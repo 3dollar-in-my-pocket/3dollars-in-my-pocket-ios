@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		328CFF878487B22029ED6AD4 /* Pods_3dollar_in_my_pocketUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F713AECDABEFD4A2350C57 /* Pods_3dollar_in_my_pocketUITests.framework */; };
 		6E0EA39723ABB230008F7CB2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */; };
 		6E0EA39923ABB230008F7CB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */; };
 		6E0EA39B23ABB230008F7CB2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39A23ABB230008F7CB2 /* ViewController.swift */; };
 		6E0EA3A023ABB231008F7CB2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E0EA39F23ABB231008F7CB2 /* Assets.xcassets */; };
 		6E0EA3AE23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA3AD23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift */; };
 		6E0EA3B923ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA3B823ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift */; };
+		BBE1E2B74E01D62BFCC24B3A /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E1EFBD2860CBC793C452FE7 /* Pods_3dollar_in_my_pocket.framework */; };
+		CE473C62907FB7AC248C5449 /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C59B69D1E4EB1BF633118AE9 /* Pods_3dollar_in_my_pocketTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +36,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		26D5102E48157BDDDE68424B /* Pods-3dollar-in-my-pocket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.debug.xcconfig"; sourceTree = "<group>"; };
+		3E9F0D0965765773F3DE8CED /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketUITests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketUITests/Pods-3dollar-in-my-pocketUITests.release.xcconfig"; sourceTree = "<group>"; };
+		4E1EFBD2860CBC793C452FE7 /* Pods_3dollar_in_my_pocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E0EA39323ABB230008F7CB2 /* 3dollar-in-my-pocket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "3dollar-in-my-pocket.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -45,6 +51,12 @@
 		6E0EA3B423ABB232008F7CB2 /* 3dollar-in-my-pocketUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "3dollar-in-my-pocketUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E0EA3B823ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _dollar_in_my_pocketUITests.swift; sourceTree = "<group>"; };
 		6E0EA3BA23ABB232008F7CB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9A39A9952D8E98C9F4B654C6 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.debug.xcconfig"; sourceTree = "<group>"; };
+		C2F713AECDABEFD4A2350C57 /* Pods_3dollar_in_my_pocketUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C59B69D1E4EB1BF633118AE9 /* Pods_3dollar_in_my_pocketTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E19CE65E50B43317856B5C1D /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketUITests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketUITests/Pods-3dollar-in-my-pocketUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		E833CAA1B728671C967E9C13 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.release.xcconfig"; sourceTree = "<group>"; };
+		FE4707071773D55BBBE581CA /* Pods-3dollar-in-my-pocket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBE1E2B74E01D62BFCC24B3A /* Pods_3dollar_in_my_pocket.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE473C62907FB7AC248C5449 /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,12 +80,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				328CFF878487B22029ED6AD4 /* Pods_3dollar_in_my_pocketUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		417867EE2A79A650E3B9F6C2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				26D5102E48157BDDDE68424B /* Pods-3dollar-in-my-pocket.debug.xcconfig */,
+				FE4707071773D55BBBE581CA /* Pods-3dollar-in-my-pocket.release.xcconfig */,
+				9A39A9952D8E98C9F4B654C6 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */,
+				E833CAA1B728671C967E9C13 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */,
+				E19CE65E50B43317856B5C1D /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */,
+				3E9F0D0965765773F3DE8CED /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		6E0EA38A23ABB230008F7CB2 = {
 			isa = PBXGroup;
 			children = (
@@ -79,6 +108,8 @@
 				6E0EA3AC23ABB232008F7CB2 /* 3dollar-in-my-pocketTests */,
 				6E0EA3B723ABB232008F7CB2 /* 3dollar-in-my-pocketUITests */,
 				6E0EA39423ABB230008F7CB2 /* Products */,
+				417867EE2A79A650E3B9F6C2 /* Pods */,
+				7A5371D9493CAB9E4689ABB5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -122,6 +153,16 @@
 			path = "3dollar-in-my-pocketUITests";
 			sourceTree = "<group>";
 		};
+		7A5371D9493CAB9E4689ABB5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4E1EFBD2860CBC793C452FE7 /* Pods_3dollar_in_my_pocket.framework */,
+				C59B69D1E4EB1BF633118AE9 /* Pods_3dollar_in_my_pocketTests.framework */,
+				C2F713AECDABEFD4A2350C57 /* Pods_3dollar_in_my_pocketUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -129,9 +170,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6E0EA3BD23ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocket" */;
 			buildPhases = (
+				4CC854A09DCBD5FDDB225278 /* [CP] Check Pods Manifest.lock */,
 				6E0EA38F23ABB230008F7CB2 /* Sources */,
 				6E0EA39023ABB230008F7CB2 /* Frameworks */,
 				6E0EA39123ABB230008F7CB2 /* Resources */,
+				842513F4586EF12283343500 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -146,6 +189,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6E0EA3C023ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocketTests" */;
 			buildPhases = (
+				69B439BCDDEA6CA692D05FFF /* [CP] Check Pods Manifest.lock */,
 				6E0EA3A523ABB232008F7CB2 /* Sources */,
 				6E0EA3A623ABB232008F7CB2 /* Frameworks */,
 				6E0EA3A723ABB232008F7CB2 /* Resources */,
@@ -164,6 +208,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6E0EA3C323ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocketUITests" */;
 			buildPhases = (
+				82AD17CE35F2DB666EA15C8B /* [CP] Check Pods Manifest.lock */,
 				6E0EA3B023ABB232008F7CB2 /* Sources */,
 				6E0EA3B123ABB232008F7CB2 /* Frameworks */,
 				6E0EA3B223ABB232008F7CB2 /* Resources */,
@@ -245,6 +290,92 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4CC854A09DCBD5FDDB225278 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-3dollar-in-my-pocket-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		69B439BCDDEA6CA692D05FFF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-3dollar-in-my-pocketTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		82AD17CE35F2DB666EA15C8B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-3dollar-in-my-pocketUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		842513F4586EF12283343500 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6E0EA38F23ABB230008F7CB2 /* Sources */ = {
@@ -405,6 +536,7 @@
 		};
 		6E0EA3BE23ABB232008F7CB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 26D5102E48157BDDDE68424B /* Pods-3dollar-in-my-pocket.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -423,6 +555,7 @@
 		};
 		6E0EA3BF23ABB232008F7CB2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FE4707071773D55BBBE581CA /* Pods-3dollar-in-my-pocket.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -441,6 +574,7 @@
 		};
 		6E0EA3C123ABB232008F7CB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9A39A9952D8E98C9F4B654C6 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -463,6 +597,7 @@
 		};
 		6E0EA3C223ABB232008F7CB2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E833CAA1B728671C967E9C13 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -485,6 +620,7 @@
 		};
 		6E0EA3C423ABB232008F7CB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E19CE65E50B43317856B5C1D /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -505,6 +641,7 @@
 		};
 		6E0EA3C523ABB232008F7CB2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3E9F0D0965765773F3DE8CED /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
