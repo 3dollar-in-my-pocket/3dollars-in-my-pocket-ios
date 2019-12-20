@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,6 +14,7 @@
 		6E0EA3A023ABB231008F7CB2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E0EA39F23ABB231008F7CB2 /* Assets.xcassets */; };
 		6E0EA3AE23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA3AD23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift */; };
 		6E0EA3B923ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA3B823ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift */; };
+		6E6B0ED823AD1530006E11CE /* KakaoOpenSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E6B0ED723AD1530006E11CE /* KakaoOpenSDK.framework */; };
 		BBE1E2B74E01D62BFCC24B3A /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E1EFBD2860CBC793C452FE7 /* Pods_3dollar_in_my_pocket.framework */; };
 		CE473C62907FB7AC248C5449 /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C59B69D1E4EB1BF633118AE9 /* Pods_3dollar_in_my_pocketTests.framework */; };
 /* End PBXBuildFile section */
@@ -51,6 +52,7 @@
 		6E0EA3B423ABB232008F7CB2 /* 3dollar-in-my-pocketUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "3dollar-in-my-pocketUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E0EA3B823ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _dollar_in_my_pocketUITests.swift; sourceTree = "<group>"; };
 		6E0EA3BA23ABB232008F7CB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6E6B0ED723AD1530006E11CE /* KakaoOpenSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KakaoOpenSDK.framework; sourceTree = "<group>"; };
 		9A39A9952D8E98C9F4B654C6 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C2F713AECDABEFD4A2350C57 /* Pods_3dollar_in_my_pocketUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C59B69D1E4EB1BF633118AE9 /* Pods_3dollar_in_my_pocketTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -65,6 +67,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BBE1E2B74E01D62BFCC24B3A /* Pods_3dollar_in_my_pocket.framework in Frameworks */,
+				6E6B0ED823AD1530006E11CE /* KakaoOpenSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,7 +100,6 @@
 				E19CE65E50B43317856B5C1D /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */,
 				3E9F0D0965765773F3DE8CED /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -156,6 +158,7 @@
 		7A5371D9493CAB9E4689ABB5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6E6B0ED723AD1530006E11CE /* KakaoOpenSDK.framework */,
 				4E1EFBD2860CBC793C452FE7 /* Pods_3dollar_in_my_pocket.framework */,
 				C59B69D1E4EB1BF633118AE9 /* Pods_3dollar_in_my_pocketTests.framework */,
 				C2F713AECDABEFD4A2350C57 /* Pods_3dollar_in_my_pocketUITests.framework */,
@@ -541,10 +544,34 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = X975A2HM62;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "3dollar-in-my-pocket/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"Kingfisher\"",
+					"-framework",
+					"\"RxCocoa\"",
+					"-framework",
+					"\"RxRelay\"",
+					"-framework",
+					"\"RxSwift\"",
+					"-framework",
+					"\"SnapKit\"",
+					"-framework",
+					"\"Then\"",
+					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -560,10 +587,34 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = X975A2HM62;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "3dollar-in-my-pocket/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"Kingfisher\"",
+					"-framework",
+					"\"RxCocoa\"",
+					"-framework",
+					"\"RxRelay\"",
+					"-framework",
+					"\"RxSwift\"",
+					"-framework",
+					"\"SnapKit\"",
+					"-framework",
+					"\"Then\"",
+					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>KAKAO_APP_KEY</key>
+	<string>a0ce3cecac62e2dedf50751d5abc5740</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -16,6 +18,17 @@
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakaoa0ce3cecac62e2dedf50751d5abc5740</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -54,5 +67,21 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <!-- 공통 -->
+        <string>kakao0123456789abcdefghijklmn</string>
+
+        <!-- 간편로그인 -->
+        <string>kakaokompassauth</string>
+        <string>storykompassauth</string>
+
+        <!-- 카카오톡링크 -->
+        <string>kakaolink</string>
+        <string>kakaotalk-5.9.7</string>
+
+        <!-- 카카오스토리링크 -->
+        <string>storylink</string>
+    </array>
 </dict>
 </plist>
