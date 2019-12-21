@@ -2,6 +2,7 @@ import UIKit
 import KakaoOpenSDK
 import NaverThirdPartyLogin
 import AuthenticationServices
+import GoogleSignIn
 
 class SignInVC: BaseVC {
     
@@ -15,6 +16,7 @@ class SignInVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = signInView
+        initializeGoogleSignIn()
         bindEvent()
     }
     
@@ -26,8 +28,7 @@ class SignInVC: BaseVC {
             .bind(onNext: requestNaverSignIn).disposed(by: disposeBag)
         
         signInView.appleBtn.rx.controlEvent(.touchUpInside)
-            .bind(onNext: requestAppleSignIn).disposed(by: disposeBag)
-        
+            .bind(onNext: requestAppleSignIn).disposed(by: disposeBag)   
     }
     
     private func requestKakaoSignIn() {
@@ -71,6 +72,13 @@ class SignInVC: BaseVC {
         authController.delegate = self
         authController.performRequests()
     }
+    
+    private func initializeGoogleSignIn() {
+        if let gidSignIn = GIDSignIn.sharedInstance() {
+            gidSignIn.presentingViewController = self
+            gidSignIn.delegate = self
+        }
+    }
 }
 
 extension SignInVC: NaverThirdPartyLoginConnectionDelegate {
@@ -111,3 +119,16 @@ extension SignInVC: ASAuthorizationControllerDelegate {
     }
 }
 
+extension SignInVC: GIDSignInDelegate {
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+        if let error = error {
+          if (error as NSError).code == GIDSignInErrorCode.hasNoAuthInKeychain.rawValue {
+            AlertUtils.show(title: "error", message: "The user has not signed in before or they have since signed out.")
+          } else {
+            AlertUtils.show(title: "error", message: error.localizedDescription)
+          }
+        } else {
+            AlertUtils.show(title: "success", message: "token: \(String(describing: user.authentication.idToken))")
+        }
+    }
+}

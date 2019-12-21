@@ -1,6 +1,7 @@
 import UIKit
 import KakaoOpenSDK
 import NaverThirdPartyLogin
+import GoogleSignIn
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -10,7 +11,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         initializeNaverLogin()
-        
+        initializeGoogleLogin()
         return true
     }
 
@@ -42,6 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         NaverThirdPartyLoginConnection.getSharedInstance()?.application(app, open: url, options: options)
+        GIDSignIn.sharedInstance().handle(url)
         
         return false
     }
@@ -64,6 +66,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         connection.consumerSecret = kConsumerSecret
         connection.appName = kServiceAppName
     }
-
+    
+    private func initializeGoogleLogin() {
+        guard let gidSignIn = GIDSignIn.sharedInstance() else {
+            AlertUtils.show(title: "error", message: "GIDSignIn 초기화 실패")
+            return
+        }
+        
+        gidSignIn.clientID = "1014726034007-cr8jiho91de2ctkvqttro93oem0gddqf.apps.googleusercontent.com"
+    }
 }
+
+
 

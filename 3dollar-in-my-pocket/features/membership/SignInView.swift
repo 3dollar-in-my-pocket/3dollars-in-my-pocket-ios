@@ -3,6 +3,7 @@ import Then
 import SnapKit
 import KakaoOpenSDK
 import AuthenticationServices
+import GoogleSignIn
 
 class SignInView: BaseView {
     
@@ -15,9 +16,12 @@ class SignInView: BaseView {
     
     let appleBtn = ASAuthorizationAppleIDButton()
     
+    let googleBtn = GIDSignInButton()
+    
+    
     override func setup() {
         backgroundColor = .white
-        addSubViews(kakaoBtn, naverBtn, appleBtn)
+        addSubViews(kakaoBtn, naverBtn, appleBtn, googleBtn)
     }
     
     override func bindConstraints() {
@@ -37,6 +41,12 @@ class SignInView: BaseView {
         appleBtn.snp.makeConstraints { (make) in
             make.left.right.equalTo(kakaoBtn)
             make.top.equalTo(naverBtn.snp.bottom).offset(20)
+            make.height.equalTo(48)
+        }
+        
+        googleBtn.snp.makeConstraints { (make) in
+            make.left.right.equalTo(kakaoBtn)
+            make.top.equalTo(appleBtn.snp.bottom).offset(20)
             make.height.equalTo(48)
         }
     }
