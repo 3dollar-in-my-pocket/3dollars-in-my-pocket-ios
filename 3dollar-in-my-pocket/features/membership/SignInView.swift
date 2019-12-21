@@ -2,6 +2,7 @@ import UIKit
 import Then
 import SnapKit
 import KakaoOpenSDK
+import AuthenticationServices
 
 class SignInView: BaseView {
     
@@ -12,9 +13,11 @@ class SignInView: BaseView {
         $0.backgroundColor = .green
     }
     
+    let appleBtn = ASAuthorizationAppleIDButton()
+    
     override func setup() {
         backgroundColor = .white
-        addSubViews(kakaoBtn, naverBtn)
+        addSubViews(kakaoBtn, naverBtn, appleBtn)
     }
     
     override func bindConstraints() {
@@ -28,6 +31,12 @@ class SignInView: BaseView {
         naverBtn.snp.makeConstraints { (make) in
             make.left.right.equalTo(kakaoBtn)
             make.top.equalTo(kakaoBtn.snp.bottom).offset(20)
+            make.height.equalTo(48)
+        }
+        
+        appleBtn.snp.makeConstraints { (make) in
+            make.left.right.equalTo(kakaoBtn)
+            make.top.equalTo(naverBtn.snp.bottom).offset(20)
             make.height.equalTo(48)
         }
     }

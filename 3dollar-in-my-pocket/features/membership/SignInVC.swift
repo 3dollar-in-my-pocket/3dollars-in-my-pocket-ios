@@ -1,6 +1,7 @@
 import UIKit
 import KakaoOpenSDK
 import NaverThirdPartyLogin
+import AuthenticationServices
 
 class SignInVC: BaseVC {
     
@@ -23,6 +24,9 @@ class SignInVC: BaseVC {
         
         signInView.naverBtn.rx.tap
             .bind(onNext: requestNaverSignIn).disposed(by: disposeBag)
+        
+        signInView.appleBtn.rx.controlEvent(.touchUpInside)
+            .bind(onNext: requestAppleSignIn).disposed(by: disposeBag)
         
     }
     
@@ -55,6 +59,18 @@ class SignInVC: BaseVC {
         connection.delegate = self
         connection.requestThirdPartyLogin()
     }
+    
+    private func requestAppleSignIn() {
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        
+        request.requestedScopes = [.fullName, .email]
+        
+        let authController = ASAuthorizationController(authorizationRequests: [request])
+        
+        authController.delegate = self
+        authController.performRequests()
+    }
 }
 
 extension SignInVC: NaverThirdPartyLoginConnectionDelegate {
@@ -63,7 +79,7 @@ extension SignInVC: NaverThirdPartyLoginConnectionDelegate {
             AlertUtils.show(title: "error", message: "네이버 로그인 초기화 실패")
             return
         }
-        AlertUtils.show(title: "success naver", message: connection.accessToken)
+        AlertUtils.show(title: "success naver", message: "token: \(String(describing: connection.accessToken))")
     }
     
     func oauth20ConnectionDidFinishRequestACTokenWithRefreshToken() {
@@ -71,7 +87,7 @@ extension SignInVC: NaverThirdPartyLoginConnectionDelegate {
             AlertUtils.show(title: "error", message: "네이버 로그인 초기화 실패")
             return
         }
-        AlertUtils.show(title: "이미 연결되어있음", message: connection.accessToken)
+        AlertUtils.show(title: "이미 연결되어있음", message: "token: \(String(describing: connection.accessToken))")
     }
     
     func oauth20ConnectionDidFinishDeleteToken() {
@@ -80,6 +96,18 @@ extension SignInVC: NaverThirdPartyLoginConnectionDelegate {
     
     func oauth20Connection(_ oauthConnection: NaverThirdPartyLoginConnection!, didFailWithError error: Error!) {
         AlertUtils.show(title: "error", message: error.localizedDescription)
+    }
+}
+
+extension SignInVC: ASAuthorizationControllerDelegate {
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        AlertUtils.show(title: "error", message: error.localizedDescription)
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            AlertUtils.show(title: "success", message: "token: \(appleIDCredential.user)")
+        }
     }
 }
 
