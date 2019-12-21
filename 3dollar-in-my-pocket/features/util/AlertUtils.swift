@@ -5,7 +5,7 @@ struct AlertUtils {
     static func show(title: String? = nil, message: String? = nil) {
         let okAction = UIAlertAction(title: "확인", style: .default)
         
-        show(title: nil, message: message, [okAction])
+        show(title: title, message: message, [okAction])
     }
     
     static func showWithCancel(title: String? = nil, message: String? = nil) {

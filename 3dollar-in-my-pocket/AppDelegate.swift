@@ -1,5 +1,6 @@
 import UIKit
 import KakaoOpenSDK
+import NaverThirdPartyLogin
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -8,6 +9,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        initializeNaverLogin()
+        
         return true
     }
 
@@ -38,6 +41,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return KOSession.handleOpen(url)
         }
         
+        NaverThirdPartyLoginConnection.getSharedInstance()?.application(app, open: url, options: options)
+        
         return false
     }
     
@@ -45,6 +50,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         KOSession.handleDidBecomeActive()
     }
 
+    private func initializeNaverLogin() {
+        guard let connection = NaverThirdPartyLoginConnection.getSharedInstance() else {
+            AlertUtils.show(title: "error", message: "네이버 로그인 초기화 실패")
+            return
+        }
+        
+        connection.isNaverAppOauthEnable = true
+        connection.isInAppOauthEnable = true
+        connection.setOnlyPortraitSupportInIphone(true)
+        connection.serviceUrlScheme = kServiceAppUrlScheme
+        connection.consumerKey = kConsumerKey
+        connection.consumerSecret = kConsumerSecret
+        connection.appName = kServiceAppName
+    }
 
 }
 
