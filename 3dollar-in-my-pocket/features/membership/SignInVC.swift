@@ -9,8 +9,10 @@ class SignInVC: BaseVC {
     private lazy var signInView = SignInView(frame: self.view.frame)
     
     
-    static func instance() -> SignInVC {
-        return SignInVC(nibName: nil, bundle: nil)
+    static func instance() -> UINavigationController {
+        let controller = SignInVC(nibName: nil, bundle: nil)
+        
+        return UINavigationController(rootViewController: controller)
     }
     
     override func viewDidLoad() {
@@ -114,7 +116,8 @@ extension SignInVC: ASAuthorizationControllerDelegate {
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-            AlertUtils.show(title: "success", message: "token: \(appleIDCredential.user)")
+//            AlertUtils.show(title: "success", message: "token: \(appleIDCredential.user)")
+            self.navigationController?.pushViewController(NicknameVC.instance(), animated: true)
         }
     }
 }

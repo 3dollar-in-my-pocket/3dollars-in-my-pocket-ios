@@ -14,6 +14,8 @@
 		6E0EA3A023ABB231008F7CB2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E0EA39F23ABB231008F7CB2 /* Assets.xcassets */; };
 		6E0EA3AE23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA3AD23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift */; };
 		6E0EA3B923ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA3B823ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift */; };
+		6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C820C23B4A2880025BB2B /* NicknameView.swift */; };
+		6E2C820F23B4A37F0025BB2B /* NicknameVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C820E23B4A37F0025BB2B /* NicknameVC.swift */; };
 		6E62EED623AD1DE9007B7570 /* AlertUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E62EED523AD1DE9007B7570 /* AlertUtils.swift */; };
 		6E6B0ED823AD1530006E11CE /* KakaoOpenSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E6B0ED723AD1530006E11CE /* KakaoOpenSDK.framework */; };
 		6E6B0EDC23AD16AC006E11CE /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EDB23AD16AC006E11CE /* BaseView.swift */; };
@@ -57,6 +59,8 @@
 		6E0EA3B423ABB232008F7CB2 /* 3dollar-in-my-pocketUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "3dollar-in-my-pocketUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E0EA3B823ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _dollar_in_my_pocketUITests.swift; sourceTree = "<group>"; };
 		6E0EA3BA23ABB232008F7CB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6E2C820C23B4A2880025BB2B /* NicknameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameView.swift; sourceTree = "<group>"; };
+		6E2C820E23B4A37F0025BB2B /* NicknameVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameVC.swift; sourceTree = "<group>"; };
 		6E62EED523AD1DE9007B7570 /* AlertUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertUtils.swift; sourceTree = "<group>"; };
 		6E6B0ED723AD1530006E11CE /* KakaoOpenSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KakaoOpenSDK.framework; sourceTree = "<group>"; };
 		6E6B0EDB23AD16AC006E11CE /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
@@ -208,6 +212,8 @@
 			children = (
 				6E0EA39A23ABB230008F7CB2 /* SignInVC.swift */,
 				6E6B0EE323AD1836006E11CE /* SignInView.swift */,
+				6E2C820C23B4A2880025BB2B /* NicknameView.swift */,
+				6E2C820E23B4A37F0025BB2B /* NicknameVC.swift */,
 			);
 			path = membership;
 			sourceTree = "<group>";
@@ -460,6 +466,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E2C820F23B4A37F0025BB2B /* NicknameVC.swift in Sources */,
+				6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */,
 				6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */,
 				6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */,
 				6E0EA39B23ABB230008F7CB2 /* SignInVC.swift in Sources */,

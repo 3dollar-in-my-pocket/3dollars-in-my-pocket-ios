@@ -39,7 +39,7 @@ DEPENDENCIES:
   - Then
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - AppAuth
     - GoogleSignIn
     - GTMAppAuth
@@ -67,4 +67,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 854f27d8aef8672c68140a114ab15e262139fff5
 
-COCOAPODS: 1.7.4
+COCOAPODS: 1.8.4
