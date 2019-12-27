@@ -17,6 +17,9 @@ target '3dollar-in-my-pocket' do
   pod 'Then'
   
   pod 'GoogleSignIn'
+  pod 'GoogleMaps'
+  pod 'GooglePlaces'
+  
   pod 'naveridlogin-sdk-ios'
 
   target '3dollar-in-my-pocketTests' do

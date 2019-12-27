@@ -2,6 +2,7 @@ import UIKit
 import KakaoOpenSDK
 import NaverThirdPartyLogin
 import GoogleSignIn
+import GoogleMaps
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -12,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         initializeNaverLogin()
         initializeGoogleLogin()
+        initializeGoogleMaps()
         return true
     }
 
@@ -74,6 +76,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         gidSignIn.clientID = "1014726034007-cr8jiho91de2ctkvqttro93oem0gddqf.apps.googleusercontent.com"
+    }
+    
+    private func initializeGoogleMaps() {
+        GMSServices.provideAPIKey("AIzaSyA7CMJwuD1RrlhgF-L1o9vuKOgFiNA-5Sg")
     }
 }
 
