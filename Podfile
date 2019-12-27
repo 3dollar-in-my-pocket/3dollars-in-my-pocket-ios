@@ -15,6 +15,12 @@ target '3dollar-in-my-pocket' do
   pod 'Kingfisher', '~> 5.0'
 
   pod 'Then'
+  
+  pod 'GoogleSignIn'
+  pod 'GoogleMaps'
+  pod 'GooglePlaces'
+  
+  pod 'naveridlogin-sdk-ios'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths

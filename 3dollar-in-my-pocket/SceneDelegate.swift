@@ -20,7 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = ViewController(nibName: nil, bundle: nil)
+        window?.backgroundColor = .white
+        window?.rootViewController = SignInVC.instance()
         window?.makeKeyAndVisible()
     }
 
@@ -51,7 +52,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
+    
+    func goToMain() {
+        window?.rootViewController = MainVC.instance()
+        window?.makeKeyAndVisible()
+    }
 
 }
 
