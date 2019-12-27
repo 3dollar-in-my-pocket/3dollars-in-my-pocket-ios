@@ -10,7 +10,7 @@ class NicknameView: BaseView {
         $0.placeholder = "입력해주세요."
     }
     
-    private let button = UIButton().then {
+    let button = UIButton().then {
         $0.setTitle("입장하기", for: .normal)
         $0.backgroundColor = .black
         $0.setTitleColor(.white, for: .normal)

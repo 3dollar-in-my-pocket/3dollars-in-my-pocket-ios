@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		328CFF878487B22029ED6AD4 /* Pods_3dollar_in_my_pocketUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F713AECDABEFD4A2350C57 /* Pods_3dollar_in_my_pocketUITests.framework */; };
+		6E07D44423B5906E0055AEE7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44323B5906E0055AEE7 /* HomeView.swift */; };
+		6E07D44623B590B30055AEE7 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44523B590B30055AEE7 /* HomeVC.swift */; };
+		6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44723B590F20055AEE7 /* MyPageView.swift */; };
+		6E07D44A23B591160055AEE7 /* MyPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44923B591160055AEE7 /* MyPageVC.swift */; };
+		6E07D44C23B5916C0055AEE7 /* WritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44B23B5916C0055AEE7 /* WritingView.swift */; };
+		6E07D44E23B5918B0055AEE7 /* WritingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44D23B5918B0055AEE7 /* WritingVC.swift */; };
 		6E0EA39723ABB230008F7CB2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */; };
 		6E0EA39923ABB230008F7CB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */; };
 		6E0EA39B23ABB230008F7CB2 /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39A23ABB230008F7CB2 /* SignInVC.swift */; };
@@ -22,6 +28,8 @@
 		6E6B0EDE23AD16F1006E11CE /* BaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EDD23AD16F1006E11CE /* BaseVC.swift */; };
 		6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EE023AD17AC006E11CE /* UIViewExt.swift */; };
 		6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EE323AD1836006E11CE /* SignInView.swift */; };
+		6EA5EC0823B57EFE0028F86B /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA5EC0723B57EFE0028F86B /* MainView.swift */; };
+		6EA5EC0A23B581880028F86B /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA5EC0923B581880028F86B /* MainVC.swift */; };
 		BBE1E2B74E01D62BFCC24B3A /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E1EFBD2860CBC793C452FE7 /* Pods_3dollar_in_my_pocket.framework */; };
 		CE473C62907FB7AC248C5449 /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C59B69D1E4EB1BF633118AE9 /* Pods_3dollar_in_my_pocketTests.framework */; };
 /* End PBXBuildFile section */
@@ -47,6 +55,12 @@
 		26D5102E48157BDDDE68424B /* Pods-3dollar-in-my-pocket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.debug.xcconfig"; sourceTree = "<group>"; };
 		3E9F0D0965765773F3DE8CED /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketUITests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketUITests/Pods-3dollar-in-my-pocketUITests.release.xcconfig"; sourceTree = "<group>"; };
 		4E1EFBD2860CBC793C452FE7 /* Pods_3dollar_in_my_pocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E07D44323B5906E0055AEE7 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		6E07D44523B590B30055AEE7 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
+		6E07D44723B590F20055AEE7 /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
+		6E07D44923B591160055AEE7 /* MyPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageVC.swift; sourceTree = "<group>"; };
+		6E07D44B23B5916C0055AEE7 /* WritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingView.swift; sourceTree = "<group>"; };
+		6E07D44D23B5918B0055AEE7 /* WritingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingVC.swift; sourceTree = "<group>"; };
 		6E0EA39323ABB230008F7CB2 /* 3dollar-in-my-pocket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "3dollar-in-my-pocket.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -67,6 +81,8 @@
 		6E6B0EDD23AD16F1006E11CE /* BaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseVC.swift; sourceTree = "<group>"; };
 		6E6B0EE023AD17AC006E11CE /* UIViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExt.swift; sourceTree = "<group>"; };
 		6E6B0EE323AD1836006E11CE /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		6EA5EC0723B57EFE0028F86B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		6EA5EC0923B581880028F86B /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		6EF3A76323ADBC1300AE18DA /* 3dollar-in-my-pocket.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "3dollar-in-my-pocket.entitlements"; sourceTree = "<group>"; };
 		9A39A9952D8E98C9F4B654C6 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C2F713AECDABEFD4A2350C57 /* Pods_3dollar_in_my_pocketUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -182,6 +198,7 @@
 		6E6B0ED923AD169B006E11CE /* features */ = {
 			isa = PBXGroup;
 			children = (
+				6EA5EC0523B57ED20028F86B /* main */,
 				6E62EED423AD1DE2007B7570 /* util */,
 				6E6B0EE223AD17D7006E11CE /* membership */,
 				6E6B0EDF23AD17A3006E11CE /* ext */,
@@ -216,6 +233,29 @@
 				6E2C820E23B4A37F0025BB2B /* NicknameVC.swift */,
 			);
 			path = membership;
+			sourceTree = "<group>";
+		};
+		6EA5EC0523B57ED20028F86B /* main */ = {
+			isa = PBXGroup;
+			children = (
+				6EA5EC0623B57EE10028F86B /* home */,
+				6EA5EC0723B57EFE0028F86B /* MainView.swift */,
+				6EA5EC0923B581880028F86B /* MainVC.swift */,
+			);
+			path = main;
+			sourceTree = "<group>";
+		};
+		6EA5EC0623B57EE10028F86B /* home */ = {
+			isa = PBXGroup;
+			children = (
+				6E07D44323B5906E0055AEE7 /* HomeView.swift */,
+				6E07D44523B590B30055AEE7 /* HomeVC.swift */,
+				6E07D44723B590F20055AEE7 /* MyPageView.swift */,
+				6E07D44923B591160055AEE7 /* MyPageVC.swift */,
+				6E07D44B23B5916C0055AEE7 /* WritingView.swift */,
+				6E07D44D23B5918B0055AEE7 /* WritingVC.swift */,
+			);
+			path = home;
 			sourceTree = "<group>";
 		};
 		7A5371D9493CAB9E4689ABB5 /* Frameworks */ = {
@@ -467,13 +507,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E2C820F23B4A37F0025BB2B /* NicknameVC.swift in Sources */,
+				6E07D44623B590B30055AEE7 /* HomeVC.swift in Sources */,
+				6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */,
+				6EA5EC0A23B581880028F86B /* MainVC.swift in Sources */,
+				6E07D44423B5906E0055AEE7 /* HomeView.swift in Sources */,
+				6E07D44C23B5916C0055AEE7 /* WritingView.swift in Sources */,
+				6E07D44A23B591160055AEE7 /* MyPageVC.swift in Sources */,
 				6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */,
 				6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */,
 				6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */,
 				6E0EA39B23ABB230008F7CB2 /* SignInVC.swift in Sources */,
 				6E0EA39723ABB230008F7CB2 /* AppDelegate.swift in Sources */,
 				6E62EED623AD1DE9007B7570 /* AlertUtils.swift in Sources */,
+				6EA5EC0823B57EFE0028F86B /* MainView.swift in Sources */,
 				6E0EA39923ABB230008F7CB2 /* SceneDelegate.swift in Sources */,
+				6E07D44E23B5918B0055AEE7 /* WritingVC.swift in Sources */,
 				6E6B0EDC23AD16AC006E11CE /* BaseView.swift in Sources */,
 				6E6B0EDE23AD16F1006E11CE /* BaseVC.swift in Sources */,
 			);

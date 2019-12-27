@@ -13,4 +13,16 @@ class NicknameVC: BaseVC {
         super.viewDidLoad()
         view = nicknameView
     }
+    
+    override func bindViewModel() {
+        nicknameView.button.rx.tap.bind {
+            self.goToMain()
+        }.disposed(by: disposeBag)
+    }
+    
+    private func goToMain() {
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            sceneDelegate.goToMain()
+        }
+    }
 }
