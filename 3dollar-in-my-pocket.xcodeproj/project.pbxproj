@@ -235,9 +235,29 @@
 			path = membership;
 			sourceTree = "<group>";
 		};
+		6E8A137623B5DCBB009C2B64 /* my-page */ = {
+			isa = PBXGroup;
+			children = (
+				6E07D44723B590F20055AEE7 /* MyPageView.swift */,
+				6E07D44923B591160055AEE7 /* MyPageVC.swift */,
+			);
+			path = "my-page";
+			sourceTree = "<group>";
+		};
+		6E8A137723B5DCC5009C2B64 /* writing */ = {
+			isa = PBXGroup;
+			children = (
+				6E07D44B23B5916C0055AEE7 /* WritingView.swift */,
+				6E07D44D23B5918B0055AEE7 /* WritingVC.swift */,
+			);
+			path = writing;
+			sourceTree = "<group>";
+		};
 		6EA5EC0523B57ED20028F86B /* main */ = {
 			isa = PBXGroup;
 			children = (
+				6E8A137723B5DCC5009C2B64 /* writing */,
+				6E8A137623B5DCBB009C2B64 /* my-page */,
 				6EA5EC0623B57EE10028F86B /* home */,
 				6EA5EC0723B57EFE0028F86B /* MainView.swift */,
 				6EA5EC0923B581880028F86B /* MainVC.swift */,
@@ -250,10 +270,6 @@
 			children = (
 				6E07D44323B5906E0055AEE7 /* HomeView.swift */,
 				6E07D44523B590B30055AEE7 /* HomeVC.swift */,
-				6E07D44723B590F20055AEE7 /* MyPageView.swift */,
-				6E07D44923B591160055AEE7 /* MyPageVC.swift */,
-				6E07D44B23B5916C0055AEE7 /* WritingView.swift */,
-				6E07D44D23B5918B0055AEE7 /* WritingVC.swift */,
 			);
 			path = home;
 			sourceTree = "<group>";
