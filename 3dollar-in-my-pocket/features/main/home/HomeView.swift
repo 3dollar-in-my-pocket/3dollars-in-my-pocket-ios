@@ -13,6 +13,7 @@ class HomeView: BaseView {
         layout.minimumInteritemSpacing = 0
         $0.backgroundColor = .white
         $0.collectionViewLayout = layout
+        $0.showsHorizontalScrollIndicator = false
     }
     
     let mapView = GMSMapView()
