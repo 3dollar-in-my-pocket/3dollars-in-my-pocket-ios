@@ -31,7 +31,7 @@ class MainVC: BaseVC {
         }.disposed(by: disposeBag)
         
         mainView.writingBtn.rx.tap.bind {
-            self.tapChange(index: 2)
+            self.present(WritingVC.instance(), animated: true, completion: nil)
         }.disposed(by: disposeBag)
     }
     
