@@ -10,14 +10,22 @@ class MainVC: BaseVC {
     
     private var selectedIndex = 0
     
-    static func instance() -> MainVC {
-        return MainVC(nibName: nil, bundle: nil)
+    static func instance() -> UINavigationController {
+        let controller = MainVC(nibName: nil, bundle: nil)
+        
+        return UINavigationController(rootViewController: controller)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.isNavigationBarHidden = true
+        navigationController?.interactivePopGestureRecognizer?.delegate = nil
         view = mainView
-        controllers = [MyPageVC.instance(), HomeVC.instance(), WritingVC.instance()]
+        
+        let homeVc = HomeVC.instance()
+        
+        homeVc.delegate = self
+        controllers = [MyPageVC.instance(), homeVc, WritingVC.instance()]
         tapChange(index: 1)
     }
     
@@ -53,5 +61,11 @@ class MainVC: BaseVC {
         
         self.view.bringSubviewToFront(mainView.stackBg)
         self.view.bringSubviewToFront(mainView.stackView)
+    }
+}
+
+extension MainVC: HomeDelegate {
+    func onTapCategory() {
+        self.navigationController?.pushViewController(CategoryListVC.instance(), animated: true)
     }
 }

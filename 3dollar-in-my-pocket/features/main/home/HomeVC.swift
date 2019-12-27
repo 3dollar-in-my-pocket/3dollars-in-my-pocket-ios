@@ -1,7 +1,13 @@
 import UIKit
 import GoogleMaps
 
+protocol HomeDelegate {
+    func onTapCategory()
+}
+
 class HomeVC: BaseVC {
+    
+    var delegate: HomeDelegate?
     
     private lazy var homeView = HomeView(frame: self.view.frame)
     
@@ -54,5 +60,9 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.delegate?.onTapCategory()
     }
 }

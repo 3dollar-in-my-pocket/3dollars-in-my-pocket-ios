@@ -30,6 +30,9 @@
 		6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EE323AD1836006E11CE /* SignInView.swift */; };
 		6EA5EC0823B57EFE0028F86B /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA5EC0723B57EFE0028F86B /* MainView.swift */; };
 		6EA5EC0A23B581880028F86B /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA5EC0923B581880028F86B /* MainVC.swift */; };
+		6EB7FA6623B651E100BFB0B4 /* CategoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */; };
+		6EB7FA6823B6521200BFB0B4 /* CategoryListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB7FA6723B6521200BFB0B4 /* CategoryListVC.swift */; };
+		6EB7FA6A23B658B000BFB0B4 /* CategoryListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB7FA6923B658B000BFB0B4 /* CategoryListCell.swift */; };
 		6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */; };
 		6EC5A47223B5E002000C09BD /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47123B5E002000C09BD /* CategoryCell.swift */; };
 		6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */; };
@@ -86,6 +89,9 @@
 		6E6B0EE323AD1836006E11CE /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		6EA5EC0723B57EFE0028F86B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		6EA5EC0923B581880028F86B /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
+		6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListView.swift; sourceTree = "<group>"; };
+		6EB7FA6723B6521200BFB0B4 /* CategoryListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListVC.swift; sourceTree = "<group>"; };
+		6EB7FA6923B658B000BFB0B4 /* CategoryListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListCell.swift; sourceTree = "<group>"; };
 		6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
 		6EC5A47123B5E002000C09BD /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
 		6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -279,6 +285,9 @@
 				6E07D44323B5906E0055AEE7 /* HomeView.swift */,
 				6E07D44523B590B30055AEE7 /* HomeVC.swift */,
 				6EC5A47123B5E002000C09BD /* CategoryCell.swift */,
+				6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */,
+				6EB7FA6723B6521200BFB0B4 /* CategoryListVC.swift */,
+				6EB7FA6923B658B000BFB0B4 /* CategoryListCell.swift */,
 			);
 			path = home;
 			sourceTree = "<group>";
@@ -533,6 +542,8 @@
 			files = (
 				6E2C820F23B4A37F0025BB2B /* NicknameVC.swift in Sources */,
 				6E07D44623B590B30055AEE7 /* HomeVC.swift in Sources */,
+				6EB7FA6623B651E100BFB0B4 /* CategoryListView.swift in Sources */,
+				6EB7FA6A23B658B000BFB0B4 /* CategoryListCell.swift in Sources */,
 				6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */,
 				6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */,
 				6EA5EC0A23B581880028F86B /* MainVC.swift in Sources */,
@@ -541,6 +552,7 @@
 				6E07D44A23B591160055AEE7 /* MyPageVC.swift in Sources */,
 				6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */,
 				6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */,
+				6EB7FA6823B6521200BFB0B4 /* CategoryListVC.swift in Sources */,
 				6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */,
 				6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */,
 				6E0EA39B23ABB230008F7CB2 /* SignInVC.swift in Sources */,
