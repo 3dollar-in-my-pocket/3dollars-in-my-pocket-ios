@@ -30,6 +30,9 @@
 		6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EE323AD1836006E11CE /* SignInView.swift */; };
 		6EA5EC0823B57EFE0028F86B /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA5EC0723B57EFE0028F86B /* MainView.swift */; };
 		6EA5EC0A23B581880028F86B /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA5EC0923B581880028F86B /* MainVC.swift */; };
+		6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */; };
+		6EC5A47223B5E002000C09BD /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47123B5E002000C09BD /* CategoryCell.swift */; };
+		6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */; };
 		BBE1E2B74E01D62BFCC24B3A /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E1EFBD2860CBC793C452FE7 /* Pods_3dollar_in_my_pocket.framework */; };
 		CE473C62907FB7AC248C5449 /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C59B69D1E4EB1BF633118AE9 /* Pods_3dollar_in_my_pocketTests.framework */; };
 /* End PBXBuildFile section */
@@ -83,6 +86,9 @@
 		6E6B0EE323AD1836006E11CE /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		6EA5EC0723B57EFE0028F86B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		6EA5EC0923B581880028F86B /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
+		6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
+		6EC5A47123B5E002000C09BD /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
+		6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
 		6EF3A76323ADBC1300AE18DA /* 3dollar-in-my-pocket.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "3dollar-in-my-pocket.entitlements"; sourceTree = "<group>"; };
 		9A39A9952D8E98C9F4B654C6 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C2F713AECDABEFD4A2350C57 /* Pods_3dollar_in_my_pocketUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -212,6 +218,8 @@
 			children = (
 				6E6B0EDB23AD16AC006E11CE /* BaseView.swift */,
 				6E6B0EDD23AD16F1006E11CE /* BaseVC.swift */,
+				6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */,
+				6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */,
 			);
 			path = base;
 			sourceTree = "<group>";
@@ -270,6 +278,7 @@
 			children = (
 				6E07D44323B5906E0055AEE7 /* HomeView.swift */,
 				6E07D44523B590B30055AEE7 /* HomeVC.swift */,
+				6EC5A47123B5E002000C09BD /* CategoryCell.swift */,
 			);
 			path = home;
 			sourceTree = "<group>";
@@ -525,10 +534,12 @@
 				6E2C820F23B4A37F0025BB2B /* NicknameVC.swift in Sources */,
 				6E07D44623B590B30055AEE7 /* HomeVC.swift in Sources */,
 				6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */,
+				6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */,
 				6EA5EC0A23B581880028F86B /* MainVC.swift in Sources */,
 				6E07D44423B5906E0055AEE7 /* HomeView.swift in Sources */,
 				6E07D44C23B5916C0055AEE7 /* WritingView.swift in Sources */,
 				6E07D44A23B591160055AEE7 /* MyPageVC.swift in Sources */,
+				6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */,
 				6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */,
 				6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */,
 				6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */,
@@ -540,6 +551,7 @@
 				6E07D44E23B5918B0055AEE7 /* WritingVC.swift in Sources */,
 				6E6B0EDC23AD16AC006E11CE /* BaseView.swift in Sources */,
 				6E6B0EDE23AD16F1006E11CE /* BaseVC.swift in Sources */,
+				6EC5A47223B5E002000C09BD /* CategoryCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
