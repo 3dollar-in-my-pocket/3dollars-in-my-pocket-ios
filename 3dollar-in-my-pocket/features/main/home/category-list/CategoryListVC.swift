@@ -46,4 +46,8 @@ extension CategoryListVC: UITableViewDelegate, UITableViewDataSource {
         
         return cell
     }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.navigationController?.pushViewController(DetailVC.instance(), animated: true)
+    }
 }
