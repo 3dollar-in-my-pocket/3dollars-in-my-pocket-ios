@@ -249,6 +249,23 @@
 			path = membership;
 			sourceTree = "<group>";
 		};
+		6E70C38C23B6EB7400C52C9C /* category-list */ = {
+			isa = PBXGroup;
+			children = (
+				6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */,
+				6EB7FA6723B6521200BFB0B4 /* CategoryListVC.swift */,
+				6EB7FA6923B658B000BFB0B4 /* CategoryListCell.swift */,
+			);
+			path = "category-list";
+			sourceTree = "<group>";
+		};
+		6E70C38D23B6EB8200C52C9C /* detail */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = detail;
+			sourceTree = "<group>";
+		};
 		6E8A137623B5DCBB009C2B64 /* my-page */ = {
 			isa = PBXGroup;
 			children = (
@@ -282,12 +299,11 @@
 		6EA5EC0623B57EE10028F86B /* home */ = {
 			isa = PBXGroup;
 			children = (
+				6E70C38D23B6EB8200C52C9C /* detail */,
+				6E70C38C23B6EB7400C52C9C /* category-list */,
 				6E07D44323B5906E0055AEE7 /* HomeView.swift */,
 				6E07D44523B590B30055AEE7 /* HomeVC.swift */,
 				6EC5A47123B5E002000C09BD /* CategoryCell.swift */,
-				6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */,
-				6EB7FA6723B6521200BFB0B4 /* CategoryListVC.swift */,
-				6EB7FA6923B658B000BFB0B4 /* CategoryListCell.swift */,
 			);
 			path = home;
 			sourceTree = "<group>";
