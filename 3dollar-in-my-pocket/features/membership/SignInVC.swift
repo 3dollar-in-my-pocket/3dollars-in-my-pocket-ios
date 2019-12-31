@@ -54,13 +54,14 @@ class SignInVC: BaseVC {
     }
     
     private func requestNaverSignIn() {
-        guard let connection = NaverThirdPartyLoginConnection.getSharedInstance() else {
-            AlertUtils.show(title: "error", message: "네이버 로그인 초기화 실패")
-            return
-        }
-        
-        connection.delegate = self
-        connection.requestThirdPartyLogin()
+        self.navigationController?.pushViewController(NicknameVC.instance(), animated: true)
+//        guard let connection = NaverThirdPartyLoginConnection.getSharedInstance() else {
+//            AlertUtils.show(title: "error", message: "네이버 로그인 초기화 실패")
+//            return
+//        }
+//
+//        connection.delegate = self
+//        connection.requestThirdPartyLogin()
     }
     
     private func requestAppleSignIn() {

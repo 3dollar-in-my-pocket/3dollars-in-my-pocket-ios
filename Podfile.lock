@@ -48,8 +48,10 @@ DEPENDENCIES:
   - Then
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - AppAuth
+    - GoogleMaps
+    - GooglePlaces
     - GoogleSignIn
     - GTMAppAuth
     - GTMSessionFetcher
@@ -60,9 +62,6 @@ SPEC REPOS:
     - RxSwift
     - SnapKit
     - Then
-  trunk:
-    - GoogleMaps
-    - GooglePlaces
 
 SPEC CHECKSUMS:
   AppAuth: 73574f3013a1e65b9601a3ddc8b3158cce68c09d
@@ -81,4 +80,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 191867515b5c0bdee03a8831129fd0f46f4a3f34
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.7.4

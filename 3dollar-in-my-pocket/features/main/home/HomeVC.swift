@@ -1,7 +1,13 @@
 import UIKit
 import GoogleMaps
 
+protocol HomeDelegate {
+    func onTapCategory()
+}
+
 class HomeVC: BaseVC {
+    
+    var delegate: HomeDelegate?
     
     private lazy var homeView = HomeView(frame: self.view.frame)
     
@@ -23,11 +29,40 @@ class HomeVC: BaseVC {
         marker.title = "닥고약기"
         marker.snippet = "무름표"
         marker.map = homeView.mapView
+        initializeCategory()
     }
     
     override func bindViewModel() {
         homeView.mapButton.rx.tap.bind {
             AlertUtils.show(title: "Current position", message: "\(self.homeView.mapView.camera.target)")
         }.disposed(by: disposeBag)
+    }
+    
+    private func initializeCategory() {
+        homeView.categoryView.delegate = self
+        homeView.categoryView.dataSource = self
+        homeView.categoryView.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.registerId)
+    }
+}
+
+extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 12
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.registerId, for: indexPath) as? CategoryCell else {
+            return BaseCollectionViewCell()
+        }
+        
+        return cell
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.delegate?.onTapCategory()
     }
 }
