@@ -18,6 +18,7 @@ class SignInVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = signInView
+        navigationController?.isNavigationBarHidden = true
         initializeGoogleSignIn()
         bindEvent()
     }

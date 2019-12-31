@@ -15,9 +15,13 @@ class NicknameVC: BaseVC {
     }
     
     override func bindViewModel() {
-        nicknameView.button.rx.tap.bind {
+        nicknameView.startBtn1.rx.tap.bind {
             self.goToMain()
         }.disposed(by: disposeBag)
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
     private func goToMain() {
