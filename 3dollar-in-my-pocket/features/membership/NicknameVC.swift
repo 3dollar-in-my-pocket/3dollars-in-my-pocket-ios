@@ -29,6 +29,14 @@ class NicknameVC: BaseVC {
         nicknameView.tapGestureView.rx.event.bind { (recognizer) in
             self.nicknameView.nicknameField.resignFirstResponder()
         }.disposed(by: disposeBag)
+        
+        nicknameView.startBtn1.rx.tap.bind {
+            self.goToMain()
+        }.disposed(by: disposeBag)
+        
+        nicknameView.startBtn2.rx.tap.bind {
+            self.goToMain()
+        }.disposed(by: disposeBag)
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
