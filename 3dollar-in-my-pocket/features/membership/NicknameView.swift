@@ -2,6 +2,8 @@ import UIKit
 
 class NicknameView: BaseView {
     
+    let tapGestureView = UITapGestureRecognizer()
+    
     let bgCloud = UIImageView().then {
         $0.image = UIImage.init(named: "bg_cloud")
         $0.contentMode = .scaleAspectFit
@@ -24,6 +26,7 @@ class NicknameView: BaseView {
         $0.placeholder = "닉네임 입력"
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 32)
         $0.textColor = UIColor.init(r: 243, g: 162, b: 169)
+        $0.returnKeyType = .done
         $0.attributedPlaceholder = NSAttributedString(string: "닉네임 입력",
                                                       attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(r: 243, g: 162, b: 169, a: 0.4)])
     }
@@ -51,6 +54,8 @@ class NicknameView: BaseView {
     override func setup() {
         backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         addSubViews(bgCloud, nicknameLabel1, nicknameFieldBg, nicknameField, nicknameLabel2, startBtn1, startBtn2)
+        isUserInteractionEnabled = true
+        addGestureRecognizer(tapGestureView)
     }
     
     override func bindConstraints() {
@@ -93,5 +98,10 @@ class NicknameView: BaseView {
             make.centerY.equalTo(startBtn1.snp.centerY)
             make.left.equalTo(startBtn1.snp.right).offset(8)
         }
+    }
+    
+    func setBtnEnable(isEnable: Bool) {
+        startBtn1.isEnabled = isEnable
+        startBtn2.isEnabled = isEnable
     }
 }
