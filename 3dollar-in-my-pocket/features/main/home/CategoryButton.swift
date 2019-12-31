@@ -14,7 +14,7 @@ class CategoryButton: BaseView {
     }
     
     override func setup() {
-        backgroundColor = .white
+        backgroundColor = .clear
         addSubViews(icon, title)
     }
     

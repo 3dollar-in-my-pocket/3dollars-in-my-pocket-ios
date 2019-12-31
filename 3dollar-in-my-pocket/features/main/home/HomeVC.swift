@@ -12,6 +12,7 @@ protocol HomeDelegate {
 class HomeVC: BaseVC {
     
     var delegate: HomeDelegate?
+    var locationManager = CLLocationManager()
     
     private lazy var homeView = HomeView(frame: self.view.frame)
     
@@ -32,17 +33,23 @@ class HomeVC: BaseVC {
         
         homeView.mapView.camera = camera
         homeView.mapView.delegate = self
+        homeView.mapView.isMyLocationEnabled = true
         
         let marker = GMSMarker()
         marker.position = CLLocationCoordinate2D(latitude: 37.49838214755165, longitude: 127.02844798564912)
         marker.title = "닥고약기"
         marker.snippet = "무름표"
         marker.map = homeView.mapView
+        
+        //Location Manager code to fetch current location
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
     }
     
     override func bindViewModel() {
-        homeView.mapButton.rx.tap.subscribe {
-            AlertUtils.show(title: "Current position", message: "\(self.homeView.mapView.camera.target)")
+        homeView.mapButton.rx.tap.bind {
+            self.locationManager.requestLocation()
         }.disposed(by: disposeBag)
     }
 }
@@ -102,5 +109,18 @@ extension HomeVC: GMSMapViewDelegate {
     
     func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
         self.delegate?.endDragMap()
+    }
+}
+
+extension HomeVC: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations.last
+        let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
+        
+        self.homeView.mapView.animate(to: camera)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        AlertUtils.show(title: "error", message: error.localizedDescription)
     }
 }

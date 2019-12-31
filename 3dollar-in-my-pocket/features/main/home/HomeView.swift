@@ -12,6 +12,10 @@ class HomeView: BaseView {
         $0.alignment = .leading
         $0.axis = .horizontal
         $0.backgroundColor = .white
+        $0.distribution = .equalCentering
+        $0.spacing = 16
+        $0.layoutMargins = UIEdgeInsets(top: 0, left: 21, bottom: 0, right: 18)
+        $0.isLayoutMarginsRelativeArrangement = true
     }
     
     let mapView = GMSMapView()
