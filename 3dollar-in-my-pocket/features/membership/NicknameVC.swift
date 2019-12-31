@@ -16,6 +16,10 @@ class NicknameVC: BaseVC {
     }
     
     override func bindViewModel() {
+        nicknameView.backBtn.rx.tap.bind {
+            self.navigationController?.popViewController(animated: true)
+        }.disposed(by: disposeBag)
+        
         nicknameView.nicknameField.rx.text.bind { (text) in
             guard let text = text else {return}
             

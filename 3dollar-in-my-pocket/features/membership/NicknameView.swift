@@ -4,9 +4,13 @@ class NicknameView: BaseView {
     
     let tapGestureView = UITapGestureRecognizer()
     
+    let backBtn = UIButton().then {
+        $0.setImage(UIImage.init(named: "ic_back_white"), for: .normal)
+    }
+    
     let bgCloud = UIImageView().then {
         $0.image = UIImage.init(named: "bg_cloud")
-        $0.contentMode = .scaleAspectFit
+        $0.contentMode = .scaleToFill
     }
     
     let nicknameLabel1 = UILabel().then {
@@ -53,15 +57,20 @@ class NicknameView: BaseView {
     
     override func setup() {
         backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
-        addSubViews(bgCloud, nicknameLabel1, nicknameFieldBg, nicknameField, nicknameLabel2, startBtn1, startBtn2)
+        addSubViews(backBtn, bgCloud, nicknameLabel1, nicknameFieldBg, nicknameField, nicknameLabel2, startBtn1, startBtn2)
         isUserInteractionEnabled = true
         addGestureRecognizer(tapGestureView)
     }
     
     override func bindConstraints() {
+        backBtn.snp.makeConstraints { (make) in
+            make.left.equalToSuperview().offset(24)
+            make.top.equalToSuperview().offset(48)
+        }
+        
         bgCloud.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide).offset(103)
+            make.top.equalTo(backBtn.snp.bottom).offset(44)
         }
         
         nicknameLabel1.snp.makeConstraints { (make) in
