@@ -16,10 +16,13 @@ class HomeView: BaseView {
     
     let mapView = GMSMapView()
     
-    let bungeoppangBtn = UIButton().then {
-        $0.setTitle("붕어빵", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-    }
+    let bungeoppangBtn1 = CategoryButton()
+    
+    let bungeoppangBtn2 = CategoryButton()
+    
+    let bungeoppangBtn3 = CategoryButton()
+    
+    let bungeoppangBtn4 = CategoryButton()
     
     let descLabel1 = UILabel().then {
         $0.text = "가장 가까운 음식점"
@@ -68,7 +71,10 @@ class HomeView: BaseView {
     
     override func setup() {
         backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
-        categoryStackView.addArrangedSubview(bungeoppangBtn)
+        categoryStackView.addArrangedSubview(bungeoppangBtn1)
+        categoryStackView.addArrangedSubview(bungeoppangBtn2)
+        categoryStackView.addArrangedSubview(bungeoppangBtn3)
+        categoryStackView.addArrangedSubview(bungeoppangBtn4)
         addSubViews(bgCloud, categoryStackView, mapView, descLabel1, descLabel2, descLabel3, shopCollectionView, mapButton)
     }
     
@@ -85,7 +91,7 @@ class HomeView: BaseView {
             make.height.equalTo(92)
         }
         
-        bungeoppangBtn.snp.makeConstraints { (make) in
+        bungeoppangBtn1.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
             make.left.equalTo(categoryStackView.snp.left).offset(21)
             make.width.height.equalTo(60)
