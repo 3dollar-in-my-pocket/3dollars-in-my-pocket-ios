@@ -99,4 +99,26 @@ class MainView: BaseView {
             }
         }
     }
+    
+    func showTabBar() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: { [weak self] in
+                self?.stackBg.alpha = 1
+                self?.stackBg.isUserInteractionEnabled = true
+                self?.stackView.alpha = 1
+                self?.stackView.isUserInteractionEnabled = true
+            }, completion: nil)
+        }
+    }
+    
+    func hideTabBar() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: { [weak self] in
+                self?.stackView.alpha = 0
+                self?.stackView.isUserInteractionEnabled = false
+                self?.stackBg.alpha = 0
+                self?.stackBg.isUserInteractionEnabled = false
+            }, completion: nil)
+        }
+    }
 }

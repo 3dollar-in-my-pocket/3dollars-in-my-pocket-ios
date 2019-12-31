@@ -64,12 +64,18 @@ class MainVC: BaseVC {
         self.view.bringSubviewToFront(mainView.stackView)
         self.mainView.selectBtn(index: index)
     }
-    
-    
 }
 
 extension MainVC: HomeDelegate {
     func onTapCategory() {
         self.navigationController?.pushViewController(CategoryListVC.instance(), animated: true)
+    }
+    
+    func didDragMap() {
+        self.mainView.hideTabBar()
+    }
+    
+    func endDragMap() {
+        self.mainView.showTabBar()
     }
 }
