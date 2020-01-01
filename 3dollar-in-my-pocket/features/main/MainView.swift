@@ -36,6 +36,7 @@ class MainView: BaseView {
         stackView.addArrangedSubview(homeBtn)
         stackView.addArrangedSubview(writingBtn)
         stackView.addArrangedSubview(myPageBtn)
+        setupStackViewShadow()
         addSubViews(stackBg, stackView)
     }
     
@@ -71,16 +72,10 @@ class MainView: BaseView {
         }
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        setupStackViewShadow()
-    }
-    
     private func setupStackViewShadow() {
         let shadowLayer = CAShapeLayer()
         
-        shadowLayer.path = UIBezierPath(roundedRect: stackBg.bounds, cornerRadius: 37).cgPath
+        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 232, height: 72), cornerRadius: 37).cgPath
         shadowLayer.fillColor = UIColor.white.cgColor
         
         shadowLayer.shadowColor = UIColor.black.cgColor

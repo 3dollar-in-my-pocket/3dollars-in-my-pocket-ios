@@ -3,6 +3,8 @@ import GoogleMaps
 
 class HomeView: BaseView {
     
+    let bungeoppangTap = UITapGestureRecognizer()
+    
     let bgCloud = UIImageView().then {
         $0.image = UIImage.init(named: "bg_cloud")
         $0.contentMode = .scaleToFill
@@ -74,11 +76,13 @@ class HomeView: BaseView {
     }
     
     override func setup() {
+        bungeoppangBtn1.addGestureRecognizer(bungeoppangTap)
         backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
         categoryStackView.addArrangedSubview(bungeoppangBtn1)
         categoryStackView.addArrangedSubview(bungeoppangBtn2)
         categoryStackView.addArrangedSubview(bungeoppangBtn3)
         categoryStackView.addArrangedSubview(bungeoppangBtn4)
+        setupStackViewShadow()
         addSubViews(bgCloud, categoryStackView, mapView, descLabel1, descLabel2, descLabel3, shopCollectionView, mapButton)
     }
     
@@ -133,19 +137,14 @@ class HomeView: BaseView {
         }
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        setupStackViewShadow()
-    }
-    
     private func setupStackViewShadow() {
         let shadowLayer = CAShapeLayer()
         
-        shadowLayer.path = UIBezierPath(roundedRect: categoryStackView.bounds, cornerRadius: 24).cgPath
+        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: frame.width-48, height: 92), cornerRadius: 24).cgPath
         shadowLayer.fillColor = UIColor.white.cgColor
         
         shadowLayer.shadowColor = UIColor.black.cgColor
-        shadowLayer.shadowPath = shadowLayer.path
+        shadowLayer.shadowPath = nil
         shadowLayer.shadowOffset = CGSize(width: 0.0, height: 1.0)
         shadowLayer.shadowOpacity = 0.1
         shadowLayer.shadowRadius = 20

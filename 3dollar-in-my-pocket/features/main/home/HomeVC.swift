@@ -48,8 +48,12 @@ class HomeVC: BaseVC {
     }
     
     override func bindViewModel() {
-        homeView.mapButton.rx.tap.bind {
-            self.locationManager.requestLocation()
+        homeView.mapButton.rx.tap.bind { [weak self] in
+            self?.locationManager.requestLocation()
+        }.disposed(by: disposeBag)
+        
+        homeView.bungeoppangTap.rx.event.bind { [weak self] ( _) in
+            self?.delegate?.onTapCategory()
         }.disposed(by: disposeBag)
     }
 }
