@@ -6,6 +6,7 @@
 	<string>앱을 열때마다 위치 주소 가져오기 허용</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>SpoqaHanSans-Regular.ttf</string>
 		<string>SpoqaHanSans-Bold.ttf</string>
 		<string>SpoqaHanSans-Light.ttf</string>
 	</array>

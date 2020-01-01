@@ -14,15 +14,19 @@ class ShopCell: BaseCollectionViewCell {
         $0.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
     }
     
-    let bungeoppangImage = UIImageView().then {
-        $0.image = UIImage.init(named: "img_fish_off")
+    let bungeoppangBtn = UIButton().then {
+        $0.setImage(UIImage.init(named: "img_fish_off"), for: .normal)
+        $0.setImage(UIImage.init(named: "img_fish_on"), for: .selected)
         $0.contentMode = .scaleAspectFit
     }
+    
+    let rankingView = RankingView()
     
     override func setup() {
         layer.cornerRadius = 16
         backgroundColor = UIColor.init(r: 251, g: 251, b: 251)
-        addSubViews(distanceLabel, bungeoppangImage)
+        setupShadow(isSelected: false)
+        addSubViews(distanceLabel, bungeoppangBtn, rankingView)
     }
     
     override func bindConstraints() {
@@ -33,32 +37,44 @@ class ShopCell: BaseCollectionViewCell {
             make.height.equalTo(25)
         }
         
-        bungeoppangImage.snp.makeConstraints { (make) in
+        bungeoppangBtn.snp.makeConstraints { (make) in
             make.top.equalTo(distanceLabel.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(25)
             make.right.equalToSuperview().offset(-25)
         }
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        setupShadow()
-    }
-    
-    func setSelected(isSelected: Bool) {
-        if isSelected {
-            backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
-        } else {
-            backgroundColor = UIColor.init(r: 251, g: 251, b: 251)
+        
+        rankingView.snp.makeConstraints { (make) in
+            make.left.equalToSuperview().offset(16)
+            make.right.equalToSuperview().offset(-14)
+            make.bottom.equalToSuperview().offset(-19)
+            make.top.equalTo(bungeoppangBtn.snp.bottom).offset(5)
         }
     }
     
-    private func setupShadow() {
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    }
+    
+    func setSelected(isSelected: Bool) {
+        if let shadowLayer = layer.sublayers?.first as? CAShapeLayer {
+            if isSelected {
+                shadowLayer.fillColor = UIColor.init(r: 28, g: 28, b: 28).cgColor
+            } else {
+                shadowLayer.fillColor = UIColor.init(r: 251, g: 251, b: 251).cgColor
+            }
+        }
+        bungeoppangBtn.isSelected = isSelected
+        rankingView.setSelected(isSelected: isSelected)
+    }
+    
+    private func setupShadow(isSelected: Bool) {
         let shadowLayer = CAShapeLayer()
         
         shadowLayer.path = UIBezierPath(roundedRect: bounds, cornerRadius: 16).cgPath
         shadowLayer.fillColor = UIColor.init(r: 251, g: 251, b: 251).cgColor
-        
+        shadowLayer.masksToBounds = false
+        shadowLayer.shouldRasterize = true
         shadowLayer.shadowColor = UIColor.black.cgColor
         shadowLayer.shadowPath = nil
         shadowLayer.shadowOffset = CGSize(width: 15, height: 20)
