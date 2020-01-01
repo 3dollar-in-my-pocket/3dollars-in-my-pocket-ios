@@ -65,7 +65,7 @@ class HomeView: BaseView {
         $0.backgroundColor = .clear
         $0.showsHorizontalScrollIndicator = false
         $0.collectionViewLayout = layout
-        $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
+        $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 196)
     }
     
     
