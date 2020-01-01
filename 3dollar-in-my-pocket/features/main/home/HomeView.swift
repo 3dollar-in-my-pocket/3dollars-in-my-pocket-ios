@@ -6,7 +6,7 @@ class HomeView: BaseView {
     let bungeoppangTap = UITapGestureRecognizer()
     
     let bgCloud = UIImageView().then {
-        $0.image = UIImage.init(named: "bg_cloud")
+        $0.image = UIImage.init(named: "bg_cloud_main")
         $0.contentMode = .scaleToFill
     }
     

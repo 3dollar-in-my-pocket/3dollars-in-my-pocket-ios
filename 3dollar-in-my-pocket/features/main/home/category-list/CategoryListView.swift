@@ -48,28 +48,40 @@ class CategoryListView: BaseView {
         $0.spacing = 24
     }
     
-    let categoryLabel = UILabel().then {
-        $0.text = "텍스트"
-        $0.textColor = .black
-        $0.font = UIFont.systemFont(ofSize: 24)
+    let mapView = GMSMapView()
+    
+    let myLocationBtn = UIButton().then {
+        $0.setImage(UIImage.init(named: "ic_location"), for: .normal)
     }
     
-    let ratingOrderBtn = UIButton().then {
-        $0.setTitle("별점순", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-        $0.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+    let descLabel1 = UILabel().then {
+        $0.text = "붕어빵"
+        $0.textColor = .black
+        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 24)
+    }
+    
+    let descLabel2 = UILabel().then {
+        $0.text = "만나기 30초 전"
+        $0.textColor = .black
+        $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 24)
+    }
+    
+    let nearOrderBtn = UIButton().then {
+        $0.setTitle("거리순", for: .normal)
+        $0.setTitleColor(.black, for: .selected)
+        $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
+        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 14)
     }
     
     let reviewOrderBtn = UIButton().then {
         $0.setTitle("리뷰순", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-        $0.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        $0.setTitleColor(.black, for: .selected)
+        $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
+        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 14)
     }
     
-    let mapView = GMSMapView()
-    
     let tableView = UITableView().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
         $0.tableFooterView = UIView()
         $0.separatorStyle = .none
     }
@@ -83,7 +95,7 @@ class CategoryListView: BaseView {
         categoryStackView.addArrangedSubview(categoryGyeranppang)
         categoryStackView.addArrangedSubview(categoryHotteok)
         navigationBar.addSubViews(backBtn, categoryImage, categoryStackView)
-        addSubViews(mapView, navigationBar, categoryLabel, ratingOrderBtn, reviewOrderBtn, tableView)
+        addSubViews(mapView, navigationBar, myLocationBtn, descLabel1, descLabel2, nearOrderBtn, reviewOrderBtn, tableView)
     }
     
     override func bindConstraints() {
@@ -104,6 +116,12 @@ class CategoryListView: BaseView {
             make.right.equalToSuperview().offset(-65)
         }
         
+        myLocationBtn.snp.makeConstraints { (make) in
+            make.right.equalTo(mapView.snp.right).offset(-24)
+            make.bottom.equalTo(mapView.snp.bottom).offset(-15)
+            make.width.height.equalTo(40)
+        }
+        
         categoryImage.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
             make.centerY.equalTo(backBtn.snp.centerY)
@@ -115,25 +133,32 @@ class CategoryListView: BaseView {
             make.top.equalTo(navigationBar.snp.bottom).offset(-20)
             make.height.equalTo(264)
         }
-        
-        categoryLabel.snp.makeConstraints { (make) in
+                
+        descLabel1.snp.makeConstraints { (make) in
             make.top.equalTo(mapView.snp.bottom).offset(41)
             make.left.equalToSuperview().offset(24)
         }
         
-        reviewOrderBtn.snp.makeConstraints { (make) in
-            make.right.equalToSuperview().offset(-25)
-            make.centerY.equalTo(categoryLabel.snp.centerY)
+        descLabel2.snp.makeConstraints { (make) in
+            make.centerY.equalTo(descLabel1.snp.centerY)
+            make.left.equalTo(descLabel1.snp.right).offset(5)
         }
         
-        ratingOrderBtn.snp.makeConstraints { (make) in
-            make.right.equalTo(reviewOrderBtn.snp.left).offset(-12)
-            make.centerY.equalTo(categoryLabel.snp.centerY)
+        reviewOrderBtn.snp.makeConstraints { (make) in
+            make.right.equalToSuperview().offset(-25)
+            make.top.equalTo(mapView.snp.bottom).offset(49)
+        }
+        
+        nearOrderBtn.snp.makeConstraints { (make) in
+            make.right.equalTo(reviewOrderBtn.snp.left).offset(-16)
+            make.centerY.equalTo(reviewOrderBtn.snp.centerY)
         }
         
         tableView.snp.makeConstraints { (make) in
-            make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(categoryLabel.snp.bottom)
+            make.bottom.equalToSuperview()
+            make.left.equalToSuperview().offset(24)
+            make.right.equalToSuperview().offset(-24)
+            make.top.equalTo(descLabel1.snp.bottom)
         }
     }
     
