@@ -18,6 +18,7 @@ class ShopCell: BaseCollectionViewCell {
         $0.setImage(UIImage.init(named: "img_fish_off"), for: .normal)
         $0.setImage(UIImage.init(named: "img_fish_on"), for: .selected)
         $0.contentMode = .scaleAspectFit
+        $0.isUserInteractionEnabled = false
     }
     
     let rankingView = RankingView()

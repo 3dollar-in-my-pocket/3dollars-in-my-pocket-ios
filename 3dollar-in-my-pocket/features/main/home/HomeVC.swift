@@ -64,6 +64,10 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
             return BaseCollectionViewCell()
         }
         
+        if indexPath.row == 0 {
+            cell.setSelected(isSelected: true)
+        }
+        
         return cell
     }
     
