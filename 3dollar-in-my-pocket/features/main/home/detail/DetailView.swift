@@ -3,62 +3,84 @@ import GoogleMaps
 
 class DetailView: BaseView {
     
-    let scrollView = UIScrollView().then {
-        $0.translatesAutoresizingMaskIntoConstraints = true
-        $0.alwaysBounceVertical = true
+    let navigationBar = UIView().then {
+        $0.backgroundColor = .white
     }
     
-    let containerView = UIView()
-    
-    let titleView = UIView().then {
-        $0.backgroundColor = .gray
-        $0.layer.cornerRadius = 8
+    let backBtn = UIButton().then {
+        $0.setImage(UIImage.init(named: "ic_back_black"), for: .normal)
     }
     
-    let mapView = GMSMapView().then {
-        $0.isUserInteractionEnabled = false
-        $0.contentMode = .scaleAspectFill
+    let titleLabel = UILabel().then {
+        $0.text = "강남역 10번 출구"
+        $0.textColor = UIColor.init(r: 51, g: 51, b: 51)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
     }
     
     let tableView = UITableView().then {
         $0.tableFooterView = UIView()
         $0.separatorStyle = .none
-        $0.isScrollEnabled = false
-        $0.isPagingEnabled = false
+        $0.backgroundColor = .white
+        $0.rowHeight = UITableView.automaticDimension
     }
     
     override func setup() {
-        containerView.addSubViews(mapView, tableView, titleView)
-        scrollView.addSubview(containerView)
-        addSubview(scrollView)
+        setupNavigationBarShadow()
+        navigationBar.addSubViews(backBtn, titleLabel)
+        addSubViews(tableView, navigationBar)
     }
     
     override func bindConstraints() {
-        scrollView.snp.makeConstraints { (make) in
-            make.edges.equalTo(0)
-        }
         
-        containerView.snp.makeConstraints { (make) in
-            make.left.top.right.bottom.equalTo(scrollView)
-            make.width.equalTo(self.frame.width)
-            make.height.equalTo(self.frame.height)
-        }
-        
-        mapView.snp.makeConstraints { (make) in
+        navigationBar.snp.makeConstraints { (make) in
             make.left.right.top.equalToSuperview()
-            make.height.equalTo(320)
+            make.height.equalTo(98)
         }
         
-        titleView.snp.makeConstraints { (make) in
+        backBtn.snp.makeConstraints { (make) in
+            make.top.equalToSuperview().offset(48)
             make.left.equalToSuperview().offset(24)
-            make.right.equalToSuperview().offset(-24)
-            make.centerY.equalTo(mapView.snp.bottom)
-            make.height.equalTo(112)
+            make.width.height.equalTo(48)
+        }
+        
+        titleLabel.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.centerY.equalTo(backBtn.snp.centerY)
         }
         
         tableView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(mapView.snp.bottom)
+            make.top.equalTo(navigationBar.snp.bottom).offset(-20)
         }
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setupNavigationBar()
+    }
+    
+    private func setupNavigationBar() {
+        let rectShape = CAShapeLayer()
+        rectShape.bounds = navigationBar.frame
+        rectShape.position = navigationBar.center
+        rectShape.path = UIBezierPath(roundedRect: navigationBar.frame, byRoundingCorners: [.bottomLeft , .bottomRight], cornerRadii: CGSize(width: 16, height: 16)).cgPath
+
+        navigationBar.layer.backgroundColor = UIColor.white.cgColor
+        navigationBar.layer.mask = rectShape
+    }
+    
+    private func setupNavigationBarShadow() {
+        let shadowLayer = CAShapeLayer()
+        
+        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: frame.width, height: 98), cornerRadius: 16).cgPath
+        shadowLayer.fillColor = UIColor.white.cgColor
+        
+        shadowLayer.shadowColor = UIColor.black.cgColor
+        shadowLayer.shadowPath = nil
+        shadowLayer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        shadowLayer.shadowOpacity = 0.08
+        shadowLayer.shadowRadius = 20
+        
+        navigationBar.layer.insertSublayer(shadowLayer, at: 0)
     }
 }

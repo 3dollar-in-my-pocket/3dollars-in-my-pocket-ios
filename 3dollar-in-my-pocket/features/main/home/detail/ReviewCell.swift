@@ -13,6 +13,7 @@ class ReviewCell: BaseTableViewCell {
     override func setup() {
         addSubview(nameLabel)
         selectionStyle = .none
+        backgroundColor = .white
     }
     
     override func bindConstraints() {
