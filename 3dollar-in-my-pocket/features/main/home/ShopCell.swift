@@ -39,7 +39,7 @@ class ShopCell: BaseCollectionViewCell {
         }
         
         bungeoppangBtn.snp.makeConstraints { (make) in
-            make.top.equalTo(distanceLabel.snp.bottom).offset(8)
+            make.top.equalTo(distanceLabel.snp.bottom).offset(12)
             make.left.equalToSuperview().offset(25)
             make.right.equalToSuperview().offset(-25)
         }
@@ -47,8 +47,7 @@ class ShopCell: BaseCollectionViewCell {
         rankingView.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(16)
             make.right.equalToSuperview().offset(-14)
-            make.bottom.equalToSuperview().offset(-19)
-            make.top.equalTo(bungeoppangBtn.snp.bottom).offset(5)
+            make.top.equalTo(distanceLabel.snp.bottom).offset(105)
         }
     }
     
