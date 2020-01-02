@@ -64,6 +64,7 @@ extension CategoryListVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             return BaseCollectionViewCell()
         }
         
+        cell.delegate = self
         return cell
     }
     
@@ -73,7 +74,13 @@ extension CategoryListVC: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let itemAt = Int(targetContentOffset.pointee.x / self.view.frame.width)
-
+        
         self.tapCategory(selectedIndex: itemAt)
+    }
+}
+
+extension CategoryListVC: CategoryCollectionCellDelegate {
+    func onTapBack() {
+        self.navigationController?.pushViewController(DetailVC.instance(), animated: true)
     }
 }

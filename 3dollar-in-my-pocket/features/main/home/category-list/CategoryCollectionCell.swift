@@ -1,8 +1,13 @@
 import UIKit
 
+protocol CategoryCollectionCellDelegate: class {
+    func onTapBack()
+}
+
 class CategoryCollectionCell: BaseCollectionViewCell {
     
     static let registerId = "\(CategoryCollectionCell.self)"
+    weak var delegate: CategoryCollectionCellDelegate?
     
     let descLabel1 = UILabel().then {
         $0.text = "붕어빵"
@@ -97,7 +102,7 @@ extension CategoryCollectionCell: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        self.navigationController?.pushViewController(DetailVC.instance(), animated: true)
+        delegate?.onTapBack()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
