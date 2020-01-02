@@ -13,6 +13,7 @@ class HomeVC: BaseVC {
     
     var delegate: HomeDelegate?
     var locationManager = CLLocationManager()
+    var isFirst = true
     
     private lazy var homeView = HomeView(frame: self.view.frame)
     
@@ -68,8 +69,9 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
             return BaseCollectionViewCell()
         }
         
-        if indexPath.row == 0 {
+        if indexPath.row == 0 && isFirst {
             cell.setSelected(isSelected: true)
+            isFirst = false
         }
         
         return cell
