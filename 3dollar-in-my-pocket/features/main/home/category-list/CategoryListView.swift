@@ -80,10 +80,12 @@ class CategoryListView: BaseView {
         $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 14)
     }
     
-    let tableView = UITableView().then {
+    let tableView = UITableView(frame: .zero, style: .grouped).then {
         $0.backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
         $0.tableFooterView = UIView()
         $0.separatorStyle = .none
+        $0.rowHeight = UITableView.automaticDimension
+        $0.showsVerticalScrollIndicator = false
     }
     
     

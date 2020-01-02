@@ -36,7 +36,7 @@ class CategoryListVC: BaseVC {
 
 extension CategoryListVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+        return 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -44,10 +44,22 @@ extension CategoryListVC: UITableViewDelegate, UITableViewDataSource {
             return BaseTableViewCell()
         }
         
+        if tableView.numberOfRows(inSection: indexPath.section) - 1 == indexPath.row {
+            cell.setBottomRadius()
+        }
+        
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.navigationController?.pushViewController(DetailVC.instance(), animated: true)
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        5
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return CategoryListHeaderView()
     }
 }
