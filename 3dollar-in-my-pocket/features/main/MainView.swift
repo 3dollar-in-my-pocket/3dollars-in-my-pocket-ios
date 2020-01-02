@@ -7,69 +7,113 @@ class MainView: BaseView {
     }
     
     let stackBg = UIView().then {
-        $0.backgroundColor = .gray
-        $0.layer.cornerRadius = 29
-    }
-    
-    let myPageBtn = UIButton().then {
-        $0.setTitle("마이 페이지", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-        $0.layer.cornerRadius = 24
-        $0.backgroundColor = .red
+        $0.backgroundColor = .white
+        $0.alpha = 0.6
+        $0.layer.cornerRadius = 37
     }
     
     let homeBtn = UIButton().then {
-        $0.setTitle("홈", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-        $0.layer.cornerRadius = 24
-        $0.backgroundColor = .yellow
+        $0.setImage(UIImage.init(named: "img_home_off"), for: .normal)
+        $0.setImage(UIImage.init(named: "img_home_on"), for: .selected)
+        $0.adjustsImageWhenHighlighted = false
     }
     
     let writingBtn = UIButton().then {
-        $0.setTitle("글쓰기", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-        $0.layer.cornerRadius = 24
-        $0.backgroundColor = .green
+        $0.setImage(UIImage.init(named: "img_writing_off"), for: .normal)
+        $0.setImage(UIImage.init(named: "img_writing_on"), for: .selected)
+        $0.adjustsImageWhenHighlighted = false
+    }
+    
+    let myPageBtn = UIButton().then {
+        $0.setImage(UIImage.init(named: "img_my_page_off"), for: .normal)
+        $0.setImage(UIImage.init(named: "img_my_page_on"), for: .selected)
+        $0.adjustsImageWhenHighlighted = false
     }
     
     
     override func setup() {
         backgroundColor = .white
-        stackView.addArrangedSubview(myPageBtn)
         stackView.addArrangedSubview(homeBtn)
         stackView.addArrangedSubview(writingBtn)
+        stackView.addArrangedSubview(myPageBtn)
+        setupStackViewShadow()
         addSubViews(stackBg, stackView)
     }
     
     override func bindConstraints() {
-        
-        myPageBtn.snp.makeConstraints { (make) in
-            make.width.equalTo(48)
-            make.height.equalTo(48)
+        writingBtn.snp.makeConstraints { (make) in
+            make.width.equalTo(56)
+            make.height.equalTo(56)
+            make.centerX.equalToSuperview()
         }
         
         homeBtn.snp.makeConstraints { (make) in
-            make.left.equalTo(myPageBtn.snp.right).offset(10)
-            make.width.equalTo(48)
-            make.height.equalTo(48)
+            make.width.equalTo(56)
+            make.height.equalTo(56)
+            make.right.equalTo(writingBtn.snp.left).offset(-24)
         }
         
-        writingBtn.snp.makeConstraints { (make) in
-            make.left.equalTo(homeBtn.snp.right).offset(10)
-            make.width.equalTo(48)
-            make.height.equalTo(48)
+        myPageBtn.snp.makeConstraints { (make) in
+            make.width.equalTo(56)
+            make.height.equalTo(56)
+            make.left.equalTo(writingBtn.snp.right).offset(24)
         }
         
         stackView.snp.makeConstraints { (make) in
-            make.bottom.equalToSuperview().offset(-20)
+            make.bottom.equalToSuperview().offset(-32)
             make.centerX.equalToSuperview()
         }
         
         stackBg.snp.makeConstraints { (make) in
-            make.left.equalTo(stackView.snp.left).offset(-20)
-            make.top.equalTo(stackView.snp.top).offset(-5)
-            make.bottom.equalTo(stackView.snp.bottom).offset(5)
-            make.right.equalTo(stackView.snp.right).offset(20)
+            make.left.equalTo(stackView.snp.left).offset(-8)
+            make.top.equalTo(stackView.snp.top).offset(-8)
+            make.bottom.equalTo(stackView.snp.bottom).offset(8)
+            make.right.equalTo(stackView.snp.right).offset(8)
+        }
+    }
+    
+    private func setupStackViewShadow() {
+        let shadowLayer = CAShapeLayer()
+        
+        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 232, height: 72), cornerRadius: 37).cgPath
+        shadowLayer.fillColor = UIColor.white.cgColor
+        
+        shadowLayer.shadowColor = UIColor.black.cgColor
+        shadowLayer.shadowPath = shadowLayer.path
+        shadowLayer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        shadowLayer.shadowOpacity = 0.1
+        shadowLayer.shadowRadius = 20
+        
+        stackBg.layer.insertSublayer(shadowLayer, at: 0)
+    }
+    
+    func selectBtn(index: Int) {
+        for buttonIndex in stackView.arrangedSubviews.indices {
+            if let button = stackView.arrangedSubviews[buttonIndex] as? UIButton {
+                button.isSelected = (buttonIndex == index)
+            }
+        }
+    }
+    
+    func showTabBar() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: { [weak self] in
+                self?.stackBg.alpha = 1
+                self?.stackBg.isUserInteractionEnabled = true
+                self?.stackView.alpha = 1
+                self?.stackView.isUserInteractionEnabled = true
+            }, completion: nil)
+        }
+    }
+    
+    func hideTabBar() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: { [weak self] in
+                self?.stackView.alpha = 0
+                self?.stackView.isUserInteractionEnabled = false
+                self?.stackBg.alpha = 0
+                self?.stackBg.isUserInteractionEnabled = false
+            }, completion: nil)
         }
     }
 }

@@ -4,45 +4,64 @@ class CategoryListCell: BaseTableViewCell {
     
     static let registerId = "\(CategoryListCell.self)"
     
-    let profileImage = UIImageView().then {
-        $0.backgroundColor = .gray
-        $0.layer.cornerRadius = 8
-        $0.clipsToBounds = true
+    let categoryImage = UIImageView().then {
+        $0.image = UIImage.init(named: "img_shop_fish")
     }
     
     let titleLabel = UILabel().then {
-        $0.text = "여기서 드세요!"
-        $0.textColor = .black
-        $0.font = UIFont.systemFont(ofSize: 18)
+        $0.text = "강남역 10번 출구"
+        $0.textColor = UIColor.init(r: 44, g: 44, b: 44)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
     }
     
     let distanceLabel = UILabel().then {
         $0.text = "10m"
-        $0.textColor = .black
-        $0.font = UIFont.systemFont(ofSize: 16)
+        $0.textColor = UIColor.init(r: 28, g: 28, b: 28)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
     }
     
     override func setup() {
+        backgroundColor = .white
         selectionStyle = .none
-        addSubViews(profileImage, titleLabel, distanceLabel)
+        addSubViews(categoryImage, titleLabel, distanceLabel)
     }
     
     override func bindConstraints() {
-        profileImage.snp.makeConstraints { (make) in
-            make.top.equalToSuperview().offset(10)
-            make.bottom.equalToSuperview().offset(-10)
-            make.left.equalToSuperview().offset(24)
-            make.width.height.equalTo(54)
+        categoryImage.snp.makeConstraints { (make) in
+            make.top.equalToSuperview().offset(12)
+            make.bottom.equalToSuperview().offset(-12)
+            make.left.equalToSuperview().offset(16)
+            make.width.equalTo(40)
+            make.height.equalTo(24)
         }
         
         titleLabel.snp.makeConstraints { (make) in
-            make.centerY.equalTo(profileImage.snp.centerY)
-            make.left.equalTo(profileImage.snp.right).offset(10)
+            make.centerY.equalTo(categoryImage.snp.centerY)
+            make.left.equalTo(categoryImage.snp.right).offset(16)
         }
         
         distanceLabel.snp.makeConstraints { (make) in
-            make.centerY.equalTo(profileImage.snp.centerY)
-            make.right.equalToSuperview().offset(-20)
+            make.centerY.equalTo(categoryImage.snp.centerY)
+            make.right.equalToSuperview().offset(-16)
         }
+    }
+    
+    func setBottomRadius(isLast: Bool) {
+        if isLast {
+            layer.cornerRadius = 12
+            layer.masksToBounds = true
+            layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        } else {
+            layer.cornerRadius = 0
+            layer.masksToBounds = false
+        }
+    }
+    
+    func setOddBg() {
+        backgroundColor = UIColor.init(r: 250, g: 250, b: 250)
+    }
+    
+    func setEvenBg() {
+        backgroundColor = .white
     }
 }

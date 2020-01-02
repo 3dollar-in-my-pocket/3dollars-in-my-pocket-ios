@@ -18,6 +18,8 @@ class SignInVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = signInView
+        navigationController?.isNavigationBarHidden = true
+        navigationController?.interactivePopGestureRecognizer?.delegate = nil
         initializeGoogleSignIn()
         bindEvent()
     }

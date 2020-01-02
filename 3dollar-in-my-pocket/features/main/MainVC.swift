@@ -25,17 +25,18 @@ class MainVC: BaseVC {
         let homeVc = HomeVC.instance()
         
         homeVc.delegate = self
-        controllers = [MyPageVC.instance(), homeVc, WritingVC.instance()]
-        tapChange(index: 1)
+        controllers = [homeVc, WritingVC.instance(), MyPageVC.instance(),]
+        tapChange(index: 0)
+        mainView.homeBtn.isSelected = true
     }
     
     override func bindViewModel() {
         mainView.homeBtn.rx.tap.bind {
-            self.tapChange(index: 1)
+            self.tapChange(index: 0)
         }.disposed(by: disposeBag)
         
         mainView.myPageBtn.rx.tap.bind {
-            self.tapChange(index: 0)
+            self.tapChange(index: 2)
         }.disposed(by: disposeBag)
         
         mainView.writingBtn.rx.tap.bind {
@@ -61,11 +62,20 @@ class MainVC: BaseVC {
         
         self.view.bringSubviewToFront(mainView.stackBg)
         self.view.bringSubviewToFront(mainView.stackView)
+        self.mainView.selectBtn(index: index)
     }
 }
 
 extension MainVC: HomeDelegate {
     func onTapCategory() {
         self.navigationController?.pushViewController(CategoryListVC.instance(), animated: true)
+    }
+    
+    func didDragMap() {
+        self.mainView.hideTabBar()
+    }
+    
+    func endDragMap() {
+        self.mainView.showTabBar()
     }
 }
