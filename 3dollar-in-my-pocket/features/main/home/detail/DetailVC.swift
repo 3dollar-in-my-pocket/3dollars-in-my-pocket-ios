@@ -30,14 +30,11 @@ class DetailVC: BaseVC {
         detailView.tableView.register(ReviewCell.self, forCellReuseIdentifier: ReviewCell.registerId)
     }
     
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//
-//        print("tableview height: \(detailView.tableView.frame.height)")
-//        print("contentSize height: \(detailView.tableView.contentSize.height)")
-//        detailView.tableView.frame = CGRect(x: 0, y: 0, width: detailView.tableView.frame.width, height: detailView.tableView.contentSize.height)
-//        print("tableview height: \(detailView.tableView.frame.height)")
-//    }
+    override func bindViewModel() {
+        detailView.backBtn.rx.tap.bind { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }.disposed(by: disposeBag)
+    }
 }
 
 extension DetailVC: UITableViewDelegate, UITableViewDataSource {
@@ -67,6 +64,22 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
             }
             
             return cell
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if section == 1 {
+            return ReviewHeaderView()
+        } else {
+            return nil
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 1 {
+            return 70
+        } else {
+            return 0
         }
     }
 }

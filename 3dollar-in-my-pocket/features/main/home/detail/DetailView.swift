@@ -17,11 +17,12 @@ class DetailView: BaseView {
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
     }
     
-    let tableView = UITableView().then {
+    let tableView = UITableView(frame: .zero, style: .grouped).then {
         $0.tableFooterView = UIView()
         $0.separatorStyle = .none
         $0.backgroundColor = .white
         $0.rowHeight = UITableView.automaticDimension
+        $0.contentInset = UIEdgeInsets(top: -35, left: 0, bottom: 0, right: 0)
     }
     
     override func setup() {

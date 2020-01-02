@@ -42,7 +42,48 @@ class ShopInfoCell: BaseTableViewCell {
         $0.numberOfLines = 0
     }
     
-    let rankingView = RankingView()
+    let star1 = UIButton().then {
+        $0.setImage(UIImage.init(named: "ic_star_big_on"), for: .selected)
+        $0.setImage(UIImage.init(named: "ic_star_big_off"), for: .normal)
+        $0.isUserInteractionEnabled = false
+    }
+    
+    let star2 = UIButton().then {
+        $0.setImage(UIImage.init(named: "ic_star_big_on"), for: .selected)
+        $0.setImage(UIImage.init(named: "ic_star_big_off"), for: .normal)
+        $0.isUserInteractionEnabled = false
+    }
+    
+    let star3 = UIButton().then {
+        $0.setImage(UIImage.init(named: "ic_star_big_on"), for: .selected)
+        $0.setImage(UIImage.init(named: "ic_star_big_off"), for: .normal)
+        $0.isUserInteractionEnabled = false
+    }
+    
+    let star4 = UIButton().then {
+        $0.setImage(UIImage.init(named: "ic_star_big_on"), for: .selected)
+        $0.setImage(UIImage.init(named: "ic_star_big_off"), for: .normal)
+        $0.isUserInteractionEnabled = false
+    }
+    
+    let star5 = UIButton().then {
+        $0.setImage(UIImage.init(named: "ic_star_big_on"), for: .selected)
+        $0.setImage(UIImage.init(named: "ic_star_big_off"), for: .normal)
+        $0.isUserInteractionEnabled = false
+    }
+    
+    let stackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.alignment = .leading
+        $0.backgroundColor = .clear
+        $0.spacing = 2
+    }
+    
+    let rankingLabel = UILabel().then {
+        $0.text = "3.8점"
+        $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
+        $0.textColor = UIColor.init(r: 243, g: 162, b: 169)
+    }
     
     let categoryLabel = UILabel().then {
         $0.text = "카테고리"
@@ -87,7 +128,13 @@ class ShopInfoCell: BaseTableViewCell {
     }
     
     override func setup() {
-        titleContainer.addSubViews(profileImage, emptyImage, distanceLabel, rankingView)
+        selectionStyle = .none
+        stackView.addArrangedSubview(star1)
+        stackView.addArrangedSubview(star2)
+        stackView.addArrangedSubview(star3)
+        stackView.addArrangedSubview(star4)
+        stackView.addArrangedSubview(star5)
+        titleContainer.addSubViews(profileImage, emptyImage, distanceLabel, stackView, rankingLabel)
         addSubViews(mapView, mapBtn, titleContainer, categoryLabel, categoryValueLabel, menuLabel, menuValueLabel, reviewBtn, modifyBtn)
         setupContainerShadow()
     }
@@ -127,11 +174,14 @@ class ShopInfoCell: BaseTableViewCell {
             make.left.equalTo(profileImage.snp.right).offset(24)
         }
         
-        rankingView.snp.makeConstraints { (make) in
-            make.left.equalTo(distanceLabel.snp.left)
-            make.top.equalTo(distanceLabel.snp.bottom).offset(12)
+        rankingLabel.snp.makeConstraints { (make) in
             make.right.equalTo(distanceLabel.snp.right)
-            make.height.equalTo(25)
+            make.top.equalTo(distanceLabel.snp.bottom).offset(12)
+        }
+        
+        stackView.snp.makeConstraints { (make) in
+            make.left.equalTo(distanceLabel.snp.left)
+            make.centerY.equalTo(rankingLabel.snp.centerY)
         }
         
         categoryLabel.snp.makeConstraints { (make) in
@@ -146,7 +196,7 @@ class ShopInfoCell: BaseTableViewCell {
         
         menuLabel.snp.makeConstraints { (make) in
             make.left.equalTo(categoryLabel.snp.left)
-            make.top.equalTo(categoryLabel.snp.top).offset(3)
+            make.top.equalTo(categoryLabel.snp.bottom).offset(3)
         }
         
         menuValueLabel.snp.makeConstraints { (make) in
@@ -173,7 +223,7 @@ class ShopInfoCell: BaseTableViewCell {
     private func setupContainerShadow() {
         let shadowLayer = CAShapeLayer()
         
-        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: frame.width, height: 120), cornerRadius: 12).cgPath
+        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 48, height: 120), cornerRadius: 12).cgPath
         shadowLayer.fillColor = UIColor.white.cgColor
         
         shadowLayer.shadowColor = UIColor.black.cgColor
