@@ -46,9 +46,22 @@ class CategoryListCell: BaseTableViewCell {
         }
     }
     
-    func setBottomRadius() {
-        layer.cornerRadius = 12
-        layer.masksToBounds = true
-        layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+    func setBottomRadius(isLast: Bool) {
+        if isLast {
+            layer.cornerRadius = 12
+            layer.masksToBounds = true
+            layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        } else {
+            layer.cornerRadius = 0
+            layer.masksToBounds = false
+        }
+    }
+    
+    func setOddBg() {
+        backgroundColor = UIColor.init(r: 250, g: 250, b: 250)
+    }
+    
+    func setEvenBg() {
+        backgroundColor = .white
     }
 }

@@ -24,42 +24,56 @@ class CategoryListVC: BaseVC {
         marker.snippet = "무름표"
         marker.map = categoryListView.mapView
         
-        categoryListView.tableView.delegate = self
-        categoryListView.tableView.dataSource = self
-        categoryListView.tableView.register(CategoryListCell.self, forCellReuseIdentifier: CategoryListCell.registerId)
+        categoryListView.pageCollectionView.delegate = self
+        categoryListView.pageCollectionView.dataSource = self
+        categoryListView.pageCollectionView.register(CategoryCollectionCell.self, forCellWithReuseIdentifier: CategoryCollectionCell.registerId)
+        categoryListView.categoryBungeoppang.isSelected = true // Default setting
     }
     
     override func bindViewModel() {
+        for index in categoryListView.categoryStackView.arrangedSubviews.indices {
+            if let button = categoryListView.categoryStackView.arrangedSubviews[index] as? UIButton {
+                button.rx.tap.bind { [weak self] in
+                    self?.tapCategory(selectedIndex: index)
+                    self?.categoryListView.pageCollectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: .centeredHorizontally, animated: true)
+                }.disposed(by: disposeBag)
+            }
+        }
         
+        categoryListView.backBtn.rx.tap.bind { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }.disposed(by: disposeBag)
+    }
+    
+    private func tapCategory(selectedIndex: Int) {
+        for index in self.categoryListView.categoryStackView.arrangedSubviews.indices {
+            if let button = self.categoryListView.categoryStackView.arrangedSubviews[index] as? UIButton {
+                button.isSelected = (index == selectedIndex)
+            }
+        }
     }
 }
 
-extension CategoryListVC: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+extension CategoryListVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 4
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryListCell.registerId, for: indexPath) as? CategoryListCell else {
-            return BaseTableViewCell()
-        }
-        
-        if tableView.numberOfRows(inSection: indexPath.section) - 1 == indexPath.row {
-            cell.setBottomRadius()
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCollectionCell.registerId, for: indexPath) as? CategoryCollectionCell else {
+            return BaseCollectionViewCell()
         }
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: self.view.frame.width, height: self.categoryListView.pageCollectionView.frame.height)
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let itemAt = Int(targetContentOffset.pointee.x / self.view.frame.width)
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.navigationController?.pushViewController(DetailVC.instance(), animated: true)
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        5
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return CategoryListHeaderView()
+        self.tapCategory(selectedIndex: itemAt)
     }
 }
