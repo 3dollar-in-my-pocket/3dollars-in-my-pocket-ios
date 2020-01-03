@@ -1,6 +1,10 @@
 import UIKit
+import RxSwift
+import RxCocoa
 
 class BaseTableViewCell: UITableViewCell {
+    
+    let disposeBag = DisposeBag()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
