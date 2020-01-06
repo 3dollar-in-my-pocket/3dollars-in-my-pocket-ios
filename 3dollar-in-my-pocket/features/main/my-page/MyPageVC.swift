@@ -25,6 +25,10 @@ class MyPageVC: BaseVC {
         myPageView.modifyBtn.rx.tap.bind { [weak self] in
             self?.navigationController?.pushViewController(RenameVC.instance(), animated: true)
         }.disposed(by: disposeBag)
+        
+        myPageView.registerTotalBtn.rx.tap.bind { [weak self] in
+            self?.navigationController?.pushViewController(RegisteredVC.instance(), animated: true)
+        }.disposed(by: disposeBag)
     }
 }
 

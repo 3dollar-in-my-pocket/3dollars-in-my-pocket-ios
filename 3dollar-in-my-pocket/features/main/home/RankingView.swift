@@ -79,7 +79,7 @@ class RankingView: BaseView {
         }
         
         rankingLabel.snp.makeConstraints { (make) in
-            make.right.equalToSuperview()
+            make.left.equalTo(stackView.snp.right).offset(8)
             make.centerY.equalTo(stackView.snp.centerY)
         }
     }
