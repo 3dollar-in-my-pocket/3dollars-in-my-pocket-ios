@@ -22,7 +22,9 @@ class MyPageVC: BaseVC {
     }
     
     override func bindViewModel() {
-        
+        myPageView.modifyBtn.rx.tap.bind { [weak self] in
+            self?.navigationController?.pushViewController(RenameVC.instance(), animated: true)
+        }.disposed(by: disposeBag)
     }
 }
 
