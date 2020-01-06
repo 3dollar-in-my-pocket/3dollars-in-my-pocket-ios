@@ -70,13 +70,22 @@ class MyPageView: BaseView {
         $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 14)
     }
     
+    let reviewTableView = UITableView().then {
+        $0.backgroundColor = .clear
+        $0.tableFooterView = UIView()
+        $0.separatorStyle = .none
+        $0.rowHeight = UITableView.automaticDimension
+        $0.showsVerticalScrollIndicator = false
+        $0.isScrollEnabled = false
+    }
+    
     
     
     override func setup() {
         backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         addSubViews(bgCloud, nicknameBg, nicknameLabel, modifyBtn, registerLabel,
                     registerCountLabel, registerTotalBtn, registerCollectionView,
-                    reviewLabel, reviewCountLabel, reviewTotalBtn)
+                    reviewLabel, reviewCountLabel, reviewTotalBtn, reviewTableView)
     }
     
     override func bindConstraints() {
@@ -140,6 +149,13 @@ class MyPageView: BaseView {
         reviewTotalBtn.snp.makeConstraints { (make) in
             make.right.equalToSuperview().offset(-24)
             make.centerY.equalTo(reviewLabel.snp.centerY)
+        }
+        
+        reviewTableView.snp.makeConstraints { (make) in
+            make.left.equalToSuperview().offset(24)
+            make.right.equalToSuperview().offset(-24)
+            make.bottom.equalToSuperview().offset(130)
+            make.top.equalTo(reviewLabel.snp.bottom).offset(19)
         }
     }
 }
