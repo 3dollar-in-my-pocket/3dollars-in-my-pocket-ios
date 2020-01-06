@@ -29,6 +29,10 @@ class MyPageVC: BaseVC {
         myPageView.registerTotalBtn.rx.tap.bind { [weak self] in
             self?.navigationController?.pushViewController(RegisteredVC.instance(), animated: true)
         }.disposed(by: disposeBag)
+        
+        myPageView.reviewTotalBtn.rx.tap.bind { [weak self] in
+            self?.navigationController?.pushViewController(MyReviewVC.instance(), animated: true)
+        }.disposed(by: disposeBag)
     }
 }
 

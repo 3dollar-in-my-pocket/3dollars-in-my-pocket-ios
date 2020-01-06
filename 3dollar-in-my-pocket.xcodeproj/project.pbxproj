@@ -36,6 +36,9 @@
 		6E6835BE23C2CEFB00D23F54 /* RegisteredCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835BD23C2CEFB00D23F54 /* RegisteredCell.swift */; };
 		6E6835C023C2D2BC00D23F54 /* RegisteredVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835BF23C2D2BC00D23F54 /* RegisteredVC.swift */; };
 		6E6835C223C2F36000D23F54 /* RegisteredHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835C123C2F36000D23F54 /* RegisteredHeader.swift */; };
+		6E6835C623C30D8300D23F54 /* MyReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835C523C30D8300D23F54 /* MyReviewView.swift */; };
+		6E6835C823C30DCB00D23F54 /* MyReviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835C723C30DCB00D23F54 /* MyReviewCell.swift */; };
+		6E6835CA23C30E0A00D23F54 /* MyReviewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835C923C30E0A00D23F54 /* MyReviewVC.swift */; };
 		6E6B0ED823AD1530006E11CE /* KakaoOpenSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E6B0ED723AD1530006E11CE /* KakaoOpenSDK.framework */; };
 		6E6B0EDC23AD16AC006E11CE /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EDB23AD16AC006E11CE /* BaseView.swift */; };
 		6E6B0EDE23AD16F1006E11CE /* BaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EDD23AD16F1006E11CE /* BaseVC.swift */; };
@@ -120,6 +123,9 @@
 		6E6835BD23C2CEFB00D23F54 /* RegisteredCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredCell.swift; sourceTree = "<group>"; };
 		6E6835BF23C2D2BC00D23F54 /* RegisteredVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredVC.swift; sourceTree = "<group>"; };
 		6E6835C123C2F36000D23F54 /* RegisteredHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredHeader.swift; sourceTree = "<group>"; };
+		6E6835C523C30D8300D23F54 /* MyReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewView.swift; sourceTree = "<group>"; };
+		6E6835C723C30DCB00D23F54 /* MyReviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewCell.swift; sourceTree = "<group>"; };
+		6E6835C923C30E0A00D23F54 /* MyReviewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewVC.swift; sourceTree = "<group>"; };
 		6E6B0ED723AD1530006E11CE /* KakaoOpenSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KakaoOpenSDK.framework; sourceTree = "<group>"; };
 		6E6B0EDB23AD16AC006E11CE /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		6E6B0EDD23AD16F1006E11CE /* BaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseVC.swift; sourceTree = "<group>"; };
@@ -288,6 +294,16 @@
 			path = registered;
 			sourceTree = "<group>";
 		};
+		6E6835C423C30D6F00D23F54 /* review */ = {
+			isa = PBXGroup;
+			children = (
+				6E6835C523C30D8300D23F54 /* MyReviewView.swift */,
+				6E6835C723C30DCB00D23F54 /* MyReviewCell.swift */,
+				6E6835C923C30E0A00D23F54 /* MyReviewVC.swift */,
+			);
+			path = review;
+			sourceTree = "<group>";
+		};
 		6E6B0ED923AD169B006E11CE /* features */ = {
 			isa = PBXGroup;
 			children = (
@@ -359,6 +375,7 @@
 		6E8A137623B5DCBB009C2B64 /* my-page */ = {
 			isa = PBXGroup;
 			children = (
+				6E6835C423C30D6F00D23F54 /* review */,
 				6E6835BA23C2CBE800D23F54 /* registered */,
 				6E6835B523C2C3CD00D23F54 /* rename */,
 				6E07D44723B590F20055AEE7 /* MyPageView.swift */,
@@ -658,11 +675,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E6835CA23C30E0A00D23F54 /* MyReviewVC.swift in Sources */,
 				6E2C820F23B4A37F0025BB2B /* NicknameVC.swift in Sources */,
 				6E07D44623B590B30055AEE7 /* HomeVC.swift in Sources */,
 				6EB7FA6623B651E100BFB0B4 /* CategoryListView.swift in Sources */,
 				6EB7FA6A23B658B000BFB0B4 /* CategoryListCell.swift in Sources */,
 				6E1D427C23B6F99F0034A471 /* ReviewCell.swift in Sources */,
+				6E6835C823C30DCB00D23F54 /* MyReviewCell.swift in Sources */,
 				6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */,
 				6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */,
 				6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */,
@@ -684,6 +703,7 @@
 				6EE0DBDA23C2B77D00B24D99 /* MyPageReviewCell.swift in Sources */,
 				6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */,
 				6E70C39123B6EECB00C52C9C /* DetailVC.swift in Sources */,
+				6E6835C623C30D8300D23F54 /* MyReviewView.swift in Sources */,
 				6E6026A223BE03A600395516 /* ReviewHeaderView.swift in Sources */,
 				6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */,
 				6E6835C223C2F36000D23F54 /* RegisteredHeader.swift in Sources */,
