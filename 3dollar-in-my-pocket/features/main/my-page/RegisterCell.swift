@@ -5,7 +5,7 @@ class RegisterCell: BaseCollectionViewCell {
     static let registerId = "\(RegisterCell.self)"
     
     let categoryImage = UIImageView().then {
-        $0.image = UIImage.init(named: "img_my_page_fish")
+        $0.image = UIImage.init(named: "img_fish_on")
     }
     
     let titleLabel = UILabel().then {

@@ -5,7 +5,7 @@ class MyPageReviewCell: BaseTableViewCell {
     static let registerId = "\(MyPageReviewCell.self)"
     
     let categoryImage = UIImageView().then {
-        $0.image = UIImage.init(named: "img_my_page_fish")
+        $0.image = UIImage.init(named: "img_fish_on")
         $0.contentMode = .scaleAspectFit
     }
     
