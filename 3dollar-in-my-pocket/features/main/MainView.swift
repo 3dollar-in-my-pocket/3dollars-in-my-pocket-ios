@@ -7,8 +7,6 @@ class MainView: BaseView {
     }
     
     let stackBg = UIView().then {
-        $0.backgroundColor = .white
-        $0.alpha = 0.6
         $0.layer.cornerRadius = 37
     }
     
@@ -76,7 +74,7 @@ class MainView: BaseView {
         let shadowLayer = CAShapeLayer()
         
         shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 232, height: 72), cornerRadius: 37).cgPath
-        shadowLayer.fillColor = UIColor.white.cgColor
+        shadowLayer.fillColor = UIColor.init(r: 255, g: 255, b: 255, a: 0.4).cgColor
         
         shadowLayer.shadowColor = UIColor.black.cgColor
         shadowLayer.shadowPath = shadowLayer.path

@@ -63,6 +63,15 @@ class MainVC: BaseVC {
         self.view.bringSubviewToFront(mainView.stackBg)
         self.view.bringSubviewToFront(mainView.stackView)
         self.mainView.selectBtn(index: index)
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                self?.setNeedsStatusBarAppearanceUpdate()
+            }
+        }
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return selectedIndex == 2 ? .lightContent : .default
     }
 }
 

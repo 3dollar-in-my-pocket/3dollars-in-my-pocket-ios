@@ -1,6 +1,20 @@
 import UIKit
 
-class RankingView: BaseView {
+class MyPageReviewCell: BaseTableViewCell {
+    
+    static let registerId = "\(MyPageReviewCell.self)"
+    
+    let categoryImage = UIImageView().then {
+        $0.image = UIImage.init(named: "img_fish_on")
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    let reviewLabel = UILabel().then {
+        $0.text = "음~냠냠긋~"
+        $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 14)
+        $0.textColor = .white
+    }
+    
     let star1 = UIButton().then {
         $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
         $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
@@ -38,70 +52,73 @@ class RankingView: BaseView {
         $0.spacing = 2
     }
     
-    let rankingLabel = UILabel().then {
-        $0.text = "3.8점"
-        $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
-        $0.textColor = UIColor.init(r: 200, g: 200, b: 200)
-    }
     
     override func setup() {
-        backgroundColor = .clear
+        selectionStyle = .none
         stackView.addArrangedSubview(star1)
         stackView.addArrangedSubview(star2)
         stackView.addArrangedSubview(star3)
         stackView.addArrangedSubview(star4)
         stackView.addArrangedSubview(star5)
-        addSubViews(stackView, rankingLabel)
+        addSubViews(categoryImage, reviewLabel, stackView)
     }
     
     override func bindConstraints() {
+        categoryImage.snp.makeConstraints { (make) in
+            make.left.equalToSuperview().offset(16)
+            make.centerY.equalToSuperview()
+            make.width.equalTo(38)
+            make.height.equalTo(24)
+        }
+        
+        reviewLabel.snp.makeConstraints { (make) in
+            make.centerY.equalTo(categoryImage.snp.centerY)
+            make.left.equalTo(categoryImage.snp.right).offset(23)
+        }
+        
         star1.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
+            make.width.height.equalTo(14)
         }
         
         star2.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
+            make.width.height.equalTo(14)
         }
         
         star3.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
+            make.width.height.equalTo(14)
         }
         
         star4.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
+            make.width.height.equalTo(14)
         }
         
         star5.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
-        }
-        stackView.snp.makeConstraints { (make) in
-            make.left.centerY.equalToSuperview()
+            make.width.height.equalTo(14)
         }
         
-        rankingLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(stackView.snp.right).offset(8)
-            make.centerY.equalTo(stackView.snp.centerY)
+        stackView.snp.makeConstraints { (make) in
+            make.centerY.equalTo(categoryImage.snp.centerY)
+            make.right.equalToSuperview().offset(-8)
         }
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        stackView.sizeToFit()
+    func setTopRadius() {
+        layer.cornerRadius = 8
+        layer.masksToBounds = true
+        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
     
-    func setRank(rank: Int) {
-        for index in 0...rank {
-            if let star = stackView.arrangedSubviews[index] as? UIButton {
-                star.isSelected = true
-            }
-        }
+    func setBottomRadius() {
+        layer.cornerRadius = 8
+        layer.masksToBounds = true
+        layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
     }
     
-    func setSelected(isSelected: Bool) {
-        if isSelected {
-            rankingLabel.textColor = .white
-        } else {
-            rankingLabel.textColor = UIColor.init(r: 200, g: 200, b: 200)
-        }
+    func setOddBg() {
+        backgroundColor = UIColor.init(r: 46, g: 46, b: 46)
+    }
+    
+    func setEvenBg() {
+        backgroundColor = UIColor.init(r: 74, g: 74, b: 74)
     }
 }
