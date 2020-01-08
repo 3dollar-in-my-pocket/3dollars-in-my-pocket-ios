@@ -21,6 +21,8 @@ target '3dollar-in-my-pocket' do
   pod 'GooglePlaces'
   
   pod 'naveridlogin-sdk-ios'
+  
+  pod 'BulletinBoard'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths

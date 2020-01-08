@@ -1,5 +1,6 @@
 import UIKit
 import GoogleMaps
+import BLTNBoard
 
 class DetailVC: BaseVC {
     
@@ -57,6 +58,18 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                 return BaseTableViewCell()
             }
             
+            cell.reviewBtn.rx.tap.bind { (_) in
+                let bulletinManager: BLTNItemManager = {
+                    let page = BLTNPageItem(title: "ㄱㅏ슴속 3$").then {
+                        $0.image = UIImage.init(named: "img_fish_on")
+                        $0.descriptionText = "내 이름은 닥터피쉬"
+                        $0.actionButtonTitle = "Subscribe"
+                    }
+                    return BLTNItemManager(rootItem: page)
+                }()
+                
+                bulletinManager.showBulletin(above: self)
+            }.disposed(by: disposeBag)
             return cell
         } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ReviewCell.registerId, for: indexPath) as? ReviewCell else {
