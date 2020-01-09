@@ -23,6 +23,8 @@
 		6E1D427C23B6F99F0034A471 /* ReviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E1D427B23B6F99F0034A471 /* ReviewCell.swift */; };
 		6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C820C23B4A2880025BB2B /* NicknameView.swift */; };
 		6E2C820F23B4A37F0025BB2B /* NicknameVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C820E23B4A37F0025BB2B /* NicknameVC.swift */; };
+		6E3E0B8F23C7078100E835AE /* ReviewModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */; };
+		6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */; };
 		6E41F7E623BAC2BA00D0AC73 /* UIColorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41F7E523BAC2BA00D0AC73 /* UIColorExt.swift */; };
 		6E41F7E923BAC85700D0AC73 /* SpoqaHanSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E41F7E823BAC85700D0AC73 /* SpoqaHanSans-Bold.ttf */; };
 		6E41F7ED23BB161D00D0AC73 /* SpoqaHanSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E41F7EC23BB161D00D0AC73 /* SpoqaHanSans-Light.ttf */; };
@@ -110,6 +112,8 @@
 		6E1D427B23B6F99F0034A471 /* ReviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCell.swift; sourceTree = "<group>"; };
 		6E2C820C23B4A2880025BB2B /* NicknameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameView.swift; sourceTree = "<group>"; };
 		6E2C820E23B4A37F0025BB2B /* NicknameVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameVC.swift; sourceTree = "<group>"; };
+		6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalView.swift; sourceTree = "<group>"; };
+		6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalVC.swift; sourceTree = "<group>"; };
 		6E41F7E523BAC2BA00D0AC73 /* UIColorExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExt.swift; sourceTree = "<group>"; };
 		6E41F7E823BAC85700D0AC73 /* SpoqaHanSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSans-Bold.ttf"; sourceTree = "<group>"; };
 		6E41F7EC23BB161D00D0AC73 /* SpoqaHanSans-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSans-Light.ttf"; sourceTree = "<group>"; };
@@ -256,6 +260,15 @@
 			path = "3dollar-in-my-pocketUITests";
 			sourceTree = "<group>";
 		};
+		6E3E0B8D23C7076D00E835AE /* review */ = {
+			isa = PBXGroup;
+			children = (
+				6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */,
+				6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */,
+			);
+			path = review;
+			sourceTree = "<group>";
+		};
 		6E41F7E723BAC81200D0AC73 /* resource */ = {
 			isa = PBXGroup;
 			children = (
@@ -363,6 +376,7 @@
 		6E70C38D23B6EB8200C52C9C /* detail */ = {
 			isa = PBXGroup;
 			children = (
+				6E3E0B8D23C7076D00E835AE /* review */,
 				6E70C38E23B6EBB300C52C9C /* DetailView.swift */,
 				6E70C39023B6EECB00C52C9C /* DetailVC.swift */,
 				6E1D427B23B6F99F0034A471 /* ReviewCell.swift */,
@@ -683,6 +697,7 @@
 				6E1D427C23B6F99F0034A471 /* ReviewCell.swift in Sources */,
 				6E6835C823C30DCB00D23F54 /* MyReviewCell.swift in Sources */,
 				6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */,
+				6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */,
 				6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */,
 				6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */,
 				6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */,
@@ -713,6 +728,7 @@
 				6E6835B923C2C89400D23F54 /* RenameVC.swift in Sources */,
 				6ED5939123BD888C00B06BD4 /* CategoryListHeaderView.swift in Sources */,
 				6E6835BE23C2CEFB00D23F54 /* RegisteredCell.swift in Sources */,
+				6E3E0B8F23C7078100E835AE /* ReviewModalView.swift in Sources */,
 				6E41F7F123BB42F600D0AC73 /* CategoryButton.swift in Sources */,
 				6EA5EC0823B57EFE0028F86B /* MainView.swift in Sources */,
 				6E88305323BC31C4007F2EF9 /* RankingView.swift in Sources */,

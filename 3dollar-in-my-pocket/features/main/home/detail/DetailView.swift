@@ -25,6 +25,10 @@ class DetailView: BaseView {
         $0.contentInset = UIEdgeInsets(top: -35, left: 0, bottom: 0, right: 0)
     }
     
+    lazy var dimView = UIView(frame: self.frame).then {
+        $0.backgroundColor = .clear
+    }
+    
     override func setup() {
         setupNavigationBarShadow()
         navigationBar.addSubViews(backBtn, titleLabel)
@@ -32,7 +36,6 @@ class DetailView: BaseView {
     }
     
     override func bindConstraints() {
-        
         navigationBar.snp.makeConstraints { (make) in
             make.left.right.top.equalToSuperview()
             make.height.equalTo(98)
@@ -84,4 +87,21 @@ class DetailView: BaseView {
         
         navigationBar.layer.insertSublayer(shadowLayer, at: 0)
     }
+    
+    func addBgDim() {
+        addSubview(dimView)
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.dimView.backgroundColor = UIColor.init(r: 0, g: 0, b: 0, a:0.3)
+        }
+    }
+    
+    
+    func removeBgDim() {
+        UIView.animate(withDuration: 0.3, animations: { [weak self] in
+            self?.dimView.backgroundColor = .clear
+        }) { [weak self] (_) in
+            self?.dimView.removeFromSuperview()
+        }
+    }
+    
 }

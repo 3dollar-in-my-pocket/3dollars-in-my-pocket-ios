@@ -6,6 +6,7 @@ class DetailVC: BaseVC {
     
     private lazy var detailView = DetailView(frame: self.view.frame)
     
+    private let reviewVC = ReviewModalVC.instance()
     
     static func instance() -> DetailVC {
         return DetailVC(nibName: nil, bundle: nil)
@@ -14,6 +15,7 @@ class DetailVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = detailView
+        reviewVC.deleaget = self
         
 //        let camera = GMSCameraPosition.camera(withLatitude: 37.49838214755165, longitude: 127.02844798564912, zoom: 15)
 //        
@@ -58,28 +60,9 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                 return BaseTableViewCell()
             }
             
-            cell.reviewBtn.rx.tap.bind { (_) in
-                let bulletinManager: BLTNItemManager = {
-                    let appearance = BLTNItemAppearance.init().then {
-                        $0.actionButtonColor = UIColor.init(r: 238, g: 98, b: 76)
-                    }
-                    
-                    let page = BLTNPageItem(title: "이 가게를\n추천하시나요?").then {
-                        $0.actionButtonTitle = "리뷰 등록하기"
-                    }
-                    page.appearance = appearance
-                    
-                    
-//                    $0.titleLabel.label.font = UIFont.init(name: "SpoqaHanSans-Light", size: 28)
-//                    $0.titleLabel.label.numberOfLines = 0
-//                    $0.actionButton?.backgroundColor = UIColor.init(r: 238, g: 98, b: 76)
-//                    $0.actionButton?.layer.cornerRadius = 14
-//                    $0.actionButton?.titleLabel?.textColor = .white
-//                    $0.actionButton?.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-                    return BLTNItemManager(rootItem: page)
-                }()
-                
-                bulletinManager.showBulletin(above: self)
+            cell.reviewBtn.rx.tap.bind { [weak self] (_) in
+                self?.detailView.addBgDim()
+                self?.present(self!.reviewVC, animated: true)
             }.disposed(by: disposeBag)
             return cell
         } else {
@@ -105,5 +88,12 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
         } else {
             return 0
         }
+    }
+}
+
+extension DetailVC: ReviewModalDelegate {
+    func onTapRegister() {
+        reviewVC.dismiss(animated: true, completion: nil)
+        self.detailView.removeBgDim()
     }
 }
