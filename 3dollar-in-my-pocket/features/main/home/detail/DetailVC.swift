@@ -6,7 +6,7 @@ class DetailVC: BaseVC {
     
     private lazy var detailView = DetailView(frame: self.view.frame)
     
-    private let reviewVC = ReviewModalVC.instance()
+    private var reviewVC: ReviewModalVC?
     
     static func instance() -> DetailVC {
         return DetailVC(nibName: nil, bundle: nil)
@@ -15,7 +15,6 @@ class DetailVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = detailView
-        reviewVC.deleaget = self
         
 //        let camera = GMSCameraPosition.camera(withLatitude: 37.49838214755165, longitude: 127.02844798564912, zoom: 15)
 //        
@@ -61,8 +60,11 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
             }
             
             cell.reviewBtn.rx.tap.bind { [weak self] (_) in
+                self?.reviewVC = ReviewModalVC.instance().then {
+                    $0.deleagete = self
+                }
                 self?.detailView.addBgDim()
-                self?.present(self!.reviewVC, animated: true)
+                self?.present(self!.reviewVC!, animated: true)
             }.disposed(by: disposeBag)
             return cell
         } else {
@@ -92,8 +94,13 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension DetailVC: ReviewModalDelegate {
+    func onTapClose() {
+        reviewVC?.dismiss(animated: true, completion: nil)
+        self.detailView.removeBgDim()
+    }
+    
     func onTapRegister() {
-        reviewVC.dismiss(animated: true, completion: nil)
+        reviewVC?.dismiss(animated: true, completion: nil)
         self.detailView.removeBgDim()
     }
 }
