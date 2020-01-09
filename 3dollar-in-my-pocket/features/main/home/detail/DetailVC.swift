@@ -60,11 +60,22 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
             
             cell.reviewBtn.rx.tap.bind { (_) in
                 let bulletinManager: BLTNItemManager = {
-                    let page = BLTNPageItem(title: "ㄱㅏ슴속 3$").then {
-                        $0.image = UIImage.init(named: "img_fish_on")
-                        $0.descriptionText = "내 이름은 닥터피쉬"
-                        $0.actionButtonTitle = "Subscribe"
+                    let appearance = BLTNItemAppearance.init().then {
+                        $0.actionButtonColor = UIColor.init(r: 238, g: 98, b: 76)
                     }
+                    
+                    let page = BLTNPageItem(title: "이 가게를\n추천하시나요?").then {
+                        $0.actionButtonTitle = "리뷰 등록하기"
+                    }
+                    page.appearance = appearance
+                    
+                    
+//                    $0.titleLabel.label.font = UIFont.init(name: "SpoqaHanSans-Light", size: 28)
+//                    $0.titleLabel.label.numberOfLines = 0
+//                    $0.actionButton?.backgroundColor = UIColor.init(r: 238, g: 98, b: 76)
+//                    $0.actionButton?.layer.cornerRadius = 14
+//                    $0.actionButton?.titleLabel?.textColor = .white
+//                    $0.actionButton?.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
                     return BLTNItemManager(rootItem: page)
                 }()
                 
