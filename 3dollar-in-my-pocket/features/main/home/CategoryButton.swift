@@ -19,13 +19,10 @@ class CategoryButton: BaseView {
     }
     
     override func bindConstraints() {
-        self.snp.makeConstraints { (make) in
-            make.width.equalTo(60)
-        }
-        
         icon.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(5)
+            make.width.equalTo(67)
         }
         
         title.snp.makeConstraints { (make) in

@@ -18,7 +18,6 @@ class HomeView: BaseView {
         $0.axis = .horizontal
         $0.backgroundColor = .white
         $0.distribution = .equalCentering
-        $0.spacing = 16
         $0.layoutMargins = UIEdgeInsets(top: 0, left: 21, bottom: 0, right: 18)
         $0.isLayoutMarginsRelativeArrangement = true
     }
@@ -101,39 +100,39 @@ class HomeView: BaseView {
         }
         
         categoryStackView.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(22)
-            make.right.equalToSuperview().offset(-26)
+            make.left.equalToSuperview().offset(22 * UIScreen.main.bounds.width / 375.0)
+            make.right.equalToSuperview().offset(-26 * UIScreen.main.bounds.width / 375.0)
             make.top.equalToSuperview().offset(56)
             make.height.equalTo(92)
         }
         
         bungeoppangBtn.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
-            make.left.equalTo(categoryStackView.snp.left).offset(21)
-            make.width.height.equalTo(60)
+            make.left.equalTo(categoryStackView.snp.left).offset(21 * UIScreen.main.bounds.width / 375.0)
+            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
         }
         
         takoyakiBtn.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
-            make.left.equalTo(bungeoppangBtn.snp.right).offset(16)
-            make.width.height.equalTo(60)
+            make.left.equalTo(bungeoppangBtn.snp.right).offset(8 * UIScreen.main.bounds.width / 375.0)
+            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
         }
         
         gyeranppangBtn.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
-            make.left.equalTo(takoyakiBtn.snp.right).offset(16)
-            make.width.height.equalTo(60)
+            make.left.equalTo(takoyakiBtn.snp.right).offset(8 * UIScreen.main.bounds.width / 375.0)
+            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
         }
         
         hotteokBtn.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
-            make.left.equalTo(gyeranppangBtn.snp.right).offset(16)
-            make.width.height.equalTo(60)
+            make.left.equalTo(gyeranppangBtn.snp.right).offset(8 * UIScreen.main.bounds.width / 375.0)
+            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
         }
         
         mapView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(categoryStackView.snp.bottom).offset(264)
+            make.top.equalTo(categoryStackView.snp.bottom).offset(264 * UIScreen.main.bounds.width / 375.0)
         }
         
         descLabel1.snp.makeConstraints { (make) in
