@@ -14,6 +14,7 @@ class HomeVC: BaseVC {
     var delegate: HomeDelegate?
     var locationManager = CLLocationManager()
     var isFirst = true
+    var previousIndex = 0
     
     private lazy var homeView = HomeView(frame: self.view.frame)
     
@@ -57,6 +58,10 @@ class HomeVC: BaseVC {
             self?.delegate?.onTapCategory()
         }.disposed(by: disposeBag)
     }
+    
+    private func goToDetail() {
+        self.navigationController?.pushViewController(DetailVC.instance(), animated: true)
+    }
 }
 
 extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -89,12 +94,31 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
         return 16
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if previousIndex == indexPath.row { // 셀이 선택된 상태에서 한번 더 누르는 경우 상세화면으로 이동
+            goToDetail()
+        } else {
+            collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+            if let cell = self.homeView.shopCollectionView.cellForItem(at: IndexPath(row: previousIndex, section: 0)) as? ShopCell {
+                // 기존에 눌려있던 셀 deselect
+                cell.setSelected(isSelected: false)
+            }
+            
+            if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
+                // 새로 누른 셀 select
+                cell.setSelected(isSelected: true)
+            }
+            previousIndex  = indexPath.row
+        }
+    }
+    
+    
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
             let pageWidth = CGFloat(172)
             let proportionalOffset = scrollView.contentOffset.x / pageWidth
-            let index = Int(round(proportionalOffset))
-            let indexPath = IndexPath(row: index, section: 0)
+            previousIndex = Int(round(proportionalOffset))
+            let indexPath = IndexPath(row: previousIndex, section: 0)
             
             self.homeView.shopCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
             if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
@@ -106,8 +130,8 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let pageWidth = CGFloat(172)
         let proportionalOffset = scrollView.contentOffset.x / pageWidth
-        let index = Int(round(proportionalOffset))
-        let indexPath = IndexPath(row: index, section: 0)
+        previousIndex = Int(round(proportionalOffset))
+        let indexPath = IndexPath(row: previousIndex, section: 0)
         
         self.homeView.shopCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
         if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
@@ -116,10 +140,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        let pageWidth = CGFloat(172)
-        let proportionalOffset = scrollView.contentOffset.x / pageWidth
-        let index = Int(round(proportionalOffset))
-        let indexPath = IndexPath(row: index, section: 0)
+        let indexPath = IndexPath(row: previousIndex, section: 0)
         
         if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
             cell.setSelected(isSelected: false)

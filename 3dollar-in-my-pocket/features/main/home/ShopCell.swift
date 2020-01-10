@@ -50,12 +50,7 @@ class ShopCell: BaseCollectionViewCell {
             make.top.equalTo(distanceLabel.snp.bottom).offset(105)
         }
     }
-    
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-    }
-    
+
     func setSelected(isSelected: Bool) {
         if let shadowLayer = layer.sublayers?.first as? CAShapeLayer {
             if isSelected {
