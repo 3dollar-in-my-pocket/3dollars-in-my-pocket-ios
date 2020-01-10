@@ -54,7 +54,19 @@ class HomeVC: BaseVC {
             self?.locationManager.requestLocation()
         }.disposed(by: disposeBag)
         
-        homeView.bungeoppangTap.rx.event.bind { [weak self] ( _) in
+        homeView.bungeoppangTap.rx.event.bind { [weak self] (_) in
+            self?.delegate?.onTapCategory()
+        }.disposed(by: disposeBag)
+
+        homeView.takoyakiTap.rx.event.bind { [weak self] (_) in
+            self?.delegate?.onTapCategory()
+        }.disposed(by: disposeBag)
+        
+        homeView.gyeranppangTap.rx.event.bind { [weak self] (_) in
+            self?.delegate?.onTapCategory()
+        }.disposed(by: disposeBag)
+
+        homeView.hotteokTap.rx.event.bind { [weak self] (_) in
             self?.delegate?.onTapCategory()
         }.disposed(by: disposeBag)
     }

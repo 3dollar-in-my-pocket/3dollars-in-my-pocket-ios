@@ -4,6 +4,9 @@ import GoogleMaps
 class HomeView: BaseView {
     
     let bungeoppangTap = UITapGestureRecognizer()
+    let takoyakiTap = UITapGestureRecognizer()
+    let gyeranppangTap = UITapGestureRecognizer()
+    let hotteokTap = UITapGestureRecognizer()
     
     let bgCloud = UIImageView().then {
         $0.image = UIImage.init(named: "bg_cloud_main")
@@ -22,13 +25,13 @@ class HomeView: BaseView {
     
     let mapView = GMSMapView()
     
-    let bungeoppangBtn1 = CategoryButton()
+    let bungeoppangBtn = CategoryButton()
     
-    let bungeoppangBtn2 = CategoryButton()
+    let takoyakiBtn = CategoryButton()
     
-    let bungeoppangBtn3 = CategoryButton()
+    let gyeranppangBtn = CategoryButton()
     
-    let bungeoppangBtn4 = CategoryButton()
+    let hotteokBtn = CategoryButton()
     
     let descLabel1 = UILabel().then {
         $0.text = "가장 가까운 음식점"
@@ -76,12 +79,17 @@ class HomeView: BaseView {
     }
     
     override func setup() {
-        bungeoppangBtn1.addGestureRecognizer(bungeoppangTap)
         backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
-        categoryStackView.addArrangedSubview(bungeoppangBtn1)
-        categoryStackView.addArrangedSubview(bungeoppangBtn2)
-        categoryStackView.addArrangedSubview(bungeoppangBtn3)
-        categoryStackView.addArrangedSubview(bungeoppangBtn4)
+        gyeranppangBtn.addGestureRecognizer(gyeranppangTap)
+        hotteokBtn.addGestureRecognizer(hotteokTap)
+        bungeoppangBtn.addGestureRecognizer(bungeoppangTap)
+        takoyakiBtn.addGestureRecognizer(takoyakiTap)
+        
+        
+        categoryStackView.addArrangedSubview(bungeoppangBtn)
+        categoryStackView.addArrangedSubview(takoyakiBtn)
+        categoryStackView.addArrangedSubview(gyeranppangBtn)
+        categoryStackView.addArrangedSubview(hotteokBtn)
         setupStackViewShadow()
         addSubViews(bgCloud, categoryStackView, mapView, descLabel1, descLabel2, descLabel3, shopCollectionView, mapButton)
     }
@@ -99,9 +107,27 @@ class HomeView: BaseView {
             make.height.equalTo(92)
         }
         
-        bungeoppangBtn1.snp.makeConstraints { (make) in
+        bungeoppangBtn.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
             make.left.equalTo(categoryStackView.snp.left).offset(21)
+            make.width.height.equalTo(60)
+        }
+        
+        takoyakiBtn.snp.makeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.left.equalTo(bungeoppangBtn.snp.right).offset(16)
+            make.width.height.equalTo(60)
+        }
+        
+        gyeranppangBtn.snp.makeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.left.equalTo(takoyakiBtn.snp.right).offset(16)
+            make.width.height.equalTo(60)
+        }
+        
+        hotteokBtn.snp.makeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.left.equalTo(gyeranppangBtn.snp.right).offset(16)
             make.width.height.equalTo(60)
         }
         
