@@ -17,6 +17,12 @@ class WritingVC: BaseVC {
         return controller
     }
     
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view = writingView
@@ -65,23 +71,19 @@ class WritingVC: BaseVC {
     }
     
     @objc func onShowKeyboard(notification: NSNotification) {
-        let keyboardHeight = (notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height
-        let containerFrame = self.writingView.containerView.frame
-        self.writingView.containerView.snp.remakeConstraints { (make) in
-            make.edges.equalTo(0)
-            make.top.equalToSuperview()
-            make.width.equalTo(self.view.frame.width)
-            make.height.equalTo(containerFrame.height + keyboardHeight)
-        }
+        let userInfo = notification.userInfo!
+        var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        keyboardFrame = self.view.convert(keyboardFrame, from: nil)
+
+        var contentInset:UIEdgeInsets = self.writingView.scrollView.contentInset
+        contentInset.bottom = keyboardFrame.size.height + 50
+        self.writingView.scrollView.contentInset = contentInset
     }
     
     @objc func onHideKeyboard(notification: NSNotification) {
-        self.writingView.containerView.snp.remakeConstraints { (make) in
-            make.edges.equalTo(0)
-            make.width.equalTo(self.view.frame.width)
-            make.top.equalToSuperview()
-            make.bottom.equalTo(self.writingView.menuTableView.snp.bottom)
-        }
+        let contentInset:UIEdgeInsets = UIEdgeInsets.zero
+        
+        self.writingView.scrollView.contentInset = contentInset
     }
 }
 
