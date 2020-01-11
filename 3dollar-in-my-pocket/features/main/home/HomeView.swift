@@ -102,7 +102,7 @@ class HomeView: BaseView {
         categoryStackView.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(22 * UIScreen.main.bounds.width / 375.0)
             make.right.equalToSuperview().offset(-26 * UIScreen.main.bounds.width / 375.0)
-            make.top.equalToSuperview().offset(56)
+            make.top.equalToSuperview().offset(80)
             make.height.equalTo(92)
         }
         

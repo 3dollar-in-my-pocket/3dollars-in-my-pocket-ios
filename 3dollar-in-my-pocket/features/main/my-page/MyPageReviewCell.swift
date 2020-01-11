@@ -98,7 +98,7 @@ class MyPageReviewCell: BaseTableViewCell {
         
         stackView.snp.makeConstraints { (make) in
             make.centerY.equalTo(categoryImage.snp.centerY)
-            make.right.equalToSuperview().offset(-8)
+            make.right.equalToSuperview().offset(-16)
         }
     }
     

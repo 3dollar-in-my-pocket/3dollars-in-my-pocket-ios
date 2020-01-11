@@ -170,13 +170,13 @@ class ShopInfoCell: BaseTableViewCell {
         }
         
         distanceLabel.snp.makeConstraints { (make) in
-            make.top.equalToSuperview().offset(16)
+            make.top.equalToSuperview().offset(10)
             make.left.equalTo(profileImage.snp.right).offset(24)
         }
         
         rankingLabel.snp.makeConstraints { (make) in
             make.right.equalTo(distanceLabel.snp.right)
-            make.top.equalTo(distanceLabel.snp.bottom).offset(12)
+            make.top.equalTo(distanceLabel.snp.bottom).offset(10)
         }
         
         stackView.snp.makeConstraints { (make) in
