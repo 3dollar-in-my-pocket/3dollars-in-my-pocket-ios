@@ -43,11 +43,11 @@ class NicknameVC: BaseVC {
         }.disposed(by: disposeBag)
         
         nicknameView.startBtn1.rx.tap.bind {
-            self.goToMain()
+            self.signIn()
         }.disposed(by: disposeBag)
         
         nicknameView.startBtn2.rx.tap.bind {
-            self.goToMain()
+            self.signIn()
         }.disposed(by: disposeBag)
     }
     
@@ -58,6 +58,22 @@ class NicknameVC: BaseVC {
     private func goToMain() {
         if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
             sceneDelegate.goToMain()
+        }
+    }
+    
+    private func signIn() {
+        let nickname = nicknameView.nicknameField.text!
+        let user = User.init(nickname: nickname, socialId: self.id, socialType: self.social)
+        
+        UserService.signIn(user: user) { [weak self] (response) in
+            switch response.result {
+            case .success(let signIn):
+                UserDefaultsUtil.setUserToken(token: signIn.token)
+                UserDefaultsUtil.setUserId(id: signIn.id)
+                self?.goToMain()
+            case.failure(let error):
+                AlertUtils.show(title: "error", message: error.localizedDescription)
+            }
         }
     }
 }
