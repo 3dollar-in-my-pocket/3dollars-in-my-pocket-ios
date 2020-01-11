@@ -47,6 +47,7 @@ class HomeVC: BaseVC {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
     }
     
     override func bindViewModel() {
@@ -73,6 +74,17 @@ class HomeVC: BaseVC {
     
     private func goToDetail() {
         self.navigationController?.pushViewController(DetailVC.instance(), animated: true)
+    }
+    
+    private func getNearestStore(latitude: Double, longitude: Double) {
+        StoreService.getStoreOrderByNearest(latitude: latitude, longitude: longitude) { (response) in
+                switch response.result {
+                case .success(let storeCards):
+                    print(storeCards) // 지금은 데이터가 없나봅니다!!
+                case .failure(let error):
+                    AlertUtils.show(title: "error", message: error.localizedDescription)
+                }
+        }
     }
 }
 
@@ -178,6 +190,8 @@ extension HomeVC: CLLocationManagerDelegate {
         let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
         
         self.homeView.mapView.animate(to: camera)
+        self.getNearestStore(latitude: location!.coordinate.latitude,
+                             longitude: location!.coordinate.longitude)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
