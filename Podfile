@@ -16,11 +16,8 @@ target '3dollar-in-my-pocket' do
 
   pod 'Then'
   
-  pod 'GoogleSignIn'
   pod 'GoogleMaps'
   pod 'GooglePlaces'
-  
-  pod 'naveridlogin-sdk-ios'
   
   pod 'Alamofire', '~> 4.9.1'
   pod 'ObjectMapper', '~> 3.4'

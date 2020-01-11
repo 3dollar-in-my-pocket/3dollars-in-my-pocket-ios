@@ -1,27 +1,19 @@
 import UIKit
-import Then
-import SnapKit
 import KakaoOpenSDK
+import SnapKit
+import Then
 import AuthenticationServices
-import GoogleSignIn
 
 class SignInView: BaseView {
     
     let kakaoBtn = KOLoginButton()
     
-    let naverBtn = UIButton().then {
-        $0.setTitle("네이버 아이디로 로그인", for: .normal)
-        $0.backgroundColor = .green
-    }
-    
     let appleBtn = ASAuthorizationAppleIDButton()
-    
-    let googleBtn = GIDSignInButton()
     
     
     override func setup() {
         backgroundColor = .white
-        addSubViews(kakaoBtn, naverBtn, appleBtn, googleBtn)
+        addSubViews(kakaoBtn, appleBtn)
     }
     
     override func bindConstraints() {
@@ -32,21 +24,9 @@ class SignInView: BaseView {
             make.height.equalTo(48)
         }
         
-        naverBtn.snp.makeConstraints { (make) in
-            make.left.right.equalTo(kakaoBtn)
-            make.top.equalTo(kakaoBtn.snp.bottom).offset(20)
-            make.height.equalTo(48)
-        }
-        
         appleBtn.snp.makeConstraints { (make) in
             make.left.right.equalTo(kakaoBtn)
-            make.top.equalTo(naverBtn.snp.bottom).offset(20)
-            make.height.equalTo(48)
-        }
-        
-        googleBtn.snp.makeConstraints { (make) in
-            make.left.right.equalTo(kakaoBtn)
-            make.top.equalTo(appleBtn.snp.bottom).offset(20)
+            make.top.equalTo(kakaoBtn.snp.bottom).offset(20)
             make.height.equalTo(48)
         }
     }

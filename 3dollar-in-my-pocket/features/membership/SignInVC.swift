@@ -1,8 +1,6 @@
 import UIKit
 import KakaoOpenSDK
-import NaverThirdPartyLogin
 import AuthenticationServices
-import GoogleSignIn
 
 class SignInVC: BaseVC {
     
@@ -17,22 +15,18 @@ class SignInVC: BaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view = signInView
         navigationController?.isNavigationBarHidden = true
         navigationController?.interactivePopGestureRecognizer?.delegate = nil
-        initializeGoogleSignIn()
-        bindEvent()
     }
     
-    private func bindEvent() {
+    override func bindViewModel() {
         signInView.kakaoBtn.rx.tap
             .bind(onNext: requestKakaoSignIn).disposed(by: disposeBag)
         
-        signInView.naverBtn.rx.tap
-            .bind(onNext: requestNaverSignIn).disposed(by: disposeBag)
-        
         signInView.appleBtn.rx.controlEvent(.touchUpInside)
-            .bind(onNext: requestAppleSignIn).disposed(by: disposeBag)   
+            .bind(onNext: requestAppleSignIn).disposed(by: disposeBag)
     }
     
     private func requestKakaoSignIn() {
@@ -55,17 +49,6 @@ class SignInVC: BaseVC {
         }
     }
     
-    private func requestNaverSignIn() {
-        self.navigationController?.pushViewController(NicknameVC.instance(id: "", social: "NAVER"), animated: true)
-//        guard let connection = NaverThirdPartyLoginConnection.getSharedInstance() else {
-//            AlertUtils.show(title: "error", message: "네이버 로그인 초기화 실패")
-//            return
-//        }
-//
-//        connection.delegate = self
-//        connection.requestThirdPartyLogin()
-    }
-    
     private func requestAppleSignIn() {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
@@ -77,41 +60,7 @@ class SignInVC: BaseVC {
         authController.delegate = self
         authController.performRequests()
     }
-    
-    private func initializeGoogleSignIn() {
-        if let gidSignIn = GIDSignIn.sharedInstance() {
-            gidSignIn.presentingViewController = self
-            gidSignIn.delegate = self
-        }
-    }
 }
-
-extension SignInVC: NaverThirdPartyLoginConnectionDelegate {
-    func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
-        guard let connection = NaverThirdPartyLoginConnection.getSharedInstance() else {
-            AlertUtils.show(title: "error", message: "네이버 로그인 초기화 실패")
-            return
-        }
-        AlertUtils.show(title: "success naver", message: "token: \(String(describing: connection.accessToken))")
-    }
-    
-    func oauth20ConnectionDidFinishRequestACTokenWithRefreshToken() {
-        guard let connection = NaverThirdPartyLoginConnection.getSharedInstance() else {
-            AlertUtils.show(title: "error", message: "네이버 로그인 초기화 실패")
-            return
-        }
-        AlertUtils.show(title: "이미 연결되어있음", message: "token: \(String(describing: connection.accessToken))")
-    }
-    
-    func oauth20ConnectionDidFinishDeleteToken() {
-        AlertUtils.show(message: "oauth20ConnectionDidFinishDeleteToken()")
-    }
-    
-    func oauth20Connection(_ oauthConnection: NaverThirdPartyLoginConnection!, didFailWithError error: Error!) {
-        AlertUtils.show(title: "error", message: error.localizedDescription)
-    }
-}
-
 extension SignInVC: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         AlertUtils.show(title: "error", message: error.localizedDescription)
@@ -119,22 +68,9 @@ extension SignInVC: ASAuthorizationControllerDelegate {
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-//            AlertUtils.show(title: "success", message: "token: \(appleIDCredential.user)")
-            self.navigationController?.pushViewController(NicknameVC.instance(id: appleIDCredential.user, social: "APPLE"), animated: true)
-        }
-    }
-}
-
-extension SignInVC: GIDSignInDelegate {
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
-        if let error = error {
-          if (error as NSError).code == GIDSignInErrorCode.hasNoAuthInKeychain.rawValue {
-            AlertUtils.show(title: "error", message: "The user has not signed in before or they have since signed out.")
-          } else {
-            AlertUtils.show(title: "error", message: error.localizedDescription)
-          }
-        } else {
-            AlertUtils.show(title: "success", message: "token: \(String(describing: user.authentication.idToken))")
+            let nicknameVC = NicknameVC.instance(id: appleIDCredential.user, social: "APPLE")
+            
+            self.navigationController?.pushViewController(nicknameVC, animated: true)
         }
     }
 }
