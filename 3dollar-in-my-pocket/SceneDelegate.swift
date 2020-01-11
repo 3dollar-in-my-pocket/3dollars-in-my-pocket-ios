@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.backgroundColor = .white
-        window?.rootViewController = SignInVC.instance()
+        window?.rootViewController = SplashVC.instance()
         window?.makeKeyAndVisible()
     }
 
@@ -55,6 +55,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func goToMain() {
         window?.rootViewController = MainVC.instance()
+        window?.makeKeyAndVisible()
+    }
+    
+    func goToSignIn() {
+        window?.rootViewController = SignInVC.instance()
         window?.makeKeyAndVisible()
     }
 

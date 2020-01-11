@@ -56,7 +56,7 @@ class SignInVC: BaseVC {
     }
     
     private func requestNaverSignIn() {
-        self.navigationController?.pushViewController(NicknameVC.instance(), animated: true)
+        self.navigationController?.pushViewController(NicknameVC.instance(id: "", social: "NAVER"), animated: true)
 //        guard let connection = NaverThirdPartyLoginConnection.getSharedInstance() else {
 //            AlertUtils.show(title: "error", message: "네이버 로그인 초기화 실패")
 //            return
@@ -120,7 +120,7 @@ extension SignInVC: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
 //            AlertUtils.show(title: "success", message: "token: \(appleIDCredential.user)")
-            self.navigationController?.pushViewController(NicknameVC.instance(), animated: true)
+            self.navigationController?.pushViewController(NicknameVC.instance(id: appleIDCredential.user, social: "APPLE"), animated: true)
         }
     }
 }

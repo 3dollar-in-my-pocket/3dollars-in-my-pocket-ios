@@ -1,6 +1,5 @@
 import UIKit
 import GoogleMaps
-import BLTNBoard
 
 class DetailVC: BaseVC {
     

@@ -3,10 +3,22 @@ import UIKit
 class NicknameVC: BaseVC {
     
     private lazy var nicknameView = NicknameView(frame: self.view.frame)
+    var id: String
+    var social: String
     
     
-    static func instance() -> NicknameVC {
-        return NicknameVC(nibName: nil, bundle: nil)
+    init(id: String, social: String) {
+        self.id = id
+        self.social = social
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("")
+    }
+    
+    static func instance(id: String, social: String) -> NicknameVC {
+        return NicknameVC.init(id: id, social: social)
     }
     
     override func viewDidLoad() {
