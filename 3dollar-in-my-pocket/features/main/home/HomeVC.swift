@@ -23,31 +23,18 @@ class HomeVC: BaseVC {
         return HomeVC(nibName: nil, bundle: nil)
     }
     
+    
+    deinit {
+        locationManager.stopUpdatingLocation()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view = homeView
         
-        homeView.shopCollectionView.delegate = self
-        homeView.shopCollectionView.dataSource = self
-        homeView.shopCollectionView.register(ShopCell.self, forCellWithReuseIdentifier: ShopCell.registerId)
-        
-        let camera = GMSCameraPosition.camera(withLatitude: 37.49838214755165, longitude: 127.02844798564912, zoom: 15)
-        
-        homeView.mapView.camera = camera
-        homeView.mapView.delegate = self
-        homeView.mapView.isMyLocationEnabled = true
-        
-        let marker = GMSMarker()
-        marker.position = CLLocationCoordinate2D(latitude: 37.49838214755165, longitude: 127.02844798564912)
-        marker.title = "닥고약기"
-        marker.snippet = "무름표"
-        marker.map = homeView.mapView
-        
-        //Location Manager code to fetch current location
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.requestLocation()
+        setupShopCollectionView()
+        setupGoogleMap()
+        setupLocationManager()
     }
     
     override func bindViewModel() {
@@ -70,6 +57,31 @@ class HomeVC: BaseVC {
         homeView.hotteokTap.rx.event.bind { [weak self] (_) in
             self?.delegate?.onTapCategory()
         }.disposed(by: disposeBag)
+    }
+    
+    private func setupShopCollectionView() {
+        homeView.shopCollectionView.delegate = self
+        homeView.shopCollectionView.dataSource = self
+        homeView.shopCollectionView.register(ShopCell.self, forCellWithReuseIdentifier: ShopCell.registerId)
+    }
+    
+    private func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
+    private func setupGoogleMap() {
+        homeView.mapView.delegate = self
+        homeView.mapView.isMyLocationEnabled = true
+        
+        let marker = GMSMarker()
+        
+        marker.position = CLLocationCoordinate2D(latitude: 37.49838214755165, longitude: 127.02844798564912)
+        marker.title = "닥고약기"
+        marker.snippet = "무름표"
+        marker.map = homeView.mapView
     }
     
     private func goToDetail() {
@@ -192,6 +204,7 @@ extension HomeVC: CLLocationManagerDelegate {
         self.homeView.mapView.animate(to: camera)
         self.getNearestStore(latitude: location!.coordinate.latitude,
                              longitude: location!.coordinate.longitude)
+        print("latitue: \(location!.coordinate.latitude)\nlongitude: \(location!.coordinate.longitude)")
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
