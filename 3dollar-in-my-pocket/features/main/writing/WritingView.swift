@@ -392,6 +392,20 @@ class WritingView: BaseView {
             })
         }
     }
+    
+    func getCategory() -> StoreCategory? {
+        if bungeoppangBtn.isSelected {
+            return .BUNGEOPPANG
+        } else if takoyakiBtn.isSelected {
+            return .TAKOYAKI
+        } else if gyeranppangBtn.isSelected {
+            return .GYERANPPANG
+        } else if hotteokBtn.isSelected {
+            return .HOTTEOK
+        } else {
+            return nil
+        }
+    }
 }
 
 extension WritingView: UIScrollViewDelegate {

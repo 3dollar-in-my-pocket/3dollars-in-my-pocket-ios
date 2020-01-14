@@ -1,5 +1,5 @@
 import UIKit
-
+import GoogleMaps
 
 class WritingVC: BaseVC {
     
@@ -8,6 +8,7 @@ class WritingVC: BaseVC {
     private var imageList: [UIImage] = []
     private var selectedImageIndex = 0
     private var menuList: [String] = []
+    var locationManager = CLLocationManager()
     
     
     static func instance() -> WritingVC {
@@ -26,17 +27,11 @@ class WritingVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = writingView
-        imagePicker.delegate = self
-        writingView.imageCollection.dataSource = self
-        writingView.imageCollection.delegate = self
-        writingView.imageCollection.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.registerId)
-        
-        writingView.menuTableView.delegate = self
-        writingView.menuTableView.dataSource = self
-        writingView.menuTableView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.registerId)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(onShowKeyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        setupImageCollectionView()
+        setupMenuTableView()
+        setupKeyboardEvent()
+        setupLocationManager()
+        setupGoogleMap()
     }
     
     override func bindViewModel() {
@@ -64,11 +59,60 @@ class WritingVC: BaseVC {
             self?.writingView.setFieldEmptyMode(isEmpty: inputText!.isEmpty)
         }.disposed(by: disposeBag)
         
-        // 이거 걸어버리면 사진등록 cell 터치가 안먹음.. ㅠ
-//        writingView.bgTap.rx.event.bind { (recognizer) in
-//            self.writingView.endEditing(true)
-//        }.disposed(by: disposeBag)
+        writingView.myLocationBtn.rx.tap.bind {
+            self.locationManager.requestLocation()
+        }.disposed(by: disposeBag)
+        
+        writingView.registerBtn.rx.tap.bind {
+            let category = self.writingView.getCategory()
+            let storeName = self.writingView.nameField.text!
+            let latitude = self.writingView.mapView.camera.target.latitude
+            let longitude = self.writingView.mapView.camera.target.longitude
+        
+            if self.isValid(category: category, storeName: storeName) {
+                print("category: \(category)\nstoreName: \(storeName)\nlatetue: \(latitude)\nlongitude: \(longitude)")
+                let store = Store.init(category: category!, latitude: latitude, longitude: longitude, storeName: storeName)
+                StoreService.saveStore(store: store) { (response) in
+                    print(response)
+                }
+                
+            } else {
+                AlertUtils.show(controller: self, message: "올바른 내용을 작성해주세요.")
+            }
+        }.disposed(by: disposeBag)
     }
+    
+    private func isValid(category: StoreCategory?, storeName: String) -> Bool {
+        return category != nil && !storeName.isEmpty
+    }
+    private func setupImageCollectionView() {
+        imagePicker.delegate = self
+        writingView.imageCollection.dataSource = self
+        writingView.imageCollection.delegate = self
+        writingView.imageCollection.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.registerId)
+    }
+    
+    private func setupMenuTableView() {
+        writingView.menuTableView.delegate = self
+        writingView.menuTableView.dataSource = self
+        writingView.menuTableView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.registerId)
+    }
+    
+    private func setupKeyboardEvent() {
+        NotificationCenter.default.addObserver(self, selector: #selector(onShowKeyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
+    private func setupGoogleMap() {
+        writingView.mapView.isMyLocationEnabled = true
+}
     
     @objc func onShowKeyboard(notification: NSNotification) {
         let userInfo = notification.userInfo!
@@ -155,3 +199,18 @@ extension WritingVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 }
+
+extension WritingVC: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations.last
+        let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
+        
+        self.writingView.mapView.animate(to: camera)
+        self.locationManager.stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
+    }
+}
+

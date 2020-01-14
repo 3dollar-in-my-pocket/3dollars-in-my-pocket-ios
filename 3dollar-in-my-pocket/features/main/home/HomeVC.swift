@@ -202,12 +202,12 @@ extension HomeVC: CLLocationManagerDelegate {
         let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
         
         self.homeView.mapView.animate(to: camera)
-        self.getNearestStore(latitude: location!.coordinate.latitude,
-                             longitude: location!.coordinate.longitude)
+//        self.getNearestStore(latitude: location!.coordinate.latitude,
+//                             longitude: location!.coordinate.longitude)
         print("latitue: \(location!.coordinate.latitude)\nlongitude: \(location!.coordinate.longitude)")
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        AlertUtils.show(title: "error", message: error.localizedDescription)
+        AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
     }
 }

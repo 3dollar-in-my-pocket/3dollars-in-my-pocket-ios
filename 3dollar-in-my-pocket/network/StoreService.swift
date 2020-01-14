@@ -24,4 +24,16 @@ struct StoreService: APIServiceType {
                 complection(response)
         }
     }
+    
+    static func saveStore(store: Store, completion: @escaping (DataResponse<String>) -> Void) {
+        let urlString = self.url("api/v1/store/save")
+        let headers = self.defaultHeader()
+        var parameters = store.toDict()
+        parameters["userId"] = "\(UserDefaultsUtil.getUserId()!)"
+        
+        Alamofire.request(urlString, method: .post, parameters: parameters, headers: headers)
+            .responseJSON { (response) in
+                print(response)
+        }
+    }
 }

@@ -4,14 +4,21 @@ import ObjectMapper
 struct Store: Mappable {
     var category: StoreCategory!
     var id: Int!
-    var images: [Image]!
+    var images: [Image?]! = []
     var latitude: Double!
     var longitude: Double!
-    var menus: [Menu]!
-    var reviews: [Review]!
+    var menus: [Menu?]! = []
+    var reviews: [Review?]! = []
     var storeName: String!
     var repoter: User!
     
+    
+    init(category: StoreCategory, latitude: Double, longitude: Double, storeName: String ) {
+        self.category = category
+        self.latitude = latitude
+        self.longitude = longitude
+        self.storeName = storeName
+    }
     
     init?(map: Map) { }
     
@@ -25,5 +32,10 @@ struct Store: Mappable {
         self.reviews <- map["review"]
         self.storeName <- map["storeName"]
         self.repoter <- map["user"]
+    }
+    
+    func toDict() -> [String: String] {
+        return ["category": "\(category.getValue())", "latitude": "\(latitude!)",
+            "longitude": "\(longitude!)", "storeName": "\(storeName!)"]
     }
 }
