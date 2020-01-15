@@ -1,15 +1,15 @@
 import UIKit
 import KakaoOpenSDK
 import GoogleMaps
+import AlamofireNetworkActivityLogger
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         initializeGoogleMaps()
+        initializeNetworkLogger()
         return true
     }
 
@@ -48,6 +48,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func initializeGoogleMaps() {
         GMSServices.provideAPIKey("AIzaSyA7CMJwuD1RrlhgF-L1o9vuKOgFiNA-5Sg")
+    }
+    
+    private func initializeNetworkLogger() {
+        NetworkActivityLogger.shared.startLogging()
+        NetworkActivityLogger.shared.level = .debug
     }
 }
 
