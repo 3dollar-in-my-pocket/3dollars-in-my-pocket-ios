@@ -40,7 +40,6 @@ class SignInVC: BaseVC {
         }
         
         kakaoSession.open { (error) in
-            print("kakao session open call")
             if let error = error {
                 AlertUtils.show(title: "error", message: error.localizedDescription)
             } else {
@@ -60,6 +59,33 @@ class SignInVC: BaseVC {
         authController.delegate = self
         authController.performRequests()
     }
+    
+    private func signIn(socialId: String, socialType: String) {
+        let user = User.init(socialId: socialId, socialType: socialType)
+        
+        UserService.signIn(user: user) { [weak self] (response) in
+            switch response.result {
+            case .success(let signIn):
+                if signIn.state {
+                    UserDefaultsUtil.setUserToken(token: signIn.token)
+                    UserDefaultsUtil.setUserId(id: signIn.id)
+                    self?.goToMain()
+                } else {
+                    let nicknameVC = NicknameVC.instance(id: signIn.id, token: signIn.token)
+                    
+                    self?.navigationController?.pushViewController(nicknameVC, animated: true)
+                }
+            case.failure(let error):
+                AlertUtils.show(title: "SignIn error", message: error.localizedDescription)
+            }
+        }
+    }
+    
+    private func goToMain() {
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            sceneDelegate.goToMain()
+        }
+    }
 }
 extension SignInVC: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
@@ -68,9 +94,7 @@ extension SignInVC: ASAuthorizationControllerDelegate {
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-            let nicknameVC = NicknameVC.instance(id: appleIDCredential.user, social: "APPLE")
-            
-            self.navigationController?.pushViewController(nicknameVC, animated: true)
+            self.signIn(socialId: appleIDCredential.user, socialType: "APPLE")
         }
     }
 }

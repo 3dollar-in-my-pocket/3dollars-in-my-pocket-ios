@@ -3,13 +3,13 @@ import UIKit
 class NicknameVC: BaseVC {
     
     private lazy var nicknameView = NicknameView(frame: self.view.frame)
-    var id: String
-    var social: String
+    var id: Int
+    var token: String
     
     
-    init(id: String, social: String) {
+    init(id: Int, token: String) {
         self.id = id
-        self.social = social
+        self.token = token
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -17,8 +17,8 @@ class NicknameVC: BaseVC {
         fatalError("")
     }
     
-    static func instance(id: String, social: String) -> NicknameVC {
-        return NicknameVC.init(id: id, social: social)
+    static func instance(id: Int, token: String) -> NicknameVC {
+        return NicknameVC.init(id: id, token: token)
     }
     
     override func viewDidLoad() {
@@ -43,11 +43,11 @@ class NicknameVC: BaseVC {
         }.disposed(by: disposeBag)
         
         nicknameView.startBtn1.rx.tap.bind {
-            self.signIn()
+            self.setNickname()
         }.disposed(by: disposeBag)
         
         nicknameView.startBtn2.rx.tap.bind {
-            self.signIn()
+            self.setNickname()
         }.disposed(by: disposeBag)
     }
     
@@ -61,20 +61,21 @@ class NicknameVC: BaseVC {
         }
     }
     
-    private func signIn() {
+    private func setNickname() {
         let nickname = nicknameView.nicknameField.text!
-        let user = User.init(nickname: nickname, socialId: self.id, socialType: self.social)
         
-        UserService.signIn(user: user) { [weak self] (response) in
+        UserService.setNickname(nickname: nickname, id: self.id, token: self.token, completion: { [weak self] (response) in
             switch response.result {
-            case .success(let signIn):
-                UserDefaultsUtil.setUserToken(token: signIn.token)
-                UserDefaultsUtil.setUserId(id: signIn.id)
+            case .success(_):
+                if let vc = self {
+                    UserDefaultsUtil.setUserToken(token: vc.token)
+                    UserDefaultsUtil.setUserId(id: vc.id)
+                }
                 self?.goToMain()
-            case.failure(let error):
-                AlertUtils.show(title: "error", message: error.localizedDescription)
+            case .failure(let error):
+                AlertUtils.show(title: "Set nickname error", message: error.localizedDescription)
             }
-        }
+        })
     }
 }
 
