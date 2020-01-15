@@ -202,8 +202,8 @@ extension HomeVC: CLLocationManagerDelegate {
         let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
         
         self.homeView.mapView.animate(to: camera)
-//        self.getNearestStore(latitude: location!.coordinate.latitude,
-//                             longitude: location!.coordinate.longitude)
+        self.getNearestStore(latitude: location!.coordinate.latitude,
+                             longitude: location!.coordinate.longitude)
         print("latitue: \(location!.coordinate.latitude)\nlongitude: \(location!.coordinate.longitude)")
         locationManager.stopUpdatingLocation()
     }

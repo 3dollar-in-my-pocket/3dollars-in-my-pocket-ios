@@ -5,7 +5,7 @@ struct StoreService: APIServiceType {
     
     
     static func getStoreOrderByNearest(latitude: Double, longitude: Double,
-                                       complection: @escaping (DataResponse<[StoreCard]>) -> Void) {
+                                       completion: @escaping (DataResponse<[StoreCard]>) -> Void) {
         let urlString = self.url("api/v1/store/get")
         let headers = self.defaultHeader()
         let parameters = ["latitude": latitude, "longitude": longitude]
@@ -21,7 +21,7 @@ struct StoreService: APIServiceType {
                         return .failure(MappingError.init(from: self, to: StoreCard.self))
                     }
                 }
-                complection(response)
+                completion(response)
         }
     }
     
@@ -31,9 +31,20 @@ struct StoreService: APIServiceType {
         var parameters = store.toDict()
         parameters["userId"] = "\(UserDefaultsUtil.getUserId()!)"
         
-        Alamofire.request(urlString, method: .post, parameters: parameters, headers: headers)
-            .responseJSON { (response) in
-                print(response)
+        Alamofire.upload(multipartFormData: { (multipartFormData) in
+//            multipartFormData.append(UIImageJPEGRepresentation(self.photoImageView.image!, 1)!, withName: "photo_path", fileName: "swift_file.jpeg", mimeType: "image/jpeg")
+            for (key, value) in parameters {
+                multipartFormData.append(value.data(using: String.Encoding.utf8)!, withName: key)
+            }
+        }, to: urlString, headers: headers) { (result) in
+            switch result {
+            case .success(let uploadRequest, _, _):
+                uploadRequest.responseString(completionHandler: { (response) in
+                    completion(response)
+                })
+            case .failure(let error):
+                AlertUtils.show(title: "Save store error", message: error.localizedDescription)
+            }
         }
     }
 }

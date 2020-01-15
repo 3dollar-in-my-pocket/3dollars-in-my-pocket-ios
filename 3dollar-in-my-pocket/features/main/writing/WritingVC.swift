@@ -70,12 +70,17 @@ class WritingVC: BaseVC {
             let longitude = self.writingView.mapView.camera.target.longitude
         
             if self.isValid(category: category, storeName: storeName) {
-                print("category: \(category)\nstoreName: \(storeName)\nlatetue: \(latitude)\nlongitude: \(longitude)")
                 let store = Store.init(category: category!, latitude: latitude, longitude: longitude, storeName: storeName)
-                StoreService.saveStore(store: store) { (response) in
-                    print(response)
+                StoreService.saveStore(store: store) { [weak self] (response) in
+                    switch response.result {
+                    case .success(let _):
+                        self?.dismiss(animated: true, completion: nil)
+                    case .failure(let error):
+                        if let vc = self {
+                            AlertUtils.show(controller: vc, title: "Save store error", message: error.localizedDescription)
+                        }
+                    }
                 }
-                
             } else {
                 AlertUtils.show(controller: self, message: "올바른 내용을 작성해주세요.")
             }
