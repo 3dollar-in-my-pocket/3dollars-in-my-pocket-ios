@@ -39,7 +39,7 @@ class HomeVC: BaseVC {
     
     override func bindViewModel() {
         homeView.mapButton.rx.tap.bind { [weak self] in
-            self?.locationManager.requestLocation()
+            self?.locationManager.startUpdatingLocation()
         }.disposed(by: disposeBag)
         
         homeView.bungeoppangTap.rx.event.bind { [weak self] (_) in
@@ -205,6 +205,7 @@ extension HomeVC: CLLocationManagerDelegate {
 //        self.getNearestStore(latitude: location!.coordinate.latitude,
 //                             longitude: location!.coordinate.longitude)
         print("latitue: \(location!.coordinate.latitude)\nlongitude: \(location!.coordinate.longitude)")
+        locationManager.stopUpdatingLocation()
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
