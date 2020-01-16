@@ -162,6 +162,7 @@ class WritingView: BaseView {
     let registerBtn = UIButton().then {
         $0.setTitle("현재 위치로 등록하기", for: .normal)
         $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+        $0.isEnabled = false
         $0.setBackgroundColor(UIColor.init(r: 200, g: 200, b: 200), for: .disabled)
         $0.setBackgroundColor(UIColor.init(r: 238, g: 98, b: 76), for: .normal)
         $0.layer.masksToBounds = true

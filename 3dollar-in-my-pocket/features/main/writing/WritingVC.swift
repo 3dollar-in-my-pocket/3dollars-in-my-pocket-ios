@@ -8,11 +8,12 @@ protocol WritingDelegate: class {
 class WritingVC: BaseVC {
     
     weak var deleagte: WritingDelegate?
+    var viewModel = WritingViewModel()
     
     private lazy var writingView = WritingView(frame: self.view.frame)
     
     private let imagePicker = UIImagePickerController()
-
+    
     private var imageList: [UIImage] = []
     
     private var selectedImageIndex = 0
@@ -52,22 +53,27 @@ class WritingVC: BaseVC {
         
         writingView.bungeoppangBtn.rx.tap.bind { [weak self] in
             self?.writingView.tapCategoryBtn(index: 0)
+            self?.viewModel.btnEnable.onNext(())
         }.disposed(by: disposeBag)
         
         writingView.takoyakiBtn.rx.tap.bind { [weak self] in
             self?.writingView.tapCategoryBtn(index: 1)
+            self?.viewModel.btnEnable.onNext(())
         }.disposed(by: disposeBag)
         
         writingView.gyeranppangBtn.rx.tap.bind { [weak self] in
             self?.writingView.tapCategoryBtn(index: 2)
+            self?.viewModel.btnEnable.onNext(())
         }.disposed(by: disposeBag)
         
         writingView.hotteokBtn.rx.tap.bind { [weak self] in
             self?.writingView.tapCategoryBtn(index: 3)
+            self?.viewModel.btnEnable.onNext(())
         }.disposed(by: disposeBag)
         
         writingView.nameField.rx.text.bind { [weak self] (inputText) in
             self?.writingView.setFieldEmptyMode(isEmpty: inputText!.isEmpty)
+            self?.viewModel.btnEnable.onNext(())
         }.disposed(by: disposeBag)
         
         writingView.myLocationBtn.rx.tap.bind {
@@ -82,7 +88,7 @@ class WritingVC: BaseVC {
                 let longitude = self?.writingView.mapView.camera.target.longitude,
                 let menus = self?.menuList {
                 let store = Store.init(category: category, latitude: latitude, longitude: longitude, storeName: storeName, menus: menus)
-
+                
                 StoreService.saveStore(store: store, images: images) { [weak self] (response) in
                     switch response.result {
                     case .success(let store):
@@ -98,6 +104,17 @@ class WritingVC: BaseVC {
                 AlertUtils.show(controller: self, message: "올바른 내용을 작성해주세요.")
             }
         }.disposed(by: disposeBag)
+        
+        viewModel.btnEnable
+            .map { [weak self] (_) in
+                if let vc = self {
+                    return !vc.writingView.nameField.text!.isEmpty && vc.writingView.getCategory() != nil
+                } else {
+                    return false
+                }
+        }
+        .bind(to: writingView.registerBtn.rx.isEnabled)
+        .disposed(by: disposeBag)
     }
     
     private func isValid(category: StoreCategory?, storeName: String) -> Bool {
