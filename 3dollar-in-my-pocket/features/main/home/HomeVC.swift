@@ -11,6 +11,7 @@ protocol HomeDelegate {
 
 class HomeVC: BaseVC {
     
+    var viewModel = HomeViewModel()
     var delegate: HomeDelegate?
     var locationManager = CLLocationManager()
     var isFirst = true
@@ -38,6 +39,17 @@ class HomeVC: BaseVC {
     }
     
     override func bindViewModel() {
+        viewModel.nearestStore
+            .bind(to: homeView.shopCollectionView.rx
+                .items(cellIdentifier: ShopCell.registerId, cellType: ShopCell.self)) { [weak self] row, element, cell in
+                    if let vc = self {
+                        if row == 0 && vc.isFirst {
+                            cell.setSelected(isSelected: true)
+                            vc.isFirst = false
+                        }
+                    }
+        }.disposed(by: disposeBag)
+        
         homeView.mapButton.rx.tap.bind { [weak self] in
             self?.locationManager.startUpdatingLocation()
         }.disposed(by: disposeBag)
@@ -45,7 +57,7 @@ class HomeVC: BaseVC {
         homeView.bungeoppangTap.rx.event.bind { [weak self] (_) in
             self?.delegate?.onTapCategory()
         }.disposed(by: disposeBag)
-
+        
         homeView.takoyakiTap.rx.event.bind { [weak self] (_) in
             self?.delegate?.onTapCategory()
         }.disposed(by: disposeBag)
@@ -53,7 +65,7 @@ class HomeVC: BaseVC {
         homeView.gyeranppangTap.rx.event.bind { [weak self] (_) in
             self?.delegate?.onTapCategory()
         }.disposed(by: disposeBag)
-
+        
         homeView.hotteokTap.rx.event.bind { [weak self] (_) in
             self?.delegate?.onTapCategory()
         }.disposed(by: disposeBag)
@@ -61,7 +73,6 @@ class HomeVC: BaseVC {
     
     private func setupShopCollectionView() {
         homeView.shopCollectionView.delegate = self
-        homeView.shopCollectionView.dataSource = self
         homeView.shopCollectionView.register(ShopCell.self, forCellWithReuseIdentifier: ShopCell.registerId)
     }
     
@@ -75,13 +86,6 @@ class HomeVC: BaseVC {
     private func setupGoogleMap() {
         homeView.mapView.delegate = self
         homeView.mapView.isMyLocationEnabled = true
-        
-        let marker = GMSMarker()
-        
-        marker.position = CLLocationCoordinate2D(latitude: 37.49838214755165, longitude: 127.02844798564912)
-        marker.title = "닥고약기"
-        marker.snippet = "무름표"
-        marker.map = homeView.mapView
     }
     
     private func goToDetail() {
@@ -89,39 +93,39 @@ class HomeVC: BaseVC {
     }
     
     private func getNearestStore(latitude: Double, longitude: Double) {
-        StoreService.getStoreOrderByNearest(latitude: latitude, longitude: longitude) { (response) in
-                switch response.result {
-                case .success(let storeCards):
-                    print(storeCards) // 지금은 데이터가 없나봅니다!!
-                case .failure(let error):
-                    AlertUtils.show(title: "error", message: error.localizedDescription)
-                }
+        StoreService.getStoreOrderByNearest(latitude: latitude, longitude: longitude) { [weak self] (response) in
+            switch response.result {
+            case .success(let storeCards):
+                self?.viewModel.nearestStore.onNext(storeCards)
+                self?.setMarker(storeCards: storeCards)
+            case .failure(let error):
+                AlertUtils.show(title: "error", message: error.localizedDescription)
+            }
         }
+    }
+    
+    private func setMarker(storeCards: [StoreCard]) {
+        homeView.mapView.clear()
+        for storeCard in storeCards {
+            let marker = GMSMarker()
+            
+            marker.position = CLLocationCoordinate2D(latitude: storeCard.latitude, longitude: storeCard.longitude)
+            marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_off")!, scaledToSize: CGSize.init(width: 16, height: 16))
+            marker.map = homeView.mapView
+            viewModel.markers.append(marker)
+        }
+    }
+    
+    private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
     }
 }
 
-extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShopCell.registerId, for: indexPath) as? ShopCell else {
-            return BaseCollectionViewCell()
-        }
-        
-        if indexPath.row == 0 && isFirst {
-            cell.setSelected(isSelected: true)
-            isFirst = false
-        }
-        
-        return cell
-    }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
+extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 172, height: 172)
     }
@@ -204,7 +208,6 @@ extension HomeVC: CLLocationManagerDelegate {
         self.homeView.mapView.animate(to: camera)
         self.getNearestStore(latitude: location!.coordinate.latitude,
                              longitude: location!.coordinate.longitude)
-        print("latitue: \(location!.coordinate.latitude)\nlongitude: \(location!.coordinate.longitude)")
         locationManager.stopUpdatingLocation()
     }
     
