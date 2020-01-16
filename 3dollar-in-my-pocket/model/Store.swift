@@ -2,15 +2,15 @@ import ObjectMapper
 
 
 struct Store: Mappable {
-    var category: StoreCategory!
-    var id: Int!
-    var images: [Image?]! = []
-    var latitude: Double!
-    var longitude: Double!
+    var category: StoreCategory?
+    var id: Int?
+    var images: [Image?]? = []
+    var latitude: Double?
+    var longitude: Double?
     var menus: [Menu]! = []
-    var reviews: [Review?]! = []
-    var storeName: String!
-    var repoter: User!
+    var reviews: [Review?]? = []
+    var storeName: String?
+    var repoter: User?
     
     
     init(category: StoreCategory, latitude: Double, longitude: Double, storeName: String,
@@ -22,7 +22,9 @@ struct Store: Mappable {
         self.menus = menus
     }
     
-    init?(map: Map) { }
+    init?(map: Map) {
+        mapping(map: map)
+    }
     
     mutating func mapping(map: Map) {
         self.category <- map["category"]

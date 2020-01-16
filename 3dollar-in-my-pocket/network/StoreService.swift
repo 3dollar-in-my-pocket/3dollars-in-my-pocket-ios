@@ -33,7 +33,8 @@ struct StoreService: APIServiceType {
         
         parameters["userId"] = "\(UserDefaultsUtil.getUserId()!)"
         parameters["menu"] = nil
-        parameters["image"] = nil
+        parameters["images"] = nil
+        parameters["review"] = nil
         
         // 배열로 보냈을 경우 서버에서 못받아서 일단 임시로 필드처럼 해서 보냄 ㅠㅠ
         for index in store.menus.indices {
@@ -59,7 +60,6 @@ struct StoreService: APIServiceType {
             case .success(let uploadRequest, _, _):
                 uploadRequest.responseJSON { (response) in
                     let response: DataResponse<Store> = response.flatMapResult { (json) in
-                        print(json)
                         if let store = Mapper<Store>().map(JSONObject: json) {
                             return .success(store)
                         } else {

@@ -9,18 +9,13 @@ class WritingVC: BaseVC {
     
     weak var deleagte: WritingDelegate?
     var viewModel = WritingViewModel()
+    var locationManager = CLLocationManager()
     
     private lazy var writingView = WritingView(frame: self.view.frame)
     
     private let imagePicker = UIImagePickerController()
     
-    private var imageList: [UIImage] = []
-    
     private var selectedImageIndex = 0
-    
-    private var menuList: [Menu] = []
-    
-    var locationManager = CLLocationManager()
     
     
     static func instance() -> WritingVC {
@@ -83,17 +78,17 @@ class WritingVC: BaseVC {
         writingView.registerBtn.rx.tap.bind { [weak self] in
             if let category = self?.writingView.getCategory(),
                 let storeName = self?.writingView.nameField.text!,
-                let images = self?.imageList,
+                let images = self?.viewModel.imageList,
                 let latitude = self?.writingView.mapView.camera.target.latitude,
                 let longitude = self?.writingView.mapView.camera.target.longitude,
-                let menus = self?.menuList {
+                let menus = self?.viewModel.menuList {
                 let store = Store.init(category: category, latitude: latitude, longitude: longitude, storeName: storeName, menus: menus)
                 
                 StoreService.saveStore(store: store, images: images) { [weak self] (response) in
                     switch response.result {
                     case .success(let store):
                         self?.dismiss(animated: true, completion: nil)
-                        self?.deleagte?.onWriteSuccess(storeId: store.id)
+                        self?.deleagte?.onWriteSuccess(storeId: store.id!)
                     case .failure(let error):
                         if let vc = self {
                             AlertUtils.show(controller: vc, title: "Save store error", message: error.localizedDescription)
@@ -169,7 +164,7 @@ class WritingVC: BaseVC {
 
 extension WritingVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageList.count + 1
+        return self.viewModel.imageList.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -177,8 +172,8 @@ extension WritingVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
             return BaseCollectionViewCell()
         }
         
-        if indexPath.row < self.imageList.count {
-            cell.setImage(image: self.imageList[indexPath.row])
+        if indexPath.row < self.viewModel.imageList.count {
+            cell.setImage(image: self.viewModel.imageList[indexPath.row])
         } else {
             cell.setImage(image: nil)
         }
@@ -198,10 +193,10 @@ extension WritingVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
 extension WritingVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.originalImage] as? UIImage {
-            if selectedImageIndex == self.imageList.count {
-                self.imageList.append(image)
+            if selectedImageIndex == self.viewModel.imageList.count {
+                self.viewModel.imageList.append(image)
             } else {
-                self.imageList[selectedImageIndex] = image
+                self.viewModel.imageList[selectedImageIndex] = image
             }
         }
         self.writingView.imageCollection.reloadData()
@@ -211,7 +206,7 @@ extension WritingVC: UIImagePickerControllerDelegate, UINavigationControllerDele
 
 extension WritingVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.menuList.count + 1
+        return self.viewModel.menuList.count + 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -225,12 +220,12 @@ extension WritingVC: UITableViewDelegate, UITableViewDataSource {
             if !name.isEmpty {
                 let menu = Menu.init(name: name)
                 
-                if indexPath.row == self?.menuList.count {
-                    self?.menuList.append(menu)
+                if indexPath.row == self?.viewModel.menuList.count {
+                    self?.viewModel.menuList.append(menu)
                     self?.writingView.menuTableView.reloadData()
                     self?.view.layoutIfNeeded()
                 } else {
-                    self?.menuList[indexPath.row].name = name
+                    self?.viewModel.menuList[indexPath.row].name = name
                 }
             }
         }.disposed(by: disposeBag)
@@ -242,8 +237,8 @@ extension WritingVC: UITableViewDelegate, UITableViewDataSource {
             if !name.isEmpty && !desc.isEmpty {
                 let menu = Menu.init(name: name, price: desc)
                 
-                if let _ = self?.menuList[indexPath.row] {
-                    self?.menuList[indexPath.row] = menu
+                if let _ = self?.viewModel.menuList[indexPath.row] {
+                    self?.viewModel.menuList[indexPath.row] = menu
                 }
             }
             
