@@ -22,10 +22,14 @@ class MainVC: BaseVC {
         navigationController?.interactivePopGestureRecognizer?.delegate = nil
         view = mainView
         
-        let homeVc = HomeVC.instance()
+        let homeVC = HomeVC.instance().then {
+            $0.delegate = self
+        }
+        let writingVC = WritingVC.instance().then {
+            $0.deleagte = self
+        }
         
-        homeVc.delegate = self
-        controllers = [homeVc, WritingVC.instance(), MyPageVC.instance(),]
+        controllers = [homeVC, writingVC, MyPageVC.instance(),]
         tapChange(index: 0)
         mainView.homeBtn.isSelected = true
     }
@@ -40,7 +44,10 @@ class MainVC: BaseVC {
         }.disposed(by: disposeBag)
         
         mainView.writingBtn.rx.tap.bind {
-            self.present(WritingVC.instance(), animated: true, completion: nil)
+            let writingVC = WritingVC.instance().then {
+                $0.deleagte = self
+            }
+            self.present(writingVC, animated: true, completion: nil)
         }.disposed(by: disposeBag)
     }
     
@@ -86,5 +93,11 @@ extension MainVC: HomeDelegate {
     
     func endDragMap() {
         self.mainView.showTabBar()
+    }
+}
+
+extension MainVC: WritingDelegate {
+    func onWriteSuccess(storeId: Int) {
+        self.navigationController?.pushViewController(DetailVC.instance(), animated: true)
     }
 }

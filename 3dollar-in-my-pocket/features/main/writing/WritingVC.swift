@@ -1,13 +1,24 @@
 import UIKit
 import GoogleMaps
 
+protocol WritingDelegate: class {
+    func onWriteSuccess(storeId: Int)
+}
+
 class WritingVC: BaseVC {
     
+    weak var deleagte: WritingDelegate?
+    
     private lazy var writingView = WritingView(frame: self.view.frame)
+    
     private let imagePicker = UIImagePickerController()
+
     private var imageList: [UIImage] = []
+    
     private var selectedImageIndex = 0
-    private var menuList: [String] = []
+    
+    private var menuList: [Menu] = []
+    
     var locationManager = CLLocationManager()
     
     
@@ -63,18 +74,20 @@ class WritingVC: BaseVC {
             self.locationManager.requestLocation()
         }.disposed(by: disposeBag)
         
-        writingView.registerBtn.rx.tap.bind {
-            let category = self.writingView.getCategory()
-            let storeName = self.writingView.nameField.text!
-            let latitude = self.writingView.mapView.camera.target.latitude
-            let longitude = self.writingView.mapView.camera.target.longitude
-        
-            if self.isValid(category: category, storeName: storeName) {
-                let store = Store.init(category: category!, latitude: latitude, longitude: longitude, storeName: storeName)
-                StoreService.saveStore(store: store) { [weak self] (response) in
+        writingView.registerBtn.rx.tap.bind { [weak self] in
+            if let category = self?.writingView.getCategory(),
+                let storeName = self?.writingView.nameField.text!,
+                let images = self?.imageList,
+                let latitude = self?.writingView.mapView.camera.target.latitude,
+                let longitude = self?.writingView.mapView.camera.target.longitude,
+                let menus = self?.menuList {
+                let store = Store.init(category: category, latitude: latitude, longitude: longitude, storeName: storeName, menus: menus)
+
+                StoreService.saveStore(store: store, images: images) { [weak self] (response) in
                     switch response.result {
-                    case .success(let _):
+                    case .success(let store):
                         self?.dismiss(animated: true, completion: nil)
+                        self?.deleagte?.onWriteSuccess(storeId: store.id)
                     case .failure(let error):
                         if let vc = self {
                             AlertUtils.show(controller: vc, title: "Save store error", message: error.localizedDescription)
@@ -90,6 +103,7 @@ class WritingVC: BaseVC {
     private func isValid(category: StoreCategory?, storeName: String) -> Bool {
         return category != nil && !storeName.isEmpty
     }
+    
     private func setupImageCollectionView() {
         imagePicker.delegate = self
         writingView.imageCollection.dataSource = self
@@ -117,13 +131,13 @@ class WritingVC: BaseVC {
     
     private func setupGoogleMap() {
         writingView.mapView.isMyLocationEnabled = true
-}
+    }
     
     @objc func onShowKeyboard(notification: NSNotification) {
         let userInfo = notification.userInfo!
         var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
         keyboardFrame = self.view.convert(keyboardFrame, from: nil)
-
+        
         var contentInset:UIEdgeInsets = self.writingView.scrollView.contentInset
         contentInset.bottom = keyboardFrame.size.height + 50
         self.writingView.scrollView.contentInset = contentInset
@@ -189,17 +203,33 @@ extension WritingVC: UITableViewDelegate, UITableViewDataSource {
         }
         
         cell.nameField.rx.controlEvent(.editingDidEnd).bind { [weak self] in
-            if let inputText = cell.nameField.text {
-                if !inputText.isEmpty {
-                    if indexPath.row == self?.menuList.count {
-                        self?.menuList.append(inputText)
-                        self?.writingView.menuTableView.reloadData()
-                        self?.view.layoutIfNeeded()
-                    } else {
-                        self?.menuList[indexPath.row]=(inputText)
-                    }
+            let name = cell.nameField.text!
+            
+            if !name.isEmpty {
+                let menu = Menu.init(name: name)
+                
+                if indexPath.row == self?.menuList.count {
+                    self?.menuList.append(menu)
+                    self?.writingView.menuTableView.reloadData()
+                    self?.view.layoutIfNeeded()
+                } else {
+                    self?.menuList[indexPath.row].name = name
                 }
             }
+        }.disposed(by: disposeBag)
+        
+        cell.descField.rx.controlEvent(.editingChanged).bind { [weak self] in
+            let name = cell.nameField.text!
+            let desc = cell.descField.text!
+            
+            if !name.isEmpty && !desc.isEmpty {
+                let menu = Menu.init(name: name, price: desc)
+                
+                if let _ = self?.menuList[indexPath.row] {
+                    self?.menuList[indexPath.row] = menu
+                }
+            }
+            
         }.disposed(by: disposeBag)
         return cell
     }
