@@ -24,13 +24,13 @@ class HomeView: BaseView {
     
     let mapView = GMSMapView()
     
-    let bungeoppangBtn = CategoryButton()
+    let bungeoppangBtn = CategoryButton(category: .BUNGEOPPANG)
     
-    let takoyakiBtn = CategoryButton()
+    let takoyakiBtn = CategoryButton(category: .TAKOYAKI)
     
-    let gyeranppangBtn = CategoryButton()
+    let gyeranppangBtn = CategoryButton(category: .GYERANPPANG)
     
-    let hotteokBtn = CategoryButton()
+    let hotteokBtn = CategoryButton(category: .HOTTEOK)
     
     let descLabel1 = UILabel().then {
         $0.text = "가장 가까운 음식점"
