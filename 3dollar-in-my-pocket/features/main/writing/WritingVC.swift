@@ -72,7 +72,7 @@ class WritingVC: BaseVC {
         }.disposed(by: disposeBag)
         
         writingView.myLocationBtn.rx.tap.bind {
-            self.locationManager.requestLocation()
+            self.locationManager.startUpdatingLocation()
         }.disposed(by: disposeBag)
         
         writingView.registerBtn.rx.tap.bind { [weak self] in
@@ -250,9 +250,9 @@ extension WritingVC: UITableViewDelegate, UITableViewDataSource {
 extension WritingVC: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.last
-        let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
+        let position = GMSCameraPosition.init(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
         
-        self.writingView.mapView.animate(to: camera)
+        self.writingView.mapView.camera = position
         self.locationManager.stopUpdatingLocation()
     }
     
