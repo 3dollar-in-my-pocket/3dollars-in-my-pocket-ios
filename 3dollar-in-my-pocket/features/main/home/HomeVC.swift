@@ -40,15 +40,18 @@ class HomeVC: BaseVC {
     
     override func bindViewModel() {
         viewModel.nearestStore
-            .bind(to: homeView.shopCollectionView.rx
-                .items(cellIdentifier: ShopCell.registerId, cellType: ShopCell.self)) { [weak self] row, element, cell in
-                    if let vc = self {
-                        if row == 0 && vc.isFirst {
-                            cell.setSelected(isSelected: true)
-                            vc.isFirst = false
-                        }
+            .bind(to: homeView.shopCollectionView.rx.items(cellIdentifier: ShopCell.registerId, cellType: ShopCell.self)) { [weak self] row, element, cell in
+                if let vc = self {
+                    if row == 0 && vc.isFirst {
+                        cell.setSelected(isSelected: true)
+                        vc.isFirst = false
                     }
+                }
         }.disposed(by: disposeBag)
+        
+        viewModel.location.subscribe(onNext: { [weak self] (latitude, longitude) in
+            self?.getNearestStore(latitude: latitude, longitude: longitude)
+        }).disposed(by: disposeBag)
         
         homeView.mapButton.rx.tap.bind { [weak self] in
             self?.locationManager.startUpdatingLocation()
@@ -71,6 +74,11 @@ class HomeVC: BaseVC {
         }.disposed(by: disposeBag)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        locationManager.startUpdatingLocation() // 화면 돌아올때마다 갱신해주면 좋을 것 같음!
+    }
+    
     private func setupShopCollectionView() {
         homeView.shopCollectionView.delegate = self
         homeView.shopCollectionView.register(ShopCell.self, forCellWithReuseIdentifier: ShopCell.registerId)
@@ -80,7 +88,6 @@ class HomeVC: BaseVC {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
     }
     
     private func setupGoogleMap() {
@@ -206,8 +213,7 @@ extension HomeVC: CLLocationManagerDelegate {
         let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
         
         self.homeView.mapView.animate(to: camera)
-        self.getNearestStore(latitude: location!.coordinate.latitude,
-                             longitude: location!.coordinate.longitude)
+        self.viewModel.location.onNext((location!.coordinate.latitude, location!.coordinate.longitude))
         locationManager.stopUpdatingLocation()
     }
     
