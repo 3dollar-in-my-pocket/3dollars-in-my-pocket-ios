@@ -98,8 +98,8 @@ class HomeVC: BaseVC {
         homeView.mapView.isMyLocationEnabled = true
     }
     
-    private func goToDetail() {
-        self.navigationController?.pushViewController(DetailVC.instance(), animated: true)
+    private func goToDetail(storeId: Int) {
+        self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
     }
     
     private func getNearestStore(latitude: Double, longitude: Double) {
@@ -166,7 +166,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if previousIndex == indexPath.row { // 셀이 선택된 상태에서 한번 더 누르는 경우 상세화면으로 이동
-            goToDetail()
+            goToDetail(storeId: try! self.viewModel.nearestStore.value()[indexPath.row].id)
         } else {
             collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
             if let cell = self.homeView.shopCollectionView.cellForItem(at: IndexPath(row: previousIndex, section: 0)) as? ShopCell {

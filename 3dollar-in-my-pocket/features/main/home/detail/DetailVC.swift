@@ -1,5 +1,6 @@
 import UIKit
 import GoogleMaps
+import Kingfisher
 
 class DetailVC: BaseVC {
     
@@ -7,34 +8,93 @@ class DetailVC: BaseVC {
     
     private var reviewVC: ReviewModalVC?
     
-    static func instance() -> DetailVC {
-        return DetailVC(nibName: nil, bundle: nil)
+    var storeId: Int!
+    
+    var locationManager = CLLocationManager()
+    
+    static func instance(storeId: Int) -> DetailVC {
+        return DetailVC.init(nibName: nil, bundle: nil).then {
+            $0.storeId = storeId
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view = detailView
         
-//        let camera = GMSCameraPosition.camera(withLatitude: 37.49838214755165, longitude: 127.02844798564912, zoom: 15)
-//        
-//        detailView.mapView.camera = camera
-//        
-//        let marker = GMSMarker()
-//        marker.position = CLLocationCoordinate2D(latitude: 37.49838214755165, longitude: 127.02844798564912)
-//        marker.title = "닥고약기"
-//        marker.snippet = "무름표"
-//        marker.map = detailView.mapView
-        
         detailView.tableView.delegate = self
         detailView.tableView.dataSource = self
         detailView.tableView.register(ShopInfoCell.self, forCellReuseIdentifier: ShopInfoCell.registerId)
         detailView.tableView.register(ReviewCell.self, forCellReuseIdentifier: ReviewCell.registerId)
+        
+        setupLocationManager()
+        getStoreDetail()
     }
     
     override func bindViewModel() {
         detailView.backBtn.rx.tap.bind { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         }.disposed(by: disposeBag)
+    }
+    
+    private func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+    }
+    
+    private func getStoreDetail() {
+        StoreService.getStoreDetail(storeId: storeId) { [weak self] (response) in
+            switch response.result {
+            case .success(let store):
+                self?.detailView.titleLabel.text = store.storeName
+                self?.setShopInfo(store: store)
+                
+                break
+            case .failure(let error):
+                AlertUtils.show(controller: self, title: "getStoreDetail error", message: error.localizedDescription)
+            }
+        }
+    }
+    
+    private func setShopInfo(store: Store) {
+        let camera = GMSCameraPosition.camera(withLatitude: store.latitude!, longitude: store.longitude!, zoom: 15)
+        
+        if let shopInfoCell = self.detailView.tableView.cellForRow(at: IndexPath.init(item: 0, section: 0)) as? ShopInfoCell {
+            // set marker
+            shopInfoCell.mapView.isMyLocationEnabled = true
+            shopInfoCell.mapView.camera = camera
+            
+            let marker = GMSMarker()
+            marker.position = CLLocationCoordinate2D(latitude: store.latitude!, longitude: store.longitude!)
+            marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_on")!, scaledToSize: CGSize.init(width: 16, height: 16))
+            marker.map = shopInfoCell.mapView
+            
+            // Set ranking
+            shopInfoCell.setRank(rank: store.rating)
+            
+            // Set image
+            if !(store.images.isEmpty) {
+                shopInfoCell.setImage(url: store.images[0].url, count: store.images.count)
+            }
+            
+            // Set category
+            shopInfoCell.setCategory(category: store.category!)
+            shopInfoCell.setMenus(menus: store.menus)
+        }
+    }
+    
+    
+    private func setMarker(latitude: Double, longitude: Double) {
+        
+    }
+    
+    private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
     }
 }
 
@@ -65,6 +125,11 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                 self?.detailView.addBgDim()
                 self?.present(self!.reviewVC!, animated: true)
             }.disposed(by: disposeBag)
+            
+            cell.mapBtn.rx.tap.bind { [weak self] in
+                self?.locationManager.startUpdatingLocation()
+            }.disposed(by: disposeBag)
+            
             return cell
         } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ReviewCell.registerId, for: indexPath) as? ReviewCell else {
@@ -89,6 +154,24 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
         } else {
             return 0
         }
+    }
+}
+
+extension DetailVC: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations.last
+        let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
+        
+        
+        if let shopInfoCell = self.detailView.tableView.cellForRow(at: IndexPath.init(item: 0, section: 0)) as? ShopInfoCell {
+            // set marker
+            shopInfoCell.mapView.animate(to: camera)
+        }
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
     }
 }
 

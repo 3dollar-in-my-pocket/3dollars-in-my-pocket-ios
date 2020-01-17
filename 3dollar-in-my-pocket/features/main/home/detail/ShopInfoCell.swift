@@ -6,7 +6,6 @@ class ShopInfoCell: BaseTableViewCell {
     static let registerId = "\(ShopInfoCell.self)"
     
     let mapView = GMSMapView().then {
-        $0.isUserInteractionEnabled = false
         $0.contentMode = .scaleAspectFill
     }
     
@@ -103,10 +102,17 @@ class ShopInfoCell: BaseTableViewCell {
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
     }
     
-    let menuValueLabel = UILabel().then {
+    let menuNameLabel = UILabel().then {
         $0.text = "등록된 정보가 없습니다"
         $0.textColor = UIColor.init(r: 137, g: 137, b: 137)
         $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
+        $0.numberOfLines = 0
+    }
+    
+    let menuPriceLabel = UILabel().then {
+        $0.textColor = UIColor.init(r: 109, g: 109, b: 109)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
+        $0.numberOfLines = 0
     }
     
     let reviewBtn = UIButton().then {
@@ -135,7 +141,7 @@ class ShopInfoCell: BaseTableViewCell {
         stackView.addArrangedSubview(star4)
         stackView.addArrangedSubview(star5)
         titleContainer.addSubViews(profileImage, emptyImage, distanceLabel, stackView, rankingLabel)
-        addSubViews(mapView, mapBtn, titleContainer, categoryLabel, categoryValueLabel, menuLabel, menuValueLabel, reviewBtn, modifyBtn)
+        addSubViews(mapView, mapBtn, titleContainer, categoryLabel, categoryValueLabel, menuLabel, menuNameLabel, menuPriceLabel, reviewBtn, modifyBtn)
         setupContainerShadow()
     }
     
@@ -199,14 +205,19 @@ class ShopInfoCell: BaseTableViewCell {
             make.top.equalTo(categoryLabel.snp.bottom).offset(3)
         }
         
-        menuValueLabel.snp.makeConstraints { (make) in
-            make.centerY.equalTo(menuLabel.snp.centerY)
+        menuNameLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(menuLabel)
             make.left.equalTo(menuLabel.snp.right).offset(16)
+        }
+        
+        menuPriceLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(menuLabel)
+            make.left.equalTo(menuNameLabel.snp.right).offset(16)
         }
         
         reviewBtn.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(24)
-            make.top.equalTo(menuLabel.snp.bottom).offset(16)
+            make.top.equalTo(menuNameLabel.snp.bottom).offset(16)
             make.bottom.equalToSuperview().offset(-24)
             make.width.equalTo(160)
             make.height.equalTo(48)
@@ -233,5 +244,53 @@ class ShopInfoCell: BaseTableViewCell {
         shadowLayer.shadowRadius = 5
         
         titleContainer.layer.insertSublayer(shadowLayer, at: 0)
+    }
+    
+    func setRank(rank: Float) {
+        if rank != 0 {
+            for index in 0...Int(rank.rounded()) {
+                if let star = stackView.arrangedSubviews[index] as? UIButton {
+                    star.isSelected = true
+                }
+            }
+        }
+        rankingLabel.text = "\(rank)"
+    }
+    
+    func setImage(url: String, count: Int) {
+        profileImage.kf.setImage(with: URL(string: url))
+        emptyImage.isHidden = true
+    }
+    
+    func setCategory(category: StoreCategory) {
+        switch category {
+        case .BUNGEOPPANG:
+            categoryValueLabel.text = "붕어빵"
+        case .GYERANPPANG:
+            categoryValueLabel.text = "계란빵"
+        case .HOTTEOK:
+            categoryValueLabel.text = "호떡"
+        case .TAKOYAKI:
+            categoryValueLabel.text = "타코야끼"
+        }
+    }
+    
+    func setMenus(menus: [Menu]) {
+        if menus.isEmpty {
+            menuNameLabel.text = "등록된 정보가 없습니다"
+            menuNameLabel.textColor = UIColor.init(r: 137, g: 137, b: 137)
+        } else {
+            var name = ""
+            var price = ""
+            
+            for menu in menus {
+                name.append("\(menu.name!)\n")
+                price.append("\(menu.price!)\n")
+            }
+            menuNameLabel.text = name
+            menuNameLabel.textColor = UIColor.init(r: 28, g: 28, b: 28)
+            menuPriceLabel.text = price
+        }
+        
     }
 }

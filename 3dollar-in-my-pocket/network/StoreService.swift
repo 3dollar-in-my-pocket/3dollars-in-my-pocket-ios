@@ -73,4 +73,21 @@ struct StoreService: APIServiceType {
             }
         }
     }
+    
+    static func getStoreDetail(storeId: Int, completion: @escaping (DataResponse<Store>) -> Void) {
+        let urlString = self.url("api/v1/store/detail")
+        let headers = self.defaultHeader()
+        let parameters = ["storeId": storeId]
+        
+        Alamofire.request(urlString, method: .get, parameters: parameters, headers: headers).responseJSON { (response) in
+            let response: DataResponse<Store> = response.flatMapResult { (json) in
+                if let store = Mapper<Store>().map(JSONObject: json) {
+                    return .success(store)
+                } else {
+                    return .failure(MappingError.init(from: json, to: Store.self))
+                }
+            }
+            completion(response)
+        }
+    }
 }

@@ -98,6 +98,6 @@ extension MainVC: HomeDelegate {
 
 extension MainVC: WritingDelegate {
     func onWriteSuccess(storeId: Int) {
-        self.navigationController?.pushViewController(DetailVC.instance(), animated: true)
+        self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
     }
 }
