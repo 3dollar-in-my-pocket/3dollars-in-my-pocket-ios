@@ -102,4 +102,20 @@ class ReviewCell: BaseTableViewCell {
             make.bottom.equalToSuperview()
         }
     }
+    
+    func bind(review: Review) {
+        setRank(rank: review.rating)
+        nameLabel.text = review.user.nickname
+        replyLabel.text = review.contents
+    }
+    
+    func setRank(rank: Int) {
+        if rank != 0 {
+            for index in 0...rank {
+                if let star = stackView.arrangedSubviews[index] as? UIButton {
+                    star.isSelected = true
+                }
+            }
+        }
+    }
 }

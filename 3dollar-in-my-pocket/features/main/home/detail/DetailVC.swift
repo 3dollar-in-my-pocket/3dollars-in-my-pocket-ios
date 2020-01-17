@@ -10,6 +10,8 @@ class DetailVC: BaseVC {
     
     var storeId: Int!
     
+    var reviews: [Review] = []
+    
     var locationManager = CLLocationManager()
     
     static func instance(storeId: Int) -> DetailVC {
@@ -49,7 +51,7 @@ class DetailVC: BaseVC {
             case .success(let store):
                 self?.detailView.titleLabel.text = store.storeName
                 self?.setShopInfo(store: store)
-                
+                self?.reviews = store.reviews
                 break
             case .failure(let error):
                 AlertUtils.show(controller: self, title: "getStoreDetail error", message: error.localizedDescription)
@@ -84,11 +86,6 @@ class DetailVC: BaseVC {
         }
     }
     
-    
-    private func setMarker(latitude: Double, longitude: Double) {
-        
-    }
-    
     private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
         image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
@@ -108,7 +105,7 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
         if section == 0 {
             return 1
         } else {
-            return 20
+            return self.reviews.count
         }
     }
     
@@ -136,13 +133,16 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                 return BaseTableViewCell()
             }
             
+            cell.bind(review: self.reviews[indexPath.row])
             return cell
         }
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 1 {
-            return ReviewHeaderView()
+            return ReviewHeaderView().then {
+                $0.setReviewCount(count: self.reviews.count)
+            }
         } else {
             return nil
         }

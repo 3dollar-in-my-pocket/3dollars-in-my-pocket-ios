@@ -9,7 +9,7 @@ struct Store: Mappable {
     var longitude: Double?
     var menus: [Menu]! = []
     var rating: Float!
-    var reviews: [Review?]? = []
+    var reviews: [Review] = []
     var storeName: String?
     var repoter: User?
     
