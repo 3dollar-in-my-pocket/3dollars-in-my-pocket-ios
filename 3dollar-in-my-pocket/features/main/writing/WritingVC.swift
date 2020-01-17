@@ -86,9 +86,9 @@ class WritingVC: BaseVC {
                 
                 StoreService.saveStore(store: store, images: images) { [weak self] (response) in
                     switch response.result {
-                    case .success(let store):
+                    case .success(let saveResponse):
                         self?.dismiss(animated: true, completion: nil)
-                        self?.deleagte?.onWriteSuccess(storeId: store.id!)
+                        self?.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
                     case .failure(let error):
                         if let vc = self {
                             AlertUtils.show(controller: vc, title: "Save store error", message: error.localizedDescription)

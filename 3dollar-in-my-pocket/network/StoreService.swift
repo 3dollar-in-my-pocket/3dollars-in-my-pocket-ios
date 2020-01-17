@@ -26,7 +26,7 @@ struct StoreService: APIServiceType {
         }
     }
     
-    static func saveStore(store: Store, images:[UIImage],completion: @escaping (DataResponse<Store>) -> Void) {
+    static func saveStore(store: Store, images:[UIImage],completion: @escaping (DataResponse<SaveResponse>) -> Void) {
         let urlString = self.url("api/v1/store/save")
         let headers = self.defaultHeader()
         var parameters = store.toJSON()
@@ -59,9 +59,9 @@ struct StoreService: APIServiceType {
             switch result {
             case .success(let uploadRequest, _, _):
                 uploadRequest.responseJSON { (response) in
-                    let response: DataResponse<Store> = response.flatMapResult { (json) in
-                        if let store = Mapper<Store>().map(JSONObject: json) {
-                            return .success(store)
+                    let response: DataResponse<SaveResponse> = response.flatMapResult { (json) in
+                        if let saveResponse = Mapper<SaveResponse>().map(JSONObject: json) {
+                            return .success(saveResponse)
                         } else {
                             return .failure(MappingError.init(from: json, to: Store.self))
                         }
