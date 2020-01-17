@@ -10,7 +10,7 @@ class MyReviewCell: BaseTableViewCell {
     }
     
     let categoryImage = UIImageView().then {
-        $0.image = UIImage.init(named: "img_fish_on")
+        $0.image = UIImage.init(named: "img_card_bungeoppang_on")
     }
     
     let titleLabel = UILabel().then {

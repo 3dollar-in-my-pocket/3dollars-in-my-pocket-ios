@@ -40,12 +40,13 @@ class HomeVC: BaseVC {
     
     override func bindViewModel() {
         viewModel.nearestStore
-            .bind(to: homeView.shopCollectionView.rx.items(cellIdentifier: ShopCell.registerId, cellType: ShopCell.self)) { [weak self] row, element, cell in
+            .bind(to: homeView.shopCollectionView.rx.items(cellIdentifier: ShopCell.registerId, cellType: ShopCell.self)) { [weak self] row, storeCard, cell in
                 if let vc = self {
                     if row == 0 && vc.isFirst {
                         cell.setSelected(isSelected: true)
                         vc.isFirst = false
                     }
+                    cell.bind(storeCard: storeCard)
                 }
         }.disposed(by: disposeBag)
         

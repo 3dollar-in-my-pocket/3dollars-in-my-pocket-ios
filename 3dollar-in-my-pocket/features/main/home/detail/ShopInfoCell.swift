@@ -26,7 +26,7 @@ class ShopInfoCell: BaseTableViewCell {
     }
     
     let emptyImage = UIImageView().then {
-        $0.image = UIImage.init(named: "img_fish_off")
+        $0.image = UIImage.init(named: "img_card_bungeoppang_off")
         $0.contentMode = .scaleAspectFit
     }
     
