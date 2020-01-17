@@ -42,7 +42,7 @@ class HomeVC: BaseVC {
         viewModel.nearestStore
             .bind(to: homeView.shopCollectionView.rx.items(cellIdentifier: ShopCell.registerId, cellType: ShopCell.self)) { [weak self] row, storeCard, cell in
                 if let vc = self {
-                    if row == 0 {
+                    if row == 0 && vc.isFirst == true {
                         cell.setSelected(isSelected: true)
                         vc.isFirst = false
                     } else {
@@ -106,6 +106,7 @@ class HomeVC: BaseVC {
         StoreService.getStoreOrderByNearest(latitude: latitude, longitude: longitude) { [weak self] (response) in
             switch response.result {
             case .success(let storeCards):
+                self?.isFirst = true
                 self?.viewModel.nearestStore.onNext(storeCards)
                 self?.homeView.shopCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .left, animated: true)
                 self?.selectMarker(selectedIndex: 0, storeCards: storeCards)
@@ -189,7 +190,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
             let proportionalOffset = scrollView.contentOffset.x / pageWidth
             previousIndex = Int(round(proportionalOffset))
             let indexPath = IndexPath(row: previousIndex, section: 0)
-            
+
             self.homeView.shopCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
             if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
                 cell.setSelected(isSelected: true)
@@ -197,23 +198,23 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
             }
         }
     }
-    
+
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let pageWidth = CGFloat(172)
         let proportionalOffset = scrollView.contentOffset.x / pageWidth
         previousIndex = Int(round(proportionalOffset))
         let indexPath = IndexPath(row: previousIndex, section: 0)
-        
+
         self.homeView.shopCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
         if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
             cell.setSelected(isSelected: true)
             self.selectMarker(selectedIndex: indexPath.row, storeCards: try! self.viewModel.nearestStore.value())
         }
     }
-    
+
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         let indexPath = IndexPath(row: previousIndex, section: 0)
-        
+
         if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
             cell.setSelected(isSelected: false)
         }
