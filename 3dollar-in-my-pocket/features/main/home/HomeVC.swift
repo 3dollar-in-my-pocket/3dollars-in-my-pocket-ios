@@ -42,9 +42,11 @@ class HomeVC: BaseVC {
         viewModel.nearestStore
             .bind(to: homeView.shopCollectionView.rx.items(cellIdentifier: ShopCell.registerId, cellType: ShopCell.self)) { [weak self] row, storeCard, cell in
                 if let vc = self {
-                    if row == 0 && vc.isFirst {
+                    if row == 0 {
                         cell.setSelected(isSelected: true)
                         vc.isFirst = false
+                    } else {
+                        cell.setSelected(isSelected: false)
                     }
                     cell.bind(storeCard: storeCard)
                 }
@@ -105,7 +107,8 @@ class HomeVC: BaseVC {
             switch response.result {
             case .success(let storeCards):
                 self?.viewModel.nearestStore.onNext(storeCards)
-                self?.setMarker(storeCards: storeCards)
+                self?.homeView.shopCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .left, animated: true)
+                self?.selectMarker(selectedIndex: 0, storeCards: storeCards)
             case .failure(let error):
                 AlertUtils.show(title: "error", message: error.localizedDescription)
             }
@@ -118,7 +121,7 @@ class HomeVC: BaseVC {
             let marker = GMSMarker()
             
             marker.position = CLLocationCoordinate2D(latitude: storeCard.latitude, longitude: storeCard.longitude)
-            marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_off")!, scaledToSize: CGSize.init(width: 16, height: 16))
+            marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_off")!, scaledToSize: CGSize.init(width: 16 * UIScreen.main.bounds.width / 375, height: 16 * UIScreen.main.bounds.width / 375))
             marker.map = homeView.mapView
             viewModel.markers.append(marker)
         }
@@ -130,6 +133,24 @@ class HomeVC: BaseVC {
         let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return newImage
+    }
+    
+    private func selectMarker(selectedIndex: Int, storeCards: [StoreCard]) {
+        self.homeView.mapView.clear()
+        
+        for index in storeCards.indices {
+            let storeCard = storeCards[index]
+            let marker = GMSMarker()
+            
+            marker.position = CLLocationCoordinate2D(latitude: storeCard.latitude, longitude: storeCard.longitude)
+            if index == selectedIndex {
+                self.homeView.mapView.animate(toLocation: marker.position)
+                marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_on")!, scaledToSize: CGSize.init(width: 16, height: 16))
+            } else {
+                marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_off")!, scaledToSize: CGSize.init(width: 16, height: 16))
+            }
+            marker.map = homeView.mapView
+        }
     }
 }
 
@@ -155,6 +176,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
             if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
                 // 새로 누른 셀 select
                 cell.setSelected(isSelected: true)
+                self.selectMarker(selectedIndex: indexPath.row, storeCards: try! self.viewModel.nearestStore.value())
             }
             previousIndex  = indexPath.row
         }
@@ -171,6 +193,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
             self.homeView.shopCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
             if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
                 cell.setSelected(isSelected: true)
+                self.selectMarker(selectedIndex: indexPath.row, storeCards: try! self.viewModel.nearestStore.value())
             }
         }
     }
@@ -184,6 +207,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
         self.homeView.shopCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
         if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
             cell.setSelected(isSelected: true)
+            self.selectMarker(selectedIndex: indexPath.row, storeCards: try! self.viewModel.nearestStore.value())
         }
     }
     
