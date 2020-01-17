@@ -7,6 +7,7 @@ struct StoreCard: Mappable {
     var latitude: Double!
     var longitude: Double!
     var storeName: String!
+    var rating: Float!
     
     init?(map: Map) { }
     
@@ -17,5 +18,6 @@ struct StoreCard: Mappable {
         self.latitude <- map["latitude"]
         self.longitude <- map["longitude"]
         self.storeName <- map["storeName"]
+        self.rating <- map["rating"]
     }
 }

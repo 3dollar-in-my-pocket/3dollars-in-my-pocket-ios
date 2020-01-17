@@ -81,7 +81,7 @@ class ShopCell: BaseCollectionViewCell {
             break
         }
         distanceLabel.text = "\(String(describing: storeCard.distance!))m"
-        rankingView.setRank(rank: 3)
+        rankingView.setRank(rank: storeCard.rating)
     }
     
     private func setupShadow(isSelected: Bool) {

@@ -90,9 +90,11 @@ class RankingView: BaseView {
     }
     
     func setRank(rank: Float) {
-        for index in 0...Int(rank.rounded()) {
-            if let star = stackView.arrangedSubviews[index] as? UIButton {
-                star.isSelected = true
+        if rank != 0 {
+            for index in 0...Int(rank.rounded()) {
+                if let star = stackView.arrangedSubviews[index] as? UIButton {
+                    star.isSelected = true
+                }
             }
         }
         rankingLabel.text = "\(rank)"
