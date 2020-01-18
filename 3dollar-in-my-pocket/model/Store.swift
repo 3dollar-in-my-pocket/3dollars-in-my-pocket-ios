@@ -12,6 +12,7 @@ struct Store: Mappable {
     var reviews: [Review] = []
     var storeName: String?
     var repoter: User?
+    var distance: Int!
     
     
     init(category: StoreCategory, latitude: Double, longitude: Double, storeName: String,
@@ -38,5 +39,6 @@ struct Store: Mappable {
         self.reviews <- map["review"]
         self.storeName <- map["storeName"]
         self.repoter <- map["user"]
+        self.distance <- map["distance"]
     }
 }

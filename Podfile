@@ -22,6 +22,8 @@ target '3dollar-in-my-pocket' do
   pod 'Alamofire', '~> 4.9.1'
   pod 'AlamofireNetworkActivityLogger', '~> 2.4'
   pod 'ObjectMapper', '~> 3.4'
+  
+  pod 'lottie-ios'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths

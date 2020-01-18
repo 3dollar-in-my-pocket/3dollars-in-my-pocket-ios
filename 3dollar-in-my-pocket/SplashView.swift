@@ -1,19 +1,23 @@
 import UIKit
+import Lottie
 
 class SplashView: BaseView {
-    let titleLabel = UILabel().then {
-        $0.text = "Splash 화면 입니다."
-        $0.textColor = .black
+    let lottie = LOTAnimationView(name: "data_1").then {
+        $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        $0.contentMode = .scaleAspectFit
+        $0.loopAnimation = true
+        $0.play()
     }
     
     override func setup() {
         backgroundColor = .white
-        addSubViews(titleLabel)
+        addSubViews(lottie)
     }
     
     override func bindConstraints() {
-        titleLabel.snp.makeConstraints { (make) in
+        lottie.snp.makeConstraints { (make) in
             make.center.equalToSuperview()
+            make.width.height.equalTo(200)
         }
     }
 }

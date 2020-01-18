@@ -19,10 +19,9 @@ class WritingVC: BaseVC {
     
     
     static func instance() -> WritingVC {
-        let controller = WritingVC(nibName: nil, bundle: nil)
-        controller.modalPresentationStyle = .fullScreen
-        
-        return controller
+        return WritingVC(nibName: nil, bundle: nil).then {
+            $0.modalPresentationStyle = .fullScreen
+        }
     }
     
     
@@ -87,8 +86,10 @@ class WritingVC: BaseVC {
                 StoreService.saveStore(store: store, images: images) { [weak self] (response) in
                     switch response.result {
                     case .success(let saveResponse):
-                        self?.dismiss(animated: true, completion: nil)
-                        self?.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
+                        if let vc = self {
+                            vc.dismiss(animated: true, completion: nil)
+                            vc.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
+                        }
                     case .failure(let error):
                         if let vc = self {
                             AlertUtils.show(controller: vc, title: "Save store error", message: error.localizedDescription)

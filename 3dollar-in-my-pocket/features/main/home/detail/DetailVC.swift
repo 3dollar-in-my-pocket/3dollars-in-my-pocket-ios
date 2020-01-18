@@ -9,14 +9,18 @@ class DetailVC: BaseVC {
     private var reviewVC: ReviewModalVC?
     
     var storeId: Int!
+    var latitude: Double!
+    var longitude: Double!
     
     var reviews: [Review] = []
     
     var locationManager = CLLocationManager()
     
-    static func instance(storeId: Int) -> DetailVC {
+    static func instance(storeId: Int, latitude: Double, longitude: Double) -> DetailVC {
         return DetailVC.init(nibName: nil, bundle: nil).then {
             $0.storeId = storeId
+            $0.latitude = latitude
+            $0.longitude = longitude
         }
     }
     
@@ -46,7 +50,7 @@ class DetailVC: BaseVC {
     }
     
     private func getStoreDetail() {
-        StoreService.getStoreDetail(storeId: storeId) { [weak self] (response) in
+        StoreService.getStoreDetail(storeId: storeId, latitude: latitude, longitude: longitude) { [weak self] (response) in
             switch response.result {
             case .success(let store):
                 self?.detailView.titleLabel.text = store.storeName
@@ -72,17 +76,14 @@ class DetailVC: BaseVC {
             marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_on")!, scaledToSize: CGSize.init(width: 16, height: 16))
             marker.map = shopInfoCell.mapView
             
-            // Set ranking
-            shopInfoCell.setRank(rank: store.rating)
             
-            // Set image
+            shopInfoCell.setRank(rank: store.rating)
             if !(store.images.isEmpty) {
                 shopInfoCell.setImage(url: store.images[0].url, count: store.images.count)
             }
-            
-            // Set category
             shopInfoCell.setCategory(category: store.category!)
             shopInfoCell.setMenus(menus: store.menus)
+            shopInfoCell.setDistance(distance: store.distance)
         }
     }
     

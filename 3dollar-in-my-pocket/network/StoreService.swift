@@ -33,7 +33,7 @@ struct StoreService: APIServiceType {
         
         parameters["userId"] = "\(UserDefaultsUtil.getUserId()!)"
         parameters["menu"] = nil
-        parameters["images"] = nil
+        parameters["image"] = nil
         parameters["review"] = nil
         
         // 배열로 보냈을 경우 서버에서 못받아서 일단 임시로 필드처럼 해서 보냄 ㅠㅠ
@@ -74,10 +74,11 @@ struct StoreService: APIServiceType {
         }
     }
     
-    static func getStoreDetail(storeId: Int, completion: @escaping (DataResponse<Store>) -> Void) {
+    static func getStoreDetail(storeId: Int, latitude: Double, longitude: Double,
+                               completion: @escaping (DataResponse<Store>) -> Void) {
         let urlString = self.url("api/v1/store/detail")
         let headers = self.defaultHeader()
-        let parameters = ["storeId": storeId]
+        let parameters: [String: Any] = ["storeId": storeId, "latitude": latitude, "longitude": longitude]
         
         Alamofire.request(urlString, method: .get, parameters: parameters, headers: headers).responseJSON { (response) in
             let response: DataResponse<Store> = response.flatMapResult { (json) in

@@ -291,6 +291,15 @@ class ShopInfoCell: BaseTableViewCell {
             menuNameLabel.textColor = UIColor.init(r: 28, g: 28, b: 28)
             menuPriceLabel.text = price
         }
+    }
+    
+    func setDistance(distance: Int) {
+        let text = "\(distance)m이내에 위치한\n음식점입니다."
+        let attributedText = NSMutableAttributedString(string: text)
+
+        attributedText.addAttribute(.font, value: UIFont.init(name: "SpoqaHanSans-Bold", size: 22)!, range: (text as NSString).range(of: "\(distance)m이내"))
+        attributedText.addAttribute(.kern, value: -1.6, range: NSMakeRange(0, text.count-1))
         
+        distanceLabel.attributedText = attributedText
     }
 }
