@@ -8,7 +8,14 @@ struct Review: Mappable {
     var user: User!
     
     
-    init?(map: Map) { }
+    init(rating: Int, contents: String) {
+        self.rating = rating
+        self.contents = contents
+    }
+    
+    init?(map: Map) {
+        mapping(map: map)
+    }
     
     mutating func mapping(map: Map) {
         self.category <- map["category"]

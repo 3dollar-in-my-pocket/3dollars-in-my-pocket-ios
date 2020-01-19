@@ -97,6 +97,7 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                 cell.reviewBtn.rx.tap.bind { [weak self] (_) in
                     self?.reviewVC = ReviewModalVC.instance().then {
                         $0.deleagete = self
+                        $0.storeId = self?.storeId
                     }
                     self?.detailView.addBgDim()
                     self?.present(self!.reviewVC!, animated: true)
@@ -170,11 +171,6 @@ extension DetailVC: CLLocationManagerDelegate {
 
 extension DetailVC: ReviewModalDelegate {
     func onTapClose() {
-        reviewVC?.dismiss(animated: true, completion: nil)
-        self.detailView.removeBgDim()
-    }
-    
-    func onTapRegister() {
         reviewVC?.dismiss(animated: true, completion: nil)
         self.detailView.removeBgDim()
     }

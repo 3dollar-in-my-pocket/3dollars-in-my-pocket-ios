@@ -89,18 +89,25 @@ class DetailView: BaseView {
     }
     
     func addBgDim() {
-        addSubview(dimView)
-        UIView.animate(withDuration: 0.3) { [weak self] in
-            self?.dimView.backgroundColor = UIColor.init(r: 0, g: 0, b: 0, a:0.3)
+        DispatchQueue.main.async { [weak self] in
+            if let vc = self {
+                vc.addSubview(vc.dimView)
+                UIView.animate(withDuration: 0.3) {
+                    vc.dimView.backgroundColor = UIColor.init(r: 0, g: 0, b: 0, a:0.3)
+                }
+            }
+            
         }
     }
     
     
     func removeBgDim() {
-        UIView.animate(withDuration: 0.3, animations: { [weak self] in
-            self?.dimView.backgroundColor = .clear
-        }) { [weak self] (_) in
-            self?.dimView.removeFromSuperview()
+        DispatchQueue.main.async { [weak self] in
+            UIView.animate(withDuration: 0.3, animations: {
+                self?.dimView.backgroundColor = .clear
+            }) { (_) in
+                self?.dimView.removeFromSuperview()
+            }
         }
     }
     

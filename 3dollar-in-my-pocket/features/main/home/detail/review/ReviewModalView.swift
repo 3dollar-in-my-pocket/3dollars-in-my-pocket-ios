@@ -9,6 +9,7 @@ protocol ReviewModalViewDelegate: class {
 class ReviewModalView: BaseView {
     
     weak var delegate: ReviewModalViewDelegate?
+    var rating = 0
     
     let containerView = UIView().then {
         $0.layer.cornerRadius = 40
@@ -171,6 +172,7 @@ class ReviewModalView: BaseView {
     }
     
     private func onTapStackView(tappedIndex: Int) {
+        rating = tappedIndex + 1
         stackContainer.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
         for index in stackView.arrangedSubviews.indices {
             if let button = stackView.arrangedSubviews[index] as? UIButton {

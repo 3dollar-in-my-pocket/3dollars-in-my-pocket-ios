@@ -1,14 +1,13 @@
 import UIKit
 
 protocol ReviewModalDelegate: class {
-    func onTapRegister()
-    
     func onTapClose()
 }
 
 class ReviewModalVC: BaseVC {
     
     weak var deleagete: ReviewModalDelegate?
+    var storeId: Int!
     
     private lazy var reviewModalView = ReviewModalView(frame: self.view.frame).then {
         $0.delegate = self
@@ -32,6 +31,21 @@ class ReviewModalVC: BaseVC {
         
     }
     
+    private func saveReview() {
+        let review = Review.init(rating: reviewModalView.rating, contents: reviewModalView.reviewTextView.text)
+        ReviewService.saveReview(review: review, storeId: storeId) { [weak self] (response) in
+            switch response.result {
+            case .success(let message):
+                print(message)
+                self?.deleagete?.onTapClose()
+            case .failure(let error):
+                if let vc = self {
+                    AlertUtils.show(controller: vc, title: "save review error", message: error.localizedDescription)
+                }
+            }
+        }
+    }
+    
     @objc func keyboardWillShow(_ sender: Notification) {
         guard let userInfo = sender.userInfo as? [String:Any] else {return}
         guard let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {return}
@@ -49,7 +63,7 @@ extension ReviewModalVC: ReviewModalViewDelegate {
     }
     
     func onTapRegister() {
-        self.deleagete?.onTapRegister()
+        self.saveReview()
     }
 }
 

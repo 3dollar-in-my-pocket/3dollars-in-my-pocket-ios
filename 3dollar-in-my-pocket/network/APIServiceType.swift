@@ -13,4 +13,9 @@ extension APIServiceType {
     static func defaultHeader() -> [String: String] {
         return ["Authorization": UserDefaultsUtil.getUserToken()!]
     }
+    
+    static func jsonWithTokenHeader() -> [String: String] {
+        return ["Accept": "application/json",
+                "Authorization": UserDefaultsUtil.getUserToken()!]
+    }
 }
