@@ -8,7 +8,7 @@ class DetailVC: BaseVC {
     
     private var viewModel = DetailViewModel()
     private var reviewVC: ReviewModalVC?
-    
+    private var myLocationFlag = false
     var storeId: Int!
     var locationManager = CLLocationManager()
     
@@ -58,6 +58,16 @@ class DetailVC: BaseVC {
             }
         }
     }
+    
+    private func moveToMyLocation(latitude: Double, longitude: Double) {
+        guard let shopInfoCell = self.detailView.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? ShopInfoCell else {
+            return
+        }
+        
+        let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 15)
+        
+        shopInfoCell.mapView.animate(to: camera)
+    }
 }
 
 extension DetailVC: UITableViewDelegate, UITableViewDataSource {
@@ -93,6 +103,7 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                 }.disposed(by: disposeBag)
                 
                 cell.mapBtn.rx.tap.bind { [weak self] in
+                    self?.myLocationFlag = true
                     self?.locationManager.startUpdatingLocation()
                 }.disposed(by: disposeBag)
                 
@@ -144,7 +155,11 @@ extension DetailVC: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.last
         
-        self.getStoreDetail(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+        if myLocationFlag {
+            self.moveToMyLocation(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+        } else {
+            self.getStoreDetail(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+        }
         locationManager.stopUpdatingLocation()
     }
     
