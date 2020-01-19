@@ -246,6 +246,27 @@ class ShopInfoCell: BaseTableViewCell {
         titleContainer.layer.insertSublayer(shadowLayer, at: 0)
     }
     
+    func setMarker(latitude: Double, longitude: Double) {
+        let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 15)
+        
+        // set marker
+        mapView.isMyLocationEnabled = true
+        mapView.camera = camera
+        
+        let marker = GMSMarker()
+        marker.position = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_on")!, scaledToSize: CGSize.init(width: 16, height: 16))
+        marker.map = mapView
+    }
+    
+    private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+    
     func setRank(rank: Float) {
         if rank != 0 {
             for index in 0...Int(rank.rounded()) {
