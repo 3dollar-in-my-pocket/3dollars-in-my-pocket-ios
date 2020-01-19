@@ -83,6 +83,7 @@ class WritingVC: BaseVC {
                 let menus = self?.viewModel.menuList {
                 let store = Store.init(category: category, latitude: latitude, longitude: longitude, storeName: storeName, menus: menus)
                 
+                LoadingViewUtil.addLoadingView()
                 StoreService.saveStore(store: store, images: images) { [weak self] (response) in
                     switch response.result {
                     case .success(let saveResponse):
@@ -95,6 +96,7 @@ class WritingVC: BaseVC {
                             AlertUtils.show(controller: vc, title: "Save store error", message: error.localizedDescription)
                         }
                     }
+                    LoadingViewUtil.removeLoadingView()
                 }
             } else {
                 AlertUtils.show(controller: self, message: "올바른 내용을 작성해주세요.")
