@@ -80,6 +80,12 @@ extension RegisteredVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let storeId = self.viewModel.stores[indexPath.row].id {
+            self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
+        }
+    }
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return RegisteredHeader().then {
             $0.setCount(count: self.viewModel.totalCount)
