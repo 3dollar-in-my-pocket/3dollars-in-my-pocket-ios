@@ -91,4 +91,22 @@ struct StoreService: APIServiceType {
             completion(response)
         }
     }
+    
+    static func getReportedStore(page: Int, completion: @escaping (DataResponse<Page<Store>>) -> Void) {
+        let urlString = self.url("api/v1/store/user")
+        let headers = self.defaultHeader()
+        let parameters: [String: Any] = ["page": page, "userId": UserDefaultsUtil.getUserId()!]
+        
+        Alamofire.request(urlString, method: .get, parameters: parameters, headers: headers).responseJSON { (response) in
+            let response: DataResponse<Page<Store>> = response.flatMapResult { (json) in
+                if let storePage = Mapper<Page<Store>>().map(JSONObject: json) {
+                    return .success(storePage)
+                } else {
+                    return .failure(MappingError.init(from: json, to: Page<Store>.self))
+                }
+            }
+            
+            completion(response)
+        }
+    }
 }

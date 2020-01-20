@@ -99,7 +99,7 @@ class HomeVC: BaseVC {
     }
     
     private func goToDetail(storeId: Int) {
-        self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId, latitude: 0, longitude: 0), animated: true)
+        self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
     }
     
     private func getNearestStore(latitude: Double, longitude: Double) {

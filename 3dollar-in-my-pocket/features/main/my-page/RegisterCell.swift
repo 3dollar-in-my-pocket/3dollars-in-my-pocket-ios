@@ -16,11 +16,23 @@ class RegisterCell: BaseCollectionViewCell {
     
     let rankingView = RankingView()
     
+    let frontImage = UIImageView().then {
+        $0.image = UIImage.init(named: "ic_front_white")
+        $0.isHidden = true
+    }
+    
+    let totalLabel = UILabel().then {
+        $0.text = "전체보기"
+        $0.textColor = UIColor.init(r: 151, g: 151, b: 151)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+        $0.isHidden = true
+    }
+    
     
     override func setup() {
         backgroundColor = UIColor.init(r: 74, g: 74, b: 74)
         layer.cornerRadius = 16
-        addSubViews(categoryImage, titleLabel, rankingView)
+        addSubViews(categoryImage, titleLabel, rankingView, frontImage, totalLabel)
         setupShadow()
     }
     
@@ -42,6 +54,45 @@ class RegisterCell: BaseCollectionViewCell {
             make.right.equalToSuperview().offset(-14)
             make.bottom.equalToSuperview().offset(-18)
             make.height.equalTo(20)
+        }
+        
+        frontImage.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(48)
+            make.top.equalToSuperview().offset(48)
+        }
+        
+        totalLabel.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(frontImage.snp.bottom)
+        }
+    }
+    
+    func bind(store: Store?) {
+        if let store = store {
+            switch store.category! {
+            case .BUNGEOPPANG:
+                categoryImage.image = UIImage.init(named: "img_card_bungeoppang_on")
+            case .GYERANPPANG:
+                categoryImage.image = UIImage.init(named: "img_card_gyeranppang_on")
+            case.HOTTEOK:
+                categoryImage.image = UIImage.init(named: "img_card_hotteok_on")
+            case.TAKOYAKI:
+                categoryImage.image = UIImage.init(named: "img_card_takoyaki_on")
+            }
+            titleLabel.text = store.storeName
+            rankingView.setRank(rank: store.rating)
+            categoryImage.isHidden = false
+            titleLabel.isHidden = false
+            rankingView.isHidden = false
+            frontImage.isHidden = true
+            totalLabel.isHidden = true
+        } else {
+            categoryImage.isHidden = true
+            titleLabel.isHidden = true
+            rankingView.isHidden = true
+            frontImage.isHidden = false
+            totalLabel.isHidden = false
         }
     }
     

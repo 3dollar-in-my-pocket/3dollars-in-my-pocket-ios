@@ -3,7 +3,7 @@ import UIKit
 class MyPageVC: BaseVC {
     
     private lazy var myPageView = MyPageView(frame: self.view.frame)
-    
+    private var viewModel = MyPageViewModel()
     
     static func instance() -> MyPageVC {
         return MyPageVC(nibName: nil, bundle: nil)
@@ -17,6 +17,10 @@ class MyPageVC: BaseVC {
     }
     
     override func bindViewModel() {
+        viewModel.reportedStores.bind(to: myPageView.registerCollectionView.rx.items(cellIdentifier: RegisterCell.registerId, cellType: RegisterCell.self)) { row, store, cell in
+            cell.bind(store: store)
+        }.disposed(by: disposeBag)
+        
         myPageView.modifyBtn.rx.tap.bind { [weak self] in
             if let currentName = self?.myPageView.nicknameLabel.text {
                 self?.navigationController?.pushViewController(RenameVC.instance(currentName: currentName), animated: true)
@@ -35,11 +39,11 @@ class MyPageVC: BaseVC {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         getMyInfo()
+        getReportedStore()
     }
     
     private func setupRegisterCollectionView() {
         myPageView.registerCollectionView.delegate = self
-        myPageView.registerCollectionView.dataSource = self
         myPageView.registerCollectionView.register(RegisterCell.self, forCellWithReuseIdentifier: RegisterCell.registerId)
     }
     
@@ -61,23 +65,40 @@ class MyPageVC: BaseVC {
             }
         }
     }
+    
+    private func getReportedStore() {
+        StoreService.getReportedStore(page: 1) { [weak self] (response) in
+            switch response.result {
+            case .success(let storePage):
+                self?.myPageView.registerCountLabel.text = "\(storePage.totalElements!)개"
+                if storePage.content.count > 5 {
+                    var sliceArray: [Store?] = Array(storePage.content[0...4])
+                    
+                    sliceArray.append(nil)
+                    self?.viewModel.reportedStores.onNext(sliceArray)
+                } else {
+                    self?.viewModel.reportedStores.onNext(storePage.content)
+                }
+            case .failure(let error):
+                if let vc = self {
+                    AlertUtils.show(controller: vc, title: "get reported store error", message: error.localizedDescription)
+                }
+            }
+        }
+    }
 }
 
-extension MyPageVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RegisterCell.registerId, for: indexPath) as? RegisterCell else {
-            return BaseCollectionViewCell()
-        }
-        
-        return cell
-    }
-    
+extension MyPageVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 172, height: 172)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let store = try? self.viewModel.reportedStores.value()[indexPath.row] {
+            self.navigationController?.pushViewController(DetailVC.instance(storeId: store.id!), animated: true)
+        } else {
+            self.navigationController?.pushViewController(RegisteredVC.instance(), animated: true)
+        }
     }
 }
 

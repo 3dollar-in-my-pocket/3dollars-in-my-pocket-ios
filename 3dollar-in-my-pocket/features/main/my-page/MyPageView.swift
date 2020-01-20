@@ -29,7 +29,6 @@ class MyPageView: BaseView {
     }
     
     let registerCountLabel = UILabel().then {
-        $0.text = "05개"
         $0.textColor = .white
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 24)
     }

@@ -12,7 +12,7 @@ class DetailVC: BaseVC {
     var storeId: Int!
     var locationManager = CLLocationManager()
     
-    static func instance(storeId: Int, latitude: Double, longitude: Double) -> DetailVC {
+    static func instance(storeId: Int) -> DetailVC {
         return DetailVC.init(nibName: nil, bundle: nil).then {
             $0.storeId = storeId
         }
