@@ -49,6 +49,21 @@ class RegisteredVC: BaseVC {
             }
         }
     }
+    
+    private func loadMoreStore() {
+        currentPage += 1
+        StoreService.getReportedStore(page: currentPage) { [weak self] (response) in
+            switch response.result {
+            case .success(let storePage):
+                self?.viewModel.stores.append(contentsOf: storePage.content)
+                self?.registeredView.tableView.reloadData()
+            case .failure(let error):
+                if let vc = self {
+                    AlertUtils.show(controller: vc, title: "get reported store error", message: error.localizedDescription)
+                }
+            }
+        }
+    }
 }
 
 extension RegisteredVC: UITableViewDelegate, UITableViewDataSource {
@@ -73,6 +88,12 @@ extension RegisteredVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 50
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == self.viewModel.stores.count - 1 && self.currentPage < self.viewModel.totalCount {
+            self.loadMoreStore()
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
