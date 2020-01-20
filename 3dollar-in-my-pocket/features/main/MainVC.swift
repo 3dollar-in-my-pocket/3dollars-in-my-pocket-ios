@@ -11,18 +11,11 @@ class MainVC: BaseVC {
     
     private var selectedIndex = 0
     
-    private var latitude: Double = 0
-    private var longitude: Double = 0
-    var locationManager = CLLocationManager()
     
     static func instance() -> UINavigationController {
         let controller = MainVC(nibName: nil, bundle: nil)
         
         return UINavigationController(rootViewController: controller)
-    }
-    
-    deinit {
-        locationManager.stopUpdatingLocation()
     }
     
     override func viewDidLoad() {
@@ -41,7 +34,6 @@ class MainVC: BaseVC {
         controllers = [homeVC, writingVC, MyPageVC.instance(),]
         tapChange(index: 0)
         mainView.homeBtn.isSelected = true
-        setupLocationManager()
     }
     
     override func bindViewModel() {
@@ -89,13 +81,6 @@ class MainVC: BaseVC {
         }
     }
     
-    private func setupLocationManager() {
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-    }
-    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return selectedIndex == 2 ? .lightContent : .default
     }
@@ -120,18 +105,3 @@ extension MainVC: WritingDelegate {
         self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
     }
 }
-
-extension MainVC: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = locations.last
-        
-        self.latitude = location!.coordinate.latitude
-        self.longitude = location!.coordinate.longitude
-        print("latitude: \(latitude)\nlongitude: \(longitude)")
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
-    }
-}
-
