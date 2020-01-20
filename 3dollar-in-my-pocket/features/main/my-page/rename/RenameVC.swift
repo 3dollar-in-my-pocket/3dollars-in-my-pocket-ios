@@ -3,16 +3,18 @@ import UIKit
 class RenameVC: BaseVC {
     
     private lazy var renameView = RenameView(frame: self.view.frame)
+    var currentName: String!
     
-    
-    static func instance() -> RenameVC {
-        return RenameVC(nibName: nil, bundle: nil)
+    static func instance(currentName: String) -> RenameVC {
+        return RenameVC(nibName: nil, bundle: nil).then {
+            $0.currentName = currentName
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view = renameView
-        renameView.nicknameField.delegate = self
+        setupNickname()
     }
     
     override func bindViewModel() {
@@ -30,17 +32,37 @@ class RenameVC: BaseVC {
             self.renameView.nicknameField.resignFirstResponder()
         }.disposed(by: disposeBag)
         
-        renameView.startBtn1.rx.tap.bind {
-            
+        renameView.startBtn1.rx.tap.bind { [weak self] in
+            self?.changeNickname()
         }.disposed(by: disposeBag)
         
-        renameView.startBtn2.rx.tap.bind {
-            
+        renameView.startBtn2.rx.tap.bind { [weak self] in
+            self?.changeNickname()
         }.disposed(by: disposeBag)
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
+    }
+    
+    private func setupNickname() {
+        renameView.oldNicknameLabel.text = currentName
+        renameView.nicknameField.delegate = self
+    }
+    
+    private func changeNickname() {
+        let nickname = renameView.nicknameField.text!
+        
+        UserService.changeNickname(nickname: nickname) { [weak self] (response) in
+            switch response.result {
+            case .success(_):
+                self?.navigationController?.popViewController(animated: true)
+            case .failure(let error):
+                if let vc = self {
+                    AlertUtils.show(controller: vc, title: "change nickname error", message: error.localizedDescription)
+                }
+            }
+        }
     }
 }
 

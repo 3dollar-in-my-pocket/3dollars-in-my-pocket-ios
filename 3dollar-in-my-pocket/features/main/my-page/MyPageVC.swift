@@ -14,12 +14,13 @@ class MyPageVC: BaseVC {
         view = myPageView
         setupRegisterCollectionView()
         setUpReviewTableView()
-        getMyInfo()
     }
     
     override func bindViewModel() {
         myPageView.modifyBtn.rx.tap.bind { [weak self] in
-            self?.navigationController?.pushViewController(RenameVC.instance(), animated: true)
+            if let currentName = self?.myPageView.nicknameLabel.text {
+                self?.navigationController?.pushViewController(RenameVC.instance(currentName: currentName), animated: true)
+            }
         }.disposed(by: disposeBag)
         
         myPageView.registerTotalBtn.rx.tap.bind { [weak self] in
@@ -29,6 +30,11 @@ class MyPageVC: BaseVC {
         myPageView.reviewTotalBtn.rx.tap.bind { [weak self] in
             self?.navigationController?.pushViewController(MyReviewVC.instance(), animated: true)
         }.disposed(by: disposeBag)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getMyInfo()
     }
     
     private func setupRegisterCollectionView() {

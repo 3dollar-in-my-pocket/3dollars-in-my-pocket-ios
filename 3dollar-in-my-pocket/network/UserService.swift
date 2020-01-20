@@ -21,7 +21,7 @@ struct UserService: APIServiceType {
     
     static func changeNickname(nickname: String, completion: @escaping (DataResponse<String>) -> Void) {
         let urlString = self.url("api/v1/user/nickname")
-        let parameters: [String: Any] = ["nickname": nickname, "userId": UserDefaultsUtil.getUserId()!]
+        let parameters: [String: Any] = ["nickName": nickname, "userId": UserDefaultsUtil.getUserId()!]
         let headers = self.defaultHeader()
         
         Alamofire.request(urlString, method: .put, parameters: parameters, headers: headers).responseString(completionHandler: { (response) in
