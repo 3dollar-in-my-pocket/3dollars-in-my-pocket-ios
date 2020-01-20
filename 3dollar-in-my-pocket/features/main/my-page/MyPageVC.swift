@@ -12,13 +12,9 @@ class MyPageVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = myPageView
-        myPageView.registerCollectionView.delegate = self
-        myPageView.registerCollectionView.dataSource = self
-        myPageView.registerCollectionView.register(RegisterCell.self, forCellWithReuseIdentifier: RegisterCell.registerId)
-        
-        myPageView.reviewTableView.delegate = self
-        myPageView.reviewTableView.dataSource = self
-        myPageView.reviewTableView.register(MyPageReviewCell.self, forCellReuseIdentifier: MyPageReviewCell.registerId)
+        setupRegisterCollectionView()
+        setUpReviewTableView()
+        getMyInfo()
     }
     
     override func bindViewModel() {
@@ -33,6 +29,31 @@ class MyPageVC: BaseVC {
         myPageView.reviewTotalBtn.rx.tap.bind { [weak self] in
             self?.navigationController?.pushViewController(MyReviewVC.instance(), animated: true)
         }.disposed(by: disposeBag)
+    }
+    
+    private func setupRegisterCollectionView() {
+        myPageView.registerCollectionView.delegate = self
+        myPageView.registerCollectionView.dataSource = self
+        myPageView.registerCollectionView.register(RegisterCell.self, forCellWithReuseIdentifier: RegisterCell.registerId)
+    }
+    
+    private func setUpReviewTableView() {
+        myPageView.reviewTableView.delegate = self
+        myPageView.reviewTableView.dataSource = self
+        myPageView.reviewTableView.register(MyPageReviewCell.self, forCellReuseIdentifier: MyPageReviewCell.registerId)
+    }
+    
+    private func getMyInfo() {
+        UserService.getUserInfo { [weak self] (response) in
+            switch response.result {
+            case .success(let user):
+                self?.myPageView.nicknameLabel.text = user.nickname
+            case .failure(let error):
+                if let vc = self {
+                    AlertUtils.show(controller: vc, title: "error user info", message: error.localizedDescription)
+                }
+            }
+        }
     }
 }
 

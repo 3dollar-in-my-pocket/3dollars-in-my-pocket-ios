@@ -40,4 +40,28 @@ struct UserService: APIServiceType {
             completion(response)
         })
     }
+    
+    static func getUserInfo(completion: @escaping ((DataResponse<User>) -> Void)) {
+        let urlString = self.url("api/v1/user/info")
+        let headders = self.defaultHeader()
+        var parameters: [String: Any] = [ : ]
+        
+        if let userId = UserDefaultsUtil.getUserId() {
+            parameters["userId"] = userId
+        }
+        
+        Alamofire.request(urlString, method: .get, parameters: parameters, headers: headders).responseJSON { (response) in
+            let response: DataResponse<User> = response.flatMapResult { (json) in
+                if let user = Mapper<User>().map(JSONObject: json) {
+                    return .success(user)
+                } else {
+                    return .failure(MappingError.init(from: json, to: User.self))
+                }
+            }
+            
+            completion(response)
+        }
+        
+        
+    }
 }
