@@ -4,6 +4,10 @@ class RegisteredVC: BaseVC {
     
     private lazy var registeredView = RegisteredView(frame: self.view.frame)
     
+    private var viewModel = RegisteredViewModel()
+    
+    private var currentPage = 1
+    
     static func instance() -> RegisteredVC {
         return RegisteredVC(nibName: nil, bundle: nil)
     }
@@ -11,9 +15,8 @@ class RegisteredVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = registeredView
-        registeredView.tableView.delegate = self
-        registeredView.tableView.dataSource = self
-        registeredView.tableView.register(RegisteredCell.self, forCellReuseIdentifier: RegisteredCell.registerId)
+        setupTableView()
+        getReportedStore()
     }
     
     override func bindViewModel() {
@@ -25,11 +28,32 @@ class RegisteredVC: BaseVC {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
+    
+    private func setupTableView() {
+        registeredView.tableView.delegate = self
+        registeredView.tableView.dataSource = self
+        registeredView.tableView.register(RegisteredCell.self, forCellReuseIdentifier: RegisteredCell.registerId)
+    }
+    
+    private func getReportedStore() {
+        StoreService.getReportedStore(page: 1) { [weak self] (response) in
+            switch response.result {
+            case .success(let storePage):
+                self?.viewModel.stores = storePage.content
+                self?.viewModel.totalCount = storePage.totalElements
+                self?.registeredView.tableView.reloadData()
+            case .failure(let error):
+                if let vc = self {
+                    AlertUtils.show(controller: vc, title: "get reported store error", message: error.localizedDescription)
+                }
+            }
+        }
+    }
 }
 
 extension RegisteredVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return self.viewModel.stores.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -37,11 +61,14 @@ extension RegisteredVC: UITableViewDelegate, UITableViewDataSource {
             return BaseTableViewCell()
         }
         
+        cell.bind(store: self.viewModel.stores[indexPath.row])
         return cell
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return RegisteredHeader()
+        return RegisteredHeader().then {
+            $0.setCount(count: self.viewModel.totalCount)
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

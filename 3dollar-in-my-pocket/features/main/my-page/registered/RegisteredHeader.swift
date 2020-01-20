@@ -19,4 +19,8 @@ class RegisteredHeader: BaseView {
             make.bottom.equalToSuperview().offset(-12)
         }
     }
+    
+    func setCount(count: Int) {
+        countLabel.text = String(format: "%02d개", count)
+    }
 }

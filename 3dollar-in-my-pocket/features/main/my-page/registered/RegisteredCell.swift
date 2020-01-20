@@ -53,4 +53,19 @@ class RegisteredCell: BaseTableViewCell {
             make.top.equalTo(titleLabel.snp.bottom).offset(15)
         }
     }
+    
+    func bind(store: Store) {
+        switch store.category! {
+        case .BUNGEOPPANG:
+            categoryImage.image = UIImage.init(named: "img_card_bungeoppang_on")
+        case .GYERANPPANG:
+            categoryImage.image = UIImage.init(named: "img_card_gyeranppang_on")
+        case.HOTTEOK:
+            categoryImage.image = UIImage.init(named: "img_card_hotteok_on")
+        case.TAKOYAKI:
+            categoryImage.image = UIImage.init(named: "img_card_takoyaki_on")
+        }
+        titleLabel.text = store.storeName
+        rankingView.setRank(rank: store.rating)
+    }
 }
