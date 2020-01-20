@@ -17,12 +17,17 @@ class RegisteredView: BaseView {
         $0.alpha = 0.2
     }
     
-    let tableView = UITableView(frame: .zero, style: .grouped).then {
+    lazy var tableView = UITableView(frame: .zero, style: .grouped).then {
         $0.tableFooterView = UIView()
         $0.backgroundColor = .clear
         $0.showsVerticalScrollIndicator = false
         $0.rowHeight = UITableView.automaticDimension
         $0.contentInsetAdjustmentBehavior = .never
+        
+        let indicator = UIActivityIndicatorView(style: .large)
+        
+        indicator.frame = CGRect(x: 0, y: 0, width: bounds.width, height: 60)
+        $0.tableFooterView = indicator
     }
     
     override func setup() {
