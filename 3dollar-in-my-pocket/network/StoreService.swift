@@ -13,7 +13,16 @@ struct StoreService: APIServiceType {
         
         Alamofire.request(urlString, method: .get, parameters: parameters, headers: headers)
             .responseJSON { (response) in
-                print(response)
+                if let code = response.response?.statusCode,
+                    code == 401{
+                    AlertUtils.showWithAction(title: "세션만료", message: "다시 로그인해주세요.") { (action) in
+                        UserDefaultsUtil.clear()
+                        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                            sceneDelegate.goToSignIn()
+                        }
+                    }
+                    return
+                }
                 let response: DataResponse<[StoreCard]> = response.flatMapResult { json in
                     
                     if let storeCards = Mapper<StoreCard>().mapArray(JSONObject: json) {

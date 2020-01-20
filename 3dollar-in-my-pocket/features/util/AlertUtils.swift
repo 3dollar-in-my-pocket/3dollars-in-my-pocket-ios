@@ -15,6 +15,11 @@ struct AlertUtils {
         show(parentController: controller, title: title, message: message, [okAction, cancelAction])
     }
     
+    static func showWithAction(title: String? = nil, message: String? = nil, handler: @escaping ((UIAlertAction) -> Void)) {
+        let action = UIAlertAction.init(title: "확인", style: .default, handler: handler)
+        show(title: title, message: message, [action])
+    }
+    
     static func show(parentController: UIViewController? = nil, title: String?, message: String?, _ actions: [UIAlertAction]) {
         let controller = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
