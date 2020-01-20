@@ -1,4 +1,5 @@
 import UIKit
+import RxSwift
 
 class MyPageVC: BaseVC {
     
@@ -21,6 +22,27 @@ class MyPageVC: BaseVC {
             cell.bind(store: store)
         }.disposed(by: disposeBag)
         
+        viewModel.reportedReviews.bind(to: myPageView.reviewTableView.rx.items(cellIdentifier: MyPageReviewCell.registerId, cellType: MyPageReviewCell.self)) { row, review, cell in
+            switch row {
+            case 0:
+                cell.setTopRadius()
+                cell.setEvenBg()
+            case 1:
+                cell.setOddBg()
+            case 2:
+                cell.setEvenBg()
+            default:
+                break
+            }
+            
+            if let count = try? self.viewModel.reportedReviews.value().count {
+                if row == count - 1 {
+                    cell.setBottomRadius()
+                }
+            }
+            cell.bind(review: review)
+        }.disposed(by: disposeBag)
+        
         myPageView.modifyBtn.rx.tap.bind { [weak self] in
             if let currentName = self?.myPageView.nicknameLabel.text {
                 self?.navigationController?.pushViewController(RenameVC.instance(currentName: currentName), animated: true)
@@ -40,6 +62,7 @@ class MyPageVC: BaseVC {
         super.viewWillAppear(animated)
         getMyInfo()
         getReportedStore()
+        getMyReviews()
     }
     
     private func setupRegisterCollectionView() {
@@ -49,7 +72,6 @@ class MyPageVC: BaseVC {
     
     private func setUpReviewTableView() {
         myPageView.reviewTableView.delegate = self
-        myPageView.reviewTableView.dataSource = self
         myPageView.reviewTableView.register(MyPageReviewCell.self, forCellReuseIdentifier: MyPageReviewCell.registerId)
     }
     
@@ -86,6 +108,24 @@ class MyPageVC: BaseVC {
             }
         }
     }
+    
+    private func getMyReviews() {
+        ReviewService.getMyReview(page: 1) { [weak self] (response) in
+            switch response.result {
+            case .success(let reviewPage):
+                self?.myPageView.reviewCountLabel.text = "\(reviewPage.totalElements!)개"
+                if reviewPage.totalElements > 3 {
+                    self?.viewModel.reportedReviews.onNext(Array(reviewPage.content[0...2]))
+                } else {
+                    self?.viewModel.reportedReviews.onNext(reviewPage.content)
+                }
+            case .failure(let error):
+                if let vc = self {
+                    AlertUtils.show(controller: vc, title: "get my review error", message: error.localizedDescription)
+                }
+            }
+        }
+    }
 }
 
 extension MyPageVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -102,31 +142,8 @@ extension MyPageVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
     }
 }
 
-extension MyPageVC: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MyPageReviewCell.registerId, for: indexPath) as? MyPageReviewCell else {
-            return BaseTableViewCell()
-        }
+extension MyPageVC: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        switch indexPath.row {
-        case 0:
-            cell.setTopRadius()
-            cell.setEvenBg()
-        case 1:
-            cell.setOddBg()
-        case 2:
-            cell.setBottomRadius()
-            cell.setEvenBg()
-        default:
-            break
-        }
-        
-        return cell
     }
-    
-    
 }

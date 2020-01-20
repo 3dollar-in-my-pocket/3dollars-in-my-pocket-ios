@@ -6,6 +6,7 @@ struct Review: Mappable {
     var id: Int!
     var rating: Int!
     var user: User!
+    var storeId: Int!
     
     
     init(rating: Int, contents: String) {
@@ -23,5 +24,6 @@ struct Review: Mappable {
         self.id <- map["id"]
         self.rating <- map["rating"]
         self.user <- map["user"]
+        self.storeId <- map["storeId"]
     }
 }

@@ -67,7 +67,7 @@ class MyPageReviewCell: BaseTableViewCell {
         categoryImage.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
-            make.width.equalTo(38)
+            make.width.equalTo(40)
             make.height.equalTo(24)
         }
         
@@ -120,5 +120,33 @@ class MyPageReviewCell: BaseTableViewCell {
     
     func setEvenBg() {
         backgroundColor = UIColor.init(r: 74, g: 74, b: 74)
+    }
+    
+    func bind(review: Review) {
+        switch review.category {
+        case .BUNGEOPPANG:
+            categoryImage.image = UIImage.init(named: "img_review_bungeoppang")
+        case .GYERANPPANG:
+            categoryImage.image = UIImage.init(named: "img_review_gyeranppang")
+        case .HOTTEOK:
+            categoryImage.image = UIImage.init(named: "img_review_hotteok")
+        case .TAKOYAKI:
+            categoryImage.image = UIImage.init(named: "img_review_takoyaki")
+        default:
+            break
+        }
+        
+        reviewLabel.text = review.contents
+        setRank(rank: review.rating)
+    }
+    
+    func setRank(rank: Int) {
+        if rank != 0 {
+            for index in 0...stackView.arrangedSubviews.count - 1 {
+                if let star = stackView.arrangedSubviews[index] as? UIButton {
+                    star.isSelected = index < rank
+                }
+            }
+        }
     }
 }

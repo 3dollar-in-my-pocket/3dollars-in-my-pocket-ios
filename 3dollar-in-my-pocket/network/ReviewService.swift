@@ -11,4 +11,22 @@ struct ReviewService: APIServiceType {
             completion(response)
         }
     }
+    
+    static func getMyReview(page: Int, completion: @escaping (DataResponse<Page<Review>>) -> Void) {
+        let urlString = self.url("api/v1/review/user")
+        let headers = self.defaultHeader()
+        let parameters: [String: Any] = ["page": page, "userId": UserDefaultsUtil.getUserId()!]
+        
+        Alamofire.request(urlString, method: .get, parameters: parameters, headers: headers).responseJSON { (response) in
+            let response: DataResponse<Page<Review>> = response.flatMapResult { (json) in
+                if let reviewPage = Mapper<Page<Review>>().map(JSONObject: json) {
+                    return .success(reviewPage)
+                } else {
+                    return .failure(MappingError.init(from: json, to: Page<Review>.self))
+                }
+            }
+            
+            completion(response)
+        }
+    }
 }
