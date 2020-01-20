@@ -269,9 +269,11 @@ class ShopInfoCell: BaseTableViewCell {
     
     func setRank(rank: Float) {
         if rank != 0 {
-            for index in 0...Int(rank.rounded()) {
+            let roundedRank = Int(rank.rounded())
+            
+            for index in 0...stackView.arrangedSubviews.count - 1 {
                 if let star = stackView.arrangedSubviews[index] as? UIButton {
-                    star.isSelected = true
+                    star.isSelected = index < roundedRank
                 }
             }
         }
