@@ -10,7 +10,6 @@ class MyPageView: BaseView {
     
     let nicknameLabel = UILabel().then {
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-        $0.text = "마포구 몽키스패너"
         $0.textAlignment = .left
         $0.textColor = UIColor.init(r: 243, g: 162, b: 169)
     }
@@ -30,7 +29,6 @@ class MyPageView: BaseView {
     }
     
     let registerCountLabel = UILabel().then {
-        $0.text = "05개"
         $0.textColor = .white
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 24)
     }

@@ -30,4 +30,8 @@ class ReviewHeaderView: BaseView {
             make.top.equalTo(seperator.snp.bottom).offset(24)
         }
     }
+    
+    func setReviewCount(count: Int) {
+        reviewCountLabel.text = "리뷰 \(count)개"
+    }
 }

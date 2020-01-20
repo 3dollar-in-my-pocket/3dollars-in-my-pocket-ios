@@ -1,4 +1,5 @@
 import UIKit
+import GoogleMaps
 
 class MainVC: BaseVC {
     
@@ -9,6 +10,7 @@ class MainVC: BaseVC {
     private var previousIndex = 0
     
     private var selectedIndex = 0
+    
     
     static func instance() -> UINavigationController {
         let controller = MainVC(nibName: nil, bundle: nil)
@@ -22,10 +24,14 @@ class MainVC: BaseVC {
         navigationController?.interactivePopGestureRecognizer?.delegate = nil
         view = mainView
         
-        let homeVc = HomeVC.instance()
+        let homeVC = HomeVC.instance().then {
+            $0.delegate = self
+        }
+        let writingVC = WritingVC.instance().then {
+            $0.deleagte = self
+        }
         
-        homeVc.delegate = self
-        controllers = [homeVc, WritingVC.instance(), MyPageVC.instance(),]
+        controllers = [homeVC, writingVC, MyPageVC.instance(),]
         tapChange(index: 0)
         mainView.homeBtn.isSelected = true
     }
@@ -39,8 +45,13 @@ class MainVC: BaseVC {
             self.tapChange(index: 2)
         }.disposed(by: disposeBag)
         
-        mainView.writingBtn.rx.tap.bind {
-            self.present(WritingVC.instance(), animated: true, completion: nil)
+        mainView.writingBtn.rx.tap.bind { [weak self] in
+            if let vc = self {
+                let writingVC = WritingVC.instance().then {
+                    $0.deleagte = self
+                }
+                vc.present(writingVC, animated: true, completion: nil)
+            }
         }.disposed(by: disposeBag)
     }
     
@@ -86,5 +97,11 @@ extension MainVC: HomeDelegate {
     
     func endDragMap() {
         self.mainView.showTabBar()
+    }
+}
+
+extension MainVC: WritingDelegate {
+    func onWriteSuccess(storeId: Int) {
+        self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
     }
 }

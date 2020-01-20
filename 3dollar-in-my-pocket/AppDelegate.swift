@@ -1,19 +1,15 @@
 import UIKit
 import KakaoOpenSDK
-import NaverThirdPartyLogin
-import GoogleSignIn
 import GoogleMaps
+import AlamofireNetworkActivityLogger
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        initializeNaverLogin()
-        initializeGoogleLogin()
         initializeGoogleMaps()
+        initializeNetworkLogger()
         return true
     }
 
@@ -43,43 +39,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if KOSession.isKakaoAccountLoginCallback(url) {
             return KOSession.handleOpen(url)
         }
-        
-        NaverThirdPartyLoginConnection.getSharedInstance()?.application(app, open: url, options: options)
-        GIDSignIn.sharedInstance().handle(url)
-        
         return false
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         KOSession.handleDidBecomeActive()
     }
-
-    private func initializeNaverLogin() {
-        guard let connection = NaverThirdPartyLoginConnection.getSharedInstance() else {
-            AlertUtils.show(title: "error", message: "네이버 로그인 초기화 실패")
-            return
-        }
-        
-        connection.isNaverAppOauthEnable = true
-        connection.isInAppOauthEnable = true
-        connection.setOnlyPortraitSupportInIphone(true)
-        connection.serviceUrlScheme = kServiceAppUrlScheme
-        connection.consumerKey = kConsumerKey
-        connection.consumerSecret = kConsumerSecret
-        connection.appName = kServiceAppName
-    }
-    
-    private func initializeGoogleLogin() {
-        guard let gidSignIn = GIDSignIn.sharedInstance() else {
-            AlertUtils.show(title: "error", message: "GIDSignIn 초기화 실패")
-            return
-        }
-        
-        gidSignIn.clientID = "1014726034007-cr8jiho91de2ctkvqttro93oem0gddqf.apps.googleusercontent.com"
-    }
     
     private func initializeGoogleMaps() {
         GMSServices.provideAPIKey("AIzaSyA7CMJwuD1RrlhgF-L1o9vuKOgFiNA-5Sg")
+    }
+    
+    private func initializeNetworkLogger() {
+        NetworkActivityLogger.shared.startLogging()
+        NetworkActivityLogger.shared.level = .debug
     }
 }
 

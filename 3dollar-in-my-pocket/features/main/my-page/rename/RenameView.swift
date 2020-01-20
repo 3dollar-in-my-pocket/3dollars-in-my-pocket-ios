@@ -20,7 +20,6 @@ class RenameView: BaseView {
     }
     
     let oldNicknameLabel = UILabel().then {
-        $0.text = "마포구 몽키스패너"
         $0.textColor = UIColor.init(r: 243, g: 162, b: 169)
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 32)
     }

@@ -14,9 +14,9 @@ class ShopCell: BaseCollectionViewCell {
         $0.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
     }
     
-    let bungeoppangBtn = UIButton().then {
-        $0.setImage(UIImage.init(named: "img_fish_off"), for: .normal)
-        $0.setImage(UIImage.init(named: "img_fish_on"), for: .selected)
+    let imageBtn = UIButton().then {
+        $0.setImage(UIImage.init(named: "img_card_bungeoppang_off"), for: .normal)
+        $0.setImage(UIImage.init(named: "img_card_bungeoppang_on"), for: .selected)
         $0.contentMode = .scaleAspectFit
         $0.isUserInteractionEnabled = false
     }
@@ -27,7 +27,7 @@ class ShopCell: BaseCollectionViewCell {
         layer.cornerRadius = 16
         backgroundColor = UIColor.init(r: 251, g: 251, b: 251)
         setupShadow(isSelected: false)
-        addSubViews(distanceLabel, bungeoppangBtn, rankingView)
+        addSubViews(distanceLabel, imageBtn, rankingView)
     }
     
     override func bindConstraints() {
@@ -38,8 +38,8 @@ class ShopCell: BaseCollectionViewCell {
             make.height.equalTo(25)
         }
         
-        bungeoppangBtn.snp.makeConstraints { (make) in
-            make.top.equalTo(distanceLabel.snp.bottom).offset(12)
+        imageBtn.snp.makeConstraints { (make) in
+            make.top.equalTo(distanceLabel.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(25)
             make.right.equalToSuperview().offset(-25)
         }
@@ -50,12 +50,7 @@ class ShopCell: BaseCollectionViewCell {
             make.top.equalTo(distanceLabel.snp.bottom).offset(105)
         }
     }
-    
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-    }
-    
+
     func setSelected(isSelected: Bool) {
         if let shadowLayer = layer.sublayers?.first as? CAShapeLayer {
             if isSelected {
@@ -64,8 +59,29 @@ class ShopCell: BaseCollectionViewCell {
                 shadowLayer.fillColor = UIColor.init(r: 251, g: 251, b: 251).cgColor
             }
         }
-        bungeoppangBtn.isSelected = isSelected
+        imageBtn.isSelected = isSelected
         rankingView.setSelected(isSelected: isSelected)
+    }
+    
+    func bind(storeCard: StoreCard) {
+        switch storeCard.category {
+        case .BUNGEOPPANG:
+            imageBtn.setImage(UIImage.init(named: "img_card_bungeoppang_off"), for: .normal)
+            imageBtn.setImage(UIImage.init(named: "img_card_bungeoppang_on"), for: .selected)
+        case .GYERANPPANG:
+            imageBtn.setImage(UIImage.init(named: "img_card_gyeranppang_off"), for: .normal)
+            imageBtn.setImage(UIImage.init(named: "img_card_gyeranppang_on"), for: .selected)
+        case .HOTTEOK:
+            imageBtn.setImage(UIImage.init(named: "img_card_hotteok_off"), for: .normal)
+            imageBtn.setImage(UIImage.init(named: "img_card_hotteok_on"), for: .selected)
+        case .TAKOYAKI:
+            imageBtn.setImage(UIImage.init(named: "img_card_takoyaki_off"), for: .normal)
+            imageBtn.setImage(UIImage.init(named: "img_card_takoyaki_on"), for: .selected)
+        default:
+            break
+        }
+        distanceLabel.text = "\(String(describing: storeCard.distance!))m"
+        rankingView.setRank(rank: storeCard.rating)
     }
     
     private func setupShadow(isSelected: Bool) {

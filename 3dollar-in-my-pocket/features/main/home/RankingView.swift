@@ -89,12 +89,15 @@ class RankingView: BaseView {
         stackView.sizeToFit()
     }
     
-    func setRank(rank: Int) {
-        for index in 0...rank {
+    func setRank(rank: Float) {
+        let roundedRank = Int(rank.rounded())
+        
+        for index in 0...stackView.arrangedSubviews.count - 1 {
             if let star = stackView.arrangedSubviews[index] as? UIButton {
-                star.isSelected = true
+                star.isSelected = index < roundedRank
             }
         }
+        rankingLabel.text = "\(rank)"
     }
     
     func setSelected(isSelected: Bool) {

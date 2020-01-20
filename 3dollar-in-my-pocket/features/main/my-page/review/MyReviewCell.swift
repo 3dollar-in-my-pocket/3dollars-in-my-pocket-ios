@@ -10,7 +10,7 @@ class MyReviewCell: BaseTableViewCell {
     }
     
     let categoryImage = UIImageView().then {
-        $0.image = UIImage.init(named: "img_fish_on")
+        $0.image = UIImage.init(named: "img_card_bungeoppang_on")
     }
     
     let titleLabel = UILabel().then {
@@ -65,5 +65,22 @@ class MyReviewCell: BaseTableViewCell {
             make.top.equalTo(categoryImage.snp.top).offset(-17)
             make.bottom.equalTo(rankingView.snp.bottom).offset(19)
         }
+    }
+    
+    func bind(review: Review) {
+        switch review.category {
+        case .BUNGEOPPANG:
+            categoryImage.image = UIImage.init(named: "img_card_bungeoppang_on")
+        case .GYERANPPANG:
+            categoryImage.image = UIImage.init(named: "img_card_gyeranppang_on")
+        case.HOTTEOK:
+            categoryImage.image = UIImage.init(named: "img_card_hotteok_on")
+        case.TAKOYAKI:
+            categoryImage.image = UIImage.init(named: "img_card_takoyaki_on")
+        default:
+            break
+        }
+        reviewLabel.text = review.contents
+        rankingView.setRank(rank: Float(review.rating))
     }
 }

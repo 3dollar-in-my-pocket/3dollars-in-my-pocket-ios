@@ -4,6 +4,9 @@ import GoogleMaps
 class HomeView: BaseView {
     
     let bungeoppangTap = UITapGestureRecognizer()
+    let takoyakiTap = UITapGestureRecognizer()
+    let gyeranppangTap = UITapGestureRecognizer()
+    let hotteokTap = UITapGestureRecognizer()
     
     let bgCloud = UIImageView().then {
         $0.image = UIImage.init(named: "bg_cloud_main")
@@ -15,20 +18,19 @@ class HomeView: BaseView {
         $0.axis = .horizontal
         $0.backgroundColor = .white
         $0.distribution = .equalCentering
-        $0.spacing = 16
         $0.layoutMargins = UIEdgeInsets(top: 0, left: 21, bottom: 0, right: 18)
         $0.isLayoutMarginsRelativeArrangement = true
     }
     
     let mapView = GMSMapView()
     
-    let bungeoppangBtn1 = CategoryButton()
+    let bungeoppangBtn = CategoryButton(category: .BUNGEOPPANG)
     
-    let bungeoppangBtn2 = CategoryButton()
+    let takoyakiBtn = CategoryButton(category: .TAKOYAKI)
     
-    let bungeoppangBtn3 = CategoryButton()
+    let gyeranppangBtn = CategoryButton(category: .GYERANPPANG)
     
-    let bungeoppangBtn4 = CategoryButton()
+    let hotteokBtn = CategoryButton(category: .HOTTEOK)
     
     let descLabel1 = UILabel().then {
         $0.text = "가장 가까운 음식점"
@@ -59,7 +61,7 @@ class HomeView: BaseView {
     }
     
     let shopCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
-        let layout = UICollectionViewFlowLayout()
+        let layout = StoreCollectionViewFlowLayout()
         
         layout.scrollDirection = .horizontal
         layout.sectionInset = UIEdgeInsets(top: 20, left: 0, bottom: 50, right: 0)
@@ -76,12 +78,17 @@ class HomeView: BaseView {
     }
     
     override func setup() {
-        bungeoppangBtn1.addGestureRecognizer(bungeoppangTap)
         backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
-        categoryStackView.addArrangedSubview(bungeoppangBtn1)
-        categoryStackView.addArrangedSubview(bungeoppangBtn2)
-        categoryStackView.addArrangedSubview(bungeoppangBtn3)
-        categoryStackView.addArrangedSubview(bungeoppangBtn4)
+        gyeranppangBtn.addGestureRecognizer(gyeranppangTap)
+        hotteokBtn.addGestureRecognizer(hotteokTap)
+        bungeoppangBtn.addGestureRecognizer(bungeoppangTap)
+        takoyakiBtn.addGestureRecognizer(takoyakiTap)
+        
+        
+        categoryStackView.addArrangedSubview(bungeoppangBtn)
+        categoryStackView.addArrangedSubview(takoyakiBtn)
+        categoryStackView.addArrangedSubview(gyeranppangBtn)
+        categoryStackView.addArrangedSubview(hotteokBtn)
         setupStackViewShadow()
         addSubViews(bgCloud, categoryStackView, mapView, descLabel1, descLabel2, descLabel3, shopCollectionView, mapButton)
     }
@@ -93,21 +100,39 @@ class HomeView: BaseView {
         }
         
         categoryStackView.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(22)
-            make.right.equalToSuperview().offset(-26)
-            make.top.equalToSuperview().offset(56)
+            make.left.equalToSuperview().offset(22 * UIScreen.main.bounds.width / 375.0)
+            make.right.equalToSuperview().offset(-26 * UIScreen.main.bounds.width / 375.0)
+            make.top.equalToSuperview().offset(80)
             make.height.equalTo(92)
         }
         
-        bungeoppangBtn1.snp.makeConstraints { (make) in
+        bungeoppangBtn.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
-            make.left.equalTo(categoryStackView.snp.left).offset(21)
-            make.width.height.equalTo(60)
+            make.left.equalTo(categoryStackView.snp.left).offset(21 * UIScreen.main.bounds.width / 375.0)
+            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
+        }
+        
+        takoyakiBtn.snp.makeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.left.equalTo(bungeoppangBtn.snp.right).offset(8 * UIScreen.main.bounds.width / 375.0)
+            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
+        }
+        
+        gyeranppangBtn.snp.makeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.left.equalTo(takoyakiBtn.snp.right).offset(8 * UIScreen.main.bounds.width / 375.0)
+            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
+        }
+        
+        hotteokBtn.snp.makeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.left.equalTo(gyeranppangBtn.snp.right).offset(8 * UIScreen.main.bounds.width / 375.0)
+            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
         }
         
         mapView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(categoryStackView.snp.bottom).offset(264)
+            make.top.equalTo(categoryStackView.snp.bottom).offset(264 * UIScreen.main.bounds.width / 375.0)
         }
         
         descLabel1.snp.makeConstraints { (make) in

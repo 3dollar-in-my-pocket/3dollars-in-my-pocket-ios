@@ -5,7 +5,7 @@ class MyPageReviewCell: BaseTableViewCell {
     static let registerId = "\(MyPageReviewCell.self)"
     
     let categoryImage = UIImageView().then {
-        $0.image = UIImage.init(named: "img_fish_on")
+        $0.image = UIImage.init(named: "img_card_bungeoppang_on")
         $0.contentMode = .scaleAspectFit
     }
     
@@ -49,7 +49,7 @@ class MyPageReviewCell: BaseTableViewCell {
         $0.axis = .horizontal
         $0.alignment = .leading
         $0.backgroundColor = .clear
-        $0.spacing = 2
+        $0.spacing = 4
     }
     
     
@@ -67,7 +67,7 @@ class MyPageReviewCell: BaseTableViewCell {
         categoryImage.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
-            make.width.equalTo(38)
+            make.width.equalTo(40)
             make.height.equalTo(24)
         }
         
@@ -98,7 +98,7 @@ class MyPageReviewCell: BaseTableViewCell {
         
         stackView.snp.makeConstraints { (make) in
             make.centerY.equalTo(categoryImage.snp.centerY)
-            make.right.equalToSuperview().offset(-8)
+            make.right.equalToSuperview().offset(-18)
         }
     }
     
@@ -120,5 +120,31 @@ class MyPageReviewCell: BaseTableViewCell {
     
     func setEvenBg() {
         backgroundColor = UIColor.init(r: 74, g: 74, b: 74)
+    }
+    
+    func bind(review: Review) {
+        switch review.category {
+        case .BUNGEOPPANG:
+            categoryImage.image = UIImage.init(named: "img_review_bungeoppang")
+        case .GYERANPPANG:
+            categoryImage.image = UIImage.init(named: "img_review_gyeranppang")
+        case .HOTTEOK:
+            categoryImage.image = UIImage.init(named: "img_review_hotteok")
+        case .TAKOYAKI:
+            categoryImage.image = UIImage.init(named: "img_review_takoyaki")
+        default:
+            break
+        }
+        
+        reviewLabel.text = review.contents
+        setRank(rank: review.rating)
+    }
+    
+    func setRank(rank: Int) {
+        for index in 0...stackView.arrangedSubviews.count - 1 {
+            if let star = stackView.arrangedSubviews[index] as? UIButton {
+                star.isSelected = index < rank
+            }
+        }
     }
 }

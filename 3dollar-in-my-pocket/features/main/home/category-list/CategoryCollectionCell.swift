@@ -38,6 +38,7 @@ class CategoryCollectionCell: BaseCollectionViewCell {
     let tableView = UITableView(frame: .zero, style: .grouped).then {
         $0.backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
         $0.tableFooterView = UIView()
+        $0.contentInset = UIEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
         $0.separatorStyle = .none
         $0.rowHeight = UITableView.automaticDimension
         $0.showsVerticalScrollIndicator = false
@@ -76,7 +77,7 @@ class CategoryCollectionCell: BaseCollectionViewCell {
             make.bottom.equalToSuperview()
             make.left.equalToSuperview().offset(24)
             make.right.equalToSuperview().offset(-24)
-            make.top.equalTo(descLabel1.snp.bottom).offset(24)
+            make.top.equalTo(descLabel1.snp.bottom).offset(5)
         }
     }
 }

@@ -3,10 +3,22 @@ import UIKit
 class NicknameVC: BaseVC {
     
     private lazy var nicknameView = NicknameView(frame: self.view.frame)
+    var id: Int
+    var token: String
     
     
-    static func instance() -> NicknameVC {
-        return NicknameVC(nibName: nil, bundle: nil)
+    init(id: Int, token: String) {
+        self.id = id
+        self.token = token
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("")
+    }
+    
+    static func instance(id: Int, token: String) -> NicknameVC {
+        return NicknameVC.init(id: id, token: token)
     }
     
     override func viewDidLoad() {
@@ -31,11 +43,11 @@ class NicknameVC: BaseVC {
         }.disposed(by: disposeBag)
         
         nicknameView.startBtn1.rx.tap.bind {
-            self.goToMain()
+            self.setNickname()
         }.disposed(by: disposeBag)
         
         nicknameView.startBtn2.rx.tap.bind {
-            self.goToMain()
+            self.setNickname()
         }.disposed(by: disposeBag)
     }
     
@@ -47,6 +59,23 @@ class NicknameVC: BaseVC {
         if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
             sceneDelegate.goToMain()
         }
+    }
+    
+    private func setNickname() {
+        let nickname = nicknameView.nicknameField.text!
+        
+        UserService.setNickname(nickname: nickname, id: self.id, token: self.token, completion: { [weak self] (response) in
+            switch response.result {
+            case .success(_):
+                if let vc = self {
+                    UserDefaultsUtil.setUserToken(token: vc.token)
+                    UserDefaultsUtil.setUserId(id: vc.id)
+                }
+                self?.goToMain()
+            case .failure(let error):
+                AlertUtils.show(title: "Set nickname error", message: error.localizedDescription)
+            }
+        })
     }
 }
 

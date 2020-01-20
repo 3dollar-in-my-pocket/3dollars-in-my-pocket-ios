@@ -1,36 +1,43 @@
 import UIKit
+import GoogleMaps
 
+protocol WritingDelegate: class {
+    func onWriteSuccess(storeId: Int)
+}
 
 class WritingVC: BaseVC {
     
+    weak var deleagte: WritingDelegate?
+    var viewModel = WritingViewModel()
+    var locationManager = CLLocationManager()
+    
     private lazy var writingView = WritingView(frame: self.view.frame)
+    
     private let imagePicker = UIImagePickerController()
-    private var imageList: [UIImage] = []
+    
     private var selectedImageIndex = 0
-    private var menuList: [String] = []
     
     
     static func instance() -> WritingVC {
-        let controller = WritingVC(nibName: nil, bundle: nil)
-        controller.modalPresentationStyle = .fullScreen
-        
-        return controller
+        return WritingVC(nibName: nil, bundle: nil).then {
+            $0.modalPresentationStyle = .fullScreen
+        }
+    }
+    
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view = writingView
-        imagePicker.delegate = self
-        writingView.imageCollection.dataSource = self
-        writingView.imageCollection.delegate = self
-        writingView.imageCollection.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.registerId)
-        
-        writingView.menuTableView.delegate = self
-        writingView.menuTableView.dataSource = self
-        writingView.menuTableView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.registerId)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(onShowKeyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        setupImageCollectionView()
+        setupMenuTableView()
+        setupKeyboardEvent()
+        setupLocationManager()
+        setupGoogleMap()
     }
     
     override func bindViewModel() {
@@ -40,54 +47,127 @@ class WritingVC: BaseVC {
         
         writingView.bungeoppangBtn.rx.tap.bind { [weak self] in
             self?.writingView.tapCategoryBtn(index: 0)
+            self?.viewModel.btnEnable.onNext(())
         }.disposed(by: disposeBag)
         
         writingView.takoyakiBtn.rx.tap.bind { [weak self] in
             self?.writingView.tapCategoryBtn(index: 1)
+            self?.viewModel.btnEnable.onNext(())
         }.disposed(by: disposeBag)
         
         writingView.gyeranppangBtn.rx.tap.bind { [weak self] in
             self?.writingView.tapCategoryBtn(index: 2)
+            self?.viewModel.btnEnable.onNext(())
         }.disposed(by: disposeBag)
         
         writingView.hotteokBtn.rx.tap.bind { [weak self] in
             self?.writingView.tapCategoryBtn(index: 3)
+            self?.viewModel.btnEnable.onNext(())
         }.disposed(by: disposeBag)
         
         writingView.nameField.rx.text.bind { [weak self] (inputText) in
             self?.writingView.setFieldEmptyMode(isEmpty: inputText!.isEmpty)
+            self?.viewModel.btnEnable.onNext(())
         }.disposed(by: disposeBag)
         
-        // 이거 걸어버리면 사진등록 cell 터치가 안먹음.. ㅠ
-//        writingView.bgTap.rx.event.bind { (recognizer) in
-//            self.writingView.endEditing(true)
-//        }.disposed(by: disposeBag)
+        writingView.myLocationBtn.rx.tap.bind {
+            self.locationManager.startUpdatingLocation()
+        }.disposed(by: disposeBag)
+        
+        writingView.registerBtn.rx.tap.bind { [weak self] in
+            if let category = self?.writingView.getCategory(),
+                let storeName = self?.writingView.nameField.text!,
+                let images = self?.viewModel.imageList,
+                let latitude = self?.writingView.mapView.camera.target.latitude,
+                let longitude = self?.writingView.mapView.camera.target.longitude,
+                let menus = self?.viewModel.menuList {
+                let store = Store.init(category: category, latitude: latitude, longitude: longitude, storeName: storeName, menus: menus)
+                
+                LoadingViewUtil.addLoadingView()
+                StoreService.saveStore(store: store, images: images) { [weak self] (response) in
+                    switch response.result {
+                    case .success(let saveResponse):
+                        if let vc = self {
+                            vc.dismiss(animated: true, completion: nil)
+                            vc.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
+                        }
+                    case .failure(let error):
+                        if let vc = self {
+                            AlertUtils.show(controller: vc, title: "Save store error", message: error.localizedDescription)
+                        }
+                    }
+                    LoadingViewUtil.removeLoadingView()
+                }
+            } else {
+                AlertUtils.show(controller: self, message: "올바른 내용을 작성해주세요.")
+            }
+        }.disposed(by: disposeBag)
+        
+        viewModel.btnEnable
+            .map { [weak self] (_) in
+                if let vc = self {
+                    return !vc.writingView.nameField.text!.isEmpty && vc.writingView.getCategory() != nil
+                } else {
+                    return false
+                }
+        }
+        .bind(to: writingView.registerBtn.rx.isEnabled)
+        .disposed(by: disposeBag)
+    }
+    
+    private func isValid(category: StoreCategory?, storeName: String) -> Bool {
+        return category != nil && !storeName.isEmpty
+    }
+    
+    private func setupImageCollectionView() {
+        imagePicker.delegate = self
+        writingView.imageCollection.dataSource = self
+        writingView.imageCollection.delegate = self
+        writingView.imageCollection.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.registerId)
+    }
+    
+    private func setupMenuTableView() {
+        writingView.menuTableView.delegate = self
+        writingView.menuTableView.dataSource = self
+        writingView.menuTableView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.registerId)
+    }
+    
+    private func setupKeyboardEvent() {
+        NotificationCenter.default.addObserver(self, selector: #selector(onShowKeyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
+    private func setupGoogleMap() {
+        writingView.mapView.isMyLocationEnabled = true
     }
     
     @objc func onShowKeyboard(notification: NSNotification) {
-        let keyboardHeight = (notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height
-        let containerFrame = self.writingView.containerView.frame
-        self.writingView.containerView.snp.remakeConstraints { (make) in
-            make.edges.equalTo(0)
-            make.top.equalToSuperview()
-            make.width.equalTo(self.view.frame.width)
-            make.height.equalTo(containerFrame.height + keyboardHeight)
-        }
+        let userInfo = notification.userInfo!
+        var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        keyboardFrame = self.view.convert(keyboardFrame, from: nil)
+        
+        var contentInset:UIEdgeInsets = self.writingView.scrollView.contentInset
+        contentInset.bottom = keyboardFrame.size.height + 50
+        self.writingView.scrollView.contentInset = contentInset
     }
     
     @objc func onHideKeyboard(notification: NSNotification) {
-        self.writingView.containerView.snp.remakeConstraints { (make) in
-            make.edges.equalTo(0)
-            make.width.equalTo(self.view.frame.width)
-            make.top.equalToSuperview()
-            make.bottom.equalTo(self.writingView.menuTableView.snp.bottom)
-        }
+        let contentInset:UIEdgeInsets = UIEdgeInsets.zero
+        
+        self.writingView.scrollView.contentInset = contentInset
     }
 }
 
 extension WritingVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageList.count + 1
+        return self.viewModel.imageList.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -95,8 +175,8 @@ extension WritingVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
             return BaseCollectionViewCell()
         }
         
-        if indexPath.row < self.imageList.count {
-            cell.setImage(image: self.imageList[indexPath.row])
+        if indexPath.row < self.viewModel.imageList.count {
+            cell.setImage(image: self.viewModel.imageList[indexPath.row])
         } else {
             cell.setImage(image: nil)
         }
@@ -116,10 +196,10 @@ extension WritingVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
 extension WritingVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.originalImage] as? UIImage {
-            if selectedImageIndex == self.imageList.count {
-                self.imageList.append(image)
+            if selectedImageIndex == self.viewModel.imageList.count {
+                self.viewModel.imageList.append(image)
             } else {
-                self.imageList[selectedImageIndex] = image
+                self.viewModel.imageList[selectedImageIndex] = image
             }
         }
         self.writingView.imageCollection.reloadData()
@@ -129,7 +209,7 @@ extension WritingVC: UIImagePickerControllerDelegate, UINavigationControllerDele
 
 extension WritingVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.menuList.count + 1
+        return self.viewModel.menuList.count + 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -138,18 +218,49 @@ extension WritingVC: UITableViewDelegate, UITableViewDataSource {
         }
         
         cell.nameField.rx.controlEvent(.editingDidEnd).bind { [weak self] in
-            if let inputText = cell.nameField.text {
-                if !inputText.isEmpty {
-                    if indexPath.row == self?.menuList.count {
-                        self?.menuList.append(inputText)
-                        self?.writingView.menuTableView.reloadData()
-                        self?.view.layoutIfNeeded()
-                    } else {
-                        self?.menuList[indexPath.row]=(inputText)
-                    }
+            let name = cell.nameField.text!
+            
+            if !name.isEmpty {
+                let menu = Menu.init(name: name)
+                
+                if indexPath.row == self?.viewModel.menuList.count {
+                    self?.viewModel.menuList.append(menu)
+                    self?.writingView.menuTableView.reloadData()
+                    self?.view.layoutIfNeeded()
+                } else {
+                    self?.viewModel.menuList[indexPath.row].name = name
                 }
             }
+        }.disposed(by: disposeBag)
+        
+        cell.descField.rx.controlEvent(.editingChanged).bind { [weak self] in
+            let name = cell.nameField.text!
+            let desc = cell.descField.text!
+            
+            if !name.isEmpty && !desc.isEmpty {
+                let menu = Menu.init(name: name, price: desc)
+                
+                if let _ = self?.viewModel.menuList[indexPath.row] {
+                    self?.viewModel.menuList[indexPath.row] = menu
+                }
+            }
+            
         }.disposed(by: disposeBag)
         return cell
     }
 }
+
+extension WritingVC: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations.last
+        let position = GMSCameraPosition.init(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
+        
+        self.writingView.mapView.camera = position
+        self.locationManager.stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
+    }
+}
+

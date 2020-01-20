@@ -81,6 +81,6 @@ extension CategoryListVC: UICollectionViewDelegate, UICollectionViewDataSource, 
 
 extension CategoryListVC: CategoryCollectionCellDelegate {
     func onTapBack() {
-        self.navigationController?.pushViewController(DetailVC.instance(), animated: true)
+        self.navigationController?.pushViewController(DetailVC.instance(storeId: 1), animated: true)
     }
 }
