@@ -110,11 +110,9 @@ class ReviewCell: BaseTableViewCell {
     }
     
     func setRank(rank: Int) {
-        if rank != 0 {
-            for index in 0...stackView.arrangedSubviews.count - 1 {
-                if let star = stackView.arrangedSubviews[index] as? UIButton {
-                    star.isSelected = index < rank
-                }
+        for index in 0...stackView.arrangedSubviews.count - 1 {
+            if let star = stackView.arrangedSubviews[index] as? UIButton {
+                star.isSelected = index < rank
             }
         }
     }
