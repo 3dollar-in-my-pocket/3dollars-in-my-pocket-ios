@@ -49,7 +49,7 @@ class MyPageReviewCell: BaseTableViewCell {
         $0.axis = .horizontal
         $0.alignment = .leading
         $0.backgroundColor = .clear
-        $0.spacing = 2
+        $0.spacing = 4
     }
     
     
@@ -98,7 +98,7 @@ class MyPageReviewCell: BaseTableViewCell {
         
         stackView.snp.makeConstraints { (make) in
             make.centerY.equalTo(categoryImage.snp.centerY)
-            make.right.equalToSuperview().offset(-16)
+            make.right.equalToSuperview().offset(-18)
         }
     }
     
