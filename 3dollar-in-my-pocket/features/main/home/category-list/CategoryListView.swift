@@ -52,16 +52,7 @@ class CategoryListView: BaseView {
         $0.setImage(UIImage.init(named: "ic_location"), for: .normal)
     }
     
-    let pageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
-        let layout = UICollectionViewFlowLayout()
-        
-        layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 0
-        $0.collectionViewLayout = layout
-        $0.backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
-        $0.showsHorizontalScrollIndicator = false
-        $0.isPagingEnabled = true
-    }
+    let pageView = UIView()
     
     
     override func setup() {
@@ -72,7 +63,7 @@ class CategoryListView: BaseView {
         categoryStackView.addArrangedSubview(categoryGyeranppang)
         categoryStackView.addArrangedSubview(categoryHotteok)
         navigationBar.addSubViews(backBtn, categoryImage, categoryStackView)
-        addSubViews(mapView, navigationBar, myLocationBtn, pageCollectionView)
+        addSubViews(mapView, navigationBar, myLocationBtn, pageView)
     }
     
     override func bindConstraints() {
@@ -110,7 +101,7 @@ class CategoryListView: BaseView {
             make.height.equalTo(264)
         }
         
-        pageCollectionView.snp.makeConstraints { (make) in
+        pageView.snp.makeConstraints { (make) in
             make.bottom.equalToSuperview()
             make.left.equalToSuperview()
             make.right.equalToSuperview()
@@ -133,8 +124,6 @@ class CategoryListView: BaseView {
             categoryImage.image = UIImage.init(named: "img_category_gyeranppang")
         case .HOTTEOK:
             categoryImage.image = UIImage.init(named: "img_category_hotteok")
-        default:
-            break
         }
     }
     
