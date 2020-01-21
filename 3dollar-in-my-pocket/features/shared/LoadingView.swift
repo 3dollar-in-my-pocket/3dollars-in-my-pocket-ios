@@ -2,7 +2,7 @@ import UIKit
 import Lottie
 
 class LoadingView: BaseView {
-    let lottie = LOTAnimationView(name: "data_1").then {
+    let lottie = LOTAnimationView(name: "loading").then {
         $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         $0.contentMode = .scaleAspectFit
         $0.loopAnimation = true
