@@ -2,7 +2,7 @@ import UIKit
 import GoogleMaps
 
 protocol HomeDelegate {
-    func onTapCategory()
+    func onTapCategory(category: StoreCategory)
     
     func didDragMap()
     
@@ -61,19 +61,19 @@ class HomeVC: BaseVC {
         }.disposed(by: disposeBag)
         
         homeView.bungeoppangTap.rx.event.bind { [weak self] (_) in
-            self?.delegate?.onTapCategory()
+            self?.delegate?.onTapCategory(category: .BUNGEOPPANG)
         }.disposed(by: disposeBag)
         
         homeView.takoyakiTap.rx.event.bind { [weak self] (_) in
-            self?.delegate?.onTapCategory()
+            self?.delegate?.onTapCategory(category: .TAKOYAKI)
         }.disposed(by: disposeBag)
         
         homeView.gyeranppangTap.rx.event.bind { [weak self] (_) in
-            self?.delegate?.onTapCategory()
+            self?.delegate?.onTapCategory(category: .GYERANPPANG)
         }.disposed(by: disposeBag)
         
         homeView.hotteokTap.rx.event.bind { [weak self] (_) in
-            self?.delegate?.onTapCategory()
+            self?.delegate?.onTapCategory(category: .HOTTEOK)
         }.disposed(by: disposeBag)
     }
     

@@ -123,15 +123,15 @@ class CategoryListView: BaseView {
         setupNavigationBar()
     }
     
-    func setCategoryTitleImage(index: Int) {
-        switch index {
-        case 0:
+    func setCategoryTitleImage(category: StoreCategory) {
+        switch category {
+        case .BUNGEOPPANG:
             categoryImage.image = UIImage.init(named: "img_category_fish")
-        case 1:
+        case .TAKOYAKI:
             categoryImage.image = UIImage.init(named: "img_category_takoyaki")
-        case 2:
+        case .GYERANPPANG:
             categoryImage.image = UIImage.init(named: "img_category_gyeranppang")
-        case 3:
+        case .HOTTEOK:
             categoryImage.image = UIImage.init(named: "img_category_hotteok")
         default:
             break

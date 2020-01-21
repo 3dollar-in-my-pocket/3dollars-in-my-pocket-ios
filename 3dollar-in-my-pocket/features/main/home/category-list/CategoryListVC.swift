@@ -4,10 +4,12 @@ import GoogleMaps
 class CategoryListVC: BaseVC {
     
     private lazy var categoryListView = CategoryListView(frame: self.view.frame)
+    private var category: StoreCategory!
     
-    
-    static func instance() -> CategoryListVC {
-        return CategoryListVC(nibName: nil, bundle: nil)
+    static func instance(category: StoreCategory) -> CategoryListVC {
+        return CategoryListVC(nibName: nil, bundle: nil).then {
+            $0.category = category
+        }
     }
     
     override func viewDidLoad() {
@@ -28,6 +30,7 @@ class CategoryListVC: BaseVC {
         categoryListView.pageCollectionView.dataSource = self
         categoryListView.pageCollectionView.register(CategoryCollectionCell.self, forCellWithReuseIdentifier: CategoryCollectionCell.registerId)
         categoryListView.categoryBungeoppang.isSelected = true // Default setting
+        tapCategory(selectedIndex: StoreCategory.categoryToIndex(self.category))
     }
     
     override func bindViewModel() {
@@ -46,7 +49,7 @@ class CategoryListVC: BaseVC {
     }
     
     private func tapCategory(selectedIndex: Int) {
-        categoryListView.setCategoryTitleImage(index: selectedIndex)
+        categoryListView.setCategoryTitleImage(category: StoreCategory.index(selectedIndex))
         for index in self.categoryListView.categoryStackView.arrangedSubviews.indices {
             if let button = self.categoryListView.categoryStackView.arrangedSubviews[index] as? UIButton {
                 button.isSelected = (index == selectedIndex)
