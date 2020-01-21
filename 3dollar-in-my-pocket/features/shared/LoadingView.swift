@@ -17,7 +17,7 @@ class LoadingView: BaseView {
     override func bindConstraints() {
         lottie.snp.makeConstraints { (make) in
             make.center.equalToSuperview()
-            make.width.height.equalTo(200)
+            make.width.height.equalTo(150)
         }
     }
 }

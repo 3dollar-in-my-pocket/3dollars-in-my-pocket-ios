@@ -28,7 +28,10 @@
 		6E2F5FD923D6911700094D41 /* CategoryPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2F5FD823D6911700094D41 /* CategoryPageVC.swift */; };
 		6E2F5FDB23D692F300094D41 /* CategoryChildVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2F5FDA23D692F300094D41 /* CategoryChildVC.swift */; };
 		6E2F5FDD23D693F700094D41 /* CategoryChildView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2F5FDC23D693F700094D41 /* CategoryChildView.swift */; };
+		6E2F5FDF23D6BF4800094D41 /* CategoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2F5FDE23D6BF4800094D41 /* CategoryService.swift */; };
+		6E2F5FE123D6C04800094D41 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2F5FE023D6C04800094D41 /* Category.swift */; };
 		6E2F5FE323D6DE8600094D41 /* loading.json in Resources */ = {isa = PBXBuildFile; fileRef = 6E2F5FE223D6DE8600094D41 /* loading.json */; };
+		6E2F5FE523D6EBAC00094D41 /* CategoryChildViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2F5FE423D6EBAC00094D41 /* CategoryChildViewModel.swift */; };
 		6E34B76023D16EDA00320B91 /* StoreCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E34B75F23D16EDA00320B91 /* StoreCollectionViewFlowLayout.swift */; };
 		6E3E0B8F23C7078100E835AE /* ReviewModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */; };
 		6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */; };
@@ -149,7 +152,10 @@
 		6E2F5FD823D6911700094D41 /* CategoryPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPageVC.swift; sourceTree = "<group>"; };
 		6E2F5FDA23D692F300094D41 /* CategoryChildVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChildVC.swift; sourceTree = "<group>"; };
 		6E2F5FDC23D693F700094D41 /* CategoryChildView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChildView.swift; sourceTree = "<group>"; };
+		6E2F5FDE23D6BF4800094D41 /* CategoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryService.swift; sourceTree = "<group>"; };
+		6E2F5FE023D6C04800094D41 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		6E2F5FE223D6DE8600094D41 /* loading.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading.json; sourceTree = "<group>"; };
+		6E2F5FE423D6EBAC00094D41 /* CategoryChildViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChildViewModel.swift; sourceTree = "<group>"; };
 		6E34B75F23D16EDA00320B91 /* StoreCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalView.swift; sourceTree = "<group>"; };
 		6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalVC.swift; sourceTree = "<group>"; };
@@ -463,6 +469,7 @@
 				6E2F5FD823D6911700094D41 /* CategoryPageVC.swift */,
 				6E2F5FDA23D692F300094D41 /* CategoryChildVC.swift */,
 				6E2F5FDC23D693F700094D41 /* CategoryChildView.swift */,
+				6E2F5FE423D6EBAC00094D41 /* CategoryChildViewModel.swift */,
 			);
 			path = "category-list";
 			sourceTree = "<group>";
@@ -489,6 +496,7 @@
 				6E73293823C9FC5B0037003B /* MappingError.swift */,
 				6E73293A23CA07920037003B /* StoreService.swift */,
 				6E4CB8FE23D488A700542D21 /* ReviewService.swift */,
+				6E2F5FDE23D6BF4800094D41 /* CategoryService.swift */,
 			);
 			path = network;
 			sourceTree = "<group>";
@@ -506,6 +514,7 @@
 				6E56BD8223CDE3BC002D7092 /* Review.swift */,
 				6EAA9B3223D2068E00B4148C /* SaveResponse.swift */,
 				6ED37D8C23D5441200E12711 /* Page.swift */,
+				6E2F5FE023D6C04800094D41 /* Category.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -820,6 +829,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E6835CA23C30E0A00D23F54 /* MyReviewVC.swift in Sources */,
+				6E2F5FDF23D6BF4800094D41 /* CategoryService.swift in Sources */,
 				6E2C820F23B4A37F0025BB2B /* NicknameVC.swift in Sources */,
 				6E07D44623B590B30055AEE7 /* HomeVC.swift in Sources */,
 				6E82F8CB23D5D8A600AB3593 /* MyReviewViewModel.swift in Sources */,
@@ -847,6 +857,7 @@
 				6E56BD7B23CDE1DC002D7092 /* Store.swift in Sources */,
 				6E6835BC23C2CC0800D23F54 /* RegisteredView.swift in Sources */,
 				6E07D44A23B591160055AEE7 /* MyPageVC.swift in Sources */,
+				6E2F5FE523D6EBAC00094D41 /* CategoryChildViewModel.swift in Sources */,
 				6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */,
 				6E72AE5A23C971FF00D3B257 /* SplashView.swift in Sources */,
 				6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */,
@@ -894,6 +905,7 @@
 				6E56BD7D23CDE216002D7092 /* StoreCategory.swift in Sources */,
 				6E41F7E623BAC2BA00D0AC73 /* UIColorExt.swift in Sources */,
 				6E8E89B023D04240003A7889 /* WritingViewModel.swift in Sources */,
+				6E2F5FE123D6C04800094D41 /* Category.swift in Sources */,
 				6E56BD8123CDE359002D7092 /* Menu.swift in Sources */,
 				6E6B0EDE23AD16F1006E11CE /* BaseVC.swift in Sources */,
 				6E6835C023C2D2BC00D23F54 /* RegisteredVC.swift in Sources */,

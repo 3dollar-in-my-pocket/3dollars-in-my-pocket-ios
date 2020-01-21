@@ -7,17 +7,20 @@ protocol CategoryPageDelegate: class {
 class CategoryPageVC: UIPageViewController {
     weak var pageDelegate: CategoryPageDelegate?
     
-    let controllers = [CategoryChildVC.instance(category: .BUNGEOPPANG),
-                       CategoryChildVC.instance(category: .TAKOYAKI),
-                       CategoryChildVC.instance(category: .GYERANPPANG),
-                       CategoryChildVC.instance(category: .HOTTEOK)]
+    lazy var controllers = [CategoryChildVC.instance(category: .BUNGEOPPANG, latitude: self.latitude, longitude: self.longitude),
+                       CategoryChildVC.instance(category: .TAKOYAKI, latitude: self.latitude, longitude: self.longitude),
+                       CategoryChildVC.instance(category: .GYERANPPANG, latitude: self.latitude, longitude: self.longitude),
+                       CategoryChildVC.instance(category: .HOTTEOK, latitude: self.latitude, longitude: self.longitude)]
     
     var category: StoreCategory!
+    var latitude: Double!
+    var longitude: Double!
     
-    
-    static func instance(category: StoreCategory) -> CategoryPageVC {
+    static func instance(category: StoreCategory, latitude: Double, longitude: Double) -> CategoryPageVC {
         return CategoryPageVC.init(transitionStyle: .scroll, navigationOrientation: .horizontal).then {
             $0.category = category
+            $0.latitude = latitude
+            $0.longitude = longitude
         }
     }
     

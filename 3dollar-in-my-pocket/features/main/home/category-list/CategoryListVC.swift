@@ -5,9 +5,11 @@ class CategoryListVC: BaseVC {
     
     private lazy var categoryListView = CategoryListView(frame: self.view.frame)
     
-    private lazy var pageVC = CategoryPageVC.instance(category: self.category)
+    private var pageVC: CategoryPageVC!
     
     private var category: StoreCategory!
+    
+    var locationManager = CLLocationManager()
     
     
     static func instance(category: StoreCategory) -> CategoryListVC {
@@ -20,8 +22,9 @@ class CategoryListVC: BaseVC {
         super.viewDidLoad()
         view = categoryListView
         
-        setupPageVC()
         tapCategory(selectedIndex: StoreCategory.categoryToIndex(category))
+        setupLocationManager()
+        setupGoogleMap()
     }
     
     override func bindViewModel() {
@@ -39,11 +42,15 @@ class CategoryListVC: BaseVC {
         }.disposed(by: disposeBag)
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        pageVC.view.snp.makeConstraints { (make) in
-            make.edges.equalTo(categoryListView.pageView)
-        }
+    private func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
+    private func setupGoogleMap() {
+        categoryListView.mapView.isMyLocationEnabled = true
     }
     
     func setupMarker(store: [Store]) {
@@ -59,10 +66,14 @@ class CategoryListVC: BaseVC {
 //        marker.map = categoryListView.mapView
     }
     
-    private func setupPageVC() {
+    private func setupPageVC(latitude: Double, longitude: Double) {
+        pageVC = CategoryPageVC.instance(category: self.category, latitude: latitude, longitude: longitude )
         addChild(pageVC)
         pageVC.pageDelegate = self
         categoryListView.pageView.addSubview(pageVC.view)
+        pageVC.view.snp.makeConstraints { (make) in
+            make.edges.equalTo(categoryListView.pageView)
+        }
     }
     
     private func tapCategory(selectedIndex: Int) {
@@ -80,3 +91,19 @@ extension CategoryListVC: CategoryPageDelegate {
         self.tapCategory(selectedIndex: index)
     }
 }
+
+extension CategoryListVC: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations.last
+        let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
+        
+        self.categoryListView.mapView.animate(to: camera)
+        self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
+    }
+}
+

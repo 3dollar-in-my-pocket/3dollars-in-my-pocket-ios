@@ -5,7 +5,7 @@ class CategoryListCell: BaseTableViewCell {
     static let registerId = "\(CategoryListCell.self)"
     
     let categoryImage = UIImageView().then {
-        $0.image = UIImage.init(named: "img_shop_fish")
+        $0.image = UIImage.init(named: "img_review_bungeoppang")
     }
     
     let titleLabel = UILabel().then {
@@ -44,6 +44,23 @@ class CategoryListCell: BaseTableViewCell {
             make.centerY.equalTo(categoryImage.snp.centerY)
             make.right.equalToSuperview().offset(-16)
         }
+    }
+    
+    func bind(storeCard: StoreCard) {
+        switch storeCard.category {
+        case .BUNGEOPPANG:
+            categoryImage.image = UIImage.init(named: "img_40_bungeoppang")
+        case .GYERANPPANG:
+            categoryImage.image = UIImage.init(named: "img_40_gyeranppang")
+        case .HOTTEOK:
+            categoryImage.image = UIImage.init(named: "img_40_hotteok")
+        case .TAKOYAKI:
+            categoryImage.image = UIImage.init(named: "img_40_takoyaki")
+        default:
+            categoryImage.image = UIImage.init(named: "img_40_bungeoppang")
+        }
+        titleLabel.text = storeCard.storeName
+        distanceLabel.text = String.init(format: "%dm", storeCard.distance)
     }
     
     func setBottomRadius(isLast: Bool) {
