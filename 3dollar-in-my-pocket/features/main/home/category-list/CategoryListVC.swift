@@ -46,6 +46,7 @@ class CategoryListVC: BaseVC {
     }
     
     private func tapCategory(selectedIndex: Int) {
+        categoryListView.setCategoryTitleImage(index: selectedIndex)
         for index in self.categoryListView.categoryStackView.arrangedSubviews.indices {
             if let button = self.categoryListView.categoryStackView.arrangedSubviews[index] as? UIButton {
                 button.isSelected = (index == selectedIndex)

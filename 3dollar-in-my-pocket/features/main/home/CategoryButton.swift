@@ -49,7 +49,7 @@ class CategoryButton: BaseView {
             icon.image = UIImage.init(named: "img_category_fish")
             title.text = "붕어빵"
         case .GYERANPPANG:
-            icon.image = UIImage.init(named: "img_category_geyranppang")
+            icon.image = UIImage.init(named: "img_category_gyeranppang")
             title.text = "계란빵"
         case .HOTTEOK:
             icon.image = UIImage.init(named: "img_category_hotteok")

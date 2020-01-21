@@ -11,9 +11,7 @@ class CategoryListView: BaseView {
         $0.setImage(UIImage.init(named: "ic_back_black"), for: .normal)
     }
     
-    let categoryImage = UIImageView().then {
-        $0.image = UIImage.init(named: "img_category_fish")
-    }
+    let categoryImage = UIImageView()
     
     let categoryBungeoppang = UIButton().then {
         $0.setTitle("붕어빵", for: .normal)
@@ -123,6 +121,21 @@ class CategoryListView: BaseView {
     override func layoutSubviews() {
         super.layoutSubviews()
         setupNavigationBar()
+    }
+    
+    func setCategoryTitleImage(index: Int) {
+        switch index {
+        case 0:
+            categoryImage.image = UIImage.init(named: "img_category_fish")
+        case 1:
+            categoryImage.image = UIImage.init(named: "img_category_takoyaki")
+        case 2:
+            categoryImage.image = UIImage.init(named: "img_category_gyeranppang")
+        case 3:
+            categoryImage.image = UIImage.init(named: "img_category_hotteok")
+        default:
+            break
+        }
     }
     
     private func setupNavigationBar() {
