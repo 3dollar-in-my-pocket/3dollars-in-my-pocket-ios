@@ -9,6 +9,7 @@ class ModifyVC: BaseVC {
     var store: Store!
     var viewModel = ModifyViewMode()
     var locationManager = CLLocationManager()
+    var deleteVC: DeleteModalVC?
     
     private let imagePicker = UIImagePickerController()
     private var selectedImageIndex = 0
@@ -39,6 +40,16 @@ class ModifyVC: BaseVC {
     override func bindViewModel() {
         modifyView.backBtn.rx.tap.bind { [weak self] in
             self?.navigationController?.popViewController(animated: true)
+        }.disposed(by: disposeBag)
+        
+        modifyView.deleteBtn.rx.tap.bind { [weak self] in
+            if let vc = self {
+                vc.deleteVC = DeleteModalVC.instance(storeId: vc.store.id!).then {
+                    $0.deleagete = self
+                }
+                vc.modifyView.addBgDim()
+                vc.present(vc.deleteVC!, animated: true)
+            }
         }.disposed(by: disposeBag)
         
         modifyView.nameField.rx.text.bind { [weak self] (inputText) in
@@ -246,4 +257,16 @@ extension ModifyVC: CLLocationManagerDelegate {
     }
 }
 
+extension ModifyVC: DeleteModalDelegate {
+    func onRequest() {
+        deleteVC?.dismiss(animated: true, completion: nil)
+        self.modifyView.removeBgDim()
+        self.navigationController?.popToRootViewController(animated: true)
+    }
+    
+    func onTapClose() {
+        deleteVC?.dismiss(animated: true, completion: nil)
+        self.modifyView.removeBgDim()
+    }
+}
 

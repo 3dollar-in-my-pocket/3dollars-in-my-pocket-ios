@@ -158,4 +158,14 @@ struct StoreService: APIServiceType {
             completion(response)
         }
     }
+    
+    static func deleteStore(storeId: Int, complection: @escaping (DataResponse<String>) -> Void) {
+        let urlString = self.url("api/v1/store/delete")
+        let headers = self.defaultHeader()
+        let parameters = ["storeId": storeId, "userId": UserDefaultsUtil.getUserId()!]
+        
+        Alamofire.request(urlString, method: .delete, parameters: parameters, headers: headers).responseString { (response) in
+            complection(response)
+        }
+    }
 }
