@@ -9,6 +9,8 @@ class CategoryListVC: BaseVC {
     
     private var category: StoreCategory!
     
+    private var myLocationFlag = false
+    
     var locationManager = CLLocationManager()
     
     
@@ -36,6 +38,11 @@ class CategoryListVC: BaseVC {
                 }.disposed(by: disposeBag)
             }
         }
+        
+        categoryListView.myLocationBtn.rx.tap.bind { [weak self] in
+            self?.myLocationFlag = true
+            self?.locationManager.startUpdatingLocation()
+        }.disposed(by: disposeBag)
         
         categoryListView.backBtn.rx.tap.bind { [weak self] in
             self?.navigationController?.popViewController(animated: true)
@@ -104,7 +111,11 @@ extension CategoryListVC: CLLocationManagerDelegate {
         let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
         
         self.categoryListView.mapView.animate(to: camera)
-        self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+        
+        if !self.myLocationFlag {
+            self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+            self.myLocationFlag = false
+        }
         locationManager.stopUpdatingLocation()
     }
     
