@@ -53,19 +53,6 @@ class CategoryListVC: BaseVC {
         categoryListView.mapView.isMyLocationEnabled = true
     }
     
-    func setupMarker(store: [Store]) {
-        // API 연동 하고나서 가게 위치들 찍어야함!
-//        let camera = GMSCameraPosition.camera(withLatitude: 37.49838214755165, longitude: 127.02844798564912, zoom: 15)
-//
-//        categoryListView.mapView.camera = camera
-//
-//        let marker = GMSMarker()
-//        marker.position = CLLocationCoordinate2D(latitude: 37.49838214755165, longitude: 127.02844798564912)
-//        marker.title = "닥고약기"
-//        marker.snippet = "무름표"
-//        marker.map = categoryListView.mapView
-    }
-    
     private func setupPageVC(latitude: Double, longitude: Double) {
         pageVC = CategoryPageVC.instance(category: self.category, latitude: latitude, longitude: longitude )
         addChild(pageVC)
@@ -84,9 +71,28 @@ class CategoryListVC: BaseVC {
             }
         }
     }
+    
+    private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
 }
 
 extension CategoryListVC: CategoryPageDelegate {
+    func setMarker(storeCards: [StoreCard]) {
+        self.categoryListView.mapView.clear()
+        
+        for store in storeCards {
+            let marker = GMSMarker()
+            marker.position = CLLocationCoordinate2D(latitude: store.latitude, longitude: store.longitude)
+            marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_off")!, scaledToSize: CGSize.init(width: 16, height: 16))
+            marker.map = categoryListView.mapView
+        }
+    }
+    
     func onScrollPage(index: Int) {
         self.tapCategory(selectedIndex: index)
     }

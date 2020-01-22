@@ -4,6 +4,27 @@ struct CategoryChildViewModel {
     var storeByDistance: CategoryByDistance = CategoryByDistance.init()
     var storeByReview: CategoryByReview = CategoryByReview.init()
     
+    func getAllDistanceStores() -> [StoreCard] {
+        var result: [StoreCard] = []
+        
+        result.append(contentsOf: storeByDistance.storeList50)
+        result.append(contentsOf: storeByDistance.storeList100)
+        result.append(contentsOf: storeByDistance.storeList500)
+        result.append(contentsOf: storeByDistance.storeList1000)
+        return result
+    }
+    
+    func getAllReviewStores() -> [StoreCard] {
+        var result: [StoreCard] = []
+        
+        result.append(contentsOf: storeByReview.storeList0)
+        result.append(contentsOf: storeByReview.storeList1)
+        result.append(contentsOf: storeByReview.storeList2)
+        result.append(contentsOf: storeByReview.storeList3)
+        result.append(contentsOf: storeByReview.storeList4)
+        return result
+    }
+    
     func getNumberOfDistanceRow(section: Int) -> Int {
         switch getRealDistanceSection(section: section) {
         case 0:

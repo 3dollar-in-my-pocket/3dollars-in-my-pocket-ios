@@ -2,15 +2,29 @@ import UIKit
 
 protocol CategoryPageDelegate: class {
     func onScrollPage(index: Int)
+    func setMarker(storeCards: [StoreCard])
 }
 
 class CategoryPageVC: UIPageViewController {
     weak var pageDelegate: CategoryPageDelegate?
     
-    lazy var controllers = [CategoryChildVC.instance(category: .BUNGEOPPANG, latitude: self.latitude, longitude: self.longitude),
-                       CategoryChildVC.instance(category: .TAKOYAKI, latitude: self.latitude, longitude: self.longitude),
-                       CategoryChildVC.instance(category: .GYERANPPANG, latitude: self.latitude, longitude: self.longitude),
-                       CategoryChildVC.instance(category: .HOTTEOK, latitude: self.latitude, longitude: self.longitude)]
+    lazy var bungeoppangVC = CategoryChildVC.instance(category: .BUNGEOPPANG, latitude: self.latitude, longitude: self.longitude).then {
+        $0.delegate = self
+    }
+    
+    lazy var takoyakiVC = CategoryChildVC.instance(category: .TAKOYAKI, latitude: self.latitude, longitude: self.longitude).then {
+        $0.delegate = self
+    }
+    
+    lazy var gyeranppangVC = CategoryChildVC.instance(category: .GYERANPPANG, latitude: self.latitude, longitude: self.longitude).then {
+        $0.delegate = self
+    }
+    
+    lazy var hotteokVC = CategoryChildVC.instance(category: .HOTTEOK, latitude: self.latitude, longitude: self.longitude).then {
+        $0.delegate = self
+    }
+    
+    lazy var controllers = [self.bungeoppangVC, self.takoyakiVC, self.gyeranppangVC, self.hotteokVC]
     
     var category: StoreCategory!
     var latitude: Double!
@@ -79,5 +93,11 @@ extension CategoryPageVC: UIPageViewControllerDelegate, UIPageViewControllerData
             let currentIndex = self.controllers.firstIndex(of: firstVC) {
             self.pageDelegate?.onScrollPage(index: currentIndex)
         }
+    }
+}
+
+extension CategoryPageVC: CategoryChildDelegate {
+    func setMarkers(storeCards: [StoreCard]) {
+        self.pageDelegate?.setMarker(storeCards: storeCards)
     }
 }

@@ -1,8 +1,13 @@
 import UIKit
 
+protocol CategoryChildDelegate {
+    func setMarkers(storeCards: [StoreCard])
+}
+
 class CategoryChildVC: BaseVC {
     
     var viewModel = CategoryChildViewModel()
+    var delegate: CategoryChildDelegate?
     var category: StoreCategory!
     var latitude: Double!
     var longitude: Double!
@@ -66,8 +71,11 @@ class CategoryChildVC: BaseVC {
         CategoryService.getStroeByDistance(category: category, latitude: latitude, longitude: longitude) { [weak self] (response) in
             switch response.result {
             case .success(let categoryByDistance):
-                self?.viewModel.storeByDistance = categoryByDistance
-                self?.categoryChildView.tableView.reloadData()
+                if let vc = self {
+                    vc.viewModel.storeByDistance = categoryByDistance
+                    vc.delegate?.setMarkers(storeCards: vc.viewModel.getAllDistanceStores())
+                    vc.categoryChildView.tableView.reloadData()
+                }
             case .failure(let error):
                 if let vc = self {
                     AlertUtils.show(controller: vc, title: "get store by distance", message: error.localizedDescription)
@@ -80,8 +88,11 @@ class CategoryChildVC: BaseVC {
         CategoryService.getStoreByReview(category: category, latitude: latitude, longitude: longitude) { [weak self] (response) in
             switch response.result {
             case .success(let categoryByReview):
-                self?.viewModel.storeByReview = categoryByReview
-                self?.categoryChildView.tableView.reloadData()
+                if let vc = self {
+                    vc.viewModel.storeByReview = categoryByReview
+                    vc.delegate?.setMarkers(storeCards: vc.viewModel.getAllReviewStores())
+                    vc.categoryChildView.tableView.reloadData()
+                }
             case .failure(let error):
                 if let vc = self {
                     AlertUtils.show(controller: vc, title: "get store by review", message: error.localizedDescription)
