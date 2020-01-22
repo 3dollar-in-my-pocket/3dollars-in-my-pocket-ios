@@ -59,7 +59,7 @@ class CategoryListHeaderView: BaseView {
     }
     
     func setReviewHeader(section: Int) {
-        nearImage.image = UIImage.init(named: "ic_near")
+        nearImage.image = UIImage.init(named: "ic_star_outline")
         switch section {
         case 0:
             titleLable.text = "4점 이상"
