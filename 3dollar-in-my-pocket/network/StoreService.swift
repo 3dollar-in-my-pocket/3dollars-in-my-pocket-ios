@@ -83,6 +83,46 @@ struct StoreService: APIServiceType {
         }
     }
     
+    static func updateStore(storeId: Int, store: Store, images: [UIImage], completion: @escaping (DataResponse<String>) -> Void) {
+        let urlString = self.url("api/v1/store/update")
+        let headers = self.defaultHeader()
+        var parameters = store.toJSON()
+        
+        parameters["menu"] = nil
+        parameters["image"] = nil
+        parameters["review"] = nil
+        parameters["storeId"] = storeId
+        
+        for index in store.menus.indices {
+            let menu = store.menus[index]
+            
+            parameters["menu[\(index)].name"] = menu.name
+            parameters["menu[\(index)].price"] = menu.price
+        }
+        
+        Alamofire.upload(multipartFormData: { (multipartFormData) in
+            for index in images.indices {
+                let image = images[index]
+
+                multipartFormData.append(image.jpegData(compressionQuality: 0.5)!, withName: "image", fileName: "image\(index).jpeg", mimeType: "image/jpeg")
+            }
+            for (key, value) in parameters {
+                let stringValue = String(describing: value)
+                
+                multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
+            }
+        }, to: urlString, method: .put, headers: headers) { (result) in
+            switch result {
+            case .success(let uploadRequest, _, _):
+                uploadRequest.responseString { (response) in
+                    completion(response)
+                }
+            case .failure(let error):
+                AlertUtils.show(title: "Save store error", message: error.localizedDescription)
+            }
+        }
+    }
+    
     static func getStoreDetail(storeId: Int, latitude: Double, longitude: Double,
                                completion: @escaping (DataResponse<Store>) -> Void) {
         let urlString = self.url("api/v1/store/detail")

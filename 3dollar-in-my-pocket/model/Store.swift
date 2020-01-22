@@ -15,7 +15,7 @@ struct Store: Mappable {
     var distance: Int!
     
     
-    init(category: StoreCategory, latitude: Double, longitude: Double, storeName: String,
+    init(category: StoreCategory? = nil, latitude: Double, longitude: Double, storeName: String,
          menus: [Menu]) {
         self.category = category
         self.latitude = latitude

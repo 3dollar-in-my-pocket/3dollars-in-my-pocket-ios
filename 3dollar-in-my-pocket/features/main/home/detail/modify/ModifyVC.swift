@@ -51,28 +51,26 @@ class ModifyVC: BaseVC {
         }.disposed(by: disposeBag)
         
         modifyView.registerBtn.rx.tap.bind { [weak self] in
-            if let storeName = self?.modifyView.nameField.text!,
+            if let storeId = self?.store.id,
+                let storeName = self?.modifyView.nameField.text!,
                 let images = self?.viewModel.imageList,
                 let latitude = self?.modifyView.mapView.camera.target.latitude,
                 let longitude = self?.modifyView.mapView.camera.target.longitude,
                 let menus = self?.viewModel.menuList {
-//                let store = Store.init(latitude: latitude, longitude: longitude, storeName: storeName, menus: menus)
-//
-//                LoadingViewUtil.addLoadingView()
-//                StoreService.saveStore(store: store, images: images) { [weak self] (response) in
-//                    switch response.result {
-//                    case .success(let saveResponse):
-//                        if let vc = self {
-//                            vc.dismiss(animated: true, completion: nil)
-//                            vc.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
-//                        }
-//                    case .failure(let error):
-//                        if let vc = self {
-//                            AlertUtils.show(controller: vc, title: "Save store error", message: error.localizedDescription)
-//                        }
-//                    }
-//                    LoadingViewUtil.removeLoadingView()
-//                }
+                let store = Store.init(latitude: latitude, longitude: longitude, storeName: storeName, menus: menus)
+
+                LoadingViewUtil.addLoadingView()
+                StoreService.updateStore(storeId: storeId, store: store, images: images) { (response) in
+                    switch response.result {
+                    case .success(_):
+                        self?.navigationController?.popViewController(animated: true)
+                    case .failure(let error):
+                        if let vc = self {
+                            AlertUtils.show(controller: vc, title: "Update store error", message: error.localizedDescription)
+                        }
+                    }
+                    LoadingViewUtil.removeLoadingView()
+                }
             } else {
                 AlertUtils.show(controller: self, message: "올바른 내용을 작성해주세요.")
             }
