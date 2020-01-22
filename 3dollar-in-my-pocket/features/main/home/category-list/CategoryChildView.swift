@@ -18,6 +18,7 @@ class CategoryChildView: BaseView {
         $0.setTitle("거리순", for: .normal)
         $0.setTitleColor(.black, for: .selected)
         $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
+        $0.isSelected = true
         $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 14)
     }
     

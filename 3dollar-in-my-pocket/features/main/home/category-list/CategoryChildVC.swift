@@ -74,7 +74,9 @@ extension CategoryChildVC: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        delegate?.onTapBack()
+        if let storeCard = self.viewModel.getDistanceStore(indexPath: indexPath) {
+            self.navigationController?.pushViewController(DetailVC.instance(storeId: storeCard.id), animated: true)
+        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
