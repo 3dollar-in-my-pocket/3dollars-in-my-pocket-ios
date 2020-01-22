@@ -78,12 +78,14 @@ extension CategoryChildVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return self.viewModel.getValidSectionCount()
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if self.viewModel.isValidDistanceSection(section: section) {
-            return CategoryListHeaderView()
+            return CategoryListHeaderView().then {
+                $0.setheader(section: self.viewModel.getRealSection(section: section))
+            }
         } else {
             return nil
         }

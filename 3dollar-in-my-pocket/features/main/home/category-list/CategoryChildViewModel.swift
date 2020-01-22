@@ -4,7 +4,7 @@ struct CategoryChildViewModel {
     var storeByDistance: Category = Category.init()
     
     func getDistanceRow(section: Int) -> Int {
-        switch section {
+        switch getRealSection(section: section) {
         case 0:
             return storeByDistance.storeList50.count
         case 1:
@@ -19,7 +19,7 @@ struct CategoryChildViewModel {
     }
     
     func getDistanceStore(indexPath: IndexPath) -> StoreCard? {
-        switch indexPath.section {
+        switch getRealSection(section: indexPath.section) {
         case 0:
             return self.storeByDistance.storeList50[indexPath.row]
         case 1:
@@ -34,7 +34,7 @@ struct CategoryChildViewModel {
     }
     
     func isValidDistanceSection(section: Int) -> Bool {
-        switch section {
+        switch getRealSection(section: section) {
         case 0:
             return !storeByDistance.storeList50.isEmpty
         case 1:
@@ -46,5 +46,63 @@ struct CategoryChildViewModel {
         default:
             return false
         }
+    }
+    
+    func getValidSectionCount() -> Int {
+        var sectionCount = 0
+        if !storeByDistance.storeList50.isEmpty {
+            sectionCount += 1
+        }
+        if !storeByDistance.storeList100.isEmpty {
+            sectionCount += 1
+        }
+        if !storeByDistance.storeList500.isEmpty {
+            sectionCount += 1
+        }
+        if !storeByDistance.storeList1000.isEmpty {
+            sectionCount += 1
+        }
+        return sectionCount
+    }
+    
+    func getRealSection(section: Int) -> Int {
+        var result = section
+        
+        switch section {
+        case 0:
+            if storeByDistance.storeList50.isEmpty {
+                result += 1
+                if storeByDistance.storeList100.isEmpty {
+                    result += 1
+                    if storeByDistance.storeList500.isEmpty {
+                        result += 1
+                    } else {
+                        return result
+                    }
+                } else {
+                    return section
+                }
+            } else {
+                return section
+            }
+        case 1:
+            if storeByDistance.storeList100.isEmpty {
+                result += 1
+                if storeByDistance.storeList500.isEmpty {
+                    result += 1
+                } else {
+                    return result
+                }
+            } else {
+                return result
+            }
+        case 2:
+            if storeByDistance.storeList500.isEmpty {
+                result += 1
+            }
+        default:
+            break
+        }
+        return result
     }
 }

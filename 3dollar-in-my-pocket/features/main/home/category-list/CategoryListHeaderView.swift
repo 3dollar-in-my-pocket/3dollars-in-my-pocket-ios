@@ -41,4 +41,19 @@ class CategoryListHeaderView: BaseView {
         layer.masksToBounds = true
         layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
+    
+    func setheader(section: Int) {
+        switch section {
+        case 0:
+            titleLable.text = "50m 이내"
+        case 1:
+            titleLable.text = "100m 이내"
+        case 2:
+            titleLable.text = "500m 이내"
+        case 3:
+            titleLable.text = "1km 이내"
+        default:
+            titleLable.text = ""
+        }
+    }
 }
