@@ -87,8 +87,8 @@ class MainVC: BaseVC {
 }
 
 extension MainVC: HomeDelegate {
-    func onTapCategory() {
-        self.navigationController?.pushViewController(CategoryListVC.instance(), animated: true)
+    func onTapCategory(category: StoreCategory) {
+        self.navigationController?.pushViewController(CategoryListVC.instance(category: category), animated: true)
     }
     
     func didDragMap() {

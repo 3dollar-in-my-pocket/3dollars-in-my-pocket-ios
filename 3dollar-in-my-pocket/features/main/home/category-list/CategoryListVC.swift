@@ -5,29 +5,28 @@ class CategoryListVC: BaseVC {
     
     private lazy var categoryListView = CategoryListView(frame: self.view.frame)
     
+    private var pageVC: CategoryPageVC!
     
-    static func instance() -> CategoryListVC {
-        return CategoryListVC(nibName: nil, bundle: nil)
+    private var category: StoreCategory!
+    
+    private var myLocationFlag = false
+    
+    var locationManager = CLLocationManager()
+    
+    
+    static func instance(category: StoreCategory) -> CategoryListVC {
+        return CategoryListVC(nibName: nil, bundle: nil).then {
+            $0.category = category
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view = categoryListView
         
-        let camera = GMSCameraPosition.camera(withLatitude: 37.49838214755165, longitude: 127.02844798564912, zoom: 15)
-        
-        categoryListView.mapView.camera = camera
-        
-        let marker = GMSMarker()
-        marker.position = CLLocationCoordinate2D(latitude: 37.49838214755165, longitude: 127.02844798564912)
-        marker.title = "닥고약기"
-        marker.snippet = "무름표"
-        marker.map = categoryListView.mapView
-        
-        categoryListView.pageCollectionView.delegate = self
-        categoryListView.pageCollectionView.dataSource = self
-        categoryListView.pageCollectionView.register(CategoryCollectionCell.self, forCellWithReuseIdentifier: CategoryCollectionCell.registerId)
-        categoryListView.categoryBungeoppang.isSelected = true // Default setting
+        tapCategory(selectedIndex: StoreCategory.categoryToIndex(category))
+        setupLocationManager()
+        setupGoogleMap()
     }
     
     override func bindViewModel() {
@@ -35,52 +34,93 @@ class CategoryListVC: BaseVC {
             if let button = categoryListView.categoryStackView.arrangedSubviews[index] as? UIButton {
                 button.rx.tap.bind { [weak self] in
                     self?.tapCategory(selectedIndex: index)
-                    self?.categoryListView.pageCollectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: .centeredHorizontally, animated: true)
+                    self?.pageVC.tapCategory(index: index)
                 }.disposed(by: disposeBag)
             }
         }
+        
+        categoryListView.myLocationBtn.rx.tap.bind { [weak self] in
+            self?.myLocationFlag = true
+            self?.locationManager.startUpdatingLocation()
+        }.disposed(by: disposeBag)
         
         categoryListView.backBtn.rx.tap.bind { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         }.disposed(by: disposeBag)
     }
     
+    private func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
+    private func setupGoogleMap() {
+        categoryListView.mapView.isMyLocationEnabled = true
+    }
+    
+    private func setupPageVC(latitude: Double, longitude: Double) {
+        pageVC = CategoryPageVC.instance(category: self.category, latitude: latitude, longitude: longitude )
+        addChild(pageVC)
+        pageVC.pageDelegate = self
+        categoryListView.pageView.addSubview(pageVC.view)
+        pageVC.view.snp.makeConstraints { (make) in
+            make.edges.equalTo(categoryListView.pageView)
+        }
+    }
+    
     private func tapCategory(selectedIndex: Int) {
+        categoryListView.setCategoryTitleImage(category: StoreCategory.index(selectedIndex))
         for index in self.categoryListView.categoryStackView.arrangedSubviews.indices {
             if let button = self.categoryListView.categoryStackView.arrangedSubviews[index] as? UIButton {
                 button.isSelected = (index == selectedIndex)
             }
         }
     }
+    
+    private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
 }
 
-extension CategoryListVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCollectionCell.registerId, for: indexPath) as? CategoryCollectionCell else {
-            return BaseCollectionViewCell()
+extension CategoryListVC: CategoryPageDelegate {
+    func setMarker(storeCards: [StoreCard]) {
+        self.categoryListView.mapView.clear()
+        
+        for store in storeCards {
+            let marker = GMSMarker()
+            marker.position = CLLocationCoordinate2D(latitude: store.latitude, longitude: store.longitude)
+            marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_off")!, scaledToSize: CGSize.init(width: 16, height: 16))
+            marker.map = categoryListView.mapView
         }
-        
-        cell.delegate = self
-        return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.width, height: self.categoryListView.pageCollectionView.frame.height)
-    }
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let itemAt = Int(targetContentOffset.pointee.x / self.view.frame.width)
-        
-        self.tapCategory(selectedIndex: itemAt)
+    func onScrollPage(index: Int) {
+        self.tapCategory(selectedIndex: index)
     }
 }
 
-extension CategoryListVC: CategoryCollectionCellDelegate {
-    func onTapBack() {
-        self.navigationController?.pushViewController(DetailVC.instance(storeId: 1), animated: true)
+extension CategoryListVC: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations.last
+        let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
+        
+        self.categoryListView.mapView.animate(to: camera)
+        
+        if !self.myLocationFlag {
+            self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+            self.myLocationFlag = false
+        }
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
     }
 }
+

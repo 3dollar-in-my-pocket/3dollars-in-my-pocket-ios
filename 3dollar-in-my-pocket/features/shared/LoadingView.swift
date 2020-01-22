@@ -2,7 +2,7 @@ import UIKit
 import Lottie
 
 class LoadingView: BaseView {
-    let lottie = LOTAnimationView(name: "data_1").then {
+    let lottie = LOTAnimationView(name: "loading").then {
         $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         $0.contentMode = .scaleAspectFit
         $0.loopAnimation = true
@@ -17,7 +17,7 @@ class LoadingView: BaseView {
     override func bindConstraints() {
         lottie.snp.makeConstraints { (make) in
             make.center.equalToSuperview()
-            make.width.height.equalTo(200)
+            make.width.height.equalTo(150)
         }
     }
 }

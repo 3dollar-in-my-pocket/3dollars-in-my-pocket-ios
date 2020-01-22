@@ -41,4 +41,38 @@ class CategoryListHeaderView: BaseView {
         layer.masksToBounds = true
         layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
+    
+    func setDistanceHeader(section: Int) {
+        nearImage.image = UIImage.init(named: "ic_near")
+        switch section {
+        case 0:
+            titleLable.text = "50m 이내"
+        case 1:
+            titleLable.text = "100m 이내"
+        case 2:
+            titleLable.text = "500m 이내"
+        case 3:
+            titleLable.text = "1km 이내"
+        default:
+            titleLable.text = ""
+        }
+    }
+    
+    func setReviewHeader(section: Int) {
+        nearImage.image = UIImage.init(named: "ic_star_outline")
+        switch section {
+        case 0:
+            titleLable.text = "4점 이상"
+        case 1:
+            titleLable.text = "3점 이상"
+        case 2:
+            titleLable.text = "2점 이상"
+        case 3:
+            titleLable.text = "1점 이상"
+        case 4:
+            titleLable.text = "0점 이상"
+        default:
+            titleLable.text = ""
+        }
+    }
 }

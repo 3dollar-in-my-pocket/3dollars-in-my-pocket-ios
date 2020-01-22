@@ -2,7 +2,7 @@ import UIKit
 import GoogleMaps
 
 protocol HomeDelegate {
-    func onTapCategory()
+    func onTapCategory(category: StoreCategory)
     
     func didDragMap()
     
@@ -53,6 +53,7 @@ class HomeVC: BaseVC {
         }.disposed(by: disposeBag)
         
         viewModel.location.subscribe(onNext: { [weak self] (latitude, longitude) in
+            self?.previousIndex = 0
             self?.getNearestStore(latitude: latitude, longitude: longitude)
         }).disposed(by: disposeBag)
         
@@ -61,24 +62,25 @@ class HomeVC: BaseVC {
         }.disposed(by: disposeBag)
         
         homeView.bungeoppangTap.rx.event.bind { [weak self] (_) in
-            self?.delegate?.onTapCategory()
+            self?.delegate?.onTapCategory(category: .BUNGEOPPANG)
         }.disposed(by: disposeBag)
         
         homeView.takoyakiTap.rx.event.bind { [weak self] (_) in
-            self?.delegate?.onTapCategory()
+            self?.delegate?.onTapCategory(category: .TAKOYAKI)
         }.disposed(by: disposeBag)
         
         homeView.gyeranppangTap.rx.event.bind { [weak self] (_) in
-            self?.delegate?.onTapCategory()
+            self?.delegate?.onTapCategory(category: .GYERANPPANG)
         }.disposed(by: disposeBag)
         
         homeView.hotteokTap.rx.event.bind { [weak self] (_) in
-            self?.delegate?.onTapCategory()
+            self?.delegate?.onTapCategory(category: .HOTTEOK)
         }.disposed(by: disposeBag)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        previousIndex = 0
         locationManager.startUpdatingLocation() // 화면 돌아올때마다 갱신해주면 좋을 것 같음!
     }
     
@@ -103,6 +105,7 @@ class HomeVC: BaseVC {
     }
     
     private func getNearestStore(latitude: Double, longitude: Double) {
+        LoadingViewUtil.addLoadingView()
         StoreService.getStoreOrderByNearest(latitude: latitude, longitude: longitude) { [weak self] (response) in
             switch response.result {
             case .success(let storeCards):
@@ -113,6 +116,7 @@ class HomeVC: BaseVC {
             case .failure(let error):
                 AlertUtils.show(title: "error", message: error.localizedDescription)
             }
+            LoadingViewUtil.removeLoadingView()
         }
     }
     
