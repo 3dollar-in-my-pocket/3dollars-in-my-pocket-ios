@@ -1,6 +1,6 @@
 import ObjectMapper
 
-struct Category: Mappable {
+struct CategoryByDistance: Mappable {
     var storeList50: [StoreCard] = []
     var storeList100: [StoreCard] = []
     var storeList500: [StoreCard] = []

@@ -16,14 +16,26 @@ class CategoryListCell: BaseTableViewCell {
     
     let distanceLabel = UILabel().then {
         $0.text = "10m"
+        $0.textColor = UIColor.init(r: 189, g: 189, b: 189)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 14)
+        $0.isHidden = true
+    }
+    
+    let valueLabel = UILabel().then {
+        $0.text = "10m"
         $0.textColor = UIColor.init(r: 28, g: 28, b: 28)
         $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
+    }
+    
+    let starImg = UIImageView().then {
+        $0.image = UIImage.init(named: "ic_star_on")
+        $0.isHidden = true
     }
     
     override func setup() {
         backgroundColor = .white
         selectionStyle = .none
-        addSubViews(categoryImage, titleLabel, distanceLabel)
+        addSubViews(categoryImage, titleLabel, distanceLabel, valueLabel, starImg)
     }
     
     override func bindConstraints() {
@@ -41,12 +53,23 @@ class CategoryListCell: BaseTableViewCell {
         }
         
         distanceLabel.snp.makeConstraints { (make) in
+            make.left.equalTo(titleLabel.snp.right).offset(8)
+            make.bottom.equalTo(titleLabel)
+        }
+        
+        valueLabel.snp.makeConstraints { (make) in
             make.centerY.equalTo(categoryImage.snp.centerY)
             make.right.equalToSuperview().offset(-16)
         }
+        
+        starImg.snp.makeConstraints { (make) in
+            make.centerY.equalTo(valueLabel)
+            make.right.equalTo(valueLabel.snp.left).offset(-3)
+            make.width.height.equalTo(22)
+        }
     }
     
-    func bind(storeCard: StoreCard) {
+    func bind(order: Order, storeCard: StoreCard) {
         switch storeCard.category {
         case .BUNGEOPPANG:
             categoryImage.image = UIImage.init(named: "img_40_bungeoppang")
@@ -60,7 +83,19 @@ class CategoryListCell: BaseTableViewCell {
             categoryImage.image = UIImage.init(named: "img_40_bungeoppang")
         }
         titleLabel.text = storeCard.storeName
-        distanceLabel.text = String.init(format: "%dm", storeCard.distance)
+        
+        switch order {
+        case .DISTANCE:
+            valueLabel.text = String.init(format: "%dm", storeCard.distance)
+            starImg.isHidden = true
+            distanceLabel.isHidden = true
+        case .REVIEW:
+            valueLabel.text = String.init(format: "%.01f점", storeCard.rating)
+            starImg.isHidden = false
+            distanceLabel.isHidden = false
+            distanceLabel.text = String.init(format: "%dm", storeCard.distance)
+        }
+        
     }
     
     func setBottomRadius(isLast: Bool) {
