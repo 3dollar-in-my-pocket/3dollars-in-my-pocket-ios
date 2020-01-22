@@ -70,4 +70,11 @@ class MenuCell: BaseTableViewCell {
             make.right.equalToSuperview().offset(-23)
         }
     }
+    
+    func setMenu(menu: Menu) {
+        self.nameField.text = menu.name
+        self.nameField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
+        self.descField.text = menu.price
+        self.descField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
+    }
 }

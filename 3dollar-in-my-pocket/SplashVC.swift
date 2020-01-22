@@ -13,17 +13,24 @@ class SplashVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = splashView
-    }
-    
-    override func bindViewModel() {
-        Observable.just(()).delay(.seconds(2), scheduler: MainScheduler.instance)
-            .subscribe { [weak self] in
+        
+        splashView.lottie.play { [weak self] (isFinish) in
+            print(isFinish)
+            if isFinish {
                 if let _ = UserDefaultsUtil.getUserToken() {
                     self?.goToMain()
                 } else {
                     self?.goToSignIn()
                 }
-        }.disposed(by: disposeBag)
+            }
+        }
+    }
+    
+    override func bindViewModel() {
+//        Observable.just(()).delay(.seconds(2), scheduler: MainScheduler.instance)
+//            .subscribe { [weak self] in
+//
+//        }.disposed(by: disposeBag)
     }
     
     private func goToMain() {
