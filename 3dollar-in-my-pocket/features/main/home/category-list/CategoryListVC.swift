@@ -109,12 +109,13 @@ extension CategoryListVC: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.last
         let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
-        
-        self.categoryListView.mapView.animate(to: camera)
-        
+                
         if !self.myLocationFlag {
+            self.categoryListView.mapView.camera = camera
             self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
             self.myLocationFlag = false
+        } else {
+            self.categoryListView.mapView.animate(to: camera)
         }
         locationManager.stopUpdatingLocation()
     }

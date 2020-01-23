@@ -16,6 +16,7 @@ class HomeVC: BaseVC {
     var locationManager = CLLocationManager()
     var isFirst = true
     var previousIndex = 0
+    var mapAnimatedFlag = false
     
     private lazy var homeView = HomeView(frame: self.view.frame)
     
@@ -58,6 +59,7 @@ class HomeVC: BaseVC {
         }).disposed(by: disposeBag)
         
         homeView.mapButton.rx.tap.bind { [weak self] in
+            self?.mapAnimatedFlag = true
             self?.locationManager.startUpdatingLocation()
         }.disposed(by: disposeBag)
         
@@ -81,6 +83,7 @@ class HomeVC: BaseVC {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         previousIndex = 0
+        mapAnimatedFlag = false
         locationManager.startUpdatingLocation() // 화면 돌아올때마다 갱신해주면 좋을 것 같음!
     }
     
@@ -242,7 +245,11 @@ extension HomeVC: CLLocationManagerDelegate {
         let location = locations.last
         let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
         
-        self.homeView.mapView.animate(to: camera)
+        if self.mapAnimatedFlag {
+            self.homeView.mapView.animate(to: camera)
+        } else {
+            self.homeView.mapView.camera = camera
+        }
         self.viewModel.location.onNext((location!.coordinate.latitude, location!.coordinate.longitude))
         locationManager.stopUpdatingLocation()
     }
