@@ -16,14 +16,19 @@ class SplashVC: BaseVC {
         
         splashView.lottie.play { [weak self] (isFinish) in
             if isFinish {
-                if let _ = UserDefaultsUtil.getUserToken() {
-                    self?.goToMain()
-                } else {
-                    self?.goToSignIn()
+                UIView.animate(withDuration: 0.5, animations: { [weak self] in
+                    self?.splashView.alpha = 0
+                }) { (isFinish) in
+                    if let _ = UserDefaultsUtil.getUserToken() {
+                        self?.goToMain()
+                    } else {
+                        self?.goToSignIn()
+                    }
                 }
             }
         }
     }
+    
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent

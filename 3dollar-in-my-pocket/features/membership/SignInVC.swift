@@ -17,6 +17,8 @@ class SignInVC: BaseVC {
         super.viewDidLoad()
         
         view = signInView
+        
+        signInView.startFadeIn()
         navigationController?.isNavigationBarHidden = true
         navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }

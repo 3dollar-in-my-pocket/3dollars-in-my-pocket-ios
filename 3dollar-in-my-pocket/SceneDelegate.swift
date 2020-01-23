@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.backgroundColor = .white
+        window?.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         window?.rootViewController = SplashVC.instance()
         window?.makeKeyAndVisible()
     }

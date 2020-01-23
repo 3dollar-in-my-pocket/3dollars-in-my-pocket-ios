@@ -20,6 +20,7 @@ class SignInView: BaseView {
     
     
     override func setup() {
+        alpha = 0
         backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         addSubViews(lottie, kakaoBtn, appleBtn)
     }
@@ -43,6 +44,14 @@ class SignInView: BaseView {
             make.left.right.equalTo(appleBtn)
             make.height.equalTo(48)
             make.bottom.equalTo(appleBtn.snp.top).offset(-20)
+        }
+    }
+    
+    func startFadeIn() {
+        DispatchQueue.main.async { [weak self] in
+            UIView.animate(withDuration: 0.5) {
+                self?.alpha = 1
+            }
         }
     }
 }
