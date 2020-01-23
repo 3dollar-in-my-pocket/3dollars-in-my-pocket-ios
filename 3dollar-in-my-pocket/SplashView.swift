@@ -2,22 +2,21 @@ import UIKit
 import Lottie
 
 class SplashView: BaseView {
-    let lottie = LOTAnimationView(name: "data_1").then {
+    let lottie = LOTAnimationView(name: "splash").then {
         $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         $0.contentMode = .scaleAspectFit
-        $0.loopAnimation = true
-        $0.play()
     }
     
     override func setup() {
-        backgroundColor = .white
+        backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         addSubViews(lottie)
     }
     
     override func bindConstraints() {
         lottie.snp.makeConstraints { (make) in
             make.center.equalToSuperview()
-            make.width.height.equalTo(200)
+            make.width.equalTo(frame.width)
+            make.height.equalTo(frame.height)
         }
     }
 }

@@ -103,6 +103,13 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                     self?.present(self!.reviewVC!, animated: true)
                 }.disposed(by: disposeBag)
                 
+                cell.modifyBtn.rx.tap.bind { [weak self] in
+                    if let vc = self,
+                        let store = try! vc.viewModel.store.value(){
+                        self?.navigationController?.pushViewController(ModifyVC.instance(store: store), animated: true)
+                    }
+                }.disposed(by: disposeBag)
+                
                 cell.mapBtn.rx.tap.bind { [weak self] in
                     self?.myLocationFlag = true
                     self?.locationManager.startUpdatingLocation()
