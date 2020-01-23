@@ -80,7 +80,12 @@ class ShopCell: BaseCollectionViewCell {
         default:
             break
         }
-        distanceLabel.text = "\(String(describing: storeCard.distance!))m"
+        if storeCard.distance > 1000 {
+            distanceLabel.text = "1km+"
+        } else {
+            distanceLabel.text = "\(storeCard.distance!)m"
+        }
+        
         rankingView.setRank(rank: storeCard.rating)
     }
     
