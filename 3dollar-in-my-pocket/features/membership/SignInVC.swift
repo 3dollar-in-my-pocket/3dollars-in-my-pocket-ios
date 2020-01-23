@@ -43,11 +43,18 @@ class SignInVC: BaseVC {
             kakaoSession.close()
         }
         
-        kakaoSession.open { (error) in
+        kakaoSession.open { [weak self] (error) in
             if let error = error {
-                AlertUtils.show(title: "error", message: error.localizedDescription)
+                if (error as NSError).code != 2 {
+                    AlertUtils.show(title: "error", message: error.localizedDescription)
+                }
             } else {
-                AlertUtils.show(title: "success", message: kakaoSession.token?.accessToken)
+                KOSessionTask.userMeTask { (error, me) in
+                    if let userId = me?.id,
+                        let vc = self {
+                        vc.signIn(socialId: userId, socialType: "KAKAO")
+                    }
+                }
             }
         }
     }
