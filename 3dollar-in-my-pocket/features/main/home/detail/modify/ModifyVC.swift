@@ -2,9 +2,14 @@ import UIKit
 import RxSwift
 import GoogleMaps
 
+protocol ModifyDelegate: class {
+    func onModifySuccess()
+}
+
 class ModifyVC: BaseVC {
     
     private lazy var modifyView = ModifyView(frame: self.view.frame)
+    weak var delegate: ModifyDelegate?
     
     var store: Store!
     var viewModel = ModifyViewMode()
@@ -74,6 +79,7 @@ class ModifyVC: BaseVC {
                 StoreService.updateStore(storeId: storeId, store: store, images: images) { (response) in
                     switch response.result {
                     case .success(_):
+                        self?.delegate?.onModifySuccess()
                         self?.navigationController?.popViewController(animated: true)
                     case .failure(let error):
                         if let vc = self {

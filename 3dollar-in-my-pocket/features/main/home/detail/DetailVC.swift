@@ -1,6 +1,7 @@
 import UIKit
 import GoogleMaps
 import Kingfisher
+import RxSwift
 
 class DetailVC: BaseVC {
     
@@ -103,19 +104,22 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                         vc.detailView.addBgDim()
                         vc.present(vc.reviewVC!, animated: true)
                     }
-                }.disposed(by: disposeBag)
+                }.disposed(by: cell.disposeBag)
                 
-                cell.modifyBtn.rx.tap.bind { [weak self] in
+                cell.modifyBtn.rx.tap.bind { [weak self] (_) in
                     if let vc = self,
                         let store = try! vc.viewModel.store.value(){
-                        self?.navigationController?.pushViewController(ModifyVC.instance(store: store), animated: true)
+                        let modifyVC = ModifyVC.instance(store: store).then {
+                            $0.delegate = self
+                        }
+                        self?.navigationController?.pushViewController(modifyVC, animated: true)
                     }
-                }.disposed(by: disposeBag)
+                }.disposed(by: cell.disposeBag)
                 
                 cell.mapBtn.rx.tap.bind { [weak self] in
                     self?.myLocationFlag = true
                     self?.locationManager.startUpdatingLocation()
-                }.disposed(by: disposeBag)
+                }.disposed(by: cell.disposeBag)
                 
                 cell.setRank(rank: store.rating)
                 if !(store.images.isEmpty) {
@@ -188,5 +192,11 @@ extension DetailVC: ReviewModalDelegate {
     func onTapClose() {
         reviewVC?.dismiss(animated: true, completion: nil)
         self.detailView.removeBgDim()
+    }
+}
+
+extension DetailVC: ModifyDelegate {
+    func onModifySuccess() {
+        self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
     }
 }

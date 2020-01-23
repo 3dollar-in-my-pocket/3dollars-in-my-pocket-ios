@@ -1,5 +1,6 @@
 import UIKit
 import GoogleMaps
+import RxSwift
 
 class ShopInfoCell: BaseTableViewCell {
     
@@ -131,6 +132,11 @@ class ShopInfoCell: BaseTableViewCell {
         $0.layer.cornerRadius = 8
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor.init(r: 153, g: 153, b: 153).cgColor
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
     }
     
     override func setup() {
