@@ -141,7 +141,7 @@
 		6E07D44923B591160055AEE7 /* MyPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageVC.swift; sourceTree = "<group>"; };
 		6E07D44B23B5916C0055AEE7 /* WritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingView.swift; sourceTree = "<group>"; };
 		6E07D44D23B5918B0055AEE7 /* WritingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingVC.swift; sourceTree = "<group>"; };
-		6E0EA39323ABB230008F7CB2 /* 3dollar-in-my-pocket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "3dollar-in-my-pocket.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E0EA39323ABB230008F7CB2 /* 가슴속3천원.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "가슴속3천원.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		6E0EA39A23ABB230008F7CB2 /* SignInVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInVC.swift; sourceTree = "<group>"; };
@@ -307,7 +307,7 @@
 		6E0EA39423ABB230008F7CB2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6E0EA39323ABB230008F7CB2 /* 3dollar-in-my-pocket.app */,
+				6E0EA39323ABB230008F7CB2 /* 가슴속3천원.app */,
 				6E0EA3A923ABB232008F7CB2 /* 3dollar-in-my-pocketTests.xctest */,
 				6E0EA3B423ABB232008F7CB2 /* 3dollar-in-my-pocketUITests.xctest */,
 			);
@@ -646,7 +646,7 @@
 			);
 			name = "3dollar-in-my-pocket";
 			productName = "3dollar-in-my-pocket";
-			productReference = 6E0EA39323ABB230008F7CB2 /* 3dollar-in-my-pocket.app */;
+			productReference = 6E0EA39323ABB230008F7CB2 /* 가슴속3천원.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6E0EA3A823ABB232008F7CB2 /* 3dollar-in-my-pocketTests */ = {
@@ -1148,7 +1148,7 @@
 					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "가슴속3천원";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -1193,7 +1193,7 @@
 					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "가슴속3천원";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
