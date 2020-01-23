@@ -15,7 +15,6 @@ class SplashVC: BaseVC {
         view = splashView
         
         splashView.lottie.play { [weak self] (isFinish) in
-            print(isFinish)
             if isFinish {
                 if let _ = UserDefaultsUtil.getUserToken() {
                     self?.goToMain()
@@ -26,11 +25,8 @@ class SplashVC: BaseVC {
         }
     }
     
-    override func bindViewModel() {
-//        Observable.just(()).delay(.seconds(2), scheduler: MainScheduler.instance)
-//            .subscribe { [weak self] in
-//
-//        }.disposed(by: disposeBag)
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
     private func goToMain() {
