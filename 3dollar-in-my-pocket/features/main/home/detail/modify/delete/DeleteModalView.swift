@@ -9,7 +9,7 @@ protocol DeleteModalViewDelegate: class {
 class DeleteModalView: BaseView {
     
     weak var delegate: DeleteModalViewDelegate?
-    var rating = 0
+    var deleteReason = ""
     
     let containerView = UIView().then {
         $0.layer.cornerRadius = 40
@@ -176,14 +176,17 @@ class DeleteModalView: BaseView {
     }
     
     @objc func onTapRemoveBtn() {
+        deleteReason = "NOSTORE"
         selectBtn(index: 0)
     }
     
     @objc func onTapLocationBtn() {
+        deleteReason = "WRONGNOPOSITION"
         selectBtn(index: 1)
     }
     
     @objc func onTapOverlap() {
+        deleteReason = "OVERLAPSTORE"
         selectBtn(index: 2)
     }
     

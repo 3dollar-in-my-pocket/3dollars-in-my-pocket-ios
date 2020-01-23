@@ -30,7 +30,7 @@ class DeleteModalVC: BaseVC {
     }
     
     private func requestDelete() {
-        StoreService.deleteStore(storeId: self.storeId) { [weak self] (response) in
+        StoreService.deleteStore(storeId: self.storeId, deleteReasonType: DeleteReason.init(rawValue: deleteModalView.deleteReason)!) { [weak self] (response) in
             switch response.result {
             case .success(_):
                 self?.deleagete?.onRequest()
@@ -50,5 +50,15 @@ extension DeleteModalVC: DeleteModalViewDelegate {
     
     func onTapClose() {
         self.deleagete?.onTapClose()
+    }
+}
+
+public enum DeleteReason: String {
+    case NOSTORE = "NOSTORE"
+    case WRONGNOPOSITION = "WRONGNOPOSITION"
+    case OVERLAPSTORE = "OVERLAPSTORE"
+    
+    func getValue() -> String {
+        return self.rawValue
     }
 }
