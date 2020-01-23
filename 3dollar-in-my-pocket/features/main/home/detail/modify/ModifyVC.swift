@@ -13,7 +13,6 @@ class ModifyVC: BaseVC {
     
     var store: Store!
     var viewModel = ModifyViewMode()
-    var locationManager = CLLocationManager()
     var deleteVC: DeleteModalVC?
     
     private let imagePicker = UIImagePickerController()
@@ -37,7 +36,6 @@ class ModifyVC: BaseVC {
         setupImageCollectionView()
         setupMenuTableView()
         setupKeyboardEvent()
-        setupLocationManager()
         setupGoogleMap()
         setupStore()
     }
@@ -60,10 +58,6 @@ class ModifyVC: BaseVC {
         modifyView.nameField.rx.text.bind { [weak self] (inputText) in
             self?.modifyView.setFieldEmptyMode(isEmpty: inputText!.isEmpty)
             self?.viewModel.btnEnable.onNext(())
-        }.disposed(by: disposeBag)
-        
-        modifyView.myLocationBtn.rx.tap.bind {
-            self.locationManager.startUpdatingLocation()
         }.disposed(by: disposeBag)
         
         modifyView.registerBtn.rx.tap.bind { [weak self] in
@@ -132,16 +126,27 @@ class ModifyVC: BaseVC {
         NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    private func setupLocationManager() {
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-    }
-    
     private func setupGoogleMap() {
         modifyView.mapView.isMyLocationEnabled = true
+        let position = GMSCameraPosition.init(latitude: store.latitude!, longitude: store.longitude!, zoom: 15)
+        
+        self.modifyView.mapView.camera = position
+        
+        let marker = GMSMarker()
+        
+        marker.position = CLLocationCoordinate2D(latitude: store.latitude!, longitude: store.longitude!)
+        marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker")!, scaledToSize: CGSize.init(width: 24, height: 32))
+        marker.map = self.modifyView.mapView
     }
+    
+    private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+    
     
     @objc func onShowKeyboard(notification: NSNotification) {
         let userInfo = notification.userInfo!
@@ -246,20 +251,6 @@ extension ModifyVC: UITableViewDelegate, UITableViewDataSource {
             
         }.disposed(by: disposeBag)
         return cell
-    }
-}
-
-extension ModifyVC: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = locations.last
-        let position = GMSCameraPosition.init(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
-        
-        self.modifyView.mapView.camera = position
-        self.locationManager.stopUpdatingLocation()
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
     }
 }
 

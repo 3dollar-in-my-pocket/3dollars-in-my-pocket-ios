@@ -25,14 +25,6 @@ class ModifyView: BaseView {
     
     let mapView = GMSMapView()
     
-    let myLocationBtn = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_location"), for: .normal)
-    }
-    
-    let marker = UIImageView().then {
-        $0.image = UIImage.init(named: "ic_marker")
-    }
-    
     let titleContainer = UIView().then {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 12
@@ -158,7 +150,7 @@ class ModifyView: BaseView {
         scrollView.delegate = self
         setupNavigationBarShadow()
         navigationBar.addSubViews(backBtn, titleLabel, deleteBtn)
-        containerView.addSubViews(mapView, myLocationBtn, marker, titleContainer, repoterValueLabel,
+        containerView.addSubViews(mapView, titleContainer, repoterValueLabel,
                                   repoterLabel, categoryLabel, nameField, imageLabel, imageCollection,
                                   menuLabel, menuTableView)
         scrollView.addSubViews(containerView)
@@ -196,18 +188,6 @@ class ModifyView: BaseView {
             make.left.right.equalToSuperview()
             make.top.equalToSuperview().offset(43)
             make.height.equalTo(336)
-        }
-        
-        myLocationBtn.snp.makeConstraints { (make) in
-            make.right.equalTo(mapView.snp.right).offset(-24)
-            make.bottom.equalTo(mapView.snp.bottom).offset(-24)
-            make.width.height.equalTo(40)
-        }
-        
-        marker.snp.makeConstraints { (make) in
-            make.center.equalTo(mapView.snp.center)
-            make.width.equalTo(24)
-            make.height.equalTo(32)
         }
         
         titleContainer.snp.makeConstraints { (make) in
