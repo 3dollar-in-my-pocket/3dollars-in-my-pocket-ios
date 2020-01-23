@@ -25,6 +25,14 @@ struct UserService: APIServiceType {
         let headers = self.defaultHeader()
         
         Alamofire.request(urlString, method: .put, parameters: parameters, headers: headers).responseString(completionHandler: { (response) in
+            let response: DataResponse<String> = response.flatMapResult { (string) in
+                let statusCode = response.response?.statusCode
+                if statusCode == 200 {
+                    return .success("success")
+                } else {
+                    return .failure(MappingError.init(desc: "이미 존재하는 닉네임입니다."))
+                }
+            }
             completion(response)
         })
     }
@@ -37,6 +45,14 @@ struct UserService: APIServiceType {
         let headers = ["Authorization": token]
         
         Alamofire.request(urlString, method: .put, parameters: parameters, headers: headers).responseString(completionHandler: { (response) in
+            let response: DataResponse<String> = response.flatMapResult { (string) in
+                let statusCode = response.response?.statusCode
+                if statusCode == 200 {
+                    return .success("success")
+                } else {
+                    return .failure(MappingError.init(desc: "이미 존재하는 닉네임입니다."))
+                }
+            }
             completion(response)
         })
     }

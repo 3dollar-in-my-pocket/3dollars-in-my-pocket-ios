@@ -65,11 +65,23 @@ class RenameView: BaseView {
         $0.backgroundColor = .clear
     }
     
+    let warningImage = UIImageView().then {
+        $0.image = UIImage.init(named: "ic_warning")
+        $0.isHidden = true
+    }
+    
+    let warningLabel = UILabel().then {
+        $0.text = "중복된 닉네임"
+        $0.textColor = UIColor.init(r: 238, g: 98, b: 76)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 13)
+        $0.isHidden = true
+    }
+    
     override func setup() {
         backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         addGestureRecognizer(tapGestureView)
         addSubViews(backBtn, titleLabel, bgCloud, oldNicknameLabel, nicknameLabel1, nicknameFieldBg,
-                    nicknameField, nicknameLabel2, startBtn1, startBtn2)
+                    nicknameField, nicknameLabel2, startBtn1, startBtn2, warningImage, warningLabel)
     }
     
     override func bindConstraints() {
@@ -129,10 +141,26 @@ class RenameView: BaseView {
             make.centerY.equalTo(startBtn1.snp.centerY)
             make.left.equalTo(startBtn1.snp.right).offset(8)
         }
+        
+        warningImage.snp.makeConstraints { (make) in
+            make.centerY.equalTo(startBtn1)
+            make.left.equalTo(startBtn2.snp.right).offset(8)
+            make.width.height.equalTo(12)
+        }
+        
+        warningLabel.snp.makeConstraints { (make) in
+            make.centerY.equalTo(warningImage)
+            make.left.equalTo(warningImage.snp.right).offset(5)
+        }
     }
     
     func setBtnEnable(isEnable: Bool) {
         startBtn1.isEnabled = isEnable
         startBtn2.isEnabled = isEnable
+    }
+    
+    func existedSameName() {
+        warningLabel.isHidden = false
+        warningImage.isHidden = false
     }
 }
