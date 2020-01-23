@@ -50,6 +50,11 @@ class MyPageView: BaseView {
         $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 20, right: 196)
     }
     
+    let registerEmptyImg = UIImageView().then {
+        $0.image = UIImage.init(named: "img_my_page_empty")
+        $0.isHidden = true
+    }
+    
     let reviewLabel = UILabel().then {
         $0.text = "내가 쓴 리뷰"
         $0.textColor = .white
@@ -77,13 +82,17 @@ class MyPageView: BaseView {
         $0.isScrollEnabled = false
     }
     
+    let reviewEmptyImg = UIImageView().then {
+        $0.image = UIImage.init(named: "img_my_page_empty")
+        $0.isHidden = true
+    }
     
     
     override func setup() {
         backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         addSubViews(bgCloud, nicknameBg, nicknameLabel, modifyBtn, registerLabel,
-                    registerCountLabel, registerTotalBtn, registerCollectionView,
-                    reviewLabel, reviewCountLabel, reviewTotalBtn, reviewTableView)
+                    registerCountLabel, registerTotalBtn, registerCollectionView, registerEmptyImg,
+                    reviewLabel, reviewCountLabel, reviewTotalBtn, reviewTableView, reviewEmptyImg)
     }
     
     override func bindConstraints() {
@@ -134,6 +143,12 @@ class MyPageView: BaseView {
             make.height.equalTo(200)
         }
         
+        registerEmptyImg.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(registerLabel.snp.bottom).offset(20)
+            make.width.height.equalTo(112 * UIScreen.main.bounds.width / 375)
+        }
+        
         reviewLabel.snp.makeConstraints { (make) in
             make.left.equalTo(registerLabel.snp.left)
             make.top.equalTo(registerCollectionView.snp.bottom).offset(10)
@@ -154,6 +169,12 @@ class MyPageView: BaseView {
             make.right.equalToSuperview().offset(-24)
             make.bottom.equalToSuperview().offset(130)
             make.top.equalTo(reviewLabel.snp.bottom).offset(19)
+        }
+        
+        reviewEmptyImg.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(reviewLabel.snp.bottom).offset(25)
+            make.width.height.equalTo(112 * UIScreen.main.bounds.width / 375)
         }
     }
 }

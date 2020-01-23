@@ -93,6 +93,7 @@ class MyPageVC: BaseVC {
             switch response.result {
             case .success(let storePage):
                 self?.myPageView.registerCountLabel.text = "\(storePage.totalElements!)개"
+                self?.myPageView.registerEmptyImg.isHidden = !storePage.content.isEmpty
                 if storePage.content.count > 5 {
                     var sliceArray: [Store?] = Array(storePage.content[0...4])
                     
@@ -114,6 +115,7 @@ class MyPageVC: BaseVC {
             switch response.result {
             case .success(let reviewPage):
                 self?.myPageView.reviewCountLabel.text = "\(reviewPage.totalElements!)개"
+                self?.myPageView.reviewEmptyImg.isHidden = !reviewPage.content.isEmpty
                 if reviewPage.totalElements > 3 {
                     self?.viewModel.reportedReviews.onNext(Array(reviewPage.content[0...2]))
                 } else {
