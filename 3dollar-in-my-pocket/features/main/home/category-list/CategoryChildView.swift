@@ -38,6 +38,18 @@ class CategoryChildView: BaseView {
         $0.showsVerticalScrollIndicator = false
     }
     
+    let emptyImg = UIImageView().then {
+        $0.image = UIImage.init(named: "img_my_page_empty")
+        $0.isHidden = true
+    }
+    
+    let emptyLabel = UILabel().then {
+        $0.text = "주변에 가게가 없어요."
+        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+        $0.textColor = UIColor.init(r: 200, g: 200, b: 200)
+        $0.isHidden = true
+    }
+    
     init(category: StoreCategory) {
         self.category = category
         super.init(frame: .zero)
@@ -49,7 +61,7 @@ class CategoryChildView: BaseView {
 
     override func setup() {
         backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
-        addSubViews(descLabel1, descLabel2, nearOrderBtn, reviewOrderBtn, tableView)
+        addSubViews(descLabel1, descLabel2, nearOrderBtn, reviewOrderBtn, tableView, emptyImg, emptyLabel)
     }
     
     override func bindConstraints() {
@@ -79,6 +91,19 @@ class CategoryChildView: BaseView {
             make.right.equalToSuperview().offset(-24)
             make.top.equalTo(descLabel1.snp.bottom).offset(5)
         }
+        
+        emptyImg.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(descLabel1.snp.bottom).offset(54)
+            make.width.equalTo(112)
+            make.height.equalTo(112)
+        }
+        
+        emptyLabel.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(emptyImg.snp.bottom).offset(8)
+        }
+        
     }
     
     override func layoutSubviews() {
@@ -95,5 +120,10 @@ class CategoryChildView: BaseView {
         default:
             descLabel1.text = "붕어빵"
         }
+    }
+    
+    func setEmpty(isEmpty: Bool) {
+        emptyImg.isHidden = !isEmpty
+        emptyLabel.isHidden = !isEmpty
     }
 }

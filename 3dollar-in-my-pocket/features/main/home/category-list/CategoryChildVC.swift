@@ -73,6 +73,7 @@ class CategoryChildVC: BaseVC {
             case .success(let categoryByDistance):
                 if let vc = self {
                     vc.viewModel.storeByDistance = categoryByDistance
+                    vc.categoryChildView.setEmpty(isEmpty: vc.viewModel.isDistanceEmpty())
                     vc.delegate?.setMarkers(storeCards: vc.viewModel.getAllDistanceStores())
                     vc.categoryChildView.tableView.reloadData()
                 }
@@ -90,6 +91,7 @@ class CategoryChildVC: BaseVC {
             case .success(let categoryByReview):
                 if let vc = self {
                     vc.viewModel.storeByReview = categoryByReview
+                    vc.categoryChildView.setEmpty(isEmpty: vc.viewModel.isReviewEmpty())
                     vc.delegate?.setMarkers(storeCards: vc.viewModel.getAllReviewStores())
                     vc.categoryChildView.tableView.reloadData()
                 }

@@ -25,6 +25,17 @@ struct CategoryChildViewModel {
         return result
     }
     
+    func isDistanceEmpty() -> Bool {
+        return storeByDistance.storeList50.isEmpty && storeByDistance.storeList100.isEmpty &&
+            storeByDistance.storeList500.isEmpty && storeByDistance.storeList1000.isEmpty
+    }
+    
+    func isReviewEmpty() -> Bool {
+        return storeByReview.storeList0.isEmpty && storeByReview.storeList1.isEmpty &&
+            storeByReview.storeList2.isEmpty && storeByReview.storeList3.isEmpty &&
+            storeByReview.storeList4.isEmpty
+    }
+    
     func getNumberOfDistanceRow(section: Int) -> Int {
         switch getRealDistanceSection(section: section) {
         case 0:
