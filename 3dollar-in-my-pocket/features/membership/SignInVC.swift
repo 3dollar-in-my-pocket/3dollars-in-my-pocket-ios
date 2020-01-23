@@ -29,6 +29,10 @@ class SignInVC: BaseVC {
             .bind(onNext: requestAppleSignIn).disposed(by: disposeBag)
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     private func requestKakaoSignIn() {
         guard let kakaoSession = KOSession.shared() else {
             AlertUtils.show(message: "Kakao session is null")
