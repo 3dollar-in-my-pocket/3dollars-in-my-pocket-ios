@@ -225,15 +225,15 @@ class ShopInfoCell: BaseTableViewCell {
             make.left.equalToSuperview().offset(24)
             make.top.equalTo(menuNameLabel.snp.bottom).offset(16)
             make.bottom.equalToSuperview().offset(-24)
-            make.width.equalTo(160)
-            make.height.equalTo(48)
+            make.width.equalTo(160 * UIScreen.main.bounds.width / 375)
+            make.height.equalTo(48 * UIScreen.main.bounds.width / 375)
         }
         
         modifyBtn.snp.makeConstraints { (make) in
             make.right.equalToSuperview().offset(-24)
             make.centerY.equalTo(reviewBtn.snp.centerY)
-            make.width.equalTo(160)
-            make.height.equalTo(48)
+            make.width.equalTo(160 * UIScreen.main.bounds.width / 375)
+            make.height.equalTo(48 * UIScreen.main.bounds.width / 375)
         }
     }
     
