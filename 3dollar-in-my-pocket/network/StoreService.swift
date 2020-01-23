@@ -167,6 +167,15 @@ struct StoreService: APIServiceType {
                                           "deleteReasonType": deleteReasonType.getValue()]
         
         Alamofire.request(urlString, method: .delete, parameters: parameters, headers: headers).responseString { (response) in
+            let response: DataResponse<String> = response.flatMapResult { (json) in
+                let statusCode = response.response!.statusCode
+                
+                if statusCode == 200 {
+                    return .success("success")
+                } else {
+                    return .failure(MappingError.init(desc: "이미 삭제요청한 사람"))
+                }
+            }
             complection(response)
         }
     }

@@ -34,9 +34,9 @@ class DeleteModalVC: BaseVC {
             switch response.result {
             case .success(_):
                 self?.deleagete?.onRequest()
-            case .failure(let error):
+            case .failure(_):
                 if let vc = self {
-                    AlertUtils.show(controller: vc, title: "delete store error", message: error.localizedDescription)
+                    AlertUtils.show(controller: vc, message: "이미 삭제요청을 했습니다.")
                 }
             }
         }
