@@ -86,7 +86,7 @@ class DeleteModalView: BaseView {
     }
     
     let registerBtn = UIButton().then {
-        $0.setTitle("리뷰 등록하기", for: .normal)
+        $0.setTitle("삭제 요청", for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
         $0.backgroundColor = UIColor.init(r: 238, g: 98, b: 76)
