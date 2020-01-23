@@ -2,6 +2,8 @@ import UIKit
 
 protocol ReviewModalDelegate: class {
     func onTapClose()
+    
+    func onReviewSuccess()
 }
 
 class ReviewModalVC: BaseVC {
@@ -35,9 +37,9 @@ class ReviewModalVC: BaseVC {
         let review = Review.init(rating: reviewModalView.rating, contents: reviewModalView.reviewTextView.text)
         ReviewService.saveReview(review: review, storeId: storeId) { [weak self] (response) in
             switch response.result {
-            case .success(let message):
-                print(message)
-                self?.deleagete?.onTapClose()
+            case .success(_):
+                self?.dismiss(animated: true, completion: nil)
+                self?.deleagete?.onReviewSuccess()
             case .failure(let error):
                 if let vc = self {
                     AlertUtils.show(controller: vc, title: "save review error", message: error.localizedDescription)

@@ -95,12 +95,14 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                     return BaseTableViewCell()
                 }
                 cell.reviewBtn.rx.tap.bind { [weak self] (_) in
-                    self?.reviewVC = ReviewModalVC.instance().then {
-                        $0.deleagete = self
-                        $0.storeId = self?.storeId
+                    if let vc = self {
+                        vc.reviewVC = ReviewModalVC.instance().then {
+                            $0.deleagete = self
+                            $0.storeId = self?.storeId
+                        }
+                        vc.detailView.addBgDim()
+                        vc.present(vc.reviewVC!, animated: true)
                     }
-                    self?.detailView.addBgDim()
-                    self?.present(self!.reviewVC!, animated: true)
                 }.disposed(by: disposeBag)
                 
                 cell.modifyBtn.rx.tap.bind { [weak self] in
@@ -168,6 +170,7 @@ extension DetailVC: CLLocationManagerDelegate {
         } else {
             self.getStoreDetail(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
         }
+        self.viewModel.location = (location!.coordinate.latitude, location!.coordinate.longitude)
         locationManager.stopUpdatingLocation()
     }
     
@@ -177,6 +180,11 @@ extension DetailVC: CLLocationManagerDelegate {
 }
 
 extension DetailVC: ReviewModalDelegate {
+    func onReviewSuccess() {
+        self.detailView.removeBgDim()
+        self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
+    }
+    
     func onTapClose() {
         reviewVC?.dismiss(animated: true, completion: nil)
         self.detailView.removeBgDim()
