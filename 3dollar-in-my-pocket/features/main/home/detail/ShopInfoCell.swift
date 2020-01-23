@@ -287,12 +287,16 @@ class ShopInfoCell: BaseTableViewCell {
         switch category {
         case .BUNGEOPPANG:
             categoryValueLabel.text = "붕어빵"
+            emptyImage.image = UIImage.init(named: "img_detail_bungeoppang")
         case .GYERANPPANG:
             categoryValueLabel.text = "계란빵"
+            emptyImage.image = UIImage.init(named: "img_detail_gyeranppang")
         case .HOTTEOK:
             categoryValueLabel.text = "호떡"
+            emptyImage.image = UIImage.init(named: "img_detail_hotteok")
         case .TAKOYAKI:
             categoryValueLabel.text = "타코야끼"
+            emptyImage.image = UIImage.init(named: "img_detail_takoyaki")
         }
     }
     
