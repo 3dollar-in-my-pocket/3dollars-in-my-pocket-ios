@@ -82,9 +82,9 @@ class HomeVC: BaseVC {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        previousIndex = 0
-        mapAnimatedFlag = false
-        locationManager.startUpdatingLocation() // 화면 돌아올때마다 갱신해주면 좋을 것 같음!
+//        previousIndex = 0
+//        mapAnimatedFlag = false
+//        locationManager.startUpdatingLocation() // 화면 돌아올때마다 갱신해주면 좋을 것 같음!
     }
     
     private func setupShopCollectionView() {
@@ -96,6 +96,7 @@ class HomeVC: BaseVC {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
     }
     
     private func setupGoogleMap() {
@@ -250,7 +251,9 @@ extension HomeVC: CLLocationManagerDelegate {
         } else {
             self.homeView.mapView.camera = camera
         }
-        self.viewModel.location.onNext((location!.coordinate.latitude, location!.coordinate.longitude))
+        if isFirst {
+            self.viewModel.location.onNext((location!.coordinate.latitude, location!.coordinate.longitude))
+        }
         locationManager.stopUpdatingLocation()
     }
     
