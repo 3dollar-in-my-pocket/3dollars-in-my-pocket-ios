@@ -1,9 +1,15 @@
 import UIKit
 import RxSwift
 
+protocol MyPageDelegate: class {
+    func onScrollStart()
+    func onScrollEnd()
+}
+
 class MyPageVC: BaseVC {
     
     private lazy var myPageView = MyPageView(frame: self.view.frame)
+    weak var delegate: MyPageDelegate?
     private var viewModel = MyPageViewModel()
     
     static func instance() -> MyPageVC {
@@ -13,6 +19,7 @@ class MyPageVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = myPageView
+        myPageView.scrollView.delegate = self
         setupRegisterCollectionView()
         setUpReviewTableView()
     }
@@ -147,5 +154,24 @@ extension MyPageVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 extension MyPageVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+    }
+}
+
+extension MyPageVC: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.delegate?.onScrollStart()
+//        self.hideRegisterBtn()
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            self.delegate?.onScrollEnd()
+//            self.showRegisterBtn()
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.delegate?.onScrollEnd()
+//        self.showRegisterBtn()
     }
 }

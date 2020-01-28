@@ -2,6 +2,12 @@ import UIKit
 
 class MyPageView: BaseView {
     
+    let scrollView = UIScrollView()
+    
+    let containerView = UIView().then {
+        $0.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
+    }
+    
     let nicknameBg = UIView().then {
         $0.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
         $0.layer.borderWidth = 2
@@ -90,14 +96,21 @@ class MyPageView: BaseView {
     
     override func setup() {
         backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
-        addSubViews(bgCloud, nicknameBg, nicknameLabel, modifyBtn, registerLabel,
-                    registerCountLabel, registerTotalBtn, registerCollectionView, registerEmptyImg,
-                    reviewLabel, reviewCountLabel, reviewTotalBtn, reviewTableView, reviewEmptyImg)
+        containerView.addSubViews(bgCloud, nicknameBg, nicknameLabel, modifyBtn, registerLabel,
+                                  registerCountLabel, registerTotalBtn, registerCollectionView, registerEmptyImg,
+                                  reviewLabel, reviewCountLabel, reviewTotalBtn, reviewTableView, reviewEmptyImg)
+        scrollView.addSubview(containerView)
+        addSubViews(scrollView)
     }
     
     override func bindConstraints() {
+        scrollView.snp.makeConstraints { (make) in
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.left.right.bottom.equalToSuperview()
+        }
+        
         nicknameBg.snp.makeConstraints { (make) in
-            make.top.equalTo(safeAreaLayoutGuide).offset(40)
+            make.top.equalToSuperview().offset(40)
             make.left.equalToSuperview().offset(24)
             make.right.equalToSuperview().offset(-24)
             make.height.equalTo(44)
@@ -119,7 +132,7 @@ class MyPageView: BaseView {
         bgCloud.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
             make.top.equalTo(nicknameBg.snp.bottom).offset(19)
-            make.height.equalTo(135 * RadioUtils.height)
+            make.height.equalTo(135)
         }
         
         registerLabel.snp.makeConstraints { (make) in
@@ -175,6 +188,13 @@ class MyPageView: BaseView {
             make.centerX.equalToSuperview()
             make.top.equalTo(reviewLabel.snp.bottom).offset(25)
             make.width.height.equalTo(112 * UIScreen.main.bounds.width / 375)
+        }
+        
+        containerView.snp.makeConstraints { (make) in
+            make.edges.equalTo(0)
+            make.width.equalTo(frame.width)
+            make.top.equalToSuperview()
+            make.height.equalTo(736)
         }
     }
 }
