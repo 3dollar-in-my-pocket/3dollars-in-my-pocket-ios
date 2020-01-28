@@ -164,7 +164,7 @@ class HomeVC: BaseVC {
 
 extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 172, height: 172)
+        return CGSize(width: 172 * RadioUtils.height, height: 172 * RadioUtils.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -193,7 +193,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
-            let pageWidth = CGFloat(172)
+            let pageWidth = CGFloat(172 * RadioUtils.width)
             let proportionalOffset = scrollView.contentOffset.x / pageWidth
             previousIndex = Int(round(proportionalOffset))
             let indexPath = IndexPath(row: previousIndex, section: 0)
@@ -207,7 +207,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        let pageWidth = CGFloat(172)
+        let pageWidth = CGFloat(172 * RadioUtils.width)
         let proportionalOffset = scrollView.contentOffset.x / pageWidth
         previousIndex = Int(round(proportionalOffset))
         let indexPath = IndexPath(row: previousIndex, section: 0)

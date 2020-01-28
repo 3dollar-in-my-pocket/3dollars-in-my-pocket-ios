@@ -7,7 +7,7 @@ class ShopCell: BaseCollectionViewCell {
     let distanceLabel = UILabel().then {
         $0.text = "100m"
         $0.textColor = UIColor.init(r: 243, g: 162, b: 169)
-        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
         $0.textAlignment = .center
         $0.layer.cornerRadius = 12.5
         $0.layer.borderWidth = 1
@@ -32,22 +32,22 @@ class ShopCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         distanceLabel.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(16)
-            make.top.equalToSuperview().offset(15)
-            make.width.equalTo(56)
-            make.height.equalTo(25)
+            make.left.equalToSuperview().offset(16 * RadioUtils.width)
+            make.top.equalToSuperview().offset(15 * RadioUtils.width)
+            make.width.equalTo(56 * RadioUtils.width)
+            make.height.equalTo(25 * RadioUtils.width)
         }
         
         imageBtn.snp.makeConstraints { (make) in
-            make.top.equalTo(distanceLabel.snp.bottom).offset(8)
-            make.left.equalToSuperview().offset(25)
-            make.right.equalToSuperview().offset(-25)
+            make.top.equalTo(distanceLabel.snp.bottom).offset(8 * RadioUtils.height)
+            make.left.equalToSuperview().offset(25 * RadioUtils.width)
+            make.right.equalToSuperview().offset(-25 * RadioUtils.width)
         }
         
         rankingView.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(16)
-            make.right.equalToSuperview().offset(-14)
-            make.top.equalTo(distanceLabel.snp.bottom).offset(105)
+            make.left.equalToSuperview().offset(16 * RadioUtils.width)
+            make.right.equalToSuperview().offset(-14 * RadioUtils.width)
+            make.top.equalTo(distanceLabel.snp.bottom).offset(105 * RadioUtils.height)
         }
     }
 

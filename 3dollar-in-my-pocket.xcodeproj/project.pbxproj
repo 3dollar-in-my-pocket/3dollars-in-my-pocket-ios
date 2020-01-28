@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		328CFF878487B22029ED6AD4 /* Pods_3dollar_in_my_pocketUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F713AECDABEFD4A2350C57 /* Pods_3dollar_in_my_pocketUITests.framework */; };
 		6E01AD1A23D094FF008BFCC0 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01AD1923D094FF008BFCC0 /* HomeViewModel.swift */; };
 		6E07D44423B5906E0055AEE7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44323B5906E0055AEE7 /* HomeView.swift */; };
 		6E07D44623B590B30055AEE7 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44523B590B30055AEE7 /* HomeVC.swift */; };
@@ -110,8 +109,9 @@
 		6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B85F23BEBF3E00BAD8E9 /* UIButtonExt.swift */; };
 		6EE2B86223BEDC3100BAD8E9 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B86123BEDC3100BAD8E9 /* ImageCell.swift */; };
 		6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */; };
-		BBE1E2B74E01D62BFCC24B3A /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E1EFBD2860CBC793C452FE7 /* Pods_3dollar_in_my_pocket.framework */; };
-		CE473C62907FB7AC248C5449 /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C59B69D1E4EB1BF633118AE9 /* Pods_3dollar_in_my_pocketTests.framework */; };
+		75DB6D3204CF1079C5B809FD /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10CE4C9D8B05C57353AD9B58 /* Pods_3dollar_in_my_pocketTests.framework */; };
+		C5CD7079728B4E2338A9132F /* Pods_3dollar_in_my_pocketUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AFC5341E65492C6C41ABD9C /* Pods_3dollar_in_my_pocketUITests.framework */; };
+		D31247F6D55CA9C19DAA2145 /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AAB89448E9297CEC92B2D3B /* Pods_3dollar_in_my_pocket.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,9 +132,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		26D5102E48157BDDDE68424B /* Pods-3dollar-in-my-pocket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.debug.xcconfig"; sourceTree = "<group>"; };
-		3E9F0D0965765773F3DE8CED /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketUITests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketUITests/Pods-3dollar-in-my-pocketUITests.release.xcconfig"; sourceTree = "<group>"; };
-		4E1EFBD2860CBC793C452FE7 /* Pods_3dollar_in_my_pocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		10CE4C9D8B05C57353AD9B58 /* Pods_3dollar_in_my_pocketTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		145B9BFE27C8382F7ED001DD /* Pods-3dollar-in-my-pocket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.debug.xcconfig"; sourceTree = "<group>"; };
+		4A470C5EB2D722B21A8F56F7 /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketUITests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketUITests/Pods-3dollar-in-my-pocketUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		4AAB89448E9297CEC92B2D3B /* Pods_3dollar_in_my_pocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A233F296C4218477DF11F70 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6E01AD1923D094FF008BFCC0 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		6E07D44323B5906E0055AEE7 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6E07D44523B590B30055AEE7 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
@@ -244,12 +246,10 @@
 		6EE2B86123BEDC3100BAD8E9 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
 		6EF3A76323ADBC1300AE18DA /* 3dollar-in-my-pocket.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "3dollar-in-my-pocket.entitlements"; sourceTree = "<group>"; };
-		9A39A9952D8E98C9F4B654C6 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.debug.xcconfig"; sourceTree = "<group>"; };
-		C2F713AECDABEFD4A2350C57 /* Pods_3dollar_in_my_pocketUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C59B69D1E4EB1BF633118AE9 /* Pods_3dollar_in_my_pocketTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E19CE65E50B43317856B5C1D /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketUITests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketUITests/Pods-3dollar-in-my-pocketUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		E833CAA1B728671C967E9C13 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.release.xcconfig"; sourceTree = "<group>"; };
-		FE4707071773D55BBBE581CA /* Pods-3dollar-in-my-pocket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.release.xcconfig"; sourceTree = "<group>"; };
+		873235376D6118D5466DB503 /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketUITests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketUITests/Pods-3dollar-in-my-pocketUITests.release.xcconfig"; sourceTree = "<group>"; };
+		9056C6F48EF324A677E88D5D /* Pods-3dollar-in-my-pocket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.release.xcconfig"; sourceTree = "<group>"; };
+		9AFC5341E65492C6C41ABD9C /* Pods_3dollar_in_my_pocketUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC4C1A996A1CB8E5A7A6E31A /* Pods-3dollar-in-my-pocketTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,8 +257,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBE1E2B74E01D62BFCC24B3A /* Pods_3dollar_in_my_pocket.framework in Frameworks */,
 				6E6B0ED823AD1530006E11CE /* KakaoOpenSDK.framework in Frameworks */,
+				D31247F6D55CA9C19DAA2145 /* Pods_3dollar_in_my_pocket.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,7 +266,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE473C62907FB7AC248C5449 /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */,
+				75DB6D3204CF1079C5B809FD /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,7 +274,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				328CFF878487B22029ED6AD4 /* Pods_3dollar_in_my_pocketUITests.framework in Frameworks */,
+				C5CD7079728B4E2338A9132F /* Pods_3dollar_in_my_pocketUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,12 +284,12 @@
 		417867EE2A79A650E3B9F6C2 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				26D5102E48157BDDDE68424B /* Pods-3dollar-in-my-pocket.debug.xcconfig */,
-				FE4707071773D55BBBE581CA /* Pods-3dollar-in-my-pocket.release.xcconfig */,
-				9A39A9952D8E98C9F4B654C6 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */,
-				E833CAA1B728671C967E9C13 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */,
-				E19CE65E50B43317856B5C1D /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */,
-				3E9F0D0965765773F3DE8CED /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */,
+				145B9BFE27C8382F7ED001DD /* Pods-3dollar-in-my-pocket.debug.xcconfig */,
+				9056C6F48EF324A677E88D5D /* Pods-3dollar-in-my-pocket.release.xcconfig */,
+				6A233F296C4218477DF11F70 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */,
+				FC4C1A996A1CB8E5A7A6E31A /* Pods-3dollar-in-my-pocketTests.release.xcconfig */,
+				4A470C5EB2D722B21A8F56F7 /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */,
+				873235376D6118D5466DB503 /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -622,9 +622,9 @@
 			isa = PBXGroup;
 			children = (
 				6E6B0ED723AD1530006E11CE /* KakaoOpenSDK.framework */,
-				4E1EFBD2860CBC793C452FE7 /* Pods_3dollar_in_my_pocket.framework */,
-				C59B69D1E4EB1BF633118AE9 /* Pods_3dollar_in_my_pocketTests.framework */,
-				C2F713AECDABEFD4A2350C57 /* Pods_3dollar_in_my_pocketUITests.framework */,
+				4AAB89448E9297CEC92B2D3B /* Pods_3dollar_in_my_pocket.framework */,
+				10CE4C9D8B05C57353AD9B58 /* Pods_3dollar_in_my_pocketTests.framework */,
+				9AFC5341E65492C6C41ABD9C /* Pods_3dollar_in_my_pocketUITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -636,12 +636,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6E0EA3BD23ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocket" */;
 			buildPhases = (
-				4CC854A09DCBD5FDDB225278 /* [CP] Check Pods Manifest.lock */,
+				92417E5BEBBF7145063E9435 /* [CP] Check Pods Manifest.lock */,
 				6E0EA38F23ABB230008F7CB2 /* Sources */,
 				6E0EA39023ABB230008F7CB2 /* Frameworks */,
 				6E0EA39123ABB230008F7CB2 /* Resources */,
-				842513F4586EF12283343500 /* [CP] Embed Pods Frameworks */,
-				BF7A239FC5D474DB5DD63468 /* [CP] Copy Pods Resources */,
+				E91BCEE77D385B82C37C7749 /* [CP] Embed Pods Frameworks */,
+				D1993FA058A37BC4AF6BF579 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -656,7 +656,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6E0EA3C023ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocketTests" */;
 			buildPhases = (
-				69B439BCDDEA6CA692D05FFF /* [CP] Check Pods Manifest.lock */,
+				0B7A716D249DED2975F56254 /* [CP] Check Pods Manifest.lock */,
 				6E0EA3A523ABB232008F7CB2 /* Sources */,
 				6E0EA3A623ABB232008F7CB2 /* Frameworks */,
 				6E0EA3A723ABB232008F7CB2 /* Resources */,
@@ -675,7 +675,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6E0EA3C323ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocketUITests" */;
 			buildPhases = (
-				82AD17CE35F2DB666EA15C8B /* [CP] Check Pods Manifest.lock */,
+				F7F5DF0B5AFB05955B84C9A8 /* [CP] Check Pods Manifest.lock */,
 				6E0EA3B023ABB232008F7CB2 /* Sources */,
 				6E0EA3B123ABB232008F7CB2 /* Frameworks */,
 				6E0EA3B223ABB232008F7CB2 /* Resources */,
@@ -766,29 +766,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4CC854A09DCBD5FDDB225278 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-3dollar-in-my-pocket-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		69B439BCDDEA6CA692D05FFF /* [CP] Check Pods Manifest.lock */ = {
+		0B7A716D249DED2975F56254 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -810,7 +788,63 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		82AD17CE35F2DB666EA15C8B /* [CP] Check Pods Manifest.lock */ = {
+		92417E5BEBBF7145063E9435 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-3dollar-in-my-pocket-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D1993FA058A37BC4AF6BF579 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E91BCEE77D385B82C37C7749 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F7F5DF0B5AFB05955B84C9A8 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -830,40 +864,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		842513F4586EF12283343500 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		BF7A239FC5D474DB5DD63468 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1115,7 +1115,7 @@
 		};
 		6E0EA3BE23ABB232008F7CB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 26D5102E48157BDDDE68424B /* Pods-3dollar-in-my-pocket.debug.xcconfig */;
+			baseConfigurationReference = 145B9BFE27C8382F7ED001DD /* Pods-3dollar-in-my-pocket.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
@@ -1160,7 +1160,7 @@
 		};
 		6E0EA3BF23ABB232008F7CB2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FE4707071773D55BBBE581CA /* Pods-3dollar-in-my-pocket.release.xcconfig */;
+			baseConfigurationReference = 9056C6F48EF324A677E88D5D /* Pods-3dollar-in-my-pocket.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
@@ -1205,7 +1205,7 @@
 		};
 		6E0EA3C123ABB232008F7CB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9A39A9952D8E98C9F4B654C6 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */;
+			baseConfigurationReference = 6A233F296C4218477DF11F70 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1228,7 +1228,7 @@
 		};
 		6E0EA3C223ABB232008F7CB2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E833CAA1B728671C967E9C13 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */;
+			baseConfigurationReference = FC4C1A996A1CB8E5A7A6E31A /* Pods-3dollar-in-my-pocketTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1251,7 +1251,7 @@
 		};
 		6E0EA3C423ABB232008F7CB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E19CE65E50B43317856B5C1D /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */;
+			baseConfigurationReference = 4A470C5EB2D722B21A8F56F7 /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1272,7 +1272,7 @@
 		};
 		6E0EA3C523ABB232008F7CB2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3E9F0D0965765773F3DE8CED /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */;
+			baseConfigurationReference = 873235376D6118D5466DB503 /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;

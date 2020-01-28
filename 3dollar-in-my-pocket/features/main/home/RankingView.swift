@@ -40,7 +40,7 @@ class RankingView: BaseView {
     
     let rankingLabel = UILabel().then {
         $0.text = "3.8점"
-        $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16 * RadioUtils.width)
         $0.textColor = UIColor.init(r: 200, g: 200, b: 200)
     }
     
@@ -56,30 +56,30 @@ class RankingView: BaseView {
     
     override func bindConstraints() {
         star1.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
+            make.width.height.equalTo(18 * RadioUtils.width)
         }
         
         star2.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
+            make.width.height.equalTo(18 * RadioUtils.width)
         }
         
         star3.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
+            make.width.height.equalTo(18 * RadioUtils.width)
         }
         
         star4.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
+            make.width.height.equalTo(18 * RadioUtils.width)
         }
         
         star5.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
+            make.width.height.equalTo(18 * RadioUtils.width)
         }
         stackView.snp.makeConstraints { (make) in
             make.left.centerY.equalToSuperview()
         }
         
         rankingLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(stackView.snp.right).offset(8)
+            make.left.equalTo(stackView.snp.right).offset(8 * RadioUtils.width)
             make.centerY.equalTo(stackView.snp.centerY)
         }
     }
