@@ -40,25 +40,25 @@ class MainView: BaseView {
     
     override func bindConstraints() {
         writingBtn.snp.makeConstraints { (make) in
-            make.width.equalTo(56 * RadioUtils.width)
-            make.height.equalTo(56 * RadioUtils.width)
+            make.width.equalTo(56)
+            make.height.equalTo(56)
             make.centerX.equalToSuperview()
         }
         
         homeBtn.snp.makeConstraints { (make) in
-            make.width.equalTo(56 * RadioUtils.width)
-            make.height.equalTo(56 * RadioUtils.width)
-            make.right.equalTo(writingBtn.snp.left).offset(-24 * RadioUtils.width)
+            make.width.equalTo(56)
+            make.height.equalTo(56)
+            make.right.equalTo(writingBtn.snp.left).offset(-24)
         }
         
         myPageBtn.snp.makeConstraints { (make) in
-            make.width.equalTo(56 * RadioUtils.width)
-            make.height.equalTo(56 * RadioUtils.width)
-            make.left.equalTo(writingBtn.snp.right).offset(24 * RadioUtils.width)
+            make.width.equalTo(56)
+            make.height.equalTo(56)
+            make.left.equalTo(writingBtn.snp.right).offset(24)
         }
         
         stackView.snp.makeConstraints { (make) in
-            make.bottom.equalToSuperview().offset(-32 * RadioUtils.height)
+            make.bottom.equalToSuperview().offset(-32)
             make.centerX.equalToSuperview()
         }
         
