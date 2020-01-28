@@ -17,28 +17,28 @@ class CategoryListView: BaseView {
         $0.setTitle("붕어빵", for: .normal)
         $0.setTitleColor(UIColor.init(r: 34, g: 34, b: 34), for: .selected)
         $0.setTitleColor(UIColor.init(r: 196, g: 196, b: 196), for: .normal)
-        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
     }
     
     let categoryTakoyaki = UIButton().then {
         $0.setTitle("타코야끼", for: .normal)
         $0.setTitleColor(UIColor.init(r: 34, g: 34, b: 34), for: .selected)
         $0.setTitleColor(UIColor.init(r: 196, g: 196, b: 196), for: .normal)
-        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
     }
     
     let categoryGyeranppang = UIButton().then {
         $0.setTitle("계란빵", for: .normal)
         $0.setTitleColor(UIColor.init(r: 34, g: 34, b: 34), for: .selected)
         $0.setTitleColor(UIColor.init(r: 196, g: 196, b: 196), for: .normal)
-        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
     }
     
     let categoryHotteok = UIButton().then {
         $0.setTitle("호떡", for: .normal)
         $0.setTitleColor(UIColor.init(r: 34, g: 34, b: 34), for: .selected)
         $0.setTitleColor(UIColor.init(r: 196, g: 196, b: 196), for: .normal)
-        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
     }
     
     let categoryStackView = UIStackView().then {
@@ -52,53 +52,55 @@ class CategoryListView: BaseView {
         $0.setImage(UIImage.init(named: "ic_location"), for: .normal)
     }
     
-    let pageView = UIView()
+    let pageView = UIView().then {
+        $0.backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
+    }
     
     
     override func setup() {
-        backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
+        backgroundColor = .white
         setupNavigationBarShadow()
         categoryStackView.addArrangedSubview(categoryBungeoppang)
         categoryStackView.addArrangedSubview(categoryTakoyaki)
         categoryStackView.addArrangedSubview(categoryGyeranppang)
         categoryStackView.addArrangedSubview(categoryHotteok)
-        navigationBar.addSubViews(backBtn, categoryImage, categoryStackView)
-        addSubViews(mapView, navigationBar, myLocationBtn, pageView)
+        addSubViews(mapView, navigationBar,backBtn, categoryImage, categoryStackView, myLocationBtn, pageView)
     }
     
     override func bindConstraints() {
         navigationBar.snp.makeConstraints { (make) in
-            make.left.top.right.equalToSuperview()
-            make.height.equalTo(145)
+            make.left.right.equalToSuperview()
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.height.equalTo(90)
         }
         
         backBtn.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(24)
-            make.top.equalToSuperview().offset(48)
-            make.width.height.equalTo(48)
-        }
-        
-        categoryStackView.snp.makeConstraints { (make) in
-            make.bottom.equalToSuperview().offset(-10)
-            make.centerX.equalToSuperview()
+            make.left.equalToSuperview().offset(24 * RadioUtils.width)
+            make.top.equalTo(navigationBar).offset(4 * RadioUtils.height)
+            make.width.height.equalTo(48 * RadioUtils.width)
         }
         
         myLocationBtn.snp.makeConstraints { (make) in
-            make.right.equalTo(mapView.snp.right).offset(-24)
-            make.bottom.equalTo(mapView.snp.bottom).offset(-15)
-            make.width.height.equalTo(40)
+            make.right.equalTo(mapView.snp.right).offset(-24 * RadioUtils.width)
+            make.bottom.equalTo(mapView.snp.bottom).offset(-15 * RadioUtils.height)
+            make.width.height.equalTo(40 * RadioUtils.width)
         }
         
         categoryImage.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
             make.centerY.equalTo(backBtn.snp.centerY)
-            make.width.height.equalTo(60)
+            make.width.height.equalTo(60 * RadioUtils.width)
+        }
+        
+        categoryStackView.snp.makeConstraints { (make) in
+            make.top.equalTo(categoryImage.snp.bottom).offset(-10)
+            make.centerX.equalToSuperview()
         }
         
         mapView.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
-            make.top.equalTo(navigationBar.snp.bottom).offset(-20)
-            make.height.equalTo(264)
+            make.top.equalTo(navigationBar.snp.bottom).offset(-20 * RadioUtils.height)
+            make.height.equalTo(264 * RadioUtils.height)
         }
         
         pageView.snp.makeConstraints { (make) in
@@ -133,14 +135,14 @@ class CategoryListView: BaseView {
         rectShape.position = navigationBar.center
         rectShape.path = UIBezierPath(roundedRect: navigationBar.frame, byRoundingCorners: [.bottomLeft , .bottomRight], cornerRadii: CGSize(width: 16, height: 16)).cgPath
 
-        navigationBar.layer.backgroundColor = UIColor.white.cgColor
+        navigationBar.layer.backgroundColor = UIColor.clear.cgColor
         navigationBar.layer.mask = rectShape
     }
     
     private func setupNavigationBarShadow() {
         let shadowLayer = CAShapeLayer()
         
-        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: frame.width, height: 145), cornerRadius: 16).cgPath
+        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: frame.width, height: 90), cornerRadius: 16).cgPath
         shadowLayer.fillColor = UIColor.white.cgColor
         
         shadowLayer.shadowColor = UIColor.black.cgColor
