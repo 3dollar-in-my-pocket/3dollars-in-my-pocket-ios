@@ -152,8 +152,8 @@ class HomeView: BaseView {
         
         shopCollectionView.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
-            make.top.equalTo(descLabel3.snp.bottom).offset(23)
-            make.height.equalTo(200 * RadioUtils.height)
+            make.top.equalTo(descLabel3.snp.bottom).offset(10)
+            make.height.equalTo(250)
         }
         
         mapButton.snp.makeConstraints { (make) in
