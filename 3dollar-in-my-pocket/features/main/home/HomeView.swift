@@ -137,22 +137,22 @@ class HomeView: BaseView {
         
         descLabel1.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(24 * RadioUtils.width)
-            make.top.equalTo(categoryStackView.snp.bottom).offset(41)
+            make.top.equalTo(categoryStackView.snp.bottom).offset(41 * RadioUtils.height)
         }
         
         descLabel2.snp.makeConstraints { (make) in
             make.left.equalTo(descLabel1.snp.left)
-            make.top.equalTo(descLabel1.snp.bottom).offset(-4)
+            make.top.equalTo(descLabel1.snp.bottom).offset(-4 * RadioUtils.height)
         }
         
         descLabel3.snp.makeConstraints { (make) in
             make.left.equalTo(descLabel1.snp.left)
-            make.top.equalTo(descLabel2.snp.bottom).offset(-8)
+            make.top.equalTo(descLabel2.snp.bottom).offset(-8 * RadioUtils.height)
         }
         
         shopCollectionView.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
-            make.top.equalTo(descLabel3.snp.bottom).offset(10)
+            make.top.equalTo(descLabel3.snp.bottom).offset(10 * RadioUtils.height)
             make.height.equalTo(250)
         }
         
