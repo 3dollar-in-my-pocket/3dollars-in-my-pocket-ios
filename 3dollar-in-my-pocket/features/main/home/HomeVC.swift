@@ -165,7 +165,7 @@ class HomeVC: BaseVC {
 
 extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 172 * RadioUtils.width, height: 172 * RadioUtils.width)
+        return CGSize(width: 172, height: 172)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

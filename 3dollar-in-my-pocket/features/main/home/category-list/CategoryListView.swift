@@ -71,7 +71,7 @@ class CategoryListView: BaseView {
         navigationBar.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
             make.top.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(100)
+            make.height.equalTo(110)
         }
         
         backBtn.snp.makeConstraints { (make) in
@@ -142,7 +142,7 @@ class CategoryListView: BaseView {
     private func setupNavigationBarShadow() {
         let shadowLayer = CAShapeLayer()
         
-        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: frame.width, height: 100), cornerRadius: 16).cgPath
+        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: frame.width, height: 110), cornerRadius: 16).cgPath
         shadowLayer.fillColor = UIColor.white.cgColor
         
         shadowLayer.shadowColor = UIColor.black.cgColor

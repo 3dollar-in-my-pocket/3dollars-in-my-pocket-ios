@@ -7,7 +7,7 @@ class ShopCell: BaseCollectionViewCell {
     let distanceLabel = UILabel().then {
         $0.text = "100m"
         $0.textColor = UIColor.init(r: 243, g: 162, b: 169)
-        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
         $0.textAlignment = .center
         $0.layer.cornerRadius = 12.5
         $0.layer.borderWidth = 1
