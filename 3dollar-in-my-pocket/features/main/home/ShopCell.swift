@@ -45,9 +45,9 @@ class ShopCell: BaseCollectionViewCell {
         }
         
         rankingView.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(16 * RadioUtils.width)
-            make.right.equalToSuperview().offset(-14 * RadioUtils.width)
-            make.top.equalTo(distanceLabel.snp.bottom).offset(105 * RadioUtils.height)
+            make.left.equalToSuperview().offset(16)
+            make.right.equalToSuperview().offset(-14)
+            make.top.equalTo(distanceLabel.snp.bottom).offset(105)
         }
     }
 
