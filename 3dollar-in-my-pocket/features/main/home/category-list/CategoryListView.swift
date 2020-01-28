@@ -71,36 +71,36 @@ class CategoryListView: BaseView {
         navigationBar.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
             make.top.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(110)
+            make.height.equalTo(105)
         }
         
         backBtn.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(24 * RadioUtils.width)
-            make.top.equalTo(navigationBar).offset(8 * RadioUtils.height)
-            make.width.height.equalTo(48 * RadioUtils.width)
+            make.left.equalToSuperview().offset(24)
+            make.top.equalTo(navigationBar).offset(8)
+            make.width.height.equalTo(48)
         }
         
         myLocationBtn.snp.makeConstraints { (make) in
-            make.right.equalTo(mapView.snp.right).offset(-24 * RadioUtils.width)
-            make.bottom.equalTo(mapView.snp.bottom).offset(-15 * RadioUtils.height)
-            make.width.height.equalTo(40 * RadioUtils.width)
+            make.right.equalTo(mapView.snp.right).offset(-24)
+            make.bottom.equalTo(mapView.snp.bottom).offset(-15)
+            make.width.height.equalTo(40)
         }
         
         categoryImage.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
             make.centerY.equalTo(backBtn.snp.centerY)
-            make.width.height.equalTo(60 * RadioUtils.width)
+            make.width.height.equalTo(60)
         }
         
         categoryStackView.snp.makeConstraints { (make) in
-            make.top.equalTo(categoryImage.snp.bottom).offset(-5)
+            make.top.equalTo(categoryImage.snp.bottom)
             make.centerX.equalToSuperview()
         }
         
         mapView.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
-            make.top.equalTo(navigationBar.snp.bottom).offset(-20 * RadioUtils.height)
-            make.height.equalTo(264 * RadioUtils.height)
+            make.top.equalTo(navigationBar.snp.bottom).offset(-20)
+            make.height.equalTo(264)
         }
         
         pageView.snp.makeConstraints { (make) in
@@ -142,7 +142,7 @@ class CategoryListView: BaseView {
     private func setupNavigationBarShadow() {
         let shadowLayer = CAShapeLayer()
         
-        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: frame.width, height: 110), cornerRadius: 16).cgPath
+        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: frame.width, height: 105), cornerRadius: 16).cgPath
         shadowLayer.fillColor = UIColor.white.cgColor
         
         shadowLayer.shadowColor = UIColor.black.cgColor

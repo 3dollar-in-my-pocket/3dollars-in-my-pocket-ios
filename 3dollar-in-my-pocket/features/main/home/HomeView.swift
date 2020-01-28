@@ -157,8 +157,8 @@ class HomeView: BaseView {
         }
         
         mapButton.snp.makeConstraints { (make) in
-            make.right.equalToSuperview().offset(-24 * RadioUtils.width)
-            make.bottom.equalToSuperview().offset(-120 * RadioUtils.height)
+            make.right.equalToSuperview().offset(-24)
+            make.bottom.equalToSuperview().offset(-120)
         }
     }
     

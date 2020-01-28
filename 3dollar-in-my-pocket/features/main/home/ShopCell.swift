@@ -32,16 +32,16 @@ class ShopCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         distanceLabel.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(16 * RadioUtils.width)
-            make.top.equalToSuperview().offset(15 * RadioUtils.width)
-            make.width.equalTo(56 * RadioUtils.width)
-            make.height.equalTo(25 * RadioUtils.width)
+            make.left.equalToSuperview().offset(16)
+            make.top.equalToSuperview().offset(15)
+            make.width.equalTo(56)
+            make.height.equalTo(25)
         }
         
         imageBtn.snp.makeConstraints { (make) in
-            make.top.equalTo(distanceLabel.snp.bottom).offset(8 * RadioUtils.height)
-            make.left.equalToSuperview().offset(25 * RadioUtils.width)
-            make.right.equalToSuperview().offset(-25 * RadioUtils.width)
+            make.top.equalTo(distanceLabel.snp.bottom).offset(8)
+            make.left.equalToSuperview().offset(25)
+            make.right.equalToSuperview().offset(-25)
         }
         
         rankingView.snp.makeConstraints { (make) in
