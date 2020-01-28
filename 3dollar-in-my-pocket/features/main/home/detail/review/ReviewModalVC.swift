@@ -65,7 +65,11 @@ extension ReviewModalVC: ReviewModalViewDelegate {
     }
     
     func onTapRegister() {
-        self.saveReview()
+        if reviewModalView.reviewTextView.text == "리뷰를 남겨주세요! (100자 이내)" {
+            AlertUtils.show(controller: self, message: "내용을 입력해주세요.")
+        } else {
+            self.saveReview()
+        }
     }
 }
 
