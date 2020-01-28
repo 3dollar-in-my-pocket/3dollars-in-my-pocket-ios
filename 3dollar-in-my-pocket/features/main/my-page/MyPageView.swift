@@ -97,7 +97,7 @@ class MyPageView: BaseView {
     
     override func bindConstraints() {
         nicknameBg.snp.makeConstraints { (make) in
-            make.top.equalToSuperview().offset(80)
+            make.top.equalTo(safeAreaLayoutGuide).offset(40)
             make.left.equalToSuperview().offset(24)
             make.right.equalToSuperview().offset(-24)
             make.height.equalTo(44)
@@ -119,7 +119,7 @@ class MyPageView: BaseView {
         bgCloud.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
             make.top.equalTo(nicknameBg.snp.bottom).offset(19)
-            make.height.equalTo(135)
+            make.height.equalTo(135 * RadioUtils.height)
         }
         
         registerLabel.snp.makeConstraints { (make) in

@@ -37,7 +37,7 @@ class MyReviewCell: BaseTableViewCell {
     
     override func bindConstraints() {
         categoryImage.snp.makeConstraints { (make) in
-            make.top.equalToSuperview().offset(21)
+            make.top.equalToSuperview().offset(17)
             make.left.equalTo(background.snp.left).offset(16)
             make.width.equalTo(40)
             make.height.equalTo(25)
@@ -57,13 +57,13 @@ class MyReviewCell: BaseTableViewCell {
         rankingView.snp.makeConstraints { (make) in
             make.left.equalTo(titleLabel.snp.left)
             make.top.equalTo(reviewLabel.snp.bottom).offset(16)
-            make.bottom.equalToSuperview().offset(-23)
+            make.bottom.equalToSuperview().offset(-25)
         }
         
         background.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
-            make.top.equalTo(categoryImage.snp.top).offset(-17)
-            make.bottom.equalTo(rankingView.snp.bottom).offset(19)
+            make.top.equalTo(titleLabel.snp.top).offset(-15)
+            make.bottom.equalTo(rankingView.snp.bottom).offset(20)
         }
     }
     
