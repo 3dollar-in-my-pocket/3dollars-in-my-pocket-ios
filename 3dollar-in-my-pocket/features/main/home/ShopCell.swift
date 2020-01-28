@@ -26,7 +26,7 @@ class ShopCell: BaseCollectionViewCell {
     override func setup() {
         layer.cornerRadius = 16
         backgroundColor = UIColor.init(r: 251, g: 251, b: 251)
-        setupShadow(isSelected: false)
+        setupShadow()
         addSubViews(distanceLabel, imageBtn, rankingView)
     }
     
@@ -52,12 +52,10 @@ class ShopCell: BaseCollectionViewCell {
     }
 
     func setSelected(isSelected: Bool) {
-        if let shadowLayer = layer.sublayers?.first as? CAShapeLayer {
-            if isSelected {
-                shadowLayer.fillColor = UIColor.init(r: 28, g: 28, b: 28).cgColor
-            } else {
-                shadowLayer.fillColor = UIColor.init(r: 251, g: 251, b: 251).cgColor
-            }
+        if isSelected {
+            layer.backgroundColor = UIColor.init(r: 28, g: 28, b: 28).cgColor
+        } else {
+            layer.backgroundColor = UIColor.init(r: 251, g: 251, b: 251).cgColor
         }
         imageBtn.isSelected = isSelected
         rankingView.setSelected(isSelected: isSelected)
@@ -89,19 +87,15 @@ class ShopCell: BaseCollectionViewCell {
         rankingView.setRank(rank: storeCard.rating)
     }
     
-    private func setupShadow(isSelected: Bool) {
-        let shadowLayer = CAShapeLayer()
-        
-        shadowLayer.path = UIBezierPath(roundedRect: bounds, cornerRadius: 16).cgPath
-        shadowLayer.fillColor = UIColor.init(r: 251, g: 251, b: 251).cgColor
-        shadowLayer.masksToBounds = false
-        shadowLayer.shouldRasterize = true
-        shadowLayer.shadowColor = UIColor.black.cgColor
-        shadowLayer.shadowPath = nil
-        shadowLayer.shadowOffset = CGSize(width: 15, height: 20)
-        shadowLayer.shadowOpacity = 0.1
-        shadowLayer.shadowRadius = 10
-        
-        layer.insertSublayer(shadowLayer, at: 0)
+    private func setupShadow() {
+        layer.masksToBounds = false
+        layer.shadowOffset = CGSize(width: 15, height: 20)
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowRadius = 16
+        layer.shadowOpacity = 0.3
+
+        let backgroundCGColor = backgroundColor?.cgColor
+        backgroundColor = nil
+        layer.backgroundColor =  backgroundCGColor
     }
 }
