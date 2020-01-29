@@ -336,7 +336,7 @@ class ShopInfoCell: BaseTableViewCell {
             
             for menu in menus {
                 name.append("\(menu.name!)\n")
-                price.append("\(menu.price!)\n")
+                price.append("\(menu.price != nil ? menu.price! : "")\n")
             }
             menuNameLabel.text = name
             menuNameLabel.textColor = UIColor.init(r: 28, g: 28, b: 28)
