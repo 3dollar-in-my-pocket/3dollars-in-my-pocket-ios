@@ -40,13 +40,8 @@ class RegisterCell: BaseCollectionViewCell {
         categoryImage.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(24)
-            make.width.equalTo(115)
-            make.height.equalTo(73)
-        }
-        
-        titleLabel.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(16)
-            make.top.equalTo(categoryImage.snp.bottom).offset(11)
+            make.width.equalTo(120)
+            make.height.equalTo(80)
         }
         
         rankingView.snp.makeConstraints { (make) in
@@ -65,6 +60,12 @@ class RegisterCell: BaseCollectionViewCell {
         totalLabel.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
             make.top.equalTo(frontImage.snp.bottom)
+        }
+        
+        titleLabel.snp.makeConstraints { (make) in
+            make.left.equalToSuperview().offset(16)
+            make.right.equalTo(rankingView)
+            make.top.equalTo(categoryImage.snp.bottom).offset(11)
         }
     }
     

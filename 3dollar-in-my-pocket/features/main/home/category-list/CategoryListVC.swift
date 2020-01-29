@@ -95,7 +95,7 @@ extension CategoryListVC: CategoryPageDelegate {
         for store in storeCards {
             let marker = GMSMarker()
             marker.position = CLLocationCoordinate2D(latitude: store.latitude, longitude: store.longitude)
-            marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_off")!, scaledToSize: CGSize.init(width: 16, height: 16))
+            marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_on")!, scaledToSize: CGSize.init(width: 16, height: 16))
             marker.map = categoryListView.mapView
         }
     }

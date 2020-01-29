@@ -202,14 +202,14 @@ class ShopInfoCell: BaseTableViewCell {
             make.left.equalTo(profileImage.snp.right).offset(24)
         }
         
-        rankingLabel.snp.makeConstraints { (make) in
-            make.right.equalTo(distanceLabel.snp.right)
+        stackView.snp.makeConstraints { (make) in
+            make.left.equalTo(distanceLabel.snp.left)
             make.top.equalTo(distanceLabel.snp.bottom).offset(10)
         }
         
-        stackView.snp.makeConstraints { (make) in
-            make.left.equalTo(distanceLabel.snp.left)
-            make.centerY.equalTo(rankingLabel.snp.centerY)
+        rankingLabel.snp.makeConstraints { (make) in
+            make.left.equalTo(stackView.snp.right).offset(10)
+            make.bottom.equalTo(stackView)
         }
         
         categoryLabel.snp.makeConstraints { (make) in

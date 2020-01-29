@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "img_takoyaki_detail.png",
+      "filename" : "imgTakoyakiDetail.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "img_takoyaki_detail@2x.png",
+      "filename" : "imgTakoyakiDetail@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "img_takoyaki_detail@3x.png",
+      "filename" : "imgTakoyakiDetail@3x.png",
       "scale" : "3x"
     }
   ],

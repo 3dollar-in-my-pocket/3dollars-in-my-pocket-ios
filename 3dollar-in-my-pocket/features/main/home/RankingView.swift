@@ -97,7 +97,7 @@ class RankingView: BaseView {
                 star.isSelected = index < roundedRank
             }
         }
-        rankingLabel.text = "\(rank)점"
+        rankingLabel.text = "\(rank)"
     }
     
     func setSelected(isSelected: Bool) {
