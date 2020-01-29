@@ -78,7 +78,7 @@ class ShopCell: BaseCollectionViewCell {
         default:
             break
         }
-        if storeCard.distance > 1000 {
+        if storeCard.distance >= 1000 {
             distanceLabel.text = "1km+"
         } else {
             distanceLabel.text = "\(storeCard.distance!)m"
