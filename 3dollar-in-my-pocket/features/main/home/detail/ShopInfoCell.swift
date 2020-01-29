@@ -19,10 +19,20 @@ class ShopInfoCell: BaseTableViewCell {
         $0.layer.cornerRadius = 12
     }
     
-    let profileImage = UIImageView().then {
+    let profileImage = UIButton().then {
         $0.backgroundColor = UIColor.init(r: 217, g: 217, b: 217)
         $0.layer.cornerRadius = 8
         $0.layer.masksToBounds = true
+    }
+    
+    let otherImages = UIButton().then {
+        $0.setBackgroundColor(UIColor.init(r: 28, g: 28, b: 28), for: .normal)
+        $0.layer.cornerRadius = 12
+        $0.setTitle("+5", for: .normal)
+        $0.setTitleColor(.white, for: .normal)
+        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 11)
+        $0.layer.masksToBounds = true
+        $0.isHidden = true
     }
     
     let emptyImage = UIImageView().then {
@@ -146,7 +156,7 @@ class ShopInfoCell: BaseTableViewCell {
         stackView.addArrangedSubview(star3)
         stackView.addArrangedSubview(star4)
         stackView.addArrangedSubview(star5)
-        titleContainer.addSubViews(profileImage, emptyImage, distanceLabel, stackView, rankingLabel)
+        titleContainer.addSubViews(profileImage, emptyImage, otherImages, distanceLabel, stackView, rankingLabel)
         addSubViews(mapView, mapBtn, titleContainer, categoryLabel, categoryValueLabel, menuLabel, menuNameLabel, menuPriceLabel, reviewBtn, modifyBtn)
         setupContainerShadow()
     }
@@ -179,6 +189,12 @@ class ShopInfoCell: BaseTableViewCell {
         emptyImage.snp.makeConstraints { (make) in
             make.center.equalTo(profileImage.snp.center)
             make.height.equalTo(37)
+        }
+        
+        otherImages.snp.makeConstraints { (make) in
+            make.width.height.equalTo(24)
+            make.centerY.equalTo(profileImage.snp.top)
+            make.centerX.equalTo(profileImage.snp.right)
         }
         
         distanceLabel.snp.makeConstraints { (make) in
@@ -285,8 +301,12 @@ class ShopInfoCell: BaseTableViewCell {
     }
     
     func setImage(url: String, count: Int) {
-        profileImage.kf.setImage(with: URL(string: url))
+        profileImage.kf.setImage(with: URL(string: url), for: .normal)
         emptyImage.isHidden = true
+        if count > 1 {
+            otherImages.setTitle(String.init(format: "+%d", count - 1), for: .normal)
+            otherImages.isHidden = false
+        }
     }
     
     func setCategory(category: StoreCategory) {
