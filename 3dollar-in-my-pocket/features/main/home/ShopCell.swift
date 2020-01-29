@@ -89,10 +89,10 @@ class ShopCell: BaseCollectionViewCell {
     
     private func setupShadow() {
         layer.masksToBounds = false
-        layer.shadowOffset = CGSize(width: 15, height: 20)
+        layer.shadowOffset = CGSize(width: 10, height: 10)
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowRadius = 16
-        layer.shadowOpacity = 0.3
+        layer.shadowOpacity = 0.2
 
         let backgroundCGColor = backgroundColor?.cgColor
         backgroundColor = nil
