@@ -27,7 +27,7 @@ class CategoryChildView: BaseView {
     }
     
     let reviewOrderBtn = UIButton().then {
-        $0.setTitle("리뷰순", for: .normal)
+        $0.setTitle("별점순", for: .normal)
         $0.setTitleColor(.black, for: .selected)
         $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
         $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 14)
