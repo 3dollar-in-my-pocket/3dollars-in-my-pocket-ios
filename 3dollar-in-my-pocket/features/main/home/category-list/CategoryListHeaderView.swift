@@ -24,7 +24,7 @@ class CategoryListHeaderView: BaseView {
         }
         
         titleLable.snp.makeConstraints { (make) in
-            make.left.equalTo(nearImage.snp.right).offset(6)
+            make.left.equalTo(nearImage.snp.right).offset(3)
             make.top.equalToSuperview().offset(16)
             make.bottom.equalToSuperview().offset(-16)
         }
