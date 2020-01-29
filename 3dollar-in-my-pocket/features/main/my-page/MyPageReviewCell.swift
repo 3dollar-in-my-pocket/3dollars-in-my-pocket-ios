@@ -71,11 +71,6 @@ class MyPageReviewCell: BaseTableViewCell {
             make.height.equalTo(24)
         }
         
-        reviewLabel.snp.makeConstraints { (make) in
-            make.centerY.equalTo(categoryImage.snp.centerY)
-            make.left.equalTo(categoryImage.snp.right).offset(23)
-        }
-        
         star1.snp.makeConstraints { (make) in
             make.width.height.equalTo(14)
         }
@@ -99,6 +94,12 @@ class MyPageReviewCell: BaseTableViewCell {
         stackView.snp.makeConstraints { (make) in
             make.centerY.equalTo(categoryImage.snp.centerY)
             make.right.equalToSuperview().offset(-18)
+        }
+        
+        reviewLabel.snp.makeConstraints { (make) in
+            make.centerY.equalTo(categoryImage.snp.centerY)
+            make.left.equalTo(categoryImage.snp.right).offset(23)
+            make.right.equalTo(stackView.snp.left)
         }
     }
     
