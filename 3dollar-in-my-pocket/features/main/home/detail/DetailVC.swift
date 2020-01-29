@@ -95,6 +95,12 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: ShopInfoCell.registerId, for: indexPath) as? ShopInfoCell else {
                     return BaseTableViewCell()
                 }
+                cell.profileImage.rx.tap.bind { [weak self] (_) in
+                    if let vc = self {
+                        vc.present(ImageDetailVC.instance(images: store.images), animated: false)
+                    }
+                }.disposed(by: disposeBag)
+                
                 cell.reviewBtn.rx.tap.bind { [weak self] (_) in
                     if let vc = self {
                         vc.reviewVC = ReviewModalVC.instance().then {
@@ -125,6 +131,8 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                 if !(store.images.isEmpty) {
                     cell.setImage(url: store.images[0].url, count: store.images.count)
                 }
+                cell.otherImages.isUserInteractionEnabled = !store.images.isEmpty
+                cell.profileImage.isUserInteractionEnabled = !store.images.isEmpty
                 cell.setMarker(latitude: store.latitude!, longitude: store.longitude!)
                 cell.setCategory(category: store.category!)
                 cell.setMenus(menus: store.menus)

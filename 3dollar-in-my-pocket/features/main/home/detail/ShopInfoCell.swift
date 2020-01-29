@@ -306,6 +306,7 @@ class ShopInfoCell: BaseTableViewCell {
         if count > 1 {
             otherImages.setTitle(String.init(format: "+%d", count - 1), for: .normal)
             otherImages.isHidden = false
+            
         }
     }
     
