@@ -21,6 +21,6 @@ class RegisteredHeader: BaseView {
     }
     
     func setCount(count: Int) {
-        countLabel.text = String(format: "%02d개", count)
+        countLabel.text = String(format: "%d개", count)
     }
 }

@@ -80,6 +80,7 @@ class MyReviewCell: BaseTableViewCell {
         default:
             break
         }
+        titleLabel.text = review.storeName
         reviewLabel.text = review.contents
         rankingView.setRank(rank: Float(review.rating))
     }
