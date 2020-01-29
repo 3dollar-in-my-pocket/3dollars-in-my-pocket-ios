@@ -102,7 +102,9 @@ class SignInVC: BaseVC {
 }
 extension SignInVC: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        AlertUtils.show(title: "error", message: error.localizedDescription)
+        if (error as NSError).code != 1001 { // 사용자가 직접 취소
+            AlertUtils.show(title: "error", message: error.localizedDescription)
+        }
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
