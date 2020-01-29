@@ -237,15 +237,20 @@ extension WritingVC: UITableViewDelegate, UITableViewDataSource {
             let name = cell.nameField.text!
             let desc = cell.descField.text!
             
-            if !name.isEmpty && !desc.isEmpty {
+            if !name.isEmpty {
                 let menu = Menu.init(name: name, price: desc)
                 
                 if let _ = self?.viewModel.menuList[indexPath.row] {
                     self?.viewModel.menuList[indexPath.row] = menu
                 }
+            } else  {
+                if let _ = self?.viewModel.menuList[indexPath.row] {
+                    self?.viewModel.menuList.remove(at: indexPath.row)
+                }
             }
             
         }.disposed(by: disposeBag)
+        
         return cell
     }
 }
