@@ -162,18 +162,15 @@ extension MyPageVC: UITableViewDelegate {
 extension MyPageVC: UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         self.delegate?.onScrollStart()
-//        self.hideRegisterBtn()
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
             self.delegate?.onScrollEnd()
-//            self.showRegisterBtn()
         }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.delegate?.onScrollEnd()
-//        self.showRegisterBtn()
     }
 }
