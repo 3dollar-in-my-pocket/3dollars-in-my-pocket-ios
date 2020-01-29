@@ -61,7 +61,7 @@ class HomeView: BaseView {
     }
     
     let shopCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
-        let layout = StoreCollectionViewFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         
         layout.scrollDirection = .horizontal
         layout.sectionInset = UIEdgeInsets(top: 20 * RadioUtils.width, left: 0, bottom: 50 * RadioUtils.height, right: 0)
