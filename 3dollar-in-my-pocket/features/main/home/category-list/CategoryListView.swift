@@ -99,7 +99,7 @@ class CategoryListView: BaseView {
         
         mapView.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
-            make.top.equalTo(navigationBar.snp.bottom).offset(-20)
+            make.top.equalTo(navigationBar.snp.bottom).offset(-35)
             make.height.equalTo(264)
         }
         
