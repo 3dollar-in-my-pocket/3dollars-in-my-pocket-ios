@@ -6,7 +6,7 @@ struct CategoryByReview: Mappable {
     var storeList2: [StoreCard] = []
     var storeList3: [StoreCard] = []
     var storeList4: [StoreCard] = []
-    
+    var indexList: [Int] = []
     
     init() { }
     

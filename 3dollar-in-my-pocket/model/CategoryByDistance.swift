@@ -5,7 +5,7 @@ struct CategoryByDistance: Mappable {
     var storeList100: [StoreCard] = []
     var storeList500: [StoreCard] = []
     var storeList1000: [StoreCard] = []
-    
+    var indexList: [Int] = []
     
     init() { }
     
