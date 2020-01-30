@@ -97,7 +97,7 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                 }
                 cell.profileImage.rx.tap.bind { [weak self] (_) in
                     if let vc = self {
-                        vc.present(ImageDetailVC.instance(images: store.images), animated: false)
+                        vc.present(ImageDetailVC.instance(title: store.storeName!, images: store.images), animated: false)
                     }
                 }.disposed(by: disposeBag)
                 

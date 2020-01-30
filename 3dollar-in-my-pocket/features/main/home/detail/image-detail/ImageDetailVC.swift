@@ -4,10 +4,12 @@ class ImageDetailVC: BaseVC {
     private lazy var imageDetailView = ImageDetailView(frame: self.view.frame)
     
     private var images: [Image]!
+    private var storeName: String!
     
-    static func instance(images: [Image]) -> ImageDetailVC {
+    static func instance(title: String, images: [Image]) -> ImageDetailVC {
         return ImageDetailVC.init(nibName: nil, bundle: nil).then {
             $0.images = images
+            $0.storeName = title
             $0.modalPresentationStyle = .overCurrentContext
         }
     }
@@ -15,6 +17,7 @@ class ImageDetailVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = imageDetailView
+        imageDetailView.titleLabel.text = storeName
         imageDetailView.collectionView.delegate = self
         imageDetailView.collectionView.dataSource = self
         imageDetailView.collectionView.register(ImageDetailCell.self, forCellWithReuseIdentifier: ImageDetailCell.registerId)
