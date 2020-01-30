@@ -346,10 +346,22 @@ class ShopInfoCell: BaseTableViewCell {
     }
     
     func setDistance(distance: Int) {
-        let text = "\(distance)m이내에 위치한\n음식점입니다."
+        var distanceString = ""
+        if distance <= 50 {
+            distanceString = "50m이내"
+        } else if distance <= 100 {
+            distanceString = "100m이내"
+        } else if distance <= 500 {
+            distanceString = "500m이내"
+        } else if distance <= 1000 {
+            distanceString = "1km이내"
+        } else {
+            distanceString = "1km+"
+        }
+        let text = "\(distanceString)에 위치한\n음식점입니다."
         let attributedText = NSMutableAttributedString(string: text)
 
-        attributedText.addAttribute(.font, value: UIFont.init(name: "SpoqaHanSans-Bold", size: 22)!, range: (text as NSString).range(of: "\(distance)m이내"))
+        attributedText.addAttribute(.font, value: UIFont.init(name: "SpoqaHanSans-Bold", size: 22)!, range: (text as NSString).range(of: distanceString))
         attributedText.addAttribute(.kern, value: -1.6, range: NSMakeRange(0, text.count-1))
         
         distanceLabel.attributedText = attributedText
