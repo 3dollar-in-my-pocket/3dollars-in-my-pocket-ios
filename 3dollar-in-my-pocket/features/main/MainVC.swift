@@ -105,6 +105,11 @@ extension MainVC: HomeDelegate {
 
 extension MainVC: WritingDelegate {
     func onWriteSuccess(storeId: Int) {
+        for controller in self.controllers {
+            if controller is HomeVC {
+                (controller as! HomeVC).onSuccessWrite()
+            }
+        }
         self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
     }
 }

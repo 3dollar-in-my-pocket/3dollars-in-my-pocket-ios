@@ -81,11 +81,10 @@ class HomeVC: BaseVC {
         }.disposed(by: disposeBag)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-//        previousIndex = 0
-//        mapAnimatedFlag = false
-//        locationManager.startUpdatingLocation() // 화면 돌아올때마다 갱신해주면 좋을 것 같음!
+    func onSuccessWrite() {
+        isFirst = true
+        mapAnimatedFlag = false
+        locationManager.startUpdatingLocation()
     }
     
     private func setupShopCollectionView() {
