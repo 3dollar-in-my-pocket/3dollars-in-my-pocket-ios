@@ -17,6 +17,7 @@ class HomeVC: BaseVC {
     var isFirst = true
     var previousIndex = 0
     var mapAnimatedFlag = false
+    var previousOffset: CGFloat = 0
     
     private lazy var homeView = HomeView(frame: self.view.frame)
     
@@ -192,8 +193,11 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     }
     
     func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-        let pageWidth = CGFloat(172 * RadioUtils.width)
-        let proportionalOffset = scrollView.contentOffset.x / pageWidth
+        let pageWidth = CGFloat(172)
+        let offsetHelper: CGFloat = self.previousOffset > scrollView.contentOffset.x ? -50 : 50
+        let proportionalOffset = (scrollView.contentOffset.x + offsetHelper) / pageWidth
+        
+        self.previousOffset = scrollView.contentOffset.x
         
         previousIndex = Int(proportionalOffset.rounded())
         if previousIndex < 0 {
@@ -208,7 +212,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     }
     
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        let pageWidth = CGFloat(172 * RadioUtils.width)
+        let pageWidth = CGFloat(172)
         let proportionalOffset = scrollView.contentOffset.x / pageWidth
         
         previousIndex = Int(proportionalOffset.rounded())
@@ -227,7 +231,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
-            let pageWidth = CGFloat(172 * RadioUtils.width)
+            let pageWidth = CGFloat(172)
             let proportionalOffset = scrollView.contentOffset.x / pageWidth
             previousIndex = Int(round(proportionalOffset))
             let indexPath = IndexPath(row: previousIndex, section: 0)
