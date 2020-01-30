@@ -46,6 +46,7 @@ class MyReviewCell: BaseTableViewCell {
         titleLabel.snp.makeConstraints { (make) in
             make.centerY.equalTo(categoryImage.snp.centerY)
             make.left.equalTo(categoryImage.snp.right).offset(16)
+            make.right.equalToSuperview().offset(-16)
         }
         
         reviewLabel.snp.makeConstraints { (make) in
