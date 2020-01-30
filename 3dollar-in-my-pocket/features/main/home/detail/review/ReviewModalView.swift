@@ -76,7 +76,7 @@ class ReviewModalView: BaseView {
     let reviewTextView = UITextView().then {
         $0.text = "리뷰를 남겨주세요! (100자 이내)"
         $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
-        $0.contentInset = UIEdgeInsets(top: 8, left: 16, bottom: 10, right: 10)
+        $0.contentInset = UIEdgeInsets(top: 8, left: 5, bottom: 10, right: 0)
         $0.backgroundColor = .clear
         $0.textColor = UIColor.init(r: 200, g: 200, b: 200)
         $0.returnKeyType = .done
