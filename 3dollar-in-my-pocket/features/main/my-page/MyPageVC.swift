@@ -120,12 +120,16 @@ class MyPageVC: BaseVC {
         ReviewService.getMyReview(page: 1) { [weak self] (response) in
             switch response.result {
             case .success(let reviewPage):
-                self?.myPageView.reviewCountLabel.text = "\(reviewPage.totalElements!)개"
-                self?.myPageView.reviewEmptyImg.isHidden = !reviewPage.content.isEmpty
+                self?.myPageView.setReviewEmpty(isEmpty: reviewPage.content.isEmpty, count: reviewPage.totalElements!)
                 if reviewPage.totalElements > 3 {
                     self?.viewModel.reportedReviews.onNext(Array(reviewPage.content[0...2]))
                 } else {
-                    self?.viewModel.reportedReviews.onNext(reviewPage.content)
+                    var contents: [Review?] = reviewPage.content
+                    
+                    while contents.count != 3 {
+                        contents.append(nil)
+                    }
+                    self?.viewModel.reportedReviews.onNext(contents)
                 }
             case .failure(let error):
                 if let vc = self {

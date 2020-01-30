@@ -219,4 +219,13 @@ class MyPageView: BaseView {
             registerCountLabel.text = "\(count)개"
         }
     }
+    
+    func setReviewEmpty(isEmpty: Bool, count: Int) {
+        if isEmpty {
+            reviewLabel.text = "내가 쓴 리뷰가 없어요"
+        } else {
+            reviewLabel.text = "내가 쓴 리뷰"
+            reviewCountLabel.text = "\(count)개"
+        }
+    }
 }

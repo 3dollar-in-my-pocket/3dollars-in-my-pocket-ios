@@ -123,22 +123,28 @@ class MyPageReviewCell: BaseTableViewCell {
         backgroundColor = UIColor.init(r: 74, g: 74, b: 74)
     }
     
-    func bind(review: Review) {
-        switch review.category {
-        case .BUNGEOPPANG:
-            categoryImage.image = UIImage.init(named: "img_review_bungeoppang")
-        case .GYERANPPANG:
-            categoryImage.image = UIImage.init(named: "img_review_gyeranppang")
-        case .HOTTEOK:
-            categoryImage.image = UIImage.init(named: "img_review_hotteok")
-        case .TAKOYAKI:
-            categoryImage.image = UIImage.init(named: "img_review_takoyaki")
-        default:
-            break
-        }
+    func bind(review: Review?) {
+        categoryImage.isHidden = review == nil
+        reviewLabel.isHidden = review == nil
+        stackView.isHidden = review == nil
         
-        reviewLabel.text = review.contents
-        setRank(rank: review.rating)
+        if review != nil {
+            switch review!.category {
+            case .BUNGEOPPANG:
+                categoryImage.image = UIImage.init(named: "img_review_bungeoppang")
+            case .GYERANPPANG:
+                categoryImage.image = UIImage.init(named: "img_review_gyeranppang")
+            case .HOTTEOK:
+                categoryImage.image = UIImage.init(named: "img_review_hotteok")
+            case .TAKOYAKI:
+                categoryImage.image = UIImage.init(named: "img_review_takoyaki")
+            default:
+                break
+            }
+            
+            reviewLabel.text = review!.contents
+            setRank(rank: review!.rating)
+        }
     }
     
     func setRank(rank: Int) {
