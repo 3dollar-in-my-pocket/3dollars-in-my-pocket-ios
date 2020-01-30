@@ -99,8 +99,7 @@ class MyPageVC: BaseVC {
         StoreService.getReportedStore(page: 1) { [weak self] (response) in
             switch response.result {
             case .success(let storePage):
-                self?.myPageView.registerCountLabel.text = "\(storePage.totalElements!)개"
-                self?.myPageView.registerEmptyImg.isHidden = !storePage.content.isEmpty
+                self?.myPageView.setRegisterEmpty(isEmpty: storePage.content.isEmpty, count: storePage.totalElements!)
                 if storePage.content.count > 5 {
                     var sliceArray: [Store?] = Array(storePage.content[0...4])
                     

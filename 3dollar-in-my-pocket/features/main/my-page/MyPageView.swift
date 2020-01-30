@@ -61,6 +61,12 @@ class MyPageView: BaseView {
         $0.isHidden = true
     }
     
+    let registerEmptyBg = UIView().then {
+        $0.backgroundColor = UIColor.init(r: 65, g: 65, b: 65)
+        $0.layer.cornerRadius = 16
+        $0.alpha = 0.4
+    }
+    
     let reviewLabel = UILabel().then {
         $0.text = "내가 쓴 리뷰"
         $0.textColor = .white
@@ -68,7 +74,6 @@ class MyPageView: BaseView {
     }
     
     let reviewCountLabel = UILabel().then {
-        $0.text = "10개"
         $0.textColor = .white
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 24)
     }
@@ -97,7 +102,7 @@ class MyPageView: BaseView {
     override func setup() {
         backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         containerView.addSubViews(bgCloud, nicknameBg, nicknameLabel, modifyBtn, registerLabel,
-                                  registerCountLabel, registerTotalBtn, registerCollectionView, registerEmptyImg,
+                                  registerCountLabel, registerTotalBtn, registerCollectionView, registerEmptyBg, registerEmptyImg,
                                   reviewLabel, reviewCountLabel, reviewTotalBtn, reviewTableView, reviewEmptyImg)
         scrollView.addSubview(containerView)
         addSubViews(scrollView)
@@ -156,10 +161,15 @@ class MyPageView: BaseView {
             make.height.equalTo(200)
         }
         
+        registerEmptyBg.snp.makeConstraints { (make) in
+            make.width.height.equalTo(172)
+            make.left.equalToSuperview().offset(20)
+            make.top.equalTo(registerLabel.snp.bottom).offset(12)
+        }
+        
         registerEmptyImg.snp.makeConstraints { (make) in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(registerLabel.snp.bottom).offset(20)
-            make.width.height.equalTo(112 * UIScreen.main.bounds.width / 375)
+            make.center.equalTo(registerEmptyBg)
+            make.width.height.equalTo(112)
         }
         
         reviewLabel.snp.makeConstraints { (make) in
@@ -195,6 +205,18 @@ class MyPageView: BaseView {
             make.width.equalTo(frame.width)
             make.top.equalToSuperview()
             make.height.equalTo(736)
+        }
+    }
+    
+    func setRegisterEmpty(isEmpty: Bool, count: Int) {
+        registerEmptyBg.isHidden = !isEmpty
+        registerEmptyImg.isHidden = !isEmpty
+        
+        if isEmpty {
+            registerLabel.text = "등록한 음식점이 없어요"
+        } else {
+            registerLabel.text = "등록한 음식점"
+            registerCountLabel.text = "\(count)개"
         }
     }
 }
