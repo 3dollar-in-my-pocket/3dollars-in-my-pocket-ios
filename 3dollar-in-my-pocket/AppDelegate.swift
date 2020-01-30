@@ -42,10 +42,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return false
     }
     
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        KOSession.handleDidBecomeActive()
-    }
-    
     private func initializeGoogleMaps() {
         GMSServices.provideAPIKey("AIzaSyA7CMJwuD1RrlhgF-L1o9vuKOgFiNA-5Sg")
     }

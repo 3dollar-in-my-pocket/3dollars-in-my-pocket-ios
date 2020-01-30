@@ -1,9 +1,15 @@
 import UIKit
 import RxSwift
 
+protocol MyPageDelegate: class {
+    func onScrollStart()
+    func onScrollEnd()
+}
+
 class MyPageVC: BaseVC {
     
     private lazy var myPageView = MyPageView(frame: self.view.frame)
+    weak var delegate: MyPageDelegate?
     private var viewModel = MyPageViewModel()
     
     static func instance() -> MyPageVC {
@@ -13,6 +19,7 @@ class MyPageVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = myPageView
+        myPageView.scrollView.delegate = self
         setupRegisterCollectionView()
         setUpReviewTableView()
     }
@@ -92,7 +99,7 @@ class MyPageVC: BaseVC {
         StoreService.getReportedStore(page: 1) { [weak self] (response) in
             switch response.result {
             case .success(let storePage):
-                self?.myPageView.registerCountLabel.text = "\(storePage.totalElements!)개"
+                self?.myPageView.setRegisterEmpty(isEmpty: storePage.content.isEmpty, count: storePage.totalElements!)
                 if storePage.content.count > 5 {
                     var sliceArray: [Store?] = Array(storePage.content[0...4])
                     
@@ -113,11 +120,16 @@ class MyPageVC: BaseVC {
         ReviewService.getMyReview(page: 1) { [weak self] (response) in
             switch response.result {
             case .success(let reviewPage):
-                self?.myPageView.reviewCountLabel.text = "\(reviewPage.totalElements!)개"
+                self?.myPageView.setReviewEmpty(isEmpty: reviewPage.content.isEmpty, count: reviewPage.totalElements!)
                 if reviewPage.totalElements > 3 {
                     self?.viewModel.reportedReviews.onNext(Array(reviewPage.content[0...2]))
                 } else {
-                    self?.viewModel.reportedReviews.onNext(reviewPage.content)
+                    var contents: [Review?] = reviewPage.content
+                    
+                    while contents.count != 3 {
+                        contents.append(nil)
+                    }
+                    self?.viewModel.reportedReviews.onNext(contents)
                 }
             case .failure(let error):
                 if let vc = self {
@@ -144,6 +156,24 @@ extension MyPageVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 
 extension MyPageVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        if let store = try? self.viewModel.reportedReviews.value()[indexPath.row] {
+            self.navigationController?.pushViewController(DetailVC.instance(storeId: store.id!), animated: true)
+        }
+    }
+}
+
+extension MyPageVC: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.delegate?.onScrollStart()
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            self.delegate?.onScrollEnd()
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.delegate?.onScrollEnd()
     }
 }

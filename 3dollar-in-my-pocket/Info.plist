@@ -2,25 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-      <key>NSAllowsArbitraryLoads</key>
-      <true/>
-    </dict>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>가게 사진 불러오기</string>
-	<key>NSCameraUsageDescription</key>
-	<string>가게 사진 불러오기</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>앱을 열때마다 위치 주소 가져오기 허용</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>SpoqaHanSans-Regular.ttf</string>
-		<string>SpoqaHanSans-Bold.ttf</string>
-		<string>SpoqaHanSans-Light.ttf</string>
-	</array>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -65,22 +46,37 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>a0ce3cecac62e2dedf50751d5abc5740</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>kakao0123456789abcdefghijklmn</string>
+		<string>kakaoa0ce3cecac62e2dedf50751d5abc5740</string>
 		<string>kakaokompassauth</string>
 		<string>storykompassauth</string>
 		<string>kakaolink</string>
 		<string>kakaotalk-5.9.7</string>
 		<string>storylink</string>
-		<string>naversearchapp</string>
-		<string>naversearchthirdlogin</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>가게 사진 불러오기</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>앱을 열때마다 위치 주소 가져오기 허용</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>가게 사진 불러오기</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SpoqaHanSans-Regular.ttf</string>
+		<string>SpoqaHanSans-Bold.ttf</string>
+		<string>SpoqaHanSans-Light.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -115,5 +111,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 </dict>
 </plist>

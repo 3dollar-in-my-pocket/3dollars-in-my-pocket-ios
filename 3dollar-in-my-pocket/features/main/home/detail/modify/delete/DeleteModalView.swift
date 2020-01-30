@@ -9,7 +9,7 @@ protocol DeleteModalViewDelegate: class {
 class DeleteModalView: BaseView {
     
     weak var delegate: DeleteModalViewDelegate?
-    var rating = 0
+    var deleteReason = ""
     
     let containerView = UIView().then {
         $0.layer.cornerRadius = 40
@@ -85,20 +85,23 @@ class DeleteModalView: BaseView {
         $0.isHidden = true
     }
     
-    let registerBtn = UIButton().then {
-        $0.setTitle("리뷰 등록하기", for: .normal)
+    let deleteBtn = UIButton().then {
+        $0.setTitle("삭제 요청", for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-        $0.backgroundColor = UIColor.init(r: 238, g: 98, b: 76)
+        $0.setBackgroundColor(UIColor.init(r: 238, g: 98, b: 76), for: .normal)
+        $0.setBackgroundColor(UIColor.init(r: 200, g: 200, b: 200), for: .disabled)
+        $0.isEnabled = false
         $0.layer.cornerRadius = 14
+        $0.layer.masksToBounds = true
         $0.addTarget(self, action: #selector(onTapRequest), for: .touchUpInside)
     }
     
     
     override func setup() {
-        addSubViews(containerView, registerBtn, titleLabel, closeBtn, descLabel,
+        addSubViews(containerView, deleteBtn, titleLabel, closeBtn, descLabel,
                     removedBtn, removedCheck, locationBtn, locationCheck,
-                    overlapBtn, overlapCheck, registerBtn)
+                    overlapBtn, overlapCheck, deleteBtn)
     }
     
     override func bindConstraints() {
@@ -108,7 +111,7 @@ class DeleteModalView: BaseView {
             make.bottom.equalToSuperview().offset(-48)
         }
         
-        registerBtn.snp.makeConstraints { (make) in
+        deleteBtn.snp.makeConstraints { (make) in
             make.left.equalTo(containerView).offset(25)
             make.right.equalTo(containerView).offset(-24)
             make.bottom.equalTo(containerView).offset(-24)
@@ -116,8 +119,8 @@ class DeleteModalView: BaseView {
         }
         
         overlapBtn.snp.makeConstraints { (make) in
-            make.left.right.equalTo(registerBtn)
-            make.bottom.equalTo(registerBtn.snp.top).offset(-24)
+            make.left.right.equalTo(deleteBtn)
+            make.bottom.equalTo(deleteBtn.snp.top).offset(-24)
             make.height.equalTo(40)
         }
         
@@ -128,7 +131,7 @@ class DeleteModalView: BaseView {
         }
         
         locationBtn.snp.makeConstraints { (make) in
-            make.left.right.equalTo(registerBtn)
+            make.left.right.equalTo(deleteBtn)
             make.bottom.equalTo(overlapBtn.snp.top).offset(-8)
             make.height.equalTo(40)
         }
@@ -140,7 +143,7 @@ class DeleteModalView: BaseView {
         }
         
         removedBtn.snp.makeConstraints { (make) in
-            make.left.right.equalTo(registerBtn)
+            make.left.right.equalTo(deleteBtn)
             make.bottom.equalTo(locationBtn.snp.top).offset(-8)
             make.height.equalTo(40)
         }
@@ -152,13 +155,13 @@ class DeleteModalView: BaseView {
         }
         
         titleLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(registerBtn)
+            make.left.equalTo(deleteBtn)
             make.bottom.equalTo(removedBtn.snp.top).offset(-24)
         }
         
         closeBtn.snp.makeConstraints { (make) in
             make.top.equalTo(titleLabel)
-            make.right.equalTo(registerBtn)
+            make.right.equalTo(deleteBtn)
             make.width.height.equalTo(24)
         }
         
@@ -176,14 +179,20 @@ class DeleteModalView: BaseView {
     }
     
     @objc func onTapRemoveBtn() {
+        deleteBtn.isEnabled = true
+        deleteReason = "NOSTORE"
         selectBtn(index: 0)
     }
     
     @objc func onTapLocationBtn() {
+        deleteBtn.isEnabled = true
+        deleteReason = "WRONGNOPOSITION"
         selectBtn(index: 1)
     }
     
     @objc func onTapOverlap() {
+        deleteBtn.isEnabled = true
+        deleteReason = "OVERLAPSTORE"
         selectBtn(index: 2)
     }
     

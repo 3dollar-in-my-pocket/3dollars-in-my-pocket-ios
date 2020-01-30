@@ -72,8 +72,8 @@ class NicknameVC: BaseVC {
                     UserDefaultsUtil.setUserId(id: vc.id)
                 }
                 self?.goToMain()
-            case .failure(let error):
-                AlertUtils.show(title: "Set nickname error", message: error.localizedDescription)
+            case .failure(_):
+                self?.nicknameView.existedSameName()
             }
         })
     }

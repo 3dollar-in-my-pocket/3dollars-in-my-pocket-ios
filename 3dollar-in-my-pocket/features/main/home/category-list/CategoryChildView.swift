@@ -9,9 +9,13 @@ class CategoryChildView: BaseView {
     }
     
     let descLabel2 = UILabel().then {
-        $0.text = "만나기 30초 전"
+        let text = "만나기 30초 전"
+        let attributedText = NSMutableAttributedString(string: text)
+        
+        attributedText.addAttribute(.kern, value: -1.6, range: NSMakeRange(0, text.count-1))
         $0.textColor = .black
         $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 24)
+        $0.attributedText = attributedText
     }
     
     let nearOrderBtn = UIButton().then {
@@ -23,7 +27,7 @@ class CategoryChildView: BaseView {
     }
     
     let reviewOrderBtn = UIButton().then {
-        $0.setTitle("리뷰순", for: .normal)
+        $0.setTitle("별점순", for: .normal)
         $0.setTitleColor(.black, for: .selected)
         $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
         $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 14)
@@ -38,6 +42,18 @@ class CategoryChildView: BaseView {
         $0.showsVerticalScrollIndicator = false
     }
     
+    let emptyImg = UIImageView().then {
+        $0.image = UIImage.init(named: "img_my_page_empty")
+        $0.isHidden = true
+    }
+    
+    let emptyLabel = UILabel().then {
+        $0.text = "주변에 가게가 없어요."
+        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
+        $0.textColor = UIColor.init(r: 200, g: 200, b: 200)
+        $0.isHidden = true
+    }
+    
     init(category: StoreCategory) {
         self.category = category
         super.init(frame: .zero)
@@ -49,7 +65,7 @@ class CategoryChildView: BaseView {
 
     override func setup() {
         backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
-        addSubViews(descLabel1, descLabel2, nearOrderBtn, reviewOrderBtn, tableView)
+        addSubViews(descLabel1, descLabel2, nearOrderBtn, reviewOrderBtn, tableView, emptyImg, emptyLabel)
     }
     
     override func bindConstraints() {
@@ -60,7 +76,7 @@ class CategoryChildView: BaseView {
         
         descLabel2.snp.makeConstraints { (make) in
             make.centerY.equalTo(descLabel1.snp.centerY)
-            make.left.equalTo(descLabel1.snp.right).offset(5)
+            make.left.equalTo(descLabel1.snp.right).offset(3)
         }
         
         reviewOrderBtn.snp.makeConstraints { (make) in
@@ -69,7 +85,7 @@ class CategoryChildView: BaseView {
         }
         
         nearOrderBtn.snp.makeConstraints { (make) in
-            make.right.equalTo(reviewOrderBtn.snp.left).offset(-16)
+            make.right.equalTo(reviewOrderBtn.snp.left).offset(-13)
             make.centerY.equalTo(reviewOrderBtn.snp.centerY)
         }
         
@@ -79,6 +95,19 @@ class CategoryChildView: BaseView {
             make.right.equalToSuperview().offset(-24)
             make.top.equalTo(descLabel1.snp.bottom).offset(5)
         }
+        
+        emptyImg.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(descLabel1.snp.bottom).offset(54)
+            make.width.equalTo(112)
+            make.height.equalTo(112)
+        }
+        
+        emptyLabel.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(emptyImg.snp.bottom).offset(8)
+        }
+        
     }
     
     override func layoutSubviews() {
@@ -95,5 +124,10 @@ class CategoryChildView: BaseView {
         default:
             descLabel1.text = "붕어빵"
         }
+    }
+    
+    func setEmpty(isEmpty: Bool) {
+        emptyImg.isHidden = !isEmpty
+        emptyLabel.isHidden = !isEmpty
     }
 }

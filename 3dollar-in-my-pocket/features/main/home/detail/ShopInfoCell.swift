@@ -1,5 +1,6 @@
 import UIKit
 import GoogleMaps
+import RxSwift
 
 class ShopInfoCell: BaseTableViewCell {
     
@@ -18,10 +19,20 @@ class ShopInfoCell: BaseTableViewCell {
         $0.layer.cornerRadius = 12
     }
     
-    let profileImage = UIImageView().then {
+    let profileImage = UIButton().then {
         $0.backgroundColor = UIColor.init(r: 217, g: 217, b: 217)
         $0.layer.cornerRadius = 8
         $0.layer.masksToBounds = true
+    }
+    
+    let otherImages = UIButton().then {
+        $0.setBackgroundColor(UIColor.init(r: 28, g: 28, b: 28), for: .normal)
+        $0.layer.cornerRadius = 12
+        $0.setTitle("+5", for: .normal)
+        $0.setTitleColor(.white, for: .normal)
+        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 11)
+        $0.layer.masksToBounds = true
+        $0.isHidden = true
     }
     
     let emptyImage = UIImageView().then {
@@ -133,6 +144,11 @@ class ShopInfoCell: BaseTableViewCell {
         $0.layer.borderColor = UIColor.init(r: 153, g: 153, b: 153).cgColor
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+    }
+    
     override func setup() {
         selectionStyle = .none
         stackView.addArrangedSubview(star1)
@@ -140,7 +156,7 @@ class ShopInfoCell: BaseTableViewCell {
         stackView.addArrangedSubview(star3)
         stackView.addArrangedSubview(star4)
         stackView.addArrangedSubview(star5)
-        titleContainer.addSubViews(profileImage, emptyImage, distanceLabel, stackView, rankingLabel)
+        titleContainer.addSubViews(profileImage, emptyImage, otherImages, distanceLabel, stackView, rankingLabel)
         addSubViews(mapView, mapBtn, titleContainer, categoryLabel, categoryValueLabel, menuLabel, menuNameLabel, menuPriceLabel, reviewBtn, modifyBtn)
         setupContainerShadow()
     }
@@ -175,19 +191,25 @@ class ShopInfoCell: BaseTableViewCell {
             make.height.equalTo(37)
         }
         
+        otherImages.snp.makeConstraints { (make) in
+            make.width.height.equalTo(24)
+            make.centerY.equalTo(profileImage.snp.top)
+            make.centerX.equalTo(profileImage.snp.right)
+        }
+        
         distanceLabel.snp.makeConstraints { (make) in
             make.top.equalToSuperview().offset(10)
             make.left.equalTo(profileImage.snp.right).offset(24)
         }
         
-        rankingLabel.snp.makeConstraints { (make) in
-            make.right.equalTo(distanceLabel.snp.right)
+        stackView.snp.makeConstraints { (make) in
+            make.left.equalTo(distanceLabel.snp.left)
             make.top.equalTo(distanceLabel.snp.bottom).offset(10)
         }
         
-        stackView.snp.makeConstraints { (make) in
-            make.left.equalTo(distanceLabel.snp.left)
-            make.centerY.equalTo(rankingLabel.snp.centerY)
+        rankingLabel.snp.makeConstraints { (make) in
+            make.left.equalTo(stackView.snp.right).offset(10)
+            make.bottom.equalTo(stackView)
         }
         
         categoryLabel.snp.makeConstraints { (make) in
@@ -219,15 +241,15 @@ class ShopInfoCell: BaseTableViewCell {
             make.left.equalToSuperview().offset(24)
             make.top.equalTo(menuNameLabel.snp.bottom).offset(16)
             make.bottom.equalToSuperview().offset(-24)
-            make.width.equalTo(160)
-            make.height.equalTo(48)
+            make.width.equalTo(160 * UIScreen.main.bounds.width / 375)
+            make.height.equalTo(48 * UIScreen.main.bounds.width / 375)
         }
         
         modifyBtn.snp.makeConstraints { (make) in
             make.right.equalToSuperview().offset(-24)
             make.centerY.equalTo(reviewBtn.snp.centerY)
-            make.width.equalTo(160)
-            make.height.equalTo(48)
+            make.width.equalTo(160 * UIScreen.main.bounds.width / 375)
+            make.height.equalTo(48 * UIScreen.main.bounds.width / 375)
         }
     }
     
@@ -279,20 +301,29 @@ class ShopInfoCell: BaseTableViewCell {
     }
     
     func setImage(url: String, count: Int) {
-        profileImage.kf.setImage(with: URL(string: url))
+        profileImage.kf.setImage(with: URL(string: url), for: .normal)
         emptyImage.isHidden = true
+        if count > 1 {
+            otherImages.setTitle(String.init(format: "+%d", count - 1), for: .normal)
+            otherImages.isHidden = false
+            
+        }
     }
     
     func setCategory(category: StoreCategory) {
         switch category {
         case .BUNGEOPPANG:
             categoryValueLabel.text = "붕어빵"
+            emptyImage.image = UIImage.init(named: "img_detail_bungeoppang")
         case .GYERANPPANG:
             categoryValueLabel.text = "계란빵"
+            emptyImage.image = UIImage.init(named: "img_detail_gyeranppang")
         case .HOTTEOK:
             categoryValueLabel.text = "호떡"
+            emptyImage.image = UIImage.init(named: "img_detail_hotteok")
         case .TAKOYAKI:
             categoryValueLabel.text = "타코야끼"
+            emptyImage.image = UIImage.init(named: "img_detail_takoyaki")
         }
     }
     
@@ -306,7 +337,7 @@ class ShopInfoCell: BaseTableViewCell {
             
             for menu in menus {
                 name.append("\(menu.name!)\n")
-                price.append("\(menu.price!)\n")
+                price.append("\(menu.price != nil ? menu.price! : "")\n")
             }
             menuNameLabel.text = name
             menuNameLabel.textColor = UIColor.init(r: 28, g: 28, b: 28)
@@ -315,10 +346,22 @@ class ShopInfoCell: BaseTableViewCell {
     }
     
     func setDistance(distance: Int) {
-        let text = "\(distance)m이내에 위치한\n음식점입니다."
+        var distanceString = ""
+        if distance <= 50 {
+            distanceString = "50m이내"
+        } else if distance <= 100 {
+            distanceString = "100m이내"
+        } else if distance <= 500 {
+            distanceString = "500m이내"
+        } else if distance <= 1000 {
+            distanceString = "1km이내"
+        } else {
+            distanceString = "1km+"
+        }
+        let text = "\(distanceString)에 위치한\n음식점입니다."
         let attributedText = NSMutableAttributedString(string: text)
 
-        attributedText.addAttribute(.font, value: UIFont.init(name: "SpoqaHanSans-Bold", size: 22)!, range: (text as NSString).range(of: "\(distance)m이내"))
+        attributedText.addAttribute(.font, value: UIFont.init(name: "SpoqaHanSans-Bold", size: 22)!, range: (text as NSString).range(of: distanceString))
         attributedText.addAttribute(.kern, value: -1.6, range: NSMakeRange(0, text.count-1))
         
         distanceLabel.attributedText = attributedText

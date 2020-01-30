@@ -15,22 +15,23 @@ class SplashVC: BaseVC {
         view = splashView
         
         splashView.lottie.play { [weak self] (isFinish) in
-            print(isFinish)
             if isFinish {
-                if let _ = UserDefaultsUtil.getUserToken() {
-                    self?.goToMain()
-                } else {
-                    self?.goToSignIn()
+                UIView.animate(withDuration: 0.5, animations: { [weak self] in
+                    self?.splashView.alpha = 0
+                }) { (isFinish) in
+                    if let _ = UserDefaultsUtil.getUserToken() {
+                        self?.goToMain()
+                    } else {
+                        self?.goToSignIn()
+                    }
                 }
             }
         }
     }
     
-    override func bindViewModel() {
-//        Observable.just(()).delay(.seconds(2), scheduler: MainScheduler.instance)
-//            .subscribe { [weak self] in
-//
-//        }.disposed(by: disposeBag)
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
     private func goToMain() {

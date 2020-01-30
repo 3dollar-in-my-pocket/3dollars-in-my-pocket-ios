@@ -2,13 +2,17 @@ import UIKit
 import RxSwift
 import GoogleMaps
 
+protocol ModifyDelegate: class {
+    func onModifySuccess()
+}
+
 class ModifyVC: BaseVC {
     
     private lazy var modifyView = ModifyView(frame: self.view.frame)
+    weak var delegate: ModifyDelegate?
     
     var store: Store!
     var viewModel = ModifyViewMode()
-    var locationManager = CLLocationManager()
     var deleteVC: DeleteModalVC?
     
     private let imagePicker = UIImagePickerController()
@@ -32,7 +36,6 @@ class ModifyVC: BaseVC {
         setupImageCollectionView()
         setupMenuTableView()
         setupKeyboardEvent()
-        setupLocationManager()
         setupGoogleMap()
         setupStore()
     }
@@ -57,10 +60,6 @@ class ModifyVC: BaseVC {
             self?.viewModel.btnEnable.onNext(())
         }.disposed(by: disposeBag)
         
-        modifyView.myLocationBtn.rx.tap.bind {
-            self.locationManager.startUpdatingLocation()
-        }.disposed(by: disposeBag)
-        
         modifyView.registerBtn.rx.tap.bind { [weak self] in
             if let storeId = self?.store.id,
                 let storeName = self?.modifyView.nameField.text!,
@@ -74,6 +73,7 @@ class ModifyVC: BaseVC {
                 StoreService.updateStore(storeId: storeId, store: store, images: images) { (response) in
                     switch response.result {
                     case .success(_):
+                        self?.delegate?.onModifySuccess()
                         self?.navigationController?.popViewController(animated: true)
                     case .failure(let error):
                         if let vc = self {
@@ -126,16 +126,27 @@ class ModifyVC: BaseVC {
         NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    private func setupLocationManager() {
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-    }
-    
     private func setupGoogleMap() {
         modifyView.mapView.isMyLocationEnabled = true
+        let position = GMSCameraPosition.init(latitude: store.latitude!, longitude: store.longitude!, zoom: 15)
+        
+        self.modifyView.mapView.camera = position
+        
+        let marker = GMSMarker()
+        
+        marker.position = CLLocationCoordinate2D(latitude: store.latitude!, longitude: store.longitude!)
+        marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker")!, scaledToSize: CGSize.init(width: 24, height: 32))
+        marker.map = self.modifyView.mapView
     }
+    
+    private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+    
     
     @objc func onShowKeyboard(notification: NSNotification) {
         let userInfo = notification.userInfo!
@@ -185,10 +196,12 @@ extension ModifyVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColl
 extension ModifyVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.originalImage] as? UIImage {
+            let cropImage = ImageUtils.cropToBounds(image: image)
+            
             if selectedImageIndex == self.viewModel.imageList.count {
-                self.viewModel.imageList.append(image)
+                self.viewModel.imageList.append(cropImage)
             } else {
-                self.viewModel.imageList[selectedImageIndex] = image
+                self.viewModel.imageList[selectedImageIndex] = cropImage
             }
         }
         self.modifyView.imageCollection.reloadData()
@@ -223,6 +236,10 @@ extension ModifyVC: UITableViewDelegate, UITableViewDataSource {
                 } else {
                     self?.viewModel.menuList[indexPath.row].name = name
                 }
+            } else  {
+                if let _ = self?.viewModel.menuList[indexPath.row] {
+                    self?.viewModel.menuList.remove(at: indexPath.row)
+                }
             }
         }.disposed(by: disposeBag)
         
@@ -230,7 +247,7 @@ extension ModifyVC: UITableViewDelegate, UITableViewDataSource {
             let name = cell.nameField.text!
             let desc = cell.descField.text!
             
-            if !name.isEmpty && !desc.isEmpty {
+            if !name.isEmpty {
                 let menu = Menu.init(name: name, price: desc)
                 
                 if let _ = self?.viewModel.menuList[indexPath.row] {
@@ -240,20 +257,6 @@ extension ModifyVC: UITableViewDelegate, UITableViewDataSource {
             
         }.disposed(by: disposeBag)
         return cell
-    }
-}
-
-extension ModifyVC: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = locations.last
-        let position = GMSCameraPosition.init(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
-        
-        self.modifyView.mapView.camera = position
-        self.locationManager.stopUpdatingLocation()
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
     }
 }
 

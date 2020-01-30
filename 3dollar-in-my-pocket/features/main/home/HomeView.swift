@@ -35,7 +35,7 @@ class HomeView: BaseView {
     let descLabel1 = UILabel().then {
         $0.text = "가장 가까운 음식점"
         $0.textColor = UIColor.init(r: 238, g: 98, b: 76)
-        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 12)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 12 * RadioUtils.width)
     }
     
     let descLabel2 = UILabel().then {
@@ -44,32 +44,32 @@ class HomeView: BaseView {
 
         attributedStr.addAttribute(.kern, value: -1.6, range: NSMakeRange(0, text.count-1))
         $0.textColor = .black
-        $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 32)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 32 * RadioUtils.width)
         $0.attributedText = attributedStr
     }
     
     let descLabel3 = UILabel().then {
         let text = "3천원이 있으시다면"
         let attributedStr = NSMutableAttributedString(string: text)
-        let subFont = UIFont.init(name: "SpoqaHanSans-Bold", size: 32)
+        let subFont = UIFont.init(name: "SpoqaHanSans-Bold", size: 32 * RadioUtils.width)
 
         attributedStr.addAttribute(.font, value: subFont!, range: (text as NSString).range(of: "3천원"))
         attributedStr.addAttribute(.kern, value: -1.6, range: NSMakeRange(0, text.count-1))
         $0.textColor = .black
-        $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 32)
+        $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 32 * RadioUtils.width)
         $0.attributedText = attributedStr
     }
     
     let shopCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
-        let layout = StoreCollectionViewFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         
         layout.scrollDirection = .horizontal
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 0, bottom: 50, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 20 * RadioUtils.width, left: 0, bottom: 50 * RadioUtils.height, right: 0)
         
         $0.backgroundColor = .clear
         $0.showsHorizontalScrollIndicator = false
         $0.collectionViewLayout = layout
-        $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 196)
+        $0.contentInset = UIEdgeInsets(top: 0, left: 24 * RadioUtils.width, bottom: 0, right: 196 * RadioUtils.width)
     }
     
     
@@ -100,44 +100,44 @@ class HomeView: BaseView {
         }
         
         categoryStackView.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(22 * UIScreen.main.bounds.width / 375.0)
-            make.right.equalToSuperview().offset(-26 * UIScreen.main.bounds.width / 375.0)
-            make.top.equalToSuperview().offset(80)
+            make.left.equalToSuperview().offset(22 * RadioUtils.width)
+            make.right.equalToSuperview().offset(-26 * RadioUtils.width)
+            make.top.equalTo(safeAreaLayoutGuide).offset(26)
             make.height.equalTo(92)
         }
         
         bungeoppangBtn.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
-            make.left.equalTo(categoryStackView.snp.left).offset(21 * UIScreen.main.bounds.width / 375.0)
-            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
+            make.left.equalTo(categoryStackView.snp.left).offset(21 * RadioUtils.width)
+            make.width.height.equalTo(67 * RadioUtils.width)
         }
         
         takoyakiBtn.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
-            make.left.equalTo(bungeoppangBtn.snp.right).offset(8 * UIScreen.main.bounds.width / 375.0)
-            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
+            make.left.equalTo(bungeoppangBtn.snp.right).offset(8 * RadioUtils.width)
+            make.width.height.equalTo(67 * RadioUtils.width)
         }
         
         gyeranppangBtn.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
-            make.left.equalTo(takoyakiBtn.snp.right).offset(8 * UIScreen.main.bounds.width / 375.0)
-            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
+            make.left.equalTo(takoyakiBtn.snp.right).offset(8 * RadioUtils.width)
+            make.width.height.equalTo(67 * RadioUtils.width)
         }
         
         hotteokBtn.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
-            make.left.equalTo(gyeranppangBtn.snp.right).offset(8 * UIScreen.main.bounds.width / 375.0)
-            make.width.height.equalTo(67 * UIScreen.main.bounds.width / 375.0)
+            make.left.equalTo(gyeranppangBtn.snp.right).offset(8 * RadioUtils.width)
+            make.width.height.equalTo(67 * RadioUtils.width)
         }
         
         mapView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(categoryStackView.snp.bottom).offset(264 * UIScreen.main.bounds.width / 375.0)
+            make.top.equalTo(categoryStackView.snp.bottom).offset(264)
         }
         
         descLabel1.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(24)
-            make.top.equalTo(categoryStackView.snp.bottom).offset(41)
+            make.left.equalToSuperview().offset(24 * RadioUtils.width)
+            make.top.equalTo(categoryStackView.snp.bottom).offset(30)
         }
         
         descLabel2.snp.makeConstraints { (make) in
@@ -147,13 +147,13 @@ class HomeView: BaseView {
         
         descLabel3.snp.makeConstraints { (make) in
             make.left.equalTo(descLabel1.snp.left)
-            make.top.equalTo(descLabel2.snp.bottom).offset(-8)
+            make.top.equalTo(descLabel2.snp.bottom).offset(-10)
         }
         
         shopCollectionView.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
-            make.top.equalTo(descLabel3.snp.bottom).offset(23)
-            make.height.equalTo(200)
+            make.top.equalTo(descLabel3.snp.bottom)
+            make.height.equalTo(250)
         }
         
         mapButton.snp.makeConstraints { (make) in

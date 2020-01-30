@@ -46,6 +46,7 @@ class RegisteredCell: BaseTableViewCell {
         titleLabel.snp.makeConstraints { (make) in
             make.top.equalTo(categoryImage.snp.top)
             make.left.equalTo(categoryImage.snp.right).offset(16)
+            make.right.equalTo(background).offset(-10)
         }
         
         rankingView.snp.makeConstraints { (make) in
@@ -57,13 +58,13 @@ class RegisteredCell: BaseTableViewCell {
     func bind(store: Store) {
         switch store.category! {
         case .BUNGEOPPANG:
-            categoryImage.image = UIImage.init(named: "img_card_bungeoppang_on")
+            categoryImage.image = UIImage.init(named: "img_mypage_bungeoppang")
         case .GYERANPPANG:
-            categoryImage.image = UIImage.init(named: "img_card_gyeranppang_on")
+            categoryImage.image = UIImage.init(named: "img_mypage_gyeranppang")
         case.HOTTEOK:
-            categoryImage.image = UIImage.init(named: "img_card_hotteok_on")
+            categoryImage.image = UIImage.init(named: "img_mypage_hotteok")
         case.TAKOYAKI:
-            categoryImage.image = UIImage.init(named: "img_card_takoyaki_on")
+            categoryImage.image = UIImage.init(named: "img_mypage_takoyaki")
         }
         titleLabel.text = store.storeName
         rankingView.setRank(rank: store.rating)

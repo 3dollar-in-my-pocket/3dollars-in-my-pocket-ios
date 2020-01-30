@@ -2,6 +2,12 @@ import UIKit
 
 class MyPageView: BaseView {
     
+    let scrollView = UIScrollView()
+    
+    let containerView = UIView().then {
+        $0.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
+    }
+    
     let nicknameBg = UIView().then {
         $0.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
         $0.layer.borderWidth = 2
@@ -50,6 +56,17 @@ class MyPageView: BaseView {
         $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 20, right: 196)
     }
     
+    let registerEmptyImg = UIImageView().then {
+        $0.image = UIImage.init(named: "img_my_page_empty")
+        $0.isHidden = true
+    }
+    
+    let registerEmptyBg = UIView().then {
+        $0.backgroundColor = UIColor.init(r: 65, g: 65, b: 65)
+        $0.layer.cornerRadius = 16
+        $0.alpha = 0.4
+    }
+    
     let reviewLabel = UILabel().then {
         $0.text = "내가 쓴 리뷰"
         $0.textColor = .white
@@ -57,7 +74,6 @@ class MyPageView: BaseView {
     }
     
     let reviewCountLabel = UILabel().then {
-        $0.text = "10개"
         $0.textColor = .white
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 24)
     }
@@ -77,18 +93,29 @@ class MyPageView: BaseView {
         $0.isScrollEnabled = false
     }
     
+    let reviewEmptyImg = UIImageView().then {
+        $0.image = UIImage.init(named: "img_my_page_empty")
+        $0.isHidden = true
+    }
     
     
     override func setup() {
         backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
-        addSubViews(bgCloud, nicknameBg, nicknameLabel, modifyBtn, registerLabel,
-                    registerCountLabel, registerTotalBtn, registerCollectionView,
-                    reviewLabel, reviewCountLabel, reviewTotalBtn, reviewTableView)
+        containerView.addSubViews(bgCloud, nicknameBg, nicknameLabel, modifyBtn, registerLabel,
+                                  registerCountLabel, registerTotalBtn, registerCollectionView, registerEmptyBg, registerEmptyImg,
+                                  reviewLabel, reviewCountLabel, reviewTotalBtn, reviewTableView, reviewEmptyImg)
+        scrollView.addSubview(containerView)
+        addSubViews(scrollView)
     }
     
     override func bindConstraints() {
+        scrollView.snp.makeConstraints { (make) in
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.left.right.bottom.equalToSuperview()
+        }
+        
         nicknameBg.snp.makeConstraints { (make) in
-            make.top.equalToSuperview().offset(80)
+            make.top.equalToSuperview().offset(40)
             make.left.equalToSuperview().offset(24)
             make.right.equalToSuperview().offset(-24)
             make.height.equalTo(44)
@@ -134,6 +161,17 @@ class MyPageView: BaseView {
             make.height.equalTo(200)
         }
         
+        registerEmptyBg.snp.makeConstraints { (make) in
+            make.width.height.equalTo(172)
+            make.left.equalToSuperview().offset(20)
+            make.top.equalTo(registerLabel.snp.bottom).offset(12)
+        }
+        
+        registerEmptyImg.snp.makeConstraints { (make) in
+            make.center.equalTo(registerEmptyBg)
+            make.width.height.equalTo(112)
+        }
+        
         reviewLabel.snp.makeConstraints { (make) in
             make.left.equalTo(registerLabel.snp.left)
             make.top.equalTo(registerCollectionView.snp.bottom).offset(10)
@@ -154,6 +192,40 @@ class MyPageView: BaseView {
             make.right.equalToSuperview().offset(-24)
             make.bottom.equalToSuperview().offset(130)
             make.top.equalTo(reviewLabel.snp.bottom).offset(19)
+        }
+        
+        reviewEmptyImg.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(reviewLabel.snp.bottom).offset(25)
+            make.width.height.equalTo(112 * UIScreen.main.bounds.width / 375)
+        }
+        
+        containerView.snp.makeConstraints { (make) in
+            make.edges.equalTo(0)
+            make.width.equalTo(frame.width)
+            make.top.equalToSuperview()
+            make.height.equalTo(736)
+        }
+    }
+    
+    func setRegisterEmpty(isEmpty: Bool, count: Int) {
+        registerEmptyBg.isHidden = !isEmpty
+        registerEmptyImg.isHidden = !isEmpty
+        
+        if isEmpty {
+            registerLabel.text = "등록한 음식점이 없어요"
+        } else {
+            registerLabel.text = "등록한 음식점"
+            registerCountLabel.text = "\(count)개"
+        }
+    }
+    
+    func setReviewEmpty(isEmpty: Bool, count: Int) {
+        if isEmpty {
+            reviewLabel.text = "내가 쓴 리뷰가 없어요"
+        } else {
+            reviewLabel.text = "내가 쓴 리뷰"
+            reviewCountLabel.text = "\(count)개"
         }
     }
 }

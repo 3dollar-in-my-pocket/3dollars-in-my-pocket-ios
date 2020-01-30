@@ -2,6 +2,8 @@ import UIKit
 
 protocol ReviewModalDelegate: class {
     func onTapClose()
+    
+    func onReviewSuccess()
 }
 
 class ReviewModalVC: BaseVC {
@@ -35,9 +37,9 @@ class ReviewModalVC: BaseVC {
         let review = Review.init(rating: reviewModalView.rating, contents: reviewModalView.reviewTextView.text)
         ReviewService.saveReview(review: review, storeId: storeId) { [weak self] (response) in
             switch response.result {
-            case .success(let message):
-                print(message)
-                self?.deleagete?.onTapClose()
+            case .success(_):
+                self?.dismiss(animated: true, completion: nil)
+                self?.deleagete?.onReviewSuccess()
             case .failure(let error):
                 if let vc = self {
                     AlertUtils.show(controller: vc, title: "save review error", message: error.localizedDescription)
@@ -63,7 +65,11 @@ extension ReviewModalVC: ReviewModalViewDelegate {
     }
     
     func onTapRegister() {
-        self.saveReview()
+        if reviewModalView.reviewTextView.text == "리뷰를 남겨주세요! (100자 이내)" {
+            AlertUtils.show(controller: self, message: "내용을 입력해주세요.")
+        } else {
+            self.saveReview()
+        }
     }
 }
 

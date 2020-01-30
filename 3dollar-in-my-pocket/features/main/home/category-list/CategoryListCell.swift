@@ -65,7 +65,7 @@ class CategoryListCell: BaseTableViewCell {
         starImg.snp.makeConstraints { (make) in
             make.centerY.equalTo(valueLabel)
             make.right.equalTo(valueLabel.snp.left).offset(-3)
-            make.width.height.equalTo(22)
+            make.width.height.equalTo(19)
         }
     }
     
@@ -90,7 +90,7 @@ class CategoryListCell: BaseTableViewCell {
             starImg.isHidden = true
             distanceLabel.isHidden = true
         case .REVIEW:
-            valueLabel.text = String.init(format: "%.01f점", storeCard.rating)
+            valueLabel.text = String.init(format: "%.01f", storeCard.rating)
             starImg.isHidden = false
             distanceLabel.isHidden = false
             distanceLabel.text = String.init(format: "%dm", storeCard.distance)

@@ -72,7 +72,8 @@ class CategoryChildVC: BaseVC {
             switch response.result {
             case .success(let categoryByDistance):
                 if let vc = self {
-                    vc.viewModel.storeByDistance = categoryByDistance
+                    vc.viewModel.setDistance(storeByDistance: categoryByDistance)
+                    vc.categoryChildView.setEmpty(isEmpty: vc.viewModel.isDistanceEmpty())
                     vc.delegate?.setMarkers(storeCards: vc.viewModel.getAllDistanceStores())
                     vc.categoryChildView.tableView.reloadData()
                 }
@@ -89,7 +90,8 @@ class CategoryChildVC: BaseVC {
             switch response.result {
             case .success(let categoryByReview):
                 if let vc = self {
-                    vc.viewModel.storeByReview = categoryByReview
+                    vc.viewModel.setReview(storeByReview: categoryByReview)
+                    vc.categoryChildView.setEmpty(isEmpty: vc.viewModel.isReviewEmpty())
                     vc.delegate?.setMarkers(storeCards: vc.viewModel.getAllReviewStores())
                     vc.categoryChildView.tableView.reloadData()
                 }
@@ -164,7 +166,7 @@ extension CategoryChildVC: UITableViewDelegate, UITableViewDataSource {
         case .DISTANCE:
             if self.viewModel.isValidDistanceSection(section: section) {
                 return CategoryListHeaderView().then {
-                    $0.setDistanceHeader(section: self.viewModel.getRealDistanceSection(section: section))
+                    $0.setDistanceHeader(section: self.viewModel.storeByDistance.indexList[section])
                 }
             } else {
                 return nil
@@ -172,7 +174,7 @@ extension CategoryChildVC: UITableViewDelegate, UITableViewDataSource {
         case .REVIEW:
             if self.viewModel.isValidReviewSection(section: section) {
                 return CategoryListHeaderView().then {
-                    $0.setReviewHeader(section: self.viewModel.getRealReviewSection(section: section))
+                    $0.setReviewHeader(section: self.viewModel.storeByReview.indexList[section])
                 }
             } else {
                 return nil

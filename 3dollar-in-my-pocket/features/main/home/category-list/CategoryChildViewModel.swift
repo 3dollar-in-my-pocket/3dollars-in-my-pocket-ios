@@ -4,6 +4,43 @@ struct CategoryChildViewModel {
     var storeByDistance: CategoryByDistance = CategoryByDistance.init()
     var storeByReview: CategoryByReview = CategoryByReview.init()
     
+    mutating func setDistance(storeByDistance: CategoryByDistance) {
+        self.storeByDistance = storeByDistance
+        if !storeByDistance.storeList50.isEmpty {
+            self.storeByDistance.indexList.append(0)
+        }
+        if !storeByDistance.storeList100.isEmpty {
+            self.storeByDistance.indexList.append(1)
+        }
+        if !storeByDistance.storeList500.isEmpty {
+            self.storeByDistance.indexList.append(2)
+        }
+        if !storeByDistance.storeList1000.isEmpty {
+            self.storeByDistance.indexList.append(3)
+        }
+    }
+    
+    mutating func setReview(storeByReview: CategoryByReview) {
+        self.storeByReview = storeByReview
+        
+        if !storeByReview.storeList4.isEmpty {
+            self.storeByReview.indexList.append(0)
+        }
+        if !storeByReview.storeList3.isEmpty {
+            self.storeByReview.indexList.append(1)
+        }
+        if !storeByReview.storeList2.isEmpty {
+            self.storeByReview.indexList.append(2)
+        }
+        if !storeByReview.storeList1.isEmpty {
+            self.storeByReview.indexList.append(3)
+        }
+        if !storeByReview.storeList0.isEmpty {
+            self.storeByReview.indexList.append(4)
+        }
+    }
+    
+    
     func getAllDistanceStores() -> [StoreCard] {
         var result: [StoreCard] = []
         
@@ -25,8 +62,19 @@ struct CategoryChildViewModel {
         return result
     }
     
+    func isDistanceEmpty() -> Bool {
+        return storeByDistance.storeList50.isEmpty && storeByDistance.storeList100.isEmpty &&
+            storeByDistance.storeList500.isEmpty && storeByDistance.storeList1000.isEmpty
+    }
+    
+    func isReviewEmpty() -> Bool {
+        return storeByReview.storeList0.isEmpty && storeByReview.storeList1.isEmpty &&
+            storeByReview.storeList2.isEmpty && storeByReview.storeList3.isEmpty &&
+            storeByReview.storeList4.isEmpty
+    }
+    
     func getNumberOfDistanceRow(section: Int) -> Int {
-        switch getRealDistanceSection(section: section) {
+        switch self.storeByDistance.indexList[section] {
         case 0:
             return storeByDistance.storeList50.count
         case 1:
@@ -41,7 +89,7 @@ struct CategoryChildViewModel {
     }
     
     func getNumberOfReviewRow(section: Int) -> Int {
-        switch getRealReviewSection(section: section) {
+        switch self.storeByReview.indexList[section] {
         case 0:
             return storeByReview.storeList4.count
         case 1:
@@ -58,7 +106,7 @@ struct CategoryChildViewModel {
     }
     
     func getDistanceStore(indexPath: IndexPath) -> StoreCard? {
-        switch getRealDistanceSection(section: indexPath.section) {
+        switch self.storeByDistance.indexList[indexPath.section] {
         case 0:
             return self.storeByDistance.storeList50[indexPath.row]
         case 1:
@@ -73,7 +121,7 @@ struct CategoryChildViewModel {
     }
     
     func getReviewStore(indexPath: IndexPath) -> StoreCard? {
-        switch getRealReviewSection(section: indexPath.section) {
+        switch self.storeByReview.indexList[indexPath.section] {
         case 0:
             return self.storeByReview.storeList4[indexPath.row]
         case 1:
@@ -90,7 +138,7 @@ struct CategoryChildViewModel {
     }
     
     func isValidDistanceSection(section: Int) -> Bool {
-        switch getRealDistanceSection(section: section) {
+        switch self.storeByDistance.indexList[section] {
         case 0:
             return !storeByDistance.storeList50.isEmpty
         case 1:
@@ -105,7 +153,7 @@ struct CategoryChildViewModel {
     }
     
     func isValidReviewSection(section: Int) -> Bool {
-        switch getRealReviewSection(section: section) {
+        switch self.storeByReview.indexList[section] {
         case 0:
             return !storeByReview.storeList4.isEmpty
         case 1:
@@ -158,90 +206,5 @@ struct CategoryChildViewModel {
             sectionCount += 1
         }
         return sectionCount
-    }
-    
-    func getRealDistanceSection(section: Int) -> Int {
-        var result = section
-        
-        switch section {
-        case 0:
-            if storeByDistance.storeList50.isEmpty {
-                result += 1
-                if storeByDistance.storeList100.isEmpty {
-                    result += 1
-                    if storeByDistance.storeList500.isEmpty {
-                        result += 1
-                    } else {
-                        return result
-                    }
-                } else {
-                    return section
-                }
-            } else {
-                return section
-            }
-        case 1:
-            if storeByDistance.storeList100.isEmpty {
-                result += 1
-                if storeByDistance.storeList500.isEmpty {
-                    result += 1
-                } else {
-                    return result
-                }
-            } else {
-                return result
-            }
-        case 2:
-            if storeByDistance.storeList500.isEmpty {
-                result += 1
-            }
-        default:
-            break
-        }
-        return result
-    }
-    
-    func getRealReviewSection(section: Int) -> Int {
-        var result = section
-        
-        switch section {
-        case 0:
-            if storeByReview.storeList4.isEmpty {
-                result += 1
-                if storeByReview.storeList3.isEmpty {
-                    result += 1
-                    if storeByReview.storeList2.isEmpty {
-                        result += 1
-                        if storeByReview.storeList1.isEmpty {
-                            result += 1
-                        }
-                    }
-                }
-            }
-        case 1:
-            if storeByReview.storeList3.isEmpty {
-                result += 1
-                if storeByReview.storeList2.isEmpty {
-                    result += 1
-                    if storeByReview.storeList1.isEmpty {
-                        result += 1
-                    }
-                }
-            }
-        case 2:
-            if storeByReview.storeList2.isEmpty {
-                result += 1
-                if storeByReview.storeList1.isEmpty {
-                    result += 1
-                }
-            }
-        case 3:
-            if storeByReview.storeList1.isEmpty {
-                result += 1
-            }
-        default:
-            break
-        }
-        return result
     }
 }

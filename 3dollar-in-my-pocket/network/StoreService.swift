@@ -159,12 +159,23 @@ struct StoreService: APIServiceType {
         }
     }
     
-    static func deleteStore(storeId: Int, complection: @escaping (DataResponse<String>) -> Void) {
+    static func deleteStore(storeId: Int, deleteReasonType: DeleteReason, complection: @escaping (DataResponse<String>) -> Void) {
         let urlString = self.url("api/v1/store/delete")
         let headers = self.defaultHeader()
-        let parameters = ["storeId": storeId, "userId": UserDefaultsUtil.getUserId()!]
+        let parameters : [String: Any] = ["storeId": storeId,
+                                          "userId": UserDefaultsUtil.getUserId()!,
+                                          "deleteReasonType": deleteReasonType.getValue()]
         
         Alamofire.request(urlString, method: .delete, parameters: parameters, headers: headers).responseString { (response) in
+            let response: DataResponse<String> = response.flatMapResult { (json) in
+                let statusCode = response.response!.statusCode
+                
+                if statusCode == 200 {
+                    return .success("success")
+                } else {
+                    return .failure(MappingError.init(desc: "이미 삭제요청한 사람"))
+                }
+            }
             complection(response)
         }
     }

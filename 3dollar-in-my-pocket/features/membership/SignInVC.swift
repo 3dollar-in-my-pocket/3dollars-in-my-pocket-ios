@@ -17,6 +17,8 @@ class SignInVC: BaseVC {
         super.viewDidLoad()
         
         view = signInView
+        
+        signInView.startFadeIn()
         navigationController?.isNavigationBarHidden = true
         navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }
@@ -29,6 +31,10 @@ class SignInVC: BaseVC {
             .bind(onNext: requestAppleSignIn).disposed(by: disposeBag)
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     private func requestKakaoSignIn() {
         guard let kakaoSession = KOSession.shared() else {
             AlertUtils.show(message: "Kakao session is null")
@@ -39,11 +45,18 @@ class SignInVC: BaseVC {
             kakaoSession.close()
         }
         
-        kakaoSession.open { (error) in
+        kakaoSession.open { [weak self] (error) in
             if let error = error {
-                AlertUtils.show(title: "error", message: error.localizedDescription)
+                if (error as NSError).code != 2 {
+                    AlertUtils.show(title: "error", message: error.localizedDescription)
+                }
             } else {
-                AlertUtils.show(title: "success", message: kakaoSession.token?.accessToken)
+                KOSessionTask.userMeTask { (error, me) in
+                    if let userId = me?.id,
+                        let vc = self {
+                        vc.signIn(socialId: userId, socialType: "KAKAO")
+                    }
+                }
             }
         }
     }
@@ -89,7 +102,9 @@ class SignInVC: BaseVC {
 }
 extension SignInVC: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        AlertUtils.show(title: "error", message: error.localizedDescription)
+        if (error as NSError).code != 1001 { // 사용자가 직접 취소
+            AlertUtils.show(title: "error", message: error.localizedDescription)
+        }
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {

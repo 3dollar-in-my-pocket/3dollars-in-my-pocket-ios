@@ -16,6 +16,8 @@ class HomeVC: BaseVC {
     var locationManager = CLLocationManager()
     var isFirst = true
     var previousIndex = 0
+    var mapAnimatedFlag = false
+    var previousOffset: CGFloat = 0
     
     private lazy var homeView = HomeView(frame: self.view.frame)
     
@@ -58,6 +60,7 @@ class HomeVC: BaseVC {
         }).disposed(by: disposeBag)
         
         homeView.mapButton.rx.tap.bind { [weak self] in
+            self?.mapAnimatedFlag = true
             self?.locationManager.startUpdatingLocation()
         }.disposed(by: disposeBag)
         
@@ -78,10 +81,10 @@ class HomeVC: BaseVC {
         }.disposed(by: disposeBag)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        previousIndex = 0
-        locationManager.startUpdatingLocation() // 화면 돌아올때마다 갱신해주면 좋을 것 같음!
+    func onSuccessWrite() {
+        isFirst = true
+        mapAnimatedFlag = false
+        locationManager.startUpdatingLocation()
     }
     
     private func setupShopCollectionView() {
@@ -93,6 +96,7 @@ class HomeVC: BaseVC {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
     }
     
     private func setupGoogleMap() {
@@ -187,7 +191,43 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
         }
     }
     
+    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+        let pageWidth = CGFloat(172)
+        let offsetHelper: CGFloat = self.previousOffset > scrollView.contentOffset.x ? -50 : 50
+        let proportionalOffset = (scrollView.contentOffset.x + offsetHelper) / pageWidth
+        
+        self.previousOffset = scrollView.contentOffset.x
+        
+        previousIndex = Int(proportionalOffset.rounded())
+        if previousIndex < 0 {
+            previousIndex = 0
+        }
+        
+        let indexPath = IndexPath(row: previousIndex, section: 0)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            self.homeView.shopCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+        }
+    }
     
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        let pageWidth = CGFloat(172)
+        let proportionalOffset = scrollView.contentOffset.x / pageWidth
+        
+        previousIndex = Int(proportionalOffset.rounded())
+        if previousIndex < 0 {
+            previousIndex = 0
+        }
+        
+        let indexPath = IndexPath(row: previousIndex, section: 0)
+        
+        if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
+            cell.setSelected(isSelected: true)
+            self.selectMarker(selectedIndex: indexPath.row, storeCards: try! self.viewModel.nearestStore.value())
+        }
+    }
+
+
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
             let pageWidth = CGFloat(172)
@@ -202,20 +242,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
             }
         }
     }
-
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        let pageWidth = CGFloat(172)
-        let proportionalOffset = scrollView.contentOffset.x / pageWidth
-        previousIndex = Int(round(proportionalOffset))
-        let indexPath = IndexPath(row: previousIndex, section: 0)
-
-        self.homeView.shopCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
-        if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
-            cell.setSelected(isSelected: true)
-            self.selectMarker(selectedIndex: indexPath.row, storeCards: try! self.viewModel.nearestStore.value())
-        }
-    }
-
+    
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         let indexPath = IndexPath(row: previousIndex, section: 0)
 
@@ -242,12 +269,24 @@ extension HomeVC: CLLocationManagerDelegate {
         let location = locations.last
         let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
         
-        self.homeView.mapView.animate(to: camera)
-        self.viewModel.location.onNext((location!.coordinate.latitude, location!.coordinate.longitude))
+        if self.mapAnimatedFlag {
+            self.homeView.mapView.animate(to: camera)
+        } else {
+            self.homeView.mapView.camera = camera
+        }
+        if isFirst {
+            self.viewModel.location.onNext((location!.coordinate.latitude, location!.coordinate.longitude))
+        }
         locationManager.stopUpdatingLocation()
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
+        if (error as NSError).code == 1 {
+            AlertUtils.showWithAction(title: "위치 권한 오류", message: "설정 > 가슴속 3천원 > 위치 > 앱을 사용하는 동안으로 선택해주세요.") { (action) in
+                UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
+            }
+        } else {
+            AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
+        }
     }
 }

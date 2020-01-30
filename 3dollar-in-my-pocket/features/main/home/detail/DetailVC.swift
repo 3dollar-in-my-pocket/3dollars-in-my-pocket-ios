@@ -1,6 +1,7 @@
 import UIKit
 import GoogleMaps
 import Kingfisher
+import RxSwift
 
 class DetailVC: BaseVC {
     
@@ -94,31 +95,44 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: ShopInfoCell.registerId, for: indexPath) as? ShopInfoCell else {
                     return BaseTableViewCell()
                 }
-                cell.reviewBtn.rx.tap.bind { [weak self] (_) in
-                    self?.reviewVC = ReviewModalVC.instance().then {
-                        $0.deleagete = self
-                        $0.storeId = self?.storeId
+                cell.profileImage.rx.tap.bind { [weak self] (_) in
+                    if let vc = self {
+                        vc.present(ImageDetailVC.instance(title: store.storeName!, images: store.images), animated: false)
                     }
-                    self?.detailView.addBgDim()
-                    self?.present(self!.reviewVC!, animated: true)
                 }.disposed(by: disposeBag)
                 
-                cell.modifyBtn.rx.tap.bind { [weak self] in
+                cell.reviewBtn.rx.tap.bind { [weak self] (_) in
+                    if let vc = self {
+                        vc.reviewVC = ReviewModalVC.instance().then {
+                            $0.deleagete = self
+                            $0.storeId = self?.storeId
+                        }
+                        vc.detailView.addBgDim()
+                        vc.present(vc.reviewVC!, animated: true)
+                    }
+                }.disposed(by: cell.disposeBag)
+                
+                cell.modifyBtn.rx.tap.bind { [weak self] (_) in
                     if let vc = self,
                         let store = try! vc.viewModel.store.value(){
-                        self?.navigationController?.pushViewController(ModifyVC.instance(store: store), animated: true)
+                        let modifyVC = ModifyVC.instance(store: store).then {
+                            $0.delegate = self
+                        }
+                        self?.navigationController?.pushViewController(modifyVC, animated: true)
                     }
-                }.disposed(by: disposeBag)
+                }.disposed(by: cell.disposeBag)
                 
                 cell.mapBtn.rx.tap.bind { [weak self] in
                     self?.myLocationFlag = true
                     self?.locationManager.startUpdatingLocation()
-                }.disposed(by: disposeBag)
+                }.disposed(by: cell.disposeBag)
                 
                 cell.setRank(rank: store.rating)
                 if !(store.images.isEmpty) {
                     cell.setImage(url: store.images[0].url, count: store.images.count)
                 }
+                cell.otherImages.isUserInteractionEnabled = !store.images.isEmpty
+                cell.profileImage.isUserInteractionEnabled = !store.images.isEmpty
                 cell.setMarker(latitude: store.latitude!, longitude: store.longitude!)
                 cell.setCategory(category: store.category!)
                 cell.setMenus(menus: store.menus)
@@ -168,6 +182,7 @@ extension DetailVC: CLLocationManagerDelegate {
         } else {
             self.getStoreDetail(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
         }
+        self.viewModel.location = (location!.coordinate.latitude, location!.coordinate.longitude)
         locationManager.stopUpdatingLocation()
     }
     
@@ -177,8 +192,19 @@ extension DetailVC: CLLocationManagerDelegate {
 }
 
 extension DetailVC: ReviewModalDelegate {
+    func onReviewSuccess() {
+        self.detailView.removeBgDim()
+        self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
+    }
+    
     func onTapClose() {
         reviewVC?.dismiss(animated: true, completion: nil)
         self.detailView.removeBgDim()
+    }
+}
+
+extension DetailVC: ModifyDelegate {
+    func onModifySuccess() {
+        self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
     }
 }

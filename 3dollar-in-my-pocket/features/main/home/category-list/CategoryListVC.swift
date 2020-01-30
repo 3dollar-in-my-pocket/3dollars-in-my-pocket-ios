@@ -95,7 +95,7 @@ extension CategoryListVC: CategoryPageDelegate {
         for store in storeCards {
             let marker = GMSMarker()
             marker.position = CLLocationCoordinate2D(latitude: store.latitude, longitude: store.longitude)
-            marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_off")!, scaledToSize: CGSize.init(width: 16, height: 16))
+            marker.icon = markerWithSize(image: UIImage.init(named: "ic_marker_store_on")!, scaledToSize: CGSize.init(width: 16, height: 16))
             marker.map = categoryListView.mapView
         }
     }
@@ -109,12 +109,13 @@ extension CategoryListVC: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.last
         let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
-        
-        self.categoryListView.mapView.animate(to: camera)
-        
+                
         if !self.myLocationFlag {
+            self.categoryListView.mapView.camera = camera
             self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
             self.myLocationFlag = false
+        } else {
+            self.categoryListView.mapView.animate(to: camera)
         }
         locationManager.stopUpdatingLocation()
     }

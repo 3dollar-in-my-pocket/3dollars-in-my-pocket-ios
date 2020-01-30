@@ -25,14 +25,6 @@ class ModifyView: BaseView {
     
     let mapView = GMSMapView()
     
-    let myLocationBtn = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_location"), for: .normal)
-    }
-    
-    let marker = UIImageView().then {
-        $0.image = UIImage.init(named: "ic_marker")
-    }
-    
     let titleContainer = UIView().then {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 12
@@ -156,9 +148,9 @@ class ModifyView: BaseView {
     override func setup() {
         backgroundColor = .white
         scrollView.delegate = self
-        setupNavigationBarShadow()
+        setupNavigationBar()
         navigationBar.addSubViews(backBtn, titleLabel, deleteBtn)
-        containerView.addSubViews(mapView, myLocationBtn, marker, titleContainer, repoterValueLabel,
+        containerView.addSubViews(mapView, titleContainer, repoterValueLabel,
                                   repoterLabel, categoryLabel, nameField, imageLabel, imageCollection,
                                   menuLabel, menuTableView)
         scrollView.addSubViews(containerView)
@@ -196,18 +188,6 @@ class ModifyView: BaseView {
             make.left.right.equalToSuperview()
             make.top.equalToSuperview().offset(43)
             make.height.equalTo(336)
-        }
-        
-        myLocationBtn.snp.makeConstraints { (make) in
-            make.right.equalTo(mapView.snp.right).offset(-24)
-            make.bottom.equalTo(mapView.snp.bottom).offset(-24)
-            make.width.height.equalTo(40)
-        }
-        
-        marker.snp.makeConstraints { (make) in
-            make.center.equalTo(mapView.snp.center)
-            make.width.equalTo(24)
-            make.height.equalTo(32)
         }
         
         titleContainer.snp.makeConstraints { (make) in
@@ -281,7 +261,6 @@ class ModifyView: BaseView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        setupNavigationBar()
         refreshScrollViewHeight()
         registerBtn.layer.cornerRadius = registerBtn.frame.height / 2
     }
@@ -323,28 +302,12 @@ class ModifyView: BaseView {
     }
     
     private func setupNavigationBar() {
-        let rectShape = CAShapeLayer()
-        rectShape.bounds = navigationBar.frame
-        rectShape.position = navigationBar.center
-        rectShape.path = UIBezierPath(roundedRect: navigationBar.frame, byRoundingCorners: [.bottomLeft , .bottomRight], cornerRadii: CGSize(width: 16, height: 16)).cgPath
-
-        navigationBar.layer.backgroundColor = UIColor.white.cgColor
-        navigationBar.layer.mask = rectShape
-    }
-    
-    private func setupNavigationBarShadow() {
-        let shadowLayer = CAShapeLayer()
+        navigationBar.layer.cornerRadius = 16
+        navigationBar.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         
-        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: frame.width, height: 98), cornerRadius: 16).cgPath
-        shadowLayer.fillColor = UIColor.white.cgColor
-        
-        shadowLayer.shadowColor = UIColor.black.cgColor
-        shadowLayer.shadowPath = nil
-        shadowLayer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        shadowLayer.shadowOpacity = 0.08
-        shadowLayer.shadowRadius = 20
-        
-        navigationBar.layer.insertSublayer(shadowLayer, at: 0)
+        navigationBar.layer.shadowOffset = CGSize(width: 8, height: 8)
+        navigationBar.layer.shadowColor = UIColor.black.cgColor
+        navigationBar.layer.shadowOpacity = 0.08
     }
     
     func setImageCount(count: Int) {

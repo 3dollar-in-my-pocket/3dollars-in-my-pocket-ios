@@ -15,6 +15,7 @@ class DetailView: BaseView {
         $0.text = "강남역 10번 출구"
         $0.textColor = UIColor.init(r: 51, g: 51, b: 51)
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+        $0.textAlignment = .center
     }
     
     let tableView = UITableView(frame: .zero, style: .grouped).then {
@@ -30,7 +31,7 @@ class DetailView: BaseView {
     }
     
     override func setup() {
-        setupNavigationBarShadow()
+        setupNavigationBar()
         navigationBar.addSubViews(backBtn, titleLabel)
         addSubViews(tableView, navigationBar)
     }
@@ -49,6 +50,8 @@ class DetailView: BaseView {
         
         titleLabel.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
+            make.left.equalTo(backBtn.snp.right)
+            make.right.equalToSuperview().offset(-72)
             make.centerY.equalTo(backBtn.snp.centerY)
         }
         
@@ -58,34 +61,13 @@ class DetailView: BaseView {
         }
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        setupNavigationBar()
-    }
-    
     private func setupNavigationBar() {
-        let rectShape = CAShapeLayer()
-        rectShape.bounds = navigationBar.frame
-        rectShape.position = navigationBar.center
-        rectShape.path = UIBezierPath(roundedRect: navigationBar.frame, byRoundingCorners: [.bottomLeft , .bottomRight], cornerRadii: CGSize(width: 16, height: 16)).cgPath
-
-        navigationBar.layer.backgroundColor = UIColor.white.cgColor
-        navigationBar.layer.mask = rectShape
-    }
-    
-    private func setupNavigationBarShadow() {
-        let shadowLayer = CAShapeLayer()
+        navigationBar.layer.cornerRadius = 16
+        navigationBar.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         
-        shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: frame.width, height: 98), cornerRadius: 16).cgPath
-        shadowLayer.fillColor = UIColor.white.cgColor
-        
-        shadowLayer.shadowColor = UIColor.black.cgColor
-        shadowLayer.shadowPath = nil
-        shadowLayer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        shadowLayer.shadowOpacity = 0.08
-        shadowLayer.shadowRadius = 20
-        
-        navigationBar.layer.insertSublayer(shadowLayer, at: 0)
+        navigationBar.layer.shadowOffset = CGSize(width: 8, height: 8)
+        navigationBar.layer.shadowColor = UIColor.black.cgColor
+        navigationBar.layer.shadowOpacity = 0.08
     }
     
     func addBgDim() {

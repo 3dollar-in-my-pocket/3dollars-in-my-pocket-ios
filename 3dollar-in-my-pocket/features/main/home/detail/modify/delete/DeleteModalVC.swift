@@ -30,13 +30,13 @@ class DeleteModalVC: BaseVC {
     }
     
     private func requestDelete() {
-        StoreService.deleteStore(storeId: self.storeId) { [weak self] (response) in
+        StoreService.deleteStore(storeId: self.storeId, deleteReasonType: DeleteReason.init(rawValue: deleteModalView.deleteReason)!) { [weak self] (response) in
             switch response.result {
             case .success(_):
                 self?.deleagete?.onRequest()
-            case .failure(let error):
+            case .failure(_):
                 if let vc = self {
-                    AlertUtils.show(controller: vc, title: "delete store error", message: error.localizedDescription)
+                    AlertUtils.show(controller: vc, message: "이미 삭제요청을 했습니다.")
                 }
             }
         }
@@ -50,5 +50,15 @@ extension DeleteModalVC: DeleteModalViewDelegate {
     
     func onTapClose() {
         self.deleagete?.onTapClose()
+    }
+}
+
+public enum DeleteReason: String {
+    case NOSTORE = "NOSTORE"
+    case WRONGNOPOSITION = "WRONGNOPOSITION"
+    case OVERLAPSTORE = "OVERLAPSTORE"
+    
+    func getValue() -> String {
+        return self.rawValue
     }
 }

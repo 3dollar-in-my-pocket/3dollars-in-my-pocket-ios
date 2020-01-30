@@ -57,10 +57,8 @@ class RenameVC: BaseVC {
             switch response.result {
             case .success(_):
                 self?.navigationController?.popViewController(animated: true)
-            case .failure(let error):
-                if let vc = self {
-                    AlertUtils.show(controller: vc, title: "change nickname error", message: error.localizedDescription)
-                }
+            case .failure(_):
+                self?.renameView.existedSameName()
             }
         }
     }

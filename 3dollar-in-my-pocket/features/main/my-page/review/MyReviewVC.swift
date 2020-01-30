@@ -108,6 +108,12 @@ extension MyReviewVC: UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let storeId = self.viewModel.review[indexPath.row].id {
+            self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
+        }
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let contentOffset = scrollView.contentOffset.y
 

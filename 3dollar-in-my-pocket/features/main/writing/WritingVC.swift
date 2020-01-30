@@ -196,10 +196,12 @@ extension WritingVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
 extension WritingVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.originalImage] as? UIImage {
+            let cropImage = ImageUtils.cropToBounds(image: image)
+            
             if selectedImageIndex == self.viewModel.imageList.count {
-                self.viewModel.imageList.append(image)
+                self.viewModel.imageList.append(cropImage)
             } else {
-                self.viewModel.imageList[selectedImageIndex] = image
+                self.viewModel.imageList[selectedImageIndex] = cropImage
             }
         }
         self.writingView.imageCollection.reloadData()
@@ -237,15 +239,20 @@ extension WritingVC: UITableViewDelegate, UITableViewDataSource {
             let name = cell.nameField.text!
             let desc = cell.descField.text!
             
-            if !name.isEmpty && !desc.isEmpty {
+            if !name.isEmpty {
                 let menu = Menu.init(name: name, price: desc)
                 
                 if let _ = self?.viewModel.menuList[indexPath.row] {
                     self?.viewModel.menuList[indexPath.row] = menu
                 }
+            } else  {
+                if let _ = self?.viewModel.menuList[indexPath.row] {
+                    self?.viewModel.menuList.remove(at: indexPath.row)
+                }
             }
             
         }.disposed(by: disposeBag)
+        
         return cell
     }
 }
