@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 class ImageDetailVC: BaseVC {
     private lazy var imageDetailView = ImageDetailView(frame: self.view.frame)
@@ -16,11 +17,10 @@ class ImageDetailVC: BaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view = imageDetailView
+        setupCollectionView()
         imageDetailView.titleLabel.text = storeName
-        imageDetailView.collectionView.delegate = self
-        imageDetailView.collectionView.dataSource = self
-        imageDetailView.collectionView.register(ImageDetailCell.self, forCellWithReuseIdentifier: ImageDetailCell.registerId)
         imageDetailView.mainImage.kf.setImage(with: URL(string: images[0].url)!)
     }
     
@@ -28,6 +28,12 @@ class ImageDetailVC: BaseVC {
         imageDetailView.closeBtn.rx.tap.bind { [weak self] in
             self?.dismiss(animated: false, completion: nil)
         }.disposed(by: disposeBag)
+    }
+    
+    private func setupCollectionView() {
+        imageDetailView.collectionView.delegate = self
+        imageDetailView.collectionView.dataSource = self
+        imageDetailView.collectionView.register(ImageDetailCell.self, forCellWithReuseIdentifier: ImageDetailCell.registerId)
     }
 }
 
