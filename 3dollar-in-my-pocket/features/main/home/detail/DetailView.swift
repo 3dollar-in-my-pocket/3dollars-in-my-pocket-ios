@@ -15,6 +15,7 @@ class DetailView: BaseView {
         $0.text = "강남역 10번 출구"
         $0.textColor = UIColor.init(r: 51, g: 51, b: 51)
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+        $0.textAlignment = .center
     }
     
     let tableView = UITableView(frame: .zero, style: .grouped).then {
