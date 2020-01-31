@@ -8,7 +8,6 @@ class ImageDetailCell: BaseCollectionViewCell {
     override func setup() {
         layer.cornerRadius = 6
         layer.masksToBounds = true
-        backgroundColor = .red
         addSubViews(imageView)
     }
     
