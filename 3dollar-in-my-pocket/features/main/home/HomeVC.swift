@@ -198,7 +198,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
         
         self.previousOffset = scrollView.contentOffset.x
         
-        previousIndex = Int(proportionalOffset.rounded())
+        previousIndex = Int(proportionalOffset.rounded()) >= 5 ? 4 : Int(proportionalOffset.rounded())
         if previousIndex < 0 {
             previousIndex = 0
         }
