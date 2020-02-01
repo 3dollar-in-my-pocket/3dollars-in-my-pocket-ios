@@ -14,7 +14,7 @@ class RegisteredHeader: BaseView {
     
     override func bindConstraints() {
         countLabel.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(24)
+            make.left.equalToSuperview()
             make.top.equalToSuperview().offset(12)
             make.bottom.equalToSuperview().offset(-12)
         }
