@@ -15,6 +15,19 @@ class ImageDetailView: BaseView {
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
     }
     
+    let mainImageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
+        let layout = UICollectionViewFlowLayout()
+        
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 0
+        
+        $0.backgroundColor = .clear
+        $0.showsHorizontalScrollIndicator = false
+        $0.collectionViewLayout = layout
+        $0.tag = 0
+        $0.isPagingEnabled = true
+    }
+    
     let mainImage = UIImageView().then {
         $0.backgroundColor = .white
     }
@@ -31,6 +44,7 @@ class ImageDetailView: BaseView {
         $0.backgroundColor = .clear
         $0.showsHorizontalScrollIndicator = false
         $0.collectionViewLayout = layout
+        $0.tag = 1
         $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
     }
     
@@ -38,7 +52,7 @@ class ImageDetailView: BaseView {
     override func setup() {
         setupNavigationBar()
         backgroundColor = UIColor.init(r: 255, g: 255, b: 255, a: 0.8)
-        addSubViews(navigationBar, closeBtn, titleLabel, mainImage, bottomBackground, collectionView)
+        addSubViews(navigationBar, closeBtn, titleLabel, mainImageCollectionView, bottomBackground, collectionView)
         
         bottomBackground.layer.shadowOffset = CGSize(width: 0, height: -4)
         bottomBackground.layer.shadowColor = UIColor.black.cgColor
@@ -63,7 +77,7 @@ class ImageDetailView: BaseView {
             make.centerY.equalTo(closeBtn.snp.centerY)
         }
         
-        mainImage.snp.makeConstraints { (make) in
+        mainImageCollectionView.snp.makeConstraints { (make) in
             make.center.equalToSuperview()
             make.width.height.equalTo(frame.width)
         }
