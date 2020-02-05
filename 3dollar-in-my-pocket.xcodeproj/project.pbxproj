@@ -1168,7 +1168,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = X975A2HM62;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1214,7 +1214,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = X975A2HM62;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
