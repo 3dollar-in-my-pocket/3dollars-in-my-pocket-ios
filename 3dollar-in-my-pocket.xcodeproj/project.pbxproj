@@ -101,6 +101,7 @@
 		6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */; };
 		6EC5A47223B5E002000C09BD /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47123B5E002000C09BD /* CategoryCell.swift */; };
 		6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */; };
+		6ECCFA8723EA3D96001A565E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6ECCFA8623EA3D96001A565E /* GoogleService-Info.plist */; };
 		6ED37D8D23D5441200E12711 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED37D8C23D5441200E12711 /* Page.swift */; };
 		6ED37D8F23D5525D00E12711 /* MyPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */; };
 		6ED37D9123D58F1700E12711 /* RegisteredViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED37D9023D58F1700E12711 /* RegisteredViewModel.swift */; };
@@ -241,6 +242,7 @@
 		6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
 		6EC5A47123B5E002000C09BD /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
 		6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
+		6ECCFA8623EA3D96001A565E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6ED37D8C23D5441200E12711 /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 		6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewModel.swift; sourceTree = "<group>"; };
 		6ED37D9023D58F1700E12711 /* RegisteredViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredViewModel.swift; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 				6E72AE5923C971FF00D3B257 /* SplashView.swift */,
 				6E0EA39F23ABB231008F7CB2 /* Assets.xcassets */,
 				6E0EA3A423ABB231008F7CB2 /* Info.plist */,
+				6ECCFA8623EA3D96001A565E /* GoogleService-Info.plist */,
 			);
 			path = "3dollar-in-my-pocket";
 			sourceTree = "<group>";
@@ -662,6 +665,7 @@
 				6E0EA39123ABB230008F7CB2 /* Resources */,
 				E91BCEE77D385B82C37C7749 /* [CP] Embed Pods Frameworks */,
 				D1993FA058A37BC4AF6BF579 /* [CP] Copy Pods Resources */,
+				6ECCFA8823EA41D1001A565E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -760,6 +764,7 @@
 			files = (
 				6E88305523BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf in Resources */,
 				6E41F7E923BAC85700D0AC73 /* SpoqaHanSans-Bold.ttf in Resources */,
+				6ECCFA8723EA3D96001A565E /* GoogleService-Info.plist in Resources */,
 				6E13578D23D829C100D91782 /* splash.json in Resources */,
 				6ED832DF23D91E9900D4EB65 /* signin.json in Resources */,
 				6E2F5FE323D6DE8600094D41 /* loading.json in Resources */,
@@ -807,6 +812,25 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		6ECCFA8823EA41D1001A565E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
 		92417E5BEBBF7145063E9435 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

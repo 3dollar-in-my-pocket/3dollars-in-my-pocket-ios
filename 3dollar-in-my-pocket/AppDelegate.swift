@@ -2,12 +2,14 @@ import UIKit
 import KakaoOpenSDK
 import GoogleMaps
 import AlamofireNetworkActivityLogger
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        initializeFirebase()
         initializeGoogleMaps()
         initializeNetworkLogger()
         return true
@@ -49,6 +51,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func initializeNetworkLogger() {
         NetworkActivityLogger.shared.startLogging()
         NetworkActivityLogger.shared.level = .debug
+    }
+    
+    private func initializeFirebase() {
+        FirebaseApp.configure()
     }
 }
 
