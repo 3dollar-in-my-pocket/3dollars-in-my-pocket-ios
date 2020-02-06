@@ -66,11 +66,11 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>가게 사진 불러오기</string>
+	<string>카메라는 길거리 음식점 사진을 찍기위해 사용됩니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>앱을 열때마다 위치 주소 가져오기 허용</string>
+	<string>사용자의 위치는 현재 사용자의 위치를 바탕으로 가까운 붕어빵 가게를 찾는데 사용됩니다.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>가게 사진 불러오기</string>
+	<string>길거리 음식점 사진을 불러오기 위해 앨범이 사용됩니다.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SpoqaHanSans-Regular.ttf</string>
