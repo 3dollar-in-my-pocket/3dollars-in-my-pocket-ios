@@ -7,10 +7,10 @@ import Lottie
 
 class SignInView: BaseView {
     
-    let lottie = LOTAnimationView(name: "signin").then {
+    let lottie = AnimationView(name: "signin").then {
         $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         $0.contentMode = .scaleAspectFill
-        $0.loopAnimation = true
+        $0.loopMode = .loop
         $0.play()
     }
     

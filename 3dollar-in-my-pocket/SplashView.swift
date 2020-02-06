@@ -2,7 +2,7 @@ import UIKit
 import Lottie
 
 class SplashView: BaseView {
-    let lottie = LOTAnimationView(name: "splash").then {
+    let lottie = AnimationView(name: "splash").then {
         $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         $0.contentMode = .scaleAspectFit
     }

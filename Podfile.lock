@@ -83,10 +83,10 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.5.1):
     - GoogleUtilities/Logger
-  - Kingfisher (5.12.0):
-    - Kingfisher/Core (= 5.12.0)
-  - Kingfisher/Core (5.12.0)
-  - lottie-ios (2.5.3)
+  - Kingfisher (5.13.0):
+    - Kingfisher/Core (= 5.13.0)
+  - Kingfisher/Core (5.13.0)
+  - lottie-ios (3.1.6)
   - nanopb (0.3.9011):
     - nanopb/decode (= 0.3.9011)
     - nanopb/encode (= 0.3.9011)
@@ -119,15 +119,6 @@ DEPENDENCIES:
   - Then
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - GoogleMaps
-    - GooglePlaces
-    - Kingfisher
-    - RxCocoa
-    - RxRelay
-    - RxSwift
-    - SnapKit
-    - Then
   trunk:
     - Alamofire
     - AlamofireNetworkActivityLogger
@@ -143,11 +134,19 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
+    - GoogleMaps
+    - GooglePlaces
     - GoogleUtilities
+    - Kingfisher
     - lottie-ios
     - nanopb
     - ObjectMapper
     - PromisesObjC
+    - RxCocoa
+    - RxRelay
+    - RxSwift
+    - SnapKit
+    - Then
 
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
@@ -167,8 +166,8 @@ SPEC CHECKSUMS:
   GoogleMaps: 55da829c68aa931f3ae982b9e341cc2f3d89c587
   GooglePlaces: a62077320f9d64239245af63aa1aa136393ebeb6
   GoogleUtilities: 06eb53bb579efe7099152735900dd04bf09e7275
-  Kingfisher: dc6e0f53bb5b12c3e75bedb0e01bbd7a640eea69
-  lottie-ios: a50d5c0160425cd4b01b852bb9578963e6d92d31
+  Kingfisher: 0d334cada987fcddbe9b5cec516406e1ee9d4748
+  lottie-ios: 85ce835dd8c53e02509f20729fc7d6a4e6645a0a
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   ObjectMapper: 70187b8941977c62ccfb423caf6b50be405cabf0
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
