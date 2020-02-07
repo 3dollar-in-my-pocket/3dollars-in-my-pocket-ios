@@ -99,7 +99,7 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                     if let vc = self {
                         vc.present(ImageDetailVC.instance(title: store.storeName!, images: store.images), animated: false)
                     }
-                }.disposed(by: disposeBag)
+                }.disposed(by: cell.disposeBag)
                 
                 cell.reviewBtn.rx.tap.bind { [weak self] (_) in
                     if let vc = self {

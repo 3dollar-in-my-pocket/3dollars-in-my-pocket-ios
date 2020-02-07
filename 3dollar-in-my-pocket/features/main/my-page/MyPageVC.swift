@@ -157,7 +157,7 @@ extension MyPageVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 extension MyPageVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let store = try? self.viewModel.reportedReviews.value()[indexPath.row] {
-            self.navigationController?.pushViewController(DetailVC.instance(storeId: store.id!), animated: true)
+            self.navigationController?.pushViewController(DetailVC.instance(storeId: store.storeId!), animated: true)
         }
     }
 }

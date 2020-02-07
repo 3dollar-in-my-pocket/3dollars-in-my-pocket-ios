@@ -237,8 +237,10 @@ extension ModifyVC: UITableViewDelegate, UITableViewDataSource {
                     self?.viewModel.menuList[indexPath.row].name = name
                 }
             } else  {
-                if let _ = self?.viewModel.menuList[indexPath.row] {
-                    self?.viewModel.menuList.remove(at: indexPath.row)
+                if let vc = self,
+                    indexPath.row < vc.viewModel.menuList.count,
+                    let _ = self?.viewModel.menuList[indexPath.row] {
+                    vc.viewModel.menuList.remove(at: indexPath.row)
                 }
             }
         }.disposed(by: disposeBag)

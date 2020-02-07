@@ -24,6 +24,9 @@ target '3dollar-in-my-pocket' do
   pod 'ObjectMapper', '~> 3.4'
   
   pod 'lottie-ios'
+  
+  pod 'Firebase/Crashlytics'
+  pod 'Firebase/Analytics'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths

@@ -39,8 +39,8 @@ class MyReviewCell: BaseTableViewCell {
         categoryImage.snp.makeConstraints { (make) in
             make.top.equalToSuperview().offset(17)
             make.left.equalTo(background.snp.left).offset(16)
-            make.width.equalTo(40)
-            make.height.equalTo(25)
+            make.width.equalTo(50)
+            make.height.equalTo(30)
         }
         
         titleLabel.snp.makeConstraints { (make) in

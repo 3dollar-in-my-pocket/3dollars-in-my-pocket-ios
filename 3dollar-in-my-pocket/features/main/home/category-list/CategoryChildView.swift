@@ -115,14 +115,19 @@ class CategoryChildView: BaseView {
         switch category {
         case .BUNGEOPPANG:
             descLabel1.text = "붕어빵"
+            descLabel2.text = "만나기 30초 전"
         case .GYERANPPANG:
-            descLabel1.text = "계란빵"
+            descLabel1.text = "계란빵,"
+            descLabel2.text = "내 입으로"
         case .HOTTEOK:
-            descLabel1.text = "호떡"
+            descLabel1.text = "호떡아"
+            descLabel2.text = "기다려"
         case .TAKOYAKI:
-            descLabel1.text = "타코야끼"
+            descLabel1.text = "타코야끼,"
+            descLabel2.text = "다 내꺼야"
         default:
             descLabel1.text = "붕어빵"
+            descLabel2.text = "만나기 30초 전"
         }
     }
     
