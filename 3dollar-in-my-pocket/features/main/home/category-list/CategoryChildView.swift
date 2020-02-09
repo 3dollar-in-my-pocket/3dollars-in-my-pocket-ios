@@ -48,7 +48,7 @@ class CategoryChildView: BaseView {
     }
     
     let emptyLabel = UILabel().then {
-        $0.text = "주변에 가게가 없어요."
+        $0.text = "1km 근처에 가게가 없어요."
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
         $0.textColor = UIColor.init(r: 200, g: 200, b: 200)
         $0.isHidden = true
