@@ -172,6 +172,7 @@ class WritingView: BaseView {
     override func setup() {
         backgroundColor = .white
         scrollView.delegate = self
+        addGestureRecognizer(bgTap)
         navigationBar.addSubViews(backBtn, titleLabel)
         containerView.addSubViews(mapView, marker, myLocationBtn, categoryLabel, bungeoppangBtn, takoyakiBtn,
                                   gyeranppangBtn, hotteokBtn, nameLabel, nameField, imageLabel,

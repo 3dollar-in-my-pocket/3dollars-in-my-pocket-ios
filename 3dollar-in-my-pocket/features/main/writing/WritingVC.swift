@@ -41,6 +41,10 @@ class WritingVC: BaseVC {
     }
     
     override func bindViewModel() {
+        writingView.bgTap.rx.event.subscribe { [weak self] (_) in
+            self?.writingView.endEditing(true)
+        }.disposed(by: disposeBag)
+        
         writingView.backBtn.rx.tap.bind { [weak self] in
             self?.dismiss(animated: true)
         }.disposed(by: disposeBag)
