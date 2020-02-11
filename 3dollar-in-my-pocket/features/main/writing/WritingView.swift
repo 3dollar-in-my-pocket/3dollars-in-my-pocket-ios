@@ -3,7 +3,9 @@ import GoogleMaps
 
 class WritingView: BaseView {
     
-    let bgTap = UITapGestureRecognizer()
+    let bgTap = UITapGestureRecognizer().then {
+        $0.cancelsTouchesInView = false
+    }
     
     let navigationBar = UIView().then {
         $0.backgroundColor = .white
@@ -172,6 +174,7 @@ class WritingView: BaseView {
     override func setup() {
         backgroundColor = .white
         scrollView.delegate = self
+        addGestureRecognizer(bgTap)
         navigationBar.addSubViews(backBtn, titleLabel)
         containerView.addSubViews(mapView, marker, myLocationBtn, categoryLabel, bungeoppangBtn, takoyakiBtn,
                                   gyeranppangBtn, hotteokBtn, nameLabel, nameField, imageLabel,
