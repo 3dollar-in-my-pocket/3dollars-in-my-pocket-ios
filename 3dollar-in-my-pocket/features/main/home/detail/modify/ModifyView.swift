@@ -3,6 +3,10 @@ import GoogleMaps
 
 class ModifyView: BaseView {
     
+    let bgTap = UITapGestureRecognizer().then {
+        $0.cancelsTouchesInView = false
+    }
+    
     let navigationBar = UIView().then {
         $0.backgroundColor = .white
     }
@@ -148,6 +152,7 @@ class ModifyView: BaseView {
     override func setup() {
         backgroundColor = .white
         scrollView.delegate = self
+        addGestureRecognizer(bgTap)
         setupNavigationBar()
         navigationBar.addSubViews(backBtn, titleLabel, deleteBtn)
         containerView.addSubViews(mapView, titleContainer, repoterValueLabel,
@@ -409,6 +414,7 @@ class ModifyView: BaseView {
 
 extension ModifyView: UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.endEditing(true)
         self.hideRegisterBtn()
     }
     

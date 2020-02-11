@@ -41,6 +41,10 @@ class ModifyVC: BaseVC {
     }
     
     override func bindViewModel() {
+        modifyView.bgTap.rx.event.bind { [weak self] (_) in
+            self?.modifyView.endEditing(true)
+        }.disposed(by: disposeBag)
+        
         modifyView.backBtn.rx.tap.bind { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         }.disposed(by: disposeBag)

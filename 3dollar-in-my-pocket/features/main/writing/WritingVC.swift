@@ -33,6 +33,8 @@ class WritingVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = writingView
+        
+        writingView.scrollView.delegate = self
         setupImageCollectionView()
         setupMenuTableView()
         setupKeyboardEvent()
@@ -41,6 +43,10 @@ class WritingVC: BaseVC {
     }
     
     override func bindViewModel() {
+        writingView.bgTap.rx.event.subscribe { [weak self] event in
+            self?.writingView.endEditing(true)
+        }.disposed(by: disposeBag)
+        
         writingView.backBtn.rx.tap.bind { [weak self] in
             self?.dismiss(animated: true)
         }.disposed(by: disposeBag)
@@ -121,6 +127,7 @@ class WritingVC: BaseVC {
     
     private func setupImageCollectionView() {
         imagePicker.delegate = self
+        writingView.imageCollection.isUserInteractionEnabled = true
         writingView.imageCollection.dataSource = self
         writingView.imageCollection.delegate = self
         writingView.imageCollection.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.registerId)
@@ -206,6 +213,12 @@ extension WritingVC: UIImagePickerControllerDelegate, UINavigationControllerDele
         }
         self.writingView.imageCollection.reloadData()
         picker.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension WritingVC: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.writingView.endEditing(true)
     }
 }
 
