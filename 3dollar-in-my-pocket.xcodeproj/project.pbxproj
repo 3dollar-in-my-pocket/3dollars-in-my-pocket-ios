@@ -90,6 +90,11 @@
 		6E88305323BC31C4007F2EF9 /* RankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E88305223BC31C4007F2EF9 /* RankingView.swift */; };
 		6E88305523BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E88305423BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf */; };
 		6E8E89B023D04240003A7889 /* WritingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E89AF23D04240003A7889 /* WritingViewModel.swift */; };
+		6E93C83623F223E5002E737F /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83523F223E5002E737F /* PopupView.swift */; };
+		6E93C83823F22537002E737F /* PopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83723F22537002E737F /* PopupVC.swift */; };
+		6E93C83A23F22CA1002E737F /* DateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83923F22CA1002E737F /* DateUtils.swift */; };
+		6E93C83C23F2303E002E737F /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83B23F2303E002E737F /* Event.swift */; };
+		6E93C83E23F23213002E737F /* EventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83D23F23213002E737F /* EventService.swift */; };
 		6E95EC2623D2F0CD00DF55B5 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E95EC2523D2F0CD00DF55B5 /* DetailViewModel.swift */; };
 		6EA5EC0823B57EFE0028F86B /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA5EC0723B57EFE0028F86B /* MainView.swift */; };
 		6EA5EC0A23B581880028F86B /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA5EC0923B581880028F86B /* MainVC.swift */; };
@@ -231,6 +236,11 @@
 		6E88305223BC31C4007F2EF9 /* RankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingView.swift; sourceTree = "<group>"; };
 		6E88305423BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSans-Regular.ttf"; sourceTree = "<group>"; };
 		6E8E89AF23D04240003A7889 /* WritingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingViewModel.swift; sourceTree = "<group>"; };
+		6E93C83523F223E5002E737F /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
+		6E93C83723F22537002E737F /* PopupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupVC.swift; sourceTree = "<group>"; };
+		6E93C83923F22CA1002E737F /* DateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtils.swift; sourceTree = "<group>"; };
+		6E93C83B23F2303E002E737F /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		6E93C83D23F23213002E737F /* EventService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventService.swift; sourceTree = "<group>"; };
 		6E95EC2523D2F0CD00DF55B5 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		6EA5EC0723B57EFE0028F86B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		6EA5EC0923B581880028F86B /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
@@ -409,6 +419,8 @@
 			isa = PBXGroup;
 			children = (
 				6E4CB90123D4961700542D21 /* LoadingView.swift */,
+				6E93C83523F223E5002E737F /* PopupView.swift */,
+				6E93C83723F22537002E737F /* PopupVC.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -432,6 +444,7 @@
 				6E4CB90323D4975400542D21 /* LoadingViewUtil.swift */,
 				6EBF8B9123DC615100039961 /* RadioUtils.swift */,
 				6E25D64E23E2605A00DB788E /* ImageUtils.swift */,
+				6E93C83923F22CA1002E737F /* DateUtils.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -554,6 +567,7 @@
 				6E73293A23CA07920037003B /* StoreService.swift */,
 				6E4CB8FE23D488A700542D21 /* ReviewService.swift */,
 				6E2F5FDE23D6BF4800094D41 /* CategoryService.swift */,
+				6E93C83D23F23213002E737F /* EventService.swift */,
 			);
 			path = network;
 			sourceTree = "<group>";
@@ -573,6 +587,7 @@
 				6ED37D8C23D5441200E12711 /* Page.swift */,
 				6E2F5FE023D6C04800094D41 /* CategoryByDistance.swift */,
 				6E13578523D7DCB600D91782 /* CategoryByReview.swift */,
+				6E93C83B23F2303E002E737F /* Event.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -919,6 +934,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E6835CA23C30E0A00D23F54 /* MyReviewVC.swift in Sources */,
+				6E93C83C23F2303E002E737F /* Event.swift in Sources */,
 				6EBF8B9223DC615100039961 /* RadioUtils.swift in Sources */,
 				6E2F5FDF23D6BF4800094D41 /* CategoryService.swift in Sources */,
 				6E2C820F23B4A37F0025BB2B /* NicknameVC.swift in Sources */,
@@ -957,6 +973,7 @@
 				6E72AE5A23C971FF00D3B257 /* SplashView.swift in Sources */,
 				6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */,
 				6E01AD1A23D094FF008BFCC0 /* HomeViewModel.swift in Sources */,
+				6E93C83A23F22CA1002E737F /* DateUtils.swift in Sources */,
 				6E2F5FDD23D693F700094D41 /* CategoryChildView.swift in Sources */,
 				6E6835B723C2C3DE00D23F54 /* RenameView.swift in Sources */,
 				6E73293D23CA0A020037003B /* StoreCard.swift in Sources */,
@@ -964,17 +981,20 @@
 				6E2F5FD923D6911700094D41 /* CategoryPageVC.swift in Sources */,
 				6ED5939523BDD5F200B06BD4 /* ShopInfoCell.swift in Sources */,
 				6EB7FA6823B6521200BFB0B4 /* CategoryListVC.swift in Sources */,
+				6E93C83E23F23213002E737F /* EventService.swift in Sources */,
 				6E13578B23D811CA00D91782 /* ModifyVC.swift in Sources */,
 				6E72AE5E23C97EE100D3B257 /* APIServiceType.swift in Sources */,
 				6E6172B423E1C6BF003E0DDF /* ImageDetailCell.swift in Sources */,
 				6E87291923C065C200F59C2F /* RegisterCell.swift in Sources */,
 				6EDBD8A523D87A3D0075EF8F /* DeleteModalView.swift in Sources */,
 				6E72AE6023C97FB400D3B257 /* UserService.swift in Sources */,
+				6E93C83823F22537002E737F /* PopupVC.swift in Sources */,
 				6EE0DBDA23C2B77D00B24D99 /* MyPageReviewCell.swift in Sources */,
 				6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */,
 				6E70C39123B6EECB00C52C9C /* DetailVC.swift in Sources */,
 				6E6835C623C30D8300D23F54 /* MyReviewView.swift in Sources */,
 				6E72AE5823C9713600D3B257 /* UserDefaultsUtil.swift in Sources */,
+				6E93C83623F223E5002E737F /* PopupView.swift in Sources */,
 				6E6026A223BE03A600395516 /* ReviewHeaderView.swift in Sources */,
 				6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */,
 				6E13578623D7DCB600D91782 /* CategoryByReview.swift in Sources */,
