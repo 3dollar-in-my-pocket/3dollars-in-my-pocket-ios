@@ -37,6 +37,8 @@ class MainVC: BaseVC {
         controllers = [homeVC, writingVC, myPageVC]
         tapChange(index: 0)
         mainView.homeBtn.isSelected = true
+        
+        getEvents()
     }
     
     override func bindViewModel() {
@@ -80,6 +82,20 @@ class MainVC: BaseVC {
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.3) { [weak self] in
                 self?.setNeedsStatusBarAppearanceUpdate()
+            }
+        }
+    }
+    
+    private func getEvents() {
+        EventService.getEvents { [weak self] (events) in
+            if !events.isEmpty {
+                if let isDisable = UserDefaultsUtil.getEventDisableToday(id: events[0].id!) {
+                    if isDisable != DateUtils.todayString() { // 다시보기 설정한 날짜가 오늘이 아니라면 팝업띄우기
+                        self?.present(PopupVC.instance(event: events[0]), animated: false)
+                    }
+                } else {
+                    self?.present(PopupVC.instance(event: events[0]), animated: false)
+                }
             }
         }
     }
