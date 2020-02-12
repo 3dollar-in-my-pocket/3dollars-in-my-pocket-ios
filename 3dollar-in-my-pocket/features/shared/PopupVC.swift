@@ -7,7 +7,7 @@ class PopupVC: BaseVC {
     
     static func instance(event: Event) -> PopupVC {
         return PopupVC.init(nibName: nil, bundle: nil).then {
-            $0.modalPresentationStyle = .overCurrentContext
+            $0.modalPresentationStyle = .fullScreen
             $0.event = event
         }
     }
@@ -30,23 +30,13 @@ class PopupVC: BaseVC {
         }.disposed(by: disposeBag)
         
         popupView.cancelBtn.rx.tap.bind { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        }.disposed(by: disposeBag)
+        
+        popupView.disableTodayBtn.rx.tap.bind { [weak self] in
             if let vc = self {
-                if vc.popupView.disableTodayBtn1.isSelected {
-                    UserDefaultsUtil.setEventDisableToday(id: vc.event.id!)
-                }
+                UserDefaultsUtil.setEventDisableToday(id: vc.event.id!)
                 vc.dismiss(animated: false)
-            }
-        }.disposed(by: disposeBag)
-        
-        popupView.disableTodayBtn1.rx.tap.bind { [weak self] in
-            if let vc = self {
-                vc.popupView.disableTodayBtn1.isSelected = !vc.popupView.disableTodayBtn1.isSelected
-            }
-        }.disposed(by: disposeBag)
-        
-        popupView.disableTodayBtn2.rx.tap.bind { [weak self] in
-            if let vc = self {
-                vc.popupView.disableTodayBtn1.isSelected = !vc.popupView.disableTodayBtn1.isSelected
             }
         }.disposed(by: disposeBag)
     }

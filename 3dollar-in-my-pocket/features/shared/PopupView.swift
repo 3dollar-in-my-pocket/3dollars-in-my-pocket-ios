@@ -4,52 +4,63 @@ class PopupView: BaseView {
     
     let bannerBtn = UIButton().then {
         $0.backgroundColor = .gray
+        $0.imageView?.contentMode = .scaleAspectFill
+        $0.contentVerticalAlignment = .fill
+        $0.contentHorizontalAlignment = .fill
+        $0.contentMode = .scaleAspectFill
     }
     
     let cancelBtn = UIButton().then {
         $0.setTitle("닫기", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
+        $0.setTitleColor(.white, for: .normal)
+        $0.backgroundColor = UIColor.init(r: 44, g: 44, b: 44)
+        $0.contentVerticalAlignment = .top
+        $0.contentEdgeInsets = UIEdgeInsets.init(top: 24, left: 0, bottom: 0, right: 0)
+        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
     }
     
-    let disableTodayBtn1 = UIButton().then {
-        $0.setBackgroundColor(.white, for: .normal)
-        $0.setBackgroundColor(.black, for: .selected)
-        $0.layer.cornerRadius = 10
-        $0.layer.masksToBounds = true
+    let disableTodayBtn = UIButton().then {
+        $0.setTitle("오늘보지않기", for: .normal)
+        $0.setTitleColor(.white, for: .normal)
+        $0.backgroundColor = UIColor.init(r: 44, g: 44, b: 44)
+        $0.contentVerticalAlignment = .top
+        $0.contentEdgeInsets = UIEdgeInsets.init(top: 24, left: 0, bottom: 0, right: 0)
+        $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
     }
     
-    let disableTodayBtn2 = UIButton().then {
-        $0.setTitle("오늘 하루 보지 않기", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
+    let verticalView = UIView().then {
+        $0.backgroundColor = UIColor.init(r: 149, g: 149, b: 149)
     }
-    
     
     override func setup() {
         backgroundColor = UIColor.init(r: 255, g: 255, b: 255, a:0.8)
-        addSubViews(bannerBtn, cancelBtn, disableTodayBtn1, disableTodayBtn2)
+        addSubViews(bannerBtn, cancelBtn, disableTodayBtn, verticalView)
     }
     
     override func bindConstraints() {
-        bannerBtn.snp.makeConstraints { (make) in
-            make.center.equalToSuperview()
-            make.width.height.equalTo(300)
+        
+        disableTodayBtn.snp.makeConstraints { (make) in
+            make.left.bottom.equalToSuperview()
+            make.right.equalTo(self.snp.centerX)
+            make.height.equalTo(101)
         }
         
         cancelBtn.snp.makeConstraints { (make) in
-            make.left.right.equalTo(bannerBtn)
-            make.top.equalTo(bannerBtn.snp.bottom)
-            make.height.equalTo(50)
+            make.right.bottom.equalToSuperview()
+            make.left.equalTo(self.snp.centerX)
+            make.height.equalTo(101)
         }
         
-        disableTodayBtn1.snp.makeConstraints { (make) in
-            make.left.equalTo(cancelBtn).offset(20)
-            make.top.equalTo(cancelBtn.snp.bottom).offset(5)
-            make.width.height.equalTo(20)
+        verticalView.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.height.equalTo(30)
+            make.width.equalTo(1)
+            make.top.equalTo(disableTodayBtn).offset(20)
         }
         
-        disableTodayBtn2.snp.makeConstraints { (make) in
-            make.left.equalTo(disableTodayBtn1.snp.right).offset(10)
-            make.centerY.equalTo(disableTodayBtn1)
+        bannerBtn.snp.makeConstraints { (make) in
+            make.left.top.right.equalToSuperview()
+            make.bottom.equalTo(disableTodayBtn.snp.top)
         }
     }
     
