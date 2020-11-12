@@ -52,6 +52,8 @@ class MenuCell: BaseTableViewCell {
                 self?.descField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
             }
         }.disposed(by: disposeBag)
+        self.nameField.delegate = self
+        self.descField.delegate = self
     }
     
     override func bindConstraints() {
@@ -76,5 +78,21 @@ class MenuCell: BaseTableViewCell {
         self.nameField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
         self.descField.text = menu.price
         self.descField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
+    }
+}
+
+extension MenuCell: UITextFieldDelegate {
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+        guard let textFieldText = textField.text,
+              let rangeOfTextToReplace = Range(range, in: textFieldText) else {
+            return false
+        }
+        let substringToReplace = textFieldText[rangeOfTextToReplace]
+        let count = textFieldText.count - substringToReplace.count + string.count
+        return count <= 10
     }
 }
