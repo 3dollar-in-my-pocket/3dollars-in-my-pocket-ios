@@ -35,7 +35,7 @@ class MenuCell: BaseTableViewCell {
     override func setup() {
         backgroundColor = .clear
         selectionStyle = .none
-        addSubViews(nameField, descField)
+        self.contentView.addSubViews(nameField, descField)
         
         nameField.rx.text.bind { [weak self] (inputText) in
             if inputText!.isEmpty {

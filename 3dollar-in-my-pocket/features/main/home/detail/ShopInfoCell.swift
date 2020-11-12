@@ -157,7 +157,7 @@ class ShopInfoCell: BaseTableViewCell {
         stackView.addArrangedSubview(star4)
         stackView.addArrangedSubview(star5)
         titleContainer.addSubViews(profileImage, emptyImage, otherImages, distanceLabel, stackView, rankingLabel)
-        addSubViews(mapView, mapBtn, titleContainer, categoryLabel, categoryValueLabel, menuLabel, menuNameLabel, menuPriceLabel, reviewBtn, modifyBtn)
+        self.contentView.addSubViews(mapView, mapBtn, titleContainer, categoryLabel, categoryValueLabel, menuLabel, menuNameLabel, menuPriceLabel, reviewBtn, modifyBtn)
         setupContainerShadow()
     }
     
