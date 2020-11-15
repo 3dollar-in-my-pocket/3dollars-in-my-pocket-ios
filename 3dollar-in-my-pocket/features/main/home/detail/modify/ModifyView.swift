@@ -340,7 +340,7 @@ class ModifyView: BaseView {
         case .HOTTEOK:
             categoryLabel.text = "호떡"
         case .TAKOYAKI:
-            categoryLabel.text = "타코야끼"
+            categoryLabel.text = "문어빵"
         default:
             break
         }

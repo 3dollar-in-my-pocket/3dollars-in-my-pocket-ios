@@ -322,7 +322,7 @@ class ShopInfoCell: BaseTableViewCell {
             categoryValueLabel.text = "호떡"
             emptyImage.image = UIImage.init(named: "img_detail_hotteok")
         case .TAKOYAKI:
-            categoryValueLabel.text = "타코야끼"
+            categoryValueLabel.text = "문어빵"
             emptyImage.image = UIImage.init(named: "img_detail_takoyaki")
         }
     }

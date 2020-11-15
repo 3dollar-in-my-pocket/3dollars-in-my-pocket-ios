@@ -21,7 +21,7 @@ class CategoryListView: BaseView {
     }
     
     let categoryTakoyaki = UIButton().then {
-        $0.setTitle("타코야끼", for: .normal)
+        $0.setTitle("문어빵", for: .normal)
         $0.setTitleColor(UIColor.init(r: 34, g: 34, b: 34), for: .selected)
         $0.setTitleColor(UIColor.init(r: 196, g: 196, b: 196), for: .normal)
         $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
