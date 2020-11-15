@@ -265,6 +265,18 @@ extension HomeVC: GMSMapViewDelegate {
 }
 
 extension HomeVC: CLLocationManagerDelegate {
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        switch status {
+        case .denied:
+            AlertUtils.showWithAction(title: "위치 권한 오류", message: "설정 > 가슴속 3천원 > 위치 > 앱을 사용하는 동안으로 선택해주세요.") { (action) in
+                UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
+            }
+        default:
+            break
+        }
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.last
         let camera = GMSCameraPosition.camera(withLatitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, zoom: 15)
@@ -281,12 +293,13 @@ extension HomeVC: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        if (error as NSError).code == 1 {
-            AlertUtils.showWithAction(title: "위치 권한 오류", message: "설정 > 가슴속 3천원 > 위치 > 앱을 사용하는 동안으로 선택해주세요.") { (action) in
-                UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
-            }
-        } else {
-            AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
-        }
+//        print("\((error as NSError).code)")
+//        if (error as NSError).code == 1 {
+//            AlertUtils.showWithAction(title: "위치 권한 오류", message: "설정 > 가슴속 3천원 > 위치 > 앱을 사용하는 동안으로 선택해주세요.") { (action) in
+//                UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
+//            }
+//        } else {
+//            AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
+//        }
     }
 }
