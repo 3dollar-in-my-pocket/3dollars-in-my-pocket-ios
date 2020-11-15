@@ -1,5 +1,6 @@
 import UIKit
 import GoogleMaps
+import GoogleMobileAds
 
 class CategoryListView: BaseView {
     
@@ -56,6 +57,8 @@ class CategoryListView: BaseView {
         $0.backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
     }
     
+    let adBannerView = GADBannerView()
+    
     
     override func setup() {
         backgroundColor = .white
@@ -64,7 +67,7 @@ class CategoryListView: BaseView {
         categoryStackView.addArrangedSubview(categoryTakoyaki)
         categoryStackView.addArrangedSubview(categoryGyeranppang)
         categoryStackView.addArrangedSubview(categoryHotteok)
-        addSubViews(mapView, navigationBar,backBtn, categoryImage, categoryStackView, myLocationBtn, pageView)
+        addSubViews(mapView, navigationBar,backBtn, categoryImage, categoryStackView, myLocationBtn, pageView, adBannerView)
     }
     
     override func bindConstraints() {
@@ -104,10 +107,15 @@ class CategoryListView: BaseView {
         }
         
         pageView.snp.makeConstraints { (make) in
-            make.bottom.equalToSuperview()
+            make.bottom.equalTo(adBannerView.snp.top)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
             make.top.equalTo(mapView.snp.bottom)
+        }
+        
+        adBannerView.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+            make.height.equalTo(64)
         }
     }
     
