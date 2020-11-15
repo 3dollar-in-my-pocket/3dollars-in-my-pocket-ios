@@ -2,6 +2,7 @@ import UIKit
 import GoogleMaps
 import Kingfisher
 import RxSwift
+import GoogleMobileAds
 
 class DetailVC: BaseVC {
     
@@ -53,6 +54,7 @@ class DetailVC: BaseVC {
             switch response.result {
             case .success(let store):
                 self?.detailView.titleLabel.text = store.storeName
+                
                 self?.viewModel.store.onNext(store)
             case .failure(let error):
                 AlertUtils.show(controller: self, title: "getStoreDetail error", message: error.localizedDescription)
@@ -82,7 +84,7 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
             return 1
         } else {
             if let store = try? self.viewModel.store.value() {
-                return store.reviews.count
+                return store.reviews.count + 1
             } else {
                 return 0
             }
@@ -143,8 +145,32 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: ReviewCell.registerId, for: indexPath) as? ReviewCell else {
                     return BaseTableViewCell()
                 }
-                
-                cell.bind(review: store.reviews[indexPath.row])
+                if indexPath.row == 0 {
+                    cell.bind(review: nil)
+                    #if DEBUG
+                    cell.adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+                    #else
+                    cell.adBannerView.adUnitID = "ca-app-pub-1527951560812478/3327283605"
+                    #endif
+                    
+                    cell.adBannerView.rootViewController = self
+                    
+                    // Step 2 - Determine the view width to use for the ad width.
+                    let frame = { () -> CGRect in
+                        // Here safe area is taken into account, hence the view frame is used
+                        // after the view has been laid out.
+                        if #available(iOS 11.0, *) {
+                            return view.frame.inset(by: view.safeAreaInsets)
+                        } else {
+                            return view.frame
+                        }
+                    }()
+                    let viewWidth = frame.size.width
+                    cell.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
+                    cell.adBannerView.load(GADRequest())
+                } else {
+                    cell.bind(review: store.reviews[indexPath.row - 1])
+                }
                 return cell
             }
         } else {
@@ -206,5 +232,40 @@ extension DetailVC: ReviewModalDelegate {
 extension DetailVC: ModifyDelegate {
     func onModifySuccess() {
         self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
+    }
+}
+
+extension DetailVC: GADBannerViewDelegate {
+    /// Tells the delegate an ad request loaded an ad.
+    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+      print("adViewDidReceiveAd")
+    }
+
+    /// Tells the delegate an ad request failed.
+    func adView(_ bannerView: GADBannerView,
+        didFailToReceiveAdWithError error: GADRequestError) {
+      print("adView:didFailToReceiveAdWithError: \(error.localizedDescription)")
+    }
+
+    /// Tells the delegate that a full-screen view will be presented in response
+    /// to the user clicking on an ad.
+    func adViewWillPresentScreen(_ bannerView: GADBannerView) {
+      print("adViewWillPresentScreen")
+    }
+
+    /// Tells the delegate that the full-screen view will be dismissed.
+    func adViewWillDismissScreen(_ bannerView: GADBannerView) {
+      print("adViewWillDismissScreen")
+    }
+
+    /// Tells the delegate that the full-screen view has been dismissed.
+    func adViewDidDismissScreen(_ bannerView: GADBannerView) {
+      print("adViewDidDismissScreen")
+    }
+
+    /// Tells the delegate that a user click will open another app (such as
+    /// the App Store), backgrounding the current app.
+    func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
+      print("adViewWillLeaveApplication")
     }
 }

@@ -3,6 +3,7 @@ import KakaoOpenSDK
 import GoogleMaps
 import AlamofireNetworkActivityLogger
 import Firebase
+import GoogleMobileAds
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -55,6 +56,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func initializeFirebase() {
         FirebaseApp.configure()
+    }
+    
+    private func initilizeAdmob() {
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
     }
 }
 
