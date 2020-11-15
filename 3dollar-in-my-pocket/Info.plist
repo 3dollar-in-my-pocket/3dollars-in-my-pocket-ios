@@ -47,6 +47,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-1527951560812478~1242588198</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>a0ce3cecac62e2dedf50751d5abc5740</string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -113,7 +115,5 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
-  <key>GADApplicationIdentifier</key>
-  <string>ca-app-pub-1527951560812478~1242588198</string>
 </dict>
 </plist>
