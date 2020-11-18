@@ -15,6 +15,22 @@ target '3dollar-in-my-pocket' do
   pod 'Kingfisher', '~> 5.0'
 
   pod 'Then'
+  
+  pod 'GoogleMaps'
+  pod 'GooglePlaces'
+  
+  pod 'Alamofire', '~> 4.9.1'
+  pod 'AlamofireNetworkActivityLogger', '~> 2.4'
+  pod 'ObjectMapper', '~> 3.4'
+  
+  pod 'lottie-ios'
+  
+  pod 'Firebase/Crashlytics'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Core'
+  pod 'Firebase/Firestore'
+  
+  pod 'Google-Mobile-Ads-SDK'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths

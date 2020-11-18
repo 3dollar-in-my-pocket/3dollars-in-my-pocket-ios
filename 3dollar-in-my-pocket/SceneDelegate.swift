@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import KakaoOpenSDK
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -20,7 +21,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = ViewController(nibName: nil, bundle: nil)
+        window?.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
+        window?.rootViewController = SplashVC.instance()
         window?.makeKeyAndVisible()
     }
 
@@ -34,6 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        KOSession.handleDidBecomeActive()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -50,8 +53,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        KOSession.handleDidEnterBackground()
     }
-
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let url = URLContexts.first?.url {
+            KOSession.handleOpen(url)
+        }
+    }
+    
+    func goToMain() {
+        window?.rootViewController = MainVC.instance()
+        window?.makeKeyAndVisible()
+    }
+    
+    func goToSignIn() {
+        window?.rootViewController = SignInVC.instance()
+        window?.makeKeyAndVisible()
+    }
 
 }
 
