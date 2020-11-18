@@ -56,7 +56,7 @@ class CategoryButton: BaseView {
             title.text = "호떡"
         case .TAKOYAKI:
             icon.image = UIImage.init(named: "img_category_takoyaki")
-            title.text = "타코야끼"
+            title.text = "문어빵"
         default:
             break
         }

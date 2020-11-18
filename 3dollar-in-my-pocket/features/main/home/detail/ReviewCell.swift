@@ -1,8 +1,13 @@
 import UIKit
+import GoogleMobileAds
 
 class ReviewCell: BaseTableViewCell {
     
     static let registerId = "\(ReviewCell.self)"
+    
+    let adBannerView = GADBannerView().then {
+        $0.isHidden = true
+    }
     
     let nameLabel = UILabel().then {
         $0.text = "익명"
@@ -60,12 +65,18 @@ class ReviewCell: BaseTableViewCell {
         stackView.addArrangedSubview(star3)
         stackView.addArrangedSubview(star4)
         stackView.addArrangedSubview(star5)
-        addSubViews(nameLabel, stackView, replyLabel)
+        addSubViews(adBannerView, nameLabel, stackView, replyLabel)
         selectionStyle = .none
         backgroundColor = .white
     }
     
     override func bindConstraints() {
+        adBannerView.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(24)
+            make.right.equalToSuperview().offset(-24)
+            make.top.bottom.equalToSuperview()
+        }
+        
         nameLabel.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(24)
             make.top.equalToSuperview().offset(8)
@@ -103,10 +114,21 @@ class ReviewCell: BaseTableViewCell {
         }
     }
     
-    func bind(review: Review) {
-        setRank(rank: review.rating)
-        nameLabel.text = review.user?.nickname
-        replyLabel.text = review.contents
+    func bind(review: Review?) {
+        if let review = review {
+            setRank(rank: review.rating)
+            nameLabel.text = review.user?.nickname
+            replyLabel.text = review.contents
+            self.adBannerView.isHidden = true
+            self.stackView.isHidden = false
+            self.replyLabel.isHidden = false
+            self.nameLabel.isHidden = false
+        } else {
+            self.adBannerView.isHidden = false
+            self.stackView.isHidden = true
+            self.replyLabel.isHidden = true
+            self.nameLabel.isHidden = true
+        }
     }
     
     func setRank(rank: Int) {

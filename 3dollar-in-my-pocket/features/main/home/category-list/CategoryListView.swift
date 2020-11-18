@@ -1,5 +1,6 @@
 import UIKit
 import GoogleMaps
+import GoogleMobileAds
 
 class CategoryListView: BaseView {
     
@@ -21,7 +22,7 @@ class CategoryListView: BaseView {
     }
     
     let categoryTakoyaki = UIButton().then {
-        $0.setTitle("타코야끼", for: .normal)
+        $0.setTitle("문어빵", for: .normal)
         $0.setTitleColor(UIColor.init(r: 34, g: 34, b: 34), for: .selected)
         $0.setTitleColor(UIColor.init(r: 196, g: 196, b: 196), for: .normal)
         $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
@@ -56,6 +57,8 @@ class CategoryListView: BaseView {
         $0.backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
     }
     
+    let adBannerView = GADBannerView()
+    
     
     override func setup() {
         backgroundColor = .white
@@ -64,7 +67,7 @@ class CategoryListView: BaseView {
         categoryStackView.addArrangedSubview(categoryTakoyaki)
         categoryStackView.addArrangedSubview(categoryGyeranppang)
         categoryStackView.addArrangedSubview(categoryHotteok)
-        addSubViews(mapView, navigationBar,backBtn, categoryImage, categoryStackView, myLocationBtn, pageView)
+        addSubViews(mapView, navigationBar,backBtn, categoryImage, categoryStackView, myLocationBtn, pageView, adBannerView)
     }
     
     override func bindConstraints() {
@@ -104,10 +107,15 @@ class CategoryListView: BaseView {
         }
         
         pageView.snp.makeConstraints { (make) in
-            make.bottom.equalToSuperview()
+            make.bottom.equalTo(adBannerView.snp.top)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
             make.top.equalTo(mapView.snp.bottom)
+        }
+        
+        adBannerView.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+            make.height.equalTo(64)
         }
     }
     

@@ -123,7 +123,7 @@ class CategoryChildView: BaseView {
             descLabel1.text = "호떡아"
             descLabel2.text = "기다려"
         case .TAKOYAKI:
-            descLabel1.text = "타코야끼,"
+            descLabel1.text = "문어빵,"
             descLabel2.text = "다 내꺼야"
         default:
             descLabel1.text = "붕어빵"

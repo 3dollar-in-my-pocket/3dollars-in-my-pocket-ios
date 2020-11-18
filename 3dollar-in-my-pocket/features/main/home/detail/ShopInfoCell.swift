@@ -157,7 +157,7 @@ class ShopInfoCell: BaseTableViewCell {
         stackView.addArrangedSubview(star4)
         stackView.addArrangedSubview(star5)
         titleContainer.addSubViews(profileImage, emptyImage, otherImages, distanceLabel, stackView, rankingLabel)
-        addSubViews(mapView, mapBtn, titleContainer, categoryLabel, categoryValueLabel, menuLabel, menuNameLabel, menuPriceLabel, reviewBtn, modifyBtn)
+        self.contentView.addSubViews(mapView, mapBtn, titleContainer, categoryLabel, categoryValueLabel, menuLabel, menuNameLabel, menuPriceLabel, reviewBtn, modifyBtn)
         setupContainerShadow()
     }
     
@@ -322,7 +322,7 @@ class ShopInfoCell: BaseTableViewCell {
             categoryValueLabel.text = "호떡"
             emptyImage.image = UIImage.init(named: "img_detail_hotteok")
         case .TAKOYAKI:
-            categoryValueLabel.text = "타코야끼"
+            categoryValueLabel.text = "문어빵"
             emptyImage.image = UIImage.init(named: "img_detail_takoyaki")
         }
     }
