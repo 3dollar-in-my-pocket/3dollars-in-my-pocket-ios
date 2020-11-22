@@ -13,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         initializeFirebase()
         initializeGoogleMaps()
         initializeNetworkLogger()
+      
         return true
     }
 

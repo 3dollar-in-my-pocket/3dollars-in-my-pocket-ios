@@ -91,6 +91,8 @@
 		6E87291923C065C200F59C2F /* RegisterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E87291823C065C200F59C2F /* RegisterCell.swift */; };
 		6E88305323BC31C4007F2EF9 /* RankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E88305223BC31C4007F2EF9 /* RankingView.swift */; };
 		6E88305523BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E88305423BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf */; };
+		6E8E2474256A93DE00AE6479 /* GoogleService-Info-Dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6E8E2472256A93DE00AE6479 /* GoogleService-Info-Dev.plist */; };
+		6E8E2475256A93DE00AE6479 /* GoogleService-Info-Prod.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6E8E2473256A93DE00AE6479 /* GoogleService-Info-Prod.plist */; };
 		6E8E89B023D04240003A7889 /* WritingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E89AF23D04240003A7889 /* WritingViewModel.swift */; };
 		6E93C83623F223E5002E737F /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83523F223E5002E737F /* PopupView.swift */; };
 		6E93C83823F22537002E737F /* PopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83723F22537002E737F /* PopupVC.swift */; };
@@ -108,7 +110,6 @@
 		6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */; };
 		6EC5A47223B5E002000C09BD /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47123B5E002000C09BD /* CategoryCell.swift */; };
 		6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */; };
-		6ECCFA8723EA3D96001A565E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6ECCFA8623EA3D96001A565E /* GoogleService-Info.plist */; };
 		6ED37D8D23D5441200E12711 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED37D8C23D5441200E12711 /* Page.swift */; };
 		6ED37D8F23D5525D00E12711 /* MyPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */; };
 		6ED37D9123D58F1700E12711 /* RegisteredViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED37D9023D58F1700E12711 /* RegisteredViewModel.swift */; };
@@ -156,7 +157,7 @@
 		6E07D44923B591160055AEE7 /* MyPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageVC.swift; sourceTree = "<group>"; };
 		6E07D44B23B5916C0055AEE7 /* WritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingView.swift; sourceTree = "<group>"; };
 		6E07D44D23B5918B0055AEE7 /* WritingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingVC.swift; sourceTree = "<group>"; };
-		6E0EA39323ABB230008F7CB2 /* 가슴속3천원.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "가슴속3천원.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E0EA39323ABB230008F7CB2 /* 가슴속3천원.debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "가슴속3천원.debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		6E0EA39A23ABB230008F7CB2 /* SignInVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInVC.swift; sourceTree = "<group>"; };
@@ -239,6 +240,8 @@
 		6E87291823C065C200F59C2F /* RegisterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterCell.swift; sourceTree = "<group>"; };
 		6E88305223BC31C4007F2EF9 /* RankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingView.swift; sourceTree = "<group>"; };
 		6E88305423BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSans-Regular.ttf"; sourceTree = "<group>"; };
+		6E8E2472256A93DE00AE6479 /* GoogleService-Info-Dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Dev.plist"; sourceTree = "<group>"; };
+		6E8E2473256A93DE00AE6479 /* GoogleService-Info-Prod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Prod.plist"; sourceTree = "<group>"; };
 		6E8E89AF23D04240003A7889 /* WritingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingViewModel.swift; sourceTree = "<group>"; };
 		6E93C83523F223E5002E737F /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
 		6E93C83723F22537002E737F /* PopupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupVC.swift; sourceTree = "<group>"; };
@@ -256,7 +259,6 @@
 		6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
 		6EC5A47123B5E002000C09BD /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
 		6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
-		6ECCFA8623EA3D96001A565E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6ED37D8C23D5441200E12711 /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 		6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewModel.swift; sourceTree = "<group>"; };
 		6ED37D9023D58F1700E12711 /* RegisteredViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredViewModel.swift; sourceTree = "<group>"; };
@@ -343,7 +345,7 @@
 		6E0EA39423ABB230008F7CB2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6E0EA39323ABB230008F7CB2 /* 가슴속3천원.app */,
+				6E0EA39323ABB230008F7CB2 /* 가슴속3천원.debug.app */,
 				6E0EA3A923ABB232008F7CB2 /* 3dollar-in-my-pocketTests.xctest */,
 				6E0EA3B423ABB232008F7CB2 /* 3dollar-in-my-pocketUITests.xctest */,
 			);
@@ -362,7 +364,6 @@
 				6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */,
 				6E0EA39F23ABB231008F7CB2 /* Assets.xcassets */,
 				6E0EA3A423ABB231008F7CB2 /* Info.plist */,
-				6ECCFA8623EA3D96001A565E /* GoogleService-Info.plist */,
 			);
 			path = "3dollar-in-my-pocket";
 			sourceTree = "<group>";
@@ -419,6 +420,7 @@
 		6E41F7E723BAC81200D0AC73 /* resource */ = {
 			isa = PBXGroup;
 			children = (
+				6E8E2471256A93DE00AE6479 /* firebase */,
 				6E118C5C23D2CE2B008B2806 /* lottie */,
 				6E88305423BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf */,
 				6E41F7EC23BB161D00D0AC73 /* SpoqaHanSans-Light.ttf */,
@@ -633,6 +635,15 @@
 			path = writing;
 			sourceTree = "<group>";
 		};
+		6E8E2471256A93DE00AE6479 /* firebase */ = {
+			isa = PBXGroup;
+			children = (
+				6E8E2472256A93DE00AE6479 /* GoogleService-Info-Dev.plist */,
+				6E8E2473256A93DE00AE6479 /* GoogleService-Info-Prod.plist */,
+			);
+			path = firebase;
+			sourceTree = "<group>";
+		};
 		6EA5EC0523B57ED20028F86B /* main */ = {
 			isa = PBXGroup;
 			children = (
@@ -689,12 +700,12 @@
 			buildConfigurationList = 6E0EA3BD23ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocket" */;
 			buildPhases = (
 				92417E5BEBBF7145063E9435 /* [CP] Check Pods Manifest.lock */,
-				F593BBC8F3031198CC4F7213 /* [CP] Prepare Artifacts */,
 				6E0EA38F23ABB230008F7CB2 /* Sources */,
 				6E0EA39023ABB230008F7CB2 /* Frameworks */,
 				6E0EA39123ABB230008F7CB2 /* Resources */,
 				E91BCEE77D385B82C37C7749 /* [CP] Embed Pods Frameworks */,
 				D1993FA058A37BC4AF6BF579 /* [CP] Copy Pods Resources */,
+				6E8E2414256A8D3C00AE6479 /* ShellScript */,
 				6ECCFA8823EA41D1001A565E /* ShellScript */,
 			);
 			buildRules = (
@@ -703,7 +714,7 @@
 			);
 			name = "3dollar-in-my-pocket";
 			productName = "3dollar-in-my-pocket";
-			productReference = 6E0EA39323ABB230008F7CB2 /* 가슴속3천원.app */;
+			productReference = 6E0EA39323ABB230008F7CB2 /* 가슴속3천원.debug.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6E0EA3A823ABB232008F7CB2 /* 3dollar-in-my-pocketTests */ = {
@@ -794,11 +805,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E88305523BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf in Resources */,
+				6E8E2474256A93DE00AE6479 /* GoogleService-Info-Dev.plist in Resources */,
 				6E41F7E923BAC85700D0AC73 /* SpoqaHanSans-Bold.ttf in Resources */,
-				6ECCFA8723EA3D96001A565E /* GoogleService-Info.plist in Resources */,
 				6E13578D23D829C100D91782 /* splash.json in Resources */,
 				6ED832DF23D91E9900D4EB65 /* signin.json in Resources */,
 				6E2F5FE323D6DE8600094D41 /* loading.json in Resources */,
+				6E8E2475256A93DE00AE6479 /* GoogleService-Info-Prod.plist in Resources */,
 				6E0EA3A023ABB231008F7CB2 /* Assets.xcassets in Resources */,
 				6E41F7ED23BB161D00D0AC73 /* SpoqaHanSans-Light.ttf in Resources */,
 				6E118C6223D2E3DA008B2806 /* data_1.json in Resources */,
@@ -843,6 +855,23 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		6E8E2414256A8D3C00AE6479 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncase \"${CONFIGURATION}\" in\n  \"Debug\" )\ncp -r \"$SRCROOT/3dollar-in-my-pocket/resource/firebase/GoogleService-Info-Dev.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\" ;;\n  \"Release\" )\ncp -r \"$SRCROOT/3dollar-in-my-pocket/resource/firebase/GoogleService-Info-Prod.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\" ;;\n*)\n;;\nesac\n";
 		};
 		6ECCFA8823EA41D1001A565E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -917,23 +946,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F593BBC8F3031198CC4F7213 /* [CP] Prepare Artifacts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-artifacts-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Prepare Artifacts";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-artifacts-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-artifacts.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F7F5DF0B5AFB05955B84C9A8 /* [CP] Check Pods Manifest.lock */ = {
@@ -1220,6 +1232,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 145B9BFE27C8382F7ED001DD /* Pods-3dollar-in-my-pocket.debug.xcconfig */;
 			buildSettings = {
+				API_URL = "http://54.180.90.249";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_STYLE = Automatic;
@@ -1232,6 +1245,7 @@
 				);
 				INFOPLIST_FILE = "3dollar-in-my-pocket/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				KAKAO_APP_KEY = 95f91f9656806e132796f0071ab99aaa;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1257,8 +1271,9 @@
 					"\"Then\"",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket";
-				PRODUCT_NAME = "가슴속3천원";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket-debug";
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
+				PRODUCT_NAME = "가슴속3천원.debug";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -1268,6 +1283,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9056C6F48EF324A677E88D5D /* Pods-3dollar-in-my-pocket.release.xcconfig */;
 			buildSettings = {
+				API_URL = "http://15.164.234.37:8080";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_STYLE = Automatic;
@@ -1279,6 +1295,7 @@
 				);
 				INFOPLIST_FILE = "3dollar-in-my-pocket/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				KAKAO_APP_KEY = a0ce3cecac62e2dedf50751d5abc5740;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
