@@ -93,6 +93,11 @@
 		6E88305523BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E88305423BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf */; };
 		6E8E2474256A93DE00AE6479 /* GoogleService-Info-Dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6E8E2472256A93DE00AE6479 /* GoogleService-Info-Dev.plist */; };
 		6E8E2475256A93DE00AE6479 /* GoogleService-Info-Prod.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6E8E2473256A93DE00AE6479 /* GoogleService-Info-Prod.plist */; };
+		6E8E2507256A9F6E00AE6479 /* SignInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E2506256A9F6E00AE6479 /* SignInViewModel.swift */; };
+		6E8E250F256AA25F00AE6479 /* AlertContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E250E256AA25F00AE6479 /* AlertContent.swift */; };
+		6E8E2514256AAB6E00AE6479 /* HTTPUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E2513256AAB6E00AE6479 /* HTTPUtils.swift */; };
+		6E8E2519256AADB100AE6479 /* CommonError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E2518256AADB100AE6479 /* CommonError.swift */; };
+		6E8E251E256AADE200AE6479 /* JsonUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E251D256AADE200AE6479 /* JsonUtils.swift */; };
 		6E8E89B023D04240003A7889 /* WritingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E89AF23D04240003A7889 /* WritingViewModel.swift */; };
 		6E93C83623F223E5002E737F /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83523F223E5002E737F /* PopupView.swift */; };
 		6E93C83823F22537002E737F /* PopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83723F22537002E737F /* PopupVC.swift */; };
@@ -242,6 +247,11 @@
 		6E88305423BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSans-Regular.ttf"; sourceTree = "<group>"; };
 		6E8E2472256A93DE00AE6479 /* GoogleService-Info-Dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Dev.plist"; sourceTree = "<group>"; };
 		6E8E2473256A93DE00AE6479 /* GoogleService-Info-Prod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Prod.plist"; sourceTree = "<group>"; };
+		6E8E2506256A9F6E00AE6479 /* SignInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewModel.swift; sourceTree = "<group>"; };
+		6E8E250E256AA25F00AE6479 /* AlertContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertContent.swift; sourceTree = "<group>"; };
+		6E8E2513256AAB6E00AE6479 /* HTTPUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPUtils.swift; sourceTree = "<group>"; };
+		6E8E2518256AADB100AE6479 /* CommonError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonError.swift; sourceTree = "<group>"; };
+		6E8E251D256AADE200AE6479 /* JsonUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonUtils.swift; sourceTree = "<group>"; };
 		6E8E89AF23D04240003A7889 /* WritingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingViewModel.swift; sourceTree = "<group>"; };
 		6E93C83523F223E5002E737F /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
 		6E93C83723F22537002E737F /* PopupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupVC.swift; sourceTree = "<group>"; };
@@ -459,6 +469,8 @@
 				6EBF8B9123DC615100039961 /* RadioUtils.swift */,
 				6E25D64E23E2605A00DB788E /* ImageUtils.swift */,
 				6E93C83923F22CA1002E737F /* DateUtils.swift */,
+				6E8E2513256AAB6E00AE6479 /* HTTPUtils.swift */,
+				6E8E251D256AADE200AE6479 /* JsonUtils.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -537,6 +549,7 @@
 			children = (
 				6E0EA39A23ABB230008F7CB2 /* SignInVC.swift */,
 				6E6B0EE323AD1836006E11CE /* SignInView.swift */,
+				6E8E2506256A9F6E00AE6479 /* SignInViewModel.swift */,
 				6E2C820C23B4A2880025BB2B /* NicknameView.swift */,
 				6E2C820E23B4A37F0025BB2B /* NicknameVC.swift */,
 			);
@@ -604,6 +617,8 @@
 				6E2F5FE023D6C04800094D41 /* CategoryByDistance.swift */,
 				6E13578523D7DCB600D91782 /* CategoryByReview.swift */,
 				6E93C83B23F2303E002E737F /* Event.swift */,
+				6E8E250E256AA25F00AE6479 /* AlertContent.swift */,
+				6E8E2518256AADB100AE6479 /* CommonError.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -985,6 +1000,7 @@
 				6E07D44623B590B30055AEE7 /* HomeVC.swift in Sources */,
 				6E82F8CB23D5D8A600AB3593 /* MyReviewViewModel.swift in Sources */,
 				6E72AE6523C9B7DE00D3B257 /* SignIn.swift in Sources */,
+				6E8E250F256AA25F00AE6479 /* AlertContent.swift in Sources */,
 				6EB7FA6623B651E100BFB0B4 /* CategoryListView.swift in Sources */,
 				6E4CB90223D4961700542D21 /* LoadingView.swift in Sources */,
 				6ED37D9123D58F1700E12711 /* RegisteredViewModel.swift in Sources */,
@@ -1003,6 +1019,7 @@
 				6E07D44423B5906E0055AEE7 /* HomeView.swift in Sources */,
 				6E2F5FDB23D692F300094D41 /* CategoryChildVC.swift in Sources */,
 				6E590DAF23E7F56C006814BE /* ImageMainCell.swift in Sources */,
+				6E8E2519256AADB100AE6479 /* CommonError.swift in Sources */,
 				6EE2B86223BEDC3100BAD8E9 /* ImageCell.swift in Sources */,
 				6E70C38F23B6EBB300C52C9C /* DetailView.swift in Sources */,
 				6E56BD7F23CDE291002D7092 /* Image.swift in Sources */,
@@ -1026,6 +1043,7 @@
 				6E2F5FD923D6911700094D41 /* CategoryPageVC.swift in Sources */,
 				6ED5939523BDD5F200B06BD4 /* ShopInfoCell.swift in Sources */,
 				6EB7FA6823B6521200BFB0B4 /* CategoryListVC.swift in Sources */,
+				6E8E2514256AAB6E00AE6479 /* HTTPUtils.swift in Sources */,
 				6E93C83E23F23213002E737F /* EventService.swift in Sources */,
 				6E13578B23D811CA00D91782 /* ModifyVC.swift in Sources */,
 				6E72AE5E23C97EE100D3B257 /* APIServiceType.swift in Sources */,
@@ -1062,6 +1080,7 @@
 				6E3E0B8F23C7078100E835AE /* ReviewModalView.swift in Sources */,
 				6ED37D8F23D5525D00E12711 /* MyPageViewModel.swift in Sources */,
 				6E41F7F123BB42F600D0AC73 /* CategoryButton.swift in Sources */,
+				6E8E2507256A9F6E00AE6479 /* SignInViewModel.swift in Sources */,
 				6EA5EC0823B57EFE0028F86B /* MainView.swift in Sources */,
 				6E88305323BC31C4007F2EF9 /* RankingView.swift in Sources */,
 				6E6172B223E1C308003E0DDF /* ImageDetailVC.swift in Sources */,
@@ -1074,6 +1093,7 @@
 				6E8E89B023D04240003A7889 /* WritingViewModel.swift in Sources */,
 				6E2F5FE123D6C04800094D41 /* CategoryByDistance.swift in Sources */,
 				6E56BD8123CDE359002D7092 /* Menu.swift in Sources */,
+				6E8E251E256AADE200AE6479 /* JsonUtils.swift in Sources */,
 				6E6B0EDE23AD16F1006E11CE /* BaseVC.swift in Sources */,
 				6E6835C023C2D2BC00D23F54 /* RegisteredVC.swift in Sources */,
 				6E73293B23CA07920037003B /* StoreService.swift in Sources */,

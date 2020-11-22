@@ -1,11 +1,14 @@
 import UIKit
-import KakaoOpenSDK
+import RxSwift
 import AuthenticationServices
 
 class SignInVC: BaseVC {
   
   private lazy var signInView = SignInView(frame: self.view.frame)
-  
+  private let viewModel = SignInViewModel(
+    userDefaults: UserDefaultsUtil(),
+    userService: UserService()
+  )
   
   static func instance() -> UINavigationController {
     let controller = SignInVC(nibName: nil, bundle: nil)
@@ -24,10 +27,29 @@ class SignInVC: BaseVC {
   }
   
   override func bindViewModel() {
+    // Bind input
     signInView.kakaoBtn.rx.tap
-      .bind(onNext: requestKakaoSignIn)
+      .bind(to: self.viewModel.input.tapKakao)
       .disposed(by: disposeBag)
     
+    // Bind output
+    self.viewModel.output.goToMain
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToMain)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.goToNickname
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToNickname)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.showSystemAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
+  }
+  
+  override func bindEvent() {
     signInView.appleBtn.rx
       .controlEvent(.touchUpInside)
       .bind(onNext: requestAppleSignIn)
@@ -36,32 +58,6 @@ class SignInVC: BaseVC {
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
     return .lightContent
-  }
-  
-  private func requestKakaoSignIn() {
-    guard let kakaoSession = KOSession.shared() else {
-      AlertUtils.show(message: "Kakao session is null")
-      return
-    }
-    
-    if kakaoSession.isOpen() {
-      kakaoSession.close()
-    }
-    
-    kakaoSession.open { [weak self] (error) in
-      if let error = error {
-        if (error as NSError).code != 2 {
-          AlertUtils.show(title: "error", message: error.localizedDescription)
-        }
-      } else {
-        KOSessionTask.userMeTask { (error, me) in
-          if let userId = me?.id,
-             let vc = self {
-            vc.signIn(socialId: userId, socialType: "KAKAO")
-          }
-        }
-      }
-    }
   }
   
   private func requestAppleSignIn() {
@@ -76,43 +72,40 @@ class SignInVC: BaseVC {
     authController.performRequests()
   }
   
-  private func signIn(socialId: String, socialType: String) {
-    let user = User.init(socialId: socialId, socialType: socialType)
-    
-    UserService.signIn(user: user) { [weak self] (response) in
-      switch response.result {
-      case .success(let signIn):
-        if signIn.state {
-          UserDefaultsUtil.setUserToken(token: signIn.token)
-          UserDefaultsUtil.setUserId(id: signIn.id)
-          self?.goToMain()
-        } else {
-          let nicknameVC = NicknameVC.instance(id: signIn.id, token: signIn.token)
-          
-          self?.navigationController?.pushViewController(nicknameVC, animated: true)
-        }
-      case.failure(let error):
-        AlertUtils.show(title: "SignIn error", message: error.localizedDescription)
-      }
-    }
-  }
-  
   private func goToMain() {
     if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
       sceneDelegate.goToMain()
     }
   }
+  
+  private func goToNickname(id: Int, token: String) {
+    let nicknameVC = NicknameVC.instance(id: id, token: token)
+    
+    self.navigationController?.pushViewController(nicknameVC, animated: true)
+  }
 }
+
 extension SignInVC: ASAuthorizationControllerDelegate {
-  func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+  func authorizationController(
+    controller: ASAuthorizationController,
+    didCompleteWithError error: Error
+  ) {
     if (error as NSError).code != 1001 { // 사용자가 직접 취소
-      AlertUtils.show(title: "error", message: error.localizedDescription)
+      let alertContent = AlertContent(
+        title: "Sign with apple error",
+        message: error.localizedDescription
+      )
+      
+      self.showSystemAlert(alert: alertContent)
     }
   }
   
-  func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+  func authorizationController(
+    controller: ASAuthorizationController,
+    didCompleteWithAuthorization authorization: ASAuthorization
+  ) {
     if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-      self.signIn(socialId: appleIDCredential.user, socialType: "APPLE")
+      self.viewModel.input.signWithApple.onNext(appleIDCredential.user)
     }
   }
 }

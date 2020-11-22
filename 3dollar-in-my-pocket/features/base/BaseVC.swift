@@ -15,4 +15,8 @@ class BaseVC: UIViewController {
   func bindViewModel() { }
   
   func bindEvent() { }
+  
+  func showSystemAlert(alert: AlertContent) {
+    AlertUtils.show(controller: self, title: alert.title, message: alert.message)
+  }
 }
