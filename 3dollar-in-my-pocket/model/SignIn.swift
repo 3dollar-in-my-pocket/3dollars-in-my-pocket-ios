@@ -18,7 +18,7 @@ struct SignIn: Mappable, Codable {
   
   enum CodingKeys: String, CodingKey {
     case token = "token"
-    case id = "id"
+    case id = "userId"
     case state = "state"
   }
   
