@@ -3,7 +3,13 @@ import ObjectMapper
 import RxSwift
 
 protocol UserServiceProtocol {
+  
   func signIn(user: User) -> Observable<SignIn>
+  func setNickname(
+    nickname: String,
+    id: Int,
+    token: String
+  ) -> Observable<Void>
 }
 
 struct UserService: APIServiceType, UserServiceProtocol {
@@ -35,6 +41,46 @@ struct UserService: APIServiceType, UserServiceProtocol {
           observer.onError(error)
         }
       }
+      
+      return Disposables.create()
+    }
+  }
+  
+  func setNickname(
+    nickname: String,
+    id: Int,
+    token: String
+  ) -> Observable<Void> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "api/v1/user/nickname"
+      let parameters: [String: Any] = ["nickName": nickname, "userId": id]
+      let headers = ["Authorization": token]
+      
+      Alamofire.request(
+        urlString,
+        method: .put,
+        parameters: parameters,
+        headers: headers
+      ).responseString(completionHandler: { (response) in
+        if let statusCode = response.response?.statusCode {
+          if statusCode == 200 {
+            observer.onNext(())
+            observer.onCompleted()
+          } else if statusCode == 400{
+            let error = CommonError(desc: "이미 존재하는 닉네임입니다.")
+            
+            observer.onError(error)
+          } else {
+            let error = CommonError(desc: "알 수 없는 에러입니다.")
+            
+            observer.onError(error)
+          }
+        } else {
+          let error = CommonError(desc: "Status code is nil")
+          
+          observer.onError(error)
+        }
+      })
       
       return Disposables.create()
     }
