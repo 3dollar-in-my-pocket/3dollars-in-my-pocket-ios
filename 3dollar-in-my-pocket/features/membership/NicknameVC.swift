@@ -1,4 +1,5 @@
 import UIKit
+import RxSwift
 
 class NicknameVC: BaseVC {
   
@@ -31,39 +32,60 @@ class NicknameVC: BaseVC {
   }
   
   override func bindViewModel() {
-    nicknameView.backBtn.rx.tap.bind {
-      self.navigationController?.popViewController(animated: true)
-    }.disposed(by: disposeBag)
-    
-    nicknameView.nicknameField.rx.text.bind { (text) in
-      guard let text = text else {return}
-      
-      self.nicknameView.setBtnEnable(isEnable: !text.isEmpty)
-    }.disposed(by: disposeBag)
-    
-    nicknameView.tapGestureView.rx.event.bind { (recognizer) in
-      self.nicknameView.nicknameField.resignFirstResponder()
-    }.disposed(by: disposeBag)
-    
-    nicknameView.startBtn1.rx.tap.bind {
-//      self.setNickname()
-    }.disposed(by: disposeBag)
-    
-    nicknameView.startBtn2.rx.tap.bind {
-//      self.setNickname()
-    }.disposed(by: disposeBag)
-  }
-  
-  override func bindEvent() {
-    // Bind Event
+    // Bind input
     self.nicknameView.nicknameField.rx.text.orEmpty
       .bind(to: self.viewModel.input.nickname)
       .disposed(by: disposeBag)
     
+    self.nicknameView.startBtn1.rx.tap
+      .bind(to: self.viewModel.input.tapStartButton)
+      .disposed(by: disposeBag)
+    
+    self.nicknameView.startBtn2.rx.tap
+      .bind(to: self.viewModel.input.tapStartButton)
+      .disposed(by: disposeBag)
+    
+    // Bind output
+    self.viewModel.output.setButtonEnable
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.nicknameView.setButtonEnable(isEnable:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.goToMain
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToMain)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.errorLabel
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.nicknameView.setErrorMessage(message:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.showAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
+  }
+  
+  override func bindEvent() {
+    self.nicknameView.backBtn.rx.tap
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.popupVC)
+      .disposed(by: disposeBag)
+    
+    self.nicknameView.tapGestureView.rx.event
+      .observeOn(MainScheduler.instance)
+      .map { _ in Void() }
+      .bind(onNext: self.nicknameView.hideKeyboard)
+      .disposed(by:disposeBag)
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
     return .lightContent
+  }
+  
+  private func popupVC() {
+    self.navigationController?.popViewController(animated: true)
   }
   
   private func initilizeTextField() {
@@ -75,27 +97,11 @@ class NicknameVC: BaseVC {
       sceneDelegate.goToMain()
     }
   }
-  
-//  private func setNickname() {
-//    let nickname = nicknameView.nicknameField.text!
-//
-//    UserService.setNickname(nickname: nickname, id: self.id, token: self.token, completion: { [weak self] (response) in
-//      switch response.result {
-//      case .success(_):
-//        if let vc = self {
-//          UserDefaultsUtil.setUserToken(token: vc.token)
-//          UserDefaultsUtil.setUserId(id: vc.id)
-//        }
-//        self?.goToMain()
-//      case .failure(_):
-//        self?.nicknameView.existedSameName()
-//      }
-//    })
-//  }
 }
 
 extension NicknameVC: UITextFieldDelegate {
-  func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+  func textField(
+    _ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
     guard let textFieldText = textField.text,
           let rangeOfTextToReplace = Range(range, in: textFieldText) else {
       return false
@@ -106,9 +112,8 @@ extension NicknameVC: UITextFieldDelegate {
     return count <= 8
   }
   
-  func textFieldShouldReturn(_ textField: UITextField) -> Bool
-  {
-    textField.resignFirstResponder()
-    return true;
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    self.nicknameView.hideKeyboard()
+    return true
   }
 }

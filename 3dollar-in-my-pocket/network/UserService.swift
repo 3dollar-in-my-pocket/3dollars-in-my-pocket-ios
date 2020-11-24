@@ -52,7 +52,7 @@ struct UserService: APIServiceType, UserServiceProtocol {
     token: String
   ) -> Observable<Void> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "api/v1/user/nickname"
+      let urlString = HTTPUtils.url + "/api/v1/user/nickname"
       let parameters: [String: Any] = ["nickName": nickname, "userId": id]
       let headers = ["Authorization": token]
       
@@ -66,7 +66,7 @@ struct UserService: APIServiceType, UserServiceProtocol {
           if statusCode == 200 {
             observer.onNext(())
             observer.onCompleted()
-          } else if statusCode == 400{
+          } else if statusCode == 500{
             let error = CommonError(desc: "이미 존재하는 닉네임입니다.")
             
             observer.onError(error)

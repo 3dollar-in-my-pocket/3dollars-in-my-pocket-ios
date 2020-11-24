@@ -48,12 +48,14 @@ class NicknameView: BaseView {
     $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 32)
     $0.setTitleColor(.white, for: .disabled)
     $0.setTitleColor(UIColor.init(r: 238, g: 98, b: 76), for: .normal)
+    $0.isEnabled = false
   }
   
   let startBtn2 = UIButton().then {
     $0.setImage(UIImage.init(named: "img_start_off_disable"), for: .disabled)
     $0.setImage(UIImage.init(named: "img_start_off_normal"), for: .normal)
     $0.backgroundColor = .clear
+    $0.isEnabled = false
   }
   
   let warningImage = UIImageView().then {
@@ -135,13 +137,22 @@ class NicknameView: BaseView {
     }
   }
   
-  func setBtnEnable(isEnable: Bool) {
+  func setButtonEnable(isEnable: Bool) {
     startBtn1.isEnabled = isEnable
     startBtn2.isEnabled = isEnable
   }
   
-  func existedSameName() {
-    warningLabel.isHidden = false
-    warningImage.isHidden = false
+  func setErrorMessage(message: String) {
+    self.warningImage.isHidden = false
+    self.warningLabel.isHidden = false
+    self.warningLabel.text = message
+  }
+  
+  func showKeyboard() {
+    self.nicknameField.becomeFirstResponder()
+  }
+  
+  func hideKeyboard() {
+    self.nicknameField.resignFirstResponder()
   }
 }
