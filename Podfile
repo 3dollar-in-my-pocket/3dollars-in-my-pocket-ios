@@ -31,6 +31,8 @@ target '3dollar-in-my-pocket' do
   pod 'Firebase/Firestore'
   
   pod 'Google-Mobile-Ads-SDK'
+  
+  pod 'NMapsMap'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths
