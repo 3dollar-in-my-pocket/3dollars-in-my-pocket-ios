@@ -1,5 +1,4 @@
 import UIKit
-import GoogleMaps
 import NMapsMap
 
 protocol HomeDelegate {
@@ -101,7 +100,7 @@ class HomeVC: BaseVC {
   }
   
   private func initilizeNaverMap() {
-    self.homeView.mapView.touchDelegate = self
+    self.homeView.mapView.addCameraDelegate(delegate: self)
     self.homeView.mapView.positionMode = .direction
   }
   
@@ -250,20 +249,17 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   }
 }
 
-extension HomeVC: GMSMapViewDelegate {
-  func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
-    if gesture {
+extension HomeVC: NMFMapViewCameraDelegate {
+  
+  func mapView(_ mapView: NMFMapView, cameraWillChangeByReason reason: Int, animated: Bool) {
+    if reason == NMFMapChangedByGesture {
       self.delegate?.didDragMap()
     }
   }
   
-  func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
+  func mapViewCameraIdle(_ mapView: NMFMapView) {
     self.delegate?.endDragMap()
   }
-}
-
-extension HomeVC: NMFMapViewTouchDelegate {
-  
 }
 
 extension HomeVC: CLLocationManagerDelegate {
