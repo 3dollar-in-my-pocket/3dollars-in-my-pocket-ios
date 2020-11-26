@@ -10,6 +10,7 @@ protocol UserServiceProtocol {
     id: Int,
     token: String
   ) -> Observable<Void>
+  func getUserInfo(userId: Int) -> Observable<User>
 }
 
 struct UserService: APIServiceType, UserServiceProtocol {
@@ -82,6 +83,37 @@ struct UserService: APIServiceType, UserServiceProtocol {
         }
       })
       
+      return Disposables.create()
+    }
+  }
+  
+  func getUserInfo(userId: Int) -> Observable<User> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v1/user/info"
+      let headders = HTTPUtils.defaultHeader()
+      let parameters: [String: Any] = ["userId" : userId]
+      
+      Alamofire.request(
+        urlString,
+        method: .get,
+        parameters: parameters,
+        headers: headders
+      ).responseJSON { response in
+        if let value = response.value {
+          if let user: User = JsonUtils.toJson(object: value) {
+            observer.onNext(user)
+            observer.onCompleted()
+          } else {
+            let error = CommonError(desc: "failed to json")
+            
+            observer.onError(error)
+          }
+        } else {
+          let error = CommonError(desc: "Value is nil")
+          
+          observer.onError(error)
+        }
+      }
       return Disposables.create()
     }
   }
