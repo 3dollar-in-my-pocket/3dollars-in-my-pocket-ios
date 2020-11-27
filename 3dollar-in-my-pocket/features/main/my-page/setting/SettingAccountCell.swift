@@ -11,7 +11,6 @@ class SettingAccountCell: BaseTableViewCell {
   let snsIconImage = UIImageView()
   
   let accountTypeLabel = UILabel().then {
-    $0.text = "카카오 계정 회원"
     $0.textColor = .white
     $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 14)
   }
@@ -25,6 +24,7 @@ class SettingAccountCell: BaseTableViewCell {
   
   override func setup() {
     backgroundColor = .clear
+    selectionStyle = .none
     addSubViews(topLineView, snsIconImage, accountTypeLabel, signOutButton)
   }
   

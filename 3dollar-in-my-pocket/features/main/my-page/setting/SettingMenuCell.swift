@@ -19,6 +19,7 @@ class SettingMenuCell: BaseTableViewCell {
   
   override func setup() {
     backgroundColor = .clear
+    selectionStyle = .none
     addSubViews(iconImageView, titleLabel, rightArrow)
   }
   

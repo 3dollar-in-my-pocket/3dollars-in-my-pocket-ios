@@ -36,17 +36,34 @@ class SettingVC: BaseVC {
       })
       .disposed(by: disposeBag)
     
+    self.viewModel.output.goToRename
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToRename(currentName:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.goToSignIn
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToSignIn)
+      .disposed(by: disposeBag)
+    
     self.viewModel.output.showSystemAlert
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSystemAlert(alert:))
       .disposed(by: disposeBag)
-    
   }
   
   override func bindEvent() {
     self.settingView.backButton.rx.tap
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.popVC)
+      .disposed(by: disposeBag)
+    
+    self.settingView.nicknameModifyLabelButton.rx.tap
+      .bind(to: self.viewModel.input.tapRename)
+      .disposed(by: disposeBag)
+    
+    self.settingView.nicknameModifyButton.rx.tap
+      .bind(to: self.viewModel.input.tapRename)
       .disposed(by: disposeBag)
   }
   
@@ -59,12 +76,55 @@ class SettingVC: BaseVC {
       SettingAccountCell.self,
       forCellReuseIdentifier: SettingAccountCell.registerId
     )
+    self.settingView.tableView.register(
+      SettingWithdrawalCell.self,
+      forCellReuseIdentifier: SettingWithdrawalCell.registerId
+    )
     self.settingView.tableView.delegate = self
     self.settingView.tableView.dataSource = self
   }
   
   private func popVC() {
     self.navigationController?.popViewController(animated: true)
+  }
+  
+  private func showSignOutAlert() {
+    AlertUtils.showWithCancel(
+      controller: self,
+      title: "로그아웃 하시겠습니까?",
+      message: nil) {
+      self.viewModel.input.signOut.onNext(())
+    }
+  }
+  
+  private func showWithdrawalAlert() {
+    AlertUtils.showWithCancel(
+      controller: self,
+      title: "회원탈퇴",
+      message: "회원탈퇴가 이루어지면 제보했던 가게와 작성한 댓글에 다시 접근할 수 없습니다. 정말로 회원탈퇴를 원하시나요?"
+    ) {
+      self.viewModel.input.withdrawal.onNext(())
+    }
+  }
+  
+  private func goToRename(currentName: String) {
+    let renameVC = RenameVC.instance(currentName: currentName)
+    
+    self.navigationController?.pushViewController(renameVC, animated: true)
+  }
+  
+  private func goToQuestion() {
+    
+  }
+  
+  private func goToTerms() {
+    
+  }
+  
+  private func goToSignIn() {
+    if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+      sceneDelegate.goToSignIn()
+    }
   }
 }
 
@@ -78,7 +138,7 @@ extension SettingVC: UITableViewDelegate, UITableViewDataSource {
     if section == 0 {
       return 2
     } else {
-      return 1
+      return 2
     }
   }
   
@@ -102,18 +162,39 @@ extension SettingVC: UITableViewDelegate, UITableViewDataSource {
       }
       return cell
     } else {
-      guard let cell = tableView.dequeueReusableCell(
-              withIdentifier: SettingAccountCell.registerId,
-              for: indexPath
-      ) as? SettingAccountCell else { return BaseTableViewCell() }
-      
-      cell.bind(socialType: self.viewModel.output.user.value.socialType)
-      
-      return cell
+      if indexPath.row == 0 {
+        guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: SettingAccountCell.registerId,
+                for: indexPath
+        ) as? SettingAccountCell else { return BaseTableViewCell() }
+        
+        cell.bind(socialType: self.viewModel.output.user.value.socialType)
+        
+        return cell
+      } else {
+        guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: SettingWithdrawalCell.registerId,
+                for: indexPath
+        ) as? SettingWithdrawalCell else { return BaseTableViewCell() }
+        
+        return cell
+      }
     }
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    
+    if indexPath.section == 0 {
+      if indexPath.row == 0 {
+        self.goToQuestion()
+      } else {
+        self.goToTerms()
+      }
+    } else {
+      if indexPath.row == 0 {
+        self.showSignOutAlert()
+      } else {
+        self.showWithdrawalAlert()
+      }
+    }
   }
 }
