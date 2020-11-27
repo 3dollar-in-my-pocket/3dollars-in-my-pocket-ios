@@ -67,6 +67,10 @@ class SettingVC: BaseVC {
       .disposed(by: disposeBag)
   }
   
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+      return .lightContent
+  }
+  
   private func initilizeTableView() {
     self.settingView.tableView.register(
       SettingMenuCell.self,
@@ -114,7 +118,9 @@ class SettingVC: BaseVC {
   }
   
   private func goToQuestion() {
+    let questionVC = QuestionVC.instance()
     
+    self.navigationController?.pushViewController(questionVC, animated: true)
   }
   
   private func goToTerms() {

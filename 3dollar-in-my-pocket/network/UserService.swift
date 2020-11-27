@@ -3,14 +3,16 @@ import ObjectMapper
 import RxSwift
 
 protocol UserServiceProtocol {
-  
   func signIn(user: User) -> Observable<SignIn>
+  
   func setNickname(
     nickname: String,
     id: Int,
     token: String
   ) -> Observable<Void>
+  
   func getUserInfo(userId: Int) -> Observable<User>
+  
   func withdrawal(userId: Int) -> Observable<Void>
 }
 
@@ -226,7 +228,5 @@ struct UserService: APIServiceType, UserServiceProtocol {
       
       completion(response)
     }
-    
-    
   }
 }

@@ -5,3 +5,8 @@
 "setting_menu_terms" = "이용 약관";
 "setting_sign_out" = "로그아웃";
 "setting_withdrawal" = "회원탈퇴";
+
+// 문의사항
+"question_title" = "문의사항";
+"question_faq" = "FAQ";
+"question_email" = "1:1문의";

@@ -49,6 +49,9 @@
 		6E4CB8FF23D488A700542D21 /* ReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4CB8FE23D488A700542D21 /* ReviewService.swift */; };
 		6E4CB90223D4961700542D21 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4CB90123D4961700542D21 /* LoadingView.swift */; };
 		6E4CB90423D4975400542D21 /* LoadingViewUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4CB90323D4975400542D21 /* LoadingViewUtil.swift */; };
+		6E511E6325710CFF009E4667 /* QuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E511E6225710CFF009E4667 /* QuestionView.swift */; };
+		6E511E68257149D4009E4667 /* QuestionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E511E67257149D4009E4667 /* QuestionVC.swift */; };
+		6E511E6D25714E70009E4667 /* QuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E511E6C25714E70009E4667 /* QuestionCell.swift */; };
 		6E56BD7B23CDE1DC002D7092 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56BD7A23CDE1DC002D7092 /* Store.swift */; };
 		6E56BD7D23CDE216002D7092 /* StoreCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56BD7C23CDE216002D7092 /* StoreCategory.swift */; };
 		6E56BD7F23CDE291002D7092 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56BD7E23CDE291002D7092 /* Image.swift */; };
@@ -213,6 +216,9 @@
 		6E4CB8FE23D488A700542D21 /* ReviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewService.swift; sourceTree = "<group>"; };
 		6E4CB90123D4961700542D21 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		6E4CB90323D4975400542D21 /* LoadingViewUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewUtil.swift; sourceTree = "<group>"; };
+		6E511E6225710CFF009E4667 /* QuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionView.swift; sourceTree = "<group>"; };
+		6E511E67257149D4009E4667 /* QuestionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionVC.swift; sourceTree = "<group>"; };
+		6E511E6C25714E70009E4667 /* QuestionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionCell.swift; sourceTree = "<group>"; };
 		6E56BD7A23CDE1DC002D7092 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		6E56BD7C23CDE216002D7092 /* StoreCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCategory.swift; sourceTree = "<group>"; };
 		6E56BD7E23CDE291002D7092 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
@@ -470,6 +476,16 @@
 			path = shared;
 			sourceTree = "<group>";
 		};
+		6E511E6125710CE2009E4667 /* question */ = {
+			isa = PBXGroup;
+			children = (
+				6E511E6225710CFF009E4667 /* QuestionView.swift */,
+				6E511E67257149D4009E4667 /* QuestionVC.swift */,
+				6E511E6C25714E70009E4667 /* QuestionCell.swift */,
+			);
+			path = question;
+			sourceTree = "<group>";
+		};
 		6E6172AE23E1C04D003E0DDF /* image-detail */ = {
 			isa = PBXGroup;
 			children = (
@@ -500,6 +516,7 @@
 		6E681E23256FDD1A00892B9E /* setting */ = {
 			isa = PBXGroup;
 			children = (
+				6E511E6125710CE2009E4667 /* question */,
 				6E681E24256FDD3500892B9E /* SettingVIew.swift */,
 				6E681E45256FE42D00892B9E /* SettingVC.swift */,
 				6E681E4A256FEDA600892B9E /* SettingMenuCell.swift */,
@@ -1073,6 +1090,7 @@
 				6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */,
 				6EDBD8A723D87C930075EF8F /* DeleteModalVC.swift in Sources */,
 				6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */,
+				6E511E6D25714E70009E4667 /* QuestionCell.swift in Sources */,
 				6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */,
 				6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */,
 				6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */,
@@ -1146,6 +1164,7 @@
 				6ED37D8F23D5525D00E12711 /* MyPageViewModel.swift in Sources */,
 				6E41F7F123BB42F600D0AC73 /* CategoryButton.swift in Sources */,
 				6E8E2507256A9F6E00AE6479 /* SignInViewModel.swift in Sources */,
+				6E511E6325710CFF009E4667 /* QuestionView.swift in Sources */,
 				6EA5EC0823B57EFE0028F86B /* MainView.swift in Sources */,
 				6E88305323BC31C4007F2EF9 /* RankingView.swift in Sources */,
 				6E6172B223E1C308003E0DDF /* ImageDetailVC.swift in Sources */,
@@ -1164,6 +1183,7 @@
 				6E73293B23CA07920037003B /* StoreService.swift in Sources */,
 				6EC5A47223B5E002000C09BD /* CategoryCell.swift in Sources */,
 				6E72AE6323C980F600D3B257 /* User.swift in Sources */,
+				6E511E68257149D4009E4667 /* QuestionVC.swift in Sources */,
 				6ED516C62570AB2F00303105 /* SettingWithdrawalCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
