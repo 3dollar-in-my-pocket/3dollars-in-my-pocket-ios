@@ -1,4 +1,5 @@
 import RxSwift
+import MessageUI
 
 class QuestionVC: BaseVC {
   
@@ -41,6 +42,19 @@ class QuestionVC: BaseVC {
   private func popVC() {
     self.navigationController?.popViewController(animated: true)
   }
+  
+  private func showMailComposer() {
+    guard MFMailComposeViewController.canSendMail() else {
+      return
+    }
+    
+    let composer = MFMailComposeViewController()
+    composer.mailComposeDelegate = self
+    composer.setToRecipients(["3dollarinmypocket@gmail.com"])
+    composer.setSubject("가슴속 3천원 문의")
+    
+    self.present(composer, animated: true, completion: nil)
+  }
 }
 
 extension QuestionVC: UITableViewDelegate, UITableViewDataSource {
@@ -63,5 +77,23 @@ extension QuestionVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     return cell
+  }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    if indexPath.row == 0 {
+      
+    } else {
+      self.showMailComposer()
+    }
+  }
+}
+
+extension QuestionVC: MFMailComposeViewControllerDelegate {
+  func mailComposeController(
+    _ controller: MFMailComposeViewController,
+    didFinishWith result: MFMailComposeResult,
+    error: Error?
+  ) {
+    controller.dismiss(animated: true, completion: nil)
   }
 }
