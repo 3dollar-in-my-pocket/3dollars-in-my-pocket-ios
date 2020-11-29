@@ -123,8 +123,10 @@ class SettingVC: BaseVC {
     self.navigationController?.pushViewController(questionVC, animated: true)
   }
   
-  private func goToTerms() {
+  private func goToPrivacy() {
+    let privacyVC = PrivacyVC.instance()
     
+    self.navigationController?.pushViewController(privacyVC, animated: true)
   }
   
   private func goToSignIn() {
@@ -163,7 +165,7 @@ extension SettingVC: UITableViewDelegate, UITableViewDataSource {
       } else {
         cell.bind(
           image: UIImage(named: "ic_setting_message")!,
-          title: "setting_menu_terms".localized
+          title: "setting_menu_privacy".localized
         )
       }
       return cell
@@ -193,7 +195,7 @@ extension SettingVC: UITableViewDelegate, UITableViewDataSource {
       if indexPath.row == 0 {
         self.goToQuestion()
       } else {
-        self.goToTerms()
+        self.goToPrivacy()
       }
     } else {
       if indexPath.row == 0 {

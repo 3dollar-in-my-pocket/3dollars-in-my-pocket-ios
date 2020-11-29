@@ -68,6 +68,8 @@
 		6E56BD8123CDE359002D7092 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56BD8023CDE359002D7092 /* Menu.swift */; };
 		6E56BD8323CDE3BC002D7092 /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56BD8223CDE3BC002D7092 /* Review.swift */; };
 		6E590DAF23E7F56C006814BE /* ImageMainCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E590DAE23E7F56C006814BE /* ImageMainCell.swift */; };
+		6E5939002573E2CE00593DC8 /* PrivacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5938FF2573E2CE00593DC8 /* PrivacyView.swift */; };
+		6E5939052573E38900593DC8 /* PrivacyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5939042573E38900593DC8 /* PrivacyVC.swift */; };
 		6E6026A223BE03A600395516 /* ReviewHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6026A123BE03A600395516 /* ReviewHeaderView.swift */; };
 		6E6172B023E1C05F003E0DDF /* ImageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172AF23E1C05F003E0DDF /* ImageDetailView.swift */; };
 		6E6172B223E1C308003E0DDF /* ImageDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172B123E1C308003E0DDF /* ImageDetailVC.swift */; };
@@ -245,6 +247,8 @@
 		6E56BD8023CDE359002D7092 /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
 		6E56BD8223CDE3BC002D7092 /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
 		6E590DAE23E7F56C006814BE /* ImageMainCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMainCell.swift; sourceTree = "<group>"; };
+		6E5938FF2573E2CE00593DC8 /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.swift; sourceTree = "<group>"; };
+		6E5939042573E38900593DC8 /* PrivacyVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyVC.swift; sourceTree = "<group>"; };
 		6E6026A123BE03A600395516 /* ReviewHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewHeaderView.swift; sourceTree = "<group>"; };
 		6E6172AF23E1C05F003E0DDF /* ImageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailView.swift; sourceTree = "<group>"; };
 		6E6172B123E1C308003E0DDF /* ImageDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailVC.swift; sourceTree = "<group>"; };
@@ -521,6 +525,15 @@
 			path = question;
 			sourceTree = "<group>";
 		};
+		6E5938FE2573E2AA00593DC8 /* privacy */ = {
+			isa = PBXGroup;
+			children = (
+				6E5938FF2573E2CE00593DC8 /* PrivacyView.swift */,
+				6E5939042573E38900593DC8 /* PrivacyVC.swift */,
+			);
+			path = privacy;
+			sourceTree = "<group>";
+		};
 		6E6172AE23E1C04D003E0DDF /* image-detail */ = {
 			isa = PBXGroup;
 			children = (
@@ -551,6 +564,7 @@
 		6E681E23256FDD1A00892B9E /* setting */ = {
 			isa = PBXGroup;
 			children = (
+				6E5938FE2573E2AA00593DC8 /* privacy */,
 				6E511E6125710CE2009E4667 /* question */,
 				6E681E24256FDD3500892B9E /* SettingVIew.swift */,
 				6E681E45256FE42D00892B9E /* SettingVC.swift */,
@@ -1183,6 +1197,7 @@
 				6E72AE5823C9713600D3B257 /* UserDefaultsUtil.swift in Sources */,
 				6E93C83623F223E5002E737F /* PopupView.swift in Sources */,
 				6E681E25256FDD3500892B9E /* SettingVIew.swift in Sources */,
+				6E5939002573E2CE00593DC8 /* PrivacyView.swift in Sources */,
 				6E6026A223BE03A600395516 /* ReviewHeaderView.swift in Sources */,
 				6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */,
 				6E13578623D7DCB600D91782 /* CategoryByReview.swift in Sources */,
@@ -1196,6 +1211,7 @@
 				6ED37D8D23D5441200E12711 /* Page.swift in Sources */,
 				6E62EED623AD1DE9007B7570 /* AlertUtils.swift in Sources */,
 				6E6835B923C2C89400D23F54 /* RenameVC.swift in Sources */,
+				6E5939052573E38900593DC8 /* PrivacyVC.swift in Sources */,
 				6E18C3232571F4AB00F37C3A /* FAQService.swift in Sources */,
 				6EAA9B3323D2068E00B4148C /* SaveResponse.swift in Sources */,
 				6E4CB8FF23D488A700542D21 /* ReviewService.swift in Sources */,
