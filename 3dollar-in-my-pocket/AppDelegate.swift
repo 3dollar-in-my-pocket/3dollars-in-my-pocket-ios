@@ -1,6 +1,5 @@
 import UIKit
 import KakaoOpenSDK
-import GoogleMaps
 import AlamofireNetworkActivityLogger
 import Firebase
 import SwiftyBeaver
@@ -14,7 +13,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
     initializeFirebase()
-    initializeGoogleMaps()
     initializeNetworkLogger()
     initilizeSwiftyBeaver()
     return true
@@ -47,10 +45,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       return KOSession.handleOpen(url)
     }
     return false
-  }
-  
-  private func initializeGoogleMaps() {
-    GMSServices.provideAPIKey("AIzaSyA7CMJwuD1RrlhgF-L1o9vuKOgFiNA-5Sg")
   }
   
   private func initializeNetworkLogger() {

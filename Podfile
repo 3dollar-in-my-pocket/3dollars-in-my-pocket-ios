@@ -16,9 +16,6 @@ target '3dollar-in-my-pocket' do
 
   pod 'Then'
   
-  pod 'GoogleMaps'
-  pod 'GooglePlaces'
-  
   pod 'Alamofire', '~> 4.9.1'
   pod 'AlamofireNetworkActivityLogger', '~> 2.4'
   pod 'ObjectMapper', '~> 3.4'

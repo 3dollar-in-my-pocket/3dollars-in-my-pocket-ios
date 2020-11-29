@@ -1,5 +1,4 @@
 import UIKit
-import GoogleMaps
 import Kingfisher
 import RxSwift
 import GoogleMobileAds

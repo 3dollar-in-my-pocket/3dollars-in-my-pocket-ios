@@ -1,5 +1,4 @@
 import UIKit
-import GoogleMaps
 import NMapsMap
 
 class HomeView: BaseView {
