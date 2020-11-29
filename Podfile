@@ -33,6 +33,8 @@ target '3dollar-in-my-pocket' do
   pod 'Google-Mobile-Ads-SDK'
   
   pod 'NMapsMap'
+  
+  pod 'SwiftyBeaver'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths

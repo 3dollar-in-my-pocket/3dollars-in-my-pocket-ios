@@ -10,3 +10,7 @@
 "question_title" = "문의사항";
 "question_faq" = "FAQ";
 "question_email" = "1:1문의";
+
+// FAQ
+"faq_title" = "FAQ";
+"faq_question" = "어떤 점이 궁금하셨나요?";

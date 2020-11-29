@@ -55,6 +55,12 @@ class QuestionVC: BaseVC {
     
     self.present(composer, animated: true, completion: nil)
   }
+  
+  private func goToFAQ() {
+    let faqVC = FAQVC.instance()
+    
+    self.navigationController?.pushViewController(faqVC, animated: true)
+  }
 }
 
 extension QuestionVC: UITableViewDelegate, UITableViewDataSource {
@@ -81,7 +87,7 @@ extension QuestionVC: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     if indexPath.row == 0 {
-      
+      self.goToFAQ()
     } else {
       self.showMailComposer()
     }
