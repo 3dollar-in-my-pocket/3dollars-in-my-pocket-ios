@@ -1,5 +1,6 @@
 import RxSwift
 import RxCocoa
+import KakaoOpenSDK
 
 class SettingViewModel: BaseViewModel {
   
@@ -32,8 +33,8 @@ class SettingViewModel: BaseViewModel {
     super.init()
     
     self.input.signOut
-      .do(onNext: self.userDefaults.clear)
-      .bind(to: self.output.goToSignIn)
+      .withLatestFrom(self.output.user)
+      .bind(onNext: self.signOut(user:))
       .disposed(by: disposeBag)
     
     self.input.tapRename
@@ -42,7 +43,8 @@ class SettingViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.withdrawal
-      .bind(onNext: self.withdrawal)
+      .withLatestFrom(self.output.user)
+      .bind(onNext: self.withdrawal(user:))
       .disposed(by: disposeBag)
   }
   
@@ -61,6 +63,28 @@ class SettingViewModel: BaseViewModel {
         }
       }
       .disposed(by: disposeBag)
+  }
+  
+  private func signOut(user: User) {
+    switch user.socialType {
+    case .KAKAO:
+      self.signOutKakao()
+    case .APPLE:
+      self.signOutApple()
+    default:
+      break
+    }
+  }
+  
+  private func withdrawal(user: User) {
+    switch user.socialType {
+    case .KAKAO:
+      self.unlinkKakao()
+    case .APPLE:
+      self.withdrawal()
+    default:
+      break
+    }
   }
   
   private func withdrawal() {
@@ -83,5 +107,41 @@ class SettingViewModel: BaseViewModel {
         }
       }
       .disposed(by: disposeBag)
+  }
+  
+  private func signOutKakao() {
+    KOSession.shared()?.logoutAndClose(completionHandler: { (isSuccess, error) in
+      if let error = error {
+        let alertContent = AlertContent(
+          title: "Error in signOutKakao",
+          message: error.localizedDescription
+        )
+        
+        self.output.showSystemAlert.accept(alertContent)
+      } else {
+        self.userDefaults.clear()
+        self.output.goToSignIn.accept(())
+      }
+    })
+  }
+  
+  private func signOutApple() {
+    self.userDefaults.clear()
+    self.output.goToSignIn.accept(())
+  }
+  
+  private func unlinkKakao() {
+    KOSessionTask.unlinkTask { (isSuccess, error) in
+      if let error = error {
+        let alertContent = AlertContent(
+          title: "Error in unlinkKakao",
+          message: error.localizedDescription
+        )
+        
+        self.output.showSystemAlert.accept(alertContent)
+      } else {
+        self.withdrawal()
+      }
+    }
   }
 }
