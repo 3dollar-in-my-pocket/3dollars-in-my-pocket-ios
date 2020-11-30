@@ -1,9 +1,11 @@
 import UIKit
 import KakaoOpenSDK
-import GoogleMaps
 import AlamofireNetworkActivityLogger
 import Firebase
+import SwiftyBeaver
 import GoogleMobileAds
+
+typealias Log = SwiftyBeaver
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -11,9 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
     initializeFirebase()
-    initializeGoogleMaps()
     initializeNetworkLogger()
-    
+    initilizeSwiftyBeaver()
     return true
   }
   
@@ -46,10 +47,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     return false
   }
   
-  private func initializeGoogleMaps() {
-    GMSServices.provideAPIKey("AIzaSyA7CMJwuD1RrlhgF-L1o9vuKOgFiNA-5Sg")
-  }
-  
   private func initializeNetworkLogger() {
     NetworkActivityLogger.shared.startLogging()
     NetworkActivityLogger.shared.level = .debug
@@ -61,6 +58,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   private func initilizeAdmob() {
     GADMobileAds.sharedInstance().start(completionHandler: nil)
+  }
+  
+  private func initilizeSwiftyBeaver() {
+    // add log destinations. at least one is needed!
+    let console = ConsoleDestination()  // log to Xcode Console
+    
+    console.format = "$DHH:mm:ss.SSS$d $C$L$c $N.$F:$l - $M"
+    Log.addDestination(console)
   }
 }
 

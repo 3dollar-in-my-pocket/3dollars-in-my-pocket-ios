@@ -17,7 +17,7 @@ class DeleteModalView: BaseView {
     }
     
     let titleLabel = UILabel().then {
-        $0.text = "삭제하시는\n이유가 궁금해요!"
+        $0.text = "신고하시는\n이유가 궁금해요!"
         $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 28)
         $0.textColor = .black
         $0.numberOfLines = 0

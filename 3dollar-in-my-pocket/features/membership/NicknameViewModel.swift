@@ -14,6 +14,7 @@ class NicknameViewModel: BaseViewModel {
   }
   
   struct Output {
+    let showLoading = PublishRelay<Bool>()
     let setButtonEnable = PublishRelay<Bool>()
     let goToMain = PublishRelay<Void>()
     let errorLabel = PublishRelay<String>()
@@ -48,6 +49,7 @@ class NicknameViewModel: BaseViewModel {
   }
   
   private func setNickname(nickname: String) {
+    self.output.showLoading.accept(true)
     self.userService.setNickname(
       nickname: nickname,
       id: self.id,
@@ -57,6 +59,7 @@ class NicknameViewModel: BaseViewModel {
       guard let self = self else { return }
       self.userDefaults.setUserToken(token: self.token)
       self.userDefaults.setUserId(id: self.id)
+      self.output.showLoading.accept(false)
       self.output.goToMain.accept(())
     } onError: { error in
       if let error = error as? CommonError {
@@ -69,6 +72,7 @@ class NicknameViewModel: BaseViewModel {
         
         self.output.showAlert.accept(alertContent)
       }
+      self.output.showLoading.accept(false)
     }
     .disposed(by: disposeBag)
   }
