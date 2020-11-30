@@ -46,6 +46,11 @@ class NicknameVC: BaseVC {
       .disposed(by: disposeBag)
     
     // Bind output
+    self.viewModel.output.showLoading
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.nicknameView.showLoading(isShow:))
+      .disposed(by: disposeBag)
+    
     self.viewModel.output.setButtonEnable
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.nicknameView.setButtonEnable(isEnable:))
