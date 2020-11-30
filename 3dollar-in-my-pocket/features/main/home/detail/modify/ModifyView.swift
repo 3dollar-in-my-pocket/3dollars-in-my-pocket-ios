@@ -22,8 +22,8 @@ class ModifyView: BaseView {
   }
   
   let deleteBtn = UIButton().then {
-    $0.setTitle("삭제 요청", for: .normal)
-    $0.setTitleColor(UIColor.init(r: 238, g: 98, b: 76), for: .normal)
+    $0.setTitle("신고", for: .normal)
+    $0.setTitleColor(UIColor.init(r: 130, g: 130, b: 130), for: .normal)
     $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
   }
   
