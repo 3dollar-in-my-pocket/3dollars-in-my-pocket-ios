@@ -91,7 +91,7 @@ class FAQVC: BaseVC {
   }
 }
 
-extension FAQVC: UICollectionViewDelegate {
+extension FAQVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     guard let cell = collectionView.cellForItem(at: indexPath) as? FAQTagCell else { return }
     self.viewModel.input.tapCategory.onNext(indexPath.row)
@@ -101,6 +101,38 @@ extension FAQVC: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
     guard let cell = collectionView.cellForItem(at: indexPath) as? FAQTagCell else { return }
     cell.setSelect(isSelected: false)
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+    
+    //Where elements_count is the count of all your items in that
+    //Collection view...
+    let cellCount = CGFloat(6)
+    
+    //If the cell count is zero, there is no point in calculating anything.
+    if cellCount > 0 {
+      let flowLayout = collectionViewLayout as! UICollectionViewFlowLayout
+      let cellWidth = flowLayout.itemSize.width + flowLayout.minimumInteritemSpacing
+      
+      //20.00 was just extra spacing I wanted to add to my cell.
+      let totalCellWidth = cellWidth*cellCount + 20.00 * (cellCount-1)
+      let contentWidth = collectionView.frame.size.width - collectionView.contentInset.left - collectionView.contentInset.right
+      
+      if (totalCellWidth < contentWidth) {
+        //If the number of cells that exists take up less room than the
+        //collection view width... then there is an actual point to centering them.
+        
+        //Calculate the right amount of padding to center the cells.
+        let padding = (contentWidth - totalCellWidth) / 4.0
+        return UIEdgeInsets(top: 0, left: padding / 2, bottom: 0, right: padding / 2)
+      } else {
+        //Pretty much if the number of cells that exist take up
+        //more room than the actual collectionView width, there is no
+        // point in trying to center them. So we leave the default behavior.
+        return UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
+      }
+    }
+    return UIEdgeInsets.zero
   }
 }
 
