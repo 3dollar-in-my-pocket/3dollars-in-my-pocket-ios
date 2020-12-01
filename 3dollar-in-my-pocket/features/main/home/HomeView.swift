@@ -33,7 +33,7 @@ class HomeView: BaseView {
   let hotteokBtn = CategoryButton(category: .HOTTEOK)
   
   let descLabel1 = UILabel().then {
-    $0.text = "가장 가까운 음식점"
+    $0.text = "가장 가까운 5개의 음식점"
     $0.textColor = UIColor.init(r: 238, g: 98, b: 76)
     $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 12 * RadioUtils.width)
   }
@@ -44,19 +44,19 @@ class HomeView: BaseView {
     
     attributedStr.addAttribute(.kern, value: -1.6, range: NSMakeRange(0, text.count-1))
     $0.textColor = .black
-    $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 32 * RadioUtils.width)
+    $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 26)
     $0.attributedText = attributedStr
   }
   
   let descLabel3 = UILabel().then {
     let text = "3천원이 있으시다면"
     let attributedStr = NSMutableAttributedString(string: text)
-    let subFont = UIFont.init(name: "SpoqaHanSans-Bold", size: 32 * RadioUtils.width)
+    let subFont = UIFont.init(name: "SpoqaHanSans-Bold", size: 26)
     
     attributedStr.addAttribute(.font, value: subFont!, range: (text as NSString).range(of: "3천원"))
     attributedStr.addAttribute(.kern, value: -1.6, range: NSMakeRange(0, text.count-1))
     $0.textColor = .black
-    $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 32 * RadioUtils.width)
+    $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 26 * RadioUtils.width)
     $0.attributedText = attributedStr
   }
   
@@ -147,12 +147,12 @@ class HomeView: BaseView {
     
     mapView.snp.makeConstraints { (make) in
       make.left.right.bottom.equalToSuperview()
-      make.top.equalTo(categoryStackView.snp.bottom).offset(264)
+      make.top.equalTo(categoryStackView.snp.bottom).offset(194)
     }
     
     descLabel1.snp.makeConstraints { (make) in
       make.left.equalToSuperview().offset(24 * RadioUtils.width)
-      make.top.equalTo(categoryStackView.snp.bottom).offset(30)
+      make.top.equalTo(categoryStackView.snp.bottom).offset(38)
     }
     
     descLabel2.snp.makeConstraints { (make) in
