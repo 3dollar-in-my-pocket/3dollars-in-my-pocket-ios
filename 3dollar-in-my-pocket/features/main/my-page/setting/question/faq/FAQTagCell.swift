@@ -8,13 +8,13 @@ class FAQTagCell: BaseCollectionViewCell {
     $0.backgroundColor = .clear
     $0.layer.borderWidth = 1
     $0.layer.borderColor = UIColor(r: 130, g: 130, b: 130).cgColor
-    $0.layer.cornerRadius = 15
+    $0.layer.cornerRadius = 16
     $0.layer.masksToBounds = true
   }
   
   let tagLabel = UILabel().then {
     $0.textColor = UIColor(r: 130, g: 130, b: 130)
-    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 14)
+    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 14 * RatioUtils.widthRatio)
   }
   
   override func setup() {
@@ -24,9 +24,9 @@ class FAQTagCell: BaseCollectionViewCell {
   
   override func bindConstraints() {
     self.tagLabel.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(17)
-      make.right.equalToSuperview().offset(-17)
-      make.height.equalTo(30)
+      make.left.equalToSuperview().offset(12 * RatioUtils.widthRatio)
+      make.right.equalToSuperview().offset(-12 * RatioUtils.widthRatio)
+      make.height.equalTo(30 * RatioUtils.widthRatio)
       make.top.bottom.equalToSuperview()
     }
     
