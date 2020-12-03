@@ -22,7 +22,11 @@ class HomeView: BaseView {
     $0.isLayoutMarginsRelativeArrangement = true
   }
   
-  let mapView = NMFMapView()
+  let mapView = NMFMapView().then {
+    $0.layer.cornerRadius = 16
+    $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+    $0.layer.masksToBounds = true
+  }
   
   let bungeoppangBtn = CategoryButton(category: .BUNGEOPPANG)
   
@@ -44,14 +48,14 @@ class HomeView: BaseView {
     
     attributedStr.addAttribute(.kern, value: -1.6, range: NSMakeRange(0, text.count-1))
     $0.textColor = .black
-    $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 26)
+    $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 28)
     $0.attributedText = attributedStr
   }
   
   let descLabel3 = UILabel().then {
     let text = "3천원이 있으시다면"
     let attributedStr = NSMutableAttributedString(string: text)
-    let subFont = UIFont.init(name: "SpoqaHanSans-Bold", size: 26)
+    let subFont = UIFont.init(name: "SpoqaHanSans-Bold", size: 28)
     
     attributedStr.addAttribute(.font, value: subFont!, range: (text as NSString).range(of: "3천원"))
     attributedStr.addAttribute(.kern, value: -1.6, range: NSMakeRange(0, text.count-1))
@@ -147,17 +151,17 @@ class HomeView: BaseView {
     
     mapView.snp.makeConstraints { (make) in
       make.left.right.bottom.equalToSuperview()
-      make.top.equalTo(categoryStackView.snp.bottom).offset(194)
+      make.top.equalTo(categoryStackView.snp.bottom).offset(234)
     }
     
     descLabel1.snp.makeConstraints { (make) in
       make.left.equalToSuperview().offset(24 * RadioUtils.width)
-      make.top.equalTo(categoryStackView.snp.bottom).offset(38)
+      make.top.equalTo(categoryStackView.snp.bottom).offset(40)
     }
     
     descLabel2.snp.makeConstraints { (make) in
       make.left.equalTo(descLabel1.snp.left)
-      make.top.equalTo(descLabel1.snp.bottom).offset(-4)
+      make.top.equalTo(descLabel1.snp.bottom).offset(4)
     }
     
     descLabel3.snp.makeConstraints { (make) in
