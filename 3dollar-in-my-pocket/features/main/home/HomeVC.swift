@@ -148,6 +148,8 @@ class HomeVC: BaseVC {
       } else {
         marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
       }
+      marker.width = 16
+      marker.height = 16
       marker.mapView = self.homeView.mapView
       self.markers.append(marker)
     }

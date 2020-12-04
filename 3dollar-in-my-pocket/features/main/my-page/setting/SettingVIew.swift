@@ -16,10 +16,6 @@ class SettingView: BaseView {
     $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 16)
   }
   
-  let topLineView = UIView().then {
-    $0.backgroundColor = UIColor(r: 43, g: 43, b: 43)
-  }
-  
   let nicknameLabel = UILabel().then {
     $0.text = "닉네임"
     $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 24)
@@ -51,7 +47,7 @@ class SettingView: BaseView {
   override func setup() {
     backgroundColor = UIColor(r: 28, g: 28, b: 28)
     addSubViews(
-      topBackground, backButton, titleLabel, topLineView, nicknameLabel,
+      topBackground, backButton, titleLabel, nicknameLabel,
       nicknameModifyLabelButton, nicknameModifyButton, middleLineView,
       tableView
     )
@@ -68,15 +64,9 @@ class SettingView: BaseView {
       make.centerY.equalTo(self.backButton)
     }
     
-    self.topLineView.snp.makeConstraints { make in
-      make.left.right.equalToSuperview()
-      make.height.equalTo(1)
-      make.top.equalTo(self.titleLabel.snp.bottom).offset(16)
-    }
-    
     self.nicknameLabel.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24 * RatioUtils.widthRatio)
-      make.top.equalTo(self.topLineView.snp.bottom).offset(33)
+      make.top.equalTo(self.backButton.snp.bottom).offset(35)
     }
     
     self.nicknameModifyLabelButton.snp.makeConstraints { make in

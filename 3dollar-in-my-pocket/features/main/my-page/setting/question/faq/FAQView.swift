@@ -27,9 +27,9 @@ class FAQView: BaseView {
     frame: .zero,
     collectionViewLayout: UICollectionViewFlowLayout()
   ).then {
-    let layout = LeftAlignedCollectionViewFlowLayout()
+    let layout = UICollectionViewFlowLayout()
     layout.scrollDirection = .vertical
-    layout.minimumInteritemSpacing = 10
+    layout.minimumInteritemSpacing = 14 * RatioUtils.widthRatio
     layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
     
     $0.collectionViewLayout = layout

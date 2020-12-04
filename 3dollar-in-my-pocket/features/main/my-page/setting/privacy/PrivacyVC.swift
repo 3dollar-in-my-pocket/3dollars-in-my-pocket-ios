@@ -32,7 +32,7 @@ class PrivacyVC: BaseVC {
   }
   
   private func loadURL() {
-    guard let url = URL(string: "https://www.notion.so/3-c1d986bdab044137b011732417e382cb") else {
+    guard let url = URL(string: "https://www.notion.so/3-3d0a9c55ddd74086b63582c308ca285e") else {
       return
     }
     let request = URLRequest(url: url)

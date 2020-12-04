@@ -105,7 +105,7 @@ class SettingVC: BaseVC {
     AlertUtils.showWithCancel(
       controller: self,
       title: "회원탈퇴",
-      message: "회원탈퇴가 이루어지면 제보했던 가게와 작성한 댓글에 다시 접근할 수 없습니다. 정말로 회원탈퇴를 원하시나요?"
+      message: "회원탈퇴 이후에 제보했던 가게와 작성한 댓글을 더이상 볼 수 없어요.\n정말로 탈퇴하시겠어요?"
     ) {
       self.viewModel.input.withdrawal.onNext(())
     }
