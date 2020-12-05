@@ -287,7 +287,7 @@ extension WritingVC: CLLocationManagerDelegate {
   }
   
   func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-    AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
+//    AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
   }
 }
 
