@@ -1,0 +1,19 @@
+// 설정
+"setting_title" = "설정";
+"setting_nickname_modify" = "닉네임 수정";
+"setting_menu_question" = "문의사항";
+"setting_menu_privacy" = "개인정보처리방침";
+"setting_sign_out" = "로그아웃";
+"setting_withdrawal" = "회원탈퇴";
+
+// 문의사항
+"question_title" = "문의사항";
+"question_faq" = "FAQ";
+"question_email" = "1:1문의";
+
+// FAQ
+"faq_title" = "FAQ";
+"faq_question" = "어떤 점이 궁금하셨나요?";
+
+// 개인정보처리방침
+"privacy_title" = "개인정보처리방침";

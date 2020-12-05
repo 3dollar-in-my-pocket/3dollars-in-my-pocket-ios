@@ -11,6 +11,7 @@ class RegisterCell: BaseCollectionViewCell {
     let titleLabel = UILabel().then {
         $0.text = "강남역 2번출구 앞"
         $0.textColor = .white
+        $0.textAlignment = .center
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
     }
     
@@ -64,8 +65,8 @@ class RegisterCell: BaseCollectionViewCell {
         
         titleLabel.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(16)
-            make.right.equalTo(rankingView)
-            make.top.equalTo(categoryImage.snp.bottom).offset(11)
+            make.left.right.equalTo(rankingView)
+            make.top.equalTo(categoryImage.snp.bottom).offset(5)
         }
     }
     
