@@ -53,14 +53,15 @@ class RenameVC: BaseVC {
     private func changeNickname() {
         let nickname = renameView.nicknameField.text!
         
-        UserService.changeNickname(nickname: nickname) { [weak self] (response) in
-            switch response.result {
-            case .success(_):
-                self?.navigationController?.popViewController(animated: true)
-            case .failure(_):
-                self?.renameView.existedSameName()
-            }
-        }
+        UserService.changeNickname(nickname: nickname)
+          .subscribe(
+            onNext: { [weak self] _ in
+              self?.navigationController?.popViewController(animated: true)
+            },
+            onError: { [weak self] _ in
+              self?.renameView.existedSameName()
+            })
+          .disposed(by: disposeBag)
     }
 }
 

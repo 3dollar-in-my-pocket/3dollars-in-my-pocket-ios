@@ -1,6 +1,5 @@
 import UIKit
 import KakaoOpenSDK
-import AlamofireNetworkActivityLogger
 import Firebase
 import SwiftyBeaver
 import GoogleMobileAds

@@ -81,31 +81,43 @@ class WritingVC: BaseVC {
     }.disposed(by: disposeBag)
     
     writingView.registerBtn.rx.tap.bind { [weak self] in
-      if let category = self?.writingView.getCategory(),
-         let storeName = self?.writingView.nameField.text!,
-         let images = self?.viewModel.imageList,
-         let latitude = self?.writingView.mapView.cameraPosition.target.lat,
-         let longitude = self?.writingView.mapView.cameraPosition.target.lng,
-         let menus = self?.viewModel.menuList {
-        let store = Store.init(category: category, latitude: latitude, longitude: longitude, storeName: storeName, menus: menus)
+      guard let self = self else { return }
+      
+      let storeName = self.writingView.nameField.text!
+      let images = self.viewModel.imageList
+      let latitude = self.writingView.mapView.cameraPosition.target.lat
+      let longitude = self.writingView.mapView.cameraPosition.target.lng
+      let menus = self.viewModel.menuList
+      
+      if let category = self.writingView.getCategory() {
+        let store = Store(
+          category: category,
+          latitude: latitude,
+          longitude: longitude,
+          storeName: storeName,
+          menus: menus
+        )
         
         LoadingViewUtil.addLoadingView()
-        StoreService.saveStore(store: store, images: images) { [weak self] (response) in
-          switch response.result {
-          case .success(let saveResponse):
-            if let vc = self {
-              vc.dismiss(animated: true, completion: nil)
-              vc.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
-            }
-          case .failure(let error):
-            if let vc = self {
-              AlertUtils.show(controller: vc, title: "Save store error", message: error.localizedDescription)
-            }
-          }
-          LoadingViewUtil.removeLoadingView()
-        }
-      } else {
-        AlertUtils.show(controller: self, message: "올바른 내용을 작성해주세요.")
+        StoreService.saveStore(store: store, images: images).subscribe(
+          onNext: { [weak self] saveResponse in
+            guard let self = self else { return }
+            
+            self.dismiss(animated: true, completion: nil)
+            self.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
+            LoadingViewUtil.removeLoadingView()
+          },
+          onError: { [weak self] error in
+            guard let self = self else { return }
+            
+            AlertUtils.show(
+              controller: self,
+              title: "Save store error",
+              message: error.localizedDescription
+            )
+            LoadingViewUtil.removeLoadingView()
+          })
+          .disposed(by: self.disposeBag)
       }
     }.disposed(by: disposeBag)
     

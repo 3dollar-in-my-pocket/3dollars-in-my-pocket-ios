@@ -36,36 +36,49 @@ class RegisteredVC: BaseVC {
     }
     
     private func getReportedStore() {
-        StoreService.getReportedStore(page: 1) { [weak self] (response) in
-            switch response.result {
-            case .success(let storePage):
-                self?.viewModel.stores = storePage.content
-                self?.viewModel.totalCount = storePage.totalElements
-                self?.viewModel.totalPage = storePage.totalPages
-                self?.registeredView.tableView.reloadData()
-            case .failure(let error):
-                if let vc = self {
-                    AlertUtils.show(controller: vc, title: "get reported store error", message: error.localizedDescription)
-                }
-            }
-        }
+      StoreService.getReportedStore(page: 1).subscribe(
+        onNext: { [weak self] storePage in
+          guard let self = self else { return }
+          
+          self.viewModel.stores = storePage.content
+          self.viewModel.totalCount = storePage.totalElements
+          self.viewModel.totalPage = storePage.totalPages
+          self.registeredView.tableView.reloadData()
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          
+          AlertUtils.show(
+            controller: self,
+            title: "get reported store error",
+            message: error.localizedDescription
+          )
+        })
+        .disposed(by: disposeBag)
     }
     
     private func loadMoreStore() {
         currentPage += 1
         addLoadingFooter()
-        StoreService.getReportedStore(page: currentPage) { [weak self] (response) in
-            switch response.result {
-            case .success(let storePage):
-                self?.viewModel.stores.append(contentsOf: storePage.content)
-                self?.registeredView.tableView.reloadData()
-            case .failure(let error):
-                if let vc = self {
-                    AlertUtils.show(controller: vc, title: "get reported store error", message: error.localizedDescription)
-                }
-            }
-            self?.removeLoadingFooter()
-        }
+        StoreService.getReportedStore(page: currentPage)
+          .subscribe(
+            onNext: { [weak self] storePage in
+              guard let self = self else { return }
+              self.viewModel.stores.append(contentsOf: storePage.content)
+              self.registeredView.tableView.reloadData()
+              self.removeLoadingFooter()
+            },
+            onError: { [weak self] error in
+              guard let self = self else { return }
+              
+              AlertUtils.show(
+                controller: self,
+                title: "get reported store error",
+                message: error.localizedDescription
+              )
+              self.removeLoadingFooter()
+            })
+          .disposed(by: disposeBag)
     }
     
     func addLoadingFooter() {
@@ -92,9 +105,9 @@ extension RegisteredVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let storeId = self.viewModel.stores[indexPath.row].id {
-            self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
-        }
+      let storeId = self.viewModel.stores[indexPath.row].id
+      
+      self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)  
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

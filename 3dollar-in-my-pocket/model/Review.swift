@@ -1,31 +1,51 @@
-import ObjectMapper
-
-struct Review: Mappable {
-    var category: StoreCategory!
-    var contents: String!
-    var id: Int!
-    var rating: Int!
-    var user: User!
-    var storeId: Int!
-    var storeName: String!
+struct Review: Codable {
+  
+  let category: StoreCategory
+  let contents: String
+  let id: Int
+  let rating: Int
+  let user: User
+  let storeId: Int
+  let storeName: String
+  
+  
+  enum CodingKeys: String, CodingKey {
+    case category = "category"
+    case contents = "contents"
+    case id = "id"
+    case rating = "rating"
+    case user = "user"
+    case storeId = "storeId"
+    case storeName = "storeName"
+  }
+  
+  init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
     
+    category = try values.decodeIfPresent(StoreCategory.self, forKey: .category) ?? .BUNGEOPPANG
+    contents = try values.decodeIfPresent(String.self, forKey: .contents) ?? ""
+    id = try values.decodeIfPresent(Int.self, forKey: .id) ?? -1
+    rating = try values.decodeIfPresent(Int.self, forKey: .rating) ?? -1
+    user = try values.decodeIfPresent(User.self, forKey: .user) ?? User(socialId: "", socialType: "")
+    storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? -1
+    storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
     
-    init(rating: Int, contents: String) {
-        self.rating = rating
-        self.contents = contents
-    }
-    
-    init?(map: Map) {
-        mapping(map: map)
-    }
-    
-    mutating func mapping(map: Map) {
-        self.category <- map["category"]
-        self.contents <- map["contents"]
-        self.id <- map["id"]
-        self.rating <- map["rating"]
-        self.user <- map["user"]
-        self.storeId <- map["storeId"]
-        self.storeName <- map["storeName"]
-    }
+  }
+  
+  init(rating: Int, contents: String) {
+    self.category = .BUNGEOPPANG
+    self.contents = contents
+    self.id = -1
+    self.rating = rating
+    self.user = User(socialId: "", socialType: "")
+    self.storeId = -1
+    self.storeName = ""
+  }
+  
+  func toJson() -> [String: Any] {
+    return [
+      "contents" : self.contents,
+      "rating" : self.rating
+    ]
+  }
 }

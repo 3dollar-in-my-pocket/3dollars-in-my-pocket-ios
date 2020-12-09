@@ -212,9 +212,7 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - Alamofire (4.9.1)
-  - AlamofireNetworkActivityLogger (2.4.0):
-    - Alamofire (~> 4.8)
+  - Alamofire (5.4.0)
   - BoringSSL-GRPC (0.0.7):
     - BoringSSL-GRPC/Implementation (= 0.0.7)
     - BoringSSL-GRPC/Interface (= 0.0.7)
@@ -354,8 +352,7 @@ PODS:
   - Then (2.7.0)
 
 DEPENDENCIES:
-  - Alamofire (~> 4.9.1)
-  - AlamofireNetworkActivityLogger (~> 2.4)
+  - Alamofire (~> 5.2)
   - Firebase/Analytics
   - Firebase/Core
   - Firebase/Crashlytics
@@ -375,7 +372,6 @@ SPEC REPOS:
   trunk:
     - abseil
     - Alamofire
-    - AlamofireNetworkActivityLogger
     - BoringSSL-GRPC
     - Firebase
     - FirebaseAnalytics
@@ -407,8 +403,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
-  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
-  AlamofireNetworkActivityLogger: 6d3398c692d2c5d83b0c58793537860aca1e383d
+  Alamofire: 3b6a534a3df22db367e4dedeeca73d1ddfcf0e2f
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   Firebase: 78e8dd2e39d653de6270432ad84fe8b59f7bf4e8
   FirebaseAnalytics: 7f165a56dea86ddd5b8ce02af3bee982c683405c
@@ -438,6 +433,6 @@ SPEC CHECKSUMS:
   SwiftyBeaver: 2e8acd6fc90c6d0a27055867a290794926d57c02
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: 0753eeaa375062eba6dc2c24ca04970e184564f6
+PODFILE CHECKSUM: a0fa07df5c15cbd8f00007aafd585be6989b7fda
 
 COCOAPODS: 1.9.3

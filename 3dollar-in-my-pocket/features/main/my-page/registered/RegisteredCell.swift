@@ -56,7 +56,7 @@ class RegisteredCell: BaseTableViewCell {
     }
     
     func bind(store: Store) {
-        switch store.category! {
+        switch store.category {
         case .BUNGEOPPANG:
             categoryImage.image = UIImage.init(named: "img_mypage_bungeoppang")
         case .GYERANPPANG:

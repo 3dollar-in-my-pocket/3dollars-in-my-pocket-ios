@@ -110,18 +110,20 @@ class HomeVC: BaseVC {
   
   private func getNearestStore(latitude: Double, longitude: Double) {
     LoadingViewUtil.addLoadingView()
-    StoreService.getStoreOrderByNearest(latitude: latitude, longitude: longitude) { [weak self] (response) in
-      switch response.result {
-      case .success(let storeCards):
-        self?.isFirst = true
-        self?.viewModel.nearestStore.onNext(storeCards)
-        self?.homeView.shopCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .left, animated: true)
-        self?.selectMarker(selectedIndex: 0, storeCards: storeCards)
-      case .failure(let error):
+    StoreService.getStoreOrderByNearest(latitude: latitude, longitude: longitude).subscribe(
+      onNext: { [weak self] storeCards in
+        guard let self = self else { return }
+        self.isFirst = true
+        self.viewModel.nearestStore.onNext(storeCards)
+        self.homeView.shopCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .left, animated: true)
+        self.selectMarker(selectedIndex: 0, storeCards: storeCards)
+        LoadingViewUtil.removeLoadingView()
+      },
+      onError: { error in
         AlertUtils.show(title: "error", message: error.localizedDescription)
-      }
-      LoadingViewUtil.removeLoadingView()
-    }
+        LoadingViewUtil.removeLoadingView()
+      })
+      .disposed(by: disposeBag)
   }
   
   private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
