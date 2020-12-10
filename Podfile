@@ -17,7 +17,6 @@ target '3dollar-in-my-pocket' do
   pod 'Then'
   
   pod 'Alamofire', '~> 5.2'
-  pod 'ObjectMapper', '~> 3.4'
   
   pod 'lottie-ios'
   
