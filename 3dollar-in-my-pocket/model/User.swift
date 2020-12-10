@@ -1,35 +1,19 @@
-import ObjectMapper
-
-struct User: Mappable, Codable {
+struct User: Codable {
   
   var nickname: String?
-  var socialId: String!
-  var socialType: SocialType!
-  
-  init?(map: Map) {}
-  
-  init(nickname: String? = nil, socialId: String, socialType: String) {
-    self.nickname = nickname
-    self.socialId = socialId
-    self.socialType = SocialType.init(rawValue: socialType)
-  }
-  
-  mutating func mapping(map: Map) {
-    self.nickname <- map["name"]
-    self.socialId <- map["socialId"]
-    self.socialType <- map["socialType"]
-  }
-  
-  func toDict() -> [String: Any] {
-    return ["name": self.nickname,
-            "socialId": self.socialId,
-            "socialType": self.socialType.rawValue]
-  }
+  let socialId: String
+  let socialType: SocialType
   
   enum CodingKeys: String, CodingKey {
     case nickname = "name"
     case socialId = "socialId"
     case socialType = "socialType"
+  }
+  
+  init(nickname: String? = nil, socialId: String, socialType: String) {
+    self.nickname = nickname
+    self.socialId = socialId
+    self.socialType = SocialType(rawValue: socialType) ?? .KAKAO
   }
   
   init(from decoder: Decoder) throws {
@@ -39,9 +23,12 @@ struct User: Mappable, Codable {
     socialId = try values.decodeIfPresent(String.self, forKey: .socialId) ?? ""
     socialType = try values.decodeIfPresent(SocialType.self, forKey: .socialType) ?? .KAKAO
   }
-}
-
-enum SocialType: String, Codable {
-  case KAKAO = "KAKAO"
-  case APPLE = "APPLE"
+  
+  func toDict() -> [String: Any] {
+    return [
+      "name": self.nickname ?? "",
+      "socialId": self.socialId,
+      "socialType": self.socialType.rawValue
+    ]
+  }
 }

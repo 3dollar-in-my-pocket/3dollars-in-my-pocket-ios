@@ -30,16 +30,15 @@ class DeleteModalVC: BaseVC {
     }
     
     private func requestDelete() {
-        StoreService.deleteStore(storeId: self.storeId, deleteReasonType: DeleteReason.init(rawValue: deleteModalView.deleteReason)!) { [weak self] (response) in
-            switch response.result {
-            case .success(_):
-                self?.deleagete?.onRequest()
-            case .failure(_):
-                if let vc = self {
-                    AlertUtils.show(controller: vc, message: "이미 삭제요청을 했습니다.")
-                }
-            }
-        }
+        StoreService.deleteStore(
+          storeId: self.storeId,
+          deleteReasonType: DeleteReason.init(rawValue: deleteModalView.deleteReason)!
+        ).subscribe(onNext: { [weak self] _ in
+          self?.deleagete?.onRequest()
+        }, onError: { [weak self] error in
+          guard let self = self else { return }
+          AlertUtils.show(controller: self, message: "이미 삭제요청을 했습니다.")
+        }).disposed(by: disposeBag)
     }
 }
 

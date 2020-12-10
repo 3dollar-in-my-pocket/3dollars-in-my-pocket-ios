@@ -117,7 +117,7 @@ class ReviewCell: BaseTableViewCell {
     func bind(review: Review?) {
         if let review = review {
             setRank(rank: review.rating)
-            nameLabel.text = review.user?.nickname
+            nameLabel.text = review.user.nickname
             replyLabel.text = review.contents
             self.adBannerView.isHidden = true
             self.stackView.isHidden = false

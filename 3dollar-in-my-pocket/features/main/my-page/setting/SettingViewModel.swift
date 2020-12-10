@@ -1,6 +1,7 @@
 import RxSwift
 import RxCocoa
-import KakaoOpenSDK
+import KakaoSDKUser
+
 
 class SettingViewModel: BaseViewModel {
   
@@ -110,7 +111,7 @@ class SettingViewModel: BaseViewModel {
   }
   
   private func signOutKakao() {
-    KOSession.shared()?.logoutAndClose(completionHandler: { (isSuccess, error) in
+    UserApi.shared.logout { error in
       if let error = error {
         let alertContent = AlertContent(
           title: "Error in signOutKakao",
@@ -118,11 +119,12 @@ class SettingViewModel: BaseViewModel {
         )
         
         self.output.showSystemAlert.accept(alertContent)
-      } else {
+      }
+      else {
         self.userDefaults.clear()
         self.output.goToSignIn.accept(())
       }
-    })
+    }
   }
   
   private func signOutApple() {
@@ -131,7 +133,7 @@ class SettingViewModel: BaseViewModel {
   }
   
   private func unlinkKakao() {
-    KOSessionTask.unlinkTask { (isSuccess, error) in
+    UserApi.shared.unlink { error in
       if let error = error {
         let alertContent = AlertContent(
           title: "Error in unlinkKakao",

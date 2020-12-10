@@ -51,7 +51,7 @@ class ModifyVC: BaseVC {
     
     modifyView.deleteBtn.rx.tap.bind { [weak self] in
       if let vc = self {
-        vc.deleteVC = DeleteModalVC.instance(storeId: vc.store.id!).then {
+        vc.deleteVC = DeleteModalVC.instance(storeId: vc.store.id).then {
           $0.deleagete = self
         }
         vc.modifyView.addBgDim()
@@ -65,31 +65,44 @@ class ModifyVC: BaseVC {
     }.disposed(by: disposeBag)
     
     modifyView.registerBtn.rx.tap.bind { [weak self] in
-      if let storeId = self?.store.id,
-         let storeName = self?.modifyView.nameField.text!,
-         let images = self?.viewModel.imageList,
-         let latitude = self?.modifyView.mapView.cameraPosition.target.lat,
-         let longitude = self?.modifyView.mapView.cameraPosition.target.lng,
-         let menus = self?.viewModel.menuList {
-        let store = Store.init(latitude: latitude, longitude: longitude, storeName: storeName, menus: menus)
+      guard let self = self else { return }
+      
+      let storeId = self.store.id
+      let storeName = self.modifyView.nameField.text!
+      let images = self.viewModel.imageList
+      let latitude = self.modifyView.mapView.cameraPosition.target.lat
+      let longitude = self.modifyView.mapView.cameraPosition.target.lng
+      let menus = self.viewModel.menuList
+      let store = Store.init(
+        category: .BUNGEOPPANG,
+        latitude: latitude,
+        longitude: longitude,
+        storeName: storeName,
+        menus: menus
+      )
         
-        LoadingViewUtil.addLoadingView()
-        StoreService.updateStore(storeId: storeId, store: store, images: images) { (response) in
-          switch response.result {
-          case .success(_):
+      LoadingViewUtil.addLoadingView()
+      StoreService.updateStore(storeId: storeId, store: store, images: images)
+        .subscribe(
+          onNext: { [weak self] _ in
             self?.delegate?.onModifySuccess()
             self?.navigationController?.popViewController(animated: true)
-          case .failure(let error):
-            if let vc = self {
-              AlertUtils.show(controller: vc, title: "Update store error", message: error.localizedDescription)
-            }
-          }
-          LoadingViewUtil.removeLoadingView()
-        }
-      } else {
-        AlertUtils.show(controller: self, message: "올바른 내용을 작성해주세요.")
-      }
-    }.disposed(by: disposeBag)
+            LoadingViewUtil.removeLoadingView()
+          },
+          onError: { [weak self] error in
+            guard let self = self else { return }
+            
+            AlertUtils.show(
+              controller: self,
+              title: "Update store error",
+              message: error.localizedDescription
+            )
+            LoadingViewUtil.removeLoadingView()
+          })
+        .disposed(by: self.disposeBag)
+    }
+    .disposed(by: disposeBag)
+      
     
     viewModel.btnEnable
       .map { [weak self] (_) in
@@ -107,8 +120,8 @@ class ModifyVC: BaseVC {
     modifyView.setImageCount(count: store.images.count)
     modifyView.setMenuCount(count: store.menus.count)
     modifyView.setCategory(category: store.category)
-    modifyView.setTitle(title: store.storeName!)
-    modifyView.setRepoter(repoter: store.repoter!.nickname!)
+    modifyView.setTitle(title: store.storeName)
+    modifyView.setRepoter(repoter: store.repoter.nickname!)
   }
   
   private func setupImageCollectionView() {
@@ -135,11 +148,11 @@ class ModifyVC: BaseVC {
     
     let marker = NMFMarker()
     
-    marker.position = NMGLatLng(lat: store.latitude!, lng: store.longitude!)
+    marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
     marker.iconImage = NMFOverlayImage(name: "ic_marker")
     marker.mapView = self.modifyView.mapView
     
-    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: store.latitude!, lng: store.longitude!))
+    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: store.latitude, lng: store.longitude))
     self.modifyView.mapView.moveCamera(cameraUpdate)
   }
   

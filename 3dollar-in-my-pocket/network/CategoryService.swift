@@ -1,40 +1,83 @@
 import Alamofire
-import ObjectMapper
+import RxSwift
 
 struct CategoryService: APIServiceType {
-    static func getStroeByDistance(category: StoreCategory, latitude: Double, longitude: Double, completion: @escaping (DataResponse<CategoryByDistance>) -> Void) {
-        let urlString = self.url("api/v1/category/distance")
-        let headers = self.defaultHeader()
-        let parameters: [String: Any] = ["category": category.getValue(), "latitude": latitude, "longitude": longitude]
-        
-        Alamofire.request(urlString, method: .get, parameters: parameters, headers: headers).responseJSON { (response) in
-            let response: DataResponse<CategoryByDistance> = response.flatMapResult { (json) in
-                if let category = Mapper<CategoryByDistance>().map(JSONObject: json) {
-                    return .success(category)
-                } else {
-                    return .failure(MappingError.init(from: json, to: CategoryByDistance.self))
-                }
-            }
+  
+  static func getStroeByDistance(
+    category: StoreCategory,
+    latitude: Double,
+    longitude: Double
+  ) -> Observable<CategoryByDistance> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v1/category/distance"
+      let headers = HTTPUtils.defaultHeader()
+      let parameters: [String: Any] = [
+        "category": category.getValue(),
+        "latitude": latitude,
+        "longitude": longitude
+      ]
+      
+      AF.request(
+        urlString,
+        method: .get,
+        parameters: parameters,
+        headers: headers
+      ).responseJSON { response in
+        if let value = response.value {
+          if let categoryByDistance: CategoryByDistance = JsonUtils.toJson(object: value) {
+            observer.onNext(categoryByDistance)
+            observer.onCompleted()
+          } else {
+            let error = CommonError(desc: "failed to json")
             
-            completion(response)
+            observer.onError(error)
+          }
+        } else {
+          let error = CommonError(desc: "value is nil")
+          
+          observer.onError(error)
         }
+      }
+      return Disposables.create()
     }
-    
-    static func getStoreByReview(category: StoreCategory, latitude: Double, longitude: Double, completion: @escaping (DataResponse<CategoryByReview>) -> Void) {
-        let urlString = self.url("api/v1/category/review")
-        let headers = self.defaultHeader()
-        let parameters: [String: Any] = ["category": category.getValue(), "latitude": latitude, "longitude": longitude]
-        
-        Alamofire.request(urlString, method: .get, parameters: parameters, headers: headers).responseJSON { (response) in
-            let response: DataResponse<CategoryByReview> = response.flatMapResult { (json) in
-                if let category = Mapper<CategoryByReview>().map(JSONObject: json) {
-                    return .success(category)
-                } else {
-                    return .failure(MappingError.init(from: json, to: CategoryByReview.self))
-                }
-            }
+  }
+  
+  static func getStoreByReview(
+    category: StoreCategory,
+    latitude: Double,
+    longitude: Double
+  ) -> Observable<CategoryByReview> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v1/category/review"
+      let headers = HTTPUtils.defaultHeader()
+      let parameters: [String: Any] = [
+        "category": category.getValue(),
+        "latitude": latitude,
+        "longitude": longitude
+      ]
+      
+      AF.request(
+        urlString,
+        method: .get,
+        parameters: parameters,
+        headers: headers
+      ).responseJSON { response in
+        if let value = response.value {
+          if let categoryByReview: CategoryByReview = JsonUtils.toJson(object: value) {
+            observer.onNext(categoryByReview)
+            observer.onCompleted()
+          } else {
+            let error = CommonError(desc: "failed to json")
             
-            completion(response)
+            observer.onError(error)
+          }
+        } else {
+          let error = CommonError(desc: "value is nil")
+          
+          observer.onError(error)
         }
+      }
+      return Disposables.create()
     }
+  }
 }

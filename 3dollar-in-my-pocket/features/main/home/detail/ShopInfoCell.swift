@@ -335,7 +335,7 @@ class ShopInfoCell: BaseTableViewCell {
       var price = ""
       
       for menu in menus {
-        name.append("\(menu.name!)\n")
+        name.append("\(menu.name)\n")
         price.append("\(menu.price != nil ? menu.price! : "")\n")
       }
       menuNameLabel.text = name

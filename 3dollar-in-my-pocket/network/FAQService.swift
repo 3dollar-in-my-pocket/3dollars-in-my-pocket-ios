@@ -10,7 +10,7 @@ struct FAQService: FAQServiceProtocol {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/faqs"
       
-      Alamofire.request(
+      AF.request(
         urlString,
         method: .get,
         headers: HTTPUtils.defaultHeader()
