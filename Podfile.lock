@@ -328,6 +328,18 @@ PODS:
     - BoringSSL-GRPC (= 0.0.7)
     - gRPC-Core/Interface (= 1.28.2)
   - gRPC-Core/Interface (1.28.2)
+  - KakaoSDKAuth (2.0.5):
+    - KakaoSDKCommon (= 2.0.5)
+  - KakaoSDKCommon (2.0.5):
+    - Alamofire (~> 5.1)
+  - KakaoSDKLink (2.0.5):
+    - KakaoSDKCommon (= 2.0.5)
+    - KakaoSDKTemplate (= 2.0.5)
+  - KakaoSDKTemplate (2.0.5):
+    - KakaoSDKCommon (= 2.0.5)
+  - KakaoSDKUser (2.0.5):
+    - KakaoSDKAuth (= 2.0.5)
+    - KakaoSDKCommon (= 2.0.5)
   - Kingfisher (5.15.7):
     - Kingfisher/Core (= 5.15.7)
   - Kingfisher/Core (5.15.7)
@@ -357,6 +369,10 @@ DEPENDENCIES:
   - Firebase/Crashlytics
   - Firebase/Firestore
   - Google-Mobile-Ads-SDK
+  - KakaoSDKAuth
+  - KakaoSDKCommon
+  - KakaoSDKLink
+  - KakaoSDKUser
   - Kingfisher (~> 5.0)
   - lottie-ios
   - NMapsMap
@@ -385,6 +401,11 @@ SPEC REPOS:
     - GoogleUtilities
     - "gRPC-C++"
     - gRPC-Core
+    - KakaoSDKAuth
+    - KakaoSDKCommon
+    - KakaoSDKLink
+    - KakaoSDKTemplate
+    - KakaoSDKUser
     - Kingfisher
     - leveldb-library
     - lottie-ios
@@ -416,6 +437,11 @@ SPEC CHECKSUMS:
   GoogleUtilities: 3dc4ff0d5e4840e2fa8eef0889620e8c33d4218c
   "gRPC-C++": 13d8ccef97d5c3c441b7e3c529ef28ebee86fad2
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
+  KakaoSDKAuth: 6903dbdaae617a9918030dba0cc47a2f42ca9731
+  KakaoSDKCommon: 0fbcc0fa12d7f1e5fa4d423cd336e877764e1403
+  KakaoSDKLink: f2aad317a7882276a2b4298af248177cf27e40c5
+  KakaoSDKTemplate: 000724221018cd32b585aec9df7261be6c263873
+  KakaoSDKUser: 55cfcdfb0e4fa04709487936802c09c013bdd782
   Kingfisher: 6e1a13523fcb1c86924ce53affe4ac957e544d59
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
@@ -429,6 +455,6 @@ SPEC CHECKSUMS:
   SwiftyBeaver: 2e8acd6fc90c6d0a27055867a290794926d57c02
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: 536d731fd5508b823ddebf980da367c654cb2c79
+PODFILE CHECKSUM: 58569631564120e30dfebe12e6f1faaa5b7c398a
 
 COCOAPODS: 1.9.3
