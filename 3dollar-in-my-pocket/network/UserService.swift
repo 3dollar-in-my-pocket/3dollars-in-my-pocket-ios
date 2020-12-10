@@ -100,7 +100,6 @@ struct UserService: UserServiceProtocol {
         urlString,
         method: .get,
         parameters: parameters,
-        encoding: JSONEncoding.default,
         headers: headders
       ).responseJSON { response in
         if let value = response.value {
@@ -231,7 +230,7 @@ struct UserService: UserServiceProtocol {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/user/info"
       let headders = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["userID" : UserDefaultsUtil().getUserId()]
+      let parameters: [String: Any] = ["userId" : UserDefaultsUtil().getUserId()]
       
       AF.request(
         urlString,
