@@ -372,6 +372,7 @@ DEPENDENCIES:
   - KakaoSDKAuth
   - KakaoSDKCommon
   - KakaoSDKLink
+  - KakaoSDKTemplate
   - KakaoSDKUser
   - Kingfisher (~> 5.0)
   - lottie-ios
@@ -455,6 +456,6 @@ SPEC CHECKSUMS:
   SwiftyBeaver: 2e8acd6fc90c6d0a27055867a290794926d57c02
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: 58569631564120e30dfebe12e6f1faaa5b7c398a
+PODFILE CHECKSUM: b3c982a811e7c3d0d954f6a900448e4d6030fcd2
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0

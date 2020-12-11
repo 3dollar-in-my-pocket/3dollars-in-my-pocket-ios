@@ -42,6 +42,12 @@ class DetailVC: BaseVC {
     }.disposed(by: disposeBag)
   }
   
+  override func bindEvent() {
+    self.detailView.shareButton.rx.tap
+      .bind(to: self.viewModel.input.tapShare)
+      .disposed(by: disposeBag)
+  }
+  
   private func setupLocationManager() {
     locationManager.delegate = self
     locationManager.desiredAccuracy = kCLLocationAccuracyBest
