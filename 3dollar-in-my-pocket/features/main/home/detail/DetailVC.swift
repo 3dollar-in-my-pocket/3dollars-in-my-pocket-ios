@@ -40,6 +40,12 @@ class DetailVC: BaseVC {
     detailView.backBtn.rx.tap.bind { [weak self] in
       self?.navigationController?.popViewController(animated: true)
     }.disposed(by: disposeBag)
+    
+    // Bind output
+    self.viewModel.output.showSystemAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {
