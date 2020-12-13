@@ -57,6 +57,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     KakaoSDKCommon.initSDK(appKey: kakaoAppKey)
   }
 }
-
-
-

@@ -5,6 +5,7 @@ struct UserDefaultsUtil {
   static let KEY_TOKEN = "KEY_TOKEN"
   static let KEY_USER_ID = "KEY_USER_ID"
   static let KEY_EVENT = "KEY_EVENT"
+  static let KEY_DETAIL_LINK = "KEY_DETAIL_LINK"
   
   let instance: UserDefaults
   
@@ -40,6 +41,14 @@ struct UserDefaultsUtil {
   
   func getEventDisableToday(id: Int) -> String {
     return self.instance.string(forKey: "\(UserDefaultsUtil.KEY_EVENT)_\(id)") ?? ""
+  }
+  
+  func setDetailLink(storeId: Int) {
+    self.instance.set(storeId, forKey: UserDefaultsUtil.KEY_DETAIL_LINK)
+  }
+  
+  func getDetailLink() -> Int {
+    return self.instance.integer(forKey: UserDefaultsUtil.KEY_DETAIL_LINK)
   }
   
   func clear() {

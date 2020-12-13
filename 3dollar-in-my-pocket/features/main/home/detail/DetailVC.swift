@@ -8,7 +8,7 @@ class DetailVC: BaseVC {
   
   private lazy var detailView = DetailView(frame: self.view.frame)
   
-  private var viewModel = DetailViewModel()
+  private var viewModel = DetailViewModel(userDefaults: UserDefaultsUtil())
   private var reviewVC: ReviewModalVC?
   private var myLocationFlag = false
   var storeId: Int!
@@ -30,6 +30,12 @@ class DetailVC: BaseVC {
     detailView.tableView.register(ReviewCell.self, forCellReuseIdentifier: ReviewCell.registerId)
     
     setupLocationManager()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    self.viewModel.clearKakaoLinkIfExisted()
   }
   
   override func bindViewModel() {

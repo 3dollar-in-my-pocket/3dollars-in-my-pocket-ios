@@ -9,6 +9,7 @@ class DetailViewModel: BaseViewModel {
   var location: (latitude: Double, longitude: Double) = (0 , 0)
   let input = Input()
   let output = Output()
+  let userDefaults: UserDefaultsUtil
   
   struct Input {
     let tapShare = PublishSubject<Void>()
@@ -18,27 +19,35 @@ class DetailViewModel: BaseViewModel {
     let showSystemAlert = PublishRelay<AlertContent>()
   }
   
-  override init() {
+  init(userDefaults: UserDefaultsUtil) {
+    self.userDefaults = userDefaults
     super.init()
-    
     self.input.tapShare
-      .subscribe(onNext: self.shareToKakao)
+      .withLatestFrom(self.store)
+      .bind(onNext: self.shareToKakao(store:))
       .disposed(by: disposeBag)
   }
   
-  private func shareToKakao() {
+  func clearKakaoLinkIfExisted() {
+    if self.userDefaults.getDetailLink() != 0 {
+      self.userDefaults.setDetailLink(storeId: 0)
+    }
+  }
+  
+  private func shareToKakao(store: Store?) {
+    guard let store = store else { return }
     let link = Link(
       webUrl: nil,
       mobileWebUrl: nil,
-      androidExecutionParams: nil,
-      iosExecutionParams: nil
+      androidExecutionParams: ["storeId": String(store.id)],
+      iosExecutionParams: ["storeId": String(store.id)]
     )
     let content = Content(
       title: "올 때 붕어빵, 잊지마!!!",
       imageUrl: URL(string: "https://firebasestorage.googleapis.com/v0/b/dollar-in-my-pocket.appspot.com/o/kakao_link.png?alt=media&token=c3dd508f-63c6-4645-bff6-808c5a902417")!,
       imageWidth: 500,
       imageHeight: 500,
-      description: "000님께서 [가슴속 3천원]의 가게 정보를 공유하셨습니다. 지금 바로 [가슴속 3천원] 앱을 설치하시고 더 많은 길거리 음식 맛집을 알아보세요!",
+      description: "당신은 붕어빵 셔틀에 당첨되셨습니다.\n지금 바로 가슴속 3천원을 설치하고 위치를 파악하여 미션을 수행하세요!",
       link: link
     )
     let feedTemplate = FeedTemplate(
