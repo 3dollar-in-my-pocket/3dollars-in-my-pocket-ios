@@ -8,7 +8,7 @@ class DetailVC: BaseVC {
   
   private lazy var detailView = DetailView(frame: self.view.frame)
   
-  private var viewModel = DetailViewModel()
+  private var viewModel = DetailViewModel(userDefaults: UserDefaultsUtil())
   private var reviewVC: ReviewModalVC?
   private var myLocationFlag = false
   var storeId: Int!
@@ -32,6 +32,12 @@ class DetailVC: BaseVC {
     setupLocationManager()
   }
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    self.viewModel.clearKakaoLinkIfExisted()
+  }
+  
   override func bindViewModel() {
     viewModel.store.subscribe { [weak self] (store) in
       self?.detailView.tableView.reloadData()
@@ -40,6 +46,18 @@ class DetailVC: BaseVC {
     detailView.backBtn.rx.tap.bind { [weak self] in
       self?.navigationController?.popViewController(animated: true)
     }.disposed(by: disposeBag)
+    
+    // Bind output
+    self.viewModel.output.showSystemAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
+  }
+  
+  override func bindEvent() {
+    self.detailView.shareButton.rx.tap
+      .bind(to: self.viewModel.input.tapShare)
+      .disposed(by: disposeBag)
   }
   
   private func setupLocationManager() {

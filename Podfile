@@ -24,6 +24,7 @@ target '3dollar-in-my-pocket' do
   pod 'KakaoSDKAuth'  # 카카오 로그인
   pod 'KakaoSDKLink'  # 메시지(카카오링크)
   pod 'KakaoSDKUser'  # 사용자 관리
+  pod 'KakaoSDKTemplate'  # 메시지 템플릿 
   
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
