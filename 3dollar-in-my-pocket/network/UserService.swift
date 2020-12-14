@@ -2,6 +2,9 @@ import Alamofire
 import RxSwift
 
 protocol UserServiceProtocol {
+  
+  func validateToken(token: String) -> Observable<String>
+  
   func signIn(user: User) -> Observable<SignIn>
   
   func setNickname(
@@ -16,6 +19,34 @@ protocol UserServiceProtocol {
 }
 
 struct UserService: UserServiceProtocol {
+  
+  func validateToken(token: String) -> Observable<String> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v1/user/me"
+      let headers = HTTPUtils.defaultHeader()
+      
+      AF.request(
+        urlString,
+        method: .get,
+        headers: headers
+      ).responseString { response in
+        if response.isSuccess() {
+          observer.onNext("success")
+          observer.onCompleted()
+        } else {
+          if let statusCode = response.response?.statusCode {
+            observer.processHTTPError(statusCode: statusCode)
+          } else {
+            let error = CommonError(desc: "알수 없는 오류발생.\n잠시 후 다시 시도해주세요.")
+            
+            observer.onError(error)
+          }
+        }
+      }
+      
+      return Disposables.create()
+    }
+  }
   
   func signIn(user: User) -> Observable<SignIn> {
     return Observable.create { observer -> Disposable in
