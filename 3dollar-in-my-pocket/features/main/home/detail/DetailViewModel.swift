@@ -36,9 +36,10 @@ class DetailViewModel: BaseViewModel {
   
   private func shareToKakao(store: Store?) {
     guard let store = store else { return }
+    let webURL = URL(string: "https://map.kakao.com/link/map/\(store.storeName),\(store.latitude),\(store.longitude)")
     let link = Link(
-      webUrl: nil,
-      mobileWebUrl: nil,
+      webUrl: webURL,
+      mobileWebUrl: webURL,
       androidExecutionParams: ["storeId": String(store.id)],
       iosExecutionParams: ["storeId": String(store.id)]
     )
