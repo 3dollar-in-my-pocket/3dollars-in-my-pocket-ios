@@ -10,7 +10,8 @@ class SplashViewModel: BaseViewModel {
   struct Output {
     let goToSignIn = PublishRelay<Void>()
     let goToMain = PublishRelay<Void>()
-    let showSystemAlert = PublishRelay<AlertContent>()
+    let showGoToSignInAlert = PublishRelay<AlertContent>()
+    let showMaintenanceAlert = PublishRelay<AlertContent>()
   }
   
   
@@ -37,19 +38,18 @@ class SplashViewModel: BaseViewModel {
           self.output.goToMain.accept(())
         },
         onError: { [weak self] error in
+          guard let self = self else { return }
           if let httpError = error as? HTTPError {
             switch httpError {
-            case .forbidden:
-              break
-            case .unauthorized:
-              break
+            case .forbidden, .unauthorized:
+              let alertContent = AlertContent(title: nil, message: httpError.description)
+              
+              self.output.showGoToSignInAlert.accept(alertContent)
             case .maintenance:
-              break
-            default:
-              break
+              let alertContent = AlertContent(title: nil, message: httpError.description)
+              
+              self.output.showMaintenanceAlert.accept(alertContent)
             }
-          } else {
-            
           }
         }
       )

@@ -44,6 +44,16 @@ class SplashVC: BaseVC {
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.goToSignIn)
       .disposed(by: disposeBag)
+    
+    self.viewModel.output.showGoToSignInAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showGoToSignInAlert(alertContent:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.showMaintenanceAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showMaintenanceAlert(alertContent:))
+      .disposed(by: disposeBag)
   }
   
   private func goToMain() {
@@ -55,6 +65,29 @@ class SplashVC: BaseVC {
   private func goToSignIn() {
     if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
       sceneDelegate.goToSignIn()
+    }
+  }
+  
+  private func showGoToSignInAlert(alertContent: AlertContent) {
+    AlertUtils.showWithAction(
+      controller: self,
+      title: alertContent.title,
+      message: alertContent.message
+    ) {
+      self.goToSignIn()
+    }
+  }
+  
+  private func showMaintenanceAlert(alertContent: AlertContent) {
+    AlertUtils.showWithAction(
+      controller: self,
+      title: alertContent.title,
+      message: alertContent.message) {
+      UIControl().sendAction(
+        #selector(URLSessionTask.suspend),
+        to: UIApplication.shared,
+        for: nil
+      )
     }
   }
 }
