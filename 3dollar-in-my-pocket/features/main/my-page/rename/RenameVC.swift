@@ -23,7 +23,7 @@ class RenameVC: BaseVC {
     }.disposed(by: disposeBag)
     
     renameView.nicknameField.rx.text.orEmpty
-      .map { !$0.isEmpty }
+      .map { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
       .bind(onNext: self.renameView.setBtnEnable(isEnable:))
       .disposed(by: disposeBag)
     
