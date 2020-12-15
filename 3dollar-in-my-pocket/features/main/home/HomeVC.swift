@@ -1,5 +1,6 @@
 import UIKit
 import NMapsMap
+import FirebaseCrashlytics
 
 protocol HomeDelegate {
   func onTapCategory(category: StoreCategory)
@@ -271,8 +272,14 @@ extension HomeVC: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
     switch status {
     case .denied:
-      AlertUtils.showWithAction(title: "위치 권한 오류", message: "설정 > 가슴속 3천원 > 위치 > 앱을 사용하는 동안으로 선택해주세요.") { (action) in
-        UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
+      AlertUtils.showWithAction(
+        title: "위치 권한 거절",
+        message: "설정 > 가슴속 3천원 > 위치에서 위치 권한을 확인해주세요."
+      ) { action in
+        UIControl().sendAction(
+            #selector(URLSessionTask.suspend),
+            to: UIApplication.shared, for: nil
+        )
       }
     default:
       break
@@ -297,13 +304,28 @@ extension HomeVC: CLLocationManagerDelegate {
   }
   
   func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-    //        print("\((error as NSError).code)")
-    //        if (error as NSError).code == 1 {
-    //            AlertUtils.showWithAction(title: "위치 권한 오류", message: "설정 > 가슴속 3천원 > 위치 > 앱을 사용하는 동안으로 선택해주세요.") { (action) in
-    //                UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
-    //            }
-    //        } else {
-    //            AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
-    //        }
+    if let error = error as? CLError {
+        switch error.code {
+        case .denied:
+            AlertUtils.show(
+                controller: self,
+                title: "위치 권한 거절",
+                message: "설정 > 가슴속 3천원 > 위치에서 위치 권한을 확인해주세요."
+            )
+        case .locationUnknown:
+            AlertUtils.show(
+                controller: self,
+                title: "알 수 없는 위치",
+                message: "현재 위치가 확인되지 않습니다.\n잠시 후 다시 시도해주세요."
+            )
+        default:
+            AlertUtils.show(
+                controller: self,
+                title: "위치 오류 발생",
+                message: "위치 오류가 발생되었습니다.\n에러가 개발자에게 보고됩니다."
+            )
+            Crashlytics.crashlytics().log("location Manager Error(error code: \(error.code.rawValue)")
+        }
+    }
   }
 }
