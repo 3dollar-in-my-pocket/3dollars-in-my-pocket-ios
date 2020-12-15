@@ -11,6 +11,7 @@ class DetailVC: BaseVC {
   private var viewModel = DetailViewModel(userDefaults: UserDefaultsUtil())
   private var reviewVC: ReviewModalVC?
   private var myLocationFlag = false
+  private var isFirstUpdate = true
   var storeId: Int!
   var locationManager = CLLocationManager()
   
@@ -72,7 +73,8 @@ class DetailVC: BaseVC {
       storeId: storeId,
       latitude: latitude,
       longitude: longitude
-    ).subscribe(onNext: { [weak self] store in
+    )
+    .subscribe(onNext: { [weak self] store in
       guard let self = self else { return }
       
       self.detailView.titleLabel.text = store.storeName
@@ -232,7 +234,10 @@ extension DetailVC: CLLocationManagerDelegate {
     if myLocationFlag {
       self.moveToMyLocation(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
     } else {
-      self.getStoreDetail(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+      if self.isFirstUpdate {
+        self.getStoreDetail(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+        self.isFirstUpdate = false
+      }
     }
     self.viewModel.location = (location!.coordinate.latitude, location!.coordinate.longitude)
     locationManager.stopUpdatingLocation()

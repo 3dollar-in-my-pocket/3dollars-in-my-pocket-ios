@@ -36,15 +36,16 @@ class DetailViewModel: BaseViewModel {
   
   private func shareToKakao(store: Store?) {
     guard let store = store else { return }
+    let webURL = URL(string: "https://map.kakao.com/link/map/\(store.storeName),\(store.latitude),\(store.longitude)")
     let link = Link(
-      webUrl: nil,
-      mobileWebUrl: nil,
+      webUrl: webURL,
+      mobileWebUrl: webURL,
       androidExecutionParams: ["storeId": String(store.id)],
       iosExecutionParams: ["storeId": String(store.id)]
     )
     let content = Content(
       title: "올 때 붕어빵, 잊지마!!!",
-      imageUrl: URL(string: "https://firebasestorage.googleapis.com/v0/b/dollar-in-my-pocket.appspot.com/o/kakao_link.png?alt=media&token=c3dd508f-63c6-4645-bff6-808c5a902417")!,
+      imageUrl: URL(string: HTTPUtils.url + "/images/share-with-kakao.png")!,
       imageWidth: 500,
       imageHeight: 500,
       description: "당신은 붕어빵 셔틀에 당첨되셨습니다.\n지금 바로 가슴속 3천원을 설치하고 위치를 파악하여 미션을 수행하세요!",
