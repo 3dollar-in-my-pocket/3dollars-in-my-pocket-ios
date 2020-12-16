@@ -291,4 +291,3 @@ extension ModifyVC: DeleteModalDelegate {
     self.modifyView.removeBgDim()
   }
 }
-
