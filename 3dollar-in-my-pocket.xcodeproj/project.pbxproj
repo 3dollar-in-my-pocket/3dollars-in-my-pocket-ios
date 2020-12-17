@@ -61,6 +61,7 @@
 		6E41F7ED23BB161D00D0AC73 /* SpoqaHanSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E41F7EC23BB161D00D0AC73 /* SpoqaHanSans-Light.ttf */; };
 		6E41F7EF23BB1F5600D0AC73 /* ShopCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41F7EE23BB1F5600D0AC73 /* ShopCell.swift */; };
 		6E41F7F123BB42F600D0AC73 /* CategoryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41F7F023BB42F600D0AC73 /* CategoryButton.swift */; };
+		6E46CFF6258B58370000421B /* QuestionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E46CFF5258B58370000421B /* QuestionViewModel.swift */; };
 		6E4CB8FF23D488A700542D21 /* ReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4CB8FE23D488A700542D21 /* ReviewService.swift */; };
 		6E4CB90223D4961700542D21 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4CB90123D4961700542D21 /* LoadingView.swift */; };
 		6E4CB90423D4975400542D21 /* LoadingViewUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4CB90323D4975400542D21 /* LoadingViewUtil.swift */; };
@@ -240,6 +241,7 @@
 		6E41F7EC23BB161D00D0AC73 /* SpoqaHanSans-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSans-Light.ttf"; sourceTree = "<group>"; };
 		6E41F7EE23BB1F5600D0AC73 /* ShopCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCell.swift; sourceTree = "<group>"; };
 		6E41F7F023BB42F600D0AC73 /* CategoryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryButton.swift; sourceTree = "<group>"; };
+		6E46CFF5258B58370000421B /* QuestionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewModel.swift; sourceTree = "<group>"; };
 		6E4CB8FE23D488A700542D21 /* ReviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewService.swift; sourceTree = "<group>"; };
 		6E4CB90123D4961700542D21 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		6E4CB90323D4975400542D21 /* LoadingViewUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewUtil.swift; sourceTree = "<group>"; };
@@ -526,6 +528,7 @@
 				6E511E6225710CFF009E4667 /* QuestionView.swift */,
 				6E511E67257149D4009E4667 /* QuestionVC.swift */,
 				6E511E6C25714E70009E4667 /* QuestionCell.swift */,
+				6E46CFF5258B58370000421B /* QuestionViewModel.swift */,
 			);
 			path = question;
 			sourceTree = "<group>";
@@ -838,7 +841,6 @@
 			buildConfigurationList = 6E0EA3BD23ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocket" */;
 			buildPhases = (
 				1987C26717DC0A90012569FF /* [CP] Check Pods Manifest.lock */,
-				7EE63E405B6111F4AA7D01EA /* [CP] Prepare Artifacts */,
 				6E0EA38F23ABB230008F7CB2 /* Sources */,
 				6E0EA39023ABB230008F7CB2 /* Frameworks */,
 				6E0EA39123ABB230008F7CB2 /* Resources */,
@@ -1070,23 +1072,6 @@
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
-		7EE63E405B6111F4AA7D01EA /* [CP] Prepare Artifacts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-artifacts-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Prepare Artifacts";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-artifacts-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-artifacts.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		E1BADDFBAC2482AF5A1A3F44 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1242,6 +1227,7 @@
 				6E2F5FE123D6C04800094D41 /* CategoryByDistance.swift in Sources */,
 				6E56BD8123CDE359002D7092 /* Menu.swift in Sources */,
 				6E8E251E256AADE200AE6479 /* JsonUtils.swift in Sources */,
+				6E46CFF6258B58370000421B /* QuestionViewModel.swift in Sources */,
 				6E6B0EDE23AD16F1006E11CE /* BaseVC.swift in Sources */,
 				6E6835C023C2D2BC00D23F54 /* RegisteredVC.swift in Sources */,
 				6E73293B23CA07920037003B /* StoreService.swift in Sources */,
@@ -1420,7 +1406,7 @@
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = X975A2HM62;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1472,7 +1458,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = X975A2HM62;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
