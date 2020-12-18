@@ -6,7 +6,6 @@ class LoadingView: UIView {
     $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
     $0.contentMode = .scaleAspectFit
     $0.loopMode = .loop
-    $0.play()
   }
   
   override init(frame: CGRect) {
@@ -19,6 +18,13 @@ class LoadingView: UIView {
     fatalError("init(coder:) has not been implemented")
   }
   
+  func startLoading() {
+    self.lottie.play()
+  }
+  
+  func stopLoading() {
+    self.lottie.stop()
+  }
   
   private func setup() {
     backgroundColor = UIColor(r: 0, g: 0, b: 0, a: 0.8)
