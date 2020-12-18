@@ -187,7 +187,7 @@ struct UserService: UserServiceProtocol {
   
   static func changeNickname(nickname: String) -> Observable<String> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "api/v1/user/nickname"
+      let urlString = HTTPUtils.url + "/api/v1/user/nickname"
       let headers = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = [
         "nickName": nickname,
