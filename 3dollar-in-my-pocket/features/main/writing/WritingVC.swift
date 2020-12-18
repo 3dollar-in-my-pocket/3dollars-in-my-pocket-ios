@@ -98,14 +98,14 @@ class WritingVC: BaseVC {
           menus: menus
         )
         
-        LoadingViewUtil.addLoadingView()
+        self.writingView.showLoading(isShow: true)
         StoreService.saveStore(store: store, images: images).subscribe(
           onNext: { [weak self] saveResponse in
             guard let self = self else { return }
             
             self.dismiss(animated: true, completion: nil)
             self.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
-            LoadingViewUtil.removeLoadingView()
+            self.writingView.showLoading(isShow: false)
           },
           onError: { [weak self] error in
             guard let self = self else { return }
@@ -115,7 +115,7 @@ class WritingVC: BaseVC {
               title: "Save store error",
               message: error.localizedDescription
             )
-            LoadingViewUtil.removeLoadingView()
+            self.writingView.showLoading(isShow: false)
           })
           .disposed(by: self.disposeBag)
       }

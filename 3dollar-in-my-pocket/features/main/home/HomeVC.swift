@@ -132,7 +132,7 @@ class HomeVC: BaseVC {
   }
   
   private func getNearestStore(latitude: Double, longitude: Double) {
-    LoadingViewUtil.addLoadingView()
+    self.homeView.showLoading(isShow: true)
     StoreService.getStoreOrderByNearest(latitude: latitude, longitude: longitude).subscribe(
       onNext: { [weak self] storeCards in
         guard let self = self else { return }
@@ -140,11 +140,11 @@ class HomeVC: BaseVC {
         self.viewModel.nearestStore.onNext(storeCards)
         self.homeView.shopCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .left, animated: true)
         self.selectMarker(selectedIndex: 0, storeCards: storeCards)
-        LoadingViewUtil.removeLoadingView()
+        self.homeView.showLoading(isShow: false)
       },
       onError: { error in
         AlertUtils.show(title: "error", message: error.localizedDescription)
-        LoadingViewUtil.removeLoadingView()
+        self.homeView.showLoading(isShow: false)
       })
       .disposed(by: disposeBag)
   }

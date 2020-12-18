@@ -80,14 +80,14 @@ class ModifyVC: BaseVC {
         storeName: storeName,
         menus: menus
       )
-        
-      LoadingViewUtil.addLoadingView()
+      
+      self.modifyView.showLoading(isShow: true)
       StoreService.updateStore(storeId: storeId, store: store, images: images)
         .subscribe(
           onNext: { [weak self] _ in
             self?.delegate?.onModifySuccess()
             self?.navigationController?.popViewController(animated: true)
-            LoadingViewUtil.removeLoadingView()
+            self?.modifyView.showLoading(isShow: false)
           },
           onError: { [weak self] error in
             guard let self = self else { return }
@@ -97,7 +97,7 @@ class ModifyVC: BaseVC {
               title: "Update store error",
               message: error.localizedDescription
             )
-            LoadingViewUtil.removeLoadingView()
+            self.modifyView.showLoading(isShow: false)
           })
         .disposed(by: self.disposeBag)
     }
