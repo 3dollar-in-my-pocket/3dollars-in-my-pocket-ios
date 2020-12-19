@@ -20,7 +20,7 @@ struct Menu: Codable {
     
     id = try values.decodeIfPresent(Int.self, forKey: .id) ?? -1
     name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
-    price = try values.decodeIfPresent(String.self, forKey: .name)
+    price = try values.decodeIfPresent(String.self, forKey: .price)
   }
   
   mutating func setPrice(price: String) {

@@ -52,6 +52,14 @@ class ReviewModalVC: BaseVC {
         .disposed(by: disposeBag)
     }
     
+    private func isValidateReview(text: String) -> Bool {
+        if text == "리뷰를 남겨주세요! (100자 이내)" {
+            return false
+        }
+        
+        return !text.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+    
     @objc func keyboardWillShow(_ sender: Notification) {
         guard let userInfo = sender.userInfo as? [String:Any] else {return}
         guard let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {return}
@@ -69,10 +77,10 @@ extension ReviewModalVC: ReviewModalViewDelegate {
     }
     
     func onTapRegister() {
-        if reviewModalView.reviewTextView.text == "리뷰를 남겨주세요! (100자 이내)" {
-            AlertUtils.show(controller: self, message: "내용을 입력해주세요.")
-        } else {
+        if self.isValidateReview(text: reviewModalView.reviewTextView.text) {
             self.saveReview()
+        } else {
+            AlertUtils.show(controller: self, message: "내용을 입력해주세요.")
         }
     }
 }

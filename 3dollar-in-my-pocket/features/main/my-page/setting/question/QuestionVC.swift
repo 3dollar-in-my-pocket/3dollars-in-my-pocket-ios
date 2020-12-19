@@ -1,9 +1,14 @@
 import RxSwift
 import MessageUI
+import DeviceKit
 
 class QuestionVC: BaseVC {
   
   private lazy var questionView = QuestionView(frame: self.view.frame)
+  private let viewModel = QestionViewModel(
+    userService: UserService(),
+    userDefaults: UserDefaultsUtil()
+  )
   
   static func instance() -> QuestionVC {
     return QuestionVC(nibName: nil, bundle: nil)
@@ -11,12 +16,28 @@ class QuestionVC: BaseVC {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
     view = questionView
     self.initilizeTableView()
+    self.viewModel.fetchMyInfo()
   }
   
   override func bindViewModel() {
+    // Bind output
+    self.viewModel.output.showMailComposer
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showMailComposer)
+      .disposed(by: disposeBag)
     
+    self.viewModel.output.showLoading
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.questionView.showLoading(isShow:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.showSystemAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {
@@ -43,15 +64,22 @@ class QuestionVC: BaseVC {
     self.navigationController?.popViewController(animated: true)
   }
   
-  private func showMailComposer() {
+  private func showMailComposer(
+    iosVersion: String,
+    nickname: String,
+    appVersion: String,
+    deviceModel: Device
+  ) {
     guard MFMailComposeViewController.canSendMail() else {
       return
     }
     
-    let composer = MFMailComposeViewController()
-    composer.mailComposeDelegate = self
-    composer.setToRecipients(["3dollarinmypocket@gmail.com"])
-    composer.setSubject("가슴속 3천원 문의")
+    let composer = MFMailComposeViewController().then {
+        $0.mailComposeDelegate = self
+        $0.setToRecipients(["3dollarinmypocket@gmail.com"])
+        $0.setSubject("가슴속 3천원 문의")
+        $0.setMessageBody("\n\n\n\nOS: ios \(iosVersion)\n닉네임: \(nickname)\n앱 버전: \(appVersion)\n디바이스: \(deviceModel)", isHTML: false)
+    }
     
     self.present(composer, animated: true, completion: nil)
   }
@@ -89,7 +117,7 @@ extension QuestionVC: UITableViewDelegate, UITableViewDataSource {
     if indexPath.row == 0 {
       self.goToFAQ()
     } else {
-      self.showMailComposer()
+      self.viewModel.input.tapMail.onNext(())
     }
   }
 }
