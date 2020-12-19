@@ -109,13 +109,11 @@ class ShopCell: BaseCollectionViewCell {
     if storeCard.distance >= 1000 {
       distanceLabel.text = "1km+"
     } else {
-      distanceLabel.text = "\(storeCard.distance!)m"
+      distanceLabel.text = "\(storeCard.distance)m"
     }
     
     self.titleLabl.text = storeCard.storeName
-    if let rating = storeCard.rating {
-      self.rankLabel.text = "\(rating)점"
-    }
+    self.rankLabel.text = "\(storeCard.rating)점"
   }
   
   private func setupShadow() {

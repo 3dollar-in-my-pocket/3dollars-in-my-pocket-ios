@@ -1,5 +1,4 @@
 import UIKit
-import KakaoOpenSDK
 import SnapKit
 import Then
 import AuthenticationServices

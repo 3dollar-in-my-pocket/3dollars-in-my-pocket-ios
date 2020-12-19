@@ -1,29 +1,33 @@
-import ObjectMapper
-
-struct Menu: Mappable {
-    var id: Int!
-    var name: String!
-    var price: String?
+struct Menu: Codable {
+  let id: Int
+  var name: String
+  var price: String?
+  
+  init(name: String, price: String? = nil) {
+    self.id = -1
+    self.name = name
+    self.price = price
+  }
+  
+  enum CodingKeys: String, CodingKey {
+    case id = "id"
+    case name = "name"
+    case price = "price"
+  }
+  
+  init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
     
-    
-    init?(map: Map) { }
-    
-    init(name: String, price: String? = nil) {
-        self.name = name
-        self.price = price
-    }
-    
-    mutating func mapping(map: Map) {
-        self.id <- map["id"]
-        self.name <- map["name"]
-        self.price <- map["price"]
-    }
-    
-    mutating func setPrice(price: String) {
-        self.price = price
-    }
-    
-    func toDict() -> [String: Any] {
-        return ["name": name, "price": price]
-    }
+    id = try values.decodeIfPresent(Int.self, forKey: .id) ?? -1
+    name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
+    price = try values.decodeIfPresent(String.self, forKey: .price)
+  }
+  
+  mutating func setPrice(price: String) {
+    self.price = price
+  }
+  
+  func toDict() -> [String: Any] {
+    return ["name": name, "price": price]
+  }
 }

@@ -35,17 +35,29 @@ class ReviewModalVC: BaseVC {
     
     private func saveReview() {
         let review = Review.init(rating: reviewModalView.rating, contents: reviewModalView.reviewTextView.text)
-        ReviewService.saveReview(review: review, storeId: storeId) { [weak self] (response) in
-            switch response.result {
-            case .success(_):
-                self?.dismiss(animated: true, completion: nil)
-                self?.deleagete?.onReviewSuccess()
-            case .failure(let error):
-                if let vc = self {
-                    AlertUtils.show(controller: vc, title: "save review error", message: error.localizedDescription)
-                }
-            }
+      ReviewService.saveReview(review: review, storeId: storeId).subscribe(
+        onNext: { [weak self] _ in
+          self?.dismiss(animated: true, completion: nil)
+          self?.deleagete?.onReviewSuccess()
+        },
+        onError: { [weak self]error in
+          guard let self = self else { return }
+          
+          AlertUtils.show(
+            controller: self,
+            title: "save review error",
+            message: error.localizedDescription
+          )
+        })
+        .disposed(by: disposeBag)
+    }
+    
+    private func isValidateReview(text: String) -> Bool {
+        if text == "리뷰를 남겨주세요! (100자 이내)" {
+            return false
         }
+        
+        return !text.trimmingCharacters(in: .whitespaces).isEmpty
     }
     
     @objc func keyboardWillShow(_ sender: Notification) {
@@ -65,10 +77,10 @@ extension ReviewModalVC: ReviewModalViewDelegate {
     }
     
     func onTapRegister() {
-        if reviewModalView.reviewTextView.text == "리뷰를 남겨주세요! (100자 이내)" {
-            AlertUtils.show(controller: self, message: "내용을 입력해주세요.")
-        } else {
+        if self.isValidateReview(text: reviewModalView.reviewTextView.text) {
             self.saveReview()
+        } else {
+            AlertUtils.show(controller: self, message: "내용을 입력해주세요.")
         }
     }
 }

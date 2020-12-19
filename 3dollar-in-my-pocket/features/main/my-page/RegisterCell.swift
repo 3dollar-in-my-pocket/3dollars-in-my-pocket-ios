@@ -72,7 +72,7 @@ class RegisterCell: BaseCollectionViewCell {
     
     func bind(store: Store?) {
         if let store = store {
-            switch store.category! {
+            switch store.category {
             case .BUNGEOPPANG:
                 categoryImage.image = UIImage.init(named: "img_card_bungeoppang_on")
             case .GYERANPPANG:

@@ -1,5 +1,6 @@
 import UIKit
 import NMapsMap
+import FirebaseCrashlytics
 
 protocol HomeDelegate {
   func onTapCategory(category: StoreCategory)
@@ -32,9 +33,19 @@ class HomeVC: BaseVC {
     super.viewDidLoad()
     view = homeView
     
-    initilizeShopCollectionView()
-    initilizeNaverMap()
-    initilizeLocationManager()
+    self.initilizeShopCollectionView()
+    self.initilizeLocationManager()
+  }
+  
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    self.addForegroundObserver()
+  }
+  
+  override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    self.removeForegroundObserver()
   }
   
   override func bindViewModel() {
@@ -84,6 +95,18 @@ class HomeVC: BaseVC {
     locationManager.startUpdatingLocation()
   }
   
+  private func addForegroundObserver() {
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(initilizeLocationManager),
+      name: UIApplication.willEnterForegroundNotification, object: nil
+    )
+  }
+  
+  private func removeForegroundObserver() {
+    NotificationCenter.default.removeObserver(self)
+  }
+  
   private func initilizeShopCollectionView() {
     homeView.shopCollectionView.delegate = self
     homeView.shopCollectionView.register(
@@ -92,11 +115,34 @@ class HomeVC: BaseVC {
     )
   }
   
-  private func initilizeLocationManager() {
+  @objc private func initilizeLocationManager() {
     locationManager.delegate = self
     locationManager.desiredAccuracy = kCLLocationAccuracyBest
-    locationManager.requestWhenInUseAuthorization()
-    locationManager.startUpdatingLocation()
+    
+    if CLLocationManager.locationServicesEnabled() {
+      switch CLLocationManager.authorizationStatus() {
+      case .authorizedAlways, .authorizedWhenInUse:
+        initilizeNaverMap()
+        locationManager.startUpdatingLocation()
+      case .notDetermined:
+        locationManager.requestWhenInUseAuthorization()
+      case .denied, .restricted:
+        AlertUtils.showWithAction(
+          title: "위치 권한 거절",
+          message: "설정 > 가슴속 3천원 > 위치에서 위치 권한을 확인해주세요."
+        ) { action in
+          UIControl().sendAction(
+            #selector(URLSessionTask.suspend),
+            to: UIApplication.shared, for: nil
+          )
+        }
+      default:
+        Log.error("알 수 없는 위치 권한: \(CLLocationManager.authorizationStatus())")
+        break
+      }
+    } else {
+      Log.debug("위치 기능 활성화 필요!")
+    }
   }
   
   private func initilizeNaverMap() {
@@ -109,19 +155,21 @@ class HomeVC: BaseVC {
   }
   
   private func getNearestStore(latitude: Double, longitude: Double) {
-    LoadingViewUtil.addLoadingView()
-    StoreService.getStoreOrderByNearest(latitude: latitude, longitude: longitude) { [weak self] (response) in
-      switch response.result {
-      case .success(let storeCards):
-        self?.isFirst = true
-        self?.viewModel.nearestStore.onNext(storeCards)
-        self?.homeView.shopCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .left, animated: true)
-        self?.selectMarker(selectedIndex: 0, storeCards: storeCards)
-      case .failure(let error):
+    self.homeView.showLoading(isShow: true)
+    StoreService.getStoreOrderByNearest(latitude: latitude, longitude: longitude).subscribe(
+      onNext: { [weak self] storeCards in
+        guard let self = self else { return }
+        self.isFirst = true
+        self.viewModel.nearestStore.onNext(storeCards)
+        self.homeView.shopCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .left, animated: true)
+        self.selectMarker(selectedIndex: 0, storeCards: storeCards)
+        self.homeView.showLoading(isShow: false)
+      },
+      onError: { error in
         AlertUtils.show(title: "error", message: error.localizedDescription)
-      }
-      LoadingViewUtil.removeLoadingView()
-    }
+        self.homeView.showLoading(isShow: false)
+      })
+      .disposed(by: disposeBag)
   }
   
   private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
@@ -266,18 +314,32 @@ extension HomeVC: NMFMapViewCameraDelegate {
 
 extension HomeVC: CLLocationManagerDelegate {
   
-  func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+  func locationManager(
+    _ manager: CLLocationManager,
+    didChangeAuthorization status: CLAuthorizationStatus
+  ) {
     switch status {
     case .denied:
-      AlertUtils.showWithAction(title: "위치 권한 오류", message: "설정 > 가슴속 3천원 > 위치 > 앱을 사용하는 동안으로 선택해주세요.") { (action) in
-        UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
+      AlertUtils.showWithAction(
+        title: "위치 권한 거절",
+        message: "설정 > 가슴속 3천원 > 위치에서 위치 권한을 확인해주세요."
+      ) { action in
+        UIControl().sendAction(
+          #selector(URLSessionTask.suspend),
+          to: UIApplication.shared, for: nil
+        )
       }
+    case .authorizedAlways, .authorizedWhenInUse:
+      self.initilizeLocationManager()
     default:
       break
     }
   }
   
-  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+  func locationManager(
+    _ manager: CLLocationManager,
+    didUpdateLocations locations: [CLLocation]
+  ) {
     let location = locations.last
     let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
       lat: location!.coordinate.latitude,
@@ -295,13 +357,28 @@ extension HomeVC: CLLocationManagerDelegate {
   }
   
   func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-    //        print("\((error as NSError).code)")
-    //        if (error as NSError).code == 1 {
-    //            AlertUtils.showWithAction(title: "위치 권한 오류", message: "설정 > 가슴속 3천원 > 위치 > 앱을 사용하는 동안으로 선택해주세요.") { (action) in
-    //                UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
-    //            }
-    //        } else {
-    //            AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
-    //        }
+    if let error = error as? CLError {
+      switch error.code {
+      case .denied:
+        AlertUtils.show(
+          controller: self,
+          title: "위치 권한 거절",
+          message: "설정 > 가슴속 3천원 > 위치에서 위치 권한을 확인해주세요."
+        )
+      case .locationUnknown:
+        AlertUtils.show(
+          controller: self,
+          title: "알 수 없는 위치",
+          message: "현재 위치가 확인되지 않습니다.\n잠시 후 다시 시도해주세요."
+        )
+      default:
+        AlertUtils.show(
+          controller: self,
+          title: "위치 오류 발생",
+          message: "위치 오류가 발생되었습니다.\n에러가 개발자에게 보고됩니다."
+        )
+        Crashlytics.crashlytics().log("location Manager Error(error code: \(error.code.rawValue)")
+      }
+    }
   }
 }

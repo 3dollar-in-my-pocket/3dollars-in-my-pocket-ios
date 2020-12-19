@@ -37,36 +37,47 @@ class MyReviewVC: BaseVC {
     }
     
     private func getMyReviews() {
-        ReviewService.getMyReview(page: 1) { [weak self] (response) in
-            switch response.result {
-            case .success(let reviewPage):
-                self?.viewModel.review = reviewPage.content
-                self?.viewModel.totalCount = reviewPage.totalElements
-                self?.viewModel.totalPage = reviewPage.totalPages
-                self?.myReviewView.tableView.reloadData()
-            case .failure(let error):
-                if let vc = self {
-                    AlertUtils.show(controller: vc, title: "get reported store error", message: error.localizedDescription)
-                }
-            }
-        }
+      ReviewService.getMyReview(page: 1).subscribe(
+        onNext: { [weak self] reviewPage in
+          guard let self = self else { return }
+          self.viewModel.review = reviewPage.content
+          self.viewModel.totalCount = reviewPage.totalElements
+          self.viewModel.totalPage = reviewPage.totalPages
+          self.myReviewView.tableView.reloadData()
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          AlertUtils.show(
+            controller: self,
+            title: "get reported store error",
+            message: error.localizedDescription
+          )
+        })
+        .disposed(by: disposeBag)
     }
     
     private func loadMoreReview() {
         currentPage += 1
         addLoadingFooter()
-        ReviewService.getMyReview(page: currentPage) { [weak self] (response) in
-            switch response.result {
-            case .success(let reviewPage):
-                self?.viewModel.review.append(contentsOf: reviewPage.content)
-                self?.myReviewView.tableView.reloadData()
-            case .failure(let error):
-                if let vc = self {
-                    AlertUtils.show(controller: vc, title: "get reported store error", message: error.localizedDescription)
-                }
-            }
-            self?.removeLoadingFooter()
-        }
+      ReviewService.getMyReview(page: currentPage).subscribe(
+        onNext: { [weak self] reviewPage in
+          guard let self = self else { return }
+          
+          self.viewModel.review.append(contentsOf: reviewPage.content)
+          self.myReviewView.tableView.reloadData()
+          self.removeLoadingFooter()
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          
+          AlertUtils.show(
+            controller: self,
+            title: "get reported store error",
+            message: error.localizedDescription
+          )
+          self.removeLoadingFooter()
+        })
+        .disposed(by: disposeBag)
     }
     
     func addLoadingFooter() {
@@ -109,9 +120,9 @@ extension MyReviewVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let storeId = self.viewModel.review[indexPath.row].storeId {
-            self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
-        }
+      let storeId = self.viewModel.review[indexPath.row].storeId
+      
+      self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

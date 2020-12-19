@@ -1,6 +1,7 @@
 import RxSwift
 import RxCocoa
-import KakaoOpenSDK
+import KakaoSDKAuth
+import KakaoSDKUser
 
 class SignInViewModel: BaseViewModel {
   
@@ -41,36 +42,53 @@ class SignInViewModel: BaseViewModel {
   }
   
   private func requestKakaoSignIn() {
-    guard let kakaoSession = KOSession.shared() else {
-      let alertContent = AlertContent(
-        title: "Error in Kakao",
-        message: "Kakao session is null"
-      )
-      
-      self.output.showSystemAlert.accept(alertContent)
-      return
-    }
-    
-    if kakaoSession.isOpen() {
-      kakaoSession.close()
-    }
-    
-    kakaoSession.open { [weak self] (error) in
-      guard let self = self else { return }
-      if let error = error {
-        if (error as NSError).code != 2 {
-          let alertContent = AlertContent(
-            title: "Error in Kakao",
-            message: error.localizedDescription
-          )
-          
-          self.output.showSystemAlert.accept(alertContent)
-        }
-      } else {
-        KOSessionTask.userMeTask { (error, me) in
-          if let userId = me?.id {
-            self.signIn(socialId: userId, socialType: "KAKAO")
+    if (AuthApi.isKakaoTalkLoginAvailable()) {
+      AuthApi.shared.loginWithKakaoTalk {(oauthToken, error) in
+        if let error = error {
+          if (error as NSError).code != 2 {
+            let alertContent = AlertContent(
+              title: "Error in Kakao",
+              message: error.localizedDescription
+            )
+            
+            self.output.showSystemAlert.accept(alertContent)
           }
+        } else {
+          self.requestKakaoInfo()
+        }
+      }
+    } else {
+      AuthApi.shared.loginWithKakaoAccount {(oauthToken, error) in
+        if let error = error {
+          if (error as NSError).code != 2 {
+            let alertContent = AlertContent(
+              title: "Error in Kakao",
+              message: error.localizedDescription
+            )
+            
+            self.output.showSystemAlert.accept(alertContent)
+          }
+        }
+        else {
+          self.requestKakaoInfo()
+        }
+      }
+    }
+  }
+  
+  private func requestKakaoInfo() {
+    UserApi.shared.me { (user, error) in
+      if let error = error {
+        let alertContent = AlertContent(
+          title: "Error in requestKakaoInfo",
+          message: error.localizedDescription
+        )
+        
+        self.output.showSystemAlert.accept(alertContent)
+      }
+      else {
+        if let userId = user?.id {
+          self.signIn(socialId: String(userId), socialType: "KAKAO")
         }
       }
     }

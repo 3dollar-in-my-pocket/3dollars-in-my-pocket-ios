@@ -1,14 +1,15 @@
-import ObjectMapper
-
-struct SaveResponse: Mappable {
-    var storeId: Int!
+struct SaveResponse: Codable {
+  
+  let storeId: Int
+  
+  
+  enum CodingKeys: String, CodingKey {
+    case storeId = "storeId"
+  }
+  
+  init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
     
-    
-    init?(map: Map) {
-        mapping(map: map)
-    }
-    
-    mutating func mapping(map: Map) {
-        self.storeId <- map["storeId"]
-    }
+    storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? -1
+  }
 }

@@ -88,60 +88,68 @@ class MyPageVC: BaseVC {
   }
   
   private func getMyInfo() {
-    UserService.getUserInfo { [weak self] (response) in
-      switch response.result {
-      case .success(let user):
-        self?.myPageView.nicknameLabel.text = user.nickname
-      case .failure(let error):
-        if let vc = self {
-          AlertUtils.show(controller: vc, title: "error user info", message: error.localizedDescription)
-        }
-      }
-    }
+    UserService.getUserInfo().subscribe(onNext: { [weak self] user in
+      self?.myPageView.nicknameLabel.text = user.nickname
+    }, onError: { [weak self] error in
+      guard let self = self else { return }
+      
+      AlertUtils.show(controller: self, title: "error user info", message: error.localizedDescription)
+    }).disposed(by: disposeBag)
   }
   
   private func getReportedStore() {
-    StoreService.getReportedStore(page: 1) { [weak self] (response) in
-      switch response.result {
-      case .success(let storePage):
-        self?.myPageView.setRegisterEmpty(isEmpty: storePage.content.isEmpty, count: storePage.totalElements!)
+    StoreService.getReportedStore(page: 1).subscribe(
+      onNext: { [weak self] storePage in
+        guard let self = self else { return }
+        self.myPageView.setRegisterEmpty(isEmpty: storePage.content.isEmpty, count: storePage.totalElements)
         if storePage.content.count > 5 {
           var sliceArray: [Store?] = Array(storePage.content[0...4])
           
           sliceArray.append(nil)
-          self?.viewModel.reportedStores.onNext(sliceArray)
+          self.viewModel.reportedStores.onNext(sliceArray)
         } else {
-          self?.viewModel.reportedStores.onNext(storePage.content)
+          self.viewModel.reportedStores.onNext(storePage.content)
         }
-      case .failure(let error):
-        if let vc = self {
-          AlertUtils.show(controller: vc, title: "get reported store error", message: error.localizedDescription)
-        }
-      }
-    }
+    }, onError: { [weak self] error in
+      guard let self = self else { return }
+      
+      AlertUtils.show(
+        controller: self,
+        title: "get reported store error",
+        message: error.localizedDescription
+      )
+    })
+    .disposed(by: disposeBag)
   }
   
   private func getMyReviews() {
-    ReviewService.getMyReview(page: 1) { [weak self] (response) in
-      switch response.result {
-      case .success(let reviewPage):
-        self?.myPageView.setReviewEmpty(isEmpty: reviewPage.content.isEmpty, count: reviewPage.totalElements!)
+    ReviewService.getMyReview(page: 1).subscribe(
+      onNext: { [weak self] reviewPage in
+        guard let self = self else { return }
+        
+        self.myPageView.setReviewEmpty(isEmpty: reviewPage.content.isEmpty, count: reviewPage.totalElements)
         if reviewPage.totalElements > 3 {
-          self?.viewModel.reportedReviews.onNext(Array(reviewPage.content[0...2]))
+          self.viewModel.reportedReviews.onNext(Array(reviewPage.content[0...2]))
         } else {
           var contents: [Review?] = reviewPage.content
           
           while contents.count != 3 {
             contents.append(nil)
           }
-          self?.viewModel.reportedReviews.onNext(contents)
+          self.viewModel.reportedReviews.onNext(contents)
         }
-      case .failure(let error):
-        if let vc = self {
-          AlertUtils.show(controller: vc, title: "get my review error", message: error.localizedDescription)
-        }
-      }
-    }
+        
+      },
+      onError: { [weak self] error in
+        guard let self = self else { return }
+        
+        AlertUtils.show(
+          controller: self,
+          title: "get my review error",
+          message: error.localizedDescription
+        )
+      })
+      .disposed(by: disposeBag)
   }
 }
 
@@ -152,7 +160,7 @@ extension MyPageVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
   
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if let store = try? self.viewModel.reportedStores.value()[indexPath.row] {
-      self.navigationController?.pushViewController(DetailVC.instance(storeId: store.id!), animated: true)
+      self.navigationController?.pushViewController(DetailVC.instance(storeId: store.id), animated: true)
     } else {
       self.navigationController?.pushViewController(RegisteredVC.instance(), animated: true)
     }
@@ -162,7 +170,7 @@ extension MyPageVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 extension MyPageVC: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     if let store = try? self.viewModel.reportedReviews.value()[indexPath.row] {
-      self.navigationController?.pushViewController(DetailVC.instance(storeId: store.storeId!), animated: true)
+      self.navigationController?.pushViewController(DetailVC.instance(storeId: store.storeId), animated: true)
     }
   }
 }

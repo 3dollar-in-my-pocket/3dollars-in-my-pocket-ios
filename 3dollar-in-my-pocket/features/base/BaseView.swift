@@ -31,7 +31,9 @@ class BaseView: UIView {
         make.edges.equalTo(0)
       }
       isUserInteractionEnabled = false
+      self.loadingView.startLoading()
     } else {
+      self.loadingView.stopLoading()
       isUserInteractionEnabled = true
       loadingView.removeFromSuperview()
     }

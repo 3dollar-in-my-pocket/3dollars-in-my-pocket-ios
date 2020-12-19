@@ -39,6 +39,11 @@ class FAQVC: BaseVC {
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.selectTag(row:))
       .disposed(by: disposeBag)
+    
+    self.viewModel.output.showLoading
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.faqView.showLoading(isShow:))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {

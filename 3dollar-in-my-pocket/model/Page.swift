@@ -1,30 +1,39 @@
-import ObjectMapper
-
-struct Page<T: Mappable>: Mappable {
-    var content: [T]!
-    var empty: Bool!
-    var first: Bool!
-    var last: Bool!
-    var number: Int!
-    var numberOfElements: Int!
-    var size: Int!
-    var totalElements: Int!
-    var totalPages: Int!
+struct Page<T: Codable>: Codable {
+  
+  let content: [T]
+  let empty: Bool
+  let first: Bool
+  let last: Bool
+  let number: Int
+  let numberOfElements: Int
+  let size: Int
+  let totalElements: Int
+  let totalPages: Int
+  
+  
+  enum CodingKeys: String, CodingKey {
+    case content = "content"
+    case empty = "empty"
+    case first = "first"
+    case last = "last"
+    case number = "number"
+    case numberOfElements = "numberOfElements"
+    case size = "size"
+    case totalElements = "totalElements"
+    case totalPages = "totalPages"
+  }
+  
+  init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
     
-    
-    init?(map: Map) {
-        mapping(map: map)
-    }
-    
-    mutating func mapping(map: Map) {
-        self.content <- map["content"]
-        self.empty <- map["empty"]
-        self.first <- map["first"]
-        self.last <- map["last"]
-        self.number <- map["number"]
-        self.numberOfElements <- map["numberOfElements"]
-        self.size <- map["size"]
-        self.totalElements <- map["totalElements"]
-        self.totalPages <- map["totalPages"]
-    }
+    content = try values.decodeIfPresent([T].self, forKey: .content) ?? []
+    empty = try values.decodeIfPresent(Bool.self, forKey: .empty) ?? true
+    first = try values.decodeIfPresent(Bool.self, forKey: .first) ?? true
+    last = try values.decodeIfPresent(Bool.self, forKey: .last) ?? true
+    number = try values.decodeIfPresent(Int.self, forKey: .number) ?? -1
+    numberOfElements = try values.decodeIfPresent(Int.self, forKey: .numberOfElements) ?? -1
+    size = try values.decodeIfPresent(Int.self, forKey: .size) ?? -1
+    totalElements = try values.decodeIfPresent(Int.self, forKey: .totalElements) ?? -1
+    totalPages = try values.decodeIfPresent(Int.self, forKey: .totalPages) ?? -1
+  }
 }

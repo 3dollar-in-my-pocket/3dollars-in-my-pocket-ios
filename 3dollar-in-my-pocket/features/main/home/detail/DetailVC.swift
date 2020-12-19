@@ -8,9 +8,10 @@ class DetailVC: BaseVC {
   
   private lazy var detailView = DetailView(frame: self.view.frame)
   
-  private var viewModel = DetailViewModel()
+  private var viewModel = DetailViewModel(userDefaults: UserDefaultsUtil())
   private var reviewVC: ReviewModalVC?
   private var myLocationFlag = false
+  private var isFirstUpdate = true
   var storeId: Int!
   var locationManager = CLLocationManager()
   
@@ -32,6 +33,12 @@ class DetailVC: BaseVC {
     setupLocationManager()
   }
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    self.viewModel.clearKakaoLinkIfExisted()
+  }
+  
   override func bindViewModel() {
     viewModel.store.subscribe { [weak self] (store) in
       self?.detailView.tableView.reloadData()
@@ -40,6 +47,18 @@ class DetailVC: BaseVC {
     detailView.backBtn.rx.tap.bind { [weak self] in
       self?.navigationController?.popViewController(animated: true)
     }.disposed(by: disposeBag)
+    
+    // Bind output
+    self.viewModel.output.showSystemAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
+  }
+  
+  override func bindEvent() {
+    self.detailView.shareButton.rx.tap
+      .bind(to: self.viewModel.input.tapShare)
+      .disposed(by: disposeBag)
   }
   
   private func setupLocationManager() {
@@ -50,16 +69,24 @@ class DetailVC: BaseVC {
   }
   
   private func getStoreDetail(latitude: Double, longitude: Double) {
-    StoreService.getStoreDetail(storeId: storeId, latitude: latitude, longitude: longitude) { [weak self] (response) in
-      switch response.result {
-      case .success(let store):
-        self?.detailView.titleLabel.text = store.storeName
-        
-        self?.viewModel.store.onNext(store)
-      case .failure(let error):
-        AlertUtils.show(controller: self, title: "getStoreDetail error", message: error.localizedDescription)
-      }
-    }
+    StoreService.getStoreDetail(
+      storeId: storeId,
+      latitude: latitude,
+      longitude: longitude
+    )
+    .subscribe(onNext: { [weak self] store in
+      guard let self = self else { return }
+      
+      self.detailView.titleLabel.text = store.storeName
+      self.viewModel.store.onNext(store)
+    }, onError: { [weak self] error in
+      guard let self = self else { return }
+      AlertUtils.show(
+        controller: self,
+        title: "getStoreDetail error",
+        message: error.localizedDescription
+      )
+    }).disposed(by: disposeBag)
   }
   
   private func moveToMyLocation(latitude: Double, longitude: Double) {
@@ -100,7 +127,7 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
         }
         cell.profileImage.rx.tap.bind { [weak self] (_) in
           if let vc = self {
-            vc.present(ImageDetailVC.instance(title: store.storeName!, images: store.images), animated: false)
+            vc.present(ImageDetailVC.instance(title: store.storeName, images: store.images), animated: false)
           }
         }.disposed(by: cell.disposeBag)
         
@@ -136,8 +163,8 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
         }
         cell.otherImages.isUserInteractionEnabled = !store.images.isEmpty
         cell.profileImage.isUserInteractionEnabled = !store.images.isEmpty
-        cell.setMarker(latitude: store.latitude!, longitude: store.longitude!)
-        cell.setCategory(category: store.category!)
+        cell.setMarker(latitude: store.latitude, longitude: store.longitude)
+        cell.setCategory(category: store.category)
         cell.setMenus(menus: store.menus)
         cell.setDistance(distance: store.distance)
         
@@ -207,7 +234,10 @@ extension DetailVC: CLLocationManagerDelegate {
     if myLocationFlag {
       self.moveToMyLocation(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
     } else {
-      self.getStoreDetail(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+      if self.isFirstUpdate {
+        self.getStoreDetail(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+        self.isFirstUpdate = false
+      }
     }
     self.viewModel.location = (location!.coordinate.latitude, location!.coordinate.longitude)
     locationManager.stopUpdatingLocation()

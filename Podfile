@@ -16,11 +16,15 @@ target '3dollar-in-my-pocket' do
 
   pod 'Then'
   
-  pod 'Alamofire', '~> 4.9.1'
-  pod 'AlamofireNetworkActivityLogger', '~> 2.4'
-  pod 'ObjectMapper', '~> 3.4'
+  pod 'Alamofire', '~> 5.2'
   
   pod 'lottie-ios'
+  
+  pod 'KakaoSDKCommon'  # 필수 요소를 담은 공통 모듈
+  pod 'KakaoSDKAuth'  # 카카오 로그인
+  pod 'KakaoSDKLink'  # 메시지(카카오링크)
+  pod 'KakaoSDKUser'  # 사용자 관리
+  pod 'KakaoSDKTemplate'  # 메시지 템플릿 
   
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
@@ -32,6 +36,8 @@ target '3dollar-in-my-pocket' do
   pod 'NMapsMap'
   
   pod 'SwiftyBeaver'
+  
+  pod 'DeviceKit', '~> 4.0'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths
