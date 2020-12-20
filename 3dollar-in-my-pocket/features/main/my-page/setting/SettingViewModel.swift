@@ -52,16 +52,16 @@ class SettingViewModel: BaseViewModel {
   func fetchMyInfo() {
     self.output.showLoading.accept(true)
     self.userService.getUserInfo(userId: self.userDefaults.getUserId())
-      .subscribe { user in
+      .subscribe { [weak self] user in
+        guard let self = self else { return }
         self.output.user.accept(user)
         self.output.showLoading.accept(false)
-      } onError: { error in
-        if let error = error as? CommonError {
-          let alertContent = AlertContent(title: "Error in fetchMyInfo", message: error.description)
-          
-          self.output.showSystemAlert.accept(alertContent)
-          self.output.showLoading.accept(false)
+      } onError: { [weak self] error in
+        guard let self = self else { return }
+        if let httpError = error as? HTTPError {
+          self.httpErrorAlert.accept(httpError)
         }
+        self.output.showLoading.accept(false)
       }
       .disposed(by: disposeBag)
   }
@@ -96,16 +96,12 @@ class SettingViewModel: BaseViewModel {
         self.userDefaults.clear()
         self.output.goToSignIn.accept(())
         self.output.showLoading.accept(false)
-      } onError: { error in
-        if let error = error as? CommonError {
-          let alertContent = AlertContent(
-            title: "Error in withdrawal",
-            message: error.description
-          )
-          
-          self.output.showLoading.accept(false)
-          self.output.showSystemAlert.accept(alertContent)
+      } onError: { [weak self] error in
+        guard let self = self else { return }
+        if let httpError = error as? HTTPError {
+          self.httpErrorAlert.accept(httpError)
         }
+        self.output.showLoading.accept(false)
       }
       .disposed(by: disposeBag)
   }

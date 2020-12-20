@@ -18,7 +18,7 @@ class NicknameViewModel: BaseViewModel {
     let setButtonEnable = PublishRelay<Bool>()
     let goToMain = PublishRelay<Void>()
     let errorLabel = PublishRelay<String>()
-    let showAlert = PublishRelay<AlertContent>()
+    let showSystemAlert = PublishRelay<AlertContent>()
   }
   
   let userDefaults: UserDefaultsUtil
@@ -62,15 +62,16 @@ class NicknameViewModel: BaseViewModel {
       self.output.showLoading.accept(false)
       self.output.goToMain.accept(())
     } onError: { error in
-      if let error = error as? CommonError {
-        self.output.errorLabel.accept(error.description)
-      } else {
-        let alertContent = AlertContent(
-          title: "Error in setNickname",
-          message: error.localizedDescription
-        )
+      if let error = error as? HTTPError {
+        if error == HTTPError.badRequest {
+          self.output.errorLabel.accept("nickname_alreay_existed".localized)
+        } else {
+          self.httpErrorAlert.accept(error)
+        }
+      } else if let error = error as? CommonError {
+        let alertContent = AlertContent(title: nil, message: error.description)
         
-        self.output.showAlert.accept(alertContent)
+        self.output.showSystemAlert.accept(alertContent)
       }
       self.output.showLoading.accept(false)
     }

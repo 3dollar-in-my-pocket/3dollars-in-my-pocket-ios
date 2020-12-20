@@ -66,7 +66,7 @@ class NicknameVC: BaseVC {
       .bind(onNext: self.nicknameView.setErrorMessage(message:))
       .disposed(by: disposeBag)
     
-    self.viewModel.output.showAlert
+    self.viewModel.output.showSystemAlert
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSystemAlert(alert:))
       .disposed(by: disposeBag)

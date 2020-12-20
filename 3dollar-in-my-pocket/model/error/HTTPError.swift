@@ -1,18 +1,30 @@
 public enum HTTPError: Int, Error {
+  case badRequest = 400
   case unauthorized = 401
   case forbidden = 403
+  case notFound = 404
+  case internalServierError = 500
+  case badGateway = 502
   case maintenance = 503
 }
 
 extension HTTPError {
   public var description: String {
     switch self {
+    case .badRequest:
+      return "http_error_bad_request".localized
     case .unauthorized:
-      return "토큰이 유효하지 않습니다."
+      return "http_error_unauthorized".localized
     case .forbidden:
-      return "탈퇴한 사용자입니다."
+      return "http_error_forbidden".localized
+    case .notFound:
+      return "http_error_not_found".localized
+    case .internalServierError:
+      return "http_error_internal_server_error".localized
+    case .badGateway:
+      return "http_error_bad_gateway".localized
     case .maintenance:
-      return "서버 점검중입니다."
+      return "http_error_maintenance".localized
     }
   }
 }

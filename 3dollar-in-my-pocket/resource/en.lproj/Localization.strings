@@ -1,7 +1,17 @@
+"http_error_bad_request" = "요청에 오류가 있습니다.\n다시 확인해주세요.";
 "http_error_undefiend" = "정의되지 않은 status code입니다.\nStatus code: %d\nurl: %s";
 "http_error_unauthorized" = "토큰이 유효하지 않습니다.";
 "http_error_forbidden" = "탈퇴한 사용자입니다.";
+"http_error_not_found" = "없는 데이터입니다.";
+"http_error_internal_server_error" = "서버에서 오류가 발생했습니다.\n서버 개발자 채찍질해서 고치라고할께요!";
+"http_error_bad_gateway" = "서버가 죽었대요...ㅠ\n바로 살려볼께요!";
 "http_error_maintenance" = "서버 점검중입니다.\n잠시후 다시 시도해주세요.";
+"error_unknown" = "알수 없는 오류가 발생했습니다.\n오류는 개발자에게 보고됩니다.";
+"error_failed_to_json" = "데이터를 가져오는 도중 오류가 발생했습니다.\n다시 시도해주세요.";
+"error_value_is_nil" = "서버와 통신중 오류가 발생했습니다.\n다시 시도해주세요.";
+"error_crashlytics_format" = "API통신중 요류 발생.\nurl: %s\nmessage: %s";
+"error_maintenance_title" = "서버점검";
+"error_maintenance_message" = "서버점검중입니다.\n잠시후 다시 시도해주세요.";
 "setting_title" = "설정";
 "setting_nickname_modify" = "닉네임 수정";
 "setting_menu_question" = "문의사항";
@@ -14,3 +24,4 @@
 "faq_title" = "FAQ";
 "faq_question" = "어떤 점이 궁금하셨나요?";
 "privacy_title" = "개인정보처리방침";
+"nickname_alreay_existed" = "이미 존재하는 닉네임입니다.";

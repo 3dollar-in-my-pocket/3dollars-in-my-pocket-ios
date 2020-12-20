@@ -88,13 +88,15 @@ class MyPageVC: BaseVC {
   }
   
   private func getMyInfo() {
-    UserService.getUserInfo().subscribe(onNext: { [weak self] user in
-      self?.myPageView.nicknameLabel.text = user.nickname
-    }, onError: { [weak self] error in
-      guard let self = self else { return }
-      
-      AlertUtils.show(controller: self, title: "error user info", message: error.localizedDescription)
-    }).disposed(by: disposeBag)
+    UserService().getUserInfo().subscribe(
+      onNext: { [weak self] user in
+        self?.myPageView.nicknameLabel.text = user.nickname
+      },
+      onError: { [weak self] error in
+        if let httpError = error as? HTTPError {
+          self?.showHTTPErrorAlert(error: httpError)
+        }
+      }).disposed(by: disposeBag)
   }
   
   private func getReportedStore() {
