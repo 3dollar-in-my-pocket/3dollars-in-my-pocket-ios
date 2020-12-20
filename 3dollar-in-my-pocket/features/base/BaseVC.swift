@@ -23,8 +23,8 @@ class BaseVC: UIViewController {
   func showHTTPErrorAlert(error: HTTPError) {
     if error == HTTPError.maintenance {
       AlertUtils.showWithAction(
-        title: "error_maintenance_title",
-        message: "error_maintenance_message") { _ in
+        title: "error_maintenance_title".localized,
+        message: "error_maintenance_message".localized) { _ in
         UIControl().sendAction(
           #selector(URLSessionTask.suspend),
           to: UIApplication.shared,

@@ -15,7 +15,7 @@ protocol CategoryServiceProtocol {
   ) -> Observable<CategoryByReview>
 }
 
-struct CategoryService: APIServiceType {
+struct CategoryService: CategoryServiceProtocol {
   
   func getStroeByDistance(
     category: StoreCategory,

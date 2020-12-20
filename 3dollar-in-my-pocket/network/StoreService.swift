@@ -171,7 +171,7 @@ struct StoreService: StoreServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: Store.self, response: response)
+          observer.processValue(class: Page<Store>.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
