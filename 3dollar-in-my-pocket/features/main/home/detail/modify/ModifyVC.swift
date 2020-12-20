@@ -82,7 +82,7 @@ class ModifyVC: BaseVC {
       )
       
       self.modifyView.showLoading(isShow: true)
-      StoreService.updateStore(storeId: storeId, store: store, images: images)
+      StoreService().updateStore(storeId: storeId, store: store, images: images)
         .subscribe(
           onNext: { [weak self] _ in
             self?.delegate?.onModifySuccess()
@@ -91,12 +91,9 @@ class ModifyVC: BaseVC {
           },
           onError: { [weak self] error in
             guard let self = self else { return }
-            
-            AlertUtils.show(
-              controller: self,
-              title: "Update store error",
-              message: error.localizedDescription
-            )
+            if let httpError = error as? HTTPError {
+              self.showHTTPErrorAlert(error: httpError)
+            }
             self.modifyView.showLoading(isShow: false)
           })
         .disposed(by: self.disposeBag)

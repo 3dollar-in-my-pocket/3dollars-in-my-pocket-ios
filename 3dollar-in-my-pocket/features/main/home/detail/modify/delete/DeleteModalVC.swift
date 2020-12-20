@@ -30,14 +30,16 @@ class DeleteModalVC: BaseVC {
     }
     
     private func requestDelete() {
-        StoreService.deleteStore(
+        StoreService().deleteStore(
           storeId: self.storeId,
           deleteReasonType: DeleteReason.init(rawValue: deleteModalView.deleteReason)!
         ).subscribe(onNext: { [weak self] _ in
           self?.deleagete?.onRequest()
         }, onError: { [weak self] error in
           guard let self = self else { return }
-          AlertUtils.show(controller: self, message: "이미 삭제요청을 했습니다.")
+          if let httpError = error as? HTTPError {
+            self.showHTTPErrorAlert(error: httpError)
+          }
         }).disposed(by: disposeBag)
     }
 }

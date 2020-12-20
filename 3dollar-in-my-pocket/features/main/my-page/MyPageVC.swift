@@ -100,28 +100,27 @@ class MyPageVC: BaseVC {
   }
   
   private func getReportedStore() {
-    StoreService.getReportedStore(page: 1).subscribe(
-      onNext: { [weak self] storePage in
-        guard let self = self else { return }
-        self.myPageView.setRegisterEmpty(isEmpty: storePage.content.isEmpty, count: storePage.totalElements)
-        if storePage.content.count > 5 {
-          var sliceArray: [Store?] = Array(storePage.content[0...4])
+    StoreService().getReportedStore(page: 1)
+      .subscribe(
+        onNext: { [weak self] storePage in
+          guard let self = self else { return }
+          self.myPageView.setRegisterEmpty(isEmpty: storePage.content.isEmpty, count: storePage.totalElements)
+          if storePage.content.count > 5 {
+            var sliceArray: [Store?] = Array(storePage.content[0...4])
+            
+            sliceArray.append(nil)
+            self.viewModel.reportedStores.onNext(sliceArray)
+          } else {
+            self.viewModel.reportedStores.onNext(storePage.content)
+          }
+        }, onError: { [weak self] error in
+          guard let self = self else { return }
           
-          sliceArray.append(nil)
-          self.viewModel.reportedStores.onNext(sliceArray)
-        } else {
-          self.viewModel.reportedStores.onNext(storePage.content)
-        }
-    }, onError: { [weak self] error in
-      guard let self = self else { return }
-      
-      AlertUtils.show(
-        controller: self,
-        title: "get reported store error",
-        message: error.localizedDescription
-      )
-    })
-    .disposed(by: disposeBag)
+          if let error = error as? HTTPError {
+            self.showHTTPErrorAlert(error: error)
+          }
+        })
+      .disposed(by: disposeBag)
   }
   
   private func getMyReviews() {

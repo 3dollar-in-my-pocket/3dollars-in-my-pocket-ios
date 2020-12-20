@@ -156,7 +156,7 @@ class HomeVC: BaseVC {
   
   private func getNearestStore(latitude: Double, longitude: Double) {
     self.homeView.showLoading(isShow: true)
-    StoreService.getStoreOrderByNearest(latitude: latitude, longitude: longitude).subscribe(
+    StoreService().getStoreOrderByNearest(latitude: latitude, longitude: longitude).subscribe(
       onNext: { [weak self] storeCards in
         guard let self = self else { return }
         self.isFirst = true
@@ -165,9 +165,11 @@ class HomeVC: BaseVC {
         self.selectMarker(selectedIndex: 0, storeCards: storeCards)
         self.homeView.showLoading(isShow: false)
       },
-      onError: { error in
-        AlertUtils.show(title: "error", message: error.localizedDescription)
-        self.homeView.showLoading(isShow: false)
+      onError: { [weak self] error in
+        guard let self = self else { return }
+        if let httpError = error as? HTTPError {
+          self.showHTTPErrorAlert(error: httpError)
+        }
       })
       .disposed(by: disposeBag)
   }

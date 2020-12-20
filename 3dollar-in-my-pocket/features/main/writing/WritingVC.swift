@@ -99,7 +99,7 @@ class WritingVC: BaseVC {
         )
         
         self.writingView.showLoading(isShow: true)
-        StoreService.saveStore(store: store, images: images).subscribe(
+        StoreService().saveStore(store: store, images: images).subscribe(
           onNext: { [weak self] saveResponse in
             guard let self = self else { return }
             
@@ -109,12 +109,9 @@ class WritingVC: BaseVC {
           },
           onError: { [weak self] error in
             guard let self = self else { return }
-            
-            AlertUtils.show(
-              controller: self,
-              title: "Save store error",
-              message: error.localizedDescription
-            )
+            if let httpError = error as? HTTPError {
+              self.showHTTPErrorAlert(error: httpError)
+            }
             self.writingView.showLoading(isShow: false)
           })
           .disposed(by: self.disposeBag)

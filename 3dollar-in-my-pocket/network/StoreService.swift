@@ -1,12 +1,25 @@
 import Alamofire
 import RxSwift
 
-struct StoreService {
+protocol StoreServiceProtocol {
   
-  static func getStoreOrderByNearest(
-    latitude: Double,
-    longitude: Double
-  ) -> Observable<[StoreCard]> {
+  func getStoreOrderByNearest(latitude: Double, longitude: Double) -> Observable<[StoreCard]>
+  
+  func saveStore(store: Store, images:[UIImage]) -> Observable<SaveResponse>
+  
+  func updateStore(storeId: Int, store: Store, images: [UIImage]) -> Observable<String>
+  
+  func getStoreDetail(storeId: Int, latitude: Double, longitude: Double) -> Observable<Store>
+  
+  func getReportedStore(page: Int) -> Observable<Page<Store>>
+  
+  func deleteStore(storeId: Int, deleteReasonType: DeleteReason) -> Observable<String>
+}
+
+
+struct StoreService: StoreServiceProtocol {
+  
+  func getStoreOrderByNearest(latitude: Double, longitude: Double) -> Observable<[StoreCard]> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/store/get"
       let headers = HTTPUtils.defaultHeader()
@@ -14,19 +27,10 @@ struct StoreService {
       
       AF.request(urlString, method: .get, parameters: parameters, headers: headers)
         .responseJSON { response in
-          if let value = response.value {
-            if let storeCards: [StoreCard] = JsonUtils.toJson(object: value) {
-              observer.onNext(storeCards)
-              observer.onCompleted()
-            } else {
-              let error = CommonError(desc: "failed to json")
-              
-              observer.onError(error)
-            }
+          if response.isSuccess() {
+            observer.processValue(class: [StoreCard].self, response: response)
           } else {
-            let error = CommonError(desc: "response value is nil")
-            
-            observer.onError(error)
+            observer.processHTTPError(response: response)
           }
         }
       
@@ -34,10 +38,7 @@ struct StoreService {
     }
   }
   
-  static func saveStore(
-    store: Store,
-    images:[UIImage]
-  ) -> Observable<SaveResponse> {
+  func saveStore(store: Store, images:[UIImage]) -> Observable<SaveResponse> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/store/save"
       let headers = HTTPUtils.defaultHeader()
@@ -60,38 +61,31 @@ struct StoreService {
         for index in images.indices {
           let image = images[index]
           
-          multipartFormData.append(image.jpegData(compressionQuality: 0.5)!, withName: "image", fileName: "image\(index).jpeg", mimeType: "image/jpeg")
+          multipartFormData.append(
+            image.jpegData(compressionQuality: 0.5)!,
+            withName: "image",
+            fileName: "image\(index).jpeg",
+            mimeType: "image/jpeg"
+          )
         }
+        
         for (key, value) in parameters {
           let stringValue = String(describing: value)
           
           multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
         }
       }, to: urlString, headers: headers).responseJSON(completionHandler: { response in
-        if let value = response.value {
-          if let saveResponse: SaveResponse = JsonUtils.toJson(object: value) {
-            observer.onNext(saveResponse)
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "failed to json")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.processValue(class: SaveResponse.self, response: response)
         } else {
-          let error = CommonError(desc: "Response value is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       })
       return Disposables.create()
     }
   }
   
-  static func updateStore(
-    storeId: Int,
-    store: Store,
-    images: [UIImage]
-  ) -> Observable<String> {
+  func updateStore(storeId: Int, store: Store, images: [UIImage]) -> Observable<String> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/store/update"
       let headers = HTTPUtils.defaultHeader()
@@ -113,7 +107,12 @@ struct StoreService {
         for index in images.indices {
           let image = images[index]
           
-          multipartFormData.append(image.jpegData(compressionQuality: 0.5)!, withName: "image", fileName: "image\(index).jpeg", mimeType: "image/jpeg")
+          multipartFormData.append(
+            image.jpegData(compressionQuality: 0.5)!,
+            withName: "image",
+            fileName: "image\(index).jpeg",
+            mimeType: "image/jpeg"
+          )
         }
         for (key, value) in parameters {
           let stringValue = String(describing: value)
@@ -121,30 +120,18 @@ struct StoreService {
           multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
         }
       }, to: urlString, method: .put, headers: headers).responseString(completionHandler: { response in
-        if let statusCode = response.response?.statusCode {
-          if statusCode == 200 {
-            observer.onNext(response.value ?? "")
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "Status code: \(statusCode)")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.onNext(response.value ?? "")
+          observer.onCompleted()
         } else {
-          let error = CommonError(desc: "Status code is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       })
       return Disposables.create()
     }
   }
   
-  static func getStoreDetail(
-    storeId: Int,
-    latitude: Double,
-    longitude: Double
-  ) -> Observable<Store> {
+  func getStoreDetail(storeId: Int, latitude: Double, longitude: Double) -> Observable<Store> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/store/detail"
       let headers = HTTPUtils.defaultHeader()
@@ -160,19 +147,10 @@ struct StoreService {
         parameters: parameters,
         headers: headers
       ).responseJSON { response in
-        if let value = response.value {
-          if let store: Store = JsonUtils.toJson(object: value) {
-            observer.onNext(store)
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "failed to json")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.processValue(class: Store.self, response: response)
         } else {
-          let error = CommonError(desc: "Response value is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       }
       
@@ -180,7 +158,7 @@ struct StoreService {
     }
   }
   
-  static func getReportedStore(page: Int) -> Observable<Page<Store>> {
+  func getReportedStore(page: Int) -> Observable<Page<Store>> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/store/user"
       let headers = HTTPUtils.defaultHeader()
@@ -192,19 +170,10 @@ struct StoreService {
         parameters: parameters,
         headers: headers
       ).responseJSON { response in
-        if let value = response.value {
-          if let storePage: Page<Store> = JsonUtils.toJson(object: value) {
-            observer.onNext(storePage)
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "failed to json")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.processValue(class: Store.self, response: response)
         } else {
-          let error = CommonError(desc: "Response value is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       }
       
@@ -212,10 +181,7 @@ struct StoreService {
     }
   }
   
-  static func deleteStore(
-    storeId: Int,
-    deleteReasonType: DeleteReason
-  ) -> Observable<String> {
+  func deleteStore(storeId: Int, deleteReasonType: DeleteReason) -> Observable<String> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/store/delete"
       let headers = HTTPUtils.defaultHeader()
@@ -231,15 +197,11 @@ struct StoreService {
         parameters: parameters,
         headers: headers
       ).responseString { response in
-        if let statusCode = response.response?.statusCode {
-          if statusCode == 200 {
-            observer.onNext("success")
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "이미 삭제요청한 사람")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.onNext("success")
+          observer.onCompleted()
+        } else {
+          observer.processHTTPError(response: response)
         }
       }
       
