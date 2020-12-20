@@ -124,32 +124,31 @@ class MyPageVC: BaseVC {
   }
   
   private func getMyReviews() {
-    ReviewService.getMyReview(page: 1).subscribe(
-      onNext: { [weak self] reviewPage in
-        guard let self = self else { return }
-        
-        self.myPageView.setReviewEmpty(isEmpty: reviewPage.content.isEmpty, count: reviewPage.totalElements)
-        if reviewPage.totalElements > 3 {
-          self.viewModel.reportedReviews.onNext(Array(reviewPage.content[0...2]))
-        } else {
-          var contents: [Review?] = reviewPage.content
+    ReviewService().getMyReview(page: 1)
+      .subscribe(
+        onNext: { [weak self] reviewPage in
+          guard let self = self else { return }
           
-          while contents.count != 3 {
-            contents.append(nil)
+          self.myPageView.setReviewEmpty(isEmpty: reviewPage.content.isEmpty, count: reviewPage.totalElements)
+          if reviewPage.totalElements > 3 {
+            self.viewModel.reportedReviews.onNext(Array(reviewPage.content[0...2]))
+          } else {
+            var contents: [Review?] = reviewPage.content
+            
+            while contents.count != 3 {
+              contents.append(nil)
+            }
+            self.viewModel.reportedReviews.onNext(contents)
           }
-          self.viewModel.reportedReviews.onNext(contents)
-        }
-        
-      },
-      onError: { [weak self] error in
-        guard let self = self else { return }
-        
-        AlertUtils.show(
-          controller: self,
-          title: "get my review error",
-          message: error.localizedDescription
-        )
-      })
+          
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          
+          if let httpError = error as? HTTPError {
+            self.showHTTPErrorAlert(error: httpError)
+          }
+        })
       .disposed(by: disposeBag)
   }
 }

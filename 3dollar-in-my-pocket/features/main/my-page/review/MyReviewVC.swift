@@ -37,7 +37,8 @@ class MyReviewVC: BaseVC {
     }
     
     private func getMyReviews() {
-      ReviewService.getMyReview(page: 1).subscribe(
+      ReviewService().getMyReview(page: 1)
+        .subscribe(
         onNext: { [weak self] reviewPage in
           guard let self = self else { return }
           self.viewModel.review = reviewPage.content
@@ -45,21 +46,16 @@ class MyReviewVC: BaseVC {
           self.viewModel.totalPage = reviewPage.totalPages
           self.myReviewView.tableView.reloadData()
         },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          AlertUtils.show(
-            controller: self,
-            title: "get reported store error",
-            message: error.localizedDescription
-          )
-        })
+          onError: self.showHTTPErrorAlert
+        )
         .disposed(by: disposeBag)
     }
     
     private func loadMoreReview() {
         currentPage += 1
         addLoadingFooter()
-      ReviewService.getMyReview(page: currentPage).subscribe(
+      ReviewService().getMyReview(page: currentPage)
+        .subscribe(
         onNext: { [weak self] reviewPage in
           guard let self = self else { return }
           
@@ -70,11 +66,7 @@ class MyReviewVC: BaseVC {
         onError: { [weak self] error in
           guard let self = self else { return }
           
-          AlertUtils.show(
-            controller: self,
-            title: "get reported store error",
-            message: error.localizedDescription
-          )
+          self.showHTTPErrorAlert(error: error)
           self.removeLoadingFooter()
         })
         .disposed(by: disposeBag)

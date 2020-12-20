@@ -1,12 +1,16 @@
 import Alamofire
 import RxSwift
 
-struct ReviewService {
+protocol ReviewServiceProtocol {
   
-  static func saveReview(
-    review: Review,
-    storeId: Int
-  ) -> Observable<String> {
+  func saveReview(review: Review, storeId: Int) -> Observable<String>
+  
+  func getMyReview(page: Int) -> Observable<Page<Review>>
+}
+
+struct ReviewService: ReviewServiceProtocol {
+  
+  func saveReview(review: Review, storeId: Int) -> Observable<String> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/review/save?storeId=\(storeId)&userId=\(UserDefaultsUtil.getUserId()!)"
       let headers = HTTPUtils.jsonWithTokenHeader()
@@ -19,19 +23,11 @@ struct ReviewService {
         encoding: JSONEncoding.default,
         headers: headers
       ).responseString { response in
-        if let statusCode = response.response?.statusCode {
-          if statusCode == 200 {
-            observer.onNext("success")
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "fail to save review")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.onNext("success")
+          observer.onCompleted()
         } else {
-          let error = CommonError(desc: "status code is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       }
       
@@ -39,7 +35,7 @@ struct ReviewService {
     }
   }
   
-  static func getMyReview(page: Int) -> Observable<Page<Review>> {
+  func getMyReview(page: Int) -> Observable<Page<Review>> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/review/user"
       let headers = HTTPUtils.defaultHeader()
@@ -51,19 +47,10 @@ struct ReviewService {
         parameters: parameters,
         headers: headers
       ).responseJSON { response in
-        if let value = response.value {
-          if let reviewPage: Page<Review> = JsonUtils.toJson(object: value) {
-            observer.onNext(reviewPage)
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "failed to json")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.processValue(class: Page<Review>.self, response: response)
         } else {
-          let error = CommonError(desc: "value is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       }
       return Disposables.create()
