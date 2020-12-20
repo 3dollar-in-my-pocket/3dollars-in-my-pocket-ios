@@ -47,6 +47,11 @@ class SignInVC: BaseVC {
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSystemAlert(alert:))
       .disposed(by: disposeBag)
+    
+    self.viewModel.httpErrorAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showHTTPErrorAlert(error:))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {
