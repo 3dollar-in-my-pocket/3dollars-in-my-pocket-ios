@@ -15,19 +15,10 @@ struct FAQService: FAQServiceProtocol {
         method: .get,
         headers: HTTPUtils.defaultHeader()
       ).responseJSON { response in
-        if let value = response.value {
-          if let faqs: [FAQ] = JsonUtils.toJson(object: value) {
-            observer.onNext(faqs)
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "failed to json")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.processValue(class: [FAQ].self, response: response)
         } else {
-          let error = CommonError(desc: "Value is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       }
       

@@ -69,11 +69,7 @@ class DetailVC: BaseVC {
   }
   
   private func getStoreDetail(latitude: Double, longitude: Double) {
-    StoreService.getStoreDetail(
-      storeId: storeId,
-      latitude: latitude,
-      longitude: longitude
-    )
+    StoreService().getStoreDetail(storeId: storeId, latitude: latitude, longitude: longitude)
     .subscribe(onNext: { [weak self] store in
       guard let self = self else { return }
       
@@ -81,11 +77,9 @@ class DetailVC: BaseVC {
       self.viewModel.store.onNext(store)
     }, onError: { [weak self] error in
       guard let self = self else { return }
-      AlertUtils.show(
-        controller: self,
-        title: "getStoreDetail error",
-        message: error.localizedDescription
-      )
+      if let httpError = error as? HTTPError {
+        self.showHTTPErrorAlert(error: httpError)
+      }
     }).disposed(by: disposeBag)
   }
   

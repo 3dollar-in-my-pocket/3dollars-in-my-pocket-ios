@@ -34,8 +34,7 @@ class SplashViewModel: BaseViewModel {
     self.userService.validateToken(token: token)
       .subscribe(
         onNext: { [weak self] message in
-          guard let self = self else { return }
-          self.output.goToMain.accept(())
+          self?.output.goToMain.accept(())
         },
         onError: { [weak self] error in
           guard let self = self else { return }
@@ -49,6 +48,8 @@ class SplashViewModel: BaseViewModel {
               let alertContent = AlertContent(title: nil, message: httpError.description)
               
               self.output.showMaintenanceAlert.accept(alertContent)
+            default:
+              self.httpErrorAlert.accept(httpError)
             }
           }
         }

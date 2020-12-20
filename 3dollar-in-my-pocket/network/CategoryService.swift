@@ -1,9 +1,23 @@
 import Alamofire
 import RxSwift
 
-struct CategoryService: APIServiceType {
+protocol CategoryServiceProtocol {
+  func getStroeByDistance(
+    category: StoreCategory,
+    latitude: Double,
+    longitude: Double
+  ) -> Observable<CategoryByDistance>
   
-  static func getStroeByDistance(
+  func getStoreByReview(
+    category: StoreCategory,
+    latitude: Double,
+    longitude: Double
+  ) -> Observable<CategoryByReview>
+}
+
+struct CategoryService: CategoryServiceProtocol {
+  
+  func getStroeByDistance(
     category: StoreCategory,
     latitude: Double,
     longitude: Double
@@ -23,26 +37,17 @@ struct CategoryService: APIServiceType {
         parameters: parameters,
         headers: headers
       ).responseJSON { response in
-        if let value = response.value {
-          if let categoryByDistance: CategoryByDistance = JsonUtils.toJson(object: value) {
-            observer.onNext(categoryByDistance)
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "failed to json")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.processValue(class: CategoryByDistance.self, response: response)
         } else {
-          let error = CommonError(desc: "value is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       }
       return Disposables.create()
     }
   }
   
-  static func getStoreByReview(
+  func getStoreByReview(
     category: StoreCategory,
     latitude: Double,
     longitude: Double
@@ -62,19 +67,10 @@ struct CategoryService: APIServiceType {
         parameters: parameters,
         headers: headers
       ).responseJSON { response in
-        if let value = response.value {
-          if let categoryByReview: CategoryByReview = JsonUtils.toJson(object: value) {
-            observer.onNext(categoryByReview)
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "failed to json")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.processValue(class: CategoryByReview.self, response: response)
         } else {
-          let error = CommonError(desc: "value is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       }
       return Disposables.create()

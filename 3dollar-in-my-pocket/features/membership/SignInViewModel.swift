@@ -98,7 +98,8 @@ class SignInViewModel: BaseViewModel {
     let user = User.init(socialId: socialId, socialType: socialType)
     
     self.userService.signIn(user: user)
-      .subscribe { signIn in
+      .subscribe { [weak self] signIn in
+        guard let self = self else { return }
         if signIn.state {
           self.userDefaults.setUserToken(token: signIn.token)
           self.userDefaults.setUserId(id: signIn.id)
@@ -106,13 +107,10 @@ class SignInViewModel: BaseViewModel {
         } else {
           self.output.goToNickname.accept((signIn.id, signIn.token))
         }
-      } onError: { error in
-        let alertContent = AlertContent(
-          title: "Error in sign-in",
-          message: error.localizedDescription
-        )
-        
-        self.output.showSystemAlert.accept(alertContent)
+      } onError: { [weak self] error in
+        if let httpError = error as? HTTPError {
+          self?.httpErrorAlert.accept(httpError)
+        }
       }
       .disposed(by: disposeBag)
   }

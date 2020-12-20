@@ -56,7 +56,13 @@ class QestionViewModel: BaseViewModel {
   func fetchMyInfo() {
     self.userService.getUserInfo(userId: self.userDefaults.getUserId())
       .map { $0.nickname ?? "" }
-      .subscribe(onNext: self.nickname.onNext)
+      .subscribe(
+        onNext: self.nickname.onNext,
+        onError: { [weak self] error in
+          if let httpError = error as? HTTPError {
+            self?.httpErrorAlert.accept(httpError)
+          }
+        })
       .disposed(by: disposeBag)
   }
   

@@ -34,21 +34,20 @@ class ReviewModalVC: BaseVC {
     }
     
     private func saveReview() {
-        let review = Review.init(rating: reviewModalView.rating, contents: reviewModalView.reviewTextView.text)
-      ReviewService.saveReview(review: review, storeId: storeId).subscribe(
-        onNext: { [weak self] _ in
-          self?.dismiss(animated: true, completion: nil)
-          self?.deleagete?.onReviewSuccess()
-        },
-        onError: { [weak self]error in
-          guard let self = self else { return }
-          
-          AlertUtils.show(
-            controller: self,
-            title: "save review error",
-            message: error.localizedDescription
-          )
-        })
+      let review = Review.init(rating: reviewModalView.rating, contents: reviewModalView.reviewTextView.text)
+      ReviewService().saveReview(review: review, storeId: storeId)
+        .subscribe(
+          onNext: { [weak self] _ in
+            guard let self = self else { return }
+            self.dismiss(animated: true, completion: nil)
+            self.deleagete?.onReviewSuccess()
+          },
+          onError: { [weak self] error in
+            guard let self = self else { return }
+            if let httpError = error as? HTTPError {
+              self.showHTTPErrorAlert(error: httpError)
+            }
+          })
         .disposed(by: disposeBag)
     }
     
