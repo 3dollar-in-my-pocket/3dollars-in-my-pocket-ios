@@ -51,18 +51,18 @@ def get_strings_from_csv(savepath, file_name):
     csv_reader = csv.reader(source_csv)
     header = csv_reader.next()
     index_key = header.index("key")
-    index_kr = header.index("kr")
+    index_ko = header.index("ko")
 
     string_list = []
 
     # Loop through the lines in the file and get each coordinate
     for row in csv_reader:
         key = row[index_key]
-        kr = row[index_kr]
+        ko = row[index_ko]
 
         dict_string = {
             "key": key,
-            "kr": kr
+            "ko": ko
         }
         string_list.append(dict_string)
 
@@ -79,7 +79,7 @@ def write_strings(string_list, save_path):
     string_file = open(save_path + "/resource/en.lproj/Localization.strings", "w")
 
     for item in string_list:
-        string_file.write("\"" + item["key"] + "\" = \"" + item["kr"] + "\";\n")
+        string_file.write("\"" + item["key"] + "\" = \"" + item["ko"] + "\";\n")
 
     string_file.close()
 
