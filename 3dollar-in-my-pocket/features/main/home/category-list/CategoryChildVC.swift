@@ -64,50 +64,42 @@ class CategoryChildVC: BaseVC {
   }
   
   private func getStoreByDistance() {
-    CategoryService.getStroeByDistance(
+    CategoryService().getStroeByDistance(
       category: category,
       latitude: latitude,
       longitude: longitude
-    ).subscribe(onNext: { [weak self] categoryByDistance in
-      guard let self = self else { return }
-      
-      self.viewModel.setDistance(storeByDistance: categoryByDistance)
-      self.categoryChildView.setEmpty(isEmpty: self.viewModel.isDistanceEmpty())
-      self.delegate?.setMarkers(storeCards: self.viewModel.getAllDistanceStores())
-      self.categoryChildView.tableView.reloadData()
-    }, onError: { [weak self] error in
-      guard let self = self else { return }
-      
-      AlertUtils.show(
-        controller: self,
-        title: "get store by distance",
-        message: error.localizedDescription
-      )
-    })
+    )
+    .subscribe(
+      onNext: { [weak self] categoryByDistance in
+        guard let self = self else { return }
+        
+        self.viewModel.setDistance(storeByDistance: categoryByDistance)
+        self.categoryChildView.setEmpty(isEmpty: self.viewModel.isDistanceEmpty())
+        self.delegate?.setMarkers(storeCards: self.viewModel.getAllDistanceStores())
+        self.categoryChildView.tableView.reloadData()
+      },
+      onError: self.showHTTPErrorAlert(error:)
+    )
     .disposed(by: disposeBag)
   }
   
   private func getStoreByReview() {
-    CategoryService.getStoreByReview(
+    CategoryService().getStoreByReview(
       category: category,
       latitude: latitude,
       longitude: longitude
-    ).subscribe(onNext: { [weak self] categoryByReview in
-      guard let self = self else { return }
-      
-      self.viewModel.setReview(storeByReview: categoryByReview)
-      self.categoryChildView.setEmpty(isEmpty: self.viewModel.isReviewEmpty())
-      self.delegate?.setMarkers(storeCards: self.viewModel.getAllReviewStores())
-      self.categoryChildView.tableView.reloadData()
-    }, onError: { [weak self] error in
-      guard let self = self else { return }
-      
-      AlertUtils.show(
-        controller: self,
-        title: "get store by review",
-        message: error.localizedDescription
-      )
-    }).disposed(by: disposeBag)
+    )
+    .subscribe(
+      onNext: { [weak self] categoryByReview in
+        guard let self = self else { return }
+        
+        self.viewModel.setReview(storeByReview: categoryByReview)
+        self.categoryChildView.setEmpty(isEmpty: self.viewModel.isReviewEmpty())
+        self.delegate?.setMarkers(storeCards: self.viewModel.getAllReviewStores())
+        self.categoryChildView.tableView.reloadData()
+      },
+      onError: self.showHTTPErrorAlert(error:)
+    ).disposed(by: disposeBag)
   }
 }
 
