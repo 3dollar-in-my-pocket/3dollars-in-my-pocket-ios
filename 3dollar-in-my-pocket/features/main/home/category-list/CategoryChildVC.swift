@@ -78,7 +78,12 @@ class CategoryChildVC: BaseVC {
         self.delegate?.setMarkers(storeCards: self.viewModel.getAllDistanceStores())
         self.categoryChildView.tableView.reloadData()
       },
-      onError: self.showHTTPErrorAlert(error:)
+      onError: { [weak self] error in
+        guard let self = self else { return }
+        if let httpError = error as? HTTPError {
+          self.showHTTPErrorAlert(error: httpError)
+        }
+      }
     )
     .disposed(by: disposeBag)
   }
@@ -98,7 +103,12 @@ class CategoryChildVC: BaseVC {
         self.delegate?.setMarkers(storeCards: self.viewModel.getAllReviewStores())
         self.categoryChildView.tableView.reloadData()
       },
-      onError: self.showHTTPErrorAlert(error:)
+      onError: { [weak self] error in
+        guard let self = self else { return }
+        if let httpError = error as? HTTPError {
+          self.showHTTPErrorAlert(error: httpError)
+        }
+      }
     ).disposed(by: disposeBag)
   }
 }

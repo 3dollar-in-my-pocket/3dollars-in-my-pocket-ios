@@ -42,7 +42,12 @@ class ReviewModalVC: BaseVC {
             self.dismiss(animated: true, completion: nil)
             self.deleagete?.onReviewSuccess()
           },
-          onError: self.showHTTPErrorAlert(error:))
+          onError: { [weak self] error in
+            guard let self = self else { return }
+            if let httpError = error as? HTTPError {
+              self.showHTTPErrorAlert(error: httpError)
+            }
+          })
         .disposed(by: disposeBag)
     }
     

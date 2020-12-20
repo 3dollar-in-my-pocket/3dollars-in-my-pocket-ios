@@ -46,7 +46,12 @@ class MyReviewVC: BaseVC {
           self.viewModel.totalPage = reviewPage.totalPages
           self.myReviewView.tableView.reloadData()
         },
-          onError: self.showHTTPErrorAlert
+          onError: { [weak self] error in
+            guard let self = self else { return }
+            if let httpError = error as? HTTPError {
+              self.showHTTPErrorAlert(error: httpError)
+            }
+          }
         )
         .disposed(by: disposeBag)
     }
@@ -66,7 +71,9 @@ class MyReviewVC: BaseVC {
         onError: { [weak self] error in
           guard let self = self else { return }
           
-          self.showHTTPErrorAlert(error: error)
+          if let httpError = error as? HTTPError {
+            self.showHTTPErrorAlert(error: httpError)
+          }
           self.removeLoadingFooter()
         })
         .disposed(by: disposeBag)
