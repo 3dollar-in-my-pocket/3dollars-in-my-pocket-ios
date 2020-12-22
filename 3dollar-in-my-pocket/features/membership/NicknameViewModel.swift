@@ -38,7 +38,7 @@ class NicknameViewModel: BaseViewModel {
     super.init()
     
     self.input.nickname
-      .map { !$0.isEmpty }
+      .map { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
       .bind(to: self.output.setButtonEnable)
       .disposed(by: disposeBag)
     
