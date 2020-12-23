@@ -127,9 +127,8 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
         
         cell.reviewBtn.rx.tap.bind { [weak self] (_) in
           if let vc = self {
-            vc.reviewVC = ReviewModalVC.instance().then {
+            vc.reviewVC = ReviewModalVC.instance(storeId: vc.storeId).then {
               $0.deleagete = self
-              $0.storeId = self?.storeId
             }
             vc.detailView.addBgDim()
             vc.present(vc.reviewVC!, animated: true)
@@ -244,6 +243,7 @@ extension DetailVC: CLLocationManagerDelegate {
 
 extension DetailVC: ReviewModalDelegate {
   func onReviewSuccess() {
+    self.reviewVC?.dismiss(animated: true, completion: nil)
     self.detailView.removeBgDim()
     self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
   }

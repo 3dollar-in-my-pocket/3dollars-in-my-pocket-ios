@@ -51,3 +51,6 @@
 "category_sub_text_hotteok" = "기다려";
 "category_sub_text_takoyaki" = "다 내꺼야";
 "category_empty" = "1km 근처에 가게가 없어요.";
+"review_modal_title" = "이 가게를\n추천하시나요?";
+"review_modal_placeholder" = "리뷰를 남겨주세요! (100자 이내)";
+"review_modal_register" = "리뷰 등록하기";
