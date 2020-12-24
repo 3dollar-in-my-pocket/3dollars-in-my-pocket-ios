@@ -1,4 +1,5 @@
 import UIKit
+import RxSwift
 
 class RenameVC: BaseVC {
   
@@ -32,10 +33,12 @@ class RenameVC: BaseVC {
     }.disposed(by: disposeBag)
     
     renameView.startBtn1.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(onNext: self.changeNickname)
       .disposed(by: disposeBag)
     
     renameView.startBtn2.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(onNext: self.changeNickname)
       .disposed(by: disposeBag)
   }

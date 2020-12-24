@@ -64,7 +64,9 @@ class ModifyVC: BaseVC {
       self?.viewModel.btnEnable.onNext(())
     }.disposed(by: disposeBag)
     
-    modifyView.registerBtn.rx.tap.bind { [weak self] in
+    modifyView.registerBtn.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+      .bind { [weak self] in
       guard let self = self else { return }
       
       let storeId = self.store.id

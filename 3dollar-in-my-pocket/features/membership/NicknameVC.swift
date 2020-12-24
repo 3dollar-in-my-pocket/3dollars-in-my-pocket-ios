@@ -38,10 +38,12 @@ class NicknameVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.nicknameView.startBtn1.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(to: self.viewModel.input.tapStartButton)
       .disposed(by: disposeBag)
     
     self.nicknameView.startBtn2.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(to: self.viewModel.input.tapStartButton)
       .disposed(by: disposeBag)
     
@@ -79,11 +81,13 @@ class NicknameVC: BaseVC {
   
   override func bindEvent() {
     self.nicknameView.backBtn.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.popupVC)
       .disposed(by: disposeBag)
     
     self.nicknameView.tapGestureView.rx.event
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
       .map { _ in Void() }
       .bind(onNext: self.nicknameView.hideKeyboard)

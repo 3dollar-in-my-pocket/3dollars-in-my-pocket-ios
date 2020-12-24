@@ -57,6 +57,7 @@ class DetailVC: BaseVC {
   
   override func bindEvent() {
     self.detailView.shareButton.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(to: self.viewModel.input.tapShare)
       .disposed(by: disposeBag)
   }

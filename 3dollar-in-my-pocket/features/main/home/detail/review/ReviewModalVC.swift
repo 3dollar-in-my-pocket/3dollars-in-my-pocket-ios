@@ -84,6 +84,7 @@ class ReviewModalVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.reviewModalView.registerButton.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(to: self.viewModel.input.tapRegister)
       .disposed(by: disposeBag)
     
