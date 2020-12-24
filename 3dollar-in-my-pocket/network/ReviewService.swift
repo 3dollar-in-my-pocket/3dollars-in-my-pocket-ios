@@ -16,7 +16,7 @@ struct ReviewService: ReviewServiceProtocol {
       let headers = HTTPUtils.jsonWithTokenHeader()
       let parameter = review.toJson()
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .post,
         parameters: parameter,
@@ -41,7 +41,7 @@ struct ReviewService: ReviewServiceProtocol {
       let headers = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = ["page": page, "userId": UserDefaultsUtil.getUserId()!]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         parameters: parameters,

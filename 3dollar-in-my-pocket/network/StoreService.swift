@@ -25,7 +25,12 @@ struct StoreService: StoreServiceProtocol {
       let headers = HTTPUtils.defaultHeader()
       let parameters = ["latitude": latitude, "longitude": longitude]
       
-      AF.request(urlString, method: .get, parameters: parameters, headers: headers)
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .get,
+        parameters: parameters,
+        headers: headers
+      )
         .responseJSON { response in
           if response.isSuccess() {
             observer.processValue(class: [StoreCard].self, response: response)
@@ -57,7 +62,7 @@ struct StoreService: StoreServiceProtocol {
         parameters["menu[\(index)].price"] = menu.price
       }
       
-      AF.upload(multipartFormData: { (multipartFormData) in
+      HTTPUtils.fileUploadSession.upload(multipartFormData: { (multipartFormData) in
         for index in images.indices {
           let image = images[index]
           
@@ -103,7 +108,7 @@ struct StoreService: StoreServiceProtocol {
         parameters["menu[\(index)].price"] = menu.price
       }
       
-      AF.upload(multipartFormData: { (multipartFormData) in
+      HTTPUtils.fileUploadSession.upload(multipartFormData: { (multipartFormData) in
         for index in images.indices {
           let image = images[index]
           
@@ -141,7 +146,7 @@ struct StoreService: StoreServiceProtocol {
         "longitude": longitude
       ]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         parameters: parameters,
@@ -164,7 +169,7 @@ struct StoreService: StoreServiceProtocol {
       let headers = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = ["page": page, "userId": UserDefaultsUtil.getUserId()!]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         parameters: parameters,
@@ -191,7 +196,7 @@ struct StoreService: StoreServiceProtocol {
         "deleteReasonType": deleteReasonType.getValue()
       ]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .delete,
         parameters: parameters,

@@ -10,7 +10,7 @@ struct FAQService: FAQServiceProtocol {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/faqs"
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         headers: HTTPUtils.defaultHeader()

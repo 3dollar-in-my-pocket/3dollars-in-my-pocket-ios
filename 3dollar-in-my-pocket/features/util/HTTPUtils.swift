@@ -6,6 +6,20 @@ struct HTTPUtils {
   
   static let url = Bundle.main.object(forInfoDictionaryKey: "API_URL") as? String ?? ""
   
+  static let defaultSession: Session = {
+    let session = Alamofire.Session.default
+    
+    session.sessionConfiguration.timeoutIntervalForRequest = 3
+    return session
+  }()
+  
+  static let fileUploadSession: Session = {
+    let session = Alamofire.Session.default
+    
+    session.sessionConfiguration.timeoutIntervalForRequest = 30
+    return session
+  }()
+  
   static func jsonHeader() -> HTTPHeaders {
     var headers = ["Accept": "application/json"] as HTTPHeaders
     

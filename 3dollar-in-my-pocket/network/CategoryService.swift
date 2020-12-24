@@ -44,7 +44,7 @@ struct CategoryService: CategoryServiceProtocol {
         parameters["mapLongitude"] = mapLongitude
       }
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         parameters: parameters,
@@ -82,7 +82,7 @@ struct CategoryService: CategoryServiceProtocol {
         parameters["mapLongitude"] = mapLongitude
       }
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         parameters: parameters,
