@@ -245,9 +245,10 @@ extension ModifyVC: UITableViewDelegate, UITableViewDataSource {
     
     cell.nameField.rx.controlEvent(.editingDidEnd).bind { [weak self] in
       let name = cell.nameField.text!
+      let price = cell.descField.text
       
       if !name.isEmpty {
-        let menu = Menu.init(name: name)
+        let menu = Menu.init(name: name, price: price)
         
         if indexPath.row == self?.viewModel.menuList.count {
           self?.viewModel.menuList.append(menu)
