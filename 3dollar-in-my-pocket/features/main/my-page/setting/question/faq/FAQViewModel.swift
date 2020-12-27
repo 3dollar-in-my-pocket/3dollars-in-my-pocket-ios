@@ -15,7 +15,6 @@ class FAQViewModel: BaseViewModel {
     let refreshTableView = PublishRelay<Void>()
     let selectTag = PublishRelay<Int>()
     let showLoading = PublishRelay<Bool>()
-    let showSystemAlert = PublishRelay<AlertContent>()
   }
   
   let faqService: FAQServiceProtocol
@@ -55,6 +54,10 @@ class FAQViewModel: BaseViewModel {
           guard let self = self else { return }
           if let httpError = error as? HTTPError {
             self.httpErrorAlert.accept(httpError)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert.accept(alertContent)
           }
           self.output.showLoading.accept(false)
         }

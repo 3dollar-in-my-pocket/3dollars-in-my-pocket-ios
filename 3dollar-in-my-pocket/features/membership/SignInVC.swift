@@ -29,6 +29,7 @@ class SignInVC: BaseVC {
   override func bindViewModel() {
     // Bind input
     signInView.kakaoBtn.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(to: self.viewModel.input.tapKakao)
       .disposed(by: disposeBag)
     
@@ -43,7 +44,7 @@ class SignInVC: BaseVC {
       .bind(onNext: self.goToNickname)
       .disposed(by: disposeBag)
     
-    self.viewModel.output.showSystemAlert
+    self.viewModel.showSystemAlert
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSystemAlert(alert:))
       .disposed(by: disposeBag)
@@ -57,6 +58,7 @@ class SignInVC: BaseVC {
   override func bindEvent() {
     signInView.appleBtn.rx
       .controlEvent(.touchUpInside)
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(onNext: requestAppleSignIn)
       .disposed(by: disposeBag)
   }

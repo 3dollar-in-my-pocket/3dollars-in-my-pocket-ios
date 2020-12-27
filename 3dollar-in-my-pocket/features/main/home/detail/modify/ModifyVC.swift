@@ -64,7 +64,9 @@ class ModifyVC: BaseVC {
       self?.viewModel.btnEnable.onNext(())
     }.disposed(by: disposeBag)
     
-    modifyView.registerBtn.rx.tap.bind { [weak self] in
+    modifyView.registerBtn.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+      .bind { [weak self] in
       guard let self = self else { return }
       
       let storeId = self.store.id
@@ -93,6 +95,10 @@ class ModifyVC: BaseVC {
             guard let self = self else { return }
             if let httpError = error as? HTTPError {
               self.showHTTPErrorAlert(error: httpError)
+            } else if let error = error as? CommonError {
+              let alertContent = AlertContent(title: nil, message: error.description)
+              
+              self.showSystemAlert(alert: alertContent)
             }
             self.modifyView.showLoading(isShow: false)
           })

@@ -13,18 +13,24 @@ class DetailViewModel: BaseViewModel {
   
   struct Input {
     let tapShare = PublishSubject<Void>()
+    let deleteReview = PublishSubject<Int>()
   }
   
   struct Output {
-    let showSystemAlert = PublishRelay<AlertContent>()
+    let showLoading = PublishRelay<Bool>()
   }
   
   init(userDefaults: UserDefaultsUtil) {
     self.userDefaults = userDefaults
     super.init()
+    
     self.input.tapShare
       .withLatestFrom(self.store)
       .bind(onNext: self.shareToKakao(store:))
+      .disposed(by: disposeBag)
+    
+    self.input.deleteReview
+      .bind(onNext: self.deleteReview(reviewId:))
       .disposed(by: disposeBag)
   }
   
@@ -63,12 +69,43 @@ class DetailViewModel: BaseViewModel {
       if let error = error {
         let alertContent = AlertContent(title: "Error in Kakao link", message: error.localizedDescription)
         
-        self.output.showSystemAlert.accept(alertContent)
+        self.showSystemAlert.accept(alertContent)
       } else {
         if let linkResult = linkResult {
           UIApplication.shared.open(linkResult.url, options: [:], completionHandler: nil)
         }
       }
     }
+  }
+  
+  private func deleteReview(reviewId: Int) {
+    self.output.showLoading.accept(true)
+    ReviewService().deleteRevie(reviewId: reviewId)
+      .subscribe(
+        onNext: { [weak self] _ in
+          guard let self = self else { return }
+          if var updatedStore = try? self.store.value() {
+            for reviewIndex in updatedStore.reviews.indices {
+              if updatedStore.reviews[reviewIndex].id == reviewId {
+                updatedStore.reviews.remove(at: reviewIndex)
+                break
+              }
+            }
+            self.store.onNext(updatedStore)
+          }
+          self.output.showLoading.accept(false)
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          if let httpError = error as? HTTPError {
+            self.httpErrorAlert.accept(httpError)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert.accept(alertContent)
+          }
+          self.output.showLoading.accept(false)
+        }
+      ).disposed(by: self.disposeBag)
   }
 }

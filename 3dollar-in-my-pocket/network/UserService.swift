@@ -29,7 +29,7 @@ struct UserService: UserServiceProtocol {
       let urlString = HTTPUtils.url + "/api/v1/user/me"
       let headers = HTTPUtils.defaultHeader()
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         headers: headers
@@ -51,7 +51,7 @@ struct UserService: UserServiceProtocol {
       let urlString = HTTPUtils.url + "/api/v1/user/login"
       let parameters = user.toDict()
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .post,
         parameters: parameters,
@@ -79,7 +79,7 @@ struct UserService: UserServiceProtocol {
       let parameters: [String: Any] = ["nickName": nickname, "userId": id]
       let headers = ["Authorization": token] as HTTPHeaders
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .put,
         parameters: parameters,
@@ -103,7 +103,7 @@ struct UserService: UserServiceProtocol {
       let headders = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = ["userId" : String(userId)]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         parameters: parameters,
@@ -125,7 +125,7 @@ struct UserService: UserServiceProtocol {
       let headers = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = ["userId": userId]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .post,
         parameters: parameters,
@@ -154,7 +154,7 @@ struct UserService: UserServiceProtocol {
         "userId": UserDefaultsUtil.getUserId() ?? ""
       ]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .put,
         parameters: parameters,
@@ -178,7 +178,7 @@ struct UserService: UserServiceProtocol {
       let headders = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = ["userId" : UserDefaultsUtil().getUserId()]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         parameters: parameters,

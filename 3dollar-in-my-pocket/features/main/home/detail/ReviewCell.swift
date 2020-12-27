@@ -2,140 +2,187 @@ import UIKit
 import GoogleMobileAds
 
 class ReviewCell: BaseTableViewCell {
-    
-    static let registerId = "\(ReviewCell.self)"
-    
-    let adBannerView = GADBannerView().then {
-        $0.isHidden = true
+  
+  static let registerId = "\(ReviewCell.self)"
+  
+  let adBannerView = GADBannerView().then {
+    $0.isHidden = true
+  }
+  
+  let containerView = UIView().then {
+    $0.backgroundColor = .white
+    $0.layer.cornerRadius = 12
+    $0.layer.masksToBounds = true
+  }
+  
+  let star1 = UIButton().then {
+    $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
+    $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
+    $0.isUserInteractionEnabled = false
+  }
+  
+  let star2 = UIButton().then {
+    $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
+    $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
+    $0.isUserInteractionEnabled = false
+  }
+  
+  let star3 = UIButton().then {
+    $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
+    $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
+    $0.isUserInteractionEnabled = false
+  }
+  
+  let star4 = UIButton().then {
+    $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
+    $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
+    $0.isUserInteractionEnabled = false
+  }
+  
+  let star5 = UIButton().then {
+    $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
+    $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
+    $0.isUserInteractionEnabled = false
+  }
+  
+  let stackView = UIStackView().then {
+    $0.axis = .horizontal
+    $0.alignment = .leading
+    $0.backgroundColor = .clear
+  }
+  
+  let moreButton = UIButton().then {
+    $0.setImage(UIImage(named: "ic_more"), for: .normal)
+  }
+  
+  let nameLabel = UILabel().then {
+    $0.textColor = .black
+    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+  }
+  
+  let createdAtLabel = UILabel().then {
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 12)
+  }
+  
+  let replyLabel = UILabel().then {
+    $0.textColor = UIColor(r: 46, g: 46, b: 46)
+    $0.numberOfLines = 0
+    $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 12)
+  }
+  
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.moreButton.isHidden = true
+  }
+  
+  
+  override func setup() {
+    stackView.addArrangedSubview(star1)
+    stackView.addArrangedSubview(star2)
+    stackView.addArrangedSubview(star3)
+    stackView.addArrangedSubview(star4)
+    stackView.addArrangedSubview(star5)
+    addSubViews(
+      containerView, adBannerView, stackView, moreButton,
+      nameLabel, createdAtLabel, replyLabel
+    )
+    selectionStyle = .none
+    contentView.isUserInteractionEnabled = false
+    backgroundColor = UIColor(r: 250, g: 250, b: 250)
+  }
+  
+  override func bindConstraints() {
+    containerView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalToSuperview().offset(8)
+      make.bottom.equalTo(replyLabel).offset(16)
+      make.bottom.equalToSuperview()
     }
     
-    let nameLabel = UILabel().then {
-        $0.text = "익명"
-        $0.textColor = .black
-        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+    adBannerView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.bottom.equalToSuperview()
     }
     
-    let star1 = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-        $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-        $0.isUserInteractionEnabled = false
+    star1.snp.makeConstraints { (make) in
+      make.width.height.equalTo(18)
     }
     
-    let star2 = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-        $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-        $0.isUserInteractionEnabled = false
+    star2.snp.makeConstraints { (make) in
+      make.width.height.equalTo(18)
     }
     
-    let star3 = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-        $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-        $0.isUserInteractionEnabled = false
+    star3.snp.makeConstraints { (make) in
+      make.width.height.equalTo(18)
     }
     
-    let star4 = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-        $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-        $0.isUserInteractionEnabled = false
+    star4.snp.makeConstraints { (make) in
+      make.width.height.equalTo(18)
+    }
+    star5.snp.makeConstraints { (make) in
+      make.width.height.equalTo(18)
     }
     
-    let star5 = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-        $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-        $0.isUserInteractionEnabled = false
+    stackView.snp.makeConstraints { (make) in
+      make.left.equalTo(containerView).offset(16)
+      make.height.equalTo(16)
+      make.top.equalTo(containerView).offset(16)
     }
     
-    let stackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.alignment = .leading
-        $0.backgroundColor = .clear
-        $0.spacing = 2
+    moreButton.snp.makeConstraints { make in
+      make.right.equalTo(containerView).offset(-12)
+      make.top.equalTo(containerView).offset(18)
+      make.width.height.equalTo(18)
     }
     
-    let replyLabel = UILabel().then {
-        $0.text = "음 냠냠굿~"
-        $0.textColor = .black
-        $0.numberOfLines = 0
+    nameLabel.snp.makeConstraints { (make) in
+      make.left.equalTo(stackView)
+      make.top.equalTo(stackView.snp.bottom).offset(6)
     }
     
-    
-    override func setup() {
-        stackView.addArrangedSubview(star1)
-        stackView.addArrangedSubview(star2)
-        stackView.addArrangedSubview(star3)
-        stackView.addArrangedSubview(star4)
-        stackView.addArrangedSubview(star5)
-        addSubViews(adBannerView, nameLabel, stackView, replyLabel)
-        selectionStyle = .none
-        backgroundColor = .white
+    createdAtLabel.snp.makeConstraints { make in
+      make.centerY.equalTo(nameLabel)
+      make.left.equalTo(nameLabel.snp.right).offset(8)
     }
     
-    override func bindConstraints() {
-        adBannerView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.right.equalToSuperview().offset(-24)
-            make.top.bottom.equalToSuperview()
-        }
-        
-        nameLabel.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(24)
-            make.top.equalToSuperview().offset(8)
-        }
-        
-        star1.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
-        }
-        
-        star2.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
-        }
-        
-        star3.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
-        }
-        
-        star4.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
-        }
-        star5.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
-        }
-        
-        stackView.snp.makeConstraints { (make) in
-            make.right.equalToSuperview().offset(-24)
-            make.centerY.equalTo(nameLabel.snp.centerY)
-        }
-        
-        replyLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(nameLabel.snp.left)
-            make.right.equalTo(stackView.snp.right)
-            make.top.equalTo(nameLabel.snp.bottom).offset(4)
-            make.bottom.equalToSuperview()
-        }
+    replyLabel.snp.makeConstraints { (make) in
+      make.left.equalTo(nameLabel)
+      make.right.equalTo(containerView).offset(-16)
+      make.top.equalTo(nameLabel.snp.bottom).offset(8)
     }
-    
-    func bind(review: Review?) {
-        if let review = review {
-            setRank(rank: review.rating)
-            nameLabel.text = review.user.nickname
-            replyLabel.text = review.contents
-            self.adBannerView.isHidden = true
-            self.stackView.isHidden = false
-            self.replyLabel.isHidden = false
-            self.nameLabel.isHidden = false
-        } else {
-            self.adBannerView.isHidden = false
-            self.stackView.isHidden = true
-            self.replyLabel.isHidden = true
-            self.nameLabel.isHidden = true
-        }
+  }
+  
+  func bind(review: Review?) {
+    if let review = review {
+      self.setRank(rank: review.rating)
+      self.nameLabel.text = review.user.nickname
+      self.replyLabel.text = review.contents
+      self.createdAtLabel.text = DateUtils.toReviewFormat(dateString: review.createdAt)
+      self.adBannerView.isHidden = true
+      self.stackView.isHidden = false
+      self.replyLabel.isHidden = false
+      self.createdAtLabel.isHidden = false
+      self.nameLabel.isHidden = false
+      self.containerView.isHidden = false
+    } else {
+      self.containerView.isHidden = true
+      self.adBannerView.isHidden = false
+      self.stackView.isHidden = true
+      self.replyLabel.isHidden = true
+      self.createdAtLabel.isHidden = true
+      self.nameLabel.isHidden = true
+      self.moreButton.isHidden = true
     }
-    
-    func setRank(rank: Int) {
-        for index in 0...stackView.arrangedSubviews.count - 1 {
-            if let star = stackView.arrangedSubviews[index] as? UIButton {
-                star.isSelected = index < rank
-            }
-        }
+  }
+  
+  func setRank(rank: Int) {
+    for index in 0...stackView.arrangedSubviews.count - 1 {
+      if let star = stackView.arrangedSubviews[index] as? UIButton {
+        star.isSelected = index < rank
+      }
     }
+  }
 }

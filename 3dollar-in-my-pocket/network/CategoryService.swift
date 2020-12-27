@@ -2,36 +2,49 @@ import Alamofire
 import RxSwift
 
 protocol CategoryServiceProtocol {
-  func getStroeByDistance(
+  
+  func getStoreByDistance(
     category: StoreCategory,
     latitude: Double,
-    longitude: Double
+    longitude: Double,
+    mapLatitude: Double?,
+    mapLongitude: Double?
   ) -> Observable<CategoryByDistance>
   
   func getStoreByReview(
     category: StoreCategory,
     latitude: Double,
-    longitude: Double
+    longitude: Double,
+    mapLatitude: Double?,
+    mapLongitude: Double?
   ) -> Observable<CategoryByReview>
 }
 
 struct CategoryService: CategoryServiceProtocol {
   
-  func getStroeByDistance(
+  func getStoreByDistance(
     category: StoreCategory,
     latitude: Double,
-    longitude: Double
+    longitude: Double,
+    mapLatitude: Double?,
+    mapLongitude: Double?
   ) -> Observable<CategoryByDistance> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/category/distance"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = [
+      var parameters: [String: Any] = [
         "category": category.getValue(),
         "latitude": latitude,
         "longitude": longitude
       ]
       
-      AF.request(
+      if let mapLatitude = mapLatitude,
+         let mapLongitude = mapLongitude {
+        parameters["mapLatitude"] = mapLatitude
+        parameters["mapLongitude"] = mapLongitude
+      }
+      
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         parameters: parameters,
@@ -50,18 +63,26 @@ struct CategoryService: CategoryServiceProtocol {
   func getStoreByReview(
     category: StoreCategory,
     latitude: Double,
-    longitude: Double
+    longitude: Double,
+    mapLatitude: Double?,
+    mapLongitude: Double?
   ) -> Observable<CategoryByReview> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/category/review"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = [
+      var parameters: [String: Any] = [
         "category": category.getValue(),
         "latitude": latitude,
         "longitude": longitude
       ]
       
-      AF.request(
+      if let mapLatitude = mapLatitude,
+         let mapLongitude = mapLongitude {
+        parameters["mapLatitude"] = mapLatitude
+        parameters["mapLongitude"] = mapLongitude
+      }
+      
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         parameters: parameters,

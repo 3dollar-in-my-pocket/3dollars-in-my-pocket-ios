@@ -1,6 +1,7 @@
 import UIKit
 
 protocol CategoryChildDelegate {
+  
   func setMarkers(storeCards: [StoreCard])
 }
 
@@ -15,7 +16,11 @@ class CategoryChildVC: BaseVC {
   
   private lazy var categoryChildView = CategoryChildView.init(category: self.category)
   
-  static func instance(category: StoreCategory, latitude: Double, longitude: Double) -> CategoryChildVC {
+  static func instance(
+    category: StoreCategory,
+    latitude: Double,
+    longitude: Double
+  ) -> CategoryChildVC {
     return CategoryChildVC.init(nibName: nil, bundle: nil).then {
       $0.category = category
       $0.latitude = latitude
@@ -27,22 +32,37 @@ class CategoryChildVC: BaseVC {
     super.viewDidLoad()
     view = categoryChildView
     setupTableView()
-    
-    if categoryChildView.nearOrderBtn.isSelected {
-      getStoreByDistance()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    if let categoryListVC = self.parent?.parent as? CategoryListVC,
+       let currentPosition = categoryListVC.currentPosition {
+      self.latitude = currentPosition.latitude
+      self.longitude = currentPosition.longitude
+      
+      if categoryChildView.nearOrderBtn.isSelected {
+        getStoreByDistance(mapLatitude: self.latitude, mapLongitude: self.longitude)
+      } else {
+        getStoreByReview(mapLatitude: self.latitude, mapLongitude: self.longitude)
+      }
     } else {
-      getStoreByReview()
+      if categoryChildView.nearOrderBtn.isSelected {
+        getStoreByDistance(mapLatitude: nil, mapLongitude: nil)
+      } else {
+        getStoreByReview(mapLatitude: nil, mapLongitude: nil)
+      }
     }
   }
   
-  override func bindViewModel() {
+  override func bindEvent() {
     categoryChildView.nearOrderBtn.rx.tap.bind { [weak self] (_) in
       if let vc = self,
          !vc.categoryChildView.nearOrderBtn.isSelected {
         vc.order = .DISTANCE
         vc.categoryChildView.nearOrderBtn.isSelected = true
         vc.categoryChildView.reviewOrderBtn.isSelected = false
-        vc.getStoreByDistance()
+        vc.getStoreByDistance(mapLatitude: vc.latitude, mapLongitude: vc.longitude)
       }
     }.disposed(by: disposeBag)
     
@@ -52,7 +72,7 @@ class CategoryChildVC: BaseVC {
         vc.order = .REVIEW
         vc.categoryChildView.nearOrderBtn.isSelected = false
         vc.categoryChildView.reviewOrderBtn.isSelected = true
-        vc.getStoreByReview()
+        vc.getStoreByReview(mapLatitude: vc.latitude, mapLongitude: vc.longitude)
       }
     }.disposed(by: disposeBag)
   }
@@ -60,14 +80,19 @@ class CategoryChildVC: BaseVC {
   private func setupTableView() {
     categoryChildView.tableView.delegate = self
     categoryChildView.tableView.dataSource = self
-    categoryChildView.tableView.register(CategoryListCell.self, forCellReuseIdentifier: CategoryListCell.registerId)
+    categoryChildView.tableView.register(
+      CategoryListCell.self,
+      forCellReuseIdentifier: CategoryListCell.registerId
+    )
   }
   
-  private func getStoreByDistance() {
-    CategoryService().getStroeByDistance(
+  private func getStoreByDistance(mapLatitude: Double?, mapLongitude: Double?) {
+    CategoryService().getStoreByDistance(
       category: category,
       latitude: latitude,
-      longitude: longitude
+      longitude: longitude,
+      mapLatitude: mapLatitude,
+      mapLongitude: mapLongitude
     )
     .subscribe(
       onNext: { [weak self] categoryByDistance in
@@ -82,17 +107,23 @@ class CategoryChildVC: BaseVC {
         guard let self = self else { return }
         if let httpError = error as? HTTPError {
           self.showHTTPErrorAlert(error: httpError)
+        } else if let error = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: error.description)
+          
+          self.showSystemAlert(alert: alertContent)
         }
       }
     )
     .disposed(by: disposeBag)
   }
   
-  private func getStoreByReview() {
+  private func getStoreByReview(mapLatitude: Double?, mapLongitude: Double?) {
     CategoryService().getStoreByReview(
       category: category,
       latitude: latitude,
-      longitude: longitude
+      longitude: longitude,
+      mapLatitude: mapLatitude,
+      mapLongitude: mapLongitude
     )
     .subscribe(
       onNext: { [weak self] categoryByReview in
@@ -107,6 +138,10 @@ class CategoryChildVC: BaseVC {
         guard let self = self else { return }
         if let httpError = error as? HTTPError {
           self.showHTTPErrorAlert(error: httpError)
+        } else if let error = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: error.description)
+          
+          self.showSystemAlert(alert: alertContent)
         }
       }
     ).disposed(by: disposeBag)
@@ -196,6 +231,3 @@ public enum Order: String {
   case DISTANCE = "DISTANCE"
   case REVIEW = "REVIEW"
 }
-
-
-

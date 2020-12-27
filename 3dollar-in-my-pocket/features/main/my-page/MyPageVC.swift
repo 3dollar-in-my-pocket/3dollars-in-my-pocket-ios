@@ -95,6 +95,10 @@ class MyPageVC: BaseVC {
       onError: { [weak self] error in
         if let httpError = error as? HTTPError {
           self?.showHTTPErrorAlert(error: httpError)
+        } else if let error = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: error.description)
+          
+          self?.showSystemAlert(alert: alertContent)
         }
       }).disposed(by: disposeBag)
   }
@@ -118,6 +122,10 @@ class MyPageVC: BaseVC {
           
           if let error = error as? HTTPError {
             self.showHTTPErrorAlert(error: error)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert(alert: alertContent)
           }
         })
       .disposed(by: disposeBag)
@@ -147,6 +155,10 @@ class MyPageVC: BaseVC {
           
           if let httpError = error as? HTTPError {
             self.showHTTPErrorAlert(error: httpError)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert(alert: alertContent)
           }
         })
       .disposed(by: disposeBag)

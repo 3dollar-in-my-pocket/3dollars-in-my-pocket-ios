@@ -34,7 +34,7 @@ class QuestionVC: BaseVC {
       .bind(onNext: self.questionView.showLoading(isShow:))
       .disposed(by: disposeBag)
     
-    self.viewModel.output.showSystemAlert
+    self.viewModel.showSystemAlert
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSystemAlert(alert:))
       .disposed(by: disposeBag)

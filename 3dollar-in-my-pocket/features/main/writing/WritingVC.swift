@@ -1,5 +1,6 @@
 import UIKit
 import NMapsMap
+import RxSwift
 
 protocol WritingDelegate: class {
   func onWriteSuccess(storeId: Int)
@@ -80,43 +81,49 @@ class WritingVC: BaseVC {
       self.locationManager.startUpdatingLocation()
     }.disposed(by: disposeBag)
     
-    writingView.registerBtn.rx.tap.bind { [weak self] in
-      guard let self = self else { return }
-      
-      let storeName = self.writingView.nameField.text!
-      let images = self.viewModel.imageList
-      let latitude = self.writingView.mapView.cameraPosition.target.lat
-      let longitude = self.writingView.mapView.cameraPosition.target.lng
-      let menus = self.viewModel.menuList
-      
-      if let category = self.writingView.getCategory() {
-        let store = Store(
-          category: category,
-          latitude: latitude,
-          longitude: longitude,
-          storeName: storeName,
-          menus: menus
-        )
+    writingView.registerBtn.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+      .bind { [weak self] in
+        guard let self = self else { return }
         
-        self.writingView.showLoading(isShow: true)
-        StoreService().saveStore(store: store, images: images).subscribe(
-          onNext: { [weak self] saveResponse in
-            guard let self = self else { return }
-            
-            self.dismiss(animated: true, completion: nil)
-            self.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
-            self.writingView.showLoading(isShow: false)
-          },
-          onError: { [weak self] error in
-            guard let self = self else { return }
-            if let httpError = error as? HTTPError {
-              self.showHTTPErrorAlert(error: httpError)
-            }
-            self.writingView.showLoading(isShow: false)
-          })
-          .disposed(by: self.disposeBag)
-      }
-    }.disposed(by: disposeBag)
+        let storeName = self.writingView.nameField.text!
+        let images = self.viewModel.imageList
+        let latitude = self.writingView.mapView.cameraPosition.target.lat
+        let longitude = self.writingView.mapView.cameraPosition.target.lng
+        let menus = self.viewModel.menuList
+        
+        if let category = self.writingView.getCategory() {
+          let store = Store(
+            category: category,
+            latitude: latitude,
+            longitude: longitude,
+            storeName: storeName,
+            menus: menus
+          )
+          
+          self.writingView.showLoading(isShow: true)
+          StoreService().saveStore(store: store, images: images).subscribe(
+            onNext: { [weak self] saveResponse in
+              guard let self = self else { return }
+              
+              self.dismiss(animated: true, completion: nil)
+              self.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
+              self.writingView.showLoading(isShow: false)
+            },
+            onError: { [weak self] error in
+              guard let self = self else { return }
+              if let httpError = error as? HTTPError {
+                self.showHTTPErrorAlert(error: httpError)
+              } else if let error = error as? CommonError {
+                let alertContent = AlertContent(title: nil, message: error.description)
+                
+                self.showSystemAlert(alert: alertContent)
+              }
+              self.writingView.showLoading(isShow: false)
+            })
+            .disposed(by: self.disposeBag)
+        }
+      }.disposed(by: disposeBag)
     
     viewModel.btnEnable
       .map { [weak self] (_) in

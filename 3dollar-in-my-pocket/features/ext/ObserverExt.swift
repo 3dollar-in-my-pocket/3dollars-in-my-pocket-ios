@@ -19,6 +19,17 @@ extension AnyObserver {
         
         self.onError(error)
       }
+    } else {
+      switch response.result {
+      case .failure(let error):
+        if error._code == 13 {
+          let error = CommonError(desc: "http_error_timeout".localized)
+
+          self.onError(error)
+        }
+      default:
+        break
+      }
     }
   }
   

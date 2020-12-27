@@ -39,6 +39,7 @@ class DetailView: BaseView {
     setupNavigationBar()
     navigationBar.addSubViews(backBtn, titleLabel, shareButton)
     addSubViews(tableView, navigationBar)
+    backgroundColor = UIColor(r: 250, g: 250, b: 250)
   }
   
   override func bindConstraints() {

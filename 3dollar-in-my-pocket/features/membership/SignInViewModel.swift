@@ -19,7 +19,6 @@ class SignInViewModel: BaseViewModel {
   struct Output {
     let goToMain = PublishRelay<Void>()
     let goToNickname = PublishRelay<(Int, String)>()
-    let showSystemAlert = PublishRelay<AlertContent>()
   }
   
   
@@ -51,7 +50,7 @@ class SignInViewModel: BaseViewModel {
               message: error.localizedDescription
             )
             
-            self.output.showSystemAlert.accept(alertContent)
+            self.showSystemAlert.accept(alertContent)
           }
         } else {
           self.requestKakaoInfo()
@@ -66,7 +65,7 @@ class SignInViewModel: BaseViewModel {
               message: error.localizedDescription
             )
             
-            self.output.showSystemAlert.accept(alertContent)
+            self.showSystemAlert.accept(alertContent)
           }
         }
         else {
@@ -84,7 +83,7 @@ class SignInViewModel: BaseViewModel {
           message: error.localizedDescription
         )
         
-        self.output.showSystemAlert.accept(alertContent)
+        self.showSystemAlert.accept(alertContent)
       }
       else {
         if let userId = user?.id {
@@ -108,8 +107,13 @@ class SignInViewModel: BaseViewModel {
           self.output.goToNickname.accept((signIn.id, signIn.token))
         }
       } onError: { [weak self] error in
+        guard let self = self else { return }
         if let httpError = error as? HTTPError {
-          self?.httpErrorAlert.accept(httpError)
+          self.httpErrorAlert.accept(httpError)
+        } else if let error = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: error.description)
+          
+          self.showSystemAlert.accept(alertContent)
         }
       }
       .disposed(by: disposeBag)
