@@ -7,6 +7,7 @@ struct Review: Codable {
   let user: User
   let storeId: Int
   let storeName: String
+  let createdAt: String
   
   
   enum CodingKeys: String, CodingKey {
@@ -17,6 +18,7 @@ struct Review: Codable {
     case user = "user"
     case storeId = "storeId"
     case storeName = "storeName"
+    case createdAt = "createdAt"
   }
   
   init(from decoder: Decoder) throws {
@@ -29,6 +31,7 @@ struct Review: Codable {
     user = try values.decodeIfPresent(User.self, forKey: .user) ?? User(socialId: "", socialType: "")
     storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? -1
     storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
+    createdAt = try values.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
     
   }
   
@@ -40,6 +43,7 @@ struct Review: Codable {
     self.user = User(socialId: "", socialType: "")
     self.storeId = -1
     self.storeName = ""
+    self.createdAt = ""
   }
   
   func toJson() -> [String: Any] {

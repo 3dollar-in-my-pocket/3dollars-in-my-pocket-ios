@@ -11,7 +11,7 @@ class DetailVC: BaseVC {
   private var viewModel = DetailViewModel(userDefaults: UserDefaultsUtil())
   private var reviewVC: ReviewModalVC?
   private var myLocationFlag = false
-  private var isFirstUpdate = true
+  
   var storeId: Int!
   var locationManager = CLLocationManager()
   
@@ -44,18 +44,28 @@ class DetailVC: BaseVC {
       self?.detailView.tableView.reloadData()
     }.disposed(by: disposeBag)
     
-    detailView.backBtn.rx.tap.bind { [weak self] in
-      self?.navigationController?.popViewController(animated: true)
-    }.disposed(by: disposeBag)
-    
     // Bind output
+    self.viewModel.output.showLoading
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.detailView.showLoading(isShow:))
+      .disposed(by: disposeBag)
+    
     self.viewModel.output.showSystemAlert
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSystemAlert(alert:))
       .disposed(by: disposeBag)
+    
+    self.viewModel.httpErrorAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showHTTPErrorAlert(error:))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {
+    self.detailView.backBtn.rx.tap.bind { [weak self] in
+      self?.navigationController?.popViewController(animated: true)
+    }.disposed(by: disposeBag)
+    
     self.detailView.shareButton.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(to: self.viewModel.input.tapShare)
@@ -93,6 +103,18 @@ class DetailVC: BaseVC {
     
     camera.animation = .easeIn
     shopInfoCell.mapView.moveCamera(camera)
+  }
+  
+  private func showDeleteActionSheet(reviewId: Int) {
+    let alertController = UIAlertController(title: nil, message: "옵션", preferredStyle: .actionSheet)
+    let deleteAction = UIAlertAction(title: "댓글 삭제", style: .destructive) { _ in
+      self.viewModel.input.deleteReview.onNext(reviewId)
+    }
+    let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in }
+    
+    alertController.addAction(deleteAction)
+    alertController.addAction(cancelAction)
+    self.present(alertController, animated: true, completion: nil)
   }
 }
 
@@ -191,7 +213,17 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
           cell.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
           cell.adBannerView.load(GADRequest())
         } else {
-          cell.bind(review: store.reviews[indexPath.row - 1])
+          let review = store.reviews[indexPath.row - 1]
+          
+          if UserDefaultsUtil().getUserId() == review.user.id {
+            cell.moreButton.isHidden = false
+            cell.moreButton.rx.tap
+              .map { review.id }
+              .observeOn(MainScheduler.instance)
+              .bind(onNext: self.showDeleteActionSheet(reviewId:))
+              .disposed(by: cell.disposeBag)
+          }
+          cell.bind(review: review)
         }
         return cell
       }
@@ -228,10 +260,7 @@ extension DetailVC: CLLocationManagerDelegate {
     if myLocationFlag {
       self.moveToMyLocation(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
     } else {
-      if self.isFirstUpdate {
-        self.getStoreDetail(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
-        self.isFirstUpdate = false
-      }
+      self.getStoreDetail(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
     }
     self.viewModel.location = (location!.coordinate.latitude, location!.coordinate.longitude)
     locationManager.stopUpdatingLocation()

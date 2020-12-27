@@ -13,18 +13,25 @@ class DetailViewModel: BaseViewModel {
   
   struct Input {
     let tapShare = PublishSubject<Void>()
+    let deleteReview = PublishSubject<Int>()
   }
   
   struct Output {
+    let showLoading = PublishRelay<Bool>()
     let showSystemAlert = PublishRelay<AlertContent>()
   }
   
   init(userDefaults: UserDefaultsUtil) {
     self.userDefaults = userDefaults
     super.init()
+    
     self.input.tapShare
       .withLatestFrom(self.store)
       .bind(onNext: self.shareToKakao(store:))
+      .disposed(by: disposeBag)
+    
+    self.input.deleteReview
+      .bind(onNext: self.deleteReview(reviewId:))
       .disposed(by: disposeBag)
   }
   
@@ -70,5 +77,32 @@ class DetailViewModel: BaseViewModel {
         }
       }
     }
+  }
+  
+  private func deleteReview(reviewId: Int) {
+    self.output.showLoading.accept(true)
+    ReviewService().deleteRevie(reviewId: reviewId)
+      .subscribe(
+        onNext: { [weak self] _ in
+          guard let self = self else { return }
+          if var updatedStore = try? self.store.value() {
+            for reviewIndex in updatedStore.reviews.indices {
+              if updatedStore.reviews[reviewIndex].id == reviewId {
+                updatedStore.reviews.remove(at: reviewIndex)
+                break
+              }
+            }
+            self.store.onNext(updatedStore)
+          }
+          self.output.showLoading.accept(false)
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          if let httpError = error as? HTTPError {
+            self.httpErrorAlert.accept(httpError)
+          }
+          self.output.showLoading.accept(false)
+        }
+      ).disposed(by: self.disposeBag)
   }
 }

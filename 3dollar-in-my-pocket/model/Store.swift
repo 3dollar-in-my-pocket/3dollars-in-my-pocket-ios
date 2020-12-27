@@ -7,7 +7,7 @@ struct Store: Codable {
   let longitude: Double
   let menus: [Menu]
   let rating: Float
-  let reviews: [Review]
+  var reviews: [Review]
   let storeName: String
   let repoter: User
   let distance: Int

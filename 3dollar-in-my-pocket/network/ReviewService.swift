@@ -5,6 +5,8 @@ protocol ReviewServiceProtocol {
   
   func saveReview(review: Review, storeId: Int) -> Observable<String>
   
+  func deleteRevie(reviewId: Int) -> Observable<Void>
+  
   func getMyReview(page: Int) -> Observable<Page<Review>>
 }
 
@@ -29,6 +31,29 @@ struct ReviewService: ReviewServiceProtocol {
         } else {
           observer.processHTTPError(response: response)
         }
+      }
+      
+      return Disposables.create()
+    }
+  }
+  
+  func deleteRevie(reviewId: Int) -> Observable<Void> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v1/review/\(reviewId)"
+      let headers = HTTPUtils.defaultHeader()
+      
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .delete,
+        headers: headers
+      ).responseJSON { response in
+        if let statusCode = response.response?.statusCode {
+          if "\(statusCode)".first! == "2" {
+            observer.onNext(())
+            observer.onCompleted()
+          }
+        }
+        observer.processHTTPError(response: response)
       }
       
       return Disposables.create()
