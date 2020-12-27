@@ -46,7 +46,7 @@ class SettingVC: BaseVC {
       .bind(onNext: self.goToSignIn)
       .disposed(by: disposeBag)
     
-    self.viewModel.output.showSystemAlert
+    self.viewModel.showSystemAlert
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSystemAlert(alert:))
       .disposed(by: disposeBag)

@@ -22,7 +22,6 @@ class QestionViewModel: BaseViewModel {
       appVersion: String,
       deviceModel: Device
     )>()
-    let showSystemAlert = PublishRelay<AlertContent>()
     let showLoading = PublishRelay<Bool>()
   }
   
@@ -59,8 +58,13 @@ class QestionViewModel: BaseViewModel {
       .subscribe(
         onNext: self.nickname.onNext,
         onError: { [weak self] error in
+          guard let self = self else { return }
           if let httpError = error as? HTTPError {
-            self?.httpErrorAlert.accept(httpError)
+            self.httpErrorAlert.accept(httpError)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert.accept(alertContent)
           }
         })
       .disposed(by: disposeBag)

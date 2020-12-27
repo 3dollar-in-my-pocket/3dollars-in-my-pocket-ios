@@ -19,7 +19,6 @@ class SettingViewModel: BaseViewModel {
     let goToRename = PublishRelay<String>()
     let goToSignIn = PublishRelay<Void>()
     let showLoading = PublishRelay<Bool>()
-    let showSystemAlert = PublishRelay<AlertContent>()
   }
   
   let userDefaults: UserDefaultsUtil
@@ -60,6 +59,10 @@ class SettingViewModel: BaseViewModel {
         guard let self = self else { return }
         if let httpError = error as? HTTPError {
           self.httpErrorAlert.accept(httpError)
+        } else if let error = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: error.description)
+          
+          self.showSystemAlert.accept(alertContent)
         }
         self.output.showLoading.accept(false)
       }
@@ -100,6 +103,10 @@ class SettingViewModel: BaseViewModel {
         guard let self = self else { return }
         if let httpError = error as? HTTPError {
           self.httpErrorAlert.accept(httpError)
+        } else if let error = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: error.description)
+          
+          self.showSystemAlert.accept(alertContent)
         }
         self.output.showLoading.accept(false)
       }
@@ -114,7 +121,7 @@ class SettingViewModel: BaseViewModel {
           message: error.localizedDescription
         )
         
-        self.output.showSystemAlert.accept(alertContent)
+        self.showSystemAlert.accept(alertContent)
       }
       else {
         self.userDefaults.clear()
@@ -136,7 +143,7 @@ class SettingViewModel: BaseViewModel {
           message: error.localizedDescription
         )
         
-        self.output.showSystemAlert.accept(alertContent)
+        self.showSystemAlert.accept(alertContent)
       } else {
         self.withdrawal()
       }

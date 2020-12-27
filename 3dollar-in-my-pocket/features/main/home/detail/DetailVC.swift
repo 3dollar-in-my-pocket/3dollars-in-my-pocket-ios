@@ -50,7 +50,7 @@ class DetailVC: BaseVC {
       .bind(onNext: self.detailView.showLoading(isShow:))
       .disposed(by: disposeBag)
     
-    self.viewModel.output.showSystemAlert
+    self.viewModel.showSystemAlert
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSystemAlert(alert:))
       .disposed(by: disposeBag)
@@ -90,6 +90,10 @@ class DetailVC: BaseVC {
       guard let self = self else { return }
       if let httpError = error as? HTTPError {
         self.showHTTPErrorAlert(error: httpError)
+      } else if let error = error as? CommonError {
+        let alertContent = AlertContent(title: nil, message: error.description)
+        
+        self.showSystemAlert(alert: alertContent)
       }
     }).disposed(by: disposeBag)
   }

@@ -51,6 +51,10 @@ class SplashViewModel: BaseViewModel {
             default:
               self.httpErrorAlert.accept(httpError)
             }
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert.accept(alertContent)
           }
         }
       )

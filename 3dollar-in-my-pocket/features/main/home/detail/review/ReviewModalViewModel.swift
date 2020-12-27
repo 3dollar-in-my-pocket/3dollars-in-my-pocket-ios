@@ -19,7 +19,6 @@ class ReviewModalViewModel: BaseViewModel {
     let showLoading = PublishRelay<Bool>()
     let dismissOnSaveReview = PublishRelay<Void>()
     let showHTTPErrorAlert = PublishRelay<HTTPError>()
-    let showSystemAlert = PublishRelay<AlertContent>()
   }
   
   init(reviewService: ReviewServiceProtocol, storeId: Int) {
@@ -47,13 +46,17 @@ class ReviewModalViewModel: BaseViewModel {
             if let httpError = error as? HTTPError {
               self.output.showLoading.accept(false)
               self.output.showHTTPErrorAlert.accept(httpError)
+            } else if let error = error as? CommonError {
+              let alertContent = AlertContent(title: nil, message: error.description)
+              
+              self.showSystemAlert.accept(alertContent)
             }
           })
         .disposed(by: disposeBag)
     } else {
       let alertContent = AlertContent(title: nil, message: "내용을 입력해주세요.")
       
-      self.output.showSystemAlert.accept(alertContent)
+      self.showSystemAlert.accept(alertContent)
     }
   }
   

@@ -7,17 +7,17 @@ struct HTTPUtils {
   static let url = Bundle.main.object(forInfoDictionaryKey: "API_URL") as? String ?? ""
   
   static let defaultSession: Session = {
-    let session = Alamofire.Session.default
+    let configuration = URLSessionConfiguration.default
+    configuration.timeoutIntervalForRequest = 3
     
-    session.sessionConfiguration.timeoutIntervalForRequest = 3
-    return session
+    return Session(configuration: configuration)
   }()
   
   static let fileUploadSession: Session = {
-    let session = Alamofire.Session.default
+    let configuration = URLSessionConfiguration.default
+    configuration.timeoutIntervalForRequest = 30
     
-    session.sessionConfiguration.timeoutIntervalForRequest = 30
-    return session
+    return Session(configuration: configuration)
   }()
   
   static func jsonHeader() -> HTTPHeaders {
@@ -42,6 +42,15 @@ struct HTTPUtils {
     
     headers.add(self.defaultUserAgent)
     return headers
+  }
+  
+  // Timeout header 테스트용으로 추가하는 함수
+  static func addTimeoutHeader(headers: HTTPHeaders) -> HTTPHeaders {
+    let timeOutHeader = HTTPHeader(name: "X-3DOLLAR-SLEEP-MILLISECONDS", value: "4000")
+    var newHeaders = headers
+    
+    newHeaders.add(timeOutHeader)
+    return newHeaders
   }
   
   static let defaultUserAgent: HTTPHeader = {

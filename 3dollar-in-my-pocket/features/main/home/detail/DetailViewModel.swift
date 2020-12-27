@@ -18,7 +18,6 @@ class DetailViewModel: BaseViewModel {
   
   struct Output {
     let showLoading = PublishRelay<Bool>()
-    let showSystemAlert = PublishRelay<AlertContent>()
   }
   
   init(userDefaults: UserDefaultsUtil) {
@@ -70,7 +69,7 @@ class DetailViewModel: BaseViewModel {
       if let error = error {
         let alertContent = AlertContent(title: "Error in Kakao link", message: error.localizedDescription)
         
-        self.output.showSystemAlert.accept(alertContent)
+        self.showSystemAlert.accept(alertContent)
       } else {
         if let linkResult = linkResult {
           UIApplication.shared.open(linkResult.url, options: [:], completionHandler: nil)
@@ -100,6 +99,10 @@ class DetailViewModel: BaseViewModel {
           guard let self = self else { return }
           if let httpError = error as? HTTPError {
             self.httpErrorAlert.accept(httpError)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert.accept(alertContent)
           }
           self.output.showLoading.accept(false)
         }

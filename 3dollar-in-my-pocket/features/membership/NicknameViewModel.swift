@@ -18,7 +18,6 @@ class NicknameViewModel: BaseViewModel {
     let setButtonEnable = PublishRelay<Bool>()
     let goToMain = PublishRelay<Void>()
     let errorLabel = PublishRelay<String>()
-    let showSystemAlert = PublishRelay<AlertContent>()
   }
   
   let userDefaults: UserDefaultsUtil
@@ -71,7 +70,7 @@ class NicknameViewModel: BaseViewModel {
       } else if let error = error as? CommonError {
         let alertContent = AlertContent(title: nil, message: error.description)
         
-        self.output.showSystemAlert.accept(alertContent)
+        self.showSystemAlert.accept(alertContent)
       }
       self.output.showLoading.accept(false)
     }

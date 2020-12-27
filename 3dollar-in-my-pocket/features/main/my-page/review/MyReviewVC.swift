@@ -50,6 +50,10 @@ class MyReviewVC: BaseVC {
             guard let self = self else { return }
             if let httpError = error as? HTTPError {
               self.showHTTPErrorAlert(error: httpError)
+            } else if let error = error as? CommonError {
+              let alertContent = AlertContent(title: nil, message: error.description)
+              
+              self.showSystemAlert(alert: alertContent)
             }
           }
         )
@@ -73,6 +77,10 @@ class MyReviewVC: BaseVC {
           
           if let httpError = error as? HTTPError {
             self.showHTTPErrorAlert(error: httpError)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert(alert: alertContent)
           }
           self.removeLoadingFooter()
         })
