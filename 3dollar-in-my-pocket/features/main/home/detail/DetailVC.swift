@@ -62,12 +62,19 @@ class DetailVC: BaseVC {
   }
   
   override func bindEvent() {
-    self.detailView.backBtn.rx.tap.bind { [weak self] in
+    self.detailView.backBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .back_button_clicked, className: DetailVC.self)
+      })
+      .bind { [weak self] in
       self?.navigationController?.popViewController(animated: true)
     }.disposed(by: disposeBag)
     
     self.detailView.shareButton.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .share_button_clicked, className: DetailVC.self)
+      })
       .bind(to: self.viewModel.input.tapShare)
       .disposed(by: disposeBag)
   }
@@ -152,7 +159,11 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
           }
         }.disposed(by: cell.disposeBag)
         
-        cell.reviewBtn.rx.tap.bind { [weak self] (_) in
+        cell.reviewBtn.rx.tap
+          .do(onNext: { _ in
+            GA.shared.logEvent(event: .review_write_button_clicked, className: DetailVC.self)
+          })
+          .bind { [weak self] (_) in
           if let vc = self {
             vc.reviewVC = ReviewModalVC.instance(storeId: vc.storeId).then {
               $0.deleagete = self
@@ -162,7 +173,11 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
           }
         }.disposed(by: cell.disposeBag)
         
-        cell.modifyBtn.rx.tap.bind { [weak self] (_) in
+        cell.modifyBtn.rx.tap
+          .do(onNext: { _ in
+            GA.shared.logEvent(event: .store_modify_button_clicked, className: DetailVC.self)
+          })
+          .bind { [weak self] (_) in
           if let vc = self,
              let store = try! vc.viewModel.store.value(){
             let modifyVC = ModifyVC.instance(store: store).then {

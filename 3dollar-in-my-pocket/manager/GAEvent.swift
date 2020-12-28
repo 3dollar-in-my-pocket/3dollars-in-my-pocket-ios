@@ -1,6 +1,6 @@
 enum GAEvent: String {
   
-  case navigate_back_button_clicked = "navigate_back_button_clicked"
+  case back_button_clicked = "back_button_clicked"
   
   case kakao_login_button_clicked = "kakao_login_button_clicked"
   case apple_login_button_clicked = "apple_login_button_clicked"
@@ -13,8 +13,6 @@ enum GAEvent: String {
   case filter_gyeranppang_button_clicked = "filter_gaeranppang_button_clicked"
   case filter_hotteok_button_clicked = "filter_hotteok_button_clicked"
   case store_card_button_clicked = "store_card_button_clicked"
-  case store_card_swiped = "store_card_swiped"
-  
   
   case navigation_home_button_clicked = "navigation_home_button_clicked"
   case navigation_register_button_clicked = "navigation_register_button_clicked"
@@ -53,5 +51,5 @@ enum GAEvent: String {
   case signout_alert_withdraw_button_clicked = "signout_alert_withdraw_button_clicked"
   case signout_alert_cancel_button_clicked = "signout_alert_cancel_button_clicked"
   case inquiry_button_clicked = "inquiry_button_clicked"
-  case terms_of_use_button_clicked = "terms_of_use_button_clicked"
+  case privacy_button_clicked = "privacy_button_clicked"
 }

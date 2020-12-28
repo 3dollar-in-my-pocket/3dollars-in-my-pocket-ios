@@ -72,19 +72,35 @@ class HomeVC: BaseVC {
       self?.locationManager.startUpdatingLocation()
     }.disposed(by: disposeBag)
     
-    homeView.bungeoppangTap.rx.event.bind { [weak self] (_) in
+    homeView.bungeoppangTap.rx.event
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .filter_bungeoppang_button_clicked, className: HomeVC.self)
+      })
+      .bind { [weak self] (_) in
       self?.delegate?.onTapCategory(category: .BUNGEOPPANG)
     }.disposed(by: disposeBag)
     
-    homeView.takoyakiTap.rx.event.bind { [weak self] (_) in
+    homeView.takoyakiTap.rx.event
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .filter_takoyaki_button_clicked, className: HomeVC.self)
+      })
+      .bind { [weak self] (_) in
       self?.delegate?.onTapCategory(category: .TAKOYAKI)
     }.disposed(by: disposeBag)
     
-    homeView.gyeranppangTap.rx.event.bind { [weak self] (_) in
+    homeView.gyeranppangTap.rx.event
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .filter_gyeranppang_button_clicked, className: HomeVC.self)
+      })
+      .bind { [weak self] (_) in
       self?.delegate?.onTapCategory(category: .GYERANPPANG)
     }.disposed(by: disposeBag)
     
-    homeView.hotteokTap.rx.event.bind { [weak self] (_) in
+    homeView.hotteokTap.rx.event
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .filter_hotteok_button_clicked, className: HomeVC.self)
+      })
+      .bind { [weak self] (_) in
       self?.delegate?.onTapCategory(category: .HOTTEOK)
     }.disposed(by: disposeBag)
   }
@@ -227,6 +243,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if previousIndex == indexPath.row { // 셀이 선택된 상태에서 한번 더 누르는 경우 상세화면으로 이동
+      GA.shared.logEvent(event: .store_card_button_clicked, className: HomeVC.self)
       goToDetail(storeId: try! self.viewModel.nearestStore.value()[indexPath.row].id)
     } else {
       collectionView.scrollToItem(at: indexPath, at: .left, animated: true)

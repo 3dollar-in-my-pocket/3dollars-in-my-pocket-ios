@@ -56,7 +56,11 @@ class CategoryChildVC: BaseVC {
   }
   
   override func bindEvent() {
-    categoryChildView.nearOrderBtn.rx.tap.bind { [weak self] (_) in
+    categoryChildView.nearOrderBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .order_by_distance_button_list, className: CategoryChildVC.self)
+      })
+      .bind { [weak self] (_) in
       if let vc = self,
          !vc.categoryChildView.nearOrderBtn.isSelected {
         vc.order = .DISTANCE
@@ -66,7 +70,11 @@ class CategoryChildVC: BaseVC {
       }
     }.disposed(by: disposeBag)
     
-    categoryChildView.reviewOrderBtn.rx.tap.bind { [weak self] (_) in
+    categoryChildView.reviewOrderBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .order_by_rating_button_list, className: CategoryChildVC.self)
+      })
+      .bind { [weak self] (_) in
       if let vc = self,
          !vc.categoryChildView.reviewOrderBtn.isSelected {
         vc.order = .REVIEW
@@ -187,10 +195,12 @@ extension CategoryChildVC: UITableViewDelegate, UITableViewDataSource {
     switch self.order {
     case .DISTANCE:
       if let storeCard = self.viewModel.getDistanceStore(indexPath: indexPath) {
+        GA.shared.logEvent(event: .store_list_item_clicked, className: CategoryChildVC.self)
         self.navigationController?.pushViewController(DetailVC.instance(storeId: storeCard.id), animated: true)
       }
     case .REVIEW:
       if let storeCard = self.viewModel.getReviewStore(indexPath: indexPath) {
+        GA.shared.logEvent(event: .store_list_item_clicked, className: CategoryChildVC.self)
         self.navigationController?.pushViewController(DetailVC.instance(storeId: storeCard.id), animated: true)
       }
     }

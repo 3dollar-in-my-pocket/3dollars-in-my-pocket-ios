@@ -50,10 +50,12 @@ class DeleteModalVC: BaseVC {
 
 extension DeleteModalVC: DeleteModalViewDelegate {
     func onTapRequest() {
+        GA.shared.logEvent(event: .delete_request_submit_button_clicked, className: DeleteModalVC.self)
         self.requestDelete()
     }
     
     func onTapClose() {
+        GA.shared.logEvent(event: .delete_request_popup_close_button_clicked, className: DeleteModalVC.self)
         self.deleagete?.onTapClose()
     }
 }

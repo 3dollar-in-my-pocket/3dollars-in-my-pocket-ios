@@ -52,14 +52,25 @@ class MyPageVC: BaseVC {
     
     myPageView.settingButton.rx.tap
       .observeOn(MainScheduler.instance)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .setting_button_clicked, className: MyPageVC.self)
+      })
       .bind(onNext: self.goToSetting)
       .disposed(by: disposeBag)
     
-    myPageView.registerTotalBtn.rx.tap.bind { [weak self] in
+    myPageView.registerTotalBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .show_all_my_store_button_clicked, className: MyPageVC.self)
+      })
+      .bind { [weak self] in
       self?.navigationController?.pushViewController(RegisteredVC.instance(), animated: true)
     }.disposed(by: disposeBag)
     
-    myPageView.reviewTotalBtn.rx.tap.bind { [weak self] in
+    myPageView.reviewTotalBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .show_all_my_review_button_clicked, className: MyPageVC.self)
+      })
+      .bind { [weak self] in
       self?.navigationController?.pushViewController(MyReviewVC.instance(), animated: true)
     }.disposed(by: disposeBag)
   }

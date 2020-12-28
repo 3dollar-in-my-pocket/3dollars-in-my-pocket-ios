@@ -51,7 +51,11 @@ class CategoryListVC: BaseVC {
       self?.locationManager.startUpdatingLocation()
     }.disposed(by: disposeBag)
     
-    categoryListView.backBtn.rx.tap.bind { [weak self] in
+    categoryListView.backBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .back_button_clicked, className: CategoryListVC.self)
+      })
+      .bind { [weak self] in
       self?.navigationController?.popViewController(animated: true)
     }.disposed(by: disposeBag)
   }

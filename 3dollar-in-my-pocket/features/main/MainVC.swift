@@ -47,15 +47,27 @@ class MainVC: BaseVC {
   }
   
   override func bindViewModel() {
-    mainView.homeBtn.rx.tap.bind {
+    mainView.homeBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .navigation_home_button_clicked, className: MainVC.self)
+      })
+      .bind {
       self.tapChange(index: 0)
     }.disposed(by: disposeBag)
     
-    mainView.myPageBtn.rx.tap.bind {
+    mainView.myPageBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .navigation_my_page_button_clicked, className: MainVC.self)
+      })
+      .bind {
       self.tapChange(index: 2)
     }.disposed(by: disposeBag)
     
-    mainView.writingBtn.rx.tap.bind { [weak self] in
+    mainView.writingBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .navigation_register_button_clicked, className: MainVC.self)
+      })
+      .bind { [weak self] in
       if let vc = self {
         let writingVC = WritingVC.instance().then {
           $0.deleagte = self
