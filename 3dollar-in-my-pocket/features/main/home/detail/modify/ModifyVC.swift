@@ -47,7 +47,7 @@ class ModifyVC: BaseVC {
     
     modifyView.backBtn.rx.tap
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .back_button_clicked, className: ModifyVC.self)
+        GA.shared.logEvent(event: .back_button_clicked, page: .store_edit_page)
       })
       .bind { [weak self] in
       self?.navigationController?.popViewController(animated: true)
@@ -55,7 +55,7 @@ class ModifyVC: BaseVC {
     
     modifyView.deleteBtn.rx.tap
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .delete_request_button_clicked, className: ModifyVC.self)
+        GA.shared.logEvent(event: .delete_request_button_clicked, page: .store_edit_page)
       })
       .bind { [weak self] in
       if let vc = self {
@@ -75,7 +75,7 @@ class ModifyVC: BaseVC {
     modifyView.registerBtn.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .store_edit_submit_button_clicked, className: ModifyVC.self)
+        GA.shared.logEvent(event: .store_edit_submit_button_clicked, page: .store_edit_page)
       })
       .bind { [weak self] in
       guard let self = self else { return }

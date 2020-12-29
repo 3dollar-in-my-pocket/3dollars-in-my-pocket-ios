@@ -167,7 +167,7 @@ class ReviewModalView: BaseView {
   }
   
   func onTapStackView(tappedIndex: Int) {
-    GA.shared.logEvent(event: .star_button_clicked, className: ReviewModalVC.self)
+    GA.shared.logEvent(event: .star_button_clicked, page: .review_write)
     stackContainer.layer.borderColor = UIColor(r: 243, g: 162, b: 169).cgColor
     for index in stackView.arrangedSubviews.indices {
       if let button = stackView.arrangedSubviews[index] as? UIButton {

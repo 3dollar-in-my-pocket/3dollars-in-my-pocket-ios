@@ -49,7 +49,7 @@ class MainVC: BaseVC {
   override func bindViewModel() {
     mainView.homeBtn.rx.tap
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .navigation_home_button_clicked, className: MainVC.self)
+        GA.shared.logEvent(event: .navigation_home_button_clicked, page: .main_page)
       })
       .bind {
       self.tapChange(index: 0)
@@ -57,7 +57,7 @@ class MainVC: BaseVC {
     
     mainView.myPageBtn.rx.tap
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .navigation_my_page_button_clicked, className: MainVC.self)
+        GA.shared.logEvent(event: .navigation_my_page_button_clicked, page: .main_page)
       })
       .bind {
       self.tapChange(index: 2)
@@ -65,7 +65,7 @@ class MainVC: BaseVC {
     
     mainView.writingBtn.rx.tap
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .navigation_register_button_clicked, className: MainVC.self)
+        GA.shared.logEvent(event: .navigation_register_button_clicked, page: .main_page)
       })
       .bind { [weak self] in
       if let vc = self {

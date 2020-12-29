@@ -53,7 +53,7 @@ class CategoryListVC: BaseVC {
     
     categoryListView.backBtn.rx.tap
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .back_button_clicked, className: CategoryListVC.self)
+        GA.shared.logEvent(event: .back_button_clicked, page: .store_list_page)
       })
       .bind { [weak self] in
       self?.navigationController?.popViewController(animated: true)

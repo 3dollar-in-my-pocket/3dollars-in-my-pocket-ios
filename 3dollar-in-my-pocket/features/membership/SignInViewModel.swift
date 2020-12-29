@@ -32,7 +32,7 @@ class SignInViewModel: BaseViewModel {
     
     self.input.tapKakao
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .kakao_login_button_clicked, className: SignInVC.self)
+        GA.shared.logEvent(event: .kakao_login_button_clicked, page: .login_page)
       })
       .bind(onNext: self.requestKakaoSignIn)
       .disposed(by: disposeBag)
@@ -40,7 +40,7 @@ class SignInViewModel: BaseViewModel {
     self.input.signWithApple
       .map { ($0, "APPLE")}
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .apple_login_button_clicked, className: SignInVC.self)
+        GA.shared.logEvent(event: .apple_login_button_clicked, page: .login_page)
       })
       .bind(onNext: self.signIn)
       .disposed(by: disposeBag)

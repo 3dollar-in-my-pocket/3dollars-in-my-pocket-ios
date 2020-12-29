@@ -35,7 +35,7 @@ class SettingViewModel: BaseViewModel {
     self.input.signOut
       .withLatestFrom(self.output.user)
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .logout_button_clicked, className: SettingVC.self)
+        GA.shared.logEvent(event: .logout_button_clicked, page: .setting_page)
       })
       .bind(onNext: self.signOut(user:))
       .disposed(by: disposeBag)
@@ -43,7 +43,7 @@ class SettingViewModel: BaseViewModel {
     self.input.tapRename
       .withLatestFrom(self.output.user) { $1.nickname! }
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .nickname_change_page_button_clicked, className: SettingVC.self)
+        GA.shared.logEvent(event: .nickname_change_page_button_clicked, page: .setting_page)
       })
       .bind(to: self.output.goToRename)
       .disposed(by: disposeBag)
@@ -51,7 +51,7 @@ class SettingViewModel: BaseViewModel {
     self.input.withdrawal
       .withLatestFrom(self.output.user)
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .signout_button_clicked, className: SettingVC.self)
+        GA.shared.logEvent(event: .signout_button_clicked, page: .setting_page)
       })
       .bind(onNext: self.withdrawal(user:))
       .disposed(by: disposeBag)

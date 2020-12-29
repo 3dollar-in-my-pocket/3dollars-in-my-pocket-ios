@@ -50,32 +50,32 @@ class WritingVC: BaseVC {
     
     writingView.backBtn.rx.tap
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .close_button_clicked, className: WritingVC.self)
+        GA.shared.logEvent(event: .close_button_clicked, page: .store_register_page)
       })
       .bind { [weak self] in
       self?.dismiss(animated: true)
     }.disposed(by: disposeBag)
     
     writingView.bungeoppangBtn.rx.tap.bind { [weak self] in
-      GA.shared.logEvent(event: .store_category_button_clicked, className: WritingVC.self)
+      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
       self?.writingView.tapCategoryBtn(index: 0)
       self?.viewModel.btnEnable.onNext(())
     }.disposed(by: disposeBag)
     
     writingView.takoyakiBtn.rx.tap.bind { [weak self] in
-      GA.shared.logEvent(event: .store_category_button_clicked, className: WritingVC.self)
+      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
       self?.writingView.tapCategoryBtn(index: 1)
       self?.viewModel.btnEnable.onNext(())
     }.disposed(by: disposeBag)
     
     writingView.gyeranppangBtn.rx.tap.bind { [weak self] in
-      GA.shared.logEvent(event: .store_category_button_clicked, className: WritingVC.self)
+      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
       self?.writingView.tapCategoryBtn(index: 2)
       self?.viewModel.btnEnable.onNext(())
     }.disposed(by: disposeBag)
     
     writingView.hotteokBtn.rx.tap.bind { [weak self] in
-      GA.shared.logEvent(event: .store_category_button_clicked, className: WritingVC.self)
+      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
       self?.writingView.tapCategoryBtn(index: 3)
       self?.viewModel.btnEnable.onNext(())
     }.disposed(by: disposeBag)
@@ -92,7 +92,7 @@ class WritingVC: BaseVC {
     writingView.registerBtn.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .store_register_submit_button_clicked, className: WritingVC.self)
+        GA.shared.logEvent(event: .store_register_submit_button_clicked, page: .store_register_page)
       })
       .bind { [weak self] in
         guard let self = self else { return }
@@ -223,7 +223,7 @@ extension WritingVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
   
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     selectedImageIndex = indexPath.row
-    GA.shared.logEvent(event: .image_attach_button_clicked, className: WritingVC.self)
+    GA.shared.logEvent(event: .image_attach_button_clicked, page: .store_register_page)
     AlertUtils.showImagePicker(controller: self, picker: self.imagePicker)
   }
 }

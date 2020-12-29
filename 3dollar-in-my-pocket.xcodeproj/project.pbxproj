@@ -114,6 +114,7 @@
 		6E72AE6523C9B7DE00D3B257 /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E72AE6423C9B7DE00D3B257 /* SignIn.swift */; };
 		6E73293B23CA07920037003B /* StoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E73293A23CA07920037003B /* StoreService.swift */; };
 		6E73293D23CA0A020037003B /* StoreCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E73293C23CA0A020037003B /* StoreCard.swift */; };
+		6E810B0F259AEA3A0035315F /* GAPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E810B0E259AEA3A0035315F /* GAPage.swift */; };
 		6E82F8CB23D5D8A600AB3593 /* MyReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E82F8CA23D5D8A600AB3593 /* MyReviewViewModel.swift */; };
 		6E87291923C065C200F59C2F /* RegisterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E87291823C065C200F59C2F /* RegisterCell.swift */; };
 		6E88305323BC31C4007F2EF9 /* RankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E88305223BC31C4007F2EF9 /* RankingView.swift */; };
@@ -296,6 +297,7 @@
 		6E72AE6423C9B7DE00D3B257 /* SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignIn.swift; sourceTree = "<group>"; };
 		6E73293A23CA07920037003B /* StoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreService.swift; sourceTree = "<group>"; };
 		6E73293C23CA0A020037003B /* StoreCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCard.swift; sourceTree = "<group>"; };
+		6E810B0E259AEA3A0035315F /* GAPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GAPage.swift; sourceTree = "<group>"; };
 		6E82F8CA23D5D8A600AB3593 /* MyReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewViewModel.swift; sourceTree = "<group>"; };
 		6E87291823C065C200F59C2F /* RegisterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterCell.swift; sourceTree = "<group>"; };
 		6E88305223BC31C4007F2EF9 /* RankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingView.swift; sourceTree = "<group>"; };
@@ -762,6 +764,16 @@
 			path = model;
 			sourceTree = "<group>";
 		};
+		6E810B10259AEA4A0035315F /* ga */ = {
+			isa = PBXGroup;
+			children = (
+				6EB8FBA025988D4200C17B74 /* GAManager.swift */,
+				6EB8FBA825988DFC00C17B74 /* GAEvent.swift */,
+				6E810B0E259AEA3A0035315F /* GAPage.swift */,
+			);
+			path = ga;
+			sourceTree = "<group>";
+		};
 		6E8A137623B5DCBB009C2B64 /* my-page */ = {
 			isa = PBXGroup;
 			children = (
@@ -830,8 +842,7 @@
 		6EB8FB9F25988D3300C17B74 /* manager */ = {
 			isa = PBXGroup;
 			children = (
-				6EB8FBA025988D4200C17B74 /* GAManager.swift */,
-				6EB8FBA825988DFC00C17B74 /* GAEvent.swift */,
+				6E810B10259AEA4A0035315F /* ga */,
 			);
 			path = manager;
 			sourceTree = "<group>";
@@ -1216,6 +1227,7 @@
 				6E93C83823F22537002E737F /* PopupVC.swift in Sources */,
 				6EE0DBDA23C2B77D00B24D99 /* MyPageReviewCell.swift in Sources */,
 				6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */,
+				6E810B0F259AEA3A0035315F /* GAPage.swift in Sources */,
 				6E70C39123B6EECB00C52C9C /* DetailVC.swift in Sources */,
 				6EB8FBA925988DFC00C17B74 /* GAEvent.swift in Sources */,
 				6E6835C623C30D8300D23F54 /* MyReviewView.swift in Sources */,

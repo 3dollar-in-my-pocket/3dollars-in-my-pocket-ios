@@ -61,7 +61,7 @@ class SettingVC: BaseVC {
     self.settingView.backButton.rx.tap
       .observeOn(MainScheduler.instance)
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .back_button_clicked, className: SettingVC.self)
+        GA.shared.logEvent(event: .back_button_clicked, page: .setting_page)
       })
       .bind(onNext: self.popVC)
       .disposed(by: disposeBag)
@@ -116,7 +116,7 @@ class SettingVC: BaseVC {
       message: "회원탈퇴 이후에 제보했던 가게와 작성한 댓글을 더이상 볼 수 없어요.\n정말로 탈퇴하시겠어요?"
     ) {
       self.viewModel.input.withdrawal.onNext(())
-      GA.shared.logEvent(event: .signout_alert_withdraw_button_clicked, className: SettingVC.self)
+      GA.shared.logEvent(event: .signout_alert_withdraw_button_clicked, page: .setting_page)
     }
   }
   
@@ -202,10 +202,10 @@ extension SettingVC: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     if indexPath.section == 0 {
       if indexPath.row == 0 {
-        GA.shared.logEvent(event: .inquiry_button_clicked, className: SettingVC.self)
+        GA.shared.logEvent(event: .inquiry_button_clicked, page: .setting_page)
         self.goToQuestion()
       } else {
-        GA.shared.logEvent(event: .privacy_button_clicked, className: SettingVC.self)
+        GA.shared.logEvent(event: .privacy_button_clicked, page: .setting_page)
         self.goToPrivacy()
       }
     } else {

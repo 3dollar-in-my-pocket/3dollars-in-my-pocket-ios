@@ -74,7 +74,7 @@ class HomeVC: BaseVC {
     
     homeView.bungeoppangTap.rx.event
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .filter_bungeoppang_button_clicked, className: HomeVC.self)
+        GA.shared.logEvent(event: .filter_bungeoppang_button_clicked, page: .home_page)
       })
       .bind { [weak self] (_) in
       self?.delegate?.onTapCategory(category: .BUNGEOPPANG)
@@ -82,7 +82,7 @@ class HomeVC: BaseVC {
     
     homeView.takoyakiTap.rx.event
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .filter_takoyaki_button_clicked, className: HomeVC.self)
+        GA.shared.logEvent(event: .filter_takoyaki_button_clicked, page: .home_page)
       })
       .bind { [weak self] (_) in
       self?.delegate?.onTapCategory(category: .TAKOYAKI)
@@ -90,7 +90,7 @@ class HomeVC: BaseVC {
     
     homeView.gyeranppangTap.rx.event
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .filter_gyeranppang_button_clicked, className: HomeVC.self)
+        GA.shared.logEvent(event: .filter_gyeranppang_button_clicked, page: .home_page)
       })
       .bind { [weak self] (_) in
       self?.delegate?.onTapCategory(category: .GYERANPPANG)
@@ -98,7 +98,7 @@ class HomeVC: BaseVC {
     
     homeView.hotteokTap.rx.event
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .filter_hotteok_button_clicked, className: HomeVC.self)
+        GA.shared.logEvent(event: .filter_hotteok_button_clicked, page: .home_page)
       })
       .bind { [weak self] (_) in
       self?.delegate?.onTapCategory(category: .HOTTEOK)
@@ -243,7 +243,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if previousIndex == indexPath.row { // 셀이 선택된 상태에서 한번 더 누르는 경우 상세화면으로 이동
-      GA.shared.logEvent(event: .store_card_button_clicked, className: HomeVC.self)
+      GA.shared.logEvent(event: .store_card_button_clicked, page: .home_page)
       goToDetail(storeId: try! self.viewModel.nearestStore.value()[indexPath.row].id)
     } else {
       collectionView.scrollToItem(at: indexPath, at: .left, animated: true)

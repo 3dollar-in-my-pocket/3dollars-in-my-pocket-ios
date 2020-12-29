@@ -116,7 +116,7 @@ class ReviewModalVC: BaseVC {
     self.reviewModalView.closeButton.rx.tap
       .observeOn(MainScheduler.instance)
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .review_write_close_button_clicked, className: ReviewModalVC.self)
+        GA.shared.logEvent(event: .review_write_close_button_clicked, page: .review_write)
       })
       .bind(onNext: self.dismissModal)
       .disposed(by: disposeBag)
