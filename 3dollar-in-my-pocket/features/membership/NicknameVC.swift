@@ -83,6 +83,9 @@ class NicknameVC: BaseVC {
     self.nicknameView.backBtn.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .observeOn(MainScheduler.instance)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .back_button_clicked, page: .nickname_initialize_page)
+      })
       .bind(onNext: self.popupVC)
       .disposed(by: disposeBag)
     

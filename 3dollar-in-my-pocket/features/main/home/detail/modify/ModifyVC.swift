@@ -45,11 +45,19 @@ class ModifyVC: BaseVC {
       self?.modifyView.endEditing(true)
     }.disposed(by: disposeBag)
     
-    modifyView.backBtn.rx.tap.bind { [weak self] in
+    modifyView.backBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .back_button_clicked, page: .store_edit_page)
+      })
+      .bind { [weak self] in
       self?.navigationController?.popViewController(animated: true)
     }.disposed(by: disposeBag)
     
-    modifyView.deleteBtn.rx.tap.bind { [weak self] in
+    modifyView.deleteBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .delete_request_button_clicked, page: .store_edit_page)
+      })
+      .bind { [weak self] in
       if let vc = self {
         vc.deleteVC = DeleteModalVC.instance(storeId: vc.store.id).then {
           $0.deleagete = self
@@ -66,6 +74,9 @@ class ModifyVC: BaseVC {
     
     modifyView.registerBtn.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .store_edit_submit_button_clicked, page: .store_edit_page)
+      })
       .bind { [weak self] in
       guard let self = self else { return }
       
@@ -245,9 +256,10 @@ extension ModifyVC: UITableViewDelegate, UITableViewDataSource {
     
     cell.nameField.rx.controlEvent(.editingDidEnd).bind { [weak self] in
       let name = cell.nameField.text!
+      let price = cell.descField.text
       
       if !name.isEmpty {
-        let menu = Menu.init(name: name)
+        let menu = Menu.init(name: name, price: price)
         
         if indexPath.row == self?.viewModel.menuList.count {
           self?.viewModel.menuList.append(menu)

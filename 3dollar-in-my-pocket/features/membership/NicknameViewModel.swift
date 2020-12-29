@@ -43,6 +43,9 @@ class NicknameViewModel: BaseViewModel {
     
     self.input.tapStartButton
       .withLatestFrom(self.input.nickname)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .nickname_change_button_clicked, page: .nickname_initialize_page)
+      })
       .bind(onNext: self.setNickname(nickname:))
       .disposed(by: disposeBag)
   }
@@ -64,6 +67,7 @@ class NicknameViewModel: BaseViewModel {
       if let error = error as? HTTPError {
         if error == HTTPError.badRequest {
           self.output.errorLabel.accept("nickname_alreay_existed".localized)
+          GA.shared.logEvent(event: .nickname_already_existed, page: .nickname_initialize_page)
         } else {
           self.httpErrorAlert.accept(error)
         }

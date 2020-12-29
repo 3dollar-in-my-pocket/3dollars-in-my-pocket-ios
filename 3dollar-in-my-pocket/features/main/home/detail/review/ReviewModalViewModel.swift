@@ -27,6 +27,9 @@ class ReviewModalViewModel: BaseViewModel {
     super.init()
     
     self.input.tapRegister.withLatestFrom(Observable.combineLatest(self.input.rating, self.input.contents)) { Review(rating: $1.0, contents: $1.1) }
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .review_register_button_clicked, page: .review_write)
+      })
       .bind(onNext: self.saveReview(review:))
       .disposed(by: disposeBag)
   }
