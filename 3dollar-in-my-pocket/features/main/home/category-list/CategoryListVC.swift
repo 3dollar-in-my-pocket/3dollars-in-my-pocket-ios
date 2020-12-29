@@ -39,7 +39,22 @@ class CategoryListVC: BaseVC {
   override func bindEvent() {
     for index in categoryListView.categoryStackView.arrangedSubviews.indices {
       if let button = categoryListView.categoryStackView.arrangedSubviews[index] as? UIButton {
-        button.rx.tap.bind { [weak self] in
+        button.rx.tap
+          .do(onNext: { _ in
+            switch index {
+            case 0:
+              GA.shared.logEvent(event: .filter_bungeoppang_button_clicked, page: .store_list_page)
+            case 1:
+              GA.shared.logEvent(event: .filter_takoyaki_button_clicked, page: .store_list_page)
+            case 2:
+              GA.shared.logEvent(event: .filter_gyeranppang_button_clicked, page: .store_list_page)
+            case 3:
+              GA.shared.logEvent(event: .filter_hotteok_button_clicked, page: .store_list_page)
+            default:
+              break
+            }
+          })
+          .bind { [weak self] in
           self?.tapCategory(selectedIndex: index)
           self?.pageVC.tapCategory(index: index)
         }.disposed(by: disposeBag)
