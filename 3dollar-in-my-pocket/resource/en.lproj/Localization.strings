@@ -4,7 +4,7 @@
 "http_error_forbidden" = "탈퇴한 사용자입니다.";
 "http_error_not_found" = "없는 데이터입니다.";
 "http_error_internal_server_error" = "서버에서 오류가 발생했습니다.\n서버 개발자 채찍질해서 고치라고할께요!";
-"http_error_bad_gateway" = "서버가 죽었대요...ㅠ\n바로 살려볼께요!";
+"http_error_bad_gateway" = "일시적인 오류가 발생했어요..ㅠㅠ\n잠시후 다시 시도해주세요!";
 "http_error_maintenance" = "서버 점검중입니다.\n잠시후 다시 시도해주세요.";
 "http_error_timeout" = "일시적인 오류가 발생했어요..ㅠㅠ\n잠시후 다시 시도해주세요!";
 "error_unknown" = "알수 없는 오류가 발생했습니다.\n오류는 개발자에게 보고됩니다.";
