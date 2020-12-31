@@ -57,7 +57,7 @@ class ReviewCell: BaseTableViewCell {
   
   let nameLabel = UILabel().then {
     $0.textColor = .black
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 12)
   }
   
   let createdAtLabel = UILabel().then {
@@ -68,7 +68,7 @@ class ReviewCell: BaseTableViewCell {
   let replyLabel = UILabel().then {
     $0.textColor = UIColor(r: 46, g: 46, b: 46)
     $0.numberOfLines = 0
-    $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 12)
+    $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 14)
   }
   
   override func prepareForReuse() {
@@ -134,8 +134,8 @@ class ReviewCell: BaseTableViewCell {
     
     moreButton.snp.makeConstraints { make in
       make.right.equalTo(containerView).offset(-12)
-      make.top.equalTo(containerView).offset(18)
-      make.width.height.equalTo(18)
+      make.top.equalTo(containerView).offset(24)
+      make.width.height.equalTo(24)
     }
     
     nameLabel.snp.makeConstraints { (make) in
