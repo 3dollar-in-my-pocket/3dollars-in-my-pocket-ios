@@ -55,8 +55,8 @@ class CategoryListVC: BaseVC {
             }
           })
           .bind { [weak self] in
-          self?.tapCategory(selectedIndex: index)
-          self?.pageVC.tapCategory(index: index)
+            self?.tapCategory(selectedIndex: index)
+            self?.pageVC.tapCategory(index: index)
         }.disposed(by: disposeBag)
       }
     }
