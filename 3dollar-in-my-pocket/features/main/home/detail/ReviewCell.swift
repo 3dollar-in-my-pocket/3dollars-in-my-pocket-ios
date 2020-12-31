@@ -53,6 +53,7 @@ class ReviewCell: BaseTableViewCell {
   
   let moreButton = UIButton().then {
     $0.setImage(UIImage(named: "ic_more"), for: .normal)
+    $0.isHidden = true
   }
   
   let nameLabel = UILabel().then {
@@ -174,7 +175,6 @@ class ReviewCell: BaseTableViewCell {
       self.replyLabel.isHidden = true
       self.createdAtLabel.isHidden = true
       self.nameLabel.isHidden = true
-      self.moreButton.isHidden = true
     }
   }
   
