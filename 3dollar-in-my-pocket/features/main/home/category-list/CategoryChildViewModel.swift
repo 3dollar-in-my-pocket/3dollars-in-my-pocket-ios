@@ -20,6 +20,9 @@ struct CategoryChildViewModel {
     if !storeByDistance.storeList1000.isEmpty {
       self.storeByDistance.indexList.append(3)
     }
+    if !storeByDistance.storeListOver1000.isEmpty {
+      self.storeByDistance.indexList.append(4)
+    }
   }
   
   mutating func setReview(storeByReview: CategoryByReview) {
@@ -49,6 +52,7 @@ struct CategoryChildViewModel {
     result.append(contentsOf: storeByDistance.storeList100)
     result.append(contentsOf: storeByDistance.storeList500)
     result.append(contentsOf: storeByDistance.storeList1000)
+    result.append(contentsOf: storeByDistance.storeListOver1000)
     return result
   }
   
@@ -65,7 +69,8 @@ struct CategoryChildViewModel {
   
   func isDistanceEmpty() -> Bool {
     return storeByDistance.storeList50.isEmpty && storeByDistance.storeList100.isEmpty &&
-      storeByDistance.storeList500.isEmpty && storeByDistance.storeList1000.isEmpty
+      storeByDistance.storeList500.isEmpty && storeByDistance.storeList1000.isEmpty &&
+      storeByDistance.storeListOver1000.isEmpty
   }
   
   func isReviewEmpty() -> Bool {
@@ -84,6 +89,8 @@ struct CategoryChildViewModel {
       return storeByDistance.storeList500.count
     case 3:
       return storeByDistance.storeList1000.count
+    case 4:
+      return storeByDistance.storeListOver1000.count
     default:
       return 0
     }
@@ -116,6 +123,8 @@ struct CategoryChildViewModel {
       return self.storeByDistance.storeList500[indexPath.row]
     case 3:
       return self.storeByDistance.storeList1000[indexPath.row]
+    case 4:
+      return self.storeByDistance.storeListOver1000[indexPath.row]
     default:
       return nil
     }
@@ -148,6 +157,8 @@ struct CategoryChildViewModel {
       return !storeByDistance.storeList500.isEmpty
     case 3:
       return !storeByDistance.storeList1000.isEmpty
+    case 4:
+      return !storeByDistance.storeListOver1000.isEmpty
     default:
       return false
     }
@@ -183,6 +194,9 @@ struct CategoryChildViewModel {
       sectionCount += 1
     }
     if !storeByDistance.storeList1000.isEmpty {
+      sectionCount += 1
+    }
+    if !storeByDistance.storeListOver1000.isEmpty {
       sectionCount += 1
     }
     return sectionCount

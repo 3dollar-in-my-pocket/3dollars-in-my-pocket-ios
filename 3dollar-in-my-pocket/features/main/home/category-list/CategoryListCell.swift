@@ -81,7 +81,11 @@ class CategoryListCell: BaseTableViewCell {
     
     switch order {
     case .DISTANCE:
-      valueLabel.text = String.init(format: "%dm", storeCard.distance)
+      if storeCard.distance >= 1000 {
+        valueLabel.text = String.init(format: "%.2fkm", Double(storeCard.distance) / 1000)
+      } else {
+        valueLabel.text = String.init(format: "%dm", storeCard.distance)
+      }
       starImg.isHidden = true
       distanceLabel.isHidden = true
     case .REVIEW:
