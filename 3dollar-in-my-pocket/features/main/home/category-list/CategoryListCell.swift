@@ -47,6 +47,7 @@ class CategoryListCell: BaseTableViewCell {
     titleLabel.snp.makeConstraints { (make) in
       make.centerY.equalTo(categoryImage.snp.centerY)
       make.left.equalTo(categoryImage.snp.right).offset(16)
+      make.width.lessThanOrEqualTo(150 * RatioUtils.widthRatio)
     }
     
     distanceLabel.snp.makeConstraints { (make) in
