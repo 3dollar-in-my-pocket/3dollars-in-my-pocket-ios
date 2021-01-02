@@ -44,6 +44,16 @@ class FAQVC: BaseVC {
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.faqView.showLoading(isShow:))
       .disposed(by: disposeBag)
+    
+    self.viewModel.httpErrorAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showHTTPErrorAlert(error:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.showSystemAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {

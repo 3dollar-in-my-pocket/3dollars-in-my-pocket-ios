@@ -30,24 +30,32 @@ class DeleteModalVC: BaseVC {
     }
     
     private func requestDelete() {
-        StoreService.deleteStore(
+        StoreService().deleteStore(
           storeId: self.storeId,
           deleteReasonType: DeleteReason.init(rawValue: deleteModalView.deleteReason)!
         ).subscribe(onNext: { [weak self] _ in
           self?.deleagete?.onRequest()
         }, onError: { [weak self] error in
           guard let self = self else { return }
-          AlertUtils.show(controller: self, message: "이미 삭제요청을 했습니다.")
+          if let httpError = error as? HTTPError {
+            self.showHTTPErrorAlert(error: httpError)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert(alert: alertContent)
+          }
         }).disposed(by: disposeBag)
     }
 }
 
 extension DeleteModalVC: DeleteModalViewDelegate {
     func onTapRequest() {
+        GA.shared.logEvent(event: .delete_request_submit_button_clicked, page: .store_detail_page)
         self.requestDelete()
     }
     
     func onTapClose() {
+        GA.shared.logEvent(event: .delete_request_popup_close_button_clicked, page: .store_detail_page)
         self.deleagete?.onTapClose()
     }
 }

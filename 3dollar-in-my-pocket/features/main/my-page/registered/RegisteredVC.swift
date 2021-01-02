@@ -36,7 +36,7 @@ class RegisteredVC: BaseVC {
     }
     
     private func getReportedStore() {
-      StoreService.getReportedStore(page: 1).subscribe(
+      StoreService().getReportedStore(page: 1).subscribe(
         onNext: { [weak self] storePage in
           guard let self = self else { return }
           
@@ -47,12 +47,13 @@ class RegisteredVC: BaseVC {
         },
         onError: { [weak self] error in
           guard let self = self else { return }
-          
-          AlertUtils.show(
-            controller: self,
-            title: "get reported store error",
-            message: error.localizedDescription
-          )
+          if let httpError = error as? HTTPError {
+            self.showHTTPErrorAlert(error: httpError)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert(alert: alertContent)
+          }
         })
         .disposed(by: disposeBag)
     }
@@ -60,7 +61,7 @@ class RegisteredVC: BaseVC {
     private func loadMoreStore() {
         currentPage += 1
         addLoadingFooter()
-        StoreService.getReportedStore(page: currentPage)
+        StoreService().getReportedStore(page: currentPage)
           .subscribe(
             onNext: { [weak self] storePage in
               guard let self = self else { return }
@@ -71,11 +72,13 @@ class RegisteredVC: BaseVC {
             onError: { [weak self] error in
               guard let self = self else { return }
               
-              AlertUtils.show(
-                controller: self,
-                title: "get reported store error",
-                message: error.localizedDescription
-              )
+              if let httpError = error as? HTTPError {
+                self.showHTTPErrorAlert(error: httpError)
+              } else if let error = error as? CommonError {
+                let alertContent = AlertContent(title: nil, message: error.description)
+                
+                self.showSystemAlert(alert: alertContent)
+              }
               self.removeLoadingFooter()
             })
           .disposed(by: disposeBag)

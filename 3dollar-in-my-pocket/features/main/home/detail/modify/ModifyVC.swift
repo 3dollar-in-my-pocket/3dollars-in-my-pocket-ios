@@ -45,11 +45,19 @@ class ModifyVC: BaseVC {
       self?.modifyView.endEditing(true)
     }.disposed(by: disposeBag)
     
-    modifyView.backBtn.rx.tap.bind { [weak self] in
+    modifyView.backBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .back_button_clicked, page: .store_edit_page)
+      })
+      .bind { [weak self] in
       self?.navigationController?.popViewController(animated: true)
     }.disposed(by: disposeBag)
     
-    modifyView.deleteBtn.rx.tap.bind { [weak self] in
+    modifyView.deleteBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .delete_request_button_clicked, page: .store_edit_page)
+      })
+      .bind { [weak self] in
       if let vc = self {
         vc.deleteVC = DeleteModalVC.instance(storeId: vc.store.id).then {
           $0.deleagete = self
@@ -64,7 +72,12 @@ class ModifyVC: BaseVC {
       self?.viewModel.btnEnable.onNext(())
     }.disposed(by: disposeBag)
     
-    modifyView.registerBtn.rx.tap.bind { [weak self] in
+    modifyView.registerBtn.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .store_edit_submit_button_clicked, page: .store_edit_page)
+      })
+      .bind { [weak self] in
       guard let self = self else { return }
       
       let storeId = self.store.id
@@ -82,7 +95,7 @@ class ModifyVC: BaseVC {
       )
       
       self.modifyView.showLoading(isShow: true)
-      StoreService.updateStore(storeId: storeId, store: store, images: images)
+      StoreService().updateStore(storeId: storeId, store: store, images: images)
         .subscribe(
           onNext: { [weak self] _ in
             self?.delegate?.onModifySuccess()
@@ -91,12 +104,13 @@ class ModifyVC: BaseVC {
           },
           onError: { [weak self] error in
             guard let self = self else { return }
-            
-            AlertUtils.show(
-              controller: self,
-              title: "Update store error",
-              message: error.localizedDescription
-            )
+            if let httpError = error as? HTTPError {
+              self.showHTTPErrorAlert(error: httpError)
+            } else if let error = error as? CommonError {
+              let alertContent = AlertContent(title: nil, message: error.description)
+              
+              self.showSystemAlert(alert: alertContent)
+            }
             self.modifyView.showLoading(isShow: false)
           })
         .disposed(by: self.disposeBag)
@@ -242,9 +256,10 @@ extension ModifyVC: UITableViewDelegate, UITableViewDataSource {
     
     cell.nameField.rx.controlEvent(.editingDidEnd).bind { [weak self] in
       let name = cell.nameField.text!
+      let price = cell.descField.text
       
       if !name.isEmpty {
-        let menu = Menu.init(name: name)
+        let menu = Menu.init(name: name, price: price)
         
         if indexPath.row == self?.viewModel.menuList.count {
           self?.viewModel.menuList.append(menu)

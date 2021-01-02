@@ -52,14 +52,25 @@ class MyPageVC: BaseVC {
     
     myPageView.settingButton.rx.tap
       .observeOn(MainScheduler.instance)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .setting_button_clicked, page: .my_info_page)
+      })
       .bind(onNext: self.goToSetting)
       .disposed(by: disposeBag)
     
-    myPageView.registerTotalBtn.rx.tap.bind { [weak self] in
+    myPageView.registerTotalBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .show_all_my_store_button_clicked, page: .my_info_page)
+      })
+      .bind { [weak self] in
       self?.navigationController?.pushViewController(RegisteredVC.instance(), animated: true)
     }.disposed(by: disposeBag)
     
-    myPageView.reviewTotalBtn.rx.tap.bind { [weak self] in
+    myPageView.reviewTotalBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .show_all_my_review_button_clicked, page: .my_info_page)
+      })
+      .bind { [weak self] in
       self?.navigationController?.pushViewController(MyReviewVC.instance(), animated: true)
     }.disposed(by: disposeBag)
   }
@@ -88,67 +99,79 @@ class MyPageVC: BaseVC {
   }
   
   private func getMyInfo() {
-    UserService.getUserInfo().subscribe(onNext: { [weak self] user in
-      self?.myPageView.nicknameLabel.text = user.nickname
-    }, onError: { [weak self] error in
-      guard let self = self else { return }
-      
-      AlertUtils.show(controller: self, title: "error user info", message: error.localizedDescription)
-    }).disposed(by: disposeBag)
+    UserService().getUserInfo().subscribe(
+      onNext: { [weak self] user in
+        self?.myPageView.nicknameLabel.text = user.nickname
+      },
+      onError: { [weak self] error in
+        if let httpError = error as? HTTPError {
+          self?.showHTTPErrorAlert(error: httpError)
+        } else if let error = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: error.description)
+          
+          self?.showSystemAlert(alert: alertContent)
+        }
+      }).disposed(by: disposeBag)
   }
   
   private func getReportedStore() {
-    StoreService.getReportedStore(page: 1).subscribe(
-      onNext: { [weak self] storePage in
-        guard let self = self else { return }
-        self.myPageView.setRegisterEmpty(isEmpty: storePage.content.isEmpty, count: storePage.totalElements)
-        if storePage.content.count > 5 {
-          var sliceArray: [Store?] = Array(storePage.content[0...4])
+    StoreService().getReportedStore(page: 1)
+      .subscribe(
+        onNext: { [weak self] storePage in
+          guard let self = self else { return }
+          self.myPageView.setRegisterEmpty(isEmpty: storePage.content.isEmpty, count: storePage.totalElements)
+          if storePage.content.count > 5 {
+            var sliceArray: [Store?] = Array(storePage.content[0...4])
+            
+            sliceArray.append(nil)
+            self.viewModel.reportedStores.onNext(sliceArray)
+          } else {
+            self.viewModel.reportedStores.onNext(storePage.content)
+          }
+        }, onError: { [weak self] error in
+          guard let self = self else { return }
           
-          sliceArray.append(nil)
-          self.viewModel.reportedStores.onNext(sliceArray)
-        } else {
-          self.viewModel.reportedStores.onNext(storePage.content)
-        }
-    }, onError: { [weak self] error in
-      guard let self = self else { return }
-      
-      AlertUtils.show(
-        controller: self,
-        title: "get reported store error",
-        message: error.localizedDescription
-      )
-    })
-    .disposed(by: disposeBag)
+          if let error = error as? HTTPError {
+            self.showHTTPErrorAlert(error: error)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert(alert: alertContent)
+          }
+        })
+      .disposed(by: disposeBag)
   }
   
   private func getMyReviews() {
-    ReviewService.getMyReview(page: 1).subscribe(
-      onNext: { [weak self] reviewPage in
-        guard let self = self else { return }
-        
-        self.myPageView.setReviewEmpty(isEmpty: reviewPage.content.isEmpty, count: reviewPage.totalElements)
-        if reviewPage.totalElements > 3 {
-          self.viewModel.reportedReviews.onNext(Array(reviewPage.content[0...2]))
-        } else {
-          var contents: [Review?] = reviewPage.content
+    ReviewService().getMyReview(page: 1)
+      .subscribe(
+        onNext: { [weak self] reviewPage in
+          guard let self = self else { return }
           
-          while contents.count != 3 {
-            contents.append(nil)
+          self.myPageView.setReviewEmpty(isEmpty: reviewPage.content.isEmpty, count: reviewPage.totalElements)
+          if reviewPage.totalElements > 3 {
+            self.viewModel.reportedReviews.onNext(Array(reviewPage.content[0...2]))
+          } else {
+            var contents: [Review?] = reviewPage.content
+            
+            while contents.count != 3 {
+              contents.append(nil)
+            }
+            self.viewModel.reportedReviews.onNext(contents)
           }
-          self.viewModel.reportedReviews.onNext(contents)
-        }
-        
-      },
-      onError: { [weak self] error in
-        guard let self = self else { return }
-        
-        AlertUtils.show(
-          controller: self,
-          title: "get my review error",
-          message: error.localizedDescription
-        )
-      })
+          
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          
+          if let httpError = error as? HTTPError {
+            self.showHTTPErrorAlert(error: httpError)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert(alert: alertContent)
+          }
+        })
       .disposed(by: disposeBag)
   }
 }

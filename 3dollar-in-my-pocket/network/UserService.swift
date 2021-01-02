@@ -16,6 +16,10 @@ protocol UserServiceProtocol {
   func getUserInfo(userId: Int) -> Observable<User>
   
   func withdrawal(userId: Int) -> Observable<Void>
+  
+  func changeNickname(nickname: String) -> Observable<String>
+  
+  func getUserInfo() -> Observable<User>
 }
 
 struct UserService: UserServiceProtocol {
@@ -25,7 +29,7 @@ struct UserService: UserServiceProtocol {
       let urlString = HTTPUtils.url + "/api/v1/user/me"
       let headers = HTTPUtils.defaultHeader()
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         headers: headers
@@ -34,13 +38,7 @@ struct UserService: UserServiceProtocol {
           observer.onNext("success")
           observer.onCompleted()
         } else {
-          if let statusCode = response.response?.statusCode {
-            observer.processHTTPError(statusCode: statusCode)
-          } else {
-            let error = CommonError(desc: "알수 없는 오류발생.\n잠시 후 다시 시도해주세요.")
-            
-            observer.onError(error)
-          }
+          observer.processHTTPError(response: response)
         }
       }
       
@@ -53,27 +51,17 @@ struct UserService: UserServiceProtocol {
       let urlString = HTTPUtils.url + "/api/v1/user/login"
       let parameters = user.toDict()
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .post,
         parameters: parameters,
         encoding: JSONEncoding.default,
         headers: HTTPUtils.jsonHeader()
       ).responseJSON { response in
-        Log.debug("response: \(response)")
-        if let value = response.value {
-          if let signIn: SignIn = JsonUtils.toJson(object: value) {
-            observer.onNext(signIn)
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "failed to json")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.processValue(class: SignIn.self, response: response)
         } else {
-          let error = CommonError(desc: "Value is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       }
       
@@ -91,29 +79,17 @@ struct UserService: UserServiceProtocol {
       let parameters: [String: Any] = ["nickName": nickname, "userId": id]
       let headers = ["Authorization": token] as HTTPHeaders
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .put,
         parameters: parameters,
         headers: headers
       ).responseString(completionHandler: { (response) in
-        if let statusCode = response.response?.statusCode {
-          if statusCode == 200 {
-            observer.onNext(())
-            observer.onCompleted()
-          } else if statusCode == 400{
-            let error = CommonError(desc: "이미 존재하는 닉네임입니다.")
-            
-            observer.onError(error)
-          } else {
-            let error = CommonError(desc: "알 수 없는 에러입니다.")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.onNext(())
+          observer.onCompleted()
         } else {
-          let error = CommonError(desc: "Status code is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       })
       
@@ -127,25 +103,16 @@ struct UserService: UserServiceProtocol {
       let headders = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = ["userId" : String(userId)]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         parameters: parameters,
         headers: headders
       ).responseJSON { response in
-        if let value = response.value {
-          if let user: User = JsonUtils.toJson(object: value) {
-            observer.onNext(user)
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "failed to json")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.processValue(class: User.self, response: response)
         } else {
-          let error = CommonError(desc: "Value is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       }
       return Disposables.create()
@@ -158,7 +125,7 @@ struct UserService: UserServiceProtocol {
       let headers = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = ["userId": userId]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .post,
         parameters: parameters,
@@ -169,23 +136,16 @@ struct UserService: UserServiceProtocol {
           if "\(statusCode)".first! == "2" {
             observer.onNext(())
             observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "알 수 없는 에러입니다.")
-            
-            observer.onError(error)
           }
-        } else {
-          let error = CommonError(desc: "Status code is nil")
-          
-          observer.onError(error)
         }
+        observer.processHTTPError(response: response)
       })
       
       return Disposables.create()
     }
   }
   
-  static func changeNickname(nickname: String) -> Observable<String> {
+  func changeNickname(nickname: String) -> Observable<String> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/user/nickname"
       let headers = HTTPUtils.defaultHeader()
@@ -194,25 +154,17 @@ struct UserService: UserServiceProtocol {
         "userId": UserDefaultsUtil.getUserId() ?? ""
       ]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .put,
         parameters: parameters,
         headers: headers
       ).responseString(completionHandler: { response in
-        if let statusCode = response.response?.statusCode {
-          if statusCode == 200 {
-            observer.onNext("success")
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "이미 존재하는 닉네임입니다.")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.onNext("success")
+          observer.onCompleted()
         } else {
-          let error = CommonError(desc: "Status code is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       })
       
@@ -220,68 +172,22 @@ struct UserService: UserServiceProtocol {
     }
   }
   
-  // 마이페이지 > 닉네임 변경 API와 따로 구현
-  // 초기 닉네임 설정하는 화면에서는 토큰과 id가 UserDefault에 저장되어있으면 안되기 떄문에 입력값으로 받음
-  static func setNickname(
-    nickname: String,
-    id: Int,
-    token: String
-  ) -> Observable<String> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/nickname"
-      let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["nickName": nickname, "userId": id]
-      
-      AF.request(
-        urlString,
-        method: .put,
-        parameters: parameters,
-        headers: headers
-      ).responseString(completionHandler: { response in
-        if let statusCode = response.response?.statusCode {
-          if statusCode == 200 {
-            observer.onNext("success")
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "이미 존재하는 닉네임입니다.")
-            
-            observer.onError(error)
-          }
-        } else {
-          let error = CommonError(desc: "Status code is nil")
-          
-          observer.onError(error)
-        }
-      })
-      return Disposables.create()
-    }
-  }
-  
-  static func getUserInfo() -> Observable<User> {
+  func getUserInfo() -> Observable<User> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/user/info"
       let headders = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = ["userId" : UserDefaultsUtil().getUserId()]
       
-      AF.request(
+      HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
         parameters: parameters,
         headers: headders
       ).responseJSON { response in
-        if let value = response.value {
-          if let user: User = JsonUtils.toJson(object: value) {
-            observer.onNext(user)
-            observer.onCompleted()
-          } else {
-            let error = CommonError(desc: "failed to json")
-            
-            observer.onError(error)
-          }
+        if response.isSuccess() {
+          observer.processValue(class: User.self, response: response)
         } else {
-          let error = CommonError(desc: "Value is nil")
-          
-          observer.onError(error)
+          observer.processHTTPError(response: response)
         }
       }
       return Disposables.create()

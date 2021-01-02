@@ -20,6 +20,12 @@ class BaseTableViewCell: UITableViewCell {
     bindConstraints()
   }
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    
+    self.disposeBag = DisposeBag()
+  }
+  
   func setup() { }
   
   func bindConstraints() { }

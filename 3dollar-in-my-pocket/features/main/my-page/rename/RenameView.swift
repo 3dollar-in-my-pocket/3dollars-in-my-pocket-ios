@@ -73,7 +73,7 @@ class RenameView: BaseView {
   }
   
   let warningLabel = UILabel().then {
-    $0.text = "중복된 닉네임"
+    $0.text = "nickname_alreay_existed".localized
     $0.textColor = UIColor.init(r: 238, g: 98, b: 76)
     $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 13)
     $0.isHidden = true

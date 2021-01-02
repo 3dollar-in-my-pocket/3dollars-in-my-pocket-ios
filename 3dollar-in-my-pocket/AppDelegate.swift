@@ -44,11 +44,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
   
   private func initilizeSwiftyBeaver() {
-    // add log destinations. at least one is needed!
-    let console = ConsoleDestination()  // log to Xcode Console
+    let console = ConsoleDestination()
+    let platform = SBPlatformDestination(
+      appID: "g6PNqN",
+      appSecret: "sxvb0isaxBuyz95xtqajnwrbfM3Dw7Bd",
+      encryptionKey: "yybiGqoyhddpxgp2fmghh9Zcyqacpe5u"
+    )
     
+    platform.minLevel = .warning
     console.format = "$DHH:mm:ss.SSS$d $C$L$c $N.$F:$l - $M"
     Log.addDestination(console)
+    Log.addDestination(platform)
   }
   
   private func initilizeKakao() {

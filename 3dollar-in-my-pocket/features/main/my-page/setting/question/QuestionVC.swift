@@ -34,9 +34,14 @@ class QuestionVC: BaseVC {
       .bind(onNext: self.questionView.showLoading(isShow:))
       .disposed(by: disposeBag)
     
-    self.viewModel.output.showSystemAlert
+    self.viewModel.showSystemAlert
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.httpErrorAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showHTTPErrorAlert(error:))
       .disposed(by: disposeBag)
   }
   
@@ -78,7 +83,7 @@ class QuestionVC: BaseVC {
         $0.mailComposeDelegate = self
         $0.setToRecipients(["3dollarinmypocket@gmail.com"])
         $0.setSubject("가슴속 3천원 문의")
-        $0.setMessageBody("\n\n\n\nOS: ios \(iosVersion)\n닉네임: \(nickname)\n앱 버전: \(appVersion)\n디바이스: \(deviceModel)", isHTML: false)
+        $0.setMessageBody("\n\n\n\n----------\n닉네임: \(nickname)\n앱 버전: \(appVersion)\nOS: ios \(iosVersion)\n디바이스: \(deviceModel)", isHTML: false)
     }
     
     self.present(composer, animated: true, completion: nil)

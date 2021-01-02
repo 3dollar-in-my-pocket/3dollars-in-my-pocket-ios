@@ -19,7 +19,6 @@ class SignInViewModel: BaseViewModel {
   struct Output {
     let goToMain = PublishRelay<Void>()
     let goToNickname = PublishRelay<(Int, String)>()
-    let showSystemAlert = PublishRelay<AlertContent>()
   }
   
   
@@ -32,11 +31,17 @@ class SignInViewModel: BaseViewModel {
     super.init()
     
     self.input.tapKakao
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .kakao_login_button_clicked, page: .login_page)
+      })
       .bind(onNext: self.requestKakaoSignIn)
       .disposed(by: disposeBag)
     
     self.input.signWithApple
       .map { ($0, "APPLE")}
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .apple_login_button_clicked, page: .login_page)
+      })
       .bind(onNext: self.signIn)
       .disposed(by: disposeBag)
   }
@@ -51,7 +56,7 @@ class SignInViewModel: BaseViewModel {
               message: error.localizedDescription
             )
             
-            self.output.showSystemAlert.accept(alertContent)
+            self.showSystemAlert.accept(alertContent)
           }
         } else {
           self.requestKakaoInfo()
@@ -66,7 +71,7 @@ class SignInViewModel: BaseViewModel {
               message: error.localizedDescription
             )
             
-            self.output.showSystemAlert.accept(alertContent)
+            self.showSystemAlert.accept(alertContent)
           }
         }
         else {
@@ -84,7 +89,7 @@ class SignInViewModel: BaseViewModel {
           message: error.localizedDescription
         )
         
-        self.output.showSystemAlert.accept(alertContent)
+        self.showSystemAlert.accept(alertContent)
       }
       else {
         if let userId = user?.id {
@@ -98,7 +103,8 @@ class SignInViewModel: BaseViewModel {
     let user = User.init(socialId: socialId, socialType: socialType)
     
     self.userService.signIn(user: user)
-      .subscribe { signIn in
+      .subscribe { [weak self] signIn in
+        guard let self = self else { return }
         if signIn.state {
           self.userDefaults.setUserToken(token: signIn.token)
           self.userDefaults.setUserId(id: signIn.id)
@@ -106,13 +112,15 @@ class SignInViewModel: BaseViewModel {
         } else {
           self.output.goToNickname.accept((signIn.id, signIn.token))
         }
-      } onError: { error in
-        let alertContent = AlertContent(
-          title: "Error in sign-in",
-          message: error.localizedDescription
-        )
-        
-        self.output.showSystemAlert.accept(alertContent)
+      } onError: { [weak self] error in
+        guard let self = self else { return }
+        if let httpError = error as? HTTPError {
+          self.httpErrorAlert.accept(httpError)
+        } else if let error = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: error.description)
+          
+          self.showSystemAlert.accept(alertContent)
+        }
       }
       .disposed(by: disposeBag)
   }

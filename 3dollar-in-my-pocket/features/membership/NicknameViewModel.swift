@@ -18,7 +18,6 @@ class NicknameViewModel: BaseViewModel {
     let setButtonEnable = PublishRelay<Bool>()
     let goToMain = PublishRelay<Void>()
     let errorLabel = PublishRelay<String>()
-    let showAlert = PublishRelay<AlertContent>()
   }
   
   let userDefaults: UserDefaultsUtil
@@ -38,12 +37,15 @@ class NicknameViewModel: BaseViewModel {
     super.init()
     
     self.input.nickname
-      .map { !$0.isEmpty }
+      .map { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
       .bind(to: self.output.setButtonEnable)
       .disposed(by: disposeBag)
     
     self.input.tapStartButton
       .withLatestFrom(self.input.nickname)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .nickname_change_button_clicked, page: .nickname_initialize_page)
+      })
       .bind(onNext: self.setNickname(nickname:))
       .disposed(by: disposeBag)
   }
@@ -62,15 +64,17 @@ class NicknameViewModel: BaseViewModel {
       self.output.showLoading.accept(false)
       self.output.goToMain.accept(())
     } onError: { error in
-      if let error = error as? CommonError {
-        self.output.errorLabel.accept(error.description)
-      } else {
-        let alertContent = AlertContent(
-          title: "Error in setNickname",
-          message: error.localizedDescription
-        )
+      if let error = error as? HTTPError {
+        if error == HTTPError.badRequest {
+          self.output.errorLabel.accept("nickname_alreay_existed".localized)
+          GA.shared.logEvent(event: .nickname_already_existed, page: .nickname_initialize_page)
+        } else {
+          self.httpErrorAlert.accept(error)
+        }
+      } else if let error = error as? CommonError {
+        let alertContent = AlertContent(title: nil, message: error.description)
         
-        self.output.showAlert.accept(alertContent)
+        self.showSystemAlert.accept(alertContent)
       }
       self.output.showLoading.accept(false)
     }

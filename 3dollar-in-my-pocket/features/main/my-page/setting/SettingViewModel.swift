@@ -1,6 +1,7 @@
 import RxSwift
 import RxCocoa
 import KakaoSDKUser
+import KakaoSDKCommon
 
 
 class SettingViewModel: BaseViewModel {
@@ -19,7 +20,6 @@ class SettingViewModel: BaseViewModel {
     let goToRename = PublishRelay<String>()
     let goToSignIn = PublishRelay<Void>()
     let showLoading = PublishRelay<Bool>()
-    let showSystemAlert = PublishRelay<AlertContent>()
   }
   
   let userDefaults: UserDefaultsUtil
@@ -35,16 +35,25 @@ class SettingViewModel: BaseViewModel {
     
     self.input.signOut
       .withLatestFrom(self.output.user)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .logout_button_clicked, page: .setting_page)
+      })
       .bind(onNext: self.signOut(user:))
       .disposed(by: disposeBag)
     
     self.input.tapRename
       .withLatestFrom(self.output.user) { $1.nickname! }
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .nickname_change_page_button_clicked, page: .setting_page)
+      })
       .bind(to: self.output.goToRename)
       .disposed(by: disposeBag)
     
     self.input.withdrawal
       .withLatestFrom(self.output.user)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .signout_button_clicked, page: .setting_page)
+      })
       .bind(onNext: self.withdrawal(user:))
       .disposed(by: disposeBag)
   }
@@ -52,16 +61,20 @@ class SettingViewModel: BaseViewModel {
   func fetchMyInfo() {
     self.output.showLoading.accept(true)
     self.userService.getUserInfo(userId: self.userDefaults.getUserId())
-      .subscribe { user in
+      .subscribe { [weak self] user in
+        guard let self = self else { return }
         self.output.user.accept(user)
         self.output.showLoading.accept(false)
-      } onError: { error in
-        if let error = error as? CommonError {
-          let alertContent = AlertContent(title: "Error in fetchMyInfo", message: error.description)
+      } onError: { [weak self] error in
+        guard let self = self else { return }
+        if let httpError = error as? HTTPError {
+          self.httpErrorAlert.accept(httpError)
+        } else if let error = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: error.description)
           
-          self.output.showSystemAlert.accept(alertContent)
-          self.output.showLoading.accept(false)
+          self.showSystemAlert.accept(alertContent)
         }
+        self.output.showLoading.accept(false)
       }
       .disposed(by: disposeBag)
   }
@@ -96,33 +109,40 @@ class SettingViewModel: BaseViewModel {
         self.userDefaults.clear()
         self.output.goToSignIn.accept(())
         self.output.showLoading.accept(false)
-      } onError: { error in
-        if let error = error as? CommonError {
-          let alertContent = AlertContent(
-            title: "Error in withdrawal",
-            message: error.description
-          )
+      } onError: { [weak self] error in
+        guard let self = self else { return }
+        if let httpError = error as? HTTPError {
+          self.httpErrorAlert.accept(httpError)
+        } else if let error = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: error.description)
           
-          self.output.showLoading.accept(false)
-          self.output.showSystemAlert.accept(alertContent)
+          self.showSystemAlert.accept(alertContent)
         }
+        self.output.showLoading.accept(false)
       }
       .disposed(by: disposeBag)
   }
   
   private func signOutKakao() {
     UserApi.shared.logout { error in
-      if let error = error {
-        let alertContent = AlertContent(
-          title: "Error in signOutKakao",
-          message: error.localizedDescription
-        )
-        
-        self.output.showSystemAlert.accept(alertContent)
-      }
-      else {
+      if let kakaoError = error as? SdkError,
+         kakaoError.getApiError().reason == .InvalidAccessToken {
+        // KAKAO 토큰이 사라진 경우: 개발서버앱으로 왔다갔다 하는경우?
         self.userDefaults.clear()
         self.output.goToSignIn.accept(())
+      } else {
+        if let error = error {
+          let alertContent = AlertContent(
+            title: "Error in signOutKakao",
+            message: error.localizedDescription
+          )
+          
+          self.showSystemAlert.accept(alertContent)
+        }
+        else {
+          self.userDefaults.clear()
+          self.output.goToSignIn.accept(())
+        }
       }
     }
   }
@@ -134,15 +154,21 @@ class SettingViewModel: BaseViewModel {
   
   private func unlinkKakao() {
     UserApi.shared.unlink { error in
-      if let error = error {
-        let alertContent = AlertContent(
-          title: "Error in unlinkKakao",
-          message: error.localizedDescription
-        )
-        
-        self.output.showSystemAlert.accept(alertContent)
-      } else {
+      if let kakaoError = error as? SdkError,
+         kakaoError.getApiError().reason == .InvalidAccessToken {
+        // KAKAO 토큰이 사라진 경우: 개발서버앱으로 왔다갔다 하는경우?
         self.withdrawal()
+      } else {
+        if let error = error {
+          let alertContent = AlertContent(
+            title: "Error in unlinkKakao",
+            message: error.localizedDescription
+          )
+          
+          self.showSystemAlert.accept(alertContent)
+        } else {
+          self.withdrawal()
+        }
       }
     }
   }

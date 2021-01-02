@@ -67,7 +67,10 @@ class CategoryListView: BaseView {
     categoryStackView.addArrangedSubview(categoryTakoyaki)
     categoryStackView.addArrangedSubview(categoryGyeranppang)
     categoryStackView.addArrangedSubview(categoryHotteok)
-    addSubViews(mapView, navigationBar,backBtn, categoryImage, categoryStackView, myLocationBtn, pageView, adBannerView)
+    addSubViews(
+      mapView, navigationBar,backBtn, categoryImage,
+      categoryStackView, myLocationBtn, pageView, adBannerView
+    )
   }
   
   override func bindConstraints() {

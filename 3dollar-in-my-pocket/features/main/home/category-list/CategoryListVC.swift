@@ -1,6 +1,7 @@
 import UIKit
 import NMapsMap
 import GoogleMobileAds
+import FirebaseCrashlytics
 
 class CategoryListVC: BaseVC {
   
@@ -16,6 +17,8 @@ class CategoryListVC: BaseVC {
   
   var markers: [NMFMarker] = []
   
+  var currentPosition: (latitude: Double, longitude: Double)?
+  
   
   static func instance(category: StoreCategory) -> CategoryListVC {
     return CategoryListVC(nibName: nil, bundle: nil).then {
@@ -27,18 +30,33 @@ class CategoryListVC: BaseVC {
     super.viewDidLoad()
     view = categoryListView
     
-    tapCategory(selectedIndex: StoreCategory.categoryToIndex(category))
-    setupLocationManager()
-    setupGoogleMap()
+    self.tapCategory(selectedIndex: StoreCategory.categoryToIndex(category))
+    self.setupLocationManager()
+    self.setupNaverMap()
     self.loadAdBanner()
   }
   
-  override func bindViewModel() {
+  override func bindEvent() {
     for index in categoryListView.categoryStackView.arrangedSubviews.indices {
       if let button = categoryListView.categoryStackView.arrangedSubviews[index] as? UIButton {
-        button.rx.tap.bind { [weak self] in
-          self?.tapCategory(selectedIndex: index)
-          self?.pageVC.tapCategory(index: index)
+        button.rx.tap
+          .do(onNext: { _ in
+            switch index {
+            case 0:
+              GA.shared.logEvent(event: .filter_bungeoppang_button_clicked, page: .store_list_page)
+            case 1:
+              GA.shared.logEvent(event: .filter_takoyaki_button_clicked, page: .store_list_page)
+            case 2:
+              GA.shared.logEvent(event: .filter_gyeranppang_button_clicked, page: .store_list_page)
+            case 3:
+              GA.shared.logEvent(event: .filter_hotteok_button_clicked, page: .store_list_page)
+            default:
+              break
+            }
+          })
+          .bind { [weak self] in
+            self?.tapCategory(selectedIndex: index)
+            self?.pageVC.tapCategory(index: index)
         }.disposed(by: disposeBag)
       }
     }
@@ -48,7 +66,11 @@ class CategoryListVC: BaseVC {
       self?.locationManager.startUpdatingLocation()
     }.disposed(by: disposeBag)
     
-    categoryListView.backBtn.rx.tap.bind { [weak self] in
+    categoryListView.backBtn.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .back_button_clicked, page: .store_list_page)
+      })
+      .bind { [weak self] in
       self?.navigationController?.popViewController(animated: true)
     }.disposed(by: disposeBag)
   }
@@ -60,12 +82,17 @@ class CategoryListVC: BaseVC {
     locationManager.startUpdatingLocation()
   }
   
-  private func setupGoogleMap() {
+  private func setupNaverMap() {
     self.categoryListView.mapView.positionMode = .direction
+    self.categoryListView.mapView.addCameraDelegate(delegate: self)
   }
   
   private func setupPageVC(latitude: Double, longitude: Double) {
-    pageVC = CategoryPageVC.instance(category: self.category, latitude: latitude, longitude: longitude )
+    pageVC = CategoryPageVC.instance(
+      category: self.category,
+      latitude: latitude,
+      longitude: longitude
+    )
     addChild(pageVC)
     pageVC.pageDelegate = self
     categoryListView.pageView.addSubview(pageVC.view)
@@ -129,6 +156,18 @@ extension CategoryListVC: CategoryPageDelegate {
   }
 }
 
+//MARK: NMFMapViewCameraDelegate
+extension CategoryListVC: NMFMapViewCameraDelegate {
+  func mapViewCameraIdle(_ mapView: NMFMapView) {
+    
+    self.currentPosition = (mapView.cameraPosition.target.lat, mapView.cameraPosition.target.lng)
+    if self.pageVC != nil {
+      self.pageVC.viewControllers?[0].viewWillAppear(false)
+    }
+    Log.debug("cameraDidChangeByReason: \(mapView.cameraPosition.target)")
+  }
+}
+
 extension CategoryListVC: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     let location = locations.last
@@ -149,7 +188,29 @@ extension CategoryListVC: CLLocationManagerDelegate {
   }
   
   func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-//    AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
+    if let error = error as? CLError {
+      switch error.code {
+      case .denied:
+        AlertUtils.show(
+          controller: self,
+          title: "error_location_permission_denied_title".localized,
+          message: "error_location_permission_denied_message".localized
+        )
+      case .locationUnknown:
+        AlertUtils.show(
+          controller: self,
+          title: "error_location_unknown_title".localized,
+          message: "error_location_unknown_message".localized
+        )
+      default:
+        AlertUtils.show(
+          controller: self,
+          title: "error_location_default_title".localized,
+          message: "error_location_default_message".localized
+        )
+        Crashlytics.crashlytics().log("location Manager Error(error code: \(error.code.rawValue)")
+      }
+    }
   }
 }
 

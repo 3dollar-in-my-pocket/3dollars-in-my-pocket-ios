@@ -1,19 +1,60 @@
-// 설정
+"http_error_bad_request" = "요청에 오류가 있습니다.\n다시 확인해주세요.";
+"http_error_undefiend" = "Status code: %@\nrequest_url: %@\nresponse: %@";
+"http_error_unauthorized" = "토큰이 유효하지 않습니다.";
+"http_error_forbidden" = "탈퇴한 사용자입니다.";
+"http_error_not_found" = "없는 데이터입니다.";
+"http_error_internal_server_error" = "서버에서 오류가 발생했습니다.\n서버 개발자 채찍질해서 고치라고할께요!";
+"http_error_bad_gateway" = "일시적인 오류가 발생했어요..ㅠㅠ\n잠시후 다시 시도해주세요!";
+"http_error_maintenance" = "서버 점검중입니다.\n잠시후 다시 시도해주세요.";
+"http_error_timeout" = "일시적인 오류가 발생했어요..ㅠㅠ\n잠시후 다시 시도해주세요!";
+"error_unknown" = "알수 없는 오류가 발생했습니다.\n오류는 개발자에게 보고됩니다.";
+"error_failed_to_json" = "데이터를 가져오는 도중 오류가 발생했습니다.\n다시 시도해주세요.";
+"error_value_is_nil" = "서버와 통신중 오류가 발생했습니다.\n다시 시도해주세요.";
+"error_crashlytics_format" = "API통신중 요류 발생.\nurl: %s\nmessage: %s";
+"error_maintenance_title" = "서버점검";
+"error_maintenance_message" = "서버점검중입니다.\n잠시후 다시 시도해주세요.";
+"error_location_permission_denied_title" = "위치 권한 거절";
+"error_location_permission_denied_message" = "설정 > 가슴속 3천원 > 위치에서 위치 권한을 확인해주세요.";
+"error_location_unknown_title" = "알 수 없는 위치";
+"error_location_unknown_message" = "현재 위치가 확인되지 않습니다.\n잠시 후 다시 시도해주세요.";
+"error_location_default_title" = "위치 오류 발생";
+"error_location_default_message" = "위치 오류가 발생되었습니다.\n에러가 개발자에게 보고됩니다.";
 "setting_title" = "설정";
 "setting_nickname_modify" = "닉네임 수정";
 "setting_menu_question" = "문의사항";
 "setting_menu_privacy" = "개인정보처리방침";
 "setting_sign_out" = "로그아웃";
 "setting_withdrawal" = "회원탈퇴";
-
-// 문의사항
 "question_title" = "문의사항";
 "question_faq" = "FAQ";
 "question_email" = "1:1문의";
-
-// FAQ
 "faq_title" = "FAQ";
 "faq_question" = "어떤 점이 궁금하셨나요?";
-
-// 개인정보처리방침
 "privacy_title" = "개인정보처리방침";
+"nickname_alreay_existed" = "이미 존재하는 닉네임입니다.";
+"category_header_50m" = "50m 이내";
+"category_header_100m" = "100m 이내";
+"category_header_500m" = "500m 이내";
+"category_header_1k" = "1km 이내";
+"category_header_over_1k" = "1km 밖";
+"category_header_4point" = "4점 이상";
+"category_header_3point" = "3점 이상";
+"category_header_2point" = "2점 이상";
+"category_header_1point" = "1점 이상";
+"category_header_0point" = "0점 이상";
+"category_ordering_distance" = "거리순";
+"category_ordering_review" = "별점순";
+"category_bungeoppang" = "붕어빵";
+"category_gyeranppang" = "계란빵,";
+"category_hotteok" = "호떡아";
+"category_takoyaki" = "문어빵,";
+"category_sub_text_bungeoppang" = "만나기 30초 전";
+"category_sub_text_gyeranppang" = "내 입으로";
+"category_sub_text_hotteok" = "기다려";
+"category_sub_text_takoyaki" = "다 내꺼야";
+"category_empty" = "근처에 가게가 없어요.";
+"review_modal_title" = "이 가게를\n추천하시나요?";
+"review_modal_placeholder" = "리뷰를 남겨주세요! (100자 이내)";
+"review_modal_register" = "리뷰 등록하기";
+"popup_close" = "닫기";
+"popup_disable_today" = "오늘보지않기";

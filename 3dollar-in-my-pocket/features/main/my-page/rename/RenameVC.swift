@@ -1,4 +1,5 @@
 import UIKit
+import RxSwift
 
 class RenameVC: BaseVC {
   
@@ -32,10 +33,12 @@ class RenameVC: BaseVC {
     }.disposed(by: disposeBag)
     
     renameView.startBtn1.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(onNext: self.changeNickname)
       .disposed(by: disposeBag)
     
     renameView.startBtn2.rx.tap
+      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(onNext: self.changeNickname)
       .disposed(by: disposeBag)
   }
@@ -52,13 +55,28 @@ class RenameVC: BaseVC {
   private func changeNickname() {
     let nickname = renameView.nicknameField.text!
     
-    UserService.changeNickname(nickname: nickname)
+    self.renameView.showLoading(isShow: true)
+    UserService().changeNickname(nickname: nickname)
       .subscribe(
         onNext: { [weak self] _ in
-          self?.navigationController?.popViewController(animated: true)
+          guard let self = self else { return }
+          self.renameView.showLoading(isShow: false)
+          self.navigationController?.popViewController(animated: true)
         },
-        onError: { [weak self] _ in
-          self?.renameView.existedSameName()
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          if let error = error as? HTTPError {
+            if error == HTTPError.badRequest {
+              self.renameView.existedSameName()
+            } else {
+              self.showHTTPErrorAlert(error: error)
+            }
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert(alert: alertContent)
+          }
+          self.renameView.showLoading(isShow: false)
         })
       .disposed(by: disposeBag)
   }
