@@ -116,10 +116,10 @@ class CategoryChildView: BaseView {
       self.descLabel1.text = "category_gyeranppang".localized
       self.setKerningText(text: "category_sub_text_gyeranppang".localized)
     case .HOTTEOK:
-      self.descLabel1.text = "category_bungeoppang".localized
+      self.descLabel1.text = "category_hotteok".localized
       self.setKerningText(text: "category_sub_text_hotteok".localized)
     case .TAKOYAKI:
-      self.descLabel1.text = "category_hotteok".localized
+      self.descLabel1.text = "category_takoyaki".localized
       self.setKerningText(text: "category_sub_text_takoyaki".localized)
     default:
       self.descLabel1.text = "category_takoyaki".localized

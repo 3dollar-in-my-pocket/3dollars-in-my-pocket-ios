@@ -57,7 +57,7 @@ class DetailView: BaseView {
     titleLabel.snp.makeConstraints { (make) in
       make.centerX.equalToSuperview()
       make.left.equalTo(backBtn.snp.right)
-      make.right.equalToSuperview().offset(-72)
+      make.right.equalToSuperview().offset(-72 * RatioUtils.widthRatio)
       make.centerY.equalTo(backBtn.snp.centerY)
     }
     

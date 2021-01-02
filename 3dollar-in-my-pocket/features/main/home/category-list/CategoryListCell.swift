@@ -47,6 +47,7 @@ class CategoryListCell: BaseTableViewCell {
     titleLabel.snp.makeConstraints { (make) in
       make.centerY.equalTo(categoryImage.snp.centerY)
       make.left.equalTo(categoryImage.snp.right).offset(16)
+      make.width.lessThanOrEqualTo(150 * RatioUtils.widthRatio)
     }
     
     distanceLabel.snp.makeConstraints { (make) in
@@ -81,14 +82,23 @@ class CategoryListCell: BaseTableViewCell {
     
     switch order {
     case .DISTANCE:
-      valueLabel.text = String.init(format: "%dm", storeCard.distance)
+      if storeCard.distance >= 1000 {
+        valueLabel.text = String.init(format: "%.2fkm", Double(storeCard.distance) / 1000)
+      } else {
+        valueLabel.text = String.init(format: "%dm", storeCard.distance)
+      }
       starImg.isHidden = true
       distanceLabel.isHidden = true
     case .REVIEW:
       valueLabel.text = String.init(format: "%.01f", storeCard.rating)
       starImg.isHidden = false
       distanceLabel.isHidden = false
-      distanceLabel.text = String.init(format: "%dm", storeCard.distance)
+      
+      if storeCard.distance >= 1000 {
+        distanceLabel.text = String.init(format: "%.2fkm", Double(storeCard.distance) / 1000)
+      } else {
+        distanceLabel.text = String.init(format: "%dm", storeCard.distance)
+      }
     }
     
   }

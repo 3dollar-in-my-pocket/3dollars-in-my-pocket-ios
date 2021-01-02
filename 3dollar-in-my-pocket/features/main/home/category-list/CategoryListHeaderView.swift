@@ -52,6 +52,8 @@ class CategoryListHeaderView: BaseView {
       titleLable.text = "category_header_500m".localized
     case 3:
       titleLable.text = "category_header_1k".localized
+    case 4:
+      titleLable.text = "category_header_over_1k".localized
     default:
       titleLable.text = ""
     }

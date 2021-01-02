@@ -235,7 +235,7 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
           let review = store.reviews[indexPath.row - 1]
           
           if UserDefaultsUtil().getUserId() == review.user.id {
-            cell.moreButton.isHidden = false
+            cell.moreButton.isHidden = UserDefaultsUtil().getUserId() != review.user.id
             cell.moreButton.rx.tap
               .map { review.id }
               .observeOn(MainScheduler.instance)

@@ -38,13 +38,11 @@ class CategoryChildVC: BaseVC {
     super.viewWillAppear(animated)
     if let categoryListVC = self.parent?.parent as? CategoryListVC,
        let currentPosition = categoryListVC.currentPosition {
-      self.latitude = currentPosition.latitude
-      self.longitude = currentPosition.longitude
       
       if categoryChildView.nearOrderBtn.isSelected {
-        getStoreByDistance(mapLatitude: self.latitude, mapLongitude: self.longitude)
+        getStoreByDistance(mapLatitude: currentPosition.latitude, mapLongitude: currentPosition.longitude)
       } else {
-        getStoreByReview(mapLatitude: self.latitude, mapLongitude: self.longitude)
+        getStoreByReview(mapLatitude: currentPosition.latitude, mapLongitude: currentPosition.longitude)
       }
     } else {
       if categoryChildView.nearOrderBtn.isSelected {
@@ -66,7 +64,9 @@ class CategoryChildVC: BaseVC {
         vc.order = .DISTANCE
         vc.categoryChildView.nearOrderBtn.isSelected = true
         vc.categoryChildView.reviewOrderBtn.isSelected = false
-        vc.getStoreByDistance(mapLatitude: vc.latitude, mapLongitude: vc.longitude)
+        
+        let cameraPosition = (vc.parent?.parent as? CategoryListVC)?.currentPosition
+        vc.getStoreByDistance(mapLatitude: cameraPosition?.latitude, mapLongitude: cameraPosition?.longitude)
       }
     }.disposed(by: disposeBag)
     
@@ -80,7 +80,9 @@ class CategoryChildVC: BaseVC {
         vc.order = .REVIEW
         vc.categoryChildView.nearOrderBtn.isSelected = false
         vc.categoryChildView.reviewOrderBtn.isSelected = true
-        vc.getStoreByReview(mapLatitude: vc.latitude, mapLongitude: vc.longitude)
+        
+        let cameraPosition = (vc.parent?.parent as? CategoryListVC)?.currentPosition
+        vc.getStoreByReview(mapLatitude: cameraPosition?.latitude, mapLongitude: cameraPosition?.longitude)
       }
     }.disposed(by: disposeBag)
   }

@@ -1,10 +1,10 @@
 "http_error_bad_request" = "요청에 오류가 있습니다.\n다시 확인해주세요.";
-"http_error_undefiend" = "정의되지 않은 status code입니다.\nStatus code: %d\nurl: %s";
+"http_error_undefiend" = "Status code: %@\nrequest_url: %@\nresponse: %@";
 "http_error_unauthorized" = "토큰이 유효하지 않습니다.";
 "http_error_forbidden" = "탈퇴한 사용자입니다.";
 "http_error_not_found" = "없는 데이터입니다.";
 "http_error_internal_server_error" = "서버에서 오류가 발생했습니다.\n서버 개발자 채찍질해서 고치라고할께요!";
-"http_error_bad_gateway" = "서버가 죽었대요...ㅠ\n바로 살려볼께요!";
+"http_error_bad_gateway" = "일시적인 오류가 발생했어요..ㅠㅠ\n잠시후 다시 시도해주세요!";
 "http_error_maintenance" = "서버 점검중입니다.\n잠시후 다시 시도해주세요.";
 "http_error_timeout" = "일시적인 오류가 발생했어요..ㅠㅠ\n잠시후 다시 시도해주세요!";
 "error_unknown" = "알수 없는 오류가 발생했습니다.\n오류는 개발자에게 보고됩니다.";
@@ -36,6 +36,7 @@
 "category_header_100m" = "100m 이내";
 "category_header_500m" = "500m 이내";
 "category_header_1k" = "1km 이내";
+"category_header_over_1k" = "1km 밖";
 "category_header_4point" = "4점 이상";
 "category_header_3point" = "3점 이상";
 "category_header_2point" = "2점 이상";
@@ -51,7 +52,7 @@
 "category_sub_text_gyeranppang" = "내 입으로";
 "category_sub_text_hotteok" = "기다려";
 "category_sub_text_takoyaki" = "다 내꺼야";
-"category_empty" = "1km 근처에 가게가 없어요.";
+"category_empty" = "근처에 가게가 없어요.";
 "review_modal_title" = "이 가게를\n추천하시나요?";
 "review_modal_placeholder" = "리뷰를 남겨주세요! (100자 이내)";
 "review_modal_register" = "리뷰 등록하기";

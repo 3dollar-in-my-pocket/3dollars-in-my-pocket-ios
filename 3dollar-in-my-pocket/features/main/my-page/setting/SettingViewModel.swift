@@ -1,6 +1,7 @@
 import RxSwift
 import RxCocoa
 import KakaoSDKUser
+import KakaoSDKCommon
 
 
 class SettingViewModel: BaseViewModel {
@@ -124,17 +125,24 @@ class SettingViewModel: BaseViewModel {
   
   private func signOutKakao() {
     UserApi.shared.logout { error in
-      if let error = error {
-        let alertContent = AlertContent(
-          title: "Error in signOutKakao",
-          message: error.localizedDescription
-        )
-        
-        self.showSystemAlert.accept(alertContent)
-      }
-      else {
+      if let kakaoError = error as? SdkError,
+         kakaoError.getApiError().reason == .InvalidAccessToken {
+        // KAKAO 토큰이 사라진 경우: 개발서버앱으로 왔다갔다 하는경우?
         self.userDefaults.clear()
         self.output.goToSignIn.accept(())
+      } else {
+        if let error = error {
+          let alertContent = AlertContent(
+            title: "Error in signOutKakao",
+            message: error.localizedDescription
+          )
+          
+          self.showSystemAlert.accept(alertContent)
+        }
+        else {
+          self.userDefaults.clear()
+          self.output.goToSignIn.accept(())
+        }
       }
     }
   }
@@ -146,15 +154,21 @@ class SettingViewModel: BaseViewModel {
   
   private func unlinkKakao() {
     UserApi.shared.unlink { error in
-      if let error = error {
-        let alertContent = AlertContent(
-          title: "Error in unlinkKakao",
-          message: error.localizedDescription
-        )
-        
-        self.showSystemAlert.accept(alertContent)
-      } else {
+      if let kakaoError = error as? SdkError,
+         kakaoError.getApiError().reason == .InvalidAccessToken {
+        // KAKAO 토큰이 사라진 경우: 개발서버앱으로 왔다갔다 하는경우?
         self.withdrawal()
+      } else {
+        if let error = error {
+          let alertContent = AlertContent(
+            title: "Error in unlinkKakao",
+            message: error.localizedDescription
+          )
+          
+          self.showSystemAlert.accept(alertContent)
+        } else {
+          self.withdrawal()
+        }
       }
     }
   }
