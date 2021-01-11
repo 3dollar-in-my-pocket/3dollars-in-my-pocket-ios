@@ -69,10 +69,14 @@ class MainVC: BaseVC {
       })
       .bind { [weak self] in
       if let vc = self {
-        let writingVC = WritingVC.instance().then {
-          $0.deleagte = self
-        }
-        vc.present(writingVC, animated: true, completion: nil)
+        let writingAddressVC = WriteAddressVC.instance()
+        
+        vc.present(writingAddressVC, animated: true, completion: nil)
+        
+//        let writingVC = WritingVC.instance().then {
+//          $0.deleagte = self
+//        }
+//        vc.present(writingVC, animated: true, completion: nil)
       }
     }.disposed(by: disposeBag)
   }

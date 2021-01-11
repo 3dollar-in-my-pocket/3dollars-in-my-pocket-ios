@@ -104,6 +104,8 @@
 		6E6B0EDE23AD16F1006E11CE /* BaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EDD23AD16F1006E11CE /* BaseVC.swift */; };
 		6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EE023AD17AC006E11CE /* UIViewExt.swift */; };
 		6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EE323AD1836006E11CE /* SignInView.swift */; };
+		6E6F35A325AC7990007931EC /* WriteAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F35A225AC7990007931EC /* WriteAddressView.swift */; };
+		6E6F35A825AC7BF4007931EC /* WriteAddressVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F35A725AC7BF4007931EC /* WriteAddressVC.swift */; };
 		6E70C38F23B6EBB300C52C9C /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70C38E23B6EBB300C52C9C /* DetailView.swift */; };
 		6E70C39123B6EECB00C52C9C /* DetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70C39023B6EECB00C52C9C /* DetailVC.swift */; };
 		6E72AE5823C9713600D3B257 /* UserDefaultsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E72AE5723C9713600D3B257 /* UserDefaultsUtil.swift */; };
@@ -287,6 +289,8 @@
 		6E6B0EDD23AD16F1006E11CE /* BaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseVC.swift; sourceTree = "<group>"; };
 		6E6B0EE023AD17AC006E11CE /* UIViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExt.swift; sourceTree = "<group>"; };
 		6E6B0EE323AD1836006E11CE /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		6E6F35A225AC7990007931EC /* WriteAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressView.swift; sourceTree = "<group>"; };
+		6E6F35A725AC7BF4007931EC /* WriteAddressVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressVC.swift; sourceTree = "<group>"; };
 		6E70C38E23B6EBB300C52C9C /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		6E70C39023B6EECB00C52C9C /* DetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVC.swift; sourceTree = "<group>"; };
 		6E72AE5723C9713600D3B257 /* UserDefaultsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsUtil.swift; sourceTree = "<group>"; };
@@ -519,6 +523,7 @@
 		6E41F7E723BAC81200D0AC73 /* resource */ = {
 			isa = PBXGroup;
 			children = (
+				6E6F35AC25AC800F007931EC /* font */,
 				6E8E2471256A93DE00AE6479 /* firebase */,
 				6E118C5C23D2CE2B008B2806 /* lottie */,
 				6E88305423BC329B007F2EF9 /* SpoqaHanSans-Regular.ttf */,
@@ -694,6 +699,13 @@
 			path = membership;
 			sourceTree = "<group>";
 		};
+		6E6F35AC25AC800F007931EC /* font */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = font;
+			sourceTree = "<group>";
+		};
 		6E70C38C23B6EB7400C52C9C /* category-list */ = {
 			isa = PBXGroup;
 			children = (
@@ -798,6 +810,8 @@
 				6EE2B86123BEDC3100BAD8E9 /* ImageCell.swift */,
 				6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */,
 				6E8E89AF23D04240003A7889 /* WritingViewModel.swift */,
+				6E6F35A225AC7990007931EC /* WriteAddressView.swift */,
+				6E6F35A725AC7BF4007931EC /* WriteAddressVC.swift */,
 			);
 			path = writing;
 			sourceTree = "<group>";
@@ -1177,6 +1191,7 @@
 				6EDBD8A723D87C930075EF8F /* DeleteModalVC.swift in Sources */,
 				6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */,
 				6E511E6D25714E70009E4667 /* QuestionCell.swift in Sources */,
+				6E6F35A325AC7990007931EC /* WriteAddressView.swift in Sources */,
 				6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */,
 				6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */,
 				6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */,
@@ -1273,6 +1288,7 @@
 				6E6B0EDC23AD16AC006E11CE /* BaseView.swift in Sources */,
 				6E56BD7D23CDE216002D7092 /* StoreCategory.swift in Sources */,
 				6E18C3192571F20600F37C3A /* FAQVC.swift in Sources */,
+				6E6F35A825AC7BF4007931EC /* WriteAddressVC.swift in Sources */,
 				6E41F7E623BAC2BA00D0AC73 /* UIColorExt.swift in Sources */,
 				6E12CF182573D67D003234D9 /* FAQHeaderView.swift in Sources */,
 				6E18C3372572249E00F37C3A /* LeftAlignedCollectionViewFlowLayout.swift in Sources */,

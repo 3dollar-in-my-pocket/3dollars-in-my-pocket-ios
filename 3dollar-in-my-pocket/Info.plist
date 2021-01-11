@@ -89,6 +89,8 @@
 	<string>길거리 음식점 사진을 불러오기 위해 앨범이 사용됩니다.</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>AppleSDGothicNeoSB.ttf</string>
+		<string>AppleSDGothicNeoB.ttf</string>
 		<string>SpoqaHanSans-Regular.ttf</string>
 		<string>SpoqaHanSans-Bold.ttf</string>
 		<string>SpoqaHanSans-Light.ttf</string>
