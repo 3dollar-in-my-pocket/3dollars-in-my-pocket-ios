@@ -5,13 +5,14 @@ import NMapsMap
 class WriteAddressVC: BaseVC {
   
   private lazy var writeAddressView = WriteAddressView(frame: self.view.frame)
-  private let viewModel = WritingAddressViewModel()
+  private let viewModel = WriteAddressViewModel(mapService: MapService())
   
   static func instance() -> UINavigationController {
     let writeAddressVC = WriteAddressVC(nibName: nil, bundle: nil)
     
     return UINavigationController(rootViewController: writeAddressVC).then {
       $0.modalPresentationStyle = .overCurrentContext
+      $0.isNavigationBarHidden = true
     }
   }
   
@@ -20,6 +21,23 @@ class WriteAddressVC: BaseVC {
     view = writeAddressView
     
     self.setupMap()
+  }
+  
+  override func bindViewModel() {
+    // Bind input
+    self.writeAddressView.addressButton.rx.tap
+      .bind(to: self.viewModel.input.tapSetAddressButton)
+      .disposed(by: disposeBag)
+    
+    // Bind output
+    self.viewModel.output.addressText
+      .bind(to: self.writeAddressView.addressLabel.rx.text)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.goToWrite
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToWrite(address:))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {
@@ -36,6 +54,10 @@ class WriteAddressVC: BaseVC {
   private func setupMap() {
     self.writeAddressView.mapView.positionMode = .direction
     self.writeAddressView.mapView.addCameraDelegate(delegate: self)
+  }
+  
+  private func goToWrite(address: String) {
+    Log.debug("address: \(address)")
   }
 }
 

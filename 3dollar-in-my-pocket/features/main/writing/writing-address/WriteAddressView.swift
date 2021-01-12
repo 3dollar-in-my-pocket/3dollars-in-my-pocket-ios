@@ -81,17 +81,17 @@ class WriteAddressView: BaseView {
   override func bindConstraints() {
     self.navigationView.snp.makeConstraints { (make) in
       make.left.right.top.equalToSuperview()
-      make.bottom.equalTo(self.safeAreaLayoutGuide.snp.top).offset(80)
+      make.bottom.equalTo(self.safeAreaLayoutGuide.snp.top).offset(60)
     }
     
     self.closeButton.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.top.equalTo(safeAreaLayoutGuide).offset(16)
+      make.centerY.equalTo(self.titleLabel)
     }
     
     self.titleLabel.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
-      make.centerY.equalTo(self.closeButton)
+      make.bottom.equalTo(self.navigationView).offset(-22)
     }
     
     self.marker.snp.makeConstraints { make in
@@ -103,7 +103,7 @@ class WriteAddressView: BaseView {
     
     self.mapView.snp.makeConstraints { make in
       make.left.right.equalToSuperview()
-      make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(70)
+      make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(50)
       make.bottom.equalTo(self.bottomContainer.snp.top).offset(10)
     }
     
@@ -115,7 +115,7 @@ class WriteAddressView: BaseView {
     self.addressButton.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-24)
+      make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-20)
       make.height.equalTo(48)
     }
     
