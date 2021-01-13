@@ -36,7 +36,7 @@ class WriteAddressVC: BaseVC {
     
     self.viewModel.output.goToWrite
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToWrite(address:))
+      .bind(onNext: self.goToWriteDetail)
       .disposed(by: disposeBag)
   }
   
@@ -56,8 +56,11 @@ class WriteAddressVC: BaseVC {
     self.writeAddressView.mapView.addCameraDelegate(delegate: self)
   }
   
-  private func goToWrite(address: String) {
-    Log.debug("address: \(address)")
+  private func goToWriteDetail(address: String, location: (Double, Double)) {
+    Log.debug("address: \(address)\nlocation: \(location)")
+    let writingDetailVC = WritingVC.instance()
+    
+    self.navigationController?.pushViewController(writingDetailVC, animated: true)
   }
 }
 

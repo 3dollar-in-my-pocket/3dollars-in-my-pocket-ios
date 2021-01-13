@@ -15,7 +15,7 @@ class WriteAddressViewModel: BaseViewModel {
   
   struct Output {
     let addressText = PublishRelay<String>()
-    let goToWrite = PublishRelay<String>()
+    let goToWriteDetail = PublishRelay<(String, (Double, Double))>()
   }
   
   
@@ -25,6 +25,11 @@ class WriteAddressViewModel: BaseViewModel {
     
     self.input.currentPosition
       .bind(onNext: self.getAddressFromLocation)
+      .disposed(by: disposeBag)
+    
+    self.input.tapSetAddressButton
+      .withLatestFrom(Observable.combineLatest(self.output.addressText, self.input.currentPosition))
+      .bind(to: self.output.goToWriteDetail)
       .disposed(by: disposeBag)
   }
   
