@@ -34,7 +34,7 @@ class WriteAddressVC: BaseVC {
       .bind(to: self.writeAddressView.addressLabel.rx.text)
       .disposed(by: disposeBag)
     
-    self.viewModel.output.goToWrite
+    self.viewModel.output.goToWriteDetail
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.goToWriteDetail)
       .disposed(by: disposeBag)

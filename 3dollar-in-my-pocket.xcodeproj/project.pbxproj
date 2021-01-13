@@ -836,14 +836,22 @@
 		6E8A137723B5DCC5009C2B64 /* writing */ = {
 			isa = PBXGroup;
 			children = (
-				6EBBCB6725AD600100F5912E /* writing-address */,
+				6E8C673925AEAEC200FDD277 /* write-detail */,
+				6EBBCB6725AD600100F5912E /* write-address */,
+			);
+			path = writing;
+			sourceTree = "<group>";
+		};
+		6E8C673925AEAEC200FDD277 /* write-detail */ = {
+			isa = PBXGroup;
+			children = (
 				6E07D44B23B5916C0055AEE7 /* WritingView.swift */,
 				6E07D44D23B5918B0055AEE7 /* WritingVC.swift */,
 				6EE2B86123BEDC3100BAD8E9 /* ImageCell.swift */,
 				6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */,
 				6E8E89AF23D04240003A7889 /* WritingViewModel.swift */,
 			);
-			path = writing;
+			path = "write-detail";
 			sourceTree = "<group>";
 		};
 		6E8E2471256A93DE00AE6479 /* firebase */ = {
@@ -891,14 +899,14 @@
 			path = manager;
 			sourceTree = "<group>";
 		};
-		6EBBCB6725AD600100F5912E /* writing-address */ = {
+		6EBBCB6725AD600100F5912E /* write-address */ = {
 			isa = PBXGroup;
 			children = (
 				6E6F35A225AC7990007931EC /* WriteAddressView.swift */,
 				6E6F35A725AC7BF4007931EC /* WriteAddressVC.swift */,
 				6EBBCB6825AD601F00F5912E /* WriteAddressViewModel.swift */,
 			);
-			path = "writing-address";
+			path = "write-address";
 			sourceTree = "<group>";
 		};
 		6EDBD8A323D87A240075EF8F /* delete */ = {

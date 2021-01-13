@@ -48,104 +48,104 @@ class WritingVC: BaseVC {
       self?.writingView.endEditing(true)
     }.disposed(by: disposeBag)
     
-    writingView.backBtn.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .close_button_clicked, page: .store_register_page)
-      })
-      .bind { [weak self] in
-      self?.dismiss(animated: true)
-    }.disposed(by: disposeBag)
-    
-    writingView.bungeoppangBtn.rx.tap.bind { [weak self] in
-      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
-      self?.writingView.tapCategoryBtn(index: 0)
-      self?.viewModel.btnEnable.onNext(())
-    }.disposed(by: disposeBag)
-    
-    writingView.takoyakiBtn.rx.tap.bind { [weak self] in
-      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
-      self?.writingView.tapCategoryBtn(index: 1)
-      self?.viewModel.btnEnable.onNext(())
-    }.disposed(by: disposeBag)
-    
-    writingView.gyeranppangBtn.rx.tap.bind { [weak self] in
-      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
-      self?.writingView.tapCategoryBtn(index: 2)
-      self?.viewModel.btnEnable.onNext(())
-    }.disposed(by: disposeBag)
-    
-    writingView.hotteokBtn.rx.tap.bind { [weak self] in
-      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
-      self?.writingView.tapCategoryBtn(index: 3)
-      self?.viewModel.btnEnable.onNext(())
-    }.disposed(by: disposeBag)
-    
-    writingView.nameField.rx.text.bind { [weak self] (inputText) in
-      self?.writingView.setFieldEmptyMode(isEmpty: inputText!.isEmpty)
-      self?.viewModel.btnEnable.onNext(())
-    }.disposed(by: disposeBag)
-    
-    writingView.myLocationBtn.rx.tap.bind {
-      self.locationManager.startUpdatingLocation()
-    }.disposed(by: disposeBag)
-    
-    writingView.registerBtn.rx.tap
-      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .store_register_submit_button_clicked, page: .store_register_page)
-      })
-      .bind { [weak self] in
-        guard let self = self else { return }
-        
-        let storeName = self.writingView.nameField.text!
-        let images = self.viewModel.imageList
-        let latitude = self.writingView.mapView.cameraPosition.target.lat
-        let longitude = self.writingView.mapView.cameraPosition.target.lng
-        let menus = self.viewModel.menuList
-        
-        if let category = self.writingView.getCategory() {
-          let store = Store(
-            category: category,
-            latitude: latitude,
-            longitude: longitude,
-            storeName: storeName,
-            menus: menus
-          )
-          
-          self.writingView.showLoading(isShow: true)
-          StoreService().saveStore(store: store, images: images).subscribe(
-            onNext: { [weak self] saveResponse in
-              guard let self = self else { return }
-              
-              self.dismiss(animated: true, completion: nil)
-              self.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
-              self.writingView.showLoading(isShow: false)
-            },
-            onError: { [weak self] error in
-              guard let self = self else { return }
-              if let httpError = error as? HTTPError {
-                self.showHTTPErrorAlert(error: httpError)
-              } else if let error = error as? CommonError {
-                let alertContent = AlertContent(title: nil, message: error.description)
-                
-                self.showSystemAlert(alert: alertContent)
-              }
-              self.writingView.showLoading(isShow: false)
-            })
-            .disposed(by: self.disposeBag)
-        }
-      }.disposed(by: disposeBag)
-    
-    viewModel.btnEnable
-      .map { [weak self] (_) in
-        if let vc = self {
-          return !vc.writingView.nameField.text!.isEmpty && vc.writingView.getCategory() != nil
-        } else {
-          return false
-        }
-      }
-      .bind(to: writingView.registerBtn.rx.isEnabled)
-      .disposed(by: disposeBag)
+//    writingView.backBtn.rx.tap
+//      .do(onNext: { _ in
+//        GA.shared.logEvent(event: .close_button_clicked, page: .store_register_page)
+//      })
+//      .bind { [weak self] in
+//      self?.dismiss(animated: true)
+//    }.disposed(by: disposeBag)
+//
+//    writingView.bungeoppangBtn.rx.tap.bind { [weak self] in
+//      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
+//      self?.writingView.tapCategoryBtn(index: 0)
+//      self?.viewModel.btnEnable.onNext(())
+//    }.disposed(by: disposeBag)
+//
+//    writingView.takoyakiBtn.rx.tap.bind { [weak self] in
+//      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
+//      self?.writingView.tapCategoryBtn(index: 1)
+//      self?.viewModel.btnEnable.onNext(())
+//    }.disposed(by: disposeBag)
+//
+//    writingView.gyeranppangBtn.rx.tap.bind { [weak self] in
+//      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
+//      self?.writingView.tapCategoryBtn(index: 2)
+//      self?.viewModel.btnEnable.onNext(())
+//    }.disposed(by: disposeBag)
+//
+//    writingView.hotteokBtn.rx.tap.bind { [weak self] in
+//      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
+//      self?.writingView.tapCategoryBtn(index: 3)
+//      self?.viewModel.btnEnable.onNext(())
+//    }.disposed(by: disposeBag)
+//
+//    writingView.nameField.rx.text.bind { [weak self] (inputText) in
+//      self?.writingView.setFieldEmptyMode(isEmpty: inputText!.isEmpty)
+//      self?.viewModel.btnEnable.onNext(())
+//    }.disposed(by: disposeBag)
+//
+//    writingView.myLocationBtn.rx.tap.bind {
+//      self.locationManager.startUpdatingLocation()
+//    }.disposed(by: disposeBag)
+//
+//    writingView.registerBtn.rx.tap
+//      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+//      .do(onNext: { _ in
+//        GA.shared.logEvent(event: .store_register_submit_button_clicked, page: .store_register_page)
+//      })
+//      .bind { [weak self] in
+//        guard let self = self else { return }
+//
+//        let storeName = self.writingView.nameField.text!
+//        let images = self.viewModel.imageList
+//        let latitude = self.writingView.mapView.cameraPosition.target.lat
+//        let longitude = self.writingView.mapView.cameraPosition.target.lng
+//        let menus = self.viewModel.menuList
+//
+//        if let category = self.writingView.getCategory() {
+//          let store = Store(
+//            category: category,
+//            latitude: latitude,
+//            longitude: longitude,
+//            storeName: storeName,
+//            menus: menus
+//          )
+//
+//          self.writingView.showLoading(isShow: true)
+//          StoreService().saveStore(store: store, images: images).subscribe(
+//            onNext: { [weak self] saveResponse in
+//              guard let self = self else { return }
+//
+//              self.dismiss(animated: true, completion: nil)
+//              self.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
+//              self.writingView.showLoading(isShow: false)
+//            },
+//            onError: { [weak self] error in
+//              guard let self = self else { return }
+//              if let httpError = error as? HTTPError {
+//                self.showHTTPErrorAlert(error: httpError)
+//              } else if let error = error as? CommonError {
+//                let alertContent = AlertContent(title: nil, message: error.description)
+//
+//                self.showSystemAlert(alert: alertContent)
+//              }
+//              self.writingView.showLoading(isShow: false)
+//            })
+//            .disposed(by: self.disposeBag)
+//        }
+//      }.disposed(by: disposeBag)
+//
+//    viewModel.btnEnable
+//      .map { [weak self] (_) in
+//        if let vc = self {
+//          return !vc.writingView.nameField.text!.isEmpty && vc.writingView.getCategory() != nil
+//        } else {
+//          return false
+//        }
+//      }
+//      .bind(to: writingView.registerBtn.rx.isEnabled)
+//      .disposed(by: disposeBag)
   }
   
   private func isValid(category: StoreCategory?, storeName: String) -> Bool {
@@ -154,16 +154,16 @@ class WritingVC: BaseVC {
   
   private func setupImageCollectionView() {
     imagePicker.delegate = self
-    writingView.imageCollection.isUserInteractionEnabled = true
-    writingView.imageCollection.dataSource = self
-    writingView.imageCollection.delegate = self
-    writingView.imageCollection.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.registerId)
+//    writingView.imageCollection.isUserInteractionEnabled = true
+//    writingView.imageCollection.dataSource = self
+//    writingView.imageCollection.delegate = self
+//    writingView.imageCollection.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.registerId)
   }
   
   private func setupMenuTableView() {
-    writingView.menuTableView.delegate = self
-    writingView.menuTableView.dataSource = self
-    writingView.menuTableView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.registerId)
+//    writingView.menuTableView.delegate = self
+//    writingView.menuTableView.dataSource = self
+//    writingView.menuTableView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.registerId)
   }
   
   private func setupKeyboardEvent() {
@@ -179,7 +179,7 @@ class WritingVC: BaseVC {
   }
   
   private func initilizeNaverMap() {
-    self.writingView.mapView.positionMode = .direction
+//    self.writingView.mapView.positionMode = .direction
   }
   
   @objc func onShowKeyboard(notification: NSNotification) {
@@ -239,7 +239,7 @@ extension WritingVC: UIImagePickerControllerDelegate, UINavigationControllerDele
         self.viewModel.imageList[selectedImageIndex] = cropImage
       }
     }
-    self.writingView.imageCollection.reloadData()
+//    self.writingView.imageCollection.reloadData()
     picker.dismiss(animated: true, completion: nil)
   }
 }
@@ -269,7 +269,7 @@ extension WritingVC: UITableViewDelegate, UITableViewDataSource {
         
         if indexPath.row == self?.viewModel.menuList.count {
           self?.viewModel.menuList.append(menu)
-          self?.writingView.menuTableView.reloadData()
+//          self?.writingView.menuTableView.reloadData()
           self?.view.layoutIfNeeded()
         } else {
           self?.viewModel.menuList[indexPath.row].name = name
@@ -311,7 +311,7 @@ extension WritingVC: CLLocationManagerDelegate {
       lng: location!.coordinate.longitude
     ))
     cameraUpdate.animation = .easeIn
-    self.writingView.mapView.moveCamera(cameraUpdate)
+//    self.writingView.mapView.moveCamera(cameraUpdate)
     self.locationManager.stopUpdatingLocation()
   }
   

@@ -7,14 +7,14 @@ class WriteAddressView: BaseView {
     $0.layer.cornerRadius = 20
     $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
     
-    $0.layer.shadowOffset = CGSize(width: 8, height: 8)
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     $0.layer.shadowColor = UIColor.black.cgColor
-    $0.layer.shadowOpacity = 0.08
+    $0.layer.shadowOpacity = 0.04
     $0.backgroundColor = .white
   }
   
   let titleLabel = UILabel().then {
-    $0.text = "write_address_title".localized
+    $0.text = "write_title".localized
     $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
     $0.textColor = .black
   }
