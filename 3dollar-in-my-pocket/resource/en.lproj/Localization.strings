@@ -64,3 +64,16 @@
 "write_address_unknown" = "주소를 알 수 없는 위치입니다.";
 "write_location" = "가게 위치";
 "write_modify_location" = "수정하기";
+"write_store_info" = "가게 정보";
+"write_store_info_name" = "가게이름";
+"write_store_info_name_placeholder" = "ex. 신촌역 0번 출구";
+"write_store_type" = "가게형태";
+"write_store_option" = "(선택)";
+"write_store_type_road" = "길거리";
+"write_store_type_store" = "매장";
+"write_store_type_convenience_store" = "편의점";
+"write_store_payment_type" = "결제방식";
+"write_store_payment_multi" = "다중선택 가능";
+"write_store_payment_cash" = "현금";
+"write_store_payment_transfer" = "계좌이체";
+"write_store_payment_card" = "카드";

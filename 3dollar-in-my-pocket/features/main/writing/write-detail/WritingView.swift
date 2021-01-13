@@ -17,7 +17,7 @@ class WritingView: BaseView {
   }
   
   let backButton = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_back"), for: .normal)
+    $0.setImage(UIImage.init(named: "ic_back_black"), for: .normal)
   }
   
   let titleLabel = UILabel().then {
@@ -26,7 +26,9 @@ class WritingView: BaseView {
     $0.textColor = .black
   }
   
-  let scrollView = UIScrollView()
+  let scrollView = UIScrollView().then {
+    $0.showsVerticalScrollIndicator = false
+  }
   
   let containerView = UIView()
   
@@ -46,114 +48,131 @@ class WritingView: BaseView {
     $0.backgroundColor = .white
   }
   
-  let locationField = UITextField().then {
-    $0.textColor = .black
-    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+  let locationFieldContainer = UIView().then {
     $0.layer.cornerRadius = 8
     $0.layer.borderWidth = 1
     $0.layer.borderColor = UIColor(r: 244, g: 244, b: 244).cgColor
   }
   
-  let categoryLabel = UILabel().then {
-    $0.text = "카테고리"
-    $0.textColor = UIColor.init(r: 79, g: 79, b: 79)
-    $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
+  let locationValueLabel = UILabel().then {
+    $0.textColor = .black
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.text = "주소주소"
   }
   
-//  let bungeoppangBtn = UIButton().then {
-//    $0.setTitle("붕어빵", for: .normal)
-//    $0.layer.cornerRadius = 8
-//    $0.layer.masksToBounds = true
-//    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-//    $0.setBackgroundColor(UIColor.init(r: 28, g: 28, b: 28), for: .selected)
-//    $0.setBackgroundColor(UIColor.init(r: 240, g: 240, b: 240), for: .normal)
-//    $0.setTitleColor(UIColor.init(r: 243, g: 162, b: 169), for: .selected)
-//    $0.setTitleColor(UIColor.init(r: 194, g: 194, b: 194), for: .normal)
-//  }
-//
-//  let takoyakiBtn = UIButton().then {
-//    $0.setTitle("문어빵", for: .normal)
-//    $0.layer.cornerRadius = 8
-//    $0.layer.masksToBounds = true
-//    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-//    $0.setBackgroundColor(UIColor.init(r: 28, g: 28, b: 28), for: .selected)
-//    $0.setBackgroundColor(UIColor.init(r: 240, g: 240, b: 240), for: .normal)
-//    $0.setTitleColor(UIColor.init(r: 243, g: 162, b: 169), for: .selected)
-//    $0.setTitleColor(UIColor.init(r: 194, g: 194, b: 194), for: .normal)
-//  }
-//
-//  let gyeranppangBtn = UIButton().then {
-//    $0.setTitle("계란빵", for: .normal)
-//    $0.layer.cornerRadius = 8
-//    $0.layer.masksToBounds = true
-//    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-//    $0.setBackgroundColor(UIColor.init(r: 28, g: 28, b: 28), for: .selected)
-//    $0.setBackgroundColor(UIColor.init(r: 240, g: 240, b: 240), for: .normal)
-//    $0.setTitleColor(UIColor.init(r: 243, g: 162, b: 169), for: .selected)
-//    $0.setTitleColor(UIColor.init(r: 194, g: 194, b: 194), for: .normal)
-//  }
-//
-//  let hotteokBtn = UIButton().then {
-//    $0.setTitle("호떡", for: .normal)
-//    $0.layer.cornerRadius = 8
-//    $0.layer.masksToBounds = true
-//    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-//    $0.setBackgroundColor(UIColor.init(r: 28, g: 28, b: 28), for: .selected)
-//    $0.setBackgroundColor(UIColor.init(r: 240, g: 240, b: 240), for: .normal)
-//    $0.setTitleColor(UIColor.init(r: 243, g: 162, b: 169), for: .selected)
-//    $0.setTitleColor(UIColor.init(r: 194, g: 194, b: 194), for: .normal)
-//  }
-//
-//  let nameLabel = UILabel().then {
-//    $0.text = "가게이름"
-//    $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
-//    $0.textColor = UIColor.init(r: 79, g: 79, b: 79)
-//  }
-//
-//  let nameField = UITextField().then {
-//    $0.layer.cornerRadius = 8
-//    $0.layer.borderColor = UIColor.init(r: 223, g: 223, b: 223).cgColor
-//    $0.layer.borderWidth = 1
-//    $0.returnKeyType = .done
-//    $0.placeholder = "ex)강남역 2번출구 앞"
-//    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-//    $0.textColor = UIColor.init(r: 28, g: 28, b: 28)
-//    $0.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 10))
-//    $0.leftViewMode = .always
-//    $0.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 10))
-//    $0.rightViewMode = .always
-//  }
-//
-//  let imageLabel = UILabel().then {
-//    let text = "사진 등록 (선택)"
-//    let attributedText = NSMutableAttributedString(string: text)
-//
-//    attributedText.addAttribute(.foregroundColor, value: UIColor.init(r: 189, g: 189, b: 189), range: (text as NSString).range(of: "(선택)"))
-//    $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
-//    $0.textColor = UIColor.init(r: 79, g: 79, b: 79)
-//    $0.attributedText = attributedText
-//  }
-//
-//  let imageCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
-//    let layout = UICollectionViewFlowLayout()
-//
-//    layout.scrollDirection = .horizontal
-//    $0.showsHorizontalScrollIndicator = false
-//    $0.collectionViewLayout = layout
-//    $0.backgroundColor = .clear
-//    $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
-//  }
-//
-//  let detailLabel = UILabel().then {
-//    let text = "상세 메뉴 입력 (선택)"
-//    let attributedText = NSMutableAttributedString(string: text)
-//
-//    attributedText.addAttribute(.foregroundColor, value: UIColor.init(r: 189, g: 189, b: 189), range: (text as NSString).range(of: "(선택)"))
-//    $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
-//    $0.textColor = UIColor.init(r: 79, g: 79, b: 79)
-//    $0.attributedText = attributedText
-//  }
-//
+  let storeInfoLabel = UILabel().then {
+    $0.text = "write_store_info".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
+    $0.textColor = .black
+  }
+  
+  let storeInfoContainer = UIView().then {
+    $0.backgroundColor = .white
+  }
+  
+  let storeNameLabel = UILabel().then {
+    $0.text = "write_store_info_name".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.textColor = .black
+  }
+  
+  let storeNameContainer = UIView().then {
+    $0.layer.cornerRadius = 8
+    $0.layer.borderWidth = 1
+    $0.layer.borderColor = UIColor(r: 244, g: 244, b: 244).cgColor
+  }
+  
+  let storeNameField = UITextField().then {
+    $0.textColor = .black
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.placeholder = "write_store_info_name_placeholder".localized
+  }
+  
+  let storeTypeLabel = UILabel().then {
+    $0.text = "write_store_type".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
+    $0.textColor = .black
+  }
+  
+  let storeTypeOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let roadRadioButton = UIButton().then {
+    $0.setTitle("write_store_type_road".localized, for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.setTitleColor(.black, for: .normal)
+    $0.setImage(UIImage(named: "ic_radio_off"), for: .normal)
+    $0.setImage(UIImage(named: "ic_radio_on"), for: .selected)
+    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
+  }
+  
+  let storeRadioButton = UIButton().then {
+    $0.setTitle("write_store_type_store".localized, for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.setTitleColor(.black, for: .normal)
+    $0.setImage(UIImage(named: "ic_radio_off"), for: .normal)
+    $0.setImage(UIImage(named: "ic_radio_on"), for: .selected)
+    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
+  }
+  
+  let convenienceStoreRadioButton = UIButton().then {
+    $0.setTitle("write_store_type_convenience_store".localized, for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.setTitleColor(.black, for: .normal)
+    $0.setImage(UIImage(named: "ic_radio_off"), for: .normal)
+    $0.setImage(UIImage(named: "ic_radio_on"), for: .selected)
+    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
+  }
+  
+  let paymentTypeLabel = UILabel().then {
+    $0.text = "write_store_payment_type".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.textColor = .black
+  }
+  
+  let paymentTypeOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let paymentTypeMultiLabel = UILabel().then {
+    $0.text = "write_store_payment_multi".localized
+    $0.textColor = UIColor(r: 255, g: 161, b: 170)
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12)
+  }
+  
+  let cashCheckButton = UIButton().then {
+    $0.setTitle("write_store_payment_cash".localized, for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.setTitleColor(.black, for: .normal)
+    $0.setImage(UIImage(named: "ic_check_off"), for: .normal)
+    $0.setImage(UIImage(named: "ic_check_on"), for: .selected)
+    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
+  }
+  
+  let cardCheckButton = UIButton().then {
+    $0.setTitle("write_store_payment_card".localized, for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.setTitleColor(.black, for: .normal)
+    $0.setImage(UIImage(named: "ic_check_off"), for: .normal)
+    $0.setImage(UIImage(named: "ic_check_on"), for: .selected)
+    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
+  }
+  
+  let transferCheckButton = UIButton().then {
+    $0.setTitle("write_store_payment_transfer".localized, for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.setTitleColor(.black, for: .normal)
+    $0.setImage(UIImage(named: "ic_check_off"), for: .normal)
+    $0.setImage(UIImage(named: "ic_check_on"), for: .selected)
+    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
+  }
+  
+  
 //  let menuTableView = UITableView().then {
 //    $0.backgroundColor = .clear
 //    $0.isScrollEnabled = false
@@ -187,19 +206,20 @@ class WritingView: BaseView {
   
   
   override func setup() {
-    backgroundColor = .white
+    backgroundColor = UIColor(r: 250, g: 250, b: 250)
     scrollView.delegate = self
     addGestureRecognizer(bgTap)
     containerView.addSubViews(
-      locationLabel, modifyLocationButton, locationContainer, locationField
+      locationLabel, modifyLocationButton, locationContainer, locationFieldContainer,
+      locationValueLabel, storeInfoLabel, storeInfoContainer, storeNameLabel,
+      storeNameContainer, storeNameField, storeTypeLabel, storeTypeOptionLabel,
+      roadRadioButton, storeRadioButton, convenienceStoreRadioButton, paymentTypeLabel,
+      paymentTypeOptionLabel, paymentTypeMultiLabel, cashCheckButton, cardCheckButton,
+      transferCheckButton
     )
-//    navigationBar.addSubViews(backBtn, titleLabel)
-//    containerView.addSubViews(mapView, marker, myLocationBtn, categoryLabel, bungeoppangBtn, takoyakiBtn,
-//                              gyeranppangBtn, hotteokBtn, nameLabel, nameField, imageLabel,
-//                              imageCollection, detailLabel, menuTableView)
+    
     scrollView.addSubview(containerView)
     addSubViews(scrollView, navigationView, backButton, titleLabel, registerBtnBg, registerBtn)
-    setupNavigationBar()
   }
   
   override func bindConstraints() {
@@ -219,7 +239,8 @@ class WritingView: BaseView {
     }
     
     self.scrollView.snp.makeConstraints { (make) in
-      make.edges.equalTo(0)
+      make.left.right.bottom.equalToSuperview()
+      make.top.equalTo(self.navigationView.snp.bottom)
     }
     
     self.containerView.snp.makeConstraints { (make) in
@@ -227,6 +248,123 @@ class WritingView: BaseView {
       make.width.equalTo(frame.width)
       make.top.equalToSuperview()
       make.height.equalTo(1000)
+    }
+    
+    self.locationLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalToSuperview().offset(40)
+    }
+    
+    self.modifyLocationButton.snp.makeConstraints { make in
+      make.right.equalToSuperview().offset(-24)
+      make.centerY.equalTo(self.locationLabel)
+    }
+    
+    self.locationContainer.snp.makeConstraints { make in
+      make.left.right.equalToSuperview()
+      make.top.equalTo(self.locationLabel.snp.bottom).offset(16)
+      make.bottom.equalTo(self.locationFieldContainer).offset(24)
+    }
+    
+    self.locationFieldContainer.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.locationContainer).offset(24)
+      make.bottom.equalTo(self.locationValueLabel).offset(13)
+    }
+    
+    self.locationValueLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.locationFieldContainer).offset(16)
+      make.right.equalTo(self.locationFieldContainer).offset(-16)
+      make.top.equalTo(self.locationFieldContainer).offset(16)
+    }
+    
+    self.storeInfoLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.locationContainer.snp.bottom).offset(33)
+    }
+    
+    self.storeInfoContainer.snp.makeConstraints { make in
+      make.left.right.equalToSuperview()
+      make.top.equalTo(self.storeInfoLabel.snp.bottom).offset(16)
+      make.bottom.equalTo(self.cashCheckButton).offset(24)
+      
+      
+      
+    }
+    
+    self.storeNameLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeInfoContainer).offset(30)
+    }
+    
+    self.storeNameContainer.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.storeNameLabel.snp.bottom).offset(10)
+      make.bottom.equalTo(self.storeNameField).offset(15)
+    }
+    
+    self.storeNameField.snp.makeConstraints { make in
+      make.left.equalTo(self.storeNameContainer).offset(16)
+      make.top.equalTo(self.storeNameContainer).offset(16)
+      make.right.equalTo(self.storeNameContainer).offset(-16)
+    }
+    
+    self.storeTypeLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeNameContainer.snp.bottom).offset(40)
+    }
+    
+    self.storeTypeOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.storeTypeLabel.snp.right).offset(6)
+      make.centerY.equalTo(self.storeTypeLabel)
+    }
+    
+    self.roadRadioButton.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeTypeLabel.snp.bottom).offset(17)
+      make.height.equalTo(20)
+    }
+    
+    self.storeRadioButton.snp.makeConstraints { make in
+      make.left.equalTo(self.roadRadioButton.snp.right).offset(31)
+      make.centerY.equalTo(self.roadRadioButton)
+    }
+    
+    self.convenienceStoreRadioButton.snp.makeConstraints { make in
+      make.left.equalTo(self.storeRadioButton.snp.right).offset(31)
+      make.centerY.equalTo(self.storeRadioButton)
+    }
+    
+    self.paymentTypeLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.roadRadioButton.snp.bottom).offset(40)
+    }
+
+    self.paymentTypeOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.paymentTypeLabel.snp.right).offset(6)
+      make.centerY.equalTo(self.paymentTypeLabel)
+    }
+
+    self.paymentTypeMultiLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.paymentTypeOptionLabel.snp.right).offset(7)
+      make.centerY.equalTo(self.paymentTypeLabel)
+    }
+
+    self.cashCheckButton.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.paymentTypeLabel.snp.bottom).offset(16)
+    }
+
+    self.cardCheckButton.snp.makeConstraints { make in
+      make.left.equalTo(self.cashCheckButton.snp.right).offset(43)
+      make.centerY.equalTo(self.cashCheckButton)
+    }
+    
+    self.transferCheckButton.snp.makeConstraints { make in
+      make.left.equalTo(self.cardCheckButton.snp.right).offset(36)
+      make.centerY.equalTo(self.cashCheckButton)
     }
     
     self.registerBtnBg.snp.makeConstraints { (make) in

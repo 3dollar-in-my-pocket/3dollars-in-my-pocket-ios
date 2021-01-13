@@ -47,14 +47,6 @@ class WritingVC: BaseVC {
     writingView.bgTap.rx.event.subscribe { [weak self] event in
       self?.writingView.endEditing(true)
     }.disposed(by: disposeBag)
-    
-//    writingView.backBtn.rx.tap
-//      .do(onNext: { _ in
-//        GA.shared.logEvent(event: .close_button_clicked, page: .store_register_page)
-//      })
-//      .bind { [weak self] in
-//      self?.dismiss(animated: true)
-//    }.disposed(by: disposeBag)
 //
 //    writingView.bungeoppangBtn.rx.tap.bind { [weak self] in
 //      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
@@ -146,6 +138,20 @@ class WritingVC: BaseVC {
 //      }
 //      .bind(to: writingView.registerBtn.rx.isEnabled)
 //      .disposed(by: disposeBag)
+  }
+  
+  override func bindEvent() {
+    self.writingView.backButton.rx.tap
+      .observeOn(MainScheduler.instance)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .close_button_clicked, page: .store_register_page)
+      })
+      .bind(onNext: self.popupVC)
+      .disposed(by: disposeBag)
+  }
+  
+  private func popupVC() {
+    self.navigationController?.popViewController(animated: true)
   }
   
   private func isValid(category: StoreCategory?, storeName: String) -> Bool {
