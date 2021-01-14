@@ -30,7 +30,10 @@ class WriteAddressView: BaseView {
   }
   
   let currentLocationButton = UIButton().then {
-    $0.setTitle("현재 위치", for: .normal)
+    $0.setImage(UIImage(named: "ic_current_location"), for: .normal)
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowOpacity = 0.015
   }
   
   let bottomContainer = UIView().then {
@@ -105,14 +108,14 @@ class WriteAddressView: BaseView {
       make.bottom.equalTo(self.bottomContainer.snp.top).offset(10)
     }
     
-    self.currentLocationButton.snp.makeConstraints { make in
-      make.right.equalToSuperview()
-      make.centerY.equalTo(self.mapView)
-    }
-    
     self.bottomContainer.snp.makeConstraints { make in
       make.left.right.bottom.equalToSuperview()
       make.top.equalTo(self.addressTitleLabel).offset(-32)
+    }
+    
+    self.currentLocationButton.snp.makeConstraints { make in
+      make.right.equalToSuperview().offset(-24)
+      make.bottom.equalTo(self.bottomContainer.snp.top).offset(-8)
     }
     
     self.addressButton.snp.makeConstraints { make in
