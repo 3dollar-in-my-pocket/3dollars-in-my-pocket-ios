@@ -96,7 +96,7 @@ class WriteAddressView: BaseView {
     
     self.marker.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
-      make.bottom.equalTo(self.snp.centerY)
+      make.bottom.equalTo(self.mapView.snp.centerY)
       make.width.equalTo(30)
       make.height.equalTo(40)
     }
@@ -136,5 +136,15 @@ class WriteAddressView: BaseView {
       make.left.equalToSuperview().offset(24)
       make.bottom.equalTo(self.addressContainer.snp.top).offset(-20)
     }
+  }
+  
+  func moveCamera(latitude: Double, longitude: Double) {
+    let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
+      lat: latitude,
+      lng: longitude
+    ))
+    
+    camera.animation = .easeIn
+    self.mapView.moveCamera(camera)
   }
 }

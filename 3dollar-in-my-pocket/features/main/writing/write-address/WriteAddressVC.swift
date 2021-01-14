@@ -6,6 +6,7 @@ class WriteAddressVC: BaseVC {
   
   private lazy var writeAddressView = WriteAddressView(frame: self.view.frame)
   private let viewModel = WriteAddressViewModel(mapService: MapService())
+  private let locationManager = CLLocationManager()
   
   static func instance() -> UINavigationController {
     let writeAddressVC = WriteAddressVC(nibName: nil, bundle: nil)
@@ -21,6 +22,7 @@ class WriteAddressVC: BaseVC {
     view = writeAddressView
     
     self.setupMap()
+    self.setupLocationManager()
   }
   
   override func bindViewModel() {
@@ -56,6 +58,12 @@ class WriteAddressVC: BaseVC {
     self.writeAddressView.mapView.addCameraDelegate(delegate: self)
   }
   
+  private func setupLocationManager() {
+    self.locationManager.delegate = self
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+    self.locationManager.startUpdatingLocation()
+  }
+  
   private func goToWriteDetail(address: String, location: (Double, Double)) {
     Log.debug("address: \(address)\nlocation: \(location)")
     let writingDetailVC = WritingVC.instance()
@@ -72,3 +80,19 @@ extension WriteAddressVC: NMFMapViewCameraDelegate {
     self.viewModel.input.currentPosition.onNext(currentPosition)
   }
 }
+
+extension WriteAddressVC: CLLocationManagerDelegate {
+  
+  func locationManager(
+    _ manager: CLLocationManager,
+    didUpdateLocations locations: [CLLocation]
+  ) {
+    locationManager.stopUpdatingLocation()
+    if let latitude = locations.last?.coordinate.latitude,
+       let longitude = locations.last?.coordinate.longitude {
+      self.viewModel.input.currentPosition.onNext((latitude, longitude))
+      self.writeAddressView.moveCamera(latitude: latitude, longitude: longitude)
+    }
+  }
+}
+
