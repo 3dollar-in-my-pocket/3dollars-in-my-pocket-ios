@@ -1,6 +1,6 @@
 import RxSwift
 
-struct WritingViewModel {
+struct WriteDetailViewModel {
     var btnEnable = BehaviorSubject<Void>.init(value: ())
     var menuList: [Menu] = []
     var imageList: [UIImage] = []

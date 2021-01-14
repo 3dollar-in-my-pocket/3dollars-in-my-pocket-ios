@@ -13,8 +13,8 @@
 		6E07D44623B590B30055AEE7 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44523B590B30055AEE7 /* HomeVC.swift */; };
 		6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44723B590F20055AEE7 /* MyPageView.swift */; };
 		6E07D44A23B591160055AEE7 /* MyPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44923B591160055AEE7 /* MyPageVC.swift */; };
-		6E07D44C23B5916C0055AEE7 /* WritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44B23B5916C0055AEE7 /* WritingView.swift */; };
-		6E07D44E23B5918B0055AEE7 /* WritingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44D23B5918B0055AEE7 /* WritingVC.swift */; };
+		6E07D44C23B5916C0055AEE7 /* WriteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44B23B5916C0055AEE7 /* WriteDetailView.swift */; };
+		6E07D44E23B5918B0055AEE7 /* WriteDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44D23B5918B0055AEE7 /* WriteDetailVC.swift */; };
 		6E0EA39723ABB230008F7CB2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */; };
 		6E0EA39923ABB230008F7CB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */; };
 		6E0EA39B23ABB230008F7CB2 /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39A23ABB230008F7CB2 /* SignInVC.swift */; };
@@ -137,7 +137,7 @@
 		6E8E2514256AAB6E00AE6479 /* HTTPUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E2513256AAB6E00AE6479 /* HTTPUtils.swift */; };
 		6E8E2519256AADB100AE6479 /* CommonError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E2518256AADB100AE6479 /* CommonError.swift */; };
 		6E8E251E256AADE200AE6479 /* JsonUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E251D256AADE200AE6479 /* JsonUtils.swift */; };
-		6E8E89B023D04240003A7889 /* WritingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E89AF23D04240003A7889 /* WritingViewModel.swift */; };
+		6E8E89B023D04240003A7889 /* WriteDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E89AF23D04240003A7889 /* WriteDetailViewModel.swift */; };
 		6E93C83623F223E5002E737F /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83523F223E5002E737F /* PopupView.swift */; };
 		6E93C83823F22537002E737F /* PopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83723F22537002E737F /* PopupVC.swift */; };
 		6E93C83A23F22CA1002E737F /* DateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83923F22CA1002E737F /* DateUtils.swift */; };
@@ -202,8 +202,8 @@
 		6E07D44523B590B30055AEE7 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		6E07D44723B590F20055AEE7 /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
 		6E07D44923B591160055AEE7 /* MyPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageVC.swift; sourceTree = "<group>"; };
-		6E07D44B23B5916C0055AEE7 /* WritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingView.swift; sourceTree = "<group>"; };
-		6E07D44D23B5918B0055AEE7 /* WritingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingVC.swift; sourceTree = "<group>"; };
+		6E07D44B23B5916C0055AEE7 /* WriteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailView.swift; sourceTree = "<group>"; };
+		6E07D44D23B5918B0055AEE7 /* WriteDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailVC.swift; sourceTree = "<group>"; };
 		6E0EA39323ABB230008F7CB2 /* 가슴속3천원.debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "가슴속3천원.debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -332,7 +332,7 @@
 		6E8E2513256AAB6E00AE6479 /* HTTPUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPUtils.swift; sourceTree = "<group>"; };
 		6E8E2518256AADB100AE6479 /* CommonError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonError.swift; sourceTree = "<group>"; };
 		6E8E251D256AADE200AE6479 /* JsonUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonUtils.swift; sourceTree = "<group>"; };
-		6E8E89AF23D04240003A7889 /* WritingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingViewModel.swift; sourceTree = "<group>"; };
+		6E8E89AF23D04240003A7889 /* WriteDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailViewModel.swift; sourceTree = "<group>"; };
 		6E93C83523F223E5002E737F /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
 		6E93C83723F22537002E737F /* PopupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupVC.swift; sourceTree = "<group>"; };
 		6E93C83923F22CA1002E737F /* DateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtils.swift; sourceTree = "<group>"; };
@@ -850,11 +850,11 @@
 		6E8C673925AEAEC200FDD277 /* write-detail */ = {
 			isa = PBXGroup;
 			children = (
-				6E07D44B23B5916C0055AEE7 /* WritingView.swift */,
-				6E07D44D23B5918B0055AEE7 /* WritingVC.swift */,
+				6E07D44B23B5916C0055AEE7 /* WriteDetailView.swift */,
+				6E07D44D23B5918B0055AEE7 /* WriteDetailVC.swift */,
+				6E8E89AF23D04240003A7889 /* WriteDetailViewModel.swift */,
 				6EE2B86123BEDC3100BAD8E9 /* ImageCell.swift */,
 				6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */,
-				6E8E89AF23D04240003A7889 /* WritingViewModel.swift */,
 				6E38046625AF20C700956F74 /* RadioButton.swift */,
 			);
 			path = "write-detail";
@@ -1262,7 +1262,7 @@
 				6E1B64E02587A396003225F4 /* AFDataResponseExt.swift in Sources */,
 				6E56BD7F23CDE291002D7092 /* Image.swift in Sources */,
 				6E25244625945BF0006EBDDB /* PopupViewModel.swift in Sources */,
-				6E07D44C23B5916C0055AEE7 /* WritingView.swift in Sources */,
+				6E07D44C23B5916C0055AEE7 /* WriteDetailView.swift in Sources */,
 				6E56BD7B23CDE1DC002D7092 /* Store.swift in Sources */,
 				6E6172B023E1C05F003E0DDF /* ImageDetailView.swift in Sources */,
 				6E6835BC23C2CC0800D23F54 /* RegisteredView.swift in Sources */,
@@ -1344,7 +1344,7 @@
 				6E6172B223E1C308003E0DDF /* ImageDetailVC.swift in Sources */,
 				6E41F7EF23BB1F5600D0AC73 /* ShopCell.swift in Sources */,
 				6E0EA39923ABB230008F7CB2 /* SceneDelegate.swift in Sources */,
-				6E07D44E23B5918B0055AEE7 /* WritingVC.swift in Sources */,
+				6E07D44E23B5918B0055AEE7 /* WriteDetailVC.swift in Sources */,
 				6E6B0EDC23AD16AC006E11CE /* BaseView.swift in Sources */,
 				6E56BD7D23CDE216002D7092 /* StoreCategory.swift in Sources */,
 				6E3AA4C925AD6BBE00D8C58C /* NaverMapResponse.swift in Sources */,
@@ -1355,7 +1355,7 @@
 				6E12CF182573D67D003234D9 /* FAQHeaderView.swift in Sources */,
 				6E3AA4C325AD661800D8C58C /* MapService.swift in Sources */,
 				6E18C3372572249E00F37C3A /* LeftAlignedCollectionViewFlowLayout.swift in Sources */,
-				6E8E89B023D04240003A7889 /* WritingViewModel.swift in Sources */,
+				6E8E89B023D04240003A7889 /* WriteDetailViewModel.swift in Sources */,
 				6E2F5FE123D6C04800094D41 /* CategoryByDistance.swift in Sources */,
 				6E56BD8123CDE359002D7092 /* Menu.swift in Sources */,
 				6E8E251E256AADE200AE6479 /* JsonUtils.swift in Sources */,

@@ -2,25 +2,25 @@ import UIKit
 import NMapsMap
 import RxSwift
 
-protocol WritingDelegate: class {
+protocol WriteDetailDelegate: class {
   func onWriteSuccess(storeId: Int)
 }
 
-class WritingVC: BaseVC {
+class WriteDetailVC: BaseVC {
   
-  weak var deleagte: WritingDelegate?
-  var viewModel = WritingViewModel()
+  weak var deleagte: WriteDetailDelegate?
+  var viewModel = WriteDetailViewModel()
   var locationManager = CLLocationManager()
   
-  private lazy var writingView = WritingView(frame: self.view.frame)
+  private lazy var writeDetailView = WriteDetailView(frame: self.view.frame)
   
   private let imagePicker = UIImagePickerController()
   
   private var selectedImageIndex = 0
   
   
-  static func instance() -> WritingVC {
-    return WritingVC(nibName: nil, bundle: nil).then {
+  static func instance() -> WriteDetailVC {
+    return WriteDetailVC(nibName: nil, bundle: nil).then {
       $0.modalPresentationStyle = .fullScreen
     }
   }
@@ -33,9 +33,9 @@ class WritingVC: BaseVC {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    view = writingView
+    view = writeDetailView
     
-    writingView.scrollView.delegate = self
+    writeDetailView.scrollView.delegate = self
     setupImageCollectionView()
     setupMenuTableView()
     setupKeyboardEvent()
@@ -44,8 +44,8 @@ class WritingVC: BaseVC {
   }
   
   override func bindViewModel() {
-    writingView.bgTap.rx.event.subscribe { [weak self] event in
-      self?.writingView.endEditing(true)
+    writeDetailView.bgTap.rx.event.subscribe { [weak self] event in
+      self?.writeDetailView.endEditing(true)
     }.disposed(by: disposeBag)
 //
 //    writingView.bungeoppangBtn.rx.tap.bind { [weak self] in
@@ -141,7 +141,7 @@ class WritingVC: BaseVC {
   }
   
   override func bindEvent() {
-    self.writingView.backButton.rx.tap
+    self.writeDetailView.backButton.rx.tap
       .observeOn(MainScheduler.instance)
       .do(onNext: { _ in
         GA.shared.logEvent(event: .close_button_clicked, page: .store_register_page)
@@ -193,19 +193,19 @@ class WritingVC: BaseVC {
     var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
     keyboardFrame = self.view.convert(keyboardFrame, from: nil)
     
-    var contentInset:UIEdgeInsets = self.writingView.scrollView.contentInset
+    var contentInset:UIEdgeInsets = self.writeDetailView.scrollView.contentInset
     contentInset.bottom = keyboardFrame.size.height + 50
-    self.writingView.scrollView.contentInset = contentInset
+    self.writeDetailView.scrollView.contentInset = contentInset
   }
   
   @objc func onHideKeyboard(notification: NSNotification) {
     let contentInset:UIEdgeInsets = UIEdgeInsets.zero
     
-    self.writingView.scrollView.contentInset = contentInset
+    self.writeDetailView.scrollView.contentInset = contentInset
   }
 }
 
-extension WritingVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension WriteDetailVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return self.viewModel.imageList.count + 1
   }
@@ -234,7 +234,7 @@ extension WritingVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
   }
 }
 
-extension WritingVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension WriteDetailVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
     if let image = info[.originalImage] as? UIImage {
       let cropImage = ImageUtils.cropToBounds(image: image)
@@ -250,13 +250,13 @@ extension WritingVC: UIImagePickerControllerDelegate, UINavigationControllerDele
   }
 }
 
-extension WritingVC: UIScrollViewDelegate {
+extension WriteDetailVC: UIScrollViewDelegate {
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-    self.writingView.endEditing(true)
+    self.writeDetailView.endEditing(true)
   }
 }
 
-extension WritingVC: UITableViewDelegate, UITableViewDataSource {
+extension WriteDetailVC: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return self.viewModel.menuList.count + 1
   }
@@ -307,7 +307,7 @@ extension WritingVC: UITableViewDelegate, UITableViewDataSource {
   }
 }
 
-extension WritingVC: CLLocationManagerDelegate {
+extension WriteDetailVC: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     let location = locations.last
     

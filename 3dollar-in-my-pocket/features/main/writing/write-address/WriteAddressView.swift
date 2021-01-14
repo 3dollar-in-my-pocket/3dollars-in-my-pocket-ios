@@ -62,6 +62,7 @@ class WriteAddressView: BaseView {
     $0.layer.masksToBounds = true
   }
   
+  
   override func setup() {
     backgroundColor = .white
     addSubViews(
@@ -69,13 +70,6 @@ class WriteAddressView: BaseView {
       marker, bottomContainer, addressTitleLabel, addressContainer,
       addressLabel, addressButton
     )
-    
-    for family: String in UIFont.familyNames {
-      print("\(family)")
-      for names: String in UIFont.fontNames(forFamilyName: family) {
-        print("== \(names)")
-      }
-    }
   }
   
   override func bindConstraints() {

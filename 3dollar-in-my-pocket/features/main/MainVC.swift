@@ -30,7 +30,7 @@ class MainVC: BaseVC {
     let homeVC = HomeVC.instance().then {
       $0.delegate = self
     }
-    let writingVC = WritingVC.instance().then {
+    let writingVC = WriteDetailVC.instance().then {
       $0.deleagte = self
     }
     let myPageVC = MyPageVC.instance().then {
@@ -166,7 +166,7 @@ extension MainVC: HomeDelegate {
   }
 }
 
-extension MainVC: WritingDelegate {
+extension MainVC: WriteDetailDelegate {
   func onWriteSuccess(storeId: Int) {
     for controller in self.controllers {
       if controller is HomeVC {
