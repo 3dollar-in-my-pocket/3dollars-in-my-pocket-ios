@@ -172,6 +172,20 @@ class WritingView: BaseView {
     $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
   }
   
+  let generateLabel = UILabel().then {
+    $0.text = "write_store_generate".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.textColor = .black
+  }
+  
+  let generateOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let dayStackView = DayStackView()
+  
   
 //  let menuTableView = UITableView().then {
 //    $0.backgroundColor = .clear
@@ -215,7 +229,7 @@ class WritingView: BaseView {
       storeNameContainer, storeNameField, storeTypeLabel, storeTypeOptionLabel,
       roadRadioButton, storeRadioButton, convenienceStoreRadioButton, paymentTypeLabel,
       paymentTypeOptionLabel, paymentTypeMultiLabel, cashCheckButton, cardCheckButton,
-      transferCheckButton
+      transferCheckButton, generateLabel, generateOptionLabel, dayStackView
     )
     
     scrollView.addSubview(containerView)
@@ -287,7 +301,7 @@ class WritingView: BaseView {
     self.storeInfoContainer.snp.makeConstraints { make in
       make.left.right.equalToSuperview()
       make.top.equalTo(self.storeInfoLabel.snp.bottom).offset(16)
-      make.bottom.equalTo(self.cashCheckButton).offset(24)
+      make.bottom.equalTo(self.dayStackView).offset(24)
       
       
       
@@ -380,6 +394,23 @@ class WritingView: BaseView {
       make.top.equalTo(registerBtnBg.snp.top).offset(8)
       make.bottom.equalTo(registerBtnBg.snp.bottom).offset(-8)
     }
+    
+    self.generateLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.cashCheckButton.snp.bottom).offset(40)
+    }
+    
+    self.generateOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.generateLabel.snp.right).offset(6)
+      make.centerY.equalTo(self.generateLabel)
+    }
+    
+    self.dayStackView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.generateLabel.snp.bottom).offset(13)
+    }
+    
   }
   
   override func layoutSubviews() {
