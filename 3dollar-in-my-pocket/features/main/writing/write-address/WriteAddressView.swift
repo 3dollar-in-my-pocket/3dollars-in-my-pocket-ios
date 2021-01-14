@@ -29,6 +29,10 @@ class WriteAddressView: BaseView {
     $0.image = UIImage(named: "ic_marker")
   }
   
+  let currentLocationButton = UIButton().then {
+    $0.setTitle("현재 위치", for: .normal)
+  }
+  
   let bottomContainer = UIView().then {
     $0.backgroundColor = .white
     $0.layer.cornerRadius = 16
@@ -67,7 +71,7 @@ class WriteAddressView: BaseView {
     backgroundColor = .white
     addSubViews(
       mapView, navigationView, closeButton, titleLabel,
-      marker, bottomContainer, addressTitleLabel, addressContainer,
+      marker, currentLocationButton, bottomContainer, addressTitleLabel, addressContainer,
       addressLabel, addressButton
     )
   }
@@ -99,6 +103,11 @@ class WriteAddressView: BaseView {
       make.left.right.equalToSuperview()
       make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(50)
       make.bottom.equalTo(self.bottomContainer.snp.top).offset(10)
+    }
+    
+    self.currentLocationButton.snp.makeConstraints { make in
+      make.right.equalToSuperview()
+      make.centerY.equalTo(self.mapView)
     }
     
     self.bottomContainer.snp.makeConstraints { make in

@@ -47,6 +47,10 @@ class WriteAddressVC: BaseVC {
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.dismiss)
       .disposed(by: disposeBag)
+    
+    self.writeAddressView.currentLocationButton.rx.tap
+      .bind(onNext: self.locationManager.startUpdatingLocation)
+      .disposed(by: disposeBag)
   }
   
   private func dismiss() {
