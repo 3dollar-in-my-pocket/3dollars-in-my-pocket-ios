@@ -54,7 +54,6 @@
 		6E2F5FE123D6C04800094D41 /* CategoryByDistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2F5FE023D6C04800094D41 /* CategoryByDistance.swift */; };
 		6E2F5FE323D6DE8600094D41 /* loading.json in Resources */ = {isa = PBXBuildFile; fileRef = 6E2F5FE223D6DE8600094D41 /* loading.json */; };
 		6E2F5FE523D6EBAC00094D41 /* CategoryChildViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2F5FE423D6EBAC00094D41 /* CategoryChildViewModel.swift */; };
-		6E38046725AF20C700956F74 /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E38046625AF20C700956F74 /* RadioButton.swift */; };
 		6E3AA4C325AD661800D8C58C /* MapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3AA4C225AD661800D8C58C /* MapService.swift */; };
 		6E3AA4C925AD6BBE00D8C58C /* NaverMapResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3AA4C825AD6BBE00D8C58C /* NaverMapResponse.swift */; };
 		6E3AA4D125AD6BDD00D8C58C /* ReverseGeoLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3AA4D025AD6BDD00D8C58C /* ReverseGeoLocation.swift */; };
@@ -249,7 +248,6 @@
 		6E2F5FE023D6C04800094D41 /* CategoryByDistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryByDistance.swift; sourceTree = "<group>"; };
 		6E2F5FE223D6DE8600094D41 /* loading.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading.json; sourceTree = "<group>"; };
 		6E2F5FE423D6EBAC00094D41 /* CategoryChildViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChildViewModel.swift; sourceTree = "<group>"; };
-		6E38046625AF20C700956F74 /* RadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButton.swift; sourceTree = "<group>"; };
 		6E3AA4C225AD661800D8C58C /* MapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapService.swift; sourceTree = "<group>"; };
 		6E3AA4C825AD6BBE00D8C58C /* NaverMapResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaverMapResponse.swift; sourceTree = "<group>"; };
 		6E3AA4D025AD6BDD00D8C58C /* ReverseGeoLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseGeoLocation.swift; sourceTree = "<group>"; };
@@ -855,7 +853,6 @@
 				6E8E89AF23D04240003A7889 /* WriteDetailViewModel.swift */,
 				6EE2B86123BEDC3100BAD8E9 /* ImageCell.swift */,
 				6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */,
-				6E38046625AF20C700956F74 /* RadioButton.swift */,
 			);
 			path = "write-detail";
 			sourceTree = "<group>";
@@ -1368,7 +1365,6 @@
 				6E18C3282571F53900F37C3A /* FAQ.swift in Sources */,
 				6E72AE6323C980F600D3B257 /* User.swift in Sources */,
 				6E17D2CE257FAA52001726AC /* NetworkActivityLogger.swift in Sources */,
-				6E38046725AF20C700956F74 /* RadioButton.swift in Sources */,
 				6E511E68257149D4009E4667 /* QuestionVC.swift in Sources */,
 				6ED516C62570AB2F00303105 /* SettingWithdrawalCell.swift in Sources */,
 			);
