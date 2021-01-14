@@ -186,6 +186,40 @@ class WriteDetailView: BaseView {
   
   let dayStackView = DayStackView()
   
+  let menuLabel = UILabel().then {
+    $0.text = "write_store_menu".localized
+    $0.textColor = .black
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
+  }
+  
+  let menuOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let deleteAllButton = UIButton().then {
+    $0.setTitle("write_store_delete_all_menu".localized, for: .normal)
+    $0.setTitleColor(UIColor(r: 255, g: 92, b: 67), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+  }
+  
+  let categoryContainer = UIView().then {
+    $0.backgroundColor = .white
+  }
+  
+  let categoryCollectionView = UICollectionView(
+    frame: .zero,
+    collectionViewLayout: UICollectionViewFlowLayout()
+  ).then {
+    let layout = UICollectionViewFlowLayout()
+    
+    layout.minimumInteritemSpacing = 16
+    layout.minimumLineSpacing = 40
+    $0.collectionViewLayout = layout
+    $0.backgroundColor = .clear
+  }
+  
   
 //  let menuTableView = UITableView().then {
 //    $0.backgroundColor = .clear
@@ -229,7 +263,9 @@ class WriteDetailView: BaseView {
       storeNameContainer, storeNameField, storeTypeLabel, storeTypeOptionLabel,
       roadRadioButton, storeRadioButton, convenienceStoreRadioButton, paymentTypeLabel,
       paymentTypeOptionLabel, paymentTypeMultiLabel, cashCheckButton, cardCheckButton,
-      transferCheckButton, generateLabel, generateOptionLabel, dayStackView
+      transferCheckButton, generateLabel, generateOptionLabel, dayStackView,
+      menuLabel, menuOptionLabel, deleteAllButton, categoryContainer,
+      categoryCollectionView
     )
     
     scrollView.addSubview(containerView)
@@ -302,9 +338,6 @@ class WriteDetailView: BaseView {
       make.left.right.equalToSuperview()
       make.top.equalTo(self.storeInfoLabel.snp.bottom).offset(16)
       make.bottom.equalTo(self.dayStackView).offset(24)
-      
-      
-      
     }
     
     self.storeNameLabel.snp.makeConstraints { make in
@@ -409,6 +442,33 @@ class WriteDetailView: BaseView {
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
       make.top.equalTo(self.generateLabel.snp.bottom).offset(13)
+    }
+    
+    self.menuLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeInfoContainer.snp.bottom).offset(40)
+    }
+    
+    self.menuOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.menuLabel.snp.right).offset(4)
+      make.centerY.equalTo(self.menuLabel)
+    }
+    
+    self.deleteAllButton.snp.makeConstraints { make in
+      make.right.equalToSuperview().offset(-24)
+      make.centerY.equalTo(self.menuLabel)
+    }
+    
+    self.categoryContainer.snp.makeConstraints { make in
+      make.left.right.equalToSuperview()
+      make.top.equalTo(self.menuLabel.snp.bottom).offset(16)
+      make.bottom.equalTo(self.categoryCollectionView).offset(24)
+    }
+    
+    self.categoryCollectionView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.categoryContainer.snp.bottom).offset(24)
     }
     
   }
