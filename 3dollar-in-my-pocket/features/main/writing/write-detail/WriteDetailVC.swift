@@ -9,26 +9,33 @@ protocol WriteDetailDelegate: class {
 class WriteDetailVC: BaseVC {
   
   weak var deleagte: WriteDetailDelegate?
-  var viewModel = WriteDetailViewModel()
-  var locationManager = CLLocationManager()
   
   private lazy var writeDetailView = WriteDetailView(frame: self.view.frame)
-  
-  private let imagePicker = UIImagePickerController()
-  
-  private var selectedImageIndex = 0
+  let viewModel: WriteDetailViewModel
   
   
-  static func instance() -> WriteDetailVC {
-    return WriteDetailVC(nibName: nil, bundle: nil).then {
-      $0.modalPresentationStyle = .fullScreen
-    }
+  init(address: String, location: (Double, Double)) {
+    self.viewModel = WriteDetailViewModel(
+      address: address,
+      location: location,
+      storeService: StoreService()
+    )
+    super.init(nibName: nil, bundle: nil)
   }
   
-  
   deinit {
-    NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-    NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    NotificationCenter.default.removeObserver(self)
+  }
+  
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  static func instance(
+    address: String,
+    location: (Double, Double)
+  ) -> WriteDetailVC {
+    return WriteDetailVC(address: address, location: location)
   }
   
   override func viewDidLoad() {
@@ -36,51 +43,24 @@ class WriteDetailVC: BaseVC {
     view = writeDetailView
     
     writeDetailView.scrollView.delegate = self
-    setupImageCollectionView()
-    setupMenuTableView()
+    setupCategoryCollectionView()
     setupKeyboardEvent()
-    setupLocationManager()
-    initilizeNaverMap()
+    self.viewModel.fetchInitialData()
   }
   
   override func bindViewModel() {
-    writeDetailView.bgTap.rx.event.subscribe { [weak self] event in
-      self?.writeDetailView.endEditing(true)
-    }.disposed(by: disposeBag)
-//
-//    writingView.bungeoppangBtn.rx.tap.bind { [weak self] in
-//      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
-//      self?.writingView.tapCategoryBtn(index: 0)
-//      self?.viewModel.btnEnable.onNext(())
-//    }.disposed(by: disposeBag)
-//
-//    writingView.takoyakiBtn.rx.tap.bind { [weak self] in
-//      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
-//      self?.writingView.tapCategoryBtn(index: 1)
-//      self?.viewModel.btnEnable.onNext(())
-//    }.disposed(by: disposeBag)
-//
-//    writingView.gyeranppangBtn.rx.tap.bind { [weak self] in
-//      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
-//      self?.writingView.tapCategoryBtn(index: 2)
-//      self?.viewModel.btnEnable.onNext(())
-//    }.disposed(by: disposeBag)
-//
-//    writingView.hotteokBtn.rx.tap.bind { [weak self] in
-//      GA.shared.logEvent(event: .store_category_button_clicked, page: .store_register_page)
-//      self?.writingView.tapCategoryBtn(index: 3)
-//      self?.viewModel.btnEnable.onNext(())
-//    }.disposed(by: disposeBag)
-//
-//    writingView.nameField.rx.text.bind { [weak self] (inputText) in
-//      self?.writingView.setFieldEmptyMode(isEmpty: inputText!.isEmpty)
-//      self?.viewModel.btnEnable.onNext(())
-//    }.disposed(by: disposeBag)
-//
-//    writingView.myLocationBtn.rx.tap.bind {
-//      self.locationManager.startUpdatingLocation()
-//    }.disposed(by: disposeBag)
-//
+    self.viewModel.output.address
+      .bind(to: self.writeDetailView.locationValueLabel.rx.text)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.categories
+      .bind(to: self.writeDetailView.categoryCollectionView.rx.items(cellIdentifier: WriteCategoryCell.registerId, cellType: WriteCategoryCell.self)) { row, category, cell in
+        cell.bind(category: category)
+        Log.debug("content view height: \(self.writeDetailView.categoryCollectionView.contentSize.height)")
+//        self.writeDetailView.refreshCategoryCollectionViewHeight()
+      }
+      .disposed(by: disposeBag)
+    
 //    writingView.registerBtn.rx.tap
 //      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
 //      .do(onNext: { _ in
@@ -141,6 +121,11 @@ class WriteDetailVC: BaseVC {
   }
   
   override func bindEvent() {
+    self.writeDetailView.bgTap.rx.event
+      .subscribe { [weak self] event in
+        self?.writeDetailView.endEditing(true)
+      }.disposed(by: disposeBag)
+    
     self.writeDetailView.backButton.rx.tap
       .observeOn(MainScheduler.instance)
       .do(onNext: { _ in
@@ -158,34 +143,19 @@ class WriteDetailVC: BaseVC {
     return category != nil && !storeName.isEmpty
   }
   
-  private func setupImageCollectionView() {
-    imagePicker.delegate = self
-//    writingView.imageCollection.isUserInteractionEnabled = true
-//    writingView.imageCollection.dataSource = self
-//    writingView.imageCollection.delegate = self
-//    writingView.imageCollection.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.registerId)
-  }
-  
-  private func setupMenuTableView() {
-//    writingView.menuTableView.delegate = self
-//    writingView.menuTableView.dataSource = self
-//    writingView.menuTableView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.registerId)
+  private func setupCategoryCollectionView() {
+    self.writeDetailView.categoryCollectionView.register(
+      WriteCategoryCell.self,
+      forCellWithReuseIdentifier: WriteCategoryCell.registerId
+    )
+    self.writeDetailView.categoryCollectionView.rx
+      .setDelegate(self)
+      .disposed(by: disposeBag)
   }
   
   private func setupKeyboardEvent() {
     NotificationCenter.default.addObserver(self, selector: #selector(onShowKeyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-  }
-  
-  private func setupLocationManager() {
-    locationManager.delegate = self
-    locationManager.desiredAccuracy = kCLLocationAccuracyBest
-    locationManager.requestWhenInUseAuthorization()
-    locationManager.startUpdatingLocation()
-  }
-  
-  private func initilizeNaverMap() {
-//    self.writingView.mapView.positionMode = .direction
   }
   
   @objc func onShowKeyboard(notification: NSNotification) {
@@ -205,124 +175,8 @@ class WriteDetailVC: BaseVC {
   }
 }
 
-extension WriteDetailVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return self.viewModel.imageList.count + 1
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.registerId, for: indexPath) as? ImageCell else {
-      return BaseCollectionViewCell()
-    }
-    
-    if indexPath.row < self.viewModel.imageList.count {
-      cell.setImage(image: self.viewModel.imageList[indexPath.row])
-    } else {
-      cell.setImage(image: nil)
-    }
-    return cell
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    return CGSize(width: 104, height: 104)
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    selectedImageIndex = indexPath.row
-    GA.shared.logEvent(event: .image_attach_button_clicked, page: .store_register_page)
-    AlertUtils.showImagePicker(controller: self, picker: self.imagePicker)
-  }
-}
-
-extension WriteDetailVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-    if let image = info[.originalImage] as? UIImage {
-      let cropImage = ImageUtils.cropToBounds(image: image)
-      
-      if selectedImageIndex == self.viewModel.imageList.count {
-        self.viewModel.imageList.append(cropImage)
-      } else {
-        self.viewModel.imageList[selectedImageIndex] = cropImage
-      }
-    }
-//    self.writingView.imageCollection.reloadData()
-    picker.dismiss(animated: true, completion: nil)
-  }
-}
-
 extension WriteDetailVC: UIScrollViewDelegate {
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
     self.writeDetailView.endEditing(true)
   }
 }
-
-extension WriteDetailVC: UITableViewDelegate, UITableViewDataSource {
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return self.viewModel.menuList.count + 1
-  }
-  
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuCell.registerId, for: indexPath) as? MenuCell else {
-      return BaseTableViewCell()
-    }
-    
-    cell.nameField.rx.controlEvent(.editingDidEnd).bind { [weak self] in
-      let name = cell.nameField.text!
-      let price = cell.descField.text
-      
-      if !name.isEmpty {
-        let menu = Menu.init(name: name, price: price)
-        
-        if indexPath.row == self?.viewModel.menuList.count {
-          self?.viewModel.menuList.append(menu)
-//          self?.writingView.menuTableView.reloadData()
-          self?.view.layoutIfNeeded()
-        } else {
-          self?.viewModel.menuList[indexPath.row].name = name
-        }
-      }
-    }.disposed(by: disposeBag)
-    
-    cell.descField.rx.controlEvent(.editingChanged).bind { [weak self] in
-      let name = cell.nameField.text!
-      let desc = cell.descField.text!
-      
-      if !name.isEmpty {
-        let menu = Menu.init(name: name, price: desc)
-        
-        if let _ = self?.viewModel.menuList[indexPath.row] {
-          self?.viewModel.menuList[indexPath.row] = menu
-        }
-      } else  {
-        if let vc = self,
-           indexPath.row < vc.viewModel.menuList.count,
-           let _ = self?.viewModel.menuList[indexPath.row] {
-          vc.viewModel.menuList.remove(at: indexPath.row)
-        }
-      }
-      
-    }.disposed(by: disposeBag)
-    
-    return cell
-  }
-}
-
-extension WriteDetailVC: CLLocationManagerDelegate {
-  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-    let location = locations.last
-    
-    
-    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
-      lat: location!.coordinate.latitude,
-      lng: location!.coordinate.longitude
-    ))
-    cameraUpdate.animation = .easeIn
-//    self.writingView.mapView.moveCamera(cameraUpdate)
-    self.locationManager.stopUpdatingLocation()
-  }
-  
-  func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-//    AlertUtils.show(title: "error locationManager", message: error.localizedDescription)
-  }
-}
-

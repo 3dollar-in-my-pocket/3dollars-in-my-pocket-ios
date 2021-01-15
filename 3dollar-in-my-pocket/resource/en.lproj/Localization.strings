@@ -87,3 +87,4 @@
 "write_store_saturday" = "토";
 "write_store_menu" = "메뉴 정보";
 "write_store_delete_all_menu" = "전체 삭제";
+"write_store_add_category" = "추가하기";

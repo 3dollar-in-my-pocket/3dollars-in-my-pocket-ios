@@ -6,6 +6,7 @@ class WriteCategoryCell: BaseCollectionViewCell {
   
   let roundView = UIView().then {
     $0.layer.cornerRadius = 26
+    $0.layer.masksToBounds = true
     $0.backgroundColor = .black
   }
   
@@ -15,6 +16,7 @@ class WriteCategoryCell: BaseCollectionViewCell {
   
   let nameLabel = UILabel().then {
     $0.textColor = .black
+    $0.textAlignment = .center
     $0.text = "write_store_add_category".localized
     $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12)
   }
@@ -31,7 +33,17 @@ class WriteCategoryCell: BaseCollectionViewCell {
     }
     
     self.categoryImage.snp.makeConstraints { make in
-      
+      make.center.equalTo(self.roundView)
     }
+    
+    self.nameLabel.snp.makeConstraints { make in
+      make.left.right.equalTo(self.roundView)
+      make.top.equalTo(self.roundView.snp.bottom).offset(8)
+      make.bottom.equalToSuperview()
+    }
+  }
+  
+  func bind(category: StoreCategory?) {
+    
   }
 }

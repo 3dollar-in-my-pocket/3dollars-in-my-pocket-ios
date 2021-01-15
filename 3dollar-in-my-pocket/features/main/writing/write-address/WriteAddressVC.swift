@@ -69,8 +69,10 @@ class WriteAddressVC: BaseVC {
   }
   
   private func goToWriteDetail(address: String, location: (Double, Double)) {
-    Log.debug("address: \(address)\nlocation: \(location)")
-    let writingDetailVC = WriteDetailVC.instance()
+    let writingDetailVC = WriteDetailVC.instance(
+      address: address,
+      location: location
+    )
     
     self.navigationController?.pushViewController(writingDetailVC, animated: true)
   }

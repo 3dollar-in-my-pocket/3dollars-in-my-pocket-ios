@@ -212,10 +212,12 @@ class WriteDetailView: BaseView {
     frame: .zero,
     collectionViewLayout: UICollectionViewFlowLayout()
   ).then {
-    let layout = UICollectionViewFlowLayout()
+    let layout = LeftAlignedCollectionViewFlowLayout()
     
-    layout.minimumInteritemSpacing = 16
-    layout.minimumLineSpacing = 40
+    layout.minimumInteritemSpacing = 16 * RatioUtils.widthRatio
+    layout.minimumLineSpacing = 20
+    layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+    layout.itemSize = CGSize(width: 52, height: 70)
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear
   }
@@ -468,7 +470,8 @@ class WriteDetailView: BaseView {
     self.categoryCollectionView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.top.equalTo(self.categoryContainer.snp.bottom).offset(24)
+      make.top.equalTo(self.categoryContainer).offset(24)
+      make.height.equalTo(72)
     }
     
   }
@@ -491,6 +494,12 @@ class WriteDetailView: BaseView {
     navigationView.layer.shadowOffset = CGSize(width: 8, height: 8)
     navigationView.layer.shadowColor = UIColor.black.cgColor
     navigationView.layer.shadowOpacity = 0.08
+  }
+  
+  func refreshCategoryCollectionViewHeight() {
+    self.categoryCollectionView.snp.updateConstraints { make in
+      make.height.equalTo(self.categoryCollectionView.contentSize.height)
+    }
   }
   
 //  private func refreshScrollViewHeight() {

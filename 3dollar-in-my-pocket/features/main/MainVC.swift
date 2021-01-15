@@ -30,8 +30,8 @@ class MainVC: BaseVC {
     let homeVC = HomeVC.instance().then {
       $0.delegate = self
     }
-    let writingVC = WriteDetailVC.instance().then {
-      $0.deleagte = self
+    let writingVC = HomeVC.instance().then {
+      $0.delegate = self
     }
     let myPageVC = MyPageVC.instance().then {
       $0.delegate = self
