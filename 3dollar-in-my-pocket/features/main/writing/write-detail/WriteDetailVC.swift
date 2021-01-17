@@ -56,9 +56,13 @@ class WriteDetailVC: BaseVC {
     self.viewModel.output.categories
       .bind(to: self.writeDetailView.categoryCollectionView.rx.items(cellIdentifier: WriteCategoryCell.registerId, cellType: WriteCategoryCell.self)) { row, category, cell in
         cell.bind(category: category)
-        Log.debug("content view height: \(self.writeDetailView.categoryCollectionView.contentSize.height)")
-//        self.writeDetailView.refreshCategoryCollectionViewHeight()
+        self.writeDetailView.refreshCategoryCollectionViewHeight()
       }
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.showCategoryDialog
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showCategoryDialog(categories:))
       .disposed(by: disposeBag)
     
 //    writingView.registerBtn.rx.tap
@@ -151,11 +155,27 @@ class WriteDetailVC: BaseVC {
     self.writeDetailView.categoryCollectionView.rx
       .setDelegate(self)
       .disposed(by: disposeBag)
+    self.writeDetailView.categoryCollectionView.rx.itemSelected
+      .bind { [weak self] indexPath in
+        if indexPath.row == 0 {
+          self?.viewModel.input.tapAddCategory.onNext(())
+        }
+      }
+      .disposed(by: disposeBag)
   }
   
   private func setupKeyboardEvent() {
     NotificationCenter.default.addObserver(self, selector: #selector(onShowKeyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+  }
+  
+  private func showCategoryDialog(categories: [StoreCategory?]) {
+    let addCategoryVC = AddCategoryVC.instance(selectedCategory: categories).then {
+      $0.delegate = self
+    }
+    
+    self.writeDetailView.showDim(isShow: true)
+    self.present(addCategoryVC, animated: true, completion: nil)
   }
   
   @objc func onShowKeyboard(notification: NSNotification) {
@@ -178,5 +198,17 @@ class WriteDetailVC: BaseVC {
 extension WriteDetailVC: UIScrollViewDelegate {
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
     self.writeDetailView.endEditing(true)
+  }
+}
+
+extension WriteDetailVC: AddCategoryDelegate {
+  
+  func onDismiss() {
+    self.writeDetailView.showDim(isShow: false)
+  }
+  
+  func onSuccess(selectedCategories: [StoreCategory]) {
+    Log.debug("selected categories: \(selectedCategories)")
+    self.writeDetailView.showDim(isShow: false)
   }
 }

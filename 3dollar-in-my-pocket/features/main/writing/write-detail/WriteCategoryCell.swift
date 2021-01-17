@@ -34,6 +34,7 @@ class WriteCategoryCell: BaseCollectionViewCell {
     
     self.categoryImage.snp.makeConstraints { make in
       make.center.equalTo(self.roundView)
+      make.width.height.equalTo(32)
     }
     
     self.nameLabel.snp.makeConstraints { make in
@@ -44,6 +45,24 @@ class WriteCategoryCell: BaseCollectionViewCell {
   }
   
   func bind(category: StoreCategory?) {
-    
+    if let category = category {
+      self.roundView.backgroundColor = .clear
+      self.roundView.layer.borderWidth = 1
+      self.roundView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
+      switch category {
+      case .BUNGEOPPANG:
+        self.categoryImage.image = UIImage(named: "img_category_fish")
+        self.nameLabel.text = "붕어빵"
+      case .GYERANPPANG:
+        self.categoryImage.image = UIImage(named: "img_category_gyeranppang")
+        self.nameLabel.text = "계란빵"
+      case .HOTTEOK:
+        self.categoryImage.image = UIImage(named: "img_category_hotteok")
+        self.nameLabel.text = "호떡"
+      case .TAKOYAKI:
+        self.categoryImage.image = UIImage(named: "img_category_takoyaki")
+        self.nameLabel.text = "문어빵"
+      }
+    }
   }
 }

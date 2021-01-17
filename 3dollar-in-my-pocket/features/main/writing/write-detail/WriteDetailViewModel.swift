@@ -9,15 +9,17 @@ class WriteDetailViewModel: BaseViewModel {
   let storeService: StoreServiceProtocol
   let address: String
   let location: (Double, Double)
-  let categoryies: [StoreCategory?] = [nil, nil, nil, nil, nil, nil, nil]
+  let categoryies: [StoreCategory?] = [nil]
   
   struct Input {
-    
+    let tapAddCategory = PublishSubject<Void>()
+    let tapCategoryDelete = PublishSubject<Int>()
   }
   
   struct Output {
     let address = PublishRelay<String>()
     let categories = PublishRelay<[StoreCategory?]>()
+    let showCategoryDialog = PublishRelay<[StoreCategory?]>()
   }
   
   init(
@@ -29,6 +31,12 @@ class WriteDetailViewModel: BaseViewModel {
     self.location = location
     self.storeService = storeService
     super.init()
+    
+    self.input.tapAddCategory
+      .debug()
+      .map { self.categoryies }
+      .bind(to: self.output.showCategoryDialog)
+      .disposed(by: disposeBag)
   }
   
   func fetchInitialData() {
