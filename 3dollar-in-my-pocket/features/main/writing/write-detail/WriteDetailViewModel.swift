@@ -73,7 +73,7 @@ class WriteDetailViewModel: BaseViewModel {
   }
   
   private func deleteCategory(index: Int) {
-    if self.categoryies.count > index + 1 {
+    if self.categoryies.count >= index + 1 {
       self.categoryies.remove(at: index + 1)
       Observable.just(self.categoryies)
         .bind(to: self.output.categories)
