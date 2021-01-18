@@ -9,8 +9,8 @@ class MenuCell: BaseTableViewCell {
     $0.layer.borderColor = UIColor.init(r: 223, g: 223, b: 223).cgColor
     $0.layer.borderWidth = 1
     $0.placeholder = "ex)슈크림"
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-    $0.textColor = UIColor.init(r: 28, g: 28, b: 28)
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.textColor = UIColor(r: 28, g: 28, b: 28)
     $0.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 10))
     $0.leftViewMode = .always
     $0.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 10))
@@ -20,11 +20,11 @@ class MenuCell: BaseTableViewCell {
   
   let descField = UITextField().then {
     $0.layer.cornerRadius = 8
-    $0.layer.borderColor = UIColor.init(r: 223, g: 223, b: 223).cgColor
+    $0.layer.borderColor = UIColor(r: 223, g: 223, b: 223).cgColor
     $0.layer.borderWidth = 1
     $0.placeholder = "ex)3개 2천원"
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-    $0.textColor = UIColor.init(r: 28, g: 28, b: 28)
+    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 16)
+    $0.textColor = UIColor(r: 28, g: 28, b: 28)
     $0.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 10))
     $0.leftViewMode = .always
     $0.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 10))
@@ -37,21 +37,16 @@ class MenuCell: BaseTableViewCell {
     selectionStyle = .none
     self.contentView.addSubViews(nameField, descField)
     
-    nameField.rx.text.bind { [weak self] (inputText) in
-      if inputText!.isEmpty {
-        self?.nameField.layer.borderColor = UIColor.init(r: 223, g: 223, b: 223).cgColor
-      } else {
-        self?.nameField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
-      }
-    }.disposed(by: disposeBag)
+    self.nameField.rx.text.orEmpty
+      .map { $0.isEmpty }
+      .bind(onNext: self.setNameFieldBorderColor(isEmpty:))
+      .disposed(by: disposeBag)
     
-    descField.rx.text.bind { [weak self] (inputText) in
-      if inputText!.isEmpty {
-        self?.descField.layer.borderColor = UIColor.init(r: 223, g: 223, b: 223).cgColor
-      } else {
-        self?.descField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
-      }
-    }.disposed(by: disposeBag)
+    self.descField.rx.text.orEmpty
+      .map { $0.isEmpty }
+      .bind(onNext: self.setDescFieldBorderColor(isEmpty:))
+      .disposed(by: disposeBag)
+    
     self.nameField.delegate = self
     self.descField.delegate = self
   }
@@ -73,11 +68,29 @@ class MenuCell: BaseTableViewCell {
     }
   }
   
-  func setMenu(menu: Menu) {
-    self.nameField.text = menu.name
-    self.nameField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
-    self.descField.text = menu.price
-    self.descField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
+  func setMenu(menu: Menu?) {
+    if let menu = menu {
+      self.nameField.text = menu.name
+      self.nameField.layer.borderColor = UIColor.init(r: 255, g: 161, b: 170).cgColor
+      self.descField.text = menu.price
+      self.descField.layer.borderColor = UIColor.init(r: 255, g: 161, b: 170).cgColor
+    }
+  }
+  
+  private func setNameFieldBorderColor(isEmpty: Bool) {
+    if isEmpty {
+      self.nameField.layer.borderColor = UIColor.init(r: 223, g: 223, b: 223).cgColor
+    } else {
+      self.nameField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
+    }
+  }
+  
+  private func setDescFieldBorderColor(isEmpty: Bool) {
+    if isEmpty {
+      self.descField.layer.borderColor = UIColor.init(r: 223, g: 223, b: 223).cgColor
+    } else {
+      self.descField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
+    }
   }
 }
 

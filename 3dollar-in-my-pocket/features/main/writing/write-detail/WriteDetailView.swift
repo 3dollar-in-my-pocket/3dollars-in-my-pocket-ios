@@ -221,13 +221,12 @@ class WriteDetailView: BaseView {
     $0.backgroundColor = .clear
   }
   
-  
-//  let menuTableView = UITableView().then {
-//    $0.backgroundColor = .clear
-//    $0.isScrollEnabled = false
-//    $0.rowHeight = UITableView.automaticDimension
-//    $0.separatorStyle = .none
-//  }
+  let menuTableView = UITableView().then {
+    $0.backgroundColor = .white
+    $0.isScrollEnabled = false
+    $0.rowHeight = UITableView.automaticDimension
+    $0.separatorStyle = .none
+  }
   
   let registerBtnBg = UIView().then {
     $0.layer.cornerRadius = 37
@@ -266,7 +265,7 @@ class WriteDetailView: BaseView {
       paymentTypeOptionLabel, paymentTypeMultiLabel, cashCheckButton, cardCheckButton,
       transferCheckButton, generateLabel, generateOptionLabel, dayStackView,
       menuLabel, menuOptionLabel, deleteAllButton, categoryContainer,
-      categoryCollectionView
+      categoryCollectionView, menuTableView
     )
     
     scrollView.addSubview(containerView)
@@ -473,6 +472,12 @@ class WriteDetailView: BaseView {
       make.height.equalTo(72)
     }
     
+    self.menuTableView.snp.makeConstraints { make in
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+      make.top.equalTo(self.categoryContainer.snp.bottom).offset(10)
+      make.height.equalTo(178)
+    }
   }
   
   override func layoutSubviews() {
@@ -501,13 +506,11 @@ class WriteDetailView: BaseView {
     }
   }
   
-//  private func refreshScrollViewHeight() {
-//    menuTableView.snp.remakeConstraints({ (make) in
-//      make.left.right.equalToSuperview()
-//      make.top.equalTo(detailLabel.snp.bottom).offset(8)
-//      make.height.equalTo(menuTableView.contentSize.height + 85)
-//    })
-//  }
+  private func refreshScrollViewHeight() {
+    menuTableView.snp.updateConstraints { make in
+      make.height.equalTo(self.menuTableView.contentSize.height)
+    }
+  }
 //
 //  func tapCategoryBtn(index: Int) {
 //    let buttons = [bungeoppangBtn, takoyakiBtn, gyeranppangBtn, hotteokBtn]

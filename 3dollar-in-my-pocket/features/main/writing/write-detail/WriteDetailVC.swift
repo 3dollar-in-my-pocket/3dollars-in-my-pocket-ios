@@ -1,6 +1,7 @@
 import UIKit
 import NMapsMap
 import RxSwift
+import RxDataSources
 
 protocol WriteDetailDelegate: class {
   func onWriteSuccess(storeId: Int)
@@ -12,7 +13,7 @@ class WriteDetailVC: BaseVC {
   
   private lazy var writeDetailView = WriteDetailView(frame: self.view.frame)
   let viewModel: WriteDetailViewModel
-  
+  var menuDataSource: RxTableViewSectionedReloadDataSource<MenuSection>!
   
   init(address: String, location: (Double, Double)) {
     self.viewModel = WriteDetailViewModel(
@@ -39,12 +40,13 @@ class WriteDetailVC: BaseVC {
   }
   
   override func viewDidLoad() {
+    self.setupMenuTableView()
+    self.setupCategoryCollectionView()
+    self.setupKeyboardEvent()
+    
     super.viewDidLoad()
     view = writeDetailView
-    
-    writeDetailView.scrollView.delegate = self
-    setupCategoryCollectionView()
-    setupKeyboardEvent()
+    self.writeDetailView.scrollView.delegate = self
     self.viewModel.fetchInitialData()
   }
   
@@ -62,7 +64,10 @@ class WriteDetailVC: BaseVC {
     
     self.viewModel.output.showCategoryDialog
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showCategoryDialog(categories:))
+      .bind(onNext: self.showCategoryDialog(selectedCategories:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.menus.bind(to: self.writeDetailView.menuTableView.rx.items(dataSource:self.menuDataSource))
       .disposed(by: disposeBag)
     
 //    writingView.registerBtn.rx.tap
@@ -164,13 +169,31 @@ class WriteDetailVC: BaseVC {
       .disposed(by: disposeBag)
   }
   
+  private func setupMenuTableView() {
+    self.writeDetailView.menuTableView.register(
+      MenuCell.self,
+      forCellReuseIdentifier: MenuCell.registerId
+    )
+    self.writeDetailView.menuTableView.rx
+      .setDelegate(self)
+      .disposed(by: disposeBag)
+    self.menuDataSource = RxTableViewSectionedReloadDataSource<MenuSection> { (dataSource, tableView, indexPath, item) in
+      guard let cell = tableView.dequeueReusableCell(
+        withIdentifier: MenuCell.registerId,
+        for: indexPath
+      ) as? MenuCell else { return BaseTableViewCell() }
+      
+      return cell
+    }
+  }
+  
   private func setupKeyboardEvent() {
     NotificationCenter.default.addObserver(self, selector: #selector(onShowKeyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
   }
   
-  private func showCategoryDialog(categories: [StoreCategory?]) {
-    let addCategoryVC = AddCategoryVC.instance(selectedCategory: categories).then {
+  private func showCategoryDialog(selectedCategories: [StoreCategory?]) {
+    let addCategoryVC = AddCategoryVC.instance(selectedCategory: selectedCategories).then {
       $0.delegate = self
     }
     
@@ -208,7 +231,32 @@ extension WriteDetailVC: AddCategoryDelegate {
   }
   
   func onSuccess(selectedCategories: [StoreCategory]) {
-    Log.debug("selected categories: \(selectedCategories)")
+    self.viewModel.input.addCategories.onNext(selectedCategories)
     self.writeDetailView.showDim(isShow: false)
+  }
+}
+
+extension WriteDetailVC: UITableViewDelegate {
+  func tableView(
+    _ tableView: UITableView,
+    viewForHeaderInSection section: Int
+  ) -> UIView? {
+    let menuHeaderView = MenuHeaderView().then {
+      $0.frame = CGRect(
+        x: 0,
+        y: 0,
+        width: tableView.frame.width,
+        height: 56
+      )
+    }
+    let sectionCategory = self.menuDataSource.sectionModels[section].category ?? .BUNGEOPPANG
+    
+    menuHeaderView.bind(category: sectionCategory)
+    menuHeaderView.deleteButton.rx.tap
+      .map { section }
+      .bind(to: self.viewModel.input.deleteCategory)
+      .disposed(by: self.disposeBag)
+    
+    return menuHeaderView
   }
 }

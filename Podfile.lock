@@ -220,6 +220,7 @@ PODS:
     - BoringSSL-GRPC/Interface (= 0.0.7)
   - BoringSSL-GRPC/Interface (0.0.7)
   - DeviceKit (4.2.1)
+  - Differentiator (4.0.1)
   - Firebase/Analytics (7.1.0):
     - Firebase/Core
   - Firebase/Core (7.1.0):
@@ -356,6 +357,10 @@ PODS:
   - RxCocoa (5.1.1):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
+  - RxDataSources (4.0.1):
+    - Differentiator (~> 4.0)
+    - RxCocoa (~> 5.0)
+    - RxSwift (~> 5.0)
   - RxRelay (5.1.1):
     - RxSwift (~> 5)
   - RxSwift (5.1.1)
@@ -380,6 +385,7 @@ DEPENDENCIES:
   - lottie-ios
   - NMapsMap
   - RxCocoa (~> 5)
+  - RxDataSources (~> 4.0)
   - RxSwift (~> 5)
   - SnapKit (~> 5.0.0)
   - SwiftyBeaver
@@ -391,6 +397,7 @@ SPEC REPOS:
     - Alamofire
     - BoringSSL-GRPC
     - DeviceKit
+    - Differentiator
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
@@ -417,6 +424,7 @@ SPEC REPOS:
     - NMapsMap
     - PromisesObjC
     - RxCocoa
+    - RxDataSources
     - RxRelay
     - RxSwift
     - SnapKit
@@ -428,6 +436,7 @@ SPEC CHECKSUMS:
   Alamofire: 3b6a534a3df22db367e4dedeeca73d1ddfcf0e2f
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   DeviceKit: cadb5ff25d45fe186778bf2d0fd2ea4750542189
+  Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   Firebase: 78e8dd2e39d653de6270432ad84fe8b59f7bf4e8
   FirebaseAnalytics: 7f165a56dea86ddd5b8ce02af3bee982c683405c
   FirebaseCore: 20046127eef0fcb8fa25df7fc12f7b97d4e48611
@@ -454,12 +463,13 @@ SPEC CHECKSUMS:
   NMapsMap: 1dc27ca06eac287ce1f001a972172766dca2abe1
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
+  RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
   RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
   RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwiftyBeaver: 2e8acd6fc90c6d0a27055867a290794926d57c02
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: 25d12c058c7d8c019dfe582edc661f64997f5be6
+PODFILE CHECKSUM: a1073b7379a68fd4124a305f209021b1bebc5d91
 
 COCOAPODS: 1.10.0

@@ -21,6 +21,14 @@ class WriteCategoryCell: BaseCollectionViewCell {
     $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12)
   }
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.roundView.backgroundColor = .black
+    self.roundView.layer.borderWidth = 0
+    self.categoryImage.image = UIImage(named: "ic_plus_pink")
+    self.nameLabel.text = "write_store_add_category".localized
+  }
+  
   override func setup() {
     backgroundColor = .clear
     addSubViews(roundView, categoryImage, nameLabel)
@@ -52,16 +60,16 @@ class WriteCategoryCell: BaseCollectionViewCell {
       switch category {
       case .BUNGEOPPANG:
         self.categoryImage.image = UIImage(named: "img_category_fish")
-        self.nameLabel.text = "붕어빵"
+        self.nameLabel.text = "shared_category_bungeoppang".localized
       case .GYERANPPANG:
         self.categoryImage.image = UIImage(named: "img_category_gyeranppang")
-        self.nameLabel.text = "계란빵"
+        self.nameLabel.text = "shared_category_gyeranppang".localized
       case .HOTTEOK:
         self.categoryImage.image = UIImage(named: "img_category_hotteok")
-        self.nameLabel.text = "호떡"
+        self.nameLabel.text = "shared_category_hotteok".localized
       case .TAKOYAKI:
         self.categoryImage.image = UIImage(named: "img_category_takoyaki")
-        self.nameLabel.text = "문어빵"
+        self.nameLabel.text = "shared_category_takoyaki".localized
       }
     }
   }
