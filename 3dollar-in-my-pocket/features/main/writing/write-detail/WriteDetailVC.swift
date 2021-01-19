@@ -26,6 +26,7 @@ class WriteDetailVC: BaseVC {
   
   deinit {
     NotificationCenter.default.removeObserver(self)
+    self.writeDetailView.menuTableView.removeObserver(self, forKeyPath: "contentSize")
   }
   
   required init?(coder: NSCoder) {
@@ -48,6 +49,20 @@ class WriteDetailVC: BaseVC {
     view = writeDetailView
     self.writeDetailView.scrollView.delegate = self
     self.viewModel.fetchInitialData()
+    self.addObservers()
+  }
+  
+  override func observeValue(
+    forKeyPath keyPath: String?,
+    of object: Any?,
+    change: [NSKeyValueChangeKey : Any]?,
+    context: UnsafeMutableRawPointer?
+  ) {
+    if let obj = object as? UITableView {
+      if obj == self.writeDetailView.menuTableView && keyPath == "contentSize" {
+        self.writeDetailView.refreshMenuTableViewHeight()
+      }
+    }
   }
   
   override func bindViewModel() {
@@ -68,11 +83,6 @@ class WriteDetailVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.viewModel.output.menus
-      .do(onNext: { menuSections in
-        if menuSections.isEmpty {
-          self.writeDetailView.refreshMenuTableViewHeight(section: -1)
-        }
-      })
       .bind(to: self.writeDetailView.menuTableView.rx.items(dataSource:self.menuDataSource))
       .disposed(by: disposeBag)
     
@@ -150,6 +160,15 @@ class WriteDetailVC: BaseVC {
       .disposed(by: disposeBag)
   }
   
+  private func addObservers() {
+    self.writeDetailView.menuTableView.addObserver(
+      self,
+      forKeyPath: "contentSize",
+      options: .new,
+      context: nil
+    )
+  }
+  
   private func popupVC() {
     self.navigationController?.popViewController(animated: true)
   }
@@ -189,7 +208,6 @@ class WriteDetailVC: BaseVC {
         for: indexPath
       ) as? MenuCell else { return BaseTableViewCell() }
       
-      self.writeDetailView.refreshMenuTableViewHeight(section: indexPath.section)
       return cell
     }
   }

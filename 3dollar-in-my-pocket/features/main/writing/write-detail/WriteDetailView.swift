@@ -506,15 +506,9 @@ class WriteDetailView: BaseView {
     }
   }
   
-  func refreshMenuTableViewHeight(section: Int = 0) {
-    if section == -1 {
-      menuTableView.snp.updateConstraints { make in
-        make.height.equalTo(0)
-      }
-    } else {
-      menuTableView.snp.updateConstraints { make in
-        make.height.equalTo(self.menuTableView.contentSize.height + 20)
-      }
+  func refreshMenuTableViewHeight() {
+    menuTableView.snp.updateConstraints { make in
+      make.height.equalTo(self.menuTableView.contentSize.height)
     }
   }
 //
