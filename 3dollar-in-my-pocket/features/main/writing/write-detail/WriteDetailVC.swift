@@ -67,7 +67,13 @@ class WriteDetailVC: BaseVC {
       .bind(onNext: self.showCategoryDialog(selectedCategories:))
       .disposed(by: disposeBag)
     
-    self.viewModel.output.menus.bind(to: self.writeDetailView.menuTableView.rx.items(dataSource:self.menuDataSource))
+    self.viewModel.output.menus
+      .do(onNext: { menuSections in
+        if menuSections.isEmpty {
+          self.writeDetailView.refreshMenuTableViewHeight(section: -1)
+        }
+      })
+      .bind(to: self.writeDetailView.menuTableView.rx.items(dataSource:self.menuDataSource))
       .disposed(by: disposeBag)
     
 //    writingView.registerBtn.rx.tap
@@ -183,6 +189,7 @@ class WriteDetailVC: BaseVC {
         for: indexPath
       ) as? MenuCell else { return BaseTableViewCell() }
       
+      self.writeDetailView.refreshMenuTableViewHeight(section: indexPath.section)
       return cell
     }
   }
@@ -254,8 +261,8 @@ extension WriteDetailVC: UITableViewDelegate {
     menuHeaderView.bind(category: sectionCategory)
     menuHeaderView.deleteButton.rx.tap
       .map { section }
-      .bind(to: self.viewModel.input.deleteCategory)
-      .disposed(by: self.disposeBag)
+      .subscribe(onNext: (self.viewModel.input.deleteCategory.onNext))
+      .disposed(by: menuHeaderView.disposeBag)
     
     return menuHeaderView
   }

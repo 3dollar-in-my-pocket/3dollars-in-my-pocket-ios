@@ -10,6 +10,7 @@ class WriteDetailViewModel: BaseViewModel {
   let address: String
   let location: (Double, Double)
   var categoryies: [StoreCategory?] = [nil]
+  var menusSections: [MenuSection] = []
   
   struct Input {
     let tapAddCategory = PublishSubject<Void>()
@@ -23,6 +24,7 @@ class WriteDetailViewModel: BaseViewModel {
     let categories = PublishRelay<[StoreCategory?]>()
     let showCategoryDialog = PublishRelay<[StoreCategory?]>()
     let menus = PublishRelay<[MenuSection]>()
+    let fetchMenuTableViewHeight = PublishRelay<Void>()
   }
   
   init(
@@ -46,6 +48,7 @@ class WriteDetailViewModel: BaseViewModel {
           MenuSection(category: category, items: [nil])
         }
       }
+      .do(onNext: { self.menusSections = $0 })
       .bind(to: self.output.menus)
       .disposed(by: disposeBag)
     
@@ -80,13 +83,9 @@ class WriteDetailViewModel: BaseViewModel {
         .disposed(by: disposeBag)
     }
     
-    self.output.menus.takeLast(1)
-      .map { menus -> [MenuSection] in
-      var newMenus = menus
-      
-      newMenus.remove(at: index)
-      return newMenus
-    }.bind(to: self.output.menus)
-    .disposed(by: disposeBag)
+    self.menusSections.remove(at: index)
+    Observable.just(self.menusSections)
+      .bind(to: self.output.menus)
+      .disposed(by: disposeBag)
   }
 }

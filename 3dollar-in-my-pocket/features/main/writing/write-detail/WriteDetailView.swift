@@ -297,7 +297,7 @@ class WriteDetailView: BaseView {
       make.edges.equalTo(0)
       make.width.equalTo(frame.width)
       make.top.equalToSuperview()
-      make.height.equalTo(1000)
+      make.bottom.equalTo(self.menuTableView)
     }
     
     self.locationLabel.snp.makeConstraints { make in
@@ -476,19 +476,19 @@ class WriteDetailView: BaseView {
       make.left.equalToSuperview()
       make.right.equalToSuperview()
       make.top.equalTo(self.categoryContainer.snp.bottom).offset(10)
-      make.height.equalTo(178)
+      make.height.equalTo(0)
     }
   }
   
   override func layoutSubviews() {
     super.layoutSubviews()
-//    refreshScrollViewHeight()
+    self.refreshMenuTableViewHeight()
     registerBtn.layer.cornerRadius = registerBtn.frame.height / 2
   }
   
   override func layoutIfNeeded() {
     super.layoutIfNeeded()
-//    refreshScrollViewHeight()
+    self.refreshMenuTableViewHeight()
   }
   
   private func setupNavigationBar() {
@@ -506,9 +506,15 @@ class WriteDetailView: BaseView {
     }
   }
   
-  private func refreshScrollViewHeight() {
-    menuTableView.snp.updateConstraints { make in
-      make.height.equalTo(self.menuTableView.contentSize.height)
+  func refreshMenuTableViewHeight(section: Int = 0) {
+    if section == -1 {
+      menuTableView.snp.updateConstraints { make in
+        make.height.equalTo(0)
+      }
+    } else {
+      menuTableView.snp.updateConstraints { make in
+        make.height.equalTo(self.menuTableView.contentSize.height + 20)
+      }
     }
   }
 //
