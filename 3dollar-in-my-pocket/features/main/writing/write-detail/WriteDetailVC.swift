@@ -73,7 +73,6 @@ class WriteDetailVC: BaseVC {
     
     self.writeDetailView.dayStackView.sundayButton.rx.tap
       .map { WeekDay.sunday }
-      .debug()
       .bind(to: self.viewModel.input.tapDay)
       .disposed(by: disposeBag)
     
@@ -107,6 +106,21 @@ class WriteDetailVC: BaseVC {
       .bind(to: self.viewModel.input.tapDay)
       .disposed(by: disposeBag)
     
+    self.writeDetailView.storeTypeStackView.roadRadioButton.rx.tap
+      .map { StoreType.road }
+      .bind(to: self.viewModel.input.tapStoreType)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.storeTypeStackView.storeRadioButton.rx.tap
+      .map { StoreType.store }
+      .bind(to: self.viewModel.input.tapStoreType)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.storeTypeStackView.convenienceStoreRadioButton.rx.tap
+      .map { StoreType.convenienceStore }
+      .bind(to: self.viewModel.input.tapStoreType)
+      .disposed(by: disposeBag)
+    
     // Bind output
     self.viewModel.output.address
       .bind(to: self.writeDetailView.locationValueLabel.rx.text)
@@ -117,9 +131,14 @@ class WriteDetailVC: BaseVC {
       .bind(onNext: self.writeDetailView.setStoreNameBorderColoe(isEmpty:))
       .disposed(by: disposeBag)
     
-    self.viewModel.output.selectedDays
+    self.viewModel.output.selectDays
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.writeDetailView.dayStackView.selectDays(weekDays:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.selectType
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.writeDetailView.storeTypeStackView.selectType(type:))
       .disposed(by: disposeBag)
     
     self.viewModel.output.categories

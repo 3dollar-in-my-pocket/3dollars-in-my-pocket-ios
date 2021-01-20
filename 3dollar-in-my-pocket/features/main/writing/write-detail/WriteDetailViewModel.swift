@@ -16,6 +16,7 @@ class WriteDetailViewModel: BaseViewModel {
   struct Input {
     let storeName = PublishSubject<String>()
     let tapDay = PublishSubject<WeekDay>()
+    let tapStoreType = PublishSubject<StoreType>()
     let tapAddCategory = PublishSubject<Void>()
     let tapCategoryDelete = PublishSubject<Int>()
     let addCategories = PublishSubject<[StoreCategory?]>()
@@ -25,7 +26,8 @@ class WriteDetailViewModel: BaseViewModel {
   struct Output {
     let address = PublishRelay<String>()
     let storeNameIsEmpty = PublishRelay<Bool>()
-    let selectedDays = PublishRelay<[WeekDay]>()
+    let selectType = PublishRelay<StoreType>()
+    let selectDays = PublishRelay<[WeekDay]>()
     let categories = PublishRelay<[StoreCategory?]>()
     let showCategoryDialog = PublishRelay<[StoreCategory?]>()
     let menus = PublishRelay<[MenuSection]>()
@@ -49,6 +51,10 @@ class WriteDetailViewModel: BaseViewModel {
     
     self.input.tapDay
       .bind(onNext: self.onTapDay(weekDay:))
+      .disposed(by: disposeBag)
+    
+    self.input.tapStoreType
+      .bind(to: self.output.selectType)
       .disposed(by: disposeBag)
     
     self.input.tapAddCategory
@@ -112,7 +118,7 @@ class WriteDetailViewModel: BaseViewModel {
     }
     
     Observable.just(self.appearenceDay)
-      .bind(to: self.output.selectedDays)
+      .bind(to: self.output.selectDays)
       .disposed(by: disposeBag)
   }
 }

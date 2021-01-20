@@ -100,32 +100,7 @@ class WriteDetailView: BaseView {
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
-  let roadRadioButton = UIButton().then {
-    $0.setTitle("write_store_type_road".localized, for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
-    $0.setTitleColor(.black, for: .normal)
-    $0.setImage(UIImage(named: "ic_radio_off"), for: .normal)
-    $0.setImage(UIImage(named: "ic_radio_on"), for: .selected)
-    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
-  }
-  
-  let storeRadioButton = UIButton().then {
-    $0.setTitle("write_store_type_store".localized, for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
-    $0.setTitleColor(.black, for: .normal)
-    $0.setImage(UIImage(named: "ic_radio_off"), for: .normal)
-    $0.setImage(UIImage(named: "ic_radio_on"), for: .selected)
-    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
-  }
-  
-  let convenienceStoreRadioButton = UIButton().then {
-    $0.setTitle("write_store_type_convenience_store".localized, for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
-    $0.setTitleColor(.black, for: .normal)
-    $0.setImage(UIImage(named: "ic_radio_off"), for: .normal)
-    $0.setImage(UIImage(named: "ic_radio_on"), for: .selected)
-    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
-  }
+  let storeTypeStackView = WriteDetailTypeStackView()
   
   let paymentTypeLabel = UILabel().then {
     $0.text = "write_store_payment_type".localized
@@ -262,7 +237,7 @@ class WriteDetailView: BaseView {
       locationLabel, modifyLocationButton, locationContainer, locationFieldContainer,
       locationValueLabel, storeInfoLabel, storeInfoContainer, storeNameLabel,
       storeNameContainer, storeNameField, storeTypeLabel, storeTypeOptionLabel,
-      roadRadioButton, storeRadioButton, convenienceStoreRadioButton, paymentTypeLabel,
+      storeTypeStackView, paymentTypeLabel,
       paymentTypeOptionLabel, paymentTypeMultiLabel, cashCheckButton, cardCheckButton,
       transferCheckButton, generateLabel, generateOptionLabel, dayStackView,
       menuLabel, menuOptionLabel, deleteAllButton, categoryContainer,
@@ -369,25 +344,14 @@ class WriteDetailView: BaseView {
       make.centerY.equalTo(self.storeTypeLabel)
     }
     
-    self.roadRadioButton.snp.makeConstraints { make in
+    self.storeTypeStackView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.top.equalTo(self.storeTypeLabel.snp.bottom).offset(17)
-      make.height.equalTo(20)
-    }
-    
-    self.storeRadioButton.snp.makeConstraints { make in
-      make.left.equalTo(self.roadRadioButton.snp.right).offset(31)
-      make.centerY.equalTo(self.roadRadioButton)
-    }
-    
-    self.convenienceStoreRadioButton.snp.makeConstraints { make in
-      make.left.equalTo(self.storeRadioButton.snp.right).offset(31)
-      make.centerY.equalTo(self.storeRadioButton)
     }
     
     self.paymentTypeLabel.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.top.equalTo(self.roadRadioButton.snp.bottom).offset(40)
+      make.top.equalTo(self.storeTypeStackView.snp.bottom).offset(40)
     }
 
     self.paymentTypeOptionLabel.snp.makeConstraints { make in
