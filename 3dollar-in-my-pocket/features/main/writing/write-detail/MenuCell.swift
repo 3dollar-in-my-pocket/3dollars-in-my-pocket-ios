@@ -1,4 +1,5 @@
 import UIKit
+import RxSwift
 
 class MenuCell: BaseTableViewCell {
   
@@ -23,13 +24,19 @@ class MenuCell: BaseTableViewCell {
     $0.layer.borderColor = UIColor(r: 223, g: 223, b: 223).cgColor
     $0.layer.borderWidth = 1
     $0.placeholder = "ex)3개 2천원"
-    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 16)
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
     $0.textColor = UIColor(r: 28, g: 28, b: 28)
     $0.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 10))
     $0.leftViewMode = .always
     $0.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 10))
     $0.rightViewMode = .always
     $0.returnKeyType = .done
+  }
+  
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.disposeBag = DisposeBag()
+    self.setup()
   }
   
   override func setup() {
@@ -54,8 +61,8 @@ class MenuCell: BaseTableViewCell {
   override func bindConstraints() {
     nameField.snp.makeConstraints { (make) in
       make.left.equalToSuperview().offset(24)
-      make.top.equalToSuperview().offset(4)
-      make.bottom.equalToSuperview().offset(-4)
+      make.top.equalToSuperview().offset(8)
+      make.bottom.equalToSuperview().offset(-8)
       make.height.equalTo(50)
       make.width.equalTo(106)
     }
@@ -95,6 +102,7 @@ class MenuCell: BaseTableViewCell {
 }
 
 extension MenuCell: UITextFieldDelegate {
+  
   func textField(
     _ textField: UITextField,
     shouldChangeCharactersIn range: NSRange,

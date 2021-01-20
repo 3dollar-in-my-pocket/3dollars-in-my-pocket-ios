@@ -226,6 +226,7 @@ class WriteDetailView: BaseView {
     $0.isScrollEnabled = false
     $0.rowHeight = UITableView.automaticDimension
     $0.separatorStyle = .none
+    $0.sectionFooterHeight = 20
   }
   
   let registerBtnBg = UIView().then {

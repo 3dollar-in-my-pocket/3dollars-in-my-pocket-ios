@@ -284,4 +284,23 @@ extension WriteDetailVC: UITableViewDelegate {
     
     return menuHeaderView
   }
+  
+  func tableView(
+    _ tableView: UITableView,
+    heightForFooterInSection section: Int
+  ) -> CGFloat {
+    return 20
+  }
+  
+  func tableView(
+    _ tableView: UITableView,
+    viewForFooterInSection section: Int
+  ) -> UIView? {
+    return MenuFooterView(frame: CGRect(
+      x: 0,
+      y: 0,
+      width: tableView.frame.width,
+      height: 20
+    ))
+  }
 }
