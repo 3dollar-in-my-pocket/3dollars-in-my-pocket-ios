@@ -12,11 +12,13 @@ class WriteDetailViewModel: BaseViewModel {
   var appearenceDay: [WeekDay] = []
   var categoryies: [StoreCategory?] = [nil]
   var menusSections: [MenuSection] = []
+  var paymentType: [PaymentType] = []
   
   struct Input {
     let storeName = PublishSubject<String>()
     let tapDay = PublishSubject<WeekDay>()
     let tapStoreType = PublishSubject<StoreType>()
+    let tapPaymentType = PublishSubject<PaymentType>()
     let tapAddCategory = PublishSubject<Void>()
     let tapCategoryDelete = PublishSubject<Int>()
     let addCategories = PublishSubject<[StoreCategory?]>()
@@ -27,6 +29,7 @@ class WriteDetailViewModel: BaseViewModel {
     let address = PublishRelay<String>()
     let storeNameIsEmpty = PublishRelay<Bool>()
     let selectType = PublishRelay<StoreType>()
+    let selectPaymentType = PublishRelay<[PaymentType]>()
     let selectDays = PublishRelay<[WeekDay]>()
     let categories = PublishRelay<[StoreCategory?]>()
     let showCategoryDialog = PublishRelay<[StoreCategory?]>()
@@ -55,6 +58,10 @@ class WriteDetailViewModel: BaseViewModel {
     
     self.input.tapStoreType
       .bind(to: self.output.selectType)
+      .disposed(by: disposeBag)
+    
+    self.input.tapPaymentType
+      .bind(onNext: self.onTapPayment(paymentType:))
       .disposed(by: disposeBag)
     
     self.input.tapAddCategory
@@ -112,6 +119,7 @@ class WriteDetailViewModel: BaseViewModel {
   private func onTapDay(weekDay: WeekDay) {
     if self.appearenceDay.contains(weekDay) {
       let removeIndex = self.appearenceDay.firstIndex(of: weekDay)!
+      
       self.appearenceDay.remove(at: removeIndex)
     } else {
       self.appearenceDay.append(weekDay)
@@ -119,6 +127,20 @@ class WriteDetailViewModel: BaseViewModel {
     
     Observable.just(self.appearenceDay)
       .bind(to: self.output.selectDays)
+      .disposed(by: disposeBag)
+  }
+  
+  private func onTapPayment(paymentType: PaymentType) {
+    if self.paymentType.contains(paymentType) {
+      let removeIndex = self.paymentType.firstIndex(of: paymentType)!
+      
+      self.paymentType.remove(at: removeIndex)
+    } else {
+      self.paymentType.append(paymentType)
+    }
+    
+    Observable.just(self.paymentType)
+      .bind(to: self.output.selectPaymentType)
       .disposed(by: disposeBag)
   }
 }

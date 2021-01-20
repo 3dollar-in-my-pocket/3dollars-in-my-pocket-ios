@@ -121,6 +121,21 @@ class WriteDetailVC: BaseVC {
       .bind(to: self.viewModel.input.tapStoreType)
       .disposed(by: disposeBag)
     
+    self.writeDetailView.paymentStackView.cashCheckButton.rx.tap
+      .map { PaymentType.cash }
+      .bind(to: self.viewModel.input.tapPaymentType)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.paymentStackView.cardCheckButton.rx.tap
+      .map { PaymentType.card }
+      .bind(to: self.viewModel.input.tapPaymentType)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.paymentStackView.transferCheckButton.rx.tap
+      .map { PaymentType.transfer }
+      .bind(to: self.viewModel.input.tapPaymentType)
+      .disposed(by: disposeBag)
+    
     // Bind output
     self.viewModel.output.address
       .bind(to: self.writeDetailView.locationValueLabel.rx.text)
@@ -131,14 +146,19 @@ class WriteDetailVC: BaseVC {
       .bind(onNext: self.writeDetailView.setStoreNameBorderColoe(isEmpty:))
       .disposed(by: disposeBag)
     
-    self.viewModel.output.selectDays
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.writeDetailView.dayStackView.selectDays(weekDays:))
-      .disposed(by: disposeBag)
-    
     self.viewModel.output.selectType
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.writeDetailView.storeTypeStackView.selectType(type:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.selectPaymentType
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.writeDetailView.paymentStackView.selectPaymentType(paymentTypes:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.selectDays
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.writeDetailView.dayStackView.selectDays(weekDays:))
       .disposed(by: disposeBag)
     
     self.viewModel.output.categories

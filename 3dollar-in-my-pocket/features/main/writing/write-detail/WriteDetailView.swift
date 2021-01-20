@@ -120,32 +120,7 @@ class WriteDetailView: BaseView {
     $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12)
   }
   
-  let cashCheckButton = UIButton().then {
-    $0.setTitle("write_store_payment_cash".localized, for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
-    $0.setTitleColor(.black, for: .normal)
-    $0.setImage(UIImage(named: "ic_check_off"), for: .normal)
-    $0.setImage(UIImage(named: "ic_check_on"), for: .selected)
-    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
-  }
-  
-  let cardCheckButton = UIButton().then {
-    $0.setTitle("write_store_payment_card".localized, for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
-    $0.setTitleColor(.black, for: .normal)
-    $0.setImage(UIImage(named: "ic_check_off"), for: .normal)
-    $0.setImage(UIImage(named: "ic_check_on"), for: .selected)
-    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
-  }
-  
-  let transferCheckButton = UIButton().then {
-    $0.setTitle("write_store_payment_transfer".localized, for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
-    $0.setTitleColor(.black, for: .normal)
-    $0.setImage(UIImage(named: "ic_check_off"), for: .normal)
-    $0.setImage(UIImage(named: "ic_check_on"), for: .selected)
-    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: -7)
-  }
+  let paymentStackView = WriteDetailPaymentStackView()
   
   let generateLabel = UILabel().then {
     $0.text = "write_store_generate".localized
@@ -237,11 +212,10 @@ class WriteDetailView: BaseView {
       locationLabel, modifyLocationButton, locationContainer, locationFieldContainer,
       locationValueLabel, storeInfoLabel, storeInfoContainer, storeNameLabel,
       storeNameContainer, storeNameField, storeTypeLabel, storeTypeOptionLabel,
-      storeTypeStackView, paymentTypeLabel,
-      paymentTypeOptionLabel, paymentTypeMultiLabel, cashCheckButton, cardCheckButton,
-      transferCheckButton, generateLabel, generateOptionLabel, dayStackView,
-      menuLabel, menuOptionLabel, deleteAllButton, categoryContainer,
-      categoryCollectionView, menuTableView
+      storeTypeStackView, paymentTypeLabel, paymentTypeOptionLabel,
+      paymentTypeMultiLabel, paymentStackView, generateLabel,
+      generateOptionLabel, dayStackView, menuLabel, menuOptionLabel,
+      deleteAllButton, categoryContainer, categoryCollectionView, menuTableView
     )
     
     scrollView.addSubview(containerView)
@@ -363,20 +337,10 @@ class WriteDetailView: BaseView {
       make.left.equalTo(self.paymentTypeOptionLabel.snp.right).offset(7)
       make.centerY.equalTo(self.paymentTypeLabel)
     }
-
-    self.cashCheckButton.snp.makeConstraints { make in
+    
+    self.paymentStackView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.top.equalTo(self.paymentTypeLabel.snp.bottom).offset(16)
-    }
-
-    self.cardCheckButton.snp.makeConstraints { make in
-      make.left.equalTo(self.cashCheckButton.snp.right).offset(43)
-      make.centerY.equalTo(self.cashCheckButton)
-    }
-    
-    self.transferCheckButton.snp.makeConstraints { make in
-      make.left.equalTo(self.cardCheckButton.snp.right).offset(36)
-      make.centerY.equalTo(self.cashCheckButton)
     }
     
     self.registerBtnBg.snp.makeConstraints { (make) in
@@ -395,7 +359,7 @@ class WriteDetailView: BaseView {
     
     self.generateLabel.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.top.equalTo(self.cashCheckButton.snp.bottom).offset(40)
+      make.top.equalTo(self.paymentStackView.snp.bottom).offset(40)
     }
     
     self.generateOptionLabel.snp.makeConstraints { make in

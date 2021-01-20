@@ -134,6 +134,8 @@
 		6E79BAA525B07CF600A70408 /* WriteCategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E79BAA425B07CF600A70408 /* WriteCategoryCell.swift */; };
 		6E7BF08125B7D5C000456D0B /* WriteDetailTypeStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08025B7D5C000456D0B /* WriteDetailTypeStackView.swift */; };
 		6E7BF08625B7D82F00456D0B /* StoreType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08525B7D82F00456D0B /* StoreType.swift */; };
+		6E7BF08B25B7DB6000456D0B /* WriteDetailPaymentStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08A25B7DB6000456D0B /* WriteDetailPaymentStackView.swift */; };
+		6E7BF09025B7DDB900456D0B /* PaymentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08F25B7DDB900456D0B /* PaymentType.swift */; };
 		6E810B0F259AEA3A0035315F /* GAPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E810B0E259AEA3A0035315F /* GAPage.swift */; };
 		6E82F8CB23D5D8A600AB3593 /* MyReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E82F8CA23D5D8A600AB3593 /* MyReviewViewModel.swift */; };
 		6E87291923C065C200F59C2F /* RegisterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E87291823C065C200F59C2F /* RegisterCell.swift */; };
@@ -339,6 +341,8 @@
 		6E79BAA425B07CF600A70408 /* WriteCategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteCategoryCell.swift; sourceTree = "<group>"; };
 		6E7BF08025B7D5C000456D0B /* WriteDetailTypeStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailTypeStackView.swift; sourceTree = "<group>"; };
 		6E7BF08525B7D82F00456D0B /* StoreType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreType.swift; sourceTree = "<group>"; };
+		6E7BF08A25B7DB6000456D0B /* WriteDetailPaymentStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailPaymentStackView.swift; sourceTree = "<group>"; };
+		6E7BF08F25B7DDB900456D0B /* PaymentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentType.swift; sourceTree = "<group>"; };
 		6E810B0E259AEA3A0035315F /* GAPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GAPage.swift; sourceTree = "<group>"; };
 		6E82F8CA23D5D8A600AB3593 /* MyReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewViewModel.swift; sourceTree = "<group>"; };
 		6E87291823C065C200F59C2F /* RegisterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterCell.swift; sourceTree = "<group>"; };
@@ -842,6 +846,7 @@
 				6ED6F1E825B51A0100357B80 /* MenuSection.swift */,
 				6E4543F125B7C44C000E60B8 /* WeekDay.swift */,
 				6E7BF08525B7D82F00456D0B /* StoreType.swift */,
+				6E7BF08F25B7DDB900456D0B /* PaymentType.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -894,6 +899,7 @@
 				6ED6F1ED25B5561A00357B80 /* MenuHeaderView.swift */,
 				6E4543EC25B7BD11000E60B8 /* MenuFooterView.swift */,
 				6E7BF08025B7D5C000456D0B /* WriteDetailTypeStackView.swift */,
+				6E7BF08A25B7DB6000456D0B /* WriteDetailPaymentStackView.swift */,
 			);
 			path = "write-detail";
 			sourceTree = "<group>";
@@ -1295,6 +1301,7 @@
 				6EA5EC0A23B581880028F86B /* MainVC.swift in Sources */,
 				6E18C33225720C6400F37C3A /* FAQTagCell.swift in Sources */,
 				6E07D44423B5906E0055AEE7 /* HomeView.swift in Sources */,
+				6E7BF09025B7DDB900456D0B /* PaymentType.swift in Sources */,
 				6E2F5FDB23D692F300094D41 /* CategoryChildVC.swift in Sources */,
 				6E590DAF23E7F56C006814BE /* ImageMainCell.swift in Sources */,
 				6E71BF5325B4274900ECFBD9 /* AddCategoryViewModel.swift in Sources */,
@@ -1363,6 +1370,7 @@
 				6E0EA39723ABB230008F7CB2 /* AppDelegate.swift in Sources */,
 				6E681E4B256FEDA600892B9E /* SettingMenuCell.swift in Sources */,
 				6ED37D8D23D5441200E12711 /* Page.swift in Sources */,
+				6E7BF08B25B7DB6000456D0B /* WriteDetailPaymentStackView.swift in Sources */,
 				6E62EED623AD1DE9007B7570 /* AlertUtils.swift in Sources */,
 				6E6835B923C2C89400D23F54 /* RenameVC.swift in Sources */,
 				6E5939052573E38900593DC8 /* PrivacyVC.swift in Sources */,
