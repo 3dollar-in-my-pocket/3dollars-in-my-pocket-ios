@@ -75,6 +75,16 @@ class DayStackView: UIStackView {
     fatalError("init(coder:) has not been implemented")
   }
   
+  func selectDays(weekDays: [WeekDay]) {
+    self.clearSelected()
+    for weekDay in weekDays {
+      let index = weekDay.getIntValue()
+      if let button = self.arrangedSubviews[index] as? UIButton {
+        self.selectButton(button: button, isSelected: true)
+      }
+    }
+  }
+  
   private func setup() {
     self.alignment = .leading
     self.axis = .horizontal
@@ -117,6 +127,24 @@ class DayStackView: UIStackView {
     
     self.saturday.snp.makeConstraints { make in
       make.width.height.equalTo(36)
+    }
+  }
+  
+  private func clearSelected() {
+    for subView in self.arrangedSubviews {
+      if let button = subView as? UIButton {
+        self.selectButton(button: button, isSelected: false)
+      }
+    }
+  }
+  
+  private func selectButton(button: UIButton, isSelected: Bool) {
+    if isSelected {
+      button.backgroundColor = .black
+      button.layer.borderWidth = 0
+    } else {
+      button.backgroundColor = .clear
+      button.layer.borderWidth = 1
     }
   }
 }

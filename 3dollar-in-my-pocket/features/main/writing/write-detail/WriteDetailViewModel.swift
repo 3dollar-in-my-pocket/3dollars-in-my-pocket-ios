@@ -9,10 +9,13 @@ class WriteDetailViewModel: BaseViewModel {
   let storeService: StoreServiceProtocol
   let address: String
   let location: (Double, Double)
+  var appearenceDay: [WeekDay] = []
   var categoryies: [StoreCategory?] = [nil]
   var menusSections: [MenuSection] = []
   
   struct Input {
+    let storeName = PublishSubject<String>()
+    let tapDay = PublishSubject<WeekDay>()
     let tapAddCategory = PublishSubject<Void>()
     let tapCategoryDelete = PublishSubject<Int>()
     let addCategories = PublishSubject<[StoreCategory?]>()
@@ -21,6 +24,8 @@ class WriteDetailViewModel: BaseViewModel {
   
   struct Output {
     let address = PublishRelay<String>()
+    let storeNameIsEmpty = PublishRelay<Bool>()
+    let selectedDays = PublishRelay<[WeekDay]>()
     let categories = PublishRelay<[StoreCategory?]>()
     let showCategoryDialog = PublishRelay<[StoreCategory?]>()
     let menus = PublishRelay<[MenuSection]>()
@@ -36,6 +41,15 @@ class WriteDetailViewModel: BaseViewModel {
     self.location = location
     self.storeService = storeService
     super.init()
+    
+    self.input.storeName
+      .map { $0.isEmpty }
+      .bind(to: self.output.storeNameIsEmpty)
+      .disposed(by: disposeBag)
+    
+    self.input.tapDay
+      .bind(onNext: self.onTapDay(weekDay:))
+      .disposed(by: disposeBag)
     
     self.input.tapAddCategory
       .map { self.categoryies }
@@ -86,6 +100,19 @@ class WriteDetailViewModel: BaseViewModel {
     self.menusSections.remove(at: index)
     Observable.just(self.menusSections)
       .bind(to: self.output.menus)
+      .disposed(by: disposeBag)
+  }
+  
+  private func onTapDay(weekDay: WeekDay) {
+    if self.appearenceDay.contains(weekDay) {
+      let removeIndex = self.appearenceDay.firstIndex(of: weekDay)!
+      self.appearenceDay.remove(at: removeIndex)
+    } else {
+      self.appearenceDay.append(weekDay)
+    }
+    
+    Observable.just(self.appearenceDay)
+      .bind(to: self.output.selectedDays)
       .disposed(by: disposeBag)
   }
 }

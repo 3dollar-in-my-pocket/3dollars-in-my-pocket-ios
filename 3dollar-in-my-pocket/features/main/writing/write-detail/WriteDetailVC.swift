@@ -66,8 +66,60 @@ class WriteDetailVC: BaseVC {
   }
   
   override func bindViewModel() {
+    // Bind input
+    self.writeDetailView.storeNameField.rx.text.orEmpty
+      .bind(to: self.viewModel.input.storeName)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.dayStackView.sundayButton.rx.tap
+      .map { WeekDay.sunday }
+      .debug()
+      .bind(to: self.viewModel.input.tapDay)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.dayStackView.mondayButton.rx.tap
+      .map { WeekDay.monday }
+      .bind(to: self.viewModel.input.tapDay)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.dayStackView.tuesdayButton.rx.tap
+      .map { WeekDay.tuesday }
+      .bind(to: self.viewModel.input.tapDay)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.dayStackView.wednesday.rx.tap
+      .map { WeekDay.wednesday }
+      .bind(to: self.viewModel.input.tapDay)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.dayStackView.thursday.rx.tap
+      .map { WeekDay.thursday }
+      .bind(to: self.viewModel.input.tapDay)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.dayStackView.friday.rx.tap
+      .map { WeekDay.friday }
+      .bind(to: self.viewModel.input.tapDay)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.dayStackView.saturday.rx.tap
+      .map { WeekDay.saturday }
+      .bind(to: self.viewModel.input.tapDay)
+      .disposed(by: disposeBag)
+    
+    // Bind output
     self.viewModel.output.address
       .bind(to: self.writeDetailView.locationValueLabel.rx.text)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.storeNameIsEmpty
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.writeDetailView.setStoreNameBorderColoe(isEmpty:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.selectedDays
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.writeDetailView.dayStackView.selectDays(weekDays:))
       .disposed(by: disposeBag)
     
     self.viewModel.output.categories
@@ -156,6 +208,11 @@ class WriteDetailVC: BaseVC {
       .do(onNext: { _ in
         GA.shared.logEvent(event: .close_button_clicked, page: .store_register_page)
       })
+      .bind(onNext: self.popupVC)
+      .disposed(by: disposeBag)
+    
+    self.writeDetailView.modifyLocationButton.rx.tap
+      .observeOn(MainScheduler.instance)
       .bind(onNext: self.popupVC)
       .disposed(by: disposeBag)
   }

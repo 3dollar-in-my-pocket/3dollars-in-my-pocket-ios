@@ -512,6 +512,10 @@ class WriteDetailView: BaseView {
       make.height.equalTo(self.menuTableView.contentSize.height)
     }
   }
+  
+  func setStoreNameBorderColoe(isEmpty: Bool) {
+    self.storeNameContainer.layer.borderColor = isEmpty ? UIColor(r: 244, g: 244, b: 244).cgColor : UIColor(r: 255, g: 161, b: 170).cgColor
+  }
 //
 //  func tapCategoryBtn(index: Int) {
 //    let buttons = [bungeoppangBtn, takoyakiBtn, gyeranppangBtn, hotteokBtn]
