@@ -122,13 +122,13 @@ class WriteDetailView: BaseView {
   
   let paymentStackView = WriteDetailPaymentStackView()
   
-  let generateLabel = UILabel().then {
-    $0.text = "write_store_generate".localized
+  let daysLabel = UILabel().then {
+    $0.text = "write_store_days".localized
     $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
     $0.textColor = .black
   }
   
-  let generateOptionLabel = UILabel().then {
+  let daysOptionLabel = UILabel().then {
     $0.text = "write_store_option".localized
     $0.textColor = UIColor(r: 183, g: 183, b: 183)
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
@@ -213,8 +213,8 @@ class WriteDetailView: BaseView {
       locationValueLabel, storeInfoLabel, storeInfoContainer, storeNameLabel,
       storeNameContainer, storeNameField, storeTypeLabel, storeTypeOptionLabel,
       storeTypeStackView, paymentTypeLabel, paymentTypeOptionLabel,
-      paymentTypeMultiLabel, paymentStackView, generateLabel,
-      generateOptionLabel, dayStackView, menuLabel, menuOptionLabel,
+      paymentTypeMultiLabel, paymentStackView, daysLabel,
+      daysOptionLabel, dayStackView, menuLabel, menuOptionLabel,
       deleteAllButton, categoryContainer, categoryCollectionView, menuTableView
     )
     
@@ -357,20 +357,20 @@ class WriteDetailView: BaseView {
       make.bottom.equalTo(registerBtnBg.snp.bottom).offset(-8)
     }
     
-    self.generateLabel.snp.makeConstraints { make in
+    self.daysLabel.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.top.equalTo(self.paymentStackView.snp.bottom).offset(40)
     }
     
-    self.generateOptionLabel.snp.makeConstraints { make in
-      make.left.equalTo(self.generateLabel.snp.right).offset(6)
-      make.centerY.equalTo(self.generateLabel)
+    self.daysOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.daysLabel.snp.right).offset(6)
+      make.centerY.equalTo(self.daysLabel)
     }
     
     self.dayStackView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.top.equalTo(self.generateLabel.snp.bottom).offset(13)
+      make.top.equalTo(self.daysLabel.snp.bottom).offset(13)
     }
     
     self.menuLabel.snp.makeConstraints { make in

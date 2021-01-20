@@ -77,7 +77,7 @@
 "write_store_payment_cash" = "현금";
 "write_store_payment_transfer" = "계좌이체";
 "write_store_payment_card" = "카드";
-"write_store_generate" = "출몰시기";
+"write_store_days" = "출몰시기";
 "write_store_sunday" = "일";
 "write_store_monday" = "월";
 "write_store_tuesday" = "화";
