@@ -84,6 +84,9 @@ class DetailVC: BaseVC {
     self.detailView.tableView.register(OverviewCell.self, forCellReuseIdentifier: OverviewCell.registerId)
     self.detailView.tableView.register(ShopInfoCell.self, forCellReuseIdentifier: ShopInfoCell.registerId)
     self.detailView.tableView.register(StoreDetailMenuCell.self, forCellReuseIdentifier: StoreDetailMenuCell.registerId)
+    self.detailView.tableView.register(StoreDetailPhotoCollectionCell.self, forCellReuseIdentifier: StoreDetailPhotoCollectionCell.registerId)
+    self.detailView.tableView.register(StoreDetailReviewCell.self, forCellReuseIdentifier: StoreDetailReviewCell.registerId)
+    
     self.detailView.tableView.delegate = self
     self.detailView.tableView.dataSource = self
   }
@@ -140,7 +143,15 @@ class DetailVC: BaseVC {
 
 extension DetailVC: UITableViewDataSource, UITableViewDelegate {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 1
+    if section == 4 {
+      if let store = try? self.viewModel.store.value() {
+        return store.reviews.count + 1
+      } else {
+        return 1
+      }
+    } else {
+      return 1
+    }
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -157,28 +168,72 @@ extension DetailVC: UITableViewDataSource, UITableViewDelegate {
       
       cell.addMenu()
       return cell
+    } else if indexPath.section == 3 {
+      guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailPhotoCollectionCell.registerId, for: indexPath) as? StoreDetailPhotoCollectionCell else { return BaseTableViewCell() }
+      
+      cell.bind(photos: ["", "", "", "", "", ""])
+      return cell
+    } else if indexPath.section == 4 {
+      guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailReviewCell.registerId, for: indexPath) as? StoreDetailReviewCell else { return BaseTableViewCell() }
+      
+      if indexPath.row == 0 {
+        cell.bind(review: nil)
+        #if DEBUG
+        cell.adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        #else
+        cell.adBannerView.adUnitID = "ca-app-pub-1527951560812478/3327283605"
+        #endif
+        
+        cell.adBannerView.rootViewController = self
+        
+        // Step 2 - Determine the view width to use for the ad width.
+        let frame = { () -> CGRect in
+          // Here safe area is taken into account, hence the view frame is used
+          // after the view has been laid out.
+          if #available(iOS 11.0, *) {
+            return view.frame.inset(by: view.safeAreaInsets)
+          } else {
+            return view.frame
+          }
+        }()
+        let viewWidth = frame.size.width
+        cell.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
+        cell.adBannerView.load(GADRequest())
+      } else {
+        if let store = try? self.viewModel.store.value() {
+          let review = store.reviews[indexPath.row - 1]
+          
+          if UserDefaultsUtil().getUserId() == review.user.id {
+            cell.moreButton.isHidden = UserDefaultsUtil().getUserId() != review.user.id
+            cell.moreButton.rx.tap
+              .map { review.id }
+              .observeOn(MainScheduler.instance)
+              .bind(onNext: self.showDeleteActionSheet(reviewId:))
+              .disposed(by: cell.disposeBag)
+          }
+          cell.bind(review: review)
+        }
+      }
+      
+      return cell
     } else {
       return BaseTableViewCell()
     }
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
-    return 3
+    return 5
   }
-  
-//  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//    if section == 1 {
-//      return 60
-//    } else {
-//      return 0
-//    }
-//  }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     if section == 1 {
-      return StoreDetailHeaderView(frame: .zero)
+      return StoreDetailHeaderView()
     } else if section == 2 {
       return StoreDetailMenuHeaderView()
+    } else if section == 3 {
+      return StoreDetailHeaderView()
+    } else if section == 4 {
+      return StoreDetailHeaderView()
     }
     else {
       return UIView(frame: .zero)

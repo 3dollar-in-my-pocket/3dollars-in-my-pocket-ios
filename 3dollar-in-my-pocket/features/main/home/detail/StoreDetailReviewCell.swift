@@ -1,9 +1,9 @@
 import UIKit
 import GoogleMobileAds
 
-class ReviewCell: BaseTableViewCell {
+class StoreDetailReviewCell: BaseTableViewCell {
   
-  static let registerId = "\(ReviewCell.self)"
+  static let registerId = "\(StoreDetailReviewCell.self)"
   
   let adBannerView = GADBannerView().then {
     $0.isHidden = true
@@ -105,7 +105,7 @@ class ReviewCell: BaseTableViewCell {
     adBannerView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.top.bottom.equalToSuperview()
+      make.top.bottom.equalToSuperview().offset(13)
     }
     
     star1.snp.makeConstraints { (make) in
