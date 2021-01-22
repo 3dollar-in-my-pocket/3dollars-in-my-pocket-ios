@@ -2,106 +2,85 @@ import UIKit
 
 class DetailView: BaseView {
   
-  let navigationBar = UIView().then {
+  let navigationView = UIView().then {
+    $0.layer.cornerRadius = 20
+    $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+    
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOpacity = 0.04
     $0.backgroundColor = .white
   }
   
-  let backBtn = UIButton().then {
+  let backButton = UIButton().then {
     $0.setImage(UIImage.init(named: "ic_back_black"), for: .normal)
   }
   
-  let titleLabel = UILabel().then {
-    $0.text = "강남역 10번 출구"
-    $0.textColor = UIColor.init(r: 51, g: 51, b: 51)
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-    $0.textAlignment = .center
+  let mainCategoryImage = UIImageView().then {
+    $0.image = UIImage(named: "img_40_bungeoppang")
   }
   
-  let shareButton = UIButton().then {
-    $0.setTitle("공유하기", for: .normal)
-    $0.setTitleColor(UIColor(r: 238, g: 98, b: 76), for: .normal)
-    $0.titleLabel?.font = UIFont(name: "SpoqaHanSans-Bold", size: 14)
+  let deleteRequestButton = UIButton().then {
+    $0.setTitle("store_detail_delete_request".localized, for: .normal)
+    $0.setTitleColor(UIColor(r: 255, g: 92, b: 67), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 15)
   }
   
-  let tableView = UITableView(frame: .zero, style: .grouped).then {
+  let tableView = UITableView().then {
     $0.tableFooterView = UIView()
-    $0.separatorStyle = .none
-    $0.backgroundColor = .white
     $0.rowHeight = UITableView.automaticDimension
-    $0.contentInset = UIEdgeInsets(top: -35, left: 0, bottom: 0, right: 0)
+    $0.backgroundColor = .clear
+    $0.separatorStyle = .none
+    $0.sectionHeaderHeight = UITableView.automaticDimension
+    $0.estimatedSectionHeaderHeight = 1
   }
   
-  lazy var dimView = UIView(frame: self.frame).then {
-    $0.backgroundColor = .clear
-  }
   
   override func setup() {
-    setupNavigationBar()
-    navigationBar.addSubViews(backBtn, titleLabel, shareButton)
-    addSubViews(tableView, navigationBar)
+    addSubViews(
+      tableView, navigationView, backButton, mainCategoryImage,
+      deleteRequestButton
+    )
     backgroundColor = UIColor(r: 250, g: 250, b: 250)
   }
   
   override func bindConstraints() {
-    navigationBar.snp.makeConstraints { (make) in
+    self.navigationView.snp.makeConstraints { (make) in
       make.left.right.top.equalToSuperview()
-      make.height.equalTo(98)
+      make.bottom.equalTo(self.safeAreaLayoutGuide.snp.top).offset(60)
     }
     
-    backBtn.snp.makeConstraints { (make) in
-      make.top.equalToSuperview().offset(48)
+    self.backButton.snp.makeConstraints { (make) in
       make.left.equalToSuperview().offset(24)
-      make.width.height.equalTo(48)
+      make.centerY.equalTo(self.mainCategoryImage)
     }
     
-    titleLabel.snp.makeConstraints { (make) in
+    self.mainCategoryImage.snp.makeConstraints { (make) in
       make.centerX.equalToSuperview()
-      make.left.equalTo(backBtn.snp.right)
-      make.right.equalToSuperview().offset(-72 * RatioUtils.widthRatio)
-      make.centerY.equalTo(backBtn.snp.centerY)
+      make.bottom.equalTo(self.navigationView).offset(-22)
     }
     
-    shareButton.snp.makeConstraints { make in
-      make.centerY.equalTo(self.backBtn)
+    self.deleteRequestButton.snp.makeConstraints { make in
+      make.centerY.equalTo(self.mainCategoryImage)
       make.right.equalToSuperview().offset(-24)
     }
     
-    tableView.snp.makeConstraints { (make) in
+    self.tableView.snp.makeConstraints { make in
       make.left.right.bottom.equalToSuperview()
-      make.top.equalTo(navigationBar.snp.bottom).offset(-20)
+      make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
     }
   }
   
-  private func setupNavigationBar() {
-    navigationBar.layer.cornerRadius = 16
-    navigationBar.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-    
-    navigationBar.layer.shadowOffset = CGSize(width: 8, height: 8)
-    navigationBar.layer.shadowColor = UIColor.black.cgColor
-    navigationBar.layer.shadowOpacity = 0.08
-  }
-  
-  func addBgDim() {
-    DispatchQueue.main.async { [weak self] in
-      if let vc = self {
-        vc.addSubview(vc.dimView)
-        UIView.animate(withDuration: 0.3) {
-          vc.dimView.backgroundColor = UIColor.init(r: 0, g: 0, b: 0, a:0.3)
-        }
-      }
-      
+  func bind(store: Store){
+    switch store.category {
+    case .BUNGEOPPANG:
+      self.mainCategoryImage.image = UIImage(named: "img_40_bungeoppang")
+    case .GYERANPPANG:
+      self.mainCategoryImage.image = UIImage(named: "img_40_gyeranppang")
+    case .HOTTEOK:
+      self.mainCategoryImage.image = UIImage(named: "img_40_hotteok")
+    case .TAKOYAKI:
+      self.mainCategoryImage.image = UIImage(named: "img_40_takoyaki")
     }
   }
-  
-  
-  func removeBgDim() {
-    DispatchQueue.main.async { [weak self] in
-      UIView.animate(withDuration: 0.3, animations: {
-        self?.dimView.backgroundColor = .clear
-      }) { (_) in
-        self?.dimView.removeFromSuperview()
-      }
-    }
-  }
-  
 }

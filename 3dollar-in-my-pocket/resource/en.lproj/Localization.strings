@@ -95,3 +95,15 @@
 "shared_category_gyeranppang" = "계란빵";
 "shared_category_hotteok" = "호떡";
 "shared_category_takoyaki" = "문어빵";
+"store_detail_delete_request" = "삭제요청";
+"store_detail_share" = "공유하기";
+"store_detail_transfer" = "송금하기";
+"store_detail_type" = "가게형태";
+"store_detail_days" = "출몰시기";
+"store_detail_payment" = "결제방식";
+"store_detail_payment_card" = "카드";
+"store_detail_payment_transfer" = "계좌이체";
+"store_detail_payment_cash" = "현금";
+"store_detail_menu" = "메뉴";
+"store_detail_menu_format" = "%d개";
+"store_detail_more" = "모두보기";
