@@ -18,11 +18,15 @@ class StoreDetailViewModel: BaseViewModel {
     let currentLocation = PublishSubject<(Double, Double)>()
     let tapShare = PublishSubject<Void>()
     let tapTransfer = PublishSubject<Void>()
+    let tapModify = PublishSubject<Void>()
+    let tapWriteReview = PublishSubject<Void>()
     let deleteReview = PublishSubject<Int>()
   }
   
   struct Output {
     let store = PublishRelay<[StoreSection]>()
+    let goToModify = PublishRelay<Store>()
+    let showReviewModal = PublishRelay<Int>()
     let showLoading = PublishRelay<Bool>()
   }
   
@@ -48,6 +52,16 @@ class StoreDetailViewModel: BaseViewModel {
     
     self.input.tapTransfer
       .bind(onNext: self.goToToss)
+      .disposed(by: disposeBag)
+    
+    self.input.tapModify
+      .map { self.store }
+      .bind(to: self.output.goToModify)
+      .disposed(by: disposeBag)
+    
+    self.input.tapWriteReview
+      .map { self.storeId }
+      .bind(to: self.output.showReviewModal)
       .disposed(by: disposeBag)
     
     self.input.deleteReview

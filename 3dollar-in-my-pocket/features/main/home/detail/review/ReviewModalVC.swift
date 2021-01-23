@@ -97,6 +97,7 @@ class ReviewModalVC: BaseVC {
     self.viewModel.output.dismissOnSaveReview
       .observeOn(MainScheduler.instance)
       .bind { [weak self] _ in
+        self?.dismiss(animated: true, completion: nil)
         self?.deleagete?.onReviewSuccess()
       }
       .disposed(by: disposeBag)
@@ -138,6 +139,7 @@ class ReviewModalVC: BaseVC {
   }
   
   private func dismissModal() {
+    self.dismiss(animated: true, completion: nil)
     self.deleagete?.onTapClose()
   }
   

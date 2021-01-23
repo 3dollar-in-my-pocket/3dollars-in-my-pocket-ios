@@ -1,6 +1,10 @@
 import UIKit
+import RxSwift
 
-class StoreDetailMenuHeaderView: BaseView {
+class StoreDetailMenuHeaderView: UITableViewHeaderFooterView {
+  
+  static let registerId = "\(StoreDetailMenuHeaderView.self)"
+  var disposeBag = DisposeBag()
   
   let containerView = UIView().then {
     $0.backgroundColor = .white
@@ -21,12 +25,28 @@ class StoreDetailMenuHeaderView: BaseView {
   }
   
   
-  override func setup() {
+  override init(reuseIdentifier: String?) {
+    super.init(reuseIdentifier: reuseIdentifier)
+    self.setup()
+    self.bindConstraints()
+  }
+  
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.disposeBag = DisposeBag()
+  }
+  
+  private func setup() {
     backgroundColor = .clear
+    tintColor = .clear
     addSubViews(containerView, menuLabel, menuValueLabel)
   }
   
-  override func bindConstraints() {
+  private func bindConstraints() {
     self.containerView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
