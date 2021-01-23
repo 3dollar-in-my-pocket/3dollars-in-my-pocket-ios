@@ -1,9 +1,9 @@
 import UIKit
 import RxSwift
 
-class ShopInfoCell: BaseTableViewCell {
+class StoreInfoCell: BaseTableViewCell {
   
-  static let registerId = "\(ShopInfoCell.self)"
+  static let registerId = "\(StoreInfoCell.self)"
   
   let infoContainer = UIView().then {
     $0.backgroundColor = .white

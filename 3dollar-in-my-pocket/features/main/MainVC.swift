@@ -144,7 +144,7 @@ class MainVC: BaseVC {
   }
   
   private func goToDetail(storeId: Int) {
-    self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
+    self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -173,7 +173,7 @@ extension MainVC: WriteDetailDelegate {
         (controller as! HomeVC).onSuccessWrite()
       }
     }
-    self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
+    self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)
   }
 }
 

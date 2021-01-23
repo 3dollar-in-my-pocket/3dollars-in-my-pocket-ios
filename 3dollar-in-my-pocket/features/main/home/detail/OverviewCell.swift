@@ -28,7 +28,7 @@ class OverviewCell: BaseTableViewCell {
   let nicknameLabel = UILabel().then {
     $0.text = "효자동 불효자 님의 제보"
     $0.textColor = UIColor(r: 255, g: 161, b: 170)
-    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
   let storeNameLabel = UILabel().then {
@@ -82,6 +82,7 @@ class OverviewCell: BaseTableViewCell {
   override func setup() {
     backgroundColor = .clear
     selectionStyle = .none
+    contentView.isUserInteractionEnabled = false
     addSubViews(
       mapView, currentLocationButton, overViewContainerView, nicknameLabel,
       storeNameLabel, distanceImage, distanceLabel, starImage, starLabel,
@@ -159,5 +160,48 @@ class OverviewCell: BaseTableViewCell {
       make.height.equalTo(32)
       make.width.equalTo(1)
     }
+  }
+  
+  func bind(store: Store) {
+    self.setNicknameBold(name: store.repoter.nickname)
+    self.storeNameLabel.text = store.storeName
+    self.distanceLabel.text = "\(store.distance)m"
+    self.starLabel.text = "\(store.rating)점"
+    self.setupMarker(latitude: store.latitude, longitude: store.longitude)
+  }
+  
+  func moveToPosition(latitude: Double, longitude: Double) {
+    let position = NMGLatLng(lat: latitude, lng: longitude)
+    let cameraUpdate = NMFCameraUpdate(scrollTo: position).then {
+      $0.animation = .easeIn
+    }
+    
+    self.mapView.moveCamera(cameraUpdate)
+  }
+  
+  private func setNicknameBold(name: String?){
+    if let name = name {
+      let text = "\(name) \("store_detail_reporter".localized)"
+      let attributedString = NSMutableAttributedString(string: text)
+      
+      attributedString.addAttribute(
+        .font,
+        value: UIFont(name: "AppleSDGothicNeo-Bold", size: 14) as Any,
+        range: (text as NSString).range(of: name)
+      )
+      self.nicknameLabel.attributedText = attributedString
+    }
+  }
+  
+  private func setupMarker(latitude: Double, longitude: Double) {
+    let position = NMGLatLng(lat: latitude, lng: longitude)
+    let iconImage = NMFOverlayImage(name: "ic_marker")
+    let marker = NMFMarker(position: position, iconImage: iconImage)
+    let cameraUpdate = NMFCameraUpdate(scrollTo: position).then {
+      $0.animation = .easeIn
+    }
+    
+    self.mapView.moveCamera(cameraUpdate)
+    marker.mapView = self.mapView
   }
 }

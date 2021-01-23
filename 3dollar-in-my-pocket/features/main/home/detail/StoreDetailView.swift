@@ -1,6 +1,6 @@
 import UIKit
 
-class DetailView: BaseView {
+class StoreDetailView: BaseView {
   
   let navigationView = UIView().then {
     $0.layer.cornerRadius = 20

@@ -1,37 +1,46 @@
 import UIKit
 import Kingfisher
 import RxSwift
+import RxDataSources
 import GoogleMobileAds
 import NMapsMap
 
-class DetailVC: BaseVC {
+class StoreDetailVC: BaseVC {
   
-  private lazy var detailView = DetailView(frame: self.view.frame)
+  private lazy var detailView = StoreDetailView(frame: self.view.frame)
   
-  private var viewModel = DetailViewModel(userDefaults: UserDefaultsUtil())
+  private let viewModel: StoreDetailViewModel
+  private let storeId: Int
   private var reviewVC: ReviewModalVC?
   private var myLocationFlag = false
+  private let locationManager = CLLocationManager()
+  var storeDataSource: RxTableViewSectionedReloadDataSource<StoreSection>!
   
-  var storeId: Int!
-  var locationManager = CLLocationManager()
+  init(storeId: Int) {
+    self.storeId = storeId
+    self.viewModel = StoreDetailViewModel(
+      storeId: storeId,
+      userDefaults: UserDefaultsUtil(),
+      storeService: StoreService()
+    )
+    super.init(nibName: nil, bundle: nil)
+  }
   
-  static func instance(storeId: Int) -> DetailVC {
-    return DetailVC.init(nibName: nil, bundle: nil).then {
-      $0.storeId = storeId
-    }
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  static func instance(storeId: Int) -> StoreDetailVC {
+    return StoreDetailVC(storeId: storeId)
   }
   
   override func viewDidLoad() {
-    super.viewDidLoad()
-    view = detailView
-    
     self.setupTableView()
-//    detailView.tableView.delegate = self
-//    detailView.tableView.dataSource = self
-//    detailView.tableView.register(ShopInfoCell.self, forCellReuseIdentifier: ShopInfoCell.registerId)
-//    detailView.tableView.register(ReviewCell.self, forCellReuseIdentifier: ReviewCell.registerId)
     
-    setupLocationManager()
+    super.viewDidLoad()
+    
+    view = detailView
+    self.setupLocationManager()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -41,11 +50,11 @@ class DetailVC: BaseVC {
   }
   
   override func bindViewModel() {
-//    viewModel.store.subscribe { [weak self] (store) in
-//      self?.detailView.tableView.reloadData()
-//    }.disposed(by: disposeBag)
-    
     // Bind output
+    self.viewModel.output.store
+      .bind(to: self.detailView.tableView.rx.items(dataSource:self.storeDataSource))
+      .disposed(by: disposeBag)
+    
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.detailView.showLoading(isShow:))
@@ -67,9 +76,8 @@ class DetailVC: BaseVC {
       .do(onNext: { _ in
         GA.shared.logEvent(event: .back_button_clicked, page: .store_detail_page)
       })
-      .bind { [weak self] in
-      self?.navigationController?.popViewController(animated: true)
-    }.disposed(by: disposeBag)
+      .bind(onNext: self.popupVC)
+      .disposed(by: disposeBag)
     
 //    self.detailView.shareButton.rx.tap
 //      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
@@ -82,13 +90,91 @@ class DetailVC: BaseVC {
   
   private func setupTableView() {
     self.detailView.tableView.register(OverviewCell.self, forCellReuseIdentifier: OverviewCell.registerId)
-    self.detailView.tableView.register(ShopInfoCell.self, forCellReuseIdentifier: ShopInfoCell.registerId)
+    self.detailView.tableView.register(StoreInfoCell.self, forCellReuseIdentifier: StoreInfoCell.registerId)
     self.detailView.tableView.register(StoreDetailMenuCell.self, forCellReuseIdentifier: StoreDetailMenuCell.registerId)
     self.detailView.tableView.register(StoreDetailPhotoCollectionCell.self, forCellReuseIdentifier: StoreDetailPhotoCollectionCell.registerId)
     self.detailView.tableView.register(StoreDetailReviewCell.self, forCellReuseIdentifier: StoreDetailReviewCell.registerId)
     
-    self.detailView.tableView.delegate = self
-    self.detailView.tableView.dataSource = self
+    self.detailView.tableView.rx.setDelegate(self)
+      .disposed(by: disposeBag)
+    self.storeDataSource = RxTableViewSectionedReloadDataSource<StoreSection> { (dataSource, tableView, indexPath, item) in
+      
+      switch StoreDetailSection(rawValue: indexPath.section)! {
+      case .overview:
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: OverviewCell.registerId, for: indexPath) as? OverviewCell else { return BaseTableViewCell() }
+        
+        cell.bind(store: dataSource.sectionModels[indexPath.section].store)
+        cell.currentLocationButton.rx.tap
+          .do { _ in
+            self.myLocationFlag = true
+          }.bind(onNext: self.locationManager.startUpdatingLocation)
+          .disposed(by: cell.disposeBag)
+        cell.shareButton.rx.tap
+          .bind(to: self.viewModel.input.tapShare)
+          .disposed(by: cell.disposeBag)
+        cell.transferButton.rx.tap
+          .bind(to: self.viewModel.input.tapTransfer)
+          .disposed(by: cell.disposeBag)
+        return cell
+      case .info:
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreInfoCell.registerId, for: indexPath) as? StoreInfoCell else { return BaseTableViewCell() }
+        
+        return cell
+      case .menu:
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailMenuCell.registerId, for: indexPath) as? StoreDetailMenuCell else { return BaseTableViewCell() }
+        
+        cell.addMenu()
+        return cell
+      case .photo:
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailPhotoCollectionCell.registerId, for: indexPath) as? StoreDetailPhotoCollectionCell else { return BaseTableViewCell() }
+        
+        cell.bind(photos: ["", "", "", "", "", ""])
+        return cell
+      case .review:
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailReviewCell.registerId, for: indexPath) as? StoreDetailReviewCell else { return BaseTableViewCell() }
+        
+        if indexPath.row == 0 {
+          cell.bind(review: nil)
+          #if DEBUG
+          cell.adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+          #else
+          cell.adBannerView.adUnitID = "ca-app-pub-1527951560812478/3327283605"
+          #endif
+          
+          cell.adBannerView.rootViewController = self
+          
+          // Step 2 - Determine the view width to use for the ad width.
+          let frame = { () -> CGRect in
+            // Here safe area is taken into account, hence the view frame is used
+            // after the view has been laid out.
+            if #available(iOS 11.0, *) {
+              return self.view.frame.inset(by: self.view.safeAreaInsets)
+            } else {
+              return self.view.frame
+            }
+          }()
+          let viewWidth = frame.size.width
+          cell.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
+          cell.adBannerView.load(GADRequest())
+        } else {
+//          if let store = try? self.viewModel.store.value() {
+//            let review = store.reviews[indexPath.row - 1]
+//
+//            if UserDefaultsUtil().getUserId() == review.user.id {
+//              cell.moreButton.isHidden = UserDefaultsUtil().getUserId() != review.user.id
+//              cell.moreButton.rx.tap
+//                .map { review.id }
+//                .observeOn(MainScheduler.instance)
+//                .bind(onNext: self.showDeleteActionSheet(reviewId:))
+//                .disposed(by: cell.disposeBag)
+//            }
+//            cell.bind(review: review)
+//          }
+        }
+        
+        return cell
+      }
+    }
   }
   
   private func setupLocationManager() {
@@ -98,34 +184,16 @@ class DetailVC: BaseVC {
     locationManager.startUpdatingLocation()
   }
   
-  private func getStoreDetail(latitude: Double, longitude: Double) {
-    StoreService().getStoreDetail(storeId: storeId, latitude: latitude, longitude: longitude)
-    .subscribe(onNext: { [weak self] store in
-      guard let self = self else { return }
-      
-//      self.detailView.titleLabel.text = store.storeName
-      self.viewModel.store.onNext(store)
-    }, onError: { [weak self] error in
-      guard let self = self else { return }
-      if let httpError = error as? HTTPError {
-        self.showHTTPErrorAlert(error: httpError)
-      } else if let error = error as? CommonError {
-        let alertContent = AlertContent(title: nil, message: error.description)
-        
-        self.showSystemAlert(alert: alertContent)
-      }
-    }).disposed(by: disposeBag)
+  private func popupVC() {
+    self.navigationController?.popViewController(animated: true)
   }
   
   private func moveToMyLocation(latitude: Double, longitude: Double) {
-//    guard let shopInfoCell = self.detailView.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? ShopInfoCell else {
-//      return
-//    }
-//
-//    let camera = NMFCameraUpdate(scrollTo: NMGLatLng(lat: latitude,lng: longitude))
-//
-//    camera.animation = .easeIn
-//    shopInfoCell.mapView.moveCamera(camera)
+    guard let overViewCell = self.detailView.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? OverviewCell else {
+      return
+    }
+    
+    overViewCell.moveToPosition(latitude: latitude, longitude: longitude)
   }
   
   private func showDeleteActionSheet(reviewId: Int) {
@@ -141,101 +209,25 @@ class DetailVC: BaseVC {
   }
 }
 
-extension DetailVC: UITableViewDataSource, UITableViewDelegate {
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if section == 4 {
-      if let store = try? self.viewModel.store.value() {
-        return store.reviews.count + 1
-      } else {
-        return 1
-      }
-    } else {
-      return 1
-    }
-  }
-  
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if indexPath.section == 0 {
-      guard let cell = tableView.dequeueReusableCell(withIdentifier: OverviewCell.registerId, for: indexPath) as? OverviewCell else { return BaseTableViewCell() }
-      
-      return cell
-    } else if indexPath.section == 1 {
-      guard let cell = tableView.dequeueReusableCell(withIdentifier: ShopInfoCell.registerId, for: indexPath) as? ShopInfoCell else { return BaseTableViewCell() }
-      
-      return cell
-    } else if indexPath.section == 2 {
-      guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailMenuCell.registerId, for: indexPath) as? StoreDetailMenuCell else { return BaseTableViewCell() }
-      
-      cell.addMenu()
-      return cell
-    } else if indexPath.section == 3 {
-      guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailPhotoCollectionCell.registerId, for: indexPath) as? StoreDetailPhotoCollectionCell else { return BaseTableViewCell() }
-      
-      cell.bind(photos: ["", "", "", "", "", ""])
-      return cell
-    } else if indexPath.section == 4 {
-      guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailReviewCell.registerId, for: indexPath) as? StoreDetailReviewCell else { return BaseTableViewCell() }
-      
-      if indexPath.row == 0 {
-        cell.bind(review: nil)
-        #if DEBUG
-        cell.adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        #else
-        cell.adBannerView.adUnitID = "ca-app-pub-1527951560812478/3327283605"
-        #endif
-        
-        cell.adBannerView.rootViewController = self
-        
-        // Step 2 - Determine the view width to use for the ad width.
-        let frame = { () -> CGRect in
-          // Here safe area is taken into account, hence the view frame is used
-          // after the view has been laid out.
-          if #available(iOS 11.0, *) {
-            return view.frame.inset(by: view.safeAreaInsets)
-          } else {
-            return view.frame
-          }
-        }()
-        let viewWidth = frame.size.width
-        cell.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
-        cell.adBannerView.load(GADRequest())
-      } else {
-        if let store = try? self.viewModel.store.value() {
-          let review = store.reviews[indexPath.row - 1]
-          
-          if UserDefaultsUtil().getUserId() == review.user.id {
-            cell.moreButton.isHidden = UserDefaultsUtil().getUserId() != review.user.id
-            cell.moreButton.rx.tap
-              .map { review.id }
-              .observeOn(MainScheduler.instance)
-              .bind(onNext: self.showDeleteActionSheet(reviewId:))
-              .disposed(by: cell.disposeBag)
-          }
-          cell.bind(review: review)
-        }
-      }
-      
-      return cell
-    } else {
-      return BaseTableViewCell()
-    }
-  }
+extension StoreDetailVC: UITableViewDelegate {
   
   func numberOfSections(in tableView: UITableView) -> Int {
     return 5
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    if section == 1 {
+    switch StoreDetailSection(rawValue: section) {
+    case .overview:
+      return UIView(frame: .zero)
+    case .info:
       return StoreDetailHeaderView()
-    } else if section == 2 {
+    case .menu:
       return StoreDetailMenuHeaderView()
-    } else if section == 3 {
+    case .photo:
       return StoreDetailHeaderView()
-    } else if section == 4 {
+    case .review:
       return StoreDetailHeaderView()
-    }
-    else {
+    default:
       return UIView(frame: .zero)
     }
   }
@@ -384,16 +376,18 @@ extension DetailVC: UITableViewDataSource, UITableViewDelegate {
 //  }
 //}
 
-extension DetailVC: CLLocationManagerDelegate {
+extension StoreDetailVC: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-    let location = locations.last
+    guard let location = locations.last else { return }
     
     if myLocationFlag {
-      self.moveToMyLocation(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+      self.moveToMyLocation(
+        latitude: location.coordinate.latitude,
+        longitude: location.coordinate.longitude
+      )
     } else {
-      self.getStoreDetail(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+      self.viewModel.input.currentLocation.onNext((location.coordinate.latitude, location.coordinate.longitude))
     }
-    self.viewModel.location = (location!.coordinate.latitude, location!.coordinate.longitude)
     locationManager.stopUpdatingLocation()
   }
   
@@ -402,10 +396,10 @@ extension DetailVC: CLLocationManagerDelegate {
   }
 }
 
-extension DetailVC: ReviewModalDelegate {
+extension StoreDetailVC: ReviewModalDelegate {
   func onReviewSuccess() {
     self.reviewVC?.dismiss(animated: true, completion: nil)
-    self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
+//    self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
   }
   
   func onTapClose() {
@@ -413,13 +407,13 @@ extension DetailVC: ReviewModalDelegate {
   }
 }
 
-extension DetailVC: ModifyDelegate {
+extension StoreDetailVC: ModifyDelegate {
   func onModifySuccess() {
-    self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
+//    self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
   }
 }
 
-extension DetailVC: GADBannerViewDelegate {
+extension StoreDetailVC: GADBannerViewDelegate {
   /// Tells the delegate an ad request loaded an ad.
   func adViewDidReceiveAd(_ bannerView: GADBannerView) {
     print("adViewDidReceiveAd")
@@ -452,4 +446,12 @@ extension DetailVC: GADBannerViewDelegate {
   func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
     print("adViewWillLeaveApplication")
   }
+}
+
+enum StoreDetailSection: Int {
+  case overview = 0
+  case info = 1
+  case menu = 2
+  case photo = 3
+  case review = 4
 }

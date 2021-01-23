@@ -107,3 +107,7 @@
 "store_detail_menu" = "메뉴";
 "store_detail_menu_format" = "%d개";
 "store_detail_more" = "모두보기";
+"store_detail_reporter" = "님의 제보";
+"store_detail_share_title" = "올 때 붕어빵, 잊지마!!!";
+"store_detail_share_description" = "당신은 붕어빵 셔틀에 당첨되셨습니다.\n지금 바로 가슴속 3천원을 설치하고 위치를 파악하여 미션을 수행하세요!";
+"store_detail_share_button" = "놀러가기";

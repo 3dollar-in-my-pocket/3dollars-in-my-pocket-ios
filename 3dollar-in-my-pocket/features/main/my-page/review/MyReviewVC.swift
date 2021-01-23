@@ -129,7 +129,7 @@ extension MyReviewVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
       let storeId = self.viewModel.review[indexPath.row].storeId
       
-      self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
+      self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
