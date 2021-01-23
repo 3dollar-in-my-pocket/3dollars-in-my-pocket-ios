@@ -11,6 +11,7 @@ class StoreDetailViewModel: BaseViewModel {
   let storeId: Int
   let userDefaults: UserDefaultsUtil
   let storeService: StoreServiceProtocol
+  let reviewService: ReviewServiceProtocol
   
   var store: Store!
   
@@ -33,11 +34,13 @@ class StoreDetailViewModel: BaseViewModel {
   init(
     storeId: Int,
     userDefaults: UserDefaultsUtil,
-    storeService: StoreServiceProtocol
+    storeService: StoreServiceProtocol,
+    reviewService: ReviewServiceProtocol
   ) {
     self.storeId = storeId
     self.userDefaults = userDefaults
     self.storeService = storeService
+    self.reviewService = reviewService
     super.init()
     
     self.input.currentLocation
@@ -154,33 +157,39 @@ class StoreDetailViewModel: BaseViewModel {
   }
   
   private func deleteReview(reviewId: Int) {
-//    self.output.showLoading.accept(true)
-//    ReviewService().deleteRevie(reviewId: reviewId)
-//      .subscribe(
-//        onNext: { [weak self] _ in
-//          guard let self = self else { return }
-//          if var updatedStore = try? self.store.value() {
-//            for reviewIndex in updatedStore.reviews.indices {
-//              if updatedStore.reviews[reviewIndex].id == reviewId {
-//                updatedStore.reviews.remove(at: reviewIndex)
-//                break
-//              }
-//            }
-//            self.store.onNext(updatedStore)
-//          }
-//          self.output.showLoading.accept(false)
-//        },
-//        onError: { [weak self] error in
-//          guard let self = self else { return }
-//          if let httpError = error as? HTTPError {
-//            self.httpErrorAlert.accept(httpError)
-//          } else if let error = error as? CommonError {
-//            let alertContent = AlertContent(title: nil, message: error.description)
-//
-//            self.showSystemAlert.accept(alertContent)
-//          }
-//          self.output.showLoading.accept(false)
-//        }
-//      ).disposed(by: self.disposeBag)
+    self.output.showLoading.accept(true)
+    self.reviewService.deleteRevie(reviewId: reviewId)
+      .subscribe(
+        onNext: { [weak self] _ in
+          guard let self = self else { return }
+          
+          for reviewIndex in self.store.reviews.indices {
+            if self.store.reviews[reviewIndex].id == reviewId {
+              self.store.reviews.remove(at: reviewIndex)
+              break
+            }
+          }
+          
+          self.output.store.accept([
+            StoreSection(store: self.store, items: [nil]),
+            StoreSection(store: self.store, items: [nil]),
+            StoreSection(store: self.store, items: [nil]),
+            StoreSection(store: self.store, items: [nil]),
+            StoreSection(store: self.store, items: [nil] + self.store.reviews)
+          ])
+          self.output.showLoading.accept(false)
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          if let httpError = error as? HTTPError {
+            self.httpErrorAlert.accept(httpError)
+          } else if let error = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: error.description)
+            
+            self.showSystemAlert.accept(alertContent)
+          }
+          self.output.showLoading.accept(false)
+        }
+      ).disposed(by: self.disposeBag)
   }
 }

@@ -53,6 +53,7 @@ class StoreDetailReviewCell: BaseTableViewCell {
   
   let moreButton = UIButton().then {
     $0.setImage(UIImage(named: "ic_more"), for: .normal)
+    $0.isHidden = true
   }
   
   let nameLabel = UILabel().then {
@@ -71,6 +72,10 @@ class StoreDetailReviewCell: BaseTableViewCell {
     $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 14)
   }
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.moreButton.isHidden = true
+  }
   
   override func setup() {
     stackView.addArrangedSubview(star1)

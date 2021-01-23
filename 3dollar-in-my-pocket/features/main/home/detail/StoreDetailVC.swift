@@ -20,7 +20,8 @@ class StoreDetailVC: BaseVC {
     self.viewModel = StoreDetailViewModel(
       storeId: storeId,
       userDefaults: UserDefaultsUtil(),
-      storeService: StoreService()
+      storeService: StoreService(),
+      reviewService: ReviewService()
     )
     super.init(nibName: nil, bundle: nil)
   }
@@ -180,19 +181,16 @@ class StoreDetailVC: BaseVC {
           let review = dataSource.sectionModels[StoreDetailSection.review.rawValue].items[indexPath.row]
           
           cell.bind(review: review)
-//          if let store = try? self.viewModel.store.value() {
-//            let review = store.reviews[indexPath.row - 1]
-//
-//            if UserDefaultsUtil().getUserId() == review.user.id {
-//              cell.moreButton.isHidden = UserDefaultsUtil().getUserId() != review.user.id
-//              cell.moreButton.rx.tap
-//                .map { review.id }
-//                .observeOn(MainScheduler.instance)
-//                .bind(onNext: self.showDeleteActionSheet(reviewId:))
-//                .disposed(by: cell.disposeBag)
-//            }
-//            cell.bind(review: review)
-//          }
+          
+          if let review = review,
+             UserDefaultsUtil().getUserId() == review.user.id {
+            cell.moreButton.isHidden = UserDefaultsUtil().getUserId() != review.user.id
+            cell.moreButton.rx.tap
+              .map { review }
+              .observeOn(MainScheduler.instance)
+              .bind(onNext: self.showMoreActionSheet(review:))
+              .disposed(by: cell.disposeBag)
+          }
         }
         
         return cell
@@ -235,14 +233,18 @@ class StoreDetailVC: BaseVC {
     self.navigationController?.pushViewController(modifyVC, animated: true)
   }
   
-  private func showDeleteActionSheet(reviewId: Int) {
+  private func showMoreActionSheet(review: Review) {
     let alertController = UIAlertController(title: nil, message: "옵션", preferredStyle: .actionSheet)
+    let modifyAction = UIAlertAction(title: "댓글 수정", style: .default) { _ in
+      // TODO: 댓글 수정하기
+    }
     let deleteAction = UIAlertAction(title: "댓글 삭제", style: .destructive) { _ in
-      self.viewModel.input.deleteReview.onNext(reviewId)
+      self.viewModel.input.deleteReview.onNext(review.id)
     }
     let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in }
     
     alertController.addAction(deleteAction)
+    alertController.addAction(modifyAction)
     alertController.addAction(cancelAction)
     self.present(alertController, animated: true, completion: nil)
   }
