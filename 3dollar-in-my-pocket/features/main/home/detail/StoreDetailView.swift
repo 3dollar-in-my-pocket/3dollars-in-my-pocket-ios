@@ -26,13 +26,17 @@ class StoreDetailView: BaseView {
     $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 15)
   }
   
-  let tableView = UITableView().then {
+  let tableView = UITableView(frame: .zero, style: .grouped).then {
     $0.tableFooterView = UIView()
     $0.rowHeight = UITableView.automaticDimension
     $0.backgroundColor = .clear
     $0.separatorStyle = .none
     $0.sectionHeaderHeight = UITableView.automaticDimension
     $0.estimatedSectionHeaderHeight = 1
+    $0.sectionFooterHeight = .leastNonzeroMagnitude
+    $0.contentInsetAdjustmentBehavior = .never
+    $0.tableHeaderView = UIView(frame: .init(x: 0, y: 0, width: 1, height: 1))
+    $0.contentInset = .init(top: -1, left: 0, bottom: 0, right: 0)
   }
   
   

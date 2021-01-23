@@ -89,7 +89,7 @@ class StoreDetailViewModel: BaseViewModel {
           StoreSection(store: store, items: [nil]),
           StoreSection(store: store, items: [nil]),
           StoreSection(store: store, items: [nil]),
-          StoreSection(store: store, items: store.reviews)
+          StoreSection(store: store, items: [nil] + store.reviews)
         ]
         
         self.output.store.accept(storeSections)

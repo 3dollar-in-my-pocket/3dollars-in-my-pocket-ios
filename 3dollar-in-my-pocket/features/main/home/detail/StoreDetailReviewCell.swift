@@ -53,7 +53,6 @@ class StoreDetailReviewCell: BaseTableViewCell {
   
   let moreButton = UIButton().then {
     $0.setImage(UIImage(named: "ic_more"), for: .normal)
-    $0.isHidden = true
   }
   
   let nameLabel = UILabel().then {
@@ -70,11 +69,6 @@ class StoreDetailReviewCell: BaseTableViewCell {
     $0.textColor = UIColor(r: 46, g: 46, b: 46)
     $0.numberOfLines = 0
     $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 14)
-  }
-  
-  override func prepareForReuse() {
-    super.prepareForReuse()
-    self.moreButton.isHidden = true
   }
   
   
@@ -105,7 +99,8 @@ class StoreDetailReviewCell: BaseTableViewCell {
     adBannerView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.top.bottom.equalToSuperview().offset(13)
+      make.top.equalToSuperview().offset(13)
+      make.bottom.equalToSuperview().offset(-13)
     }
     
     star1.snp.makeConstraints { (make) in

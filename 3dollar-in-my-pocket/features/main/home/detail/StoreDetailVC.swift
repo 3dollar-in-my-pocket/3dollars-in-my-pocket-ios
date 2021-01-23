@@ -173,20 +173,13 @@ class StoreDetailVC: BaseVC {
           
           cell.adBannerView.rootViewController = self
           
-          // Step 2 - Determine the view width to use for the ad width.
-          let frame = { () -> CGRect in
-            // Here safe area is taken into account, hence the view frame is used
-            // after the view has been laid out.
-            if #available(iOS 11.0, *) {
-              return self.view.frame.inset(by: self.view.safeAreaInsets)
-            } else {
-              return self.view.frame
-            }
-          }()
-          let viewWidth = frame.size.width
+          let viewWidth = self.view.frame.size.width
           cell.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
           cell.adBannerView.load(GADRequest())
         } else {
+          let review = dataSource.sectionModels[StoreDetailSection.review.rawValue].items[indexPath.row]
+          
+          cell.bind(review: review)
 //          if let store = try? self.viewModel.store.value() {
 //            let review = store.reviews[indexPath.row - 1]
 //
