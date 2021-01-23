@@ -78,14 +78,6 @@ class StoreDetailVC: BaseVC {
       })
       .bind(onNext: self.popupVC)
       .disposed(by: disposeBag)
-    
-//    self.detailView.shareButton.rx.tap
-//      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-//      .do(onNext: { _ in
-//        GA.shared.logEvent(event: .share_button_clicked, page: .store_detail_page)
-//      })
-//      .bind(to: self.viewModel.input.tapShare)
-//      .disposed(by: disposeBag)
   }
   
   private func setupTableView() {
@@ -110,9 +102,14 @@ class StoreDetailVC: BaseVC {
           }.bind(onNext: self.locationManager.startUpdatingLocation)
           .disposed(by: cell.disposeBag)
         cell.shareButton.rx.tap
+          .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+          .do(onNext: { _ in
+            GA.shared.logEvent(event: .share_button_clicked, page: .store_detail_page)
+          })
           .bind(to: self.viewModel.input.tapShare)
           .disposed(by: cell.disposeBag)
         cell.transferButton.rx.tap
+          .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
           .bind(to: self.viewModel.input.tapTransfer)
           .disposed(by: cell.disposeBag)
         return cell
