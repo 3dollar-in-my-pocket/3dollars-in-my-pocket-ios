@@ -156,8 +156,9 @@ class StoreDetailVC: BaseVC {
         return cell
       case .photo:
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailPhotoCollectionCell.registerId, for: indexPath) as? StoreDetailPhotoCollectionCell else { return BaseTableViewCell() }
+        let photos = self.storeDataSource.sectionModels[0].store.images
         
-        cell.bind(photos: ["", "", "", "", "", ""])
+        cell.bind(photos: photos)
         return cell
       case .review:
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailReviewCell.registerId, for: indexPath) as? StoreDetailReviewCell else { return BaseTableViewCell() }

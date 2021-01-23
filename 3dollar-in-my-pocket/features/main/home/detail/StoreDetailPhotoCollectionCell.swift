@@ -5,7 +5,7 @@ class StoreDetailPhotoCollectionCell: BaseTableViewCell {
   
   static let registerId = "\(StoreDetailPhotoCell.self)"
   
-  let photos = PublishSubject<[String]>()
+  let photos = PublishSubject<[Image?]>()
   let photoCollectionView = UICollectionView(
     frame: .zero,
     collectionViewLayout: UICollectionViewFlowLayout()
@@ -30,7 +30,8 @@ class StoreDetailPhotoCollectionCell: BaseTableViewCell {
   override func setup() {
     selectionStyle = .none
     backgroundColor = .clear
-    self.contentView.addSubViews(photoCollectionView)
+    contentView.isUserInteractionEnabled = false
+    self.addSubViews(photoCollectionView)
     self.setupCollectionView()
   }
   
@@ -41,8 +42,12 @@ class StoreDetailPhotoCollectionCell: BaseTableViewCell {
     }
   }
   
-  func bind(photos: [String]) {
-    self.photos.onNext(photos)
+  func bind(photos: [Image]) {
+    if photos.isEmpty {
+      self.photos.onNext([nil])
+    } else {
+      self.photos.onNext(photos)
+    }
   }
   
   private func setupCollectionView() {
@@ -53,8 +58,8 @@ class StoreDetailPhotoCollectionCell: BaseTableViewCell {
     self.photos.bind(to: self.photoCollectionView.rx.items(
       cellIdentifier: StoreDetailPhotoCell.registerId,
       cellType: StoreDetailPhotoCell.self
-    )) { row, url, cell in
-      cell.bind(url: url)
+    )) { row, image, cell in
+      cell.bind(image: image)
     }.disposed(by: disposeBag)
   }
   
