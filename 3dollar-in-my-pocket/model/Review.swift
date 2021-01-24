@@ -1,9 +1,9 @@
 struct Review: Codable {
   
   let category: StoreCategory
-  let contents: String
+  var contents: String
   let id: Int
-  let rating: Int
+  var rating: Int
   let user: User
   let storeId: Int
   let storeName: String

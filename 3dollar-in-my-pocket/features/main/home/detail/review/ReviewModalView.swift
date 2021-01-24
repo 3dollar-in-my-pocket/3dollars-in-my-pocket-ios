@@ -175,6 +175,19 @@ class ReviewModalView: BaseView {
       }
     }
   }
+  
+  func bind(review: Review) {
+    self.titleLabel.text = "review_modal_modify_title".localized
+    self.registerButton.setTitle("review_modal_modify".localized, for: .normal)
+    self.onTapStackView(tappedIndex: review.rating)
+    self.reviewTextView.text = review.contents
+    
+    if review.contents.isEmpty {
+      self.reviewTextView.layer.borderColor = UIColor(r: 223, g: 223, b: 223).cgColor
+    } else {
+      self.reviewTextView.layer.borderColor = UIColor(r: 243, g: 162, b: 169).cgColor
+    }
+  }
 }
 
 // MARK: UITextViewDelegate

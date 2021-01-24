@@ -62,7 +62,7 @@ class StoreDetailVC: BaseVC {
     
     self.viewModel.output.showReviewModal
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showReviewModal(storeId:))
+      .bind(onNext: self.showReviewModal)
       .disposed(by: disposeBag)
     
     self.viewModel.output.showLoading
@@ -217,8 +217,8 @@ class StoreDetailVC: BaseVC {
     overViewCell.moveToPosition(latitude: latitude, longitude: longitude)
   }
   
-  private func showReviewModal(storeId: Int) {
-    let reviewVC = ReviewModalVC.instance(storeId: storeId).then {
+  private func showReviewModal(storeId: Int, review: Review? = nil) {
+    let reviewVC = ReviewModalVC.instance(storeId: storeId, review: review).then {
       $0.deleagete = self
     }
     
@@ -236,7 +236,7 @@ class StoreDetailVC: BaseVC {
   private func showMoreActionSheet(review: Review) {
     let alertController = UIAlertController(title: nil, message: "옵션", preferredStyle: .actionSheet)
     let modifyAction = UIAlertAction(title: "댓글 수정", style: .default) { _ in
-      // TODO: 댓글 수정하기
+      self.viewModel.input.tapModifyReview.onNext(review)
     }
     let deleteAction = UIAlertAction(title: "댓글 삭제", style: .destructive) { _ in
       self.viewModel.input.deleteReview.onNext(review.id)
@@ -310,78 +310,6 @@ extension StoreDetailVC: UITableViewDelegate {
     }
   }
 }
-
-//  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//    if let store = try? self.viewModel.store.value() {
-//      if indexPath.section == 0 {
-//        guard let cell = tableView.dequeueReusableCell(withIdentifier: ShopInfoCell.registerId, for: indexPath) as? ShopInfoCell else {
-//          return BaseTableViewCell()
-//        }
-//        cell.profileImage.rx.tap.bind { [weak self] (_) in
-//          if let vc = self {
-//            vc.present(ImageDetailVC.instance(title: store.storeName, images: store.images), animated: false)
-//          }
-//        }.disposed(by: cell.disposeBag)
-//
-//
-//        cell.setRank(rank: store.rating)
-//        if !(store.images.isEmpty) {
-//          cell.setImage(url: store.images[0].url, count: store.images.count)
-//        }
-//        cell.otherImages.isUserInteractionEnabled = !store.images.isEmpty
-//        cell.profileImage.isUserInteractionEnabled = !store.images.isEmpty
-//        cell.setMarker(latitude: store.latitude, longitude: store.longitude)
-//        cell.setCategory(category: store.category)
-//        cell.setMenus(menus: store.menus)
-//        cell.setDistance(distance: store.distance)
-//
-//        return cell
-//      } else {
-//        guard let cell = tableView.dequeueReusableCell(withIdentifier: ReviewCell.registerId, for: indexPath) as? ReviewCell else {
-//          return BaseTableViewCell()
-//        }
-//        if indexPath.row == 0 {
-//          cell.bind(review: nil)
-//          #if DEBUG
-//          cell.adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-//          #else
-//          cell.adBannerView.adUnitID = "ca-app-pub-1527951560812478/3327283605"
-//          #endif
-//
-//          cell.adBannerView.rootViewController = self
-//
-//          // Step 2 - Determine the view width to use for the ad width.
-//          let frame = { () -> CGRect in
-//            // Here safe area is taken into account, hence the view frame is used
-//            // after the view has been laid out.
-//            if #available(iOS 11.0, *) {
-//              return view.frame.inset(by: view.safeAreaInsets)
-//            } else {
-//              return view.frame
-//            }
-//          }()
-//          let viewWidth = frame.size.width
-//          cell.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
-//          cell.adBannerView.load(GADRequest())
-//        } else {
-//          let review = store.reviews[indexPath.row - 1]
-//
-//          if UserDefaultsUtil().getUserId() == review.user.id {
-//            cell.moreButton.isHidden = UserDefaultsUtil().getUserId() != review.user.id
-//            cell.moreButton.rx.tap
-//              .map { review.id }
-//              .observeOn(MainScheduler.instance)
-//              .bind(onNext: self.showDeleteActionSheet(reviewId:))
-//              .disposed(by: cell.disposeBag)
-//          }
-//          cell.bind(review: review)
-//        }
-//        return cell
-//      }
-//    } else {
-//      return BaseTableViewCell()
-//    }
-//  }
 
 extension StoreDetailVC: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

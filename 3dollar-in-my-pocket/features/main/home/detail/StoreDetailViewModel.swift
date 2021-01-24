@@ -21,13 +21,14 @@ class StoreDetailViewModel: BaseViewModel {
     let tapTransfer = PublishSubject<Void>()
     let tapModify = PublishSubject<Void>()
     let tapWriteReview = PublishSubject<Void>()
+    let tapModifyReview = PublishSubject<Review>()
     let deleteReview = PublishSubject<Int>()
   }
   
   struct Output {
     let store = PublishRelay<[StoreSection]>()
     let goToModify = PublishRelay<Store>()
-    let showReviewModal = PublishRelay<Int>()
+    let showReviewModal = PublishRelay<(Int, Review?)>()
     let showLoading = PublishRelay<Bool>()
   }
   
@@ -63,7 +64,12 @@ class StoreDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.tapWriteReview
-      .map { self.storeId }
+      .map { (self.storeId, nil) }
+      .bind(to: self.output.showReviewModal)
+      .disposed(by: disposeBag)
+    
+    self.input.tapModifyReview
+      .map { (self.storeId, $0) }
       .bind(to: self.output.showReviewModal)
       .disposed(by: disposeBag)
     

@@ -54,8 +54,10 @@
 "category_sub_text_takoyaki" = "다 내꺼야";
 "category_empty" = "근처에 가게가 없어요.";
 "review_modal_title" = "이 가게를\n추천하시나요?";
+"review_modal_modify_title" = "이 가게의 추천 내용을\n수정합니다.";
 "review_modal_placeholder" = "리뷰를 남겨주세요! (100자 이내)";
 "review_modal_register" = "리뷰 쓰기";
+"review_modal_modify" = "리뷰 수정";
 "popup_close" = "닫기";
 "popup_disable_today" = "오늘보지않기";
 "write_title" = "가게 제보";

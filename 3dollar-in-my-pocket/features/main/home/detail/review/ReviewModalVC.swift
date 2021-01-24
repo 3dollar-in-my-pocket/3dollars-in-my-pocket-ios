@@ -11,13 +11,19 @@ class ReviewModalVC: BaseVC {
   
   weak var deleagete: ReviewModalDelegate?
   
-  let viewModel: ReviewModalViewModel
+  private let viewModel: ReviewModalViewModel
+  private let review: Review?
   
   private lazy var reviewModalView = ReviewModalView(frame: self.view.frame)
   
   
-  init(storeId: Int) {
-    self.viewModel = ReviewModalViewModel(reviewService: ReviewService(), storeId: storeId)
+  init(storeId: Int, review: Review?) {
+    self.viewModel = ReviewModalViewModel(
+      reviewService: ReviewService(),
+      storeId: storeId,
+      review: review
+    )
+    self.review = review
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -29,8 +35,8 @@ class ReviewModalVC: BaseVC {
     fatalError("init(coder:) has not been implemented")
   }
   
-  static func instance(storeId: Int) -> ReviewModalVC {
-    return ReviewModalVC(storeId: storeId).then {
+  static func instance(storeId: Int, review: Review? = nil) -> ReviewModalVC {
+    return ReviewModalVC(storeId: storeId, review: review).then {
       $0.modalPresentationStyle = .overCurrentContext
     }
   }
@@ -40,6 +46,9 @@ class ReviewModalVC: BaseVC {
     view = reviewModalView
     
     self.addObservers()
+    if let review = self.review {
+      self.reviewModalView.bind(review: review)
+    }
   }
   
   override func bindViewModel() {
@@ -121,6 +130,11 @@ class ReviewModalVC: BaseVC {
       })
       .bind(onNext: self.dismissModal)
       .disposed(by: disposeBag)
+    
+    self.reviewModalView.tapBackground.rx.event.bind { [weak self] _ in
+      self?.dismissModal()
+    }
+    .disposed(by: disposeBag)
   }
   
   private func addObservers() {
