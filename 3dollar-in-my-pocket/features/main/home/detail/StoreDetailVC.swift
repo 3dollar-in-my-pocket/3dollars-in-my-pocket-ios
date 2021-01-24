@@ -405,7 +405,8 @@ extension StoreDetailVC: CLLocationManagerDelegate {
 
 extension StoreDetailVC: ReviewModalDelegate {
   func onReviewSuccess() {
-//    self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
+    self.myLocationFlag = false
+    self.locationManager.startUpdatingLocation()
     self.detailView.showDim(isShow: false)
   }
   

@@ -147,10 +147,10 @@ class ReviewModalVC: BaseVC {
     guard let userInfo = sender.userInfo as? [String:Any] else {return}
     guard let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {return}
     
-    self.reviewModalView.contentView.transform = CGAffineTransform(translationX: 0, y: -keyboardFrame.cgRectValue.height)
+    self.reviewModalView.containerView.transform = CGAffineTransform(translationX: 0, y: -keyboardFrame.cgRectValue.height)
   }
   
   @objc func keyboardWillHide(_ sender: Notification) {
-    self.reviewModalView.contentView.transform = .identity
+    self.reviewModalView.containerView.transform = .identity
   }
 }
