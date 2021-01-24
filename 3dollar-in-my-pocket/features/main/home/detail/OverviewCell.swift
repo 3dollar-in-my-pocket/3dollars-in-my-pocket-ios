@@ -26,7 +26,6 @@ class OverviewCell: BaseTableViewCell {
   }
   
   let nicknameLabel = UILabel().then {
-    $0.text = "효자동 불효자 님의 제보"
     $0.textColor = UIColor(r: 255, g: 161, b: 170)
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
@@ -34,7 +33,7 @@ class OverviewCell: BaseTableViewCell {
   let storeNameLabel = UILabel().then {
     $0.textColor = .black
     $0.font = UIFont(name: "AppleSDGothicNeoEB00", size: 22)
-    $0.text = "가게이름 가게이름"
+    $0.textAlignment = .center
   }
   
   let distanceImage = UIImageView().then {
@@ -42,7 +41,6 @@ class OverviewCell: BaseTableViewCell {
   }
   
   let distanceLabel = UILabel().then {
-    $0.text = "154m"
     $0.textColor = .black
     $0.textAlignment = .right
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
@@ -53,7 +51,6 @@ class OverviewCell: BaseTableViewCell {
   }
   
   let starLabel = UILabel().then{
-    $0.text = "3.4점"
     $0.textColor = .black
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
