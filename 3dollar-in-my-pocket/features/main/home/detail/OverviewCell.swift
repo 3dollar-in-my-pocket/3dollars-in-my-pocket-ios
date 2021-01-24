@@ -117,6 +117,8 @@ class OverviewCell: BaseTableViewCell {
     
     self.storeNameLabel.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
+      make.left.equalTo(self.overViewContainerView).offset(16)
+      make.right.equalTo(self.overViewContainerView).offset(-16)
       make.top.equalTo(self.nicknameLabel.snp.bottom).offset(8)
     }
     
