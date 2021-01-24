@@ -17,6 +17,7 @@ class StoreDetailViewModel: BaseViewModel {
   
   struct Input {
     let currentLocation = PublishSubject<(Double, Double)>()
+    let tapDeleteRequest = PublishSubject<Void>()
     let tapShare = PublishSubject<Void>()
     let tapTransfer = PublishSubject<Void>()
     let tapModify = PublishSubject<Void>()
@@ -27,6 +28,7 @@ class StoreDetailViewModel: BaseViewModel {
   
   struct Output {
     let store = PublishRelay<[StoreSection]>()
+    let showDeleteModal = PublishRelay<Int>()
     let goToModify = PublishRelay<Store>()
     let showReviewModal = PublishRelay<(Int, Review?)>()
     let showLoading = PublishRelay<Bool>()
@@ -47,6 +49,11 @@ class StoreDetailViewModel: BaseViewModel {
     self.input.currentLocation
       .map { (self.storeId, $0) }
       .bind(onNext: self.fetchStore)
+      .disposed(by: disposeBag)
+    
+    self.input.tapDeleteRequest
+      .map { self.storeId }
+      .bind(to: self.output.showDeleteModal)
       .disposed(by: disposeBag)
     
     self.input.tapShare

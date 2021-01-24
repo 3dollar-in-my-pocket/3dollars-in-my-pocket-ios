@@ -55,6 +55,11 @@ class StoreDetailVC: BaseVC {
       .bind(to: self.detailView.tableView.rx.items(dataSource:self.storeDataSource))
       .disposed(by: disposeBag)
     
+    self.viewModel.output.showDeleteModal
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showDeleteModal(storeId:))
+      .disposed(by: disposeBag)
+    
     self.viewModel.output.goToModify
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.goToModify(store:))
@@ -87,6 +92,13 @@ class StoreDetailVC: BaseVC {
         GA.shared.logEvent(event: .back_button_clicked, page: .store_detail_page)
       })
       .bind(onNext: self.popupVC)
+      .disposed(by: disposeBag)
+    
+    self.detailView.deleteRequestButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .delete_request_button_clicked, page: .store_edit_page)
+      })
+      .bind(to: self.viewModel.input.tapDeleteRequest)
       .disposed(by: disposeBag)
   }
   
@@ -217,6 +229,15 @@ class StoreDetailVC: BaseVC {
     overViewCell.moveToPosition(latitude: latitude, longitude: longitude)
   }
   
+  private func showDeleteModal(storeId: Int) {
+    let deleteVC = DeleteModalVC.instance(storeId: storeId).then {
+      $0.deleagete = self
+    }
+    
+    self.detailView.showDim(isShow: true)
+    self.present(deleteVC, animated: true, completion: nil)
+  }
+  
   private func showReviewModal(storeId: Int, review: Review? = nil) {
     let reviewVC = ReviewModalVC.instance(storeId: storeId, review: review).then {
       $0.deleagete = self
@@ -332,6 +353,7 @@ extension StoreDetailVC: CLLocationManagerDelegate {
 }
 
 extension StoreDetailVC: ReviewModalDelegate {
+  
   func onReviewSuccess() {
     self.myLocationFlag = false
     self.locationManager.startUpdatingLocation()
@@ -342,6 +364,17 @@ extension StoreDetailVC: ReviewModalDelegate {
     self.detailView.showDim(isShow: false)
   }
 }
+
+extension StoreDetailVC: DeleteModalDelegate {
+  
+  func onRequest() {
+    self.detailView.showDim(isShow: false)
+    self.navigationController?.popToRootViewController(animated: true)
+  }
+}
+
+
+
 
 extension StoreDetailVC: ModifyDelegate {
   func onModifySuccess() {
