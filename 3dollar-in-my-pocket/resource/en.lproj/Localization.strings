@@ -125,3 +125,4 @@
 "store_delete_menu_wrong_location" = "위치가 잘못됐어요.";
 "store_delete_menu_overlap" = "중복 제보된 가게에요.";
 "store_delete_request_button" = "신고하기";
+"store_modify_title" = "가게 정보 수정";

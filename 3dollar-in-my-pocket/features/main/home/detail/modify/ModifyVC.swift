@@ -15,9 +15,6 @@ class ModifyVC: BaseVC {
   var viewModel = ModifyViewMode()
   var deleteVC: DeleteModalVC?
   
-  private let imagePicker = UIImagePickerController()
-  private var selectedImageIndex = 0
-  
   deinit {
     NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
     NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -33,11 +30,9 @@ class ModifyVC: BaseVC {
     super.viewDidLoad()
     view = modifyView
     
-    setupImageCollectionView()
     setupMenuTableView()
     setupKeyboardEvent()
     initilizeNaverMap()
-    setupStore()
   }
   
   override func bindViewModel() {
@@ -45,31 +40,12 @@ class ModifyVC: BaseVC {
       self?.modifyView.endEditing(true)
     }.disposed(by: disposeBag)
     
-    modifyView.backBtn.rx.tap
+    self.modifyView.backButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .back_button_clicked, page: .store_edit_page)
       })
       .bind { [weak self] in
       self?.navigationController?.popViewController(animated: true)
-    }.disposed(by: disposeBag)
-    
-    modifyView.deleteBtn.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .delete_request_button_clicked, page: .store_edit_page)
-      })
-      .bind { [weak self] in
-      if let vc = self {
-        vc.deleteVC = DeleteModalVC.instance(storeId: vc.store.id).then {
-          $0.deleagete = self
-        }
-        vc.modifyView.addBgDim()
-        vc.present(vc.deleteVC!, animated: true)
-      }
-    }.disposed(by: disposeBag)
-    
-    modifyView.nameField.rx.text.bind { [weak self] (inputText) in
-      self?.modifyView.setFieldEmptyMode(isEmpty: inputText!.isEmpty)
-      self?.viewModel.btnEnable.onNext(())
     }.disposed(by: disposeBag)
     
     modifyView.registerBtn.rx.tap
@@ -78,71 +54,44 @@ class ModifyVC: BaseVC {
         GA.shared.logEvent(event: .store_edit_submit_button_clicked, page: .store_edit_page)
       })
       .bind { [weak self] in
-      guard let self = self else { return }
-      
-      let storeId = self.store.id
-      let storeName = self.modifyView.nameField.text!
-      let images = self.viewModel.imageList
-      let latitude = self.modifyView.mapView.cameraPosition.target.lat
-      let longitude = self.modifyView.mapView.cameraPosition.target.lng
-      let menus = self.viewModel.menuList
-      let store = Store.init(
-        category: .BUNGEOPPANG,
-        latitude: latitude,
-        longitude: longitude,
-        storeName: storeName,
-        menus: menus
-      )
-      
-      self.modifyView.showLoading(isShow: true)
-      StoreService().updateStore(storeId: storeId, store: store, images: images)
-        .subscribe(
-          onNext: { [weak self] _ in
-            self?.delegate?.onModifySuccess()
-            self?.navigationController?.popViewController(animated: true)
-            self?.modifyView.showLoading(isShow: false)
-          },
-          onError: { [weak self] error in
-            guard let self = self else { return }
-            if let httpError = error as? HTTPError {
-              self.showHTTPErrorAlert(error: httpError)
-            } else if let error = error as? CommonError {
-              let alertContent = AlertContent(title: nil, message: error.description)
-              
-              self.showSystemAlert(alert: alertContent)
-            }
-            self.modifyView.showLoading(isShow: false)
-          })
-        .disposed(by: self.disposeBag)
+//      guard let self = self else { return }
+//
+//      let storeId = self.store.id
+//      let storeName = self.modifyView.nameField.text!
+//      let images = self.viewModel.imageList
+//      let latitude = self.modifyView.mapView.cameraPosition.target.lat
+//      let longitude = self.modifyView.mapView.cameraPosition.target.lng
+//      let menus = self.viewModel.menuList
+//      let store = Store.init(
+//        category: .BUNGEOPPANG,
+//        latitude: latitude,
+//        longitude: longitude,
+//        storeName: storeName,
+//        menus: menus
+//      )
+//
+//      self.modifyView.showLoading(isShow: true)
+//      StoreService().updateStore(storeId: storeId, store: store, images: images)
+//        .subscribe(
+//          onNext: { [weak self] _ in
+//            self?.delegate?.onModifySuccess()
+//            self?.navigationController?.popViewController(animated: true)
+//            self?.modifyView.showLoading(isShow: false)
+//          },
+//          onError: { [weak self] error in
+//            guard let self = self else { return }
+//            if let httpError = error as? HTTPError {
+//              self.showHTTPErrorAlert(error: httpError)
+//            } else if let error = error as? CommonError {
+//              let alertContent = AlertContent(title: nil, message: error.description)
+//
+//              self.showSystemAlert(alert: alertContent)
+//            }
+//            self.modifyView.showLoading(isShow: false)
+//          })
+//        .disposed(by: self.disposeBag)
     }
     .disposed(by: disposeBag)
-      
-    
-    viewModel.btnEnable
-      .map { [weak self] (_) in
-        if let vc = self {
-          return !vc.modifyView.nameField.text!.isEmpty
-        } else {
-          return false
-        }
-      }
-      .bind(to: modifyView.registerBtn.rx.isEnabled)
-      .disposed(by: disposeBag)
-  }
-  
-  private func setupStore() {
-    modifyView.setImageCount(count: store.images.count)
-    modifyView.setMenuCount(count: store.menus.count)
-    modifyView.setCategory(category: store.category)
-    modifyView.setTitle(title: store.storeName)
-    modifyView.setRepoter(repoter: store.repoter.nickname!)
-  }
-  
-  private func setupImageCollectionView() {
-    imagePicker.delegate = self
-    modifyView.imageCollection.dataSource = self
-    modifyView.imageCollection.delegate = self
-    modifyView.imageCollection.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.registerId)
   }
   
   private func setupMenuTableView() {
@@ -193,50 +142,6 @@ class ModifyVC: BaseVC {
     let contentInset:UIEdgeInsets = UIEdgeInsets.zero
     
     self.modifyView.scrollView.contentInset = contentInset
-  }
-}
-
-extension ModifyVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return self.viewModel.imageList.count + 1
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.registerId, for: indexPath) as? ImageCell else {
-      return BaseCollectionViewCell()
-    }
-    
-    if indexPath.row < self.viewModel.imageList.count {
-      cell.setImage(image: self.viewModel.imageList[indexPath.row])
-    } else {
-      cell.setImage(image: nil)
-    }
-    return cell
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    return CGSize(width: 104, height: 104)
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    selectedImageIndex = indexPath.row
-    AlertUtils.showImagePicker(controller: self, picker: self.imagePicker)
-  }
-}
-
-extension ModifyVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-    if let image = info[.originalImage] as? UIImage {
-      let cropImage = ImageUtils.cropToBounds(image: image)
-      
-      if selectedImageIndex == self.viewModel.imageList.count {
-        self.viewModel.imageList.append(cropImage)
-      } else {
-        self.viewModel.imageList[selectedImageIndex] = cropImage
-      }
-    }
-    self.modifyView.imageCollection.reloadData()
-    picker.dismiss(animated: true, completion: nil)
   }
 }
 
@@ -291,18 +196,5 @@ extension ModifyVC: UITableViewDelegate, UITableViewDataSource {
       
     }.disposed(by: disposeBag)
     return cell
-  }
-}
-
-extension ModifyVC: DeleteModalDelegate {
-  func onRequest() {
-    deleteVC?.dismiss(animated: true, completion: nil)
-    self.modifyView.removeBgDim()
-    self.navigationController?.popToRootViewController(animated: true)
-  }
-  
-  func onTapClose() {
-    deleteVC?.dismiss(animated: true, completion: nil)
-    self.modifyView.removeBgDim()
   }
 }
