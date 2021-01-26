@@ -35,9 +35,23 @@ class ModifyView: BaseView {
   
   let mapView = NMFMapView()
   
-  let titleContainer = UIView().then {
+  let addressContainer = UIView().then {
     $0.backgroundColor = .white
     $0.layer.cornerRadius = 12
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOpacity = 0.04
+    $0.layer.shadowOffset = CGSize(width: 8, height: 8)
+  }
+  
+  let addressLabel = UILabel().then {
+    $0.textColor = UIColor(r: 28, g: 28, b: 28)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 18)
+    $0.text = "서울특별시 관악구\n독립문로 14길"
+    $0.numberOfLines = 0
+  }
+  
+  let editButton = UIButton().then {
+    $0.setImage(UIImage(named: "ic_edit"), for: .normal)
   }
   
   let menuTableView = UITableView().then {
@@ -76,7 +90,8 @@ class ModifyView: BaseView {
     addGestureRecognizer(bgTap)
     
     containerView.addSubViews(
-      mapView, titleContainer, menuTableView
+      mapView, addressContainer, addressLabel, editButton,
+      menuTableView
     )
     scrollView.addSubViews(containerView)
     addSubViews(
@@ -106,11 +121,21 @@ class ModifyView: BaseView {
       make.top.equalTo(self.navigationView.snp.bottom)
     }
     
-    titleContainer.snp.makeConstraints { (make) in
+    self.editButton.snp.makeConstraints { make in
+      make.centerY.equalTo(mapView.snp.bottom)
+      make.right.equalTo(self.addressContainer).offset(-19)
+    }
+    
+    self.addressContainer.snp.makeConstraints { (make) in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.centerY.equalTo(mapView.snp.bottom)
-      make.height.equalTo(150)
+      make.top.equalTo(self.editButton).offset(-23)
+      make.bottom.equalTo(self.editButton).offset(23)
+    }
+    
+    self.addressLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.addressContainer).offset(24)
+      make.centerY.equalTo(self.addressContainer)
     }
     
     containerView.snp.makeConstraints { (make) in
