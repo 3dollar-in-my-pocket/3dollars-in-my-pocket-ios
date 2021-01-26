@@ -54,11 +54,123 @@ class ModifyView: BaseView {
     $0.setImage(UIImage(named: "ic_edit"), for: .normal)
   }
   
-  let menuTableView = UITableView().then {
+  let storeInfoLabel = UILabel().then {
+    $0.text = "write_store_info".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
+    $0.textColor = .black
+  }
+  
+  let storeInfoContainer = UIView().then {
+    $0.backgroundColor = .white
+  }
+  
+  let storeNameLabel = UILabel().then {
+    $0.text = "write_store_info_name".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.textColor = .black
+  }
+  
+  let storeNameContainer = UIView().then {
+    $0.layer.cornerRadius = 8
+    $0.layer.borderWidth = 1
+    $0.layer.borderColor = UIColor(r: 244, g: 244, b: 244).cgColor
+  }
+  
+  let storeNameField = UITextField().then {
+    $0.textColor = .black
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.placeholder = "write_store_info_name_placeholder".localized
+  }
+  
+  let storeTypeLabel = UILabel().then {
+    $0.text = "write_store_type".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
+    $0.textColor = .black
+  }
+  
+  let storeTypeOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let storeTypeStackView = WriteDetailTypeStackView()
+  
+  let paymentTypeLabel = UILabel().then {
+    $0.text = "write_store_payment_type".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.textColor = .black
+  }
+  
+  let paymentTypeOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let paymentTypeMultiLabel = UILabel().then {
+    $0.text = "write_store_payment_multi".localized
+    $0.textColor = UIColor(r: 255, g: 161, b: 170)
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12)
+  }
+  
+  let paymentStackView = WriteDetailPaymentStackView()
+  
+  let daysLabel = UILabel().then {
+    $0.text = "write_store_days".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.textColor = .black
+  }
+  
+  let daysOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let dayStackView = DayStackView(dayStackSize: .normal)
+  
+  let menuLabel = UILabel().then {
+    $0.text = "write_store_menu".localized
+    $0.textColor = .black
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
+  }
+  
+  let menuOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let deleteAllButton = UIButton().then {
+    $0.setTitle("write_store_delete_all_menu".localized, for: .normal)
+    $0.setTitleColor(UIColor(r: 255, g: 92, b: 67), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+  }
+  
+  let categoryContainer = UIView().then {
+    $0.backgroundColor = .white
+  }
+  
+  let categoryCollectionView = UICollectionView(
+    frame: .zero,
+    collectionViewLayout: UICollectionViewFlowLayout()
+  ).then {
+    let layout = LeftAlignedCollectionViewFlowLayout()
+    
+    layout.minimumInteritemSpacing = 16 * RatioUtils.widthRatio
+    layout.minimumLineSpacing = 20
+    layout.itemSize = CGSize(width: 52, height: 70)
+    $0.collectionViewLayout = layout
     $0.backgroundColor = .clear
+  }
+  
+  let menuTableView = UITableView().then {
+    $0.backgroundColor = .white
     $0.isScrollEnabled = false
     $0.rowHeight = UITableView.automaticDimension
     $0.separatorStyle = .none
+    $0.sectionFooterHeight = 20
   }
   
   let registerBtnBg = UIView().then {
@@ -91,7 +203,12 @@ class ModifyView: BaseView {
     
     containerView.addSubViews(
       mapView, addressContainer, addressLabel, editButton,
-      menuTableView
+      storeInfoLabel, storeInfoContainer, storeNameLabel,
+      storeNameContainer, storeNameField, storeTypeLabel, storeTypeOptionLabel,
+      storeTypeStackView, paymentTypeLabel, paymentTypeOptionLabel,
+      paymentTypeMultiLabel, paymentStackView, daysLabel,
+      daysOptionLabel, dayStackView, menuLabel, menuOptionLabel,
+      deleteAllButton, categoryContainer, categoryCollectionView, menuTableView
     )
     scrollView.addSubViews(containerView)
     addSubViews(
@@ -121,6 +238,13 @@ class ModifyView: BaseView {
       make.top.equalTo(self.navigationView.snp.bottom)
     }
     
+    self.containerView.snp.makeConstraints { (make) in
+      make.edges.equalTo(0)
+      make.width.equalTo(frame.width)
+      make.top.equalToSuperview()
+      make.bottom.equalTo(self.menuTableView)
+    }
+    
     self.editButton.snp.makeConstraints { make in
       make.centerY.equalTo(mapView.snp.bottom)
       make.right.equalTo(self.addressContainer).offset(-19)
@@ -138,17 +262,124 @@ class ModifyView: BaseView {
       make.centerY.equalTo(self.addressContainer)
     }
     
-    containerView.snp.makeConstraints { (make) in
-      make.edges.equalTo(0)
-      make.width.equalTo(frame.width)
-      make.top.equalToSuperview()
-      make.bottom.equalTo(menuTableView.snp.bottom)
+    self.mapView.snp.makeConstraints { make in
+      make.left.top.right.equalToSuperview()
+      make.height.equalTo(350)
     }
     
-    self.mapView.snp.makeConstraints { make in
+    self.storeInfoLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.addressContainer.snp.bottom).offset(33)
+    }
+    
+    self.storeInfoContainer.snp.makeConstraints { make in
       make.left.right.equalToSuperview()
-      make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(50)
-      make.height.equalTo(350)
+      make.top.equalTo(self.storeInfoLabel.snp.bottom).offset(16)
+      make.bottom.equalTo(self.dayStackView).offset(24)
+    }
+    
+    self.storeNameLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeInfoContainer).offset(30)
+    }
+    
+    self.storeNameContainer.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.storeNameLabel.snp.bottom).offset(10)
+      make.bottom.equalTo(self.storeNameField).offset(15)
+    }
+    
+    self.storeNameField.snp.makeConstraints { make in
+      make.left.equalTo(self.storeNameContainer).offset(16)
+      make.top.equalTo(self.storeNameContainer).offset(16)
+      make.right.equalTo(self.storeNameContainer).offset(-16)
+    }
+    
+    self.storeTypeLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeNameContainer.snp.bottom).offset(40)
+    }
+    
+    self.storeTypeOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.storeTypeLabel.snp.right).offset(6)
+      make.centerY.equalTo(self.storeTypeLabel)
+    }
+    
+    self.storeTypeStackView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeTypeLabel.snp.bottom).offset(17)
+    }
+    
+    self.paymentTypeLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeTypeStackView.snp.bottom).offset(40)
+    }
+
+    self.paymentTypeOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.paymentTypeLabel.snp.right).offset(6)
+      make.centerY.equalTo(self.paymentTypeLabel)
+    }
+
+    self.paymentTypeMultiLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.paymentTypeOptionLabel.snp.right).offset(7)
+      make.centerY.equalTo(self.paymentTypeLabel)
+    }
+    
+    self.paymentStackView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.paymentTypeLabel.snp.bottom).offset(16)
+    }
+    
+    self.daysLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.paymentStackView.snp.bottom).offset(40)
+    }
+    
+    self.daysOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.daysLabel.snp.right).offset(6)
+      make.centerY.equalTo(self.daysLabel)
+    }
+    
+    self.dayStackView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.daysLabel.snp.bottom).offset(13)
+    }
+    
+    self.menuLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeInfoContainer.snp.bottom).offset(40)
+    }
+    
+    self.menuOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.menuLabel.snp.right).offset(4)
+      make.centerY.equalTo(self.menuLabel)
+    }
+    
+    self.deleteAllButton.snp.makeConstraints { make in
+      make.right.equalToSuperview().offset(-24)
+      make.centerY.equalTo(self.menuLabel)
+    }
+    
+    self.categoryContainer.snp.makeConstraints { make in
+      make.left.right.equalToSuperview()
+      make.top.equalTo(self.menuLabel.snp.bottom).offset(16)
+      make.bottom.equalTo(self.categoryCollectionView).offset(24)
+    }
+    
+    self.categoryCollectionView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.categoryContainer).offset(24)
+      make.height.equalTo(72)
+    }
+    
+    self.menuTableView.snp.makeConstraints { make in
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+      make.top.equalTo(self.categoryContainer.snp.bottom).offset(10)
+      make.height.equalTo(0)
     }
     
     registerBtnBg.snp.makeConstraints { (make) in
@@ -168,21 +399,21 @@ class ModifyView: BaseView {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    refreshScrollViewHeight()
+//    refreshScrollViewHeight()
     registerBtn.layer.cornerRadius = registerBtn.frame.height / 2
   }
   
-  override func layoutIfNeeded() {
-    super.layoutIfNeeded()
-    refreshScrollViewHeight()
-  }
+//  override func layoutIfNeeded() {
+//    super.layoutIfNeeded()
+//    refreshScrollViewHeight()
+//  }
   
   private func refreshScrollViewHeight() {
-    menuTableView.snp.remakeConstraints({ (make) in
-      make.left.right.equalToSuperview()
-      make.top.equalTo(menuTableView).offset(8)
-      make.height.equalTo(menuTableView.contentSize.height + 85)
-    })
+//    menuTableView.snp.remakeConstraints({ (make) in
+//      make.left.right.equalToSuperview()
+//      make.top.equalTo(menuTableView).offset(8)
+//      make.height.equalTo(menuTableView.contentSize.height + 85)
+//    })
   }
   
   func hideRegisterBtn() {
