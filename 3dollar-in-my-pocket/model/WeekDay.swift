@@ -1,11 +1,11 @@
-enum WeekDay: String {
-  case monday = "monday"
-  case tuesday = "tuesday"
-  case wednesday = "wednesday"
-  case thursday = "thursday"
-  case friday = "friday"
-  case saturday = "saturday"
-  case sunday = "sunday"
+enum WeekDay: String, Codable {
+  case monday = "MONDAY"
+  case tuesday = "TUESDAY"
+  case wednesday = "WEDNESDAY"
+  case thursday = "THURSDAY"
+  case friday = "FRIDAY"
+  case saturday = "SATURDAY"
+  case sunday = "SUNDAY"
   
   func getIntValue() -> Int {
     switch self {

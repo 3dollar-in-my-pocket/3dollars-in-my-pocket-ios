@@ -1,7 +1,7 @@
-enum PaymentType: String {
-  case cash = "caes"
-  case card = "card"
-  case transfer = "transfer"
+enum PaymentType: String, Codable {
+  case cash = "CASH"
+  case card = "CARD"
+  case transfer = "ACCOUNT_TRANSFER"
   
   func getIndexValue() -> Int {
     switch self {

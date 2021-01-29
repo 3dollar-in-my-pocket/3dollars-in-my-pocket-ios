@@ -22,6 +22,13 @@ class StoreInfoCell: BaseTableViewCell {
     $0.text = "노점"
   }
   
+  let storeTypeEmptyLabel = UILabel().then {
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14)
+    $0.text = "store_detail_info_empty".localized
+    $0.isHidden = false
+  }
+  
   let storeDaysLabel = UILabel().then{
     $0.text = "store_detail_days".localized
     $0.textColor = .black
@@ -29,6 +36,13 @@ class StoreInfoCell: BaseTableViewCell {
   }
   
   let dayStackView = DayStackView(dayStackSize: .small)
+  
+  let storeDaysEmptyLabel = UILabel().then {
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14)
+    $0.text = "store_detail_info_empty".localized
+    $0.isHidden = true
+  }
   
   let paymentLabel = UILabel().then {
     $0.text = "store_detail_payment".localized
@@ -69,14 +83,21 @@ class StoreInfoCell: BaseTableViewCell {
     $0.layer.cornerRadius = 4
   }
   
+  let storePaymentEmptyLabel = UILabel().then {
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14)
+    $0.text = "store_detail_info_empty".localized
+    $0.isHidden = true
+  }
   
   override func setup() {
     selectionStyle = .none
     backgroundColor = .clear
     addSubViews(
-      infoContainer, storeTypeLabel, storeTypeValueLabel, storeDaysLabel,
-      dayStackView, paymentLabel, cardLabel, cardCircleView, transferLabel,
-      transferCircleView, cashLabel, cashCircleView
+      infoContainer, storeTypeLabel, storeTypeValueLabel, storeTypeEmptyLabel,
+      storeDaysLabel, dayStackView, storeDaysEmptyLabel, paymentLabel,
+      cardLabel, cardCircleView, transferLabel, transferCircleView,
+      cashLabel, cashCircleView, storePaymentEmptyLabel
     )
   }
   
@@ -99,12 +120,22 @@ class StoreInfoCell: BaseTableViewCell {
       make.centerY.equalTo(self.storeTypeLabel)
     }
     
+    self.storeTypeEmptyLabel.snp.makeConstraints { make in
+      make.right.equalTo(self.infoContainer).offset(-16)
+      make.centerY.equalTo(self.storeTypeLabel)
+    }
+    
     self.storeDaysLabel.snp.makeConstraints { make in
       make.left.equalTo(self.storeTypeLabel)
       make.top.equalTo(self.storeTypeLabel.snp.bottom).offset(19)
     }
     
     self.dayStackView.snp.makeConstraints { make in
+      make.centerY.equalTo(self.storeDaysLabel)
+      make.right.equalTo(self.infoContainer).offset(-16)
+    }
+    
+    self.storeDaysEmptyLabel.snp.makeConstraints { make in
       make.centerY.equalTo(self.storeDaysLabel)
       make.right.equalTo(self.infoContainer).offset(-16)
     }
@@ -145,6 +176,51 @@ class StoreInfoCell: BaseTableViewCell {
       make.centerY.equalTo(self.paymentLabel)
       make.right.equalTo(self.cashLabel.snp.left).offset(-6)
       make.width.height.equalTo(8)
+    }
+    
+    self.storePaymentEmptyLabel.snp.makeConstraints { make in
+      make.centerY.equalTo(self.paymentLabel)
+      make.right.equalTo(self.infoContainer).offset(-16)
+    }
+  }
+  
+  func bind(store: Store) {
+    self.setStoreType(storeType: store.storeType)
+    self.setStoreDays(weekDays: store.appearanceDays)
+    self.setStorePayment(paymentMethods: store.paymentMethods)
+  }
+  
+  private func setStoreType(storeType: StoreType?) {
+    self.storeTypeEmptyLabel.isHidden = (storeType != nil)
+    self.storeTypeValueLabel.isHidden = (storeType == nil)
+    if let storeType = storeType {
+      self.storeTypeValueLabel.text = storeType.getString()
+    }
+  }
+  
+  private func setStoreDays(weekDays: [WeekDay]) {
+    self.storeDaysEmptyLabel.isHidden = !weekDays.isEmpty
+    self.dayStackView.isHidden = weekDays.isEmpty
+    self.dayStackView.selectDays(weekDays: weekDays)
+  }
+  
+  private func setStorePayment(paymentMethods: [PaymentType]) {
+    if paymentMethods.isEmpty {
+      self.storePaymentEmptyLabel.isHidden = false
+      self.cashCircleView.isHidden = true
+      self.cashLabel.isHidden = true
+      self.cardCircleView.isHidden = true
+      self.cardLabel.isHidden = true
+      self.transferCircleView.isHidden = true
+      self.transferLabel.isHidden = true
+    } else {
+      self.storePaymentEmptyLabel.isHidden = true
+      self.cardCircleView.backgroundColor = paymentMethods.contains(.card) ? UIColor(r: 255, g: 161, b: 170): UIColor(r: 161, g: 161, b: 161)
+      self.cardLabel.textColor = paymentMethods.contains(.card) ? UIColor(r: 255, g: 161, b: 170): UIColor(r: 161, g: 161, b: 161)
+      self.cashCircleView.backgroundColor = paymentMethods.contains(.cash) ? UIColor(r: 255, g: 161, b: 170): UIColor(r: 161, g: 161, b: 161)
+      self.cashLabel.textColor = paymentMethods.contains(.cash) ? UIColor(r: 255, g: 161, b: 170): UIColor(r: 161, g: 161, b: 161)
+      self.transferCircleView.backgroundColor = paymentMethods.contains(.transfer) ? UIColor(r: 255, g: 161, b: 170): UIColor(r: 161, g: 161, b: 161)
+      self.transferLabel.textColor = paymentMethods.contains(.transfer) ? UIColor(r: 255, g: 161, b: 170): UIColor(r: 161, g: 161, b: 161)
     }
   }
 }

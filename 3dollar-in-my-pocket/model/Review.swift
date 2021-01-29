@@ -2,48 +2,47 @@ struct Review: Codable {
   
   let category: StoreCategory
   var contents: String
+  let createdAt: String
   let id: Int
   var rating: Int
-  let user: User
   let storeId: Int
   let storeName: String
-  let createdAt: String
+  let user: User
   
   
   enum CodingKeys: String, CodingKey {
     case category = "category"
     case contents = "contents"
+    case createdAt = "createdAt"
     case id = "id"
     case rating = "rating"
-    case user = "user"
     case storeId = "storeId"
     case storeName = "storeName"
-    case createdAt = "createdAt"
+    case user = "user"
   }
   
   init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     
-    category = try values.decodeIfPresent(StoreCategory.self, forKey: .category) ?? .BUNGEOPPANG
-    contents = try values.decodeIfPresent(String.self, forKey: .contents) ?? ""
-    id = try values.decodeIfPresent(Int.self, forKey: .id) ?? -1
-    rating = try values.decodeIfPresent(Int.self, forKey: .rating) ?? -1
-    user = try values.decodeIfPresent(User.self, forKey: .user) ?? User(socialId: "", socialType: "")
-    storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? -1
-    storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
-    createdAt = try values.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
-    
+    self.category = try values.decodeIfPresent(StoreCategory.self, forKey: .category) ?? .BUNGEOPPANG
+    self.contents = try values.decodeIfPresent(String.self, forKey: .contents) ?? ""
+    self.createdAt = try values.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
+    self.id = try values.decodeIfPresent(Int.self, forKey: .id) ?? -1
+    self.rating = try values.decodeIfPresent(Int.self, forKey: .rating) ?? -1
+    self.storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? -1
+    self.storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
+    self.user = try values.decodeIfPresent(User.self, forKey: .user) ?? User(socialId: "", socialType: "")
   }
   
   init(rating: Int, contents: String) {
     self.category = .BUNGEOPPANG
     self.contents = contents
+    self.createdAt = ""
     self.id = -1
     self.rating = rating
-    self.user = User(socialId: "", socialType: "")
     self.storeId = -1
     self.storeName = ""
-    self.createdAt = ""
+    self.user = User(socialId: "", socialType: "")
   }
   
   func toJson() -> [String: Any] {

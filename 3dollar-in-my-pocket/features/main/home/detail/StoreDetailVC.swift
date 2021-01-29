@@ -161,6 +161,7 @@ class StoreDetailVC: BaseVC {
       case .info:
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreInfoCell.registerId, for: indexPath) as? StoreInfoCell else { return BaseTableViewCell() }
         
+        cell.bind(store: dataSource.sectionModels[indexPath.section].store)
         return cell
       case .menu:
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailMenuCell.registerId, for: indexPath) as? StoreDetailMenuCell else { return BaseTableViewCell() }
