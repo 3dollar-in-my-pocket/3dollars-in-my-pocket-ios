@@ -359,8 +359,20 @@ class WriteDetailVC: BaseVC {
 }
 
 extension WriteDetailVC: UIScrollViewDelegate {
+  
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
     self.writeDetailView.endEditing(true)
+    self.writeDetailView.hideRegisterButton()
+  }
+  
+  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    if !decelerate {
+      self.writeDetailView.showRegisterButton()
+    }
+  }
+  
+  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    self.writeDetailView.showRegisterButton()
   }
 }
 

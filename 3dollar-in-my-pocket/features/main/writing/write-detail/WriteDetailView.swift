@@ -28,6 +28,7 @@ class WriteDetailView: BaseView {
   
   let scrollView = UIScrollView().then {
     $0.showsVerticalScrollIndicator = false
+    $0.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 98, right: 0)
   }
   
   let containerView = UIView()
@@ -179,12 +180,12 @@ class WriteDetailView: BaseView {
     $0.sectionFooterHeight = 20
   }
   
-  let registerBtnBg = UIView().then {
+  let registerButtonBg = UIView().then {
     $0.layer.cornerRadius = 37
     
     let shadowLayer = CAShapeLayer()
     
-    shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 232, height: 72), cornerRadius: 37).cgPath
+    shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 232, height: 64), cornerRadius: 37).cgPath
     shadowLayer.fillColor = UIColor.init(r: 255, g: 255, b: 255, a: 0.6).cgColor
     shadowLayer.shadowColor = UIColor.black.cgColor
     shadowLayer.shadowPath = nil
@@ -194,19 +195,18 @@ class WriteDetailView: BaseView {
     $0.layer.insertSublayer(shadowLayer, at: 0)
   }
   
-  let registerBtn = UIButton().then {
-    $0.setTitle("현재 위치로 등록하기", for: .normal)
-    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+  let registerButton = UIButton().then {
+    $0.setTitle("write_store_register_button".localized, for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
     $0.isEnabled = false
-    $0.setBackgroundColor(UIColor.init(r: 200, g: 200, b: 200), for: .disabled)
-    $0.setBackgroundColor(UIColor.init(r: 238, g: 98, b: 76), for: .normal)
+    $0.setBackgroundColor(UIColor.init(r: 208, g: 208, b: 208), for: .disabled)
+    $0.setBackgroundColor(UIColor.init(r: 255, g: 92, b: 67), for: .normal)
     $0.layer.masksToBounds = true
   }
   
   
   override func setup() {
     backgroundColor = UIColor(r: 250, g: 250, b: 250)
-    scrollView.delegate = self
     addGestureRecognizer(bgTap)
     containerView.addSubViews(
       locationLabel, modifyLocationButton, locationContainer, locationFieldContainer,
@@ -219,7 +219,7 @@ class WriteDetailView: BaseView {
     )
     
     scrollView.addSubview(containerView)
-    addSubViews(scrollView, navigationView, backButton, titleLabel, registerBtnBg, registerBtn)
+    addSubViews(scrollView, navigationView, backButton, titleLabel, registerButtonBg, registerButton)
   }
   
   override func bindConstraints() {
@@ -343,18 +343,18 @@ class WriteDetailView: BaseView {
       make.top.equalTo(self.paymentTypeLabel.snp.bottom).offset(16)
     }
     
-    self.registerBtnBg.snp.makeConstraints { (make) in
+    self.registerButtonBg.snp.makeConstraints { (make) in
       make.centerX.equalToSuperview()
       make.width.equalTo(232)
-      make.height.equalTo(72)
+      make.height.equalTo(64)
       make.bottom.equalToSuperview().offset(-32)
     }
     
-    self.registerBtn.snp.makeConstraints { (make) in
-      make.left.equalTo(registerBtnBg.snp.left).offset(8)
-      make.right.equalTo(registerBtnBg.snp.right).offset(-8)
-      make.top.equalTo(registerBtnBg.snp.top).offset(8)
-      make.bottom.equalTo(registerBtnBg.snp.bottom).offset(-8)
+    self.registerButton.snp.makeConstraints { (make) in
+      make.left.equalTo(registerButtonBg.snp.left).offset(8)
+      make.right.equalTo(registerButtonBg.snp.right).offset(-8)
+      make.top.equalTo(registerButtonBg.snp.top).offset(8)
+      make.bottom.equalTo(registerButtonBg.snp.bottom).offset(-8)
     }
     
     self.daysLabel.snp.makeConstraints { make in
@@ -412,7 +412,7 @@ class WriteDetailView: BaseView {
   override func layoutSubviews() {
     super.layoutSubviews()
     self.refreshMenuTableViewHeight()
-    registerBtn.layer.cornerRadius = registerBtn.frame.height / 2
+    registerButton.layer.cornerRadius = registerButton.frame.height / 2
   }
   
   override func layoutIfNeeded() {
@@ -444,66 +444,34 @@ class WriteDetailView: BaseView {
   func setStoreNameBorderColoe(isEmpty: Bool) {
     self.storeNameContainer.layer.borderColor = isEmpty ? UIColor(r: 244, g: 244, b: 244).cgColor : UIColor(r: 255, g: 161, b: 170).cgColor
   }
-//
-//  func tapCategoryBtn(index: Int) {
-//    let buttons = [bungeoppangBtn, takoyakiBtn, gyeranppangBtn, hotteokBtn]
-//
-//    for buttonIndex in buttons.indices {
-//      buttons[buttonIndex].isSelected = (buttonIndex == index)
-//    }
-//  }
-//
-//  func setFieldEmptyMode(isEmpty: Bool) {
-//    if isEmpty {
-//      nameField.layer.borderColor = UIColor.init(r: 223, g: 223, b: 223).cgColor
-//    } else {
-//      nameField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
-//    }
-//  }
   
-  func hideRegisterBtn() {
-    if registerBtnBg.alpha != 0 {
-      let originalBgTransform = self.registerBtnBg.transform
-      let originalBtnTransform = self.registerBtn.transform
+  func hideRegisterButton() {
+    if registerButtonBg.alpha != 0 {
+      let originalBgTransform = self.registerButtonBg.transform
+      let originalBtnTransform = self.registerButton.transform
       
       UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-        self?.registerBtnBg.transform = originalBgTransform.translatedBy(x: 0.0, y: 90)
-        self?.registerBtnBg.alpha = 0
+        self?.registerButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: 90)
+        self?.registerButtonBg.alpha = 0
         
-        self?.registerBtn.transform = originalBtnTransform.translatedBy(x: 0.0, y: 90)
-        self?.registerBtn.alpha = 0
+        self?.registerButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: 90)
+        self?.registerButton.alpha = 0
       })
     }
   }
   
-  func showRegisterBtn() {
-    if registerBtnBg.alpha != 1 {
-      let originalBgTransform = self.registerBtnBg.transform
-      let originalBtnTransform = self.registerBtn.transform
+  func showRegisterButton() {
+    if registerButtonBg.alpha != 1 {
+      let originalBgTransform = self.registerButtonBg.transform
+      let originalBtnTransform = self.registerButton.transform
       
       UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-        self?.registerBtnBg.transform = originalBgTransform.translatedBy(x: 0.0, y: -90)
-        self?.registerBtnBg.alpha = 1
+        self?.registerButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: -90)
+        self?.registerButtonBg.alpha = 1
         
-        self?.registerBtn.transform = originalBtnTransform.translatedBy(x: 0.0, y: -90)
-        self?.registerBtn.alpha = 1
+        self?.registerButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: -90)
+        self?.registerButton.alpha = 1
       })
     }
-  }
-}
-
-extension WriteDetailView: UIScrollViewDelegate {
-  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-    self.hideRegisterBtn()
-  }
-  
-  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-    if !decelerate {
-      self.showRegisterBtn()
-    }
-  }
-  
-  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-    self.showRegisterBtn()
   }
 }
