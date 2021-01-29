@@ -21,7 +21,10 @@ class WriteDetailViewModel: BaseViewModel {
     let tapPaymentType = PublishSubject<PaymentType>()
     let tapAddCategory = PublishSubject<Void>()
     let tapCategoryDelete = PublishSubject<Int>()
-    let addCategories = PublishSubject<[StoreCategory?]>()
+    let addCategories = PublishSubject<[StoreCategory]>()
+    let deleteAllCategories = PublishSubject<Void>()
+    let menuName = PublishSubject<(IndexPath, String)>()
+    let menuPrice = PublishSubject<(IndexPath, String)>()
     let deleteCategory = PublishSubject<Int>()
   }
   
@@ -70,21 +73,19 @@ class WriteDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.addCategories
-      .map {
-        $0.map { category -> MenuSection in
-          MenuSection(category: category, items: [nil])
-        }
-      }
-      .do(onNext: { self.menusSections = $0 })
-      .bind(to: self.output.menus)
+      .bind(onNext: self.onAddCategory(categories:))
       .disposed(by: disposeBag)
     
-    self.input.addCategories
-      .map { [nil] + $0}
-      .do(onNext: { [weak self] selectedCategories in
-        self?.categoryies = selectedCategories
-      })
-      .bind(to: self.output.categories)
+    self.input.deleteAllCategories
+      .bind(onNext: self.onTapDeleteAllCategories)
+      .disposed(by: disposeBag)
+    
+    self.input.menuName
+      .bind(onNext: self.onEditMenuName)
+      .disposed(by: disposeBag)
+    
+    self.input.menuPrice
+      .bind(onNext: self.onEditMenuPrice)
       .disposed(by: disposeBag)
     
     self.input.deleteCategory
@@ -142,5 +143,57 @@ class WriteDetailViewModel: BaseViewModel {
     Observable.just(self.paymentType)
       .bind(to: self.output.selectPaymentType)
       .disposed(by: disposeBag)
+  }
+  
+  private func onAddCategory(categories: [StoreCategory]) {
+    var newMenuSection: [MenuSection] = []
+    
+    for category in categories{
+      if self.categoryies.contains(category){
+        for menuSection in self.menusSections {
+          if menuSection.category! == category {
+            newMenuSection.append(menuSection)
+            break
+          }
+        }
+      } else {
+        newMenuSection.append(MenuSection(category: category, items: [Menu()]))
+      }
+    }
+    
+    self.menusSections = newMenuSection
+    self.categoryies = [nil] + categories
+    self.output.categories.accept(self.categoryies)
+    self.output.menus.accept(self.menusSections)
+  }
+  
+  private func onTapDeleteAllCategories() {
+    self.categoryies = [nil]
+    self.menusSections = []
+    
+    self.output.categories.accept(categoryies)
+    self.output.menus.accept(menusSections)
+  }
+  
+  private func onEditMenuName(indexPath: IndexPath, name: String) {
+    if !name.isEmpty {
+      self.menusSections[indexPath.section].items[indexPath.row].name = name
+      if self.menusSections[indexPath.section].items.count == indexPath.row + 1 {
+        self.menusSections[indexPath.section].items.append(Menu())
+        
+        self.output.menus.accept(self.menusSections)
+      }
+    }
+  }
+  
+  private func onEditMenuPrice(indexPath: IndexPath, price: String) {
+    if !price.isEmpty {
+      self.menusSections[indexPath.section].items[indexPath.row].price = price
+      if self.menusSections[indexPath.section].items.count == indexPath.row + 1 {
+        self.menusSections[indexPath.section].items.append(Menu())
+        
+        self.output.menus.accept(self.menusSections)
+      }
+    }
   }
 }

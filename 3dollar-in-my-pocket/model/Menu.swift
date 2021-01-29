@@ -1,10 +1,10 @@
 struct Menu: Codable {
   let id: Int
   let category: StoreCategory?
-  var name: String
+  var name: String?
   var price: String?
   
-  init(name: String, price: String? = nil) {
+  init(name: String? = nil, price: String? = nil) {
     self.id = -1
     self.category = nil
     self.name = name
@@ -23,12 +23,8 @@ struct Menu: Codable {
     
     self.id = try values.decodeIfPresent(Int.self, forKey: .id) ?? -1
     self.category = try values.decodeIfPresent(StoreCategory.self, forKey: .category)
-    self.name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
+    self.name = try values.decodeIfPresent(String.self, forKey: .name)
     self.price = try values.decodeIfPresent(String.self, forKey: .price)
-  }
-  
-  mutating func setPrice(price: String) {
-    self.price = price
   }
   
   func toDict() -> [String: Any] {

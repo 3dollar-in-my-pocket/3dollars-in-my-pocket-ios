@@ -136,6 +136,10 @@ class WriteDetailVC: BaseVC {
       .bind(to: self.viewModel.input.tapPaymentType)
       .disposed(by: disposeBag)
     
+    self.writeDetailView.deleteAllButton.rx.tap
+      .bind(to: self.viewModel.input.deleteAllCategories)
+      .disposed(by: disposeBag)
+    
     // Bind output
     self.viewModel.output.address
       .bind(to: self.writeDetailView.locationValueLabel.rx.text)
@@ -304,6 +308,21 @@ class WriteDetailVC: BaseVC {
         for: indexPath
       ) as? MenuCell else { return BaseTableViewCell() }
       
+      cell.setMenu(menu: item)
+      
+      cell.nameField.rx.controlEvent(.editingDidEnd)
+        .withLatestFrom(cell.nameField.rx.text.orEmpty)
+        .map { (indexPath, $0) }
+        .bind(to: self.viewModel.input.menuName)
+        .disposed(by: cell.disposeBag)
+        
+      cell.descField.rx.controlEvent(.editingDidEnd)
+        .withLatestFrom(cell.descField.rx.text.orEmpty)
+        .map { (indexPath, $0) }
+        .bind(to: self.viewModel.input.menuPrice)
+        .disposed(by: cell.disposeBag)
+        
+        
       return cell
     }
   }

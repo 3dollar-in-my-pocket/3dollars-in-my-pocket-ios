@@ -36,6 +36,8 @@ class MenuCell: BaseTableViewCell {
   override func prepareForReuse() {
     super.prepareForReuse()
     self.disposeBag = DisposeBag()
+    self.nameField.text = nil
+    self.descField.text = nil
     self.setup()
   }
   
@@ -78,25 +80,25 @@ class MenuCell: BaseTableViewCell {
   func setMenu(menu: Menu?) {
     if let menu = menu {
       self.nameField.text = menu.name
-      self.nameField.layer.borderColor = UIColor.init(r: 255, g: 161, b: 170).cgColor
+      self.setNameFieldBorderColor(isEmpty: menu.name?.isEmpty ?? true)
       self.descField.text = menu.price
-      self.descField.layer.borderColor = UIColor.init(r: 255, g: 161, b: 170).cgColor
+      self.setDescFieldBorderColor(isEmpty: menu.price?.isEmpty ?? true)
     }
   }
   
   private func setNameFieldBorderColor(isEmpty: Bool) {
     if isEmpty {
-      self.nameField.layer.borderColor = UIColor.init(r: 223, g: 223, b: 223).cgColor
+      self.nameField.layer.borderColor = UIColor.init(r: 208, g: 208, b: 208).cgColor
     } else {
-      self.nameField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
+      self.nameField.layer.borderColor = UIColor.init(r: 255, g: 161, b: 170).cgColor
     }
   }
   
   private func setDescFieldBorderColor(isEmpty: Bool) {
     if isEmpty {
-      self.descField.layer.borderColor = UIColor.init(r: 223, g: 223, b: 223).cgColor
+      self.descField.layer.borderColor = UIColor.init(r: 208, g: 208, b: 208).cgColor
     } else {
-      self.descField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
+      self.descField.layer.borderColor = UIColor.init(r: 255, g: 161, b: 170).cgColor
     }
   }
 }
