@@ -48,6 +48,7 @@ class WriteCategoryCell: BaseCollectionViewCell {
     self.nameLabel.snp.makeConstraints { make in
       make.left.right.equalTo(self.roundView)
       make.top.equalTo(self.roundView.snp.bottom).offset(8)
+      make.height.equalTo(self.nameLabel.intrinsicContentSize.height)
       make.bottom.equalToSuperview()
     }
   }

@@ -26,6 +26,7 @@ class WriteDetailViewModel: BaseViewModel {
     let menuName = PublishSubject<(IndexPath, String)>()
     let menuPrice = PublishSubject<(IndexPath, String)>()
     let deleteCategory = PublishSubject<Int>()
+    let tapRegister = PublishSubject<Void>()
   }
   
   struct Output {
@@ -38,6 +39,7 @@ class WriteDetailViewModel: BaseViewModel {
     let showCategoryDialog = PublishRelay<[StoreCategory?]>()
     let menus = PublishRelay<[MenuSection]>()
     let fetchMenuTableViewHeight = PublishRelay<Void>()
+    let registerButtonIsEnable = PublishRelay<Bool>()
   }
   
   init(
@@ -53,6 +55,11 @@ class WriteDetailViewModel: BaseViewModel {
     self.input.storeName
       .map { $0.isEmpty }
       .bind(to: self.output.storeNameIsEmpty)
+      .disposed(by: disposeBag)
+    
+    self.input.storeName
+      .map { !$0.isEmpty }
+      .bind(to: self.output.registerButtonIsEnable)
       .disposed(by: disposeBag)
     
     self.input.tapDay

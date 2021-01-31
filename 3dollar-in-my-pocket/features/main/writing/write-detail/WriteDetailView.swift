@@ -167,7 +167,7 @@ class WriteDetailView: BaseView {
     
     layout.minimumInteritemSpacing = 16 * RatioUtils.widthRatio
     layout.minimumLineSpacing = 20
-    layout.itemSize = CGSize(width: 52, height: 70)
+    layout.estimatedItemSize = CGSize(width: 52, height: 75)
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear
   }

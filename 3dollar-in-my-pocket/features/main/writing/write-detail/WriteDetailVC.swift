@@ -140,6 +140,10 @@ class WriteDetailVC: BaseVC {
       .bind(to: self.viewModel.input.deleteAllCategories)
       .disposed(by: disposeBag)
     
+    self.writeDetailView.registerButton.rx.tap
+      .bind(to: self.viewModel.input.tapRegister)
+      .disposed(by: disposeBag)
+    
     // Bind output
     self.viewModel.output.address
       .bind(to: self.writeDetailView.locationValueLabel.rx.text)
@@ -179,6 +183,10 @@ class WriteDetailVC: BaseVC {
     
     self.viewModel.output.menus
       .bind(to: self.writeDetailView.menuTableView.rx.items(dataSource:self.menuDataSource))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.registerButtonIsEnable
+      .bind(to: self.writeDetailView.registerButton.rx.isEnabled)
       .disposed(by: disposeBag)
     
 //    writingView.registerBtn.rx.tap
@@ -309,7 +317,6 @@ class WriteDetailVC: BaseVC {
       ) as? MenuCell else { return BaseTableViewCell() }
       
       cell.setMenu(menu: item)
-      
       cell.nameField.rx.controlEvent(.editingDidEnd)
         .withLatestFrom(cell.nameField.rx.text.orEmpty)
         .map { (indexPath, $0) }
@@ -321,7 +328,6 @@ class WriteDetailVC: BaseVC {
         .map { (indexPath, $0) }
         .bind(to: self.viewModel.input.menuPrice)
         .disposed(by: cell.disposeBag)
-        
         
       return cell
     }
