@@ -4,6 +4,15 @@ struct MenuSection {
   
   var category: StoreCategory?
   var items: [Menu]
+  
+  func toMenu() -> [Menu] {
+    var menus: [Menu] = []
+    for item in items {
+      menus.append(Menu(category: self.category, name: item.name, price: item.price))
+    }
+    
+    return menus
+  }
 }
 
 extension MenuSection: SectionModelType {

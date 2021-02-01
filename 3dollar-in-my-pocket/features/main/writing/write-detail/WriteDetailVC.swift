@@ -189,63 +189,25 @@ class WriteDetailVC: BaseVC {
       .bind(to: self.writeDetailView.registerButton.rx.isEnabled)
       .disposed(by: disposeBag)
     
-//    writingView.registerBtn.rx.tap
-//      .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-//      .do(onNext: { _ in
-//        GA.shared.logEvent(event: .store_register_submit_button_clicked, page: .store_register_page)
-//      })
-//      .bind { [weak self] in
-//        guard let self = self else { return }
-//
-//        let storeName = self.writingView.nameField.text!
-//        let images = self.viewModel.imageList
-//        let latitude = self.writingView.mapView.cameraPosition.target.lat
-//        let longitude = self.writingView.mapView.cameraPosition.target.lng
-//        let menus = self.viewModel.menuList
-//
-//        if let category = self.writingView.getCategory() {
-//          let store = Store(
-//            category: category,
-//            latitude: latitude,
-//            longitude: longitude,
-//            storeName: storeName,
-//            menus: menus
-//          )
-//
-//          self.writingView.showLoading(isShow: true)
-//          StoreService().saveStore(store: store, images: images).subscribe(
-//            onNext: { [weak self] saveResponse in
-//              guard let self = self else { return }
-//
-//              self.dismiss(animated: true, completion: nil)
-//              self.deleagte?.onWriteSuccess(storeId: saveResponse.storeId)
-//              self.writingView.showLoading(isShow: false)
-//            },
-//            onError: { [weak self] error in
-//              guard let self = self else { return }
-//              if let httpError = error as? HTTPError {
-//                self.showHTTPErrorAlert(error: httpError)
-//              } else if let error = error as? CommonError {
-//                let alertContent = AlertContent(title: nil, message: error.description)
-//
-//                self.showSystemAlert(alert: alertContent)
-//              }
-//              self.writingView.showLoading(isShow: false)
-//            })
-//            .disposed(by: self.disposeBag)
-//        }
-//      }.disposed(by: disposeBag)
-//
-//    viewModel.btnEnable
-//      .map { [weak self] (_) in
-//        if let vc = self {
-//          return !vc.writingView.nameField.text!.isEmpty && vc.writingView.getCategory() != nil
-//        } else {
-//          return false
-//        }
-//      }
-//      .bind(to: writingView.registerBtn.rx.isEnabled)
-//      .disposed(by: disposeBag)
+    self.viewModel.output.dismissAndGoDetail
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: dismissAndGoDetail)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.showLoading
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.writeDetailView.showLoading(isShow:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.httpErrorAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showHTTPErrorAlert(error:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.showSystemAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {
@@ -345,6 +307,11 @@ class WriteDetailVC: BaseVC {
     
     self.writeDetailView.showDim(isShow: true)
     self.present(addCategoryVC, animated: true, completion: nil)
+  }
+  
+  private func dismissAndGoDetail(storeId: Int) {
+    self.dismiss(animated: true, completion: nil)
+    self.deleagte?.onWriteSuccess(storeId: storeId)
   }
   
   @objc func onShowKeyboard(notification: NSNotification) {

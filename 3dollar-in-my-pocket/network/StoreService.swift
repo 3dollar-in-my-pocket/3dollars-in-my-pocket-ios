@@ -5,7 +5,7 @@ protocol StoreServiceProtocol {
   
   func getStoreOrderByNearest(latitude: Double, longitude: Double) -> Observable<[StoreCard]>
   
-  func saveStore(store: Store, images:[UIImage]) -> Observable<SaveResponse>
+  func saveStore(store: Store) -> Observable<SaveResponse>
   
   func updateStore(storeId: Int, store: Store, images: [UIImage]) -> Observable<String>
   
@@ -43,49 +43,61 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func saveStore(store: Store, images:[UIImage]) -> Observable<SaveResponse> {
+  func saveStore(store: Store) -> Observable<SaveResponse> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/store/save"
       let headers = HTTPUtils.defaultHeader()
       var parameters = store.toJson()
       
       parameters["userId"] = "\(UserDefaultsUtil.getUserId()!)"
-      parameters["menu"] = nil
-      parameters["image"] = nil
-      parameters["review"] = nil
       
       // 배열로 보냈을 경우 서버에서 못받아서 일단 임시로 필드처럼 해서 보냄 ㅠㅠ
       for index in store.menus.indices {
         let menu = store.menus[index]
         
+        parameters["menu[\(index)].category"] = menu.category?.rawValue ?? StoreCategory.BUNGEOPPANG
         parameters["menu[\(index)].name"] = menu.name
         parameters["menu[\(index)].price"] = menu.price
       }
       
-      HTTPUtils.fileUploadSession.upload(multipartFormData: { (multipartFormData) in
-        for index in images.indices {
-          let image = images[index]
-          
-          multipartFormData.append(
-            image.jpegData(compressionQuality: 0.5)!,
-            withName: "image",
-            fileName: "image\(index).jpeg",
-            mimeType: "image/jpeg"
-          )
-        }
-        
-        for (key, value) in parameters {
-          let stringValue = String(describing: value)
-          
-          multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
-        }
-      }, to: urlString, headers: headers).responseJSON(completionHandler: { response in
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .post,
+        parameters: parameters,
+        encoding: JSONEncoding.default,
+        headers: headers
+      )
+      .responseJSON { response in
         if response.isSuccess() {
           observer.processValue(class: SaveResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
-      })
+      }
+//      HTTPUtils.fileUploadSession.upload(multipartFormData: { (multipartFormData) in
+//        for index in images.indices {
+//          let image = images[index]
+//
+//          multipartFormData.append(
+//            image.jpegData(compressionQuality: 0.5)!,
+//            withName: "image",
+//            fileName: "image\(index).jpeg",
+//            mimeType: "image/jpeg"
+//          )
+//        }
+//
+//        for (key, value) in parameters {
+//          let stringValue = String(describing: value)
+//
+//          multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
+//        }
+//      }, to: urlString, headers: headers).responseJSON(completionHandler: { response in
+//        if response.isSuccess() {
+//          observer.processValue(class: SaveResponse.self, response: response)
+//        } else {
+//          observer.processHTTPError(response: response)
+//        }
+//      })
       return Disposables.create()
     }
   }

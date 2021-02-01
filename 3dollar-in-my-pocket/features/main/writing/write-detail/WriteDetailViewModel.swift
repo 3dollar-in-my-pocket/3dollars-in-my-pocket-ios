@@ -40,6 +40,8 @@ class WriteDetailViewModel: BaseViewModel {
     let menus = PublishRelay<[MenuSection]>()
     let fetchMenuTableViewHeight = PublishRelay<Void>()
     let registerButtonIsEnable = PublishRelay<Bool>()
+    let dismissAndGoDetail = PublishRelay<Int>()
+    let showLoading = PublishRelay<Bool>()
   }
   
   init(
@@ -97,6 +99,20 @@ class WriteDetailViewModel: BaseViewModel {
     
     self.input.deleteCategory
       .bind(onNext: self.deleteCategory(index:))
+      .disposed(by: disposeBag)
+    
+    self.input.tapRegister
+      .withLatestFrom(Observable.combineLatest(self.input.storeName, self.input.tapStoreType))
+      .map { Store(
+        appearanceDays: self.appearenceDay,
+        latitude: self.location.0,
+        longitude: self.location.1,
+        menuSections: self.menusSections,
+        paymentType: self.paymentType,
+        storeName: $0.0,
+        storeType: $0.1
+      ) }
+      .bind(onNext: self.saveStore(store:))
       .disposed(by: disposeBag)
   }
   
@@ -202,5 +218,27 @@ class WriteDetailViewModel: BaseViewModel {
         self.output.menus.accept(self.menusSections)
       }
     }
+  }
+  
+  private func saveStore(store: Store) {
+    self.output.showLoading.accept(true)
+    self.storeService.saveStore(store: store)
+      .subscribe(
+        onNext: { [weak self] saveResponse in
+          guard let self = self else { return }
+          
+          self.output.dismissAndGoDetail.accept(saveResponse.storeId)
+          self.output.showLoading.accept(false)
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          if let httpError = error as? HTTPError{
+            self.httpErrorAlert.accept(httpError)
+          }
+          
+          self.output.showLoading.accept(false)
+        }
+      )
+      .disposed(by: disposeBag)
   }
 }

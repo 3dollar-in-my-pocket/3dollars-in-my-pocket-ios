@@ -57,6 +57,36 @@ struct Store: Codable {
     self.repoter = User(socialId: "", socialType: "")
   }
   
+  init(
+    appearanceDays: [WeekDay],
+    latitude: Double,
+    longitude: Double,
+    menuSections: [MenuSection],
+    paymentType: [PaymentType],
+    storeName: String,
+    storeType: StoreType
+  ) {
+    self.appearanceDays = appearanceDays
+    self.category = .BUNGEOPPANG
+    self.distance = -1
+    self.id = -1
+    self.images = []
+    self.latitude = latitude
+    self.longitude = longitude
+    
+    var menus: [Menu] = []
+    for menuSection in menuSections {
+      menus = menus + menuSection.toMenu()
+    }
+    self.menus = menus
+    self.paymentMethods = paymentType
+    self.rating = -1
+    self.reviews = []
+    self.storeName = storeName
+    self.storeType = storeType
+    self.repoter = User(socialId: "", socialType: "")
+  }
+  
   init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     
@@ -78,10 +108,13 @@ struct Store: Codable {
   
   func toJson() -> [String: Any] {
     return [
-      "category" : self.category.getValue(),
-      "latitude" : self.latitude,
-      "longitude" : self.longitude,
-      "storeName" : self.storeName
+      "appearanceDays": self.appearanceDays.map { $0.rawValue },
+//      "category" : self.category.getValue(),
+      "latitude": self.latitude,
+      "longitude": self.longitude,
+      "paymentMethods": self.paymentMethods.map { $0.rawValue },
+      "storeName": self.storeName,
+      "storeType": self.storeType?.rawValue ?? StoreType.road.rawValue
     ]
   }
 }

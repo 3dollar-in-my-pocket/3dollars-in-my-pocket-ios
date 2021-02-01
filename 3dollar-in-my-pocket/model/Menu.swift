@@ -11,6 +11,13 @@ struct Menu: Codable {
     self.price = price
   }
   
+  init(category: StoreCategory?, name: String?, price: String?) {
+    self.id = -1
+    self.category = category
+    self.name = name
+    self.price = price
+  }
+  
   enum CodingKeys: String, CodingKey {
     case id = "id"
     case category = "category"
