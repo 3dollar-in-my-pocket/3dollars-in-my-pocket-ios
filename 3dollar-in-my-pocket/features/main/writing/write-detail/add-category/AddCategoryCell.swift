@@ -32,8 +32,8 @@ class AddCategoryCell: BaseCollectionViewCell {
     
     self.categoryImage.snp.makeConstraints { make in
       make.center.equalTo(self.roundView)
-      make.width.equalTo(38)
-      make.height.equalTo(22)
+      make.width.equalTo(32)
+      make.height.equalTo(32)
     }
     
     self.nameLabel.snp.makeConstraints { make in
@@ -48,16 +48,16 @@ class AddCategoryCell: BaseCollectionViewCell {
       self.roundView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
       switch category {
       case .BUNGEOPPANG:
-        self.categoryImage.image = UIImage(named: "img_40_bungeoppang")
+        self.categoryImage.image = UIImage(named: "img_32_bungeoppang_on")
         self.nameLabel.text = "shared_category_bungeoppang".localized
       case .GYERANPPANG:
-        self.categoryImage.image = UIImage(named: "img_40_gyeranppang")
+        self.categoryImage.image = UIImage(named: "img_32_gyeranppang_on")
         self.nameLabel.text = "shared_category_gyeranppang".localized
       case .HOTTEOK:
-        self.categoryImage.image = UIImage(named: "img_40_hotteok")
+        self.categoryImage.image = UIImage(named: "img_32_hotteok_on")
         self.nameLabel.text = "shared_category_hotteok".localized
       case .TAKOYAKI:
-        self.categoryImage.image = UIImage(named: "img_40_takoyaki")
+        self.categoryImage.image = UIImage(named: "img_32_takoyaki_on")
         self.nameLabel.text = "shared_category_takoyaki".localized
       }
       self.nameLabel.textColor = UIColor(r: 28, g: 28, b: 28)
@@ -65,16 +65,16 @@ class AddCategoryCell: BaseCollectionViewCell {
       self.roundView.layer.borderColor = UIColor(r: 208, g: 208, b: 208).cgColor
       switch category {
       case .BUNGEOPPANG:
-        self.categoryImage.image = UIImage(named: "img_40_bungeoppang")
+        self.categoryImage.image = UIImage(named: "img_32_bungeoppang_off")
         self.nameLabel.text = "shared_category_bungeoppang".localized
       case .GYERANPPANG:
-        self.categoryImage.image = UIImage(named: "img_40_gyeranppang_off")
+        self.categoryImage.image = UIImage(named: "img_32_gyeranppang_off")
         self.nameLabel.text = "shared_category_gyeranppang".localized
       case .HOTTEOK:
-        self.categoryImage.image = UIImage(named: "img_40_hotteok_off")
+        self.categoryImage.image = UIImage(named: "img_32_hotteok_off")
         self.nameLabel.text = "shared_category_hotteok".localized
       case .TAKOYAKI:
-        self.categoryImage.image = UIImage(named: "img_40_takoyaki")
+        self.categoryImage.image = UIImage(named: "img_32_takoyaki_off")
         self.nameLabel.text = "shared_category_takoyaki".localized
       }
       self.nameLabel.textColor = UIColor(r: 137, g: 137, b: 137)

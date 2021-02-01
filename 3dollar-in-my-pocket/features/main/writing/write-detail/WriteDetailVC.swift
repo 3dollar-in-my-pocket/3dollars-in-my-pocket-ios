@@ -257,8 +257,11 @@ class WriteDetailVC: BaseVC {
       .disposed(by: disposeBag)
     self.writeDetailView.categoryCollectionView.rx.itemSelected
       .bind { [weak self] indexPath in
+        guard let self = self else { return }
         if indexPath.row == 0 {
-          self?.viewModel.input.tapAddCategory.onNext(())
+          self.viewModel.input.tapAddCategory.onNext(())
+        } else {
+          self.viewModel.input.deleteCategory.onNext(indexPath.row - 1)
         }
       }
       .disposed(by: disposeBag)

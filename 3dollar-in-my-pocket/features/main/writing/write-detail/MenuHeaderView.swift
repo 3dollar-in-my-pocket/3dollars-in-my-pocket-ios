@@ -21,7 +21,7 @@ class MenuHeaderView: BaseView {
   override func bindConstraints() {
     self.categoryImage.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.width.equalTo(40)
+      make.width.height.equalTo(32)
       make.top.equalToSuperview().offset(18)
       make.bottom.equalToSuperview().offset(-16)
     }
@@ -41,16 +41,16 @@ class MenuHeaderView: BaseView {
   func bind(category: StoreCategory) {
     switch category {
     case .BUNGEOPPANG:
-      self.categoryImage.image = UIImage(named: "img_40_bungeoppang")
+      self.categoryImage.image = UIImage(named: "img_32_bungeoppang_on")
       self.titleLabel.text = "shared_category_bungeoppang".localized
     case .GYERANPPANG:
-      self.categoryImage.image = UIImage(named: "img_40_gyeranppang")
+      self.categoryImage.image = UIImage(named: "img_32_gyeranppang_on")
       self.titleLabel.text = "shared_category_gyeranppang".localized
     case .HOTTEOK:
-      self.categoryImage.image = UIImage(named: "img_40_hotteok")
+      self.categoryImage.image = UIImage(named: "img_32_hotteok_on")
       self.titleLabel.text = "shared_category_hotteok".localized
     case .TAKOYAKI:
-      self.categoryImage.image = UIImage(named: "img_40_takoyaki")
+      self.categoryImage.image = UIImage(named: "img_32_takoyaki_on")
       self.titleLabel.text = "shared_category_takoyaki".localized
     }
   }

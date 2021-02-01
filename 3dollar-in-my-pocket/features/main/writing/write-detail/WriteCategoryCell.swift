@@ -14,6 +14,10 @@ class WriteCategoryCell: BaseCollectionViewCell {
     $0.image = UIImage(named: "ic_plus_pink")
   }
   
+  let deleteButton = UIImageView().then {
+    $0.image = UIImage(named: "ic_delete_small")
+  }
+  
   let nameLabel = UILabel().then {
     $0.textColor = .black
     $0.textAlignment = .center
@@ -31,7 +35,7 @@ class WriteCategoryCell: BaseCollectionViewCell {
   
   override func setup() {
     backgroundColor = .clear
-    addSubViews(roundView, categoryImage, nameLabel)
+    addSubViews(roundView, categoryImage, deleteButton, nameLabel)
   }
   
   override func bindConstraints() {
@@ -45,6 +49,11 @@ class WriteCategoryCell: BaseCollectionViewCell {
       make.width.height.equalTo(32)
     }
     
+    self.deleteButton.snp.makeConstraints { make in
+      make.top.equalTo(self.roundView)
+      make.centerX.equalTo(self.roundView.snp.right).offset(-4)
+    }
+    
     self.nameLabel.snp.makeConstraints { make in
       make.left.right.equalTo(self.roundView)
       make.top.equalTo(self.roundView.snp.bottom).offset(8)
@@ -54,22 +63,23 @@ class WriteCategoryCell: BaseCollectionViewCell {
   }
   
   func bind(category: StoreCategory?) {
+    self.deleteButton.isHidden = (category == nil)
     if let category = category {
       self.roundView.backgroundColor = .clear
       self.roundView.layer.borderWidth = 1
       self.roundView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
       switch category {
       case .BUNGEOPPANG:
-        self.categoryImage.image = UIImage(named: "img_category_fish")
+        self.categoryImage.image = UIImage(named: "img_32_bungeoppang_on")
         self.nameLabel.text = "shared_category_bungeoppang".localized
       case .GYERANPPANG:
-        self.categoryImage.image = UIImage(named: "img_category_gyeranppang")
+        self.categoryImage.image = UIImage(named: "img_32_gyeranppang_on")
         self.nameLabel.text = "shared_category_gyeranppang".localized
       case .HOTTEOK:
-        self.categoryImage.image = UIImage(named: "img_category_hotteok")
+        self.categoryImage.image = UIImage(named: "img_32_hotteok_on")
         self.nameLabel.text = "shared_category_hotteok".localized
       case .TAKOYAKI:
-        self.categoryImage.image = UIImage(named: "img_category_takoyaki")
+        self.categoryImage.image = UIImage(named: "img_32_takoyaki_on")
         self.nameLabel.text = "shared_category_takoyaki".localized
       }
     }
