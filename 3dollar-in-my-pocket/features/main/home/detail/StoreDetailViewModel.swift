@@ -12,6 +12,7 @@ class StoreDetailViewModel: BaseViewModel {
   let userDefaults: UserDefaultsUtil
   let storeService: StoreServiceProtocol
   let reviewService: ReviewServiceProtocol
+  var currentLocation: (Double, Double) = (0, 0)
   
   var store: Store!
   
@@ -23,6 +24,7 @@ class StoreDetailViewModel: BaseViewModel {
     let tapModify = PublishSubject<Void>()
     let tapWriteReview = PublishSubject<Void>()
     let tapModifyReview = PublishSubject<Review>()
+    let registerPhoto = PublishSubject<UIImage>()
     let deleteReview = PublishSubject<Int>()
   }
   
@@ -47,6 +49,7 @@ class StoreDetailViewModel: BaseViewModel {
     super.init()
     
     self.input.currentLocation
+      .do(onNext: { self.currentLocation = $0 })
       .map { (self.storeId, $0) }
       .bind(onNext: self.fetchStore)
       .disposed(by: disposeBag)
@@ -78,6 +81,11 @@ class StoreDetailViewModel: BaseViewModel {
     self.input.tapModifyReview
       .map { (self.storeId, $0) }
       .bind(to: self.output.showReviewModal)
+      .disposed(by: disposeBag)
+    
+    self.input.registerPhoto
+      .map { (self.storeId, [$0]) }
+      .bind(onNext: self.savePhoto)
       .disposed(by: disposeBag)
     
     self.input.deleteReview
@@ -204,5 +212,26 @@ class StoreDetailViewModel: BaseViewModel {
           self.output.showLoading.accept(false)
         }
       ).disposed(by: self.disposeBag)
+  }
+  
+  private func savePhoto(storeId: Int, photos: [UIImage]) {
+    self.output.showLoading.accept(true)
+    self.storeService.savePhoto(storeId: storeId, photos: photos)
+      .subscribe(
+        onNext: { [weak self] _ in
+          guard let self = self else { return }
+          
+          self.fetchStore(storeId: self.storeId, location: self.currentLocation)
+          self.output.showLoading.accept(false)
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          if let httpError = error as? HTTPError{
+            self.httpErrorAlert.accept(httpError)
+          }
+          self.output.showLoading.accept(false)
+        }
+      )
+      .disposed(by: disposeBag)
   }
 }

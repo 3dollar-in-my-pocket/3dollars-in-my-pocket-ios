@@ -124,6 +124,12 @@
 "store_detail_header_review" = "리뷰 %d개";
 "store_detail_header_add_review" = "리뷰쓰기";
 "store_detail_info_empty" = "아직 등록된 정보가 없어요.";
+"store_detail_register_photo" = "사진 제보";
+"store_detail_album" = "앨범";
+"store_detail_camera" = "카메라";
+"store_detail_modify_review" = "댓글 수정";
+"store_detail_delete_review" = "댓글 삭제";
+"store_detail_cancel" = "취소";
 "store_delete_title" = "삭제요청 하시는\n이유가 궁금해요!";
 "store_delete_description" = "3건 이상의 요청이 들어오면 자동 삭제됩니다.";
 "store_delete_menu_not_existed" = "없어진 가게에요.";

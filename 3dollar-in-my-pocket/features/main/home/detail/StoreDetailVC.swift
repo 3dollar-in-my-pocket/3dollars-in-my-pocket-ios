@@ -138,7 +138,10 @@ class StoreDetailVC: BaseVC {
       
       switch StoreDetailSection(rawValue: indexPath.section)! {
       case .overview:
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: OverviewCell.registerId, for: indexPath) as? OverviewCell else { return BaseTableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: OverviewCell.registerId,
+                for: indexPath
+        ) as? OverviewCell else { return BaseTableViewCell() }
         
         cell.bind(store: dataSource.sectionModels[indexPath.section].store)
         cell.currentLocationButton.rx.tap
@@ -159,23 +162,35 @@ class StoreDetailVC: BaseVC {
           .disposed(by: cell.disposeBag)
         return cell
       case .info:
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreInfoCell.registerId, for: indexPath) as? StoreInfoCell else { return BaseTableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(
+          withIdentifier: StoreInfoCell.registerId,
+          for: indexPath
+        ) as? StoreInfoCell else { return BaseTableViewCell() }
         
         cell.bind(store: dataSource.sectionModels[indexPath.section].store)
         return cell
       case .menu:
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailMenuCell.registerId, for: indexPath) as? StoreDetailMenuCell else { return BaseTableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(
+          withIdentifier: StoreDetailMenuCell.registerId,
+          for: indexPath
+        ) as? StoreDetailMenuCell else { return BaseTableViewCell() }
         
         cell.addMenu()
         return cell
       case .photo:
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailPhotoCollectionCell.registerId, for: indexPath) as? StoreDetailPhotoCollectionCell else { return BaseTableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(
+          withIdentifier: StoreDetailPhotoCollectionCell.registerId,
+          for: indexPath
+        ) as? StoreDetailPhotoCollectionCell else { return BaseTableViewCell() }
         let photos = self.storeDataSource.sectionModels[0].store.images
         
         cell.bind(photos: photos)
         return cell
       case .review:
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreDetailReviewCell.registerId, for: indexPath) as? StoreDetailReviewCell else { return BaseTableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(
+          withIdentifier: StoreDetailReviewCell.registerId,
+          for: indexPath
+        ) as? StoreDetailReviewCell else { return BaseTableViewCell() }
         
         if indexPath.row == 0 {
           cell.bind(review: nil)
@@ -257,18 +272,61 @@ class StoreDetailVC: BaseVC {
   
   private func showMoreActionSheet(review: Review) {
     let alertController = UIAlertController(title: nil, message: "옵션", preferredStyle: .actionSheet)
-    let modifyAction = UIAlertAction(title: "댓글 수정", style: .default) { _ in
+    let modifyAction = UIAlertAction(
+      title: "store_detail_modify_review".localized,
+      style: .default
+    ) { _ in
       self.viewModel.input.tapModifyReview.onNext(review)
     }
-    let deleteAction = UIAlertAction(title: "댓글 삭제", style: .destructive) { _ in
+    let deleteAction = UIAlertAction(
+      title: "store_detail_delete_review".localized,
+      style: .destructive
+    ) { _ in
       self.viewModel.input.deleteReview.onNext(review.id)
     }
-    let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in }
+    let cancelAction = UIAlertAction(
+      title: "store_detail_cancel".localized,
+      style: .cancel
+    ) { _ in }
     
     alertController.addAction(deleteAction)
     alertController.addAction(modifyAction)
     alertController.addAction(cancelAction)
     self.present(alertController, animated: true, completion: nil)
+  }
+  
+  private func showPictureActionSheet() {
+    let imagePicker = UIImagePickerController().then {
+      $0.delegate = self
+    }
+    let alert = UIAlertController(
+      title: "store_detail_register_photo".localized,
+      message: nil,
+      preferredStyle: .actionSheet
+    )
+    let libraryAction = UIAlertAction(
+      title: "store_detail_album".localized,
+      style: .default
+    ) { _ in
+      
+    }
+    let cameraAction = UIAlertAction(
+      title: "store_detail_camera".localized,
+      style: .default
+    ) { _ in
+      imagePicker.sourceType = .camera
+      self.present(imagePicker, animated: true)
+    }
+    let cancelAction = UIAlertAction(
+      title: "store_detail_cancel".localized,
+      style: .cancel,
+      handler: nil
+    )
+    
+    alert.addAction(libraryAction)
+    alert.addAction(cameraAction)
+    alert.addAction(cancelAction)
+    self.present(alert, animated: true)
   }
 }
 
@@ -309,7 +367,13 @@ extension StoreDetailVC: UITableViewDelegate {
               withIdentifier: StoreDetailHeaderView.registerId
       ) as? StoreDetailHeaderView else { return UITableViewHeaderFooterView() }
       
-      headerView.bind(section: .photo, count: self.storeDataSource.sectionModels[0].store.images.count)
+      headerView.bind(
+        section: .photo,
+        count: self.storeDataSource.sectionModels[0].store.images.count
+      )
+      headerView.rightButton.rx.tap
+        .bind(onNext: self.showPictureActionSheet)
+        .disposed(by: headerView.disposeBag)
       return headerView
       
     case .review:
@@ -317,7 +381,10 @@ extension StoreDetailVC: UITableViewDelegate {
               withIdentifier: StoreDetailHeaderView.registerId
       ) as? StoreDetailHeaderView else { return UITableViewHeaderFooterView() }
       
-      headerView.bind(section: .review, count: self.storeDataSource.sectionModels[0].store.reviews.count)
+      headerView.bind(
+        section: .review,
+        count: self.storeDataSource.sectionModels[0].store.reviews.count
+      )
       headerView.rightButton.rx.tap
         .do(onNext: { _ in
           GA.shared.logEvent(event: .review_write_button_clicked, page: .store_detail_page)
@@ -415,6 +482,20 @@ extension StoreDetailVC: GADBannerViewDelegate {
   /// the App Store), backgrounding the current app.
   func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
     print("adViewWillLeaveApplication")
+  }
+}
+
+extension StoreDetailVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+  
+  func imagePickerController(
+    _ picker: UIImagePickerController,
+    didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]
+  ) {
+    if let photo = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+      self.viewModel.input.registerPhoto.onNext(photo)
+    }
+
+    picker.dismiss(animated: true, completion: nil) // picker를 닫아줌
   }
 }
 

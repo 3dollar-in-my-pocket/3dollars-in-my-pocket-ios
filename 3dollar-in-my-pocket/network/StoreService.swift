@@ -7,6 +7,8 @@ protocol StoreServiceProtocol {
   
   func saveStore(store: Store) -> Observable<SaveResponse>
   
+  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String>
+  
   func updateStore(storeId: Int, store: Store, images: [UIImage]) -> Observable<String>
   
   func getStoreDetail(storeId: Int, latitude: Double, longitude: Double) -> Observable<Store>
@@ -98,6 +100,42 @@ struct StoreService: StoreServiceProtocol {
 //          observer.processHTTPError(response: response)
 //        }
 //      })
+      return Disposables.create()
+    }
+  }
+  
+  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v1/store/\(storeId)/images"
+      let headers = HTTPUtils.defaultHeader()
+      
+      HTTPUtils.fileUploadSession.upload(
+        multipartFormData: { multipartFormData in
+          for index in photos.indices{
+            let photo = photos[index]
+            
+            multipartFormData.append(
+              photo.jpegData(compressionQuality: 0.4)!,
+              withName: "image",
+              fileName: "image\(index).jpeg",
+              mimeType: "image/jpeg"
+            )
+          }
+          
+          multipartFormData.append("\(storeId)".data(using: .utf8)!, withName: "storeId")
+        },
+        to: urlString,
+        headers: headers
+      )
+      .responseString { response in
+        if response.isSuccess() {
+          observer.onNext("success")
+          observer.onCompleted()
+        } else {
+          observer.processHTTPError(response: response)
+        }
+      }
+      
       return Disposables.create()
     }
   }
