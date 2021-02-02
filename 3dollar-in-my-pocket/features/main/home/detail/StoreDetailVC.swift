@@ -185,6 +185,9 @@ class StoreDetailVC: BaseVC {
         let photos = self.storeDataSource.sectionModels[0].store.images
         
         cell.bind(photos: photos)
+        cell.photoCollectionView.rx.itemSelected
+          .bind(to: self.viewModel.input.tapPhoto)
+          .disposed(by: cell.disposeBag)
         return cell
       case .review:
         guard let cell = tableView.dequeueReusableCell(

@@ -15,10 +15,34 @@ class StoreDetailPhotoCell: BaseCollectionViewCell {
     $0.image = UIImage(named: "img_detail_bungeoppang")
   }
   
+  let dimView = UIView().then {
+    $0.backgroundColor = UIColor(r: 17, g: 17, b: 17, a: 0.35)
+    $0.layer.cornerRadius = 6
+    $0.layer.masksToBounds = true
+    $0.isHidden = true
+  }
+  
+  let countLabel = UILabel().then {
+    $0.text =  "+30"
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 18)
+    $0.textColor = UIColor(r: 255, g: 161, b: 170)
+    $0.isHidden = true
+  }
+  
+  let moreLabel = UILabel().then {
+    $0.text = "더보기"
+    $0.textColor = .white
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.isHidden = true
+  }
+  
   
   override func setup() {
     backgroundColor = .clear
-    addSubViews(photo, emptyImage)
+    addSubViews(
+      photo, emptyImage, dimView, countLabel,
+      moreLabel
+    )
   }
   
   override func bindConstraints() {
@@ -30,14 +54,34 @@ class StoreDetailPhotoCell: BaseCollectionViewCell {
       make.center.equalTo(self.photo)
       make.width.height.equalTo(42)
     }
+    
+    self.dimView.snp.makeConstraints { make in
+      make.edges.equalTo(photo)
+    }
+    
+    self.countLabel.snp.makeConstraints { make in
+      make.centerX.equalToSuperview()
+      make.centerY.equalToSuperview().offset(-8)
+    }
+    
+    self.moreLabel.snp.makeConstraints { make in
+      make.centerX.equalToSuperview()
+      make.centerY.equalToSuperview().offset(8)
+    }
   }
   
-  func bind(image: Image?) {
+  func bind(image: Image?, isLast: Bool, count: Int) {
     if let image = image {
       self.photo.setImage(urlString: image.url)
       self.emptyImage.isHidden = true
     } else {
       self.emptyImage.isHidden = false
+    }
+    self.dimView.isHidden = !isLast
+    self.countLabel.isHidden = !isLast
+    self.moreLabel.isHidden = !isLast
+    if isLast {
+      self.countLabel.text =  "+\(count - 4)"
     }
   }
 }

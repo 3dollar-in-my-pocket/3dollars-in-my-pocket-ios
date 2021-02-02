@@ -24,6 +24,7 @@ class StoreDetailViewModel: BaseViewModel {
     let tapModify = PublishSubject<Void>()
     let tapWriteReview = PublishSubject<Void>()
     let tapModifyReview = PublishSubject<Review>()
+    let tapPhoto = PublishSubject<IndexPath>()
     let registerPhoto = PublishSubject<UIImage>()
     let deleteReview = PublishSubject<Int>()
   }

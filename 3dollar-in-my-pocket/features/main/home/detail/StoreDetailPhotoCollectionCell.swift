@@ -13,13 +13,18 @@ class StoreDetailPhotoCollectionCell: BaseTableViewCell {
     let layout = UICollectionViewFlowLayout()
     
     layout.scrollDirection = .horizontal
-    layout.itemSize = CGSize(width: 72, height: 72)
+    layout.itemSize = CGSize(
+      width: (UIScreen.main.bounds.width - 75)/4,
+      height: (UIScreen.main.bounds.width - 75)/4
+    )
+    layout.minimumInteritemSpacing = 9
     $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
     $0.collectionViewLayout = layout
     $0.showsVerticalScrollIndicator = false
     $0.showsHorizontalScrollIndicator = false
     $0.backgroundColor = .clear
   }
+  var count: Int?
   
   override func prepareForReuse() {
     super.prepareForReuse()
@@ -43,10 +48,13 @@ class StoreDetailPhotoCollectionCell: BaseTableViewCell {
   }
   
   func bind(photos: [Image]) {
+    self.count = photos.count
     if photos.isEmpty {
       self.photos.onNext([nil])
+    } else if photos.count <= 4 {
+      self.photos.onNext(Array(photos[0..<photos.count]))
     } else {
-      self.photos.onNext(photos)
+      self.photos.onNext(Array(photos[0..<4]))
     }
   }
   
@@ -58,9 +66,8 @@ class StoreDetailPhotoCollectionCell: BaseTableViewCell {
     self.photos.bind(to: self.photoCollectionView.rx.items(
       cellIdentifier: StoreDetailPhotoCell.registerId,
       cellType: StoreDetailPhotoCell.self
-    )) { row, image, cell in
-      cell.bind(image: image)
+    )) { [weak self] row, image, cell in
+      cell.bind(image: image, isLast: row == 3, count: self?.count ?? 0)
     }.disposed(by: disposeBag)
   }
-  
 }
