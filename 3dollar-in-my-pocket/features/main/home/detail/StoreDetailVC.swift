@@ -65,6 +65,16 @@ class StoreDetailVC: BaseVC {
       .bind(onNext: self.goToModify(store:))
       .disposed(by: disposeBag)
     
+    self.viewModel.output.showPhotoDetail
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showPhotoDetail)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.goToPhotoList
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToPhotoList(photos:))
+      .disposed(by: disposeBag)
+    
     self.viewModel.output.showReviewModal
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showReviewModal)
@@ -186,6 +196,7 @@ class StoreDetailVC: BaseVC {
         
         cell.bind(photos: photos)
         cell.photoCollectionView.rx.itemSelected
+          .map { $0.row }
           .bind(to: self.viewModel.input.tapPhoto)
           .disposed(by: cell.disposeBag)
         return cell
@@ -340,6 +351,16 @@ class StoreDetailVC: BaseVC {
     }
     
     self.present(registerPhotoVC, animated: true, completion: nil)
+  }
+  
+  private func showPhotoDetail(index: Int, photos: [Image]) {
+    let photoDetailVC = ImageDetailVC.instance(title: "가게 제보", images: photos)
+    
+    self.present(photoDetailVC, animated: true, completion: nil)
+  }
+  
+  private func goToPhotoList(photos: [Image]) {
+    
   }
 }
 

@@ -24,7 +24,7 @@ class StoreDetailViewModel: BaseViewModel {
     let tapModify = PublishSubject<Void>()
     let tapWriteReview = PublishSubject<Void>()
     let tapModifyReview = PublishSubject<Review>()
-    let tapPhoto = PublishSubject<IndexPath>()
+    let tapPhoto = PublishSubject<Int>()
     let registerPhoto = PublishSubject<UIImage>()
     let deleteReview = PublishSubject<Int>()
   }
@@ -33,6 +33,8 @@ class StoreDetailViewModel: BaseViewModel {
     let store = PublishRelay<[StoreSection]>()
     let showDeleteModal = PublishRelay<Int>()
     let goToModify = PublishRelay<Store>()
+    let showPhotoDetail = PublishRelay<(Int, [Image])>()
+    let goToPhotoList = PublishRelay<[Image]>()
     let showReviewModal = PublishRelay<(Int, Review?)>()
     let showLoading = PublishRelay<Bool>()
   }
@@ -82,6 +84,10 @@ class StoreDetailViewModel: BaseViewModel {
     self.input.tapModifyReview
       .map { (self.storeId, $0) }
       .bind(to: self.output.showReviewModal)
+      .disposed(by: disposeBag)
+    
+    self.input.tapPhoto
+      .bind(onNext: self.onTapPhoto(index:))
       .disposed(by: disposeBag)
     
     self.input.registerPhoto
@@ -234,5 +240,13 @@ class StoreDetailViewModel: BaseViewModel {
         }
       )
       .disposed(by: disposeBag)
+  }
+  
+  private func onTapPhoto(index: Int) {
+    if index == 3 {
+      self.output.goToPhotoList.accept(self.store.images)
+    } else {
+      self.output.showPhotoDetail.accept((index, self.store.images))
+    }
   }
 }
