@@ -69,6 +69,10 @@
 		6E3AA4DB25AD6C5400D8C58C /* Addition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3AA4DA25AD6C5400D8C58C /* Addition.swift */; };
 		6E3AA4E025AD6C9B00D8C58C /* Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3AA4DF25AD6C9B00D8C58C /* Region.swift */; };
 		6E3AA4E525AD6CC300D8C58C /* Area.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3AA4E425AD6CC300D8C58C /* Area.swift */; };
+		6E3DED7725C7E391000BE04C /* RegisterPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3DED7625C7E391000BE04C /* RegisterPhotoView.swift */; };
+		6E3DED7925C7EA32000BE04C /* RegisterPhotoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3DED7825C7EA32000BE04C /* RegisterPhotoVC.swift */; };
+		6E3DED7B25C7EDB1000BE04C /* RegisterPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3DED7A25C7EDB1000BE04C /* RegisterPhotoCell.swift */; };
+		6E3DED7D25C7F60F000BE04C /* RegisterPhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3DED7C25C7F60F000BE04C /* RegisterPhotoViewModel.swift */; };
 		6E3E0B8F23C7078100E835AE /* ReviewModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */; };
 		6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */; };
 		6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */; };
@@ -293,6 +297,10 @@
 		6E3AA4DA25AD6C5400D8C58C /* Addition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Addition.swift; sourceTree = "<group>"; };
 		6E3AA4DF25AD6C9B00D8C58C /* Region.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Region.swift; sourceTree = "<group>"; };
 		6E3AA4E425AD6CC300D8C58C /* Area.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Area.swift; sourceTree = "<group>"; };
+		6E3DED7625C7E391000BE04C /* RegisterPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterPhotoView.swift; sourceTree = "<group>"; };
+		6E3DED7825C7EA32000BE04C /* RegisterPhotoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterPhotoVC.swift; sourceTree = "<group>"; };
+		6E3DED7A25C7EDB1000BE04C /* RegisterPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterPhotoCell.swift; sourceTree = "<group>"; };
+		6E3DED7C25C7F60F000BE04C /* RegisterPhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterPhotoViewModel.swift; sourceTree = "<group>"; };
 		6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalView.swift; sourceTree = "<group>"; };
 		6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalVC.swift; sourceTree = "<group>"; };
 		6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
@@ -613,6 +621,17 @@
 			path = map;
 			sourceTree = "<group>";
 		};
+		6E3DED7525C7E366000BE04C /* register-photo */ = {
+			isa = PBXGroup;
+			children = (
+				6E3DED7625C7E391000BE04C /* RegisterPhotoView.swift */,
+				6E3DED7825C7EA32000BE04C /* RegisterPhotoVC.swift */,
+				6E3DED7A25C7EDB1000BE04C /* RegisterPhotoCell.swift */,
+				6E3DED7C25C7F60F000BE04C /* RegisterPhotoViewModel.swift */,
+			);
+			path = "register-photo";
+			sourceTree = "<group>";
+		};
 		6E3E0B8D23C7076D00E835AE /* review */ = {
 			isa = PBXGroup;
 			children = (
@@ -830,6 +849,7 @@
 		6E70C38D23B6EB8200C52C9C /* detail */ = {
 			isa = PBXGroup;
 			children = (
+				6E3DED7525C7E366000BE04C /* register-photo */,
 				6EDBD8A323D87A240075EF8F /* delete */,
 				6E31574B25BA60A00022D6F3 /* menu */,
 				6E6172AE23E1C04D003E0DDF /* image-detail */,
@@ -1476,9 +1496,12 @@
 				6E9D64E025BD751B0075DE36 /* DeleteReason.swift in Sources */,
 				6ED6F1E925B51A0100357B80 /* MenuSection.swift in Sources */,
 				6E3AA4C925AD6BBE00D8C58C /* NaverMapResponse.swift in Sources */,
+				6E3DED7B25C7EDB1000BE04C /* RegisterPhotoCell.swift in Sources */,
 				6E3AA4E525AD6CC300D8C58C /* Area.swift in Sources */,
+				6E3DED7925C7EA32000BE04C /* RegisterPhotoVC.swift in Sources */,
 				6E31576F25BA80730022D6F3 /* StoreDetailMenuMoreButton.swift in Sources */,
 				6E18C3192571F20600F37C3A /* FAQVC.swift in Sources */,
+				6E3DED7725C7E391000BE04C /* RegisterPhotoView.swift in Sources */,
 				6E6F35A825AC7BF4007931EC /* WriteAddressVC.swift in Sources */,
 				6E41F7E623BAC2BA00D0AC73 /* UIColorExt.swift in Sources */,
 				6E12CF182573D67D003234D9 /* FAQHeaderView.swift in Sources */,
@@ -1494,6 +1517,7 @@
 				6E6835C023C2D2BC00D23F54 /* RegisteredVC.swift in Sources */,
 				6E73293B23CA07920037003B /* StoreService.swift in Sources */,
 				6EC5A47223B5E002000C09BD /* CategoryCell.swift in Sources */,
+				6E3DED7D25C7F60F000BE04C /* RegisterPhotoViewModel.swift in Sources */,
 				6EB8FBA125988D4200C17B74 /* GAManager.swift in Sources */,
 				6E18C3282571F53900F37C3A /* FAQ.swift in Sources */,
 				6E72AE6323C980F600D3B257 /* User.swift in Sources */,

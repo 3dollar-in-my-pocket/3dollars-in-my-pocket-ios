@@ -308,13 +308,15 @@ class StoreDetailVC: BaseVC {
       title: "store_detail_album".localized,
       style: .default
     ) { _ in
-      
+      self.showRegisterPhoto(storeId: self.storeId)
     }
     let cameraAction = UIAlertAction(
       title: "store_detail_camera".localized,
       style: .default
     ) { _ in
       imagePicker.sourceType = .camera
+      imagePicker.cameraCaptureMode = .photo
+      
       self.present(imagePicker, animated: true)
     }
     let cancelAction = UIAlertAction(
@@ -327,6 +329,14 @@ class StoreDetailVC: BaseVC {
     alert.addAction(cameraAction)
     alert.addAction(cancelAction)
     self.present(alert, animated: true)
+  }
+  
+  private func showRegisterPhoto(storeId: Int) {
+    let registerPhotoVC = RegisterPhotoVC.instance(storeId: storeId).then {
+      $0.delegate = self
+    }
+    
+    self.present(registerPhotoVC, animated: true, completion: nil)
   }
 }
 
@@ -441,8 +451,12 @@ extension StoreDetailVC: DeleteModalDelegate {
   }
 }
 
-
-
+extension StoreDetailVC: RegisterPhotoDelegate {
+  func onSaveSuccess() {
+    self.myLocationFlag = false
+    self.locationManager.startUpdatingLocation()
+  }
+}
 
 extension StoreDetailVC: ModifyDelegate {
   func onModifySuccess() {
