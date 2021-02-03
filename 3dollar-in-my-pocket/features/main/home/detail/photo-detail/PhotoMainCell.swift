@@ -13,7 +13,9 @@ class PhotoMainCell: BaseCollectionViewCell {
   
   let containerView = UIView()
   
-  let photo = UIImageView()
+  let photo = UIImageView().then {
+    $0.contentMode = .scaleAspectFill
+  }
   
   
   override func setup() {
