@@ -139,3 +139,4 @@
 "store_modify_title" = "가게 정보 수정";
 "register_photo_title" = "사진 제보";
 "register_photo_button_format" = "총 %d장의 사진 등록";
+"photo_detail_title" = "사진 제보";

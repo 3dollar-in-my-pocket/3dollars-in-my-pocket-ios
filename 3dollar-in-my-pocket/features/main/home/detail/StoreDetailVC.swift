@@ -354,7 +354,7 @@ class StoreDetailVC: BaseVC {
   }
   
   private func showPhotoDetail(index: Int, photos: [Image]) {
-    let photoDetailVC = ImageDetailVC.instance(title: "가게 제보", images: photos)
+    let photoDetailVC = PhotoDetailVC.instance(index: index, photos: photos)
     
     self.present(photoDetailVC, animated: true, completion: nil)
   }
