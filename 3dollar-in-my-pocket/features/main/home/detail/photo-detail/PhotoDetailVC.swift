@@ -1,14 +1,20 @@
 import UIKit
 import RxSwift
 
+protocol PhotoDetailDelegate: class {
+  func onClose()
+}
+
 class PhotoDetailVC: BaseVC {
   
   private lazy var photoDetailView = PhotoDetailView(frame: self.view.frame)
   private let viewModel: PhotoDetailViewModel
+  weak var delegate: PhotoDetailDelegate?
   
   
-  init(index: Int, photos: [Image]) {
+  init(storeId: Int, index: Int, photos: [Image]) {
     self.viewModel = PhotoDetailViewModel(
+      storeId: storeId,
       selectedIndex: index,
       photos: photos,
       storeService: StoreService()
@@ -20,8 +26,8 @@ class PhotoDetailVC: BaseVC {
     fatalError("init(coder:) has not been implemented")
   }
   
-  static func instance(index: Int, photos: [Image]) -> PhotoDetailVC {
-    return PhotoDetailVC(index: index, photos: photos).then {
+  static func instance(storeId: Int, index: Int, photos: [Image]) -> PhotoDetailVC {
+    return PhotoDetailVC(storeId: storeId, index: index, photos: photos).then {
       $0.modalPresentationStyle = .overCurrentContext
     }
   }
@@ -59,6 +65,11 @@ class PhotoDetailVC: BaseVC {
       .bind(onNext: self.selectItem(indexPath:))
       .disposed(by: disposeBag)
     
+    self.viewModel.output.dismiss
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.dismiss)
+      .disposed(by: disposeBag)
+    
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.photoDetailView.showLoading(isShow:))
@@ -69,6 +80,11 @@ class PhotoDetailVC: BaseVC {
     self.photoDetailView.closeButton.rx.tap
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.dismiss)
+      .disposed(by: disposeBag)
+    
+    self.photoDetailView.deleteButton.rx.tap
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showDeleteAlert)
       .disposed(by: disposeBag)
   }
   
@@ -100,6 +116,7 @@ class PhotoDetailVC: BaseVC {
   
   private func dismiss() {
     self.dismiss(animated: false, completion: nil)
+    self.delegate?.onClose()
   }
   
   private func selectItem(indexPath: IndexPath) {
@@ -116,6 +133,7 @@ class PhotoDetailVC: BaseVC {
   }
   
   private func selectSubItem(indexPath: IndexPath){
+    self.viewModel.input.selectPhoto.onNext(indexPath.row)
     self.photoDetailView.subCollectionView.selectItem(
       at: indexPath,
       animated: true,
@@ -124,10 +142,20 @@ class PhotoDetailVC: BaseVC {
   }
   
   private func scrollToIndex(indexPath: IndexPath) {
+    self.viewModel.input.selectPhoto.onNext(indexPath.row)
     self.photoDetailView.mainCollectionView.selectItem(
       at: indexPath,
       animated: false,
       scrollPosition: .centeredHorizontally
     )
+  }
+  
+  private func showDeleteAlert() {
+    AlertUtils.showWithCancel(
+      controller: self,
+      title: "photo_detail_delete_title".localized,
+      message: "photo_detail_delete_description".localized) {
+      self.viewModel.input.tapDelete.onNext(())
+    }
   }
 }

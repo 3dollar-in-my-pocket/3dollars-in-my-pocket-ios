@@ -23,17 +23,24 @@ class StoreDetailPhotoCell: BaseCollectionViewCell {
   }
   
   let countLabel = UILabel().then {
-    $0.text =  "+30"
     $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 18)
     $0.textColor = UIColor(r: 255, g: 161, b: 170)
     $0.isHidden = true
   }
   
   let moreLabel = UILabel().then {
-    $0.text = "더보기"
+    $0.text = "store_detail_more_photo".localized
     $0.textColor = .white
     $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
     $0.isHidden = true
+  }
+  
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.photo.image = nil
+    self.dimView.isHidden = true
+    self.countLabel.isHidden = true
+    self.moreLabel.isHidden = true
   }
   
   
@@ -77,9 +84,9 @@ class StoreDetailPhotoCell: BaseCollectionViewCell {
     } else {
       self.emptyImage.isHidden = false
     }
-    self.dimView.isHidden = !isLast
-    self.countLabel.isHidden = !isLast
-    self.moreLabel.isHidden = !isLast
+    self.dimView.isHidden = !isLast || count == 4
+    self.countLabel.isHidden = !isLast || count == 4
+    self.moreLabel.isHidden = !isLast || count == 4
     if isLast {
       self.countLabel.text =  "+\(count - 4)"
     }

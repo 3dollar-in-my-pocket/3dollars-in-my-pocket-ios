@@ -353,10 +353,16 @@ class StoreDetailVC: BaseVC {
     self.present(registerPhotoVC, animated: true, completion: nil)
   }
   
-  private func showPhotoDetail(index: Int, photos: [Image]) {
-    let photoDetailVC = PhotoDetailVC.instance(index: index, photos: photos)
+  private func showPhotoDetail(storeId: Int, index: Int, photos: [Image]) {
+    let photoDetailVC = PhotoDetailVC.instance(
+      storeId: storeId,
+      index: index,
+      photos: photos
+    ).then {
+      $0.delegate = self
+    }
     
-    self.present(photoDetailVC, animated: true, completion: nil)
+    self.present(photoDetailVC, animated: false, completion: nil)
   }
   
   private func goToPhotoList(photos: [Image]) {
@@ -534,6 +540,15 @@ extension StoreDetailVC: UIImagePickerControllerDelegate, UINavigationController
     }
 
     picker.dismiss(animated: true, completion: nil) // picker를 닫아줌
+  }
+}
+
+extension StoreDetailVC: PhotoDetailDelegate {
+  
+  func onClose() {
+    self.myLocationFlag = false
+    self.locationManager.startUpdatingLocation()
+    self.detailView.showDim(isShow: false)
   }
 }
 

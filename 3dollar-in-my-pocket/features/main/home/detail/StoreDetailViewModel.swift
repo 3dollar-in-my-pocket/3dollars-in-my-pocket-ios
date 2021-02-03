@@ -33,7 +33,7 @@ class StoreDetailViewModel: BaseViewModel {
     let store = PublishRelay<[StoreSection]>()
     let showDeleteModal = PublishRelay<Int>()
     let goToModify = PublishRelay<Store>()
-    let showPhotoDetail = PublishRelay<(Int, [Image])>()
+    let showPhotoDetail = PublishRelay<(Int, Int, [Image])>()
     let goToPhotoList = PublishRelay<[Image]>()
     let showReviewModal = PublishRelay<(Int, Review?)>()
     let showLoading = PublishRelay<Bool>()
@@ -246,7 +246,7 @@ class StoreDetailViewModel: BaseViewModel {
     if index == 3 {
       self.output.goToPhotoList.accept(self.store.images)
     } else {
-      self.output.showPhotoDetail.accept((index, self.store.images))
+      self.output.showPhotoDetail.accept((self.storeId, index, self.store.images))
     }
   }
 }

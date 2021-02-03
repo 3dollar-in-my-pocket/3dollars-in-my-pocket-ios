@@ -9,6 +9,8 @@ protocol StoreServiceProtocol {
   
   func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String>
   
+  func deletePhoto(storeId: Int, photoId: Int) -> Observable<String>
+  
   func updateStore(storeId: Int, store: Store, images: [UIImage]) -> Observable<String>
   
   func getStoreDetail(storeId: Int, latitude: Double, longitude: Double) -> Observable<Store>
@@ -125,6 +127,29 @@ struct StoreService: StoreServiceProtocol {
           multipartFormData.append("\(storeId)".data(using: .utf8)!, withName: "storeId")
         },
         to: urlString,
+        headers: headers
+      )
+      .responseString { response in
+        if response.isSuccess() {
+          observer.onNext("success")
+          observer.onCompleted()
+        } else {
+          observer.processHTTPError(response: response)
+        }
+      }
+      
+      return Disposables.create()
+    }
+  }
+  
+  func deletePhoto(storeId: Int, photoId: Int) -> Observable<String> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v1/store/\(storeId)/images/\(photoId)"
+      let headers = HTTPUtils.defaultHeader()
+      
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .delete,
         headers: headers
       )
       .responseString { response in
