@@ -40,13 +40,13 @@ class StoreDetailVC: BaseVC {
     super.viewDidLoad()
     
     view = detailView
-    self.setupLocationManager()
   }
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
     self.viewModel.clearKakaoLinkIfExisted()
+    self.setupLocationManager()
   }
   
   override func bindViewModel() {
@@ -72,7 +72,7 @@ class StoreDetailVC: BaseVC {
     
     self.viewModel.output.goToPhotoList
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToPhotoList(photos:))
+      .bind(onNext: self.goToPhotoList)
       .disposed(by: disposeBag)
     
     self.viewModel.output.showReviewModal
@@ -358,15 +358,15 @@ class StoreDetailVC: BaseVC {
       storeId: storeId,
       index: index,
       photos: photos
-    ).then {
-      $0.delegate = self
-    }
+    )
     
     self.present(photoDetailVC, animated: false, completion: nil)
   }
   
-  private func goToPhotoList(photos: [Image]) {
+  private func goToPhotoList(storeId: Int, photos: [Image]) {
+    let photoListVC = PhotoListVC.instance(storeid: storeId, photos: photos)
     
+    self.navigationController?.pushViewController(photoListVC, animated: true)
   }
 }
 
@@ -540,15 +540,6 @@ extension StoreDetailVC: UIImagePickerControllerDelegate, UINavigationController
     }
 
     picker.dismiss(animated: true, completion: nil) // picker를 닫아줌
-  }
-}
-
-extension StoreDetailVC: PhotoDetailDelegate {
-  
-  func onClose() {
-    self.myLocationFlag = false
-    self.locationManager.startUpdatingLocation()
-    self.detailView.showDim(isShow: false)
   }
 }
 

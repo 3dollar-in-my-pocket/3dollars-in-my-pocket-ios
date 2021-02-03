@@ -34,7 +34,7 @@ class StoreDetailViewModel: BaseViewModel {
     let showDeleteModal = PublishRelay<Int>()
     let goToModify = PublishRelay<Store>()
     let showPhotoDetail = PublishRelay<(Int, Int, [Image])>()
-    let goToPhotoList = PublishRelay<[Image]>()
+    let goToPhotoList = PublishRelay<(Int, [Image])>()
     let showReviewModal = PublishRelay<(Int, Review?)>()
     let showLoading = PublishRelay<Bool>()
   }
@@ -244,7 +244,7 @@ class StoreDetailViewModel: BaseViewModel {
   
   private func onTapPhoto(index: Int) {
     if index == 3 {
-      self.output.goToPhotoList.accept(self.store.images)
+      self.output.goToPhotoList.accept((self.storeId, self.store.images))
     } else {
       self.output.showPhotoDetail.accept((self.storeId, index, self.store.images))
     }

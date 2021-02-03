@@ -77,6 +77,10 @@
 		6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */; };
 		6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */; };
 		6E3EDF3C25694F8C0038E6A1 /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3EDF3B25694F8C0038E6A1 /* BaseViewModel.swift */; };
+		6E41D97525CA5FE3009D7C3A /* PhotoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41D97425CA5FE3009D7C3A /* PhotoListView.swift */; };
+		6E41D97725CA60EE009D7C3A /* PhotoListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41D97625CA60EE009D7C3A /* PhotoListVC.swift */; };
+		6E41D97925CA61C8009D7C3A /* PhotoListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41D97825CA61C8009D7C3A /* PhotoListViewModel.swift */; };
+		6E41D97B25CA62B4009D7C3A /* PhotoListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41D97A25CA62B4009D7C3A /* PhotoListCell.swift */; };
 		6E41F7E623BAC2BA00D0AC73 /* UIColorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41F7E523BAC2BA00D0AC73 /* UIColorExt.swift */; };
 		6E41F7E923BAC85700D0AC73 /* SpoqaHanSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E41F7E823BAC85700D0AC73 /* SpoqaHanSans-Bold.ttf */; };
 		6E41F7ED23BB161D00D0AC73 /* SpoqaHanSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E41F7EC23BB161D00D0AC73 /* SpoqaHanSans-Light.ttf */; };
@@ -306,6 +310,10 @@
 		6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalVC.swift; sourceTree = "<group>"; };
 		6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
 		6E3EDF3B25694F8C0038E6A1 /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
+		6E41D97425CA5FE3009D7C3A /* PhotoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoListView.swift; sourceTree = "<group>"; };
+		6E41D97625CA60EE009D7C3A /* PhotoListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoListVC.swift; sourceTree = "<group>"; };
+		6E41D97825CA61C8009D7C3A /* PhotoListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoListViewModel.swift; sourceTree = "<group>"; };
+		6E41D97A25CA62B4009D7C3A /* PhotoListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoListCell.swift; sourceTree = "<group>"; };
 		6E41F7E523BAC2BA00D0AC73 /* UIColorExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExt.swift; sourceTree = "<group>"; };
 		6E41F7E823BAC85700D0AC73 /* SpoqaHanSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSans-Bold.ttf"; sourceTree = "<group>"; };
 		6E41F7EC23BB161D00D0AC73 /* SpoqaHanSans-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSans-Light.ttf"; sourceTree = "<group>"; };
@@ -644,6 +652,17 @@
 			path = review;
 			sourceTree = "<group>";
 		};
+		6E41D97325CA54F0009D7C3A /* photo-list */ = {
+			isa = PBXGroup;
+			children = (
+				6E41D97425CA5FE3009D7C3A /* PhotoListView.swift */,
+				6E41D97625CA60EE009D7C3A /* PhotoListVC.swift */,
+				6E41D97825CA61C8009D7C3A /* PhotoListViewModel.swift */,
+				6E41D97A25CA62B4009D7C3A /* PhotoListCell.swift */,
+			);
+			path = "photo-list";
+			sourceTree = "<group>";
+		};
 		6E41F7E723BAC81200D0AC73 /* resource */ = {
 			isa = PBXGroup;
 			children = (
@@ -855,6 +874,7 @@
 				6E3DED7525C7E366000BE04C /* register-photo */,
 				6EDBD8A323D87A240075EF8F /* delete */,
 				6E31574B25BA60A00022D6F3 /* menu */,
+				6E41D97325CA54F0009D7C3A /* photo-list */,
 				6E6172AE23E1C04D003E0DDF /* photo-detail */,
 				6E13578723D80FEB00D91782 /* modify */,
 				6E3E0B8D23C7076D00E835AE /* review */,
@@ -1363,17 +1383,20 @@
 				6E7BF08125B7D5C000456D0B /* WriteDetailTypeStackView.swift in Sources */,
 				6E4543ED25B7BD11000E60B8 /* MenuFooterView.swift in Sources */,
 				6E82F8CB23D5D8A600AB3593 /* MyReviewViewModel.swift in Sources */,
+				6E41D97525CA5FE3009D7C3A /* PhotoListView.swift in Sources */,
 				6E72AE6523C9B7DE00D3B257 /* SignIn.swift in Sources */,
 				6E8E250F256AA25F00AE6479 /* AlertContent.swift in Sources */,
 				6E31578125BAA0C60022D6F3 /* UIImageViewExt.swift in Sources */,
 				6EB7FA6623B651E100BFB0B4 /* CategoryListView.swift in Sources */,
 				6E4543F225B7C44C000E60B8 /* WeekDay.swift in Sources */,
+				6E41D97B25CA62B4009D7C3A /* PhotoListCell.swift in Sources */,
 				6E4CB90223D4961700542D21 /* LoadingView.swift in Sources */,
 				6ED37D9123D58F1700E12711 /* RegisteredViewModel.swift in Sources */,
 				6E681E50256FF04E00892B9E /* SettingAccountCell.swift in Sources */,
 				6E681E55256FF98000892B9E /* SettingViewModel.swift in Sources */,
 				6EB7FA6A23B658B000BFB0B4 /* CategoryListCell.swift in Sources */,
 				6E1D427C23B6F99F0034A471 /* StoreDetailReviewCell.swift in Sources */,
+				6E41D97725CA60EE009D7C3A /* PhotoListVC.swift in Sources */,
 				6E6835C823C30DCB00D23F54 /* MyReviewCell.swift in Sources */,
 				6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */,
 				6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */,
@@ -1503,6 +1526,7 @@
 				6E3DED7B25C7EDB1000BE04C /* RegisterPhotoCell.swift in Sources */,
 				6E3AA4E525AD6CC300D8C58C /* Area.swift in Sources */,
 				6E3DED7925C7EA32000BE04C /* RegisterPhotoVC.swift in Sources */,
+				6E41D97925CA61C8009D7C3A /* PhotoListViewModel.swift in Sources */,
 				6E31576F25BA80730022D6F3 /* StoreDetailMenuMoreButton.swift in Sources */,
 				6E18C3192571F20600F37C3A /* FAQVC.swift in Sources */,
 				6E3DED7725C7E391000BE04C /* RegisterPhotoView.swift in Sources */,
