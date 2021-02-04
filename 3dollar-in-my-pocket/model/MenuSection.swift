@@ -8,7 +8,9 @@ struct MenuSection {
   func toMenu() -> [Menu] {
     var menus: [Menu] = []
     for item in items {
-      menus.append(Menu(category: self.category, name: item.name, price: item.price))
+      if (item.name != nil && item.price != nil) {
+        menus.append(Menu(category: self.category, name: item.name, price: item.price))
+      }
     }
     
     return menus

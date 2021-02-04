@@ -65,4 +65,8 @@ class StoreDetailMenuHeaderView: UITableViewHeaderFooterView {
       make.centerY.equalTo(self.menuLabel)
     }
   }
+  
+  func bind(menus: [Menu]) {
+    self.menuValueLabel.text = String(format: "store_detail_menu_format".localized, menus.count)
+  }
 }

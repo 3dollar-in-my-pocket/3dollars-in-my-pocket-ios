@@ -1,4 +1,5 @@
 import UIKit
+import RxSwift
 
 class StoreDetailMenuCell: BaseTableViewCell {
   
@@ -10,12 +11,14 @@ class StoreDetailMenuCell: BaseTableViewCell {
     $0.backgroundColor = .white
     $0.layer.cornerRadius = 12
     $0.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+    $0.isUserInteractionEnabled = true
   }
   
   override func setup() {
-    selectionStyle = .none
-    backgroundColor = .clear
-    addSubViews(menuStackView)
+    self.selectionStyle = .none
+    self.backgroundColor = .clear
+    self.contentView.isUserInteractionEnabled = false
+    self.addSubViews(menuStackView)
   }
   
   override func bindConstraints() {
@@ -27,24 +30,45 @@ class StoreDetailMenuCell: BaseTableViewCell {
     }
   }
   
-  func addMenu() {
+  func addMenu(menus: [Menu]) {
     if self.menuStackView.subviews.isEmpty {
-      let categoryView1 = StoreDetailMenuCategoryView()
-      let categoryView2 = StoreDetailMenuCategoryView()
-      let menuView1 = StoreDetailMenuView()
-      let menuView2 = StoreDetailMenuView()
-      let menuView3 = StoreDetailMenuView()
-      let menuView4 = StoreDetailMenuView()
-      let footerView = StoreDetailMenuFooterView()
-      
-      self.menuStackView.addArrangedSubview(categoryView1)
-      self.menuStackView.addArrangedSubview(menuView1)
-      self.menuStackView.addArrangedSubview(menuView2)
-      self.menuStackView.addArrangedSubview(categoryView2)
-      self.menuStackView.addArrangedSubview(menuView3)
-      self.menuStackView.addArrangedSubview(menuView4)
-      self.menuStackView.addArrangedSubview(footerView)
+      if menus.isEmpty {
+        let emptyView = StoreDetailMenuEmptyView()
+        
+        self.menuStackView.addArrangedSubview(emptyView)
+      } else {
+        let subViews = self.subViewsFromMenus(menus: menus)
+        
+        for subView in subViews {
+          self.menuStackView.addArrangedSubview(subView)
+        }
+        self.menuStackView.addArrangedSubview(StoreDetailMenuFooterView())
+      }
     }
-    // TODO: 6줄 이상이면 모두보기 버튼, 없으면 그냥 빈 뷰
+  }
+  
+  private func subViewsFromMenus(menus: [Menu]) -> [UIView] {
+    var previousCategory = menus[0].category
+    var subViews: [UIView] = []
+    
+    let firstCategoryView = StoreDetailMenuCategoryView()
+    
+    firstCategoryView.bind(category: menus[0].category ?? .BUNGEOPPANG)
+    subViews.append(firstCategoryView)
+    
+    for menu in menus {
+      if previousCategory != menu.category {
+        let categoryView = StoreDetailMenuCategoryView()
+        categoryView.bind(category: menu.category ?? .BUNGEOPPANG)
+        subViews.append(categoryView)
+        previousCategory = menu.category
+      }
+      let menuView = StoreDetailMenuView()
+      menuView.bind(menu: menu)
+      
+      subViews.append(menuView)
+    }
+    
+    return subViews
   }
 }

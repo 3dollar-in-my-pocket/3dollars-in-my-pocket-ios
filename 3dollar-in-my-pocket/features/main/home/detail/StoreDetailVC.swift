@@ -190,7 +190,7 @@ class StoreDetailVC: BaseVC {
           for: indexPath
         ) as? StoreDetailMenuCell else { return BaseTableViewCell() }
         
-        cell.addMenu()
+        cell.addMenu(menus: dataSource.sectionModels[indexPath.section].store.menus)
         return cell
       case .photo:
         guard let cell = tableView.dequeueReusableCell(
@@ -405,6 +405,7 @@ extension StoreDetailVC: UITableViewDelegate {
               withIdentifier: StoreDetailMenuHeaderView.registerId
       ) as? StoreDetailMenuHeaderView else { return UITableViewHeaderFooterView() }
       
+      headerView.bind(menus: self.storeDataSource.sectionModels[0].store.menus)
       return headerView
       
     case .photo:

@@ -6,14 +6,12 @@ class StoreDetailMenuView: BaseView {
     $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14)
     $0.textColor = .black
     $0.textAlignment = .left
-    $0.text = "메뉴 이름"
   }
   
   let priceLabel = UILabel().then {
     $0.font = UIFont(name: "AppleSDGothicNeo-Light", size: 14)
     $0.textColor = .black
     $0.textAlignment = .right
-    $0.text = "가격"
   }
   
   
@@ -24,7 +22,7 @@ class StoreDetailMenuView: BaseView {
   
   override func bindConstraints() {
     self.nameLabel.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(51)
+      make.left.equalToSuperview().offset(48)
       make.top.equalToSuperview().offset(5)
       make.bottom.equalToSuperview().offset(-5)
     }
@@ -37,6 +35,12 @@ class StoreDetailMenuView: BaseView {
   
   override func draw(_ rect: CGRect) {
     super.draw(rect)
+    self.drawDash()
+  }
+  
+  func bind(menu: Menu) {
+    self.nameLabel.text = menu.name
+    self.priceLabel.text = menu.price
     self.drawDash()
   }
   
