@@ -2,14 +2,21 @@ import UIKit
 import RxSwift
 import NMapsMap
 
+protocol WriteAddressDelegate: class {
+  func onWriteSuccess(storeId: Int)
+}
+
 class WriteAddressVC: BaseVC {
   
   private lazy var writeAddressView = WriteAddressView(frame: self.view.frame)
   private let viewModel = WriteAddressViewModel(mapService: MapService())
   private let locationManager = CLLocationManager()
+  weak var delegate: WriteAddressDelegate?
   
-  static func instance() -> UINavigationController {
-    let writeAddressVC = WriteAddressVC(nibName: nil, bundle: nil)
+  static func instance(delegate: WriteAddressDelegate) -> UINavigationController {
+    let writeAddressVC = WriteAddressVC(nibName: nil, bundle: nil).then {
+      $0.delegate = delegate
+    }
     
     return UINavigationController(rootViewController: writeAddressVC).then {
       $0.modalPresentationStyle = .overCurrentContext
@@ -72,7 +79,9 @@ class WriteAddressVC: BaseVC {
     let writingDetailVC = WriteDetailVC.instance(
       address: address,
       location: location
-    )
+    ).then {
+      $0.deleagte = self
+    }
     
     self.navigationController?.pushViewController(writingDetailVC, animated: true)
   }
@@ -84,6 +93,13 @@ extension WriteAddressVC: NMFMapViewCameraDelegate {
     let currentPosition = (mapView.cameraPosition.target.lat, mapView.cameraPosition.target.lng)
     
     self.viewModel.input.currentPosition.onNext(currentPosition)
+  }
+}
+
+extension WriteAddressVC: WriteDetailDelegate {
+  
+  func onWriteSuccess(storeId: Int) {
+    self.delegate?.onWriteSuccess(storeId: storeId)
   }
 }
 

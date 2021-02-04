@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>길거리 음식점 사진을 불러오기 위해 앨범이 사용됩니다.</string>
 	<key>API_URL</key>
 	<string>$(API_URL)</string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -88,6 +86,8 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>사용자의 위치는 현재 사용자의 위치를 바탕으로 가까운 붕어빵 가게를 찾는데 사용됩니다.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>길거리 음식점 사진을 불러오기 위해 앨범이 사용됩니다.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
 	<string>길거리 음식점 사진을 불러오기 위해 앨범이 사용됩니다.</string>
 	<key>UIAppFonts</key>
 	<array>

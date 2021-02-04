@@ -108,11 +108,10 @@ struct Store: Codable {
   
   func toJson() -> [String: Any] {
     return [
-      "appearanceDays": self.appearanceDays.map { $0.rawValue },
-//      "category" : self.category.getValue(),
+      "appearanceDays": self.appearanceDays.map{ $0.rawValue }.joined(separator: ","),
       "latitude": self.latitude,
       "longitude": self.longitude,
-      "paymentMethods": self.paymentMethods.map { $0.rawValue },
+      "paymentMethods": self.paymentMethods.map { $0.rawValue }.joined(separator: ","),
       "storeName": self.storeName,
       "storeType": self.storeType?.rawValue ?? StoreType.road.rawValue
     ]

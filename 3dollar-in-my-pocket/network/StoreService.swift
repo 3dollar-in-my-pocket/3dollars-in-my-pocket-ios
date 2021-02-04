@@ -64,44 +64,19 @@ struct StoreService: StoreServiceProtocol {
         parameters["menu[\(index)].price"] = menu.price
       }
       
-      HTTPUtils.defaultSession.request(
-        urlString,
-        method: .post,
-        parameters: parameters,
-        encoding: JSONEncoding.default,
-        headers: headers
-      )
-      .responseJSON { response in
+      HTTPUtils.fileUploadSession.upload(multipartFormData: { (multipartFormData) in
+        for (key, value) in parameters {
+          let stringValue = String(describing: value)
+          
+          multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
+        }
+      }, to: urlString, headers: headers).responseJSON(completionHandler: { response in
         if response.isSuccess() {
           observer.processValue(class: SaveResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
-      }
-//      HTTPUtils.fileUploadSession.upload(multipartFormData: { (multipartFormData) in
-//        for index in images.indices {
-//          let image = images[index]
-//
-//          multipartFormData.append(
-//            image.jpegData(compressionQuality: 0.5)!,
-//            withName: "image",
-//            fileName: "image\(index).jpeg",
-//            mimeType: "image/jpeg"
-//          )
-//        }
-//
-//        for (key, value) in parameters {
-//          let stringValue = String(describing: value)
-//
-//          multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
-//        }
-//      }, to: urlString, headers: headers).responseJSON(completionHandler: { response in
-//        if response.isSuccess() {
-//          observer.processValue(class: SaveResponse.self, response: response)
-//        } else {
-//          observer.processHTTPError(response: response)
-//        }
-//      })
+      })
       return Disposables.create()
     }
   }

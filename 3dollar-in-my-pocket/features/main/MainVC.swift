@@ -69,14 +69,9 @@ class MainVC: BaseVC {
       })
       .bind { [weak self] in
       if let vc = self {
-        let writingAddressVC = WriteAddressVC.instance()
+        let writingAddressVC = WriteAddressVC.instance(delegate: vc)
         
         vc.present(writingAddressVC, animated: true, completion: nil)
-        
-//        let writingVC = WritingVC.instance().then {
-//          $0.deleagte = self
-//        }
-//        vc.present(writingVC, animated: true, completion: nil)
       }
     }.disposed(by: disposeBag)
   }
@@ -166,7 +161,7 @@ extension MainVC: HomeDelegate {
   }
 }
 
-extension MainVC: WriteDetailDelegate {
+extension MainVC: WriteAddressDelegate {
   func onWriteSuccess(storeId: Int) {
     for controller in self.controllers {
       if controller is HomeVC {
