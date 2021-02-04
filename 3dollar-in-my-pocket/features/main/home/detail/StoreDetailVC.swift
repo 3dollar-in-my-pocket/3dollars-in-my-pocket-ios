@@ -51,6 +51,11 @@ class StoreDetailVC: BaseVC {
   
   override func bindViewModel() {
     // Bind output
+    self.viewModel.output.category
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.detailView.bind)
+      .disposed(by: disposeBag)
+    
     self.viewModel.output.store
       .bind(to: self.detailView.tableView.rx.items(dataSource:self.storeDataSource))
       .disposed(by: disposeBag)

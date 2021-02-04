@@ -30,6 +30,7 @@ class StoreDetailViewModel: BaseViewModel {
   }
   
   struct Output {
+    let category = PublishRelay<StoreCategory>()
     let store = PublishRelay<[StoreSection]>()
     let showDeleteModal = PublishRelay<Int>()
     let goToModify = PublishRelay<Store>()
@@ -123,6 +124,7 @@ class StoreDetailViewModel: BaseViewModel {
           StoreSection(store: store, items: [nil] + store.reviews)
         ]
         
+        self.output.category.accept(store.category)
         self.output.store.accept(storeSections)
         self.output.showLoading.accept(false)
       },

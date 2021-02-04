@@ -99,7 +99,7 @@ struct Store: Codable {
     self.longitude = try values.decodeIfPresent(Double.self, forKey: .longitude) ?? -1
     self.menus = try values.decodeIfPresent([Menu].self, forKey: .menus) ?? []
     self.paymentMethods = try values.decodeIfPresent([PaymentType].self, forKey: .paymentMethods) ?? []
-    self.rating = try values.decodeIfPresent(Float.self, forKey: .rating) ?? -1
+    self.rating = try values.decodeIfPresent(Float.self, forKey: .rating) ?? 0
     self.reviews = try values.decodeIfPresent([Review].self, forKey: .reviews) ?? []
     self.storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
     self.storeType = try values.decodeIfPresent(StoreType.self, forKey: .storeType)

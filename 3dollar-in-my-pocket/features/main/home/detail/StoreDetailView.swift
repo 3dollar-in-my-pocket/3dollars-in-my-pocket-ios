@@ -16,9 +16,7 @@ class StoreDetailView: BaseView {
     $0.setImage(UIImage.init(named: "ic_back_black"), for: .normal)
   }
   
-  let mainCategoryImage = UIImageView().then {
-    $0.image = UIImage(named: "img_40_bungeoppang")
-  }
+  let mainCategoryImage = UIImageView()
   
   let deleteRequestButton = UIButton().then {
     $0.setTitle("store_detail_delete_request".localized, for: .normal)
@@ -62,7 +60,7 @@ class StoreDetailView: BaseView {
     
     self.mainCategoryImage.snp.makeConstraints { (make) in
       make.centerX.equalToSuperview()
-      make.bottom.equalTo(self.navigationView).offset(-22)
+      make.bottom.equalTo(self.navigationView).offset(-3)
     }
     
     self.deleteRequestButton.snp.makeConstraints { make in
@@ -76,16 +74,16 @@ class StoreDetailView: BaseView {
     }
   }
   
-  func bind(store: Store){
-    switch store.category {
+  func bind(category: StoreCategory){
+    switch category {
     case .BUNGEOPPANG:
-      self.mainCategoryImage.image = UIImage(named: "img_40_bungeoppang")
+      self.mainCategoryImage.image = UIImage(named: "img_60_bungeoppang")
     case .GYERANPPANG:
-      self.mainCategoryImage.image = UIImage(named: "img_40_gyeranppang")
+      self.mainCategoryImage.image = UIImage(named: "img_60_gyeranppang")
     case .HOTTEOK:
-      self.mainCategoryImage.image = UIImage(named: "img_40_hotteok")
+      self.mainCategoryImage.image = UIImage(named: "img_60_hotteok")
     case .TAKOYAKI:
-      self.mainCategoryImage.image = UIImage(named: "img_40_takoyaki")
+      self.mainCategoryImage.image = UIImage(named: "img_60_takoyaki")
     }
   }
 }

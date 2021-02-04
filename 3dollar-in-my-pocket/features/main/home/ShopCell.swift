@@ -103,8 +103,6 @@ class ShopCell: BaseCollectionViewCell {
     case .TAKOYAKI:
       imageBtn.setImage(UIImage.init(named: "img_card_takoyaki_off"), for: .normal)
       imageBtn.setImage(UIImage.init(named: "img_card_takoyaki_on"), for: .selected)
-    default:
-      break
     }
     if storeCard.distance >= 1000 {
       distanceLabel.text = "1km+"
