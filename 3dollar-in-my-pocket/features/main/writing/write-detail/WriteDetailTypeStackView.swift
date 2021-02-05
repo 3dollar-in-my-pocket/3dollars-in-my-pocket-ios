@@ -53,13 +53,15 @@ class WriteDetailTypeStackView: UIStackView {
     self.addArrangedSubview(convenienceStoreRadioButton)
   }
   
-  func selectType(type: StoreType) {
+  func selectType(type: StoreType?) {
     self.clearSelect()
     
-    let index = type.getIndexValue()
-    
-    if let button = self.arrangedSubviews[index] as? UIButton {
-      button.isSelected = true
+    if let type = type {
+      let index = type.getIndexValue()
+      
+      if let button = self.arrangedSubviews[index] as? UIButton {
+        button.isSelected = true
+      }
     }
   }
   

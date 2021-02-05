@@ -58,6 +58,7 @@ struct Store: Codable {
   }
   
   init(
+    id: Int = -1,
     appearanceDays: [WeekDay],
     latitude: Double,
     longitude: Double,
@@ -69,7 +70,7 @@ struct Store: Codable {
     self.appearanceDays = appearanceDays
     self.category = .BUNGEOPPANG
     self.distance = -1
-    self.id = -1
+    self.id = id
     self.images = []
     self.latitude = latitude
     self.longitude = longitude

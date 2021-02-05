@@ -11,7 +11,7 @@ protocol StoreServiceProtocol {
   
   func deletePhoto(storeId: Int, photoId: Int) -> Observable<String>
   
-  func updateStore(storeId: Int, store: Store, images: [UIImage]) -> Observable<String>
+  func updateStore(storeId: Int, store: Store) -> Observable<String>
   
   func getStoreDetail(storeId: Int, latitude: Double, longitude: Double) -> Observable<Store>
   
@@ -55,7 +55,6 @@ struct StoreService: StoreServiceProtocol {
       
       parameters["userId"] = "\(UserDefaultsUtil.getUserId()!)"
       
-      // 배열로 보냈을 경우 서버에서 못받아서 일단 임시로 필드처럼 해서 보냄 ㅠㅠ
       for index in store.menus.indices {
         let menu = store.menus[index]
         
@@ -64,7 +63,7 @@ struct StoreService: StoreServiceProtocol {
         parameters["menu[\(index)].price"] = menu.price
       }
       
-      HTTPUtils.fileUploadSession.upload(multipartFormData: { (multipartFormData) in
+      HTTPUtils.fileUploadSession.upload(multipartFormData: { multipartFormData in
         for (key, value) in parameters {
           let stringValue = String(describing: value)
           
@@ -140,35 +139,23 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func updateStore(storeId: Int, store: Store, images: [UIImage]) -> Observable<String> {
+  func updateStore(storeId: Int, store: Store) -> Observable<String> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/store/update"
       let headers = HTTPUtils.defaultHeader()
       var parameters = store.toJson()
       
-      parameters["menu"] = nil
-      parameters["image"] = nil
-      parameters["review"] = nil
       parameters["storeId"] = storeId
       
       for index in store.menus.indices {
         let menu = store.menus[index]
         
+        parameters["menu[\(index)].category"] = menu.category?.rawValue ?? StoreCategory.BUNGEOPPANG
         parameters["menu[\(index)].name"] = menu.name
         parameters["menu[\(index)].price"] = menu.price
       }
       
-      HTTPUtils.fileUploadSession.upload(multipartFormData: { (multipartFormData) in
-        for index in images.indices {
-          let image = images[index]
-          
-          multipartFormData.append(
-            image.jpegData(compressionQuality: 0.5)!,
-            withName: "image",
-            fileName: "image\(index).jpeg",
-            mimeType: "image/jpeg"
-          )
-        }
+      HTTPUtils.fileUploadSession.upload(multipartFormData: { multipartFormData in
         for (key, value) in parameters {
           let stringValue = String(describing: value)
           
@@ -176,7 +163,7 @@ struct StoreService: StoreServiceProtocol {
         }
       }, to: urlString, method: .put, headers: headers).responseString(completionHandler: { response in
         if response.isSuccess() {
-          observer.onNext(response.value ?? "")
+          observer.onNext("success")
           observer.onCompleted()
         } else {
           observer.processHTTPError(response: response)

@@ -160,7 +160,7 @@ class ModifyView: BaseView {
     
     layout.minimumInteritemSpacing = 16 * RatioUtils.widthRatio
     layout.minimumLineSpacing = 20
-    layout.itemSize = CGSize(width: 52, height: 70)
+    layout.estimatedItemSize = CGSize(width: 52, height: 75)
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear
   }
@@ -173,12 +173,15 @@ class ModifyView: BaseView {
     $0.sectionFooterHeight = 20
   }
   
-  let registerBtnBg = UIView().then {
+  let registerButtonBg = UIView().then {
     $0.layer.cornerRadius = 37
     
     let shadowLayer = CAShapeLayer()
     
-    shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 232, height: 72), cornerRadius: 37).cgPath
+    shadowLayer.path = UIBezierPath(
+      roundedRect: CGRect(x: 0, y: 0, width: 232, height: 72),
+      cornerRadius: 37
+    ).cgPath
     shadowLayer.fillColor = UIColor.init(r: 255, g: 255, b: 255, a: 0.6).cgColor
     shadowLayer.shadowColor = UIColor.black.cgColor
     shadowLayer.shadowPath = nil
@@ -188,7 +191,7 @@ class ModifyView: BaseView {
     $0.layer.insertSublayer(shadowLayer, at: 0)
   }
   
-  let registerBtn = UIButton().then {
+  let registerButton = UIButton().then {
     $0.setTitle("수정하기", for: .normal)
     $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
     $0.setBackgroundColor(UIColor.init(r: 200, g: 200, b: 200), for: .disabled)
@@ -197,11 +200,10 @@ class ModifyView: BaseView {
   }
   
   override func setup() {
-    backgroundColor = UIColor(r: 250, g: 250, b: 250)
-    scrollView.delegate = self
-    addGestureRecognizer(bgTap)
+    self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
+    self.addGestureRecognizer(bgTap)
     
-    containerView.addSubViews(
+    self.containerView.addSubViews(
       mapView, addressContainer, addressLabel, editButton,
       storeInfoLabel, storeInfoContainer, storeNameLabel,
       storeNameContainer, storeNameField, storeTypeLabel, storeTypeOptionLabel,
@@ -210,10 +212,10 @@ class ModifyView: BaseView {
       daysOptionLabel, dayStackView, menuLabel, menuOptionLabel,
       deleteAllButton, categoryContainer, categoryCollectionView, menuTableView
     )
-    scrollView.addSubViews(containerView)
-    addSubViews(
+    self.scrollView.addSubViews(containerView)
+    self.addSubViews(
       scrollView, navigationView, backButton, titleLabel,
-      registerBtnBg, registerBtn
+      registerButtonBg, registerButton
     )
   }
   
@@ -382,85 +384,73 @@ class ModifyView: BaseView {
       make.height.equalTo(0)
     }
     
-    registerBtnBg.snp.makeConstraints { (make) in
+    self.registerButtonBg.snp.makeConstraints { (make) in
       make.centerX.equalToSuperview()
       make.width.equalTo(232)
       make.height.equalTo(72)
       make.bottom.equalToSuperview().offset(-32)
     }
     
-    registerBtn.snp.makeConstraints { (make) in
-      make.left.equalTo(registerBtnBg.snp.left).offset(8)
-      make.right.equalTo(registerBtnBg.snp.right).offset(-8)
-      make.top.equalTo(registerBtnBg.snp.top).offset(8)
-      make.bottom.equalTo(registerBtnBg.snp.bottom).offset(-8)
+    self.registerButton.snp.makeConstraints { (make) in
+      make.left.equalTo(registerButtonBg.snp.left).offset(8)
+      make.right.equalTo(registerButtonBg.snp.right).offset(-8)
+      make.top.equalTo(registerButtonBg.snp.top).offset(8)
+      make.bottom.equalTo(registerButtonBg.snp.bottom).offset(-8)
     }
   }
   
   override func layoutSubviews() {
     super.layoutSubviews()
-//    refreshScrollViewHeight()
-    registerBtn.layer.cornerRadius = registerBtn.frame.height / 2
+    registerButton.layer.cornerRadius = registerButton.frame.height / 2
   }
   
-//  override func layoutIfNeeded() {
-//    super.layoutIfNeeded()
-//    refreshScrollViewHeight()
-//  }
-  
-  private func refreshScrollViewHeight() {
-//    menuTableView.snp.remakeConstraints({ (make) in
-//      make.left.right.equalToSuperview()
-//      make.top.equalTo(menuTableView).offset(8)
-//      make.height.equalTo(menuTableView.contentSize.height + 85)
-//    })
+  func bind(store: Store) {
+    self.storeNameField.text = store.storeName
   }
   
-  func hideRegisterBtn() {
-    if registerBtnBg.alpha != 0 {
-      let originalBgTransform = self.registerBtnBg.transform
-      let originalBtnTransform = self.registerBtn.transform
+  func refreshCategoryCollectionViewHeight() {
+    self.categoryCollectionView.snp.updateConstraints { make in
+      make.height.equalTo(self.categoryCollectionView.contentSize.height)
+    }
+  }
+  
+  func refreshMenuTableViewHeight() {
+    menuTableView.snp.updateConstraints { make in
+      make.height.equalTo(self.menuTableView.contentSize.height)
+    }
+  }
+  
+  func setStoreNameBorderColoe(isEmpty: Bool) {
+    self.storeNameContainer.layer.borderColor = isEmpty ? UIColor(r: 244, g: 244, b: 244).cgColor : UIColor(r: 255, g: 161, b: 170).cgColor
+  }
+  
+  func hideRegisterButton() {
+    if registerButtonBg.alpha != 0 {
+      let originalBgTransform = self.registerButtonBg.transform
+      let originalBtnTransform = self.registerButton.transform
       
       UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-        self?.registerBtnBg.transform = originalBgTransform.translatedBy(x: 0.0, y: 90)
-        self?.registerBtnBg.alpha = 0
+        self?.registerButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: 90)
+        self?.registerButtonBg.alpha = 0
         
-        self?.registerBtn.transform = originalBtnTransform.translatedBy(x: 0.0, y: 90)
-        self?.registerBtn.alpha = 0
+        self?.registerButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: 90)
+        self?.registerButton.alpha = 0
       })
     }
   }
   
-  func showRegisterBtn() {
-    if registerBtnBg.alpha != 1 {
-      let originalBgTransform = self.registerBtnBg.transform
-      let originalBtnTransform = self.registerBtn.transform
+  func showRegisterButton() {
+    if registerButtonBg.alpha != 1 {
+      let originalBgTransform = self.registerButtonBg.transform
+      let originalBtnTransform = self.registerButton.transform
       
       UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-        self?.registerBtnBg.transform = originalBgTransform.translatedBy(x: 0.0, y: -90)
-        self?.registerBtnBg.alpha = 1
+        self?.registerButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: -90)
+        self?.registerButtonBg.alpha = 1
         
-        self?.registerBtn.transform = originalBtnTransform.translatedBy(x: 0.0, y: -90)
-        self?.registerBtn.alpha = 1
+        self?.registerButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: -90)
+        self?.registerButton.alpha = 1
       })
     }
   }
 }
-
-extension ModifyView: UIScrollViewDelegate {
-  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-    self.endEditing(true)
-    self.hideRegisterBtn()
-  }
-  
-  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-    if !decelerate {
-      self.showRegisterBtn()
-    }
-  }
-  
-  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-    self.showRegisterBtn()
-  }
-}
-

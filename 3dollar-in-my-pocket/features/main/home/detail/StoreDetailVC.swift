@@ -283,9 +283,8 @@ class StoreDetailVC: BaseVC {
   }
   
   private func goToModify(store: Store) {
-    let modifyVC = ModifyVC.instance(store: store).then {
-      $0.delegate = self
-    }
+    let modifyVC = ModifyVC.instance(store: store)
+    
     self.navigationController?.pushViewController(modifyVC, animated: true)
   }
   
@@ -491,12 +490,6 @@ extension StoreDetailVC: RegisterPhotoDelegate {
   func onSaveSuccess() {
     self.myLocationFlag = false
     self.locationManager.startUpdatingLocation()
-  }
-}
-
-extension StoreDetailVC: ModifyDelegate {
-  func onModifySuccess() {
-//    self.getStoreDetail(latitude: self.viewModel.location.latitude, longitude: self.viewModel.location.longitude)
   }
 }
 
