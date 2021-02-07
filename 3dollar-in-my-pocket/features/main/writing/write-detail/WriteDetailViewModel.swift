@@ -60,7 +60,7 @@ class WriteDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.storeName
-      .map { !$0.isEmpty }
+      .map { !$0.isEmpty && !self.categoryies.compactMap { $0 }.isEmpty }
       .bind(to: self.output.registerButtonIsEnable)
       .disposed(by: disposeBag)
     
@@ -114,6 +114,11 @@ class WriteDetailViewModel: BaseViewModel {
         storeType: $0.1
       ) }
       .bind(onNext: self.saveStore(store:))
+      .disposed(by: disposeBag)
+    
+    self.output.categories
+      .withLatestFrom(self.input.storeName) { !$0.compactMap{ $0 }.isEmpty && !$1.isEmpty }
+      .bind(to: self.output.registerButtonIsEnable)
       .disposed(by: disposeBag)
   }
   
