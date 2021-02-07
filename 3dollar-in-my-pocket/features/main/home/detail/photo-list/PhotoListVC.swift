@@ -6,8 +6,11 @@ class PhotoListVC: BaseVC {
   private let viewModel: PhotoListViewModel
   
   
-  init(storeId: Int, photos: [Image]) {
-    self.viewModel = PhotoListViewModel(storeId: storeId, photos: photos)
+  init(storeId: Int) {
+    self.viewModel = PhotoListViewModel(
+      storeId: storeId,
+      storeService: StoreService()
+    )
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -15,8 +18,8 @@ class PhotoListVC: BaseVC {
     fatalError("init(coder:) has not been implemented")
   }
   
-  static func instance(storeid: Int, photos: [Image]) -> PhotoListVC {
-    return PhotoListVC(storeId: storeid, photos: photos)
+  static func instance(storeid: Int) -> PhotoListVC {
+    return PhotoListVC(storeId: storeid)
   }
   
   override func viewDidLoad() {
@@ -24,6 +27,11 @@ class PhotoListVC: BaseVC {
     view = photoListView
     
     self.setupCollectionView()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
     self.viewModel.fetchPhotos()
   }
   
@@ -70,8 +78,17 @@ class PhotoListVC: BaseVC {
       storeId: storeId,
       index: selectedIndex,
       photos: photos
-    )
+    ).then {
+      $0.delegate = self
+    }
     
     self.present(photoDetailVC, animated: false, completion: nil)
+  }
+}
+
+extension PhotoListVC: PhotoDetailDelegate {
+  
+  func onClose() {
+    self.viewModel.fetchPhotos()
   }
 }

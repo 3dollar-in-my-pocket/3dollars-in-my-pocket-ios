@@ -9,7 +9,7 @@ class PhotoDetailView: BaseView {
   }
   
   let closeButton = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_close"), for: .normal)
+    $0.setImage(UIImage.init(named: "ic_close_white"), for: .normal)
   }
   
   let titleLabel = UILabel().then {

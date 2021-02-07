@@ -374,13 +374,15 @@ class StoreDetailVC: BaseVC {
       storeId: storeId,
       index: index,
       photos: photos
-    )
+    ).then {
+      $0.delegate = self
+    }
     
     self.present(photoDetailVC, animated: false, completion: nil)
   }
   
-  private func goToPhotoList(storeId: Int, photos: [Image]) {
-    let photoListVC = PhotoListVC.instance(storeid: storeId, photos: photos)
+  private func goToPhotoList(storeId: Int) {
+    let photoListVC = PhotoListVC.instance(storeid: storeId)
     
     self.navigationController?.pushViewController(photoListVC, animated: true)
   }
@@ -500,6 +502,13 @@ extension StoreDetailVC: DeleteModalDelegate {
 
 extension StoreDetailVC: RegisterPhotoDelegate {
   func onSaveSuccess() {
+    self.myLocationFlag = false
+    self.locationManager.startUpdatingLocation()
+  }
+}
+
+extension StoreDetailVC: PhotoDetailDelegate {
+  func onClose() {
     self.myLocationFlag = false
     self.locationManager.startUpdatingLocation()
   }

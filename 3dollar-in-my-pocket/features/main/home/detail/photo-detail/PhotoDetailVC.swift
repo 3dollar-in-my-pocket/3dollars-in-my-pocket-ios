@@ -1,10 +1,15 @@
 import UIKit
 import RxSwift
 
+protocol PhotoDetailDelegate: class {
+  func onClose()
+}
+
 class PhotoDetailVC: BaseVC {
   
   private lazy var photoDetailView = PhotoDetailView(frame: self.view.frame)
   private let viewModel: PhotoDetailViewModel
+  weak var delegate: PhotoDetailDelegate?
   
   
   init(storeId: Int, index: Int, photos: [Image]) {
@@ -111,6 +116,7 @@ class PhotoDetailVC: BaseVC {
   
   private func dismiss() {
     self.dismiss(animated: false, completion: nil)
+    self.delegate?.onClose()
   }
   
   private func selectItem(indexPath: IndexPath) {
