@@ -11,6 +11,7 @@ class ModifyVC: BaseVC {
   var store: Store
   var viewModel: ModifyViewModel
   var menuDataSource: RxTableViewSectionedReloadDataSource<MenuSection>!
+  let marker = NMFMarker()
   
   init(store: Store) {
     self.store = store
@@ -66,6 +67,10 @@ class ModifyVC: BaseVC {
     // Bind input
     self.modifyView.storeNameField.rx.text.orEmpty
       .bind(to: self.viewModel.input.storeName)
+      .disposed(by: disposeBag)
+    
+    self.modifyView.editButton.rx.tap
+      .bind(to: self.viewModel.input.tapEdit)
       .disposed(by: disposeBag)
     
     self.modifyView.dayStackView.sundayButton.rx.tap
@@ -148,6 +153,16 @@ class ModifyVC: BaseVC {
     // Bind output
     self.viewModel.output.address
       .bind(to: self.modifyView.addressLabel.rx.text)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.moveCamera
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.moveCamera)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.goToEditAddress
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToEditAddress(store:))
       .disposed(by: disposeBag)
     
     self.viewModel.output.storeNameIsEmpty
@@ -239,6 +254,14 @@ class ModifyVC: BaseVC {
     self.navigationController?.popViewController(animated: true)
   }
   
+  private func goToEditAddress(store: Store) {
+    let modifyVC = ModifyAddressVC.instance(store: store).then {
+      $0.delegate = self
+    }
+    
+    self.navigationController?.pushViewController(modifyVC, animated: true)
+  }
+  
   private func setupCategoryCollectionView() {
     self.modifyView.categoryCollectionView.register(
       WriteCategoryCell.self,
@@ -316,14 +339,15 @@ class ModifyVC: BaseVC {
   
   private func initilizeNaverMap() {
     self.modifyView.mapView.positionMode = .direction
-    
-    let marker = NMFMarker()
-    
-    marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
+  }
+  
+  private func moveCamera(latitude: Double, longitude: Double) {
+    marker.mapView = nil
+    marker.position = NMGLatLng(lat: latitude, lng: longitude)
     marker.iconImage = NMFOverlayImage(name: "ic_marker")
     marker.mapView = self.modifyView.mapView
     
-    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: store.latitude, lng: store.longitude))
+    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: latitude, lng: longitude))
     self.modifyView.mapView.moveCamera(cameraUpdate)
   }
   
@@ -426,5 +450,12 @@ extension ModifyVC: UITableViewDelegate {
       width: tableView.frame.width,
       height: 20
     ))
+  }
+}
+
+extension ModifyVC: ModifyAddressDelegate {
+  func onModifyAddress(address: String, location: (Double, Double)) {
+    self.modifyView.addressLabel.text = address
+    self.viewModel.input.editLocation.onNext(location)
   }
 }

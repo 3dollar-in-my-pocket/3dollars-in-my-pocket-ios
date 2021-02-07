@@ -18,6 +18,8 @@ class ModifyViewModel: BaseViewModel {
   
   struct Input {
     let storeName = PublishSubject<String>()
+    let tapEdit = PublishSubject<Void>()
+    let editLocation = PublishSubject<(Double, Double)>()
     let tapDay = PublishSubject<WeekDay>()
     let tapStoreType = PublishSubject<StoreType?>()
     let tapPaymentType = PublishSubject<PaymentType>()
@@ -33,6 +35,8 @@ class ModifyViewModel: BaseViewModel {
   
   struct Output {
     let address = PublishRelay<String>()
+    let moveCamera = PublishRelay<(Double, Double)>()
+    let goToEditAddress = PublishRelay<Store>()
     let storeNameIsEmpty = PublishRelay<Bool>()
     let selectType = PublishRelay<StoreType?>()
     let selectPaymentType = PublishRelay<[PaymentType]>()
@@ -64,6 +68,18 @@ class ModifyViewModel: BaseViewModel {
       categories: store.categories,
       menus: store.menus
     )
+    
+    self.input.tapEdit
+      .map { self.store }
+      .bind(to: self.output.goToEditAddress)
+      .disposed(by: disposeBag)
+    
+    self.input.editLocation
+      .do(onNext: { (latitude, longitude) in
+        self.location = (latitude, longitude)
+      })
+      .bind(to: self.output.moveCamera)
+      .disposed(by: disposeBag)
     
     self.input.storeName
       .map { $0.isEmpty }
@@ -137,6 +153,7 @@ class ModifyViewModel: BaseViewModel {
   func fetchStore() {
     self.input.storeName.onNext(self.store.storeName)
     self.input.tapStoreType.onNext(self.store.storeType)
+    self.output.moveCamera.accept((self.store.latitude, self.store.longitude))
     self.output.selectPaymentType.accept(self.store.paymentMethods)
     self.output.selectDays.accept(self.store.appearanceDays)
     self.output.categories.accept(self.categories)
