@@ -30,14 +30,14 @@ class StoreDetailMenuCell: BaseTableViewCell {
     }
   }
   
-  func addMenu(menus: [Menu]) {
+  func addMenu(categories: [StoreCategory], menus: [Menu]) {
     if self.menuStackView.subviews.isEmpty {
-      if menus.isEmpty {
+      if categories.isEmpty {
         let emptyView = StoreDetailMenuEmptyView()
         
         self.menuStackView.addArrangedSubview(emptyView)
       } else {
-        let subViews = self.subViewsFromMenus(menus: menus)
+        let subViews = self.subViewsFromMenus(categories: categories, menus: menus)
         
         for subView in subViews {
           self.menuStackView.addArrangedSubview(subView)
@@ -47,26 +47,23 @@ class StoreDetailMenuCell: BaseTableViewCell {
     }
   }
   
-  private func subViewsFromMenus(menus: [Menu]) -> [UIView] {
-    var previousCategory = menus[0].category
+  private func subViewsFromMenus(categories: [StoreCategory], menus: [Menu]) -> [UIView] {
     var subViews: [UIView] = []
     
-    let firstCategoryView = StoreDetailMenuCategoryView()
-    
-    firstCategoryView.bind(category: menus[0].category ?? .BUNGEOPPANG)
-    subViews.append(firstCategoryView)
-    
-    for menu in menus {
-      if previousCategory != menu.category {
-        let categoryView = StoreDetailMenuCategoryView()
-        categoryView.bind(category: menu.category ?? .BUNGEOPPANG)
-        subViews.append(categoryView)
-        previousCategory = menu.category
-      }
-      let menuView = StoreDetailMenuView()
-      menuView.bind(menu: menu)
+    for category in categories {
+      let categoryView = StoreDetailMenuCategoryView()
+      var menuSubViews: [UIView] = []
       
-      subViews.append(menuView)
+      for menu in menus {
+        let menuView = StoreDetailMenuView()
+        
+        menuView.bind(menu: menu)
+        menuSubViews.append(menuView)
+      }
+      
+      categoryView.bind(category: category, isEmpty: menuSubViews.isEmpty)
+      subViews.append(categoryView)
+      subViews = subViews + menuSubViews
     }
     
     return subViews

@@ -192,7 +192,10 @@ class StoreDetailVC: BaseVC {
           for: indexPath
         ) as? StoreDetailMenuCell else { return BaseTableViewCell() }
         
-        cell.addMenu(menus: dataSource.sectionModels[indexPath.section].store.menus)
+        cell.addMenu(
+          categories: dataSource.sectionModels[indexPath.section].store.categories,
+          menus: dataSource.sectionModels[indexPath.section].store.menus
+        )
         return cell
       case .photo:
         guard let cell = tableView.dequeueReusableCell(

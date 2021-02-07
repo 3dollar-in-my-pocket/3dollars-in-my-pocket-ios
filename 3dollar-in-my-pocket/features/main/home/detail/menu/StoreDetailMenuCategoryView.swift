@@ -11,6 +11,13 @@ class StoreDetailMenuCategoryView: BaseView {
     $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
   }
   
+  let emptyLabel = UILabel().then {
+    $0.text = "store_detail_empty_menu".localized
+    $0.textColor = UIColor(r: 161, g: 161, b: 161)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Light", size: 14)
+    $0.isHidden = true
+  }
+  
   override func setup() {
     backgroundColor = .clear
     addSubViews(categoryImage, categoryLabel)
@@ -28,9 +35,15 @@ class StoreDetailMenuCategoryView: BaseView {
       make.centerY.equalTo(self.categoryImage)
       make.left.equalTo(self.categoryImage.snp.right).offset(8)
     }
+    
+    self.emptyLabel.snp.makeConstraints { make in
+      make.right.equalToSuperview().offset(-24)
+      make.centerY.equalTo(self.categoryImage)
+    }
   }
   
-  func bind(category: StoreCategory) {
+  func bind(category: StoreCategory, isEmpty: Bool) {
+    self.emptyLabel.isHidden = !isEmpty
     switch category {
     case .BUNGEOPPANG:
       self.categoryImage.image = UIImage(named: "img_32_bungeoppang_on")
