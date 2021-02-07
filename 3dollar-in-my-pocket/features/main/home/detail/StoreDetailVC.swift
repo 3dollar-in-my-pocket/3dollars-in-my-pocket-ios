@@ -4,6 +4,8 @@ import RxSwift
 import RxDataSources
 import GoogleMobileAds
 import NMapsMap
+import AppTrackingTransparency
+import AdSupport
 
 class StoreDetailVC: BaseVC {
   
@@ -223,7 +225,14 @@ class StoreDetailVC: BaseVC {
           
           let viewWidth = self.view.frame.size.width
           cell.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
-          cell.adBannerView.load(GADRequest())
+          
+          if #available(iOS 14, *) {
+            ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+              cell.adBannerView.load(GADRequest())
+            })
+          } else {
+            cell.adBannerView.load(GADRequest())
+          }
         } else {
           let review = dataSource.sectionModels[StoreDetailSection.review.rawValue].items[indexPath.row]
           
