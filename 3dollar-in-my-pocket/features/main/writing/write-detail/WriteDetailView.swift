@@ -137,16 +137,10 @@ class WriteDetailView: BaseView {
   
   let dayStackView = DayStackView(dayStackSize: .normal)
   
-  let menuLabel = UILabel().then {
-    $0.text = "write_store_menu".localized
+  let categoryLabel = UILabel().then {
+    $0.text = "write_store_category".localized
     $0.textColor = .black
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
-  }
-  
-  let menuOptionLabel = UILabel().then {
-    $0.text = "write_store_option".localized
-    $0.textColor = UIColor(r: 183, g: 183, b: 183)
-    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
   let deleteAllButton = UIButton().then {
@@ -170,6 +164,20 @@ class WriteDetailView: BaseView {
     layout.estimatedItemSize = CGSize(width: 52, height: 75)
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear
+  }
+  
+  let menuLabel = UILabel().then {
+    $0.text = "write_store_menu".localized
+    $0.textColor = .black
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
+    $0.isHidden = true
+  }
+  
+  let menuOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+    $0.isHidden = true
   }
   
   let menuTableView = UITableView().then {
@@ -214,8 +222,9 @@ class WriteDetailView: BaseView {
       storeNameContainer, storeNameField, storeTypeLabel, storeTypeOptionLabel,
       storeTypeStackView, paymentTypeLabel, paymentTypeOptionLabel,
       paymentTypeMultiLabel, paymentStackView, daysLabel,
-      daysOptionLabel, dayStackView, menuLabel, menuOptionLabel,
-      deleteAllButton, categoryContainer, categoryCollectionView, menuTableView
+      daysOptionLabel, dayStackView, categoryLabel, deleteAllButton,
+      categoryContainer, categoryCollectionView, menuLabel, menuOptionLabel,
+      menuTableView
     )
     
     scrollView.addSubview(containerView)
@@ -373,24 +382,19 @@ class WriteDetailView: BaseView {
       make.top.equalTo(self.daysLabel.snp.bottom).offset(13)
     }
     
-    self.menuLabel.snp.makeConstraints { make in
+    self.categoryLabel.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.top.equalTo(self.storeInfoContainer.snp.bottom).offset(40)
     }
     
-    self.menuOptionLabel.snp.makeConstraints { make in
-      make.left.equalTo(self.menuLabel.snp.right).offset(4)
-      make.centerY.equalTo(self.menuLabel)
-    }
-    
     self.deleteAllButton.snp.makeConstraints { make in
       make.right.equalToSuperview().offset(-24)
-      make.centerY.equalTo(self.menuLabel)
+      make.centerY.equalTo(self.categoryLabel)
     }
     
     self.categoryContainer.snp.makeConstraints { make in
       make.left.right.equalToSuperview()
-      make.top.equalTo(self.menuLabel.snp.bottom).offset(16)
+      make.top.equalTo(self.categoryLabel.snp.bottom).offset(16)
       make.bottom.equalTo(self.categoryCollectionView).offset(24)
     }
     
@@ -401,10 +405,20 @@ class WriteDetailView: BaseView {
       make.height.equalTo(72)
     }
     
+    self.menuLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.categoryContainer.snp.bottom).offset(20)
+    }
+    
+    self.menuOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.menuLabel.snp.right).offset(4)
+      make.centerY.equalTo(self.menuLabel)
+    }
+    
     self.menuTableView.snp.makeConstraints { make in
       make.left.equalToSuperview()
       make.right.equalToSuperview()
-      make.top.equalTo(self.categoryContainer.snp.bottom).offset(10)
+      make.top.equalTo(self.menuLabel.snp.bottom).offset(12)
       make.height.equalTo(0)
     }
   }
@@ -443,6 +457,11 @@ class WriteDetailView: BaseView {
   
   func setStoreNameBorderColoe(isEmpty: Bool) {
     self.storeNameContainer.layer.borderColor = isEmpty ? UIColor(r: 244, g: 244, b: 244).cgColor : UIColor(r: 255, g: 161, b: 170).cgColor
+  }
+  
+  func setMenuHeader(menuSections: [MenuSection]) {
+    self.menuLabel.isHidden = menuSections.isEmpty
+    self.menuOptionLabel.isHidden = menuSections.isEmpty
   }
   
   func hideRegisterButton() {

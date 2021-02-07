@@ -182,6 +182,7 @@ class WriteDetailVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.viewModel.output.menus
+      .do(onNext: self.writeDetailView.setMenuHeader)
       .bind(to: self.writeDetailView.menuTableView.rx.items(dataSource:self.menuDataSource))
       .disposed(by: disposeBag)
     

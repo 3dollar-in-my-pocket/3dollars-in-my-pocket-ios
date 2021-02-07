@@ -114,6 +114,7 @@ class ModifyViewModel: BaseViewModel {
       .map { Store(
         id: self.store.id,
         appearanceDays: self.appearenceDay,
+        categories: self.categories.compactMap{ $0 },
         latitude: self.location.0,
         longitude: self.location.1,
         menuSections: self.menuSections,

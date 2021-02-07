@@ -2,6 +2,7 @@ struct Store: Codable {
   
   let appearanceDays: [WeekDay]
   let category: StoreCategory
+  let categories: [StoreCategory]
   let distance: Int
   let id: Int
   let images: [Image]
@@ -19,6 +20,7 @@ struct Store: Codable {
   enum CodingKeys: String, CodingKey {
     case appearanceDays = "appearanceDays"
     case category = "category"
+    case categories = "categories"
     case distance = "distance"
     case id = "id"
     case images = "image"
@@ -43,6 +45,7 @@ struct Store: Codable {
   ) {
     self.appearanceDays = []
     self.category = category
+    self.categories = []
     self.distance = -1
     self.id = -1
     self.images = []
@@ -60,6 +63,7 @@ struct Store: Codable {
   init(
     id: Int = -1,
     appearanceDays: [WeekDay],
+    categories: [StoreCategory],
     latitude: Double,
     longitude: Double,
     menuSections: [MenuSection],
@@ -69,6 +73,7 @@ struct Store: Codable {
   ) {
     self.appearanceDays = appearanceDays
     self.category = .BUNGEOPPANG
+    self.categories = categories
     self.distance = -1
     self.id = id
     self.images = []
@@ -93,6 +98,7 @@ struct Store: Codable {
     
     self.appearanceDays = try values.decodeIfPresent([WeekDay].self, forKey: .appearanceDays) ?? []
     self.category = try values.decodeIfPresent(StoreCategory.self, forKey: .category) ?? .BUNGEOPPANG
+    self.categories = try values.decodeIfPresent([StoreCategory].self, forKey: .categories) ?? []
     self.distance = try values.decodeIfPresent(Int.self, forKey: .distance) ?? -1
     self.id = try values.decodeIfPresent(Int.self, forKey: .id) ?? -1
     self.images = try values.decodeIfPresent([Image].self, forKey: .images) ?? []
@@ -110,6 +116,7 @@ struct Store: Codable {
   func toJson() -> [String: Any] {
     return [
       "appearanceDays": self.appearanceDays.map{ $0.rawValue }.joined(separator: ","),
+      "categories": self.categories.map { $0.rawValue }.joined(separator: ","),
       "latitude": self.latitude,
       "longitude": self.longitude,
       "paymentMethods": self.paymentMethods.map { $0.rawValue }.joined(separator: ","),
