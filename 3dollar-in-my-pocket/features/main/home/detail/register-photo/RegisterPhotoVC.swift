@@ -109,14 +109,6 @@ extension RegisterPhotoVC: UICollectionViewDelegate {
   
   func collectionView(
     _ collectionView: UICollectionView,
-    willDisplay cell: UICollectionViewCell,
-    forItemAt indexPath: IndexPath
-  ) {
-    self.viewModel.input.photoPrefetchIndex.onNext(indexPath.row)
-  }
-  
-  func collectionView(
-    _ collectionView: UICollectionView,
     didSelectItemAt indexPath: IndexPath
   ) {
     if let cell = collectionView.cellForItem(at: indexPath) as? RegisterPhotoCell,

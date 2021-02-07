@@ -9,14 +9,11 @@ class RegisterPhotoViewModel: BaseViewModel{
   let storeService: StoreServiceProtocol
   var assets: PHFetchResult<PHAsset>!
   let storeId: Int
-  let pagingSize = 100
-  var lastIndex = 0
   var selectedIndex: [Int] = []
   var selectedPhoto: [UIImage] = []
   
   struct Input {
     let selectPhoto = PublishSubject<(Int, UIImage)>()
-    let photoPrefetchIndex = PublishSubject<Int>()
     let tapRegisterButton = PublishSubject<Void>()
   }
   
@@ -32,12 +29,6 @@ class RegisterPhotoViewModel: BaseViewModel{
     self.storeId = storeId
     self.storeService = storeService
     super.init()
-    
-    self.input.photoPrefetchIndex
-      .filter { $0 >= self.lastIndex - 1 }
-      .map { _ in Void() }
-      .bind(onNext: self.fetchNextPhotos)
-      .disposed(by: disposeBag)
     
     self.input.selectPhoto
       .bind(onNext: self.selectPhoto)
@@ -81,16 +72,7 @@ class RegisterPhotoViewModel: BaseViewModel{
     }
     
     self.assets = PHAsset.fetchAssets(with: .image, options: fetchOption)
-    self.fetchNextPhotos()
-  }
-  
-  private func fetchNextPhotos() {
-    if self.assets.count < self.lastIndex + self.pagingSize {
-      self.lastIndex = self.assets.count
-    } else {
-      self.lastIndex = self.lastIndex + self.pagingSize
-    }
-    self.output.photos.accept(self.assets.objects(at: IndexSet(0..<self.lastIndex)))
+    self.output.photos.accept(self.assets.objects(at: IndexSet(0..<self.assets.count - 1)))
   }
   
   private func selectPhoto(selectedIndex: Int, image: UIImage) {
