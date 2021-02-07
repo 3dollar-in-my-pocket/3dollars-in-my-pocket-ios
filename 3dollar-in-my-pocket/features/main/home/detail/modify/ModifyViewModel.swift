@@ -57,10 +57,13 @@ class ModifyViewModel: BaseViewModel {
     self.location = (store.latitude, store.longitude)
     self.appearenceDay = store.appearanceDays
     self.paymentType = store.paymentMethods
+    self.categories = [nil] + store.categories
     super.init()
     
-    self.menuSections = self.menuSectionFromMenus(menus: store.menus)
-    self.categories = self.categoryFromMenus(menus: store.menus)
+    self.menuSections = self.menuSectionFromMenus(
+      categories: store.categories,
+      menus: store.menus
+    )
     
     self.input.storeName
       .map { $0.isEmpty }
@@ -68,7 +71,7 @@ class ModifyViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.storeName
-      .map { !$0.isEmpty }
+      .map { !$0.isEmpty && !self.categories.compactMap{ $0 }.isEmpty }
       .bind(to: self.output.registerButtonIsEnable)
       .disposed(by: disposeBag)
     
@@ -124,6 +127,11 @@ class ModifyViewModel: BaseViewModel {
       )}
       .bind(onNext: self.updateStroe(store:))
       .disposed(by: disposeBag)
+    
+    self.output.categories
+      .withLatestFrom(self.input.storeName) { !$0.compactMap{ $0 }.isEmpty && !$1.isEmpty }
+      .bind(to: self.output.registerButtonIsEnable)
+      .disposed(by: disposeBag)
   }
   
   func fetchStore() {
@@ -136,16 +144,18 @@ class ModifyViewModel: BaseViewModel {
     self.getAddressFromLocation(lat: self.location.0, lng: self.location.1)
   }
   
-  private func menuSectionFromMenus(menus: [Menu]) -> [MenuSection] {
+  private func menuSectionFromMenus(categories: [StoreCategory], menus: [Menu]) -> [MenuSection] {
     var menuSections: [MenuSection] = []
-    for menu in menus {
-      for sectionIndex in menuSections.indices {
-        if menu.category == menuSections[sectionIndex].category {
-          menuSections[sectionIndex].items.append(menu)
-          break
+    
+    for category in categories {
+      var menuSection = MenuSection(category: category, items: [])
+      for menu in menus {
+        if menu.category == category {
+          menuSection.items.append(menu)
         }
+        menuSection.items.append(Menu(name: "", price: ""))
       }
-      menuSections.append(MenuSection(category: menu.category, items: [menu]))
+      menuSections.append(menuSection)
     }
     
     return menuSections
