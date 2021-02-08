@@ -20,7 +20,7 @@ class StoreDetailMenuCategoryView: BaseView {
   
   override func setup() {
     backgroundColor = .clear
-    addSubViews(categoryImage, categoryLabel)
+    addSubViews(categoryImage, categoryLabel, emptyLabel)
   }
   
   override func bindConstraints() {

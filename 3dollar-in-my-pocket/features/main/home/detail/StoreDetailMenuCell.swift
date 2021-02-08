@@ -55,12 +55,13 @@ class StoreDetailMenuCell: BaseTableViewCell {
       var menuSubViews: [UIView] = []
       
       for menu in menus {
-        let menuView = StoreDetailMenuView()
-        
-        menuView.bind(menu: menu)
-        menuSubViews.append(menuView)
+        if menu.category == category {
+          let menuView = StoreDetailMenuView()
+          
+          menuView.bind(menu: menu)
+          menuSubViews.append(menuView)
+        }
       }
-      
       categoryView.bind(category: category, isEmpty: menuSubViews.isEmpty)
       subViews.append(categoryView)
       subViews = subViews + menuSubViews
