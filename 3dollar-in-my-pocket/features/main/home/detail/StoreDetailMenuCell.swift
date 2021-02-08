@@ -14,6 +14,11 @@ class StoreDetailMenuCell: BaseTableViewCell {
     $0.isUserInteractionEnabled = true
   }
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.menuStackView.subviews.forEach { $0.removeFromSuperview() }
+  }
+  
   override func setup() {
     self.selectionStyle = .none
     self.backgroundColor = .clear
@@ -31,19 +36,17 @@ class StoreDetailMenuCell: BaseTableViewCell {
   }
   
   func addMenu(categories: [StoreCategory], menus: [Menu]) {
-    if self.menuStackView.subviews.isEmpty {
-      if categories.isEmpty {
-        let emptyView = StoreDetailMenuEmptyView()
-        
-        self.menuStackView.addArrangedSubview(emptyView)
-      } else {
-        let subViews = self.subViewsFromMenus(categories: categories, menus: menus)
-        
-        for subView in subViews {
-          self.menuStackView.addArrangedSubview(subView)
-        }
-        self.menuStackView.addArrangedSubview(StoreDetailMenuFooterView())
+    if categories.isEmpty {
+      let emptyView = StoreDetailMenuEmptyView()
+      
+      self.menuStackView.addArrangedSubview(emptyView)
+    } else {
+      let subViews = self.subViewsFromMenus(categories: categories, menus: menus)
+      
+      for subView in subViews {
+        self.menuStackView.addArrangedSubview(subView)
       }
+      self.menuStackView.addArrangedSubview(StoreDetailMenuFooterView())
     }
   }
   

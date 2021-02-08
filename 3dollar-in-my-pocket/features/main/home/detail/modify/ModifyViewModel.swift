@@ -272,6 +272,8 @@ class ModifyViewModel: BaseViewModel {
         
         self.output.menus.accept(self.menuSections)
       }
+    } else {
+      self.menuSections[indexPath.section].items[indexPath.row].name = nil
     }
   }
   
@@ -283,6 +285,8 @@ class ModifyViewModel: BaseViewModel {
         
         self.output.menus.accept(self.menuSections)
       }
+    } else {
+      self.menuSections[indexPath.section].items[indexPath.row].price = nil
     }
   }
   
