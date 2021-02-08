@@ -170,8 +170,8 @@ class ModifyViewModel: BaseViewModel {
         if menu.category == category {
           menuSection.items.append(menu)
         }
-        menuSection.items.append(Menu(name: "", price: ""))
       }
+      menuSection.items.append(Menu(name: nil, price: nil))
       menuSections.append(menuSection)
     }
     
