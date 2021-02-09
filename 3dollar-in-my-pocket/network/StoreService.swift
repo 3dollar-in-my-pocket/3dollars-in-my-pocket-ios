@@ -89,17 +89,14 @@ struct StoreService: StoreServiceProtocol {
       
       HTTPUtils.fileUploadSession.upload(
         multipartFormData: { multipartFormData in
-          for index in photos.indices{
-            let photo = photos[index]
-            
+          for data in ImageUtils.dataArrayFromImages(photos: photos) {
             multipartFormData.append(
-              photo.jpegData(compressionQuality: 0.4)!,
+              data,
               withName: "image",
-              fileName: "image\(index).jpeg",
+              fileName: "image.jpeg",
               mimeType: "image/jpeg"
             )
           }
-          
           multipartFormData.append("\(storeId)".data(using: .utf8)!, withName: "storeId")
         },
         to: urlString,

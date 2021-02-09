@@ -94,8 +94,10 @@ class RegisterPhotoViewModel: BaseViewModel{
   }
   
   private func savePhotos(storeId: Int, photos: [UIImage]) {
+    let savePhotoObservables = photos.map { self.storeService.savePhoto(storeId: storeId, photos: [$0])}
+    
     self.output.showLoading.accept(true)
-    self.storeService.savePhoto(storeId: storeId, photos: photos)
+    Observable.zip(savePhotoObservables)
       .subscribe(
         onNext: { [weak self] _ in
           guard let self = self else { return }
