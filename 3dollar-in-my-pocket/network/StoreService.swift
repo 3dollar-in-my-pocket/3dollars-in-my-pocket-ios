@@ -103,9 +103,11 @@ struct StoreService: StoreServiceProtocol {
         headers: headers
       )
       .responseString { response in
-        if response.isSuccess() {
-          observer.onNext("success")
-          observer.onCompleted()
+        if let statusCode = response.response?.statusCode {
+          if "\(statusCode)".first! == "2" {
+            observer.onNext("success")
+            observer.onCompleted()
+          }
         } else {
           observer.processHTTPError(response: response)
         }
