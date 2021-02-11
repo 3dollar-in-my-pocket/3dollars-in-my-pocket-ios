@@ -339,6 +339,7 @@ class ModifyVC: BaseVC {
   
   private func initilizeNaverMap() {
     self.modifyView.mapView.positionMode = .direction
+    self.modifyView.mapView.zoomLevel = 17
   }
   
   private func moveCamera(latitude: Double, longitude: Double) {

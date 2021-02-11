@@ -66,6 +66,7 @@ class WriteAddressVC: BaseVC {
   
   private func setupMap() {
     self.writeAddressView.mapView.positionMode = .direction
+    self.writeAddressView.mapView.zoomLevel = 17
     self.writeAddressView.mapView.addCameraDelegate(delegate: self)
   }
   

@@ -82,6 +82,7 @@ class ModifyAddressVC: BaseVC {
   
   private func setupMap() {
     self.modifyAddressView.mapView.positionMode = .direction
+    self.modifyAddressView.mapView.zoomLevel = 17
     self.modifyAddressView.mapView.addCameraDelegate(delegate: self)
   }
   
