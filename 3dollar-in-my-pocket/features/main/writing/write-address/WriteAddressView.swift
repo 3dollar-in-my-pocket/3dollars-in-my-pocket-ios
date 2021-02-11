@@ -114,8 +114,8 @@ class WriteAddressView: BaseView {
     }
     
     self.currentLocationButton.snp.makeConstraints { make in
-      make.right.equalToSuperview().offset(-24)
-      make.bottom.equalTo(self.bottomContainer.snp.top).offset(-8)
+      make.right.equalToSuperview().offset(-12)
+      make.bottom.equalTo(self.bottomContainer.snp.top)
     }
     
     self.addressButton.snp.makeConstraints { make in
