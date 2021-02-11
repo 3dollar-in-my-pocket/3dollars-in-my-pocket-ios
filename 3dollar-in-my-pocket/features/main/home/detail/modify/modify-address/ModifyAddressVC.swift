@@ -35,6 +35,11 @@ class ModifyAddressVC: BaseVC {
     
     self.setupMap()
     self.setupLocationManager()
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    
     self.viewModel.fetchLocation()
   }
   
