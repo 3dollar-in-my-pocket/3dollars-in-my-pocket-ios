@@ -11,13 +11,19 @@ class ReviewModalVC: BaseVC {
   
   weak var deleagete: ReviewModalDelegate?
   
-  let viewModel: ReviewModalViewModel
+  private let viewModel: ReviewModalViewModel
+  private let review: Review?
   
   private lazy var reviewModalView = ReviewModalView(frame: self.view.frame)
   
   
-  init(storeId: Int) {
-    self.viewModel = ReviewModalViewModel(reviewService: ReviewService(), storeId: storeId)
+  init(storeId: Int, review: Review?) {
+    self.viewModel = ReviewModalViewModel(
+      reviewService: ReviewService(),
+      storeId: storeId,
+      review: review
+    )
+    self.review = review
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -29,8 +35,8 @@ class ReviewModalVC: BaseVC {
     fatalError("init(coder:) has not been implemented")
   }
   
-  static func instance(storeId: Int) -> ReviewModalVC {
-    return ReviewModalVC(storeId: storeId).then {
+  static func instance(storeId: Int, review: Review? = nil) -> ReviewModalVC {
+    return ReviewModalVC(storeId: storeId, review: review).then {
       $0.modalPresentationStyle = .overCurrentContext
     }
   }
@@ -40,6 +46,9 @@ class ReviewModalVC: BaseVC {
     view = reviewModalView
     
     self.addObservers()
+    if let review = self.review {
+      self.reviewModalView.bind(review: review)
+    }
   }
   
   override func bindViewModel() {
@@ -97,6 +106,7 @@ class ReviewModalVC: BaseVC {
     self.viewModel.output.dismissOnSaveReview
       .observeOn(MainScheduler.instance)
       .bind { [weak self] _ in
+        self?.dismiss(animated: true, completion: nil)
         self?.deleagete?.onReviewSuccess()
       }
       .disposed(by: disposeBag)
@@ -120,6 +130,11 @@ class ReviewModalVC: BaseVC {
       })
       .bind(onNext: self.dismissModal)
       .disposed(by: disposeBag)
+    
+    self.reviewModalView.tapBackground.rx.event.bind { [weak self] _ in
+      self?.dismissModal()
+    }
+    .disposed(by: disposeBag)
   }
   
   private func addObservers() {
@@ -138,6 +153,7 @@ class ReviewModalVC: BaseVC {
   }
   
   private func dismissModal() {
+    self.dismiss(animated: true, completion: nil)
     self.deleagete?.onTapClose()
   }
   
@@ -145,10 +161,10 @@ class ReviewModalVC: BaseVC {
     guard let userInfo = sender.userInfo as? [String:Any] else {return}
     guard let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {return}
     
-    self.reviewModalView.contentView.transform = CGAffineTransform(translationX: 0, y: -keyboardFrame.cgRectValue.height)
+    self.reviewModalView.containerView.transform = CGAffineTransform(translationX: 0, y: -keyboardFrame.cgRectValue.height)
   }
   
   @objc func keyboardWillHide(_ sender: Notification) {
-    self.reviewModalView.contentView.transform = .identity
+    self.reviewModalView.containerView.transform = .identity
   }
 }

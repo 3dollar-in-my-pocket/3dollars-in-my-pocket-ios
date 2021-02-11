@@ -85,10 +85,15 @@
 	<string>사용자의 위치는 현재 사용자의 위치를 바탕으로 가까운 붕어빵 가게를 찾는데 사용됩니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>사용자의 위치는 현재 사용자의 위치를 바탕으로 가까운 붕어빵 가게를 찾는데 사용됩니다.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>사용자의 관심사에 기반해 광고를 보여주기 위해 사용됩니다.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>길거리 음식점 사진을 불러오기 위해 앨범이 사용됩니다.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
 	<string>길거리 음식점 사진을 불러오기 위해 앨범이 사용됩니다.</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>AppleSDGothicNeoEB00.ttf</string>
 		<string>SpoqaHanSans-Regular.ttf</string>
 		<string>SpoqaHanSans-Bold.ttf</string>
 		<string>SpoqaHanSans-Light.ttf</string>
@@ -129,5 +134,12 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 </dict>
 </plist>

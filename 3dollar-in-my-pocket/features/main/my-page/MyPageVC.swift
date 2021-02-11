@@ -183,7 +183,7 @@ extension MyPageVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
   
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if let store = try? self.viewModel.reportedStores.value()[indexPath.row] {
-      self.navigationController?.pushViewController(DetailVC.instance(storeId: store.id), animated: true)
+      self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: store.id), animated: true)
     } else {
       self.navigationController?.pushViewController(RegisteredVC.instance(), animated: true)
     }
@@ -193,7 +193,7 @@ extension MyPageVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 extension MyPageVC: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     if let store = try? self.viewModel.reportedReviews.value()[indexPath.row] {
-      self.navigationController?.pushViewController(DetailVC.instance(storeId: store.storeId), animated: true)
+      self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: store.storeId), animated: true)
     }
   }
 }

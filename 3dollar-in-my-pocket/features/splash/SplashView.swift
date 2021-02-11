@@ -3,7 +3,7 @@ import Lottie
 
 class SplashView: BaseView {
   
-  let lottie = AnimationView(name: "splash").then {
+  let lottie = AnimationView(name: "splash02").then {
     $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
     $0.contentMode = .scaleAspectFit
   }

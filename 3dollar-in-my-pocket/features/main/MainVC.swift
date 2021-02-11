@@ -30,8 +30,8 @@ class MainVC: BaseVC {
     let homeVC = HomeVC.instance().then {
       $0.delegate = self
     }
-    let writingVC = WritingVC.instance().then {
-      $0.deleagte = self
+    let writingVC = HomeVC.instance().then {
+      $0.delegate = self
     }
     let myPageVC = MyPageVC.instance().then {
       $0.delegate = self
@@ -69,10 +69,9 @@ class MainVC: BaseVC {
       })
       .bind { [weak self] in
       if let vc = self {
-        let writingVC = WritingVC.instance().then {
-          $0.deleagte = self
-        }
-        vc.present(writingVC, animated: true, completion: nil)
+        let writingAddressVC = WriteAddressVC.instance(delegate: vc)
+        
+        vc.present(writingAddressVC, animated: true, completion: nil)
       }
     }.disposed(by: disposeBag)
   }
@@ -140,7 +139,7 @@ class MainVC: BaseVC {
   }
   
   private func goToDetail(storeId: Int) {
-    self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
+    self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -162,14 +161,14 @@ extension MainVC: HomeDelegate {
   }
 }
 
-extension MainVC: WritingDelegate {
+extension MainVC: WriteAddressDelegate {
   func onWriteSuccess(storeId: Int) {
     for controller in self.controllers {
       if controller is HomeVC {
         (controller as! HomeVC).onSuccessWrite()
       }
     }
-    self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
+    self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)
   }
 }
 

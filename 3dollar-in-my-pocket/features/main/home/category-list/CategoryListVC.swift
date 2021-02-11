@@ -2,6 +2,8 @@ import UIKit
 import NMapsMap
 import GoogleMobileAds
 import FirebaseCrashlytics
+import AppTrackingTransparency
+import AdSupport
 
 class CategoryListVC: BaseVC {
   
@@ -128,7 +130,14 @@ class CategoryListVC: BaseVC {
     self.categoryListView.adBannerView.rootViewController = self
     self.categoryListView.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(self.view.frame.width)
     self.categoryListView.adBannerView.delegate = self
-    self.categoryListView.adBannerView.load(GADRequest())
+    
+    if #available(iOS 14, *) {
+      ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+        self.categoryListView.adBannerView.load(GADRequest())
+      })
+    } else {
+      self.categoryListView.adBannerView.load(GADRequest())
+    }
   }
   
   private func clearMarkers() {
