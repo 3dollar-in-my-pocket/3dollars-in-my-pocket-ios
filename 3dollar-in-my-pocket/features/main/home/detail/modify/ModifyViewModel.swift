@@ -139,7 +139,7 @@ class ModifyViewModel: BaseViewModel {
         menuSections: self.menuSections,
         paymentType: self.paymentType,
         storeName: $0.0,
-        storeType: $0.1 ?? .road
+        storeType: $0.1
       )}
       .bind(onNext: self.updateStroe(store:))
       .disposed(by: disposeBag)
