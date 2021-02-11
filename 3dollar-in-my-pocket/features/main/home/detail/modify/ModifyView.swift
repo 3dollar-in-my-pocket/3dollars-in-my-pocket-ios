@@ -129,7 +129,7 @@ class ModifyView: BaseView {
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
-  let dayStackView = DayStackView(dayStackSize: .normal)
+  let dayStackView = DayStackInputView()
   
   let categoryLabel = UILabel().then {
     $0.text = "write_store_category".localized
