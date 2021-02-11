@@ -90,7 +90,7 @@ class RenameView: BaseView {
     
     backBtn.snp.makeConstraints { (make) in
       make.left.equalToSuperview().offset(24)
-      make.top.equalToSuperview().offset(48)
+      make.top.equalTo(safeAreaLayoutGuide).offset(3)
       make.width.height.equalTo(48)
     }
     
@@ -106,7 +106,7 @@ class RenameView: BaseView {
     
     oldNicknameLabel.snp.makeConstraints { (make) in
       make.left.equalTo(bgCloud.snp.left).offset(24)
-      make.top.equalTo(bgCloud.snp.top).offset(161)
+      make.top.equalTo(bgCloud.snp.top).offset(130)
     }
     
     nicknameLabel1.snp.makeConstraints { (make) in
@@ -116,7 +116,7 @@ class RenameView: BaseView {
     
     nicknameFieldBg.snp.makeConstraints { (make) in
       make.left.equalTo(oldNicknameLabel.snp.left)
-      make.top.equalTo(oldNicknameLabel.snp.bottom).offset(16)
+      make.top.equalTo(oldNicknameLabel.snp.bottom).offset(16 * RatioUtils.heightRatio)
       make.height.equalTo(56)
       make.width.equalTo(282)
     }
@@ -135,7 +135,7 @@ class RenameView: BaseView {
     
     startBtn1.snp.makeConstraints { (make) in
       make.left.equalTo(oldNicknameLabel.snp.left)
-      make.top.equalTo(nicknameFieldBg.snp.bottom).offset(16)
+      make.top.equalTo(nicknameFieldBg.snp.bottom).offset(16 * RatioUtils.heightRatio)
       make.height.equalTo(38)
     }
     
