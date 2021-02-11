@@ -50,9 +50,10 @@ class WriteDetailView: BaseView {
   }
   
   let locationFieldContainer = UIView().then {
+    $0.backgroundColor = UIColor(r: 244, g: 244, b: 244)
     $0.layer.cornerRadius = 8
     $0.layer.borderWidth = 1
-    $0.layer.borderColor = UIColor(r: 244, g: 244, b: 244).cgColor
+    $0.layer.borderColor = UIColor(r: 208, g: 208, b: 208).cgColor
   }
   
   let locationValueLabel = UILabel().then {
