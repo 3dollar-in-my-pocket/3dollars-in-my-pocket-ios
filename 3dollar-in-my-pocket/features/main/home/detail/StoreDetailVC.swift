@@ -380,7 +380,7 @@ class StoreDetailVC: BaseVC {
       $0.delegate = self
     }
     
-    self.present(photoDetailVC, animated: false, completion: nil)
+    self.present(photoDetailVC, animated: true, completion: nil)
   }
   
   private func goToPhotoList(storeId: Int) {
