@@ -120,9 +120,10 @@
 "store_detail_share_button" = "놀러가기";
 "store_detail_header_info" = "가게정보";
 "store_detail_header_modify_info" = "정보수정";
-"store_detail_header_photo" = "가게사진 %d개";
+"store_detail_header_photo" = "가게사진";
+"store_detail_header_count" = "%d개";
 "store_detail_header_add_photo" = "사진제보";
-"store_detail_header_review" = "리뷰 %d개";
+"store_detail_header_review" = "리뷰";
 "store_detail_header_add_review" = "리뷰쓰기";
 "store_detail_info_empty" = "아직 등록된 정보가 없어요.";
 "store_detail_register_photo" = "사진 제보";
