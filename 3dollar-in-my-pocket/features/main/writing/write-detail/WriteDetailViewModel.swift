@@ -17,7 +17,7 @@ class WriteDetailViewModel: BaseViewModel {
   struct Input {
     let storeName = PublishSubject<String>()
     let tapDay = PublishSubject<WeekDay>()
-    let tapStoreType = PublishSubject<StoreType>()
+    let tapStoreType = BehaviorSubject<StoreType?>(value: nil)
     let tapPaymentType = PublishSubject<PaymentType>()
     let tapAddCategory = PublishSubject<Void>()
     let tapCategoryDelete = PublishSubject<Int>()
@@ -32,7 +32,7 @@ class WriteDetailViewModel: BaseViewModel {
   struct Output {
     let address = PublishRelay<String>()
     let storeNameIsEmpty = PublishRelay<Bool>()
-    let selectType = PublishRelay<StoreType>()
+    let selectType = PublishRelay<StoreType?>()
     let selectPaymentType = PublishRelay<[PaymentType]>()
     let selectDays = PublishRelay<[WeekDay]>()
     let categories = PublishRelay<[StoreCategory?]>()
