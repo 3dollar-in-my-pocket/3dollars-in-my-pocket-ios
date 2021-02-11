@@ -198,6 +198,7 @@ class ModifyVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.viewModel.output.menus
+      .do(onNext: self.modifyView.setMenuHeader)
       .bind(to: self.modifyView.menuTableView.rx.items(dataSource:self.menuDataSource))
       .disposed(by: disposeBag)
     
