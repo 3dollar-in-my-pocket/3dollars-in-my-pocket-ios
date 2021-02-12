@@ -269,6 +269,7 @@ class ModifyView: BaseView {
     
     self.addressLabel.snp.makeConstraints { make in
       make.left.equalTo(self.addressContainer).offset(24)
+      make.right.equalTo(self.addressContainer).offset(-24)
       make.centerY.equalTo(self.addressContainer)
     }
     

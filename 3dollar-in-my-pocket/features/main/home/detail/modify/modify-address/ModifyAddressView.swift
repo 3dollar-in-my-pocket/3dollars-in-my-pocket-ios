@@ -55,7 +55,6 @@ class ModifyAddressView: BaseView {
   }
   
   let addressLabel = UILabel().then {
-    $0.text = "주소주소"
     $0.textAlignment = .center
     $0.textColor = UIColor(r: 28, g: 28, b: 28)
     $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
