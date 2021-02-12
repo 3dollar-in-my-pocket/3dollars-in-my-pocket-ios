@@ -38,7 +38,7 @@ struct ImageUtils {
   
   static func dataArrayFromImages(photos: [UIImage]) -> [Data] {
     let maximumLenth = 10 * 1024 * 1024
-    var compressionQuality: CGFloat = 1
+    var compressionQuality: CGFloat = 0.5
     var dataArray: [Data] = []
     
     let bcf = ByteCountFormatter()
