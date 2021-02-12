@@ -137,7 +137,7 @@
 "store_delete_title" = "삭제요청 하시는\n이유가 궁금해요!";
 "store_delete_description" = "3건 이상의 요청이 들어오면 자동 삭제됩니다.";
 "store_delete_menu_not_existed" = "없어진 가게에요.";
-"store_delete_menu_wrong_location" = "위치가 잘못됐어요.";
+"store_delete_menu_wrong_content" = "부적절한 내용이 있어요.";
 "store_delete_menu_overlap" = "중복 제보된 가게에요.";
 "store_delete_request_button" = "신고하기";
 "store_modify_title" = "가게 정보 수정";

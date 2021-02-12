@@ -45,8 +45,8 @@ class DeleteModalVC: BaseVC {
       .bind(to: self.viewModel.input.tapReason)
       .disposed(by: disposeBag)
     
-    self.deleteModalView.deleteMenuStackView.wronglocationButton.rx.tap
-      .map { DeleteReason.WRONGNOPOSITION }
+    self.deleteModalView.deleteMenuStackView.wrongContentButton.rx.tap
+      .map { DeleteReason.WRONGCONTENT }
       .bind(to: self.viewModel.input.tapReason)
       .disposed(by: disposeBag)
     

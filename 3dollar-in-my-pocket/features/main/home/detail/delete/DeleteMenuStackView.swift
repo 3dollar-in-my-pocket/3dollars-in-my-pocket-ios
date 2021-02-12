@@ -6,8 +6,8 @@ class DeleteMenuStackView: UIStackView {
     $0.setTitle("store_delete_menu_not_existed".localized, for: .normal)
   }
   
-  let wronglocationButton = DeleteMenuButton().then {
-    $0.setTitle("store_delete_menu_wrong_location".localized, for: .normal)
+  let wrongContentButton = DeleteMenuButton().then {
+    $0.setTitle("store_delete_menu_wrong_content".localized, for: .normal)
   }
   
   let overlapButton = DeleteMenuButton().then {
@@ -30,8 +30,8 @@ class DeleteMenuStackView: UIStackView {
     switch deleteReason {
     case .NOSTORE:
       self.notExistedButton.isSelected = true
-    case .WRONGNOPOSITION:
-      self.wronglocationButton.isSelected = true
+    case .WRONGCONTENT:
+      self.wrongContentButton.isSelected = true
     case .OVERLAPSTORE:
       self.overlapButton.isSelected = true
     }
@@ -45,7 +45,7 @@ class DeleteMenuStackView: UIStackView {
     self.distribution = .equalSpacing
     
     self.addArrangedSubview(notExistedButton)
-    self.addArrangedSubview(wronglocationButton)
+    self.addArrangedSubview(wrongContentButton)
     self.addArrangedSubview(overlapButton)
   }
   
@@ -55,7 +55,7 @@ class DeleteMenuStackView: UIStackView {
       make.left.right.equalToSuperview()
     }
     
-    self.wronglocationButton.snp.makeConstraints { make in
+    self.wrongContentButton.snp.makeConstraints { make in
       make.height.equalTo(40)
       make.left.right.equalToSuperview()
     }
