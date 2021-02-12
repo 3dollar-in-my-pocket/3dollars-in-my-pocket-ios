@@ -47,7 +47,6 @@ class ModifyView: BaseView {
   let addressLabel = UILabel().then {
     $0.textColor = UIColor(r: 28, g: 28, b: 28)
     $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 18)
-    $0.text = "서울특별시 관악구\n독립문로 14길"
     $0.numberOfLines = 0
   }
   
@@ -257,7 +256,7 @@ class ModifyView: BaseView {
     }
     
     self.editButton.snp.makeConstraints { make in
-      make.centerY.equalTo(mapView.snp.bottom)
+      make.centerY.equalTo(self.addressContainer)
       make.right.equalTo(self.addressContainer).offset(-19)
     }
     
@@ -265,7 +264,7 @@ class ModifyView: BaseView {
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
       make.top.equalTo(self.editButton).offset(-23)
-      make.bottom.equalTo(self.editButton).offset(23)
+      make.bottom.equalTo(self.mapView).offset(-24)
     }
     
     self.addressLabel.snp.makeConstraints { make in
@@ -280,7 +279,7 @@ class ModifyView: BaseView {
     
     self.storeInfoLabel.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.top.equalTo(self.addressContainer.snp.bottom).offset(33)
+      make.top.equalTo(self.mapView.snp.bottom).offset(40)
     }
     
     self.storeInfoContainer.snp.makeConstraints { make in
