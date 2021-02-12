@@ -47,11 +47,6 @@ class ModifyVC: BaseVC {
     self.modifyView.scrollView.delegate = self
     self.addObservers()
     self.initilizeNaverMap()
-  }
-  
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    
     self.viewModel.fetchStore()
   }
   
