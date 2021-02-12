@@ -4,6 +4,7 @@ import NMapsMap
 class OverviewCell: BaseTableViewCell {
   
   static let registerId = "\(OverviewCell.self)"
+  var marker = NMFMarker()
   
   let mapView = NMFMapView().then {
     $0.contentMode = .scaleAspectFill
@@ -75,6 +76,10 @@ class OverviewCell: BaseTableViewCell {
     $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
   }
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.marker.mapView = nil
+  }
   
   override func setup() {
     backgroundColor = .clear
@@ -193,9 +198,10 @@ class OverviewCell: BaseTableViewCell {
   }
   
   private func setupMarker(latitude: Double, longitude: Double) {
+    self.marker.mapView = nil
     let position = NMGLatLng(lat: latitude, lng: longitude)
     let iconImage = NMFOverlayImage(name: "ic_marker")
-    let marker = NMFMarker(position: position, iconImage: iconImage)
+    self.marker = NMFMarker(position: position, iconImage: iconImage)
     let cameraUpdate = NMFCameraUpdate(scrollTo: position).then {
       $0.animation = .easeIn
     }
