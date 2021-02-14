@@ -140,6 +140,7 @@
 "store_delete_menu_wrong_content" = "부적절한 내용이 있어요.";
 "store_delete_menu_overlap" = "중복 제보된 가게에요.";
 "store_delete_request_button" = "신고하기";
+"store_delete_already_request" = "이미 삭제요청한 가게에요.";
 "store_modify_title" = "가게 정보 수정";
 "store_modify_address_title" = "가게 위치 수정";
 "register_photo_title" = "사진 제보";

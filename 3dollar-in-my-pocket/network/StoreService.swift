@@ -267,6 +267,10 @@ struct StoreService: StoreServiceProtocol {
         if response.isSuccess() {
           observer.onNext("success")
           observer.onCompleted()
+        } else if response.response?.statusCode == 400 {
+          let error = CommonError(desc: "store_delete_already_request".localized)
+          
+          observer.onError(error)
         } else {
           observer.processHTTPError(response: response)
         }
