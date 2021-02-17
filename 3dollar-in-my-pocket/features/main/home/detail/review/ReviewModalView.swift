@@ -181,6 +181,7 @@ class ReviewModalView: BaseView {
     self.registerButton.setTitle("review_modal_modify".localized, for: .normal)
     self.onTapStackView(tappedIndex: review.rating)
     self.reviewTextView.text = review.contents
+    self.reviewTextView.textColor = .black
     
     if review.contents.isEmpty {
       self.reviewTextView.layer.borderColor = UIColor(r: 223, g: 223, b: 223).cgColor

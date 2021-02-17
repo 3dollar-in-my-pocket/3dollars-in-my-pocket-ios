@@ -115,7 +115,7 @@ class PhotoDetailVC: BaseVC {
   }
   
   private func dismiss() {
-    self.dismiss(animated: false, completion: nil)
+    self.dismiss(animated: true, completion: nil)
     self.delegate?.onClose()
   }
   

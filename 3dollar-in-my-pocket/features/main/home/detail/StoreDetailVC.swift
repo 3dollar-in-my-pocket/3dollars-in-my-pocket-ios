@@ -160,6 +160,8 @@ class StoreDetailVC: BaseVC {
                 for: indexPath
         ) as? OverviewCell else { return BaseTableViewCell() }
         
+        cell.mapView.positionMode = .direction
+        cell.mapView.zoomLevel = 17
         cell.bind(store: dataSource.sectionModels[indexPath.section].store)
         cell.currentLocationButton.rx.tap
           .do { _ in
@@ -378,7 +380,7 @@ class StoreDetailVC: BaseVC {
       $0.delegate = self
     }
     
-    self.present(photoDetailVC, animated: false, completion: nil)
+    self.present(photoDetailVC, animated: true, completion: nil)
   }
   
   private func goToPhotoList(storeId: Int) {

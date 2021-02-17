@@ -1,10 +1,6 @@
 import UIKit
 
-class DayStackView: UIStackView {
-  
-  let dayStackSize: DayStackViewSize
-  let itemWidth: Int
-  let fontSize: CGFloat
+class DayStackInputView: UIStackView {
   
   let sundayButton = UIButton().then {
     $0.layer.masksToBounds = true
@@ -12,6 +8,8 @@ class DayStackView: UIStackView {
     $0.layer.borderColor = UIColor(r: 208, g: 208, b: 208).cgColor
     $0.setTitle("write_store_sunday".localized, for: .normal)
     $0.setTitleColor(UIColor(r: 255, g: 161, b: 170), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16)
+    $0.layer.cornerRadius = CGFloat(18)
   }
   
   let mondayButton = UIButton().then {
@@ -20,6 +18,8 @@ class DayStackView: UIStackView {
     $0.layer.borderColor = UIColor(r: 208, g: 208, b: 208).cgColor
     $0.setTitle("write_store_monday".localized, for: .normal)
     $0.setTitleColor(UIColor(r: 255, g: 161, b: 170), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16)
+    $0.layer.cornerRadius = CGFloat(18)
   }
   
   let tuesdayButton = UIButton().then {
@@ -28,6 +28,8 @@ class DayStackView: UIStackView {
     $0.layer.borderColor = UIColor(r: 208, g: 208, b: 208).cgColor
     $0.setTitle("write_store_tuesday".localized, for: .normal)
     $0.setTitleColor(UIColor(r: 255, g: 161, b: 170), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16)
+    $0.layer.cornerRadius = CGFloat(18)
   }
   
   let wednesday = UIButton().then {
@@ -36,6 +38,8 @@ class DayStackView: UIStackView {
     $0.layer.borderColor = UIColor(r: 208, g: 208, b: 208).cgColor
     $0.setTitle("write_store_wednesday".localized, for: .normal)
     $0.setTitleColor(UIColor(r: 255, g: 161, b: 170), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16)
+    $0.layer.cornerRadius = CGFloat(18)
   }
   
   let thursday = UIButton().then {
@@ -44,6 +48,8 @@ class DayStackView: UIStackView {
     $0.layer.borderColor = UIColor(r: 208, g: 208, b: 208).cgColor
     $0.setTitle("write_store_thursday".localized, for: .normal)
     $0.setTitleColor(UIColor(r: 255, g: 161, b: 170), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16)
+    $0.layer.cornerRadius = CGFloat(18)
   }
   
   let friday = UIButton().then {
@@ -52,6 +58,8 @@ class DayStackView: UIStackView {
     $0.layer.borderColor = UIColor(r: 208, g: 208, b: 208).cgColor
     $0.setTitle("write_store_friday".localized, for: .normal)
     $0.setTitleColor(UIColor(r: 255, g: 161, b: 170), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16)
+    $0.layer.cornerRadius = CGFloat(18)
   }
   
   let saturday = UIButton().then {
@@ -60,20 +68,15 @@ class DayStackView: UIStackView {
     $0.layer.borderColor = UIColor(r: 208, g: 208, b: 208).cgColor
     $0.setTitle("write_store_saturday".localized, for: .normal)
     $0.setTitleColor(UIColor(r: 255, g: 161, b: 170), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16)
+    $0.layer.cornerRadius = CGFloat(18)
   }
   
-  init(dayStackSize: DayStackViewSize){
-    self.dayStackSize = dayStackSize
-    if dayStackSize == .normal {
-      self.fontSize = 16
-      self.itemWidth = 36
-    } else {
-      self.fontSize = 12
-      self.itemWidth = 24
-    }
-    super.init(frame: .zero)
-    setup()
-    bindConstraints()
+  override init(frame: CGRect){
+    super.init(frame: frame)
+    
+    self.setup()
+    self.bindConstraints()
   }
   
   required init(coder: NSCoder) {
@@ -104,51 +107,35 @@ class DayStackView: UIStackView {
     self.addArrangedSubview(thursday)
     self.addArrangedSubview(friday)
     self.addArrangedSubview(saturday)
-    
-    self.sundayButton.layer.cornerRadius = CGFloat(self.itemWidth/2)
-    self.mondayButton.layer.cornerRadius = CGFloat(self.itemWidth/2)
-    self.tuesdayButton.layer.cornerRadius = CGFloat(self.itemWidth/2)
-    self.wednesday.layer.cornerRadius = CGFloat(self.itemWidth/2)
-    self.thursday.layer.cornerRadius = CGFloat(self.itemWidth/2)
-    self.friday.layer.cornerRadius = CGFloat(self.itemWidth/2)
-    self.saturday.layer.cornerRadius = CGFloat(self.itemWidth/2)
-    
-    self.sundayButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: self.fontSize)
-    self.mondayButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: self.fontSize)
-    self.tuesdayButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: self.fontSize)
-    self.wednesday.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: self.fontSize)
-    self.thursday.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: self.fontSize)
-    self.friday.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: self.fontSize)
-    self.saturday.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: self.fontSize)
   }
   
   private func bindConstraints() {
     self.sundayButton.snp.makeConstraints { make in
-      make.width.height.equalTo(self.itemWidth)
+      make.width.height.equalTo(36)
     }
     
     self.mondayButton.snp.makeConstraints { make in
-      make.width.height.equalTo(self.itemWidth)
+      make.width.height.equalTo(36)
     }
     
     self.tuesdayButton.snp.makeConstraints { make in
-      make.width.height.equalTo(self.itemWidth)
+      make.width.height.equalTo(36)
     }
     
     self.wednesday.snp.makeConstraints { make in
-      make.width.height.equalTo(self.itemWidth)
+      make.width.height.equalTo(36)
     }
     
     self.thursday.snp.makeConstraints { make in
-      make.width.height.equalTo(self.itemWidth)
+      make.width.height.equalTo(36)
     }
     
     self.friday.snp.makeConstraints { make in
-      make.width.height.equalTo(self.itemWidth)
+      make.width.height.equalTo(36)
     }
     
     self.saturday.snp.makeConstraints { make in
-      make.width.height.equalTo(self.itemWidth)
+      make.width.height.equalTo(36)
     }
   }
   
@@ -169,8 +156,4 @@ class DayStackView: UIStackView {
       button.layer.borderWidth = 1
     }
   }
-}
-
-enum DayStackViewSize {
-  case small, normal
 }

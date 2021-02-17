@@ -35,6 +35,11 @@ class ModifyAddressVC: BaseVC {
     
     self.setupMap()
     self.setupLocationManager()
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    
     self.viewModel.fetchLocation()
   }
   
@@ -77,6 +82,7 @@ class ModifyAddressVC: BaseVC {
   
   private func setupMap() {
     self.modifyAddressView.mapView.positionMode = .direction
+    self.modifyAddressView.mapView.zoomLevel = 17
     self.modifyAddressView.mapView.addCameraDelegate(delegate: self)
   }
   

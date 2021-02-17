@@ -35,7 +35,7 @@ class StoreInfoCell: BaseTableViewCell {
     $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
   }
   
-  let dayStackView = DayStackView(dayStackSize: .small)
+  let dayStackView = DayStackView()
   
   let storeDaysEmptyLabel = UILabel().then {
     $0.textColor = UIColor(r: 183, g: 183, b: 183)

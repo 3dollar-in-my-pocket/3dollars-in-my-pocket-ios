@@ -45,9 +45,9 @@ class ModifyVC: BaseVC {
     self.view = modifyView
     self.modifyView.bind(store: self.store)
     self.modifyView.scrollView.delegate = self
-    self.viewModel.fetchStore()
     self.addObservers()
     self.initilizeNaverMap()
+    self.viewModel.fetchStore()
   }
   
   override func observeValue(
@@ -198,6 +198,7 @@ class ModifyVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.viewModel.output.menus
+      .do(onNext: self.modifyView.setMenuHeader)
       .bind(to: self.modifyView.menuTableView.rx.items(dataSource:self.menuDataSource))
       .disposed(by: disposeBag)
     
@@ -339,6 +340,7 @@ class ModifyVC: BaseVC {
   
   private func initilizeNaverMap() {
     self.modifyView.mapView.positionMode = .direction
+    self.modifyView.mapView.zoomLevel = 17
   }
   
   private func moveCamera(latitude: Double, longitude: Double) {

@@ -55,7 +55,6 @@ class ModifyAddressView: BaseView {
   }
   
   let addressLabel = UILabel().then {
-    $0.text = "주소주소"
     $0.textAlignment = .center
     $0.textColor = UIColor(r: 28, g: 28, b: 28)
     $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
@@ -114,8 +113,8 @@ class ModifyAddressView: BaseView {
     }
     
     self.currentLocationButton.snp.makeConstraints { make in
-      make.right.equalToSuperview().offset(-24)
-      make.bottom.equalTo(self.bottomContainer.snp.top).offset(-8)
+      make.right.equalToSuperview().offset(-12)
+      make.bottom.equalTo(self.bottomContainer.snp.top)
     }
     
     self.addressButton.snp.makeConstraints { make in

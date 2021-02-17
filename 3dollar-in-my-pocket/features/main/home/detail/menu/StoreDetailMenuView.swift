@@ -47,7 +47,7 @@ class StoreDetailMenuView: BaseView {
   private func drawDash() {
     let bzPath = UIBezierPath()
     bzPath.lineWidth = 1
-    bzPath.lineCapStyle = .butt
+    bzPath.lineCapStyle = .round
 
     let startingPoint = CGPoint(x: self.nameLabel.frame.maxX + 8, y: self.nameLabel.frame.midY)
     let endingPoint = CGPoint(x: self.priceLabel.frame.minX - 8, y: self.nameLabel.frame.midY)
@@ -55,7 +55,7 @@ class StoreDetailMenuView: BaseView {
     bzPath.move(to: startingPoint)
     bzPath.addLine(to: endingPoint)
     bzPath.close()
-    bzPath.setLineDash([3, 3], count: 2, phase: 0)
+    bzPath.setLineDash([3, 10], count: 2, phase: 0)
     UIColor(r: 226, g: 226, b: 226).set()
     bzPath.stroke()
   }

@@ -24,7 +24,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   // MARK: UISceneSession Lifecycle
   
-  func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+  func application(
+    _ application: UIApplication,
+    configurationForConnecting connectingSceneSession: UISceneSession,
+    options: UIScene.ConnectionOptions
+  ) -> UISceneConfiguration {
     // Called when a new scene session is being created.
     // Use this method to select a configuration to create the new scene with.
     return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
@@ -45,16 +49,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   private func initilizeSwiftyBeaver() {
     let console = ConsoleDestination()
-    let platform = SBPlatformDestination(
-      appID: "g6PNqN",
-      appSecret: "sxvb0isaxBuyz95xtqajnwrbfM3Dw7Bd",
-      encryptionKey: "yybiGqoyhddpxgp2fmghh9Zcyqacpe5u"
-    )
     
-    platform.minLevel = .warning
     console.format = "$DHH:mm:ss.SSS$d $C$L$c $N.$F:$l - $M"
     Log.addDestination(console)
-    Log.addDestination(platform)
   }
   
   private func initilizeKakao() {
