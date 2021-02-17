@@ -27,6 +27,6 @@ struct StoreCard: Codable {
     latitude = try values.decodeIfPresent(Double.self, forKey: .latitude) ?? -1
     longitude = try values.decodeIfPresent(Double.self, forKey: .longitude) ?? -1
     storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
-    rating = try values.decodeIfPresent(Float.self, forKey: .rating) ?? -1
+    rating = try values.decodeIfPresent(Float.self, forKey: .rating) ?? 0
   }
 }

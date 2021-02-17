@@ -7,119 +7,189 @@ class ModifyView: BaseView {
     $0.cancelsTouchesInView = false
   }
   
-  let navigationBar = UIView().then {
+  let navigationView = UIView().then {
+    $0.layer.cornerRadius = 20
+    $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+    
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOpacity = 0.04
     $0.backgroundColor = .white
   }
   
-  let backBtn = UIButton().then {
+  let backButton = UIButton().then {
     $0.setImage(UIImage.init(named: "ic_back_black"), for: .normal)
   }
   
   let titleLabel = UILabel().then {
-    $0.text = "가게 정보 수정"
-    $0.textColor = UIColor.init(r: 51, g: 51, b: 51)
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+    $0.text = "store_modify_title".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.textColor = .black
   }
   
-  let deleteBtn = UIButton().then {
-    $0.setTitle("신고", for: .normal)
-    $0.setTitleColor(UIColor.init(r: 130, g: 130, b: 130), for: .normal)
-    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
+  let scrollView = UIScrollView().then {
+    $0.showsVerticalScrollIndicator = false
+    $0.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 98, right: 0)
   }
+  
+  let containerView = UIView()
   
   let mapView = NMFMapView()
   
-  let titleContainer = UIView().then {
+  let addressContainer = UIView().then {
     $0.backgroundColor = .white
     $0.layer.cornerRadius = 12
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOpacity = 0.04
+    $0.layer.shadowOffset = CGSize(width: 8, height: 8)
   }
   
-  let repoterValueLabel = UILabel().then {
-    $0.textColor = .black
-    $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 24)
-    
-    let text = "효자동 불효자 님이"
-    let attributedText = NSMutableAttributedString(string: text)
-    
-    attributedText.addAttribute(.font, value: UIFont.init(name: "SpoqaHanSans-Bold", size: 24)!, range: (text as NSString).range(of: "효자동 불효자"))
-    $0.attributedText = attributedText
+  let addressLabel = UILabel().then {
+    $0.textColor = UIColor(r: 28, g: 28, b: 28)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 18)
+    $0.numberOfLines = 0
   }
   
-  let repoterLabel = UILabel().then {
-    $0.text = "제보한 가게입니다."
-    $0.textColor = .black
-    $0.font = UIFont.init(name: "SpoqaHanSans-Light", size: 24)
+  let editButton = UIButton().then {
+    $0.setImage(UIImage(named: "ic_edit"), for: .normal)
   }
+  
+  let storeInfoLabel = UILabel().then {
+    $0.text = "write_store_info".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
+    $0.textColor = .black
+  }
+  
+  let storeInfoContainer = UIView().then {
+    $0.backgroundColor = .white
+  }
+  
+  let storeNameLabel = UILabel().then {
+    $0.text = "write_store_info_name".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.textColor = .black
+  }
+  
+  let storeNameContainer = UIView().then {
+    $0.layer.cornerRadius = 8
+    $0.layer.borderWidth = 1
+    $0.layer.borderColor = UIColor(r: 244, g: 244, b: 244).cgColor
+  }
+  
+  let storeNameField = UITextField().then {
+    $0.textColor = .black
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.placeholder = "write_store_info_name_placeholder".localized
+  }
+  
+  let storeTypeLabel = UILabel().then {
+    $0.text = "write_store_type".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
+    $0.textColor = .black
+  }
+  
+  let storeTypeOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let storeTypeStackView = WriteDetailTypeStackView()
+  
+  let paymentTypeLabel = UILabel().then {
+    $0.text = "write_store_payment_type".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.textColor = .black
+  }
+  
+  let paymentTypeOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let paymentTypeMultiLabel = UILabel().then {
+    $0.text = "write_store_payment_multi".localized
+    $0.textColor = UIColor(r: 255, g: 161, b: 170)
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12)
+  }
+  
+  let paymentStackView = WriteDetailPaymentStackView()
+  
+  let daysLabel = UILabel().then {
+    $0.text = "write_store_days".localized
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.textColor = .black
+  }
+  
+  let daysOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let dayStackView = DayStackInputView()
   
   let categoryLabel = UILabel().then {
-    $0.text = "붕어빵"
-    $0.layer.cornerRadius = 8
-    $0.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
-    $0.textColor = UIColor.init(r: 243, g: 162, b: 169)
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-    $0.textAlignment = .center
-    $0.layer.masksToBounds = true
+    $0.text = "write_store_category".localized
+    $0.textColor = .black
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
   }
   
-  let nameField = UITextField().then {
-    $0.layer.cornerRadius = 8
-    $0.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
-    $0.layer.borderWidth = 1
-    $0.returnKeyType = .done
-    $0.text = "강남역 2번출구 앞"
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-    $0.textColor = UIColor.init(r: 28, g: 28, b: 28)
-    $0.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 10))
-    $0.leftViewMode = .always
-    $0.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 10))
-    $0.rightViewMode = .always
+  let deleteAllButton = UIButton().then {
+    $0.setTitle("write_store_delete_all_menu".localized, for: .normal)
+    $0.setTitleColor(UIColor(r: 255, g: 92, b: 67), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
   }
   
-  let imageLabel = UILabel().then {
-    $0.textColor = UIColor.init(r: 79, g: 79, b: 79)
-    $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
-    
-    let text = "총 3개의 사진 제보!"
-    let attributedText = NSMutableAttributedString(string: text)
-    
-    attributedText.addAttribute(.font, value: UIFont.init(name: "SpoqaHanSans-Bold", size: 16)!, range: (text as NSString).range(of: "3개"))
-    $0.attributedText = attributedText
+  let categoryContainer = UIView().then {
+    $0.backgroundColor = .white
   }
   
-  let imageCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
-    let layout = UICollectionViewFlowLayout()
+  let categoryCollectionView = UICollectionView(
+    frame: .zero,
+    collectionViewLayout: UICollectionViewFlowLayout()
+  ).then {
+    let layout = LeftAlignedCollectionViewFlowLayout()
     
-    layout.scrollDirection = .horizontal
-    $0.showsHorizontalScrollIndicator = false
+    layout.minimumInteritemSpacing = 16 * RatioUtils.widthRatio
+    layout.minimumLineSpacing = 20
+    layout.estimatedItemSize = CGSize(width: 52, height: 75)
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear
-    $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
   }
   
   let menuLabel = UILabel().then {
-    $0.textColor = UIColor.init(r: 79, g: 79, b: 79)
-    $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
-    
-    let text = "총 3개의 메뉴 제보!"
-    let attributedText = NSMutableAttributedString(string: text)
-    
-    attributedText.addAttribute(.font, value: UIFont.init(name: "SpoqaHanSans-Bold", size: 16)!, range: (text as NSString).range(of: "3개"))
-    $0.attributedText = attributedText
+    $0.text = "write_store_menu".localized
+    $0.textColor = .black
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
+    $0.isHidden = true
+  }
+  
+  let menuOptionLabel = UILabel().then {
+    $0.text = "write_store_option".localized
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+    $0.isHidden = true
   }
   
   let menuTableView = UITableView().then {
-    $0.backgroundColor = .clear
+    $0.backgroundColor = .white
     $0.isScrollEnabled = false
     $0.rowHeight = UITableView.automaticDimension
     $0.separatorStyle = .none
+    $0.sectionFooterHeight = 20
   }
   
-  let registerBtnBg = UIView().then {
+  let registerButtonBg = UIView().then {
     $0.layer.cornerRadius = 37
     
     let shadowLayer = CAShapeLayer()
     
-    shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 232, height: 72), cornerRadius: 37).cgPath
+    shadowLayer.path = UIBezierPath(
+      roundedRect: CGRect(x: 0, y: 0, width: 232, height: 72),
+      cornerRadius: 37
+    ).cgPath
     shadowLayer.fillColor = UIColor.init(r: 255, g: 255, b: 255, a: 0.6).cgColor
     shadowLayer.shadowColor = UIColor.black.cgColor
     shadowLayer.shadowPath = nil
@@ -129,7 +199,7 @@ class ModifyView: BaseView {
     $0.layer.insertSublayer(shadowLayer, at: 0)
   }
   
-  let registerBtn = UIButton().then {
+  let registerButton = UIButton().then {
     $0.setTitle("수정하기", for: .normal)
     $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
     $0.setBackgroundColor(UIColor.init(r: 200, g: 200, b: 200), for: .disabled)
@@ -137,295 +207,269 @@ class ModifyView: BaseView {
     $0.layer.masksToBounds = true
   }
   
-  let containerView = UIView().then {
-    $0.isUserInteractionEnabled = true
-  }
-  
-  let scrollView = UIScrollView().then {
-    $0.isUserInteractionEnabled = true
-  }
-  
-  lazy var dimView = UIView(frame: self.frame).then {
-    $0.backgroundColor = .clear
-  }
-  
   override func setup() {
-    backgroundColor = .white
-    scrollView.delegate = self
-    addGestureRecognizer(bgTap)
-    setupNavigationBar()
-    navigationBar.addSubViews(backBtn, titleLabel, deleteBtn)
-    containerView.addSubViews(mapView, titleContainer, repoterValueLabel,
-                              repoterLabel, categoryLabel, nameField, imageLabel, imageCollection,
-                              menuLabel, menuTableView)
-    scrollView.addSubViews(containerView)
-    addSubViews(scrollView, navigationBar, registerBtnBg, registerBtn)
-    setupContainerShadow()
+    self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
+    self.addGestureRecognizer(bgTap)
+    
+    self.containerView.addSubViews(
+      mapView, addressContainer, addressLabel, editButton,
+      storeInfoLabel, storeInfoContainer, storeNameLabel,
+      storeNameContainer, storeNameField, storeTypeLabel, storeTypeOptionLabel,
+      storeTypeStackView, paymentTypeLabel, paymentTypeOptionLabel,
+      paymentTypeMultiLabel, paymentStackView, daysLabel, daysOptionLabel,
+      dayStackView, categoryLabel, deleteAllButton, categoryContainer,
+      categoryCollectionView, menuLabel, menuOptionLabel, menuTableView
+    )
+    self.scrollView.addSubViews(containerView)
+    self.addSubViews(
+      scrollView, navigationView, backButton, titleLabel,
+      registerButtonBg, registerButton
+    )
   }
   
   override func bindConstraints() {
-    scrollView.snp.makeConstraints { (make) in
-      make.edges.equalTo(0)
-    }
-    
-    navigationBar.snp.makeConstraints { (make) in
+    self.navigationView.snp.makeConstraints { (make) in
       make.left.right.top.equalToSuperview()
-      make.height.equalTo(98)
+      make.bottom.equalTo(self.safeAreaLayoutGuide.snp.top).offset(60)
     }
     
-    backBtn.snp.makeConstraints { (make) in
-      make.top.equalToSuperview().offset(48)
+    self.backButton.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.width.height.equalTo(48)
+      make.centerY.equalTo(self.titleLabel)
     }
     
-    titleLabel.snp.makeConstraints { (make) in
+    self.titleLabel.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
-      make.centerY.equalTo(backBtn.snp.centerY)
+      make.bottom.equalTo(self.navigationView).offset(-22)
     }
     
-    deleteBtn.snp.makeConstraints { (make) in
-      make.centerY.equalTo(titleLabel)
-      make.right.equalToSuperview().offset(-24)
+    self.scrollView.snp.makeConstraints { (make) in
+      make.left.right.bottom.equalToSuperview()
+      make.top.equalTo(self.navigationView.snp.bottom)
     }
     
-    mapView.snp.makeConstraints { (make) in
-      make.left.right.equalToSuperview()
-      make.top.equalToSuperview().offset(43)
-      make.height.equalTo(336)
-    }
-    
-    titleContainer.snp.makeConstraints { (make) in
-      make.left.equalToSuperview().offset(24)
-      make.right.equalToSuperview().offset(-24)
-      make.centerY.equalTo(mapView.snp.bottom)
-      make.height.equalTo(150)
-    }
-    
-    repoterValueLabel.snp.makeConstraints { (make) in
-      make.left.equalTo(titleContainer).offset(16)
-      make.top.equalTo(titleContainer).offset(16)
-    }
-    
-    repoterLabel.snp.makeConstraints { (make) in
-      make.left.equalTo(repoterValueLabel)
-      make.top.equalTo(repoterValueLabel.snp.bottom).offset(-10)
-    }
-    
-    categoryLabel.snp.makeConstraints { (make) in
-      make.left.equalTo(repoterValueLabel)
-      make.bottom.equalTo(titleContainer).offset(-20)
-      make.width.equalTo(102)
-      make.height.equalTo(40)
-    }
-    
-    nameField.snp.makeConstraints { (make) in
-      make.centerY.equalTo(categoryLabel)
-      make.left.equalTo(categoryLabel.snp.right).offset(8)
-      make.right.equalTo(titleContainer).offset(-16)
-      make.height.equalTo(categoryLabel)
-    }
-    
-    imageLabel.snp.makeConstraints { (make) in
-      make.left.equalToSuperview().offset(24)
-      make.top.equalTo(titleContainer.snp.bottom).offset(40)
-    }
-    
-    imageCollection.snp.makeConstraints { (make) in
-      make.left.right.equalToSuperview()
-      make.top.equalTo(imageLabel.snp.bottom).offset(16)
-      make.height.equalTo(110)
-    }
-    
-    menuLabel.snp.makeConstraints { (make) in
-      make.left.equalToSuperview().offset(24)
-      make.top.equalTo(imageCollection.snp.bottom).offset(32)
-    }
-    
-    containerView.snp.makeConstraints { (make) in
+    self.containerView.snp.makeConstraints { (make) in
       make.edges.equalTo(0)
       make.width.equalTo(frame.width)
       make.top.equalToSuperview()
-      make.bottom.equalTo(menuTableView.snp.bottom)
+      make.bottom.equalTo(self.menuTableView)
     }
     
-    registerBtnBg.snp.makeConstraints { (make) in
+    self.editButton.snp.makeConstraints { make in
+      make.centerY.equalTo(self.addressContainer)
+      make.right.equalTo(self.addressContainer).offset(-19)
+    }
+    
+    self.addressContainer.snp.makeConstraints { (make) in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.editButton).offset(-23)
+      make.bottom.equalTo(self.mapView).offset(-24)
+    }
+    
+    self.addressLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.addressContainer).offset(24)
+      make.right.equalTo(self.addressContainer).offset(-24)
+      make.centerY.equalTo(self.addressContainer)
+    }
+    
+    self.mapView.snp.makeConstraints { make in
+      make.left.top.right.equalToSuperview()
+      make.height.equalTo(350)
+    }
+    
+    self.storeInfoLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.mapView.snp.bottom).offset(40)
+    }
+    
+    self.storeInfoContainer.snp.makeConstraints { make in
+      make.left.right.equalToSuperview()
+      make.top.equalTo(self.storeInfoLabel.snp.bottom).offset(16)
+      make.bottom.equalTo(self.dayStackView).offset(24)
+    }
+    
+    self.storeNameLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeInfoContainer).offset(30)
+    }
+    
+    self.storeNameContainer.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.storeNameLabel.snp.bottom).offset(10)
+      make.bottom.equalTo(self.storeNameField).offset(15)
+    }
+    
+    self.storeNameField.snp.makeConstraints { make in
+      make.left.equalTo(self.storeNameContainer).offset(16)
+      make.top.equalTo(self.storeNameContainer).offset(16)
+      make.right.equalTo(self.storeNameContainer).offset(-16)
+    }
+    
+    self.storeTypeLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeNameContainer.snp.bottom).offset(40)
+    }
+    
+    self.storeTypeOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.storeTypeLabel.snp.right).offset(6)
+      make.centerY.equalTo(self.storeTypeLabel)
+    }
+    
+    self.storeTypeStackView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeTypeLabel.snp.bottom).offset(17)
+    }
+    
+    self.paymentTypeLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeTypeStackView.snp.bottom).offset(40)
+    }
+
+    self.paymentTypeOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.paymentTypeLabel.snp.right).offset(6)
+      make.centerY.equalTo(self.paymentTypeLabel)
+    }
+
+    self.paymentTypeMultiLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.paymentTypeOptionLabel.snp.right).offset(7)
+      make.centerY.equalTo(self.paymentTypeLabel)
+    }
+    
+    self.paymentStackView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.paymentTypeLabel.snp.bottom).offset(16)
+    }
+    
+    self.daysLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.paymentStackView.snp.bottom).offset(40)
+    }
+    
+    self.daysOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.daysLabel.snp.right).offset(6)
+      make.centerY.equalTo(self.daysLabel)
+    }
+    
+    self.dayStackView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.daysLabel.snp.bottom).offset(13)
+    }
+    
+    self.categoryLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.storeInfoContainer.snp.bottom).offset(40)
+    }
+    
+    self.deleteAllButton.snp.makeConstraints { make in
+      make.right.equalToSuperview().offset(-24)
+      make.centerY.equalTo(self.categoryLabel)
+    }
+    
+    self.categoryContainer.snp.makeConstraints { make in
+      make.left.right.equalToSuperview()
+      make.top.equalTo(self.categoryLabel.snp.bottom).offset(16)
+      make.bottom.equalTo(self.categoryCollectionView).offset(24)
+    }
+    
+    self.categoryCollectionView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.categoryContainer).offset(24)
+      make.height.equalTo(72)
+    }
+    
+    self.menuLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.categoryContainer.snp.bottom).offset(40)
+    }
+    
+    self.menuOptionLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.menuLabel.snp.right).offset(4)
+      make.centerY.equalTo(self.menuLabel)
+    }
+    
+    self.menuTableView.snp.makeConstraints { make in
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+      make.top.equalTo(self.menuLabel.snp.bottom).offset(12)
+      make.height.equalTo(0)
+    }
+    
+    self.registerButtonBg.snp.makeConstraints { (make) in
       make.centerX.equalToSuperview()
       make.width.equalTo(232)
       make.height.equalTo(72)
       make.bottom.equalToSuperview().offset(-32)
     }
     
-    registerBtn.snp.makeConstraints { (make) in
-      make.left.equalTo(registerBtnBg.snp.left).offset(8)
-      make.right.equalTo(registerBtnBg.snp.right).offset(-8)
-      make.top.equalTo(registerBtnBg.snp.top).offset(8)
-      make.bottom.equalTo(registerBtnBg.snp.bottom).offset(-8)
+    self.registerButton.snp.makeConstraints { (make) in
+      make.left.equalTo(registerButtonBg.snp.left).offset(8)
+      make.right.equalTo(registerButtonBg.snp.right).offset(-8)
+      make.top.equalTo(registerButtonBg.snp.top).offset(8)
+      make.bottom.equalTo(registerButtonBg.snp.bottom).offset(-8)
     }
   }
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    refreshScrollViewHeight()
-    registerBtn.layer.cornerRadius = registerBtn.frame.height / 2
+    registerButton.layer.cornerRadius = registerButton.frame.height / 2
   }
   
-  override func layoutIfNeeded() {
-    super.layoutIfNeeded()
-    refreshScrollViewHeight()
+  func bind(store: Store) {
+    self.storeNameField.text = store.storeName
   }
   
-  func setFieldEmptyMode(isEmpty: Bool) {
-    if isEmpty {
-      nameField.layer.borderColor = UIColor.init(r: 223, g: 223, b: 223).cgColor
-    } else {
-      nameField.layer.borderColor = UIColor.init(r: 243, g: 162, b: 169).cgColor
+  func refreshCategoryCollectionViewHeight() {
+    self.categoryCollectionView.snp.updateConstraints { make in
+      make.height.equalTo(self.categoryCollectionView.contentSize.height)
     }
   }
   
-  private func refreshScrollViewHeight() {
-    menuTableView.snp.remakeConstraints({ (make) in
-      make.left.right.equalToSuperview()
-      make.top.equalTo(menuLabel.snp.bottom).offset(8)
-      make.height.equalTo(menuTableView.contentSize.height + 85)
-    })
-  }
-  
-  private func setupContainerShadow() {
-    let shadowLayer = CAShapeLayer()
-    
-    shadowLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 48, height: 150), cornerRadius: 12).cgPath
-    shadowLayer.fillColor = UIColor.white.cgColor
-    
-    shadowLayer.shadowColor = UIColor.black.cgColor
-    shadowLayer.shadowPath = nil
-    shadowLayer.shadowOffset = CGSize(width: 8.0, height: 8.0)
-    shadowLayer.shadowOpacity = 0.06
-    shadowLayer.shadowRadius = 5
-    
-    titleContainer.layer.insertSublayer(shadowLayer, at: 0)
-  }
-  
-  private func setupNavigationBar() {
-    navigationBar.layer.cornerRadius = 16
-    navigationBar.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-    
-    navigationBar.layer.shadowOffset = CGSize(width: 8, height: 8)
-    navigationBar.layer.shadowColor = UIColor.black.cgColor
-    navigationBar.layer.shadowOpacity = 0.08
-  }
-  
-  func setImageCount(count: Int) {
-    let text = "총 \(count)개의 사진 제보!"
-    let attributedText = NSMutableAttributedString(string: text)
-    
-    attributedText.addAttribute(.font, value: UIFont.init(name: "SpoqaHanSans-Bold", size: 16)!, range: (text as NSString).range(of: "\(count)개"))
-    imageLabel.attributedText = attributedText
-  }
-  
-  func setMenuCount(count: Int) {
-    let text = "총 \(count)개의 메뉴 제보!"
-    let attributedText = NSMutableAttributedString(string: text)
-    
-    attributedText.addAttribute(.font, value: UIFont.init(name: "SpoqaHanSans-Bold", size: 16)!, range: (text as NSString).range(of: "\(count)개"))
-    menuLabel.attributedText = attributedText
-  }
-  
-  func setCategory(category: StoreCategory?) {
-    switch category {
-    case .BUNGEOPPANG:
-      categoryLabel.text = "붕어빵"
-    case .GYERANPPANG:
-      categoryLabel.text = "계란빵"
-    case .HOTTEOK:
-      categoryLabel.text = "호떡"
-    case .TAKOYAKI:
-      categoryLabel.text = "문어빵"
-    default:
-      break
+  func refreshMenuTableViewHeight() {
+    menuTableView.snp.updateConstraints { make in
+      make.height.equalTo(self.menuTableView.contentSize.height)
     }
   }
   
-  func setTitle(title: String) {
-    nameField.text = title
+  func setStoreNameBorderColoe(isEmpty: Bool) {
+    self.storeNameContainer.layer.borderColor = isEmpty ? UIColor(r: 244, g: 244, b: 244).cgColor : UIColor(r: 255, g: 161, b: 170).cgColor
   }
   
-  func setRepoter(repoter: String) {
-    let text = "\(repoter) 님이"
-    let attributedText = NSMutableAttributedString(string: text)
-    
-    attributedText.addAttribute(.font, value: UIFont.init(name: "SpoqaHanSans-Bold", size: 24)!, range: (text as NSString).range(of: repoter))
-    repoterValueLabel.attributedText = attributedText
+  func setMenuHeader(menuSections: [MenuSection]) {
+    self.menuLabel.isHidden = menuSections.isEmpty
+    self.menuOptionLabel.isHidden = menuSections.isEmpty
   }
   
-  func addBgDim() {
-    DispatchQueue.main.async { [weak self] in
-      if let vc = self {
-        vc.addSubview(vc.dimView)
-        UIView.animate(withDuration: 0.3) {
-          vc.dimView.backgroundColor = UIColor.init(r: 0, g: 0, b: 0, a:0.3)
-        }
-      }
-      
-    }
-  }
-  
-  
-  func removeBgDim() {
-    DispatchQueue.main.async { [weak self] in
-      UIView.animate(withDuration: 0.3, animations: {
-        self?.dimView.backgroundColor = .clear
-      }) { (_) in
-        self?.dimView.removeFromSuperview()
-      }
-    }
-  }
-  
-  func hideRegisterBtn() {
-    if registerBtnBg.alpha != 0 {
-      let originalBgTransform = self.registerBtnBg.transform
-      let originalBtnTransform = self.registerBtn.transform
+  func hideRegisterButton() {
+    if registerButtonBg.alpha != 0 {
+      let originalBgTransform = self.registerButtonBg.transform
+      let originalBtnTransform = self.registerButton.transform
       
       UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-        self?.registerBtnBg.transform = originalBgTransform.translatedBy(x: 0.0, y: 90)
-        self?.registerBtnBg.alpha = 0
+        self?.registerButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: 90)
+        self?.registerButtonBg.alpha = 0
         
-        self?.registerBtn.transform = originalBtnTransform.translatedBy(x: 0.0, y: 90)
-        self?.registerBtn.alpha = 0
+        self?.registerButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: 90)
+        self?.registerButton.alpha = 0
       })
     }
   }
   
-  func showRegisterBtn() {
-    if registerBtnBg.alpha != 1 {
-      let originalBgTransform = self.registerBtnBg.transform
-      let originalBtnTransform = self.registerBtn.transform
+  func showRegisterButton() {
+    if registerButtonBg.alpha != 1 {
+      let originalBgTransform = self.registerButtonBg.transform
+      let originalBtnTransform = self.registerButton.transform
       
       UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-        self?.registerBtnBg.transform = originalBgTransform.translatedBy(x: 0.0, y: -90)
-        self?.registerBtnBg.alpha = 1
+        self?.registerButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: -90)
+        self?.registerButtonBg.alpha = 1
         
-        self?.registerBtn.transform = originalBtnTransform.translatedBy(x: 0.0, y: -90)
-        self?.registerBtn.alpha = 1
+        self?.registerButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: -90)
+        self?.registerButton.alpha = 1
       })
     }
   }
 }
-
-extension ModifyView: UIScrollViewDelegate {
-  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-    self.endEditing(true)
-    self.hideRegisterBtn()
-  }
-  
-  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-    if !decelerate {
-      self.showRegisterBtn()
-    }
-  }
-  
-  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-    self.showRegisterBtn()
-  }
-}
-

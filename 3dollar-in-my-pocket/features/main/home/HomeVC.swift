@@ -34,12 +34,12 @@ class HomeVC: BaseVC {
     view = homeView
     
     self.initilizeShopCollectionView()
-    self.initilizeLocationManager()
   }
   
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
+    self.initilizeLocationManager()
     self.addForegroundObserver()
   }
   
@@ -132,6 +132,7 @@ class HomeVC: BaseVC {
   }
   
   @objc private func initilizeLocationManager() {
+    self.isFirst = true
     locationManager.delegate = self
     locationManager.desiredAccuracy = kCLLocationAccuracyBest
     
@@ -167,7 +168,7 @@ class HomeVC: BaseVC {
   }
   
   private func goToDetail(storeId: Int) {
-    self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)
+    self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)
   }
   
   private func getNearestStore(latitude: Double, longitude: Double) {

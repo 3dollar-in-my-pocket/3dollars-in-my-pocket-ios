@@ -198,12 +198,12 @@ extension CategoryChildVC: UITableViewDelegate, UITableViewDataSource {
     case .DISTANCE:
       if let storeCard = self.viewModel.getDistanceStore(indexPath: indexPath) {
         GA.shared.logEvent(event: .store_list_item_clicked, page: .store_list_page)
-        self.navigationController?.pushViewController(DetailVC.instance(storeId: storeCard.id), animated: true)
+        self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeCard.id), animated: true)
       }
     case .REVIEW:
       if let storeCard = self.viewModel.getReviewStore(indexPath: indexPath) {
         GA.shared.logEvent(event: .store_list_item_clicked, page: .store_list_page)
-        self.navigationController?.pushViewController(DetailVC.instance(storeId: storeCard.id), animated: true)
+        self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeCard.id), animated: true)
       }
     }
   }

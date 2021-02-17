@@ -110,7 +110,7 @@ extension RegisteredVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
       let storeId = self.viewModel.stores[indexPath.row].id
       
-      self.navigationController?.pushViewController(DetailVC.instance(storeId: storeId), animated: true)  
+      self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)  
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

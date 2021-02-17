@@ -5,9 +5,15 @@ protocol StoreServiceProtocol {
   
   func getStoreOrderByNearest(latitude: Double, longitude: Double) -> Observable<[StoreCard]>
   
-  func saveStore(store: Store, images:[UIImage]) -> Observable<SaveResponse>
+  func saveStore(store: Store) -> Observable<SaveResponse>
   
-  func updateStore(storeId: Int, store: Store, images: [UIImage]) -> Observable<String>
+  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String>
+  
+  func getPhotos(storeId: Int) -> Observable<[Image]>
+  
+  func deletePhoto(storeId: Int, photoId: Int) -> Observable<String>
+  
+  func updateStore(storeId: Int, store: Store) -> Observable<String>
   
   func getStoreDetail(storeId: Int, latitude: Double, longitude: Double) -> Observable<Store>
   
@@ -43,37 +49,23 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func saveStore(store: Store, images:[UIImage]) -> Observable<SaveResponse> {
+  func saveStore(store: Store) -> Observable<SaveResponse> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/store/save"
       let headers = HTTPUtils.defaultHeader()
       var parameters = store.toJson()
       
       parameters["userId"] = "\(UserDefaultsUtil.getUserId()!)"
-      parameters["menu"] = nil
-      parameters["image"] = nil
-      parameters["review"] = nil
       
-      // 배열로 보냈을 경우 서버에서 못받아서 일단 임시로 필드처럼 해서 보냄 ㅠㅠ
       for index in store.menus.indices {
         let menu = store.menus[index]
         
+        parameters["menu[\(index)].category"] = menu.category?.rawValue ?? StoreCategory.BUNGEOPPANG
         parameters["menu[\(index)].name"] = menu.name
         parameters["menu[\(index)].price"] = menu.price
       }
       
-      HTTPUtils.fileUploadSession.upload(multipartFormData: { (multipartFormData) in
-        for index in images.indices {
-          let image = images[index]
-          
-          multipartFormData.append(
-            image.jpegData(compressionQuality: 0.5)!,
-            withName: "image",
-            fileName: "image\(index).jpeg",
-            mimeType: "image/jpeg"
-          )
-        }
-        
+      HTTPUtils.fileUploadSession.upload(multipartFormData: { multipartFormData in
         for (key, value) in parameters {
           let stringValue = String(describing: value)
           
@@ -90,35 +82,105 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func updateStore(storeId: Int, store: Store, images: [UIImage]) -> Observable<String> {
+  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v1/store/\(storeId)/images"
+      let headers = HTTPUtils.defaultHeader()
+      
+      HTTPUtils.fileUploadSession.upload(
+        multipartFormData: { multipartFormData in
+          for data in ImageUtils.dataArrayFromImages(photos: photos) {
+            multipartFormData.append(
+              data,
+              withName: "image",
+              fileName: "image.jpeg",
+              mimeType: "image/jpeg"
+            )
+          }
+          multipartFormData.append("\(storeId)".data(using: .utf8)!, withName: "storeId")
+        },
+        to: urlString,
+        headers: headers
+      )
+      .responseString { response in
+        if let statusCode = response.response?.statusCode {
+          if "\(statusCode)".first! == "2" {
+            observer.onNext("success")
+            observer.onCompleted()
+          }
+        } else {
+          observer.processHTTPError(response: response)
+        }
+      }
+      
+      return Disposables.create()
+    }
+  }
+  
+  func getPhotos(storeId: Int) -> Observable<[Image]> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v1/store/\(storeId)/images"
+      let headers = HTTPUtils.defaultHeader()
+      
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .get,
+        headers: headers
+      )
+      .responseJSON { response in
+        if response.isSuccess() {
+          observer.processValue(class: [Image].self, response: response)
+        } else {
+          observer.processHTTPError(response: response)
+        }
+      }
+      
+      return Disposables.create()
+    }
+  }
+  
+  func deletePhoto(storeId: Int, photoId: Int) -> Observable<String> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v1/store/\(storeId)/images/\(photoId)"
+      let headers = HTTPUtils.defaultHeader()
+      
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .delete,
+        headers: headers
+      )
+      .responseString { response in
+        if let statusCode = response.response?.statusCode {
+          if "\(statusCode)".first! == "2" {
+            observer.onNext("success")
+            observer.onCompleted()
+          }
+        } else {
+          observer.processHTTPError(response: response)
+        }
+      }
+      
+      return Disposables.create()
+    }
+  }
+  
+  func updateStore(storeId: Int, store: Store) -> Observable<String> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/store/update"
       let headers = HTTPUtils.defaultHeader()
       var parameters = store.toJson()
       
-      parameters["menu"] = nil
-      parameters["image"] = nil
-      parameters["review"] = nil
       parameters["storeId"] = storeId
       
       for index in store.menus.indices {
         let menu = store.menus[index]
         
+        parameters["menu[\(index)].category"] = menu.category?.rawValue ?? StoreCategory.BUNGEOPPANG
         parameters["menu[\(index)].name"] = menu.name
         parameters["menu[\(index)].price"] = menu.price
       }
       
-      HTTPUtils.fileUploadSession.upload(multipartFormData: { (multipartFormData) in
-        for index in images.indices {
-          let image = images[index]
-          
-          multipartFormData.append(
-            image.jpegData(compressionQuality: 0.5)!,
-            withName: "image",
-            fileName: "image\(index).jpeg",
-            mimeType: "image/jpeg"
-          )
-        }
+      HTTPUtils.fileUploadSession.upload(multipartFormData: { multipartFormData in
         for (key, value) in parameters {
           let stringValue = String(describing: value)
           
@@ -126,7 +188,7 @@ struct StoreService: StoreServiceProtocol {
         }
       }, to: urlString, method: .put, headers: headers).responseString(completionHandler: { response in
         if response.isSuccess() {
-          observer.onNext(response.value ?? "")
+          observer.onNext("success")
           observer.onCompleted()
         } else {
           observer.processHTTPError(response: response)
@@ -205,6 +267,10 @@ struct StoreService: StoreServiceProtocol {
         if response.isSuccess() {
           observer.onNext("success")
           observer.onCompleted()
+        } else if response.response?.statusCode == 400 {
+          let error = CommonError(desc: "store_delete_already_request".localized)
+          
+          observer.onError(error)
         } else {
           observer.processHTTPError(response: response)
         }

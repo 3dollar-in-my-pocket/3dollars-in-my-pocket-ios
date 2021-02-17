@@ -117,7 +117,7 @@ class MyPageView: BaseView {
     }
     
     nicknameBg.snp.makeConstraints { (make) in
-      make.top.equalToSuperview().offset(40)
+      make.top.equalTo(safeAreaLayoutGuide).offset(35)
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
       make.height.equalTo(44)
