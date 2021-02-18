@@ -25,6 +25,11 @@ class CategoryListVC: BaseVC {
   static func instance(category: StoreCategory) -> CategoryListVC {
     return CategoryListVC(nibName: nil, bundle: nil).then {
       $0.category = category
+      $0.tabBarItem = UITabBarItem(
+        title: nil,
+        image: UIImage(named: "ic_category"),
+        tag: TabBarTag.home.rawValue
+      )
     }
   }
   

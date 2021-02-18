@@ -16,6 +16,11 @@ class WriteAddressVC: BaseVC {
   static func instance(delegate: WriteAddressDelegate) -> UINavigationController {
     let writeAddressVC = WriteAddressVC(nibName: nil, bundle: nil).then {
       $0.delegate = delegate
+      $0.tabBarItem = UITabBarItem(
+        title: nil,
+        image: UIImage(named: "ic_write"),
+        tag: TabBarTag.write.rawValue
+      )
     }
     
     return UINavigationController(rootViewController: writeAddressVC).then {

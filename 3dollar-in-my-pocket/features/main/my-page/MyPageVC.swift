@@ -13,7 +13,13 @@ class MyPageVC: BaseVC {
   private var viewModel = MyPageViewModel()
   
   static func instance() -> MyPageVC {
-    return MyPageVC(nibName: nil, bundle: nil)
+    return MyPageVC(nibName: nil, bundle: nil).then {
+      $0.tabBarItem = UITabBarItem(
+        title: nil,
+        image: UIImage(named: "ic_my"),
+        tag: TabBarTag.my.rawValue
+      )
+    }
   }
   
   override func viewDidLoad() {

@@ -22,7 +22,13 @@ class HomeVC: BaseVC {
   var markers: [NMFMarker] = []
   
   static func instance() -> HomeVC {
-    return HomeVC(nibName: nil, bundle: nil)
+    return HomeVC(nibName: nil, bundle: nil).then {
+      $0.tabBarItem = UITabBarItem(
+        title: nil,
+        image: UIImage(named: "ic_home"),
+        tag: TabBarTag.home.rawValue
+      )
+    }
   }
   
   deinit {
