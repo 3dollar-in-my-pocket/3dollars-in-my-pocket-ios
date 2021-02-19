@@ -2,18 +2,12 @@ import UIKit
 import NMapsMap
 import FirebaseCrashlytics
 
-protocol HomeDelegate {
-  func onTapCategory(category: StoreCategory)
-  func didDragMap()
-  func endDragMap()
-}
 
 class HomeVC: BaseVC {
   
   private lazy var homeView = HomeView(frame: self.view.frame)
   
   var viewModel = HomeViewModel()
-  var delegate: HomeDelegate?
   var locationManager = CLLocationManager()
   var isFirst = true
   var previousIndex = 0
@@ -21,13 +15,17 @@ class HomeVC: BaseVC {
   var previousOffset: CGFloat = 0
   var markers: [NMFMarker] = []
   
-  static func instance() -> HomeVC {
-    return HomeVC(nibName: nil, bundle: nil).then {
+  static func instance() -> UINavigationController {
+    let homeVC = HomeVC(nibName: nil, bundle: nil).then {
       $0.tabBarItem = UITabBarItem(
         title: nil,
         image: UIImage(named: "ic_home"),
         tag: TabBarTag.home.rawValue
       )
+    }
+    
+    return UINavigationController(rootViewController: homeVC).then {
+      $0.isNavigationBarHidden = true
     }
   }
   
@@ -42,9 +40,9 @@ class HomeVC: BaseVC {
     self.initilizeShopCollectionView()
   }
   
-  
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
+    
     self.initilizeLocationManager()
     self.addForegroundObserver()
   }
@@ -55,7 +53,7 @@ class HomeVC: BaseVC {
   }
   
   override func bindViewModel() {
-    viewModel.nearestStore
+    self.viewModel.nearestStore
       .bind(to: homeView.shopCollectionView.rx.items(cellIdentifier: ShopCell.registerId, cellType: ShopCell.self)) { [weak self] row, storeCard, cell in
         if let vc = self {
           if row == 0 && vc.isFirst == true {
@@ -68,46 +66,14 @@ class HomeVC: BaseVC {
         }
       }.disposed(by: disposeBag)
     
-    viewModel.location.subscribe(onNext: { [weak self] (latitude, longitude) in
+    self.viewModel.location.subscribe(onNext: { [weak self] (latitude, longitude) in
       self?.previousIndex = 0
       self?.getNearestStore(latitude: latitude, longitude: longitude)
     }).disposed(by: disposeBag)
     
-    homeView.mapButton.rx.tap.bind { [weak self] in
+    self.homeView.currentLocationButton.rx.tap.bind { [weak self] in
       self?.mapAnimatedFlag = true
       self?.locationManager.startUpdatingLocation()
-    }.disposed(by: disposeBag)
-    
-    homeView.bungeoppangTap.rx.event
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .filter_bungeoppang_button_clicked, page: .home_page)
-      })
-      .bind { [weak self] (_) in
-      self?.delegate?.onTapCategory(category: .BUNGEOPPANG)
-    }.disposed(by: disposeBag)
-    
-    homeView.takoyakiTap.rx.event
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .filter_takoyaki_button_clicked, page: .home_page)
-      })
-      .bind { [weak self] (_) in
-      self?.delegate?.onTapCategory(category: .TAKOYAKI)
-    }.disposed(by: disposeBag)
-    
-    homeView.gyeranppangTap.rx.event
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .filter_gyeranppang_button_clicked, page: .home_page)
-      })
-      .bind { [weak self] (_) in
-      self?.delegate?.onTapCategory(category: .GYERANPPANG)
-    }.disposed(by: disposeBag)
-    
-    homeView.hotteokTap.rx.event
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .filter_hotteok_button_clicked, page: .home_page)
-      })
-      .bind { [weak self] (_) in
-      self?.delegate?.onTapCategory(category: .HOTTEOK)
     }.disposed(by: disposeBag)
   }
   
@@ -130,8 +96,8 @@ class HomeVC: BaseVC {
   }
   
   private func initilizeShopCollectionView() {
-    homeView.shopCollectionView.delegate = self
-    homeView.shopCollectionView.register(
+    self.homeView.shopCollectionView.delegate = self
+    self.homeView.shopCollectionView.register(
       ShopCell.self,
       forCellWithReuseIdentifier: ShopCell.registerId
     )
@@ -139,26 +105,18 @@ class HomeVC: BaseVC {
   
   @objc private func initilizeLocationManager() {
     self.isFirst = true
-    locationManager.delegate = self
-    locationManager.desiredAccuracy = kCLLocationAccuracyBest
+    self.locationManager.delegate = self
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
     
     if CLLocationManager.locationServicesEnabled() {
       switch CLLocationManager.authorizationStatus() {
       case .authorizedAlways, .authorizedWhenInUse:
-        initilizeNaverMap()
-        locationManager.startUpdatingLocation()
+        self.initilizeNaverMap()
+        self.locationManager.startUpdatingLocation()
       case .notDetermined:
-        locationManager.requestWhenInUseAuthorization()
+        self.locationManager.requestWhenInUseAuthorization()
       case .denied, .restricted:
-        AlertUtils.showWithAction(
-          title: "위치 권한 거절",
-          message: "설정 > 가슴속 3천원 > 위치에서 위치 권한을 확인해주세요."
-        ) { action in
-          UIControl().sendAction(
-            #selector(URLSessionTask.suspend),
-            to: UIApplication.shared, for: nil
-          )
-        }
+        self.showDenyAlert()
       default:
         Log.error("알 수 없는 위치 권한: \(CLLocationManager.authorizationStatus())")
         break
@@ -169,7 +127,6 @@ class HomeVC: BaseVC {
   }
   
   private func initilizeNaverMap() {
-    self.homeView.mapView.addCameraDelegate(delegate: self)
     self.homeView.mapView.positionMode = .direction
   }
   
@@ -237,16 +194,21 @@ class HomeVC: BaseVC {
       marker.mapView = nil
     }
   }
+  
+  private func showDenyAlert() {
+    AlertUtils.showWithAction(
+      title: "location_deny".localized,
+      message: "location_deny_description".localized
+    ) { action in
+      UIControl().sendAction(
+        #selector(URLSessionTask.suspend),
+        to: UIApplication.shared, for: nil
+      )
+    }
+  }
 }
 
 extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    return CGSize(width: 172, height: 172)
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-    return 16
-  }
   
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if previousIndex == indexPath.row { // 셀이 선택된 상태에서 한번 더 누르는 경우 상세화면으로 이동
@@ -269,7 +231,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   }
   
   func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-    let pageWidth = CGFloat(172)
+    let pageWidth = CGFloat(264)
     let offsetHelper: CGFloat = self.previousOffset > scrollView.contentOffset.x ? -50 : 50
     let proportionalOffset = (scrollView.contentOffset.x + offsetHelper) / pageWidth
     
@@ -288,7 +250,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   }
   
   func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-    let pageWidth = CGFloat(172)
+    let pageWidth = CGFloat(264)
     let proportionalOffset = scrollView.contentOffset.x / pageWidth
     
     previousIndex = Int(proportionalOffset.rounded())
@@ -307,7 +269,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   
   func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
     if !decelerate {
-      let pageWidth = CGFloat(172)
+      let pageWidth = CGFloat(264)
       let proportionalOffset = scrollView.contentOffset.x / pageWidth
       previousIndex = Int(round(proportionalOffset))
       let indexPath = IndexPath(row: previousIndex, section: 0)
@@ -326,19 +288,6 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
       cell.setSelected(isSelected: false)
     }
-  }
-}
-
-extension HomeVC: NMFMapViewCameraDelegate {
-  
-  func mapView(_ mapView: NMFMapView, cameraWillChangeByReason reason: Int, animated: Bool) {
-    if reason == NMFMapChangedByGesture {
-      self.delegate?.didDragMap()
-    }
-  }
-  
-  func mapViewCameraIdle(_ mapView: NMFMapView) {
-    self.delegate?.endDragMap()
   }
 }
 
