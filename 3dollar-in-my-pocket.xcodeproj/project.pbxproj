@@ -157,6 +157,7 @@
 		6E810B0F259AEA3A0035315F /* GAPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E810B0E259AEA3A0035315F /* GAPage.swift */; };
 		6E81B83E25E0E22F00748E02 /* SearchAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E81B83D25E0E22F00748E02 /* SearchAddressView.swift */; };
 		6E81B84025E0E72800748E02 /* SearchAddressVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E81B83F25E0E72800748E02 /* SearchAddressVC.swift */; };
+		6E81B84225E0EDE900748E02 /* SearchTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E81B84125E0EDE900748E02 /* SearchTransition.swift */; };
 		6E82F8CB23D5D8A600AB3593 /* MyReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E82F8CA23D5D8A600AB3593 /* MyReviewViewModel.swift */; };
 		6E860C0325B9288D008F42A1 /* AppleSDGothicNeoEB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E860C0225B9288D008F42A1 /* AppleSDGothicNeoEB00.ttf */; };
 		6E860C0B25B95960008F42A1 /* StoreDetailHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E860C0A25B95960008F42A1 /* StoreDetailHeaderView.swift */; };
@@ -397,6 +398,7 @@
 		6E810B0E259AEA3A0035315F /* GAPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GAPage.swift; sourceTree = "<group>"; };
 		6E81B83D25E0E22F00748E02 /* SearchAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAddressView.swift; sourceTree = "<group>"; };
 		6E81B83F25E0E72800748E02 /* SearchAddressVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAddressVC.swift; sourceTree = "<group>"; };
+		6E81B84125E0EDE900748E02 /* SearchTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTransition.swift; sourceTree = "<group>"; };
 		6E82F8CA23D5D8A600AB3593 /* MyReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewViewModel.swift; sourceTree = "<group>"; };
 		6E860C0225B9288D008F42A1 /* AppleSDGothicNeoEB00.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleSDGothicNeoEB00.ttf; sourceTree = "<group>"; };
 		6E860C0A25B95960008F42A1 /* StoreDetailHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreDetailHeaderView.swift; sourceTree = "<group>"; };
@@ -984,6 +986,7 @@
 			children = (
 				6E81B83D25E0E22F00748E02 /* SearchAddressView.swift */,
 				6E81B83F25E0E72800748E02 /* SearchAddressVC.swift */,
+				6E81B84125E0EDE900748E02 /* SearchTransition.swift */,
 			);
 			path = search;
 			sourceTree = "<group>";
@@ -1539,6 +1542,7 @@
 				6E13578923D8108800D91782 /* ModifyView.swift in Sources */,
 				6E56BD8323CDE3BC002D7092 /* Review.swift in Sources */,
 				6ED5939123BD888C00B06BD4 /* CategoryListHeaderView.swift in Sources */,
+				6E81B84225E0EDE900748E02 /* SearchTransition.swift in Sources */,
 				6E31574D25BA60B60022D6F3 /* StoreDetailMenuCategoryView.swift in Sources */,
 				6E9D64DB25BD73E10075DE36 /* DeleteModalViewModel.swift in Sources */,
 				6E6835BE23C2CEFB00D23F54 /* RegisteredCell.swift in Sources */,

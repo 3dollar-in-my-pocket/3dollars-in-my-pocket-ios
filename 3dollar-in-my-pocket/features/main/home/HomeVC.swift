@@ -17,6 +17,7 @@ class HomeVC: BaseVC {
   var mapAnimatedFlag = false
   var previousOffset: CGFloat = 0
   var markers: [NMFMarker] = []
+  let transition = SearchTransition()
   
   static func instance() -> UINavigationController {
     let homeVC = HomeVC(nibName: nil, bundle: nil).then {
@@ -200,7 +201,9 @@ class HomeVC: BaseVC {
   }
   
   private func showSearchAddress() {
-    let searchAddressVC = SearchAddressVC.instacne()
+    let searchAddressVC = SearchAddressVC.instacne().then{
+      $0.transitioningDelegate = self
+    }
     
     self.present(searchAddressVC, animated: true, completion: nil)
   }
@@ -353,5 +356,26 @@ extension HomeVC: CLLocationManagerDelegate {
         Crashlytics.crashlytics().log("location Manager Error(error code: \(error.code.rawValue)")
       }
     }
+  }
+}
+
+extension HomeVC: UIViewControllerTransitioningDelegate {
+  
+  func animationController(
+    forPresented presented: UIViewController,
+    presenting: UIViewController,
+    source: UIViewController
+  ) -> UIViewControllerAnimatedTransitioning? {
+    transition.transitionMode = .present
+    transition.maskView.frame = self.homeView.addressContainerView.frame
+    
+    return transition
+  }
+  
+  func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    transition.transitionMode = .dismiss
+    transition.maskOriginalFrame = self.homeView.addressContainerView.frame
+    
+    return transition
   }
 }
