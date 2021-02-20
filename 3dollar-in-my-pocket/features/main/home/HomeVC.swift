@@ -100,9 +100,15 @@ class HomeVC: BaseVC {
     self.homeView.currentLocationButton.rx.tap
       .observeOn(MainScheduler.instance)
       .bind { [weak self] in
-        self?.mapAnimatedFlag = true
-        self?.locationManager.startUpdatingLocation()
+        guard let self = self else { return }
+        self.mapAnimatedFlag = true
+        self.locationManager.startUpdatingLocation()
       }
+      .disposed(by: disposeBag)
+    
+    self.homeView.tossButton.rx.tap
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToToss)
       .disposed(by: disposeBag)
   }
   
@@ -179,6 +185,13 @@ class HomeVC: BaseVC {
         to: UIApplication.shared, for: nil
       )
     }
+  }
+  
+  private func goToToss() {
+    let tossScheme = Bundle.main.object(forInfoDictionaryKey: "Toss scheme") as? String ?? ""
+    guard let url = URL(string: tossScheme) else { return }
+    
+    UIApplication.shared.open(url, options: [:], completionHandler: nil)
   }
   
   @objc private func initilizeLocationManager() {

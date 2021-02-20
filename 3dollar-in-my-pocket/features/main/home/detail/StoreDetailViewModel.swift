@@ -181,7 +181,8 @@ class StoreDetailViewModel: BaseViewModel {
   }
   
   private func goToToss() {
-    guard let url = URL(string: "https://service.toss.im/transfer/bridge/open-transfer?type=send") else { return }
+    let tossScheme = Bundle.main.object(forInfoDictionaryKey: "Toss scheme") as? String ?? ""
+    guard let url = URL(string: tossScheme) else { return }
     
     UIApplication.shared.open(url, options: [:], completionHandler: nil)
   }
