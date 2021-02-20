@@ -696,6 +696,7 @@
 				6E4CB90123D4961700542D21 /* LoadingView.swift */,
 				6E18C3362572249E00F37C3A /* LeftAlignedCollectionViewFlowLayout.swift */,
 				6E7938FD25B0064F007F23E5 /* DayStackInputView.swift */,
+				6E88305223BC31C4007F2EF9 /* RankingView.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -1048,7 +1049,6 @@
 				6E07D44523B590B30055AEE7 /* HomeVC.swift */,
 				6E01AD1923D094FF008BFCC0 /* HomeViewModel.swift */,
 				6E41F7EE23BB1F5600D0AC73 /* StoreCell.swift */,
-				6E88305223BC31C4007F2EF9 /* RankingView.swift */,
 			);
 			path = home;
 			sourceTree = "<group>";
