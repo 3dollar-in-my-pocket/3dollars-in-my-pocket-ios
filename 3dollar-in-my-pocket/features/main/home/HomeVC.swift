@@ -1,4 +1,5 @@
 import UIKit
+import RxSwift
 import NMapsMap
 import FirebaseCrashlytics
 
@@ -6,10 +7,9 @@ import FirebaseCrashlytics
 class HomeVC: BaseVC {
   
   private lazy var homeView = HomeView(frame: self.view.frame)
+  private let viewModel = HomeViewModel(storeService: StoreService())
+  private let locationManager = CLLocationManager()
   
-  var viewModel = HomeViewModel()
-  var locationManager = CLLocationManager()
-  var isFirst = true
   var previousIndex = 0
   var mapAnimatedFlag = false
   var previousOffset: CGFloat = 0
@@ -30,7 +30,7 @@ class HomeVC: BaseVC {
   }
   
   deinit {
-    locationManager.stopUpdatingLocation()
+    self.locationManager.stopUpdatingLocation()
   }
   
   override func viewDidLoad() {
@@ -38,49 +38,65 @@ class HomeVC: BaseVC {
     view = homeView
     
     self.initilizeShopCollectionView()
+    self.initilizeLocationManager()
   }
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
-    self.initilizeLocationManager()
     self.addForegroundObserver()
   }
   
   override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
+    
     self.removeForegroundObserver()
   }
   
   override func bindViewModel() {
-    self.viewModel.nearestStore
-      .bind(to: homeView.shopCollectionView.rx.items(cellIdentifier: ShopCell.registerId, cellType: ShopCell.self)) { [weak self] row, storeCard, cell in
-        if let vc = self {
-          if row == 0 && vc.isFirst == true {
-            cell.setSelected(isSelected: true)
-            vc.isFirst = false
-          } else {
-            cell.setSelected(isSelected: false)
-          }
-          cell.bind(storeCard: storeCard)
-        }
+    // Bind output
+    self.viewModel.output.stores
+      .bind(to: homeView.storeCollectionView.rx.items(
+        cellIdentifier: ShopCell.registerId,
+        cellType: ShopCell.self
+      )) { row, storeCard, cell in
+        cell.bind(storeCard: storeCard)
       }.disposed(by: disposeBag)
     
-    self.viewModel.location.subscribe(onNext: { [weak self] (latitude, longitude) in
-      self?.previousIndex = 0
-      self?.getNearestStore(latitude: latitude, longitude: longitude)
-    }).disposed(by: disposeBag)
+    self.viewModel.output.scrollToIndex
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.homeView.scrollToIndex(index:))
+      .disposed(by: disposeBag)
     
-    self.homeView.currentLocationButton.rx.tap.bind { [weak self] in
-      self?.mapAnimatedFlag = true
-      self?.locationManager.startUpdatingLocation()
-    }.disposed(by: disposeBag)
+    self.viewModel.output.setSelectStore
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.homeView.setSelectStore)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.selectMarker
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.selectMarker)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.goToDetail
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToDetail(storeId:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.showLoading
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.homeView.showLoading(isShow:))
+      .disposed(by: disposeBag)
   }
   
-  func onSuccessWrite() {
-    isFirst = true
-    mapAnimatedFlag = false
-    locationManager.startUpdatingLocation()
+  override func bindEvent() {
+    self.homeView.currentLocationButton.rx.tap
+      .observeOn(MainScheduler.instance)
+      .bind { [weak self] in
+        self?.mapAnimatedFlag = true
+        self?.locationManager.startUpdatingLocation()
+      }
+      .disposed(by: disposeBag)
   }
   
   private func addForegroundObserver() {
@@ -96,74 +112,23 @@ class HomeVC: BaseVC {
   }
   
   private func initilizeShopCollectionView() {
-    self.homeView.shopCollectionView.delegate = self
-    self.homeView.shopCollectionView.register(
+    self.homeView.storeCollectionView.delegate = self
+    self.homeView.storeCollectionView.register(
       ShopCell.self,
       forCellWithReuseIdentifier: ShopCell.registerId
     )
   }
   
-  @objc private func initilizeLocationManager() {
-    self.isFirst = true
-    self.locationManager.delegate = self
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-    
-    if CLLocationManager.locationServicesEnabled() {
-      switch CLLocationManager.authorizationStatus() {
-      case .authorizedAlways, .authorizedWhenInUse:
-        self.initilizeNaverMap()
-        self.locationManager.startUpdatingLocation()
-      case .notDetermined:
-        self.locationManager.requestWhenInUseAuthorization()
-      case .denied, .restricted:
-        self.showDenyAlert()
-      default:
-        Log.error("알 수 없는 위치 권한: \(CLLocationManager.authorizationStatus())")
-        break
-      }
-    } else {
-      Log.debug("위치 기능 활성화 필요!")
-    }
-  }
-  
   private func initilizeNaverMap() {
     self.homeView.mapView.positionMode = .direction
+    self.homeView.mapView.zoomLevel = 15
   }
   
   private func goToDetail(storeId: Int) {
-    self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)
-  }
-  
-  private func getNearestStore(latitude: Double, longitude: Double) {
-    self.homeView.showLoading(isShow: true)
-    StoreService().getStoreOrderByNearest(latitude: latitude, longitude: longitude).subscribe(
-      onNext: { [weak self] storeCards in
-        guard let self = self else { return }
-        self.isFirst = true
-        self.viewModel.nearestStore.onNext(storeCards)
-        self.homeView.shopCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .left, animated: true)
-        self.selectMarker(selectedIndex: 0, storeCards: storeCards)
-        self.homeView.showLoading(isShow: false)
-      },
-      onError: { [weak self] error in
-        guard let self = self else { return }
-        if let httpError = error as? HTTPError {
-          self.showHTTPErrorAlert(error: httpError)
-        } else if let error = error as? CommonError {
-          let alertContent = AlertContent(title: nil, message: error.description)
-          
-          self.showSystemAlert(alert: alertContent)
-        }
-      })
-      .disposed(by: disposeBag)
-  }
-  
-  private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
-    UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
-    image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
-    let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-    UIGraphicsEndImageContext()
-    return newImage
+    self.navigationController?.pushViewController(
+      StoreDetailVC.instance(storeId: storeId),
+      animated: true
+    )
   }
   
   private func selectMarker(selectedIndex: Int, storeCards: [StoreCard]) {
@@ -178,12 +143,14 @@ class HomeVC: BaseVC {
         let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: storeCard.latitude, lng: storeCard.longitude))
         cameraUpdate.animation = .easeIn
         self.homeView.mapView.moveCamera(cameraUpdate)
-        marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
+        marker.iconImage = NMFOverlayImage(name: "ic_marker")
+        marker.width = 30
+        marker.height = 40
       } else {
         marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
+        marker.width = 16
+        marker.height = 16
       }
-      marker.width = 16
-      marker.height = 16
       marker.mapView = self.homeView.mapView
       self.markers.append(marker)
     }
@@ -206,28 +173,41 @@ class HomeVC: BaseVC {
       )
     }
   }
+  
+  @objc private func initilizeLocationManager() {
+    self.locationManager.delegate = self
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+    
+    if CLLocationManager.locationServicesEnabled() {
+      switch CLLocationManager.authorizationStatus() {
+      case .authorizedAlways, .authorizedWhenInUse:
+        self.initilizeNaverMap()
+        self.locationManager.startUpdatingLocation()
+      case .notDetermined:
+        self.locationManager.requestWhenInUseAuthorization()
+      case .denied, .restricted:
+        self.showDenyAlert()
+      default:
+        let alertContent = AlertContent(
+          title: "location_unknown_status".localized,
+          message: "\(CLLocationManager.authorizationStatus())"
+        )
+        self.showSystemAlert(alert: alertContent)
+        break
+      }
+    } else {
+      Log.debug("위치 기능 활성화 필요!")
+    }
+  }
 }
 
 extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    if previousIndex == indexPath.row { // 셀이 선택된 상태에서 한번 더 누르는 경우 상세화면으로 이동
-      GA.shared.logEvent(event: .store_card_button_clicked, page: .home_page)
-      goToDetail(storeId: try! self.viewModel.nearestStore.value()[indexPath.row].id)
-    } else {
-      collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
-      if let cell = self.homeView.shopCollectionView.cellForItem(at: IndexPath(row: previousIndex, section: 0)) as? ShopCell {
-        // 기존에 눌려있던 셀 deselect
-        cell.setSelected(isSelected: false)
-      }
-      
-      if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
-        // 새로 누른 셀 select
-        cell.setSelected(isSelected: true)
-        self.selectMarker(selectedIndex: indexPath.row, storeCards: try! self.viewModel.nearestStore.value())
-      }
-      previousIndex  = indexPath.row
-    }
+  func collectionView(
+    _ collectionView: UICollectionView,
+    didSelectItemAt indexPath: IndexPath
+  ) {
+    self.viewModel.input.tapStore.onNext(indexPath.row)
   }
   
   func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
@@ -237,15 +217,15 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     self.previousOffset = scrollView.contentOffset.x
     
-    previousIndex = Int(proportionalOffset.rounded()) >= 5 ? 4 : Int(proportionalOffset.rounded())
-    if previousIndex < 0 {
-      previousIndex = 0
+    var selectedIndex = Int(proportionalOffset.rounded()) >= 5 ? 4 : Int(proportionalOffset.rounded())
+    if selectedIndex < 0 {
+      selectedIndex = 0
     }
     
-    let indexPath = IndexPath(row: previousIndex, section: 0)
+    let indexPath = IndexPath(row: selectedIndex, section: 0)
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-      self.homeView.shopCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+      self.homeView.scrollToIndex(index: indexPath)
     }
   }
   
@@ -253,17 +233,11 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     let pageWidth = CGFloat(264)
     let proportionalOffset = scrollView.contentOffset.x / pageWidth
     
-    previousIndex = Int(proportionalOffset.rounded())
-    if previousIndex < 0 {
-      previousIndex = 0
+    var selectedIndex = Int(proportionalOffset.rounded())
+    if selectedIndex < 0 {
+      selectedIndex = 0
     }
-    
-    let indexPath = IndexPath(row: previousIndex, section: 0)
-    
-    if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
-      cell.setSelected(isSelected: true)
-      self.selectMarker(selectedIndex: indexPath.row, storeCards: try! self.viewModel.nearestStore.value())
-    }
+    self.viewModel.input.selectStore.onNext(selectedIndex)
   }
   
   
@@ -271,23 +245,14 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     if !decelerate {
       let pageWidth = CGFloat(264)
       let proportionalOffset = scrollView.contentOffset.x / pageWidth
-      previousIndex = Int(round(proportionalOffset))
-      let indexPath = IndexPath(row: previousIndex, section: 0)
+      let selectedIndex = Int(round(proportionalOffset))
       
-      self.homeView.shopCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
-      if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
-        cell.setSelected(isSelected: true)
-        self.selectMarker(selectedIndex: indexPath.row, storeCards: try! self.viewModel.nearestStore.value())
-      }
+      self.viewModel.input.selectStore.onNext(selectedIndex)
     }
   }
   
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-    let indexPath = IndexPath(row: previousIndex, section: 0)
-    
-    if let cell = self.homeView.shopCollectionView.cellForItem(at: indexPath) as? ShopCell {
-      cell.setSelected(isSelected: false)
-    }
+    self.viewModel.input.deselectCurrentStore.onNext(())
   }
 }
 
@@ -300,8 +265,8 @@ extension HomeVC: CLLocationManagerDelegate {
     switch status {
     case .denied:
       AlertUtils.showWithAction(
-        title: "위치 권한 거절",
-        message: "설정 > 가슴속 3천원 > 위치에서 위치 권한을 확인해주세요."
+        title: "location_deny_title".localized,
+        message: "location_deny_description".localized
       ) { action in
         UIControl().sendAction(
           #selector(URLSessionTask.suspend),
@@ -315,10 +280,7 @@ extension HomeVC: CLLocationManagerDelegate {
     }
   }
   
-  func locationManager(
-    _ manager: CLLocationManager,
-    didUpdateLocations locations: [CLLocation]
-  ) {
+  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     let location = locations.last
     let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
       lat: location!.coordinate.latitude,
@@ -329,9 +291,10 @@ extension HomeVC: CLLocationManagerDelegate {
       camera.animation = .easeIn
     }
     self.homeView.mapView.moveCamera(camera)
-    if isFirst {
-      self.viewModel.location.onNext((location!.coordinate.latitude, location!.coordinate.longitude))
-    }
+    self.viewModel.input.location.onNext((
+      location!.coordinate.latitude,
+      location!.coordinate.longitude
+    ))
     locationManager.stopUpdatingLocation()
   }
   
@@ -341,20 +304,20 @@ extension HomeVC: CLLocationManagerDelegate {
       case .denied:
         AlertUtils.show(
           controller: self,
-          title: "위치 권한 거절",
-          message: "설정 > 가슴속 3천원 > 위치에서 위치 권한을 확인해주세요."
+          title: "location_deny_title".localized,
+          message: "location_deny_description".localized
         )
       case .locationUnknown:
         AlertUtils.show(
           controller: self,
-          title: "알 수 없는 위치",
-          message: "현재 위치가 확인되지 않습니다.\n잠시 후 다시 시도해주세요."
+          title: "location_unknown_title".localized,
+          message: "location_unknown_description".localized
         )
       default:
         AlertUtils.show(
           controller: self,
-          title: "위치 오류 발생",
-          message: "위치 오류가 발생되었습니다.\n에러가 개발자에게 보고됩니다."
+          title: "location_unknown_error_title".localized,
+          message: "location_unknown_error_description".localized
         )
         Crashlytics.crashlytics().log("location Manager Error(error code: \(error.code.rawValue)")
       }

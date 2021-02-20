@@ -10,15 +10,14 @@ class ShopCell: BaseCollectionViewCell {
   }
   
   let titleLabel = UILabel().then {
-    $0.text = "강남역 0번 출구"
-    $0.textColor = .white
+    $0.textColor = .black
     $0.font = UIFont(name: "AppleSDGothicNeo-ExtraBold", size: 16)
   }
   
   let descriptionLabel = UILabel().then {
     $0.text = "#붕어빵 #땅콩과자 #호떡"
     $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12)
-    $0.textColor = .white
+    $0.textColor = UIColor(r: 114, g: 114, b: 114)
   }
   
   let distanceImage = UIImageView().then {
@@ -26,7 +25,7 @@ class ShopCell: BaseCollectionViewCell {
   }
   
   let distanceLabel = UILabel().then {
-    $0.textColor = .white
+    $0.textColor = .black
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
@@ -37,13 +36,13 @@ class ShopCell: BaseCollectionViewCell {
   let rankLabel = UILabel().then {
     $0.textColor = UIColor(r: 200, g: 200, b: 200)
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
-    $0.textColor = .white
+    $0.textColor = .black
   }
   
   
   override func setup() {
     self.layer.cornerRadius = 16
-    self.backgroundColor = .black
+    self.backgroundColor = .white
     self.addSubViews(
       categoryImage, titleLabel, descriptionLabel, distanceImage,
       distanceLabel, starImage, rankLabel
@@ -96,11 +95,13 @@ class ShopCell: BaseCollectionViewCell {
       self.backgroundColor = .black
       self.titleLabel.textColor = .white
       self.descriptionLabel.textColor = .white
+      self.distanceLabel.textColor = .white
       self.rankLabel.textColor = .white
     } else {
       self.backgroundColor = .white
       self.titleLabel.textColor = .black
       self.descriptionLabel.textColor = UIColor(r: 114, g: 114, b: 114)
+      self.distanceLabel.textColor = .black
       self.rankLabel.textColor = .black
     }
   }

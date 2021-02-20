@@ -147,7 +147,7 @@ extension MainVC: WriteAddressDelegate {
   func onWriteSuccess(storeId: Int) {
     for controller in self.controllers {
       if controller is HomeVC {
-        (controller as! HomeVC).onSuccessWrite()
+//        (controller as! HomeVC).onSuccessWrite()
       }
     }
     self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)

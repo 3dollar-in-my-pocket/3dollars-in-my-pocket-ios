@@ -2,7 +2,7 @@ import UIKit
 
 class WriteCategoryCell: BaseCollectionViewCell {
   
-  static let registerId = "\(CategoryCell.self)"
+  static let registerId = "\(WriteCategoryCell.self)"
   
   let roundView = UIView().then {
     $0.layer.cornerRadius = 26

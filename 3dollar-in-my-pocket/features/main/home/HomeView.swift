@@ -23,7 +23,7 @@ class HomeView: BaseView {
     $0.image = UIImage(named: "ic_arrow_bottom_black")
   }
   
-  let shopCollectionView = UICollectionView(
+  let storeCollectionView = UICollectionView(
     frame: .zero,
     collectionViewLayout: UICollectionViewFlowLayout()
   ).then {
@@ -42,7 +42,7 @@ class HomeView: BaseView {
       top: 0,
       left: 24,
       bottom: 0,
-      right: 0
+      right: 24
     )
   }
   
@@ -59,7 +59,7 @@ class HomeView: BaseView {
     self.backgroundColor = .white
     self.addSubViews(
       mapView, addressContainerView, addressLabel, bottomArrowImage,
-      shopCollectionView, currentLocationButton, tossButton
+      storeCollectionView, currentLocationButton, tossButton
     )
   }
   
@@ -85,7 +85,7 @@ class HomeView: BaseView {
       make.left.equalTo(self.addressLabel.snp.right).offset(8)
     }
     
-    self.shopCollectionView.snp.makeConstraints { (make) in
+    self.storeCollectionView.snp.makeConstraints { (make) in
       make.left.right.equalToSuperview()
       make.bottom.equalTo(safeAreaLayoutGuide).offset(-24)
       make.height.equalTo(104)
@@ -93,12 +93,22 @@ class HomeView: BaseView {
     
     self.tossButton.snp.makeConstraints { make in
       make.right.equalToSuperview().offset(-24)
-      make.bottom.equalTo(self.shopCollectionView.snp.top).offset(-4)
+      make.bottom.equalTo(self.storeCollectionView.snp.top).offset(-4)
     }
     
     self.currentLocationButton.snp.makeConstraints { (make) in
       make.right.equalTo(self.tossButton)
       make.bottom.equalTo(self.tossButton.snp.top)
+    }
+  }
+  
+  func scrollToIndex(index: IndexPath){
+    self.storeCollectionView.scrollToItem(at: index, at: .left, animated: true)
+  }
+  
+  func setSelectStore(indexPath: IndexPath, isSelected: Bool) {
+    if let cell = self.storeCollectionView.cellForItem(at: indexPath) as? ShopCell {
+      cell.setSelected(isSelected: isSelected)
     }
   }
 }
