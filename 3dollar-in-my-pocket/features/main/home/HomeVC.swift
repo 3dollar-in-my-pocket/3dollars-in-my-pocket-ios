@@ -59,7 +59,7 @@ class HomeVC: BaseVC {
   override func bindViewModel() {
     // Bind output
     self.viewModel.output.address
-      .bind(to: self.homeView.addressLabel.rx.text)
+      .bind(to: self.homeView.addressButton.rx.title(for: .normal))
       .disposed(by: disposeBag)
     
     self.viewModel.output.stores
@@ -97,6 +97,11 @@ class HomeVC: BaseVC {
   }
   
   override func bindEvent() {
+    self.homeView.addressButton.rx.tap
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSearchAddress)
+      .disposed(by: disposeBag)
+    
     self.homeView.currentLocationButton.rx.tap
       .observeOn(MainScheduler.instance)
       .bind { [weak self] in
@@ -192,6 +197,12 @@ class HomeVC: BaseVC {
     guard let url = URL(string: tossScheme) else { return }
     
     UIApplication.shared.open(url, options: [:], completionHandler: nil)
+  }
+  
+  private func showSearchAddress() {
+    let searchAddressVC = SearchAddressVC.instacne()
+    
+    self.present(searchAddressVC, animated: true, completion: nil)
   }
   
   @objc private func initilizeLocationManager() {

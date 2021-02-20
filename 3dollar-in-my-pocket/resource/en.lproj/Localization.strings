@@ -156,3 +156,5 @@
 "location_unknown_status" = "알 수 없는 위치 권한";
 "location_unknown_error_title" = "위치 오류 발생";
 "location_unknown_error_description" = "위치 오류가 발생되었습니다.\n에러가 개발자에게 보고됩니다.";
+"search_address_title" = "위치 검색";
+"search_address_placeholder" = "구, 동, 건물명, 역 등으로 검색";

@@ -13,13 +13,12 @@ class HomeView: BaseView {
     $0.layer.shadowOpacity = 0.08
   }
   
-  let addressLabel = UILabel().then {
-    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
-    $0.textColor = .black
-  }
-  
-  let bottomArrowImage = UIImageView().then {
-    $0.image = UIImage(named: "ic_arrow_bottom_black")
+  let addressButton = UIButton().then {
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.setImage(UIImage(named: "ic_arrow_bottom_black"), for: .normal)
+    $0.semanticContentAttribute = .forceRightToLeft
+    $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -8)
+    $0.setTitleColor(.black, for: .normal)
   }
   
   let storeCollectionView = UICollectionView(
@@ -57,8 +56,8 @@ class HomeView: BaseView {
   override func setup() {
     self.backgroundColor = .white
     self.addSubViews(
-      mapView, addressContainerView, addressLabel, bottomArrowImage,
-      storeCollectionView, currentLocationButton, tossButton
+      mapView, addressContainerView, addressButton, storeCollectionView,
+      currentLocationButton, tossButton
     )
   }
   
@@ -74,14 +73,9 @@ class HomeView: BaseView {
       make.height.equalTo(56)
     }
     
-    self.addressLabel.snp.makeConstraints { make in
+    self.addressButton.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
       make.centerY.equalTo(self.addressContainerView)
-    }
-    
-    self.bottomArrowImage.snp.makeConstraints { make in
-      make.centerY.equalTo(self.addressLabel)
-      make.left.equalTo(self.addressLabel.snp.right).offset(8)
     }
     
     self.storeCollectionView.snp.makeConstraints { (make) in
