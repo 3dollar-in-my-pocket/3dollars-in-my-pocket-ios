@@ -107,7 +107,7 @@ class HomeView: BaseView {
   }
   
   func setSelectStore(indexPath: IndexPath, isSelected: Bool) {
-    if let cell = self.storeCollectionView.cellForItem(at: indexPath) as? ShopCell {
+    if let cell = self.storeCollectionView.cellForItem(at: indexPath) as? StoreCell {
       cell.setSelected(isSelected: isSelected)
     }
   }

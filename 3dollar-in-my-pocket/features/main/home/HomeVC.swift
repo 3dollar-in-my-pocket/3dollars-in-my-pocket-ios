@@ -57,8 +57,8 @@ class HomeVC: BaseVC {
     // Bind output
     self.viewModel.output.stores
       .bind(to: homeView.storeCollectionView.rx.items(
-        cellIdentifier: ShopCell.registerId,
-        cellType: ShopCell.self
+        cellIdentifier: StoreCell.registerId,
+        cellType: StoreCell.self
       )) { row, storeCard, cell in
         cell.bind(storeCard: storeCard)
       }.disposed(by: disposeBag)
@@ -114,8 +114,8 @@ class HomeVC: BaseVC {
   private func initilizeShopCollectionView() {
     self.homeView.storeCollectionView.delegate = self
     self.homeView.storeCollectionView.register(
-      ShopCell.self,
-      forCellWithReuseIdentifier: ShopCell.registerId
+      StoreCell.self,
+      forCellWithReuseIdentifier: StoreCell.registerId
     )
   }
   

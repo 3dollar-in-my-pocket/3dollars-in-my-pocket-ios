@@ -1,8 +1,8 @@
 import UIKit
 
-class ShopCell: BaseCollectionViewCell {
+class StoreCell: BaseCollectionViewCell {
   
-  static let registerId = "\(ShopCell.self)"
+  static let registerId = "\(StoreCell.self)"
   
   let categoryImage = UIImageView().then {
     $0.image = UIImage(named: "img_60_bungeoppang")
