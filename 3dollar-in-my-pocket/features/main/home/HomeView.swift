@@ -14,7 +14,6 @@ class HomeView: BaseView {
   }
   
   let addressLabel = UILabel().then {
-    $0.text = "서울특별시 사직동"
     $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
     $0.textColor = .black
   }

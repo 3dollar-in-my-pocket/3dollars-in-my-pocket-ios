@@ -7,7 +7,10 @@ import FirebaseCrashlytics
 class HomeVC: BaseVC {
   
   private lazy var homeView = HomeView(frame: self.view.frame)
-  private let viewModel = HomeViewModel(storeService: StoreService())
+  private let viewModel = HomeViewModel(
+    storeService: StoreService(),
+    mapService: MapService()
+  )
   private let locationManager = CLLocationManager()
   
   var previousIndex = 0
@@ -55,6 +58,10 @@ class HomeVC: BaseVC {
   
   override func bindViewModel() {
     // Bind output
+    self.viewModel.output.address
+      .bind(to: self.homeView.addressLabel.rx.text)
+      .disposed(by: disposeBag)
+    
     self.viewModel.output.stores
       .bind(to: homeView.storeCollectionView.rx.items(
         cellIdentifier: StoreCell.registerId,
