@@ -40,6 +40,11 @@ class StoreCell: BaseCollectionViewCell {
   }
   
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.setSelected(isSelected: false)
+  }
+  
   override func setup() {
     self.layer.cornerRadius = 16
     self.backgroundColor = .white
