@@ -203,6 +203,7 @@ class HomeVC: BaseVC {
   private func showSearchAddress() {
     let searchAddressVC = SearchAddressVC.instacne().then{
       $0.transitioningDelegate = self
+      $0.delegate = self
     }
     
     self.present(searchAddressVC, animated: true, completion: nil)
@@ -317,8 +318,8 @@ extension HomeVC: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     let location = locations.last
     let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
-      lat: location!.coordinate.latitude,
-      lng: location!.coordinate.longitude
+      lat: location!.coordinate.longitude,
+      lng: location!.coordinate.latitude
     ))
     
     if self.mapAnimatedFlag {
@@ -356,6 +357,13 @@ extension HomeVC: CLLocationManagerDelegate {
         Crashlytics.crashlytics().log("location Manager Error(error code: \(error.code.rawValue)")
       }
     }
+  }
+}
+
+extension HomeVC: SearchAddressDelegate {
+  func selectAddress(location: (Double, Double), name: String) {
+    self.viewModel.input.location.onNext(location)
+    self.viewModel.output.address.accept(name)
   }
 }
 

@@ -35,13 +35,14 @@ class SearchAddressView: BaseView {
     $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 15)
   }
   
-  let searchButton = UIButton().then {
+  let currentLocationButton = UIButton().then {
     $0.setImage(UIImage(named: "ic_current_location"), for: .normal)
   }
   
   let addressTableVIew = UITableView().then {
     $0.backgroundColor = .white
     $0.tableFooterView = UIView()
+    $0.separatorStyle = .none
     $0.rowHeight = UITableView.automaticDimension
     $0.layer.borderWidth = 1
     $0.layer.borderColor = UIColor(r: 226, g: 226, b: 226).cgColor
@@ -52,7 +53,7 @@ class SearchAddressView: BaseView {
     self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
     self.addSubViews(
       navigationView, closeButton, titleLabel, inputBoxContainer,
-      searchImage, addressField, searchButton, addressTableVIew
+      searchImage, addressField, currentLocationButton, addressTableVIew
     )
   }
   
@@ -72,15 +73,15 @@ class SearchAddressView: BaseView {
       make.bottom.equalTo(self.navigationView).offset(-20)
     }
     
-    self.searchButton.snp.makeConstraints { make in
+    self.currentLocationButton.snp.makeConstraints { make in
       make.right.equalToSuperview().offset(-24)
       make.top.equalTo(self.navigationView.snp.bottom).offset(32)
     }
     
     self.inputBoxContainer.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.right.equalTo(self.searchButton.snp.left).offset(-8)
-      make.height.centerY.equalTo(self.searchButton)
+      make.right.equalTo(self.currentLocationButton.snp.left).offset(-8)
+      make.height.centerY.equalTo(self.currentLocationButton)
     }
     
     self.searchImage.snp.makeConstraints { make in
@@ -100,5 +101,13 @@ class SearchAddressView: BaseView {
       make.top.equalTo(self.inputBoxContainer.snp.bottom).offset(24)
       make.bottom.equalTo(safeAreaLayoutGuide)
     }
+  }
+  
+  func showKeyboard() {
+    self.addressField.becomeFirstResponder()
+  }
+  
+  func hideKeyboard() {
+    self.addressField.resignFirstResponder()
   }
 }
