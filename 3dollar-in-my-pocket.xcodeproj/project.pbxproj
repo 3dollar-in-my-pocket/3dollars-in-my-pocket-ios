@@ -833,6 +833,10 @@
 		6E6B0ED923AD169B006E11CE /* features */ = {
 			isa = PBXGroup;
 			children = (
+				6EA5EC0623B57EE10028F86B /* home */,
+				6E70C38C23B6EB7400C52C9C /* category */,
+				6E8A137723B5DCC5009C2B64 /* writing */,
+				6E8A137623B5DCBB009C2B64 /* my-page */,
 				6E077ED525694B7A00839CA3 /* splash */,
 				6E4CB90023D4960D00542D21 /* shared */,
 				6EA5EC0523B57ED20028F86B /* main */,
@@ -890,7 +894,7 @@
 			path = font;
 			sourceTree = "<group>";
 		};
-		6E70C38C23B6EB7400C52C9C /* category-list */ = {
+		6E70C38C23B6EB7400C52C9C /* category */ = {
 			isa = PBXGroup;
 			children = (
 				6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */,
@@ -902,7 +906,7 @@
 				6E2F5FDC23D693F700094D41 /* CategoryChildView.swift */,
 				6E2F5FE423D6EBAC00094D41 /* CategoryChildViewModel.swift */,
 			);
-			path = "category-list";
+			path = category;
 			sourceTree = "<group>";
 		};
 		6E70C38D23B6EB8200C52C9C /* detail */ = {
@@ -1081,9 +1085,6 @@
 		6EA5EC0523B57ED20028F86B /* main */ = {
 			isa = PBXGroup;
 			children = (
-				6E8A137723B5DCC5009C2B64 /* writing */,
-				6E8A137623B5DCBB009C2B64 /* my-page */,
-				6EA5EC0623B57EE10028F86B /* home */,
 				6EA5EC0723B57EFE0028F86B /* MainView.swift */,
 				6EA5EC0923B581880028F86B /* MainVC.swift */,
 				6E7EF40925DE978C0014CD2B /* TabBarVC.swift */,
@@ -1096,7 +1097,6 @@
 			children = (
 				6E81B83C25E0E21100748E02 /* search */,
 				6E70C38D23B6EB8200C52C9C /* detail */,
-				6E70C38C23B6EB7400C52C9C /* category-list */,
 				6E07D44323B5906E0055AEE7 /* HomeView.swift */,
 				6E07D44523B590B30055AEE7 /* HomeVC.swift */,
 				6E01AD1923D094FF008BFCC0 /* HomeViewModel.swift */,
