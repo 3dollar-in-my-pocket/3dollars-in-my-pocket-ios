@@ -82,8 +82,8 @@ struct MapService: MapServiceProtocol {
         "Authorization": "KakaoAK 5bbbafb84c73c6be5b181b6f3d514129"
       ] as HTTPHeaders
       let parameters: [String: Any] = [
-        "x": lat,
-        "y": lng
+        "x": lng,
+        "y": lat
       ]
       
       AF.request(

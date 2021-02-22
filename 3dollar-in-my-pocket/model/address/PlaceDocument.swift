@@ -6,6 +6,7 @@ struct PlaceDocument: Decodable, Document {
   let roadAddressName: String
   let placeName: String
   
+  
   enum CodingKeys: String, CodingKey {
     case addressName = "address_name"
     case y, x

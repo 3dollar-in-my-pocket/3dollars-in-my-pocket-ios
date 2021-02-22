@@ -13,6 +13,7 @@ class HomeViewModel: BaseViewModel {
   
   struct Input {
     let location = PublishSubject<(Double, Double)>()
+    let locationForAddress = PublishSubject<(Double, Double)>()
     let selectStore = PublishSubject<Int>()
     let tapStore = PublishSubject<Int>()
     let deselectCurrentStore = PublishSubject<Void>()
@@ -38,8 +39,11 @@ class HomeViewModel: BaseViewModel {
     super.init()
     
     self.input.location
-      .do(onNext: self.getAddressFromLocation)
       .bind(onNext: self.fetchNearestStores)
+      .disposed(by: disposeBag)
+    
+    self.input.locationForAddress
+      .bind(onNext: self.getAddressFromLocation)
       .disposed(by: disposeBag)
     
     self.input.selectStore
@@ -89,7 +93,7 @@ class HomeViewModel: BaseViewModel {
             self.httpErrorAlert.accept(httpError)
           } else if let error = error as? CommonError {
             let alertContent = AlertContent(title: nil, message: error.description)
-            
+
             self.showSystemAlert.accept(alertContent)
           }
         }

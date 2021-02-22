@@ -330,6 +330,11 @@ extension HomeVC: CLLocationManagerDelegate {
       location!.coordinate.latitude,
       location!.coordinate.longitude
     ))
+    self.viewModel.input.locationForAddress
+      .onNext((
+        location!.coordinate.latitude,
+        location!.coordinate.longitude
+      ))
     locationManager.stopUpdatingLocation()
   }
   

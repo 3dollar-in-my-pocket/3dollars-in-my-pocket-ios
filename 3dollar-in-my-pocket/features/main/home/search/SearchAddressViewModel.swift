@@ -40,7 +40,7 @@ class SearchAddressViewModel: BaseViewModel{
     
     self.input.tapcurrentLocation
       .do(onNext: { (lat, lng) in
-        self.currentLocation = (lng, lat)
+        self.currentLocation = (lat, lng)
       })
       .bind(onNext: self.getMyLocation)
       .disposed(by: disposeBag)
@@ -89,7 +89,7 @@ class SearchAddressViewModel: BaseViewModel{
       )
     } else {
       let addressDocument = document as! AddressDocument
-      self.output.dismiss.accept((self.currentLocation, addressDocument.roadAddress.buildingName))
+      self.output.dismiss.accept((self.currentLocation, addressDocument.name))
     }
   }
 }

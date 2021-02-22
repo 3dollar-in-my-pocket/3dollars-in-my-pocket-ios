@@ -176,8 +176,8 @@ extension SearchAddressVC: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     if !locations.isEmpty {
       let location = (
-        locations.last!.coordinate.longitude,
-        locations.last!.coordinate.latitude
+        locations.last!.coordinate.latitude,
+        locations.last!.coordinate.longitude
       )
       
       self.viewModel.input.tapcurrentLocation.onNext(location)
