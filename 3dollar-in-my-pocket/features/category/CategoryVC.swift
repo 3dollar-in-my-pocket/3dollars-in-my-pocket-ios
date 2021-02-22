@@ -57,6 +57,8 @@ class CategoryVC: BaseVC {
   }
   
   private func goToCategoryList(category: StoreCategory) {
+    let categoryVC = CategoryListVC.instance(category: category)
     
+    self.navigationController?.pushViewController(categoryVC, animated: true)
   }
 }
