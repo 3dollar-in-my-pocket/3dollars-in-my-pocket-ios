@@ -65,6 +65,8 @@ class RegisteredCell: BaseTableViewCell {
             categoryImage.image = UIImage.init(named: "img_mypage_hotteok")
         case.TAKOYAKI:
             categoryImage.image = UIImage.init(named: "img_mypage_takoyaki")
+        default:
+          break
         }
         titleLabel.text = store.storeName
         rankingView.setRank(rank: store.rating)

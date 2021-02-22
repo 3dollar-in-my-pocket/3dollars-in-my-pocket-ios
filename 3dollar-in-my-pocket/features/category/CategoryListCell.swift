@@ -77,6 +77,8 @@ class CategoryListCell: BaseTableViewCell {
       categoryImage.image = UIImage.init(named: "img_40_hotteok")
     case .TAKOYAKI:
       categoryImage.image = UIImage.init(named: "img_40_takoyaki")
+    default:
+      break
     }
     titleLabel.text = storeCard.storeName
     

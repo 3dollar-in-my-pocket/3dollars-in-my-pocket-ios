@@ -57,6 +57,8 @@ class StoreDetailMenuCategoryView: BaseView {
     case .TAKOYAKI:
       self.categoryImage.image = UIImage(named: "img_32_takoyaki_on")
       self.categoryLabel.text = "shared_category_takoyaki".localized
+    default:
+      break
     }
   }
 }

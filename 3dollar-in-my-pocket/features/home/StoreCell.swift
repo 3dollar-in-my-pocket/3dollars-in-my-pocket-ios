@@ -121,6 +121,8 @@ class StoreCell: BaseCollectionViewCell {
       self.categoryImage.image = UIImage(named: "img_60_hotteok")
     case .TAKOYAKI:
       self.categoryImage.image = UIImage(named: "img_60_takoyaki")
+    default:
+      break
     }
     
     if storeCard.distance >= 1000 {

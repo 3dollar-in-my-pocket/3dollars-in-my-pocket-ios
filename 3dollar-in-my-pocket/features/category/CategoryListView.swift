@@ -132,6 +132,8 @@ class CategoryListView: BaseView {
       categoryImage.image = UIImage.init(named: "img_category_gyeranppang")
     case .HOTTEOK:
       categoryImage.image = UIImage.init(named: "img_category_hotteok")
+    default:
+      break
     }
   }
   

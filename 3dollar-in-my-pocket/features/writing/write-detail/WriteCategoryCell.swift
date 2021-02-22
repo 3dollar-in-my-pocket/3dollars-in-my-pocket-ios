@@ -81,6 +81,8 @@ class WriteCategoryCell: BaseCollectionViewCell {
       case .TAKOYAKI:
         self.categoryImage.image = UIImage(named: "img_32_takoyaki_on")
         self.nameLabel.text = "shared_category_takoyaki".localized
+      default:
+        break
       }
     }
   }

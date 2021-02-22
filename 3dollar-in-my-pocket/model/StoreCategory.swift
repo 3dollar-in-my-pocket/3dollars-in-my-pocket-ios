@@ -3,6 +3,16 @@ public enum StoreCategory: String, Codable {
   case TAKOYAKI = "TAKOYAKI"
   case GYERANPPANG = "GYERANPPANG"
   case HOTTEOK = "HOTTEOK"
+  case EOMUK = "EOMUK"
+  case GUNGOGUMA = "GUNGOGUMA"
+  case TTEOKBOKI = "TTEOKBOKI"
+  case TTANGKONGPPANG = "TTANGKONGPPANG"
+  case GUNOKSUSU = "GUNOKSUSU"
+  case KKOCHI = "KKOCHI"
+  case TOAST = "TOAST"
+  case WAFFLE = "WAFFLE"
+  case GUKHWAPPANG = "GUKHWAPPANG"
+  case SUNDAE = "SUNDAE"
   
   func getValue() -> String {
     return self.rawValue
@@ -33,6 +43,8 @@ public enum StoreCategory: String, Codable {
       return 2
     case .HOTTEOK:
       return 3
+    default:
+      return 0
     }
   }
 }

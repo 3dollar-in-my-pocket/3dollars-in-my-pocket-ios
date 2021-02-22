@@ -84,6 +84,8 @@ class StoreDetailView: BaseView {
       self.mainCategoryImage.image = UIImage(named: "img_60_hotteok")
     case .TAKOYAKI:
       self.mainCategoryImage.image = UIImage(named: "img_60_takoyaki")
+    default:
+      break
     }
   }
 }

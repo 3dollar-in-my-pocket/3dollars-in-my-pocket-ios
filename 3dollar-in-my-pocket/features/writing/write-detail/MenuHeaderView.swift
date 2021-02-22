@@ -52,6 +52,8 @@ class MenuHeaderView: BaseView {
     case .TAKOYAKI:
       self.categoryImage.image = UIImage(named: "img_32_takoyaki_on")
       self.titleLabel.text = "shared_category_takoyaki".localized
+    default:
+      break
     }
   }
 }

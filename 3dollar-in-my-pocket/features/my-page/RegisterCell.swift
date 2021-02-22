@@ -81,6 +81,8 @@ class RegisterCell: BaseCollectionViewCell {
                 categoryImage.image = UIImage.init(named: "img_card_hotteok_on")
             case.TAKOYAKI:
                 categoryImage.image = UIImage.init(named: "img_card_takoyaki_on")
+            default:
+              break
             }
             titleLabel.text = store.storeName
             rankingView.setRank(rank: store.rating)

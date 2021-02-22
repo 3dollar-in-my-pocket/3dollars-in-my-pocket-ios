@@ -59,6 +59,8 @@ class AddCategoryCell: BaseCollectionViewCell {
       case .TAKOYAKI:
         self.categoryImage.image = UIImage(named: "img_32_takoyaki_on")
         self.nameLabel.text = "shared_category_takoyaki".localized
+      default:
+        break
       }
       self.nameLabel.textColor = UIColor(r: 28, g: 28, b: 28)
     } else {
@@ -76,6 +78,8 @@ class AddCategoryCell: BaseCollectionViewCell {
       case .TAKOYAKI:
         self.categoryImage.image = UIImage(named: "img_32_takoyaki_off")
         self.nameLabel.text = "shared_category_takoyaki".localized
+      default:
+        break
       }
       self.nameLabel.textColor = UIColor(r: 137, g: 137, b: 137)
     }

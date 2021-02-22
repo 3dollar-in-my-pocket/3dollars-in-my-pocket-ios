@@ -99,6 +99,16 @@
 "shared_category_gyeranppang" = "계란빵";
 "shared_category_hotteok" = "호떡";
 "shared_category_takoyaki" = "문어빵";
+"shared_category_eomuk" = "어묵";
+"shared_category_gukhwappang" = "국화빵";
+"shared_category_gungoguma" = "군고구마";
+"shared_category_gunoksusu" = "군옥수수";
+"shared_category_kkochi" = "꼬치";
+"shared_category_sundae" = "순대";
+"shared_category_toast" = "토스트";
+"shared_category_ttangkongppang" = "땅콩빵";
+"shared_category_tteokboki" = "떡볶이";
+"shared_category_waffle" = "와플";
 "shared_store_type_road" = "길거리";
 "shared_store_type_store" = "매장";
 "shared_store_type_convenience_store" = "편의점";
@@ -158,3 +168,4 @@
 "location_unknown_error_description" = "위치 오류가 발생되었습니다.\n에러가 개발자에게 보고됩니다.";
 "search_address_title" = "위치 검색";
 "search_address_placeholder" = "구, 동, 건물명, 역 등으로 검색";
+"category_title" = "이 안에 네 최애 하나쯤은 있겠지!";
