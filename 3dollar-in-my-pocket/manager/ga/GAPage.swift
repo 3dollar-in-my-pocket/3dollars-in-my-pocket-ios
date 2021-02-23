@@ -1,4 +1,5 @@
 enum GAPage: String {
+  
   case login_page = "login_page"
   case nickname_initialize_page = "nickname_initialize_page"
   case nickname_change_page = "nickname_change_page"

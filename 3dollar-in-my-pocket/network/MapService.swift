@@ -2,6 +2,7 @@ import RxSwift
 import Alamofire
 
 protocol MapServiceProtocol {
+  
   func getAddressFromLocation(lat: Double, lng: Double) -> Observable<String>
   
   func searchAddress(keyword: String) -> Observable<LocalResponse<PlaceDocument>>
