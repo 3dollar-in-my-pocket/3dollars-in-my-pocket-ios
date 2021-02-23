@@ -4,7 +4,7 @@ class MainVC: BaseVC {
   
   private lazy var mainView = MainView(frame: self.view.frame)
   
-  private var controllers: [BaseVC] = []
+  private var controllers: [UIViewController] = []
   
   private var previousIndex = 0
   
@@ -27,12 +27,8 @@ class MainVC: BaseVC {
     navigationController?.interactivePopGestureRecognizer?.delegate = nil
     view = mainView
     
-    let homeVC = HomeVC.instance().then {
-      $0.delegate = self
-    }
-    let writingVC = HomeVC.instance().then {
-      $0.delegate = self
-    }
+    let homeVC = HomeVC.instance()
+    let writingVC = HomeVC.instance()
     let myPageVC = MyPageVC.instance().then {
       $0.delegate = self
     }
@@ -147,25 +143,11 @@ class MainVC: BaseVC {
   }
 }
 
-extension MainVC: HomeDelegate {
-  func onTapCategory(category: StoreCategory) {
-    self.navigationController?.pushViewController(CategoryListVC.instance(category: category), animated: true)
-  }
-  
-  func didDragMap() {
-    self.mainView.hideTabBar()
-  }
-  
-  func endDragMap() {
-    self.mainView.showTabBar()
-  }
-}
-
 extension MainVC: WriteAddressDelegate {
   func onWriteSuccess(storeId: Int) {
     for controller in self.controllers {
       if controller is HomeVC {
-        (controller as! HomeVC).onSuccessWrite()
+//        (controller as! HomeVC).onSuccessWrite()
       }
     }
     self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)

@@ -25,7 +25,7 @@ class TabBarVC: UITabBarController {
   private func setupTabBarController() {
     self.setViewControllers([
       HomeVC.instance(),
-      CategoryListVC.instance(category: .BUNGEOPPANG),
+      CategoryVC.instance(),
       WriteAddressVC.instance(delegate: self),
       MyPageVC.instance(),
     ], animated: true)
