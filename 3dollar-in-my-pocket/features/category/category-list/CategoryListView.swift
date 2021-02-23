@@ -4,145 +4,122 @@ import NMapsMap
 
 class CategoryListView: BaseView {
   
-  let navigationBar = UIView().then {
+  let navigationView = UIView().then {
+    $0.layer.cornerRadius = 20
+    $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+    
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOpacity = 0.04
     $0.backgroundColor = .white
   }
   
-  let backBtn = UIButton().then {
+  let backButton = UIButton().then {
     $0.setImage(UIImage.init(named: "ic_back_black"), for: .normal)
+  }
+  
+  let titleStackView = UIStackView().then {
+    $0.axis = .horizontal
+    $0.spacing = 8
   }
   
   let categoryImage = UIImageView()
   
-  let categoryBungeoppang = UIButton().then {
-    $0.setTitle("붕어빵", for: .normal)
-    $0.setTitleColor(UIColor.init(r: 34, g: 34, b: 34), for: .selected)
-    $0.setTitleColor(UIColor.init(r: 196, g: 196, b: 196), for: .normal)
-    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
-  }
-  
-  let categoryTakoyaki = UIButton().then {
-    $0.setTitle("문어빵", for: .normal)
-    $0.setTitleColor(UIColor.init(r: 34, g: 34, b: 34), for: .selected)
-    $0.setTitleColor(UIColor.init(r: 196, g: 196, b: 196), for: .normal)
-    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
-  }
-  
-  let categoryGyeranppang = UIButton().then {
-    $0.setTitle("계란빵", for: .normal)
-    $0.setTitleColor(UIColor.init(r: 34, g: 34, b: 34), for: .selected)
-    $0.setTitleColor(UIColor.init(r: 196, g: 196, b: 196), for: .normal)
-    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
-  }
-  
-  let categoryHotteok = UIButton().then {
-    $0.setTitle("호떡", for: .normal)
-    $0.setTitleColor(UIColor.init(r: 34, g: 34, b: 34), for: .selected)
-    $0.setTitleColor(UIColor.init(r: 196, g: 196, b: 196), for: .normal)
-    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16 * RadioUtils.width)
-  }
-  
-  let categoryStackView = UIStackView().then {
-    $0.axis = .horizontal
-    $0.spacing = 15
+  let categoryLabel = UILabel().then {
+    $0.text = "붕어빵"
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
+    $0.textColor = .black
   }
   
   let mapView = NMFMapView()
   
-  let myLocationBtn = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_location"), for: .normal)
+  let currentLocationButton = UIButton().then {
+    $0.setImage(UIImage.init(named: "ic_current_location"), for: .normal)
   }
   
-  let pageView = UIView().then {
-    $0.backgroundColor = UIColor.init(r: 245, g: 245, b: 245)
+  let categoryTitleLabel = UILabel().then {
+    $0.font = UIFont(name: "AppleSDGothicNeo-ExtraBold", size: 24)
+    $0.textColor = .black
+    $0.text = "붕어빵 만나기 30초 전"
+  }
+  
+  let nearOrderButton = UIButton().then {
+    $0.setTitle("category_ordering_distance".localized, for: .normal)
+    $0.setTitleColor(.black, for: .selected)
+    $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
+    $0.isSelected = true
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+  }
+  
+  let reviewOrderButton = UIButton().then {
+    $0.setTitle("category_ordering_review".localized, for: .normal)
+    $0.setTitleColor(.black, for: .selected)
+    $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+  }
+  
+  let storeTableView = UITableView().then {
+    $0.tableFooterView = UIView()
+    $0.rowHeight = UITableView.automaticDimension
+    $0.separatorStyle = .none
+    $0.backgroundColor = UIColor(r: 250, g: 250, b: 250)
   }
   
   let adBannerView = GADBannerView()
   
   
   override func setup() {
-    backgroundColor = .white
-    setupNavigationBar()
-    categoryStackView.addArrangedSubview(categoryBungeoppang)
-    categoryStackView.addArrangedSubview(categoryTakoyaki)
-    categoryStackView.addArrangedSubview(categoryGyeranppang)
-    categoryStackView.addArrangedSubview(categoryHotteok)
-    addSubViews(
-      mapView, navigationBar,backBtn, categoryImage,
-      categoryStackView, myLocationBtn, pageView, adBannerView
+    self.backgroundColor = .white
+    self.titleStackView.addArrangedSubview(categoryImage)
+    self.titleStackView.addArrangedSubview(categoryLabel)
+    self.addSubViews(
+      mapView, navigationView, backButton, titleStackView,
+      currentLocationButton, categoryTitleLabel, nearOrderButton,
+      reviewOrderButton, storeTableView, adBannerView
     )
   }
   
   override func bindConstraints() {
-    navigationBar.snp.makeConstraints { (make) in
-      make.left.right.equalToSuperview()
-      make.top.equalTo(safeAreaLayoutGuide)
-      make.height.equalTo(105)
+    self.navigationView.snp.makeConstraints { make in
+      make.left.right.top.equalToSuperview()
+      make.bottom.equalTo(self.safeAreaLayoutGuide.snp.top).offset(60)
     }
     
-    backBtn.snp.makeConstraints { (make) in
+    self.backButton.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.top.equalTo(navigationBar).offset(8)
-      make.width.height.equalTo(48)
+      make.bottom.equalTo(self.navigationView).offset(-21)
     }
     
-    myLocationBtn.snp.makeConstraints { (make) in
+    self.titleStackView.snp.makeConstraints { make in
+      make.centerX.equalToSuperview()
+      make.centerY.equalTo(self.backButton)
+    }
+    
+    self.categoryImage.snp.makeConstraints { (make) in
+      make.width.height.equalTo(32)
+    }
+    
+    self.currentLocationButton.snp.makeConstraints { (make) in
       make.right.equalTo(mapView.snp.right).offset(-24)
       make.bottom.equalTo(mapView.snp.bottom).offset(-15)
       make.width.height.equalTo(40)
     }
     
-    categoryImage.snp.makeConstraints { (make) in
-      make.centerX.equalToSuperview()
-      make.centerY.equalTo(backBtn.snp.centerY)
-      make.width.height.equalTo(60)
-    }
-    
-    categoryStackView.snp.makeConstraints { (make) in
-      make.top.equalTo(categoryImage.snp.bottom)
-      make.centerX.equalToSuperview()
-    }
-    
-    mapView.snp.makeConstraints { (make) in
+    self.mapView.snp.makeConstraints { (make) in
       make.left.right.equalToSuperview()
-      make.top.equalTo(navigationBar.snp.bottom).offset(-35)
-      make.height.equalTo(264)
+      make.top.equalTo(navigationView.snp.bottom).offset(-50)
+      make.height.equalTo(396)
     }
     
-    pageView.snp.makeConstraints { (make) in
-      make.bottom.equalTo(adBannerView.snp.top)
-      make.left.equalToSuperview()
-      make.right.equalToSuperview()
-      make.top.equalTo(mapView.snp.bottom)
-    }
-    
-    adBannerView.snp.makeConstraints { make in
-      make.left.right.bottom.equalToSuperview()
+    self.adBannerView.snp.makeConstraints { make in
+      make.left.right.equalToSuperview()
+      make.bottom.equalTo(safeAreaLayoutGuide)
       make.height.equalTo(64)
     }
   }
   
-  func setCategoryTitleImage(category: StoreCategory) {
-    switch category {
-    case .BUNGEOPPANG:
-      categoryImage.image = UIImage.init(named: "img_category_fish")
-    case .TAKOYAKI:
-      categoryImage.image = UIImage.init(named: "img_category_takoyaki")
-    case .GYERANPPANG:
-      categoryImage.image = UIImage.init(named: "img_category_gyeranppang")
-    case .HOTTEOK:
-      categoryImage.image = UIImage.init(named: "img_category_hotteok")
-    default:
-      break
-    }
-  }
-  
-  private func setupNavigationBar() {
-    navigationBar.layer.cornerRadius = 16
-    navigationBar.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-    
-    navigationBar.layer.shadowOffset = CGSize(width: 8, height: 8)
-    navigationBar.layer.shadowColor = UIColor.black.cgColor
-    navigationBar.layer.shadowOpacity = 0.08
+  func setCategoryTitle(category: StoreCategory) {
+    self.categoryImage.image = category.image
+    self.categoryLabel.text = category.name
   }
 }

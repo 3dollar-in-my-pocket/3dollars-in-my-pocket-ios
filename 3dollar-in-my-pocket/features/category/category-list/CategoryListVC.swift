@@ -8,78 +8,50 @@ import AdSupport
 class CategoryListVC: BaseVC {
   
   private lazy var categoryListView = CategoryListView(frame: self.view.frame)
-  
-  private var pageVC: CategoryPageVC!
-  
-  private var category: StoreCategory!
+  private var category: StoreCategory
   
   private var myLocationFlag = false
   
   var locationManager = CLLocationManager()
-  
   var markers: [NMFMarker] = []
-  
   var currentPosition: (latitude: Double, longitude: Double)?
   
   
+  init(category: StoreCategory) {
+    self.category = category
+    super.init(nibName: nil, bundle: nil)
+  }
+  
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
   static func instance(category: StoreCategory) -> CategoryListVC {
-    return CategoryListVC(nibName: nil, bundle: nil).then {
-      $0.category = category
-      $0.tabBarItem = UITabBarItem(
-        title: nil,
-        image: UIImage(named: "ic_category"),
-        tag: TabBarTag.home.rawValue
-      )
-    }
+    return CategoryListVC(category: category)
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     view = categoryListView
     
-    self.tapCategory(selectedIndex: StoreCategory.categoryToIndex(category))
     self.setupLocationManager()
     self.setupNaverMap()
     self.loadAdBanner()
+    self.categoryListView.setCategoryTitle(category: self.category)
   }
   
   override func bindEvent() {
-    for index in categoryListView.categoryStackView.arrangedSubviews.indices {
-      if let button = categoryListView.categoryStackView.arrangedSubviews[index] as? UIButton {
-        button.rx.tap
-          .do(onNext: { _ in
-            switch index {
-            case 0:
-              GA.shared.logEvent(event: .filter_bungeoppang_button_clicked, page: .store_list_page)
-            case 1:
-              GA.shared.logEvent(event: .filter_takoyaki_button_clicked, page: .store_list_page)
-            case 2:
-              GA.shared.logEvent(event: .filter_gyeranppang_button_clicked, page: .store_list_page)
-            case 3:
-              GA.shared.logEvent(event: .filter_hotteok_button_clicked, page: .store_list_page)
-            default:
-              break
-            }
-          })
-          .bind { [weak self] in
-            self?.tapCategory(selectedIndex: index)
-            self?.pageVC.tapCategory(index: index)
-        }.disposed(by: disposeBag)
-      }
-    }
-    
-    categoryListView.myLocationBtn.rx.tap.bind { [weak self] in
+    self.categoryListView.currentLocationButton.rx.tap.bind { [weak self] in
       self?.myLocationFlag = true
       self?.locationManager.startUpdatingLocation()
     }.disposed(by: disposeBag)
     
-    categoryListView.backBtn.rx.tap
+    categoryListView.backButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .back_button_clicked, page: .store_list_page)
       })
-      .bind { [weak self] in
-      self?.navigationController?.popViewController(animated: true)
-    }.disposed(by: disposeBag)
+      .bind(onNext: self.popVC)
+      .disposed(by: disposeBag)
   }
   
   private func setupLocationManager() {
@@ -94,35 +66,8 @@ class CategoryListVC: BaseVC {
     self.categoryListView.mapView.addCameraDelegate(delegate: self)
   }
   
-  private func setupPageVC(latitude: Double, longitude: Double) {
-    pageVC = CategoryPageVC.instance(
-      category: self.category,
-      latitude: latitude,
-      longitude: longitude
-    )
-    addChild(pageVC)
-    pageVC.pageDelegate = self
-    categoryListView.pageView.addSubview(pageVC.view)
-    pageVC.view.snp.makeConstraints { (make) in
-      make.edges.equalTo(categoryListView.pageView)
-    }
-  }
-  
-  private func tapCategory(selectedIndex: Int) {
-    categoryListView.setCategoryTitleImage(category: StoreCategory.index(selectedIndex))
-    for index in self.categoryListView.categoryStackView.arrangedSubviews.indices {
-      if let button = self.categoryListView.categoryStackView.arrangedSubviews[index] as? UIButton {
-        button.isSelected = (index == selectedIndex)
-      }
-    }
-  }
-  
-  private func markerWithSize(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
-    UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
-    image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
-    let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-    UIGraphicsEndImageContext()
-    return newImage
+  private func popVC() {
+    self.navigationController?.popViewController(animated: true)
   }
   
   private func loadAdBanner() {
@@ -150,9 +95,7 @@ class CategoryListVC: BaseVC {
       marker.mapView = nil
     }
   }
-}
-
-extension CategoryListVC: CategoryPageDelegate {
+  
   func setMarker(storeCards: [StoreCard]) {
     self.clearMarkers()
     
@@ -164,10 +107,6 @@ extension CategoryListVC: CategoryPageDelegate {
       self.markers.append(marker)
     }
   }
-  
-  func onScrollPage(index: Int) {
-    self.tapCategory(selectedIndex: index)
-  }
 }
 
 //MARK: NMFMapViewCameraDelegate
@@ -175,9 +114,6 @@ extension CategoryListVC: NMFMapViewCameraDelegate {
   func mapViewCameraIdle(_ mapView: NMFMapView) {
     
     self.currentPosition = (mapView.cameraPosition.target.lat, mapView.cameraPosition.target.lng)
-    if self.pageVC != nil {
-      self.pageVC.viewControllers?[0].viewWillAppear(false)
-    }
     Log.debug("cameraDidChangeByReason: \(mapView.cameraPosition.target)")
   }
 }
@@ -193,7 +129,7 @@ extension CategoryListVC: CLLocationManagerDelegate {
     
     if !self.myLocationFlag {
       self.categoryListView.mapView.moveCamera(cameraUpdate)
-      self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+//      self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
       self.myLocationFlag = false
     } else {
       self.categoryListView.mapView.moveCamera(cameraUpdate)
