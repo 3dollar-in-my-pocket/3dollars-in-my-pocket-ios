@@ -1,4 +1,5 @@
 import UIKit
+import RxDataSources
 import NMapsMap
 import GoogleMobileAds
 import FirebaseCrashlytics
@@ -8,13 +9,14 @@ import AdSupport
 class CategoryListVC: BaseVC {
   
   private lazy var categoryListView = CategoryListView(frame: self.view.frame)
-  private var category: StoreCategory
+  
+  private let category: StoreCategory
+  private let locationManager = CLLocationManager()
   
   private var myLocationFlag = false
-  
-  var locationManager = CLLocationManager()
-  var markers: [NMFMarker] = []
-  var currentPosition: (latitude: Double, longitude: Double)?
+  private var markers: [NMFMarker] = []
+  private var currentPosition: (latitude: Double, longitude: Double)?
+  var categoryDataSource: RxTableViewSectionedReloadDataSource<CategorySection>!
   
   
   init(category: StoreCategory) {
@@ -34,17 +36,23 @@ class CategoryListVC: BaseVC {
     super.viewDidLoad()
     view = categoryListView
     
+    self.setupTableView()
     self.setupLocationManager()
-    self.setupNaverMap()
-    self.loadAdBanner()
+//    self.setupNaverMap()
+//    self.loadAdBanner()
     self.categoryListView.setCategoryTitle(category: self.category)
   }
   
+  override func bindViewModel() {
+    // Bind output
+    
+  }
+  
   override func bindEvent() {
-    self.categoryListView.currentLocationButton.rx.tap.bind { [weak self] in
-      self?.myLocationFlag = true
-      self?.locationManager.startUpdatingLocation()
-    }.disposed(by: disposeBag)
+//    self.categoryListView.currentLocationButton.rx.tap.bind { [weak self] in
+//      self?.myLocationFlag = true
+//      self?.locationManager.startUpdatingLocation()
+//    }.disposed(by: disposeBag)
     
     categoryListView.backButton.rx.tap
       .do(onNext: { _ in
@@ -54,6 +62,40 @@ class CategoryListVC: BaseVC {
       .disposed(by: disposeBag)
   }
   
+  private func setupTableView() {
+    // Register
+    self.categoryListView.storeTableView.register(
+      CategoryListMapCell.self,
+      forCellReuseIdentifier: CategoryListMapCell.registerId
+    )
+    
+    self.categoryListView.storeTableView.register(
+      CategoryListTitleCell.self,
+      forCellReuseIdentifier: CategoryListTitleCell.registerId
+    )
+    
+    self.categoryDataSource = RxTableViewSectionedReloadDataSource<CategorySection> { (dataSource, tableView, indexPath, item) in
+      switch indexPath.section {
+      case 0:
+        guard let cell = tableView.dequeueReusableCell(
+          withIdentifier: CategoryListMapCell.registerId,
+          for: indexPath
+        ) as? CategoryListMapCell else { return BaseTableViewCell() }
+        return cell
+      case 1:
+        guard let cell = tableView.dequeueReusableCell(
+          withIdentifier: CategoryListTitleCell.registerId,
+          for: indexPath
+        ) as? CategoryListTitleCell else { return BaseTableViewCell() }
+        return cell
+      default:
+        break
+      }
+      
+      return UITableViewCell()
+    }
+  }
+  
   private func setupLocationManager() {
     locationManager.delegate = self
     locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -61,52 +103,52 @@ class CategoryListVC: BaseVC {
     locationManager.startUpdatingLocation()
   }
   
-  private func setupNaverMap() {
-    self.categoryListView.mapView.positionMode = .direction
-    self.categoryListView.mapView.addCameraDelegate(delegate: self)
-  }
+//  private func setupNaverMap() {
+//    self.categoryListView.mapView.positionMode = .direction
+//    self.categoryListView.mapView.addCameraDelegate(delegate: self)
+//  }
   
   private func popVC() {
     self.navigationController?.popViewController(animated: true)
   }
   
-  private func loadAdBanner() {
-    #if DEBUG
-    self.categoryListView.adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-    #else
-    self.categoryListView.adBannerView.adUnitID = "ca-app-pub-1527951560812478/3327283605"
-    #endif
-    
-    self.categoryListView.adBannerView.rootViewController = self
-    self.categoryListView.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(self.view.frame.width)
-    self.categoryListView.adBannerView.delegate = self
-    
-    if #available(iOS 14, *) {
-      ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
-        self.categoryListView.adBannerView.load(GADRequest())
-      })
-    } else {
-      self.categoryListView.adBannerView.load(GADRequest())
-    }
-  }
-  
-  private func clearMarkers() {
-    for marker in self.markers {
-      marker.mapView = nil
-    }
-  }
-  
-  func setMarker(storeCards: [StoreCard]) {
-    self.clearMarkers()
-    
-    for store in storeCards {
-      let marker = NMFMarker()
-      marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
-      marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
-      marker.mapView = self.categoryListView.mapView
-      self.markers.append(marker)
-    }
-  }
+//  private func loadAdBanner() {
+//    #if DEBUG
+//    self.categoryListView.adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+//    #else
+//    self.categoryListView.adBannerView.adUnitID = "ca-app-pub-1527951560812478/3327283605"
+//    #endif
+//
+//    self.categoryListView.adBannerView.rootViewController = self
+//    self.categoryListView.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(self.view.frame.width)
+//    self.categoryListView.adBannerView.delegate = self
+//
+//    if #available(iOS 14, *) {
+//      ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+//        self.categoryListView.adBannerView.load(GADRequest())
+//      })
+//    } else {
+//      self.categoryListView.adBannerView.load(GADRequest())
+//    }
+//  }
+//
+//  private func clearMarkers() {
+//    for marker in self.markers {
+//      marker.mapView = nil
+//    }
+//  }
+//
+//  func setMarker(storeCards: [StoreCard]) {
+//    self.clearMarkers()
+//
+//    for store in storeCards {
+//      let marker = NMFMarker()
+//      marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
+//      marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
+//      marker.mapView = self.categoryListView.mapView
+//      self.markers.append(marker)
+//    }
+//  }
 }
 
 //MARK: NMFMapViewCameraDelegate
@@ -128,11 +170,11 @@ extension CategoryListVC: CLLocationManagerDelegate {
     cameraUpdate.animation = .easeIn
     
     if !self.myLocationFlag {
-      self.categoryListView.mapView.moveCamera(cameraUpdate)
+//      self.categoryListView.mapView.moveCamera(cameraUpdate)
 //      self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
       self.myLocationFlag = false
     } else {
-      self.categoryListView.mapView.moveCamera(cameraUpdate)
+//      self.categoryListView.mapView.moveCamera(cameraUpdate)
     }
     locationManager.stopUpdatingLocation()
   }

@@ -76,6 +76,10 @@
 		6E3DED7D25C7F60F000BE04C /* RegisterPhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3DED7C25C7F60F000BE04C /* RegisterPhotoViewModel.swift */; };
 		6E3E0B8F23C7078100E835AE /* ReviewModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */; };
 		6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */; };
+		6E3E994325E523C8007BA379 /* CategoryListMapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E994225E523C8007BA379 /* CategoryListMapCell.swift */; };
+		6E3E994525E524D4007BA379 /* CategoryListTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E994425E524D4007BA379 /* CategoryListTitleCell.swift */; };
+		6E3E994725E52834007BA379 /* CategorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E994625E52834007BA379 /* CategorySection.swift */; };
+		6E3E994925E52B0E007BA379 /* CategoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E994825E52B0E007BA379 /* CategoryListViewModel.swift */; };
 		6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */; };
 		6E3EDF3C25694F8C0038E6A1 /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3EDF3B25694F8C0038E6A1 /* BaseViewModel.swift */; };
 		6E41D97525CA5FE3009D7C3A /* PhotoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41D97425CA5FE3009D7C3A /* PhotoListView.swift */; };
@@ -328,6 +332,10 @@
 		6E3DED7C25C7F60F000BE04C /* RegisterPhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterPhotoViewModel.swift; sourceTree = "<group>"; };
 		6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalView.swift; sourceTree = "<group>"; };
 		6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalVC.swift; sourceTree = "<group>"; };
+		6E3E994225E523C8007BA379 /* CategoryListMapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListMapCell.swift; sourceTree = "<group>"; };
+		6E3E994425E524D4007BA379 /* CategoryListTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListTitleCell.swift; sourceTree = "<group>"; };
+		6E3E994625E52834007BA379 /* CategorySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySection.swift; sourceTree = "<group>"; };
+		6E3E994825E52B0E007BA379 /* CategoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListViewModel.swift; sourceTree = "<group>"; };
 		6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
 		6E3EDF3B25694F8C0038E6A1 /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
 		6E41D97425CA5FE3009D7C3A /* PhotoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoListView.swift; sourceTree = "<group>"; };
@@ -691,9 +699,19 @@
 			path = review;
 			sourceTree = "<group>";
 		};
+		6E3E994125E523B1007BA379 /* cell */ = {
+			isa = PBXGroup;
+			children = (
+				6E3E994225E523C8007BA379 /* CategoryListMapCell.swift */,
+				6E3E994425E524D4007BA379 /* CategoryListTitleCell.swift */,
+			);
+			path = cell;
+			sourceTree = "<group>";
+		};
 		6E4107E725E4D806008F86F1 /* category-list */ = {
 			isa = PBXGroup;
 			children = (
+				6E3E994125E523B1007BA379 /* cell */,
 				6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */,
 				6EB7FA6723B6521200BFB0B4 /* CategoryListVC.swift */,
 				6EB7FA6923B658B000BFB0B4 /* CategoryListCell.swift */,
@@ -702,6 +720,7 @@
 				6E2F5FDA23D692F300094D41 /* CategoryChildVC.swift */,
 				6E2F5FDC23D693F700094D41 /* CategoryChildView.swift */,
 				6E2F5FE423D6EBAC00094D41 /* CategoryChildViewModel.swift */,
+				6E3E994825E52B0E007BA379 /* CategoryListViewModel.swift */,
 			);
 			path = "category-list";
 			sourceTree = "<group>";
@@ -1005,6 +1024,7 @@
 				6E91965725BBF9520052044B /* StoreSection.swift */,
 				6E9D64DF25BD751B0075DE36 /* DeleteReason.swift */,
 				6E53160E25DE9E38006C5CDC /* TabBarTag.swift */,
+				6E3E994625E52834007BA379 /* CategorySection.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -1457,6 +1477,7 @@
 			files = (
 				6EE02CB225C98F4800C856D3 /* PhotoDetailViewModel.swift in Sources */,
 				6E6835CA23C30E0A00D23F54 /* MyReviewVC.swift in Sources */,
+				6E3E994725E52834007BA379 /* CategorySection.swift in Sources */,
 				6E681E46256FE42D00892B9E /* SettingVC.swift in Sources */,
 				6E681E41256FE2F200892B9E /* RatioUtils.swift in Sources */,
 				6E3AA4E025AD6C9B00D8C58C /* Region.swift in Sources */,
@@ -1512,6 +1533,7 @@
 				6E1B64E02587A396003225F4 /* AFDataResponseExt.swift in Sources */,
 				6E56BD7F23CDE291002D7092 /* Image.swift in Sources */,
 				6E25244625945BF0006EBDDB /* PopupViewModel.swift in Sources */,
+				6E3E994325E523C8007BA379 /* CategoryListMapCell.swift in Sources */,
 				6E07D44C23B5916C0055AEE7 /* WriteDetailView.swift in Sources */,
 				6E56BD7B23CDE1DC002D7092 /* Store.swift in Sources */,
 				6E6172B023E1C05F003E0DDF /* PhotoDetailView.swift in Sources */,
@@ -1564,6 +1586,7 @@
 				6E93C83623F223E5002E737F /* PopupView.swift in Sources */,
 				6E681E25256FDD3500892B9E /* SettingVIew.swift in Sources */,
 				6E2119B525BD64CD008B6207 /* DeleteMenuButton.swift in Sources */,
+				6E3E994525E524D4007BA379 /* CategoryListTitleCell.swift in Sources */,
 				6E5939002573E2CE00593DC8 /* PrivacyView.swift in Sources */,
 				6EBBCB6925AD601F00F5912E /* WriteAddressViewModel.swift in Sources */,
 				6E29966625E2869D003FC13A /* AddressDocument.swift in Sources */,
@@ -1652,6 +1675,7 @@
 				6E73293B23CA07920037003B /* StoreService.swift in Sources */,
 				6E3DED7D25C7F60F000BE04C /* RegisterPhotoViewModel.swift in Sources */,
 				6EB8FBA125988D4200C17B74 /* GAManager.swift in Sources */,
+				6E3E994925E52B0E007BA379 /* CategoryListViewModel.swift in Sources */,
 				6E18C3282571F53900F37C3A /* FAQ.swift in Sources */,
 				6E72AE6323C980F600D3B257 /* User.swift in Sources */,
 				6E17D2CE257FAA52001726AC /* NetworkActivityLogger.swift in Sources */,

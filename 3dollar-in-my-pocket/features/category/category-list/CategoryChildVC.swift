@@ -36,21 +36,21 @@ class CategoryChildVC: BaseVC {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    if let categoryListVC = self.parent?.parent as? CategoryListVC,
-       let currentPosition = categoryListVC.currentPosition {
-      
-      if categoryChildView.nearOrderBtn.isSelected {
-        getStoreByDistance(mapLatitude: currentPosition.latitude, mapLongitude: currentPosition.longitude)
-      } else {
-        getStoreByReview(mapLatitude: currentPosition.latitude, mapLongitude: currentPosition.longitude)
-      }
-    } else {
-      if categoryChildView.nearOrderBtn.isSelected {
-        getStoreByDistance(mapLatitude: nil, mapLongitude: nil)
-      } else {
-        getStoreByReview(mapLatitude: nil, mapLongitude: nil)
-      }
-    }
+//    if let categoryListVC = self.parent?.parent as? CategoryListVC,
+//       let currentPosition = categoryListVC.currentPosition {
+//
+//      if categoryChildView.nearOrderBtn.isSelected {
+//        getStoreByDistance(mapLatitude: currentPosition.latitude, mapLongitude: currentPosition.longitude)
+//      } else {
+//        getStoreByReview(mapLatitude: currentPosition.latitude, mapLongitude: currentPosition.longitude)
+//      }
+//    } else {
+//      if categoryChildView.nearOrderBtn.isSelected {
+//        getStoreByDistance(mapLatitude: nil, mapLongitude: nil)
+//      } else {
+//        getStoreByReview(mapLatitude: nil, mapLongitude: nil)
+//      }
+//    }
   }
   
   override func bindEvent() {
@@ -65,8 +65,8 @@ class CategoryChildVC: BaseVC {
         vc.categoryChildView.nearOrderBtn.isSelected = true
         vc.categoryChildView.reviewOrderBtn.isSelected = false
         
-        let cameraPosition = (vc.parent?.parent as? CategoryListVC)?.currentPosition
-        vc.getStoreByDistance(mapLatitude: cameraPosition?.latitude, mapLongitude: cameraPosition?.longitude)
+//        let cameraPosition = (vc.parent?.parent as? CategoryListVC)?.currentPosition
+//        vc.getStoreByDistance(mapLatitude: cameraPosition?.latitude, mapLongitude: cameraPosition?.longitude)
       }
     }.disposed(by: disposeBag)
     
@@ -81,8 +81,8 @@ class CategoryChildVC: BaseVC {
         vc.categoryChildView.nearOrderBtn.isSelected = false
         vc.categoryChildView.reviewOrderBtn.isSelected = true
         
-        let cameraPosition = (vc.parent?.parent as? CategoryListVC)?.currentPosition
-        vc.getStoreByReview(mapLatitude: cameraPosition?.latitude, mapLongitude: cameraPosition?.longitude)
+//        let cameraPosition = (vc.parent?.parent as? CategoryListVC)?.currentPosition
+//        vc.getStoreByReview(mapLatitude: cameraPosition?.latitude, mapLongitude: cameraPosition?.longitude)
       }
     }.disposed(by: disposeBag)
   }
