@@ -3,7 +3,8 @@ import RxDataSources
 struct CategorySection {
   
   var category: StoreCategory
-  var location: (Double, Double)
+  var headerType: CategoryHeaderType?
+  var stores: [StoreCard] = []
   var items: [StoreCard?]
 }
 

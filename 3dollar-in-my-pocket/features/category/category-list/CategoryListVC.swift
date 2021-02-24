@@ -1,4 +1,5 @@
 import UIKit
+import RxSwift
 import RxDataSources
 import NMapsMap
 import GoogleMobileAds
@@ -9,18 +10,21 @@ import AdSupport
 class CategoryListVC: BaseVC {
   
   private lazy var categoryListView = CategoryListView(frame: self.view.frame)
-  
-  private let category: StoreCategory
   private let locationManager = CLLocationManager()
+  private let viewModel: CategoryListViewModel
+  private let category: StoreCategory
   
   private var myLocationFlag = false
   private var markers: [NMFMarker] = []
-  private var currentPosition: (latitude: Double, longitude: Double)?
   var categoryDataSource: RxTableViewSectionedReloadDataSource<CategorySection>!
   
   
   init(category: StoreCategory) {
     self.category = category
+    self.viewModel = CategoryListViewModel(
+      category: category,
+      categoryService: CategoryService()
+    )
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -33,19 +37,21 @@ class CategoryListVC: BaseVC {
   }
   
   override func viewDidLoad() {
-    super.viewDidLoad()
-    view = categoryListView
-    
     self.setupTableView()
+    
+    super.viewDidLoad()
+    
+    view = categoryListView
     self.setupLocationManager()
-//    self.setupNaverMap()
 //    self.loadAdBanner()
     self.categoryListView.setCategoryTitle(category: self.category)
   }
   
   override func bindViewModel() {
     // Bind output
-    
+    self.viewModel.ouput.stores
+      .bind(to: self.categoryListView.storeTableView.rx.items(dataSource: self.categoryDataSource))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {
@@ -74,6 +80,15 @@ class CategoryListVC: BaseVC {
       forCellReuseIdentifier: CategoryListTitleCell.registerId
     )
     
+    self.categoryListView.storeTableView.register(
+      CategoryListStoreCell.self,
+      forCellReuseIdentifier: CategoryListStoreCell.registerId
+    )
+    
+    self.categoryListView.storeTableView.rx
+      .setDelegate(self)
+      .disposed(by: disposeBag)
+    
     self.categoryDataSource = RxTableViewSectionedReloadDataSource<CategorySection> { (dataSource, tableView, indexPath, item) in
       switch indexPath.section {
       case 0:
@@ -81,18 +96,44 @@ class CategoryListVC: BaseVC {
           withIdentifier: CategoryListMapCell.registerId,
           for: indexPath
         ) as? CategoryListMapCell else { return BaseTableViewCell() }
+        
+        cell.mapView.removeCameraDelegate(delegate: self)
+        cell.mapView.positionMode = .direction
+        cell.mapView.addCameraDelegate(delegate: self)
+        cell.currentLocationButton.rx.tap
+          .observeOn(MainScheduler.instance)
+          .bind(onNext: self.setupLocationManager)
+          .disposed(by: cell.disposeBag)
+        
+        for marker in self.markers {
+          marker.mapView = nil
+        }
+        
+        for store in dataSource.sectionModels[indexPath.section].stores {
+          let marker = NMFMarker()
+          marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
+          marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
+          marker.mapView = cell.mapView
+          self.markers.append(marker)
+        }
+        
         return cell
       case 1:
         guard let cell = tableView.dequeueReusableCell(
           withIdentifier: CategoryListTitleCell.registerId,
           for: indexPath
         ) as? CategoryListTitleCell else { return BaseTableViewCell() }
+        
+        cell.bind(category: dataSource.sectionModels[indexPath.section].category)
         return cell
       default:
-        break
+        guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: CategoryListStoreCell.registerId,
+                for: indexPath
+        ) as? CategoryListStoreCell else { return BaseTableViewCell() }
+        cell.bind(storeCard: dataSource.sectionModels[indexPath.section].items[indexPath.row])
+        return cell
       }
-      
-      return UITableViewCell()
     }
   }
   
@@ -102,11 +143,6 @@ class CategoryListVC: BaseVC {
     locationManager.requestWhenInUseAuthorization()
     locationManager.startUpdatingLocation()
   }
-  
-//  private func setupNaverMap() {
-//    self.categoryListView.mapView.positionMode = .direction
-//    self.categoryListView.mapView.addCameraDelegate(delegate: self)
-//  }
   
   private func popVC() {
     self.navigationController?.popViewController(animated: true)
@@ -132,49 +168,61 @@ class CategoryListVC: BaseVC {
 //    }
 //  }
 //
-//  private func clearMarkers() {
-//    for marker in self.markers {
-//      marker.mapView = nil
-//    }
-//  }
-//
-//  func setMarker(storeCards: [StoreCard]) {
-//    self.clearMarkers()
-//
-//    for store in storeCards {
-//      let marker = NMFMarker()
-//      marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
-//      marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
-//      marker.mapView = self.categoryListView.mapView
-//      self.markers.append(marker)
-//    }
-//  }
+}
+
+extension CategoryListVC: UITableViewDelegate {
+  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    switch section {
+    case 0, 1:
+      return UIView(frame: .zero)
+    default:
+      let headerView = CategoryListHeaderView()
+      
+      headerView.bind(type: self.categoryDataSource.sectionModels[section].headerType)
+      return headerView
+    }
+  }
 }
 
 //MARK: NMFMapViewCameraDelegate
 extension CategoryListVC: NMFMapViewCameraDelegate {
+  
   func mapViewCameraIdle(_ mapView: NMFMapView) {
+    let mapLocation = CLLocation(
+      latitude: mapView.cameraPosition.target.lat,
+      longitude: mapView.cameraPosition.target.lng
+    )
     
-    self.currentPosition = (mapView.cameraPosition.target.lat, mapView.cameraPosition.target.lng)
-    Log.debug("cameraDidChangeByReason: \(mapView.cameraPosition.target)")
+    self.viewModel.input.mapLocation.onNext(mapLocation)
   }
 }
 
 extension CategoryListVC: CLLocationManagerDelegate {
-  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-    let location = locations.last
-    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
-      lat: location!.coordinate.latitude,
-      lng: location!.coordinate.longitude
-    ))
-    cameraUpdate.animation = .easeIn
-    
-    if !self.myLocationFlag {
-//      self.categoryListView.mapView.moveCamera(cameraUpdate)
-//      self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
-      self.myLocationFlag = false
-    } else {
-//      self.categoryListView.mapView.moveCamera(cameraUpdate)
+  
+  func locationManager(
+    _ manager: CLLocationManager,
+    didUpdateLocations locations: [CLLocation]
+  ) {
+    if !locations.isEmpty {
+      let lastLocation = locations.last
+      let location = CLLocation(
+        latitude: lastLocation!.coordinate.latitude,
+        longitude: lastLocation!.coordinate.longitude
+      )
+      let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
+        lat: lastLocation!.coordinate.latitude,
+        lng: lastLocation!.coordinate.longitude
+      ))
+      cameraUpdate.animation = .easeIn
+      
+      if !self.myLocationFlag {
+        self.viewModel.input.currentLocation.onNext(location)
+  //      self.categoryListView.mapView.moveCamera(cameraUpdate)
+  //      self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+        self.myLocationFlag = false
+      } else {
+  //      self.categoryListView.mapView.moveCamera(cameraUpdate)
+      }
     }
     locationManager.stopUpdatingLocation()
   }

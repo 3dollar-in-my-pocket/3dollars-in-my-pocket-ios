@@ -8,6 +8,7 @@ class CategoryListTitleCell: BaseTableViewCell {
     $0.font = UIFont(name: "AppleSDGothicNeoEB00", size: 24)
     $0.textColor = .black
     $0.text = "붕어빵 만나기 30초 전"
+    $0.numberOfLines = 0
   }
   
   let nearOrderButton = UIButton().then {
@@ -36,7 +37,7 @@ class CategoryListTitleCell: BaseTableViewCell {
   override func bindConstraints() {
     self.categoryTitleLabel.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.right.equalTo(self.reviewOrderButton.snp.left).offset(-19)
+      make.right.equalToSuperview().offset(-129)
       make.top.equalToSuperview().offset(48)
       make.bottom.equalToSuperview().offset(-33)
     }
@@ -48,8 +49,11 @@ class CategoryListTitleCell: BaseTableViewCell {
     
     self.nearOrderButton.snp.makeConstraints { make in
       make.bottom.equalTo(self.reviewOrderButton)
-      make.right.equalTo(self.reviewOrderButton.snp.left).offset(-16)
+      make.right.equalToSuperview().offset(-75)
     }
   }
-
+  
+  func bind(category: StoreCategory) {
+    
+  }
 }

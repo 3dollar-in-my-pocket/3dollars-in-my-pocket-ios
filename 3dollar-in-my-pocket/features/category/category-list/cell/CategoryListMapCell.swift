@@ -15,13 +15,14 @@ class CategoryListMapCell: BaseTableViewCell {
   override func setup() {
     self.backgroundColor = .clear
     self.selectionStyle = .none
+    self.contentView.isUserInteractionEnabled = false
     self.addSubViews(mapView, currentLocationButton)
   }
   
   override func bindConstraints() {
     self.mapView.snp.makeConstraints { make in
       make.left.top.right.bottom.equalToSuperview()
-      make.height.equalTo(396 * RatioUtils.heightRatio)
+      make.height.equalTo(375)
     }
     
     self.currentLocationButton.snp.makeConstraints { (make) in

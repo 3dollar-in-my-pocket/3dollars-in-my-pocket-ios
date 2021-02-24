@@ -90,72 +90,72 @@ class CategoryChildVC: BaseVC {
   private func setupTableView() {
     categoryChildView.tableView.delegate = self
     categoryChildView.tableView.dataSource = self
-    categoryChildView.tableView.register(
-      CategoryListCell.self,
-      forCellReuseIdentifier: CategoryListCell.registerId
-    )
+//    categoryChildView.tableView.register(
+//      CategoryListCell.self,
+//      forCellReuseIdentifier: CategoryListCell.registerId
+//    )
   }
   
-  private func getStoreByDistance(mapLatitude: Double?, mapLongitude: Double?) {
-    CategoryService().getStoreByDistance(
-      category: category,
-      latitude: latitude,
-      longitude: longitude,
-      mapLatitude: mapLatitude,
-      mapLongitude: mapLongitude
-    )
-    .subscribe(
-      onNext: { [weak self] categoryByDistance in
-        guard let self = self else { return }
-        
-        self.viewModel.setDistance(storeByDistance: categoryByDistance)
-        self.categoryChildView.setEmpty(isEmpty: self.viewModel.isDistanceEmpty())
-        self.delegate?.setMarkers(storeCards: self.viewModel.getAllDistanceStores())
-        self.categoryChildView.tableView.reloadData()
-      },
-      onError: { [weak self] error in
-        guard let self = self else { return }
-        if let httpError = error as? HTTPError {
-          self.showHTTPErrorAlert(error: httpError)
-        } else if let error = error as? CommonError {
-          let alertContent = AlertContent(title: nil, message: error.description)
-          
-          self.showSystemAlert(alert: alertContent)
-        }
-      }
-    )
-    .disposed(by: disposeBag)
-  }
+//  private func getStoreByDistance(mapLatitude: Double?, mapLongitude: Double?) {
+//    CategoryService().getStoreByDistance(
+//      category: category,
+//      latitude: latitude,
+//      longitude: longitude,
+//      mapLatitude: mapLatitude,
+//      mapLongitude: mapLongitude
+//    )
+//    .subscribe(
+//      onNext: { [weak self] categoryByDistance in
+//        guard let self = self else { return }
+//
+//        self.viewModel.setDistance(storeByDistance: categoryByDistance)
+//        self.categoryChildView.setEmpty(isEmpty: self.viewModel.isDistanceEmpty())
+//        self.delegate?.setMarkers(storeCards: self.viewModel.getAllDistanceStores())
+//        self.categoryChildView.tableView.reloadData()
+//      },
+//      onError: { [weak self] error in
+//        guard let self = self else { return }
+//        if let httpError = error as? HTTPError {
+//          self.showHTTPErrorAlert(error: httpError)
+//        } else if let error = error as? CommonError {
+//          let alertContent = AlertContent(title: nil, message: error.description)
+//
+//          self.showSystemAlert(alert: alertContent)
+//        }
+//      }
+//    )
+//    .disposed(by: disposeBag)
+//  }
   
-  private func getStoreByReview(mapLatitude: Double?, mapLongitude: Double?) {
-    CategoryService().getStoreByReview(
-      category: category,
-      latitude: latitude,
-      longitude: longitude,
-      mapLatitude: mapLatitude,
-      mapLongitude: mapLongitude
-    )
-    .subscribe(
-      onNext: { [weak self] categoryByReview in
-        guard let self = self else { return }
-        
-        self.viewModel.setReview(storeByReview: categoryByReview)
-        self.categoryChildView.setEmpty(isEmpty: self.viewModel.isReviewEmpty())
-        self.delegate?.setMarkers(storeCards: self.viewModel.getAllReviewStores())
-        self.categoryChildView.tableView.reloadData()
-      },
-      onError: { [weak self] error in
-        guard let self = self else { return }
-        if let httpError = error as? HTTPError {
-          self.showHTTPErrorAlert(error: httpError)
-        } else if let error = error as? CommonError {
-          let alertContent = AlertContent(title: nil, message: error.description)
-          
-          self.showSystemAlert(alert: alertContent)
-        }
-      }
-    ).disposed(by: disposeBag)
-  }
+//  private func getStoreByReview(mapLatitude: Double?, mapLongitude: Double?) {
+//    CategoryService().getStoreByReview(
+//      category: category,
+//      latitude: latitude,
+//      longitude: longitude,
+//      mapLatitude: mapLatitude,
+//      mapLongitude: mapLongitude
+//    )
+//    .subscribe(
+//      onNext: { [weak self] categoryByReview in
+//        guard let self = self else { return }
+//
+//        self.viewModel.setReview(storeByReview: categoryByReview)
+//        self.categoryChildView.setEmpty(isEmpty: self.viewModel.isReviewEmpty())
+//        self.delegate?.setMarkers(storeCards: self.viewModel.getAllReviewStores())
+//        self.categoryChildView.tableView.reloadData()
+//      },
+//      onError: { [weak self] error in
+//        guard let self = self else { return }
+//        if let httpError = error as? HTTPError {
+//          self.showHTTPErrorAlert(error: httpError)
+//        } else if let error = error as? CommonError {
+//          let alertContent = AlertContent(title: nil, message: error.description)
+//
+//          self.showSystemAlert(alert: alertContent)
+//        }
+//      }
+//    ).disposed(by: disposeBag)
+//  }
 }
 
 extension CategoryChildVC: UITableViewDelegate, UITableViewDataSource {
@@ -169,28 +169,29 @@ extension CategoryChildVC: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryListCell.registerId, for: indexPath) as? CategoryListCell else {
-      return BaseTableViewCell()
-    }
-    
-    cell.setBottomRadius(isLast: tableView.numberOfRows(inSection: indexPath.section) - 1 == indexPath.row)
-    if indexPath.row % 2 == 0 {
-      cell.setEvenBg()
-    } else {
-      cell.setOddBg()
-    }
-    
-    switch self.order {
-    case .DISTANCE:
-      if let storeCard = self.viewModel.getDistanceStore(indexPath: indexPath) {
-        cell.bind(order: .DISTANCE, storeCard: storeCard)
-      }
-    default:
-      if let storeCard = self.viewModel.getReviewStore(indexPath: indexPath) {
-        cell.bind(order: .REVIEW, storeCard: storeCard)
-      }
-    }
-    return cell
+    return BaseTableViewCell()
+//    guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryListStoreCell.registerId, for: indexPath) as? CategoryListStoreCell else {
+//      return BaseTableViewCell()
+//    }
+//
+//    cell.setBottomRadius(isLast: tableView.numberOfRows(inSection: indexPath.section) - 1 == indexPath.row)
+//    if indexPath.row % 2 == 0 {
+//      cell.setEvenBg()
+//    } else {
+//      cell.setOddBg()
+//    }
+//
+//    switch self.order {
+//    case .DISTANCE:
+//      if let storeCard = self.viewModel.getDistanceStore(indexPath: indexPath) {
+//        cell.bind(order: .DISTANCE, storeCard: storeCard)
+//      }
+//    default:
+//      if let storeCard = self.viewModel.getReviewStore(indexPath: indexPath) {
+//        cell.bind(order: .REVIEW, storeCard: storeCard)
+//      }
+//    }
+//    return cell
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -221,17 +222,13 @@ extension CategoryChildVC: UITableViewDelegate, UITableViewDataSource {
     switch self.order {
     case .DISTANCE:
       if self.viewModel.isValidDistanceSection(section: section) {
-        return CategoryListHeaderView().then {
-          $0.setDistanceHeader(section: self.viewModel.storeByDistance.indexList[section])
-        }
+        return CategoryListHeaderView()
       } else {
         return nil
       }
     case .REVIEW:
       if self.viewModel.isValidReviewSection(section: section) {
-        return CategoryListHeaderView().then {
-          $0.setReviewHeader(section: self.viewModel.storeByReview.indexList[section])
-        }
+        return CategoryListHeaderView()
       } else {
         return nil
       }

@@ -34,6 +34,8 @@ class CategoryListView: BaseView {
     $0.tableFooterView = UIView()
     $0.rowHeight = UITableView.automaticDimension
     $0.separatorStyle = .none
+    $0.sectionHeaderHeight = UITableView.automaticDimension
+    $0.estimatedSectionHeaderHeight = 1
     $0.backgroundColor = UIColor(r: 250, g: 250, b: 250)
   }
   
