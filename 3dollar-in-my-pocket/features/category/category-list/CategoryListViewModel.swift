@@ -53,6 +53,31 @@ class CategoryListViewModel: BaseViewModel {
     .disposed(by: disposeBag)
   }
   
+  func fetchCategoryStoresByReview(
+    currentLocation: CLLocation,
+    mapLocation: CLLocation?
+  ) {
+    self.categoryService.getStoreByReview(
+      category: self.category,
+      currentLocation: currentLocation,
+      mapLocation: mapLocation
+    )
+    .subscribe(
+      onNext: { [weak self] categoryByReview in
+        guard let self = self else { return }
+        let stores = self.storesByReview(from: categoryByReview)
+        self.ouput.stores.accept(stores)
+      },
+      onError: { [weak self] error in
+        guard let self = self else { return }
+        if let httpError = error as? HTTPError {
+          self.httpErrorAlert.accept(httpError)
+        }
+      }
+    )
+    .disposed(by: disposeBag)
+  }
+  
   private func storesByDistance(from response: CategoryByDistance) -> [CategorySection] {
     var categorySections: [CategorySection] = []
     let mapSection = CategorySection(
@@ -106,6 +131,63 @@ class CategoryListViewModel: BaseViewModel {
     }
     if !distanceSection5.items.isEmpty {
       categorySections.append(distanceSection5)
+    }
+    return categorySections
+  }
+  
+  private func storesByReview(from response: CategoryByReview) -> [CategorySection] {
+    var categorySections: [CategorySection] = []
+    let mapSection = CategorySection(
+      category: self.category,
+      stores: response.storeList4 + response.storeList3 + response.storeList2 + response.storeList1 + response.storeList0,
+      items: [nil]
+    )
+    let titleSection = CategorySection(category: self.category, items: [nil])
+    let review4Section = CategorySection(
+      category: self.category,
+      headerType: .review4,
+      items: response.storeList4
+    )
+    let review3Section = CategorySection(
+      category: self.category,
+      headerType: .review3,
+      items: response.storeList3
+    )
+    
+    let review2Section = CategorySection(
+      category: self.category,
+      headerType: .review2,
+      items: response.storeList2
+    )
+    
+    let review1Section = CategorySection(
+      category: self.category,
+      headerType: .review1,
+      items: response.storeList1
+    )
+    
+    let review0Section = CategorySection(
+      category: self.category,
+      headerType: .review0,
+      items: response.storeList0
+    )
+    
+    categorySections.append(mapSection)
+    categorySections.append(titleSection)
+    if !review4Section.items.isEmpty {
+      categorySections.append(review4Section)
+    }
+    if !review3Section.items.isEmpty {
+      categorySections.append(review3Section)
+    }
+    if !review2Section.items.isEmpty {
+      categorySections.append(review2Section)
+    }
+    if !review1Section.items.isEmpty {
+      categorySections.append(review1Section)
+    }
+    if !review0Section.items.isEmpty {
+      categorySections.append(review0Section)
     }
     return categorySections
   }
