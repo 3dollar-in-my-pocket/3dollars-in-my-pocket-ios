@@ -90,9 +90,9 @@ class CategoryListVC: BaseVC {
           withIdentifier: CategoryListMapCell.registerId,
           for: indexPath
         ) as? CategoryListMapCell else { return BaseTableViewCell() }
-        
+
+        cell.mapView.positionMode = .compass
         cell.mapView.removeCameraDelegate(delegate: self)
-        cell.mapView.positionMode = .direction
         cell.mapView.addCameraDelegate(delegate: self)
         cell.currentLocationButton.rx.tap
           .do(onNext: { _ in

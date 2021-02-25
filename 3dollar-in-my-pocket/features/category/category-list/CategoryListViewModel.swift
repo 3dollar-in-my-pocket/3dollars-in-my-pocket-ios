@@ -38,6 +38,28 @@ class CategoryListViewModel: BaseViewModel {
       .bind(onNext: self.fetchCategoryStoresByDistance)
       .disposed(by: disposeBag)
     
+    self.input.mapLocation
+      .do { [weak self] location in
+        self?.mapLocation = location
+      }
+      .map { (order: self.order, location: (self.currentLocation, $0)) }
+      .bind { result in
+        if let currentLocation = result.location.0 {
+          if result.order == .distance {
+            self.fetchCategoryStoresByDistance(
+              currentLocation: currentLocation,
+              mapLocation: result.location.1
+            )
+          } else {
+            self.fetchCategoryStoresByReview(
+              currentLocation: currentLocation,
+              mapLocation: result.location.1
+            )
+          }
+        }
+      }
+      .disposed(by: disposeBag)
+    
     self.input.tapOrderButton
       .filter { $0 != self.order }
       .do { self.order = $0 }
