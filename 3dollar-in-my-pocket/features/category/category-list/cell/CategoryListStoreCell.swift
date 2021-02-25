@@ -41,7 +41,6 @@ class CategoryListStoreCell: BaseTableViewCell {
   override func setup() {
     self.backgroundColor = .clear
     self.selectionStyle = .none
-    self.contentView.isUserInteractionEnabled = false
     self.addSubViews(
       containerView, titleLabel, categoriesLabel, ratingLabel,
       ratingImage, distanceLabel, distanceImage

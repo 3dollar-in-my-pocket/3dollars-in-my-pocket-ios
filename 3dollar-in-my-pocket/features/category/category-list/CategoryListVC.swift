@@ -55,11 +55,6 @@ class CategoryListVC: BaseVC {
   }
   
   override func bindEvent() {
-//    self.categoryListView.currentLocationButton.rx.tap.bind { [weak self] in
-//      self?.myLocationFlag = true
-//      self?.locationManager.startUpdatingLocation()
-//    }.disposed(by: disposeBag)
-    
     categoryListView.backButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .back_button_clicked, page: .store_list_page)
@@ -69,7 +64,6 @@ class CategoryListVC: BaseVC {
   }
   
   private func setupTableView() {
-    // Register
     self.categoryListView.storeTableView.register(
       CategoryListMapCell.self,
       forCellReuseIdentifier: CategoryListMapCell.registerId
@@ -101,6 +95,9 @@ class CategoryListVC: BaseVC {
         cell.mapView.positionMode = .direction
         cell.mapView.addCameraDelegate(delegate: self)
         cell.currentLocationButton.rx.tap
+          .do(onNext: { _ in
+            self.myLocationFlag = true
+          })
           .observeOn(MainScheduler.instance)
           .bind(onNext: self.setupLocationManager)
           .disposed(by: cell.disposeBag)
@@ -127,12 +124,18 @@ class CategoryListVC: BaseVC {
         cell.distanceOrderButton.rx.tap
           .map { CategoryOrder.distance }
           .do(onNext: cell.onTapOrderButton)
+          .do(onNext: { _ in
+            GA.shared.logEvent(event: .order_by_rating_button_list, page: .store_list_page)
+          })
           .bind(to: self.viewModel.input.tapOrderButton)
           .disposed(by: cell.disposeBag)
         
         cell.reviewOrderButton.rx.tap
           .map { CategoryOrder.review }
           .do(onNext: cell.onTapOrderButton)
+          .do(onNext: { _ in
+            GA.shared.logEvent(event: .order_by_rating_button_list, page: .store_list_page)
+          })
           .bind(to: self.viewModel.input.tapOrderButton)
           .disposed(by: cell.disposeBag)
         cell.bind(category: dataSource.sectionModels[indexPath.section].category)
@@ -146,6 +149,15 @@ class CategoryListVC: BaseVC {
         return cell
       }
     }
+    
+    self.categoryListView.storeTableView.rx.itemSelected
+      .filter { $0.section > 1 }
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .store_list_item_clicked, page: .store_list_page)
+      })
+      .map { self.categoryDataSource.sectionModels[$0.section].items[$0.row]?.id }
+      .bind(onNext: self.goToStoreDetail(storeId:))
+      .disposed(by: disposeBag)
   }
   
   private func setupLocationManager() {
@@ -157,6 +169,15 @@ class CategoryListVC: BaseVC {
   
   private func popVC() {
     self.navigationController?.popViewController(animated: true)
+  }
+  
+  private func goToStoreDetail(storeId: Int?) {
+    if let storeId = storeId {
+      self.navigationController?.pushViewController(
+        StoreDetailVC.instance(storeId: storeId),
+        animated: true
+      )
+    }
   }
   
 //  private func loadAdBanner() {
@@ -228,11 +249,11 @@ extension CategoryListVC: CLLocationManagerDelegate {
       
       if !self.myLocationFlag {
         self.viewModel.input.currentLocation.onNext(location)
-  //      self.categoryListView.mapView.moveCamera(cameraUpdate)
-  //      self.setupPageVC(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
         self.myLocationFlag = false
       } else {
-  //      self.categoryListView.mapView.moveCamera(cameraUpdate)
+        guard let mapCell = self.categoryListView.storeTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CategoryListMapCell else { return }
+        
+        mapCell.mapView.moveCamera(cameraUpdate)
       }
     }
     locationManager.stopUpdatingLocation()
@@ -299,5 +320,3 @@ extension CategoryListVC: GADBannerViewDelegate {
     print("adViewWillLeaveApplication")
   }
 }
-
-
