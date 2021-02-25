@@ -81,7 +81,7 @@ class CategoryListStoreCell: BaseTableViewCell {
     self.distanceLabel.snp.makeConstraints { make in
       make.right.equalTo(self.ratingImage.snp.left).offset(-8)
       make.centerY.equalTo(self.categoriesLabel)
-      make.width.lessThanOrEqualTo(45)
+      make.width.lessThanOrEqualTo(50)
     }
 
     self.distanceImage.snp.makeConstraints { make in
@@ -93,8 +93,6 @@ class CategoryListStoreCell: BaseTableViewCell {
   func bind(storeCard: StoreCard?) {
     if let storeCard = storeCard {
       self.titleLabel.text = storeCard.storeName
-      self.categoriesLabel.text = "#붕어빵 #땅콩빵 #어묵"
-      self.categoriesLabel.sizeToFit()
       self.ratingLabel.text = String.init(format: "%.01f", storeCard.rating)
       self.ratingLabel.sizeToFit()
       
@@ -104,6 +102,12 @@ class CategoryListStoreCell: BaseTableViewCell {
         self.distanceLabel.text = String.init(format: "%dm", storeCard.distance)
       }
       self.distanceLabel.sizeToFit()
+      
+      var categories = "#\(storeCard.category.name) "
+      for category in storeCard.categories {
+        categories.append("#\(category.name) ")
+      }
+      self.categoriesLabel.text = categories
     }
   }
 }
