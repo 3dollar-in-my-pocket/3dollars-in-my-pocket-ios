@@ -11,7 +11,7 @@ class CategoryListTitleCell: BaseTableViewCell {
     $0.numberOfLines = 0
   }
   
-  let nearOrderButton = UIButton().then {
+  let distanceOrderButton = UIButton().then {
     $0.setTitle("category_ordering_distance".localized, for: .normal)
     $0.setTitleColor(.black, for: .selected)
     $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
@@ -31,7 +31,7 @@ class CategoryListTitleCell: BaseTableViewCell {
     self.backgroundColor = .clear
     self.selectionStyle = .none
     self.contentView.isUserInteractionEnabled = false
-    self.addSubViews(reviewOrderButton, nearOrderButton, categoryTitleLabel)
+    self.addSubViews(reviewOrderButton, distanceOrderButton, categoryTitleLabel)
   }
   
   override func bindConstraints() {
@@ -47,7 +47,7 @@ class CategoryListTitleCell: BaseTableViewCell {
       make.bottom.equalTo(self.categoryTitleLabel)
     }
     
-    self.nearOrderButton.snp.makeConstraints { make in
+    self.distanceOrderButton.snp.makeConstraints { make in
       make.bottom.equalTo(self.reviewOrderButton)
       make.right.equalToSuperview().offset(-75)
     }
@@ -55,5 +55,10 @@ class CategoryListTitleCell: BaseTableViewCell {
   
   func bind(category: StoreCategory) {
     
+  }
+  
+  func onTapOrderButton(order: CategoryOrder) {
+    self.distanceOrderButton.isSelected = order == .distance
+    self.reviewOrderButton.isSelected = order == .review
   }
 }

@@ -124,6 +124,17 @@ class CategoryListVC: BaseVC {
           for: indexPath
         ) as? CategoryListTitleCell else { return BaseTableViewCell() }
         
+        cell.distanceOrderButton.rx.tap
+          .map { CategoryOrder.distance }
+          .do(onNext: cell.onTapOrderButton)
+          .bind(to: self.viewModel.input.tapOrderButton)
+          .disposed(by: cell.disposeBag)
+        
+        cell.reviewOrderButton.rx.tap
+          .map { CategoryOrder.review }
+          .do(onNext: cell.onTapOrderButton)
+          .bind(to: self.viewModel.input.tapOrderButton)
+          .disposed(by: cell.disposeBag)
         cell.bind(category: dataSource.sectionModels[indexPath.section].category)
         return cell
       default:

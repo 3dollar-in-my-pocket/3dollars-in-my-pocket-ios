@@ -9,9 +9,16 @@ class CategoryListViewModel: BaseViewModel {
   let categoryService: CategoryServiceProtocol
   let category: StoreCategory
   
+  var order: CategoryOrder = .distance
+  var currentLocation: CLLocation!
+  var mapLocation: CLLocation? = nil
+  
   struct Input {
     let currentLocation = PublishSubject<CLLocation>()
     let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
+    let tapOrderButton = PublishSubject<CategoryOrder>()
+    let tapDistanceOrderButton = PublishSubject<Void>()
+    let tapReviewOrderButton = PublishSubject<Void>()
   }
   
   struct Output {
@@ -24,8 +31,27 @@ class CategoryListViewModel: BaseViewModel {
     super.init()
     
     self.input.currentLocation
+      .do(onNext: { [weak self] location in
+        self?.currentLocation = location
+      })
       .map { ($0, nil) }
       .bind(onNext: self.fetchCategoryStoresByDistance)
+      .disposed(by: disposeBag)
+    
+    self.input.tapOrderButton
+      .filter { $0 != self.order }
+      .do { self.order = $0 }
+      .map { order -> (order: CategoryOrder, location: (CLLocation, CLLocation?)) in
+        return (order, (self.currentLocation, self.mapLocation))
+      }
+      .bind { [weak self] result in
+        guard let self = self else { return }
+        if result.0 == .distance {
+          self.fetchCategoryStoresByDistance(currentLocation: result.location.0, mapLocation: result.location.1)
+        } else {
+          self.fetchCategoryStoresByReview(currentLocation: result.location.0, mapLocation: result.location.1)
+        }
+      }
       .disposed(by: disposeBag)
   }
   
