@@ -69,7 +69,8 @@ class StoreDetailView: BaseView {
     }
     
     self.tableView.snp.makeConstraints { make in
-      make.left.right.bottom.equalToSuperview()
+      make.left.right.equalToSuperview()
+      make.bottom.equalTo(safeAreaLayoutGuide)
       make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
     }
   }
