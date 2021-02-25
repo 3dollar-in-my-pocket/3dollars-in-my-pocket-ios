@@ -10,4 +10,6 @@ enum CategoryHeaderType: String {
   case review2 = "review2"
   case review3 = "review3"
   case review4 = "review4"
+  
+  case ad = "ad"
 }

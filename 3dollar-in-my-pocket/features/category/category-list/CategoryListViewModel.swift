@@ -154,6 +154,11 @@ class CategoryListViewModel: BaseViewModel {
       items: response.storeListOver1000
     )
     
+    let adSection = CategorySection(
+      headerType: .ad,
+      items: [nil]
+    )
+    
     if !distanceSection1.items.isEmpty {
       categorySections.append(distanceSection1)
     }
@@ -169,6 +174,7 @@ class CategoryListViewModel: BaseViewModel {
     if !distanceSection5.items.isEmpty {
       categorySections.append(distanceSection5)
     }
+    categorySections.append(adSection)
     return categorySections
   }
   
@@ -198,6 +204,11 @@ class CategoryListViewModel: BaseViewModel {
       items: response.storeList0
     )
     
+    let adSection = CategorySection(
+      headerType: .ad,
+      items: [nil]
+    )
+    
     if !review4Section.items.isEmpty {
       categorySections.append(review4Section)
     }
@@ -213,6 +224,7 @@ class CategoryListViewModel: BaseViewModel {
     if !review0Section.items.isEmpty {
       categorySections.append(review0Section)
     }
+    categorySections.append(adSection)
     return categorySections
   }
 }

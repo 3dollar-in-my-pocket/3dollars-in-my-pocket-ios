@@ -42,6 +42,8 @@ class CategoryListHeaderView: BaseView {
       case .review0, .review1, .review2, .review3, .review4:
         self.headerImage.image = UIImage(named: "ic_star")
         self.headerLabel.text = "category_list_header_\(type.rawValue)".localized
+      default:
+        break
       }
     }
   }

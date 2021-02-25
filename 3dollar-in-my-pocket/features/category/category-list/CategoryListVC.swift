@@ -112,18 +112,48 @@ class CategoryListVC: BaseVC {
       forCellReuseIdentifier: CategoryListStoreCell.registerId
     )
     
+    self.categoryListView.storeTableView.register(
+      CategoryListAdBannerCell.self,
+      forCellReuseIdentifier: CategoryListAdBannerCell.registerId
+    )
+    
     self.categoryListView.storeTableView.rx
       .setDelegate(self)
       .disposed(by: disposeBag)
     
     self.categoryDataSource = RxTableViewSectionedReloadDataSource<CategorySection> { (dataSource, tableView, indexPath, item) in
-      
-      guard let cell = tableView.dequeueReusableCell(
-        withIdentifier: CategoryListStoreCell.registerId,
-        for: indexPath
-      ) as? CategoryListStoreCell else { return BaseTableViewCell() }
-      cell.bind(storeCard: dataSource.sectionModels[indexPath.section].items[indexPath.row])
-      return cell
+      if item != nil {
+        guard let cell = tableView.dequeueReusableCell(
+          withIdentifier: CategoryListStoreCell.registerId,
+          for: indexPath
+        ) as? CategoryListStoreCell else { return BaseTableViewCell() }
+        cell.bind(storeCard: dataSource.sectionModels[indexPath.section].items[indexPath.row])
+        
+        return cell
+      } else {
+        guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: CategoryListAdBannerCell.registerId,
+                for: indexPath
+        ) as? CategoryListAdBannerCell else { return BaseTableViewCell() }
+        #if DEBUG
+        cell.adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        #else
+        cell.adBannerView.adUnitID = "ca-app-pub-1527951560812478/3327283605"
+        #endif
+    
+        cell.adBannerView.rootViewController = self
+        cell.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(cell.frame.width)
+        cell.adBannerView.delegate = self
+    
+        if #available(iOS 14, *) {
+          ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+            cell.adBannerView.load(GADRequest())
+          })
+        } else {
+          cell.adBannerView.load(GADRequest())
+        }
+        return cell
+      }
     }
     
     self.categoryListView.storeTableView.rx.itemSelected
@@ -173,35 +203,18 @@ class CategoryListVC: BaseVC {
       )
     }
   }
-  
-//  private func loadAdBanner() {
-//    #if DEBUG
-//    self.categoryListView.adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-//    #else
-//    self.categoryListView.adBannerView.adUnitID = "ca-app-pub-1527951560812478/3327283605"
-//    #endif
-//
-//    self.categoryListView.adBannerView.rootViewController = self
-//    self.categoryListView.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(self.view.frame.width)
-//    self.categoryListView.adBannerView.delegate = self
-//
-//    if #available(iOS 14, *) {
-//      ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
-//        self.categoryListView.adBannerView.load(GADRequest())
-//      })
-//    } else {
-//      self.categoryListView.adBannerView.load(GADRequest())
-//    }
-//  }
-//
 }
 
 extension CategoryListVC: UITableViewDelegate {
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    let headerView = CategoryListHeaderView()
-    
-    headerView.bind(type: self.categoryDataSource.sectionModels[section].headerType)
-    return headerView
+    if self.categoryDataSource.sectionModels[section].headerType == CategoryHeaderType.ad {
+      return UIView(frame: .zero)
+    } else {
+      let headerView = CategoryListHeaderView()
+      
+      headerView.bind(type: self.categoryDataSource.sectionModels[section].headerType)
+      return headerView
+    }
   }
 }
 
