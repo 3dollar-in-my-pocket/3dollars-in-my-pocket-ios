@@ -127,7 +127,6 @@ class CategoryListVC: BaseVC {
     }
     
     self.categoryListView.storeTableView.rx.itemSelected
-      .filter { $0.section > 1 }
       .do(onNext: { _ in
         GA.shared.logEvent(event: .store_list_item_clicked, page: .store_list_page)
       })
@@ -199,15 +198,10 @@ class CategoryListVC: BaseVC {
 
 extension CategoryListVC: UITableViewDelegate {
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    switch section {
-    case 0, 1:
-      return UIView(frame: .zero)
-    default:
-      let headerView = CategoryListHeaderView()
-      
-      headerView.bind(type: self.categoryDataSource.sectionModels[section].headerType)
-      return headerView
-    }
+    let headerView = CategoryListHeaderView()
+    
+    headerView.bind(type: self.categoryDataSource.sectionModels[section].headerType)
+    return headerView
   }
 }
 

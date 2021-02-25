@@ -56,7 +56,7 @@ class CategoryListView: BaseView {
     $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
   }
   
-  let storeTableView = UITableView().then {
+  let storeTableView = UITableView(frame: .zero, style: .grouped).then {
     $0.tableFooterView = UIView()
     $0.rowHeight = UITableView.automaticDimension
     $0.separatorStyle = .none
@@ -64,6 +64,7 @@ class CategoryListView: BaseView {
     $0.estimatedSectionHeaderHeight = 1
     $0.backgroundColor = UIColor(r: 250, g: 250, b: 250)
     $0.showsVerticalScrollIndicator = false
+    $0.contentInsetAdjustmentBehavior = .never
   }
   
 //  let adBannerView = GADBannerView()
@@ -103,7 +104,7 @@ class CategoryListView: BaseView {
     self.mapView.snp.makeConstraints { make in
       make.left.right.equalToSuperview()
       make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
-      make.height.equalTo(375)
+      make.height.equalTo(339)
     }
     
     self.currentLocationButton.snp.makeConstraints { (make) in
@@ -115,7 +116,7 @@ class CategoryListView: BaseView {
     self.categoryTitleLabel.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-129)
-      make.top.equalTo(self.mapView.snp.bottom).offset(48)
+      make.top.equalTo(self.mapView.snp.bottom).offset(40)
     }
     
     self.reviewOrderButton.snp.makeConstraints { make in
@@ -129,7 +130,7 @@ class CategoryListView: BaseView {
     }
     
     self.storeTableView.snp.makeConstraints { make in
-      make.top.equalTo(self.categoryTitleLabel.snp.bottom).offset(33)
+      make.top.equalTo(self.categoryTitleLabel.snp.bottom)
       make.left.right.equalToSuperview()
       make.bottom.equalTo(safeAreaLayoutGuide)
     }
