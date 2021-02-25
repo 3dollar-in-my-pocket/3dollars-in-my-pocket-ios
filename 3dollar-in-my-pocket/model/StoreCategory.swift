@@ -86,6 +86,41 @@ public enum StoreCategory: String, Codable {
     }
   }
   
+  var lowcase: String {
+    get {
+      switch self {
+      case .BUNGEOPPANG:
+        return "bungeoppang"
+      case .GYERANPPANG:
+        return "gyeranppang"
+      case .TAKOYAKI:
+        return "takoyaki"
+      case .HOTTEOK:
+        return "hotteok"
+      case .EOMUK:
+        return "eomuk"
+      case .GUKHWAPPANG:
+        return "gukhwappang"
+      case .GUNGOGUMA:
+        return "gungoguma"
+      case .GUNOKSUSU:
+        return "gunoksusu"
+      case .KKOCHI:
+        return "kkochi"
+      case .SUNDAE:
+        return "sundae"
+      case .TOAST:
+        return "toast"
+      case .TTANGKONGPPANG:
+        return "ttangkongppang"
+      case .TTEOKBOKI:
+        return "tteokboki"
+      case .WAFFLE:
+        return "waffle"
+      }
+    }
+  }
+  
   func getValue() -> String {
     return self.rawValue
   }

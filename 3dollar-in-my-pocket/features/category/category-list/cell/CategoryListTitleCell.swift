@@ -5,9 +5,8 @@ class CategoryListTitleCell: BaseTableViewCell {
   static let registerId = "\(CategoryListTitleCell.self)"
   
   let categoryTitleLabel = UILabel().then {
-    $0.font = UIFont(name: "AppleSDGothicNeoEB00", size: 24)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Light", size: 24)
     $0.textColor = .black
-    $0.text = "붕어빵 만나기 30초 전"
     $0.numberOfLines = 0
   }
   
@@ -54,7 +53,16 @@ class CategoryListTitleCell: BaseTableViewCell {
   }
   
   func bind(category: StoreCategory) {
+    let text = "category_list_\(category.lowcase)".localized
+    let attributedString = NSMutableAttributedString(string: text)
+    let boldTextRange = (text as NSString).range(of: "shared_category_\(category.lowcase)".localized)
     
+    attributedString.addAttribute(
+      .font,
+      value: UIFont(name: "AppleSDGothicNeoEB00", size: 24)!,
+      range: boldTextRange
+    )
+    self.categoryTitleLabel.attributedText = attributedString
   }
   
   func onTapOrderButton(order: CategoryOrder) {
