@@ -43,14 +43,47 @@ class CategoryListVC: BaseVC {
     
     view = categoryListView
     self.setupLocationManager()
+    self.setupMap()
 //    self.loadAdBanner()
-    self.categoryListView.setCategoryTitle(category: self.category)
+    self.categoryListView.bind(category: self.category)
   }
   
   override func bindViewModel() {
+    // Bind input
+    self.categoryListView.currentLocationButton.rx.tap
+      .do(onNext: { _ in
+        self.myLocationFlag = true
+      })
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.setupLocationManager)
+      .disposed(by: disposeBag)
+    
+    self.categoryListView.distanceOrderButton.rx.tap
+      .map { CategoryOrder.distance }
+      .do(onNext: self.categoryListView.onTapOrderButton)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .order_by_rating_button_list, page: .store_list_page)
+      })
+      .bind(to: self.viewModel.input.tapOrderButton)
+      .disposed(by: disposeBag)
+    
+    self.categoryListView.reviewOrderButton.rx.tap
+      .map { CategoryOrder.review }
+      .do(onNext: self.categoryListView.onTapOrderButton)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .order_by_rating_button_list, page: .store_list_page)
+      })
+      .bind(to: self.viewModel.input.tapOrderButton)
+      .disposed(by: disposeBag)
+    
     // Bind output
     self.viewModel.ouput.stores
       .bind(to: self.categoryListView.storeTableView.rx.items(dataSource: self.categoryDataSource))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.ouput.markers
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.setMarkders(stores:))
       .disposed(by: disposeBag)
   }
   
@@ -84,70 +117,13 @@ class CategoryListVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.categoryDataSource = RxTableViewSectionedReloadDataSource<CategorySection> { (dataSource, tableView, indexPath, item) in
-      switch indexPath.section {
-      case 0:
-        guard let cell = tableView.dequeueReusableCell(
-          withIdentifier: CategoryListMapCell.registerId,
-          for: indexPath
-        ) as? CategoryListMapCell else { return BaseTableViewCell() }
-
-        cell.mapView.positionMode = .compass
-        cell.mapView.removeCameraDelegate(delegate: self)
-        cell.mapView.addCameraDelegate(delegate: self)
-        cell.currentLocationButton.rx.tap
-          .do(onNext: { _ in
-            self.myLocationFlag = true
-          })
-          .observeOn(MainScheduler.instance)
-          .bind(onNext: self.setupLocationManager)
-          .disposed(by: cell.disposeBag)
-        
-        for marker in self.markers {
-          marker.mapView = nil
-        }
-        
-        for store in dataSource.sectionModels[indexPath.section].stores {
-          let marker = NMFMarker()
-          marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
-          marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
-          marker.mapView = cell.mapView
-          self.markers.append(marker)
-        }
-        
-        return cell
-      case 1:
-        guard let cell = tableView.dequeueReusableCell(
-          withIdentifier: CategoryListTitleCell.registerId,
-          for: indexPath
-        ) as? CategoryListTitleCell else { return BaseTableViewCell() }
-        
-        cell.distanceOrderButton.rx.tap
-          .map { CategoryOrder.distance }
-          .do(onNext: cell.onTapOrderButton)
-          .do(onNext: { _ in
-            GA.shared.logEvent(event: .order_by_rating_button_list, page: .store_list_page)
-          })
-          .bind(to: self.viewModel.input.tapOrderButton)
-          .disposed(by: cell.disposeBag)
-        
-        cell.reviewOrderButton.rx.tap
-          .map { CategoryOrder.review }
-          .do(onNext: cell.onTapOrderButton)
-          .do(onNext: { _ in
-            GA.shared.logEvent(event: .order_by_rating_button_list, page: .store_list_page)
-          })
-          .bind(to: self.viewModel.input.tapOrderButton)
-          .disposed(by: cell.disposeBag)
-        cell.bind(category: dataSource.sectionModels[indexPath.section].category)
-        return cell
-      default:
-        guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: CategoryListStoreCell.registerId,
-                for: indexPath
-        ) as? CategoryListStoreCell else { return BaseTableViewCell() }
-        cell.bind(storeCard: dataSource.sectionModels[indexPath.section].items[indexPath.row])
-        return cell
-      }
+      
+      guard let cell = tableView.dequeueReusableCell(
+        withIdentifier: CategoryListStoreCell.registerId,
+        for: indexPath
+      ) as? CategoryListStoreCell else { return BaseTableViewCell() }
+      cell.bind(storeCard: dataSource.sectionModels[indexPath.section].items[indexPath.row])
+      return cell
     }
     
     self.categoryListView.storeTableView.rx.itemSelected
@@ -165,6 +141,25 @@ class CategoryListVC: BaseVC {
     locationManager.desiredAccuracy = kCLLocationAccuracyBest
     locationManager.requestWhenInUseAuthorization()
     locationManager.startUpdatingLocation()
+  }
+  
+  private func setupMap() {
+    self.categoryListView.mapView.positionMode = .compass
+    self.categoryListView.mapView.addCameraDelegate(delegate: self)
+  }
+  
+  private func setMarkders(stores: [StoreCard]) {
+    for marker in self.markers {
+      marker.mapView = nil
+    }
+    
+    for store in stores {
+      let marker = NMFMarker()
+      marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
+      marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
+      marker.mapView = self.categoryListView.mapView
+      self.markers.append(marker)
+    }
   }
   
   private func popVC() {
@@ -251,9 +246,7 @@ extension CategoryListVC: CLLocationManagerDelegate {
         self.viewModel.input.currentLocation.onNext(location)
         self.myLocationFlag = false
       } else {
-        guard let mapCell = self.categoryListView.storeTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CategoryListMapCell else { return }
-        
-        mapCell.mapView.moveCamera(cameraUpdate)
+        self.categoryListView.mapView.moveCamera(cameraUpdate)
       }
     }
     locationManager.stopUpdatingLocation()

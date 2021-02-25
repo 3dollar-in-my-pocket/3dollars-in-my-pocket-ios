@@ -25,9 +25,35 @@ class CategoryListView: BaseView {
   let categoryImage = UIImageView()
   
   let categoryLabel = UILabel().then {
-    $0.text = "붕어빵"
     $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
     $0.textColor = .black
+  }
+  
+  let mapView = NMFMapView()
+  
+  let currentLocationButton = UIButton().then {
+    $0.setImage(UIImage.init(named: "ic_current_location"), for: .normal)
+  }
+  
+  let categoryTitleLabel = UILabel().then {
+    $0.font = UIFont(name: "AppleSDGothicNeo-Light", size: 24)
+    $0.textColor = .black
+    $0.numberOfLines = 0
+  }
+  
+  let distanceOrderButton = UIButton().then {
+    $0.setTitle("category_ordering_distance".localized, for: .normal)
+    $0.setTitleColor(.black, for: .selected)
+    $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
+    $0.isSelected = true
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+  }
+  
+  let reviewOrderButton = UIButton().then {
+    $0.setTitle("category_ordering_review".localized, for: .normal)
+    $0.setTitleColor(.black, for: .selected)
+    $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
   }
   
   let storeTableView = UITableView().then {
@@ -37,16 +63,21 @@ class CategoryListView: BaseView {
     $0.sectionHeaderHeight = UITableView.automaticDimension
     $0.estimatedSectionHeaderHeight = 1
     $0.backgroundColor = UIColor(r: 250, g: 250, b: 250)
+    $0.showsVerticalScrollIndicator = false
   }
   
 //  let adBannerView = GADBannerView()
   
   
   override func setup() {
-    self.backgroundColor = .white
+    self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
     self.titleStackView.addArrangedSubview(categoryImage)
     self.titleStackView.addArrangedSubview(categoryLabel)
-    self.addSubViews(storeTableView, navigationView, backButton, titleStackView)
+    self.addSubViews(
+      storeTableView, mapView, navigationView, backButton,
+      currentLocationButton, reviewOrderButton, distanceOrderButton,
+      categoryTitleLabel, titleStackView
+    )
   }
   
   override func bindConstraints() {
@@ -69,15 +100,59 @@ class CategoryListView: BaseView {
       make.width.height.equalTo(32)
     }
     
-    self.storeTableView.snp.makeConstraints { make in
+    self.mapView.snp.makeConstraints { make in
+      make.left.right.equalToSuperview()
       make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
+      make.height.equalTo(375)
+    }
+    
+    self.currentLocationButton.snp.makeConstraints { (make) in
+      make.right.equalTo(mapView.snp.right).offset(-24)
+      make.bottom.equalTo(mapView.snp.bottom).offset(-15)
+      make.width.height.equalTo(48)
+    }
+    
+    self.categoryTitleLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-129)
+      make.top.equalTo(self.mapView.snp.bottom).offset(48)
+    }
+    
+    self.reviewOrderButton.snp.makeConstraints { make in
+      make.right.equalToSuperview().offset(-24)
+      make.bottom.equalTo(self.categoryTitleLabel)
+    }
+    
+    self.distanceOrderButton.snp.makeConstraints { make in
+      make.bottom.equalTo(self.reviewOrderButton)
+      make.right.equalToSuperview().offset(-75)
+    }
+    
+    self.storeTableView.snp.makeConstraints { make in
+      make.top.equalTo(self.categoryTitleLabel.snp.bottom).offset(33)
       make.left.right.equalToSuperview()
       make.bottom.equalTo(safeAreaLayoutGuide)
     }
   }
   
-  func setCategoryTitle(category: StoreCategory) {
+  func bind(category: StoreCategory) {
     self.categoryImage.image = category.image
     self.categoryLabel.text = category.name
+    
+    let text = "category_list_\(category.lowcase)".localized
+    let attributedString = NSMutableAttributedString(string: text)
+    let boldTextRange = (text as NSString).range(of: "shared_category_\(category.lowcase)".localized)
+    
+    attributedString.addAttribute(
+      .font,
+      value: UIFont(name: "AppleSDGothicNeoEB00", size: 24)!,
+      range: boldTextRange
+    )
+    self.categoryTitleLabel.attributedText = attributedString
+  }
+  
+  func onTapOrderButton(order: CategoryOrder) {
+    self.distanceOrderButton.isSelected = order == .distance
+    self.reviewOrderButton.isSelected = order == .review
   }
 }

@@ -12,17 +12,17 @@ class CategoryListViewModel: BaseViewModel {
   var order: CategoryOrder = .distance
   var currentLocation: CLLocation!
   var mapLocation: CLLocation? = nil
+  var stores: [StoreCard] = []
   
   struct Input {
     let currentLocation = PublishSubject<CLLocation>()
     let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
     let tapOrderButton = PublishSubject<CategoryOrder>()
-    let tapDistanceOrderButton = PublishSubject<Void>()
-    let tapReviewOrderButton = PublishSubject<Void>()
   }
   
   struct Output {
     let stores = PublishRelay<[CategorySection]>()
+    let markers = PublishRelay<[StoreCard]>()
   }
   
   init(category: StoreCategory, categoryService: CategoryServiceProtocol) {
@@ -90,6 +90,7 @@ class CategoryListViewModel: BaseViewModel {
         guard let self = self else { return }
         let stores = self.storesByDistance(from: categoryByDistance)
         self.ouput.stores.accept(stores)
+        self.ouput.markers.accept(categoryByDistance.getStores())
       },
       onError: { [weak self] error in
         guard let self = self else { return }
@@ -115,6 +116,7 @@ class CategoryListViewModel: BaseViewModel {
         guard let self = self else { return }
         let stores = self.storesByReview(from: categoryByReview)
         self.ouput.stores.accept(stores)
+        self.ouput.markers.accept(categoryByReview.getStores())
       },
       onError: { [weak self] error in
         guard let self = self else { return }
@@ -128,43 +130,30 @@ class CategoryListViewModel: BaseViewModel {
   
   private func storesByDistance(from response: CategoryByDistance) -> [CategorySection] {
     var categorySections: [CategorySection] = []
-    let mapSection = CategorySection(
-      category: self.category,
-      stores: response.storeList50 + response.storeList100 + response.storeList500 + response.storeList1000 + response.storeListOver1000,
-      items: [nil]
-    )
-    let titleSection = CategorySection(category: self.category, items: [nil])
     let distanceSection1 = CategorySection(
-      category: self.category,
       headerType: .distance50,
       items: response.storeList50
     )
     let distanceSection2 = CategorySection(
-      category: self.category,
       headerType: .distance100,
       items: response.storeList100
     )
     
     let distanceSection3 = CategorySection(
-      category: self.category,
       headerType: .distance500,
       items: response.storeList500
     )
     
     let distanceSection4 = CategorySection(
-      category: self.category,
       headerType: .distance1000,
       items: response.storeList1000
     )
     
     let distanceSection5 = CategorySection(
-      category: self.category,
       headerType: .distanceOver1000,
       items: response.storeListOver1000
     )
     
-    categorySections.append(mapSection)
-    categorySections.append(titleSection)
     if !distanceSection1.items.isEmpty {
       categorySections.append(distanceSection1)
     }
@@ -185,43 +174,30 @@ class CategoryListViewModel: BaseViewModel {
   
   private func storesByReview(from response: CategoryByReview) -> [CategorySection] {
     var categorySections: [CategorySection] = []
-    let mapSection = CategorySection(
-      category: self.category,
-      stores: response.storeList4 + response.storeList3 + response.storeList2 + response.storeList1 + response.storeList0,
-      items: [nil]
-    )
-    let titleSection = CategorySection(category: self.category, items: [nil])
     let review4Section = CategorySection(
-      category: self.category,
       headerType: .review4,
       items: response.storeList4
     )
     let review3Section = CategorySection(
-      category: self.category,
       headerType: .review3,
       items: response.storeList3
     )
     
     let review2Section = CategorySection(
-      category: self.category,
       headerType: .review2,
       items: response.storeList2
     )
     
     let review1Section = CategorySection(
-      category: self.category,
       headerType: .review1,
       items: response.storeList1
     )
     
     let review0Section = CategorySection(
-      category: self.category,
       headerType: .review0,
       items: response.storeList0
     )
     
-    categorySections.append(mapSection)
-    categorySections.append(titleSection)
     if !review4Section.items.isEmpty {
       categorySections.append(review4Section)
     }
