@@ -132,7 +132,7 @@ class StoreCell: BaseCollectionViewCell {
     self.titleLabel.text = storeCard.storeName
     self.rankLabel.text = "\(storeCard.rating)점"
     
-    var categories = "#\(storeCard.category.name) "
+    var categories = ""
     for category in storeCard.categories {
       categories.append("#\(category.name) ")
     }

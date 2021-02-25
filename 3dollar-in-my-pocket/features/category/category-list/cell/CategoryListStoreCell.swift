@@ -103,7 +103,7 @@ class CategoryListStoreCell: BaseTableViewCell {
       }
       self.distanceLabel.sizeToFit()
       
-      var categories = "#\(storeCard.category.name) "
+      var categories = ""
       for category in storeCard.categories {
         categories.append("#\(category.name) ")
       }
