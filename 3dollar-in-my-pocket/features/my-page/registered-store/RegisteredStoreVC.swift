@@ -39,6 +39,11 @@ class RegisteredVC: BaseVC {
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.goToStoreDetail(storeId:))
       .disposed(by: disposeBag)
+    
+    self.viewModel.httpErrorAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showHTTPErrorAlert(error:))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {

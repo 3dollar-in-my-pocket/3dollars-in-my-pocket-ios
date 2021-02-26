@@ -229,7 +229,7 @@ struct StoreService: StoreServiceProtocol {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/store/user"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["page": page, "userId": UserDefaultsUtil.getUserId()!]
+      let parameters: [String: Any] = ["page": page]
       
       HTTPUtils.defaultSession.request(
         urlString,
