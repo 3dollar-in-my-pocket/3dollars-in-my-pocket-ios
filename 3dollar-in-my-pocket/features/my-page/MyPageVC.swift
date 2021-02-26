@@ -12,13 +12,22 @@ class MyPageVC: BaseVC {
   weak var delegate: MyPageDelegate?
   private var viewModel = MyPageViewModel()
   
-  static func instance() -> MyPageVC {
-    return MyPageVC(nibName: nil, bundle: nil).then {
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+    return .lightContent
+  }
+  
+  static func instance() -> UINavigationController {
+    let myPageVC = MyPageVC(nibName: nil, bundle: nil).then {
       $0.tabBarItem = UITabBarItem(
         title: nil,
         image: UIImage(named: "ic_my"),
         tag: TabBarTag.my.rawValue
       )
+    }
+    
+    return UINavigationController(rootViewController: myPageVC).then {
+      $0.setNavigationBarHidden(true, animated: false)
+      $0.navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }
   }
   

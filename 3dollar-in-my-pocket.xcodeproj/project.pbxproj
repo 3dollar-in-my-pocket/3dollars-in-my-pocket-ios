@@ -1065,15 +1065,15 @@
 		6E8A137623B5DCBB009C2B64 /* my-page */ = {
 			isa = PBXGroup;
 			children = (
-				6E681E23256FDD1A00892B9E /* setting */,
-				6E6835C423C30D6F00D23F54 /* review */,
+				6EE0DBD923C2B77D00B24D99 /* MyPageReviewCell.swift */,
+				6E07D44923B591160055AEE7 /* MyPageVC.swift */,
+				6E07D44723B590F20055AEE7 /* MyPageView.swift */,
+				6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */,
+				6E87291823C065C200F59C2F /* RegisterCell.swift */,
 				6E6835BA23C2CBE800D23F54 /* registered */,
 				6E6835B523C2C3CD00D23F54 /* rename */,
-				6E07D44723B590F20055AEE7 /* MyPageView.swift */,
-				6E07D44923B591160055AEE7 /* MyPageVC.swift */,
-				6E87291823C065C200F59C2F /* RegisterCell.swift */,
-				6EE0DBD923C2B77D00B24D99 /* MyPageReviewCell.swift */,
-				6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */,
+				6E6835C423C30D6F00D23F54 /* review */,
+				6E681E23256FDD1A00892B9E /* setting */,
 			);
 			path = "my-page";
 			sourceTree = "<group>";
