@@ -26,6 +26,7 @@ class MyPageView: BaseView {
   
   let bgCloud = UIImageView().then {
     $0.image = UIImage.init(named: "bg_cloud_my_page")
+    $0.alpha = 0.1
   }
   
   let registerLabel = UILabel().then {
@@ -154,7 +155,7 @@ class MyPageView: BaseView {
     
     self.registerCountLabel.snp.makeConstraints { (make) in
       make.left.equalTo(self.registerLabel.snp.right).offset(5)
-      make.centerY.equalTo(self.registerLabel)
+      make.centerY.equalTo(self.registerLabel).offset(-3)
     }
     
     self.registerTotalButton.snp.makeConstraints { (make) in
@@ -186,7 +187,7 @@ class MyPageView: BaseView {
     
     self.reviewCountLabel.snp.makeConstraints { (make) in
       make.left.equalTo(self.reviewLabel.snp.right).offset(5)
-      make.centerY.equalTo(self.reviewLabel.snp.centerY)
+      make.centerY.equalTo(self.reviewLabel.snp.centerY).offset(-3)
     }
     
     self.reviewTotalButton.snp.makeConstraints { (make) in
@@ -226,7 +227,7 @@ class MyPageView: BaseView {
     if count == 0 {
       self.registerLabel.text = "my_page_registered_store_empty".localized
     } else {
-      self.registerLabel.text = "my_page_registered_review".localized
+      self.registerLabel.text = "my_page_registered_store".localized
       self.registerCountLabel.text = "\(count)개"
     }
   }

@@ -1,110 +1,104 @@
 import UIKit
 
 class RankingView: BaseView {
-    let star1 = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-        $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-        $0.isUserInteractionEnabled = false
+  
+  let star1 = UIButton().then {
+    $0.setImage(UIImage(named: "ic_star_on"), for: .selected)
+    $0.setImage(UIImage(named: "ic_star_off"), for: .normal)
+    $0.isUserInteractionEnabled = false
+  }
+  
+  let star2 = UIButton().then {
+    $0.setImage(UIImage(named: "ic_star_on"), for: .selected)
+    $0.setImage(UIImage(named: "ic_star_off"), for: .normal)
+    $0.isUserInteractionEnabled = false
+  }
+  
+  let star3 = UIButton().then {
+    $0.setImage(UIImage(named: "ic_star_on"), for: .selected)
+    $0.setImage(UIImage(named: "ic_star_off"), for: .normal)
+    $0.isUserInteractionEnabled = false
+  }
+  
+  let star4 = UIButton().then {
+    $0.setImage(UIImage(named: "ic_star_on"), for: .selected)
+    $0.setImage(UIImage(named: "ic_star_off"), for: .normal)
+    $0.isUserInteractionEnabled = false
+  }
+  
+  let star5 = UIButton().then {
+    $0.setImage(UIImage(named: "ic_star_on"), for: .selected)
+    $0.setImage(UIImage(named: "ic_star_off"), for: .normal)
+    $0.isUserInteractionEnabled = false
+  }
+  
+  let stackView = UIStackView().then {
+    $0.axis = .horizontal
+    $0.alignment = .leading
+    $0.backgroundColor = .clear
+    $0.spacing = 2
+  }
+  
+  let rankingLabel = UILabel().then {
+    $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14)
+    $0.textColor = .white
+  }
+  
+  override func setup() {
+    self.backgroundColor = .clear
+    self.stackView.addArrangedSubview(star1)
+    self.stackView.addArrangedSubview(star2)
+    self.stackView.addArrangedSubview(star3)
+    self.stackView.addArrangedSubview(star4)
+    self.stackView.addArrangedSubview(star5)
+    self.addSubViews(stackView, rankingLabel)
+  }
+  
+  override func bindConstraints() {
+    self.star1.snp.makeConstraints { make in
+      make.width.height.equalTo(14)
     }
     
-    let star2 = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-        $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-        $0.isUserInteractionEnabled = false
+    self.star2.snp.makeConstraints { make in
+      make.width.height.equalTo(14)
     }
     
-    let star3 = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-        $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-        $0.isUserInteractionEnabled = false
+    self.star3.snp.makeConstraints { make in
+      make.width.height.equalTo(14)
     }
     
-    let star4 = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-        $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-        $0.isUserInteractionEnabled = false
+    self.star4.snp.makeConstraints { make in
+      make.width.height.equalTo(14)
     }
     
-    let star5 = UIButton().then {
-        $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-        $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-        $0.isUserInteractionEnabled = false
+    self.star5.snp.makeConstraints { make in
+      make.width.height.equalTo(14)
     }
     
-    let stackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.alignment = .leading
-        $0.backgroundColor = .clear
-        $0.spacing = 2
+    self.stackView.snp.makeConstraints { make in
+      make.left.centerY.equalToSuperview()
     }
     
-    let rankingLabel = UILabel().then {
-        $0.text = "3.8점"
-        $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
-        $0.textColor = UIColor.init(r: 200, g: 200, b: 200)
+    self.rankingLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.stackView.snp.right).offset(9)
+      make.centerY.equalTo(self.stackView).offset(2)
     }
+  }
+  
+  override func layoutSubviews() {
+    super.layoutSubviews()
     
-    override func setup() {
-        backgroundColor = .clear
-        stackView.addArrangedSubview(star1)
-        stackView.addArrangedSubview(star2)
-        stackView.addArrangedSubview(star3)
-        stackView.addArrangedSubview(star4)
-        stackView.addArrangedSubview(star5)
-        addSubViews(stackView, rankingLabel)
-    }
+    self.stackView.sizeToFit()
+  }
+  
+  func setRank(rank: Float) {
+    let roundedRank = Int(rank.rounded())
     
-    override func bindConstraints() {
-        star1.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
-        }
-        
-        star2.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
-        }
-        
-        star3.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
-        }
-        
-        star4.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
-        }
-        
-        star5.snp.makeConstraints { (make) in
-            make.width.height.equalTo(18)
-        }
-        stackView.snp.makeConstraints { (make) in
-            make.left.centerY.equalToSuperview()
-        }
-        
-        rankingLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(stackView.snp.right).offset(8)
-            make.centerY.equalTo(stackView.snp.centerY)
-        }
+    for index in 0...stackView.arrangedSubviews.count - 1 {
+      if let star = stackView.arrangedSubviews[index] as? UIButton {
+        star.isSelected = index < roundedRank
+      }
     }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        stackView.sizeToFit()
-    }
-    
-    func setRank(rank: Float) {
-        let roundedRank = Int(rank.rounded())
-        
-        for index in 0...stackView.arrangedSubviews.count - 1 {
-            if let star = stackView.arrangedSubviews[index] as? UIButton {
-                star.isSelected = index < roundedRank
-            }
-        }
-        rankingLabel.text = "\(rank)"
-    }
-    
-    func setSelected(isSelected: Bool) {
-        if isSelected {
-            rankingLabel.textColor = .white
-        } else {
-            rankingLabel.textColor = UIColor.init(r: 200, g: 200, b: 200)
-        }
-    }
+    self.rankingLabel.text = "\(rank)점"
+  }
 }

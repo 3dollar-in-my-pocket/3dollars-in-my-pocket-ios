@@ -84,12 +84,11 @@ class MyPageViewModel: BaseViewModel {
           self.output.registeredStoreCount.accept(storePage.totalElements)
           
           if storePage.content.count > 5 {
-            var sliceArray: [Store?] = Array(storePage.content[0...4])
+            let sliceArray: [Store?] = Array(storePage.content[0...4]) + [nil]
             
-            sliceArray.append(nil)
             self.output.registeredStores.accept(sliceArray)
           } else {
-            self.output.registeredStores.accept(storePage.content)
+            self.output.registeredStores.accept(storePage.content + [nil])
           }
         },
         onError: { [weak self] error in
