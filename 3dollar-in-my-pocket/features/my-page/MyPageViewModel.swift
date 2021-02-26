@@ -21,6 +21,7 @@ class MyPageViewModel: BaseViewModel {
     let reviewCount = PublishRelay<Int>()
     let reviews = PublishRelay<[Review?]>()
     let goToStoreDetail = PublishRelay<Int>()
+    let goToRegistered = PublishRelay<Void>()
     let showSystemAlert = PublishRelay<AlertContent>()
   }
   
@@ -37,8 +38,14 @@ class MyPageViewModel: BaseViewModel {
     
     self.input.tapStore
       .withLatestFrom(self.output.registeredStores) { $1[$0] }
-      .compactMap { $0?.id } // TODO: nil일때는 RegisteredVC로 보내기
-      .bind(to: self.output.goToStoreDetail)
+      .bind(onNext: { [weak self] store in
+        guard let self = self else { return }
+        if let store = store{
+          self.output.goToStoreDetail.accept(store.id)
+        } else {
+          self.output.goToRegistered.accept(())
+        }
+      })
       .disposed(by: disposeBag)
     
     self.input.tapReview

@@ -103,6 +103,11 @@ class MyPageVC: BaseVC {
       .bind(onNext: self.goToStoreDetail(storeId:))
       .disposed(by: disposeBag)
     
+    self.viewModel.output.goToRegistered
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToTotalRegisteredStore)
+      .disposed(by: disposeBag)
+    
     self.viewModel.output.showSystemAlert
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSystemAlert(alert:))
