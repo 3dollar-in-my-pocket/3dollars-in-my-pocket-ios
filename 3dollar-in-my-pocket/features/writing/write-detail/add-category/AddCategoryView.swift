@@ -30,14 +30,16 @@ class AddCategoryView: BaseView {
     frame: .zero,
     collectionViewLayout: UICollectionViewFlowLayout()
   ).then {
-    let layout = LeftAlignedCollectionViewFlowLayout()
+    let layout = UICollectionViewFlowLayout()
     
-    layout.scrollDirection = .horizontal
+    layout.scrollDirection = .vertical
     layout.itemSize = CGSize(width: 52, height: 72)
     layout.minimumInteritemSpacing = 16 * RatioUtils.widthRatio
-    layout.minimumLineSpacing = 20
+    layout.minimumLineSpacing = 28
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear
+    $0.showsVerticalScrollIndicator = false
+    $0.showsHorizontalScrollIndicator = false
   }
   
   let selectButton = UIButton().then {
@@ -78,7 +80,7 @@ class AddCategoryView: BaseView {
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
       make.bottom.equalTo(self.selectButton.snp.top).offset(-32)
-      make.height.equalTo(72)
+      make.height.equalTo(272)
     }
     
     self.titleLabel.snp.makeConstraints { make in

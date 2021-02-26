@@ -25,6 +25,7 @@ class CategoryVC: BaseVC {
     view = categoryView
     self.setupCollectionView()
     self.viewModel.fetchCategories()
+    self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
   }
   
   override func bindViewModel() {

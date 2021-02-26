@@ -33,4 +33,8 @@ struct CategoryByReview: Codable {
     storeList3 = try values.decodeIfPresent([StoreCard].self, forKey: .storeList3) ?? []
     storeList4 = try values.decodeIfPresent([StoreCard].self, forKey: .storeList4) ?? []
   }
+  
+  func getStores() -> [StoreCard] {
+    return self.storeList4 + self.storeList3 + self.storeList2 + self.storeList1 + self.storeList0
+  }
 }

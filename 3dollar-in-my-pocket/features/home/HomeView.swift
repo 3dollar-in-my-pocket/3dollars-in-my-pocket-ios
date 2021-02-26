@@ -46,10 +46,16 @@ class HomeView: BaseView {
   
   let currentLocationButton = UIButton().then {
     $0.setImage(UIImage(named: "ic_current_location"), for: .normal)
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowOpacity = 0.15
   }
   
   let tossButton = UIButton().then {
     $0.setImage(UIImage(named: "ic_toss"), for: .normal)
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowOpacity = 0.15
   }
   
   
@@ -86,12 +92,12 @@ class HomeView: BaseView {
     
     self.tossButton.snp.makeConstraints { make in
       make.right.equalToSuperview().offset(-24)
-      make.bottom.equalTo(self.storeCollectionView.snp.top).offset(-4)
+      make.bottom.equalTo(self.storeCollectionView.snp.top).offset(-40)
     }
     
     self.currentLocationButton.snp.makeConstraints { (make) in
       make.right.equalTo(self.tossButton)
-      make.bottom.equalTo(self.tossButton.snp.top)
+      make.bottom.equalTo(self.tossButton.snp.top).offset(-12)
     }
   }
   

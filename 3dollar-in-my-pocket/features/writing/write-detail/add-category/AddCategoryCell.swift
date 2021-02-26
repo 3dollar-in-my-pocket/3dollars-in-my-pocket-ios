@@ -46,42 +46,13 @@ class AddCategoryCell: BaseCollectionViewCell {
   func bind(category: StoreCategory, isSelected: Bool) {
     if isSelected {
       self.roundView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
-      switch category {
-      case .BUNGEOPPANG:
-        self.categoryImage.image = UIImage(named: "img_32_bungeoppang_on")
-        self.nameLabel.text = "shared_category_bungeoppang".localized
-      case .GYERANPPANG:
-        self.categoryImage.image = UIImage(named: "img_32_gyeranppang_on")
-        self.nameLabel.text = "shared_category_gyeranppang".localized
-      case .HOTTEOK:
-        self.categoryImage.image = UIImage(named: "img_32_hotteok_on")
-        self.nameLabel.text = "shared_category_hotteok".localized
-      case .TAKOYAKI:
-        self.categoryImage.image = UIImage(named: "img_32_takoyaki_on")
-        self.nameLabel.text = "shared_category_takoyaki".localized
-      default:
-        break
-      }
+      self.categoryImage.image = UIImage(named: "img_32_\(category.lowcase)_on")
       self.nameLabel.textColor = UIColor(r: 28, g: 28, b: 28)
     } else {
       self.roundView.layer.borderColor = UIColor(r: 208, g: 208, b: 208).cgColor
-      switch category {
-      case .BUNGEOPPANG:
-        self.categoryImage.image = UIImage(named: "img_32_bungeoppang_off")
-        self.nameLabel.text = "shared_category_bungeoppang".localized
-      case .GYERANPPANG:
-        self.categoryImage.image = UIImage(named: "img_32_gyeranppang_off")
-        self.nameLabel.text = "shared_category_gyeranppang".localized
-      case .HOTTEOK:
-        self.categoryImage.image = UIImage(named: "img_32_hotteok_off")
-        self.nameLabel.text = "shared_category_hotteok".localized
-      case .TAKOYAKI:
-        self.categoryImage.image = UIImage(named: "img_32_takoyaki_off")
-        self.nameLabel.text = "shared_category_takoyaki".localized
-      default:
-        break
-      }
+      self.categoryImage.image = UIImage(named: "img_32_\(category.lowcase)_off")
       self.nameLabel.textColor = UIColor(r: 137, g: 137, b: 137)
     }
+    self.nameLabel.text = "shared_category_\(category.lowcase)".localized
   }
 }

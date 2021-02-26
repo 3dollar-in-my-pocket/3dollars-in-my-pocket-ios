@@ -14,8 +14,7 @@ class StoreCell: BaseCollectionViewCell {
     $0.font = UIFont(name: "AppleSDGothicNeo-ExtraBold", size: 16)
   }
   
-  let descriptionLabel = UILabel().then {
-    $0.text = "#붕어빵 #땅콩과자 #호떡"
+  let categoriesLabel = UILabel().then {
     $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12)
     $0.textColor = UIColor(r: 114, g: 114, b: 114)
   }
@@ -49,7 +48,7 @@ class StoreCell: BaseCollectionViewCell {
     self.layer.cornerRadius = 16
     self.backgroundColor = .white
     self.addSubViews(
-      categoryImage, titleLabel, descriptionLabel, distanceImage,
+      categoryImage, titleLabel, categoriesLabel, distanceImage,
       distanceLabel, starImage, rankLabel
     )
   }
@@ -69,7 +68,7 @@ class StoreCell: BaseCollectionViewCell {
       make.right.equalToSuperview().offset(-16)
     }
     
-    self.descriptionLabel.snp.makeConstraints { make in
+    self.categoriesLabel.snp.makeConstraints { make in
       make.left.right.equalTo(self.titleLabel)
       make.top.equalTo(self.titleLabel.snp.bottom).offset(2)
     }
@@ -99,13 +98,13 @@ class StoreCell: BaseCollectionViewCell {
     if isSelected {
       self.backgroundColor = .black
       self.titleLabel.textColor = .white
-      self.descriptionLabel.textColor = .white
+      self.categoriesLabel.textColor = .white
       self.distanceLabel.textColor = .white
       self.rankLabel.textColor = .white
     } else {
       self.backgroundColor = .white
       self.titleLabel.textColor = .black
-      self.descriptionLabel.textColor = UIColor(r: 114, g: 114, b: 114)
+      self.categoriesLabel.textColor = UIColor(r: 114, g: 114, b: 114)
       self.distanceLabel.textColor = .black
       self.rankLabel.textColor = .black
     }
@@ -132,5 +131,11 @@ class StoreCell: BaseCollectionViewCell {
     }
     self.titleLabel.text = storeCard.storeName
     self.rankLabel.text = "\(storeCard.rating)점"
+    
+    var categories = ""
+    for category in storeCard.categories {
+      categories.append("#\(category.name) ")
+    }
+    self.categoriesLabel.text = categories
   }
 }

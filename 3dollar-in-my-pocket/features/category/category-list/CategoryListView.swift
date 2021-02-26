@@ -7,7 +7,6 @@ class CategoryListView: BaseView {
   let navigationView = UIView().then {
     $0.layer.cornerRadius = 20
     $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-    
     $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOpacity = 0.04
@@ -26,7 +25,6 @@ class CategoryListView: BaseView {
   let categoryImage = UIImageView()
   
   let categoryLabel = UILabel().then {
-    $0.text = "붕어빵"
     $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
     $0.textColor = .black
   }
@@ -38,12 +36,12 @@ class CategoryListView: BaseView {
   }
   
   let categoryTitleLabel = UILabel().then {
-    $0.font = UIFont(name: "AppleSDGothicNeo-ExtraBold", size: 24)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Light", size: 24)
     $0.textColor = .black
-    $0.text = "붕어빵 만나기 30초 전"
+    $0.numberOfLines = 0
   }
   
-  let nearOrderButton = UIButton().then {
+  let distanceOrderButton = UIButton().then {
     $0.setTitle("category_ordering_distance".localized, for: .normal)
     $0.setTitleColor(.black, for: .selected)
     $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
@@ -58,24 +56,28 @@ class CategoryListView: BaseView {
     $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
   }
   
-  let storeTableView = UITableView().then {
+  let storeTableView = UITableView(frame: .zero, style: .grouped).then {
     $0.tableFooterView = UIView()
     $0.rowHeight = UITableView.automaticDimension
     $0.separatorStyle = .none
+    $0.sectionHeaderHeight = UITableView.automaticDimension
+    $0.estimatedSectionHeaderHeight = 1
     $0.backgroundColor = UIColor(r: 250, g: 250, b: 250)
+    $0.showsVerticalScrollIndicator = false
+    $0.contentInsetAdjustmentBehavior = .never
   }
   
-  let adBannerView = GADBannerView()
+//  let adBannerView = GADBannerView()
   
   
   override func setup() {
-    self.backgroundColor = .white
+    self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
     self.titleStackView.addArrangedSubview(categoryImage)
     self.titleStackView.addArrangedSubview(categoryLabel)
     self.addSubViews(
-      mapView, navigationView, backButton, titleStackView,
-      currentLocationButton, categoryTitleLabel, nearOrderButton,
-      reviewOrderButton, storeTableView, adBannerView
+      storeTableView, mapView, navigationView, backButton,
+      currentLocationButton, reviewOrderButton, distanceOrderButton,
+      categoryTitleLabel, titleStackView
     )
   }
   
@@ -95,31 +97,63 @@ class CategoryListView: BaseView {
       make.centerY.equalTo(self.backButton)
     }
     
-    self.categoryImage.snp.makeConstraints { (make) in
+    self.categoryImage.snp.makeConstraints { make in
       make.width.height.equalTo(32)
+    }
+    
+    self.mapView.snp.makeConstraints { make in
+      make.left.right.equalToSuperview()
+      make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
+      make.height.equalTo(339)
     }
     
     self.currentLocationButton.snp.makeConstraints { (make) in
       make.right.equalTo(mapView.snp.right).offset(-24)
       make.bottom.equalTo(mapView.snp.bottom).offset(-15)
-      make.width.height.equalTo(40)
+      make.width.height.equalTo(48)
     }
     
-    self.mapView.snp.makeConstraints { (make) in
-      make.left.right.equalToSuperview()
-      make.top.equalTo(navigationView.snp.bottom).offset(-50)
-      make.height.equalTo(396)
+    self.categoryTitleLabel.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-129)
+      make.top.equalTo(self.mapView.snp.bottom).offset(40)
     }
     
-    self.adBannerView.snp.makeConstraints { make in
+    self.reviewOrderButton.snp.makeConstraints { make in
+      make.right.equalToSuperview().offset(-24)
+      make.bottom.equalTo(self.categoryTitleLabel)
+    }
+    
+    self.distanceOrderButton.snp.makeConstraints { make in
+      make.bottom.equalTo(self.reviewOrderButton)
+      make.right.equalToSuperview().offset(-75)
+    }
+    
+    self.storeTableView.snp.makeConstraints { make in
+      make.top.equalTo(self.categoryTitleLabel.snp.bottom)
       make.left.right.equalToSuperview()
       make.bottom.equalTo(safeAreaLayoutGuide)
-      make.height.equalTo(64)
     }
   }
   
-  func setCategoryTitle(category: StoreCategory) {
+  func bind(category: StoreCategory) {
     self.categoryImage.image = category.image
     self.categoryLabel.text = category.name
+    
+    let text = "category_list_\(category.lowcase)".localized
+    let attributedString = NSMutableAttributedString(string: text)
+    let boldTextRange = (text as NSString).range(of: "shared_category_\(category.lowcase)".localized)
+    
+    attributedString.addAttribute(
+      .font,
+      value: UIFont(name: "AppleSDGothicNeoEB00", size: 24)!,
+      range: boldTextRange
+    )
+    self.categoryTitleLabel.attributedText = attributedString
+  }
+  
+  func onTapOrderButton(order: CategoryOrder) {
+    self.distanceOrderButton.isSelected = order == .distance
+    self.reviewOrderButton.isSelected = order == .review
   }
 }

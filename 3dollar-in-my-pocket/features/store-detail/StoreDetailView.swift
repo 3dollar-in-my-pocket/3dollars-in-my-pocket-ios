@@ -60,6 +60,7 @@ class StoreDetailView: BaseView {
     
     self.mainCategoryImage.snp.makeConstraints { (make) in
       make.centerX.equalToSuperview()
+      make.width.height.equalTo(60)
       make.bottom.equalTo(self.navigationView).offset(-3)
     }
     
@@ -69,7 +70,8 @@ class StoreDetailView: BaseView {
     }
     
     self.tableView.snp.makeConstraints { make in
-      make.left.right.bottom.equalToSuperview()
+      make.left.right.equalToSuperview()
+      make.bottom.equalTo(safeAreaLayoutGuide)
       make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
     }
   }

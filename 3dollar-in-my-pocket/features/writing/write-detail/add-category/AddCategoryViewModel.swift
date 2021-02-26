@@ -7,7 +7,11 @@ class AddCategoryViewModel: BaseViewModel {
   let output = Output()
   
   var selectedCategory: [StoreCategory]
-  let categories: [StoreCategory] = [.BUNGEOPPANG, .GYERANPPANG, .TAKOYAKI, .HOTTEOK]
+  let categories: [StoreCategory] = [
+    .BUNGEOPPANG, .KKOCHI, .EOMUK, .GUKHWAPPANG, .GUNGOGUMA,
+    .GYERANPPANG, .HOTTEOK, .GUNOKSUSU, .SUNDAE, .TAKOYAKI,
+    .TOAST, .TTANGKONGPPANG, .TTEOKBOKI, .WAFFLE,
+  ]
   
   struct Input {
     let tapCategory = PublishSubject<IndexPath>()

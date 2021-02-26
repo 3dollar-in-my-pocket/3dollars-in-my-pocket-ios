@@ -68,22 +68,8 @@ class WriteCategoryCell: BaseCollectionViewCell {
       self.roundView.backgroundColor = .clear
       self.roundView.layer.borderWidth = 1
       self.roundView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
-      switch category {
-      case .BUNGEOPPANG:
-        self.categoryImage.image = UIImage(named: "img_32_bungeoppang_on")
-        self.nameLabel.text = "shared_category_bungeoppang".localized
-      case .GYERANPPANG:
-        self.categoryImage.image = UIImage(named: "img_32_gyeranppang_on")
-        self.nameLabel.text = "shared_category_gyeranppang".localized
-      case .HOTTEOK:
-        self.categoryImage.image = UIImage(named: "img_32_hotteok_on")
-        self.nameLabel.text = "shared_category_hotteok".localized
-      case .TAKOYAKI:
-        self.categoryImage.image = UIImage(named: "img_32_takoyaki_on")
-        self.nameLabel.text = "shared_category_takoyaki".localized
-      default:
-        break
-      }
+      self.categoryImage.image = UIImage(named: "img_32_\(category.lowcase)_on")
+      self.nameLabel.text = "shared_category_\(category.lowcase)".localized
     }
   }
 }
