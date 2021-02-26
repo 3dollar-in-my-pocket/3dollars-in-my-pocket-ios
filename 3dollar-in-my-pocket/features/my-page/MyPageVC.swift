@@ -41,6 +41,7 @@ class MyPageVC: BaseVC {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
+    self.tabBarController?.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
     self.viewModel.fetchMyInfo()
     self.viewModel.fetchReportedStore()
     self.viewModel.fetchMyReview()

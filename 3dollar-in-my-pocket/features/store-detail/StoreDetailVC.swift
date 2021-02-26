@@ -47,6 +47,7 @@ class StoreDetailVC: BaseVC {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
+    self.tabBarController?.tabBar.barTintColor = .white
     self.viewModel.clearKakaoLinkIfExisted()
     self.setupLocationManager()
   }
