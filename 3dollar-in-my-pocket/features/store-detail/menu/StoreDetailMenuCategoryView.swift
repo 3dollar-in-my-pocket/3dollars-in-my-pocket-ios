@@ -44,21 +44,7 @@ class StoreDetailMenuCategoryView: BaseView {
   
   func bind(category: StoreCategory, isEmpty: Bool) {
     self.emptyLabel.isHidden = !isEmpty
-    switch category {
-    case .BUNGEOPPANG:
-      self.categoryImage.image = UIImage(named: "img_32_bungeoppang_on")
-      self.categoryLabel.text = "shared_category_bungeoppang".localized
-    case .GYERANPPANG:
-      self.categoryImage.image = UIImage(named: "img_32_gyeranppang_on")
-      self.categoryLabel.text = "shared_category_gyeranppang".localized
-    case .HOTTEOK:
-      self.categoryImage.image = UIImage(named: "img_32_hotteok_on")
-      self.categoryLabel.text = "shared_category_hotteok".localized
-    case .TAKOYAKI:
-      self.categoryImage.image = UIImage(named: "img_32_takoyaki_on")
-      self.categoryLabel.text = "shared_category_takoyaki".localized
-    default:
-      break
-    }
+    self.categoryImage.image = UIImage(named: "img_32_\(category.lowcase)_on")
+    self.categoryLabel.text = "shared_category_\(category.lowcase)".localized
   }
 }
