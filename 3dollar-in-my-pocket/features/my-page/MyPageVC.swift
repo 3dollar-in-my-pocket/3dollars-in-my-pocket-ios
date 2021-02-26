@@ -88,12 +88,10 @@ class MyPageVC: BaseVC {
         default:
           break
         }
-        // TODO: 제일 마지막 셀 radius 적용 필요
-//        if let count = try? self.viewModel.reportedReviews.value().count {
-//          if row == count - 1 {
-//            cell.setBottomRadius()
-//          }
-//        }
+        
+        if row == self.myPageView.reviewTableView.numberOfRows(inSection: 0) - 1 {
+          cell.setBottomRadius()
+        }
         cell.bind(review: review)
       }
       .disposed(by: disposeBag)
