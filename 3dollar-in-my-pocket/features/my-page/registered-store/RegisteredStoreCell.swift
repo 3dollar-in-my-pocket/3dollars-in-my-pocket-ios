@@ -1,8 +1,8 @@
 import UIKit
 
-class RegisteredCell: BaseTableViewCell {
+class RegisteredStoreCell: BaseTableViewCell {
     
-    static let registerId = "\(RegisteredCell.self)"
+    static let registerId = "\(RegisteredStoreCell.self)"
     
     
     let background = UIView().then {

@@ -1,6 +1,6 @@
 import RxSwift
 
-struct RegisteredViewModel {
+struct RegisteredStoreViewModel {
     var stores: [Store] = []
     var totalCount = Int.max
     var totalPage = 0

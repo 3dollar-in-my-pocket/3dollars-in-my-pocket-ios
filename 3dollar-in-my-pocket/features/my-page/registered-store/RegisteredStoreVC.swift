@@ -2,9 +2,9 @@ import UIKit
 
 class RegisteredVC: BaseVC {
     
-    private lazy var registeredView = RegisteredView(frame: self.view.frame)
+    private lazy var registeredStoreView = RegisteredStoreView(frame: self.view.frame)
     
-    private var viewModel = RegisteredViewModel()
+    private var viewModel = RegisteredStoreViewModel()
     
     private var currentPage = 1
     
@@ -14,13 +14,13 @@ class RegisteredVC: BaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view = registeredView
+        view = registeredStoreView
         setupTableView()
         getReportedStore()
     }
     
     override func bindViewModel() {
-        registeredView.backBtn.rx.tap.bind { [weak self] in
+      registeredStoreView.backButton.rx.tap.bind { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         }.disposed(by: disposeBag)
     }
@@ -30,9 +30,9 @@ class RegisteredVC: BaseVC {
     }
     
     private func setupTableView() {
-        registeredView.tableView.delegate = self
-        registeredView.tableView.dataSource = self
-        registeredView.tableView.register(RegisteredCell.self, forCellReuseIdentifier: RegisteredCell.registerId)
+        registeredStoreView.tableView.delegate = self
+        registeredStoreView.tableView.dataSource = self
+        registeredStoreView.tableView.register(RegisteredStoreCell.self, forCellReuseIdentifier: RegisteredStoreCell.registerId)
     }
     
     private func getReportedStore() {
@@ -43,7 +43,7 @@ class RegisteredVC: BaseVC {
           self.viewModel.stores = storePage.content
           self.viewModel.totalCount = storePage.totalElements
           self.viewModel.totalPage = storePage.totalPages
-          self.registeredView.tableView.reloadData()
+          self.registeredStoreView.tableView.reloadData()
         },
         onError: { [weak self] error in
           guard let self = self else { return }
@@ -66,7 +66,7 @@ class RegisteredVC: BaseVC {
             onNext: { [weak self] storePage in
               guard let self = self else { return }
               self.viewModel.stores.append(contentsOf: storePage.content)
-              self.registeredView.tableView.reloadData()
+              self.registeredStoreView.tableView.reloadData()
               self.removeLoadingFooter()
             },
             onError: { [weak self] error in
@@ -85,11 +85,11 @@ class RegisteredVC: BaseVC {
     }
     
     func addLoadingFooter() {
-        self.registeredView.tableView.tableFooterView?.isHidden = false
+        self.registeredStoreView.tableView.tableFooterView?.isHidden = false
     }
     
     func removeLoadingFooter() {
-        self.registeredView.tableView.tableFooterView?.isHidden = true
+        self.registeredStoreView.tableView.tableFooterView?.isHidden = true
     }
 }
 
@@ -99,7 +99,7 @@ extension RegisteredVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: RegisteredCell.registerId, for: indexPath) as? RegisteredCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: RegisteredStoreCell.registerId, for: indexPath) as? RegisteredStoreCell else {
             return BaseTableViewCell()
         }
         
@@ -114,7 +114,7 @@ extension RegisteredVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return RegisteredHeader().then {
+        return RegisteredStoreHeader().then {
             $0.setCount(count: self.viewModel.totalCount)
         }
     }
@@ -133,11 +133,11 @@ extension RegisteredVC: UITableViewDelegate, UITableViewDataSource {
         let contentOffset = scrollView.contentOffset.y
 
         if 130 - contentOffset > 0 && contentOffset > 0 && scrollView.contentSize.height > scrollView.frame.height {
-            self.registeredView.bgCloud.snp.remakeConstraints { (make) in
+            self.registeredStoreView.bgCloud.snp.remakeConstraints { (make) in
                 make.left.right.equalToSuperview()
                 make.top.equalToSuperview().offset(98 - contentOffset)
             }
-            self.registeredView.bgCloud.alpha = CGFloat((130 - contentOffset)/(130/0.2))
+            self.registeredStoreView.bgCloud.alpha = CGFloat((130 - contentOffset)/(130/0.2))
         }
     }
 

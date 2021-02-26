@@ -111,7 +111,7 @@ extension MyReviewVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return RegisteredHeader().then {
+        return RegisteredStoreHeader().then {
             $0.setCount(count: self.viewModel.totalCount)
         }
     }

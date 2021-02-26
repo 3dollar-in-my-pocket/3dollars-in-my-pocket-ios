@@ -1,6 +1,6 @@
 import UIKit
 
-class RegisteredHeader: BaseView {
+class RegisteredStoreHeader: BaseView {
     let countLabel = UILabel().then {
         $0.text = "05개"
         $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 24)
