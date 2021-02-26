@@ -9,15 +9,10 @@ class RegisteredStoreView: BaseView {
   let titleLabel = UILabel().then {
     $0.text = "registered_store_title".localized
     $0.textColor = .white
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
   }
   
-  let bgCloud = UIImageView().then {
-    $0.image = UIImage.init(named: "bg_cloud_my_page")
-    $0.alpha = 0.2
-  }
-  
-  lazy var tableView = UITableView(frame: .zero, style: .grouped).then {
+  let tableView = UITableView(frame: .zero, style: .grouped).then {
     $0.tableFooterView = UIView()
     $0.backgroundColor = .clear
     $0.showsVerticalScrollIndicator = false
@@ -26,37 +21,37 @@ class RegisteredStoreView: BaseView {
     
     let indicator = UIActivityIndicatorView(style: .large)
     
-    indicator.frame = CGRect(x: 0, y: 0, width: bounds.width, height: 60)
+    indicator.frame = CGRect(
+      x: 0,
+      y: 0,
+      width: UIScreen.main.bounds.width,
+      height: 60
+    )
     $0.tableFooterView = indicator
   }
   
   override func setup() {
-    backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
-    addSubViews(backButton, titleLabel, bgCloud, tableView)
+    self.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
+    self.addSubViews(backButton, titleLabel, tableView)
   }
   
   override func bindConstraints() {
-    backButton.snp.makeConstraints { (make) in
+    self.backButton.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.top.equalToSuperview().offset(48)
-      make.width.height.equalTo(48)
+      make.top.equalTo(safeAreaLayoutGuide).offset(13)
+      make.width.height.equalTo(24)
     }
     
-    titleLabel.snp.makeConstraints { (make) in
-      make.centerY.equalTo(backButton.snp.centerY)
+    self.titleLabel.snp.makeConstraints { make in
+      make.centerY.equalTo(self.backButton)
       make.centerX.equalToSuperview()
     }
     
-    bgCloud.snp.makeConstraints { (make) in
-      make.left.right.equalToSuperview()
-      make.top.equalToSuperview().offset(98)
-    }
-    
-    tableView.snp.makeConstraints { (make) in
-      make.bottom.equalToSuperview()
-      make.right.equalToSuperview().offset(-24)
-      make.left.equalToSuperview().offset(24)
-      make.top.equalTo(bgCloud.snp.top)
+    self.tableView.snp.makeConstraints { (make) in
+      make.bottom.equalTo(safeAreaLayoutGuide)
+      make.right.equalToSuperview()
+      make.left.equalToSuperview()
+      make.top.equalTo(self.backButton.snp.bottom).offset(10)
     }
   }
 }

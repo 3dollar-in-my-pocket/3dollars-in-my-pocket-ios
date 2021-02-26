@@ -1,26 +1,27 @@
 import UIKit
 
 class RegisteredStoreHeader: BaseView {
-    let countLabel = UILabel().then {
-        $0.text = "05개"
-        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 24)
-        $0.textColor = .white
+  
+  let countLabel = UILabel().then {
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 20)
+    $0.textColor = .white
+  }
+  
+  
+  override func setup() {
+    self.backgroundColor = .clear
+    self.addSubViews(countLabel)
+  }
+  
+  override func bindConstraints() {
+    self.countLabel.snp.makeConstraints { (make) in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalToSuperview().offset(12)
+      make.bottom.equalToSuperview().offset(-16)
     }
-    
-    override func setup() {
-        backgroundColor = .clear
-        addSubViews(countLabel)
-    }
-    
-    override func bindConstraints() {
-        countLabel.snp.makeConstraints { (make) in
-            make.left.equalToSuperview()
-            make.top.equalToSuperview().offset(12)
-            make.bottom.equalToSuperview().offset(-12)
-        }
-    }
-    
-    func setCount(count: Int) {
-        countLabel.text = String(format: "%d개", count)
-    }
+  }
+  
+  func setCount(count: Int) {
+    countLabel.text = String(format: "registered_store_count_format".localized, count)
+  }
 }

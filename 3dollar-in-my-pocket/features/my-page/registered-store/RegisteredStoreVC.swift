@@ -39,7 +39,6 @@ class RegisteredVC: BaseVC {
       StoreService().getReportedStore(page: 1).subscribe(
         onNext: { [weak self] storePage in
           guard let self = self else { return }
-          
           self.viewModel.stores = storePage.content
           self.viewModel.totalCount = storePage.totalElements
           self.viewModel.totalPage = storePage.totalPages
@@ -128,17 +127,4 @@ extension RegisteredVC: UITableViewDelegate, UITableViewDataSource {
             self.loadMoreStore()
         }
     }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let contentOffset = scrollView.contentOffset.y
-
-        if 130 - contentOffset > 0 && contentOffset > 0 && scrollView.contentSize.height > scrollView.frame.height {
-            self.registeredStoreView.bgCloud.snp.remakeConstraints { (make) in
-                make.left.right.equalToSuperview()
-                make.top.equalToSuperview().offset(98 - contentOffset)
-            }
-            self.registeredStoreView.bgCloud.alpha = CGFloat((130 - contentOffset)/(130/0.2))
-        }
-    }
-
 }

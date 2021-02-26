@@ -1,74 +1,117 @@
 import UIKit
 
 class RegisteredStoreCell: BaseTableViewCell {
-    
-    static let registerId = "\(RegisteredStoreCell.self)"
-    
-    
-    let background = UIView().then {
-        $0.backgroundColor = UIColor.init(r: 74, g: 74, b: 74)
-        $0.layer.cornerRadius = 16
+  
+  static let registerId = "\(RegisteredStoreCell.self)"
+  
+  let containerView = UIView().then {
+    $0.backgroundColor = UIColor.init(r: 46, g: 46, b: 46)
+    $0.layer.cornerRadius = 12
+  }
+  
+  let categoryImage = UIImageView()
+  
+  let titleLabel = UILabel().then {
+    $0.font = UIFont(name: "AppleSDGothicNeoEB00", size: 16)
+    $0.textColor = .white
+  }
+  
+  let categoriesLabel = UILabel().then {
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12)
+  }
+  
+  let distanceImage = UIImageView().then {
+    $0.image = UIImage(named: "ic_near_filled")
+  }
+  
+  let distanceLabel = UILabel().then {
+    $0.textColor = .white
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+  }
+  
+  let starImage = UIImageView().then {
+    $0.image = UIImage(named: "ic_star")
+  }
+  
+  let rankLabel = UILabel().then {
+    $0.textColor = UIColor(r: 200, g: 200, b: 200)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
+    $0.textColor = .white
+  }
+  
+  
+  override func setup() {
+    self.backgroundColor = .clear
+    self.selectionStyle = .none
+    self.addSubViews(
+      containerView, categoryImage, titleLabel, categoriesLabel,
+      distanceImage, distanceLabel, starImage, rankLabel
+    )
+  }
+  
+  override func bindConstraints() {
+    self.containerView.snp.makeConstraints { (make) in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalToSuperview().offset(8)
+      make.bottom.equalToSuperview().offset(-8)
     }
     
-    let categoryImage = UIImageView().then {
-        $0.image = UIImage.init(named: "img_card_bungeoppang_on")
+    self.categoryImage.snp.makeConstraints { make in
+      make.left.equalTo(self.containerView).offset(16)
+      make.centerY.equalTo(self.containerView)
+      make.top.equalTo(self.containerView).offset(22)
+      make.bottom.equalToSuperview().offset(-22)
+      make.width.height.equalTo(60)
     }
     
-    let titleLabel = UILabel().then {
-        $0.text = "강남역 2번출구 앞"
-        $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
-        $0.textColor = .white
+    self.titleLabel.snp.makeConstraints { make in
+      make.top.equalTo(self.containerView).offset(20)
+      make.left.equalTo(self.categoryImage.snp.right).offset(13)
+      make.right.equalToSuperview().offset(-16)
     }
     
-    let rankingView = RankingView()
-    
-    override func setup() {
-        backgroundColor = .clear
-        selectionStyle = .none
-        addSubViews(background, categoryImage, titleLabel, rankingView)
+    self.categoriesLabel.snp.makeConstraints { make in
+      make.left.right.equalTo(self.titleLabel)
+      make.top.equalTo(self.titleLabel.snp.bottom).offset(2)
     }
     
-    override func bindConstraints() {
-        background.snp.makeConstraints { (make) in
-            make.left.right.equalToSuperview()
-            make.top.equalToSuperview().offset(4)
-            make.bottom.equalToSuperview().offset(-4)
-        }
-        
-        categoryImage.snp.makeConstraints { (make) in
-            make.top.equalTo(background.snp.top).offset(20)
-            make.bottom.equalTo(background.snp.bottom).offset(-20)
-            make.left.equalTo(background.snp.left).offset(16)
-            make.width.equalTo(80)
-            make.height.equalTo(56)
-        }
-        
-        titleLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(categoryImage.snp.top)
-            make.left.equalTo(categoryImage.snp.right).offset(16)
-            make.right.equalTo(background).offset(-10)
-        }
-        
-        rankingView.snp.makeConstraints { (make) in
-            make.left.equalTo(titleLabel.snp.left)
-            make.top.equalTo(titleLabel.snp.bottom).offset(15)
-        }
+    self.distanceImage.snp.makeConstraints { make in
+      make.left.equalTo(self.titleLabel)
+      make.bottom.equalTo(self.containerView).offset(-15)
     }
     
-    func bind(store: Store) {
-        switch store.category {
-        case .BUNGEOPPANG:
-            categoryImage.image = UIImage.init(named: "img_mypage_bungeoppang")
-        case .GYERANPPANG:
-            categoryImage.image = UIImage.init(named: "img_mypage_gyeranppang")
-        case.HOTTEOK:
-            categoryImage.image = UIImage.init(named: "img_mypage_hotteok")
-        case.TAKOYAKI:
-            categoryImage.image = UIImage.init(named: "img_mypage_takoyaki")
-        default:
-          break
-        }
-        titleLabel.text = store.storeName
-        rankingView.setRank(rank: store.rating)
+    self.distanceLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.distanceImage.snp.right).offset(4)
+      make.centerY.equalTo(self.distanceImage)
     }
+    
+    self.starImage.snp.makeConstraints { make in
+      make.centerY.equalTo(self.distanceImage)
+      make.left.equalTo(self.distanceLabel.snp.right).offset(12)
+    }
+    
+    self.rankLabel.snp.makeConstraints { make in
+      make.left.equalTo(self.starImage.snp.right).offset(4)
+      make.centerY.equalTo(self.distanceLabel)
+    }
+  }
+  
+  func bind(store: Store) {
+    self.categoryImage.image = UIImage(named: "img_60_\(store.category.lowcase)")
+    self.titleLabel.text = store.storeName
+    self.rankLabel.text = "\(store.rating)점"
+    if store.distance >= 1000 {
+      distanceLabel.text = "1km+"
+    } else {
+      distanceLabel.text = "\(store.distance)m"
+    }
+    
+    var categories = ""
+    for category in store.categories {
+      categories.append("#\(category.name) ")
+    }
+    self.categoriesLabel.text = categories
+  }
 }

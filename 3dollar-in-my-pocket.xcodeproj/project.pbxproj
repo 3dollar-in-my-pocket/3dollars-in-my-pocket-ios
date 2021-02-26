@@ -842,10 +842,10 @@
 		6E6835BA23C2CBE800D23F54 /* registered-store */ = {
 			isa = PBXGroup;
 			children = (
-				6E6835BB23C2CC0800D23F54 /* RegisteredStoreView.swift */,
 				6E6835BD23C2CEFB00D23F54 /* RegisteredStoreCell.swift */,
-				6E6835BF23C2D2BC00D23F54 /* RegisteredStoreVC.swift */,
 				6E6835C123C2F36000D23F54 /* RegisteredStoreHeader.swift */,
+				6E6835BF23C2D2BC00D23F54 /* RegisteredStoreVC.swift */,
+				6E6835BB23C2CC0800D23F54 /* RegisteredStoreView.swift */,
 				6ED37D9023D58F1700E12711 /* RegisteredStoreViewModel.swift */,
 			);
 			path = "registered-store";
