@@ -183,3 +183,8 @@
 "category_list_waffle" = "넌 어쩜 이름도\n와플일까?";
 "category_list_gukhwappang" = "사계절 너가 생각나\n국화빵";
 "category_list_sundae" = "순대, 제발 내장 많이 주세요.";
+"my_page_registered_store" = "제보한 가게";
+"my_page_total" = "전체보기";
+"my_page_registered_review" = "내가 쓴 리뷰";
+"my_page_registered_store_empty" = "제보한 가게가 없어요.";
+"my_page_registered_review_empty" = "내가 쓴 리뷰가 없어요.";
