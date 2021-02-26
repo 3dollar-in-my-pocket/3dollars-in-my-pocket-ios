@@ -30,6 +30,7 @@ class RegisteredStoreView: BaseView {
     $0.tableFooterView = indicator
   }
   
+  
   override func setup() {
     self.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
     self.addSubViews(backButton, titleLabel, tableView)
