@@ -111,18 +111,7 @@ class StoreCell: BaseCollectionViewCell {
   }
   
   func bind(storeCard: StoreCard) {
-    switch storeCard.category {
-    case .BUNGEOPPANG:
-      self.categoryImage.image = UIImage(named: "img_60_bungeoppang")
-    case .GYERANPPANG:
-      self.categoryImage.image = UIImage(named: "img_60_gyeranppang")
-    case .HOTTEOK:
-      self.categoryImage.image = UIImage(named: "img_60_hotteok")
-    case .TAKOYAKI:
-      self.categoryImage.image = UIImage(named: "img_60_takoyaki")
-    default:
-      break
-    }
+    self.categoryImage.image = UIImage(named: "img_60_\(storeCard.category.lowcase)")
     
     if storeCard.distance >= 1000 {
       distanceLabel.text = "1km+"
