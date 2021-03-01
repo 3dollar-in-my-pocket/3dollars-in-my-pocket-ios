@@ -1,62 +1,125 @@
 import UIKit
 import RxSwift
 
-protocol MyPageDelegate: class {
-  func onScrollStart()
-  func onScrollEnd()
-}
-
 class MyPageVC: BaseVC {
   
   private lazy var myPageView = MyPageView(frame: self.view.frame)
-  weak var delegate: MyPageDelegate?
-  private var viewModel = MyPageViewModel()
+  private let viewModel = MyPageViewModel(
+    userService: UserService(),
+    storeService: StoreService(),
+    reviewService: ReviewService()
+  )
   
-  static func instance() -> MyPageVC {
-    return MyPageVC(nibName: nil, bundle: nil).then {
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+    return .lightContent
+  }
+  
+  
+  static func instance() -> UINavigationController {
+    let myPageVC = MyPageVC(nibName: nil, bundle: nil).then {
       $0.tabBarItem = UITabBarItem(
         title: nil,
         image: UIImage(named: "ic_my"),
         tag: TabBarTag.my.rawValue
       )
     }
+    
+    return UINavigationController(rootViewController: myPageVC).then {
+      $0.setNavigationBarHidden(true, animated: false)
+      $0.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+    }
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    view = myPageView
-    myPageView.scrollView.delegate = self
-    setupRegisterCollectionView()
-    setUpReviewTableView()
+    
+    self.view = myPageView
+    self.setupRegisterCollectionView()
+    self.setUpReviewTableView()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    self.tabBarController?.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
+    self.viewModel.fetchMyInfo()
+    self.viewModel.fetchReportedStore()
+    self.viewModel.fetchMyReview()
   }
   
   override func bindViewModel() {
-    viewModel.reportedStores.bind(to: myPageView.registerCollectionView.rx.items(cellIdentifier: RegisterCell.registerId, cellType: RegisterCell.self)) { row, store, cell in
-      cell.bind(store: store)
-    }.disposed(by: disposeBag)
+    // Bind output
+    self.viewModel.output.user
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.myPageView.bind(user:))
+      .disposed(by: disposeBag)
     
-    viewModel.reportedReviews.bind(to: myPageView.reviewTableView.rx.items(cellIdentifier: MyPageReviewCell.registerId, cellType: MyPageReviewCell.self)) { row, review, cell in
-      switch row {
-      case 0:
-        cell.setTopRadius()
-        cell.setEvenBg()
-      case 1:
-        cell.setOddBg()
-      case 2:
-        cell.setEvenBg()
-      default:
-        break
+    self.viewModel.output.registeredStoreCount
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.myPageView.setStore(count:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.registeredStores
+      .bind(to: self.myPageView.registerCollectionView.rx.items(
+        cellIdentifier: RegisterCell.registerId,
+        cellType: RegisterCell.self
+      )) { row, store, cell in
+        cell.bind(store: store)
       }
-      
-      if let count = try? self.viewModel.reportedReviews.value().count {
-        if row == count - 1 {
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.reviewCount
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.myPageView.setReview(count:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.reviews
+      .bind(to: self.myPageView.reviewTableView.rx.items(
+              cellIdentifier: MyPageReviewCell.registerId,
+              cellType: MyPageReviewCell.self
+      )) { row, review, cell in
+        switch row {
+        case 0:
+          cell.setTopRadius()
+          cell.setEvenBg()
+        case 1:
+          cell.setOddBg()
+        case 2:
+          cell.setEvenBg()
+        default:
+          break
+        }
+        
+        if row == self.myPageView.reviewTableView.numberOfRows(inSection: 0) - 1 {
           cell.setBottomRadius()
         }
+        cell.bind(review: review)
       }
-      cell.bind(review: review)
-    }.disposed(by: disposeBag)
+      .disposed(by: disposeBag)
     
-    myPageView.settingButton.rx.tap
+    self.viewModel.output.goToStoreDetail
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToStoreDetail(storeId:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.goToRegistered
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToTotalRegisteredStore)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.httpErrorAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showHTTPErrorAlert(error:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.showSystemAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
+  }
+  
+  override func bindEvent() {
+    self.myPageView.settingButton.rx.tap
       .observeOn(MainScheduler.instance)
       .do(onNext: { _ in
         GA.shared.logEvent(event: .setting_button_clicked, page: .my_info_page)
@@ -64,38 +127,43 @@ class MyPageVC: BaseVC {
       .bind(onNext: self.goToSetting)
       .disposed(by: disposeBag)
     
-    myPageView.registerTotalBtn.rx.tap
+    self.myPageView.registerTotalButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .show_all_my_store_button_clicked, page: .my_info_page)
       })
-      .bind { [weak self] in
-      self?.navigationController?.pushViewController(RegisteredVC.instance(), animated: true)
-    }.disposed(by: disposeBag)
+      .bind(onNext: self.goToTotalRegisteredStore)
+      .disposed(by: disposeBag)
     
-    myPageView.reviewTotalBtn.rx.tap
+    self.myPageView.reviewTotalButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .show_all_my_review_button_clicked, page: .my_info_page)
       })
-      .bind { [weak self] in
-      self?.navigationController?.pushViewController(MyReviewVC.instance(), animated: true)
-    }.disposed(by: disposeBag)
-  }
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    getMyInfo()
-    getReportedStore()
-    getMyReviews()
+      .bind(onNext: self.goToMyReview)
+      .disposed(by: disposeBag)
   }
   
   private func setupRegisterCollectionView() {
-    myPageView.registerCollectionView.delegate = self
-    myPageView.registerCollectionView.register(RegisterCell.self, forCellWithReuseIdentifier: RegisterCell.registerId)
+    self.myPageView.registerCollectionView.register(
+      RegisterCell.self,
+      forCellWithReuseIdentifier: RegisterCell.registerId
+    )
+    
+    self.myPageView.registerCollectionView.rx.itemSelected
+      .map { $0.row }
+      .bind(to: self.viewModel.input.tapStore)
+      .disposed(by: disposeBag)
   }
   
   private func setUpReviewTableView() {
-    myPageView.reviewTableView.delegate = self
-    myPageView.reviewTableView.register(MyPageReviewCell.self, forCellReuseIdentifier: MyPageReviewCell.registerId)
+    self.myPageView.reviewTableView.register(
+      MyPageReviewCell.self,
+      forCellReuseIdentifier: MyPageReviewCell.registerId
+    )
+    
+    self.myPageView.reviewTableView.rx.itemSelected
+      .map { $0.row }
+      .bind(to: self.viewModel.input.tapReview)
+      .disposed(by: disposeBag)
   }
   
   private func goToSetting() {
@@ -104,118 +172,21 @@ class MyPageVC: BaseVC {
     self.navigationController?.pushViewController(settingVC, animated: true)
   }
   
-  private func getMyInfo() {
-    UserService().getUserInfo().subscribe(
-      onNext: { [weak self] user in
-        self?.myPageView.nicknameLabel.text = user.nickname
-      },
-      onError: { [weak self] error in
-        if let httpError = error as? HTTPError {
-          self?.showHTTPErrorAlert(error: httpError)
-        } else if let error = error as? CommonError {
-          let alertContent = AlertContent(title: nil, message: error.description)
-          
-          self?.showSystemAlert(alert: alertContent)
-        }
-      }).disposed(by: disposeBag)
+  private func goToTotalRegisteredStore() {
+    let registeredVC = RegisteredVC.instance()
+    
+    self.navigationController?.pushViewController(registeredVC, animated: true)
   }
   
-  private func getReportedStore() {
-    StoreService().getReportedStore(page: 1)
-      .subscribe(
-        onNext: { [weak self] storePage in
-          guard let self = self else { return }
-          self.myPageView.setRegisterEmpty(isEmpty: storePage.content.isEmpty, count: storePage.totalElements)
-          if storePage.content.count > 5 {
-            var sliceArray: [Store?] = Array(storePage.content[0...4])
-            
-            sliceArray.append(nil)
-            self.viewModel.reportedStores.onNext(sliceArray)
-          } else {
-            self.viewModel.reportedStores.onNext(storePage.content)
-          }
-        }, onError: { [weak self] error in
-          guard let self = self else { return }
-          
-          if let error = error as? HTTPError {
-            self.showHTTPErrorAlert(error: error)
-          } else if let error = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: error.description)
-            
-            self.showSystemAlert(alert: alertContent)
-          }
-        })
-      .disposed(by: disposeBag)
+  private func goToMyReview() {
+    let myReviewVC = MyReviewVC.instance()
+    
+    self.navigationController?.pushViewController(myReviewVC, animated: true)
   }
   
-  private func getMyReviews() {
-    ReviewService().getMyReview(page: 1)
-      .subscribe(
-        onNext: { [weak self] reviewPage in
-          guard let self = self else { return }
-          
-          self.myPageView.setReviewEmpty(isEmpty: reviewPage.content.isEmpty, count: reviewPage.totalElements)
-          if reviewPage.totalElements > 3 {
-            self.viewModel.reportedReviews.onNext(Array(reviewPage.content[0...2]))
-          } else {
-            var contents: [Review?] = reviewPage.content
-            
-            while contents.count != 3 {
-              contents.append(nil)
-            }
-            self.viewModel.reportedReviews.onNext(contents)
-          }
-          
-        },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          
-          if let httpError = error as? HTTPError {
-            self.showHTTPErrorAlert(error: httpError)
-          } else if let error = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: error.description)
-            
-            self.showSystemAlert(alert: alertContent)
-          }
-        })
-      .disposed(by: disposeBag)
-  }
-}
-
-extension MyPageVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    return CGSize(width: 172, height: 172)
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    if let store = try? self.viewModel.reportedStores.value()[indexPath.row] {
-      self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: store.id), animated: true)
-    } else {
-      self.navigationController?.pushViewController(RegisteredVC.instance(), animated: true)
-    }
-  }
-}
-
-extension MyPageVC: UITableViewDelegate {
-  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    if let store = try? self.viewModel.reportedReviews.value()[indexPath.row] {
-      self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: store.storeId), animated: true)
-    }
-  }
-}
-
-extension MyPageVC: UIScrollViewDelegate {
-  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-    self.delegate?.onScrollStart()
-  }
-  
-  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-    if !decelerate {
-      self.delegate?.onScrollEnd()
-    }
-  }
-  
-  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-    self.delegate?.onScrollEnd()
+  private func goToStoreDetail(storeId: Int) {
+    let storeDetailVC = StoreDetailVC.instance(storeId: storeId)
+    
+    self.navigationController?.pushViewController(storeDetailVC, animated: true)
   }
 }

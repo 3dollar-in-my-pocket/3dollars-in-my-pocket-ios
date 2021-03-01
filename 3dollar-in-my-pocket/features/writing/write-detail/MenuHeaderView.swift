@@ -10,7 +10,7 @@ class MenuHeaderView: BaseView {
   }
   
   let deleteButton = UIButton().then {
-    $0.setImage(UIImage(named: "ic_delete_category"), for: .normal)
+    $0.setImage(UIImage(named: "ic_delete_small"), for: .normal)
   }
   
   override func setup() {

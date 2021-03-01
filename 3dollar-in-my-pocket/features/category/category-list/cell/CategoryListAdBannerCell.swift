@@ -11,12 +11,15 @@ class CategoryListAdBannerCell: BaseTableViewCell {
   override func setup() {
     self.contentView.isUserInteractionEnabled = false
     self.selectionStyle = .none
+    self.backgroundColor = .clear
     self.addSubViews(adBannerView)
   }
   
   override func bindConstraints() {
     self.adBannerView.snp.makeConstraints { make in
-      make.left.right.top.bottom.equalToSuperview()
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.bottom.equalToSuperview()
       make.height.equalTo(80)
     }
   }

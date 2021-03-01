@@ -29,9 +29,7 @@ class MainVC: BaseVC {
     
     let homeVC = HomeVC.instance()
     let writingVC = HomeVC.instance()
-    let myPageVC = MyPageVC.instance().then {
-      $0.delegate = self
-    }
+    let myPageVC = MyPageVC.instance()
     
     controllers = [homeVC, writingVC, myPageVC]
     tapChange(index: 0)
@@ -151,15 +149,5 @@ extension MainVC: WriteAddressDelegate {
       }
     }
     self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)
-  }
-}
-
-extension MainVC: MyPageDelegate {
-  func onScrollStart() {
-    self.mainView.hideTabBar()
-  }
-  
-  func onScrollEnd() {
-    self.mainView.showTabBar()
   }
 }

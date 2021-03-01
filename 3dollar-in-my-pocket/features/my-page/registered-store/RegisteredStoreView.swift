@@ -1,13 +1,13 @@
 import UIKit
 
-class MyReviewView: BaseView {
+class RegisteredStoreView: BaseView {
   
   let backButton = UIButton().then {
     $0.setImage(UIImage.init(named: "ic_back_white"), for: .normal)
   }
   
   let titleLabel = UILabel().then {
-    $0.text = "my_review_title".localized
+    $0.text = "registered_store_title".localized
     $0.textColor = .white
     $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
   }
@@ -17,6 +17,7 @@ class MyReviewView: BaseView {
     $0.backgroundColor = .clear
     $0.showsVerticalScrollIndicator = false
     $0.rowHeight = UITableView.automaticDimension
+    $0.contentInsetAdjustmentBehavior = .never
     
     let indicator = UIActivityIndicatorView(style: .large)
     

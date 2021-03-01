@@ -1,22 +1,24 @@
 import UIKit
 
-class StoreCell: BaseCollectionViewCell {
+class RegisteredStoreCell: BaseTableViewCell {
   
-  static let registerId = "\(StoreCell.self)"
+  static let registerId = "\(RegisteredStoreCell.self)"
   
-  let categoryImage = UIImageView().then {
-    $0.image = UIImage(named: "img_60_bungeoppang")
-    $0.contentMode = .scaleAspectFit
+  let containerView = UIView().then {
+    $0.backgroundColor = UIColor.init(r: 46, g: 46, b: 46)
+    $0.layer.cornerRadius = 12
   }
   
+  let categoryImage = UIImageView()
+  
   let titleLabel = UILabel().then {
-    $0.textColor = .black
-    $0.font = UIFont(name: "AppleSDGothicNeo-ExtraBold", size: 16)
+    $0.font = UIFont(name: "AppleSDGothicNeoEB00", size: 16)
+    $0.textColor = .white
   }
   
   let categoriesLabel = UILabel().then {
+    $0.textColor = UIColor(r: 183, g: 183, b: 183)
     $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12)
-    $0.textColor = UIColor(r: 114, g: 114, b: 114)
   }
   
   let distanceImage = UIImageView().then {
@@ -24,7 +26,7 @@ class StoreCell: BaseCollectionViewCell {
   }
   
   let distanceLabel = UILabel().then {
-    $0.textColor = .black
+    $0.textColor = .white
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
@@ -35,35 +37,37 @@ class StoreCell: BaseCollectionViewCell {
   let rankLabel = UILabel().then {
     $0.textColor = UIColor(r: 200, g: 200, b: 200)
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
-    $0.textColor = .black
+    $0.textColor = .white
   }
   
-  
-  override func prepareForReuse() {
-    super.prepareForReuse()
-    self.setSelected(isSelected: false)
-  }
   
   override func setup() {
-    self.layer.cornerRadius = 16
-    self.backgroundColor = .white
+    self.backgroundColor = .clear
+    self.selectionStyle = .none
     self.addSubViews(
-      categoryImage, titleLabel, categoriesLabel, distanceImage,
-      distanceLabel, starImage, rankLabel
+      containerView, categoryImage, titleLabel, categoriesLabel,
+      distanceImage, distanceLabel, starImage, rankLabel
     )
   }
   
   override func bindConstraints() {
+    self.containerView.snp.makeConstraints { (make) in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalToSuperview().offset(8)
+      make.bottom.equalToSuperview().offset(-8)
+    }
+    
     self.categoryImage.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(16)
-      make.centerY.equalToSuperview()
-      make.top.equalToSuperview().offset(22)
+      make.left.equalTo(self.containerView).offset(16)
+      make.centerY.equalTo(self.containerView)
+      make.top.equalTo(self.containerView).offset(22)
       make.bottom.equalToSuperview().offset(-22)
       make.width.height.equalTo(60)
     }
     
     self.titleLabel.snp.makeConstraints { make in
-      make.top.equalToSuperview().offset(18)
+      make.top.equalTo(self.containerView).offset(20)
       make.left.equalTo(self.categoryImage.snp.right).offset(13)
       make.right.equalToSuperview().offset(-16)
     }
@@ -75,7 +79,7 @@ class StoreCell: BaseCollectionViewCell {
     
     self.distanceImage.snp.makeConstraints { make in
       make.left.equalTo(self.titleLabel)
-      make.bottom.equalToSuperview().offset(-15)
+      make.bottom.equalTo(self.containerView).offset(-15)
     }
     
     self.distanceLabel.snp.makeConstraints { make in
@@ -94,35 +98,18 @@ class StoreCell: BaseCollectionViewCell {
     }
   }
   
-  func setSelected(isSelected: Bool) {
-    if isSelected {
-      self.backgroundColor = .black
-      self.titleLabel.textColor = .white
-      self.categoriesLabel.textColor = .white
-      self.distanceLabel.textColor = .white
-      self.rankLabel.textColor = .white
-    } else {
-      self.backgroundColor = .white
-      self.titleLabel.textColor = .black
-      self.categoriesLabel.textColor = UIColor(r: 114, g: 114, b: 114)
-      self.distanceLabel.textColor = .black
-      self.rankLabel.textColor = .black
-    }
-  }
-  
-  func bind(storeCard: StoreCard) {
-    self.categoryImage.image = UIImage(named: "img_60_\(storeCard.category.lowcase)")
-    
-    if storeCard.distance >= 1000 {
+  func bind(store: Store) {
+    self.categoryImage.image = UIImage(named: "img_60_\(store.category.lowcase)")
+    self.titleLabel.text = store.storeName
+    self.rankLabel.text = "\(store.rating)점"
+    if store.distance >= 1000 {
       distanceLabel.text = "1km+"
     } else {
-      distanceLabel.text = "\(storeCard.distance)m"
+      distanceLabel.text = "\(store.distance)m"
     }
-    self.titleLabel.text = storeCard.storeName
-    self.rankLabel.text = "\(storeCard.rating)점"
     
     var categories = ""
-    for category in storeCard.categories {
+    for category in store.categories {
       categories.append("#\(category.name) ")
     }
     self.categoriesLabel.text = categories
