@@ -1,146 +1,135 @@
 import UIKit
+import RxSwift
 
 class MyReviewVC: BaseVC {
+  
+  private lazy var myReviewView = MyReviewView(frame: self.view.frame)
+  private let viewModel = MyReviewViewModel(reviewService: ReviewService())
+  
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+    return .lightContent
+  }
+  
+  static func instance() -> MyReviewVC {
+    return MyReviewVC(nibName: nil, bundle: nil)
+  }
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
     
-    private lazy var myReviewView = MyReviewView(frame: self.view.frame)
+    self.view = myReviewView
+    self.setupTableView()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
     
-    private var viewModel = MyReviewViewModel()
+    self.tabBarController?.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
+    self.viewModel.fetchMyReviews()
+  }
+  
+  override func bindViewModel() {
+    // Bind output
+    self.viewModel.output.reviews
+      .bind(to: self.myReviewView.tableView.rx.items(
+              cellIdentifier: MyReviewCell.registerId,
+              cellType: MyReviewCell.self
+      )) { row, review, cell in
+        cell.bind(review: review)
+        cell.moreButton.rx.tap
+          .map { row }
+          .bind(onNext: self.showMoreActionSheet(reviewId:))
+          .disposed(by: cell.disposeBag)
+      }
+      .disposed(by: disposeBag)
     
-    private var currentPage = 1
+    self.viewModel.output.isHiddenFooter
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.setHiddenLoadingFooter(isHidden:))
+      .disposed(by: disposeBag)
     
-    static func instance() -> MyReviewVC {
-        return MyReviewVC(nibName: nil, bundle: nil)
+    self.viewModel.output.goToStoreDetail
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.goToStoreDetail(storeId:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.showLoading
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.myReviewView.showLoading(isShow:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.httpErrorAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showHTTPErrorAlert(error:))
+      .disposed(by: disposeBag)
+  }
+  
+  override func bindEvent() {
+    self.myReviewView.backButton.rx.tap
+      .bind(onNext: self.popVC)
+      .disposed(by: disposeBag)
+  }
+  
+  private func popVC() {
+    self.navigationController?.popViewController(animated: true)
+  }
+  
+  private func setupTableView() {
+    self.myReviewView.tableView.rx
+      .setDelegate(self)
+      .disposed(by: disposeBag)
+    self.myReviewView.tableView.register(
+      MyReviewCell.self, forCellReuseIdentifier:
+        MyReviewCell.registerId
+    )
+    self.myReviewView.tableView.rx.itemSelected
+      .map { $0.row }
+      .bind(to: self.viewModel.input.tapReview)
+      .disposed(by: disposeBag)
+  }
+  
+  private func setHiddenLoadingFooter(isHidden: Bool){
+    self.myReviewView.tableView.tableFooterView?.isHidden = isHidden
+  }
+  
+  private func goToStoreDetail(storeId: Int) {
+    let storeDetailVC = StoreDetailVC.instance(storeId: storeId)
+    
+    self.navigationController?.pushViewController(storeDetailVC, animated: true)
+  }
+  
+  private func showMoreActionSheet(reviewId: Int) {
+    let alertController = UIAlertController(title: nil, message: "옵션", preferredStyle: .actionSheet)
+    let deleteAction = UIAlertAction(
+      title: "store_detail_delete_review".localized,
+      style: .destructive
+    ) { _ in
+      self.viewModel.input.deleteReview.onNext(reviewId)
     }
+    let cancelAction = UIAlertAction(
+      title: "store_detail_cancel".localized,
+      style: .cancel
+    ) { _ in }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view = myReviewView
-        
-        setupTableView()
-        getMyReviews()
-    }
-    
-    override func bindViewModel() {
-        myReviewView.backBtn.rx.tap.bind { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
-        }.disposed(by: disposeBag)
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
-    private func setupTableView() {
-        myReviewView.tableView.delegate = self
-        myReviewView.tableView.dataSource = self
-        myReviewView.tableView.register(MyReviewCell.self, forCellReuseIdentifier: MyReviewCell.registerId)
-    }
-    
-    private func getMyReviews() {
-      ReviewService().getMyReview(page: 1)
-        .subscribe(
-        onNext: { [weak self] reviewPage in
-          guard let self = self else { return }
-          self.viewModel.review = reviewPage.content
-          self.viewModel.totalCount = reviewPage.totalElements
-          self.viewModel.totalPage = reviewPage.totalPages
-          self.myReviewView.tableView.reloadData()
-        },
-          onError: { [weak self] error in
-            guard let self = self else { return }
-            if let httpError = error as? HTTPError {
-              self.showHTTPErrorAlert(error: httpError)
-            } else if let error = error as? CommonError {
-              let alertContent = AlertContent(title: nil, message: error.description)
-              
-              self.showSystemAlert(alert: alertContent)
-            }
-          }
-        )
-        .disposed(by: disposeBag)
-    }
-    
-    private func loadMoreReview() {
-        currentPage += 1
-        addLoadingFooter()
-      ReviewService().getMyReview(page: currentPage)
-        .subscribe(
-        onNext: { [weak self] reviewPage in
-          guard let self = self else { return }
-          
-          self.viewModel.review.append(contentsOf: reviewPage.content)
-          self.myReviewView.tableView.reloadData()
-          self.removeLoadingFooter()
-        },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          
-          if let httpError = error as? HTTPError {
-            self.showHTTPErrorAlert(error: httpError)
-          } else if let error = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: error.description)
-            
-            self.showSystemAlert(alert: alertContent)
-          }
-          self.removeLoadingFooter()
-        })
-        .disposed(by: disposeBag)
-    }
-    
-    func addLoadingFooter() {
-        self.myReviewView.tableView.tableFooterView?.isHidden = false
-    }
-    
-    func removeLoadingFooter() {
-        self.myReviewView.tableView.tableFooterView?.isHidden = true
-    }
+    alertController.addAction(deleteAction)
+    alertController.addAction(cancelAction)
+    self.present(alertController, animated: true, completion: nil)
+  }
 }
 
-extension MyReviewVC: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.review.count
+extension MyReviewVC: UITableViewDelegate {
+  
+  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    return MyReviewHeaderView().then {
+      $0.setCount(count: self.viewModel.totalCount)
     }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MyReviewCell.registerId, for: indexPath) as? MyReviewCell else {
-            return BaseTableViewCell()
-        }
-        
-        cell.bind(review: self.viewModel.review[indexPath.row])
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return RegisteredStoreHeader().then {
-            $0.setCount(count: self.viewModel.totalCount)
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 50
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == self.viewModel.review.count - 1 && self.currentPage < self.viewModel.totalPage {
-            self.loadMoreReview()
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-      let storeId = self.viewModel.review[indexPath.row].storeId
-      
-      self.navigationController?.pushViewController(StoreDetailVC.instance(storeId: storeId), animated: true)
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let contentOffset = scrollView.contentOffset.y
-
-        if 130 - contentOffset > 0 && contentOffset > 0 && scrollView.contentSize.height > scrollView.frame.height {
-            self.myReviewView.bgCloud.snp.remakeConstraints { (make) in
-                make.left.right.equalToSuperview()
-                make.top.equalToSuperview().offset(98 - contentOffset)
-            }
-            self.myReviewView.bgCloud.alpha = CGFloat((130 - contentOffset)/(130/0.2))
-        }
-    }
+  }
+  
+  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    return 50
+  }
+  
+  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    self.viewModel.input.loadMore.onNext(indexPath.row)
+  }
 }

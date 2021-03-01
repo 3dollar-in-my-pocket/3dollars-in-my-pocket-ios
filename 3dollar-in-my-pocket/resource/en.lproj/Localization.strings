@@ -190,3 +190,5 @@
 "my_page_registered_review_empty" = "내가 쓴 리뷰가 없어요.";
 "registered_store_title" = "제보한 가게";
 "registered_store_count_format" = "%02d개의 가게";
+"my_review_title" = "내가 쓴 리뷰";
+"my_review_count_format" = "%02d개의 리뷰";

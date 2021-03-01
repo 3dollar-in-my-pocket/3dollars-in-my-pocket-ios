@@ -46,6 +46,7 @@
 		6E26842A25D5411200D146BB /* DayStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E26842925D5411200D146BB /* DayStackView.swift */; };
 		6E29966625E2869D003FC13A /* AddressDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E29966525E2869D003FC13A /* AddressDocument.swift */; };
 		6E29966825E28967003FC13A /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E29966725E28967003FC13A /* Document.swift */; };
+		6E299C5025ED055800810DF7 /* MyReviewHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E299C4F25ED055800810DF7 /* MyReviewHeaderView.swift */; };
 		6E29CF75258F190200F0BACB /* ErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E29CF74258F190200F0BACB /* ErrorResponse.swift */; };
 		6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C820C23B4A2880025BB2B /* NicknameView.swift */; };
 		6E2C820F23B4A37F0025BB2B /* NicknameVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C820E23B4A37F0025BB2B /* NicknameVC.swift */; };
@@ -301,6 +302,7 @@
 		6E26842925D5411200D146BB /* DayStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayStackView.swift; sourceTree = "<group>"; };
 		6E29966525E2869D003FC13A /* AddressDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressDocument.swift; sourceTree = "<group>"; };
 		6E29966725E28967003FC13A /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		6E299C4F25ED055800810DF7 /* MyReviewHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewHeaderView.swift; sourceTree = "<group>"; };
 		6E29CF74258F190200F0BACB /* ErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResponse.swift; sourceTree = "<group>"; };
 		6E2C820C23B4A2880025BB2B /* NicknameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameView.swift; sourceTree = "<group>"; };
 		6E2C820E23B4A37F0025BB2B /* NicknameVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameVC.swift; sourceTree = "<group>"; };
@@ -858,6 +860,7 @@
 				6E6835C723C30DCB00D23F54 /* MyReviewCell.swift */,
 				6E6835C923C30E0A00D23F54 /* MyReviewVC.swift */,
 				6E82F8CA23D5D8A600AB3593 /* MyReviewViewModel.swift */,
+				6E299C4F25ED055800810DF7 /* MyReviewHeaderView.swift */,
 			);
 			path = review;
 			sourceTree = "<group>";
@@ -1655,6 +1658,7 @@
 				6E41F7E623BAC2BA00D0AC73 /* UIColorExt.swift in Sources */,
 				6E4CDCDD25E6314600C9193D /* CategoryHeaderType.swift in Sources */,
 				6E53160F25DE9E38006C5CDC /* TabBarTag.swift in Sources */,
+				6E299C5025ED055800810DF7 /* MyReviewHeaderView.swift in Sources */,
 				6E12CF182573D67D003234D9 /* FAQHeaderView.swift in Sources */,
 				6E3AA4C325AD661800D8C58C /* MapService.swift in Sources */,
 				6E81B84025E0E72800748E02 /* SearchAddressVC.swift in Sources */,
