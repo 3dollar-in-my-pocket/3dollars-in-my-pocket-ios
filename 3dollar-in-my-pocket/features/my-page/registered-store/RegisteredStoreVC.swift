@@ -16,6 +16,12 @@ class RegisteredVC: BaseVC {
     
     self.view = registeredStoreView
     self.setupTableView()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    self.tabBarController?.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
     self.viewModel.fetchRegisteredStores()
   }
   
