@@ -58,6 +58,11 @@ class HomeVC: BaseVC {
   }
   
   override func bindViewModel() {
+    // Bind input
+    self.homeView.researchButton.rx.tap
+      .bind(to: self.viewModel.input.tapResearch)
+      .disposed(by: disposeBag)
+    
     // Bind output
     self.viewModel.output.address
       .bind(to: self.homeView.addressButton.rx.title(for: .normal))
@@ -70,6 +75,11 @@ class HomeVC: BaseVC {
       )) { row, store, cell in
         cell.bind(store: store)
       }.disposed(by: disposeBag)
+    
+    self.viewModel.output.isHiddenResearchButton
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.homeView.isHiddenResearchButton(isHidden:))
+      .disposed(by: disposeBag)
     
     self.viewModel.output.scrollToIndex
       .observeOn(MainScheduler.instance)

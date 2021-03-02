@@ -21,6 +21,7 @@ class HomeViewModel: BaseViewModel {
     let currentLocation = PublishSubject<CLLocation>()
     let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
     let locationForAddress = PublishSubject<(Double, Double)>()
+    let tapResearch = PublishSubject<Void>()
     let selectStore = PublishSubject<Int>()
     let tapStore = PublishSubject<Int>()
     let deselectCurrentStore = PublishSubject<Void>()
@@ -29,6 +30,7 @@ class HomeViewModel: BaseViewModel {
   struct Output {
     let address = PublishRelay<String>()
     let stores = PublishRelay<[StoreResponse]>()
+    let isHiddenResearchButton = PublishRelay<Bool>()
     let scrollToIndex = PublishRelay<IndexPath>()
     let setSelectStore = PublishRelay<(IndexPath, Bool)>()
     let selectMarker = PublishRelay<(Int, [StoreResponse])>()
@@ -50,8 +52,19 @@ class HomeViewModel: BaseViewModel {
       .bind(onNext: self.searchNearStores)
       .disposed(by: disposeBag)
     
+    self.input.mapLocation
+      .map { _ in false }
+      .bind(to: self.output.isHiddenResearchButton)
+      .disposed(by: disposeBag)
+      
+    
     self.input.locationForAddress
       .bind(onNext: self.getAddressFromLocation)
+      .disposed(by: disposeBag)
+    
+    self.input.tapResearch
+      .withLatestFrom(Observable.combineLatest(self.input.currentLocation, self.input.mapLocation)) { ($1.0, $1.1) }
+      .bind(onNext: self.searchNearStores)
       .disposed(by: disposeBag)
     
     self.input.selectStore
@@ -84,6 +97,7 @@ class HomeViewModel: BaseViewModel {
           self.onSelectStore(index: 0)
         }
         self.output.showLoading.accept(false)
+        self.output.isHiddenResearchButton.accept(true)
       },
       onError: { [weak self] error in
         guard let self = self else { return }

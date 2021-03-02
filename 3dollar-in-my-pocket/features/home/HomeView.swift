@@ -21,6 +21,19 @@ class HomeView: BaseView {
     $0.setTitleColor(.black, for: .normal)
   }
   
+  let researchButton = UIButton().then {
+    $0.setTitle("home_research".localized, for: .normal)
+    $0.setTitleColor(.white, for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 14)
+    $0.contentEdgeInsets = UIEdgeInsets(top: 12, left: 24, bottom: 12, right: 24)
+    $0.backgroundColor = UIColor(r: 255, g: 92, b: 67)
+    $0.layer.cornerRadius = 20
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowOpacity = 0.08
+    $0.alpha = 0.0
+  }
+  
   let storeCollectionView = UICollectionView(
     frame: .zero,
     collectionViewLayout: UICollectionViewFlowLayout()
@@ -62,8 +75,8 @@ class HomeView: BaseView {
   override func setup() {
     self.backgroundColor = .white
     self.addSubViews(
-      mapView, addressContainerView, addressButton, storeCollectionView,
-      currentLocationButton, tossButton
+      mapView, researchButton, addressContainerView, addressButton,
+      storeCollectionView, currentLocationButton, tossButton
     )
   }
   
@@ -82,6 +95,12 @@ class HomeView: BaseView {
     self.addressButton.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
       make.centerY.equalTo(self.addressContainerView)
+    }
+    
+    self.researchButton.snp.makeConstraints { make in
+      make.centerX.equalToSuperview()
+      make.bottom.equalTo(self.addressContainerView)
+      make.height.equalTo(40)
     }
     
     self.storeCollectionView.snp.makeConstraints { (make) in
@@ -108,6 +127,28 @@ class HomeView: BaseView {
   func setSelectStore(indexPath: IndexPath, isSelected: Bool) {
     if let cell = self.storeCollectionView.cellForItem(at: indexPath) as? StoreCell {
       cell.setSelected(isSelected: isSelected)
+    }
+  }
+  
+  func isHiddenResearchButton(isHidden: Bool) {
+    if isHidden {
+      UIView.transition(
+        with: self.researchButton,
+        duration: 0.3,
+        options: .curveEaseInOut
+      ) {
+        self.researchButton.transform = .identity
+        self.researchButton.alpha = 0
+      }
+    } else {
+      UIView.transition(
+        with: self.researchButton,
+        duration: 0.3,
+        options: .curveEaseInOut
+      ) {
+        self.researchButton.transform = .init(translationX: 0, y: 56)
+        self.researchButton.alpha = 1.0
+      }
     }
   }
 }

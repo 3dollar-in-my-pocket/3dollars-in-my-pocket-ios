@@ -192,3 +192,4 @@
 "registered_store_count_format" = "%02d개의 가게";
 "my_review_title" = "내가 쓴 리뷰";
 "my_review_count_format" = "%02d개의 리뷰";
+"home_research" = "현재 지도에서 가게 재검색";
