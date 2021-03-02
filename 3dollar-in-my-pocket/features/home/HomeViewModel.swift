@@ -13,6 +13,7 @@ class HomeViewModel: BaseViewModel {
   var selectedIndex: Int = 0
   var stores: [StoreResponse] = [] {
     didSet {
+      self.output.isHiddenEmptyCell.accept(!stores.isEmpty)
       self.output.stores.accept(stores)
     }
   }
@@ -31,6 +32,7 @@ class HomeViewModel: BaseViewModel {
     let address = PublishRelay<String>()
     let stores = PublishRelay<[StoreResponse]>()
     let isHiddenResearchButton = PublishRelay<Bool>()
+    let isHiddenEmptyCell = PublishRelay<Bool>()
     let scrollToIndex = PublishRelay<IndexPath>()
     let setSelectStore = PublishRelay<(IndexPath, Bool)>()
     let selectMarker = PublishRelay<(Int, [StoreResponse])>()

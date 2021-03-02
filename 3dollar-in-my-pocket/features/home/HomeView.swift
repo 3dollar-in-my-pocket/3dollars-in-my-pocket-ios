@@ -57,6 +57,10 @@ class HomeView: BaseView {
     )
   }
   
+  let emptyCell = HomeEmptyStoreCell().then {
+    $0.isHidden = true
+  }
+  
   let currentLocationButton = UIButton().then {
     $0.setImage(UIImage(named: "ic_current_location"), for: .normal)
     $0.layer.shadowColor = UIColor.black.cgColor
@@ -76,7 +80,7 @@ class HomeView: BaseView {
     self.backgroundColor = .white
     self.addSubViews(
       mapView, researchButton, addressContainerView, addressButton,
-      storeCollectionView, currentLocationButton, tossButton
+      storeCollectionView, currentLocationButton, tossButton, emptyCell
     )
   }
   
@@ -117,6 +121,13 @@ class HomeView: BaseView {
     self.currentLocationButton.snp.makeConstraints { (make) in
       make.right.equalTo(self.tossButton)
       make.bottom.equalTo(self.tossButton.snp.top).offset(-12)
+    }
+    
+    self.emptyCell.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.bottom.equalTo(safeAreaLayoutGuide).offset(-24)
+      make.height.equalTo(104)
     }
   }
   

@@ -81,6 +81,10 @@ class HomeVC: BaseVC {
       .bind(onNext: self.homeView.isHiddenResearchButton(isHidden:))
       .disposed(by: disposeBag)
     
+    self.viewModel.output.isHiddenEmptyCell
+      .bind(to: self.homeView.emptyCell.rx.isHidden)
+      .disposed(by: disposeBag)
+    
     self.viewModel.output.scrollToIndex
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.homeView.scrollToIndex(index:))

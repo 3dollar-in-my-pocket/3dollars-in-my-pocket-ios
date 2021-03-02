@@ -193,3 +193,5 @@
 "my_review_title" = "내가 쓴 리뷰";
 "my_review_count_format" = "%02d개의 리뷰";
 "home_research" = "현재 지도에서 가게 재검색";
+"home_empty_title" = "주변 2km 이내에 가게가 없어요";
+"home_empty_description" = "다른 주소로 검색하거나 직접 제보해보세요!";
