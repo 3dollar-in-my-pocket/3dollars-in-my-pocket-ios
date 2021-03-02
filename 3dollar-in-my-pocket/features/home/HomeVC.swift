@@ -67,8 +67,8 @@ class HomeVC: BaseVC {
       .bind(to: homeView.storeCollectionView.rx.items(
         cellIdentifier: StoreCell.registerId,
         cellType: StoreCell.self
-      )) { row, storeCard, cell in
-        cell.bind(storeCard: storeCard)
+      )) { row, store, cell in
+        cell.bind(store: store)
       }.disposed(by: disposeBag)
     
     self.viewModel.output.scrollToIndex
@@ -141,6 +141,7 @@ class HomeVC: BaseVC {
   private func initilizeNaverMap() {
     self.homeView.mapView.positionMode = .direction
     self.homeView.mapView.zoomLevel = 15
+    self.homeView.mapView.addCameraDelegate(delegate: self)
   }
   
   private func goToDetail(storeId: Int) {
@@ -150,16 +151,16 @@ class HomeVC: BaseVC {
     )
   }
   
-  private func selectMarker(selectedIndex: Int, storeCards: [StoreCard]) {
+  private func selectMarker(selectedIndex: Int, stores: [StoreResponse]) {
     self.clearMarker()
     
-    for index in storeCards.indices {
-      let storeCard = storeCards[index]
+    for index in stores.indices {
+      let store = stores[index]
       let marker = NMFMarker()
       
-      marker.position = NMGLatLng(lat: storeCard.latitude, lng: storeCard.longitude)
+      marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
       if index == selectedIndex {
-        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: storeCard.latitude, lng: storeCard.longitude))
+        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: store.latitude, lng: store.longitude))
         cameraUpdate.animation = .easeIn
         self.homeView.mapView.moveCamera(cameraUpdate)
         marker.iconImage = NMFOverlayImage(name: "ic_marker")
@@ -316,25 +317,23 @@ extension HomeVC: CLLocationManagerDelegate {
   }
   
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-    let location = locations.last
-    let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
-      lat: location!.coordinate.longitude,
-      lng: location!.coordinate.latitude
-    ))
-    
-    if self.mapAnimatedFlag {
-      camera.animation = .easeIn
-    }
-    self.homeView.mapView.moveCamera(camera)
-    self.viewModel.input.location.onNext((
-      location!.coordinate.latitude,
-      location!.coordinate.longitude
-    ))
-    self.viewModel.input.locationForAddress
-      .onNext((
-        location!.coordinate.latitude,
-        location!.coordinate.longitude
+    if let currentLocation = locations.last {
+      let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
+        lat: currentLocation.coordinate.longitude,
+        lng: currentLocation.coordinate.latitude
       ))
+      
+      if self.mapAnimatedFlag {
+        camera.animation = .easeIn
+      }
+      self.homeView.mapView.moveCamera(camera)
+      self.viewModel.input.currentLocation.onNext(currentLocation)
+      self.viewModel.input.locationForAddress
+        .onNext((
+          currentLocation.coordinate.latitude,
+          currentLocation.coordinate.longitude
+        ))
+    }
     locationManager.stopUpdatingLocation()
   }
   
@@ -367,8 +366,27 @@ extension HomeVC: CLLocationManagerDelegate {
 
 extension HomeVC: SearchAddressDelegate {
   func selectAddress(location: (Double, Double), name: String) {
-    self.viewModel.input.location.onNext(location)
+    let location = CLLocation(latitude: location.0, longitude: location.1)
+    
+    self.viewModel.input.currentLocation.onNext(location)
     self.viewModel.output.address.accept(name)
+  }
+}
+
+extension HomeVC: NMFMapViewCameraDelegate {
+  
+  func mapView(
+    _ mapView: NMFMapView,
+    cameraWillChangeByReason reason: Int,
+    animated: Bool
+  ) {
+    if reason == NMFMapChangedByGesture {
+      let mapLocation = CLLocation(
+        latitude: mapView.cameraPosition.target.lat,
+        longitude: mapView.cameraPosition.target.lng
+      )
+      self.viewModel.input.mapLocation.onNext(mapLocation)
+    }
   }
 }
 

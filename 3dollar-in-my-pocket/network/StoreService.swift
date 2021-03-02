@@ -1,9 +1,14 @@
 import Alamofire
 import RxSwift
 
+import CoreLocation
+
 protocol StoreServiceProtocol {
   
-  func getStoreOrderByNearest(latitude: Double, longitude: Double) -> Observable<[StoreCard]>
+  func searchNearStores(
+    currentLocation: CLLocation,
+    mapLocation: CLLocation
+  ) -> Observable<[StoreResponse]>
   
   func saveStore(store: Store) -> Observable<SaveResponse>
   
@@ -25,11 +30,20 @@ protocol StoreServiceProtocol {
 
 struct StoreService: StoreServiceProtocol {
   
-  func getStoreOrderByNearest(latitude: Double, longitude: Double) -> Observable<[StoreCard]> {
+  func searchNearStores(
+    currentLocation: CLLocation,
+    mapLocation: CLLocation
+  ) -> Observable<[StoreResponse]> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/get"
+      let urlString = HTTPUtils.url + "/api/v1/stores"
       let headers = HTTPUtils.defaultHeader()
-      let parameters = ["latitude": latitude, "longitude": longitude]
+      let parameters: [String: Any] = [
+        "distance": 2000,
+        "latitude": currentLocation.coordinate.latitude,
+        "longitude": currentLocation.coordinate.longitude,
+        "mapLatitude": mapLocation.coordinate.latitude,
+        "mapLongitude": mapLocation.coordinate.longitude
+      ]
       
       HTTPUtils.defaultSession.request(
         urlString,
@@ -37,13 +51,13 @@ struct StoreService: StoreServiceProtocol {
         parameters: parameters,
         headers: headers
       )
-        .responseJSON { response in
-          if response.isSuccess() {
-            observer.processValue(class: [StoreCard].self, response: response)
-          } else {
-            observer.processHTTPError(response: response)
-          }
+      .responseJSON { response in
+        if response.isSuccess() {
+          observer.processValue(class: [StoreResponse].self, response: response)
+        } else {
+          observer.processHTTPError(response: response)
         }
+      }
       
       return Disposables.create()
     }

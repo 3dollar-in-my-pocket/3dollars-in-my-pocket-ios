@@ -110,19 +110,19 @@ class StoreCell: BaseCollectionViewCell {
     }
   }
   
-  func bind(storeCard: StoreCard) {
-    self.categoryImage.image = UIImage(named: "img_60_\(storeCard.category.lowcase)")
+  func bind(store: StoreResponse) {
+    self.categoryImage.image = UIImage(named: "img_60_\(store.category.lowcase)")
     
-    if storeCard.distance >= 1000 {
+    if store.distance >= 1000 {
       distanceLabel.text = "1km+"
     } else {
-      distanceLabel.text = "\(storeCard.distance)m"
+      distanceLabel.text = "\(store.distance)m"
     }
-    self.titleLabel.text = storeCard.storeName
-    self.rankLabel.text = "\(storeCard.rating)점"
+    self.titleLabel.text = store.storeName
+    self.rankLabel.text = "\(store.rating)점"
     
     var categories = ""
-    for category in storeCard.categories {
+    for category in store.categories {
       categories.append("#\(category.name) ")
     }
     self.categoriesLabel.text = categories

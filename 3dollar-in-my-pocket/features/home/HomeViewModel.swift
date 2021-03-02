@@ -1,5 +1,7 @@
 import RxSwift
 import RxCocoa
+import CoreLocation
+
 
 class HomeViewModel: BaseViewModel {
   
@@ -9,10 +11,15 @@ class HomeViewModel: BaseViewModel {
   let mapService: MapServiceProtocol
   
   var selectedIndex: Int = 0
-  var stores: [StoreCard] = []
+  var stores: [StoreResponse] = [] {
+    didSet {
+      self.output.stores.accept(stores)
+    }
+  }
   
   struct Input {
-    let location = PublishSubject<(Double, Double)>()
+    let currentLocation = PublishSubject<CLLocation>()
+    let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
     let locationForAddress = PublishSubject<(Double, Double)>()
     let selectStore = PublishSubject<Int>()
     let tapStore = PublishSubject<Int>()
@@ -21,10 +28,10 @@ class HomeViewModel: BaseViewModel {
   
   struct Output {
     let address = PublishRelay<String>()
-    let stores = PublishRelay<[StoreCard]>()
+    let stores = PublishRelay<[StoreResponse]>()
     let scrollToIndex = PublishRelay<IndexPath>()
     let setSelectStore = PublishRelay<(IndexPath, Bool)>()
-    let selectMarker = PublishRelay<(Int, [StoreCard])>()
+    let selectMarker = PublishRelay<(Int, [StoreResponse])>()
     let goToDetail = PublishRelay<Int>()
     let showLoading = PublishRelay<Bool>()
   }
@@ -38,8 +45,9 @@ class HomeViewModel: BaseViewModel {
     self.mapService = mapService
     super.init()
     
-    self.input.location
-      .bind(onNext: self.fetchNearestStores)
+    self.input.currentLocation
+      .withLatestFrom(self.input.mapLocation) { ($0, $1) }
+      .bind(onNext: self.searchNearStores)
       .disposed(by: disposeBag)
     
     self.input.locationForAddress
@@ -59,29 +67,33 @@ class HomeViewModel: BaseViewModel {
       .disposed(by: disposeBag)
   }
   
-  private func fetchNearestStores(lat: Double, lng: Double) {
+  private func searchNearStores(
+    currentLocation: CLLocation,
+    mapLocation: CLLocation?
+  ) {
     self.output.showLoading.accept(true)
-    self.storeService.getStoreOrderByNearest(latitude: lat, longitude: lng)
-      .subscribe(
-        onNext: { [weak self] stores in
-          guard let self = self else { return }
-          self.stores = stores
-          self.output.stores.accept(stores)
-          
-          DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
-            self.onSelectStore(index: 0)
-          }
-          self.output.showLoading.accept(false)
-        },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          if let httpError = error as? HTTPError{
-            self.httpErrorAlert.accept(httpError)
-          }
-          self.output.showLoading.accept(false)
+    self.storeService.searchNearStores(
+      currentLocation: currentLocation,
+      mapLocation: mapLocation == nil ? currentLocation : mapLocation!
+    ).subscribe(
+      onNext: { [weak self] stores in
+        guard let self = self else { return }
+        self.stores = stores
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
+          self.onSelectStore(index: 0)
         }
-      )
-      .disposed(by: disposeBag)
+        self.output.showLoading.accept(false)
+      },
+      onError: { [weak self] error in
+        guard let self = self else { return }
+        if let httpError = error as? HTTPError{
+          self.httpErrorAlert.accept(httpError)
+        }
+        self.output.showLoading.accept(false)
+      }
+    )
+    .disposed(by: disposeBag)
   }
   
   private func getAddressFromLocation(lat: Double, lng: Double) {
