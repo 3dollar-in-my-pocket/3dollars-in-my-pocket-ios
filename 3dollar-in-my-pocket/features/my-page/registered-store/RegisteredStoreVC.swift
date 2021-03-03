@@ -4,7 +4,10 @@ import RxSwift
 class RegisteredVC: BaseVC {
   
   private lazy var registeredStoreView = RegisteredStoreView(frame: self.view.frame)
-  private let viewModel = RegisteredStoreViewModel(storeService: StoreService())
+  private let viewModel = RegisteredStoreViewModel(
+    storeService: StoreService(),
+    userDefaults: UserDefaultsUtil()
+  )
   
   
   static func instance() -> RegisteredVC {
@@ -22,7 +25,7 @@ class RegisteredVC: BaseVC {
     super.viewWillAppear(animated)
     
     self.tabBarController?.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
-    self.viewModel.fetchRegisteredStores()
+    self.viewModel.searchRegisteredStores()
   }
   
   override func bindViewModel() {

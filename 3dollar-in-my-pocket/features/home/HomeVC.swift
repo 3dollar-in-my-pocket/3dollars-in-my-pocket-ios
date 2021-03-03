@@ -9,7 +9,8 @@ class HomeVC: BaseVC {
   private lazy var homeView = HomeView(frame: self.view.frame)
   private let viewModel = HomeViewModel(
     storeService: StoreService(),
-    mapService: MapService()
+    mapService: MapService(),
+    userDefaults: UserDefaultsUtil()
   )
   private let locationManager = CLLocationManager()
   

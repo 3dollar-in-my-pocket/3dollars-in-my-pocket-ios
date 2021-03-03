@@ -1,13 +1,15 @@
 import RxSwift
 import RxCocoa
+import CoreLocation
 
 class RegisteredStoreViewModel: BaseViewModel {
   
   let input = Input()
   let output = Output()
   let storeService: StoreServiceProtocol
+  let userDefaults: UserDefaultsUtil
   
-  var stores: [Store] = [] {
+  var stores: [StoreCard] = [] {
     didSet {
       self.output.stores.accept(stores)
     }
@@ -22,13 +24,18 @@ class RegisteredStoreViewModel: BaseViewModel {
   }
   
   struct Output {
-    let stores = PublishRelay<[Store]>()
+    let stores = PublishRelay<[StoreCard]>()
     let isHiddenFooter = PublishRelay<Bool>()
     let goToStoreDetail = PublishRelay<Int>()
   }
   
-  init(storeService: StoreServiceProtocol) {
+  
+  init(
+    storeService: StoreServiceProtocol,
+    userDefaults: UserDefaultsUtil
+  ) {
     self.storeService = storeService
+    self.userDefaults = userDefaults
     super.init()
     
     self.input.tapStore
@@ -43,26 +50,34 @@ class RegisteredStoreViewModel: BaseViewModel {
         self.currentPage = self.currentPage + 1
       }
       .map { _ in Void() }
-      .bind(onNext: self.fetchRegisteredStores)
+      .bind(onNext: self.searchRegisteredStores)
       .disposed(by: disposeBag)
   }
   
-  func fetchRegisteredStores() {
+  func searchRegisteredStores() {
+    let currentLocation = self.userDefaults.getUserCurrentLocation()
+    
     self.output.isHiddenFooter.accept(false)
-    self.storeService.getReportedStore(page: currentPage)
-      .subscribe { [weak self] pageStore in
+    self.storeService.searchRegisteredStores(
+      latitude: currentLocation.coordinate.latitude,
+      longitude: currentLocation.coordinate.longitude,
+      page: self.currentPage
+    )
+    .subscribe(
+      onNext: { [weak self] pageStore in
         guard let self = self else { return }
         self.totalCount = pageStore.totalElements
         self.totalPage = pageStore.totalPages
         self.stores = self.stores + pageStore.content
         self.output.isHiddenFooter.accept(true)
-      } onError: { error in
+      },
+      onError: { error in
         if let httpError = error as? HTTPError {
           self.httpErrorAlert.accept(httpError)
         }
         self.output.isHiddenFooter.accept(true)
       }
-      .disposed(by: disposeBag)
+    )
+    .disposed(by: disposeBag)
   }
-  
 }

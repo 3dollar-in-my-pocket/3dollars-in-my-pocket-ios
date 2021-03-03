@@ -24,6 +24,12 @@ protocol StoreServiceProtocol {
   
   func getReportedStore(page: Int) -> Observable<Page<Store>>
   
+  func searchRegisteredStores(
+    latitude: Double,
+    longitude: Double,
+    page: Int
+  ) -> Observable<Page<StoreCard>>
+  
   func deleteStore(storeId: Int, deleteReasonType: DeleteReason) -> Observable<String>
 }
 
@@ -253,6 +259,38 @@ struct StoreService: StoreServiceProtocol {
       ).responseJSON { response in
         if response.isSuccess() {
           observer.processValue(class: Page<Store>.self, response: response)
+        } else {
+          observer.processHTTPError(response: response)
+        }
+      }
+      
+      return Disposables.create()
+    }
+  }
+  
+  func searchRegisteredStores(
+    latitude: Double,
+    longitude: Double,
+    page: Int
+  ) -> Observable<Page<StoreCard>> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v1/stores/user"
+      let headers = HTTPUtils.defaultHeader()
+      let parameters: [String: Any] = [
+        "latitude": latitude,
+        "longitude": longitude,
+        "page": page
+      ]
+      
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .get,
+        parameters: parameters,
+        headers: headers
+      )
+      .responseJSON { response in
+        if response.isSuccess() {
+          observer.processValue(class: Page<StoreCard>.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
