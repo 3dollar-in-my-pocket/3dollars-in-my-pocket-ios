@@ -266,30 +266,16 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     let proportionalOffset = (scrollView.contentOffset.x + offsetHelper) / pageWidth
     
     self.previousOffset = scrollView.contentOffset.x
-    
-    var selectedIndex = Int(proportionalOffset.rounded()) >= 5 ? 4 : Int(proportionalOffset.rounded())
-    if selectedIndex < 0 {
-      selectedIndex = 0
-    }
-    
-    let indexPath = IndexPath(row: selectedIndex, section: 0)
-    
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-      self.homeView.scrollToIndex(index: indexPath)
-    }
-  }
-  
-  func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-    let pageWidth = CGFloat(264)
-    let proportionalOffset = scrollView.contentOffset.x / pageWidth
-    
+
     var selectedIndex = Int(proportionalOffset.rounded())
     if selectedIndex < 0 {
       selectedIndex = 0
     }
-    self.viewModel.input.selectStore.onNext(selectedIndex)
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+      self.viewModel.input.selectStore.onNext(selectedIndex)
+    }
   }
-  
   
   func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
     if !decelerate {

@@ -70,6 +70,7 @@ class HomeViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.selectStore
+      .map { $0 >= self.stores.count ? self.stores.count - 1 : $0 }
       .bind(onNext: self.onSelectStore(index:))
       .disposed(by: disposeBag)
     
@@ -95,7 +96,7 @@ class HomeViewModel: BaseViewModel {
         guard let self = self else { return }
         self.stores = stores
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
           self.onSelectStore(index: 0)
         }
         self.output.showLoading.accept(false)
