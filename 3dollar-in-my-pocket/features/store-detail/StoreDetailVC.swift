@@ -6,6 +6,7 @@ import GoogleMobileAds
 import NMapsMap
 import AppTrackingTransparency
 import AdSupport
+import SPPermissions
 
 class StoreDetailVC: BaseVC {
   
@@ -15,6 +16,9 @@ class StoreDetailVC: BaseVC {
   private let storeId: Int
   private var myLocationFlag = false
   private let locationManager = CLLocationManager()
+  private lazy var imagePicker = UIImagePickerController().then {
+    $0.delegate = self
+  }
   var storeDataSource: RxTableViewSectionedReloadDataSource<StoreSection>!
   
   init(storeId: Int) {
@@ -329,9 +333,6 @@ class StoreDetailVC: BaseVC {
   }
   
   private func showPictureActionSheet() {
-    let imagePicker = UIImagePickerController().then {
-      $0.delegate = self
-    }
     let alert = UIAlertController(
       title: "store_detail_register_photo".localized,
       message: nil,
@@ -341,16 +342,27 @@ class StoreDetailVC: BaseVC {
       title: "store_detail_album".localized,
       style: .default
     ) { _ in
-      self.showRegisterPhoto(storeId: self.storeId)
+      if SPPermission.photoLibrary.isAuthorized {
+        self.showRegisterPhoto(storeId: self.storeId)
+      } else {
+        let controller = SPPermissions.native([.photoLibrary])
+        
+        controller.delegate = self
+        controller.present(on: self)
+      }
     }
     let cameraAction = UIAlertAction(
       title: "store_detail_camera".localized,
       style: .default
     ) { _ in
-      imagePicker.sourceType = .camera
-      imagePicker.cameraCaptureMode = .photo
-      
-      self.present(imagePicker, animated: true)
+      if SPPermission.camera.isAuthorized {
+        self.showCamera()
+      } else {
+        let controller = SPPermissions.native([.camera])
+        
+        controller.delegate = self
+        controller.present(on: self)
+      }
     }
     let cancelAction = UIAlertAction(
       title: "store_detail_cancel".localized,
@@ -362,6 +374,13 @@ class StoreDetailVC: BaseVC {
     alert.addAction(cameraAction)
     alert.addAction(cancelAction)
     self.present(alert, animated: true)
+  }
+  
+  private func showCamera() {
+    self.imagePicker.sourceType = .camera
+    self.imagePicker.cameraCaptureMode = .photo
+    
+    self.present(imagePicker, animated: true)
   }
   
   private func showRegisterPhoto(storeId: Int) {
@@ -563,6 +582,26 @@ extension StoreDetailVC: UIImagePickerControllerDelegate, UINavigationController
     }
 
     picker.dismiss(animated: true, completion: nil) // picker를 닫아줌
+  }
+}
+
+extension StoreDetailVC: SPPermissionsDelegate {
+  func didAllow(permission: SPPermission) {
+    if permission == .camera {
+      self.showCamera()
+    } else if permission == .photoLibrary {
+      self.showRegisterPhoto(storeId: self.storeId)
+    }
+  }
+  
+  func deniedData(for permission: SPPermission) -> SPPermissionDeniedAlertData? {
+    let data = SPPermissionDeniedAlertData()
+    
+    data.alertOpenSettingsDeniedPermissionTitle = "permission_denied_title".localized
+    data.alertOpenSettingsDeniedPermissionDescription = "permission_denied_description".localized
+    data.alertOpenSettingsDeniedPermissionButtonTitle = "permission_setting_button".localized
+    data.alertOpenSettingsDeniedPermissionCancelTitle = "permission_setting_cancel".localized
+    return data
   }
 }
 

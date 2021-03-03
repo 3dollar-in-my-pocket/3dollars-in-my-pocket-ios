@@ -39,6 +39,10 @@ target '3dollar-in-my-pocket' do
   pod 'SwiftyBeaver'
   
   pod 'DeviceKit', '~> 4.0'
+  
+  pod 'SPPermissions/Camera'
+  pod 'SPPermissions/Location'
+  pod 'SPPermissions/PhotoLibrary'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths
