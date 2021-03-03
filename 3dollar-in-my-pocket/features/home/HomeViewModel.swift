@@ -9,6 +9,7 @@ class HomeViewModel: BaseViewModel {
   let output = Output()
   let storeService: StoreServiceProtocol
   let mapService: MapServiceProtocol
+  let userDefaults: UserDefaultsUtil
   
   var selectedIndex: Int = 0
   var stores: [StoreResponse] = [] {
@@ -43,13 +44,16 @@ class HomeViewModel: BaseViewModel {
   
   init(
     storeService: StoreServiceProtocol,
-    mapService: MapServiceProtocol
+    mapService: MapServiceProtocol,
+    userDefaults: UserDefaultsUtil
   ) {
     self.storeService = storeService
     self.mapService = mapService
+    self.userDefaults = userDefaults
     super.init()
     
     self.input.currentLocation
+      .do(onNext: self.userDefaults.setUserCurrentLocation(location:))
       .withLatestFrom(self.input.mapLocation) { ($0, $1) }
       .bind(onNext: self.searchNearStores)
       .disposed(by: disposeBag)
