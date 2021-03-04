@@ -62,7 +62,6 @@ class HomeViewModel: BaseViewModel {
       .map { _ in false }
       .bind(to: self.output.isHiddenResearchButton)
       .disposed(by: disposeBag)
-      
     
     self.input.locationForAddress
       .bind(onNext: self.getAddressFromLocation)

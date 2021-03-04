@@ -327,7 +327,8 @@ extension HomeVC: CLLocationManagerDelegate {
       if self.mapAnimatedFlag {
         camera.animation = .easeIn
       }
-      self.homeView.mapView.moveCamera(camera)
+      
+      self.viewModel.input.mapLocation.onNext(nil)
       self.viewModel.input.currentLocation.onNext(currentLocation)
       self.viewModel.input.locationForAddress
         .onNext((
