@@ -205,16 +205,15 @@ class StoreInfoCell: BaseTableViewCell {
   }
   
   private func setStorePayment(paymentMethods: [PaymentType]) {
-    if paymentMethods.isEmpty {
-      self.storePaymentEmptyLabel.isHidden = false
-      self.cashCircleView.isHidden = true
-      self.cashLabel.isHidden = true
-      self.cardCircleView.isHidden = true
-      self.cardLabel.isHidden = true
-      self.transferCircleView.isHidden = true
-      self.transferLabel.isHidden = true
-    } else {
-      self.storePaymentEmptyLabel.isHidden = true
+    self.storePaymentEmptyLabel.isHidden = !paymentMethods.isEmpty
+    self.cashCircleView.isHidden = paymentMethods.isEmpty
+    self.cashLabel.isHidden = paymentMethods.isEmpty
+    self.cardCircleView.isHidden = paymentMethods.isEmpty
+    self.cardLabel.isHidden = paymentMethods.isEmpty
+    self.transferCircleView.isHidden = paymentMethods.isEmpty
+    self.transferLabel.isHidden = paymentMethods.isEmpty
+    
+    if !paymentMethods.isEmpty {
       self.cardCircleView.backgroundColor = paymentMethods.contains(.card) ? UIColor(r: 255, g: 161, b: 170): UIColor(r: 161, g: 161, b: 161)
       self.cardLabel.textColor = paymentMethods.contains(.card) ? UIColor(r: 255, g: 161, b: 170): UIColor(r: 161, g: 161, b: 161)
       self.cashCircleView.backgroundColor = paymentMethods.contains(.cash) ? UIColor(r: 255, g: 161, b: 170): UIColor(r: 161, g: 161, b: 161)
