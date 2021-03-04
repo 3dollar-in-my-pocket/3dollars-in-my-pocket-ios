@@ -40,6 +40,9 @@ class WriteAddressVC: BaseVC {
   override func bindViewModel() {
     // Bind input
     self.writeAddressView.addressButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .set_address_button_clicked, page: .store_register_address_page)
+      })
       .bind(to: self.viewModel.input.tapSetAddressButton)
       .disposed(by: disposeBag)
     
@@ -56,11 +59,17 @@ class WriteAddressVC: BaseVC {
   
   override func bindEvent() {
     self.writeAddressView.closeButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .close_button_clicked, page: .store_register_address_page)
+      })
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.dismiss)
       .disposed(by: disposeBag)
     
     self.writeAddressView.currentLocationButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .current_location_button_clicked, page: .store_register_address_page)
+      })
       .bind(onNext: self.locationManager.startUpdatingLocation)
       .disposed(by: disposeBag)
   }

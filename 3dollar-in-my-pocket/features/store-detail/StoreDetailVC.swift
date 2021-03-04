@@ -118,7 +118,7 @@ class StoreDetailVC: BaseVC {
     
     self.detailView.deleteRequestButton.rx.tap
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .delete_request_button_clicked, page: .store_edit_page)
+        GA.shared.logEvent(event: .store_delete_request_button_clicked, page: .store_edit_page)
       })
       .bind(to: self.viewModel.input.tapDeleteRequest)
       .disposed(by: disposeBag)
@@ -171,6 +171,7 @@ class StoreDetailVC: BaseVC {
         cell.currentLocationButton.rx.tap
           .do { _ in
             self.myLocationFlag = true
+            GA.shared.logEvent(event: .current_location_button_clicked, page: .store_detail_page)
           }.bind(onNext: self.locationManager.startUpdatingLocation)
           .disposed(by: cell.disposeBag)
         cell.shareButton.rx.tap
@@ -182,6 +183,9 @@ class StoreDetailVC: BaseVC {
           .disposed(by: cell.disposeBag)
         cell.transferButton.rx.tap
           .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+          .do(onNext: { _ in
+            GA.shared.logEvent(event: .toss_button_clicked, page: .store_detail_page)
+          })
           .bind(to: self.viewModel.input.tapTransfer)
           .disposed(by: cell.disposeBag)
         return cell
@@ -453,6 +457,9 @@ extension StoreDetailVC: UITableViewDelegate {
         count: self.storeDataSource.sectionModels[0].store.images.count
       )
       headerView.rightButton.rx.tap
+        .do(onNext: { _ in
+          GA.shared.logEvent(event: .image_attach_button_clicked, page: .store_detail_page)
+        })
         .bind(onNext: self.showPictureActionSheet)
         .disposed(by: headerView.disposeBag)
       return headerView

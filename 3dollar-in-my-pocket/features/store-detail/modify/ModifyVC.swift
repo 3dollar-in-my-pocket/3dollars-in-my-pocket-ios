@@ -72,6 +72,9 @@ class ModifyVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.modifyView.editButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .address_edit_button_clicked, page: .store_edit_page)
+      })
       .bind(to: self.viewModel.input.tapEdit)
       .disposed(by: disposeBag)
     

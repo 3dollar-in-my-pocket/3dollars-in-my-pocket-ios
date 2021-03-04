@@ -114,11 +114,17 @@ class HomeVC: BaseVC {
   
   override func bindEvent() {
     self.homeView.addressButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .search_button_clicked, page: .home_page)
+      })
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSearchAddress)
       .disposed(by: disposeBag)
     
     self.homeView.currentLocationButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .current_location_button_clicked, page: .home_page)
+      })
       .observeOn(MainScheduler.instance)
       .bind { [weak self] in
         guard let self = self else { return }
@@ -128,6 +134,9 @@ class HomeVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.homeView.tossButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .toss_button_clicked, page: .home_page)
+      })
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.goToToss)
       .disposed(by: disposeBag)

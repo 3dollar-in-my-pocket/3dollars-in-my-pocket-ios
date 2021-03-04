@@ -44,7 +44,6 @@ class CategoryListVC: BaseVC {
     view = categoryListView
     self.setupLocationManager()
     self.setupMap()
-//    self.loadAdBanner()
     self.categoryListView.bind(category: self.category)
   }
   
@@ -53,6 +52,7 @@ class CategoryListVC: BaseVC {
     self.categoryListView.currentLocationButton.rx.tap
       .do(onNext: { _ in
         self.myLocationFlag = true
+        GA.shared.logEvent(event: .current_location_button_clicked, page: .store_list_page)
       })
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.setupLocationManager)

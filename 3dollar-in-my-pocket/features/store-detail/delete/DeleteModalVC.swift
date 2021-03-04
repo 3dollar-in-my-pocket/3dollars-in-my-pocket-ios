@@ -57,7 +57,7 @@ class DeleteModalVC: BaseVC {
     
     self.deleteModalView.deleteButton.rx.tap
       .do { _ in
-        GA.shared.logEvent(event: .delete_request_submit_button_clicked, page: .store_detail_page)
+        GA.shared.logEvent(event: .delete_request_submit_button_clicked, page: .delete_request_popup)
       }
       .bind(to: self.viewModel.input.tapDeleteButton)
       .disposed(by: disposeBag)
@@ -98,7 +98,7 @@ class DeleteModalVC: BaseVC {
       .do { _ in
         GA.shared.logEvent(
           event: .delete_request_popup_close_button_clicked,
-          page: .store_detail_page
+          page: .delete_request_popup
         )
       }.bind(onNext: self.dismiss)
       .disposed(by: disposeBag)
