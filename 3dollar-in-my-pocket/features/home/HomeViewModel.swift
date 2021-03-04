@@ -59,6 +59,7 @@ class HomeViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.mapLocation
+      .filter { $0 != nil }
       .map { _ in false }
       .bind(to: self.output.isHiddenResearchButton)
       .disposed(by: disposeBag)
