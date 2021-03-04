@@ -380,7 +380,7 @@ class StoreDetailVC: BaseVC {
     self.imagePicker.sourceType = .camera
     self.imagePicker.cameraCaptureMode = .photo
     
-    self.present(imagePicker, animated: true)
+    self.tabBarController?.present(imagePicker, animated: true)
   }
   
   private func showRegisterPhoto(storeId: Int) {
@@ -388,7 +388,7 @@ class StoreDetailVC: BaseVC {
       $0.delegate = self
     }
     
-    self.present(registerPhotoVC, animated: true, completion: nil)
+    self.tabBarController?.present(registerPhotoVC, animated: true, completion: nil)
   }
   
   private func showPhotoDetail(storeId: Int, index: Int, photos: [Image]) {
