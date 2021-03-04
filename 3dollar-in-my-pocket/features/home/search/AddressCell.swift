@@ -6,7 +6,7 @@ class AddressCell: BaseTableViewCell {
   
   let buildingName = UILabel().then {
     $0.textColor = .black
-    $0.font = UIFont(name: "AppleSDGothicNeo-ExtraBold", size: 16)
+    $0.font = UIFont(name: "AppleSDGothicNeoEB00", size: 16)
   }
   
   let addressLabel = UILabel().then {
@@ -55,11 +55,19 @@ class AddressCell: BaseTableViewCell {
   }
   
   func bind(document: AddressDocument) {
-    self.buildingName.text = document.roadAddress.buildingName
-    if document.roadAddress.addressName.isEmpty {
-      self.addressLabel.text = document.address.addressName
+    if document.roadAddress.buildingName.isEmpty {
+      if document.roadAddress.addressName.isEmpty {
+        self.buildingName.text = document.address.addressName
+      } else {
+        self.buildingName.text = document.roadAddress.addressName
+      }
     } else {
-      self.addressLabel.text = document.roadAddress.addressName
+      self.buildingName.text = document.roadAddress.buildingName
+      if document.roadAddress.addressName.isEmpty {
+        self.addressLabel.text = document.address.addressName
+      } else {
+        self.addressLabel.text = document.roadAddress.addressName
+      }
     }
   }
 }
