@@ -68,6 +68,7 @@
 "category_list_waffle" = "넌 어쩜 이름도\n와플일까?";
 "category_list_gukhwappang" = "사계절 너가 생각나\n국화빵";
 "category_list_sundae" = "순대, 제발 내장 많이 주세요.";
+"category_list_empty" = "주변에 가게가 없어요.";
 "review_modal_title" = "이 가게를\n추천하시나요?";
 "review_modal_modify_title" = "이 가게의 추천 내용을\n수정합니다.";
 "review_modal_placeholder" = "리뷰를 남겨주세요! (100자 이내)";

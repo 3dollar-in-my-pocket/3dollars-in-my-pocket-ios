@@ -81,6 +81,14 @@ class CategoryListVC: BaseVC {
       .bind(to: self.categoryListView.storeTableView.rx.items(dataSource: self.categoryDataSource))
       .disposed(by: disposeBag)
     
+    self.viewModel.ouput.isHiddenEmpty
+      .bind(to: self.categoryListView.emptyLabel.rx.isHidden)
+      .disposed(by: disposeBag)
+    
+    self.viewModel.ouput.isHiddenEmpty
+      .bind(to: self.categoryListView.emptyImage.rx.isHidden)
+      .disposed(by: disposeBag)
+    
     self.viewModel.ouput.markers
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.setMarkders(stores:))

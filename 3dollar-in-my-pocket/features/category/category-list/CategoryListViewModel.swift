@@ -22,6 +22,7 @@ class CategoryListViewModel: BaseViewModel {
   
   struct Output {
     let stores = PublishRelay<[CategorySection]>()
+    let isHiddenEmpty = PublishRelay<Bool>()
     let markers = PublishRelay<[StoreCard]>()
   }
   
@@ -90,6 +91,7 @@ class CategoryListViewModel: BaseViewModel {
         guard let self = self else { return }
         let stores = self.storesByDistance(from: categoryByDistance)
         self.ouput.stores.accept(stores)
+        self.ouput.isHiddenEmpty.accept(!stores.isEmpty)
         self.ouput.markers.accept(categoryByDistance.getStores())
       },
       onError: { [weak self] error in
@@ -116,6 +118,7 @@ class CategoryListViewModel: BaseViewModel {
         guard let self = self else { return }
         let stores = self.storesByReview(from: categoryByReview)
         self.ouput.stores.accept(stores)
+        self.ouput.isHiddenEmpty.accept(!stores.isEmpty)
         self.ouput.markers.accept(categoryByReview.getStores())
       },
       onError: { [weak self] error in
@@ -174,7 +177,10 @@ class CategoryListViewModel: BaseViewModel {
     if !distanceSection5.items.isEmpty {
       categorySections.append(distanceSection5)
     }
-    categorySections.append(adSection)
+    
+    if !categorySections.isEmpty {
+      categorySections.append(adSection)
+    }
     return categorySections
   }
   
@@ -224,7 +230,10 @@ class CategoryListViewModel: BaseViewModel {
     if !review0Section.items.isEmpty {
       categorySections.append(review0Section)
     }
-    categorySections.append(adSection)
+    
+    if !categorySections.isEmpty {
+      categorySections.append(adSection)
+    }
     return categorySections
   }
 }

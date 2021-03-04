@@ -67,7 +67,17 @@ class CategoryListView: BaseView {
     $0.contentInsetAdjustmentBehavior = .never
   }
   
-//  let adBannerView = GADBannerView()
+  let emptyImage = UIImageView().then {
+    $0.image = UIImage(named: "img_empty")
+    $0.isHidden = true
+  }
+  
+  let emptyLabel = UILabel().then {
+    $0.text = "category_list_empty".localized
+    $0.textColor = UIColor(r: 200, g: 200, b: 200)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
+    $0.isHidden = true
+  }
   
   
   override func setup() {
@@ -77,7 +87,7 @@ class CategoryListView: BaseView {
     self.addSubViews(
       storeTableView, mapView, navigationView, backButton,
       currentLocationButton, reviewOrderButton, distanceOrderButton,
-      categoryTitleLabel, titleStackView
+      categoryTitleLabel, titleStackView, emptyImage, emptyLabel
     )
   }
   
@@ -133,6 +143,16 @@ class CategoryListView: BaseView {
       make.top.equalTo(self.categoryTitleLabel.snp.bottom)
       make.left.right.equalToSuperview()
       make.bottom.equalTo(safeAreaLayoutGuide)
+    }
+    
+    self.emptyImage.snp.makeConstraints { make in
+      make.centerX.equalToSuperview()
+      make.top.equalTo(self.categoryTitleLabel.snp.bottom).offset(32)
+    }
+    
+    self.emptyLabel.snp.makeConstraints { make in
+      make.centerX.equalToSuperview()
+      make.top.equalTo(self.emptyImage.snp.bottom).offset(8)
     }
   }
   
