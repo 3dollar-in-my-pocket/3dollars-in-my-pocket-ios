@@ -5,6 +5,9 @@ class HomeEmptyStoreCell: BaseView {
   let containerView = UIView().then {
     $0.backgroundColor = .white
     $0.layer.cornerRadius = 16
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowOpacity = 0.08
   }
   
   let emptyImage = UIImageView().then {

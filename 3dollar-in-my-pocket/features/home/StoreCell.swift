@@ -4,6 +4,14 @@ class StoreCell: BaseCollectionViewCell {
   
   static let registerId = "\(StoreCell.self)"
   
+  let containerView = UIView().then {
+    $0.backgroundColor = .white
+    $0.layer.cornerRadius = 16
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowOpacity = 0.08
+  }
+  
   let categoryImage = UIImageView().then {
     $0.image = UIImage(named: "img_60_bungeoppang")
     $0.contentMode = .scaleAspectFit
@@ -45,27 +53,33 @@ class StoreCell: BaseCollectionViewCell {
   }
   
   override func setup() {
-    self.layer.cornerRadius = 16
-    self.backgroundColor = .white
+    self.backgroundColor = .clear
     self.addSubViews(
-      categoryImage, titleLabel, categoriesLabel, distanceImage,
-      distanceLabel, starImage, rankLabel
+      containerView, categoryImage, titleLabel, categoriesLabel,
+      distanceImage, distanceLabel, starImage, rankLabel
     )
   }
   
   override func bindConstraints() {
+    self.containerView.snp.makeConstraints { make in
+      make.left.top.right.equalToSuperview()
+      make.width.equalTo(264)
+      make.height.equalTo(104)
+      make.bottom.equalToSuperview().offset(-10)
+    }
+    
     self.categoryImage.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(16)
-      make.centerY.equalToSuperview()
-      make.top.equalToSuperview().offset(22)
-      make.bottom.equalToSuperview().offset(-22)
+      make.left.equalTo(self.containerView).offset(16)
+      make.centerY.equalTo(self.containerView)
+      make.top.equalTo(self.containerView).offset(22)
+      make.bottom.equalTo(self.containerView).offset(-22)
       make.width.height.equalTo(60)
     }
     
     self.titleLabel.snp.makeConstraints { make in
-      make.top.equalToSuperview().offset(18)
+      make.top.equalTo(self.containerView).offset(18)
       make.left.equalTo(self.categoryImage.snp.right).offset(13)
-      make.right.equalToSuperview().offset(-16)
+      make.right.equalTo(self.containerView).offset(-16)
     }
     
     self.categoriesLabel.snp.makeConstraints { make in
@@ -75,7 +89,7 @@ class StoreCell: BaseCollectionViewCell {
     
     self.distanceImage.snp.makeConstraints { make in
       make.left.equalTo(self.titleLabel)
-      make.bottom.equalToSuperview().offset(-15)
+      make.bottom.equalTo(self.containerView).offset(-15)
     }
     
     self.distanceLabel.snp.makeConstraints { make in
@@ -96,13 +110,13 @@ class StoreCell: BaseCollectionViewCell {
   
   func setSelected(isSelected: Bool) {
     if isSelected {
-      self.backgroundColor = .black
+      self.containerView.backgroundColor = .black
       self.titleLabel.textColor = .white
       self.categoriesLabel.textColor = .white
       self.distanceLabel.textColor = .white
       self.rankLabel.textColor = .white
     } else {
-      self.backgroundColor = .white
+      self.containerView.backgroundColor = .white
       self.titleLabel.textColor = .black
       self.categoriesLabel.textColor = UIColor(r: 114, g: 114, b: 114)
       self.distanceLabel.textColor = .black

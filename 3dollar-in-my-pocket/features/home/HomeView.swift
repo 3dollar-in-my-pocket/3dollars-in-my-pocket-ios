@@ -44,7 +44,7 @@ class HomeView: BaseView {
     layout.minimumInteritemSpacing = 12
     layout.itemSize = CGSize(
       width: 264,
-      height: 104
+      height: 114
     )
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear
@@ -110,7 +110,7 @@ class HomeView: BaseView {
     self.storeCollectionView.snp.makeConstraints { (make) in
       make.left.right.equalToSuperview()
       make.bottom.equalTo(safeAreaLayoutGuide).offset(-24)
-      make.height.equalTo(104)
+      make.height.equalTo(124)
     }
     
     self.tossButton.snp.makeConstraints { make in
@@ -126,7 +126,7 @@ class HomeView: BaseView {
     self.emptyCell.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.bottom.equalTo(safeAreaLayoutGuide).offset(-24)
+      make.bottom.equalTo(safeAreaLayoutGuide).offset(-34)
       make.height.equalTo(104)
     }
   }
