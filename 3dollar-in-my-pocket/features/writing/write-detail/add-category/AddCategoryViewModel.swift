@@ -8,7 +8,7 @@ class AddCategoryViewModel: BaseViewModel {
   
   var selectedCategory: [StoreCategory]
   let categories: [StoreCategory] = [
-    .BUNGEOPPANG, .KKOCHI, .EOMUK, .GUKHWAPPANG, .GUNGOGUMA,
+    .BUNGEOPPANG, .KKOCHI, .EOMUK, .GUKWAPPANG, .GUNGOGUMA,
     .GYERANPPANG, .HOTTEOK, .GUNOKSUSU, .SUNDAE, .TAKOYAKI,
     .TOAST, .TTANGKONGPPANG, .TTEOKBOKKI, .WAFFLE,
   ]

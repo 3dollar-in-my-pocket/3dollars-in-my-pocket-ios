@@ -7,7 +7,7 @@ class CategoryViewModel: BaseViewModel {
   let output = Output()
   let categories: [StoreCategory] = [
     .BUNGEOPPANG, .KKOCHI, .EOMUK,
-    .GUKHWAPPANG, .GUNGOGUMA, .GYERANPPANG,
+    .GUKWAPPANG, .GUNGOGUMA, .GYERANPPANG,
     .HOTTEOK, .GUNOKSUSU, .SUNDAE,
     .TAKOYAKI, .TOAST, .TTANGKONGPPANG,
     .TTEOKBOKKI, .WAFFLE
