@@ -213,7 +213,7 @@ class ModifyVC: BaseVC {
     
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.modifyView.showLoading(isShow:))
+      .bind(onNext: self.showRootLoading(isShow:))
       .disposed(by: disposeBag)
     
     self.viewModel.httpErrorAlert

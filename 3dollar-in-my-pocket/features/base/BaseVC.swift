@@ -39,4 +39,16 @@ class BaseVC: UIViewController {
       )
     }
   }
+  
+  func showRootLoading(isShow: Bool) {
+    if let tabBarVC = self.navigationController?.parent as? TabBarVC {
+      tabBarVC.showLoading(isShow: isShow)
+    }
+  }
+  
+  func showRootDim(isShow: Bool) {
+    if let tabBarVC = self.navigationController?.parent as? TabBarVC {
+      tabBarVC.showDim(isShow: isShow)
+    }
+  }
 }

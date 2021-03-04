@@ -94,7 +94,7 @@ class StoreDetailVC: BaseVC {
     
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.detailView.showLoading(isShow:))
+      .bind(onNext: self.showRootLoading(isShow:))
       .disposed(by: disposeBag)
     
     self.viewModel.showSystemAlert
@@ -288,8 +288,8 @@ class StoreDetailVC: BaseVC {
       $0.deleagete = self
     }
     
-    self.detailView.showDim(isShow: true)
-    self.present(deleteVC, animated: true, completion: nil)
+    self.showRootDim(isShow: true)
+    self.tabBarController?.present(deleteVC, animated: true, completion: nil)
   }
   
   private func showReviewModal(storeId: Int, review: Review? = nil) {
@@ -297,8 +297,8 @@ class StoreDetailVC: BaseVC {
       $0.deleagete = self
     }
     
-    self.detailView.showDim(isShow: true)
-    self.present(reviewVC, animated: true, completion: nil)
+    self.showRootDim(isShow: true)
+    self.tabBarController?.present(reviewVC, animated: true, completion: nil)
   }
   
   private func goToModify(store: Store) {
@@ -506,18 +506,18 @@ extension StoreDetailVC: ReviewModalDelegate {
   func onReviewSuccess() {
     self.myLocationFlag = false
     self.locationManager.startUpdatingLocation()
-    self.detailView.showDim(isShow: false)
+    self.showRootDim(isShow: false)
   }
   
   func onTapClose() {
-    self.detailView.showDim(isShow: false)
+    self.showRootDim(isShow: false)
   }
 }
 
 extension StoreDetailVC: DeleteModalDelegate {
   
   func onRequest() {
-    self.detailView.showDim(isShow: false)
+    self.showRootDim(isShow: false)
     self.navigationController?.popToRootViewController(animated: true)
   }
 }

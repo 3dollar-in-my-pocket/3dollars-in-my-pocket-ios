@@ -108,7 +108,7 @@ class HomeVC: BaseVC {
     
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.homeView.showLoading(isShow:))
+      .bind(onNext: self.showRootLoading(isShow:))
       .disposed(by: disposeBag)
   }
   
