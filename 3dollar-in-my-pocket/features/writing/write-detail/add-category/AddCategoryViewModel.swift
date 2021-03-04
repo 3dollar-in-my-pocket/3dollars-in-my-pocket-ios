@@ -10,7 +10,7 @@ class AddCategoryViewModel: BaseViewModel {
   let categories: [StoreCategory] = [
     .BUNGEOPPANG, .KKOCHI, .EOMUK, .GUKHWAPPANG, .GUNGOGUMA,
     .GYERANPPANG, .HOTTEOK, .GUNOKSUSU, .SUNDAE, .TAKOYAKI,
-    .TOAST, .TTANGKONGPPANG, .TTEOKBOKI, .WAFFLE,
+    .TOAST, .TTANGKONGPPANG, .TTEOKBOKKI, .WAFFLE,
   ]
   
   struct Input {

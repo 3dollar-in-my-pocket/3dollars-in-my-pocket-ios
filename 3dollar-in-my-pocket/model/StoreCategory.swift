@@ -7,7 +7,7 @@ public enum StoreCategory: String, Codable {
   case HOTTEOK = "HOTTEOK"
   case EOMUK = "EOMUK"
   case GUNGOGUMA = "GUNGOGUMA"
-  case TTEOKBOKI = "TTEOKBOKI"
+  case TTEOKBOKKI = "TTEOKBOKKI"
   case TTANGKONGPPANG = "TTANGKONGPPANG"
   case GUNOKSUSU = "GUNOKSUSU"
   case KKOCHI = "KKOCHI"
@@ -43,8 +43,8 @@ public enum StoreCategory: String, Codable {
         return "shared_category_toast".localized
       case .TTANGKONGPPANG:
         return "shared_category_ttangkongppang".localized
-      case .TTEOKBOKI:
-        return "shared_category_tteokboki".localized
+      case .TTEOKBOKKI:
+        return "shared_category_tteokbokki".localized
       case .WAFFLE:
         return "shared_category_waffle".localized
       }
@@ -78,8 +78,8 @@ public enum StoreCategory: String, Codable {
         return UIImage(named: "img_60_toast")
       case .TTANGKONGPPANG:
         return UIImage(named: "img_60_ttangkongppang")
-      case .TTEOKBOKI:
-        return UIImage(named: "img_60_tteokboki")
+      case .TTEOKBOKKI:
+        return UIImage(named: "img_60_tteokbokki")
       case .WAFFLE:
         return UIImage(named: "img_60_waffle")
       }
@@ -113,8 +113,8 @@ public enum StoreCategory: String, Codable {
         return "toast"
       case .TTANGKONGPPANG:
         return "ttangkongppang"
-      case .TTEOKBOKI:
-        return "tteokboki"
+      case .TTEOKBOKKI:
+        return "tteokbokki"
       case .WAFFLE:
         return "waffle"
       }

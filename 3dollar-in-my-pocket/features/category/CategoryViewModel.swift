@@ -10,7 +10,7 @@ class CategoryViewModel: BaseViewModel {
     .GUKHWAPPANG, .GUNGOGUMA, .GYERANPPANG,
     .HOTTEOK, .GUNOKSUSU, .SUNDAE,
     .TAKOYAKI, .TOAST, .TTANGKONGPPANG,
-    .TTEOKBOKI, .WAFFLE
+    .TTEOKBOKKI, .WAFFLE
   ]
   
   struct Input {

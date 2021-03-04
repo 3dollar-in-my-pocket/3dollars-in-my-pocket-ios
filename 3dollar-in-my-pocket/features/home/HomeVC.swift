@@ -133,6 +133,13 @@ class HomeVC: BaseVC {
       .disposed(by: disposeBag)
   }
   
+  func goToDetail(storeId: Int) {
+    self.navigationController?.pushViewController(
+      StoreDetailVC.instance(storeId: storeId),
+      animated: true
+    )
+  }
+  
   private func addForegroundObserver() {
     NotificationCenter.default.addObserver(
       self,
@@ -157,13 +164,6 @@ class HomeVC: BaseVC {
     self.homeView.mapView.positionMode = .direction
     self.homeView.mapView.zoomLevel = 15
     self.homeView.mapView.addCameraDelegate(delegate: self)
-  }
-  
-  private func goToDetail(storeId: Int) {
-    self.navigationController?.pushViewController(
-      StoreDetailVC.instance(storeId: storeId),
-      animated: true
-    )
   }
   
   private func selectMarker(selectedIndex: Int, stores: [StoreResponse]) {

@@ -60,7 +60,7 @@
 "category_list_hotteok" = "호떡아 기다려";
 "category_list_eomuk" = "날 쏴줘 어묵 탕!";
 "category_list_gungoguma" = "널 생각하면 목이 막혀,\n군고구마";
-"category_list_tteokboki" = "떡볶이...\n너 500원이었잖아";
+"category_list_tteokbokki" = "떡볶이...\n너 500원이었잖아";
 "category_list_ttangkongppang" = "땅콩빵, 오늘 널 갖겠어";
 "category_list_gunoksusu" = "버터까지 발라서 굽겠어\n군옥수수";
 "category_list_kkochi" = "꼬치꼬치 캐묻지마 ♥︎";
@@ -123,7 +123,7 @@
 "shared_category_sundae" = "순대";
 "shared_category_toast" = "토스트";
 "shared_category_ttangkongppang" = "땅콩빵";
-"shared_category_tteokboki" = "떡볶이";
+"shared_category_tteokbokki" = "떡볶이";
 "shared_category_waffle" = "와플";
 "shared_store_type_road" = "길거리";
 "shared_store_type_store" = "매장";

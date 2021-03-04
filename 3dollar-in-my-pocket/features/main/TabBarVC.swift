@@ -80,7 +80,11 @@ class TabBarVC: UITabBarController {
 
 extension TabBarVC: WriteAddressDelegate {
   func onWriteSuccess(storeId: Int) {
-    
+    self.selectedIndex = 0
+    if let navigationVC = self.viewControllers?[0] as? UINavigationController,
+       let homeVC = navigationVC.topViewController as? HomeVC {
+      homeVC.goToDetail(storeId: storeId)
+    }
   }
 }
 
