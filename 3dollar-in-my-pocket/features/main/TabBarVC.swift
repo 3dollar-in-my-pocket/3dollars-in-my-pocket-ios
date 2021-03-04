@@ -83,6 +83,7 @@ extension TabBarVC: WriteAddressDelegate {
     self.selectedIndex = 0
     if let navigationVC = self.viewControllers?[0] as? UINavigationController,
        let homeVC = navigationVC.topViewController as? HomeVC {
+      homeVC.locationManager.startUpdatingLocation()
       homeVC.goToDetail(storeId: storeId)
     }
   }

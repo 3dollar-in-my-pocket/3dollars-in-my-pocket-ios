@@ -12,13 +12,13 @@ class HomeVC: BaseVC {
     mapService: MapService(),
     userDefaults: UserDefaultsUtil()
   )
-  private let locationManager = CLLocationManager()
   
   var previousIndex = 0
   var mapAnimatedFlag = false
   var previousOffset: CGFloat = 0
   var markers: [NMFMarker] = []
   let transition = SearchTransition()
+  let locationManager = CLLocationManager()
   
   static func instance() -> UINavigationController {
     let homeVC = HomeVC(nibName: nil, bundle: nil).then {
