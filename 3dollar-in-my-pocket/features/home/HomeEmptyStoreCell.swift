@@ -18,12 +18,14 @@ class HomeEmptyStoreCell: BaseView {
     $0.text = "home_empty_title".localized
     $0.font = UIFont(name: "AppleSDGothicNeoEB00", size: 16)
     $0.textColor = .black
+    $0.setKern(kern: -0.96)
   }
   
   let emptyDescriptionLabel = UILabel().then {
     $0.text = "home_empty_description".localized
     $0.textColor = UIColor(r: 114, g: 114, b: 114)
     $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12)
+    $0.setKern(kern: -0.72)
   }
   
   
@@ -40,12 +42,13 @@ class HomeEmptyStoreCell: BaseView {
     }
     
     self.emptyImage.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(24)
+      make.left.equalToSuperview().offset(16)
       make.bottom.equalToSuperview().offset(-12)
+      make.width.height.equalTo(80)
     }
     
     self.emptyTitleLabel.snp.makeConstraints { make in
-      make.left.equalTo(self.emptyImage.snp.right).offset(24)
+      make.left.equalTo(self.emptyImage.snp.right).offset(16)
       make.top.equalTo(self.containerView).offset(32)
     }
     
