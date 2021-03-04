@@ -70,6 +70,15 @@ class HomeViewModel: BaseViewModel {
     
     self.input.tapResearch
       .withLatestFrom(Observable.combineLatest(self.input.currentLocation, self.input.mapLocation)) { ($1.0, $1.1) }
+      .do(onNext: { [weak self] locations in
+        guard let self = self else { return }
+        if let mapLocation = locations.1 {
+          self.getAddressFromLocation(
+            lat: mapLocation.coordinate.latitude,
+            lng: mapLocation.coordinate.longitude
+          )
+        }
+      })
       .bind(onNext: self.searchNearStores)
       .disposed(by: disposeBag)
     
