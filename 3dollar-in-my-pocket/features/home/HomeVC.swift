@@ -9,15 +9,16 @@ class HomeVC: BaseVC {
   private lazy var homeView = HomeView(frame: self.view.frame)
   private let viewModel = HomeViewModel(
     storeService: StoreService(),
-    mapService: MapService()
+    mapService: MapService(),
+    userDefaults: UserDefaultsUtil()
   )
-  private let locationManager = CLLocationManager()
   
   var previousIndex = 0
   var mapAnimatedFlag = false
   var previousOffset: CGFloat = 0
   var markers: [NMFMarker] = []
   let transition = SearchTransition()
+  let locationManager = CLLocationManager()
   
   static func instance() -> UINavigationController {
     let homeVC = HomeVC(nibName: nil, bundle: nil).then {
@@ -58,6 +59,11 @@ class HomeVC: BaseVC {
   }
   
   override func bindViewModel() {
+    // Bind input
+    self.homeView.researchButton.rx.tap
+      .bind(to: self.viewModel.input.tapResearch)
+      .disposed(by: disposeBag)
+    
     // Bind output
     self.viewModel.output.address
       .bind(to: self.homeView.addressButton.rx.title(for: .normal))
@@ -67,9 +73,18 @@ class HomeVC: BaseVC {
       .bind(to: homeView.storeCollectionView.rx.items(
         cellIdentifier: StoreCell.registerId,
         cellType: StoreCell.self
-      )) { row, storeCard, cell in
-        cell.bind(storeCard: storeCard)
+      )) { row, store, cell in
+        cell.bind(store: store)
       }.disposed(by: disposeBag)
+    
+    self.viewModel.output.isHiddenResearchButton
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.homeView.isHiddenResearchButton(isHidden:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.isHiddenEmptyCell
+      .bind(to: self.homeView.emptyCell.rx.isHidden)
+      .disposed(by: disposeBag)
     
     self.viewModel.output.scrollToIndex
       .observeOn(MainScheduler.instance)
@@ -93,17 +108,23 @@ class HomeVC: BaseVC {
     
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.homeView.showLoading(isShow:))
+      .bind(onNext: self.showRootLoading(isShow:))
       .disposed(by: disposeBag)
   }
   
   override func bindEvent() {
     self.homeView.addressButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .search_button_clicked, page: .home_page)
+      })
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSearchAddress)
       .disposed(by: disposeBag)
     
     self.homeView.currentLocationButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .current_location_button_clicked, page: .home_page)
+      })
       .observeOn(MainScheduler.instance)
       .bind { [weak self] in
         guard let self = self else { return }
@@ -113,9 +134,19 @@ class HomeVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.homeView.tossButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .toss_button_clicked, page: .home_page)
+      })
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.goToToss)
       .disposed(by: disposeBag)
+  }
+  
+  func goToDetail(storeId: Int) {
+    self.navigationController?.pushViewController(
+      StoreDetailVC.instance(storeId: storeId),
+      animated: true
+    )
   }
   
   private func addForegroundObserver() {
@@ -141,25 +172,19 @@ class HomeVC: BaseVC {
   private func initilizeNaverMap() {
     self.homeView.mapView.positionMode = .direction
     self.homeView.mapView.zoomLevel = 15
+    self.homeView.mapView.addCameraDelegate(delegate: self)
   }
   
-  private func goToDetail(storeId: Int) {
-    self.navigationController?.pushViewController(
-      StoreDetailVC.instance(storeId: storeId),
-      animated: true
-    )
-  }
-  
-  private func selectMarker(selectedIndex: Int, storeCards: [StoreCard]) {
+  private func selectMarker(selectedIndex: Int, stores: [StoreResponse]) {
     self.clearMarker()
     
-    for index in storeCards.indices {
-      let storeCard = storeCards[index]
+    for index in stores.indices {
+      let store = stores[index]
       let marker = NMFMarker()
       
-      marker.position = NMGLatLng(lat: storeCard.latitude, lng: storeCard.longitude)
+      marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
       if index == selectedIndex {
-        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: storeCard.latitude, lng: storeCard.longitude))
+        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: store.latitude, lng: store.longitude))
         cameraUpdate.animation = .easeIn
         self.homeView.mapView.moveCamera(cameraUpdate)
         marker.iconImage = NMFOverlayImage(name: "ic_marker")
@@ -251,30 +276,16 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     let proportionalOffset = (scrollView.contentOffset.x + offsetHelper) / pageWidth
     
     self.previousOffset = scrollView.contentOffset.x
-    
-    var selectedIndex = Int(proportionalOffset.rounded()) >= 5 ? 4 : Int(proportionalOffset.rounded())
-    if selectedIndex < 0 {
-      selectedIndex = 0
-    }
-    
-    let indexPath = IndexPath(row: selectedIndex, section: 0)
-    
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-      self.homeView.scrollToIndex(index: indexPath)
-    }
-  }
-  
-  func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-    let pageWidth = CGFloat(264)
-    let proportionalOffset = scrollView.contentOffset.x / pageWidth
-    
+
     var selectedIndex = Int(proportionalOffset.rounded())
     if selectedIndex < 0 {
       selectedIndex = 0
     }
-    self.viewModel.input.selectStore.onNext(selectedIndex)
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+      self.viewModel.input.selectStore.onNext(selectedIndex)
+    }
   }
-  
   
   func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
     if !decelerate {
@@ -316,25 +327,24 @@ extension HomeVC: CLLocationManagerDelegate {
   }
   
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-    let location = locations.last
-    let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
-      lat: location!.coordinate.longitude,
-      lng: location!.coordinate.latitude
-    ))
-    
-    if self.mapAnimatedFlag {
-      camera.animation = .easeIn
-    }
-    self.homeView.mapView.moveCamera(camera)
-    self.viewModel.input.location.onNext((
-      location!.coordinate.latitude,
-      location!.coordinate.longitude
-    ))
-    self.viewModel.input.locationForAddress
-      .onNext((
-        location!.coordinate.latitude,
-        location!.coordinate.longitude
+    if let currentLocation = locations.last {
+      let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
+        lat: currentLocation.coordinate.longitude,
+        lng: currentLocation.coordinate.latitude
       ))
+      
+      if self.mapAnimatedFlag {
+        camera.animation = .easeIn
+      }
+      
+      self.viewModel.input.mapLocation.onNext(nil)
+      self.viewModel.input.currentLocation.onNext(currentLocation)
+      self.viewModel.input.locationForAddress
+        .onNext((
+          currentLocation.coordinate.latitude,
+          currentLocation.coordinate.longitude
+        ))
+    }
     locationManager.stopUpdatingLocation()
   }
   
@@ -367,8 +377,27 @@ extension HomeVC: CLLocationManagerDelegate {
 
 extension HomeVC: SearchAddressDelegate {
   func selectAddress(location: (Double, Double), name: String) {
-    self.viewModel.input.location.onNext(location)
+    let location = CLLocation(latitude: location.0, longitude: location.1)
+    
+    self.viewModel.input.currentLocation.onNext(location)
     self.viewModel.output.address.accept(name)
+  }
+}
+
+extension HomeVC: NMFMapViewCameraDelegate {
+  
+  func mapView(
+    _ mapView: NMFMapView,
+    cameraWillChangeByReason reason: Int,
+    animated: Bool
+  ) {
+    if reason == NMFMapChangedByGesture {
+      let mapLocation = CLLocation(
+        latitude: mapView.cameraPosition.target.lat,
+        longitude: mapView.cameraPosition.target.lng
+      )
+      self.viewModel.input.mapLocation.onNext(mapLocation)
+    }
   }
 }
 

@@ -57,6 +57,9 @@ class ReviewModalVC: BaseVC {
       .map { 1 }
       .observeOn(MainScheduler.instance)
       .do(onNext: self.reviewModalView.onTapStackView)
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .star_button_clicked, page: .review_write)
+      })
       .bind(to: self.viewModel.input.rating)
       .disposed(by: disposeBag)
     

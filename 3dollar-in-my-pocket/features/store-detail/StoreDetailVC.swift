@@ -6,6 +6,7 @@ import GoogleMobileAds
 import NMapsMap
 import AppTrackingTransparency
 import AdSupport
+import SPPermissions
 
 class StoreDetailVC: BaseVC {
   
@@ -15,6 +16,9 @@ class StoreDetailVC: BaseVC {
   private let storeId: Int
   private var myLocationFlag = false
   private let locationManager = CLLocationManager()
+  private lazy var imagePicker = UIImagePickerController().then {
+    $0.delegate = self
+  }
   var storeDataSource: RxTableViewSectionedReloadDataSource<StoreSection>!
   
   init(storeId: Int) {
@@ -90,7 +94,7 @@ class StoreDetailVC: BaseVC {
     
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.detailView.showLoading(isShow:))
+      .bind(onNext: self.showRootLoading(isShow:))
       .disposed(by: disposeBag)
     
     self.viewModel.showSystemAlert
@@ -114,7 +118,7 @@ class StoreDetailVC: BaseVC {
     
     self.detailView.deleteRequestButton.rx.tap
       .do(onNext: { _ in
-        GA.shared.logEvent(event: .delete_request_button_clicked, page: .store_edit_page)
+        GA.shared.logEvent(event: .store_delete_request_button_clicked, page: .store_edit_page)
       })
       .bind(to: self.viewModel.input.tapDeleteRequest)
       .disposed(by: disposeBag)
@@ -167,6 +171,7 @@ class StoreDetailVC: BaseVC {
         cell.currentLocationButton.rx.tap
           .do { _ in
             self.myLocationFlag = true
+            GA.shared.logEvent(event: .current_location_button_clicked, page: .store_detail_page)
           }.bind(onNext: self.locationManager.startUpdatingLocation)
           .disposed(by: cell.disposeBag)
         cell.shareButton.rx.tap
@@ -178,6 +183,9 @@ class StoreDetailVC: BaseVC {
           .disposed(by: cell.disposeBag)
         cell.transferButton.rx.tap
           .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+          .do(onNext: { _ in
+            GA.shared.logEvent(event: .toss_button_clicked, page: .store_detail_page)
+          })
           .bind(to: self.viewModel.input.tapTransfer)
           .disposed(by: cell.disposeBag)
         return cell
@@ -284,8 +292,8 @@ class StoreDetailVC: BaseVC {
       $0.deleagete = self
     }
     
-    self.detailView.showDim(isShow: true)
-    self.present(deleteVC, animated: true, completion: nil)
+    self.showRootDim(isShow: true)
+    self.tabBarController?.present(deleteVC, animated: true, completion: nil)
   }
   
   private func showReviewModal(storeId: Int, review: Review? = nil) {
@@ -293,8 +301,8 @@ class StoreDetailVC: BaseVC {
       $0.deleagete = self
     }
     
-    self.detailView.showDim(isShow: true)
-    self.present(reviewVC, animated: true, completion: nil)
+    self.showRootDim(isShow: true)
+    self.tabBarController?.present(reviewVC, animated: true, completion: nil)
   }
   
   private func goToModify(store: Store) {
@@ -329,9 +337,6 @@ class StoreDetailVC: BaseVC {
   }
   
   private func showPictureActionSheet() {
-    let imagePicker = UIImagePickerController().then {
-      $0.delegate = self
-    }
     let alert = UIAlertController(
       title: "store_detail_register_photo".localized,
       message: nil,
@@ -341,16 +346,27 @@ class StoreDetailVC: BaseVC {
       title: "store_detail_album".localized,
       style: .default
     ) { _ in
-      self.showRegisterPhoto(storeId: self.storeId)
+      if SPPermission.photoLibrary.isAuthorized {
+        self.showRegisterPhoto(storeId: self.storeId)
+      } else {
+        let controller = SPPermissions.native([.photoLibrary])
+        
+        controller.delegate = self
+        controller.present(on: self)
+      }
     }
     let cameraAction = UIAlertAction(
       title: "store_detail_camera".localized,
       style: .default
     ) { _ in
-      imagePicker.sourceType = .camera
-      imagePicker.cameraCaptureMode = .photo
-      
-      self.present(imagePicker, animated: true)
+      if SPPermission.camera.isAuthorized {
+        self.showCamera()
+      } else {
+        let controller = SPPermissions.native([.camera])
+        
+        controller.delegate = self
+        controller.present(on: self)
+      }
     }
     let cancelAction = UIAlertAction(
       title: "store_detail_cancel".localized,
@@ -364,12 +380,19 @@ class StoreDetailVC: BaseVC {
     self.present(alert, animated: true)
   }
   
+  private func showCamera() {
+    self.imagePicker.sourceType = .camera
+    self.imagePicker.cameraCaptureMode = .photo
+    
+    self.tabBarController?.present(imagePicker, animated: true)
+  }
+  
   private func showRegisterPhoto(storeId: Int) {
     let registerPhotoVC = RegisterPhotoVC.instance(storeId: storeId).then {
       $0.delegate = self
     }
     
-    self.present(registerPhotoVC, animated: true, completion: nil)
+    self.tabBarController?.present(registerPhotoVC, animated: true, completion: nil)
   }
   
   private func showPhotoDetail(storeId: Int, index: Int, photos: [Image]) {
@@ -434,6 +457,9 @@ extension StoreDetailVC: UITableViewDelegate {
         count: self.storeDataSource.sectionModels[0].store.images.count
       )
       headerView.rightButton.rx.tap
+        .do(onNext: { _ in
+          GA.shared.logEvent(event: .image_attach_button_clicked, page: .store_detail_page)
+        })
         .bind(onNext: self.showPictureActionSheet)
         .disposed(by: headerView.disposeBag)
       return headerView
@@ -487,18 +513,18 @@ extension StoreDetailVC: ReviewModalDelegate {
   func onReviewSuccess() {
     self.myLocationFlag = false
     self.locationManager.startUpdatingLocation()
-    self.detailView.showDim(isShow: false)
+    self.showRootDim(isShow: false)
   }
   
   func onTapClose() {
-    self.detailView.showDim(isShow: false)
+    self.showRootDim(isShow: false)
   }
 }
 
 extension StoreDetailVC: DeleteModalDelegate {
   
   func onRequest() {
-    self.detailView.showDim(isShow: false)
+    self.showRootDim(isShow: false)
     self.navigationController?.popToRootViewController(animated: true)
   }
 }
@@ -563,6 +589,26 @@ extension StoreDetailVC: UIImagePickerControllerDelegate, UINavigationController
     }
 
     picker.dismiss(animated: true, completion: nil) // picker를 닫아줌
+  }
+}
+
+extension StoreDetailVC: SPPermissionsDelegate {
+  func didAllow(permission: SPPermission) {
+    if permission == .camera {
+      self.showCamera()
+    } else if permission == .photoLibrary {
+      self.showRegisterPhoto(storeId: self.storeId)
+    }
+  }
+  
+  func deniedData(for permission: SPPermission) -> SPPermissionDeniedAlertData? {
+    let data = SPPermissionDeniedAlertData()
+    
+    data.alertOpenSettingsDeniedPermissionTitle = "permission_denied_title".localized
+    data.alertOpenSettingsDeniedPermissionDescription = "permission_denied_description".localized
+    data.alertOpenSettingsDeniedPermissionButtonTitle = "permission_setting_button".localized
+    data.alertOpenSettingsDeniedPermissionCancelTitle = "permission_setting_cancel".localized
+    return data
   }
 }
 

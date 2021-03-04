@@ -98,7 +98,7 @@ class RegisteredStoreCell: BaseTableViewCell {
     }
   }
   
-  func bind(store: Store) {
+  func bind(store: StoreCard) {
     self.categoryImage.image = UIImage(named: "img_60_\(store.category.lowcase)")
     self.titleLabel.text = store.storeName
     self.rankLabel.text = "\(store.rating)점"

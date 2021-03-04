@@ -1,5 +1,7 @@
 import RxSwift
 import RxCocoa
+import CoreLocation
+
 
 class HomeViewModel: BaseViewModel {
   
@@ -7,13 +9,21 @@ class HomeViewModel: BaseViewModel {
   let output = Output()
   let storeService: StoreServiceProtocol
   let mapService: MapServiceProtocol
+  let userDefaults: UserDefaultsUtil
   
   var selectedIndex: Int = 0
-  var stores: [StoreCard] = []
+  var stores: [StoreResponse] = [] {
+    didSet {
+      self.output.isHiddenEmptyCell.accept(!stores.isEmpty)
+      self.output.stores.accept(stores)
+    }
+  }
   
   struct Input {
-    let location = PublishSubject<(Double, Double)>()
+    let currentLocation = PublishSubject<CLLocation>()
+    let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
     let locationForAddress = PublishSubject<(Double, Double)>()
+    let tapResearch = PublishSubject<Void>()
     let selectStore = PublishSubject<Int>()
     let tapStore = PublishSubject<Int>()
     let deselectCurrentStore = PublishSubject<Void>()
@@ -21,10 +31,12 @@ class HomeViewModel: BaseViewModel {
   
   struct Output {
     let address = PublishRelay<String>()
-    let stores = PublishRelay<[StoreCard]>()
+    let stores = PublishRelay<[StoreResponse]>()
+    let isHiddenResearchButton = PublishRelay<Bool>()
+    let isHiddenEmptyCell = PublishRelay<Bool>()
     let scrollToIndex = PublishRelay<IndexPath>()
     let setSelectStore = PublishRelay<(IndexPath, Bool)>()
-    let selectMarker = PublishRelay<(Int, [StoreCard])>()
+    let selectMarker = PublishRelay<(Int, [StoreResponse])>()
     let goToDetail = PublishRelay<Int>()
     let showLoading = PublishRelay<Bool>()
   }
@@ -32,21 +44,46 @@ class HomeViewModel: BaseViewModel {
   
   init(
     storeService: StoreServiceProtocol,
-    mapService: MapServiceProtocol
+    mapService: MapServiceProtocol,
+    userDefaults: UserDefaultsUtil
   ) {
     self.storeService = storeService
     self.mapService = mapService
+    self.userDefaults = userDefaults
     super.init()
     
-    self.input.location
-      .bind(onNext: self.fetchNearestStores)
+    self.input.currentLocation
+      .do(onNext: self.userDefaults.setUserCurrentLocation(location:))
+      .withLatestFrom(self.input.mapLocation) { ($0, $1) }
+      .bind(onNext: self.searchNearStores)
+      .disposed(by: disposeBag)
+    
+    self.input.mapLocation
+      .filter { $0 != nil }
+      .map { _ in false }
+      .bind(to: self.output.isHiddenResearchButton)
       .disposed(by: disposeBag)
     
     self.input.locationForAddress
       .bind(onNext: self.getAddressFromLocation)
       .disposed(by: disposeBag)
     
+    self.input.tapResearch
+      .withLatestFrom(Observable.combineLatest(self.input.currentLocation, self.input.mapLocation)) { ($1.0, $1.1) }
+      .do(onNext: { [weak self] locations in
+        guard let self = self else { return }
+        if let mapLocation = locations.1 {
+          self.getAddressFromLocation(
+            lat: mapLocation.coordinate.latitude,
+            lng: mapLocation.coordinate.longitude
+          )
+        }
+      })
+      .bind(onNext: self.searchNearStores)
+      .disposed(by: disposeBag)
+    
     self.input.selectStore
+      .map { $0 >= self.stores.count ? self.stores.count - 1 : $0 }
       .bind(onNext: self.onSelectStore(index:))
       .disposed(by: disposeBag)
     
@@ -59,29 +96,34 @@ class HomeViewModel: BaseViewModel {
       .disposed(by: disposeBag)
   }
   
-  private func fetchNearestStores(lat: Double, lng: Double) {
+  private func searchNearStores(
+    currentLocation: CLLocation,
+    mapLocation: CLLocation?
+  ) {
     self.output.showLoading.accept(true)
-    self.storeService.getStoreOrderByNearest(latitude: lat, longitude: lng)
-      .subscribe(
-        onNext: { [weak self] stores in
-          guard let self = self else { return }
-          self.stores = stores
-          self.output.stores.accept(stores)
-          
-          DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
-            self.onSelectStore(index: 0)
-          }
-          self.output.showLoading.accept(false)
-        },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          if let httpError = error as? HTTPError{
-            self.httpErrorAlert.accept(httpError)
-          }
-          self.output.showLoading.accept(false)
+    self.storeService.searchNearStores(
+      currentLocation: currentLocation,
+      mapLocation: mapLocation == nil ? currentLocation : mapLocation!
+    ).subscribe(
+      onNext: { [weak self] stores in
+        guard let self = self else { return }
+        self.stores = stores
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+          self.onSelectStore(index: 0)
         }
-      )
-      .disposed(by: disposeBag)
+        self.output.showLoading.accept(false)
+        self.output.isHiddenResearchButton.accept(true)
+      },
+      onError: { [weak self] error in
+        guard let self = self else { return }
+        if let httpError = error as? HTTPError{
+          self.httpErrorAlert.accept(httpError)
+        }
+        self.output.showLoading.accept(false)
+      }
+    )
+    .disposed(by: disposeBag)
   }
   
   private func getAddressFromLocation(lat: Double, lng: Double) {

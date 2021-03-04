@@ -33,7 +33,9 @@ class ModifyVC: BaseVC {
   }
   
   static func instance(store: Store) -> ModifyVC {
-    return ModifyVC.init(store: store)
+    return ModifyVC.init(store: store).then {
+      $0.hidesBottomBarWhenPushed = true
+    }
   }
   
   override func viewDidLoad() {
@@ -70,6 +72,9 @@ class ModifyVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.modifyView.editButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .address_edit_button_clicked, page: .store_edit_page)
+      })
       .bind(to: self.viewModel.input.tapEdit)
       .disposed(by: disposeBag)
     
@@ -213,7 +218,7 @@ class ModifyVC: BaseVC {
     
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.modifyView.showLoading(isShow:))
+      .bind(onNext: self.showRootLoading(isShow:))
       .disposed(by: disposeBag)
     
     self.viewModel.httpErrorAlert

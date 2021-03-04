@@ -77,17 +77,6 @@ class StoreDetailView: BaseView {
   }
   
   func bind(category: StoreCategory){
-    switch category {
-    case .BUNGEOPPANG:
-      self.mainCategoryImage.image = UIImage(named: "img_60_bungeoppang")
-    case .GYERANPPANG:
-      self.mainCategoryImage.image = UIImage(named: "img_60_gyeranppang")
-    case .HOTTEOK:
-      self.mainCategoryImage.image = UIImage(named: "img_60_hotteok")
-    case .TAKOYAKI:
-      self.mainCategoryImage.image = UIImage(named: "img_60_takoyaki")
-    default:
-      break
-    }
+    self.mainCategoryImage.image = UIImage(named: "img_60_\(category.lowcase)")
   }
 }

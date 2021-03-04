@@ -249,7 +249,9 @@ class StoreDetailViewModel: BaseViewModel {
     if index == 3 {
       self.output.goToPhotoList.accept(self.storeId)
     } else {
-      self.output.showPhotoDetail.accept((self.storeId, index, self.store.images))
+      if !self.store.images.isEmpty {
+        self.output.showPhotoDetail.accept((self.storeId, index, self.store.images))
+      }
     }
   }
 }
