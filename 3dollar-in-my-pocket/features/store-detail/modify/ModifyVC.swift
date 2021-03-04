@@ -33,7 +33,9 @@ class ModifyVC: BaseVC {
   }
   
   static func instance(store: Store) -> ModifyVC {
-    return ModifyVC.init(store: store)
+    return ModifyVC.init(store: store).then {
+      $0.hidesBottomBarWhenPushed = true
+    }
   }
   
   override func viewDidLoad() {

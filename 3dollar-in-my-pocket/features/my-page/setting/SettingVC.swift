@@ -10,7 +10,9 @@ class SettingVC: BaseVC {
   )
   
   static func instance() -> SettingVC {
-    return SettingVC(nibName: nil, bundle: nil)
+    return SettingVC(nibName: nil, bundle: nil).then {
+      $0.hidesBottomBarWhenPushed = true
+    }
   }
   
   override func viewDidLoad() {
