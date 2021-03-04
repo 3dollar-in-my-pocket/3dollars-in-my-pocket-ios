@@ -99,8 +99,8 @@ class OverviewCell: BaseTableViewCell {
     }
     
     self.currentLocationButton.snp.makeConstraints { make in
-      make.right.equalToSuperview().offset(-12)
-      make.bottom.equalTo(self.overViewContainerView.snp.top)
+      make.right.equalToSuperview().offset(-24)
+      make.bottom.equalTo(self.overViewContainerView.snp.top).offset(-32)
     }
     
     self.overViewContainerView.snp.makeConstraints { make in
