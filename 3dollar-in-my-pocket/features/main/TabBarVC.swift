@@ -118,7 +118,7 @@ class TabBarVC: UITabBarController {
   private func checkIfBannerExisted() {
     EventService.getEvents { [weak self] (events) in
       if !events.isEmpty {
-        if let isDisable = UserDefaultsUtil.getEventDisableToday(id: events[0].id!) {
+        if let isDisable = UserDefaultsUtil.getEventDisableToday(id: events[0].id) {
           if isDisable != DateUtils.todayString() { // 다시보기 설정한 날짜가 오늘이 아니라면 팝업띄우기
             self?.present(PopupVC.instance(event: events[0]), animated: false)
           }
