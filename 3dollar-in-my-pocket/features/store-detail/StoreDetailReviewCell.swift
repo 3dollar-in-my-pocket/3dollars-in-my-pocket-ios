@@ -58,18 +58,18 @@ class StoreDetailReviewCell: BaseTableViewCell {
   
   let nameLabel = UILabel().then {
     $0.textColor = .black
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 12)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 12)
   }
   
   let createdAtLabel = UILabel().then {
     $0.textColor = UIColor(r: 183, g: 183, b: 183)
-    $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 12)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12)
   }
   
   let replyLabel = UILabel().then {
     $0.textColor = UIColor(r: 46, g: 46, b: 46)
     $0.numberOfLines = 0
-    $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 14)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14)
   }
   
   override func prepareForReuse() {

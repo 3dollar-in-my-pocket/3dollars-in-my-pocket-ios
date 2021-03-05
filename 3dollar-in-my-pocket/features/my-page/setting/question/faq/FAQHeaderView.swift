@@ -10,7 +10,7 @@ class FAQHeaderView: BaseView {
   let titleLabel = UILabel().then {
     $0.text = "제목"
     $0.textColor = .white
-    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 16)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
   }
   
   

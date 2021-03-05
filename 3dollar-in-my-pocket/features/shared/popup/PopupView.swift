@@ -16,7 +16,7 @@ class PopupView: BaseView {
     $0.backgroundColor = UIColor.init(r: 44, g: 44, b: 44)
     $0.contentVerticalAlignment = .top
     $0.contentEdgeInsets = UIEdgeInsets.init(top: 24, left: 0, bottom: 0, right: 0)
-    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
   }
   
   let disableTodayButton = UIButton().then {
@@ -25,7 +25,7 @@ class PopupView: BaseView {
     $0.backgroundColor = UIColor.init(r: 44, g: 44, b: 44)
     $0.contentVerticalAlignment = .top
     $0.contentEdgeInsets = UIEdgeInsets.init(top: 24, left: 0, bottom: 0, right: 0)
-    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 16)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
   }
   
   let verticalView = UIView().then {

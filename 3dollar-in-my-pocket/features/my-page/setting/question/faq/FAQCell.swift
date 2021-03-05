@@ -12,19 +12,19 @@ class FAQCell: BaseTableViewCell {
   
   let qLabel = UILabel().then {
     $0.text = "Q."
-    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 14)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
     $0.textColor = UIColor(r: 243, g: 162, b: 169)
   }
   
   let questionLabel = UILabel().then {
-    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 14)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
     $0.textColor = UIColor(r: 243, g: 162, b: 169)
     $0.textAlignment = .left
     $0.numberOfLines = 0
   }
   
   let answerLabel = UILabel().then {
-    $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 14)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14)
     $0.textColor = UIColor(r: 242, g: 242, b: 242)
     $0.textAlignment = .left
     $0.numberOfLines = 0

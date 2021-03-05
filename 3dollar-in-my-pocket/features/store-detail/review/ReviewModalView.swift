@@ -77,7 +77,7 @@ class ReviewModalView: BaseView {
   let registerButton = UIButton().then {
     $0.setTitle("review_modal_register".localized, for: .normal)
     $0.setTitleColor(.white, for: .normal)
-    $0.titleLabel?.font = UIFont(name: "SpoqaHanSans-Bold", size: 16)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
     $0.backgroundColor = UIColor(r: 238, g: 98, b: 76)
     $0.layer.cornerRadius = 14
   }
