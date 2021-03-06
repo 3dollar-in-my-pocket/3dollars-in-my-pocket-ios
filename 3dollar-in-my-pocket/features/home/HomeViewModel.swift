@@ -11,7 +11,7 @@ class HomeViewModel: BaseViewModel {
   let mapService: MapServiceProtocol
   let userDefaults: UserDefaultsUtil
   
-  var selectedIndex: Int = 0
+  var selectedIndex: Int = -1
   var stores: [StoreResponse] = [] {
     didSet {
       self.output.isHiddenEmptyCell.accept(!stores.isEmpty)
@@ -72,6 +72,7 @@ class HomeViewModel: BaseViewModel {
       .withLatestFrom(Observable.combineLatest(self.input.currentLocation, self.input.mapLocation)) { ($1.0, $1.1) }
       .do(onNext: { [weak self] locations in
         guard let self = self else { return }
+        self.selectedIndex = -1
         if let mapLocation = locations.1 {
           self.getAddressFromLocation(
             lat: mapLocation.coordinate.latitude,
@@ -108,10 +109,8 @@ class HomeViewModel: BaseViewModel {
       onNext: { [weak self] stores in
         guard let self = self else { return }
         self.stores = stores
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-          self.onSelectStore(index: 0)
-        }
+        self.output.selectMarker.accept((self.selectedIndex, self.stores))
+        self.output.scrollToIndex.accept(IndexPath(row: 0, section: 0))
         self.output.showLoading.accept(false)
         self.output.isHiddenResearchButton.accept(true)
       },

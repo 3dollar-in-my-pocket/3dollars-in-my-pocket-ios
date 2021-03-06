@@ -13,7 +13,6 @@ class HomeVC: BaseVC {
     userDefaults: UserDefaultsUtil()
   )
   
-  var previousIndex = 0
   var mapAnimatedFlag = false
   var previousOffset: CGFloat = 0
   var markers: [NMFMarker] = []
@@ -329,14 +328,12 @@ extension HomeVC: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     if let currentLocation = locations.last {
       let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
-        lat: currentLocation.coordinate.longitude,
-        lng: currentLocation.coordinate.latitude
+        lat: currentLocation.coordinate.latitude,
+        lng: currentLocation.coordinate.longitude
       ))
+      camera.animation = .easeIn
       
-      if self.mapAnimatedFlag {
-        camera.animation = .easeIn
-      }
-      
+      self.homeView.mapView.moveCamera(camera)
       self.viewModel.input.mapLocation.onNext(nil)
       self.viewModel.input.currentLocation.onNext(currentLocation)
       self.viewModel.input.locationForAddress
