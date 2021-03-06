@@ -134,7 +134,8 @@ extension TabBarVC: WriteAddressDelegate {
   func onWriteSuccess(storeId: Int) {
     self.selectedIndex = 0
     if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-       let homeVC = navigationVC.topViewController as? HomeVC {
+       let homeVC = navigationVC.viewControllers[0] as? HomeVC {
+      navigationVC.popToRootViewController(animated: false)
       homeVC.locationManager.startUpdatingLocation()
       homeVC.goToDetail(storeId: storeId)
     }
