@@ -4,8 +4,10 @@ class WriteCategoryCell: BaseCollectionViewCell {
   
   static let registerId = "\(WriteCategoryCell.self)"
   
-  let roundView = UIView().then {
-    $0.layer.cornerRadius = 26
+  let categoryCellWidth = ((UIScreen.main.bounds.width - 48) - (17 * 4)) / 5
+  
+  lazy var roundView = UIView().then {
+    $0.layer.cornerRadius = self.categoryCellWidth / 2
     $0.layer.masksToBounds = true
     $0.backgroundColor = .black
   }
@@ -40,13 +42,16 @@ class WriteCategoryCell: BaseCollectionViewCell {
   
   override func bindConstraints() {
     self.roundView.snp.makeConstraints { make in
-      make.width.height.equalTo(52)
+      make.width.height.equalTo(self.categoryCellWidth)
       make.top.left.right.equalToSuperview()
     }
     
     self.categoryImage.snp.makeConstraints { make in
       make.center.equalTo(self.roundView)
-      make.width.height.equalTo(32)
+      make.left.equalTo(self.roundView).offset(10)
+      make.top.equalTo(self.roundView).offset(10)
+      make.right.equalTo(self.roundView).offset(-10)
+      make.bottom.equalTo(self.roundView).offset(-10)
     }
     
     self.deleteButton.snp.makeConstraints { make in

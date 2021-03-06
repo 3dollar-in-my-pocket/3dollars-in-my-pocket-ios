@@ -3,6 +3,8 @@ import NMapsMap
 
 class ModifyView: BaseView {
   
+  let categoryCellWidth = ((UIScreen.main.bounds.width - 48) - (17 * 4)) / 5
+  
   let bgTap = UITapGestureRecognizer().then {
     $0.cancelsTouchesInView = false
   }
@@ -146,17 +148,21 @@ class ModifyView: BaseView {
     $0.backgroundColor = .white
   }
   
-  let categoryCollectionView = UICollectionView(
+  lazy var categoryCollectionView = UICollectionView(
     frame: .zero,
     collectionViewLayout: UICollectionViewFlowLayout()
   ).then {
     let layout = LeftAlignedCollectionViewFlowLayout()
     
-    layout.minimumInteritemSpacing = 16 * RatioUtils.widthRatio
+    layout.minimumInteritemSpacing = 16
     layout.minimumLineSpacing = 20
-    layout.estimatedItemSize = CGSize(width: 52, height: 75)
+    layout.estimatedItemSize = CGSize(
+      width: self.categoryCellWidth,
+      height: self.categoryCellWidth + 23
+    )
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear
+    $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
   }
   
   let menuLabel = UILabel().then {
@@ -375,10 +381,9 @@ class ModifyView: BaseView {
     }
     
     self.categoryCollectionView.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(24)
-      make.right.equalToSuperview().offset(-24)
+      make.left.right.equalToSuperview()
       make.top.equalTo(self.categoryContainer).offset(24)
-      make.height.equalTo(72)
+      make.height.equalTo(self.categoryCellWidth + 23)
     }
     
     self.menuLabel.snp.makeConstraints { make in
