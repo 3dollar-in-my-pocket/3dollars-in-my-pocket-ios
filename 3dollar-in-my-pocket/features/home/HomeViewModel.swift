@@ -54,6 +54,10 @@ class HomeViewModel: BaseViewModel {
     
     self.input.currentLocation
       .do(onNext: self.userDefaults.setUserCurrentLocation(location:))
+      .do(onNext: { [weak self] _ in
+        guard let self = self else { return }
+        self.selectedIndex = -1
+      })
       .withLatestFrom(self.input.mapLocation) { ($0, $1) }
       .bind(onNext: self.searchNearStores)
       .disposed(by: disposeBag)

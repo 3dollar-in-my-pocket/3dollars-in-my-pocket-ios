@@ -45,18 +45,6 @@ class HomeVC: BaseVC {
     self.initilizeLocationManager()
   }
   
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    
-    self.addForegroundObserver()
-  }
-  
-  override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
-    
-    self.removeForegroundObserver()
-  }
-  
   override func bindViewModel() {
     // Bind input
     self.homeView.researchButton.rx.tap
@@ -146,18 +134,6 @@ class HomeVC: BaseVC {
       StoreDetailVC.instance(storeId: storeId),
       animated: true
     )
-  }
-  
-  private func addForegroundObserver() {
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(initilizeLocationManager),
-      name: UIApplication.willEnterForegroundNotification, object: nil
-    )
-  }
-  
-  private func removeForegroundObserver() {
-    NotificationCenter.default.removeObserver(self)
   }
   
   private func initilizeShopCollectionView() {
