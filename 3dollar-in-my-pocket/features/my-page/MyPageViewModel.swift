@@ -87,6 +87,8 @@ class MyPageViewModel: BaseViewModel {
             let sliceArray: [Store?] = Array(storePage.content[0...4]) + [nil]
             
             self.output.registeredStores.accept(sliceArray)
+          } else if storePage.content.count == 0 {
+            self.output.registeredStores.accept(storePage.content)
           } else {
             self.output.registeredStores.accept(storePage.content + [nil])
           }
