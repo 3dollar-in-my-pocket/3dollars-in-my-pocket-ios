@@ -376,6 +376,9 @@ extension HomeVC: NMFMapViewCameraDelegate {
         latitude: mapView.cameraPosition.target.lat,
         longitude: mapView.cameraPosition.target.lng
       )
+      let distance = mapView.contentBounds.boundsLatLngs[0].distance(to: mapView.contentBounds.boundsLatLngs[1])
+      
+      self.viewModel.input.distance.onNext(distance / 2)
       self.viewModel.input.mapLocation.onNext(mapLocation)
     }
   }

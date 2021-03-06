@@ -7,7 +7,8 @@ protocol StoreServiceProtocol {
   
   func searchNearStores(
     currentLocation: CLLocation,
-    mapLocation: CLLocation
+    mapLocation: CLLocation,
+    distance: Double
   ) -> Observable<[StoreResponse]>
   
   func saveStore(store: Store) -> Observable<SaveResponse>
@@ -38,13 +39,14 @@ struct StoreService: StoreServiceProtocol {
   
   func searchNearStores(
     currentLocation: CLLocation,
-    mapLocation: CLLocation
+    mapLocation: CLLocation,
+    distance: Double
   ) -> Observable<[StoreResponse]> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/stores"
       let headers = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = [
-        "distance": 2000,
+        "distance": distance,
         "latitude": currentLocation.coordinate.latitude,
         "longitude": currentLocation.coordinate.longitude,
         "mapLatitude": mapLocation.coordinate.latitude,

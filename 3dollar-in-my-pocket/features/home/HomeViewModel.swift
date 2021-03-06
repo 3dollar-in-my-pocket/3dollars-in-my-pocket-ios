@@ -21,6 +21,7 @@ class HomeViewModel: BaseViewModel {
   
   struct Input {
     let currentLocation = PublishSubject<CLLocation>()
+    let distance = BehaviorSubject<Double>(value: 2000)
     let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
     let locationForAddress = PublishSubject<(Double, Double)>()
     let tapResearch = PublishSubject<Void>()
@@ -58,7 +59,7 @@ class HomeViewModel: BaseViewModel {
         guard let self = self else { return }
         self.selectedIndex = -1
       })
-      .withLatestFrom(self.input.mapLocation) { ($0, $1) }
+      .withLatestFrom(Observable.combineLatest(self.input.mapLocation, self.input.distance)) { ($0, $1.0, $1.1) }
       .bind(onNext: self.searchNearStores)
       .disposed(by: disposeBag)
     
@@ -73,7 +74,7 @@ class HomeViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.tapResearch
-      .withLatestFrom(Observable.combineLatest(self.input.currentLocation, self.input.mapLocation)) { ($1.0, $1.1) }
+      .withLatestFrom(Observable.combineLatest(self.input.currentLocation, self.input.mapLocation, self.input.distance)) { ($1.0, $1.1, $1.2) }
       .do(onNext: { [weak self] locations in
         guard let self = self else { return }
         self.selectedIndex = -1
@@ -103,12 +104,14 @@ class HomeViewModel: BaseViewModel {
   
   private func searchNearStores(
     currentLocation: CLLocation,
-    mapLocation: CLLocation?
+    mapLocation: CLLocation?,
+    distance: Double
   ) {
     self.output.showLoading.accept(true)
     self.storeService.searchNearStores(
       currentLocation: currentLocation,
-      mapLocation: mapLocation == nil ? currentLocation : mapLocation!
+      mapLocation: mapLocation == nil ? currentLocation : mapLocation!,
+      distance: distance
     ).subscribe(
       onNext: { [weak self] stores in
         guard let self = self else { return }
