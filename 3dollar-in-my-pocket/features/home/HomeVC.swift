@@ -351,8 +351,15 @@ extension HomeVC: CLLocationManagerDelegate {
 extension HomeVC: SearchAddressDelegate {
   func selectAddress(location: (Double, Double), name: String) {
     let location = CLLocation(latitude: location.0, longitude: location.1)
+    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
+      lat: location.coordinate.latitude,
+      lng: location.coordinate.longitude
+    ))
+    cameraUpdate.animation = .easeIn
     
-    self.viewModel.input.currentLocation.onNext(location)
+    self.homeView.mapView.moveCamera(cameraUpdate)
+    self.viewModel.input.mapLocation.onNext(location)
+    self.viewModel.input.tapResearch.onNext(())
     self.viewModel.output.address.accept(name)
   }
 }
