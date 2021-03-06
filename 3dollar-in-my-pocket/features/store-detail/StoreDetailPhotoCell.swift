@@ -84,11 +84,11 @@ class StoreDetailPhotoCell: BaseCollectionViewCell {
     } else {
       self.emptyImage.isHidden = false
     }
-    self.dimView.isHidden = !isLast || count == 4
-    self.countLabel.isHidden = !isLast || count == 4
-    self.moreLabel.isHidden = !isLast || count == 4
+    self.dimView.isHidden = !isLast || count == 3
+    self.countLabel.isHidden = !isLast || count == 3
+    self.moreLabel.isHidden = !isLast || count == 3
     if isLast {
-      self.countLabel.text =  "+\(count - 4)"
+      self.countLabel.text =  "+\(count - 3)"
     }
   }
 }

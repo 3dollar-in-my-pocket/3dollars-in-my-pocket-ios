@@ -404,11 +404,13 @@ class StoreDetailVC: BaseVC {
       $0.delegate = self
     }
     
-    self.present(photoDetailVC, animated: true, completion: nil)
+    self.tabBarController?.present(photoDetailVC, animated: true, completion: nil)
   }
   
   private func goToPhotoList(storeId: Int) {
-    let photoListVC = PhotoListVC.instance(storeid: storeId)
+    let photoListVC = PhotoListVC.instance(storeid: storeId).then {
+      $0.hidesBottomBarWhenPushed = true
+    }
     
     self.navigationController?.pushViewController(photoListVC, animated: true)
   }
