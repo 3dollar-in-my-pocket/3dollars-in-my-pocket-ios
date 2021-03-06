@@ -19,7 +19,7 @@ class StoreCell: BaseCollectionViewCell {
   
   let titleLabel = UILabel().then {
     $0.textColor = .black
-    $0.font = UIFont(name: "AppleSDGothicNeo-ExtraBold", size: 16)
+    $0.font = UIFont(name: "AppleSDGothicNeoEB00", size: 16)
   }
   
   let categoriesLabel = UILabel().then {
@@ -133,7 +133,12 @@ class StoreCell: BaseCollectionViewCell {
       distanceLabel.text = "\(store.distance)m"
     }
     self.titleLabel.text = store.storeName
-    self.rankLabel.text = "\(store.rating)점"
+    
+    if floor(store.rating) == store.rating {
+      self.rankLabel.text = "\(Int(store.rating))점"
+    } else {
+      self.rankLabel.text = "\(store.rating)점"
+    }
     
     var categories = ""
     for category in store.categories {
