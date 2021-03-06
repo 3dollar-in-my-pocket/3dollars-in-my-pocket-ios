@@ -30,6 +30,7 @@ class HomeVC: BaseVC {
     
     return UINavigationController(rootViewController: homeVC).then {
       $0.isNavigationBarHidden = true
+      $0.interactivePopGestureRecognizer?.delegate = nil
     }
   }
   
@@ -130,8 +131,11 @@ class HomeVC: BaseVC {
   }
   
   func goToDetail(storeId: Int) {
+    let storeDetailVC = StoreDetailVC.instance(storeId: storeId).then {
+      $0.delegate = self
+    }
     self.navigationController?.pushViewController(
-      StoreDetailVC.instance(storeId: storeId),
+      storeDetailVC,
       animated: true
     )
   }
@@ -361,6 +365,13 @@ extension HomeVC: SearchAddressDelegate {
     self.viewModel.input.mapLocation.onNext(location)
     self.viewModel.input.tapResearch.onNext(())
     self.viewModel.output.address.accept(name)
+  }
+}
+
+extension HomeVC: StoreDetailDelegate {
+  
+  func popup(store: Store) {
+    self.viewModel.input.backFromDetail.onNext(store)
   }
 }
 

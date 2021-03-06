@@ -8,7 +8,13 @@ import AppTrackingTransparency
 import AdSupport
 import SPPermissions
 
+protocol StoreDetailDelegate: class {
+  func popup(store: Store)
+}
+
 class StoreDetailVC: BaseVC {
+  
+  weak var delegate: StoreDetailDelegate?
   
   private lazy var detailView = StoreDetailView(frame: self.view.frame)
   
@@ -54,6 +60,12 @@ class StoreDetailVC: BaseVC {
     self.tabBarController?.tabBar.barTintColor = .white
     self.viewModel.clearKakaoLinkIfExisted()
     self.setupLocationManager()
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    
+    self.viewModel.input.popup.onNext(())
   }
   
   override func bindViewModel() {
@@ -105,6 +117,11 @@ class StoreDetailVC: BaseVC {
     self.viewModel.httpErrorAlert
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showHTTPErrorAlert(error:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.popup
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.passStore(store:))
       .disposed(by: disposeBag)
   }
   
@@ -277,6 +294,10 @@ class StoreDetailVC: BaseVC {
   
   private func popupVC() {
     self.navigationController?.popViewController(animated: true)
+  }
+  
+  private func passStore(store: Store) {
+    self.delegate?.popup(store: store)
   }
   
   private func moveToMyLocation(latitude: Double, longitude: Double) {

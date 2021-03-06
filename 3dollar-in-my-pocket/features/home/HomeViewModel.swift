@@ -26,6 +26,7 @@ class HomeViewModel: BaseViewModel {
     let locationForAddress = PublishSubject<(Double, Double)>()
     let tapResearch = PublishSubject<Void>()
     let selectStore = PublishSubject<Int>()
+    let backFromDetail = PublishSubject<Store>()
     let tapStore = PublishSubject<Int>()
     let deselectCurrentStore = PublishSubject<Void>()
   }
@@ -93,6 +94,11 @@ class HomeViewModel: BaseViewModel {
       .bind(onNext: self.onSelectStore(index:))
       .disposed(by: disposeBag)
     
+    self.input.backFromDetail
+      .map { (self.selectedIndex, $0) }
+      .bind(onNext: self.updateStore)
+      .disposed(by: disposeBag)
+    
     self.input.tapStore
       .bind(onNext: self.onTapStore(index:))
       .disposed(by: disposeBag)
@@ -147,6 +153,12 @@ class HomeViewModel: BaseViewModel {
         }
       )
       .disposed(by: disposeBag)
+  }
+  
+  private func updateStore(index: Int, store: Store) {
+    let newStore = StoreResponse(store: store)
+    self.stores[index] = newStore
+    self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
   }
   
   private func onSelectStore(index: Int){
