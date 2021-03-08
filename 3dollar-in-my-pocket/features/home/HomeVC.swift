@@ -314,13 +314,16 @@ extension HomeVC: CLLocationManagerDelegate {
       camera.animation = .easeIn
       
       self.homeView.mapView.moveCamera(camera)
-      self.viewModel.input.mapLocation.onNext(nil)
-      self.viewModel.input.currentLocation.onNext(currentLocation)
-      self.viewModel.input.locationForAddress
-        .onNext((
-          currentLocation.coordinate.latitude,
-          currentLocation.coordinate.longitude
-        ))
+      
+      if !self.mapAnimatedFlag {
+        self.viewModel.input.mapLocation.onNext(nil)
+        self.viewModel.input.currentLocation.onNext(currentLocation)
+        self.viewModel.input.locationForAddress
+          .onNext((
+            currentLocation.coordinate.latitude,
+            currentLocation.coordinate.longitude
+          ))
+      }
     }
     locationManager.stopUpdatingLocation()
   }
