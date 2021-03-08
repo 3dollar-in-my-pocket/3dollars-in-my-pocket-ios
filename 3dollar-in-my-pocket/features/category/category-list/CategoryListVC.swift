@@ -260,9 +260,8 @@ extension CategoryListVC: CLLocationManagerDelegate {
       if !self.myLocationFlag {
         self.viewModel.input.currentLocation.onNext(location)
         self.myLocationFlag = false
-      } else {
-        self.categoryListView.mapView.moveCamera(cameraUpdate)
       }
+      self.categoryListView.mapView.moveCamera(cameraUpdate)
     }
     locationManager.stopUpdatingLocation()
   }
