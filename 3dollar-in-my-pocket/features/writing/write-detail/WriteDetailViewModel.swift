@@ -241,6 +241,11 @@ class WriteDetailViewModel: BaseViewModel {
           if let httpError = error as? HTTPError{
             self.httpErrorAlert.accept(httpError)
           }
+          if let commonError = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: commonError.description)
+            
+            self.showSystemAlert.accept(alertContent)
+          }
           
           self.output.showLoading.accept(false)
         }

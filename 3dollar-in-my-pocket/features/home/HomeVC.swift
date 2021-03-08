@@ -98,6 +98,11 @@ class HomeVC: BaseVC {
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showRootLoading(isShow:))
       .disposed(by: disposeBag)
+    
+    self.viewModel.showSystemAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {
