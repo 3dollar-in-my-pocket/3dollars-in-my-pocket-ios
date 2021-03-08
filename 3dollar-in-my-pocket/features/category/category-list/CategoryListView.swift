@@ -114,7 +114,7 @@ class CategoryListView: BaseView {
     self.mapView.snp.makeConstraints { make in
       make.left.right.equalToSuperview()
       make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
-      make.height.equalTo(339)
+      make.height.equalTo(339 * RatioUtils.heightRatio)
     }
     
     self.currentLocationButton.snp.makeConstraints { (make) in
@@ -168,6 +168,11 @@ class CategoryListView: BaseView {
       .font,
       value: UIFont(name: "AppleSDGothicNeoEB00", size: 24)!,
       range: boldTextRange
+    )
+    attributedString.addAttribute(
+      .kern,
+      value: -1.2,
+      range: .init(location: 0, length: text.count)
     )
     self.categoryTitleLabel.attributedText = attributedString
   }
