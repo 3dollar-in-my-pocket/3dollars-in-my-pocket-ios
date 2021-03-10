@@ -11,7 +11,7 @@ class HomeViewModel: BaseViewModel {
   let mapService: MapServiceProtocol
   let userDefaults: UserDefaultsUtil
   
-  var selectedIndex: Int = 0
+  var selectedIndex: Int = -1
   var stores: [StoreResponse] = [] {
     didSet {
       self.output.isHiddenEmptyCell.accept(!stores.isEmpty)
@@ -21,10 +21,12 @@ class HomeViewModel: BaseViewModel {
   
   struct Input {
     let currentLocation = PublishSubject<CLLocation>()
+    let distance = BehaviorSubject<Double>(value: 2000)
     let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
     let locationForAddress = PublishSubject<(Double, Double)>()
     let tapResearch = PublishSubject<Void>()
     let selectStore = PublishSubject<Int>()
+    let backFromDetail = PublishSubject<Store>()
     let tapStore = PublishSubject<Int>()
     let deselectCurrentStore = PublishSubject<Void>()
   }
@@ -54,7 +56,11 @@ class HomeViewModel: BaseViewModel {
     
     self.input.currentLocation
       .do(onNext: self.userDefaults.setUserCurrentLocation(location:))
-      .withLatestFrom(self.input.mapLocation) { ($0, $1) }
+      .do(onNext: { [weak self] _ in
+        guard let self = self else { return }
+        self.selectedIndex = -1
+      })
+      .withLatestFrom(Observable.combineLatest(self.input.mapLocation, self.input.distance)) { ($0, $1.0, $1.1) }
       .bind(onNext: self.searchNearStores)
       .disposed(by: disposeBag)
     
@@ -69,9 +75,10 @@ class HomeViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.tapResearch
-      .withLatestFrom(Observable.combineLatest(self.input.currentLocation, self.input.mapLocation)) { ($1.0, $1.1) }
+      .withLatestFrom(Observable.combineLatest(self.input.currentLocation, self.input.mapLocation, self.input.distance)) { ($1.0, $1.1, $1.2) }
       .do(onNext: { [weak self] locations in
         guard let self = self else { return }
+        self.selectedIndex = -1
         if let mapLocation = locations.1 {
           self.getAddressFromLocation(
             lat: mapLocation.coordinate.latitude,
@@ -87,6 +94,11 @@ class HomeViewModel: BaseViewModel {
       .bind(onNext: self.onSelectStore(index:))
       .disposed(by: disposeBag)
     
+    self.input.backFromDetail
+      .map { (self.selectedIndex, $0) }
+      .bind(onNext: self.updateStore)
+      .disposed(by: disposeBag)
+    
     self.input.tapStore
       .bind(onNext: self.onTapStore(index:))
       .disposed(by: disposeBag)
@@ -98,27 +110,32 @@ class HomeViewModel: BaseViewModel {
   
   private func searchNearStores(
     currentLocation: CLLocation,
-    mapLocation: CLLocation?
+    mapLocation: CLLocation?,
+    distance: Double
   ) {
     self.output.showLoading.accept(true)
     self.storeService.searchNearStores(
       currentLocation: currentLocation,
-      mapLocation: mapLocation == nil ? currentLocation : mapLocation!
+      mapLocation: mapLocation == nil ? currentLocation : mapLocation!,
+      distance: distance
     ).subscribe(
       onNext: { [weak self] stores in
         guard let self = self else { return }
         self.stores = stores
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-          self.onSelectStore(index: 0)
-        }
+        self.output.selectMarker.accept((self.selectedIndex, self.stores))
+        self.output.scrollToIndex.accept(IndexPath(row: 0, section: 0))
         self.output.showLoading.accept(false)
         self.output.isHiddenResearchButton.accept(true)
       },
       onError: { [weak self] error in
         guard let self = self else { return }
-        if let httpError = error as? HTTPError{
+        if let httpError = error as? HTTPError {
           self.httpErrorAlert.accept(httpError)
+        }
+        if let commonError = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: commonError.description)
+          
+          self.showSystemAlert.accept(alertContent)
         }
         self.output.showLoading.accept(false)
       }
@@ -141,6 +158,12 @@ class HomeViewModel: BaseViewModel {
         }
       )
       .disposed(by: disposeBag)
+  }
+  
+  private func updateStore(index: Int, store: Store) {
+    let newStore = StoreResponse(store: store)
+    self.stores[index] = newStore
+    self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
   }
   
   private func onSelectStore(index: Int){

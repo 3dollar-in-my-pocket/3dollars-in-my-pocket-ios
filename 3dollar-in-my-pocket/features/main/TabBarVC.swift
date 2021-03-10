@@ -7,13 +7,21 @@ class TabBarVC: UITabBarController {
     $0.backgroundColor = .clear
   }
   
+  
+  deinit {
+    self.removeKakaoLinkObserver()
+  }
+  
   static func instance() -> TabBarVC {
     return TabBarVC(nibName: nil, bundle: nil)
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    self.checkIfBannerExisted()
     self.setupTabBarController()
+    self.addKakaoLinkObserver()
+    self.processKakaoLinkIfExisted()
     self.delegate = self
   }
   
@@ -76,13 +84,58 @@ class TabBarVC: UITabBarController {
     self.tabBar.clipsToBounds = true
     self.tabBar.barTintColor = .white
   }
+  
+  private func addKakaoLinkObserver() {
+    NotificationCenter.default.addObserver(
+      forName: UIApplication.willEnterForegroundNotification,
+      object: nil,
+      queue: .main
+    ) { [weak self] notification in
+      self?.processKakaoLinkIfExisted()
+    }
+  }
+  
+  private func removeKakaoLinkObserver() {
+    NotificationCenter.default.removeObserver(self)
+  }
+  
+  private func processKakaoLinkIfExisted() {
+    let kakaoLinkStoreId = UserDefaultsUtil().getDetailLink()
+    
+    if kakaoLinkStoreId != 0 {
+      self.goToStoreDetail(storeId: kakaoLinkStoreId)
+    }
+  }
+  
+  private func goToStoreDetail(storeId: Int) {
+    self.selectedIndex = 0
+    if let navigationVC = self.viewControllers?[0] as? UINavigationController,
+       let homeVC = navigationVC.topViewController as? HomeVC {
+      homeVC.goToDetail(storeId: storeId)
+    }
+  }
+  
+  private func checkIfBannerExisted() {
+    EventService.getEvents { [weak self] (events) in
+      if !events.isEmpty {
+        if let isDisable = UserDefaultsUtil.getEventDisableToday(id: events[0].id) {
+          if isDisable != DateUtils.todayString() { // 다시보기 설정한 날짜가 오늘이 아니라면 팝업띄우기
+            self?.present(PopupVC.instance(event: events[0]), animated: false)
+          }
+        } else {
+          self?.present(PopupVC.instance(event: events[0]), animated: false)
+        }
+      }
+    }
+  }
 }
 
 extension TabBarVC: WriteAddressDelegate {
   func onWriteSuccess(storeId: Int) {
     self.selectedIndex = 0
     if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-       let homeVC = navigationVC.topViewController as? HomeVC {
+       let homeVC = navigationVC.viewControllers[0] as? HomeVC {
+      navigationVC.popToRootViewController(animated: false)
       homeVC.locationManager.startUpdatingLocation()
       homeVC.goToDetail(storeId: storeId)
     }

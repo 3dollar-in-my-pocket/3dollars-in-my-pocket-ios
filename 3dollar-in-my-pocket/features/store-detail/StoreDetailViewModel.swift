@@ -27,6 +27,7 @@ class StoreDetailViewModel: BaseViewModel {
     let tapPhoto = PublishSubject<Int>()
     let registerPhoto = PublishSubject<UIImage>()
     let deleteReview = PublishSubject<Int>()
+    let popup = PublishSubject<Void>()
   }
   
   struct Output {
@@ -38,6 +39,7 @@ class StoreDetailViewModel: BaseViewModel {
     let goToPhotoList = PublishRelay<Int>()
     let showReviewModal = PublishRelay<(Int, Review?)>()
     let showLoading = PublishRelay<Bool>()
+    let popup = PublishRelay<Store>()
   }
   
   init(
@@ -98,6 +100,11 @@ class StoreDetailViewModel: BaseViewModel {
     
     self.input.deleteReview
       .bind(onNext: self.deleteReview(reviewId:))
+      .disposed(by: disposeBag)
+    
+    self.input.popup
+      .map { self.store }
+      .bind(to: self.output.popup)
       .disposed(by: disposeBag)
   }
   
@@ -238,6 +245,11 @@ class StoreDetailViewModel: BaseViewModel {
           guard let self = self else { return }
           if let httpError = error as? HTTPError{
             self.httpErrorAlert.accept(httpError)
+          }
+          if let commonError = error as? CommonError {
+            let alertContent = AlertContent(title: nil, message: commonError.description)
+            
+            self.showSystemAlert.accept(alertContent)
           }
           self.output.showLoading.accept(false)
         }

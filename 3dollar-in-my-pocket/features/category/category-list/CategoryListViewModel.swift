@@ -99,6 +99,11 @@ class CategoryListViewModel: BaseViewModel {
         if let httpError = error as? HTTPError {
           self.httpErrorAlert.accept(httpError)
         }
+        if let commonError = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: commonError.description)
+          
+          self.showSystemAlert.accept(alertContent)
+        }
       }
     )
     .disposed(by: disposeBag)
@@ -125,6 +130,11 @@ class CategoryListViewModel: BaseViewModel {
         guard let self = self else { return }
         if let httpError = error as? HTTPError {
           self.httpErrorAlert.accept(httpError)
+        }
+        if let commonError = error as? CommonError {
+          let alertContent = AlertContent(title: nil, message: commonError.description)
+          
+          self.showSystemAlert.accept(alertContent)
         }
       }
     )

@@ -10,7 +10,7 @@ class SettingWithdrawalCell: BaseTableViewCell {
   
   let withdrawalLabel = UILabel().then {
     $0.text = "setting_withdrawal".localized
-    $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 14)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
     $0.textColor = UIColor(r: 153, g: 153, b: 153)
   }
   

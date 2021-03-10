@@ -26,7 +26,7 @@ class MyPageVC: BaseVC {
     
     return UINavigationController(rootViewController: myPageVC).then {
       $0.setNavigationBarHidden(true, animated: false)
-      $0.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+      $0.interactivePopGestureRecognizer?.delegate = nil
     }
   }
   

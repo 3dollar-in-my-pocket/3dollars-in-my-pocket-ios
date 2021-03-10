@@ -53,7 +53,11 @@ class StoreDetailMenuCell: BaseTableViewCell {
   private func subViewsFromMenus(categories: [StoreCategory], menus: [Menu]) -> [UIView] {
     var subViews: [UIView] = []
     
-    for category in categories {
+    let sortedCategories = categories.sorted { (category1, category2) -> Bool in
+      menus.filter { $0.category == category1 }.count > menus.filter { $0.category == category2 }.count
+    }
+    
+    for category in sortedCategories {
       let categoryView = StoreDetailMenuCategoryView()
       var menuSubViews: [UIView] = []
       

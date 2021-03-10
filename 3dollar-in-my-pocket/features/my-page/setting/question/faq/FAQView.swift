@@ -9,7 +9,7 @@ class FAQView: BaseView {
   let titleLabel = UILabel().then {
     $0.text = "faq_title".localized
     $0.textColor = .white
-    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 16)
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
   }
   
   let topLineView = UIView().then {
@@ -18,7 +18,7 @@ class FAQView: BaseView {
   
   let questionLabel = UILabel().then {
     $0.text = "faq_question".localized
-    $0.font = UIFont(name: "SpoqaHanSans-Light", size: 24)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 24)
     $0.textColor = .white
     $0.textAlignment = .center
   }

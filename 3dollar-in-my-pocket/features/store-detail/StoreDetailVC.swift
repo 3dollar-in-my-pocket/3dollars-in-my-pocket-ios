@@ -8,7 +8,13 @@ import AppTrackingTransparency
 import AdSupport
 import SPPermissions
 
+protocol StoreDetailDelegate: class {
+  func popup(store: Store)
+}
+
 class StoreDetailVC: BaseVC {
+  
+  weak var delegate: StoreDetailDelegate?
   
   private lazy var detailView = StoreDetailView(frame: self.view.frame)
   
@@ -54,6 +60,12 @@ class StoreDetailVC: BaseVC {
     self.tabBarController?.tabBar.barTintColor = .white
     self.viewModel.clearKakaoLinkIfExisted()
     self.setupLocationManager()
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    
+    self.viewModel.input.popup.onNext(())
   }
   
   override func bindViewModel() {
@@ -105,6 +117,11 @@ class StoreDetailVC: BaseVC {
     self.viewModel.httpErrorAlert
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showHTTPErrorAlert(error:))
+      .disposed(by: disposeBag)
+    
+    self.viewModel.output.popup
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.passStore(store:))
       .disposed(by: disposeBag)
   }
   
@@ -279,6 +296,10 @@ class StoreDetailVC: BaseVC {
     self.navigationController?.popViewController(animated: true)
   }
   
+  private func passStore(store: Store) {
+    self.delegate?.popup(store: store)
+  }
+  
   private func moveToMyLocation(latitude: Double, longitude: Double) {
     guard let overViewCell = self.detailView.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? OverviewCell else {
       return
@@ -404,11 +425,13 @@ class StoreDetailVC: BaseVC {
       $0.delegate = self
     }
     
-    self.present(photoDetailVC, animated: true, completion: nil)
+    self.tabBarController?.present(photoDetailVC, animated: true, completion: nil)
   }
   
   private func goToPhotoList(storeId: Int) {
-    let photoListVC = PhotoListVC.instance(storeid: storeId)
+    let photoListVC = PhotoListVC.instance(storeid: storeId).then {
+      $0.hidesBottomBarWhenPushed = true
+    }
     
     self.navigationController?.pushViewController(photoListVC, animated: true)
   }

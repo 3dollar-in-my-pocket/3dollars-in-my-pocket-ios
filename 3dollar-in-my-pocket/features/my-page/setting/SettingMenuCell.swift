@@ -9,7 +9,7 @@ class SettingMenuCell: BaseTableViewCell {
   let titleLabel = UILabel().then {
     $0.text = "setting_menu_question".localized
     $0.textColor = .white
-    $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 16)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16)
   }
   
   let rightArrow = UIImageView().then {

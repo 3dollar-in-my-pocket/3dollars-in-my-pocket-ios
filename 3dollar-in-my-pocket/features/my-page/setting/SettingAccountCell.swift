@@ -12,13 +12,13 @@ class SettingAccountCell: BaseTableViewCell {
   
   let accountTypeLabel = UILabel().then {
     $0.textColor = .white
-    $0.font = UIFont(name: "SpoqaHanSans-Regular", size: 14)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
   let signOutButton = UIButton().then {
     $0.setTitle("setting_sign_out".localized, for: .normal)
     $0.setTitleColor(UIColor(r: 238, g: 98, b: 76), for: .normal)
-    $0.titleLabel?.font = UIFont(name: "SpoqaHanSans-Regular", size: 13)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 13)
   }
   
   

@@ -20,7 +20,7 @@ class SignInView: BaseView {
   
   let kakaoLabel = UILabel().then {
     $0.text = "카카오 계정으로 로그인"
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 14)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
     $0.textColor = UIColor.init(r: 56, g: 30, b: 31)
   }
   

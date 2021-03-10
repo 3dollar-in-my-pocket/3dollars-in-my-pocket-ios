@@ -3,6 +3,8 @@ import NMapsMap
 
 class ModifyView: BaseView {
   
+  let categoryCellWidth = ((UIScreen.main.bounds.width - 48) - (17 * 4)) / 5
+  
   let bgTap = UITapGestureRecognizer().then {
     $0.cancelsTouchesInView = false
   }
@@ -146,17 +148,21 @@ class ModifyView: BaseView {
     $0.backgroundColor = .white
   }
   
-  let categoryCollectionView = UICollectionView(
+  lazy var categoryCollectionView = UICollectionView(
     frame: .zero,
     collectionViewLayout: UICollectionViewFlowLayout()
   ).then {
     let layout = LeftAlignedCollectionViewFlowLayout()
     
-    layout.minimumInteritemSpacing = 16 * RatioUtils.widthRatio
+    layout.minimumInteritemSpacing = 16
     layout.minimumLineSpacing = 20
-    layout.estimatedItemSize = CGSize(width: 52, height: 75)
+    layout.estimatedItemSize = CGSize(
+      width: self.categoryCellWidth,
+      height: self.categoryCellWidth + 23
+    )
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear
+    $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
   }
   
   let menuLabel = UILabel().then {
@@ -201,7 +207,7 @@ class ModifyView: BaseView {
   
   let registerButton = UIButton().then {
     $0.setTitle("수정하기", for: .normal)
-    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 16)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
     $0.setBackgroundColor(UIColor.init(r: 200, g: 200, b: 200), for: .disabled)
     $0.setBackgroundColor(UIColor.init(r: 238, g: 98, b: 76), for: .normal)
     $0.layer.masksToBounds = true
@@ -375,10 +381,9 @@ class ModifyView: BaseView {
     }
     
     self.categoryCollectionView.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(24)
-      make.right.equalToSuperview().offset(-24)
+      make.left.right.equalToSuperview()
       make.top.equalTo(self.categoryContainer).offset(24)
-      make.height.equalTo(72)
+      make.height.equalTo(self.categoryCellWidth + 23)
     }
     
     self.menuLabel.snp.makeConstraints { make in

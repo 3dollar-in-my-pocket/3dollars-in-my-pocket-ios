@@ -9,7 +9,7 @@ class QuestionView: BaseView {
   let titleLabel = UILabel().then {
     $0.text = "question_title".localized
     $0.textColor = .white
-    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 16)
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
   }
   
   let topLineView = UIView().then {

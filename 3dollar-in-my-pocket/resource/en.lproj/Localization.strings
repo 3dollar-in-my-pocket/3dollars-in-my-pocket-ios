@@ -66,7 +66,7 @@
 "category_list_kkochi" = "꼬치꼬치 캐묻지마 ♥︎";
 "category_list_toast" = "너네 사이에 나도 껴주라,\n토스트";
 "category_list_waffle" = "넌 어쩜 이름도\n와플일까?";
-"category_list_gukwappang" = "사계절 너가 생각나\n국화빵";
+"category_list_gukwappang" = "사계절 네가 생각나\n국화빵";
 "category_list_sundae" = "순대, 제발 내장 많이 주세요.";
 "category_list_empty" = "주변에 가게가 없어요.";
 "review_modal_title" = "이 가게를\n추천하시나요?";
@@ -190,11 +190,11 @@
 "my_page_registered_store_empty" = "제보한 가게가 없어요.";
 "my_page_registered_review_empty" = "내가 쓴 리뷰가 없어요.";
 "registered_store_title" = "제보한 가게";
-"registered_store_count_format" = "%02d개의 가게";
+"registered_store_count_format" = "%d개의 가게";
 "my_review_title" = "내가 쓴 리뷰";
-"my_review_count_format" = "%02d개의 리뷰";
+"my_review_count_format" = "%d개의 리뷰";
 "home_research" = "현재 지도에서 가게 재검색";
-"home_empty_title" = "주변 2km 이내에 가게가 없어요";
+"home_empty_title" = "주변에 가게가 없어요.";
 "home_empty_description" = "다른 주소로 검색하거나 직접 제보해보세요!";
 "permission_denied_title" = "권한이 거절되었어요😭";
 "permission_denied_description" = "설정에서 해당 권한을 허용해 주세요!!";

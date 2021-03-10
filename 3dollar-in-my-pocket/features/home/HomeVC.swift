@@ -13,7 +13,6 @@ class HomeVC: BaseVC {
     userDefaults: UserDefaultsUtil()
   )
   
-  var previousIndex = 0
   var mapAnimatedFlag = false
   var previousOffset: CGFloat = 0
   var markers: [NMFMarker] = []
@@ -31,6 +30,7 @@ class HomeVC: BaseVC {
     
     return UINavigationController(rootViewController: homeVC).then {
       $0.isNavigationBarHidden = true
+      $0.interactivePopGestureRecognizer?.delegate = nil
     }
   }
   
@@ -44,18 +44,6 @@ class HomeVC: BaseVC {
     
     self.initilizeShopCollectionView()
     self.initilizeLocationManager()
-  }
-  
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    
-    self.addForegroundObserver()
-  }
-  
-  override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
-    
-    self.removeForegroundObserver()
   }
   
   override func bindViewModel() {
@@ -110,6 +98,11 @@ class HomeVC: BaseVC {
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showRootLoading(isShow:))
       .disposed(by: disposeBag)
+    
+    self.viewModel.showSystemAlert
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showSystemAlert(alert:))
+      .disposed(by: disposeBag)
   }
   
   override func bindEvent() {
@@ -143,22 +136,13 @@ class HomeVC: BaseVC {
   }
   
   func goToDetail(storeId: Int) {
+    let storeDetailVC = StoreDetailVC.instance(storeId: storeId).then {
+      $0.delegate = self
+    }
     self.navigationController?.pushViewController(
-      StoreDetailVC.instance(storeId: storeId),
+      storeDetailVC,
       animated: true
     )
-  }
-  
-  private func addForegroundObserver() {
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(initilizeLocationManager),
-      name: UIApplication.willEnterForegroundNotification, object: nil
-    )
-  }
-  
-  private func removeForegroundObserver() {
-    NotificationCenter.default.removeObserver(self)
   }
   
   private func initilizeShopCollectionView() {
@@ -329,21 +313,22 @@ extension HomeVC: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     if let currentLocation = locations.last {
       let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
-        lat: currentLocation.coordinate.longitude,
-        lng: currentLocation.coordinate.latitude
+        lat: currentLocation.coordinate.latitude,
+        lng: currentLocation.coordinate.longitude
       ))
+      camera.animation = .easeIn
       
-      if self.mapAnimatedFlag {
-        camera.animation = .easeIn
+      self.homeView.mapView.moveCamera(camera)
+      
+      if !self.mapAnimatedFlag {
+        self.viewModel.input.mapLocation.onNext(nil)
+        self.viewModel.input.currentLocation.onNext(currentLocation)
+        self.viewModel.input.locationForAddress
+          .onNext((
+            currentLocation.coordinate.latitude,
+            currentLocation.coordinate.longitude
+          ))
       }
-      
-      self.viewModel.input.mapLocation.onNext(nil)
-      self.viewModel.input.currentLocation.onNext(currentLocation)
-      self.viewModel.input.locationForAddress
-        .onNext((
-          currentLocation.coordinate.latitude,
-          currentLocation.coordinate.longitude
-        ))
     }
     locationManager.stopUpdatingLocation()
   }
@@ -378,9 +363,23 @@ extension HomeVC: CLLocationManagerDelegate {
 extension HomeVC: SearchAddressDelegate {
   func selectAddress(location: (Double, Double), name: String) {
     let location = CLLocation(latitude: location.0, longitude: location.1)
+    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
+      lat: location.coordinate.latitude,
+      lng: location.coordinate.longitude
+    ))
+    cameraUpdate.animation = .easeIn
     
-    self.viewModel.input.currentLocation.onNext(location)
+    self.homeView.mapView.moveCamera(cameraUpdate)
+    self.viewModel.input.mapLocation.onNext(location)
+    self.viewModel.input.tapResearch.onNext(())
     self.viewModel.output.address.accept(name)
+  }
+}
+
+extension HomeVC: StoreDetailDelegate {
+  
+  func popup(store: Store) {
+    self.viewModel.input.backFromDetail.onNext(store)
   }
 }
 
@@ -396,6 +395,9 @@ extension HomeVC: NMFMapViewCameraDelegate {
         latitude: mapView.cameraPosition.target.lat,
         longitude: mapView.cameraPosition.target.lng
       )
+      let distance = mapView.contentBounds.boundsLatLngs[0].distance(to: mapView.contentBounds.boundsLatLngs[1])
+      
+      self.viewModel.input.distance.onNext(distance / 3)
       self.viewModel.input.mapLocation.onNext(mapLocation)
     }
   }

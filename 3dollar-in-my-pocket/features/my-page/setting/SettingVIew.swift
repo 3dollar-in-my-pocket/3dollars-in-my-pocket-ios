@@ -13,19 +13,19 @@ class SettingView: BaseView {
   let titleLabel = UILabel().then {
     $0.text = "setting_title".localized
     $0.textColor = .white
-    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 16)
+    $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
   }
   
   let nicknameLabel = UILabel().then {
     $0.text = "닉네임"
-    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 24)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 24)
     $0.textColor = .white
   }
   
   let nicknameModifyLabelButton = UIButton().then {
     $0.setTitle("setting_nickname_modify".localized, for: .normal)
     $0.setTitleColor(UIColor(r: 243, g: 162, b: 169), for: .normal)
-    $0.titleLabel?.font = UIFont(name: "SpoqaHanSans-Regular", size: 14)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
   let nicknameModifyButton = UIButton().then {

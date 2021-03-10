@@ -103,9 +103,6 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>AppleSDGothicNeoEB00.ttf</string>
-		<string>SpoqaHanSans-Regular.ttf</string>
-		<string>SpoqaHanSans-Bold.ttf</string>
-		<string>SpoqaHanSans-Light.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

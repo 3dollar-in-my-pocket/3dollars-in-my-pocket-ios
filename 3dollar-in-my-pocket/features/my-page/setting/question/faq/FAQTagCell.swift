@@ -14,7 +14,7 @@ class FAQTagCell: BaseCollectionViewCell {
   
   let tagLabel = UILabel().then {
     $0.textColor = UIColor(r: 130, g: 130, b: 130)
-    $0.font = UIFont(name: "SpoqaHanSans-Bold", size: 14 * RatioUtils.widthRatio)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14 * RatioUtils.widthRatio)
   }
   
   override func setup() {
