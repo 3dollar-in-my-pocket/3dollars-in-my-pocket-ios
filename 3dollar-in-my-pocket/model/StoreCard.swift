@@ -1,6 +1,7 @@
 struct StoreCard: Codable {
   
   let category: StoreCategory
+  let categories: [StoreCategory]
   let distance: Int
   let id: Int
   let latitude: Double
@@ -10,6 +11,7 @@ struct StoreCard: Codable {
   
   enum CodingKeys: String, CodingKey {
     case category = "category"
+    case categories = "categories"
     case distance = "distance"
     case id = "id"
     case latitude = "latitude"
@@ -22,6 +24,7 @@ struct StoreCard: Codable {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     
     category = try values.decodeIfPresent(StoreCategory.self, forKey: .category) ?? .BUNGEOPPANG
+    categories = try values.decodeIfPresent([StoreCategory].self, forKey: .categories) ?? []
     distance = try values.decodeIfPresent(Int.self, forKey: .distance) ?? -1
     id = try values.decodeIfPresent(Int.self, forKey: .id) ?? -1
     latitude = try values.decodeIfPresent(Double.self, forKey: .latitude) ?? -1

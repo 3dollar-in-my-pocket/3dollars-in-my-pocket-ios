@@ -2,6 +2,7 @@ import Alamofire
 import RxSwift
 
 protocol FAQServiceProtocol {
+  
   func getFAQs() -> Observable<[FAQ]>
 }
 

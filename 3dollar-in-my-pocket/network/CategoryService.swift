@@ -1,22 +1,19 @@
 import Alamofire
 import RxSwift
+import CoreLocation
 
 protocol CategoryServiceProtocol {
   
   func getStoreByDistance(
     category: StoreCategory,
-    latitude: Double,
-    longitude: Double,
-    mapLatitude: Double?,
-    mapLongitude: Double?
+    currentLocation: CLLocation,
+    mapLocation: CLLocation?
   ) -> Observable<CategoryByDistance>
   
   func getStoreByReview(
     category: StoreCategory,
-    latitude: Double,
-    longitude: Double,
-    mapLatitude: Double?,
-    mapLongitude: Double?
+    currentLocation: CLLocation,
+    mapLocation: CLLocation?
   ) -> Observable<CategoryByReview>
 }
 
@@ -24,24 +21,21 @@ struct CategoryService: CategoryServiceProtocol {
   
   func getStoreByDistance(
     category: StoreCategory,
-    latitude: Double,
-    longitude: Double,
-    mapLatitude: Double?,
-    mapLongitude: Double?
+    currentLocation: CLLocation,
+    mapLocation: CLLocation?
   ) -> Observable<CategoryByDistance> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/category/distance"
       let headers = HTTPUtils.defaultHeader()
       var parameters: [String: Any] = [
         "category": category.getValue(),
-        "latitude": latitude,
-        "longitude": longitude
+        "latitude": currentLocation.coordinate.latitude,
+        "longitude": currentLocation.coordinate.longitude
       ]
       
-      if let mapLatitude = mapLatitude,
-         let mapLongitude = mapLongitude {
-        parameters["mapLatitude"] = mapLatitude
-        parameters["mapLongitude"] = mapLongitude
+      if let mapLocation = mapLocation {
+        parameters["mapLatitude"] = mapLocation.coordinate.latitude
+        parameters["mapLongitude"] = mapLocation.coordinate.longitude
       }
       
       HTTPUtils.defaultSession.request(
@@ -62,24 +56,21 @@ struct CategoryService: CategoryServiceProtocol {
   
   func getStoreByReview(
     category: StoreCategory,
-    latitude: Double,
-    longitude: Double,
-    mapLatitude: Double?,
-    mapLongitude: Double?
+    currentLocation: CLLocation,
+    mapLocation: CLLocation?
   ) -> Observable<CategoryByReview> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/category/review"
       let headers = HTTPUtils.defaultHeader()
       var parameters: [String: Any] = [
         "category": category.getValue(),
-        "latitude": latitude,
-        "longitude": longitude
+        "latitude": currentLocation.coordinate.latitude,
+        "longitude": currentLocation.coordinate.longitude
       ]
       
-      if let mapLatitude = mapLatitude,
-         let mapLongitude = mapLongitude {
-        parameters["mapLatitude"] = mapLatitude
-        parameters["mapLongitude"] = mapLongitude
+      if let mapLocation = mapLocation {
+        parameters["mapLatitude"] = mapLocation.coordinate.latitude
+        parameters["mapLongitude"] = mapLocation.coordinate.longitude
       }
       
       HTTPUtils.defaultSession.request(

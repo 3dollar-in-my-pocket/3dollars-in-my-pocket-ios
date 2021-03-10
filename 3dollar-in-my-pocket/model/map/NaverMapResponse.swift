@@ -38,12 +38,15 @@ struct NaverMapResponse: Codable {
         }
       } else {
         address = "\(results[0].region.area1.name) \(results[0].region.area2.name) \(results[0].region.area3.name)"
-        if let jibun1 = results[2].land?.number1 {
-          address = "\(address) \(jibun1)"
-          
-          if let jibun2 = results[2].land?.number2,
-             !jibun2.isEmpty {
-            address = "\(address)-\(jibun2)"
+        
+        if results.count > 2 {
+          if let jibun1 = results[2].land?.number1 {
+            address = "\(address) \(jibun1)"
+            
+            if let jibun2 = results[2].land?.number2,
+               !jibun2.isEmpty {
+              address = "\(address)-\(jibun2)"
+            }
           }
         }
       }

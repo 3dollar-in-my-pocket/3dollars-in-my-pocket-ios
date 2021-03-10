@@ -77,8 +77,9 @@ struct UserService: UserServiceProtocol {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/user/nickname"
       let parameters: [String: Any] = ["nickName": nickname, "userId": id]
-      let headers = ["Authorization": token] as HTTPHeaders
+      var headers = ["Authorization": token] as HTTPHeaders
       
+      headers.add(HTTPUtils.defaultUserAgent)
       HTTPUtils.defaultSession.request(
         urlString,
         method: .put,

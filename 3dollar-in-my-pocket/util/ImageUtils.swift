@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 
 struct ImageUtils {
+  
   static func cropToBounds(image: UIImage) -> UIImage {
     
     let cgimage = image.cgImage!

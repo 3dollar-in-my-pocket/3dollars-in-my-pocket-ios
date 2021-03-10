@@ -1,6 +1,7 @@
 import Foundation
 
 struct DateUtils {
+  
   static func toDate(dateString: String) -> Date {
     let dateFormatter = DateFormatter().then {
       $0.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"

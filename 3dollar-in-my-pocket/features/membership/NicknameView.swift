@@ -15,7 +15,7 @@ class NicknameView: BaseView {
   
   let nicknameLabel1 = UILabel().then {
     $0.text = "저는 닉네임"
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 32)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 32)
     $0.textColor = .white
   }
   
@@ -28,7 +28,7 @@ class NicknameView: BaseView {
   
   let nicknameField = UITextField().then {
     $0.placeholder = "닉네임 입력"
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 32)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 32)
     $0.textColor = UIColor.init(r: 243, g: 162, b: 169)
     $0.returnKeyType = .done
     $0.attributedPlaceholder = NSAttributedString(
@@ -39,13 +39,13 @@ class NicknameView: BaseView {
   
   let nicknameLabel2 = UILabel().then {
     $0.text = "로"
-    $0.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 32)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 32)
     $0.textColor = .white
   }
   
   let startBtn1 = UIButton().then {
     $0.setTitle("시작할래요", for: .normal)
-    $0.titleLabel?.font = UIFont.init(name: "SpoqaHanSans-Bold", size: 32)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 32)
     $0.setTitleColor(.white, for: .disabled)
     $0.setTitleColor(UIColor.init(r: 238, g: 98, b: 76), for: .normal)
     $0.isEnabled = false
@@ -66,7 +66,7 @@ class NicknameView: BaseView {
   let warningLabel = UILabel().then {
     $0.text = "중복된 닉네임"
     $0.textColor = UIColor.init(r: 238, g: 98, b: 76)
-    $0.font = UIFont.init(name: "SpoqaHanSans-Regular", size: 13)
+    $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 13)
     $0.isHidden = true
   }
   

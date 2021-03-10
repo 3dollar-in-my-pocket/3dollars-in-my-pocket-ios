@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation
 
 struct UserDefaultsUtil {
   
@@ -6,6 +7,8 @@ struct UserDefaultsUtil {
   static let KEY_USER_ID = "KEY_USER_ID"
   static let KEY_EVENT = "KEY_EVENT"
   static let KEY_DETAIL_LINK = "KEY_DETAIL_LINK"
+  static let KEY_CURRENT_LATITUDE = "KEY_CURRENT_LATITUDE"
+  static let KEY_CURRENT_LONGITUDE = "KEY_CURRENT_LONGITUDE"
   
   let instance: UserDefaults
   
@@ -49,6 +52,24 @@ struct UserDefaultsUtil {
   
   func getDetailLink() -> Int {
     return self.instance.integer(forKey: UserDefaultsUtil.KEY_DETAIL_LINK)
+  }
+  
+  func setUserCurrentLocation(location: CLLocation) {
+    self.instance.set(
+      location.coordinate.latitude,
+      forKey: UserDefaultsUtil.KEY_CURRENT_LATITUDE
+    )
+    self.instance.set(
+      location.coordinate.longitude,
+      forKey: UserDefaultsUtil.KEY_CURRENT_LONGITUDE
+    )
+  }
+  
+  func getUserCurrentLocation() -> CLLocation {
+    let latitude = self.instance.double(forKey: UserDefaultsUtil.KEY_CURRENT_LATITUDE)
+    let longitude = self.instance.double(forKey: UserDefaultsUtil.KEY_CURRENT_LONGITUDE)
+    
+    return CLLocation(latitude: latitude, longitude: longitude)
   }
   
   func clear() {

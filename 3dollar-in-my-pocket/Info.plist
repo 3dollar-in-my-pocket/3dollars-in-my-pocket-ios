@@ -58,7 +58,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-1527951560812478~1242588198</string>
+	<string>ca-app-pub-5385646520024289~4792901724</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>$(KAKAO_APP_KEY)</string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -98,12 +98,11 @@
 			<string>cstr6suwn9.skadnetwork</string>
 		</dict>
 	</array>
+	<key>Toss scheme</key>
+	<string>$(TOSS_SCHEME)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AppleSDGothicNeoEB00.ttf</string>
-		<string>SpoqaHanSans-Regular.ttf</string>
-		<string>SpoqaHanSans-Bold.ttf</string>
-		<string>SpoqaHanSans-Light.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
