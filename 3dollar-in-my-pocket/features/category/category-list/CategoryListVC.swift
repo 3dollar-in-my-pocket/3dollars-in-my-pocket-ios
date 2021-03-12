@@ -146,7 +146,7 @@ class CategoryListVC: BaseVC {
         #if DEBUG
         cell.adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
         #else
-        cell.adBannerView.adUnitID = "ca-app-pub-5385646520024289/7940737419"
+        cell.adBannerView.adUnitID = "ca-app-pub-1527951560812478/3327283605"
         #endif
     
         cell.adBannerView.rootViewController = self
