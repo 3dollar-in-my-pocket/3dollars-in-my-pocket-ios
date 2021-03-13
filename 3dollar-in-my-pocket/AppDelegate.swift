@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     initializeNetworkLogger()
     initilizeSwiftyBeaver()
     initilizeKakao()
+    initilizeAdmob()
     
     return true
   }
