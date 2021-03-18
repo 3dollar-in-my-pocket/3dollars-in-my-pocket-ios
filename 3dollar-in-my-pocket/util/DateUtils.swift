@@ -4,10 +4,11 @@ struct DateUtils {
   
   static func toDate(dateString: String) -> Date {
     let dateFormatter = DateFormatter().then {
-      $0.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+      $0.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+      $0.locale = Locale(identifier: "ko")
     }
     
-    return dateFormatter.date(from: dateString) ?? Date()
+    return dateFormatter.date(from: dateString)!
   }
   
   static func todayString() -> String {
