@@ -141,7 +141,7 @@ class SearchAddressVC: BaseVC {
   
   private func showDenyAlert() {
     AlertUtils.showWithAction(
-      title: "location_deny".localized,
+      title: "location_deny_title".localized,
       message: "location_deny_description".localized
     ) { action in
       UIControl().sendAction(

@@ -191,14 +191,22 @@ class HomeVC: BaseVC {
   }
   
   private func showDenyAlert() {
-    AlertUtils.showWithAction(
-      title: "location_deny".localized,
-      message: "location_deny_description".localized
-    ) { action in
-      UIControl().sendAction(
-        #selector(URLSessionTask.suspend),
-        to: UIApplication.shared, for: nil
-      )
+    AlertUtils.showWithCancel(
+      controller: self,
+      title: "location_deny_title".localized,
+      message: "location_deny_description".localized,
+      okButtonTitle: "설정",
+      onTapOk: self.goToAppSetting
+    )
+  }
+  
+  private func goToAppSetting() {
+    guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+      return
+    }
+    
+    if UIApplication.shared.canOpenURL(settingsUrl) {
+      UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
     }
   }
   
@@ -294,15 +302,7 @@ extension HomeVC: CLLocationManagerDelegate {
   ) {
     switch status {
     case .denied:
-      AlertUtils.showWithAction(
-        title: "location_deny_title".localized,
-        message: "location_deny_description".localized
-      ) { action in
-        UIControl().sendAction(
-          #selector(URLSessionTask.suspend),
-          to: UIApplication.shared, for: nil
-        )
-      }
+      self.showDenyAlert()
     case .authorizedAlways, .authorizedWhenInUse:
       self.initilizeLocationManager()
     default:
@@ -337,11 +337,7 @@ extension HomeVC: CLLocationManagerDelegate {
     if let error = error as? CLError {
       switch error.code {
       case .denied:
-        AlertUtils.show(
-          controller: self,
-          title: "location_deny_title".localized,
-          message: "location_deny_description".localized
-        )
+        self.showDenyAlert()
       case .locationUnknown:
         AlertUtils.show(
           controller: self,
