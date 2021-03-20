@@ -14,7 +14,7 @@
 "error_maintenance_title" = "서버점검";
 "error_maintenance_message" = "서버점검중입니다.\n잠시후 다시 시도해주세요.";
 "error_location_permission_denied_title" = "위치 권한 거절";
-"error_location_permission_denied_message" = "설정 > 가슴속 3천원 > 위치에서 위치 권한을 확인해주세요.";
+"error_location_permission_denied_message" = "현재 내 위치와 가까운 가게를 찾기 위해 위치 권한이 필요합니다. 설정에서 위치 권한을 허용시켜주세요.";
 "error_location_unknown_title" = "알 수 없는 위치";
 "error_location_unknown_message" = "현재 위치가 확인되지 않습니다.\n잠시 후 다시 시도해주세요.";
 "error_location_default_title" = "위치 오류 발생";
@@ -176,7 +176,7 @@
 "photo_detail_delete_description" = "사진 삭제시 복구할 수 없습니다.";
 "photo_list_title" = "사진 미리보기";
 "location_deny_title" = "위치 권한 거절";
-"location_deny_description" = "설정 > 가슴속 3천원 > 위치에서 위치 권한을 확인해주세요.";
+"location_deny_description" = "현재 내 위치와 가까운 가게를 찾기 위해 위치 권한이 필요합니다. 설정에서 위치 권한을 허용시켜주세요.";
 "location_unknown_title" = "알 수 없는 위치";
 "location_unknown_description" = "현재 위치가 확인되지 않습니다.\n잠시 후 다시 시도해주세요.";
 "location_unknown_status" = "알 수 없는 위치 권한";
