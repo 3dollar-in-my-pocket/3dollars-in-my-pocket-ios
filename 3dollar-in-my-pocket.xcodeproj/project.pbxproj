@@ -230,6 +230,7 @@
 		6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B85F23BEBF3E00BAD8E9 /* UIButtonExt.swift */; };
 		6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */; };
 		6EEF4E5A25B87EE6008BFF52 /* OverviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EEF4E5925B87EE6008BFF52 /* OverviewCell.swift */; };
+		6EFC89DF268B63E800B3414F /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFC89DE268B63E800B3414F /* R.generated.swift */; };
 		D53262643AB0ADC338E637DA /* Pods_3dollar_in_my_pocketUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBA6B7784FEF6EAC6FC63F58 /* Pods_3dollar_in_my_pocketUITests.framework */; };
 		FF84B0E4D229CD931F6CA8E6 /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A7346443A0DB1FD5466BDD0 /* Pods_3dollar_in_my_pocket.framework */; };
 /* End PBXBuildFile section */
@@ -484,6 +485,7 @@
 		6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
 		6EEF4E5925B87EE6008BFF52 /* OverviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverviewCell.swift; sourceTree = "<group>"; };
 		6EF3A76323ADBC1300AE18DA /* 3dollar-in-my-pocket.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "3dollar-in-my-pocket.entitlements"; sourceTree = "<group>"; };
+		6EFC89DE268B63E800B3414F /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
 		7A7346443A0DB1FD5466BDD0 /* Pods_3dollar_in_my_pocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		81DB63289C3A221DE6A185E3 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.debug.xcconfig"; sourceTree = "<group>"; };
 		AFE4F6EC0A60A42CC426BC37 /* Pods-3dollar-in-my-pocket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.release.xcconfig"; sourceTree = "<group>"; };
@@ -734,6 +736,7 @@
 				6E8E2471256A93DE00AE6479 /* firebase */,
 				6E118C5C23D2CE2B008B2806 /* lottie */,
 				6E681E30256FDF0100892B9E /* Localization.strings */,
+				6EFC89DE268B63E800B3414F /* R.generated.swift */,
 			);
 			path = resource;
 			sourceTree = "<group>";
@@ -1188,6 +1191,7 @@
 			buildConfigurationList = 6E0EA3BD23ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocket" */;
 			buildPhases = (
 				1987C26717DC0A90012569FF /* [CP] Check Pods Manifest.lock */,
+				6EFC89DD268B62AA00B3414F /* ShellScript */,
 				6E0EA38F23ABB230008F7CB2 /* Sources */,
 				6E0EA39023ABB230008F7CB2 /* Frameworks */,
 				6E0EA39123ABB230008F7CB2 /* Resources */,
@@ -1452,6 +1456,25 @@
 			shellPath = /bin/sh;
 			shellScript = "${PODS_ROOT}/SwiftLint/swiftlint\n";
 		};
+		6EFC89DD268B62AA00B3414F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$TEMP_DIR/rswift-lastrun",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$SRCROOT/3dollar-in-my-pocket/resource/R.generated.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$PODS_ROOT/R.swift/rswift\" generate \"$SRCROOT/3dollar-in-my-pocket/resource/R.generated.swift\"\n";
+		};
 		E1BADDFBAC2482AF5A1A3F44 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1588,6 +1611,7 @@
 				6E681E25256FDD3500892B9E /* SettingVIew.swift in Sources */,
 				6E2119B525BD64CD008B6207 /* DeleteMenuButton.swift in Sources */,
 				6E37A64B25EE73A300C8C6C4 /* PaddingLabel.swift in Sources */,
+				6EFC89DF268B63E800B3414F /* R.generated.swift in Sources */,
 				6E3E994525E524D4007BA379 /* CategoryListTitleCell.swift in Sources */,
 				6E5939002573E2CE00593DC8 /* PrivacyView.swift in Sources */,
 				6EBBCB6925AD601F00F5912E /* WriteAddressViewModel.swift in Sources */,

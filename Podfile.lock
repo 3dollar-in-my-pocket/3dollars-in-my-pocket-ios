@@ -385,6 +385,9 @@ PODS:
   - nanopb/encode (2.30908.0)
   - NMapsMap (3.13.0)
   - PromisesObjC (1.2.12)
+  - R.swift (5.4.0):
+    - R.swift.Library (~> 5.3.0)
+  - R.swift.Library (5.3.0)
   - RxCocoa (5.1.1):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
@@ -423,6 +426,7 @@ DEPENDENCIES:
   - Kingfisher (~> 5.0)
   - lottie-ios
   - NMapsMap
+  - R.swift
   - RxCocoa (~> 5)
   - RxDataSources (~> 4.0)
   - RxSwift (~> 5)
@@ -466,6 +470,8 @@ SPEC REPOS:
     - nanopb
     - NMapsMap
     - PromisesObjC
+    - R.swift
+    - R.swift.Library
     - RxCocoa
     - RxDataSources
     - RxRelay
@@ -507,6 +513,8 @@ SPEC CHECKSUMS:
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   NMapsMap: 88b5bdac7087bfa99ab058ff5cdd95fb766e0e95
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
+  R.swift: c533450b0f7dc494e0993f5f1a1db925d84c3006
+  R.swift.Library: 0fc583cb55a99e28901299cc451614cad1161962
   RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
   RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
@@ -517,6 +525,6 @@ SPEC CHECKSUMS:
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: ffc29a9518554a70c2efbb759870ae39ff5628bd
+PODFILE CHECKSUM: 32486287554e6c2f354f49ad314c0df115332d6f
 
 COCOAPODS: 1.10.0

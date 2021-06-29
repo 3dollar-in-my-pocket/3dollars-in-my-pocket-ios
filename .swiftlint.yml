@@ -1,5 +1,6 @@
 excluded:
   - Pods
+  - 3dollar-in-my-pocket/resource/R.generated.swift
 
 force_cast: warning
 force_try:
