@@ -1195,6 +1195,7 @@
 				6ECCFA8823EA41D1001A565E /* ShellScript */,
 				532E9CC6E22F104EADC34A26 /* [CP] Embed Pods Frameworks */,
 				6EA92ED4258E3643009B6227 /* ShellScript */,
+				6EFC89DC268B51C100B3414F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1433,6 +1434,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
+		6EFC89DC268B51C100B3414F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${PODS_ROOT}/SwiftLint/swiftlint\n";
 		};
 		E1BADDFBAC2482AF5A1A3F44 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -48,7 +48,7 @@ class PhotoDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
   }
   
-  func fetchPhotos(){
+  func fetchPhotos() {
     self.output.mainPhotos.accept(self.photos)
     self.output.subPhotos.accept(self.photos)
     self.output.selectPhoto.accept(selectedIndex)
@@ -66,7 +66,11 @@ class PhotoDetailViewModel: BaseViewModel {
           if self.photos.isEmpty {
             self.output.dismiss.accept(())
           } else {
-            self.selectedIndex = self.selectedIndex - 1 < 0 ? 0 : self.selectedIndex - 1
+            if self.selectedIndex - 1 < 0 {
+              self.selectedIndex = 0
+            } else {
+              self.selectedIndex -= 1
+            }
             self.fetchPhotos()
           }
           self.output.showLoading.accept(false)

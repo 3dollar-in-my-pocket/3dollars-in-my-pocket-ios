@@ -48,7 +48,7 @@ struct ImageUtils {
     
     for photo in photos {
       while photo.jpegData(compressionQuality: compressionQuality)!.count > maximumLenth {
-        compressionQuality = compressionQuality - 0.1
+        compressionQuality -= 0.1
       }
       
       let data = photo.jpegData(compressionQuality: compressionQuality)!

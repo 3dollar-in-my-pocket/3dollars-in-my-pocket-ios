@@ -403,6 +403,7 @@ PODS:
     - SPPermissions/Core
   - SPPermissions/PhotoLibrary (5.5.8):
     - SPPermissions/Core
+  - SwiftLint (0.43.1)
   - SwiftyBeaver (1.9.5)
   - Then (2.7.0)
 
@@ -429,6 +430,7 @@ DEPENDENCIES:
   - SPPermissions/Camera
   - SPPermissions/Location
   - SPPermissions/PhotoLibrary
+  - SwiftLint
   - SwiftyBeaver
   - Then
 
@@ -470,6 +472,7 @@ SPEC REPOS:
     - RxSwift
     - SnapKit
     - SPPermissions
+    - SwiftLint
     - SwiftyBeaver
     - Then
 
@@ -510,9 +513,10 @@ SPEC CHECKSUMS:
   RxSwift: 1e2e1f9570186967f617e49128ed26ccf1bafc8e
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SPPermissions: 77d05b0b8489f4c3faefa47317d5af0179c2bfd1
+  SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: 7bd67394ca62cb8fc919745cfd2301b93ae4af2f
+PODFILE CHECKSUM: ffc29a9518554a70c2efbb759870ae39ff5628bd
 
 COCOAPODS: 1.10.0
