@@ -82,7 +82,7 @@ struct Store: Codable {
     
     var menus: [Menu] = []
     for menuSection in menuSections {
-      menus = menus + menuSection.toMenu()
+      menus += menuSection.toMenu()
     }
     self.menus = menus
     self.paymentMethods = paymentType

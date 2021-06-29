@@ -40,7 +40,7 @@ class MyReviewViewModel: BaseViewModel {
       .filter { self.reviews.count - 1 == $0 && self.currentPage < self.totalPage }
       .do { [weak self] _ in
         guard let self = self else { return }
-        self.currentPage = self.currentPage + 1
+        self.currentPage += 1
       }
       .map { _ in Void() }
       .bind(onNext: self.fetchMyReviews)
@@ -60,7 +60,7 @@ class MyReviewViewModel: BaseViewModel {
           guard let self = self else { return }
           self.totalCount = pageRevies.totalElements
           self.totalPage = pageRevies.totalPages
-          self.reviews = self.reviews + pageRevies.content
+          self.reviews += pageRevies.content
           self.output.reviews.accept(self.reviews)
           self.output.isHiddenFooter.accept(true)
         },
@@ -88,7 +88,7 @@ class MyReviewViewModel: BaseViewModel {
           guard let self = self else { return }
           
           self.revmoveReview(reviewId: reviewId)
-          self.totalCount = self.totalCount - 1
+          self.totalCount -= 1
           self.output.reviews.accept(self.reviews)
           self.output.showLoading.accept(false)
         },

@@ -47,8 +47,8 @@ class SignInViewModel: BaseViewModel {
   }
   
   private func requestKakaoSignIn() {
-    if (AuthApi.isKakaoTalkLoginAvailable()) {
-      AuthApi.shared.loginWithKakaoTalk {(oauthToken, error) in
+    if UserApi.isKakaoTalkLoginAvailable() {
+      UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
         if let error = error {
           if (error as NSError).code != 2 {
             let alertContent = AlertContent(
@@ -63,7 +63,7 @@ class SignInViewModel: BaseViewModel {
         }
       }
     } else {
-      AuthApi.shared.loginWithKakaoAccount {(oauthToken, error) in
+      UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
         if let error = error {
           if (error as NSError).code != 2 {
             let alertContent = AlertContent(

@@ -47,7 +47,7 @@ class RegisteredStoreViewModel: BaseViewModel {
       .filter { self.stores.count - 1 == $0 && self.currentPage < self.totalPage }
       .do { [weak self] _ in
         guard let self = self else { return }
-        self.currentPage = self.currentPage + 1
+        self.currentPage += 1
       }
       .map { _ in Void() }
       .bind(onNext: self.searchRegisteredStores)
@@ -68,7 +68,7 @@ class RegisteredStoreViewModel: BaseViewModel {
         guard let self = self else { return }
         self.totalCount = pageStore.totalElements
         self.totalPage = pageStore.totalPages
-        self.stores = self.stores + pageStore.content
+        self.stores += pageStore.content
         self.output.isHiddenFooter.accept(true)
       },
       onError: { error in

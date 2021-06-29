@@ -1,0 +1,44 @@
+excluded:
+  - Pods
+  - 3dollar-in-my-pocket/resource/R.generated.swift
+
+force_cast: warning
+force_try:
+  severity: warning # explicitly
+
+line_length: 99
+
+type_body_length:
+  - 300 # warning
+  - 400 # error
+
+function_body_length:
+  - 40
+
+file_length:
+  warning: 500
+  error: 1200
+
+type_name:
+  min_length: 3
+  max_length:
+    warning: 40
+    error: 50
+  allowed_symbols: ["_"]
+
+identifier_name:
+  min_length:
+    error: 1
+  excluded:
+    - id
+    - URL
+    - GlobalAPIKey
+  allowed_symbols: ["_"]
+  
+trailing_whitespace:
+  ignores_empty_lines: true
+  
+vertical_whitespace:
+  max_empty_lines: 2
+  
+reporter: "xcode"

@@ -71,7 +71,7 @@ class StoreDetailMenuCell: BaseTableViewCell {
       }
       categoryView.bind(category: category, isEmpty: menuSubViews.isEmpty)
       subViews.append(categoryView)
-      subViews = subViews + menuSubViews
+      subViews += menuSubViews
     }
     
     return subViews

@@ -43,6 +43,9 @@ target '3dollar-in-my-pocket' do
   pod 'SPPermissions/Camera'
   pod 'SPPermissions/Location'
   pod 'SPPermissions/PhotoLibrary'
+  
+  pod 'SwiftLint'
+  pod 'R.swift'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths
