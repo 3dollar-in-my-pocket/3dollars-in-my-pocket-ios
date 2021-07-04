@@ -10,12 +10,12 @@ class SplashView: BaseView {
   
   
   override func setup() {
-    backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
-    addSubViews(lottie)
+    self.backgroundColor = R.color.gray100()
+    self.addSubViews([lottie])
   }
   
   override func bindConstraints() {
-    lottie.snp.makeConstraints { (make) in
+    self.lottie.snp.makeConstraints { make in
       make.edges.equalToSuperview()
     }
   }
