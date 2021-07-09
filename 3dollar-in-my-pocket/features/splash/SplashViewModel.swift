@@ -3,9 +3,14 @@ import RxCocoa
 
 class SplashViewModel: BaseViewModel {
   
+  let input = Input()
   let output = Output()
   let userDefaults: UserDefaultsUtil
   let userService: UserServiceProtocol
+  
+  struct Input {
+    let viewDidLoad = PublishSubject<Void>()
+  }
   
   struct Output {
     let goToSignIn = PublishRelay<Void>()
@@ -19,9 +24,17 @@ class SplashViewModel: BaseViewModel {
     self.userDefaults = userDefaults
     self.userService = userService
     super.init()
+    
+    self.input.viewDidLoad
+      .bind(onNext: self.validateToken)
+      .disposed(by: self.disposeBag)
   }
   
-  func validateUserToken() {
+  private func validateToken() {
+    
+  }
+  
+  private func validateUserDefaultsToken() {
     let token = self.userDefaults.getUserToken()
     if !token.isEmpty {
       self.validateTokenFromServer(token: token)
@@ -32,32 +45,32 @@ class SplashViewModel: BaseViewModel {
   
   private func validateTokenFromServer(token: String) {
     self.userService.validateToken(token: token)
+      .map { _ in Void() }
       .subscribe(
-        onNext: { [weak self] message in
-          self?.output.goToMain.accept(())
-        },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          if let httpError = error as? HTTPError {
-            switch httpError {
-            case .forbidden, .unauthorized:
-              let alertContent = AlertContent(title: nil, message: httpError.description)
-              
-              self.output.showGoToSignInAlert.accept(alertContent)
-            case .maintenance:
-              let alertContent = AlertContent(title: nil, message: httpError.description)
-              
-              self.output.showMaintenanceAlert.accept(alertContent)
-            default:
-              self.httpErrorAlert.accept(httpError)
-            }
-          } else if let error = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: error.description)
-            
-            self.showSystemAlert.accept(alertContent)
-          }
-        }
+        onNext: self.output.goToMain.accept(_:),
+        onError: self.handelValidationError(error:)
       )
       .disposed(by: disposeBag)
+  }
+  
+  private func handelValidationError(error: Error) {
+    if let httpError = error as? HTTPError {
+      switch httpError {
+      case .forbidden, .unauthorized:
+        let alertContent = AlertContent(title: nil, message: httpError.description)
+        
+        self.output.showGoToSignInAlert.accept(alertContent)
+      case .maintenance:
+        let alertContent = AlertContent(title: nil, message: httpError.description)
+        
+        self.output.showMaintenanceAlert.accept(alertContent)
+      default:
+        self.httpErrorAlert.accept(httpError)
+      }
+    } else if let error = error as? CommonError {
+      let alertContent = AlertContent(title: nil, message: error.description)
+      
+      self.showSystemAlert.accept(alertContent)
+    }
   }
 }
