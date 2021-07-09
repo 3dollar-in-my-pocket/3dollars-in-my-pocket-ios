@@ -3,7 +3,7 @@ import RxSwift
 
 class SplashVC: BaseVC {
   
-  private lazy var splashView = SplashView(frame: self.view.frame)
+  private let splashView = SplashView()
   private let viewModel = SplashViewModel(
     userDefaults: UserDefaultsUtil(),
     userService: UserService()
@@ -14,19 +14,14 @@ class SplashVC: BaseVC {
     return SplashVC.init(nibName: nil, bundle: nil)
   }
   
+  override func loadView() {
+    self.view = self.splashView
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    view = splashView
     
-    splashView.lottie.play { [weak self] (isFinish) in
-      if isFinish {
-        UIView.animate(withDuration: 0.5, animations: { [weak self] in
-          self?.splashView.alpha = 0
-        }) { _ in
-          self?.viewModel.validateUserToken()
-        }
-      }
-    }
+    self.startAnimation()
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -35,35 +30,42 @@ class SplashVC: BaseVC {
   
   override func bindViewModel() {
     // Bind Output
-    self.viewModel.output.goToMain
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToMain)
+    self.viewModel.output.goToSignIn
+      .asDriver(onErrorJustReturn: ())
+      .drive(onNext: self.goToSignIn)
       .disposed(by: disposeBag)
     
-    self.viewModel.output.goToSignIn
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToSignIn)
+    self.viewModel.output.goToMain
+      .asDriver(onErrorJustReturn: ())
+      .drive(onNext: self.goToMain)
       .disposed(by: disposeBag)
     
     self.viewModel.output.showGoToSignInAlert
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showGoToSignInAlert(alertContent:))
+      .asDriver(onErrorJustReturn: AlertContent())
+      .drive(onNext: self.showGoToSignInAlert(alertContent:))
       .disposed(by: disposeBag)
     
     self.viewModel.output.showMaintenanceAlert
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showMaintenanceAlert(alertContent:))
+      .asDriver(onErrorJustReturn: AlertContent())
+      .drive(onNext: self.showMaintenanceAlert(alertContent:))
       .disposed(by: disposeBag)
     
-    self.viewModel.httpErrorAlert
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showHTTPErrorAlert(error:))
+    self.viewModel.showErrorAlert
+      .asDriver(onErrorJustReturn: BaseError.custom(""))
+      .drive(onNext: self.showErrorAlert(error:))
       .disposed(by: disposeBag)
-    
-    self.viewModel.showSystemAlert
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showSystemAlert(alert:))
-      .disposed(by: disposeBag)
+  }
+  
+  private func startAnimation() {
+    self.splashView.lottie.play { [weak self] _ in
+      UIView.animate(
+        withDuration: 0.5,
+        animations: { [weak self] in
+          self?.splashView.alpha = 0
+        }) { _ in
+        self?.viewModel.input.viewDidLoad.onNext(())
+      }
+    }
   }
   
   private func goToMain() {

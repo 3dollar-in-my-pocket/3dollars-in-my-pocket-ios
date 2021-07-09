@@ -31,21 +31,21 @@ class SplashViewModel: BaseViewModel {
   }
   
   private func validateToken() {
-    
-  }
-  
-  private func validateUserDefaultsToken() {
     let token = self.userDefaults.getUserToken()
-    if !token.isEmpty {
+    
+    if self.validateTokenFromLocal(token: token) {
       self.validateTokenFromServer(token: token)
     } else {
       self.output.goToSignIn.accept(())
     }
   }
   
+  private func validateTokenFromLocal(token: String) -> Bool {
+    return !token.isEmpty
+  }
+  
   private func validateTokenFromServer(token: String) {
     self.userService.validateToken(token: token)
-      .map { _ in Void() }
       .subscribe(
         onNext: self.output.goToMain.accept(_:),
         onError: self.handelValidationError(error:)
@@ -65,12 +65,10 @@ class SplashViewModel: BaseViewModel {
         
         self.output.showMaintenanceAlert.accept(alertContent)
       default:
-        self.httpErrorAlert.accept(httpError)
+        self.showErrorAlert.accept(error)
       }
-    } else if let error = error as? CommonError {
-      let alertContent = AlertContent(title: nil, message: error.description)
-      
-      self.showSystemAlert.accept(alertContent)
+    } else {
+      self.showErrorAlert.accept(error)
     }
   }
 }
