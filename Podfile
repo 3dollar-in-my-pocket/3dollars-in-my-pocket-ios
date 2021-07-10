@@ -49,12 +49,6 @@ target '3dollar-in-my-pocket' do
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths
-    # Pods for testing
+    pod 'RxTest', '~> 5'
   end
-
-  target '3dollar-in-my-pocketUITests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
 end
