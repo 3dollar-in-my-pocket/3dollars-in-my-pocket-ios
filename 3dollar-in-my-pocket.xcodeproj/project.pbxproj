@@ -19,7 +19,7 @@
 		6E0EA39923ABB230008F7CB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */; };
 		6E0EA39B23ABB230008F7CB2 /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39A23ABB230008F7CB2 /* SignInVC.swift */; };
 		6E0EA3A023ABB231008F7CB2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E0EA39F23ABB231008F7CB2 /* Assets.xcassets */; };
-		6E0EA3AE23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA3AD23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift */; };
+		6E0EA3AE23ABB232008F7CB2 /* SplashViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA3AD23ABB232008F7CB2 /* SplashViewModelTests.swift */; };
 		6E12CF132573CEA4003234D9 /* FAQCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E12CF122573CEA4003234D9 /* FAQCell.swift */; };
 		6E12CF182573D67D003234D9 /* FAQHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E12CF172573D67D003234D9 /* FAQHeaderView.swift */; };
 		6E13578623D7DCB600D91782 /* CategoryByReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E13578523D7DCB600D91782 /* CategoryByReview.swift */; };
@@ -263,7 +263,7 @@
 		6E0EA39F23ABB231008F7CB2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6E0EA3A423ABB231008F7CB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E0EA3A923ABB232008F7CB2 /* 3dollar-in-my-pocketTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "3dollar-in-my-pocketTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6E0EA3AD23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _dollar_in_my_pocketTests.swift; sourceTree = "<group>"; };
+		6E0EA3AD23ABB232008F7CB2 /* SplashViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModelTests.swift; sourceTree = "<group>"; };
 		6E0EA3AF23ABB232008F7CB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E12CF122573CEA4003234D9 /* FAQCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQCell.swift; sourceTree = "<group>"; };
 		6E12CF172573D67D003234D9 /* FAQHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQHeaderView.swift; sourceTree = "<group>"; };
@@ -570,7 +570,8 @@
 		6E0EA3AC23ABB232008F7CB2 /* 3dollar-in-my-pocketTests */ = {
 			isa = PBXGroup;
 			children = (
-				6E0EA3AD23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift */,
+				6E37D4CA26997A4200FEC4B2 /* stubs */,
+				6E37D4C8269979BC00FEC4B2 /* features */,
 				6E0EA3AF23ABB232008F7CB2 /* Info.plist */,
 			);
 			path = "3dollar-in-my-pocketTests";
@@ -631,6 +632,37 @@
 				6E520ADC25CBF2B6007944F5 /* StoreDetailMenuEmptyView.swift */,
 			);
 			path = menu;
+			sourceTree = "<group>";
+		};
+		6E37D4C8269979BC00FEC4B2 /* features */ = {
+			isa = PBXGroup;
+			children = (
+				6E37D4C9269979C000FEC4B2 /* splash */,
+			);
+			path = features;
+			sourceTree = "<group>";
+		};
+		6E37D4C9269979C000FEC4B2 /* splash */ = {
+			isa = PBXGroup;
+			children = (
+				6E0EA3AD23ABB232008F7CB2 /* SplashViewModelTests.swift */,
+			);
+			path = splash;
+			sourceTree = "<group>";
+		};
+		6E37D4CA26997A4200FEC4B2 /* stubs */ = {
+			isa = PBXGroup;
+			children = (
+				6E37D4CB26997A4B00FEC4B2 /* services */,
+			);
+			path = stubs;
+			sourceTree = "<group>";
+		};
+		6E37D4CB26997A4B00FEC4B2 /* services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = services;
 			sourceTree = "<group>";
 		};
 		6E3AA4C725AD6BB100D8C58C /* map */ = {
@@ -1666,7 +1698,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6E0EA3AE23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift in Sources */,
+				6E0EA3AE23ABB232008F7CB2 /* SplashViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
