@@ -20,4 +20,4 @@ jobs:
     - name: Run tests
       run: |
         pod install --repo-update --clean-install
-        xcodebuild test -workspace 3dollar-in-my-pocket.xcworkspace -scheme 3dollar-in-my-pocket -destination 'platform=iOS Simulator,name:iPhone 12 Pro,OS=14.4'
+        xcodebuild test -workspace 3dollar-in-my-pocket.xcworkspace -scheme 3dollar-in-my-pocket -destination 'platform=iOS Simulator,name=iPhone 12 Pro,OS=14.4'
