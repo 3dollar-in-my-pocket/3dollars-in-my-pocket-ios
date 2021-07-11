@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import _dollar_in_my_pocket
+@testable import 가슴속3천원_debug
 
 class _dollar_in_my_pocketTests: XCTestCase {
 

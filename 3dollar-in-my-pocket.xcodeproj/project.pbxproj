@@ -1958,7 +1958,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/3dollar-in-my-pocket.app/3dollar-in-my-pocket";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/가슴속3천원.debug.app/가슴속3천원.debug";
 			};
 			name = Debug;
 		};
@@ -1981,7 +1981,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/3dollar-in-my-pocket.app/3dollar-in-my-pocket";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/가슴속3천원.debug.app/가슴속3천원.debug";
 			};
 			name = Release;
 		};
