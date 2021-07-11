@@ -1,0 +1,23 @@
+name: Swift
+
+on:
+  push:
+    branches:
+    - develop
+    - master
+  pull_request:
+    branches:
+    - develop
+    - master
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run tests
+      run: |
+        pod install --repo-update --clean-install --project-directory=3dollars-in-my-pocket-ios/
+        xcodebuild test -workspace 3dollar-in-my-pocket.xcworkspace -scheme 3dollar-in-my-pocket -destination 'platform=iOS Simulator,name=iPhone 11 Pro,OS=13.6'
