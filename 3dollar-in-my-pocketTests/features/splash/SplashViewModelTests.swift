@@ -7,7 +7,7 @@ import RxTest
 class SplashViewModelTests: XCTestCase {
 
   var disposeBag: DisposeBag!
-  var userServiceStub: UserServiceProtocol!
+  var userServiceMock: UserServiceMock!
   var userDefaults: UserDefaultsUtil!
   var schedular: TestScheduler!
   
@@ -15,6 +15,7 @@ class SplashViewModelTests: XCTestCase {
     super.setUp()
     
     self.disposeBag = DisposeBag()
+    self.userServiceMock = UserServiceMock()
     self.userDefaults = UserDefaultsUtil(name: #file)
     self.schedular = TestScheduler(initialClock: 0)
   }
@@ -23,7 +24,7 @@ class SplashViewModelTests: XCTestCase {
     super.tearDown()
     
     self.disposeBag = nil
-    self.userServiceStub = nil
+    self.userServiceMock = nil
     self.userDefaults = nil
     self.schedular = nil
   }
@@ -31,9 +32,18 @@ class SplashViewModelTests: XCTestCase {
   func testValidateTokenSuccess() {
     // Setup
     let goToMainExpectation = self.schedular.createObserver(Void.self)
+    
+    self.userServiceMock.validateTokenObservable = Observable.create { observer in
+      observer.onNext(())
+      observer.onCompleted()
+      
+      return Disposables.create()
+    }
+    self.userDefaults.setUserToken(token: "test token")
+    
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceStub
+      userService: self.userServiceMock
     )
     
     // Bind input
@@ -57,7 +67,7 @@ class SplashViewModelTests: XCTestCase {
     let goToSignInExpectation = self.schedular.createObserver(Void.self)
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceStub
+      userService: self.userServiceMock
     )
     
     // Bind input
@@ -79,9 +89,17 @@ class SplashViewModelTests: XCTestCase {
   func testValidateTokenFailWithUnauthorized() {
     // Setup
     let goToSignInWithAlertExpectation = self.schedular.createObserver(AlertContent.self)
+    
+    self.userDefaults.setUserToken(token: "test token")
+    self.userServiceMock.validateTokenObservable = .create { observer in
+      observer.onError(HTTPError.unauthorized)
+      
+      return Disposables.create()
+    }
+    
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceStub
+      userService: self.userServiceMock
     )
     
     // Bind input
@@ -106,9 +124,17 @@ class SplashViewModelTests: XCTestCase {
   func testValidateTokenFailWithForbidden() {
     // Setup
     let goToSignInWithAlertExpectation = self.schedular.createObserver(AlertContent.self)
+    
+    self.userDefaults.setUserToken(token: "test token")
+    self.userServiceMock.validateTokenObservable = .create { observer in
+      observer.onError(HTTPError.forbidden)
+      
+      return Disposables.create()
+    }
+    
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceStub
+      userService: self.userServiceMock
     )
     
     // Bind input
@@ -133,9 +159,17 @@ class SplashViewModelTests: XCTestCase {
   func testValidateTokenFailWithMaintenance() {
     // Setup
     let showMaintenanceAlertExpectation = self.schedular.createObserver(AlertContent.self)
+    
+    self.userDefaults.setUserToken(token: "test token")
+    self.userServiceMock.validateTokenObservable = .create { observer in
+      observer.onError(HTTPError.maintenance)
+      
+      return Disposables.create()
+    }
+    
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceStub
+      userService: self.userServiceMock
     )
     
     // Bind input
@@ -159,9 +193,17 @@ class SplashViewModelTests: XCTestCase {
   
   func testValidateTokenFailWithUnknownError() {
     let showErrorAlertExpectation = self.schedular.createObserver(Error.self)
+    
+    self.userDefaults.setUserToken(token: "test token")
+    self.userServiceMock.validateTokenObservable = .create { observer in
+      observer.onError(BaseError.unknown)
+      
+      return Disposables.create()
+    }
+    
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceStub
+      userService: self.userServiceMock
     )
     
     // Bind input
