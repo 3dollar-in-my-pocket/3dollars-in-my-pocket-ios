@@ -4,7 +4,7 @@ import AuthenticationServices
 
 class SignInVC: BaseVC {
   
-  private lazy var signInView = SignInView(frame: self.view.frame)
+  private let signInView = SignInView()
   private let viewModel = SignInViewModel(
     userDefaults: UserDefaultsUtil(),
     userService: UserService()
@@ -16,50 +16,52 @@ class SignInVC: BaseVC {
     return UINavigationController(rootViewController: controller)
   }
   
+  override func loadView() {
+    self.view = self.signInView
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    view = signInView
-    
-    signInView.startFadeIn()
-    navigationController?.isNavigationBarHidden = true
-    navigationController?.interactivePopGestureRecognizer?.delegate = nil
+    self.signInView.startFadeIn()
+    self.navigationController?.isNavigationBarHidden = true
+    self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
   }
   
   override func bindViewModel() {
     // Bind input
-    signInView.kakaoBtn.rx.tap
+    self.signInView.kakaoButton.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(to: self.viewModel.input.tapKakao)
       .disposed(by: disposeBag)
     
     // Bind output
     self.viewModel.output.goToMain
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToMain)
+      .asDriver(onErrorJustReturn: ())
+      .drive(onNext: self.goToMain)
       .disposed(by: disposeBag)
     
     self.viewModel.output.goToNickname
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToNickname)
+      .asDriver(onErrorJustReturn: (0, ""))
+      .drive(onNext: self.goToNickname)
       .disposed(by: disposeBag)
     
     self.viewModel.showSystemAlert
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showSystemAlert(alert:))
+      .asDriver(onErrorJustReturn: AlertContent(title: nil, message: ""))
+      .drive(onNext: self.showSystemAlert(alert:))
       .disposed(by: disposeBag)
     
     self.viewModel.httpErrorAlert
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showHTTPErrorAlert(error:))
+      .asDriver(onErrorJustReturn: .badRequest)
+      .drive(onNext: self.showHTTPErrorAlert(error:))
       .disposed(by: disposeBag)
   }
   
   override func bindEvent() {
-    signInView.appleBtn.rx
+    self.signInView.appleButton.rx
       .controlEvent(.touchUpInside)
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-      .bind(onNext: requestAppleSignIn)
+      .bind(onNext: self.requestAppleSignIn)
       .disposed(by: disposeBag)
   }
   

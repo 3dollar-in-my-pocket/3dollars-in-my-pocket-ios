@@ -25,6 +25,7 @@
 "setting_menu_privacy" = "개인정보처리방침";
 "setting_sign_out" = "로그아웃";
 "setting_withdrawal" = "회원탈퇴";
+"sign_in_with_kakao" = "카카오 계정으로 로그인";
 "question_title" = "문의사항";
 "question_faq" = "FAQ";
 "question_email" = "1:1문의";
