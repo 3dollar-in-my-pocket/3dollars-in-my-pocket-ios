@@ -40,7 +40,7 @@ class SplashVC: BaseVC {
       .drive(onNext: self.goToMain)
       .disposed(by: disposeBag)
     
-    self.viewModel.output.showGoToSignInAlert
+    self.viewModel.output.goToSignInWithAlert
       .asDriver(onErrorJustReturn: AlertContent())
       .drive(onNext: self.showGoToSignInAlert(alertContent:))
       .disposed(by: disposeBag)

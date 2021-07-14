@@ -19,8 +19,7 @@
 		6E0EA39923ABB230008F7CB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */; };
 		6E0EA39B23ABB230008F7CB2 /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39A23ABB230008F7CB2 /* SignInVC.swift */; };
 		6E0EA3A023ABB231008F7CB2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E0EA39F23ABB231008F7CB2 /* Assets.xcassets */; };
-		6E0EA3AE23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA3AD23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift */; };
-		6E0EA3B923ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA3B823ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift */; };
+		6E0EA3AE23ABB232008F7CB2 /* SplashViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA3AD23ABB232008F7CB2 /* SplashViewModelTests.swift */; };
 		6E12CF132573CEA4003234D9 /* FAQCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E12CF122573CEA4003234D9 /* FAQCell.swift */; };
 		6E12CF182573D67D003234D9 /* FAQHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E12CF172573D67D003234D9 /* FAQHeaderView.swift */; };
 		6E13578623D7DCB600D91782 /* CategoryByReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E13578523D7DCB600D91782 /* CategoryByReview.swift */; };
@@ -163,6 +162,7 @@
 		6E7BF08B25B7DB6000456D0B /* WriteDetailPaymentStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08A25B7DB6000456D0B /* WriteDetailPaymentStackView.swift */; };
 		6E7BF09025B7DDB900456D0B /* PaymentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08F25B7DDB900456D0B /* PaymentType.swift */; };
 		6E7EF40A25DE978C0014CD2B /* TabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EF40925DE978C0014CD2B /* TabBarVC.swift */; };
+		6E802088269A9608000A646E /* UserServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E802087269A9608000A646E /* UserServiceMock.swift */; };
 		6E810B0F259AEA3A0035315F /* GAPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E810B0E259AEA3A0035315F /* GAPage.swift */; };
 		6E81B83E25E0E22F00748E02 /* SearchAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E81B83D25E0E22F00748E02 /* SearchAddressView.swift */; };
 		6E81B84025E0E72800748E02 /* SearchAddressVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E81B83F25E0E72800748E02 /* SearchAddressVC.swift */; };
@@ -233,19 +233,11 @@
 		6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */; };
 		6EEF4E5A25B87EE6008BFF52 /* OverviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EEF4E5925B87EE6008BFF52 /* OverviewCell.swift */; };
 		6EFC89DF268B63E800B3414F /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFC89DE268B63E800B3414F /* R.generated.swift */; };
-		D53262643AB0ADC338E637DA /* Pods_3dollar_in_my_pocketUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBA6B7784FEF6EAC6FC63F58 /* Pods_3dollar_in_my_pocketUITests.framework */; };
 		FF84B0E4D229CD931F6CA8E6 /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A7346443A0DB1FD5466BDD0 /* Pods_3dollar_in_my_pocket.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		6E0EA3AA23ABB232008F7CB2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6E0EA38B23ABB230008F7CB2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6E0EA39223ABB230008F7CB2;
-			remoteInfo = "3dollar-in-my-pocket";
-		};
-		6E0EA3B523ABB232008F7CB2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6E0EA38B23ABB230008F7CB2 /* Project object */;
 			proxyType = 1;
@@ -272,11 +264,8 @@
 		6E0EA39F23ABB231008F7CB2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6E0EA3A423ABB231008F7CB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E0EA3A923ABB232008F7CB2 /* 3dollar-in-my-pocketTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "3dollar-in-my-pocketTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6E0EA3AD23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _dollar_in_my_pocketTests.swift; sourceTree = "<group>"; };
+		6E0EA3AD23ABB232008F7CB2 /* SplashViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModelTests.swift; sourceTree = "<group>"; };
 		6E0EA3AF23ABB232008F7CB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6E0EA3B423ABB232008F7CB2 /* 3dollar-in-my-pocketUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "3dollar-in-my-pocketUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6E0EA3B823ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _dollar_in_my_pocketUITests.swift; sourceTree = "<group>"; };
-		6E0EA3BA23ABB232008F7CB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E12CF122573CEA4003234D9 /* FAQCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQCell.swift; sourceTree = "<group>"; };
 		6E12CF172573D67D003234D9 /* FAQHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQHeaderView.swift; sourceTree = "<group>"; };
 		6E13578523D7DCB600D91782 /* CategoryByReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryByReview.swift; sourceTree = "<group>"; };
@@ -419,6 +408,7 @@
 		6E7BF08A25B7DB6000456D0B /* WriteDetailPaymentStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailPaymentStackView.swift; sourceTree = "<group>"; };
 		6E7BF08F25B7DDB900456D0B /* PaymentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentType.swift; sourceTree = "<group>"; };
 		6E7EF40925DE978C0014CD2B /* TabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarVC.swift; sourceTree = "<group>"; };
+		6E802087269A9608000A646E /* UserServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserServiceMock.swift; sourceTree = "<group>"; };
 		6E810B0E259AEA3A0035315F /* GAPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GAPage.swift; sourceTree = "<group>"; };
 		6E81B83D25E0E22F00748E02 /* SearchAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAddressView.swift; sourceTree = "<group>"; };
 		6E81B83F25E0E72800748E02 /* SearchAddressVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAddressVC.swift; sourceTree = "<group>"; };
@@ -515,14 +505,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6E0EA3B123ABB232008F7CB2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D53262643AB0ADC338E637DA /* Pods_3dollar_in_my_pocketUITests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -554,7 +536,6 @@
 			children = (
 				6E0EA39523ABB230008F7CB2 /* 3dollar-in-my-pocket */,
 				6E0EA3AC23ABB232008F7CB2 /* 3dollar-in-my-pocketTests */,
-				6E0EA3B723ABB232008F7CB2 /* 3dollar-in-my-pocketUITests */,
 				6E0EA39423ABB230008F7CB2 /* Products */,
 				417867EE2A79A650E3B9F6C2 /* Pods */,
 				7A5371D9493CAB9E4689ABB5 /* Frameworks */,
@@ -566,7 +547,6 @@
 			children = (
 				6E0EA39323ABB230008F7CB2 /* 가슴속3천원.debug.app */,
 				6E0EA3A923ABB232008F7CB2 /* 3dollar-in-my-pocketTests.xctest */,
-				6E0EA3B423ABB232008F7CB2 /* 3dollar-in-my-pocketUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -592,19 +572,11 @@
 		6E0EA3AC23ABB232008F7CB2 /* 3dollar-in-my-pocketTests */ = {
 			isa = PBXGroup;
 			children = (
-				6E0EA3AD23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift */,
+				6E37D4CA26997A4200FEC4B2 /* stubs */,
+				6E37D4C8269979BC00FEC4B2 /* features */,
 				6E0EA3AF23ABB232008F7CB2 /* Info.plist */,
 			);
 			path = "3dollar-in-my-pocketTests";
-			sourceTree = "<group>";
-		};
-		6E0EA3B723ABB232008F7CB2 /* 3dollar-in-my-pocketUITests */ = {
-			isa = PBXGroup;
-			children = (
-				6E0EA3B823ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift */,
-				6E0EA3BA23ABB232008F7CB2 /* Info.plist */,
-			);
-			path = "3dollar-in-my-pocketUITests";
 			sourceTree = "<group>";
 		};
 		6E118C5C23D2CE2B008B2806 /* lottie */ = {
@@ -662,6 +634,38 @@
 				6E520ADC25CBF2B6007944F5 /* StoreDetailMenuEmptyView.swift */,
 			);
 			path = menu;
+			sourceTree = "<group>";
+		};
+		6E37D4C8269979BC00FEC4B2 /* features */ = {
+			isa = PBXGroup;
+			children = (
+				6E37D4C9269979C000FEC4B2 /* splash */,
+			);
+			path = features;
+			sourceTree = "<group>";
+		};
+		6E37D4C9269979C000FEC4B2 /* splash */ = {
+			isa = PBXGroup;
+			children = (
+				6E0EA3AD23ABB232008F7CB2 /* SplashViewModelTests.swift */,
+			);
+			path = splash;
+			sourceTree = "<group>";
+		};
+		6E37D4CA26997A4200FEC4B2 /* stubs */ = {
+			isa = PBXGroup;
+			children = (
+				6E37D4CB26997A4B00FEC4B2 /* services */,
+			);
+			path = stubs;
+			sourceTree = "<group>";
+		};
+		6E37D4CB26997A4B00FEC4B2 /* services */ = {
+			isa = PBXGroup;
+			children = (
+				6E802087269A9608000A646E /* UserServiceMock.swift */,
+			);
+			path = services;
 			sourceTree = "<group>";
 		};
 		6E3AA4C725AD6BB100D8C58C /* map */ = {
@@ -1224,6 +1228,7 @@
 				6E0EA3A523ABB232008F7CB2 /* Sources */,
 				6E0EA3A623ABB232008F7CB2 /* Frameworks */,
 				6E0EA3A723ABB232008F7CB2 /* Resources */,
+				64FB5B3B86854594021888F5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1234,25 +1239,6 @@
 			productName = "3dollar-in-my-pocketTests";
 			productReference = 6E0EA3A923ABB232008F7CB2 /* 3dollar-in-my-pocketTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		6E0EA3B323ABB232008F7CB2 /* 3dollar-in-my-pocketUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6E0EA3C323ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocketUITests" */;
-			buildPhases = (
-				38DBD6B45B40DB5A01036744 /* [CP] Check Pods Manifest.lock */,
-				6E0EA3B023ABB232008F7CB2 /* Sources */,
-				6E0EA3B123ABB232008F7CB2 /* Frameworks */,
-				6E0EA3B223ABB232008F7CB2 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6E0EA3B623ABB232008F7CB2 /* PBXTargetDependency */,
-			);
-			name = "3dollar-in-my-pocketUITests";
-			productName = "3dollar-in-my-pocketUITests";
-			productReference = 6E0EA3B423ABB232008F7CB2 /* 3dollar-in-my-pocketUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -1268,10 +1254,6 @@
 						CreatedOnToolsVersion = 11.3;
 					};
 					6E0EA3A823ABB232008F7CB2 = {
-						CreatedOnToolsVersion = 11.3;
-						TestTargetID = 6E0EA39223ABB230008F7CB2;
-					};
-					6E0EA3B323ABB232008F7CB2 = {
 						CreatedOnToolsVersion = 11.3;
 						TestTargetID = 6E0EA39223ABB230008F7CB2;
 					};
@@ -1293,7 +1275,6 @@
 			targets = (
 				6E0EA39223ABB230008F7CB2 /* 3dollar-in-my-pocket */,
 				6E0EA3A823ABB232008F7CB2 /* 3dollar-in-my-pocketTests */,
-				6E0EA3B323ABB232008F7CB2 /* 3dollar-in-my-pocketUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -1316,13 +1297,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6E0EA3A723ABB232008F7CB2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6E0EA3B223ABB232008F7CB2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1354,28 +1328,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		38DBD6B45B40DB5A01036744 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-3dollar-in-my-pocketUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		532E9CC6E22F104EADC34A26 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1391,6 +1343,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		64FB5B3B86854594021888F5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6E8E2414256A8D3C00AE6479 /* ShellScript */ = {
@@ -1732,15 +1701,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6E0EA3AE23ABB232008F7CB2 /* _dollar_in_my_pocketTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6E0EA3B023ABB232008F7CB2 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6E0EA3B923ABB232008F7CB2 /* _dollar_in_my_pocketUITests.swift in Sources */,
+				6E802088269A9608000A646E /* UserServiceMock.swift in Sources */,
+				6E0EA3AE23ABB232008F7CB2 /* SplashViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1751,11 +1713,6 @@
 			isa = PBXTargetDependency;
 			target = 6E0EA39223ABB230008F7CB2 /* 3dollar-in-my-pocket */;
 			targetProxy = 6E0EA3AA23ABB232008F7CB2 /* PBXContainerItemProxy */;
-		};
-		6E0EA3B623ABB232008F7CB2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6E0EA39223ABB230008F7CB2 /* 3dollar-in-my-pocket */;
-			targetProxy = 6E0EA3B523ABB232008F7CB2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2008,7 +1965,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/3dollar-in-my-pocket.app/3dollar-in-my-pocket";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/가슴속3천원.debug.app/가슴속3천원.debug";
 			};
 			name = Debug;
 		};
@@ -2031,49 +1988,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/3dollar-in-my-pocket.app/3dollar-in-my-pocket";
-			};
-			name = Release;
-		};
-		6E0EA3C423ABB232008F7CB2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1ED4B9861094CE819487D2BC /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = X975A2HM62;
-				INFOPLIST_FILE = "3dollar-in-my-pocketUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocketUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "3dollar-in-my-pocket";
-			};
-			name = Debug;
-		};
-		6E0EA3C523ABB232008F7CB2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F28EA3E10CF152AB91C7CAE7 /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = X975A2HM62;
-				INFOPLIST_FILE = "3dollar-in-my-pocketUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocketUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "3dollar-in-my-pocket";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/가슴속3천원.debug.app/가슴속3천원.debug";
 			};
 			name = Release;
 		};
@@ -2103,15 +2018,6 @@
 			buildConfigurations = (
 				6E0EA3C123ABB232008F7CB2 /* Debug */,
 				6E0EA3C223ABB232008F7CB2 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6E0EA3C323ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocketUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6E0EA3C423ABB232008F7CB2 /* Debug */,
-				6E0EA3C523ABB232008F7CB2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -15,7 +15,7 @@ class SplashViewModel: BaseViewModel {
   struct Output {
     let goToSignIn = PublishRelay<Void>()
     let goToMain = PublishRelay<Void>()
-    let showGoToSignInAlert = PublishRelay<AlertContent>()
+    let goToSignInWithAlert = PublishRelay<AlertContent>()
     let showMaintenanceAlert = PublishRelay<AlertContent>()
   }
   
@@ -59,7 +59,7 @@ class SplashViewModel: BaseViewModel {
       case .forbidden, .unauthorized:
         let alertContent = AlertContent(title: nil, message: httpError.description)
         
-        self.output.showGoToSignInAlert.accept(alertContent)
+        self.output.goToSignInWithAlert.accept(alertContent)
       case .maintenance:
         let alertContent = AlertContent(title: nil, message: httpError.description)
         

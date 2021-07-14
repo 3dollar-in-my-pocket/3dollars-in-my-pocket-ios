@@ -398,6 +398,8 @@ PODS:
   - RxRelay (5.1.1):
     - RxSwift (~> 5)
   - RxSwift (5.1.2)
+  - RxTest (5.1.2):
+    - RxSwift (~> 5)
   - SnapKit (5.0.1)
   - SPPermissions/Camera (5.5.8):
     - SPPermissions/Core
@@ -430,6 +432,7 @@ DEPENDENCIES:
   - RxCocoa (~> 5)
   - RxDataSources (~> 4.0)
   - RxSwift (~> 5)
+  - RxTest (~> 5)
   - SnapKit (~> 5.0.0)
   - SPPermissions/Camera
   - SPPermissions/Location
@@ -476,6 +479,7 @@ SPEC REPOS:
     - RxDataSources
     - RxRelay
     - RxSwift
+    - RxTest
     - SnapKit
     - SPPermissions
     - SwiftLint
@@ -519,12 +523,13 @@ SPEC CHECKSUMS:
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
   RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
   RxSwift: 1e2e1f9570186967f617e49128ed26ccf1bafc8e
+  RxTest: 274549b747dca56f47c52c8991ec5cf797ecfe40
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SPPermissions: 77d05b0b8489f4c3faefa47317d5af0179c2bfd1
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: 32486287554e6c2f354f49ad314c0df115332d6f
+PODFILE CHECKSUM: b1262d7df2bfa85c611f8cfab3fdfdb691127c67
 
 COCOAPODS: 1.10.0
