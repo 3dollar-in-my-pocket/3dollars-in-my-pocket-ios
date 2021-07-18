@@ -26,12 +26,13 @@ class TabBarVC: UITabBarController {
   }
   
   override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-    self.tabBar.barTintColor = item.tag == TabBarTag.my.rawValue ? UIColor(r: 46, g: 46, b: 46) : .white
-    
-    if item.tag == TabBarTag.my.rawValue {
-      self.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
-    } else {
-      self.tabBar.barTintColor = .white
+    switch item.tag {
+    case TabBarTag.my.rawValue:
+        self.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
+    case TabBarTag.home.rawValue, TabBarTag.category.rawValue:
+        self.tabBar.barTintColor = .white
+    default:
+        break
     }
   }
   
