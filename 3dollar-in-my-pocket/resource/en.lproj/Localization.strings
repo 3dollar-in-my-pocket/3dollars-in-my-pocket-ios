@@ -19,12 +19,15 @@
 "error_location_unknown_message" = "현재 위치가 확인되지 않습니다.\n잠시 후 다시 시도해주세요.";
 "error_location_default_title" = "위치 오류 발생";
 "error_location_default_message" = "위치 오류가 발생되었습니다.\n에러가 개발자에게 보고됩니다.";
+"splash_need_update_title" = "업데이트 필요";
+"splash_need_update_description" = "따끈따끈한 업데이트가 나왔어요!\n확인버튼을 눌러 업데이트를 진행해주세요!";
 "setting_title" = "설정";
 "setting_nickname_modify" = "닉네임 수정";
 "setting_menu_question" = "문의사항";
 "setting_menu_privacy" = "개인정보처리방침";
 "setting_sign_out" = "로그아웃";
 "setting_withdrawal" = "회원탈퇴";
+"sign_in_with_kakao" = "카카오 계정으로 로그인";
 "question_title" = "문의사항";
 "question_faq" = "FAQ";
 "question_email" = "1:1문의";

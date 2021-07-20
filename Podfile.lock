@@ -234,6 +234,11 @@ PODS:
   - Firebase/Firestore (8.1.1):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 8.1.0)
+  - Firebase/RemoteConfig (8.1.1):
+    - Firebase/CoreOnly
+    - FirebaseRemoteConfig (~> 8.1.0)
+  - FirebaseABTesting (8.3.0):
+    - FirebaseCore (~> 8.0)
   - FirebaseAnalytics (8.1.1):
     - FirebaseAnalytics/AdIdSupport (= 8.1.1)
     - FirebaseCore (~> 8.0)
@@ -293,6 +298,12 @@ PODS:
     - GoogleUtilities/Environment (~> 7.4)
     - GoogleUtilities/UserDefaults (~> 7.4)
     - PromisesObjC (~> 1.2)
+  - FirebaseRemoteConfig (8.1.0):
+    - FirebaseABTesting (~> 8.0)
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - "GoogleUtilities/NSData+zlib (~> 7.4)"
   - Google-Mobile-Ads-SDK (8.6.0):
     - GoogleAppMeasurement (< 9.0, >= 7.0)
     - GoogleUserMessagingPlatform (>= 1.1)
@@ -398,6 +409,8 @@ PODS:
   - RxRelay (5.1.1):
     - RxSwift (~> 5)
   - RxSwift (5.1.2)
+  - RxTest (5.1.2):
+    - RxSwift (~> 5)
   - SnapKit (5.0.1)
   - SPPermissions/Camera (5.5.8):
     - SPPermissions/Core
@@ -417,6 +430,7 @@ DEPENDENCIES:
   - Firebase/Core
   - Firebase/Crashlytics
   - Firebase/Firestore
+  - Firebase/RemoteConfig
   - Google-Mobile-Ads-SDK
   - KakaoSDKAuth
   - KakaoSDKCommon
@@ -430,6 +444,7 @@ DEPENDENCIES:
   - RxCocoa (~> 5)
   - RxDataSources (~> 4.0)
   - RxSwift (~> 5)
+  - RxTest (~> 5)
   - SnapKit (~> 5.0.0)
   - SPPermissions/Camera
   - SPPermissions/Location
@@ -446,12 +461,14 @@ SPEC REPOS:
     - DeviceKit
     - Differentiator
     - Firebase
+    - FirebaseABTesting
     - FirebaseAnalytics
     - FirebaseCore
     - FirebaseCoreDiagnostics
     - FirebaseCrashlytics
     - FirebaseFirestore
     - FirebaseInstallations
+    - FirebaseRemoteConfig
     - Google-Mobile-Ads-SDK
     - GoogleAppMeasurement
     - GoogleDataTransport
@@ -476,6 +493,7 @@ SPEC REPOS:
     - RxDataSources
     - RxRelay
     - RxSwift
+    - RxTest
     - SnapKit
     - SPPermissions
     - SwiftLint
@@ -489,12 +507,14 @@ SPEC CHECKSUMS:
   DeviceKit: 2c5d7485a2fa10b65c0091b2952d30843a6ba06d
   Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   Firebase: 4bb49ae87756034cef870fa3c4006235eb46f475
+  FirebaseABTesting: 7fe1b1d6b2bba76d3259f5d2a2089c05faf72ff0
   FirebaseAnalytics: d6dd061b26a04744cb988c66e29697181152b2a3
   FirebaseCore: 389c4ce9a7cce4a7e25eb22326b4bee0050557b2
   FirebaseCoreDiagnostics: 3e249cee3de5c5f9cfd6cc2a19997231286fec11
   FirebaseCrashlytics: 1b55b3a718f9e20d59d96db46a4652d95a8ba1d2
   FirebaseFirestore: c4be8314e9fa156f44b54025f7a98ecbff6971a6
   FirebaseInstallations: 7f31798a8198c354eadcb87176d2090b62edc187
+  FirebaseRemoteConfig: eef8513f6d368ba5c6ed6d1cb267b4d949cf65bf
   Google-Mobile-Ads-SDK: 0d6e2e065c4efe9836bca3fbd6ff9ef0bca073c2
   GoogleAppMeasurement: 31c7d7655818784b7dd34bdf6884f75b465d5f6c
   GoogleDataTransport: 04c3e9a480bbcaa2ec3f5d27f1cdeb6a92f20c8d
@@ -519,12 +539,13 @@ SPEC CHECKSUMS:
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
   RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
   RxSwift: 1e2e1f9570186967f617e49128ed26ccf1bafc8e
+  RxTest: 274549b747dca56f47c52c8991ec5cf797ecfe40
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SPPermissions: 77d05b0b8489f4c3faefa47317d5af0179c2bfd1
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: 32486287554e6c2f354f49ad314c0df115332d6f
+PODFILE CHECKSUM: 72e02c6862b87c636252d0283ed825420805fddd
 
 COCOAPODS: 1.10.0
