@@ -31,6 +31,7 @@ target '3dollar-in-my-pocket' do
   pod 'Firebase/Analytics'
   pod 'Firebase/Core'
   pod 'Firebase/Firestore'
+  pod 'Firebase/RemoteConfig'
   
   pod 'Google-Mobile-Ads-SDK'
   

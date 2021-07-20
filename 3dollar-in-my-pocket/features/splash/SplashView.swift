@@ -19,4 +19,17 @@ class SplashView: BaseView {
       make.edges.equalToSuperview()
     }
   }
+  
+  func startAnimation(oncompletion: @escaping (() -> Void)) {
+    self.alpha = 1.0
+    self.lottie.play { [weak self] _ in
+      UIView.animate(
+        withDuration: 0.5,
+        animations: { [weak self] in
+          self?.alpha = 0
+        }) { _ in
+        oncompletion()
+      }
+    }
+  }
 }

@@ -1,5 +1,6 @@
 import RxSwift
 import RxCocoa
+import FirebaseRemoteConfig
 
 class SplashViewModel: BaseViewModel {
   
@@ -7,6 +8,7 @@ class SplashViewModel: BaseViewModel {
   let output = Output()
   let userDefaults: UserDefaultsUtil
   let userService: UserServiceProtocol
+  let remoteConfigService: RemoteConfigProtocol
   
   struct Input {
     let viewDidLoad = PublishSubject<Void>()
@@ -17,16 +19,37 @@ class SplashViewModel: BaseViewModel {
     let goToMain = PublishRelay<Void>()
     let goToSignInWithAlert = PublishRelay<AlertContent>()
     let showMaintenanceAlert = PublishRelay<AlertContent>()
+    let showUpdateAlert = PublishRelay<Void>()
   }
   
   
-  init(userDefaults: UserDefaultsUtil, userService: UserServiceProtocol) {
+  init(
+    userDefaults: UserDefaultsUtil,
+    userService: UserServiceProtocol,
+    remoteConfigService: RemoteConfigProtocol
+  ) {
     self.userDefaults = userDefaults
     self.userService = userService
+    self.remoteConfigService = remoteConfigService
     super.init()
     
     self.input.viewDidLoad
-      .bind(onNext: self.validateToken)
+      .bind(onNext: self.checkMinimalVersion)
+      .disposed(by: self.disposeBag)
+  }
+  
+  private func checkMinimalVersion() {
+    self.remoteConfigService.fetchMinimalVersion()
+      .subscribe(onNext: { [weak self] minimalVersion in
+        if VersionUtils.isNeedUpdate(
+            currentVersion: VersionUtils.appVersion,
+            minimumVersion: minimalVersion) {
+          self?.output.showUpdateAlert.accept(())
+        } else {
+          self?.validateToken()
+        }
+      },
+      onError: self.showErrorAlert.accept(_:))
       .disposed(by: self.disposeBag)
   }
   
