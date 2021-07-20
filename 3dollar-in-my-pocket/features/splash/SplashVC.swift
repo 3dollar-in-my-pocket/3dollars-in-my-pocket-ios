@@ -6,9 +6,14 @@ class SplashVC: BaseVC {
   private let splashView = SplashView()
   private let viewModel = SplashViewModel(
     userDefaults: UserDefaultsUtil(),
-    userService: UserService()
+    userService: UserService(),
+    remoteConfigService: RemoteConfigService()
   )
   
+  
+  deinit {
+    NotificationCenter.default.removeObserver(self)
+  }
   
   static func instance() -> SplashVC {
     return SplashVC.init(nibName: nil, bundle: nil)
@@ -21,7 +26,11 @@ class SplashVC: BaseVC {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    self.startAnimation()
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(self.willEnterForegroundNotification(_:)),
+      name: UIScene.willEnterForegroundNotification,
+      object: nil)
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -50,22 +59,15 @@ class SplashVC: BaseVC {
       .drive(onNext: self.showMaintenanceAlert(alertContent:))
       .disposed(by: disposeBag)
     
+    self.viewModel.output.showUpdateAlert
+      .asDriver(onErrorJustReturn: ())
+      .drive(onNext: self.showUpdateAlert)
+      .disposed(by: self.disposeBag)
+    
     self.viewModel.showErrorAlert
       .asDriver(onErrorJustReturn: BaseError.custom(""))
       .drive(onNext: self.showErrorAlert(error:))
       .disposed(by: disposeBag)
-  }
-  
-  private func startAnimation() {
-    self.splashView.lottie.play { [weak self] _ in
-      UIView.animate(
-        withDuration: 0.5,
-        animations: { [weak self] in
-          self?.splashView.alpha = 0
-        }) { _ in
-        self?.viewModel.input.viewDidLoad.onNext(())
-      }
-    }
   }
   
   private func goToMain() {
@@ -100,6 +102,24 @@ class SplashVC: BaseVC {
         to: UIApplication.shared,
         for: nil
       )
+    }
+  }
+  
+  private func showUpdateAlert() {
+    AlertUtils.showWithAction(
+      title: R.string.localization.splash_need_update_title(),
+      message: R.string.localization.splash_need_update_description()
+    ) { _ in
+      if let url = URL(string: "itms-apps://itunes.apple.com/app/1496099467"),
+         UIApplication.shared.canOpenURL(url) {
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+      }
+    }
+  }
+  
+  @objc private func willEnterForegroundNotification(_ notification: Notification) {
+    self.splashView.startAnimation { [weak self] in
+      self?.viewModel.input.viewDidLoad.onNext(())
     }
   }
 }
