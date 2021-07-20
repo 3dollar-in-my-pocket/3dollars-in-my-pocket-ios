@@ -8,6 +8,7 @@ class SplashViewModelTests: XCTestCase {
 
   var disposeBag: DisposeBag!
   var userServiceMock: UserServiceMock!
+  var remoteConfigServiceMock: RemoteConfigServiceMock!
   var userDefaults: UserDefaultsUtil!
   var schedular: TestScheduler!
   
@@ -16,6 +17,7 @@ class SplashViewModelTests: XCTestCase {
     
     self.disposeBag = DisposeBag()
     self.userServiceMock = UserServiceMock()
+    self.remoteConfigServiceMock = RemoteConfigServiceMock()
     self.userDefaults = UserDefaultsUtil(name: #file)
     self.schedular = TestScheduler(initialClock: 0)
   }
@@ -43,7 +45,8 @@ class SplashViewModelTests: XCTestCase {
     
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceMock
+      userService: self.userServiceMock,
+      remoteConfigService: self.remoteConfigServiceMock
     )
     
     // Bind input
@@ -67,7 +70,8 @@ class SplashViewModelTests: XCTestCase {
     let goToSignInExpectation = self.schedular.createObserver(Void.self)
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceMock
+      userService: self.userServiceMock,
+      remoteConfigService: self.remoteConfigServiceMock
     )
     
     // Bind input
@@ -99,7 +103,8 @@ class SplashViewModelTests: XCTestCase {
     
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceMock
+      userService: self.userServiceMock,
+      remoteConfigService: self.remoteConfigServiceMock
     )
     
     // Bind input
@@ -134,7 +139,8 @@ class SplashViewModelTests: XCTestCase {
     
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceMock
+      userService: self.userServiceMock,
+      remoteConfigService: self.remoteConfigServiceMock
     )
     
     // Bind input
@@ -169,7 +175,8 @@ class SplashViewModelTests: XCTestCase {
     
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceMock
+      userService: self.userServiceMock,
+      remoteConfigService: self.remoteConfigServiceMock
     )
     
     // Bind input
@@ -203,7 +210,8 @@ class SplashViewModelTests: XCTestCase {
     
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
-      userService: self.userServiceMock
+      userService: self.userServiceMock,
+      remoteConfigService: self.remoteConfigServiceMock
     )
     
     // Bind input

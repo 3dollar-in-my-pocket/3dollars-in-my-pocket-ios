@@ -41,7 +41,9 @@ class SplashViewModel: BaseViewModel {
   private func checkMinimalVersion() {
     self.remoteConfigService.fetchMinimalVersion()
       .subscribe(onNext: { [weak self] minimalVersion in
-        if VersionUtils.isNeedUpdate(minimumVersion: minimalVersion) {
+        if VersionUtils.isNeedUpdate(
+            currentVersion: VersionUtils.appVersion,
+            minimumVersion: minimalVersion) {
           self?.output.showUpdateAlert.accept(())
         } else {
           self?.validateToken()

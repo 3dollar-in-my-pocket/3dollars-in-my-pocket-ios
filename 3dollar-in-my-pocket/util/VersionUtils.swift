@@ -10,13 +10,12 @@ import Foundation
 
 struct VersionUtils {
   
-  static var appVersion: String? {
-    return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+  static var appVersion: String {
+    return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
   }
   
-  static func isNeedUpdate(minimumVersion: String) -> Bool {
-    guard let appVersion = self.appVersion else { return true }
-    let currentVersionArray = appVersion.split(separator: ".")
+  static func isNeedUpdate(currentVersion: String, minimumVersion: String) -> Bool {
+    let currentVersionArray = currentVersion.split(separator: ".")
     let minimumVersionArray = minimumVersion.split(separator: ".")
     
     if currentVersionArray[0] > minimumVersionArray[0] {
