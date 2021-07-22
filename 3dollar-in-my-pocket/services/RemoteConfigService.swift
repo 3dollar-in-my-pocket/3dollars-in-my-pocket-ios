@@ -22,8 +22,8 @@ struct RemoteConfigService: RemoteConfigProtocol {
     return Observable.create { observer in
       self.instance.fetch(withExpirationDuration: 1800) { (status, error) in
         if status == .success {
-          self.instance.activate() { (changed, error) in
-            let minimumVersion = self.instance["minimum_version"].stringValue ?? ""
+          self.instance.activate { (_, _) in
+            let minimumVersion = self.instance["minimum_version_ios"].stringValue ?? ""
             
             observer.onNext(minimumVersion)
             observer.onCompleted()
