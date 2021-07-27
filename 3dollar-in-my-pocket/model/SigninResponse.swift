@@ -1,15 +1,15 @@
 struct SigninResponse: Decodable {
   
-  let sessionId: String
+  let token: String
   
   enum CodingKeys: String, CodingKey {
-    case sessionId
+    case token
   }
   
   
   init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     
-    self.sessionId = try values.decodeIfPresent(String.self, forKey: .sessionId) ?? ""
+    self.token = try values.decodeIfPresent(String.self, forKey: .token) ?? ""
   }
 }
