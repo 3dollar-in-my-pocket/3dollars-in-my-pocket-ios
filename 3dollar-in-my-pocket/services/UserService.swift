@@ -3,7 +3,7 @@ import RxSwift
 
 protocol UserServiceProtocol {
   
-  func validateToken(token: String) -> Observable<String>
+  func validateToken(token: String) -> Observable<Void>
   
   func signIn(user: User) -> Observable<SignIn>
   
@@ -24,7 +24,7 @@ protocol UserServiceProtocol {
 
 struct UserService: UserServiceProtocol {
   
-  func validateToken(token: String) -> Observable<String> {
+  func validateToken(token: String) -> Observable<Void> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v1/user/me"
       let headers = HTTPUtils.defaultHeader()
@@ -35,7 +35,7 @@ struct UserService: UserServiceProtocol {
         headers: headers
       ).responseString { response in
         if response.isSuccess() {
-          observer.onNext("success")
+          observer.onNext(())
           observer.onCompleted()
         } else {
           observer.processHTTPError(response: response)

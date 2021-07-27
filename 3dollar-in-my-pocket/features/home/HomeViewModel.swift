@@ -170,7 +170,9 @@ class HomeViewModel: BaseViewModel {
     self.output.scrollToIndex.accept(IndexPath(row: index, section: 0))
     self.output.selectMarker.accept((index, self.stores))
     self.output.setSelectStore.accept((IndexPath(row: self.selectedIndex, section: 0), false))
-    self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+      self?.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
+    }
     self.selectedIndex = index
   }
   

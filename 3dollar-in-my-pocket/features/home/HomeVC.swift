@@ -180,6 +180,11 @@ class HomeVC: BaseVC {
         marker.height = 16
       }
       marker.mapView = self.homeView.mapView
+      marker.touchHandler =  { [weak self] _ in
+        guard let self = self else { return false }
+        self.viewModel.input.selectStore.onNext(index)
+        return true
+      }
       self.markers.append(marker)
     }
   }
