@@ -5,7 +5,7 @@ protocol UserServiceProtocol {
   
   func validateToken(token: String) -> Observable<Void>
   
-  func signIn(user: User) -> Observable<SignIn>
+  func signin(request: SigninRequest) -> Observable<SigninResponse>
   
   func setNickname(
     nickname: String,
@@ -46,15 +46,14 @@ struct UserService: UserServiceProtocol {
     }
   }
   
-  func signIn(user: User) -> Observable<SignIn> {
+  func signin(request: SigninRequest) -> Observable<SigninResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/login"
-      let parameters = user.toDict()
+      let urlString = HTTPUtils.url + "/api/v2/login"
       
       HTTPUtils.defaultSession.request(
         urlString,
         method: .post,
-        parameters: parameters,
+        parameters: request.parameters,
         encoding: JSONEncoding.default,
         headers: HTTPUtils.jsonHeader()
       ).responseJSON { response in

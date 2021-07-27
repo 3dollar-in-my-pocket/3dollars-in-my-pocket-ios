@@ -10,116 +10,70 @@ class SignInViewModel: BaseViewModel {
   
   let userService: UserServiceProtocol
   let userDefaults: UserDefaultsUtil
+  let kakaoManager: SigninManagerProtocol
+  let appleManager: SigninManagerProtocol
   
   struct Input {
-    let tapKakao = PublishSubject<Void>()
-    let signWithApple = PublishSubject<String>()
+    let tapKakaoButton = PublishSubject<Void>()
+    let tapAppleButton = PublishSubject<Void>()
   }
   
   struct Output {
     let goToMain = PublishRelay<Void>()
-    let goToNickname = PublishRelay<(Int, String)>()
+    let goToNickname = PublishRelay<Void>()
   }
   
   
   init(
     userDefaults: UserDefaultsUtil,
-    userService: UserServiceProtocol
+    userService: UserServiceProtocol,
+    kakaoManager: SigninManagerProtocol,
+    appleManager: SigninManagerProtocol
   ) {
     self.userDefaults = userDefaults
     self.userService = userService
+    self.kakaoManager = kakaoManager
+    self.appleManager = appleManager
     super.init()
     
-    self.input.tapKakao
+    self.input.tapKakaoButton
       .do(onNext: { _ in
         GA.shared.logEvent(event: .kakao_login_button_clicked, page: .login_page)
       })
-      .bind(onNext: self.requestKakaoSignIn)
-      .disposed(by: disposeBag)
+      .flatMap(self.kakaoManager.signIn)
+      .subscribe(
+        onNext: self.signIn(request:),
+        onError: self.showErrorAlert.accept(_:)
+      )
+      .disposed(by: self.disposeBag)
     
-    self.input.signWithApple
-      .map { ($0, "APPLE")}
+    self.input.tapAppleButton
       .do(onNext: { _ in
         GA.shared.logEvent(event: .apple_login_button_clicked, page: .login_page)
       })
-      .bind(onNext: self.signIn)
-      .disposed(by: disposeBag)
+      .flatMap(self.appleManager.signIn)
+      .subscribe(
+        onNext: self.signIn(request:),
+        onError: self.showErrorAlert.accept(_:)
+      )
+      .disposed(by: self.disposeBag)
   }
   
-  private func requestKakaoSignIn() {
-    if UserApi.isKakaoTalkLoginAvailable() {
-      UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
-        if let error = error {
-          if (error as NSError).code != 2 {
-            let alertContent = AlertContent(
-              title: "Error in Kakao",
-              message: error.localizedDescription
-            )
-            
-            self.showSystemAlert.accept(alertContent)
-          }
-        } else {
-          self.requestKakaoInfo()
-        }
-      }
-    } else {
-      UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
-        if let error = error {
-          if (error as NSError).code != 2 {
-            let alertContent = AlertContent(
-              title: "Error in Kakao",
-              message: error.localizedDescription
-            )
-            
-            self.showSystemAlert.accept(alertContent)
-          }
-        }
-        else {
-          self.requestKakaoInfo()
-        }
-      }
-    }
-  }
-  
-  private func requestKakaoInfo() {
-    UserApi.shared.me { (user, error) in
-      if let error = error {
-        let alertContent = AlertContent(
-          title: "Error in requestKakaoInfo",
-          message: error.localizedDescription
-        )
-        
-        self.showSystemAlert.accept(alertContent)
-      }
-      else {
-        if let userId = user?.id {
-          self.signIn(socialId: String(userId), socialType: "KAKAO")
-        }
-      }
-    }
-  }
-  
-  private func signIn(socialId: String, socialType: String) {
-    let user = User.init(socialId: socialId, socialType: socialType)
-    
-    self.userService.signIn(user: user)
-      .subscribe { [weak self] signIn in
+  private func signIn(request: SigninRequest) {
+    self.userService.signin(request: request)
+      .subscribe { [weak self] response in
         guard let self = self else { return }
-        if signIn.state {
-          self.userDefaults.setUserToken(token: signIn.token)
-          self.userDefaults.setUserId(id: signIn.id)
-          self.output.goToMain.accept(())
-        } else {
-          self.output.goToNickname.accept((signIn.id, signIn.token))
-        }
+        
+        self.userDefaults.setUserToken(token: response.sessionId)
+        self.output.goToMain.accept(())
       } onError: { [weak self] error in
         guard let self = self else { return }
-        if let httpError = error as? HTTPError {
-          self.httpErrorAlert.accept(httpError)
-        } else if let error = error as? CommonError {
-          let alertContent = AlertContent(title: nil, message: error.description)
-          
-          self.showSystemAlert.accept(alertContent)
+        
+        if let httpError = error as? HTTPError,
+           httpError == .notFound {
+          self.output.goToNickname.accept(())
+        } else {
+          self.showErrorAlert.accept(error)
         }
       }
       .disposed(by: disposeBag)
