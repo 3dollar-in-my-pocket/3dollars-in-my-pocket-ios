@@ -11,6 +11,7 @@ class SignInView: BaseView {
     $0.contentMode = .scaleAspectFill
     $0.loopMode = .loop
     $0.play()
+    $0.clipsToBounds = false
   }
   
   let kakaoButton = UIButton().then {
