@@ -569,7 +569,7 @@
 				6E41F7E723BAC81200D0AC73 /* resource */,
 				6EF3A76323ADBC1300AE18DA /* 3dollar-in-my-pocket.entitlements */,
 				6E6B0EDF23AD17A3006E11CE /* extension */,
-				6E6B0ED923AD169B006E11CE /* features */,
+				6E6B0ED923AD169B006E11CE /* domain */,
 				6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */,
 				6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */,
 				6E0EA3A423ABB231008F7CB2 /* Info.plist */,
@@ -889,7 +889,7 @@
 			path = review;
 			sourceTree = "<group>";
 		};
-		6E6B0ED923AD169B006E11CE /* features */ = {
+		6E6B0ED923AD169B006E11CE /* domain */ = {
 			isa = PBXGroup;
 			children = (
 				6E6B0EDA23AD16A3006E11CE /* base */,
@@ -903,7 +903,7 @@
 				6E70C38D23B6EB8200C52C9C /* store-detail */,
 				6E8A137723B5DCC5009C2B64 /* writing */,
 			);
-			path = features;
+			path = domain;
 			sourceTree = "<group>";
 		};
 		6E6B0EDA23AD16A3006E11CE /* base */ = {
@@ -1870,7 +1870,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE9EFDCA662B9A2EA4646EEE /* Pods-3dollar-in-my-pocket.debug.xcconfig */;
 			buildSettings = {
-				API_URL = "https://dev.server.3dollars-in-my-pocket.com";
+				API_URL = "http://13.209.172.143";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -2013,48 +2013,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/가슴속3천원.debug.app/가슴속3천원.debug";
-			};
-			name = Release;
-		};
-		6E0EA3C423ABB232008F7CB2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1ED4B9861094CE819487D2BC /* Pods-3dollar-in-my-pocketUITests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = X975A2HM62;
-				INFOPLIST_FILE = "3dollar-in-my-pocketUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocketUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "3dollar-in-my-pocket";
-			};
-			name = Debug;
-		};
-		6E0EA3C523ABB232008F7CB2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F28EA3E10CF152AB91C7CAE7 /* Pods-3dollar-in-my-pocketUITests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = X975A2HM62;
-				INFOPLIST_FILE = "3dollar-in-my-pocketUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocketUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "3dollar-in-my-pocket";
 			};
 			name = Release;
 		};
