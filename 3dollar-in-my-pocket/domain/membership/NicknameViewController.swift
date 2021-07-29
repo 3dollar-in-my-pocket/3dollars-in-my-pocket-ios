@@ -1,7 +1,7 @@
 import UIKit
 import RxSwift
 
-class NicknameVC: BaseVC {
+class NicknameViewController: BaseVC {
   
   private let nicknameView = NicknameView()
   private let viewModel: NicknameViewModel
@@ -20,8 +20,8 @@ class NicknameVC: BaseVC {
     fatalError("init(coder:) has not been implemented")
   }
   
-  static func instance(signinRequest: SigninRequest) -> NicknameVC {
-    return NicknameVC.init(signinRequest: signinRequest)
+  static func instance(signinRequest: SigninRequest) -> NicknameViewController {
+    return NicknameViewController(signinRequest: signinRequest)
   }
   
   override func loadView() {

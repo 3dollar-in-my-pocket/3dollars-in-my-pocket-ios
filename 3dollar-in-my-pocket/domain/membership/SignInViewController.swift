@@ -1,7 +1,7 @@
 import UIKit
 import RxSwift
 
-class SignInVC: BaseVC {
+class SignInViewController: BaseVC {
   
   private let signInView = SignInView()
   private let viewModel = SignInViewModel(
@@ -12,7 +12,7 @@ class SignInVC: BaseVC {
   )
   
   static func instance() -> UINavigationController {
-    let controller = SignInVC(nibName: nil, bundle: nil)
+    let controller = SignInViewController(nibName: nil, bundle: nil)
     
     return UINavigationController(rootViewController: controller)
   }
@@ -76,7 +76,7 @@ class SignInVC: BaseVC {
   }
   
   private func goToNickname(signinRequest: SigninRequest) {
-    let nicknameVC = NicknameVC.instance(signinRequest: signinRequest)
+    let nicknameVC = NicknameViewController.instance(signinRequest: signinRequest)
     
     self.navigationController?.pushViewController(nicknameVC, animated: true)
   }
