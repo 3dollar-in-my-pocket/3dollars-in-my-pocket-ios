@@ -53,7 +53,7 @@ class NicknameViewController: BaseVC {
     self.viewModel.output.goToMain
       .asDriver(onErrorJustReturn: ())
       .drive(onNext: self.goToMain)
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.viewModel.output.errorLabelHidden
       .asDriver(onErrorJustReturn: true)
@@ -63,7 +63,7 @@ class NicknameViewController: BaseVC {
     self.viewModel.showLoading
       .asDriver(onErrorJustReturn: false)
       .drive(onNext: self.nicknameView.showLoading(isShow:))
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.viewModel.showErrorAlert
       .asDriver(onErrorJustReturn: BaseError.unknown)
@@ -79,14 +79,14 @@ class NicknameViewController: BaseVC {
         GA.shared.logEvent(event: .back_button_clicked, page: .nickname_initialize_page)
       })
       .drive(onNext: self.popupVC)
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.nicknameView.tapGestureView.rx.event
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .map { _ in Void() }
       .asDriver(onErrorJustReturn: ())
       .drive(onNext: self.nicknameView.hideKeyboard)
-      .disposed(by:disposeBag)
+      .disposed(by: self.disposeBag)
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
