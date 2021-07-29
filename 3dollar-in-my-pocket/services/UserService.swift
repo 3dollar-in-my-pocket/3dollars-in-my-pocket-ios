@@ -7,11 +7,7 @@ protocol UserServiceProtocol {
   
   func signin(request: SigninRequest) -> Observable<SigninResponse>
   
-  func setNickname(
-    nickname: String,
-    id: Int,
-    token: String
-  ) -> Observable<Void>
+  func signup(request: SignupRequest) -> Observable<SigninResponse>
   
   func getUserInfo(userId: Int) -> Observable<User>
   
@@ -58,7 +54,7 @@ struct UserService: UserServiceProtocol {
         headers: HTTPUtils.jsonHeader()
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: SignIn.self, response: response)
+          observer.processValue(class: SigninResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -68,30 +64,24 @@ struct UserService: UserServiceProtocol {
     }
   }
   
-  func setNickname(
-    nickname: String,
-    id: Int,
-    token: String
-  ) -> Observable<Void> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/nickname"
-      let parameters: [String: Any] = ["nickName": nickname, "userId": id]
-      var headers = ["Authorization": token] as HTTPHeaders
+  func signup(request: SignupRequest) -> Observable<SigninResponse> {
+    return Observable.create { observer in
+      let urlString = HTTPUtils.url + "/api/v2/signup"
       
-      headers.add(HTTPUtils.defaultUserAgent)
       HTTPUtils.defaultSession.request(
         urlString,
-        method: .put,
-        parameters: parameters,
-        headers: headers
-      ).responseString(completionHandler: { (response) in
+        method: .post,
+        parameters: request.parameters,
+        encoding: JSONEncoding.default,
+        headers: HTTPUtils.jsonHeader()
+      ).responseJSON { response in
         if response.isSuccess() {
-          observer.onNext(())
+          observer.processValue(class: SigninResponse.self, response: response)
           observer.onCompleted()
         } else {
           observer.processHTTPError(response: response)
         }
-      })
+      }
       
       return Disposables.create()
     }

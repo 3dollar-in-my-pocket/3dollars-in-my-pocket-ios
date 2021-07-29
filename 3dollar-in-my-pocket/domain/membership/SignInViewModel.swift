@@ -20,7 +20,7 @@ class SignInViewModel: BaseViewModel {
   
   struct Output {
     let goToMain = PublishRelay<Void>()
-    let goToNickname = PublishRelay<Void>()
+    let goToNickname = PublishRelay<SigninRequest>()
   }
   
   
@@ -64,14 +64,14 @@ class SignInViewModel: BaseViewModel {
       .subscribe { [weak self] response in
         guard let self = self else { return }
         
-        self.userDefaults.setUserToken(token: response.sessionId)
+        self.userDefaults.setUserToken(token: response.token)
         self.output.goToMain.accept(())
       } onError: { [weak self] error in
         guard let self = self else { return }
         
         if let httpError = error as? HTTPError,
            httpError == .notFound {
-          self.output.goToNickname.accept(())
+          self.output.goToNickname.accept(request)
         } else {
           self.showErrorAlert.accept(error)
         }

@@ -241,6 +241,7 @@
 		6EE0DBDA23C2B77D00B24D99 /* MyPageReviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE0DBD923C2B77D00B24D99 /* MyPageReviewCell.swift */; };
 		6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B85F23BEBF3E00BAD8E9 /* UIButtonExt.swift */; };
 		6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */; };
+		6EE8299126B2E5D900F201EF /* SignupRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE8299026B2E5D900F201EF /* SignupRequest.swift */; };
 		6EEF4E5A25B87EE6008BFF52 /* OverviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EEF4E5925B87EE6008BFF52 /* OverviewCell.swift */; };
 		6EFC89DF268B63E800B3414F /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFC89DE268B63E800B3414F /* R.generated.swift */; };
 		FF84B0E4D229CD931F6CA8E6 /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A7346443A0DB1FD5466BDD0 /* Pods_3dollar_in_my_pocket.framework */; };
@@ -497,6 +498,7 @@
 		6EE0DBD923C2B77D00B24D99 /* MyPageReviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageReviewCell.swift; sourceTree = "<group>"; };
 		6EE2B85F23BEBF3E00BAD8E9 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
 		6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
+		6EE8299026B2E5D900F201EF /* SignupRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupRequest.swift; sourceTree = "<group>"; };
 		6EEF4E5925B87EE6008BFF52 /* OverviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverviewCell.swift; sourceTree = "<group>"; };
 		6EF3A76323ADBC1300AE18DA /* 3dollar-in-my-pocket.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "3dollar-in-my-pocket.entitlements"; sourceTree = "<group>"; };
 		6EFC89DE268B63E800B3414F /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
@@ -1076,6 +1078,7 @@
 				6E4952BE26B0335500D65042 /* SignInRequest.swift */,
 				6E4952C026B033E100D65042 /* ResponseContainer.swift */,
 				6E4952C226B0349100D65042 /* SigninResponse.swift */,
+				6EE8299026B2E5D900F201EF /* SignupRequest.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -1716,6 +1719,7 @@
 				6E6F35A825AC7BF4007931EC /* WriteAddressVC.swift in Sources */,
 				6E41F7E623BAC2BA00D0AC73 /* UIColorExt.swift in Sources */,
 				6E4CDCDD25E6314600C9193D /* CategoryHeaderType.swift in Sources */,
+				6EE8299126B2E5D900F201EF /* SignupRequest.swift in Sources */,
 				6E53160F25DE9E38006C5CDC /* TabBarTag.swift in Sources */,
 				6E299C5025ED055800810DF7 /* MyReviewHeaderView.swift in Sources */,
 				6E12CF182573D67D003234D9 /* FAQHeaderView.swift in Sources */,

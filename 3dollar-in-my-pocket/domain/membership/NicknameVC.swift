@@ -3,14 +3,13 @@ import RxSwift
 
 class NicknameVC: BaseVC {
   
-  private lazy var nicknameView = NicknameView(frame: self.view.frame)
+  private let nicknameView = NicknameView()
   private let viewModel: NicknameViewModel
   
   
-  init(id: Int, token: String) {
+  init(signinRequest: SigninRequest) {
     self.viewModel = NicknameViewModel(
-      id: id,
-      token: token,
+      signinRequest: signinRequest,
       userDefaults: UserDefaultsUtil(),
       userService: UserService()
     )
@@ -18,82 +17,75 @@ class NicknameVC: BaseVC {
   }
   
   required init?(coder: NSCoder) {
-    fatalError("")
+    fatalError("init(coder:) has not been implemented")
   }
   
-  static func instance(id: Int, token: String) -> NicknameVC {
-    return NicknameVC.init(id: id, token: token)
+  static func instance(signinRequest: SigninRequest) -> NicknameVC {
+    return NicknameVC.init(signinRequest: signinRequest)
   }
   
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    view = nicknameView
-    self.initilizeTextField()
+  override func loadView() {
+    self.view = self.nicknameView
   }
   
   override func bindViewModel() {
     // Bind input
     self.nicknameView.nicknameField.rx.text.orEmpty
       .bind(to: self.viewModel.input.nickname)
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
-    self.nicknameView.startBtn1.rx.tap
+    self.nicknameView.startButton1.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(to: self.viewModel.input.tapStartButton)
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
-    self.nicknameView.startBtn2.rx.tap
+    self.nicknameView.startButton2.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .bind(to: self.viewModel.input.tapStartButton)
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     // Bind output
-    self.viewModel.output.showLoading
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.nicknameView.showLoading(isShow:))
-      .disposed(by: disposeBag)
-    
-    self.viewModel.output.setButtonEnable
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.nicknameView.setButtonEnable(isEnable:))
-      .disposed(by: disposeBag)
+    self.viewModel.output.startButtonEnable
+      .asDriver(onErrorJustReturn: false)
+      .drive(self.nicknameView.rx.startButtonEnable)
+      .disposed(by: self.disposeBag)
     
     self.viewModel.output.goToMain
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToMain)
+      .asDriver(onErrorJustReturn: ())
+      .drive(onNext: self.goToMain)
       .disposed(by: disposeBag)
     
-    self.viewModel.output.errorLabel
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.nicknameView.setErrorMessage(message:))
+    self.viewModel.output.errorLabelHidden
+      .asDriver(onErrorJustReturn: true)
+      .drive(self.nicknameView.rx.errorLabelHidden)
+      .disposed(by: self.disposeBag)
+      
+    self.viewModel.showLoading
+      .asDriver(onErrorJustReturn: false)
+      .drive(onNext: self.nicknameView.showLoading(isShow:))
       .disposed(by: disposeBag)
     
-    self.viewModel.showSystemAlert
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showSystemAlert(alert:))
-      .disposed(by: disposeBag)
-    
-    self.viewModel.httpErrorAlert
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showHTTPErrorAlert(error:))
-      .disposed(by: disposeBag)
+    self.viewModel.showErrorAlert
+      .asDriver(onErrorJustReturn: BaseError.unknown)
+      .drive(onNext: self.showErrorAlert(error:))
+      .disposed(by: self.disposeBag)
   }
   
   override func bindEvent() {
-    self.nicknameView.backBtn.rx.tap
+    self.nicknameView.backButton.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-      .observeOn(MainScheduler.instance)
+      .asDriver(onErrorJustReturn: ())
       .do(onNext: { _ in
         GA.shared.logEvent(event: .back_button_clicked, page: .nickname_initialize_page)
       })
-      .bind(onNext: self.popupVC)
+      .drive(onNext: self.popupVC)
       .disposed(by: disposeBag)
     
     self.nicknameView.tapGestureView.rx.event
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-      .observeOn(MainScheduler.instance)
       .map { _ in Void() }
-      .bind(onNext: self.nicknameView.hideKeyboard)
+      .asDriver(onErrorJustReturn: ())
+      .drive(onNext: self.nicknameView.hideKeyboard)
       .disposed(by:disposeBag)
   }
   
@@ -105,32 +97,9 @@ class NicknameVC: BaseVC {
     self.navigationController?.popViewController(animated: true)
   }
   
-  private func initilizeTextField() {
-    self.nicknameView.nicknameField.delegate = self
-  }
-  
   private func goToMain() {
     if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
       sceneDelegate.goToMain()
     }
-  }
-}
-
-extension NicknameVC: UITextFieldDelegate {
-  func textField(
-    _ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-    guard let textFieldText = textField.text,
-          let rangeOfTextToReplace = Range(range, in: textFieldText) else {
-      return false
-    }
-    let substringToReplace = textFieldText[rangeOfTextToReplace]
-    let count = textFieldText.count - substringToReplace.count + string.count
-    
-    return count <= 8
-  }
-  
-  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-    self.nicknameView.hideKeyboard()
-    return true
   }
 }

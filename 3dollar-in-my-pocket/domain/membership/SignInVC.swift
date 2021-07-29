@@ -50,7 +50,7 @@ class SignInVC: BaseVC {
       .disposed(by: self.disposeBag)
     
     self.viewModel.output.goToNickname
-      .asDriver(onErrorJustReturn: ())
+      .asDriver(onErrorJustReturn: SigninRequest(socialType: .KAKAO, token: ""))
       .drive(onNext: self.goToNickname)
       .disposed(by: self.disposeBag)
     
@@ -75,8 +75,8 @@ class SignInVC: BaseVC {
     }
   }
   
-  private func goToNickname() {
-    let nicknameVC = NicknameVC.instance(id: 0, token: "")
+  private func goToNickname(signinRequest: SigninRequest) {
+    let nicknameVC = NicknameVC.instance(signinRequest: signinRequest)
     
     self.navigationController?.pushViewController(nicknameVC, animated: true)
   }

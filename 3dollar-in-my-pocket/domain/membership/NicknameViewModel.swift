@@ -3,43 +3,38 @@ import RxCocoa
 
 class NicknameViewModel: BaseViewModel {
   
-  let input = Input()
-  let output = Output()
-  let id: Int
-  let token: String
-  
   struct Input {
     let nickname = PublishSubject<String>()
     let tapStartButton = PublishSubject<Void>()
   }
   
   struct Output {
-    let showLoading = PublishRelay<Bool>()
-    let setButtonEnable = PublishRelay<Bool>()
+    let startButtonEnable = PublishRelay<Bool>()
     let goToMain = PublishRelay<Void>()
-    let errorLabel = PublishRelay<String>()
+    let errorLabelHidden = PublishRelay<Bool>()
   }
   
+  let input = Input()
+  let output = Output()
+  let signinRequest: SigninRequest
   let userDefaults: UserDefaultsUtil
   let userService: UserServiceProtocol
   
   
   init(
-    id: Int,
-    token: String,
+    signinRequest: SigninRequest,
     userDefaults: UserDefaultsUtil,
     userService: UserServiceProtocol
   ) {
-    self.id = id
-    self.token = token
+    self.signinRequest = signinRequest
     self.userDefaults = userDefaults
     self.userService = userService
     super.init()
     
     self.input.nickname
       .map { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
-      .bind(to: self.output.setButtonEnable)
-      .disposed(by: disposeBag)
+      .bind(to: self.output.startButtonEnable)
+      .disposed(by: self.disposeBag)
     
     self.input.tapStartButton
       .withLatestFrom(self.input.nickname)
@@ -51,33 +46,34 @@ class NicknameViewModel: BaseViewModel {
   }
   
   private func setNickname(nickname: String) {
-    self.output.showLoading.accept(true)
-    self.userService.setNickname(
-      nickname: nickname,
-      id: self.id,
-      token: self.token
+    let signupRequest = SignupRequest(
+      name: nickname,
+      socialType: self.signinRequest.socialType,
+      token: self.signinRequest.token
     )
-    .subscribe { [weak self] _ in
-      guard let self = self else { return }
-      self.userDefaults.setUserToken(token: self.token)
-      self.userDefaults.setUserId(id: self.id)
-      self.output.showLoading.accept(false)
-      self.output.goToMain.accept(())
-    } onError: { error in
-      if let error = error as? HTTPError {
-        if error == HTTPError.badRequest {
-          self.output.errorLabel.accept("nickname_alreay_existed".localized)
-          GA.shared.logEvent(event: .nickname_already_existed, page: .nickname_initialize_page)
-        } else {
-          self.httpErrorAlert.accept(error)
+    self.showLoading.accept(true)
+    self.userService.signup(request: signupRequest)
+      .subscribe(
+        onNext: { [weak self] response in
+          guard let self = self else { return }
+          self.userDefaults.setUserToken(token: response.token)
+          self.showLoading.accept(false)
+          self.output.goToMain.accept(())
+        },
+        onError: { error in
+          if let error = error as? HTTPError {
+            if error == HTTPError.badRequest {
+              self.output.errorLabelHidden.accept(false)
+              GA.shared.logEvent(event: .nickname_already_existed, page: .nickname_initialize_page)
+            } else {
+              self.httpErrorAlert.accept(error)
+            }
+          } else {
+            self.showErrorAlert.accept(error)
+          }
+          self.showLoading.accept(false)
         }
-      } else if let error = error as? CommonError {
-        let alertContent = AlertContent(title: nil, message: error.description)
-        
-        self.showSystemAlert.accept(alertContent)
-      }
-      self.output.showLoading.accept(false)
-    }
-    .disposed(by: disposeBag)
+      )
+      .disposed(by: self.disposeBag)
   }
 }
