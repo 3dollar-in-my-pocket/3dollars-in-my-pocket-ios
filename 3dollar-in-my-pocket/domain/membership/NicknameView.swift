@@ -151,23 +151,12 @@ class NicknameView: BaseView {
     }
   }
   
-  func setButtonEnable(isEnable: Bool) {
-    startButton1.isEnabled = isEnable
-    startButton2.isEnabled = isEnable
-  }
-  
-  func setErrorMessage(message: String) {
-    self.warningImage.isHidden = false
-    self.warningLabel.isHidden = false
-    self.warningLabel.text = message
-  }
-  
-  func showKeyboard() {
-    self.nicknameField.becomeFirstResponder()
-  }
-  
   func hideKeyboard() {
     self.nicknameField.resignFirstResponder()
+  }
+  
+  private func showKeyboard() {
+    self.nicknameField.becomeFirstResponder()
   }
 }
 
