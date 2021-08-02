@@ -57,7 +57,7 @@ class SplashViewModel: BaseViewModel {
     let token = self.userDefaults.getUserToken()
     
     if self.validateTokenFromLocal(token: token) {
-      self.validateTokenFromServer(token: token)
+      self.validateTokenFromServer()
     } else {
       self.output.goToSignIn.accept(())
     }
@@ -67,8 +67,9 @@ class SplashViewModel: BaseViewModel {
     return !token.isEmpty
   }
   
-  private func validateTokenFromServer(token: String) {
-    self.userService.validateToken(token: token)
+  private func validateTokenFromServer() {
+    self.userService.getUserInfo()
+      .map { _ in Void() }
       .subscribe(
         onNext: self.output.goToMain.accept(_:),
         onError: self.handelValidationError(error:)
