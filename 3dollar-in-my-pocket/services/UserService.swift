@@ -13,7 +13,7 @@ protocol UserServiceProtocol {
   
   func withdrawal(userId: Int) -> Observable<Void>
   
-  func changeNickname(nickname: String) -> Observable<String>
+  func changeNickname(name: String) -> Observable<User>
   
   func getUserInfo() -> Observable<User>
 }
@@ -135,28 +135,25 @@ struct UserService: UserServiceProtocol {
     }
   }
   
-  func changeNickname(nickname: String) -> Observable<String> {
+  func changeNickname(name: String) -> Observable<User> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/nickname"
+      let urlString = HTTPUtils.url + "/api/v2/user/me"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = [
-        "nickName": nickname,
-        "userId": UserDefaultsUtil.getUserId() ?? ""
-      ]
+      let parameters: [String: Any] = ["name": name]
       
       HTTPUtils.defaultSession.request(
         urlString,
         method: .put,
         parameters: parameters,
         headers: headers
-      ).responseString(completionHandler: { response in
+      ).responseJSON { response in
         if response.isSuccess() {
-          observer.onNext("success")
+          observer.processValue(class: User.self, response: response)
           observer.onCompleted()
         } else {
           observer.processHTTPError(response: response)
         }
-      })
+      }
       
       return Disposables.create()
     }

@@ -56,7 +56,7 @@ class RenameVC: BaseVC {
     let nickname = renameView.nicknameField.text!
     
     self.renameView.showLoading(isShow: true)
-    UserService().changeNickname(nickname: nickname)
+    UserService().changeNickname(name: nickname)
       .subscribe(
         onNext: { [weak self] _ in
           guard let self = self else { return }
