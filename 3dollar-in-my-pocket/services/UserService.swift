@@ -22,7 +22,7 @@ struct UserService: UserServiceProtocol {
   
   func validateToken(token: String) -> Observable<Void> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/me"
+      let urlString = HTTPUtils.url + "/api/v2/user/me"
       let headers = HTTPUtils.defaultHeader()
       
       HTTPUtils.defaultSession.request(
@@ -164,14 +164,12 @@ struct UserService: UserServiceProtocol {
   
   func getUserInfo() -> Observable<User> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/info"
+      let urlString = HTTPUtils.url + "/api/v2/user/me"
       let headders = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["userId" : UserDefaultsUtil().getUserId()]
       
       HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
-        parameters: parameters,
         headers: headders
       ).responseJSON { response in
         if response.isSuccess() {

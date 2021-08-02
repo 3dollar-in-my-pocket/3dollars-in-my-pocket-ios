@@ -167,7 +167,7 @@ class OverviewCell: BaseTableViewCell {
   }
   
   func bind(store: Store) {
-    self.setNicknameBold(name: store.repoter.nickname)
+    self.setNicknameBold(name: store.repoter.name)
     self.storeNameLabel.text = store.storeName
     self.distanceLabel.text = "\(store.distance)m"
     self.starLabel.text = "\(store.rating)점"

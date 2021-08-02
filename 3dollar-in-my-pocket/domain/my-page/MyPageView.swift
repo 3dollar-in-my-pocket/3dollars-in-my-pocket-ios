@@ -217,7 +217,7 @@ class MyPageView: BaseView {
   }
   
   func bind(user: User) {
-    self.nicknameLabel.text = user.nickname
+    self.nicknameLabel.text = user.name
   }
   
   func setStore(count: Int) {

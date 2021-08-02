@@ -54,7 +54,7 @@ class QestionViewModel: BaseViewModel {
   
   func fetchMyInfo() {
     self.userService.getUserInfo(userId: self.userDefaults.getUserId())
-      .map { $0.nickname ?? "" }
+      .map { $0.name }
       .subscribe(
         onNext: self.nickname.onNext,
         onError: { [weak self] error in

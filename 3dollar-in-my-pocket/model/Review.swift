@@ -31,7 +31,7 @@ struct Review: Codable {
     self.rating = try values.decodeIfPresent(Int.self, forKey: .rating) ?? -1
     self.storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? -1
     self.storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
-    self.user = try values.decodeIfPresent(User.self, forKey: .user) ?? User(socialId: "", socialType: "")
+    self.user = try values.decodeIfPresent(User.self, forKey: .user) ?? User()
   }
   
   init(rating: Int, contents: String) {
@@ -42,7 +42,7 @@ struct Review: Codable {
     self.rating = rating
     self.storeId = -1
     self.storeName = ""
-    self.user = User(socialId: "", socialType: "")
+    self.user = User()
   }
   
   func toJson() -> [String: Any] {

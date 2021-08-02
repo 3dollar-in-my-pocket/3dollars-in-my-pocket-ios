@@ -154,7 +154,7 @@ class MyReviewCell: BaseTableViewCell {
     self.titleLabel.text = review.storeName
     self.reviewLabel.text = review.contents
     self.setRank(rank: review.rating)
-    self.nameLabel.text = review.user.nickname
+    self.nameLabel.text = review.user.name
     self.createdAtLabel.text = DateUtils.toReviewFormat(dateString: review.createdAt)
   }
   

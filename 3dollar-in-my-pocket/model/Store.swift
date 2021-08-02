@@ -57,7 +57,7 @@ struct Store: Codable {
     self.reviews = []
     self.storeName = storeName
     self.storeType = nil
-    self.repoter = User(socialId: "", socialType: "")
+    self.repoter = User()
   }
   
   init(
@@ -90,7 +90,7 @@ struct Store: Codable {
     self.reviews = []
     self.storeName = storeName
     self.storeType = storeType
-    self.repoter = User(socialId: "", socialType: "")
+    self.repoter = User()
   }
   
   init(from decoder: Decoder) throws {
@@ -110,7 +110,7 @@ struct Store: Codable {
     self.reviews = try values.decodeIfPresent([Review].self, forKey: .reviews) ?? []
     self.storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
     self.storeType = try values.decodeIfPresent(StoreType.self, forKey: .storeType)
-    self.repoter = try values.decodeIfPresent(User.self, forKey: .repoter) ?? User(socialId: "", socialType: "")
+    self.repoter = try values.decodeIfPresent(User.self, forKey: .repoter) ?? User()
   }
   
   func toJson() -> [String: Any] {

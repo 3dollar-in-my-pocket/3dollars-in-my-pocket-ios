@@ -270,8 +270,8 @@ class StoreDetailVC: BaseVC {
           cell.bind(review: review)
           
           if let review = review,
-             UserDefaultsUtil().getUserId() == review.user.id {
-            cell.moreButton.isHidden = UserDefaultsUtil().getUserId() != review.user.id
+             UserDefaultsUtil().getUserId() == review.user.userId {
+            cell.moreButton.isHidden = UserDefaultsUtil().getUserId() != review.user.userId
             cell.moreButton.rx.tap
               .map { review }
               .observeOn(MainScheduler.instance)

@@ -16,7 +16,7 @@ class SettingViewModel: BaseViewModel {
   }
   
   struct Output {
-    let user = BehaviorRelay<User>(value: User(nickname: "", socialId: "", socialType: "APPLE"))
+    let user = BehaviorRelay<User>(value: User())
     let goToRename = PublishRelay<String>()
     let goToSignIn = PublishRelay<Void>()
     let showLoading = PublishRelay<Bool>()
@@ -42,7 +42,7 @@ class SettingViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.tapRename
-      .withLatestFrom(self.output.user) { $1.nickname! }
+      .withLatestFrom(self.output.user) { $1.name }
       .do(onNext: { _ in
         GA.shared.logEvent(event: .nickname_change_page_button_clicked, page: .setting_page)
       })

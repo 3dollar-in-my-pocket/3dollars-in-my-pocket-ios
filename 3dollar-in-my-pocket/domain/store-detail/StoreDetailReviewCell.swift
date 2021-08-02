@@ -159,7 +159,7 @@ class StoreDetailReviewCell: BaseTableViewCell {
   func bind(review: Review?) {
     if let review = review {
       self.setRank(rank: review.rating)
-      self.nameLabel.text = review.user.nickname
+      self.nameLabel.text = review.user.name
       self.replyLabel.text = review.contents
       self.createdAtLabel.text = DateUtils.toReviewFormat(dateString: review.createdAt)
       self.adBannerView.isHidden = true

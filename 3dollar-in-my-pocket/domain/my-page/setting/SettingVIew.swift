@@ -98,6 +98,6 @@ class SettingView: BaseView {
   }
   
   func bind(user: User) {
-    self.nicknameLabel.text = user.nickname
+    self.nicknameLabel.text = user.name
   }
 }
