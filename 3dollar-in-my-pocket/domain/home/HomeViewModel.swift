@@ -12,7 +12,7 @@ class HomeViewModel: BaseViewModel {
   let userDefaults: UserDefaultsUtil
   
   var selectedIndex: Int = -1
-  var stores: [StoreResponse] = [] {
+  var stores: [StoreInfoResponse] = [] {
     didSet {
       self.output.isHiddenEmptyCell.accept(!stores.isEmpty)
       self.output.stores.accept(stores)
@@ -33,12 +33,12 @@ class HomeViewModel: BaseViewModel {
   
   struct Output {
     let address = PublishRelay<String>()
-    let stores = PublishRelay<[StoreResponse]>()
+    let stores = PublishRelay<[StoreInfoResponse]>()
     let isHiddenResearchButton = PublishRelay<Bool>()
     let isHiddenEmptyCell = PublishRelay<Bool>()
     let scrollToIndex = PublishRelay<IndexPath>()
     let setSelectStore = PublishRelay<(IndexPath, Bool)>()
-    let selectMarker = PublishRelay<(Int, [StoreResponse])>()
+    let selectMarker = PublishRelay<(Int, [StoreInfoResponse])>()
     let goToDetail = PublishRelay<Int>()
     let showLoading = PublishRelay<Bool>()
   }
@@ -161,12 +161,12 @@ class HomeViewModel: BaseViewModel {
   }
   
   private func updateStore(index: Int, store: Store) {
-    let newStore = StoreResponse(store: store)
+    let newStore = StoreInfoResponse(store: store)
     self.stores[index] = newStore
     self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
   }
   
-  private func onSelectStore(index: Int){
+  private func onSelectStore(index: Int) {
     self.output.scrollToIndex.accept(IndexPath(row: index, section: 0))
     self.output.selectMarker.accept((index, self.stores))
     self.output.setSelectStore.accept((IndexPath(row: self.selectedIndex, section: 0), false))
@@ -179,7 +179,7 @@ class HomeViewModel: BaseViewModel {
   private func onTapStore(index: Int) {
     if selectedIndex == index {
       GA.shared.logEvent(event: .store_card_button_clicked, page: .home_page)
-      self.output.goToDetail.accept(self.stores[index].id)
+      self.output.goToDetail.accept(self.stores[index].storeId)
     } else {
       self.output.scrollToIndex.accept(IndexPath(row: index, section: 0))
       self.output.selectMarker.accept((index, self.stores))

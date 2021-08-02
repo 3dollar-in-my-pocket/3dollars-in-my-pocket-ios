@@ -9,7 +9,7 @@ protocol StoreServiceProtocol {
     currentLocation: CLLocation,
     mapLocation: CLLocation,
     distance: Double
-  ) -> Observable<[StoreResponse]>
+  ) -> Observable<[StoreInfoResponse]>
   
   func saveStore(store: Store) -> Observable<SaveResponse>
   
@@ -41,9 +41,9 @@ struct StoreService: StoreServiceProtocol {
     currentLocation: CLLocation,
     mapLocation: CLLocation,
     distance: Double
-  ) -> Observable<[StoreResponse]> {
+  ) -> Observable<[StoreInfoResponse]> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/stores"
+      let urlString = HTTPUtils.url + "/api/v2/stores/near"
       let headers = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = [
         "distance": distance,
@@ -61,7 +61,7 @@ struct StoreService: StoreServiceProtocol {
       )
       .responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: [StoreResponse].self, response: response)
+          observer.processValue(class: [StoreInfoResponse].self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }

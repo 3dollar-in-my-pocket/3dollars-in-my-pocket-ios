@@ -124,8 +124,8 @@ class StoreCell: BaseCollectionViewCell {
     }
   }
   
-  func bind(store: StoreResponse) {
-    self.categoryImage.image = UIImage(named: "img_60_\(store.category.lowcase)")
+  func bind(store: StoreInfoResponse) {
+    self.categoryImage.image = UIImage(named: "img_60_\(store.categories[0].lowcase)")
     
     if store.distance >= 1000 {
       distanceLabel.text = "1km+"
