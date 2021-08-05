@@ -11,7 +11,7 @@ protocol StoreServiceProtocol {
     distance: Double
   ) -> Observable<[StoreInfoResponse]>
   
-  func saveStore(store: Store) -> Observable<SaveResponse>
+  func saveStore(addStoreRequest: AddStoreRequest) -> Observable<SaveResponse>
   
   func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String>
   
@@ -71,35 +71,25 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func saveStore(store: Store) -> Observable<SaveResponse> {
+  func saveStore(addStoreRequest: AddStoreRequest) -> Observable<SaveResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/save"
+      let urlString = HTTPUtils.url + "/api/v2/store"
       let headers = HTTPUtils.defaultHeader()
-      var parameters = store.toJson()
+      let parameters = addStoreRequest.params
       
-      parameters["userId"] = "\(UserDefaultsUtil.getUserId()!)"
-      
-      for index in store.menus.indices {
-        let menu = store.menus[index]
-        
-        parameters["menu[\(index)].category"] = menu.category?.rawValue ?? StoreCategory.BUNGEOPPANG
-        parameters["menu[\(index)].name"] = menu.name
-        parameters["menu[\(index)].price"] = menu.price
-      }
-      
-      HTTPUtils.fileUploadSession.upload(multipartFormData: { multipartFormData in
-        for (key, value) in parameters {
-          let stringValue = String(describing: value)
-          
-          multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
-        }
-      }, to: urlString, headers: headers).responseJSON(completionHandler: { response in
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .post,
+        parameters: parameters,
+        encoding: JSONEncoding.default,
+        headers: headers
+      ).responseJSON { response in
         if response.isSuccess() {
           observer.processValue(class: SaveResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
-      })
+      }
       return Disposables.create()
     }
   }

@@ -240,7 +240,7 @@ class ModifyViewModel: BaseViewModel {
     for category in categories{
       if self.categories.contains(category){
         for menuSection in self.menuSections {
-          if menuSection.category! == category {
+          if menuSection.category == category {
             newMenuSection.append(menuSection)
             break
           }

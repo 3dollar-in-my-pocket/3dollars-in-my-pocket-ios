@@ -1,10 +1,10 @@
-struct StoreInfoResponse: Codable {
+struct StoreInfoResponse: Decodable {
   
   let categories: [StoreCategory]
   let distance: Int
   let latitude: Double
   let longitude: Double
-  let rating: Float
+  let rating: Double
   let storeId: Int
   let storeName: String
   
@@ -26,7 +26,7 @@ struct StoreInfoResponse: Codable {
     self.distance = try values.decodeIfPresent(Int.self, forKey: .distance) ?? 0
     self.latitude = try values.decodeIfPresent(Double.self, forKey: .latitude) ?? 0
     self.longitude = try values.decodeIfPresent(Double.self, forKey: .longitude) ?? 0
-    self.rating = try values.decodeIfPresent(Float.self, forKey: .rating) ?? 0
+    self.rating = try values.decodeIfPresent(Double.self, forKey: .rating) ?? 0
     self.storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? 0
     self.storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
   }
@@ -36,7 +36,7 @@ struct StoreInfoResponse: Codable {
     self.distance = store.distance
     self.latitude = store.latitude
     self.longitude = store.longitude
-    self.rating = store.rating
+    self.rating = Double(store.rating)
     self.storeId = store.id
     self.storeName = store.storeName
   }

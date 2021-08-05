@@ -180,7 +180,7 @@ class WriteDetailViewModel: BaseViewModel {
     for category in categories{
       if self.categoryies.contains(category){
         for menuSection in self.menusSections {
-          if menuSection.category! == category {
+          if menuSection.category == category {
             newMenuSection.append(menuSection)
             break
           }
@@ -228,7 +228,9 @@ class WriteDetailViewModel: BaseViewModel {
   
   private func saveStore(store: Store) {
     self.output.showLoading.accept(true)
-    self.storeService.saveStore(store: store)
+    
+    let addStoreRequest = AddStoreRequest(store: store)
+    self.storeService.saveStore(addStoreRequest: addStoreRequest)
       .subscribe(
         onNext: { [weak self] saveResponse in
           guard let self = self else { return }

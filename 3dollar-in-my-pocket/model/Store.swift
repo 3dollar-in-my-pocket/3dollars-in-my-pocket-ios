@@ -114,11 +114,37 @@ struct Store: Codable {
   }
   
   func toJson() -> [String: Any] {
+//    {
+//      "appearanceDays": [
+//        "MONDAY"
+//      ],
+//      "latitude": 0,
+//      "longitude": 0,
+//      "menu": [
+//        {
+//          "category": "BUNGEOPPANG",
+//          "name": "",
+//          "price": ""
+//        },
+//        {
+//          "category": "KKOCHI",
+//          "name": "",
+//          "price": ""
+//        }
+//      ],
+//      "paymentMethods": [
+//        "CASH"
+//      ],
+//      "storeName": "string",
+//      "storeType": "ROAD"
+//    }
     var dictionary: [String: Any] = [
-      "appearanceDays": self.appearanceDays.map{ $0.rawValue }.joined(separator: ","),
-      "categories": self.categories.map { $0.rawValue }.joined(separator: ","),
+      "appearanceDays": self.appearanceDays.map { $0.rawValue },
       "latitude": self.latitude,
       "longitude": self.longitude,
+      
+      "categories": self.categories.map { $0.rawValue }.joined(separator: ","),
+      
       "paymentMethods": self.paymentMethods.map { $0.rawValue }.joined(separator: ","),
       "storeName": self.storeName
     ]

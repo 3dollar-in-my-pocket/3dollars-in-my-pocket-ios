@@ -1,4 +1,5 @@
 struct Menu: Codable {
+  
   let id: Int
   let category: StoreCategory?
   var name: String?
