@@ -19,6 +19,7 @@ struct StoreInfoResponse: Decodable {
     case storeName
   }
   
+  
   init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     
@@ -37,7 +38,7 @@ struct StoreInfoResponse: Decodable {
     self.latitude = store.latitude
     self.longitude = store.longitude
     self.rating = Double(store.rating)
-    self.storeId = store.id
+    self.storeId = store.storeId
     self.storeName = store.storeName
   }
 }

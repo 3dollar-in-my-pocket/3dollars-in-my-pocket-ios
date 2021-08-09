@@ -69,7 +69,7 @@ class RegisterCell: BaseCollectionViewCell {
   
   func bind(store: Store?) {
     if let store = store {
-      self.categoryImage.image = UIImage(named: "img_60_\(store.category.lowcase)")
+      self.categoryImage.image = UIImage(named: "img_60_\(store.categories[0].lowcase)")
       self.titleLabel.text = store.storeName
       self.rankingView.setRank(rank: store.rating)
       self.categoryImage.isHidden = false

@@ -41,7 +41,7 @@ class MyPageViewModel: BaseViewModel {
       .bind(onNext: { [weak self] store in
         guard let self = self else { return }
         if let store = store{
-          self.output.goToStoreDetail.accept(store.id)
+          self.output.goToStoreDetail.accept(store.storeId)
         } else {
           self.output.goToRegistered.accept(())
         }

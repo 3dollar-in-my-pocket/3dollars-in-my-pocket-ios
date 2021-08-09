@@ -131,7 +131,7 @@ class StoreDetailViewModel: BaseViewModel {
           StoreSection(store: store, items: [nil] + store.reviews)
         ]
         
-        self.output.category.accept(store.category)
+        self.output.category.accept(store.categories[0])
         self.output.store.accept(storeSections)
         self.output.showLoading.accept(false)
       },
@@ -156,8 +156,8 @@ class StoreDetailViewModel: BaseViewModel {
     let link = Link(
       webUrl: webURL,
       mobileWebUrl: webURL,
-      androidExecutionParams: ["storeId": String(store.id)],
-      iosExecutionParams: ["storeId": String(store.id)]
+      androidExecutionParams: ["storeId": String(store.storeId)],
+      iosExecutionParams: ["storeId": String(store.storeId)]
     )
     let content = Content(
       title: "store_detail_share_title".localized,

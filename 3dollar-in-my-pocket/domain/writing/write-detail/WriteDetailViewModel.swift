@@ -186,7 +186,7 @@ class WriteDetailViewModel: BaseViewModel {
           }
         }
       } else {
-        newMenuSection.append(MenuSection(category: category, items: [Menu()]))
+        newMenuSection.append(MenuSection(category: category, items: [Menu(category: category)]))
       }
     }
     
@@ -208,7 +208,7 @@ class WriteDetailViewModel: BaseViewModel {
     if !name.isEmpty {
       self.menusSections[indexPath.section].items[indexPath.row].name = name
       if self.menusSections[indexPath.section].items.count == indexPath.row + 1 {
-        self.menusSections[indexPath.section].items.append(Menu())
+        self.menusSections[indexPath.section].items.append(Menu(category: self.menusSections[indexPath.section].category))
         
         self.output.menus.accept(self.menusSections)
       }
@@ -219,7 +219,7 @@ class WriteDetailViewModel: BaseViewModel {
     if !price.isEmpty {
       self.menusSections[indexPath.section].items[indexPath.row].price = price
       if self.menusSections[indexPath.section].items.count == indexPath.row + 1 {
-        self.menusSections[indexPath.section].items.append(Menu())
+        self.menusSections[indexPath.section].items.append(Menu(category: self.menusSections[indexPath.section].category))
         
         self.output.menus.accept(self.menusSections)
       }

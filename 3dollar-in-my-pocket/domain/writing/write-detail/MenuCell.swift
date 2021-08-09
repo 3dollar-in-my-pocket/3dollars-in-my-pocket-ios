@@ -80,9 +80,9 @@ class MenuCell: BaseTableViewCell {
   func setMenu(menu: Menu?) {
     if let menu = menu {
       self.nameField.text = menu.name
-      self.setNameFieldBorderColor(isEmpty: menu.name?.isEmpty ?? true)
+      self.setNameFieldBorderColor(isEmpty: menu.name.isEmpty ?? true)
       self.descField.text = menu.price
-      self.setDescFieldBorderColor(isEmpty: menu.price?.isEmpty ?? true)
+      self.setDescFieldBorderColor(isEmpty: menu.price.isEmpty ?? true)
     }
   }
   

@@ -187,7 +187,7 @@ struct StoreService: StoreServiceProtocol {
       for index in store.menus.indices {
         let menu = store.menus[index]
         
-        parameters["menu[\(index)].category"] = menu.category?.rawValue ?? StoreCategory.BUNGEOPPANG
+        parameters["menu[\(index)].category"] = menu.category.rawValue ?? StoreCategory.BUNGEOPPANG
         parameters["menu[\(index)].name"] = menu.name
         parameters["menu[\(index)].price"] = menu.price
       }

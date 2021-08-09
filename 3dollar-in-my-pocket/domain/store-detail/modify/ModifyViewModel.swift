@@ -131,7 +131,7 @@ class ModifyViewModel: BaseViewModel {
     self.input.tapModify
       .withLatestFrom(Observable.combineLatest(self.input.storeName, self.input.tapStoreType))
       .map { Store(
-        id: self.store.id,
+        id: self.store.storeId,
         appearanceDays: self.appearenceDay,
         categories: self.categories.compactMap{ $0 },
         latitude: self.location.0,
@@ -171,7 +171,7 @@ class ModifyViewModel: BaseViewModel {
           menuSection.items.append(menu)
         }
       }
-      menuSection.items.append(Menu(name: nil, price: nil))
+      menuSection.items.append(Menu(category: category))
       menuSections.append(menuSection)
     }
     
@@ -246,7 +246,7 @@ class ModifyViewModel: BaseViewModel {
           }
         }
       } else {
-        newMenuSection.append(MenuSection(category: category, items: [Menu()]))
+        newMenuSection.append(MenuSection(category: category, items: [Menu(category: category)]))
       }
     }
     
@@ -268,12 +268,12 @@ class ModifyViewModel: BaseViewModel {
     if !name.isEmpty {
       self.menuSections[indexPath.section].items[indexPath.row].name = name
       if self.menuSections[indexPath.section].items.count == indexPath.row + 1 {
-        self.menuSections[indexPath.section].items.append(Menu())
+        self.menuSections[indexPath.section].items.append(Menu(category: self.menuSections[indexPath.row].category))
         
         self.output.menus.accept(self.menuSections)
       }
     } else {
-      self.menuSections[indexPath.section].items[indexPath.row].name = nil
+      self.menuSections[indexPath.section].items[indexPath.row].name = ""
     }
   }
   
@@ -281,12 +281,12 @@ class ModifyViewModel: BaseViewModel {
     if !price.isEmpty {
       self.menuSections[indexPath.section].items[indexPath.row].price = price
       if self.menuSections[indexPath.section].items.count == indexPath.row + 1 {
-        self.menuSections[indexPath.section].items.append(Menu())
+        self.menuSections[indexPath.section].items.append(Menu(category: self.menuSections[indexPath.section].category))
         
         self.output.menus.accept(self.menuSections)
       }
     } else {
-      self.menuSections[indexPath.section].items[indexPath.row].price = nil
+      self.menuSections[indexPath.section].items[indexPath.row].price = ""
     }
   }
   
@@ -306,7 +306,7 @@ class ModifyViewModel: BaseViewModel {
   
   private func updateStroe(store: Store) {
     self.output.showLoading.accept(true)
-    self.storeService.updateStore(storeId: store.id, store: store)
+    self.storeService.updateStore(storeId: store.storeId, store: store)
       .subscribe { [weak self] _ in
         guard let self = self else { return }
         
