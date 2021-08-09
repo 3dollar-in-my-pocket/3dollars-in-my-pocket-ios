@@ -60,7 +60,8 @@ class SettingViewModel: BaseViewModel {
   
   func fetchMyInfo() {
     self.output.showLoading.accept(true)
-    self.userService.getUserInfo(userId: self.userDefaults.getUserId())
+    self.userService.fetchUserInfo()
+      .map(User.init)
       .subscribe { [weak self] user in
         guard let self = self else { return }
         self.output.user.accept(user)

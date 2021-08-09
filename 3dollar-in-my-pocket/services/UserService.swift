@@ -7,13 +7,11 @@ protocol UserServiceProtocol {
   
   func signup(request: SignupRequest) -> Observable<SigninResponse>
   
-  func getUserInfo(userId: Int) -> Observable<User>
-  
   func withdrawal(userId: Int) -> Observable<Void>
   
   func changeNickname(name: String) -> Observable<User>
   
-  func getUserInfo() -> Observable<User>
+  func fetchUserInfo() -> Observable<UserInfoResponse>
 }
 
 struct UserService: UserServiceProtocol {
@@ -59,28 +57,6 @@ struct UserService: UserServiceProtocol {
         }
       }
       
-      return Disposables.create()
-    }
-  }
-  
-  func getUserInfo(userId: Int) -> Observable<User> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/info"
-      let headders = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["userId" : String(userId)]
-      
-      HTTPUtils.defaultSession.request(
-        urlString,
-        method: .get,
-        parameters: parameters,
-        headers: headders
-      ).responseJSON { response in
-        if response.isSuccess() {
-          observer.processValue(class: User.self, response: response)
-        } else {
-          observer.processHTTPError(response: response)
-        }
-      }
       return Disposables.create()
     }
   }
@@ -135,7 +111,7 @@ struct UserService: UserServiceProtocol {
     }
   }
   
-  func getUserInfo() -> Observable<User> {
+  func fetchUserInfo() -> Observable<UserInfoResponse> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/user/me"
       let headders = HTTPUtils.defaultHeader()
@@ -146,7 +122,7 @@ struct UserService: UserServiceProtocol {
         headers: headders
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: User.self, response: response)
+          observer.processValue(class: UserInfoResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }

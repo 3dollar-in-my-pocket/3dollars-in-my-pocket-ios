@@ -53,7 +53,8 @@ class QestionViewModel: BaseViewModel {
   }
   
   func fetchMyInfo() {
-    self.userService.getUserInfo(userId: self.userDefaults.getUserId())
+    self.userService.fetchUserInfo()
+      .map(User.init)
       .map { $0.name }
       .subscribe(
         onNext: self.nickname.onNext,

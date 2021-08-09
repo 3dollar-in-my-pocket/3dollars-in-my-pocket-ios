@@ -17,6 +17,12 @@ struct User: Codable {
     self.socialType = .KAKAO
   }
   
+  init(response: UserInfoResponse) {
+    self.name = response.name
+    self.userId = response.userId
+    self.socialType = response.socialType
+  }
+  
   init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     

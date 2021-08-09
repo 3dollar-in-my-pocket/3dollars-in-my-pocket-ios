@@ -56,7 +56,8 @@ class MyPageViewModel: BaseViewModel {
   }
   
   func fetchMyInfo() {
-    self.userService.getUserInfo()
+    self.userService.fetchUserInfo()
+      .map(User.init)
       .subscribe(
         onNext: self.output.user.accept,
         onError: { [weak self] error in

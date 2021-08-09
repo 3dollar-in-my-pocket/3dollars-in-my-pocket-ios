@@ -68,7 +68,7 @@ class SplashViewModel: BaseViewModel {
   }
   
   private func validateTokenFromServer() {
-    self.userService.getUserInfo()
+    self.userService.fetchUserInfo()
       .map { _ in Void() }
       .subscribe(
         onNext: self.output.goToMain.accept(_:),
