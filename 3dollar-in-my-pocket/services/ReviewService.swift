@@ -9,7 +9,10 @@ protocol ReviewServiceProtocol {
   
   func deleteRevie(reviewId: Int) -> Observable<Void>
   
-  func getMyReview(page: Int) -> Observable<Page<Review>>
+  func fetchMyReview(
+    totalCount: Int?,
+    cursor: Int?
+  ) -> Observable<Pagination<ReviewDetailResponse>>
 }
 
 struct ReviewService: ReviewServiceProtocol {
@@ -88,11 +91,21 @@ struct ReviewService: ReviewServiceProtocol {
     }
   }
   
-  func getMyReview(page: Int) -> Observable<Page<Review>> {
+  func fetchMyReview(
+    totalCount: Int?,
+    cursor: Int?
+  ) -> Observable<Pagination<ReviewDetailResponse>> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/review/user"
+      let urlString = HTTPUtils.url + "/api/v2/store/reviews/me"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["page": page, "userId": UserDefaultsUtil.getUserId()!]
+      var parameters: [String: Any] = ["size": 20]
+      
+      if let totalcount = totalCount {
+        parameters["cachingTotalElements"] = totalcount
+      }
+      if let cursor = cursor {
+        parameters["cursor"] = cursor
+      }
       
       HTTPUtils.defaultSession.request(
         urlString,
@@ -101,7 +114,7 @@ struct ReviewService: ReviewServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: Page<Review>.self, response: response)
+          observer.processValue(class: Pagination<ReviewDetailResponse>.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }

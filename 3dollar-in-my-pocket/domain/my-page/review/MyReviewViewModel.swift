@@ -7,12 +7,16 @@ class MyReviewViewModel: BaseViewModel {
   let output = Output()
   let reviewService: ReviewServiceProtocol
   
-  var reviews: [Review] = []
-  var totalCount = 0
-  var totalPage = 0
-  var currentPage = 1
+  var reviews: [Review] = [] {
+    didSet {
+      self.output.reviews.accept(self.reviews)
+    }
+  }
+  var totalCount: Int?
+  var nextCursor: Int?
   
   struct Input {
+    let viewDidLoad = PublishSubject<Void>()
     let tapReview = PublishSubject<Int>()
     let tapMore = PublishSubject<Int>()
     let loadMore = PublishSubject<Int>()
@@ -31,18 +35,19 @@ class MyReviewViewModel: BaseViewModel {
     self.reviewService = reviewService
     super.init()
     
+    self.input.viewDidLoad
+      .map { _ in (self.totalCount, self.nextCursor) }
+      .bind(onNext: self.fetchMyReviews)
+      .disposed(by: disposeBag)
+    
     self.input.tapReview
       .map { self.reviews[$0].storeId }
       .bind(to: self.output.goToStoreDetail)
       .disposed(by: disposeBag)
     
     self.input.loadMore
-      .filter { self.reviews.count - 1 == $0 && self.currentPage < self.totalPage }
-      .do { [weak self] _ in
-        guard let self = self else { return }
-        self.currentPage += 1
-      }
-      .map { _ in Void() }
+      .filter { self.reviews.count - 1 == $0 && self.nextCursor != nil }
+      .map { _ in (self.totalCount, self.nextCursor) }
       .bind(onNext: self.fetchMyReviews)
       .disposed(by: disposeBag)
     
@@ -52,32 +57,28 @@ class MyReviewViewModel: BaseViewModel {
       .disposed(by: disposeBag)
   }
   
-  func fetchMyReviews() {
+  private func fetchMyReviews(totalCount: Int?, cursor: Int?) {
     self.output.isHiddenFooter.accept(false)
-    self.reviewService.getMyReview(page: self.currentPage)
-      .subscribe(
-        onNext: { [weak self] pageRevies in
-          guard let self = self else { return }
-          self.totalCount = pageRevies.totalElements
-          self.totalPage = pageRevies.totalPages
-          self.reviews += pageRevies.content
-          self.output.reviews.accept(self.reviews)
-          self.output.isHiddenFooter.accept(true)
-        },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          if let httpError = error as? HTTPError {
-            self.httpErrorAlert.accept(httpError)
-          }
-          if let commonError = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: commonError.description)
-            
-            self.showSystemAlert.accept(alertContent)
-          }
-          self.output.isHiddenFooter.accept(true)
-        }
-      )
-      .disposed(by: disposeBag)
+    self.reviewService.fetchMyReview(
+      totalCount: totalCount,
+      cursor: cursor
+    )
+    .do { [weak self] pagination in
+      guard let self = self else { return }
+      self.nextCursor = pagination.nextCursor
+      self.totalCount = pagination.totalElements
+      self.output.isHiddenFooter.accept(true)
+    }
+    .map { $0.contents }
+    .map { $0.map(Review.init) }
+    .subscribe(
+      onNext: { [weak self] newReviews in
+        guard let self = self else { return }
+        self.reviews += newReviews
+      },
+      onError: self.showErrorAlert.accept(_:)
+    )
+    .disposed(by: self.disposeBag)
   }
   
   private func deleteReview(reviewId: Int) {
@@ -88,7 +89,7 @@ class MyReviewViewModel: BaseViewModel {
           guard let self = self else { return }
           
           self.revmoveReview(reviewId: reviewId)
-          self.totalCount -= 1
+          self.totalCount? -= 1
           self.output.reviews.accept(self.reviews)
           self.output.showLoading.accept(false)
         },

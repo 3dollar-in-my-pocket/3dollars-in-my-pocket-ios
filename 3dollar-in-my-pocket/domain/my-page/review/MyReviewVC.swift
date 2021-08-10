@@ -25,7 +25,7 @@ class MyReviewVC: BaseVC {
     super.viewWillAppear(animated)
     
     self.tabBarController?.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
-    self.viewModel.fetchMyReviews()
+    self.viewModel.input.viewDidLoad.onNext(())
   }
   
   override func bindViewModel() {
@@ -121,7 +121,7 @@ extension MyReviewVC: UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     return MyReviewHeaderView().then {
-      $0.setCount(count: self.viewModel.totalCount)
+      $0.setCount(count: self.viewModel.totalCount ?? 0)
     }
   }
   

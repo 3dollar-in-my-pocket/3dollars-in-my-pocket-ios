@@ -109,35 +109,27 @@ class MyPageViewModel: BaseViewModel {
   }
   
   func fetchMyReview() {
-    self.reviewService.getMyReview(page: 1)
+    self.reviewService.fetchMyReview(totalCount: nil, cursor: nil)
       .subscribe(
-        onNext: { [weak self] reviewPage in
+        onNext: { [weak self] pagination in
           guard let self = self else { return }
           
-          self.output.reviewCount.accept(reviewPage.totalElements)
-          if reviewPage.totalElements > 3 {
-            self.output.reviews.accept(Array(reviewPage.content[0...2]))
-          } else {
-            var contents: [Review?] = reviewPage.content
+          self.output.reviewCount.accept(pagination.totalElements)
+          if pagination.totalElements > 3 {
+            let reviews = Array(pagination.contents[0...2]).map(Review.init)
             
-            while contents.count != 3 {
-              contents.append(nil)
+            self.output.reviews.accept(reviews)
+          } else {
+            var reviews: [Review?] = pagination.contents.map(Review.init)
+            
+            while reviews.count != 3 {
+              reviews.append(nil)
             }
-            self.output.reviews.accept(contents)
+            self.output.reviews.accept(reviews)
           }
         },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          
-          if let httpError = error as? HTTPError {
-            self.httpErrorAlert.accept(httpError)
-          } else if let error = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: error.description)
-            
-            self.output.showSystemAlert.accept(alertContent)
-          }
-        }
+        onError: self.showErrorAlert.accept(_:)
       )
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
   }
 }
