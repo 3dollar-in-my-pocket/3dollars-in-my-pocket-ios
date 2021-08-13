@@ -40,7 +40,7 @@ class MyPageViewModel: BaseViewModel {
       .withLatestFrom(self.output.registeredStores) { $1[$0] }
       .bind(onNext: { [weak self] store in
         guard let self = self else { return }
-        if let store = store{
+        if let store = store {
           self.output.goToStoreDetail.accept(store.storeId)
         } else {
           self.output.goToRegistered.accept(())
@@ -78,20 +78,21 @@ class MyPageViewModel: BaseViewModel {
   }
   
   func fetchReportedStore() {
-    self.storeService.getReportedStore(page: 1)
+    self.storeService.getReportedStore(totalCount: nil, cursor: nil)
       .subscribe(
-        onNext: { [weak self] storePage in
+        onNext: { [weak self] pagination in
           guard let self = self else { return }
-          self.output.registeredStoreCount.accept(storePage.totalElements)
+          let stores = pagination.contents.map(Store.init)
           
-          if storePage.content.count > 5 {
-            let sliceArray: [Store?] = Array(storePage.content[0...4]) + [nil]
+          self.output.registeredStoreCount.accept(pagination.totalElements)
+          if pagination.contents.count > 5 {
+            let sliceArray: [Store?] = Array(stores[0...4]) + [nil]
             
             self.output.registeredStores.accept(sliceArray)
-          } else if storePage.content.count == 0 {
-            self.output.registeredStores.accept(storePage.content)
+          } else if pagination.contents.isEmpty {
+            self.output.registeredStores.accept(stores)
           } else {
-            self.output.registeredStores.accept(storePage.content + [nil])
+            self.output.registeredStores.accept(stores + [nil])
           }
         },
         onError: { [weak self] error in

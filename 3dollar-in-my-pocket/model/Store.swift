@@ -108,6 +108,23 @@ struct Store: Codable {
     self.user = try values.decodeIfPresent(User.self, forKey: .user) ?? User()
   }
   
+  init(response: StoreInfoResponse) {
+    self.appearanceDays = []
+    self.categories = response.categories
+    self.distance = response.distance
+    self.storeId = response.storeId
+    self.images = []
+    self.latitude = response.latitude
+    self.longitude = response.longitude
+    self.menus = []
+    self.paymentMethods = []
+    self.rating = Float(response.rating)
+    self.reviews = []
+    self.storeName = response.storeName
+    self.storeType = nil
+    self.user = User()
+  }
+  
   func toJson() -> [String: Any] {
 //    {
 //      "appearanceDays": [

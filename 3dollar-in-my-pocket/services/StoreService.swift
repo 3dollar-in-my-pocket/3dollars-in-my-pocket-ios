@@ -23,7 +23,10 @@ protocol StoreServiceProtocol {
   
   func getStoreDetail(storeId: Int, latitude: Double, longitude: Double) -> Observable<Store>
   
-  func getReportedStore(page: Int) -> Observable<Page<Store>>
+  func getReportedStore(
+    totalCount: Int?,
+    cursor: Int?
+  ) -> Observable<Pagination<StoreInfoResponse>>
   
   func searchRegisteredStores(
     latitude: Double,
@@ -237,11 +240,21 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func getReportedStore(page: Int) -> Observable<Page<Store>> {
+  func getReportedStore(
+    totalCount: Int?,
+    cursor: Int?
+  ) -> Observable<Pagination<StoreInfoResponse>> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/user"
+      let urlString = HTTPUtils.url + "/api/v2/stores/me"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["page": page]
+      var parameters: [String: Any] = ["size": 20]
+      
+      if let totalcount = totalCount {
+        parameters["cachingTotalElements"] = totalcount
+      }
+      if let cursor = cursor {
+        parameters["cursor"] = cursor
+      }
       
       HTTPUtils.defaultSession.request(
         urlString,
@@ -250,7 +263,7 @@ struct StoreService: StoreServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: Page<Store>.self, response: response)
+          observer.processValue(class: Pagination<StoreInfoResponse>.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
