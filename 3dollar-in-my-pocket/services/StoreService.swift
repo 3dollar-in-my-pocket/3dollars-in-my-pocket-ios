@@ -21,7 +21,11 @@ protocol StoreServiceProtocol {
   
   func updateStore(storeId: Int, store: Store) -> Observable<String>
   
-  func getStoreDetail(storeId: Int, latitude: Double, longitude: Double) -> Observable<Store>
+  func getStoreDetail(
+    storeId: Int,
+    latitude: Double,
+    longitude: Double
+  ) -> Observable<StoreDetailResponse>
   
   func getReportedStore(
     totalCount: Int?,
@@ -207,9 +211,13 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func getStoreDetail(storeId: Int, latitude: Double, longitude: Double) -> Observable<Store> {
+  func getStoreDetail(
+    storeId: Int,
+    latitude: Double,
+    longitude: Double
+  ) -> Observable<StoreDetailResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/detail"
+      let urlString = HTTPUtils.url + "/api/v2/store"
       let headers = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = [
         "storeId": storeId,
@@ -224,7 +232,7 @@ struct StoreService: StoreServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: Store.self, response: response)
+          observer.processValue(class: StoreDetailResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }

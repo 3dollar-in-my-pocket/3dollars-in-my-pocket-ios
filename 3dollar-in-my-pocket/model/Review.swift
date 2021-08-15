@@ -56,6 +56,17 @@ struct Review: Codable {
     self.user = User(response: reviewDetailResponse.user)
   }
   
+  init(response: ReviewWithWriterResponse) {
+    self.category = .BUNGEOPPANG
+    self.contents = response.contents
+    self.createdAt = response.createdAt
+    self.id = response.reviewId
+    self.rating = response.rating
+    self.storeId = 0
+    self.storeName = ""
+    self.user = User(response: response.user)
+  }
+  
   func toJson() -> [String: Any] {
     return [
       "contents" : self.contents,

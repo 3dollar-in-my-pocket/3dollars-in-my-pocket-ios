@@ -15,4 +15,11 @@ struct Menu: Codable {
     self.name = name
     self.price = price
   }
+  
+  init(response: MenuResponse) {
+    self.category = response.category
+    self.menuId = response.menuId
+    self.name = response.name
+    self.price = response.price
+  }
 }

@@ -125,6 +125,23 @@ struct Store: Codable {
     self.user = User()
   }
   
+  init(response: StoreDetailResponse) {
+    self.appearanceDays = response.appearanceDays
+    self.categories = response.categories
+    self.distance = response.distance
+    self.storeId = response.storeId
+    self.images = response.images.map(Image.init)
+    self.latitude = response.latitude
+    self.longitude = response.longitude
+    self.menus = response.menus.map(Menu.init)
+    self.paymentMethods = response.paymentMethods
+    self.rating = Float(response.rating)
+    self.reviews = response.reviews.map(Review.init)
+    self.storeName = response.storeName
+    self.storeType = response.storeType
+    self.user = User(response: response.user)
+  }
+  
   func toJson() -> [String: Any] {
 //    {
 //      "appearanceDays": [

@@ -119,7 +119,9 @@ class StoreDetailViewModel: BaseViewModel {
       storeId: storeId,
       latitude: location.latitude,
       longitude: location.longitude
-    ).subscribe(
+    )
+    .map(Store.init)
+    .subscribe(
       onNext: { [weak self] store in
         guard let self = self else { return }
         self.store = store
