@@ -25,7 +25,7 @@ class RegisteredVC: BaseVC {
     super.viewWillAppear(animated)
     
     self.tabBarController?.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
-    self.viewModel.searchRegisteredStores()
+    self.viewModel.input.fetchStores.onNext(())
   }
   
   override func bindViewModel() {
@@ -89,7 +89,7 @@ class RegisteredVC: BaseVC {
     self.navigationController?.pushViewController(storeDetailVC, animated: true)
   }
   
-  func setHiddenLoadingFooter(isHidden: Bool){
+  func setHiddenLoadingFooter(isHidden: Bool) {
     self.registeredStoreView.tableView.tableFooterView?.isHidden = isHidden
   }
 }
@@ -98,7 +98,7 @@ extension RegisteredVC: UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     return RegisteredStoreHeader().then {
-      $0.setCount(count: self.viewModel.totalCount)
+      $0.setCount(count: self.viewModel.totalCount ?? 0)
     }
   }
   

@@ -32,4 +32,15 @@ struct StoreCard: Codable {
     storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
     rating = try values.decodeIfPresent(Float.self, forKey: .rating) ?? 0
   }
+  
+  init(response: StoreInfoResponse) {
+    self.category = response.categories[0]
+    self.categories = response.categories
+    self.distance = response.distance
+    self.id = response.storeId
+    self.latitude = response.latitude
+    self.longitude = response.longitude
+    self.storeName = response.storeName
+    self.rating = Float(response.rating)
+  }
 }

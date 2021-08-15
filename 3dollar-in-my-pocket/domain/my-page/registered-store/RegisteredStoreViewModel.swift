@@ -14,11 +14,11 @@ class RegisteredStoreViewModel: BaseViewModel {
       self.output.stores.accept(stores)
     }
   }
-  var totalCount = 0
-  var totalPage = 0
-  var currentPage = 1
+  var totalCount: Int?
+  var nextCursor: Int?
   
   struct Input {
+    let fetchStores = PublishSubject<Void>()
     let tapStore = PublishSubject<Int>()
     let loadMore = PublishSubject<Int>()
   }
@@ -38,51 +38,43 @@ class RegisteredStoreViewModel: BaseViewModel {
     self.userDefaults = userDefaults
     super.init()
     
+    self.input.fetchStores
+      .map { (self.totalCount, self.nextCursor) }
+      .bind(onNext: self.fetchRegisteredStores)
+      .disposed(by: self.disposeBag)
+    
     self.input.tapStore
       .map { self.stores[$0].id }
       .bind(to: self.output.goToStoreDetail)
       .disposed(by: disposeBag)
     
     self.input.loadMore
-      .filter { self.stores.count - 1 == $0 && self.currentPage < self.totalPage }
-      .do { [weak self] _ in
-        guard let self = self else { return }
-        self.currentPage += 1
-      }
-      .map { _ in Void() }
-      .bind(onNext: self.searchRegisteredStores)
+      .filter(self.hasNextPage(currentIndex:))
+      .map { _ in (self.totalCount, self.nextCursor) }
+      .bind(onNext: self.fetchRegisteredStores)
       .disposed(by: disposeBag)
   }
   
-  func searchRegisteredStores() {
-    let currentLocation = self.userDefaults.getUserCurrentLocation()
-    
+  func fetchRegisteredStores(totalCount: Int?, nextCursor: Int?) {
     self.output.isHiddenFooter.accept(false)
-    self.storeService.searchRegisteredStores(
-      latitude: currentLocation.coordinate.latitude,
-      longitude: currentLocation.coordinate.longitude,
-      page: self.currentPage
-    )
-    .subscribe(
-      onNext: { [weak self] pageStore in
-        guard let self = self else { return }
-        self.totalCount = pageStore.totalElements
-        self.totalPage = pageStore.totalPages
-        self.stores += pageStore.content
-        self.output.isHiddenFooter.accept(true)
-      },
-      onError: { error in
-        if let httpError = error as? HTTPError {
-          self.httpErrorAlert.accept(httpError)
-        }
-        if let commonError = error as? CommonError {
-          let alertContent = AlertContent(title: nil, message: commonError.description)
+    self.storeService.getReportedStore(totalCount: totalCount, cursor: nextCursor)
+      .subscribe(
+        onNext: { [weak self] pagination in
+          guard let self = self else { return }
+          let newStores = pagination.contents.map(StoreCard.init)
           
-          self.showSystemAlert.accept(alertContent)
-        }
-        self.output.isHiddenFooter.accept(true)
-      }
-    )
-    .disposed(by: disposeBag)
+          self.totalCount = pagination.totalElements
+          self.nextCursor = pagination.nextCursor
+          self.stores += newStores
+          self.output.isHiddenFooter.accept(true)
+        },
+        onError: self.showErrorAlert.accept(_:)
+      )
+      .disposed(by: disposeBag)
+  }
+  
+  private func hasNextPage(currentIndex: Int) -> Bool {
+    return self.stores.count - 1 == currentIndex
+      && self.nextCursor != -1
   }
 }
