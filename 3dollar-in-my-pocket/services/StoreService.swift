@@ -11,7 +11,7 @@ protocol StoreServiceProtocol {
     distance: Double
   ) -> Observable<[StoreInfoResponse]>
   
-  func saveStore(addStoreRequest: AddStoreRequest) -> Observable<SaveResponse>
+  func saveStore(addStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse>
   
   func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String>
   
@@ -72,7 +72,7 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func saveStore(addStoreRequest: AddStoreRequest) -> Observable<SaveResponse> {
+  func saveStore(addStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/store"
       let headers = HTTPUtils.defaultHeader()
@@ -86,7 +86,7 @@ struct StoreService: StoreServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: SaveResponse.self, response: response)
+          observer.processValue(class: StoreInfoResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }

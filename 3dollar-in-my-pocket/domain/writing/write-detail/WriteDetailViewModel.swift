@@ -105,7 +105,7 @@ class WriteDetailViewModel: BaseViewModel {
       .withLatestFrom(Observable.combineLatest(self.input.storeName, self.input.tapStoreType))
       .map { Store(
         appearanceDays: self.appearenceDay,
-        categories: self.categoryies.compactMap{ $0 },
+        categories: self.categoryies.compactMap { $0 },
         latitude: self.location.0,
         longitude: self.location.1,
         menuSections: self.menusSections,
@@ -117,7 +117,7 @@ class WriteDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.output.categories
-      .withLatestFrom(self.input.storeName) { !$0.compactMap{ $0 }.isEmpty && !$1.isEmpty }
+      .withLatestFrom(self.input.storeName) { !$0.compactMap { $0 }.isEmpty && !$1.isEmpty }
       .bind(to: self.output.registerButtonIsEnable)
       .disposed(by: disposeBag)
   }
