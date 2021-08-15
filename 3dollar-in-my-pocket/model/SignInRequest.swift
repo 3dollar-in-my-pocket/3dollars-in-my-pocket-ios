@@ -1,4 +1,4 @@
-struct SigninRequest {
+struct SigninRequest: Equatable {
   
   let socialType: SocialType
   let token: String

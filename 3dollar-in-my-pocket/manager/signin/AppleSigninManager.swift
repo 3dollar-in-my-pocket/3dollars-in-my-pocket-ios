@@ -10,7 +10,7 @@ class AppleSigninManager: NSObject, SigninManagerProtocol {
     self.publisher.onCompleted()
   }
   
-  func signIn() -> Observable<SigninRequest> {
+  func signin() -> Observable<SigninRequest> {
     self.publisher = PublishSubject<SigninRequest>()
     
     let appleIDProvider = ASAuthorizationAppleIDProvider()

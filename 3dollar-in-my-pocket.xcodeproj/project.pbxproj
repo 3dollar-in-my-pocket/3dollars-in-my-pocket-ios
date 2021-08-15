@@ -129,6 +129,8 @@
 		6E590DAF23E7F56C006814BE /* PhotoMainCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E590DAE23E7F56C006814BE /* PhotoMainCell.swift */; };
 		6E5939002573E2CE00593DC8 /* PrivacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5938FF2573E2CE00593DC8 /* PrivacyView.swift */; };
 		6E5939052573E38900593DC8 /* PrivacyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5939042573E38900593DC8 /* PrivacyVC.swift */; };
+		6E59BEF926C8F3E300008DDA /* SigninViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E59BEF826C8F3E300008DDA /* SigninViewModelTests.swift */; };
+		6E59BEFC26C8F5BA00008DDA /* SigninManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E59BEFB26C8F5BA00008DDA /* SigninManagerMock.swift */; };
 		6E5C358A2691C3A9003681FF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E5C35892691C3A9003681FF /* Colors.xcassets */; };
 		6E6172B023E1C05F003E0DDF /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172AF23E1C05F003E0DDF /* PhotoDetailView.swift */; };
 		6E6172B223E1C308003E0DDF /* PhotoDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172B123E1C308003E0DDF /* PhotoDetailVC.swift */; };
@@ -395,6 +397,8 @@
 		6E590DAE23E7F56C006814BE /* PhotoMainCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMainCell.swift; sourceTree = "<group>"; };
 		6E5938FF2573E2CE00593DC8 /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.swift; sourceTree = "<group>"; };
 		6E5939042573E38900593DC8 /* PrivacyVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyVC.swift; sourceTree = "<group>"; };
+		6E59BEF826C8F3E300008DDA /* SigninViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninViewModelTests.swift; sourceTree = "<group>"; };
+		6E59BEFB26C8F5BA00008DDA /* SigninManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninManagerMock.swift; sourceTree = "<group>"; };
 		6E5C35892691C3A9003681FF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		6E6172AF23E1C05F003E0DDF /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		6E6172B123E1C308003E0DDF /* PhotoDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailVC.swift; sourceTree = "<group>"; };
@@ -614,7 +618,7 @@
 			children = (
 				6E38402926A697210047B2D8 /* utils */,
 				6E37D4CA26997A4200FEC4B2 /* stubs */,
-				6E37D4C8269979BC00FEC4B2 /* features */,
+				6E37D4C8269979BC00FEC4B2 /* domains */,
 				6E0EA3AF23ABB232008F7CB2 /* Info.plist */,
 			);
 			path = "3dollar-in-my-pocketTests";
@@ -677,12 +681,13 @@
 			path = menu;
 			sourceTree = "<group>";
 		};
-		6E37D4C8269979BC00FEC4B2 /* features */ = {
+		6E37D4C8269979BC00FEC4B2 /* domains */ = {
 			isa = PBXGroup;
 			children = (
+				6E59BEF726C8F3AE00008DDA /* membership */,
 				6E37D4C9269979C000FEC4B2 /* splash */,
 			);
-			path = features;
+			path = domains;
 			sourceTree = "<group>";
 		};
 		6E37D4C9269979C000FEC4B2 /* splash */ = {
@@ -696,6 +701,7 @@
 		6E37D4CA26997A4200FEC4B2 /* stubs */ = {
 			isa = PBXGroup;
 			children = (
+				6E59BEFA26C8F5AB00008DDA /* managers */,
 				6E37D4CB26997A4B00FEC4B2 /* services */,
 			);
 			path = stubs;
@@ -853,6 +859,22 @@
 				6E5939042573E38900593DC8 /* PrivacyVC.swift */,
 			);
 			path = privacy;
+			sourceTree = "<group>";
+		};
+		6E59BEF726C8F3AE00008DDA /* membership */ = {
+			isa = PBXGroup;
+			children = (
+				6E59BEF826C8F3E300008DDA /* SigninViewModelTests.swift */,
+			);
+			path = membership;
+			sourceTree = "<group>";
+		};
+		6E59BEFA26C8F5AB00008DDA /* managers */ = {
+			isa = PBXGroup;
+			children = (
+				6E59BEFB26C8F5BA00008DDA /* SigninManagerMock.swift */,
+			);
+			path = managers;
 			sourceTree = "<group>";
 		};
 		6E6172AE23E1C04D003E0DDF /* photo-detail */ = {
@@ -1820,7 +1842,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E802088269A9608000A646E /* UserServiceMock.swift in Sources */,
+				6E59BEFC26C8F5BA00008DDA /* SigninManagerMock.swift in Sources */,
 				6E0EA3AE23ABB232008F7CB2 /* SplashViewModelTests.swift in Sources */,
+				6E59BEF926C8F3E300008DDA /* SigninViewModelTests.swift in Sources */,
 				6E38402D26A6977D0047B2D8 /* VersionUtilsTests.swift in Sources */,
 				6E38402F26A6A7CC0047B2D8 /* RemoteConfigServiceMock.swift in Sources */,
 			);

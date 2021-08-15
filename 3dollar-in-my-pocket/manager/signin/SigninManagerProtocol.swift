@@ -2,5 +2,5 @@ import RxSwift
 
 protocol SigninManagerProtocol {
   
-  func signIn() -> Observable<SigninRequest>
+  func signin() -> Observable<SigninRequest>
 }

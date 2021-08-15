@@ -14,7 +14,7 @@ class KakaoSigninManager: SigninManagerProtocol {
     self.publisher.onCompleted()
   }
   
-  func signIn() -> Observable<SigninRequest> {
+  func signin() -> Observable<SigninRequest> {
     self.publisher = PublishSubject<SigninRequest>()
     
     if UserApi.isKakaoTalkLoginAvailable() {
@@ -69,7 +69,23 @@ class KakaoSigninManager: SigninManagerProtocol {
         self.publisher.onNext(request)
         self.publisher.onCompleted()
       } onError: { error in
-        self.publisher.onError(error)
+        if let sdkError = error as? SdkError {
+          if sdkError.isClientFailed {
+            switch sdkError.getClientError().reason {
+            case .Cancelled:
+              break
+            default:
+              let errorMessage = sdkError.getApiError().info?.msg ?? ""
+              let error = BaseError.custom(errorMessage)
+              
+              self.publisher.onError(error)
+            }
+          }
+        } else {
+          let signInError = BaseError.custom("error is not SdkError. (\(error.self))")
+          
+          self.publisher.onError(signInError)
+        }
       }
       .disposed(by: self.disposeBag)
   }

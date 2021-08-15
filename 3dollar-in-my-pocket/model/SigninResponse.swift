@@ -12,4 +12,8 @@ struct SigninResponse: Decodable {
     
     self.token = try values.decodeIfPresent(String.self, forKey: .token) ?? ""
   }
+  
+  init() {
+    self.token = ""
+  }
 }

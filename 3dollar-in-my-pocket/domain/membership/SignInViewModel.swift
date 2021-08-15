@@ -40,9 +40,9 @@ class SignInViewModel: BaseViewModel {
       .do(onNext: { _ in
         GA.shared.logEvent(event: .kakao_login_button_clicked, page: .login_page)
       })
-      .flatMap(self.kakaoManager.signIn)
+      .flatMap(self.kakaoManager.signin)
       .subscribe(
-        onNext: self.signIn(request:),
+        onNext: self.signin(request:),
         onError: self.showErrorAlert.accept(_:)
       )
       .disposed(by: self.disposeBag)
@@ -51,15 +51,15 @@ class SignInViewModel: BaseViewModel {
       .do(onNext: { _ in
         GA.shared.logEvent(event: .apple_login_button_clicked, page: .login_page)
       })
-      .flatMap(self.appleManager.signIn)
+      .flatMap(self.appleManager.signin)
       .subscribe(
-        onNext: self.signIn(request:),
+        onNext: self.signin(request:),
         onError: self.showErrorAlert.accept(_:)
       )
       .disposed(by: self.disposeBag)
   }
   
-  private func signIn(request: SigninRequest) {
+  private func signin(request: SigninRequest) {
     self.userService.signin(request: request)
       .subscribe { [weak self] response in
         guard let self = self else { return }
