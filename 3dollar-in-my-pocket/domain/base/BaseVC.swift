@@ -2,7 +2,6 @@ import UIKit
 import RxSwift
 
 class BaseVC: UIViewController {
-  
   let disposeBag = DisposeBag()
   
   

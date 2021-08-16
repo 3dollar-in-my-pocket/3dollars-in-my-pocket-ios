@@ -3,7 +3,6 @@ import RxSwift
 import RxCocoa
 
 class NicknameView: BaseView {
-  
   let tapGestureView = UITapGestureRecognizer()
   
   let backButton = UIButton().then {

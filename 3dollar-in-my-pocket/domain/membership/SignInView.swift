@@ -5,7 +5,6 @@ import AuthenticationServices
 import Lottie
 
 class SignInView: BaseView {
-  
   let lottie = AnimationView(name: "signin").then {
     $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
     $0.contentMode = .scaleAspectFill

@@ -1326,11 +1326,11 @@
 			buildConfigurationList = 6E0EA3BD23ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocket" */;
 			buildPhases = (
 				1987C26717DC0A90012569FF /* [CP] Check Pods Manifest.lock */,
+				6E8E2414256A8D3C00AE6479 /* ShellScript */,
 				6EFC89DD268B62AA00B3414F /* ShellScript */,
 				6E0EA38F23ABB230008F7CB2 /* Sources */,
 				6E0EA39023ABB230008F7CB2 /* Frameworks */,
 				6E0EA39123ABB230008F7CB2 /* Resources */,
-				6E8E2414256A8D3C00AE6479 /* ShellScript */,
 				6ECCFA8823EA41D1001A565E /* ShellScript */,
 				532E9CC6E22F104EADC34A26 /* [CP] Embed Pods Frameworks */,
 				6EA92ED4258E3643009B6227 /* ShellScript */,

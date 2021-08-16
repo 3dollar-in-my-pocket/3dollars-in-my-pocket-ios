@@ -2,7 +2,6 @@ import UIKit
 import RxSwift
 
 class SignInViewController: BaseVC {
-  
   private let signInView = SignInView()
   private let viewModel = SignInViewModel(
     userDefaults: UserDefaultsUtil(),
@@ -10,6 +9,7 @@ class SignInViewController: BaseVC {
     kakaoManager: KakaoSigninManager(),
     appleManager: AppleSigninManager()
   )
+  
   
   static func instance() -> UINavigationController {
     let controller = SignInViewController(nibName: nil, bundle: nil)

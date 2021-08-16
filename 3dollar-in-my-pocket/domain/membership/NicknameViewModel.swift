@@ -2,7 +2,6 @@ import RxSwift
 import RxCocoa
 
 class NicknameViewModel: BaseViewModel {
-  
   struct Input {
     let nickname = PublishSubject<String>()
     let tapStartButton = PublishSubject<Void>()

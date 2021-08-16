@@ -3,7 +3,6 @@ import RxCocoa
 import RxSwift
 
 class BaseView: UIView {
-  
   let disposeBag = DisposeBag()
   
   private let loadingView = LoadingView()
@@ -11,6 +10,7 @@ class BaseView: UIView {
   private lazy var dimView = UIView(frame: self.frame).then {
     $0.backgroundColor = .clear
   }
+  
   
   override init(frame: CGRect) {
     super.init(frame: frame)

@@ -4,7 +4,6 @@ import KakaoSDKAuth
 import KakaoSDKUser
 
 class SignInViewModel: BaseViewModel {
-  
   let input = Input()
   let output = Output()
   

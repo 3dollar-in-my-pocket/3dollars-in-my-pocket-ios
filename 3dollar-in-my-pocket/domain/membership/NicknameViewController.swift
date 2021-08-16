@@ -2,7 +2,6 @@ import UIKit
 import RxSwift
 
 class NicknameViewController: BaseVC {
-  
   private let nicknameView = NicknameView()
   private let viewModel: NicknameViewModel
   
