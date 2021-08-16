@@ -12,6 +12,7 @@ import RxSwift
 
 struct UserServiceMock: UserServiceProtocol {
   var signinObservable: Observable<SigninResponse>?
+  var signupObservable: Observable<SigninResponse>?
   var fetchUserInfoObservable: Observable<UserInfoResponse>?
   
   func signin(request: SigninRequest) -> Observable<SigninResponse> {
@@ -19,7 +20,7 @@ struct UserServiceMock: UserServiceProtocol {
   }
   
   func signup(request: SignupRequest) -> Observable<SigninResponse> {
-    return .empty()
+    return self.signupObservable ?? .empty()
   }
   
   func withdrawal(userId: Int) -> Observable<Void> {
