@@ -11,12 +11,8 @@ import RxSwift
 @testable import 가슴속3천원_debug
 
 struct UserServiceMock: UserServiceProtocol {
-  var validateTokenObservable: Observable<Void>?
   var signinObservable: Observable<SigninResponse>?
-  
-  func validateToken(token: String) -> Observable<Void> {
-    return self.validateTokenObservable ?? .empty()
-  }
+  var fetchUserInfoObservable: Observable<UserInfoResponse>?
   
   func signin(request: SigninRequest) -> Observable<SigninResponse> {
     return self.signinObservable ?? .empty()
@@ -35,6 +31,6 @@ struct UserServiceMock: UserServiceProtocol {
   }
   
   func fetchUserInfo() -> Observable<UserInfoResponse> {
-    return .empty()
+    return self.fetchUserInfoObservable ?? .empty()
   }
 }

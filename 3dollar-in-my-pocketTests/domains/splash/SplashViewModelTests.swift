@@ -5,7 +5,6 @@ import RxTest
 @testable import 가슴속3천원_debug
 
 class SplashViewModelTests: XCTestCase {
-
   var disposeBag: DisposeBag!
   var userServiceMock: UserServiceMock!
   var remoteConfigServiceMock: RemoteConfigServiceMock!
@@ -31,14 +30,49 @@ class SplashViewModelTests: XCTestCase {
     self.schedular = nil
   }
   
+  func testNeedUpdate() {
+    let showUpdateExpectation = self.schedular.createObserver(Void.self)
+    
+    self.remoteConfigServiceMock.fetchMinimalVersionObservable = .create { observer in
+      observer.onNext("4.0.0")
+      observer.onCompleted()
+      return Disposables.create()
+    }
+    
+    let viewModel = SplashViewModel(
+      userDefaults: self.userDefaults,
+      userService: self.userServiceMock,
+      remoteConfigService: self.remoteConfigServiceMock
+    )
+    
+    // Bind input
+    self.schedular.createColdObservable([.next(210, ())])
+      .bind(to: viewModel.input.viewDidLoad)
+      .disposed(by: self.disposeBag)
+    
+    // Bind output
+    viewModel.output.showUpdateAlert
+      .bind(to: showUpdateExpectation)
+      .disposed(by: self.disposeBag)
+    
+    self.schedular.start()
+    
+    // Assert
+    XCTAssertEqual(showUpdateExpectation.events.count, 1)
+  }
+  
   func testValidateTokenSuccess() {
     // Setup
     let goToMainExpectation = self.schedular.createObserver(Void.self)
     
-    self.userServiceMock.validateTokenObservable = Observable.create { observer in
-      observer.onNext(())
+    self.remoteConfigServiceMock.fetchMinimalVersionObservable = .create { observer in
+      observer.onNext("1.0.0")
       observer.onCompleted()
-      
+      return Disposables.create()
+    }
+    self.userServiceMock.fetchUserInfoObservable = .create { observer in
+      observer.onNext(UserInfoResponse())
+      observer.onCompleted()
       return Disposables.create()
     }
     self.userDefaults.setUserToken(token: "test token")
@@ -68,6 +102,13 @@ class SplashViewModelTests: XCTestCase {
   func testValidateTokenFailAtLocal() {
     // Setup
     let goToSignInExpectation = self.schedular.createObserver(Void.self)
+    
+    self.remoteConfigServiceMock.fetchMinimalVersionObservable = .create { observer in
+      observer.onNext("1.0.0")
+      observer.onCompleted()
+      return Disposables.create()
+    }
+    
     let viewModel = SplashViewModel(
       userDefaults: self.userDefaults,
       userService: self.userServiceMock,
@@ -94,8 +135,13 @@ class SplashViewModelTests: XCTestCase {
     // Setup
     let goToSignInWithAlertExpectation = self.schedular.createObserver(AlertContent.self)
     
+    self.remoteConfigServiceMock.fetchMinimalVersionObservable = .create { observer in
+      observer.onNext("1.0.0")
+      observer.onCompleted()
+      return Disposables.create()
+    }
     self.userDefaults.setUserToken(token: "test token")
-    self.userServiceMock.validateTokenObservable = .create { observer in
+    self.userServiceMock.fetchUserInfoObservable = .create { observer in
       observer.onError(HTTPError.unauthorized)
       
       return Disposables.create()
@@ -130,8 +176,13 @@ class SplashViewModelTests: XCTestCase {
     // Setup
     let goToSignInWithAlertExpectation = self.schedular.createObserver(AlertContent.self)
     
+    self.remoteConfigServiceMock.fetchMinimalVersionObservable = .create { observer in
+      observer.onNext("1.0.0")
+      observer.onCompleted()
+      return Disposables.create()
+    }
     self.userDefaults.setUserToken(token: "test token")
-    self.userServiceMock.validateTokenObservable = .create { observer in
+    self.userServiceMock.fetchUserInfoObservable = .create { observer in
       observer.onError(HTTPError.forbidden)
       
       return Disposables.create()
@@ -166,8 +217,13 @@ class SplashViewModelTests: XCTestCase {
     // Setup
     let showMaintenanceAlertExpectation = self.schedular.createObserver(AlertContent.self)
     
+    self.remoteConfigServiceMock.fetchMinimalVersionObservable = .create { observer in
+      observer.onNext("1.0.0")
+      observer.onCompleted()
+      return Disposables.create()
+    }
     self.userDefaults.setUserToken(token: "test token")
-    self.userServiceMock.validateTokenObservable = .create { observer in
+    self.userServiceMock.fetchUserInfoObservable = .create { observer in
       observer.onError(HTTPError.maintenance)
       
       return Disposables.create()
@@ -201,8 +257,13 @@ class SplashViewModelTests: XCTestCase {
   func testValidateTokenFailWithUnknownError() {
     let showErrorAlertExpectation = self.schedular.createObserver(Error.self)
     
+    self.remoteConfigServiceMock.fetchMinimalVersionObservable = .create { observer in
+      observer.onNext("1.0.0")
+      observer.onCompleted()
+      return Disposables.create()
+    }
     self.userDefaults.setUserToken(token: "test token")
-    self.userServiceMock.validateTokenObservable = .create { observer in
+    self.userServiceMock.fetchUserInfoObservable = .create { observer in
       observer.onError(BaseError.unknown)
       
       return Disposables.create()

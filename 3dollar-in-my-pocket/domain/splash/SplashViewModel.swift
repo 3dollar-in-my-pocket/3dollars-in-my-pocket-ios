@@ -43,7 +43,8 @@ class SplashViewModel: BaseViewModel {
       .subscribe(onNext: { [weak self] minimalVersion in
         if VersionUtils.isNeedUpdate(
             currentVersion: VersionUtils.appVersion,
-            minimumVersion: minimalVersion) {
+            minimumVersion: minimalVersion
+        ) {
           self?.output.showUpdateAlert.accept(())
         } else {
           self?.validateToken()
