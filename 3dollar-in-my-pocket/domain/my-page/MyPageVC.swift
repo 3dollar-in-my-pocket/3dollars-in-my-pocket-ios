@@ -2,7 +2,7 @@ import UIKit
 import RxSwift
 
 class MyPageVC: BaseVC {
-  
+  weak var coordinator: MyPageCoordinator?
   private lazy var myPageView = MyPageView(frame: self.view.frame)
   private let viewModel = MyPageViewModel(
     userService: UserService(),
@@ -23,7 +23,6 @@ class MyPageVC: BaseVC {
         tag: TabBarTag.my.rawValue
       )
     }
-    
     return UINavigationController(rootViewController: myPageVC).then {
       $0.setNavigationBarHidden(true, animated: false)
       $0.interactivePopGestureRecognizer?.delegate = nil
@@ -34,6 +33,7 @@ class MyPageVC: BaseVC {
     super.viewDidLoad()
     
     self.view = myPageView
+    self.coordinator = self
     self.setupRegisterCollectionView()
     self.setUpReviewTableView()
   }
@@ -99,12 +99,16 @@ class MyPageVC: BaseVC {
     
     self.viewModel.output.goToStoreDetail
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToStoreDetail(storeId:))
+      .bind(onNext: { [weak self] storeId in
+        self?.coordinator?.goToStoreDetail(storeId: storeId)
+      })
       .disposed(by: disposeBag)
     
     self.viewModel.output.goToRegistered
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToTotalRegisteredStore)
+      .bind(onNext: { [weak self] in
+        self?.coordinator?.goToTotalRegisteredStore()
+      })
       .disposed(by: disposeBag)
     
     self.viewModel.httpErrorAlert
@@ -165,28 +169,10 @@ class MyPageVC: BaseVC {
       .bind(to: self.viewModel.input.tapReview)
       .disposed(by: disposeBag)
   }
-  
-  private func goToSetting() {
-    let settingVC = SettingVC.instance()
-    
-    self.navigationController?.pushViewController(settingVC, animated: true)
-  }
-  
-  private func goToTotalRegisteredStore() {
-    let registeredVC = RegisteredVC.instance()
-    
-    self.navigationController?.pushViewController(registeredVC, animated: true)
-  }
-  
-  private func goToMyReview() {
-    let myReviewVC = MyReviewVC.instance()
-    
-    self.navigationController?.pushViewController(myReviewVC, animated: true)
-  }
-  
-  private func goToStoreDetail(storeId: Int) {
-    let storeDetailVC = StoreDetailVC.instance(storeId: storeId)
-    
-    self.navigationController?.pushViewController(storeDetailVC, animated: true)
+}
+
+extension MyPageVC: MyPageCoordinator {
+  var presenter: UINavigationController? {
+    return self.navigationController
   }
 }
