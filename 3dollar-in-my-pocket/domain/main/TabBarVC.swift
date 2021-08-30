@@ -18,6 +18,7 @@ class TabBarVC: UITabBarController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
     self.checkIfBannerExisted()
     self.setupTabBarController()
     self.addKakaoLinkObserver()
@@ -28,7 +29,7 @@ class TabBarVC: UITabBarController {
   override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
     switch item.tag {
     case TabBarTag.my.rawValue:
-        self.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
+        self.tabBar.barTintColor = R.color.gray100()
     case TabBarTag.home.rawValue, TabBarTag.category.rawValue:
         self.tabBar.barTintColor = .white
     default:
@@ -79,7 +80,7 @@ class TabBarVC: UITabBarController {
       WriteAddressVC.instance(delegate: self),
       MyPageVC.instance(),
     ], animated: true)
-    self.tabBar.tintColor = UIColor(r: 255, g: 92, b: 67)
+    self.tabBar.tintColor = R.color.red()
     self.tabBar.layer.borderWidth = 0
     self.tabBar.layer.borderColor = UIColor.clear.cgColor
     self.tabBar.clipsToBounds = true
