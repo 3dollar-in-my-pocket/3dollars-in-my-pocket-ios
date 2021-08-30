@@ -15,18 +15,18 @@ class HomeView: BaseView {
   
   let addressButton = UIButton().then {
     $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
-    $0.setImage(UIImage(named: "ic_arrow_bottom_black"), for: .normal)
+    $0.setImage(R.image.ic_arrow_bottom_black(), for: .normal)
     $0.semanticContentAttribute = .forceRightToLeft
     $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -8)
     $0.setTitleColor(.black, for: .normal)
   }
   
   let researchButton = UIButton().then {
-    $0.setTitle("home_research".localized, for: .normal)
+    $0.setTitle(R.string.localization.home_research(), for: .normal)
     $0.setTitleColor(.white, for: .normal)
     $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 14)
     $0.contentEdgeInsets = UIEdgeInsets(top: 12, left: 24, bottom: 12, right: 24)
-    $0.backgroundColor = UIColor(r: 255, g: 92, b: 67)
+    $0.backgroundColor = R.color.red()
     $0.layer.cornerRadius = 20
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOffset = CGSize(width: 0, height: 4)
@@ -42,19 +42,12 @@ class HomeView: BaseView {
     
     layout.scrollDirection = .horizontal
     layout.minimumInteritemSpacing = 12
-    layout.itemSize = CGSize(
-      width: 264,
-      height: 114
-    )
+    layout.itemSize = StoreCell.itemSize
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear
     $0.showsHorizontalScrollIndicator = false
-    $0.contentInset = UIEdgeInsets(
-      top: 0,
-      left: 24,
-      bottom: 0,
-      right: 24
-    )
+    $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
+    $0.register([StoreCell.self])
   }
   
   let emptyCell = HomeEmptyStoreCell().then {
@@ -62,14 +55,14 @@ class HomeView: BaseView {
   }
   
   let currentLocationButton = UIButton().then {
-    $0.setImage(UIImage(named: "ic_current_location"), for: .normal)
+    $0.setImage(R.image.ic_current_location(), for: .normal)
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     $0.layer.shadowOpacity = 0.15
   }
   
   let tossButton = UIButton().then {
-    $0.setImage(UIImage(named: "ic_toss"), for: .normal)
+    $0.setImage(R.image.ic_toss(), for: .normal)
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     $0.layer.shadowOpacity = 0.15
@@ -79,8 +72,14 @@ class HomeView: BaseView {
   override func setup() {
     self.backgroundColor = .white
     self.addSubViews(
-      mapView, researchButton, addressContainerView, addressButton,
-      storeCollectionView, currentLocationButton, tossButton, emptyCell
+      mapView,
+      researchButton,
+      addressContainerView,
+      addressButton,
+      storeCollectionView,
+      currentLocationButton,
+      tossButton,
+      emptyCell
     )
   }
   
@@ -109,7 +108,7 @@ class HomeView: BaseView {
     
     self.storeCollectionView.snp.makeConstraints { (make) in
       make.left.right.equalToSuperview()
-      make.bottom.equalTo(safeAreaLayoutGuide).offset(-24)
+      make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-24)
       make.height.equalTo(124)
     }
     
@@ -126,12 +125,12 @@ class HomeView: BaseView {
     self.emptyCell.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.bottom.equalTo(safeAreaLayoutGuide).offset(-34)
+      make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-34)
       make.height.equalTo(104)
     }
   }
   
-  func scrollToIndex(index: IndexPath){
+  func scrollToIndex(index: IndexPath) {
     self.storeCollectionView.scrollToItem(at: index, at: .left, animated: true)
   }
   

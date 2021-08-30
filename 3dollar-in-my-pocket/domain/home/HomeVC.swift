@@ -3,10 +3,9 @@ import RxSwift
 import NMapsMap
 import FirebaseCrashlytics
 
-
 class HomeVC: BaseVC {
   
-  private lazy var homeView = HomeView(frame: self.view.frame)
+  private let homeView = HomeView()
   private let viewModel = HomeViewModel(
     storeService: StoreService(),
     mapService: MapService(),
@@ -23,7 +22,7 @@ class HomeVC: BaseVC {
     let homeVC = HomeVC(nibName: nil, bundle: nil).then {
       $0.tabBarItem = UITabBarItem(
         title: nil,
-        image: UIImage(named: "ic_home"),
+        image: R.image.ic_home(),
         tag: TabBarTag.home.rawValue
       )
     }
@@ -38,9 +37,12 @@ class HomeVC: BaseVC {
     self.locationManager.stopUpdatingLocation()
   }
   
+  override func loadView() {
+    self.view = self.homeView
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    view = homeView
     
     self.initilizeShopCollectionView()
     self.initilizeLocationManager()
@@ -61,7 +63,7 @@ class HomeVC: BaseVC {
       .bind(to: homeView.storeCollectionView.rx.items(
         cellIdentifier: StoreCell.registerId,
         cellType: StoreCell.self
-      )) { row, store, cell in
+      )) { _, store, cell in
         cell.bind(store: store)
       }.disposed(by: disposeBag)
     
@@ -147,10 +149,6 @@ class HomeVC: BaseVC {
   
   private func initilizeShopCollectionView() {
     self.homeView.storeCollectionView.delegate = self
-    self.homeView.storeCollectionView.register(
-      StoreCell.self,
-      forCellWithReuseIdentifier: StoreCell.registerId
-    )
   }
   
   private func initilizeNaverMap() {
@@ -223,7 +221,7 @@ class HomeVC: BaseVC {
   }
   
   private func showSearchAddress() {
-    let searchAddressVC = SearchAddressVC.instacne().then{
+    let searchAddressVC = SearchAddressVC.instacne().then {
       $0.transitioningDelegate = self
       $0.delegate = self
     }
