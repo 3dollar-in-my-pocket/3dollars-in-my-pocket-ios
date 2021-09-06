@@ -306,7 +306,7 @@ class ModifyViewModel: BaseViewModel {
   
   private func updateStroe(store: Store) {
     self.output.showLoading.accept(true)
-    self.storeService.updateStore(storeId: store.storeId, store: store)
+    self.storeService.updateStore(storeId: store.storeId, updateStoreRequest: .init(store: store))
       .subscribe { [weak self] _ in
         guard let self = self else { return }
         

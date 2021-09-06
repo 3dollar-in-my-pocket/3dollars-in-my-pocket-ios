@@ -17,9 +17,9 @@ protocol StoreServiceProtocol {
   
   func getPhotos(storeId: Int) -> Observable<[Image]>
   
-  func deletePhoto(storeId: Int, photoId: Int) -> Observable<String>
+  func deletePhoto(photoId: Int) -> Observable<String>
   
-  func updateStore(storeId: Int, store: Store) -> Observable<String>
+  func updateStore(storeId: Int, updateStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse>
   
   func getStoreDetail(
     storeId: Int,
@@ -97,7 +97,7 @@ struct StoreService: StoreServiceProtocol {
   
   func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/\(storeId)/images"
+      let urlString = HTTPUtils.url + "/api/v2/store/images"
       let headers = HTTPUtils.defaultHeader()
       
       HTTPUtils.fileUploadSession.upload(
@@ -152,9 +152,9 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func deletePhoto(storeId: Int, photoId: Int) -> Observable<String> {
+  func deletePhoto(photoId: Int) -> Observable<String> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/\(storeId)/images/\(photoId)"
+      let urlString = HTTPUtils.url + "/api/v2/store/image/\(photoId)"
       let headers = HTTPUtils.defaultHeader()
       
       HTTPUtils.defaultSession.request(
@@ -177,36 +177,25 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func updateStore(storeId: Int, store: Store) -> Observable<String> {
+  func updateStore(storeId: Int, updateStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/update"
+      let urlString = HTTPUtils.url + "/api/v2/store/\(storeId)"
       let headers = HTTPUtils.defaultHeader()
-      var parameters = store.toJson()
+      let parameters = updateStoreRequest.params
       
-      parameters["storeId"] = storeId
-      
-      for index in store.menus.indices {
-        let menu = store.menus[index]
-        
-        parameters["menu[\(index)].category"] = menu.category.rawValue ?? StoreCategory.BUNGEOPPANG
-        parameters["menu[\(index)].name"] = menu.name
-        parameters["menu[\(index)].price"] = menu.price
-      }
-      
-      HTTPUtils.fileUploadSession.upload(multipartFormData: { multipartFormData in
-        for (key, value) in parameters {
-          let stringValue = String(describing: value)
-          
-          multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
-        }
-      }, to: urlString, method: .put, headers: headers).responseString(completionHandler: { response in
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .put,
+        parameters: parameters,
+        encoding: JSONEncoding.default,
+        headers: headers
+      ).responseJSON { response in
         if response.isSuccess() {
-          observer.onNext("success")
-          observer.onCompleted()
+          observer.processValue(class: StoreInfoResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
-      })
+      }
       return Disposables.create()
     }
   }

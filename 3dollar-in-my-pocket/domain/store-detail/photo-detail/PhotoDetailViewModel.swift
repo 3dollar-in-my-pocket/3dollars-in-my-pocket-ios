@@ -43,7 +43,7 @@ class PhotoDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.tapDelete
-      .map { (self.storeId, self.selectedIndex) }
+      .map { self.selectedIndex }
       .bind(onNext: self.deletePhoto)
       .disposed(by: disposeBag)
   }
@@ -54,10 +54,10 @@ class PhotoDetailViewModel: BaseViewModel {
     self.output.selectPhoto.accept(selectedIndex)
   }
   
-  private func deletePhoto(storeId: Int, selectedIndex: Int) {
+  private func deletePhoto(selectedIndex: Int) {
     self.output.showLoading.accept(true)
     
-    self.storeService.deletePhoto(storeId: storeId, photoId: self.photos[selectedIndex].id)
+    self.storeService.deletePhoto(photoId: self.photos[selectedIndex].id)
       .subscribe(
         onNext: { [weak self] _ in
           guard let self = self else { return }
