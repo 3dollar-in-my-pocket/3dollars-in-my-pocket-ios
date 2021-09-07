@@ -7,7 +7,7 @@ protocol UserServiceProtocol {
   
   func signup(request: SignupRequest) -> Observable<SigninResponse>
   
-  func withdrawal(userId: Int) -> Observable<Void>
+  func withdrawal() -> Observable<Void>
   
   func changeNickname(name: String) -> Observable<User>
   
@@ -61,19 +61,17 @@ struct UserService: UserServiceProtocol {
     }
   }
   
-  func withdrawal(userId: Int) -> Observable<Void> {
+  func withdrawal() -> Observable<Void> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/signout"
+      let urlString = HTTPUtils.url + "/api/v2/signout"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["userId": userId]
       
       HTTPUtils.defaultSession.request(
         urlString,
-        method: .post,
-        parameters: parameters,
-        encoding: URLEncoding.default,
+        method: .delete,
         headers: headers
-      ).responseString(completionHandler: { (response) in
+      )
+      .responseString(completionHandler: { (response) in
         if let statusCode = response.response?.statusCode {
           if "\(statusCode)".first! == "2" {
             observer.onNext(())

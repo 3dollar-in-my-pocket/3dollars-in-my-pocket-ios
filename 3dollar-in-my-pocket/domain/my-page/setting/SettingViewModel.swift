@@ -104,7 +104,7 @@ class SettingViewModel: BaseViewModel {
   
   private func withdrawal() {
     self.output.showLoading.accept(true)
-    self.userService.withdrawal(userId: self.userDefaults.getUserId())
+    self.userService.withdrawal()
       .subscribe { [weak self] _ in
         guard let self = self else { return }
         self.userDefaults.clear()
