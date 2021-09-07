@@ -32,7 +32,7 @@ protocol StoreServiceProtocol {
     cursor: Int?
   ) -> Observable<Pagination<StoreInfoResponse>>
   
-  func deleteStore(storeId: Int, deleteReasonType: DeleteReason) -> Observable<String>
+  func deleteStore(storeId: Int, deleteReasonType: DeleteReason) -> Observable<StoreDeleteResponse>
 }
 
 
@@ -263,25 +263,23 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func deleteStore(storeId: Int, deleteReasonType: DeleteReason) -> Observable<String> {
+  func deleteStore(
+    storeId: Int,
+    deleteReasonType: DeleteReason
+  ) -> Observable<StoreDeleteResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/delete"
+      let urlString = HTTPUtils.url + "/api/v2/store/\(storeId)"
       let headers = HTTPUtils.defaultHeader()
-      let parameters : [String: Any] = [
-        "storeId": storeId,
-        "userId": UserDefaultsUtil.getUserId()!,
-        "deleteReasonType": deleteReasonType.getValue()
-      ]
+      let parameters: [String: Any] = ["deleteReasonType": deleteReasonType.getValue()]
       
       HTTPUtils.defaultSession.request(
         urlString,
         method: .delete,
         parameters: parameters,
         headers: headers
-      ).responseString { response in
+      ).responseJSON { response in
         if response.isSuccess() {
-          observer.onNext("success")
-          observer.onCompleted()
+          observer.processValue(class: StoreDeleteResponse.self, response: response)
         } else if response.response?.statusCode == 400 {
           let error = CommonError(desc: "store_delete_already_request".localized)
           
