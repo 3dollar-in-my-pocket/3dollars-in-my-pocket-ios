@@ -13,7 +13,7 @@ protocol StoreServiceProtocol {
   
   func saveStore(addStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse>
   
-  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String>
+  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[StoreImageResponse]>
   
   func getPhotos(storeId: Int) -> Observable<[Image]>
   
@@ -95,7 +95,7 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String> {
+  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[StoreImageResponse]> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/store/images"
       let headers = HTTPUtils.defaultHeader()
@@ -105,7 +105,7 @@ struct StoreService: StoreServiceProtocol {
           for data in ImageUtils.dataArrayFromImages(photos: photos) {
             multipartFormData.append(
               data,
-              withName: "image",
+              withName: "images",
               fileName: "image.jpeg",
               mimeType: "image/jpeg"
             )
@@ -115,16 +115,15 @@ struct StoreService: StoreServiceProtocol {
         to: urlString,
         headers: headers
       )
-      .responseString { response in
+      .responseJSON(completionHandler: { response in
         if let statusCode = response.response?.statusCode {
           if "\(statusCode)".first! == "2" {
-            observer.onNext("success")
-            observer.onCompleted()
+            observer.processValue(class: [StoreImageResponse].self, response: response)
           }
         } else {
           observer.processHTTPError(response: response)
         }
-      }
+      })
       
       return Disposables.create()
     }
