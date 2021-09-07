@@ -280,7 +280,7 @@ struct StoreService: StoreServiceProtocol {
       ).responseJSON { response in
         if response.isSuccess() {
           observer.processValue(class: StoreDeleteResponse.self, response: response)
-        } else if response.response?.statusCode == 400 {
+        } else if response.response?.statusCode == 409 {
           let error = CommonError(desc: "store_delete_already_request".localized)
           
           observer.onError(error)
