@@ -15,7 +15,7 @@ protocol StoreServiceProtocol {
   
   func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[StoreImageResponse]>
   
-  func getPhotos(storeId: Int) -> Observable<[Image]>
+  func getPhotos(storeId: Int) -> Observable<[StoreImageResponse]>
   
   func deletePhoto(photoId: Int) -> Observable<String>
   
@@ -129,9 +129,9 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func getPhotos(storeId: Int) -> Observable<[Image]> {
+  func getPhotos(storeId: Int) -> Observable<[StoreImageResponse]> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/\(storeId)/images"
+      let urlString = HTTPUtils.url + "/api/v2/store/\(storeId)/images"
       let headers = HTTPUtils.defaultHeader()
       
       HTTPUtils.defaultSession.request(
@@ -141,7 +141,7 @@ struct StoreService: StoreServiceProtocol {
       )
       .responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: [Image].self, response: response)
+          observer.processValue(class: [StoreImageResponse].self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }

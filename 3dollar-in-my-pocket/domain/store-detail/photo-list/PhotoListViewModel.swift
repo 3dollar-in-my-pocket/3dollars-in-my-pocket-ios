@@ -32,8 +32,10 @@ class PhotoListViewModel: BaseViewModel {
   func fetchPhotos(){
     self.output.showLoading.accept(true)
     self.storeService.getPhotos(storeId: self.storeId)
-      .subscribe { [weak self] photos in
+      .subscribe { [weak self] photoResponse in
         guard let self = self else { return }
+        let photos = photoResponse.map { Image(response: $0) }
+        
         self.output.photos.accept(photos)
         self.output.showLoading.accept(false)
       } onError: { [weak self] error in
