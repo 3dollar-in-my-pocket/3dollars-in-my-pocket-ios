@@ -5,7 +5,7 @@ protocol ReviewServiceProtocol {
   
   func saveReview(review: Review, storeId: Int) -> Observable<ReviewInfoResponse>
   
-  func modifyReview(review: Review) -> Observable<String>
+  func modifyReview(review: Review) -> Observable<ReviewInfoResponse>
   
   func deleteRevie(reviewId: Int) -> Observable<Void>
   
@@ -42,11 +42,11 @@ struct ReviewService: ReviewServiceProtocol {
     }
   }
   
-  func modifyReview(review: Review) -> Observable<String> {
+  func modifyReview(review: Review) -> Observable<ReviewInfoResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/review/\(review.id)"
+      let urlString = HTTPUtils.url + "/api/v2/store/review/\(review.id)"
       let headers = HTTPUtils.defaultHeader()
-      let parameter = review.toJson()
+      let parameter = UpdateReviewRequest(review: review).params
       
       HTTPUtils.defaultSession.request(
         urlString,
@@ -55,10 +55,9 @@ struct ReviewService: ReviewServiceProtocol {
         encoding: JSONEncoding.default,
         headers: headers
       )
-      .responseString { response in
+      .responseJSON { response in
         if response.isSuccess() {
-          observer.onNext("success")
-          observer.onCompleted()
+          observer.processValue(class: ReviewInfoResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -70,7 +69,7 @@ struct ReviewService: ReviewServiceProtocol {
   
   func deleteRevie(reviewId: Int) -> Observable<Void> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/review/\(reviewId)"
+      let urlString = HTTPUtils.url + "/api/v2/store/review/\(reviewId)"
       let headers = HTTPUtils.defaultHeader()
       
       HTTPUtils.defaultSession.request(
