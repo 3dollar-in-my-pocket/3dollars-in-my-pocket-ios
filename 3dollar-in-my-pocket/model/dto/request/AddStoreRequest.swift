@@ -1,4 +1,4 @@
-struct AddStoreRequest: Parameterable {
+struct AddStoreRequest: Requestable {
   
   let appearanceDays: [WeekDay]
   let latitude: Double

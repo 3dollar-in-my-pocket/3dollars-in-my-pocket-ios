@@ -3,7 +3,7 @@ import RxSwift
 
 protocol ReviewServiceProtocol {
   
-  func saveReview(review: Review, storeId: Int) -> Observable<String>
+  func saveReview(review: Review, storeId: Int) -> Observable<ReviewInfoResponse>
   
   func modifyReview(review: Review) -> Observable<String>
   
@@ -17,11 +17,12 @@ protocol ReviewServiceProtocol {
 
 struct ReviewService: ReviewServiceProtocol {
   
-  func saveReview(review: Review, storeId: Int) -> Observable<String> {
+  func saveReview(review: Review, storeId: Int) -> Observable<ReviewInfoResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/review/save?storeId=\(storeId)&userId=\(UserDefaultsUtil.getUserId()!)"
+      let urlString = HTTPUtils.url + "/api/v2/store/review"
       let headers = HTTPUtils.jsonWithTokenHeader()
-      let parameter = review.toJson()
+      var parameter = AddReviewRequest(review: review).params
+      parameter["storeId"] = storeId
       
       HTTPUtils.defaultSession.request(
         urlString,
@@ -29,10 +30,9 @@ struct ReviewService: ReviewServiceProtocol {
         parameters: parameter,
         encoding: JSONEncoding.default,
         headers: headers
-      ).responseString { response in
+      ).responseJSON { response in
         if response.isSuccess() {
-          observer.onNext("success")
-          observer.onCompleted()
+          observer.processValue(class: ReviewInfoResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }

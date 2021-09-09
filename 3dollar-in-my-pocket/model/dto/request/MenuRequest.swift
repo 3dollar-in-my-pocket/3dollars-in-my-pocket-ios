@@ -1,4 +1,4 @@
-struct MenuRequest: Parameterable {
+struct MenuRequest: Requestable {
   
   let category: StoreCategory
   let name: String
