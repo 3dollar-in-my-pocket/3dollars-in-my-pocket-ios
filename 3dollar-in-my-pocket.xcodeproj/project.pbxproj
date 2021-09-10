@@ -237,6 +237,7 @@
 		6EBF20F3259327E500C821EF /* ReviewModalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBF20F2259327E500C821EF /* ReviewModalViewModel.swift */; };
 		6EC0D67C26EB7EEF008AD34B /* StoresGroupByDistanceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC0D67B26EB7EEF008AD34B /* StoresGroupByDistanceResponse.swift */; };
 		6EC0D67E26EB856D008AD34B /* StoresGroupByReviewResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC0D67D26EB856D008AD34B /* StoresGroupByReviewResponse.swift */; };
+		6EC0D68026EB8891008AD34B /* FQAResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC0D67F26EB8891008AD34B /* FQAResponse.swift */; };
 		6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */; };
 		6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */; };
 		6EC8685C25BF07F10082521C /* splash.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EC8685B25BF07F10082521C /* splash.json */; };
@@ -516,6 +517,7 @@
 		6EBF20F2259327E500C821EF /* ReviewModalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalViewModel.swift; sourceTree = "<group>"; };
 		6EC0D67B26EB7EEF008AD34B /* StoresGroupByDistanceResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoresGroupByDistanceResponse.swift; sourceTree = "<group>"; };
 		6EC0D67D26EB856D008AD34B /* StoresGroupByReviewResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoresGroupByReviewResponse.swift; sourceTree = "<group>"; };
+		6EC0D67F26EB8891008AD34B /* FQAResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FQAResponse.swift; sourceTree = "<group>"; };
 		6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
 		6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
 		6EC8685B25BF07F10082521C /* splash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = splash.json; sourceTree = "<group>"; };
@@ -1328,6 +1330,7 @@
 				6E479B6626EA2C5B00566384 /* ReviewInfoResponse.swift */,
 				6EC0D67B26EB7EEF008AD34B /* StoresGroupByDistanceResponse.swift */,
 				6EC0D67D26EB856D008AD34B /* StoresGroupByReviewResponse.swift */,
+				6EC0D67F26EB8891008AD34B /* FQAResponse.swift */,
 			);
 			path = response;
 			sourceTree = "<group>";
@@ -1711,6 +1714,7 @@
 				6E70C38F23B6EBB300C52C9C /* StoreDetailView.swift in Sources */,
 				6E2C4CCC26E79A8F00AAEA6E /* StoreDeleteResponse.swift in Sources */,
 				6E4952C626B039BF00D65042 /* KakaoSigninManager.swift in Sources */,
+				6EC0D68026EB8891008AD34B /* FQAResponse.swift in Sources */,
 				6E1B64E02587A396003225F4 /* AFDataResponseExt.swift in Sources */,
 				6E56BD7F23CDE291002D7092 /* Image.swift in Sources */,
 				6E25244625945BF0006EBDDB /* PopupViewModel.swift in Sources */,
