@@ -87,9 +87,11 @@ class CategoryListViewModel: BaseViewModel {
       currentLocation: currentLocation,
       mapLocation: mapLocation
     ).subscribe(
-      onNext: { [weak self] categoryByDistance in
+      onNext: { [weak self] response in
         guard let self = self else { return }
+        let categoryByDistance = CategoryByDistance(response: response)
         let stores = self.storesByDistance(from: categoryByDistance)
+        
         self.ouput.stores.accept(stores)
         self.ouput.isHiddenEmpty.accept(!stores.isEmpty)
         self.ouput.markers.accept(categoryByDistance.getStores())
@@ -119,9 +121,11 @@ class CategoryListViewModel: BaseViewModel {
       mapLocation: mapLocation
     )
     .subscribe(
-      onNext: { [weak self] categoryByReview in
+      onNext: { [weak self] response in
         guard let self = self else { return }
+        let categoryByReview = CategoryByReview(response: response)
         let stores = self.storesByReview(from: categoryByReview)
+        
         self.ouput.stores.accept(stores)
         self.ouput.isHiddenEmpty.accept(!stores.isEmpty)
         self.ouput.markers.accept(categoryByReview.getStores())

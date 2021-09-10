@@ -41,4 +41,14 @@ struct StoreInfoResponse: Decodable {
     self.storeId = store.storeId
     self.storeName = store.storeName
   }
+  
+  init(storeCard: StoreCard) {
+    self.categories = storeCard.categories
+    self.distance = storeCard.distance
+    self.latitude = storeCard.latitude
+    self.longitude = storeCard.longitude
+    self.rating = Double(storeCard.rating)
+    self.storeId = storeCard.id
+    self.storeName = storeCard.storeName
+  }
 }

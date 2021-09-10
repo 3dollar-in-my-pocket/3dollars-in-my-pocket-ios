@@ -34,6 +34,14 @@ struct CategoryByReview: Codable {
     storeList4 = try values.decodeIfPresent([StoreCard].self, forKey: .storeList4) ?? []
   }
   
+  init(response: StoresGroupByReviewResponse) {
+    self.storeList0 = response.storeList0.map(StoreCard.init)
+    self.storeList1 = response.storeList1.map(StoreCard.init)
+    self.storeList2 = response.storeList2.map(StoreCard.init)
+    self.storeList3 = response.storeList3.map(StoreCard.init)
+    self.storeList4 = response.storeList4.map(StoreCard.init)
+  }
+  
   func getStores() -> [StoreCard] {
     return self.storeList4 + self.storeList3 + self.storeList2 + self.storeList1 + self.storeList0
   }
