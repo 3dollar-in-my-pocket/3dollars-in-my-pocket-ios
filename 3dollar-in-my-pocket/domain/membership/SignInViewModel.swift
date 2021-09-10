@@ -63,6 +63,7 @@ class SignInViewModel: BaseViewModel {
       .subscribe { [weak self] response in
         guard let self = self else { return }
         
+        self.userDefaults.setUserId(id: response.userId)
         self.userDefaults.setUserToken(token: response.token)
         self.output.goToMain.accept(())
       } onError: { [weak self] error in

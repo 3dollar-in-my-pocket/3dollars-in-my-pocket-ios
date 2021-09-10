@@ -55,6 +55,7 @@ class NicknameViewModel: BaseViewModel {
       .subscribe(
         onNext: { [weak self] response in
           guard let self = self else { return }
+          self.userDefaults.setUserId(id: response.userId)
           self.userDefaults.setUserToken(token: response.token)
           self.showLoading.accept(false)
           self.output.goToMain.accept(())
