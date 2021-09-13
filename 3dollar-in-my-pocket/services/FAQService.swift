@@ -22,7 +22,7 @@ struct FAQService: FAQServiceProtocol {
       HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
-        parameters: params,
+        parameters: nil,
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
@@ -48,7 +48,7 @@ struct FAQService: FAQServiceProtocol {
       ).responseJSON { response in
         if response.isSuccess() {
           observer.processValue(class: [FAQCategoryResponse].self, response: response)
-        } else{
+        } else {
           observer.processHTTPError(response: response)
         }
       }

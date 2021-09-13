@@ -16,17 +16,17 @@ class FAQVC: BaseVC {
     view = faqView
     self.initilizeTagCollectionView()
     self.initilizeFAQTableView()
-    self.viewModel.fetchFAQs()
+    self.viewModel.input.viewDidLoad.onNext(())
   }
   
   override func bindViewModel() {
     // Bind output
-    self.viewModel.output.faqTags
+    self.viewModel.output.faqCategories
       .bind(to: self.faqView.tagCollectionView.rx.items(
               cellIdentifier: FAQTagCell.registerId,
               cellType: FAQTagCell.self
-      )) { row, tag, cell in
-        cell.bind(name: tag.name)
+      )) { _, category, cell in
+        cell.bind(name: category.description)
       }
       .disposed(by: disposeBag)
     
@@ -178,9 +178,10 @@ extension FAQVC: UITableViewDataSource, UITableViewDelegate {
                                     height: 40
     ))
     
-    let tagName = self.viewModel.filteredfaqs[section][0].tags[0].name
+    let category = self.viewModel.filteredfaqs[section][0].category
+    let firstIndex = self.viewModel.categories.firstIndex { $0.category == category }
     
-    headerView.bind(title: tagName)
+    headerView.bind(title: self.viewModel.categories[firstIndex ?? 0].description)
     return headerView
   }
 }
