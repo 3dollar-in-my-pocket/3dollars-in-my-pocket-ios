@@ -11,13 +11,15 @@ class FAQViewModel: BaseViewModel {
   }
   
   struct Output {
-    let faqTags = PublishRelay<[FAQTag]>()
+    let faqCategories = PublishRelay<[FAQCategoryResponse]>()
+    let faqs = PublishRelay<[FAQ]>()
     let refreshTableView = PublishRelay<Void>()
     let selectTag = PublishRelay<Int>()
     let showLoading = PublishRelay<Bool>()
   }
   
   let faqService: FAQServiceProtocol
+  var currentCategory: FAQCategory? = nil
   var faqs: [[FAQ]] = []
   var filteredfaqs: [[FAQ]] = []
   
@@ -30,39 +32,17 @@ class FAQViewModel: BaseViewModel {
       .disposed(by: disposeBag)
   }
   
+  func fetchFAQCategories() {
+    self.faqService.fetchFAQCategories()
+      .bind(to: self.output.faqCategories)
+      .disposed(by: self.disposeBag)
+  }
+  
   func fetchFAQs() {
-    self.output.showLoading.accept(true)
-    self.faqService.getFAQs()
-      .subscribe(
-        onNext: { [weak self] faqs in
-          guard let self = self else { return }
-          let tags = Array(Set(faqs.map { $0.tags }.reduce([], +))).sorted { (tag1, tag2) -> Bool in
-            return tag1.displayOrder < tag2.displayOrder
-          }
-          let totalTag = FAQTag(id: -1, name: "전체", displayOrder: -1)
-          
-          self.faqs = Array(repeating: [], count: tags.count)
-          self.setupFaqs(faqs: faqs)
-          self.filteredfaqs = self.faqs
-          
-          self.output.refreshTableView.accept(())
-          self.output.faqTags.accept([totalTag] + tags)
-          self.output.selectTag.accept(0)
-          self.output.showLoading.accept(false)
-        },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          if let httpError = error as? HTTPError {
-            self.httpErrorAlert.accept(httpError)
-          } else if let error = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: error.description)
-            
-            self.showSystemAlert.accept(alertContent)
-          }
-          self.output.showLoading.accept(false)
-        }
-      )
-      .disposed(by: disposeBag)
+    self.faqService.fetchFAQs(category: self.currentCategory)
+      .map { $0.map(FAQ.init) }
+      .bind(to: self.output.faqs)
+      .disposed(by: self.disposeBag)
   }
   
   private func setupFaqs(faqs: [FAQ]) {

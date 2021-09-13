@@ -19,4 +19,11 @@ struct FAQ: Codable {
     question = try values.decodeIfPresent(String.self, forKey: .question) ?? ""
     tags = try values.decodeIfPresent([FAQTag].self, forKey: .tags) ?? []
   }
+  
+  init(response: FAQResponse) {
+    self.answer = response.answer
+    self.id = response.faqId
+    self.question = response.question
+    self.tags = []
+  }
 }
