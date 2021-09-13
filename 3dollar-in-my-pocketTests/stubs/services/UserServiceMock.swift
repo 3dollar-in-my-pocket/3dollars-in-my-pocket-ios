@@ -11,34 +11,27 @@ import RxSwift
 @testable import 가슴속3천원_debug
 
 struct UserServiceMock: UserServiceProtocol {
+  var signinObservable: Observable<SigninResponse>?
+  var signupObservable: Observable<SigninResponse>?
+  var fetchUserInfoObservable: Observable<UserInfoResponse>?
   
-  var validateTokenObservable: Observable<Void>?
-  
-  func validateToken(token: String) -> Observable<Void> {
-    return self.validateTokenObservable ?? .empty()
+  func signin(request: SigninRequest) -> Observable<SigninResponse> {
+    return self.signinObservable ?? .empty()
   }
   
-  func signIn(user: User) -> Observable<SignIn> {
-    return .empty()
-  }
-  
-  func setNickname(nickname: String, id: Int, token: String) -> Observable<Void> {
-    return .empty()
-  }
-  
-  func getUserInfo(userId: Int) -> Observable<User> {
-    return .empty()
+  func signup(request: SignupRequest) -> Observable<SigninResponse> {
+    return self.signupObservable ?? .empty()
   }
   
   func withdrawal(userId: Int) -> Observable<Void> {
     return .empty()
   }
   
-  func changeNickname(nickname: String) -> Observable<String> {
+  func changeNickname(name: String) -> Observable<User> {
     return .empty()
   }
   
-  func getUserInfo() -> Observable<User> {
-    return .empty()
+  func fetchUserInfo() -> Observable<UserInfoResponse> {
+    return self.fetchUserInfoObservable ?? .empty()
   }
 }

@@ -2,7 +2,7 @@ import RxDataSources
 
 struct MenuSection {
   
-  var category: StoreCategory?
+  var category: StoreCategory
   var items: [Menu]
   
   func toMenu() -> [Menu] {

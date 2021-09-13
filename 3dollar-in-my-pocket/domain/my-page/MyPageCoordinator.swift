@@ -1,0 +1,45 @@
+//
+//  MyPageCoordinator.swift
+//  3dollar-in-my-pocket
+//
+//  Created by Hyun Sik Yoo on 2021/08/26.
+//  Copyright © 2021 Macgongmon. All rights reserved.
+//
+
+import Foundation
+
+protocol MyPageCoordinator: Coordinator, AnyObject {
+  func goToSetting()
+  
+  func goToTotalRegisteredStore()
+  
+  func goToMyReview()
+  
+  func goToStoreDetail(storeId: Int)
+}
+
+extension MyPageCoordinator {
+  func goToSetting() {
+    let viewController = SettingVC.instance()
+    
+    presenter?.pushViewController(viewController, animated: true)
+  }
+  
+  func goToTotalRegisteredStore() {
+    let viewController = RegisteredVC.instance()
+    
+    presenter?.pushViewController(viewController, animated: true)
+  }
+  
+  func goToMyReview() {
+    let viewController = MyReviewVC.instance()
+    
+    presenter?.pushViewController(viewController, animated: true)
+  }
+  
+  func goToStoreDetail(storeId: Int) {
+    let viewController = StoreDetailVC.instance(storeId: storeId)
+    
+    presenter?.pushViewController(viewController, animated: true)
+  }
+}

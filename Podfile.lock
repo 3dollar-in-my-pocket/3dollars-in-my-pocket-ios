@@ -399,6 +399,11 @@ PODS:
   - R.swift (5.4.0):
     - R.swift.Library (~> 5.3.0)
   - R.swift.Library (5.3.0)
+  - RxAlamofire (5.7.1):
+    - RxAlamofire/Core (= 5.7.1)
+  - RxAlamofire/Core (5.7.1):
+    - Alamofire (~> 5.4)
+    - RxSwift (~> 5.1)
   - RxCocoa (5.1.1):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
@@ -406,6 +411,23 @@ PODS:
     - Differentiator (~> 4.0)
     - RxCocoa (~> 5.0)
     - RxSwift (~> 5.0)
+  - RxKakaoSDKAuth (2.5.3):
+    - KakaoSDKAuth (= 2.5.3)
+    - RxKakaoSDKCommon (= 2.5.3)
+  - RxKakaoSDKCommon (2.5.3):
+    - RxKakaoSDKCommon/Common (= 2.5.3)
+    - RxKakaoSDKCommon/Network (= 2.5.3)
+  - RxKakaoSDKCommon/Common (2.5.3):
+    - KakaoSDKCommon/Common (= 2.5.3)
+    - RxCocoa
+    - RxSwift
+  - RxKakaoSDKCommon/Network (2.5.3):
+    - KakaoSDKCommon/Network (= 2.5.3)
+    - RxAlamofire (~> 5.2)
+    - RxKakaoSDKCommon/Common (= 2.5.3)
+  - RxKakaoSDKUser (2.5.3):
+    - KakaoSDKUser (= 2.5.3)
+    - RxKakaoSDKAuth (= 2.5.3)
   - RxRelay (5.1.1):
     - RxSwift (~> 5)
   - RxSwift (5.1.2)
@@ -432,17 +454,17 @@ DEPENDENCIES:
   - Firebase/Firestore
   - Firebase/RemoteConfig
   - Google-Mobile-Ads-SDK
-  - KakaoSDKAuth
   - KakaoSDKCommon
   - KakaoSDKLink
   - KakaoSDKTemplate
-  - KakaoSDKUser
   - Kingfisher (~> 5.0)
   - lottie-ios
   - NMapsMap
   - R.swift
   - RxCocoa (~> 5)
   - RxDataSources (~> 4.0)
+  - RxKakaoSDKAuth
+  - RxKakaoSDKUser
   - RxSwift (~> 5)
   - RxTest (~> 5)
   - SnapKit (~> 5.0.0)
@@ -489,8 +511,12 @@ SPEC REPOS:
     - PromisesObjC
     - R.swift
     - R.swift.Library
+    - RxAlamofire
     - RxCocoa
     - RxDataSources
+    - RxKakaoSDKAuth
+    - RxKakaoSDKCommon
+    - RxKakaoSDKUser
     - RxRelay
     - RxSwift
     - RxTest
@@ -535,8 +561,12 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   R.swift: c533450b0f7dc494e0993f5f1a1db925d84c3006
   R.swift.Library: 0fc583cb55a99e28901299cc451614cad1161962
+  RxAlamofire: 8e144c62dcc01d68dcb366bfc542eb6dd46bab78
   RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
+  RxKakaoSDKAuth: 8f4609d0a1e1613f8861a219e727aa1b688d67f3
+  RxKakaoSDKCommon: 6dc3f478b35751dfd1f806f20d3bf7b1650f257c
+  RxKakaoSDKUser: 088d321b0b959b66bbb112f8db278aae2a83e6bf
   RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
   RxSwift: 1e2e1f9570186967f617e49128ed26ccf1bafc8e
   RxTest: 274549b747dca56f47c52c8991ec5cf797ecfe40
@@ -546,6 +576,6 @@ SPEC CHECKSUMS:
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: 72e02c6862b87c636252d0283ed825420805fddd
+PODFILE CHECKSUM: c5129c5ef9ea90cdc23448f1f6a295b5a5d8c6fe
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1

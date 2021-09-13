@@ -13,4 +13,9 @@ struct Image: Codable {
     id = try values.decodeIfPresent(Int.self, forKey: .id) ?? -1
     url = try values.decodeIfPresent(String.self, forKey: .url) ?? ""
   }
+  
+  init(response: StoreImageResponse) {
+    self.id = response.imageId
+    self.url = response.url
+  }
 }

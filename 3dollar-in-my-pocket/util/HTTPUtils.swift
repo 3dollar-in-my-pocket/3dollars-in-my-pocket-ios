@@ -8,7 +8,7 @@ struct HTTPUtils {
   
   static let defaultSession: Session = {
     let configuration = URLSessionConfiguration.default
-    configuration.timeoutIntervalForRequest = 3
+    configuration.timeoutIntervalForRequest = 4
     
     return Session(configuration: configuration)
   }()

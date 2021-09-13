@@ -3,22 +3,26 @@ import RxSwift
 
 protocol ReviewServiceProtocol {
   
-  func saveReview(review: Review, storeId: Int) -> Observable<String>
+  func saveReview(review: Review, storeId: Int) -> Observable<ReviewInfoResponse>
   
-  func modifyReview(review: Review) -> Observable<String>
+  func modifyReview(review: Review) -> Observable<ReviewInfoResponse>
   
   func deleteRevie(reviewId: Int) -> Observable<Void>
   
-  func getMyReview(page: Int) -> Observable<Page<Review>>
+  func fetchMyReview(
+    totalCount: Int?,
+    cursor: Int?
+  ) -> Observable<Pagination<ReviewDetailResponse>>
 }
 
 struct ReviewService: ReviewServiceProtocol {
   
-  func saveReview(review: Review, storeId: Int) -> Observable<String> {
+  func saveReview(review: Review, storeId: Int) -> Observable<ReviewInfoResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/review/save?storeId=\(storeId)&userId=\(UserDefaultsUtil.getUserId()!)"
+      let urlString = HTTPUtils.url + "/api/v2/store/review"
       let headers = HTTPUtils.jsonWithTokenHeader()
-      let parameter = review.toJson()
+      var parameter = AddReviewRequest(review: review).params
+      parameter["storeId"] = storeId
       
       HTTPUtils.defaultSession.request(
         urlString,
@@ -26,10 +30,9 @@ struct ReviewService: ReviewServiceProtocol {
         parameters: parameter,
         encoding: JSONEncoding.default,
         headers: headers
-      ).responseString { response in
+      ).responseJSON { response in
         if response.isSuccess() {
-          observer.onNext("success")
-          observer.onCompleted()
+          observer.processValue(class: ReviewInfoResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -39,11 +42,11 @@ struct ReviewService: ReviewServiceProtocol {
     }
   }
   
-  func modifyReview(review: Review) -> Observable<String> {
+  func modifyReview(review: Review) -> Observable<ReviewInfoResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/review/\(review.id)"
+      let urlString = HTTPUtils.url + "/api/v2/store/review/\(review.id)"
       let headers = HTTPUtils.defaultHeader()
-      let parameter = review.toJson()
+      let parameter = UpdateReviewRequest(review: review).params
       
       HTTPUtils.defaultSession.request(
         urlString,
@@ -52,10 +55,9 @@ struct ReviewService: ReviewServiceProtocol {
         encoding: JSONEncoding.default,
         headers: headers
       )
-      .responseString { response in
+      .responseJSON { response in
         if response.isSuccess() {
-          observer.onNext("success")
-          observer.onCompleted()
+          observer.processValue(class: ReviewInfoResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -67,7 +69,7 @@ struct ReviewService: ReviewServiceProtocol {
   
   func deleteRevie(reviewId: Int) -> Observable<Void> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/review/\(reviewId)"
+      let urlString = HTTPUtils.url + "/api/v2/store/review/\(reviewId)"
       let headers = HTTPUtils.defaultHeader()
       
       HTTPUtils.defaultSession.request(
@@ -88,11 +90,21 @@ struct ReviewService: ReviewServiceProtocol {
     }
   }
   
-  func getMyReview(page: Int) -> Observable<Page<Review>> {
+  func fetchMyReview(
+    totalCount: Int?,
+    cursor: Int?
+  ) -> Observable<Pagination<ReviewDetailResponse>> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/review/user"
+      let urlString = HTTPUtils.url + "/api/v2/store/reviews/me"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["page": page, "userId": UserDefaultsUtil.getUserId()!]
+      var parameters: [String: Any] = ["size": 20]
+      
+      if let totalcount = totalCount {
+        parameters["cachingTotalElements"] = totalcount
+      }
+      if let cursor = cursor {
+        parameters["cursor"] = cursor
+      }
       
       HTTPUtils.defaultSession.request(
         urlString,
@@ -101,7 +113,7 @@ struct ReviewService: ReviewServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: Page<Review>.self, response: response)
+          observer.processValue(class: Pagination<ReviewDetailResponse>.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
