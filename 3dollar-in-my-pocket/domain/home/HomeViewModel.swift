@@ -161,9 +161,11 @@ class HomeViewModel: BaseViewModel {
   }
   
   private func updateStore(index: Int, store: Store) {
-    let newStore = StoreInfoResponse(store: store)
-    self.stores[index] = newStore
-    self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
+    if index >= 0 {
+      let newStore = StoreInfoResponse(store: store)
+      self.stores[index] = newStore
+      self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
+    }
   }
   
   private func onSelectStore(index: Int) {
