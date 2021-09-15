@@ -95,6 +95,7 @@ struct UserService: UserServiceProtocol {
         urlString,
         method: .put,
         parameters: parameters,
+        encoding: JSONEncoding.default,
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
