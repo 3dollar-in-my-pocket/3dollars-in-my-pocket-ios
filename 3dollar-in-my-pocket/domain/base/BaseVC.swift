@@ -91,10 +91,18 @@ class BaseVC: UIViewController {
   }
   
   private func showDefaultErrorAlert(error: Error) {
-    AlertUtils.show(
-      controller: self,
-      title: nil,
-      message: error.localizedDescription
-    )
+    if let localizedError = error as? LocalizedError {
+      AlertUtils.show(
+        controller: self,
+        title: nil,
+        message: localizedError.errorDescription
+      )
+    } else {
+      AlertUtils.show(
+        controller: self,
+        title: nil,
+        message: error.localizedDescription
+      )
+    }
   }
 }

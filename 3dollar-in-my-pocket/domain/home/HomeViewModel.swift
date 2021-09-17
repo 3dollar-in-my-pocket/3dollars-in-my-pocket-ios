@@ -60,7 +60,9 @@ class HomeViewModel: BaseViewModel {
         guard let self = self else { return }
         self.selectedIndex = -1
       })
-      .withLatestFrom(Observable.combineLatest(self.input.mapLocation, self.input.distance)) { ($0, $1.0, $1.1) }
+      .withLatestFrom(
+        Observable.combineLatest(self.input.mapLocation, self.input.distance)
+      ) { ($0, $1.0, $1.1) }
       .bind(onNext: self.searchNearStores)
       .disposed(by: disposeBag)
     
