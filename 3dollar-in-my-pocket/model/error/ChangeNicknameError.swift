@@ -17,7 +17,7 @@ enum ChangeNicknameError: Int, LocalizedError {
     case .alreadyExistedNickname:
       return ""
     case .badRequest:
-      return ""
+      return "잘못된 형식의 닉네임입니다."
     }
   }
 }

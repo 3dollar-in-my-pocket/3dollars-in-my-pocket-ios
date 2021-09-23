@@ -91,6 +91,11 @@ class RenameVC: BaseVC {
       .asDriver(onErrorJustReturn: CommonError.init(desc: ""))
       .drive(onNext: self.showErrorAlert(error:))
       .disposed(by: self.disposeBag)
+    
+    self.viewModel.showSystemAlert
+      .asDriver(onErrorJustReturn: .init())
+      .drive(onNext: self.showSystemAlert(alert:))
+      .disposed(by: self.disposeBag)
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {

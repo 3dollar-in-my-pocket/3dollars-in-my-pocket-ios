@@ -40,6 +40,9 @@ final class RenameViewModel: BaseViewModel {
     
     self.input.tapRenameButton
       .withLatestFrom(self.input.newNickname)
+      .do(onNext: { [weak self] _ in
+        self?.output.isHiddenAlreadyExistedNickname.accept(true)
+      })
       .bind(onNext: self.changeNickname(name:))
       .disposed(by: self.disposeBag)
   }
@@ -50,11 +53,27 @@ final class RenameViewModel: BaseViewModel {
       .map { _ in Void() }
       .subscribe(
         onNext: self.output.popViewController.accept(_:),
-        onError: { error in
-          self.showLoading.accept(false)
-          self.showErrorAlert.accept(error)
-        }
+        onError: self.handleNicknameError(error:)
       )
       .disposed(by: self.disposeBag)
+  }
+  
+  private func handleNicknameError(error: Error) {
+    self.showLoading.accept(false)
+    if let changeNicknameError = error as? ChangeNicknameError {
+      switch changeNicknameError {
+      case .alreadyExistedNickname:
+        self.output.isHiddenAlreadyExistedNickname.accept(false)
+      case .badRequest:
+        let alertContent = AlertContent(
+          title: nil,
+          message: changeNicknameError.errorDescription
+        )
+        
+        self.showSystemAlert.accept(alertContent)
+      }
+    } else {
+      self.showErrorAlert.accept(error)
+    }
   }
 }
