@@ -73,7 +73,7 @@ class BaseVC: UIViewController {
           for: nil
         )
       }
-    } else if error == HTTPError.forbidden {
+    } else if error == HTTPError.unauthorized {
       AlertUtils.showWithAction(
         controller: self,
         title: nil,
