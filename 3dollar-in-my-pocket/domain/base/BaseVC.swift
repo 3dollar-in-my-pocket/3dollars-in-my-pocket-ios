@@ -73,6 +73,15 @@ class BaseVC: UIViewController {
           for: nil
         )
       }
+    } else if error == HTTPError.forbidden {
+      AlertUtils.showWithAction(
+        controller: self,
+        title: nil,
+        message: error.description) {
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+          sceneDelegate.goToSignIn()
+        }
+      }
     } else {
       AlertUtils.show(
         controller: self,
