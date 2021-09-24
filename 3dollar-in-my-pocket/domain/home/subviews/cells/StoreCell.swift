@@ -151,7 +151,7 @@ class StoreCell: BaseCollectionViewCell {
     if floor(rating) == rating {
       self.rankLabel.text = "\(Int(rating))점"
     } else {
-      self.rankLabel.text = "\(rating)점"
+      self.rankLabel.text = String(format: "%.1f점", rating)
     }
   }
   

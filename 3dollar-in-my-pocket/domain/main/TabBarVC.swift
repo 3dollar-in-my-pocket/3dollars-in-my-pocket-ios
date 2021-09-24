@@ -24,14 +24,35 @@ class TabBarVC: UITabBarController {
     self.addKakaoLinkObserver()
     self.processKakaoLinkIfExisted()
     self.delegate = self
+    if #available(iOS 15, *) {
+      let appearance = UITabBarAppearance()
+      appearance.configureWithOpaqueBackground()
+      appearance.backgroundColor = .white
+      self.tabBar.standardAppearance = appearance
+      self.tabBar.scrollEdgeAppearance = appearance
+    }
   }
   
   override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
     switch item.tag {
     case TabBarTag.my.rawValue:
         self.tabBar.barTintColor = R.color.gray100()
+      if #available(iOS 15, *) {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = R.color.gray100()
+        self.tabBar.standardAppearance = appearance
+        self.tabBar.scrollEdgeAppearance = appearance
+      }
     case TabBarTag.home.rawValue, TabBarTag.category.rawValue:
         self.tabBar.barTintColor = .white
+      if #available(iOS 15, *) {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+        self.tabBar.standardAppearance = appearance
+        self.tabBar.scrollEdgeAppearance = appearance
+      }
     default:
         break
     }

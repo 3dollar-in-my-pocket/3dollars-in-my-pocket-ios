@@ -7,7 +7,7 @@ struct StoreCard: Codable {
   let latitude: Double
   let longitude: Double
   let storeName: String
-  let rating: Float
+  let rating: Double
   
   enum CodingKeys: String, CodingKey {
     case category = "category"
@@ -30,7 +30,7 @@ struct StoreCard: Codable {
     latitude = try values.decodeIfPresent(Double.self, forKey: .latitude) ?? -1
     longitude = try values.decodeIfPresent(Double.self, forKey: .longitude) ?? -1
     storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
-    rating = try values.decodeIfPresent(Float.self, forKey: .rating) ?? 0
+    rating = try values.decodeIfPresent(Double.self, forKey: .rating) ?? 0
   }
   
   init(response: StoreInfoResponse) {
@@ -41,6 +41,6 @@ struct StoreCard: Codable {
     self.latitude = response.latitude
     self.longitude = response.longitude
     self.storeName = response.storeName
-    self.rating = Float(response.rating)
+    self.rating = response.rating
   }
 }
