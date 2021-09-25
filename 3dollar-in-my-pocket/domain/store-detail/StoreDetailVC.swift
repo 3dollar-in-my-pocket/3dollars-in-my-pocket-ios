@@ -8,7 +8,7 @@ import AppTrackingTransparency
 import AdSupport
 import SPPermissions
 
-protocol StoreDetailDelegate: class {
+protocol StoreDetailDelegate: AnyObject {
   func popup(store: Store)
 }
 

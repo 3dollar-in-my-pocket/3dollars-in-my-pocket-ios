@@ -2,7 +2,7 @@ import UIKit
 import RxSwift
 
 class MyPageVC: BaseVC {
-  weak var coordinator: MyPageCoordinator?
+  private lazy var coordinator = MyPageCoordinator(presenter: self)
   private lazy var myPageView = MyPageView(frame: self.view.frame)
   private let viewModel = MyPageViewModel(
     userService: UserService(),
@@ -33,7 +33,6 @@ class MyPageVC: BaseVC {
     super.viewDidLoad()
     
     self.view = myPageView
-    self.coordinator = self
     self.setupRegisterCollectionView()
     self.setUpReviewTableView()
   }
@@ -100,14 +99,14 @@ class MyPageVC: BaseVC {
     self.viewModel.output.goToStoreDetail
       .observeOn(MainScheduler.instance)
       .bind(onNext: { [weak self] storeId in
-        self?.coordinator?.goToStoreDetail(storeId: storeId)
+        self?.coordinator.goToStoreDetail(storeId: storeId)
       })
       .disposed(by: disposeBag)
     
     self.viewModel.output.goToRegistered
       .observeOn(MainScheduler.instance)
       .bind(onNext: { [weak self] in
-        self?.coordinator?.goToTotalRegisteredStore()
+        self?.coordinator.goToTotalRegisteredStore()
       })
       .disposed(by: disposeBag)
     
@@ -128,21 +127,21 @@ class MyPageVC: BaseVC {
       .do(onNext: { _ in
         GA.shared.logEvent(event: .setting_button_clicked, page: .my_info_page)
       })
-      .bind(onNext: self.goToSetting)
+      .bind(onNext: self.coordinator.goToSetting)
       .disposed(by: disposeBag)
     
     self.myPageView.registerTotalButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .show_all_my_store_button_clicked, page: .my_info_page)
       })
-      .bind(onNext: self.goToTotalRegisteredStore)
+      .bind(onNext: self.coordinator.goToTotalRegisteredStore)
       .disposed(by: disposeBag)
     
     self.myPageView.reviewTotalButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .show_all_my_review_button_clicked, page: .my_info_page)
       })
-      .bind(onNext: self.goToMyReview)
+      .bind(onNext: self.coordinator.goToMyReview)
       .disposed(by: disposeBag)
   }
   
@@ -168,11 +167,5 @@ class MyPageVC: BaseVC {
       .map { $0.row }
       .bind(to: self.viewModel.input.tapReview)
       .disposed(by: disposeBag)
-  }
-}
-
-extension MyPageVC: MyPageCoordinator {
-  var presenter: UINavigationController? {
-    return self.navigationController
   }
 }

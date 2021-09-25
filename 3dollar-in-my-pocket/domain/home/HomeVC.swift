@@ -11,6 +11,7 @@ class HomeVC: BaseVC {
     mapService: MapService(),
     userDefaults: UserDefaultsUtil()
   )
+  lazy var coordinator = HomeCoordinator(presenter: self)
   
   var mapAnimatedFlag = false
   var previousOffset: CGFloat = 0
@@ -96,7 +97,7 @@ class HomeVC: BaseVC {
     
     self.viewModel.output.goToDetail
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToDetail(storeId:))
+      .bind(onNext: self.coordinator.goToDetail(storeId:))
       .disposed(by: disposeBag)
     
     self.viewModel.showLoading
@@ -124,7 +125,7 @@ class HomeVC: BaseVC {
         GA.shared.logEvent(event: .toss_button_clicked, page: .home_page)
       })
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToToss)
+        .bind(onNext: self.coordinator.goToToss)
       .disposed(by: disposeBag)
   }
   
@@ -154,16 +155,6 @@ class HomeVC: BaseVC {
         onError: self.handleLocationError(error:)
       )
       .disposed(by: self.disposeBag)
-  }
-  
-  func goToDetail(storeId: Int) {
-    let storeDetailVC = StoreDetailVC.instance(storeId: storeId).then {
-      $0.delegate = self
-    }
-    self.navigationController?.pushViewController(
-      storeDetailVC,
-      animated: true
-    )
   }
   
   private func initilizeShopCollectionView() {
@@ -212,33 +203,6 @@ class HomeVC: BaseVC {
     }
   }
   
-  private func showDenyAlert() {
-    AlertUtils.showWithCancel(
-      controller: self,
-      title: "location_deny_title".localized,
-      message: "location_deny_description".localized,
-      okButtonTitle: "설정",
-      onTapOk: self.goToAppSetting
-    )
-  }
-  
-  private func goToAppSetting() {
-    guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
-      return
-    }
-    
-    if UIApplication.shared.canOpenURL(settingsUrl) {
-      UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
-    }
-  }
-  
-  private func goToToss() {
-    let tossScheme = Bundle.main.object(forInfoDictionaryKey: "Toss scheme") as? String ?? ""
-    guard let url = URL(string: tossScheme) else { return }
-    
-    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-  }
-  
   private func showSearchAddress() {
     let searchAddressVC = SearchAddressVC.instacne().then {
       $0.transitioningDelegate = self
@@ -251,7 +215,7 @@ class HomeVC: BaseVC {
   private func handleLocationError(error: Error) {
     if let locationError = error as? LocationError {
       if locationError == .denied {
-        self.showDenyAlert()
+        self.coordinator.showDenyAlert()
       } else {
         AlertUtils.show(controller: self, title: nil, message: locationError.errorDescription)
       }
