@@ -11,7 +11,7 @@ class HomeViewModel: BaseViewModel {
   let userDefaults: UserDefaultsUtil
   
   var selectedIndex: Int = -1
-  var stores: [StoreInfoResponse] = [] {
+  var stores: [Store] = [] {
     didSet {
       self.output.isHiddenEmptyCell.accept(!stores.isEmpty)
       self.output.stores.accept(stores)
@@ -32,12 +32,12 @@ class HomeViewModel: BaseViewModel {
   
   struct Output {
     let address = PublishRelay<String>()
-    let stores = PublishRelay<[StoreInfoResponse]>()
+    let stores = PublishRelay<[Store]>()
     let isHiddenResearchButton = PublishRelay<Bool>()
     let isHiddenEmptyCell = PublishRelay<Bool>()
     let scrollToIndex = PublishRelay<IndexPath>()
     let setSelectStore = PublishRelay<(IndexPath, Bool)>()
-    let selectMarker = PublishRelay<(Int, [StoreInfoResponse])>()
+    let selectMarker = PublishRelay<(Int, [Store])>()
     let goToDetail = PublishRelay<Int>()
   }
   
@@ -127,21 +127,23 @@ class HomeViewModel: BaseViewModel {
       currentLocation: currentLocation,
       mapLocation: mapLocation == nil ? currentLocation : mapLocation!,
       distance: distance
-    ).subscribe(
-      onNext: { [weak self] stores in
-        guard let self = self else { return }
-        self.stores = stores
-        self.output.selectMarker.accept((self.selectedIndex, self.stores))
-        self.output.scrollToIndex.accept(IndexPath(row: 0, section: 0))
-        self.output.isHiddenResearchButton.accept(true)
-        self.showLoading.accept(false)
-      },
-      onError: { [weak self] error in
-        guard let self = self else { return }
-        
-        self.showErrorAlert.accept(error)
-        self.showLoading.accept(false)
-      }
+    )
+      .map { $0.map(Store.init(response:)) }
+      .subscribe(
+        onNext: { [weak self] stores in
+          guard let self = self else { return }
+          self.stores = stores
+          self.output.selectMarker.accept((self.selectedIndex, self.stores))
+          self.output.scrollToIndex.accept(IndexPath(row: 0, section: 0))
+          self.output.isHiddenResearchButton.accept(true)
+          self.showLoading.accept(false)
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          
+          self.showErrorAlert.accept(error)
+          self.showLoading.accept(false)
+        }
     )
     .disposed(by: disposeBag)
   }
@@ -156,9 +158,7 @@ class HomeViewModel: BaseViewModel {
   }
   
   private func updateStore(index: Int, store: Store) {
-    let newStore = StoreInfoResponse(store: store)
-    
-    self.stores[index] = newStore
+    self.stores[index] = store
     self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
   }
   

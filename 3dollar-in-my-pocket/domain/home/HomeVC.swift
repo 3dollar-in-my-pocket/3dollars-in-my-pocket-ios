@@ -166,7 +166,7 @@ class HomeVC: BaseVC {
     self.homeView.mapView.addCameraDelegate(delegate: self)
   }
   
-  private func selectMarker(selectedIndex: Int, stores: [StoreInfoResponse]) {
+  private func selectMarker(selectedIndex: Int, stores: [Store]) {
     self.clearMarker()
     
     for index in stores.indices {
