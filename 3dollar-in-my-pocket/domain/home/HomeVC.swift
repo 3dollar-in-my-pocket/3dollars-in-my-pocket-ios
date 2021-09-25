@@ -96,7 +96,7 @@ class HomeVC: BaseVC {
       .bind(onNext: self.goToDetail(storeId:))
       .disposed(by: disposeBag)
     
-    self.viewModel.output.showLoading
+    self.viewModel.showLoading
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showRootLoading(isShow:))
       .disposed(by: disposeBag)
@@ -396,7 +396,7 @@ extension HomeVC: NMFMapViewCameraDelegate {
       )
       let distance = mapView.contentBounds.boundsLatLngs[0].distance(to: mapView.contentBounds.boundsLatLngs[1])
       
-      self.viewModel.input.distance.onNext(distance / 3)
+      self.viewModel.input.mapMaxDistance.onNext(distance / 3)
       self.viewModel.input.mapLocation.onNext(mapLocation)
     }
   }

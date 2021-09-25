@@ -31,7 +31,7 @@ struct MapService: MapServiceProtocol {
         method: .get,
         parameters: parameters,
         headers: headers
-      ).responseJSON { (response) in
+      ).responseJSON { response in
         if let value = response.value {
           if let naverMapResponse: NaverMapResponse = JsonUtils.toJson(object: value) {
             let address = naverMapResponse.getAddress()
@@ -40,8 +40,13 @@ struct MapService: MapServiceProtocol {
             observer.onCompleted()
           } else {
             let error = CommonError(desc: "데이터를 파싱할 수 없습니다.")
+            
             observer.onError(error)
           }
+        } else {
+          let error = CommonError(desc: "데이터가 비어있습니다.")
+          
+          observer.onError(error)
         }
       }
       return Disposables.create()
