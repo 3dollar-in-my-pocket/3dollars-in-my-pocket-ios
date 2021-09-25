@@ -9,9 +9,9 @@ protocol StoreServiceProtocol {
     currentLocation: CLLocation,
     mapLocation: CLLocation,
     distance: Double
-  ) -> Observable<[StoreInfoResponse]>
+  ) -> Observable<[Store]>
   
-  func saveStore(addStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse>
+  func saveStore(store: Store) -> Observable<Store>
   
   func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[StoreImageResponse]>
   
@@ -42,7 +42,7 @@ struct StoreService: StoreServiceProtocol {
     currentLocation: CLLocation,
     mapLocation: CLLocation,
     distance: Double
-  ) -> Observable<[StoreInfoResponse]> {
+  ) -> Observable<[Store]> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/stores/near"
       let headers = HTTPUtils.defaultHeader()
@@ -62,7 +62,10 @@ struct StoreService: StoreServiceProtocol {
       )
       .responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: [StoreInfoResponse].self, response: response)
+          let storeInfoResponse = response.decode(class: [StoreInfoResponse].self)
+          let stores = storeInfoResponse?.map(Store.init(response:))
+          
+          observer.processValue(data: stores)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -72,7 +75,9 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func saveStore(addStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse> {
+  func saveStore(store: Store) -> Observable<Store> {
+    let addStoreRequest = AddStoreRequest(store: store)
+    
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/store"
       let headers = HTTPUtils.defaultHeader()
@@ -86,7 +91,10 @@ struct StoreService: StoreServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: StoreInfoResponse.self, response: response)
+          let storeInfoResponse = response.decode(class: [StoreInfoResponse].self)
+          let stores = storeInfoResponse?.map(Store.init(response:))
+          
+          observer.processValue(data: stores)
         } else {
           observer.processHTTPError(response: response)
         }

@@ -128,7 +128,6 @@ class HomeViewModel: BaseViewModel {
       mapLocation: mapLocation == nil ? currentLocation : mapLocation!,
       distance: distance
     )
-      .map { $0.map(Store.init(response:)) }
       .subscribe(
         onNext: { [weak self] stores in
           guard let self = self else { return }
@@ -144,8 +143,8 @@ class HomeViewModel: BaseViewModel {
           self.showErrorAlert.accept(error)
           self.showLoading.accept(false)
         }
-    )
-    .disposed(by: disposeBag)
+      )
+      .disposed(by: disposeBag)
   }
   
   private func getAddressFromLocation(lat: Double, lng: Double) {
