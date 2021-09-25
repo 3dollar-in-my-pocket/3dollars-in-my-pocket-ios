@@ -4,19 +4,18 @@ import NMapsMap
 import FirebaseCrashlytics
 
 class HomeVC: BaseVC {
-  
+  lazy var coordinator = HomeCoordinator(presenter: self)
   private let homeView = HomeView()
   private let viewModel = HomeViewModel(
     storeService: StoreService(),
     mapService: MapService(),
     userDefaults: UserDefaultsUtil()
   )
-  lazy var coordinator = HomeCoordinator(presenter: self)
   
   var mapAnimatedFlag = false
   var previousOffset: CGFloat = 0
   var markers: [NMFMarker] = []
-  let transition = SearchTransition()
+  fileprivate let transition = SearchTransition()
   
   static func instance() -> UINavigationController {
     let homeVC = HomeVC(nibName: nil, bundle: nil).then {
@@ -44,8 +43,7 @@ class HomeVC: BaseVC {
     self.fetchStoresFromCurrentLocation()
   }
   
-  override func bindViewModel() {
-    // Bind input
+  override func bindViewModelInput() {
     self.homeView.researchButton.rx.tap
       .bind(to: self.viewModel.input.tapResearch)
       .disposed(by: disposeBag)
@@ -57,8 +55,9 @@ class HomeVC: BaseVC {
       })
       .bind(onNext: self.fetchStoresFromCurrentLocation)
       .disposed(by: self.disposeBag)
-    
-    // Bind output
+  }
+  
+  override func bindViewModelOutput() {
     self.viewModel.output.address
       .bind(to: self.homeView.addressButton.rx.title(for: .normal))
       .disposed(by: disposeBag)
@@ -117,7 +116,7 @@ class HomeVC: BaseVC {
         GA.shared.logEvent(event: .search_button_clicked, page: .home_page)
       })
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showSearchAddress)
+        .bind(onNext: self.coordinator.showSearchAddress)
       .disposed(by: disposeBag)
             
     self.homeView.tossButton.rx.tap
@@ -176,7 +175,10 @@ class HomeVC: BaseVC {
       
       marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
       if index == selectedIndex {
-        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: store.latitude, lng: store.longitude))
+        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
+          lat: store.latitude,
+          lng: store.longitude
+        ))
         cameraUpdate.animation = .easeIn
         self.homeView.mapView.moveCamera(cameraUpdate)
         marker.iconImage = NMFOverlayImage(name: "ic_marker")
@@ -188,7 +190,7 @@ class HomeVC: BaseVC {
         marker.height = 16
       }
       marker.mapView = self.homeView.mapView
-      marker.touchHandler =  { [weak self] _ in
+      marker.touchHandler = { [weak self] _ in
         guard let self = self else { return false }
         self.viewModel.input.selectStore.onNext(index)
         return true
@@ -201,15 +203,6 @@ class HomeVC: BaseVC {
     for marker in self.markers {
       marker.mapView = nil
     }
-  }
-  
-  private func showSearchAddress() {
-    let searchAddressVC = SearchAddressVC.instacne().then {
-      $0.transitioningDelegate = self
-      $0.delegate = self
-    }
-    
-    self.present(searchAddressVC, animated: true, completion: nil)
   }
   
   private func handleLocationError(error: Error) {
@@ -226,7 +219,6 @@ class HomeVC: BaseVC {
 }
 
 extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-  
   func collectionView(
     _ collectionView: UICollectionView,
     didSelectItemAt indexPath: IndexPath
@@ -283,14 +275,12 @@ extension HomeVC: SearchAddressDelegate {
 }
 
 extension HomeVC: StoreDetailDelegate {
-  
   func popup(store: Store) {
     self.viewModel.input.backFromDetail.onNext(store)
   }
 }
 
 extension HomeVC: NMFMapViewCameraDelegate {
-  
   func mapView(
     _ mapView: NMFMapView,
     cameraWillChangeByReason reason: Int,
@@ -301,7 +291,10 @@ extension HomeVC: NMFMapViewCameraDelegate {
         latitude: mapView.cameraPosition.target.lat,
         longitude: mapView.cameraPosition.target.lng
       )
-      let distance = mapView.contentBounds.boundsLatLngs[0].distance(to: mapView.contentBounds.boundsLatLngs[1])
+      let distance = mapView
+        .contentBounds
+        .boundsLatLngs[0]
+        .distance(to: mapView.contentBounds.boundsLatLngs[1])
       
       self.viewModel.input.mapMaxDistance.onNext(distance / 3)
       self.viewModel.input.mapLocation.onNext(mapLocation)
@@ -310,22 +303,23 @@ extension HomeVC: NMFMapViewCameraDelegate {
 }
 
 extension HomeVC: UIViewControllerTransitioningDelegate {
-  
   func animationController(
     forPresented presented: UIViewController,
     presenting: UIViewController,
     source: UIViewController
   ) -> UIViewControllerAnimatedTransitioning? {
-    transition.transitionMode = .present
-    transition.maskView.frame = self.homeView.addressContainerView.frame
+    self.transition.transitionMode = .present
+    self.transition.maskView.frame = self.homeView.addressContainerView.frame
     
-    return transition
+    return self.transition
   }
   
-  func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    transition.transitionMode = .dismiss
-    transition.maskOriginalFrame = self.homeView.addressContainerView.frame
+  func animationController(
+    forDismissed dismissed: UIViewController
+  ) -> UIViewControllerAnimatedTransitioning? {
+    self.transition.transitionMode = .dismiss
+    self.transition.maskOriginalFrame = self.homeView.addressContainerView.frame
     
-    return transition
+    return self.transition
   }
 }

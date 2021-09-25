@@ -849,6 +849,7 @@
 		6E451BE026DD110C0056CDC4 /* subviews */ = {
 			isa = PBXGroup;
 			children = (
+				6E37A64C25EE7A9F00C8C6C4 /* HomeEmptyStoreCell.swift */,
 				6E451BE126DD111A0056CDC4 /* cells */,
 			);
 			path = subviews;
@@ -1291,7 +1292,6 @@
 				6E07D44323B5906E0055AEE7 /* HomeView.swift */,
 				6E07D44523B590B30055AEE7 /* HomeVC.swift */,
 				6E01AD1923D094FF008BFCC0 /* HomeViewModel.swift */,
-				6E37A64C25EE7A9F00C8C6C4 /* HomeEmptyStoreCell.swift */,
 				6EEE30B626FEE35C00696467 /* HomeCoordinator.swift */,
 			);
 			path = home;
