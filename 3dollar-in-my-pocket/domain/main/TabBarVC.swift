@@ -159,7 +159,7 @@ extension TabBarVC: WriteAddressDelegate {
     if let navigationVC = self.viewControllers?[0] as? UINavigationController,
        let homeVC = navigationVC.viewControllers[0] as? HomeVC {
       navigationVC.popToRootViewController(animated: false)
-      homeVC.locationManager.startUpdatingLocation()
+      homeVC.fetchStoresFromCurrentLocation()
       homeVC.goToDetail(storeId: storeId)
     }
   }

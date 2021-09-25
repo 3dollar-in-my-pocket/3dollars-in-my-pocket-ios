@@ -270,6 +270,8 @@
 		6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B85F23BEBF3E00BAD8E9 /* UIButtonExt.swift */; };
 		6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */; };
 		6EE8299126B2E5D900F201EF /* SignupRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE8299026B2E5D900F201EF /* SignupRequest.swift */; };
+		6EEE30B226FEDA9800696467 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EEE30B126FEDA9800696467 /* LocationManager.swift */; };
+		6EEE30B526FEDAED00696467 /* LocationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EEE30B426FEDAED00696467 /* LocationError.swift */; };
 		6EEF4E5A25B87EE6008BFF52 /* OverviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EEF4E5925B87EE6008BFF52 /* OverviewCell.swift */; };
 		6EFC89DF268B63E800B3414F /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFC89DE268B63E800B3414F /* R.generated.swift */; };
 		FF84B0E4D229CD931F6CA8E6 /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A7346443A0DB1FD5466BDD0 /* Pods_3dollar_in_my_pocket.framework */; };
@@ -555,6 +557,8 @@
 		6EE2B85F23BEBF3E00BAD8E9 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
 		6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
 		6EE8299026B2E5D900F201EF /* SignupRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupRequest.swift; sourceTree = "<group>"; };
+		6EEE30B126FEDA9800696467 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		6EEE30B426FEDAED00696467 /* LocationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationError.swift; sourceTree = "<group>"; };
 		6EEF4E5925B87EE6008BFF52 /* OverviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverviewCell.swift; sourceTree = "<group>"; };
 		6EF3A76323ADBC1300AE18DA /* 3dollar-in-my-pocket.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "3dollar-in-my-pocket.entitlements"; sourceTree = "<group>"; };
 		6EFC89DE268B63E800B3414F /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
@@ -1293,6 +1297,7 @@
 		6EB8FB9F25988D3300C17B74 /* manager */ = {
 			isa = PBXGroup;
 			children = (
+				6EEE30B326FEDAE600696467 /* location */,
 				6E4952C426B039A200D65042 /* signin */,
 				6E810B10259AEA4A0035315F /* ga */,
 			);
@@ -1370,6 +1375,15 @@
 				6E9D64DA25BD73E10075DE36 /* DeleteModalViewModel.swift */,
 			);
 			path = delete;
+			sourceTree = "<group>";
+		};
+		6EEE30B326FEDAE600696467 /* location */ = {
+			isa = PBXGroup;
+			children = (
+				6EEE30B126FEDA9800696467 /* LocationManager.swift */,
+				6EEE30B426FEDAED00696467 /* LocationError.swift */,
+			);
+			path = location;
 			sourceTree = "<group>";
 		};
 		7A5371D9493CAB9E4689ABB5 /* Frameworks */ = {
@@ -1676,6 +1690,7 @@
 				6E681E41256FE2F200892B9E /* RatioUtils.swift in Sources */,
 				6E3AA4E025AD6C9B00D8C58C /* Region.swift in Sources */,
 				6E31577925BA9F180022D6F3 /* StoreDetailPhotoCell.swift in Sources */,
+				6EEE30B526FEDAED00696467 /* LocationError.swift in Sources */,
 				6E16EE2426BC1AC800F4DD03 /* UserInfoResponse.swift in Sources */,
 				6E93C83C23F2303E002E737F /* Event.swift in Sources */,
 				6E2F5FDF23D6BF4800094D41 /* CategoryService.swift in Sources */,
@@ -1737,6 +1752,7 @@
 				6E56BD7F23CDE291002D7092 /* Image.swift in Sources */,
 				6E25244625945BF0006EBDDB /* PopupViewModel.swift in Sources */,
 				6E3E994325E523C8007BA379 /* CategoryListMapCell.swift in Sources */,
+				6EEE30B226FEDA9800696467 /* LocationManager.swift in Sources */,
 				6E07D44C23B5916C0055AEE7 /* WriteDetailView.swift in Sources */,
 				6E56BD7B23CDE1DC002D7092 /* Store.swift in Sources */,
 				6E6172B023E1C05F003E0DDF /* PhotoDetailView.swift in Sources */,

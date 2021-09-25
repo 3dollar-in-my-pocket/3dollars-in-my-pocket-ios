@@ -16,7 +16,6 @@ class HomeVC: BaseVC {
   var previousOffset: CGFloat = 0
   var markers: [NMFMarker] = []
   let transition = SearchTransition()
-  let locationManager = CLLocationManager()
   
   static func instance() -> UINavigationController {
     let homeVC = HomeVC(nibName: nil, bundle: nil).then {
@@ -33,10 +32,6 @@ class HomeVC: BaseVC {
     }
   }
   
-  deinit {
-    self.locationManager.stopUpdatingLocation()
-  }
-  
   override func loadView() {
     self.view = self.homeView
   }
@@ -45,7 +40,7 @@ class HomeVC: BaseVC {
     super.viewDidLoad()
     
     self.initilizeShopCollectionView()
-    self.initilizeLocationManager()
+    self.fetchStoresFromCurrentLocation()
   }
   
   override func bindViewModel() {
@@ -53,6 +48,14 @@ class HomeVC: BaseVC {
     self.homeView.researchButton.rx.tap
       .bind(to: self.viewModel.input.tapResearch)
       .disposed(by: disposeBag)
+    
+    self.homeView.currentLocationButton.rx.tap
+      .do(onNext: { [weak self] _ in
+        self?.mapAnimatedFlag = true
+        GA.shared.logEvent(event: .current_location_button_clicked, page: .home_page)
+      })
+      .bind(onNext: self.fetchStoresFromCurrentLocation)
+      .disposed(by: self.disposeBag)
     
     // Bind output
     self.viewModel.output.address
@@ -115,19 +118,7 @@ class HomeVC: BaseVC {
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showSearchAddress)
       .disposed(by: disposeBag)
-    
-    self.homeView.currentLocationButton.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .current_location_button_clicked, page: .home_page)
-      })
-      .observeOn(MainScheduler.instance)
-      .bind { [weak self] in
-        guard let self = self else { return }
-        self.mapAnimatedFlag = true
-        self.locationManager.startUpdatingLocation()
-      }
-      .disposed(by: disposeBag)
-    
+            
     self.homeView.tossButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .toss_button_clicked, page: .home_page)
@@ -135,6 +126,34 @@ class HomeVC: BaseVC {
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.goToToss)
       .disposed(by: disposeBag)
+  }
+  
+  func fetchStoresFromCurrentLocation() {
+    LocationManager.shared.getCurrentLocation()
+      .subscribe(
+        onNext: { [weak self] location in
+          guard let self = self else { return }
+          let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
+            lat: location.coordinate.latitude,
+            lng: location.coordinate.longitude
+          ))
+          camera.animation = .easeIn
+          
+          self.homeView.mapView.moveCamera(camera)
+          
+          if !self.mapAnimatedFlag {
+            self.viewModel.input.mapLocation.onNext(nil)
+            self.viewModel.input.currentLocation.onNext(location)
+            self.viewModel.input.locationForAddress
+              .onNext((
+                location.coordinate.latitude,
+                location.coordinate.longitude
+              ))
+          }
+        },
+        onError: self.handleLocationError(error:)
+      )
+      .disposed(by: self.disposeBag)
   }
   
   func goToDetail(storeId: Int) {
@@ -229,29 +248,15 @@ class HomeVC: BaseVC {
     self.present(searchAddressVC, animated: true, completion: nil)
   }
   
-  @objc private func initilizeLocationManager() {
-    self.locationManager.delegate = self
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-    
-    if CLLocationManager.locationServicesEnabled() {
-      switch CLLocationManager.authorizationStatus() {
-      case .authorizedAlways, .authorizedWhenInUse:
-        self.initilizeNaverMap()
-        self.locationManager.startUpdatingLocation()
-      case .notDetermined:
-        self.locationManager.requestWhenInUseAuthorization()
-      case .denied, .restricted:
+  private func handleLocationError(error: Error) {
+    if let locationError = error as? LocationError {
+      if locationError == .denied {
         self.showDenyAlert()
-      default:
-        let alertContent = AlertContent(
-          title: "location_unknown_status".localized,
-          message: "\(CLLocationManager.authorizationStatus())"
-        )
-        self.showSystemAlert(alert: alertContent)
-        break
+      } else {
+        AlertUtils.show(controller: self, title: nil, message: locationError.errorDescription)
       }
     } else {
-      Log.debug("위치 기능 활성화 필요!")
+      self.showErrorAlert(error: error)
     }
   }
 }
@@ -294,68 +299,6 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
     self.viewModel.input.deselectCurrentStore.onNext(())
-  }
-}
-
-extension HomeVC: CLLocationManagerDelegate {
-  
-  func locationManager(
-    _ manager: CLLocationManager,
-    didChangeAuthorization status: CLAuthorizationStatus
-  ) {
-    switch status {
-    case .denied:
-      self.showDenyAlert()
-    case .authorizedAlways, .authorizedWhenInUse:
-      self.initilizeLocationManager()
-    default:
-      break
-    }
-  }
-  
-  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-    if let currentLocation = locations.last {
-      let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
-        lat: currentLocation.coordinate.latitude,
-        lng: currentLocation.coordinate.longitude
-      ))
-      camera.animation = .easeIn
-      
-      self.homeView.mapView.moveCamera(camera)
-      
-      if !self.mapAnimatedFlag {
-        self.viewModel.input.mapLocation.onNext(nil)
-        self.viewModel.input.currentLocation.onNext(currentLocation)
-        self.viewModel.input.locationForAddress
-          .onNext((
-            currentLocation.coordinate.latitude,
-            currentLocation.coordinate.longitude
-          ))
-      }
-    }
-    locationManager.stopUpdatingLocation()
-  }
-  
-  func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-    if let error = error as? CLError {
-      switch error.code {
-      case .denied:
-        self.showDenyAlert()
-      case .locationUnknown:
-        AlertUtils.show(
-          controller: self,
-          title: "location_unknown_title".localized,
-          message: "location_unknown_description".localized
-        )
-      default:
-        AlertUtils.show(
-          controller: self,
-          title: "location_unknown_error_title".localized,
-          message: "location_unknown_error_description".localized
-        )
-        Crashlytics.crashlytics().log("location Manager Error(error code: \(error.code.rawValue)")
-      }
-    }
   }
 }
 

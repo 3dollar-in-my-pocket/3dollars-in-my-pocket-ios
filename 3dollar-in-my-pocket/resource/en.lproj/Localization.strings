@@ -7,7 +7,7 @@
 "http_error_bad_gateway" = "일시적인 오류가 발생했어요..ㅠㅠ\n잠시 후 다시 시도해주세요!";
 "http_error_maintenance" = "서버 점검중입니다.\n잠시 후 다시 시도해주세요.";
 "http_error_timeout" = "일시적인 오류가 발생했어요..ㅠㅠ\n잠시 후 다시 시도해주세요!";
-"error_unknown" = "알수 없는 오류가 발생했습니다.\n오류는 개발자에게 보고됩니다.";
+"error_unknown" = "알수 없는 오류가 발생했습니다.\n잠시 후 다시 시도해주세요!";
 "error_failed_to_json" = "데이터를 가져오는 도중 오류가 발생했습니다.\n다시 시도해주세요.";
 "error_value_is_nil" = "서버와 통신중 오류가 발생했습니다.\n다시 시도해주세요.";
 "error_crashlytics_format" = "API통신중 요류 발생.\nurl: %s\nmessage: %s";
