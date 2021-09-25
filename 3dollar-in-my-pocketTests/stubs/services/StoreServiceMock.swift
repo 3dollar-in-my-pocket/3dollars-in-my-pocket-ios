@@ -7,25 +7,28 @@
 //
 
 import Foundation
+import CoreLocation
 
 import RxSwift
 
 @testable import dollar_in_my_pocket
 
 struct StoreServiceMock: StoreServiceProtocol {
-  var searchNearStoresObservable: Observable<[StoreInfoResponse]>?
+  var searchNearStoresObservable: Observable<[Store]>?
+  var saveStoreObservable: Observable<Store>?
   
   func searchNearStores(
     currentLocation: CLLocation,
     mapLocation: CLLocation,
     distance: Double
-  ) -> Observable<[StoreInfoResponse]> {
-    return self.searchNearStoresObservable
-    ?? .error(CommonError(desc: "searchNearStoresObservable가 정의되지 않았습니다."))
+  ) -> Observable<[Store]> {
+    return self.searchNearStoresObservable ??
+      .error(CommonError(desc: "searchNearStoresObservable가 정의되지 않았습니다."))
   }
   
-  func saveStore(addStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse> {
-    return .empty()
+  func saveStore(store: Store) -> Observable<Store> {
+    return self.saveStoreObservable ??
+      .error(CommonError(desc: "saveStoreObservable가 정의되지 않았습니다."))
   }
   
   func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[StoreImageResponse]> {
@@ -55,6 +58,4 @@ struct StoreServiceMock: StoreServiceProtocol {
   func deleteStore(storeId: Int, deleteReasonType: DeleteReason) -> Observable<StoreDeleteResponse> {
     return .empty()
   }
-  
-  
 }
