@@ -8,7 +8,7 @@
 
 import RxSwift
 
-@testable import 가슴속3천원_debug
+@testable import dollar_in_my_pocket
 
 struct SigninManagerMock: SigninManagerProtocol {
   var signinObservable: Observable<SigninRequest>?

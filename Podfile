@@ -51,5 +51,7 @@ target '3dollar-in-my-pocket' do
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths
     pod 'RxTest', '~> 5'
+    pod 'Quick'
+    pod 'RxNimble/RxTest'
   end
 end

@@ -8,12 +8,13 @@
 
 import RxSwift
 
-@testable import 가슴속3천원_debug
+@testable import dollar_in_my_pocket
 
 struct UserServiceMock: UserServiceProtocol {
   var signinObservable: Observable<SigninResponse>?
   var signupObservable: Observable<SigninResponse>?
   var fetchUserInfoObservable: Observable<UserInfoResponse>?
+  var withdrawalObservable: Observable<Void>?
   
   func signin(request: SigninRequest) -> Observable<SigninResponse> {
     return self.signinObservable ?? .empty()
@@ -33,5 +34,10 @@ struct UserServiceMock: UserServiceProtocol {
   
   func fetchUserInfo() -> Observable<UserInfoResponse> {
     return self.fetchUserInfoObservable ?? .empty()
+  }
+    
+  func withdrawal() -> Observable<Void> {
+    return self.withdrawalObservable
+      ?? .error(CommonError(desc: "withdrawalObservable 가 정의되지 않았습니다."))
   }
 }

@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6E0EA39223ABB230008F7CB2"
-               BuildableName = "&#x1100;&#x1161;&#x1109;&#x1173;&#x11b7;&#x1109;&#x1169;&#x11a8;3&#x110e;&#x1165;&#x11ab;&#x110b;&#x116f;&#x11ab;.app"
+               BuildableName = "dollar-in-my-pocket.app"
                BlueprintName = "3dollar-in-my-pocket"
                ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
             </BuildableReference>
@@ -65,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6E0EA39223ABB230008F7CB2"
-            BuildableName = "&#x1100;&#x1161;&#x1109;&#x1173;&#x11b7;&#x1109;&#x1169;&#x11a8;3&#x110e;&#x1165;&#x11ab;&#x110b;&#x116f;&#x11ab;.app"
+            BuildableName = "dollar-in-my-pocket.app"
             BlueprintName = "3dollar-in-my-pocket"
             ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
          </BuildableReference>
@@ -92,7 +92,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6E0EA39223ABB230008F7CB2"
-            BuildableName = "&#x1100;&#x1161;&#x1109;&#x1173;&#x11b7;&#x1109;&#x1169;&#x11a8;3&#x110e;&#x1165;&#x11ab;&#x110b;&#x116f;&#x11ab;.app"
+            BuildableName = "dollar-in-my-pocket.app"
             BlueprintName = "3dollar-in-my-pocket"
             ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
          </BuildableReference>
