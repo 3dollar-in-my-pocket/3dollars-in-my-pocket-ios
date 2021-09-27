@@ -132,8 +132,6 @@ class HomeViewModel: BaseViewModel {
         onNext: { [weak self] stores in
           guard let self = self else { return }
           self.stores = stores
-          self.output.selectMarker.accept((self.selectedIndex, self.stores))
-          self.output.scrollToIndex.accept(IndexPath(row: 0, section: 0))
           self.output.isHiddenResearchButton.accept(true)
           self.showLoading.accept(false)
         },

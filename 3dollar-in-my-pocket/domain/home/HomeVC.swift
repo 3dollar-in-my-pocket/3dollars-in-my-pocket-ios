@@ -41,6 +41,7 @@ class HomeVC: BaseVC {
     
     self.initilizeShopCollectionView()
     self.fetchStoresFromCurrentLocation()
+    self.initilizeNaverMap()
   }
   
   override func bindViewModelInput() {
