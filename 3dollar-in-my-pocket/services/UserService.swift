@@ -53,7 +53,13 @@ struct UserService: UserServiceProtocol {
           observer.processValue(class: SigninResponse.self, response: response)
           observer.onCompleted()
         } else {
-          observer.processHTTPError(response: response)
+          if response.response?.statusCode == 409 {
+            observer.onError(SignupError.alreadyExistedNickname)
+          } else if response.response?.statusCode == 400 {
+            observer.onError(SignupError.badRequest)
+          } else {
+            observer.processHTTPError(response: response)
+          }
         }
       }
       

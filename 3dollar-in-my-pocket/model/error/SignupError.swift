@@ -1,6 +1,6 @@
 import Foundation
 
-enum ChangeNicknameError: Int, LocalizedError {
+enum SignupError: Int, LocalizedError {
   case alreadyExistedNickname = 409
   case badRequest = 400
   

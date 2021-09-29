@@ -68,6 +68,11 @@ class NicknameViewController: BaseVC {
       .asDriver(onErrorJustReturn: BaseError.unknown)
       .drive(onNext: self.showErrorAlert(error:))
       .disposed(by: self.disposeBag)
+    
+    self.viewModel.showSystemAlert
+      .asDriver(onErrorJustReturn: .init())
+      .drive(onNext: self.showSystemAlert(alert:))
+      .disposed(by: self.disposeBag)
   }
   
   override func bindEvent() {
