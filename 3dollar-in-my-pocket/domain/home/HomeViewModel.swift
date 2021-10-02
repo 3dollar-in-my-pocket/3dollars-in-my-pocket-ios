@@ -54,10 +54,6 @@ class HomeViewModel: BaseViewModel {
     
     self.input.currentLocation
       .do(onNext: self.userDefaults.setUserCurrentLocation(location:))
-      .do(onNext: { [weak self] _ in
-        guard let self = self else { return }
-        self.selectedIndex = -1
-      })
       .withLatestFrom(
         Observable.combineLatest(self.input.mapLocation, self.input.mapMaxDistance)
       ) { ($0, $1.0, $1.1) }
@@ -131,7 +127,9 @@ class HomeViewModel: BaseViewModel {
       .subscribe(
         onNext: { [weak self] stores in
           guard let self = self else { return }
+          self.selectedIndex = -1
           self.stores = stores
+          self.output.selectMarker.accept((self.selectedIndex, stores))
           self.output.isHiddenResearchButton.accept(true)
           self.showLoading.accept(false)
         },
