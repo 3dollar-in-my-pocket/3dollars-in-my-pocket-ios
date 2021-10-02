@@ -91,10 +91,12 @@ struct StoreService: StoreServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          let storeInfoResponse = response.decode(class: [StoreInfoResponse].self)
-          let stores = storeInfoResponse?.map(Store.init(response:))
+          guard let storeInfoResponse = response.decode(class: StoreInfoResponse.self) else {
+            return  observer.onError(BaseError.failDecoding)
+          }
+          let store = Store(response: storeInfoResponse)
           
-          observer.processValue(data: stores)
+          observer.processValue(data: store)
         } else {
           observer.processHTTPError(response: response)
         }
