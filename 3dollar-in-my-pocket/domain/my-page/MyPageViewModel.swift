@@ -66,7 +66,7 @@ class MyPageViewModel: BaseViewModel {
   }
   
   func fetchReportedStore() {
-    self.storeService.getReportedStore(totalCount: nil, cursor: nil)
+    self.storeService.getReportedStore(currentLocation: nil, totalCount: nil, cursor: nil)
       .subscribe(
         onNext: { [weak self] pagination in
           guard let self = self else { return }

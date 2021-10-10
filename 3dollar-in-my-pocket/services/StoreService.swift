@@ -28,6 +28,7 @@ protocol StoreServiceProtocol {
   ) -> Observable<StoreDetailResponse>
   
   func getReportedStore(
+    currentLocation: CLLocation?,
     totalCount: Int?,
     cursor: Int?
   ) -> Observable<Pagination<StoreInfoResponse>>
@@ -241,19 +242,27 @@ struct StoreService: StoreServiceProtocol {
   }
   
   func getReportedStore(
+    currentLocation: CLLocation?,
     totalCount: Int?,
     cursor: Int?
   ) -> Observable<Pagination<StoreInfoResponse>> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/stores/me"
       let headers = HTTPUtils.defaultHeader()
-      var parameters: [String: Any] = ["size": 20]
+      var parameters: [String: Any] = [
+        "size": 20
+      ]
       
       if let totalcount = totalCount {
         parameters["cachingTotalElements"] = totalcount
       }
       if let cursor = cursor {
         parameters["cursor"] = cursor
+      }
+      
+      if let location = currentLocation {
+        parameters["latitude"] = location.coordinate.latitude
+        parameters["longitude"] = location.coordinate.longitude
       }
       
       HTTPUtils.defaultSession.request(

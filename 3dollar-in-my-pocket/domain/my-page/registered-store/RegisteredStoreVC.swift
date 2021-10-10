@@ -11,7 +11,9 @@ class RegisteredVC: BaseVC {
   
   
   static func instance() -> RegisteredVC {
-    return RegisteredVC(nibName: nil, bundle: nil)
+    return RegisteredVC(nibName: nil, bundle: nil).then {
+      $0.hidesBottomBarWhenPushed = true
+    }
   }
   
   override func viewDidLoad() {
@@ -25,7 +27,9 @@ class RegisteredVC: BaseVC {
     super.viewWillAppear(animated)
     
     self.tabBarController?.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
-    self.viewModel.input.fetchStores.onNext(())
+    LocationManager.shared.getCurrentLocation()
+      .bind(to: self.viewModel.input.fetchStores)
+      .disposed(by: self.disposeBag)
   }
   
   override func bindViewModel() {

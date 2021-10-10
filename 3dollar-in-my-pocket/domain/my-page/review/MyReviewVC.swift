@@ -11,7 +11,9 @@ class MyReviewVC: BaseVC {
   }
   
   static func instance() -> MyReviewVC {
-    return MyReviewVC(nibName: nil, bundle: nil)
+    return MyReviewVC(nibName: nil, bundle: nil).then {
+      $0.hidesBottomBarWhenPushed = true
+    }
   }
   
   override func viewDidLoad() {

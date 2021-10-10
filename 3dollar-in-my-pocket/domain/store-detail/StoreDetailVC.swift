@@ -43,7 +43,9 @@ class StoreDetailVC: BaseVC {
   }
   
   static func instance(storeId: Int) -> StoreDetailVC {
-    return StoreDetailVC(storeId: storeId)
+    return StoreDetailVC(storeId: storeId).then {
+      $0.hidesBottomBarWhenPushed = true
+    }
   }
   
   override func viewDidLoad() {
