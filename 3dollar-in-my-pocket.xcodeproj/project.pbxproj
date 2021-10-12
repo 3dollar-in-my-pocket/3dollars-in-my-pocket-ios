@@ -2146,7 +2146,7 @@
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = X975A2HM62;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2195,12 +2195,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3BD4F78FA4F3A696F62234EE /* Pods-3dollar-in-my-pocket.release.xcconfig */;
 			buildSettings = {
-				API_URL = "http://15.164.234.37";
+				API_URL = "https://threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = X975A2HM62;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
