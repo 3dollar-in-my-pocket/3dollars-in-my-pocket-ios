@@ -6,11 +6,21 @@ class CategoryViewModel: BaseViewModel {
   let input = Input()
   let output = Output()
   let categories: [StoreCategory] = [
-    .BUNGEOPPANG, .KKOCHI, .EOMUK,
-    .GUKWAPPANG, .GUNGOGUMA, .GYERANPPANG,
-    .HOTTEOK, .GUNOKSUSU, .SUNDAE,
-    .TAKOYAKI, .TOAST, .TTANGKONGPPANG,
-    .TTEOKBOKKI, .WAFFLE
+    .DALGONA,
+    .BUNGEOPPANG,
+    .KKOCHI,
+    .EOMUK,
+    .GUKWAPPANG,
+    .GUNGOGUMA,
+    .GYERANPPANG,
+    .HOTTEOK,
+    .GUNOKSUSU,
+    .SUNDAE,
+    .TAKOYAKI,
+    .TOAST,
+    .TTANGKONGPPANG,
+    .TTEOKBOKKI,
+    .WAFFLE
   ]
   
   struct Input {
@@ -65,6 +75,8 @@ class CategoryViewModel: BaseViewModel {
       GA.shared.logEvent(event: .gukwappang_button_clicked, page: .category_page)
     case .SUNDAE:
       GA.shared.logEvent(event: .sundae_button_clicked, page: .category_page)
+    case .DALGONA:
+      GA.shared.logEvent(event: .dalgona_button_clicked, page: .category_page)
     }
   }
 }

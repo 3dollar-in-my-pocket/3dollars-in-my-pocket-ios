@@ -75,6 +75,7 @@
 "category_list_waffle" = "넌 어쩜 이름도\n와플일까?";
 "category_list_gukwappang" = "사계절 네가 생각나\n국화빵";
 "category_list_sundae" = "순대, 제발 내장 많이 주세요.";
+"category_list_dalgona" = "456번째 달고나";
 "category_list_empty" = "주변에 가게가 없어요.";
 "review_modal_title" = "이 가게를\n추천하시나요?";
 "review_modal_modify_title" = "이 가게의 추천 내용을\n수정합니다.";
@@ -135,6 +136,7 @@
 "shared_store_type_road" = "길거리";
 "shared_store_type_store" = "매장";
 "shared_store_type_convenience_store" = "편의점";
+"shared_category_dalgona" = "달고나";
 "store_detail_delete_request" = "삭제요청";
 "store_detail_share" = "공유하기";
 "store_detail_transfer" = "송금하기";
