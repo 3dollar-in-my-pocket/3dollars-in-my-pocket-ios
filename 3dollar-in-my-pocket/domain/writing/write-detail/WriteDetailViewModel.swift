@@ -228,14 +228,12 @@ class WriteDetailViewModel: BaseViewModel {
   
   private func saveStore(store: Store) {
     self.output.showLoading.accept(true)
-    
-    let addStoreRequest = AddStoreRequest(store: store)
-    self.storeService.saveStore(addStoreRequest: addStoreRequest)
+    self.storeService.saveStore(store: store)
       .subscribe(
-        onNext: { [weak self] saveResponse in
+        onNext: { [weak self] store in
           guard let self = self else { return }
           
-          self.output.dismissAndGoDetail.accept(saveResponse.storeId)
+          self.output.dismissAndGoDetail.accept(store.storeId)
           self.output.showLoading.accept(false)
         },
         onError: { [weak self] error in

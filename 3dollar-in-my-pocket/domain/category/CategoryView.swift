@@ -35,6 +35,7 @@ class CategoryView: BaseView {
     $0.backgroundColor = UIColor(r: 250, g: 250, b: 250)
     $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
     $0.showsVerticalScrollIndicator = false
+    $0.clipsToBounds = false
   }
   
   

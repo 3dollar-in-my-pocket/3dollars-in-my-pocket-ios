@@ -53,7 +53,13 @@ struct UserService: UserServiceProtocol {
           observer.processValue(class: SigninResponse.self, response: response)
           observer.onCompleted()
         } else {
-          observer.processHTTPError(response: response)
+          if response.response?.statusCode == 409 {
+            observer.onError(SignupError.alreadyExistedNickname)
+          } else if response.response?.statusCode == 400 {
+            observer.onError(SignupError.badRequest)
+          } else {
+            observer.processHTTPError(response: response)
+          }
         }
       }
       
@@ -95,13 +101,20 @@ struct UserService: UserServiceProtocol {
         urlString,
         method: .put,
         parameters: parameters,
+        encoding: JSONEncoding.default,
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
           observer.processValue(class: User.self, response: response)
           observer.onCompleted()
         } else {
-          observer.processHTTPError(response: response)
+          if response.response?.statusCode == 409 {
+            observer.onError(ChangeNicknameError.alreadyExistedNickname)
+          } else if response.response?.statusCode == 400 {
+            observer.onError(ChangeNicknameError.badRequest)
+          } else {
+            observer.processHTTPError(response: response)
+          }
         }
       }
       

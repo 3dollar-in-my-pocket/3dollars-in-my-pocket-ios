@@ -60,20 +60,30 @@ class NicknameViewModel: BaseViewModel {
           self.showLoading.accept(false)
           self.output.goToMain.accept(())
         },
-        onError: { error in
-          if let error = error as? HTTPError {
-            if error == HTTPError.badRequest {
-              self.output.errorLabelHidden.accept(false)
-              GA.shared.logEvent(event: .nickname_already_existed, page: .nickname_initialize_page)
-            } else {
-              self.httpErrorAlert.accept(error)
-            }
-          } else {
-            self.showErrorAlert.accept(error)
-          }
-          self.showLoading.accept(false)
-        }
+        onError: self.handleSignupError(error:)
       )
       .disposed(by: self.disposeBag)
+  }
+  
+  private func handleSignupError(error: Error) {
+    self.showLoading.accept(false)
+    if let signupError = error as? SignupError {
+      switch signupError {
+      case .alreadyExistedNickname:
+        self.output.errorLabelHidden.accept(false)
+        GA.shared.logEvent(event: .nickname_already_existed, page: .nickname_initialize_page)
+      case .badRequest:
+        let alertContent = AlertContent(
+          title: nil,
+          message: signupError.errorDescription
+        )
+        
+        self.showSystemAlert.accept(alertContent)
+        self.showLoading.accept(false)
+      }
+    } else {
+      self.showErrorAlert.accept(error)
+      self.showLoading.accept(false)
+    }
   }
 }

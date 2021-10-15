@@ -35,4 +35,17 @@ extension AnyObserver {
       self.onError(BaseError.nilValue)
     }
   }
+  
+  func processValue(data: Any?) {
+    if let data = data {
+      if let element = data as? Element {
+        self.onNext(element)
+        self.onCompleted()
+      } else {
+        self.onError(BaseError.failDecoding)
+      }
+    } else {
+      self.onError(BaseError.nilValue)
+    }
+  }
 }

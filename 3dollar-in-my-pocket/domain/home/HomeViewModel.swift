@@ -2,7 +2,6 @@ import RxSwift
 import RxCocoa
 import CoreLocation
 
-
 class HomeViewModel: BaseViewModel {
   
   let input = Input()
@@ -12,7 +11,7 @@ class HomeViewModel: BaseViewModel {
   let userDefaults: UserDefaultsUtil
   
   var selectedIndex: Int = -1
-  var stores: [StoreInfoResponse] = [] {
+  var stores: [Store] = [] {
     didSet {
       self.output.isHiddenEmptyCell.accept(!stores.isEmpty)
       self.output.stores.accept(stores)
@@ -21,7 +20,7 @@ class HomeViewModel: BaseViewModel {
   
   struct Input {
     let currentLocation = PublishSubject<CLLocation>()
-    let distance = BehaviorSubject<Double>(value: 2000)
+    let mapMaxDistance = BehaviorSubject<Double>(value: 2000)
     let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
     let locationForAddress = PublishSubject<(Double, Double)>()
     let tapResearch = PublishSubject<Void>()
@@ -33,14 +32,13 @@ class HomeViewModel: BaseViewModel {
   
   struct Output {
     let address = PublishRelay<String>()
-    let stores = PublishRelay<[StoreInfoResponse]>()
+    let stores = PublishRelay<[Store]>()
     let isHiddenResearchButton = PublishRelay<Bool>()
     let isHiddenEmptyCell = PublishRelay<Bool>()
     let scrollToIndex = PublishRelay<IndexPath>()
     let setSelectStore = PublishRelay<(IndexPath, Bool)>()
-    let selectMarker = PublishRelay<(Int, [StoreInfoResponse])>()
+    let selectMarker = PublishRelay<(Int, [Store])>()
     let goToDetail = PublishRelay<Int>()
-    let showLoading = PublishRelay<Bool>()
   }
   
   
@@ -56,38 +54,44 @@ class HomeViewModel: BaseViewModel {
     
     self.input.currentLocation
       .do(onNext: self.userDefaults.setUserCurrentLocation(location:))
-      .do(onNext: { [weak self] _ in
-        guard let self = self else { return }
-        self.selectedIndex = -1
-      })
-      .withLatestFrom(Observable.combineLatest(self.input.mapLocation, self.input.distance)) { ($0, $1.0, $1.1) }
+      .withLatestFrom(
+        Observable.combineLatest(self.input.mapLocation, self.input.mapMaxDistance)
+      ) { ($0, $1.0, $1.1) }
       .bind(onNext: self.searchNearStores)
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.input.mapLocation
       .filter { $0 != nil }
       .map { _ in false }
       .bind(to: self.output.isHiddenResearchButton)
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.input.locationForAddress
       .bind(onNext: self.getAddressFromLocation)
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.input.tapResearch
-      .withLatestFrom(Observable.combineLatest(self.input.currentLocation, self.input.mapLocation, self.input.distance)) { ($1.0, $1.1, $1.2) }
-      .do(onNext: { [weak self] locations in
+      .withLatestFrom(Observable.combineLatest(
+        self.input.currentLocation,
+        self.input.mapLocation,
+        self.input.mapMaxDistance
+      ))
+      .bind(onNext: { [weak self] (currentLocation, mapLocation, mapMaxDistance) in
         guard let self = self else { return }
         self.selectedIndex = -1
-        if let mapLocation = locations.1 {
+        if let mapLocation = mapLocation {
           self.getAddressFromLocation(
             lat: mapLocation.coordinate.latitude,
             lng: mapLocation.coordinate.longitude
           )
         }
+        self.searchNearStores(
+          currentLocation: currentLocation,
+          mapLocation: mapLocation,
+          distance: mapMaxDistance
+        )
       })
-      .bind(onNext: self.searchNearStores)
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.input.selectStore
       .map { $0 >= self.stores.count ? self.stores.count - 1 : $0 }
@@ -95,6 +99,7 @@ class HomeViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.backFromDetail
+      .filter { _ in self.selectedIndex >= 0 }
       .map { (self.selectedIndex, $0) }
       .bind(onNext: self.updateStore)
       .disposed(by: disposeBag)
@@ -113,56 +118,42 @@ class HomeViewModel: BaseViewModel {
     mapLocation: CLLocation?,
     distance: Double
   ) {
-    self.output.showLoading.accept(true)
+    self.showLoading.accept(true)
     self.storeService.searchNearStores(
       currentLocation: currentLocation,
       mapLocation: mapLocation == nil ? currentLocation : mapLocation!,
       distance: distance
-    ).subscribe(
-      onNext: { [weak self] stores in
-        guard let self = self else { return }
-        self.stores = stores
-        self.output.selectMarker.accept((self.selectedIndex, self.stores))
-        self.output.scrollToIndex.accept(IndexPath(row: 0, section: 0))
-        self.output.showLoading.accept(false)
-        self.output.isHiddenResearchButton.accept(true)
-      },
-      onError: { [weak self] error in
-        guard let self = self else { return }
-        if let httpError = error as? HTTPError {
-          self.httpErrorAlert.accept(httpError)
-        }
-        if let commonError = error as? CommonError {
-          let alertContent = AlertContent(title: nil, message: commonError.description)
-          
-          self.showSystemAlert.accept(alertContent)
-        }
-        self.output.showLoading.accept(false)
-      }
     )
-    .disposed(by: disposeBag)
-  }
-  
-  private func getAddressFromLocation(lat: Double, lng: Double) {
-    self.mapService.getAddressFromLocation(lat: lat, lng: lng)
       .subscribe(
-        onNext: self.output.address.accept,
-        onError: { error in
-          if let httpError = error as? HTTPError {
-            self.httpErrorAlert.accept(httpError)
-          } else if let error = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: error.description)
-
-            self.showSystemAlert.accept(alertContent)
-          }
+        onNext: { [weak self] stores in
+          guard let self = self else { return }
+          self.selectedIndex = -1
+          self.stores = stores
+          self.output.selectMarker.accept((self.selectedIndex, stores))
+          self.output.isHiddenResearchButton.accept(true)
+          self.showLoading.accept(false)
+        },
+        onError: { [weak self] error in
+          guard let self = self else { return }
+          
+          self.showErrorAlert.accept(error)
+          self.showLoading.accept(false)
         }
       )
       .disposed(by: disposeBag)
   }
   
+  private func getAddressFromLocation(lat: Double, lng: Double) {
+    self.mapService.getAddressFromLocation(lat: lat, lng: lng)
+      .subscribe(
+        onNext: self.output.address.accept(_:),
+        onError: self.showErrorAlert.accept(_:)
+      )
+      .disposed(by: disposeBag)
+  }
+  
   private func updateStore(index: Int, store: Store) {
-    let newStore = StoreInfoResponse(store: store)
-    self.stores[index] = newStore
+    self.stores[index] = store
     self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
   }
   
@@ -181,11 +172,7 @@ class HomeViewModel: BaseViewModel {
       GA.shared.logEvent(event: .store_card_button_clicked, page: .home_page)
       self.output.goToDetail.accept(self.stores[index].storeId)
     } else {
-      self.output.scrollToIndex.accept(IndexPath(row: index, section: 0))
-      self.output.selectMarker.accept((index, self.stores))
-      self.output.setSelectStore.accept((IndexPath(row: self.selectedIndex, section: 0), false))
-      self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
-      self.selectedIndex = index
+      self.onSelectStore(index: index)
     }
   }
   

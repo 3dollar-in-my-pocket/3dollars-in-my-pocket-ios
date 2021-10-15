@@ -9,5 +9,15 @@
 import UIKit
 
 protocol Coordinator {
-  var presenter: UINavigationController? { get }
+  associatedtype Presenter: UIViewController
+  
+  var presenter: Presenter { get }
+  
+  init(presenter: Presenter)
+}
+
+extension Coordinator {
+  init(presenter: Presenter) {
+    self.init(presenter: presenter)
+  }
 }

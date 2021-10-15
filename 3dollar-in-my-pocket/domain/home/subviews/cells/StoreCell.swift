@@ -131,7 +131,7 @@ class StoreCell: BaseCollectionViewCell {
     }
   }
   
-  func bind(store: StoreInfoResponse) {
+  func bind(store: Store) {
     self.categoryImage.image = UIImage(named: "img_60_\(store.categories[0].lowcase)")
     self.setDistance(distance: store.distance)
     self.titleLabel.text = store.storeName
@@ -147,11 +147,11 @@ class StoreCell: BaseCollectionViewCell {
     }
   }
   
-  private func setRating(rating: Double) {
+  private func setRating(rating: Float) {
     if floor(rating) == rating {
       self.rankLabel.text = "\(Int(rating))점"
     } else {
-      self.rankLabel.text = "\(rating)점"
+      self.rankLabel.text = String(format: "%.1f점", rating)
     }
   }
   

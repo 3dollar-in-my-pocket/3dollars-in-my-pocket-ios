@@ -14,7 +14,7 @@ class HomeView: BaseView {
   }
   
   let addressButton = UIButton().then {
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+    $0.titleLabel?.font = .semiBold(size: 16)
     $0.setImage(R.image.ic_arrow_bottom_black(), for: .normal)
     $0.semanticContentAttribute = .forceRightToLeft
     $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -8)
@@ -24,7 +24,7 @@ class HomeView: BaseView {
   let researchButton = UIButton().then {
     $0.setTitle(R.string.localization.home_research(), for: .normal)
     $0.setTitleColor(.white, for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 14)
+    $0.titleLabel?.font = .semiBold(size: 14)
     $0.contentEdgeInsets = UIEdgeInsets(top: 12, left: 24, bottom: 12, right: 24)
     $0.backgroundColor = R.color.red()
     $0.layer.cornerRadius = 20

@@ -16,9 +16,10 @@ class RegisteredStoreViewModel: BaseViewModel {
   }
   var totalCount: Int?
   var nextCursor: Int?
+  var currentLocation: CLLocation?
   
   struct Input {
-    let fetchStores = PublishSubject<Void>()
+    let fetchStores = PublishSubject<CLLocation?>()
     let tapStore = PublishSubject<Int>()
     let loadMore = PublishSubject<Int>()
   }
@@ -39,7 +40,10 @@ class RegisteredStoreViewModel: BaseViewModel {
     super.init()
     
     self.input.fetchStores
-      .map { (self.totalCount, self.nextCursor) }
+      .do(onNext: { [weak self] location in
+        self?.currentLocation = location
+      })
+      .map { ($0, self.totalCount, self.nextCursor) }
       .bind(onNext: self.fetchRegisteredStores)
       .disposed(by: self.disposeBag)
     
@@ -50,14 +54,19 @@ class RegisteredStoreViewModel: BaseViewModel {
     
     self.input.loadMore
       .filter(self.hasNextPage(currentIndex:))
-      .map { _ in (self.totalCount, self.nextCursor) }
+      .map { _ in (self.currentLocation, self.totalCount, self.nextCursor) }
       .bind(onNext: self.fetchRegisteredStores)
       .disposed(by: disposeBag)
   }
   
-  func fetchRegisteredStores(totalCount: Int?, nextCursor: Int?) {
+  func fetchRegisteredStores(location: CLLocation?, totalCount: Int?, nextCursor: Int?) {
     self.output.isHiddenFooter.accept(false)
-    self.storeService.getReportedStore(totalCount: totalCount, cursor: nextCursor)
+    guard let location = location else { return }
+    self.storeService.getReportedStore(
+      currentLocation: location,
+      totalCount: totalCount,
+      cursor: nextCursor
+    )
       .subscribe(
         onNext: { [weak self] pagination in
           guard let self = self else { return }

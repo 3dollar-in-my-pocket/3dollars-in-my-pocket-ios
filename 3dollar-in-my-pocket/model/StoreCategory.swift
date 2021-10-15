@@ -15,6 +15,7 @@ public enum StoreCategory: String, Codable {
   case WAFFLE = "WAFFLE"
   case GUKWAPPANG = "GUKWAPPANG"
   case SUNDAE = "SUNDAE"
+  case DALGONA = "DALGONA"
   
   var name: String {
     get {
@@ -47,6 +48,8 @@ public enum StoreCategory: String, Codable {
         return "shared_category_tteokbokki".localized
       case .WAFFLE:
         return "shared_category_waffle".localized
+      case .DALGONA:
+        return "shared_category_dalgona".localized
       }
     }
   }
@@ -82,6 +85,8 @@ public enum StoreCategory: String, Codable {
         return UIImage(named: "img_60_tteokbokki")
       case .WAFFLE:
         return UIImage(named: "img_60_waffle")
+      case .DALGONA:
+        return UIImage(named: "img_60_dalgona")
       }
     }
   }
@@ -117,6 +122,8 @@ public enum StoreCategory: String, Codable {
         return "tteokbokki"
       case .WAFFLE:
         return "waffle"
+      case .DALGONA:
+        return "dalgona"
       }
     }
   }

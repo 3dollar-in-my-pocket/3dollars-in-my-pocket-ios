@@ -46,7 +46,8 @@ class MyReviewViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.loadMore
-      .filter { self.reviews.count - 1 == $0 && self.nextCursor != nil }
+      .filter { self.reviews.count - 1 >= $0 && self.nextCursor != nil && self.nextCursor != -1 }
+      .debug()
       .map { _ in (self.totalCount, self.nextCursor) }
       .bind(onNext: self.fetchMyReviews)
       .disposed(by: disposeBag)

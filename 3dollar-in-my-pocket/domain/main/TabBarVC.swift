@@ -24,14 +24,35 @@ class TabBarVC: UITabBarController {
     self.addKakaoLinkObserver()
     self.processKakaoLinkIfExisted()
     self.delegate = self
+    if #available(iOS 15, *) {
+      let appearance = UITabBarAppearance()
+      appearance.configureWithOpaqueBackground()
+      appearance.backgroundColor = .white
+      self.tabBar.standardAppearance = appearance
+      self.tabBar.scrollEdgeAppearance = appearance
+    }
   }
   
   override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
     switch item.tag {
     case TabBarTag.my.rawValue:
         self.tabBar.barTintColor = R.color.gray100()
+      if #available(iOS 15, *) {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = R.color.gray100()
+        self.tabBar.standardAppearance = appearance
+        self.tabBar.scrollEdgeAppearance = appearance
+      }
     case TabBarTag.home.rawValue, TabBarTag.category.rawValue:
         self.tabBar.barTintColor = .white
+      if #available(iOS 15, *) {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+        self.tabBar.standardAppearance = appearance
+        self.tabBar.scrollEdgeAppearance = appearance
+      }
     default:
         break
     }
@@ -113,7 +134,7 @@ class TabBarVC: UITabBarController {
     self.selectedIndex = 0
     if let navigationVC = self.viewControllers?[0] as? UINavigationController,
        let homeVC = navigationVC.topViewController as? HomeVC {
-      homeVC.goToDetail(storeId: storeId)
+      homeVC.coordinator.goToDetail(storeId: storeId)
     }
   }
   
@@ -138,8 +159,8 @@ extension TabBarVC: WriteAddressDelegate {
     if let navigationVC = self.viewControllers?[0] as? UINavigationController,
        let homeVC = navigationVC.viewControllers[0] as? HomeVC {
       navigationVC.popToRootViewController(animated: false)
-      homeVC.locationManager.startUpdatingLocation()
-      homeVC.goToDetail(storeId: storeId)
+      homeVC.fetchStoresFromCurrentLocation()
+      homeVC.coordinator.goToDetail(storeId: storeId)
     }
   }
 }

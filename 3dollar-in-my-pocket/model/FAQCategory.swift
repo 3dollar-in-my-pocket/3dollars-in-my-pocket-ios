@@ -4,5 +4,6 @@ enum FAQCategory: String, Decodable {
   case reviewMenu = "REVIEW_MENU"
   case withdrawal = "WITHDRAWAL"
   case board = "BOARD"
-  case CATEGORY = "CATEGORY"
+  case category = "CATEGORY"
+  case etc = "ETC"
 }

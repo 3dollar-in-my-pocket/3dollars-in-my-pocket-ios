@@ -4,7 +4,7 @@ import NMapsMap
 import FirebaseCrashlytics
 
 class HomeVC: BaseVC {
-  
+  lazy var coordinator = HomeCoordinator(presenter: self)
   private let homeView = HomeView()
   private let viewModel = HomeViewModel(
     storeService: StoreService(),
@@ -15,8 +15,7 @@ class HomeVC: BaseVC {
   var mapAnimatedFlag = false
   var previousOffset: CGFloat = 0
   var markers: [NMFMarker] = []
-  let transition = SearchTransition()
-  let locationManager = CLLocationManager()
+  fileprivate let transition = SearchTransition()
   
   static func instance() -> UINavigationController {
     let homeVC = HomeVC(nibName: nil, bundle: nil).then {
@@ -33,10 +32,6 @@ class HomeVC: BaseVC {
     }
   }
   
-  deinit {
-    self.locationManager.stopUpdatingLocation()
-  }
-  
   override func loadView() {
     self.view = self.homeView
   }
@@ -45,16 +40,25 @@ class HomeVC: BaseVC {
     super.viewDidLoad()
     
     self.initilizeShopCollectionView()
-    self.initilizeLocationManager()
+    self.fetchStoresFromCurrentLocation()
+    self.initilizeNaverMap()
   }
   
-  override func bindViewModel() {
-    // Bind input
+  override func bindViewModelInput() {
     self.homeView.researchButton.rx.tap
       .bind(to: self.viewModel.input.tapResearch)
       .disposed(by: disposeBag)
     
-    // Bind output
+    self.homeView.currentLocationButton.rx.tap
+      .do(onNext: { [weak self] _ in
+        self?.mapAnimatedFlag = true
+        GA.shared.logEvent(event: .current_location_button_clicked, page: .home_page)
+      })
+      .bind(onNext: self.fetchStoresFromCurrentLocation)
+      .disposed(by: self.disposeBag)
+  }
+  
+  override func bindViewModelOutput() {
     self.viewModel.output.address
       .bind(to: self.homeView.addressButton.rx.title(for: .normal))
       .disposed(by: disposeBag)
@@ -93,10 +97,10 @@ class HomeVC: BaseVC {
     
     self.viewModel.output.goToDetail
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToDetail(storeId:))
+      .bind(onNext: self.coordinator.goToDetail(storeId:))
       .disposed(by: disposeBag)
     
-    self.viewModel.output.showLoading
+    self.viewModel.showLoading
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.showRootLoading(isShow:))
       .disposed(by: disposeBag)
@@ -113,38 +117,44 @@ class HomeVC: BaseVC {
         GA.shared.logEvent(event: .search_button_clicked, page: .home_page)
       })
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showSearchAddress)
+        .bind(onNext: self.coordinator.showSearchAddress)
       .disposed(by: disposeBag)
-    
-    self.homeView.currentLocationButton.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .current_location_button_clicked, page: .home_page)
-      })
-      .observeOn(MainScheduler.instance)
-      .bind { [weak self] in
-        guard let self = self else { return }
-        self.mapAnimatedFlag = true
-        self.locationManager.startUpdatingLocation()
-      }
-      .disposed(by: disposeBag)
-    
+            
     self.homeView.tossButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .toss_button_clicked, page: .home_page)
       })
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToToss)
+        .bind(onNext: self.coordinator.goToToss)
       .disposed(by: disposeBag)
   }
   
-  func goToDetail(storeId: Int) {
-    let storeDetailVC = StoreDetailVC.instance(storeId: storeId).then {
-      $0.delegate = self
-    }
-    self.navigationController?.pushViewController(
-      storeDetailVC,
-      animated: true
-    )
+  func fetchStoresFromCurrentLocation() {
+    LocationManager.shared.getCurrentLocation()
+      .subscribe(
+        onNext: { [weak self] location in
+          guard let self = self else { return }
+          let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
+            lat: location.coordinate.latitude,
+            lng: location.coordinate.longitude
+          ))
+          camera.animation = .easeIn
+          
+          self.homeView.mapView.moveCamera(camera)
+          
+          if !self.mapAnimatedFlag {
+            self.viewModel.input.mapLocation.onNext(nil)
+            self.viewModel.input.currentLocation.onNext(location)
+            self.viewModel.input.locationForAddress
+              .onNext((
+                location.coordinate.latitude,
+                location.coordinate.longitude
+              ))
+          }
+        },
+        onError: self.handleLocationError(error:)
+      )
+      .disposed(by: self.disposeBag)
   }
   
   private func initilizeShopCollectionView() {
@@ -157,7 +167,7 @@ class HomeVC: BaseVC {
     self.homeView.mapView.addCameraDelegate(delegate: self)
   }
   
-  private func selectMarker(selectedIndex: Int, stores: [StoreInfoResponse]) {
+  private func selectMarker(selectedIndex: Int, stores: [Store]) {
     self.clearMarker()
     
     for index in stores.indices {
@@ -166,7 +176,10 @@ class HomeVC: BaseVC {
       
       marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
       if index == selectedIndex {
-        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: store.latitude, lng: store.longitude))
+        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
+          lat: store.latitude,
+          lng: store.longitude
+        ))
         cameraUpdate.animation = .easeIn
         self.homeView.mapView.moveCamera(cameraUpdate)
         marker.iconImage = NMFOverlayImage(name: "ic_marker")
@@ -178,7 +191,7 @@ class HomeVC: BaseVC {
         marker.height = 16
       }
       marker.mapView = self.homeView.mapView
-      marker.touchHandler =  { [weak self] _ in
+      marker.touchHandler = { [weak self] _ in
         guard let self = self else { return false }
         self.viewModel.input.selectStore.onNext(index)
         return true
@@ -193,71 +206,20 @@ class HomeVC: BaseVC {
     }
   }
   
-  private func showDenyAlert() {
-    AlertUtils.showWithCancel(
-      controller: self,
-      title: "location_deny_title".localized,
-      message: "location_deny_description".localized,
-      okButtonTitle: "설정",
-      onTapOk: self.goToAppSetting
-    )
-  }
-  
-  private func goToAppSetting() {
-    guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
-      return
-    }
-    
-    if UIApplication.shared.canOpenURL(settingsUrl) {
-      UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
-    }
-  }
-  
-  private func goToToss() {
-    let tossScheme = Bundle.main.object(forInfoDictionaryKey: "Toss scheme") as? String ?? ""
-    guard let url = URL(string: tossScheme) else { return }
-    
-    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-  }
-  
-  private func showSearchAddress() {
-    let searchAddressVC = SearchAddressVC.instacne().then {
-      $0.transitioningDelegate = self
-      $0.delegate = self
-    }
-    
-    self.present(searchAddressVC, animated: true, completion: nil)
-  }
-  
-  @objc private func initilizeLocationManager() {
-    self.locationManager.delegate = self
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-    
-    if CLLocationManager.locationServicesEnabled() {
-      switch CLLocationManager.authorizationStatus() {
-      case .authorizedAlways, .authorizedWhenInUse:
-        self.initilizeNaverMap()
-        self.locationManager.startUpdatingLocation()
-      case .notDetermined:
-        self.locationManager.requestWhenInUseAuthorization()
-      case .denied, .restricted:
-        self.showDenyAlert()
-      default:
-        let alertContent = AlertContent(
-          title: "location_unknown_status".localized,
-          message: "\(CLLocationManager.authorizationStatus())"
-        )
-        self.showSystemAlert(alert: alertContent)
-        break
+  private func handleLocationError(error: Error) {
+    if let locationError = error as? LocationError {
+      if locationError == .denied {
+        self.coordinator.showDenyAlert()
+      } else {
+        AlertUtils.show(controller: self, title: nil, message: locationError.errorDescription)
       }
     } else {
-      Log.debug("위치 기능 활성화 필요!")
+      self.showErrorAlert(error: error)
     }
   }
 }
 
 extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-  
   func collectionView(
     _ collectionView: UICollectionView,
     didSelectItemAt indexPath: IndexPath
@@ -297,68 +259,6 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   }
 }
 
-extension HomeVC: CLLocationManagerDelegate {
-  
-  func locationManager(
-    _ manager: CLLocationManager,
-    didChangeAuthorization status: CLAuthorizationStatus
-  ) {
-    switch status {
-    case .denied:
-      self.showDenyAlert()
-    case .authorizedAlways, .authorizedWhenInUse:
-      self.initilizeLocationManager()
-    default:
-      break
-    }
-  }
-  
-  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-    if let currentLocation = locations.last {
-      let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
-        lat: currentLocation.coordinate.latitude,
-        lng: currentLocation.coordinate.longitude
-      ))
-      camera.animation = .easeIn
-      
-      self.homeView.mapView.moveCamera(camera)
-      
-      if !self.mapAnimatedFlag {
-        self.viewModel.input.mapLocation.onNext(nil)
-        self.viewModel.input.currentLocation.onNext(currentLocation)
-        self.viewModel.input.locationForAddress
-          .onNext((
-            currentLocation.coordinate.latitude,
-            currentLocation.coordinate.longitude
-          ))
-      }
-    }
-    locationManager.stopUpdatingLocation()
-  }
-  
-  func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-    if let error = error as? CLError {
-      switch error.code {
-      case .denied:
-        self.showDenyAlert()
-      case .locationUnknown:
-        AlertUtils.show(
-          controller: self,
-          title: "location_unknown_title".localized,
-          message: "location_unknown_description".localized
-        )
-      default:
-        AlertUtils.show(
-          controller: self,
-          title: "location_unknown_error_title".localized,
-          message: "location_unknown_error_description".localized
-        )
-        Crashlytics.crashlytics().log("location Manager Error(error code: \(error.code.rawValue)")
-      }
-    }
-  }
-}
-
 extension HomeVC: SearchAddressDelegate {
   func selectAddress(location: (Double, Double), name: String) {
     let location = CLLocation(latitude: location.0, longitude: location.1)
@@ -376,14 +276,12 @@ extension HomeVC: SearchAddressDelegate {
 }
 
 extension HomeVC: StoreDetailDelegate {
-  
   func popup(store: Store) {
     self.viewModel.input.backFromDetail.onNext(store)
   }
 }
 
 extension HomeVC: NMFMapViewCameraDelegate {
-  
   func mapView(
     _ mapView: NMFMapView,
     cameraWillChangeByReason reason: Int,
@@ -394,31 +292,35 @@ extension HomeVC: NMFMapViewCameraDelegate {
         latitude: mapView.cameraPosition.target.lat,
         longitude: mapView.cameraPosition.target.lng
       )
-      let distance = mapView.contentBounds.boundsLatLngs[0].distance(to: mapView.contentBounds.boundsLatLngs[1])
+      let distance = mapView
+        .contentBounds
+        .boundsLatLngs[0]
+        .distance(to: mapView.contentBounds.boundsLatLngs[1])
       
-      self.viewModel.input.distance.onNext(distance / 3)
+      self.viewModel.input.mapMaxDistance.onNext(distance / 3)
       self.viewModel.input.mapLocation.onNext(mapLocation)
     }
   }
 }
 
 extension HomeVC: UIViewControllerTransitioningDelegate {
-  
   func animationController(
     forPresented presented: UIViewController,
     presenting: UIViewController,
     source: UIViewController
   ) -> UIViewControllerAnimatedTransitioning? {
-    transition.transitionMode = .present
-    transition.maskView.frame = self.homeView.addressContainerView.frame
+    self.transition.transitionMode = .present
+    self.transition.maskView.frame = self.homeView.addressContainerView.frame
     
-    return transition
+    return self.transition
   }
   
-  func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    transition.transitionMode = .dismiss
-    transition.maskOriginalFrame = self.homeView.addressContainerView.frame
+  func animationController(
+    forDismissed dismissed: UIViewController
+  ) -> UIViewControllerAnimatedTransitioning? {
+    self.transition.transitionMode = .dismiss
+    self.transition.maskOriginalFrame = self.homeView.addressContainerView.frame
     
-    return transition
+    return self.transition
   }
 }

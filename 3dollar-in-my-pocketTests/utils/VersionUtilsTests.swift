@@ -8,7 +8,7 @@
 
 import XCTest
 
-@testable import 가슴속3천원_debug
+@testable import dollar_in_my_pocket
 
 class VersionUtilsTests: XCTestCase {
   

@@ -12,7 +12,7 @@ struct FAQCategoryResponse: Decodable {
   init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     
-    self.category = try values.decodeIfPresent(FAQCategory.self, forKey: .category) ?? .CATEGORY
+    self.category = try values.decodeIfPresent(FAQCategory.self, forKey: .category) ?? .category
     self.description = try values.decodeIfPresent(String.self, forKey: .description) ?? ""
     self.displayOrder = try values.decodeIfPresent(Int.self, forKey: .displayOrder) ?? 0
   }

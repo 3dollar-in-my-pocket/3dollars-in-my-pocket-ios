@@ -14,7 +14,7 @@ class StoreDetailViewModel: BaseViewModel {
   let reviewService: ReviewServiceProtocol
   var currentLocation: (Double, Double) = (0, 0)
   
-  var store: Store!
+  var store: Store?
   
   struct Input {
     let currentLocation = PublishSubject<(Double, Double)>()
@@ -66,7 +66,7 @@ class StoreDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.tapShare
-      .map { self.store }
+      .compactMap { self.store }
       .bind(onNext: self.shareToKakao(store:))
       .disposed(by: disposeBag)
     
@@ -75,7 +75,7 @@ class StoreDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.tapModify
-      .map { self.store }
+      .compactMap { self.store }
       .bind(to: self.output.goToModify)
       .disposed(by: disposeBag)
     
@@ -103,7 +103,7 @@ class StoreDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.popup
-      .map { self.store }
+      .compactMap { self.store }
       .bind(to: self.output.popup)
       .disposed(by: disposeBag)
   }
@@ -202,20 +202,21 @@ class StoreDetailViewModel: BaseViewModel {
       .subscribe(
         onNext: { [weak self] _ in
           guard let self = self else { return }
+          guard let store = self.store else { return }
           
-          for reviewIndex in self.store.reviews.indices {
-            if self.store.reviews[reviewIndex].id == reviewId {
-              self.store.reviews.remove(at: reviewIndex)
+          for reviewIndex in store.reviews.indices {
+            if self.store?.reviews[reviewIndex].id == reviewId {
+              self.store?.reviews.remove(at: reviewIndex)
               break
             }
           }
           
           self.output.store.accept([
-            StoreSection(store: self.store, items: [nil]),
-            StoreSection(store: self.store, items: [nil]),
-            StoreSection(store: self.store, items: [nil]),
-            StoreSection(store: self.store, items: [nil]),
-            StoreSection(store: self.store, items: [nil] + self.store.reviews)
+            StoreSection(store: store, items: [nil]),
+            StoreSection(store: store, items: [nil]),
+            StoreSection(store: store, items: [nil]),
+            StoreSection(store: store, items: [nil]),
+            StoreSection(store: store, items: [nil] + store.reviews)
           ])
           self.output.showLoading.accept(false)
         },
@@ -260,11 +261,12 @@ class StoreDetailViewModel: BaseViewModel {
   }
   
   private func onTapPhoto(index: Int) {
+    guard let store = self.store else { return }
     if index == 3 {
       self.output.goToPhotoList.accept(self.storeId)
     } else {
-      if !self.store.images.isEmpty {
-        self.output.showPhotoDetail.accept((self.storeId, index, self.store.images))
+      if !store.images.isEmpty {
+        self.output.showPhotoDetail.accept((self.storeId, index, store.images))
       }
     }
   }

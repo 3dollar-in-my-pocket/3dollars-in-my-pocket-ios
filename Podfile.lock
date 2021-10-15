@@ -394,8 +394,10 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
+  - Nimble (9.2.1)
   - NMapsMap (3.13.0)
   - PromisesObjC (1.2.12)
+  - Quick (4.0.0)
   - R.swift (5.4.0):
     - R.swift.Library (~> 5.3.0)
   - R.swift.Library (5.3.0)
@@ -428,6 +430,12 @@ PODS:
   - RxKakaoSDKUser (2.5.3):
     - KakaoSDKUser (= 2.5.3)
     - RxKakaoSDKAuth (= 2.5.3)
+  - RxNimble/Core (5.0.0):
+    - Nimble (~> 9.0)
+    - RxSwift (~> 5.0)
+  - RxNimble/RxTest (5.0.0):
+    - RxNimble/Core
+    - RxTest
   - RxRelay (5.1.1):
     - RxSwift (~> 5)
   - RxSwift (5.1.2)
@@ -460,11 +468,13 @@ DEPENDENCIES:
   - Kingfisher (~> 5.0)
   - lottie-ios
   - NMapsMap
+  - Quick
   - R.swift
   - RxCocoa (~> 5)
   - RxDataSources (~> 4.0)
   - RxKakaoSDKAuth
   - RxKakaoSDKUser
+  - RxNimble/RxTest
   - RxSwift (~> 5)
   - RxTest (~> 5)
   - SnapKit (~> 5.0.0)
@@ -507,8 +517,10 @@ SPEC REPOS:
     - leveldb-library
     - lottie-ios
     - nanopb
+    - Nimble
     - NMapsMap
     - PromisesObjC
+    - Quick
     - R.swift
     - R.swift.Library
     - RxAlamofire
@@ -517,6 +529,7 @@ SPEC REPOS:
     - RxKakaoSDKAuth
     - RxKakaoSDKCommon
     - RxKakaoSDKUser
+    - RxNimble
     - RxRelay
     - RxSwift
     - RxTest
@@ -557,8 +570,10 @@ SPEC CHECKSUMS:
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
   NMapsMap: 88b5bdac7087bfa99ab058ff5cdd95fb766e0e95
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
+  Quick: 6473349e43b9271a8d43839d9ba1c442ed1b7ac4
   R.swift: c533450b0f7dc494e0993f5f1a1db925d84c3006
   R.swift.Library: 0fc583cb55a99e28901299cc451614cad1161962
   RxAlamofire: 8e144c62dcc01d68dcb366bfc542eb6dd46bab78
@@ -567,6 +582,7 @@ SPEC CHECKSUMS:
   RxKakaoSDKAuth: 8f4609d0a1e1613f8861a219e727aa1b688d67f3
   RxKakaoSDKCommon: 6dc3f478b35751dfd1f806f20d3bf7b1650f257c
   RxKakaoSDKUser: 088d321b0b959b66bbb112f8db278aae2a83e6bf
+  RxNimble: 3b757b0f8fb4dc487c3f9a383bc61a6f5bd72d28
   RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
   RxSwift: 1e2e1f9570186967f617e49128ed26ccf1bafc8e
   RxTest: 274549b747dca56f47c52c8991ec5cf797ecfe40
@@ -576,6 +592,6 @@ SPEC CHECKSUMS:
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: c5129c5ef9ea90cdc23448f1f6a295b5a5d8c6fe
+PODFILE CHECKSUM: 09b1513ffc3d618a568e8685b9d005d9cd7e39c9
 
 COCOAPODS: 1.10.1

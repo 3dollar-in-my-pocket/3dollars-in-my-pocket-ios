@@ -9,9 +9,9 @@ protocol StoreServiceProtocol {
     currentLocation: CLLocation,
     mapLocation: CLLocation,
     distance: Double
-  ) -> Observable<[StoreInfoResponse]>
+  ) -> Observable<[Store]>
   
-  func saveStore(addStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse>
+  func saveStore(store: Store) -> Observable<Store>
   
   func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[StoreImageResponse]>
   
@@ -28,6 +28,7 @@ protocol StoreServiceProtocol {
   ) -> Observable<StoreDetailResponse>
   
   func getReportedStore(
+    currentLocation: CLLocation?,
     totalCount: Int?,
     cursor: Int?
   ) -> Observable<Pagination<StoreInfoResponse>>
@@ -42,7 +43,7 @@ struct StoreService: StoreServiceProtocol {
     currentLocation: CLLocation,
     mapLocation: CLLocation,
     distance: Double
-  ) -> Observable<[StoreInfoResponse]> {
+  ) -> Observable<[Store]> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/stores/near"
       let headers = HTTPUtils.defaultHeader()
@@ -62,7 +63,10 @@ struct StoreService: StoreServiceProtocol {
       )
       .responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: [StoreInfoResponse].self, response: response)
+          let storeInfoResponse = response.decode(class: [StoreInfoResponse].self)
+          let stores = storeInfoResponse?.map(Store.init(response:))
+          
+          observer.processValue(data: stores)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -72,7 +76,9 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func saveStore(addStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse> {
+  func saveStore(store: Store) -> Observable<Store> {
+    let addStoreRequest = AddStoreRequest(store: store)
+    
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/store"
       let headers = HTTPUtils.defaultHeader()
@@ -86,7 +92,12 @@ struct StoreService: StoreServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: StoreInfoResponse.self, response: response)
+          guard let storeInfoResponse = response.decode(class: StoreInfoResponse.self) else {
+            return  observer.onError(BaseError.failDecoding)
+          }
+          let store = Store(response: storeInfoResponse)
+          
+          observer.processValue(data: store)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -231,19 +242,27 @@ struct StoreService: StoreServiceProtocol {
   }
   
   func getReportedStore(
+    currentLocation: CLLocation?,
     totalCount: Int?,
     cursor: Int?
   ) -> Observable<Pagination<StoreInfoResponse>> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/stores/me"
       let headers = HTTPUtils.defaultHeader()
-      var parameters: [String: Any] = ["size": 20]
+      var parameters: [String: Any] = [
+        "size": 20
+      ]
       
       if let totalcount = totalCount {
         parameters["cachingTotalElements"] = totalcount
       }
       if let cursor = cursor {
         parameters["cursor"] = cursor
+      }
+      
+      if let location = currentLocation {
+        parameters["latitude"] = location.coordinate.latitude
+        parameters["longitude"] = location.coordinate.longitude
       }
       
       HTTPUtils.defaultSession.request(

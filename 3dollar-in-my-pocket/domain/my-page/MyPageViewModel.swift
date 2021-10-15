@@ -60,25 +60,13 @@ class MyPageViewModel: BaseViewModel {
       .map(User.init)
       .subscribe(
         onNext: self.output.user.accept,
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          if let httpError = error as? HTTPError {
-            self.httpErrorAlert.accept(httpError)
-          } else if let error = error as? CommonError {
-            let alertContent = AlertContent(
-              title: nil,
-              message: error.description
-            )
-            
-            self.showSystemAlert.accept(alertContent)
-          }
-        }
+        onError: self.showErrorAlert.accept(_:)
       )
       .disposed(by: disposeBag)
   }
   
   func fetchReportedStore() {
-    self.storeService.getReportedStore(totalCount: nil, cursor: nil)
+    self.storeService.getReportedStore(currentLocation: nil, totalCount: nil, cursor: nil)
       .subscribe(
         onNext: { [weak self] pagination in
           guard let self = self else { return }
@@ -95,16 +83,7 @@ class MyPageViewModel: BaseViewModel {
             self.output.registeredStores.accept(stores + [nil])
           }
         },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          if let httpError = error as? HTTPError {
-            self.httpErrorAlert.accept(httpError)
-          } else if let error = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: error.description)
-            
-            self.output.showSystemAlert.accept(alertContent)
-          }
-        }
+        onError: self.showErrorAlert.accept(_:)
       )
       .disposed(by: disposeBag)
   }

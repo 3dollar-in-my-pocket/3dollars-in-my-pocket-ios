@@ -8,10 +8,16 @@ class BaseVC: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     bindViewModel()
+    self.bindViewModelInput()
+    self.bindViewModelOutput()
     bindEvent()
   }
   
   func bindViewModel() { }
+  
+  func bindViewModelInput() { }
+  
+  func bindViewModelOutput() { }
   
   func bindEvent() { }
   
@@ -73,6 +79,15 @@ class BaseVC: UIViewController {
           for: nil
         )
       }
+    } else if error == HTTPError.unauthorized {
+      AlertUtils.showWithAction(
+        controller: self,
+        title: nil,
+        message: error.description) {
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+          sceneDelegate.goToSignIn()
+        }
+      }
     } else {
       AlertUtils.show(
         controller: self,
@@ -91,10 +106,18 @@ class BaseVC: UIViewController {
   }
   
   private func showDefaultErrorAlert(error: Error) {
-    AlertUtils.show(
-      controller: self,
-      title: nil,
-      message: error.localizedDescription
-    )
+    if let localizedError = error as? LocalizedError {
+      AlertUtils.show(
+        controller: self,
+        title: nil,
+        message: localizedError.errorDescription
+      )
+    } else {
+      AlertUtils.show(
+        controller: self,
+        title: nil,
+        message: error.localizedDescription
+      )
+    }
   }
 }

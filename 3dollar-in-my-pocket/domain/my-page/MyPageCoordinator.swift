@@ -8,38 +8,34 @@
 
 import Foundation
 
-protocol MyPageCoordinator: Coordinator, AnyObject {
-  func goToSetting()
+final class MyPageCoordinator: Coordinator {
+  var presenter: MyPageVC
   
-  func goToTotalRegisteredStore()
+  required init(presenter: MyPageVC) {
+    self.presenter = presenter
+  }
   
-  func goToMyReview()
-  
-  func goToStoreDetail(storeId: Int)
-}
-
-extension MyPageCoordinator {
   func goToSetting() {
     let viewController = SettingVC.instance()
     
-    presenter?.pushViewController(viewController, animated: true)
+    self.presenter.navigationController?.pushViewController(viewController, animated: true)
   }
   
   func goToTotalRegisteredStore() {
     let viewController = RegisteredVC.instance()
     
-    presenter?.pushViewController(viewController, animated: true)
+    self.presenter.navigationController?.pushViewController(viewController, animated: true)
   }
   
   func goToMyReview() {
     let viewController = MyReviewVC.instance()
     
-    presenter?.pushViewController(viewController, animated: true)
+    self.presenter.navigationController?.pushViewController(viewController, animated: true)
   }
   
   func goToStoreDetail(storeId: Int) {
     let viewController = StoreDetailVC.instance(storeId: storeId)
     
-    presenter?.pushViewController(viewController, animated: true)
+    self.presenter.navigationController?.pushViewController(viewController, animated: true)
   }
 }

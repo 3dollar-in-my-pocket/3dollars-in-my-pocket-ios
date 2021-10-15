@@ -2,7 +2,7 @@ import XCTest
 import RxSwift
 import RxTest
 
-@testable import 가슴속3천원_debug
+@testable import dollar_in_my_pocket
 
 class SplashViewModelTests: XCTestCase {
   var disposeBag: DisposeBag!

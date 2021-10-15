@@ -4,8 +4,8 @@ class RenameView: BaseView {
   
   let tapGestureView = UITapGestureRecognizer()
   
-  let backBtn = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_back_white"), for: .normal)
+  let backButton = UIButton().then {
+    $0.setImage(R.image.ic_back_white(), for: .normal)
   }
   
   let titleLabel = UILabel().then {
@@ -84,26 +84,26 @@ class RenameView: BaseView {
   override func setup() {
     backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
     addGestureRecognizer(tapGestureView)
-    addSubViews(backBtn, titleLabel, bgCloud, oldNicknameLabel, nicknameLabel1, nicknameFieldBg,
+    addSubViews(backButton, titleLabel, bgCloud, oldNicknameLabel, nicknameLabel1, nicknameFieldBg,
                 nicknameField, nicknameLabel2, startBtn1, startBtn2, warningImage, warningLabel)
   }
   
   override func bindConstraints() {
     
-    backBtn.snp.makeConstraints { (make) in
+    backButton.snp.makeConstraints { (make) in
       make.left.equalToSuperview().offset(24)
       make.top.equalTo(safeAreaLayoutGuide).offset(3)
       make.width.height.equalTo(48)
     }
     
     titleLabel.snp.makeConstraints { (make) in
-      make.centerY.equalTo(backBtn.snp.centerY)
+      make.centerY.equalTo(backButton.snp.centerY)
       make.centerX.equalToSuperview()
     }
     
     bgCloud.snp.makeConstraints { (make) in
       make.left.right.equalToSuperview()
-      make.top.equalTo(backBtn.snp.bottom).offset(44)
+      make.top.equalTo(backButton.snp.bottom).offset(44)
     }
     
     oldNicknameLabel.snp.makeConstraints { (make) in
@@ -163,8 +163,8 @@ class RenameView: BaseView {
     startBtn2.isEnabled = isEnable
   }
   
-  func existedSameName() {
-    warningLabel.isHidden = false
-    warningImage.isHidden = false
+  func existedSameName(isHidden: Bool) {
+    warningLabel.isHidden = isHidden
+    warningImage.isHidden = isHidden
   }
 }
