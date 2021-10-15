@@ -3,21 +3,51 @@ import RxSwift
 
 protocol FAQServiceProtocol {
   
-  func getFAQs() -> Observable<[FAQ]>
+  func fetchFAQs(category: FAQCategory?) -> Observable<[FAQResponse]>
+  
+  func fetchFAQCategories() -> Observable<[FAQCategoryResponse]>
 }
 
 struct FAQService: FAQServiceProtocol {
-  func getFAQs() -> Observable<[FAQ]> {
+  func fetchFAQs(category: FAQCategory?) -> Observable<[FAQResponse]> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/faqs"
+      let urlString = HTTPUtils.url + "/api/v2/faqs"
+      let headers = HTTPUtils.jsonHeader()
+      var params: [String: Any] = [:]
+      
+      if let category = category {
+        params["category"] = category.rawValue
+      }
       
       HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
-        headers: HTTPUtils.defaultHeader()
+        parameters: nil,
+        headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: [FAQ].self, response: response)
+          observer.processValue(class: [FAQResponse].self, response: response)
+        } else {
+          observer.processHTTPError(response: response)
+        }
+      }
+      
+      return Disposables.create()
+    }
+  }
+  
+  func fetchFAQCategories() -> Observable<[FAQCategoryResponse]> {
+    return .create { observer in
+      let urlString = HTTPUtils.url + "/api/v2/faq/categories"
+      let header = HTTPUtils.jsonHeader()
+      
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .get,
+        headers: header
+      ).responseJSON { response in
+        if response.isSuccess() {
+          observer.processValue(class: [FAQCategoryResponse].self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }

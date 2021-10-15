@@ -34,6 +34,7 @@ enum GAEvent: String {
   case waffle_button_clicked = "waffle_button_clicked"
   case gukwappang_button_clicked = "gukwappang_button_clicked"
   case sundae_button_clicked = "sundae_button_clicked"
+  case dalgona_button_clicked = "dalgona_button_clicked"
   
   // store_list_page
   case order_by_distance_button_list = "order_by_distance_button_list"

@@ -8,16 +8,12 @@
 
 import RxSwift
 
-@testable import 가슴속3천원_debug
+@testable import dollar_in_my_pocket
 
 struct RemoteConfigServiceMock: RemoteConfigProtocol {
+  var fetchMinimalVersionObservable: Observable<String>?
   
   func fetchMinimalVersion() -> Observable<String> {
-    return Observable.create { observer in
-      observer.onNext("1.0.0")
-      observer.onCompleted()
-      
-      return Disposables.create()
-    }
+    return self.fetchMinimalVersionObservable ?? .empty()
   }
 }

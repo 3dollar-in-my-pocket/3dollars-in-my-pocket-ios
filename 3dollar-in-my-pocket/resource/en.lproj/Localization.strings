@@ -7,7 +7,7 @@
 "http_error_bad_gateway" = "일시적인 오류가 발생했어요..ㅠㅠ\n잠시 후 다시 시도해주세요!";
 "http_error_maintenance" = "서버 점검중입니다.\n잠시 후 다시 시도해주세요.";
 "http_error_timeout" = "일시적인 오류가 발생했어요..ㅠㅠ\n잠시 후 다시 시도해주세요!";
-"error_unknown" = "알수 없는 오류가 발생했습니다.\n오류는 개발자에게 보고됩니다.";
+"error_unknown" = "알수 없는 오류가 발생했습니다.\n잠시 후 다시 시도해주세요!";
 "error_failed_to_json" = "데이터를 가져오는 도중 오류가 발생했습니다.\n다시 시도해주세요.";
 "error_value_is_nil" = "서버와 통신중 오류가 발생했습니다.\n다시 시도해주세요.";
 "error_crashlytics_format" = "API통신중 요류 발생.\nurl: %s\nmessage: %s";
@@ -35,6 +35,10 @@
 "faq_question" = "어떤 점이 궁금하셨나요?";
 "privacy_title" = "개인정보처리방침";
 "nickname_alreay_existed" = "이미 존재하는 닉네임입니다.";
+"nickname_label_1" = "저는 닉네임";
+"nickname_label_2" = "로";
+"nickname_label_3" = "시작할래요";
+"nickname_placeholder" = "닉네임 입력";
 "category_list_header_distance50" = "50m 이내";
 "category_list_header_distance100" = "100m 이내";
 "category_list_header_distance500" = "500m 이내";
@@ -71,6 +75,7 @@
 "category_list_waffle" = "넌 어쩜 이름도\n와플일까?";
 "category_list_gukwappang" = "사계절 네가 생각나\n국화빵";
 "category_list_sundae" = "순대, 제발 내장 많이 주세요.";
+"category_list_dalgona" = "456번째 달고나";
 "category_list_empty" = "주변에 가게가 없어요.";
 "review_modal_title" = "이 가게를\n추천하시나요?";
 "review_modal_modify_title" = "이 가게의 추천 내용을\n수정합니다.";
@@ -131,6 +136,7 @@
 "shared_store_type_road" = "길거리";
 "shared_store_type_store" = "매장";
 "shared_store_type_convenience_store" = "편의점";
+"shared_category_dalgona" = "달고나";
 "store_detail_delete_request" = "삭제요청";
 "store_detail_share" = "공유하기";
 "store_detail_transfer" = "송금하기";

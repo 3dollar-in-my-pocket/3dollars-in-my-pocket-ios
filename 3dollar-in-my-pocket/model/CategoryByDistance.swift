@@ -34,6 +34,14 @@ struct CategoryByDistance: Codable {
     storeListOver1000 = try values.decodeIfPresent([StoreCard].self, forKey: .storeListOver1000) ?? []
   }
   
+  init(response: StoresGroupByDistanceResponse) {
+    self.storeList50 = response.storeList50.map(StoreCard.init)
+    self.storeList100 = response.storeList100.map(StoreCard.init)
+    self.storeList500 = response.storeList500.map(StoreCard.init)
+    self.storeList1000 = response.storeList1000.map(StoreCard.init)
+    self.storeListOver1000 = response.storeListOver1000.map(StoreCard.init)
+  }
+  
   func getStores() -> [StoreCard] {
     return self.storeList50 + self.storeList100 + self.storeList500 + self.storeList1000 + self.storeListOver1000
   }

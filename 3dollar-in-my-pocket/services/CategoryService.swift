@@ -8,13 +8,13 @@ protocol CategoryServiceProtocol {
     category: StoreCategory,
     currentLocation: CLLocation,
     mapLocation: CLLocation?
-  ) -> Observable<CategoryByDistance>
+  ) -> Observable<StoresGroupByDistanceResponse>
   
   func getStoreByReview(
     category: StoreCategory,
     currentLocation: CLLocation,
     mapLocation: CLLocation?
-  ) -> Observable<CategoryByReview>
+  ) -> Observable<StoresGroupByReviewResponse>
 }
 
 struct CategoryService: CategoryServiceProtocol {
@@ -23,10 +23,10 @@ struct CategoryService: CategoryServiceProtocol {
     category: StoreCategory,
     currentLocation: CLLocation,
     mapLocation: CLLocation?
-  ) -> Observable<CategoryByDistance> {
+  ) -> Observable<StoresGroupByDistanceResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/category/distance"
-      let headers = HTTPUtils.defaultHeader()
+      let urlString = HTTPUtils.url + "/api/v2/stores/distance"
+      let headers = HTTPUtils.jsonHeader()
       var parameters: [String: Any] = [
         "category": category.getValue(),
         "latitude": currentLocation.coordinate.latitude,
@@ -45,7 +45,7 @@ struct CategoryService: CategoryServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: CategoryByDistance.self, response: response)
+          observer.processValue(class: StoresGroupByDistanceResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -58,10 +58,10 @@ struct CategoryService: CategoryServiceProtocol {
     category: StoreCategory,
     currentLocation: CLLocation,
     mapLocation: CLLocation?
-  ) -> Observable<CategoryByReview> {
+  ) -> Observable<StoresGroupByReviewResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/category/review"
-      let headers = HTTPUtils.defaultHeader()
+      let urlString = HTTPUtils.url + "/api/v2/stores/review"
+      let headers = HTTPUtils.jsonHeader()
       var parameters: [String: Any] = [
         "category": category.getValue(),
         "latitude": currentLocation.coordinate.latitude,
@@ -80,7 +80,7 @@ struct CategoryService: CategoryServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: CategoryByReview.self, response: response)
+          observer.processValue(class: StoresGroupByReviewResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }

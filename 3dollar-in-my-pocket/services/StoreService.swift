@@ -9,29 +9,31 @@ protocol StoreServiceProtocol {
     currentLocation: CLLocation,
     mapLocation: CLLocation,
     distance: Double
-  ) -> Observable<[StoreResponse]>
+  ) -> Observable<[Store]>
   
-  func saveStore(store: Store) -> Observable<SaveResponse>
+  func saveStore(store: Store) -> Observable<Store>
   
-  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String>
+  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[StoreImageResponse]>
   
-  func getPhotos(storeId: Int) -> Observable<[Image]>
+  func getPhotos(storeId: Int) -> Observable<[StoreImageResponse]>
   
-  func deletePhoto(storeId: Int, photoId: Int) -> Observable<String>
+  func deletePhoto(photoId: Int) -> Observable<String>
   
-  func updateStore(storeId: Int, store: Store) -> Observable<String>
+  func updateStore(storeId: Int, updateStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse>
   
-  func getStoreDetail(storeId: Int, latitude: Double, longitude: Double) -> Observable<Store>
-  
-  func getReportedStore(page: Int) -> Observable<Page<Store>>
-  
-  func searchRegisteredStores(
+  func getStoreDetail(
+    storeId: Int,
     latitude: Double,
-    longitude: Double,
-    page: Int
-  ) -> Observable<Page<StoreCard>>
+    longitude: Double
+  ) -> Observable<StoreDetailResponse>
   
-  func deleteStore(storeId: Int, deleteReasonType: DeleteReason) -> Observable<String>
+  func getReportedStore(
+    currentLocation: CLLocation?,
+    totalCount: Int?,
+    cursor: Int?
+  ) -> Observable<Pagination<StoreInfoResponse>>
+  
+  func deleteStore(storeId: Int, deleteReasonType: DeleteReason) -> Observable<StoreDeleteResponse>
 }
 
 
@@ -41,9 +43,9 @@ struct StoreService: StoreServiceProtocol {
     currentLocation: CLLocation,
     mapLocation: CLLocation,
     distance: Double
-  ) -> Observable<[StoreResponse]> {
+  ) -> Observable<[Store]> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/stores"
+      let urlString = HTTPUtils.url + "/api/v2/stores/near"
       let headers = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = [
         "distance": distance,
@@ -61,52 +63,52 @@ struct StoreService: StoreServiceProtocol {
       )
       .responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: [StoreResponse].self, response: response)
-        } else {
-          observer.processHTTPError(response: response)
-        }
-      }
-      
-      return Disposables.create()
-    }
-  }
-  
-  func saveStore(store: Store) -> Observable<SaveResponse> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/save"
-      let headers = HTTPUtils.defaultHeader()
-      var parameters = store.toJson()
-      
-      parameters["userId"] = "\(UserDefaultsUtil.getUserId()!)"
-      
-      for index in store.menus.indices {
-        let menu = store.menus[index]
-        
-        parameters["menu[\(index)].category"] = menu.category?.rawValue ?? StoreCategory.BUNGEOPPANG
-        parameters["menu[\(index)].name"] = menu.name
-        parameters["menu[\(index)].price"] = menu.price
-      }
-      
-      HTTPUtils.fileUploadSession.upload(multipartFormData: { multipartFormData in
-        for (key, value) in parameters {
-          let stringValue = String(describing: value)
+          let storeInfoResponse = response.decode(class: [StoreInfoResponse].self)
+          let stores = storeInfoResponse?.map(Store.init(response:))
           
-          multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
-        }
-      }, to: urlString, headers: headers).responseJSON(completionHandler: { response in
-        if response.isSuccess() {
-          observer.processValue(class: SaveResponse.self, response: response)
+          observer.processValue(data: stores)
         } else {
           observer.processHTTPError(response: response)
         }
-      })
+      }
+      
       return Disposables.create()
     }
   }
   
-  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<String> {
+  func saveStore(store: Store) -> Observable<Store> {
+    let addStoreRequest = AddStoreRequest(store: store)
+    
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/\(storeId)/images"
+      let urlString = HTTPUtils.url + "/api/v2/store"
+      let headers = HTTPUtils.defaultHeader()
+      let parameters = addStoreRequest.params
+      
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .post,
+        parameters: parameters,
+        encoding: JSONEncoding.default,
+        headers: headers
+      ).responseJSON { response in
+        if response.isSuccess() {
+          guard let storeInfoResponse = response.decode(class: StoreInfoResponse.self) else {
+            return  observer.onError(BaseError.failDecoding)
+          }
+          let store = Store(response: storeInfoResponse)
+          
+          observer.processValue(data: store)
+        } else {
+          observer.processHTTPError(response: response)
+        }
+      }
+      return Disposables.create()
+    }
+  }
+  
+  func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[StoreImageResponse]> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v2/store/images"
       let headers = HTTPUtils.defaultHeader()
       
       HTTPUtils.fileUploadSession.upload(
@@ -114,7 +116,7 @@ struct StoreService: StoreServiceProtocol {
           for data in ImageUtils.dataArrayFromImages(photos: photos) {
             multipartFormData.append(
               data,
-              withName: "image",
+              withName: "images",
               fileName: "image.jpeg",
               mimeType: "image/jpeg"
             )
@@ -124,24 +126,23 @@ struct StoreService: StoreServiceProtocol {
         to: urlString,
         headers: headers
       )
-      .responseString { response in
+      .responseJSON(completionHandler: { response in
         if let statusCode = response.response?.statusCode {
           if "\(statusCode)".first! == "2" {
-            observer.onNext("success")
-            observer.onCompleted()
+            observer.processValue(class: [StoreImageResponse].self, response: response)
           }
         } else {
           observer.processHTTPError(response: response)
         }
-      }
+      })
       
       return Disposables.create()
     }
   }
   
-  func getPhotos(storeId: Int) -> Observable<[Image]> {
+  func getPhotos(storeId: Int) -> Observable<[StoreImageResponse]> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/\(storeId)/images"
+      let urlString = HTTPUtils.url + "/api/v2/store/\(storeId)/images"
       let headers = HTTPUtils.defaultHeader()
       
       HTTPUtils.defaultSession.request(
@@ -151,7 +152,7 @@ struct StoreService: StoreServiceProtocol {
       )
       .responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: [Image].self, response: response)
+          observer.processValue(class: [StoreImageResponse].self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -161,9 +162,9 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func deletePhoto(storeId: Int, photoId: Int) -> Observable<String> {
+  func deletePhoto(photoId: Int) -> Observable<String> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/\(storeId)/images/\(photoId)"
+      let urlString = HTTPUtils.url + "/api/v2/store/image/\(photoId)"
       let headers = HTTPUtils.defaultHeader()
       
       HTTPUtils.defaultSession.request(
@@ -186,43 +187,36 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func updateStore(storeId: Int, store: Store) -> Observable<String> {
+  func updateStore(storeId: Int, updateStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/update"
+      let urlString = HTTPUtils.url + "/api/v2/store/\(storeId)"
       let headers = HTTPUtils.defaultHeader()
-      var parameters = store.toJson()
+      let parameters = updateStoreRequest.params
       
-      parameters["storeId"] = storeId
-      
-      for index in store.menus.indices {
-        let menu = store.menus[index]
-        
-        parameters["menu[\(index)].category"] = menu.category?.rawValue ?? StoreCategory.BUNGEOPPANG
-        parameters["menu[\(index)].name"] = menu.name
-        parameters["menu[\(index)].price"] = menu.price
-      }
-      
-      HTTPUtils.fileUploadSession.upload(multipartFormData: { multipartFormData in
-        for (key, value) in parameters {
-          let stringValue = String(describing: value)
-          
-          multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
-        }
-      }, to: urlString, method: .put, headers: headers).responseString(completionHandler: { response in
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .put,
+        parameters: parameters,
+        encoding: JSONEncoding.default,
+        headers: headers
+      ).responseJSON { response in
         if response.isSuccess() {
-          observer.onNext("success")
-          observer.onCompleted()
+          observer.processValue(class: StoreInfoResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
-      })
+      }
       return Disposables.create()
     }
   }
   
-  func getStoreDetail(storeId: Int, latitude: Double, longitude: Double) -> Observable<Store> {
+  func getStoreDetail(
+    storeId: Int,
+    latitude: Double,
+    longitude: Double
+  ) -> Observable<StoreDetailResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/detail"
+      let urlString = HTTPUtils.url + "/api/v2/store"
       let headers = HTTPUtils.defaultHeader()
       let parameters: [String: Any] = [
         "storeId": storeId,
@@ -237,7 +231,7 @@ struct StoreService: StoreServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: Store.self, response: response)
+          observer.processValue(class: StoreDetailResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -247,11 +241,29 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func getReportedStore(page: Int) -> Observable<Page<Store>> {
+  func getReportedStore(
+    currentLocation: CLLocation?,
+    totalCount: Int?,
+    cursor: Int?
+  ) -> Observable<Pagination<StoreInfoResponse>> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/user"
+      let urlString = HTTPUtils.url + "/api/v2/stores/me"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["page": page]
+      var parameters: [String: Any] = [
+        "size": 20
+      ]
+      
+      if let totalcount = totalCount {
+        parameters["cachingTotalElements"] = totalcount
+      }
+      if let cursor = cursor {
+        parameters["cursor"] = cursor
+      }
+      
+      if let location = currentLocation {
+        parameters["latitude"] = location.coordinate.latitude
+        parameters["longitude"] = location.coordinate.longitude
+      }
       
       HTTPUtils.defaultSession.request(
         urlString,
@@ -260,7 +272,7 @@ struct StoreService: StoreServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: Page<Store>.self, response: response)
+          observer.processValue(class: Pagination<StoreInfoResponse>.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -270,58 +282,24 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func searchRegisteredStores(
-    latitude: Double,
-    longitude: Double,
-    page: Int
-  ) -> Observable<Page<StoreCard>> {
+  func deleteStore(
+    storeId: Int,
+    deleteReasonType: DeleteReason
+  ) -> Observable<StoreDeleteResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/stores/user"
+      let urlString = HTTPUtils.url + "/api/v2/store/\(storeId)"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = [
-        "latitude": latitude,
-        "longitude": longitude,
-        "page": page
-      ]
-      
-      HTTPUtils.defaultSession.request(
-        urlString,
-        method: .get,
-        parameters: parameters,
-        headers: headers
-      )
-      .responseJSON { response in
-        if response.isSuccess() {
-          observer.processValue(class: Page<StoreCard>.self, response: response)
-        } else {
-          observer.processHTTPError(response: response)
-        }
-      }
-      
-      return Disposables.create()
-    }
-  }
-  
-  func deleteStore(storeId: Int, deleteReasonType: DeleteReason) -> Observable<String> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/store/delete"
-      let headers = HTTPUtils.defaultHeader()
-      let parameters : [String: Any] = [
-        "storeId": storeId,
-        "userId": UserDefaultsUtil.getUserId()!,
-        "deleteReasonType": deleteReasonType.getValue()
-      ]
+      let parameters: [String: Any] = ["deleteReasonType": deleteReasonType.getValue()]
       
       HTTPUtils.defaultSession.request(
         urlString,
         method: .delete,
         parameters: parameters,
         headers: headers
-      ).responseString { response in
+      ).responseJSON { response in
         if response.isSuccess() {
-          observer.onNext("success")
-          observer.onCompleted()
-        } else if response.response?.statusCode == 400 {
+          observer.processValue(class: StoreDeleteResponse.self, response: response)
+        } else if response.response?.statusCode == 409 {
           let error = CommonError(desc: "store_delete_already_request".localized)
           
           observer.onError(error)

@@ -10,4 +10,15 @@ extension AFDataResponse {
       return false
     }
   }
+  
+  func decode<T: Decodable>(class: T.Type) -> T? {
+    guard let value = self.value else {
+      return nil
+    }
+    guard let responseContainer: ResponseContainer<T> = JsonUtils.toJson(object: value) else {
+      return nil
+    }
+    
+    return responseContainer.data
+  }
 }

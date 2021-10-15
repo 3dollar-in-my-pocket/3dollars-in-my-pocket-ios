@@ -25,8 +25,21 @@ extension AnyObserver {
   
   func processValue<T: Decodable>(class: T.Type, response: AFDataResponse<Any>) {
     if let value = response.value {
-      if let valueObject: T = JsonUtils.toJson(object: value) {
-        self.onNext(valueObject as! Element)
+      if let responseContainer: ResponseContainer<T> = JsonUtils.toJson(object: value) {
+        self.onNext(responseContainer.data as! Element)
+        self.onCompleted()
+      } else {
+        self.onError(BaseError.failDecoding)
+      }
+    } else {
+      self.onError(BaseError.nilValue)
+    }
+  }
+  
+  func processValue(data: Any?) {
+    if let data = data {
+      if let element = data as? Element {
+        self.onNext(element)
         self.onCompleted()
       } else {
         self.onError(BaseError.failDecoding)

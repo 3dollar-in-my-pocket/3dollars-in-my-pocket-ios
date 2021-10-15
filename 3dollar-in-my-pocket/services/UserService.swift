@@ -3,63 +3,32 @@ import RxSwift
 
 protocol UserServiceProtocol {
   
-  func validateToken(token: String) -> Observable<Void>
+  func signin(request: SigninRequest) -> Observable<SigninResponse>
   
-  func signIn(user: User) -> Observable<SignIn>
+  func signup(request: SignupRequest) -> Observable<SigninResponse>
   
-  func setNickname(
-    nickname: String,
-    id: Int,
-    token: String
-  ) -> Observable<Void>
+  func withdrawal() -> Observable<Void>
   
-  func getUserInfo(userId: Int) -> Observable<User>
+  func changeNickname(name: String) -> Observable<User>
   
-  func withdrawal(userId: Int) -> Observable<Void>
-  
-  func changeNickname(nickname: String) -> Observable<String>
-  
-  func getUserInfo() -> Observable<User>
+  func fetchUserInfo() -> Observable<UserInfoResponse>
 }
 
 struct UserService: UserServiceProtocol {
   
-  func validateToken(token: String) -> Observable<Void> {
+  func signin(request: SigninRequest) -> Observable<SigninResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/me"
-      let headers = HTTPUtils.defaultHeader()
-      
-      HTTPUtils.defaultSession.request(
-        urlString,
-        method: .get,
-        headers: headers
-      ).responseString { response in
-        if response.isSuccess() {
-          observer.onNext(())
-          observer.onCompleted()
-        } else {
-          observer.processHTTPError(response: response)
-        }
-      }
-      
-      return Disposables.create()
-    }
-  }
-  
-  func signIn(user: User) -> Observable<SignIn> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/login"
-      let parameters = user.toDict()
+      let urlString = HTTPUtils.url + "/api/v2/login"
       
       HTTPUtils.defaultSession.request(
         urlString,
         method: .post,
-        parameters: parameters,
+        parameters: request.parameters,
         encoding: JSONEncoding.default,
         headers: HTTPUtils.jsonHeader()
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: SignIn.self, response: response)
+          observer.processValue(class: SigninResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -69,70 +38,46 @@ struct UserService: UserServiceProtocol {
     }
   }
   
-  func setNickname(
-    nickname: String,
-    id: Int,
-    token: String
-  ) -> Observable<Void> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/nickname"
-      let parameters: [String: Any] = ["nickName": nickname, "userId": id]
-      var headers = ["Authorization": token] as HTTPHeaders
-      
-      headers.add(HTTPUtils.defaultUserAgent)
-      HTTPUtils.defaultSession.request(
-        urlString,
-        method: .put,
-        parameters: parameters,
-        headers: headers
-      ).responseString(completionHandler: { (response) in
-        if response.isSuccess() {
-          observer.onNext(())
-          observer.onCompleted()
-        } else {
-          observer.processHTTPError(response: response)
-        }
-      })
-      
-      return Disposables.create()
-    }
-  }
-  
-  func getUserInfo(userId: Int) -> Observable<User> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/info"
-      let headders = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["userId" : String(userId)]
-      
-      HTTPUtils.defaultSession.request(
-        urlString,
-        method: .get,
-        parameters: parameters,
-        headers: headders
-      ).responseJSON { response in
-        if response.isSuccess() {
-          observer.processValue(class: User.self, response: response)
-        } else {
-          observer.processHTTPError(response: response)
-        }
-      }
-      return Disposables.create()
-    }
-  }
-  
-  func withdrawal(userId: Int) -> Observable<Void> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/signout"
-      let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["userId": userId]
+  func signup(request: SignupRequest) -> Observable<SigninResponse> {
+    return Observable.create { observer in
+      let urlString = HTTPUtils.url + "/api/v2/signup"
       
       HTTPUtils.defaultSession.request(
         urlString,
         method: .post,
-        parameters: parameters,
-        encoding: URLEncoding.default,
+        parameters: request.parameters,
+        encoding: JSONEncoding.default,
+        headers: HTTPUtils.jsonHeader()
+      ).responseJSON { response in
+        if response.isSuccess() {
+          observer.processValue(class: SigninResponse.self, response: response)
+          observer.onCompleted()
+        } else {
+          if response.response?.statusCode == 409 {
+            observer.onError(SignupError.alreadyExistedNickname)
+          } else if response.response?.statusCode == 400 {
+            observer.onError(SignupError.badRequest)
+          } else {
+            observer.processHTTPError(response: response)
+          }
+        }
+      }
+      
+      return Disposables.create()
+    }
+  }
+  
+  func withdrawal() -> Observable<Void> {
+    return Observable.create { observer -> Disposable in
+      let urlString = HTTPUtils.url + "/api/v2/signout"
+      let headers = HTTPUtils.defaultHeader()
+      
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .delete,
         headers: headers
-      ).responseString(completionHandler: { (response) in
+      )
+      .responseString(completionHandler: { (response) in
         if let statusCode = response.response?.statusCode {
           if "\(statusCode)".first! == "2" {
             observer.onNext(())
@@ -146,47 +91,49 @@ struct UserService: UserServiceProtocol {
     }
   }
   
-  func changeNickname(nickname: String) -> Observable<String> {
+  func changeNickname(name: String) -> Observable<User> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/nickname"
+      let urlString = HTTPUtils.url + "/api/v2/user/me"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = [
-        "nickName": nickname,
-        "userId": UserDefaultsUtil.getUserId() ?? ""
-      ]
+      let parameters: [String: Any] = ["name": name]
       
       HTTPUtils.defaultSession.request(
         urlString,
         method: .put,
         parameters: parameters,
+        encoding: JSONEncoding.default,
         headers: headers
-      ).responseString(completionHandler: { response in
+      ).responseJSON { response in
         if response.isSuccess() {
-          observer.onNext("success")
+          observer.processValue(class: User.self, response: response)
           observer.onCompleted()
         } else {
-          observer.processHTTPError(response: response)
+          if response.response?.statusCode == 409 {
+            observer.onError(ChangeNicknameError.alreadyExistedNickname)
+          } else if response.response?.statusCode == 400 {
+            observer.onError(ChangeNicknameError.badRequest)
+          } else {
+            observer.processHTTPError(response: response)
+          }
         }
-      })
+      }
       
       return Disposables.create()
     }
   }
   
-  func getUserInfo() -> Observable<User> {
+  func fetchUserInfo() -> Observable<UserInfoResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v1/user/info"
+      let urlString = HTTPUtils.url + "/api/v2/user/me"
       let headders = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = ["userId" : UserDefaultsUtil().getUserId()]
       
       HTTPUtils.defaultSession.request(
         urlString,
         method: .get,
-        parameters: parameters,
         headers: headders
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: User.self, response: response)
+          observer.processValue(class: UserInfoResponse.self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }

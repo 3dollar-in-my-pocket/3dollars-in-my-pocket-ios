@@ -1,14 +1,14 @@
-struct FAQ: Codable {
+struct FAQ: Decodable {
   let answer: String
   let id: Int
   let question: String
-  let tags: [FAQTag]
+  let category: FAQCategory
   
   enum CodingKeys: String, CodingKey {
     case answer = "answer"
     case id = "id"
     case question = "question"
-    case tags = "tags"
+    case category
   }
   
   init(from decoder: Decoder) throws {
@@ -17,6 +17,13 @@ struct FAQ: Codable {
     answer = try values.decodeIfPresent(String.self, forKey: .answer) ?? ""
     id = try values.decodeIfPresent(Int.self, forKey: .id) ?? -1
     question = try values.decodeIfPresent(String.self, forKey: .question) ?? ""
-    tags = try values.decodeIfPresent([FAQTag].self, forKey: .tags) ?? []
+    category = try values.decodeIfPresent(FAQCategory.self, forKey: .category) ?? .store
+  }
+  
+  init(response: FAQResponse) {
+    self.answer = response.answer
+    self.id = response.faqId
+    self.question = response.question
+    self.category = response.category
   }
 }

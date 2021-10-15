@@ -1,4 +1,4 @@
 enum SocialType: String, Codable {
-  case KAKAO = "KAKAO"
-  case APPLE = "APPLE"
+  case KAKAO
+  case APPLE
 }

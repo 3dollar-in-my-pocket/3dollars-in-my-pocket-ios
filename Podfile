@@ -22,10 +22,10 @@ target '3dollar-in-my-pocket' do
   pod 'lottie-ios'
   
   pod 'KakaoSDKCommon'  # 필수 요소를 담은 공통 모듈
-  pod 'KakaoSDKAuth'  # 카카오 로그인
   pod 'KakaoSDKLink'  # 메시지(카카오링크)
-  pod 'KakaoSDKUser'  # 사용자 관리
-  pod 'KakaoSDKTemplate'  # 메시지 템플릿 
+  pod 'KakaoSDKTemplate'  # 메시지 템플릿
+  pod 'RxKakaoSDKAuth'
+  pod 'RxKakaoSDKUser'
   
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
@@ -51,5 +51,14 @@ target '3dollar-in-my-pocket' do
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths
     pod 'RxTest', '~> 5'
+    pod 'Quick'
+    pod 'RxNimble/RxTest'
+  end
+end
+
+# M1에서 시뮬레이터 빌드를 하기위해 추가했습니다.
+post_install do |installer|
+  installer.pods_project.build_configurations.each do |config|
+    config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
   end
 end

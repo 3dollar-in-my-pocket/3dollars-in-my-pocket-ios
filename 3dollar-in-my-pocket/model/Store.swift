@@ -1,10 +1,8 @@
 struct Store: Codable {
   
   let appearanceDays: [WeekDay]
-  let category: StoreCategory
   let categories: [StoreCategory]
   let distance: Int
-  let id: Int
   let images: [Image]
   let latitude: Double
   let longitude: Double
@@ -12,27 +10,27 @@ struct Store: Codable {
   let paymentMethods: [PaymentType]
   let rating: Float
   var reviews: [Review]
+  let storeId: Int
   let storeName: String
   let storeType: StoreType?
-  let repoter: User
+  let user: User
   
   
   enum CodingKeys: String, CodingKey {
-    case appearanceDays = "appearanceDays"
-    case category = "category"
-    case categories = "categories"
-    case distance = "distance"
-    case id = "id"
-    case images = "image"
-    case latitude = "latitude"
-    case longitude = "longitude"
-    case menus = "menu"
-    case paymentMethods = "paymentMethods"
-    case rating = "rating"
-    case reviews = "review"
-    case storeName = "storeName"
-    case storeType = "storeType"
-    case repoter = "user"
+    case appearanceDays
+    case categories
+    case distance
+    case images
+    case latitude
+    case longitude
+    case menus
+    case paymentMethods
+    case rating
+    case reviews
+    case storeId
+    case storeName
+    case storeType
+    case user
   }
   
   
@@ -44,10 +42,9 @@ struct Store: Codable {
     menus: [Menu]
   ) {
     self.appearanceDays = []
-    self.category = category
-    self.categories = []
+    self.categories = [category]
     self.distance = -1
-    self.id = -1
+    self.storeId = -1
     self.images = []
     self.latitude = latitude
     self.longitude = longitude
@@ -57,7 +54,7 @@ struct Store: Codable {
     self.reviews = []
     self.storeName = storeName
     self.storeType = nil
-    self.repoter = User(socialId: "", socialType: "")
+    self.user = User()
   }
   
   init(
@@ -72,10 +69,9 @@ struct Store: Codable {
     storeType: StoreType?
   ) {
     self.appearanceDays = appearanceDays
-    self.category = .BUNGEOPPANG
     self.categories = categories
     self.distance = -1
-    self.id = id
+    self.storeId = id
     self.images = []
     self.latitude = latitude
     self.longitude = longitude
@@ -90,17 +86,16 @@ struct Store: Codable {
     self.reviews = []
     self.storeName = storeName
     self.storeType = storeType
-    self.repoter = User(socialId: "", socialType: "")
+    self.user = User()
   }
   
   init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     
     self.appearanceDays = try values.decodeIfPresent([WeekDay].self, forKey: .appearanceDays) ?? []
-    self.category = try values.decodeIfPresent(StoreCategory.self, forKey: .category) ?? .BUNGEOPPANG
     self.categories = try values.decodeIfPresent([StoreCategory].self, forKey: .categories) ?? []
     self.distance = try values.decodeIfPresent(Int.self, forKey: .distance) ?? -1
-    self.id = try values.decodeIfPresent(Int.self, forKey: .id) ?? -1
+    self.storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? -1
     self.images = try values.decodeIfPresent([Image].self, forKey: .images) ?? []
     self.latitude = try values.decodeIfPresent(Double.self, forKey: .latitude) ?? -1
     self.longitude = try values.decodeIfPresent(Double.self, forKey: .longitude) ?? -1
@@ -110,15 +105,75 @@ struct Store: Codable {
     self.reviews = try values.decodeIfPresent([Review].self, forKey: .reviews) ?? []
     self.storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
     self.storeType = try values.decodeIfPresent(StoreType.self, forKey: .storeType)
-    self.repoter = try values.decodeIfPresent(User.self, forKey: .repoter) ?? User(socialId: "", socialType: "")
+    self.user = try values.decodeIfPresent(User.self, forKey: .user) ?? User()
+  }
+  
+  init(response: StoreInfoResponse) {
+    self.appearanceDays = []
+    self.categories = response.categories
+    self.distance = response.distance
+    self.storeId = response.storeId
+    self.images = []
+    self.latitude = response.latitude
+    self.longitude = response.longitude
+    self.menus = []
+    self.paymentMethods = []
+    self.rating = Float(response.rating)
+    self.reviews = []
+    self.storeName = response.storeName
+    self.storeType = nil
+    self.user = User()
+  }
+  
+  init(response: StoreDetailResponse) {
+    self.appearanceDays = response.appearanceDays
+    self.categories = response.categories
+    self.distance = response.distance
+    self.storeId = response.storeId
+    self.images = response.images.map(Image.init)
+    self.latitude = response.latitude
+    self.longitude = response.longitude
+    self.menus = response.menus.map(Menu.init)
+    self.paymentMethods = response.paymentMethods
+    self.rating = Float(response.rating)
+    self.reviews = response.reviews.map(Review.init)
+    self.storeName = response.storeName
+    self.storeType = response.storeType
+    self.user = User(response: response.user)
   }
   
   func toJson() -> [String: Any] {
+//    {
+//      "appearanceDays": [
+//        "MONDAY"
+//      ],
+//      "latitude": 0,
+//      "longitude": 0,
+//      "menu": [
+//        {
+//          "category": "BUNGEOPPANG",
+//          "name": "",
+//          "price": ""
+//        },
+//        {
+//          "category": "KKOCHI",
+//          "name": "",
+//          "price": ""
+//        }
+//      ],
+//      "paymentMethods": [
+//        "CASH"
+//      ],
+//      "storeName": "string",
+//      "storeType": "ROAD"
+//    }
     var dictionary: [String: Any] = [
-      "appearanceDays": self.appearanceDays.map{ $0.rawValue }.joined(separator: ","),
-      "categories": self.categories.map { $0.rawValue }.joined(separator: ","),
+      "appearanceDays": self.appearanceDays.map { $0.rawValue },
       "latitude": self.latitude,
       "longitude": self.longitude,
+      
+      "categories": self.categories.map { $0.rawValue }.joined(separator: ","),
+      
       "paymentMethods": self.paymentMethods.map { $0.rawValue }.joined(separator: ","),
       "storeName": self.storeName
     ]
