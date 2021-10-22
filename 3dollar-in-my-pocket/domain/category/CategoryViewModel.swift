@@ -24,6 +24,7 @@ class CategoryViewModel: BaseViewModel {
   ]
   
   struct Input {
+    let viewDidLoad = PublishSubject<Void>()
     let tapCategory = PublishSubject<Int>()
   }
   
