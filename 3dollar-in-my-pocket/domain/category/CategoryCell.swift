@@ -58,4 +58,10 @@ class CategoryCell: BaseCollectionViewCell {
     self.categoryImage.image = category.image
     self.newLabel.isHidden = category != .DALGONA
   }
+  
+  func bind(menuCategory: MenuCategoryResponse) {
+    self.categoryLabel.text = menuCategory.name
+    self.categoryImage.image = menuCategory.image
+    self.newLabel.isHidden = !menuCategory.isNew
+  }
 }

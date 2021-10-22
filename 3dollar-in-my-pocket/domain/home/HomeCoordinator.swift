@@ -59,6 +59,6 @@ final class HomeCoordinator: Coordinator {
       $0.delegate = self.presenter
     }
     
-    self.presenter.present(searchAddressVC, animated: true, completion: nil)
+    self.presenter.tabBarController?.present(searchAddressVC, animated: true, completion: nil)
   }
 }

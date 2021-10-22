@@ -3,7 +3,7 @@ import RxSwift
 class CategoryVC: BaseVC {
   
   private lazy var categoryView = CategoryView(frame: self.view.frame)
-  private let viewModel = CategoryViewModel()
+  private let viewModel = CategoryViewModel(categoryService: CategoryService())
   
   static func instance() -> UINavigationController {
     let categoryVC = CategoryVC(nibName: nil, bundle: nil).then {
@@ -24,7 +24,7 @@ class CategoryVC: BaseVC {
     
     view = categoryView
     self.setupCollectionView()
-    self.viewModel.fetchCategories()
+    self.viewModel.input.viewDidLoad.onNext(())
     self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
   }
   
@@ -34,8 +34,8 @@ class CategoryVC: BaseVC {
       .bind(to: self.categoryView.categoryCollectionView.rx.items(
         cellIdentifier: CategoryCell.registerId,
         cellType: CategoryCell.self
-      )) { row, category, cell in
-        cell.bind(category: category)
+      )) { _, category, cell in
+        cell.bind(menuCategory: category)
       }
       .disposed(by: disposeBag)
     

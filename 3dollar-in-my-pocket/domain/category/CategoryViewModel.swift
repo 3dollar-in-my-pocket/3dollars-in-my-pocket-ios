@@ -5,44 +5,41 @@ class CategoryViewModel: BaseViewModel {
   
   let input = Input()
   let output = Output()
-  let categories: [StoreCategory] = [
-    .DALGONA,
-    .BUNGEOPPANG,
-    .KKOCHI,
-    .EOMUK,
-    .GUKWAPPANG,
-    .GUNGOGUMA,
-    .GYERANPPANG,
-    .HOTTEOK,
-    .GUNOKSUSU,
-    .SUNDAE,
-    .TAKOYAKI,
-    .TOAST,
-    .TTANGKONGPPANG,
-    .TTEOKBOKKI,
-    .WAFFLE
-  ]
+  var categories: [MenuCategoryResponse] = []
   
   struct Input {
+    let viewDidLoad = PublishSubject<Void>()
     let tapCategory = PublishSubject<Int>()
   }
   
   struct Output {
-    let categories = PublishRelay<[StoreCategory]>()
+    let categories = PublishRelay<[MenuCategoryResponse]>()
     let goToCategoryList = PublishRelay<StoreCategory>()
   }
   
-  override init() {
+  let categoryService: CategoryServiceProtocol
+  
+  init(categoryService: CategoryServiceProtocol) {
+    self.categoryService = categoryService
     super.init()
     
+    self.input.viewDidLoad
+      .bind(onNext: self.fetchCategories)
+      .disposed(by: self.disposeBag)
+    
     self.input.tapCategory
-      .map { self.categories[$0] }
+      .map { self.categories[$0].category }
       .bind(to: self.output.goToCategoryList)
       .disposed(by: disposeBag)
   }
   
   func fetchCategories() {
-    self.output.categories.accept(self.categories)
+    self.categoryService.fetchCategories()
+      .do(onNext: { [weak self] menuCategoryResponse in
+        self?.categories = menuCategoryResponse
+      })
+      .bind(to: self.output.categories)
+      .disposed(by: self.disposeBag)
   }
   
   private func logGA(category: StoreCategory) {
