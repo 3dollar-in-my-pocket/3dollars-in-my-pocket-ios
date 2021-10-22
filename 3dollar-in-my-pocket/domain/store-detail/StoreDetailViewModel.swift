@@ -202,15 +202,16 @@ class StoreDetailViewModel: BaseViewModel {
       .subscribe(
         onNext: { [weak self] _ in
           guard let self = self else { return }
-          guard let store = self.store else { return }
+          guard var store = self.store else { return }
           
           for reviewIndex in store.reviews.indices {
-            if self.store?.reviews[reviewIndex].id == reviewId {
-              self.store?.reviews.remove(at: reviewIndex)
+            if store.reviews[reviewIndex].id == reviewId {
+              store.reviews.remove(at: reviewIndex)
               break
             }
           }
           
+          self.store?.reviews = store.reviews
           self.output.store.accept([
             StoreSection(store: store, items: [nil]),
             StoreSection(store: store, items: [nil]),
