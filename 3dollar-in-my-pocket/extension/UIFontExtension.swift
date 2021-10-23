@@ -20,4 +20,8 @@ extension UIFont {
   static func regular(size: CGFloat) -> UIFont? {
     return Self.init(name: "AppleSDGothicNeo-Regular", size: size)
   }
+  
+  static func medium(size: CGFloat) -> UIFont? {
+    return Self.init(name: "AppleSDGothicNeo-Medium", size: size)
+  }
 }

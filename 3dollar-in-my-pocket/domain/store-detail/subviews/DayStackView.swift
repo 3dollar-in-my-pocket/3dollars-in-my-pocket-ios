@@ -1,6 +1,6 @@
 import UIKit
 
-class DayStackView: UIStackView {
+final class DayStackView: UIStackView {
   
   let sundayButton = UIButton().then {
     $0.layer.masksToBounds = true

@@ -1,11 +1,11 @@
 import UIKit
 import NMapsMap
 
-class StoreOverview: BaseView {
+final class StoreOverview: BaseView {
   
-  var marker = NMFMarker()
+  private var marker = NMFMarker()
   
-  let mapView = NMFMapView().then {
+  private let mapView = NMFMapView().then {
     $0.contentMode = .scaleAspectFill
     $0.positionMode = .direction
   }
@@ -17,7 +17,7 @@ class StoreOverview: BaseView {
     $0.layer.shadowOpacity = 0.015
   }
   
-  let overViewContainerView = UIView().then {
+  private let overViewContainerView = UIView().then {
     $0.backgroundColor = .white
     $0.layer.cornerRadius = 12
     $0.layer.shadowColor = UIColor.black.cgColor
@@ -25,32 +25,32 @@ class StoreOverview: BaseView {
     $0.layer.shadowOpacity = 0.04
   }
   
-  let nicknameLabel = UILabel().then {
+  private let nicknameLabel = UILabel().then {
     $0.textColor = UIColor(r: 255, g: 161, b: 170)
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
-  let storeNameLabel = UILabel().then {
+  private let storeNameLabel = UILabel().then {
     $0.textColor = .black
     $0.font = UIFont(name: "AppleSDGothicNeoEB00", size: 22)
     $0.textAlignment = .center
   }
   
-  let distanceImage = UIImageView().then {
+  private let distanceImage = UIImageView().then {
     $0.image = UIImage(named: "ic_near_filled")
   }
   
-  let distanceLabel = UILabel().then {
+  private let distanceLabel = UILabel().then {
     $0.textColor = .black
     $0.textAlignment = .right
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
-  let starImage = UIImageView().then {
+  private let starImage = UIImageView().then {
     $0.image = UIImage(named: "ic_star")
   }
   
-  let starLabel = UILabel().then {
+  private let starLabel = UILabel().then {
     $0.textColor = .black
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
@@ -63,7 +63,7 @@ class StoreOverview: BaseView {
     $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
   }
   
-  let dividorView = UIView().then {
+  private let dividorView = UIView().then {
     $0.backgroundColor = UIColor(r: 208, g: 208, b: 208)
   }
   

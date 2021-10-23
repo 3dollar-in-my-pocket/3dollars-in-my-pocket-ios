@@ -150,10 +150,6 @@ class StoreDetailVC: BaseVC {
   
   private func setupTableView() {
     self.storeDetailView.tableView.register(
-      StoreDetailMenuCell.self,
-      forCellReuseIdentifier: StoreDetailMenuCell.registerId
-    )
-    self.storeDetailView.tableView.register(
       StoreDetailPhotoCollectionCell.self,
       forCellReuseIdentifier: StoreDetailPhotoCollectionCell.registerId
     )
@@ -165,65 +161,12 @@ class StoreDetailVC: BaseVC {
       StoreDetailHeaderView.self,
       forHeaderFooterViewReuseIdentifier: StoreDetailHeaderView.registerId
     )
-    self.storeDetailView.tableView.register(
-      StoreDetailMenuHeaderView.self,
-      forHeaderFooterViewReuseIdentifier: StoreDetailMenuHeaderView.registerId
-    )
     
     self.storeDetailView.tableView.rx.setDelegate(self)
       .disposed(by: disposeBag)
     self.storeDataSource = RxTableViewSectionedReloadDataSource<StoreSection> { (dataSource, tableView, indexPath, item) in
       
       switch StoreDetailSection(rawValue: indexPath.section)! {
-//      case .overview:
-//        guard let cell = tableView.dequeueReusableCell(
-//                withIdentifier: OverviewCell.registerId,
-//                for: indexPath
-//        ) as? OverviewCell else { return BaseTableViewCell() }
-//
-//        cell.mapView.positionMode = .direction
-//        cell.mapView.zoomLevel = 17
-//        cell.bind(store: dataSource.sectionModels[indexPath.section].store)
-//        cell.currentLocationButton.rx.tap
-//          .do { _ in
-//            self.myLocationFlag = true
-//            GA.shared.logEvent(event: .current_location_button_clicked, page: .store_detail_page)
-//          }.bind(onNext: self.locationManager.startUpdatingLocation)
-//          .disposed(by: cell.disposeBag)
-//        cell.shareButton.rx.tap
-//          .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-//          .do(onNext: { _ in
-//            GA.shared.logEvent(event: .share_button_clicked, page: .store_detail_page)
-//          })
-//          .bind(to: self.viewModel.input.tapShare)
-//          .disposed(by: cell.disposeBag)
-//        cell.transferButton.rx.tap
-//          .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-//          .do(onNext: { _ in
-//            GA.shared.logEvent(event: .toss_button_clicked, page: .store_detail_page)
-//          })
-//          .bind(to: self.viewModel.input.tapTransfer)
-//          .disposed(by: cell.disposeBag)
-//        return cell
-//      case .info:
-//        guard let cell = tableView.dequeueReusableCell(
-//          withIdentifier: StoreInfoCell.registerId,
-//          for: indexPath
-//        ) as? StoreInfoCell else { return BaseTableViewCell() }
-//        
-//        cell.bind(store: dataSource.sectionModels[indexPath.section].store)
-//        return cell
-      case .menu:
-        guard let cell = tableView.dequeueReusableCell(
-          withIdentifier: StoreDetailMenuCell.registerId,
-          for: indexPath
-        ) as? StoreDetailMenuCell else { return BaseTableViewCell() }
-        
-        cell.addMenu(
-          categories: dataSource.sectionModels[indexPath.section].store.categories,
-          menus: dataSource.sectionModels[indexPath.section].store.menus
-        )
-        return cell
       case .photo:
         guard let cell = tableView.dequeueReusableCell(
           withIdentifier: StoreDetailPhotoCollectionCell.registerId,
@@ -462,14 +405,6 @@ extension StoreDetailVC: UITableViewDelegate {
         })
         .bind(to: self.viewModel.input.tapModify)
         .disposed(by: headerView.disposeBag)
-      return headerView
-      
-    case .menu:
-      guard let headerView = tableView.dequeueReusableHeaderFooterView(
-              withIdentifier: StoreDetailMenuHeaderView.registerId
-      ) as? StoreDetailMenuHeaderView else { return UITableViewHeaderFooterView() }
-      
-      headerView.bind(menus: self.storeDataSource.sectionModels[0].store.menus)
       return headerView
       
     case .photo:

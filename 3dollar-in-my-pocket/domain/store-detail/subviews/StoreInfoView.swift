@@ -1,15 +1,15 @@
 import UIKit
 import RxSwift
 
-class StoreInfoView: BaseView {
+final class StoreInfoView: BaseView {
   
-  let titleLabel = UILabel().then {
+  private let titleLabel = UILabel().then {
     $0.text = R.string.localization.store_detail_header_info()
     $0.textColor = .black
     $0.font = .semiBold(size: 18)
   }
   
-  let updatedAtLabel = UILabel().then {
+  private let updatedAtLabel = UILabel().then {
     $0.textColor = R.color.gray30()
     $0.font = .semiBold(size: 12)
   }
@@ -23,51 +23,51 @@ class StoreInfoView: BaseView {
     $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
   }
   
-  let infoContainer = UIView().then {
+  private let infoContainer = UIView().then {
     $0.backgroundColor = .white
     $0.layer.cornerRadius = 12
   }
   
-  let storeTypeLabel = UILabel().then {
+  private let storeTypeLabel = UILabel().then {
     $0.text = R.string.localization.store_detail_type()
     $0.textColor = R.color.black()
     $0.font = .bold(size: 14)
   }
   
-  let storeTypeValueLabel = UILabel().then {
+  private let storeTypeValueLabel = UILabel().then {
     $0.textColor = R.color.pink()
     $0.font = .regular(size: 14)
   }
   
-  let storeTypeEmptyLabel = UILabel().then {
+  private let storeTypeEmptyLabel = UILabel().then {
     $0.textColor = R.color.gray30()
     $0.font = .regular(size: 14)
     $0.text = R.string.localization.store_detail_info_empty()
     $0.isHidden = false
   }
   
-  let storeDaysLabel = UILabel().then {
+  private let storeDaysLabel = UILabel().then {
     $0.text = R.string.localization.store_detail_days()
     $0.textColor = R.color.black()
     $0.font = .bold(size: 14)
   }
   
-  let dayStackView = DayStackView()
+  private let dayStackView = DayStackView()
   
-  let storeDaysEmptyLabel = UILabel().then {
+  private let storeDaysEmptyLabel = UILabel().then {
     $0.textColor = R.color.gray30()
     $0.font = .regular(size: 14)
     $0.text = R.string.localization.store_detail_info_empty()
     $0.isHidden = true
   }
   
-  let paymentLabel = UILabel().then {
+  private let paymentLabel = UILabel().then {
     $0.text = R.string.localization.store_detail_payment()
     $0.textColor = R.color.black()
     $0.font = .bold(size: 14)
   }
   
-  let paymentMethodView = PaymentMethodView()
+  private let paymentMethodView = PaymentMethodView()
   
   override func setup() {
     self.backgroundColor = .clear
