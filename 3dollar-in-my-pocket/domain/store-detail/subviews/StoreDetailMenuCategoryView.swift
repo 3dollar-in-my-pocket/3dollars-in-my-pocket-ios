@@ -1,6 +1,6 @@
 import UIKit
 
-class StoreDetailMenuCategoryView: BaseView {
+final class StoreDetailMenuCategoryView: BaseView {
   
   let categoryImage = UIImageView().then {
     $0.contentMode = .scaleAspectFit

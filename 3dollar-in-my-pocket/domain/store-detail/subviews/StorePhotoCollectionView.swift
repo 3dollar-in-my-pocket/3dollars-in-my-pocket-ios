@@ -1,7 +1,7 @@
 import UIKit
 import RxSwift
 
-class StorePhotoCollectionView: BaseView {
+final class StorePhotoCollectionView: BaseView {
   
   let titleLabel = UILabel().then {
     $0.textColor = R.color.black()

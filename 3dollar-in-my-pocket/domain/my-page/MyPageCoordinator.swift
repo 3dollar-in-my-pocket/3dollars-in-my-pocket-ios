@@ -34,7 +34,7 @@ final class MyPageCoordinator: Coordinator {
   }
   
   func goToStoreDetail(storeId: Int) {
-    let viewController = StoreDetailVC.instance(storeId: storeId)
+    let viewController = StoreDetailViewController.instance(storeId: storeId)
     
     self.presenter.navigationController?.pushViewController(viewController, animated: true)
   }

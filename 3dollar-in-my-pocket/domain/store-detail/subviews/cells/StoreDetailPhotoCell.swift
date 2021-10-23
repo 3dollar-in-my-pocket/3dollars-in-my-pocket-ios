@@ -1,37 +1,37 @@
 import UIKit
 
-class StoreDetailPhotoCell: BaseCollectionViewCell {
+final class StoreDetailPhotoCell: BaseCollectionViewCell {
   
   static let registerId = "\(StoreDetailPhotoCell.self)"
   
-  let photo = UIImageView().then {
+  private let photo = UIImageView().then {
     $0.contentMode = .scaleAspectFill
     $0.layer.cornerRadius = 6
     $0.layer.masksToBounds = true
     $0.backgroundColor = UIColor(r: 226, g: 226, b: 226)
   }
   
-  let emptyImage = UIImageView().then {
-    $0.image = UIImage(named: "img_detail_bungeoppang")
+  private let emptyImage = UIImageView().then {
+    $0.image = R.image.img_detail_bungeoppang()
   }
   
-  let dimView = UIView().then {
+  private let dimView = UIView().then {
     $0.backgroundColor = UIColor(r: 17, g: 17, b: 17, a: 0.35)
     $0.layer.cornerRadius = 6
     $0.layer.masksToBounds = true
     $0.isHidden = true
   }
   
-  let countLabel = UILabel().then {
-    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 18)
+  private let countLabel = UILabel().then {
+    $0.font = .bold(size: 18)
     $0.textColor = UIColor(r: 255, g: 161, b: 170)
     $0.isHidden = true
   }
   
-  let moreLabel = UILabel().then {
-    $0.text = "store_detail_more_photo".localized
+  private let moreLabel = UILabel().then {
+    $0.text = R.string.localization.store_detail_more_photo()
     $0.textColor = .white
-    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+    $0.font = .bold(size: 14)
     $0.isHidden = true
   }
   
@@ -45,11 +45,14 @@ class StoreDetailPhotoCell: BaseCollectionViewCell {
   
   
   override func setup() {
-    backgroundColor = .clear
-    addSubViews(
-      photo, emptyImage, dimView, countLabel,
-      moreLabel
-    )
+    self.backgroundColor = .clear
+    self.addSubViews([
+      self.photo,
+      self.emptyImage,
+      self.dimView,
+      self.countLabel,
+      self.moreLabel
+    ])
   }
   
   override func bindConstraints() {

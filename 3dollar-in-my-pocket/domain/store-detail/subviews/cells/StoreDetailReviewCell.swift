@@ -1,75 +1,47 @@
 import UIKit
 import GoogleMobileAds
 
-class StoreDetailReviewCell: BaseTableViewCell {
+final class StoreDetailReviewCell: BaseTableViewCell {
   
   static let registerId = "\(StoreDetailReviewCell.self)"
   
   let adBannerView = GADBannerView().then {
     $0.isHidden = true
+    // TODO: 번들에 저장했으니 변경 필요
+    #if DEBUG
+    $0.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+    #else
+    $0.adUnitID = "ca-app-pub-1527951560812478/3327283605"
+    #endif
   }
   
-  let containerView = UIView().then {
+  private let containerView = UIView().then {
     $0.backgroundColor = .white
     $0.layer.cornerRadius = 12
     $0.layer.masksToBounds = true
   }
   
-  let star1 = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-    $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-    $0.isUserInteractionEnabled = false
-  }
-  
-  let star2 = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-    $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-    $0.isUserInteractionEnabled = false
-  }
-  
-  let star3 = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-    $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-    $0.isUserInteractionEnabled = false
-  }
-  
-  let star4 = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-    $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-    $0.isUserInteractionEnabled = false
-  }
-  
-  let star5 = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_star_on"), for: .selected)
-    $0.setImage(UIImage.init(named: "ic_star_off"), for: .normal)
-    $0.isUserInteractionEnabled = false
-  }
-  
-  let stackView = UIStackView().then {
-    $0.axis = .horizontal
-    $0.alignment = .leading
-    $0.backgroundColor = .clear
-  }
+  private let ratingView = RatingView()
   
   let moreButton = UIButton().then {
-    $0.setImage(UIImage(named: "ic_more"), for: .normal)
+    $0.setImage(R.image.ic_more(), for: .normal)
     $0.isHidden = true
   }
   
-  let nameLabel = UILabel().then {
+  private let nameLabel = UILabel().then {
     $0.textColor = .black
-    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 12)
+    $0.font = .bold(size: 12)
   }
   
-  let createdAtLabel = UILabel().then {
-    $0.textColor = UIColor(r: 183, g: 183, b: 183)
-    $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12)
+  private let createdAtLabel = UILabel().then {
+    $0.textColor = R.color.gray30()
+    $0.font = .regular(size: 12)
   }
   
-  let replyLabel = UILabel().then {
-    $0.textColor = UIColor(r: 46, g: 46, b: 46)
+  private let replyLabel = UILabel().then {
+    $0.textColor = R.color.gray90()
     $0.numberOfLines = 0
-    $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14)
+    $0.font = .regular(size: 14)
   }
   
   override func prepareForReuse() {
@@ -78,111 +50,124 @@ class StoreDetailReviewCell: BaseTableViewCell {
   }
   
   override func setup() {
-    stackView.addArrangedSubview(star1)
-    stackView.addArrangedSubview(star2)
-    stackView.addArrangedSubview(star3)
-    stackView.addArrangedSubview(star4)
-    stackView.addArrangedSubview(star5)
-    addSubViews(
-      containerView, adBannerView, stackView, moreButton,
-      nameLabel, createdAtLabel, replyLabel
-    )
-    selectionStyle = .none
-    contentView.isUserInteractionEnabled = false
-    backgroundColor = UIColor(r: 250, g: 250, b: 250)
+    self.addSubViews([
+      self.containerView,
+      self.adBannerView,
+      self.ratingView,
+      self.moreButton,
+      self.nameLabel,
+      self.createdAtLabel,
+      self.replyLabel
+    ])
+    self.selectionStyle = .none
+    self.contentView.isUserInteractionEnabled = false
+    self.backgroundColor = .clear
   }
   
   override func bindConstraints() {
-    containerView.snp.makeConstraints { make in
+    self.containerView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.top.equalToSuperview().offset(8)
-      make.bottom.equalTo(replyLabel).offset(16)
+      make.top.equalToSuperview()
+      make.top.equalToSuperview().offset(16)
+      make.bottom.equalTo(self.replyLabel).offset(16)
       make.bottom.equalToSuperview()
     }
     
-    adBannerView.snp.makeConstraints { make in
+    self.adBannerView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
       make.top.equalToSuperview().offset(13)
       make.bottom.equalToSuperview().offset(-13)
     }
     
-    star1.snp.makeConstraints { (make) in
-      make.width.height.equalTo(18)
+    self.ratingView.snp.makeConstraints { make in
+      make.left.equalTo(self.containerView).offset(17)
+      make.top.equalTo(self.containerView).offset(17)
     }
     
-    star2.snp.makeConstraints { (make) in
-      make.width.height.equalTo(18)
+    self.createdAtLabel.snp.makeConstraints { make in
+      make.centerY.equalTo(self.ratingView)
+      make.right.equalTo(self.containerView).offset(-16)
     }
     
-    star3.snp.makeConstraints { (make) in
-      make.width.height.equalTo(18)
+    self.nameLabel.snp.makeConstraints { (make) in
+      make.left.equalTo(self.containerView).offset(16)
+      make.top.equalTo(self.ratingView.snp.bottom).offset(16)
     }
     
-    star4.snp.makeConstraints { (make) in
-      make.width.height.equalTo(18)
-    }
-    star5.snp.makeConstraints { (make) in
-      make.width.height.equalTo(18)
-    }
-    
-    stackView.snp.makeConstraints { (make) in
-      make.left.equalTo(containerView).offset(16)
-      make.height.equalTo(16)
-      make.top.equalTo(containerView).offset(16)
+    self.replyLabel.snp.makeConstraints { (make) in
+      make.left.equalTo(self.containerView).offset(16)
+      make.right.equalTo(self.containerView).offset(-16)
+      make.top.equalTo(self.nameLabel.snp.bottom).offset(10)
     }
     
-    moreButton.snp.makeConstraints { make in
-      make.right.equalTo(containerView).offset(-12)
-      make.top.equalTo(containerView).offset(24)
+    self.moreButton.snp.makeConstraints { make in
+      make.right.equalTo(self.containerView).offset(-12)
+      make.bottom.equalTo(self.containerView).offset(-12)
       make.width.height.equalTo(24)
-    }
-    
-    nameLabel.snp.makeConstraints { (make) in
-      make.left.equalTo(stackView)
-      make.top.equalTo(stackView.snp.bottom).offset(6)
-    }
-    
-    createdAtLabel.snp.makeConstraints { make in
-      make.centerY.equalTo(nameLabel)
-      make.left.equalTo(nameLabel.snp.right).offset(8)
-    }
-    
-    replyLabel.snp.makeConstraints { (make) in
-      make.left.equalTo(nameLabel)
-      make.right.equalTo(containerView).offset(-16)
-      make.top.equalTo(nameLabel.snp.bottom).offset(8)
     }
   }
   
-  func bind(review: Review?) {
+  func bind(review: Review?, userId: Int) {
     if let review = review {
-      self.setRank(rank: review.rating)
+      self.ratingView.bind(rating: review.rating)
+      self.ratingView.isHidden = false
       self.nameLabel.text = review.user.name
       self.replyLabel.text = review.contents
       self.createdAtLabel.text = DateUtils.toReviewFormat(dateString: review.createdAt)
       self.adBannerView.isHidden = true
-      self.stackView.isHidden = false
       self.replyLabel.isHidden = false
       self.createdAtLabel.isHidden = false
       self.nameLabel.isHidden = false
       self.containerView.isHidden = false
+      self.loadAd()
     } else {
       self.containerView.isHidden = true
       self.adBannerView.isHidden = false
-      self.stackView.isHidden = true
+      self.ratingView.isHidden = true
       self.replyLabel.isHidden = true
       self.createdAtLabel.isHidden = true
       self.nameLabel.isHidden = true
     }
+    self.moreButton.isHidden = userId == review?.user.userId
   }
   
-  func setRank(rank: Int) {
-    for index in 0...stackView.arrangedSubviews.count - 1 {
-      if let star = stackView.arrangedSubviews[index] as? UIButton {
-        star.isSelected = index < rank
-      }
-    }
+  private func loadAd() {
+    let viewWidth = UIScreen.main.bounds.width
+    
+    self.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
+    self.adBannerView.load(GADRequest())
+    self.adBannerView.delegate = self
   }
 }
+
+extension StoreDetailReviewCell: GADBannerViewDelegate {
+  /// Tells the delegate an ad request loaded an ad.
+  func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+    print("adViewDidReceiveAd")
+  }
+  
+  /// Tells the delegate that a full-screen view will be presented in response
+  /// to the user clicking on an ad.
+  func bannerViewWillPresentScreen(_ bannerView: GADBannerView) {
+    print("adViewWillPresentScreen")
+  }
+  
+  /// Tells the delegate that the full-screen view will be dismissed.
+  func bannerViewWillDismissScreen(_ bannerView: GADBannerView) {
+    print("adViewWillDismissScreen")
+  }
+  
+  /// Tells the delegate that the full-screen view has been dismissed.
+  func bannerViewDidDismissScreen(_ bannerView: GADBannerView) {
+    print("adViewDidDismissScreen")
+  }
+  
+  /// Tells the delegate that a user click will open another app (such as
+  /// the App Store), backgrounding the current app.
+  func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
+    print("adViewWillLeaveApplication")
+  }
+}
+

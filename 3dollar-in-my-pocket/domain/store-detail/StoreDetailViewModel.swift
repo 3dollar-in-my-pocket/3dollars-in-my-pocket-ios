@@ -31,7 +31,6 @@ class StoreDetailViewModel: BaseViewModel {
   struct Output {
     let store = PublishRelay<Store>()
     let category = PublishRelay<StoreCategory>()
-//    let store = PublishRelay<[StoreSection]>()
     let showDeleteModal = PublishRelay<Int>()
     let goToModify = PublishRelay<Store>()
     let showPhotoDetail = PublishRelay<(Int, Int, [Image])>()

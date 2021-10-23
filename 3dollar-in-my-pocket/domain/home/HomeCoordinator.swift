@@ -16,7 +16,7 @@ final class HomeCoordinator: Coordinator {
   }
   
   func goToDetail(storeId: Int) {
-    let storeDetailVC = StoreDetailVC.instance(storeId: storeId).then {
+    let storeDetailVC = StoreDetailViewController.instance(storeId: storeId).then {
       $0.delegate = self.presenter
     }
     

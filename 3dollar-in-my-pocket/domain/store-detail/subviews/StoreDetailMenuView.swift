@@ -1,6 +1,6 @@
 import UIKit
 
-class StoreDetailMenuView: BaseView {
+final class StoreDetailMenuView: BaseView {
   
   let nameLabel = UILabel().then {
     $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14)

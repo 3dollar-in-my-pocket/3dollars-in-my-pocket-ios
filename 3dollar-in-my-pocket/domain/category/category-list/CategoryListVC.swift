@@ -206,7 +206,7 @@ class CategoryListVC: BaseVC {
   private func goToStoreDetail(storeId: Int?) {
     if let storeId = storeId {
       self.navigationController?.pushViewController(
-        StoreDetailVC.instance(storeId: storeId),
+        StoreDetailViewController.instance(storeId: storeId),
         animated: true
       )
     }

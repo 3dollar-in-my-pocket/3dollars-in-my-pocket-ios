@@ -14,15 +14,15 @@ final class StoreDetailView: BaseView {
   }
   
   let backButton = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_back_black"), for: .normal)
+    $0.setImage(R.image.ic_back_black(), for: .normal)
   }
   
   let mainCategoryImage = UIImageView()
   
   let deleteRequestButton = UIButton().then {
-    $0.setTitle("store_detail_delete_request".localized, for: .normal)
-    $0.setTitleColor(UIColor(r: 255, g: 92, b: 67), for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 15)
+    $0.setTitle(R.string.localization.store_detail_delete_request(), for: .normal)
+    $0.setTitleColor(R.color.red(), for: .normal)
+    $0.titleLabel?.font = .semiBold(size: 14)
   }
   
   private let scrollView = UIScrollView()
@@ -37,19 +37,7 @@ final class StoreDetailView: BaseView {
   
   fileprivate let storePhotoCollectionView = StorePhotoCollectionView()
   
-  let tableView = UITableView(frame: .zero, style: .grouped).then {
-    $0.tableFooterView = UIView()
-    $0.rowHeight = UITableView.automaticDimension
-    $0.backgroundColor = .clear
-    $0.separatorStyle = .none
-    $0.sectionHeaderHeight = UITableView.automaticDimension
-    $0.estimatedSectionHeaderHeight = 1
-    $0.sectionFooterHeight = .leastNonzeroMagnitude
-    $0.contentInsetAdjustmentBehavior = .never
-    $0.tableHeaderView = UIView(frame: .init(x: 0, y: 0, width: 1, height: 1))
-    $0.contentInset = .init(top: -1, left: 0, bottom: 0, right: 0)
-    $0.showsVerticalScrollIndicator = false
-  }
+  fileprivate let storeReviewTableView = StoreReviewTableView()
   
   
   override func setup() {
@@ -57,7 +45,8 @@ final class StoreDetailView: BaseView {
       self.storeOverview,
       self.storeInfoView,
       self.storeMenuView,
-      self.storePhotoCollectionView
+      self.storePhotoCollectionView,
+      self.storeReviewTableView
     ])
     
     self.scrollView.addSubview(self.containerView)
@@ -104,7 +93,7 @@ final class StoreDetailView: BaseView {
       make.edges.equalTo(self.scrollView)
       make.width.equalTo(UIScreen.main.bounds.width)
       make.top.equalTo(self.storeOverview)
-      make.bottom.equalTo(self.storePhotoCollectionView)
+      make.bottom.equalTo(self.storeReviewTableView).offset(40)
     }
     
     self.storeOverview.snp.makeConstraints { make in
@@ -131,11 +120,11 @@ final class StoreDetailView: BaseView {
       make.top.equalTo(self.storeMenuView.snp.bottom)
     }
     
-//    self.tableView.snp.makeConstraints { make in
-//      make.left.right.equalToSuperview()
-//      make.bottom.equalTo(safeAreaLayoutGuide)
-//      make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
-//    }
+    self.storeReviewTableView.snp.makeConstraints { make in
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+      make.top.equalTo(self.storePhotoCollectionView.snp.bottom)
+    }
   }
   
   func bind(category: StoreCategory) {
@@ -151,6 +140,7 @@ extension Reactive where Base: StoreDetailView {
       view.storeInfoView.bind(store: store)
       view.storeMenuView.bind(store: store)
       view.storePhotoCollectionView.bind(store: store)
+      view.storeReviewTableView.bind(store: store)
     }
   }
 }

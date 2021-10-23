@@ -95,7 +95,7 @@ class MyReviewVC: BaseVC {
   }
   
   private func goToStoreDetail(storeId: Int) {
-    let storeDetailVC = StoreDetailVC.instance(storeId: storeId)
+    let storeDetailVC = StoreDetailViewController.instance(storeId: storeId)
     
     self.navigationController?.pushViewController(storeDetailVC, animated: true)
   }
