@@ -268,7 +268,9 @@ class ModifyViewModel: BaseViewModel {
     if !name.isEmpty {
       self.menuSections[indexPath.section].items[indexPath.row].name = name
       if self.menuSections[indexPath.section].items.count == indexPath.row + 1 {
-        self.menuSections[indexPath.section].items.append(Menu(category: self.menuSections[indexPath.row].category))
+        self.menuSections[indexPath.section].items.append(
+            Menu(category: self.menuSections[indexPath.section].items[indexPath.row].category)
+        )
         
         self.output.menus.accept(self.menuSections)
       }
@@ -281,8 +283,9 @@ class ModifyViewModel: BaseViewModel {
     if !price.isEmpty {
       self.menuSections[indexPath.section].items[indexPath.row].price = price
       if self.menuSections[indexPath.section].items.count == indexPath.row + 1 {
-        self.menuSections[indexPath.section].items.append(Menu(category: self.menuSections[indexPath.section].category))
-        
+        self.menuSections[indexPath.section].items.append(
+            Menu(category: self.menuSections[indexPath.section].items[indexPath.row].category)
+        )
         self.output.menus.accept(self.menuSections)
       }
     } else {

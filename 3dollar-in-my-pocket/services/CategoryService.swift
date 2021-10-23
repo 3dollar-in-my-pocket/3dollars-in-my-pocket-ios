@@ -15,6 +15,8 @@ protocol CategoryServiceProtocol {
     currentLocation: CLLocation,
     mapLocation: CLLocation?
   ) -> Observable<StoresGroupByReviewResponse>
+  
+  func fetchCategories() -> Observable<[MenuCategoryResponse]>
 }
 
 struct CategoryService: CategoryServiceProtocol {
@@ -85,6 +87,27 @@ struct CategoryService: CategoryServiceProtocol {
           observer.processHTTPError(response: response)
         }
       }
+      return Disposables.create()
+    }
+  }
+  
+  func fetchCategories() -> Observable<[MenuCategoryResponse]> {
+    return .create { observer in
+      let urlString = HTTPUtils.url + "/api/v2/store/menu/categories"
+      let headers = HTTPUtils.jsonHeader()
+      
+      HTTPUtils.defaultSession.request(
+        urlString,
+        method: .get,
+        headers: headers
+      ).responseJSON { response in
+        if response.isSuccess() {
+          observer.processValue(class: [MenuCategoryResponse].self, response: response)
+        } else {
+          observer.processHTTPError(response: response)
+        }
+      }
+      
       return Disposables.create()
     }
   }

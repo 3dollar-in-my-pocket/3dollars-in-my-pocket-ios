@@ -12,7 +12,7 @@ struct StoreDetailResponse: Decodable {
   let reviews: [ReviewWithWriterResponse]
   let storeId: Int
   let storeName: String
-  let storeType: StoreType
+  let storeType: StoreType?
   let user: UserInfoResponse
   
   enum CodingKeys: String, CodingKey {
@@ -54,7 +54,7 @@ struct StoreDetailResponse: Decodable {
     ) ?? []
     self.storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? 0
     self.storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
-    self.storeType = try values.decodeIfPresent(StoreType.self, forKey: .storeType) ?? .road
+    self.storeType = try values.decodeIfPresent(StoreType.self, forKey: .storeType)
     self.user = try values.decodeIfPresent(
       UserInfoResponse.self,
       forKey: .user

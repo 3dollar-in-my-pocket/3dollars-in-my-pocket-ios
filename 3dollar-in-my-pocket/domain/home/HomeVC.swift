@@ -187,8 +187,8 @@ class HomeVC: BaseVC {
         marker.height = 40
       } else {
         marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
-        marker.width = 16
-        marker.height = 16
+        marker.width = 24
+        marker.height = 24
       }
       marker.mapView = self.homeView.mapView
       marker.touchHandler = { [weak self] _ in

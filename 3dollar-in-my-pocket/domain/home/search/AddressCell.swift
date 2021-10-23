@@ -18,6 +18,13 @@ class AddressCell: BaseTableViewCell {
     $0.backgroundColor = UIColor(r: 244, g: 244, b: 244)
   }
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    
+    self.buildingName.text = nil
+    self.addressLabel.text = nil
+  }
+  
   
   override func setup() {
     self.selectionStyle = .none
