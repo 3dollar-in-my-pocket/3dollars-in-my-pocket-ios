@@ -1,4 +1,4 @@
-struct Menu: Codable {
+struct Menu {
   
   let category: StoreCategory
   let menuId: Int

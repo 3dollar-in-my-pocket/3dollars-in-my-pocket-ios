@@ -18,7 +18,6 @@ public enum StoreCategory: String, Codable {
   case DALGONA = "DALGONA"
   
   var name: String {
-    get {
       switch self {
       case .BUNGEOPPANG:
         return "shared_category_bungeoppang".localized
@@ -51,11 +50,9 @@ public enum StoreCategory: String, Codable {
       case .DALGONA:
         return "shared_category_dalgona".localized
       }
-    }
   }
   
   var image: UIImage? {
-    get {
       switch self {
       case .BUNGEOPPANG:
         return UIImage(named: "img_60_bungeoppang")
@@ -88,11 +85,9 @@ public enum StoreCategory: String, Codable {
       case .DALGONA:
         return UIImage(named: "img_60_dalgona")
       }
-    }
   }
   
   var lowcase: String {
-    get {
       switch self {
       case .BUNGEOPPANG:
         return "bungeoppang"
@@ -125,7 +120,6 @@ public enum StoreCategory: String, Codable {
       case .DALGONA:
         return "dalgona"
       }
-    }
   }
   
   func getValue() -> String {

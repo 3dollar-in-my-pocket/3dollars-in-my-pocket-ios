@@ -1,11 +1,12 @@
 import UIKit
+import RxSwift
+import RxCocoa
 
-class StoreDetailView: BaseView {
+final class StoreDetailView: BaseView {
   
-  let navigationView = UIView().then {
+  private let navigationView = UIView().then {
     $0.layer.cornerRadius = 20
     $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-    
     $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOpacity = 0.04
@@ -24,6 +25,14 @@ class StoreDetailView: BaseView {
     $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 15)
   }
   
+  private let scrollView = UIScrollView()
+  
+  private let containerView = UIView()
+  
+  fileprivate let storeOverview = StoreOverview()
+  
+  fileprivate let storeInfoView = StoreInfoView()
+  
   let tableView = UITableView(frame: .zero, style: .grouped).then {
     $0.tableFooterView = UIView()
     $0.rowHeight = UITableView.automaticDimension
@@ -40,11 +49,21 @@ class StoreDetailView: BaseView {
   
   
   override func setup() {
-    addSubViews(
-      tableView, navigationView, backButton, mainCategoryImage,
-      deleteRequestButton
-    )
-    backgroundColor = UIColor(r: 250, g: 250, b: 250)
+    self.containerView.addSubViews([
+      self.storeOverview,
+      self.storeInfoView
+    ])
+    
+    self.scrollView.addSubview(self.containerView)
+    
+    self.addSubViews([
+      self.scrollView,
+      self.navigationView,
+      self.backButton,
+      self.mainCategoryImage,
+      self.deleteRequestButton
+    ])
+    self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
   }
   
   override func bindConstraints() {
@@ -69,14 +88,49 @@ class StoreDetailView: BaseView {
       make.right.equalToSuperview().offset(-24)
     }
     
-    self.tableView.snp.makeConstraints { make in
+    self.scrollView.snp.makeConstraints { make in
       make.left.right.equalToSuperview()
       make.bottom.equalTo(safeAreaLayoutGuide)
       make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
     }
+    
+    self.containerView.snp.makeConstraints { make in
+      make.edges.equalTo(self.scrollView)
+      make.width.equalTo(UIScreen.main.bounds.width)
+      make.top.equalTo(self.storeOverview)
+      make.bottom.equalTo(self.storeInfoView)
+    }
+    
+    self.storeOverview.snp.makeConstraints { make in
+      make.top.equalToSuperview()
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+    }
+    
+    self.storeInfoView.snp.makeConstraints { make in
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+      make.top.equalTo(self.storeOverview.snp.bottom)
+    }
+    
+//    self.tableView.snp.makeConstraints { make in
+//      make.left.right.equalToSuperview()
+//      make.bottom.equalTo(safeAreaLayoutGuide)
+//      make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
+//    }
   }
   
-  func bind(category: StoreCategory){
+  func bind(category: StoreCategory) {
     self.mainCategoryImage.image = UIImage(named: "img_60_\(category.lowcase)")
+  }
+}
+
+extension Reactive where Base: StoreDetailView {
+  var store: Binder<Store> {
+    return Binder(self.base) { view, store in
+      view.bind(category: store.categories[0])
+      view.storeOverview.bind(store: store)
+      view.storeInfoView.bind(store: store)
+    }
   }
 }

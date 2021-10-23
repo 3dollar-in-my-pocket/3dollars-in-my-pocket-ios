@@ -153,7 +153,7 @@
 "store_detail_share_title" = "올 때 붕어빵, 잊지마!!!";
 "store_detail_share_description" = "당신은 붕어빵 셔틀에 당첨되셨습니다.\n지금 바로 가슴속 3천원을 설치하고 위치를 파악하여 미션을 수행하세요!";
 "store_detail_share_button" = "놀러가기";
-"store_detail_header_info" = "가게정보";
+"store_detail_header_info" = "가게 정보";
 "store_detail_header_modify_info" = "정보수정";
 "store_detail_header_photo" = "가게사진";
 "store_detail_header_count" = "%d개";

@@ -91,7 +91,7 @@ class RankingView: BaseView {
     self.stackView.sizeToFit()
   }
   
-  func setRank(rank: Float) {
+  func setRank(rank: Double) {
     let roundedRank = Int(rank.rounded())
     
     for index in 0...stackView.arrangedSubviews.count - 1 {

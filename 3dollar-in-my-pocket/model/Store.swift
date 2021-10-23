@@ -1,4 +1,4 @@
-struct Store: Codable {
+struct Store {
   
   let appearanceDays: [WeekDay]
   let categories: [StoreCategory]
@@ -8,31 +8,13 @@ struct Store: Codable {
   let longitude: Double
   let menus: [Menu]
   let paymentMethods: [PaymentType]
-  let rating: Float
+  let rating: Double
   var reviews: [Review]
   let storeId: Int
   let storeName: String
   let storeType: StoreType?
+  let updatedAt: String
   let user: User
-  
-  
-  enum CodingKeys: String, CodingKey {
-    case appearanceDays
-    case categories
-    case distance
-    case images
-    case latitude
-    case longitude
-    case menus
-    case paymentMethods
-    case rating
-    case reviews
-    case storeId
-    case storeName
-    case storeType
-    case user
-  }
-  
   
   init(
     category: StoreCategory,
@@ -54,6 +36,7 @@ struct Store: Codable {
     self.reviews = []
     self.storeName = storeName
     self.storeType = nil
+    self.updatedAt = ""
     self.user = User()
   }
   
@@ -86,26 +69,26 @@ struct Store: Codable {
     self.reviews = []
     self.storeName = storeName
     self.storeType = storeType
+    self.updatedAt = ""
     self.user = User()
   }
   
-  init(from decoder: Decoder) throws {
-    let values = try decoder.container(keyedBy: CodingKeys.self)
-    
-    self.appearanceDays = try values.decodeIfPresent([WeekDay].self, forKey: .appearanceDays) ?? []
-    self.categories = try values.decodeIfPresent([StoreCategory].self, forKey: .categories) ?? []
-    self.distance = try values.decodeIfPresent(Int.self, forKey: .distance) ?? -1
-    self.storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? -1
-    self.images = try values.decodeIfPresent([Image].self, forKey: .images) ?? []
-    self.latitude = try values.decodeIfPresent(Double.self, forKey: .latitude) ?? -1
-    self.longitude = try values.decodeIfPresent(Double.self, forKey: .longitude) ?? -1
-    self.menus = try values.decodeIfPresent([Menu].self, forKey: .menus) ?? []
-    self.paymentMethods = try values.decodeIfPresent([PaymentType].self, forKey: .paymentMethods) ?? []
-    self.rating = try values.decodeIfPresent(Float.self, forKey: .rating) ?? 0
-    self.reviews = try values.decodeIfPresent([Review].self, forKey: .reviews) ?? []
-    self.storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
-    self.storeType = try values.decodeIfPresent(StoreType.self, forKey: .storeType)
-    self.user = try values.decodeIfPresent(User.self, forKey: .user) ?? User()
+  init() {
+    self.appearanceDays = []
+    self.categories = []
+    self.distance = 0
+    self.storeId = 0
+    self.images = []
+    self.latitude = 0
+    self.longitude = 0
+    self.menus = []
+    self.paymentMethods = []
+    self.rating = 0
+    self.reviews = []
+    self.storeName = ""
+    self.storeType = nil
+    self.updatedAt = ""
+    self.user = User()
   }
   
   init(response: StoreInfoResponse) {
@@ -118,10 +101,11 @@ struct Store: Codable {
     self.longitude = response.longitude
     self.menus = []
     self.paymentMethods = []
-    self.rating = Float(response.rating)
+    self.rating = response.rating
     self.reviews = []
     self.storeName = response.storeName
     self.storeType = nil
+    self.updatedAt = ""
     self.user = User()
   }
   
@@ -135,53 +119,11 @@ struct Store: Codable {
     self.longitude = response.longitude
     self.menus = response.menus.map(Menu.init)
     self.paymentMethods = response.paymentMethods
-    self.rating = Float(response.rating)
+    self.rating = response.rating
     self.reviews = response.reviews.map(Review.init)
     self.storeName = response.storeName
     self.storeType = response.storeType
+    self.updatedAt = response.updatedAt
     self.user = User(response: response.user)
-  }
-  
-  func toJson() -> [String: Any] {
-//    {
-//      "appearanceDays": [
-//        "MONDAY"
-//      ],
-//      "latitude": 0,
-//      "longitude": 0,
-//      "menu": [
-//        {
-//          "category": "BUNGEOPPANG",
-//          "name": "",
-//          "price": ""
-//        },
-//        {
-//          "category": "KKOCHI",
-//          "name": "",
-//          "price": ""
-//        }
-//      ],
-//      "paymentMethods": [
-//        "CASH"
-//      ],
-//      "storeName": "string",
-//      "storeType": "ROAD"
-//    }
-    var dictionary: [String: Any] = [
-      "appearanceDays": self.appearanceDays.map { $0.rawValue },
-      "latitude": self.latitude,
-      "longitude": self.longitude,
-      
-      "categories": self.categories.map { $0.rawValue }.joined(separator: ","),
-      
-      "paymentMethods": self.paymentMethods.map { $0.rawValue }.joined(separator: ","),
-      "storeName": self.storeName
-    ]
-    
-    if let storeType = self.storeType {
-      dictionary["storeType"] = storeType.rawValue
-    }
-    
-    return dictionary
   }
 }

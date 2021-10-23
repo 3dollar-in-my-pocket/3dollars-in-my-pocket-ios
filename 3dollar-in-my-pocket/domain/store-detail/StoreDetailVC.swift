@@ -16,7 +16,7 @@ class StoreDetailVC: BaseVC {
   
   weak var delegate: StoreDetailDelegate?
   
-  private lazy var detailView = StoreDetailView(frame: self.view.frame)
+  private lazy var storeDetailView = StoreDetailView(frame: self.view.frame)
   
   private let viewModel: StoreDetailViewModel
   private let storeId: Int
@@ -53,7 +53,7 @@ class StoreDetailVC: BaseVC {
     
     super.viewDidLoad()
     
-    view = detailView
+    view = storeDetailView
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -74,12 +74,17 @@ class StoreDetailVC: BaseVC {
     // Bind output
     self.viewModel.output.category
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.detailView.bind)
+      .bind(onNext: self.storeDetailView.bind)
       .disposed(by: disposeBag)
     
     self.viewModel.output.store
-      .bind(to: self.detailView.tableView.rx.items(dataSource:self.storeDataSource))
-      .disposed(by: disposeBag)
+      .asDriver(onErrorJustReturn: Store())
+      .drive(self.storeDetailView.rx.store)
+      .disposed(by: self.disposeBag)
+    
+//    self.viewModel.output.store
+//      .bind(to: self.detailView.tableView.rx.items(dataSource:self.storeDataSource))
+//      .disposed(by: disposeBag)
     
     self.viewModel.output.showDeleteModal
       .observeOn(MainScheduler.instance)
@@ -128,14 +133,14 @@ class StoreDetailVC: BaseVC {
   }
   
   override func bindEvent() {
-    self.detailView.backButton.rx.tap
+    self.storeDetailView.backButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .back_button_clicked, page: .store_detail_page)
       })
       .bind(onNext: self.popupVC)
       .disposed(by: disposeBag)
     
-    self.detailView.deleteRequestButton.rx.tap
+    self.storeDetailView.deleteRequestButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .store_delete_request_button_clicked, page: .store_edit_page)
       })
@@ -144,78 +149,70 @@ class StoreDetailVC: BaseVC {
   }
   
   private func setupTableView() {
-    self.detailView.tableView.register(
-      OverviewCell.self,
-      forCellReuseIdentifier: OverviewCell.registerId
-    )
-    self.detailView.tableView.register(
-      StoreInfoCell.self,
-      forCellReuseIdentifier: StoreInfoCell.registerId
-    )
-    self.detailView.tableView.register(
+    self.storeDetailView.tableView.register(
       StoreDetailMenuCell.self,
       forCellReuseIdentifier: StoreDetailMenuCell.registerId
     )
-    self.detailView.tableView.register(
+    self.storeDetailView.tableView.register(
       StoreDetailPhotoCollectionCell.self,
       forCellReuseIdentifier: StoreDetailPhotoCollectionCell.registerId
     )
-    self.detailView.tableView.register(
+    self.storeDetailView.tableView.register(
       StoreDetailReviewCell.self,
       forCellReuseIdentifier: StoreDetailReviewCell.registerId
     )
-    self.detailView.tableView.register(
+    self.storeDetailView.tableView.register(
       StoreDetailHeaderView.self,
       forHeaderFooterViewReuseIdentifier: StoreDetailHeaderView.registerId
     )
-    self.detailView.tableView.register(
+    self.storeDetailView.tableView.register(
       StoreDetailMenuHeaderView.self,
       forHeaderFooterViewReuseIdentifier: StoreDetailMenuHeaderView.registerId
     )
     
-    self.detailView.tableView.rx.setDelegate(self)
+    self.storeDetailView.tableView.rx.setDelegate(self)
       .disposed(by: disposeBag)
     self.storeDataSource = RxTableViewSectionedReloadDataSource<StoreSection> { (dataSource, tableView, indexPath, item) in
       
       switch StoreDetailSection(rawValue: indexPath.section)! {
-      case .overview:
-        guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: OverviewCell.registerId,
-                for: indexPath
-        ) as? OverviewCell else { return BaseTableViewCell() }
-        
-        cell.mapView.positionMode = .direction
-        cell.mapView.zoomLevel = 17
-        cell.bind(store: dataSource.sectionModels[indexPath.section].store)
-        cell.currentLocationButton.rx.tap
-          .do { _ in
-            self.myLocationFlag = true
-            GA.shared.logEvent(event: .current_location_button_clicked, page: .store_detail_page)
-          }.bind(onNext: self.locationManager.startUpdatingLocation)
-          .disposed(by: cell.disposeBag)
-        cell.shareButton.rx.tap
-          .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-          .do(onNext: { _ in
-            GA.shared.logEvent(event: .share_button_clicked, page: .store_detail_page)
-          })
-          .bind(to: self.viewModel.input.tapShare)
-          .disposed(by: cell.disposeBag)
-        cell.transferButton.rx.tap
-          .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-          .do(onNext: { _ in
-            GA.shared.logEvent(event: .toss_button_clicked, page: .store_detail_page)
-          })
-          .bind(to: self.viewModel.input.tapTransfer)
-          .disposed(by: cell.disposeBag)
-        return cell
-      case .info:
-        guard let cell = tableView.dequeueReusableCell(
-          withIdentifier: StoreInfoCell.registerId,
-          for: indexPath
-        ) as? StoreInfoCell else { return BaseTableViewCell() }
-        
-        cell.bind(store: dataSource.sectionModels[indexPath.section].store)
-        return cell
+//      case .overview:
+//        guard let cell = tableView.dequeueReusableCell(
+//                withIdentifier: OverviewCell.registerId,
+//                for: indexPath
+//        ) as? OverviewCell else { return BaseTableViewCell() }
+//
+//        cell.mapView.positionMode = .direction
+//        cell.mapView.zoomLevel = 17
+//        cell.bind(store: dataSource.sectionModels[indexPath.section].store)
+//        cell.currentLocationButton.rx.tap
+//          .do { _ in
+//            self.myLocationFlag = true
+//            GA.shared.logEvent(event: .current_location_button_clicked, page: .store_detail_page)
+//          }.bind(onNext: self.locationManager.startUpdatingLocation)
+//          .disposed(by: cell.disposeBag)
+//        cell.shareButton.rx.tap
+//          .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+//          .do(onNext: { _ in
+//            GA.shared.logEvent(event: .share_button_clicked, page: .store_detail_page)
+//          })
+//          .bind(to: self.viewModel.input.tapShare)
+//          .disposed(by: cell.disposeBag)
+//        cell.transferButton.rx.tap
+//          .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+//          .do(onNext: { _ in
+//            GA.shared.logEvent(event: .toss_button_clicked, page: .store_detail_page)
+//          })
+//          .bind(to: self.viewModel.input.tapTransfer)
+//          .disposed(by: cell.disposeBag)
+//        return cell
+//      case .info:
+//        guard let cell = tableView.dequeueReusableCell(
+//          withIdentifier: StoreInfoCell.registerId,
+//          for: indexPath
+//        ) as? StoreInfoCell else { return BaseTableViewCell() }
+//        
+//        cell.bind(store: dataSource.sectionModels[indexPath.section].store)
+//        return cell
       case .menu:
         guard let cell = tableView.dequeueReusableCell(
           withIdentifier: StoreDetailMenuCell.registerId,
@@ -283,6 +280,9 @@ class StoreDetailVC: BaseVC {
         }
         
         return cell
+        
+      default:
+        return BaseTableViewCell()
       }
     }
   }
@@ -303,11 +303,11 @@ class StoreDetailVC: BaseVC {
   }
   
   private func moveToMyLocation(latitude: Double, longitude: Double) {
-    guard let overViewCell = self.detailView.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? OverviewCell else {
-      return
-    }
-    
-    overViewCell.moveToPosition(latitude: latitude, longitude: longitude)
+//    guard let overViewCell = self.detailView.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? OverviewCell else {
+//      return
+//    }
+//
+//    overViewCell.moveToPosition(latitude: latitude, longitude: longitude)
   }
   
   private func showDeleteModal(storeId: Int) {
@@ -346,7 +346,7 @@ class StoreDetailVC: BaseVC {
       title: "store_detail_delete_review".localized,
       style: .destructive
     ) { _ in
-      self.viewModel.input.deleteReview.onNext(review.id)
+      self.viewModel.input.deleteReview.onNext(review.reviewId)
     }
     let cancelAction = UIAlertAction(
       title: "store_detail_cancel".localized,

@@ -7,14 +7,12 @@ class StoreDetailViewModel: BaseViewModel {
   
   let input = Input()
   let output = Output()
+  var model = Model()
   
   let storeId: Int
   let userDefaults: UserDefaultsUtil
   let storeService: StoreServiceProtocol
   let reviewService: ReviewServiceProtocol
-  var currentLocation: (Double, Double) = (0, 0)
-  
-  var store: Store?
   
   struct Input {
     let currentLocation = PublishSubject<(Double, Double)>()
@@ -31,8 +29,9 @@ class StoreDetailViewModel: BaseViewModel {
   }
   
   struct Output {
+    let store = PublishRelay<Store>()
     let category = PublishRelay<StoreCategory>()
-    let store = PublishRelay<[StoreSection]>()
+//    let store = PublishRelay<[StoreSection]>()
     let showDeleteModal = PublishRelay<Int>()
     let goToModify = PublishRelay<Store>()
     let showPhotoDetail = PublishRelay<(Int, Int, [Image])>()
@@ -40,6 +39,11 @@ class StoreDetailViewModel: BaseViewModel {
     let showReviewModal = PublishRelay<(Int, Review?)>()
     let showLoading = PublishRelay<Bool>()
     let popup = PublishRelay<Store>()
+  }
+  
+  struct Model {
+    var currentLocation: (Double, Double) = (0, 0)
+    var store: Store?
   }
   
   init(
@@ -53,9 +57,11 @@ class StoreDetailViewModel: BaseViewModel {
     self.storeService = storeService
     self.reviewService = reviewService
     super.init()
-    
+  }
+  
+  override func bind() {
     self.input.currentLocation
-      .do(onNext: { self.currentLocation = $0 })
+      .do(onNext: { self.model.currentLocation = $0 })
       .map { (self.storeId, $0) }
       .bind(onNext: self.fetchStore)
       .disposed(by: disposeBag)
@@ -66,7 +72,7 @@ class StoreDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.tapShare
-      .compactMap { self.store }
+      .compactMap { self.model.store }
       .bind(onNext: self.shareToKakao(store:))
       .disposed(by: disposeBag)
     
@@ -75,7 +81,7 @@ class StoreDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.tapModify
-      .compactMap { self.store }
+      .compactMap { self.model.store }
       .bind(to: self.output.goToModify)
       .disposed(by: disposeBag)
     
@@ -103,7 +109,7 @@ class StoreDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.popup
-      .compactMap { self.store }
+      .compactMap { self.model.store }
       .bind(to: self.output.popup)
       .disposed(by: disposeBag)
   }
@@ -115,6 +121,7 @@ class StoreDetailViewModel: BaseViewModel {
   }
   
   private func fetchStore(storeId: Int, location: (latitude: Double, longitude: Double)) {
+    self.showLoading.accept(true)
     self.storeService.getStoreDetail(
       storeId: storeId,
       latitude: location.latitude,
@@ -124,7 +131,8 @@ class StoreDetailViewModel: BaseViewModel {
     .subscribe(
       onNext: { [weak self] store in
         guard let self = self else { return }
-        self.store = store
+        
+        self.model.store = store
         let storeSections = [
           StoreSection(store: store, items: [nil]),
           StoreSection(store: store, items: [nil]),
@@ -134,7 +142,7 @@ class StoreDetailViewModel: BaseViewModel {
         ]
         
         self.output.category.accept(store.categories[0])
-        self.output.store.accept(storeSections)
+        self.output.store.accept(store)
         self.output.showLoading.accept(false)
       },
       onError: { [weak self] error in
@@ -202,23 +210,23 @@ class StoreDetailViewModel: BaseViewModel {
       .subscribe(
         onNext: { [weak self] _ in
           guard let self = self else { return }
-          guard var store = self.store else { return }
+          guard var store = self.model.store else { return }
           
           for reviewIndex in store.reviews.indices {
-            if store.reviews[reviewIndex].id == reviewId {
+            if store.reviews[reviewIndex].reviewId == reviewId {
               store.reviews.remove(at: reviewIndex)
               break
             }
           }
           
-          self.store?.reviews = store.reviews
-          self.output.store.accept([
-            StoreSection(store: store, items: [nil]),
-            StoreSection(store: store, items: [nil]),
-            StoreSection(store: store, items: [nil]),
-            StoreSection(store: store, items: [nil]),
-            StoreSection(store: store, items: [nil] + store.reviews)
-          ])
+          self.model.store?.reviews = store.reviews
+//          self.output.store.accept([
+//            StoreSection(store: store, items: [nil]),
+//            StoreSection(store: store, items: [nil]),
+//            StoreSection(store: store, items: [nil]),
+//            StoreSection(store: store, items: [nil]),
+//            StoreSection(store: store, items: [nil] + store.reviews)
+//          ])
           self.output.showLoading.accept(false)
         },
         onError: { [weak self] error in
@@ -242,7 +250,7 @@ class StoreDetailViewModel: BaseViewModel {
         onNext: { [weak self] _ in
           guard let self = self else { return }
           
-          self.fetchStore(storeId: self.storeId, location: self.currentLocation)
+          self.fetchStore(storeId: self.storeId, location: self.model.currentLocation)
           self.output.showLoading.accept(false)
         },
         onError: { [weak self] error in
@@ -262,7 +270,7 @@ class StoreDetailViewModel: BaseViewModel {
   }
   
   private func onTapPhoto(index: Int) {
-    guard let store = self.store else { return }
+    guard let store = self.model.store else { return }
     if index == 3 {
       self.output.goToPhotoList.accept(self.storeId)
     } else {

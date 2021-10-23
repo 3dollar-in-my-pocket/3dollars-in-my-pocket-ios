@@ -1,9 +1,8 @@
 import UIKit
 import NMapsMap
 
-class OverviewCell: BaseTableViewCell {
+class StoreOverview: BaseView {
   
-  static let registerId = "\(OverviewCell.self)"
   var marker = NMFMarker()
   
   let mapView = NMFMapView().then {
@@ -51,7 +50,7 @@ class OverviewCell: BaseTableViewCell {
     $0.image = UIImage(named: "ic_star")
   }
   
-  let starLabel = UILabel().then{
+  let starLabel = UILabel().then {
     $0.textColor = .black
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
@@ -76,20 +75,22 @@ class OverviewCell: BaseTableViewCell {
     $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
   }
   
-  override func prepareForReuse() {
-    super.prepareForReuse()
-    self.marker.mapView = nil
-  }
-  
   override func setup() {
-    backgroundColor = .clear
-    selectionStyle = .none
-    contentView.isUserInteractionEnabled = false
-    addSubViews(
-      mapView, currentLocationButton, overViewContainerView, nicknameLabel,
-      storeNameLabel, distanceImage, distanceLabel, starImage, starLabel,
-      shareButton, transferButton, dividorView
-    )
+    self.backgroundColor = .clear
+    self.addSubViews([
+      mapView,
+      currentLocationButton,
+      overViewContainerView,
+      nicknameLabel,
+      storeNameLabel,
+      distanceImage,
+      distanceLabel,
+      starImage,
+      starLabel,
+      shareButton,
+      transferButton,
+      dividorView
+    ])
   }
   
   override func bindConstraints() {
@@ -164,6 +165,11 @@ class OverviewCell: BaseTableViewCell {
       make.height.equalTo(32)
       make.width.equalTo(1)
     }
+    
+    self.snp.makeConstraints { make in
+      make.top.equalTo(self.mapView).priority(.high)
+      make.bottom.equalTo(self.overViewContainerView).priority(.high)
+    }
   }
   
   func bind(store: Store) {
@@ -183,25 +189,26 @@ class OverviewCell: BaseTableViewCell {
     self.mapView.moveCamera(cameraUpdate)
   }
   
-  private func setNicknameBold(name: String?){
+  private func setNicknameBold(name: String?) {
     if let name = name {
       let text = "\(name) \("store_detail_reporter".localized)"
-      let attributedString = NSMutableAttributedString(string: text)
-      
-      attributedString.addAttribute(
-        .font,
-        value: UIFont(name: "AppleSDGothicNeo-Bold", size: 14) as Any,
-        range: (text as NSString).range(of: name)
+      let attributedString = NSMutableAttributedString(
+        string: text,
+        attributes: [.font: UIFont(name: "AppleSDGothicNeo-Bold", size: 14) as Any]
       )
+      
       self.nicknameLabel.attributedText = attributedString
     }
   }
   
   private func setupMarker(latitude: Double, longitude: Double) {
     self.marker.mapView = nil
+    
     let position = NMGLatLng(lat: latitude, lng: longitude)
     let iconImage = NMFOverlayImage(name: "ic_marker")
+    
     self.marker = NMFMarker(position: position, iconImage: iconImage)
+    
     let cameraUpdate = NMFCameraUpdate(scrollTo: position).then {
       $0.animation = .easeIn
     }

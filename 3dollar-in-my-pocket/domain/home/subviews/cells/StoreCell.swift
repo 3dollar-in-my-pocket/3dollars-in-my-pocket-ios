@@ -147,7 +147,7 @@ class StoreCell: BaseCollectionViewCell {
     }
   }
   
-  private func setRating(rating: Float) {
+  private func setRating(rating: Double) {
     if floor(rating) == rating {
       self.rankLabel.text = "\(Int(rating))점"
     } else {

@@ -53,7 +53,7 @@ class MyReviewViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.deleteReview
-      .map { self.reviews[$0].id }
+      .map { self.reviews[$0].reviewId }
       .bind(onNext: self.deleteReview(reviewId:))
       .disposed(by: disposeBag)
   }
@@ -110,7 +110,7 @@ class MyReviewViewModel: BaseViewModel {
   
   private func revmoveReview(reviewId: Int) {
     for index in self.reviews.indices {
-      if self.reviews[index].id == reviewId {
+      if self.reviews[index].reviewId == reviewId {
         self.reviews.remove(at: index)
         break
       }
