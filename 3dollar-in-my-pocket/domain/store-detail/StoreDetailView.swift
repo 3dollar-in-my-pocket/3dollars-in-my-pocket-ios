@@ -35,6 +35,8 @@ final class StoreDetailView: BaseView {
   
   fileprivate let storeMenuView = StoreMenuView()
   
+  fileprivate let storePhotoCollectionView = StorePhotoCollectionView()
+  
   let tableView = UITableView(frame: .zero, style: .grouped).then {
     $0.tableFooterView = UIView()
     $0.rowHeight = UITableView.automaticDimension
@@ -54,7 +56,8 @@ final class StoreDetailView: BaseView {
     self.containerView.addSubViews([
       self.storeOverview,
       self.storeInfoView,
-      self.storeMenuView
+      self.storeMenuView,
+      self.storePhotoCollectionView
     ])
     
     self.scrollView.addSubview(self.containerView)
@@ -101,7 +104,7 @@ final class StoreDetailView: BaseView {
       make.edges.equalTo(self.scrollView)
       make.width.equalTo(UIScreen.main.bounds.width)
       make.top.equalTo(self.storeOverview)
-      make.bottom.equalTo(self.storeMenuView)
+      make.bottom.equalTo(self.storePhotoCollectionView)
     }
     
     self.storeOverview.snp.makeConstraints { make in
@@ -120,6 +123,12 @@ final class StoreDetailView: BaseView {
       make.left.equalToSuperview()
       make.right.equalToSuperview()
       make.top.equalTo(self.storeInfoView.snp.bottom)
+    }
+    
+    self.storePhotoCollectionView.snp.makeConstraints { make in
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+      make.top.equalTo(self.storeMenuView.snp.bottom)
     }
     
 //    self.tableView.snp.makeConstraints { make in
@@ -141,6 +150,7 @@ extension Reactive where Base: StoreDetailView {
       view.storeOverview.bind(store: store)
       view.storeInfoView.bind(store: store)
       view.storeMenuView.bind(store: store)
+      view.storePhotoCollectionView.bind(store: store)
     }
   }
 }

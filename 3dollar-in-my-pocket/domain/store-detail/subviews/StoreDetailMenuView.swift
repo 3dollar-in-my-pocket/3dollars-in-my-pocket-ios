@@ -60,4 +60,3 @@ class StoreDetailMenuView: BaseView {
     bzPath.stroke()
   }
 }
-

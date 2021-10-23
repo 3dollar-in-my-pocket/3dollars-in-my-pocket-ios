@@ -50,7 +50,7 @@ final class StoreMenuView: BaseView {
     
     self.countLabel.snp.makeConstraints { make in
       make.centerY.equalTo(self.titleLabel)
-      make.left.equalTo(self.titleLabel.snp.right)
+      make.left.equalTo(self.titleLabel.snp.right).offset(2)
     }
     
     self.menuStackView.snp.makeConstraints { make in

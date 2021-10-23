@@ -150,10 +150,6 @@ class StoreDetailVC: BaseVC {
   
   private func setupTableView() {
     self.storeDetailView.tableView.register(
-      StoreDetailPhotoCollectionCell.self,
-      forCellReuseIdentifier: StoreDetailPhotoCollectionCell.registerId
-    )
-    self.storeDetailView.tableView.register(
       StoreDetailReviewCell.self,
       forCellReuseIdentifier: StoreDetailReviewCell.registerId
     )
@@ -167,19 +163,6 @@ class StoreDetailVC: BaseVC {
     self.storeDataSource = RxTableViewSectionedReloadDataSource<StoreSection> { (dataSource, tableView, indexPath, item) in
       
       switch StoreDetailSection(rawValue: indexPath.section)! {
-      case .photo:
-        guard let cell = tableView.dequeueReusableCell(
-          withIdentifier: StoreDetailPhotoCollectionCell.registerId,
-          for: indexPath
-        ) as? StoreDetailPhotoCollectionCell else { return BaseTableViewCell() }
-        let photos = self.storeDataSource.sectionModels[0].store.images
-        
-        cell.bind(photos: photos)
-        cell.photoCollectionView.rx.itemSelected
-          .map { $0.row }
-          .bind(to: self.viewModel.input.tapPhoto)
-          .disposed(by: cell.disposeBag)
-        return cell
       case .review:
         guard let cell = tableView.dequeueReusableCell(
           withIdentifier: StoreDetailReviewCell.registerId,
