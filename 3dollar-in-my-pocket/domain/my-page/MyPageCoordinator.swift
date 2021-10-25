@@ -8,13 +8,14 @@
 
 import Foundation
 
-final class MyPageCoordinator: Coordinator {
-  var presenter: MyPageVC
-  
-  required init(presenter: MyPageVC) {
-    self.presenter = presenter
-  }
-  
+protocol MyPageCoordinator: Coordinator, AnyObject {
+  func goToSetting()
+  func goToTotalRegisteredStore()
+  func goToMyReview()
+  func goToStoreDetail(storeId: Int)
+}
+
+extension MyPageCoordinator {
   func goToSetting() {
     let viewController = SettingVC.instance()
     

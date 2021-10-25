@@ -140,7 +140,7 @@ extension Reactive where Base: StoreDetailView {
       view.storeInfoView.bind(store: store)
       view.storeMenuView.bind(store: store)
       view.storePhotoCollectionView.bind(store: store)
-      view.storeReviewTableView.bind(store: store)
+      view.storeReviewTableView.bind(store: store, userId: UserDefaultsUtil().getUserId())
     }
   }
 }

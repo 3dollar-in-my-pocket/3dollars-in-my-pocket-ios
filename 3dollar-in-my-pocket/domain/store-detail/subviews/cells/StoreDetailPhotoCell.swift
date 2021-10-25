@@ -3,6 +3,10 @@ import UIKit
 final class StoreDetailPhotoCell: BaseCollectionViewCell {
   
   static let registerId = "\(StoreDetailPhotoCell.self)"
+  static let cellSize = CGSize(
+    width: (UIScreen.main.bounds.width - 75)/4,
+    height: (UIScreen.main.bounds.width - 75)/4
+  )
   
   private let photo = UIImageView().then {
     $0.contentMode = .scaleAspectFill

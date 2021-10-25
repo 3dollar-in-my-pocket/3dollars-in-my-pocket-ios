@@ -73,7 +73,7 @@ final class StoreReviewTableView: BaseView {
     }
   }
   
-  func bind(store: Store) {
+  func bind(store: Store, userId: Int) {
     self.countLabel.text = R.string.localization.store_detail_header_count(store.reviews.count)
     Observable.from(optional: [nil] + store.reviews)
       .asDriver(onErrorJustReturn: [nil])
@@ -81,7 +81,7 @@ final class StoreReviewTableView: BaseView {
               cellIdentifier: StoreDetailReviewCell.registerId,
               cellType: StoreDetailReviewCell.self
       )) { _, review, cell in
-        cell.bind(review: review)
+        cell.bind(review: review, userId: userId)
       }
       .disposed(by: self.disposeBag)
   }

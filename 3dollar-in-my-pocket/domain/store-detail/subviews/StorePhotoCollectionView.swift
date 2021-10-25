@@ -76,7 +76,7 @@ final class StorePhotoCollectionView: BaseView {
       make.left.equalToSuperview()
       make.right.equalToSuperview()
       make.top.equalTo(self.titleLabel.snp.bottom).offset(18)
-      make.height.equalTo(72)
+      make.height.equalTo(StoreDetailPhotoCell.cellSize.height)
     }
     
     self.snp.makeConstraints { make in

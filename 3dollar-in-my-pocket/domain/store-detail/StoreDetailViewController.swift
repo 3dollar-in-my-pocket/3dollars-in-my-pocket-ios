@@ -12,11 +12,12 @@ protocol StoreDetailDelegate: AnyObject {
   func popup(store: Store)
 }
 
-class StoreDetailViewController: BaseVC {
+class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
   
   weak var delegate: StoreDetailDelegate?
   private let storeDetailView = StoreDetailView()
   private let viewModel: StoreDetailViewModel
+  fileprivate weak var coordinator: StoreDetailCoordinator?
   private var myLocationFlag = false
   private lazy var imagePicker = UIImagePickerController().then {
     $0.delegate = self
@@ -46,6 +47,7 @@ class StoreDetailViewController: BaseVC {
     super.viewDidLoad()
     
     self.view = storeDetailView
+    self.coordinator = self
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -76,27 +78,37 @@ class StoreDetailViewController: BaseVC {
         
     self.viewModel.output.showDeleteModal
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showDeleteModal(storeId:))
+      .bind(onNext: { [weak self] storeId in
+        self?.coordinator?.showDeleteModal(storeId: storeId)
+      })
       .disposed(by: disposeBag)
     
     self.viewModel.output.goToModify
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToModify(store:))
+      .bind(onNext: { [weak self] store in
+        self?.coordinator?.goToModify(store: store)
+      })
       .disposed(by: disposeBag)
     
     self.viewModel.output.showPhotoDetail
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showPhotoDetail)
+      .bind(onNext: { [weak self] (storeId, index, photos) in
+        self?.coordinator?.showPhotoDetail(storeId: storeId, index: index, photos: photos)
+      })
       .disposed(by: disposeBag)
     
     self.viewModel.output.goToPhotoList
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.goToPhotoList)
+      .bind(onNext: { [weak self] storeId in
+        self?.coordinator?.goToPhotoList(storeId: storeId)
+      })
       .disposed(by: disposeBag)
     
     self.viewModel.output.showReviewModal
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showReviewModal)
+      .bind(onNext: { [weak self] (storeId, review) in
+        self?.coordinator?.showReviewModal(storeId: storeId, review: review)
+      })
       .disposed(by: disposeBag)
     
     self.viewModel.output.showLoading
@@ -125,7 +137,9 @@ class StoreDetailViewController: BaseVC {
       .do(onNext: { _ in
         GA.shared.logEvent(event: .back_button_clicked, page: .store_detail_page)
       })
-      .bind(onNext: self.popupVC)
+      .bind(onNext: { [weak self] in
+        self?.coordinator?.popup()
+      })
       .disposed(by: disposeBag)
     
     self.storeDetailView.deleteRequestButton.rx.tap
@@ -207,9 +221,9 @@ class StoreDetailViewController: BaseVC {
 //    }
 //  }
   
-  private func popupVC() {
-    self.navigationController?.popViewController(animated: true)
-  }
+//  private func popupVC() {
+//    self.navigationController?.popViewController(animated: true)
+//  }
   
   private func passStore(store: Store) {
     self.delegate?.popup(store: store)
@@ -221,30 +235,6 @@ class StoreDetailViewController: BaseVC {
 //    }
 //
 //    overViewCell.moveToPosition(latitude: latitude, longitude: longitude)
-  }
-  
-  private func showDeleteModal(storeId: Int) {
-    let deleteVC = DeleteModalVC.instance(storeId: storeId).then {
-      $0.deleagete = self
-    }
-    
-    self.showRootDim(isShow: true)
-    self.tabBarController?.present(deleteVC, animated: true, completion: nil)
-  }
-  
-  private func showReviewModal(storeId: Int, review: Review? = nil) {
-    let reviewVC = ReviewModalVC.instance(storeId: storeId, review: review).then {
-      $0.deleagete = self
-    }
-    
-    self.showRootDim(isShow: true)
-    self.tabBarController?.present(reviewVC, animated: true, completion: nil)
-  }
-  
-  private func goToModify(store: Store) {
-    let modifyVC = ModifyVC.instance(store: store)
-    
-    self.navigationController?.pushViewController(modifyVC, animated: true)
   }
   
   private func showMoreActionSheet(review: Review) {
@@ -283,7 +273,7 @@ class StoreDetailViewController: BaseVC {
       style: .default
     ) { _ in
       if SPPermission.photoLibrary.isAuthorized {
-        self.showRegisterPhoto(storeId: self.storeId)
+//        self.showRegisterPhoto(storeId: self.storeId)
       } else {
         let controller = SPPermissions.native([.photoLibrary])
         
@@ -314,41 +304,6 @@ class StoreDetailViewController: BaseVC {
     alert.addAction(cameraAction)
     alert.addAction(cancelAction)
     self.present(alert, animated: true)
-  }
-  
-  private func showCamera() {
-    self.imagePicker.sourceType = .camera
-    self.imagePicker.cameraCaptureMode = .photo
-    
-    self.tabBarController?.present(imagePicker, animated: true)
-  }
-  
-  private func showRegisterPhoto(storeId: Int) {
-    let registerPhotoVC = RegisterPhotoVC.instance(storeId: storeId).then {
-      $0.delegate = self
-    }
-    
-    self.tabBarController?.present(registerPhotoVC, animated: true, completion: nil)
-  }
-  
-  private func showPhotoDetail(storeId: Int, index: Int, photos: [Image]) {
-    let photoDetailVC = PhotoDetailVC.instance(
-      storeId: storeId,
-      index: index,
-      photos: photos
-    ).then {
-      $0.delegate = self
-    }
-    
-    self.tabBarController?.present(photoDetailVC, animated: true, completion: nil)
-  }
-  
-  private func goToPhotoList(storeId: Int) {
-    let photoListVC = PhotoListVC.instance(storeid: storeId).then {
-      $0.hidesBottomBarWhenPushed = true
-    }
-    
-    self.navigationController?.pushViewController(photoListVC, animated: true)
   }
 }
 
@@ -404,9 +359,9 @@ extension StoreDetailViewController: UIImagePickerControllerDelegate, UINavigati
 extension StoreDetailViewController: SPPermissionsDelegate {
   func didAllow(permission: SPPermission) {
     if permission == .camera {
-      self.showCamera()
+      self.coordinator?.showCamera()
     } else if permission == .photoLibrary {
-      self.showRegisterPhoto(storeId: self.storeId)
+//      self.showRegisterPhoto(storeId: self.storeId)
     }
   }
   

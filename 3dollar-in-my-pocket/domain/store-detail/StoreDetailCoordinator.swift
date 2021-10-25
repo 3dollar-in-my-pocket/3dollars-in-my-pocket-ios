@@ -1,0 +1,90 @@
+//
+//  StoreDetailCoordinator.swift
+//  3dollar-in-my-pocket
+//
+//  Created by Hyun Sik Yoo on 2021/10/25.
+//  Copyright © 2021 Macgongmon. All rights reserved.
+//
+
+import UIKit
+
+protocol StoreDetailCoordinator: Coordinator, AnyObject {
+  func showDeleteModal(storeId: Int)
+  func goToModify(store: Store)
+  func showReviewModal(storeId: Int, review: Review?)
+  func showCamera()
+  func showRegisterPhoto(storeId: Int)
+  func showPhotoDetail(storeId: Int, index: Int, photos: [Image])
+  func goToPhotoList(storeId: Int)
+}
+
+extension StoreDetailCoordinator {
+  func showDeleteModal(storeId: Int) {
+    let deleteVC = DeleteModalVC.instance(storeId: storeId).then {
+      $0.deleagete = self as? DeleteModalDelegate
+    }
+    
+    self.presenter.showRootDim(isShow: true)
+    self.presenter.tabBarController?.present(
+      deleteVC,
+      animated: true,
+      completion: nil
+    )
+  }
+  
+  func goToModify(store: Store) {
+    let modifyVC = ModifyVC.instance(store: store)
+    
+    self.presenter.navigationController?.pushViewController(modifyVC, animated: true)
+  }
+  
+  func showReviewModal(storeId: Int, review: Review? = nil) {
+    let reviewVC = ReviewModalVC.instance(storeId: storeId, review: review).then {
+      $0.deleagete = self as? ReviewModalDelegate
+    }
+    
+    self.showRootDim(isShow: true)
+    self.presenter.tabBarController?.present(reviewVC, animated: true, completion: nil)
+  }
+  
+  func showCamera() {
+    let imagePicker = UIImagePickerController().then {
+      $0.delegate = self as?  UIImagePickerControllerDelegate & UINavigationControllerDelegate
+      $0.sourceType = .camera
+      $0.cameraCaptureMode = .photo
+    }
+    
+    self.presenter.tabBarController?.present(
+      imagePicker,
+      animated: true
+    )
+  }
+  
+  func showRegisterPhoto(storeId: Int) {
+    let registerPhotoVC = RegisterPhotoVC.instance(storeId: storeId).then {
+      $0.delegate = self as? RegisterPhotoDelegate
+    }
+    
+    self.presenter.tabBarController?.present(registerPhotoVC, animated: true, completion: nil)
+  }
+  
+  func showPhotoDetail(storeId: Int, index: Int, photos: [Image]) {
+    let photoDetailVC = PhotoDetailVC.instance(
+      storeId: storeId,
+      index: index,
+      photos: photos
+    ).then {
+      $0.delegate = self as? PhotoDetailDelegate
+    }
+    
+    self.presenter.tabBarController?.present(photoDetailVC, animated: true, completion: nil)
+  }
+  
+  func goToPhotoList(storeId: Int) {
+    let photoListVC = PhotoListVC.instance(storeid: storeId).then {
+      $0.hidesBottomBarWhenPushed = true
+    }
+    
+    self.presenter.navigationController?.pushViewController(photoListVC, animated: true)
+  }
+}

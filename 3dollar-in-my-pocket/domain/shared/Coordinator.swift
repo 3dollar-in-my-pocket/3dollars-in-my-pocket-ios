@@ -9,15 +9,28 @@
 import UIKit
 
 protocol Coordinator {
-  associatedtype Presenter: UIViewController
+  var presenter: BaseVC { get }
   
-  var presenter: Presenter { get }
-  
-  init(presenter: Presenter)
+  func popup()
+  func dismiss()
+  func showRootDim(isShow: Bool)
 }
 
-extension Coordinator {
-  init(presenter: Presenter) {
-    self.init(presenter: presenter)
+extension Coordinator where Self: BaseVC {
+  
+  var presenter: BaseVC {
+    return self
+  }
+  
+  func popup() {
+    self.presenter.navigationController?.popViewController(animated: true)
+  }
+  
+  func dismiss() {
+    self.presenter.dismiss(animated: true, completion: nil)
+  }
+  
+  func showRootDim(isShow: Bool) {
+    self.presenter.showRootDim(isShow: isShow)
   }
 }
