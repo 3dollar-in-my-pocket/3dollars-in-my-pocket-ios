@@ -7,6 +7,8 @@ final class StoreReviewTableView: BaseView {
     $0.textColor = R.color.black()
     $0.font = .semiBold(size: 18)
     $0.text = R.string.localization.store_detail_header_review()
+    $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+    $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
   }
   
   private let countLabel = UILabel().then {
@@ -23,7 +25,7 @@ final class StoreReviewTableView: BaseView {
     $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
   }
   
-  private let reviewTableView = UITableView().then {
+  let reviewTableView = UITableView().then {
     $0.backgroundColor = .clear
     $0.tableFooterView = UIView()
     $0.estimatedRowHeight = UITableView.automaticDimension
@@ -59,12 +61,13 @@ final class StoreReviewTableView: BaseView {
     self.addPhotoButton.snp.makeConstraints { make in
       make.right.equalToSuperview().offset(-24)
       make.top.equalToSuperview().offset(40)
+      make.height.equalTo(30)
     }
     
     self.reviewTableView.snp.makeConstraints { make in
       make.left.equalToSuperview()
       make.right.equalToSuperview()
-      make.top.equalTo(self.titleLabel.snp.bottom).offset(19)
+      make.top.equalToSuperview().offset(83)
       make.height.equalTo(0)
     }
     
@@ -77,6 +80,11 @@ final class StoreReviewTableView: BaseView {
     self.countLabel.text = R.string.localization.store_detail_header_count(store.reviews.count)
     Observable.from(optional: [nil] + store.reviews)
       .asDriver(onErrorJustReturn: [nil])
+      .do(onNext: { [weak self] reviews in
+        self?.snp.updateConstraints{ make in
+          make.height.equalTo(reviews.count * 143 + 123)
+        }
+      })
       .drive(self.reviewTableView.rx.items(
               cellIdentifier: StoreDetailReviewCell.registerId,
               cellType: StoreDetailReviewCell.self

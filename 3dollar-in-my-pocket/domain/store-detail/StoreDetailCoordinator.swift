@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SPPermissions
 
 protocol StoreDetailCoordinator: Coordinator, AnyObject {
   func showDeleteModal(storeId: Int)
@@ -16,9 +17,15 @@ protocol StoreDetailCoordinator: Coordinator, AnyObject {
   func showRegisterPhoto(storeId: Int)
   func showPhotoDetail(storeId: Int, index: Int, photos: [Image])
   func goToPhotoList(storeId: Int)
+  func showMoreActionSheet(
+    review: Review,
+    onTapModify: @escaping (() -> Void),
+    onTapDelete: @escaping (() -> Void)
+  )
+  func showPictureActionSheet(storeId: Int)
 }
 
-extension StoreDetailCoordinator {
+extension StoreDetailCoordinator where Self: BaseVC {
   func showDeleteModal(storeId: Int) {
     let deleteVC = DeleteModalVC.instance(storeId: storeId).then {
       $0.deleagete = self as? DeleteModalDelegate
@@ -86,5 +93,78 @@ extension StoreDetailCoordinator {
     }
     
     self.presenter.navigationController?.pushViewController(photoListVC, animated: true)
+  }
+  
+  func showMoreActionSheet(
+    review: Review,
+    onTapModify: @escaping (() -> Void),
+    onTapDelete: @escaping (() -> Void)
+  ) {
+    let alertController = UIAlertController(title: nil, message: "옵션", preferredStyle: .actionSheet)
+    let modifyAction = UIAlertAction(
+      title: R.string.localization.store_detail_modify_review(),
+      style: .default
+    ) { _ in
+      onTapModify()
+    }
+    let deleteAction = UIAlertAction(
+      title: R.string.localization.store_detail_delete_review(),
+      style: .destructive
+    ) { _ in
+      onTapDelete()
+    }
+    let cancelAction = UIAlertAction(
+      title: R.string.localization.store_detail_cancel(),
+      style: .cancel
+    ) { _ in }
+    
+    alertController.addAction(deleteAction)
+    alertController.addAction(modifyAction)
+    alertController.addAction(cancelAction)
+    self.presenter.present(alertController, animated: true, completion: nil)
+  }
+  
+  func showPictureActionSheet(storeId: Int) {
+    let alert = UIAlertController(
+      title: R.string.localization.store_detail_register_photo(),
+      message: nil,
+      preferredStyle: .actionSheet
+    )
+    let libraryAction = UIAlertAction(
+      title: "store_detail_album".localized,
+      style: .default
+    ) { _ in
+      if SPPermission.photoLibrary.isAuthorized {
+        self.showRegisterPhoto(storeId: storeId)
+      } else {
+        let controller = SPPermissions.native([.photoLibrary])
+        
+        controller.delegate = self as? SPPermissionsDelegate
+        controller.present(on: self)
+      }
+    }
+    let cameraAction = UIAlertAction(
+      title: "store_detail_camera".localized,
+      style: .default
+    ) { _ in
+      if SPPermission.camera.isAuthorized {
+        self.showCamera()
+      } else {
+        let controller = SPPermissions.native([.camera])
+        
+        controller.delegate = self as? SPPermissionsDelegate
+        controller.present(on: self)
+      }
+    }
+    let cancelAction = UIAlertAction(
+      title: R.string.localization.store_detail_cancel(),
+      style: .cancel,
+      handler: nil
+    )
+    
+    alert.addAction(libraryAction)
+    alert.addAction(cameraAction)
+    alert.addAction(cancelAction)
+    self.presenter.present(alert, animated: true)
   }
 }

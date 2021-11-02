@@ -30,6 +30,7 @@ class StoreDetailViewModel: BaseViewModel {
   
   struct Output {
     let store = PublishRelay<Store>()
+    let reviews = PublishRelay<[Review]>()
     let category = PublishRelay<StoreCategory>()
     let showDeleteModal = PublishRelay<Int>()
     let goToModify = PublishRelay<Store>()
@@ -142,6 +143,7 @@ class StoreDetailViewModel: BaseViewModel {
         
         self.output.category.accept(store.categories[0])
         self.output.store.accept(store)
+        self.output.reviews.accept(store.reviews)
         self.output.showLoading.accept(false)
       },
       onError: { [weak self] error in

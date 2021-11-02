@@ -1,5 +1,6 @@
 import UIKit
 import GoogleMobileAds
+import AppTrackingTransparency
 
 final class StoreDetailReviewCell: BaseTableViewCell {
   
@@ -47,6 +48,7 @@ final class StoreDetailReviewCell: BaseTableViewCell {
   override func prepareForReuse() {
     super.prepareForReuse()
     self.moreButton.isHidden = true
+    self.adBannerView.delegate = nil
   }
   
   override func setup() {
@@ -137,8 +139,15 @@ final class StoreDetailReviewCell: BaseTableViewCell {
     let viewWidth = UIScreen.main.bounds.width
     
     self.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
-    self.adBannerView.load(GADRequest())
     self.adBannerView.delegate = self
+    
+    if #available(iOS 14, *) {
+      ATTrackingManager.requestTrackingAuthorization(completionHandler: { _ in
+        self.adBannerView.load(GADRequest())
+      })
+    } else {
+      self.adBannerView.load(GADRequest())
+    }
   }
 }
 
@@ -170,4 +179,3 @@ extension StoreDetailReviewCell: GADBannerViewDelegate {
     print("adViewWillLeaveApplication")
   }
 }
-

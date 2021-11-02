@@ -75,6 +75,31 @@ class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
       .asDriver(onErrorJustReturn: Store())
       .drive(self.storeDetailView.rx.store)
       .disposed(by: self.disposeBag)
+    
+//    self.viewModel.output.reviews
+//      .asDriver(onErrorJustReturn: [])
+//      .drive(self.storeDetailView.storeReviewTableView.reviewTableView.rx.items(
+//        cellIdentifier: StoreDetailReviewCell.registerId,
+//        cellType: StoreDetailReviewCell.self
+//      )) { _, review, cell in
+//        cell.bind(review: review, userId: self.viewModel.userDefaults.getUserId())
+//        cell.moreButton.rx.tap
+//          .asDriver()
+//          .drive(onNext: { [weak self] in
+//            self?.coordinator?.showMoreActionSheet(
+//              review: review,
+//              onTapModify: {
+//                self?.viewModel.input.tapModifyReview.onNext(review)
+//              },
+//              onTapDelete: {
+//                self?.viewModel.input.deleteReview.onNext(review.reviewId)
+//              }
+//            )
+//          })
+//          .disposed(by: cell.disposeBag)
+//        cell.adBannerView.rootViewController = self
+//      }
+//      .disposed(by: self.disposeBag)
         
     self.viewModel.output.showDeleteModal
       .observeOn(MainScheduler.instance)
@@ -156,154 +181,21 @@ class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
       .drive { [weak self] location in
         guard let self = self else { return }
         if self.myLocationFlag {
-          self.moveToMyLocation(
+          self.storeDetailView.storeOverview.moveToPosition(
             latitude: location.coordinate.latitude,
             longitude: location.coordinate.longitude
           )
         } else {
-          self.viewModel.input.currentLocation.onNext((location.coordinate.latitude, location.coordinate.longitude))
+          self.viewModel.input.currentLocation.onNext(
+            (location.coordinate.latitude, location.coordinate.longitude)
+          )
         }
       }
       .disposed(by: self.disposeBag)
   }
-  
-//  private func setupTableView() {
-//    self.storeDataSource = RxTableViewSectionedReloadDataSource<StoreSection> { (dataSource, tableView, indexPath, item) in
-//
-//      switch StoreDetailSection(rawValue: indexPath.section)! {
-//      case .review:
-//        guard let cell = tableView.dequeueReusableCell(
-//          withIdentifier: StoreDetailReviewCell.registerId,
-//          for: indexPath
-//        ) as? StoreDetailReviewCell else { return BaseTableViewCell() }
-//
-//        if indexPath.row == 0 {
-//          cell.bind(review: nil)
-//          #if DEBUG
-//          cell.adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-//          #else
-//          cell.adBannerView.adUnitID = "ca-app-pub-1527951560812478/3327283605"
-//          #endif
-//          cell.adBannerView.rootViewController = self
-//          cell.adBannerView.delegate = self
-//
-//          let viewWidth = self.view.frame.size.width
-//          cell.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
-//
-//          if #available(iOS 14, *) {
-//            ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
-//              cell.adBannerView.load(GADRequest())
-//            })
-//          } else {
-//            cell.adBannerView.load(GADRequest())
-//          }
-//        } else {
-//          let review = dataSource.sectionModels[StoreDetailSection.review.rawValue].items[indexPath.row]
-//
-//          cell.bind(review: review)
-//
-//          if let review = review,
-//             UserDefaultsUtil().getUserId() == review.user.userId {
-//            cell.moreButton.isHidden = UserDefaultsUtil().getUserId() != review.user.userId
-//            cell.moreButton.rx.tap
-//              .map { review }
-//              .observeOn(MainScheduler.instance)
-//              .bind(onNext: self.showMoreActionSheet(review:))
-//              .disposed(by: cell.disposeBag)
-//          }
-//        }
-//
-//        return cell
-//
-//      default:
-//        return BaseTableViewCell()
-//      }
-//    }
-//  }
-  
-//  private func popupVC() {
-//    self.navigationController?.popViewController(animated: true)
-//  }
-  
+    
   private func passStore(store: Store) {
     self.delegate?.popup(store: store)
-  }
-  
-  private func moveToMyLocation(latitude: Double, longitude: Double) {
-//    guard let overViewCell = self.detailView.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? OverviewCell else {
-//      return
-//    }
-//
-//    overViewCell.moveToPosition(latitude: latitude, longitude: longitude)
-  }
-  
-  private func showMoreActionSheet(review: Review) {
-    let alertController = UIAlertController(title: nil, message: "옵션", preferredStyle: .actionSheet)
-    let modifyAction = UIAlertAction(
-      title: "store_detail_modify_review".localized,
-      style: .default
-    ) { _ in
-      self.viewModel.input.tapModifyReview.onNext(review)
-    }
-    let deleteAction = UIAlertAction(
-      title: "store_detail_delete_review".localized,
-      style: .destructive
-    ) { _ in
-      self.viewModel.input.deleteReview.onNext(review.reviewId)
-    }
-    let cancelAction = UIAlertAction(
-      title: "store_detail_cancel".localized,
-      style: .cancel
-    ) { _ in }
-    
-    alertController.addAction(deleteAction)
-    alertController.addAction(modifyAction)
-    alertController.addAction(cancelAction)
-    self.present(alertController, animated: true, completion: nil)
-  }
-  
-  private func showPictureActionSheet() {
-    let alert = UIAlertController(
-      title: "store_detail_register_photo".localized,
-      message: nil,
-      preferredStyle: .actionSheet
-    )
-    let libraryAction = UIAlertAction(
-      title: "store_detail_album".localized,
-      style: .default
-    ) { _ in
-      if SPPermission.photoLibrary.isAuthorized {
-//        self.showRegisterPhoto(storeId: self.storeId)
-      } else {
-        let controller = SPPermissions.native([.photoLibrary])
-        
-        controller.delegate = self
-        controller.present(on: self)
-      }
-    }
-    let cameraAction = UIAlertAction(
-      title: "store_detail_camera".localized,
-      style: .default
-    ) { _ in
-      if SPPermission.camera.isAuthorized {
-        self.showCamera()
-      } else {
-        let controller = SPPermissions.native([.camera])
-        
-        controller.delegate = self
-        controller.present(on: self)
-      }
-    }
-    let cancelAction = UIAlertAction(
-      title: "store_detail_cancel".localized,
-      style: .cancel,
-      handler: nil
-    )
-    
-    alert.addAction(libraryAction)
-    alert.addAction(cameraAction)
-    alert.addAction(cancelAction)
-    self.present(alert, animated: true)
   }
 }
 
@@ -342,11 +234,12 @@ extension StoreDetailViewController: PhotoDetailDelegate {
   }
 }
 
-extension StoreDetailViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension StoreDetailViewController: UIImagePickerControllerDelegate,
+                                     UINavigationControllerDelegate {
   
   func imagePickerController(
     _ picker: UIImagePickerController,
-    didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]
+    didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
   ) {
     if let photo = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
       self.viewModel.input.registerPhoto.onNext(photo)
@@ -361,7 +254,7 @@ extension StoreDetailViewController: SPPermissionsDelegate {
     if permission == .camera {
       self.coordinator?.showCamera()
     } else if permission == .photoLibrary {
-//      self.showRegisterPhoto(storeId: self.storeId)
+      self.coordinator?.showRegisterPhoto(storeId: self.viewModel.storeId)
     }
   }
   

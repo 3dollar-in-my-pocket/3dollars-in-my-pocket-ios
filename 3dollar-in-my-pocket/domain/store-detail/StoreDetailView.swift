@@ -29,7 +29,7 @@ final class StoreDetailView: BaseView {
   
   private let containerView = UIView()
   
-  fileprivate let storeOverview = StoreOverview()
+  let storeOverview = StoreOverview()
   
   fileprivate let storeInfoView = StoreInfoView()
   
@@ -37,7 +37,7 @@ final class StoreDetailView: BaseView {
   
   fileprivate let storePhotoCollectionView = StorePhotoCollectionView()
   
-  fileprivate let storeReviewTableView = StoreReviewTableView()
+  let storeReviewTableView = StoreReviewTableView()
   
   
   override func setup() {
@@ -124,6 +124,7 @@ final class StoreDetailView: BaseView {
       make.left.equalToSuperview()
       make.right.equalToSuperview()
       make.top.equalTo(self.storePhotoCollectionView.snp.bottom)
+      make.height.equalTo(0)
     }
   }
   
