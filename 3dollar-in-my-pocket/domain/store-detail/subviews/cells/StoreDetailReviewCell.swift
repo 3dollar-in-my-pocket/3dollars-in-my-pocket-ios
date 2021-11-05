@@ -81,6 +81,7 @@ final class StoreDetailReviewCell: BaseTableViewCell {
       make.right.equalToSuperview().offset(-24)
       make.top.equalToSuperview().offset(13)
       make.bottom.equalToSuperview().offset(-13)
+      make.height.equalTo(64)
     }
     
     self.ratingView.snp.makeConstraints { make in
@@ -123,7 +124,7 @@ final class StoreDetailReviewCell: BaseTableViewCell {
       self.createdAtLabel.isHidden = false
       self.nameLabel.isHidden = false
       self.containerView.isHidden = false
-      self.loadAd()
+      self.moreButton.isHidden = userId == review.user.userId
     } else {
       self.containerView.isHidden = true
       self.adBannerView.isHidden = false
@@ -131,14 +132,16 @@ final class StoreDetailReviewCell: BaseTableViewCell {
       self.replyLabel.isHidden = true
       self.createdAtLabel.isHidden = true
       self.nameLabel.isHidden = true
+      self.moreButton.isHidden = true
+      self.loadAd()
     }
-    self.moreButton.isHidden = userId == review?.user.userId
   }
   
   private func loadAd() {
     let viewWidth = UIScreen.main.bounds.width
     
-    self.adBannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
+    self.adBannerView.adSize
+    = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
     self.adBannerView.delegate = self
     
     if #available(iOS 14, *) {

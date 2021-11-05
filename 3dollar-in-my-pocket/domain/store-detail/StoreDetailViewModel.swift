@@ -17,9 +17,9 @@ class StoreDetailViewModel: BaseViewModel {
   struct Input {
     let currentLocation = PublishSubject<(Double, Double)>()
     let tapDeleteRequest = PublishSubject<Void>()
-    let tapShare = PublishSubject<Void>()
-    let tapTransfer = PublishSubject<Void>()
-    let tapModify = PublishSubject<Void>()
+    let tapShareButton = PublishSubject<Void>()
+    let tapTransferBUtton = PublishSubject<Void>()
+    let tapEditStoreButton = PublishSubject<Void>()
     let tapWriteReview = PublishSubject<Void>()
     let tapModifyReview = PublishSubject<Review>()
     let tapPhoto = PublishSubject<Int>()
@@ -30,7 +30,7 @@ class StoreDetailViewModel: BaseViewModel {
   
   struct Output {
     let store = PublishRelay<Store>()
-    let reviews = PublishRelay<[Review]>()
+    let reviews = PublishRelay<[Review?]>()
     let category = PublishRelay<StoreCategory>()
     let showDeleteModal = PublishRelay<Int>()
     let goToModify = PublishRelay<Store>()
@@ -71,16 +71,16 @@ class StoreDetailViewModel: BaseViewModel {
       .bind(to: self.output.showDeleteModal)
       .disposed(by: disposeBag)
     
-    self.input.tapShare
+    self.input.tapShareButton
       .compactMap { self.model.store }
       .bind(onNext: self.shareToKakao(store:))
       .disposed(by: disposeBag)
     
-    self.input.tapTransfer
+    self.input.tapTransferBUtton
       .bind(onNext: self.goToToss)
       .disposed(by: disposeBag)
     
-    self.input.tapModify
+    self.input.tapEditStoreButton
       .compactMap { self.model.store }
       .bind(to: self.output.goToModify)
       .disposed(by: disposeBag)
@@ -143,7 +143,7 @@ class StoreDetailViewModel: BaseViewModel {
         
         self.output.category.accept(store.categories[0])
         self.output.store.accept(store)
-        self.output.reviews.accept(store.reviews)
+        self.output.reviews.accept([nil] + store.reviews)
         self.output.showLoading.accept(false)
       },
       onError: { [weak self] error in

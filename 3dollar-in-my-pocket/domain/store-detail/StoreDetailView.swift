@@ -131,6 +131,12 @@ final class StoreDetailView: BaseView {
   func bind(category: StoreCategory) {
     self.mainCategoryImage.image = UIImage(named: "img_60_\(category.lowcase)")
   }
+  
+  func updateReviewTableViewHeight(reviews: [Review?]) {
+    self.storeReviewTableView.snp.updateConstraints { make in
+      make.height.equalTo(143 * reviews.count + 64)
+    }
+  }
 }
 
 extension Reactive where Base: StoreDetailView {
@@ -143,5 +149,17 @@ extension Reactive where Base: StoreDetailView {
       view.storePhotoCollectionView.bind(store: store)
       view.storeReviewTableView.bind(store: store, userId: UserDefaultsUtil().getUserId())
     }
+  }
+  
+  var tapShareButton: ControlEvent<Void> {
+    return base.storeOverview.shareButton.rx.tap
+  }
+  
+  var tapTransferButton: ControlEvent<Void> {
+    return base.storeOverview.transferButton.rx.tap
+  }
+  
+  var tapEditStore: ControlEvent<Void> {
+    return base.storeInfoView.editButton.rx.tap
   }
 }

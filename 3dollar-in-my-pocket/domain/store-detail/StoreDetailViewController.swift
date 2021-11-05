@@ -64,6 +64,27 @@ class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
     self.viewModel.input.popup.onNext(())
   }
   
+  override func bindViewModelInput() {
+    self.storeDetailView.deleteRequestButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .store_delete_request_button_clicked, page: .store_edit_page)
+      })
+        .bind(to: self.viewModel.input.tapDeleteRequest)
+        .disposed(by: self.disposeBag)
+        
+        self.storeDetailView.rx.tapEditStore
+        .bind(to: self.viewModel.input.tapEditStoreButton)
+        .disposed(by: self.disposeBag)
+        
+        self.storeDetailView.rx.tapShareButton
+        .bind(to: self.viewModel.input.tapShareButton)
+        .disposed(by: self.disposeBag)
+        
+        self.storeDetailView.rx.tapTransferButton
+        .bind(to: self.viewModel.input.tapTransferBUtton)
+        .disposed(by: self.disposeBag)
+  }
+  
   override func bindViewModel() {
     // Bind output
     self.viewModel.output.category
@@ -76,30 +97,34 @@ class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
       .drive(self.storeDetailView.rx.store)
       .disposed(by: self.disposeBag)
     
-//    self.viewModel.output.reviews
-//      .asDriver(onErrorJustReturn: [])
-//      .drive(self.storeDetailView.storeReviewTableView.reviewTableView.rx.items(
-//        cellIdentifier: StoreDetailReviewCell.registerId,
-//        cellType: StoreDetailReviewCell.self
-//      )) { _, review, cell in
-//        cell.bind(review: review, userId: self.viewModel.userDefaults.getUserId())
-//        cell.moreButton.rx.tap
-//          .asDriver()
-//          .drive(onNext: { [weak self] in
-//            self?.coordinator?.showMoreActionSheet(
-//              review: review,
-//              onTapModify: {
-//                self?.viewModel.input.tapModifyReview.onNext(review)
-//              },
-//              onTapDelete: {
-//                self?.viewModel.input.deleteReview.onNext(review.reviewId)
-//              }
-//            )
-//          })
-//          .disposed(by: cell.disposeBag)
-//        cell.adBannerView.rootViewController = self
-//      }
-//      .disposed(by: self.disposeBag)
+    self.viewModel.output.reviews
+      .asDriver(onErrorJustReturn: [])
+      .do(onNext: { [weak self] reviews in
+        self?.storeDetailView.updateReviewTableViewHeight(reviews: reviews)
+      })
+      .drive(self.storeDetailView.storeReviewTableView.reviewTableView.rx.items(
+        cellIdentifier: StoreDetailReviewCell.registerId,
+        cellType: StoreDetailReviewCell.self
+      )) { _, review, cell in
+        cell.bind(review: review, userId: self.viewModel.userDefaults.getUserId())
+        cell.moreButton.rx.tap
+          .asDriver()
+          .drive(onNext: { [weak self] in
+            guard let review = review else { return }
+            self?.coordinator?.showMoreActionSheet(
+              review: review,
+              onTapModify: {
+                self?.viewModel.input.tapModifyReview.onNext(review)
+              },
+              onTapDelete: {
+                self?.viewModel.input.deleteReview.onNext(review.reviewId)
+              }
+            )
+          })
+          .disposed(by: cell.disposeBag)
+        cell.adBannerView.rootViewController = self
+      }
+      .disposed(by: self.disposeBag)
         
     self.viewModel.output.showDeleteModal
       .observeOn(MainScheduler.instance)
@@ -165,14 +190,7 @@ class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
       .bind(onNext: { [weak self] in
         self?.coordinator?.popup()
       })
-      .disposed(by: disposeBag)
-    
-    self.storeDetailView.deleteRequestButton.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .store_delete_request_button_clicked, page: .store_edit_page)
-      })
-      .bind(to: self.viewModel.input.tapDeleteRequest)
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
   }
   
   private func fetchMyLocation() {

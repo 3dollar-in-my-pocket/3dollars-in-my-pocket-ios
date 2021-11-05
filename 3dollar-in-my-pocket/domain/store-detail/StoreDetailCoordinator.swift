@@ -100,7 +100,11 @@ extension StoreDetailCoordinator where Self: BaseVC {
     onTapModify: @escaping (() -> Void),
     onTapDelete: @escaping (() -> Void)
   ) {
-    let alertController = UIAlertController(title: nil, message: "옵션", preferredStyle: .actionSheet)
+    let alertController = UIAlertController(
+      title: nil,
+      message: "옵션",
+      preferredStyle: .actionSheet
+    )
     let modifyAction = UIAlertAction(
       title: R.string.localization.store_detail_modify_review(),
       style: .default

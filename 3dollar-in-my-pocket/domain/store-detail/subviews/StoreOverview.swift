@@ -76,6 +76,7 @@ final class StoreOverview: BaseView {
   }
   
   override func setup() {
+    self.isUserInteractionEnabled = true
     self.backgroundColor = .clear
     self.addSubViews([
       mapView,

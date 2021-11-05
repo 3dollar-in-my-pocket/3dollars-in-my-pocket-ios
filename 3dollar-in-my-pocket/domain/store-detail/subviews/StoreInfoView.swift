@@ -70,6 +70,7 @@ final class StoreInfoView: BaseView {
   private let paymentMethodView = PaymentMethodView()
   
   override func setup() {
+    self.isUserInteractionEnabled = true
     self.backgroundColor = .clear
     self.addSubViews([
       self.titleLabel,

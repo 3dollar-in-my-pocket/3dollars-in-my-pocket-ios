@@ -78,21 +78,5 @@ final class StoreReviewTableView: BaseView {
   
   func bind(store: Store, userId: Int) {
     self.countLabel.text = R.string.localization.store_detail_header_count(store.reviews.count)
-    Observable.from(optional: [nil] + store.reviews)
-      .asDriver(onErrorJustReturn: [nil])
-      .do(onNext: { [weak self] reviews in
-        self?.snp.updateConstraints{ make in
-          make.height.equalTo(reviews.count * 143 + 123)
-        }
-      })
-      .drive(self.reviewTableView.rx.items(
-              cellIdentifier: StoreDetailReviewCell.registerId,
-              cellType: StoreDetailReviewCell.self
-      )) { _, review, cell in
-        cell.bind(review: review, userId: userId)
-      }
-      .disposed(by: self.disposeBag)
   }
-  
-  // TODO: 높이 계산
 }
