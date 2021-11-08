@@ -35,7 +35,7 @@ final class StoreDetailView: BaseView {
   
   fileprivate let storeMenuView = StoreMenuView()
   
-  fileprivate let storePhotoCollectionView = StorePhotoCollectionView()
+  let storePhotoCollectionView = StorePhotoCollectionView()
   
   let storeReviewTableView = StoreReviewTableView()
   

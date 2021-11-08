@@ -99,6 +99,11 @@ final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
     self.storeDetailView.rx.tapAddPhotoButton
       .bind(to: self.viewModel.input.tapAddPhotoButton)
       .disposed(by: self.disposeBag)
+        
+    self.storeDetailView.storePhotoCollectionView.photoCollectionView.rx.itemSelected
+      .map { $0.row }
+      .bind(to: self.viewModel.input.tapPhoto)
+      .disposed(by: self.disposeBag)
     
     self.storeDetailView.rx.tapWriteReviewButton
       .bind(to: self.viewModel.input.tapWriteReview)
@@ -110,7 +115,7 @@ final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
       .asDriver(onErrorJustReturn: Store())
       .drive(self.storeDetailView.rx.store)
       .disposed(by: self.disposeBag)
-    
+        
     self.viewModel.output.reviews
       .asDriver(onErrorJustReturn: [])
       .do(onNext: { [weak self] reviews in

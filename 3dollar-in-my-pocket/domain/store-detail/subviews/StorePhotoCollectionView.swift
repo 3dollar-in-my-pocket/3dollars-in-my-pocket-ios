@@ -3,6 +3,8 @@ import RxSwift
 
 final class StorePhotoCollectionView: BaseView {
   
+  var photoDisposeBag = DisposeBag()
+  
   let titleLabel = UILabel().then {
     $0.textColor = R.color.black()
     $0.font = .semiBold(size: 18)
@@ -87,6 +89,7 @@ final class StorePhotoCollectionView: BaseView {
   func bind(store: Store) {
     self.countLabel.text = R.string.localization.store_detail_header_count(store.images.count)
     
+    self.photoDisposeBag = DisposeBag()
     let photos = self.extractPhotos(from: store.images)
     Observable.from(optional: photos)
       .asDriver(onErrorJustReturn: [nil])
@@ -96,7 +99,7 @@ final class StorePhotoCollectionView: BaseView {
       )) { row, image, cell in
         cell.bind(image: image, isLast: row == 3, count: store.images.count)
       }
-      .disposed(by: self.disposeBag)
+      .disposed(by: self.photoDisposeBag)
   }
   
   private func extractPhotos(from photos: [Image]) -> [Image?] {

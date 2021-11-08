@@ -68,14 +68,13 @@ class StoreDetailViewModel: BaseViewModel {
       .do { [weak self] location in
         self?.model.currentLocation = (location.coordinate.latitude, location.coordinate.longitude)
       }
-      .compactMap { [weak self] location -> (Int, (Double, Double)) in
+      .compactMap { [weak self] _ -> (Int, (Double, Double)) in
         guard let self = self else { throw CommonError.init(desc: "self is nil") }
         
         return (self.storeId, self.model.currentLocation)
       }
       .bind(onNext: self.fetchStore)
       .disposed(by: self.disposeBag)
-
     
     self.input.tapDeleteRequest
       .map { self.storeId }
@@ -257,6 +256,16 @@ class StoreDetailViewModel: BaseViewModel {
       if !store.images.isEmpty {
         self.output.showPhotoDetail.accept((self.storeId, index, store.images))
       }
+    }
+  }
+  
+  private func extractPhotos(from photos: [Image]) -> [Image?] {
+    if photos.isEmpty {
+      return [nil]
+    } else if photos.count <= 4 {
+      return Array(photos[0..<photos.count])
+    } else {
+      return Array(photos[0..<4])
     }
   }
 }
