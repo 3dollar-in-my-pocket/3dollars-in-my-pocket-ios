@@ -178,10 +178,11 @@ final class StoreOverview: BaseView {
     self.storeNameLabel.text = store.storeName
     self.distanceLabel.text = "\(store.distance)m"
     self.starLabel.text = "\(store.rating)점"
+    self.moveToPosition(latitude: store.longitude, longitude: store.latitude)
     self.setupMarker(latitude: store.latitude, longitude: store.longitude)
   }
   
-  func moveToPosition(latitude: Double, longitude: Double) {
+  private func moveToPosition(latitude: Double, longitude: Double) {
     let position = NMGLatLng(lat: latitude, lng: longitude)
     let cameraUpdate = NMFCameraUpdate(scrollTo: position).then {
       $0.animation = .easeIn

@@ -31,6 +31,7 @@ final class StoreReviewTableView: BaseView {
     $0.estimatedRowHeight = UITableView.automaticDimension
     $0.showsVerticalScrollIndicator = false
     $0.isScrollEnabled = false
+    $0.separatorStyle = .none
     $0.register(
       StoreDetailReviewCell.self,
       forCellReuseIdentifier: StoreDetailReviewCell.registerId

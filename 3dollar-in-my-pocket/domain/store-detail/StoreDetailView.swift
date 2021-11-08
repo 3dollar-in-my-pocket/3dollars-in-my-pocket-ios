@@ -128,7 +128,7 @@ final class StoreDetailView: BaseView {
     }
   }
   
-  func bind(category: StoreCategory) {
+  fileprivate func bind(category: StoreCategory) {
     self.mainCategoryImage.image = UIImage(named: "img_60_\(category.lowcase)")
   }
   
@@ -161,5 +161,13 @@ extension Reactive where Base: StoreDetailView {
   
   var tapEditStore: ControlEvent<Void> {
     return base.storeInfoView.editButton.rx.tap
+  }
+  
+  var tapWriteReviewButton: ControlEvent<Void> {
+    return base.storeReviewTableView.addPhotoButton.rx.tap
+  }
+  
+  var tapAddPhotoButton: ControlEvent<Void> {
+    return base.storePhotoCollectionView.addPhotoButton.rx.tap
   }
 }

@@ -14,6 +14,7 @@ protocol Coordinator {
   func popup()
   func dismiss()
   func showRootDim(isShow: Bool)
+  func showErrorAlert(error: Error)
 }
 
 extension Coordinator where Self: BaseVC {
@@ -32,5 +33,9 @@ extension Coordinator where Self: BaseVC {
   
   func showRootDim(isShow: Bool) {
     self.presenter.showRootDim(isShow: isShow)
+  }
+  
+  func showErrorAlert(error: Error) {
+    self.presenter.showErrorAlert(error: error)
   }
 }

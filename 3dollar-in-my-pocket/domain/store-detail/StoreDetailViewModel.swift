@@ -11,17 +11,19 @@ class StoreDetailViewModel: BaseViewModel {
   
   let storeId: Int
   let userDefaults: UserDefaultsUtil
+  let locationManager: LocationManagerProtocol
   let storeService: StoreServiceProtocol
   let reviewService: ReviewServiceProtocol
   
   struct Input {
-    let currentLocation = PublishSubject<(Double, Double)>()
+    let fetch = PublishSubject<Void>()
     let tapDeleteRequest = PublishSubject<Void>()
     let tapShareButton = PublishSubject<Void>()
-    let tapTransferBUtton = PublishSubject<Void>()
+    let tapTransferButton = PublishSubject<Void>()
     let tapEditStoreButton = PublishSubject<Void>()
+    let tapAddPhotoButton = PublishSubject<Void>()
     let tapWriteReview = PublishSubject<Void>()
-    let tapModifyReview = PublishSubject<Review>()
+    let tapEditReview = PublishSubject<Review>()
     let tapPhoto = PublishSubject<Int>()
     let registerPhoto = PublishSubject<UIImage>()
     let deleteReview = PublishSubject<Int>()
@@ -31,13 +33,12 @@ class StoreDetailViewModel: BaseViewModel {
   struct Output {
     let store = PublishRelay<Store>()
     let reviews = PublishRelay<[Review?]>()
-    let category = PublishRelay<StoreCategory>()
     let showDeleteModal = PublishRelay<Int>()
     let goToModify = PublishRelay<Store>()
     let showPhotoDetail = PublishRelay<(Int, Int, [Image])>()
+    let showAddPhotoActionSheet = PublishRelay<Int>()
     let goToPhotoList = PublishRelay<Int>()
     let showReviewModal = PublishRelay<(Int, Review?)>()
-    let showLoading = PublishRelay<Bool>()
     let popup = PublishRelay<Store>()
   }
   
@@ -49,22 +50,32 @@ class StoreDetailViewModel: BaseViewModel {
   init(
     storeId: Int,
     userDefaults: UserDefaultsUtil,
+    locationManager: LocationManagerProtocol,
     storeService: StoreServiceProtocol,
     reviewService: ReviewServiceProtocol
   ) {
     self.storeId = storeId
     self.userDefaults = userDefaults
+    self.locationManager = locationManager
     self.storeService = storeService
     self.reviewService = reviewService
     super.init()
   }
   
   override func bind() {
-    self.input.currentLocation
-      .do(onNext: { self.model.currentLocation = $0 })
-      .map { (self.storeId, $0) }
+    self.input.fetch
+      .flatMap(self.locationManager.getCurrentLocation)
+      .do { [weak self] location in
+        self?.model.currentLocation = (location.coordinate.latitude, location.coordinate.longitude)
+      }
+      .compactMap { [weak self] location -> (Int, (Double, Double)) in
+        guard let self = self else { throw CommonError.init(desc: "self is nil") }
+        
+        return (self.storeId, self.model.currentLocation)
+      }
       .bind(onNext: self.fetchStore)
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
+
     
     self.input.tapDeleteRequest
       .map { self.storeId }
@@ -76,7 +87,7 @@ class StoreDetailViewModel: BaseViewModel {
       .bind(onNext: self.shareToKakao(store:))
       .disposed(by: disposeBag)
     
-    self.input.tapTransferBUtton
+    self.input.tapTransferButton
       .bind(onNext: self.goToToss)
       .disposed(by: disposeBag)
     
@@ -85,12 +96,19 @@ class StoreDetailViewModel: BaseViewModel {
       .bind(to: self.output.goToModify)
       .disposed(by: disposeBag)
     
+    self.input.tapAddPhotoButton
+      .compactMap { [weak self] in
+        return self?.storeId
+      }
+      .bind(to: self.output.showAddPhotoActionSheet)
+      .disposed(by: self.disposeBag)
+    
     self.input.tapWriteReview
       .map { (self.storeId, nil) }
       .bind(to: self.output.showReviewModal)
       .disposed(by: disposeBag)
     
-    self.input.tapModifyReview
+    self.input.tapEditReview
       .map { (self.storeId, $0) }
       .bind(to: self.output.showReviewModal)
       .disposed(by: disposeBag)
@@ -133,32 +151,16 @@ class StoreDetailViewModel: BaseViewModel {
         guard let self = self else { return }
         
         self.model.store = store
-        let storeSections = [
-          StoreSection(store: store, items: [nil]),
-          StoreSection(store: store, items: [nil]),
-          StoreSection(store: store, items: [nil]),
-          StoreSection(store: store, items: [nil]),
-          StoreSection(store: store, items: [nil] + store.reviews)
-        ]
-        
-        self.output.category.accept(store.categories[0])
         self.output.store.accept(store)
         self.output.reviews.accept([nil] + store.reviews)
-        self.output.showLoading.accept(false)
+        self.showLoading.accept(false)
       },
       onError: { [weak self] error in
-        guard let self = self else { return }
-        if let httpError = error as? HTTPError {
-          self.httpErrorAlert.accept(httpError)
-        } else if let error = error as? CommonError {
-          let alertContent = AlertContent(title: nil, message: error.description)
-          
-          self.showSystemAlert.accept(alertContent)
-        }
-        self.output.showLoading.accept(false)
+        self?.showErrorAlert.accept(error)
+        self?.showLoading.accept(false)
       }
     )
-    .disposed(by: disposeBag)
+    .disposed(by: self.disposeBag)
   }
   
   private func shareToKakao(store: Store) {
@@ -187,9 +189,7 @@ class StoreDetailViewModel: BaseViewModel {
     
     LinkApi.shared.defaultLink(templatable: feedTemplate) { (linkResult, error) in
       if let error = error {
-        let alertContent = AlertContent(title: "Error in Kakao link", message: error.localizedDescription)
-        
-        self.showSystemAlert.accept(alertContent)
+        self.showErrorAlert.accept(error)
       } else {
         if let linkResult = linkResult {
           UIApplication.shared.open(linkResult.url, options: [:], completionHandler: nil)
@@ -206,7 +206,7 @@ class StoreDetailViewModel: BaseViewModel {
   }
   
   private func deleteReview(reviewId: Int) {
-    self.output.showLoading.accept(true)
+    self.showLoading.accept(true)
     self.reviewService.deleteRevie(reviewId: reviewId)
       .subscribe(
         onNext: { [weak self] _ in
@@ -221,50 +221,29 @@ class StoreDetailViewModel: BaseViewModel {
           }
           
           self.model.store?.reviews = store.reviews
-//          self.output.store.accept([
-//            StoreSection(store: store, items: [nil]),
-//            StoreSection(store: store, items: [nil]),
-//            StoreSection(store: store, items: [nil]),
-//            StoreSection(store: store, items: [nil]),
-//            StoreSection(store: store, items: [nil] + store.reviews)
-//          ])
-          self.output.showLoading.accept(false)
+          self.output.reviews.accept(store.reviews)
+          self.showLoading.accept(false)
         },
         onError: { [weak self] error in
-          guard let self = self else { return }
-          if let httpError = error as? HTTPError {
-            self.httpErrorAlert.accept(httpError)
-          } else if let error = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: error.description)
-            
-            self.showSystemAlert.accept(alertContent)
-          }
-          self.output.showLoading.accept(false)
+          self?.showErrorAlert.accept(error)
+          self?.showLoading.accept(false)
         }
       ).disposed(by: self.disposeBag)
   }
   
   private func savePhoto(storeId: Int, photos: [UIImage]) {
-    self.output.showLoading.accept(true)
+    self.showLoading.accept(true)
     self.storeService.savePhoto(storeId: storeId, photos: photos)
       .subscribe(
         onNext: { [weak self] _ in
           guard let self = self else { return }
           
           self.fetchStore(storeId: self.storeId, location: self.model.currentLocation)
-          self.output.showLoading.accept(false)
+          self.showLoading.accept(false)
         },
         onError: { [weak self] error in
-          guard let self = self else { return }
-          if let httpError = error as? HTTPError{
-            self.httpErrorAlert.accept(httpError)
-          }
-          if let commonError = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: commonError.description)
-            
-            self.showSystemAlert.accept(alertContent)
-          }
-          self.output.showLoading.accept(false)
+          self?.showErrorAlert.accept(error)
+          self?.showLoading.accept(false)
         }
       )
       .disposed(by: disposeBag)

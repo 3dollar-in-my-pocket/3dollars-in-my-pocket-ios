@@ -12,12 +12,12 @@ protocol StoreDetailDelegate: AnyObject {
   func popup(store: Store)
 }
 
-class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
+final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
   
   weak var delegate: StoreDetailDelegate?
   private let storeDetailView = StoreDetailView()
   private let viewModel: StoreDetailViewModel
-  fileprivate weak var coordinator: StoreDetailCoordinator?
+  private weak var coordinator: StoreDetailCoordinator?
   private var myLocationFlag = false
   private lazy var imagePicker = UIImagePickerController().then {
     $0.delegate = self
@@ -27,6 +27,7 @@ class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
     self.viewModel = StoreDetailViewModel(
       storeId: storeId,
       userDefaults: UserDefaultsUtil(),
+      locationManager: LocationManager.shared,
       storeService: StoreService(),
       reviewService: ReviewService()
     )
@@ -55,7 +56,7 @@ class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
     
     self.tabBarController?.tabBar.barTintColor = .white
     self.viewModel.clearKakaoLinkIfExisted()
-    self.fetchMyLocation()
+    self.viewModel.input.fetch.onNext(())
   }
   
   override func viewWillDisappear(_ animated: Bool) {
@@ -64,34 +65,47 @@ class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
     self.viewModel.input.popup.onNext(())
   }
   
+  override func bindEvent() {
+    self.storeDetailView.backButton.rx.tap
+      .do(onNext: { _ in
+        GA.shared.logEvent(event: .back_button_clicked, page: .store_detail_page)
+      })
+      .bind(onNext: { [weak self] in
+        self?.coordinator?.popup()
+      })
+      .disposed(by: self.disposeBag)
+  }
+  
   override func bindViewModelInput() {
     self.storeDetailView.deleteRequestButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .store_delete_request_button_clicked, page: .store_edit_page)
       })
-        .bind(to: self.viewModel.input.tapDeleteRequest)
-        .disposed(by: self.disposeBag)
-        
-        self.storeDetailView.rx.tapEditStore
-        .bind(to: self.viewModel.input.tapEditStoreButton)
-        .disposed(by: self.disposeBag)
-        
-        self.storeDetailView.rx.tapShareButton
-        .bind(to: self.viewModel.input.tapShareButton)
-        .disposed(by: self.disposeBag)
-        
-        self.storeDetailView.rx.tapTransferButton
-        .bind(to: self.viewModel.input.tapTransferBUtton)
-        .disposed(by: self.disposeBag)
+      .bind(to: self.viewModel.input.tapDeleteRequest)
+      .disposed(by: self.disposeBag)
+    
+    self.storeDetailView.rx.tapShareButton
+      .bind(to: self.viewModel.input.tapShareButton)
+      .disposed(by: self.disposeBag)
+    
+    self.storeDetailView.rx.tapTransferButton
+      .bind(to: self.viewModel.input.tapTransferButton)
+      .disposed(by: self.disposeBag)
+    
+    self.storeDetailView.rx.tapEditStore
+      .bind(to: self.viewModel.input.tapEditStoreButton)
+      .disposed(by: self.disposeBag)
+    
+    self.storeDetailView.rx.tapAddPhotoButton
+      .bind(to: self.viewModel.input.tapAddPhotoButton)
+      .disposed(by: self.disposeBag)
+    
+    self.storeDetailView.rx.tapWriteReviewButton
+      .bind(to: self.viewModel.input.tapWriteReview)
+      .disposed(by: self.disposeBag)
   }
   
-  override func bindViewModel() {
-    // Bind output
-    self.viewModel.output.category
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.storeDetailView.bind)
-      .disposed(by: disposeBag)
-    
+  override func bindViewModelOutput() {
     self.viewModel.output.store
       .asDriver(onErrorJustReturn: Store())
       .drive(self.storeDetailView.rx.store)
@@ -114,7 +128,7 @@ class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
             self?.coordinator?.showMoreActionSheet(
               review: review,
               onTapModify: {
-                self?.viewModel.input.tapModifyReview.onNext(review)
+                self?.viewModel.input.tapEditReview.onNext(review)
               },
               onTapDelete: {
                 self?.viewModel.input.deleteReview.onNext(review.reviewId)
@@ -125,89 +139,63 @@ class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
         cell.adBannerView.rootViewController = self
       }
       .disposed(by: self.disposeBag)
-        
+    
     self.viewModel.output.showDeleteModal
       .observeOn(MainScheduler.instance)
       .bind(onNext: { [weak self] storeId in
         self?.coordinator?.showDeleteModal(storeId: storeId)
       })
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.viewModel.output.goToModify
       .observeOn(MainScheduler.instance)
       .bind(onNext: { [weak self] store in
         self?.coordinator?.goToModify(store: store)
       })
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.viewModel.output.showPhotoDetail
       .observeOn(MainScheduler.instance)
       .bind(onNext: { [weak self] (storeId, index, photos) in
         self?.coordinator?.showPhotoDetail(storeId: storeId, index: index, photos: photos)
       })
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
+    
+    self.viewModel.output.showAddPhotoActionSheet
+      .asDriver(onErrorJustReturn: 0)
+      .drive { [weak self] storeId in
+        self?.coordinator?.showPictureActionSheet(storeId: storeId)
+      }
+      .disposed(by: self.disposeBag)
     
     self.viewModel.output.goToPhotoList
       .observeOn(MainScheduler.instance)
       .bind(onNext: { [weak self] storeId in
         self?.coordinator?.goToPhotoList(storeId: storeId)
       })
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.viewModel.output.showReviewModal
       .observeOn(MainScheduler.instance)
       .bind(onNext: { [weak self] (storeId, review) in
         self?.coordinator?.showReviewModal(storeId: storeId, review: review)
       })
-      .disposed(by: disposeBag)
-    
-    self.viewModel.output.showLoading
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showRootLoading(isShow:))
-      .disposed(by: disposeBag)
-    
-    self.viewModel.showSystemAlert
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showSystemAlert(alert:))
-      .disposed(by: disposeBag)
-    
-    self.viewModel.httpErrorAlert
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showHTTPErrorAlert(error:))
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.viewModel.output.popup
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.passStore(store:))
-      .disposed(by: disposeBag)
-  }
-  
-  override func bindEvent() {
-    self.storeDetailView.backButton.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .back_button_clicked, page: .store_detail_page)
-      })
-      .bind(onNext: { [weak self] in
-        self?.coordinator?.popup()
-      })
       .disposed(by: self.disposeBag)
-  }
-  
-  private func fetchMyLocation() {
-    LocationManager.shared.getCurrentLocation()
-      .asDriver(onErrorJustReturn: .init(latitude: 0, longitude: 0))
-      .drive { [weak self] location in
-        guard let self = self else { return }
-        if self.myLocationFlag {
-          self.storeDetailView.storeOverview.moveToPosition(
-            latitude: location.coordinate.latitude,
-            longitude: location.coordinate.longitude
-          )
-        } else {
-          self.viewModel.input.currentLocation.onNext(
-            (location.coordinate.latitude, location.coordinate.longitude)
-          )
-        }
+    
+    self.viewModel.showLoading
+      .observeOn(MainScheduler.instance)
+      .bind(onNext: self.showRootLoading(isShow:))
+      .disposed(by: self.disposeBag)
+    
+    self.viewModel.showErrorAlert
+      .asDriver(onErrorJustReturn: BaseError.unknown)
+      .drive { [weak self] error in
+        self?.coordinator?.showErrorAlert(error: error)
       }
       .disposed(by: self.disposeBag)
   }
@@ -221,7 +209,7 @@ extension StoreDetailViewController: ReviewModalDelegate {
   
   func onReviewSuccess() {
     self.myLocationFlag = false
-    self.fetchMyLocation()
+    self.viewModel.input.fetch.onNext(())
     self.showRootDim(isShow: false)
   }
   
@@ -241,14 +229,14 @@ extension StoreDetailViewController: DeleteModalDelegate {
 extension StoreDetailViewController: RegisterPhotoDelegate {
   func onSaveSuccess() {
     self.myLocationFlag = false
-    self.fetchMyLocation()
+    self.viewModel.input.fetch.onNext(())
   }
 }
 
 extension StoreDetailViewController: PhotoDetailDelegate {
   func onClose() {
     self.myLocationFlag = false
-    self.fetchMyLocation()
+    self.viewModel.input.fetch.onNext(())
   }
 }
 
