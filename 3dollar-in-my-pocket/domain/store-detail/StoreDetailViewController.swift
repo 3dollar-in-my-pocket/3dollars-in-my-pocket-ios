@@ -74,6 +74,13 @@ final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
         self?.coordinator?.popup()
       })
       .disposed(by: self.disposeBag)
+    
+    self.storeDetailView.visitButton.rx.tap
+      .asDriver()
+      .drive(onNext: { [weak self] in
+        self?.coordinator?.showVisit()
+      })
+      .disposed(by: self.disposeBag)
   }
   
   override func bindViewModelInput() {

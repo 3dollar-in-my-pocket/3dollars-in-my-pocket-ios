@@ -210,3 +210,5 @@
 "permission_denied_description" = "설정에서 해당 권한을 허용해 주세요!!";
 "permission_setting_button" = "설정";
 "permission_setting_cancel" = "취소";
+"visit_title_disable" = "가게 근처에서\n방문을 인증할 수 있어요!";
+"visit_title_enable" = "가게 도착!\n방문을 인증해보세요!";

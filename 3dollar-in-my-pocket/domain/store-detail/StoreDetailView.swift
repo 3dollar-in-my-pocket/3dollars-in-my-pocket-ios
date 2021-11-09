@@ -39,7 +39,7 @@ final class StoreDetailView: BaseView {
   
   let storeReviewTableView = StoreReviewTableView()
   
-  private let registerButtonBg = UIView().then {
+  private let visitButtonBg = UIView().then {
     $0.layer.cornerRadius = 37
     
     let shadowLayer = CAShapeLayer()
@@ -57,7 +57,7 @@ final class StoreDetailView: BaseView {
     $0.layer.insertSublayer(shadowLayer, at: 0)
   }
   
-  let registerButton = UIButton().then {
+  let visitButton = UIButton().then {
     $0.setTitle("store_detail_add_visit_history".localized, for: .normal)
     $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
     $0.setBackgroundColor(UIColor(r: 255, g: 92, b: 67), for: .normal)
@@ -83,8 +83,8 @@ final class StoreDetailView: BaseView {
       self.backButton,
       self.mainCategoryImage,
       self.deleteRequestButton,
-      self.registerButtonBg,
-      self.registerButton
+      self.visitButtonBg,
+      self.visitButton
     ])
     self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
   }
@@ -155,18 +155,18 @@ final class StoreDetailView: BaseView {
       make.height.equalTo(0)
     }
     
-    self.registerButtonBg.snp.makeConstraints { (make) in
+    self.visitButtonBg.snp.makeConstraints { (make) in
       make.centerX.equalToSuperview()
       make.width.equalTo(232)
       make.height.equalTo(64)
       make.bottom.equalToSuperview().offset(-32)
     }
     
-    self.registerButton.snp.makeConstraints { (make) in
-      make.left.equalTo(registerButtonBg.snp.left).offset(8)
-      make.right.equalTo(registerButtonBg.snp.right).offset(-8)
-      make.top.equalTo(registerButtonBg.snp.top).offset(8)
-      make.bottom.equalTo(registerButtonBg.snp.bottom).offset(-8)
+    self.visitButton.snp.makeConstraints { (make) in
+      make.left.equalTo(visitButtonBg.snp.left).offset(8)
+      make.right.equalTo(visitButtonBg.snp.right).offset(-8)
+      make.top.equalTo(visitButtonBg.snp.top).offset(8)
+      make.bottom.equalTo(visitButtonBg.snp.bottom).offset(-8)
     }
   }
   
@@ -181,31 +181,31 @@ final class StoreDetailView: BaseView {
   }
   
   func hideRegisterButton() {
-    if registerButtonBg.alpha != 0 {
-      let originalBgTransform = self.registerButtonBg.transform
-      let originalBtnTransform = self.registerButton.transform
+    if visitButtonBg.alpha != 0 {
+      let originalBgTransform = self.visitButtonBg.transform
+      let originalBtnTransform = self.visitButton.transform
       
       UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-        self?.registerButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: 90)
-        self?.registerButtonBg.alpha = 0
+        self?.visitButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: 90)
+        self?.visitButtonBg.alpha = 0
         
-        self?.registerButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: 90)
-        self?.registerButton.alpha = 0
+        self?.visitButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: 90)
+        self?.visitButton.alpha = 0
       })
     }
   }
   
   func showRegisterButton() {
-    if registerButtonBg.alpha != 1 {
-      let originalBgTransform = self.registerButtonBg.transform
-      let originalBtnTransform = self.registerButton.transform
+    if visitButtonBg.alpha != 1 {
+      let originalBgTransform = self.visitButtonBg.transform
+      let originalBtnTransform = self.visitButton.transform
       
       UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-        self?.registerButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: -90)
-        self?.registerButtonBg.alpha = 1
+        self?.visitButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: -90)
+        self?.visitButtonBg.alpha = 1
         
-        self?.registerButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: -90)
-        self?.registerButton.alpha = 1
+        self?.visitButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: -90)
+        self?.visitButton.alpha = 1
       })
     }
   }
@@ -259,4 +259,3 @@ extension StoreDetailView: UIScrollViewDelegate {
     self.showRegisterButton()
   }
 }
-

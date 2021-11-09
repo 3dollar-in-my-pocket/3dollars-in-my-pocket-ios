@@ -23,6 +23,7 @@ protocol StoreDetailCoordinator: Coordinator, AnyObject {
     onTapDelete: @escaping (() -> Void)
   )
   func showPictureActionSheet(storeId: Int)
+  func showVisit()
 }
 
 extension StoreDetailCoordinator where Self: BaseVC {
@@ -170,5 +171,11 @@ extension StoreDetailCoordinator where Self: BaseVC {
     alert.addAction(cameraAction)
     alert.addAction(cancelAction)
     self.presenter.present(alert, animated: true)
+  }
+  
+  func showVisit() {
+    let viewController = VisitViewController.instance()
+    
+    self.presenter.present(viewController, animated: true, completion: nil)
   }
 }
