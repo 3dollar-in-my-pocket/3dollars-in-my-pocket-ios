@@ -39,8 +39,34 @@ final class StoreDetailView: BaseView {
   
   let storeReviewTableView = StoreReviewTableView()
   
+  private let registerButtonBg = UIView().then {
+    $0.layer.cornerRadius = 37
+    
+    let shadowLayer = CAShapeLayer()
+    
+    shadowLayer.path = UIBezierPath(
+      roundedRect: CGRect(x: 0, y: 0, width: 232, height: 64),
+      cornerRadius: 37
+    ).cgPath
+    shadowLayer.fillColor = UIColor.init(r: 255, g: 255, b: 255, a: 0.6).cgColor
+    shadowLayer.shadowColor = UIColor.black.cgColor
+    shadowLayer.shadowPath = nil
+    shadowLayer.shadowOffset = CGSize(width: 0, height: 1)
+    shadowLayer.shadowOpacity = 0.3
+    shadowLayer.shadowRadius = 10
+    $0.layer.insertSublayer(shadowLayer, at: 0)
+  }
+  
+  let registerButton = UIButton().then {
+    $0.setTitle("store_detail_add_visit_history".localized, for: .normal)
+    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
+    $0.setBackgroundColor(UIColor(r: 255, g: 92, b: 67), for: .normal)
+    $0.layer.cornerRadius = 24
+    $0.layer.masksToBounds = true
+  }
   
   override func setup() {
+    self.scrollView.delegate = self
     self.containerView.addSubViews([
       self.storeOverview,
       self.storeInfoView,
@@ -56,7 +82,9 @@ final class StoreDetailView: BaseView {
       self.navigationView,
       self.backButton,
       self.mainCategoryImage,
-      self.deleteRequestButton
+      self.deleteRequestButton,
+      self.registerButtonBg,
+      self.registerButton
     ])
     self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
   }
@@ -126,6 +154,20 @@ final class StoreDetailView: BaseView {
       make.top.equalTo(self.storePhotoCollectionView.snp.bottom)
       make.height.equalTo(0)
     }
+    
+    self.registerButtonBg.snp.makeConstraints { (make) in
+      make.centerX.equalToSuperview()
+      make.width.equalTo(232)
+      make.height.equalTo(64)
+      make.bottom.equalToSuperview().offset(-32)
+    }
+    
+    self.registerButton.snp.makeConstraints { (make) in
+      make.left.equalTo(registerButtonBg.snp.left).offset(8)
+      make.right.equalTo(registerButtonBg.snp.right).offset(-8)
+      make.top.equalTo(registerButtonBg.snp.top).offset(8)
+      make.bottom.equalTo(registerButtonBg.snp.bottom).offset(-8)
+    }
   }
   
   fileprivate func bind(category: StoreCategory) {
@@ -135,6 +177,36 @@ final class StoreDetailView: BaseView {
   func updateReviewTableViewHeight(reviews: [Review?]) {
     self.storeReviewTableView.snp.updateConstraints { make in
       make.height.equalTo(143 * reviews.count + 64)
+    }
+  }
+  
+  func hideRegisterButton() {
+    if registerButtonBg.alpha != 0 {
+      let originalBgTransform = self.registerButtonBg.transform
+      let originalBtnTransform = self.registerButton.transform
+      
+      UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
+        self?.registerButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: 90)
+        self?.registerButtonBg.alpha = 0
+        
+        self?.registerButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: 90)
+        self?.registerButton.alpha = 0
+      })
+    }
+  }
+  
+  func showRegisterButton() {
+    if registerButtonBg.alpha != 1 {
+      let originalBgTransform = self.registerButtonBg.transform
+      let originalBtnTransform = self.registerButton.transform
+      
+      UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
+        self?.registerButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: -90)
+        self?.registerButtonBg.alpha = 1
+        
+        self?.registerButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: -90)
+        self?.registerButton.alpha = 1
+      })
     }
   }
 }
@@ -171,3 +243,20 @@ extension Reactive where Base: StoreDetailView {
     return base.storePhotoCollectionView.addPhotoButton.rx.tap
   }
 }
+
+extension StoreDetailView: UIScrollViewDelegate {
+  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    self.hideRegisterButton()
+  }
+  
+  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    if !decelerate {
+      self.showRegisterButton()
+    }
+  }
+  
+  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    self.showRegisterButton()
+  }
+}
+
