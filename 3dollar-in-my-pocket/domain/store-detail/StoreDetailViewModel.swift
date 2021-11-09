@@ -28,6 +28,7 @@ class StoreDetailViewModel: BaseViewModel {
     let registerPhoto = PublishSubject<UIImage>()
     let deleteReview = PublishSubject<Int>()
     let popup = PublishSubject<Void>()
+    let tapVisitButton = PublishSubject<Void>()
   }
   
   struct Output {
@@ -40,6 +41,7 @@ class StoreDetailViewModel: BaseViewModel {
     let goToPhotoList = PublishRelay<Int>()
     let showReviewModal = PublishRelay<(Int, Review?)>()
     let popup = PublishRelay<Store>()
+    let showVisit = PublishRelay<Store>()
   }
   
   struct Model {
@@ -129,6 +131,13 @@ class StoreDetailViewModel: BaseViewModel {
       .compactMap { self.model.store }
       .bind(to: self.output.popup)
       .disposed(by: disposeBag)
+    
+    self.input.tapVisitButton
+      .compactMap { [weak self] in
+        self?.model.store
+      }
+      .bind(to: self.output.showVisit)
+      .disposed(by: self.disposeBag)
   }
   
   func clearKakaoLinkIfExisted() {

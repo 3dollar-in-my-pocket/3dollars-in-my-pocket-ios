@@ -137,6 +137,7 @@
 		6E57F298273A9209008C524A /* VisitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57F297273A9209008C524A /* VisitView.swift */; };
 		6E57F29A273A9FF0008C524A /* VisitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57F299273A9FF0008C524A /* VisitViewController.swift */; };
 		6E57F29C273AA04D008C524A /* VisitCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57F29B273AA04D008C524A /* VisitCoordinator.swift */; };
+		6E57F29E273AA724008C524A /* VisitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57F29D273AA724008C524A /* VisitViewModel.swift */; };
 		6E590DAF23E7F56C006814BE /* PhotoMainCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E590DAE23E7F56C006814BE /* PhotoMainCell.swift */; };
 		6E5939002573E2CE00593DC8 /* PrivacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5938FF2573E2CE00593DC8 /* PrivacyView.swift */; };
 		6E5939052573E38900593DC8 /* PrivacyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5939042573E38900593DC8 /* PrivacyVC.swift */; };
@@ -436,6 +437,7 @@
 		6E57F297273A9209008C524A /* VisitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitView.swift; sourceTree = "<group>"; };
 		6E57F299273A9FF0008C524A /* VisitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitViewController.swift; sourceTree = "<group>"; };
 		6E57F29B273AA04D008C524A /* VisitCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitCoordinator.swift; sourceTree = "<group>"; };
+		6E57F29D273AA724008C524A /* VisitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitViewModel.swift; sourceTree = "<group>"; };
 		6E590DAE23E7F56C006814BE /* PhotoMainCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMainCell.swift; sourceTree = "<group>"; };
 		6E5938FF2573E2CE00593DC8 /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.swift; sourceTree = "<group>"; };
 		6E5939042573E38900593DC8 /* PrivacyVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyVC.swift; sourceTree = "<group>"; };
@@ -926,6 +928,7 @@
 				6E57F297273A9209008C524A /* VisitView.swift */,
 				6E57F299273A9FF0008C524A /* VisitViewController.swift */,
 				6E57F29B273AA04D008C524A /* VisitCoordinator.swift */,
+				6E57F29D273AA724008C524A /* VisitViewModel.swift */,
 			);
 			path = visit;
 			sourceTree = "<group>";
@@ -1769,6 +1772,7 @@
 				6E31577925BA9F180022D6F3 /* StoreDetailPhotoCell.swift in Sources */,
 				6EEE30B526FEDAED00696467 /* LocationError.swift in Sources */,
 				6E16EE2426BC1AC800F4DD03 /* UserInfoResponse.swift in Sources */,
+				6E57F29E273AA724008C524A /* VisitViewModel.swift in Sources */,
 				6E93C83C23F2303E002E737F /* Event.swift in Sources */,
 				6E2F5FDF23D6BF4800094D41 /* CategoryService.swift in Sources */,
 				6E2C820F23B4A37F0025BB2B /* NicknameViewController.swift in Sources */,

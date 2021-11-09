@@ -1,4 +1,7 @@
 import UIKit
+
+import RxSwift
+import RxCocoa
 import NMapsMap
 
 final class VisitView: BaseView {
@@ -35,7 +38,7 @@ final class VisitView: BaseView {
   
   let storeCategoryImage = UIImageView()
   
-  let storeTitleLabel = UILabel().then {
+  let storeNameLabel = UILabel().then {
     $0.font = R.font.appleSDGothicNeoEB00(size: 16)
     $0.textColor = R.color.gray0()
   }
@@ -76,14 +79,15 @@ final class VisitView: BaseView {
   }
   
   override func setup() {
-    self.backgroundColor = R.color.gray100()
+    self.backgroundColor = .black
+    
     self.addSubViews([
       self.closeButton,
       self.bedgeImage,
       self.titleLabel,
       self.mapContainerView,
       self.storeCategoryImage,
-      self.storeTitleLabel,
+      self.storeNameLabel,
       self.storeCategoryLabel,
       self.mapView,
       self.bottomContainerView,
@@ -131,6 +135,11 @@ final class VisitView: BaseView {
       make.width.height.equalTo(56)
     }
     
+    self.bottomRightCategoryImage.snp.makeConstraints { make in
+      make.center.equalTo(self.bottomRightCircleView)
+      make.width.height.equalTo(40)
+    }
+    
     self.distanceLabel.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
       make.bottom.equalTo(self.bottomContainerView).offset(-16)
@@ -154,15 +163,15 @@ final class VisitView: BaseView {
       make.width.height.equalTo(44)
     }
     
-    self.storeTitleLabel.snp.makeConstraints { make in
+    self.storeNameLabel.snp.makeConstraints { make in
       make.left.equalTo(self.storeCategoryImage.snp.right).offset(19)
       make.top.equalTo(self.mapContainerView).offset(13)
       make.right.equalTo(self.mapContainerView).offset(-19)
     }
     
     self.storeCategoryLabel.snp.makeConstraints { make in
-      make.left.right.equalTo(self.storeTitleLabel)
-      make.top.equalTo(self.storeTitleLabel.snp.bottom).offset(7)
+      make.left.right.equalTo(self.storeNameLabel)
+      make.top.equalTo(self.storeNameLabel.snp.bottom).offset(7)
     }
     
     self.mapView.snp.makeConstraints { make in
@@ -197,5 +206,29 @@ final class VisitView: BaseView {
     bzPath.setLineDash([3, 10], count: 2, phase: 0)
     R.color.red()?.set()
     bzPath.stroke()
+  }
+  
+  fileprivate func bind(store: Store) {
+    self.storeNameLabel.text = store.storeName
+    self.storeCategoryImage.image = store.categories[0].image
+    self.setCategories(categories: store.categories)
+    self.bottomRightCategoryImage.image = store.categories[0].image
+  }
+  
+  private func setCategories(categories: [StoreCategory]) {
+    var categoryString = ""
+    for category in categories {
+      categoryString.append("#\(category.name) ")
+    }
+    self.storeCategoryLabel.text = categoryString
+  }
+}
+
+extension Reactive where Base: VisitView {
+  
+  var store: Binder<Store> {
+    return Binder(self.base) { view, store in
+      view.bind(store: store)
+    }
   }
 }

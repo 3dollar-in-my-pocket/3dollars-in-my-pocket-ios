@@ -74,13 +74,6 @@ final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
         self?.coordinator?.popup()
       })
       .disposed(by: self.disposeBag)
-    
-    self.storeDetailView.visitButton.rx.tap
-      .asDriver()
-      .drive(onNext: { [weak self] in
-        self?.coordinator?.showVisit()
-      })
-      .disposed(by: self.disposeBag)
   }
   
   override func bindViewModelInput() {
@@ -118,6 +111,10 @@ final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
     
     self.storeDetailView.rx.tapWriteReviewButton
       .bind(to: self.viewModel.input.tapWriteReview)
+      .disposed(by: self.disposeBag)
+    
+    self.storeDetailView.visitButton.rx.tap
+      .bind(to: self.viewModel.input.tapVisitButton)
       .disposed(by: self.disposeBag)
   }
   
@@ -201,6 +198,13 @@ final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
     self.viewModel.output.popup
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.passStore(store:))
+      .disposed(by: self.disposeBag)
+    
+    self.viewModel.output.showVisit
+      .asDriver(onErrorJustReturn: Store())
+      .drive(onNext: { [weak self] store in
+        self?.coordinator?.showVisit(store: store)
+      })
       .disposed(by: self.disposeBag)
     
     self.viewModel.showLoading
