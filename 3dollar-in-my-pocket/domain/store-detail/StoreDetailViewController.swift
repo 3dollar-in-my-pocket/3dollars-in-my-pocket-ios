@@ -77,6 +77,10 @@ final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
   }
   
   override func bindViewModelInput() {
+    self.storeDetailView.storeOverview.currentLocationButton.rx.tap
+      .bind(to: self.viewModel.input.fetch)
+      .disposed(by: self.disposeBag)
+    
     self.storeDetailView.deleteRequestButton.rx.tap
       .do(onNext: { _ in
         GA.shared.logEvent(event: .store_delete_request_button_clicked, page: .store_edit_page)

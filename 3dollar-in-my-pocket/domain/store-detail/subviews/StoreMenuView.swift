@@ -66,6 +66,7 @@ final class StoreMenuView: BaseView {
   
   func bind(store: Store) {
     self.countLabel.text = R.string.localization.store_detail_menu_format(store.menus.count)
+    self.clearMenuStackView()
     
     let subViews = self.subViewsFromMenus(
       categories: store.categories,
@@ -75,6 +76,10 @@ final class StoreMenuView: BaseView {
     for subView in subViews {
       self.menuStackView.addArrangedSubview(subView)
     }
+  }
+  
+  private func clearMenuStackView() {
+    self.menuStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
   }
   
   private func subViewsFromMenus(categories: [StoreCategory], menus: [Menu]) -> [UIView] {

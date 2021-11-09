@@ -70,7 +70,6 @@ final class StoreDetailReviewCell: BaseTableViewCell {
     self.containerView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.top.equalToSuperview()
       make.top.equalToSuperview().offset(16)
       make.bottom.equalTo(self.replyLabel).offset(16)
       make.bottom.equalToSuperview()
@@ -79,14 +78,13 @@ final class StoreDetailReviewCell: BaseTableViewCell {
     self.adBannerView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.top.equalToSuperview().offset(13)
-      make.bottom.equalToSuperview().offset(-13)
+      make.top.equalToSuperview()
       make.height.equalTo(64)
     }
     
     self.ratingView.snp.makeConstraints { make in
       make.left.equalTo(self.containerView).offset(17)
-      make.top.equalTo(self.containerView).offset(17)
+      make.top.equalTo(self.containerView).offset(15)
     }
     
     self.createdAtLabel.snp.makeConstraints { make in
@@ -94,12 +92,12 @@ final class StoreDetailReviewCell: BaseTableViewCell {
       make.right.equalTo(self.containerView).offset(-16)
     }
     
-    self.nameLabel.snp.makeConstraints { (make) in
+    self.nameLabel.snp.makeConstraints { make in
       make.left.equalTo(self.containerView).offset(16)
-      make.top.equalTo(self.ratingView.snp.bottom).offset(16)
+      make.top.equalTo(self.ratingView.snp.bottom).offset(14)
     }
     
-    self.replyLabel.snp.makeConstraints { (make) in
+    self.replyLabel.snp.makeConstraints { make in
       make.left.equalTo(self.containerView).offset(16)
       make.right.equalTo(self.containerView).offset(-16)
       make.top.equalTo(self.nameLabel.snp.bottom).offset(10)
@@ -124,7 +122,7 @@ final class StoreDetailReviewCell: BaseTableViewCell {
       self.createdAtLabel.isHidden = false
       self.nameLabel.isHidden = false
       self.containerView.isHidden = false
-      self.moreButton.isHidden = userId == review.user.userId
+      self.moreButton.isHidden = userId != review.user.userId
     } else {
       self.containerView.isHidden = true
       self.adBannerView.isHidden = false

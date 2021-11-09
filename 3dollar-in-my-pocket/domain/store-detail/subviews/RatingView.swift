@@ -74,6 +74,10 @@ final class RatingView: BaseView {
       make.left.top.right.equalTo(self.stackView).priority(.high)
       make.height.equalTo(16)
     }
+    
+    self.snp.makeConstraints { make in
+      make.edges.equalTo(self.stackView)
+    }
   }
   
   func bind(rating: Int) {
