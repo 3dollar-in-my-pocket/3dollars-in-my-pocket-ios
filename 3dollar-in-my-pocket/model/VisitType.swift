@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum VisitType: String {
+enum VisitType: String, Decodable {
   case exists = "EXISTS"
   case notExists = "NOT_EXISTS"
 }

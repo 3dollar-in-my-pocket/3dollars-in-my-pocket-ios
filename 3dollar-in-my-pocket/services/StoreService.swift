@@ -24,7 +24,9 @@ protocol StoreServiceProtocol {
   func getStoreDetail(
     storeId: Int,
     latitude: Double,
-    longitude: Double
+    longitude: Double,
+    startDate: Date,
+    endDate: Date
   ) -> Observable<StoreDetailResponse>
   
   func getReportedStore(
@@ -213,7 +215,9 @@ struct StoreService: StoreServiceProtocol {
   func getStoreDetail(
     storeId: Int,
     latitude: Double,
-    longitude: Double
+    longitude: Double,
+    startDate: Date,
+    endDate: Date
   ) -> Observable<StoreDetailResponse> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/store"
@@ -221,7 +225,9 @@ struct StoreService: StoreServiceProtocol {
       let parameters: [String: Any] = [
         "storeId": storeId,
         "latitude": latitude,
-        "longitude": longitude
+        "longitude": longitude,
+        "startDate": startDate.toString(format: "yyyy-MM-dd"),
+        "endDate": endDate.toString(format: "yyyy-MM-dd")
       ]
       
       HTTPUtils.defaultSession.request(

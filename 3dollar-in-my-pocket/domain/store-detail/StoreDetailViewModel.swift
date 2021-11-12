@@ -146,12 +146,17 @@ class StoreDetailViewModel: BaseViewModel {
     }
   }
   
-  private func fetchStore(storeId: Int, location: (latitude: Double, longitude: Double)) {
+  private func fetchStore(
+    storeId: Int,
+    location: (latitude: Double, longitude: Double)
+    ) {
     self.showLoading.accept(true)
     self.storeService.getStoreDetail(
       storeId: storeId,
       latitude: location.latitude,
-      longitude: location.longitude
+      longitude: location.longitude,
+      startDate: Date().addWeek(week: -1),
+      endDate: Date()
     )
     .map(Store.init)
     .subscribe(
