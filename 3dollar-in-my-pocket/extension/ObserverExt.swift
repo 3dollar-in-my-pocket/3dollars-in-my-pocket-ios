@@ -9,7 +9,13 @@ extension AnyObserver {
       if let httpError = HTTPError(rawValue: statusCode) {
         self.onError(httpError)
       } else {
-        self.onError(BaseError.unknown)
+        if let value = response.value {
+          if let responseContainer: ResponseContainer<String> = JsonUtils.toJson(object: value) {
+            self.onError(BaseError.custom(responseContainer.message))
+          }
+        } else {
+          self.onError(BaseError.unknown)
+        }
       }
     } else {
       switch response.result {
