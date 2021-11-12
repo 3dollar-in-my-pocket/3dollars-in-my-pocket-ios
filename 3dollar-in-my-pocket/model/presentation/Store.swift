@@ -15,6 +15,7 @@ struct Store {
   let storeType: StoreType?
   let updatedAt: String
   let user: User
+  let visitHistories: [VisitHistory]
   
   init(
     category: StoreCategory,
@@ -38,6 +39,7 @@ struct Store {
     self.storeType = nil
     self.updatedAt = ""
     self.user = User()
+    self.visitHistories = []
   }
   
   init(
@@ -71,6 +73,7 @@ struct Store {
     self.storeType = storeType
     self.updatedAt = ""
     self.user = User()
+    self.visitHistories = []
   }
   
   init() {
@@ -89,6 +92,7 @@ struct Store {
     self.storeType = nil
     self.updatedAt = ""
     self.user = User()
+    self.visitHistories = []
   }
   
   init(response: StoreInfoResponse) {
@@ -107,6 +111,7 @@ struct Store {
     self.storeType = nil
     self.updatedAt = ""
     self.user = User()
+    self.visitHistories = []
   }
   
   init(response: StoreDetailResponse) {
@@ -125,5 +130,6 @@ struct Store {
     self.storeType = response.storeType
     self.updatedAt = response.updatedAt
     self.user = User(response: response.user)
+    self.visitHistories = response.visitHistories.map { VisitHistory(response: $0) }
   }
 }

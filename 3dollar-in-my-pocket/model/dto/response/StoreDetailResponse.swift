@@ -15,6 +15,7 @@ struct StoreDetailResponse: Decodable {
   let storeType: StoreType?
   let updatedAt: String
   let user: UserInfoResponse
+  let visitHistories: [VisitHistoryWithUserResponse]
   
   enum CodingKeys: String, CodingKey {
     case appearanceDays
@@ -32,6 +33,7 @@ struct StoreDetailResponse: Decodable {
     case storeType
     case updatedAt
     case user
+    case visitHistories
   }
   
   
@@ -62,5 +64,9 @@ struct StoreDetailResponse: Decodable {
       UserInfoResponse.self,
       forKey: .user
     ) ?? UserInfoResponse()
+    self.visitHistories = try values.decodeIfPresent(
+      [VisitHistoryWithUserResponse].self,
+      forKey: .visitHistories
+    ) ?? []
   }
 }

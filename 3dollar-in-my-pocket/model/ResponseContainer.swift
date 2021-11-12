@@ -1,6 +1,6 @@
 struct ResponseContainer<T: Decodable>: Decodable {
   
-  let data: T
+  let data: T?
   let message: String
   let resultCode: String
   
@@ -13,7 +13,7 @@ struct ResponseContainer<T: Decodable>: Decodable {
   init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     
-    self.data = try values.decodeIfPresent(T.self, forKey: .data) ?? T(from: decoder)
+    self.data = try values.decodeIfPresent(T.self, forKey: .data)
     self.message = try values.decodeIfPresent(String.self, forKey: .message) ?? ""
     self.resultCode = try values.decodeIfPresent(String.self, forKey: .resultCode) ?? ""
   }

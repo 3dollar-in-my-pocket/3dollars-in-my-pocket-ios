@@ -31,6 +31,8 @@ final class StoreDetailView: BaseView {
   
   let storeOverview = StoreOverview()
   
+  let storeVisitHistoryView = StoreVisitHistoryView()
+  
   fileprivate let storeInfoView = StoreInfoView()
   
   fileprivate let storeMenuView = StoreMenuView()
@@ -69,6 +71,7 @@ final class StoreDetailView: BaseView {
     self.scrollView.delegate = self
     self.containerView.addSubViews([
       self.storeOverview,
+      self.storeVisitHistoryView,
       self.storeInfoView,
       self.storeMenuView,
       self.storePhotoCollectionView,
@@ -121,7 +124,7 @@ final class StoreDetailView: BaseView {
       make.edges.equalTo(self.scrollView)
       make.width.equalTo(UIScreen.main.bounds.width)
       make.top.equalTo(self.storeOverview)
-      make.bottom.equalTo(self.storeReviewTableView).offset(40)
+      make.bottom.equalTo(self.storeReviewTableView)
     }
     
     self.storeOverview.snp.makeConstraints { make in
@@ -130,10 +133,16 @@ final class StoreDetailView: BaseView {
       make.right.equalToSuperview()
     }
     
+    self.storeVisitHistoryView.snp.makeConstraints { make in
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+      make.top.equalTo(self.storeOverview.snp.bottom).offset(48)
+    }
+    
     self.storeInfoView.snp.makeConstraints { make in
       make.left.equalToSuperview()
       make.right.equalToSuperview()
-      make.top.equalTo(self.storeOverview.snp.bottom)
+      make.top.equalTo(self.storeVisitHistoryView.snp.bottom).offset(40)
     }
     
     self.storeMenuView.snp.makeConstraints { make in
@@ -216,6 +225,7 @@ extension Reactive where Base: StoreDetailView {
     return Binder(self.base) { view, store in
       view.bind(category: store.categories[0])
       view.storeOverview.bind(store: store)
+      view.storeVisitHistoryView.bind(visitHistories: store.visitHistories)
       view.storeInfoView.bind(store: store)
       view.storeMenuView.bind(store: store)
       view.storePhotoCollectionView.bind(store: store)
