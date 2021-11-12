@@ -15,21 +15,20 @@ final class VisitButton: UIButton {
     height: (UIScreen.main.bounds.width - 63)/2
   )
   
-  enum VisitType {
-    case existed
-    case notExisted
-  }
-  
   private let categoryImageBackground = UIView().then {
     $0.backgroundColor = UIColor(r: 196, g: 196, b: 196)
     $0.layer.cornerRadius = 40
+    $0.isUserInteractionEnabled = false
   }
   
-  private let categoryImage = UIImageView()
+  private let categoryImage = UIImageView().then {
+    $0.isUserInteractionEnabled = false
+  }
   
   private let subjectLabel = UILabel().then {
     $0.textColor = .black
     $0.font = .semiBold(size: 16)
+    $0.isUserInteractionEnabled = false
   }
   
   init(type: VisitType) {
@@ -46,10 +45,10 @@ final class VisitButton: UIButton {
   
   func bind(type: VisitType) {
     switch type {
-    case .existed:
+    case .exists:
       self.subjectLabel.text = "가게가 있어요!"
       
-    case .notExisted:
+    case .notExists:
       self.subjectLabel.text = "가게가 없어요!"
     }
   }

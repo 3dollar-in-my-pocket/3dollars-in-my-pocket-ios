@@ -96,9 +96,9 @@ final class VisitView: BaseView {
     $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
   }
   
-  let notExistedButton = VisitButton(type: .notExisted)
+  let notExistedButton = VisitButton(type: .notExists)
   
-  let existedButton = VisitButton(type: .existed)
+  let existedButton = VisitButton(type: .exists)
   
   override func setup() {
     self.backgroundColor = .black

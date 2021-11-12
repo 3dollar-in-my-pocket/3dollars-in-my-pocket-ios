@@ -16,7 +16,8 @@ final class VisitViewController: BaseVC, VisitCoordinator {
   init(store: Store) {
     self.viewModel = VisitViewModel(
       store: store,
-      locationManager: LocationManager.shared
+      locationManager: LocationManager.shared,
+      visitHistoryService: VisitHistoryService()
     )
     
     super.init(nibName: nil, bundle: nil)
@@ -51,6 +52,16 @@ final class VisitViewController: BaseVC, VisitCoordinator {
     self.visitView.currentLocationButton.rx.tap
       .bind(to: self.viewModel.input.tapCurrentLocationButton)
       .disposed(by: self.disposeBag)
+    
+    self.visitView.notExistedButton.rx.tap
+      .map { VisitType.notExists }
+      .bind(to: self.viewModel.input.tapVisitButton)
+      .disposed(by: self.disposeBag)
+    
+    self.visitView.existedButton.rx.tap
+      .map { VisitType.exists }
+      .bind(to: self.viewModel.input.tapVisitButton)
+      .disposed(by: self.disposeBag)
   }
   
   override func bindViewModelOutput() {
@@ -78,6 +89,20 @@ final class VisitViewController: BaseVC, VisitCoordinator {
       .drive { [weak self] (latitude, longitude) in
         self?.visitView.moveCamera(latitude: latitude, longitude: longitude)
       }
+      .disposed(by: self.disposeBag)
+    
+    self.viewModel.output.dismiss
+      .asDriver(onErrorJustReturn: ())
+      .drive(onNext: { [weak self] in
+        self?.coordinator?.dismiss()
+      })
+      .disposed(by: self.disposeBag)
+    
+    self.viewModel.showErrorAlert
+      .asDriver(onErrorJustReturn: BaseError.unknown)
+      .drive(onNext: { [weak self] error in
+        self?.coordinator?.showErrorAlert(error: error)
+      })
       .disposed(by: self.disposeBag)
   }
 }
