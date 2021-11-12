@@ -14,7 +14,10 @@ final class VisitViewController: BaseVC, VisitCoordinator {
   }
   
   init(store: Store) {
-    self.viewModel = VisitViewModel(store: store)
+    self.viewModel = VisitViewModel(
+      store: store,
+      locationManager: LocationManager.shared
+    )
     
     super.init(nibName: nil, bundle: nil)
   }
@@ -45,13 +48,36 @@ final class VisitViewController: BaseVC, VisitCoordinator {
   }
   
   override func bindViewModelInput() {
-    
+    self.visitView.currentLocationButton.rx.tap
+      .bind(to: self.viewModel.input.tapCurrentLocationButton)
+      .disposed(by: self.disposeBag)
   }
   
   override func bindViewModelOutput() {
     self.viewModel.output.store
       .asDriver(onErrorJustReturn: Store())
       .drive(self.visitView.rx.store)
+      .disposed(by: self.disposeBag)
+    
+    self.viewModel.output.distance
+      .asDriver(onErrorJustReturn: 0)
+      .drive(onNext: { [weak self] distance in
+        self?.visitView.bindDistance(distance: distance)
+      })
+      .disposed(by: self.disposeBag)
+    
+    self.viewModel.output.isVisitable
+      .asDriver(onErrorJustReturn: false)
+      .drive { [weak self] isVisitable in
+        self?.visitView.bindVisitable(isVisitable: isVisitable)
+      }
+      .disposed(by: self.disposeBag)
+    
+    self.viewModel.output.moveCamera
+      .asDriver(onErrorJustReturn: (0, 0))
+      .drive { [weak self] (latitude, longitude) in
+        self?.visitView.moveCamera(latitude: latitude, longitude: longitude)
+      }
       .disposed(by: self.disposeBag)
   }
 }

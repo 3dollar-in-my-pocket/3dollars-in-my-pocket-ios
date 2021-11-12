@@ -49,7 +49,15 @@ final class VisitView: BaseView {
   }
   
   let mapView = NMFMapView().then {
-    $0.layer.cornerRadius = 24
+    $0.layer.cornerRadius = 20
+    $0.positionMode = .direction
+  }
+  
+  let currentLocationButton = UIButton().then {
+    $0.setImage(R.image.ic_current_location(), for: .normal)
+    $0.layer.shadowColor = UIColor.black.cgColor
+    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    $0.layer.shadowOpacity = 0.15
   }
   
   let bottomContainerView = UIView().then {
@@ -58,12 +66,12 @@ final class VisitView: BaseView {
   }
   
   let bottomLeftCircleView = UIView().then {
-    $0.layer.cornerRadius = 28
+    $0.layer.cornerRadius = 28 * RatioUtils.heightRatio
     $0.backgroundColor = R.color.gray90()
   }
   
   let bottomRightCircleView = UIView().then {
-    $0.layer.cornerRadius = 28
+    $0.layer.cornerRadius = 28 * RatioUtils.heightRatio
     $0.backgroundColor = R.color.gray90()
   }
   
@@ -73,10 +81,24 @@ final class VisitView: BaseView {
     $0.image = R.image.img_distance_indicator()
   }
   
+  let dashedLine = UIImageView().then {
+    $0.image = R.image.img_line_dashed()
+  }
+  
   let distanceLabel = UILabel().then {
     $0.font = .regular(size: 14)
     $0.textColor = R.color.pink()
   }
+  
+  let bottomSheetContainerView = UIView().then {
+    $0.backgroundColor = .white
+    $0.layer.cornerRadius = 21
+    $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+  }
+  
+  let notExistedButton = VisitButton(type: .notExisted)
+  
+  let existedButton = VisitButton(type: .existed)
   
   override func setup() {
     self.backgroundColor = .black
@@ -90,12 +112,17 @@ final class VisitView: BaseView {
       self.storeNameLabel,
       self.storeCategoryLabel,
       self.mapView,
+      self.currentLocationButton,
       self.bottomContainerView,
       self.bottomLeftCircleView,
       self.bottomRightCircleView,
       self.bottomRightCategoryImage,
       self.indicatorImage,
-      self.distanceLabel
+      self.dashedLine,
+      self.distanceLabel,
+      self.bottomSheetContainerView,
+      self.notExistedButton,
+      self.existedButton
     ])
   }
   
@@ -119,93 +146,156 @@ final class VisitView: BaseView {
     self.bottomContainerView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-10)
-      make.top.equalTo(self.bottomLeftCircleView).offset(-16)
+      make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-10 * RatioUtils.heightRatio)
+      make.top.equalTo(self.bottomLeftCircleView).offset(-16 * RatioUtils.heightRatio)
     }
     
     self.bottomLeftCircleView.snp.makeConstraints { make in
       make.left.equalTo(self.bottomContainerView).offset(10)
-      make.bottom.equalTo(self.bottomContainerView).offset(-16)
-      make.width.height.equalTo(56)
+      make.bottom.equalTo(self.bottomContainerView).offset(-16 * RatioUtils.heightRatio)
+      make.width.height.equalTo(56 * RatioUtils.heightRatio)
     }
     
     self.bottomRightCircleView.snp.makeConstraints { make in
       make.centerY.equalTo(self.bottomLeftCircleView)
       make.right.equalTo(self.bottomContainerView).offset(-10)
-      make.width.height.equalTo(56)
+      make.width.height.equalTo(56 * RatioUtils.heightRatio)
     }
     
     self.bottomRightCategoryImage.snp.makeConstraints { make in
       make.center.equalTo(self.bottomRightCircleView)
-      make.width.height.equalTo(40)
+      make.width.height.equalTo(40 * RatioUtils.heightRatio)
     }
     
     self.distanceLabel.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
-      make.bottom.equalTo(self.bottomContainerView).offset(-16)
+      make.top.equalTo(self.dashedLine).offset(11 * RatioUtils.heightRatio)
+    }
+    
+    self.dashedLine.snp.makeConstraints { make in
+      make.centerY.equalTo(self.bottomContainerView)
+      make.left.equalTo(self.bottomLeftCircleView.snp.right)
+      make.right.equalTo(self.bottomRightCircleView.snp.left)
     }
     
     self.indicatorImage.snp.makeConstraints { make in
       make.centerX.equalTo(distanceLabel)
-      make.bottom.equalTo(self.distanceLabel.snp.top).offset(-16)
+      make.bottom.equalTo(self.dashedLine.snp.top).offset(-5 * RatioUtils.heightRatio)
+      make.width.equalTo(24 * RatioUtils.heightRatio)
+      make.height.equalTo(29 * RatioUtils.heightRatio)
     }
     
     self.mapContainerView.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.bottom.equalTo(self.bottomContainerView.snp.top).offset(-20)
+      make.bottom.equalTo(self.mapView)
       make.top.equalTo(self.titleLabel.snp.bottom).offset(22)
     }
     
     self.storeCategoryImage.snp.makeConstraints { make in
       make.left.equalTo(self.mapContainerView).offset(19)
-      make.top.equalTo(self.mapContainerView).offset(10)
+      make.top.equalTo(self.mapContainerView).offset(10 * RatioUtils.heightRatio)
       make.width.height.equalTo(44)
     }
     
     self.storeNameLabel.snp.makeConstraints { make in
       make.left.equalTo(self.storeCategoryImage.snp.right).offset(19)
-      make.top.equalTo(self.mapContainerView).offset(13)
+      make.top.equalTo(self.mapContainerView).offset(13 * RatioUtils.heightRatio)
       make.right.equalTo(self.mapContainerView).offset(-19)
     }
     
     self.storeCategoryLabel.snp.makeConstraints { make in
       make.left.right.equalTo(self.storeNameLabel)
-      make.top.equalTo(self.storeNameLabel.snp.bottom).offset(7)
+      make.top.equalTo(self.storeNameLabel.snp.bottom).offset(7 * RatioUtils.heightRatio)
     }
     
     self.mapView.snp.makeConstraints { make in
-      make.left.right.bottom.equalTo(self.mapContainerView)
-      make.top.equalTo(self.storeCategoryImage.snp.bottom).offset(14)
+      make.left.right.equalTo(self.mapContainerView)
+      make.top.equalTo(self.storeCategoryImage.snp.bottom).offset(14 * RatioUtils.heightRatio)
+      make.height.equalTo(380 * RatioUtils.heightRatio)
+    }
+    
+    self.currentLocationButton.snp.makeConstraints { make in
+      make.right.equalTo(self.mapView).offset(-16)
+      make.bottom.equalTo(self.mapView).offset(-16)
+    }
+    
+    self.bottomSheetContainerView.snp.makeConstraints { make in
+      make.left.right.equalToSuperview()
+      make.top.equalTo(self.snp.bottom)
+      make.height.equalTo(
+        246 * RatioUtils.heightRatio
+          + (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0)
+      )
+    }
+    
+    self.notExistedButton.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.bottomSheetContainerView).offset(30 * RatioUtils.heightRatio)
+      make.size.equalTo(VisitButton.size)
+    }
+    
+    self.existedButton.snp.makeConstraints { make in
+      make.right.equalToSuperview().offset(-24)
+      make.centerY.equalTo(self.notExistedButton)
+      make.size.equalTo(VisitButton.size)
     }
   }
   
-  override func draw(_ rect: CGRect) {
-    super.draw(rect)
-    
-    self.drawDash()
+  func bindDistance(distance: Int) {
+    self.distanceLabel.text = "인증까지 \(distance)m"
   }
   
-  private func drawDash() {
-    let bzPath = UIBezierPath()
-    bzPath.lineWidth = 3
-    bzPath.lineCapStyle = .round
-
-    let startingPoint = CGPoint(
-      x: self.bottomLeftCircleView.frame.maxX + 8,
-      y: self.bottomLeftCircleView.frame.midY
-    )
-    let endingPoint = CGPoint(
-      x: self.bottomRightCircleView.frame.minX - 8,
-      y: self.bottomRightCircleView.frame.midY
-    )
-
-    bzPath.move(to: startingPoint)
-    bzPath.addLine(to: endingPoint)
-    bzPath.close()
-    bzPath.setLineDash([3, 10], count: 2, phase: 0)
-    R.color.red()?.set()
-    bzPath.stroke()
+  func moveCamera(latitude: Double, longitude: Double) {
+    let cameraUpdate = NMFCameraUpdate(scrollTo: .init(lat: latitude, lng: longitude))
+    
+    cameraUpdate.animation = .easeIn
+    self.mapView.moveCamera(cameraUpdate)
+  }
+  
+  func bindVisitable(isVisitable: Bool) {
+    if isVisitable {
+      self.mapView.snp.updateConstraints { make in
+        make.height.equalTo(200)
+      }
+      self.bottomSheetContainerView.snp.remakeConstraints { make in
+        make.left.right.equalToSuperview()
+        make.bottom.equalToSuperview()
+        make.height.equalTo(
+          246 * RatioUtils.heightRatio
+            + (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0)
+        )
+      }
+      UIView.animate(withDuration: 0.3) { [weak self] in
+        guard let self = self else { return }
+        self.backgroundColor = R.color.pink()
+        self.mapContainerView.backgroundColor = UIColor(r: 243, g: 132, b: 141)
+        self.layoutIfNeeded()
+      }
+      self.storeCategoryLabel.textColor = .white
+    } else {
+      self.mapView.snp.updateConstraints { make in
+        make.height.equalTo(380 * RatioUtils.heightRatio)
+      }
+      self.bottomSheetContainerView.snp.remakeConstraints { make in
+        make.left.right.equalToSuperview()
+        make.top.equalTo(self.snp.bottom)
+        make.height.equalTo(
+          246 * RatioUtils.heightRatio
+            + (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0)
+        )
+      }
+      UIView.animate(withDuration: 0.3) { [weak self] in
+        guard let self = self else { return }
+        self.backgroundColor = .black
+        self.mapContainerView.backgroundColor = R.color.gray95()
+        self.layoutIfNeeded()
+      }
+      self.storeCategoryLabel.textColor = R.color.pink()
+      self.titleLabel.textColor = .white
+    }
+    self.setupTitleLabel(isVisitable: isVisitable)
+    self.currentLocationButton.isHidden = isVisitable
   }
   
   fileprivate func bind(store: Store) {
@@ -213,6 +303,7 @@ final class VisitView: BaseView {
     self.storeCategoryImage.image = store.categories[0].image
     self.setCategories(categories: store.categories)
     self.bottomRightCategoryImage.image = store.categories[0].image
+    self.setupMap(latitude: store.latitude, longitude: store.longitude)
   }
   
   private func setCategories(categories: [StoreCategory]) {
@@ -221,6 +312,52 @@ final class VisitView: BaseView {
       categoryString.append("#\(category.name) ")
     }
     self.storeCategoryLabel.text = categoryString
+  }
+  
+  private func setupMap(latitude: Double, longitude: Double) {
+    self.moveCamera(latitude: latitude, longitude: longitude)
+    self.setupRangeOverlayView(latitude: latitude, longitude: longitude)
+    self.setupMarker(latitude: latitude, longitude: longitude)
+  }
+  
+  private func setupRangeOverlayView(latitude: Double, longitude: Double) {
+    let rangeOverlayView = NMFCircleOverlay().then {
+      $0.center = NMGLatLng(lat: latitude, lng: longitude)
+      $0.radius = 500
+      $0.fillColor = R.color.pink()?.withAlphaComponent(0.2) ?? .clear
+    }
+    
+    rangeOverlayView.mapView = self.mapView
+  }
+  
+  private func setupMarker(latitude: Double, longitude: Double) {
+    let marker = NMFMarker().then {
+      $0.position = NMGLatLng(lat: latitude, lng: longitude)
+      $0.iconImage = NMFOverlayImage(name: "ic_marker")
+      $0.width = 30
+      $0.height = 40
+    }
+    
+    marker.mapView = self.mapView
+    marker.globalZIndex = 1
+  }
+  
+  private func setupTitleLabel(isVisitable: Bool) {
+    let text = isVisitable
+      ? R.string.localization.visit_title_enable()
+      : R.string.localization.visit_title_disable()
+    let attributedString = NSMutableAttributedString(string: text)
+    let boldTextRange = (text as NSString).range(of: "방문을 인증")
+    
+    attributedString.addAttribute(
+      .font,
+      value: UIFont(name: "AppleSDGothicNeoEB00", size: 28) as Any,
+      range: boldTextRange
+    )
+    self.titleLabel.attributedText = attributedString
+    self.titleLabel.textColor = isVisitable
+      ? .black
+      : .white
   }
 }
 
