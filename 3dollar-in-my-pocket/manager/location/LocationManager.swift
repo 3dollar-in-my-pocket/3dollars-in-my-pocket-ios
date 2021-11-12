@@ -20,11 +20,16 @@ class LocationManager: NSObject, LocationManagerProtocol {
   private var manager = CLLocationManager()
   fileprivate var locationPublisher = PublishSubject<CLLocation>()
   
+  override init() {
+    super.init()
+    
+    self.manager.delegate = self
+  }
+  
   func getCurrentLocation() -> Observable<CLLocation> {
     if CLLocationManager.locationServicesEnabled() {
       self.locationPublisher = PublishSubject<CLLocation>()
-      self.manager = CLLocationManager()
-      self.manager.delegate = self
+      self.manager.startUpdatingLocation()
       
       return self.locationPublisher
     } else {
@@ -42,14 +47,12 @@ extension LocationManager: CLLocationManagerDelegate {
     switch status {
     case .denied, .restricted:
       self.locationPublisher.onError(LocationError.denied)
-      self.manager.delegate = nil
     case .authorizedAlways, .authorizedWhenInUse:
       self.manager.startUpdatingLocation()
     case .notDetermined:
       self.manager.requestWhenInUseAuthorization()
     default:
       self.locationPublisher.onError(LocationError.unknown)
-      self.manager.delegate = nil
     }
   }
   
@@ -58,7 +61,7 @@ extension LocationManager: CLLocationManagerDelegate {
     didUpdateLocations locations: [CLLocation]
   ) {
     self.manager.stopUpdatingLocation()
-    self.manager.delegate = nil
+    
     guard let lastLocation = locations.last else { return }
     
     self.locationPublisher.onNext(lastLocation)
@@ -80,4 +83,3 @@ extension LocationManager: CLLocationManagerDelegate {
     }
   }
 }
-

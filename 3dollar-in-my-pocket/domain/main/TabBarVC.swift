@@ -134,7 +134,7 @@ class TabBarVC: UITabBarController {
     self.selectedIndex = 0
     if let navigationVC = self.viewControllers?[0] as? UINavigationController,
        let homeVC = navigationVC.topViewController as? HomeVC {
-      homeVC.coordinator.goToDetail(storeId: storeId)
+      homeVC.coordinator?.goToDetail(storeId: storeId)
     }
   }
   
@@ -160,7 +160,7 @@ extension TabBarVC: WriteAddressDelegate {
        let homeVC = navigationVC.viewControllers[0] as? HomeVC {
       navigationVC.popToRootViewController(animated: false)
       homeVC.fetchStoresFromCurrentLocation()
-      homeVC.coordinator.goToDetail(storeId: storeId)
+      homeVC.coordinator?.goToDetail(storeId: storeId)
     }
   }
 }

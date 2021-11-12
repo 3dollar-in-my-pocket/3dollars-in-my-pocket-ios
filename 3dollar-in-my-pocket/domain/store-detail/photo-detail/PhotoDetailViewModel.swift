@@ -57,7 +57,7 @@ class PhotoDetailViewModel: BaseViewModel {
   private func deletePhoto(selectedIndex: Int) {
     self.output.showLoading.accept(true)
     
-    self.storeService.deletePhoto(photoId: self.photos[selectedIndex].id)
+    self.storeService.deletePhoto(photoId: self.photos[selectedIndex].imageId)
       .subscribe(
         onNext: { [weak self] _ in
           guard let self = self else { return }

@@ -29,4 +29,14 @@ struct DateUtils {
     
     return dateFormatter.string(from: date)
   }
+  
+  static func toUpdatedAtFormat(dateString: String) -> String {
+    let date = toDate(dateString: dateString)
+    let dateFormatter = DateFormatter().then {
+      $0.dateFormat = "yy.MM.dd 업데이트"
+      $0.locale = Locale(identifier: "ko")
+    }
+    
+    return dateFormatter.string(from: date)
+  }
 }
