@@ -58,36 +58,36 @@ class CategoryListVC: BaseVC {
       .bind(onNext: self.setupLocationManager)
       .disposed(by: disposeBag)
     
-    self.categoryListView.distanceOrderButton.rx.tap
-      .map { CategoryOrder.distance }
-      .do(onNext: self.categoryListView.onTapOrderButton)
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .order_by_rating_button_list, page: .store_list_page)
-      })
-      .bind(to: self.viewModel.input.tapOrderButton)
-      .disposed(by: disposeBag)
-    
-    self.categoryListView.reviewOrderButton.rx.tap
-      .map { CategoryOrder.review }
-      .do(onNext: self.categoryListView.onTapOrderButton)
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .order_by_rating_button_list, page: .store_list_page)
-      })
-      .bind(to: self.viewModel.input.tapOrderButton)
-      .disposed(by: disposeBag)
+//    self.categoryListView.distanceOrderButton.rx.tap
+//      .map { CategoryOrder.distance }
+//      .do(onNext: self.categoryListView.onTapOrderButton)
+//      .do(onNext: { _ in
+//        GA.shared.logEvent(event: .order_by_rating_button_list, page: .store_list_page)
+//      })
+//      .bind(to: self.viewModel.input.tapOrderButton)
+//      .disposed(by: disposeBag)
+//
+//    self.categoryListView.reviewOrderButton.rx.tap
+//      .map { CategoryOrder.review }
+//      .do(onNext: self.categoryListView.onTapOrderButton)
+//      .do(onNext: { _ in
+//        GA.shared.logEvent(event: .order_by_rating_button_list, page: .store_list_page)
+//      })
+//      .bind(to: self.viewModel.input.tapOrderButton)
+//      .disposed(by: disposeBag)
     
     // Bind output
     self.viewModel.ouput.stores
       .bind(to: self.categoryListView.storeTableView.rx.items(dataSource: self.categoryDataSource))
       .disposed(by: disposeBag)
     
-    self.viewModel.ouput.isHiddenEmpty
-      .bind(to: self.categoryListView.emptyLabel.rx.isHidden)
-      .disposed(by: disposeBag)
-    
-    self.viewModel.ouput.isHiddenEmpty
-      .bind(to: self.categoryListView.emptyImage.rx.isHidden)
-      .disposed(by: disposeBag)
+//    self.viewModel.ouput.isHiddenEmpty
+//      .bind(to: self.categoryListView.emptyLabel.rx.isHidden)
+//      .disposed(by: disposeBag)
+//
+//    self.viewModel.ouput.isHiddenEmpty
+//      .bind(to: self.categoryListView.emptyImage.rx.isHidden)
+//      .disposed(by: disposeBag)
     
     self.viewModel.ouput.markers
       .observeOn(MainScheduler.instance)

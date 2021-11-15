@@ -133,3 +133,10 @@ struct Store {
     self.visitHistories = response.visitHistories.map { VisitHistory(response: $0) }
   }
 }
+
+extension Store {
+  /// 카테고리들 나열된 문자열 ex.) #붕어빵 #땅콩과자 #호떡
+  var categoriesString: String {
+    return self.categories.map { "#\($0.name)"}.joined(separator: " ")
+  }
+}

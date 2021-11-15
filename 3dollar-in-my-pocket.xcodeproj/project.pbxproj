@@ -62,6 +62,8 @@
 		6E31577425BA96F40022D6F3 /* StorePhotoCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E31577325BA96F40022D6F3 /* StorePhotoCollectionView.swift */; };
 		6E31577925BA9F180022D6F3 /* StoreDetailPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E31577825BA9F180022D6F3 /* StoreDetailPhotoCell.swift */; };
 		6E31578125BAA0C60022D6F3 /* UIImageViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E31578025BAA0C60022D6F3 /* UIImageViewExt.swift */; };
+		6E326B212742564000E68666 /* CertificateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B202742564000E68666 /* CertificateButton.swift */; };
+		6E326B232742633200E68666 /* OrderFiltterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B222742633200E68666 /* OrderFiltterButton.swift */; };
 		6E33F49226FF471C000BF5AA /* StoreServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */; };
 		6E35058E26A41E1600690C12 /* RemoteConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E35058D26A41E1600690C12 /* RemoteConfigService.swift */; };
 		6E37A64B25EE73A300C8C6C4 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E37A64A25EE73A300C8C6C4 /* PaddingLabel.swift */; };
@@ -370,6 +372,8 @@
 		6E31577325BA96F40022D6F3 /* StorePhotoCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePhotoCollectionView.swift; sourceTree = "<group>"; };
 		6E31577825BA9F180022D6F3 /* StoreDetailPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreDetailPhotoCell.swift; sourceTree = "<group>"; };
 		6E31578025BAA0C60022D6F3 /* UIImageViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExt.swift; sourceTree = "<group>"; };
+		6E326B202742564000E68666 /* CertificateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificateButton.swift; sourceTree = "<group>"; };
+		6E326B222742633200E68666 /* OrderFiltterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFiltterButton.swift; sourceTree = "<group>"; };
 		6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreServiceMock.swift; sourceTree = "<group>"; };
 		6E35058D26A41E1600690C12 /* RemoteConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigService.swift; sourceTree = "<group>"; };
 		6E37A64A25EE73A300C8C6C4 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
@@ -742,6 +746,15 @@
 			path = popup;
 			sourceTree = "<group>";
 		};
+		6E326B1F2742563000E68666 /* subviews */ = {
+			isa = PBXGroup;
+			children = (
+				6E326B202742564000E68666 /* CertificateButton.swift */,
+				6E326B222742633200E68666 /* OrderFiltterButton.swift */,
+			);
+			path = subviews;
+			sourceTree = "<group>";
+		};
 		6E37D4C8269979BC00FEC4B2 /* domains */ = {
 			isa = PBXGroup;
 			children = (
@@ -839,6 +852,7 @@
 		6E4107E725E4D806008F86F1 /* category-list */ = {
 			isa = PBXGroup;
 			children = (
+				6E326B1F2742563000E68666 /* subviews */,
 				6EB7FA6723B6521200BFB0B4 /* CategoryListVC.swift */,
 				6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */,
 				6E3E994825E52B0E007BA379 /* CategoryListViewModel.swift */,
@@ -1807,6 +1821,7 @@
 				6E57F29E273AA724008C524A /* VisitViewModel.swift in Sources */,
 				6E93C83C23F2303E002E737F /* Event.swift in Sources */,
 				6E2F5FDF23D6BF4800094D41 /* CategoryService.swift in Sources */,
+				6E326B232742633200E68666 /* OrderFiltterButton.swift in Sources */,
 				6E2C820F23B4A37F0025BB2B /* NicknameViewController.swift in Sources */,
 				6E29CF75258F190200F0BACB /* ErrorResponse.swift in Sources */,
 				6E07D44623B590B30055AEE7 /* HomeVC.swift in Sources */,
@@ -1892,6 +1907,7 @@
 				6E4952CA26B03C7800D65042 /* AppleSigninManager.swift in Sources */,
 				6ED5939523BDD5F200B06BD4 /* StoreInfoView.swift in Sources */,
 				6E18C32D2571F59100F37C3A /* FAQTag.swift in Sources */,
+				6E326B212742564000E68666 /* CertificateButton.swift in Sources */,
 				6E31577425BA96F40022D6F3 /* StorePhotoCollectionView.swift in Sources */,
 				6EB7FA6823B6521200BFB0B4 /* CategoryListVC.swift in Sources */,
 				6E8E2514256AAB6E00AE6479 /* HTTPUtils.swift in Sources */,
