@@ -7,7 +7,7 @@ struct StoreInfoResponse: Decodable {
   let rating: Double
   let storeId: Int
   let storeName: String
-  
+  let visitHistory: VisitHistoryInfoResponse
   
   enum CodingKeys: String, CodingKey {
     case categories
@@ -17,6 +17,7 @@ struct StoreInfoResponse: Decodable {
     case rating
     case storeId
     case storeName
+    case visitHistory
   }
   
   
@@ -30,6 +31,10 @@ struct StoreInfoResponse: Decodable {
     self.rating = try values.decodeIfPresent(Double.self, forKey: .rating) ?? 0
     self.storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? 0
     self.storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
+    self.visitHistory = try values.decodeIfPresent(
+      VisitHistoryInfoResponse.self,
+      forKey: .visitHistory
+    ) ?? VisitHistoryInfoResponse()
   }
   
   init(store: Store) {
@@ -40,6 +45,7 @@ struct StoreInfoResponse: Decodable {
     self.rating = Double(store.rating)
     self.storeId = store.storeId
     self.storeName = store.storeName
+    self.visitHistory = VisitHistoryInfoResponse()
   }
   
   init(storeCard: StoreCard) {
@@ -50,5 +56,6 @@ struct StoreInfoResponse: Decodable {
     self.rating = Double(storeCard.rating)
     self.storeId = storeCard.id
     self.storeName = storeCard.storeName
+    self.visitHistory = VisitHistoryInfoResponse()
   }
 }

@@ -122,7 +122,9 @@ class HomeViewModel: BaseViewModel {
     self.storeService.searchNearStores(
       currentLocation: currentLocation,
       mapLocation: mapLocation == nil ? currentLocation : mapLocation!,
-      distance: distance
+      distance: distance,
+      category: nil,
+      orderType: nil
     )
       .subscribe(
         onNext: { [weak self] stores in

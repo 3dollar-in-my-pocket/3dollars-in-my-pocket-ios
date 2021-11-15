@@ -65,7 +65,7 @@ class CategoryListTitleCell: BaseTableViewCell {
     self.categoryTitleLabel.attributedText = attributedString
   }
   
-  func onTapOrderButton(order: CategoryOrder) {
+  func onTapOrderButton(order: StoreOrder) {
     self.distanceOrderButton.isSelected = order == .distance
     self.reviewOrderButton.isSelected = order == .review
   }

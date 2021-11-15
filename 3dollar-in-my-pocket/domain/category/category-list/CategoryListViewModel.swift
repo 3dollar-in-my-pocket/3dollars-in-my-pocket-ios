@@ -2,22 +2,12 @@ import RxSwift
 import RxCocoa
 import CoreLocation
 
-class CategoryListViewModel: BaseViewModel {
-  
-  let input = Input()
-  let ouput = Output()
-  let categoryService: CategoryServiceProtocol
-  let category: StoreCategory
-  
-  var order: CategoryOrder = .distance
-  var currentLocation: CLLocation!
-  var mapLocation: CLLocation? = nil
-  var stores: [StoreCard] = []
+final class CategoryListViewModel: BaseViewModel {
   
   struct Input {
     let currentLocation = PublishSubject<CLLocation>()
     let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
-    let tapOrderButton = PublishSubject<CategoryOrder>()
+    let tapOrderButton = PublishSubject<StoreOrder>()
   }
   
   struct Output {
@@ -25,6 +15,16 @@ class CategoryListViewModel: BaseViewModel {
     let isHiddenEmpty = PublishRelay<Bool>()
     let markers = PublishRelay<[StoreCard]>()
   }
+  
+  let input = Input()
+  let ouput = Output()
+  let categoryService: CategoryServiceProtocol
+  let category: StoreCategory
+  
+  var order: StoreOrder = .distance
+  var currentLocation: CLLocation!
+  var mapLocation: CLLocation? = nil
+  var stores: [StoreCard] = []
   
   init(category: StoreCategory, categoryService: CategoryServiceProtocol) {
     self.category = category
@@ -64,7 +64,7 @@ class CategoryListViewModel: BaseViewModel {
     self.input.tapOrderButton
       .filter { $0 != self.order }
       .do { self.order = $0 }
-      .map { order -> (order: CategoryOrder, location: (CLLocation, CLLocation?)) in
+      .map { order -> (order: StoreOrder, location: (CLLocation, CLLocation?)) in
         return (order, (self.currentLocation, self.mapLocation))
       }
       .bind { [weak self] result in

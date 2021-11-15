@@ -8,7 +8,9 @@ protocol StoreServiceProtocol {
   func searchNearStores(
     currentLocation: CLLocation,
     mapLocation: CLLocation,
-    distance: Double
+    distance: Double,
+    category: StoreCategory?,
+    orderType: StoreOrder?
   ) -> Observable<[Store]>
   
   func saveStore(store: Store) -> Observable<Store>
@@ -19,7 +21,10 @@ protocol StoreServiceProtocol {
   
   func deletePhoto(photoId: Int) -> Observable<String>
   
-  func updateStore(storeId: Int, updateStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse>
+  func updateStore(
+    storeId: Int,
+    updateStoreRequest: AddStoreRequest
+  ) -> Observable<StoreInfoResponse>
   
   func getStoreDetail(
     storeId: Int,
@@ -44,18 +49,28 @@ struct StoreService: StoreServiceProtocol {
   func searchNearStores(
     currentLocation: CLLocation,
     mapLocation: CLLocation,
-    distance: Double
+    distance: Double,
+    category: StoreCategory?,
+    orderType: StoreOrder?
   ) -> Observable<[Store]> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/stores/near"
       let headers = HTTPUtils.defaultHeader()
-      let parameters: [String: Any] = [
+      var parameters: [String: Any] = [
         "distance": distance,
         "latitude": currentLocation.coordinate.latitude,
         "longitude": currentLocation.coordinate.longitude,
         "mapLatitude": mapLocation.coordinate.latitude,
         "mapLongitude": mapLocation.coordinate.longitude
       ]
+      
+      if let category = category {
+        parameters["category"] = category.rawValue
+      }
+      
+      if let orderType = orderType {
+        parameters["orderType"] = orderType.rawValue
+      }
       
       HTTPUtils.defaultSession.request(
         urlString,
@@ -189,7 +204,10 @@ struct StoreService: StoreServiceProtocol {
     }
   }
   
-  func updateStore(storeId: Int, updateStoreRequest: AddStoreRequest) -> Observable<StoreInfoResponse> {
+  func updateStore(
+    storeId: Int,
+    updateStoreRequest: AddStoreRequest
+  ) -> Observable<StoreInfoResponse> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/store/\(storeId)"
       let headers = HTTPUtils.defaultHeader()

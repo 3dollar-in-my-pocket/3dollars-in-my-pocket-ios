@@ -12,7 +12,7 @@ import RxCocoa
 
 final class OrderFilterButton: BaseView {
   
-  fileprivate let orderType = PublishSubject<CategoryOrder>()
+  fileprivate let orderType = PublishSubject<StoreOrder>()
   
   private let distanceOrderButton = UIButton().then {
     $0.setTitle(R.string.localization.category_ordering_distance(), for: .normal)
@@ -46,7 +46,7 @@ final class OrderFilterButton: BaseView {
     ])
     
     self.distanceOrderButton.rx.tap
-      .map { CategoryOrder.review }
+      .map { StoreOrder.review }
       .do(onNext: { [weak self] order in
         self?.selectOrder(order: order)
       })
@@ -54,7 +54,7 @@ final class OrderFilterButton: BaseView {
       .disposed(by: self.disposeBag)
     
     self.reviewOrderButton.rx.tap
-      .map { CategoryOrder.distance }
+      .map { StoreOrder.distance }
       .do(onNext: { [weak self] order in
         self?.selectOrder(order: order)
       })
@@ -90,7 +90,7 @@ final class OrderFilterButton: BaseView {
     }
   }
   
-  private func selectOrder(order: CategoryOrder) {
+  private func selectOrder(order: StoreOrder) {
     self.distanceOrderButton.isSelected = order == .distance
     self.reviewOrderButton.isSelected = order == .review
     switch order {
@@ -113,7 +113,7 @@ final class OrderFilterButton: BaseView {
 }
 
 extension Reactive where Base: OrderFilterButton {
-  var orderType: ControlEvent<CategoryOrder> {
+  var orderType: ControlEvent<StoreOrder> {
     return ControlEvent(events: base.orderType)
   }
 }

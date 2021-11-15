@@ -34,7 +34,10 @@ struct VisitHistoryWithUserResponse: Decodable {
     self.storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? 0
     self.type = try values.decodeIfPresent(VisitType.self, forKey: .type) ?? .exists
     self.updatedAt = try values.decodeIfPresent(String.self, forKey: .updatedAt) ?? ""
-    self.user = try values.decodeIfPresent(UserInfoResponse.self, forKey: .user) ?? UserInfoResponse()
+    self.user = try values.decodeIfPresent(
+      UserInfoResponse.self,
+      forKey: .user
+    ) ?? UserInfoResponse()
     self.visitHistoryId = try values.decodeIfPresent(Int.self, forKey: .visitHistoryId) ?? 0
   }
 }
