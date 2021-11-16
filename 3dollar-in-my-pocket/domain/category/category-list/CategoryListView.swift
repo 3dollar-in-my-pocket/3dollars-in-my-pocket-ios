@@ -172,7 +172,7 @@ final class CategoryListView: BaseView {
     
     self.emptyImage.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
-      make.top.equalTo(self.categoryTitleLabel.snp.bottom).offset(32)
+      make.top.equalTo(self.certificatedButton.snp.bottom).offset(19)
     }
     
     self.emptyLabel.snp.makeConstraints { make in
@@ -205,8 +205,6 @@ final class CategoryListView: BaseView {
   func bind(stores: [Store]) {
     self.emptyImage.isHidden = !stores.isEmpty
     self.emptyLabel.isHidden = !stores.isEmpty
-    self.certificatedButton.isHidden = stores.isEmpty
-    self.orderFilterButton.isHidden = stores.isEmpty
     
     if stores.isEmpty {
       self.containerView.snp.remakeConstraints { make in
