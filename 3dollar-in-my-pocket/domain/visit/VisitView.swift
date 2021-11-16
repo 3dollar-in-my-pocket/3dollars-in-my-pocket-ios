@@ -92,6 +92,7 @@ final class VisitView: BaseView {
   
   let bottomSheetContainerView = UIView().then {
     $0.backgroundColor = .white
+    $0.alpha = 0.3
     $0.layer.cornerRadius = 21
     $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
   }
@@ -229,15 +230,15 @@ final class VisitView: BaseView {
       )
     }
     
-    self.notExistedButton.snp.makeConstraints { make in
+    self.existedButton.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.top.equalTo(self.bottomSheetContainerView).offset(30 * RatioUtils.heightRatio)
       make.size.equalTo(VisitButton.size)
     }
     
-    self.existedButton.snp.makeConstraints { make in
+    self.notExistedButton.snp.makeConstraints { make in
       make.right.equalToSuperview().offset(-24)
-      make.centerY.equalTo(self.notExistedButton)
+      make.centerY.equalTo(self.existedButton)
       make.size.equalTo(VisitButton.size)
     }
   }
@@ -269,7 +270,7 @@ final class VisitView: BaseView {
       UIView.animate(withDuration: 0.3) { [weak self] in
         guard let self = self else { return }
         self.backgroundColor = R.color.pink()
-        self.mapContainerView.backgroundColor = UIColor(r: 243, g: 132, b: 141)
+        self.mapContainerView.backgroundColor = UIColor(r: 243, g: 132, b: 141)           
         self.layoutIfNeeded()
       }
       self.storeCategoryLabel.textColor = .white
