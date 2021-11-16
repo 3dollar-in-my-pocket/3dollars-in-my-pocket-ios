@@ -14,6 +14,7 @@ protocol HomeCoordinator: Coordinator, AnyObject {
   func goToAppSetting()
   func goToToss()
   func showSearchAddress()
+  func presentVisit(store: Store)
 }
 
 extension HomeCoordinator where Self: UIViewController {
@@ -62,5 +63,11 @@ extension HomeCoordinator where Self: UIViewController {
     }
     
     self.presenter.tabBarController?.present(searchAddressVC, animated: true, completion: nil)
+  }
+  
+  func presentVisit(store: Store) {
+    let viewController = VisitViewController.instance(store: store)
+    
+    self.presenter.present(viewController, animated: true, completion: nil)
   }
 }

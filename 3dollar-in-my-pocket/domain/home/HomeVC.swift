@@ -69,8 +69,12 @@ class HomeVC: BaseVC, HomeCoordinator {
       .bind(to: homeView.storeCollectionView.rx.items(
         cellIdentifier: StoreCell.registerId,
         cellType: StoreCell.self
-      )) { _, store, cell in
+      )) { row, store, cell in
         cell.bind(store: store)
+        cell.visitButton.rx.tap
+          .map { row }
+          .bind(to: self.viewModel.input.tapStoreVisit)
+          .disposed(by: cell.disposeBag)
       }.disposed(by: disposeBag)
     
     self.viewModel.output.isHiddenResearchButton
@@ -103,6 +107,13 @@ class HomeVC: BaseVC, HomeCoordinator {
         self?.coordinator?.goToDetail(storeId: storeId)
       })
       .disposed(by: disposeBag)
+    
+    self.viewModel.output.presentVisit
+      .asDriver(onErrorJustReturn: Store())
+      .drive { [weak self] store in
+        self?.coordinator?.presentVisit(store: store)
+      }
+      .disposed(by: self.disposeBag)
     
     self.viewModel.showLoading
       .observeOn(MainScheduler.instance)

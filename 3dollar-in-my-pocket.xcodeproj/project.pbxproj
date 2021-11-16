@@ -1074,6 +1074,7 @@
 		6E6B0ED923AD169B006E11CE /* domain */ = {
 			isa = PBXGroup;
 			children = (
+				6E57F296273A91F0008C524A /* visit */,
 				6E6B0EDA23AD16A3006E11CE /* base */,
 				6E70C38C23B6EB7400C52C9C /* category */,
 				6EA5EC0623B57EE10028F86B /* home */,
@@ -1155,7 +1156,6 @@
 		6E70C38D23B6EB8200C52C9C /* store-detail */ = {
 			isa = PBXGroup;
 			children = (
-				6E57F296273A91F0008C524A /* visit */,
 				6E7487962723AE460021DF93 /* subviews */,
 				6E3DED7525C7E366000BE04C /* register-photo */,
 				6EDBD8A323D87A240075EF8F /* delete */,
