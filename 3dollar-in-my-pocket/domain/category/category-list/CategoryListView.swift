@@ -33,7 +33,9 @@ final class CategoryListView: BaseView {
   
   private let containerView = UIView()
   
-  let mapView = NMFMapView()
+  let mapView = NMFMapView().then {
+    $0.positionMode = .compass
+  }
   
   let currentLocationButton = UIButton().then {
     $0.setImage(R.image.ic_current_location(), for: .normal)
@@ -50,10 +52,16 @@ final class CategoryListView: BaseView {
   let orderFilterButton = OrderFilterButton()
   
   let storeTableView = UITableView().then {
+    $0.backgroundColor = .clear
     $0.tableFooterView = UIView()
     $0.rowHeight = CategoryListStoreCell.height
     $0.separatorStyle = .none
     $0.showsVerticalScrollIndicator = false
+    $0.isScrollEnabled = false
+    $0.register(
+      CategoryListStoreCell.self,
+      forCellReuseIdentifier: CategoryListStoreCell.registerId
+    )
   }
   
   private let emptyImage = UIImageView().then {
@@ -192,5 +200,41 @@ final class CategoryListView: BaseView {
       range: .init(location: 0, length: text.count)
     )
     self.categoryTitleLabel.attributedText = attributedString
+  }
+  
+  func bind(stores: [Store]) {
+    self.emptyImage.isHidden = !stores.isEmpty
+    self.emptyLabel.isHidden = !stores.isEmpty
+    self.certificatedButton.isHidden = stores.isEmpty
+    self.orderFilterButton.isHidden = stores.isEmpty
+    
+    if stores.isEmpty {
+      self.containerView.snp.remakeConstraints { make in
+        make.edges.equalToSuperview()
+        make.width.equalTo(UIScreen.main.bounds.width)
+        make.top.equalTo(self.mapView).priority(.high)
+        make.bottom.equalTo(self.emptyLabel).priority(.high)
+      }
+    } else {
+      self.storeTableView.snp.updateConstraints { make in
+        make.height.equalTo(CGFloat(stores.count) * CategoryListStoreCell.height)
+      }
+      self.containerView.snp.remakeConstraints { make in
+        make.edges.equalToSuperview()
+        make.width.equalTo(UIScreen.main.bounds.width)
+        make.top.equalTo(self.mapView).priority(.high)
+        make.bottom.equalTo(self.storeTableView).priority(.high)
+      }
+    }
+  }
+  
+  func moveCemra(location: CLLocation) {
+    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
+      lat: location.coordinate.latitude,
+      lng: location.coordinate.longitude
+    ))
+    cameraUpdate.animation = .easeIn
+    
+    self.mapView.moveCamera(cameraUpdate)
   }
 }

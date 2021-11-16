@@ -19,6 +19,7 @@ final class OrderFilterButton: BaseView {
     $0.setTitleColor(R.color.pink(), for: .selected)
     $0.setTitleColor(R.color.gray40(), for: .normal)
     $0.titleLabel?.font = .regular(size: 14)
+    $0.isSelected = true
   }
   
   private let reviewOrderButton = UIButton().then {
@@ -46,7 +47,7 @@ final class OrderFilterButton: BaseView {
     ])
     
     self.distanceOrderButton.rx.tap
-      .map { StoreOrder.review }
+      .map { StoreOrder.distance }
       .do(onNext: { [weak self] order in
         self?.selectOrder(order: order)
       })
@@ -54,7 +55,7 @@ final class OrderFilterButton: BaseView {
       .disposed(by: self.disposeBag)
     
     self.reviewOrderButton.rx.tap
-      .map { StoreOrder.distance }
+      .map { StoreOrder.review }
       .do(onNext: { [weak self] order in
         self?.selectOrder(order: order)
       })
@@ -95,15 +96,19 @@ final class OrderFilterButton: BaseView {
     self.reviewOrderButton.isSelected = order == .review
     switch order {
     case .distance:
-      self.selectedContainer.snp.updateConstraints { make in
-        make.left.equalTo(self.snp.centerX).offset(5)
-        make.right.equalToSuperview().offset(-5)
+      self.selectedContainer.snp.remakeConstraints { make in
+        make.left.equalToSuperview().offset(5)
+        make.right.equalTo(self.snp.centerX).offset(-5)
+        make.top.equalToSuperview().offset(5)
+        make.bottom.equalToSuperview().offset(-5)
       }
       
     case .review:
-      self.selectedContainer.snp.updateConstraints { make in
-        make.left.equalToSuperview().offset(5)
-        make.right.equalTo(self.snp.centerX).offset(-5)
+      self.selectedContainer.snp.remakeConstraints { make in
+        make.left.equalTo(self.snp.centerX).offset(5)
+        make.right.equalToSuperview().offset(-5)
+        make.top.equalToSuperview().offset(5)
+        make.bottom.equalToSuperview().offset(-5)
       }
     }
     UIView.animate(withDuration: 0.3) { [weak self] in

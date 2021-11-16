@@ -47,6 +47,11 @@ class CategoryListStoreCell: BaseTableViewCell {
     $0.font = .medium(size: 14)
   }
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    
+    self.titleStackView.subviews.forEach { $0.removeFromSuperview()}
+  }
   
   override func setup() {
     self.backgroundColor = .clear
@@ -71,8 +76,12 @@ class CategoryListStoreCell: BaseTableViewCell {
     }
     
     self.titleStackView.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(16)
+      make.left.equalTo(self.containerView).offset(16)
       make.top.equalTo(self.containerView).offset(20)
+    }
+    
+    self.bedgedImage.snp.makeConstraints { make in
+      make.width.height.equalTo(16)
     }
     
     self.categoriesLabel.snp.makeConstraints { make in
@@ -106,9 +115,11 @@ class CategoryListStoreCell: BaseTableViewCell {
   func bind(store: Store?) {
     if let store = store {
       self.titleLabel.text = store.storeName
-      // TODO: store 모델링 변경 후에 스택뷰 추가 필요
       
-      
+      if store.isCertificated {
+        self.titleStackView.addArrangedSubview(self.bedgedImage)
+      }
+      self.titleStackView.addArrangedSubview(self.titleLabel)
       self.ratingLabel.text = String.init(format: "%.01f", store.rating)
       if store.distance >= 1000 {
         self.distanceLabel.text = String.init(format: "%.2fkm", Double(store.distance) / 1000)

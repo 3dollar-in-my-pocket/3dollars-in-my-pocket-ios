@@ -13,6 +13,7 @@ import RxCocoa
 final class CertificateButton: UIButton {
   
   private let disposeBag = DisposeBag()
+  fileprivate let isCertificatedPublisher = PublishSubject<Bool>()
   
   private let checkImage = UIImageView().then {
     $0.image = R.image.ic_check_off()
@@ -52,7 +53,9 @@ final class CertificateButton: UIButton {
     self.rx.tap
       .asDriver()
       .drive(onNext: { [weak self] in
-        self?.isSelected.toggle()
+        guard let self = self else { return }
+        self.isSelected.toggle()
+        self.isCertificatedPublisher.onNext(self.isSelected)
       })
       .disposed(by: self.disposeBag)
   }
@@ -76,5 +79,11 @@ final class CertificateButton: UIButton {
       make.bottom.equalTo(self.checkImage).offset(14).priority(.high)
       make.right.equalTo(self.subjectLabel).offset(14).priority(.high)
     }
+  }
+}
+
+extension Reactive where Base: CertificateButton {
+  var isCertificated: ControlEvent<Bool> {
+    return ControlEvent(events: base.isCertificatedPublisher)
   }
 }

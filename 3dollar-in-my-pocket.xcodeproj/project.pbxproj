@@ -65,6 +65,7 @@
 		6E326B212742564000E68666 /* CertificateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B202742564000E68666 /* CertificateButton.swift */; };
 		6E326B232742633200E68666 /* OrderFiltterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B222742633200E68666 /* OrderFiltterButton.swift */; };
 		6E326B252742798300E68666 /* VisitHistoryInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B242742798300E68666 /* VisitHistoryInfoResponse.swift */; };
+		6E326B27274286D100E68666 /* CategoryListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B26274286D100E68666 /* CategoryListCoordinator.swift */; };
 		6E33F49226FF471C000BF5AA /* StoreServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */; };
 		6E35058E26A41E1600690C12 /* RemoteConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E35058D26A41E1600690C12 /* RemoteConfigService.swift */; };
 		6E37A64B25EE73A300C8C6C4 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E37A64A25EE73A300C8C6C4 /* PaddingLabel.swift */; };
@@ -86,8 +87,6 @@
 		6E3DED7D25C7F60F000BE04C /* RegisterPhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3DED7C25C7F60F000BE04C /* RegisterPhotoViewModel.swift */; };
 		6E3E0B8F23C7078100E835AE /* ReviewModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */; };
 		6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */; };
-		6E3E994325E523C8007BA379 /* CategoryListMapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E994225E523C8007BA379 /* CategoryListMapCell.swift */; };
-		6E3E994525E524D4007BA379 /* CategoryListTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E994425E524D4007BA379 /* CategoryListTitleCell.swift */; };
 		6E3E994725E52834007BA379 /* CategorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E994625E52834007BA379 /* CategorySection.swift */; };
 		6E3E994925E52B0E007BA379 /* CategoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E994825E52B0E007BA379 /* CategoryListViewModel.swift */; };
 		6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */; };
@@ -133,7 +132,6 @@
 		6E4952CA26B03C7800D65042 /* AppleSigninManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4952C926B03C7800D65042 /* AppleSigninManager.swift */; };
 		6E4CB8FF23D488A700542D21 /* ReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4CB8FE23D488A700542D21 /* ReviewService.swift */; };
 		6E4CB90223D4961700542D21 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4CB90123D4961700542D21 /* LoadingView.swift */; };
-		6E4CDCD525E629F500C9193D /* CategoryListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4CDCD425E629F500C9193D /* CategoryListHeaderView.swift */; };
 		6E4CDCDD25E6314600C9193D /* CategoryHeaderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4CDCDC25E6314600C9193D /* CategoryHeaderType.swift */; };
 		6E511E6325710CFF009E4667 /* QuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E511E6225710CFF009E4667 /* QuestionView.swift */; };
 		6E511E68257149D4009E4667 /* QuestionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E511E67257149D4009E4667 /* QuestionVC.swift */; };
@@ -376,6 +374,7 @@
 		6E326B202742564000E68666 /* CertificateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificateButton.swift; sourceTree = "<group>"; };
 		6E326B222742633200E68666 /* OrderFiltterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFiltterButton.swift; sourceTree = "<group>"; };
 		6E326B242742798300E68666 /* VisitHistoryInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitHistoryInfoResponse.swift; sourceTree = "<group>"; };
+		6E326B26274286D100E68666 /* CategoryListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListCoordinator.swift; sourceTree = "<group>"; };
 		6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreServiceMock.swift; sourceTree = "<group>"; };
 		6E35058D26A41E1600690C12 /* RemoteConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigService.swift; sourceTree = "<group>"; };
 		6E37A64A25EE73A300C8C6C4 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
@@ -397,8 +396,6 @@
 		6E3DED7C25C7F60F000BE04C /* RegisterPhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterPhotoViewModel.swift; sourceTree = "<group>"; };
 		6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalView.swift; sourceTree = "<group>"; };
 		6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalVC.swift; sourceTree = "<group>"; };
-		6E3E994225E523C8007BA379 /* CategoryListMapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListMapCell.swift; sourceTree = "<group>"; };
-		6E3E994425E524D4007BA379 /* CategoryListTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListTitleCell.swift; sourceTree = "<group>"; };
 		6E3E994625E52834007BA379 /* CategorySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySection.swift; sourceTree = "<group>"; };
 		6E3E994825E52B0E007BA379 /* CategoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListViewModel.swift; sourceTree = "<group>"; };
 		6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
@@ -444,7 +441,6 @@
 		6E4952C926B03C7800D65042 /* AppleSigninManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSigninManager.swift; sourceTree = "<group>"; };
 		6E4CB8FE23D488A700542D21 /* ReviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewService.swift; sourceTree = "<group>"; };
 		6E4CB90123D4961700542D21 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
-		6E4CDCD425E629F500C9193D /* CategoryListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListHeaderView.swift; sourceTree = "<group>"; };
 		6E4CDCDC25E6314600C9193D /* CategoryHeaderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryHeaderType.swift; sourceTree = "<group>"; };
 		6E511E6225710CFF009E4667 /* QuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionView.swift; sourceTree = "<group>"; };
 		6E511E67257149D4009E4667 /* QuestionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionVC.swift; sourceTree = "<group>"; };
@@ -843,9 +839,6 @@
 			isa = PBXGroup;
 			children = (
 				6EB7FA6923B658B000BFB0B4 /* CategoryListStoreCell.swift */,
-				6E3E994225E523C8007BA379 /* CategoryListMapCell.swift */,
-				6E3E994425E524D4007BA379 /* CategoryListTitleCell.swift */,
-				6E4CDCD425E629F500C9193D /* CategoryListHeaderView.swift */,
 				6EA1FD1B25E7DD2A00BC2695 /* CategoryListAdBannerCell.swift */,
 			);
 			path = cell;
@@ -858,6 +851,7 @@
 				6EB7FA6723B6521200BFB0B4 /* CategoryListVC.swift */,
 				6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */,
 				6E3E994825E52B0E007BA379 /* CategoryListViewModel.swift */,
+				6E326B26274286D100E68666 /* CategoryListCoordinator.swift */,
 				6E3E994125E523B1007BA379 /* cell */,
 			);
 			path = "category-list";
@@ -1883,7 +1877,6 @@
 				6E1B64E02587A396003225F4 /* AFDataResponseExt.swift in Sources */,
 				6E56BD7F23CDE291002D7092 /* Image.swift in Sources */,
 				6E25244625945BF0006EBDDB /* PopupViewModel.swift in Sources */,
-				6E3E994325E523C8007BA379 /* CategoryListMapCell.swift in Sources */,
 				6EEE30B226FEDA9800696467 /* LocationManager.swift in Sources */,
 				6E07D44C23B5916C0055AEE7 /* WriteDetailView.swift in Sources */,
 				6E56BD7B23CDE1DC002D7092 /* Store.swift in Sources */,
@@ -1949,7 +1942,6 @@
 				6EFC89DF268B63E800B3414F /* R.generated.swift in Sources */,
 				6E4697C9273E182F005A5902 /* VisitType.swift in Sources */,
 				6E48B7A326C154C100E2F02B /* Pagination.swift in Sources */,
-				6E3E994525E524D4007BA379 /* CategoryListTitleCell.swift in Sources */,
 				6E5939002573E2CE00593DC8 /* PrivacyView.swift in Sources */,
 				6EBBCB6925AD601F00F5912E /* WriteAddressViewModel.swift in Sources */,
 				6E29966625E2869D003FC13A /* AddressDocument.swift in Sources */,
@@ -1970,7 +1962,6 @@
 				6E681E4B256FEDA600892B9E /* SettingMenuCell.swift in Sources */,
 				6ED37D8D23D5441200E12711 /* Page.swift in Sources */,
 				6E7BF08B25B7DB6000456D0B /* WriteDetailPaymentStackView.swift in Sources */,
-				6E4CDCD525E629F500C9193D /* CategoryListHeaderView.swift in Sources */,
 				6E57F298273A9209008C524A /* VisitView.swift in Sources */,
 				6E447FF425E3E1CD00459551 /* CategoryVC.swift in Sources */,
 				6ED79E1125CFF13B00B3CFA9 /* ModifyAddressVC.swift in Sources */,
@@ -2002,6 +1993,7 @@
 				6E16EE2026BC182400F4DD03 /* MenuResponse.swift in Sources */,
 				6EA1FD1C25E7DD2A00BC2695 /* CategoryListAdBannerCell.swift in Sources */,
 				6E8E2507256A9F6E00AE6479 /* SignInViewModel.swift in Sources */,
+				6E326B27274286D100E68666 /* CategoryListCoordinator.swift in Sources */,
 				6E7487992723BD940021DF93 /* PaymentMethodView.swift in Sources */,
 				6E18C31E2571F31700F37C3A /* FAQViewModel.swift in Sources */,
 				6E511E6325710CFF009E4667 /* QuestionView.swift in Sources */,
