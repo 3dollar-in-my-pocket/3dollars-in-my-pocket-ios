@@ -64,6 +64,7 @@ class StoreCell: BaseCollectionViewCell {
     super.prepareForReuse()
     
     self.setSelected(isSelected: false)
+    self.bedgeImage.isHidden = true
   }
   
   override func setup() {

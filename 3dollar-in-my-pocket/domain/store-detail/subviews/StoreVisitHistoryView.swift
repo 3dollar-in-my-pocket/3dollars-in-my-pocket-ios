@@ -110,9 +110,12 @@ final class StoreVisitHistoryView: BaseView {
   }
   
   func bind(visitHistories: [VisitHistory]) {
-    self.setupTitleLabel(isEmpty: visitHistories.isEmpty, count: visitHistories.count)
-    self.setupExist(count: visitHistories.filter { $0.type == .exists }.count)
-    self.setupNotExist(count: visitHistories.filter { $0.type == .notExists }.count)
+    let existedCount = visitHistories.filter { $0.type == .exists }.count
+    let notExistedCount = visitHistories.filter { $0.type == .notExists }.count
+    
+    self.setupTitleLabel(isEmpty: visitHistories.isEmpty, count: existedCount)
+    self.setupExist(count: existedCount)
+    self.setupNotExist(count: notExistedCount)
     self.moreButton.isHidden = visitHistories.isEmpty
   }
   
