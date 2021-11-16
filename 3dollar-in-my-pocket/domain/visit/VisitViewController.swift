@@ -94,7 +94,7 @@ final class VisitViewController: BaseVC, VisitCoordinator {
     self.viewModel.output.dismiss
       .asDriver(onErrorJustReturn: ())
       .drive(onNext: { [weak self] in
-        self?.coordinator?.dismiss()
+        self?.coordinator?.dismissWithSuccessAlert()
       })
       .disposed(by: self.disposeBag)
     
