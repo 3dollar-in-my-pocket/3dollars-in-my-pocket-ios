@@ -82,6 +82,7 @@ final class CategoryListVC: BaseVC, CategoryListCoordinator {
         cellType: CategoryListStoreCell.self
       )) { _, store, cell in
         cell.bind(store: store)
+        cell.adBannerView.rootViewController = self
       }
       .disposed(by: self.disposeBag)
     
@@ -158,18 +159,20 @@ final class CategoryListVC: BaseVC, CategoryListCoordinator {
     self.categoryListView.mapView.addCameraDelegate(delegate: self)
   }
   
-  private func setMarkders(stores: [Store]) {
+  private func setMarkders(stores: [Store?]) {
     for marker in self.markers {
       marker.mapView = nil
     }
     
     for store in stores {
-      let marker = NMFMarker()
-      
-      marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
-      marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
-      marker.mapView = self.categoryListView.mapView
-      self.markers.append(marker)
+      if let store = store {
+        let marker = NMFMarker()
+        
+        marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
+        marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
+        marker.mapView = self.categoryListView.mapView
+        self.markers.append(marker)
+      }
     }
   }
 }

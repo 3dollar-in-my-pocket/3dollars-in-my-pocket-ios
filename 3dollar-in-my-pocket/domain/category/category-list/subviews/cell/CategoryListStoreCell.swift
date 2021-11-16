@@ -1,6 +1,9 @@
 import UIKit
+import AppTrackingTransparency
 
-class CategoryListStoreCell: BaseTableViewCell {
+import GoogleMobileAds
+
+final class CategoryListStoreCell: BaseTableViewCell {
   
   static let registerId = "\(CategoryListStoreCell.self)"
   static let height: CGFloat = 90
@@ -47,13 +50,27 @@ class CategoryListStoreCell: BaseTableViewCell {
     $0.font = .medium(size: 14)
   }
   
+  let adBannerView = GADBannerView().then {
+    #if DEBUG
+    $0.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+    #else
+    $0.adUnitID = "ca-app-pub-1527951560812478/3327283605"
+    #endif
+  }
+  
   override func prepareForReuse() {
     super.prepareForReuse()
     
     self.titleStackView.subviews.forEach { $0.removeFromSuperview()}
+    self.adBannerView.isHidden = true
+    self.adBannerView.delegate = nil
+    self.containerView.isHidden = false
+    self.distanceImage.isHidden = false
+    self.ratingImage.isHidden = false
   }
   
   override func setup() {
+    self.contentView.isUserInteractionEnabled = false
     self.backgroundColor = .clear
     self.selectionStyle = .none
     self.addSubViews([
@@ -63,8 +80,25 @@ class CategoryListStoreCell: BaseTableViewCell {
       self.ratingLabel,
       self.ratingImage,
       self.distanceLabel,
-      self.distanceImage
+      self.distanceImage,
+      self.adBannerView
     ])
+  }
+  
+  private func loadAd() {
+    let viewWidth = UIScreen.main.bounds.width
+    
+    self.adBannerView.adSize
+    = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
+    self.adBannerView.delegate = self
+    
+    if #available(iOS 14, *) {
+      ATTrackingManager.requestTrackingAuthorization(completionHandler: { _ in
+        self.adBannerView.load(GADRequest())
+      })
+    } else {
+      self.adBannerView.load(GADRequest())
+    }
   }
   
   override func bindConstraints() {
@@ -110,6 +144,13 @@ class CategoryListStoreCell: BaseTableViewCell {
       make.centerY.equalTo(self.categoriesLabel)
       make.width.height.equalTo(16)
     }
+    
+    self.adBannerView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalToSuperview()
+      make.height.equalTo(64)
+    }
   }
   
   func bind(store: Store?) {
@@ -128,7 +169,11 @@ class CategoryListStoreCell: BaseTableViewCell {
       }
       self.categoriesLabel.text = store.categoriesString
     } else {
-      // TODO: 광고 배너 바인딩 필요
+      self.adBannerView.isHidden = false
+      self.loadAd()
+      self.containerView.isHidden = true
+      self.distanceImage.isHidden = true
+      self.ratingImage.isHidden = true
     }
   }
   
@@ -153,3 +198,33 @@ class CategoryListStoreCell: BaseTableViewCell {
     }
   }
 }
+
+extension CategoryListStoreCell: GADBannerViewDelegate {
+  /// Tells the delegate an ad request loaded an ad.
+  func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+    print("adViewDidReceiveAd")
+  }
+  
+  /// Tells the delegate that a full-screen view will be presented in response
+  /// to the user clicking on an ad.
+  func bannerViewWillPresentScreen(_ bannerView: GADBannerView) {
+    print("adViewWillPresentScreen")
+  }
+  
+  /// Tells the delegate that the full-screen view will be dismissed.
+  func bannerViewWillDismissScreen(_ bannerView: GADBannerView) {
+    print("adViewWillDismissScreen")
+  }
+  
+  /// Tells the delegate that the full-screen view has been dismissed.
+  func bannerViewDidDismissScreen(_ bannerView: GADBannerView) {
+    print("adViewDidDismissScreen")
+  }
+  
+  /// Tells the delegate that a user click will open another app (such as
+  /// the App Store), backgrounding the current app.
+  func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
+    print("adViewWillLeaveApplication")
+  }
+}
+

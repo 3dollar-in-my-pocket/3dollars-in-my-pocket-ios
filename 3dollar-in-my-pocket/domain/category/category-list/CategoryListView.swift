@@ -202,7 +202,7 @@ final class CategoryListView: BaseView {
     self.categoryTitleLabel.attributedText = attributedString
   }
   
-  func bind(stores: [Store]) {
+  func bind(stores: [Store?]) {
     self.emptyImage.isHidden = !stores.isEmpty
     self.emptyLabel.isHidden = !stores.isEmpty
     
