@@ -266,7 +266,7 @@ final class VisitView: BaseView {
     
     attributedString.addAttribute(
       .font,
-      value: UIFont.bold(size: 14),
+      value: UIFont.bold(size: 14) as Any,
       range: (text as NSString).range(of: "\(distance)m")
     )
     self.distanceLabel.attributedText = attributedString
@@ -295,7 +295,8 @@ final class VisitView: BaseView {
       UIView.animate(withDuration: 0.3) { [weak self] in
         guard let self = self else { return }
         self.backgroundColor = R.color.pink()
-        self.mapContainerView.backgroundColor = UIColor(r: 243, g: 132, b: 141)           
+        self.bottomContainerView.alpha = 0
+        self.mapContainerView.backgroundColor = UIColor(r: 243, g: 132, b: 141)
         self.layoutIfNeeded()
       }
       self.storeCategoryLabel.textColor = .white
@@ -314,6 +315,7 @@ final class VisitView: BaseView {
       UIView.animate(withDuration: 0.3) { [weak self] in
         guard let self = self else { return }
         self.backgroundColor = .black
+        self.bottomContainerView.alpha = 1
         self.mapContainerView.backgroundColor = R.color.gray95()
         self.layoutIfNeeded()
       }
