@@ -22,6 +22,11 @@ class StoreCell: BaseCollectionViewCell {
     $0.font = R.font.appleSDGothicNeoEB00(size: 16)
   }
   
+  private let bedgeImage = UIImageView().then {
+    $0.image = R.image.img_bedge()
+    $0.isHidden = true
+  }
+  
   let categoriesLabel = UILabel().then {
     $0.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12)
     $0.textColor = R.color.gray40()
@@ -45,11 +50,21 @@ class StoreCell: BaseCollectionViewCell {
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
+  let visitButton = UIButton().then {
+    $0.backgroundColor = R.color.red()
+    $0.layer.cornerRadius = 13
+    $0.setTitle("방문하기", for: .normal)
+    $0.titleEdgeInsets = .init(top: 0, left: 2, bottom: 0, right: 0)
+    $0.titleLabel?.font = .bold(size: 12)
+    $0.setImage(R.image.ic_dest(), for: .normal)
+  }
+  
   
   override func prepareForReuse() {
     super.prepareForReuse()
     
     self.setSelected(isSelected: false)
+    self.bedgeImage.isHidden = true
   }
   
   override func setup() {
@@ -58,11 +73,13 @@ class StoreCell: BaseCollectionViewCell {
       self.containerView,
       self.categoryImage,
       self.titleLabel,
+      self.bedgeImage,
       self.categoriesLabel,
       self.distanceImage,
       self.distanceLabel,
       self.starImage,
-      self.rankLabel
+      self.rankLabel,
+      self.visitButton
     )
   }
   
@@ -83,6 +100,12 @@ class StoreCell: BaseCollectionViewCell {
       make.top.equalTo(self.containerView).offset(18)
       make.left.equalTo(self.categoryImage.snp.right).offset(8)
       make.right.equalTo(self.containerView).offset(-16)
+    }
+    
+    self.bedgeImage.snp.makeConstraints { make in
+      make.top.equalTo(self.containerView).offset(16)
+      make.right.equalTo(self.containerView).offset(-14)
+      make.width.height.equalTo(24)
     }
     
     self.categoriesLabel.snp.makeConstraints { make in
@@ -110,6 +133,13 @@ class StoreCell: BaseCollectionViewCell {
     self.rankLabel.snp.makeConstraints { make in
       make.left.equalTo(self.starImage.snp.right).offset(4)
       make.centerY.equalTo(self.distanceLabel)
+    }
+    
+    self.visitButton.snp.makeConstraints { make in
+      make.right.equalTo(self.containerView).offset(-14)
+      make.bottom.equalTo(self.containerView).offset(-14)
+      make.height.equalTo(26)
+      make.width.equalTo(74)
     }
   }
   
@@ -139,6 +169,7 @@ class StoreCell: BaseCollectionViewCell {
     self.titleLabel.text = store.storeName
     self.setRating(rating: store.rating)
     self.setCategories(categories: store.categories)
+    self.bedgeImage.isHidden = !store.isCertificated
   }
   
   private func setDistance(distance: Int) {

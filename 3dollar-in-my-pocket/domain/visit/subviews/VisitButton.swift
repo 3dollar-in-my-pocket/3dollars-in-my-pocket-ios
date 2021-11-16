@@ -15,20 +15,18 @@ final class VisitButton: UIButton {
     height: (UIScreen.main.bounds.width - 63)/2
   )
   
-  private let categoryImageBackground = UIView().then {
-    $0.backgroundColor = UIColor(r: 196, g: 196, b: 196)
-    $0.layer.cornerRadius = 40
-    $0.isUserInteractionEnabled = false
-  }
-  
-  private let categoryImage = UIImageView().then {
+  private let visitImage = UIImageView().then {
     $0.isUserInteractionEnabled = false
   }
   
   private let subjectLabel = UILabel().then {
-    $0.textColor = .black
     $0.font = .semiBold(size: 16)
     $0.isUserInteractionEnabled = false
+  }
+  
+  private let subjectContainerView = UIView().then {
+    $0.layer.cornerRadius = 15
+    $0.alpha = 0.1
   }
   
   init(type: VisitType) {
@@ -46,38 +44,47 @@ final class VisitButton: UIButton {
   func bind(type: VisitType) {
     switch type {
     case .exists:
-      self.subjectLabel.text = "가게가 있어요!"
+      self.visitImage.image = R.image.img_visit_success()
+      self.subjectLabel.text = "구매 성공"
+      self.subjectLabel.textColor = UIColor(r: 0, g: 198, b: 103)
+      self.subjectContainerView.backgroundColor = UIColor(r: 0, g: 198, b: 103)
       
     case .notExists:
-      self.subjectLabel.text = "가게가 없어요!"
+      self.visitImage.image = R.image.img_visit_fail()
+      self.subjectLabel.text = "가게가 없어요"
+      self.subjectLabel.textColor = R.color.red()
+      self.subjectContainerView.backgroundColor = R.color.red()
     }
   }
   
   private func setup() {
-    self.backgroundColor = R.color.gray10()
+    self.backgroundColor = .white
     self.layer.cornerRadius = 21
     
     self.addSubViews([
-      self.categoryImageBackground,
-      self.categoryImage,
+      self.visitImage,
+      self.subjectContainerView,
       self.subjectLabel
     ])
   }
   
   private func bindConstraints() {
-    self.categoryImageBackground.snp.makeConstraints { make in
+    self.visitImage.snp.makeConstraints { make in
+      make.top.equalToSuperview().offset(14)
       make.centerX.equalToSuperview()
-      make.top.equalToSuperview().offset(18)
-      make.width.height.equalTo(80)
+      make.width.height.equalTo(88)
     }
     
-    self.categoryImage.snp.makeConstraints { make in
-      make.center.equalTo(self.categoryImageBackground)
+    self.subjectContainerView.snp.makeConstraints { make in
+      make.top.equalTo(self.visitImage.snp.bottom).offset(4)
+      make.height.equalTo(30)
+      make.left.equalTo(self.subjectLabel).offset(-8)
+      make.right.equalTo(self.subjectLabel).offset(8)
     }
     
     self.subjectLabel.snp.makeConstraints({ make in
       make.centerX.equalToSuperview()
-      make.top.equalTo(self.categoryImageBackground.snp.bottom).offset(22)
+      make.top.equalTo(self.subjectContainerView).offset(6)
     })
   }
 }

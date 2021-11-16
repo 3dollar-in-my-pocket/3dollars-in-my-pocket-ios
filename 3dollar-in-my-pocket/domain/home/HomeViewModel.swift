@@ -27,6 +27,7 @@ class HomeViewModel: BaseViewModel {
     let selectStore = PublishSubject<Int>()
     let backFromDetail = PublishSubject<Store>()
     let tapStore = PublishSubject<Int>()
+    let tapStoreVisit = PublishSubject<Int>()
     let deselectCurrentStore = PublishSubject<Void>()
   }
   
@@ -39,6 +40,7 @@ class HomeViewModel: BaseViewModel {
     let setSelectStore = PublishRelay<(IndexPath, Bool)>()
     let selectMarker = PublishRelay<(Int, [Store])>()
     let goToDetail = PublishRelay<Int>()
+    let presentVisit = PublishRelay<Store>()
   }
   
   
@@ -108,6 +110,13 @@ class HomeViewModel: BaseViewModel {
       .bind(onNext: self.onTapStore(index:))
       .disposed(by: disposeBag)
     
+    self.input.tapStoreVisit
+      .compactMap { [weak self] index in
+        return self?.stores[index]
+      }
+      .bind(to: self.output.presentVisit)
+      .disposed(by: self.disposeBag)
+    
     self.input.deselectCurrentStore
       .bind(onNext: self.deselectStore)
       .disposed(by: disposeBag)
@@ -122,7 +131,9 @@ class HomeViewModel: BaseViewModel {
     self.storeService.searchNearStores(
       currentLocation: currentLocation,
       mapLocation: mapLocation == nil ? currentLocation : mapLocation!,
-      distance: distance
+      distance: distance,
+      category: nil,
+      orderType: nil
     )
       .subscribe(
         onNext: { [weak self] stores in

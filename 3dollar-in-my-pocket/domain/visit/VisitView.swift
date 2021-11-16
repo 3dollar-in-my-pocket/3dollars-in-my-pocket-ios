@@ -61,17 +61,13 @@ final class VisitView: BaseView {
   }
   
   let bottomContainerView = UIView().then {
-    $0.layer.cornerRadius = 24
+    $0.layer.cornerRadius = 21
+    $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     $0.backgroundColor = R.color.gray95()
   }
   
-  let bottomLeftCircleView = UIView().then {
-    $0.layer.cornerRadius = 28 * RatioUtils.heightRatio
-    $0.backgroundColor = R.color.gray90()
-  }
-  
   let bottomRightCircleView = UIView().then {
-    $0.layer.cornerRadius = 28 * RatioUtils.heightRatio
+    $0.layer.cornerRadius = 24 * RatioUtils.heightRatio
     $0.backgroundColor = R.color.gray90()
   }
   
@@ -81,17 +77,25 @@ final class VisitView: BaseView {
     $0.image = R.image.img_distance_indicator()
   }
   
-  let dashedLine = UIImageView().then {
-    $0.image = R.image.img_line_dashed()
+  private let progressBackgroundView = UIView().then {
+    $0.backgroundColor = R.color.gray90()
+    $0.layer.cornerRadius = 6
+  }
+  
+  private let progressView = UIProgressView().then {
+    $0.trackTintColor = .clear
+    $0.progressTintColor = R.color.red()
+    $0.layer.cornerRadius = 3
   }
   
   let distanceLabel = UILabel().then {
     $0.font = .regular(size: 14)
-    $0.textColor = R.color.pink()
+    $0.textColor = .white
   }
   
   let bottomSheetContainerView = UIView().then {
     $0.backgroundColor = .white
+    $0.alpha = 0.3
     $0.layer.cornerRadius = 21
     $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
   }
@@ -102,6 +106,15 @@ final class VisitView: BaseView {
   
   override func setup() {
     self.backgroundColor = .black
+    
+    self.bottomContainerView.addSubViews([
+      self.bottomRightCircleView,
+      self.bottomRightCategoryImage,
+      self.indicatorImage,
+      self.progressBackgroundView,
+      self.progressView,
+      self.distanceLabel
+    ])
     
     self.addSubViews([
       self.closeButton,
@@ -114,12 +127,6 @@ final class VisitView: BaseView {
       self.mapView,
       self.currentLocationButton,
       self.bottomContainerView,
-      self.bottomLeftCircleView,
-      self.bottomRightCircleView,
-      self.bottomRightCategoryImage,
-      self.indicatorImage,
-      self.dashedLine,
-      self.distanceLabel,
       self.bottomSheetContainerView,
       self.notExistedButton,
       self.existedButton
@@ -144,22 +151,16 @@ final class VisitView: BaseView {
     }
     
     self.bottomContainerView.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(24)
-      make.right.equalToSuperview().offset(-24)
-      make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-10 * RatioUtils.heightRatio)
-      make.top.equalTo(self.bottomLeftCircleView).offset(-16 * RatioUtils.heightRatio)
-    }
-    
-    self.bottomLeftCircleView.snp.makeConstraints { make in
-      make.left.equalTo(self.bottomContainerView).offset(10)
-      make.bottom.equalTo(self.bottomContainerView).offset(-16 * RatioUtils.heightRatio)
-      make.width.height.equalTo(56 * RatioUtils.heightRatio)
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+      make.bottom.equalToSuperview()
+      make.top.equalTo(self.safeAreaLayoutGuide.snp.bottom).offset(-96 * RatioUtils.heightRatio)
     }
     
     self.bottomRightCircleView.snp.makeConstraints { make in
-      make.centerY.equalTo(self.bottomLeftCircleView)
-      make.right.equalTo(self.bottomContainerView).offset(-10)
-      make.width.height.equalTo(56 * RatioUtils.heightRatio)
+      make.top.equalToSuperview().offset(26 * RatioUtils.heightRatio)
+      make.right.equalToSuperview().offset(-40)
+      make.width.height.equalTo(48 * RatioUtils.heightRatio)
     }
     
     self.bottomRightCategoryImage.snp.makeConstraints { make in
@@ -168,19 +169,28 @@ final class VisitView: BaseView {
     }
     
     self.distanceLabel.snp.makeConstraints { make in
-      make.centerX.equalToSuperview()
-      make.top.equalTo(self.dashedLine).offset(11 * RatioUtils.heightRatio)
+      make.centerX.equalTo(self.indicatorImage.snp.centerX)
+      make.top.equalTo(self.progressBackgroundView.snp.bottom).offset(5 * RatioUtils.heightRatio)
     }
     
-    self.dashedLine.snp.makeConstraints { make in
-      make.centerY.equalTo(self.bottomContainerView)
-      make.left.equalTo(self.bottomLeftCircleView.snp.right)
-      make.right.equalTo(self.bottomRightCircleView.snp.left)
+    self.progressBackgroundView.snp.makeConstraints { make in
+      make.height.equalTo(12)
+      make.centerY.equalTo(self.bottomRightCircleView)
+      make.left.equalToSuperview().offset(40)
+      make.right.equalTo(self.bottomRightCircleView.snp.left).offset(4)
+    }
+    
+    self.progressView.snp.makeConstraints { make in
+      make.left.equalTo(self.progressBackgroundView).offset(3)
+      make.right.equalTo(self.progressBackgroundView).offset(-3)
+      make.top.equalTo(self.progressBackgroundView).offset(3)
+      make.bottom.equalTo(self.progressBackgroundView).offset(-3)
     }
     
     self.indicatorImage.snp.makeConstraints { make in
-      make.centerX.equalTo(distanceLabel)
-      make.bottom.equalTo(self.dashedLine.snp.top).offset(-5 * RatioUtils.heightRatio)
+      make.centerX.equalTo(self.progressView.snp.left)
+        .offset(CGFloat(self.progressView.progress) * self.progressView.frame.width)
+      make.bottom.equalTo(self.progressBackgroundView.snp.top).offset(1 * RatioUtils.heightRatio)
       make.width.equalTo(24 * RatioUtils.heightRatio)
       make.height.equalTo(29 * RatioUtils.heightRatio)
     }
@@ -229,21 +239,37 @@ final class VisitView: BaseView {
       )
     }
     
-    self.notExistedButton.snp.makeConstraints { make in
+    self.existedButton.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.top.equalTo(self.bottomSheetContainerView).offset(30 * RatioUtils.heightRatio)
       make.size.equalTo(VisitButton.size)
     }
     
-    self.existedButton.snp.makeConstraints { make in
+    self.notExistedButton.snp.makeConstraints { make in
       make.right.equalToSuperview().offset(-24)
-      make.centerY.equalTo(self.notExistedButton)
+      make.centerY.equalTo(self.existedButton)
       make.size.equalTo(VisitButton.size)
     }
   }
   
   func bindDistance(distance: Int) {
-    self.distanceLabel.text = "인증까지 \(distance)m"
+    let progress = Float(300 - distance)/300
+    
+    self.progressView.progress = progress
+    self.indicatorImage.snp.updateConstraints { make in
+      make.centerX.equalTo(self.progressView.snp.left)
+        .offset(CGFloat(progress) * 243 * RatioUtils.widthRatio)
+    }
+    
+    let text = "인증까지 \(distance)m"
+    let attributedString = NSMutableAttributedString(string: text)
+    
+    attributedString.addAttribute(
+      .font,
+      value: UIFont.bold(size: 14) as Any,
+      range: (text as NSString).range(of: "\(distance)m")
+    )
+    self.distanceLabel.attributedText = attributedString
   }
   
   func moveCamera(latitude: Double, longitude: Double) {
@@ -269,6 +295,7 @@ final class VisitView: BaseView {
       UIView.animate(withDuration: 0.3) { [weak self] in
         guard let self = self else { return }
         self.backgroundColor = R.color.pink()
+        self.bottomContainerView.alpha = 0
         self.mapContainerView.backgroundColor = UIColor(r: 243, g: 132, b: 141)
         self.layoutIfNeeded()
       }
@@ -288,6 +315,7 @@ final class VisitView: BaseView {
       UIView.animate(withDuration: 0.3) { [weak self] in
         guard let self = self else { return }
         self.backgroundColor = .black
+        self.bottomContainerView.alpha = 1
         self.mapContainerView.backgroundColor = R.color.gray95()
         self.layoutIfNeeded()
       }

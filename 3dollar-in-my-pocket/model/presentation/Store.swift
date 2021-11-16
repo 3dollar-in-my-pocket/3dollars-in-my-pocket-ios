@@ -16,6 +16,7 @@ struct Store {
   let updatedAt: String
   let user: User
   let visitHistories: [VisitHistory]
+  let isCertificated: Bool
   
   init(
     category: StoreCategory,
@@ -40,6 +41,7 @@ struct Store {
     self.updatedAt = ""
     self.user = User()
     self.visitHistories = []
+    self.isCertificated = false
   }
   
   init(
@@ -74,6 +76,7 @@ struct Store {
     self.updatedAt = ""
     self.user = User()
     self.visitHistories = []
+    self.isCertificated = false
   }
   
   init() {
@@ -93,6 +96,7 @@ struct Store {
     self.updatedAt = ""
     self.user = User()
     self.visitHistories = []
+    self.isCertificated = false
   }
   
   init(response: StoreInfoResponse) {
@@ -112,6 +116,7 @@ struct Store {
     self.updatedAt = ""
     self.user = User()
     self.visitHistories = []
+    self.isCertificated = response.visitHistory.isCertified
   }
   
   init(response: StoreDetailResponse) {
@@ -131,5 +136,13 @@ struct Store {
     self.updatedAt = response.updatedAt
     self.user = User(response: response.user)
     self.visitHistories = response.visitHistories.map { VisitHistory(response: $0) }
+    self.isCertificated = !response.visitHistories.filter { $0.type == .exists }.isEmpty
+  }
+}
+
+extension Store {
+  /// 카테고리들 나열된 문자열 ex.) #붕어빵 #땅콩과자 #호떡
+  var categoriesString: String {
+    return self.categories.map { "#\($0.name)"}.joined(separator: " ")
   }
 }
