@@ -253,7 +253,8 @@ final class VisitView: BaseView {
   }
   
   func bindDistance(distance: Int) {
-    let progress = Float(300 - distance)/300
+    /// 기준 거리인 300m보다 멀리 있으면 0.5로 고정, 300m보다 가까이 있으면 프로그래스 바 설정
+    let progress = distance > 300 ? 0.5 : Float(300 - distance)/300
     
     self.progressView.progress = progress
     self.indicatorImage.snp.updateConstraints { make in
