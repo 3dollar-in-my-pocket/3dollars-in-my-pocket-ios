@@ -122,9 +122,21 @@ final class CategoryListViewModel: BaseViewModel {
         guard let self = self else { return }
         
         if self.model.isOnlyCertificated {
-          self.ouput.stores.accept([nil] + self.model.stores.filter { $0?.isCertificated == true })
+          let certificatedStores = self.model.stores.filter { $0?.isCertificated == true }
+          
+          if certificatedStores.isEmpty {
+            self.ouput.stores.accept([])
+          } else {
+            self.ouput.stores.accept([nil] + certificatedStores)
+          }
         } else {
-          self.ouput.stores.accept(self.model.stores)
+          let notCertificatedStores = self.model.stores.filter { $0?.isCertificated == false }
+          
+          if notCertificatedStores.isEmpty {
+            self.ouput.stores.accept([])
+          } else {
+            self.ouput.stores.accept([nil] + notCertificatedStores)
+          }
         }
       }
       .disposed(by: self.disposeBag)
@@ -155,9 +167,19 @@ final class CategoryListViewModel: BaseViewModel {
       self.model.stores = [nil] + stores
       
       if self.model.isOnlyCertificated {
-        self.ouput.stores.accept([nil] + stores.filter { $0.isCertificated })
+        let certificatedStores = stores.filter { $0.isCertificated }
+        
+        if certificatedStores.isEmpty {
+          self.ouput.stores.accept([])
+        } else {
+          self.ouput.stores.accept([nil] + certificatedStores)
+        }
       } else {
-        self.ouput.stores.accept([nil] + stores)
+        if stores.isEmpty {
+          self.ouput.stores.accept([])
+        } else {
+          self.ouput.stores.accept([nil] + stores)
+        }
       }
     } onError: { [weak self] error in
       self?.showErrorAlert.accept(error)
