@@ -46,8 +46,7 @@ class MyReviewViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.loadMore
-      .filter { self.reviews.count - 1 >= $0 && self.nextCursor != nil && self.nextCursor != -1 }
-      .debug()
+      .filter { self.canLoadMore(index: $0) }
       .map { _ in (self.totalCount, self.nextCursor) }
       .bind(onNext: self.fetchMyReviews)
       .disposed(by: disposeBag)
@@ -115,5 +114,9 @@ class MyReviewViewModel: BaseViewModel {
         break
       }
     }
+  }
+  
+  private func canLoadMore(index: Int) -> Bool {
+    return self.reviews.count - 1 <= index && self.nextCursor != nil && self.nextCursor != -1
   }
 }
