@@ -111,6 +111,7 @@ final class CategoryListStoreCell: BaseTableViewCell {
     
     self.titleStackView.snp.makeConstraints { make in
       make.left.equalTo(self.containerView).offset(16)
+      make.right.equalTo(self.containerView).offset(-16)
       make.top.equalTo(self.containerView).offset(20)
     }
     
@@ -120,6 +121,7 @@ final class CategoryListStoreCell: BaseTableViewCell {
     
     self.categoriesLabel.snp.makeConstraints { make in
       make.left.equalTo(self.containerView).offset(16)
+      make.right.equalTo(self.containerView.snp.centerX)
       make.bottom.equalTo(self.containerView).offset(-14)
     }
     
