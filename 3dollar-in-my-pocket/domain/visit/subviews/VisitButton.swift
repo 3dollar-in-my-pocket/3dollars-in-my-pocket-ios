@@ -52,13 +52,13 @@ final class VisitButton: UIButton {
     switch type {
     case .exists:
       self.visitImage.image = R.image.img_visit_success()
-      self.subjectLabel.text = "구매 성공"
+      self.subjectLabel.text = R.string.localization.visit_success()
       self.subjectLabel.textColor = UIColor(r: 0, g: 198, b: 103)
       self.subjectContainerView.backgroundColor = UIColor(r: 0, g: 198, b: 103)
       
     case .notExists:
       self.visitImage.image = R.image.img_visit_fail()
-      self.subjectLabel.text = "가게가 없어요"
+      self.subjectLabel.text = R.string.localization.visit_fail()
       self.subjectLabel.textColor = R.color.red()
       self.subjectContainerView.backgroundColor = R.color.red()
     }

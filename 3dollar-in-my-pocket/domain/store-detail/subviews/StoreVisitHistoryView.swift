@@ -38,10 +38,6 @@ final class StoreVisitHistoryView: BaseView {
     $0.textColor = R.color.gray30()
   }
   
-  private let moreButton = UIButton().then {
-    $0.setImage(R.image.ic_down(), for: .normal)
-  }
-  
   override func setup() {
     self.backgroundColor = .clear
     self.addSubViews([
@@ -51,8 +47,7 @@ final class StoreVisitHistoryView: BaseView {
       self.existImage,
       self.existLabel,
       self.notExistImage,
-      self.notExistLabel,
-      self.moreButton
+      self.notExistLabel
     ])
   }
   
@@ -98,11 +93,6 @@ final class StoreVisitHistoryView: BaseView {
       make.centerY.equalTo(self.notExistImage)
     }
     
-    self.moreButton.snp.makeConstraints { make in
-      make.right.equalTo(self.containerView).offset(-17)
-      make.centerY.equalTo(self.containerView)
-    }
-    
     self.snp.makeConstraints { make in
       make.top.equalTo(self.titleLabel).priority(.high)
       make.bottom.equalTo(self.containerView).priority(.high)
@@ -116,7 +106,6 @@ final class StoreVisitHistoryView: BaseView {
     self.setupTitleLabel(isEmpty: visitHistories.isEmpty, count: existedCount)
     self.setupExist(count: existedCount)
     self.setupNotExist(count: notExistedCount)
-    self.moreButton.isHidden = visitHistories.isEmpty
   }
   
   private func setupTitleLabel(isEmpty: Bool, count: Int) {
