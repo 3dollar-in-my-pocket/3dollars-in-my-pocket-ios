@@ -71,7 +71,14 @@ struct MapService: MapServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: LocalResponse<PlaceDocument>.self, response: response)
+          if let value = response.value {
+            if let localResponse: LocalResponse<PlaceDocument> = JsonUtils.toJson(object: value) {
+              observer.onNext(localResponse)
+              observer.onCompleted()
+            } else {
+              observer.onError(BaseError.failDecoding)
+            }
+          }
         } else {
           observer.processHTTPError(response: response)
         }
@@ -99,7 +106,15 @@ struct MapService: MapServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: LocalResponse<AddressDocument>.self, response: response)
+          if let value = response.value {
+            if let localResponse: LocalResponse<AddressDocument>
+                = JsonUtils.toJson(object: value) {
+              observer.onNext(localResponse)
+              observer.onCompleted()
+            } else {
+              observer.onError(BaseError.failDecoding)
+            }
+          }
         } else {
           observer.processHTTPError(response: response)
         }

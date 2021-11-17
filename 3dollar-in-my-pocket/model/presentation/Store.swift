@@ -13,7 +13,7 @@ struct Store {
   let storeId: Int
   let storeName: String
   let storeType: StoreType?
-  let updatedAt: String
+  let updatedAt: String?
   let user: User
   let visitHistories: [VisitHistory]
   let isCertificated: Bool
@@ -38,7 +38,7 @@ struct Store {
     self.reviews = []
     self.storeName = storeName
     self.storeType = nil
-    self.updatedAt = ""
+    self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
     self.isCertificated = false
@@ -73,7 +73,7 @@ struct Store {
     self.reviews = []
     self.storeName = storeName
     self.storeType = storeType
-    self.updatedAt = ""
+    self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
     self.isCertificated = false
@@ -93,7 +93,7 @@ struct Store {
     self.reviews = []
     self.storeName = ""
     self.storeType = nil
-    self.updatedAt = ""
+    self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
     self.isCertificated = false
@@ -113,7 +113,7 @@ struct Store {
     self.reviews = []
     self.storeName = response.storeName
     self.storeType = nil
-    self.updatedAt = ""
+    self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
     self.isCertificated = response.visitHistory.isCertified
