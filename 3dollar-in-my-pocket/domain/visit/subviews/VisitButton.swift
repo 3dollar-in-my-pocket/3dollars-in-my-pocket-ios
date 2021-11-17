@@ -15,6 +15,13 @@ final class VisitButton: UIButton {
     height: (UIScreen.main.bounds.width - 63)/2
   )
   
+  private let stackView = UIStackView().then {
+    $0.isUserInteractionEnabled = false
+    $0.axis = .vertical
+    $0.spacing = 4
+    $0.alignment = .center
+  }
+  
   private let visitImage = UIImageView().then {
     $0.isUserInteractionEnabled = false
   }
@@ -61,22 +68,27 @@ final class VisitButton: UIButton {
     self.backgroundColor = .white
     self.layer.cornerRadius = 21
     
+    self.stackView.addArrangedSubview(self.visitImage)
+    self.stackView.addArrangedSubview(self.subjectContainerView)
     self.addSubViews([
-      self.visitImage,
-      self.subjectContainerView,
+      self.stackView,
       self.subjectLabel
     ])
   }
   
   private func bindConstraints() {
+    self.stackView.snp.makeConstraints { make in
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+      make.center.equalToSuperview()
+    }
+    
     self.visitImage.snp.makeConstraints { make in
-      make.top.equalToSuperview().offset(14)
       make.centerX.equalToSuperview()
       make.width.height.equalTo(88)
     }
     
     self.subjectContainerView.snp.makeConstraints { make in
-      make.top.equalTo(self.visitImage.snp.bottom).offset(4)
       make.height.equalTo(30)
       make.left.equalTo(self.subjectLabel).offset(-8)
       make.right.equalTo(self.subjectLabel).offset(8)

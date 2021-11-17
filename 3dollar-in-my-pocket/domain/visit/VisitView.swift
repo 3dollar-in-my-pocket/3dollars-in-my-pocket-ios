@@ -234,7 +234,7 @@ final class VisitView: BaseView {
       make.left.right.equalToSuperview()
       make.top.equalTo(self.snp.bottom)
       make.height.equalTo(
-        246 * RatioUtils.heightRatio
+        186 * RatioUtils.heightRatio
           + (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0)
       )
     }
@@ -282,13 +282,13 @@ final class VisitView: BaseView {
   func bindVisitable(isVisitable: Bool) {
     if isVisitable {
       self.mapView.snp.updateConstraints { make in
-        make.height.equalTo(200)
+        make.height.equalTo(270 * RatioUtils.heightRatio)
       }
       self.bottomSheetContainerView.snp.remakeConstraints { make in
         make.left.right.equalToSuperview()
         make.bottom.equalToSuperview()
         make.height.equalTo(
-          246 * RatioUtils.heightRatio
+          230 * RatioUtils.heightRatio
             + (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0)
         )
       }
@@ -308,7 +308,7 @@ final class VisitView: BaseView {
         make.left.right.equalToSuperview()
         make.top.equalTo(self.snp.bottom)
         make.height.equalTo(
-          246 * RatioUtils.heightRatio
+          230 * RatioUtils.heightRatio
             + (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0)
         )
       }
