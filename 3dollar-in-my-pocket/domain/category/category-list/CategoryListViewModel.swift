@@ -132,9 +132,7 @@ final class CategoryListViewModel: BaseViewModel {
       .disposed(by: self.disposeBag)
     
     self.input.tapStore
-      .compactMap { [weak self] row in
-        return self?.model.stores[row].storeId
-      }
+      .withLatestFrom(self.ouput.stores) { $1[$0].storeId }
       .bind(to: self.ouput.pushStoreDetail)
       .disposed(by: self.disposeBag)
   }
