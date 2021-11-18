@@ -16,7 +16,7 @@ struct Store {
   let updatedAt: String?
   let user: User
   let visitHistories: [VisitHistory]
-  var isCertificated: Bool
+  var visitHistory: VisitOverview
   
   init(
     category: StoreCategory,
@@ -41,7 +41,7 @@ struct Store {
     self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
-    self.isCertificated = false
+    self.visitHistory = VisitOverview()
   }
   
   init(
@@ -76,7 +76,7 @@ struct Store {
     self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
-    self.isCertificated = false
+    self.visitHistory = VisitOverview()
   }
   
   init() {
@@ -96,7 +96,7 @@ struct Store {
     self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
-    self.isCertificated = false
+    self.visitHistory = VisitOverview()
   }
   
   init(response: StoreInfoResponse) {
@@ -116,7 +116,7 @@ struct Store {
     self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
-    self.isCertificated = response.visitHistory.isCertified
+    self.visitHistory = VisitOverview(response: response.visitHistory)
   }
   
   init(response: StoreDetailResponse) {
@@ -136,9 +136,7 @@ struct Store {
     self.updatedAt = response.updatedAt
     self.user = User(response: response.user)
     self.visitHistories = response.visitHistories.map { VisitHistory(response: $0) }
-    self.isCertificated =
-      response.visitHistories.filter { $0.type == .exists }.count >
-      response.visitHistories.filter { $0.type == .notExists }.count
+    self.visitHistory = VisitOverview(response: response.visitHistory)
   }
 }
 

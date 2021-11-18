@@ -113,17 +113,15 @@ final class VisitViewModel: BaseViewModel {
   }
   
   private func updateCertificate(type: VisitType) {
-    var existsCount = self.model.store.visitHistories.filter { $0.type == .exists }.count
-    var notExistsCount = self.model.store.visitHistories.filter { $0.type == .notExists }.count
-    
     switch type {
     case .exists:
-      existsCount += 1
+      self.model.store.visitHistory.existsCounts += 1
       
     case .notExists:
-      notExistsCount += 1
+      self.model.store.visitHistory.notExistsCounts += 1
     }
     
-    self.model.store.isCertificated = existsCount > notExistsCount
+    self.model.store.visitHistory.isCertified
+      = self.model.store.visitHistory.existsCounts > self.model.store.visitHistory.notExistsCounts
   }
 }

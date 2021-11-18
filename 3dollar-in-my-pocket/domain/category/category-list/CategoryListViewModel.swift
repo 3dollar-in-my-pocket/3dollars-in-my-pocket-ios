@@ -122,7 +122,7 @@ final class CategoryListViewModel: BaseViewModel {
         guard let self = self else { return }
         
         if self.model.isOnlyCertificated {
-          let certificatedStores = self.model.stores.filter { $0.isCertificated == true }
+          let certificatedStores = self.model.stores.filter { $0.visitHistory.isCertified }
           
           self.ouput.stores.accept(certificatedStores)
         } else {
@@ -155,7 +155,7 @@ final class CategoryListViewModel: BaseViewModel {
       self.model.stores = stores
       
       if self.model.isOnlyCertificated {
-        let certificatedStores = stores.filter { $0.isCertificated }
+        let certificatedStores = stores.filter { $0.visitHistory.isCertified }
         
         self.ouput.stores.accept(certificatedStores)
       } else {

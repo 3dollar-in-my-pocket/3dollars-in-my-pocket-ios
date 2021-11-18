@@ -123,7 +123,7 @@ final class CategoryListStoreCell: BaseTableViewCell {
   func bind(store: Store) {
     self.titleLabel.text = store.storeName
     
-    if store.isCertificated {
+    if store.visitHistory.isCertified {
       self.titleStackView.addArrangedSubview(self.bedgedImage)
     }
     self.titleStackView.addArrangedSubview(self.titleLabel)
