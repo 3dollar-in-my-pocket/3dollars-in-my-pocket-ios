@@ -1,5 +1,4 @@
 import UIKit
-import AppTrackingTransparency
 
 import GoogleMobileAds
 
@@ -50,20 +49,10 @@ final class CategoryListStoreCell: BaseTableViewCell {
     $0.font = .medium(size: 14)
   }
   
-  let adBannerView = GADBannerView().then {
-    #if DEBUG
-    $0.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-    #else
-    $0.adUnitID = "ca-app-pub-1527951560812478/3327283605"
-    #endif
-  }
-  
   override func prepareForReuse() {
     super.prepareForReuse()
     
     self.titleStackView.subviews.forEach { $0.removeFromSuperview()}
-    self.adBannerView.isHidden = true
-    self.adBannerView.delegate = nil
     self.containerView.isHidden = false
     self.distanceImage.isHidden = false
     self.ratingImage.isHidden = false
@@ -80,25 +69,8 @@ final class CategoryListStoreCell: BaseTableViewCell {
       self.ratingLabel,
       self.ratingImage,
       self.distanceLabel,
-      self.distanceImage,
-      self.adBannerView
+      self.distanceImage
     ])
-  }
-  
-  private func loadAd() {
-    let viewWidth = UIScreen.main.bounds.width
-    
-    self.adBannerView.adSize
-    = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
-    self.adBannerView.delegate = self
-    
-    if #available(iOS 14, *) {
-      ATTrackingManager.requestTrackingAuthorization(completionHandler: { _ in
-        self.adBannerView.load(GADRequest())
-      })
-    } else {
-      self.adBannerView.load(GADRequest())
-    }
   }
   
   override func bindConstraints() {
@@ -146,87 +118,21 @@ final class CategoryListStoreCell: BaseTableViewCell {
       make.centerY.equalTo(self.categoriesLabel)
       make.width.height.equalTo(16)
     }
+  }
+  
+  func bind(store: Store) {
+    self.titleLabel.text = store.storeName
     
-    self.adBannerView.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(24)
-      make.right.equalToSuperview().offset(-24)
-      make.top.equalToSuperview()
-      make.height.equalTo(64)
+    if store.isCertificated {
+      self.titleStackView.addArrangedSubview(self.bedgedImage)
     }
-  }
-  
-  func bind(store: Store?) {
-    if let store = store {
-      self.titleLabel.text = store.storeName
-      
-      if store.isCertificated {
-        self.titleStackView.addArrangedSubview(self.bedgedImage)
-      }
-      self.titleStackView.addArrangedSubview(self.titleLabel)
-      self.ratingLabel.text = String.init(format: "%.01f", store.rating)
-      if store.distance >= 1000 {
-        self.distanceLabel.text = String.init(format: "%.2fkm", Double(store.distance) / 1000)
-      } else {
-        self.distanceLabel.text = String.init(format: "%dm", store.distance)
-      }
-      self.categoriesLabel.text = store.categoriesString
+    self.titleStackView.addArrangedSubview(self.titleLabel)
+    self.ratingLabel.text = String.init(format: "%.01f", store.rating)
+    if store.distance >= 1000 {
+      self.distanceLabel.text = String.init(format: "%.2fkm", Double(store.distance) / 1000)
     } else {
-      self.adBannerView.isHidden = false
-      self.loadAd()
-      self.containerView.isHidden = true
-      self.distanceImage.isHidden = true
-      self.ratingImage.isHidden = true
+      self.distanceLabel.text = String.init(format: "%dm", store.distance)
     }
-  }
-  
-  func bind(storeCard: StoreCard?) {
-    if let storeCard = storeCard {
-      self.titleLabel.text = storeCard.storeName
-      self.ratingLabel.text = String.init(format: "%.01f", storeCard.rating)
-      self.ratingLabel.sizeToFit()
-      
-      if storeCard.distance >= 1000 {
-        self.distanceLabel.text = String.init(format: "%.2fkm", Double(storeCard.distance) / 1000)
-      } else {
-        self.distanceLabel.text = String.init(format: "%dm", storeCard.distance)
-      }
-      self.distanceLabel.sizeToFit()
-      
-      var categories = ""
-      for category in storeCard.categories {
-        categories.append("#\(category.name) ")
-      }
-      self.categoriesLabel.text = categories
-    }
+    self.categoriesLabel.text = store.categoriesString
   }
 }
-
-extension CategoryListStoreCell: GADBannerViewDelegate {
-  /// Tells the delegate an ad request loaded an ad.
-  func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-    print("adViewDidReceiveAd")
-  }
-  
-  /// Tells the delegate that a full-screen view will be presented in response
-  /// to the user clicking on an ad.
-  func bannerViewWillPresentScreen(_ bannerView: GADBannerView) {
-    print("adViewWillPresentScreen")
-  }
-  
-  /// Tells the delegate that the full-screen view will be dismissed.
-  func bannerViewWillDismissScreen(_ bannerView: GADBannerView) {
-    print("adViewWillDismissScreen")
-  }
-  
-  /// Tells the delegate that the full-screen view has been dismissed.
-  func bannerViewDidDismissScreen(_ bannerView: GADBannerView) {
-    print("adViewDidDismissScreen")
-  }
-  
-  /// Tells the delegate that a user click will open another app (such as
-  /// the App Store), backgrounding the current app.
-  func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
-    print("adViewWillLeaveApplication")
-  }
-}
-

@@ -15,14 +15,14 @@ final class CategoryListViewModel: BaseViewModel {
   
   struct Output {
     let category = PublishRelay<StoreCategory>()
-    let stores = PublishRelay<[Store?]>()
+    let stores = PublishRelay<[Store]>()
     let moveCamera = PublishRelay<CLLocation>()
     let pushStoreDetail = PublishRelay<Int>()
   }
   
   struct Model {
     let category: StoreCategory
-    var stores: [Store?] = []
+    var stores: [Store] = []
     var mapLocation: CLLocation?
     var currentLocation: CLLocation?
     var isOnlyCertificated = false
@@ -122,26 +122,18 @@ final class CategoryListViewModel: BaseViewModel {
         guard let self = self else { return }
         
         if self.model.isOnlyCertificated {
-          let certificatedStores = self.model.stores.filter { $0?.isCertificated == true }
+          let certificatedStores = self.model.stores.filter { $0.isCertificated == true }
           
-          if certificatedStores.isEmpty {
-            self.ouput.stores.accept([])
-          } else {
-            self.ouput.stores.accept([nil] + certificatedStores)
-          }
+          self.ouput.stores.accept(certificatedStores)
         } else {
-          if self.model.stores.count == 1 { // nil만 있을 경우
-            self.ouput.stores.accept([])
-          } else {
-            self.ouput.stores.accept(self.model.stores)
-          }
+          self.ouput.stores.accept(self.model.stores)
         }
       }
       .disposed(by: self.disposeBag)
     
     self.input.tapStore
       .compactMap { [weak self] row in
-        return self?.model.stores[row]?.storeId
+        return self?.model.stores[row].storeId
       }
       .bind(to: self.ouput.pushStoreDetail)
       .disposed(by: self.disposeBag)
@@ -162,22 +154,14 @@ final class CategoryListViewModel: BaseViewModel {
       orderType: orderType
     ).subscribe { [weak self] stores in
       guard let self = self else { return }
-      self.model.stores = [nil] + stores
+      self.model.stores = stores
       
       if self.model.isOnlyCertificated {
         let certificatedStores = stores.filter { $0.isCertificated }
         
-        if certificatedStores.isEmpty {
-          self.ouput.stores.accept([])
-        } else {
-          self.ouput.stores.accept([nil] + certificatedStores)
-        }
+        self.ouput.stores.accept(certificatedStores)
       } else {
-        if stores.isEmpty {
-          self.ouput.stores.accept([])
-        } else {
-          self.ouput.stores.accept([nil] + stores)
-        }
+        self.ouput.stores.accept(stores)
       }
     } onError: { [weak self] error in
       self?.showErrorAlert.accept(error)
