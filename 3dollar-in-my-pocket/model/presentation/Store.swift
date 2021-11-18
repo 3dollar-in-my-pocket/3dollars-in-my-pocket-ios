@@ -136,7 +136,9 @@ struct Store {
     self.updatedAt = response.updatedAt
     self.user = User(response: response.user)
     self.visitHistories = response.visitHistories.map { VisitHistory(response: $0) }
-    self.isCertificated = !response.visitHistories.filter { $0.type == .exists }.isEmpty
+    self.isCertificated =
+      response.visitHistories.filter { $0.type == .exists }.count >
+      response.visitHistories.filter { $0.type == .notExists }.count
   }
 }
 
