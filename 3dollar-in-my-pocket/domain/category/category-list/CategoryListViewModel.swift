@@ -61,7 +61,7 @@ final class CategoryListViewModel: BaseViewModel {
           category: self.model.category,
           currentLocation: currentLocation,
           mapLocation: currentLocation,
-          distance: 500,
+          distance: 1000,
           orderType: self.model.orderType
         )
         self.ouput.category.accept(self.model.category)
@@ -89,7 +89,7 @@ final class CategoryListViewModel: BaseViewModel {
           category: self.model.category,
           currentLocation: currentLocation,
           mapLocation: mapLocation,
-          distance: 500,
+          distance: 1000,
           orderType: self.model.orderType
         )
       }
@@ -108,7 +108,7 @@ final class CategoryListViewModel: BaseViewModel {
           category: self.model.category,
           currentLocation: currentLocation,
           mapLocation: mapLocation,
-          distance: 500,
+          distance: 1000,
           orderType: self.model.orderType
         )
       }
