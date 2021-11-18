@@ -16,7 +16,7 @@ struct Store {
   let updatedAt: String?
   let user: User
   let visitHistories: [VisitHistory]
-  let isCertificated: Bool
+  var isCertificated: Bool
   
   init(
     category: StoreCategory,
@@ -146,5 +146,12 @@ extension Store {
   /// 카테고리들 나열된 문자열 ex.) #붕어빵 #땅콩과자 #호떡
   var categoriesString: String {
     return self.categories.map { "#\($0.name)"}.joined(separator: " ")
+  }
+}
+
+extension Store: Equatable {
+  
+  static func == (lhs: Store, rhs: Store) -> Bool {
+    return lhs.storeId == rhs.storeId
   }
 }

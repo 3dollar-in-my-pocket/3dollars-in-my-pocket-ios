@@ -343,3 +343,9 @@ extension HomeVC: UIViewControllerTransitioningDelegate {
     return self.transition
   }
 }
+
+extension HomeVC: VisitViewControllerDelegate {
+  func onSuccessVisit(store: Store) {
+    self.viewModel.input.updateStore.onNext(store)
+  }
+}

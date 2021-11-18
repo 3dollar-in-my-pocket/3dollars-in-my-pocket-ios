@@ -67,6 +67,7 @@ extension HomeCoordinator where Self: UIViewController {
   
   func presentVisit(store: Store) {
     let viewController = VisitViewController.instance(store: store)
+    viewController.delegate = self as? VisitViewControllerDelegate
     
     self.presenter.present(viewController, animated: true, completion: nil)
   }

@@ -27,11 +27,11 @@ final class VisitViewModel: BaseViewModel {
     let distance = PublishRelay<Int>()
     let isVisitable = PublishRelay<Bool>()
     let moveCamera = PublishRelay<(Double, Double)>()
-    let dismiss = PublishRelay<Void>()
+    let dismiss = PublishRelay<Store>()
   }
   
   struct Model {
-    let store: Store
+    var store: Store
     var currentLocation: (Double, Double)?
     let visitMaxRange = 500
   }
@@ -102,10 +102,28 @@ final class VisitViewModel: BaseViewModel {
       storeId: self.model.store.storeId,
       type: type
     ).subscribe { [weak self] _ in
-      self?.output.dismiss.accept(())
+      guard let self = self else { return }
+      
+      self.updateCertificate(type: type)
+      self.output.dismiss.accept(self.model.store)
     } onError: { [weak self] error in
       self?.showErrorAlert.accept(error)
     }
     .disposed(by: self.disposeBag)
+  }
+  
+  private func updateCertificate(type: VisitType) {
+    var existsCount = self.model.store.visitHistories.filter { $0.type == .exists }.count
+    var notExistsCount = self.model.store.visitHistories.filter { $0.type == .notExists }.count
+    
+    switch type {
+    case .exists:
+      existsCount += 1
+      
+    case .notExists:
+      notExistsCount += 1
+    }
+    
+    self.model.store.isCertificated = existsCount > notExistsCount
   }
 }
