@@ -130,12 +130,10 @@ final class CategoryListViewModel: BaseViewModel {
             self.ouput.stores.accept([nil] + certificatedStores)
           }
         } else {
-          let notCertificatedStores = self.model.stores.filter { $0?.isCertificated == false }
-          
-          if notCertificatedStores.isEmpty {
+          if self.model.stores.count == 1 { // nil만 있을 경우
             self.ouput.stores.accept([])
           } else {
-            self.ouput.stores.accept([nil] + notCertificatedStores)
+            self.ouput.stores.accept(self.model.stores)
           }
         }
       }
