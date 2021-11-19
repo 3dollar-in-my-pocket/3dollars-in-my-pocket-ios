@@ -1,4 +1,6 @@
 import UIKit
+
+import AppTrackingTransparency
 import GoogleMobileAds
 import NMapsMap
 
@@ -51,6 +53,14 @@ final class CategoryListView: BaseView {
   
   let orderFilterButton = OrderFilterButton()
   
+  let adBannerView = GADBannerView().then {
+    #if DEBUG
+    $0.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+    #else
+    $0.adUnitID = "ca-app-pub-1527951560812478/3327283605"
+    #endif
+  }
+  
   let storeTableView = UITableView().then {
     $0.backgroundColor = .clear
     $0.tableFooterView = UIView()
@@ -97,8 +107,11 @@ final class CategoryListView: BaseView {
       self.orderFilterButton,
       self.storeTableView,
       self.emptyImage,
-      self.emptyLabel
+      self.emptyLabel,
+      self.adBannerView
     ])
+    self.adBannerView.delegate = self
+    self.loadAd()
   }
   
   override func bindConstraints() {
@@ -164,15 +177,22 @@ final class CategoryListView: BaseView {
       make.left.equalTo(self.certificatedButton.snp.right).offset(12)
     }
     
+    self.adBannerView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.right.equalToSuperview().offset(-24)
+      make.top.equalTo(self.certificatedButton.snp.bottom).offset(19)
+      make.height.equalTo(64)
+    }
+    
     self.storeTableView.snp.makeConstraints { make in
-      make.top.equalTo(self.certificatedButton.snp.bottom).offset(16)
+      make.top.equalTo(self.adBannerView.snp.bottom).offset(16)
       make.left.right.equalToSuperview()
       make.height.equalTo(0)
     }
     
     self.emptyImage.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
-      make.top.equalTo(self.certificatedButton.snp.bottom).offset(19)
+      make.top.equalTo(self.adBannerView.snp.bottom).offset(19)
     }
     
     self.emptyLabel.snp.makeConstraints { make in
@@ -234,5 +254,49 @@ final class CategoryListView: BaseView {
     cameraUpdate.animation = .easeIn
     
     self.mapView.moveCamera(cameraUpdate)
+  }
+  
+  private func loadAd() {
+    let viewWidth = UIScreen.main.bounds.width
+    
+    self.adBannerView.adSize
+    = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
+    self.adBannerView.delegate = self
+    if #available(iOS 14, *) {
+      ATTrackingManager.requestTrackingAuthorization(completionHandler: { _ in
+        self.adBannerView.load(GADRequest())
+      })
+    } else {
+      self.adBannerView.load(GADRequest())
+    }
+  }
+}
+
+extension CategoryListView: GADBannerViewDelegate {
+  /// Tells the delegate an ad request loaded an ad.
+  func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+    print("adViewDidReceiveAd")
+  }
+  
+  /// Tells the delegate that a full-screen view will be presented in response
+  /// to the user clicking on an ad.
+  func bannerViewWillPresentScreen(_ bannerView: GADBannerView) {
+    print("adViewWillPresentScreen")
+  }
+  
+  /// Tells the delegate that the full-screen view will be dismissed.
+  func bannerViewWillDismissScreen(_ bannerView: GADBannerView) {
+    print("adViewWillDismissScreen")
+  }
+  
+  /// Tells the delegate that the full-screen view has been dismissed.
+  func bannerViewDidDismissScreen(_ bannerView: GADBannerView) {
+    print("adViewDidDismissScreen")
+  }
+  
+  /// Tells the delegate that a user click will open another app (such as
+  /// the App Store), backgrounding the current app.
+  func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
+    print("adViewWillLeaveApplication")
   }
 }

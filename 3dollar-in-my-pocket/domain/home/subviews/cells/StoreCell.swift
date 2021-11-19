@@ -169,7 +169,7 @@ class StoreCell: BaseCollectionViewCell {
     self.titleLabel.text = store.storeName
     self.setRating(rating: store.rating)
     self.setCategories(categories: store.categories)
-    self.bedgeImage.isHidden = !store.isCertificated
+    self.bedgeImage.isHidden = !store.visitHistory.isCertified
   }
   
   private func setDistance(distance: Int) {

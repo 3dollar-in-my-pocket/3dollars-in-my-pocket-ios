@@ -101,7 +101,7 @@ class FAQViewModel: BaseViewModel {
   
   private func filterTag(index: Int) {
     if index == 0 {
-      self.filteredfaqs = self.faqs
+      self.filteredfaqs = Array(self.faqs[1..<self.faqs.count-1])
     } else {
       self.filteredfaqs = [self.faqs[index]]
     }

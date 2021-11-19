@@ -13,10 +13,10 @@ struct Store {
   let storeId: Int
   let storeName: String
   let storeType: StoreType?
-  let updatedAt: String
+  let updatedAt: String?
   let user: User
   let visitHistories: [VisitHistory]
-  let isCertificated: Bool
+  var visitHistory: VisitOverview
   
   init(
     category: StoreCategory,
@@ -38,10 +38,10 @@ struct Store {
     self.reviews = []
     self.storeName = storeName
     self.storeType = nil
-    self.updatedAt = ""
+    self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
-    self.isCertificated = false
+    self.visitHistory = VisitOverview()
   }
   
   init(
@@ -73,10 +73,10 @@ struct Store {
     self.reviews = []
     self.storeName = storeName
     self.storeType = storeType
-    self.updatedAt = ""
+    self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
-    self.isCertificated = false
+    self.visitHistory = VisitOverview()
   }
   
   init() {
@@ -93,10 +93,10 @@ struct Store {
     self.reviews = []
     self.storeName = ""
     self.storeType = nil
-    self.updatedAt = ""
+    self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
-    self.isCertificated = false
+    self.visitHistory = VisitOverview()
   }
   
   init(response: StoreInfoResponse) {
@@ -113,10 +113,10 @@ struct Store {
     self.reviews = []
     self.storeName = response.storeName
     self.storeType = nil
-    self.updatedAt = ""
+    self.updatedAt = nil
     self.user = User()
     self.visitHistories = []
-    self.isCertificated = response.visitHistory.isCertified
+    self.visitHistory = VisitOverview(response: response.visitHistory)
   }
   
   init(response: StoreDetailResponse) {
@@ -136,7 +136,7 @@ struct Store {
     self.updatedAt = response.updatedAt
     self.user = User(response: response.user)
     self.visitHistories = response.visitHistories.map { VisitHistory(response: $0) }
-    self.isCertificated = !response.visitHistories.filter { $0.type == .exists }.isEmpty
+    self.visitHistory = VisitOverview(response: response.visitHistory)
   }
 }
 
@@ -144,5 +144,12 @@ extension Store {
   /// 카테고리들 나열된 문자열 ex.) #붕어빵 #땅콩과자 #호떡
   var categoriesString: String {
     return self.categories.map { "#\($0.name)"}.joined(separator: " ")
+  }
+}
+
+extension Store: Equatable {
+  
+  static func == (lhs: Store, rhs: Store) -> Bool {
+    return lhs.storeId == rhs.storeId
   }
 }

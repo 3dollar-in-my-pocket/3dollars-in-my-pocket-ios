@@ -44,7 +44,7 @@ class HomeView: BaseView {
     let layout = UICollectionViewFlowLayout()
     
     layout.scrollDirection = .horizontal
-    layout.minimumInteritemSpacing = 12
+    layout.minimumInteritemSpacing = 17
     layout.itemSize = StoreCell.itemSize
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear

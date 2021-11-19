@@ -15,14 +15,14 @@ final class CategoryListViewModel: BaseViewModel {
   
   struct Output {
     let category = PublishRelay<StoreCategory>()
-    let stores = PublishRelay<[Store?]>()
+    let stores = PublishRelay<[Store]>()
     let moveCamera = PublishRelay<CLLocation>()
     let pushStoreDetail = PublishRelay<Int>()
   }
   
   struct Model {
     let category: StoreCategory
-    var stores: [Store?] = []
+    var stores: [Store] = []
     var mapLocation: CLLocation?
     var currentLocation: CLLocation?
     var isOnlyCertificated = false
@@ -61,7 +61,7 @@ final class CategoryListViewModel: BaseViewModel {
           category: self.model.category,
           currentLocation: currentLocation,
           mapLocation: currentLocation,
-          distance: 500,
+          distance: 1000,
           orderType: self.model.orderType
         )
         self.ouput.category.accept(self.model.category)
@@ -89,7 +89,7 @@ final class CategoryListViewModel: BaseViewModel {
           category: self.model.category,
           currentLocation: currentLocation,
           mapLocation: mapLocation,
-          distance: 500,
+          distance: 1000,
           orderType: self.model.orderType
         )
       }
@@ -108,7 +108,7 @@ final class CategoryListViewModel: BaseViewModel {
           category: self.model.category,
           currentLocation: currentLocation,
           mapLocation: mapLocation,
-          distance: 500,
+          distance: 1000,
           orderType: self.model.orderType
         )
       }
@@ -122,7 +122,9 @@ final class CategoryListViewModel: BaseViewModel {
         guard let self = self else { return }
         
         if self.model.isOnlyCertificated {
-          self.ouput.stores.accept([nil] + self.model.stores.filter { $0?.isCertificated == true })
+          let certificatedStores = self.model.stores.filter { $0.visitHistory.isCertified }
+          
+          self.ouput.stores.accept(certificatedStores)
         } else {
           self.ouput.stores.accept(self.model.stores)
         }
@@ -130,9 +132,7 @@ final class CategoryListViewModel: BaseViewModel {
       .disposed(by: self.disposeBag)
     
     self.input.tapStore
-      .compactMap { [weak self] row in
-        return self?.model.stores[row]?.storeId
-      }
+      .withLatestFrom(self.ouput.stores) { $1[$0].storeId }
       .bind(to: self.ouput.pushStoreDetail)
       .disposed(by: self.disposeBag)
   }
@@ -152,12 +152,14 @@ final class CategoryListViewModel: BaseViewModel {
       orderType: orderType
     ).subscribe { [weak self] stores in
       guard let self = self else { return }
-      self.model.stores = [nil] + stores
+      self.model.stores = stores
       
       if self.model.isOnlyCertificated {
-        self.ouput.stores.accept([nil] + stores.filter { $0.isCertificated })
+        let certificatedStores = stores.filter { $0.visitHistory.isCertified }
+        
+        self.ouput.stores.accept(certificatedStores)
       } else {
-        self.ouput.stores.accept([nil] + stores)
+        self.ouput.stores.accept(stores)
       }
     } onError: { [weak self] error in
       self?.showErrorAlert.accept(error)

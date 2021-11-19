@@ -234,7 +234,7 @@ final class VisitView: BaseView {
       make.left.right.equalToSuperview()
       make.top.equalTo(self.snp.bottom)
       make.height.equalTo(
-        246 * RatioUtils.heightRatio
+        186 * RatioUtils.heightRatio
           + (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0)
       )
     }
@@ -253,7 +253,8 @@ final class VisitView: BaseView {
   }
   
   func bindDistance(distance: Int) {
-    let progress = Float(300 - distance)/300
+    /// 기준 거리인 300m보다 멀리 있으면 0.5로 고정, 300m보다 가까이 있으면 프로그래스 바 설정
+    let progress = distance > 300 ? 0.5 : Float(300 - distance)/300
     
     self.progressView.progress = progress
     self.indicatorImage.snp.updateConstraints { make in
@@ -282,13 +283,13 @@ final class VisitView: BaseView {
   func bindVisitable(isVisitable: Bool) {
     if isVisitable {
       self.mapView.snp.updateConstraints { make in
-        make.height.equalTo(200)
+        make.height.equalTo(270 * RatioUtils.heightRatio)
       }
       self.bottomSheetContainerView.snp.remakeConstraints { make in
         make.left.right.equalToSuperview()
         make.bottom.equalToSuperview()
         make.height.equalTo(
-          246 * RatioUtils.heightRatio
+          230 * RatioUtils.heightRatio
             + (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0)
         )
       }
@@ -308,7 +309,7 @@ final class VisitView: BaseView {
         make.left.right.equalToSuperview()
         make.top.equalTo(self.snp.bottom)
         make.height.equalTo(
-          246 * RatioUtils.heightRatio
+          230 * RatioUtils.heightRatio
             + (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0)
         )
       }

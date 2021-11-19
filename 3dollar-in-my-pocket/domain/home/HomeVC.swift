@@ -247,7 +247,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   }
   
   func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-    let pageWidth = CGFloat(264)
+    let pageWidth = CGFloat(272)
     let offsetHelper: CGFloat = self.previousOffset > scrollView.contentOffset.x ? -50 : 50
     let proportionalOffset = (scrollView.contentOffset.x + offsetHelper) / pageWidth
     
@@ -265,7 +265,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   
   func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
     if !decelerate {
-      let pageWidth = CGFloat(264)
+      let pageWidth = CGFloat(272)
       let proportionalOffset = scrollView.contentOffset.x / pageWidth
       let selectedIndex = Int(round(proportionalOffset))
       
@@ -341,5 +341,11 @@ extension HomeVC: UIViewControllerTransitioningDelegate {
     self.transition.maskOriginalFrame = self.homeView.addressContainerView.frame
     
     return self.transition
+  }
+}
+
+extension HomeVC: VisitViewControllerDelegate {
+  func onSuccessVisit(store: Store) {
+    self.viewModel.input.updateStore.onNext(store)
   }
 }

@@ -2,7 +2,12 @@ import UIKit
 
 import NMapsMap
 
+protocol VisitViewControllerDelegate: AnyObject {
+  func onSuccessVisit(store: Store)
+}
+
 final class VisitViewController: BaseVC, VisitCoordinator {
+  weak var delegate: VisitViewControllerDelegate?
   private let visitView = VisitView()
   private let viewModel: VisitViewModel
   private weak var coordinator: VisitCoordinator?
@@ -92,8 +97,9 @@ final class VisitViewController: BaseVC, VisitCoordinator {
       .disposed(by: self.disposeBag)
     
     self.viewModel.output.dismiss
-      .asDriver(onErrorJustReturn: ())
-      .drive(onNext: { [weak self] in
+      .asDriver(onErrorJustReturn: Store())
+      .drive(onNext: { [weak self] store in
+        self?.delegate?.onSuccessVisit(store: store)
         self?.coordinator?.dismissWithSuccessAlert()
       })
       .disposed(by: self.disposeBag)

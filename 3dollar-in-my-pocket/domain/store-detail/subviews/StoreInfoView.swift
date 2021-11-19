@@ -157,7 +157,10 @@ final class StoreInfoView: BaseView {
   }
   
   func bind(store: Store) {
-    self.updatedAtLabel.text = DateUtils.toUpdatedAtFormat(dateString: store.updatedAt)
+    // 과거의 데이터중에서는 updatedAt이 Nil인 경우가 존재합니다.
+    if let updatedAt = store.updatedAt {
+      self.updatedAtLabel.text = DateUtils.toUpdatedAtFormat(dateString: updatedAt)
+    }
     self.setStoreType(storeType: store.storeType)
     self.setStoreDays(weekDays: store.appearanceDays)
     self.paymentMethodView.bind(paymentMethods: store.paymentMethods)

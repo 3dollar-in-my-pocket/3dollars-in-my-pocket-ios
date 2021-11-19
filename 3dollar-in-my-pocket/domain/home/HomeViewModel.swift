@@ -29,6 +29,7 @@ class HomeViewModel: BaseViewModel {
     let tapStore = PublishSubject<Int>()
     let tapStoreVisit = PublishSubject<Int>()
     let deselectCurrentStore = PublishSubject<Void>()
+    let updateStore = PublishSubject<Store>()
   }
   
   struct Output {
@@ -120,6 +121,16 @@ class HomeViewModel: BaseViewModel {
     self.input.deselectCurrentStore
       .bind(onNext: self.deselectStore)
       .disposed(by: disposeBag)
+    
+    self.input.updateStore
+      .bind { [weak self] store in
+        guard let self = self else { return }
+        
+        if let index = self.stores.firstIndex(of: store) {
+          self.stores[index] = store
+        }
+      }
+      .disposed(by: self.disposeBag)
   }
   
   private func searchNearStores(
