@@ -1,10 +1,12 @@
 import UIKit
+
+import AppTrackingTransparency
 import GoogleMobileAds
 import NMapsMap
 
-class CategoryListView: BaseView {
+final class CategoryListView: BaseView {
   
-  let navigationView = UIView().then {
+  private let navigationView = UIView().then {
     $0.layer.cornerRadius = 20
     $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
     $0.layer.shadowOffset = CGSize(width: 0, height: 4)
@@ -14,81 +16,102 @@ class CategoryListView: BaseView {
   }
   
   let backButton = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_back_black"), for: .normal)
+    $0.setImage(R.image.ic_back_black(), for: .normal)
   }
   
-  let titleStackView = UIStackView().then {
+  private let titleStackView = UIStackView().then {
     $0.axis = .horizontal
     $0.spacing = 8
   }
   
-  let categoryImage = UIImageView()
+  private let categoryImage = UIImageView()
   
-  let categoryLabel = UILabel().then {
-    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
+  private let categoryLabel = UILabel().then {
+    $0.font = .bold(size: 16)
     $0.textColor = .black
   }
   
-  let mapView = NMFMapView()
+  private let scrollView = UIScrollView()
   
-  let currentLocationButton = UIButton().then {
-    $0.setImage(UIImage.init(named: "ic_current_location"), for: .normal)
+  private let containerView = UIView()
+  
+  let mapView = NMFMapView().then {
+    $0.positionMode = .compass
   }
   
-  let categoryTitleLabel = UILabel().then {
+  let currentLocationButton = UIButton().then {
+    $0.setImage(R.image.ic_current_location(), for: .normal)
+  }
+  
+  private let categoryTitleLabel = UILabel().then {
     $0.font = UIFont(name: "AppleSDGothicNeo-Light", size: 24)
     $0.textColor = .black
     $0.numberOfLines = 0
   }
   
-  let distanceOrderButton = UIButton().then {
-    $0.setTitle("category_ordering_distance".localized, for: .normal)
-    $0.setTitleColor(.black, for: .selected)
-    $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
-    $0.isSelected = true
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+  let certificatedButton = CertificateButton()
+  
+  let orderFilterButton = OrderFilterButton()
+  
+  let adBannerView = GADBannerView().then {
+    #if DEBUG
+    $0.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+    #else
+    $0.adUnitID = "ca-app-pub-1527951560812478/3327283605"
+    #endif
   }
   
-  let reviewOrderButton = UIButton().then {
-    $0.setTitle("category_ordering_review".localized, for: .normal)
-    $0.setTitleColor(.black, for: .selected)
-    $0.setTitleColor(UIColor.init(r: 189, g: 189, b: 189), for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
-  }
-  
-  let storeTableView = UITableView(frame: .zero, style: .grouped).then {
+  let storeTableView = UITableView().then {
+    $0.backgroundColor = .clear
     $0.tableFooterView = UIView()
-    $0.rowHeight = UITableView.automaticDimension
+    $0.rowHeight = CategoryListStoreCell.height
     $0.separatorStyle = .none
-    $0.sectionHeaderHeight = UITableView.automaticDimension
-    $0.estimatedSectionHeaderHeight = 1
-    $0.backgroundColor = UIColor(r: 250, g: 250, b: 250)
     $0.showsVerticalScrollIndicator = false
-    $0.contentInsetAdjustmentBehavior = .never
+    $0.isScrollEnabled = false
+    $0.register(
+      CategoryListStoreCell.self,
+      forCellReuseIdentifier: CategoryListStoreCell.registerId
+    )
   }
   
-  let emptyImage = UIImageView().then {
-    $0.image = UIImage(named: "img_empty")
+  private let emptyImage = UIImageView().then {
+    $0.image = R.image.img_empty()
     $0.isHidden = true
   }
   
-  let emptyLabel = UILabel().then {
-    $0.text = "category_list_empty".localized
-    $0.textColor = UIColor(r: 200, g: 200, b: 200)
-    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
+  private let emptyLabel = UILabel().then {
+    $0.text = R.string.localization.category_list_empty()
+    $0.textColor = R.color.gray1()
+    $0.font = .bold(size: 16)
     $0.isHidden = true
   }
   
   
   override func setup() {
-    self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
-    self.titleStackView.addArrangedSubview(categoryImage)
-    self.titleStackView.addArrangedSubview(categoryLabel)
-    self.addSubViews(
-      storeTableView, mapView, navigationView, backButton,
-      currentLocationButton, reviewOrderButton, distanceOrderButton,
-      categoryTitleLabel, titleStackView, emptyImage, emptyLabel
-    )
+    self.backgroundColor = R.color.gray0()
+    self.titleStackView.addArrangedSubview(self.categoryImage)
+    self.titleStackView.addArrangedSubview(self.categoryLabel)
+    self.addSubViews([
+      self.scrollView,
+      self.navigationView,
+      self.backButton,
+      self.titleStackView
+    ])
+    
+    self.scrollView.addSubview(self.containerView)
+    self.containerView.addSubViews([
+      self.mapView,
+      self.currentLocationButton,
+      self.categoryTitleLabel,
+      self.certificatedButton,
+      self.orderFilterButton,
+      self.storeTableView,
+      self.emptyImage,
+      self.emptyLabel,
+      self.adBannerView
+    ])
+    self.adBannerView.delegate = self
+    self.loadAd()
   }
   
   override func bindConstraints() {
@@ -111,43 +134,65 @@ class CategoryListView: BaseView {
       make.width.height.equalTo(32)
     }
     
+    self.scrollView.snp.makeConstraints { make in
+      make.left.equalToSuperview()
+      make.right.equalToSuperview()
+      make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
+      make.bottom.equalToSuperview()
+    }
+    
+    self.containerView.snp.makeConstraints { make in
+      make.edges.equalToSuperview()
+      make.width.equalTo(UIScreen.main.bounds.width)
+      make.top.equalTo(self.mapView).priority(.high)
+      make.bottom.equalTo(self.storeTableView).priority(.high)
+    }
+    
     self.mapView.snp.makeConstraints { make in
       make.left.right.equalToSuperview()
-      make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
+      make.top.equalToSuperview()
       make.height.equalTo(339 * RatioUtils.heightRatio)
     }
     
     self.currentLocationButton.snp.makeConstraints { (make) in
-      make.right.equalTo(mapView.snp.right).offset(-24)
-      make.bottom.equalTo(mapView.snp.bottom).offset(-15)
+      make.right.equalTo(self.mapView.snp.right).offset(-24)
+      make.bottom.equalTo(self.mapView.snp.bottom).offset(-15)
       make.width.height.equalTo(48)
     }
     
     self.categoryTitleLabel.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-129)
-      make.top.equalTo(self.mapView.snp.bottom).offset(40)
+      make.top.equalTo(self.mapView.snp.bottom).offset(32)
     }
     
-    self.reviewOrderButton.snp.makeConstraints { make in
+    self.certificatedButton.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(self.categoryTitleLabel.snp.bottom).offset(14)
+    }
+    
+    self.orderFilterButton.snp.makeConstraints { make in
+      make.top.equalTo(self.certificatedButton)
+      make.bottom.equalTo(self.certificatedButton)
+      make.left.equalTo(self.certificatedButton.snp.right).offset(12)
+    }
+    
+    self.adBannerView.snp.makeConstraints { make in
+      make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
-      make.bottom.equalTo(self.categoryTitleLabel)
-    }
-    
-    self.distanceOrderButton.snp.makeConstraints { make in
-      make.bottom.equalTo(self.reviewOrderButton)
-      make.right.equalToSuperview().offset(-75)
+      make.top.equalTo(self.certificatedButton.snp.bottom).offset(19)
+      make.height.equalTo(64)
     }
     
     self.storeTableView.snp.makeConstraints { make in
-      make.top.equalTo(self.categoryTitleLabel.snp.bottom)
+      make.top.equalTo(self.adBannerView.snp.bottom).offset(16)
       make.left.right.equalToSuperview()
-      make.bottom.equalTo(safeAreaLayoutGuide)
+      make.height.equalTo(0)
     }
     
     self.emptyImage.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
-      make.top.equalTo(self.categoryTitleLabel.snp.bottom).offset(32)
+      make.top.equalTo(self.adBannerView.snp.bottom).offset(19)
     }
     
     self.emptyLabel.snp.makeConstraints { make in
@@ -177,8 +222,81 @@ class CategoryListView: BaseView {
     self.categoryTitleLabel.attributedText = attributedString
   }
   
-  func onTapOrderButton(order: CategoryOrder) {
-    self.distanceOrderButton.isSelected = order == .distance
-    self.reviewOrderButton.isSelected = order == .review
+  func bind(stores: [Store?]) {
+    self.emptyImage.isHidden = !stores.isEmpty
+    self.emptyLabel.isHidden = !stores.isEmpty
+    
+    if stores.isEmpty {
+      self.containerView.snp.remakeConstraints { make in
+        make.edges.equalToSuperview()
+        make.width.equalTo(UIScreen.main.bounds.width)
+        make.top.equalTo(self.mapView).priority(.high)
+        make.bottom.equalTo(self.emptyLabel).priority(.high)
+      }
+    } else {
+      self.storeTableView.snp.updateConstraints { make in
+        make.height.equalTo(CGFloat(stores.count) * CategoryListStoreCell.height)
+      }
+      self.containerView.snp.remakeConstraints { make in
+        make.edges.equalToSuperview()
+        make.width.equalTo(UIScreen.main.bounds.width)
+        make.top.equalTo(self.mapView).priority(.high)
+        make.bottom.equalTo(self.storeTableView).priority(.high)
+      }
+    }
+  }
+  
+  func moveCemra(location: CLLocation) {
+    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
+      lat: location.coordinate.latitude,
+      lng: location.coordinate.longitude
+    ))
+    cameraUpdate.animation = .easeIn
+    
+    self.mapView.moveCamera(cameraUpdate)
+  }
+  
+  private func loadAd() {
+    let viewWidth = UIScreen.main.bounds.width
+    
+    self.adBannerView.adSize
+    = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth)
+    self.adBannerView.delegate = self
+    if #available(iOS 14, *) {
+      ATTrackingManager.requestTrackingAuthorization(completionHandler: { _ in
+        self.adBannerView.load(GADRequest())
+      })
+    } else {
+      self.adBannerView.load(GADRequest())
+    }
+  }
+}
+
+extension CategoryListView: GADBannerViewDelegate {
+  /// Tells the delegate an ad request loaded an ad.
+  func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+    print("adViewDidReceiveAd")
+  }
+  
+  /// Tells the delegate that a full-screen view will be presented in response
+  /// to the user clicking on an ad.
+  func bannerViewWillPresentScreen(_ bannerView: GADBannerView) {
+    print("adViewWillPresentScreen")
+  }
+  
+  /// Tells the delegate that the full-screen view will be dismissed.
+  func bannerViewWillDismissScreen(_ bannerView: GADBannerView) {
+    print("adViewWillDismissScreen")
+  }
+  
+  /// Tells the delegate that the full-screen view has been dismissed.
+  func bannerViewDidDismissScreen(_ bannerView: GADBannerView) {
+    print("adViewDidDismissScreen")
+  }
+  
+  /// Tells the delegate that a user click will open another app (such as
+  /// the App Store), backgrounding the current app.
+  func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
+    print("adViewWillLeaveApplication")
   }
 }

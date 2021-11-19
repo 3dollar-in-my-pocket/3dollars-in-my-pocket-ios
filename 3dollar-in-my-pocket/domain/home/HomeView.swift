@@ -3,7 +3,10 @@ import NMapsMap
 
 class HomeView: BaseView {
   
-  let mapView = NMFMapView()
+  let mapView = NMFMapView().then {
+    $0.positionMode = .direction
+    $0.zoomLevel = 15
+  }
   
   let addressContainerView = UIView().then {
     $0.backgroundColor = .white
@@ -41,7 +44,7 @@ class HomeView: BaseView {
     let layout = UICollectionViewFlowLayout()
     
     layout.scrollDirection = .horizontal
-    layout.minimumInteritemSpacing = 12
+    layout.minimumInteritemSpacing = 17
     layout.itemSize = StoreCell.itemSize
     $0.collectionViewLayout = layout
     $0.backgroundColor = .clear

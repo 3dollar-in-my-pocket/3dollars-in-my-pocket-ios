@@ -27,7 +27,9 @@ class HomeViewModel: BaseViewModel {
     let selectStore = PublishSubject<Int>()
     let backFromDetail = PublishSubject<Store>()
     let tapStore = PublishSubject<Int>()
+    let tapStoreVisit = PublishSubject<Int>()
     let deselectCurrentStore = PublishSubject<Void>()
+    let updateStore = PublishSubject<Store>()
   }
   
   struct Output {
@@ -39,6 +41,7 @@ class HomeViewModel: BaseViewModel {
     let setSelectStore = PublishRelay<(IndexPath, Bool)>()
     let selectMarker = PublishRelay<(Int, [Store])>()
     let goToDetail = PublishRelay<Int>()
+    let presentVisit = PublishRelay<Store>()
   }
   
   
@@ -108,9 +111,26 @@ class HomeViewModel: BaseViewModel {
       .bind(onNext: self.onTapStore(index:))
       .disposed(by: disposeBag)
     
+    self.input.tapStoreVisit
+      .compactMap { [weak self] index in
+        return self?.stores[index]
+      }
+      .bind(to: self.output.presentVisit)
+      .disposed(by: self.disposeBag)
+    
     self.input.deselectCurrentStore
       .bind(onNext: self.deselectStore)
       .disposed(by: disposeBag)
+    
+    self.input.updateStore
+      .bind { [weak self] store in
+        guard let self = self else { return }
+        
+        if let index = self.stores.firstIndex(of: store) {
+          self.stores[index] = store
+        }
+      }
+      .disposed(by: self.disposeBag)
   }
   
   private func searchNearStores(
@@ -122,7 +142,9 @@ class HomeViewModel: BaseViewModel {
     self.storeService.searchNearStores(
       currentLocation: currentLocation,
       mapLocation: mapLocation == nil ? currentLocation : mapLocation!,
-      distance: distance
+      distance: distance,
+      category: nil,
+      orderType: nil
     )
       .subscribe(
         onNext: { [weak self] stores in

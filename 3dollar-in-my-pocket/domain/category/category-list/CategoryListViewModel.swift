@@ -2,252 +2,168 @@ import RxSwift
 import RxCocoa
 import CoreLocation
 
-class CategoryListViewModel: BaseViewModel {
-  
-  let input = Input()
-  let ouput = Output()
-  let categoryService: CategoryServiceProtocol
-  let category: StoreCategory
-  
-  var order: CategoryOrder = .distance
-  var currentLocation: CLLocation!
-  var mapLocation: CLLocation? = nil
-  var stores: [StoreCard] = []
+final class CategoryListViewModel: BaseViewModel {
   
   struct Input {
-    let currentLocation = PublishSubject<CLLocation>()
-    let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
-    let tapOrderButton = PublishSubject<CategoryOrder>()
+    let viewDidLoad = PublishSubject<Void>()
+    let tapCurrentLocationButton = PublishSubject<Void>()
+    let changeMapLocation = PublishSubject<CLLocation>()
+    let tapOrderButton = PublishSubject<StoreOrder>()
+    let tapCertificatedButton = PublishSubject<Bool>()
+    let tapStore = PublishSubject<Int>()
   }
   
   struct Output {
-    let stores = PublishRelay<[CategorySection]>()
-    let isHiddenEmpty = PublishRelay<Bool>()
-    let markers = PublishRelay<[StoreCard]>()
+    let category = PublishRelay<StoreCategory>()
+    let stores = PublishRelay<[Store]>()
+    let moveCamera = PublishRelay<CLLocation>()
+    let pushStoreDetail = PublishRelay<Int>()
   }
   
-  init(category: StoreCategory, categoryService: CategoryServiceProtocol) {
-    self.category = category
-    self.categoryService = categoryService
+  struct Model {
+    let category: StoreCategory
+    var stores: [Store] = []
+    var mapLocation: CLLocation?
+    var currentLocation: CLLocation?
+    var isOnlyCertificated = false
+    var orderType: StoreOrder = .distance
+  }
+  
+  let input = Input()
+  let ouput = Output()
+  var model: Model
+  let storeService: StoreServiceProtocol
+  let locationManager: LocationManagerProtocol
+  
+  
+  init(
+    category: StoreCategory,
+    storeService: StoreServiceProtocol,
+    locationManager: LocationManagerProtocol
+  ) {
+    self.model = Model(category: category)
+    self.storeService = storeService
+    self.locationManager = locationManager
+    
     super.init()
-    
-    self.input.currentLocation
-      .do(onNext: { [weak self] location in
-        self?.currentLocation = location
+  }
+  
+  override func bind() {
+    self.input.viewDidLoad
+      .flatMap { self.locationManager.getCurrentLocation() }
+      .do(onNext: { [weak self] currentLocation in
+        self?.model.currentLocation = currentLocation
       })
-      .map { ($0, nil) }
-      .bind(onNext: self.fetchCategoryStoresByDistance)
-      .disposed(by: disposeBag)
+      .bind(onNext: { [weak self] currentLocation in
+        guard let self = self else { return }
+        
+        self.fetchStores(
+          category: self.model.category,
+          currentLocation: currentLocation,
+          mapLocation: currentLocation,
+          distance: 1000,
+          orderType: self.model.orderType
+        )
+        self.ouput.category.accept(self.model.category)
+      })
+      .disposed(by: self.disposeBag)
     
-    self.input.mapLocation
+    self.input.tapCurrentLocationButton
+      .flatMap { self.locationManager.getCurrentLocation() }
+      .do(onNext: { [weak self] currentLocation in
+        self?.model.currentLocation = currentLocation
+      })
+      .bind(to: self.ouput.moveCamera)
+      .disposed(by: self.disposeBag)
+    
+    self.input.changeMapLocation
       .do { [weak self] location in
-        self?.mapLocation = location
+        self?.model.mapLocation = location
       }
-      .map { (order: self.order, location: (self.currentLocation, $0)) }
-      .bind { result in
-        if let currentLocation = result.location.0 {
-          if result.order == .distance {
-            self.fetchCategoryStoresByDistance(
-              currentLocation: currentLocation,
-              mapLocation: result.location.1
-            )
-          } else {
-            self.fetchCategoryStoresByReview(
-              currentLocation: currentLocation,
-              mapLocation: result.location.1
-            )
-          }
-        }
+      .bind { [weak self] mapLocation in
+        guard let self = self,
+              let currentLocation = self.model.currentLocation,
+              let mapLocation = self.model.mapLocation else { return }
+        
+        self.fetchStores(
+          category: self.model.category,
+          currentLocation: currentLocation,
+          mapLocation: mapLocation,
+          distance: 1000,
+          orderType: self.model.orderType
+        )
       }
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
     
     self.input.tapOrderButton
-      .filter { $0 != self.order }
-      .do { self.order = $0 }
-      .map { order -> (order: CategoryOrder, location: (CLLocation, CLLocation?)) in
-        return (order, (self.currentLocation, self.mapLocation))
+      .do { [weak self] order in
+        self?.model.orderType = order
       }
-      .bind { [weak self] result in
+      .bind { [weak self] _ in
+        guard let self = self,
+              let currentLocation = self.model.currentLocation,
+              let mapLocation = self.model.mapLocation else { return }
+        
+        self.fetchStores(
+          category: self.model.category,
+          currentLocation: currentLocation,
+          mapLocation: mapLocation,
+          distance: 1000,
+          orderType: self.model.orderType
+        )
+      }
+      .disposed(by: self.disposeBag)
+    
+    self.input.tapCertificatedButton
+      .do(onNext: { [weak self] isOnlyCertificated in
+        self?.model.isOnlyCertificated = isOnlyCertificated
+      })
+      .bind { [weak self] isCertificated in
         guard let self = self else { return }
-        if result.0 == .distance {
-          self.fetchCategoryStoresByDistance(currentLocation: result.location.0, mapLocation: result.location.1)
+        
+        if self.model.isOnlyCertificated {
+          let certificatedStores = self.model.stores.filter { $0.visitHistory.isCertified }
+          
+          self.ouput.stores.accept(certificatedStores)
         } else {
-          self.fetchCategoryStoresByReview(currentLocation: result.location.0, mapLocation: result.location.1)
+          self.ouput.stores.accept(self.model.stores)
         }
       }
-      .disposed(by: disposeBag)
+      .disposed(by: self.disposeBag)
+    
+    self.input.tapStore
+      .withLatestFrom(self.ouput.stores) { $1[$0].storeId }
+      .bind(to: self.ouput.pushStoreDetail)
+      .disposed(by: self.disposeBag)
   }
   
-  func fetchCategoryStoresByDistance(
+  private func fetchStores(
+    category: StoreCategory,
     currentLocation: CLLocation,
-    mapLocation: CLLocation?
+    mapLocation: CLLocation,
+    distance: Double,
+    orderType: StoreOrder
   ) {
-    self.categoryService.getStoreByDistance(
-      category: self.category,
+    self.storeService.searchNearStores(
       currentLocation: currentLocation,
-      mapLocation: mapLocation
-    ).subscribe(
-      onNext: { [weak self] response in
-        guard let self = self else { return }
-        let categoryByDistance = CategoryByDistance(response: response)
-        let stores = self.storesByDistance(from: categoryByDistance)
+      mapLocation: mapLocation,
+      distance: distance,
+      category: category,
+      orderType: orderType
+    ).subscribe { [weak self] stores in
+      guard let self = self else { return }
+      self.model.stores = stores
+      
+      if self.model.isOnlyCertificated {
+        let certificatedStores = stores.filter { $0.visitHistory.isCertified }
         
+        self.ouput.stores.accept(certificatedStores)
+      } else {
         self.ouput.stores.accept(stores)
-        self.ouput.isHiddenEmpty.accept(!stores.isEmpty)
-        self.ouput.markers.accept(categoryByDistance.getStores())
-      },
-      onError: { [weak self] error in
-        guard let self = self else { return }
-        if let httpError = error as? HTTPError {
-          self.httpErrorAlert.accept(httpError)
-        }
-        if let commonError = error as? CommonError {
-          let alertContent = AlertContent(title: nil, message: commonError.description)
-          
-          self.showSystemAlert.accept(alertContent)
-        }
       }
-    )
-    .disposed(by: disposeBag)
-  }
-  
-  func fetchCategoryStoresByReview(
-    currentLocation: CLLocation,
-    mapLocation: CLLocation?
-  ) {
-    self.categoryService.getStoreByReview(
-      category: self.category,
-      currentLocation: currentLocation,
-      mapLocation: mapLocation
-    )
-    .subscribe(
-      onNext: { [weak self] response in
-        guard let self = self else { return }
-        let categoryByReview = CategoryByReview(response: response)
-        let stores = self.storesByReview(from: categoryByReview)
-        
-        self.ouput.stores.accept(stores)
-        self.ouput.isHiddenEmpty.accept(!stores.isEmpty)
-        self.ouput.markers.accept(categoryByReview.getStores())
-      },
-      onError: { [weak self] error in
-        guard let self = self else { return }
-        if let httpError = error as? HTTPError {
-          self.httpErrorAlert.accept(httpError)
-        }
-        if let commonError = error as? CommonError {
-          let alertContent = AlertContent(title: nil, message: commonError.description)
-          
-          self.showSystemAlert.accept(alertContent)
-        }
-      }
-    )
-    .disposed(by: disposeBag)
-  }
-  
-  private func storesByDistance(from response: CategoryByDistance) -> [CategorySection] {
-    var categorySections: [CategorySection] = []
-    let distanceSection1 = CategorySection(
-      headerType: .distance50,
-      items: response.storeList50
-    )
-    let distanceSection2 = CategorySection(
-      headerType: .distance100,
-      items: response.storeList100
-    )
-    
-    let distanceSection3 = CategorySection(
-      headerType: .distance500,
-      items: response.storeList500
-    )
-    
-    let distanceSection4 = CategorySection(
-      headerType: .distance1000,
-      items: response.storeList1000
-    )
-    
-    let distanceSection5 = CategorySection(
-      headerType: .distanceOver1000,
-      items: response.storeListOver1000
-    )
-    
-    let adSection = CategorySection(
-      headerType: .ad,
-      items: [nil]
-    )
-    
-    if !distanceSection1.items.isEmpty {
-      categorySections.append(distanceSection1)
+    } onError: { [weak self] error in
+      self?.showErrorAlert.accept(error)
     }
-    if !distanceSection2.items.isEmpty {
-      categorySections.append(distanceSection2)
-    }
-    if !distanceSection3.items.isEmpty {
-      categorySections.append(distanceSection3)
-    }
-    if !distanceSection4.items.isEmpty {
-      categorySections.append(distanceSection4)
-    }
-    if !distanceSection5.items.isEmpty {
-      categorySections.append(distanceSection5)
-    }
-    
-    if !categorySections.isEmpty {
-      categorySections.append(adSection)
-    }
-    return categorySections
-  }
-  
-  private func storesByReview(from response: CategoryByReview) -> [CategorySection] {
-    var categorySections: [CategorySection] = []
-    let review4Section = CategorySection(
-      headerType: .review4,
-      items: response.storeList4
-    )
-    let review3Section = CategorySection(
-      headerType: .review3,
-      items: response.storeList3
-    )
-    
-    let review2Section = CategorySection(
-      headerType: .review2,
-      items: response.storeList2
-    )
-    
-    let review1Section = CategorySection(
-      headerType: .review1,
-      items: response.storeList1
-    )
-    
-    let review0Section = CategorySection(
-      headerType: .review0,
-      items: response.storeList0
-    )
-    
-    let adSection = CategorySection(
-      headerType: .ad,
-      items: [nil]
-    )
-    
-    if !review4Section.items.isEmpty {
-      categorySections.append(review4Section)
-    }
-    if !review3Section.items.isEmpty {
-      categorySections.append(review3Section)
-    }
-    if !review2Section.items.isEmpty {
-      categorySections.append(review2Section)
-    }
-    if !review1Section.items.isEmpty {
-      categorySections.append(review1Section)
-    }
-    if !review0Section.items.isEmpty {
-      categorySections.append(review0Section)
-    }
-    
-    if !categorySections.isEmpty {
-      categorySections.append(adSection)
-    }
-    return categorySections
+    .disposed(by: self.disposeBag)
   }
 }

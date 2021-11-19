@@ -77,6 +77,7 @@
 "category_list_sundae" = "순대, 제발 내장 많이 주세요.";
 "category_list_dalgona" = "456번째 달고나";
 "category_list_empty" = "주변에 가게가 없어요.";
+"category_list_certificated" = "인증된 가게만";
 "review_modal_title" = "이 가게를\n추천하시나요?";
 "review_modal_modify_title" = "이 가게의 추천 내용을\n수정합니다.";
 "review_modal_placeholder" = "리뷰를 남겨주세요! (100자 이내)";
@@ -153,7 +154,7 @@
 "store_detail_share_title" = "올 때 붕어빵, 잊지마!!!";
 "store_detail_share_description" = "당신은 붕어빵 셔틀에 당첨되셨습니다.\n지금 바로 가슴속 3천원을 설치하고 위치를 파악하여 미션을 수행하세요!";
 "store_detail_share_button" = "놀러가기";
-"store_detail_header_info" = "가게정보";
+"store_detail_header_info" = "가게 정보";
 "store_detail_header_modify_info" = "정보수정";
 "store_detail_header_photo" = "가게사진";
 "store_detail_header_count" = "%d개";
@@ -169,6 +170,9 @@
 "store_detail_cancel" = "취소";
 "store_detail_more_photo" = "더보기";
 "store_detail_empty_menu" = "상세 메뉴 없음";
+"store_detail_add_visit_history" = "방문 인증하기";
+"store_detail_empty_visit_history" = "아직 방문 인증 내역이 없어요 :(";
+"store_detail_visit_history" = "1주일 동안 %d명이 다녀간 가게에요!";
 "store_delete_title" = "삭제요청 하시는\n이유가 궁금해요!";
 "store_delete_description" = "3건 이상의 요청이 들어오면 자동 삭제됩니다.";
 "store_delete_menu_not_existed" = "없어진 가게에요.";
@@ -209,3 +213,7 @@
 "permission_denied_description" = "설정에서 해당 권한을 허용해 주세요!!";
 "permission_setting_button" = "설정";
 "permission_setting_cancel" = "취소";
+"visit_title_disable" = "가게 근처에서\n방문을 인증할 수 있어요!";
+"visit_title_enable" = "가게 도착!\n방문을 인증해보세요!";
+"visit_success" = "방문 성공";
+"visit_fail" = "방문 실패";

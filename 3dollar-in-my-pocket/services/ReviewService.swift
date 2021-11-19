@@ -44,7 +44,7 @@ struct ReviewService: ReviewServiceProtocol {
   
   func modifyReview(review: Review) -> Observable<ReviewInfoResponse> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v2/store/review/\(review.id)"
+      let urlString = HTTPUtils.url + "/api/v2/store/review/\(review.reviewId)"
       let headers = HTTPUtils.defaultHeader()
       let parameter = UpdateReviewRequest(review: review).params
       

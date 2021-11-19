@@ -13,7 +13,10 @@ struct StoreDetailResponse: Decodable {
   let storeId: Int
   let storeName: String
   let storeType: StoreType?
+  let updatedAt: String?
   let user: UserInfoResponse
+  let visitHistories: [VisitHistoryWithUserResponse]
+  let visitHistory: VisitHistoryInfoResponse
   
   enum CodingKeys: String, CodingKey {
     case appearanceDays
@@ -29,7 +32,10 @@ struct StoreDetailResponse: Decodable {
     case storeId
     case storeName
     case storeType
+    case updatedAt
     case user
+    case visitHistories
+    case visitHistory
   }
   
   
@@ -55,9 +61,18 @@ struct StoreDetailResponse: Decodable {
     self.storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? 0
     self.storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
     self.storeType = try values.decodeIfPresent(StoreType.self, forKey: .storeType)
+    self.updatedAt = try values.decodeIfPresent(String.self, forKey: .updatedAt)
     self.user = try values.decodeIfPresent(
       UserInfoResponse.self,
       forKey: .user
     ) ?? UserInfoResponse()
+    self.visitHistories = try values.decodeIfPresent(
+      [VisitHistoryWithUserResponse].self,
+      forKey: .visitHistories
+    ) ?? []
+    self.visitHistory = try values.decodeIfPresent(
+      VisitHistoryInfoResponse.self,
+      forKey: .visitHistory
+    ) ??  VisitHistoryInfoResponse()
   }
 }

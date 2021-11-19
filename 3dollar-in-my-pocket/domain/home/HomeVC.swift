@@ -3,8 +3,9 @@ import RxSwift
 import NMapsMap
 import FirebaseCrashlytics
 
-class HomeVC: BaseVC {
-  lazy var coordinator = HomeCoordinator(presenter: self)
+class HomeVC: BaseVC, HomeCoordinator {
+  
+  weak var coordinator: HomeCoordinator?
   private let homeView = HomeView()
   private let viewModel = HomeViewModel(
     storeService: StoreService(),
@@ -39,6 +40,7 @@ class HomeVC: BaseVC {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    self.coordinator = self
     self.initilizeShopCollectionView()
     self.fetchStoresFromCurrentLocation()
     self.initilizeNaverMap()
@@ -67,8 +69,12 @@ class HomeVC: BaseVC {
       .bind(to: homeView.storeCollectionView.rx.items(
         cellIdentifier: StoreCell.registerId,
         cellType: StoreCell.self
-      )) { _, store, cell in
+      )) { row, store, cell in
         cell.bind(store: store)
+        cell.visitButton.rx.tap
+          .map { row }
+          .bind(to: self.viewModel.input.tapStoreVisit)
+          .disposed(by: cell.disposeBag)
       }.disposed(by: disposeBag)
     
     self.viewModel.output.isHiddenResearchButton
@@ -97,8 +103,17 @@ class HomeVC: BaseVC {
     
     self.viewModel.output.goToDetail
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.coordinator.goToDetail(storeId:))
+      .bind(onNext: { [weak self] storeId in
+        self?.coordinator?.goToDetail(storeId: storeId)
+      })
       .disposed(by: disposeBag)
+    
+    self.viewModel.output.presentVisit
+      .asDriver(onErrorJustReturn: Store())
+      .drive { [weak self] store in
+        self?.coordinator?.presentVisit(store: store)
+      }
+      .disposed(by: self.disposeBag)
     
     self.viewModel.showLoading
       .observeOn(MainScheduler.instance)
@@ -117,7 +132,9 @@ class HomeVC: BaseVC {
         GA.shared.logEvent(event: .search_button_clicked, page: .home_page)
       })
       .observeOn(MainScheduler.instance)
-        .bind(onNext: self.coordinator.showSearchAddress)
+      .bind(onNext: { [weak self] in
+        self?.coordinator?.showSearchAddress()
+      })
       .disposed(by: disposeBag)
             
     self.homeView.tossButton.rx.tap
@@ -125,7 +142,9 @@ class HomeVC: BaseVC {
         GA.shared.logEvent(event: .toss_button_clicked, page: .home_page)
       })
       .observeOn(MainScheduler.instance)
-        .bind(onNext: self.coordinator.goToToss)
+      .bind(onNext: { [weak self] in
+        self?.coordinator?.goToToss()
+      })
       .disposed(by: disposeBag)
   }
   
@@ -209,7 +228,7 @@ class HomeVC: BaseVC {
   private func handleLocationError(error: Error) {
     if let locationError = error as? LocationError {
       if locationError == .denied {
-        self.coordinator.showDenyAlert()
+        self.coordinator?.showDenyAlert()
       } else {
         AlertUtils.show(controller: self, title: nil, message: locationError.errorDescription)
       }
@@ -228,7 +247,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   }
   
   func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-    let pageWidth = CGFloat(264)
+    let pageWidth = CGFloat(272)
     let offsetHelper: CGFloat = self.previousOffset > scrollView.contentOffset.x ? -50 : 50
     let proportionalOffset = (scrollView.contentOffset.x + offsetHelper) / pageWidth
     
@@ -246,7 +265,7 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   
   func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
     if !decelerate {
-      let pageWidth = CGFloat(264)
+      let pageWidth = CGFloat(272)
       let proportionalOffset = scrollView.contentOffset.x / pageWidth
       let selectedIndex = Int(round(proportionalOffset))
       
@@ -322,5 +341,11 @@ extension HomeVC: UIViewControllerTransitioningDelegate {
     self.transition.maskOriginalFrame = self.homeView.addressContainerView.frame
     
     return self.transition
+  }
+}
+
+extension HomeVC: VisitViewControllerDelegate {
+  func onSuccessVisit(store: Store) {
+    self.viewModel.input.updateStore.onNext(store)
   }
 }

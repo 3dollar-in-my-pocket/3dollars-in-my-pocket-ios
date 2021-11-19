@@ -8,16 +8,19 @@
 
 import UIKit
 
-final class HomeCoordinator: Coordinator {
-  let presenter: HomeVC
-  
-  required init(presenter: HomeVC) {
-    self.presenter = presenter
-  }
-  
+protocol HomeCoordinator: Coordinator, AnyObject {
+  func goToDetail(storeId: Int)
+  func showDenyAlert()
+  func goToAppSetting()
+  func goToToss()
+  func showSearchAddress()
+  func presentVisit(store: Store)
+}
+
+extension HomeCoordinator where Self: UIViewController {
   func goToDetail(storeId: Int) {
-    let storeDetailVC = StoreDetailVC.instance(storeId: storeId).then {
-      $0.delegate = self.presenter
+    let storeDetailVC = StoreDetailViewController.instance(storeId: storeId).then {
+      $0.delegate = self as? StoreDetailDelegate
     }
     
     self.presenter.navigationController?.pushViewController(
@@ -55,10 +58,17 @@ final class HomeCoordinator: Coordinator {
   
   func showSearchAddress() {
     let searchAddressVC = SearchAddressVC.instacne().then {
-      $0.transitioningDelegate = self.presenter
-      $0.delegate = self.presenter
+      $0.transitioningDelegate = self as? UIViewControllerTransitioningDelegate
+      $0.delegate = self as? SearchAddressDelegate
     }
     
     self.presenter.tabBarController?.present(searchAddressVC, animated: true, completion: nil)
+  }
+  
+  func presentVisit(store: Store) {
+    let viewController = VisitViewController.instance(store: store)
+    viewController.delegate = self as? VisitViewControllerDelegate
+    
+    self.presenter.present(viewController, animated: true, completion: nil)
   }
 }
