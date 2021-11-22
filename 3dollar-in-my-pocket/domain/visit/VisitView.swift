@@ -335,6 +335,10 @@ final class VisitView: BaseView {
     self.setupMap(latitude: store.latitude, longitude: store.longitude)
   }
   
+  fileprivate func moveCurrentLocation(latitude: Double, longitude: Double) {
+    self.mapView.locationOverlay.location = NMGLatLng(lat: latitude, lng: longitude)
+  }
+  
   private func setCategories(categories: [StoreCategory]) {
     var categoryString = ""
     for category in categories {
@@ -395,6 +399,15 @@ extension Reactive where Base: VisitView {
   var store: Binder<Store> {
     return Binder(self.base) { view, store in
       view.bind(store: store)
+    }
+  }
+  
+  var currentLocation: Binder<(Double, Double)> {
+    return Binder(self.base) { view, currentLocation in
+      view.moveCurrentLocation(
+        latitude: currentLocation.0,
+        longitude: currentLocation.1
+      )
     }
   }
 }
