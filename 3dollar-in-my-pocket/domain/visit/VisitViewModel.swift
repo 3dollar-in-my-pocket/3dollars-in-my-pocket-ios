@@ -25,6 +25,7 @@ final class VisitViewModel: BaseViewModel {
   struct Output {
     let store = PublishRelay<Store>()
     let distance = PublishRelay<Int>()
+    let currentLocation = PublishRelay<(Double, Double)>()
     let isVisitable = PublishRelay<Bool>()
     let moveCamera = PublishRelay<(Double, Double)>()
     let dismiss = PublishRelay<Store>()
@@ -91,6 +92,7 @@ final class VisitViewModel: BaseViewModel {
         let distnace = Int(location.distance(from: storePosition))
 
         self.model.currentLocation = (location.coordinate.latitude, location.coordinate.longitude)
+        self.output.currentLocation.accept((location.coordinate.latitude, location.coordinate.longitude))
         self.output.distance.accept(distnace - self.model.visitMaxRange)
         self.output.isVisitable.accept(distnace < self.model.visitMaxRange)
       }

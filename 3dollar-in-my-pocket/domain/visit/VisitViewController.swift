@@ -75,6 +75,11 @@ final class VisitViewController: BaseVC, VisitCoordinator {
       .drive(self.visitView.rx.store)
       .disposed(by: self.disposeBag)
     
+    self.viewModel.output.currentLocation
+      .asDriver(onErrorJustReturn: (0, 0))
+      .drive(self.visitView.rx.currentLocation)
+      .disposed(by: self.disposeBag)
+    
     self.viewModel.output.distance
       .asDriver(onErrorJustReturn: 0)
       .drive(onNext: { [weak self] distance in
