@@ -1,50 +1,73 @@
 import RxSwift
 import RxCocoa
 
-class PopupViewModel: BaseViewModel {
-  
-  let input = Input()
-  let output = Output()
-  
-  let event: Event
-  let userDefaults: UserDefaultsUtil
-  
-  struct Input {
-    let tapBannerButton = PublishSubject<Void>()
-    let tapDisableButton = PublishSubject<Void>()
-  }
-  
-  struct Output {
-    let dismiss = PublishRelay<Void>()
-  }
-  
-
-  init(event: Event, userDefaults: UserDefaultsUtil) {
-    self.event = event
-    self.userDefaults = userDefaults
-    super.init()
+final class PopupViewModel: BaseViewModel {
     
-    self.input.tapBannerButton
-      .map { self.event }
-      .bind(onNext: self.openEventURL(event:))
-      .disposed(by: disposeBag)
+    struct Input {
+        let viewDidLoad = PublishSubject<Void>()
+        let tapBannerButton = PublishSubject<Void>()
+        let tapDisableButton = PublishSubject<Void>()
+    }
     
-    self.input.tapDisableButton
-      .map { self.event}
-      .bind(onNext: self.setDisableToday(event:))
-      .disposed(by: disposeBag)
-  }
-  
-  private func openEventURL(event: Event) {
-    guard let url = URL(string: event.url),
-          UIApplication.shared.canOpenURL(url) else { return }
+    struct Output {
+        let popup = PublishRelay<Popup>()
+        let dismiss = PublishRelay<Void>()
+    }
     
-    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-    self.output.dismiss.accept(())
-  }
-  
-  private func setDisableToday(event: Event) {
-    self.userDefaults.setEventDisableToday(id: event.id)
-    self.output.dismiss.accept(())
-  }
+    struct Model {
+        let popup: Popup
+    }
+    
+    let input = Input()
+    let output = Output()
+    let model: Model
+    let userDefaults: UserDefaultsUtil
+    
+    
+    init(event: Popup, userDefaults: UserDefaultsUtil) {
+        self.model = Model(popup: event)
+        self.userDefaults = userDefaults
+        
+        super.init()
+    }
+    
+    override func bind() {
+        self.input.viewDidLoad
+            .compactMap { [weak self] in
+                self?.model.popup
+            }
+            .bind(to: self.output.popup)
+            .disposed(by: self.disposeBag)
+        
+        self.input.tapBannerButton
+            .compactMap { [weak self] in
+                self?.model.popup
+            }
+            .bind(onNext: { [weak self] popup in
+                self?.openEventURL(popup: popup)
+            })
+            .disposed(by: self.disposeBag)
+        
+        self.input.tapDisableButton
+            .compactMap { [weak self] in
+                self?.model.popup
+            }
+            .bind(onNext: { [weak self] event in
+                self?.setDisableToday(event: event)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func openEventURL(popup: Popup) {
+        guard let url = URL(string: popup.linkUrl),
+              UIApplication.shared.canOpenURL(url) else { return }
+        
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        self.output.dismiss.accept(())
+    }
+    
+    private func setDisableToday(event: Popup) {
+        self.userDefaults.setEventDisableToday(id: event.id)
+        self.output.dismiss.accept(())
+    }
 }
