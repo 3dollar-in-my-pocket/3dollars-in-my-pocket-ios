@@ -101,7 +101,7 @@ class TabBarVC: UITabBarController {
             HomeVC.instance(),
             CategoryVC.instance(),
             WriteAddressVC.instance(delegate: self),
-            MyPageVC.instance(),
+            MyPageViewController.instance(),
         ], animated: true)
         self.tabBar.tintColor = R.color.red()
         self.tabBar.layer.borderWidth = 0
