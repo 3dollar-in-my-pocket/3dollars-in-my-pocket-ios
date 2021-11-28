@@ -59,7 +59,7 @@ class SettingAccountCell: BaseTableViewCell {
     case .APPLE:
       self.snsIconImage.image = R.image.ic_setting_apple()
       self.accountTypeLabel.text = "애플 계정 회원"
-    case .KAKAO:
+    case .KAKAO, .GOOGLE:
       self.snsIconImage.image = R.image.ic_setting_kakao()
       self.accountTypeLabel.text = "카카오 계정 회원"
     }
