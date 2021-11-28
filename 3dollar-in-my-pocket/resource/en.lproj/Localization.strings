@@ -84,7 +84,7 @@
 "review_modal_register" = "리뷰 쓰기";
 "review_modal_modify" = "리뷰 수정";
 "popup_close" = "닫기";
-"popup_disable_today" = "오늘보지않기";
+"popup_disable_today" = "오늘 하루 보지않기";
 "write_title" = "가게 제보";
 "write_address_bottom_title" = "맛집 위치는 바로 여기!";
 "write_address_button" = "이 위치로 주소 설정";
