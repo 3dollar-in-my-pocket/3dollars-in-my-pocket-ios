@@ -65,6 +65,12 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
             .disposed(by: self.disposeBag)
     }
     
+    override func bindViewModelInput() {
+        self.myPageView.refreshControl.rx.controlEvent(.valueChanged)
+            .bind(to: self.viewModel.input.viewDidLoad)
+            .disposed(by: self.disposeBag)
+    }
+    
     override func bindViewModelOutput() {
         self.viewModel.output.user
             .asDriver(onErrorJustReturn: User())
@@ -79,6 +85,11 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
             )) { _, visitHistory, cell in
                 cell.bind(visitHitory: visitHistory)
             }
+            .disposed(by: self.disposeBag)
+        
+        self.viewModel.output.isRefreshing
+            .asDriver(onErrorJustReturn: false)
+            .drive(self.myPageView.refreshControl.rx.isRefreshing)
             .disposed(by: self.disposeBag)
     }
 }

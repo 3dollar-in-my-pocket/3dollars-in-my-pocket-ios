@@ -10,6 +10,7 @@ final class MyPageViewModel: BaseViewModel {
     struct Output {
         let user = PublishRelay<User>()
         let visitHistories = PublishRelay<[VisitHistory]>()
+        let isRefreshing = PublishRelay<Bool>()
     }
     
     let input = Input()
@@ -43,9 +44,11 @@ final class MyPageViewModel: BaseViewModel {
             .subscribe(
                 onNext: { [weak self] user in
                     self?.output.user.accept(user)
+                    self?.output.isRefreshing.accept(false)
                 },
                 onError: { [weak self] error in
                     self?.showErrorAlert.accept(error)
+                    self?.output.isRefreshing.accept(false)
                 }
             )
             .disposed(by: self.disposeBag)
@@ -57,9 +60,11 @@ final class MyPageViewModel: BaseViewModel {
             .subscribe(
                 onNext: { [weak self] visitHistories in
                     self?.output.visitHistories.accept(visitHistories)
+                    self?.output.isRefreshing.accept(false)
                 },
                 onError: { [weak self] error in
                     self?.showErrorAlert.accept(error)
+                    self?.output.isRefreshing.accept(false)
                 }
             )
             .disposed(by: self.disposeBag)

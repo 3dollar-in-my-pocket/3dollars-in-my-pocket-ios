@@ -5,6 +5,8 @@ import RxCocoa
 
 final class MyPageView: BaseView {
     
+    let refreshControl = UIRefreshControl()
+    
     private let scrollView = UIScrollView()
     
     private let containerView = UIView().then {
@@ -87,6 +89,7 @@ final class MyPageView: BaseView {
     
     override func setup() {
         self.backgroundColor = R.color.gray100()
+        self.scrollView.refreshControl = self.refreshControl
         self.containerView.addSubViews([
             self.bgCloud,
             self.bedgeImage,
