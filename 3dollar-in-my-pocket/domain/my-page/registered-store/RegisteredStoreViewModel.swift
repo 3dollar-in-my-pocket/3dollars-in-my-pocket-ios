@@ -10,7 +10,7 @@ final class RegisteredStoreViewModel: BaseViewModel {
     }
     
     struct Output {
-        let stores = PublishRelay<[Store]>()
+        let stores = BehaviorRelay<[Store]>(value: [])
         let totalStoreCount = PublishRelay<Int>()
         let isHiddenFooter = PublishRelay<Bool>()
         let goToStoreDetail = PublishRelay<Int>()
@@ -75,6 +75,7 @@ final class RegisteredStoreViewModel: BaseViewModel {
                     self?.output.stores.accept(stores)
                 },
                 onError: { [weak self] error in
+                    self?.output.isHiddenFooter.accept(true)
                     self?.showErrorAlert.accept(error)
                 }
             )

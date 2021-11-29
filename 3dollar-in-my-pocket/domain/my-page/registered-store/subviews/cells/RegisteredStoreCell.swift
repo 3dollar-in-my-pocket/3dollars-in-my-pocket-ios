@@ -94,4 +94,23 @@ final class RegisteredStoreCell: BaseTableViewCell {
             make.right.equalTo(self.containerView).offset(-14)
         }
     }
+    
+    func bind(store: Store) {
+        self.categoryImage.image = store.categories[0].image
+        self.categoriesLabel.text = store.categoriesString
+        self.rankLabel.text = "\(store.rating)점"
+        
+        if store.isDeleted {
+            self.titleLabel.text = "없어진 가게에요 :("
+            self.categoriesLabel.textColor = R.color.gray50()
+            self.starImage.alpha = 0.5
+            self.rankLabel.textColor = R.color.gray60()
+        } else {
+            self.titleLabel.text = store.storeName
+            self.categoriesLabel.textColor = R.color.pink()
+            self.starImage.alpha = 1
+            self.rankLabel.textColor = .white
+        }
+        self.bedgeView.bind(visitHistory: store.visitHistory, isDeleted: store.isDeleted)
+    }
 }

@@ -4,48 +4,60 @@ final class VisitBedgeView: BaseView {
     
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 13
-        $0.backgroundColor = UIColor(r: 0, g: 198, b: 103)
     }
     
-    private let bedgeImage = UIImageView().then {
-        $0.image = R.image.img_bedge()
+    private let stackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 2
     }
+    
+    private let bedgeImage = UIImageView()
     
     private let countLabel = UILabel().then {
         $0.font = .bold(size: 12)
-        $0.textColor = .white
-        $0.text = "10명"
     }
     
     override func setup() {
         self.backgroundColor = .clear
+        self.stackView.addArrangedSubview(self.bedgeImage)
+        self.stackView.addArrangedSubview(self.countLabel)
         self.addSubViews([
             self.containerView,
-            self.bedgeImage,
-            self.countLabel
+            self.stackView
         ])
     }
     
     override func bindConstraints() {
         self.containerView.snp.makeConstraints { make in
-            make.left.equalTo(self.bedgeImage).offset(-10)
-            make.right.equalTo(self.countLabel).offset(10)
-            make.top.equalTo(self.bedgeImage).offset(-5)
-            make.bottom.equalTo(self.bedgeImage).offset(5)
+            make.left.equalTo(self.stackView).offset(-10)
+            make.right.equalTo(self.stackView).offset(10)
+            make.top.equalTo(self.stackView).offset(-5)
+            make.bottom.equalTo(self.stackView).offset(5)
+        }
+        
+        self.stackView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
         
         self.bedgeImage.snp.makeConstraints { make in
-            make.center.equalToSuperview()
             make.width.height.equalTo(16)
         }
-        
-        self.countLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(self.bedgeImage)
-            make.left.equalTo(self.bedgeImage.snp.right).offset(2)
-        }
-        
+                
         self.snp.makeConstraints { make in
-            make.edges.equalTo(self.containerView).priority(.high)
+            make.edges.equalTo(self.containerView)
         }
+    }
+    
+    func bind(visitHistory: VisitOverview, isDeleted: Bool) {
+        if isDeleted {
+            self.containerView.backgroundColor = R.color.gray60()
+            self.countLabel.textColor = R.color.gray10()
+            self.bedgeImage.image = R.image.img_bedge_gray()
+        } else {
+            self.containerView.backgroundColor = UIColor(r: 0, g: 198, b: 103)
+            self.countLabel.textColor = .white
+            self.bedgeImage.image = R.image.img_bedge()
+        }
+        self.countLabel.text = "\(visitHistory.existsCounts)명"
     }
 }

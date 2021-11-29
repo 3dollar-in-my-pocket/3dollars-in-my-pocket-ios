@@ -68,7 +68,7 @@ struct VisitHistoryService: VisitHistoryProtocol {
             ).responseJSON { response in
                 if response.isSuccess() {
                     observer.processValue(
-                        class: Page<VisitHistoryWithStoreResponse>.self,
+                        class: Pagination<VisitHistoryWithStoreResponse>.self,
                         response: response
                     )
                 } else {

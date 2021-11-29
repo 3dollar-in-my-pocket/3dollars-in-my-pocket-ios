@@ -2,6 +2,7 @@ struct Store {
     
     let appearanceDays: [WeekDay]
     let categories: [StoreCategory]
+    let isDeleted: Bool
     let distance: Int
     let images: [Image]
     let latitude: Double
@@ -28,6 +29,7 @@ struct Store {
         self.appearanceDays = []
         self.categories = [category]
         self.distance = -1
+        self.isDeleted = false
         self.storeId = -1
         self.images = []
         self.latitude = latitude
@@ -58,6 +60,7 @@ struct Store {
         self.appearanceDays = appearanceDays
         self.categories = categories
         self.distance = -1
+        self.isDeleted = false
         self.storeId = id
         self.images = []
         self.latitude = latitude
@@ -82,6 +85,7 @@ struct Store {
     init() {
         self.appearanceDays = []
         self.categories = []
+        self.isDeleted = false
         self.distance = 0
         self.storeId = 0
         self.images = []
@@ -103,6 +107,7 @@ struct Store {
         self.appearanceDays = []
         self.categories = response.categories
         self.distance = 0
+        self.isDeleted = response.isDeleted
         self.storeId = response.storeId
         self.images = []
         self.latitude = response.latitude
@@ -123,6 +128,7 @@ struct Store {
         self.appearanceDays = response.appearanceDays
         self.categories = response.categories
         self.distance = response.distance
+        self.isDeleted = false
         self.storeId = response.storeId
         self.images = response.images.map(Image.init)
         self.latitude = response.latitude
@@ -143,6 +149,7 @@ struct Store {
         self.appearanceDays = []
         self.categories = response.categories
         self.distance = 0
+        self.isDeleted = response.isDeleted
         self.storeId = response.storeId
         self.images = []
         self.latitude = response.latitude
@@ -163,6 +170,7 @@ struct Store {
         self.appearanceDays = []
         self.categories = response.categories
         self.distance = response.distance
+        self.isDeleted = response.isDeleted
         self.storeId = response.storeId
         self.images = []
         self.latitude = response.latitude
