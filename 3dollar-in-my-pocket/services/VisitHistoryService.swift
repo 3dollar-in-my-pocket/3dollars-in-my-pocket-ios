@@ -16,7 +16,7 @@ protocol VisitHistoryProtocol {
     func fetchVisitHistory(
         cursor: Int?,
         size: Int
-    ) -> Observable<Page<VisitHistoryWithStoreResponse>>
+    ) -> Observable<Pagination<VisitHistoryWithStoreResponse>>
 }
 
 struct VisitHistoryService: VisitHistoryProtocol {
@@ -50,7 +50,7 @@ struct VisitHistoryService: VisitHistoryProtocol {
     func fetchVisitHistory(
         cursor: Int?,
         size: Int
-    ) -> Observable<Page<VisitHistoryWithStoreResponse>> {
+    ) -> Observable<Pagination<VisitHistoryWithStoreResponse>> {
         return .create { observer in
             let urlString = HTTPUtils.url + "/api/v2/store/visits/me"
             let headers = HTTPUtils.defaultHeader()

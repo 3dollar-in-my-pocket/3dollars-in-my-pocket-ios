@@ -30,9 +30,9 @@ final class RegisteredStoreViewController: BaseVC {
         super.viewWillAppear(animated)
         
         self.tabBarController?.tabBar.barTintColor = UIColor(r: 46, g: 46, b: 46)
-        LocationManager.shared.getCurrentLocation()
-            .bind(to: self.viewModel.input.fetchStores)
-            .disposed(by: self.disposeBag)
+//        LocationManager.shared.getCurrentLocation()
+//            .bind(to: self.viewModel.input.fetchStores)
+//            .disposed(by: self.disposeBag)
     }
     
     override func bindViewModel() {
@@ -101,23 +101,23 @@ final class RegisteredStoreViewController: BaseVC {
     }
 }
 
-extension RegisteredStoreViewController: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return RegisteredStoreHeader().then {
-            $0.setCount(count: self.viewModel.totalCount ?? 0)
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 50
-    }
-    
-    func tableView(
-        _ tableView: UITableView,
-        willDisplay cell: UITableViewCell,
-        forRowAt indexPath: IndexPath
-    ) {
-        self.viewModel.input.loadMore.onNext(indexPath.row)
-    }
-}
+//extension RegisteredStoreViewController: UITableViewDelegate {
+//
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        return RegisteredStoreHeader().then {
+//            $0.setCount(count: self.viewModel.totalCount ?? 0)
+//        }
+//    }
+//
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 50
+//    }
+//
+//    func tableView(
+//        _ tableView: UITableView,
+//        willDisplay cell: UITableViewCell,
+//        forRowAt indexPath: IndexPath
+//    ) {
+//        self.viewModel.input.loadMore.onNext(indexPath.row)
+//    }
+//}

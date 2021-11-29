@@ -146,6 +146,7 @@ class HomeViewModel: BaseViewModel {
       category: nil,
       orderType: nil
     )
+    .map { $0.map(Store.init) }
       .subscribe(
         onNext: { [weak self] stores in
           guard let self = self else { return }

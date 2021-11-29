@@ -9,19 +9,20 @@
 import Foundation
 
 struct VisitOverview {
-  var existsCounts: Int
-  var isCertified: Bool
-  var notExistsCounts: Int
-  
-  init(response: VisitHistoryInfoResponse) {
-    self.existsCounts = response.existsCounts
-    self.isCertified = response.isCertified
-    self.notExistsCounts = response.notExistsCounts
-  }
-  
-  init() {
-    self.existsCounts = 0
-    self.isCertified = false
-    self.notExistsCounts = 0
-  }
+    var existsCounts: Int
+    var isCertified: Bool
+    var notExistsCounts: Int
+    
+    
+    init() {
+        self.existsCounts = 0
+        self.isCertified = false
+        self.notExistsCounts = 0
+    }
+    
+    init(response: VisitHistoryCountsResponse) {
+        self.existsCounts = response.existsCounts
+        self.isCertified = response.isCertified
+        self.notExistsCounts = response.notExistsCounts
+    }
 }

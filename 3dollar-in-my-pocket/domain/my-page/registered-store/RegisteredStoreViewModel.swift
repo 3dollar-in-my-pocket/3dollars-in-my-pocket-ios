@@ -1,89 +1,87 @@
 import RxSwift
 import RxCocoa
-import CoreLocation
 
-class RegisteredStoreViewModel: BaseViewModel {
-  
-  let input = Input()
-  let output = Output()
-  let storeService: StoreServiceProtocol
-  let userDefaults: UserDefaultsUtil
-  
-  var stores: [StoreCard] = [] {
-    didSet {
-      self.output.stores.accept(stores)
+final class RegisteredStoreViewModel: BaseViewModel {
+    
+    struct Input {
+        let viewDidLoad = PublishSubject<Void>()
+        let loadMore = PublishSubject<Int>()
+        let tapStore = PublishSubject<Int>()
     }
-  }
-  var totalCount: Int?
-  var nextCursor: Int?
-  var currentLocation: CLLocation?
-  
-  struct Input {
-    let fetchStores = PublishSubject<CLLocation?>()
-    let tapStore = PublishSubject<Int>()
-    let loadMore = PublishSubject<Int>()
-  }
-  
-  struct Output {
-    let stores = PublishRelay<[StoreCard]>()
-    let isHiddenFooter = PublishRelay<Bool>()
-    let goToStoreDetail = PublishRelay<Int>()
-  }
-  
-  
-  init(
-    storeService: StoreServiceProtocol,
-    userDefaults: UserDefaultsUtil
-  ) {
-    self.storeService = storeService
-    self.userDefaults = userDefaults
-    super.init()
     
-    self.input.fetchStores
-      .do(onNext: { [weak self] location in
-        self?.currentLocation = location
-      })
-      .map { ($0, self.totalCount, self.nextCursor) }
-      .bind(onNext: self.fetchRegisteredStores)
-      .disposed(by: self.disposeBag)
+    struct Output {
+        let stores = PublishRelay<[Store]>()
+        let totalStoreCount = PublishRelay<Int>()
+        let isHiddenFooter = PublishRelay<Bool>()
+        let goToStoreDetail = PublishRelay<Int>()
+    }
     
-    self.input.tapStore
-      .map { self.stores[$0].id }
-      .bind(to: self.output.goToStoreDetail)
-      .disposed(by: disposeBag)
+    let input = Input()
+    let output = Output()
+    let storeService: StoreServiceProtocol
+    let userDefaults: UserDefaultsUtil
+    private let size = 20
+    private var nextCursor: Int?
     
-    self.input.loadMore
-      .filter(self.hasNextPage(currentIndex:))
-      .map { _ in (self.currentLocation, self.totalCount, self.nextCursor) }
-      .bind(onNext: self.fetchRegisteredStores)
-      .disposed(by: disposeBag)
-  }
-  
-  func fetchRegisteredStores(location: CLLocation?, totalCount: Int?, nextCursor: Int?) {
-    self.output.isHiddenFooter.accept(false)
-    guard let location = location else { return }
-    self.storeService.getReportedStore(
-      currentLocation: location,
-      totalCount: totalCount,
-      cursor: nextCursor
-    )
-      .subscribe(
-        onNext: { [weak self] pagination in
-          guard let self = self else { return }
-          let newStores = pagination.contents.map(StoreCard.init)
-          
-          self.totalCount = pagination.totalElements
-          self.nextCursor = pagination.nextCursor
-          self.stores += newStores
-          self.output.isHiddenFooter.accept(true)
-        },
-        onError: self.showErrorAlert.accept(_:)
-      )
-      .disposed(by: disposeBag)
-  }
-  
-  private func hasNextPage(currentIndex: Int) -> Bool {
-    return self.stores.count - 1 == currentIndex
-      && self.nextCursor != -1
-  }
+    
+    init(
+        storeService: StoreServiceProtocol,
+        userDefaults: UserDefaultsUtil
+    ) {
+        self.storeService = storeService
+        self.userDefaults = userDefaults
+        super.init()
+    }
+    
+    override func bind() {
+        self.input.viewDidLoad
+            .bind(onNext: { [weak self] in
+                guard let self = self else { return }
+                self.fetchRegisteredStores(nextCursor: self.nextCursor)
+            })
+            .disposed(by: self.disposeBag)
+        
+        self.input.loadMore
+            .withLatestFrom(self.output.stores) { $0 >= $1.count }
+            .filter { [weak self] in
+                guard let self = self else { return false }
+                return self.canLoadMore(isUpperItemCounts: $0, nextCursor: self.nextCursor)
+            }
+            .bind(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                
+                self.fetchRegisteredStores(nextCursor: self.nextCursor)
+            })
+            .disposed(by: self.disposeBag)
+        
+        self.input.tapStore
+            .withLatestFrom(self.output.stores) { $1[$0].storeId }
+            .bind(to: self.output.goToStoreDetail)
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func fetchRegisteredStores(nextCursor: Int?) {
+        self.output.isHiddenFooter.accept(false)
+        self.storeService.fetchRegisteredStores(cursor: self.nextCursor, size: self.size)
+            .do(onNext: { [weak self] page in
+                self?.nextCursor = page.nextCursor
+                self?.output.totalStoreCount.accept(page.totalElements)
+            })
+            .map { $0.contents.map(Store.init) }
+            .withLatestFrom(self.output.stores) { $1 + $0 }
+            .subscribe(
+                onNext: { [weak self] stores in
+                    self?.output.isHiddenFooter.accept(true)
+                    self?.output.stores.accept(stores)
+                },
+                onError: { [weak self] error in
+                    self?.showErrorAlert.accept(error)
+                }
+            )
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func canLoadMore(isUpperItemCounts: Bool, nextCursor: Int?) -> Bool {
+        return isUpperItemCounts && self.nextCursor != nil
+    }
 }
