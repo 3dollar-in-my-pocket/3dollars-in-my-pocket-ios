@@ -15,14 +15,11 @@ final class VisitDateView: BaseView {
         $0.alpha = 0.1
     }
     
-    private let visitImage = UIImageView().then {
-        $0.image = R.image.img_exist()
-    }
+    private let visitImage = UIImageView()
     
     private let dateLabel = UILabel().then {
         $0.textColor = .white
         $0.font = .medium(size: 12)
-        $0.text = "10월 1일 19:23:00"
     }
     
     override func setup() {
@@ -50,7 +47,25 @@ final class VisitDateView: BaseView {
             make.left.equalTo(self.visitImage).offset(-6).priority(.high)
             make.top.equalTo(self.visitImage).offset(-6).priority(.high)
             make.bottom.equalTo(self.visitImage).offset(6).priority(.high)
-            make.right.equalTo(self.visitImage).offset(6).priority(.high)
+            make.right.equalTo(self.dateLabel).offset(6).priority(.high)
         }
+        
+        self.snp.makeConstraints { make in
+            make.edges.equalTo(self.visitDateContainerView)
+        }
+    }
+    
+    func bind(visitDate: String, visitType: VisitType) {
+        switch visitType {
+        case .exists:
+            self.visitDateContainerView.backgroundColor = UIColor(r: 0, g: 198, b: 103)
+            self.visitImage.image = R.image.img_exist()
+            
+        case .notExists:
+            self.visitDateContainerView.backgroundColor = R.color.red()
+            self.visitImage.image = R.image.img_not_exist()
+        }
+        
+        self.dateLabel.text = DateUtils.toString(dateString: visitDate, format: "MM월 d일 HH:mm:ss")
     }
 }

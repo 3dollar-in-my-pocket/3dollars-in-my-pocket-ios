@@ -26,6 +26,6 @@ extension UIFont {
     }
     
     static func extraBold(size: CGFloat) -> UIFont? {
-        return Self.init(name: "AppleSDGothicNeo-ExtraBold", size: size)
+        return Self.init(name: "AppleSDGothicNeoEB00", size: size)
     }
 }

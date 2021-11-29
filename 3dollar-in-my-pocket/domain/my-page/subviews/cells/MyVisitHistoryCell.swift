@@ -1,17 +1,9 @@
-//
-//  MyVisitHistoryCell.swift
-//  3dollar-in-my-pocket
-//
-//  Created by Hyun Sik Yoo on 2021/11/28.
-//  Copyright © 2021 Macgongmon. All rights reserved.
-//
-
 import UIKit
 
 final class MyVisitHistoryCell: BaseCollectionViewCell {
     
     static let registerId = "\(MyVisitHistoryCell.self)"
-    static let size = CGSize(width: 162, height: 112)
+    static let size = CGSize(width: 250, height: 112)
     
     private let visitDateLabel = VisitDateView()
     
@@ -27,20 +19,20 @@ final class MyVisitHistoryCell: BaseCollectionViewCell {
     private let storeNameLabel = UILabel().then {
         $0.font = .medium(size: 16)
         $0.textColor = .white
-        $0.text = "강남역 0번 출구"
     }
     
     private let categoryLabel = UILabel().then {
         $0.font = .regular(size: 12)
         $0.textColor = R.color.gray30()
-        $0.text = "#붕어빵 #땅콩과자 #호떡"
     }
     
     override func setup() {
         self.backgroundColor = .clear
         self.addSubViews([
+            self.visitDateLabel,
             self.storeContainerView,
             self.categoryImage,
+            self.storeNameLabel,
             self.categoryLabel
         ])
     }
@@ -55,11 +47,13 @@ final class MyVisitHistoryCell: BaseCollectionViewCell {
             make.left.equalToSuperview()
             make.top.equalTo(self.visitDateLabel.snp.bottom).offset(8)
             make.width.equalTo(Self.size.width)
+            make.bottom.equalToSuperview()
         }
         
         self.categoryImage.snp.makeConstraints { make in
             make.left.equalTo(self.storeContainerView).offset(16)
             make.centerY.equalTo(self.storeContainerView)
+            make.width.height.equalTo(48)
         }
         
         self.storeNameLabel.snp.makeConstraints { make in
@@ -73,5 +67,12 @@ final class MyVisitHistoryCell: BaseCollectionViewCell {
             make.top.equalTo(self.storeNameLabel.snp.bottom).offset(8)
             make.right.equalTo(self.storeNameLabel)
         }
+    }
+    
+    func bind(visitHitory: VisitHistory) {
+        self.visitDateLabel.bind(visitDate: visitHitory.createdAt, visitType: visitHitory.type)
+        self.categoryImage.image = visitHitory.store.categories[0].image
+        self.storeNameLabel.text = visitHitory.store.storeName
+        self.categoryLabel.text = visitHitory.store.categoriesString
     }
 }

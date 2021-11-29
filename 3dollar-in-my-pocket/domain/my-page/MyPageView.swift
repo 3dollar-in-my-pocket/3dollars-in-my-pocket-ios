@@ -1,5 +1,8 @@
 import UIKit
 
+import RxSwift
+import RxCocoa
+
 final class MyPageView: BaseView {
     
     private let scrollView = UIScrollView()
@@ -11,7 +14,7 @@ final class MyPageView: BaseView {
     private let titleLabel = UILabel().then {
         $0.textColor = .white
         $0.font = .semiBold(size: 16)
-        $0.text = "마이 페이지"
+        $0.text = R.string.localization.my_page_title()
     }
     
     let settingButton = UIButton().then {
@@ -20,7 +23,6 @@ final class MyPageView: BaseView {
     
     private let bgCloud = UIImageView().then {
         $0.image = R.image.bg_cloud_my_page()
-        $0.alpha = 0.1
     }
     
     private let bedgeImage = UIImageView().then {
@@ -34,7 +36,6 @@ final class MyPageView: BaseView {
         $0.font = .bold(size: 30)
         $0.textAlignment = .center
         $0.textColor = .white
-        $0.text = "마포구 몽키스패너"
     }
     
     let storeCountButton = CountButton(type: .store)
@@ -43,27 +44,44 @@ final class MyPageView: BaseView {
     
     let titleCountButton = CountButton(type: .title)
     
+    private let bottomBackgroundView = UIView().then {
+        $0.backgroundColor = .black
+    }
+    
     private let visitBedgeImage = UIImageView().then {
         $0.image = R.image.ic_bedge()
     }
     
     private let visitLabel = UILabel().then {
-        $0.text = "방문 인증"
+        $0.text = R.string.localization.my_page_visit()
         $0.textColor = .white
         $0.font = .bold(size: 12)
     }
     
     private let visitHistoryButton = UIButton().then {
-        $0.setTitle("최근 내가 들린 가게는?", for: .normal)
+        $0.setTitle(R.string.localization.my_page_visit_description(), for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = .regular(size: 24)
     }
     
-    private let visitHistoryCollectionView = UICollectionView(
+    let visitHistoryCollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
     ).then {
+        let layout = UICollectionViewFlowLayout()
+        
+        layout.itemSize = MyVisitHistoryCell.size
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 16
+        
+        $0.collectionViewLayout = layout
+        $0.showsHorizontalScrollIndicator = false
+        $0.contentInset = .init(top: 0, left: 24, bottom: 0, right: 24)
         $0.backgroundColor = .clear
+        $0.register(
+            MyVisitHistoryCell.self,
+            forCellWithReuseIdentifier: MyVisitHistoryCell.registerId
+        )
     }
     
     
@@ -77,6 +95,7 @@ final class MyPageView: BaseView {
             self.storeCountButton,
             self.reviewCountButton,
             self.titleCountButton,
+            self.bottomBackgroundView,
             self.visitBedgeImage,
             self.visitLabel,
             self.visitHistoryButton,
@@ -115,6 +134,13 @@ final class MyPageView: BaseView {
             make.left.equalToSuperview()
             make.right.equalToSuperview()
             make.height.equalTo(154)
+        }
+        
+        self.bottomBackgroundView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.top.equalTo(self.storeCountButton.snp.bottom).offset(24)
+            make.bottom.equalToSuperview()
         }
         
         self.bedgeImage.snp.makeConstraints { make in
@@ -179,32 +205,22 @@ final class MyPageView: BaseView {
             make.edges.equalToSuperview()
             make.width.equalTo(self.scrollView)
             make.top.equalTo(self.bgCloud).priority(.high)
-            make.bottom.equalTo(self.visitHistoryCollectionView).priority(.high)
+            make.bottom.equalTo(self.visitHistoryCollectionView).offset(24).priority(.high)
         }
     }
     
-    func bind(user: User) {
+    fileprivate func bind(user: User) {
         self.nicknameLabel.text = user.name
+        self.storeCountButton.bind(count: user.activity.storesCount)
+        self.reviewCountButton.bind(count: user.activity.reviewsCount)
+        self.titleCountButton.bind(count: user.activity.medalsCounts)
     }
-    
-//    func setStore(count: Int) {
-//        self.registerEmptyBg.isHidden = count != 0
-//        self.registerEmptyImage.isHidden = count != 0
-//
-//        if count == 0 {
-//            self.registerLabel.text = "my_page_registered_store_empty".localized
-//        } else {
-//            self.registerLabel.text = "my_page_registered_store".localized
-//            self.registerCountLabel.text = "\(count)개"
-//        }
-//    }
-//
-//    func setReview(count: Int) {
-//        if count == 0 {
-//            self.reviewLabel.text = "my_page_registered_review_empty".localized
-//        } else {
-//            self.reviewLabel.text = "my_page_registered_review".localized
-//            self.reviewCountLabel.text = "\(count)개"
-//        }
-//    }
+}
+
+extension Reactive where Base: MyPageView {
+    var user: Binder<User> {
+        return Binder(self.base) { view, user in
+            view.bind(user: user)
+        }
+    }
 }

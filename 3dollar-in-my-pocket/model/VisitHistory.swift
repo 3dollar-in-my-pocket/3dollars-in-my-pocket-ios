@@ -9,17 +9,29 @@
 import Foundation
 
 struct VisitHistory {
-  let createdAt: String
-  let storeId: Int
-  let type: VisitType
-  let user: User
-  let visitHistoryId: Int
-  
-  init(response: VisitHistoryWithUserResponse) {
-    self.createdAt = response.createdAt
-    self.storeId = response.storeId
-    self.type = response.type
-    self.user = User(response: response.user)
-    self.visitHistoryId = response.visitHistoryId
-  }
+    
+    let createdAt: String
+    let storeId: Int
+    let store: Store
+    let type: VisitType
+    let user: User
+    let visitHistoryId: Int
+    
+    init(response: VisitHistoryWithUserResponse) {
+        self.createdAt = response.createdAt
+        self.storeId = response.storeId
+        self.store = Store()
+        self.type = response.type
+        self.user = User(response: response.user)
+        self.visitHistoryId = response.visitHistoryId
+    }
+    
+    init(response: VisitHistoryWithStoreResponse) {
+        self.createdAt = response.createdAt
+        self.storeId = 0
+        self.store = Store(response: response.store)
+        self.type = response.type
+        self.user = User()
+        self.visitHistoryId = response.visitHistoryId
+    }
 }

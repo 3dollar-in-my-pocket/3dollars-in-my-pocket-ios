@@ -53,13 +53,13 @@ final class CountButton: UIButton {
         
         switch type {
         case .store:
-            self.nameLabel.text = "제보한 가게"
+            self.nameLabel.text = R.string.localization.my_page_registered_store()
             
         case .review:
-            self.nameLabel.text = "내가 쓴 리뷰"
+            self.nameLabel.text = R.string.localization.my_page_registered_review()
             
         case .title:
-            self.nameLabel.text = "내 칭호"
+            self.nameLabel.text = R.string.localization.my_page_medals()
         }
         
         self.layer.cornerRadius = 20
