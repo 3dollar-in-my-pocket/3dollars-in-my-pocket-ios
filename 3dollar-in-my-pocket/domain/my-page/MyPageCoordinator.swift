@@ -10,9 +10,13 @@ import Foundation
 
 protocol MyPageCoordinator: Coordinator, AnyObject {
   func goToSetting()
+    
   func goToTotalRegisteredStore()
+    
   func goToMyReview()
+    
   func goToStoreDetail(storeId: Int)
+    
 }
 
 extension MyPageCoordinator {

@@ -57,6 +57,20 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
             })
             .disposed(by: self.disposeBag)
         
+        self.myPageView.storeCountButton.rx.tap
+            .asDriver()
+            .drive(onNext: { [weak self] in
+                self?.coordinator?.goToTotalRegisteredStore()
+            })
+            .disposed(by: self.disposeBag)
+        
+        self.myPageView.reviewCountButton.rx.tap
+            .asDriver()
+            .drive(onNext: { [weak self] in
+                self?.coordinator?.goToMyReview()
+            })
+            .disposed(by: self.disposeBag)
+        
         self.viewModel.showErrorAlert
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in
