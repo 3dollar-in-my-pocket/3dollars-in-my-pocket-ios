@@ -179,7 +179,7 @@
 		6E6835B923C2C89400D23F54 /* RenameVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835B823C2C89400D23F54 /* RenameVC.swift */; };
 		6E6835BC23C2CC0800D23F54 /* RegisteredStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835BB23C2CC0800D23F54 /* RegisteredStoreView.swift */; };
 		6E6835BE23C2CEFB00D23F54 /* RegisteredStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835BD23C2CEFB00D23F54 /* RegisteredStoreCell.swift */; };
-		6E6835C023C2D2BC00D23F54 /* RegisteredStoreVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835BF23C2D2BC00D23F54 /* RegisteredStoreVC.swift */; };
+		6E6835C023C2D2BC00D23F54 /* RegisteredStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835BF23C2D2BC00D23F54 /* RegisteredStoreViewController.swift */; };
 		6E6835C223C2F36000D23F54 /* RegisteredStoreHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835C123C2F36000D23F54 /* RegisteredStoreHeader.swift */; };
 		6E6835C623C30D8300D23F54 /* MyReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835C523C30D8300D23F54 /* MyReviewView.swift */; };
 		6E6835C823C30DCB00D23F54 /* MyReviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835C723C30DCB00D23F54 /* MyReviewCell.swift */; };
@@ -289,6 +289,7 @@
 		6EDAC5E526D7DCB300979252 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDAC5E426D7DCB300979252 /* Coordinator.swift */; };
 		6EDBBB7227546AF200470F71 /* UserWithActivityResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDBBB7127546AF200470F71 /* UserWithActivityResponse.swift */; };
 		6EDBBB7427546F9D00470F71 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDBBB7327546F9D00470F71 /* Activity.swift */; };
+		6EDBBB782754A34800470F71 /* VisitBedgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDBBB772754A34800470F71 /* VisitBedgeView.swift */; };
 		6EDBD8A523D87A3D0075EF8F /* DeleteModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDBD8A423D87A3D0075EF8F /* DeleteModalView.swift */; };
 		6EDBD8A723D87C930075EF8F /* DeleteModalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDBD8A623D87C930075EF8F /* DeleteModalVC.swift */; };
 		6EDEC58B256B920D0067FCF0 /* NicknameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDEC58A256B920D0067FCF0 /* NicknameViewModel.swift */; };
@@ -495,7 +496,7 @@
 		6E6835B823C2C89400D23F54 /* RenameVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameVC.swift; sourceTree = "<group>"; };
 		6E6835BB23C2CC0800D23F54 /* RegisteredStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreView.swift; sourceTree = "<group>"; };
 		6E6835BD23C2CEFB00D23F54 /* RegisteredStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreCell.swift; sourceTree = "<group>"; };
-		6E6835BF23C2D2BC00D23F54 /* RegisteredStoreVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreVC.swift; sourceTree = "<group>"; };
+		6E6835BF23C2D2BC00D23F54 /* RegisteredStoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreViewController.swift; sourceTree = "<group>"; };
 		6E6835C123C2F36000D23F54 /* RegisteredStoreHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreHeader.swift; sourceTree = "<group>"; };
 		6E6835C523C30D8300D23F54 /* MyReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewView.swift; sourceTree = "<group>"; };
 		6E6835C723C30DCB00D23F54 /* MyReviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewCell.swift; sourceTree = "<group>"; };
@@ -605,6 +606,7 @@
 		6EDAC5E426D7DCB300979252 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		6EDBBB7127546AF200470F71 /* UserWithActivityResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWithActivityResponse.swift; sourceTree = "<group>"; };
 		6EDBBB7327546F9D00470F71 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
+		6EDBBB772754A34800470F71 /* VisitBedgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitBedgeView.swift; sourceTree = "<group>"; };
 		6EDBD8A423D87A3D0075EF8F /* DeleteModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteModalView.swift; sourceTree = "<group>"; };
 		6EDBD8A623D87C930075EF8F /* DeleteModalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteModalVC.swift; sourceTree = "<group>"; };
 		6EDEC58A256B920D0067FCF0 /* NicknameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameViewModel.swift; sourceTree = "<group>"; };
@@ -1083,9 +1085,8 @@
 		6E6835BA23C2CBE800D23F54 /* registered-store */ = {
 			isa = PBXGroup;
 			children = (
-				6E6835BD23C2CEFB00D23F54 /* RegisteredStoreCell.swift */,
-				6E6835C123C2F36000D23F54 /* RegisteredStoreHeader.swift */,
-				6E6835BF23C2D2BC00D23F54 /* RegisteredStoreVC.swift */,
+				6EDBBB7527549B8500470F71 /* subviews */,
+				6E6835BF23C2D2BC00D23F54 /* RegisteredStoreViewController.swift */,
 				6E6835BB23C2CC0800D23F54 /* RegisteredStoreView.swift */,
 				6ED37D9023D58F1700E12711 /* RegisteredStoreViewModel.swift */,
 			);
@@ -1522,6 +1523,24 @@
 				6ED79E1225CFF39600B3CFA9 /* ModifyAddressViewModel.swift */,
 			);
 			path = "modify-address";
+			sourceTree = "<group>";
+		};
+		6EDBBB7527549B8500470F71 /* subviews */ = {
+			isa = PBXGroup;
+			children = (
+				6E6835C123C2F36000D23F54 /* RegisteredStoreHeader.swift */,
+				6EDBBB7627549B8800470F71 /* cells */,
+				6EDBBB772754A34800470F71 /* VisitBedgeView.swift */,
+			);
+			path = subviews;
+			sourceTree = "<group>";
+		};
+		6EDBBB7627549B8800470F71 /* cells */ = {
+			isa = PBXGroup;
+			children = (
+				6E6835BD23C2CEFB00D23F54 /* RegisteredStoreCell.swift */,
+			);
+			path = cells;
 			sourceTree = "<group>";
 		};
 		6EDBD8A323D87A240075EF8F /* delete */ = {
@@ -2073,6 +2092,7 @@
 				6E3DED7725C7E391000BE04C /* RegisterPhotoView.swift in Sources */,
 				6E479B6726EA2C5B00566384 /* ReviewInfoResponse.swift in Sources */,
 				6E6F35A825AC7BF4007931EC /* WriteAddressVC.swift in Sources */,
+				6EDBBB782754A34800470F71 /* VisitBedgeView.swift in Sources */,
 				6E41F7E623BAC2BA00D0AC73 /* UIColorExt.swift in Sources */,
 				6E4CDCDD25E6314600C9193D /* CategoryHeaderType.swift in Sources */,
 				6EE8299126B2E5D900F201EF /* SignupRequest.swift in Sources */,
@@ -2092,7 +2112,7 @@
 				6E81B84B25E121FD00748E02 /* RoadAddress.swift in Sources */,
 				6E4952C126B033E100D65042 /* ResponseContainer.swift in Sources */,
 				6E79BAA525B07CF600A70408 /* WriteCategoryCell.swift in Sources */,
-				6E6835C023C2D2BC00D23F54 /* RegisteredStoreVC.swift in Sources */,
+				6E6835C023C2D2BC00D23F54 /* RegisteredStoreViewController.swift in Sources */,
 				6E41661227464C8A0088E69C /* VisitOverview.swift in Sources */,
 				6E73293B23CA07920037003B /* StoreService.swift in Sources */,
 				6E3DED7D25C7F60F000BE04C /* RegisterPhotoViewModel.swift in Sources */,

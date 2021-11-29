@@ -27,7 +27,7 @@ extension MyPageCoordinator {
   }
   
   func goToTotalRegisteredStore() {
-    let viewController = RegisteredVC.instance()
+    let viewController = RegisteredStoreViewController.instance()
     
     self.presenter.navigationController?.pushViewController(viewController, animated: true)
   }
