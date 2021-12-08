@@ -121,16 +121,6 @@ class MyReviewVC: BaseVC {
 
 extension MyReviewVC: UITableViewDelegate {
   
-  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    return MyReviewHeaderView().then {
-      $0.setCount(count: self.viewModel.totalCount ?? 0)
-    }
-  }
-  
-  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return 50
-  }
-  
   func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     self.viewModel.input.loadMore.onNext(indexPath.row)
   }
