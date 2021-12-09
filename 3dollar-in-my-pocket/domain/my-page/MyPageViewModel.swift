@@ -16,13 +16,13 @@ final class MyPageViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     let userService: UserServiceProtocol
-    let visitHistoryService: VisitHistoryProtocol
+    let visitHistoryService: VisitHistoryServiceProtocol
     private let size = 5
     
     
     init(
         userService: UserServiceProtocol,
-        visitHistoryService: VisitHistoryProtocol
+        visitHistoryService: VisitHistoryServiceProtocol
     ) {
         self.userService = userService
         self.visitHistoryService = visitHistoryService

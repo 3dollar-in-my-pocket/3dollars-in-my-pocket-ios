@@ -9,8 +9,7 @@
 import Alamofire
 import RxSwift
 
-protocol VisitHistoryProtocol {
-    
+protocol VisitHistoryServiceProtocol {
     func visitStore(storeId: Int, type: VisitType) -> Observable<String>
     
     func fetchVisitHistory(
@@ -19,8 +18,7 @@ protocol VisitHistoryProtocol {
     ) -> Observable<Pagination<VisitHistoryWithStoreResponse>>
 }
 
-struct VisitHistoryService: VisitHistoryProtocol {
-    
+struct VisitHistoryService: VisitHistoryServiceProtocol {
     func visitStore(storeId: Int, type: VisitType) -> Observable<String> {
         let addVisitHistoryRequest = AddVisitHistoryRequest(storeId: storeId, type: type)
         

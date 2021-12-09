@@ -75,7 +75,7 @@ final class MyReviewViewController: BaseVC, MyReviewCoordinator {
         self.viewModel.output.goToStoreDetail
             .asDriver(onErrorJustReturn: -1)
             .drive(onNext: { [weak self] storeId in
-                self?.coordinator?.pushStoreDetail(storeId: storeId)
+                self?.coordinator?.goToStoreDetail(storeId: storeId)
             })
             .disposed(by: disposeBag)
         

@@ -17,7 +17,10 @@ final class MyVisitHistoryView: BaseView {
         $0.rowHeight = UITableView.automaticDimension
         $0.separatorStyle = .none
         $0.addIndicatorFooter()
-        $0.register(MyReviewCell.self, forCellReuseIdentifier: MyReviewCell.registerId)
+        $0.register(
+            MyVisitHistoryTableViewCell.self,
+            forCellReuseIdentifier: MyVisitHistoryTableViewCell.registerId
+        )
     }
     
     override func setup() {

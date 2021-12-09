@@ -38,12 +38,12 @@ final class VisitViewModel: BaseViewModel {
   }
     
   private let locationManager: LocationManagerProtocol
-  private let visitHistoryService: VisitHistoryProtocol
+  private let visitHistoryService: VisitHistoryServiceProtocol
   
   init(
     store: Store,
     locationManager: LocationManagerProtocol,
-    visitHistoryService: VisitHistoryService
+    visitHistoryService: VisitHistoryServiceProtocol
   ) {
     self.model = Model(store: store)
     self.locationManager = locationManager

@@ -9,6 +9,7 @@ final class MyVisitHistoryImageView: BaseView {
     
     private let timeLabel = UILabel().then {
         $0.font = .light(size: 12)
+        $0.textColor = .white
     }
     
     override func setup() {

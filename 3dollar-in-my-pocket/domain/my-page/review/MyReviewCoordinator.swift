@@ -9,13 +9,13 @@
 import UIKit
 
 protocol MyReviewCoordinator: Coordinator, AnyObject {
-    func pushStoreDetail(storeId: Int)
+    func goToStoreDetail(storeId: Int)
     
     func showMoreActionSheet(row: Int, onTapDelete: @escaping () -> Void)
 }
 
 extension MyReviewCoordinator {
-    func pushStoreDetail(storeId: Int) {
+    func goToStoreDetail(storeId: Int) {
         let viewController = StoreDetailViewController.instance(storeId: storeId)
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
