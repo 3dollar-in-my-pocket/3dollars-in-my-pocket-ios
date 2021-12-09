@@ -219,3 +219,4 @@
 "visit_title_enable" = "가게 도착!\n방문을 인증해보세요!";
 "visit_success" = "방문 성공";
 "visit_fail" = "방문 실패";
+"my_visit_history_title" = "방문 인증 내역";

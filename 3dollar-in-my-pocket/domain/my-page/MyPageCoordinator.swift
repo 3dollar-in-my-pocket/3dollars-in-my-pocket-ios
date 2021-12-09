@@ -9,38 +9,45 @@
 import Foundation
 
 protocol MyPageCoordinator: Coordinator, AnyObject {
-  func goToSetting()
+    func goToSetting()
     
-  func goToTotalRegisteredStore()
+    func goToTotalRegisteredStore()
     
-  func goToMyReview()
+    func goToMyReview()
     
-  func goToStoreDetail(storeId: Int)
+    func goToStoreDetail(storeId: Int)
     
+    func goToMyVisitHistory()
 }
 
 extension MyPageCoordinator {
-  func goToSetting() {
-    let viewController = SettingVC.instance()
+    func goToSetting() {
+        let viewController = SettingVC.instance()
+        
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
     
-    self.presenter.navigationController?.pushViewController(viewController, animated: true)
-  }
-  
-  func goToTotalRegisteredStore() {
-    let viewController = RegisteredStoreViewController.instance()
+    func goToTotalRegisteredStore() {
+        let viewController = RegisteredStoreViewController.instance()
+        
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
     
-    self.presenter.navigationController?.pushViewController(viewController, animated: true)
-  }
-  
-  func goToMyReview() {
-    let viewController = MyReviewViewController.instance()
+    func goToMyReview() {
+        let viewController = MyReviewViewController.instance()
+        
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
     
-    self.presenter.navigationController?.pushViewController(viewController, animated: true)
-  }
-  
-  func goToStoreDetail(storeId: Int) {
-    let viewController = StoreDetailViewController.instance(storeId: storeId)
+    func goToStoreDetail(storeId: Int) {
+        let viewController = StoreDetailViewController.instance(storeId: storeId)
+        
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
     
-    self.presenter.navigationController?.pushViewController(viewController, animated: true)
-  }
+    func goToMyVisitHistory() {
+        let viewController = MyVisitHistoryViewController.instance()
+        
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
 }

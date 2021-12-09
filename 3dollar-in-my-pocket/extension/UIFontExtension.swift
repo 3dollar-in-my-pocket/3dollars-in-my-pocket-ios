@@ -9,6 +9,10 @@
 import UIKit
 
 extension UIFont {
+    static func light(size: CGFloat) -> UIFont? {
+        return Self.init(name: "AppleSDGothicNeo-Light", size: size)
+    }
+    
     static func semiBold(size: CGFloat) -> UIFont? {
         return Self.init(name: "AppleSDGothicNeo-SemiBold", size: size)
     }

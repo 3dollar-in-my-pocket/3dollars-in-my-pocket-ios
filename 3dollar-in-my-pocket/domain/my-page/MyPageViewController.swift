@@ -71,6 +71,13 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
             })
             .disposed(by: self.disposeBag)
         
+        self.myPageView.visitHistoryButton.rx.tap
+            .asDriver()
+            .drive(onNext: { [weak self] in
+                self?.coordinator?.goToMyVisitHistory()
+            })
+            .disposed(by: self.disposeBag)
+        
         self.viewModel.showErrorAlert
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in

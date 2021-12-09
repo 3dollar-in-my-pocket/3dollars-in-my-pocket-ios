@@ -1,0 +1,3 @@
+protocol MyVisitHistoryCoordinator: Coordinator, AnyObject {
+    
+}

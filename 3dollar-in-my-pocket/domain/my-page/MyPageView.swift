@@ -57,7 +57,7 @@ final class MyPageView: BaseView {
         $0.font = .bold(size: 12)
     }
     
-    private let visitHistoryButton = UIButton().then {
+    let visitHistoryButton = UIButton().then {
         $0.setTitle(R.string.localization.my_page_visit_description(), for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = .regular(size: 24)
