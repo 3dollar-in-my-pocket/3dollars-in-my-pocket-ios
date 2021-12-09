@@ -16,16 +16,8 @@ final class MyReviewView: BaseView {
         $0.backgroundColor = .clear
         $0.rowHeight = UITableView.automaticDimension
         $0.separatorStyle = .none
-        
-        let indicator = UIActivityIndicatorView(style: .large)
-        
-        indicator.frame = CGRect(
-            x: 0,
-            y: 0,
-            width: UIScreen.main.bounds.width,
-            height: 60
-        )
-        $0.tableFooterView = indicator
+        $0.addIndicatorFooter()
+        $0.register(MyReviewCell.self, forCellReuseIdentifier: MyReviewCell.registerId)
     }
     
     override func setup() {

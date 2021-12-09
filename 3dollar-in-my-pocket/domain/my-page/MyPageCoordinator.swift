@@ -33,7 +33,7 @@ extension MyPageCoordinator {
   }
   
   func goToMyReview() {
-    let viewController = MyReviewVC.instance()
+    let viewController = MyReviewViewController.instance()
     
     self.presenter.navigationController?.pushViewController(viewController, animated: true)
   }

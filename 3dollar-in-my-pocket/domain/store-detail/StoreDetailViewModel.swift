@@ -220,7 +220,7 @@ class StoreDetailViewModel: BaseViewModel {
   
   private func deleteReview(reviewId: Int) {
     self.showLoading.accept(true)
-    self.reviewService.deleteRevie(reviewId: reviewId)
+    self.reviewService.deleteReview(reviewId: reviewId)
       .subscribe(
         onNext: { [weak self] _ in
           guard let self = self else { return }

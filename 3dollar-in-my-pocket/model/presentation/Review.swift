@@ -20,15 +20,15 @@ struct Review {
     self.user = User()
   }
   
-  init(reviewDetailResponse: ReviewDetailResponse) {
-    self.category = reviewDetailResponse.categories[0]
-    self.contents = reviewDetailResponse.contents
-    self.createdAt = reviewDetailResponse.createdAt
-    self.reviewId = reviewDetailResponse.reviewId
-    self.rating = reviewDetailResponse.rating
-    self.storeId = reviewDetailResponse.storeId
-    self.storeName = reviewDetailResponse.storeName
-    self.user = User(response: reviewDetailResponse.user)
+  init(response: ReviewDetailResponse) {
+    self.category = response.store.categories[0]
+    self.contents = response.contents
+    self.createdAt = response.createdAt
+    self.reviewId = response.reviewId
+    self.rating = response.rating
+    self.storeId = response.store.storeId
+    self.storeName = response.store.storeName
+    self.user = User(response: response.user)
   }
   
   init(response: ReviewWithWriterResponse) {

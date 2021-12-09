@@ -1,16 +1,15 @@
 import Foundation
 
 struct UserWithActivityResponse: Decodable {
-    
     let activity: ActivityResponse
-    let medalType: String // TODO: 실제 타입 들어오면 enum으로 변경 예정
+    let medal: MedalResponse
     let name: String
     let socialType: SocialType
     let userId: Int
     
     enum CodingKeys: String, CodingKey {
         case activity
-        case medalType
+        case medal
         case name
         case socialType
         case userId
@@ -23,9 +22,15 @@ struct UserWithActivityResponse: Decodable {
             ActivityResponse.self,
             forKey: .activity
         ) ?? ActivityResponse()
-        self.medalType = try values.decodeIfPresent(String.self, forKey: .medalType) ?? ""
+        self.medal = try values.decodeIfPresent(
+            MedalResponse.self,
+            forKey: .medal
+        ) ?? MedalResponse()
         self.name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
-        self.socialType = try values.decodeIfPresent(SocialType.self, forKey: .socialType) ?? .APPLE
+        self.socialType = try values.decodeIfPresent(
+            SocialType.self,
+            forKey: .socialType
+        ) ?? .APPLE
         self.userId = try values.decodeIfPresent(Int.self, forKey: .userId) ?? 0
     }
 }

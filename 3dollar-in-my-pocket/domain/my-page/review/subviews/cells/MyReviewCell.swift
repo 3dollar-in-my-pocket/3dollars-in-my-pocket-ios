@@ -36,7 +36,7 @@ final class MyReviewCell: BaseTableViewCell {
     }
     
     let moreButton = UIButton().then {
-        $0.setImage(R.image.ic_more(), for: .normal)
+        $0.setImage(R.image.ic_more_horizontal(), for: .normal)
     }
     
     override func setup() {
@@ -114,7 +114,7 @@ final class MyReviewCell: BaseTableViewCell {
         self.storeNameLabel.text = review.storeName
         self.ratingView.bind(rating: review.rating)
         self.dateLabel.text = DateUtils.toReviewFormat(dateString: review.createdAt)
-        // TODO: title 설정
+        self.titleLabel.bind(title: review.user.medal.name)
         self.userNameLabel.text = review.user.name
         self.reviewLabel.text = review.contents
     }

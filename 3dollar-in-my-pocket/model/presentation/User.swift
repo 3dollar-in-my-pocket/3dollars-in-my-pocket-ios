@@ -1,9 +1,9 @@
 struct User {
-    
     let name: String
     let userId: Int
     let socialType: SocialType
     let activity: UserActivity
+    let medal: Medal
     
     
     init() {
@@ -11,6 +11,7 @@ struct User {
         self.userId = -1
         self.socialType = .KAKAO
         self.activity = UserActivity()
+        self.medal = Medal()
     }
     
     init(response: UserInfoResponse) {
@@ -18,6 +19,7 @@ struct User {
         self.userId = response.userId
         self.socialType = response.socialType
         self.activity = UserActivity()
+        self.medal = Medal(response: response.medal)
     }
     
     init(response: UserWithActivityResponse) {
@@ -25,5 +27,6 @@ struct User {
         self.userId = response.userId
         self.socialType = response.socialType
         self.activity = UserActivity(response: response.activity)
+        self.medal = Medal(response: response.medal)
     }
 }

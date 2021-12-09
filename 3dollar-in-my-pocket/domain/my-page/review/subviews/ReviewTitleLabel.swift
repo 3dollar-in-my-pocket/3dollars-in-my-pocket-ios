@@ -18,7 +18,6 @@ final class ReviewTitleLabel: BaseView {
     private let titleLabel = UILabel().then {
         $0.textColor = UIColor(r: 235, g: 87, b: 87)
         $0.font = .regular(size: 12)
-        $0.text = "붕어빵챌린저"
     }
     
     func bind(title: String) {
