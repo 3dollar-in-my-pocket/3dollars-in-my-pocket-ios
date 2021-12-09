@@ -27,10 +27,7 @@ final class MyPageView: BaseView {
         $0.image = R.image.bg_cloud_my_page()
     }
     
-    private let bedgeImage = UIImageView().then {
-        $0.backgroundColor = UIColor(r: 196, g: 196, b: 196)
-        $0.layer.cornerRadius = 60
-    }
+    private let bedgeImage = UIImageView()
     
     private let myTitleLabel = TitleLabel()
     
@@ -64,6 +61,8 @@ final class MyPageView: BaseView {
         $0.setTitle(R.string.localization.my_page_visit_description(), for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = .regular(size: 24)
+        $0.semanticContentAttribute = .forceRightToLeft
+        $0.setImage(R.image.ic_right_arrow(), for: .normal)
     }
     
     let visitHistoryCollectionView = UICollectionView(
@@ -214,6 +213,8 @@ final class MyPageView: BaseView {
     
     fileprivate func bind(user: User) {
         self.nicknameLabel.text = user.name
+        self.bedgeImage.setImage(urlString: user.medal.iconUrl)
+        self.myTitleLabel.bind(title: user.medal.name)
         self.storeCountButton.bind(count: user.activity.storesCount)
         self.reviewCountButton.bind(count: user.activity.reviewsCount)
         self.titleCountButton.bind(count: user.activity.medalsCounts)

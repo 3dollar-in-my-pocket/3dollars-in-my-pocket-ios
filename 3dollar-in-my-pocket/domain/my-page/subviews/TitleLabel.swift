@@ -9,7 +9,6 @@
 import UIKit
 
 final class TitleLabel: UIView {
-    
     private let outlineView = UIView().then {
         $0.layer.cornerRadius = 15
         $0.layer.borderColor = R.color.pink()?.cgColor
