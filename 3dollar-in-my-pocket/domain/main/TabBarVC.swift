@@ -2,7 +2,7 @@ import UIKit
 import RxSwift
 
 class TabBarVC: UITabBarController {
-    
+    private let feedbackGenerator = UISelectionFeedbackGenerator()
     private let disposeBag = DisposeBag()
     private let loadingView = LoadingView()
     private lazy var dimView = UIView(frame: self.view.frame).then {
@@ -25,6 +25,7 @@ class TabBarVC: UITabBarController {
         self.setupTabBarController()
         self.addKakaoLinkObserver()
         self.processKakaoLinkIfExisted()
+        self.feedbackGenerator.prepare()
         self.delegate = self
         if #available(iOS 15, *) {
             let appearance = UITabBarAppearance()
@@ -36,6 +37,7 @@ class TabBarVC: UITabBarController {
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        self.feedbackGenerator.selectionChanged()
         switch item.tag {
         case TabBarTag.my.rawValue:
             self.tabBar.barTintColor = R.color.gray100()
