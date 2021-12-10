@@ -60,7 +60,7 @@ class RegisterPhotoCell: BaseCollectionViewCell {
       for: asset,
       targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight),
       contentMode: .aspectFit,
-      options: options) { (image, info) in
+      options: options) { (image, _) in
       guard let image = image else { return }
       self.photo.image = image
     }
@@ -68,8 +68,8 @@ class RegisterPhotoCell: BaseCollectionViewCell {
   
   
   override var isSelected: Bool {
-    didSet{
-      if isSelected{
+    didSet {
+      if isSelected {
         self.dimView.layer.borderWidth = 2
         self.dimView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
         self.checkBox.image = UIImage(named: "ic_check_circle_on")
@@ -79,15 +79,4 @@ class RegisterPhotoCell: BaseCollectionViewCell {
       self.dimView.isHidden = !isSelected
     }
   }
-  
-//  func select(isSelected: Bool) {
-//    if isSelected{
-//      self.dimView.layer.borderWidth = 2
-//      self.dimView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
-//      self.checkBox.image = UIImage(named: "ic_check_circle_on")
-//    } else {
-//      self.checkBox.image = UIImage(named: "ic_check_circle_off")
-//    }
-//    self.dimView.isHidden = !isSelected
-//  }
 }

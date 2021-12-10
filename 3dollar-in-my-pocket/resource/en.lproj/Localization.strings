@@ -183,7 +183,7 @@
 "store_modify_title" = "가게 정보 수정";
 "store_modify_address_title" = "가게 위치 수정";
 "register_photo_title" = "사진 제보";
-"register_photo_button_format" = "총 %d장의 사진 등록";
+"register_photo_button_format" = "총 %d장/3장의 사진 등록";
 "photo_detail_title" = "사진 제보";
 "photo_detail_delete_title" = "사진을 삭제하시겠습니까?";
 "photo_detail_delete_description" = "사진 삭제시 복구할 수 없습니다.";

@@ -37,7 +37,7 @@ class RegisterPhotoView: BaseView {
     $0.allowsMultipleSelection = true
   }
   
-  let registerButtonBg = UIView().then{
+  let registerButtonBg = UIView().then {
     $0.backgroundColor = UIColor(r: 255, g: 255, b: 255, a: 0.6)
     $0.layer.cornerRadius = 32
     $0.layer.shadowColor = UIColor.black.cgColor
@@ -99,6 +99,13 @@ class RegisterPhotoView: BaseView {
       make.bottom.equalTo(self.registerButtonBg).offset(-8)
     }
   }
+    
+    func deselectCollectionItem(index: Int) {
+        self.photoCollectionView.deselectItem(
+            at: IndexPath(row: index, section: 0),
+            animated: true
+        )
+    }
   
   func hideRegisterButton() {
     if registerButtonBg.alpha != 0 {

@@ -54,10 +54,7 @@ class RegisterPhotoVC: BaseVC {
     self.viewModel.output.photos.bind(to: self.registerPhotoView.photoCollectionView.rx.items(
       cellIdentifier: RegisterPhotoCell.registerId,
       cellType: RegisterPhotoCell.self
-    )) { [weak self] row, asset, cell in
-      guard let self = self else { return }
-      
-      cell.isSelected = self.viewModel.selectedIndex.contains(row)
+    )) { row, asset, cell in
       cell.bind(asset: asset)
     }
     .disposed(by: disposeBag)
@@ -77,6 +74,15 @@ class RegisterPhotoVC: BaseVC {
       .bind(onNext: self.showHTTPErrorAlert(error:))
       .disposed(by: disposeBag)
   }
+    
+    override func bindViewModelOutput() {
+        self.viewModel.output.deSelectPublisher
+            .asDriver(onErrorJustReturn: -1)
+            .drive(onNext: { [weak self] index in
+                self?.registerPhotoView.deselectCollectionItem(index: index)
+            })
+            .disposed(by: self.disposeBag)
+    }
   
   override func bindEvent() {
     self.registerPhotoView.closeButton.rx.tap
@@ -113,7 +119,6 @@ extension RegisterPhotoVC: UICollectionViewDelegate {
   ) {
     if let cell = collectionView.cellForItem(at: indexPath) as? RegisterPhotoCell,
        let image = cell.photo.image {
-      cell.isSelected = true
       self.viewModel.input.selectPhoto.onNext((indexPath.row, image))
     }
   }
@@ -124,7 +129,6 @@ extension RegisterPhotoVC: UICollectionViewDelegate {
   ) {
     if let cell = collectionView.cellForItem(at: indexPath) as? RegisterPhotoCell,
        let image = cell.photo.image {
-      cell.isSelected = false
       self.viewModel.input.selectPhoto.onNext((indexPath.row, image))
     }
   }
