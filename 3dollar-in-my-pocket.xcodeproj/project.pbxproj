@@ -1088,6 +1088,7 @@
 		6E681E23256FDD1A00892B9E /* setting */ = {
 			isa = PBXGroup;
 			children = (
+				6E6835B523C2C3CD00D23F54 /* rename */,
 				6E5938FE2573E2AA00593DC8 /* privacy */,
 				6E511E6125710CE2009E4667 /* question */,
 				6E681E24256FDD3500892B9E /* SettingVIew.swift */,
@@ -1378,6 +1379,7 @@
 		6E8A137623B5DCBB009C2B64 /* my-page */ = {
 			isa = PBXGroup;
 			children = (
+				6E6835C423C30D6F00D23F54 /* review */,
 				6EF63FB92761B0F10063A3B9 /* visit-history */,
 				6E4C1BDF27532DDF006C0F15 /* subviews */,
 				6E07D44923B591160055AEE7 /* MyPageViewController.swift */,
@@ -1385,8 +1387,6 @@
 				6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */,
 				6EDAC5E226D7DC1500979252 /* MyPageCoordinator.swift */,
 				6E6835BA23C2CBE800D23F54 /* registered-store */,
-				6E6835B523C2C3CD00D23F54 /* rename */,
-				6E6835C423C30D6F00D23F54 /* review */,
 				6E681E23256FDD1A00892B9E /* setting */,
 			);
 			path = "my-page";

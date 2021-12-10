@@ -55,8 +55,8 @@ class SettingView: BaseView {
   
   override func bindConstraints() {
     self.backButton.snp.makeConstraints { (make) in
-      make.left.equalToSuperview().offset(24 * RatioUtils.widthRatio)
-      make.top.equalTo(safeAreaLayoutGuide).offset(3)
+      make.left.equalToSuperview().offset(24)
+      make.top.equalTo(safeAreaLayoutGuide).offset(15)
     }
     
     self.titleLabel.snp.makeConstraints { make in
