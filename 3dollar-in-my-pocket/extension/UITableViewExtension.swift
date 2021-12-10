@@ -11,7 +11,7 @@ extension UITableView {
     }
     
     func addIndicatorFooter() {
-        let indicator = UIActivityIndicatorView(style: .large)
+        let indicator = UIActivityIndicatorView(style: .medium)
         
         indicator.frame = CGRect(
             x: 0,

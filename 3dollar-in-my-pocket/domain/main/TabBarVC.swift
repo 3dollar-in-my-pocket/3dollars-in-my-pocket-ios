@@ -81,7 +81,7 @@ class TabBarVC: UITabBarController {
                 guard let self = self else { return }
                 self.view.addSubview(self.dimView)
                 UIView.animate(withDuration: 0.3) {
-                    self.dimView.backgroundColor = UIColor.init(r: 0, g: 0, b: 0, a:0.5)
+                    self.dimView.backgroundColor = UIColor.init(r: 0, g: 0, b: 0, a: 0.5)
                 }
             }
         } else {
@@ -101,7 +101,7 @@ class TabBarVC: UITabBarController {
             HomeVC.instance(),
             CategoryVC.instance(),
             WriteAddressVC.instance(delegate: self),
-            MyPageViewController.instance(),
+            MyPageViewController.instance()
         ], animated: true)
         self.tabBar.tintColor = R.color.red()
         self.tabBar.layer.borderWidth = 0

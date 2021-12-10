@@ -8,7 +8,14 @@
 
 import UIKit
 
-final class TitleLabel: UIView {
+final class TitleLabel: BaseView {
+    enum TitleType {
+        case small
+        case big
+    }
+    
+    private let type: TitleType
+    
     private let outlineView = UIView().then {
         $0.layer.cornerRadius = 15
         $0.layer.borderColor = R.color.pink()?.cgColor
@@ -17,14 +24,12 @@ final class TitleLabel: UIView {
     
     private let titleLabel = UILabel().then {
         $0.textColor = R.color.pink()
-        $0.font = .medium(size: 14)
     }
     
-    init() {
-        super.init(frame: .zero)
+    init(type: TitleType) {
+        self.type = type
         
-        self.setup()
-        self.bindConstraints()
+        super.init(frame: .zero)
     }
     
     required init?(coder: NSCoder) {
@@ -35,20 +40,40 @@ final class TitleLabel: UIView {
         self.titleLabel.text = title
     }
     
-    private func setup() {
+    override func setup() {
         self.backgroundColor = .clear
         self.addSubViews([
             self.outlineView,
             self.titleLabel
         ])
+        
+        switch self.type {
+        case .small:
+            self.titleLabel.font = .regular(size: 12)
+            self.outlineView.layer.cornerRadius = 11
+            
+        case .big:
+            self.titleLabel.font = .medium(size: 14)
+            self.outlineView.layer.cornerRadius = 15
+        }
     }
     
-    private func bindConstraints() {
-        self.outlineView.snp.makeConstraints { make in
-            make.left.equalTo(self.titleLabel).offset(-10)
-            make.right.equalTo(self.titleLabel).offset(10)
-            make.top.equalTo(self.titleLabel).offset(-6)
-            make.bottom.equalTo(self.titleLabel).offset(6)
+    override func bindConstraints() {
+        switch self.type {
+        case .small:
+            self.outlineView.snp.makeConstraints { make in
+                make.left.equalTo(self.titleLabel).offset(-6)
+                make.right.equalTo(self.titleLabel).offset(6)
+                make.top.equalTo(self.titleLabel).offset(-4)
+                make.bottom.equalTo(self.titleLabel).offset(4)
+            }
+        case .big:
+            self.outlineView.snp.makeConstraints { make in
+                make.left.equalTo(self.titleLabel).offset(-10)
+                make.right.equalTo(self.titleLabel).offset(10)
+                make.top.equalTo(self.titleLabel).offset(-6)
+                make.bottom.equalTo(self.titleLabel).offset(6)
+            }
         }
         
         self.titleLabel.snp.makeConstraints { make in

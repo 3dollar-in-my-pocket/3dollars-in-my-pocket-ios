@@ -220,3 +220,4 @@
 "visit_success" = "방문 성공";
 "visit_fail" = "방문 실패";
 "my_visit_history_title" = "방문 인증 내역";
+"visit_history_total_count" = "이번 주 %d명이\n다녀간 가게에요!";

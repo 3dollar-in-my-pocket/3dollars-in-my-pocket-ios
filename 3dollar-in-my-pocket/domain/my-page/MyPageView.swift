@@ -29,7 +29,7 @@ final class MyPageView: BaseView {
     
     private let bedgeImage = UIImageView()
     
-    private let myTitleLabel = TitleLabel()
+    private let myTitleLabel = TitleLabel(type: .big)
     
     private let nicknameLabel = UILabel().then {
         $0.font = .bold(size: 30)
