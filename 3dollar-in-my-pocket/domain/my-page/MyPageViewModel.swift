@@ -5,12 +5,14 @@ final class MyPageViewModel: BaseViewModel {
     
     struct Input {
         let viewDidLoad = PublishSubject<Void>()
+        let tapMyMedal = PublishSubject<Void>()
     }
     
     struct Output {
         let user = PublishRelay<User>()
         let visitHistories = PublishRelay<[VisitHistory]>()
         let isRefreshing = PublishRelay<Bool>()
+        let goToMyMedal = PublishRelay<Medal>()
     }
     
     let input = Input()
@@ -35,6 +37,11 @@ final class MyPageViewModel: BaseViewModel {
                 self?.fetchMyActivityInfo()
                 self?.fetchVisitHistories()
             }
+            .disposed(by: self.disposeBag)
+        
+        self.input.tapMyMedal
+            .withLatestFrom(self.output.user) { $1.medal }
+            .bind(to: self.output.goToMyMedal)
             .disposed(by: self.disposeBag)
     }
     

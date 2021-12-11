@@ -64,6 +64,10 @@
 		6E326B27274286D100E68666 /* CategoryListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B26274286D100E68666 /* CategoryListCoordinator.swift */; };
 		6E33F49226FF471C000BF5AA /* StoreServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */; };
 		6E3493B2276481D10082B011 /* MedalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B1276481D10082B011 /* MedalCollectionCell.swift */; };
+		6E3493B4276491B20082B011 /* MyMedalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B3276491B20082B011 /* MyMedalViewModel.swift */; };
+		6E3493B62764924B0082B011 /* MedalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B52764924B0082B011 /* MedalService.swift */; };
+		6E3493B92764BA810082B011 /* MedalContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B82764BA810082B011 /* MedalContext.swift */; };
+		6E3493BB2764C8F50082B011 /* MedalHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493BA2764C8F50082B011 /* MedalHeaderView.swift */; };
 		6E35058E26A41E1600690C12 /* RemoteConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E35058D26A41E1600690C12 /* RemoteConfigService.swift */; };
 		6E37A64B25EE73A300C8C6C4 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E37A64A25EE73A300C8C6C4 /* PaddingLabel.swift */; };
 		6E37A64D25EE7A9F00C8C6C4 /* HomeEmptyStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E37A64C25EE7A9F00C8C6C4 /* HomeEmptyStoreCell.swift */; };
@@ -399,6 +403,10 @@
 		6E326B26274286D100E68666 /* CategoryListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListCoordinator.swift; sourceTree = "<group>"; };
 		6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreServiceMock.swift; sourceTree = "<group>"; };
 		6E3493B1276481D10082B011 /* MedalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalCollectionCell.swift; sourceTree = "<group>"; };
+		6E3493B3276491B20082B011 /* MyMedalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalViewModel.swift; sourceTree = "<group>"; };
+		6E3493B52764924B0082B011 /* MedalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalService.swift; sourceTree = "<group>"; };
+		6E3493B82764BA810082B011 /* MedalContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalContext.swift; sourceTree = "<group>"; };
+		6E3493BA2764C8F50082B011 /* MedalHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalHeaderView.swift; sourceTree = "<group>"; };
 		6E35058D26A41E1600690C12 /* RemoteConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigService.swift; sourceTree = "<group>"; };
 		6E37A64A25EE73A300C8C6C4 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		6E37A64C25EE7A9F00C8C6C4 /* HomeEmptyStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEmptyStoreCell.swift; sourceTree = "<group>"; };
@@ -725,6 +733,7 @@
 		6E0EA39523ABB230008F7CB2 /* 3dollar-in-my-pocket */ = {
 			isa = PBXGroup;
 			children = (
+				6E3493B72764BA770082B011 /* context */,
 				6EB8FB9F25988D3300C17B74 /* manager */,
 				6E62EED423AD1DE2007B7570 /* util */,
 				6E72AE6123C980F000D3B257 /* model */,
@@ -805,6 +814,14 @@
 				6E326B222742633200E68666 /* OrderFiltterButton.swift */,
 			);
 			path = subviews;
+			sourceTree = "<group>";
+		};
+		6E3493B72764BA770082B011 /* context */ = {
+			isa = PBXGroup;
+			children = (
+				6E3493B82764BA810082B011 /* MedalContext.swift */,
+			);
+			path = context;
 			sourceTree = "<group>";
 		};
 		6E37D4C8269979BC00FEC4B2 /* domains */ = {
@@ -1269,6 +1286,7 @@
 				6E3AA4C225AD661800D8C58C /* MapService.swift */,
 				6E35058D26A41E1600690C12 /* RemoteConfigService.swift */,
 				6E4697C6273E053B005A5902 /* VisitHistoryService.swift */,
+				6E3493B52764924B0082B011 /* MedalService.swift */,
 			);
 			path = services;
 			sourceTree = "<group>";
@@ -1357,6 +1375,7 @@
 				6E7E3E4B27642AB000A4C6E2 /* MyMedalView.swift */,
 				6E7E3E4D27642C6900A4C6E2 /* MyMedalViewController.swift */,
 				6E7E3E4F27642CBF00A4C6E2 /* MyMedalCoordinator.swift */,
+				6E3493B3276491B20082B011 /* MyMedalViewModel.swift */,
 			);
 			path = medal;
 			sourceTree = "<group>";
@@ -1374,6 +1393,7 @@
 			children = (
 				6E7E3E5327642F8B00A4C6E2 /* MyMedalCollectionCell.swift */,
 				6E3493B1276481D10082B011 /* MedalCollectionCell.swift */,
+				6E3493BA2764C8F50082B011 /* MedalHeaderView.swift */,
 			);
 			path = cells;
 			sourceTree = "<group>";
@@ -2072,6 +2092,7 @@
 				6E590DAF23E7F56C006814BE /* PhotoMainCell.swift in Sources */,
 				6E71BF5325B4274900ECFBD9 /* AddCategoryViewModel.swift in Sources */,
 				6E41755426EE458600EA66B7 /* FAQCategory.swift in Sources */,
+				6E3493BB2764C8F50082B011 /* MedalHeaderView.swift in Sources */,
 				6E8E2519256AADB100AE6479 /* CommonError.swift in Sources */,
 				6E70C38F23B6EBB300C52C9C /* StoreDetailView.swift in Sources */,
 				6E2C4CCC26E79A8F00AAEA6E /* StoreDeleteResponse.swift in Sources */,
@@ -2161,6 +2182,7 @@
 				6ED79E0F25CFF11A00B3CFA9 /* ModifyAddressView.swift in Sources */,
 				6E4C1BE3275330CF006C0F15 /* CountButton.swift in Sources */,
 				6E4C1BE827534DC0006C0F15 /* VisitDateView.swift in Sources */,
+				6E3493B4276491B20082B011 /* MyMedalViewModel.swift in Sources */,
 				6ECCE9AF26BAD308006B3C01 /* Requestable.swift in Sources */,
 				6E49B0FC27506C86009897C1 /* PopupResponse.swift in Sources */,
 				6E7E3E4E27642C6900A4C6E2 /* MyMedalViewController.swift in Sources */,
@@ -2181,6 +2203,7 @@
 				6ED79E1125CFF13B00B3CFA9 /* ModifyAddressVC.swift in Sources */,
 				6E57F29A273A9FF0008C524A /* VisitViewController.swift in Sources */,
 				6E62EED623AD1DE9007B7570 /* AlertUtils.swift in Sources */,
+				6E3493B92764BA810082B011 /* MedalContext.swift in Sources */,
 				6E6835B923C2C89400D23F54 /* RenameVC.swift in Sources */,
 				6E5939052573E38900593DC8 /* PrivacyVC.swift in Sources */,
 				6E35058E26A41E1600690C12 /* RemoteConfigService.swift in Sources */,
@@ -2250,6 +2273,7 @@
 				6E3DED7725C7E391000BE04C /* RegisterPhotoView.swift in Sources */,
 				6E479B6726EA2C5B00566384 /* ReviewInfoResponse.swift in Sources */,
 				6E9AFD1A2760376600402441 /* ReviewTitleLabel.swift in Sources */,
+				6E3493B62764924B0082B011 /* MedalService.swift in Sources */,
 				6E6F35A825AC7BF4007931EC /* WriteAddressVC.swift in Sources */,
 				6EDBBB782754A34800470F71 /* VisitBedgeView.swift in Sources */,
 				6E41F7E623BAC2BA00D0AC73 /* UIColorExt.swift in Sources */,

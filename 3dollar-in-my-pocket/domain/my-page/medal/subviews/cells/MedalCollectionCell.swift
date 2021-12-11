@@ -9,8 +9,6 @@ final class MedalCollectionCell: BaseCollectionViewCell {
     )
     
     private let containerView = UIView().then {
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
         $0.backgroundColor = R.color.gray95()
         $0.layer.cornerRadius = 8
     }
@@ -19,6 +17,9 @@ final class MedalCollectionCell: BaseCollectionViewCell {
     
     private let nameContainerView = UIView().then {
         $0.layer.cornerRadius = 8
+        $0.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
+        $0.layer.borderWidth = 1
+        $0.backgroundColor = .clear
     }
     
     private let nameLabel = UILabel().then {
@@ -63,6 +64,7 @@ final class MedalCollectionCell: BaseCollectionViewCell {
         self.medalImage.snp.makeConstraints { make in
             make.centerX.equalTo(self.containerView)
             make.top.equalTo(self.containerView).offset(15)
+            make.width.height.equalTo(90)
         }
         
         self.nameContainerView.snp.makeConstraints { make in

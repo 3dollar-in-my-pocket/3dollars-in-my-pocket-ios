@@ -78,13 +78,6 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
             })
             .disposed(by: self.disposeBag)
         
-        self.myPageView.medalCountButton.rx.tap
-            .asDriver()
-            .drive(onNext: { [weak self] in
-                self?.coordinator?.goToMyMedal()
-            })
-            .disposed(by: self.disposeBag)
-        
         self.viewModel.showErrorAlert
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in
@@ -96,6 +89,10 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
     override func bindViewModelInput() {
         self.myPageView.refreshControl.rx.controlEvent(.valueChanged)
             .bind(to: self.viewModel.input.viewDidLoad)
+            .disposed(by: self.disposeBag)
+        
+        self.myPageView.medalCountButton.rx.tap
+            .bind(to: self.viewModel.input.tapMyMedal)
             .disposed(by: self.disposeBag)
     }
     
@@ -118,6 +115,13 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
         self.viewModel.output.isRefreshing
             .asDriver(onErrorJustReturn: false)
             .drive(self.myPageView.refreshControl.rx.isRefreshing)
+            .disposed(by: self.disposeBag)
+        
+        self.viewModel.output.goToMyMedal
+            .asDriver(onErrorJustReturn: Medal())
+            .drive(onNext: { [weak self] medal in
+                self?.coordinator?.goToMyMedal(medal: medal)
+            })
             .disposed(by: self.disposeBag)
     }
 }

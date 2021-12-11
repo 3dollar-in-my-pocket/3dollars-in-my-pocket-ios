@@ -19,7 +19,7 @@ protocol MyPageCoordinator: Coordinator, AnyObject {
     
     func goToMyVisitHistory()
     
-    func goToMyMedal()
+    func goToMyMedal(medal: Medal)
 }
 
 extension MyPageCoordinator {
@@ -53,8 +53,8 @@ extension MyPageCoordinator {
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    func goToMyMedal() {
-        let viewController = MyMedalViewController.instance()
+    func goToMyMedal(medal: Medal) {
+        let viewController = MyMedalViewController.instance(medal: medal)
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }

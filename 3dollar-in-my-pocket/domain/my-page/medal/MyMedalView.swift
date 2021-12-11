@@ -15,8 +15,12 @@ final class MyMedalView: BaseView {
         frame: .zero,
         collectionViewLayout: UICollectionViewLayout()
     ).then {
-        let layout = UICollectionViewFlowLayout()
+        let layout = LeftAlignedCollectionViewFlowLayout()
         
+        layout.estimatedItemSize = MedalCollectionCell.size
+        layout.minimumInteritemSpacing = 17
+        layout.minimumLineSpacing = 20
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 62)
         $0.collectionViewLayout = layout
         $0.backgroundColor = .clear
         $0.register(
@@ -27,6 +31,12 @@ final class MyMedalView: BaseView {
             MedalCollectionCell.self,
             forCellWithReuseIdentifier: MedalCollectionCell.registerId
         )
+        $0.register(
+            MedalHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: MedalHeaderView.registerId
+        )
+        $0.contentInset = UIEdgeInsets(top: 26, left: 24, bottom: 24, right: 24)
     }
     
     override func setup() {

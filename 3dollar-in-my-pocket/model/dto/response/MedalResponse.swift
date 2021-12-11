@@ -10,26 +10,30 @@ import Foundation
 
 struct MedalResponse: Decodable {
     let iconUrl: String
+    let disableIconUrl: String
     let medalId: Int
     let name: String
     
     enum CodingKeys: String, CodingKey {
-      case iconUrl
-      case medalId
-      case name
+        case iconUrl
+        case disableIconUrl
+        case medalId
+        case name
     }
     
     init() {
         self.iconUrl = ""
+        self.disableIconUrl = ""
         self.medalId = -1
         self.name = ""
     }
     
     init(from decoder: Decoder) throws {
-      let values = try decoder.container(keyedBy: CodingKeys.self)
-      
-      self.iconUrl = try values.decodeIfPresent(String.self, forKey: .iconUrl) ?? ""
-      self.medalId = try values.decodeIfPresent(Int.self, forKey: .medalId) ?? -1
-      self.name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.iconUrl = try values.decodeIfPresent(String.self, forKey: .iconUrl) ?? ""
+        self.disableIconUrl = try values.decodeIfPresent(String.self, forKey: .disableIconUrl) ?? ""
+        self.medalId = try values.decodeIfPresent(Int.self, forKey: .medalId) ?? -1
+        self.name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
     }
 }
