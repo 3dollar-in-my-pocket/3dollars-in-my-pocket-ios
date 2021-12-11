@@ -78,6 +78,13 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
             })
             .disposed(by: self.disposeBag)
         
+        self.myPageView.medalCountButton.rx.tap
+            .asDriver()
+            .drive(onNext: { [weak self] in
+                self?.coordinator?.goToMyMedal()
+            })
+            .disposed(by: self.disposeBag)
+        
         self.viewModel.showErrorAlert
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in

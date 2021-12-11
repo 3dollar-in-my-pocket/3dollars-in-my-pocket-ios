@@ -1,0 +1,3 @@
+protocol MyMedalCoordinator: Coordinator, AnyObject {
+    
+}

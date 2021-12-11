@@ -18,6 +18,8 @@ protocol MyPageCoordinator: Coordinator, AnyObject {
     func goToStoreDetail(storeId: Int)
     
     func goToMyVisitHistory()
+    
+    func goToMyMedal()
 }
 
 extension MyPageCoordinator {
@@ -47,6 +49,12 @@ extension MyPageCoordinator {
     
     func goToMyVisitHistory() {
         let viewController = MyVisitHistoryViewController.instance()
+        
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    func goToMyMedal() {
+        let viewController = MyMedalViewController.instance()
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }

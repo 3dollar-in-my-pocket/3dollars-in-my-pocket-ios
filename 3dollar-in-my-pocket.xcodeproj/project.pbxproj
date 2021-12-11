@@ -63,6 +63,7 @@
 		6E326B232742633200E68666 /* OrderFiltterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B222742633200E68666 /* OrderFiltterButton.swift */; };
 		6E326B27274286D100E68666 /* CategoryListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B26274286D100E68666 /* CategoryListCoordinator.swift */; };
 		6E33F49226FF471C000BF5AA /* StoreServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */; };
+		6E3493B2276481D10082B011 /* MedalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B1276481D10082B011 /* MedalCollectionCell.swift */; };
 		6E35058E26A41E1600690C12 /* RemoteConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E35058D26A41E1600690C12 /* RemoteConfigService.swift */; };
 		6E37A64B25EE73A300C8C6C4 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E37A64A25EE73A300C8C6C4 /* PaddingLabel.swift */; };
 		6E37A64D25EE7A9F00C8C6C4 /* HomeEmptyStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E37A64C25EE7A9F00C8C6C4 /* HomeEmptyStoreCell.swift */; };
@@ -208,6 +209,10 @@
 		6E7BF08625B7D82F00456D0B /* StoreType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08525B7D82F00456D0B /* StoreType.swift */; };
 		6E7BF08B25B7DB6000456D0B /* WriteDetailPaymentStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08A25B7DB6000456D0B /* WriteDetailPaymentStackView.swift */; };
 		6E7BF09025B7DDB900456D0B /* PaymentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08F25B7DDB900456D0B /* PaymentType.swift */; };
+		6E7E3E4C27642AB000A4C6E2 /* MyMedalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7E3E4B27642AB000A4C6E2 /* MyMedalView.swift */; };
+		6E7E3E4E27642C6900A4C6E2 /* MyMedalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7E3E4D27642C6900A4C6E2 /* MyMedalViewController.swift */; };
+		6E7E3E5027642CBF00A4C6E2 /* MyMedalCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7E3E4F27642CBF00A4C6E2 /* MyMedalCoordinator.swift */; };
+		6E7E3E5427642F8B00A4C6E2 /* MyMedalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7E3E5327642F8B00A4C6E2 /* MyMedalCollectionCell.swift */; };
 		6E7EF40A25DE978C0014CD2B /* TabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EF40925DE978C0014CD2B /* TabBarVC.swift */; };
 		6E802088269A9608000A646E /* UserServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E802087269A9608000A646E /* UserServiceMock.swift */; };
 		6E810B0F259AEA3A0035315F /* GAPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E810B0E259AEA3A0035315F /* GAPage.swift */; };
@@ -393,6 +398,7 @@
 		6E326B222742633200E68666 /* OrderFiltterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFiltterButton.swift; sourceTree = "<group>"; };
 		6E326B26274286D100E68666 /* CategoryListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListCoordinator.swift; sourceTree = "<group>"; };
 		6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreServiceMock.swift; sourceTree = "<group>"; };
+		6E3493B1276481D10082B011 /* MedalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalCollectionCell.swift; sourceTree = "<group>"; };
 		6E35058D26A41E1600690C12 /* RemoteConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigService.swift; sourceTree = "<group>"; };
 		6E37A64A25EE73A300C8C6C4 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		6E37A64C25EE7A9F00C8C6C4 /* HomeEmptyStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEmptyStoreCell.swift; sourceTree = "<group>"; };
@@ -538,6 +544,10 @@
 		6E7BF08525B7D82F00456D0B /* StoreType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreType.swift; sourceTree = "<group>"; };
 		6E7BF08A25B7DB6000456D0B /* WriteDetailPaymentStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailPaymentStackView.swift; sourceTree = "<group>"; };
 		6E7BF08F25B7DDB900456D0B /* PaymentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentType.swift; sourceTree = "<group>"; };
+		6E7E3E4B27642AB000A4C6E2 /* MyMedalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalView.swift; sourceTree = "<group>"; };
+		6E7E3E4D27642C6900A4C6E2 /* MyMedalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalViewController.swift; sourceTree = "<group>"; };
+		6E7E3E4F27642CBF00A4C6E2 /* MyMedalCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalCoordinator.swift; sourceTree = "<group>"; };
+		6E7E3E5327642F8B00A4C6E2 /* MyMedalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalCollectionCell.swift; sourceTree = "<group>"; };
 		6E7EF40925DE978C0014CD2B /* TabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarVC.swift; sourceTree = "<group>"; };
 		6E802087269A9608000A646E /* UserServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserServiceMock.swift; sourceTree = "<group>"; };
 		6E810B0E259AEA3A0035315F /* GAPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GAPage.swift; sourceTree = "<group>"; };
@@ -1340,6 +1350,34 @@
 			path = presentation;
 			sourceTree = "<group>";
 		};
+		6E7E3E4A27642A8E00A4C6E2 /* medal */ = {
+			isa = PBXGroup;
+			children = (
+				6E7E3E5127642F7500A4C6E2 /* subviews */,
+				6E7E3E4B27642AB000A4C6E2 /* MyMedalView.swift */,
+				6E7E3E4D27642C6900A4C6E2 /* MyMedalViewController.swift */,
+				6E7E3E4F27642CBF00A4C6E2 /* MyMedalCoordinator.swift */,
+			);
+			path = medal;
+			sourceTree = "<group>";
+		};
+		6E7E3E5127642F7500A4C6E2 /* subviews */ = {
+			isa = PBXGroup;
+			children = (
+				6E7E3E5227642F7800A4C6E2 /* cells */,
+			);
+			path = subviews;
+			sourceTree = "<group>";
+		};
+		6E7E3E5227642F7800A4C6E2 /* cells */ = {
+			isa = PBXGroup;
+			children = (
+				6E7E3E5327642F8B00A4C6E2 /* MyMedalCollectionCell.swift */,
+				6E3493B1276481D10082B011 /* MedalCollectionCell.swift */,
+			);
+			path = cells;
+			sourceTree = "<group>";
+		};
 		6E810B10259AEA4A0035315F /* ga */ = {
 			isa = PBXGroup;
 			children = (
@@ -1379,6 +1417,7 @@
 		6E8A137623B5DCBB009C2B64 /* my-page */ = {
 			isa = PBXGroup;
 			children = (
+				6E7E3E4A27642A8E00A4C6E2 /* medal */,
 				6E6835C423C30D6F00D23F54 /* review */,
 				6EF63FB92761B0F10063A3B9 /* visit-history */,
 				6E4C1BDF27532DDF006C0F15 /* subviews */,
@@ -1974,6 +2013,7 @@
 				6EEE30B526FEDAED00696467 /* LocationError.swift in Sources */,
 				6E16EE2426BC1AC800F4DD03 /* UserInfoResponse.swift in Sources */,
 				6E57F29E273AA724008C524A /* VisitViewModel.swift in Sources */,
+				6E7E3E4C27642AB000A4C6E2 /* MyMedalView.swift in Sources */,
 				6E93C83C23F2303E002E737F /* Popup.swift in Sources */,
 				6E2F5FDF23D6BF4800094D41 /* CategoryService.swift in Sources */,
 				6E326B232742633200E68666 /* OrderFiltterButton.swift in Sources */,
@@ -1981,6 +2021,7 @@
 				6E29CF75258F190200F0BACB /* ErrorResponse.swift in Sources */,
 				6E07D44623B590B30055AEE7 /* HomeVC.swift in Sources */,
 				6E7BF08125B7D5C000456D0B /* WriteDetailTypeStackView.swift in Sources */,
+				6E3493B2276481D10082B011 /* MedalCollectionCell.swift in Sources */,
 				6E4543ED25B7BD11000E60B8 /* MenuFooterView.swift in Sources */,
 				6ED79E1325CFF39700B3CFA9 /* ModifyAddressViewModel.swift in Sources */,
 				6E61F48126F466410087C888 /* UIFontExtension.swift in Sources */,
@@ -2026,6 +2067,7 @@
 				6E1B64DB2587A2CA003225F4 /* ObserverExt.swift in Sources */,
 				6E18C33225720C6400F37C3A /* FAQTagCell.swift in Sources */,
 				6E07D44423B5906E0055AEE7 /* HomeView.swift in Sources */,
+				6E7E3E5427642F8B00A4C6E2 /* MyMedalCollectionCell.swift in Sources */,
 				6E7BF09025B7DDB900456D0B /* PaymentType.swift in Sources */,
 				6E590DAF23E7F56C006814BE /* PhotoMainCell.swift in Sources */,
 				6E71BF5325B4274900ECFBD9 /* AddCategoryViewModel.swift in Sources */,
@@ -2121,6 +2163,7 @@
 				6E4C1BE827534DC0006C0F15 /* VisitDateView.swift in Sources */,
 				6ECCE9AF26BAD308006B3C01 /* Requestable.swift in Sources */,
 				6E49B0FC27506C86009897C1 /* PopupResponse.swift in Sources */,
+				6E7E3E4E27642C6900A4C6E2 /* MyMedalViewController.swift in Sources */,
 				6E6835C223C2F36000D23F54 /* RegisteredStoreHeader.swift in Sources */,
 				6E451BDD26DD0F870056CDC4 /* UITableViewExtension.swift in Sources */,
 				6E72AE5C23C9727100D3B257 /* SplashVC.swift in Sources */,
@@ -2170,6 +2213,7 @@
 				6E7487992723BD940021DF93 /* PaymentMethodView.swift in Sources */,
 				6E18C31E2571F31700F37C3A /* FAQViewModel.swift in Sources */,
 				6E511E6325710CFF009E4667 /* QuestionView.swift in Sources */,
+				6E7E3E5027642CBF00A4C6E2 /* MyMedalCoordinator.swift in Sources */,
 				6EBF20F3259327E500C821EF /* ReviewModalViewModel.swift in Sources */,
 				6E4697CF273E35FD005A5902 /* DateExtension.swift in Sources */,
 				6E4697CB273E1908005A5902 /* AddVisitHistoryRequest.swift in Sources */,

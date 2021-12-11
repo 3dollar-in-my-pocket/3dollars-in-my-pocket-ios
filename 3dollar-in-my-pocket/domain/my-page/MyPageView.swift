@@ -41,7 +41,7 @@ final class MyPageView: BaseView {
     
     let reviewCountButton = CountButton(type: .review)
     
-    let titleCountButton = CountButton(type: .title)
+    let medalCountButton = CountButton(type: .title)
     
     private let bottomBackgroundView = UIView().then {
         $0.backgroundColor = .black
@@ -96,7 +96,7 @@ final class MyPageView: BaseView {
             self.nicknameLabel,
             self.storeCountButton,
             self.reviewCountButton,
-            self.titleCountButton,
+            self.medalCountButton,
             self.bottomBackgroundView,
             self.visitBedgeImage,
             self.visitLabel,
@@ -174,7 +174,7 @@ final class MyPageView: BaseView {
             make.size.equalTo(CountButton.size)
         }
         
-        self.titleCountButton.snp.makeConstraints { make in
+        self.medalCountButton.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-36)
             make.centerY.equalTo(self.storeCountButton)
             make.size.equalTo(CountButton.size)
@@ -217,7 +217,7 @@ final class MyPageView: BaseView {
         self.myTitleLabel.bind(title: user.medal.name)
         self.storeCountButton.bind(count: user.activity.storesCount)
         self.reviewCountButton.bind(count: user.activity.reviewsCount)
-        self.titleCountButton.bind(count: user.activity.medalsCounts)
+        self.medalCountButton.bind(count: user.activity.medalsCounts)
     }
 }
 
