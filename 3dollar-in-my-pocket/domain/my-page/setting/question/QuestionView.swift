@@ -18,13 +18,13 @@ class QuestionView: BaseView {
     
     let tableView = UITableView().then {
         $0.tableFooterView = UIView()
-        $0.backgroundColor = UIColor(r: 28, g: 28, b: 28)
+        $0.backgroundColor = .clear
         $0.separatorStyle = .none
         $0.contentInset = UIEdgeInsets(top: 18, left: 0, bottom: 0, right: 0)
     }
     
     override func setup() {
-        backgroundColor = UIColor(r: 28, g: 28, b: 28)
+        backgroundColor = R.color.gray100()
         addSubViews(backButton, titleLabel, topLineView, tableView)
     }
     

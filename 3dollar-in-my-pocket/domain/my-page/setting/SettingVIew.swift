@@ -3,7 +3,7 @@ import UIKit
 class SettingView: BaseView {
   
   let topBackground = UIView().then {
-    $0.backgroundColor = UIColor(r: 32, g: 32, b: 32)
+    $0.backgroundColor = R.color.gray95()
   }
   
   let backButton = UIButton().then {
@@ -37,7 +37,7 @@ class SettingView: BaseView {
   }
   
   let tableView = UITableView().then {
-    $0.backgroundColor = UIColor(r: 28, g: 28, b: 28)
+    $0.backgroundColor = R.color.gray100()
     $0.tableFooterView = UIView()
     $0.separatorStyle = .none
     $0.contentInset = UIEdgeInsets(top: 12.5, left: 0, bottom: 0, right: 0)
@@ -45,7 +45,7 @@ class SettingView: BaseView {
   
   
   override func setup() {
-    backgroundColor = UIColor(r: 28, g: 28, b: 28)
+    backgroundColor = R.color.gray100()
     addSubViews(
       topBackground, backButton, titleLabel, nicknameLabel,
       nicknameModifyLabelButton, nicknameModifyButton, middleLineView,

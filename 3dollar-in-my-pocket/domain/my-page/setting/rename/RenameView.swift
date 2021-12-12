@@ -82,7 +82,7 @@ class RenameView: BaseView {
     }
     
     override func setup() {
-        backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
+        backgroundColor = R.color.gray100()
         addGestureRecognizer(tapGestureView)
         addSubViews(backButton, titleLabel, bgCloud, oldNicknameLabel, nicknameLabel1, nicknameFieldBg,
                     nicknameField, nicknameLabel2, startBtn1, startBtn2, warningImage, warningLabel)
