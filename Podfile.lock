@@ -237,7 +237,7 @@ PODS:
   - Firebase/RemoteConfig (8.1.1):
     - Firebase/CoreOnly
     - FirebaseRemoteConfig (~> 8.1.0)
-  - FirebaseABTesting (8.3.0):
+  - FirebaseABTesting (8.4.0):
     - FirebaseCore (~> 8.0)
   - FirebaseAnalytics (8.1.1):
     - FirebaseAnalytics/AdIdSupport (= 8.1.1)
@@ -546,7 +546,7 @@ SPEC CHECKSUMS:
   DeviceKit: 2c5d7485a2fa10b65c0091b2952d30843a6ba06d
   Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   Firebase: 4bb49ae87756034cef870fa3c4006235eb46f475
-  FirebaseABTesting: 7fe1b1d6b2bba76d3259f5d2a2089c05faf72ff0
+  FirebaseABTesting: 4cb61aeeb50f60680af1c01fff781dfaf9293916
   FirebaseAnalytics: d6dd061b26a04744cb988c66e29697181152b2a3
   FirebaseCore: 389c4ce9a7cce4a7e25eb22326b4bee0050557b2
   FirebaseCoreDiagnostics: 3e249cee3de5c5f9cfd6cc2a19997231286fec11
@@ -594,4 +594,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 94125d10d7f918f2b9f7b9af380327fdd1c9eb6f
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.11.2

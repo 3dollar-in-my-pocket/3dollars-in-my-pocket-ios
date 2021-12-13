@@ -92,12 +92,7 @@ final class MyMedalViewController: BaseVC, MyMedalCoordinator {
             ) as? MedalHeaderView else {
                 return UICollectionReusableView()
             }
-            cell.frame = CGRect(
-                x: 0,
-                y: 0,
-                width: MedalHeaderView.size.width,
-                height: indexPath.row == 0 ? 0 : MedalHeaderView.size.height
-            )
+
             cell.bind(title: dataSource.sectionModels[indexPath.section].model)
             return cell
         }

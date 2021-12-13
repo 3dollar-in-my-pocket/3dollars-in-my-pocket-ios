@@ -20,7 +20,6 @@ final class MyMedalView: BaseView {
         layout.estimatedItemSize = MedalCollectionCell.size
         layout.minimumInteritemSpacing = 17
         layout.minimumLineSpacing = 20
-        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 62)
         $0.collectionViewLayout = layout
         $0.backgroundColor = .clear
         $0.register(
@@ -41,6 +40,7 @@ final class MyMedalView: BaseView {
     
     override func setup() {
         self.backgroundColor = R.color.gray100()
+        self.collectionView.delegate = self
         self.addSubViews([
             self.backButton,
             self.titleLabel,
@@ -65,6 +65,20 @@ final class MyMedalView: BaseView {
             make.right.equalToSuperview()
             make.left.equalToSuperview()
             make.top.equalTo(self.backButton.snp.bottom).offset(10)
+        }
+    }
+}
+
+extension MyMedalView: UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        referenceSizeForHeaderInSection section: Int
+    ) -> CGSize {
+        if section == 0 {
+            return .zero
+        } else {
+            return MedalHeaderView.size
         }
     }
 }

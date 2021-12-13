@@ -4,7 +4,7 @@ final class MedalCollectionCell: BaseCollectionViewCell {
     static let registerId = "\(MedalCollectionCell.self)"
     
     static let size = CGSize(
-        width: (UIScreen.main.bounds.width - 48 - 17) / 2,
+        width: (UIScreen.main.bounds.width - 48 - 24) / 2,
         height: 161
     )
     
