@@ -2,7 +2,7 @@ import UIKit
 
 final class MedalHeaderView: UICollectionReusableView {
     static let registerId = "\(MedalHeaderView.self)"
-    static let size = CGSize(width: UIScreen.main.bounds.width - 48, height: 62)
+    static let size = CGSize(width: UIScreen.main.bounds.width - 48, height: 73)
     
     private let dividorView = UIView().then {
         $0.backgroundColor = R.color.gray80()

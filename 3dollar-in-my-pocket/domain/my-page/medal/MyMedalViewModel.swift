@@ -48,12 +48,18 @@ final class MyMedalViewModel: BaseViewModel {
         self.medalService.fetchMyMedals()
             .map { $0.map(Medal.init) }
             .subscribe(
-                onNext: { [weak self] medals in
+                onNext: { [weak self] myMedals in
                     guard let self = self else { return }
+                    var medals = self.medalContext.medals
+                    
+                    for index in medals.indices {
+                        medals[index].isOwned = myMedals.contains(medals[index])
+                    }
+                    
                     let myMedalSection = SectionModel(model: "", items: [self.medal])
                     let medalsSection = SectionModel(
                         model: "내 칭호",
-                        items: self.medalContext.medals
+                        items: medals
                     )
                     
                     self.output.medals = [myMedalSection, medalsSection]

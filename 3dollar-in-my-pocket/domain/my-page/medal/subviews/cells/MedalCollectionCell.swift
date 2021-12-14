@@ -37,10 +37,16 @@ final class MedalCollectionCell: BaseCollectionViewCell {
             } else {
                 self.containerView.layer.borderWidth = 0
                 self.nameContainerView.layer.borderWidth = 1
-                self.nameContainerView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
                 self.nameContainerView.backgroundColor = .clear
             }
         }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.nameContainerView.layer.borderWidth = 0
+        self.containerView.layer.borderWidth = 0
     }
     
     override func setup() {
@@ -80,7 +86,19 @@ final class MedalCollectionCell: BaseCollectionViewCell {
     }
     
     func bind(medal: Medal) {
-        self.medalImage.setImage(urlString: medal.iconUrl)
+        if medal.isOwned {
+            self.medalImage.setImage(urlString: medal.iconUrl)
+            self.containerView.layer.borderWidth = 0
+            self.nameContainerView.layer.borderWidth = 1
+            self.nameContainerView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
+            self.nameContainerView.backgroundColor = .clear
+            self.nameLabel.textColor = R.color.pink()
+        } else {
+            self.medalImage.setImage(urlString: medal.disableUrl)
+            self.nameLabel.textColor = R.color.gray60()
+            self.nameContainerView.layer.borderColor = UIColor(r: 90, g: 90, b: 90).cgColor
+            self.nameContainerView.layer.borderWidth = 1
+        }
         self.nameLabel.text = medal.name
     }
 }
