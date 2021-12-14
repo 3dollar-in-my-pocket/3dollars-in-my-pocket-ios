@@ -9,8 +9,10 @@ final class MyPageView: BaseView {
     
     private let scrollView = UIScrollView()
     
-    private let containerView = UIView().then {
-        $0.backgroundColor = R.color.gray100()
+    private let containerView = UIView()
+    
+    private let navigationBackgroundView = UIView().then {
+        $0.backgroundColor = R.color.gray95()
     }
     
     private let titleLabel = UILabel().then {
@@ -43,8 +45,10 @@ final class MyPageView: BaseView {
     
     let medalCountButton = CountButton(type: .title)
     
-    private let bottomBackgroundView = UIView().then {
-        $0.backgroundColor = .black
+    private let topBackgroundView = UIView().then {
+        $0.backgroundColor = R.color.gray95()
+        $0.layer.cornerRadius = 10
+        $0.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
     }
     
     private let visitBedgeImage = UIImageView().then {
@@ -90,6 +94,7 @@ final class MyPageView: BaseView {
         self.backgroundColor = R.color.gray100()
         self.scrollView.refreshControl = self.refreshControl
         self.containerView.addSubViews([
+            self.topBackgroundView,
             self.bgCloud,
             self.bedgeImage,
             self.myTitleLabel,
@@ -97,7 +102,6 @@ final class MyPageView: BaseView {
             self.storeCountButton,
             self.reviewCountButton,
             self.medalCountButton,
-            self.bottomBackgroundView,
             self.visitBedgeImage,
             self.visitLabel,
             self.visitHistoryButton,
@@ -105,6 +109,7 @@ final class MyPageView: BaseView {
         ])
         self.scrollView.addSubview(self.containerView)
         self.addSubViews([
+            self.navigationBackgroundView,
             self.titleLabel,
             self.settingButton,
             self.scrollView
@@ -113,6 +118,12 @@ final class MyPageView: BaseView {
     }
     
     override func bindConstraints() {
+        self.navigationBackgroundView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.top.equalToSuperview()
+            make.bottom.equalTo(self.scrollView.snp.top)
+        }
         self.titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(self.safeAreaLayoutGuide).offset(23)
@@ -138,11 +149,11 @@ final class MyPageView: BaseView {
             make.height.equalTo(154)
         }
         
-        self.bottomBackgroundView.snp.makeConstraints { make in
+        self.topBackgroundView.snp.makeConstraints { make in
             make.left.equalToSuperview()
             make.right.equalToSuperview()
-            make.top.equalTo(self.storeCountButton.snp.bottom).offset(24)
-            make.bottom.equalToSuperview()
+            make.top.equalToSuperview()
+            make.bottom.equalTo(self.storeCountButton).offset(32)
         }
         
         self.bedgeImage.snp.makeConstraints { make in

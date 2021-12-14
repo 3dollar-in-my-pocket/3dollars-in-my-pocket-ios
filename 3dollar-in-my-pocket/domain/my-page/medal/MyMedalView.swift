@@ -15,9 +15,8 @@ final class MyMedalView: BaseView {
         frame: .zero,
         collectionViewLayout: UICollectionViewLayout()
     ).then {
-        let layout = LeftAlignedCollectionViewFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         
-        layout.estimatedItemSize = MedalCollectionCell.size
         layout.minimumInteritemSpacing = 17
         layout.minimumLineSpacing = 20
         $0.collectionViewLayout = layout
@@ -79,6 +78,18 @@ extension MyMedalView: UICollectionViewDelegateFlowLayout {
             return .zero
         } else {
             return MedalHeaderView.size
+        }
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        if indexPath.section == 0 {
+            return MyMedalCollectionCell.size
+        } else {
+            return MedalCollectionCell.size
         }
     }
 }

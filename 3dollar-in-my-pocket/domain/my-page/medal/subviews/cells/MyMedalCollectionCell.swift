@@ -3,6 +3,11 @@ import UIKit
 final class MyMedalCollectionCell: BaseCollectionViewCell {
     static let registerId = "\(MyMedalCollectionCell.self)"
     
+    static let size = CGSize(
+        width: UIScreen.main.bounds.width,
+        height: 148
+    )
+    
     private let titleLabel = UILabel().then {
         $0.font = .bold(size: 12)
         $0.textColor = .white
@@ -29,11 +34,11 @@ final class MyMedalCollectionCell: BaseCollectionViewCell {
     override func bindConstraints() {
         self.titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.left.equalToSuperview()
+            make.left.equalToSuperview().offset(24)
         }
         
         self.containerView.snp.makeConstraints { make in
-            make.left.equalToSuperview()
+            make.left.equalToSuperview().offset(24)
             make.top.equalTo(self.titleLabel.snp.bottom).offset(12)
             make.right.equalTo(self.medalImage).offset(32)
             make.bottom.equalTo(self.medalImage).offset(15)

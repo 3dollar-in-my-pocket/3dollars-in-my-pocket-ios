@@ -35,7 +35,7 @@ final class MedalCollectionCell: BaseCollectionViewCell {
                 self.nameContainerView.layer.borderWidth = 0
                 self.nameContainerView.backgroundColor = .white
             } else {
-                self.containerView.layer.borderWidth = 1
+                self.containerView.layer.borderWidth = 0
                 self.nameContainerView.layer.borderWidth = 1
                 self.nameContainerView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
                 self.nameContainerView.backgroundColor = .clear
