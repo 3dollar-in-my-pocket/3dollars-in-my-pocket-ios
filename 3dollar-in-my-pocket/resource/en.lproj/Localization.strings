@@ -204,8 +204,12 @@
 "my_page_visit" = "방문 인증";
 "my_page_visit_description" = "최근 내가 들린 가게는?";
 "my_page_medals" = "내 칭호";
+"my_page_visit_history_empty_title" = "방문을 인증해보세요!";
+"my_page_visit_history_empty_description" = "아직 내가 인증한 가게가 없어요ㅠㅠ";
 "registered_store_title" = "제보한 가게";
 "registered_store_count_format" = "%d개의 가게";
+"registered_store_empty_title" = "제보한 가게가 없어요!";
+"registered_store_empty_description" = "발견한 가게를 제보해 보세요 :)";
 "my_review_title" = "내가 쓴 리뷰";
 "my_review_count_format" = "%d개의 리뷰";
 "home_research" = "현재 지도에서 가게 재검색";

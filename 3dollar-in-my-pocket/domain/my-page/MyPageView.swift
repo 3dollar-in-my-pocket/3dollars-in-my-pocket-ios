@@ -89,6 +89,10 @@ final class MyPageView: BaseView {
         )
     }
     
+    let visitHistoryEmptyView = VisitHistoryEmptyView().then {
+        $0.isHidden = true
+    }
+    
     
     override func setup() {
         self.backgroundColor = R.color.gray100()
@@ -105,7 +109,8 @@ final class MyPageView: BaseView {
             self.visitBedgeImage,
             self.visitLabel,
             self.visitHistoryButton,
-            self.visitHistoryCollectionView
+            self.visitHistoryCollectionView,
+            self.visitHistoryEmptyView
         ])
         self.scrollView.addSubview(self.containerView)
         self.addSubViews([
@@ -212,6 +217,11 @@ final class MyPageView: BaseView {
             make.right.equalToSuperview()
             make.top.equalTo(self.visitHistoryButton.snp.bottom).offset(23)
             make.height.equalTo(112)
+        }
+        
+        self.visitHistoryEmptyView.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(24)
+            make.top.equalTo(visitHistoryButton.snp.bottom).offset(24)
         }
         
         self.containerView.snp.makeConstraints { make in

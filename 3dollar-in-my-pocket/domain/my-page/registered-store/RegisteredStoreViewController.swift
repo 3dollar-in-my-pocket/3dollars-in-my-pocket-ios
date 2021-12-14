@@ -67,6 +67,9 @@ final class RegisteredStoreViewController: BaseVC, RegisteredStoreCoordinator {
     override func bindViewModelOutput() {
         self.viewModel.output.stores
             .asDriver(onErrorJustReturn: [])
+            .do(onNext: { [weak self] stores in
+                self?.registeredStoreView.emptyView.isHidden = !stores.isEmpty
+            })
             .drive(self.registeredStoreView.tableView.rx.items(
                     cellIdentifier: RegisteredStoreCell.registerId,
                     cellType: RegisteredStoreCell.self

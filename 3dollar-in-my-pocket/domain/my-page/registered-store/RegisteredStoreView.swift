@@ -45,6 +45,10 @@ final class RegisteredStoreView: BaseView {
         $0.text = "0개 제보하셨네요."
     }
     
+    let emptyView = RegisteredStoreEmptyView().then {
+        $0.isHidden = true
+    }
+    
     
     override func setup() {
         self.backgroundColor = .black
@@ -53,7 +57,8 @@ final class RegisteredStoreView: BaseView {
         self.addSubViews([
             self.backButton,
             self.titleLabel,
-            self.tableView
+            self.tableView,
+            self.emptyView
         ])
     }
     
@@ -85,6 +90,10 @@ final class RegisteredStoreView: BaseView {
             make.left.equalToSuperview()
             make.top.equalTo(self.backButton.snp.bottom).offset(10)
         }
+        
+        self.emptyView.snp.makeConstraints { make in
+            make.edges.equalTo(self.tableView)
+        }
     }
     
     fileprivate func setStoreCount(count: Int) {
@@ -98,6 +107,7 @@ final class RegisteredStoreView: BaseView {
             range: range
         )
         self.headerCountLabel.attributedText = attributedString
+        self.headerCountLabel.isHidden = count == 0
     }
 }
 

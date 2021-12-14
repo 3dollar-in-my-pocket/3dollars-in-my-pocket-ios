@@ -108,6 +108,9 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
         
         self.viewModel.output.visitHistories
             .asDriver(onErrorJustReturn: [])
+            .do(onNext: { [weak self] visitHistories in
+                self?.myPageView.visitHistoryEmptyView.isHidden = !visitHistories.isEmpty
+            })
             .drive(self.myPageView.visitHistoryCollectionView.rx.items(
                 cellIdentifier: MyVisitHistoryCell.registerId,
                 cellType: MyVisitHistoryCell.self
