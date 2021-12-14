@@ -3,6 +3,7 @@ import UIKit
 final class MyReviewEmptyView: BaseView {
     private let emptyBackground = UIImageView().then {
         $0.image = R.image.img_empty_my_review_background()
+        $0.contentMode = .scaleAspectFit
     }
     
     private let emptyContainerView = UIView().then {
