@@ -13,7 +13,7 @@ final class MyReviewViewModel: BaseViewModel {
     struct Output {
         let isHiddenFooter = PublishRelay<Bool>()
         let goToStoreDetail = PublishRelay<Int>()
-        let reviewsPublisher = BehaviorRelay<[Review]>(value: [])
+        let reviewsPublisher = PublishRelay<[Review]>()
         
         var reviews: [Review] = [] {
             didSet {

@@ -1,8 +1,8 @@
 import UIKit
 
-final class MyVisitHistoryEmptyView: BaseView {
+final class MyReviewEmptyView: BaseView {
     private let emptyBackground = UIImageView().then {
-        $0.image = R.image.img_empty_my_visit_history_background()
+        $0.image = R.image.img_empty_my_review_background()
     }
     
     private let emptyContainerView = UIView().then {
@@ -17,13 +17,7 @@ final class MyVisitHistoryEmptyView: BaseView {
     private let emptyTitleLabel = UILabel().then {
         $0.font = .medium(size: 16)
         $0.textColor = R.color.gray30()
-        $0.text = R.string.localization.my_visit_history_empty_title()
-    }
-    
-    private let emptyDescriptionLabel = UILabel().then {
-        $0.textColor = R.color.gray60()
-        $0.font = .regular(size: 12)
-        $0.text = R.string.localization.my_visit_history_empty_description()
+        $0.text = R.string.localization.my_review_empty_title()
     }
     
     override func setup() {
@@ -32,8 +26,7 @@ final class MyVisitHistoryEmptyView: BaseView {
             self.emptyBackground,
             self.emptyContainerView,
             self.emptyImageView,
-            self.emptyTitleLabel,
-            self.emptyDescriptionLabel
+            self.emptyTitleLabel
         ])
     }
     
@@ -56,11 +49,6 @@ final class MyVisitHistoryEmptyView: BaseView {
         self.emptyTitleLabel.snp.makeConstraints { make in
             make.centerX.equalTo(self.emptyContainerView)
             make.top.equalTo(self.emptyImageView.snp.bottom).offset(12)
-        }
-        
-        self.emptyDescriptionLabel.snp.makeConstraints { make in
-            make.centerX.equalTo(self.emptyContainerView)
-            make.top.equalTo(self.emptyTitleLabel.snp.bottom).offset(8)
         }
     }
 }

@@ -10,14 +10,20 @@ final class RegisteredStoreViewModel: BaseViewModel {
     }
     
     struct Output {
-        let stores = BehaviorRelay<[Store]>(value: [])
+        let storesPublisher = PublishRelay<[Store]>()
         let totalStoreCount = PublishRelay<Int>()
         let isHiddenFooter = PublishRelay<Bool>()
         let goToStoreDetail = PublishRelay<Int>()
+        
+        var stores: [Store] = [] {
+            didSet {
+                self.storesPublisher.accept(stores)
+            }
+        }
     }
     
     let input = Input()
-    let output = Output()
+    var output = Output()
     let storeService: StoreServiceProtocol
     let userDefaults: UserDefaultsUtil
     private let size = 20
@@ -42,10 +48,9 @@ final class RegisteredStoreViewModel: BaseViewModel {
             .disposed(by: self.disposeBag)
         
         self.input.loadMore
-            .withLatestFrom(self.output.stores) { $0 >= $1.count }
             .filter { [weak self] in
                 guard let self = self else { return false }
-                return self.canLoadMore(isUpperItemCounts: $0, nextCursor: self.nextCursor)
+                return self.canLoadMore(index: $0, nextCursor: self.nextCursor)
             }
             .bind(onNext: { [weak self] _ in
                 guard let self = self else { return }
@@ -55,7 +60,7 @@ final class RegisteredStoreViewModel: BaseViewModel {
             .disposed(by: self.disposeBag)
         
         self.input.tapStore
-            .withLatestFrom(self.output.stores) { $1[$0].storeId }
+            .compactMap { [weak self] in self?.output.stores[$0].storeId }
             .bind(to: self.output.goToStoreDetail)
             .disposed(by: self.disposeBag)
     }
@@ -68,11 +73,12 @@ final class RegisteredStoreViewModel: BaseViewModel {
                 self?.output.totalStoreCount.accept(page.totalElements)
             })
             .map { $0.contents.map(Store.init) }
-            .withLatestFrom(self.output.stores) { $1 + $0 }
             .subscribe(
                 onNext: { [weak self] stores in
-                    self?.output.isHiddenFooter.accept(true)
-                    self?.output.stores.accept(stores)
+                    guard let self = self else { return }
+                    
+                    self.output.isHiddenFooter.accept(true)
+                    self.output.stores.append(contentsOf: stores)
                 },
                 onError: { [weak self] error in
                     self?.output.isHiddenFooter.accept(true)
@@ -82,7 +88,7 @@ final class RegisteredStoreViewModel: BaseViewModel {
             .disposed(by: self.disposeBag)
     }
     
-    private func canLoadMore(isUpperItemCounts: Bool, nextCursor: Int?) -> Bool {
-        return isUpperItemCounts && self.nextCursor != nil
+    private func canLoadMore(index: Int, nextCursor: Int?) -> Bool {
+        return index >= self.output.stores.count && self.nextCursor != nil
     }
 }

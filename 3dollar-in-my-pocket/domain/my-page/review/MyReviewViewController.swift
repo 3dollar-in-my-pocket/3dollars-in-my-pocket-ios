@@ -52,6 +52,9 @@ final class MyReviewViewController: BaseVC, MyReviewCoordinator {
     override func bindViewModelOutput() {
         self.viewModel.output.reviewsPublisher
             .asDriver(onErrorJustReturn: [])
+            .do(onNext: { [weak self] reviews in
+                self?.myReviewView.emptyView.isHidden = !reviews.isEmpty
+            })
             .drive(self.myReviewView.tableView.rx.items(
                 cellIdentifier: MyReviewCell.registerId,
                 cellType: MyReviewCell.self
