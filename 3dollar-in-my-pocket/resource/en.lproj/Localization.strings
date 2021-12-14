@@ -172,7 +172,7 @@
 "store_detail_empty_menu" = "상세 메뉴 없음";
 "store_detail_add_visit_history" = "방문 인증하기";
 "store_detail_empty_visit_history" = "아직 방문 인증 내역이 없어요 :(";
-"store_detail_visit_history" = "1주일 동안 %d명이 다녀간 가게에요!";
+"store_detail_visit_history" = "1달 동안 %d명이 다녀간 가게에요!";
 "store_delete_title" = "삭제요청 하시는\n이유가 궁금해요!";
 "store_delete_description" = "3건 이상의 요청이 들어오면 자동 삭제됩니다.";
 "store_delete_menu_not_existed" = "없어진 가게에요.";
@@ -227,5 +227,5 @@
 "my_visit_history_title" = "방문 인증 내역";
 "my_visit_history_empty_title" = "방문 인증 내역이 없어요!";
 "my_visit_history_empty_description" = "방문을 인증해 보고 정확도를 높혀봐요";
-"visit_history_total_count" = "이번 주 %d명이\n다녀간 가게에요!";
+"visit_history_total_count" = "이번 달 %d명이\n다녀간 가게에요!";
 "my_medal_title" = "내 칭호";

@@ -34,7 +34,7 @@ final class VisitViewModel: BaseViewModel {
   struct Model {
     var store: Store
     var currentLocation: (Double, Double)?
-    let visitMaxRange = 500
+    let visitMaxRange = 100
   }
     
   private let locationManager: LocationManagerProtocol

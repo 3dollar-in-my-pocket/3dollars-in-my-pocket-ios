@@ -356,7 +356,7 @@ final class VisitView: BaseView {
   private func setupRangeOverlayView(latitude: Double, longitude: Double) {
     let rangeOverlayView = NMFCircleOverlay().then {
       $0.center = NMGLatLng(lat: latitude, lng: longitude)
-      $0.radius = 500
+      $0.radius = 100
       $0.fillColor = R.color.pink()?.withAlphaComponent(0.2) ?? .clear
     }
     
