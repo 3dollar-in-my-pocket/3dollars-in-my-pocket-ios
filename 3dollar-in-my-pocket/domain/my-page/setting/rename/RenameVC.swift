@@ -10,6 +10,8 @@ class RenameVC: BaseVC {
   static func instance(currentName: String) -> RenameVC {
     return RenameVC(name: currentName).then {
       $0.currentName = currentName
+    }.then {
+        $0.hidesBottomBarWhenPushed = true
     }
   }
   

@@ -7,6 +7,7 @@ final class MyPageViewModel: BaseViewModel {
         let viewDidLoad = PublishSubject<Void>()
         let tapMyMedal = PublishSubject<Void>()
         let onChangeMedal = PublishSubject<Medal>()
+        let tapNickname = PublishSubject<Void>()
     }
     
     struct Output {
@@ -14,6 +15,7 @@ final class MyPageViewModel: BaseViewModel {
         let visitHistories = PublishRelay<[VisitHistory]>()
         let isRefreshing = PublishRelay<Bool>()
         let goToMyMedal = PublishRelay<Medal>()
+        let goToRename = PublishRelay<String>()
     }
     
     let input = Input()
@@ -53,6 +55,11 @@ final class MyPageViewModel: BaseViewModel {
                 
                 self?.output.user.accept(updatedUser)
             })
+            .disposed(by: self.disposeBag)
+        
+        self.input.tapNickname
+            .withLatestFrom(self.output.user) { $1.name }
+            .bind(to: self.output.goToRename)
             .disposed(by: self.disposeBag)
     }
     

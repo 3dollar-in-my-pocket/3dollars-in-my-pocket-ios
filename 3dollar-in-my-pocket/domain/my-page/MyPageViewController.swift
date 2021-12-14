@@ -94,6 +94,10 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
         self.myPageView.medalCountButton.rx.tap
             .bind(to: self.viewModel.input.tapMyMedal)
             .disposed(by: self.disposeBag)
+        
+        self.myPageView.medalImageButton.rx.tap
+            .bind(to: self.viewModel.input.tapMyMedal)
+            .disposed(by: self.disposeBag)
     }
     
     override func bindViewModelOutput() {

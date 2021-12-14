@@ -11,6 +11,8 @@ import Foundation
 protocol MyPageCoordinator: Coordinator, AnyObject {
     func goToSetting()
     
+    func goToMyMedal(medal: Medal)
+    
     func goToTotalRegisteredStore()
     
     func goToMyReview()
@@ -18,13 +20,19 @@ protocol MyPageCoordinator: Coordinator, AnyObject {
     func goToStoreDetail(storeId: Int)
     
     func goToMyVisitHistory()
-    
-    func goToMyMedal(medal: Medal)
 }
 
 extension MyPageCoordinator {
     func goToSetting() {
         let viewController = SettingVC.instance()
+        
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    func goToMyMedal(medal: Medal) {
+        let viewController = MyMedalViewController.instance(medal: medal)
+        
+        viewController.delegate = self as? MyMedalViewControllerDelegate
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
@@ -49,14 +57,6 @@ extension MyPageCoordinator {
     
     func goToMyVisitHistory() {
         let viewController = MyVisitHistoryViewController.instance()
-        
-        self.presenter.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    func goToMyMedal(medal: Medal) {
-        let viewController = MyMedalViewController.instance(medal: medal)
-        
-        viewController.delegate = self as? MyMedalViewControllerDelegate
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }

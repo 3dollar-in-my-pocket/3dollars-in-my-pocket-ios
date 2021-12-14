@@ -29,7 +29,7 @@ final class MyPageView: BaseView {
         $0.image = R.image.bg_cloud_my_page()
     }
     
-    private let bedgeImage = UIImageView()
+    let medalImageButton = UIButton()
     
     private let myTitleLabel = TitleLabel(type: .big)
     
@@ -96,7 +96,7 @@ final class MyPageView: BaseView {
         self.containerView.addSubViews([
             self.topBackgroundView,
             self.bgCloud,
-            self.bedgeImage,
+            self.medalImageButton,
             self.myTitleLabel,
             self.nicknameLabel,
             self.storeCountButton,
@@ -156,7 +156,7 @@ final class MyPageView: BaseView {
             make.bottom.equalTo(self.storeCountButton).offset(32)
         }
         
-        self.bedgeImage.snp.makeConstraints { make in
+        self.medalImageButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(self.bgCloud).offset(11)
             make.width.equalTo(120)
@@ -165,7 +165,7 @@ final class MyPageView: BaseView {
         
         self.myTitleLabel.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
-            make.top.equalTo(self.bedgeImage.snp.bottom).offset(20)
+            make.top.equalTo(self.medalImageButton.snp.bottom).offset(20)
         }
         
         self.nicknameLabel.snp.makeConstraints { (make) in
@@ -224,7 +224,7 @@ final class MyPageView: BaseView {
     
     fileprivate func bind(user: User) {
         self.nicknameLabel.text = user.name
-        self.bedgeImage.setImage(urlString: user.medal.iconUrl)
+        self.medalImageButton.setImage(urlString: user.medal.iconUrl, state: .normal)
         self.myTitleLabel.bind(title: user.medal.name)
         self.storeCountButton.bind(count: user.activity.storesCount)
         self.reviewCountButton.bind(count: user.activity.reviewsCount)
