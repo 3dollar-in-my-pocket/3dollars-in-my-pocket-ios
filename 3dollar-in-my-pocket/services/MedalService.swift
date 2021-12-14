@@ -13,6 +13,8 @@ protocol MedalServiceProtocol {
     func fetchMedals() -> Observable<[MedalResponse]>
     
     func fetchMyMedals() -> Observable<[MedalResponse]>
+    
+    func changeMyMdal(medalId: Int) -> Observable<UserInfoResponse>
 }
 
 struct MedalService: MedalServiceProtocol {
@@ -47,6 +49,30 @@ struct MedalService: MedalServiceProtocol {
             ).responseJSON { response in
                 if response.isSuccess() {
                     observer.processValue(class: [MedalResponse].self, response: response)
+                } else {
+                    observer.processHTTPError(response: response)
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func changeMyMdal(medalId: Int) -> Observable<UserInfoResponse> {
+        return .create { observer in
+            let urlString = HTTPUtils.url + "/api/v1/user/medal"
+            let header = HTTPUtils.defaultHeader()
+            let parameter: [String: Any] = ["medalId": medalId]
+            
+            HTTPUtils.defaultSession.request(
+                urlString,
+                method: .put,
+                parameters: parameter,
+                encoding: JSONEncoding.default,
+                headers: header
+            ).responseJSON { response in
+                if response.isSuccess() {
+                    observer.processValue(class: UserInfoResponse.self, response: response)
                 } else {
                     observer.processHTTPError(response: response)
                 }

@@ -1,5 +1,8 @@
 import UIKit
 
+import RxSwift
+import RxCocoa
+
 final class MyMedalView: BaseView {
     let backButton = UIButton().then {
         $0.setImage(R.image.ic_back_white(), for: .normal)
@@ -90,6 +93,20 @@ extension MyMedalView: UICollectionViewDelegateFlowLayout {
             return MyMedalCollectionCell.size
         } else {
             return MedalCollectionCell.size
+        }
+    }
+}
+
+extension Reactive where Base: MyMedalView {
+    var selectMedal: Binder<Int> {
+        return Binder(self.base) { view, index in
+            DispatchQueue.main.async {
+                view.collectionView.selectItem(
+                    at: IndexPath(row: index, section: 1),
+                    animated: false,
+                    scrollPosition: .init()
+                )
+            }
         }
     }
 }

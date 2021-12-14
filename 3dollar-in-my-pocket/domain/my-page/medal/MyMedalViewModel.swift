@@ -16,6 +16,7 @@ final class MyMedalViewModel: BaseViewModel {
         }
         
         let medalsPublisher = PublishRelay<[SectionModel<String, Medal>]>()
+        let selectMedalPublisher = PublishRelay<Int>()
     }
     
     let input = Input()
@@ -63,12 +64,14 @@ final class MyMedalViewModel: BaseViewModel {
                     )
                     
                     self.output.medals = [myMedalSection, medalsSection]
+                    if let myMedalIndex = medals.firstIndex(of: self.medal) {
+                        self.output.selectMedalPublisher.accept(myMedalIndex)
+                    }
                 },
                 onError: { [weak self] error in
                     self?.showErrorAlert.accept(error)
                 }
             )
             .disposed(by: self.disposeBag)
-            
     }
 }

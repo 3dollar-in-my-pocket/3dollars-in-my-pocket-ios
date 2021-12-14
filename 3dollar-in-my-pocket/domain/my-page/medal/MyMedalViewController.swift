@@ -57,6 +57,11 @@ final class MyMedalViewController: BaseVC, MyMedalCoordinator {
             .asDriver(onErrorJustReturn: [])
             .drive(self.myMedalView.collectionView.rx.items(dataSource: self.dataSource))
             .disposed(by: self.disposeBag)
+        
+        self.viewModel.output.selectMedalPublisher
+            .asDriver(onErrorJustReturn: 0)
+            .drive(self.myMedalView.rx.selectMedal)
+            .disposed(by: self.disposeBag)
     }
     
     private func setupDataSource() {
