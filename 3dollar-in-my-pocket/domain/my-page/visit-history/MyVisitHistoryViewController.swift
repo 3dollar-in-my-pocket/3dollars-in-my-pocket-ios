@@ -55,6 +55,9 @@ final class MyVisitHistoryViewController: BaseVC, MyVisitHistoryCoordinator {
         
         self.viewModel.output.visitHistoriesPublisher
             .asDriver(onErrorJustReturn: [])
+            .do(onNext: { [weak self] visitHistories in
+                self?.myVisitHistoryView.emptyView.isHidden = !visitHistories.isEmpty
+            })
             .drive(self.myVisitHistoryView.tableView.rx.items(
                     cellIdentifier: MyVisitHistoryTableViewCell.registerId,
                     cellType: MyVisitHistoryTableViewCell.self

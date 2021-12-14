@@ -23,12 +23,17 @@ final class MyVisitHistoryView: BaseView {
         )
     }
     
+    let emptyView = MyVisitHistoryEmptyView().then {
+        $0.isHidden = true
+    }
+    
     override func setup() {
         self.backgroundColor = R.color.gray100()
         self.addSubViews([
             self.backButton,
             self.titleLabel,
-            self.tableView
+            self.tableView,
+            self.emptyView
         ])
     }
     
@@ -49,6 +54,10 @@ final class MyVisitHistoryView: BaseView {
             make.right.equalToSuperview()
             make.left.equalToSuperview()
             make.top.equalTo(self.backButton.snp.bottom).offset(10)
+        }
+        
+        self.emptyView.snp.makeConstraints { make in
+            make.edges.equalTo(self.tableView)
         }
     }
 }

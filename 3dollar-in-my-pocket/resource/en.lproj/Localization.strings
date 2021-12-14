@@ -224,5 +224,7 @@
 "visit_success" = "방문 성공";
 "visit_fail" = "방문 실패";
 "my_visit_history_title" = "방문 인증 내역";
+"my_visit_history_empty_title" = "방문 인증 내역이 없어요!";
+"my_visit_history_empty_description" = "방문을 인증해 보고 정확도를 높혀봐요";
 "visit_history_total_count" = "이번 주 %d명이\n다녀간 가게에요!";
 "my_medal_title" = "내 칭호";
