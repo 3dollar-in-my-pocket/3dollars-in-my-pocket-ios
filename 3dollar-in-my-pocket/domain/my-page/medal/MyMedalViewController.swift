@@ -1,7 +1,12 @@
 import UIKit
 import RxDataSources
 
+protocol MyMedalViewControllerDelegate: AnyObject {
+    func onChangeMedal(medal: Medal)
+}
+
 final class MyMedalViewController: BaseVC, MyMedalCoordinator {
+    weak var delegate: MyMedalViewControllerDelegate?
     private let myMedalView = MyMedalView()
     private let viewModel: MyMedalViewModel
     private weak var coordinator: MyMedalCoordinator?
@@ -52,6 +57,14 @@ final class MyMedalViewController: BaseVC, MyMedalCoordinator {
             .disposed(by: self.disposeBag)
     }
     
+    override func bindViewModelInput() {
+        self.myMedalView.collectionView.rx.itemSelected
+            .filter { $0.section == 1 }
+            .map { $0.row }
+            .bind(to: self.viewModel.input.tapMedal)
+            .disposed(by: self.disposeBag)
+    }
+    
     override func bindViewModelOutput() {
         self.viewModel.output.medalsPublisher
             .asDriver(onErrorJustReturn: [])
@@ -61,6 +74,20 @@ final class MyMedalViewController: BaseVC, MyMedalCoordinator {
         self.viewModel.output.selectMedalPublisher
             .asDriver(onErrorJustReturn: 0)
             .drive(self.myMedalView.rx.selectMedal)
+            .disposed(by: self.disposeBag)
+        
+        self.viewModel.output.updateMyPageMedalPublisher
+            .asDriver(onErrorJustReturn: Medal())
+            .drive(onNext: { [weak self] medal in
+                self?.delegate?.onChangeMedal(medal: medal)
+            })
+            .disposed(by: self.disposeBag)
+            
+        self.viewModel.showErrorAlert
+            .asDriver(onErrorJustReturn: BaseError.unknown)
+            .drive(onNext: { [weak self] error in
+                self?.coordinator?.showErrorAlert(error: error)
+            })
             .disposed(by: self.disposeBag)
     }
     

@@ -6,6 +6,7 @@ final class MyPageViewModel: BaseViewModel {
     struct Input {
         let viewDidLoad = PublishSubject<Void>()
         let tapMyMedal = PublishSubject<Void>()
+        let onChangeMedal = PublishSubject<Medal>()
     }
     
     struct Output {
@@ -42,6 +43,16 @@ final class MyPageViewModel: BaseViewModel {
         self.input.tapMyMedal
             .withLatestFrom(self.output.user) { $1.medal }
             .bind(to: self.output.goToMyMedal)
+            .disposed(by: self.disposeBag)
+        
+        self.input.onChangeMedal
+            .withLatestFrom(self.output.user) { ($0, $1) }
+            .bind(onNext: { [weak self] (newMedal, user) in
+                var updatedUser = user
+                updatedUser.medal = newMedal
+                
+                self?.output.user.accept(updatedUser)
+            })
             .disposed(by: self.disposeBag)
     }
     

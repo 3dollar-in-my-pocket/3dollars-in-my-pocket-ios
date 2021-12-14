@@ -3,7 +3,7 @@ struct User {
     let userId: Int
     let socialType: SocialType
     let activity: UserActivity
-    let medal: Medal
+    var medal: Medal
     
     
     init() {

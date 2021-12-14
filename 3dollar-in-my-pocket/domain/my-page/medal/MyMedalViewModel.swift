@@ -16,6 +16,7 @@ final class MyMedalViewModel: BaseViewModel {
         }
         
         let medalsPublisher = PublishRelay<[SectionModel<String, Medal>]>()
+        let updateMyPageMedalPublisher = PublishRelay<Medal>()
         let selectMedalPublisher = PublishRelay<Int>()
     }
     
@@ -23,7 +24,7 @@ final class MyMedalViewModel: BaseViewModel {
     var output = Output()
     let medalService: MedalServiceProtocol
     let medalContext: MedalContext
-    let medal: Medal
+    var medal: Medal
     
     init(
         medal: Medal,
@@ -41,6 +42,13 @@ final class MyMedalViewModel: BaseViewModel {
         self.input.viewDidLoad
             .bind { [weak self] in
                 self?.fetchMyMedals()
+            }
+            .disposed(by: self.disposeBag)
+        
+        self.input.tapMedal
+            .compactMap { [weak self] in self?.output.medals[1].items[$0].medalId }
+            .bind { [weak self] medalId in
+                self?.changeMyMedal(medalId: medalId)
             }
             .disposed(by: self.disposeBag)
     }
@@ -64,14 +72,36 @@ final class MyMedalViewModel: BaseViewModel {
                     )
                     
                     self.output.medals = [myMedalSection, medalsSection]
-                    if let myMedalIndex = medals.firstIndex(of: self.medal) {
-                        self.output.selectMedalPublisher.accept(myMedalIndex)
-                    }
+                    self.selectMyMedal()
                 },
                 onError: { [weak self] error in
                     self?.showErrorAlert.accept(error)
                 }
             )
             .disposed(by: self.disposeBag)
+    }
+    
+    private func changeMyMedal(medalId: Int) {
+        self.medalService.changeMyMdal(medalId: medalId)
+            .map(User.init)
+            .subscribe(
+                onNext: { [weak self] user in
+                    self?.output.updateMyPageMedalPublisher.accept(user.medal)
+                    self?.output.medals[0].items = [user.medal]
+                    self?.medal = user.medal
+                    self?.selectMyMedal()
+                },
+                onError: { [weak self] error in
+                    self?.selectMyMedal()
+                    self?.showErrorAlert.accept(error)
+                }
+            )
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func selectMyMedal() {
+        if let myMedalIndex = self.output.medals[1].items.firstIndex(of: self.medal) {
+            self.output.selectMedalPublisher.accept(myMedalIndex)
+        }
     }
 }

@@ -125,3 +125,9 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
             .disposed(by: self.disposeBag)
     }
 }
+
+extension MyPageViewController: MyMedalViewControllerDelegate {
+    func onChangeMedal(medal: Medal) {
+        self.viewModel.input.onChangeMedal.onNext(medal)
+    }
+}
