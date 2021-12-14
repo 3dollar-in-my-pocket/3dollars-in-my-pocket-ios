@@ -1,8 +1,12 @@
 import UIKit
 
+import RxSwift
+
 final class MedalHeaderView: UICollectionReusableView {
     static let registerId = "\(MedalHeaderView.self)"
     static let size = CGSize(width: UIScreen.main.bounds.width - 48, height: 73)
+    
+    var disposeBag = DisposeBag()
     
     private let dividorView = UIView().then {
         $0.backgroundColor = R.color.gray80()
@@ -14,6 +18,10 @@ final class MedalHeaderView: UICollectionReusableView {
         $0.textColor = .white
     }
     
+    let infoButton = UIButton().then {
+        $0.setImage(R.image.ic_info(), for: .normal)
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -21,15 +29,22 @@ final class MedalHeaderView: UICollectionReusableView {
         self.bindConstraints()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.disposeBag = DisposeBag()
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setup() {
+    private func setup() { 
         self.backgroundColor = .clear
         self.addSubViews([
             self.dividorView,
-            self.titleLabel
+            self.titleLabel,
+            self.infoButton
         ])
     }
     
@@ -45,6 +60,11 @@ final class MedalHeaderView: UICollectionReusableView {
             make.left.equalToSuperview()
             make.top.equalTo(self.dividorView.snp.bottom).offset(15)
             make.bottom.equalToSuperview()
+        }
+        
+        self.infoButton.snp.makeConstraints { make in
+            make.centerY.equalTo(self.titleLabel)
+            make.left.equalTo(self.titleLabel.snp.right).offset(8)
         }
     }
     

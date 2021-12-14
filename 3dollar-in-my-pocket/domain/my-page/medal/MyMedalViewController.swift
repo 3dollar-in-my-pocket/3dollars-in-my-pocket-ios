@@ -82,6 +82,13 @@ final class MyMedalViewController: BaseVC, MyMedalCoordinator {
                 self?.delegate?.onChangeMedal(medal: medal)
             })
             .disposed(by: self.disposeBag)
+        
+        self.viewModel.output.showMedalInfoPublisher
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.showMedalInfo()
+            })
+            .disposed(by: self.disposeBag)
             
         self.viewModel.showErrorAlert
             .asDriver(onErrorJustReturn: BaseError.unknown)
@@ -124,8 +131,15 @@ final class MyMedalViewController: BaseVC, MyMedalCoordinator {
             ) as? MedalHeaderView else {
                 return UICollectionReusableView()
             }
-
+            
             cell.bind(title: dataSource.sectionModels[indexPath.section].model)
+            cell.infoButton.rx.tap
+                .asDriver()
+                .drive(onNext: { [weak self] in
+                    self?.coordinator?.showMedalInfo()
+                })
+                .disposed(by: cell.disposeBag)
+                
             return cell
         }
     }

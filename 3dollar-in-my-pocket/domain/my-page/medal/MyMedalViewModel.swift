@@ -18,6 +18,7 @@ final class MyMedalViewModel: BaseViewModel {
         let medalsPublisher = PublishRelay<[SectionModel<String, Medal>]>()
         let updateMyPageMedalPublisher = PublishRelay<Medal>()
         let selectMedalPublisher = PublishRelay<Int>()
+        let showMedalInfoPublisher = PublishRelay<Void>()
     }
     
     let input = Input()
@@ -46,10 +47,16 @@ final class MyMedalViewModel: BaseViewModel {
             .disposed(by: self.disposeBag)
         
         self.input.tapMedal
-            .compactMap { [weak self] in self?.output.medals[1].items[$0].medalId }
-            .bind { [weak self] medalId in
-                self?.changeMyMedal(medalId: medalId)
-            }
+            .bind(onNext: { [weak self] index in
+                guard let self = self else { return }
+                let selectedMedal = self.output.medals[1].items[index]
+                if selectedMedal.isOwned {
+                    self.changeMyMedal(medalId: selectedMedal.medalId)
+                } else {
+                    self.selectMyMedal()
+                    self.output.showMedalInfoPublisher.accept(())
+                }
+            })
             .disposed(by: self.disposeBag)
     }
     

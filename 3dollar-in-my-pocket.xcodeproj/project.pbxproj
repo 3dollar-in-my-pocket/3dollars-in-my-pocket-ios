@@ -162,6 +162,11 @@
 		6E59BEFC26C8F5BA00008DDA /* SigninManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E59BEFB26C8F5BA00008DDA /* SigninManagerMock.swift */; };
 		6E5BDF7E26CA107100A7A1E0 /* NicknameViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5BDF7D26CA107100A7A1E0 /* NicknameViewModelTests.swift */; };
 		6E5C358A2691C3A9003681FF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E5C35892691C3A9003681FF /* Colors.xcassets */; };
+		6E5CA57627686CAC001EDE19 /* MedalInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA57527686CAC001EDE19 /* MedalInfoView.swift */; };
+		6E5CA57827686E96001EDE19 /* MedalInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA57727686E96001EDE19 /* MedalInfoViewController.swift */; };
+		6E5CA57A27686EFB001EDE19 /* MedalInfoCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA57927686EFB001EDE19 /* MedalInfoCoordinator.swift */; };
+		6E5CA57E2768728F001EDE19 /* MedalInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA57D2768728F001EDE19 /* MedalInfoTableViewCell.swift */; };
+		6E5CA5802768777F001EDE19 /* MedalInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA57F2768777F001EDE19 /* MedalInfoViewModel.swift */; };
 		6E6172B023E1C05F003E0DDF /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172AF23E1C05F003E0DDF /* PhotoDetailView.swift */; };
 		6E6172B223E1C308003E0DDF /* PhotoDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172B123E1C308003E0DDF /* PhotoDetailVC.swift */; };
 		6E6172B423E1C6BF003E0DDF /* PhotoSubCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172B323E1C6BE003E0DDF /* PhotoSubCell.swift */; };
@@ -501,6 +506,11 @@
 		6E59BEFB26C8F5BA00008DDA /* SigninManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninManagerMock.swift; sourceTree = "<group>"; };
 		6E5BDF7D26CA107100A7A1E0 /* NicknameViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameViewModelTests.swift; sourceTree = "<group>"; };
 		6E5C35892691C3A9003681FF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		6E5CA57527686CAC001EDE19 /* MedalInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalInfoView.swift; sourceTree = "<group>"; };
+		6E5CA57727686E96001EDE19 /* MedalInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalInfoViewController.swift; sourceTree = "<group>"; };
+		6E5CA57927686EFB001EDE19 /* MedalInfoCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalInfoCoordinator.swift; sourceTree = "<group>"; };
+		6E5CA57D2768728F001EDE19 /* MedalInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalInfoTableViewCell.swift; sourceTree = "<group>"; };
+		6E5CA57F2768777F001EDE19 /* MedalInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalInfoViewModel.swift; sourceTree = "<group>"; };
 		6E6172AF23E1C05F003E0DDF /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		6E6172B123E1C308003E0DDF /* PhotoDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailVC.swift; sourceTree = "<group>"; };
 		6E6172B323E1C6BE003E0DDF /* PhotoSubCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSubCell.swift; sourceTree = "<group>"; };
@@ -1084,6 +1094,34 @@
 			path = managers;
 			sourceTree = "<group>";
 		};
+		6E5CA57427686CA6001EDE19 /* info */ = {
+			isa = PBXGroup;
+			children = (
+				6E5CA57B27687283001EDE19 /* subviews */,
+				6E5CA57527686CAC001EDE19 /* MedalInfoView.swift */,
+				6E5CA57727686E96001EDE19 /* MedalInfoViewController.swift */,
+				6E5CA57927686EFB001EDE19 /* MedalInfoCoordinator.swift */,
+				6E5CA57F2768777F001EDE19 /* MedalInfoViewModel.swift */,
+			);
+			path = info;
+			sourceTree = "<group>";
+		};
+		6E5CA57B27687283001EDE19 /* subviews */ = {
+			isa = PBXGroup;
+			children = (
+				6E5CA57C27687286001EDE19 /* cells */,
+			);
+			path = subviews;
+			sourceTree = "<group>";
+		};
+		6E5CA57C27687286001EDE19 /* cells */ = {
+			isa = PBXGroup;
+			children = (
+				6E5CA57D2768728F001EDE19 /* MedalInfoTableViewCell.swift */,
+			);
+			path = cells;
+			sourceTree = "<group>";
+		};
 		6E6172AE23E1C04D003E0DDF /* photo-detail */ = {
 			isa = PBXGroup;
 			children = (
@@ -1371,6 +1409,7 @@
 		6E7E3E4A27642A8E00A4C6E2 /* medal */ = {
 			isa = PBXGroup;
 			children = (
+				6E5CA57427686CA6001EDE19 /* info */,
 				6E7E3E5127642F7500A4C6E2 /* subviews */,
 				6E7E3E4B27642AB000A4C6E2 /* MyMedalView.swift */,
 				6E7E3E4D27642C6900A4C6E2 /* MyMedalViewController.swift */,
@@ -2127,6 +2166,7 @@
 				6E95EC2623D2F0CD00DF55B5 /* StoreDetailViewModel.swift in Sources */,
 				6E09470326F4BE27000D4858 /* RenameViewModel.swift in Sources */,
 				6E4952CA26B03C7800D65042 /* AppleSigninManager.swift in Sources */,
+				6E5CA57A27686EFB001EDE19 /* MedalInfoCoordinator.swift in Sources */,
 				6ED5939523BDD5F200B06BD4 /* StoreInfoView.swift in Sources */,
 				6E18C32D2571F59100F37C3A /* FAQTag.swift in Sources */,
 				6E326B212742564000E68666 /* CertificateButton.swift in Sources */,
@@ -2157,6 +2197,7 @@
 				6E810B0F259AEA3A0035315F /* GAPage.swift in Sources */,
 				6EF63FB82761AAD50063A3B9 /* Medal.swift in Sources */,
 				6E31575225BA60D20022D6F3 /* StoreDetailMenuView.swift in Sources */,
+				6E5CA57E2768728F001EDE19 /* MedalInfoTableViewCell.swift in Sources */,
 				6E70C39123B6EECB00C52C9C /* StoreDetailViewController.swift in Sources */,
 				6EB8FBA925988DFC00C17B74 /* GAEvent.swift in Sources */,
 				6E6835C623C30D8300D23F54 /* MyReviewView.swift in Sources */,
@@ -2203,6 +2244,7 @@
 				6ED79E1125CFF13B00B3CFA9 /* ModifyAddressVC.swift in Sources */,
 				6E57F29A273A9FF0008C524A /* VisitViewController.swift in Sources */,
 				6E62EED623AD1DE9007B7570 /* AlertUtils.swift in Sources */,
+				6E5CA5802768777F001EDE19 /* MedalInfoViewModel.swift in Sources */,
 				6E3493B92764BA810082B011 /* MedalContext.swift in Sources */,
 				6E6835B923C2C89400D23F54 /* RenameVC.swift in Sources */,
 				6E5939052573E38900593DC8 /* PrivacyVC.swift in Sources */,
@@ -2211,6 +2253,7 @@
 				6E4952C326B0349200D65042 /* SigninResponse.swift in Sources */,
 				6E71BF5825B447CD00ECFBD9 /* AddCategoryCell.swift in Sources */,
 				6E18C3232571F4AB00F37C3A /* FAQService.swift in Sources */,
+				6E5CA57827686E96001EDE19 /* MedalInfoViewController.swift in Sources */,
 				6EEE30B726FEE35C00696467 /* HomeCoordinator.swift in Sources */,
 				6E4697D1273E36C7005A5902 /* VisitHistoryWithUserResponse.swift in Sources */,
 				6E8F3799269897D7004FAC70 /* BaseError.swift in Sources */,
@@ -2287,6 +2330,7 @@
 				6E8E89B023D04240003A7889 /* WriteDetailViewModel.swift in Sources */,
 				6E56BD8123CDE359002D7092 /* Menu.swift in Sources */,
 				6E8E251E256AADE200AE6479 /* JsonUtils.swift in Sources */,
+				6E5CA57627686CAC001EDE19 /* MedalInfoView.swift in Sources */,
 				6E46CFF6258B58370000421B /* QuestionViewModel.swift in Sources */,
 				6EF63FBF2761B3690063A3B9 /* MyVisitHistoryCoordinator.swift in Sources */,
 				6E3960F025F0AF3C004D4644 /* UILabelExtension.swift in Sources */,
