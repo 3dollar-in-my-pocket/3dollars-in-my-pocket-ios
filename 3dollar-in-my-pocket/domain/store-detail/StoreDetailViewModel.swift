@@ -162,7 +162,7 @@ class StoreDetailViewModel: BaseViewModel {
       storeId: storeId,
       latitude: location.latitude,
       longitude: location.longitude,
-      startDate: Date().addWeek(week: -1),
+      startDate: Date().addMonth(month: -1),
       endDate: Date()
     )
     .map(Store.init)
