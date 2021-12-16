@@ -91,6 +91,6 @@ final class RegisteredStoreViewModel: BaseViewModel {
     }
     
     private func canLoadMore(index: Int, nextCursor: Int?) -> Bool {
-        return index >= self.output.stores.count && self.nextCursor != nil
+        return index >= self.output.stores.count - 1 && self.nextCursor != nil
     }
 }
