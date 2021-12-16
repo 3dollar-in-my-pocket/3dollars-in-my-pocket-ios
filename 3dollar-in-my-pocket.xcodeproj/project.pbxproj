@@ -1485,16 +1485,16 @@
 		6E8A137623B5DCBB009C2B64 /* my-page */ = {
 			isa = PBXGroup;
 			children = (
-				6E7E3E4A27642A8E00A4C6E2 /* medal */,
-				6E6835C423C30D6F00D23F54 /* review */,
-				6EF63FB92761B0F10063A3B9 /* visit-history */,
-				6E4C1BDF27532DDF006C0F15 /* subviews */,
-				6E07D44923B591160055AEE7 /* MyPageViewController.swift */,
-				6E07D44723B590F20055AEE7 /* MyPageView.swift */,
-				6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */,
 				6EDAC5E226D7DC1500979252 /* MyPageCoordinator.swift */,
+				6E07D44723B590F20055AEE7 /* MyPageView.swift */,
+				6E07D44923B591160055AEE7 /* MyPageViewController.swift */,
+				6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */,
+				6E7E3E4A27642A8E00A4C6E2 /* medal */,
 				6E6835BA23C2CBE800D23F54 /* registered-store */,
+				6E6835C423C30D6F00D23F54 /* review */,
 				6E681E23256FDD1A00892B9E /* setting */,
+				6E4C1BDF27532DDF006C0F15 /* subviews */,
+				6EF63FB92761B0F10063A3B9 /* visit-history */,
 			);
 			path = "my-page";
 			sourceTree = "<group>";
