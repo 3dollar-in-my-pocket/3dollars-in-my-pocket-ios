@@ -42,9 +42,9 @@ final class MyVisitHistoryViewModel: BaseViewModel {
             .disposed(by: self.disposeBag)
         
         self.input.tapVisitHistory
-            .compactMap { [weak self] index in
-                self?.output.visitHistories[index].store.storeId
-            }
+            .compactMap { [weak self] index in self?.output.visitHistories[index].store }
+            .filter { !$0.isDeleted }
+            .map { $0.storeId }
             .bind(to: self.output.goToStoreDetail)
             .disposed(by: self.disposeBag)
 
