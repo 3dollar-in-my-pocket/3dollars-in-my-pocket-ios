@@ -1,122 +1,125 @@
 import RxSwift
 import RxCocoa
 
-class MyReviewViewModel: BaseViewModel {
-  
-  let input = Input()
-  let output = Output()
-  let reviewService: ReviewServiceProtocol
-  
-  var reviews: [Review] = [] {
-    didSet {
-      self.output.reviews.accept(self.reviews)
+final class MyReviewViewModel: BaseViewModel {
+    struct Input {
+        let viewDidLoad = PublishSubject<Void>()
+        let tapReview = PublishSubject<Int>()
+        let tapMore = PublishSubject<Int>()
+        let willDisplayCell = PublishSubject<Int>()
+        let deleteReview = PublishSubject<Int>()
     }
-  }
-  var totalCount: Int?
-  var nextCursor: Int?
-  
-  struct Input {
-    let viewDidLoad = PublishSubject<Void>()
-    let tapReview = PublishSubject<Int>()
-    let tapMore = PublishSubject<Int>()
-    let loadMore = PublishSubject<Int>()
-    let deleteReview = PublishSubject<Int>()
-  }
-  
-  struct Output {
-    let reviews = PublishRelay<[Review]>()
-    let isHiddenFooter = PublishRelay<Bool>()
-    let goToStoreDetail = PublishRelay<Int>()
-    let showLoading = PublishRelay<Bool>()
-  }
-  
-  
-  init(reviewService: ReviewServiceProtocol) {
-    self.reviewService = reviewService
-    super.init()
     
-    self.input.viewDidLoad
-      .map { _ in (self.totalCount, self.nextCursor) }
-      .bind(onNext: self.fetchMyReviews)
-      .disposed(by: disposeBag)
-    
-    self.input.tapReview
-      .map { self.reviews[$0].storeId }
-      .bind(to: self.output.goToStoreDetail)
-      .disposed(by: disposeBag)
-    
-    self.input.loadMore
-      .filter { self.canLoadMore(index: $0) }
-      .map { _ in (self.totalCount, self.nextCursor) }
-      .bind(onNext: self.fetchMyReviews)
-      .disposed(by: disposeBag)
-    
-    self.input.deleteReview
-      .map { self.reviews[$0].reviewId }
-      .bind(onNext: self.deleteReview(reviewId:))
-      .disposed(by: disposeBag)
-  }
-  
-  private func fetchMyReviews(totalCount: Int?, cursor: Int?) {
-    self.output.isHiddenFooter.accept(false)
-    self.reviewService.fetchMyReview(
-      totalCount: totalCount,
-      cursor: cursor
-    )
-    .do { [weak self] pagination in
-      guard let self = self else { return }
-      self.nextCursor = pagination.nextCursor
-      self.totalCount = pagination.totalElements
-      self.output.isHiddenFooter.accept(true)
-    }
-    .map { $0.contents }
-    .map { $0.map(Review.init) }
-    .subscribe(
-      onNext: { [weak self] newReviews in
-        guard let self = self else { return }
-        self.reviews += newReviews
-      },
-      onError: self.showErrorAlert.accept(_:)
-    )
-    .disposed(by: self.disposeBag)
-  }
-  
-  private func deleteReview(reviewId: Int) {
-    self.output.showLoading.accept(true)
-    self.reviewService.deleteRevie(reviewId: reviewId)
-      .subscribe(
-        onNext: { [weak self] _ in
-          guard let self = self else { return }
-          
-          self.revmoveReview(reviewId: reviewId)
-          self.totalCount? -= 1
-          self.output.reviews.accept(self.reviews)
-          self.output.showLoading.accept(false)
-        },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          if let httpError = error as? HTTPError {
-            self.httpErrorAlert.accept(httpError)
-          } else if let error = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: error.description)
-            
-            self.showSystemAlert.accept(alertContent)
-          }
-          self.output.showLoading.accept(false)
+    struct Output {
+        let isHiddenFooter = PublishRelay<Bool>()
+        let goToStoreDetail = PublishRelay<Int>()
+        let reviewsPublisher = PublishRelay<[Review]>()
+        
+        var reviews: [Review] = [] {
+            didSet {
+                self.reviewsPublisher.accept(reviews)
+            }
         }
-      ).disposed(by: self.disposeBag)
-  }
-  
-  private func revmoveReview(reviewId: Int) {
-    for index in self.reviews.indices {
-      if self.reviews[index].reviewId == reviewId {
-        self.reviews.remove(at: index)
-        break
-      }
     }
-  }
-  
-  private func canLoadMore(index: Int) -> Bool {
-    return self.reviews.count - 1 <= index && self.nextCursor != nil && self.nextCursor != -1
-  }
+    
+    let input = Input()
+    var output = Output()
+    let reviewService: ReviewServiceProtocol
+    
+    var cursor: Int?
+    
+    
+    init(reviewService: ReviewServiceProtocol) {
+        self.reviewService = reviewService
+        
+        super.init()
+    }
+    
+    override func bind() {
+        self.input.viewDidLoad
+            .map { [weak self] in self?.cursor }
+            .bind(onNext: { [weak self] cursor in
+                self?.fetchMyReviews(cursor: cursor)
+            })
+            .disposed(by: self.disposeBag)
+        
+        self.input.tapReview
+            .compactMap { [weak self] index in self?.output.reviews[index].store }
+            .filter { !$0.isDeleted }
+            .map { $0.storeId }
+            .bind(to: self.output.goToStoreDetail)
+            .disposed(by: self.disposeBag)
+        
+        self.input.willDisplayCell
+            .filter { [weak self] in
+                guard let self = self else { return false }
+                
+                return self.canLoadMore(reviews: self.output.reviews, index: $0)
+            }
+            .map { [weak self] _ in self?.cursor }
+            .bind(onNext: { [weak self] cursor in
+                self?.fetchMyReviews(cursor: cursor)
+            })
+            .disposed(by: self.disposeBag)
+        
+        self.input.deleteReview
+            .compactMap { [weak self] index in
+                self?.output.reviews[index].reviewId
+            }
+            .bind(onNext: { [weak self] reviewId in
+                self?.deleteReview(reviewId: reviewId)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func fetchMyReviews(cursor: Int?) {
+        self.output.isHiddenFooter.accept(false)
+        self.reviewService.fetchMyReviews(
+            cursor: cursor,
+            size: 20
+        )
+        .do(onNext: { [weak self] pagination in
+            self?.cursor = pagination.nextCursor
+        })
+        .map { $0.contents.map(Review.init) }
+        .map { [weak self] newReviews -> [Review] in
+            guard let self = self else { return [] }
+            return self.output.reviews + newReviews
+        }
+        .subscribe(
+            onNext: { [weak self] reviews in
+                self?.output.reviews = reviews
+                self?.output.isHiddenFooter.accept(true)
+            },
+            onError: { [weak self] error in
+                self?.showErrorAlert.accept(error)
+                self?.output.isHiddenFooter.accept(true)
+            }
+        )
+        .disposed(by: self.disposeBag)
+    }
+    
+    private func deleteReview(reviewId: Int) {
+        self.showLoading.accept(true)
+        self.reviewService.deleteReview(reviewId: reviewId)
+            .subscribe(
+                onNext: { [weak self] _ in
+                    guard let self = self else { return }
+                    
+                    if let targetIndex = self.output.reviews.firstIndex(
+                        where: { $0.reviewId == reviewId }) {
+                        self.output.reviews.remove(at: targetIndex)
+                    }
+                    self.showLoading.accept(false)
+                },
+                onError: { [weak self] error in
+                    self?.showErrorAlert.accept(error)
+                    self?.showLoading.accept(false)
+                }
+            ).disposed(by: self.disposeBag)
+    }
+    
+    private func canLoadMore(reviews: [Review], index: Int) -> Bool {
+        return reviews.count - 1 <= index && self.cursor != nil && self.cursor != -1
+    }
 }

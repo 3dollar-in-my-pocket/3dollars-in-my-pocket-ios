@@ -16,7 +16,7 @@ struct StoreDetailResponse: Decodable {
   let updatedAt: String?
   let user: UserInfoResponse
   let visitHistories: [VisitHistoryWithUserResponse]
-  let visitHistory: VisitHistoryInfoResponse
+  let visitHistory: VisitHistoryCountsResponse
   
   enum CodingKeys: String, CodingKey {
     case appearanceDays
@@ -71,8 +71,8 @@ struct StoreDetailResponse: Decodable {
       forKey: .visitHistories
     ) ?? []
     self.visitHistory = try values.decodeIfPresent(
-      VisitHistoryInfoResponse.self,
+        VisitHistoryCountsResponse.self,
       forKey: .visitHistory
-    ) ??  VisitHistoryInfoResponse()
+    ) ??  VisitHistoryCountsResponse()
   }
 }

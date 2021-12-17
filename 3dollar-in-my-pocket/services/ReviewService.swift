@@ -7,12 +7,9 @@ protocol ReviewServiceProtocol {
   
   func modifyReview(review: Review) -> Observable<ReviewInfoResponse>
   
-  func deleteRevie(reviewId: Int) -> Observable<Void>
+  func deleteReview(reviewId: Int) -> Observable<Void>
   
-  func fetchMyReview(
-    totalCount: Int?,
-    cursor: Int?
-  ) -> Observable<Pagination<ReviewDetailResponse>>
+  func fetchMyReviews(cursor: Int?, size: Int) -> Observable<Pagination<ReviewDetailResponse>>
 }
 
 struct ReviewService: ReviewServiceProtocol {
@@ -67,7 +64,7 @@ struct ReviewService: ReviewServiceProtocol {
     }
   }
   
-  func deleteRevie(reviewId: Int) -> Observable<Void> {
+  func deleteReview(reviewId: Int) -> Observable<Void> {
     return Observable.create { observer -> Disposable in
       let urlString = HTTPUtils.url + "/api/v2/store/review/\(reviewId)"
       let headers = HTTPUtils.defaultHeader()
@@ -90,18 +87,12 @@ struct ReviewService: ReviewServiceProtocol {
     }
   }
   
-  func fetchMyReview(
-    totalCount: Int?,
-    cursor: Int?
-  ) -> Observable<Pagination<ReviewDetailResponse>> {
+    func fetchMyReviews(cursor: Int?, size: Int) -> Observable<Pagination<ReviewDetailResponse>> {
     return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v2/store/reviews/me"
+      let urlString = HTTPUtils.url + "/api/v3/store/reviews/me"
       let headers = HTTPUtils.defaultHeader()
-      var parameters: [String: Any] = ["size": 20]
+      var parameters: [String: Any] = ["size": size]
       
-      if let totalcount = totalCount {
-        parameters["cachingTotalElements"] = totalcount
-      }
       if let cursor = cursor {
         parameters["cursor"] = cursor
       }

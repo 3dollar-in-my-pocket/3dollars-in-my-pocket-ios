@@ -150,7 +150,9 @@ final class CategoryListViewModel: BaseViewModel {
       distance: distance,
       category: category,
       orderType: orderType
-    ).subscribe { [weak self] stores in
+    )
+    .map { $0.map(Store.init) }
+    .subscribe { [weak self] stores in
       guard let self = self else { return }
       self.model.stores = stores
       

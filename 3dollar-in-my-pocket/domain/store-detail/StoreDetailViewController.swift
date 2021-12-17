@@ -96,6 +96,10 @@ final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
       .bind(to: self.viewModel.input.tapTransferButton)
       .disposed(by: self.disposeBag)
     
+    self.storeDetailView.storeVisitHistoryView.rx.tap
+        .bind(to: self.viewModel.input.tapVisitHistoryButton)
+        .disposed(by: self.disposeBag)
+    
     self.storeDetailView.rx.tapEditStore
       .bind(to: self.viewModel.input.tapEditStoreButton)
       .disposed(by: self.disposeBag)
@@ -159,6 +163,13 @@ final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
         self?.coordinator?.showDeleteModal(storeId: storeId)
       })
       .disposed(by: self.disposeBag)
+    
+    self.viewModel.output.showVisitHistories
+        .asDriver(onErrorJustReturn: [])
+        .drive(onNext: { [weak self] visitHistories in
+            self?.coordinator?.showVisitHistories(visitHistories: visitHistories)
+        })
+        .disposed(by: self.disposeBag)
     
     self.viewModel.output.goToModify
       .observeOn(MainScheduler.instance)
@@ -293,4 +304,10 @@ extension StoreDetailViewController: SPPermissionsDelegate {
     data.alertOpenSettingsDeniedPermissionCancelTitle = "permission_setting_cancel".localized
     return data
   }
+}
+
+extension StoreDetailViewController: VisitHistoryViewControllerDelegate {
+    func onDismiss() {
+        self.coordinator?.showRootDim(isShow: false)
+    }
 }

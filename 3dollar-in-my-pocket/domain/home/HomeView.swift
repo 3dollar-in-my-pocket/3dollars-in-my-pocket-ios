@@ -41,7 +41,7 @@ class HomeView: BaseView {
     frame: .zero,
     collectionViewLayout: UICollectionViewFlowLayout()
   ).then {
-    let layout = UICollectionViewFlowLayout()
+    let layout = HomeStoreFlowLayout()
     
     layout.scrollDirection = .horizontal
     layout.minimumInteritemSpacing = 17

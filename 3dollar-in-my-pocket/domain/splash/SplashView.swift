@@ -10,7 +10,7 @@ class SplashView: BaseView {
   
   
   override func setup() {
-    self.backgroundColor = R.color.gray100()
+    self.backgroundColor = UIColor(r: 28, g: 28, b: 28)
     self.addSubViews([lottie])
   }
   

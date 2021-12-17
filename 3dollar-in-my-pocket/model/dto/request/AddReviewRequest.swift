@@ -15,6 +15,6 @@ struct AddReviewRequest: Requestable {
   init(review: Review) {
     self.contents = review.contents
     self.rating = review.rating
-    self.storeId = review.storeId
+    self.storeId = review.store.storeId
   }
 }

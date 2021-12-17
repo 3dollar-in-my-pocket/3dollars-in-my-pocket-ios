@@ -7,7 +7,9 @@ class SplashVC: BaseVC {
   private let viewModel = SplashViewModel(
     userDefaults: UserDefaultsUtil(),
     userService: UserService(),
-    remoteConfigService: RemoteConfigService()
+    remoteConfigService: RemoteConfigService(),
+    medalContext: MedalContext.shared,
+    medalService: MedalService()
   )
   
   

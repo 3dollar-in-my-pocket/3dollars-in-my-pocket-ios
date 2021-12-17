@@ -20,6 +20,7 @@ class StoreDetailViewModel: BaseViewModel {
     let tapDeleteRequest = PublishSubject<Void>()
     let tapShareButton = PublishSubject<Void>()
     let tapTransferButton = PublishSubject<Void>()
+    let tapVisitHistoryButton = PublishSubject<Void>()
     let tapEditStoreButton = PublishSubject<Void>()
     let tapAddPhotoButton = PublishSubject<Void>()
     let tapWriteReview = PublishSubject<Void>()
@@ -36,6 +37,7 @@ class StoreDetailViewModel: BaseViewModel {
     let reviews = PublishRelay<[Review?]>()
     let showDeleteModal = PublishRelay<Int>()
     let goToModify = PublishRelay<Store>()
+    let showVisitHistories = PublishSubject<[VisitHistory]>()
     let showPhotoDetail = PublishRelay<(Int, Int, [Image])>()
     let showAddPhotoActionSheet = PublishRelay<Int>()
     let goToPhotoList = PublishRelay<Int>()
@@ -91,6 +93,11 @@ class StoreDetailViewModel: BaseViewModel {
     self.input.tapTransferButton
       .bind(onNext: self.goToToss)
       .disposed(by: disposeBag)
+    
+    self.input.tapVisitHistoryButton
+        .compactMap { [weak self] in self?.model.store?.visitHistories }
+        .bind(to: self.output.showVisitHistories)
+        .disposed(by: self.disposeBag)
     
     self.input.tapEditStoreButton
       .compactMap { self.model.store }
@@ -155,7 +162,7 @@ class StoreDetailViewModel: BaseViewModel {
       storeId: storeId,
       latitude: location.latitude,
       longitude: location.longitude,
-      startDate: Date().addWeek(week: -1),
+      startDate: Date().addMonth(month: -1),
       endDate: Date()
     )
     .map(Store.init)
@@ -220,7 +227,7 @@ class StoreDetailViewModel: BaseViewModel {
   
   private func deleteReview(reviewId: Int) {
     self.showLoading.accept(true)
-    self.reviewService.deleteRevie(reviewId: reviewId)
+    self.reviewService.deleteReview(reviewId: reviewId)
       .subscribe(
         onNext: { [weak self] _ in
           guard let self = self else { return }

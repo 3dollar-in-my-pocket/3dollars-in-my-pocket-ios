@@ -35,7 +35,7 @@ class SignInView: BaseView {
   
   override func setup() {
     self.alpha = 0
-    self.backgroundColor = R.color.gray100()
+    self.backgroundColor = UIColor(r: 28, g: 28, b: 28)
     self.addSubViews([
       self.lottie,
       self.kakaoButton,

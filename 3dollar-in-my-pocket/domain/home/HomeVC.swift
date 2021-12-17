@@ -250,31 +250,17 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     let pageWidth = CGFloat(272)
     let offsetHelper: CGFloat = self.previousOffset > scrollView.contentOffset.x ? -50 : 50
     let proportionalOffset = (scrollView.contentOffset.x + offsetHelper) / pageWidth
-    
+
     self.previousOffset = scrollView.contentOffset.x
 
     var selectedIndex = Int(proportionalOffset.rounded())
     if selectedIndex < 0 {
       selectedIndex = 0
     }
-    
+
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
       self.viewModel.input.selectStore.onNext(selectedIndex)
     }
-  }
-  
-  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-    if !decelerate {
-      let pageWidth = CGFloat(272)
-      let proportionalOffset = scrollView.contentOffset.x / pageWidth
-      let selectedIndex = Int(round(proportionalOffset))
-      
-      self.viewModel.input.selectStore.onNext(selectedIndex)
-    }
-  }
-  
-  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-    self.viewModel.input.deselectCurrentStore.onNext(())
   }
 }
 
