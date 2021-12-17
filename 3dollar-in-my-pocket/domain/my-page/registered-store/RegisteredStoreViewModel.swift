@@ -60,7 +60,9 @@ final class RegisteredStoreViewModel: BaseViewModel {
             .disposed(by: self.disposeBag)
         
         self.input.tapStore
-            .compactMap { [weak self] in self?.output.stores[$0].storeId }
+            .compactMap { [weak self] in self?.output.stores[$0] }
+            .filter { !$0.isDeleted }
+            .map { $0.storeId }
             .bind(to: self.output.goToStoreDetail)
             .disposed(by: self.disposeBag)
     }
@@ -89,6 +91,6 @@ final class RegisteredStoreViewModel: BaseViewModel {
     }
     
     private func canLoadMore(index: Int, nextCursor: Int?) -> Bool {
-        return index >= self.output.stores.count && self.nextCursor != nil
+        return index >= self.output.stores.count - 1 && self.nextCursor != nil && self.nextCursor != -1
     }
 }

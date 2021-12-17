@@ -1485,16 +1485,16 @@
 		6E8A137623B5DCBB009C2B64 /* my-page */ = {
 			isa = PBXGroup;
 			children = (
-				6E7E3E4A27642A8E00A4C6E2 /* medal */,
-				6E6835C423C30D6F00D23F54 /* review */,
-				6EF63FB92761B0F10063A3B9 /* visit-history */,
-				6E4C1BDF27532DDF006C0F15 /* subviews */,
-				6E07D44923B591160055AEE7 /* MyPageViewController.swift */,
-				6E07D44723B590F20055AEE7 /* MyPageView.swift */,
-				6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */,
 				6EDAC5E226D7DC1500979252 /* MyPageCoordinator.swift */,
+				6E07D44723B590F20055AEE7 /* MyPageView.swift */,
+				6E07D44923B591160055AEE7 /* MyPageViewController.swift */,
+				6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */,
+				6E7E3E4A27642A8E00A4C6E2 /* medal */,
 				6E6835BA23C2CBE800D23F54 /* registered-store */,
+				6E6835C423C30D6F00D23F54 /* review */,
 				6E681E23256FDD1A00892B9E /* setting */,
+				6E4C1BDF27532DDF006C0F15 /* subviews */,
+				6EF63FB92761B0F10063A3B9 /* visit-history */,
 			);
 			path = "my-page";
 			sourceTree = "<group>";
@@ -2546,7 +2546,7 @@
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = X975A2HM62;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2560,7 +2560,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.2;
+				MARKETING_VERSION = 2.4.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -2600,7 +2600,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = X975A2HM62;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2613,7 +2613,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.2;
+				MARKETING_VERSION = 2.4.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",

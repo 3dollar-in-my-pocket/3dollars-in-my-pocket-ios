@@ -3,6 +3,7 @@ import UIKit
 final class MyVisitHistoryEmptyView: BaseView {
     private let emptyBackground = UIImageView().then {
         $0.image = R.image.img_empty_my_visit_history_background()
+        $0.contentMode = .scaleAspectFit
     }
     
     private let emptyContainerView = UIView().then {

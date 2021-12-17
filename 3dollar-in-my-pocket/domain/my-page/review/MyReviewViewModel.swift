@@ -44,14 +44,18 @@ final class MyReviewViewModel: BaseViewModel {
             .disposed(by: self.disposeBag)
         
         self.input.tapReview
-            .compactMap { [weak self] index in
-                self?.output.reviews[index].storeId
-            }
+            .compactMap { [weak self] index in self?.output.reviews[index].store }
+            .filter { !$0.isDeleted }
+            .map { $0.storeId }
             .bind(to: self.output.goToStoreDetail)
             .disposed(by: self.disposeBag)
         
         self.input.willDisplayCell
-            .filter { self.canLoadMore(reviews: self.output.reviews, index: $0) }
+            .filter { [weak self] in
+                guard let self = self else { return false }
+                
+                return self.canLoadMore(reviews: self.output.reviews, index: $0)
+            }
             .map { [weak self] _ in self?.cursor }
             .bind(onNext: { [weak self] cursor in
                 self?.fetchMyReviews(cursor: cursor)

@@ -111,7 +111,7 @@ final class MyReviewCell: BaseTableViewCell {
     
     func bind(review: Review) {
         self.categoryImage.image = review.category.image
-        self.storeNameLabel.text = review.storeName
+        self.storeNameLabel.text = review.store.storeName
         self.ratingView.bind(rating: review.rating)
         self.dateLabel.text = DateUtils.toReviewFormat(dateString: review.createdAt)
         self.titleLabel.bind(title: review.user.medal.name)

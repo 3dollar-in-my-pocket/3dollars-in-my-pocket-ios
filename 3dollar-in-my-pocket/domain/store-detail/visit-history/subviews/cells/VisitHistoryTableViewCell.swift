@@ -10,13 +10,13 @@ final class VisitHistoryTableViewCell: BaseTableViewCell {
     private let dateLabel = UILabel().then {
         $0.font = .semiBold(size: 12)
         $0.textColor = R.color.gray40()
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
     
     private let timeLabel = UILabel().then {
         $0.font = .light(size: 12)
         $0.textColor = R.color.gray40()
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
     
     private let nameLabel = UILabel().then {
