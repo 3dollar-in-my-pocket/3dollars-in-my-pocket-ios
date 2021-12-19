@@ -199,6 +199,7 @@
 		6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EE323AD1836006E11CE /* SignInView.swift */; };
 		6E6F35A325AC7990007931EC /* WriteAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F35A225AC7990007931EC /* WriteAddressView.swift */; };
 		6E6F35A825AC7BF4007931EC /* WriteAddressVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F35A725AC7BF4007931EC /* WriteAddressVC.swift */; };
+		6E6F3EFE276EFB1A001FEC03 /* MedalServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F3EFD276EFB1A001FEC03 /* MedalServiceMock.swift */; };
 		6E70C38F23B6EBB300C52C9C /* StoreDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70C38E23B6EBB300C52C9C /* StoreDetailView.swift */; };
 		6E70C39123B6EECB00C52C9C /* StoreDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70C39023B6EECB00C52C9C /* StoreDetailViewController.swift */; };
 		6E71BF4425B418B100ECFBD9 /* AddCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E71BF4325B418B100ECFBD9 /* AddCategoryView.swift */; };
@@ -253,7 +254,6 @@
 		6E8E89B023D04240003A7889 /* WriteDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E89AF23D04240003A7889 /* WriteDetailViewModel.swift */; };
 		6E8F3799269897D7004FAC70 /* BaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8F3798269897D7004FAC70 /* BaseError.swift */; };
 		6E91965825BBF9520052044B /* StoreSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E91965725BBF9520052044B /* StoreSection.swift */; };
-		6E91DC8826FF11E80046309C /* HomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E91DC8726FF11E80046309C /* HomeViewModelTests.swift */; };
 		6E93C83623F223E5002E737F /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83523F223E5002E737F /* PopupView.swift */; };
 		6E93C83823F22537002E737F /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83723F22537002E737F /* PopupViewController.swift */; };
 		6E93C83A23F22CA1002E737F /* DateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83923F22CA1002E737F /* DateUtils.swift */; };
@@ -547,6 +547,7 @@
 		6E6B0EE323AD1836006E11CE /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		6E6F35A225AC7990007931EC /* WriteAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressView.swift; sourceTree = "<group>"; };
 		6E6F35A725AC7BF4007931EC /* WriteAddressVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressVC.swift; sourceTree = "<group>"; };
+		6E6F3EFD276EFB1A001FEC03 /* MedalServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalServiceMock.swift; sourceTree = "<group>"; };
 		6E70C38E23B6EBB300C52C9C /* StoreDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreDetailView.swift; sourceTree = "<group>"; };
 		6E70C39023B6EECB00C52C9C /* StoreDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreDetailViewController.swift; sourceTree = "<group>"; };
 		6E71BF4325B418B100ECFBD9 /* AddCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryView.swift; sourceTree = "<group>"; };
@@ -601,7 +602,6 @@
 		6E8E89AF23D04240003A7889 /* WriteDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailViewModel.swift; sourceTree = "<group>"; };
 		6E8F3798269897D7004FAC70 /* BaseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseError.swift; sourceTree = "<group>"; };
 		6E91965725BBF9520052044B /* StoreSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreSection.swift; sourceTree = "<group>"; };
-		6E91DC8726FF11E80046309C /* HomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTests.swift; sourceTree = "<group>"; };
 		6E93C83523F223E5002E737F /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
 		6E93C83723F22537002E737F /* PopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
 		6E93C83923F22CA1002E737F /* DateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtils.swift; sourceTree = "<group>"; };
@@ -877,6 +877,7 @@
 				6E38402E26A6A7CC0047B2D8 /* RemoteConfigServiceMock.swift */,
 				6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */,
 				6E984BFD26FF5C7800175F25 /* MapServiceMock.swift */,
+				6E6F3EFD276EFB1A001FEC03 /* MedalServiceMock.swift */,
 			);
 			path = services;
 			sourceTree = "<group>";
@@ -1537,7 +1538,6 @@
 		6E91DC8626FF11AD0046309C /* home */ = {
 			isa = PBXGroup;
 			children = (
-				6E91DC8726FF11E80046309C /* HomeViewModelTests.swift */,
 			);
 			path = home;
 			sourceTree = "<group>";
@@ -2388,13 +2388,13 @@
 				6E802088269A9608000A646E /* UserServiceMock.swift in Sources */,
 				6E5BDF7E26CA107100A7A1E0 /* NicknameViewModelTests.swift in Sources */,
 				6E59BEFC26C8F5BA00008DDA /* SigninManagerMock.swift in Sources */,
-				6E91DC8826FF11E80046309C /* HomeViewModelTests.swift in Sources */,
 				6E0EA3AE23ABB232008F7CB2 /* SplashViewModelTests.swift in Sources */,
 				6E59BEF926C8F3E300008DDA /* SigninViewModelTests.swift in Sources */,
 				6E984C0026FF61E600175F25 /* DataUtils.swift in Sources */,
 				6E984BFE26FF5C7800175F25 /* MapServiceMock.swift in Sources */,
 				6E38402D26A6977D0047B2D8 /* VersionUtilsTests.swift in Sources */,
 				6E984C0626FF698200175F25 /* StoreMock.swift in Sources */,
+				6E6F3EFE276EFB1A001FEC03 /* MedalServiceMock.swift in Sources */,
 				6E38402F26A6A7CC0047B2D8 /* RemoteConfigServiceMock.swift in Sources */,
 				6E33F49226FF471C000BF5AA /* StoreServiceMock.swift in Sources */,
 			);
