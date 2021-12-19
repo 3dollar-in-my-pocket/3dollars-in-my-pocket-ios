@@ -847,7 +847,6 @@
 		6E37D4C8269979BC00FEC4B2 /* domains */ = {
 			isa = PBXGroup;
 			children = (
-				6E91DC8626FF11AD0046309C /* home */,
 				6E59BEF726C8F3AE00008DDA /* membership */,
 				6E37D4C9269979C000FEC4B2 /* splash */,
 			);
@@ -1536,13 +1535,6 @@
 				6E8E2473256A93DE00AE6479 /* GoogleService-Info-Prod.plist */,
 			);
 			path = firebase;
-			sourceTree = "<group>";
-		};
-		6E91DC8626FF11AD0046309C /* home */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = home;
 			sourceTree = "<group>";
 		};
 		6E984C0126FF684B00175F25 /* resources */ = {
