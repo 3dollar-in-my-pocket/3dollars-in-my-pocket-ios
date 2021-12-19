@@ -200,6 +200,7 @@
 		6E6F35A325AC7990007931EC /* WriteAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F35A225AC7990007931EC /* WriteAddressView.swift */; };
 		6E6F35A825AC7BF4007931EC /* WriteAddressVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F35A725AC7BF4007931EC /* WriteAddressVC.swift */; };
 		6E6F3EFE276EFB1A001FEC03 /* MedalServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F3EFD276EFB1A001FEC03 /* MedalServiceMock.swift */; };
+		6E6F3F00276F0D7B001FEC03 /* BundleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F3EFF276F0D7B001FEC03 /* BundleExtension.swift */; };
 		6E70C38F23B6EBB300C52C9C /* StoreDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70C38E23B6EBB300C52C9C /* StoreDetailView.swift */; };
 		6E70C39123B6EECB00C52C9C /* StoreDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70C39023B6EECB00C52C9C /* StoreDetailViewController.swift */; };
 		6E71BF4425B418B100ECFBD9 /* AddCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E71BF4325B418B100ECFBD9 /* AddCategoryView.swift */; };
@@ -548,6 +549,7 @@
 		6E6F35A225AC7990007931EC /* WriteAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressView.swift; sourceTree = "<group>"; };
 		6E6F35A725AC7BF4007931EC /* WriteAddressVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressVC.swift; sourceTree = "<group>"; };
 		6E6F3EFD276EFB1A001FEC03 /* MedalServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalServiceMock.swift; sourceTree = "<group>"; };
+		6E6F3EFF276F0D7B001FEC03 /* BundleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleExtension.swift; sourceTree = "<group>"; };
 		6E70C38E23B6EBB300C52C9C /* StoreDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreDetailView.swift; sourceTree = "<group>"; };
 		6E70C39023B6EECB00C52C9C /* StoreDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreDetailViewController.swift; sourceTree = "<group>"; };
 		6E71BF4325B418B100ECFBD9 /* AddCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryView.swift; sourceTree = "<group>"; };
@@ -1255,6 +1257,7 @@
 				6E451BDE26DD10D20056CDC4 /* UICollectionExt.swift */,
 				6E61F48026F466410087C888 /* UIFontExtension.swift */,
 				6E4697CE273E35FD005A5902 /* DateExtension.swift */,
+				6E6F3EFF276F0D7B001FEC03 /* BundleExtension.swift */,
 			);
 			path = extension;
 			sourceTree = "<group>";
@@ -2169,6 +2172,7 @@
 				6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */,
 				6E681E39256FDF5000892B9E /* StringExtension.swift in Sources */,
 				6E01AD1A23D094FF008BFCC0 /* HomeViewModel.swift in Sources */,
+				6E6F3F00276F0D7B001FEC03 /* BundleExtension.swift in Sources */,
 				6E93C83A23F22CA1002E737F /* DateUtils.swift in Sources */,
 				6E6835B723C2C3DE00D23F54 /* RenameView.swift in Sources */,
 				6ECCE9AB26BACF3F006B3C01 /* MenuRequest.swift in Sources */,
@@ -2540,6 +2544,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2EDE7CBD20E67AC529682967 /* Pods-3dollar-in-my-pocket.debug.xcconfig */;
 			buildSettings = {
+				ADMOB_UNIT_ID = "ca-app-pub-3940256099942544/2934735716";
 				API_URL = "https://dev.threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원-Dev";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -2595,6 +2600,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3BD4F78FA4F3A696F62234EE /* Pods-3dollar-in-my-pocket.release.xcconfig */;
 			buildSettings = {
+				ADMOB_UNIT_ID = "ca-app-pub-5385646520024289/7940737419";
 				API_URL = "https://threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -2647,7 +2653,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B11C0F8A272F749D4F119EA /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */;
 			buildSettings = {
-				ADMOB_UNIT_ID = "ca-app-pub-3940256099942544/2934735716";
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -2671,7 +2676,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 624C116D2E6C5A0BF75EDF97 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */;
 			buildSettings = {
-				ADMOB_UNIT_ID = "ca-app-pub-1527951560812478/3327283605";
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
