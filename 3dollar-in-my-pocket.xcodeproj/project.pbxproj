@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -265,6 +265,7 @@
 		6E984C0026FF61E600175F25 /* DataUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E984BFF26FF61E600175F25 /* DataUtils.swift */; };
 		6E984C0326FF68AE00175F25 /* HomeStores.json in Resources */ = {isa = PBXBuildFile; fileRef = 6E984C0226FF68AE00175F25 /* HomeStores.json */; };
 		6E984C0626FF698200175F25 /* StoreMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E984C0526FF698200175F25 /* StoreMock.swift */; };
+		6E9AC7992776DB66002C04FF /* ReactorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9AC7982776DB66002C04FF /* ReactorKit */; };
 		6E9AFD1A2760376600402441 /* ReviewTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AFD192760376600402441 /* ReviewTitleLabel.swift */; };
 		6E9C21B627047F7E00A2682D /* SignupError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9C21B527047F7E00A2682D /* SignupError.swift */; };
 		6E9D64D625BD6F160075DE36 /* DeleteMenuStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D64D525BD6F160075DE36 /* DeleteMenuStackView.swift */; };
@@ -694,6 +695,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E9AC7992776DB66002C04FF /* ReactorKit in Frameworks */,
 				FE94855E03305D11B25FAAA8 /* Pods_3dollar_in_my_pocket.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1804,6 +1806,9 @@
 			dependencies = (
 			);
 			name = "3dollar-in-my-pocket";
+			packageProductDependencies = (
+				6E9AC7982776DB66002C04FF /* ReactorKit */,
+			);
 			productName = "3dollar-in-my-pocket";
 			productReference = 6E0EA39323ABB230008F7CB2 /* dollar-in-my-pocket-debug.app */;
 			productType = "com.apple.product-type.application";
@@ -1857,6 +1862,9 @@
 				ko,
 			);
 			mainGroup = 6E0EA38A23ABB230008F7CB2;
+			packageReferences = (
+				6E9AC7972776DB66002C04FF /* XCRemoteSwiftPackageReference "ReactorKit" */,
+			);
 			productRefGroup = 6E0EA39423ABB230008F7CB2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2718,6 +2726,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6E9AC7972776DB66002C04FF /* XCRemoteSwiftPackageReference "ReactorKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactorKit/ReactorKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6E9AC7982776DB66002C04FF /* ReactorKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9AC7972776DB66002C04FF /* XCRemoteSwiftPackageReference "ReactorKit" */;
+			productName = ReactorKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6E0EA38B23ABB230008F7CB2 /* Project object */;
 }
