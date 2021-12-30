@@ -41,6 +41,7 @@ final class CategoryListView: BaseView {
     
     let currentLocationButton = UIButton().then {
         $0.setImage(R.image.ic_current_location(), for: .normal)
+        $0.accessibilityLabel = "현재 위치"
     }
     
     private let categoryTitleLabel = UILabel().then {

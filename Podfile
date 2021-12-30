@@ -12,6 +12,7 @@ target '3dollar-in-my-pocket' do
   pod 'RxSwift', '~> 5'
   pod 'RxCocoa', '~> 5'
   pod 'RxDataSources', '~> 4.0'
+  pod 'ReactorKit'
 
   pod 'Kingfisher', '~> 5.0'
 

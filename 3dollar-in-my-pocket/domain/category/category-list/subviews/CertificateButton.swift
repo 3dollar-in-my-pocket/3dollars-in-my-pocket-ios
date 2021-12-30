@@ -45,6 +45,7 @@ final class CertificateButton: UIButton {
   private func setup() {
     self.backgroundColor = UIColor(r: 255, g: 161, b: 170, a: 0.1)
     self.layer.cornerRadius = 12
+    self.accessibilityLabel = R.string.localization.category_list_certificated()
     self.addSubViews([
       self.subjectLabel,
       self.checkImage

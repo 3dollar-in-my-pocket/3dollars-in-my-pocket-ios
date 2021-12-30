@@ -62,6 +62,7 @@ class HomeView: BaseView {
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     $0.layer.shadowOpacity = 0.15
+    $0.accessibilityLabel = "현재 위치"
   }
   
   let tossButton = UIButton().then {
@@ -69,6 +70,7 @@ class HomeView: BaseView {
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     $0.layer.shadowOpacity = 0.15
+    $0.accessibilityLabel = "토스 송금하기"
   }
   
   
