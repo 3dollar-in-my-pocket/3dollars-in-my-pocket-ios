@@ -2,7 +2,8 @@ import UIKit
 import RxSwift
 
 class BaseVC: UIViewController {
-    let disposeBag = DisposeBag()
+    var disposeBag = DisposeBag()
+    let eventDisposeBag = DisposeBag()
     
     private lazy var dimView = UIView(frame: self.view.frame).then {
         $0.backgroundColor = .clear

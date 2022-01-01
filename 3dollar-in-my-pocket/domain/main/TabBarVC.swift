@@ -102,7 +102,7 @@ class TabBarVC: UITabBarController {
         self.setViewControllers([
             HomeVC.instance(),
             CategoryVC.instance(),
-            WriteAddressVC.instance(delegate: self),
+            WriteAddressViewController.instance(delegate: self),
             MyPageViewController.instance()
         ], animated: true)
         self.tabBar.tintColor = R.color.red()
@@ -188,8 +188,8 @@ extension TabBarVC: UITabBarControllerDelegate {
         shouldSelect viewController: UIViewController
     ) -> Bool {
         if let navigationVC = viewController as? UINavigationController {
-            if navigationVC.topViewController is WriteAddressVC {
-                let writeVC = WriteAddressVC.instance(delegate: self)
+            if navigationVC.topViewController is WriteAddressViewController {
+                let writeVC = WriteAddressViewController.instance(delegate: self)
                 
                 self.present(writeVC, animated: true, completion: nil)
                 return false
