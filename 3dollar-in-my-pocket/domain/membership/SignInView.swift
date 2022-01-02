@@ -16,12 +16,14 @@ class SignInView: BaseView {
   let kakaoButton = UIButton().then {
     $0.layer.cornerRadius = 20
     $0.backgroundColor = R.color.kakaoYellow()
+    $0.accessibilityLabel = R.string.localization.sign_in_with_kakao()
   }
   
   let kakaoLabel = UILabel().then {
     $0.text = R.string.localization.sign_in_with_kakao()
     $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
     $0.textColor = UIColor.init(r: 56, g: 30, b: 31)
+    $0.isAccessibilityElement = false
   }
   
   let kakaoImage = UIImageView().then {

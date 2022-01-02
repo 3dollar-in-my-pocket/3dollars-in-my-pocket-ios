@@ -190,7 +190,7 @@ class ModifyViewModel: BaseViewModel {
   }
   
   private func getAddressFromLocation(lat: Double, lng: Double) {
-    self.mapService.getAddressFromLocation(lat: lat, lng: lng)
+    self.mapService.getAddressFromLocation(latitude: lat, longitude: lng)
       .subscribe(
         onNext: self.output.address.accept,
         onError: { error in

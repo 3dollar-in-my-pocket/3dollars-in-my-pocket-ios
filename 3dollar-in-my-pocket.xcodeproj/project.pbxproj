@@ -151,6 +151,8 @@
 		6E56BD7F23CDE291002D7092 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56BD7E23CDE291002D7092 /* Image.swift */; };
 		6E56BD8123CDE359002D7092 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56BD8023CDE359002D7092 /* Menu.swift */; };
 		6E56BD8323CDE3BC002D7092 /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56BD8223CDE3BC002D7092 /* Review.swift */; };
+		6E57729B2780893E001E39DE /* BaseReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57729A2780893E001E39DE /* BaseReactor.swift */; };
+		6E57729D27809499001E39DE /* WriteAddressCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57729C27809499001E39DE /* WriteAddressCoordinator.swift */; };
 		6E57F298273A9209008C524A /* VisitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57F297273A9209008C524A /* VisitView.swift */; };
 		6E57F29A273A9FF0008C524A /* VisitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57F299273A9FF0008C524A /* VisitViewController.swift */; };
 		6E57F29C273AA04D008C524A /* VisitCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57F29B273AA04D008C524A /* VisitCoordinator.swift */; };
@@ -198,10 +200,15 @@
 		6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EE023AD17AC006E11CE /* UIViewExt.swift */; };
 		6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EE323AD1836006E11CE /* SignInView.swift */; };
 		6E6F35A325AC7990007931EC /* WriteAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F35A225AC7990007931EC /* WriteAddressView.swift */; };
-		6E6F35A825AC7BF4007931EC /* WriteAddressVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F35A725AC7BF4007931EC /* WriteAddressVC.swift */; };
+		6E6F35A825AC7BF4007931EC /* WriteAddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F35A725AC7BF4007931EC /* WriteAddressViewController.swift */; };
 		6E6F3EFE276EFB1A001FEC03 /* MedalServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F3EFD276EFB1A001FEC03 /* MedalServiceMock.swift */; };
+		6E6F3F00276F0D7B001FEC03 /* BundleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F3EFF276F0D7B001FEC03 /* BundleExtension.swift */; };
 		6E70C38F23B6EBB300C52C9C /* StoreDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70C38E23B6EBB300C52C9C /* StoreDetailView.swift */; };
 		6E70C39123B6EECB00C52C9C /* StoreDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70C39023B6EECB00C52C9C /* StoreDetailViewController.swift */; };
+		6E7112C62781587D00396CC0 /* CheckExistStoresNearbyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7112C52781587D00396CC0 /* CheckExistStoresNearbyResponse.swift */; };
+		6E7112C92781655700396CC0 /* AddressConfirmPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7112C82781655700396CC0 /* AddressConfirmPopupView.swift */; };
+		6E7112CB27816A6900396CC0 /* AddressConfirmPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7112CA27816A6900396CC0 /* AddressConfirmPopupViewController.swift */; };
+		6E7112CD27816D5B00396CC0 /* AddressConfirmPopupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7112CC27816D5B00396CC0 /* AddressConfirmPopupCoordinator.swift */; };
 		6E71BF4425B418B100ECFBD9 /* AddCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E71BF4325B418B100ECFBD9 /* AddCategoryView.swift */; };
 		6E71BF4925B4209C00ECFBD9 /* AddCategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E71BF4825B4209C00ECFBD9 /* AddCategoryVC.swift */; };
 		6E71BF5325B4274900ECFBD9 /* AddCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E71BF5225B4274900ECFBD9 /* AddCategoryViewModel.swift */; };
@@ -279,7 +286,7 @@
 		6EB7FA6A23B658B000BFB0B4 /* CategoryListStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB7FA6923B658B000BFB0B4 /* CategoryListStoreCell.swift */; };
 		6EB8FBA125988D4200C17B74 /* GAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB8FBA025988D4200C17B74 /* GAManager.swift */; };
 		6EB8FBA925988DFC00C17B74 /* GAEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB8FBA825988DFC00C17B74 /* GAEvent.swift */; };
-		6EBBCB6925AD601F00F5912E /* WriteAddressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBBCB6825AD601F00F5912E /* WriteAddressViewModel.swift */; };
+		6EBBCB6925AD601F00F5912E /* WriteAddressReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBBCB6825AD601F00F5912E /* WriteAddressReactor.swift */; };
 		6EBF20F3259327E500C821EF /* ReviewModalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBF20F2259327E500C821EF /* ReviewModalViewModel.swift */; };
 		6EBF45242761C65F00DC3BD2 /* MyVisitHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBF45232761C65F00DC3BD2 /* MyVisitHistoryViewModel.swift */; };
 		6EBF4527276213CE00DC3BD2 /* VisitHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBF4526276213CE00DC3BD2 /* VisitHistoryView.swift */; };
@@ -499,6 +506,8 @@
 		6E56BD7E23CDE291002D7092 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		6E56BD8023CDE359002D7092 /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
 		6E56BD8223CDE3BC002D7092 /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
+		6E57729A2780893E001E39DE /* BaseReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseReactor.swift; sourceTree = "<group>"; };
+		6E57729C27809499001E39DE /* WriteAddressCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressCoordinator.swift; sourceTree = "<group>"; };
 		6E57F297273A9209008C524A /* VisitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitView.swift; sourceTree = "<group>"; };
 		6E57F299273A9FF0008C524A /* VisitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitViewController.swift; sourceTree = "<group>"; };
 		6E57F29B273AA04D008C524A /* VisitCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitCoordinator.swift; sourceTree = "<group>"; };
@@ -546,10 +555,15 @@
 		6E6B0EE023AD17AC006E11CE /* UIViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExt.swift; sourceTree = "<group>"; };
 		6E6B0EE323AD1836006E11CE /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		6E6F35A225AC7990007931EC /* WriteAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressView.swift; sourceTree = "<group>"; };
-		6E6F35A725AC7BF4007931EC /* WriteAddressVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressVC.swift; sourceTree = "<group>"; };
+		6E6F35A725AC7BF4007931EC /* WriteAddressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressViewController.swift; sourceTree = "<group>"; };
 		6E6F3EFD276EFB1A001FEC03 /* MedalServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalServiceMock.swift; sourceTree = "<group>"; };
+		6E6F3EFF276F0D7B001FEC03 /* BundleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleExtension.swift; sourceTree = "<group>"; };
 		6E70C38E23B6EBB300C52C9C /* StoreDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreDetailView.swift; sourceTree = "<group>"; };
 		6E70C39023B6EECB00C52C9C /* StoreDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreDetailViewController.swift; sourceTree = "<group>"; };
+		6E7112C52781587D00396CC0 /* CheckExistStoresNearbyResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckExistStoresNearbyResponse.swift; sourceTree = "<group>"; };
+		6E7112C82781655700396CC0 /* AddressConfirmPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressConfirmPopupView.swift; sourceTree = "<group>"; };
+		6E7112CA27816A6900396CC0 /* AddressConfirmPopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressConfirmPopupViewController.swift; sourceTree = "<group>"; };
+		6E7112CC27816D5B00396CC0 /* AddressConfirmPopupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressConfirmPopupCoordinator.swift; sourceTree = "<group>"; };
 		6E71BF4325B418B100ECFBD9 /* AddCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryView.swift; sourceTree = "<group>"; };
 		6E71BF4825B4209C00ECFBD9 /* AddCategoryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryVC.swift; sourceTree = "<group>"; };
 		6E71BF5225B4274900ECFBD9 /* AddCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryViewModel.swift; sourceTree = "<group>"; };
@@ -627,7 +641,7 @@
 		6EB7FA6923B658B000BFB0B4 /* CategoryListStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListStoreCell.swift; sourceTree = "<group>"; };
 		6EB8FBA025988D4200C17B74 /* GAManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GAManager.swift; sourceTree = "<group>"; };
 		6EB8FBA825988DFC00C17B74 /* GAEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GAEvent.swift; sourceTree = "<group>"; };
-		6EBBCB6825AD601F00F5912E /* WriteAddressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressViewModel.swift; sourceTree = "<group>"; };
+		6EBBCB6825AD601F00F5912E /* WriteAddressReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressReactor.swift; sourceTree = "<group>"; };
 		6EBF20F2259327E500C821EF /* ReviewModalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalViewModel.swift; sourceTree = "<group>"; };
 		6EBF45232761C65F00DC3BD2 /* MyVisitHistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVisitHistoryViewModel.swift; sourceTree = "<group>"; };
 		6EBF4526276213CE00DC3BD2 /* VisitHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitHistoryView.swift; sourceTree = "<group>"; };
@@ -845,7 +859,6 @@
 		6E37D4C8269979BC00FEC4B2 /* domains */ = {
 			isa = PBXGroup;
 			children = (
-				6E91DC8626FF11AD0046309C /* home */,
 				6E59BEF726C8F3AE00008DDA /* membership */,
 				6E37D4C9269979C000FEC4B2 /* splash */,
 			);
@@ -1236,6 +1249,7 @@
 				6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */,
 				6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */,
 				6E3EDF3B25694F8C0038E6A1 /* BaseViewModel.swift */,
+				6E57729A2780893E001E39DE /* BaseReactor.swift */,
 			);
 			path = base;
 			sourceTree = "<group>";
@@ -1255,6 +1269,7 @@
 				6E451BDE26DD10D20056CDC4 /* UICollectionExt.swift */,
 				6E61F48026F466410087C888 /* UIFontExtension.swift */,
 				6E4697CE273E35FD005A5902 /* DateExtension.swift */,
+				6E6F3EFF276F0D7B001FEC03 /* BundleExtension.swift */,
 			);
 			path = extension;
 			sourceTree = "<group>";
@@ -1309,6 +1324,16 @@
 				6EE195912726DC6200FC4A0B /* StoreDetailCoordinator.swift */,
 			);
 			path = "store-detail";
+			sourceTree = "<group>";
+		};
+		6E7112C72781653300396CC0 /* address-comfirm-popup */ = {
+			isa = PBXGroup;
+			children = (
+				6E7112C82781655700396CC0 /* AddressConfirmPopupView.swift */,
+				6E7112CA27816A6900396CC0 /* AddressConfirmPopupViewController.swift */,
+				6E7112CC27816D5B00396CC0 /* AddressConfirmPopupCoordinator.swift */,
+			);
+			path = "address-comfirm-popup";
 			sourceTree = "<group>";
 		};
 		6E71BF4225B4189A00ECFBD9 /* add-category */ = {
@@ -1535,13 +1560,6 @@
 			path = firebase;
 			sourceTree = "<group>";
 		};
-		6E91DC8626FF11AD0046309C /* home */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = home;
-			sourceTree = "<group>";
-		};
 		6E984C0126FF684B00175F25 /* resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1626,9 +1644,11 @@
 		6EBBCB6725AD600100F5912E /* write-address */ = {
 			isa = PBXGroup;
 			children = (
+				6E7112C72781653300396CC0 /* address-comfirm-popup */,
 				6E6F35A225AC7990007931EC /* WriteAddressView.swift */,
-				6E6F35A725AC7BF4007931EC /* WriteAddressVC.swift */,
-				6EBBCB6825AD601F00F5912E /* WriteAddressViewModel.swift */,
+				6E6F35A725AC7BF4007931EC /* WriteAddressViewController.swift */,
+				6EBBCB6825AD601F00F5912E /* WriteAddressReactor.swift */,
+				6E57729C27809499001E39DE /* WriteAddressCoordinator.swift */,
 			);
 			path = "write-address";
 			sourceTree = "<group>";
@@ -1693,6 +1713,7 @@
 				6E4697D0273E36C7005A5902 /* VisitHistoryWithUserResponse.swift */,
 				6E48B7A226C154C100E2F02B /* Pagination.swift */,
 				6EF63FB52761A90B0063A3B9 /* MedalResponse.swift */,
+				6E7112C52781587D00396CC0 /* CheckExistStoresNearbyResponse.swift */,
 			);
 			path = response;
 			sourceTree = "<group>";
@@ -2124,6 +2145,7 @@
 				6E4952BF26B0335500D65042 /* SignInRequest.swift in Sources */,
 				6E6835C823C30DCB00D23F54 /* MyReviewCell.swift in Sources */,
 				6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */,
+				6E7112C92781655700396CC0 /* AddressConfirmPopupView.swift in Sources */,
 				6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */,
 				6EDBD8A723D87C930075EF8F /* DeleteModalVC.swift in Sources */,
 				6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */,
@@ -2166,10 +2188,13 @@
 				6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */,
 				6E48B79B26C14D5400E2F02B /* StoreDetailResponse.swift in Sources */,
 				6E72AE5A23C971FF00D3B257 /* SplashView.swift in Sources */,
+				6E7112CB27816A6900396CC0 /* AddressConfirmPopupViewController.swift in Sources */,
 				6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */,
 				6E681E39256FDF5000892B9E /* StringExtension.swift in Sources */,
 				6E01AD1A23D094FF008BFCC0 /* HomeViewModel.swift in Sources */,
+				6E6F3F00276F0D7B001FEC03 /* BundleExtension.swift in Sources */,
 				6E93C83A23F22CA1002E737F /* DateUtils.swift in Sources */,
+				6E57729B2780893E001E39DE /* BaseReactor.swift in Sources */,
 				6E6835B723C2C3DE00D23F54 /* RenameView.swift in Sources */,
 				6ECCE9AB26BACF3F006B3C01 /* MenuRequest.swift in Sources */,
 				6EDAC5E526D7DCB300979252 /* Coordinator.swift in Sources */,
@@ -2216,6 +2241,7 @@
 				6E6835C623C30D8300D23F54 /* MyReviewView.swift in Sources */,
 				6E72AE5823C9713600D3B257 /* UserDefaultsUtil.swift in Sources */,
 				6E1E376825825A330037FA1D /* SocialType.swift in Sources */,
+				6E7112CD27816D5B00396CC0 /* AddressConfirmPopupCoordinator.swift in Sources */,
 				6E5551E125879A890034B627 /* HTTPError.swift in Sources */,
 				6E93C83623F223E5002E737F /* PopupView.swift in Sources */,
 				6E681E25256FDD3500892B9E /* SettingVIew.swift in Sources */,
@@ -2226,8 +2252,9 @@
 				6EFC89DF268B63E800B3414F /* R.generated.swift in Sources */,
 				6E4697C9273E182F005A5902 /* VisitType.swift in Sources */,
 				6E48B7A326C154C100E2F02B /* Pagination.swift in Sources */,
+				6E57729D27809499001E39DE /* WriteAddressCoordinator.swift in Sources */,
 				6E5939002573E2CE00593DC8 /* PrivacyView.swift in Sources */,
-				6EBBCB6925AD601F00F5912E /* WriteAddressViewModel.swift in Sources */,
+				6EBBCB6925AD601F00F5912E /* WriteAddressReactor.swift in Sources */,
 				6E29966625E2869D003FC13A /* AddressDocument.swift in Sources */,
 				6EC0D67E26EB856D008AD34B /* StoresGroupByReviewResponse.swift in Sources */,
 				6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */,
@@ -2245,6 +2272,7 @@
 				6E72AE5C23C9727100D3B257 /* SplashVC.swift in Sources */,
 				6EDBBB802754C1EC00470F71 /* StoreWithVisitsResponse.swift in Sources */,
 				6E0EA39B23ABB230008F7CB2 /* SignInViewController.swift in Sources */,
+				6E7112C62781587D00396CC0 /* CheckExistStoresNearbyResponse.swift in Sources */,
 				6E81B84725E11FF300748E02 /* LocalResponse.swift in Sources */,
 				6E25D64F23E2605A00DB788E /* ImageUtils.swift in Sources */,
 				6E3AA4DB25AD6C5400D8C58C /* Addition.swift in Sources */,
@@ -2332,7 +2360,7 @@
 				6E479B6726EA2C5B00566384 /* ReviewInfoResponse.swift in Sources */,
 				6E9AFD1A2760376600402441 /* ReviewTitleLabel.swift in Sources */,
 				6E3493B62764924B0082B011 /* MedalService.swift in Sources */,
-				6E6F35A825AC7BF4007931EC /* WriteAddressVC.swift in Sources */,
+				6E6F35A825AC7BF4007931EC /* WriteAddressViewController.swift in Sources */,
 				6EDBBB782754A34800470F71 /* VisitBedgeView.swift in Sources */,
 				6E41F7E623BAC2BA00D0AC73 /* UIColorExt.swift in Sources */,
 				6E4CDCDD25E6314600C9193D /* CategoryHeaderType.swift in Sources */,
@@ -2540,6 +2568,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2EDE7CBD20E67AC529682967 /* Pods-3dollar-in-my-pocket.debug.xcconfig */;
 			buildSettings = {
+				ADMOB_UNIT_ID = "ca-app-pub-3940256099942544/2934735716";
 				API_URL = "https://dev.threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원-Dev";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -2595,6 +2624,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3BD4F78FA4F3A696F62234EE /* Pods-3dollar-in-my-pocket.release.xcconfig */;
 			buildSettings = {
+				ADMOB_UNIT_ID = "ca-app-pub-5385646520024289/7940737419";
 				API_URL = "https://threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -2647,7 +2677,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B11C0F8A272F749D4F119EA /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */;
 			buildSettings = {
-				ADMOB_UNIT_ID = "ca-app-pub-3940256099942544/2934735716";
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -2671,7 +2700,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 624C116D2E6C5A0BF75EDF97 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */;
 			buildSettings = {
-				ADMOB_UNIT_ID = "ca-app-pub-1527951560812478/3327283605";
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;

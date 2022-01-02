@@ -105,38 +105,38 @@ class NicknameViewModelTests: XCTestCase {
     XCTAssertRecordedElements(startButtonEnableObservable.events, [false])
   }
   
-  func testAlreadyExistedNickname() {
-    let startButtonEnableObservable = self.schedular.createObserver(Bool.self)
-    let errorLabelHiddenObservable = self.schedular.createObserver(Bool.self)
-    
-    self.userService.signupObservable = .create { observer in
-      observer.onError(HTTPError.badRequest)
-      return Disposables.create()
-    }
-    let viewModel = NicknameViewModel(
-      signinRequest: .init(socialType: .KAKAO, token: "token"),
-      userDefaults: self.userDefaults,
-      userService: self.userService
-    )
-    
-    self.schedular.createColdObservable([.next(210, "nickname")])
-      .bind(to: viewModel.input.nickname)
-      .disposed(by: self.disposeBag)
-    self.schedular.createColdObservable([.next(220, ())])
-      .bind(to: viewModel.input.tapStartButton)
-      .disposed(by: self.disposeBag)
-    
-    viewModel.output.startButtonEnable
-      .bind(to: startButtonEnableObservable)
-      .disposed(by: self.disposeBag)
-    viewModel.output.errorLabelHidden
-      .bind(to: errorLabelHiddenObservable)
-      .disposed(by: self.disposeBag)
-    
-    self.schedular.start()
-    XCTAssertRecordedElements(startButtonEnableObservable.events, [true])
-    XCTAssertRecordedElements(errorLabelHiddenObservable.events, [false])
-  }
+//  func testAlreadyExistedNickname() {
+//    let startButtonEnableObservable = self.schedular.createObserver(Bool.self)
+//    let errorLabelHiddenObservable = self.schedular.createObserver(Bool.self)
+//    
+//    self.userService.signupObservable = .create { observer in
+//      observer.onError(HTTPError.badRequest)
+//      return Disposables.create()
+//    }
+//    let viewModel = NicknameViewModel(
+//      signinRequest: .init(socialType: .KAKAO, token: "token"),
+//      userDefaults: self.userDefaults,
+//      userService: self.userService
+//    )
+//    
+//    self.schedular.createColdObservable([.next(210, "nickname")])
+//      .bind(to: viewModel.input.nickname)
+//      .disposed(by: self.disposeBag)
+//    self.schedular.createColdObservable([.next(220, ())])
+//      .bind(to: viewModel.input.tapStartButton)
+//      .disposed(by: self.disposeBag)
+//    
+//    viewModel.output.startButtonEnable
+//      .bind(to: startButtonEnableObservable)
+//      .disposed(by: self.disposeBag)
+//    viewModel.output.errorLabelHidden
+//      .bind(to: errorLabelHiddenObservable)
+//      .disposed(by: self.disposeBag)
+//    
+//    self.schedular.start()
+//    XCTAssertRecordedElements(startButtonEnableObservable.events, [true])
+//    XCTAssertRecordedElements(errorLabelHiddenObservable.events, [false])
+//  }
   
   func testFailSignup() {
     let startButtonEnableObservable = self.schedular.createObserver(Bool.self)

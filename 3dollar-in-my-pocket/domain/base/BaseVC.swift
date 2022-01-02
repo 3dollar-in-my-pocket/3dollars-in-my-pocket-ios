@@ -2,7 +2,8 @@ import UIKit
 import RxSwift
 
 class BaseVC: UIViewController {
-    let disposeBag = DisposeBag()
+    var disposeBag = DisposeBag()
+    let eventDisposeBag = DisposeBag()
     
     private lazy var dimView = UIView(frame: self.view.frame).then {
         $0.backgroundColor = .clear
@@ -33,6 +34,8 @@ class BaseVC: UIViewController {
     func showRootDim(isShow: Bool) {
         if let tabBarVC = self.navigationController?.parent as? TabBarVC {
             tabBarVC.showDim(isShow: isShow)
+        } else {
+            self.showDim(isShow: isShow)
         }
     }
     
@@ -67,6 +70,27 @@ class BaseVC: UIViewController {
             self.showBaseErrorAlert(error: baseError)
         } else {
             self.showDefaultErrorAlert(error: error)
+        }
+    }
+    
+    private func showDim(isShow: Bool) {
+        if isShow {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.view.addSubview(self.dimView)
+                UIView.animate(withDuration: 0.3) {
+                    self.dimView.backgroundColor = UIColor.init(r: 0, g: 0, b: 0, a: 0.5)
+                }
+            }
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.dimView.backgroundColor = .clear
+                }) { (_) in
+                    self.dimView.removeFromSuperview()
+                }
+            }
         }
     }
     
