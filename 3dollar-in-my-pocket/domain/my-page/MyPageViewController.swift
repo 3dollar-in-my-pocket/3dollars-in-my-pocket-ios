@@ -98,6 +98,11 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
         self.myPageView.medalImageButton.rx.tap
             .bind(to: self.viewModel.input.tapMyMedal)
             .disposed(by: self.disposeBag)
+        
+        self.myPageView.visitHistoryCollectionView.rx.itemSelected
+            .map { $0.row }
+            .bind(to: self.viewModel.input.tapVisitHistory)
+            .disposed(by: self.disposeBag)
     }
     
     override func bindViewModelOutput() {
@@ -128,6 +133,13 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
             .asDriver(onErrorJustReturn: Medal())
             .drive(onNext: { [weak self] medal in
                 self?.coordinator?.goToMyMedal(medal: medal)
+            })
+            .disposed(by: self.disposeBag)
+        
+        self.viewModel.output.goToStoreDetail
+            .asDriver(onErrorJustReturn: -1)
+            .drive(onNext: { [weak self] storeId in
+                self?.coordinator?.goToStoreDetail(storeId: storeId)
             })
             .disposed(by: self.disposeBag)
     }
