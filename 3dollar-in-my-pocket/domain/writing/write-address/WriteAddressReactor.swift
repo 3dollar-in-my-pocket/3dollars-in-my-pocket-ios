@@ -130,7 +130,7 @@ final class WriteAddressReactor: BaseReactor, Reactor {
         let mapLocataion = CLLocation(latitude: cameraPosition.0, longitude: cameraPosition.1)
         
         return self.storeService.isStoresExistedAround(
-            distance: 100,
+            distance: 10,
             mapLocation: mapLocataion
         )
         .map { $0.isExists }
