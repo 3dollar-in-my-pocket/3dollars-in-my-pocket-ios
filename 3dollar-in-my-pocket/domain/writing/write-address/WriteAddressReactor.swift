@@ -57,7 +57,24 @@ final class WriteAddressReactor: BaseReactor, Reactor {
             ])
             
         case .tapCurrentLocation:
-            return self.fetchMyLocation()
+            return self.locationManager.getCurrentLocation()
+                .flatMap { [weak self] location -> Observable<Mutation> in
+                    guard let self = self else { return .just(.showErrorAlert(BaseError.unknown)) }
+                    return .merge([
+                        self.fetchNearStores(
+                            latitude: location.coordinate.latitude,
+                            longitude: location.coordinate.longitude
+                        ),
+                        self.fetchAddressFromLocation(
+                            latitude: location.coordinate.latitude,
+                            longitude: location.coordinate.longitude
+                        ),
+                        .just(.moveCamera(
+                            latitude: location.coordinate.latitude,
+                            longitude: location.coordinate.longitude
+                        ))
+                    ])
+                }
             
         case .tapSetAddress:
             return self.isStoreExistedNear()
@@ -111,15 +128,6 @@ final class WriteAddressReactor: BaseReactor, Reactor {
         )
         .map { .setNearStores(stores: $0.map(Store.init)) }
         .catchError { .just(.showErrorAlert($0)) }
-    }
-    
-    private func fetchMyLocation() -> Observable<Mutation> {
-        return self.locationManager.getCurrentLocation()
-            .map { .moveCamera(
-                latitude: $0.coordinate.latitude,
-                longitude: $0.coordinate.longitude
-            ) }
-            .catchError { .just(.showErrorAlert($0)) }
     }
     
     private func isStoreExistedNear() -> Observable<Mutation> {

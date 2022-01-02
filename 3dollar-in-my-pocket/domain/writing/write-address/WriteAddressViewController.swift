@@ -132,14 +132,12 @@ final class WriteAddressViewController: BaseVC, View, WriteAddressCoordinator {
 
 extension WriteAddressViewController: NMFMapViewCameraDelegate {
     func mapView(_ mapView: NMFMapView, cameraDidChangeByReason reason: Int, animated: Bool) {
-        if animated {
+        if animated && reason == NMFMapChangedByGesture {
             self.writeAddressReactor.action.onNext(.moveMapCenter(
                 latitude: mapView.cameraPosition.target.lat,
                 longitude: mapView.cameraPosition.target.lng
             ))
         }
-        Log.debug("camera did change by reason: \(reason)")
-        Log.debug("animated: \(animated)")
     }
 }
 

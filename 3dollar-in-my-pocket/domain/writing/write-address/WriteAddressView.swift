@@ -178,6 +178,7 @@ final class WriteAddressView: BaseView {
             marker.width = 24
             marker.height = 24
             marker.mapView = self.mapView
+            self.markers.append(marker)
         }
     }
     
