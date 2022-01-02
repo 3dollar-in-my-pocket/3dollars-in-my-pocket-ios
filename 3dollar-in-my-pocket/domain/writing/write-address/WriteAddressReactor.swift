@@ -1,3 +1,5 @@
+import CoreLocation
+
 import RxSwift
 import RxCocoa
 import ReactorKit
@@ -14,6 +16,7 @@ final class WriteAddressReactor: BaseReactor, Reactor {
         case moveCamera(latitude: Double, longitude: Double)
         case setAddressText(address: String)
         case pushAddressDetail(address: String, location: (Double, Double))
+        case presentConfirmPopup(address: String)
         case showErrorAlert(Error)
     }
     
@@ -25,6 +28,7 @@ final class WriteAddressReactor: BaseReactor, Reactor {
     
     let initialState = State()
     let pushWriteDetailPublisher = PublishRelay<(String, (Double, Double))>()
+    let presentConfirmPopupPublisher = PublishRelay<String>()
     private let mapService: MapServiceProtocol
     private let storeService: StoreServiceProtocol
     private let locationManager: LocationManagerProtocol
@@ -37,6 +41,9 @@ final class WriteAddressReactor: BaseReactor, Reactor {
         self.mapService = mapService
         self.storeService = storeService
         self.locationManager = locationManager
+        
+        super.init()
+        self.action.onNext(.tapCurrentLocation)
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
@@ -44,7 +51,8 @@ final class WriteAddressReactor: BaseReactor, Reactor {
         case let .moveMapCenter(latitude, longitude):
             return .merge([
                 self.fetchNearStores(latitude: latitude, longitude: longitude),
-                self.fetchAddressFromLocation(latitude: latitude, longitude: longitude)
+                self.fetchAddressFromLocation(latitude: latitude, longitude: longitude),
+                .just(.moveCamera(latitude: latitude, longitude: longitude))
             ])
             
         case .tapCurrentLocation:
@@ -71,6 +79,9 @@ final class WriteAddressReactor: BaseReactor, Reactor {
         case .pushAddressDetail(let address, let location):
             self.pushWriteDetailPublisher.accept((address, location))
             
+        case .presentConfirmPopup(let address):
+            self.presentConfirmPopupPublisher.accept(address)
+            
         case .showErrorAlert(let error):
             self.showErrorAlertPublisher.accept(error)
         }
@@ -79,7 +90,15 @@ final class WriteAddressReactor: BaseReactor, Reactor {
     }
     
     private func fetchNearStores(latitude: Double, longitude: Double) -> Observable<Mutation> {
-        return .empty()
+        return self.storeService.searchNearStores(
+            currentLocation: nil,
+            mapLocation: CLLocation(latitude: latitude, longitude: longitude),
+            distance: 200,
+            category: nil,
+            orderType: nil
+        )
+        .map { .setNearStores(stores: $0.map(Store.init)) }
+        .catchError { .just(.showErrorAlert($0)) }
     }
     
     private func fetchMyLocation() -> Observable<Mutation> {
@@ -92,7 +111,28 @@ final class WriteAddressReactor: BaseReactor, Reactor {
     }
     
     private func isStoreExistedNear() -> Observable<Mutation> {
-        return .empty()
+        guard let cameraPosition = self.currentState.cameraPosition else {
+            let error = BaseError.custom("지도의 위치가 올바르지 않습니다.")
+            return .just(.showErrorAlert(error))
+        }
+        let mapLocataion = CLLocation(latitude: cameraPosition.0, longitude: cameraPosition.1)
+        
+        return self.storeService.isStoresExistedAround(
+            distance: 100,
+            mapLocation: mapLocataion
+        )
+        .map { $0.isExists }
+        .map { isExists in
+            if isExists {
+                return .presentConfirmPopup(address: self.currentState.address)
+            } else {
+                return .pushAddressDetail(
+                    address: self.currentState.address,
+                    location: cameraPosition
+                )
+            }
+        }
+        .catchError { .just(.showErrorAlert($0)) }
     }
     
     private func fetchAddressFromLocation(

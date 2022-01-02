@@ -5,6 +5,7 @@ import RxCocoa
 import NMapsMap
 
 final class WriteAddressView: BaseView {
+    private var markers: [NMFMarker] = []
     private let navigationView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
@@ -164,6 +165,27 @@ final class WriteAddressView: BaseView {
         camera.animation = .easeIn
         self.mapView.moveCamera(camera)
     }
+    
+    fileprivate func setNearStores(stores: [Store]) {
+        self.clearMarkers()
+        
+        for store in stores {
+            let marker = NMFMarker(
+                position: NMGLatLng(lat: store.latitude, lng: store.longitude),
+                iconImage: NMFOverlayImage(name: "ic_marker_store_off")
+            )
+            
+            marker.width = 24
+            marker.height = 24
+            marker.mapView = self.mapView
+        }
+    }
+    
+    private func clearMarkers() {
+        for marker in self.markers {
+            marker.mapView = nil
+        }
+    }
 }
 
 extension Reactive where Base: WriteAddressView {
@@ -173,6 +195,12 @@ extension Reactive where Base: WriteAddressView {
                 latitude: position.0,
                 longitude: position.1
             )
+        }
+    }
+    
+    var nearStores: Binder<[Store]> {
+        return Binder(self.base) { view, stores in
+            view.setNearStores(stores: stores)
         }
     }
 }

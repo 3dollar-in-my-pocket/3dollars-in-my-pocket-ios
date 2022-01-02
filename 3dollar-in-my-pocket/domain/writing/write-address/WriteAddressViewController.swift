@@ -72,12 +72,24 @@ final class WriteAddressViewController: BaseVC, View, WriteAddressCoordinator {
         
         reactor.state
             .map { $0.address }
+            .distinctUntilChanged()
             .asDriver(onErrorJustReturn: "")
             .drive(self.writeAddressView.addressLabel.rx.text)
             .disposed(by: self.disposeBag)
         
         reactor.state
+            .map { $0.nearStores }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: [])
+            .drive(self.writeAddressView.rx.nearStores)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
             .compactMap { $0.cameraPosition }
+            .distinctUntilChanged({ oldPosition, newPosition in
+                return oldPosition == newPosition
+            })
+            .debug()
             .asDriver(onErrorJustReturn: (0, 0))
             .drive(self.writeAddressView.rx.cameraPosition)
             .disposed(by: self.disposeBag)
@@ -112,11 +124,15 @@ final class WriteAddressViewController: BaseVC, View, WriteAddressCoordinator {
 }
 
 extension WriteAddressViewController: NMFMapViewCameraDelegate {
-    func mapViewCameraIdle(_ mapView: NMFMapView) {
-        self.writeAddressReactor.action.onNext(.moveMapCenter(
-            latitude: mapView.cameraPosition.target.lat,
-            longitude: mapView.cameraPosition.target.lng
-        ))
+    func mapView(_ mapView: NMFMapView, cameraDidChangeByReason reason: Int, animated: Bool) {
+        if animated {
+            self.writeAddressReactor.action.onNext(.moveMapCenter(
+                latitude: mapView.cameraPosition.target.lat,
+                longitude: mapView.cameraPosition.target.lng
+            ))
+        }
+        Log.debug("camera did change by reason: \(reason)")
+        Log.debug("animated: \(animated)")
     }
 }
 

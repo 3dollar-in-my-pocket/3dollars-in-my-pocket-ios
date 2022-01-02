@@ -205,6 +205,7 @@
 		6E6F3F00276F0D7B001FEC03 /* BundleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6F3EFF276F0D7B001FEC03 /* BundleExtension.swift */; };
 		6E70C38F23B6EBB300C52C9C /* StoreDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70C38E23B6EBB300C52C9C /* StoreDetailView.swift */; };
 		6E70C39123B6EECB00C52C9C /* StoreDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E70C39023B6EECB00C52C9C /* StoreDetailViewController.swift */; };
+		6E7112C62781587D00396CC0 /* CheckExistStoresNearbyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7112C52781587D00396CC0 /* CheckExistStoresNearbyResponse.swift */; };
 		6E71BF4425B418B100ECFBD9 /* AddCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E71BF4325B418B100ECFBD9 /* AddCategoryView.swift */; };
 		6E71BF4925B4209C00ECFBD9 /* AddCategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E71BF4825B4209C00ECFBD9 /* AddCategoryVC.swift */; };
 		6E71BF5325B4274900ECFBD9 /* AddCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E71BF5225B4274900ECFBD9 /* AddCategoryViewModel.swift */; };
@@ -556,6 +557,7 @@
 		6E6F3EFF276F0D7B001FEC03 /* BundleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleExtension.swift; sourceTree = "<group>"; };
 		6E70C38E23B6EBB300C52C9C /* StoreDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreDetailView.swift; sourceTree = "<group>"; };
 		6E70C39023B6EECB00C52C9C /* StoreDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreDetailViewController.swift; sourceTree = "<group>"; };
+		6E7112C52781587D00396CC0 /* CheckExistStoresNearbyResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckExistStoresNearbyResponse.swift; sourceTree = "<group>"; };
 		6E71BF4325B418B100ECFBD9 /* AddCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryView.swift; sourceTree = "<group>"; };
 		6E71BF4825B4209C00ECFBD9 /* AddCategoryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryVC.swift; sourceTree = "<group>"; };
 		6E71BF5225B4274900ECFBD9 /* AddCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryViewModel.swift; sourceTree = "<group>"; };
@@ -1694,6 +1696,7 @@
 				6E4697D0273E36C7005A5902 /* VisitHistoryWithUserResponse.swift */,
 				6E48B7A226C154C100E2F02B /* Pagination.swift */,
 				6EF63FB52761A90B0063A3B9 /* MedalResponse.swift */,
+				6E7112C52781587D00396CC0 /* CheckExistStoresNearbyResponse.swift */,
 			);
 			path = response;
 			sourceTree = "<group>";
@@ -2249,6 +2252,7 @@
 				6E72AE5C23C9727100D3B257 /* SplashVC.swift in Sources */,
 				6EDBBB802754C1EC00470F71 /* StoreWithVisitsResponse.swift in Sources */,
 				6E0EA39B23ABB230008F7CB2 /* SignInViewController.swift in Sources */,
+				6E7112C62781587D00396CC0 /* CheckExistStoresNearbyResponse.swift in Sources */,
 				6E81B84725E11FF300748E02 /* LocalResponse.swift in Sources */,
 				6E25D64F23E2605A00DB788E /* ImageUtils.swift in Sources */,
 				6E3AA4DB25AD6C5400D8C58C /* Addition.swift in Sources */,
