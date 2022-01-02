@@ -9,6 +9,7 @@ final class WriteAddressReactor: BaseReactor, Reactor {
         case moveMapCenter(latitude: Double, longitude: Double)
         case tapCurrentLocation
         case tapSetAddress
+        case tapConfirmAddress
     }
     
     enum Mutation {
@@ -60,6 +61,17 @@ final class WriteAddressReactor: BaseReactor, Reactor {
             
         case .tapSetAddress:
             return self.isStoreExistedNear()
+            
+        case .tapConfirmAddress:
+            guard let location = self.currentState.cameraPosition else {
+                let error = BaseError.custom("지도 위치가 올바르지 않습니다.")
+                
+                return .just(.showErrorAlert(error))
+            }
+            return .just(.pushAddressDetail(
+                address: self.currentState.address,
+                location: location
+            ))
         }
     }
     

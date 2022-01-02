@@ -116,6 +116,13 @@ final class WriteAddressViewController: BaseVC, View, WriteAddressCoordinator {
                 self?.coordinator?.goToWriteDetail(address: address, location: location)
             })
             .disposed(by: self.eventDisposeBag)
+        
+        self.writeAddressReactor.presentConfirmPopupPublisher
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] address in
+                self?.coordinator?.presentConfirmPopup(address: address)
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
     private func setupMap() {
@@ -139,5 +146,16 @@ extension WriteAddressViewController: NMFMapViewCameraDelegate {
 extension WriteAddressViewController: WriteDetailDelegate {
     func onWriteSuccess(storeId: Int) {
         self.delegate?.onWriteSuccess(storeId: storeId)
+    }
+}
+
+extension WriteAddressViewController: AddressConfirmPopupViewControllerDelegate {
+    func onDismiss() {
+        self.showRootDim(isShow: false)
+    }
+    
+    func onClickOk() {
+        self.showRootDim(isShow: false)
+        self.writeAddressReactor.action.onNext(.tapConfirmAddress)
     }
 }
