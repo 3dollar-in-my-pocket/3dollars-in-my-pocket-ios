@@ -2624,7 +2624,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3BD4F78FA4F3A696F62234EE /* Pods-3dollar-in-my-pocket.release.xcconfig */;
 			buildSettings = {
-				ADMOB_UNIT_ID = "ca-app-pub-5385646520024289/7940737419";
+				ADMOB_UNIT_ID = "ca-app-pub-1527951560812478/3327283605";
 				API_URL = "https://threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
