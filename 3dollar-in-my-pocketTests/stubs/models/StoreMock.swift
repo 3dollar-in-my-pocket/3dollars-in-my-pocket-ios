@@ -11,8 +11,8 @@ import Foundation
 @testable import dollar_in_my_pocket
 
 struct StoreMock {
-  func fetchHomeStores() -> [Store] {
-    let stores: [Store] = DataUtils.load("HomeStores.json")
+  func fetchHomeStores() -> [StoreWithVisitsAndDistanceResponse] {
+    let stores: [StoreWithVisitsAndDistanceResponse] = DataUtils.load("HomeStores.json")
     
     return stores
   }

@@ -28,7 +28,7 @@ struct VisitHistory {
     
     init(response: VisitHistoryWithStoreResponse) {
         self.createdAt = response.createdAt
-        self.storeId = 0
+        self.storeId = response.store.storeId
         self.store = Store(response: response.store)
         self.type = response.type
         self.user = User()

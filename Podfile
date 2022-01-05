@@ -12,6 +12,7 @@ target '3dollar-in-my-pocket' do
   pod 'RxSwift', '~> 5'
   pod 'RxCocoa', '~> 5'
   pod 'RxDataSources', '~> 4.0'
+  pod 'ReactorKit'
 
   pod 'Kingfisher', '~> 5.0'
 
@@ -51,7 +52,6 @@ target '3dollar-in-my-pocket' do
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths
     pod 'RxTest', '~> 5'
-    pod 'Quick'
     pod 'RxNimble/RxTest'
   end
 end

@@ -8,12 +8,7 @@ final class StoreDetailReviewCell: BaseTableViewCell {
     
     let adBannerView = GADBannerView().then {
         $0.isHidden = true
-        // TODO: 번들에 저장했으니 변경 필요
-        #if DEBUG
-        $0.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        #else
-        $0.adUnitID = "ca-app-pub-1527951560812478/3327283605"
-        #endif
+        $0.adUnitID = Bundle.admobUnitId
     }
     
     private let containerView = UIView().then {

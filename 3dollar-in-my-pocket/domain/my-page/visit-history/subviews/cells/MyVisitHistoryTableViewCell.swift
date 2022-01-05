@@ -80,6 +80,7 @@ final class MyVisitHistoryTableViewCell: BaseTableViewCell {
         
         self.storeNameLabel.snp.makeConstraints { make in
             make.left.equalTo(self.categoryImage.snp.right).offset(8)
+            make.right.equalTo(self.containerView).offset(-12)
             make.top.equalTo(self.categoryImage)
         }
         

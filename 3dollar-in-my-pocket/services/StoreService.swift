@@ -4,14 +4,18 @@ import RxSwift
 import CoreLocation
 
 protocol StoreServiceProtocol {
-    
     func searchNearStores(
-        currentLocation: CLLocation,
+        currentLocation: CLLocation?,
         mapLocation: CLLocation,
         distance: Double,
         category: StoreCategory?,
         orderType: StoreOrder?
     ) -> Observable<[StoreWithVisitsAndDistanceResponse]>
+    
+    func isStoresExistedAround(
+        distance: Double,
+        mapLocation: CLLocation
+    ) -> Observable<CheckExistStoresNearbyResponse>
     
     func saveStore(store: Store) -> Observable<Store>
     
@@ -47,9 +51,8 @@ protocol StoreServiceProtocol {
 
 
 struct StoreService: StoreServiceProtocol {
-    
     func searchNearStores(
-        currentLocation: CLLocation,
+        currentLocation: CLLocation?,
         mapLocation: CLLocation,
         distance: Double,
         category: StoreCategory?,
@@ -60,8 +63,6 @@ struct StoreService: StoreServiceProtocol {
             let headers = HTTPUtils.defaultHeader()
             var parameters: [String: Any] = [
                 "distance": distance,
-                "latitude": currentLocation.coordinate.latitude,
-                "longitude": currentLocation.coordinate.longitude,
                 "mapLatitude": mapLocation.coordinate.latitude,
                 "mapLongitude": mapLocation.coordinate.longitude
             ]
@@ -74,6 +75,11 @@ struct StoreService: StoreServiceProtocol {
                 parameters["orderType"] = orderType.rawValue
             }
             
+            if let currentLocation = currentLocation {
+                parameters["latitude"] = currentLocation.coordinate.latitude
+                parameters["longitude"] = currentLocation.coordinate.longitude
+            }
+            
             HTTPUtils.defaultSession.request(
                 urlString,
                 method: .get,
@@ -84,6 +90,39 @@ struct StoreService: StoreServiceProtocol {
                 if response.isSuccess() {
                     observer.processValue(
                         class: [StoreWithVisitsAndDistanceResponse].self,
+                        response: response
+                    )
+                } else {
+                    observer.processHTTPError(response: response)
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func isStoresExistedAround(
+        distance: Double,
+        mapLocation: CLLocation
+    ) -> Observable<CheckExistStoresNearbyResponse> {
+        return .create { observer in
+            let urlString = HTTPUtils.url + "/api/v1/stores/near/exists"
+            let header = HTTPUtils.jsonHeader()
+            let parameters: [String: Any] = [
+                "distance": distance,
+                "mapLatitude": mapLocation.coordinate.latitude,
+                "mapLongitude": mapLocation.coordinate.longitude
+            ]
+            
+            HTTPUtils.defaultSession.request(
+                urlString,
+                method: .get,
+                parameters: parameters,
+                headers: header
+            ).responseJSON { response in
+                if response.isSuccess() {
+                    observer.processValue(
+                        class: CheckExistStoresNearbyResponse.self,
                         response: response
                     )
                 } else {

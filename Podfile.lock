@@ -397,7 +397,6 @@ PODS:
   - Nimble (9.2.1)
   - NMapsMap (3.13.0)
   - PromisesObjC (1.2.12)
-  - Quick (4.0.0)
   - R.swift (5.4.0):
     - R.swift.Library (~> 5.3.0)
   - R.swift.Library (5.3.0)
@@ -468,7 +467,6 @@ DEPENDENCIES:
   - Kingfisher (~> 5.0)
   - lottie-ios
   - NMapsMap
-  - Quick
   - R.swift
   - RxCocoa (~> 5)
   - RxDataSources (~> 4.0)
@@ -520,7 +518,6 @@ SPEC REPOS:
     - Nimble
     - NMapsMap
     - PromisesObjC
-    - Quick
     - R.swift
     - R.swift.Library
     - RxAlamofire
@@ -573,7 +570,6 @@ SPEC CHECKSUMS:
   Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
   NMapsMap: 88b5bdac7087bfa99ab058ff5cdd95fb766e0e95
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
-  Quick: 6473349e43b9271a8d43839d9ba1c442ed1b7ac4
   R.swift: c533450b0f7dc494e0993f5f1a1db925d84c3006
   R.swift.Library: 0fc583cb55a99e28901299cc451614cad1161962
   RxAlamofire: 8e144c62dcc01d68dcb366bfc542eb6dd46bab78
@@ -592,6 +588,6 @@ SPEC CHECKSUMS:
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
 
-PODFILE CHECKSUM: 94125d10d7f918f2b9f7b9af380327fdd1c9eb6f
+PODFILE CHECKSUM: 661a246bb5788a55f75a4a35f42f76811339c37a
 
 COCOAPODS: 1.11.2
