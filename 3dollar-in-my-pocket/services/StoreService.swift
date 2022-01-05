@@ -61,10 +61,8 @@ struct StoreService: StoreServiceProtocol {
         return .create { observer in
             let urlString = HTTPUtils.url + "/api/v2/stores/near"
             let headers = HTTPUtils.defaultHeader()
-            var parameters: [String: Any?] = [
+            var parameters: [String: Any] = [
                 "distance": distance,
-                "latitude": currentLocation?.coordinate.latitude,
-                "longitude": currentLocation?.coordinate.longitude,
                 "mapLatitude": mapLocation.coordinate.latitude,
                 "mapLongitude": mapLocation.coordinate.longitude
             ]
@@ -75,6 +73,11 @@ struct StoreService: StoreServiceProtocol {
             
             if let orderType = orderType {
                 parameters["orderType"] = orderType.rawValue
+            }
+            
+            if let currentLocation = currentLocation {
+                parameters["latitude"] = currentLocation.coordinate.latitude
+                parameters["longitude"] = currentLocation.coordinate.longitude
             }
             
             HTTPUtils.defaultSession.request(

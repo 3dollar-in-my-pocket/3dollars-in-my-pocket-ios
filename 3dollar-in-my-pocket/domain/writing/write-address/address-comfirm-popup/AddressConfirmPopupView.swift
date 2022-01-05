@@ -7,17 +7,27 @@ final class AddressConfirmPopupView: BaseView {
     
     private let containerView = UIView().then {
         $0.backgroundColor = .white
-        $0.layer.cornerRadius = 16
+        $0.layer.cornerRadius = 30
     }
     
     private let titleLabel = UILabel().then {
-        $0.font = .bold(size: 20)
+        $0.font = .light(size: 24)
         $0.textColor = R.color.black()
         $0.attributedText = NSMutableAttributedString(
             string: R.string.localization.write_address_confirm_popup_title(),
             attributes: [.kern: -0.5]
         )
         $0.numberOfLines = 0
+    }
+    
+    let closeButton = UIButton().then {
+        $0.setImage(R.image.ic_close_24(), for: .normal)
+    }
+    
+    private let descriptionLabel = UILabel().then {
+        $0.text = R.string.localization.write_address_confirm_popup_description()
+        $0.font = .semiBold(size: 14)
+        $0.textColor = R.color.gray50()
     }
     
     private let addressContainerView = UIView().then {
@@ -46,6 +56,8 @@ final class AddressConfirmPopupView: BaseView {
             self.backgroundView,
             self.containerView,
             self.titleLabel,
+            self.closeButton,
+            self.descriptionLabel,
             self.addressContainerView,
             self.addressLabel,
             self.okButton
@@ -60,14 +72,21 @@ final class AddressConfirmPopupView: BaseView {
         self.containerView.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(24)
             make.right.equalToSuperview().offset(-24)
-            make.top.equalTo(self.titleLabel).offset(-40)
-            make.bottom.equalTo(self.okButton).offset(48)
+            make.top.equalTo(self.titleLabel).offset(-32)
+            make.bottom.equalTo(safeAreaLayoutGuide).offset(-20)
+        }
+        
+        self.okButton.snp.makeConstraints { make in
+            make.left.equalTo(self.containerView).offset(12)
+            make.right.equalTo(self.containerView).offset(-12)
+            make.height.equalTo(48)
+            make.bottom.equalTo(self.containerView).offset(-32)
         }
         
         self.addressContainerView.snp.makeConstraints { make in
             make.left.equalTo(self.containerView).offset(12)
             make.right.equalTo(self.containerView).offset(-12)
-            make.centerY.equalToSuperview()
+            make.bottom.equalTo(self.okButton.snp.top).offset(-16)
             make.height.equalTo(48)
         }
         
@@ -77,17 +96,21 @@ final class AddressConfirmPopupView: BaseView {
             make.centerY.equalTo(self.addressContainerView)
         }
         
-        self.titleLabel.snp.makeConstraints { make in
-            make.left.equalTo(self.containerView).offset(12)
-            make.right.equalTo(self.containerView).offset(-12)
-            make.bottom.equalTo(self.addressContainerView.snp.top).offset(-16)
+        self.descriptionLabel.snp.makeConstraints { make in
+            make.left.equalTo(self.containerView).offset(24)
+            make.bottom.equalTo(self.addressContainerView.snp.top).offset(-24)
         }
         
-        self.okButton.snp.makeConstraints { make in
-            make.left.equalTo(self.containerView).offset(12)
-            make.right.equalTo(self.containerView).offset(-12)
-            make.top.equalTo(self.addressContainerView.snp.bottom).offset(28)
-            make.height.equalTo(48)
+        self.titleLabel.snp.makeConstraints { make in
+            make.left.equalTo(self.containerView).offset(24)
+            make.right.equalTo(self.closeButton.snp.left).offset(-12)
+            make.bottom.equalTo(self.descriptionLabel.snp.top).offset(-12)
+        }
+        
+        self.closeButton.snp.makeConstraints { make in
+            make.top.equalTo(self.containerView).offset(32)
+            make.right.equalTo(self.containerView).offset(-24)
+            make.width.height.equalTo(24)
         }
     }
     

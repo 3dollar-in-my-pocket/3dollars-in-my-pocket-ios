@@ -8,12 +8,14 @@ final class MyPageViewModel: BaseViewModel {
         let tapMyMedal = PublishSubject<Void>()
         let onChangeMedal = PublishSubject<Medal>()
         let tapNickname = PublishSubject<Void>()
+        let tapVisitHistory = PublishSubject<Int>()
     }
     
     struct Output {
         let user = PublishRelay<User>()
         let visitHistories = PublishRelay<[VisitHistory]>()
         let isRefreshing = PublishRelay<Bool>()
+        let goToStoreDetail = PublishRelay<Int>()
         let goToMyMedal = PublishRelay<Medal>()
         let goToRename = PublishRelay<String>()
     }
@@ -60,6 +62,13 @@ final class MyPageViewModel: BaseViewModel {
         self.input.tapNickname
             .withLatestFrom(self.output.user) { $1.name }
             .bind(to: self.output.goToRename)
+            .disposed(by: self.disposeBag)
+        
+        self.input.tapVisitHistory
+            .withLatestFrom(self.output.visitHistories) { $1[$0] }
+            .filter { !$0.store.isDeleted }
+            .map { $0.storeId }
+            .bind(to: self.output.goToStoreDetail)
             .disposed(by: self.disposeBag)
     }
     

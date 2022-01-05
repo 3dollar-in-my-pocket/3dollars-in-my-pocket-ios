@@ -46,6 +46,14 @@ final class AddressConfirmPopupViewController: BaseVC, AddressConfirmPopupCoordi
             })
             .disposed(by: self.eventDisposeBag)
         
+        self.addressConfirmPopupView.closeButton.rx.tap
+            .asDriver()
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.dismiss()
+                self?.delegate?.onDismiss()
+            })
+            .disposed(by: self.eventDisposeBag)
+        
         self.addressConfirmPopupView.okButton.rx.tap
             .asDriver()
             .drive(onNext: { [weak self] in
