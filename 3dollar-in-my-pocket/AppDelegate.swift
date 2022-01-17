@@ -73,7 +73,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func initilizeKakao() {
-        let kakaoAppKey = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as? String ?? ""
+        let kakaoAppKey
+            = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as? String ?? ""
         Log.debug("kakaoAppKey: \(kakaoAppKey)")
         KakaoSDKCommon.initSDK(appKey: kakaoAppKey)
     }
@@ -91,33 +92,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        if let fcmToken = fcmToken {
-            Log.debug("fcmToken: \(fcmToken)")
-        }
+        
     }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
-        didReceive response: UNNotificationResponse,
-        withCompletionHandler completionHandler: @escaping () -> Void
-    ) {
-        let userInfo = response.notification.request.content.userInfo
-        
-        print(userInfo)
-        completionHandler()
-    }
-    
-    
-    func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
         let userInfo = notification.request.content.userInfo
-        print(userInfo)
-        
     
         if #available(iOS 14.0, *) {
             completionHandler([[.sound, .banner]])
