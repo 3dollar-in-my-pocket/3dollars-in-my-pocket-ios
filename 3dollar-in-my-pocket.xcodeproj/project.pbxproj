@@ -295,6 +295,8 @@
 		6EC0D67C26EB7EEF008AD34B /* StoresGroupByDistanceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC0D67B26EB7EEF008AD34B /* StoresGroupByDistanceResponse.swift */; };
 		6EC0D67E26EB856D008AD34B /* StoresGroupByReviewResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC0D67D26EB856D008AD34B /* StoresGroupByReviewResponse.swift */; };
 		6EC0D68026EB8891008AD34B /* FQAResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC0D67F26EB8891008AD34B /* FQAResponse.swift */; };
+		6EC0E96D279AE51E0068D4FB /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC0E96C279AE51E0068D4FB /* NotificationService.swift */; };
+		6EC0E971279AE51E0068D4FB /* service-extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6EC0E96A279AE51E0068D4FB /* service-extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */; };
 		6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */; };
 		6EC8685C25BF07F10082521C /* splash.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EC8685B25BF07F10082521C /* splash.json */; };
@@ -352,7 +354,28 @@
 			remoteGlobalIDString = 6E0EA39223ABB230008F7CB2;
 			remoteInfo = "3dollar-in-my-pocket";
 		};
+		6EC0E96F279AE51E0068D4FB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6E0EA38B23ABB230008F7CB2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6EC0E969279AE51E0068D4FB;
+			remoteInfo = "service-extension";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6EC0E972279AE51E0068D4FB /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				6EC0E971279AE51E0068D4FB /* service-extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2EDE7CBD20E67AC529682967 /* Pods-3dollar-in-my-pocket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.debug.xcconfig"; sourceTree = "<group>"; };
@@ -650,6 +673,9 @@
 		6EC0D67B26EB7EEF008AD34B /* StoresGroupByDistanceResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoresGroupByDistanceResponse.swift; sourceTree = "<group>"; };
 		6EC0D67D26EB856D008AD34B /* StoresGroupByReviewResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoresGroupByReviewResponse.swift; sourceTree = "<group>"; };
 		6EC0D67F26EB8891008AD34B /* FQAResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FQAResponse.swift; sourceTree = "<group>"; };
+		6EC0E96A279AE51E0068D4FB /* service-extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "service-extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6EC0E96C279AE51E0068D4FB /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		6EC0E96E279AE51E0068D4FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
 		6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
 		6EC8685B25BF07F10082521C /* splash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = splash.json; sourceTree = "<group>"; };
@@ -718,6 +744,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6EC0E967279AE51E0068D4FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -747,6 +780,7 @@
 			children = (
 				6E0EA39523ABB230008F7CB2 /* 3dollar-in-my-pocket */,
 				6E0EA3AC23ABB232008F7CB2 /* 3dollar-in-my-pocketTests */,
+				6EC0E96B279AE51E0068D4FB /* service-extension */,
 				6E0EA39423ABB230008F7CB2 /* Products */,
 				417867EE2A79A650E3B9F6C2 /* Pods */,
 				BEA79344C96B102E170EE0E8 /* Frameworks */,
@@ -758,6 +792,7 @@
 			children = (
 				6E0EA39323ABB230008F7CB2 /* dollar-in-my-pocket-debug.app */,
 				6E0EA3A923ABB232008F7CB2 /* 3dollar-in-my-pocketTests.xctest */,
+				6EC0E96A279AE51E0068D4FB /* service-extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1665,6 +1700,15 @@
 			path = "visit-history";
 			sourceTree = "<group>";
 		};
+		6EC0E96B279AE51E0068D4FB /* service-extension */ = {
+			isa = PBXGroup;
+			children = (
+				6EC0E96C279AE51E0068D4FB /* NotificationService.swift */,
+				6EC0E96E279AE51E0068D4FB /* Info.plist */,
+			);
+			path = "service-extension";
+			sourceTree = "<group>";
+		};
 		6ECCE9A926BACF34006B3C01 /* dto */ = {
 			isa = PBXGroup;
 			children = (
@@ -1824,10 +1868,12 @@
 				6EA92ED4258E3643009B6227 /* ShellScript */,
 				6EFC89DC268B51C100B3414F /* ShellScript */,
 				B2A25EA6465C94978C1F9E16 /* [CP] Embed Pods Frameworks */,
+				6EC0E972279AE51E0068D4FB /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				6EC0E970279AE51E0068D4FB /* PBXTargetDependency */,
 			);
 			name = "3dollar-in-my-pocket";
 			productName = "3dollar-in-my-pocket";
@@ -1854,13 +1900,30 @@
 			productReference = 6E0EA3A923ABB232008F7CB2 /* 3dollar-in-my-pocketTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		6EC0E969279AE51E0068D4FB /* service-extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6EC0E975279AE51E0068D4FB /* Build configuration list for PBXNativeTarget "service-extension" */;
+			buildPhases = (
+				6EC0E966279AE51E0068D4FB /* Sources */,
+				6EC0E967279AE51E0068D4FB /* Frameworks */,
+				6EC0E968279AE51E0068D4FB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "service-extension";
+			productName = "service-extension";
+			productReference = 6EC0E96A279AE51E0068D4FB /* service-extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		6E0EA38B23ABB230008F7CB2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1130;
+				LastSwiftUpdateCheck = 1320;
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = Macgongmon;
 				TargetAttributes = {
@@ -1870,6 +1933,9 @@
 					6E0EA3A823ABB232008F7CB2 = {
 						CreatedOnToolsVersion = 11.3;
 						TestTargetID = 6E0EA39223ABB230008F7CB2;
+					};
+					6EC0E969279AE51E0068D4FB = {
+						CreatedOnToolsVersion = 13.2.1;
 					};
 				};
 			};
@@ -1889,6 +1955,7 @@
 			targets = (
 				6E0EA39223ABB230008F7CB2 /* 3dollar-in-my-pocket */,
 				6E0EA3A823ABB232008F7CB2 /* 3dollar-in-my-pocketTests */,
+				6EC0E969279AE51E0068D4FB /* service-extension */,
 			);
 		};
 /* End PBXProject section */
@@ -1915,6 +1982,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E984C0326FF68AE00175F25 /* HomeStores.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6EC0E968279AE51E0068D4FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2428,6 +2502,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6EC0E966279AE51E0068D4FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6EC0E96D279AE51E0068D4FB /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -2435,6 +2517,11 @@
 			isa = PBXTargetDependency;
 			target = 6E0EA39223ABB230008F7CB2 /* 3dollar-in-my-pocket */;
 			targetProxy = 6E0EA3AA23ABB232008F7CB2 /* PBXContainerItemProxy */;
+		};
+		6EC0E970279AE51E0068D4FB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6EC0E969279AE51E0068D4FB /* service-extension */;
+			targetProxy = 6EC0E96F279AE51E0068D4FB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2569,6 +2656,7 @@
 			baseConfigurationReference = 2EDE7CBD20E67AC529682967 /* Pods-3dollar-in-my-pocket.debug.xcconfig */;
 			buildSettings = {
 				ADMOB_UNIT_ID = "ca-app-pub-3940256099942544/2934735716";
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				API_URL = "https://dev.threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원-Dev";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -2625,6 +2713,7 @@
 			baseConfigurationReference = 3BD4F78FA4F3A696F62234EE /* Pods-3dollar-in-my-pocket.release.xcconfig */;
 			buildSettings = {
 				ADMOB_UNIT_ID = "ca-app-pub-1527951560812478/3327283605";
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				API_URL = "https://threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -2719,6 +2808,63 @@
 			};
 			name = Release;
 		};
+		6EC0E973279AE51E0068D4FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = X975A2HM62;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "service-extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "service-extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Macgongmon. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket.service-extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6EC0E974279AE51E0068D4FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = X975A2HM62;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "service-extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "service-extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Macgongmon. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket.service-extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2745,6 +2891,15 @@
 			buildConfigurations = (
 				6E0EA3C123ABB232008F7CB2 /* Debug */,
 				6E0EA3C223ABB232008F7CB2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6EC0E975279AE51E0068D4FB /* Build configuration list for PBXNativeTarget "service-extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6EC0E973279AE51E0068D4FB /* Debug */,
+				6EC0E974279AE51E0068D4FB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
