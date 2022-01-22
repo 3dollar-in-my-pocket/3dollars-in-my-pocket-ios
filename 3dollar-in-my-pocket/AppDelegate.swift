@@ -105,7 +105,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let userInfo = notification.request.content.userInfo
     
         if #available(iOS 14.0, *) {
-            completionHandler([[.sound, .banner]])
+            completionHandler([[.sound, .banner, .alert]])
         } else {
             completionHandler([[.alert, .sound]])
         }
