@@ -234,6 +234,9 @@ PODS:
   - Firebase/Firestore (8.1.1):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 8.1.0)
+  - Firebase/Messaging (8.1.1):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 8.1.0)
   - Firebase/RemoteConfig (8.1.1):
     - Firebase/CoreOnly
     - FirebaseRemoteConfig (~> 8.1.0)
@@ -298,6 +301,13 @@ PODS:
     - GoogleUtilities/Environment (~> 7.4)
     - GoogleUtilities/UserDefaults (~> 7.4)
     - PromisesObjC (~> 1.2)
+  - FirebaseMessaging (8.1.0):
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Reachability (~> 7.4)
+    - GoogleUtilities/UserDefaults (~> 7.4)
   - FirebaseRemoteConfig (8.1.0):
     - FirebaseABTesting (~> 8.0)
     - FirebaseCore (~> 8.0)
@@ -400,6 +410,9 @@ PODS:
   - R.swift (5.4.0):
     - R.swift.Library (~> 5.3.0)
   - R.swift.Library (5.3.0)
+  - ReactorKit (2.1.1):
+    - RxSwift (~> 5.0)
+    - WeakMapTable (~> 1.1)
   - RxAlamofire (5.7.1):
     - RxAlamofire/Core (= 5.7.1)
   - RxAlamofire/Core (5.7.1):
@@ -451,6 +464,7 @@ PODS:
   - SwiftLint (0.43.1)
   - SwiftyBeaver (1.9.5)
   - Then (2.7.0)
+  - WeakMapTable (1.2.0)
 
 DEPENDENCIES:
   - Alamofire (~> 5.2)
@@ -459,6 +473,7 @@ DEPENDENCIES:
   - Firebase/Core
   - Firebase/Crashlytics
   - Firebase/Firestore
+  - Firebase/Messaging
   - Firebase/RemoteConfig
   - Google-Mobile-Ads-SDK
   - KakaoSDKCommon
@@ -468,6 +483,7 @@ DEPENDENCIES:
   - lottie-ios
   - NMapsMap
   - R.swift
+  - ReactorKit
   - RxCocoa (~> 5)
   - RxDataSources (~> 4.0)
   - RxKakaoSDKAuth
@@ -498,6 +514,7 @@ SPEC REPOS:
     - FirebaseCrashlytics
     - FirebaseFirestore
     - FirebaseInstallations
+    - FirebaseMessaging
     - FirebaseRemoteConfig
     - Google-Mobile-Ads-SDK
     - GoogleAppMeasurement
@@ -520,6 +537,7 @@ SPEC REPOS:
     - PromisesObjC
     - R.swift
     - R.swift.Library
+    - ReactorKit
     - RxAlamofire
     - RxCocoa
     - RxDataSources
@@ -535,6 +553,7 @@ SPEC REPOS:
     - SwiftLint
     - SwiftyBeaver
     - Then
+    - WeakMapTable
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
@@ -550,6 +569,7 @@ SPEC CHECKSUMS:
   FirebaseCrashlytics: 1b55b3a718f9e20d59d96db46a4652d95a8ba1d2
   FirebaseFirestore: c4be8314e9fa156f44b54025f7a98ecbff6971a6
   FirebaseInstallations: 7f31798a8198c354eadcb87176d2090b62edc187
+  FirebaseMessaging: c8871b0907dcf4e76de81241eb6a62be6d657d2f
   FirebaseRemoteConfig: eef8513f6d368ba5c6ed6d1cb267b4d949cf65bf
   Google-Mobile-Ads-SDK: 0d6e2e065c4efe9836bca3fbd6ff9ef0bca073c2
   GoogleAppMeasurement: 31c7d7655818784b7dd34bdf6884f75b465d5f6c
@@ -572,6 +592,7 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   R.swift: c533450b0f7dc494e0993f5f1a1db925d84c3006
   R.swift.Library: 0fc583cb55a99e28901299cc451614cad1161962
+  ReactorKit: 6d894a20c3d508344320901cd8e386fde92df4b6
   RxAlamofire: 8e144c62dcc01d68dcb366bfc542eb6dd46bab78
   RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
@@ -587,7 +608,8 @@ SPEC CHECKSUMS:
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
+  WeakMapTable: 05c694ce8439a7a9ebabb56187287a63c57673d6
 
-PODFILE CHECKSUM: 661a246bb5788a55f75a4a35f42f76811339c37a
+PODFILE CHECKSUM: 1e12bd2ab7641048674de7ce98f5c18e211e8f9d
 
 COCOAPODS: 1.11.2
