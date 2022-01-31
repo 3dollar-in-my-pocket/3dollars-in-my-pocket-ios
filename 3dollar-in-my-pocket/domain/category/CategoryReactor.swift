@@ -11,6 +11,7 @@ final class CategoryReactor: BaseReactor, Reactor {
     
     enum Mutation {
         case setCategories([MenuCategory])
+        case setAd(ads: [Popup])
         case goToWeb(url: String)
         case pushCategoryList(category: StoreCategory)
         case showErrorAlert(Error)
@@ -18,15 +19,21 @@ final class CategoryReactor: BaseReactor, Reactor {
     
     struct State {
         var categories: [MenuCategory] = []
+        var ad: Popup?
     }
     
     let initialState = State()
     let pushCategoryListPublisher = PublishRelay<StoreCategory>()
     let goToWebPublisher = PublishRelay<String>()
     private let categoryService: CategoryServiceProtocol
+    private let popupService: PopupServiceProtocol
   
-    init(categoryService: CategoryServiceProtocol) {
+    init(
+        categoryService: CategoryServiceProtocol,
+        popupService: PopupServiceProtocol
+    ) {
         self.categoryService = categoryService
+        self.popupService = popupService
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
@@ -52,6 +59,9 @@ final class CategoryReactor: BaseReactor, Reactor {
         case .setCategories(let menuCategories):
             newState.categories = menuCategories
             
+        case .setAd(let ads):
+            newState.ad = ads.isEmpty ? nil : ads[0]
+            
         case .goToWeb(let url):
             print(url)
             
@@ -70,6 +80,13 @@ final class CategoryReactor: BaseReactor, Reactor {
         return self.categoryService.fetchCategories()
             .map { $0.map(MenuCategory.init(response:)) }
             .map { .setCategories($0) }
+            .catchError { .just(.showErrorAlert($0)) }
+    }
+    
+    private func fetchPopup() -> Observable<Mutation> {
+        return self.popupService.fetchPopups(position: .menuCategoryBanner)
+            .map { $0.map(Popup.init(response:)) }
+            .map { .setAd(ads: $0) }
             .catchError { .just(.showErrorAlert($0)) }
     }
   

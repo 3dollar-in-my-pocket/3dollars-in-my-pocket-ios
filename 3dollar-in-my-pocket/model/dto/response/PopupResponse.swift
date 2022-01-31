@@ -1,39 +1,39 @@
-//
-//  PopupResponse.swift
-//  3dollar-in-my-pocket
-//
-//  Created by Hyun Sik Yoo on 2021/11/26.
-//  Copyright © 2021 Macgongmon. All rights reserved.
-//
-
 import Foundation
 
 struct PopupResponse: Decodable {
-    let createdAt: String
+    let bgColor: String
+    let fontColor: String
     let imageUrl: String
     let linkUrl: String
-    let updatedAt: String
+    let subTitle: String
+    let title: String
     
     enum CodingKeys: String, CodingKey {
-        case createdAt
+        case bgColor
+        case fontColor
         case imageUrl
         case linkUrl
-        case updatedAt
+        case subTitle
+        case title
     }
     
     init() {
-        self.createdAt = ""
+        self.bgColor = ""
+        self.fontColor = ""
         self.imageUrl = ""
         self.linkUrl = ""
-        self.updatedAt = ""
+        self.subTitle = ""
+        self.title = ""
     }
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.createdAt = try values.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
+        self.bgColor = try values.decodeIfPresent(String.self, forKey: .bgColor) ?? ""
+        self.fontColor = try values.decodeIfPresent(String.self, forKey: .fontColor) ?? ""
         self.imageUrl = try values.decodeIfPresent(String.self, forKey: .imageUrl) ?? ""
         self.linkUrl = try values.decodeIfPresent(String.self, forKey: .linkUrl) ?? ""
-        self.updatedAt = try values.decodeIfPresent(String.self, forKey: .updatedAt) ?? ""
+        self.subTitle = try values.decodeIfPresent(String.self, forKey: .subTitle) ?? ""
+        self.title = try values.decodeIfPresent(String.self, forKey: .title) ?? ""
     }
 }

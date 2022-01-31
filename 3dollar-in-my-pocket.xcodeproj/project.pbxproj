@@ -258,6 +258,7 @@
 		6E8B30A9279BAF35001083B6 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6E8B30A7279BAF35001083B6 /* MainInterface.storyboard */; };
 		6E8B30AD279BAF35001083B6 /* content-extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6E8B309F279BAF35001083B6 /* content-extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6E8C190427A81D9F00FF5B4C /* CategoryCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8C190327A81D9F00FF5B4C /* CategoryCoordinator.swift */; };
+		6E8C190627A8239B00FF5B4C /* PopupPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8C190527A8239B00FF5B4C /* PopupPosition.swift */; };
 		6E8E2474256A93DE00AE6479 /* GoogleService-Info-Dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6E8E2472256A93DE00AE6479 /* GoogleService-Info-Dev.plist */; };
 		6E8E2475256A93DE00AE6479 /* GoogleService-Info-Prod.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6E8E2473256A93DE00AE6479 /* GoogleService-Info-Prod.plist */; };
 		6E8E2507256A9F6E00AE6479 /* SignInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E2506256A9F6E00AE6479 /* SignInViewModel.swift */; };
@@ -652,6 +653,7 @@
 		6E8B30A8279BAF35001083B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		6E8B30AA279BAF35001083B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E8C190327A81D9F00FF5B4C /* CategoryCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCoordinator.swift; sourceTree = "<group>"; };
+		6E8C190527A8239B00FF5B4C /* PopupPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupPosition.swift; sourceTree = "<group>"; };
 		6E8E2472256A93DE00AE6479 /* GoogleService-Info-Dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Dev.plist"; sourceTree = "<group>"; };
 		6E8E2473256A93DE00AE6479 /* GoogleService-Info-Prod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Prod.plist"; sourceTree = "<group>"; };
 		6E8E2506256A9F6E00AE6479 /* SignInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewModel.swift; sourceTree = "<group>"; };
@@ -1480,6 +1482,7 @@
 				6E41661127464C8A0088E69C /* VisitOverview.swift */,
 				6EDBBB7327546F9D00470F71 /* Activity.swift */,
 				6EF63FB72761AAD50063A3B9 /* Medal.swift */,
+				6E8C190527A8239B00FF5B4C /* PopupPosition.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -2516,6 +2519,7 @@
 				6E07D44E23B5918B0055AEE7 /* WriteDetailVC.swift in Sources */,
 				6E6B0EDC23AD16AC006E11CE /* BaseView.swift in Sources */,
 				6E56BD7D23CDE216002D7092 /* StoreCategory.swift in Sources */,
+				6E8C190627A8239B00FF5B4C /* PopupPosition.swift in Sources */,
 				6E9D64E025BD751B0075DE36 /* DeleteReason.swift in Sources */,
 				6ED6F1E925B51A0100357B80 /* MenuSection.swift in Sources */,
 				6E3AA4C925AD6BBE00D8C58C /* NaverMapResponse.swift in Sources */,

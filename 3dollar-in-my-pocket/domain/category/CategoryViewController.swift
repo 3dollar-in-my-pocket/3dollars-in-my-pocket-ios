@@ -4,7 +4,10 @@ import ReactorKit
 
 final class CategoryViewController: BaseVC, View, CategoryCoordinator {
     private let categoryView = CategoryView()
-    private let categoryReactor = CategoryReactor(categoryService: CategoryService())
+    private let categoryReactor = CategoryReactor(
+        categoryService: CategoryService(),
+        popupService: PopupService()
+    )
     private weak var coordinator: CategoryCoordinator?
     
     static func instance() -> UINavigationController {
@@ -31,7 +34,7 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
         
         self.reactor = self.categoryReactor
         self.coordinator = self
-        self.categoryReactor.action.onNext(.viewDidLoad)
+        self.categoryReactor.action.onNext(.viewDidLoad) 
     }
     
     override func bindEvent() {
