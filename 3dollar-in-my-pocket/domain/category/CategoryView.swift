@@ -26,15 +26,21 @@ final class CategoryView: BaseView {
         layout.minimumLineSpacing = 16
         layout.itemSize = CategoryCell.size
         layout.scrollDirection = .vertical
+        layout.headerReferenceSize = AdBannerHeaderView.size
         
         $0.collectionViewLayout = layout
         $0.backgroundColor = UIColor(r: 250, g: 250, b: 250)
         $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
         $0.showsVerticalScrollIndicator = false
-        $0.clipsToBounds = false
+        $0.clipsToBounds = true
         $0.register(
             CategoryCell.self,
             forCellWithReuseIdentifier: CategoryCell.registerId
+        )
+        $0.register(
+            AdBannerHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: AdBannerHeaderView.registerID
         )
     }
     
@@ -56,7 +62,7 @@ final class CategoryView: BaseView {
         self.categoryCollectionView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.bottom.equalTo(self.safeAreaLayoutGuide)
-            make.top.equalTo(self.titleLabel.snp.bottom).offset(32)
+            make.top.equalTo(self.titleLabel.snp.bottom).offset(16)
         }
     }
 }

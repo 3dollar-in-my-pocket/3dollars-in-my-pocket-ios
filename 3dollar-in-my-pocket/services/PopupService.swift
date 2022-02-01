@@ -12,7 +12,7 @@ struct PopupService: PopupServiceProtocol {
             let urlString = HTTPUtils.url + "/api/v1/popups"
             let parameters: [String: Any] = [
                 "platform": "IOS",
-                "position": position
+                "position": position.rawValue
             ]
             
             HTTPUtils.defaultSession.request(

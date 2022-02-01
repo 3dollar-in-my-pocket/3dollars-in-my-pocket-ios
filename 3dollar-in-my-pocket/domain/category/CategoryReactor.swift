@@ -1,6 +1,7 @@
 import RxSwift
 import RxCocoa
 import ReactorKit
+import RxDataSources
 
 final class CategoryReactor: BaseReactor, Reactor {
     enum Action {
@@ -10,16 +11,14 @@ final class CategoryReactor: BaseReactor, Reactor {
     }
     
     enum Mutation {
-        case setCategories([MenuCategory])
-        case setAd(ads: [Popup])
+        case setCategories(categories: [MenuCategory], advertisement: Popup?)
         case goToWeb(url: String)
         case pushCategoryList(category: StoreCategory)
         case showErrorAlert(Error)
     }
     
     struct State {
-        var categories: [MenuCategory] = []
-        var ad: Popup?
+        var categorySections: [SectionModel<Popup?, MenuCategory>] = []
     }
     
     let initialState = State()
@@ -39,13 +38,17 @@ final class CategoryReactor: BaseReactor, Reactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            return self.fetchCategories()
+            return Observable.zip(self.fetchCategories(), self.fetchAdvertisement())
+                .map { categories, advertisement -> Mutation in
+                    return .setCategories(categories: categories, advertisement: advertisement)
+                }
+                .catchError { .just(.showErrorAlert($0)) }
             
         case .tapBanner:
             return .empty()
             
         case .tapCategory(let index):
-            let tappedCategory = self.currentState.categories[index].category
+            let tappedCategory = self.currentState.categorySections[0].items[index].category
             
             self.logGA(category: tappedCategory)
             return .just(.pushCategoryList(category: tappedCategory))
@@ -56,11 +59,8 @@ final class CategoryReactor: BaseReactor, Reactor {
         var newState = state
         
         switch mutation {
-        case .setCategories(let menuCategories):
-            newState.categories = menuCategories
-            
-        case .setAd(let ads):
-            newState.ad = ads.isEmpty ? nil : ads[0]
+        case .setCategories(let menuCategories, let advertisement):
+            newState.categorySections = [SectionModel(model: advertisement, items: menuCategories)]
             
         case .goToWeb(let url):
             print(url)
@@ -76,18 +76,14 @@ final class CategoryReactor: BaseReactor, Reactor {
     }
   
     
-    private func fetchCategories() -> Observable<Mutation> {
+    private func fetchCategories() -> Observable<[MenuCategory]> {
         return self.categoryService.fetchCategories()
             .map { $0.map(MenuCategory.init(response:)) }
-            .map { .setCategories($0) }
-            .catchError { .just(.showErrorAlert($0)) }
     }
     
-    private func fetchPopup() -> Observable<Mutation> {
+    private func fetchAdvertisement() -> Observable<Popup?> {
         return self.popupService.fetchPopups(position: .menuCategoryBanner)
-            .map { $0.map(Popup.init(response:)) }
-            .map { .setAd(ads: $0) }
-            .catchError { .just(.showErrorAlert($0)) }
+            .map { $0.map(Popup.init(response:)).first }
     }
   
   private func logGA(category: StoreCategory) {

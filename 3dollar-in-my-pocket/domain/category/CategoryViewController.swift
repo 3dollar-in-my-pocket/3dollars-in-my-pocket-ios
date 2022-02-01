@@ -1,5 +1,6 @@
 import UIKit
 
+import RxDataSources
 import ReactorKit
 
 final class CategoryViewController: BaseVC, View, CategoryCoordinator {
@@ -9,6 +10,8 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
         popupService: PopupService()
     )
     private weak var coordinator: CategoryCoordinator?
+    private var categoryDataSource
+        : RxCollectionViewSectionedReloadDataSource<SectionModel<Popup?, MenuCategory>>!
     
     static func instance() -> UINavigationController {
         let viewController = CategoryViewController(nibName: nil, bundle: nil).then {
@@ -32,9 +35,10 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.setupDataSource()
         self.reactor = self.categoryReactor
         self.coordinator = self
-        self.categoryReactor.action.onNext(.viewDidLoad) 
+        self.categoryReactor.action.onNext(.viewDidLoad)
     }
     
     override func bindEvent() {
@@ -51,6 +55,13 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
                 
             })
             .disposed(by: self.eventDisposeBag)
+        
+        self.categoryReactor.showErrorAlertPublisher
+            .asDriver(onErrorJustReturn: BaseError.unknown)
+            .drive(onNext: { [weak self] error in
+                self?.coordinator?.showErrorAlert(error: error)
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: CategoryReactor) {
@@ -62,14 +73,47 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
         
         // Bind State
         reactor.state
-            .map { $0.categories }
+            .map { $0.categorySections }
             .asDriver(onErrorJustReturn: [])
-            .drive(self.categoryView.categoryCollectionView.rx.items(
-                cellIdentifier: CategoryCell.registerId,
-                cellType: CategoryCell.self
-            )) { _, category, cell in
-                cell.bind(menuCategory: category)
+            .drive(
+                self.categoryView.categoryCollectionView.rx
+                    .items(dataSource: self.categoryDataSource)
+            )
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func setupDataSource() {
+        self.categoryDataSource
+            = .init(configureCell: { _, collectionView, indexPath, menuCategory in
+                guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: CategoryCell.registerId,
+                    for: indexPath
+                ) as? CategoryCell else { return BaseCollectionViewCell() }
+                
+                cell.bind(menuCategory: menuCategory)
+                return cell
+            })
+        
+        self.categoryDataSource.configureSupplementaryView
+            = { dataSource, collectionView, _, indexPath -> UICollectionReusableView in
+                guard let adBannerHeaderView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: UICollectionView.elementKindSectionHeader,
+                    withReuseIdentifier: AdBannerHeaderView.registerID,
+                    for: indexPath
+                ) as? AdBannerHeaderView else {
+                    return UICollectionReusableView()
+                }
+                
+                if let advertisement = dataSource.sectionModels[indexPath.section].model {
+                    adBannerHeaderView.bind(advertisement: advertisement)
+                } else {
+                    if let layout
+                        = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                        layout.headerReferenceSize = .zero
+                    }
+                }
+                
+                return adBannerHeaderView
             }
-            .disposed(by: disposeBag)
     }
 }
