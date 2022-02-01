@@ -13,7 +13,7 @@ enum GAEvent: String {
   case nickname_already_existed = "nickname_already_existed"
     
     /// 홈 화면 전면 팝업 터치
-    case tap_splash_popup
+    case splash_popup_clicked
   
   // home_page
   case search_button_clicked = "search_button_clicked"
@@ -23,7 +23,7 @@ enum GAEvent: String {
   case location_item_clicked = "location_item_clicked"
   
     /// 카테고리 화면 상단 배너 터치
-    case tap_category_banner
+    case category_banner_clicked
     
   case bungeoppang_button_clicked = "bungeoppang_button_clicked"
   case takoyaki_button_clicked = "takoyaki_button_clicked"

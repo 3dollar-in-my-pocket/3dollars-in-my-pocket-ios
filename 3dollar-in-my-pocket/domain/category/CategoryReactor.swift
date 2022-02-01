@@ -44,7 +44,7 @@ final class CategoryReactor: BaseReactor, Reactor {
                 .catchError { .just(.showErrorAlert($0)) }
             
         case .tapBanner:
-            GA.shared.logEvent(event: .tap_category_banner, page: .category_page)
+            GA.shared.logEvent(event: .category_banner_clicked, page: .category_page)
             guard let url = self.currentState.categorySections[0].model?.linkUrl else {
                 return .empty()
             }
