@@ -7,6 +7,6 @@ class GAManager {
   static let shared = GAManager()
   
   func logEvent(event: GAEvent, page: GAPage) {
-    Analytics.logEvent(event.rawValue, parameters: ["referral" : page.rawValue])
+    Analytics.logEvent(event.rawValue, parameters: ["referral": page.rawValue])
   }
 }
