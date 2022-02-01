@@ -15,4 +15,6 @@ enum GAPage: String {
   case delete_request_popup = "delete_request_popup"
   case my_info_page = "my_info_page"
   case setting_page = "setting_page"
+    /// 홈 화면 전면 팝업
+    case splash_popup_page
 }

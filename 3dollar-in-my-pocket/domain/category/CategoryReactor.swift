@@ -23,7 +23,6 @@ final class CategoryReactor: BaseReactor, Reactor {
     
     let initialState = State()
     let pushCategoryListPublisher = PublishRelay<StoreCategory>()
-    let goToWebPublisher = PublishRelay<String>()
     private let categoryService: CategoryServiceProtocol
     private let popupService: PopupServiceProtocol
   
@@ -45,7 +44,12 @@ final class CategoryReactor: BaseReactor, Reactor {
                 .catchError { .just(.showErrorAlert($0)) }
             
         case .tapBanner:
-            return .empty()
+            GA.shared.logEvent(event: .tap_category_banner, page: .category_page)
+            guard let url = self.currentState.categorySections[0].model?.linkUrl else {
+                return .empty()
+            }
+            
+            return .just(.goToWeb(url: url))
             
         case .tapCategory(let index):
             let tappedCategory = self.currentState.categorySections[0].items[index].category
@@ -63,7 +67,7 @@ final class CategoryReactor: BaseReactor, Reactor {
             newState.categorySections = [SectionModel(model: advertisement, items: menuCategories)]
             
         case .goToWeb(let url):
-            print(url)
+            self.openURLPublisher.accept(url)
             
         case .pushCategoryList(let category):
             self.pushCategoryListPublisher.accept(category)

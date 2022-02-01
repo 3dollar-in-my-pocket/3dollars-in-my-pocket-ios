@@ -49,10 +49,10 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
             })
             .disposed(by: self.eventDisposeBag)
         
-        self.categoryReactor.goToWebPublisher
+        self.categoryReactor.openURLPublisher
             .asDriver(onErrorJustReturn: "")
             .drive(onNext: { [weak self] url in
-                
+                self?.coordinator?.openURL(url: url)
             })
             .disposed(by: self.eventDisposeBag)
         
@@ -106,6 +106,10 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
                 
                 if let advertisement = dataSource.sectionModels[indexPath.section].model {
                     adBannerHeaderView.bind(advertisement: advertisement)
+                    adBannerHeaderView.rx.tap
+                        .map { Reactor.Action.tapBanner }
+                        .bind(to: self.categoryReactor.action)
+                        .disposed(by: adBannerHeaderView.disposeBag)
                 } else {
                     if let layout
                         = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {

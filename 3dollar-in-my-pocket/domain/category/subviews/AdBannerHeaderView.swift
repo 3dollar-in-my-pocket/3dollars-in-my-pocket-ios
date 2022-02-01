@@ -1,6 +1,10 @@
 import UIKit
 
+import RxSwift
+import RxCocoa
+
 final class AdBannerHeaderView: UICollectionReusableView {
+    let disposeBag = DisposeBag()
     static let registerID = "\(AdBannerHeaderView.self)"
     static let size = CGSize(
         width: UIScreen.main.bounds.width - 48,
@@ -22,6 +26,8 @@ final class AdBannerHeaderView: UICollectionReusableView {
     }
     
     private let rightImageView = UIImageView()
+    
+    fileprivate let button = UIButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -50,7 +56,8 @@ final class AdBannerHeaderView: UICollectionReusableView {
             self.containerView,
             self.titleLabel,
             self.descriptionLabel,
-            self.rightImageView
+            self.rightImageView,
+            self.button
         ])
     }
     
@@ -79,5 +86,15 @@ final class AdBannerHeaderView: UICollectionReusableView {
             make.right.equalTo(self.containerView)
             make.width.height.equalTo(84)
         }
+        
+        self.button.snp.makeConstraints { make in
+            make.edges.equalTo(containerView)
+        }
+    }
+}
+
+extension Reactive where Base: AdBannerHeaderView {
+    var tap: ControlEvent<Void> {
+        return base.button.rx.tap
     }
 }

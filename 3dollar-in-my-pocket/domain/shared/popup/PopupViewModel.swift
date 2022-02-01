@@ -44,6 +44,7 @@ final class PopupViewModel: BaseViewModel {
                 self?.model.popup
             }
             .bind(onNext: { [weak self] popup in
+                GA.shared.logEvent(event: .tap_splash_popup, page: .splash_popup)
                 self?.openEventURL(popup: popup)
             })
             .disposed(by: self.disposeBag)
