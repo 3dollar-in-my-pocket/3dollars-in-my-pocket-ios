@@ -1,15 +1,19 @@
 import Foundation
+
 import RxSwift
 
 protocol PopupServiceProtocol {
-    func fetchPopups() -> Observable<[PopupResponse]>
+    func fetchPopups(position: PopupPosition) -> Observable<[PopupResponse]>
 }
 
 struct PopupService: PopupServiceProtocol {
-    func fetchPopups() -> Observable<[PopupResponse]> {
+    func fetchPopups(position: PopupPosition) -> Observable<[PopupResponse]> {
         return .create { observer in
             let urlString = HTTPUtils.url + "/api/v1/popups"
-            let parameters: [String: Any] = ["platform": "IOS"]
+            let parameters: [String: Any] = [
+                "platform": "IOS",
+                "position": position.rawValue
+            ]
             
             HTTPUtils.defaultSession.request(
                 urlString,

@@ -101,7 +101,7 @@ class TabBarVC: UITabBarController {
     private func setupTabBarController() {
         self.setViewControllers([
             HomeVC.instance(),
-            CategoryVC.instance(),
+            CategoryViewController.instance(),
             WriteAddressViewController.instance(delegate: self),
             MyPageViewController.instance()
         ], animated: true)
@@ -143,7 +143,7 @@ class TabBarVC: UITabBarController {
     }
     
     private func checkIfBannerExisted() {
-        PopupService().fetchPopups()
+        PopupService().fetchPopups(position: .splash)
             .map { $0.map { Popup.init(response: $0)} }
             .subscribe(
                 onNext: { [weak self] popups in
