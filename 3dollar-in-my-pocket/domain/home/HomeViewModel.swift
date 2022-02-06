@@ -1,145 +1,179 @@
-import RxSwift
-import RxCocoa
 import CoreLocation
 
-class HomeViewModel: BaseViewModel {
-  
-  let input = Input()
-  let output = Output()
-  let storeService: StoreServiceProtocol
-  let mapService: MapServiceProtocol
-  let userDefaults: UserDefaultsUtil
-  
-  var selectedIndex: Int = -1
-  var stores: [Store] = [] {
-    didSet {
-      self.output.isHiddenEmptyCell.accept(!stores.isEmpty)
-      self.output.stores.accept(stores)
+import RxSwift
+import RxCocoa
+import ReactorKit
+
+
+final class HomeReactor: Reactor, BaseReactor {
+    enum Action {
+        case viewDidLoad
+        case changeMaxDistance(maxDistance: Double)
+        case changeMapLocation(CLLocation)
+        case searchByAddress(location: CLLocation, name: String)
+        case tapResearchButton
+        case tapCurrentButton
+        case tapStore(index: Int)
+        case tapVisitButton(index: Int)
+        case tapMarker(index: Int)
     }
-  }
-  
-  struct Input {
-    let currentLocation = PublishSubject<CLLocation>()
-    let mapMaxDistance = BehaviorSubject<Double>(value: 2000)
-    let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
-    let locationForAddress = PublishSubject<(Double, Double)>()
-    let tapResearch = PublishSubject<Void>()
-    let selectStore = PublishSubject<Int>()
-    let backFromDetail = PublishSubject<Store>()
-    let tapStore = PublishSubject<Int>()
-    let tapStoreVisit = PublishSubject<Int>()
-    let deselectCurrentStore = PublishSubject<Void>()
-    let updateStore = PublishSubject<Store>()
-  }
-  
-  struct Output {
-    let address = PublishRelay<String>()
-    let stores = PublishRelay<[Store]>()
-    let isHiddenResearchButton = PublishRelay<Bool>()
-    let isHiddenEmptyCell = PublishRelay<Bool>()
-    let scrollToIndex = PublishRelay<IndexPath>()
-    let setSelectStore = PublishRelay<(IndexPath, Bool)>()
-    let selectMarker = PublishRelay<(Int, [Store])>()
-    let goToDetail = PublishRelay<Int>()
-    let presentVisit = PublishRelay<Store>()
-  }
-  
-  
-  init(
-    storeService: StoreServiceProtocol,
-    mapService: MapServiceProtocol,
-    userDefaults: UserDefaultsUtil
-  ) {
-    self.storeService = storeService
-    self.mapService = mapService
-    self.userDefaults = userDefaults
-    super.init()
     
-    self.input.currentLocation
-      .do(onNext: self.userDefaults.setUserCurrentLocation(location:))
-      .withLatestFrom(
-        Observable.combineLatest(self.input.mapLocation, self.input.mapMaxDistance)
-      ) { ($0, $1.0, $1.1) }
-      .bind(onNext: self.searchNearStores)
-      .disposed(by: self.disposeBag)
+    enum Mutation {
+        case setStores([StoreCellType])
+        case setMaxDistance(Double)
+        case setMapLocation(CLLocation)
+        case showLoading(Bool)
+    }
     
-    self.input.mapLocation
-      .filter { $0 != nil }
-      .map { _ in false }
-      .bind(to: self.output.isHiddenResearchButton)
-      .disposed(by: self.disposeBag)
-    
-    self.input.locationForAddress
-      .bind(onNext: self.getAddressFromLocation)
-      .disposed(by: self.disposeBag)
-    
-    self.input.tapResearch
-      .withLatestFrom(Observable.combineLatest(
-        self.input.currentLocation,
-        self.input.mapLocation,
-        self.input.mapMaxDistance
-      ))
-      .bind(onNext: { [weak self] (currentLocation, mapLocation, mapMaxDistance) in
-        guard let self = self else { return }
-        self.selectedIndex = -1
-        if let mapLocation = mapLocation {
-          self.getAddressFromLocation(
-            lat: mapLocation.coordinate.latitude,
-            lng: mapLocation.coordinate.longitude
-          )
-        }
-        self.searchNearStores(
-          currentLocation: currentLocation,
-          mapLocation: mapLocation,
-          distance: mapMaxDistance
-        )
-      })
-      .disposed(by: self.disposeBag)
-    
-    self.input.selectStore
-      .map { $0 >= self.stores.count ? self.stores.count - 1 : $0 }
-      .bind(onNext: self.onSelectStore(index:))
-      .disposed(by: disposeBag)
-    
-    self.input.backFromDetail
-      .filter { _ in self.selectedIndex >= 0 }
-      .map { (self.selectedIndex, $0) }
-      .bind(onNext: self.updateStore)
-      .disposed(by: disposeBag)
-    
-    self.input.tapStore
-      .bind(onNext: self.onTapStore(index:))
-      .disposed(by: disposeBag)
-    
-    self.input.tapStoreVisit
-      .compactMap { [weak self] index in
-        return self?.stores[index]
-      }
-      .bind(to: self.output.presentVisit)
-      .disposed(by: self.disposeBag)
-    
-    self.input.deselectCurrentStore
-      .bind(onNext: self.deselectStore)
-      .disposed(by: disposeBag)
-    
-    self.input.updateStore
-      .bind { [weak self] store in
-        guard let self = self else { return }
+    struct State {
+        var storeCellTypes: [StoreCellType] = []
+        var address = ""
+        var isHiddenResearchButton = false
+        var selectedIndex: Int?
         
-        if let index = self.stores.firstIndex(of: store) {
-          self.stores[index] = store
-        }
-      }
-      .disposed(by: self.disposeBag)
-  }
+    }
+    
+    //  var selectedIndex: Int = -1
+    //  var stores: [Store] = [] {
+    //    didSet {
+    //      self.output.isHiddenEmptyCell.accept(!stores.isEmpty)
+    //      self.output.stores.accept(stores)
+    //    }
+    //  }
+    //
+    //  struct Input {
+    //    let currentLocation = PublishSubject<CLLocation>()
+    //    let mapMaxDistance = BehaviorSubject<Double>(value: 2000)
+    //    let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
+    //    let locationForAddress = PublishSubject<(Double, Double)>()
+    //    let tapResearch = PublishSubject<Void>()
+    //    let selectStore = PublishSubject<Int>()
+    //    let backFromDetail = PublishSubject<Store>()
+    //    let tapStore = PublishSubject<Int>()
+    //    let tapStoreVisit = PublishSubject<Int>()
+    //    let deselectCurrentStore = PublishSubject<Void>()
+    //    let updateStore = PublishSubject<Store>()
+    //  }
+    //
+    //  struct Output {
+    //    let address = PublishRelay<String>()
+    //    let stores = PublishRelay<[Store]>()
+    //    let isHiddenResearchButton = PublishRelay<Bool>()
+    //    let isHiddenEmptyCell = PublishRelay<Bool>()
+    //    let scrollToIndex = PublishRelay<IndexPath>()
+    //    let setSelectStore = PublishRelay<(IndexPath, Bool)>()
+    //    let selectMarker = PublishRelay<(Int, [Store])>()
+    //    let goToDetail = PublishRelay<Int>()
+    //    let presentVisit = PublishRelay<Store>()
+    //  }
+    
+    let initialState = State()
+    let pushStoreDetailPublisher = PublishRelay<Int>()
+    let presentVisit = PublishRelay<Store>()
+    private let storeService: StoreServiceProtocol
+    private let locationManager: LocationManagerProtocol
+    private let mapService: MapServiceProtocol
+    private let userDefaults: UserDefaultsUtil
+  
+    
+    init(
+        storeService: StoreServiceProtocol,
+        locationManager: LocationManagerProtocol,
+        mapService: MapServiceProtocol,
+        userDefaults: UserDefaultsUtil
+    ) {
+        self.storeService = storeService
+        self.locationManager = locationManager
+        self.mapService = mapService
+        self.userDefaults = userDefaults
+        super.init()
+    }
+//    super.init()
+//
+//    self.input.currentLocation
+//      .do(onNext: self.userDefaults.setUserCurrentLocation(location:))
+//      .withLatestFrom(
+//        Observable.combineLatest(self.input.mapLocation, self.input.mapMaxDistance)
+//      ) { ($0, $1.0, $1.1) }
+//      .bind(onNext: self.searchNearStores)
+//      .disposed(by: self.disposeBag)
+//
+//    self.input.mapLocation
+//      .filter { $0 != nil }
+//      .map { _ in false }
+//      .bind(to: self.output.isHiddenResearchButton)
+//      .disposed(by: self.disposeBag)
+//
+//    self.input.locationForAddress
+//      .bind(onNext: self.getAddressFromLocation)
+//      .disposed(by: self.disposeBag)
+//
+//    self.input.tapResearch
+//      .withLatestFrom(Observable.combineLatest(
+//        self.input.currentLocation,
+//        self.input.mapLocation,
+//        self.input.mapMaxDistance
+//      ))
+//      .bind(onNext: { [weak self] (currentLocation, mapLocation, mapMaxDistance) in
+//        guard let self = self else { return }
+//        self.selectedIndex = -1
+//        if let mapLocation = mapLocation {
+//          self.getAddressFromLocation(
+//            lat: mapLocation.coordinate.latitude,
+//            lng: mapLocation.coordinate.longitude
+//          )
+//        }
+//        self.searchNearStores(
+//          currentLocation: currentLocation,
+//          mapLocation: mapLocation,
+//          distance: mapMaxDistance
+//        )
+//      })
+//      .disposed(by: self.disposeBag)
+//
+//    self.input.selectStore
+//      .map { $0 >= self.stores.count ? self.stores.count - 1 : $0 }
+//      .bind(onNext: self.onSelectStore(index:))
+//      .disposed(by: disposeBag)
+//
+//    self.input.backFromDetail
+//      .filter { _ in self.selectedIndex >= 0 }
+//      .map { (self.selectedIndex, $0) }
+//      .bind(onNext: self.updateStore)
+//      .disposed(by: disposeBag)
+//
+//    self.input.tapStore
+//      .bind(onNext: self.onTapStore(index:))
+//      .disposed(by: disposeBag)
+//
+//    self.input.tapStoreVisit
+//      .compactMap { [weak self] index in
+//        return self?.stores[index]
+//      }
+//      .bind(to: self.output.presentVisit)
+//      .disposed(by: self.disposeBag)
+//
+//    self.input.deselectCurrentStore
+//      .bind(onNext: self.deselectStore)
+//      .disposed(by: disposeBag)
+//
+//    self.input.updateStore
+//      .bind { [weak self] store in
+//        guard let self = self else { return }
+//
+//        if let index = self.stores.firstIndex(of: store) {
+//          self.stores[index] = store
+//        }
+//      }
+//      .disposed(by: self.disposeBag)
+//  }
   
   private func searchNearStores(
     currentLocation: CLLocation,
     mapLocation: CLLocation?,
     distance: Double
-  ) {
-    self.showLoading.accept(true)
-    self.storeService.searchNearStores(
+  ) -> Observable<[Store]> {
+    return self.storeService.searchNearStores(
       currentLocation: currentLocation,
       mapLocation: mapLocation == nil ? currentLocation : mapLocation!,
       distance: distance,
@@ -147,24 +181,25 @@ class HomeViewModel: BaseViewModel {
       orderType: nil
     )
     .map { $0.map(Store.init) }
-      .subscribe(
-        onNext: { [weak self] stores in
-          guard let self = self else { return }
-          self.selectedIndex = -1
-          self.stores = stores
-          self.output.selectMarker.accept((self.selectedIndex, stores))
-          self.output.isHiddenResearchButton.accept(true)
-          self.showLoading.accept(false)
-        },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          
-          self.showErrorAlert.accept(error)
-          self.showLoading.accept(false)
-        }
-      )
-      .disposed(by: disposeBag)
   }
+//      .subscribe(
+//        onNext: { [weak self] stores in
+//          guard let self = self else { return }
+//          self.selectedIndex = -1
+//          self.stores = stores
+//          self.output.selectMarker.accept((self.selectedIndex, stores))
+//          self.output.isHiddenResearchButton.accept(true)
+//          self.showLoading.accept(false)
+//        },
+//        onError: { [weak self] error in
+//          guard let self = self else { return }
+//
+//          self.showErrorAlert.accept(error)
+//
+//        }
+//      )
+//      .disposed(by: disposeBag)
+//  }
   
   private func getAddressFromLocation(lat: Double, lng: Double) {
     self.mapService.getAddressFromLocation(latitude: lat, longitude: lng)
