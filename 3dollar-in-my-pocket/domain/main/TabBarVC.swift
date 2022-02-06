@@ -100,7 +100,7 @@ class TabBarVC: UITabBarController {
     
     private func setupTabBarController() {
         self.setViewControllers([
-            HomeVC.instance(),
+            HomeViewController.instance(),
             CategoryViewController.instance(),
             WriteAddressViewController.instance(delegate: self),
             MyPageViewController.instance()
@@ -137,7 +137,7 @@ class TabBarVC: UITabBarController {
     private func goToStoreDetail(storeId: Int) {
         self.selectedIndex = 0
         if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-           let homeVC = navigationVC.topViewController as? HomeVC {
+           let homeVC = navigationVC.topViewController as? HomeViewController {
             homeVC.coordinator?.goToDetail(storeId: storeId)
         }
     }
@@ -173,9 +173,9 @@ extension TabBarVC: WriteAddressDelegate {
     func onWriteSuccess(storeId: Int) {
         self.selectedIndex = 0
         if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-           let homeVC = navigationVC.viewControllers[0] as? HomeVC {
+           let homeVC = navigationVC.viewControllers[0] as? HomeViewController {
             navigationVC.popToRootViewController(animated: false)
-            homeVC.fetchStoresFromCurrentLocation()
+//            homeVC.fetchStoresFromCurrentLocation()
             homeVC.coordinator?.goToDetail(storeId: storeId)
         }
     }

@@ -11,4 +11,5 @@ import RxCocoa
 class BaseReactor {
     let showErrorAlertPublisher = PublishRelay<Error>()
     let openURLPublisher = PublishRelay<String>()
+    let showLoadingPublisher = PublishRelay<Bool>()
 }

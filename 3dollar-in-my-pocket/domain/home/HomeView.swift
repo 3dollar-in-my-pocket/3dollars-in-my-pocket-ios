@@ -47,12 +47,12 @@ final class HomeView: BaseView {
         
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 17
-        layout.itemSize = StoreCell.itemSize
+        layout.itemSize = HomeStoreCell.itemSize
         $0.collectionViewLayout = layout
         $0.backgroundColor = .clear
         $0.showsHorizontalScrollIndicator = false
         $0.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
-        $0.register([StoreCell.self])
+        $0.register([HomeStoreCell.self, HomeEmptyStoreCell.self])
     }
     
     let currentLocationButton = UIButton().then {
@@ -129,8 +129,9 @@ final class HomeView: BaseView {
     }
     
     func setSelectStore(indexPath: IndexPath, isSelected: Bool) {
-        if let cell = self.storeCollectionView.cellForItem(at: indexPath) as? StoreCell {
-            cell.setSelected(isSelected: isSelected)
+        if let cell = self.storeCollectionView.cellForItem(at: indexPath) as? HomeStoreCell {
+            cell.isSelected = isSelected
+//            cell.setSelected(isSelected: isSelected)
         }
     }
   
