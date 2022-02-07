@@ -145,6 +145,20 @@ final class HomeView: BaseView {
             self?.researchButton.alpha = isHidden ? 0.0 : 1.0
         }
     }
+    
+    fileprivate func moveCamera(position: CLLocation) {
+        let cameraPosition = NMFCameraPosition(
+            NMGLatLng(
+                lat: position.coordinate.latitude,
+                lng: position.coordinate.longitude
+            ),
+            zoom: self.mapView.zoomLevel
+        )
+        let cameraUpdate = NMFCameraUpdate(position: cameraPosition)
+        
+        cameraUpdate.animation = .easeIn
+        self.mapView.moveCamera(cameraUpdate)
+    }
 }
 
 
@@ -152,6 +166,12 @@ extension Reactive where Base: HomeView {
     var isResearchButtonHidden: Binder<Bool> {
         return Binder(self.base) { view, isHidden in
             view.setHiddenResearchButton(isHidden: isHidden)
+        }
+    }
+    
+    var cameraPosition: Binder<CLLocation> {
+        return Binder(self.base) { view, cameraPosition in
+            view.moveCamera(position: cameraPosition)
         }
     }
 }

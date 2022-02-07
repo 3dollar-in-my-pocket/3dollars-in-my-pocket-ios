@@ -22,7 +22,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case setCurrentLocation(CLLocation)
         case setAddressText(address: String)
         case setMaxDistance(Double)
-        case setMapLocation(CLLocation)
+        case setCameraPosition(CLLocation)
         case selectStore(index: Int)
         case setHiddenResearchButton(Bool)
         case presentVisit(store: Store)
@@ -35,10 +35,10 @@ final class HomeReactor: BaseReactor, Reactor {
     struct State {
         var storeCellTypes: [StoreCellType] = []
         var address = ""
-        var isHiddenResearchButton = false
+        var isHiddenResearchButton = true
         var selectedIndex: Int?
         var mapMaxDistance: Double = 2000
-        var currentMapLocation: CLLocation?
+        var cameraPosition: CLLocation?
         var currentLocation = CLLocation(latitude: 0, longitude: 0)
     }
     
@@ -109,16 +109,16 @@ final class HomeReactor: BaseReactor, Reactor {
         case .changeMapLocation(let mapLocation):
             return .merge([
                 .just(.setHiddenResearchButton(false)),
-                .just(.setMapLocation(mapLocation))
+                .just(.setCameraPosition(mapLocation))
             ])
             
         case .searchByAddress(let location, let address):
             return .concat([
-                .just(.setMapLocation(location)),
+                .just(.setCameraPosition(location)),
                 .just(.setAddressText(address: address)),
                 self.searchNearStores(
                     currentLocation: self.currentState.currentLocation,
-                    mapLocation: self.currentState.currentMapLocation,
+                    mapLocation: self.currentState.cameraPosition,
                     distance: self.currentState.mapMaxDistance
                 )
             ])
@@ -128,7 +128,7 @@ final class HomeReactor: BaseReactor, Reactor {
                 .just(.showLoading(true)),
                 self.searchNearStores(
                     currentLocation: self.currentState.currentLocation,
-                    mapLocation: self.currentState.currentMapLocation,
+                    mapLocation: self.currentState.cameraPosition,
                     distance: self.currentState.mapMaxDistance
                 ),
                 .just(.showLoading(false))
@@ -186,8 +186,8 @@ final class HomeReactor: BaseReactor, Reactor {
         case .setMaxDistance(let maxDistance):
             newState.mapMaxDistance = maxDistance
             
-        case .setMapLocation(let location):
-            newState.currentMapLocation = location
+        case .setCameraPosition(let location):
+            newState.cameraPosition = location
             
         case .selectStore(let index):
             newState.selectedIndex = index
@@ -300,11 +300,13 @@ final class HomeReactor: BaseReactor, Reactor {
                 
                 return .merge([
                     .just(.setCurrentLocation(currentLocation)),
+                    .just(.setCameraPosition(currentLocation)),
                     self.searchNearStores(
                         currentLocation: currentLocation,
-                        mapLocation: self.currentState.currentMapLocation,
+                        mapLocation: self.currentState.cameraPosition,
                         distance: self.currentState.mapMaxDistance
-                    )
+                    ),
+                    self.fetchAddressFromLocation(location: currentLocation)
                 ])
             }
             .catchError { .just(.showErrorAlert($0)) }
@@ -350,14 +352,14 @@ final class HomeReactor: BaseReactor, Reactor {
 //      .disposed(by: disposeBag)
 //  }
   
-//  private func getAddressFromLocation(lat: Double, lng: Double) {
-//    self.mapService.getAddressFromLocation(latitude: lat, longitude: lng)
-//      .subscribe(
-//        onNext: self.output.address.accept(_:),
-//        onError: self.showErrorAlert.accept(_:)
-//      )
-//      .disposed(by: disposeBag)
-//  }
+    private func fetchAddressFromLocation(location: CLLocation) -> Observable<Mutation> {
+        return self.mapService.getAddressFromLocation(
+            latitude: location.coordinate.latitude,
+            longitude: location.coordinate.longitude
+        )
+            .map { .setAddressText(address: $0) }
+            .catchError { .just(.showErrorAlert($0)) }
+    }
 //
 //  private func updateStore(index: Int, store: Store) {
 //    self.stores[index] = store

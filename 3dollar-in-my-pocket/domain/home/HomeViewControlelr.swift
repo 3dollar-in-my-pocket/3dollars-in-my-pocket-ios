@@ -143,6 +143,20 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
             .asDriver(onErrorJustReturn: false)
             .drive(self.homeView.rx.isResearchButtonHidden)
             .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .compactMap { $0.cameraPosition }
+            .asDriver(onErrorJustReturn: CLLocation(latitude: 0, longitude: 0))
+            .drive(self.homeView.rx.cameraPosition)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .map { ($0.selectedIndex, $0.storeCellTypes) }
+            .asDriver(onErrorJustReturn: (nil, []))
+            .drive(onNext: { [weak self] selectedIndex, storeCellTypes in
+                self?.selectMarker(selectedIndex: selectedIndex, storeCellTypes: storeCellTypes)
+            })
+            .disposed(by: self.disposeBag)
     }
   
 //  override func bindViewModelInput() {
@@ -261,44 +275,45 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
         self.homeView.mapView.addCameraDelegate(delegate: self)
     }
     
-//  private func selectMarker(selectedIndex: Int, stores: [Store]) {
-//    self.clearMarker()
-//
-//    for index in stores.indices {
-//      let store = stores[index]
-//      let marker = NMFMarker()
-//
-//      marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
-//      if index == selectedIndex {
-//        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
-//          lat: store.latitude,
-//          lng: store.longitude
-//        ))
-//        cameraUpdate.animation = .easeIn
-//        self.homeView.mapView.moveCamera(cameraUpdate)
-//        marker.iconImage = NMFOverlayImage(name: "ic_marker")
-//        marker.width = 30
-//        marker.height = 40
-//      } else {
-//        marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
-//        marker.width = 24
-//        marker.height = 24
-//      }
-//      marker.mapView = self.homeView.mapView
-//      marker.touchHandler = { [weak self] _ in
-//        guard let self = self else { return false }
-//        self.viewModel.input.selectStore.onNext(index)
-//        return true
-//      }
-//      self.markers.append(marker)
-//    }
-//  }
-//
-  private func clearMarker() {
-    for marker in self.markers {
-      marker.mapView = nil
+    private func selectMarker(selectedIndex: Int?, storeCellTypes: [StoreCellType]) {
+        self.clearMarker()
+        
+        for index in storeCellTypes.indices {
+            if case .store(let store) = storeCellTypes[index] {
+                let marker = NMFMarker()
+                
+                marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
+                if index == selectedIndex {
+                    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
+                        lat: store.latitude,
+                        lng: store.longitude
+                    ))
+                    cameraUpdate.animation = .easeIn
+                    self.homeView.mapView.moveCamera(cameraUpdate)
+                    marker.iconImage = NMFOverlayImage(name: "ic_marker")
+                    marker.width = 30
+                    marker.height = 40
+                } else {
+                    marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
+                    marker.width = 24
+                    marker.height = 24
+                }
+                marker.mapView = self.homeView.mapView
+                marker.touchHandler = { [weak self] _ in
+                    
+                    self?.homeReactor.action.onNext(.tapStore(index: index))
+                    return true
+                }
+                self.markers.append(marker)
+            }
+        }
     }
-  }
+
+    private func clearMarker() {
+        for marker in self.markers {
+            marker.mapView = nil
+        }
+    }
   
   private func handleLocationError(error: Error) {
     if let locationError = error as? LocationError {
