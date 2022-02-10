@@ -9,25 +9,25 @@
 import UIKit
 
 protocol HomeCoordinator: Coordinator, AnyObject {
-  func goToDetail(storeId: Int)
+    func pushStoreDetail(storeId: Int)
   func showDenyAlert()
   func goToAppSetting()
   func goToToss()
   func showSearchAddress()
-  func presentVisit(store: Store)
+    func presentVisit(store: Store)
 }
 
 extension HomeCoordinator where Self: UIViewController {
-  func goToDetail(storeId: Int) {
-    let storeDetailVC = StoreDetailViewController.instance(storeId: storeId).then {
-      $0.delegate = self as? StoreDetailDelegate
+    func pushStoreDetail(storeId: Int) {
+        let storeDetailVC = StoreDetailViewController.instance(storeId: storeId).then {
+            $0.delegate = self as? StoreDetailDelegate
+        }
+        
+        self.presenter.navigationController?.pushViewController(
+            storeDetailVC,
+            animated: true
+        )
     }
-    
-    self.presenter.navigationController?.pushViewController(
-      storeDetailVC,
-      animated: true
-    )
-  }
   
   func showDenyAlert() {
     AlertUtils.showWithCancel(
@@ -65,10 +65,10 @@ extension HomeCoordinator where Self: UIViewController {
     self.presenter.tabBarController?.present(searchAddressVC, animated: true, completion: nil)
   }
   
-  func presentVisit(store: Store) {
-    let viewController = VisitViewController.instance(store: store)
-    viewController.delegate = self as? VisitViewControllerDelegate
-    
-    self.presenter.present(viewController, animated: true, completion: nil)
-  }
+    func presentVisit(store: Store) {
+        let viewController = VisitViewController.instance(store: store)
+        
+        viewController.delegate = self as? VisitViewControllerDelegate
+        self.presenter.present(viewController, animated: true, completion: nil)
+    }
 }

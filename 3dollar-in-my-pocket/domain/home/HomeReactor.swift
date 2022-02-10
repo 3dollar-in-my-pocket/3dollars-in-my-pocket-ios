@@ -42,40 +42,6 @@ final class HomeReactor: BaseReactor, Reactor {
         var currentLocation = CLLocation(latitude: 0, longitude: 0)
     }
     
-    //  var selectedIndex: Int = -1
-    //  var stores: [Store] = [] {
-    //    didSet {
-    //      self.output.isHiddenEmptyCell.accept(!stores.isEmpty)
-    //      self.output.stores.accept(stores)
-    //    }
-    //  }
-    //
-    //  struct Input {
-    //    let currentLocation = PublishSubject<CLLocation>()
-    //    let mapMaxDistance = BehaviorSubject<Double>(value: 2000)
-    //    let mapLocation = BehaviorSubject<CLLocation?>(value: nil)
-    //    let locationForAddress = PublishSubject<(Double, Double)>()
-    //    let tapResearch = PublishSubject<Void>()
-    //    let selectStore = PublishSubject<Int>()
-    //    let backFromDetail = PublishSubject<Store>()
-    //    let tapStore = PublishSubject<Int>()
-    //    let tapStoreVisit = PublishSubject<Int>()
-    //    let deselectCurrentStore = PublishSubject<Void>()
-    //    let updateStore = PublishSubject<Store>()
-    //  }
-    //
-    //  struct Output {
-    //    let address = PublishRelay<String>()
-    //    let stores = PublishRelay<[Store]>()
-    //    let isHiddenResearchButton = PublishRelay<Bool>()
-    //    let isHiddenEmptyCell = PublishRelay<Bool>()
-    //    let scrollToIndex = PublishRelay<IndexPath>()
-    //    let setSelectStore = PublishRelay<(IndexPath, Bool)>()
-    //    let selectMarker = PublishRelay<(Int, [Store])>()
-    //    let goToDetail = PublishRelay<Int>()
-    //    let presentVisit = PublishRelay<Store>()
-    //  }
-    
     let initialState = State()
     let pushStoreDetailPublisher = PublishRelay<Int>()
     let presentVisitPublisher = PublishRelay<Store>()
@@ -83,7 +49,6 @@ final class HomeReactor: BaseReactor, Reactor {
     private let locationManager: LocationManagerProtocol
     private let mapService: MapServiceProtocol
     private let userDefaults: UserDefaultsUtil
-  
     
     init(
         storeService: StoreServiceProtocol,
@@ -101,10 +66,7 @@ final class HomeReactor: BaseReactor, Reactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .changeMaxDistance(let maxDistance):
-            return .merge([
-                .just(.setHiddenResearchButton(false)),
-                .just(.setMaxDistance(maxDistance))
-            ])
+            return .just(.setMaxDistance(maxDistance))
             
         case .changeMapLocation(let mapLocation):
             return .merge([
@@ -131,6 +93,8 @@ final class HomeReactor: BaseReactor, Reactor {
                     mapLocation: self.currentState.cameraPosition,
                     distance: self.currentState.mapMaxDistance
                 ),
+                self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
+                .just(.setHiddenResearchButton(true)),
                 .just(.showLoading(false))
             ])
             
@@ -143,6 +107,7 @@ final class HomeReactor: BaseReactor, Reactor {
             
         case .tapStore(let index):
             let selectedStore = self.currentState.storeCellTypes[index]
+            
             if self.currentState.selectedIndex == index {
                 switch selectedStore {
                 case .store(let store):
@@ -155,7 +120,18 @@ final class HomeReactor: BaseReactor, Reactor {
                     return .empty()
                 }
             } else {
-                return .just(.selectStore(index: index))
+                if case .store(let store) = selectedStore {
+                    let location = CLLocation(
+                        latitude: store.latitude,
+                        longitude: store.longitude
+                    )
+                    return .merge([
+                        .just(.setCameraPosition(location)),
+                        .just(.selectStore(index: index))
+                    ])
+                } else {
+                    return .just(.selectStore(index: index))
+                }
             }
             
         case .tapVisitButton(let index):
@@ -166,7 +142,20 @@ final class HomeReactor: BaseReactor, Reactor {
             }
             
         case .tapMarker(let index):
-            return .just(.selectStore(index: index))
+            let selectedStore = self.currentState.storeCellTypes[index]
+            
+            if case .store(let store) = selectedStore {
+                let location = CLLocation(
+                    latitude: store.latitude,
+                    longitude: store.longitude
+                )
+                return .merge([
+                    .just(.setCameraPosition(location)),
+                    .just(.selectStore(index: index))
+                ])
+            } else {
+                return .just(.selectStore(index: index))
+            }
         }
     }
     
@@ -213,85 +202,6 @@ final class HomeReactor: BaseReactor, Reactor {
         
         return newState
     }
-//    super.init()
-//
-//    self.input.currentLocation
-//      .do(onNext: self.userDefaults.setUserCurrentLocation(location:))
-//      .withLatestFrom(
-//        Observable.combineLatest(self.input.mapLocation, self.input.mapMaxDistance)
-//      ) { ($0, $1.0, $1.1) }
-//      .bind(onNext: self.searchNearStores)
-//      .disposed(by: self.disposeBag)
-//
-//    self.input.mapLocation
-//      .filter { $0 != nil }
-//      .map { _ in false }
-//      .bind(to: self.output.isHiddenResearchButton)
-//      .disposed(by: self.disposeBag)
-//
-//    self.input.locationForAddress
-//      .bind(onNext: self.getAddressFromLocation)
-//      .disposed(by: self.disposeBag)
-//
-//    self.input.tapResearch
-//      .withLatestFrom(Observable.combineLatest(
-//        self.input.currentLocation,
-//        self.input.mapLocation,
-//        self.input.mapMaxDistance
-//      ))
-//      .bind(onNext: { [weak self] (currentLocation, mapLocation, mapMaxDistance) in
-//        guard let self = self else { return }
-//        self.selectedIndex = -1
-//        if let mapLocation = mapLocation {
-//          self.getAddressFromLocation(
-//            lat: mapLocation.coordinate.latitude,
-//            lng: mapLocation.coordinate.longitude
-//          )
-//        }
-//        self.searchNearStores(
-//          currentLocation: currentLocation,
-//          mapLocation: mapLocation,
-//          distance: mapMaxDistance
-//        )
-//      })
-//      .disposed(by: self.disposeBag)
-//
-//    self.input.selectStore
-//      .map { $0 >= self.stores.count ? self.stores.count - 1 : $0 }
-//      .bind(onNext: self.onSelectStore(index:))
-//      .disposed(by: disposeBag)
-//
-//    self.input.backFromDetail
-//      .filter { _ in self.selectedIndex >= 0 }
-//      .map { (self.selectedIndex, $0) }
-//      .bind(onNext: self.updateStore)
-//      .disposed(by: disposeBag)
-//
-//    self.input.tapStore
-//      .bind(onNext: self.onTapStore(index:))
-//      .disposed(by: disposeBag)
-//
-//    self.input.tapStoreVisit
-//      .compactMap { [weak self] index in
-//        return self?.stores[index]
-//      }
-//      .bind(to: self.output.presentVisit)
-//      .disposed(by: self.disposeBag)
-//
-//    self.input.deselectCurrentStore
-//      .bind(onNext: self.deselectStore)
-//      .disposed(by: disposeBag)
-//
-//    self.input.updateStore
-//      .bind { [weak self] store in
-//        guard let self = self else { return }
-//
-//        if let index = self.stores.firstIndex(of: store) {
-//          self.stores[index] = store
-//        }
-//      }
-//      .disposed(by: self.disposeBag)
-//  }
     
     private func refreshCurrentLocation() -> Observable<Mutation> {
         return self.locationManager.getCurrentLocation()
@@ -303,7 +213,7 @@ final class HomeReactor: BaseReactor, Reactor {
                     .just(.setCameraPosition(currentLocation)),
                     self.searchNearStores(
                         currentLocation: currentLocation,
-                        mapLocation: self.currentState.cameraPosition,
+                        mapLocation: nil,
                         distance: self.currentState.mapMaxDistance
                     ),
                     self.fetchAddressFromLocation(location: currentLocation)
@@ -333,26 +243,14 @@ final class HomeReactor: BaseReactor, Reactor {
             .map { .setStoreCellTypes($0) }
             .catchError { .just(.showErrorAlert($0)) }
     }
-//      .subscribe(
-//        onNext: { [weak self] stores in
-//          guard let self = self else { return }
-//          self.selectedIndex = -1
-//          self.stores = stores
-//          self.output.selectMarker.accept((self.selectedIndex, stores))
-//          self.output.isHiddenResearchButton.accept(true)
-//          self.showLoading.accept(false)
-//        },
-//        onError: { [weak self] error in
-//          guard let self = self else { return }
-//
-//          self.showErrorAlert.accept(error)
-//
-//        }
-//      )
-//      .disposed(by: disposeBag)
-//  }
-  
-    private func fetchAddressFromLocation(location: CLLocation) -> Observable<Mutation> {
+    
+    private func fetchAddressFromLocation(location: CLLocation?) -> Observable<Mutation> {
+        guard let location = location else {
+            let error = BaseError.custom("올바르지 않은 위치 입니다.")
+            
+            return .just(.showErrorAlert(error))
+        }
+        
         return self.mapService.getAddressFromLocation(
             latitude: location.coordinate.latitude,
             longitude: location.coordinate.longitude
@@ -360,7 +258,7 @@ final class HomeReactor: BaseReactor, Reactor {
             .map { .setAddressText(address: $0) }
             .catchError { .just(.showErrorAlert($0)) }
     }
-//
+    
 //  private func updateStore(index: Int, store: Store) {
 //    self.stores[index] = store
 //    self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
@@ -374,20 +272,5 @@ final class HomeReactor: BaseReactor, Reactor {
 //      self?.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
 //    }
 //    self.selectedIndex = index
-//  }
-//
-//  private func onTapStore(index: Int) {
-//    if selectedIndex == index {
-//      GA.shared.logEvent(event: .store_card_button_clicked, page: .home_page)
-//      self.output.goToDetail.accept(self.stores[index].storeId)
-//    } else {
-//      self.onSelectStore(index: index)
-//    }
-//  }
-//
-//  private func deselectStore() {
-//    let indexPath = IndexPath(row: self.selectedIndex, section: 0)
-//
-//    self.output.setSelectStore.accept((indexPath, false))
 //  }
 }

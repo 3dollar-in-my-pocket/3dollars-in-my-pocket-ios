@@ -44,7 +44,6 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
         self.coordinator = self
         self.reactor = self.homeReactor
         self.initilizeShopCollectionView()
-//        self.fetchStoresFromCurrentLocation()
         self.initilizeNaverMap()
         self.homeReactor.action.onNext(.tapCurrentLocationButton)
     }
@@ -69,6 +68,20 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
                 self?.coordinator?.goToToss()
             })
             .disposed(by: self.eventDisposeBag)
+        
+        self.homeReactor.pushStoreDetailPublisher
+            .asDriver(onErrorJustReturn: -1)
+            .drive(onNext: { [weak self] storeId in
+                self?.coordinator?.pushStoreDetail(storeId: storeId)
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.homeReactor.presentVisitPublisher
+            .asDriver(onErrorJustReturn: Store())
+            .drive(onNext: { [weak self] store in
+                self?.coordinator?.presentVisit(store: store)
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: HomeReactor) {
@@ -87,11 +100,11 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
             .map { Reactor.Action.tapStore(index: $0.row) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
-        
         // Bind State
         
         reactor.state
             .map { $0.storeCellTypes }
+            .distinctUntilChanged()
             .asDriver(onErrorJustReturn: [])
             .drive(
                 self.homeView.storeCollectionView.rx.items
@@ -140,6 +153,7 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
         
         reactor.state
             .map { $0.isHiddenResearchButton }
+            .distinctUntilChanged()
             .asDriver(onErrorJustReturn: false)
             .drive(self.homeView.rx.isResearchButtonHidden)
             .disposed(by: self.disposeBag)
@@ -158,86 +172,6 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
             })
             .disposed(by: self.disposeBag)
     }
-  
-//  override func bindViewModelInput() {
-//    self.homeView.researchButton.rx.tap
-//      .bind(to: self.viewModel.input.tapResearch)
-//      .disposed(by: disposeBag)
-//
-//    self.homeView.currentLocationButton.rx.tap
-//      .do(onNext: { [weak self] _ in
-//        self?.mapAnimatedFlag = true
-//        GA.shared.logEvent(event: .current_location_button_clicked, page: .home_page)
-//      })
-//      .bind(onNext: self.fetchStoresFromCurrentLocation)
-//      .disposed(by: self.disposeBag)
-//  }
-  
-//  override func bindViewModelOutput() {
-//    self.viewModel.output.address
-//      .bind(to: self.homeView.addressButton.rx.title(for: .normal))
-//      .disposed(by: disposeBag)
-//
-//    self.viewModel.output.stores
-//      .bind(to: homeView.storeCollectionView.rx.items(
-//        cellIdentifier: StoreCell.registerId,
-//        cellType: StoreCell.self
-//      )) { row, store, cell in
-//        cell.bind(store: store)
-//        cell.visitButton.rx.tap
-//          .map { row }
-//          .bind(to: self.viewModel.input.tapStoreVisit)
-//          .disposed(by: cell.disposeBag)
-//      }.disposed(by: disposeBag)
-//
-//    self.viewModel.output.isHiddenResearchButton
-//      .observeOn(MainScheduler.instance)
-//      .bind(onNext: self.homeView.isHiddenResearchButton(isHidden:))
-//      .disposed(by: disposeBag)
-//
-//    self.viewModel.output.isHiddenEmptyCell
-//      .bind(to: self.homeView.emptyCell.rx.isHidden)
-//      .disposed(by: disposeBag)
-//
-//    self.viewModel.output.scrollToIndex
-//      .observeOn(MainScheduler.instance)
-//      .bind(onNext: self.homeView.scrollToIndex(index:))
-//      .disposed(by: disposeBag)
-//
-//    self.viewModel.output.setSelectStore
-//      .observeOn(MainScheduler.instance)
-//      .bind(onNext: self.homeView.setSelectStore)
-//      .disposed(by: disposeBag)
-//
-//    self.viewModel.output.selectMarker
-//      .observeOn(MainScheduler.instance)
-//      .bind(onNext: self.selectMarker)
-//      .disposed(by: disposeBag)
-//
-//    self.viewModel.output.goToDetail
-//      .observeOn(MainScheduler.instance)
-//      .bind(onNext: { [weak self] storeId in
-//        self?.coordinator?.goToDetail(storeId: storeId)
-//      })
-//      .disposed(by: disposeBag)
-//
-//    self.viewModel.output.presentVisit
-//      .asDriver(onErrorJustReturn: Store())
-//      .drive { [weak self] store in
-//        self?.coordinator?.presentVisit(store: store)
-//      }
-//      .disposed(by: self.disposeBag)
-//
-//    self.viewModel.showLoading
-//      .observeOn(MainScheduler.instance)
-//      .bind(onNext: self.showRootLoading(isShow:))
-//      .disposed(by: disposeBag)
-//
-//    self.viewModel.showSystemAlert
-//      .observeOn(MainScheduler.instance)
-//      .bind(onNext: self.showSystemAlert(alert:))
-//      .disposed(by: disposeBag)
-//  }
   
 //  func fetchStoresFromCurrentLocation() {
 //    LocationManager.shared.getCurrentLocation()
@@ -268,7 +202,9 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
 //  }
     
     private func initilizeShopCollectionView() {
-        self.homeView.storeCollectionView.delegate = self
+        self.homeView.storeCollectionView.rx
+            .setDelegate(self)
+            .disposed(by: self.eventDisposeBag)
     }
     
     private func initilizeNaverMap() {
@@ -284,12 +220,6 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
                 
                 marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
                 if index == selectedIndex {
-                    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
-                        lat: store.latitude,
-                        lng: store.longitude
-                    ))
-                    cameraUpdate.animation = .easeIn
-                    self.homeView.mapView.moveCamera(cameraUpdate)
                     marker.iconImage = NMFOverlayImage(name: "ic_marker")
                     marker.width = 30
                     marker.height = 40
@@ -300,7 +230,6 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
                 }
                 marker.mapView = self.homeView.mapView
                 marker.touchHandler = { [weak self] _ in
-                    
                     self?.homeReactor.action.onNext(.tapStore(index: index))
                     return true
                 }
@@ -328,29 +257,22 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
   }
 }
 
-extension HomeViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-//  func collectionView(
-//    _ collectionView: UICollectionView,
-//    didSelectItemAt indexPath: IndexPath
-//  ) {
-//    self.viewModel.input.tapStore.onNext(indexPath.row)
-//  }
-  
-  func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-    let pageWidth = CGFloat(272)
-    let offsetHelper: CGFloat = self.previousOffset > scrollView.contentOffset.x ? -50 : 50
-    let proportionalOffset = (scrollView.contentOffset.x + offsetHelper) / pageWidth
+extension HomeViewController: UIScrollViewDelegate {
+    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+        let pageWidth = CGFloat(272)
+        let offsetHelper: CGFloat = self.previousOffset > scrollView.contentOffset.x ? -50 : 50
+        let proportionalOffset = (scrollView.contentOffset.x + offsetHelper) / pageWidth
+        
+        self.previousOffset = scrollView.contentOffset.x
+        
+        var selectedIndex = Int(proportionalOffset.rounded())
+        if selectedIndex < 0 {
+            selectedIndex = 0
+        }
 
-    self.previousOffset = scrollView.contentOffset.x
-
-    var selectedIndex = Int(proportionalOffset.rounded())
-    if selectedIndex < 0 {
-      selectedIndex = 0
-    }
-
-//    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-//      self.viewModel.input.selectStore.onNext(selectedIndex)
-//    }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+//            self.homeReactor.action.onNext(.tapStore(index: selectedIndex))
+//        }
   }
 }
 
@@ -377,47 +299,63 @@ extension HomeViewController: StoreDetailDelegate {
 }
 
 extension HomeViewController: NMFMapViewCameraDelegate {
-  func mapView(
-    _ mapView: NMFMapView,
-    cameraWillChangeByReason reason: Int,
-    animated: Bool
-  ) {
-    if reason == NMFMapChangedByGesture {
-      let mapLocation = CLLocation(
-        latitude: mapView.cameraPosition.target.lat,
-        longitude: mapView.cameraPosition.target.lng
-      )
-      let distance = mapView
-        .contentBounds
-        .boundsLatLngs[0]
-        .distance(to: mapView.contentBounds.boundsLatLngs[1])
-      
-//      self.viewModel.input.mapMaxDistance.onNext(distance / 3)
-//      self.viewModel.input.mapLocation.onNext(mapLocation)
+    func mapView(
+        _ mapView: NMFMapView,
+        cameraWillChangeByReason reason: Int,
+        animated: Bool
+    ) {
+        if reason == NMFMapChangedByGesture {
+            let mapLocation = CLLocation(
+                latitude: mapView.cameraPosition.target.lat,
+                longitude: mapView.cameraPosition.target.lng
+            )
+            let distance = mapView
+                .contentBounds
+                .boundsLatLngs[0]
+                .distance(to: mapView.contentBounds.boundsLatLngs[1])
+            
+            self.homeReactor.action.onNext(.changeMaxDistance(maxDistance: distance / 3))
+            self.homeReactor.action.onNext(.changeMapLocation(mapLocation))
+        }
     }
-  }
+    
+    func mapView(_ mapView: NMFMapView, cameraDidChangeByReason reason: Int, animated: Bool) {
+        if reason == NMFMapChangedByGesture {
+            let mapLocation = CLLocation(
+                latitude: mapView.cameraPosition.target.lat,
+                longitude: mapView.cameraPosition.target.lng
+            )
+            let distance = mapView
+                .contentBounds
+                .boundsLatLngs[0]
+                .distance(to: mapView.contentBounds.boundsLatLngs[1])
+            
+            self.homeReactor.action.onNext(.changeMaxDistance(maxDistance: distance / 3))
+            self.homeReactor.action.onNext(.changeMapLocation(mapLocation))
+        }
+    }
 }
 
 extension HomeViewController: UIViewControllerTransitioningDelegate {
-  func animationController(
-    forPresented presented: UIViewController,
-    presenting: UIViewController,
-    source: UIViewController
-  ) -> UIViewControllerAnimatedTransitioning? {
-    self.transition.transitionMode = .present
-    self.transition.maskView.frame = self.homeView.addressContainerView.frame
+    func animationController(
+        forPresented presented: UIViewController,
+        presenting: UIViewController,
+        source: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
+        self.transition.transitionMode = .present
+        self.transition.maskView.frame = self.homeView.addressContainerView.frame
+        
+        return self.transition
+    }
     
-    return self.transition
-  }
-  
-  func animationController(
-    forDismissed dismissed: UIViewController
-  ) -> UIViewControllerAnimatedTransitioning? {
-    self.transition.transitionMode = .dismiss
-    self.transition.maskOriginalFrame = self.homeView.addressContainerView.frame
-    
-    return self.transition
-  }
+    func animationController(
+        forDismissed dismissed: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
+        self.transition.transitionMode = .dismiss
+        self.transition.maskOriginalFrame = self.homeView.addressContainerView.frame
+        
+        return self.transition
+    }
 }
 
 extension HomeViewController: VisitViewControllerDelegate {
