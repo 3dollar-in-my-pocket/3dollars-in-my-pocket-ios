@@ -30,10 +30,22 @@ final class HomeStoreFlowLayout: UICollectionViewFlowLayout {
             
             if (pannedLessThanAPage && flicked) == true {
                 resultContentOffset.x = nextPage * self.pageWidth
-                self.currentIndex.accept(Int(round(nextPage)))
+                
+                var currentIndex = Int(round(nextPage))
+                
+                if currentIndex < 0 {
+                    currentIndex = 0
+                }
+                self.currentIndex.accept(currentIndex)
             } else {
                 resultContentOffset.x = round(rawPageValue) * self.pageWidth
-                self.currentIndex.accept(Int(rawPageValue))
+                
+                var currentIndex = Int(round(rawPageValue))
+                
+                if currentIndex < 0 {
+                    currentIndex = 0
+                }
+                self.currentIndex.accept(currentIndex)
             }
             resultContentOffset.x -= self.collectionView?.contentInset.left ?? 0
         }

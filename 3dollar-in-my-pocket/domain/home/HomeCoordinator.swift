@@ -10,10 +10,10 @@ import UIKit
 
 protocol HomeCoordinator: Coordinator, AnyObject {
     func pushStoreDetail(storeId: Int)
-  func showDenyAlert()
-  func goToAppSetting()
-  func goToToss()
-  func showSearchAddress()
+    func showDenyAlert()
+    func goToAppSetting()
+    func goToToss()
+    func showSearchAddress()
     func presentVisit(store: Store)
 }
 
@@ -28,43 +28,43 @@ extension HomeCoordinator where Self: UIViewController {
             animated: true
         )
     }
-  
-  func showDenyAlert() {
-    AlertUtils.showWithCancel(
-      controller: self.presenter,
-      title: "location_deny_title".localized,
-      message: "location_deny_description".localized,
-      okButtonTitle: "설정",
-      onTapOk: self.goToAppSetting
-    )
-  }
-  
-  func goToAppSetting() {
-    guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
-      return
+    
+    func showDenyAlert() {
+        AlertUtils.showWithCancel(
+            controller: self.presenter,
+            title: "location_deny_title".localized,
+            message: "location_deny_description".localized,
+            okButtonTitle: "설정",
+            onTapOk: self.goToAppSetting
+        )
     }
     
-    if UIApplication.shared.canOpenURL(settingsUrl) {
-      UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
-    }
-  }
-  
-  func goToToss() {
-    let tossScheme = Bundle.main.object(forInfoDictionaryKey: "Toss scheme") as? String ?? ""
-    guard let url = URL(string: tossScheme) else { return }
-    
-    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-  }
-  
-  func showSearchAddress() {
-    let searchAddressVC = SearchAddressVC.instacne().then {
-      $0.transitioningDelegate = self as? UIViewControllerTransitioningDelegate
-      $0.delegate = self as? SearchAddressDelegate
+    func goToAppSetting() {
+        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+        
+        if UIApplication.shared.canOpenURL(settingsUrl) {
+            UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
+        }
     }
     
-    self.presenter.tabBarController?.present(searchAddressVC, animated: true, completion: nil)
-  }
-  
+    func goToToss() {
+        let tossScheme = Bundle.main.object(forInfoDictionaryKey: "Toss scheme") as? String ?? ""
+        guard let url = URL(string: tossScheme) else { return }
+        
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+    
+    func showSearchAddress() {
+        let searchAddressVC = SearchAddressVC.instacne().then {
+            $0.transitioningDelegate = self as? UIViewControllerTransitioningDelegate
+            $0.delegate = self as? SearchAddressDelegate
+        }
+        
+        self.presenter.tabBarController?.present(searchAddressVC, animated: true, completion: nil)
+    }
+    
     func presentVisit(store: Store) {
         let viewController = VisitViewController.instance(store: store)
         

@@ -273,19 +273,12 @@ extension HomeViewController: UIScrollViewDelegate {
 }
 
 extension HomeViewController: SearchAddressDelegate {
-  func selectAddress(location: (Double, Double), name: String) {
-//    let location = CLLocation(latitude: location.0, longitude: location.1)
-//    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
-//      lat: location.coordinate.latitude,
-//      lng: location.coordinate.longitude
-//    ))
-//    cameraUpdate.animation = .easeIn
-//
-//    self.homeView.mapView.moveCamera(cameraUpdate)
-//    self.viewModel.input.mapLocation.onNext(location)
-//    self.viewModel.input.tapResearch.onNext(())
-//    self.viewModel.output.address.accept(name)
-  }
+    func selectAddress(location: (Double, Double), name: String) {
+        let location = CLLocation(latitude: location.0, longitude: location.1)
+        
+        self.homeReactor.action.onNext(.changeMapLocation(location))
+        self.homeReactor.action.onNext(.tapResearchButton)
+    }
 }
 
 extension HomeViewController: StoreDetailDelegate {

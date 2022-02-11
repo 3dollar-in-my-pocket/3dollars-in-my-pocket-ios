@@ -24,7 +24,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case setAddressText(address: String)
         case setMaxDistance(Double)
         case setCameraPosition(CLLocation)
-        case selectStore(index: Int)
+        case selectStore(index: Int?)
         case setHiddenResearchButton(Bool)
         case presentVisit(store: Store)
         case pushStoreDetail(storeId: Int)
@@ -95,6 +95,7 @@ final class HomeReactor: BaseReactor, Reactor {
                     distance: self.currentState.mapMaxDistance
                 ),
                 self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
+                .just(.selectStore(index: nil)),
                 .just(.setHiddenResearchButton(true)),
                 .just(.showLoading(false))
             ])
