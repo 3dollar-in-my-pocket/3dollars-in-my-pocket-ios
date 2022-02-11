@@ -82,6 +82,17 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
                 self?.coordinator?.presentVisit(store: store)
             })
             .disposed(by: self.eventDisposeBag)
+        
+        self.homeReactor.showErrorAlertPublisher
+            .asDriver(onErrorJustReturn: BaseError.unknown)
+            .drive(onNext: { [weak self] error in
+                if let locationError = error as? LocationError {
+                    self?.handleLocationError(locationError: locationError)
+                } else {
+                    self?.coordinator?.showErrorAlert(error: error)
+                }
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: HomeReactor) {
@@ -193,34 +204,6 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
             })
             .disposed(by: self.disposeBag)
     }
-  
-//  func fetchStoresFromCurrentLocation() {
-//    LocationManager.shared.getCurrentLocation()
-//      .subscribe(
-//        onNext: { [weak self] location in
-//          guard let self = self else { return }
-//          let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
-//            lat: location.coordinate.latitude,
-//            lng: location.coordinate.longitude
-//          ))
-//          camera.animation = .easeIn
-//
-//          self.homeView.mapView.moveCamera(camera)
-//
-//          if !self.mapAnimatedFlag {
-//            self.viewModel.input.mapLocation.onNext(nil)
-//            self.viewModel.input.currentLocation.onNext(location)
-//            self.viewModel.input.locationForAddress
-//              .onNext((
-//                location.coordinate.latitude,
-//                location.coordinate.longitude
-//              ))
-//          }
-//        },
-//        onError: self.handleLocationError(error:)
-//      )
-//      .disposed(by: self.disposeBag)
-//  }
     
     private func initilizeShopCollectionView() {
         self.homeView.storeCollectionView.rx
@@ -265,17 +248,13 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
         }
     }
   
-  private func handleLocationError(error: Error) {
-    if let locationError = error as? LocationError {
-      if locationError == .denied {
-        self.coordinator?.showDenyAlert()
-      } else {
-        AlertUtils.show(controller: self, title: nil, message: locationError.errorDescription)
-      }
-    } else {
-      self.showErrorAlert(error: error)
+    private func handleLocationError(locationError: LocationError) {
+        if locationError == .denied {
+            self.coordinator?.showDenyAlert()
+        } else {
+            AlertUtils.show(controller: self, title: nil, message: locationError.errorDescription)
+        }
     }
-  }
 }
 
 extension HomeViewController: UIScrollViewDelegate {
