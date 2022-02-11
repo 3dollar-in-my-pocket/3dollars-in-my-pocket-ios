@@ -1,8 +1,11 @@
 import UIKit
 
 import RxSwift
+import RxCocoa
 
 final class HomeStoreFlowLayout: UICollectionViewFlowLayout {
+    let currentIndex = PublishRelay<Int>()
+    
     var pageWidth: CGFloat {
         return self.itemSize.width + self.minimumLineSpacing
     }
@@ -27,8 +30,10 @@ final class HomeStoreFlowLayout: UICollectionViewFlowLayout {
             
             if (pannedLessThanAPage && flicked) == true {
                 resultContentOffset.x = nextPage * self.pageWidth
+                self.currentIndex.accept(Int(round(nextPage)))
             } else {
                 resultContentOffset.x = round(rawPageValue) * self.pageWidth
+                self.currentIndex.accept(Int(rawPageValue))
             }
             resultContentOffset.x -= self.collectionView?.contentInset.left ?? 0
         }

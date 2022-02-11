@@ -12,6 +12,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case searchByAddress(location: CLLocation, address: String)
         case tapResearchButton
         case tapCurrentLocationButton
+        case selectStore(index: Int)
         case tapStore(index: Int)
         case tapVisitButton(index: Int)
         case tapMarker(index: Int)
@@ -104,6 +105,22 @@ final class HomeReactor: BaseReactor, Reactor {
                 self.refreshCurrentLocation(),
                 .just(.showLoading(false))
             ])
+            
+        case .selectStore(let index):
+            let selectedStore = self.currentState.storeCellTypes[index]
+            
+            if case .store(let store) = selectedStore {
+                let location = CLLocation(
+                    latitude: store.latitude,
+                    longitude: store.longitude
+                )
+                return .merge([
+                    .just(.setCameraPosition(location)),
+                    .just(.selectStore(index: index))
+                ])
+            } else {
+                return .just(.selectStore(index: index))
+            }
             
         case .tapStore(let index):
             let selectedStore = self.currentState.storeCellTypes[index]
@@ -264,13 +281,3 @@ final class HomeReactor: BaseReactor, Reactor {
 //    self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
 //  }
 //
-//  private func onSelectStore(index: Int) {
-//    self.output.scrollToIndex.accept(IndexPath(row: index, section: 0))
-//    self.output.selectMarker.accept((index, self.stores))
-//    self.output.setSelectStore.accept((IndexPath(row: self.selectedIndex, section: 0), false))
-//    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-//      self?.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
-//    }
-//    self.selectedIndex = index
-//  }
-}

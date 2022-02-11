@@ -100,8 +100,16 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
             .map { Reactor.Action.tapStore(index: $0.row) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
-        // Bind State
         
+        if let layout
+            = self.homeView.storeCollectionView.collectionViewLayout as? HomeStoreFlowLayout {
+            layout.currentIndex
+                .map { Reactor.Action.selectStore(index: $0) }
+                .bind(to: reactor.action)
+                .disposed(by: self.disposeBag)
+        }
+        
+        // Bind State
         reactor.state
             .map { $0.storeCellTypes }
             .distinctUntilChanged()
@@ -171,6 +179,19 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
                 self?.selectMarker(selectedIndex: selectedIndex, storeCellTypes: storeCellTypes)
             })
             .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .compactMap { $0.selectedIndex }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: 0)
+            .drive(onNext: { [weak self] selectedIndex in
+                self?.homeView.storeCollectionView.selectItem(
+                    at: IndexPath(row: selectedIndex, section: 0),
+                    animated: true,
+                    scrollPosition: .left
+                )
+            })
+            .disposed(by: self.disposeBag)
     }
   
 //  func fetchStoresFromCurrentLocation() {
@@ -230,7 +251,7 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
                 }
                 marker.mapView = self.homeView.mapView
                 marker.touchHandler = { [weak self] _ in
-                    self?.homeReactor.action.onNext(.tapStore(index: index))
+                    self?.homeReactor.action.onNext(.selectStore(index: index))
                     return true
                 }
                 self.markers.append(marker)
@@ -269,11 +290,7 @@ extension HomeViewController: UIScrollViewDelegate {
         if selectedIndex < 0 {
             selectedIndex = 0
         }
-
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-//            self.homeReactor.action.onNext(.tapStore(index: selectedIndex))
-//        }
-  }
+    }
 }
 
 extension HomeViewController: SearchAddressDelegate {

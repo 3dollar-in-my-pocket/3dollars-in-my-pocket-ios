@@ -123,17 +123,6 @@ final class HomeView: BaseView {
             make.bottom.equalTo(self.tossButton.snp.top).offset(-12)
         }
     }
-    
-    func scrollToIndex(index: IndexPath) {
-        self.storeCollectionView.scrollToItem(at: index, at: .left, animated: true)
-    }
-    
-    func setSelectStore(indexPath: IndexPath, isSelected: Bool) {
-        if let cell = self.storeCollectionView.cellForItem(at: indexPath) as? HomeStoreCell {
-            cell.isSelected = isSelected
-//            cell.setSelected(isSelected: isSelected)
-        }
-    }
   
     fileprivate func setHiddenResearchButton(isHidden: Bool) {
         UIView.transition(
