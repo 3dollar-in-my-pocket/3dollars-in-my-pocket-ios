@@ -49,17 +49,20 @@ final class HomeReactor: BaseReactor, Reactor {
     let pushStoreDetailPublisher = PublishRelay<Int>()
     let presentVisitPublisher = PublishRelay<Store>()
     private let storeService: StoreServiceProtocol
+    private let advertisementService: AdvertisementServiceProtocol
     private let locationManager: LocationManagerProtocol
     private let mapService: MapServiceProtocol
     private let userDefaults: UserDefaultsUtil
     
     init(
         storeService: StoreServiceProtocol,
+        advertisementService: AdvertisementServiceProtocol,
         locationManager: LocationManagerProtocol,
         mapService: MapServiceProtocol,
         userDefaults: UserDefaultsUtil
     ) {
         self.storeService = storeService
+        self.advertisementService = advertisementService
         self.locationManager = locationManager
         self.mapService = mapService
         self.userDefaults = userDefaults
@@ -253,7 +256,7 @@ final class HomeReactor: BaseReactor, Reactor {
         mapLocation: CLLocation?,
         distance: Double
     ) -> Observable<Mutation> {
-        return self.storeService.searchNearStores(
+        let searchNearStores = self.storeService.searchNearStores(
             currentLocation: currentLocation,
             mapLocation: mapLocation == nil ? currentLocation : mapLocation!,
             distance: distance,
@@ -266,8 +269,25 @@ final class HomeReactor: BaseReactor, Reactor {
                 ? [StoreCellType.empty]
                 : stores.map(StoreCellType.store)
             }
+        let fetchAdvertisement = self.fetchAdvertisement()
+        
+        return Observable.zip(searchNearStores, fetchAdvertisement)
+            .map { stores, advertisement -> [StoreCellType] in
+                var storeCellTypes = stores
+                
+                if let advertisement = advertisement {
+                    storeCellTypes.insert(StoreCellType.advertisement(advertisement), at: 1)
+                }
+                return storeCellTypes
+            }
             .map { .setStoreCellTypes($0) }
             .catchError { .just(.showErrorAlert($0)) }
+    }
+    
+    private func fetchAdvertisement() -> Observable<Advertisement?> {
+        return self.advertisementService
+            .fetchAdvertisements(position: .mainPageCard)
+            .map { $0.map(Advertisement.init(response:)).first }
     }
     
     private func fetchAddressFromLocation(location: CLLocation?) -> Observable<Mutation> {

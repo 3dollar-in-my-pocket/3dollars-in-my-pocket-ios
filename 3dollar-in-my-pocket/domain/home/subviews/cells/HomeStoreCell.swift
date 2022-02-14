@@ -18,7 +18,7 @@ final class HomeStoreCell: BaseCollectionViewCell {
         $0.layer.shadowOpacity = 0.08
     }
   
-    private  let categoryImage = UIImageView()
+    private let categoryImage = UIImageView()
   
     private let titleLabel = UILabel().then {
         $0.textColor = R.color.gray100()

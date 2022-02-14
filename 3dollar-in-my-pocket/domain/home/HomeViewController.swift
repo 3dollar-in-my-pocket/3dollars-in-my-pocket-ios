@@ -9,6 +9,7 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
     private let homeView = HomeView()
     private let homeReactor = HomeReactor(
         storeService: StoreService(),
+        advertisementService: AdvertisementService(),
         locationManager: LocationManager.shared,
         mapService: MapService(),
         userDefaults: UserDefaultsUtil()
@@ -93,6 +94,13 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
                 }
             })
             .disposed(by: self.eventDisposeBag)
+                
+        self.homeReactor.openURLPublisher
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] url in
+                self?.coordinator?.openURL(url: url)
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: HomeReactor) {
@@ -147,8 +155,15 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
                     return cell
                     
                 case .advertisement(let advertisement):
-                    // TODO: 새로운 셀 구현 후 바인딩 작업ㄱㄱ
-                    return BaseCollectionViewCell()
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: HomeAdvertisementCell.registerId,
+                        for: indexPath
+                    ) as? HomeAdvertisementCell else {
+                        return BaseCollectionViewCell()
+                    }
+                    
+                    cell.bind(advertisement: advertisement)
+                    return cell
                     
                 case .empty:
                     guard let cell = collectionView.dequeueReusableCell(

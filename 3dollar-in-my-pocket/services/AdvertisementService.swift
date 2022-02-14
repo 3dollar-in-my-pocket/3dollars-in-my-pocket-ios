@@ -13,7 +13,7 @@ struct AdvertisementService: AdvertisementServiceProtocol {
         position: AdvertisementPosition
     ) -> Observable<[AdvertisementResponse]> {
         return .create { observer in
-            let urlString = HTTPUtils.url + "/api/v1/api/v1/advertisements"
+            let urlString = HTTPUtils.url + "/api/v1/advertisements"
             let parameters: [String: Any] = [
                 "platform": "IOS",
                 "position": position.rawValue
