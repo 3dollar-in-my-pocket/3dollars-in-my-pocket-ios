@@ -27,7 +27,7 @@ enum StoreCellType: Equatable {
     }
     
     case store(Store)
-    case advertisement(Popup)
+    case advertisement(Advertisement)
     case empty
     
     var value: Any? {

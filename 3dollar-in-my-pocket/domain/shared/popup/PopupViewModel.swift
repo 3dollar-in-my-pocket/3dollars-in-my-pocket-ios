@@ -10,12 +10,12 @@ final class PopupViewModel: BaseViewModel {
     }
     
     struct Output {
-        let popup = PublishRelay<Popup>()
+        let advertisement = PublishRelay<Advertisement>()
         let dismiss = PublishRelay<Void>()
     }
     
     struct Model {
-        let popup: Popup
+        let advertisement: Advertisement
     }
     
     let input = Input()
@@ -24,8 +24,8 @@ final class PopupViewModel: BaseViewModel {
     let userDefaults: UserDefaultsUtil
     
     
-    init(event: Popup, userDefaults: UserDefaultsUtil) {
-        self.model = Model(popup: event)
+    init(advertisement: Advertisement, userDefaults: UserDefaultsUtil) {
+        self.model = Model(advertisement: advertisement)
         self.userDefaults = userDefaults
         
         super.init()
@@ -34,41 +34,41 @@ final class PopupViewModel: BaseViewModel {
     override func bind() {
         self.input.viewDidLoad
             .compactMap { [weak self] in
-                self?.model.popup
+                self?.model.advertisement
             }
-            .bind(to: self.output.popup)
+            .bind(to: self.output.advertisement)
             .disposed(by: self.disposeBag)
         
         self.input.tapBannerButton
             .compactMap { [weak self] in
-                self?.model.popup
+                self?.model.advertisement
             }
-            .bind(onNext: { [weak self] popup in
+            .bind(onNext: { [weak self] advertisement in
                 GA.shared.logEvent(event: .splash_popup_clicked, page: .splash_popup_page)
-                self?.openEventURL(popup: popup)
+                self?.openEventURL(advertisement: advertisement)
             })
             .disposed(by: self.disposeBag)
         
         self.input.tapDisableButton
             .compactMap { [weak self] in
-                self?.model.popup
+                self?.model.advertisement
             }
-            .bind(onNext: { [weak self] event in
-                self?.setDisableToday(event: event)
+            .bind(onNext: { [weak self] advertisement in
+                self?.setDisableToday(advertisement: advertisement)
             })
             .disposed(by: self.disposeBag)
     }
     
-    private func openEventURL(popup: Popup) {
-        guard let url = URL(string: popup.linkUrl),
+    private func openEventURL(advertisement: Advertisement) {
+        guard let url = URL(string: advertisement.linkUrl),
               UIApplication.shared.canOpenURL(url) else { return }
         
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
         self.output.dismiss.accept(())
     }
     
-    private func setDisableToday(event: Popup) {
-        self.userDefaults.setEventDisableToday(id: event.id)
+    private func setDisableToday(advertisement: Advertisement) {
+        self.userDefaults.setEventDisableToday(id: advertisement.id)
         self.output.dismiss.accept(())
     }
 }

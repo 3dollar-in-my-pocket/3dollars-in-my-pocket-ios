@@ -143,23 +143,23 @@ class TabBarVC: UITabBarController {
     }
     
     private func checkIfBannerExisted() {
-        PopupService().fetchPopups(position: .splash)
-            .map { $0.map { Popup.init(response: $0)} }
+        AdvertisementService().fetchAdvertisements(position: .splash)
+            .map { $0.map { Advertisement.init(response: $0)} }
             .subscribe(
-                onNext: { [weak self] popups in
-                    if !popups.isEmpty {
+                onNext: { [weak self] advertisements in
+                    if !advertisements.isEmpty {
                         if let isDisable
-                            = UserDefaultsUtil.getEventDisableToday(id: popups[0].id) {
+                            = UserDefaultsUtil.getEventDisableToday(id: advertisements[0].id) {
                             if isDisable != DateUtils.todayString() {
                                 // 다시보기 설정한 날짜가 오늘이 아니라면 팝업띄우기
                                 self?.present(
-                                    PopupViewController.instance(popup: popups[0]),
+                                    PopupViewController.instance(advertisement: advertisements[0]),
                                     animated: false
                                 )
                             }
                         } else {
                             self?.present(
-                                PopupViewController.instance(popup: popups[0]),
+                                PopupViewController.instance(advertisement: advertisements[0]),
                                 animated: false
                             )
                         }

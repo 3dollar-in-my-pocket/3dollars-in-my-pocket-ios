@@ -7,11 +7,11 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
     private let categoryView = CategoryView()
     private let categoryReactor = CategoryReactor(
         categoryService: CategoryService(),
-        popupService: PopupService()
+        advertisementService: AdvertisementService()
     )
     private weak var coordinator: CategoryCoordinator?
     private var categoryDataSource
-        : RxCollectionViewSectionedReloadDataSource<SectionModel<Popup?, MenuCategory>>!
+        : RxCollectionViewSectionedReloadDataSource<SectionModel<Advertisement?, MenuCategory>>!
     
     static func instance() -> UINavigationController {
         let viewController = CategoryViewController(nibName: nil, bundle: nil).then {
