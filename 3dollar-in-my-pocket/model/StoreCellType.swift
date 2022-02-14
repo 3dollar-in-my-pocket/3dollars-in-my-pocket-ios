@@ -13,6 +13,7 @@ enum StoreCellType: Equatable {
         switch (lhs, rhs) {
         case (.store(let store1), .store(let store2)):
             return store1.storeId == store2.storeId
+            && store1.visitHistory.isCertified == store2.visitHistory.isCertified
             
         case (.advertisement(let ad1), .advertisement(let ad2)):
             return ad1.id == ad2.id

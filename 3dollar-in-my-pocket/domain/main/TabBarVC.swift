@@ -32,7 +32,7 @@ class TabBarVC: UITabBarController {
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = .white
             self.tabBar.standardAppearance = appearance
-            //      self.tabBar.scrollEdgeAppearance = appearance
+            self.tabBar.scrollEdgeAppearance = appearance
         }
     }
     
@@ -46,7 +46,7 @@ class TabBarVC: UITabBarController {
                 appearance.configureWithOpaqueBackground()
                 appearance.backgroundColor = R.color.gray100()
                 self.tabBar.standardAppearance = appearance
-                //        self.tabBar.scrollEdgeAppearance = appearance
+                self.tabBar.scrollEdgeAppearance = appearance
             }
         case TabBarTag.home.rawValue, TabBarTag.category.rawValue:
             self.tabBar.barTintColor = .white
@@ -55,7 +55,7 @@ class TabBarVC: UITabBarController {
                 appearance.configureWithOpaqueBackground()
                 appearance.backgroundColor = .white
                 self.tabBar.standardAppearance = appearance
-                //        self.tabBar.scrollEdgeAppearance = appearance
+                self.tabBar.scrollEdgeAppearance = appearance
             }
         default:
             break

@@ -13,6 +13,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case tapResearchButton
         case tapCurrentLocationButton
         case selectStore(index: Int)
+        case updateStore(store: Store)
         case tapStore(index: Int)
         case tapVisitButton(index: Int)
         case tapMarker(index: Int)
@@ -25,6 +26,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case setMaxDistance(Double)
         case setCameraPosition(CLLocation)
         case selectStore(index: Int?)
+        case updateStore(index: Int, store: Store)
         case setHiddenResearchButton(Bool)
         case presentVisit(store: Store)
         case pushStoreDetail(storeId: Int)
@@ -123,6 +125,9 @@ final class HomeReactor: BaseReactor, Reactor {
                 return .just(.selectStore(index: index))
             }
             
+        case .updateStore(let store):
+            return self.updateStore(store: store)
+            
         case .tapStore(let index):
             let selectedStore = self.currentState.storeCellTypes[index]
             
@@ -198,6 +203,9 @@ final class HomeReactor: BaseReactor, Reactor {
             
         case .selectStore(let index):
             newState.selectedIndex = index
+            
+        case .updateStore(let index, let store):
+            newState.storeCellTypes[index] = .store(store)
             
         case .setHiddenResearchButton(let isHidden):
             newState.isHiddenResearchButton = isHidden
@@ -277,9 +285,14 @@ final class HomeReactor: BaseReactor, Reactor {
             .catchError { .just(.showErrorAlert($0)) }
     }
     
-//  private func updateStore(index: Int, store: Store) {
-//    self.stores[index] = store
-//    self.output.setSelectStore.accept((IndexPath(row: index, section: 0), true))
-//  }
-//
+    private func updateStore(store: Store) -> Observable<Mutation> {
+        for index in self.currentState.storeCellTypes.indices {
+            if case .store(let currentStore) = self.currentState.storeCellTypes[index] {
+                if store == currentStore {
+                    return .just(.updateStore(index: index, store: store))
+                }
+            }
+        }
+        return .empty()
+    }
 }

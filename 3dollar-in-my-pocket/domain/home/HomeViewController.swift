@@ -282,9 +282,9 @@ extension HomeViewController: SearchAddressDelegate {
 }
 
 extension HomeViewController: StoreDetailDelegate {
-  func popup(store: Store) {
-//    self.viewModel.input.backFromDetail.onNext(store)
-  }
+    func popup(store: Store) {
+        self.homeReactor.action.onNext(.updateStore(store: store))
+    }
 }
 
 extension HomeViewController: NMFMapViewCameraDelegate {
@@ -348,7 +348,7 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
 }
 
 extension HomeViewController: VisitViewControllerDelegate {
-  func onSuccessVisit(store: Store) {
-//    self.viewModel.input.updateStore.onNext(store)
-  }
+    func onSuccessVisit(store: Store) {
+        self.homeReactor.action.onNext(.updateStore(store: store))
+    }
 }
