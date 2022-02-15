@@ -48,6 +48,27 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
                 self?.coordinator?.popup()
             })
             .disposed(by: self.eventDisposeBag)
+        
+        self.categoryListReactor.pushStoreDetailPublisher
+            .asDriver(onErrorJustReturn: -1)
+            .drive(onNext: { [weak self] storeId in
+                self?.coordinator?.pushStoreDetail(storeId: storeId)
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.categoryListReactor.openURLPublisher
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] url in
+                self?.coordinator?.openURL(url: url)
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.categoryListReactor.showErrorAlertPublisher
+            .asDriver(onErrorJustReturn: BaseError.unknown)
+            .drive(onNext: { [weak self] error in
+                self?.coordinator?.showErrorAlert(error: error)
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: CategoryListReactor) {
@@ -62,8 +83,13 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
-        self.categoryListView.certificatedButton.rx.tap
-            .map { Reactor.Action.tapCertificatedButton }
+        self.categoryListView.certificatedButton.rx.isCertificated
+            .map { Reactor.Action.tapCertificatedButton(isOnlyCertificated: $0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        self.categoryListView.storeTableView.rx.itemSelected
+            .map { Reactor.Action.tapStore(index: $0.row) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
@@ -83,7 +109,13 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
             .disposed(by: self.disposeBag)
         
         reactor.state
-            .map { $0.storeCellTypes }
+            .map { ($0.storeCellTypes, $0.isOnlyCertificated) }
+            .map { [weak self] storeCellTypes, isOnlyCertificated -> [StoreCellType] in
+                return self?.filterCertificated(
+                    storeCellTypes: storeCellTypes,
+                    isOnlyCertificated: isOnlyCertificated
+                ) ?? []
+            }
             .distinctUntilChanged()
             .do(onNext: { [weak self] storeCellTypes in
                 self?.categoryListView.calculateTableViewHeight(storeCellTypes: storeCellTypes)
@@ -94,27 +126,32 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
                 self.categoryListView.storeTableView.rx.items
             ) { tableView, row, storeCellType -> UITableViewCell in
                 let indexPath = IndexPath(row: row, section: 0)
-                
+
                 switch storeCellType {
                 case .store(let store):
                     guard let cell = tableView.dequeueReusableCell(
                         withIdentifier: CategoryListStoreCell.registerId,
                         for: indexPath
                     ) as? CategoryListStoreCell else { return BaseTableViewCell() }
-                    
+
                     cell.bind(store: store)
                     return cell
-                    
+
                 case .advertisement(let advertisement):
                     guard let cell = tableView.dequeueReusableCell(
                         withIdentifier: CategoryListAdvertisementCell.registerId,
                         for: indexPath
                     ) as? CategoryListAdvertisementCell else { return BaseTableViewCell() }
-                    
+
                     cell.bind(advertisement: advertisement)
                     return cell
                 case .empty:
-                    return BaseTableViewCell()
+                    guard let cell = tableView.dequeueReusableCell(
+                        withIdentifier: CategoryListEmptyCell.registerId,
+                        for: indexPath
+                    ) as? CategoryListEmptyCell else { return BaseTableViewCell() }
+
+                    return cell
                 }
             }
             .disposed(by: self.disposeBag)
@@ -122,6 +159,28 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
   
     private func setupMap() {
         self.categoryListView.mapView.addCameraDelegate(delegate: self)
+    }
+    
+    private func filterCertificated(
+        storeCellTypes: [StoreCellType],
+        isOnlyCertificated: Bool
+    ) -> [StoreCellType] {
+        var newStoreCellTypes: [StoreCellType] = []
+        
+        if isOnlyCertificated {
+            for storeCellType in storeCellTypes {
+                if case .store(let store) = storeCellType {
+                    if store.visitHistory.isCertified {
+                        newStoreCellTypes.append(storeCellType)
+                    }
+                } else {
+                    newStoreCellTypes.append(storeCellType)
+                }
+            }
+            return newStoreCellTypes
+        } else {
+            return storeCellTypes
+        }
     }
 }
 
@@ -132,9 +191,10 @@ extension CategoryListViewController: NMFMapViewCameraDelegate {
                 latitude: mapView.cameraPosition.target.lat,
                 longitude: mapView.cameraPosition.target.lng
             )
-            
         
-            self.categoryListReactor.action.onNext(.changeMapLocation(mapLocation))
+            if animated {
+                self.categoryListReactor.action.onNext(.changeMapLocation(mapLocation))
+            }
         }
     }
 }

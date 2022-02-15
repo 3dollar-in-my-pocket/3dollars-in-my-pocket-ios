@@ -48,6 +48,7 @@ final class CategoryListAdvertisementCell: BaseTableViewCell {
     }
     
     override func setup() {
+        self.selectionStyle = .none
         self.backgroundColor = .clear
         self.addSubViews([
             self.containerView,

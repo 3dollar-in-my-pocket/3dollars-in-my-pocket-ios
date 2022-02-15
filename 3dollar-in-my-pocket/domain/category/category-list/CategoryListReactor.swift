@@ -10,7 +10,7 @@ final class CategoryListReactor: BaseReactor, Reactor {
         case tapCurrentLocationButton
         case changeMapLocation(CLLocation)
         case tapOrderButton(StoreOrder)
-        case tapCertificatedButton
+        case tapCertificatedButton(isOnlyCertificated: Bool)
         case tapStore(index: Int)
     }
     
@@ -20,6 +20,7 @@ final class CategoryListReactor: BaseReactor, Reactor {
         case setCurrentLocation(CLLocation)
         case setCameraPosition(CLLocation)
         case setOrderType(StoreOrder)
+        case setOnlyCertificated(isOnlyCertificated: Bool)
         case pushStoreDetail(storeId: Int)
         case pushWebView(url: String)
         case showErrorAlert(Error)
@@ -80,13 +81,14 @@ final class CategoryListReactor: BaseReactor, Reactor {
                 self.searchNearStores(
                     category: self.currentState.category,
                     currentLocation: self.currentState.currentLocation,
-                    mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation,
+                    mapLocation:
+                        self.currentState.cameraPosition ?? self.currentState.currentLocation,
                     orderType: orderType
                 )
             ])
             
-        case .tapCertificatedButton:
-            return .empty()
+        case .tapCertificatedButton(let isOnlyCertificated):
+            return .just(.setOnlyCertificated(isOnlyCertificated: isOnlyCertificated))
             
         case .tapStore(let index):
             let selectedStore = self.currentState.storeCellTypes[index]
@@ -123,6 +125,9 @@ final class CategoryListReactor: BaseReactor, Reactor {
         case .setOrderType(let orderType):
             newState.orderType = orderType
             
+        case .setOnlyCertificated(let isOnlyCertificated):
+            newState.isOnlyCertificated = isOnlyCertificated
+            
         case .pushStoreDetail(let storeId):
             self.pushStoreDetailPublisher.accept(storeId)
             
@@ -147,7 +152,7 @@ final class CategoryListReactor: BaseReactor, Reactor {
                     self.searchNearStores(
                         category: self.currentState.category,
                         currentLocation: currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? currentLocation,
+                        mapLocation: currentLocation,
                         orderType: self.currentState.orderType
                     )
                 ])

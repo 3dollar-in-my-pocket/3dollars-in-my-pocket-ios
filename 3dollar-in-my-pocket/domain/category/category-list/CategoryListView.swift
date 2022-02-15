@@ -77,18 +77,10 @@ final class CategoryListView: BaseView {
             CategoryListAdvertisementCell.self,
             forCellReuseIdentifier: CategoryListAdvertisementCell.registerId
         )
-    }
-    
-    private let emptyImage = UIImageView().then {
-        $0.image = R.image.img_empty()
-        $0.isHidden = true
-    }
-    
-    private let emptyLabel = UILabel().then {
-        $0.text = R.string.localization.category_list_empty()
-        $0.textColor = R.color.gray1()
-        $0.font = .bold(size: 16)
-        $0.isHidden = true
+        $0.register(
+            CategoryListEmptyCell.self,
+            forCellReuseIdentifier: CategoryListEmptyCell.registerId
+        )
     }
     
     
@@ -111,8 +103,6 @@ final class CategoryListView: BaseView {
             self.certificatedButton,
             self.orderFilterButton,
             self.storeTableView,
-            self.emptyImage,
-            self.emptyLabel,
             self.adBannerView
         ])
         self.adBannerView.delegate = self
@@ -194,41 +184,7 @@ final class CategoryListView: BaseView {
             make.left.right.equalToSuperview()
             make.height.equalTo(0)
         }
-        
-        self.emptyImage.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(self.adBannerView.snp.bottom).offset(19)
-        }
-        
-        self.emptyLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(self.emptyImage.snp.bottom).offset(8)
-        }
     }
-    
-//    func bind(stores: [Store?]) {
-//        self.emptyImage.isHidden = !stores.isEmpty
-//        self.emptyLabel.isHidden = !stores.isEmpty
-//
-//        if stores.isEmpty {
-//            self.containerView.snp.remakeConstraints { make in
-//                make.edges.equalToSuperview()
-//                make.width.equalTo(UIScreen.main.bounds.width)
-//                make.top.equalTo(self.mapView).priority(.high)
-//                make.bottom.equalTo(self.emptyLabel).priority(.high)
-//            }
-//        } else {
-//            self.storeTableView.snp.updateConstraints { make in
-//                make.height.equalTo(CGFloat(stores.count) * CategoryListStoreCell.height)
-//            }
-//            self.containerView.snp.remakeConstraints { make in
-//                make.edges.equalToSuperview()
-//                make.width.equalTo(UIScreen.main.bounds.width)
-//                make.top.equalTo(self.mapView).priority(.high)
-//                make.bottom.equalTo(self.storeTableView).priority(.high)
-//            }
-//        }
-//    }
     
     func calculateTableViewHeight(storeCellTypes: [StoreCellType]) {
         var height: CGFloat = 0
@@ -242,7 +198,7 @@ final class CategoryListView: BaseView {
                 height += CategoryListAdvertisementCell.height
                 
             case .empty:
-                height += CategoryListStoreCell.height
+                height += CategoryListEmptyCell.height
             }
         }
         
