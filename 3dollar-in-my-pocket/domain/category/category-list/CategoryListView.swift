@@ -1,10 +1,14 @@
 import UIKit
-
 import AppTrackingTransparency
+
+import RxSwift
+import RxCocoa
 import GoogleMobileAds
 import NMapsMap
 
 final class CategoryListView: BaseView {
+    private var markers: [NMFMarker] = []
+    private let bottomInset = 30
     
     private let navigationView = UIView().then {
         $0.layer.cornerRadius = 20
@@ -61,13 +65,17 @@ final class CategoryListView: BaseView {
     let storeTableView = UITableView().then {
         $0.backgroundColor = .clear
         $0.tableFooterView = UIView()
-        $0.rowHeight = CategoryListStoreCell.height
+        $0.rowHeight = UITableView.automaticDimension
         $0.separatorStyle = .none
         $0.showsVerticalScrollIndicator = false
         $0.isScrollEnabled = false
         $0.register(
             CategoryListStoreCell.self,
             forCellReuseIdentifier: CategoryListStoreCell.registerId
+        )
+        $0.register(
+            CategoryListAdvertisementCell.self,
+            forCellReuseIdentifier: CategoryListAdvertisementCell.registerId
         )
     }
     
@@ -198,13 +206,90 @@ final class CategoryListView: BaseView {
         }
     }
     
-    func bind(category: StoreCategory) {
+//    func bind(stores: [Store?]) {
+//        self.emptyImage.isHidden = !stores.isEmpty
+//        self.emptyLabel.isHidden = !stores.isEmpty
+//
+//        if stores.isEmpty {
+//            self.containerView.snp.remakeConstraints { make in
+//                make.edges.equalToSuperview()
+//                make.width.equalTo(UIScreen.main.bounds.width)
+//                make.top.equalTo(self.mapView).priority(.high)
+//                make.bottom.equalTo(self.emptyLabel).priority(.high)
+//            }
+//        } else {
+//            self.storeTableView.snp.updateConstraints { make in
+//                make.height.equalTo(CGFloat(stores.count) * CategoryListStoreCell.height)
+//            }
+//            self.containerView.snp.remakeConstraints { make in
+//                make.edges.equalToSuperview()
+//                make.width.equalTo(UIScreen.main.bounds.width)
+//                make.top.equalTo(self.mapView).priority(.high)
+//                make.bottom.equalTo(self.storeTableView).priority(.high)
+//            }
+//        }
+//    }
+    
+    func calculateTableViewHeight(storeCellTypes: [StoreCellType]) {
+        var height: CGFloat = 0
+        
+        for cellType in storeCellTypes {
+            switch cellType {
+            case .store:
+                height += CategoryListStoreCell.height
+                
+            case .advertisement:
+                height += CategoryListAdvertisementCell.height
+                
+            case .empty:
+                height += CategoryListStoreCell.height
+            }
+        }
+        
+        self.storeTableView.snp.updateConstraints { make in
+            make.height.equalTo(height)
+        }
+        self.containerView.snp.remakeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalTo(UIScreen.main.bounds.width)
+            make.top.equalTo(self.mapView).priority(.high)
+            make.bottom.equalTo(self.storeTableView).offset(self.bottomInset).priority(.high)
+        }
+    }
+    
+    func setMarkers(storeCellTypes: [StoreCellType]) {
+        self.clearMarkers()
+        
+        for cellType in storeCellTypes {
+            if case .store(let store) = cellType {
+                let marker = NMFMarker()
+                
+                marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
+                marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
+                marker.mapView = self.mapView
+                self.markers.append(marker)
+            }
+        }
+    }
+    
+    fileprivate func moveCamera(position: CLLocation) {
+        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
+            lat: position.coordinate.latitude,
+            lng: position.coordinate.longitude
+        ))
+        cameraUpdate.animation = .easeIn
+        
+        self.mapView.moveCamera(cameraUpdate)
+    }
+    
+    fileprivate func bind(category: StoreCategory) {
         self.categoryImage.image = category.image
         self.categoryLabel.text = category.name
         
         let text = "category_list_\(category.lowcase)".localized
         let attributedString = NSMutableAttributedString(string: text)
-        let boldTextRange = (text as NSString).range(of: "shared_category_\(category.lowcase)".localized)
+        let boldTextRange
+        = (text as NSString).range(of: "shared_category_\(category.lowcase)".localized)
         
         attributedString.addAttribute(
             .font,
@@ -219,40 +304,6 @@ final class CategoryListView: BaseView {
         self.categoryTitleLabel.attributedText = attributedString
     }
     
-    func bind(stores: [Store?]) {
-        self.emptyImage.isHidden = !stores.isEmpty
-        self.emptyLabel.isHidden = !stores.isEmpty
-        
-        if stores.isEmpty {
-            self.containerView.snp.remakeConstraints { make in
-                make.edges.equalToSuperview()
-                make.width.equalTo(UIScreen.main.bounds.width)
-                make.top.equalTo(self.mapView).priority(.high)
-                make.bottom.equalTo(self.emptyLabel).priority(.high)
-            }
-        } else {
-            self.storeTableView.snp.updateConstraints { make in
-                make.height.equalTo(CGFloat(stores.count) * CategoryListStoreCell.height)
-            }
-            self.containerView.snp.remakeConstraints { make in
-                make.edges.equalToSuperview()
-                make.width.equalTo(UIScreen.main.bounds.width)
-                make.top.equalTo(self.mapView).priority(.high)
-                make.bottom.equalTo(self.storeTableView).priority(.high)
-            }
-        }
-    }
-    
-    func moveCemra(location: CLLocation) {
-        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(
-            lat: location.coordinate.latitude,
-            lng: location.coordinate.longitude
-        ))
-        cameraUpdate.animation = .easeIn
-        
-        self.mapView.moveCamera(cameraUpdate)
-    }
-    
     private func loadAd() {
         let viewWidth = UIScreen.main.bounds.width
         
@@ -265,6 +316,26 @@ final class CategoryListView: BaseView {
             })
         } else {
             self.adBannerView.load(GADRequest())
+        }
+    }
+    
+    private func clearMarkers() {
+        for marker in self.markers {
+            marker.mapView = nil
+        }
+    }
+}
+
+extension Reactive where Base: CategoryListView {
+    var category: Binder<StoreCategory> {
+        return Binder(self.base) { view, category in
+            view.bind(category: category)
+        }
+    }
+    
+    var cameraPosition: Binder<CLLocation> {
+        return Binder(self.base) { view, cameraPosition in
+            view.moveCamera(position: cameraPosition)
         }
     }
 }

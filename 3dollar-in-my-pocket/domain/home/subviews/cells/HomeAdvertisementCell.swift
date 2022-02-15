@@ -26,7 +26,7 @@ final class HomeAdvertisementCell: BaseCollectionViewCell {
         $0.backgroundColor = UIColor(r: 255, g: 92, b: 67, a: 0.2)
         $0.layer.cornerRadius = 11
         $0.textColor = R.color.red()
-        $0.text = "광고"
+        $0.text = "shared_advertisement".localized
         $0.font = .medium(size: 12)
         $0.layer.masksToBounds = true
     }
