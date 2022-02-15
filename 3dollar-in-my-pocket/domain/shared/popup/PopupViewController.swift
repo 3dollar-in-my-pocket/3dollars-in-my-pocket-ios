@@ -7,8 +7,8 @@ final class PopupViewController: BaseVC, PopupCoordinator {
     private let popupView = PopupView()
     private let viewModel: PopupViewModel
     
-    init(popup: Popup) {
-        self.viewModel = PopupViewModel(event: popup, userDefaults: UserDefaultsUtil())
+    init(advertisement: Advertisement) {
+        self.viewModel = PopupViewModel(advertisement: advertisement, userDefaults: UserDefaultsUtil())
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -17,8 +17,8 @@ final class PopupViewController: BaseVC, PopupCoordinator {
         fatalError("init(coder:) has not been implemented")
     }
     
-    static func instance(popup: Popup) -> PopupViewController {
-        return PopupViewController(popup: popup).then {
+    static func instance(advertisement: Advertisement) -> PopupViewController {
+        return PopupViewController(advertisement: advertisement).then {
             $0.modalPresentationStyle = .fullScreen
             $0.modalTransitionStyle = .crossDissolve
         }
@@ -57,10 +57,10 @@ final class PopupViewController: BaseVC, PopupCoordinator {
     }
     
     override func bindViewModelOutput() {
-        self.viewModel.output.popup
-            .asDriver(onErrorJustReturn: Popup())
-            .drive(onNext: { [weak self] popup in
-                self?.popupView.bind(popup: popup)
+        self.viewModel.output.advertisement
+            .asDriver(onErrorJustReturn: Advertisement())
+            .drive(onNext: { [weak self] advertisement in
+                self?.popupView.bind(advertisement: advertisement)
             })
             .disposed(by: self.disposeBag)
         

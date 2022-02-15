@@ -4,7 +4,7 @@ protocol CategoryCoordinator: AnyObject, Coordinator {
 
 extension CategoryCoordinator {
     func pushCategoryList(category: StoreCategory) {
-        let viewController = CategoryListVC.instance(category: category)
+        let viewController = CategoryListViewController.instance(category: category)
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }

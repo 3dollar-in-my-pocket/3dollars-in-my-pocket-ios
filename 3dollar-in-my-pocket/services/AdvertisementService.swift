@@ -2,14 +2,18 @@ import Foundation
 
 import RxSwift
 
-protocol PopupServiceProtocol {
-    func fetchPopups(position: PopupPosition) -> Observable<[PopupResponse]>
+protocol AdvertisementServiceProtocol {
+    func fetchAdvertisements(
+        position: AdvertisementPosition
+    ) -> Observable<[AdvertisementResponse]>
 }
 
-struct PopupService: PopupServiceProtocol {
-    func fetchPopups(position: PopupPosition) -> Observable<[PopupResponse]> {
+struct AdvertisementService: AdvertisementServiceProtocol {
+    func fetchAdvertisements(
+        position: AdvertisementPosition
+    ) -> Observable<[AdvertisementResponse]> {
         return .create { observer in
-            let urlString = HTTPUtils.url + "/api/v1/popups"
+            let urlString = HTTPUtils.url + "/api/v1/advertisements"
             let parameters: [String: Any] = [
                 "platform": "IOS",
                 "position": position.rawValue
@@ -21,7 +25,7 @@ struct PopupService: PopupServiceProtocol {
                 parameters: parameters
             ).responseJSON { response in
                 if response.isSuccess() {
-                    observer.processValue(class: [PopupResponse].self, response: response)
+                    observer.processValue(class: [AdvertisementResponse].self, response: response)
                 } else {
                     observer.processHTTPError(response: response)
                 }

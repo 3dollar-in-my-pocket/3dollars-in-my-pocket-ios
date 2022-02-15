@@ -71,7 +71,7 @@ final class PopupView: BaseView {
         }
     }
     
-    func bind(popup: Popup) {
-        bannerButton.kf.setImage(with: URL.init(string: popup.imageUrl), for: .normal)
+    func bind(advertisement: Advertisement) {
+        bannerButton.kf.setImage(with: URL.init(string: advertisement.imageUrl), for: .normal)
     }
 }

@@ -1,4 +1,4 @@
-struct Popup {
+struct Advertisement {
     let id: Int
     let bgColor: String
     let fontColor: String
@@ -7,7 +7,7 @@ struct Popup {
     let subTitle: String
     let title: String
     
-    init(response: PopupResponse) {
+    init(response: AdvertisementResponse) {
         self.id = 0
         self.bgColor = response.bgColor
         self.fontColor = response.fontColor

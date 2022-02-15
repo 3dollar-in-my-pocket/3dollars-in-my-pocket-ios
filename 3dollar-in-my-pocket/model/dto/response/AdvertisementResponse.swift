@@ -1,6 +1,6 @@
 import Foundation
 
-struct PopupResponse: Decodable {
+struct AdvertisementResponse: Decodable {
     let bgColor: String
     let fontColor: String
     let imageUrl: String
