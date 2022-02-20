@@ -11,27 +11,27 @@ final class CategoryReactor: BaseReactor, Reactor {
     }
     
     enum Mutation {
-        case setCategories(categories: [MenuCategory], advertisement: Popup?)
+        case setCategories(categories: [MenuCategory], advertisement: Advertisement?)
         case goToWeb(url: String)
         case pushCategoryList(category: StoreCategory)
         case showErrorAlert(Error)
     }
     
     struct State {
-        var categorySections: [SectionModel<Popup?, MenuCategory>] = []
+        var categorySections: [SectionModel<Advertisement?, MenuCategory>] = []
     }
     
     let initialState = State()
     let pushCategoryListPublisher = PublishRelay<StoreCategory>()
     private let categoryService: CategoryServiceProtocol
-    private let popupService: PopupServiceProtocol
+    private let advertisementService: AdvertisementServiceProtocol
   
     init(
         categoryService: CategoryServiceProtocol,
-        popupService: PopupServiceProtocol
+        advertisementService: AdvertisementServiceProtocol
     ) {
         self.categoryService = categoryService
-        self.popupService = popupService
+        self.advertisementService = advertisementService
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
@@ -85,9 +85,9 @@ final class CategoryReactor: BaseReactor, Reactor {
             .map { $0.map(MenuCategory.init(response:)) }
     }
     
-    private func fetchAdvertisement() -> Observable<Popup?> {
-        return self.popupService.fetchPopups(position: .menuCategoryBanner)
-            .map { $0.map(Popup.init(response:)).first }
+    private func fetchAdvertisement() -> Observable<Advertisement?> {
+        return self.advertisementService.fetchAdvertisements(position: .menuCategoryBanner)
+            .map { $0.map(Advertisement.init(response:)).first }
     }
   
   private func logGA(category: StoreCategory) {

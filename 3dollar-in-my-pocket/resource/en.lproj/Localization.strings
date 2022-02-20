@@ -141,6 +141,7 @@
 "shared_store_type_store" = "매장";
 "shared_store_type_convenience_store" = "편의점";
 "shared_category_dalgona" = "달고나";
+"shared_advertisement" = "광고";
 "store_detail_delete_request" = "삭제요청";
 "store_detail_share" = "공유하기";
 "store_detail_transfer" = "송금하기";
@@ -218,7 +219,8 @@
 "my_review_empty_title" = "아직 작성한 리뷰가 없어요!";
 "home_research" = "현재 지도에서 가게 재검색";
 "home_empty_title" = "주변에 가게가 없어요.";
-"home_empty_description" = "다른 주소로 검색하거나 직접 제보해보세요!";
+"home_empty_description" = "다른 주소로 검색하거나\n직접 제보해보세요!";
+"home_visit" = "방문하기";
 "permission_denied_title" = "권한이 거절되었어요😭";
 "permission_denied_description" = "설정에서 해당 권한을 허용해 주세요!!";
 "permission_setting_button" = "설정";

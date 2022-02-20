@@ -40,7 +40,7 @@ final class AdBannerHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(advertisement: Popup) {
+    func bind(advertisement: Advertisement) {
         self.titleLabel.text = advertisement.title
         self.titleLabel.textColor = .init(hex: advertisement.fontColor)
         self.titleLabel.setKern(kern: -0.4)

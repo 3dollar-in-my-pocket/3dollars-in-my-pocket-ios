@@ -32,7 +32,7 @@ class TabBarVC: UITabBarController {
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = .white
             self.tabBar.standardAppearance = appearance
-            //      self.tabBar.scrollEdgeAppearance = appearance
+            self.tabBar.scrollEdgeAppearance = appearance
         }
     }
     
@@ -46,7 +46,7 @@ class TabBarVC: UITabBarController {
                 appearance.configureWithOpaqueBackground()
                 appearance.backgroundColor = R.color.gray100()
                 self.tabBar.standardAppearance = appearance
-                //        self.tabBar.scrollEdgeAppearance = appearance
+                self.tabBar.scrollEdgeAppearance = appearance
             }
         case TabBarTag.home.rawValue, TabBarTag.category.rawValue:
             self.tabBar.barTintColor = .white
@@ -55,7 +55,7 @@ class TabBarVC: UITabBarController {
                 appearance.configureWithOpaqueBackground()
                 appearance.backgroundColor = .white
                 self.tabBar.standardAppearance = appearance
-                //        self.tabBar.scrollEdgeAppearance = appearance
+                self.tabBar.scrollEdgeAppearance = appearance
             }
         default:
             break
@@ -100,7 +100,7 @@ class TabBarVC: UITabBarController {
     
     private func setupTabBarController() {
         self.setViewControllers([
-            HomeVC.instance(),
+            HomeViewController.instance(),
             CategoryViewController.instance(),
             WriteAddressViewController.instance(delegate: self),
             MyPageViewController.instance()
@@ -137,29 +137,29 @@ class TabBarVC: UITabBarController {
     private func goToStoreDetail(storeId: Int) {
         self.selectedIndex = 0
         if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-           let homeVC = navigationVC.topViewController as? HomeVC {
-            homeVC.coordinator?.goToDetail(storeId: storeId)
+           let homeVC = navigationVC.topViewController as? HomeViewController {
+            homeVC.coordinator?.pushStoreDetail(storeId: storeId)
         }
     }
     
     private func checkIfBannerExisted() {
-        PopupService().fetchPopups(position: .splash)
-            .map { $0.map { Popup.init(response: $0)} }
+        AdvertisementService().fetchAdvertisements(position: .splash)
+            .map { $0.map { Advertisement.init(response: $0)} }
             .subscribe(
-                onNext: { [weak self] popups in
-                    if !popups.isEmpty {
+                onNext: { [weak self] advertisements in
+                    if !advertisements.isEmpty {
                         if let isDisable
-                            = UserDefaultsUtil.getEventDisableToday(id: popups[0].id) {
+                            = UserDefaultsUtil.getEventDisableToday(id: advertisements[0].id) {
                             if isDisable != DateUtils.todayString() {
                                 // 다시보기 설정한 날짜가 오늘이 아니라면 팝업띄우기
                                 self?.present(
-                                    PopupViewController.instance(popup: popups[0]),
+                                    PopupViewController.instance(advertisement: advertisements[0]),
                                     animated: false
                                 )
                             }
                         } else {
                             self?.present(
-                                PopupViewController.instance(popup: popups[0]),
+                                PopupViewController.instance(advertisement: advertisements[0]),
                                 animated: false
                             )
                         }
@@ -173,10 +173,10 @@ extension TabBarVC: WriteAddressDelegate {
     func onWriteSuccess(storeId: Int) {
         self.selectedIndex = 0
         if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-           let homeVC = navigationVC.viewControllers[0] as? HomeVC {
+           let homeVC = navigationVC.viewControllers[0] as? HomeViewController {
             navigationVC.popToRootViewController(animated: false)
-            homeVC.fetchStoresFromCurrentLocation()
-            homeVC.coordinator?.goToDetail(storeId: storeId)
+//            homeVC.fetchStoresFromCurrentLocation()
+            homeVC.coordinator?.pushStoreDetail(storeId: storeId)
         }
     }
 }
