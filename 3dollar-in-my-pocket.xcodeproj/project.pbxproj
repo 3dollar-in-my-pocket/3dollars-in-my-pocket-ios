@@ -1947,7 +1947,7 @@
 				6E0EA39023ABB230008F7CB2 /* Frameworks */,
 				6E0EA39123ABB230008F7CB2 /* Resources */,
 				6ECCFA8823EA41D1001A565E /* ShellScript */,
-				6EA92ED4258E3643009B6227 /* ShellScript */,
+				6EA92ED4258E3643009B6227 /* Sync String */,
 				6EFC89DC268B51C100B3414F /* ShellScript */,
 				B2A25EA6465C94978C1F9E16 /* [CP] Embed Pods Frameworks */,
 				6EC0E972279AE51E0068D4FB /* Embed App Extensions */,
@@ -2141,7 +2141,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncase \"${CONFIGURATION}\" in\n  \"Debug\" )\ncp -r \"$SRCROOT/3dollar-in-my-pocket/resource/firebase/GoogleService-Info-Dev.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\" ;;\n  \"Release\" )\ncp -r \"$SRCROOT/3dollar-in-my-pocket/resource/firebase/GoogleService-Info-Prod.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\" ;;\n*)\n;;\nesac\n";
 		};
-		6EA92ED4258E3643009B6227 /* ShellScript */ = {
+		6EA92ED4258E3643009B6227 /* Sync String */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2150,13 +2150,14 @@
 			);
 			inputPaths = (
 			);
+			name = "Sync String";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\npython $TARGET_NAME/script/string_resource.py $TARGET_NAME\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\npython3 $TARGET_NAME/script/string_resource.py $TARGET_NAME\n";
 		};
 		6ECCFA8823EA41D1001A565E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -1,11 +1,13 @@
+#-*- coding=utf-8 -*-
 
 import os
 import sys
 import urllib
 import csv
+from imp import reload
+from urllib.request import urlretrieve
 
 reload(sys)
-sys.setdefaultencoding('utf-8')
 
 gdoc_id = "1Af6kiSYN-uPgxGfHZSewH6lzHsXtHZsZeDuclEYUC60/edit#gid=0"
 
@@ -37,7 +39,7 @@ def export_csv_from_sheet(gdoc_id, download_path=None, ):
     print('Downloading spreadsheet to %s' % file_name)
 
     url = 'https://docs.google.com/spreadsheet/ccc?key=%s&output=csv&gid=%s' % (resource, tab)
-    urllib.urlretrieve(url, file_name)
+    urlretrieve(url, file_name)
 
     print("Download Completed!")
 
