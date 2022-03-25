@@ -1941,14 +1941,14 @@
 			buildConfigurationList = 6E0EA3BD23ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocket" */;
 			buildPhases = (
 				ABE94685D6CD1BBEB7C4DB8B /* [CP] Check Pods Manifest.lock */,
-				6E8E2414256A8D3C00AE6479 /* ShellScript */,
+				6E8E2414256A8D3C00AE6479 /* GoogleService Info */,
 				6EFC89DD268B62AA00B3414F /* ShellScript */,
 				6E0EA38F23ABB230008F7CB2 /* Sources */,
 				6E0EA39023ABB230008F7CB2 /* Frameworks */,
 				6E0EA39123ABB230008F7CB2 /* Resources */,
-				6ECCFA8823EA41D1001A565E /* ShellScript */,
+				6ECCFA8823EA41D1001A565E /* FirebaseCrashlytics */,
 				6EA92ED4258E3643009B6227 /* Sync String */,
-				6EFC89DC268B51C100B3414F /* ShellScript */,
+				6EFC89DC268B51C100B3414F /* Swift Lint */,
 				B2A25EA6465C94978C1F9E16 /* [CP] Embed Pods Frameworks */,
 				6EC0E972279AE51E0068D4FB /* Embed App Extensions */,
 			);
@@ -2124,7 +2124,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		6E8E2414256A8D3C00AE6479 /* ShellScript */ = {
+		6E8E2414256A8D3C00AE6479 /* GoogleService Info */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2133,6 +2133,7 @@
 			);
 			inputPaths = (
 			);
+			name = "GoogleService Info";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -2159,7 +2160,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\npython3 $TARGET_NAME/script/string_resource.py $TARGET_NAME\n";
 		};
-		6ECCFA8823EA41D1001A565E /* ShellScript */ = {
+		6ECCFA8823EA41D1001A565E /* FirebaseCrashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2170,6 +2171,7 @@
 				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
 				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 			);
+			name = FirebaseCrashlytics;
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -2178,7 +2180,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
-		6EFC89DC268B51C100B3414F /* ShellScript */ = {
+		6EFC89DC268B51C100B3414F /* Swift Lint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2187,6 +2189,7 @@
 			);
 			inputPaths = (
 			);
+			name = "Swift Lint";
 			outputFileListPaths = (
 			);
 			outputPaths = (
