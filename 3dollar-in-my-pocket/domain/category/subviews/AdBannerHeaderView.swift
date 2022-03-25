@@ -15,6 +15,12 @@ final class AdBannerHeaderView: UICollectionReusableView {
         $0.layer.cornerRadius = 12
     }
     
+    private let stackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 0
+        $0.alignment = .leading
+    }
+    
     private let titleLabel = UILabel().then {
         $0.font = .bold(size: 14)
         $0.textAlignment = .left
@@ -49,13 +55,19 @@ final class AdBannerHeaderView: UICollectionReusableView {
         self.descriptionLabel.setKern(kern: -0.2)
         self.rightImageView.setImage(urlString: advertisement.imageUrl)
         self.containerView.backgroundColor = .init(hex: advertisement.bgColor)
+        if advertisement.subTitle.count < 21 {
+            self.stackView.spacing = 0
+        } else {
+            self.stackView.spacing = 8
+        }
     }
     
     private func setup() {
+        self.stackView.addArrangedSubview(self.titleLabel)
+        self.stackView.addArrangedSubview(self.descriptionLabel)
         self.addSubViews([
             self.containerView,
-            self.titleLabel,
-            self.descriptionLabel,
+            self.stackView,
             self.rightImageView,
             self.button
         ])
@@ -69,16 +81,10 @@ final class AdBannerHeaderView: UICollectionReusableView {
             make.height.equalTo(84)
         }
         
-        self.titleLabel.snp.makeConstraints { make in
+        self.stackView.snp.makeConstraints { make in
+            make.centerY.equalTo(self.containerView)
             make.left.equalTo(self.containerView).offset(16)
-            make.top.equalTo(self.containerView).offset(16)
             make.right.equalTo(self.rightImageView.snp.left)
-        }
-        
-        self.descriptionLabel.snp.makeConstraints { make in
-            make.left.equalTo(self.titleLabel)
-            make.right.equalTo(self.titleLabel)
-            make.top.equalTo(self.titleLabel.snp.bottom).offset(4)
         }
         
         self.rightImageView.snp.makeConstraints { make in
