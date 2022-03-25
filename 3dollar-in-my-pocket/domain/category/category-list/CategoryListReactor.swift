@@ -196,22 +196,7 @@ final class CategoryListReactor: BaseReactor, Reactor {
     
     private func fetchAdvertisement() -> Observable<Advertisement?> {
         return self.advertisementService
-            .fetchAdvertisements(position: .mainPageCard)
+            .fetchAdvertisements(position: .storeCategoryList)
             .map { $0.map(Advertisement.init(response:)).first }
     }
-    //    .subscribe { [weak self] stores in
-    //      guard let self = self else { return }
-    //      self.model.stores = stores
-    //
-    //      if self.model.isOnlyCertificated {
-    //        let certificatedStores = stores.filter { $0.visitHistory.isCertified }
-    //
-    //        self.ouput.stores.accept(certificatedStores)
-    //      } else {
-    //        self.ouput.stores.accept(stores)
-    //      }
-    //    } onError: { [weak self] error in
-    //      self?.showErrorAlert.accept(error)
-    //    }
-    //    .disposed(by: self.disposeBag)
 }
