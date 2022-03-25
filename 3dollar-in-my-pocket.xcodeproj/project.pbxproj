@@ -2846,7 +2846,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				TOSS_SCHEME = "https://service.toss.im/transfer/bridge/open-transfer?type=send";
 			};
 			name = Debug;
 		};
@@ -2900,7 +2899,6 @@
 				PRODUCT_NAME = "dollar-in-my-pocket";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				TOSS_SCHEME = "https://service.toss.im/transfer/bridge/open-transfer?type=send";
 			};
 			name = Release;
 		};
