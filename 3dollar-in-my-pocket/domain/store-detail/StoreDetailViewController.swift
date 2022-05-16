@@ -92,10 +92,6 @@ final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
       .bind(to: self.viewModel.input.tapShareButton)
       .disposed(by: self.disposeBag)
     
-    self.storeDetailView.rx.tapTransferButton
-      .bind(to: self.viewModel.input.tapTransferButton)
-      .disposed(by: self.disposeBag)
-    
     self.storeDetailView.storeVisitHistoryView.rx.tap
         .bind(to: self.viewModel.input.tapVisitHistoryButton)
         .disposed(by: self.disposeBag)

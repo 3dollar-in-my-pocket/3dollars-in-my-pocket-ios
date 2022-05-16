@@ -63,18 +63,6 @@ final class StoreOverview: BaseView {
     $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
   }
   
-  private let dividorView = UIView().then {
-    $0.backgroundColor = UIColor(r: 208, g: 208, b: 208)
-  }
-  
-  let transferButton = UIButton().then {
-    $0.setImage(UIImage(named: "ic_transfer"), for: .normal)
-    $0.setTitle("store_detail_transfer".localized, for: .normal)
-    $0.setTitleColor(UIColor(r: 0, g: 80, b: 255), for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
-    $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
-  }
-  
   override func setup() {
     self.isUserInteractionEnabled = true
     self.backgroundColor = .clear
@@ -88,9 +76,7 @@ final class StoreOverview: BaseView {
       distanceLabel,
       starImage,
       starLabel,
-      shareButton,
-      transferButton,
-      dividorView
+      shareButton
     ])
   }
   
@@ -109,8 +95,7 @@ final class StoreOverview: BaseView {
       make.left.equalToSuperview().offset(24)
       make.right.equalToSuperview().offset(-24)
       make.top.equalTo(self.mapView.snp.bottom).offset(-32)
-      make.bottom.equalTo(self.dividorView)
-        .offset(10)
+      make.bottom.equalTo(self.shareButton).offset(10)
       make.bottom.equalToSuperview()
     }
     
@@ -149,22 +134,8 @@ final class StoreOverview: BaseView {
     self.shareButton.snp.makeConstraints { make in
       make.top.equalTo(self.distanceLabel.snp.bottom).offset(36)
       make.left.equalTo(self.overViewContainerView)
-      make.right.equalTo(self.snp.centerX)
-      make.height.equalTo(32)
-    }
-    
-    self.transferButton.snp.makeConstraints { make in
-      make.left.equalTo(self.snp.centerX)
       make.right.equalTo(self.overViewContainerView)
-      make.centerY.equalTo(self.shareButton)
       make.height.equalTo(32)
-    }
-    
-    self.dividorView.snp.makeConstraints { make in
-      make.centerX.equalToSuperview()
-      make.centerY.equalTo(self.shareButton)
-      make.height.equalTo(32)
-      make.width.equalTo(1)
     }
     
     self.snp.makeConstraints { make in

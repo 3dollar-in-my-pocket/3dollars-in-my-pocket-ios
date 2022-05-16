@@ -237,10 +237,6 @@ extension Reactive where Base: StoreDetailView {
     return base.storeOverview.shareButton.rx.tap
   }
   
-  var tapTransferButton: ControlEvent<Void> {
-    return base.storeOverview.transferButton.rx.tap
-  }
-  
   var tapEditStore: ControlEvent<Void> {
     return base.storeInfoView.editButton.rx.tap
   }

@@ -102,8 +102,6 @@
 			<string>cstr6suwn9.skadnetwork</string>
 		</dict>
 	</array>
-	<key>Toss scheme</key>
-	<string>$(TOSS_SCHEME)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AppleSDGothicNeoEB00.ttf</string>

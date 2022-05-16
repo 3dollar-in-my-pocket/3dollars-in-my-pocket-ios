@@ -59,16 +59,6 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
                 self?.coordinator?.showSearchAddress()
             })
             .disposed(by: self.eventDisposeBag)
-                
-        self.homeView.tossButton.rx.tap
-            .asDriver()
-            .do(onNext: { _ in
-                GA.shared.logEvent(event: .toss_button_clicked, page: .home_page)
-            })
-            .drive(onNext: { [weak self] in
-                self?.coordinator?.goToToss()
-            })
-            .disposed(by: self.eventDisposeBag)
         
         self.homeReactor.pushStoreDetailPublisher
             .asDriver(onErrorJustReturn: -1)
