@@ -66,14 +66,6 @@ final class HomeView: BaseView {
         $0.layer.shadowOpacity = 0.15
         $0.accessibilityLabel = "현재 위치"
     }
-    
-    let tossButton = UIButton().then {
-        $0.setImage(R.image.ic_toss(), for: .normal)
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowOpacity = 0.15
-        $0.accessibilityLabel = "토스 송금하기"
-    }
   
     override func setup() {
         self.backgroundColor = .white
@@ -83,8 +75,7 @@ final class HomeView: BaseView {
             self.addressContainerView,
             self.addressButton,
             self.storeCollectionView,
-            self.currentLocationButton,
-            self.tossButton
+            self.currentLocationButton
         ])
     }
   
@@ -117,14 +108,9 @@ final class HomeView: BaseView {
             make.height.equalTo(124)
         }
         
-        self.tossButton.snp.makeConstraints { make in
+        self.currentLocationButton.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-24)
             make.bottom.equalTo(self.storeCollectionView.snp.top).offset(-40)
-        }
-        
-        self.currentLocationButton.snp.makeConstraints { (make) in
-            make.right.equalTo(self.tossButton)
-            make.bottom.equalTo(self.tossButton.snp.top).offset(-12)
         }
     }
   

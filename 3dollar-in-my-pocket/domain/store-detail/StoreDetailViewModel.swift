@@ -19,7 +19,6 @@ class StoreDetailViewModel: BaseViewModel {
     let fetch = PublishSubject<Void>()
     let tapDeleteRequest = PublishSubject<Void>()
     let tapShareButton = PublishSubject<Void>()
-    let tapTransferButton = PublishSubject<Void>()
     let tapVisitHistoryButton = PublishSubject<Void>()
     let tapEditStoreButton = PublishSubject<Void>()
     let tapAddPhotoButton = PublishSubject<Void>()
@@ -88,10 +87,6 @@ class StoreDetailViewModel: BaseViewModel {
     self.input.tapShareButton
       .compactMap { self.model.store }
       .bind(onNext: self.shareToKakao(store:))
-      .disposed(by: disposeBag)
-    
-    self.input.tapTransferButton
-      .bind(onNext: self.goToToss)
       .disposed(by: disposeBag)
     
     self.input.tapVisitHistoryButton
@@ -217,14 +212,7 @@ class StoreDetailViewModel: BaseViewModel {
       }
     }
   }
-  
-  private func goToToss() {
-    let tossScheme = Bundle.main.object(forInfoDictionaryKey: "Toss scheme") as? String ?? ""
-    guard let url = URL(string: tossScheme) else { return }
     
-    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-  }
-  
   private func deleteReview(reviewId: Int) {
     self.showLoading.accept(true)
     self.reviewService.deleteReview(reviewId: reviewId)

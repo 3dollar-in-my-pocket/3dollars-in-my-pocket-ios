@@ -12,7 +12,6 @@ protocol HomeCoordinator: Coordinator, AnyObject {
     func pushStoreDetail(storeId: Int)
     func showDenyAlert()
     func goToAppSetting()
-    func goToToss()
     func showSearchAddress()
     func presentVisit(store: Store)
 }
@@ -47,13 +46,6 @@ extension HomeCoordinator where Self: UIViewController {
         if UIApplication.shared.canOpenURL(settingsUrl) {
             UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
         }
-    }
-    
-    func goToToss() {
-        let tossScheme = Bundle.main.object(forInfoDictionaryKey: "Toss scheme") as? String ?? ""
-        guard let url = URL(string: tossScheme) else { return }
-        
-        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
     
     func showSearchAddress() {

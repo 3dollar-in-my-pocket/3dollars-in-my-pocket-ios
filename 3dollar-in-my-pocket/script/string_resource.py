@@ -51,7 +51,7 @@ def get_strings_from_csv(savepath, file_name):
 
     source_csv = open(file_name, "r")
     csv_reader = csv.reader(source_csv)
-    header = csv_reader.next()
+    header = csv_reader.__next__()
     index_key = header.index("key")
     index_ko = header.index("ko")
 
