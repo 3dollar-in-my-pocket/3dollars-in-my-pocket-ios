@@ -52,9 +52,13 @@ final class RenameViewModel: BaseViewModel {
     self.userService.changeNickname(name: name)
       .map { _ in Void() }
       .subscribe(
-        onNext: self.output.popViewController.accept(_:),
-        onError: self.handleNicknameError(error:)
-      )
+        onNext: { [weak self] in
+            self?.showLoading.accept(false)
+            self?.output.popViewController.accept(())
+        },
+        onError: { [weak self] error in
+            self?.handleNicknameError(error: error)
+        })
       .disposed(by: self.disposeBag)
   }
   

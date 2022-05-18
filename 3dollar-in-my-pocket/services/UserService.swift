@@ -9,7 +9,7 @@ protocol UserServiceProtocol {
     
     func withdrawal() -> Observable<Void>
     
-    func changeNickname(name: String) -> Observable<User>
+    func changeNickname(name: String) -> Observable<Void>
     
     func fetchUserInfo() -> Observable<UserInfoResponse>
     
@@ -93,7 +93,7 @@ struct UserService: UserServiceProtocol {
         }
     }
     
-    func changeNickname(name: String) -> Observable<User> {
+    func changeNickname(name: String) -> Observable<Void> {
         return Observable.create { observer -> Disposable in
             let urlString = HTTPUtils.url + "/api/v2/user/me"
             let headers = HTTPUtils.defaultHeader()
@@ -107,7 +107,7 @@ struct UserService: UserServiceProtocol {
                 headers: headers
             ).responseJSON { response in
                 if response.isSuccess() {
-//                    observer.processValue(class: User.self, response: response)
+                    observer.onNext(())
                     observer.onCompleted()
                 } else {
                     if response.response?.statusCode == 409 {
