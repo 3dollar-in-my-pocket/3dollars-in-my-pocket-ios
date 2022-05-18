@@ -251,6 +251,7 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
         for marker in self.markers {
             marker.mapView = nil
         }
+        self.markers.removeAll()
     }
   
     private func handleLocationError(locationError: LocationError) {
