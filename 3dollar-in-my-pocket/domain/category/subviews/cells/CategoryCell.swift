@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 final class CategoryCell: BaseCollectionViewCell {
     static let registerId = "\(CategoryCell.self)"
     static let size = CGSize(

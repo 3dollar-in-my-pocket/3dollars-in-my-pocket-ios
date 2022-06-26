@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 final class MyVisitHistoryCell: BaseCollectionViewCell {
     
     static let registerId = "\(MyVisitHistoryCell.self)"

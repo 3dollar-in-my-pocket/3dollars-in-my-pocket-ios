@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 class WriteCategoryCell: BaseCollectionViewCell {
   
   static let registerId = "\(WriteCategoryCell.self)"

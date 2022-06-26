@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 final class HomeAdvertisementCell: BaseCollectionViewCell {
     static let registerId = "\(HomeAdvertisementCell.self)"
     
