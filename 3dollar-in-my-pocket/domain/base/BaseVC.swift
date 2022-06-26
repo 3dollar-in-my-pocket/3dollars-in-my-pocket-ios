@@ -1,10 +1,9 @@
 import UIKit
+
+import Base
 import RxSwift
 
-class BaseVC: UIViewController {
-    var disposeBag = DisposeBag()
-    let eventDisposeBag = DisposeBag()
-    
+class BaseVC: Base.BaseViewController {
     private lazy var dimView = UIView(frame: self.view.frame).then {
         $0.backgroundColor = .clear
     }
@@ -22,8 +21,6 @@ class BaseVC: UIViewController {
     func bindViewModelInput() { }
     
     func bindViewModelOutput() { }
-    
-    func bindEvent() { }
     
     func showRootLoading(isShow: Bool) {
         if let tabBarVC = self.navigationController?.parent as? TabBarVC {
@@ -63,13 +60,13 @@ class BaseVC: UIViewController {
         }
     }
     
-    func showErrorAlert(error: Error) {
+    override func showErrorAlert(error: Error) {
         if let httpError = error as? HTTPError {
             self.showHTTPErrorAlert2(error: httpError)
         } else if let baseError = error as? BaseError {
             self.showBaseErrorAlert(error: baseError)
         } else {
-            self.showDefaultErrorAlert(error: error)
+            super.showErrorAlert(error: error)
         }
     }
     
@@ -130,21 +127,5 @@ class BaseVC: UIViewController {
             title: nil,
             message: error.errorDescription
         )
-    }
-    
-    private func showDefaultErrorAlert(error: Error) {
-        if let localizedError = error as? LocalizedError {
-            AlertUtils.show(
-                controller: self,
-                title: nil,
-                message: localizedError.errorDescription
-            )
-        } else {
-            AlertUtils.show(
-                controller: self,
-                title: nil,
-                message: error.localizedDescription
-            )
-        }
     }
 }

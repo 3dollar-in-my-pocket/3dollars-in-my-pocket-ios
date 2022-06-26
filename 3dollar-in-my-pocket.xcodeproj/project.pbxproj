@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		213EDE6A6655D10B7985973D /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF0F69C12BFA691156A29472 /* Pods_3dollar_in_my_pocketTests.framework */; };
 		6E01AD1A23D094FF008BFCC0 /* HomeReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01AD1923D094FF008BFCC0 /* HomeReactor.swift */; };
+		6E07675828688E070078CE5B /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E07675728688E070078CE5B /* Base.framework */; };
+		6E07675928688E070078CE5B /* Base.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6E07675728688E070078CE5B /* Base.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6E07D44423B5906E0055AEE7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44323B5906E0055AEE7 /* HomeView.swift */; };
 		6E07D44623B590B30055AEE7 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44523B590B30055AEE7 /* HomeViewController.swift */; };
 		6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44723B590F20055AEE7 /* MyPageView.swift */; };
@@ -309,7 +311,6 @@
 		6EC0D68026EB8891008AD34B /* FQAResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC0D67F26EB8891008AD34B /* FQAResponse.swift */; };
 		6EC0E96D279AE51E0068D4FB /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC0E96C279AE51E0068D4FB /* NotificationService.swift */; };
 		6EC0E971279AE51E0068D4FB /* service-extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6EC0E96A279AE51E0068D4FB /* service-extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */; };
 		6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */; };
 		6EC8685C25BF07F10082521C /* splash.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EC8685B25BF07F10082521C /* splash.json */; };
 		6ECCE9AB26BACF3F006B3C01 /* MenuRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECCE9AA26BACF3F006B3C01 /* MenuRequest.swift */; };
@@ -384,6 +385,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		6E07675A28688E070078CE5B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6E07675928688E070078CE5B /* Base.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6EC0E972279AE51E0068D4FB /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -404,6 +416,7 @@
 		5B11C0F8A272F749D4F119EA /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.debug.xcconfig"; sourceTree = "<group>"; };
 		624C116D2E6C5A0BF75EDF97 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.release.xcconfig"; sourceTree = "<group>"; };
 		6E01AD1923D094FF008BFCC0 /* HomeReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeReactor.swift; sourceTree = "<group>"; };
+		6E07675728688E070078CE5B /* Base.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Base.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E07D44323B5906E0055AEE7 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6E07D44523B590B30055AEE7 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		6E07D44723B590F20055AEE7 /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
@@ -710,7 +723,6 @@
 		6EC0E96A279AE51E0068D4FB /* service-extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "service-extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EC0E96C279AE51E0068D4FB /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		6EC0E96E279AE51E0068D4FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
 		6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
 		6EC8685B25BF07F10082521C /* splash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = splash.json; sourceTree = "<group>"; };
 		6ECCE9AA26BACF3F006B3C01 /* MenuRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuRequest.swift; sourceTree = "<group>"; };
@@ -768,6 +780,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE94855E03305D11B25FAAA8 /* Pods_3dollar_in_my_pocket.framework in Frameworks */,
+				6E07675828688E070078CE5B /* Base.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1347,7 +1360,6 @@
 			children = (
 				6E6B0EDB23AD16AC006E11CE /* BaseView.swift */,
 				6E6B0EDD23AD16F1006E11CE /* BaseVC.swift */,
-				6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */,
 				6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */,
 				6E3EDF3B25694F8C0038E6A1 /* BaseViewModel.swift */,
 				6E57729A2780893E001E39DE /* BaseReactor.swift */,
@@ -1925,6 +1937,7 @@
 		BEA79344C96B102E170EE0E8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6E07675728688E070078CE5B /* Base.framework */,
 				CA3693E9A0EAAD623D57457B /* Pods_3dollar_in_my_pocket.framework */,
 				FF0F69C12BFA691156A29472 /* Pods_3dollar_in_my_pocketTests.framework */,
 				6E8B30A0279BAF35001083B6 /* UserNotifications.framework */,
@@ -1951,6 +1964,7 @@
 				6EFC89DC268B51C100B3414F /* Swift Lint */,
 				B2A25EA6465C94978C1F9E16 /* [CP] Embed Pods Frameworks */,
 				6EC0E972279AE51E0068D4FB /* Embed App Extensions */,
+				6E07675A28688E070078CE5B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2344,7 +2358,6 @@
 				6EA3207A2762F015002AA2F5 /* VisitHistoryViewModel.swift in Sources */,
 				6EDAC5E326D7DC1500979252 /* MyPageCoordinator.swift in Sources */,
 				6E6F35A325AC7990007931EC /* WriteAddressView.swift in Sources */,
-				6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */,
 				6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */,
 				6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */,
 				6E48B7A526C15DBA00E2F02B /* ReviewDetailResponse.swift in Sources */,
@@ -2816,7 +2829,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "3dollar-in-my-pocket/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				KAKAO_APP_KEY = 95f91f9656806e132796f0071ab99aaa;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2870,7 +2883,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "3dollar-in-my-pocket/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				KAKAO_APP_KEY = a0ce3cecac62e2dedf50751d5abc5740;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

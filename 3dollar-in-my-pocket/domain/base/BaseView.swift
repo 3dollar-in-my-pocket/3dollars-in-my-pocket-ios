@@ -1,32 +1,15 @@
 import UIKit
+
+import Base
 import RxCocoa
 import RxSwift
 
-class BaseView: UIView {
-  let disposeBag = DisposeBag()
-  
+class BaseView: Base.BaseView {
   private let loadingView = LoadingView()
   
   private lazy var dimView = UIView(frame: self.frame).then {
     $0.backgroundColor = .clear
   }
-  
-  
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    setup()
-    bindConstraints()
-  }
-  
-  required init?(coder: NSCoder) {
-    super.init(coder: coder)
-    setup()
-    bindConstraints()
-  }
-  
-  func setup() { }
-  
-  func bindConstraints() { }
   
   func showLoading(isShow: Bool) {
     if isShow {

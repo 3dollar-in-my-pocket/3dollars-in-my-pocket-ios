@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 class SettingAccountCell: BaseTableViewCell {
   
   static let registerId = "\(SettingAccountCell.self)"

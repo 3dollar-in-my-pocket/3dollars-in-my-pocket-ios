@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 final class MyReviewCell: BaseTableViewCell {
     static let registerId = "\(MyReviewCell.self)"
     

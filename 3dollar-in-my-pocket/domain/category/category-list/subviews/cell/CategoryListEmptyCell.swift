@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 final class CategoryListEmptyCell: BaseTableViewCell {
     static let registerId = "\(CategoryListEmptyCell.self)"
     static let height: CGFloat = 169
