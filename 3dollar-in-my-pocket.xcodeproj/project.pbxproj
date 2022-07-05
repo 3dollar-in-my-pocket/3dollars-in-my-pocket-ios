@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		213EDE6A6655D10B7985973D /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF0F69C12BFA691156A29472 /* Pods_3dollar_in_my_pocketTests.framework */; };
 		6E01AD1A23D094FF008BFCC0 /* HomeReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01AD1923D094FF008BFCC0 /* HomeReactor.swift */; };
-		6E07675828688E070078CE5B /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E07675728688E070078CE5B /* Base.framework */; };
-		6E07675928688E070078CE5B /* Base.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6E07675728688E070078CE5B /* Base.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6E07D44423B5906E0055AEE7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44323B5906E0055AEE7 /* HomeView.swift */; };
 		6E07D44623B590B30055AEE7 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44523B590B30055AEE7 /* HomeViewController.swift */; };
 		6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44723B590F20055AEE7 /* MyPageView.swift */; };
@@ -294,6 +292,8 @@
 		6EA3207E2762F1F9002AA2F5 /* VisitHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA3207D2762F1F9002AA2F5 /* VisitHistoryTableViewCell.swift */; };
 		6EA3208027632352002AA2F5 /* HomeStoreFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA3207F27632352002AA2F5 /* HomeStoreFlowLayout.swift */; };
 		6EAD2AB827227AB2000BAA52 /* MenuCategoryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAD2AB727227AB2000BAA52 /* MenuCategoryResponse.swift */; };
+		6EAED9E3287476320009A086 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E07675728688E070078CE5B /* Base.framework */; };
+		6EAED9E4287476320009A086 /* Base.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6E07675728688E070078CE5B /* Base.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6EB6D0A525E728390017E09A /* StoreOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB6D0A425E728390017E09A /* StoreOrder.swift */; };
 		6EB7FA6623B651E100BFB0B4 /* CategoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */; };
 		6EB7FA6823B6521200BFB0B4 /* CategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB7FA6723B6521200BFB0B4 /* CategoryListViewController.swift */; };
@@ -384,13 +384,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		6E07675A28688E070078CE5B /* Embed Frameworks */ = {
+		6EAED9E5287476330009A086 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				6E07675928688E070078CE5B /* Base.framework in Embed Frameworks */,
+				6EAED9E4287476320009A086 /* Base.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -778,7 +778,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE94855E03305D11B25FAAA8 /* Pods_3dollar_in_my_pocket.framework in Frameworks */,
-				6E07675828688E070078CE5B /* Base.framework in Frameworks */,
+				6EAED9E3287476320009A086 /* Base.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1961,7 +1961,7 @@
 				6EFC89DC268B51C100B3414F /* Swift Lint */,
 				B2A25EA6465C94978C1F9E16 /* [CP] Embed Pods Frameworks */,
 				6EC0E972279AE51E0068D4FB /* Embed App Extensions */,
-				6E07675A28688E070078CE5B /* Embed Frameworks */,
+				6EAED9E5287476330009A086 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
