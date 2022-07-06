@@ -1,4 +1,6 @@
 import UIKit
+
+import SnapKit
 import Firebase
 import SwiftyBeaver
 import GoogleMobileAds

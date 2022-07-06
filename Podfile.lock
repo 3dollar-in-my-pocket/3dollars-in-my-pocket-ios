@@ -410,15 +410,12 @@ PODS:
   - R.swift (5.4.0):
     - R.swift.Library (~> 5.3.0)
   - R.swift.Library (5.3.0)
-  - ReactorKit (2.1.1):
-    - RxSwift (~> 5.0)
-    - WeakMapTable (~> 1.1)
   - RxAlamofire (5.7.1):
     - RxAlamofire/Core (= 5.7.1)
   - RxAlamofire/Core (5.7.1):
     - Alamofire (~> 5.4)
     - RxSwift (~> 5.1)
-  - RxCocoa (5.1.1):
+  - RxCocoa (5.1.3):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
   - RxDataSources (4.0.1):
@@ -448,12 +445,11 @@ PODS:
   - RxNimble/RxTest (5.0.0):
     - RxNimble/Core
     - RxTest
-  - RxRelay (5.1.1):
+  - RxRelay (5.1.3):
     - RxSwift (~> 5)
-  - RxSwift (5.1.2)
+  - RxSwift (5.1.3)
   - RxTest (5.1.2):
     - RxSwift (~> 5)
-  - SnapKit (5.0.1)
   - SPPermissions/Camera (5.5.8):
     - SPPermissions/Core
   - SPPermissions/Core (5.5.8)
@@ -463,8 +459,6 @@ PODS:
     - SPPermissions/Core
   - SwiftLint (0.43.1)
   - SwiftyBeaver (1.9.5)
-  - Then (2.7.0)
-  - WeakMapTable (1.2.0)
 
 DEPENDENCIES:
   - Alamofire (~> 5.2)
@@ -483,21 +477,16 @@ DEPENDENCIES:
   - lottie-ios
   - NMapsMap
   - R.swift
-  - ReactorKit
-  - RxCocoa (~> 5)
   - RxDataSources (~> 4.0)
   - RxKakaoSDKAuth
   - RxKakaoSDKUser
   - RxNimble/RxTest
-  - RxSwift (~> 5)
   - RxTest (~> 5)
-  - SnapKit (~> 5.0.0)
   - SPPermissions/Camera
   - SPPermissions/Location
   - SPPermissions/PhotoLibrary
   - SwiftLint
   - SwiftyBeaver
-  - Then
 
 SPEC REPOS:
   trunk:
@@ -537,7 +526,6 @@ SPEC REPOS:
     - PromisesObjC
     - R.swift
     - R.swift.Library
-    - ReactorKit
     - RxAlamofire
     - RxCocoa
     - RxDataSources
@@ -548,12 +536,9 @@ SPEC REPOS:
     - RxRelay
     - RxSwift
     - RxTest
-    - SnapKit
     - SPPermissions
     - SwiftLint
     - SwiftyBeaver
-    - Then
-    - WeakMapTable
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
@@ -592,24 +577,20 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   R.swift: c533450b0f7dc494e0993f5f1a1db925d84c3006
   R.swift.Library: 0fc583cb55a99e28901299cc451614cad1161962
-  ReactorKit: 6d894a20c3d508344320901cd8e386fde92df4b6
   RxAlamofire: 8e144c62dcc01d68dcb366bfc542eb6dd46bab78
-  RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
+  RxCocoa: e2ed092d5432e4296aa818021d27de4090ac0354
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
   RxKakaoSDKAuth: 8f4609d0a1e1613f8861a219e727aa1b688d67f3
   RxKakaoSDKCommon: 6dc3f478b35751dfd1f806f20d3bf7b1650f257c
   RxKakaoSDKUser: 088d321b0b959b66bbb112f8db278aae2a83e6bf
   RxNimble: 3b757b0f8fb4dc487c3f9a383bc61a6f5bd72d28
-  RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
-  RxSwift: 1e2e1f9570186967f617e49128ed26ccf1bafc8e
+  RxRelay: 5a18c2eb2d68326ebaf0112f80d837ae41b92b97
+  RxSwift: 915abbdfb62214aa89ccd0b194d44fb478019b27
   RxTest: 274549b747dca56f47c52c8991ec5cf797ecfe40
-  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SPPermissions: 77d05b0b8489f4c3faefa47317d5af0179c2bfd1
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
-  Then: acfe0be7e98221c6204e12f8161459606d5d822d
-  WeakMapTable: 05c694ce8439a7a9ebabb56187287a63c57673d6
 
-PODFILE CHECKSUM: 1e12bd2ab7641048674de7ce98f5c18e211e8f9d
+PODFILE CHECKSUM: 964a0532ff77f37685310cc965ae19bc3b00068e
 
 COCOAPODS: 1.11.2
