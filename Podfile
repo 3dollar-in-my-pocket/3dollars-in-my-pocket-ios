@@ -14,12 +14,6 @@ target '3dollar-in-my-pocket' do
   
   pod 'lottie-ios'
   
-  pod 'KakaoSDKCommon'  # 필수 요소를 담은 공통 모듈
-  pod 'KakaoSDKLink'  # 메시지(카카오링크)
-  pod 'KakaoSDKTemplate'  # 메시지 템플릿
-  pod 'RxKakaoSDKAuth'
-  pod 'RxKakaoSDKUser'
-  
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
   pod 'Firebase/Core'

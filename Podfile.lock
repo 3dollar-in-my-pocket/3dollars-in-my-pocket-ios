@@ -378,22 +378,6 @@ PODS:
     - BoringSSL-GRPC (= 0.0.7)
     - gRPC-Core/Interface (= 1.28.2)
   - gRPC-Core/Interface (1.28.2)
-  - KakaoSDKAuth (2.5.3):
-    - KakaoSDKCommon (= 2.5.3)
-  - KakaoSDKCommon (2.5.3):
-    - KakaoSDKCommon/Common (= 2.5.3)
-    - KakaoSDKCommon/Network (= 2.5.3)
-  - KakaoSDKCommon/Common (2.5.3)
-  - KakaoSDKCommon/Network (2.5.3):
-    - Alamofire (~> 5.1)
-    - KakaoSDKCommon/Common (= 2.5.3)
-  - KakaoSDKLink (2.5.3):
-    - KakaoSDKCommon (= 2.5.3)
-    - KakaoSDKTemplate (= 2.5.3)
-  - KakaoSDKTemplate (2.5.3):
-    - KakaoSDKCommon/Common (= 2.5.3)
-  - KakaoSDKUser (2.5.3):
-    - KakaoSDKAuth (= 2.5.3)
   - Kingfisher (5.15.8):
     - Kingfisher/Core (= 5.15.8)
   - Kingfisher/Core (5.15.8)
@@ -410,11 +394,6 @@ PODS:
   - R.swift (5.4.0):
     - R.swift.Library (~> 5.3.0)
   - R.swift.Library (5.3.0)
-  - RxAlamofire (5.7.1):
-    - RxAlamofire/Core (= 5.7.1)
-  - RxAlamofire/Core (5.7.1):
-    - Alamofire (~> 5.4)
-    - RxSwift (~> 5.1)
   - RxCocoa (5.1.3):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
@@ -422,23 +401,6 @@ PODS:
     - Differentiator (~> 4.0)
     - RxCocoa (~> 5.0)
     - RxSwift (~> 5.0)
-  - RxKakaoSDKAuth (2.5.3):
-    - KakaoSDKAuth (= 2.5.3)
-    - RxKakaoSDKCommon (= 2.5.3)
-  - RxKakaoSDKCommon (2.5.3):
-    - RxKakaoSDKCommon/Common (= 2.5.3)
-    - RxKakaoSDKCommon/Network (= 2.5.3)
-  - RxKakaoSDKCommon/Common (2.5.3):
-    - KakaoSDKCommon/Common (= 2.5.3)
-    - RxCocoa
-    - RxSwift
-  - RxKakaoSDKCommon/Network (2.5.3):
-    - KakaoSDKCommon/Network (= 2.5.3)
-    - RxAlamofire (~> 5.2)
-    - RxKakaoSDKCommon/Common (= 2.5.3)
-  - RxKakaoSDKUser (2.5.3):
-    - KakaoSDKUser (= 2.5.3)
-    - RxKakaoSDKAuth (= 2.5.3)
   - RxNimble/Core (5.0.0):
     - Nimble (~> 9.0)
     - RxSwift (~> 5.0)
@@ -470,16 +432,11 @@ DEPENDENCIES:
   - Firebase/Messaging
   - Firebase/RemoteConfig
   - Google-Mobile-Ads-SDK
-  - KakaoSDKCommon
-  - KakaoSDKLink
-  - KakaoSDKTemplate
   - Kingfisher (~> 5.0)
   - lottie-ios
   - NMapsMap
   - R.swift
   - RxDataSources (~> 4.0)
-  - RxKakaoSDKAuth
-  - RxKakaoSDKUser
   - RxNimble/RxTest
   - RxTest (~> 5)
   - SPPermissions/Camera
@@ -512,11 +469,6 @@ SPEC REPOS:
     - GoogleUtilities
     - "gRPC-C++"
     - gRPC-Core
-    - KakaoSDKAuth
-    - KakaoSDKCommon
-    - KakaoSDKLink
-    - KakaoSDKTemplate
-    - KakaoSDKUser
     - Kingfisher
     - leveldb-library
     - lottie-ios
@@ -526,12 +478,8 @@ SPEC REPOS:
     - PromisesObjC
     - R.swift
     - R.swift.Library
-    - RxAlamofire
     - RxCocoa
     - RxDataSources
-    - RxKakaoSDKAuth
-    - RxKakaoSDKCommon
-    - RxKakaoSDKUser
     - RxNimble
     - RxRelay
     - RxSwift
@@ -563,11 +511,6 @@ SPEC CHECKSUMS:
   GoogleUtilities: f8a43108b38a68eebe8b3540e1f4f2d28843ce20
   "gRPC-C++": 13d8ccef97d5c3c441b7e3c529ef28ebee86fad2
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
-  KakaoSDKAuth: b1a0b9a84c21c967c4139d221edce83a7f15cdfe
-  KakaoSDKCommon: 08548932f6f570215ea038241a98157c0b3f7a8b
-  KakaoSDKLink: 4d35879b0abd90fbd0bc0de56dbb06097e9b31d3
-  KakaoSDKTemplate: 5939681de6c24fd81e93bf824982e979e794f87e
-  KakaoSDKUser: 5d2de71fe070455bbaaad6a37af3eb500fbc8972
   Kingfisher: a3c03d702433fa6cfedabb2bddbe076fb8f2e902
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
@@ -577,12 +520,8 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   R.swift: c533450b0f7dc494e0993f5f1a1db925d84c3006
   R.swift.Library: 0fc583cb55a99e28901299cc451614cad1161962
-  RxAlamofire: 8e144c62dcc01d68dcb366bfc542eb6dd46bab78
   RxCocoa: e2ed092d5432e4296aa818021d27de4090ac0354
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
-  RxKakaoSDKAuth: 8f4609d0a1e1613f8861a219e727aa1b688d67f3
-  RxKakaoSDKCommon: 6dc3f478b35751dfd1f806f20d3bf7b1650f257c
-  RxKakaoSDKUser: 088d321b0b959b66bbb112f8db278aae2a83e6bf
   RxNimble: 3b757b0f8fb4dc487c3f9a383bc61a6f5bd72d28
   RxRelay: 5a18c2eb2d68326ebaf0112f80d837ae41b92b97
   RxSwift: 915abbdfb62214aa89ccd0b194d44fb478019b27
@@ -591,6 +530,6 @@ SPEC CHECKSUMS:
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
 
-PODFILE CHECKSUM: 964a0532ff77f37685310cc965ae19bc3b00068e
+PODFILE CHECKSUM: b2a4438d3f7675ac75258cf0c4d7ebb588b50e30
 
 COCOAPODS: 1.11.2
