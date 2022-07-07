@@ -6,8 +6,6 @@ target '3dollar-in-my-pocket' do
   use_frameworks!
 
   # Pods for 3dollar-in-my-pocket
-  pod 'RxDataSources', '~> 4.0'
-
   pod 'Kingfisher', '~> 5.0'
   
   pod 'Alamofire', '~> 5.2'

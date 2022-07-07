@@ -147,6 +147,7 @@
 		6E4AFC8E28770B0C00D42996 /* KakaoSDKTalk in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC8D28770B0C00D42996 /* KakaoSDKTalk */; };
 		6E4AFC9028770B0C00D42996 /* KakaoSDKTemplate in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC8F28770B0C00D42996 /* KakaoSDKTemplate */; };
 		6E4AFC9228770B0C00D42996 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC9128770B0C00D42996 /* KakaoSDKUser */; };
+		6E4AFC952877107000D42996 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC942877107000D42996 /* RxDataSources */; };
 		6E4C1BE127532E0D006C0F15 /* TitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4C1BE027532E0D006C0F15 /* TitleLabel.swift */; };
 		6E4C1BE3275330CF006C0F15 /* CountButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4C1BE2275330CF006C0F15 /* CountButton.swift */; };
 		6E4C1BE627534B5F006C0F15 /* MyVisitHistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4C1BE527534B5F006C0F15 /* MyVisitHistoryCell.swift */; };
@@ -788,6 +789,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E4AFC8A28770B0C00D42996 /* KakaoSDKCommon in Frameworks */,
+				6E4AFC952877107000D42996 /* RxDataSources in Frameworks */,
 				6E4AFC8828770B0C00D42996 /* KakaoSDKAuth in Frameworks */,
 				6E2E39AD2875AC9800B524BF /* Base.framework in Frameworks */,
 				6E4AFC9028770B0C00D42996 /* KakaoSDKTemplate in Frameworks */,
@@ -2001,6 +2003,7 @@
 				6E4AFC8D28770B0C00D42996 /* KakaoSDKTalk */,
 				6E4AFC8F28770B0C00D42996 /* KakaoSDKTemplate */,
 				6E4AFC9128770B0C00D42996 /* KakaoSDKUser */,
+				6E4AFC942877107000D42996 /* RxDataSources */,
 			);
 			productName = "3dollar-in-my-pocket";
 			productReference = 6E0EA39323ABB230008F7CB2 /* dollar-in-my-pocket-debug.app */;
@@ -2100,6 +2103,7 @@
 				6E2E39BA2875B57700B524BF /* XCRemoteSwiftPackageReference "Then" */,
 				6E0BCC9D2875C63B00B7A5AD /* XCRemoteSwiftPackageReference "SnapKit" */,
 				6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
+				6E4AFC932877107000D42996 /* XCRemoteSwiftPackageReference "RxDataSources" */,
 			);
 			productRefGroup = 6E0EA39423ABB230008F7CB2 /* Products */;
 			projectDirPath = "";
@@ -3163,6 +3167,14 @@
 				kind = branch;
 			};
 		};
+		6E4AFC932877107000D42996 /* XCRemoteSwiftPackageReference "RxDataSources" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -3215,6 +3227,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
 			productName = KakaoSDKUser;
+		};
+		6E4AFC942877107000D42996 /* RxDataSources */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E4AFC932877107000D42996 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = RxDataSources;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

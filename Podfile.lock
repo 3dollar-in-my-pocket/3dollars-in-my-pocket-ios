@@ -220,7 +220,6 @@ PODS:
     - BoringSSL-GRPC/Interface (= 0.0.7)
   - BoringSSL-GRPC/Interface (0.0.7)
   - DeviceKit (4.4.0)
-  - Differentiator (4.0.1)
   - Firebase/Analytics (8.1.1):
     - Firebase/Core
   - Firebase/Core (8.1.1):
@@ -394,21 +393,12 @@ PODS:
   - R.swift (5.4.0):
     - R.swift.Library (~> 5.3.0)
   - R.swift.Library (5.3.0)
-  - RxCocoa (5.1.3):
-    - RxRelay (~> 5)
-    - RxSwift (~> 5)
-  - RxDataSources (4.0.1):
-    - Differentiator (~> 4.0)
-    - RxCocoa (~> 5.0)
-    - RxSwift (~> 5.0)
   - RxNimble/Core (5.0.0):
     - Nimble (~> 9.0)
     - RxSwift (~> 5.0)
   - RxNimble/RxTest (5.0.0):
     - RxNimble/Core
     - RxTest
-  - RxRelay (5.1.3):
-    - RxSwift (~> 5)
   - RxSwift (5.1.3)
   - RxTest (5.1.2):
     - RxSwift (~> 5)
@@ -436,7 +426,6 @@ DEPENDENCIES:
   - lottie-ios
   - NMapsMap
   - R.swift
-  - RxDataSources (~> 4.0)
   - RxNimble/RxTest
   - RxTest (~> 5)
   - SPPermissions/Camera
@@ -451,7 +440,6 @@ SPEC REPOS:
     - Alamofire
     - BoringSSL-GRPC
     - DeviceKit
-    - Differentiator
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
@@ -478,10 +466,7 @@ SPEC REPOS:
     - PromisesObjC
     - R.swift
     - R.swift.Library
-    - RxCocoa
-    - RxDataSources
     - RxNimble
-    - RxRelay
     - RxSwift
     - RxTest
     - SPPermissions
@@ -493,7 +478,6 @@ SPEC CHECKSUMS:
   Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   DeviceKit: 2c5d7485a2fa10b65c0091b2952d30843a6ba06d
-  Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   Firebase: 4bb49ae87756034cef870fa3c4006235eb46f475
   FirebaseABTesting: 4cb61aeeb50f60680af1c01fff781dfaf9293916
   FirebaseAnalytics: d6dd061b26a04744cb988c66e29697181152b2a3
@@ -520,16 +504,13 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   R.swift: c533450b0f7dc494e0993f5f1a1db925d84c3006
   R.swift.Library: 0fc583cb55a99e28901299cc451614cad1161962
-  RxCocoa: e2ed092d5432e4296aa818021d27de4090ac0354
-  RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
   RxNimble: 3b757b0f8fb4dc487c3f9a383bc61a6f5bd72d28
-  RxRelay: 5a18c2eb2d68326ebaf0112f80d837ae41b92b97
   RxSwift: 915abbdfb62214aa89ccd0b194d44fb478019b27
   RxTest: 274549b747dca56f47c52c8991ec5cf797ecfe40
   SPPermissions: 77d05b0b8489f4c3faefa47317d5af0179c2bfd1
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
 
-PODFILE CHECKSUM: b2a4438d3f7675ac75258cf0c4d7ebb588b50e30
+PODFILE CHECKSUM: aa47e543202e1a60c90a4bf15daf5807aa56ba59
 
 COCOAPODS: 1.11.2
