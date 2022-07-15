@@ -1,3 +1,6 @@
+import Foundation
+import UIKit
+
 import RxSwift
 
 protocol RegisterPhotoDelegate: class {

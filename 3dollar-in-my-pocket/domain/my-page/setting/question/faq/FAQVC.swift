@@ -1,3 +1,6 @@
+import UIKit
+
+import Base
 import RxSwift
 
 class FAQVC: BaseVC {

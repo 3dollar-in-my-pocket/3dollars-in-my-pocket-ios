@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 extension UICollectionView {
     func register(_ types: [BaseCollectionViewCell.Type]) {
         for type in types {

@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 final class CategoryListAdvertisementCell: BaseTableViewCell {
     static let registerId = "\(CategoryListAdvertisementCell.self)"
     static let height: CGFloat = 150

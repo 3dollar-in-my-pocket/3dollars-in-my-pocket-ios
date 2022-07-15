@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 class SettingWithdrawalCell: BaseTableViewCell {
   
   static let registerId = "\(SettingWithdrawalCell.self)"

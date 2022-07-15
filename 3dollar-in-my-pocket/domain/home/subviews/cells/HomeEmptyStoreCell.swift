@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 final class HomeEmptyStoreCell: BaseCollectionViewCell {
     static let registerId = "\(HomeEmptyStoreCell.self)"
     

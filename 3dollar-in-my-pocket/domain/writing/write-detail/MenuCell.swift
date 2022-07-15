@@ -1,4 +1,6 @@
 import UIKit
+
+import Base
 import RxSwift
 
 class MenuCell: BaseTableViewCell {

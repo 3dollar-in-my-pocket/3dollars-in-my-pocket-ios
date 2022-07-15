@@ -1,5 +1,6 @@
 import UIKit
 
+import Base
 import GoogleMobileAds
 
 final class CategoryListStoreCell: BaseTableViewCell {

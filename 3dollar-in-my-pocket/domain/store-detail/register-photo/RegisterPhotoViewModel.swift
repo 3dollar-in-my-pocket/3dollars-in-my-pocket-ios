@@ -1,6 +1,8 @@
+import UIKit
+import Photos
+
 import RxSwift
 import RxCocoa
-import Photos
 
 class RegisterPhotoViewModel: BaseViewModel{
     

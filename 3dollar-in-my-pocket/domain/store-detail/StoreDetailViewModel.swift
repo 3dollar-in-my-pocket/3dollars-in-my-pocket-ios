@@ -1,6 +1,8 @@
+import UIKit
+
 import RxSwift
 import RxCocoa
-import KakaoSDKLink
+import KakaoSDKShare
 import KakaoSDKTemplate
 
 class StoreDetailViewModel: BaseViewModel {
@@ -202,15 +204,15 @@ class StoreDetailViewModel: BaseViewModel {
       buttons: [Button(title: "store_detail_share_button".localized, link: link)]
     )
     
-    LinkApi.shared.defaultLink(templatable: feedTemplate) { (linkResult, error) in
-      if let error = error {
-        self.showErrorAlert.accept(error)
-      } else {
-        if let linkResult = linkResult {
-          UIApplication.shared.open(linkResult.url, options: [:], completionHandler: nil)
-        }
+      ShareApi.shared.shareDefault(templatable: feedTemplate) { linkResult, error in
+          if let error = error {
+              self.showErrorAlert.accept(error)
+          } else {
+              if let linkResult = linkResult {
+                  UIApplication.shared.open(linkResult.url, options: [:], completionHandler: nil)
+              }
+          }
       }
-    }
   }
     
   private func deleteReview(reviewId: Int) {
@@ -239,23 +241,20 @@ class StoreDetailViewModel: BaseViewModel {
       ).disposed(by: self.disposeBag)
   }
   
-  private func savePhoto(storeId: Int, photos: [UIImage]) {
-    self.showLoading.accept(true)
-    self.storeService.savePhoto(storeId: storeId, photos: photos)
-      .subscribe(
-        onNext: { [weak self] _ in
-          guard let self = self else { return }
-          
-          self.fetchStore(storeId: self.storeId, location: self.model.currentLocation)
-          self.showLoading.accept(false)
-        },
-        onError: { [weak self] error in
-          self?.showErrorAlert.accept(error)
-          self?.showLoading.accept(false)
-        }
-      )
-      .disposed(by: disposeBag)
-  }
+    private func savePhoto(storeId: Int, photos: [UIImage]) {
+        self.showLoading.accept(true)
+        self.storeService.savePhoto(storeId: storeId, photos: photos)
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+
+                self.fetchStore(storeId: self.storeId, location: self.model.currentLocation)
+                self.showLoading.accept(false)
+            }, onError: { [weak self] error in
+                self?.showErrorAlert.accept(error)
+                self?.showLoading.accept(false)
+            })
+            .disposed(by: disposeBag)
+    }
   
   private func onTapPhoto(index: Int) {
     guard let store = self.model.store else { return }

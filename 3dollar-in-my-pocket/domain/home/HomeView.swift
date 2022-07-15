@@ -126,6 +126,9 @@ final class HomeView: BaseView {
     }
     
     fileprivate func moveCamera(position: CLLocation) {
+        if self.mapView.positionMode == .disabled {
+            self.mapView.positionMode = .direction
+        }
         let cameraPosition = NMFCameraPosition(
             NMGLatLng(
                 lat: position.coordinate.latitude,

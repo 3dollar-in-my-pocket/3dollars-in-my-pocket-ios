@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 class AddressCell: BaseTableViewCell {
   
   static let registerId = "\(AddressCell.self)"
