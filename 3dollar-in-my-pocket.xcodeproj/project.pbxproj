@@ -189,6 +189,7 @@
 		6E5CA5842768AEC4001EDE19 /* RegisteredStoreEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA5832768AEC4001EDE19 /* RegisteredStoreEmptyView.swift */; };
 		6E5CA5862768B2F7001EDE19 /* MyVisitHistoryEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA5852768B2F7001EDE19 /* MyVisitHistoryEmptyView.swift */; };
 		6E5CA5882768B50D001EDE19 /* MyReviewEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA5872768B50D001EDE19 /* MyReviewEmptyView.swift */; };
+		6E5E193F2881AA39006C014F /* HomeCategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5E193E2881AA39006C014F /* HomeCategoryCollectionViewCell.swift */; };
 		6E6172B023E1C05F003E0DDF /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172AF23E1C05F003E0DDF /* PhotoDetailView.swift */; };
 		6E6172B223E1C308003E0DDF /* PhotoDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172B123E1C308003E0DDF /* PhotoDetailVC.swift */; };
 		6E6172B423E1C6BF003E0DDF /* PhotoSubCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172B323E1C6BE003E0DDF /* PhotoSubCell.swift */; };
@@ -245,7 +246,7 @@
 		6E7938FE25B0064F007F23E5 /* DayStackInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7938FD25B0064F007F23E5 /* DayStackInputView.swift */; };
 		6E79BAA525B07CF600A70408 /* WriteCategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E79BAA425B07CF600A70408 /* WriteCategoryCell.swift */; };
 		6E7BF08125B7D5C000456D0B /* WriteDetailTypeStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08025B7D5C000456D0B /* WriteDetailTypeStackView.swift */; };
-		6E7BF08625B7D82F00456D0B /* StoreType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08525B7D82F00456D0B /* StoreType.swift */; };
+		6E7BF08625B7D82F00456D0B /* StreetFoodStoreType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08525B7D82F00456D0B /* StreetFoodStoreType.swift */; };
 		6E7BF08B25B7DB6000456D0B /* WriteDetailPaymentStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08A25B7DB6000456D0B /* WriteDetailPaymentStackView.swift */; };
 		6E7BF09025B7DDB900456D0B /* PaymentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7BF08F25B7DDB900456D0B /* PaymentType.swift */; };
 		6E7E3E4C27642AB000A4C6E2 /* MyMedalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7E3E4B27642AB000A4C6E2 /* MyMedalView.swift */; };
@@ -600,6 +601,7 @@
 		6E5CA5832768AEC4001EDE19 /* RegisteredStoreEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreEmptyView.swift; sourceTree = "<group>"; };
 		6E5CA5852768B2F7001EDE19 /* MyVisitHistoryEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVisitHistoryEmptyView.swift; sourceTree = "<group>"; };
 		6E5CA5872768B50D001EDE19 /* MyReviewEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewEmptyView.swift; sourceTree = "<group>"; };
+		6E5E193E2881AA39006C014F /* HomeCategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCategoryCollectionViewCell.swift; sourceTree = "<group>"; };
 		6E6172AF23E1C05F003E0DDF /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		6E6172B123E1C308003E0DDF /* PhotoDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailVC.swift; sourceTree = "<group>"; };
 		6E6172B323E1C6BE003E0DDF /* PhotoSubCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSubCell.swift; sourceTree = "<group>"; };
@@ -656,7 +658,7 @@
 		6E7938FD25B0064F007F23E5 /* DayStackInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayStackInputView.swift; sourceTree = "<group>"; };
 		6E79BAA425B07CF600A70408 /* WriteCategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteCategoryCell.swift; sourceTree = "<group>"; };
 		6E7BF08025B7D5C000456D0B /* WriteDetailTypeStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailTypeStackView.swift; sourceTree = "<group>"; };
-		6E7BF08525B7D82F00456D0B /* StoreType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreType.swift; sourceTree = "<group>"; };
+		6E7BF08525B7D82F00456D0B /* StreetFoodStoreType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreetFoodStoreType.swift; sourceTree = "<group>"; };
 		6E7BF08A25B7DB6000456D0B /* WriteDetailPaymentStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailPaymentStackView.swift; sourceTree = "<group>"; };
 		6E7BF08F25B7DDB900456D0B /* PaymentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentType.swift; sourceTree = "<group>"; };
 		6E7E3E4B27642AB000A4C6E2 /* MyMedalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalView.swift; sourceTree = "<group>"; };
@@ -1120,6 +1122,7 @@
 				6E37A64C25EE7A9F00C8C6C4 /* HomeEmptyStoreCell.swift */,
 				6E41F7EE23BB1F5600D0AC73 /* HomeStoreCell.swift */,
 				6E178D1E27BA526300B6DFB5 /* HomeAdvertisementCell.swift */,
+				6E5E193E2881AA39006C014F /* HomeCategoryCollectionViewCell.swift */,
 			);
 			path = cells;
 			sourceTree = "<group>";
@@ -1575,7 +1578,7 @@
 				6E56BD8023CDE359002D7092 /* Menu.swift */,
 				6E7BF08F25B7DDB900456D0B /* PaymentType.swift */,
 				6E56BD8223CDE3BC002D7092 /* Review.swift */,
-				6E7BF08525B7D82F00456D0B /* StoreType.swift */,
+				6E7BF08525B7D82F00456D0B /* StreetFoodStoreType.swift */,
 				6E72AE6223C980F600D3B257 /* User.swift */,
 				6E58ED6F27A7D1EC004819A9 /* MenuCategory.swift */,
 			);
@@ -2405,6 +2408,7 @@
 				6E6F35A325AC7990007931EC /* WriteAddressView.swift in Sources */,
 				6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */,
 				6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */,
+				6E5E193F2881AA39006C014F /* HomeCategoryCollectionViewCell.swift in Sources */,
 				6E48B7A526C15DBA00E2F02B /* ReviewDetailResponse.swift in Sources */,
 				6E9B604A288137FE00B80D41 /* StoreTypeButton.swift in Sources */,
 				6E1B64DB2587A2CA003225F4 /* ObserverExt.swift in Sources */,
@@ -2513,7 +2517,7 @@
 				6E29966625E2869D003FC13A /* AddressDocument.swift in Sources */,
 				6EC0D67E26EB856D008AD34B /* StoresGroupByReviewResponse.swift in Sources */,
 				6E6B0EE423AD1836006E11CE /* SignInView.swift in Sources */,
-				6E7BF08625B7D82F00456D0B /* StoreType.swift in Sources */,
+				6E7BF08625B7D82F00456D0B /* StreetFoodStoreType.swift in Sources */,
 				6EF63FB4276185BE0063A3B9 /* MyReviewCoordinator.swift in Sources */,
 				6ED79E0F25CFF11A00B3CFA9 /* ModifyAddressView.swift in Sources */,
 				6E4C1BE3275330CF006C0F15 /* CountButton.swift in Sources */,

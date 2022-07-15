@@ -13,6 +13,25 @@ final class HomeView: BaseView {
     let storeTypeButton = StoreTypeButton()
   
     let addressButton = AddressButton()
+    
+    let categoryCollectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: UICollectionViewLayout()
+    ).then {
+        let layout = UICollectionViewFlowLayout()
+        
+        layout.estimatedItemSize = HomeCategoryCollectionViewCell.itemSize
+        layout.minimumInteritemSpacing = 8
+        layout.scrollDirection = .horizontal
+        $0.contentInset = .init(top: 0, left: 24, bottom: 0, right: 24)
+        $0.collectionViewLayout = layout
+        $0.backgroundColor = .clear
+        $0.clipsToBounds = false
+        $0.register(
+            HomeCategoryCollectionViewCell.self,
+            forCellWithReuseIdentifier: HomeCategoryCollectionViewCell.registerId
+        )
+    }
   
     let researchButton = UIButton().then {
         $0.setTitle(R.string.localization.home_research(), for: .normal)
@@ -62,6 +81,7 @@ final class HomeView: BaseView {
             self.researchButton,
             self.storeTypeButton,
             self.addressButton,
+            self.categoryCollectionView,
             self.storeCollectionView,
             self.currentLocationButton
         ])
@@ -84,9 +104,16 @@ final class HomeView: BaseView {
             make.left.equalTo(self.storeTypeButton.snp.right).offset(8)
         }
         
+        self.categoryCollectionView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.top.equalTo(self.storeTypeButton.snp.bottom).offset(12)
+            make.right.equalToSuperview()
+            make.height.equalTo(HomeCategoryCollectionViewCell.itemSize.height)
+        }
+        
         self.researchButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(self.addressButton)
+            make.bottom.equalTo(self.categoryCollectionView)
             make.height.equalTo(40)
         }
         

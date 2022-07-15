@@ -109,17 +109,17 @@ class WriteDetailVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.writeDetailView.storeTypeStackView.roadRadioButton.rx.tap
-      .map { StoreType.road }
+      .map { StreetFoodStoreType.road }
       .bind(to: self.viewModel.input.tapStoreType)
       .disposed(by: disposeBag)
     
     self.writeDetailView.storeTypeStackView.storeRadioButton.rx.tap
-      .map { StoreType.store }
+      .map { StreetFoodStoreType.store }
       .bind(to: self.viewModel.input.tapStoreType)
       .disposed(by: disposeBag)
     
     self.writeDetailView.storeTypeStackView.convenienceStoreRadioButton.rx.tap
-      .map { StoreType.convenienceStore }
+      .map { StreetFoodStoreType.convenienceStore }
       .bind(to: self.viewModel.input.tapStoreType)
       .disposed(by: disposeBag)
     

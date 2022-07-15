@@ -116,17 +116,17 @@ class ModifyVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.modifyView.storeTypeStackView.roadRadioButton.rx.tap
-      .map { StoreType.road }
+      .map { StreetFoodStoreType.road }
       .bind(to: self.viewModel.input.tapStoreType)
       .disposed(by: disposeBag)
     
     self.modifyView.storeTypeStackView.storeRadioButton.rx.tap
-      .map { StoreType.store }
+      .map { StreetFoodStoreType.store }
       .bind(to: self.viewModel.input.tapStoreType)
       .disposed(by: disposeBag)
     
     self.modifyView.storeTypeStackView.convenienceStoreRadioButton.rx.tap
-      .map { StoreType.convenienceStore }
+      .map { StreetFoodStoreType.convenienceStore }
       .bind(to: self.viewModel.input.tapStoreType)
       .disposed(by: disposeBag)
     

@@ -13,7 +13,7 @@ struct Store {
     var reviews: [Review]
     let storeId: Int
     let storeName: String
-    let storeType: StoreType?
+    let storeType: StreetFoodStoreType?
     let updatedAt: String?
     let user: User
     let visitHistories: [VisitHistory]
@@ -55,7 +55,7 @@ struct Store {
         menuSections: [MenuSection],
         paymentType: [PaymentType],
         storeName: String,
-        storeType: StoreType?
+        storeType: StreetFoodStoreType?
     ) {
         self.appearanceDays = appearanceDays
         self.categories = categories

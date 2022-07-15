@@ -48,6 +48,16 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
         self.initilizeShopCollectionView()
         self.initilizeNaverMap()
         self.homeReactor.action.onNext(.tapCurrentLocationButton)
+        
+        Observable.just([1,2,3,4])
+            .asDriver(onErrorJustReturn: [])
+            .drive(self.homeView.categoryCollectionView.rx.items(
+                cellIdentifier: HomeCategoryCollectionViewCell.registerId,
+                cellType: HomeCategoryCollectionViewCell.self
+            )) { row, item, cell in
+                
+            }
+            .disposed(by: self.eventDisposeBag)
     }
     
     override func bindEvent() {

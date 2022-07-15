@@ -1,4 +1,4 @@
-enum StoreType: String, Codable {
+enum StreetFoodStoreType: String, Codable {
   case road = "ROAD"
   case store = "STORE"
   case convenienceStore = "CONVENIENCE_STORE"

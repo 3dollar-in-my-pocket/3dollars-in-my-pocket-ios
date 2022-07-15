@@ -12,7 +12,7 @@ struct StoreDetailResponse: Decodable {
   let reviews: [ReviewWithWriterResponse]
   let storeId: Int
   let storeName: String
-  let storeType: StoreType?
+  let storeType: StreetFoodStoreType?
   let updatedAt: String?
   let user: UserInfoResponse
   let visitHistories: [VisitHistoryWithUserResponse]
@@ -60,7 +60,7 @@ struct StoreDetailResponse: Decodable {
     ) ?? []
     self.storeId = try values.decodeIfPresent(Int.self, forKey: .storeId) ?? 0
     self.storeName = try values.decodeIfPresent(String.self, forKey: .storeName) ?? ""
-    self.storeType = try values.decodeIfPresent(StoreType.self, forKey: .storeType)
+    self.storeType = try values.decodeIfPresent(StreetFoodStoreType.self, forKey: .storeType)
     self.updatedAt = try values.decodeIfPresent(String.self, forKey: .updatedAt)
     self.user = try values.decodeIfPresent(
       UserInfoResponse.self,
