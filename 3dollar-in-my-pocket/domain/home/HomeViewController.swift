@@ -173,7 +173,7 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
             .map { $0.address }
             .asDriver(onErrorJustReturn: "")
             .distinctUntilChanged()
-            .drive(self.homeView.addressButton.rx.title(for: .normal))
+            .drive(self.homeView.addressButton.rx.title)
             .disposed(by: self.disposeBag)
         
         reactor.state
@@ -339,7 +339,7 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
         source: UIViewController
     ) -> UIViewControllerAnimatedTransitioning? {
         self.transition.transitionMode = .present
-        self.transition.maskView.frame = self.homeView.addressContainerView.frame
+        self.transition.maskView.frame = self.homeView.addressButton.frame
         
         return self.transition
     }
@@ -348,7 +348,7 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
         forDismissed dismissed: UIViewController
     ) -> UIViewControllerAnimatedTransitioning? {
         self.transition.transitionMode = .dismiss
-        self.transition.maskOriginalFrame = self.homeView.addressContainerView.frame
+        self.transition.maskOriginalFrame = self.homeView.addressButton.frame
         
         return self.transition
     }

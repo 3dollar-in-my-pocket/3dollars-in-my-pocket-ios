@@ -9,22 +9,10 @@ final class HomeView: BaseView {
         $0.positionMode = .direction
         $0.zoomLevel = 15
     }
+    
+    let storeTypeButton = StoreTypeButton()
   
-    let addressContainerView = UIView().then {
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 16
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowOpacity = 0.08
-    }
-  
-    let addressButton = UIButton().then {
-        $0.titleLabel?.font = .semiBold(size: 16)
-        $0.setImage(R.image.ic_arrow_bottom_black(), for: .normal)
-        $0.semanticContentAttribute = .forceRightToLeft
-        $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -8)
-        $0.setTitleColor(.black, for: .normal)
-    }
+    let addressButton = AddressButton()
   
     let researchButton = UIButton().then {
         $0.setTitle(R.string.localization.home_research(), for: .normal)
@@ -72,7 +60,7 @@ final class HomeView: BaseView {
         self.addSubViews([
             self.mapView,
             self.researchButton,
-            self.addressContainerView,
+            self.storeTypeButton,
             self.addressButton,
             self.storeCollectionView,
             self.currentLocationButton
@@ -84,21 +72,21 @@ final class HomeView: BaseView {
             make.edges.equalTo(0)
         }
         
-        self.addressContainerView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(25)
-            make.right.equalToSuperview().offset(-25)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(7)
-            make.height.equalTo(56)
+        self.storeTypeButton.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(24)
+            make.width.equalTo(94)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(9)
         }
         
         self.addressButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalTo(self.addressContainerView)
+            make.centerY.equalTo(self.storeTypeButton)
+            make.right.equalToSuperview().offset(-24)
+            make.left.equalTo(self.storeTypeButton.snp.right).offset(8)
         }
         
         self.researchButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(self.addressContainerView)
+            make.bottom.equalTo(self.addressButton)
             make.height.equalTo(40)
         }
         
