@@ -5,13 +5,13 @@ import CoreLocation
 protocol CategoryServiceProtocol {
   
   func getStoreByDistance(
-    category: StoreCategory,
+    category: StreetFoodStoreCategory,
     currentLocation: CLLocation,
     mapLocation: CLLocation?
   ) -> Observable<StoresGroupByDistanceResponse>
   
   func getStoreByReview(
-    category: StoreCategory,
+    category: StreetFoodStoreCategory,
     currentLocation: CLLocation,
     mapLocation: CLLocation?
   ) -> Observable<StoresGroupByReviewResponse>
@@ -22,7 +22,7 @@ protocol CategoryServiceProtocol {
 struct CategoryService: CategoryServiceProtocol {
   
   func getStoreByDistance(
-    category: StoreCategory,
+    category: StreetFoodStoreCategory,
     currentLocation: CLLocation,
     mapLocation: CLLocation?
   ) -> Observable<StoresGroupByDistanceResponse> {
@@ -57,7 +57,7 @@ struct CategoryService: CategoryServiceProtocol {
   }
   
   func getStoreByReview(
-    category: StoreCategory,
+    category: StreetFoodStoreCategory,
     currentLocation: CLLocation,
     mapLocation: CLLocation?
   ) -> Observable<StoresGroupByReviewResponse> {

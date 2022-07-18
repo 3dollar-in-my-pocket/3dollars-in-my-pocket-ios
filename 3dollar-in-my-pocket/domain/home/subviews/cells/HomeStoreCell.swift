@@ -193,7 +193,7 @@ final class HomeStoreCell: BaseCollectionViewCell {
         }
     }
     
-    private func setCategories(categories: [StoreCategory]) {
+    private func setCategories(categories: [StreetFoodStoreCategory]) {
         var categoryString = ""
         for category in categories {
             categoryString.append("#\(category.name) ")

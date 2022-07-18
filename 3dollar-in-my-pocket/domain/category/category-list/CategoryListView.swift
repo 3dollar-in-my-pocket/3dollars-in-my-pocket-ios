@@ -238,7 +238,7 @@ final class CategoryListView: BaseView {
         self.mapView.moveCamera(cameraUpdate)
     }
     
-    fileprivate func bind(category: StoreCategory) {
+    fileprivate func bind(category: StreetFoodStoreCategory) {
         self.categoryImage.image = category.image
         self.categoryLabel.text = category.name
         
@@ -283,7 +283,7 @@ final class CategoryListView: BaseView {
 }
 
 extension Reactive where Base: CategoryListView {
-    var category: Binder<StoreCategory> {
+    var category: Binder<StreetFoodStoreCategory> {
         return Binder(self.base) { view, category in
             view.bind(category: category)
         }

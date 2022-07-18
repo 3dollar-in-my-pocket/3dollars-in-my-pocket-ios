@@ -1,7 +1,7 @@
 struct Store {
     
     let appearanceDays: [WeekDay]
-    let categories: [StoreCategory]
+    let categories: [StreetFoodStoreCategory]
     let isDeleted: Bool
     let distance: Int
     let images: [Image]
@@ -20,7 +20,7 @@ struct Store {
     var visitHistory: VisitOverview
     
     init(
-        category: StoreCategory,
+        category: StreetFoodStoreCategory,
         latitude: Double,
         longitude: Double,
         storeName: String,
@@ -49,7 +49,7 @@ struct Store {
     init(
         id: Int = -1,
         appearanceDays: [WeekDay],
-        categories: [StoreCategory],
+        categories: [StreetFoodStoreCategory],
         latitude: Double,
         longitude: Double,
         menuSections: [MenuSection],

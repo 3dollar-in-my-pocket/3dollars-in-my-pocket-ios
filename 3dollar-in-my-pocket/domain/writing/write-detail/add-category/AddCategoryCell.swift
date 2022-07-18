@@ -45,7 +45,7 @@ class AddCategoryCell: BaseCollectionViewCell {
     }
   }
   
-  func bind(category: StoreCategory, isSelected: Bool) {
+  func bind(category: StreetFoodStoreCategory, isSelected: Bool) {
     if isSelected {
       self.roundView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
       self.categoryImage.image = UIImage(named: "img_32_\(category.lowcase)_on")

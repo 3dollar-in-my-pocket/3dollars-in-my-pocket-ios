@@ -2,7 +2,7 @@ import Foundation
 
 struct StoreWithVisitsAndDistanceResponse: Decodable {
     
-    let categories: [StoreCategory]
+    let categories: [StreetFoodStoreCategory]
     let createdAt: String
     let distance: Int
     let isDeleted: Bool
@@ -31,7 +31,7 @@ struct StoreWithVisitsAndDistanceResponse: Decodable {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.categories = try values.decodeIfPresent([StoreCategory].self, forKey: .categories) ?? []
+        self.categories = try values.decodeIfPresent([StreetFoodStoreCategory].self, forKey: .categories) ?? []
         self.createdAt = try values.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
         self.distance = try values.decodeIfPresent(Int.self, forKey: .distance) ?? 0
         self.isDeleted = try values.decodeIfPresent(Bool.self, forKey: .isDeleted) ?? false

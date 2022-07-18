@@ -252,7 +252,7 @@ class WriteDetailVC: BaseVC {
     self.navigationController?.popViewController(animated: true)
   }
   
-  private func isValid(category: StoreCategory?, storeName: String) -> Bool {
+  private func isValid(category: StreetFoodStoreCategory?, storeName: String) -> Bool {
     return category != nil && !storeName.isEmpty
   }
   
@@ -312,7 +312,7 @@ class WriteDetailVC: BaseVC {
     NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
   }
   
-  private func showCategoryDialog(selectedCategories: [StoreCategory?]) {
+  private func showCategoryDialog(selectedCategories: [StreetFoodStoreCategory?]) {
     let addCategoryVC = AddCategoryVC.instance(selectedCategory: selectedCategories).then {
       $0.delegate = self
     }
@@ -367,7 +367,7 @@ extension WriteDetailVC: AddCategoryDelegate {
     self.writeDetailView.showDim(isShow: false)
   }
   
-  func onSuccess(selectedCategories: [StoreCategory]) {
+  func onSuccess(selectedCategories: [StreetFoodStoreCategory]) {
     self.viewModel.input.addCategories.onNext(selectedCategories)
     self.writeDetailView.showDim(isShow: false)
   }

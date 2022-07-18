@@ -8,8 +8,8 @@ class AddCategoryViewModel: BaseViewModel {
   let input = Input()
   let output = Output()
   
-  var selectedCategory: [StoreCategory]
-  let categories: [StoreCategory] = [
+  var selectedCategory: [StreetFoodStoreCategory]
+  let categories: [StreetFoodStoreCategory] = [
     .DALGONA,
     .BUNGEOPPANG,
     .KKOCHI,
@@ -35,12 +35,12 @@ class AddCategoryViewModel: BaseViewModel {
   struct Output {
     let buttonText = PublishRelay<String>()
     let buttonEnable = PublishRelay<Bool>()
-    let category = PublishRelay<[(category: StoreCategory, isSelected: Bool)]>()
-    let selectCategories = PublishRelay<[StoreCategory]>()
+    let category = PublishRelay<[(category: StreetFoodStoreCategory, isSelected: Bool)]>()
+    let selectCategories = PublishRelay<[StreetFoodStoreCategory]>()
   }
   
   
-  init(selectedCategory: [StoreCategory?]) {
+  init(selectedCategory: [StreetFoodStoreCategory?]) {
     self.selectedCategory = selectedCategory.compactMap { $0 }
     super.init()
     
@@ -70,7 +70,7 @@ class AddCategoryViewModel: BaseViewModel {
       .disposed(by: disposeBag)
   }
   
-  private func onTapCategory(category: StoreCategory) {
+  private func onTapCategory(category: StreetFoodStoreCategory) {
     if self.selectedCategory.contains(category) {
       self.selectedCategory.remove(at: self.selectedCategory.firstIndex(of: category)!)
     } else {

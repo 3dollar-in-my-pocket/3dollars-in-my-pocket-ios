@@ -1,5 +1,5 @@
 struct MenuCategory {
-    let category: StoreCategory
+    let category: StreetFoodStoreCategory
     let description: String
     let isNew: Bool
     let name: String

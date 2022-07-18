@@ -336,7 +336,7 @@ class ModifyVC: BaseVC {
     )
   }
   
-  private func showCategoryDialog(selectedCategories: [StoreCategory?]) {
+  private func showCategoryDialog(selectedCategories: [StreetFoodStoreCategory?]) {
     let addCategoryVC = AddCategoryVC.instance(selectedCategory: selectedCategories).then {
       $0.delegate = self
     }
@@ -411,7 +411,7 @@ extension ModifyVC: AddCategoryDelegate {
     self.modifyView.showDim(isShow: false)
   }
   
-  func onSuccess(selectedCategories: [StoreCategory]) {
+  func onSuccess(selectedCategories: [StreetFoodStoreCategory]) {
     self.viewModel.input.addCategories.onNext(selectedCategories)
     self.modifyView.showDim(isShow: false)
   }

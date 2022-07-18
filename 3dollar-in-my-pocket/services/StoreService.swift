@@ -10,7 +10,7 @@ protocol StoreServiceProtocol {
         currentLocation: CLLocation?,
         mapLocation: CLLocation,
         distance: Double,
-        category: StoreCategory?,
+        category: StreetFoodStoreCategory?,
         orderType: StoreOrder?
     ) -> Observable<[StoreWithVisitsAndDistanceResponse]>
     
@@ -57,7 +57,7 @@ struct StoreService: StoreServiceProtocol {
         currentLocation: CLLocation?,
         mapLocation: CLLocation,
         distance: Double,
-        category: StoreCategory?,
+        category: StreetFoodStoreCategory?,
         orderType: StoreOrder?
     ) -> Observable<[StoreWithVisitsAndDistanceResponse]> {
         return .create { observer in

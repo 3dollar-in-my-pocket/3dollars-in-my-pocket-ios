@@ -10,7 +10,7 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
     private let categoryListReactor: CategoryListReactor
     private weak var coordinator: CategoryListCoordinator?
   
-    init(category: StoreCategory) {
+    init(category: StreetFoodStoreCategory) {
         self.categoryListReactor = CategoryListReactor(
             category: category,
             storeService: StoreService(),
@@ -24,7 +24,7 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
         fatalError("init(coder:) has not been implemented")
     }
   
-    static func instance(category: StoreCategory) -> CategoryListViewController {
+    static func instance(category: StreetFoodStoreCategory) -> CategoryListViewController {
         return CategoryListViewController(category: category)
     }
   

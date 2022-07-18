@@ -1,12 +1,12 @@
 struct Menu {
   
-  let category: StoreCategory
+  let category: StreetFoodStoreCategory
   let menuId: Int
   var name: String
   var price: String
   
   init(
-    category: StoreCategory,
+    category: StreetFoodStoreCategory,
     name: String = "",
     price: String = ""
   ) {

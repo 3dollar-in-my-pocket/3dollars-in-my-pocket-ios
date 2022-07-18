@@ -1,6 +1,6 @@
 struct MenuResponse: Decodable {
   
-  let category: StoreCategory
+  let category: StreetFoodStoreCategory
   let menuId: Int
   let name: String
   let price: String
@@ -17,7 +17,7 @@ struct MenuResponse: Decodable {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     
     self.category = try values.decodeIfPresent(
-      StoreCategory.self,
+        StreetFoodStoreCategory.self,
       forKey: .category
     ) ?? .BUNGEOPPANG
     self.menuId = try values.decodeIfPresent(Int.self, forKey: .menuId) ?? 0

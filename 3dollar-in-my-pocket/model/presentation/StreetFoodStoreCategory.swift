@@ -1,6 +1,6 @@
 import UIKit
 
-public enum StoreCategory: String, Codable {
+public enum StreetFoodStoreCategory: String, Codable {
   case BUNGEOPPANG = "BUNGEOPPANG"
   case TAKOYAKI = "TAKOYAKI"
   case GYERANPPANG = "GYERANPPANG"

@@ -27,7 +27,7 @@ final class CategoryListReactor: BaseReactor, Reactor {
     }
     
     struct State {
-        var category: StoreCategory
+        var category: StreetFoodStoreCategory
         var cameraPosition: CLLocation?
         var storeCellTypes: [StoreCellType] = []
         var stores: [Store] = []
@@ -43,7 +43,7 @@ final class CategoryListReactor: BaseReactor, Reactor {
     let pushStoreDetailPublisher = PublishRelay<Int>()
     
     init(
-        category: StoreCategory,
+        category: StreetFoodStoreCategory,
         storeService: StoreServiceProtocol,
         advertisementService: AdvertisementServiceProtocol,
         locationManager: LocationManagerProtocol
@@ -161,7 +161,7 @@ final class CategoryListReactor: BaseReactor, Reactor {
     }
     
     private func searchNearStores(
-        category: StoreCategory,
+        category: StreetFoodStoreCategory,
         currentLocation: CLLocation,
         mapLocation: CLLocation,
         orderType: StoreOrder

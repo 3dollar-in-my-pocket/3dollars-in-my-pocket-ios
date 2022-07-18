@@ -5,7 +5,7 @@ import RxSwift
 protocol AddCategoryDelegate: class {
   
   func onDismiss()
-  func onSuccess(selectedCategories: [StoreCategory])
+  func onSuccess(selectedCategories: [StreetFoodStoreCategory])
 }
 
 class AddCategoryVC: BaseVC {
@@ -17,7 +17,7 @@ class AddCategoryVC: BaseVC {
   private let viewModel: AddCategoryViewModel
   
   
-  init(selectedCategory: [StoreCategory?]) {
+  init(selectedCategory: [StreetFoodStoreCategory?]) {
     self.viewModel = AddCategoryViewModel(selectedCategory: selectedCategory)
     super.init(nibName: nil, bundle: nil)
   }
@@ -26,7 +26,7 @@ class AddCategoryVC: BaseVC {
     fatalError("init(coder:) has not been implemented")
   }
   
-  static func instance(selectedCategory: [StoreCategory?]) -> AddCategoryVC {
+  static func instance(selectedCategory: [StreetFoodStoreCategory?]) -> AddCategoryVC {
     return AddCategoryVC(selectedCategory: selectedCategory).then {
       $0.modalPresentationStyle = .overCurrentContext
     }
@@ -91,7 +91,7 @@ class AddCategoryVC: BaseVC {
     self.dismiss(animated: true, completion: nil)
   }
   
-  private func selectCategories(selectedCategories: [StoreCategory]) {
+  private func selectCategories(selectedCategories: [StreetFoodStoreCategory]) {
     self.delegate?.onSuccess(selectedCategories: selectedCategories)
     self.dismiss()
   }
