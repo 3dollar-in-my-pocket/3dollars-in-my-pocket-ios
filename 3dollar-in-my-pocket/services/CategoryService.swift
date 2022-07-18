@@ -3,23 +3,25 @@ import RxSwift
 import CoreLocation
 
 protocol CategoryServiceProtocol {
-  
-  func getStoreByDistance(
-    category: StreetFoodStoreCategory,
-    currentLocation: CLLocation,
-    mapLocation: CLLocation?
-  ) -> Observable<StoresGroupByDistanceResponse>
-  
-  func getStoreByReview(
-    category: StreetFoodStoreCategory,
-    currentLocation: CLLocation,
-    mapLocation: CLLocation?
-  ) -> Observable<StoresGroupByReviewResponse>
-  
-  func fetchCategories() -> Observable<[MenuCategoryResponse]>
+    func getStoreByDistance(
+        category: StreetFoodStoreCategory,
+        currentLocation: CLLocation,
+        mapLocation: CLLocation?
+    ) -> Observable<StoresGroupByDistanceResponse>
+    
+    func getStoreByReview(
+        category: StreetFoodStoreCategory,
+        currentLocation: CLLocation,
+        mapLocation: CLLocation?
+    ) -> Observable<StoresGroupByReviewResponse>
+    
+    func fetchCategories() -> Observable<[MenuCategoryResponse]>
+    
+    func fetchFoodTruckCategories() -> Observable<[Categorizable]>
 }
 
 struct CategoryService: CategoryServiceProtocol {
+    let networkManager = NetworkManager()
   
   func getStoreByDistance(
     category: StreetFoodStoreCategory,
@@ -111,4 +113,16 @@ struct CategoryService: CategoryServiceProtocol {
       return Disposables.create()
     }
   }
+    
+    func fetchFoodTruckCategories() -> Observable<[Categorizable]> {
+        let urlString = HTTPUtils.url + "/api/v1/boss/store/categories"
+        let headers = HTTPUtils.jsonHeader()
+        
+        return self.networkManager.createGetObservable(
+            class: [BossStoreCategoryResponse].self,
+            urlString: urlString,
+            headers: headers
+        )
+        .map { $0.map(FoodTruckCategory.init(response: )) }
+    }
 }
