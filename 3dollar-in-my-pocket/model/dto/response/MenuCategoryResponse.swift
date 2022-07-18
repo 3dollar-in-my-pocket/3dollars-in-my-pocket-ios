@@ -1,7 +1,7 @@
 import UIKit
 
 struct MenuCategoryResponse: Decodable {
-    let category: StreetFoodStoreCategory
+    let category: String
     let description: String
     let isNew: Bool
     let name: String
@@ -16,10 +16,7 @@ struct MenuCategoryResponse: Decodable {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.category = try values.decodeIfPresent(
-            StreetFoodStoreCategory.self,
-            forKey: .category
-        ) ?? .BUNGEOPPANG
+        self.category = try values.decodeIfPresent(String.self, forKey: .category) ?? ""
         self.description = try values.decodeIfPresent(
             String.self,
             forKey: .description

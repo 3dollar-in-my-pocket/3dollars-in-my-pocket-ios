@@ -17,6 +17,8 @@ protocol CategoryServiceProtocol {
     
     func fetchCategories() -> Observable<[MenuCategoryResponse]>
     
+    func fetchStreetFoodCategories() -> Observable<[Categorizable]>
+    
     func fetchFoodTruckCategories() -> Observable<[Categorizable]>
 }
 
@@ -113,6 +115,18 @@ struct CategoryService: CategoryServiceProtocol {
       return Disposables.create()
     }
   }
+    
+    func fetchStreetFoodCategories() -> Observable<[Categorizable]> {
+        let urlString = HTTPUtils.url + "/api/v2/store/menu/categories"
+        let headers = HTTPUtils.jsonHeader()
+
+        return self.networkManager.createGetObservable(
+            class: [MenuCategoryResponse].self,
+            urlString: urlString,
+            headers: headers
+        )
+        .map { $0.map(StreetFoodCategory.init(response: )) }
+    }
     
     func fetchFoodTruckCategories() -> Observable<[Categorizable]> {
         let urlString = HTTPUtils.url + "/api/v1/boss/store/categories"

@@ -11,14 +11,14 @@ final class CategoryReactor: BaseReactor, Reactor {
     }
     
     enum Mutation {
-        case setCategories(categories: [MenuCategory], advertisement: Advertisement?)
+        case setCategories(categories: [StreetFoodCategory], advertisement: Advertisement?)
         case goToWeb(url: String)
         case pushCategoryList(category: StreetFoodStoreCategory)
         case showErrorAlert(Error)
     }
     
     struct State {
-        var categorySections: [SectionModel<Advertisement?, MenuCategory>] = []
+        var categorySections: [SectionModel<Advertisement?, StreetFoodCategory>] = []
     }
     
     let initialState = State()
@@ -80,9 +80,9 @@ final class CategoryReactor: BaseReactor, Reactor {
     }
   
     
-    private func fetchCategories() -> Observable<[MenuCategory]> {
+    private func fetchCategories() -> Observable<[StreetFoodCategory]> {
         return self.categoryService.fetchCategories()
-            .map { $0.map(MenuCategory.init(response:)) }
+            .map { $0.map(StreetFoodCategory.init(response:)) }
     }
     
     private func fetchAdvertisement() -> Observable<Advertisement?> {
