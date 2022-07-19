@@ -23,7 +23,9 @@ final class HomeView: BaseView {
         layout.estimatedItemSize = HomeCategoryCollectionViewCell.itemSize
         layout.minimumInteritemSpacing = 8
         layout.scrollDirection = .horizontal
+        layout.sectionInset = .init(top: 0, left: 0, bottom: 0, right: 24)
         $0.contentInset = .init(top: 0, left: 24, bottom: 0, right: 24)
+        $0.showsHorizontalScrollIndicator = false
         $0.collectionViewLayout = layout
         $0.backgroundColor = .clear
         $0.clipsToBounds = false

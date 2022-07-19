@@ -1,14 +1,16 @@
 import CoreLocation
+import MapKit
 
 import RxSwift
 import RxCocoa
 import ReactorKit
-import MapKit
 
 final class HomeReactor: BaseReactor, Reactor {
     enum Action {
+        case viewDidLoad
         case changeMaxDistance(maxDistance: Double)
         case changeMapLocation(CLLocation)
+        case tapStoreTypeButton
         case searchByAddress(location: CLLocation, address: String)
         case tapResearchButton
         case tapCurrentLocationButton
@@ -20,7 +22,9 @@ final class HomeReactor: BaseReactor, Reactor {
     }
     
     enum Mutation {
+        case setCategories([Categorizable])
         case setStoreCellTypes([StoreCellType])
+        case setStoreType(StoreType)
         case setCurrentLocation(CLLocation)
         case setAddressText(address: String)
         case setMaxDistance(Double)
@@ -36,6 +40,8 @@ final class HomeReactor: BaseReactor, Reactor {
     }
     
     struct State {
+        var storeType: StoreType = .streetFood
+        var categories: [Categorizable] = []
         var storeCellTypes: [StoreCellType] = []
         var address = ""
         var isHiddenResearchButton = true
@@ -48,7 +54,10 @@ final class HomeReactor: BaseReactor, Reactor {
     let initialState = State()
     let pushStoreDetailPublisher = PublishRelay<Int>()
     let presentVisitPublisher = PublishRelay<Store>()
+    private var foodTruckCategory: [Categorizable] = []
+    private var streetFoodCategory: [Categorizable] = []
     private let storeService: StoreServiceProtocol
+    private let categoryService: CategoryServiceProtocol
     private let advertisementService: AdvertisementServiceProtocol
     private let locationManager: LocationManagerProtocol
     private let mapService: MapServiceProtocol
@@ -56,12 +65,14 @@ final class HomeReactor: BaseReactor, Reactor {
     
     init(
         storeService: StoreServiceProtocol,
+        categoryService: CategoryServiceProtocol,
         advertisementService: AdvertisementServiceProtocol,
         locationManager: LocationManagerProtocol,
         mapService: MapServiceProtocol,
         userDefaults: UserDefaultsUtil
     ) {
         self.storeService = storeService
+        self.categoryService = categoryService
         self.advertisementService = advertisementService
         self.locationManager = locationManager
         self.mapService = mapService
@@ -71,6 +82,18 @@ final class HomeReactor: BaseReactor, Reactor {
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
+        case .viewDidLoad:
+            return Observable.zip(
+                self.categoryService.fetchStreetFoodCategories(),
+                self.categoryService.fetchFoodTruckCategories()
+            )
+            .do(onNext: { [weak self] streetFoodCategory, foodTruckCategory in
+                self?.streetFoodCategory = streetFoodCategory
+                self?.foodTruckCategory = foodTruckCategory
+            })
+            .map { Mutation.setCategories($0.0) }
+            .catch { .just(.showErrorAlert($0)) }
+            
         case .changeMaxDistance(let maxDistance):
             return .just(.setMaxDistance(maxDistance))
             
@@ -78,6 +101,15 @@ final class HomeReactor: BaseReactor, Reactor {
             return .merge([
                 .just(.setHiddenResearchButton(false)),
                 .just(.setCameraPosition(mapLocation))
+            ])
+            
+        case .tapStoreTypeButton:
+            let toggleStoreType = self.currentState.storeType.toggle()
+            let toggleCateogires = self.getCategories(by: toggleStoreType)
+            
+            return .merge([
+                .just(.setStoreType(toggleStoreType)),
+                .just(.setCategories(toggleCateogires))
             ])
             
         case .searchByAddress(let location, let address):
@@ -189,8 +221,14 @@ final class HomeReactor: BaseReactor, Reactor {
         var newState = state
         
         switch mutation {
+        case .setCategories(let categories):
+            newState.categories = categories
+            
         case .setStoreCellTypes(let storeCellTypes):
             newState.storeCellTypes = storeCellTypes
+            
+        case .setStoreType(let storeType):
+            newState.storeType = storeType
             
         case .setCurrentLocation(let currentLocation):
             newState.currentLocation = currentLocation
@@ -284,6 +322,10 @@ final class HomeReactor: BaseReactor, Reactor {
             .catchError { .just(.showErrorAlert($0)) }
     }
     
+    private func fetchStreedFoodCategories() -> Observable<[Categorizable]> {
+        return self.categoryService.fetchStreetFoodCategories()
+    }
+    
     private func fetchAdvertisement() -> Observable<Advertisement?> {
         return self.advertisementService
             .fetchAdvertisements(position: .mainPageCard)
@@ -314,5 +356,13 @@ final class HomeReactor: BaseReactor, Reactor {
             }
         }
         return .empty()
+    }
+    
+    private func getCategories(by storeType: StoreType) -> [Categorizable] {
+        if storeType == .streetFood {
+            return self.streetFoodCategory
+        } else {
+            return self.foodTruckCategory
+        }
     }
 }

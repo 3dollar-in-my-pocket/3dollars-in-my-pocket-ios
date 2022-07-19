@@ -10,17 +10,27 @@ enum StoreType {
             return "푸드트럭"
             
         case .streetFood:
-            return "길거리 음식"
+            return "길거리음식"
         }
     }
     
     var themeColor: UIColor? {
         switch self {
         case .foodTruck:
-            return R.color.pink()
+            return R.color.green()
             
         case .streetFood:
-            return R.color.green()
+            return R.color.pink()
+        }
+    }
+    
+    func toggle() -> Self {
+        switch self {
+        case .streetFood:
+            return .foodTruck
+            
+        case .foodTruck:
+            return .streetFood
         }
     }
 }

@@ -10,6 +10,7 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
     private let homeView = HomeView()
     private let homeReactor = HomeReactor(
         storeService: StoreService(),
+        categoryService: CategoryService(),
         advertisementService: AdvertisementService(),
         locationManager: LocationManager.shared,
         mapService: MapService(),
@@ -47,17 +48,8 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
         self.reactor = self.homeReactor
         self.initilizeShopCollectionView()
         self.initilizeNaverMap()
+        self.homeReactor.action.onNext(.viewDidLoad)
         self.homeReactor.action.onNext(.tapCurrentLocationButton)
-        
-        Observable.just([1,2,3,4])
-            .asDriver(onErrorJustReturn: [])
-            .drive(self.homeView.categoryCollectionView.rx.items(
-                cellIdentifier: HomeCategoryCollectionViewCell.registerId,
-                cellType: HomeCategoryCollectionViewCell.self
-            )) { row, item, cell in
-                
-            }
-            .disposed(by: self.eventDisposeBag)
     }
     
     override func bindEvent() {
@@ -106,6 +98,12 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
     
     func bind(reactor: HomeReactor) {
         // Bind Action
+        self.homeView.storeTypeButton.rx.tap
+            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapStoreTypeButton }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
         self.homeView.researchButton.rx.tap
             .map { Reactor.Action.tapResearchButton }
             .bind(to: reactor.action)
@@ -130,6 +128,30 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
         }
         
         // Bind State
+        reactor.state
+            .map { $0.storeType }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: .streetFood)
+            .drive(self.homeView.storeTypeButton.rx.storeType)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .map { $0.categories }
+            .distinctUntilChanged { lhs, rhs in
+                return lhs.count == rhs.count
+            }
+            .asDriver(onErrorJustReturn: [])
+            .drive(self.homeView.categoryCollectionView.rx.items(
+                cellIdentifier: HomeCategoryCollectionViewCell.registerId,
+                cellType: HomeCategoryCollectionViewCell.self
+            )) { _, category, cell in
+                cell.bind(
+                    category: category,
+                    storeType: reactor.currentState.storeType
+                )
+            }
+            .disposed(by: self.disposeBag)
+        
         reactor.state
             .map { $0.storeCellTypes }
             .distinctUntilChanged()
