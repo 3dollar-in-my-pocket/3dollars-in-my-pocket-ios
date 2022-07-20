@@ -49,10 +49,20 @@ protocol StoreServiceProtocol {
         storeId: Int,
         deleteReasonType: DeleteReason
     ) -> Observable<StoreDeleteResponse>
+    
+    func searchNearBossStores(
+        categoryId: String?,
+        distance: Double?,
+        currentLocation: CLLocation,
+        mapLocation: CLLocation,
+        orderType: BossStoreOrderType?
+    ) -> Observable<[StoreProtocol]>
 }
 
 
 struct StoreService: StoreServiceProtocol {
+    let networkManager = NetworkManager()
+    
     func searchNearStores(
         currentLocation: CLLocation?,
         mapLocation: CLLocation,
@@ -371,5 +381,40 @@ struct StoreService: StoreServiceProtocol {
             
             return Disposables.create()
         }
+    }
+    
+    func searchNearBossStores(
+        categoryId: String?,
+        distance: Double?,
+        currentLocation: CLLocation,
+        mapLocation: CLLocation,
+        orderType: BossStoreOrderType?
+    ) -> Observable<[StoreProtocol]> {
+        let urlString = HTTPUtils.url + "/api/v1/boss/stores/around"
+        let headers = HTTPUtils.jsonHeader()
+        var parameters: [String: Any] = [
+            "latitude": currentLocation.coordinate.latitude,
+            "longitude": currentLocation.coordinate.longitude,
+            "mapLatitude": mapLocation.coordinate.latitude,
+            "mapLongitude": mapLocation.coordinate.longitude
+        ]
+        
+        if let categoryId = categoryId {
+            parameters["categoryId"] = categoryId
+        }
+        if let distance = distance {
+            parameters["distanceKm"] = distance
+        }
+        if let orderType = orderType {
+            parameters["orderType"] = orderType.rawValue
+        }
+        
+        return self.networkManager.createGetObservable(
+            class: [BossStoreAroundInfoResponse].self,
+            urlString: urlString,
+            headers: headers,
+            parameters: parameters
+        )
+        .map { $0.map(BossStore.init(response: )) }
     }
 }
