@@ -220,7 +220,6 @@ PODS:
     - BoringSSL-GRPC/Interface (= 0.0.7)
   - BoringSSL-GRPC/Interface (0.0.7)
   - DeviceKit (4.4.0)
-  - Differentiator (4.0.1)
   - Firebase/Analytics (8.1.1):
     - Firebase/Core
   - Firebase/Core (8.1.1):
@@ -378,22 +377,6 @@ PODS:
     - BoringSSL-GRPC (= 0.0.7)
     - gRPC-Core/Interface (= 1.28.2)
   - gRPC-Core/Interface (1.28.2)
-  - KakaoSDKAuth (2.5.3):
-    - KakaoSDKCommon (= 2.5.3)
-  - KakaoSDKCommon (2.5.3):
-    - KakaoSDKCommon/Common (= 2.5.3)
-    - KakaoSDKCommon/Network (= 2.5.3)
-  - KakaoSDKCommon/Common (2.5.3)
-  - KakaoSDKCommon/Network (2.5.3):
-    - Alamofire (~> 5.1)
-    - KakaoSDKCommon/Common (= 2.5.3)
-  - KakaoSDKLink (2.5.3):
-    - KakaoSDKCommon (= 2.5.3)
-    - KakaoSDKTemplate (= 2.5.3)
-  - KakaoSDKTemplate (2.5.3):
-    - KakaoSDKCommon/Common (= 2.5.3)
-  - KakaoSDKUser (2.5.3):
-    - KakaoSDKAuth (= 2.5.3)
   - Kingfisher (5.15.8):
     - Kingfisher/Core (= 5.15.8)
   - Kingfisher/Core (5.15.8)
@@ -410,50 +393,15 @@ PODS:
   - R.swift (5.4.0):
     - R.swift.Library (~> 5.3.0)
   - R.swift.Library (5.3.0)
-  - ReactorKit (2.1.1):
-    - RxSwift (~> 5.0)
-    - WeakMapTable (~> 1.1)
-  - RxAlamofire (5.7.1):
-    - RxAlamofire/Core (= 5.7.1)
-  - RxAlamofire/Core (5.7.1):
-    - Alamofire (~> 5.4)
-    - RxSwift (~> 5.1)
-  - RxCocoa (5.1.1):
-    - RxRelay (~> 5)
-    - RxSwift (~> 5)
-  - RxDataSources (4.0.1):
-    - Differentiator (~> 4.0)
-    - RxCocoa (~> 5.0)
-    - RxSwift (~> 5.0)
-  - RxKakaoSDKAuth (2.5.3):
-    - KakaoSDKAuth (= 2.5.3)
-    - RxKakaoSDKCommon (= 2.5.3)
-  - RxKakaoSDKCommon (2.5.3):
-    - RxKakaoSDKCommon/Common (= 2.5.3)
-    - RxKakaoSDKCommon/Network (= 2.5.3)
-  - RxKakaoSDKCommon/Common (2.5.3):
-    - KakaoSDKCommon/Common (= 2.5.3)
-    - RxCocoa
-    - RxSwift
-  - RxKakaoSDKCommon/Network (2.5.3):
-    - KakaoSDKCommon/Network (= 2.5.3)
-    - RxAlamofire (~> 5.2)
-    - RxKakaoSDKCommon/Common (= 2.5.3)
-  - RxKakaoSDKUser (2.5.3):
-    - KakaoSDKUser (= 2.5.3)
-    - RxKakaoSDKAuth (= 2.5.3)
   - RxNimble/Core (5.0.0):
     - Nimble (~> 9.0)
     - RxSwift (~> 5.0)
   - RxNimble/RxTest (5.0.0):
     - RxNimble/Core
     - RxTest
-  - RxRelay (5.1.1):
-    - RxSwift (~> 5)
-  - RxSwift (5.1.2)
+  - RxSwift (5.1.3)
   - RxTest (5.1.2):
     - RxSwift (~> 5)
-  - SnapKit (5.0.1)
   - SPPermissions/Camera (5.5.8):
     - SPPermissions/Core
   - SPPermissions/Core (5.5.8)
@@ -463,8 +411,6 @@ PODS:
     - SPPermissions/Core
   - SwiftLint (0.43.1)
   - SwiftyBeaver (1.9.5)
-  - Then (2.7.0)
-  - WeakMapTable (1.2.0)
 
 DEPENDENCIES:
   - Alamofire (~> 5.2)
@@ -476,28 +422,17 @@ DEPENDENCIES:
   - Firebase/Messaging
   - Firebase/RemoteConfig
   - Google-Mobile-Ads-SDK
-  - KakaoSDKCommon
-  - KakaoSDKLink
-  - KakaoSDKTemplate
   - Kingfisher (~> 5.0)
   - lottie-ios
   - NMapsMap
   - R.swift
-  - ReactorKit
-  - RxCocoa (~> 5)
-  - RxDataSources (~> 4.0)
-  - RxKakaoSDKAuth
-  - RxKakaoSDKUser
   - RxNimble/RxTest
-  - RxSwift (~> 5)
   - RxTest (~> 5)
-  - SnapKit (~> 5.0.0)
   - SPPermissions/Camera
   - SPPermissions/Location
   - SPPermissions/PhotoLibrary
   - SwiftLint
   - SwiftyBeaver
-  - Then
 
 SPEC REPOS:
   trunk:
@@ -505,7 +440,6 @@ SPEC REPOS:
     - Alamofire
     - BoringSSL-GRPC
     - DeviceKit
-    - Differentiator
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
@@ -523,11 +457,6 @@ SPEC REPOS:
     - GoogleUtilities
     - "gRPC-C++"
     - gRPC-Core
-    - KakaoSDKAuth
-    - KakaoSDKCommon
-    - KakaoSDKLink
-    - KakaoSDKTemplate
-    - KakaoSDKUser
     - Kingfisher
     - leveldb-library
     - lottie-ios
@@ -537,30 +466,18 @@ SPEC REPOS:
     - PromisesObjC
     - R.swift
     - R.swift.Library
-    - ReactorKit
-    - RxAlamofire
-    - RxCocoa
-    - RxDataSources
-    - RxKakaoSDKAuth
-    - RxKakaoSDKCommon
-    - RxKakaoSDKUser
     - RxNimble
-    - RxRelay
     - RxSwift
     - RxTest
-    - SnapKit
     - SPPermissions
     - SwiftLint
     - SwiftyBeaver
-    - Then
-    - WeakMapTable
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
   Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   DeviceKit: 2c5d7485a2fa10b65c0091b2952d30843a6ba06d
-  Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   Firebase: 4bb49ae87756034cef870fa3c4006235eb46f475
   FirebaseABTesting: 4cb61aeeb50f60680af1c01fff781dfaf9293916
   FirebaseAnalytics: d6dd061b26a04744cb988c66e29697181152b2a3
@@ -578,11 +495,6 @@ SPEC CHECKSUMS:
   GoogleUtilities: f8a43108b38a68eebe8b3540e1f4f2d28843ce20
   "gRPC-C++": 13d8ccef97d5c3c441b7e3c529ef28ebee86fad2
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
-  KakaoSDKAuth: b1a0b9a84c21c967c4139d221edce83a7f15cdfe
-  KakaoSDKCommon: 08548932f6f570215ea038241a98157c0b3f7a8b
-  KakaoSDKLink: 4d35879b0abd90fbd0bc0de56dbb06097e9b31d3
-  KakaoSDKTemplate: 5939681de6c24fd81e93bf824982e979e794f87e
-  KakaoSDKUser: 5d2de71fe070455bbaaad6a37af3eb500fbc8972
   Kingfisher: a3c03d702433fa6cfedabb2bddbe076fb8f2e902
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
@@ -592,24 +504,13 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   R.swift: c533450b0f7dc494e0993f5f1a1db925d84c3006
   R.swift.Library: 0fc583cb55a99e28901299cc451614cad1161962
-  ReactorKit: 6d894a20c3d508344320901cd8e386fde92df4b6
-  RxAlamofire: 8e144c62dcc01d68dcb366bfc542eb6dd46bab78
-  RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
-  RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
-  RxKakaoSDKAuth: 8f4609d0a1e1613f8861a219e727aa1b688d67f3
-  RxKakaoSDKCommon: 6dc3f478b35751dfd1f806f20d3bf7b1650f257c
-  RxKakaoSDKUser: 088d321b0b959b66bbb112f8db278aae2a83e6bf
   RxNimble: 3b757b0f8fb4dc487c3f9a383bc61a6f5bd72d28
-  RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
-  RxSwift: 1e2e1f9570186967f617e49128ed26ccf1bafc8e
+  RxSwift: 915abbdfb62214aa89ccd0b194d44fb478019b27
   RxTest: 274549b747dca56f47c52c8991ec5cf797ecfe40
-  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SPPermissions: 77d05b0b8489f4c3faefa47317d5af0179c2bfd1
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
-  Then: acfe0be7e98221c6204e12f8161459606d5d822d
-  WeakMapTable: 05c694ce8439a7a9ebabb56187287a63c57673d6
 
-PODFILE CHECKSUM: 1e12bd2ab7641048674de7ce98f5c18e211e8f9d
+PODFILE CHECKSUM: d9879f83ca1c744a369eb4ca54b31fbec7a883f6
 
 COCOAPODS: 1.11.2

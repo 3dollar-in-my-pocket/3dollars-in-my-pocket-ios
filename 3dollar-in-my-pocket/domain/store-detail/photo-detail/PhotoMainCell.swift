@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 class PhotoMainCell: BaseCollectionViewCell {
   
   static let registerId = "\(PhotoMainCell.self)"

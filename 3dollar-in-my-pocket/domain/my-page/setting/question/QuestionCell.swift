@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 class QuestionCell: BaseTableViewCell {
   
   static let registerId = "\(QuestionCell.self)"

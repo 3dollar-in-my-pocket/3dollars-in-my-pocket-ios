@@ -248,7 +248,7 @@ final class HomeReactor: BaseReactor, Reactor {
                     self.fetchAddressFromLocation(location: currentLocation)
                 ])
             }
-            .catchError { .just(.showErrorAlert($0)) }
+            .catch { .just(.showErrorAlert($0)) }
     }
     
     private func searchNearStores(

@@ -37,12 +37,12 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
         super.viewDidLoad()
         
         self.coordinator = self
-        self.viewModel.input.viewDidLoad.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        self.viewModel.input.viewDidLoad.onNext(())
         self.tabBarController?.tabBar.barTintColor = R.color.gray100()
     }
     

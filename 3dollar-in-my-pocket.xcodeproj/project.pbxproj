@@ -3,11 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		213EDE6A6655D10B7985973D /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF0F69C12BFA691156A29472 /* Pods_3dollar_in_my_pocketTests.framework */; };
+		3BCC5E0521BC8C9F0EB79506 /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2150BCA4A1F1A8F0652699B1 /* Pods_3dollar_in_my_pocket.framework */; };
 		6E01AD1A23D094FF008BFCC0 /* HomeReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01AD1923D094FF008BFCC0 /* HomeReactor.swift */; };
 		6E07D44423B5906E0055AEE7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44323B5906E0055AEE7 /* HomeView.swift */; };
 		6E07D44623B590B30055AEE7 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44523B590B30055AEE7 /* HomeViewController.swift */; };
@@ -17,6 +17,7 @@
 		6E07D44E23B5918B0055AEE7 /* WriteDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44D23B5918B0055AEE7 /* WriteDetailVC.swift */; };
 		6E09470326F4BE27000D4858 /* RenameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09470226F4BE27000D4858 /* RenameViewModel.swift */; };
 		6E09470526F4C5DE000D4858 /* ChangeNicknameError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09470426F4C5DE000D4858 /* ChangeNicknameError.swift */; };
+		6E0BCC9F2875C63B00B7A5AD /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6E0BCC9E2875C63B00B7A5AD /* SnapKit */; };
 		6E0EA39723ABB230008F7CB2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */; };
 		6E0EA39923ABB230008F7CB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */; };
 		6E0EA39B23ABB230008F7CB2 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39A23ABB230008F7CB2 /* SignInViewController.swift */; };
@@ -54,6 +55,10 @@
 		6E2C4CCC26E79A8F00AAEA6E /* StoreDeleteResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C4CCB26E79A8F00AAEA6E /* StoreDeleteResponse.swift */; };
 		6E2C820D23B4A2880025BB2B /* NicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C820C23B4A2880025BB2B /* NicknameView.swift */; };
 		6E2C820F23B4A37F0025BB2B /* NicknameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C820E23B4A37F0025BB2B /* NicknameViewController.swift */; };
+		6E2E39AD2875AC9800B524BF /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E07675728688E070078CE5B /* Base.framework */; };
+		6E2E39AE2875AC9800B524BF /* Base.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6E07675728688E070078CE5B /* Base.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6E2E39B92875B48000B524BF /* ReactorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6E2E39B82875B48000B524BF /* ReactorKit */; };
+		6E2E39BC2875B57700B524BF /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = 6E2E39BB2875B57700B524BF /* Then */; };
 		6E2F5FDF23D6BF4800094D41 /* CategoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2F5FDE23D6BF4800094D41 /* CategoryService.swift */; };
 		6E2F5FE323D6DE8600094D41 /* loading.json in Resources */ = {isa = PBXBuildFile; fileRef = 6E2F5FE223D6DE8600094D41 /* loading.json */; };
 		6E31574D25BA60B60022D6F3 /* StoreDetailMenuCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E31574C25BA60B60022D6F3 /* StoreDetailMenuCategoryView.swift */; };
@@ -135,6 +140,14 @@
 		6E4952CA26B03C7800D65042 /* AppleSigninManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4952C926B03C7800D65042 /* AppleSigninManager.swift */; };
 		6E49B0FA27506AB7009897C1 /* PopupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E49B0F927506AB7009897C1 /* PopupCoordinator.swift */; };
 		6E49B0FC27506C86009897C1 /* AdvertisementResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E49B0FB27506C86009897C1 /* AdvertisementResponse.swift */; };
+		6E4AFC8628770B0C00D42996 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC8528770B0C00D42996 /* KakaoSDK */; };
+		6E4AFC8828770B0C00D42996 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC8728770B0C00D42996 /* KakaoSDKAuth */; };
+		6E4AFC8A28770B0C00D42996 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC8928770B0C00D42996 /* KakaoSDKCommon */; };
+		6E4AFC8C28770B0C00D42996 /* KakaoSDKShare in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC8B28770B0C00D42996 /* KakaoSDKShare */; };
+		6E4AFC8E28770B0C00D42996 /* KakaoSDKTalk in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC8D28770B0C00D42996 /* KakaoSDKTalk */; };
+		6E4AFC9028770B0C00D42996 /* KakaoSDKTemplate in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC8F28770B0C00D42996 /* KakaoSDKTemplate */; };
+		6E4AFC9228770B0C00D42996 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC9128770B0C00D42996 /* KakaoSDKUser */; };
+		6E4AFC952877107000D42996 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC942877107000D42996 /* RxDataSources */; };
 		6E4C1BE127532E0D006C0F15 /* TitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4C1BE027532E0D006C0F15 /* TitleLabel.swift */; };
 		6E4C1BE3275330CF006C0F15 /* CountButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4C1BE2275330CF006C0F15 /* CountButton.swift */; };
 		6E4C1BE627534B5F006C0F15 /* MyVisitHistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4C1BE527534B5F006C0F15 /* MyVisitHistoryCell.swift */; };
@@ -309,8 +322,6 @@
 		6EC0D68026EB8891008AD34B /* FQAResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC0D67F26EB8891008AD34B /* FQAResponse.swift */; };
 		6EC0E96D279AE51E0068D4FB /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC0E96C279AE51E0068D4FB /* NotificationService.swift */; };
 		6EC0E971279AE51E0068D4FB /* service-extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6EC0E96A279AE51E0068D4FB /* service-extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */; };
-		6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */; };
 		6EC8685C25BF07F10082521C /* splash.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EC8685B25BF07F10082521C /* splash.json */; };
 		6ECCE9AB26BACF3F006B3C01 /* MenuRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECCE9AA26BACF3F006B3C01 /* MenuRequest.swift */; };
 		6ECCE9AD26BAD179006B3C01 /* AddStoreRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECCE9AC26BAD179006B3C01 /* AddStoreRequest.swift */; };
@@ -356,7 +367,7 @@
 		6EF63FC32761B7130063A3B9 /* MyVisitHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF63FC22761B7130063A3B9 /* MyVisitHistoryTableViewCell.swift */; };
 		6EF63FC52761B7E10063A3B9 /* MyVisitHistoryImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF63FC42761B7E10063A3B9 /* MyVisitHistoryImageView.swift */; };
 		6EFC89DF268B63E800B3414F /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFC89DE268B63E800B3414F /* R.generated.swift */; };
-		FE94855E03305D11B25FAAA8 /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA3693E9A0EAAD623D57457B /* Pods_3dollar_in_my_pocket.framework */; };
+		B8EA7A145886259737429AC9 /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C7D748F844F08727B81379C /* Pods_3dollar_in_my_pocketTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -384,6 +395,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		6E2E39AF2875AC9800B524BF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6E2E39AE2875AC9800B524BF /* Base.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6EC0E972279AE51E0068D4FB /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -399,11 +421,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2EDE7CBD20E67AC529682967 /* Pods-3dollar-in-my-pocket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.debug.xcconfig"; sourceTree = "<group>"; };
-		3BD4F78FA4F3A696F62234EE /* Pods-3dollar-in-my-pocket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.release.xcconfig"; sourceTree = "<group>"; };
-		5B11C0F8A272F749D4F119EA /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.debug.xcconfig"; sourceTree = "<group>"; };
-		624C116D2E6C5A0BF75EDF97 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.release.xcconfig"; sourceTree = "<group>"; };
+		01E82AF878A12672A9077474 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.debug.xcconfig"; sourceTree = "<group>"; };
+		2150BCA4A1F1A8F0652699B1 /* Pods_3dollar_in_my_pocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4ECBEAC85F3CCBE26D668F75 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.release.xcconfig"; sourceTree = "<group>"; };
+		6C7D748F844F08727B81379C /* Pods_3dollar_in_my_pocketTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E01AD1923D094FF008BFCC0 /* HomeReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeReactor.swift; sourceTree = "<group>"; };
+		6E07675728688E070078CE5B /* Base.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Base.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E07D44323B5906E0055AEE7 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6E07D44523B590B30055AEE7 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		6E07D44723B590F20055AEE7 /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
@@ -710,8 +733,6 @@
 		6EC0E96A279AE51E0068D4FB /* service-extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "service-extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EC0E96C279AE51E0068D4FB /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		6EC0E96E279AE51E0068D4FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
-		6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
 		6EC8685B25BF07F10082521C /* splash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = splash.json; sourceTree = "<group>"; };
 		6ECCE9AA26BACF3F006B3C01 /* MenuRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuRequest.swift; sourceTree = "<group>"; };
 		6ECCE9AC26BAD179006B3C01 /* AddStoreRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStoreRequest.swift; sourceTree = "<group>"; };
@@ -758,8 +779,8 @@
 		6EF63FC22761B7130063A3B9 /* MyVisitHistoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVisitHistoryTableViewCell.swift; sourceTree = "<group>"; };
 		6EF63FC42761B7E10063A3B9 /* MyVisitHistoryImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVisitHistoryImageView.swift; sourceTree = "<group>"; };
 		6EFC89DE268B63E800B3414F /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
-		CA3693E9A0EAAD623D57457B /* Pods_3dollar_in_my_pocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FF0F69C12BFA691156A29472 /* Pods_3dollar_in_my_pocketTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BD7363D69E45B80A24A0A6F /* Pods-3dollar-in-my-pocket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.release.xcconfig"; sourceTree = "<group>"; };
+		9BF56FCCEFDD2EC9EA90ED1B /* Pods-3dollar-in-my-pocket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -767,7 +788,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FE94855E03305D11B25FAAA8 /* Pods_3dollar_in_my_pocket.framework in Frameworks */,
+				6E4AFC8A28770B0C00D42996 /* KakaoSDKCommon in Frameworks */,
+				6E4AFC952877107000D42996 /* RxDataSources in Frameworks */,
+				6E4AFC8828770B0C00D42996 /* KakaoSDKAuth in Frameworks */,
+				6E2E39AD2875AC9800B524BF /* Base.framework in Frameworks */,
+				6E4AFC9028770B0C00D42996 /* KakaoSDKTemplate in Frameworks */,
+				6E2E39B92875B48000B524BF /* ReactorKit in Frameworks */,
+				3BCC5E0521BC8C9F0EB79506 /* Pods_3dollar_in_my_pocket.framework in Frameworks */,
+				6E2E39BC2875B57700B524BF /* Then in Frameworks */,
+				6E0BCC9F2875C63B00B7A5AD /* SnapKit in Frameworks */,
+				6E4AFC9228770B0C00D42996 /* KakaoSDKUser in Frameworks */,
+				6E4AFC8E28770B0C00D42996 /* KakaoSDKTalk in Frameworks */,
+				6E4AFC8628770B0C00D42996 /* KakaoSDK in Frameworks */,
+				6E4AFC8C28770B0C00D42996 /* KakaoSDKShare in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -775,7 +808,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				213EDE6A6655D10B7985973D /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */,
+				B8EA7A145886259737429AC9 /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -801,10 +834,10 @@
 		417867EE2A79A650E3B9F6C2 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				2EDE7CBD20E67AC529682967 /* Pods-3dollar-in-my-pocket.debug.xcconfig */,
-				3BD4F78FA4F3A696F62234EE /* Pods-3dollar-in-my-pocket.release.xcconfig */,
-				5B11C0F8A272F749D4F119EA /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */,
-				624C116D2E6C5A0BF75EDF97 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */,
+				9BF56FCCEFDD2EC9EA90ED1B /* Pods-3dollar-in-my-pocket.debug.xcconfig */,
+				9BD7363D69E45B80A24A0A6F /* Pods-3dollar-in-my-pocket.release.xcconfig */,
+				01E82AF878A12672A9077474 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */,
+				4ECBEAC85F3CCBE26D668F75 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1334,7 +1367,6 @@
 				6EA5EC0523B57ED20028F86B /* main */,
 				6E6B0EE223AD17D7006E11CE /* membership */,
 				6E8A137623B5DCBB009C2B64 /* my-page */,
-				6E4CB90023D4960D00542D21 /* shared */,
 				6E077ED525694B7A00839CA3 /* splash */,
 				6E70C38D23B6EB8200C52C9C /* store-detail */,
 				6E8A137723B5DCC5009C2B64 /* writing */,
@@ -1347,8 +1379,6 @@
 			children = (
 				6E6B0EDB23AD16AC006E11CE /* BaseView.swift */,
 				6E6B0EDD23AD16F1006E11CE /* BaseVC.swift */,
-				6EC5A46F23B5DFBF000C09BD /* BaseTableViewCell.swift */,
-				6EC5A47323B5E242000C09BD /* BaseCollectionViewCell.swift */,
 				6E3EDF3B25694F8C0038E6A1 /* BaseViewModel.swift */,
 				6E57729A2780893E001E39DE /* BaseReactor.swift */,
 			);
@@ -1728,6 +1758,7 @@
 		6EA5EC0523B57ED20028F86B /* main */ = {
 			isa = PBXGroup;
 			children = (
+				6E4CB90023D4960D00542D21 /* shared */,
 				6E7EF40925DE978C0014CD2B /* TabBarVC.swift */,
 			);
 			path = main;
@@ -1925,10 +1956,11 @@
 		BEA79344C96B102E170EE0E8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CA3693E9A0EAAD623D57457B /* Pods_3dollar_in_my_pocket.framework */,
-				FF0F69C12BFA691156A29472 /* Pods_3dollar_in_my_pocketTests.framework */,
+				6E07675728688E070078CE5B /* Base.framework */,
 				6E8B30A0279BAF35001083B6 /* UserNotifications.framework */,
 				6E8B30A2279BAF35001083B6 /* UserNotificationsUI.framework */,
+				2150BCA4A1F1A8F0652699B1 /* Pods_3dollar_in_my_pocket.framework */,
+				6C7D748F844F08727B81379C /* Pods_3dollar_in_my_pocketTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1940,7 +1972,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6E0EA3BD23ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocket" */;
 			buildPhases = (
-				ABE94685D6CD1BBEB7C4DB8B /* [CP] Check Pods Manifest.lock */,
+				1F0336659EDDB90592264AC2 /* [CP] Check Pods Manifest.lock */,
 				6E8E2414256A8D3C00AE6479 /* GoogleService Info */,
 				6EFC89DD268B62AA00B3414F /* ShellScript */,
 				6E0EA38F23ABB230008F7CB2 /* Sources */,
@@ -1949,8 +1981,9 @@
 				6ECCFA8823EA41D1001A565E /* FirebaseCrashlytics */,
 				6EA92ED4258E3643009B6227 /* Sync String */,
 				6EFC89DC268B51C100B3414F /* Swift Lint */,
-				B2A25EA6465C94978C1F9E16 /* [CP] Embed Pods Frameworks */,
 				6EC0E972279AE51E0068D4FB /* Embed App Extensions */,
+				6E2E39AF2875AC9800B524BF /* Embed Frameworks */,
+				3CDADFF337D73220F55EA637 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1959,6 +1992,19 @@
 				6E8B30AC279BAF35001083B6 /* PBXTargetDependency */,
 			);
 			name = "3dollar-in-my-pocket";
+			packageProductDependencies = (
+				6E2E39B82875B48000B524BF /* ReactorKit */,
+				6E2E39BB2875B57700B524BF /* Then */,
+				6E0BCC9E2875C63B00B7A5AD /* SnapKit */,
+				6E4AFC8528770B0C00D42996 /* KakaoSDK */,
+				6E4AFC8728770B0C00D42996 /* KakaoSDKAuth */,
+				6E4AFC8928770B0C00D42996 /* KakaoSDKCommon */,
+				6E4AFC8B28770B0C00D42996 /* KakaoSDKShare */,
+				6E4AFC8D28770B0C00D42996 /* KakaoSDKTalk */,
+				6E4AFC8F28770B0C00D42996 /* KakaoSDKTemplate */,
+				6E4AFC9128770B0C00D42996 /* KakaoSDKUser */,
+				6E4AFC942877107000D42996 /* RxDataSources */,
+			);
 			productName = "3dollar-in-my-pocket";
 			productReference = 6E0EA39323ABB230008F7CB2 /* dollar-in-my-pocket-debug.app */;
 			productType = "com.apple.product-type.application";
@@ -1967,11 +2013,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6E0EA3C023ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocketTests" */;
 			buildPhases = (
-				C7F2A63119AFBED82E1D8E9C /* [CP] Check Pods Manifest.lock */,
+				8F51C045645F441BDFD8C590 /* [CP] Check Pods Manifest.lock */,
 				6E0EA3A523ABB232008F7CB2 /* Sources */,
 				6E0EA3A623ABB232008F7CB2 /* Frameworks */,
 				6E0EA3A723ABB232008F7CB2 /* Resources */,
-				62C0B1AC987A1E6EAFB59964 /* [CP] Embed Pods Frameworks */,
+				AB0F44299AB1B1C88C483067 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2052,6 +2098,13 @@
 				ko,
 			);
 			mainGroup = 6E0EA38A23ABB230008F7CB2;
+			packageReferences = (
+				6E2E39B72875B48000B524BF /* XCRemoteSwiftPackageReference "ReactorKit" */,
+				6E2E39BA2875B57700B524BF /* XCRemoteSwiftPackageReference "Then" */,
+				6E0BCC9D2875C63B00B7A5AD /* XCRemoteSwiftPackageReference "SnapKit" */,
+				6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
+				6E4AFC932877107000D42996 /* XCRemoteSwiftPackageReference "RxDataSources" */,
+			);
 			productRefGroup = 6E0EA39423ABB230008F7CB2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2107,21 +2160,43 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		62C0B1AC987A1E6EAFB59964 /* [CP] Embed Pods Frameworks */ = {
+		1F0336659EDDB90592264AC2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-3dollar-in-my-pocket-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3CDADFF337D73220F55EA637 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6E8E2414256A8D3C00AE6479 /* GoogleService Info */ = {
@@ -2217,46 +2292,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"$PODS_ROOT/R.swift/rswift\" generate \"$SRCROOT/3dollar-in-my-pocket/resource/R.generated.swift\"\n";
 		};
-		ABE94685D6CD1BBEB7C4DB8B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-3dollar-in-my-pocket-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B2A25EA6465C94978C1F9E16 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C7F2A63119AFBED82E1D8E9C /* [CP] Check Pods Manifest.lock */ = {
+		8F51C045645F441BDFD8C590 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2276,6 +2312,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AB0F44299AB1B1C88C483067 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -2344,7 +2397,6 @@
 				6EA3207A2762F015002AA2F5 /* VisitHistoryViewModel.swift in Sources */,
 				6EDAC5E326D7DC1500979252 /* MyPageCoordinator.swift in Sources */,
 				6E6F35A325AC7990007931EC /* WriteAddressView.swift in Sources */,
-				6EC5A47023B5DFBF000C09BD /* BaseTableViewCell.swift in Sources */,
 				6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */,
 				6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */,
 				6E48B7A526C15DBA00E2F02B /* ReviewDetailResponse.swift in Sources */,
@@ -2379,7 +2431,6 @@
 				6E13578F23D8309400D91782 /* ModifyViewModel.swift in Sources */,
 				6E07D44A23B591160055AEE7 /* MyPageViewController.swift in Sources */,
 				6E18C3142571F14100F37C3A /* FAQView.swift in Sources */,
-				6EC5A47423B5E242000C09BD /* BaseCollectionViewCell.swift in Sources */,
 				6E48B79B26C14D5400E2F02B /* StoreDetailResponse.swift in Sources */,
 				6E72AE5A23C971FF00D3B257 /* SplashView.swift in Sources */,
 				6E7112CB27816A6900396CC0 /* AddressConfirmPopupViewController.swift in Sources */,
@@ -2798,7 +2849,7 @@
 		};
 		6E0EA3BE23ABB232008F7CB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2EDE7CBD20E67AC529682967 /* Pods-3dollar-in-my-pocket.debug.xcconfig */;
+			baseConfigurationReference = 9BF56FCCEFDD2EC9EA90ED1B /* Pods-3dollar-in-my-pocket.debug.xcconfig */;
 			buildSettings = {
 				ADMOB_UNIT_ID = "ca-app-pub-3940256099942544/2934735716";
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
@@ -2811,18 +2862,19 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = X975A2HM62;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "3dollar-in-my-pocket/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				KAKAO_APP_KEY = 95f91f9656806e132796f0071ab99aaa;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.3;
+				MARKETING_VERSION = 2.5.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -2831,17 +2883,6 @@
 					"\"CFNetwork\"",
 					"-framework",
 					"\"Kingfisher\"",
-					"-framework",
-					"\"RxCocoa\"",
-					"-framework",
-					"\"RxRelay\"",
-					"-framework",
-					"\"RxSwift\"",
-					"-framework",
-					"\"SnapKit\"",
-					"-framework",
-					"\"Then\"",
-					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket-debug";
 				PRODUCT_MODULE_NAME = dollar_in_my_pocket;
@@ -2854,7 +2895,7 @@
 		};
 		6E0EA3BF23ABB232008F7CB2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3BD4F78FA4F3A696F62234EE /* Pods-3dollar-in-my-pocket.release.xcconfig */;
+			baseConfigurationReference = 9BD7363D69E45B80A24A0A6F /* Pods-3dollar-in-my-pocket.release.xcconfig */;
 			buildSettings = {
 				ADMOB_UNIT_ID = "ca-app-pub-1527951560812478/3327283605";
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
@@ -2865,18 +2906,19 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X975A2HM62;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "3dollar-in-my-pocket/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				KAKAO_APP_KEY = a0ce3cecac62e2dedf50751d5abc5740;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.3;
+				MARKETING_VERSION = 2.5.4;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -2886,17 +2928,6 @@
 					"\"CFNetwork\"",
 					"-framework",
 					"\"Kingfisher\"",
-					"-framework",
-					"\"RxCocoa\"",
-					"-framework",
-					"\"RxRelay\"",
-					"-framework",
-					"\"RxSwift\"",
-					"-framework",
-					"\"SnapKit\"",
-					"-framework",
-					"\"Then\"",
-					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket";
 				PRODUCT_NAME = "dollar-in-my-pocket";
@@ -2907,7 +2938,7 @@
 		};
 		6E0EA3C123ABB232008F7CB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B11C0F8A272F749D4F119EA /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */;
+			baseConfigurationReference = 01E82AF878A12672A9077474 /* Pods-3dollar-in-my-pocketTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -2930,7 +2961,7 @@
 		};
 		6E0EA3C223ABB232008F7CB2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 624C116D2E6C5A0BF75EDF97 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */;
+			baseConfigurationReference = 4ECBEAC85F3CCBE26D668F75 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -3102,6 +3133,107 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6E0BCC9D2875C63B00B7A5AD /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		6E2E39B72875B48000B524BF /* XCRemoteSwiftPackageReference "ReactorKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactorKit/ReactorKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		6E2E39BA2875B57700B524BF /* XCRemoteSwiftPackageReference "Then" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/devxoul/Then";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao/kakao-ios-sdk";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		6E4AFC932877107000D42996 /* XCRemoteSwiftPackageReference "RxDataSources" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6E0BCC9E2875C63B00B7A5AD /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E0BCC9D2875C63B00B7A5AD /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		6E2E39B82875B48000B524BF /* ReactorKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E2E39B72875B48000B524BF /* XCRemoteSwiftPackageReference "ReactorKit" */;
+			productName = ReactorKit;
+		};
+		6E2E39BB2875B57700B524BF /* Then */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E2E39BA2875B57700B524BF /* XCRemoteSwiftPackageReference "Then" */;
+			productName = Then;
+		};
+		6E4AFC8528770B0C00D42996 /* KakaoSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDK;
+		};
+		6E4AFC8728770B0C00D42996 /* KakaoSDKAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKAuth;
+		};
+		6E4AFC8928770B0C00D42996 /* KakaoSDKCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKCommon;
+		};
+		6E4AFC8B28770B0C00D42996 /* KakaoSDKShare */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKShare;
+		};
+		6E4AFC8D28770B0C00D42996 /* KakaoSDKTalk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKTalk;
+		};
+		6E4AFC8F28770B0C00D42996 /* KakaoSDKTemplate */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKTemplate;
+		};
+		6E4AFC9128770B0C00D42996 /* KakaoSDKUser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKUser;
+		};
+		6E4AFC942877107000D42996 /* RxDataSources */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E4AFC932877107000D42996 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = RxDataSources;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6E0EA38B23ABB230008F7CB2 /* Project object */;
 }

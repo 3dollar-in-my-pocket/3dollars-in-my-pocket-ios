@@ -157,7 +157,7 @@ final class CategoryListReactor: BaseReactor, Reactor {
                     )
                 ])
             }
-            .catchError { .just(.showErrorAlert($0)) }
+            .catch { .just(.showErrorAlert($0)) }
     }
     
     private func searchNearStores(
@@ -186,12 +186,12 @@ final class CategoryListReactor: BaseReactor, Reactor {
                 var storeCellTypes = stores
                 
                 if let advertisement = advertisement {
-                    storeCellTypes.insert(StoreCellType.advertisement(advertisement), at: 1)
+                    storeCellTypes.insert(StoreCellType.advertisement(advertisement), at: 0)
                 }
                 return storeCellTypes
             }
             .map { .setStoreCellTypes($0) }
-            .catchError { .just(.showErrorAlert($0)) }
+            .catch { .just(.showErrorAlert($0)) }
     }
     
     private func fetchAdvertisement() -> Observable<Advertisement?> {

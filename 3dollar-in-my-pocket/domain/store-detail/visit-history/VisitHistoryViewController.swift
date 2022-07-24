@@ -1,5 +1,7 @@
 import UIKit
 
+import Base
+
 protocol VisitHistoryViewControllerDelegate: AnyObject {
     func onDismiss()
 }

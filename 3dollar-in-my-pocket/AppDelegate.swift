@@ -1,4 +1,6 @@
 import UIKit
+
+import SnapKit
 import Firebase
 import SwiftyBeaver
 import GoogleMobileAds
@@ -76,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let kakaoAppKey
             = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as? String ?? ""
         Log.debug("kakaoAppKey: \(kakaoAppKey)")
-        KakaoSDKCommon.initSDK(appKey: kakaoAppKey)
+        KakaoSDK.initSDK(appKey: kakaoAppKey)
     }
     
     private func initilizeNotification() {
