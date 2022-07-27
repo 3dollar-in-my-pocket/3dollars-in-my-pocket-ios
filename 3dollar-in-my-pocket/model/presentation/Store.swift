@@ -1,4 +1,7 @@
-struct Store {
+struct Store: StoreProtocol {
+    var id: String {
+        return String(self.storeId)
+    }
     
     let appearanceDays: [WeekDay]
     let categories: [StreetFoodStoreCategory]
