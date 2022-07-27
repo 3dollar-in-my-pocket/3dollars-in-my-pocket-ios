@@ -5,7 +5,7 @@ import RxSwift
 import NMapsMap
 import ReactorKit
 
-final class HomeViewController: BaseVC, View, HomeCoordinator {
+final class HomeViewController: BaseViewController, View, HomeCoordinator {
     weak var coordinator: HomeCoordinator?
     private let homeView = HomeView()
     private let homeReactor = HomeReactor(

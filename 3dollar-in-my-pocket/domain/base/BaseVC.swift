@@ -1,9 +1,11 @@
 import UIKit
 
-import Base
 import RxSwift
 
-class BaseVC: Base.BaseViewController {
+class BaseVC: UIViewController {
+    var disposeBag = DisposeBag()
+    var eventDisposeBag = DisposeBag()
+    
     private lazy var dimView = UIView(frame: self.view.frame).then {
         $0.backgroundColor = .clear
     }
@@ -15,6 +17,8 @@ class BaseVC: Base.BaseViewController {
         self.bindViewModelOutput()
         bindEvent()
     }
+    
+    func bindEvent() { }
     
     func bindViewModel() { }
     
@@ -60,13 +64,13 @@ class BaseVC: Base.BaseViewController {
         }
     }
     
-    override func showErrorAlert(error: Error) {
+    func showErrorAlert(error: Error) {
         if let httpError = error as? HTTPError {
             self.showHTTPErrorAlert2(error: httpError)
         } else if let baseError = error as? BaseError {
             self.showBaseErrorAlert(error: baseError)
         } else {
-            super.showErrorAlert(error: error)
+            self.showErrorAlert(error: error)
         }
     }
     

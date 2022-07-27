@@ -1,14 +1,6 @@
-//
-//  HomeCoordinator.swift
-//  3dollar-in-my-pocket
-//
-//  Created by Hyun Sik Yoo on 2021/09/25.
-//  Copyright © 2021 Macgongmon. All rights reserved.
-//
-
 import UIKit
 
-protocol HomeCoordinator: Coordinator, AnyObject {
+protocol HomeCoordinator: BaseCoordinator, AnyObject {
     func pushStoreDetail(storeId: Int)
     func showDenyAlert()
     func goToAppSetting()
