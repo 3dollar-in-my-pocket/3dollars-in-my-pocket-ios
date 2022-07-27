@@ -9,7 +9,8 @@
 import UIKit
 
 protocol HomeCoordinator: Coordinator, AnyObject {
-    func pushStoreDetail(storeId: Int)
+    func pushStoreDetail(storeId: String)
+    func pushBossStoreDetail(storeId: String)
     func showDenyAlert()
     func goToAppSetting()
     func showSearchAddress()
@@ -17,8 +18,8 @@ protocol HomeCoordinator: Coordinator, AnyObject {
 }
 
 extension HomeCoordinator where Self: UIViewController {
-    func pushStoreDetail(storeId: Int) {
-        let storeDetailVC = StoreDetailViewController.instance(storeId: storeId).then {
+    func pushStoreDetail(storeId: String) {
+        let storeDetailVC = StoreDetailViewController.instance(storeId: Int(storeId) ?? 0).then {
             $0.delegate = self as? StoreDetailDelegate
         }
         
@@ -26,6 +27,10 @@ extension HomeCoordinator where Self: UIViewController {
             storeDetailVC,
             animated: true
         )
+    }
+    
+    func pushBossStoreDetail(storeId: String) {
+        // TODO: 만들어야 함!
     }
     
     func showDenyAlert() {

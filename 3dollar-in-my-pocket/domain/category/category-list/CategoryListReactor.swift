@@ -95,7 +95,7 @@ final class CategoryListReactor: BaseReactor, Reactor {
             
             switch selectedStore {
             case .store(let store):
-                return .just(.pushStoreDetail(storeId: store.storeId))
+                return .just(.pushStoreDetail(storeId: Int(store.id) ?? 0))
                 
             case .advertisement(let advertisement):
                 return .just(.pushWebView(url: advertisement.linkUrl))

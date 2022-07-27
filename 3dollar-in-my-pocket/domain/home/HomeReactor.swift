@@ -1,3 +1,6 @@
+// swiftlint:disable cyclomatic_complexity
+// swiftlint:disable type_body_length
+
 import CoreLocation
 import MapKit
 
@@ -10,6 +13,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case viewDidLoad
         case changeMaxDistance(maxDistance: Double)
         case changeMapLocation(CLLocation)
+        case selectCategory(index: Int)
         case tapStoreTypeButton
         case searchByAddress(location: CLLocation, address: String)
         case tapResearchButton
@@ -44,13 +48,13 @@ final class HomeReactor: BaseReactor, Reactor {
         var storeType: StoreType
         var categories: [Categorizable]
         var selectedCategory: Categorizable?
+        var storeCellTypes: [StoreCellType]
         var address: String
         var isHiddenResearchButton: Bool
         var selectedIndex: Int?
         var mapMaxDistance: Double
         var cameraPosition: CLLocation?
         var currentLocation: CLLocation
-        var storeCellTypes: [StoreCellType] = []
     }
     
     let initialState: State
@@ -76,6 +80,7 @@ final class HomeReactor: BaseReactor, Reactor {
         state: State = State(
             storeType: .streetFood,
             categories: [],
+            storeCellTypes: [],
             address: "",
             isHiddenResearchButton: true,
             selectedIndex: nil,
@@ -117,6 +122,37 @@ final class HomeReactor: BaseReactor, Reactor {
                 .just(.setHiddenResearchButton(false)),
                 .just(.setCameraPosition(mapLocation))
             ])
+            
+        case .selectCategory(let index):
+            let selectedCategory = self.currentState.categories[index]
+            
+            if self.currentState.storeType == .streetFood {
+                return .concat([
+                    .just(.showLoading(true)),
+                    self.searchNearStores(
+                        categoryId: selectedCategory.id,
+                        distance: self.currentState.mapMaxDistance,
+                        currentLocation: self.currentState.currentLocation,
+                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                    ),
+                    .just(.selectStore(index: nil)),
+                    .just(.setHiddenResearchButton(true)),
+                    .just(.showLoading(false))
+                ])
+            } else {
+                return .concat([
+                    .just(.showLoading(true)),
+                    self.searchNearBossStore(
+                        categoryId: selectedCategory.id,
+                        distance: self.currentState.mapMaxDistance,
+                        currentLocation: self.currentState.currentLocation,
+                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                    ),
+                    .just(.selectStore(index: nil)),
+                    .just(.setHiddenResearchButton(true)),
+                    .just(.showLoading(false))
+                ])
+            }
             
         case .tapStoreTypeButton:
             let toggleStoreType = self.currentState.storeType.toggle()
@@ -451,7 +487,7 @@ final class HomeReactor: BaseReactor, Reactor {
         mapLocation: CLLocation
     ) -> Observable<Mutation> {
         let searchNearStores = self.storeService.searchNearStores(
-            categoryId: categoryId,
+            categoryId: categoryId == "0" ? nil : categoryId,
             distance: distance,
             currentLocation: currentLocation,
             mapLocation: mapLocation,
@@ -479,7 +515,7 @@ final class HomeReactor: BaseReactor, Reactor {
         mapLocation: CLLocation
     ) -> Observable<Mutation> {
         let searchNearBossStore = self.storeService.searchNearBossStores(
-            categoryId: categoryId,
+            categoryId: categoryId == "0" ? nil : categoryId,
             distance: distance,
             currentLocation: currentLocation,
             mapLocation: mapLocation,
@@ -539,11 +575,14 @@ final class HomeReactor: BaseReactor, Reactor {
     ) -> [StoreCellType] {
         var results = stores.map { StoreCellType.store($0) }
         
-        if let advertisement = advertisement,
-           !results.isEmpty {
-            results.insert(StoreCellType.advertisement(advertisement), at: 1)
+        if results.isEmpty {
+            return [.empty]
+        } else {
+            if let advertisement = advertisement {
+                results.insert(StoreCellType.advertisement(advertisement), at: 1)
+            }
+            
+            return results
         }
-        
-        return results
     }
 }

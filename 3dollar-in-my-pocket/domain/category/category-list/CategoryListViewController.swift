@@ -134,6 +134,7 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
                         withIdentifier: CategoryListStoreCell.registerId,
                         for: indexPath
                     ) as? CategoryListStoreCell else { return BaseTableViewCell() }
+                    guard let store = store as? Store else { return BaseTableViewCell() }
 
                     cell.bind(store: store)
                     return cell
@@ -171,6 +172,8 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
         if isOnlyCertificated {
             for storeCellType in storeCellTypes {
                 if case .store(let store) = storeCellType {
+                    guard let store = store as? Store else { return storeCellTypes }
+                    
                     if store.visitHistory.isCertified {
                         newStoreCellTypes.append(storeCellType)
                     }
