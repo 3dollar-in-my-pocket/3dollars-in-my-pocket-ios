@@ -191,26 +191,22 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
                 
                 switch storeCellType {
                 case .store(let store):
-                    if let store = store as? Store {
-                        guard let cell = collectionView.dequeueReusableCell(
-                            withReuseIdentifier: HomeStoreCell.registerId,
-                            for: indexPath
-                        ) as? HomeStoreCell else {
-                            return BaseCollectionViewCell()
-                        }
-                        
-                        cell.bind(store: store)
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: HomeStoreCell.registerId,
+                        for: indexPath
+                    ) as? HomeStoreCell else {
+                        return BaseCollectionViewCell()
+                    }
+                    
+                    cell.bind(store: store)
+                    if store is Store {
                         cell.visitButton.rx.tap
                             .map { Reactor.Action.tapVisitButton(index: row) }
                             .bind(to: self.homeReactor.action)
                             .disposed(by: cell.disposeBag)
-                        return cell
-                    } else if let bossStore = store as? BossStore {
-                        // TODO: 여기도 해야함!
-                        return BaseCollectionViewCell()
-                    } else {
-                        return BaseCollectionViewCell()
                     }
+                    
+                    return cell
                     
                 case .advertisement(let advertisement):
                     guard let cell = collectionView.dequeueReusableCell(
@@ -307,7 +303,21 @@ final class HomeViewController: BaseVC, View, HomeCoordinator {
                         marker.height = 24
                     }
                 } else if let bossStore = store as? BossStore {
-                    // TODO: 사장님 마커 추가
+                    if let location = bossStore.location {
+                        marker.position = NMGLatLng(
+                            lat: location.latitude,
+                            lng: location.longitude
+                        )
+                        if index == selectedIndex {
+                            marker.iconImage = NMFOverlayImage(name: "ic_marker_boss")
+                            marker.width = 30
+                            marker.height = 40
+                        } else {
+                            marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
+                            marker.width = 24
+                            marker.height = 24
+                        }
+                    }
                 }
                 
                 marker.mapView = self.homeView.mapView
