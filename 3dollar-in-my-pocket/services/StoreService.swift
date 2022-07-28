@@ -6,13 +6,30 @@ import RxSwift
 import CoreLocation
 
 protocol StoreServiceProtocol {
+    @available(*, deprecated, message: "프로토콜화 시킨 함수로 이용 부탁드립니다.")
     func searchNearStores(
         currentLocation: CLLocation?,
         mapLocation: CLLocation,
         distance: Double,
-        category: StoreCategory?,
+        category: StreetFoodStoreCategory?,
         orderType: StoreOrder?
     ) -> Observable<[StoreWithVisitsAndDistanceResponse]>
+    
+    func searchNearStores(
+        categoryId: String?,
+        distance: Double?,
+        currentLocation: CLLocation,
+        mapLocation: CLLocation,
+        orderType: StoreOrder?
+    ) -> Observable<[StoreProtocol]>
+    
+    func searchNearBossStores(
+        categoryId: String?,
+        distance: Double?,
+        currentLocation: CLLocation,
+        mapLocation: CLLocation,
+        orderType: BossStoreOrderType?
+    ) -> Observable<[StoreProtocol]>
     
     func isStoresExistedAround(
         distance: Double,
@@ -53,11 +70,13 @@ protocol StoreServiceProtocol {
 
 
 struct StoreService: StoreServiceProtocol {
+    let networkManager = NetworkManager()
+    
     func searchNearStores(
         currentLocation: CLLocation?,
         mapLocation: CLLocation,
         distance: Double,
-        category: StoreCategory?,
+        category: StreetFoodStoreCategory?,
         orderType: StoreOrder?
     ) -> Observable<[StoreWithVisitsAndDistanceResponse]> {
         return .create { observer in
@@ -101,6 +120,78 @@ struct StoreService: StoreServiceProtocol {
             
             return Disposables.create()
         }
+    }
+    
+    func searchNearStores(
+        categoryId: String?,
+        distance: Double?,
+        currentLocation: CLLocation,
+        mapLocation: CLLocation,
+        orderType: StoreOrder?
+    ) -> Observable<[StoreProtocol]> {
+        let urlString = HTTPUtils.url + "/api/v2/stores/near"
+        let headers = HTTPUtils.defaultHeader()
+        var parameters: [String: Any] = [
+            "mapLatitude": mapLocation.coordinate.latitude,
+            "mapLongitude": mapLocation.coordinate.longitude,
+            "latitude": currentLocation.coordinate.latitude,
+            "longitude": currentLocation.coordinate.longitude
+        ]
+        
+        if let distance = distance {
+            parameters["distance"] = distance
+        }
+        
+        if let categoryId = categoryId {
+            parameters["category"] = categoryId
+        }
+        
+        if let orderType = orderType {
+            parameters["orderType"] = orderType.rawValue
+        }
+        
+        return self.networkManager.createGetObservable(
+            class: [StoreWithVisitsAndDistanceResponse].self,
+            urlString: urlString,
+            headers: headers,
+            parameters: parameters
+        )
+        .map { $0.map(Store.init(response: )) }
+    }
+    
+    func searchNearBossStores(
+        categoryId: String?,
+        distance: Double?,
+        currentLocation: CLLocation,
+        mapLocation: CLLocation,
+        orderType: BossStoreOrderType?
+    ) -> Observable<[StoreProtocol]> {
+        let urlString = HTTPUtils.url + "/api/v1/boss/stores/around"
+        let headers = HTTPUtils.jsonHeader()
+        var parameters: [String: Any] = [
+            "latitude": currentLocation.coordinate.latitude,
+            "longitude": currentLocation.coordinate.longitude,
+            "mapLatitude": mapLocation.coordinate.latitude,
+            "mapLongitude": mapLocation.coordinate.longitude
+        ]
+        
+        if let categoryId = categoryId {
+            parameters["categoryId"] = categoryId
+        }
+        if let distance = distance {
+            parameters["distanceKm"] = distance
+        }
+        if let orderType = orderType {
+            parameters["orderType"] = orderType.rawValue
+        }
+        
+        return self.networkManager.createGetObservable(
+            class: [BossStoreAroundInfoResponse].self,
+            urlString: urlString,
+            headers: headers,
+            parameters: parameters
+        )
+        .map { $0.map(BossStore.init(response: )) }
     }
     
     func isStoresExistedAround(

@@ -11,18 +11,18 @@ final class CategoryReactor: BaseReactor, Reactor {
     }
     
     enum Mutation {
-        case setCategories(categories: [MenuCategory], advertisement: Advertisement?)
+        case setCategories(categories: [StreetFoodCategory], advertisement: Advertisement?)
         case goToWeb(url: String)
-        case pushCategoryList(category: StoreCategory)
+        case pushCategoryList(category: StreetFoodStoreCategory)
         case showErrorAlert(Error)
     }
     
     struct State {
-        var categorySections: [SectionModel<Advertisement?, MenuCategory>] = []
+        var categorySections: [SectionModel<Advertisement?, StreetFoodCategory>] = []
     }
     
     let initialState = State()
-    let pushCategoryListPublisher = PublishRelay<StoreCategory>()
+    let pushCategoryListPublisher = PublishRelay<StreetFoodStoreCategory>()
     private let categoryService: CategoryServiceProtocol
     private let advertisementService: AdvertisementServiceProtocol
   
@@ -80,9 +80,9 @@ final class CategoryReactor: BaseReactor, Reactor {
     }
   
     
-    private func fetchCategories() -> Observable<[MenuCategory]> {
+    private func fetchCategories() -> Observable<[StreetFoodCategory]> {
         return self.categoryService.fetchCategories()
-            .map { $0.map(MenuCategory.init(response:)) }
+            .map { $0.map(StreetFoodCategory.init(response:)) }
     }
     
     private func fetchAdvertisement() -> Observable<Advertisement?> {
@@ -90,7 +90,7 @@ final class CategoryReactor: BaseReactor, Reactor {
             .map { $0.map(Advertisement.init(response:)).first }
     }
   
-  private func logGA(category: StoreCategory) {
+  private func logGA(category: StreetFoodStoreCategory) {
     switch category {
     case .BUNGEOPPANG:
       GA.shared.logEvent(event: .bungeoppang_button_clicked, page: .category_page)

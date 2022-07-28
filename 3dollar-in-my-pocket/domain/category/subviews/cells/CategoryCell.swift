@@ -69,7 +69,7 @@ final class CategoryCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(menuCategory: MenuCategory) {
+    func bind(menuCategory: StreetFoodCategory) {
         self.categoryLabel.text = menuCategory.name
         self.categoryImage.image = menuCategory.category.image
         self.newLabel.isHidden = !menuCategory.isNew

@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "ic_fwd.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "ic_fwd@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "ic_fwd@3x.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "right.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

@@ -166,7 +166,7 @@ final class StoreInfoView: BaseView {
     self.paymentMethodView.bind(paymentMethods: store.paymentMethods)
   }
   
-  private func setStoreType(storeType: StoreType?) {
+  private func setStoreType(storeType: StreetFoodStoreType?) {
     self.storeTypeEmptyLabel.isHidden = (storeType != nil)
     self.storeTypeValueLabel.isHidden = (storeType == nil)
     if let storeType = storeType {

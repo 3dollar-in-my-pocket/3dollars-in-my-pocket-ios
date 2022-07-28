@@ -1,6 +1,6 @@
 struct Review {
     
-    let category: StoreCategory
+    let category: StreetFoodStoreCategory
     var contents: String
     let createdAt: String
     let reviewId: Int

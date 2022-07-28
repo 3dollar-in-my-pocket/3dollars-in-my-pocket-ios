@@ -42,7 +42,7 @@ final class StoreDetailMenuCategoryView: BaseView {
     }
   }
   
-  func bind(category: StoreCategory, isEmpty: Bool) {
+  func bind(category: StreetFoodStoreCategory, isEmpty: Bool) {
     self.emptyLabel.isHidden = !isEmpty
     self.categoryImage.image = UIImage(named: "img_32_\(category.lowcase)_on")
     self.categoryLabel.text = "shared_category_\(category.lowcase)".localized

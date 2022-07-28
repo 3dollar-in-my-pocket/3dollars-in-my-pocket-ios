@@ -1,6 +1,6 @@
 struct MenuRequest: Requestable {
   
-  let category: StoreCategory
+  let category: StreetFoodStoreCategory
   let name: String
   let price: String
   
@@ -14,7 +14,7 @@ struct MenuRequest: Requestable {
   
   
   init(
-    category: StoreCategory,
+    category: StreetFoodStoreCategory,
     name: String = "",
     price: String = ""
   ) {

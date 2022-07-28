@@ -1,21 +1,36 @@
-enum StoreType: String, Codable {
-  case road = "ROAD"
-  case store = "STORE"
-  case convenienceStore = "CONVENIENCE_STORE"
-  
-  func getIndexValue() -> Int {
-    switch self {
-    case .road: return 0
-    case .store: return 1
-    case .convenienceStore: return 2
+import UIKit
+
+enum StoreType {
+    case foodTruck
+    case streetFood
+    
+    var title: String {
+        switch self {
+        case .foodTruck:
+            return "푸드트럭"
+            
+        case .streetFood:
+            return "길거리음식"
+        }
     }
-  }
-  
-  func getString() -> String {
-    switch self {
-    case .road: return "shared_store_type_road".localized
-    case .store: return "shared_store_type_store".localized
-    case .convenienceStore: return "shared_store_type_convenience_store".localized
+    
+    var themeColor: UIColor? {
+        switch self {
+        case .foodTruck:
+            return R.color.green()
+            
+        case .streetFood:
+            return R.color.pink()
+        }
     }
-  }
+    
+    func toggle() -> Self {
+        switch self {
+        case .streetFood:
+            return .foodTruck
+            
+        case .foodTruck:
+            return .streetFood
+        }
+    }
 }

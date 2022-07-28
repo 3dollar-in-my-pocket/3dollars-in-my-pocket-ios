@@ -218,12 +218,14 @@ final class CategoryListView: BaseView {
         
         for cellType in storeCellTypes {
             if case .store(let store) = cellType {
-                let marker = NMFMarker()
-                
-                marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
-                marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
-                marker.mapView = self.mapView
-                self.markers.append(marker)
+                if let store = store as? Store {
+                    let marker = NMFMarker()
+                    
+                    marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
+                    marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
+                    marker.mapView = self.mapView
+                    self.markers.append(marker)
+                }
             }
         }
     }
@@ -238,7 +240,7 @@ final class CategoryListView: BaseView {
         self.mapView.moveCamera(cameraUpdate)
     }
     
-    fileprivate func bind(category: StoreCategory) {
+    fileprivate func bind(category: StreetFoodStoreCategory) {
         self.categoryImage.image = category.image
         self.categoryLabel.text = category.name
         
@@ -283,7 +285,7 @@ final class CategoryListView: BaseView {
 }
 
 extension Reactive where Base: CategoryListView {
-    var category: Binder<StoreCategory> {
+    var category: Binder<StreetFoodStoreCategory> {
         return Binder(self.base) { view, category in
             view.bind(category: category)
         }

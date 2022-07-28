@@ -148,13 +148,25 @@ final class HomeStoreCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(store: Store) {
-      self.categoryImage.image = UIImage(named: "img_60_\(store.categories[0].lowcase)")
-      self.setDistance(distance: store.distance)
-      self.titleLabel.text = store.storeName
-      self.setRating(rating: store.rating)
-      self.setCategories(categories: store.categories)
-      self.bedgeImage.isHidden = !store.visitHistory.isCertified
+    func bind(store: StoreProtocol) {
+        if let store = store as? Store {
+            self.categoryImage.image = UIImage(named: "img_60_\(store.categories[0].lowcase)")
+            self.setDistance(distance: store.distance)
+            self.titleLabel.text = store.storeName
+            self.setRating(rating: store.rating)
+            self.setCategories(categories: store.categories)
+            self.bedgeImage.isHidden = !store.visitHistory.isCertified
+            self.visitButton.isHidden = false
+        } else if let bossStore = store as? BossStore {
+            // TODO: 이미지 설정 필요
+            self.setDistance(distance: bossStore.distance)
+            self.titleLabel.text = bossStore.name
+            self.starImage.isHidden = true
+            self.rankLabel.isHidden = true
+            self.setCategories(categories: bossStore.categories)
+            self.bedgeImage.isHidden = true
+            self.visitButton.isHidden = true
+        }
     }
   
     private func setSelected(isSelected: Bool) {
@@ -186,6 +198,8 @@ final class HomeStoreCell: BaseCollectionViewCell {
     }
     
     private func setRating(rating: Double) {
+        self.starImage.isHidden = false
+        self.rankLabel.isHidden = false
         if floor(rating) == rating {
             self.rankLabel.text = "\(Int(rating))점"
         } else {
@@ -193,7 +207,15 @@ final class HomeStoreCell: BaseCollectionViewCell {
         }
     }
     
-    private func setCategories(categories: [StoreCategory]) {
+    private func setCategories(categories: [StreetFoodStoreCategory]) {
+        var categoryString = ""
+        for category in categories {
+            categoryString.append("#\(category.name) ")
+        }
+        self.categoriesLabel.text = categoryString
+    }
+    
+    private func setCategories(categories: [Categorizable]) {
         var categoryString = ""
         for category in categories {
             categoryString.append("#\(category.name) ")

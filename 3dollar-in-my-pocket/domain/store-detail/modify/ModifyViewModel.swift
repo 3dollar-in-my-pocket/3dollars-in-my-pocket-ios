@@ -14,7 +14,7 @@ class ModifyViewModel: BaseViewModel {
   
   var location: (Double, Double)
   var appearenceDay: [WeekDay] = []
-  var categories: [StoreCategory?] = [nil]
+  var categories: [StreetFoodStoreCategory?] = [nil]
   var menuSections: [MenuSection] = []
   var paymentType: [PaymentType] = []
   
@@ -23,11 +23,11 @@ class ModifyViewModel: BaseViewModel {
     let tapEdit = PublishSubject<Void>()
     let editLocation = PublishSubject<(Double, Double)>()
     let tapDay = PublishSubject<WeekDay>()
-    let tapStoreType = PublishSubject<StoreType?>()
+    let tapStoreType = PublishSubject<StreetFoodStoreType?>()
     let tapPaymentType = PublishSubject<PaymentType>()
     let tapAddCategory = PublishSubject<Void>()
     let tapCategoryDelete = PublishSubject<Int>()
-    let addCategories = PublishSubject<[StoreCategory]>()
+    let addCategories = PublishSubject<[StreetFoodStoreCategory]>()
     let deleteAllCategories = PublishSubject<Void>()
     let menuName = PublishSubject<(IndexPath, String)>()
     let menuPrice = PublishSubject<(IndexPath, String)>()
@@ -40,11 +40,11 @@ class ModifyViewModel: BaseViewModel {
     let moveCamera = PublishRelay<(Double, Double)>()
     let goToEditAddress = PublishRelay<Store>()
     let storeNameIsEmpty = PublishRelay<Bool>()
-    let selectType = PublishRelay<StoreType?>()
+    let selectType = PublishRelay<StreetFoodStoreType?>()
     let selectPaymentType = PublishRelay<[PaymentType]>()
     let selectDays = PublishRelay<[WeekDay]>()
-    let categories = PublishRelay<[StoreCategory?]>()
-    let showCategoryDialog = PublishRelay<[StoreCategory?]>()
+    let categories = PublishRelay<[StreetFoodStoreCategory?]>()
+    let showCategoryDialog = PublishRelay<[StreetFoodStoreCategory?]>()
     let menus = PublishRelay<[MenuSection]>()
     let fetchMenuTableViewHeight = PublishRelay<Void>()
     let registerButtonIsEnable = PublishRelay<Bool>()
@@ -163,7 +163,7 @@ class ModifyViewModel: BaseViewModel {
     self.getAddressFromLocation(lat: self.location.0, lng: self.location.1)
   }
   
-  private func menuSectionFromMenus(categories: [StoreCategory], menus: [Menu]) -> [MenuSection] {
+  private func menuSectionFromMenus(categories: [StreetFoodStoreCategory], menus: [Menu]) -> [MenuSection] {
     var menuSections: [MenuSection] = []
     
     for category in categories {
@@ -180,8 +180,8 @@ class ModifyViewModel: BaseViewModel {
     return menuSections
   }
   
-  private func categoryFromMenus(menus: [Menu]) -> [StoreCategory?] {
-    var categories: [StoreCategory?] = [nil]
+  private func categoryFromMenus(menus: [Menu]) -> [StreetFoodStoreCategory?] {
+    var categories: [StreetFoodStoreCategory?] = [nil]
     
     for menu in menus {
       if !categories.contains(menu.category) {
@@ -236,7 +236,7 @@ class ModifyViewModel: BaseViewModel {
       .disposed(by: disposeBag)
   }
   
-  private func onAddCategory(categories: [StoreCategory]) {
+  private func onAddCategory(categories: [StreetFoodStoreCategory]) {
     var newMenuSection: [MenuSection] = []
     
     for category in categories{

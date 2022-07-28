@@ -1,54 +1,70 @@
+// swiftlint:disable cyclomatic_complexity
+// swiftlint:disable type_body_length
+
 import CoreLocation
+import MapKit
 
 import RxSwift
 import RxCocoa
 import ReactorKit
-import MapKit
 
 final class HomeReactor: BaseReactor, Reactor {
     enum Action {
+        case viewDidLoad
         case changeMaxDistance(maxDistance: Double)
         case changeMapLocation(CLLocation)
+        case selectCategory(index: Int)
+        case tapStoreTypeButton
         case searchByAddress(location: CLLocation, address: String)
         case tapResearchButton
         case tapCurrentLocationButton
         case selectStore(index: Int)
-        case updateStore(store: Store)
+//        case updateStore(store: Store) // TODO: GlobalState로 빼야합니다. 상세화면에서 가게 업데이트
         case tapStore(index: Int)
         case tapVisitButton(index: Int)
         case tapMarker(index: Int)
     }
     
     enum Mutation {
+        case setStoreType(StoreType)
         case setStoreCellTypes([StoreCellType])
+        case setCategories([Categorizable])
         case setCurrentLocation(CLLocation)
         case setAddressText(address: String)
         case setMaxDistance(Double)
         case setCameraPosition(CLLocation)
         case selectStore(index: Int?)
-        case updateStore(index: Int, store: Store)
+        case updateStore(store: StoreProtocol)
         case setHiddenResearchButton(Bool)
         case presentVisit(store: Store)
-        case pushStoreDetail(storeId: Int)
+        case pushStoreDetail(storeId: String)
+        case pushBossStoreDetail(storeId: String)
         case pushWebView(url: String)
         case showLoading(Bool)
         case showErrorAlert(Error)
     }
     
     struct State {
-        var storeCellTypes: [StoreCellType] = []
-        var address = ""
-        var isHiddenResearchButton = true
+        var storeType: StoreType
+        var categories: [Categorizable]
+        var selectedCategory: Categorizable?
+        var storeCellTypes: [StoreCellType]
+        var address: String
+        var isHiddenResearchButton: Bool
         var selectedIndex: Int?
-        var mapMaxDistance: Double = 2000
+        var mapMaxDistance: Double
         var cameraPosition: CLLocation?
-        var currentLocation = CLLocation(latitude: 0, longitude: 0)
+        var currentLocation: CLLocation
     }
     
-    let initialState = State()
-    let pushStoreDetailPublisher = PublishRelay<Int>()
+    let initialState: State
+    let pushStoreDetailPublisher = PublishRelay<String>()
+    let pushBossStoreDetailPublisher = PublishRelay<String>()
     let presentVisitPublisher = PublishRelay<Store>()
+    private var foodTruckCategory: [Categorizable] = []
+    private var streetFoodCategory: [Categorizable] = []
     private let storeService: StoreServiceProtocol
+    private let categoryService: CategoryServiceProtocol
     private let advertisementService: AdvertisementServiceProtocol
     private let locationManager: LocationManagerProtocol
     private let mapService: MapServiceProtocol
@@ -56,21 +72,48 @@ final class HomeReactor: BaseReactor, Reactor {
     
     init(
         storeService: StoreServiceProtocol,
+        categoryService: CategoryServiceProtocol,
         advertisementService: AdvertisementServiceProtocol,
         locationManager: LocationManagerProtocol,
         mapService: MapServiceProtocol,
-        userDefaults: UserDefaultsUtil
+        userDefaults: UserDefaultsUtil,
+        state: State = State(
+            storeType: .streetFood,
+            categories: [],
+            storeCellTypes: [],
+            address: "",
+            isHiddenResearchButton: true,
+            selectedIndex: nil,
+            mapMaxDistance: 2000,
+            cameraPosition: nil,
+            currentLocation: CLLocation(latitude: 0, longitude: 0)
+        )
     ) {
         self.storeService = storeService
+        self.categoryService = categoryService
         self.advertisementService = advertisementService
         self.locationManager = locationManager
         self.mapService = mapService
         self.userDefaults = userDefaults
+        self.initialState = state
+        
         super.init()
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
+        case .viewDidLoad:
+            return Observable.zip(
+                self.categoryService.fetchStreetFoodCategories(),
+                self.categoryService.fetchFoodTruckCategories()
+            )
+            .do(onNext: { [weak self] streetFoodCategory, foodTruckCategory in
+                self?.streetFoodCategory = streetFoodCategory
+                self?.foodTruckCategory = foodTruckCategory
+            })
+            .map { Mutation.setCategories($0.0) }
+            .catch { .just(.showErrorAlert($0)) }
+            
         case .changeMaxDistance(let maxDistance):
             return .just(.setMaxDistance(maxDistance))
             
@@ -80,30 +123,130 @@ final class HomeReactor: BaseReactor, Reactor {
                 .just(.setCameraPosition(mapLocation))
             ])
             
+        case .selectCategory(let index):
+            let selectedCategory = self.currentState.categories[index]
+            
+            if self.currentState.storeType == .streetFood {
+                return .concat([
+                    .just(.showLoading(true)),
+                    self.searchNearStores(
+                        categoryId: selectedCategory.id,
+                        distance: self.currentState.mapMaxDistance,
+                        currentLocation: self.currentState.currentLocation,
+                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                    ),
+                    .just(.selectStore(index: nil)),
+                    .just(.setHiddenResearchButton(true)),
+                    .just(.showLoading(false))
+                ])
+            } else {
+                return .concat([
+                    .just(.showLoading(true)),
+                    self.searchNearBossStore(
+                        categoryId: selectedCategory.id,
+                        distance: self.currentState.mapMaxDistance,
+                        currentLocation: self.currentState.currentLocation,
+                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                    ),
+                    .just(.selectStore(index: nil)),
+                    .just(.setHiddenResearchButton(true)),
+                    .just(.showLoading(false))
+                ])
+            }
+            
+        case .tapStoreTypeButton:
+            let toggleStoreType = self.currentState.storeType.toggle()
+            let toggleCateogires = self.getCategories(by: toggleStoreType)
+            
+            if toggleStoreType == .streetFood {
+                return .concat([
+                    .just(.showLoading(true)),
+                    .just(.setStoreType(toggleStoreType)),
+                    .just(.setCategories(toggleCateogires)),
+                    self.searchNearStores(
+                        categoryId: self.currentState.selectedCategory?.id,
+                        distance: self.currentState.mapMaxDistance,
+                        currentLocation: self.currentState.currentLocation,
+                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                    ),
+                    self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
+                    .just(.selectStore(index: nil)),
+                    .just(.setHiddenResearchButton(true)),
+                    .just(.showLoading(false))
+                ])
+            } else {
+                return .concat([
+                    .just(.showLoading(true)),
+                    .just(.setStoreType(toggleStoreType)),
+                    .just(.setCategories(toggleCateogires)),
+                    self.searchNearBossStore(
+                        categoryId: self.currentState.selectedCategory?.id,
+                        distance: self.currentState.mapMaxDistance,
+                        currentLocation: self.currentState.currentLocation,
+                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                    ),
+                    self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
+                    .just(.selectStore(index: nil)),
+                    .just(.setHiddenResearchButton(true)),
+                    .just(.showLoading(false))
+                ])
+            }
+            
         case .searchByAddress(let location, let address):
-            return .concat([
-                .just(.setCameraPosition(location)),
-                .just(.setAddressText(address: address)),
-                self.searchNearStores(
-                    currentLocation: self.currentState.currentLocation,
-                    mapLocation: self.currentState.cameraPosition,
-                    distance: self.currentState.mapMaxDistance
-                )
-            ])
+            if self.currentState.storeType == .streetFood {
+                return .concat([
+                    .just(.setCameraPosition(location)),
+                    .just(.setAddressText(address: address)),
+                    self.searchNearStores(
+                        categoryId: self.currentState.selectedCategory?.id,
+                        distance: self.currentState.mapMaxDistance,
+                        currentLocation: self.currentState.currentLocation,
+                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                    )
+                ])
+            } else {
+                return .concat([
+                    .just(.setCameraPosition(location)),
+                    .just(.setAddressText(address: address)),
+                    self.searchNearBossStore(
+                        categoryId: self.currentState.selectedCategory?.id,
+                        distance: self.currentState.mapMaxDistance,
+                        currentLocation: self.currentState.currentLocation,
+                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                    )
+                ])
+            }
             
         case .tapResearchButton:
-            return .concat([
-                .just(.showLoading(true)),
-                self.searchNearStores(
-                    currentLocation: self.currentState.currentLocation,
-                    mapLocation: self.currentState.cameraPosition,
-                    distance: self.currentState.mapMaxDistance
-                ),
-                self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
-                .just(.selectStore(index: nil)),
-                .just(.setHiddenResearchButton(true)),
-                .just(.showLoading(false))
-            ])
+            if self.currentState.storeType == .streetFood {
+                return .concat([
+                    .just(.showLoading(true)),
+                    self.searchNearStores(
+                        categoryId: self.currentState.selectedCategory?.id,
+                        distance: self.currentState.mapMaxDistance,
+                        currentLocation: self.currentState.currentLocation,
+                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                    ),
+                    self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
+                    .just(.selectStore(index: nil)),
+                    .just(.setHiddenResearchButton(true)),
+                    .just(.showLoading(false))
+                ])
+            } else {
+                return .concat([
+                    .just(.showLoading(true)),
+                    self.searchNearBossStore(
+                        categoryId: self.currentState.selectedCategory?.id,
+                        distance: self.currentState.mapMaxDistance,
+                        currentLocation: self.currentState.currentLocation,
+                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                    ),
+                    self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
+                    .just(.selectStore(index: nil)),
+                    .just(.setHiddenResearchButton(true)),
+                    .just(.showLoading(false))
+                ])
+            }
             
         case .tapCurrentLocationButton:
             return .concat([
@@ -113,31 +256,51 @@ final class HomeReactor: BaseReactor, Reactor {
             ])
             
         case .selectStore(let index):
-            let selectedStore = self.currentState.storeCellTypes[index]
+            let selectedStoreCell = self.currentState.storeCellTypes[index]
             
-            if case .store(let store) = selectedStore {
-                let location = CLLocation(
-                    latitude: store.latitude,
-                    longitude: store.longitude
-                )
-                return .merge([
-                    .just(.setCameraPosition(location)),
-                    .just(.selectStore(index: index))
-                ])
-            } else {
+            switch selectedStoreCell {
+            case .store(let store):
+                if let store = store as? Store {
+                    let location = CLLocation(
+                        latitude: store.latitude,
+                        longitude: store.longitude
+                    )
+                    
+                    return .merge([
+                        .just(.setCameraPosition(location)),
+                        .just(.selectStore(index: index))
+                    ])
+                } else if let bossStore = store as? BossStore,
+                          let latitude = bossStore.location?.latitude,
+                          let longitude = bossStore.location?.longitude {
+                    let location = CLLocation(latitude: latitude, longitude: longitude)
+                    
+                    return .merge([
+                        .just(.setCameraPosition(location)),
+                        .just(.selectStore(index: index))
+                    ])
+                } else {
+                    return .error(BaseError.unknown)
+                }
+                
+            case .advertisement:
                 return .just(.selectStore(index: index))
+                
+            case .empty:
+                return .empty()
             }
             
-        case .updateStore(let store):
-            return self.updateStore(store: store)
-            
         case .tapStore(let index):
-            let selectedStore = self.currentState.storeCellTypes[index]
+            let selectedStoreCell = self.currentState.storeCellTypes[index]
             
-            if self.currentState.selectedIndex == index {
-                switch selectedStore {
+            if index == self.currentState.selectedIndex {
+                switch selectedStoreCell {
                 case .store(let store):
-                    return .just(.pushStoreDetail(storeId: store.storeId))
+                    if let store = store as? Store {
+                        return .just(.pushStoreDetail(storeId: store.id))
+                    } else {
+                        return .just(.pushBossStoreDetail(storeId: store.id))
+                    }
                     
                 case .advertisement(let advertisement):
                     return .just(.pushWebView(url: advertisement.linkUrl))
@@ -146,7 +309,57 @@ final class HomeReactor: BaseReactor, Reactor {
                     return .empty()
                 }
             } else {
-                if case .store(let store) = selectedStore {
+                switch selectedStoreCell {
+                case .store(let store):
+                    if let store = store as? Store {
+                        let location = CLLocation(
+                            latitude: store.latitude,
+                            longitude: store.longitude
+                        )
+                        
+                        return .merge([
+                            .just(.setCameraPosition(location)),
+                            .just(.selectStore(index: index))
+                        ])
+                    } else if let bossStore = store as? BossStore,
+                              let latitude = bossStore.location?.latitude,
+                              let longitude = bossStore.location?.longitude {
+                        let location = CLLocation(latitude: latitude, longitude: longitude)
+                        
+                        return .merge([
+                            .just(.setCameraPosition(location)),
+                            .just(.selectStore(index: index))
+                        ])
+                    } else {
+                        return .error(BaseError.unknown)
+                    }
+                    
+                case .advertisement(_):
+                    return .just(.selectStore(index: index))
+                    
+                case .empty:
+                    return .empty()
+                }
+            }
+            
+        case .tapVisitButton(let index):
+            let selectedStoreCell = self.currentState.storeCellTypes[index]
+            
+            if case .store(let store) = selectedStoreCell {
+                if let store = store as? Store {
+                    return .just(.presentVisit(store: store))
+                } else {
+                    return .error(BaseError.unknown)
+                }
+            } else {
+                return .error(BaseError.unknown)
+            }
+            
+        case .tapMarker(let index):
+            let selectedStoreCell = self.currentState.storeCellTypes[index]
+            
+            if case .store(let store) = selectedStoreCell {
+                if let store = store as? Store {
                     let location = CLLocation(
                         latitude: store.latitude,
                         longitude: store.longitude
@@ -155,30 +368,18 @@ final class HomeReactor: BaseReactor, Reactor {
                         .just(.setCameraPosition(location)),
                         .just(.selectStore(index: index))
                     ])
+                } else if let bossStore = store as? BossStore,
+                          let latitude = bossStore.location?.latitude,
+                          let longitude = bossStore.location?.longitude {
+                    let location = CLLocation(latitude: latitude, longitude: longitude)
+                    
+                    return .merge([
+                        .just(.setCameraPosition(location)),
+                        .just(.selectStore(index: index))
+                    ])
                 } else {
-                    return .just(.selectStore(index: index))
+                    return .empty()
                 }
-            }
-            
-        case .tapVisitButton(let index):
-            if let selectedStore = self.currentState.storeCellTypes[index].value as? Store {
-                return .just(.presentVisit(store: selectedStore))
-            } else {
-                return .empty()
-            }
-            
-        case .tapMarker(let index):
-            let selectedStore = self.currentState.storeCellTypes[index]
-            
-            if case .store(let store) = selectedStore {
-                let location = CLLocation(
-                    latitude: store.latitude,
-                    longitude: store.longitude
-                )
-                return .merge([
-                    .just(.setCameraPosition(location)),
-                    .just(.selectStore(index: index))
-                ])
             } else {
                 return .just(.selectStore(index: index))
             }
@@ -189,8 +390,14 @@ final class HomeReactor: BaseReactor, Reactor {
         var newState = state
         
         switch mutation {
+        case .setStoreType(let storeType):
+            newState.storeType = storeType
+            
         case .setStoreCellTypes(let storeCellTypes):
             newState.storeCellTypes = storeCellTypes
+            
+        case .setCategories(let categories):
+            newState.categories = categories
             
         case .setCurrentLocation(let currentLocation):
             newState.currentLocation = currentLocation
@@ -207,8 +414,12 @@ final class HomeReactor: BaseReactor, Reactor {
         case .selectStore(let index):
             newState.selectedIndex = index
             
-        case .updateStore(let index, let store):
-            newState.storeCellTypes[index] = .store(store)
+        case .updateStore(let store):
+            for index in newState.storeCellTypes.indices {
+                if case .store = newState.storeCellTypes[index] {
+                    newState.storeCellTypes[index] = StoreCellType.store(store)
+                }
+            }
             
         case .setHiddenResearchButton(let isHidden):
             newState.isHiddenResearchButton = isHidden
@@ -218,6 +429,9 @@ final class HomeReactor: BaseReactor, Reactor {
             
         case .pushStoreDetail(let storeId):
             self.pushStoreDetailPublisher.accept(storeId)
+            
+        case .pushBossStoreDetail(let storeId):
+            self.pushBossStoreDetailPublisher.accept(storeId)
             
         case .pushWebView(let url):
             self.openURLPublisher.accept(url)
@@ -237,51 +451,93 @@ final class HomeReactor: BaseReactor, Reactor {
             .flatMap { [weak self] currentLocation -> Observable<Mutation> in
                 guard let self = self else { return .error(BaseError.unknown) }
                 
-                return .merge([
-                    .just(.setCurrentLocation(currentLocation)),
-                    .just(.setCameraPosition(currentLocation)),
-                    self.searchNearStores(
-                        currentLocation: currentLocation,
-                        mapLocation: nil,
-                        distance: self.currentState.mapMaxDistance
-                    ),
-                    self.fetchAddressFromLocation(location: currentLocation)
-                ])
+                if self.currentState.storeType == .streetFood {
+                    return .merge([
+                        .just(.setCurrentLocation(currentLocation)),
+                        .just(.setCameraPosition(currentLocation)),
+                        self.searchNearStores(
+                            categoryId: self.currentState.selectedCategory?.id,
+                            distance: self.currentState.mapMaxDistance,
+                            currentLocation: currentLocation,
+                            mapLocation: currentLocation
+                        ),
+                        self.fetchAddressFromLocation(location: currentLocation)
+                    ])
+                } else {
+                    return .merge([
+                        .just(.setCurrentLocation(currentLocation)),
+                        .just(.setCameraPosition(currentLocation)),
+                        self.searchNearBossStore(
+                            categoryId: self.currentState.selectedCategory?.id,
+                            distance: self.currentState.mapMaxDistance,
+                            currentLocation: currentLocation,
+                            mapLocation: currentLocation
+                        ),
+                        self.fetchAddressFromLocation(location: currentLocation)
+                    ])
+                }
             }
             .catch { .just(.showErrorAlert($0)) }
     }
     
     private func searchNearStores(
+        categoryId: String?,
+        distance: Double?,
         currentLocation: CLLocation,
-        mapLocation: CLLocation?,
-        distance: Double
+        mapLocation: CLLocation
     ) -> Observable<Mutation> {
         let searchNearStores = self.storeService.searchNearStores(
-            currentLocation: currentLocation,
-            mapLocation: mapLocation == nil ? currentLocation : mapLocation!,
+            categoryId: categoryId == "0" ? nil : categoryId,
             distance: distance,
-            category: nil,
-            orderType: nil
+            currentLocation: currentLocation,
+            mapLocation: mapLocation,
+            orderType: .distance
         )
-            .map { $0.map(Store.init) }
-            .map { stores in
-                return stores.isEmpty
-                ? [StoreCellType.empty]
-                : stores.map(StoreCellType.store)
-            }
         let fetchAdvertisement = self.fetchAdvertisement()
         
         return Observable.zip(searchNearStores, fetchAdvertisement)
-            .map { stores, advertisement -> [StoreCellType] in
-                var storeCellTypes = stores
+            .flatMap { [weak self] stores, advertisement -> Observable<Mutation> in
+                guard let self = self else { return .error(BaseError.unknown) }
+                let storeCellTypes = self.toStoreCellTypes(
+                    stores: stores,
+                    advertisement: advertisement
+                )
                 
-                if let advertisement = advertisement {
-                    storeCellTypes.insert(StoreCellType.advertisement(advertisement), at: 1)
-                }
-                return storeCellTypes
+                return .just(.setStoreCellTypes(storeCellTypes))
             }
-            .map { .setStoreCellTypes($0) }
-            .catchError { .just(.showErrorAlert($0)) }
+            .catch { .just(.showErrorAlert($0)) }
+    }
+    
+    private func searchNearBossStore(
+        categoryId: String?,
+        distance: Double?,
+        currentLocation: CLLocation,
+        mapLocation: CLLocation
+    ) -> Observable<Mutation> {
+        let searchNearBossStore = self.storeService.searchNearBossStores(
+            categoryId: categoryId == "0" ? nil : categoryId,
+            distance: distance,
+            currentLocation: currentLocation,
+            mapLocation: mapLocation,
+            orderType: .distance
+        )
+        let fetchAdvertisement = self.fetchAdvertisement()
+        
+        return Observable.zip(searchNearBossStore, fetchAdvertisement)
+            .flatMap { [weak self] stores, advertisement -> Observable<Mutation> in
+                guard let self = self else { return .error(BaseError.unknown) }
+                let storeCellTypes = self.toStoreCellTypes(
+                    stores: stores,
+                    advertisement: advertisement
+                )
+                
+                return .just(.setStoreCellTypes(storeCellTypes))
+            }
+            .catch { .just(.showErrorAlert($0)) }
+    }
+    
+    private func fetchStreedFoodCategories() -> Observable<[Categorizable]> {
+        return self.categoryService.fetchStreetFoodCategories()
     }
     
     private func fetchAdvertisement() -> Observable<Advertisement?> {
@@ -302,17 +558,31 @@ final class HomeReactor: BaseReactor, Reactor {
             longitude: location.coordinate.longitude
         )
             .map { .setAddressText(address: $0) }
-            .catchError { .just(.showErrorAlert($0)) }
+            .catch { .just(.showErrorAlert($0)) }
     }
     
-    private func updateStore(store: Store) -> Observable<Mutation> {
-        for index in self.currentState.storeCellTypes.indices {
-            if case .store(let currentStore) = self.currentState.storeCellTypes[index] {
-                if store == currentStore {
-                    return .just(.updateStore(index: index, store: store))
-                }
-            }
+    private func getCategories(by storeType: StoreType) -> [Categorizable] {
+        if storeType == .streetFood {
+            return self.streetFoodCategory
+        } else {
+            return self.foodTruckCategory
         }
-        return .empty()
+    }
+    
+    private func toStoreCellTypes(
+        stores: [StoreProtocol],
+        advertisement: Advertisement?
+    ) -> [StoreCellType] {
+        var results = stores.map { StoreCellType.store($0) }
+        
+        if results.isEmpty {
+            return [.empty]
+        } else {
+            if let advertisement = advertisement {
+                results.insert(StoreCellType.advertisement(advertisement), at: 1)
+            }
+            
+            return results
+        }
     }
 }

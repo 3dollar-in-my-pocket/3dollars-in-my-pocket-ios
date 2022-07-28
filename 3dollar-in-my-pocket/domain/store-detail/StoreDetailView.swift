@@ -179,7 +179,7 @@ final class StoreDetailView: BaseView {
     }
   }
   
-  fileprivate func bind(category: StoreCategory) {
+  fileprivate func bind(category: StreetFoodStoreCategory) {
     self.mainCategoryImage.image = UIImage(named: "img_60_\(category.lowcase)")
   }
   

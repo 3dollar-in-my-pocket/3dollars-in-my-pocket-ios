@@ -12,18 +12,18 @@ class WriteDetailViewModel: BaseViewModel {
   let address: String
   let location: (Double, Double)
   var appearenceDay: [WeekDay] = []
-  var categoryies: [StoreCategory?] = [nil]
+  var categoryies: [StreetFoodStoreCategory?] = [nil]
   var menusSections: [MenuSection] = []
   var paymentType: [PaymentType] = []
   
   struct Input {
     let storeName = PublishSubject<String>()
     let tapDay = PublishSubject<WeekDay>()
-    let tapStoreType = BehaviorSubject<StoreType?>(value: nil)
+    let tapStoreType = BehaviorSubject<StreetFoodStoreType?>(value: nil)
     let tapPaymentType = PublishSubject<PaymentType>()
     let tapAddCategory = PublishSubject<Void>()
     let tapCategoryDelete = PublishSubject<Int>()
-    let addCategories = PublishSubject<[StoreCategory]>()
+    let addCategories = PublishSubject<[StreetFoodStoreCategory]>()
     let deleteAllCategories = PublishSubject<Void>()
     let menuName = PublishSubject<(IndexPath, String)>()
     let menuPrice = PublishSubject<(IndexPath, String)>()
@@ -34,11 +34,11 @@ class WriteDetailViewModel: BaseViewModel {
   struct Output {
     let address = PublishRelay<String>()
     let storeNameIsEmpty = PublishRelay<Bool>()
-    let selectType = PublishRelay<StoreType?>()
+    let selectType = PublishRelay<StreetFoodStoreType?>()
     let selectPaymentType = PublishRelay<[PaymentType]>()
     let selectDays = PublishRelay<[WeekDay]>()
-    let categories = PublishRelay<[StoreCategory?]>()
-    let showCategoryDialog = PublishRelay<[StoreCategory?]>()
+    let categories = PublishRelay<[StreetFoodStoreCategory?]>()
+    let showCategoryDialog = PublishRelay<[StreetFoodStoreCategory?]>()
     let menus = PublishRelay<[MenuSection]>()
     let fetchMenuTableViewHeight = PublishRelay<Void>()
     let registerButtonIsEnable = PublishRelay<Bool>()
@@ -176,7 +176,7 @@ class WriteDetailViewModel: BaseViewModel {
       .disposed(by: disposeBag)
   }
   
-  private func onAddCategory(categories: [StoreCategory]) {
+  private func onAddCategory(categories: [StreetFoodStoreCategory]) {
     var newMenuSection: [MenuSection] = []
     
     for category in categories{

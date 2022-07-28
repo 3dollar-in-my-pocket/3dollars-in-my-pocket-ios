@@ -6,7 +6,7 @@ struct AddStoreRequest: Requestable {
   let menus: [MenuRequest]
   let paymentMethods: [PaymentType]
   let storeName: String
-  let storeType: StoreType?
+  let storeType: StreetFoodStoreType?
   
   var params: [String: Any] {
     return [

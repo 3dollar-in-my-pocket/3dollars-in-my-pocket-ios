@@ -339,7 +339,7 @@ final class VisitView: BaseView {
     self.mapView.locationOverlay.location = NMGLatLng(lat: latitude, lng: longitude)
   }
   
-  private func setCategories(categories: [StoreCategory]) {
+  private func setCategories(categories: [StreetFoodStoreCategory]) {
     var categoryString = ""
     for category in categories {
       categoryString.append("#\(category.name) ")

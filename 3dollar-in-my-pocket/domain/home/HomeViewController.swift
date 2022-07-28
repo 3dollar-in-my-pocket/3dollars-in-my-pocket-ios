@@ -10,6 +10,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
     private let homeView = HomeView()
     private let homeReactor = HomeReactor(
         storeService: StoreService(),
+        categoryService: CategoryService(),
         advertisementService: AdvertisementService(),
         locationManager: LocationManager.shared,
         mapService: MapService(),
@@ -47,6 +48,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
         self.reactor = self.homeReactor
         self.initilizeShopCollectionView()
         self.initilizeNaverMap()
+        self.homeReactor.action.onNext(.viewDidLoad)
         self.homeReactor.action.onNext(.tapCurrentLocationButton)
     }
     
@@ -62,9 +64,16 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
             .disposed(by: self.eventDisposeBag)
         
         self.homeReactor.pushStoreDetailPublisher
-            .asDriver(onErrorJustReturn: -1)
+            .asDriver(onErrorJustReturn: "")
             .drive(onNext: { [weak self] storeId in
                 self?.coordinator?.pushStoreDetail(storeId: storeId)
+            })
+            .disposed(by: self.eventDisposeBag)
+                
+        self.homeReactor.pushBossStoreDetailPublisher
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] storeId in
+                self?.coordinator?.pushBossStoreDetail(storeId: storeId)
             })
             .disposed(by: self.eventDisposeBag)
         
@@ -86,6 +95,13 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
             })
             .disposed(by: self.eventDisposeBag)
                 
+        self.homeReactor.showLoadingPublisher
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: { [weak self] isShow in
+                // TODO: LoadingManager 구현 필요
+            })
+            .disposed(by: self.eventDisposeBag)
+                
         self.homeReactor.openURLPublisher
             .asDriver(onErrorJustReturn: "")
             .drive(onNext: { [weak self] url in
@@ -96,6 +112,17 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
     
     func bind(reactor: HomeReactor) {
         // Bind Action
+        self.homeView.storeTypeButton.rx.tap
+            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapStoreTypeButton }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        self.homeView.categoryCollectionView.rx.itemSelected
+            .map { Reactor.Action.selectCategory(index: $0.row) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
         self.homeView.researchButton.rx.tap
             .map { Reactor.Action.tapResearchButton }
             .bind(to: reactor.action)
@@ -121,6 +148,39 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
         
         // Bind State
         reactor.state
+            .map { $0.storeType }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: .streetFood)
+            .drive(self.homeView.storeTypeButton.rx.storeType)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .map { $0.categories }
+            .distinctUntilChanged { lhs, rhs in
+                return lhs.count == rhs.count
+            }
+            .asDriver(onErrorJustReturn: [])
+            .do(onNext: { [weak self] _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self?.homeView.categoryCollectionView.selectItem(
+                        at: IndexPath(row: 0, section: 0),
+                        animated: false,
+                        scrollPosition: .centeredHorizontally
+                    )
+                }
+            })
+            .drive(self.homeView.categoryCollectionView.rx.items(
+                cellIdentifier: HomeCategoryCollectionViewCell.registerId,
+                cellType: HomeCategoryCollectionViewCell.self
+            )) { _, category, cell in
+                cell.bind(
+                    category: category,
+                    storeType: reactor.currentState.storeType
+                )
+            }
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
             .map { $0.storeCellTypes }
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: [])
@@ -139,10 +199,13 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
                     }
                     
                     cell.bind(store: store)
-                    cell.visitButton.rx.tap
-                        .map { Reactor.Action.tapVisitButton(index: row) }
-                        .bind(to: self.homeReactor.action)
-                        .disposed(by: cell.disposeBag)
+                    if store is Store {
+                        cell.visitButton.rx.tap
+                            .map { Reactor.Action.tapVisitButton(index: row) }
+                            .bind(to: self.homeReactor.action)
+                            .disposed(by: cell.disposeBag)
+                    }
+                    
                     return cell
                     
                 case .advertisement(let advertisement):
@@ -173,7 +236,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
             .map { $0.address }
             .asDriver(onErrorJustReturn: "")
             .distinctUntilChanged()
-            .drive(self.homeView.addressButton.rx.title(for: .normal))
+            .drive(self.homeView.addressButton.rx.title)
             .disposed(by: self.disposeBag)
         
         reactor.state
@@ -228,16 +291,35 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
             if case .store(let store) = storeCellTypes[index] {
                 let marker = NMFMarker()
                 
-                marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
-                if index == selectedIndex {
-                    marker.iconImage = NMFOverlayImage(name: "ic_marker")
-                    marker.width = 30
-                    marker.height = 40
-                } else {
-                    marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
-                    marker.width = 24
-                    marker.height = 24
+                if let store = store as? Store {
+                    marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
+                    if index == selectedIndex {
+                        marker.iconImage = NMFOverlayImage(name: "ic_marker")
+                        marker.width = 30
+                        marker.height = 40
+                    } else {
+                        marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
+                        marker.width = 24
+                        marker.height = 24
+                    }
+                } else if let bossStore = store as? BossStore {
+                    if let location = bossStore.location {
+                        marker.position = NMGLatLng(
+                            lat: location.latitude,
+                            lng: location.longitude
+                        )
+                        if index == selectedIndex {
+                            marker.iconImage = NMFOverlayImage(name: "ic_marker_boss")
+                            marker.width = 30
+                            marker.height = 40
+                        } else {
+                            marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
+                            marker.width = 24
+                            marker.height = 24
+                        }
+                    }
                 }
+                
                 marker.mapView = self.homeView.mapView
                 marker.touchHandler = { [weak self] _ in
                     self?.homeReactor.action.onNext(.selectStore(index: index))
@@ -288,11 +370,12 @@ extension HomeViewController: SearchAddressDelegate {
     }
 }
 
-extension HomeViewController: StoreDetailDelegate {
-    func popup(store: Store) {
-        self.homeReactor.action.onNext(.updateStore(store: store))
-    }
-}
+// TODO: GlobalState로 변경 필요
+//extension HomeViewController: StoreDetailDelegate {
+//    func popup(store: Store) {
+//        self.homeReactor.action.onNext(.updateStore(store: store))
+//    }
+//}
 
 extension HomeViewController: NMFMapViewCameraDelegate {
     func mapView(
@@ -339,7 +422,7 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
         source: UIViewController
     ) -> UIViewControllerAnimatedTransitioning? {
         self.transition.transitionMode = .present
-        self.transition.maskView.frame = self.homeView.addressContainerView.frame
+        self.transition.maskView.frame = self.homeView.addressButton.frame
         
         return self.transition
     }
@@ -348,14 +431,15 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
         forDismissed dismissed: UIViewController
     ) -> UIViewControllerAnimatedTransitioning? {
         self.transition.transitionMode = .dismiss
-        self.transition.maskOriginalFrame = self.homeView.addressContainerView.frame
+        self.transition.maskOriginalFrame = self.homeView.addressButton.frame
         
         return self.transition
     }
 }
 
-extension HomeViewController: VisitViewControllerDelegate {
-    func onSuccessVisit(store: Store) {
-        self.homeReactor.action.onNext(.updateStore(store: store))
-    }
-}
+// TODO: GlobalState로 변경 필요
+//extension HomeViewController: VisitViewControllerDelegate {
+//    func onSuccessVisit(store: Store) {
+//        self.homeReactor.action.onNext(.updateStore(store: store))
+//    }
+//}

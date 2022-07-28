@@ -82,7 +82,7 @@ final class StoreMenuView: BaseView {
     self.menuStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
   }
   
-  private func subViewsFromMenus(categories: [StoreCategory], menus: [Menu]) -> [UIView] {
+  private func subViewsFromMenus(categories: [StreetFoodStoreCategory], menus: [Menu]) -> [UIView] {
     var subViews: [UIView] = []
     
     let sortedCategories = categories.sorted { (category1, category2) -> Bool in
