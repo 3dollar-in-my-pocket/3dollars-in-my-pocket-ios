@@ -19,7 +19,6 @@ final class HomeReactor: BaseReactor, Reactor {
         case tapResearchButton
         case tapCurrentLocationButton
         case selectStore(index: Int)
-//        case updateStore(store: Store) // TODO: GlobalState로 빼야합니다. 상세화면에서 가게 업데이트
         case tapStore(index: Int)
         case tapVisitButton(index: Int)
         case tapMarker(index: Int)
@@ -69,6 +68,7 @@ final class HomeReactor: BaseReactor, Reactor {
     private let locationManager: LocationManagerProtocol
     private let mapService: MapServiceProtocol
     private let userDefaults: UserDefaultsUtil
+    private let globalState: GlobalState
     
     init(
         storeService: StoreServiceProtocol,
@@ -77,6 +77,7 @@ final class HomeReactor: BaseReactor, Reactor {
         locationManager: LocationManagerProtocol,
         mapService: MapServiceProtocol,
         userDefaults: UserDefaultsUtil,
+        globalState: GlobalState,
         state: State = State(
             storeType: .streetFood,
             categories: [],
@@ -95,6 +96,7 @@ final class HomeReactor: BaseReactor, Reactor {
         self.locationManager = locationManager
         self.mapService = mapService
         self.userDefaults = userDefaults
+        self.globalState = globalState
         self.initialState = state
         
         super.init()
@@ -133,7 +135,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: selectedCategory.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     .just(.selectStore(index: nil)),
                     .just(.setHiddenResearchButton(true)),
@@ -146,7 +149,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: selectedCategory.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     .just(.selectStore(index: nil)),
                     .just(.setHiddenResearchButton(true)),
@@ -167,7 +171,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
                     .just(.selectStore(index: nil)),
@@ -183,7 +188,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
                     .just(.selectStore(index: nil)),
@@ -201,7 +207,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     )
                 ])
             } else {
@@ -212,7 +219,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     )
                 ])
             }
@@ -225,7 +233,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
                     .just(.selectStore(index: nil)),
@@ -239,7 +248,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
                     .just(.selectStore(index: nil)),
@@ -384,6 +394,14 @@ final class HomeReactor: BaseReactor, Reactor {
                 return .just(.selectStore(index: index))
             }
         }
+    }
+    
+    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
+        return .merge([
+            mutation,
+            self.globalState.updateStore
+                .map { .updateStore(store: $0) }
+        ])
     }
     
     func reduce(state: State, mutation: Mutation) -> State {

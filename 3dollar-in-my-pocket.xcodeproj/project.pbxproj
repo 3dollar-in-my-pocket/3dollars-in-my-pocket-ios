@@ -280,6 +280,7 @@
 		6E8B30A6279BAF35001083B6 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B30A5279BAF35001083B6 /* NotificationViewController.swift */; };
 		6E8B30A9279BAF35001083B6 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6E8B30A7279BAF35001083B6 /* MainInterface.storyboard */; };
 		6E8B30AD279BAF35001083B6 /* content-extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6E8B309F279BAF35001083B6 /* content-extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6E8BE65A2892C31F00D67938 /* GlobalState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8BE6592892C31F00D67938 /* GlobalState.swift */; };
 		6E8C190427A81D9F00FF5B4C /* CategoryCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8C190327A81D9F00FF5B4C /* CategoryCoordinator.swift */; };
 		6E8C190627A8239B00FF5B4C /* PopupPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8C190527A8239B00FF5B4C /* PopupPosition.swift */; };
 		6E8E2474256A93DE00AE6479 /* GoogleService-Info-Dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6E8E2472256A93DE00AE6479 /* GoogleService-Info-Dev.plist */; };
@@ -710,6 +711,7 @@
 		6E8B30A5279BAF35001083B6 /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		6E8B30A8279BAF35001083B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		6E8B30AA279BAF35001083B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6E8BE6592892C31F00D67938 /* GlobalState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalState.swift; sourceTree = "<group>"; };
 		6E8C190327A81D9F00FF5B4C /* CategoryCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCoordinator.swift; sourceTree = "<group>"; };
 		6E8C190527A8239B00FF5B4C /* PopupPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupPosition.swift; sourceTree = "<group>"; };
 		6E8E2472256A93DE00AE6479 /* GoogleService-Info-Dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Dev.plist"; sourceTree = "<group>"; };
@@ -1006,6 +1008,7 @@
 			isa = PBXGroup;
 			children = (
 				6E3493B82764BA810082B011 /* MedalContext.swift */,
+				6E8BE6592892C31F00D67938 /* GlobalState.swift */,
 			);
 			path = context;
 			sourceTree = "<group>";
@@ -2736,6 +2739,7 @@
 				6E511E68257149D4009E4667 /* QuestionVC.swift in Sources */,
 				6E29966825E28967003FC13A /* Document.swift in Sources */,
 				6E91965825BBF9520052044B /* StoreSection.swift in Sources */,
+				6E8BE65A2892C31F00D67938 /* GlobalState.swift in Sources */,
 				6E447FF825E3E53800459551 /* CategoryReactor.swift in Sources */,
 				6E71BF4925B4209C00ECFBD9 /* AddCategoryVC.swift in Sources */,
 				6EDBBB7E2754BA1B00470F71 /* VisitHistoryCountsResponse.swift in Sources */,

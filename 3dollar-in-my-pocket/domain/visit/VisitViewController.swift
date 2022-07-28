@@ -3,12 +3,7 @@ import UIKit
 import RxSwift
 import NMapsMap
 
-protocol VisitViewControllerDelegate: AnyObject {
-    func onSuccessVisit(store: Store)
-}
-
 final class VisitViewController: BaseVC, VisitCoordinator {
-    weak var delegate: VisitViewControllerDelegate?
     private let visitView = VisitView()
     private let viewModel: VisitViewModel
     private weak var coordinator: VisitCoordinator?
@@ -107,7 +102,7 @@ final class VisitViewController: BaseVC, VisitCoordinator {
         self.viewModel.output.dismiss
             .asDriver(onErrorJustReturn: Store())
             .drive(onNext: { [weak self] store in
-                self?.delegate?.onSuccessVisit(store: store)
+                GlobalState.shared.updateStore.onNext(store)
                 self?.coordinator?.dismissWithSuccessAlert()
             })
             .disposed(by: self.disposeBag)

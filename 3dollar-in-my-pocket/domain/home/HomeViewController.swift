@@ -14,7 +14,8 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
         advertisementService: AdvertisementService(),
         locationManager: LocationManager.shared,
         mapService: MapService(),
-        userDefaults: UserDefaultsUtil()
+        userDefaults: UserDefaultsUtil(),
+        globalState: GlobalState.shared
     )
   
     var mapAnimatedFlag = false
@@ -370,13 +371,6 @@ extension HomeViewController: SearchAddressDelegate {
     }
 }
 
-// TODO: GlobalState로 변경 필요
-//extension HomeViewController: StoreDetailDelegate {
-//    func popup(store: Store) {
-//        self.homeReactor.action.onNext(.updateStore(store: store))
-//    }
-//}
-
 extension HomeViewController: NMFMapViewCameraDelegate {
     func mapView(
         _ mapView: NMFMapView,
@@ -436,10 +430,3 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
         return self.transition
     }
 }
-
-// TODO: GlobalState로 변경 필요
-//extension HomeViewController: VisitViewControllerDelegate {
-//    func onSuccessVisit(store: Store) {
-//        self.homeReactor.action.onNext(.updateStore(store: store))
-//    }
-//}
