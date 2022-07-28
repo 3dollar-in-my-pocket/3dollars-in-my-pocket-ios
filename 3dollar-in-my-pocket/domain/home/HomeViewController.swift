@@ -98,7 +98,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
         self.homeReactor.showLoadingPublisher
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: { [weak self] isShow in
-                // TODO: LoadingManager 구현 필요
+                self?.coordinator?.showLoading(isShow: isShow)
             })
             .disposed(by: self.eventDisposeBag)
                 
