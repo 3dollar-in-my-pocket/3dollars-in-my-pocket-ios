@@ -9,7 +9,12 @@ extension BossStoreSectionModel: SectionModelType {
     
     enum SectionItemType: Equatable {
         case overview(BossStore)
-        case info(contacts: String?, snsUrl: String?, introduction: String?)
+        case info(
+            contacts: String?,
+            snsUrl: String?,
+            introduction: String?,
+            imageUrl: String?
+        )
         case menu(BossStoreMenu)
         case appearanceDay([BossStoreAppearanceDay])
     }
@@ -23,9 +28,19 @@ extension BossStoreSectionModel: SectionModelType {
         self.items = [.overview(store)]
     }
     
-    init(contacts: String?, snsUrl: String?, introduction: String?) {
+    init(
+        contacts: String?,
+        snsUrl: String?,
+        introduction: String?,
+        imageUrl: String?
+    ) {
         self.items = [
-            .info(contacts: contacts, snsUrl: snsUrl, introduction: introduction)
+            .info(
+                contacts: contacts,
+                snsUrl: snsUrl,
+                introduction: introduction,
+                imageUrl: imageUrl
+            )
         ]
     }
     

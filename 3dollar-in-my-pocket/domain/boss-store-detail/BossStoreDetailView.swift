@@ -5,8 +5,22 @@ import RxSwift
 import RxCocoa
 
 final class BossStoreDetailView: BaseView {
+    private let navigationContainerView = UIView().then {
+        $0.backgroundColor = .white
+        $0.layer.cornerRadius = 20
+        $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+    }
+    
     let backButton = UIButton().then {
         $0.setImage(R.image.ic_back_black(), for: .normal)
+    }
+    
+    private let categoryImageView = UIImageView()
+    
+    let feedbackButton = UIButton().then {
+        $0.setTitle("평가하기", for: .normal)
+        $0.titleLabel?.font = .semiBold(size: 14)
+        $0.setTitleColor(R.color.green(), for: .normal)
     }
     
     let collectionView = UICollectionView(
@@ -116,16 +130,60 @@ final class BossStoreDetailView: BaseView {
     
     override func setup() {
         self.addSubViews([
-            self.collectionView
+            self.collectionView,
+            self.navigationContainerView,
+            self.backButton,
+            self.categoryImageView,
+            self.feedbackButton
         ])
     }
     
     override func bindConstraints() {
+        self.navigationContainerView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.top.equalToSuperview()
+            make.bottom.equalTo(self.safeAreaLayoutGuide.snp.top).offset(59)
+        }
+        
+        self.backButton.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(24)
+            make.bottom.equalTo(self.navigationContainerView).offset(-21)
+            make.width.equalTo(24)
+            make.height.equalTo(24)
+        }
+        
+        self.categoryImageView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalTo(self.backButton)
+            make.width.equalTo(60)
+            make.height.equalTo(60)
+        }
+        
+        self.feedbackButton.snp.makeConstraints { make in
+            make.right.equalToSuperview().offset(-24)
+            make.centerY.equalTo(self.backButton)
+        }
+        
         self.collectionView.snp.makeConstraints { make in
             make.left.equalToSuperview()
-            make.top.equalToSuperview()
+            make.top.equalTo(self.navigationContainerView.snp.bottom).offset(-20)
             make.right.equalToSuperview()
             make.bottom.equalToSuperview()
+        }
+    }
+    
+    fileprivate func bind(category: Categorizable) {
+        if let foodTruckCategory = category as? FoodTruckCategory {
+            self.categoryImageView.setImage(urlString: foodTruckCategory.imageUrl)
+        }
+    }
+}
+
+extension Reactive where Base: BossStoreDetailView {
+    var category: Binder<Categorizable> {
+        return Binder(self.base) { view, category in
+            view.bind(category: category)
         }
     }
 }

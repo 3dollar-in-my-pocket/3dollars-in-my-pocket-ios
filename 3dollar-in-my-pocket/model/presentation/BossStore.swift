@@ -12,6 +12,7 @@ struct BossStore: StoreProtocol {
     let contacts: String?
     let snsUrl: String?
     let introduction: String?
+    let feedbackCount: Int
     
     init(response: BossStoreAroundInfoResponse) {
         self.id = response.bossStoreId
@@ -27,6 +28,7 @@ struct BossStore: StoreProtocol {
         self.contacts = nil
         self.snsUrl = nil
         self.introduction = nil
+        self.feedbackCount = response.totalFeedbacksCounts
     }
     
     init(response: BossStoreInfoResponse) {
@@ -44,6 +46,7 @@ struct BossStore: StoreProtocol {
         self.contacts = response.contactsNumber
         self.snsUrl = response.snsUrl
         self.introduction = response.introduction
+        self.feedbackCount = 0
     }
     
     init() {
@@ -60,6 +63,7 @@ struct BossStore: StoreProtocol {
         self.contacts = nil
         self.snsUrl = nil
         self.introduction = nil
+        self.feedbackCount = 0
     }
 }
 

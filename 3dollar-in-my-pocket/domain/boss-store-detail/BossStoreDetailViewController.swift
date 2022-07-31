@@ -48,6 +48,15 @@ final class BossStoreDetailViewController:
     }
     
     override func bindEvent() {
+        self.bossStoreDetailView.backButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] in
+                self?.coordinator?.presenter.navigationController?
+                    .popViewController(animated: true)
+            })
+            .disposed(by: self.eventDisposeBag)
+        
         self.bossStoreDetailReactor.pushFeedbackPublisher
             .asDriver(onErrorJustReturn: "" )
             .drive(onNext: { [weak self] storeId in
@@ -80,12 +89,19 @@ final class BossStoreDetailViewController:
     func bind(reactor: BossStoreDetailReactor) {
         // Bind state
         reactor.state
+            .compactMap { $0.store.categories.first }
+            .asDriver(onErrorJustReturn: FoodTruckCategory.totalCategory)
+            .drive(self.bossStoreDetailView.rx.category)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
             .map { [
                 BossStoreSectionModel(store: $0.store),
                 BossStoreSectionModel(
                     contacts: $0.store.contacts,
                     snsUrl: $0.store.snsUrl,
-                    introduction: $0.store.introduction
+                    introduction: $0.store.introduction,
+                    imageUrl: $0.store.imageURL
                 ),
                 BossStoreSectionModel(menus: $0.store.menus),
                 BossStoreSectionModel(appearanceDays: $0.store.appearanceDays)
@@ -112,13 +128,18 @@ final class BossStoreDetailViewController:
                     cell.bind(store: store)
                     return cell
                     
-                case .info(let contacts, let snsUrl, let introduction):
+                case .info(let contacts, let snsUrl, let introduction, let imageUrl):
                     guard let cell = collectionView.dequeueReusableCell(
                         withReuseIdentifier: BossStoreInfoCell.registerId,
                         for: indexPath
                     ) as? BossStoreInfoCell else { return BaseCollectionViewCell() }
                     
-                    cell.bind(contacts: contacts, snsUrl: snsUrl, introduction: introduction)
+                    cell.bind(
+                        contacts: contacts,
+                        snsUrl: snsUrl,
+                        introduction: introduction,
+                        imageUrl: imageUrl
+                    )
                     return cell
                     
                 case .menu(let menu):

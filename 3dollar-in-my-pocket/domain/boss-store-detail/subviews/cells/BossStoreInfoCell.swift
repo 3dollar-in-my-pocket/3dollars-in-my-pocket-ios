@@ -4,7 +4,7 @@ import Base
 
 final class BossStoreInfoCell: BaseCollectionViewCell {
     static let registerId = "\(BossStoreInfoCell.self)"
-    static let estimatedHeight: CGFloat = 210
+    static let estimatedHeight: CGFloat = 436
     
     private let containerView = UIView().then {
         $0.backgroundColor = .white
@@ -46,6 +46,12 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         $0.numberOfLines = 0
     }
     
+    private let photoView = UIImageView().then {
+        $0.layer.cornerRadius = 12
+        $0.contentMode = .scaleAspectFill
+        $0.layer.masksToBounds = true
+    }
+    
     override func setup() {
         self.backgroundColor = .clear
         self.addSubViews([
@@ -55,7 +61,8 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
             self.snsTitleLabel,
             self.snsButton,
             self.introductionTitleLabel,
-            self.introductionValueLabel
+            self.introductionValueLabel,
+            self.photoView
         ])
     }
     
@@ -95,11 +102,27 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         self.introductionValueLabel.snp.makeConstraints { make in
             make.top.equalTo(self.introductionTitleLabel.snp.bottom).offset(8)
         }
+        
+        self.photoView.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(24)
+            make.right.equalToSuperview().offset(-24)
+            make.top.equalTo(self.containerView.snp.bottom).offset(16)
+            make.bottom.equalToSuperview()
+            make.height.equalTo(210)
+        }
     }
     
-    func bind(contacts: String?, snsUrl: String?, introduction: String?) {
+    func bind(
+        contacts: String?,
+        snsUrl: String?,
+        introduction: String?,
+        imageUrl: String?
+    ) {
         self.contactValueLabel.text = contacts
         self.snsButton.isHidden = snsUrl == nil
         self.introductionValueLabel.text = introduction
+        if let imageUrl = imageUrl {
+            self.photoView.setImage(urlString: imageUrl)
+        }
     }
 }
