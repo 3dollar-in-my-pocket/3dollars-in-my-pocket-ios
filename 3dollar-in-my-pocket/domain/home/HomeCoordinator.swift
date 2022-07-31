@@ -20,7 +20,12 @@ extension HomeCoordinator where Self: UIViewController {
     }
     
     func pushBossStoreDetail(storeId: String) {
-        // TODO: 만들어야 함!
+        let viewController = BossStoreDetailViewController.instance(storeId: storeId)
+        
+        self.presenter.navigationController?.pushViewController(
+            viewController,
+            animated: true
+        )
     }
     
     func showDenyAlert() {

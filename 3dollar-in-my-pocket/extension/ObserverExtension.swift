@@ -22,6 +22,8 @@ extension AnyObserver {
             case .failure(let error):
                 if error._code == 13 {
                     self.onError(BaseError.timeout)
+                } else {
+                    self.onError(error)
                 }
             default:
                 break

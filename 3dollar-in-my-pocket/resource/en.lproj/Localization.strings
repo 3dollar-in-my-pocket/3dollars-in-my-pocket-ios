@@ -233,3 +233,16 @@
 "my_visit_history_empty_description" = "방문을 인증해 보고 정확도를 높혀봐요";
 "visit_history_total_count" = "이번 달 %d명이\n다녀간 가게에요!";
 "my_medal_title" = "내 칭호";
+"boss_store_share" = "공유하기";
+"boss_store_contact" = "연락처";
+"boss_store_sns" = "SNS";
+"boss_store_sns_shortcut" = "바로가기";
+"boss_store_introduction" = "사장님 한마디";
+"boss_store_closed_day" = "휴무";
+"monday_full" = "월요일";
+"tuesday_full" = "화요일";
+"wednesday_full" = "수요일";
+"thursday_full" = "목요일";
+"friday_full" = "금요일";
+"saturday_full" = "토요일";
+"sunday_full" = "일요일";
