@@ -27,7 +27,7 @@ final class MyMedalViewController: BaseVC, MyMedalCoordinator {
     init(medal: Medal) {
         self.viewModel = MyMedalViewModel(
             medal: medal,
-            medalContext: MedalContext.shared,
+            metaContext: MetaContext.shared,
             medalService: MedalService()
         )
         

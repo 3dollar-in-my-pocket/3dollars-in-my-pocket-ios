@@ -8,7 +8,7 @@ class SplashVC: BaseVC {
     userDefaults: UserDefaultsUtil(),
     userService: UserService(),
     remoteConfigService: RemoteConfigService(),
-    medalContext: MedalContext.shared,
+    metaContext: MetaContext.shared,
     medalService: MedalService()
   )
   

@@ -20,7 +20,7 @@ final class SplashViewModel: BaseViewModel {
     let userDefaults: UserDefaultsUtil
     let userService: UserServiceProtocol
     let remoteConfigService: RemoteConfigProtocol
-    let medalContext: MedalContext
+    let metaContext: MetaContext
     let medalService: MedalServiceProtocol
     
     
@@ -28,13 +28,13 @@ final class SplashViewModel: BaseViewModel {
         userDefaults: UserDefaultsUtil,
         userService: UserServiceProtocol,
         remoteConfigService: RemoteConfigProtocol,
-        medalContext: MedalContext,
+        metaContext: MetaContext,
         medalService: MedalServiceProtocol
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
         self.remoteConfigService = remoteConfigService
-        self.medalContext = medalContext
+        self.metaContext = metaContext
         self.medalService = medalService
         
         super.init()
@@ -112,7 +112,7 @@ final class SplashViewModel: BaseViewModel {
         self.medalService.fetchMedals()
             .map { $0.map(Medal.init) }
             .subscribe(onNext: { [weak self] medals in
-                self?.medalContext.medals = medals
+                self?.metaContext.medals = medals
                 self?.checkMinimalVersion()
             }, onError: { [weak self] error in
                 self?.showErrorAlert.accept(error)
