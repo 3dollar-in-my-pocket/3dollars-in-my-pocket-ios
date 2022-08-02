@@ -11,6 +11,8 @@ final class HomeStoreCell: BaseCollectionViewCell {
             self.setSelected(isSelected: self.isSelected)
         }
     }
+    
+    private var storeType: StoreType = .streetFood
   
     private let containerView = UIView().then {
         $0.backgroundColor = .white
@@ -150,6 +152,7 @@ final class HomeStoreCell: BaseCollectionViewCell {
     
     func bind(store: StoreProtocol) {
         if let store = store as? Store {
+            self.storeType = .streetFood
             self.categoryImage.image = UIImage(named: "img_60_\(store.categories[0].lowcase)")
             self.setDistance(distance: store.distance)
             self.titleLabel.text = store.storeName
@@ -158,7 +161,10 @@ final class HomeStoreCell: BaseCollectionViewCell {
             self.bedgeImage.isHidden = !store.visitHistory.isCertified
             self.visitButton.isHidden = false
         } else if let bossStore = store as? BossStore {
-            // TODO: 이미지 설정 필요
+            self.storeType = .foodTruck
+            if let category = bossStore.categories.first as? FoodTruckCategory {
+                self.categoryImage.setImage(urlString: category.imageUrl)
+            }
             self.setDistance(distance: bossStore.distance)
             self.titleLabel.text = bossStore.name
             self.starImage.isHidden = true
@@ -173,7 +179,7 @@ final class HomeStoreCell: BaseCollectionViewCell {
         if isSelected {
             self.containerView.backgroundColor = .black
             self.titleLabel.textColor = .white
-            self.categoriesLabel.textColor = R.color.pink()
+            self.categoriesLabel.textColor = self.storeType.themeColor
             self.distanceLabel.textColor = .white
             self.distanceImage.image = R.image.ic_near_white()
             self.rankLabel.textColor = .white
