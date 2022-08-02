@@ -19,6 +19,7 @@ final class BossStoreHeaderView: UICollectionReusableView {
         $0.titleLabel?.font = .bold(size: 12)
         $0.layer.cornerRadius = 15
         $0.backgroundColor = UIColor(r: 0, g: 198, b: 103, a: 0.13)
+        $0.contentEdgeInsets = .init(top: 8, left: 16, bottom: 8, right: 16)
     }
     
     override func prepareForReuse() {

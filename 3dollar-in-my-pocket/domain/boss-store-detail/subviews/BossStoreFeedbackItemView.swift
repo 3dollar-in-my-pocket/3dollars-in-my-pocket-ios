@@ -8,7 +8,6 @@ final class BossStoreFeedbackItemView: Base.BaseView {
     private let titleLabel = UILabel().then {
         $0.font = .bold(size: 14)
         $0.textColor = R.color.gray95()
-        $0.text = "🍕 음식이 맛있어요"
     }
     
     private let countLabel = PaddingLabel(
@@ -18,7 +17,7 @@ final class BossStoreFeedbackItemView: Base.BaseView {
         rightInset: 8
     ).then {
         $0.font = .regular(size: 12)
-        $0.textColor = .green
+        $0.textColor = R.color.green()
         $0.layer.borderColor = R.color.green()?.cgColor
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 11
@@ -77,7 +76,7 @@ final class BossStoreFeedbackItemView: Base.BaseView {
     }
     
     func bind(feedback: BossStoreFeedback, isTopRate: Bool) {
-//        self.titleLabel.text = "\(feedback.type.emoji) \(statistics.type.description)"
+        self.titleLabel.text = "\(feedback.type.emoji) \(feedback.type.description)"
         self.countLabel.text = "\(feedback.count)개"
         self.progressView.progress = Float(feedback.ratio)
         self.setProgressBar(isTopRate: isTopRate)

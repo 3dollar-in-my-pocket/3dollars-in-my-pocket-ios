@@ -183,13 +183,25 @@ final class BossStoreDetailViewController:
                 ) as? BossStoreHeaderView else { return UICollectionReusableView() }
                 
                 if indexPath.section == 1 {
-                    headerView.titleLabel.text = "가게 정보".localized
+                    headerView.titleLabel.text
+                    = R.string.localization.boss_store_store_info()
+                    headerView.rightButton.isHidden = true
                 } else if indexPath.section == 2 {
-                    headerView.titleLabel.text = "메뉴 정보"
+                    headerView.titleLabel.text
+                    = R.string.localization.boss_store_menu_info()
+                    headerView.rightButton.isHidden = true
                 } else if indexPath.section == 3 {
-                    headerView.titleLabel.text = "영업 일정"
+                    headerView.titleLabel.text
+                    = R.string.localization.boss_store_workday()
+                    headerView.rightButton.isHidden = true
                 } else {
-                    headerView.titleLabel.text = "가게 평가"
+                    headerView.titleLabel.text
+                    = R.string.localization.boss_store_store_feedback()
+                    headerView.rightButton.isHidden = false
+                    headerView.rightButton.setTitle(
+                        R.string.localization.boss_store_feedback(),
+                        for: .normal
+                    )
                 }
                 
                 return headerView

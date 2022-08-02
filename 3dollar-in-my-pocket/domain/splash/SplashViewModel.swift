@@ -22,25 +22,28 @@ final class SplashViewModel: BaseViewModel {
     let remoteConfigService: RemoteConfigProtocol
     let metaContext: MetaContext
     let medalService: MedalServiceProtocol
-    
+    private let feedbackService: FeedbackServiceProtocol
     
     init(
         userDefaults: UserDefaultsUtil,
         userService: UserServiceProtocol,
         remoteConfigService: RemoteConfigProtocol,
         metaContext: MetaContext,
-        medalService: MedalServiceProtocol
+        medalService: MedalServiceProtocol,
+        feedbackService: FeedbackServiceProtocol
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
         self.remoteConfigService = remoteConfigService
         self.metaContext = metaContext
         self.medalService = medalService
+        self.feedbackService = feedbackService
         
         super.init()
         
         self.input.viewDidLoad
             .bind(onNext: { [weak self] in
+                self?.fetchBossStoreTypes()
                 self?.fetchMedals()
             })
             .disposed(by: self.disposeBag)
@@ -114,6 +117,16 @@ final class SplashViewModel: BaseViewModel {
             .subscribe(onNext: { [weak self] medals in
                 self?.metaContext.medals = medals
                 self?.checkMinimalVersion()
+            }, onError: { [weak self] error in
+                self?.showErrorAlert.accept(error)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func fetchBossStoreTypes() {
+        self.feedbackService.fetchFeedbackTypes()
+            .subscribe(onNext: { [weak self] feedbackTypes in
+                self?.metaContext.feedbackTypes = feedbackTypes
             }, onError: { [weak self] error in
                 self?.showErrorAlert.accept(error)
             })

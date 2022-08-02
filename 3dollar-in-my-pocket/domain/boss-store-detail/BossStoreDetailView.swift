@@ -18,7 +18,7 @@ final class BossStoreDetailView: BaseView {
     private let categoryImageView = UIImageView()
     
     let feedbackButton = UIButton().then {
-        $0.setTitle("평가하기", for: .normal)
+        $0.setTitle(R.string.localization.boss_store_feedback(), for: .normal)
         $0.titleLabel?.font = .semiBold(size: 14)
         $0.setTitleColor(R.color.green(), for: .normal)
     }
@@ -119,6 +119,7 @@ final class BossStoreDetailView: BaseView {
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .topLeading
                 )]
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 20, trailing: 0)
                 return section
             }
         }
