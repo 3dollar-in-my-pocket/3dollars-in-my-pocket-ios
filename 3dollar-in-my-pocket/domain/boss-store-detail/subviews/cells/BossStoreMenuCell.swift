@@ -4,7 +4,7 @@ import Base
 
 final class BossStoreMenuCell: BaseCollectionViewCell {
     static let registerId = "\(BossStoreMenuCell.self)"
-    static let height: CGFloat = 74
+    static let height: CGFloat = 86
     
     private let containerView = UIView().then {
         $0.backgroundColor = .white

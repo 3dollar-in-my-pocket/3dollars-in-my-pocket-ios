@@ -104,7 +104,8 @@ final class BossStoreDetailViewController:
                     imageUrl: $0.store.imageURL
                 ),
                 BossStoreSectionModel(menus: $0.store.menus),
-                BossStoreSectionModel(appearanceDays: $0.store.appearanceDays)
+                BossStoreSectionModel(appearanceDays: $0.store.appearanceDays),
+                BossStoreSectionModel(feedbacks: $0.store.feedbacks)
             ] }
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: [])
@@ -159,6 +160,15 @@ final class BossStoreDetailViewController:
                     
                     cell.bind(appearanceDays: appearanceDay)
                     return cell
+                    
+                case .feedbacks(let feedbacks):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: BossStoreFeedbacksCell.registerId,
+                        for: indexPath
+                    ) as? BossStoreFeedbacksCell else { return BaseCollectionViewCell() }
+                    
+                    cell.bind(feedbacks: feedbacks)
+                    return cell
                 }
         })
         
@@ -176,8 +186,10 @@ final class BossStoreDetailViewController:
                     headerView.titleLabel.text = "가게 정보".localized
                 } else if indexPath.section == 2 {
                     headerView.titleLabel.text = "메뉴 정보"
-                } else {
+                } else if indexPath.section == 3 {
                     headerView.titleLabel.text = "영업 일정"
+                } else {
+                    headerView.titleLabel.text = "가게 평가"
                 }
                 
                 return headerView

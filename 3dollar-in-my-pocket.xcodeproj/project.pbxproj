@@ -149,6 +149,11 @@
 		6E4AFC9028770B0C00D42996 /* KakaoSDKTemplate in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC8F28770B0C00D42996 /* KakaoSDKTemplate */; };
 		6E4AFC9228770B0C00D42996 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC9128770B0C00D42996 /* KakaoSDKUser */; };
 		6E4AFC952877107000D42996 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = 6E4AFC942877107000D42996 /* RxDataSources */; };
+		6E4BD3A8289817A2002B4882 /* BossStoreWithFeedbacksResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4BD3A7289817A2002B4882 /* BossStoreWithFeedbacksResponse.swift */; };
+		6E4BD3AA28981847002B4882 /* BossStoreFeedbackCountWithRatioResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4BD3A928981847002B4882 /* BossStoreFeedbackCountWithRatioResponse.swift */; };
+		6E4BD3AC289819D5002B4882 /* BossStoreFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4BD3AB289819D5002B4882 /* BossStoreFeedback.swift */; };
+		6E4BD3AE289819FC002B4882 /* BossStoreFeedbackType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4BD3AD289819FC002B4882 /* BossStoreFeedbackType.swift */; };
+		6E4BD3B028981C95002B4882 /* BossStoreFeedbacksCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4BD3AF28981C95002B4882 /* BossStoreFeedbacksCell.swift */; };
 		6E4C1BE127532E0D006C0F15 /* TitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4C1BE027532E0D006C0F15 /* TitleLabel.swift */; };
 		6E4C1BE3275330CF006C0F15 /* CountButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4C1BE2275330CF006C0F15 /* CountButton.swift */; };
 		6E4C1BE627534B5F006C0F15 /* MyVisitHistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4C1BE527534B5F006C0F15 /* MyVisitHistoryCell.swift */; };
@@ -210,6 +215,7 @@
 		6E5CA5882768B50D001EDE19 /* MyReviewEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA5872768B50D001EDE19 /* MyReviewEmptyView.swift */; };
 		6E5E193F2881AA39006C014F /* HomeCategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5E193E2881AA39006C014F /* HomeCategoryCollectionViewCell.swift */; };
 		6E5E19412881B3EB006C014F /* StoreType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5E19402881B3EB006C014F /* StoreType.swift */; };
+		6E5F3F7128993EC00066E318 /* BossStoreFeedbackItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5F3F7028993EC00066E318 /* BossStoreFeedbackItemView.swift */; };
 		6E6172B023E1C05F003E0DDF /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172AF23E1C05F003E0DDF /* PhotoDetailView.swift */; };
 		6E6172B223E1C308003E0DDF /* PhotoDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172B123E1C308003E0DDF /* PhotoDetailVC.swift */; };
 		6E6172B423E1C6BF003E0DDF /* PhotoSubCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6172B323E1C6BE003E0DDF /* PhotoSubCell.swift */; };
@@ -597,6 +603,11 @@
 		6E4952C926B03C7800D65042 /* AppleSigninManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSigninManager.swift; sourceTree = "<group>"; };
 		6E49B0F927506AB7009897C1 /* PopupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupCoordinator.swift; sourceTree = "<group>"; };
 		6E49B0FB27506C86009897C1 /* AdvertisementResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementResponse.swift; sourceTree = "<group>"; };
+		6E4BD3A7289817A2002B4882 /* BossStoreWithFeedbacksResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreWithFeedbacksResponse.swift; sourceTree = "<group>"; };
+		6E4BD3A928981847002B4882 /* BossStoreFeedbackCountWithRatioResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreFeedbackCountWithRatioResponse.swift; sourceTree = "<group>"; };
+		6E4BD3AB289819D5002B4882 /* BossStoreFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreFeedback.swift; sourceTree = "<group>"; };
+		6E4BD3AD289819FC002B4882 /* BossStoreFeedbackType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreFeedbackType.swift; sourceTree = "<group>"; };
+		6E4BD3AF28981C95002B4882 /* BossStoreFeedbacksCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreFeedbacksCell.swift; sourceTree = "<group>"; };
 		6E4C1BE027532E0D006C0F15 /* TitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleLabel.swift; sourceTree = "<group>"; };
 		6E4C1BE2275330CF006C0F15 /* CountButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountButton.swift; sourceTree = "<group>"; };
 		6E4C1BE527534B5F006C0F15 /* MyVisitHistoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVisitHistoryCell.swift; sourceTree = "<group>"; };
@@ -658,6 +669,7 @@
 		6E5CA5872768B50D001EDE19 /* MyReviewEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewEmptyView.swift; sourceTree = "<group>"; };
 		6E5E193E2881AA39006C014F /* HomeCategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCategoryCollectionViewCell.swift; sourceTree = "<group>"; };
 		6E5E19402881B3EB006C014F /* StoreType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreType.swift; sourceTree = "<group>"; };
+		6E5F3F7028993EC00066E318 /* BossStoreFeedbackItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreFeedbackItemView.swift; sourceTree = "<group>"; };
 		6E6172AF23E1C05F003E0DDF /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		6E6172B123E1C308003E0DDF /* PhotoDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailVC.swift; sourceTree = "<group>"; };
 		6E6172B323E1C6BE003E0DDF /* PhotoSubCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSubCell.swift; sourceTree = "<group>"; };
@@ -1665,8 +1677,10 @@
 				6EA205FF2888223100BAB019 /* BossStoreOrderType.swift */,
 				6E54BFE928963B0600B7E608 /* BossStoreMenu.swift */,
 				6E54BFED28963D4500B7E608 /* BossStoreAppearanceDay.swift */,
+				6E4BD3AB289819D5002B4882 /* BossStoreFeedback.swift */,
 				6E54BFEF28963D6900B7E608 /* DayOfTheWeek.swift */,
 				6E54BFFA2896539100B7E608 /* BossStoreSectionModel.swift */,
+				6E4BD3AD289819FC002B4882 /* BossStoreFeedbackType.swift */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -1791,6 +1805,7 @@
 			children = (
 				6E8BE6622892CCED00D67938 /* cells */,
 				6E54BFF2289643FB00B7E608 /* BossStoreWorkdayStackViewItem.swift */,
+				6E5F3F7028993EC00066E318 /* BossStoreFeedbackItemView.swift */,
 			);
 			path = subviews;
 			sourceTree = "<group>";
@@ -1803,6 +1818,7 @@
 				6E54BFE728963A1C00B7E608 /* BossStoreMenuCell.swift */,
 				6E54BFEB28963BBC00B7E608 /* BossStoreWorkdayCell.swift */,
 				6E54BFF428964A2300B7E608 /* BossStoreHeaderView.swift */,
+				6E4BD3AF28981C95002B4882 /* BossStoreFeedbacksCell.swift */,
 			);
 			path = cells;
 			sourceTree = "<group>";
@@ -2015,6 +2031,8 @@
 				6EA205F3288817DC00BAB019 /* BossStoreOpenStatusResponse.swift */,
 				6EA205F52888182F00BAB019 /* OpenStatusResponse.swift */,
 				6E56FBBF2894038100D8352C /* BossStoreInfoResponse.swift */,
+				6E4BD3A7289817A2002B4882 /* BossStoreWithFeedbacksResponse.swift */,
+				6E4BD3A928981847002B4882 /* BossStoreFeedbackCountWithRatioResponse.swift */,
 				6E56FBC1289403C700D8352C /* BossStoreAppearanceDayResponse.swift */,
 				6E56FBC3289403EF00D8352C /* TimeInterval.swift */,
 				6E56FBC52894041200D8352C /* LocalTime.swift */,
@@ -2641,11 +2659,13 @@
 				6E3EDF3C25694F8C0038E6A1 /* BaseViewModel.swift in Sources */,
 				6EDBD8A523D87A3D0075EF8F /* DeleteModalView.swift in Sources */,
 				6E7938FE25B0064F007F23E5 /* DayStackInputView.swift in Sources */,
+				6E4BD3AC289819D5002B4882 /* BossStoreFeedback.swift in Sources */,
 				6E4697C7273E053B005A5902 /* VisitHistoryService.swift in Sources */,
 				6E72AE6023C97FB400D3B257 /* UserService.swift in Sources */,
 				6E49B0FA27506AB7009897C1 /* PopupCoordinator.swift in Sources */,
 				6E4CB52A288584DF007D96A7 /* BossStoreCategoryResponse.swift in Sources */,
 				6E37A64D25EE7A9F00C8C6C4 /* HomeEmptyStoreCell.swift in Sources */,
+				6E4BD3A8289817A2002B4882 /* BossStoreWithFeedbacksResponse.swift in Sources */,
 				6E93C83823F22537002E737F /* PopupViewController.swift in Sources */,
 				6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */,
 				6E26842A25D5411200D146BB /* DayStackView.swift in Sources */,
@@ -2692,6 +2712,7 @@
 				6E6835C223C2F36000D23F54 /* RegisteredStoreHeader.swift in Sources */,
 				6E451BDD26DD0F870056CDC4 /* UITableViewExtension.swift in Sources */,
 				6E72AE5C23C9727100D3B257 /* SplashVC.swift in Sources */,
+				6E5F3F7128993EC00066E318 /* BossStoreFeedbackItemView.swift in Sources */,
 				6EDBBB802754C1EC00470F71 /* StoreWithVisitsResponse.swift in Sources */,
 				6E0EA39B23ABB230008F7CB2 /* SignInViewController.swift in Sources */,
 				6E7112C62781587D00396CC0 /* CheckExistStoresNearbyResponse.swift in Sources */,
@@ -2702,6 +2723,7 @@
 				6E681E4B256FEDA600892B9E /* SettingMenuCell.swift in Sources */,
 				6E4CB52E28858795007D96A7 /* FoodTruckCategory.swift in Sources */,
 				6E7BF08B25B7DB6000456D0B /* WriteDetailPaymentStackView.swift in Sources */,
+				6E4BD3AE289819FC002B4882 /* BossStoreFeedbackType.swift in Sources */,
 				6EF63FBB2761B0FD0063A3B9 /* MyVisitHistoryView.swift in Sources */,
 				6E57F298273A9209008C524A /* VisitView.swift in Sources */,
 				6E447FF425E3E1CD00459551 /* CategoryViewController.swift in Sources */,
@@ -2818,6 +2840,8 @@
 				6E6835C023C2D2BC00D23F54 /* RegisteredStoreViewController.swift in Sources */,
 				6E41661227464C8A0088E69C /* VisitOverview.swift in Sources */,
 				6E73293B23CA07920037003B /* StoreService.swift in Sources */,
+				6E4BD3AA28981847002B4882 /* BossStoreFeedbackCountWithRatioResponse.swift in Sources */,
+				6E4BD3B028981C95002B4882 /* BossStoreFeedbacksCell.swift in Sources */,
 				6E3DED7D25C7F60F000BE04C /* RegisterPhotoViewModel.swift in Sources */,
 				6E9C21B627047F7E00A2682D /* SignupError.swift in Sources */,
 				6EF63FC32761B7130063A3B9 /* MyVisitHistoryTableViewCell.swift in Sources */,

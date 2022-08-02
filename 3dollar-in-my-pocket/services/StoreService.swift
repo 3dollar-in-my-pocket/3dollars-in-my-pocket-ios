@@ -473,7 +473,7 @@ struct StoreService: StoreServiceProtocol {
         bossStoreId: String,
         currentLocation: CLLocation
     ) -> Observable<BossStore> {
-        let urlString = HTTPUtils.url + "/api/v1/boss/store/\(bossStoreId)"
+        let urlString = HTTPUtils.url + "/api/v1/boss/store/\(bossStoreId)/detail"
         let headers = HTTPUtils.defaultHeader()
         let parameters: [String: Any] = [
             "latitude": currentLocation.coordinate.latitude,
@@ -481,11 +481,11 @@ struct StoreService: StoreServiceProtocol {
         ]
         
         return self.networkManager.createGetObservable(
-            class: BossStoreInfoResponse.self,
+            class: BossStoreWithFeedbacksResponse.self,
             urlString: urlString,
             headers: headers,
             parameters: parameters
         )
-        .map(BossStore.init(response: ))
+        .map(BossStore.init(response:))
     }
 }

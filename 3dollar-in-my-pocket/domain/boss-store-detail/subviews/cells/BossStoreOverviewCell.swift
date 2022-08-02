@@ -65,6 +65,7 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
         $0.setTitleColor(R.color.black(), for: .normal)
         $0.titleLabel?.font = .medium(size: 16)
         $0.imageEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 8)
+        $0.titleEdgeInsets = .init(top: 0, left: 8, bottom: 0, right: 0)
     }
         
     override func prepareForReuse() {

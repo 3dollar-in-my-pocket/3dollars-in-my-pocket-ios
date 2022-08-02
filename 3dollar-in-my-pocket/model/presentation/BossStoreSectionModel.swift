@@ -17,6 +17,7 @@ extension BossStoreSectionModel: SectionModelType {
         )
         case menu(BossStoreMenu)
         case appearanceDay([BossStoreAppearanceDay])
+        case feedbacks([BossStoreFeedback])
     }
     
     init(original: BossStoreSectionModel, items: [Item]) {
@@ -50,5 +51,9 @@ extension BossStoreSectionModel: SectionModelType {
     
     init(appearanceDays: [BossStoreAppearanceDay]) {
         self.items = [SectionItemType.appearanceDay(appearanceDays)]
+    }
+    
+    init(feedbacks: [BossStoreFeedback]) {
+        self.items = [SectionItemType.feedbacks(feedbacks)]
     }
 }

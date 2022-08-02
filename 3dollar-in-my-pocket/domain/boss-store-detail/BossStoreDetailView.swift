@@ -80,7 +80,7 @@ final class BossStoreDetailView: BaseView {
                     alignment: .topLeading
                 )]
                 return section
-            } else {
+            } else if sectionIndex == 3 {
                 let item = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
                     heightDimension: .absolute(BossStoreWorkdayCell.height)
@@ -88,6 +88,26 @@ final class BossStoreDetailView: BaseView {
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
                     heightDimension: .absolute(BossStoreWorkdayCell.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(BossStoreHeaderView.height)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .topLeading
+                )]
+                return section
+            } else {
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(BossStoreFeedbacksCell.estimatedHeight)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(BossStoreFeedbacksCell.estimatedHeight)
                 ), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
                 
@@ -120,6 +140,10 @@ final class BossStoreDetailView: BaseView {
         $0.register(
             BossStoreWorkdayCell.self,
             forCellWithReuseIdentifier: BossStoreWorkdayCell.registerId
+        )
+        $0.register(
+            BossStoreFeedbacksCell.self,
+            forCellWithReuseIdentifier: BossStoreFeedbacksCell.registerId
         )
         $0.register(
             BossStoreHeaderView.self,

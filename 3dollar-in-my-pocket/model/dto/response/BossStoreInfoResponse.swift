@@ -70,4 +70,19 @@ struct BossStoreInfoResponse: Decodable {
         ) ?? BossStoreOpenStatusResponse()
         self.snsUrl = try values.decodeIfPresent(String.self, forKey: .snsUrl)
     }
+    
+    init() {
+        self.appearanceDays = []
+        self.bossStoreId = ""
+        self.categories = []
+        self.contactsNumber = nil
+        self.distance = 0
+        self.imageUrl = nil
+        self.introduction = nil
+        self.location = LocationResponse()
+        self.menus = []
+        self.name = ""
+        self.openStatus = BossStoreOpenStatusResponse()
+        self.snsUrl = nil
+    }
 }
