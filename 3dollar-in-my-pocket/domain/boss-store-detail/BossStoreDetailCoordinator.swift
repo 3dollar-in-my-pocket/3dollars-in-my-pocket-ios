@@ -8,7 +8,12 @@ protocol BossStoreDetailCoordinator: AnyObject, BaseCoordinator {
 
 extension BossStoreDetailCoordinator {
     func pushFeedback(storeId: String) {
+        let viewController = BossStoreFeedbackViewController.instacne(storeId: storeId)
         
+        self.presenter.navigationController?.pushViewController(
+            viewController,
+            animated: true
+        )
     }
     
     func pushURL(url: String?) {

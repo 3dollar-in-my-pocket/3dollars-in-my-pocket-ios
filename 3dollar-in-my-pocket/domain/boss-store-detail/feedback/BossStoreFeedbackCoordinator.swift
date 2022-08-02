@@ -1,0 +1,3 @@
+protocol BossStoreFeedbackCoordinator: BaseCoordinator, AnyObject {
+    
+}
