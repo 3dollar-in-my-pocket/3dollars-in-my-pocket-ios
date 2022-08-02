@@ -60,7 +60,7 @@ final class BossStoreDetailViewController:
         self.bossStoreDetailReactor.pushFeedbackPublisher
             .asDriver(onErrorJustReturn: "" )
             .drive(onNext: { [weak self] storeId in
-                
+                self?.coordinator?.pushFeedback(storeId: storeId)
             })
             .disposed(by: self.eventDisposeBag)
         
@@ -68,6 +68,13 @@ final class BossStoreDetailViewController:
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] in
                 
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.bossStoreDetailReactor.pushURLPublisher
+            .asDriver(onErrorJustReturn: nil)
+            .drive(onNext: { [weak self] url in
+                self?.coordinator?.pushURL(url: url)
             })
             .disposed(by: self.eventDisposeBag)
         
@@ -87,6 +94,13 @@ final class BossStoreDetailViewController:
     }
     
     func bind(reactor: BossStoreDetailReactor) {
+        // Bind acion
+        self.bossStoreDetailView.feedbackButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapFeedback }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
         // Bind state
         reactor.state
             .compactMap { $0.store.categories.first }
@@ -127,6 +141,22 @@ final class BossStoreDetailViewController:
                     ) as? BossStoreOverviewCell else { return BaseCollectionViewCell() }
                     
                     cell.bind(store: store)
+                    cell.currentLocationButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapCurrentLocation}
+                        .bind(to: self.bossStoreDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
+                    cell.shareButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapShare}
+                        .bind(to: self.bossStoreDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
+                    self.bossStoreDetailReactor.moveCameraPublisher
+                        .observe(on: MainScheduler.instance)
+                        .bind(onNext: { [weak cell] location in
+                            cell?.moveCamera(location: location)
+                        })
+                        .disposed(by: cell.disposeBag)
                     return cell
                     
                 case .info(let contacts, let snsUrl, let introduction, let imageUrl):
@@ -141,6 +171,11 @@ final class BossStoreDetailViewController:
                         introduction: introduction,
                         imageUrl: imageUrl
                     )
+                    cell.snsButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapSNSButton }
+                        .bind(to: self.bossStoreDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
                     return cell
                     
                 case .menu(let menu):
@@ -202,6 +237,11 @@ final class BossStoreDetailViewController:
                         R.string.localization.boss_store_feedback(),
                         for: .normal
                     )
+                    headerView.rightButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapFeedback }
+                        .bind(to: self.bossStoreDetailReactor.action)
+                        .disposed(by: headerView.disposeBag)
                 }
                 
                 return headerView

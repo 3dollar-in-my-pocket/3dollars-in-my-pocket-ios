@@ -12,7 +12,7 @@ final class BossStoreFeedbacksCell: BaseCollectionViewCell {
         $0.layer.cornerRadius = 12
         $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         $0.backgroundColor = .white
-        $0.layoutMargins = .init(top: 32, left: 0, bottom: 0, right: 0)
+        $0.layoutMargins = .init(top: 32, left: 0, bottom: 32, right: 0)
         $0.isLayoutMarginsRelativeArrangement = true
     }
     

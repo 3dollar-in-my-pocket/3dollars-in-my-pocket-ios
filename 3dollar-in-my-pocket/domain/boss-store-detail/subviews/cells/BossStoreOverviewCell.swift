@@ -13,6 +13,7 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
     private let mapView = NMFMapView().then {
         $0.zoomLevel = 15
         $0.layer.cornerRadius = 10
+        $0.positionMode = .direction
     }
     
     let currentLocationButton = UIButton().then {
@@ -163,6 +164,20 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
         self.nameLabel.text = store.name
         self.distanceLabel.text = "\(store.distance)m"
         self.reviewCountLabel.text = "리뷰 \(store.feedbackCount)개"
+    }
+    
+    func moveCamera(location: CLLocation) {
+        let cameraPosition = NMFCameraPosition(
+            NMGLatLng(
+                lat: location.coordinate.latitude,
+                lng: location.coordinate.longitude
+            ),
+            zoom: self.mapView.zoomLevel
+        )
+        let cameraUpdate = NMFCameraUpdate(position: cameraPosition)
+        
+        cameraUpdate.animation = .easeIn
+        self.mapView.moveCamera(cameraUpdate)
     }
     
     private func setMarker(latitude: Double, longitude: Double) {

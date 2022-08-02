@@ -1,3 +1,5 @@
+import CoreLocation
+
 import ReactorKit
 import RxSwift
 import RxCocoa
@@ -5,6 +7,8 @@ import RxCocoa
 final class BossStoreDetailReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
+        case tapCurrentLocation
+        case tapSNSButton
         case tapShare
         case tapFeedback
     }
@@ -13,6 +17,8 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         case setStore(BossStore)
         case pushShare
         case pushFeedback(storeId: String)
+        case moveCamera(location: CLLocation)
+        case pushURL(url: String?)
         case showLoading(isShow: Bool)
         case showErrorAlert(Error)
     }
@@ -25,9 +31,10 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     let initialState: State
     let pushFeedbackPublisher = PublishRelay<String>()
     let pushSharePublisher = PublishRelay<Void>()
+    let moveCameraPublisher = PublishRelay<CLLocation>()
+    let pushURLPublisher = PublishRelay<String?>()
     private let storeService: StoreServiceProtocol
     private let locationService: LocationManagerProtocol
-    
     
     init(
         storeId: String,
@@ -50,11 +57,17 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
                 .just(.showLoading(isShow: false))
             ])
             
+        case .tapCurrentLocation:
+            return self.fetchCurrentLocation()
+            
+        case .tapSNSButton:
+            return .just(.pushURL(url: self.currentState.store.snsUrl))
+            
         case .tapShare:
             return .empty()
             
         case .tapFeedback:
-            return .empty()
+            return .just(.pushFeedback(storeId: self.storeId))
         }
     }
     
@@ -70,6 +83,12 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             
         case .pushFeedback(let storeId):
             self.pushFeedbackPublisher.accept(storeId)
+            
+        case .moveCamera(let location):
+            self.moveCameraPublisher.accept(location)
+            
+        case .pushURL(let url):
+            self.pushURLPublisher.accept(url)
             
         case .showLoading(let isShow):
             self.showLoadingPublisher.accept(isShow)
@@ -92,6 +111,12 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
                 )
                 .map { .setStore($0) }
             }
+            .catch { .just(.showErrorAlert($0)) }
+    }
+    
+    private func fetchCurrentLocation() -> Observable<Mutation> {
+        return self.locationService.getCurrentLocation()
+            .map { .moveCamera(location: $0) }
             .catch { .just(.showErrorAlert($0)) }
     }
 }

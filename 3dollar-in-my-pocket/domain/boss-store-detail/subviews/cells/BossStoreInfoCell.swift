@@ -28,7 +28,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         $0.text = R.string.localization.boss_store_sns()
     }
     
-    private let snsButton = UIButton().then {
+    let snsButton = UIButton().then {
         $0.setTitle(R.string.localization.boss_store_sns_shortcut(), for: .normal)
         $0.titleLabel?.font = .regular(size: 14)
         $0.setTitleColor(R.color.green(), for: .normal)
@@ -119,7 +119,11 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         imageUrl: String?
     ) {
         self.contactValueLabel.text = contacts
-        self.snsButton.isHidden = snsUrl == nil
+        if let snsUrl = snsUrl {
+            self.snsButton.isHidden = snsUrl.isEmpty
+        } else {
+            self.snsButton.isHidden = true
+        }
         self.introductionValueLabel.text = introduction
         if let imageUrl = imageUrl {
             self.photoView.setImage(urlString: imageUrl)
