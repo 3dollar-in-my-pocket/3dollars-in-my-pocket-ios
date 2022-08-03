@@ -1,11 +1,12 @@
 import UIKit
 
 import Base
-import RxSwift
+import ReactorKit
 
 final class BossStoreFeedbackViewController:
-    Base.BaseViewController, BossStoreFeedbackCoordinator {
+    Base.BaseViewController, View, BossStoreFeedbackCoordinator {
     private let bossStoreFeedbackView = BossStoreFeedbackView()
+    private let bossStoreFeedbackReactor: BossStoreFeedbackReactor
     private weak var coordinator: BossStoreFeedbackCoordinator?
     
     static func instacne(storeId: String) -> BossStoreFeedbackViewController {
@@ -13,6 +14,12 @@ final class BossStoreFeedbackViewController:
     }
     
     init(storeId: String) {
+        self.bossStoreFeedbackReactor = BossStoreFeedbackReactor(
+            bossStoreId: storeId,
+            feedbackService: FeedbackService(),
+            globalState: GlobalState.shared,
+            metaContext: MetaContext.shared
+        )
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -27,6 +34,7 @@ final class BossStoreFeedbackViewController:
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.reactor = self.bossStoreFeedbackReactor
         self.coordinator = self
     }
     
@@ -39,5 +47,32 @@ final class BossStoreFeedbackViewController:
                     .popViewController(animated: true)
             })
             .disposed(by: self.eventDisposeBag)
+    }
+    
+    func bind(reactor: BossStoreFeedbackReactor) {
+        // Bind Action
+        self.bossStoreFeedbackView.feedbackTableView.rx.itemSelected
+            .map { Reactor.Action.selectFeedback(index: $0.row) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        self.bossStoreFeedbackView.sendFeedbackButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapSendFeedback }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        // Bind State
+        reactor.state
+            .map { $0.feedbackTypes }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: [])
+            .drive(self.bossStoreFeedbackView.feedbackTableView.rx.items(
+                cellIdentifier: BossStoreFeedbackTableViewCell.registerId,
+                cellType: BossStoreFeedbackTableViewCell.self
+            )) { _, feedbackType, cell in
+                cell.bind(feedbackType: feedbackType)
+            }
+            .disposed(by: self.disposeBag)
     }
 }

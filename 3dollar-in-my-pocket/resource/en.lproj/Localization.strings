@@ -239,7 +239,7 @@
 "boss_store_sns_shortcut" = "바로가기";
 "boss_store_introduction" = "사장님 한마디";
 "boss_store_closed_day" = "휴무";
-"boss_store_feedback" = "평가하기";
+"boss_store_feedback" = "리뷰 남기기";
 "boss_store_store_info" = "가게 정보";
 "boss_store_menu_info" = "메뉴 정보";
 "boss_store_workday" = "영업 일정";
@@ -251,3 +251,7 @@
 "friday_full" = "금요일";
 "saturday_full" = "토요일";
 "sunday_full" = "일요일";
+"boss_store_feedback_title" = "리뷰 남기기";
+"boss_store_feedback_header_title" = "푸드트럭은\n어떠셨나요?";
+"boss_store_feedback_header_description" = "여러개의 리뷰를 선택할 수 있습니다.";
+"boss_store_feedback_send_feedback" = "리뷰 남기기 완료!";

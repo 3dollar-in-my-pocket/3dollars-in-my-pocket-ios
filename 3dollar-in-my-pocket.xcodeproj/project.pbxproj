@@ -30,6 +30,7 @@
 		6E13578F23D8309400D91782 /* ModifyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E13578E23D8309400D91782 /* ModifyViewModel.swift */; };
 		6E16EE2026BC182400F4DD03 /* MenuResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E16EE1F26BC182400F4DD03 /* MenuResponse.swift */; };
 		6E16EE2426BC1AC800F4DD03 /* UserInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E16EE2326BC1AC800F4DD03 /* UserInfoResponse.swift */; };
+		6E177FE2289A8EE200615800 /* BossStoreFeedbackHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E177FE1289A8EE200615800 /* BossStoreFeedbackHeaderView.swift */; };
 		6E178D1F27BA526300B6DFB5 /* HomeAdvertisementCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E178D1E27BA526300B6DFB5 /* HomeAdvertisementCell.swift */; };
 		6E17D2CE257FAA52001726AC /* NetworkActivityLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E17D2CD257FAA52001726AC /* NetworkActivityLogger.swift */; };
 		6E18C3142571F14100F37C3A /* FAQView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E18C3132571F14100F37C3A /* FAQView.swift */; };
@@ -49,6 +50,7 @@
 		6E25D64F23E2605A00DB788E /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E25D64E23E2605A00DB788E /* ImageUtils.swift */; };
 		6E26842A25D5411200D146BB /* DayStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E26842925D5411200D146BB /* DayStackView.swift */; };
 		6E26BF7527AF83D500CC7585 /* StoreCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E26BF7427AF83D500CC7585 /* StoreCellType.swift */; };
+		6E28BE3E289A8A0E00403EDC /* BossStoreFeedbackTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E28BE3D289A8A0E00403EDC /* BossStoreFeedbackTableViewCell.swift */; };
 		6E29966625E2869D003FC13A /* AddressDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E29966525E2869D003FC13A /* AddressDocument.swift */; };
 		6E29966825E28967003FC13A /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E29966725E28967003FC13A /* Document.swift */; };
 		6E29CF75258F190200F0BACB /* ErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E29CF74258F190200F0BACB /* ErrorResponse.swift */; };
@@ -323,6 +325,7 @@
 		6E8E89B023D04240003A7889 /* WriteDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E89AF23D04240003A7889 /* WriteDetailViewModel.swift */; };
 		6E8F3799269897D7004FAC70 /* BaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8F3798269897D7004FAC70 /* BaseError.swift */; };
 		6E903BB5288CDC82002E43C9 /* BaseCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E903BB4288CDC82002E43C9 /* BaseCoordinator.swift */; };
+		6E9177E2289AAAEA00F5A8FA /* BossStoreFeedbackReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9177E1289AAAEA00F5A8FA /* BossStoreFeedbackReactor.swift */; };
 		6E91965825BBF9520052044B /* StoreSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E91965725BBF9520052044B /* StoreSection.swift */; };
 		6E93C83623F223E5002E737F /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83523F223E5002E737F /* PopupView.swift */; };
 		6E93C83823F22537002E737F /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E93C83723F22537002E737F /* PopupViewController.swift */; };
@@ -502,6 +505,7 @@
 		6E13578E23D8309400D91782 /* ModifyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyViewModel.swift; sourceTree = "<group>"; };
 		6E16EE1F26BC182400F4DD03 /* MenuResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuResponse.swift; sourceTree = "<group>"; };
 		6E16EE2326BC1AC800F4DD03 /* UserInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoResponse.swift; sourceTree = "<group>"; };
+		6E177FE1289A8EE200615800 /* BossStoreFeedbackHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreFeedbackHeaderView.swift; sourceTree = "<group>"; };
 		6E178D1E27BA526300B6DFB5 /* HomeAdvertisementCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAdvertisementCell.swift; sourceTree = "<group>"; };
 		6E17D2CD257FAA52001726AC /* NetworkActivityLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkActivityLogger.swift; sourceTree = "<group>"; };
 		6E18C3132571F14100F37C3A /* FAQView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQView.swift; sourceTree = "<group>"; };
@@ -521,6 +525,7 @@
 		6E25D64E23E2605A00DB788E /* ImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUtils.swift; sourceTree = "<group>"; };
 		6E26842925D5411200D146BB /* DayStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayStackView.swift; sourceTree = "<group>"; };
 		6E26BF7427AF83D500CC7585 /* StoreCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCellType.swift; sourceTree = "<group>"; };
+		6E28BE3D289A8A0E00403EDC /* BossStoreFeedbackTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreFeedbackTableViewCell.swift; sourceTree = "<group>"; };
 		6E29966525E2869D003FC13A /* AddressDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressDocument.swift; sourceTree = "<group>"; };
 		6E29966725E28967003FC13A /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		6E29CF74258F190200F0BACB /* ErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResponse.swift; sourceTree = "<group>"; };
@@ -784,6 +789,7 @@
 		6E8E89AF23D04240003A7889 /* WriteDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailViewModel.swift; sourceTree = "<group>"; };
 		6E8F3798269897D7004FAC70 /* BaseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseError.swift; sourceTree = "<group>"; };
 		6E903BB4288CDC82002E43C9 /* BaseCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCoordinator.swift; sourceTree = "<group>"; };
+		6E9177E1289AAAEA00F5A8FA /* BossStoreFeedbackReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreFeedbackReactor.swift; sourceTree = "<group>"; };
 		6E91965725BBF9520052044B /* StoreSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreSection.swift; sourceTree = "<group>"; };
 		6E93C83523F223E5002E737F /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
 		6E93C83723F22537002E737F /* PopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
@@ -1052,6 +1058,23 @@
 				6E49B0F927506AB7009897C1 /* PopupCoordinator.swift */,
 			);
 			path = popup;
+			sourceTree = "<group>";
+		};
+		6E28BE3B289A8A0000403EDC /* subviews */ = {
+			isa = PBXGroup;
+			children = (
+				6E28BE3C289A8A0300403EDC /* cells */,
+			);
+			path = subviews;
+			sourceTree = "<group>";
+		};
+		6E28BE3C289A8A0300403EDC /* cells */ = {
+			isa = PBXGroup;
+			children = (
+				6E28BE3D289A8A0E00403EDC /* BossStoreFeedbackTableViewCell.swift */,
+				6E177FE1289A8EE200615800 /* BossStoreFeedbackHeaderView.swift */,
+			);
+			path = cells;
 			sourceTree = "<group>";
 		};
 		6E326B1F2742563000E68666 /* subviews */ = {
@@ -1387,9 +1410,11 @@
 		6E5F3F7828995CAB0066E318 /* feedback */ = {
 			isa = PBXGroup;
 			children = (
+				6E28BE3B289A8A0000403EDC /* subviews */,
 				6E5F3F7928995CC80066E318 /* BossStoreFeedbackView.swift */,
 				6E5F3F7B28995D380066E318 /* BossStoreFeedbackViewController.swift */,
 				6E5F3F7D28995DCC0066E318 /* BossStoreFeedbackCoordinator.swift */,
+				6E9177E1289AAAEA00F5A8FA /* BossStoreFeedbackReactor.swift */,
 			);
 			path = feedback;
 			sourceTree = "<group>";
@@ -2596,6 +2621,7 @@
 				6EA205FA28881AE000BAB019 /* BossStore.swift in Sources */,
 				6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */,
 				6E5E19412881B3EB006C014F /* StoreType.swift in Sources */,
+				6E28BE3E289A8A0E00403EDC /* BossStoreFeedbackTableViewCell.swift in Sources */,
 				6EDBD8A723D87C930075EF8F /* DeleteModalVC.swift in Sources */,
 				6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */,
 				6E511E6D25714E70009E4667 /* QuestionCell.swift in Sources */,
@@ -2666,6 +2692,7 @@
 				6E4952CA26B03C7800D65042 /* AppleSigninManager.swift in Sources */,
 				6E5CA57A27686EFB001EDE19 /* MedalInfoCoordinator.swift in Sources */,
 				6E56FBC02894038100D8352C /* BossStoreInfoResponse.swift in Sources */,
+				6E9177E2289AAAEA00F5A8FA /* BossStoreFeedbackReactor.swift in Sources */,
 				6ED5939523BDD5F200B06BD4 /* StoreInfoView.swift in Sources */,
 				6E18C32D2571F59100F37C3A /* FAQTag.swift in Sources */,
 				6E326B212742564000E68666 /* CertificateButton.swift in Sources */,
@@ -2749,6 +2776,7 @@
 				6E25D64F23E2605A00DB788E /* ImageUtils.swift in Sources */,
 				6E3AA4DB25AD6C5400D8C58C /* Addition.swift in Sources */,
 				6E0EA39723ABB230008F7CB2 /* AppDelegate.swift in Sources */,
+				6E177FE2289A8EE200615800 /* BossStoreFeedbackHeaderView.swift in Sources */,
 				6E681E4B256FEDA600892B9E /* SettingMenuCell.swift in Sources */,
 				6E4CB52E28858795007D96A7 /* FoodTruckCategory.swift in Sources */,
 				6E7BF08B25B7DB6000456D0B /* WriteDetailPaymentStackView.swift in Sources */,
@@ -3118,7 +3146,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 3.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -3162,7 +3190,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 3.0.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",

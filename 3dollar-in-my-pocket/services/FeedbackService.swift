@@ -3,6 +3,11 @@ import RxSwift
 
 protocol FeedbackServiceProtocol {
     func fetchFeedbackTypes() -> Observable<[BossStoreFeedbackMeta]>
+    
+    func sendFeedbacks(
+        bossStoreId: String,
+        feedbackTypes: [BossStoreFeedbackType]
+    ) -> Observable<Void>
 }
 
 struct FeedbackService: FeedbackServiceProtocol {
@@ -17,5 +22,12 @@ struct FeedbackService: FeedbackServiceProtocol {
             headers: HTTPUtils.jsonHeader()
         )
         .map { $0.map(BossStoreFeedbackMeta.init(response:))}
+    }
+    
+    func sendFeedbacks(
+        bossStoreId: String,
+        feedbackTypes: [BossStoreFeedbackType]
+    ) -> Observable<Void> {
+        return .empty()
     }
 }
