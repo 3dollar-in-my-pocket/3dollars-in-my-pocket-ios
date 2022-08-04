@@ -15,7 +15,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     
     enum Mutation {
         case setStore(BossStore)
-        case pushShare
+        case pushShare(BossStore)
         case pushFeedback(storeId: String)
         case moveCamera(location: CLLocation)
         case pushURL(url: String?)
@@ -30,7 +30,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     let storeId: String
     let initialState: State
     let pushFeedbackPublisher = PublishRelay<String>()
-    let pushSharePublisher = PublishRelay<Void>()
+    let pushSharePublisher = PublishRelay<BossStore>()
     let moveCameraPublisher = PublishRelay<CLLocation>()
     let pushURLPublisher = PublishRelay<String?>()
     private let storeService: StoreServiceProtocol
@@ -64,7 +64,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             return .just(.pushURL(url: self.currentState.store.snsUrl))
             
         case .tapShare:
-            return .empty()
+            return .just(.pushShare(self.currentState.store))
             
         case .tapFeedback:
             return .just(.pushFeedback(storeId: self.storeId))
@@ -78,8 +78,8 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         case .setStore(let store):
             newState.store = store
             
-        case .pushShare:
-            break
+        case .pushShare(let store):
+            self.pushSharePublisher.accept(store)
             
         case .pushFeedback(let storeId):
             self.pushFeedbackPublisher.accept(storeId)

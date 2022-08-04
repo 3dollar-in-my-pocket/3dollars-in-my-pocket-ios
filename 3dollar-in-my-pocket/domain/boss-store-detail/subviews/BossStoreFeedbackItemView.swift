@@ -79,7 +79,7 @@ final class BossStoreFeedbackItemView: Base.BaseView {
         self.titleLabel.text = "\(feedback.type.emoji) \(feedback.type.description)"
         self.countLabel.text = "\(feedback.count)개"
         self.progressView.progress = Float(feedback.ratio)
-        self.setProgressBar(isTopRate: isTopRate)
+        self.setProgressBar(isTopRate: feedback.count == 0 ? false : isTopRate)
     }
     
     private func setProgressBar(isTopRate: Bool) {

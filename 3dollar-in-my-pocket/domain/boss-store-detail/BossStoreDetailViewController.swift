@@ -65,9 +65,9 @@ final class BossStoreDetailViewController:
             .disposed(by: self.eventDisposeBag)
         
         self.bossStoreDetailReactor.pushSharePublisher
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] in
-                
+            .asDriver(onErrorJustReturn: BossStore())
+            .drive(onNext: { [weak self] store in
+                self?.coordinator?.shareToKakao(store: store)
             })
             .disposed(by: self.eventDisposeBag)
         
@@ -132,7 +132,7 @@ final class BossStoreDetailViewController:
     private func setupDataSource() {
         self.bossStoreCollectionViewDataSource
         = RxCollectionViewSectionedReloadDataSource<BossStoreSectionModel>(
-            configureCell: { dataSource, collectionView, indexPath, item in
+            configureCell: { _, collectionView, indexPath, item in
                 switch item {
                 case .overview(let store):
                     guard let cell = collectionView.dequeueReusableCell(
@@ -187,6 +187,14 @@ final class BossStoreDetailViewController:
                     cell.bind(menu: menu)
                     return cell
                     
+                case .emptyMenu:
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: BossStoreEmptyMenuCell.registerId,
+                        for: indexPath
+                    ) as? BossStoreEmptyMenuCell else { return BaseCollectionViewCell() }
+                    
+                    return cell
+                    
                 case .appearanceDay(let appearanceDay):
                     guard let cell = collectionView.dequeueReusableCell(
                         withReuseIdentifier: BossStoreWorkdayCell.registerId,
@@ -208,7 +216,7 @@ final class BossStoreDetailViewController:
         })
         
         self.bossStoreCollectionViewDataSource.configureSupplementaryView
-        = { dataSource, collectionView, kind, indexPath -> UICollectionReusableView in
+        = { _, collectionView, kind, indexPath -> UICollectionReusableView in
             switch kind {
             case UICollectionView.elementKindSectionHeader:
                 guard let headerView = collectionView.dequeueReusableSupplementaryView(

@@ -357,6 +357,7 @@
 		6EA3207A2762F015002AA2F5 /* VisitHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA320792762F015002AA2F5 /* VisitHistoryViewModel.swift */; };
 		6EA3207E2762F1F9002AA2F5 /* VisitHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA3207D2762F1F9002AA2F5 /* VisitHistoryTableViewCell.swift */; };
 		6EA3208027632352002AA2F5 /* HomeStoreFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA3207F27632352002AA2F5 /* HomeStoreFlowLayout.swift */; };
+		6EACB6FA289B6DDC003F1A4E /* BossStoreEmptyMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EACB6F9289B6DDC003F1A4E /* BossStoreEmptyMenuCell.swift */; };
 		6EAD2AB827227AB2000BAA52 /* MenuCategoryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAD2AB727227AB2000BAA52 /* MenuCategoryResponse.swift */; };
 		6EB46A5C2892BF390057B21A /* LoadingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB46A5B2892BF390057B21A /* LoadingManager.swift */; };
 		6EB6D0A525E728390017E09A /* StoreOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB6D0A425E728390017E09A /* StoreOrder.swift */; };
@@ -821,6 +822,7 @@
 		6EA320792762F015002AA2F5 /* VisitHistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitHistoryViewModel.swift; sourceTree = "<group>"; };
 		6EA3207D2762F1F9002AA2F5 /* VisitHistoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitHistoryTableViewCell.swift; sourceTree = "<group>"; };
 		6EA3207F27632352002AA2F5 /* HomeStoreFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeStoreFlowLayout.swift; sourceTree = "<group>"; };
+		6EACB6F9289B6DDC003F1A4E /* BossStoreEmptyMenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreEmptyMenuCell.swift; sourceTree = "<group>"; };
 		6EAD2AB727227AB2000BAA52 /* MenuCategoryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCategoryResponse.swift; sourceTree = "<group>"; };
 		6EB46A5B2892BF390057B21A /* LoadingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingManager.swift; sourceTree = "<group>"; };
 		6EB6D0A425E728390017E09A /* StoreOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOrder.swift; sourceTree = "<group>"; };
@@ -1869,6 +1871,7 @@
 				6E54BFEB28963BBC00B7E608 /* BossStoreWorkdayCell.swift */,
 				6E54BFF428964A2300B7E608 /* BossStoreHeaderView.swift */,
 				6E4BD3AF28981C95002B4882 /* BossStoreFeedbacksCell.swift */,
+				6EACB6F9289B6DDC003F1A4E /* BossStoreEmptyMenuCell.swift */,
 			);
 			path = cells;
 			sourceTree = "<group>";
@@ -2891,6 +2894,7 @@
 				6E5CA57627686CAC001EDE19 /* MedalInfoView.swift in Sources */,
 				6E46CFF6258B58370000421B /* QuestionViewModel.swift in Sources */,
 				6E56FBC62894041200D8352C /* LocalTime.swift in Sources */,
+				6EACB6FA289B6DDC003F1A4E /* BossStoreEmptyMenuCell.swift in Sources */,
 				6EF63FBF2761B3690063A3B9 /* MyVisitHistoryCoordinator.swift in Sources */,
 				6E3960F025F0AF3C004D4644 /* UILabelExtension.swift in Sources */,
 				6E6B0EDE23AD16F1006E11CE /* BaseVC.swift in Sources */,

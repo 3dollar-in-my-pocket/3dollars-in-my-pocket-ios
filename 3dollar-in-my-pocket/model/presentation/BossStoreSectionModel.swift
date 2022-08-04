@@ -16,6 +16,7 @@ extension BossStoreSectionModel: SectionModelType {
             imageUrl: String?
         )
         case menu(BossStoreMenu)
+        case emptyMenu
         case appearanceDay([BossStoreAppearanceDay])
         case feedbacks([BossStoreFeedback])
     }
@@ -46,7 +47,11 @@ extension BossStoreSectionModel: SectionModelType {
     }
     
     init(menus: [BossStoreMenu]) {
-        self.items = menus.map { SectionItemType.menu($0) }
+        if menus.isEmpty {
+            self.items = [.emptyMenu]
+        } else {
+            self.items = menus.map { SectionItemType.menu($0) }
+        }
     }
     
     init(appearanceDays: [BossStoreAppearanceDay]) {
