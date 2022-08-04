@@ -1,6 +1,8 @@
 import UIKit
 
 import Base
+import RxSwift
+import RxCocoa
 
 final class BossStoreFeedbackView: Base.BaseView {
     private let navigationContainerView = UIView().then {
@@ -104,6 +106,25 @@ final class BossStoreFeedbackView: Base.BaseView {
             make.right.equalToSuperview()
             make.bottom.equalToSuperview()
             make.top.equalTo(self.safeAreaLayoutGuide.snp.bottom)
+        }
+    }
+    
+    fileprivate func setEnableSendFeedbackButton(isEnable: Bool) {
+        self.sendFeedbackButton.isEnabled = isEnable
+        if isEnable {
+            self.sendFeedbackButton.backgroundColor = R.color.green()
+            self.bottomBackgroundView.backgroundColor = R.color.green()
+        } else {
+            self.sendFeedbackButton.backgroundColor = R.color.gray30()
+            self.bottomBackgroundView.backgroundColor = R.color.gray30()
+        }
+    }
+}
+
+extension Reactive where Base: BossStoreFeedbackView {
+    var isEnableSendFeedbackButton: Binder<Bool> {
+        return Binder(self.base) { view, isEnable in
+            view.setEnableSendFeedbackButton(isEnable: isEnable)
         }
     }
 }

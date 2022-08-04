@@ -32,25 +32,7 @@ struct BossStore: StoreProtocol {
         self.feedbackCount = response.totalFeedbacksCounts
         self.feedbacks = []
     }
-    
-//    init(response: BossStoreInfoResponse) {
-//        self.id = response.bossStoreId
-//        self.appearanceDays
-//        = response.appearanceDays.map(BossStoreAppearanceDay.init(response:))
-//        self.categories = response.categories.map(FoodTruckCategory.init(response:))
-//        self.distance = response.distance
-//        self.location = Location(response: response.location)
-//        self.menus = response.menus.map(BossStoreMenu.init(response: ))
-//        self.name = response.name
-//        self.openingTime = response.openStatus.openStartDateTime
-//        self.imageURL = response.imageUrl
-//        self.status = OpenStatus(response: response.openStatus.status)
-//        self.contacts = response.contactsNumber
-//        self.snsUrl = response.snsUrl
-//        self.introduction = response.introduction
-//        self.feedbackCount = 0
-//    }
-    
+        
     init(response: BossStoreWithFeedbacksResponse) {
         self.id = response.store.bossStoreId
         self.appearanceDays

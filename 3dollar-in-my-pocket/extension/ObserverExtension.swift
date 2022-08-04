@@ -10,7 +10,9 @@ extension AnyObserver {
                 self.onError(httpError)
             } else {
                 if let value = response.value {
-                    if let responseContainer: ResponseContainer<String> = JsonUtils.toJson(object: value) {
+                    print(value)
+                    if let responseContainer: ResponseContainer<String?>
+                        = JsonUtils.toJson(object: value) {
                         self.onError(BaseError.custom(responseContainer.message))
                     }
                 } else {
@@ -68,6 +70,15 @@ extension AnyObserver {
             }
         } else {
             self.onError(BaseError.nilValue)
+        }
+    }
+    
+    func processAPIError(response: AFDataResponse<Data>) {
+        if let value = response.value,
+           let errorContainer: ResponseContainer<String> = JsonUtils.decode(data: value) {
+            self.onError(BaseError.custom(errorContainer.message))
+        } else {
+            self.processHTTPError(response: response)
         }
     }
 }

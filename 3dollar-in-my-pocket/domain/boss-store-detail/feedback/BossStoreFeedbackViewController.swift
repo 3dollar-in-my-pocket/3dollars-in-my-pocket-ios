@@ -47,12 +47,39 @@ final class BossStoreFeedbackViewController:
                     .popViewController(animated: true)
             })
             .disposed(by: self.eventDisposeBag)
+        
+        self.bossStoreFeedbackReactor.popPublisher
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] in
+                self?.coordinator?.presenter.navigationController?
+                    .popViewController(animated: true)
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.bossStoreFeedbackReactor.showLoadingPublisher
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: { [weak self] isShow in
+                self?.coordinator?.showLoading(isShow: isShow)
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.bossStoreFeedbackReactor.showErrorAlertPublisher
+            .asDriver(onErrorJustReturn: BaseError.unknown)
+            .drive(onNext: { [weak self]  error in
+                self?.coordinator?.showErrorAlert(error: error)
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: BossStoreFeedbackReactor) {
         // Bind Action
         self.bossStoreFeedbackView.feedbackTableView.rx.itemSelected
             .map { Reactor.Action.selectFeedback(index: $0.row) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        self.bossStoreFeedbackView.feedbackTableView.rx.itemDeselected
+            .map { Reactor.Action.deselectFeedback(index: $0.row) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
@@ -73,6 +100,13 @@ final class BossStoreFeedbackViewController:
             )) { _, feedbackType, cell in
                 cell.bind(feedbackType: feedbackType)
             }
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .map { $0.isEnableSendFeedbackButton }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: false)
+            .drive(self.bossStoreFeedbackView.rx.isEnableSendFeedbackButton)
             .disposed(by: self.disposeBag)
     }
 }

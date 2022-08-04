@@ -6,11 +6,13 @@ import RxCocoa
 final class BossStoreFeedbackReactor: BaseReactor, Reactor {
     enum Action {
         case selectFeedback(index: Int)
+        case deselectFeedback(index: Int)
         case tapSendFeedback
     }
     
     enum Mutation {
-        case toggleFeedback(index: Int)
+        case selectFeedback(index: Int)
+        case deSelectFeedback(index: Int)
         case pop
         case showLoading(isShow: Bool)
         case showErrorAlert(Error)
@@ -19,6 +21,7 @@ final class BossStoreFeedbackReactor: BaseReactor, Reactor {
     struct State {
         var feedbackTypes: [BossStoreFeedbackMeta]
         var selectedIndex: [Int]
+        var isEnableSendFeedbackButton: Bool
     }
     
     let initialState: State
@@ -40,14 +43,18 @@ final class BossStoreFeedbackReactor: BaseReactor, Reactor {
         self.metaContext = metaContext
         self.initialState = State(
             feedbackTypes: metaContext.feedbackTypes,
-            selectedIndex: []
+            selectedIndex: [],
+            isEnableSendFeedbackButton: false
         )
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .selectFeedback(let index):
-            return .just(.toggleFeedback(index: index))
+            return .just(.selectFeedback(index: index))
+            
+        case .deselectFeedback(let index):
+            return .just(.deSelectFeedback(index: index))
             
         case .tapSendFeedback:
             let selectedFeedbacks = self.currentState.selectedIndex.map {
@@ -69,12 +76,15 @@ final class BossStoreFeedbackReactor: BaseReactor, Reactor {
         var newState = state
         
         switch mutation {
-        case .toggleFeedback(let index):
+        case .selectFeedback(let index):
+            newState.selectedIndex.append(index)
+            newState.isEnableSendFeedbackButton = !newState.selectedIndex.isEmpty
+            
+        case .deSelectFeedback(let index):
             if let targetIndex = newState.selectedIndex.firstIndex(of: index) {
                 newState.selectedIndex.remove(at: targetIndex)
-            } else {
-                newState.selectedIndex.append(index)
             }
+            newState.isEnableSendFeedbackButton = !newState.selectedIndex.isEmpty
             
         case .pop:
             self.popPublisher.accept(())
