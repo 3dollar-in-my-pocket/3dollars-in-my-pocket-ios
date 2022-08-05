@@ -244,6 +244,7 @@
 "boss_store_menu_info" = "메뉴 정보";
 "boss_store_workday" = "영업 일정";
 "boss_store_store_feedback" = "가게 평가";
+"boss_store_empty_menu" = "아직 등록된 정보가 없어요.";
 "monday_full" = "월요일";
 "tuesday_full" = "화요일";
 "wednesday_full" = "수요일";

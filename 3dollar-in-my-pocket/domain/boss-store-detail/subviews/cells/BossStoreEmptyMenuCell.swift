@@ -12,13 +12,13 @@ final class BossStoreEmptyMenuCell: BaseCollectionViewCell {
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = "아직 등록된 정보가 없어요."
+        $0.text = R.string.localization.boss_store_empty_menu()
         $0.textColor = R.color.gray30()
         $0.font = .regular(size: 14)
     }
     
     private let emptyImage = UIImageView().then {
-        $0.image = UIImage(named: "img_boss_empty_menu")
+        $0.image = R.image.img_boss_empty_menu()
     }
     
     override func setup() {
@@ -35,11 +35,12 @@ final class BossStoreEmptyMenuCell: BaseCollectionViewCell {
             make.right.equalToSuperview().offset(-24)
             make.top.equalToSuperview()
             make.bottom.equalToSuperview()
+            make.height.equalTo(52)
         }
         
         self.titleLabel.snp.makeConstraints { make in
             make.left.equalTo(self.containerView).offset(16)
-            make.centerY.equalTo(self.titleLabel)
+            make.centerY.equalTo(self.containerView)
         }
         
         self.emptyImage.snp.makeConstraints { make in

@@ -67,7 +67,7 @@ final class BossStoreDetailView: BaseView {
                 ))
                 let emptyMenuItem = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .estimated(BossStoreEmptyMenuCell.height)
+                    heightDimension: .absolute(BossStoreEmptyMenuCell.height)
                 ))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),

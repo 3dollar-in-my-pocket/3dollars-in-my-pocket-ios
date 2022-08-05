@@ -5,7 +5,7 @@ import RxCocoa
 
 final class BossStoreHeaderView: UICollectionReusableView {
     static let registerId = "\(BossStoreHeaderView.self)"
-    static let height: CGFloat = 69
+    static let height: CGFloat = 73
     
     var disposeBag = DisposeBag()
     
@@ -50,7 +50,7 @@ final class BossStoreHeaderView: UICollectionReusableView {
         self.titleLabel.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(24)
             make.top.equalToSuperview().offset(37)
-            make.bottom.equalToSuperview().offset(-12)
+            make.bottom.equalToSuperview().offset(-16)
         }
         
         self.rightButton.snp.makeConstraints { make in
