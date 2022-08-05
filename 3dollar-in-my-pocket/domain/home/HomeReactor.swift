@@ -518,7 +518,8 @@ final class HomeReactor: BaseReactor, Reactor {
                 guard let self = self else { return .error(BaseError.unknown) }
                 let storeCellTypes = self.toStoreCellTypes(
                     stores: stores,
-                    advertisement: advertisement
+                    advertisement: advertisement,
+                    storeType: .streetFood
                 )
                 
                 return .just(.setStoreCellTypes(storeCellTypes))
@@ -546,7 +547,8 @@ final class HomeReactor: BaseReactor, Reactor {
                 guard let self = self else { return .error(BaseError.unknown) }
                 let storeCellTypes = self.toStoreCellTypes(
                     stores: stores,
-                    advertisement: advertisement
+                    advertisement: advertisement,
+                    storeType: .foodTruck
                 )
                 
                 return .just(.setStoreCellTypes(storeCellTypes))
@@ -589,12 +591,13 @@ final class HomeReactor: BaseReactor, Reactor {
     
     private func toStoreCellTypes(
         stores: [StoreProtocol],
-        advertisement: Advertisement?
+        advertisement: Advertisement?,
+        storeType: StoreType
     ) -> [StoreCellType] {
         var results = stores.map { StoreCellType.store($0) }
         
         if results.isEmpty {
-            return [.empty]
+            return [.empty(storeType)]
         } else {
             if let advertisement = advertisement {
                 results.insert(StoreCellType.advertisement(advertisement), at: 1)

@@ -220,6 +220,8 @@
 "home_empty_title" = "주변에 가게가 없어요.";
 "home_empty_description" = "다른 주소로 검색하거나\n직접 제보해보세요!";
 "home_visit" = "방문하기";
+"home_empty_boss_title" = "주변에 푸드트럭이 없어요.";
+"home_empty_boss_description" = "다른 주소로 검색해보세요!";
 "permission_denied_title" = "권한이 거절되었어요😭";
 "permission_denied_description" = "설정에서 해당 권한을 허용해 주세요!!";
 "permission_setting_button" = "설정";

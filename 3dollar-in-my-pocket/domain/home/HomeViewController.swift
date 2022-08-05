@@ -220,7 +220,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
                     cell.bind(advertisement: advertisement)
                     return cell
                     
-                case .empty:
+                case .empty(let storeType):
                     guard let cell = collectionView.dequeueReusableCell(
                         withReuseIdentifier: HomeEmptyStoreCell.registerId,
                         for: indexPath
@@ -228,6 +228,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
                         return BaseCollectionViewCell()
                     }
                     
+                    cell.bind(storeType: storeType)
                     return cell
                 }
             }

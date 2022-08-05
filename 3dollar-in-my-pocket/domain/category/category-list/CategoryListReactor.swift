@@ -176,7 +176,7 @@ final class CategoryListReactor: BaseReactor, Reactor {
             .map { $0.map(Store.init) }
             .map { stores in
                 return stores.isEmpty
-                ? [StoreCellType.empty]
+                ? [StoreCellType.empty(.streetFood)]
                 : stores.map(StoreCellType.store)
             }
         let fetchAdvertisement = self.fetchAdvertisement()
