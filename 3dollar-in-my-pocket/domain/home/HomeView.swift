@@ -14,6 +14,8 @@ final class HomeView: BaseView {
   
     let addressButton = AddressButton()
     
+    fileprivate let tooltipView = FoodTruckTooltipView()
+    
     let categoryCollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewLayout()
@@ -90,7 +92,8 @@ final class HomeView: BaseView {
             self.addressButton,
             self.categoryCollectionView,
             self.storeCollectionView,
-            self.currentLocationButton
+            self.currentLocationButton,
+            self.tooltipView
         ])
     }
   
@@ -109,6 +112,11 @@ final class HomeView: BaseView {
             make.centerY.equalTo(self.storeTypeButton)
             make.right.equalToSuperview().offset(-24)
             make.left.equalTo(self.storeTypeButton.snp.right).offset(8)
+        }
+        
+        self.tooltipView.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(40)
+            make.top.equalTo(self.storeTypeButton.snp.bottom).offset(6)
         }
         
         self.categoryCollectionView.snp.makeConstraints { make in
@@ -192,5 +200,9 @@ extension Reactive where Base: HomeView {
             view.setStoreType(storeType: storeType)
             view.storeTypeButton.rx.storeType.onNext(storeType)
         }
+    }
+    
+    var isTooltipHidden: Binder<Bool> {
+        return base.tooltipView.rx.isTooltipHidden
     }
 }

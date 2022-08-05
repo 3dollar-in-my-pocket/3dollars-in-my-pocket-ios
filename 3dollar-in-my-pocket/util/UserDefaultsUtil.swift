@@ -9,6 +9,7 @@ struct UserDefaultsUtil {
   static let KEY_DETAIL_LINK = "KEY_DETAIL_LINK"
   static let KEY_CURRENT_LATITUDE = "KEY_CURRENT_LATITUDE"
   static let KEY_CURRENT_LONGITUDE = "KEY_CURRENT_LONGITUDE"
+    static let KEY_FOODTRUCK_TOOLTIP = "KEY_FOODTRUCK_TOOLTIP"
   
   let instance: UserDefaults
   
@@ -21,6 +22,15 @@ struct UserDefaultsUtil {
       instance = UserDefaults.standard
     }
   }
+    
+    var isFoodTruckTooltipShown: Bool {
+        get {
+            self.instance.bool(forKey: UserDefaultsUtil.KEY_FOODTRUCK_TOOLTIP)
+        }
+        set {
+            self.instance.set(newValue, forKey: UserDefaultsUtil.KEY_FOODTRUCK_TOOLTIP)
+        }
+    }
   
   func setUserToken(token: String) {
     self.instance.set(token, forKey: UserDefaultsUtil.KEY_TOKEN)

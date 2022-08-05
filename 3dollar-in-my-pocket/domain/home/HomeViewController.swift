@@ -274,6 +274,13 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
                 )
             })
             .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .map { $0.isTooltipHidden }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: true)
+            .drive(self.homeView.rx.isTooltipHidden)
+            .disposed(by: self.disposeBag)
     }
     
     private func initilizeShopCollectionView() {

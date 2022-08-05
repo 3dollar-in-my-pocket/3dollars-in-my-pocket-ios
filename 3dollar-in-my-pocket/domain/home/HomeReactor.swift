@@ -33,6 +33,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case setMaxDistance(Double)
         case setCameraPosition(CLLocation)
         case selectStore(index: Int?)
+        case setTooltipHidden(isHidden: Bool)
         case updateStore(store: StoreProtocol)
         case setHiddenResearchButton(Bool)
         case presentVisit(store: Store)
@@ -54,6 +55,7 @@ final class HomeReactor: BaseReactor, Reactor {
         var mapMaxDistance: Double
         var cameraPosition: CLLocation?
         var currentLocation: CLLocation
+        var isTooltipHidden: Bool = false
     }
     
     let initialState: State
@@ -67,7 +69,7 @@ final class HomeReactor: BaseReactor, Reactor {
     private let advertisementService: AdvertisementServiceProtocol
     private let locationManager: LocationManagerProtocol
     private let mapService: MapServiceProtocol
-    private let userDefaults: UserDefaultsUtil
+    private var userDefaults: UserDefaultsUtil
     private let globalState: GlobalState
     
     init(
@@ -107,9 +109,10 @@ final class HomeReactor: BaseReactor, Reactor {
         case .viewDidLoad:
             return Observable.zip(
                 self.categoryService.fetchStreetFoodCategories(),
-                self.categoryService.fetchFoodTruckCategories()
+                self.categoryService.fetchFoodTruckCategories(),
+                self.fetchFoodTruckTooltipShown()
             )
-            .do(onNext: { [weak self] streetFoodCategory, foodTruckCategory in
+            .do(onNext: { [weak self] streetFoodCategory, foodTruckCategory, _ in
                 self?.streetFoodCategory = streetFoodCategory
                 self?.foodTruckCategory = foodTruckCategory
             })
@@ -408,6 +411,9 @@ final class HomeReactor: BaseReactor, Reactor {
         var newState = state
         
         switch mutation {
+        case .setTooltipHidden(let isHidden):
+            newState.isTooltipHidden = isHidden
+            
         case .setStoreType(let storeType):
             newState.storeType = storeType
             
@@ -462,6 +468,10 @@ final class HomeReactor: BaseReactor, Reactor {
         }
         
         return newState
+    }
+    
+    private func fetchFoodTruckTooltipShown() -> Observable<Mutation> {
+        return .just(.setTooltipHidden(isHidden: self.userDefaults.isFoodTruckTooltipShown))
     }
     
     private func refreshCurrentLocation() -> Observable<Mutation> {
