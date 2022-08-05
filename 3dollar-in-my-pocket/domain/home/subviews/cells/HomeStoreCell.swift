@@ -160,6 +160,8 @@ final class HomeStoreCell: BaseCollectionViewCell {
             self.setCategories(categories: store.categories)
             self.bedgeImage.isHidden = !store.visitHistory.isCertified
             self.visitButton.isHidden = false
+            self.starImage.image = R.image.ic_star()
+            self.distanceImage.image = R.image.ic_near_filled()
         } else if let bossStore = store as? BossStore {
             self.storeType = .foodTruck
             if let category = bossStore.categories.first as? FoodTruckCategory {
@@ -167,9 +169,10 @@ final class HomeStoreCell: BaseCollectionViewCell {
             }
             self.setDistance(distance: bossStore.distance)
             self.titleLabel.text = bossStore.name
-            self.starImage.isHidden = true
-            self.rankLabel.isHidden = true
+            self.starImage.image = R.image.ic_review_green()
+            self.rankLabel.text = "\(bossStore.feedbackCount)개"
             self.setCategories(categories: bossStore.categories)
+            self.distanceImage.image = R.image.ic_near_filled_green()
             self.bedgeImage.isHidden = true
             self.visitButton.isHidden = true
         }
@@ -177,21 +180,31 @@ final class HomeStoreCell: BaseCollectionViewCell {
   
     private func setSelected(isSelected: Bool) {
         if isSelected {
+            if self.storeType == .foodTruck {
+                self.starImage.image = R.image.ic_review_white()
+            } else {
+                self.starImage.image = R.image.ic_star_white()
+            }
+            self.distanceImage.image = R.image.ic_near_white()
             self.containerView.backgroundColor = .black
             self.titleLabel.textColor = .white
             self.categoriesLabel.textColor = self.storeType.themeColor
             self.distanceLabel.textColor = .white
-            self.distanceImage.image = R.image.ic_near_white()
             self.rankLabel.textColor = .white
-            self.starImage.image = R.image.ic_star_white()
         } else {
+            if self.storeType == .foodTruck {
+                self.starImage.image = R.image.ic_review_green()
+                self.distanceImage.image = R.image.ic_near_filled_green()
+            } else {
+                self.starImage.image = R.image.ic_star()
+                self.distanceImage.image = R.image.ic_near_filled()
+            }
             self.containerView.backgroundColor = .white
             self.titleLabel.textColor = .black
             self.categoriesLabel.textColor = R.color.gray60()
             self.distanceLabel.textColor = R.color.gray90()
             self.distanceImage.image = R.image.ic_near_filled()
             self.rankLabel.textColor = R.color.gray90()
-            self.starImage.image = R.image.ic_star()
         }
   }
   

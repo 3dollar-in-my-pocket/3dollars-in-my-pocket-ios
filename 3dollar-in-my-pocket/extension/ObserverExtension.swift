@@ -48,12 +48,10 @@ extension AnyObserver {
     
     func processValue<T: Decodable>(class: T.Type, response: AFDataResponse<Data>) {
         if let data = response.value {
-            if let responseContainer: ResponseContainer<T> = JsonUtils.decode(data: data),
-               let element = responseContainer.data as? Element {
+            if let responseContainer: ResponseContainer<T> = JsonUtils.decode(data: data) {
+                let element = responseContainer.data as! Element
                 self.onNext(element)
                 self.onCompleted()
-            } else {
-                self.onError(BaseError.failDecoding)
             }
         } else {
             self.onError(BaseError.nilValue)

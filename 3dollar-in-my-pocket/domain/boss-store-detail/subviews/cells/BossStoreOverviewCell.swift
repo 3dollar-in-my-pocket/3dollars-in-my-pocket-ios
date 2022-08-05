@@ -51,7 +51,7 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
     }
     
     private let reviewIcon = UIImageView().then {
-        $0.image = R.image.ic_star_green()
+        $0.image = R.image.ic_review_green()
     }
     
     private let reviewCountLabel = UILabel().then {
