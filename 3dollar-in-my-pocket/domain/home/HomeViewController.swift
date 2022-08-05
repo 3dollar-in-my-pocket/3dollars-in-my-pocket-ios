@@ -152,7 +152,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
             .map { $0.storeType }
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: .streetFood)
-            .drive(self.homeView.storeTypeButton.rx.storeType)
+            .drive(self.homeView.rx.storeType)
             .disposed(by: self.disposeBag)
         
         reactor.state

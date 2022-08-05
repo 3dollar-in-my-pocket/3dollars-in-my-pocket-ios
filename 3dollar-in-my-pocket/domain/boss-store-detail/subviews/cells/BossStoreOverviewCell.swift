@@ -17,7 +17,15 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
     }
     
     let currentLocationButton = UIButton().then {
-        $0.setImage(R.image.ic_current_location_green(), for: .normal)
+        $0.setImage(R.image.ic_location_green(), for: .normal)
+        $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
+        $0.layer.shadowColor = UIColor.black.cgColor
+        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+        $0.layer.shadowOpacity = 0.15
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = R.color.gray20()?.cgColor
+        $0.backgroundColor = .white
+        $0.layer.cornerRadius = 24
     }
     
     private let containerView = UIView().then {
@@ -68,7 +76,7 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
         $0.imageEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 8)
         $0.titleEdgeInsets = .init(top: 0, left: 8, bottom: 0, right: 0)
     }
-        
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -101,8 +109,10 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
         }
         
         self.currentLocationButton.snp.makeConstraints { make in
-          make.right.equalToSuperview()
-          make.bottom.equalTo(self.containerView.snp.top).offset(-20)
+            make.right.equalToSuperview().offset(-24)
+            make.bottom.equalTo(self.containerView.snp.top).offset(-32)
+            make.width.equalTo(48)
+            make.height.equalTo(48)
         }
         
         self.containerView.snp.makeConstraints { make in
