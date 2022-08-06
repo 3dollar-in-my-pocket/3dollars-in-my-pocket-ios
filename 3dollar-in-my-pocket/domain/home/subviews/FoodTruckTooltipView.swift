@@ -5,6 +5,8 @@ import RxSwift
 import RxCocoa
 
 final class FoodTruckTooltipView: Base.BaseView {
+    fileprivate let tapGesture = UITapGestureRecognizer()
+    
     private let fingerImage = UIImageView().then {
         $0.image = R.image.img_tootip_finger()
     }
@@ -26,6 +28,7 @@ final class FoodTruckTooltipView: Base.BaseView {
     }
     
     override func setup() {
+        self.addGestureRecognizer(self.tapGesture)
         self.addSubViews([
             self.containerView,
             self.fingerImage,
@@ -75,6 +78,20 @@ final class FoodTruckTooltipView: Base.BaseView {
             self?.transform = .init(translationX: 0, y: 10)
         } completion: { [weak self] _ in
             self?.transform = .identity
+        }
+    }
+    
+    func resumeAnimation() {
+        if !self.isHidden {
+            UIView.transition(
+                with: self,
+                duration: 1,
+                options: [.autoreverse, .repeat]
+            ) { [weak self] in
+                self?.transform = .init(translationX: 0, y: 10)
+            } completion: { [weak self] _ in
+                self?.transform = .identity
+            }
         }
     }
     
@@ -130,5 +147,9 @@ extension Reactive where Base: FoodTruckTooltipView {
                 view.show()
             }
         }
+    }
+    
+    var tap: ControlEvent<Void> {
+        return ControlEvent(events: self.base.tapGesture.rx.event.map { _ in () })
     }
 }

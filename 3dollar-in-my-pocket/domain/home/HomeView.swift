@@ -14,7 +14,7 @@ final class HomeView: BaseView {
   
     let addressButton = AddressButton()
     
-    fileprivate let tooltipView = FoodTruckTooltipView()
+    let tooltipView = FoodTruckTooltipView()
     
     let categoryCollectionView = UICollectionView(
         frame: .zero,

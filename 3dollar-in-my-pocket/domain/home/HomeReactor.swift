@@ -11,6 +11,7 @@ import ReactorKit
 final class HomeReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
+        case tapTooltip
         case changeMaxDistance(maxDistance: Double)
         case changeMapLocation(CLLocation)
         case selectCategory(index: Int)
@@ -25,6 +26,7 @@ final class HomeReactor: BaseReactor, Reactor {
     }
     
     enum Mutation {
+        case shownTooltip
         case setStoreType(StoreType)
         case setStoreCellTypes([StoreCellType])
         case setCategories([Categorizable])
@@ -99,7 +101,19 @@ final class HomeReactor: BaseReactor, Reactor {
         self.mapService = mapService
         self.userDefaults = userDefaults
         self.globalState = globalState
-        self.initialState = state
+        self.initialState = State(
+            storeType: state.storeType,
+            categories: state.categories,
+            selectedCategory: state.selectedCategory,
+            storeCellTypes: state.storeCellTypes,
+            address: state.address,
+            isHiddenResearchButton: state.isHiddenResearchButton,
+            selectedIndex: state.selectedIndex,
+            mapMaxDistance: state.mapMaxDistance,
+            cameraPosition: state.cameraPosition,
+            currentLocation: state.currentLocation,
+            isTooltipHidden: userDefaults.isFoodTruckTooltipShown
+        )
         
         super.init()
     }
@@ -109,15 +123,17 @@ final class HomeReactor: BaseReactor, Reactor {
         case .viewDidLoad:
             return Observable.zip(
                 self.categoryService.fetchStreetFoodCategories(),
-                self.categoryService.fetchFoodTruckCategories(),
-                self.fetchFoodTruckTooltipShown()
+                self.categoryService.fetchFoodTruckCategories()
             )
-            .do(onNext: { [weak self] streetFoodCategory, foodTruckCategory, _ in
+            .do(onNext: { [weak self] streetFoodCategory, foodTruckCategory in
                 self?.streetFoodCategory = streetFoodCategory
                 self?.foodTruckCategory = foodTruckCategory
             })
             .map { Mutation.setCategories($0.0) }
             .catch { .just(.showErrorAlert($0)) }
+            
+        case .tapTooltip:
+            return .just(.shownTooltip)
             
         case .changeMaxDistance(let maxDistance):
             return .just(.setMaxDistance(maxDistance))
@@ -170,6 +186,7 @@ final class HomeReactor: BaseReactor, Reactor {
                     .just(.showLoading(true)),
                     .just(.setStoreType(toggleStoreType)),
                     .just(.setCategories(toggleCateogires)),
+                    .just(.shownTooltip),
                     self.searchNearStores(
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
@@ -187,6 +204,7 @@ final class HomeReactor: BaseReactor, Reactor {
                     .just(.showLoading(true)),
                     .just(.setStoreType(toggleStoreType)),
                     .just(.setCategories(toggleCateogires)),
+                    .just(.shownTooltip),
                     self.searchNearBossStore(
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
@@ -411,6 +429,10 @@ final class HomeReactor: BaseReactor, Reactor {
         var newState = state
         
         switch mutation {
+        case .shownTooltip:
+            self.userDefaults.isFoodTruckTooltipShown = true
+            newState.isTooltipHidden = true
+            
         case .setTooltipHidden(let isHidden):
             newState.isTooltipHidden = isHidden
             
@@ -468,10 +490,6 @@ final class HomeReactor: BaseReactor, Reactor {
         }
         
         return newState
-    }
-    
-    private func fetchFoodTruckTooltipShown() -> Observable<Mutation> {
-        return .just(.setTooltipHidden(isHidden: self.userDefaults.isFoodTruckTooltipShown))
     }
     
     private func refreshCurrentLocation() -> Observable<Mutation> {

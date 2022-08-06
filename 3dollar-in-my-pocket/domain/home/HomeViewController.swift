@@ -53,6 +53,12 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
         self.homeReactor.action.onNext(.tapCurrentLocationButton)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.homeView.tooltipView.resumeAnimation()
+    }
+    
     override func bindEvent() {
         self.homeView.addressButton.rx.tap
             .asDriver()
@@ -113,6 +119,11 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
     
     func bind(reactor: HomeReactor) {
         // Bind Action
+        self.homeView.tooltipView.rx.tap
+            .map { Reactor.Action.tapTooltip }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
         self.homeView.storeTypeButton.rx.tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .map { Reactor.Action.tapStoreTypeButton }
