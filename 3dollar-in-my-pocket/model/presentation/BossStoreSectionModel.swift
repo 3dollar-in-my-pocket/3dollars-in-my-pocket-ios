@@ -57,7 +57,7 @@ extension BossStoreSectionModel: SectionModelType {
                 self.items = menus.map { SectionItemType.menu($0) }
             } else {
                 var sectionItemTypes = menus[..<5].map { SectionItemType.menu($0) }
-                let moreItemType = SectionItemType.moreMenu(Array(menus[3...]))
+                let moreItemType = SectionItemType.moreMenu(Array(menus[5...]))
                 
                 sectionItemTypes.append(moreItemType)
                 self.items = sectionItemTypes

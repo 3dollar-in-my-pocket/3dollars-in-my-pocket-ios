@@ -78,9 +78,7 @@ final class BossStoreMoreMenuCell: Base.BaseCollectionViewCell {
             format: R.string.localization.boss_store_more_menu(menus.count)
         )
         
-        let splitedMenus = menus.count < 4 ? menus : Array(menus[..<3])
-        
-        for menu in splitedMenus {
+        for menu in menus {
             let photoView = self.generatePhotoView(menu: menu)
 
             self.stackView.addArrangedSubview(photoView)
