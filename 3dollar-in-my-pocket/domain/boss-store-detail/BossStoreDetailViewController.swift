@@ -110,6 +110,12 @@ final class BossStoreDetailViewController:
             .disposed(by: self.disposeBag)
         
         reactor.state
+            .map { $0.store.status == .open }
+            .asDriver(onErrorJustReturn: false)
+            .drive(self.bossStoreDetailView.rx.isStoreOpen)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
             .map { [
                 BossStoreSectionModel(store: $0.store),
                 BossStoreSectionModel(

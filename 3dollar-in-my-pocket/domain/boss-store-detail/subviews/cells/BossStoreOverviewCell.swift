@@ -193,7 +193,7 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
     private func setMarker(latitude: Double, longitude: Double) {
         self.marker?.mapView = nil
         self.marker = NMFMarker()
-        self.marker?.iconImage = NMFOverlayImage(name: "ic_marker_boss")
+        self.marker?.iconImage = NMFOverlayImage(name: "ic_marker_boss_open_selected")
         self.marker?.width = 30
         self.marker?.height = 40
         self.marker?.position = NMGLatLng(lat: latitude, lng: longitude)

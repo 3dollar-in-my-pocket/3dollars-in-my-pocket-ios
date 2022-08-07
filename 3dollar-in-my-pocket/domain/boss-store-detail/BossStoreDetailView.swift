@@ -161,13 +161,29 @@ final class BossStoreDetailView: BaseView {
         )
     }
     
+    fileprivate let storeClosedTagView = PaddingLabel(
+        topInset: 10,
+        bottomInset: 10,
+        leftInset: 16,
+        rightInset: 16
+    ).then {
+        $0.backgroundColor = R.color.gray95()
+        $0.layer.cornerRadius = 20
+        $0.text = R.string.localization.boss_store_closed()
+        $0.font = .medium(size: 14)
+        $0.textColor = .white
+        $0.layer.masksToBounds = true
+        $0.isHidden = true
+    }
+    
     override func setup() {
         self.addSubViews([
             self.collectionView,
             self.navigationContainerView,
             self.backButton,
             self.categoryImageView,
-            self.feedbackButton
+            self.feedbackButton,
+            self.storeClosedTagView
         ])
     }
     
@@ -204,6 +220,12 @@ final class BossStoreDetailView: BaseView {
             make.right.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        
+        self.storeClosedTagView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-20)
+            make.height.equalTo(40)
+        }
     }
     
     fileprivate func bind(category: Categorizable) {
@@ -218,5 +240,9 @@ extension Reactive where Base: BossStoreDetailView {
         return Binder(self.base) { view, category in
             view.bind(category: category)
         }
+    }
+    
+    var isStoreOpen: Binder<Bool> {
+        return base.storeClosedTagView.rx.isHidden
     }
 }
