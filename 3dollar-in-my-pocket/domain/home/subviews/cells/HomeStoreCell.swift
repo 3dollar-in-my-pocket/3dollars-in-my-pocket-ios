@@ -56,6 +56,21 @@ final class HomeStoreCell: BaseCollectionViewCell {
         $0.textColor = R.color.gray40()
         $0.font = .medium(size: 12)
     }
+    
+    private let isClosedTagView = PaddingLabel(
+        topInset: 4,
+        bottomInset: 4,
+        leftInset: 8,
+        rightInset: 8
+    ).then {
+        $0.layer.cornerRadius = 8
+        $0.backgroundColor = R.color.gray60()
+        $0.text = R.string.localization.home_foodtruck_closed()
+        $0.font = .regular(size: 12)
+        $0.isHidden = true
+        $0.layer.masksToBounds = true
+        $0.textColor = .white
+    }
   
     let visitButton = UIButton().then {
         $0.backgroundColor = R.color.red()
@@ -71,6 +86,7 @@ final class HomeStoreCell: BaseCollectionViewCell {
         
         self.isSelected = false
         self.bedgeImage.isHidden = true
+        self.categoryImage.alpha = 1
     }
     
     override func setup() {
@@ -85,7 +101,8 @@ final class HomeStoreCell: BaseCollectionViewCell {
             self.distanceLabel,
             self.starImage,
             self.rankLabel,
-            self.visitButton
+            self.visitButton,
+            self.isClosedTagView
         ])
     }
   
@@ -148,6 +165,11 @@ final class HomeStoreCell: BaseCollectionViewCell {
             make.height.equalTo(26)
             make.width.equalTo(72)
         }
+        
+        self.isClosedTagView.snp.makeConstraints { make in
+            make.right.equalTo(self.containerView).offset(-16)
+            make.bottom.equalTo(self.containerView).offset(-16)
+        }
     }
     
     func bind(store: StoreProtocol) {
@@ -175,6 +197,8 @@ final class HomeStoreCell: BaseCollectionViewCell {
             self.distanceImage.image = R.image.ic_near_filled_green()
             self.bedgeImage.isHidden = true
             self.visitButton.isHidden = true
+            self.isClosedTagView.isHidden = bossStore.status == .open
+            self.categoryImage.alpha = bossStore.status == .open ? 1 : 0.4
         }
     }
   

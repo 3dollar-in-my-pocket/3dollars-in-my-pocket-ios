@@ -324,11 +324,19 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
                             lng: location.longitude
                         )
                         if index == selectedIndex {
-                            marker.iconImage = NMFOverlayImage(name: "ic_marker_boss")
+                            if bossStore.status == .open {
+                                marker.iconImage = NMFOverlayImage(name: "ic_marker_boss_open_selected")
+                            } else {
+                                marker.iconImage = NMFOverlayImage(name: "ic_marker_boss_closed_selected")
+                            }
                             marker.width = 30
                             marker.height = 40
                         } else {
-                            marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
+                            if bossStore.status == .open {
+                                marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
+                            } else {
+                                marker.iconImage = NMFOverlayImage(name: "ic_marker_boss_closed")
+                            }
                             marker.width = 24
                             marker.height = 24
                         }
