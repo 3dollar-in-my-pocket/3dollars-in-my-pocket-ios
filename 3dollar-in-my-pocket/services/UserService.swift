@@ -85,8 +85,9 @@ struct UserService: UserServiceProtocol {
                         observer.onNext(())
                         observer.onCompleted()
                     }
+                } else {
+                    observer.processHTTPError(response: response)
                 }
-                observer.processHTTPError(response: response)
             })
             
             return Disposables.create()
