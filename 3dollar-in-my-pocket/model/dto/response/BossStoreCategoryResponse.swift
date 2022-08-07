@@ -1,9 +1,11 @@
 struct BossStoreCategoryResponse: Decodable {
     let categoryId: String
+    let imageUrl: String
     let name: String
     
     enum CodingKeys: String, CodingKey {
         case categoryId
+        case imageUrl
         case name
     }
     
@@ -14,6 +16,7 @@ struct BossStoreCategoryResponse: Decodable {
             String.self,
             forKey: .categoryId
         ) ?? ""
+        self.imageUrl = try values.decodeIfPresent(String.self, forKey: .imageUrl) ?? ""
         self.name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
     }
 }

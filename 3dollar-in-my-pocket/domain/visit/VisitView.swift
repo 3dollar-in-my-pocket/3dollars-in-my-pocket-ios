@@ -54,10 +54,14 @@ final class VisitView: BaseView {
   }
   
   let currentLocationButton = UIButton().then {
-    $0.setImage(R.image.ic_current_location(), for: .normal)
+    $0.setImage(R.image.ic_location_pink(), for: .normal)
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     $0.layer.shadowOpacity = 0.15
+      $0.layer.borderWidth = 1
+      $0.layer.borderColor = R.color.gray20()?.cgColor
+      $0.layer.cornerRadius = 20
+      $0.backgroundColor = .white
   }
   
   let bottomContainerView = UIView().then {
@@ -228,6 +232,8 @@ final class VisitView: BaseView {
     self.currentLocationButton.snp.makeConstraints { make in
       make.right.equalTo(self.mapView).offset(-16)
       make.bottom.equalTo(self.mapView).offset(-16)
+        make.width.equalTo(40)
+        make.height.equalTo(40)
     }
     
     self.bottomSheetContainerView.snp.makeConstraints { make in

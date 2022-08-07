@@ -12,4 +12,5 @@ class BaseReactor {
     let showErrorAlertPublisher = PublishRelay<Error>()
     let openURLPublisher = PublishRelay<String>()
     let showLoadingPublisher = PublishRelay<Bool>()
+    let showToastPublisher = PublishRelay<String>()
 }

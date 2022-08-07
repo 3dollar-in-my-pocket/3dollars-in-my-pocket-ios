@@ -8,13 +8,7 @@ import AppTrackingTransparency
 import AdSupport
 import SPPermissions
 
-protocol StoreDetailDelegate: AnyObject {
-  func popup(store: Store)
-}
-
 final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
-  
-  weak var delegate: StoreDetailDelegate?
   private let storeDetailView = StoreDetailView()
   private let viewModel: StoreDetailViewModel
   private weak var coordinator: StoreDetailCoordinator?
@@ -228,7 +222,7 @@ final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
   }
     
   private func passStore(store: Store) {
-    self.delegate?.popup(store: store)
+      GlobalState.shared.updateStore.onNext(store)
   }
 }
 

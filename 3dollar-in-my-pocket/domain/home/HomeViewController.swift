@@ -14,7 +14,8 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
         advertisementService: AdvertisementService(),
         locationManager: LocationManager.shared,
         mapService: MapService(),
-        userDefaults: UserDefaultsUtil()
+        userDefaults: UserDefaultsUtil(),
+        globalState: GlobalState.shared
     )
   
     var mapAnimatedFlag = false
@@ -50,6 +51,12 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
         self.initilizeNaverMap()
         self.homeReactor.action.onNext(.viewDidLoad)
         self.homeReactor.action.onNext(.tapCurrentLocationButton)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.homeView.tooltipView.resumeAnimation()
     }
     
     override func bindEvent() {
@@ -98,7 +105,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
         self.homeReactor.showLoadingPublisher
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: { [weak self] isShow in
-                // TODO: LoadingManager 구현 필요
+                self?.coordinator?.showLoading(isShow: isShow)
             })
             .disposed(by: self.eventDisposeBag)
                 
@@ -151,7 +158,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
             .map { $0.storeType }
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: .streetFood)
-            .drive(self.homeView.storeTypeButton.rx.storeType)
+            .drive(self.homeView.rx.storeType)
             .disposed(by: self.disposeBag)
         
         reactor.state
@@ -219,7 +226,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
                     cell.bind(advertisement: advertisement)
                     return cell
                     
-                case .empty:
+                case .empty(let storeType):
                     guard let cell = collectionView.dequeueReusableCell(
                         withReuseIdentifier: HomeEmptyStoreCell.registerId,
                         for: indexPath
@@ -227,6 +234,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
                         return BaseCollectionViewCell()
                     }
                     
+                    cell.bind(storeType: storeType)
                     return cell
                 }
             }
@@ -272,6 +280,13 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
                 )
             })
             .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .map { $0.isTooltipHidden }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: true)
+            .drive(self.homeView.rx.isTooltipHidden)
+            .disposed(by: self.disposeBag)
     }
     
     private func initilizeShopCollectionView() {
@@ -309,11 +324,19 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
                             lng: location.longitude
                         )
                         if index == selectedIndex {
-                            marker.iconImage = NMFOverlayImage(name: "ic_marker_boss")
+                            if bossStore.status == .open {
+                                marker.iconImage = NMFOverlayImage(name: "ic_marker_boss_open_selected")
+                            } else {
+                                marker.iconImage = NMFOverlayImage(name: "ic_marker_boss_closed_selected")
+                            }
                             marker.width = 30
                             marker.height = 40
                         } else {
-                            marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
+                            if bossStore.status == .open {
+                                marker.iconImage = NMFOverlayImage(name: "ic_marker_store_off")
+                            } else {
+                                marker.iconImage = NMFOverlayImage(name: "ic_marker_boss_closed")
+                            }
                             marker.width = 24
                             marker.height = 24
                         }
@@ -369,13 +392,6 @@ extension HomeViewController: SearchAddressDelegate {
         self.homeReactor.action.onNext(.tapResearchButton)
     }
 }
-
-// TODO: GlobalState로 변경 필요
-//extension HomeViewController: StoreDetailDelegate {
-//    func popup(store: Store) {
-//        self.homeReactor.action.onNext(.updateStore(store: store))
-//    }
-//}
 
 extension HomeViewController: NMFMapViewCameraDelegate {
     func mapView(
@@ -436,10 +452,3 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
         return self.transition
     }
 }
-
-// TODO: GlobalState로 변경 필요
-//extension HomeViewController: VisitViewControllerDelegate {
-//    func onSuccessVisit(store: Store) {
-//        self.homeReactor.action.onNext(.updateStore(store: store))
-//    }
-//}

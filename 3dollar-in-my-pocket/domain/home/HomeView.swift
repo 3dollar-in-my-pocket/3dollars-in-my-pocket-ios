@@ -14,6 +14,10 @@ final class HomeView: BaseView {
   
     let addressButton = AddressButton()
     
+    let tooltipView = FoodTruckTooltipView().then {
+        $0.isHidden = true
+    }
+    
     let categoryCollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewLayout()
@@ -69,10 +73,15 @@ final class HomeView: BaseView {
     }
     
     let currentLocationButton = UIButton().then {
-        $0.setImage(R.image.ic_current_location(), for: .normal)
+        $0.setImage(R.image.ic_location_pink(), for: .normal)
+        $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
         $0.layer.shadowColor = UIColor.black.cgColor
         $0.layer.shadowOffset = CGSize(width: 0, height: 4)
         $0.layer.shadowOpacity = 0.15
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = R.color.gray20()?.cgColor
+        $0.layer.cornerRadius = 20
+        $0.backgroundColor = .white
         $0.accessibilityLabel = "현재 위치"
     }
   
@@ -85,7 +94,8 @@ final class HomeView: BaseView {
             self.addressButton,
             self.categoryCollectionView,
             self.storeCollectionView,
-            self.currentLocationButton
+            self.currentLocationButton,
+            self.tooltipView
         ])
     }
   
@@ -104,6 +114,11 @@ final class HomeView: BaseView {
             make.centerY.equalTo(self.storeTypeButton)
             make.right.equalToSuperview().offset(-24)
             make.left.equalTo(self.storeTypeButton.snp.right).offset(8)
+        }
+        
+        self.tooltipView.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(40)
+            make.top.equalTo(self.storeTypeButton.snp.bottom).offset(6)
         }
         
         self.categoryCollectionView.snp.makeConstraints { make in
@@ -127,7 +142,7 @@ final class HomeView: BaseView {
         
         self.currentLocationButton.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-24)
-            make.bottom.equalTo(self.storeCollectionView.snp.top).offset(-40)
+            make.bottom.equalTo(self.storeCollectionView.snp.top).offset(-33)
         }
     }
   
@@ -158,6 +173,14 @@ final class HomeView: BaseView {
         cameraUpdate.animation = .easeIn
         self.mapView.moveCamera(cameraUpdate)
     }
+    
+    fileprivate func setStoreType(storeType: StoreType) {
+        if storeType == .foodTruck {
+            self.currentLocationButton.setImage(R.image.ic_location_green(), for: .normal)
+        } else {
+            self.currentLocationButton.setImage(R.image.ic_location_pink(), for: .normal)
+        }
+    }
 }
 
 
@@ -172,5 +195,16 @@ extension Reactive where Base: HomeView {
         return Binder(self.base) { view, cameraPosition in
             view.moveCamera(position: cameraPosition)
         }
+    }
+    
+    var storeType: Binder<StoreType> {
+        return Binder(self.base) { view, storeType in
+            view.setStoreType(storeType: storeType)
+            view.storeTypeButton.rx.storeType.onNext(storeType)
+        }
+    }
+    
+    var isTooltipHidden: Binder<Bool> {
+        return base.tooltipView.rx.isTooltipHidden
     }
 }

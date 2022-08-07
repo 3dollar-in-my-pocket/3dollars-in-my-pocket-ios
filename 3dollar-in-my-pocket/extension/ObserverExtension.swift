@@ -10,7 +10,9 @@ extension AnyObserver {
                 self.onError(httpError)
             } else {
                 if let value = response.value {
-                    if let responseContainer: ResponseContainer<String> = JsonUtils.toJson(object: value) {
+                    print(value)
+                    if let responseContainer: ResponseContainer<String?>
+                        = JsonUtils.toJson(object: value) {
                         self.onError(BaseError.custom(responseContainer.message))
                     }
                 } else {
@@ -22,6 +24,8 @@ extension AnyObserver {
             case .failure(let error):
                 if error._code == 13 {
                     self.onError(BaseError.timeout)
+                } else {
+                    self.onError(error)
                 }
             default:
                 break
@@ -44,8 +48,8 @@ extension AnyObserver {
     
     func processValue<T: Decodable>(class: T.Type, response: AFDataResponse<Data>) {
         if let data = response.value {
-            if let responseContainer: ResponseContainer<T> = JsonUtils.decode(data: data),
-               let element = responseContainer.data as? Element {
+            if let responseContainer: ResponseContainer<T> = JsonUtils.decode(data: data) {
+                let element = responseContainer.data as! Element
                 self.onNext(element)
                 self.onCompleted()
             } else {
@@ -66,6 +70,15 @@ extension AnyObserver {
             }
         } else {
             self.onError(BaseError.nilValue)
+        }
+    }
+    
+    func processAPIError(response: AFDataResponse<Data>) {
+        if let value = response.value,
+           let errorContainer: ResponseContainer<String> = JsonUtils.decode(data: value) {
+            self.onError(BaseError.custom(errorContainer.message))
+        } else {
+            self.processHTTPError(response: response)
         }
     }
 }

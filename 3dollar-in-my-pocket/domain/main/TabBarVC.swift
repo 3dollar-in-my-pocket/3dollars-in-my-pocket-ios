@@ -24,7 +24,6 @@ class TabBarVC: UITabBarController {
         self.checkIfBannerExisted()
         self.setupTabBarController()
         self.addKakaoLinkObserver()
-        self.processKakaoLinkIfExisted()
         self.feedbackGenerator.prepare()
         self.delegate = self
         if #available(iOS 15, *) {
@@ -34,6 +33,12 @@ class TabBarVC: UITabBarController {
             self.tabBar.standardAppearance = appearance
             self.tabBar.scrollEdgeAppearance = appearance
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.processKakaoLinkIfExisted()
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -127,10 +132,15 @@ class TabBarVC: UITabBarController {
     }
     
     private func processKakaoLinkIfExisted() {
-        let kakaoLinkStoreId = UserDefaultsUtil().getDetailLink()
+        let kakaoShareLink = UserDefaultsUtil().shareLink
+        guard !kakaoShareLink.isEmpty else { return }
+        let storeType = kakaoShareLink.split(separator: ":").first ?? "foodTruck"
+        let storeId = kakaoShareLink.split(separator: ":").last ?? ""
         
-        if kakaoLinkStoreId != 0 {
-            self.goToStoreDetail(storeId: kakaoLinkStoreId)
+        if storeType ==  "foodTruck" {
+            self.pushBossStoreDetail(storeId: String(storeId))
+        } else {
+            self.goToStoreDetail(storeId: Int(storeId) ?? 0)
         }
     }
     
@@ -139,6 +149,14 @@ class TabBarVC: UITabBarController {
         if let navigationVC = self.viewControllers?[0] as? UINavigationController,
            let homeVC = navigationVC.topViewController as? HomeViewController {
             homeVC.coordinator?.pushStoreDetail(storeId: String(storeId))
+        }
+    }
+    
+    private func pushBossStoreDetail(storeId: String) {
+        self.selectedIndex = 0
+        if let navigationVC = self.viewControllers?[0] as? UINavigationController,
+           let homeVC = navigationVC.topViewController as? HomeViewController {
+            homeVC.coordinator?.pushBossStoreDetail(storeId: storeId)
         }
     }
     

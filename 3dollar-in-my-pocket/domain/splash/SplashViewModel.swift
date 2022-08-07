@@ -20,27 +20,30 @@ final class SplashViewModel: BaseViewModel {
     let userDefaults: UserDefaultsUtil
     let userService: UserServiceProtocol
     let remoteConfigService: RemoteConfigProtocol
-    let medalContext: MedalContext
+    let metaContext: MetaContext
     let medalService: MedalServiceProtocol
-    
+    private let feedbackService: FeedbackServiceProtocol
     
     init(
         userDefaults: UserDefaultsUtil,
         userService: UserServiceProtocol,
         remoteConfigService: RemoteConfigProtocol,
-        medalContext: MedalContext,
-        medalService: MedalServiceProtocol
+        metaContext: MetaContext,
+        medalService: MedalServiceProtocol,
+        feedbackService: FeedbackServiceProtocol
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
         self.remoteConfigService = remoteConfigService
-        self.medalContext = medalContext
+        self.metaContext = metaContext
         self.medalService = medalService
+        self.feedbackService = feedbackService
         
         super.init()
         
         self.input.viewDidLoad
             .bind(onNext: { [weak self] in
+                self?.fetchBossStoreTypes()
                 self?.fetchMedals()
             })
             .disposed(by: self.disposeBag)
@@ -112,8 +115,18 @@ final class SplashViewModel: BaseViewModel {
         self.medalService.fetchMedals()
             .map { $0.map(Medal.init) }
             .subscribe(onNext: { [weak self] medals in
-                self?.medalContext.medals = medals
+                self?.metaContext.medals = medals
                 self?.checkMinimalVersion()
+            }, onError: { [weak self] error in
+                self?.showErrorAlert.accept(error)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func fetchBossStoreTypes() {
+        self.feedbackService.fetchFeedbackTypes()
+            .subscribe(onNext: { [weak self] feedbackTypes in
+                self?.metaContext.feedbackTypes = feedbackTypes
             }, onError: { [weak self] error in
                 self?.showErrorAlert.accept(error)
             })

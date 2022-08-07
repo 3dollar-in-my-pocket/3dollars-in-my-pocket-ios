@@ -3,9 +3,9 @@ import Foundation
 enum StoreCellType {
     case store(StoreProtocol)
     case advertisement(Advertisement)
-    case empty
+    case empty(StoreType)
     
-    var value: Any? {
+    var value: Any {
         switch self {
         case .store(let store):
             return store
@@ -13,8 +13,8 @@ enum StoreCellType {
         case .advertisement(let advertisement):
             return advertisement
             
-        case .empty:
-            return nil
+        case .empty(let storeType):
+            return storeType
         }
     }
 }

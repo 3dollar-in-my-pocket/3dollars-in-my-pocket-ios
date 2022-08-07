@@ -11,6 +11,7 @@ import ReactorKit
 final class HomeReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
+        case tapTooltip
         case changeMaxDistance(maxDistance: Double)
         case changeMapLocation(CLLocation)
         case selectCategory(index: Int)
@@ -19,13 +20,13 @@ final class HomeReactor: BaseReactor, Reactor {
         case tapResearchButton
         case tapCurrentLocationButton
         case selectStore(index: Int)
-//        case updateStore(store: Store) // TODO: GlobalState로 빼야합니다. 상세화면에서 가게 업데이트
         case tapStore(index: Int)
         case tapVisitButton(index: Int)
         case tapMarker(index: Int)
     }
     
     enum Mutation {
+        case shownTooltip
         case setStoreType(StoreType)
         case setStoreCellTypes([StoreCellType])
         case setCategories([Categorizable])
@@ -34,6 +35,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case setMaxDistance(Double)
         case setCameraPosition(CLLocation)
         case selectStore(index: Int?)
+        case setTooltipHidden(isHidden: Bool)
         case updateStore(store: StoreProtocol)
         case setHiddenResearchButton(Bool)
         case presentVisit(store: Store)
@@ -55,6 +57,7 @@ final class HomeReactor: BaseReactor, Reactor {
         var mapMaxDistance: Double
         var cameraPosition: CLLocation?
         var currentLocation: CLLocation
+        var isTooltipHidden: Bool
     }
     
     let initialState: State
@@ -68,7 +71,8 @@ final class HomeReactor: BaseReactor, Reactor {
     private let advertisementService: AdvertisementServiceProtocol
     private let locationManager: LocationManagerProtocol
     private let mapService: MapServiceProtocol
-    private let userDefaults: UserDefaultsUtil
+    private var userDefaults: UserDefaultsUtil
+    private let globalState: GlobalState
     
     init(
         storeService: StoreServiceProtocol,
@@ -77,6 +81,7 @@ final class HomeReactor: BaseReactor, Reactor {
         locationManager: LocationManagerProtocol,
         mapService: MapServiceProtocol,
         userDefaults: UserDefaultsUtil,
+        globalState: GlobalState,
         state: State = State(
             storeType: .streetFood,
             categories: [],
@@ -86,7 +91,8 @@ final class HomeReactor: BaseReactor, Reactor {
             selectedIndex: nil,
             mapMaxDistance: 2000,
             cameraPosition: nil,
-            currentLocation: CLLocation(latitude: 0, longitude: 0)
+            currentLocation: CLLocation(latitude: 0, longitude: 0),
+            isTooltipHidden: true
         )
     ) {
         self.storeService = storeService
@@ -95,7 +101,20 @@ final class HomeReactor: BaseReactor, Reactor {
         self.locationManager = locationManager
         self.mapService = mapService
         self.userDefaults = userDefaults
-        self.initialState = state
+        self.globalState = globalState
+        self.initialState = State(
+            storeType: state.storeType,
+            categories: state.categories,
+            selectedCategory: state.selectedCategory,
+            storeCellTypes: state.storeCellTypes,
+            address: state.address,
+            isHiddenResearchButton: state.isHiddenResearchButton,
+            selectedIndex: state.selectedIndex,
+            mapMaxDistance: state.mapMaxDistance,
+            cameraPosition: state.cameraPosition,
+            currentLocation: state.currentLocation,
+            isTooltipHidden: userDefaults.isFoodTruckTooltipShown
+        )
         
         super.init()
     }
@@ -113,6 +132,9 @@ final class HomeReactor: BaseReactor, Reactor {
             })
             .map { Mutation.setCategories($0.0) }
             .catch { .just(.showErrorAlert($0)) }
+            
+        case .tapTooltip:
+            return .just(.shownTooltip)
             
         case .changeMaxDistance(let maxDistance):
             return .just(.setMaxDistance(maxDistance))
@@ -133,7 +155,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: selectedCategory.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     .just(.selectStore(index: nil)),
                     .just(.setHiddenResearchButton(true)),
@@ -146,7 +169,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: selectedCategory.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     .just(.selectStore(index: nil)),
                     .just(.setHiddenResearchButton(true)),
@@ -163,11 +187,13 @@ final class HomeReactor: BaseReactor, Reactor {
                     .just(.showLoading(true)),
                     .just(.setStoreType(toggleStoreType)),
                     .just(.setCategories(toggleCateogires)),
+                    .just(.shownTooltip),
                     self.searchNearStores(
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
                     .just(.selectStore(index: nil)),
@@ -179,11 +205,13 @@ final class HomeReactor: BaseReactor, Reactor {
                     .just(.showLoading(true)),
                     .just(.setStoreType(toggleStoreType)),
                     .just(.setCategories(toggleCateogires)),
+                    .just(.shownTooltip),
                     self.searchNearBossStore(
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
                     .just(.selectStore(index: nil)),
@@ -201,7 +229,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     )
                 ])
             } else {
@@ -212,7 +241,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     )
                 ])
             }
@@ -225,7 +255,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
                     .just(.selectStore(index: nil)),
@@ -239,7 +270,8 @@ final class HomeReactor: BaseReactor, Reactor {
                         categoryId: self.currentState.selectedCategory?.id,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
-                        mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation
+                        mapLocation: self.currentState.cameraPosition
+                        ?? self.currentState.currentLocation
                     ),
                     self.fetchAddressFromLocation(location: self.currentState.cameraPosition),
                     .just(.selectStore(index: nil)),
@@ -386,10 +418,25 @@ final class HomeReactor: BaseReactor, Reactor {
         }
     }
     
+    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
+        return .merge([
+            mutation,
+            self.globalState.updateStore
+                .map { .updateStore(store: $0) }
+        ])
+    }
+    
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         
         switch mutation {
+        case .shownTooltip:
+            self.userDefaults.isFoodTruckTooltipShown = true
+            newState.isTooltipHidden = true
+            
+        case .setTooltipHidden(let isHidden):
+            newState.isTooltipHidden = isHidden
+            
         case .setStoreType(let storeType):
             newState.storeType = storeType
             
@@ -500,7 +547,8 @@ final class HomeReactor: BaseReactor, Reactor {
                 guard let self = self else { return .error(BaseError.unknown) }
                 let storeCellTypes = self.toStoreCellTypes(
                     stores: stores,
-                    advertisement: advertisement
+                    advertisement: advertisement,
+                    storeType: .streetFood
                 )
                 
                 return .just(.setStoreCellTypes(storeCellTypes))
@@ -528,7 +576,8 @@ final class HomeReactor: BaseReactor, Reactor {
                 guard let self = self else { return .error(BaseError.unknown) }
                 let storeCellTypes = self.toStoreCellTypes(
                     stores: stores,
-                    advertisement: advertisement
+                    advertisement: advertisement,
+                    storeType: .foodTruck
                 )
                 
                 return .just(.setStoreCellTypes(storeCellTypes))
@@ -571,12 +620,13 @@ final class HomeReactor: BaseReactor, Reactor {
     
     private func toStoreCellTypes(
         stores: [StoreProtocol],
-        advertisement: Advertisement?
+        advertisement: Advertisement?,
+        storeType: StoreType
     ) -> [StoreCellType] {
         var results = stores.map { StoreCellType.store($0) }
         
         if results.isEmpty {
-            return [.empty]
+            return [.empty(storeType)]
         } else {
             if let advertisement = advertisement {
                 results.insert(StoreCellType.advertisement(advertisement), at: 1)

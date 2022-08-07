@@ -19,7 +19,7 @@ final class LoadingView: Base.BaseView {
     }
     
     override func setup() {
-        self.backgroundColor = UIColor(r: 0, g: 0, b: 0, a: 0.8)
+        self.backgroundColor = .clear
         self.addSubViews(lottieView)
     }
     

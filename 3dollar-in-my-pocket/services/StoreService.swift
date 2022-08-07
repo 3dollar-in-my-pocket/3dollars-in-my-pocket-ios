@@ -66,6 +66,11 @@ protocol StoreServiceProtocol {
         storeId: Int,
         deleteReasonType: DeleteReason
     ) -> Observable<StoreDeleteResponse>
+    
+    func fetchBossStore(
+        bossStoreId: String,
+        currentLocation: CLLocation
+    ) -> Observable<BossStore>
 }
 
 
@@ -462,5 +467,25 @@ struct StoreService: StoreServiceProtocol {
             
             return Disposables.create()
         }
+    }
+    
+    func fetchBossStore(
+        bossStoreId: String,
+        currentLocation: CLLocation
+    ) -> Observable<BossStore> {
+        let urlString = HTTPUtils.url + "/api/v1/boss/store/\(bossStoreId)/detail"
+        let headers = HTTPUtils.defaultHeader()
+        let parameters: [String: Any] = [
+            "latitude": currentLocation.coordinate.latitude,
+            "longitude": currentLocation.coordinate.longitude
+        ]
+        
+        return self.networkManager.createGetObservable(
+            class: BossStoreWithFeedbacksResponse.self,
+            urlString: urlString,
+            headers: headers,
+            parameters: parameters
+        )
+        .map(BossStore.init(response:))
     }
 }

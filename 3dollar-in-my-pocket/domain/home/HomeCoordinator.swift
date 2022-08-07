@@ -11,9 +11,7 @@ protocol HomeCoordinator: BaseCoordinator, AnyObject {
 
 extension HomeCoordinator where Self: UIViewController {
     func pushStoreDetail(storeId: String) {
-        let storeDetailVC = StoreDetailViewController.instance(storeId: Int(storeId) ?? 0).then {
-            $0.delegate = self as? StoreDetailDelegate
-        }
+        let storeDetailVC = StoreDetailViewController.instance(storeId: Int(storeId) ?? 0)
         
         self.presenter.navigationController?.pushViewController(
             storeDetailVC,
@@ -22,7 +20,12 @@ extension HomeCoordinator where Self: UIViewController {
     }
     
     func pushBossStoreDetail(storeId: String) {
-        // TODO: 만들어야 함!
+        let viewController = BossStoreDetailViewController.instance(storeId: storeId)
+        
+        self.presenter.navigationController?.pushViewController(
+            viewController,
+            animated: true
+        )
     }
     
     func showDenyAlert() {
@@ -57,7 +60,6 @@ extension HomeCoordinator where Self: UIViewController {
     func presentVisit(store: Store) {
         let viewController = VisitViewController.instance(store: store)
         
-        viewController.delegate = self as? VisitViewControllerDelegate
         self.presenter.present(viewController, animated: true, completion: nil)
     }
 }

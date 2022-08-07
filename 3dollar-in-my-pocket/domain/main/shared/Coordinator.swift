@@ -5,7 +5,6 @@ protocol Coordinator {
     
     func popup()
     func dismiss()
-    func showLoading(isShow: Bool)
     func showRootDim(isShow: Bool)
     func showErrorAlert(error: Error)
     func openURL(url: String)

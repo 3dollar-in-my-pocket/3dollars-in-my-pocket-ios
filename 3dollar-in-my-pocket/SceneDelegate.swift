@@ -17,19 +17,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     self.scene(scene, openURLContexts: connectionOptions.urlContexts)
   }
   
-  func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-    if let url = URLContexts.first?.url {
-      if (AuthApi.isKakaoTalkLoginUrl(url)) {
-        _ = AuthController.handleOpenUrl(url: url)
-      } else if self.isKakaoLinkUrl(url: url) {
-        if let params = url.params(),
-           let storeIdString = params["storeId"] as? String,
-           let storeId = Int(storeIdString) {
-          self.saveStoreDetailLink(storeId: storeId)
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let url = URLContexts.first?.url {
+            if (AuthApi.isKakaoTalkLoginUrl(url)) {
+                _ = AuthController.handleOpenUrl(url: url)
+            } else if self.isKakaoLinkUrl(url: url) {
+                if let params = url.params(),
+                   let storeId = params["storeId"] as? String,
+                   let storeType = params["storeType"] as? String {
+                    var userDefaultsUtil = UserDefaultsUtil()
+                    
+                    userDefaultsUtil.shareLink = "\(storeType):\(storeId)"
+                }
+            }
         }
-      }
     }
-  }
   
   func goToMain() {
     window?.rootViewController = TabBarVC.instance()
@@ -45,10 +47,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     let kakaoAppKey = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as? String ?? ""
     
     return url.absoluteString.hasPrefix("kakao\(kakaoAppKey)://kakaolink")
-  }
-  
-  private func saveStoreDetailLink(storeId: Int) {
-    UserDefaultsUtil().setDetailLink(storeId: storeId)
   }
 }
 

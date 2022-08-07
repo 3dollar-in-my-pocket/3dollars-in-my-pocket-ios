@@ -17,6 +17,7 @@ struct NetworkManager {
                 parameters: parameters,
                 headers: headers
             ).responseData { response in
+                Log.debug(response)
                 if response.isSuccess() {
                     observer.processValue(class: T.self, response: response)
                 } else {
