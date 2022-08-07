@@ -2,7 +2,11 @@ import FirebaseAnalytics
 
 typealias GA = GAManager
 
-class GAManager {
+protocol GAManagerProtocol {
+    func logEvent(event: GAEvent, page: GAPage)
+}
+
+class GAManager: GAManagerProtocol {
   
   static let shared = GAManager()
   

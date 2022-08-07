@@ -86,4 +86,7 @@ enum GAEvent: String {
   case signout_alert_cancel_button_clicked = "signout_alert_cancel_button_clicked"
   case inquiry_button_clicked = "inquiry_button_clicked"
   case privacy_button_clicked = "privacy_button_clicked"
+    
+    // 푸드트럭 상세화면
+    case view_boss_store_detail
 }

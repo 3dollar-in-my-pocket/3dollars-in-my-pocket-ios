@@ -17,4 +17,7 @@ enum GAPage: String {
   case setting_page = "setting_page"
     /// 홈 화면 전면 팝업
     case splash_popup_page
+    
+    /// 푸드트럭 상세화면
+    case boss_store_detail
 }

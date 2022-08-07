@@ -41,6 +41,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     private let locationService: LocationManagerProtocol
     private let globalState: GlobalState
     private var userDefaults: UserDefaultsUtil
+    private var gaManager: GAManagerProtocol
     
     init(
         storeId: String,
@@ -48,6 +49,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         locationManaber: LocationManagerProtocol,
         globalState: GlobalState,
         userDefaults: UserDefaultsUtil,
+        gaManager: GAManagerProtocol,
         state: State = State(store: BossStore(), showTotalMenus: false)
     ) {
         self.storeId = storeId
@@ -55,6 +57,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         self.locationService = locationManaber
         self.globalState = globalState
         self.userDefaults = userDefaults
+        self.gaManager = gaManager
         self.initialState = state
     }
     
@@ -62,6 +65,10 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         switch action {
         case .viewDidLoad:
             self.clearKakaoLinkIfExisted()
+            self.gaManager.logEvent(
+                event: .view_boss_store_detail,
+                page: .boss_store_detail
+            )
             
             return .concat([
                 .just(.showLoading(isShow: true)),

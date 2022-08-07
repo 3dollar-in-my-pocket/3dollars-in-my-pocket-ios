@@ -20,7 +20,8 @@ final class BossStoreDetailViewController:
             storeService: StoreService(),
             locationManaber: LocationManager.shared,
             globalState: GlobalState.shared,
-            userDefaults: UserDefaultsUtil()
+            userDefaults: UserDefaultsUtil(),
+            gaManager: GAManager.shared
         )
         
         super.init(nibName: nil, bundle: nil)
