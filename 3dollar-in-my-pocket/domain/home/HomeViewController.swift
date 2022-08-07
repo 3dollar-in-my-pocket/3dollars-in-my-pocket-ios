@@ -119,11 +119,6 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
     
     func bind(reactor: HomeReactor) {
         // Bind Action
-        self.homeView.tooltipView.rx.tap
-            .map { Reactor.Action.tapTooltip }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-        
         self.homeView.storeTypeButton.rx.tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .map { Reactor.Action.tapStoreTypeButton }

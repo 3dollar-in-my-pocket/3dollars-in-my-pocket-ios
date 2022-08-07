@@ -5,8 +5,6 @@ import RxSwift
 import RxCocoa
 
 final class FoodTruckTooltipView: Base.BaseView {
-    fileprivate let tapGesture = UITapGestureRecognizer()
-    
     private let fingerImage = UIImageView().then {
         $0.image = R.image.img_tootip_finger()
     }
@@ -20,7 +18,7 @@ final class FoodTruckTooltipView: Base.BaseView {
         $0.font = .medium(size: 14)
         $0.textColor = .white
         $0.numberOfLines = 0
-        $0.text = "여기를 눌러 푸드트럭 위치를 볼 수 있어요!\n이제 푸드트럭 음식도 즐겨보세요💚"
+        $0.text = R.string.localization.home_foodtruck_tooltip()
     }
     
     deinit {
@@ -28,7 +26,6 @@ final class FoodTruckTooltipView: Base.BaseView {
     }
     
     override func setup() {
-        self.addGestureRecognizer(self.tapGesture)
         self.addSubViews([
             self.containerView,
             self.fingerImage,
@@ -147,9 +144,5 @@ extension Reactive where Base: FoodTruckTooltipView {
                 view.show()
             }
         }
-    }
-    
-    var tap: ControlEvent<Void> {
-        return ControlEvent(events: self.base.tapGesture.rx.event.map { _ in () })
     }
 }
