@@ -16,6 +16,7 @@ extension BossStoreSectionModel: SectionModelType {
             imageUrl: String?
         )
         case menu(BossStoreMenu)
+        case moreMenu([BossStoreMenu])
         case emptyMenu
         case appearanceDay([BossStoreAppearanceDay])
         case feedbacks([BossStoreFeedback])
@@ -46,11 +47,21 @@ extension BossStoreSectionModel: SectionModelType {
         ]
     }
     
-    init(menus: [BossStoreMenu]) {
+    init(menus: [BossStoreMenu], showTotalMenus: Bool) {
         if menus.isEmpty {
             self.items = [.emptyMenu]
-        } else {
+        } else if menus.count < 6 {
             self.items = menus.map { SectionItemType.menu($0) }
+        } else {
+            if showTotalMenus {
+                self.items = menus.map { SectionItemType.menu($0) }
+            } else {
+                var sectionItemTypes = menus[..<5].map { SectionItemType.menu($0) }
+                let moreItemType = SectionItemType.moreMenu(Array(menus[3...]))
+                
+                sectionItemTypes.append(moreItemType)
+                self.items = sectionItemTypes
+            }
         }
     }
     

@@ -10,6 +10,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         case tapCurrentLocation
         case tapSNSButton
         case tapShare
+        case showTotalMenus
         case tapFeedback
     }
     
@@ -20,12 +21,14 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         case moveCamera(location: CLLocation)
         case pushURL(url: String?)
         case updateFeedbacks([BossStoreFeedback])
+        case showTotalMenus
         case showLoading(isShow: Bool)
         case showErrorAlert(Error)
     }
     
     struct State {
         var store: BossStore
+        var showTotalMenus: Bool
     }
     
     let storeId: String
@@ -45,7 +48,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         locationManaber: LocationManagerProtocol,
         globalState: GlobalState,
         userDefaults: UserDefaultsUtil,
-        state: State = State(store: BossStore())
+        state: State = State(store: BossStore(), showTotalMenus: false)
     ) {
         self.storeId = storeId
         self.storeService = storeService
@@ -74,6 +77,9 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             
         case .tapShare:
             return .just(.pushShare(self.currentState.store))
+            
+        case .showTotalMenus:
+            return .just(.showTotalMenus)
             
         case .tapFeedback:
             return .just(.pushFeedback(storeId: self.storeId))
@@ -110,6 +116,9 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         case .updateFeedbacks(let feedbacks):
             newState.store.feedbacks = feedbacks
             newState.store.feedbackCount = feedbacks.map { $0.count }.reduce(0, +)
+            
+        case .showTotalMenus:
+            newState.showTotalMenus = true
             
         case .showLoading(let isShow):
             self.showLoadingPublisher.accept(isShow)

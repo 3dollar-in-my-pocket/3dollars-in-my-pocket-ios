@@ -250,6 +250,7 @@
 "boss_store_store_feedback" = "가게 평가";
 "boss_store_empty_menu" = "아직 등록된 정보가 없어요.";
 "boss_store_closed" = "지금은 준비중이에요! 🧑‍🍳";
+"boss_store_more_menu" = "%d개의 메뉴가 더 있습니다.";
 "monday_full" = "월요일";
 "tuesday_full" = "화요일";
 "wednesday_full" = "수요일";

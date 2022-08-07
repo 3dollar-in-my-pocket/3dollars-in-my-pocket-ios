@@ -125,7 +125,7 @@ final class BossStoreDetailViewController:
                     introduction: $0.store.introduction,
                     imageUrl: $0.store.imageURL
                 ),
-                BossStoreSectionModel(menus: $0.store.menus),
+                BossStoreSectionModel(menus: $0.store.menus, showTotalMenus: $0.showTotalMenus),
                 BossStoreSectionModel(appearanceDays: $0.store.appearanceDays),
                 BossStoreSectionModel(feedbacks: $0.store.feedbacks)
             ] }
@@ -193,6 +193,20 @@ final class BossStoreDetailViewController:
                     ) as? BossStoreMenuCell else { return BaseCollectionViewCell() }
                     
                     cell.bind(menu: menu)
+                    return cell
+                    
+                case .moreMenu(let menus):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: BossStoreMoreMenuCell.registerId,
+                        for: indexPath
+                    ) as? BossStoreMoreMenuCell else { return BaseCollectionViewCell() }
+                    
+                    cell.bind(menus: menus)
+                    cell.rx.tap
+                        .map { Reactor.Action.showTotalMenus }
+                        .debug()
+                        .bind(to: self.bossStoreDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
                     return cell
                     
                 case .emptyMenu:
