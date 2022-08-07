@@ -69,6 +69,13 @@ final class BossStoreFeedbackViewController:
                 self?.coordinator?.showErrorAlert(error: error)
             })
             .disposed(by: self.eventDisposeBag)
+        
+        self.bossStoreFeedbackReactor.showToastPublisher
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] message in
+                self?.coordinator?.showToast(message: message)
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: BossStoreFeedbackReactor) {

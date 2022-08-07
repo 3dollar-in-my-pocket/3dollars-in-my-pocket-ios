@@ -16,6 +16,7 @@ final class BossStoreFeedbackReactor: BaseReactor, Reactor {
         case pop
         case showLoading(isShow: Bool)
         case showErrorAlert(Error)
+        case showToast(String)
     }
     
     struct State {
@@ -94,6 +95,9 @@ final class BossStoreFeedbackReactor: BaseReactor, Reactor {
             
         case .showErrorAlert(let error):
             self.showErrorAlertPublisher.accept(error)
+            
+        case .showToast(let message):
+            self.showToastPublisher.accept(message)
         }
         
         return newState
@@ -122,7 +126,14 @@ final class BossStoreFeedbackReactor: BaseReactor, Reactor {
         .do(onNext: { [weak self] feedbacks in
             self?.globalState.updateFeedbacks.onNext(feedbacks)
         })
-        .map { _ in .pop }
+        .flatMap { _ -> Observable<Mutation> in
+            return .merge([
+                .just(.pop),
+                .just(.showToast(
+                    R.string.localization.boss_store_feedback_send_feedback()
+                ))
+            ])
+        }
         .catch { .just(.showErrorAlert($0)) }
     }
 }

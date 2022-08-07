@@ -190,7 +190,7 @@
 		6E56BD8323CDE3BC002D7092 /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56BD8223CDE3BC002D7092 /* Review.swift */; };
 		6E56FBC02894038100D8352C /* BossStoreInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56FBBF2894038100D8352C /* BossStoreInfoResponse.swift */; };
 		6E56FBC2289403C700D8352C /* BossStoreAppearanceDayResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56FBC1289403C700D8352C /* BossStoreAppearanceDayResponse.swift */; };
-		6E56FBC4289403EF00D8352C /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56FBC3289403EF00D8352C /* TimeInterval.swift */; };
+		6E56FBC4289403EF00D8352C /* TimeIntervalResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56FBC3289403EF00D8352C /* TimeIntervalResponse.swift */; };
 		6E56FBC62894041200D8352C /* LocalTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E56FBC52894041200D8352C /* LocalTime.swift */; };
 		6E57729B2780893E001E39DE /* BaseReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57729A2780893E001E39DE /* BaseReactor.swift */; };
 		6E57729D27809499001E39DE /* WriteAddressCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57729C27809499001E39DE /* WriteAddressCoordinator.swift */; };
@@ -217,6 +217,7 @@
 		6E5CA5882768B50D001EDE19 /* MyReviewEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA5872768B50D001EDE19 /* MyReviewEmptyView.swift */; };
 		6E5E193F2881AA39006C014F /* HomeCategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5E193E2881AA39006C014F /* HomeCategoryCollectionViewCell.swift */; };
 		6E5E19412881B3EB006C014F /* StoreType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5E19402881B3EB006C014F /* StoreType.swift */; };
+		6E5E8467289F7D5800418CAF /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5E8466289F7D5800418CAF /* ToastView.swift */; };
 		6E5F3F7128993EC00066E318 /* BossStoreFeedbackItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5F3F7028993EC00066E318 /* BossStoreFeedbackItemView.swift */; };
 		6E5F3F73289944800066E318 /* FeedbackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5F3F72289944800066E318 /* FeedbackService.swift */; };
 		6E5F3F75289945C60066E318 /* BossStoreFeedbackTypeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5F3F74289945C60066E318 /* BossStoreFeedbackTypeResponse.swift */; };
@@ -656,7 +657,7 @@
 		6E56BD8223CDE3BC002D7092 /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
 		6E56FBBF2894038100D8352C /* BossStoreInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreInfoResponse.swift; sourceTree = "<group>"; };
 		6E56FBC1289403C700D8352C /* BossStoreAppearanceDayResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreAppearanceDayResponse.swift; sourceTree = "<group>"; };
-		6E56FBC3289403EF00D8352C /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
+		6E56FBC3289403EF00D8352C /* TimeIntervalResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIntervalResponse.swift; sourceTree = "<group>"; };
 		6E56FBC52894041200D8352C /* LocalTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTime.swift; sourceTree = "<group>"; };
 		6E57729A2780893E001E39DE /* BaseReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseReactor.swift; sourceTree = "<group>"; };
 		6E57729C27809499001E39DE /* WriteAddressCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteAddressCoordinator.swift; sourceTree = "<group>"; };
@@ -683,6 +684,7 @@
 		6E5CA5872768B50D001EDE19 /* MyReviewEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewEmptyView.swift; sourceTree = "<group>"; };
 		6E5E193E2881AA39006C014F /* HomeCategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCategoryCollectionViewCell.swift; sourceTree = "<group>"; };
 		6E5E19402881B3EB006C014F /* StoreType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreType.swift; sourceTree = "<group>"; };
+		6E5E8466289F7D5800418CAF /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		6E5F3F7028993EC00066E318 /* BossStoreFeedbackItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreFeedbackItemView.swift; sourceTree = "<group>"; };
 		6E5F3F72289944800066E318 /* FeedbackService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackService.swift; sourceTree = "<group>"; };
 		6E5F3F74289945C60066E318 /* BossStoreFeedbackTypeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreFeedbackTypeResponse.swift; sourceTree = "<group>"; };
@@ -1992,6 +1994,7 @@
 			isa = PBXGroup;
 			children = (
 				6EB6F9EC289CE92F00D41AE3 /* ToastManager.swift */,
+				6E5E8466289F7D5800418CAF /* ToastView.swift */,
 			);
 			path = toast;
 			sourceTree = "<group>";
@@ -2098,7 +2101,7 @@
 				6EC0D67D26EB856D008AD34B /* StoresGroupByReviewResponse.swift */,
 				6EDBBB792754B7E800470F71 /* StoreWithVisitsAndDistanceResponse.swift */,
 				6EDBBB7F2754C1EC00470F71 /* StoreWithVisitsResponse.swift */,
-				6E56FBC3289403EF00D8352C /* TimeInterval.swift */,
+				6E56FBC3289403EF00D8352C /* TimeIntervalResponse.swift */,
 				6E16EE2326BC1AC800F4DD03 /* UserInfoResponse.swift */,
 				6EDBBB7127546AF200470F71 /* UserWithActivityResponse.swift */,
 				6EDBBB7D2754BA1B00470F71 /* VisitHistoryCountsResponse.swift */,
@@ -2634,7 +2637,7 @@
 				6E07D44823B590F20055AEE7 /* MyPageView.swift in Sources */,
 				6E7112C92781655700396CC0 /* AddressConfirmPopupView.swift in Sources */,
 				6E5F3F7A28995CC80066E318 /* BossStoreFeedbackView.swift in Sources */,
-				6E56FBC4289403EF00D8352C /* TimeInterval.swift in Sources */,
+				6E56FBC4289403EF00D8352C /* TimeIntervalResponse.swift in Sources */,
 				6EA205FA28881AE000BAB019 /* BossStore.swift in Sources */,
 				6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */,
 				6E5E19412881B3EB006C014F /* StoreType.swift in Sources */,
@@ -2937,6 +2940,7 @@
 				6E17D2CE257FAA52001726AC /* NetworkActivityLogger.swift in Sources */,
 				6E511E68257149D4009E4667 /* QuestionVC.swift in Sources */,
 				6E29966825E28967003FC13A /* Document.swift in Sources */,
+				6E5E8467289F7D5800418CAF /* ToastView.swift in Sources */,
 				6E91965825BBF9520052044B /* StoreSection.swift in Sources */,
 				6E8BE65A2892C31F00D67938 /* GlobalState.swift in Sources */,
 				6E447FF825E3E53800459551 /* CategoryReactor.swift in Sources */,

@@ -14,7 +14,9 @@ final class HomeView: BaseView {
   
     let addressButton = AddressButton()
     
-    let tooltipView = FoodTruckTooltipView()
+    let tooltipView = FoodTruckTooltipView().then {
+        $0.isHidden = true
+    }
     
     let categoryCollectionView = UICollectionView(
         frame: .zero,

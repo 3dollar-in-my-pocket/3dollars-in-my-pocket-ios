@@ -1,5 +1,7 @@
 import Foundation
 
+import Base
+
 struct BossStoreAppearanceDay: Equatable {
     let dayOfTheWeek: DayOfTheWeek
     let locationDescription: String
@@ -10,8 +12,14 @@ struct BossStoreAppearanceDay: Equatable {
     init(response: BossStoreAppearanceDayResponse) {
         self.dayOfTheWeek = DayOfTheWeek(value: response.dayOfTheWeek)
         self.locationDescription = response.locationDescription
-        self.openingHours = response.openingHours.startTime.toDate()
-        self.closingHours = response.openingHours.endTime.toDate()
+        self.openingHours = Base.DateUtils.toDate(
+            dateString: response.openingHours.startTime,
+            format: "HH:mm"
+        )
+        self.closingHours = Base.DateUtils.toDate(
+            dateString: response.openingHours.endTime,
+            format: "HH:mm"
+        )
         self.isClosedDay = false
     }
     

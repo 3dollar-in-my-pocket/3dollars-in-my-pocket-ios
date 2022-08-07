@@ -259,3 +259,4 @@
 "boss_store_feedback_header_title" = "푸드트럭은\n어떠셨나요?";
 "boss_store_feedback_header_description" = "여러개의 리뷰를 선택할 수 있습니다.";
 "boss_store_feedback_send_feedback" = "리뷰 남기기 완료!";
+"boss_store_feedback_success" = "소중한 리뷰가 사장님께 전달되었습니다!";

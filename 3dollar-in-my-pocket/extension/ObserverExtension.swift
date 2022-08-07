@@ -52,6 +52,8 @@ extension AnyObserver {
                 let element = responseContainer.data as! Element
                 self.onNext(element)
                 self.onCompleted()
+            } else {
+                self.onError(BaseError.failDecoding)
             }
         } else {
             self.onError(BaseError.nilValue)

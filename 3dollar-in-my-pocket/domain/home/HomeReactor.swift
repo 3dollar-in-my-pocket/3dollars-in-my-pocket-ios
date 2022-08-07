@@ -57,7 +57,7 @@ final class HomeReactor: BaseReactor, Reactor {
         var mapMaxDistance: Double
         var cameraPosition: CLLocation?
         var currentLocation: CLLocation
-        var isTooltipHidden: Bool = false
+        var isTooltipHidden: Bool
     }
     
     let initialState: State
@@ -91,7 +91,8 @@ final class HomeReactor: BaseReactor, Reactor {
             selectedIndex: nil,
             mapMaxDistance: 2000,
             cameraPosition: nil,
-            currentLocation: CLLocation(latitude: 0, longitude: 0)
+            currentLocation: CLLocation(latitude: 0, longitude: 0),
+            isTooltipHidden: true
         )
     ) {
         self.storeService = storeService

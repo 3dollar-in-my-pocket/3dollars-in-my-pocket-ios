@@ -44,6 +44,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         $0.font = .regular(size: 14)
         $0.textColor = R.color.gray50()
         $0.numberOfLines = 0
+        $0.textAlignment = .left
     }
     
     private let photoView = UIImageView().then {
@@ -101,6 +102,8 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         
         self.introductionValueLabel.snp.makeConstraints { make in
             make.top.equalTo(self.introductionTitleLabel.snp.bottom).offset(8)
+            make.left.equalTo(self.introductionTitleLabel)
+            make.right.equalTo(self.containerView).offset(-16)
         }
         
         self.photoView.snp.makeConstraints { make in
