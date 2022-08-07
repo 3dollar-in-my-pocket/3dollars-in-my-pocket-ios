@@ -6,10 +6,11 @@ struct UserDefaultsUtil {
   static let KEY_TOKEN = "KEY_TOKEN"
   static let KEY_USER_ID = "KEY_USER_ID"
   static let KEY_EVENT = "KEY_EVENT"
-  static let KEY_DETAIL_LINK = "KEY_DETAIL_LINK"
   static let KEY_CURRENT_LATITUDE = "KEY_CURRENT_LATITUDE"
   static let KEY_CURRENT_LONGITUDE = "KEY_CURRENT_LONGITUDE"
     static let KEY_FOODTRUCK_TOOLTIP = "KEY_FOODTRUCK_TOOLTIP"
+    static let KEY_SHARE_LINK_STORE_TYPE = "KEY_SHARE_LINK_STORE_TYPE"
+    static let KEY_SHARE_LINK_STORE_ID = "KEY_SHARE_LINK_STORE_ID"
   
   let instance: UserDefaults
   
@@ -29,6 +30,49 @@ struct UserDefaultsUtil {
         }
         set {
             self.instance.set(newValue, forKey: UserDefaultsUtil.KEY_FOODTRUCK_TOOLTIP)
+        }
+    }
+    
+    var shareLink: String {
+        get {
+            let storeType = self.instance.string(
+                forKey: UserDefaultsUtil.KEY_SHARE_LINK_STORE_TYPE
+            ) ?? ""
+            let storeId = self.instance.string(
+                forKey: UserDefaultsUtil.KEY_SHARE_LINK_STORE_ID
+            ) ?? ""
+            
+            if storeType.isEmpty {
+                return ""
+            } else {
+                return "\(storeType):\(storeId)"
+            }
+        }
+        
+        set {
+            if newValue.isEmpty {
+                self.instance.set(
+                    "",
+                    forKey: UserDefaultsUtil.KEY_SHARE_LINK_STORE_TYPE
+                )
+                self.instance.set(
+                    "",
+                    forKey: UserDefaultsUtil.KEY_SHARE_LINK_STORE_ID
+                )
+            } else {
+                let splitArray = newValue.split(separator: ":")
+                let storeType = splitArray.first ?? "streetFood"
+                let storeId = splitArray.last ?? ""
+                
+                self.instance.set(
+                    storeType,
+                    forKey: UserDefaultsUtil.KEY_SHARE_LINK_STORE_TYPE
+                )
+                self.instance.set(
+                    storeId,
+                    forKey: UserDefaultsUtil.KEY_SHARE_LINK_STORE_ID
+                )
+            }
         }
     }
   
@@ -54,14 +98,6 @@ struct UserDefaultsUtil {
   
   func getEventDisableToday(id: Int) -> String {
     return self.instance.string(forKey: "\(UserDefaultsUtil.KEY_EVENT)_\(id)") ?? ""
-  }
-  
-  func setDetailLink(storeId: Int) {
-    self.instance.set(storeId, forKey: UserDefaultsUtil.KEY_DETAIL_LINK)
-  }
-  
-  func getDetailLink() -> Int {
-    return self.instance.integer(forKey: UserDefaultsUtil.KEY_DETAIL_LINK)
   }
   
   func setUserCurrentLocation(location: CLLocation) {
@@ -104,7 +140,10 @@ struct UserDefaultsUtil {
   }
   
   static func setEventDisableToday(id: Int) {
-    UserDefaults.standard.set(DateUtils.todayString() ,forKey: "\(UserDefaultsUtil.KEY_EVENT)_\(id)")
+    UserDefaults.standard.set(
+        DateUtils.todayString(),
+        forKey: "\(UserDefaultsUtil.KEY_EVENT)_\(id)"
+    )
   }
   
   static func getEventDisableToday(id: Int) -> String? {

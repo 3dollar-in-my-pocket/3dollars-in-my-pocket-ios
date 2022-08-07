@@ -37,24 +37,29 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     private let storeService: StoreServiceProtocol
     private let locationService: LocationManagerProtocol
     private let globalState: GlobalState
+    private var userDefaults: UserDefaultsUtil
     
     init(
         storeId: String,
         storeService: StoreServiceProtocol,
         locationManaber: LocationManagerProtocol,
         globalState: GlobalState,
+        userDefaults: UserDefaultsUtil,
         state: State = State(store: BossStore())
     ) {
         self.storeId = storeId
         self.storeService = storeService
         self.locationService = locationManaber
         self.globalState = globalState
+        self.userDefaults = userDefaults
         self.initialState = state
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
+            self.clearKakaoLinkIfExisted()
+            
             return .concat([
                 .just(.showLoading(isShow: true)),
                 self.fetchBossStore(storeId: self.storeId),
@@ -134,5 +139,11 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         return self.locationService.getCurrentLocation()
             .map { .moveCamera(location: $0) }
             .catch { .just(.showErrorAlert($0)) }
+    }
+    
+    private func clearKakaoLinkIfExisted() {
+        if !self.userDefaults.shareLink.isEmpty {
+            self.userDefaults.shareLink = ""
+        }
     }
 }

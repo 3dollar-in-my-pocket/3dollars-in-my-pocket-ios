@@ -33,28 +33,34 @@ extension BossStoreDetailCoordinator {
         = "https://map.kakao.com/link/map/\(store.name),\(latitude),\(longitude)"
             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         let imageUrl = URL(string: store.imageURL ?? "")!
-      let webURL = URL(string: urlString)
-      let link = Link(
-        webUrl: webURL,
-        mobileWebUrl: webURL,
-        androidExecutionParams: ["storeId": String(store.id)],
-        iosExecutionParams: ["storeId": String(store.id)]
-      )
-      let content = Content(
-        title: "store_detail_share_title".localized,
-        imageUrl: imageUrl,
-        imageWidth: 500,
-        imageHeight: 500,
-        description: "store_detail_share_description".localized,
-        link: link
-      )
-      let feedTemplate = FeedTemplate(
-        content: content,
-        social: nil,
-        buttonTitle: nil,
-        buttons: [Button(title: "store_detail_share_button".localized, link: link)]
-      )
-      
+        let webURL = URL(string: urlString)
+        let link = Link(
+            webUrl: webURL,
+            mobileWebUrl: webURL,
+            androidExecutionParams: [
+                "storeId": String(store.id),
+                "storeType": "foodTruck"
+            ],
+            iosExecutionParams: [
+                "storeId": String(store.id),
+                "storeType": "foodTruck"
+            ]
+        )
+        let content = Content(
+            title: "[푸드트럭] \(store.name)",
+            imageUrl: imageUrl,
+            imageWidth: 500,
+            imageHeight: 320,
+            description: store.introduction ?? "\(store.name) 푸드트럭 보러가기",
+            link: link
+        )
+        let feedTemplate = FeedTemplate(
+            content: content,
+            social: nil,
+            buttonTitle: nil,
+            buttons: [Button(title: "store_detail_share_button".localized, link: link)]
+        )
+        
         ShareApi.shared.shareDefault(templatable: feedTemplate) { linkResult, error in
             if let error = error {
                 self.showErrorAlert(error: error)
