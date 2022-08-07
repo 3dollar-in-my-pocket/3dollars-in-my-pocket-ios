@@ -184,6 +184,7 @@ final class HomeStoreCell: BaseCollectionViewCell {
             self.visitButton.isHidden = false
             self.starImage.image = R.image.ic_star()
             self.distanceImage.image = R.image.ic_near_filled()
+            self.isClosedTagView.isHidden = true
         } else if let bossStore = store as? BossStore {
             self.storeType = .foodTruck
             if let category = bossStore.categories.first as? FoodTruckCategory {
