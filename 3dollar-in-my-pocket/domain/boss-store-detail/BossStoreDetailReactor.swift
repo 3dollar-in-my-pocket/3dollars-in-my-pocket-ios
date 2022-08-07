@@ -19,6 +19,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         case pushFeedback(storeId: String)
         case moveCamera(location: CLLocation)
         case pushURL(url: String?)
+        case updateFeedbacks([BossStoreFeedback])
         case showLoading(isShow: Bool)
         case showErrorAlert(Error)
     }
@@ -35,16 +36,19 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     let pushURLPublisher = PublishRelay<String?>()
     private let storeService: StoreServiceProtocol
     private let locationService: LocationManagerProtocol
+    private let globalState: GlobalState
     
     init(
         storeId: String,
         storeService: StoreServiceProtocol,
         locationManaber: LocationManagerProtocol,
+        globalState: GlobalState,
         state: State = State(store: BossStore())
     ) {
         self.storeId = storeId
         self.storeService = storeService
         self.locationService = locationManaber
+        self.globalState = globalState
         self.initialState = state
     }
     
@@ -71,6 +75,14 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         }
     }
     
+    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
+        return .merge([
+            mutation,
+            self.globalState.updateFeedbacks
+                .map { .updateFeedbacks($0) }
+        ])
+    }
+    
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         
@@ -89,6 +101,10 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             
         case .pushURL(let url):
             self.pushURLPublisher.accept(url)
+            
+        case .updateFeedbacks(let feedbacks):
+            newState.store.feedbacks = feedbacks
+            newState.store.feedbackCount = feedbacks.map { $0.count }.reduce(0, +)
             
         case .showLoading(let isShow):
             self.showLoadingPublisher.accept(isShow)

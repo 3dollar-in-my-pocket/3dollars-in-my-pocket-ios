@@ -12,8 +12,8 @@ struct BossStore: StoreProtocol {
     let contacts: String?
     let snsUrl: String?
     let introduction: String?
-    let feedbackCount: Int
-    let feedbacks: [BossStoreFeedback]
+    var feedbackCount: Int
+    var feedbacks: [BossStoreFeedback]
     
     init(response: BossStoreAroundInfoResponse) {
         self.id = response.bossStoreId

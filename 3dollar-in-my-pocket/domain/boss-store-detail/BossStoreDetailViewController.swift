@@ -18,7 +18,8 @@ final class BossStoreDetailViewController:
         self.bossStoreDetailReactor = BossStoreDetailReactor(
             storeId: storeId,
             storeService: StoreService(),
-            locationManaber: LocationManager.shared
+            locationManaber: LocationManager.shared,
+            globalState: GlobalState.shared
         )
         
         super.init(nibName: nil, bundle: nil)

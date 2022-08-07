@@ -107,7 +107,22 @@ final class BossStoreFeedbackReactor: BaseReactor, Reactor {
             bossStoreId: bossStoreId,
             feedbackTypes: selectedFeedbakcs
         )
-        .map { .pop }
+        .flatMap { [weak self] _ -> Observable<Mutation> in
+            guard let self = self else { return .error(BaseError.unknown) }
+            
+            return self.fetchFeedbacks(bossStoreId: self.bossStoreId)
+        }
+        .catch { .just(.showErrorAlert($0)) }
+    }
+    
+    private func fetchFeedbacks(bossStoreId: String) -> Observable<Mutation> {
+        return self.feedbackService.fetchBossStoreFeedbacks(
+            bossStoreId: self.bossStoreId
+        )
+        .do(onNext: { [weak self] feedbacks in
+            self?.globalState.updateFeedbacks.onNext(feedbacks)
+        })
+        .map { _ in .pop }
         .catch { .just(.showErrorAlert($0)) }
     }
 }

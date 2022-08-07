@@ -4,6 +4,10 @@ import RxSwift
 protocol FeedbackServiceProtocol {
     func fetchFeedbackTypes() -> Observable<[BossStoreFeedbackMeta]>
     
+    func fetchBossStoreFeedbacks(
+        bossStoreId: String
+    ) -> Observable<[BossStoreFeedback]>
+    
     func sendFeedbacks(
         bossStoreId: String,
         feedbackTypes: [BossStoreFeedbackType]
@@ -24,6 +28,19 @@ struct FeedbackService: FeedbackServiceProtocol {
         .map { $0.map(BossStoreFeedbackMeta.init(response:))}
     }
     
+    func fetchBossStoreFeedbacks(
+        bossStoreId: String
+    ) -> Observable<[BossStoreFeedback]> {
+        let urlString = HTTPUtils.url + "/api/v1/boss/store/\(bossStoreId)/feedbacks/full"
+        
+        return self.networkManager.createGetObservable(
+            class: [BossStoreFeedbackCountWithRatioResponse].self,
+            urlString: urlString,
+            headers: HTTPUtils.defaultHeader()
+        )
+        .map { $0.map(BossStoreFeedback.init(response:)) }
+    }
+    
     func sendFeedbacks(
         bossStoreId: String,
         feedbackTypes: [BossStoreFeedbackType]
@@ -40,7 +57,8 @@ struct FeedbackService: FeedbackServiceProtocol {
                 headers: HTTPUtils.defaultHeader()
             ).responseData { response in
                 if response.isSuccess() {
-                    observer.processValue(class: String.self, response: response)
+                    observer.onNext(())
+                    observer.onCompleted()
                 } else {
                     observer.processAPIError(response: response)
                 }
@@ -48,6 +66,5 @@ struct FeedbackService: FeedbackServiceProtocol {
             
             return Disposables.create()
         }
-        .map { () }
     }
 }
