@@ -121,7 +121,6 @@ final class BossStoreDetailViewController:
             .map { [
                 BossStoreSectionModel(store: $0.store),
                 BossStoreSectionModel(
-                    contacts: $0.store.contacts,
                     snsUrl: $0.store.snsUrl,
                     introduction: $0.store.introduction,
                     imageUrl: $0.store.imageURL
@@ -168,18 +167,13 @@ final class BossStoreDetailViewController:
                         .disposed(by: cell.disposeBag)
                     return cell
                     
-                case .info(let contacts, let snsUrl, let introduction, let imageUrl):
+                case .info(let snsUrl, let introduction, let imageUrl):
                     guard let cell = collectionView.dequeueReusableCell(
                         withReuseIdentifier: BossStoreInfoCell.registerId,
                         for: indexPath
                     ) as? BossStoreInfoCell else { return BaseCollectionViewCell() }
                     
-                    cell.bind(
-                        contacts: contacts,
-                        snsUrl: snsUrl,
-                        introduction: introduction,
-                        imageUrl: imageUrl
-                    )
+                    cell.bind(snsUrl: snsUrl, introduction: introduction, imageUrl: imageUrl)
                     cell.snsButton.rx.tap
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
                         .map { Reactor.Action.tapSNSButton }
