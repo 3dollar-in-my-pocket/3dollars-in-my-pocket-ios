@@ -66,7 +66,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         case .viewDidLoad:
             self.clearKakaoLinkIfExisted()
             self.gaManager.logEvent(
-                event: .view_boss_store_detail,
+                event: .view_boss_store_detail(storeId: self.storeId),
                 page: .boss_store_detail
             )
             
