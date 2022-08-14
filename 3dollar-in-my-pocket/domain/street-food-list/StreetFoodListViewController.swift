@@ -5,13 +5,13 @@ import RxSwift
 import ReactorKit
 import NMapsMap
 
-final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
-    private let categoryListView = CategoryListView()
-    private let categoryListReactor: CategoryListReactor
-    private weak var coordinator: CategoryListCoordinator?
+final class StreetFoodListViewController: BaseVC, StreetFoodListCoordinator, View {
+    private let categoryListView = StreetFoodListView()
+    private let categoryListReactor: StreetFoodListReactor
+    private weak var coordinator: StreetFoodListCoordinator?
   
     init(category: StreetFoodStoreCategory) {
-        self.categoryListReactor = CategoryListReactor(
+        self.categoryListReactor = StreetFoodListReactor(
             category: category,
             storeService: StoreService(),
             advertisementService: AdvertisementService(),
@@ -24,8 +24,8 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
         fatalError("init(coder:) has not been implemented")
     }
   
-    static func instance(category: StreetFoodStoreCategory) -> CategoryListViewController {
-        return CategoryListViewController(category: category)
+    static func instance(category: StreetFoodStoreCategory) -> StreetFoodListViewController {
+        return StreetFoodListViewController(category: category)
     }
   
     override func loadView() {
@@ -72,7 +72,7 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
             .disposed(by: self.eventDisposeBag)
     }
     
-    func bind(reactor: CategoryListReactor) {
+    func bind(reactor: StreetFoodListReactor) {
         // Bind Action
         self.categoryListView.currentLocationButton.rx.tap
             .map { Reactor.Action.tapCurrentLocationButton }
@@ -188,7 +188,7 @@ final class CategoryListViewController: BaseVC, CategoryListCoordinator, View {
     }
 }
 
-extension CategoryListViewController: NMFMapViewCameraDelegate {
+extension StreetFoodListViewController: NMFMapViewCameraDelegate {
     func mapView(_ mapView: NMFMapView, cameraDidChangeByReason reason: Int, animated: Bool) {
         if reason == NMFMapChangedByGesture {
             let mapLocation = CLLocation(

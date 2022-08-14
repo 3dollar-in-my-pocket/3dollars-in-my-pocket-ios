@@ -6,33 +6,30 @@ import RxCocoa
 import GoogleMobileAds
 import NMapsMap
 
-final class CategoryListView: BaseView {
+final class StreetFoodListView: BaseView {
     private var markers: [NMFMarker] = []
     private let bottomInset = 30
     
-    private let navigationView = UIView().then {
+    private let topContainerView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOpacity = 0.04
         $0.backgroundColor = .white
     }
     
-    let backButton = UIButton().then {
-        $0.setImage(R.image.ic_back_black(), for: .normal)
+    private let categoryImageView = UIImageView()
+    
+    private let categoryLabel = UILabel().then {
+        $0.font = .extraBold(size: 18)
+        $0.textColor = .black
+    }
+    
+    let categoryButton = UIButton().then {
+        $0.setImage(R.image.ic_arrow_bottom(), for: .normal)
     }
     
     private let titleStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 8
-    }
-    
-    private let categoryImage = UIImageView()
-    
-    private let categoryLabel = UILabel().then {
-        $0.font = .bold(size: 16)
-        $0.textColor = .black
     }
     
     private let scrollView = UIScrollView()
@@ -97,8 +94,8 @@ final class CategoryListView: BaseView {
         self.titleStackView.addArrangedSubview(self.categoryLabel)
         self.addSubViews([
             self.scrollView,
-            self.navigationView,
-            self.backButton,
+            self.topContainerView,
+            self.categoryButton,
             self.titleStackView
         ])
         
@@ -117,19 +114,19 @@ final class CategoryListView: BaseView {
     }
     
     override func bindConstraints() {
-        self.navigationView.snp.makeConstraints { make in
+        self.topContainerView.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
             make.bottom.equalTo(self.safeAreaLayoutGuide.snp.top).offset(60)
         }
         
-        self.backButton.snp.makeConstraints { make in
+        self.categoryButton.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(24)
-            make.bottom.equalTo(self.navigationView).offset(-21)
+            make.bottom.equalTo(self.topContainerView).offset(-21)
         }
         
         self.titleStackView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalTo(self.backButton)
+            make.centerY.equalTo(self.categoryButton)
         }
         
         self.categoryImage.snp.makeConstraints { make in
@@ -139,7 +136,7 @@ final class CategoryListView: BaseView {
         self.scrollView.snp.makeConstraints { make in
             make.left.equalToSuperview()
             make.right.equalToSuperview()
-            make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
+            make.top.equalTo(self.topContainerView.snp.bottom).offset(-20)
             make.bottom.equalToSuperview()
         }
         
@@ -291,7 +288,7 @@ final class CategoryListView: BaseView {
     }
 }
 
-extension Reactive where Base: CategoryListView {
+extension Reactive where Base: StreetFoodListView {
     var category: Binder<StreetFoodStoreCategory> {
         return Binder(self.base) { view, category in
             view.bind(category: category)
@@ -305,7 +302,7 @@ extension Reactive where Base: CategoryListView {
     }
 }
 
-extension CategoryListView: GADBannerViewDelegate {
+extension StreetFoodListView: GADBannerViewDelegate {
     /// Tells the delegate an ad request loaded an ad.
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
         print("adViewDidReceiveAd")

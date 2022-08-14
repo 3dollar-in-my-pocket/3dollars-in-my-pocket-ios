@@ -4,7 +4,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-final class CategoryListReactor: BaseReactor, Reactor {
+final class StreetFoodListReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
         case tapCurrentLocationButton

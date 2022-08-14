@@ -70,7 +70,7 @@
 		6E31578125BAA0C60022D6F3 /* UIImageViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E31578025BAA0C60022D6F3 /* UIImageViewExt.swift */; };
 		6E326B212742564000E68666 /* CertificateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B202742564000E68666 /* CertificateButton.swift */; };
 		6E326B232742633200E68666 /* OrderFiltterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B222742633200E68666 /* OrderFiltterButton.swift */; };
-		6E326B27274286D100E68666 /* CategoryListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B26274286D100E68666 /* CategoryListCoordinator.swift */; };
+		6E326B27274286D100E68666 /* StreetFoodListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B26274286D100E68666 /* StreetFoodListCoordinator.swift */; };
 		6E33F49226FF471C000BF5AA /* StoreServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */; };
 		6E3493B2276481D10082B011 /* MedalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B1276481D10082B011 /* MedalCollectionCell.swift */; };
 		6E3493B4276491B20082B011 /* MyMedalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B3276491B20082B011 /* MyMedalViewModel.swift */; };
@@ -97,7 +97,7 @@
 		6E3DED7D25C7F60F000BE04C /* RegisterPhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3DED7C25C7F60F000BE04C /* RegisterPhotoViewModel.swift */; };
 		6E3E0B8F23C7078100E835AE /* ReviewModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */; };
 		6E3E0B9123C708C900E835AE /* ReviewModalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */; };
-		6E3E994925E52B0E007BA379 /* CategoryListReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E994825E52B0E007BA379 /* CategoryListReactor.swift */; };
+		6E3E994925E52B0E007BA379 /* StreetFoodListReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E994825E52B0E007BA379 /* StreetFoodListReactor.swift */; };
 		6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */; };
 		6E3EDF3C25694F8C0038E6A1 /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3EDF3B25694F8C0038E6A1 /* BaseViewModel.swift */; };
 		6E41661227464C8A0088E69C /* VisitOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41661127464C8A0088E69C /* VisitOverview.swift */; };
@@ -364,8 +364,8 @@
 		6EB6D0A525E728390017E09A /* StoreOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB6D0A425E728390017E09A /* StoreOrder.swift */; };
 		6EB6F9ED289CE92F00D41AE3 /* ToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB6F9EC289CE92F00D41AE3 /* ToastManager.swift */; };
 		6EB6F9EF289D3F9300D41AE3 /* FoodTruckTooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB6F9EE289D3F9300D41AE3 /* FoodTruckTooltipView.swift */; };
-		6EB7FA6623B651E100BFB0B4 /* CategoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */; };
-		6EB7FA6823B6521200BFB0B4 /* CategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB7FA6723B6521200BFB0B4 /* CategoryListViewController.swift */; };
+		6EB7FA6623B651E100BFB0B4 /* StreetFoodListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB7FA6523B651E100BFB0B4 /* StreetFoodListView.swift */; };
+		6EB7FA6823B6521200BFB0B4 /* StreetFoodListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB7FA6723B6521200BFB0B4 /* StreetFoodListViewController.swift */; };
 		6EB7FA6A23B658B000BFB0B4 /* CategoryListStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB7FA6923B658B000BFB0B4 /* CategoryListStoreCell.swift */; };
 		6EB8FBA125988D4200C17B74 /* GAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB8FBA025988D4200C17B74 /* GAManager.swift */; };
 		6EB8FBA925988DFC00C17B74 /* GAEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB8FBA825988DFC00C17B74 /* GAEvent.swift */; };
@@ -546,7 +546,7 @@
 		6E31578025BAA0C60022D6F3 /* UIImageViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExt.swift; sourceTree = "<group>"; };
 		6E326B202742564000E68666 /* CertificateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificateButton.swift; sourceTree = "<group>"; };
 		6E326B222742633200E68666 /* OrderFiltterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFiltterButton.swift; sourceTree = "<group>"; };
-		6E326B26274286D100E68666 /* CategoryListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListCoordinator.swift; sourceTree = "<group>"; };
+		6E326B26274286D100E68666 /* StreetFoodListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreetFoodListCoordinator.swift; sourceTree = "<group>"; };
 		6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreServiceMock.swift; sourceTree = "<group>"; };
 		6E3493B1276481D10082B011 /* MedalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalCollectionCell.swift; sourceTree = "<group>"; };
 		6E3493B3276491B20082B011 /* MyMedalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalViewModel.swift; sourceTree = "<group>"; };
@@ -573,7 +573,7 @@
 		6E3DED7C25C7F60F000BE04C /* RegisterPhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterPhotoViewModel.swift; sourceTree = "<group>"; };
 		6E3E0B8E23C7078100E835AE /* ReviewModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalView.swift; sourceTree = "<group>"; };
 		6E3E0B9023C708C900E835AE /* ReviewModalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewModalVC.swift; sourceTree = "<group>"; };
-		6E3E994825E52B0E007BA379 /* CategoryListReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListReactor.swift; sourceTree = "<group>"; };
+		6E3E994825E52B0E007BA379 /* StreetFoodListReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreetFoodListReactor.swift; sourceTree = "<group>"; };
 		6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
 		6E3EDF3B25694F8C0038E6A1 /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
 		6E41661127464C8A0088E69C /* VisitOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitOverview.swift; sourceTree = "<group>"; };
@@ -833,8 +833,8 @@
 		6EB6D0A425E728390017E09A /* StoreOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOrder.swift; sourceTree = "<group>"; };
 		6EB6F9EC289CE92F00D41AE3 /* ToastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastManager.swift; sourceTree = "<group>"; };
 		6EB6F9EE289D3F9300D41AE3 /* FoodTruckTooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckTooltipView.swift; sourceTree = "<group>"; };
-		6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListView.swift; sourceTree = "<group>"; };
-		6EB7FA6723B6521200BFB0B4 /* CategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListViewController.swift; sourceTree = "<group>"; };
+		6EB7FA6523B651E100BFB0B4 /* StreetFoodListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreetFoodListView.swift; sourceTree = "<group>"; };
+		6EB7FA6723B6521200BFB0B4 /* StreetFoodListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreetFoodListViewController.swift; sourceTree = "<group>"; };
 		6EB7FA6923B658B000BFB0B4 /* CategoryListStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListStoreCell.swift; sourceTree = "<group>"; };
 		6EB8FBA025988D4200C17B74 /* GAManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GAManager.swift; sourceTree = "<group>"; };
 		6EB8FBA825988DFC00C17B74 /* GAEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GAEvent.swift; sourceTree = "<group>"; };
@@ -1198,18 +1198,6 @@
 			path = cell;
 			sourceTree = "<group>";
 		};
-		6E4107E725E4D806008F86F1 /* category-list */ = {
-			isa = PBXGroup;
-			children = (
-				6E326B1F2742563000E68666 /* subviews */,
-				6EB7FA6723B6521200BFB0B4 /* CategoryListViewController.swift */,
-				6EB7FA6523B651E100BFB0B4 /* CategoryListView.swift */,
-				6E3E994825E52B0E007BA379 /* CategoryListReactor.swift */,
-				6E326B26274286D100E68666 /* CategoryListCoordinator.swift */,
-			);
-			path = "category-list";
-			sourceTree = "<group>";
-		};
 		6E41D97325CA54F0009D7C3A /* photo-list */ = {
 			isa = PBXGroup;
 			children = (
@@ -1511,6 +1499,7 @@
 		6E6B0ED923AD169B006E11CE /* domain */ = {
 			isa = PBXGroup;
 			children = (
+				6E7BF37C28A9250A00A00BF2 /* street-food-list */,
 				6E8BE65B2892CA8900D67938 /* boss-store-detail */,
 				6E57F296273A91F0008C524A /* visit */,
 				6E6B0EDA23AD16A3006E11CE /* base */,
@@ -1583,7 +1572,6 @@
 			isa = PBXGroup;
 			children = (
 				6E58ED7127A7D326004819A9 /* subviews */,
-				6E4107E725E4D806008F86F1 /* category-list */,
 				6E447FF125E3DE2E00459551 /* CategoryView.swift */,
 				6E447FF325E3E1CD00459551 /* CategoryViewController.swift */,
 				6E447FF725E3E53800459551 /* CategoryReactor.swift */,
@@ -1743,6 +1731,18 @@
 				6E4543F125B7C44C000E60B8 /* WeekDay.swift */,
 			);
 			path = presentation;
+			sourceTree = "<group>";
+		};
+		6E7BF37C28A9250A00A00BF2 /* street-food-list */ = {
+			isa = PBXGroup;
+			children = (
+				6E326B1F2742563000E68666 /* subviews */,
+				6EB7FA6723B6521200BFB0B4 /* StreetFoodListViewController.swift */,
+				6EB7FA6523B651E100BFB0B4 /* StreetFoodListView.swift */,
+				6E3E994825E52B0E007BA379 /* StreetFoodListReactor.swift */,
+				6E326B26274286D100E68666 /* StreetFoodListCoordinator.swift */,
+			);
+			path = "street-food-list";
 			sourceTree = "<group>";
 		};
 		6E7E3E4A27642A8E00A4C6E2 /* medal */ = {
@@ -2613,7 +2613,7 @@
 				6E8E250F256AA25F00AE6479 /* AlertContent.swift in Sources */,
 				6E31578125BAA0C60022D6F3 /* UIImageViewExt.swift in Sources */,
 				6E7EF40A25DE978C0014CD2B /* TabBarVC.swift in Sources */,
-				6EB7FA6623B651E100BFB0B4 /* CategoryListView.swift in Sources */,
+				6EB7FA6623B651E100BFB0B4 /* StreetFoodListView.swift in Sources */,
 				6E4543F225B7C44C000E60B8 /* WeekDay.swift in Sources */,
 				6E447FF625E3E3FB00459551 /* CategoryCell.swift in Sources */,
 				6EA205F62888182F00BAB019 /* OpenStatusResponse.swift in Sources */,
@@ -2722,7 +2722,7 @@
 				6E31577425BA96F40022D6F3 /* StorePhotoCollectionView.swift in Sources */,
 				6EDBBB7A2754B7E800470F71 /* StoreWithVisitsAndDistanceResponse.swift in Sources */,
 				6EDBBB822754C92100470F71 /* RegisteredStoreCoordinator.swift in Sources */,
-				6EB7FA6823B6521200BFB0B4 /* CategoryListViewController.swift in Sources */,
+				6EB7FA6823B6521200BFB0B4 /* StreetFoodListViewController.swift in Sources */,
 				6EDBBB7427546F9D00470F71 /* Activity.swift in Sources */,
 				6E8E2514256AAB6E00AE6479 /* HTTPUtils.swift in Sources */,
 				6E93C83E23F23213002E737F /* AdvertisementService.swift in Sources */,
@@ -2850,7 +2850,7 @@
 				6E5CA5882768B50D001EDE19 /* MyReviewEmptyView.swift in Sources */,
 				6E16EE2026BC182400F4DD03 /* MenuResponse.swift in Sources */,
 				6E8E2507256A9F6E00AE6479 /* SignInViewModel.swift in Sources */,
-				6E326B27274286D100E68666 /* CategoryListCoordinator.swift in Sources */,
+				6E326B27274286D100E68666 /* StreetFoodListCoordinator.swift in Sources */,
 				6E7487992723BD940021DF93 /* PaymentMethodView.swift in Sources */,
 				6E18C31E2571F31700F37C3A /* FAQViewModel.swift in Sources */,
 				6E511E6325710CFF009E4667 /* QuestionView.swift in Sources */,
@@ -2934,7 +2934,7 @@
 				6EF63FC32761B7130063A3B9 /* MyVisitHistoryTableViewCell.swift in Sources */,
 				6EB8FBA125988D4200C17B74 /* GAManager.swift in Sources */,
 				6EA205EE2888176E00BAB019 /* BossStoreAroundInfoResponse.swift in Sources */,
-				6E3E994925E52B0E007BA379 /* CategoryListReactor.swift in Sources */,
+				6E3E994925E52B0E007BA379 /* StreetFoodListReactor.swift in Sources */,
 				6E18C3282571F53900F37C3A /* FAQ.swift in Sources */,
 				6EDBBB7227546AF200470F71 /* UserWithActivityResponse.swift in Sources */,
 				6EA3208027632352002AA2F5 /* HomeStoreFlowLayout.swift in Sources */,
