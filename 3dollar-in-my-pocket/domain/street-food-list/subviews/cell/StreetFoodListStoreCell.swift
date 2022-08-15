@@ -1,10 +1,9 @@
 import UIKit
 
 import Base
-import GoogleMobileAds
 
-final class CategoryListStoreCell: BaseTableViewCell {
-    static let registerId = "\(CategoryListStoreCell.self)"
+final class StreetFoodListStoreCell: BaseTableViewCell {
+    static let registerId = "\(StreetFoodListStoreCell.self)"
     static let height: CGFloat = 90
     
     private let containerView = UIView().then {
@@ -32,7 +31,7 @@ final class CategoryListStoreCell: BaseTableViewCell {
     }
     
     private let distanceImage = UIImageView().then {
-        $0.image = R.image.ic_near_filled()
+        $0.image = R.image.ic_near_filled_pink()
     }
     
     private let distanceLabel = UILabel().then {

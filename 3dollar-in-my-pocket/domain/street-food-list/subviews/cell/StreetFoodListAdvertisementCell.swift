@@ -2,8 +2,8 @@ import UIKit
 
 import Base
 
-final class CategoryListAdvertisementCell: BaseTableViewCell {
-    static let registerId = "\(CategoryListAdvertisementCell.self)"
+final class StreetFoodListAdvertisementCell: BaseTableViewCell {
+    static let registerId = "\(StreetFoodListAdvertisementCell.self)"
     static let height: CGFloat = 150
     
     private let containerView = UIView().then {
@@ -20,13 +20,13 @@ final class CategoryListAdvertisementCell: BaseTableViewCell {
         $0.backgroundColor = UIColor(r: 255, g: 92, b: 67, a: 0.2)
         $0.layer.cornerRadius = 11
         $0.textColor = R.color.red()
-        $0.text = "shared_advertisement".localized
+        $0.text = R.string.localization.shared_advertisement()
         $0.font = .medium(size: 12)
         $0.layer.masksToBounds = true
     }
     
     private let moreLabel = UILabel().then {
-        $0.text = "자세히 보기 >"
+        $0.text = R.string.localization.shared_advertisement_more()
         $0.textColor = R.color.pink()
         $0.font = .regular(size: 12)
     }

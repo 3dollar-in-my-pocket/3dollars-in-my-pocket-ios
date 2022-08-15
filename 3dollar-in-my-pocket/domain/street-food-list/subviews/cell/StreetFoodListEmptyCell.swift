@@ -2,8 +2,8 @@ import UIKit
 
 import Base
 
-final class CategoryListEmptyCell: BaseTableViewCell {
-    static let registerId = "\(CategoryListEmptyCell.self)"
+final class StreetFoodListEmptyCell: BaseCollectionViewCell {
+    static let registerId = "\(StreetFoodListEmptyCell.self)"
     static let height: CGFloat = 169
     
     private let emptyImage = UIImageView().then {
@@ -17,7 +17,6 @@ final class CategoryListEmptyCell: BaseTableViewCell {
     }
     
     override func setup() {
-        self.selectionStyle = .none
         self.backgroundColor = .clear
         self.addSubViews([
             self.emptyImage,
