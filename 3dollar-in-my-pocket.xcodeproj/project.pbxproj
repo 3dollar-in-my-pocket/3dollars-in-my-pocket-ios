@@ -250,6 +250,7 @@
 		6E6835C623C30D8300D23F54 /* MyReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835C523C30D8300D23F54 /* MyReviewView.swift */; };
 		6E6835C823C30DCB00D23F54 /* MyReviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835C723C30DCB00D23F54 /* MyReviewCell.swift */; };
 		6E6835CA23C30E0A00D23F54 /* MyReviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835C923C30E0A00D23F54 /* MyReviewViewController.swift */; };
+		6E68683828ABCD3F003EE196 /* StreetFoodListSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E68683728ABCD3F003EE196 /* StreetFoodListSectionModel.swift */; };
 		6E6B0EDC23AD16AC006E11CE /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EDB23AD16AC006E11CE /* BaseView.swift */; };
 		6E6B0EDE23AD16F1006E11CE /* BaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EDD23AD16F1006E11CE /* BaseVC.swift */; };
 		6E6B0EE123AD17AC006E11CE /* UIViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6B0EE023AD17AC006E11CE /* UIViewExt.swift */; };
@@ -720,6 +721,7 @@
 		6E6835C523C30D8300D23F54 /* MyReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewView.swift; sourceTree = "<group>"; };
 		6E6835C723C30DCB00D23F54 /* MyReviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewCell.swift; sourceTree = "<group>"; };
 		6E6835C923C30E0A00D23F54 /* MyReviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewViewController.swift; sourceTree = "<group>"; };
+		6E68683728ABCD3F003EE196 /* StreetFoodListSectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreetFoodListSectionModel.swift; sourceTree = "<group>"; };
 		6E6B0EDB23AD16AC006E11CE /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		6E6B0EDD23AD16F1006E11CE /* BaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseVC.swift; sourceTree = "<group>"; };
 		6E6B0EE023AD17AC006E11CE /* UIViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExt.swift; sourceTree = "<group>"; };
@@ -1735,6 +1737,7 @@
 				6E7BF08525B7D82F00456D0B /* StreetFoodStoreType.swift */,
 				6E72AE6223C980F600D3B257 /* User.swift */,
 				6E4543F125B7C44C000E60B8 /* WeekDay.swift */,
+				6E68683728ABCD3F003EE196 /* StreetFoodListSectionModel.swift */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -2914,6 +2917,7 @@
 				6E53160F25DE9E38006C5CDC /* TabBarTag.swift in Sources */,
 				6E66040727BBA11A001EDF75 /* StreetFoodListAdvertisementCell.swift in Sources */,
 				6E12CF182573D67D003234D9 /* FAQHeaderView.swift in Sources */,
+				6E68683828ABCD3F003EE196 /* StreetFoodListSectionModel.swift in Sources */,
 				6E3AA4C325AD661800D8C58C /* MapService.swift in Sources */,
 				6EB46A5C2892BF390057B21A /* LoadingManager.swift in Sources */,
 				6E81B84025E0E72800748E02 /* SearchAddressVC.swift in Sources */,

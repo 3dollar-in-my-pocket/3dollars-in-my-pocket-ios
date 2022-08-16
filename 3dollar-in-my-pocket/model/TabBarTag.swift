@@ -1,3 +1,6 @@
 enum TabBarTag: Int {
-  case home, category, write, my
+    case home
+    case streetFood
+    case write
+    case my
 }

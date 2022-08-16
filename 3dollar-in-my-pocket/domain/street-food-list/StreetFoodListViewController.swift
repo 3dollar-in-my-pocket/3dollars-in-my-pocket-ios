@@ -2,21 +2,24 @@ import UIKit
 
 import Base
 import RxSwift
+import RxDataSources
 import ReactorKit
-import NMapsMap
 
-final class StreetFoodListViewController: BaseVC, StreetFoodListCoordinator, View {
-    private let categoryListView = StreetFoodListView()
-    private let categoryListReactor: StreetFoodListReactor
+final class StreetFoodListViewController: BaseViewController, StreetFoodListCoordinator, View {
+    private let streetFoodListView = StreetFoodListView()
+    private let streetFoodListReactor: StreetFoodListReactor
     private weak var coordinator: StreetFoodListCoordinator?
+    private var streetFoodStoreCollectionViewDataSource:
+    RxCollectionViewSectionedReloadDataSource<StreetFoodListSectionModel>!
   
-    init(category: StreetFoodStoreCategory) {
-        self.categoryListReactor = StreetFoodListReactor(
+    init(category: StreetFoodCategory) {
+        self.streetFoodListReactor = StreetFoodListReactor(
             category: category,
             storeService: StoreService(),
             advertisementService: AdvertisementService(),
             locationManager: LocationManager.shared
         )
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -24,47 +27,50 @@ final class StreetFoodListViewController: BaseVC, StreetFoodListCoordinator, Vie
         fatalError("init(coder:) has not been implemented")
     }
   
-    static func instance(category: StreetFoodStoreCategory) -> StreetFoodListViewController {
-        return StreetFoodListViewController(category: category)
+    static func instance(category: StreetFoodCategory) -> UINavigationController {
+        let viewController = StreetFoodListViewController(category: category).then {
+            $0.tabBarItem = UITabBarItem(
+                title: nil,
+                image: UIImage(named: "ic_street_food"),
+                tag: TabBarTag.streetFood.rawValue
+            )
+        }
+        
+        return UINavigationController(rootViewController: viewController).then {
+            $0.setNavigationBarHidden(true, animated: false)
+            $0.interactivePopGestureRecognizer?.delegate = nil
+        }
     }
   
     override func loadView() {
-        self.view = self.categoryListView
+        self.view = self.streetFoodListView
     }
   
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.coordinator = self
-        self.reactor = self.categoryListReactor
-        self.setupMap()
+        self.reactor = self.streetFoodListReactor
 //        self.categoryListView.adBannerView.rootViewController = self
-        self.categoryListReactor.action.onNext(.viewDidLoad)
+        self.streetFoodListReactor.action.onNext(.viewDidLoad)
     }
   
     override func bindEvent() {
-//        self.categoryListView.backButton.rx.tap
-//            .asDriver()
-//            .drive(onNext: { [weak self] _ in
-//                self?.coordinator?.popup()
-//            })
-//            .disposed(by: self.eventDisposeBag)
-        
-        self.categoryListReactor.pushStoreDetailPublisher
+        self.streetFoodListReactor.pushStoreDetailPublisher
             .asDriver(onErrorJustReturn: -1)
             .drive(onNext: { [weak self] storeId in
                 self?.coordinator?.pushStoreDetail(storeId: storeId)
             })
             .disposed(by: self.eventDisposeBag)
         
-        self.categoryListReactor.openURLPublisher
+        self.streetFoodListReactor.openURLPublisher
             .asDriver(onErrorJustReturn: "")
             .drive(onNext: { [weak self] url in
                 self?.coordinator?.openURL(url: url)
             })
             .disposed(by: self.eventDisposeBag)
         
-        self.categoryListReactor.showErrorAlertPublisher
+        self.streetFoodListReactor.showErrorAlertPublisher
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in
                 self?.coordinator?.showErrorAlert(error: error)
@@ -74,6 +80,11 @@ final class StreetFoodListViewController: BaseVC, StreetFoodListCoordinator, Vie
     
     func bind(reactor: StreetFoodListReactor) {
         // Bind Action
+        self.streetFoodListView.categoryButton.rx.tap
+            .map { Reactor.Action.tapCategory }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
 //        self.categoryListView.currentLocationButton.rx.tap
 //            .map { Reactor.Action.tapCurrentLocationButton }
 //            .bind(to: reactor.action)
@@ -95,6 +106,23 @@ final class StreetFoodListViewController: BaseVC, StreetFoodListCoordinator, Vie
 //            .disposed(by: self.disposeBag)
         
         // Bind State
+        reactor.state
+            .map { state -> [StreetFoodListSectionModel] in
+                let mapSection = StreetFoodListSectionModel(stores: state.stores)
+                let storeSection = StreetFoodListSectionModel(
+                    stores: state.stores,
+                    advertisement: state.advertisement
+                )
+                
+                return [mapSection] + [storeSection]
+            }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: [])
+            .drive(self.streetFoodListView.collectionView.rx.items(
+                dataSource: self.streetFoodStoreCollectionViewDataSource
+            ))
+            .disposed(by: self.disposeBag)
+        
 //        reactor.state
 //            .map { $0.category }
 //            .distinctUntilChanged()
@@ -158,9 +186,62 @@ final class StreetFoodListViewController: BaseVC, StreetFoodListCoordinator, Vie
 //            }
 //            .disposed(by: self.disposeBag)
     }
-  
-    private func setupMap() {
-//        self.categoryListView.mapView.addCameraDelegate(delegate: self)
+    
+    private func setupDateSource() {
+        self.streetFoodStoreCollectionViewDataSource
+        = RxCollectionViewSectionedReloadDataSource<StreetFoodListSectionModel>(
+            configureCell: { dataSource, collectionView, indexPath, item in
+                switch item {
+                case .map(let stores):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: StreetFoodListMapCell.registerId,
+                        for: indexPath
+                    ) as? StreetFoodListMapCell else { return BaseCollectionViewCell() }
+                    
+                    return cell
+                    
+                case .empty:
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: StreetFoodListEmptyCell.registerId,
+                        for: indexPath
+                    ) as? StreetFoodListEmptyCell else { return BaseCollectionViewCell() }
+                    
+                    return cell
+                    
+                case .store(let store):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: StreetFoodListStoreCell.registerId,
+                        for: indexPath
+                    ) as? StreetFoodListStoreCell else { return BaseCollectionViewCell() }
+                    
+                    return cell
+                    
+                case .advertisement(let advertisement):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: StreetFoodListAdvertisementCell.registerId,
+                        for: indexPath
+                    ) as? StreetFoodListAdvertisementCell else { return BaseCollectionViewCell() }
+                    
+                    return cell
+                }
+        })
+        
+        self.streetFoodStoreCollectionViewDataSource.configureSupplementaryView
+        = { _, collectionView, kind, indexPath -> UICollectionReusableView in
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
+                guard let headerView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: UICollectionView.elementKindSectionHeader,
+                    withReuseIdentifier: StreetFoodListHeaderView.registerId,
+                    for: indexPath
+                ) as? StreetFoodListHeaderView else { return UICollectionReusableView() }
+                
+                return headerView
+                
+            default:
+                return UICollectionReusableView()
+            }
+        }
     }
     
     private func filterCertificated(
@@ -197,7 +278,7 @@ extension StreetFoodListViewController: NMFMapViewCameraDelegate {
             )
         
             if animated {
-                self.categoryListReactor.action.onNext(.changeMapLocation(mapLocation))
+                self.streetFoodListReactor.action.onNext(.changeMapLocation(mapLocation))
             }
         }
     }

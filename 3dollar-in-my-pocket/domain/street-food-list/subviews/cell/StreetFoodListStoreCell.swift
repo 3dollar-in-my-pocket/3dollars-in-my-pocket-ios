@@ -2,7 +2,7 @@ import UIKit
 
 import Base
 
-final class StreetFoodListStoreCell: BaseTableViewCell {
+final class StreetFoodListStoreCell: BaseCollectionViewCell {
     static let registerId = "\(StreetFoodListStoreCell.self)"
     static let height: CGFloat = 90
     

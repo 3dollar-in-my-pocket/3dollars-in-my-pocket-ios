@@ -1,10 +1,10 @@
 import Foundation
 
-protocol StreetFoodListCoordinator: Coordinator, AnyObject {
+protocol StreetFoodListCoordinator: BaseCoordinator, AnyObject {
     func pushStoreDetail(storeId: Int)
 }
 
-extension StreetFoodListCoordinator where Self: BaseVC {
+extension StreetFoodListCoordinator where Self: StreetFoodListViewController {
     func pushStoreDetail(storeId: Int) {
         let viewController = StoreDetailViewController.instance(storeId: storeId)
         
