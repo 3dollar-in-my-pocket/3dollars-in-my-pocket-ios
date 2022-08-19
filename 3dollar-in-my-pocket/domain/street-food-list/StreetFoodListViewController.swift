@@ -56,6 +56,14 @@ final class StreetFoodListViewController: BaseViewController, StreetFoodListCoor
     }
   
     override func bindEvent() {
+        self.streetFoodListView.writeButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.presentWriteAddress()
+            })
+            .disposed(by: self.eventDisposeBag)
+        
         self.streetFoodListReactor.pushStoreDetailPublisher
             .asDriver(onErrorJustReturn: -1)
             .drive(onNext: { [weak self] storeId in
@@ -219,5 +227,11 @@ extension StreetFoodListViewController: NMFMapViewCameraDelegate {
                 self.streetFoodListReactor.action.onNext(.changeMapLocation(mapLocation))
             }
         }
+    }
+}
+
+extension StreetFoodListViewController: WriteAddressDelegate {
+    func onWriteSuccess(storeId: Int) {
+        
     }
 }
