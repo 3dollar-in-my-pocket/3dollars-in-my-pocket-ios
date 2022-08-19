@@ -23,7 +23,7 @@ final class StreetFoodListView: Base.BaseView {
     }
     
     let categoryButton = UIButton().then {
-        $0.setImage(R.image.ic_arrow_bottom(), for: .normal)
+        $0.setImage(R.image.ic_arrow_bottom_black(), for: .normal)
         $0.contentEdgeInsets = .init(top: 5, left: 5, bottom: 5, right: 5)
     }
     
@@ -47,20 +47,12 @@ final class StreetFoodListView: Base.BaseView {
             } else {
                 let storeItem = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(StreetFoodListStoreCell.height)
+                    heightDimension: .estimated(StreetFoodListEmptyCell.height)
                 ))
-                let emptyItem = NSCollectionLayoutItem(layoutSize: .init(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(StreetFoodListEmptyCell.height)
-                ))
-                let advertisementItem = NSCollectionLayoutItem(layoutSize: .init(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(StreetFoodListAdvertisementCell.height)
-                ))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
                     heightDimension: .estimated(StreetFoodListStoreCell.height)
-                ), subitems: [storeItem, emptyItem, advertisementItem])
+                ), subitems: [storeItem])
                 let section = NSCollectionLayoutSection(group: group)
                 
                 section.boundarySupplementaryItems = [.init(
@@ -91,6 +83,11 @@ final class StreetFoodListView: Base.BaseView {
         $0.register(
             StreetFoodListAdvertisementCell.self,
             forCellWithReuseIdentifier: StreetFoodListAdvertisementCell.registerId
+        )
+        $0.register(
+            StreetFoodListHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: StreetFoodListHeaderView.registerId
         )
     }
     
@@ -151,6 +148,19 @@ final class StreetFoodListView: Base.BaseView {
             make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-24)
             make.width.equalTo(50)
             make.height.equalTo(50)
+        }
+    }
+    
+    fileprivate func bind(category: StreetFoodCategory) {
+        self.categoryImageView.setImage(urlString: category.imageUrl)
+        self.categoryLabel.text = category.name
+    }
+}
+
+extension Reactive where Base: StreetFoodListView {
+    var category: Binder<StreetFoodCategory> {
+        return Binder(self.base) { view, category in
+            view.bind(category: category)
         }
     }
 }

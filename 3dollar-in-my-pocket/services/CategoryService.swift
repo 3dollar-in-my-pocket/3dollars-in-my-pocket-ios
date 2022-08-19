@@ -125,7 +125,7 @@ struct CategoryService: CategoryServiceProtocol {
             urlString: urlString,
             headers: headers
         )
-        .map { [StreetFoodCategory.totalCategory] + $0.map(StreetFoodCategory.init(response: )) }
+        .map { $0.map(StreetFoodCategory.init(response: )) }
     }
     
     func fetchFoodTruckCategories() -> Observable<[Categorizable]> {

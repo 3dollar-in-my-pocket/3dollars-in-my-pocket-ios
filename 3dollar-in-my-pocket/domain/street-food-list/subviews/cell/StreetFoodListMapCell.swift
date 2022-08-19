@@ -49,7 +49,12 @@ final class StreetFoodListMapCell: BaseCollectionViewCell {
         }
     }
     
-    fileprivate func moveCamera(location: CLLocation) {
+    func bind(stores: [Store]) {
+        self.setMarkers(stores: stores)
+    }
+    
+    fileprivate func moveCamera(location: CLLocation?) {
+        guard let location = location else { return }
         let cameraPosition = NMFCameraPosition(
             NMGLatLng(
                 lat: location.coordinate.latitude,
@@ -63,20 +68,16 @@ final class StreetFoodListMapCell: BaseCollectionViewCell {
         self.mapView.moveCamera(cameraUpdate)
     }
     
-    private func setMarkers(storeCellTypes: [StoreCellType]) {
+    private func setMarkers(stores: [Store]) {
         self.clearMarkers()
         
-        for cellType in storeCellTypes {
-            if case .store(let store) = cellType {
-                if let store = store as? Store {
-                    let marker = NMFMarker()
-                    
-                    marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
-                    marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
-                    marker.mapView = self.mapView
-                    self.markers.append(marker)
-                }
-            }
+        for store in stores {
+            let marker = NMFMarker()
+            
+            marker.position = NMGLatLng(lat: store.latitude, lng: store.longitude)
+            marker.iconImage = NMFOverlayImage(name: "ic_marker_store_on")
+            marker.mapView = self.mapView
+            self.markers.append(marker)
         }
     }
     
@@ -88,7 +89,7 @@ final class StreetFoodListMapCell: BaseCollectionViewCell {
 }
 
 extension Reactive where Base: StreetFoodListMapCell {
-    var cameraPosition: Binder<CLLocation> {
+    var cameraPosition: Binder<CLLocation?> {
         return Binder(self.base) { view, cameraPosition in
             view.moveCamera(location: cameraPosition)
         }

@@ -45,12 +45,13 @@ final class StreetFoodListReactor: BaseReactor, Reactor {
     private let storeService: StoreServiceProtocol
     private let advertisementService: AdvertisementServiceProtocol
     private let locationManager: LocationManagerProtocol
+    private let metaContext: MetaContext
     
     init(
-        category: StreetFoodCategory,
         storeService: StoreServiceProtocol,
         advertisementService: AdvertisementServiceProtocol,
         locationManager: LocationManagerProtocol,
+        metaContext: MetaContext,
         state: State = State(
             category: StreetFoodCategory.totalCategory,
             cameraPosition: nil,
@@ -64,7 +65,22 @@ final class StreetFoodListReactor: BaseReactor, Reactor {
         self.storeService = storeService
         self.locationManager = locationManager
         self.advertisementService = advertisementService
-        self.initialState = state
+        self.metaContext = metaContext
+        
+        guard let firstCategory
+                = metaContext.streetFoodCategories.first as? StreetFoodCategory else {
+            fatalError("Category 정보가 없습니다.")
+        }
+        
+        self.initialState = State(
+            category: firstCategory,
+            cameraPosition: state.cameraPosition,
+            stores: state.stores,
+            advertisement: state.advertisement,
+            orderType: state.orderType,
+            isOnlyCertificated: state.isOnlyCertificated,
+            currentLocation: state.currentLocation
+        )
         
         super.init()
     }

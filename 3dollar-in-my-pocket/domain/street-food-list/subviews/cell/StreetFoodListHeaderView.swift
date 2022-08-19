@@ -74,7 +74,7 @@ final class StreetFoodListHeaderView: UICollectionReusableView {
         
         self.certificatedButton.snp.makeConstraints { make in
             make.left.equalTo(self.categoryTitleLabel)
-            make.top.equalTo(14)
+            make.top.equalTo(self.categoryTitleLabel.snp.bottom).offset(14)
         }
         
         self.orderFilterButton.snp.makeConstraints { make in
@@ -138,4 +138,3 @@ extension StreetFoodListHeaderView: GADBannerViewDelegate {
         print("adViewWillLeaveApplication")
     }
 }
-

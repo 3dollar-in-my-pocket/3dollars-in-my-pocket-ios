@@ -34,7 +34,6 @@ final class StreetFoodListEmptyCell: BaseCollectionViewCell {
         self.emptyLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(self.emptyImage.snp.bottom).offset(5)
-            make.bottom.equalToSuperview()
         }
     }
 }

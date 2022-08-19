@@ -23,6 +23,7 @@ final class SplashViewModel: BaseViewModel {
     let metaContext: MetaContext
     let medalService: MedalServiceProtocol
     private let feedbackService: FeedbackServiceProtocol
+    private let categoryService: CategoryServiceProtocol
     
     init(
         userDefaults: UserDefaultsUtil,
@@ -30,7 +31,8 @@ final class SplashViewModel: BaseViewModel {
         remoteConfigService: RemoteConfigProtocol,
         metaContext: MetaContext,
         medalService: MedalServiceProtocol,
-        feedbackService: FeedbackServiceProtocol
+        feedbackService: FeedbackServiceProtocol,
+        categoryService: CategoryServiceProtocol
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
@@ -38,6 +40,7 @@ final class SplashViewModel: BaseViewModel {
         self.metaContext = metaContext
         self.medalService = medalService
         self.feedbackService = feedbackService
+        self.categoryService = categoryService
         
         super.init()
         
@@ -45,6 +48,7 @@ final class SplashViewModel: BaseViewModel {
             .bind(onNext: { [weak self] in
                 self?.fetchBossStoreTypes()
                 self?.fetchMedals()
+                self?.fetchStreetFoodCategories()
             })
             .disposed(by: self.disposeBag)
     }
@@ -127,6 +131,16 @@ final class SplashViewModel: BaseViewModel {
         self.feedbackService.fetchFeedbackTypes()
             .subscribe(onNext: { [weak self] feedbackTypes in
                 self?.metaContext.feedbackTypes = feedbackTypes
+            }, onError: { [weak self] error in
+                self?.showErrorAlert.accept(error)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func fetchStreetFoodCategories() {
+        self.categoryService.fetchStreetFoodCategories()
+            .subscribe(onNext: { [weak self] categories in
+                self?.metaContext.streetFoodCategories = categories
             }, onError: { [weak self] error in
                 self?.showErrorAlert.accept(error)
             })

@@ -4,6 +4,7 @@ struct MenuCategoryResponse: Decodable {
     let categoryId: String
     let category: String
     let description: String
+    let imageUrl: String
     let isNew: Bool
     let name: String
     
@@ -11,6 +12,7 @@ struct MenuCategoryResponse: Decodable {
         case categoryId
         case category
         case description
+        case imageUrl
         case isNew
         case name
     }
@@ -24,6 +26,7 @@ struct MenuCategoryResponse: Decodable {
             String.self,
             forKey: .description
         ) ?? ""
+        self.imageUrl = try values.decodeIfPresent(String.self, forKey: .imageUrl) ?? ""
         self.isNew = try values.decodeIfPresent(Bool.self, forKey: .isNew) ?? false
         self.name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
     }

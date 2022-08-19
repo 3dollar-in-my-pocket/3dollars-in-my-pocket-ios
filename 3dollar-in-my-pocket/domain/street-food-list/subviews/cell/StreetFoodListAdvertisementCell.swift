@@ -50,9 +50,8 @@ final class StreetFoodListAdvertisementCell: BaseCollectionViewCell {
     }
     
     override func setup() {
-        self.selectionStyle = .none
         self.backgroundColor = .clear
-        self.addSubViews([
+        self.contentView.addSubViews([
             self.containerView,
             self.advertisementLabel,
             self.moreLabel,
@@ -67,8 +66,7 @@ final class StreetFoodListAdvertisementCell: BaseCollectionViewCell {
             make.left.equalToSuperview().offset(24)
             make.right.equalToSuperview().offset(-24)
             make.top.equalToSuperview().offset(16)
-            make.bottom.equalToSuperview()
-            make.height.equalTo(134)
+            make.height.equalTo(134).priority(.high)
         }
         
         self.advertisementLabel.snp.makeConstraints { make in

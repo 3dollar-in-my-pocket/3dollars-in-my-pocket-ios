@@ -53,7 +53,7 @@ class TabBarVC: UITabBarController {
                 self.tabBar.standardAppearance = appearance
                 self.tabBar.scrollEdgeAppearance = appearance
             }
-        case TabBarTag.home.rawValue, TabBarTag.category.rawValue:
+        case TabBarTag.home.rawValue, TabBarTag.streetFood.rawValue:
             self.tabBar.barTintColor = .white
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()
@@ -106,7 +106,7 @@ class TabBarVC: UITabBarController {
     private func setupTabBarController() {
         self.setViewControllers([
             HomeViewController.instance(),
-            CategoryViewController.instance(),
+            StreetFoodListViewController.instance(),
             WriteAddressViewController.instance(delegate: self),
             MyPageViewController.instance()
         ], animated: true)

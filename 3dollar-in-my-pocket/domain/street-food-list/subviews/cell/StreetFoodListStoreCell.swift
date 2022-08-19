@@ -60,7 +60,6 @@ final class StreetFoodListStoreCell: BaseCollectionViewCell {
     override func setup() {
         self.contentView.isUserInteractionEnabled = false
         self.backgroundColor = .clear
-        self.selectionStyle = .none
         self.addSubViews([
             self.containerView,
             self.titleStackView,

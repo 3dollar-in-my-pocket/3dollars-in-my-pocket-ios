@@ -4,8 +4,8 @@ protocol CategoryCoordinator: AnyObject, Coordinator {
 
 extension CategoryCoordinator {
     func pushCategoryList(category: StreetFoodStoreCategory) {
-        let viewController = StreetFoodListViewController.instance(category: category)
-        
-        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+//        let viewController = StreetFoodListViewController.instance(category: category)
+//        
+//        self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
 }

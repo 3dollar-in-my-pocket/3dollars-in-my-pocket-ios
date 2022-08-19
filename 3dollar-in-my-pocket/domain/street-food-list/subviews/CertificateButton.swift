@@ -19,7 +19,9 @@ final class CertificateButton: UIButton {
     
     override var isSelected: Bool {
         didSet {
-            self.checkImage.image = self.isSelected ? R.image.ic_check_on() : R.image.ic_check_off()
+            self.checkImage.image = self.isSelected
+            ? R.image.ic_check_on()
+            : R.image.ic_check_off()
         }
     }
     
