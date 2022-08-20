@@ -108,6 +108,8 @@ final class StreetFoodListView: Base.BaseView {
             self.categoryButton,
             self.writeButton
         ])
+        
+        self.collectionView.delegate = self
     }
     
     override func bindConstraints() {
@@ -155,6 +157,20 @@ final class StreetFoodListView: Base.BaseView {
         self.categoryImageView.setImage(urlString: category.imageUrl)
         self.categoryLabel.text = category.name
     }
+    
+    private func showWriteAddressButton() {
+        UIView.transition(with: self, duration: 0.3, options: .curveEaseInOut) { [weak self] in
+            self?.writeButton.transform = .identity
+            self?.writeButton.alpha = 1
+        }
+    }
+    
+    private func hideWriteAddressButton() {
+        UIView.transition(with: self, duration: 0.3, options: .curveEaseInOut) { [weak self] in
+            self?.writeButton.transform = .init(translationX: 0, y: 100)
+            self?.writeButton.alpha = 0
+        }
+    }
 }
 
 extension Reactive where Base: StreetFoodListView {
@@ -162,5 +178,15 @@ extension Reactive where Base: StreetFoodListView {
         return Binder(self.base) { view, category in
             view.bind(category: category)
         }
+    }
+}
+
+extension StreetFoodListView: UICollectionViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.hideWriteAddressButton()
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.showWriteAddressButton()
     }
 }
