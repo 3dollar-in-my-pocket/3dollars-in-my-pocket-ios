@@ -10,9 +10,9 @@ protocol StreetFoodListCoordinator: BaseCoordinator, AnyObject {
 
 extension StreetFoodListCoordinator where Self: StreetFoodListViewController {
     func presentCategoryFilter() {
-        let viewController = CategoryViewController.instance()
+        let viewController = CategoryFilterViewController.instance()
         
-        self.presenter.present(viewController, animated: true)
+        self.tabBarController?.present(viewController, animated: true)
     }
     
     func pushStoreDetail(storeId: Int) {

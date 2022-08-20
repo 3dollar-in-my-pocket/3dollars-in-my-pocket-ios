@@ -4,49 +4,55 @@ import Base
 import RxDataSources
 import ReactorKit
 
-final class CategoryViewController: BaseVC, View, CategoryCoordinator {
-    private let categoryView = CategoryFilterView()
-    private let categoryReactor = CategoryReactor(
+final class CategoryFilterViewController: BaseViewController, View, CategoryFilterCoordinator {
+    private let categoryFilterView = CategoryFilterView()
+    private let categoryFilterReactor = CategoryFilterReactor(
         categoryService: CategoryService(),
         advertisementService: AdvertisementService()
     )
-    private weak var coordinator: CategoryCoordinator?
+    private weak var coordinator: CategoryFilterCoordinator?
     private var categoryDataSource
         : RxCollectionViewSectionedReloadDataSource<SectionModel<Advertisement?, StreetFoodCategory>>!
     
-    static func instance() -> CategoryViewController {
-        return CategoryViewController(nibName: nil, bundle: nil)
+    static func instance() -> CategoryFilterViewController {
+        return CategoryFilterViewController(nibName: nil, bundle: nil).then {
+            $0.modalPresentationStyle = .overCurrentContext
+        }
     }
     
     override func loadView() {
-        self.view = self.categoryView
+        self.view = self.categoryFilterView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if let parentView = self.presentingViewController?.view {
+            DimManager.shared.showDim(targetView: parentView)
+        }
         self.setupDataSource()
-        self.reactor = self.categoryReactor
+        self.reactor = self.categoryFilterReactor
         self.coordinator = self
-        self.categoryReactor.action.onNext(.viewDidLoad)
+        self.categoryFilterReactor.action.onNext(.viewDidLoad)
     }
     
     override func bindEvent() {
-        self.categoryReactor.pushCategoryListPublisher
-            .asDriver(onErrorJustReturn: .BUNGEOPPANG)
-            .drive(onNext: { [weak self] category in
-                self?.coordinator?.pushCategoryList(category: category)
+        self.categoryFilterView.backgroundButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] in
+                self?.coordinator?.dismiss()
             })
             .disposed(by: self.eventDisposeBag)
         
-        self.categoryReactor.openURLPublisher
+        self.categoryFilterReactor.openURLPublisher
             .asDriver(onErrorJustReturn: "")
             .drive(onNext: { [weak self] url in
                 self?.coordinator?.openURL(url: url)
             })
             .disposed(by: self.eventDisposeBag)
         
-        self.categoryReactor.showErrorAlertPublisher
+        self.categoryFilterReactor.showErrorAlertPublisher
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in
                 self?.coordinator?.showErrorAlert(error: error)
@@ -54,9 +60,9 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
             .disposed(by: self.eventDisposeBag)
     }
     
-    func bind(reactor: CategoryReactor) {
+    func bind(reactor: CategoryFilterReactor) {
         // Bind Action
-        self.categoryView.categoryCollectionView.rx.itemSelected
+        self.categoryFilterView.categoryCollectionView.rx.itemSelected
             .map { Reactor.Action.tapCategory(index: $0.row) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
@@ -66,7 +72,7 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
             .map { $0.categorySections }
             .asDriver(onErrorJustReturn: [])
             .drive(
-                self.categoryView.categoryCollectionView.rx
+                self.categoryFilterView.categoryCollectionView.rx
                     .items(dataSource: self.categoryDataSource)
             )
             .disposed(by: self.disposeBag)
@@ -98,7 +104,7 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
                     adBannerHeaderView.bind(advertisement: advertisement)
                     adBannerHeaderView.rx.tap
                         .map { Reactor.Action.tapBanner }
-                        .bind(to: self.categoryReactor.action)
+                        .bind(to: self.categoryFilterReactor.action)
                         .disposed(by: adBannerHeaderView.disposeBag)
                 } else {
                     if let layout

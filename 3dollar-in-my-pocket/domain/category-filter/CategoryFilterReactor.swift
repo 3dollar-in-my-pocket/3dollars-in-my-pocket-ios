@@ -3,7 +3,7 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
-final class CategoryReactor: BaseReactor, Reactor {
+final class CategoryFilterReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
         case tapBanner

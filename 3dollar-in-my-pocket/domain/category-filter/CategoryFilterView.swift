@@ -1,10 +1,12 @@
 import UIKit
 
 final class CategoryFilterView: BaseView {
+    let backgroundButton = UIButton()
+    
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        $0.backgroundColor = .white
+        $0.backgroundColor = UIColor(r: 250, g: 250, b: 250)
     }
     
     private let topIndicator = UIImageView().then {
@@ -54,10 +56,11 @@ final class CategoryFilterView: BaseView {
         )
     }
     
-    
     override func setup() {
-        self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
+        self.backgroundColor = .clear
         self.addSubViews([
+            self.backgroundButton,
+            self.containerView,
             self.topIndicator,
             self.titleLabel,
             self.categoryCollectionView
@@ -65,8 +68,22 @@ final class CategoryFilterView: BaseView {
     }
     
     override func bindConstraints() {
+        self.backgroundButton.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.top.equalToSuperview()
+            make.bottom.equalTo(self.containerView.snp.top)
+        }
+        
+        self.containerView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(44)
+        }
+        
         self.topIndicator.snp.makeConstraints { make in
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(16)
+            make.top.equalTo(self.containerView).offset(16)
             make.centerX.equalToSuperview()
         }
         
@@ -77,7 +94,7 @@ final class CategoryFilterView: BaseView {
         
         self.categoryCollectionView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(self.safeAreaLayoutGuide)
+            make.bottom.equalToSuperview()
             make.top.equalTo(self.titleLabel.snp.bottom).offset(16)
         }
     }
