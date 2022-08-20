@@ -1,10 +1,13 @@
 import UIKit
 
 import Base
+import RxSwift
+import RxCocoa
 
 final class StreetFoodListStoreCell: BaseCollectionViewCell {
     static let registerId = "\(StreetFoodListStoreCell.self)"
     static let height: CGFloat = 90
+    fileprivate let tapGesture = UITapGestureRecognizer()
     
     private let containerView = UIView().then {
         $0.backgroundColor = .white
@@ -59,6 +62,7 @@ final class StreetFoodListStoreCell: BaseCollectionViewCell {
     
     override func setup() {
         self.contentView.isUserInteractionEnabled = false
+        self.addGestureRecognizer(self.tapGesture)
         self.backgroundColor = .clear
         self.addSubViews([
             self.containerView,
@@ -133,5 +137,11 @@ final class StreetFoodListStoreCell: BaseCollectionViewCell {
             self.distanceLabel.text = String.init(format: "%dm", store.distance)
         }
         self.categoriesLabel.text = store.categoriesString
+    }
+}
+
+extension Reactive where Base: StreetFoodListStoreCell {
+    var tap: ControlEvent<Void> {
+        return ControlEvent(events: base.tapGesture.rx.event.map { _ in () })
     }
 }

@@ -5,7 +5,7 @@ import RxDataSources
 import ReactorKit
 
 final class CategoryViewController: BaseVC, View, CategoryCoordinator {
-    private let categoryView = CategoryView()
+    private let categoryView = CategoryFilterView()
     private let categoryReactor = CategoryReactor(
         categoryService: CategoryService(),
         advertisementService: AdvertisementService()

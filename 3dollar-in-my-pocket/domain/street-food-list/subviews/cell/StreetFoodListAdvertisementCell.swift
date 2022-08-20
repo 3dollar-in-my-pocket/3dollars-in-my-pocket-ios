@@ -1,10 +1,13 @@
 import UIKit
 
 import Base
+import RxSwift
+import RxCocoa
 
 final class StreetFoodListAdvertisementCell: BaseCollectionViewCell {
     static let registerId = "\(StreetFoodListAdvertisementCell.self)"
     static let height: CGFloat = 150
+    fileprivate let tapGesture = UITapGestureRecognizer()
     
     private let containerView = UIView().then {
         $0.backgroundColor = .white
@@ -50,6 +53,8 @@ final class StreetFoodListAdvertisementCell: BaseCollectionViewCell {
     }
     
     override func setup() {
+        self.contentView.isUserInteractionEnabled = false
+        self.addGestureRecognizer(self.tapGesture)
         self.backgroundColor = .clear
         self.contentView.addSubViews([
             self.containerView,
@@ -103,5 +108,11 @@ final class StreetFoodListAdvertisementCell: BaseCollectionViewCell {
         self.titleLabel.text = advertisement.title
         self.descriptionLabel.text = advertisement.subTitle
         self.image.setImage(urlString: advertisement.imageUrl)
+    }
+}
+
+extension Reactive where Base: StreetFoodListAdvertisementCell {
+    var tap: ControlEvent<Void> {
+        return ControlEvent(events: base.tapGesture.rx.event.map { _ in () })
     }
 }

@@ -170,6 +170,11 @@ final class StreetFoodListViewController: BaseViewController, StreetFoodListCoor
                     ) as? StreetFoodListStoreCell else { return BaseCollectionViewCell() }
                     
                     cell.bind(store: store)
+                    cell.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapStore(index: indexPath.row)}
+                        .bind(to: self.streetFoodListReactor.action)
+                        .disposed(by: cell.disposeBag)
                     return cell
                     
                 case .advertisement(let advertisement):
@@ -179,6 +184,11 @@ final class StreetFoodListViewController: BaseViewController, StreetFoodListCoor
                     ) as? StreetFoodListAdvertisementCell else { return BaseCollectionViewCell() }
                     
                     cell.bind(advertisement: advertisement)
+                    cell.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapAdvertisement }
+                        .bind(to: self.streetFoodListReactor.action)
+                        .disposed(by: cell.disposeBag)
                     return cell
                 }
         })
