@@ -1,12 +1,20 @@
 import Foundation
 
 protocol StreetFoodListCoordinator: BaseCoordinator, AnyObject {
+    func presentCategoryFilter()
+    
     func pushStoreDetail(storeId: Int)
     
     func presentWriteAddress()
 }
 
 extension StreetFoodListCoordinator where Self: StreetFoodListViewController {
+    func presentCategoryFilter() {
+        let viewController = CategoryViewController.instance()
+        
+        self.presenter.present(viewController, animated: true)
+    }
+    
     func pushStoreDetail(storeId: Int) {
         let viewController = StoreDetailViewController.instance(storeId: storeId)
         

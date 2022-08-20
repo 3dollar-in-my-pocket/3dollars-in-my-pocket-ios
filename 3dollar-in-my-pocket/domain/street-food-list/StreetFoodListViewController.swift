@@ -71,6 +71,13 @@ final class StreetFoodListViewController: BaseViewController, StreetFoodListCoor
             })
             .disposed(by: self.eventDisposeBag)
         
+        self.streetFoodListReactor.presentCategoryFilterPublisher
+            .asDriver(onErrorJustReturn: StreetFoodCategory.totalCategory)
+            .drive(onNext: { [weak self] category in
+                self?.coordinator?.presentCategoryFilter()
+            })
+            .disposed(by: self.eventDisposeBag)
+        
         self.streetFoodListReactor.openURLPublisher
             .asDriver(onErrorJustReturn: "")
             .drive(onNext: { [weak self] url in

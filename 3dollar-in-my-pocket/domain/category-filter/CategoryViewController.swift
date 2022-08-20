@@ -14,19 +14,8 @@ final class CategoryViewController: BaseVC, View, CategoryCoordinator {
     private var categoryDataSource
         : RxCollectionViewSectionedReloadDataSource<SectionModel<Advertisement?, StreetFoodCategory>>!
     
-    static func instance() -> UINavigationController {
-        let viewController = CategoryViewController(nibName: nil, bundle: nil).then {
-            $0.tabBarItem = UITabBarItem(
-                title: nil,
-                image: UIImage(named: "ic_category"),
-                tag: TabBarTag.home.rawValue
-            )
-        }
-        
-        return UINavigationController(rootViewController: viewController).then {
-            $0.setNavigationBarHidden(true, animated: false)
-            $0.interactivePopGestureRecognizer?.delegate = nil
-        }
+    static func instance() -> CategoryViewController {
+        return CategoryViewController(nibName: nil, bundle: nil)
     }
     
     override func loadView() {

@@ -1,8 +1,18 @@
 import UIKit
 
-final class CategoryView: BaseView {
+final class CategoryFilterView: BaseView {
+    private let containerView = UIView().then {
+        $0.layer.cornerRadius = 20
+        $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        $0.backgroundColor = .white
+    }
+    
+    private let topIndicator = UIImageView().then {
+        $0.image = R.image.img_top_indicator()
+    }
+    
     private let titleLabel = UILabel().then {
-        let text = "category_title".localized
+        let text = R.string.localization.category_title()
         let attributedString = NSMutableAttributedString(string: text)
         let boldTextRange = (text as NSString).range(of: "네 최애")
         
@@ -48,15 +58,21 @@ final class CategoryView: BaseView {
     override func setup() {
         self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
         self.addSubViews([
+            self.topIndicator,
             self.titleLabel,
             self.categoryCollectionView
         ])
     }
     
     override func bindConstraints() {
+        self.topIndicator.snp.makeConstraints { make in
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(16)
+            make.centerX.equalToSuperview()
+        }
+        
         self.titleLabel.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(24)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(35)
+            make.top.equalTo(self.topIndicator.snp.bottom).offset(26)
         }
         
         self.categoryCollectionView.snp.makeConstraints { make in

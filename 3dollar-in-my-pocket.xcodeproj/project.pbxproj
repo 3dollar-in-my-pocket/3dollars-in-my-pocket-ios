@@ -109,7 +109,7 @@
 		6E41D97B25CA62B4009D7C3A /* PhotoListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41D97A25CA62B4009D7C3A /* PhotoListCell.swift */; };
 		6E41F7E623BAC2BA00D0AC73 /* UIColorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41F7E523BAC2BA00D0AC73 /* UIColorExt.swift */; };
 		6E41F7EF23BB1F5600D0AC73 /* HomeStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41F7EE23BB1F5600D0AC73 /* HomeStoreCell.swift */; };
-		6E447FF225E3DE2E00459551 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E447FF125E3DE2E00459551 /* CategoryView.swift */; };
+		6E447FF225E3DE2E00459551 /* CategoryFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E447FF125E3DE2E00459551 /* CategoryFilterView.swift */; };
 		6E447FF425E3E1CD00459551 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E447FF325E3E1CD00459551 /* CategoryViewController.swift */; };
 		6E447FF625E3E3FB00459551 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E447FF525E3E3FB00459551 /* CategoryCell.swift */; };
 		6E447FF825E3E53800459551 /* CategoryReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E447FF725E3E53800459551 /* CategoryReactor.swift */; };
@@ -588,7 +588,7 @@
 		6E41D97A25CA62B4009D7C3A /* PhotoListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoListCell.swift; sourceTree = "<group>"; };
 		6E41F7E523BAC2BA00D0AC73 /* UIColorExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExt.swift; sourceTree = "<group>"; };
 		6E41F7EE23BB1F5600D0AC73 /* HomeStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeStoreCell.swift; sourceTree = "<group>"; };
-		6E447FF125E3DE2E00459551 /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
+		6E447FF125E3DE2E00459551 /* CategoryFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryFilterView.swift; sourceTree = "<group>"; };
 		6E447FF325E3E1CD00459551 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		6E447FF525E3E3FB00459551 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
 		6E447FF725E3E53800459551 /* CategoryReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryReactor.swift; sourceTree = "<group>"; };
@@ -1511,7 +1511,7 @@
 				6E8BE65B2892CA8900D67938 /* boss-store-detail */,
 				6E57F296273A91F0008C524A /* visit */,
 				6E6B0EDA23AD16A3006E11CE /* base */,
-				6E70C38C23B6EB7400C52C9C /* category */,
+				6E70C38C23B6EB7400C52C9C /* category-filter */,
 				6EA5EC0623B57EE10028F86B /* home */,
 				6EA5EC0523B57ED20028F86B /* main */,
 				6E6B0EE223AD17D7006E11CE /* membership */,
@@ -1576,16 +1576,16 @@
 			path = font;
 			sourceTree = "<group>";
 		};
-		6E70C38C23B6EB7400C52C9C /* category */ = {
+		6E70C38C23B6EB7400C52C9C /* category-filter */ = {
 			isa = PBXGroup;
 			children = (
 				6E58ED7127A7D326004819A9 /* subviews */,
-				6E447FF125E3DE2E00459551 /* CategoryView.swift */,
+				6E447FF125E3DE2E00459551 /* CategoryFilterView.swift */,
 				6E447FF325E3E1CD00459551 /* CategoryViewController.swift */,
 				6E447FF725E3E53800459551 /* CategoryReactor.swift */,
 				6E8C190327A81D9F00FF5B4C /* CategoryCoordinator.swift */,
 			);
-			path = category;
+			path = "category-filter";
 			sourceTree = "<group>";
 		};
 		6E70C38D23B6EB8200C52C9C /* store-detail */ = {
@@ -2965,7 +2965,7 @@
 				6E54BFF3289643FB00B7E608 /* BossStoreWorkdayStackViewItem.swift in Sources */,
 				6ED516C62570AB2F00303105 /* SettingWithdrawalCell.swift in Sources */,
 				6EC0D67C26EB7EEF008AD34B /* StoresGroupByDistanceResponse.swift in Sources */,
-				6E447FF225E3DE2E00459551 /* CategoryView.swift in Sources */,
+				6E447FF225E3DE2E00459551 /* CategoryFilterView.swift in Sources */,
 				6E74879E2723E8A30021DF93 /* RatingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
