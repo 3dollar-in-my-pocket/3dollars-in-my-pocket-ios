@@ -6,18 +6,31 @@ import ReactorKit
 
 final class CategoryFilterViewController: BaseViewController, View, CategoryFilterCoordinator {
     private let categoryFilterView = CategoryFilterView()
-    private let categoryFilterReactor = CategoryFilterReactor(
-        categoryService: CategoryService(),
-        advertisementService: AdvertisementService()
-    )
+    private let categoryFilterReactor: CategoryFilterReactor
     private weak var coordinator: CategoryFilterCoordinator?
-    private var categoryDataSource
-        : RxCollectionViewSectionedReloadDataSource<SectionModel<Advertisement?, StreetFoodCategory>>!
+    private var categoryDataSource:
+    RxCollectionViewSectionedReloadDataSource<CategoryFilterSectionModel>!
     
-    static func instance() -> CategoryFilterViewController {
-        return CategoryFilterViewController(nibName: nil, bundle: nil).then {
+    static func instance(storeType: StoreType) -> CategoryFilterViewController {
+        return CategoryFilterViewController(storeType: storeType).then {
             $0.modalPresentationStyle = .overCurrentContext
         }
+    }
+    
+    init(storeType: StoreType) {
+        self.categoryFilterReactor = CategoryFilterReactor(
+            storeType: storeType,
+            advertisementService: AdvertisementService(),
+            metaContext: MetaContext.shared,
+            globalState: GlobalState.shared
+        )
+        
+        super.init(nibName: nil, bundle: nil)
+        self.setupDataSource()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func loadView() {
@@ -30,7 +43,6 @@ final class CategoryFilterViewController: BaseViewController, View, CategoryFilt
         if let parentView = self.presentingViewController?.view {
             DimManager.shared.showDim(targetView: parentView)
         }
-        self.setupDataSource()
         self.reactor = self.categoryFilterReactor
         self.coordinator = self
         self.categoryFilterReactor.action.onNext(.viewDidLoad)
@@ -69,51 +81,66 @@ final class CategoryFilterViewController: BaseViewController, View, CategoryFilt
         
         // Bind State
         reactor.state
-            .map { $0.categorySections }
+            .map { [CategoryFilterSectionModel(categories: $0.categories)] }
             .asDriver(onErrorJustReturn: [])
-            .drive(
-                self.categoryFilterView.categoryCollectionView.rx
-                    .items(dataSource: self.categoryDataSource)
+            .drive(self.categoryFilterView.categoryCollectionView.rx.items(
+                dataSource: self.categoryDataSource)
             )
             .disposed(by: self.disposeBag)
     }
     
     private func setupDataSource() {
         self.categoryDataSource
-            = .init(configureCell: { _, collectionView, indexPath, menuCategory in
+        = .init(configureCell: { _, collectionView, indexPath, sectionModel in
+            switch sectionModel {
+            case .category(let category):
                 guard let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: CategoryCell.registerId,
+                    withReuseIdentifier: CategoryFilterCell.registerId,
                     for: indexPath
-                ) as? CategoryCell else { return BaseCollectionViewCell() }
+                ) as? CategoryFilterCell else { return BaseCollectionViewCell() }
                 
-                cell.bind(menuCategory: menuCategory)
+                cell.bind(category: category)
                 return cell
-            })
+            }
+        })
         
         self.categoryDataSource.configureSupplementaryView
-            = { dataSource, collectionView, _, indexPath -> UICollectionReusableView in
-                guard let adBannerHeaderView = collectionView.dequeueReusableSupplementaryView(
+        = { _, collectionView, kind, indexPath -> UICollectionReusableView in
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
+                guard let headerView = collectionView.dequeueReusableSupplementaryView(
                     ofKind: UICollectionView.elementKindSectionHeader,
-                    withReuseIdentifier: AdBannerHeaderView.registerID,
+                    withReuseIdentifier: CategoryFilterHeaderView.registerID,
                     for: indexPath
-                ) as? AdBannerHeaderView else {
+                ) as? CategoryFilterHeaderView else {
                     return UICollectionReusableView()
                 }
                 
-                if let advertisement = dataSource.sectionModels[indexPath.section].model {
-                    adBannerHeaderView.bind(advertisement: advertisement)
-                    adBannerHeaderView.rx.tap
-                        .map { Reactor.Action.tapBanner }
-                        .bind(to: self.categoryFilterReactor.action)
-                        .disposed(by: adBannerHeaderView.disposeBag)
-                } else {
-                    if let layout
-                        = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-                        layout.headerReferenceSize = .zero
-                    }
-                }
+                headerView.rx.tap
+                    .map { Reactor.Action.tapBanner }
+                    .bind(to: self.categoryFilterReactor.action)
+                    .disposed(by: headerView.disposeBag)
                 
-                return adBannerHeaderView
+                self.categoryFilterReactor.state
+                    .map { $0.advertisement }
+                    .distinctUntilChanged()
+                    .do(onNext: { advertisement in
+                        if advertisement == nil {
+                            if let layout = collectionView.collectionViewLayout
+                                as? UICollectionViewFlowLayout {
+                                layout.headerReferenceSize = .zero
+                            }
+                        }
+                    })
+                    .asDriver(onErrorJustReturn: nil)
+                    .drive(headerView.rx.advertisement)
+                    .disposed(by: headerView.disposeBag)
+                
+                return headerView
+                
+            default:
+                return UICollectionReusableView()
             }
+        }
     }
 }

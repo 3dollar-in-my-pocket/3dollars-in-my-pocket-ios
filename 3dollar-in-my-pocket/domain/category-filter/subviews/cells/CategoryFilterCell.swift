@@ -2,8 +2,8 @@ import UIKit
 
 import Base
 
-final class CategoryCell: BaseCollectionViewCell {
-    static let registerId = "\(CategoryCell.self)"
+final class CategoryFilterCell: BaseCollectionViewCell {
+    static let registerId = "\(CategoryFilterCell.self)"
     static let size = CGSize(
         width: (UIScreen.main.bounds.width - 48 - 22)/3,
         height: (UIScreen.main.bounds.width - 48 - 22)/3 + 9
@@ -60,7 +60,9 @@ final class CategoryCell: BaseCollectionViewCell {
         
         self.categoryImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(self.containerView).offset(10 * RatioUtils.heightRatio)
+            make.top.equalTo(self.containerView).offset(10)
+            make.width.equalTo(60)
+            make.height.equalTo(60)
         }
         
         self.categoryLabel.snp.makeConstraints { make in
@@ -69,9 +71,15 @@ final class CategoryCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(menuCategory: StreetFoodCategory) {
-        self.categoryLabel.text = menuCategory.name
-        self.categoryImage.image = menuCategory.category.image
-        self.newLabel.isHidden = !menuCategory.isNew
+    func bind(category: Categorizable) {
+        if let streetFoodCategory = category as? StreetFoodCategory {
+            self.categoryLabel.text = streetFoodCategory.name
+            self.categoryImage.setImage(urlString: streetFoodCategory.imageUrl)
+            self.newLabel.isHidden = !streetFoodCategory.isNew
+        } else if let foodtruckCategory = category as? FoodTruckCategory {
+            self.categoryLabel.text = foodtruckCategory.name
+            self.categoryImage.setImage(urlString: foodtruckCategory.imageUrl)
+            self.newLabel.isHidden = true
+        }
     }
 }

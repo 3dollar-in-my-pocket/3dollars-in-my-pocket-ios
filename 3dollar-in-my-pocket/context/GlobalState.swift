@@ -10,4 +10,6 @@ final class GlobalState {
     
     /// 푸드트럭 피드백 추가한 경우
     let updateFeedbacks = PublishSubject<[BossStoreFeedback]>()
+    
+    let selectCategoryFilter = PublishSubject<Categorizable>()
 }

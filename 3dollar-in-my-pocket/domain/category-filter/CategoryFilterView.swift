@@ -36,9 +36,9 @@ final class CategoryFilterView: BaseView {
         
         layout.minimumInteritemSpacing = 11
         layout.minimumLineSpacing = 16
-        layout.itemSize = CategoryCell.size
+        layout.itemSize = CategoryFilterCell.size
         layout.scrollDirection = .vertical
-        layout.headerReferenceSize = AdBannerHeaderView.size
+        layout.headerReferenceSize = CategoryFilterHeaderView.size
         
         $0.collectionViewLayout = layout
         $0.backgroundColor = UIColor(r: 250, g: 250, b: 250)
@@ -46,14 +46,33 @@ final class CategoryFilterView: BaseView {
         $0.showsVerticalScrollIndicator = false
         $0.clipsToBounds = true
         $0.register(
-            CategoryCell.self,
-            forCellWithReuseIdentifier: CategoryCell.registerId
+            CategoryFilterCell.self,
+            forCellWithReuseIdentifier: CategoryFilterCell.registerId
         )
         $0.register(
-            AdBannerHeaderView.self,
+            CategoryFilterHeaderView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: AdBannerHeaderView.registerID
+            withReuseIdentifier: CategoryFilterHeaderView.registerID
         )
+    }
+    
+    private let gradientView = UIView().then {
+        let gradient: CAGradientLayer = CAGradientLayer()
+        
+        gradient.colors = [
+            UIColor.white.withAlphaComponent(0).cgColor,
+            UIColor.white.withAlphaComponent(1).cgColor
+        ]
+        gradient.locations = [0.0 , 1.0]
+        gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
+        gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
+        gradient.frame = CGRect(
+            x: 0,
+            y: 0,
+            width: UIScreen.main.bounds.width,
+            height: 80
+        )
+        $0.layer.addSublayer(gradient)
     }
     
     override func setup() {
@@ -63,7 +82,8 @@ final class CategoryFilterView: BaseView {
             self.containerView,
             self.topIndicator,
             self.titleLabel,
-            self.categoryCollectionView
+            self.categoryCollectionView,
+            self.gradientView
         ])
     }
     
@@ -96,6 +116,13 @@ final class CategoryFilterView: BaseView {
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview()
             make.top.equalTo(self.titleLabel.snp.bottom).offset(16)
+        }
+        
+        self.gradientView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.height.equalTo(80)
         }
     }
 }

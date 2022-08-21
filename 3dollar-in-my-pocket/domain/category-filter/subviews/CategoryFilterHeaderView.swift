@@ -3,13 +3,13 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class AdBannerHeaderView: UICollectionReusableView {
-    let disposeBag = DisposeBag()
-    static let registerID = "\(AdBannerHeaderView.self)"
+final class CategoryFilterHeaderView: UICollectionReusableView {
+    static let registerID = "\(CategoryFilterHeaderView.self)"
     static let size = CGSize(
         width: UIScreen.main.bounds.width - 48,
         height: 100
     )
+    var disposeBag = DisposeBag()
     
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 12
@@ -46,7 +46,20 @@ final class AdBannerHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(advertisement: Advertisement) {
+    private func setup() {
+        self.stackView.addArrangedSubview(self.titleLabel)
+        self.stackView.addArrangedSubview(self.descriptionLabel)
+        self.addSubViews([
+            self.containerView,
+            self.stackView,
+            self.rightImageView,
+            self.button
+        ])
+    }
+    
+    fileprivate func bind(advertisement: Advertisement?) {
+        guard let advertisement = advertisement else { return}
+
         self.titleLabel.text = advertisement.title
         self.titleLabel.textColor = .init(hex: advertisement.fontColor)
         self.titleLabel.setKern(kern: -0.4)
@@ -60,17 +73,6 @@ final class AdBannerHeaderView: UICollectionReusableView {
         } else {
             self.stackView.spacing = 8
         }
-    }
-    
-    private func setup() {
-        self.stackView.addArrangedSubview(self.titleLabel)
-        self.stackView.addArrangedSubview(self.descriptionLabel)
-        self.addSubViews([
-            self.containerView,
-            self.stackView,
-            self.rightImageView,
-            self.button
-        ])
     }
     
     private func bindConstraints() {
@@ -99,8 +101,14 @@ final class AdBannerHeaderView: UICollectionReusableView {
     }
 }
 
-extension Reactive where Base: AdBannerHeaderView {
+extension Reactive where Base: CategoryFilterHeaderView {
     var tap: ControlEvent<Void> {
         return base.button.rx.tap
+    }
+    
+    var advertisement: Binder<Advertisement?> {
+        return Binder(self.base) { view, advertisement in
+            view.bind(advertisement: advertisement)
+        }
     }
 }
