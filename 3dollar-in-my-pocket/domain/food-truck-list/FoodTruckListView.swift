@@ -5,7 +5,7 @@ import RxSwift
 import RxCocoa
 import NMapsMap
 
-final class StreetFoodListView: Base.BaseView {
+final class FoodTruckListView: Base.BaseView {
     private let topContainerView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
@@ -88,13 +88,6 @@ final class StreetFoodListView: Base.BaseView {
             withReuseIdentifier: StreetFoodListHeaderView.registerId
         )
     }
-    
-    let writeButton = UIButton().then {
-        $0.layer.cornerRadius = 25
-        $0.backgroundColor = R.color.red()
-        $0.setImage(R.image.ic_write(), for: .normal)
-        $0.contentEdgeInsets = .init(top: 14, left: 14, bottom: 14, right: 14)
-    }
         
     override func setup() {
         self.backgroundColor = R.color.gray0()
@@ -103,11 +96,8 @@ final class StreetFoodListView: Base.BaseView {
             self.topContainerView,
             self.categoryImageView,
             self.categoryLabel,
-            self.categoryButton,
-            self.writeButton
+            self.categoryButton
         ])
-        
-        self.collectionView.delegate = self
     }
     
     override func bindConstraints() {
@@ -142,49 +132,18 @@ final class StreetFoodListView: Base.BaseView {
             make.top.equalTo(self.topContainerView.snp.bottom).offset(-20)
             make.bottom.equalTo(self.safeAreaLayoutGuide)
         }
-        
-        self.writeButton.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-24)
-            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-24)
-            make.width.equalTo(50)
-            make.height.equalTo(50)
-        }
     }
     
-    fileprivate func bind(category: StreetFoodCategory) {
+    fileprivate func bind(category: FoodTruckCategory) {
         self.categoryImageView.setImage(urlString: category.imageUrl)
         self.categoryLabel.text = category.name
     }
-    
-    private func showWriteAddressButton() {
-        UIView.transition(with: self, duration: 0.3, options: .curveEaseInOut) { [weak self] in
-            self?.writeButton.transform = .identity
-            self?.writeButton.alpha = 1
-        }
-    }
-    
-    private func hideWriteAddressButton() {
-        UIView.transition(with: self, duration: 0.3, options: .curveEaseInOut) { [weak self] in
-            self?.writeButton.transform = .init(translationX: 0, y: 100)
-            self?.writeButton.alpha = 0
-        }
-    }
 }
 
-extension Reactive where Base: StreetFoodListView {
-    var category: Binder<StreetFoodCategory> {
+extension Reactive where Base: FoodTruckListView {
+    var category: Binder<FoodTruckCategory> {
         return Binder(self.base) { view, category in
             view.bind(category: category)
         }
-    }
-}
-
-extension StreetFoodListView: UICollectionViewDelegate {
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        self.hideWriteAddressButton()
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        self.showWriteAddressButton()
     }
 }

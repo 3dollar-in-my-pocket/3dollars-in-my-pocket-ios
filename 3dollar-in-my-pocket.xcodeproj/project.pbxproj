@@ -17,6 +17,9 @@
 		6E07D44E23B5918B0055AEE7 /* WriteDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44D23B5918B0055AEE7 /* WriteDetailVC.swift */; };
 		6E09470326F4BE27000D4858 /* RenameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09470226F4BE27000D4858 /* RenameViewModel.swift */; };
 		6E09470526F4C5DE000D4858 /* ChangeNicknameError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09470426F4C5DE000D4858 /* ChangeNicknameError.swift */; };
+		6E09A75828B22F7D00792F12 /* FoodTruckListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09A75728B22F7D00792F12 /* FoodTruckListView.swift */; };
+		6E09A75A28B22F9500792F12 /* FoodTruckListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09A75928B22F9500792F12 /* FoodTruckListViewController.swift */; };
+		6E09A75D28B2305F00792F12 /* FoodTruckListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09A75C28B2305F00792F12 /* FoodTruckListHeaderView.swift */; };
 		6E0BCC9F2875C63B00B7A5AD /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6E0BCC9E2875C63B00B7A5AD /* SnapKit */; };
 		6E0EA39723ABB230008F7CB2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */; };
 		6E0EA39923ABB230008F7CB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */; };
@@ -499,6 +502,9 @@
 		6E07D44D23B5918B0055AEE7 /* WriteDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailVC.swift; sourceTree = "<group>"; };
 		6E09470226F4BE27000D4858 /* RenameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameViewModel.swift; sourceTree = "<group>"; };
 		6E09470426F4C5DE000D4858 /* ChangeNicknameError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeNicknameError.swift; sourceTree = "<group>"; };
+		6E09A75728B22F7D00792F12 /* FoodTruckListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckListView.swift; sourceTree = "<group>"; };
+		6E09A75928B22F9500792F12 /* FoodTruckListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckListViewController.swift; sourceTree = "<group>"; };
+		6E09A75C28B2305F00792F12 /* FoodTruckListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckListHeaderView.swift; sourceTree = "<group>"; };
 		6E0EA39323ABB230008F7CB2 /* dollar-in-my-pocket-debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dollar-in-my-pocket-debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E0EA39623ABB230008F7CB2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6E0EA39823ABB230008F7CB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -978,6 +984,24 @@
 				6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */,
 			);
 			path = splash;
+			sourceTree = "<group>";
+		};
+		6E09A75628B22F6600792F12 /* food-truck-list */ = {
+			isa = PBXGroup;
+			children = (
+				6E09A75B28B2304E00792F12 /* subviews */,
+				6E09A75728B22F7D00792F12 /* FoodTruckListView.swift */,
+				6E09A75928B22F9500792F12 /* FoodTruckListViewController.swift */,
+			);
+			path = "food-truck-list";
+			sourceTree = "<group>";
+		};
+		6E09A75B28B2304E00792F12 /* subviews */ = {
+			isa = PBXGroup;
+			children = (
+				6E09A75C28B2305F00792F12 /* FoodTruckListHeaderView.swift */,
+			);
+			path = subviews;
 			sourceTree = "<group>";
 		};
 		6E0EA38A23ABB230008F7CB2 = {
@@ -1511,6 +1535,7 @@
 		6E6B0ED923AD169B006E11CE /* domain */ = {
 			isa = PBXGroup;
 			children = (
+				6E09A75628B22F6600792F12 /* food-truck-list */,
 				6E7BF37C28A9250A00A00BF2 /* street-food-list */,
 				6E8BE65B2892CA8900D67938 /* boss-store-detail */,
 				6E57F296273A91F0008C524A /* visit */,
@@ -2603,6 +2628,7 @@
 				6E3AA4E025AD6C9B00D8C58C /* Region.swift in Sources */,
 				6E54BFF528964A2300B7E608 /* BossStoreHeaderView.swift in Sources */,
 				6EA205FE28881CF700BAB019 /* OpenStatus.swift in Sources */,
+				6E09A75D28B2305F00792F12 /* FoodTruckListHeaderView.swift in Sources */,
 				6E31577925BA9F180022D6F3 /* StoreDetailPhotoCell.swift in Sources */,
 				6EEE30B526FEDAED00696467 /* LocationError.swift in Sources */,
 				6E16EE2426BC1AC800F4DD03 /* UserInfoResponse.swift in Sources */,
@@ -2812,6 +2838,7 @@
 				6E72AE5C23C9727100D3B257 /* SplashVC.swift in Sources */,
 				6E5F3F7128993EC00066E318 /* BossStoreFeedbackItemView.swift in Sources */,
 				6EDBBB802754C1EC00470F71 /* StoreWithVisitsResponse.swift in Sources */,
+				6E09A75828B22F7D00792F12 /* FoodTruckListView.swift in Sources */,
 				6E0EA39B23ABB230008F7CB2 /* SignInViewController.swift in Sources */,
 				6E7112C62781587D00396CC0 /* CheckExistStoresNearbyResponse.swift in Sources */,
 				6E81B84725E11FF300748E02 /* LocalResponse.swift in Sources */,
@@ -2848,6 +2875,7 @@
 				6E4CB8FF23D488A700542D21 /* ReviewService.swift in Sources */,
 				6EC8303B289FC11C00C0324F /* BossStoreMoreMenuCell.swift in Sources */,
 				6E13578923D8108800D91782 /* ModifyView.swift in Sources */,
+				6E09A75A28B22F9500792F12 /* FoodTruckListViewController.swift in Sources */,
 				6E81B84D25E1231A00748E02 /* Address.swift in Sources */,
 				6E56BD8323CDE3BC002D7092 /* Review.swift in Sources */,
 				6E54BFEA28963B0600B7E608 /* BossStoreMenu.swift in Sources */,
