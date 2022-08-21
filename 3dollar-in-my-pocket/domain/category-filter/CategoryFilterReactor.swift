@@ -62,7 +62,7 @@ final class CategoryFilterReactor: BaseReactor, Reactor {
         case .tapCategory(let index):
             let tappedCategory = self.currentState.categories[index]
             
-            self.globalState.selectCategoryFilter.onNext(tappedCategory)
+            self.globalState.updateCategoryFilter.onNext(tappedCategory)
             return .just(.dismiss)
         }
     }

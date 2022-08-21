@@ -64,6 +64,13 @@ final class CategoryFilterViewController: BaseViewController, View, CategoryFilt
             })
             .disposed(by: self.eventDisposeBag)
         
+        self.categoryFilterReactor.dismissPublisher
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.dismiss()
+            })
+            .disposed(by: self.eventDisposeBag)
+        
         self.categoryFilterReactor.showErrorAlertPublisher
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in

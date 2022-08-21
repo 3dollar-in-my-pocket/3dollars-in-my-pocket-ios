@@ -12,7 +12,8 @@ final class StreetFoodListViewController: BaseViewController, StreetFoodListCoor
         storeService: StoreService(),
         advertisementService: AdvertisementService(),
         locationManager: LocationManager.shared,
-        metaContext: MetaContext.shared
+        metaContext: MetaContext.shared,
+        globalState: GlobalState.shared
     )
     private weak var coordinator: StreetFoodListCoordinator?
     private var streetFoodStoreCollectionViewDataSource:

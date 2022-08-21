@@ -18,6 +18,7 @@ final class StreetFoodListReactor: BaseReactor, Reactor {
     
     enum Mutation {
         case presentCategoryFilter(selectedCategory: StreetFoodCategory)
+        case setCategory(StreetFoodCategory)
         case setStores([Store])
         case setAdvertisement(Advertisement?)
         case setCurrentLocation(CLLocation)
@@ -46,12 +47,14 @@ final class StreetFoodListReactor: BaseReactor, Reactor {
     private let advertisementService: AdvertisementServiceProtocol
     private let locationManager: LocationManagerProtocol
     private let metaContext: MetaContext
+    private let globalState: GlobalState
     
     init(
         storeService: StoreServiceProtocol,
         advertisementService: AdvertisementServiceProtocol,
         locationManager: LocationManagerProtocol,
         metaContext: MetaContext,
+        globalState: GlobalState,
         state: State = State(
             category: StreetFoodCategory.totalCategory,
             cameraPosition: nil,
@@ -66,6 +69,7 @@ final class StreetFoodListReactor: BaseReactor, Reactor {
         self.locationManager = locationManager
         self.advertisementService = advertisementService
         self.metaContext = metaContext
+        self.globalState = globalState
         
         guard let firstCategory
                 = metaContext.streetFoodCategories.first as? StreetFoodCategory else {
@@ -143,12 +147,37 @@ final class StreetFoodListReactor: BaseReactor, Reactor {
         }
     }
     
+    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
+        return .merge([
+            mutation,
+            self.globalState.updateCategoryFilter
+                .flatMap { category -> Observable<Mutation> in
+                    if let streetFoodCategory = category as? StreetFoodCategory {
+                        return .merge([
+                            .just(.setCategory(streetFoodCategory)),
+                            self.searchNearStores(
+                                category: streetFoodCategory,
+                                currentLocation: self.currentState.currentLocation,
+                                mapLocation: self.currentState.cameraPosition ?? self.currentState.currentLocation,
+                                orderType: self.currentState.orderType
+                            )
+                        ])
+                    } else {
+                        return .error(BaseError.custom("알 수 없는 카테고리 입니다."))
+                    }
+                }
+        ])
+    }
+    
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         
         switch mutation {
         case .presentCategoryFilter(let selectedCategory):
             self.presentCategoryFilterPublisher.accept(selectedCategory)
+            
+        case .setCategory(let category):
+            newState.category = category
             
         case .setStores(let stores):
             newState.stores = stores
