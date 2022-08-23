@@ -39,7 +39,7 @@ final class FoodTruckListStoreCell: BaseCollectionViewCell {
     }
     
     private let ratingImage = UIImageView().then {
-        $0.image = R.image.ic_review_white()
+        $0.image = R.image.ic_review_green()
     }
     
     private let reviewCountLabel = UILabel().then {

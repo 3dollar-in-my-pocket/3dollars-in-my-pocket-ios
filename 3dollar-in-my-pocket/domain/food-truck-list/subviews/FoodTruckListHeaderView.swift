@@ -18,7 +18,7 @@ final class FoodTruckListHeaderView: UICollectionReusableView {
         $0.textAlignment = .left
     }
     
-    let orderFilterButton = OrderFilterButton()
+    let orderFilterButton = OrderFilterButton(storeType: .foodTruck)
     
     let adBannerView = GADBannerView().then {
         $0.adUnitID = Bundle.admobUnitId

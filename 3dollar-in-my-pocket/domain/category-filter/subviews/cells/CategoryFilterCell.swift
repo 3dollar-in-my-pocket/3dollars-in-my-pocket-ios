@@ -31,6 +31,7 @@ final class CategoryFilterCell: BaseCollectionViewCell {
     private let categoryLabel = UILabel().then {
         $0.font = .extraBold(size: 14)
         $0.textColor = .black
+        $0.textAlignment = .center
     }
     
     override func setup() {
@@ -66,7 +67,8 @@ final class CategoryFilterCell: BaseCollectionViewCell {
         }
         
         self.categoryLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
+            make.left.equalTo(self.containerView).offset(10)
+            make.right.equalTo(self.containerView).offset(-10)
             make.top.equalTo(self.categoryImage.snp.bottom).offset(4)
         }
     }

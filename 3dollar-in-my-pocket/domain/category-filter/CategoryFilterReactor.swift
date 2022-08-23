@@ -43,7 +43,7 @@ final class CategoryFilterReactor: BaseReactor, Reactor {
         if storeType == .streetFood {
             self.initialState = State(categories: metaContext.streetFoodCategories)
         } else {
-            self.initialState = State(categories: metaContext.streetFoodCategories)
+            self.initialState = State(categories: metaContext.foodTruckCategories)
         }
     }
     

@@ -20,7 +20,7 @@ final class StreetFoodListHeaderView: UICollectionReusableView {
     
     let certificatedButton = CertificateButton()
     
-    let orderFilterButton = OrderFilterButton()
+    let orderFilterButton = OrderFilterButton(storeType: .streetFood)
     
     let adBannerView = GADBannerView().then {
         $0.adUnitID = Bundle.admobUnitId

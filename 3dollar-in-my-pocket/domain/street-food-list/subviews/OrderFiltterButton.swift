@@ -29,6 +29,22 @@ final class OrderFilterButton: BaseView {
         $0.layer.shadowOpacity = 0.08
     }
     
+    init(storeType: StoreType) {
+        super.init(frame: .zero)
+        
+        if storeType == .streetFood {
+            self.distanceOrderButton.setTitleColor(R.color.pink(), for: .selected)
+            self.reviewOrderButton.setTitleColor(R.color.pink(), for: .selected)
+        } else {
+            self.distanceOrderButton.setTitleColor(R.color.green(), for: .selected)
+            self.reviewOrderButton.setTitleColor(R.color.green(), for: .selected)
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func setup() {
         self.layer.cornerRadius = 12
         self.backgroundColor = R.color.gray5()
