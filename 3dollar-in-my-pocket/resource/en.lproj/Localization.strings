@@ -142,6 +142,7 @@
 "shared_store_type_convenience_store" = "편의점";
 "shared_category_dalgona" = "달고나";
 "shared_advertisement" = "광고";
+"shared_advertisement_more" = "자세히 보기 >";
 "store_detail_delete_request" = "삭제요청";
 "store_detail_share" = "공유하기";
 "store_detail_type" = "가게형태";

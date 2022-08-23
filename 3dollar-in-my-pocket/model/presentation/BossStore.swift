@@ -1,4 +1,4 @@
-struct BossStore: StoreProtocol {
+struct BossStore {
     let id: String
     let appearanceDays: [BossStoreAppearanceDay]
     let categories: [Categorizable]
@@ -64,6 +64,23 @@ struct BossStore: StoreProtocol {
         self.introduction = nil
         self.feedbackCount = 0
         self.feedbacks = []
+    }
+}
+
+extension BossStore {
+    /// 카테고리들 나열된 문자열
+    var categoriesString: String {
+        return self.categories.map { "#\($0.name)" }.joined(separator: " ")
+    }
+}
+
+extension BossStore: StoreProtocol {
+    var latitude: Double {
+        return self.location?.latitude ?? 0
+    }
+    
+    var longitude: Double {
+        return self.location?.longitude ?? 0
     }
 }
 

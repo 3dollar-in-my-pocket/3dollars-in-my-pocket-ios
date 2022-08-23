@@ -10,7 +10,8 @@ class SplashVC: BaseVC {
     remoteConfigService: RemoteConfigService(),
     metaContext: MetaContext.shared,
     medalService: MedalService(),
-    feedbackService: FeedbackService()
+    feedbackService: FeedbackService(),
+    categoryService: CategoryService()
   )
   
   
