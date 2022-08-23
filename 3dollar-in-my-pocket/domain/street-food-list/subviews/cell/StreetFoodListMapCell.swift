@@ -49,7 +49,7 @@ final class StreetFoodListMapCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(stores: [Store]) {
+    func bind(stores: [StoreProtocol]) {
         self.setMarkers(stores: stores)
     }
     
@@ -68,7 +68,7 @@ final class StreetFoodListMapCell: BaseCollectionViewCell {
         self.mapView.moveCamera(cameraUpdate)
     }
     
-    private func setMarkers(stores: [Store]) {
+    private func setMarkers(stores: [StoreProtocol]) {
         self.clearMarkers()
         
         for store in stores {

@@ -210,6 +210,7 @@
 		6E5939052573E38900593DC8 /* PrivacyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5939042573E38900593DC8 /* PrivacyVC.swift */; };
 		6E59BEF926C8F3E300008DDA /* SigninViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E59BEF826C8F3E300008DDA /* SigninViewModelTests.swift */; };
 		6E59BEFC26C8F5BA00008DDA /* SigninManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E59BEFB26C8F5BA00008DDA /* SigninManagerMock.swift */; };
+		6E5B359C28B3ACFE0056C223 /* FoodTruckListStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5B359B28B3ACFE0056C223 /* FoodTruckListStoreCell.swift */; };
 		6E5BDF7E26CA107100A7A1E0 /* NicknameViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5BDF7D26CA107100A7A1E0 /* NicknameViewModelTests.swift */; };
 		6E5C358A2691C3A9003681FF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E5C35892691C3A9003681FF /* Colors.xcassets */; };
 		6E5CA57627686CAC001EDE19 /* MedalInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA57527686CAC001EDE19 /* MedalInfoView.swift */; };
@@ -433,6 +434,9 @@
 		6EF63FBF2761B3690063A3B9 /* MyVisitHistoryCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF63FBE2761B3690063A3B9 /* MyVisitHistoryCoordinator.swift */; };
 		6EF63FC32761B7130063A3B9 /* MyVisitHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF63FC22761B7130063A3B9 /* MyVisitHistoryTableViewCell.swift */; };
 		6EF63FC52761B7E10063A3B9 /* MyVisitHistoryImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF63FC42761B7E10063A3B9 /* MyVisitHistoryImageView.swift */; };
+		6EFBB8CF28B50280009E4FAF /* FoodTruckListReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFBB8CE28B50280009E4FAF /* FoodTruckListReactor.swift */; };
+		6EFBB8D128B50536009E4FAF /* FoodTruckListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFBB8D028B50536009E4FAF /* FoodTruckListCoordinator.swift */; };
+		6EFBB8D328B5055E009E4FAF /* FoodTruckListSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFBB8D228B5055E009E4FAF /* FoodTruckListSectionModel.swift */; };
 		6EFC89DF268B63E800B3414F /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFC89DE268B63E800B3414F /* R.generated.swift */; };
 		B8EA7A145886259737429AC9 /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C7D748F844F08727B81379C /* Pods_3dollar_in_my_pocketTests.framework */; };
 /* End PBXBuildFile section */
@@ -686,6 +690,7 @@
 		6E5939042573E38900593DC8 /* PrivacyVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyVC.swift; sourceTree = "<group>"; };
 		6E59BEF826C8F3E300008DDA /* SigninViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninViewModelTests.swift; sourceTree = "<group>"; };
 		6E59BEFB26C8F5BA00008DDA /* SigninManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninManagerMock.swift; sourceTree = "<group>"; };
+		6E5B359B28B3ACFE0056C223 /* FoodTruckListStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckListStoreCell.swift; sourceTree = "<group>"; };
 		6E5BDF7D26CA107100A7A1E0 /* NicknameViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameViewModelTests.swift; sourceTree = "<group>"; };
 		6E5C35892691C3A9003681FF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		6E5CA57527686CAC001EDE19 /* MedalInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalInfoView.swift; sourceTree = "<group>"; };
@@ -912,6 +917,9 @@
 		6EF63FBE2761B3690063A3B9 /* MyVisitHistoryCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVisitHistoryCoordinator.swift; sourceTree = "<group>"; };
 		6EF63FC22761B7130063A3B9 /* MyVisitHistoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVisitHistoryTableViewCell.swift; sourceTree = "<group>"; };
 		6EF63FC42761B7E10063A3B9 /* MyVisitHistoryImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVisitHistoryImageView.swift; sourceTree = "<group>"; };
+		6EFBB8CE28B50280009E4FAF /* FoodTruckListReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckListReactor.swift; sourceTree = "<group>"; };
+		6EFBB8D028B50536009E4FAF /* FoodTruckListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckListCoordinator.swift; sourceTree = "<group>"; };
+		6EFBB8D228B5055E009E4FAF /* FoodTruckListSectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckListSectionModel.swift; sourceTree = "<group>"; };
 		6EFC89DE268B63E800B3414F /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
 		9BD7363D69E45B80A24A0A6F /* Pods-3dollar-in-my-pocket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.release.xcconfig"; sourceTree = "<group>"; };
 		9BF56FCCEFDD2EC9EA90ED1B /* Pods-3dollar-in-my-pocket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocket.debug.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocket/Pods-3dollar-in-my-pocket.debug.xcconfig"; sourceTree = "<group>"; };
@@ -992,6 +1000,8 @@
 				6E09A75B28B2304E00792F12 /* subviews */,
 				6E09A75728B22F7D00792F12 /* FoodTruckListView.swift */,
 				6E09A75928B22F9500792F12 /* FoodTruckListViewController.swift */,
+				6EFBB8CE28B50280009E4FAF /* FoodTruckListReactor.swift */,
+				6EFBB8D028B50536009E4FAF /* FoodTruckListCoordinator.swift */,
 			);
 			path = "food-truck-list";
 			sourceTree = "<group>";
@@ -999,6 +1009,7 @@
 		6E09A75B28B2304E00792F12 /* subviews */ = {
 			isa = PBXGroup;
 			children = (
+				6E5B359A28B3ACEB0056C223 /* cell */,
 				6E09A75C28B2305F00792F12 /* FoodTruckListHeaderView.swift */,
 			);
 			path = subviews;
@@ -1414,6 +1425,14 @@
 			path = managers;
 			sourceTree = "<group>";
 		};
+		6E5B359A28B3ACEB0056C223 /* cell */ = {
+			isa = PBXGroup;
+			children = (
+				6E5B359B28B3ACFE0056C223 /* FoodTruckListStoreCell.swift */,
+			);
+			path = cell;
+			sourceTree = "<group>";
+		};
 		6E5CA57427686CA6001EDE19 /* info */ = {
 			isa = PBXGroup;
 			children = (
@@ -1768,6 +1787,7 @@
 				6E72AE6223C980F600D3B257 /* User.swift */,
 				6E4543F125B7C44C000E60B8 /* WeekDay.swift */,
 				6E68683728ABCD3F003EE196 /* StreetFoodListSectionModel.swift */,
+				6EFBB8D228B5055E009E4FAF /* FoodTruckListSectionModel.swift */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -2691,6 +2711,7 @@
 				6E511E6D25714E70009E4667 /* QuestionCell.swift in Sources */,
 				6EA3207A2762F015002AA2F5 /* VisitHistoryViewModel.swift in Sources */,
 				6EDAC5E326D7DC1500979252 /* MyPageCoordinator.swift in Sources */,
+				6EFBB8CF28B50280009E4FAF /* FoodTruckListReactor.swift in Sources */,
 				6E6F35A325AC7990007931EC /* WriteAddressView.swift in Sources */,
 				6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */,
 				6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */,
@@ -2771,6 +2792,7 @@
 				6E93C83E23F23213002E737F /* AdvertisementService.swift in Sources */,
 				6EB6F9EF289D3F9300D41AE3 /* FoodTruckTooltipView.swift in Sources */,
 				6EBF45242761C65F00DC3BD2 /* MyVisitHistoryViewModel.swift in Sources */,
+				6EFBB8D128B50536009E4FAF /* FoodTruckListCoordinator.swift in Sources */,
 				6E4697D3273E37E4005A5902 /* VisitHistory.swift in Sources */,
 				6E13578B23D811CA00D91782 /* ModifyVC.swift in Sources */,
 				6ECCE9AD26BAD179006B3C01 /* AddStoreRequest.swift in Sources */,
@@ -2882,6 +2904,7 @@
 				6E81B84225E0EDE900748E02 /* SearchTransition.swift in Sources */,
 				6E4C1BEA2753A932006C0F15 /* VisitHistoryWithStoreResponse.swift in Sources */,
 				6E31574D25BA60B60022D6F3 /* StoreDetailMenuCategoryView.swift in Sources */,
+				6E5B359C28B3ACFE0056C223 /* FoodTruckListStoreCell.swift in Sources */,
 				6E54BFFB2896539100B7E608 /* BossStoreSectionModel.swift in Sources */,
 				6E9D64DB25BD73E10075DE36 /* DeleteModalViewModel.swift in Sources */,
 				6E6835BE23C2CEFB00D23F54 /* RegisteredStoreCell.swift in Sources */,
@@ -2929,6 +2952,7 @@
 				6E89DCE928AA787300327829 /* StreetFoodListHeaderView.swift in Sources */,
 				6E4813EF28A9C8020083B122 /* StreetFoodListMapCell.swift in Sources */,
 				6E9D64E025BD751B0075DE36 /* DeleteReason.swift in Sources */,
+				6EFBB8D328B5055E009E4FAF /* FoodTruckListSectionModel.swift in Sources */,
 				6ED6F1E925B51A0100357B80 /* MenuSection.swift in Sources */,
 				6E3AA4C925AD6BBE00D8C58C /* NaverMapResponse.swift in Sources */,
 				6E3DED7B25C7EDB1000BE04C /* RegisterPhotoCell.swift in Sources */,

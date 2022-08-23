@@ -49,6 +49,7 @@ final class SplashViewModel: BaseViewModel {
                 self?.fetchBossStoreTypes()
                 self?.fetchMedals()
                 self?.fetchStreetFoodCategories()
+                self?.fetchFoodTurckCategories()
             })
             .disposed(by: self.disposeBag)
     }
@@ -141,6 +142,16 @@ final class SplashViewModel: BaseViewModel {
         self.categoryService.fetchStreetFoodCategories()
             .subscribe(onNext: { [weak self] categories in
                 self?.metaContext.streetFoodCategories = categories
+            }, onError: { [weak self] error in
+                self?.showErrorAlert.accept(error)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func fetchFoodTurckCategories() {
+        self.categoryService.fetchFoodTruckCategories()
+            .subscribe(onNext: { [weak self] categories in
+                self?.metaContext.foodTruckCategories = categories
             }, onError: { [weak self] error in
                 self?.showErrorAlert.accept(error)
             })

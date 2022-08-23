@@ -137,6 +137,6 @@ struct CategoryService: CategoryServiceProtocol {
             urlString: urlString,
             headers: headers
         )
-        .map { [FoodTruckCategory.totalCategory] + $0.map(FoodTruckCategory.init(response: )) }
+        .map { $0.map(FoodTruckCategory.init(response: )) }
     }
 }

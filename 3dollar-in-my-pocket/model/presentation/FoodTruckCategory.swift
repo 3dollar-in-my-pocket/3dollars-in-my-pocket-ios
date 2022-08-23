@@ -1,4 +1,4 @@
-struct FoodTruckCategory: Categorizable {
+struct FoodTruckCategory: Categorizable, Equatable {
     let id: String
     let name: String
     let imageUrl: String

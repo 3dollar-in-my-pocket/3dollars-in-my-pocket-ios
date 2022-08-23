@@ -49,14 +49,14 @@ final class FoodTruckListView: Base.BaseView {
                 ))
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .estimated(StreetFoodListStoreCell.height)
+                    heightDimension: .estimated(FoodTruckListStoreCell.height)
                 ), subitems: [storeItem])
                 let section = NSCollectionLayoutSection(group: group)
                 
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(StreetFoodListHeaderView.height)
+                        heightDimension: .absolute(FoodTruckListHeaderView.height)
                     ),
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .topLeading
@@ -71,8 +71,8 @@ final class FoodTruckListView: Base.BaseView {
             forCellWithReuseIdentifier: StreetFoodListMapCell.registerId
         )
         $0.register(
-            StreetFoodListStoreCell.self,
-            forCellWithReuseIdentifier: StreetFoodListStoreCell.registerId
+            FoodTruckListStoreCell.self,
+            forCellWithReuseIdentifier: FoodTruckListStoreCell.registerId
         )
         $0.register(
             StreetFoodListEmptyCell.self,
@@ -83,9 +83,9 @@ final class FoodTruckListView: Base.BaseView {
             forCellWithReuseIdentifier: StreetFoodListAdvertisementCell.registerId
         )
         $0.register(
-            StreetFoodListHeaderView.self,
+            FoodTruckListHeaderView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: StreetFoodListHeaderView.registerId
+            withReuseIdentifier: FoodTruckListHeaderView.registerId
         )
     }
         

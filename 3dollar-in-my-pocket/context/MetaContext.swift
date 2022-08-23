@@ -9,4 +9,7 @@ final class MetaContext {
     
     /// 활성화된 길거리 음식점 카테고리를 저장해둡니다.
     var streetFoodCategories: [Categorizable] = []
+    
+    /// 활성화된 푸드트럭 카테고리를 저장해둡니다.
+    var foodTruckCategories: [Categorizable] = []
 }
