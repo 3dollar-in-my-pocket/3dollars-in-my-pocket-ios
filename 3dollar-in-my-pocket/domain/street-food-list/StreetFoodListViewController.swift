@@ -250,6 +250,6 @@ extension StreetFoodListViewController: NMFMapViewCameraDelegate {
 
 extension StreetFoodListViewController: WriteAddressDelegate {
     func onWriteSuccess(storeId: Int) {
-        
+        self.coordinator?.pushStoreDetail(storeId: storeId)
     }
 }
