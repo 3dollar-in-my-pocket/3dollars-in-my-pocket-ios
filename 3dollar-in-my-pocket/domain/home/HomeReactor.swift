@@ -463,7 +463,8 @@ final class HomeReactor: BaseReactor, Reactor {
             
         case .updateStore(let store):
             for index in newState.storeCellTypes.indices {
-                if case .store = newState.storeCellTypes[index] {
+                if case .store(let storeProtocol) = newState.storeCellTypes[index],
+                   storeProtocol.id == store.id {
                     newState.storeCellTypes[index] = StoreCellType.store(store)
                 }
             }
