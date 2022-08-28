@@ -197,7 +197,7 @@ class StoreDetailViewModel: BaseViewModel {
     )
     let content = Content(
       title: "store_detail_share_title".localized,
-      imageUrl: URL(string: "https://storage.prod.threedollars.co.kr/share/share-with-kakao.png")!,
+      imageUrl: URL(string: "https://storage.threedollars.co.kr/share/share-with-kakao.png")!,
       imageWidth: 500,
       imageHeight: 500,
       description: "store_detail_share_description".localized,
