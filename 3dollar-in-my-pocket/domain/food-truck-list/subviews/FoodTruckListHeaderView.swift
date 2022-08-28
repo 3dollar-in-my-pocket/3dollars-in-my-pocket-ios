@@ -35,6 +35,12 @@ final class FoodTruckListHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.disposeBag = DisposeBag()
+    }
+    
     fileprivate func bind(category: FoodTruckCategory) {
         let text = category.description
         let attributedString = NSMutableAttributedString(string: text)
