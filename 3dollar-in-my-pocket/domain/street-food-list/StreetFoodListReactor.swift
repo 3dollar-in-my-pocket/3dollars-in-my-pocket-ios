@@ -163,7 +163,7 @@ final class StreetFoodListReactor: BaseReactor, Reactor {
                             )
                         ])
                     } else {
-                        return .error(BaseError.custom("알 수 없는 카테고리 입니다."))
+                        return .empty()
                     }
                 }
         ])
