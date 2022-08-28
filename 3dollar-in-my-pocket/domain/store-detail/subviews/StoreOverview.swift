@@ -37,7 +37,7 @@ final class StoreOverview: BaseView {
   }
   
   private let distanceImage = UIImageView().then {
-    $0.image = UIImage(named: "ic_near_filled")
+    $0.image = UIImage(named: "ic_near_filled_pink")
   }
   
   private let distanceLabel = UILabel().then {
