@@ -122,12 +122,7 @@ final class FoodTruckListReactor: BaseReactor, Reactor {
             ])
             
         case .tapStore(let index):
-            var selectedIndex = index
-            
-            if index >= 2 {
-                selectedIndex = self.currentState.advertisement == nil ? index : index + 1
-            }
-            
+            let selectedIndex = self.currentState.advertisement == nil ? index : index - 1
             let selectedStore = self.currentState.stores[selectedIndex]
             
             return .just(.pushBossStoreDetail(storeId: selectedStore.id))

@@ -32,7 +32,7 @@ extension FoodTruckListSectionModel: SectionModelType {
             if let advertisement = advertisement {
                 let advertisementSection = SectionItemType.advertisement(advertisement)
                 
-                self.items = storeSection + [advertisementSection]
+                self.items = [advertisementSection] + storeSection
             } else {
                 self.items = storeSection
             }

@@ -35,7 +35,7 @@ extension StreetFoodListSectionModel: SectionModelType {
                 if let advertisement = advertisement {
                     let advertisementSection = SectionItemType.advertisement(advertisement)
                     
-                    self.items = storeSection + [advertisementSection]
+                    self.items = [advertisementSection] + storeSection
                 } else {
                     self.items = storeSection
                 }
@@ -49,7 +49,7 @@ extension StreetFoodListSectionModel: SectionModelType {
                 if let advertisement = advertisement {
                     let advertisementSection = SectionItemType.advertisement(advertisement)
                     
-                    self.items = storeSection + [advertisementSection]
+                    self.items = [advertisementSection] + storeSection
                 } else {
                     self.items = storeSection
                 }
