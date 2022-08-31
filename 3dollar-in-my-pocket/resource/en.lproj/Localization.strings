@@ -142,6 +142,7 @@
 "shared_store_type_convenience_store" = "편의점";
 "shared_category_dalgona" = "달고나";
 "shared_advertisement" = "광고";
+"shared_advertisement_more" = "자세히 보기 >";
 "store_detail_delete_request" = "삭제요청";
 "store_detail_share" = "공유하기";
 "store_detail_type" = "가게형태";
@@ -238,7 +239,6 @@
 "visit_history_total_count" = "이번 달 %d명이\n다녀간 가게에요!";
 "my_medal_title" = "내 칭호";
 "boss_store_share" = "공유하기";
-"boss_store_contact" = "연락처";
 "boss_store_sns" = "SNS";
 "boss_store_sns_shortcut" = "바로가기";
 "boss_store_introduction" = "사장님 한마디";
@@ -250,6 +250,7 @@
 "boss_store_store_feedback" = "가게 평가";
 "boss_store_empty_menu" = "아직 등록된 정보가 없어요.";
 "boss_store_closed" = "지금은 준비중이에요! 🧑‍🍳";
+"boss_store_more_menu" = "%d개의 메뉴가 더 있습니다.";
 "monday_full" = "월요일";
 "tuesday_full" = "화요일";
 "wednesday_full" = "수요일";

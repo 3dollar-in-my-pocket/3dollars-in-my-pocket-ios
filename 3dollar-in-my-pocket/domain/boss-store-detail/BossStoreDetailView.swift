@@ -69,10 +69,14 @@ final class BossStoreDetailView: BaseView {
                     widthDimension: .fractionalWidth(1),
                     heightDimension: .absolute(BossStoreEmptyMenuCell.height)
                 ))
+                let moreItem = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(BossStoreMoreMenuCell.height)
+                ))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
                     heightDimension: .estimated(BossStoreMenuCell.height)
-                ), subitems: [menuItem, emptyMenuItem])
+                ), subitems: [menuItem, moreItem, emptyMenuItem])
                 let section = NSCollectionLayoutSection(group: group)
                 
                 section.boundarySupplementaryItems = [.init(
@@ -141,6 +145,10 @@ final class BossStoreDetailView: BaseView {
         $0.register(
             BossStoreMenuCell.self,
             forCellWithReuseIdentifier: BossStoreMenuCell.registerId
+        )
+        $0.register(
+            BossStoreMoreMenuCell.self,
+            forCellWithReuseIdentifier: BossStoreMoreMenuCell.registerId
         )
         $0.register(
             BossStoreEmptyMenuCell.self,

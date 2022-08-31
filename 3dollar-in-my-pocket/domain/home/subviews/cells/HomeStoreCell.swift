@@ -40,7 +40,7 @@ final class HomeStoreCell: BaseCollectionViewCell {
     }
   
     private let distanceImage = UIImageView().then {
-        $0.image = R.image.ic_near_filled()
+        $0.image = R.image.ic_near_filled_pink()
     }
   
     private let distanceLabel = UILabel().then {
@@ -183,7 +183,8 @@ final class HomeStoreCell: BaseCollectionViewCell {
             self.bedgeImage.isHidden = !store.visitHistory.isCertified
             self.visitButton.isHidden = false
             self.starImage.image = R.image.ic_star()
-            self.distanceImage.image = R.image.ic_near_filled()
+            self.distanceImage.image = R.image.ic_near_filled_pink()
+            self.isClosedTagView.isHidden = true
         } else if let bossStore = store as? BossStore {
             self.storeType = .foodTruck
             if let category = bossStore.categories.first as? FoodTruckCategory {
@@ -221,13 +222,13 @@ final class HomeStoreCell: BaseCollectionViewCell {
                 self.distanceImage.image = R.image.ic_near_filled_green()
             } else {
                 self.starImage.image = R.image.ic_star()
-                self.distanceImage.image = R.image.ic_near_filled()
+                self.distanceImage.image = R.image.ic_near_filled_pink()
             }
             self.containerView.backgroundColor = .white
             self.titleLabel.textColor = .black
             self.categoriesLabel.textColor = R.color.gray60()
             self.distanceLabel.textColor = R.color.gray90()
-            self.distanceImage.image = R.image.ic_near_filled()
+            self.distanceImage.image = R.image.ic_near_filled_pink()
             self.rankLabel.textColor = R.color.gray90()
         }
   }

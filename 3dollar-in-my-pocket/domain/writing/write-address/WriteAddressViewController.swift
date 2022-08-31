@@ -22,11 +22,6 @@ final class WriteAddressViewController: BaseVC, View, WriteAddressCoordinator {
     static func instance(delegate: WriteAddressDelegate) -> UINavigationController {
         let writeAddressVC = WriteAddressViewController(nibName: nil, bundle: nil).then {
             $0.delegate = delegate
-            $0.tabBarItem = UITabBarItem(
-                title: nil,
-                image: R.image.ic_write(),
-                tag: TabBarTag.write.rawValue
-            )
         }
         
         return UINavigationController(rootViewController: writeAddressVC).then {

@@ -1,4 +1,4 @@
-struct BossStore: StoreProtocol {
+struct BossStore {
     let id: String
     let appearanceDays: [BossStoreAppearanceDay]
     let categories: [Categorizable]
@@ -9,7 +9,6 @@ struct BossStore: StoreProtocol {
     let openingTime: String?
     let imageURL: String?
     let status: OpenStatus
-    let contacts: String?
     let snsUrl: String?
     let introduction: String?
     var feedbackCount: Int
@@ -26,7 +25,6 @@ struct BossStore: StoreProtocol {
         self.openingTime = response.openStatus.openStartDateTime
         self.imageURL = nil
         self.status = OpenStatus(response: response.openStatus.status)
-        self.contacts = nil
         self.snsUrl = nil
         self.introduction = nil
         self.feedbackCount = response.totalFeedbacksCounts
@@ -45,7 +43,6 @@ struct BossStore: StoreProtocol {
         self.openingTime = response.store.openStatus.openStartDateTime
         self.imageURL = response.store.imageUrl
         self.status = OpenStatus(response: response.store.openStatus.status)
-        self.contacts = response.store.contactsNumber
         self.snsUrl = response.store.snsUrl
         self.introduction = response.store.introduction
         self.feedbackCount = response.feedbacks.map { $0.count }.reduce(0, +)
@@ -63,11 +60,27 @@ struct BossStore: StoreProtocol {
         self.openingTime = nil
         self.imageURL = nil
         self.status = .open
-        self.contacts = nil
         self.snsUrl = nil
         self.introduction = nil
         self.feedbackCount = 0
         self.feedbacks = []
+    }
+}
+
+extension BossStore {
+    /// 카테고리들 나열된 문자열
+    var categoriesString: String {
+        return self.categories.map { "#\($0.name)" }.joined(separator: " ")
+    }
+}
+
+extension BossStore: StoreProtocol {
+    var latitude: Double {
+        return self.location?.latitude ?? 0
+    }
+    
+    var longitude: Double {
+        return self.location?.longitude ?? 0
     }
 }
 

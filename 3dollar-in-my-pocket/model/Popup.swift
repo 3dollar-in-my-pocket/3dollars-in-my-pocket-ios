@@ -1,4 +1,4 @@
-struct Advertisement {
+struct Advertisement: Equatable {
     let id: Int
     let bgColor: String
     let fontColor: String

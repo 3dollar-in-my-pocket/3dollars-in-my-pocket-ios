@@ -11,17 +11,6 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         $0.layer.cornerRadius = 12
     }
     
-    private let contactTitleLabel = UILabel().then {
-        $0.font = .bold(size: 14)
-        $0.textColor = R.color.black()
-        $0.text = R.string.localization.boss_store_contact()
-    }
-    
-    private let contactValueLabel = UILabel().then {
-        $0.font = .regular(size: 14)
-        $0.textColor = R.color.gray50()
-    }
-    
     private let snsTitleLabel = UILabel().then {
         $0.font = .bold(size: 14)
         $0.textColor = R.color.black()
@@ -57,8 +46,6 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         self.backgroundColor = .clear
         self.addSubViews([
             self.containerView,
-            self.contactTitleLabel,
-            self.contactValueLabel,
             self.snsTitleLabel,
             self.snsButton,
             self.introductionTitleLabel,
@@ -75,28 +62,18 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
             make.bottom.equalTo(self.introductionValueLabel).offset(16)
         }
         
-        self.contactTitleLabel.snp.makeConstraints { make in
+        self.snsTitleLabel.snp.makeConstraints { make in
             make.left.equalTo(self.containerView).offset(16)
             make.top.equalTo(self.containerView).offset(16)
         }
         
-        self.contactValueLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(self.contactTitleLabel)
-            make.right.equalTo(self.containerView).offset(-16)
-        }
-        
-        self.snsTitleLabel.snp.makeConstraints { make in
-            make.left.equalTo(self.contactTitleLabel)
-            make.top.equalTo(self.contactTitleLabel.snp.bottom).offset(18)
-        }
-        
         self.snsButton.snp.makeConstraints { make in
-            make.right.equalTo(self.contactValueLabel)
+            make.right.equalTo(self.containerView).offset(-16)
             make.centerY.equalTo(self.snsTitleLabel)
         }
         
         self.introductionTitleLabel.snp.makeConstraints { make in
-            make.left.equalTo(self.contactTitleLabel)
+            make.left.equalTo(self.snsTitleLabel)
             make.top.equalTo(self.snsTitleLabel.snp.bottom).offset(16)
         }
         
@@ -115,13 +92,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(
-        contacts: String?,
-        snsUrl: String?,
-        introduction: String?,
-        imageUrl: String?
-    ) {
-        self.contactValueLabel.text = contacts
+    func bind(snsUrl: String?, introduction: String?, imageUrl: String?) {
         if let snsUrl = snsUrl {
             self.snsButton.isHidden = snsUrl.isEmpty
         } else {

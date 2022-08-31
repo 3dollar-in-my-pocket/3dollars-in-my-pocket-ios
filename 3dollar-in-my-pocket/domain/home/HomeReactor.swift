@@ -123,8 +123,8 @@ final class HomeReactor: BaseReactor, Reactor {
         switch action {
         case .viewDidLoad:
             return Observable.zip(
-                self.categoryService.fetchStreetFoodCategories(),
-                self.categoryService.fetchFoodTruckCategories()
+                self.fetchStreedFoodCategories(),
+                self.fetchFoodTruckCategories()
             )
             .do(onNext: { [weak self] streetFoodCategory, foodTruckCategory in
                 self?.streetFoodCategory = streetFoodCategory
@@ -463,7 +463,8 @@ final class HomeReactor: BaseReactor, Reactor {
             
         case .updateStore(let store):
             for index in newState.storeCellTypes.indices {
-                if case .store = newState.storeCellTypes[index] {
+                if case .store(let storeProtocol) = newState.storeCellTypes[index],
+                   storeProtocol.id == store.id {
                     newState.storeCellTypes[index] = StoreCellType.store(store)
                 }
             }
@@ -587,6 +588,12 @@ final class HomeReactor: BaseReactor, Reactor {
     
     private func fetchStreedFoodCategories() -> Observable<[Categorizable]> {
         return self.categoryService.fetchStreetFoodCategories()
+            .map { [StreetFoodCategory.totalCategory] + $0 }
+    }
+    
+    private func fetchFoodTruckCategories() -> Observable<[Categorizable]> {
+        return self.categoryService.fetchFoodTruckCategories()
+            .map { [FoodTruckCategory.totalCategory] + $0 }
     }
     
     private func fetchAdvertisement() -> Observable<Advertisement?> {

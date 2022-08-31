@@ -25,7 +25,6 @@ class TabBarVC: UITabBarController {
         self.setupTabBarController()
         self.addKakaoLinkObserver()
         self.feedbackGenerator.prepare()
-        self.delegate = self
         if #available(iOS 15, *) {
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
@@ -53,7 +52,7 @@ class TabBarVC: UITabBarController {
                 self.tabBar.standardAppearance = appearance
                 self.tabBar.scrollEdgeAppearance = appearance
             }
-        case TabBarTag.home.rawValue, TabBarTag.category.rawValue:
+        case TabBarTag.home.rawValue, TabBarTag.streetFood.rawValue:
             self.tabBar.barTintColor = .white
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()
@@ -106,8 +105,8 @@ class TabBarVC: UITabBarController {
     private func setupTabBarController() {
         self.setViewControllers([
             HomeViewController.instance(),
-            CategoryViewController.instance(),
-            WriteAddressViewController.instance(delegate: self),
+            StreetFoodListViewController.instance(),
+            FoodTruckListViewController.instance(),
             MyPageViewController.instance()
         ], animated: true)
         self.tabBar.tintColor = R.color.red()
@@ -184,35 +183,5 @@ class TabBarVC: UITabBarController {
                     }
                 })
             .disposed(by: self.disposeBag)
-    }
-}
-
-extension TabBarVC: WriteAddressDelegate {
-    func onWriteSuccess(storeId: Int) {
-        self.selectedIndex = 0
-        if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-           let homeVC = navigationVC.viewControllers[0] as? HomeViewController {
-            navigationVC.popToRootViewController(animated: false)
-//            homeVC.fetchStoresFromCurrentLocation()
-            homeVC.coordinator?.pushStoreDetail(storeId: String(storeId))
-        }
-    }
-}
-
-extension TabBarVC: UITabBarControllerDelegate {
-    
-    func tabBarController(
-        _ tabBarController: UITabBarController,
-        shouldSelect viewController: UIViewController
-    ) -> Bool {
-        if let navigationVC = viewController as? UINavigationController {
-            if navigationVC.topViewController is WriteAddressViewController {
-                let writeVC = WriteAddressViewController.instance(delegate: self)
-                
-                self.present(writeVC, animated: true, completion: nil)
-                return false
-            }
-        }
-        return true
     }
 }
