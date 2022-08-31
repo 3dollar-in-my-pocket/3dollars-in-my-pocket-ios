@@ -12,17 +12,17 @@ final class MedalInfoViewModel: BaseViewModel {
     
     let input = Input()
     let output = Output()
-    let medalContext: MedalContext
+    let metaContext: MetaContext
     
-    init(medalContext: MedalContext) {
-        self.medalContext = medalContext
+    init(metaContext: MetaContext) {
+        self.metaContext = metaContext
         
         super.init()
     }
     
     override func bind() {
         self.input.viewDidLoad
-            .compactMap { [weak self] in self?.medalContext.medals }
+            .compactMap { [weak self] in self?.metaContext.medals }
             .bind(to: self.output.medals)
             .disposed(by: self.disposeBag)
     }

@@ -12,7 +12,7 @@ class StoreDetailViewModel: BaseViewModel {
   var model = Model()
   
   let storeId: Int
-  let userDefaults: UserDefaultsUtil
+  var userDefaults: UserDefaultsUtil
   let locationManager: LocationManagerProtocol
   let storeService: StoreServiceProtocol
   let reviewService: ReviewServiceProtocol
@@ -145,9 +145,9 @@ class StoreDetailViewModel: BaseViewModel {
   }
   
   func clearKakaoLinkIfExisted() {
-    if self.userDefaults.getDetailLink() != 0 {
-      self.userDefaults.setDetailLink(storeId: 0)
-    }
+      if !self.userDefaults.shareLink.isEmpty {
+          self.userDefaults.shareLink = ""
+      }
   }
   
   private func fetchStore(
@@ -186,12 +186,18 @@ class StoreDetailViewModel: BaseViewModel {
     let link = Link(
       webUrl: webURL,
       mobileWebUrl: webURL,
-      androidExecutionParams: ["storeId": String(store.storeId)],
-      iosExecutionParams: ["storeId": String(store.storeId)]
+      androidExecutionParams: [
+          "storeId": String(store.id),
+          "storeType": "streetFood"
+      ],
+      iosExecutionParams: [
+          "storeId": String(store.id),
+          "storeType": "streetFood"
+      ]
     )
     let content = Content(
       title: "store_detail_share_title".localized,
-      imageUrl: URL(string: "https://storage.prod.threedollars.co.kr/share/share-with-kakao.png")!,
+      imageUrl: URL(string: "https://storage.threedollars.co.kr/share/share-with-kakao.png")!,
       imageWidth: 500,
       imageHeight: 500,
       description: "store_detail_share_description".localized,

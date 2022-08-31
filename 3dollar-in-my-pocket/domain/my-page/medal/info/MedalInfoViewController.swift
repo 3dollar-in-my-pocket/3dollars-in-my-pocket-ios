@@ -2,7 +2,7 @@ import UIKit
 
 final class MedalInfoViewController: BaseVC, MedalInfoCoordinator {
     private let medalInfoView = MedalInfoView()
-    private let viewModel = MedalInfoViewModel(medalContext: MedalContext.shared)
+    private let viewModel = MedalInfoViewModel(metaContext: MetaContext.shared)
     private weak var coordinator: MedalInfoCoordinator?
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

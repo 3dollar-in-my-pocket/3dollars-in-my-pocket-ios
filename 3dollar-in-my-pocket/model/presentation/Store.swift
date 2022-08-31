@@ -1,7 +1,10 @@
-struct Store {
+struct Store: StoreProtocol {
+    var id: String {
+        return String(self.storeId)
+    }
     
     let appearanceDays: [WeekDay]
-    let categories: [StoreCategory]
+    let categories: [StreetFoodStoreCategory]
     let isDeleted: Bool
     let distance: Int
     let images: [Image]
@@ -13,14 +16,14 @@ struct Store {
     var reviews: [Review]
     let storeId: Int
     let storeName: String
-    let storeType: StoreType?
+    let storeType: StreetFoodStoreType?
     let updatedAt: String?
     let user: User
     let visitHistories: [VisitHistory]
     var visitHistory: VisitOverview
     
     init(
-        category: StoreCategory,
+        category: StreetFoodStoreCategory,
         latitude: Double,
         longitude: Double,
         storeName: String,
@@ -49,13 +52,13 @@ struct Store {
     init(
         id: Int = -1,
         appearanceDays: [WeekDay],
-        categories: [StoreCategory],
+        categories: [StreetFoodStoreCategory],
         latitude: Double,
         longitude: Double,
         menuSections: [MenuSection],
         paymentType: [PaymentType],
         storeName: String,
-        storeType: StoreType?
+        storeType: StreetFoodStoreType?
     ) {
         self.appearanceDays = appearanceDays
         self.categories = categories

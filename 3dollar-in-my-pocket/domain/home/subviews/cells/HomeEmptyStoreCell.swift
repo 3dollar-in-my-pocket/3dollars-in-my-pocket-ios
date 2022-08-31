@@ -66,4 +66,14 @@ final class HomeEmptyStoreCell: BaseCollectionViewCell {
             make.top.equalTo(self.emptyTitleLabel.snp.bottom).offset(8)
         }
     }
+    
+    func bind(storeType: StoreType) {
+        if storeType == .streetFood {
+            self.emptyTitleLabel.text = R.string.localization.home_empty_title()
+            self.emptyDescriptionLabel.text = R.string.localization.home_empty_description()
+        } else {
+            self.emptyTitleLabel.text = R.string.localization.home_empty_boss_title()
+            self.emptyDescriptionLabel.text = R.string.localization.home_empty_boss_description()
+        }
+    }
 }

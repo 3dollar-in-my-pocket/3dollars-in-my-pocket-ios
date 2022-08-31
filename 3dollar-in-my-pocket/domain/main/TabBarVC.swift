@@ -24,9 +24,7 @@ class TabBarVC: UITabBarController {
         self.checkIfBannerExisted()
         self.setupTabBarController()
         self.addKakaoLinkObserver()
-        self.processKakaoLinkIfExisted()
         self.feedbackGenerator.prepare()
-        self.delegate = self
         if #available(iOS 15, *) {
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
@@ -34,6 +32,12 @@ class TabBarVC: UITabBarController {
             self.tabBar.standardAppearance = appearance
             self.tabBar.scrollEdgeAppearance = appearance
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.processKakaoLinkIfExisted()
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -48,7 +52,7 @@ class TabBarVC: UITabBarController {
                 self.tabBar.standardAppearance = appearance
                 self.tabBar.scrollEdgeAppearance = appearance
             }
-        case TabBarTag.home.rawValue, TabBarTag.category.rawValue:
+        case TabBarTag.home.rawValue, TabBarTag.streetFood.rawValue:
             self.tabBar.barTintColor = .white
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()
@@ -101,8 +105,8 @@ class TabBarVC: UITabBarController {
     private func setupTabBarController() {
         self.setViewControllers([
             HomeViewController.instance(),
-            CategoryViewController.instance(),
-            WriteAddressViewController.instance(delegate: self),
+            StreetFoodListViewController.instance(),
+            FoodTruckListViewController.instance(),
             MyPageViewController.instance()
         ], animated: true)
         self.tabBar.tintColor = R.color.red()
@@ -127,10 +131,15 @@ class TabBarVC: UITabBarController {
     }
     
     private func processKakaoLinkIfExisted() {
-        let kakaoLinkStoreId = UserDefaultsUtil().getDetailLink()
+        let kakaoShareLink = UserDefaultsUtil().shareLink
+        guard !kakaoShareLink.isEmpty else { return }
+        let storeType = kakaoShareLink.split(separator: ":").first ?? "foodTruck"
+        let storeId = kakaoShareLink.split(separator: ":").last ?? ""
         
-        if kakaoLinkStoreId != 0 {
-            self.goToStoreDetail(storeId: kakaoLinkStoreId)
+        if storeType ==  "foodTruck" {
+            self.pushBossStoreDetail(storeId: String(storeId))
+        } else {
+            self.goToStoreDetail(storeId: Int(storeId) ?? 0)
         }
     }
     
@@ -138,7 +147,15 @@ class TabBarVC: UITabBarController {
         self.selectedIndex = 0
         if let navigationVC = self.viewControllers?[0] as? UINavigationController,
            let homeVC = navigationVC.topViewController as? HomeViewController {
-            homeVC.coordinator?.pushStoreDetail(storeId: storeId)
+            homeVC.coordinator?.pushStoreDetail(storeId: String(storeId))
+        }
+    }
+    
+    private func pushBossStoreDetail(storeId: String) {
+        self.selectedIndex = 0
+        if let navigationVC = self.viewControllers?[0] as? UINavigationController,
+           let homeVC = navigationVC.topViewController as? HomeViewController {
+            homeVC.coordinator?.pushBossStoreDetail(storeId: storeId)
         }
     }
     
@@ -166,35 +183,5 @@ class TabBarVC: UITabBarController {
                     }
                 })
             .disposed(by: self.disposeBag)
-    }
-}
-
-extension TabBarVC: WriteAddressDelegate {
-    func onWriteSuccess(storeId: Int) {
-        self.selectedIndex = 0
-        if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-           let homeVC = navigationVC.viewControllers[0] as? HomeViewController {
-            navigationVC.popToRootViewController(animated: false)
-//            homeVC.fetchStoresFromCurrentLocation()
-            homeVC.coordinator?.pushStoreDetail(storeId: storeId)
-        }
-    }
-}
-
-extension TabBarVC: UITabBarControllerDelegate {
-    
-    func tabBarController(
-        _ tabBarController: UITabBarController,
-        shouldSelect viewController: UIViewController
-    ) -> Bool {
-        if let navigationVC = viewController as? UINavigationController {
-            if navigationVC.topViewController is WriteAddressViewController {
-                let writeVC = WriteAddressViewController.instance(delegate: self)
-                
-                self.present(writeVC, animated: true, completion: nil)
-                return false
-            }
-        }
-        return true
     }
 }

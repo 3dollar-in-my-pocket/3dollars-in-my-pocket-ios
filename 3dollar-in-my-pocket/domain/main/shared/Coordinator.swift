@@ -1,11 +1,3 @@
-//
-//  Coordinator.swift
-//  3dollar-in-my-pocket
-//
-//  Created by Hyun Sik Yoo on 2021/08/26.
-//  Copyright © 2021 Macgongmon. All rights reserved.
-//
-
 import UIKit
 
 protocol Coordinator {
@@ -30,6 +22,10 @@ extension Coordinator where Self: BaseVC {
     
     func dismiss() {
         self.presenter.dismiss(animated: true, completion: nil)
+    }
+    
+    func showLoading(isShow: Bool) {
+        
     }
     
     func showRootDim(isShow: Bool) {

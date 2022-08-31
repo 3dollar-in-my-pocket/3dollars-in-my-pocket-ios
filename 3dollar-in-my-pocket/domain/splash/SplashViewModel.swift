@@ -20,28 +20,36 @@ final class SplashViewModel: BaseViewModel {
     let userDefaults: UserDefaultsUtil
     let userService: UserServiceProtocol
     let remoteConfigService: RemoteConfigProtocol
-    let medalContext: MedalContext
+    let metaContext: MetaContext
     let medalService: MedalServiceProtocol
-    
+    private let feedbackService: FeedbackServiceProtocol
+    private let categoryService: CategoryServiceProtocol
     
     init(
         userDefaults: UserDefaultsUtil,
         userService: UserServiceProtocol,
         remoteConfigService: RemoteConfigProtocol,
-        medalContext: MedalContext,
-        medalService: MedalServiceProtocol
+        metaContext: MetaContext,
+        medalService: MedalServiceProtocol,
+        feedbackService: FeedbackServiceProtocol,
+        categoryService: CategoryServiceProtocol
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
         self.remoteConfigService = remoteConfigService
-        self.medalContext = medalContext
+        self.metaContext = metaContext
         self.medalService = medalService
+        self.feedbackService = feedbackService
+        self.categoryService = categoryService
         
         super.init()
         
         self.input.viewDidLoad
             .bind(onNext: { [weak self] in
+                self?.fetchBossStoreTypes()
                 self?.fetchMedals()
+                self?.fetchStreetFoodCategories()
+                self?.fetchFoodTurckCategories()
             })
             .disposed(by: self.disposeBag)
     }
@@ -112,8 +120,38 @@ final class SplashViewModel: BaseViewModel {
         self.medalService.fetchMedals()
             .map { $0.map(Medal.init) }
             .subscribe(onNext: { [weak self] medals in
-                self?.medalContext.medals = medals
+                self?.metaContext.medals = medals
                 self?.checkMinimalVersion()
+            }, onError: { [weak self] error in
+                self?.showErrorAlert.accept(error)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func fetchBossStoreTypes() {
+        self.feedbackService.fetchFeedbackTypes()
+            .subscribe(onNext: { [weak self] feedbackTypes in
+                self?.metaContext.feedbackTypes = feedbackTypes
+            }, onError: { [weak self] error in
+                self?.showErrorAlert.accept(error)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func fetchStreetFoodCategories() {
+        self.categoryService.fetchStreetFoodCategories()
+            .subscribe(onNext: { [weak self] categories in
+                self?.metaContext.streetFoodCategories = categories
+            }, onError: { [weak self] error in
+                self?.showErrorAlert.accept(error)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func fetchFoodTurckCategories() {
+        self.categoryService.fetchFoodTruckCategories()
+            .subscribe(onNext: { [weak self] categories in
+                self?.metaContext.foodTruckCategories = categories
             }, onError: { [weak self] error in
                 self?.showErrorAlert.accept(error)
             })

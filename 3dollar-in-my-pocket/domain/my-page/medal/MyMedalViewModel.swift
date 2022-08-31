@@ -24,16 +24,16 @@ final class MyMedalViewModel: BaseViewModel {
     let input = Input()
     var output = Output()
     let medalService: MedalServiceProtocol
-    let medalContext: MedalContext
+    let metaContext: MetaContext
     var medal: Medal
     
     init(
         medal: Medal,
-        medalContext: MedalContext,
+        metaContext: MetaContext,
         medalService: MedalServiceProtocol
     ) {
         self.medal = medal
-        self.medalContext = medalContext
+        self.metaContext = metaContext
         self.medalService = medalService
         
         super.init()
@@ -66,7 +66,7 @@ final class MyMedalViewModel: BaseViewModel {
             .subscribe(
                 onNext: { [weak self] myMedals in
                     guard let self = self else { return }
-                    var medals = self.medalContext.medals
+                    var medals = self.metaContext.medals
                     
                     for index in medals.indices {
                         medals[index].isOwned = myMedals.contains(medals[index])

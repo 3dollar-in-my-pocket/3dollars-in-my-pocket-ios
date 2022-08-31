@@ -69,7 +69,7 @@ class WriteCategoryCell: BaseCollectionViewCell {
     }
   }
   
-  func bind(category: StoreCategory?) {
+  func bind(category: StreetFoodStoreCategory?) {
     self.deleteButton.isHidden = (category == nil)
     if let category = category {
       self.roundView.backgroundColor = .clear

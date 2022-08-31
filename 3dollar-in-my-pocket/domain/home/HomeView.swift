@@ -9,21 +9,34 @@ final class HomeView: BaseView {
         $0.positionMode = .direction
         $0.zoomLevel = 15
     }
+    
+    let storeTypeButton = StoreTypeButton()
   
-    let addressContainerView = UIView().then {
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 16
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowOpacity = 0.08
+    let addressButton = AddressButton()
+    
+    let tooltipView = FoodTruckTooltipView().then {
+        $0.isHidden = true
     }
-  
-    let addressButton = UIButton().then {
-        $0.titleLabel?.font = .semiBold(size: 16)
-        $0.setImage(R.image.ic_arrow_bottom_black(), for: .normal)
-        $0.semanticContentAttribute = .forceRightToLeft
-        $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -8)
-        $0.setTitleColor(.black, for: .normal)
+    
+    let categoryCollectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: UICollectionViewLayout()
+    ).then {
+        let layout = UICollectionViewFlowLayout()
+        
+        layout.estimatedItemSize = HomeCategoryCollectionViewCell.itemSize
+        layout.minimumInteritemSpacing = 8
+        layout.scrollDirection = .horizontal
+        layout.sectionInset = .init(top: 0, left: 0, bottom: 0, right: 24)
+        $0.contentInset = .init(top: 0, left: 24, bottom: 0, right: 24)
+        $0.showsHorizontalScrollIndicator = false
+        $0.collectionViewLayout = layout
+        $0.backgroundColor = .clear
+        $0.clipsToBounds = false
+        $0.register(
+            HomeCategoryCollectionViewCell.self,
+            forCellWithReuseIdentifier: HomeCategoryCollectionViewCell.registerId
+        )
     }
   
     let researchButton = UIButton().then {
@@ -60,10 +73,15 @@ final class HomeView: BaseView {
     }
     
     let currentLocationButton = UIButton().then {
-        $0.setImage(R.image.ic_current_location(), for: .normal)
+        $0.setImage(R.image.ic_location_pink(), for: .normal)
+        $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
         $0.layer.shadowColor = UIColor.black.cgColor
         $0.layer.shadowOffset = CGSize(width: 0, height: 4)
         $0.layer.shadowOpacity = 0.15
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = R.color.gray20()?.cgColor
+        $0.layer.cornerRadius = 20
+        $0.backgroundColor = .white
         $0.accessibilityLabel = "현재 위치"
     }
   
@@ -72,10 +90,12 @@ final class HomeView: BaseView {
         self.addSubViews([
             self.mapView,
             self.researchButton,
-            self.addressContainerView,
+            self.storeTypeButton,
             self.addressButton,
+            self.categoryCollectionView,
             self.storeCollectionView,
-            self.currentLocationButton
+            self.currentLocationButton,
+            self.tooltipView
         ])
     }
   
@@ -84,21 +104,33 @@ final class HomeView: BaseView {
             make.edges.equalTo(0)
         }
         
-        self.addressContainerView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(25)
-            make.right.equalToSuperview().offset(-25)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(7)
-            make.height.equalTo(56)
+        self.storeTypeButton.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(24)
+            make.width.equalTo(94)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(9)
         }
         
         self.addressButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalTo(self.addressContainerView)
+            make.centerY.equalTo(self.storeTypeButton)
+            make.right.equalToSuperview().offset(-24)
+            make.left.equalTo(self.storeTypeButton.snp.right).offset(8)
+        }
+        
+        self.tooltipView.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(40)
+            make.top.equalTo(self.storeTypeButton.snp.bottom).offset(6)
+        }
+        
+        self.categoryCollectionView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.top.equalTo(self.storeTypeButton.snp.bottom).offset(12)
+            make.right.equalToSuperview()
+            make.height.equalTo(HomeCategoryCollectionViewCell.itemSize.height)
         }
         
         self.researchButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(self.addressContainerView)
+            make.bottom.equalTo(self.categoryCollectionView)
             make.height.equalTo(40)
         }
         
@@ -110,7 +142,7 @@ final class HomeView: BaseView {
         
         self.currentLocationButton.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-24)
-            make.bottom.equalTo(self.storeCollectionView.snp.top).offset(-40)
+            make.bottom.equalTo(self.storeCollectionView.snp.top).offset(-33)
         }
     }
   
@@ -141,6 +173,14 @@ final class HomeView: BaseView {
         cameraUpdate.animation = .easeIn
         self.mapView.moveCamera(cameraUpdate)
     }
+    
+    fileprivate func setStoreType(storeType: StoreType) {
+        if storeType == .foodTruck {
+            self.currentLocationButton.setImage(R.image.ic_location_green(), for: .normal)
+        } else {
+            self.currentLocationButton.setImage(R.image.ic_location_pink(), for: .normal)
+        }
+    }
 }
 
 
@@ -155,5 +195,16 @@ extension Reactive where Base: HomeView {
         return Binder(self.base) { view, cameraPosition in
             view.moveCamera(position: cameraPosition)
         }
+    }
+    
+    var storeType: Binder<StoreType> {
+        return Binder(self.base) { view, storeType in
+            view.setStoreType(storeType: storeType)
+            view.storeTypeButton.rx.storeType.onNext(storeType)
+        }
+    }
+    
+    var isTooltipHidden: Binder<Bool> {
+        return base.tooltipView.rx.isTooltipHidden
     }
 }

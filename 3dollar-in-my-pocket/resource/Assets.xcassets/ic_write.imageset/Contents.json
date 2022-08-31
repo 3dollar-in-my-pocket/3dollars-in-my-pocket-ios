@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "write.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "write@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "write@3x.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "write.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

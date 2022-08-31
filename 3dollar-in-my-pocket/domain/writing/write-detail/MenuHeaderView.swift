@@ -38,7 +38,7 @@ class MenuHeaderView: BaseView {
     }
   }
   
-  func bind(category: StoreCategory) {
+  func bind(category: StreetFoodStoreCategory) {
     self.categoryImage.image = UIImage(named: "img_32_\(category.lowcase)_on")
     self.titleLabel.text = "shared_category_\(category.lowcase)".localized
   }

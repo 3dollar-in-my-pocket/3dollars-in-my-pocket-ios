@@ -1,7 +1,8 @@
 import UIKit
 
 protocol HomeCoordinator: BaseCoordinator, AnyObject {
-    func pushStoreDetail(storeId: Int)
+    func pushStoreDetail(storeId: String)
+    func pushBossStoreDetail(storeId: String)
     func showDenyAlert()
     func goToAppSetting()
     func showSearchAddress()
@@ -9,13 +10,20 @@ protocol HomeCoordinator: BaseCoordinator, AnyObject {
 }
 
 extension HomeCoordinator where Self: UIViewController {
-    func pushStoreDetail(storeId: Int) {
-        let storeDetailVC = StoreDetailViewController.instance(storeId: storeId).then {
-            $0.delegate = self as? StoreDetailDelegate
-        }
+    func pushStoreDetail(storeId: String) {
+        let storeDetailVC = StoreDetailViewController.instance(storeId: Int(storeId) ?? 0)
         
         self.presenter.navigationController?.pushViewController(
             storeDetailVC,
+            animated: true
+        )
+    }
+    
+    func pushBossStoreDetail(storeId: String) {
+        let viewController = BossStoreDetailViewController.instance(storeId: storeId)
+        
+        self.presenter.navigationController?.pushViewController(
+            viewController,
             animated: true
         )
     }
@@ -52,7 +60,6 @@ extension HomeCoordinator where Self: UIViewController {
     func presentVisit(store: Store) {
         let viewController = VisitViewController.instance(store: store)
         
-        viewController.delegate = self as? VisitViewControllerDelegate
         self.presenter.present(viewController, animated: true, completion: nil)
     }
 }

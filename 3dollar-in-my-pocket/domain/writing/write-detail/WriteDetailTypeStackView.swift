@@ -53,7 +53,7 @@ class WriteDetailTypeStackView: UIStackView {
     self.addArrangedSubview(convenienceStoreRadioButton)
   }
   
-  func selectType(type: StoreType?) {
+  func selectType(type: StreetFoodStoreType?) {
     self.clearSelect()
     
     if let type = type {
