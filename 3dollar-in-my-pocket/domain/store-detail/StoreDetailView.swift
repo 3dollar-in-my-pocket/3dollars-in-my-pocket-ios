@@ -1,35 +1,35 @@
 import UIKit
+
 import RxSwift
 import RxCocoa
 
 final class StoreDetailView: BaseView {
+    private let navigationView = UIView().then {
+        $0.layer.cornerRadius = 20
+        $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+        $0.layer.shadowColor = UIColor.black.cgColor
+        $0.layer.shadowOpacity = 0.04
+        $0.backgroundColor = .white
+    }
   
-  private let navigationView = UIView().then {
-    $0.layer.cornerRadius = 20
-    $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-    $0.layer.shadowColor = UIColor.black.cgColor
-    $0.layer.shadowOpacity = 0.04
-    $0.backgroundColor = .white
-  }
+    let backButton = UIButton().then {
+        $0.setImage(R.image.ic_back_black(), for: .normal)
+    }
   
-  let backButton = UIButton().then {
-    $0.setImage(R.image.ic_back_black(), for: .normal)
-  }
+    fileprivate let mainCategoryImage = UIImageView()
   
-  let mainCategoryImage = UIImageView()
-  
-  let deleteRequestButton = UIButton().then {
-    $0.setTitle(R.string.localization.store_detail_delete_request(), for: .normal)
-    $0.setTitleColor(R.color.red(), for: .normal)
-    $0.titleLabel?.font = .semiBold(size: 14)
-  }
+    let deleteRequestButton = UIButton().then {
+        $0.setTitle(R.string.localization.store_detail_delete_request(), for: .normal)
+        $0.setTitleColor(R.color.red(), for: .normal)
+        $0.titleLabel?.font = .semiBold(size: 14)
+    }
   
   private let scrollView = UIScrollView()
   
   private let containerView = UIView()
   
-  let storeOverview = StoreOverview()
+//  let storeOverview = StoreOverview()
   
   let storeVisitHistoryView = StoreVisitHistoryView()
   

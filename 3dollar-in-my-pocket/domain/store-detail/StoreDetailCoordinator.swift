@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Base
 import SPPermissions
 
 protocol StoreDetailCoordinator: Coordinator, AnyObject {
@@ -27,7 +28,7 @@ protocol StoreDetailCoordinator: Coordinator, AnyObject {
     func showVisitHistories(visitHistories: [VisitHistory])
 }
 
-extension StoreDetailCoordinator where Self: BaseVC {
+extension StoreDetailCoordinator where Self: BaseViewController {
     func showDeleteModal(storeId: Int) {
         let deleteVC = DeleteModalVC.instance(storeId: storeId).then {
             $0.deleagete = self as? DeleteModalDelegate

@@ -1,9 +1,11 @@
 import UIKit
 
+import Base
 import RxSwift
 import RxCocoa
 
-final class StoreVisitHistoryView: BaseView {
+final class StoreVisitHistoryCollectionViewCell: BaseCollectionViewCell {
+    static let registerId = "\(StoreVisitHistoryCollectionViewCell.self)"
     
     private let titleLabel = UILabel().then {
         $0.font = .semiBold(size: 18)
@@ -105,7 +107,7 @@ final class StoreVisitHistoryView: BaseView {
         }
     }
     
-    func bind(visitHistories: [VisitHistory]) {
+    fileprivate func bind(visitHistories: [VisitHistory]) {
         let existedCount = visitHistories.filter { $0.type == .exists }.count
         let notExistedCount = visitHistories.filter { $0.type == .notExists }.count
         
@@ -142,19 +144,31 @@ final class StoreVisitHistoryView: BaseView {
     
     private func setupExist(count: Int) {
         self.existImage.image = count == 0 ? R.image.img_exist_empty() : R.image.img_exist()
-        self.existLabel.textColor = count == 0 ? R.color.gray30() : UIColor(r: 0, g: 198, b: 103)
+        self.existLabel.textColor =
+        count == 0
+        ? R.color.gray30()
+        : UIColor(r: 0, g: 198, b: 103)
         self.existLabel.text = "\(count) 명"
     }
     
     private func setupNotExist(count: Int) {
-        self.notExistImage.image = count == 0 ? R.image.img_not_exist_empty() : R.image.img_not_exist()
+        self.notExistImage.image =
+        count == 0
+        ? R.image.img_not_exist_empty()
+        : R.image.img_not_exist()
         self.notExistLabel.textColor = count == 0 ? R.color.gray30() : R.color.red()
         self.notExistLabel.text = "\(count) 명"
     }
 }
 
-extension Reactive where Base: StoreVisitHistoryView {
+extension Reactive where Base: StoreVisitHistoryCollectionViewCell {
     var tap: ControlEvent<Void> {
         return base.plusButton.rx.tap
+    }
+    
+    var visitHistories: Binder<[VisitHistory]> {
+        return Binder(self.base) { view, visitHistories in
+            view.bind(visitHistories: visitHistories)
+        }
     }
 }

@@ -38,7 +38,7 @@ protocol StoreServiceProtocol {
     
     func saveStore(store: Store) -> Observable<Store>
     
-    func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[StoreImageResponse]>
+    func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[Image]>
     
     func getPhotos(storeId: Int) -> Observable<[StoreImageResponse]>
     
@@ -49,13 +49,13 @@ protocol StoreServiceProtocol {
         updateStoreRequest: AddStoreRequest
     ) -> Observable<StoreInfoResponse>
     
-    func getStoreDetail(
+    func fetchStoreDetail(
         storeId: Int,
         latitude: Double,
         longitude: Double,
         startDate: Date,
         endDate: Date
-    ) -> Observable<StoreDetailResponse>
+    ) -> Observable<Store>
     
     func fetchRegisteredStores(
         cursor: Int?,
@@ -262,8 +262,8 @@ struct StoreService: StoreServiceProtocol {
         }
     }
     
-    func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[StoreImageResponse]> {
-        return Observable.create { observer -> Disposable in
+    func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[Image]> {
+        return Observable<[StoreImageResponse]>.create { observer -> Disposable in
             let urlString = HTTPUtils.url + "/api/v2/store/images"
             let headers = HTTPUtils.defaultHeader()
             
@@ -282,7 +282,7 @@ struct StoreService: StoreServiceProtocol {
                 to: urlString,
                 headers: headers
             )
-            .responseJSON(completionHandler: { response in
+            .responseData(completionHandler: { response in
                 if let statusCode = response.response?.statusCode {
                     if "\(statusCode)".first! == "2" {
                         observer.processValue(class: [StoreImageResponse].self, response: response)
@@ -294,6 +294,7 @@ struct StoreService: StoreServiceProtocol {
             
             return Disposables.create()
         }
+        .map { $0.map(Image.init(response:)) }
     }
     
     func getPhotos(storeId: Int) -> Observable<[StoreImageResponse]> {
@@ -369,39 +370,30 @@ struct StoreService: StoreServiceProtocol {
         }
     }
     
-    func getStoreDetail(
+    func fetchStoreDetail(
         storeId: Int,
         latitude: Double,
         longitude: Double,
         startDate: Date,
         endDate: Date
-    ) -> Observable<StoreDetailResponse> {
-        return Observable.create { observer -> Disposable in
-            let urlString = HTTPUtils.url + "/api/v2/store"
-            let headers = HTTPUtils.defaultHeader()
-            let parameters: [String: Any] = [
-                "storeId": storeId,
-                "latitude": latitude,
-                "longitude": longitude,
-                "startDate": startDate.toString(format: "yyyy-MM-dd"),
-                "endDate": endDate.toString(format: "yyyy-MM-dd")
-            ]
-            
-            HTTPUtils.defaultSession.request(
-                urlString,
-                method: .get,
-                parameters: parameters,
-                headers: headers
-            ).responseJSON { response in
-                if response.isSuccess() {
-                    observer.processValue(class: StoreDetailResponse.self, response: response)
-                } else {
-                    observer.processHTTPError(response: response)
-                }
-            }
-            
-            return Disposables.create()
-        }
+    ) -> Observable<Store> {
+        let urlString = HTTPUtils.url + "/api/v2/store"
+        let headers = HTTPUtils.defaultHeader()
+        let parameters: [String: Any] = [
+            "storeId": storeId,
+            "latitude": latitude,
+            "longitude": longitude,
+            "startDate": startDate.toString(format: "yyyy-MM-dd"),
+            "endDate": endDate.toString(format: "yyyy-MM-dd")
+        ]
+        
+        return self.networkManager.createGetObservable(
+            class: StoreDetailResponse.self,
+            urlString: urlString,
+            headers: headers,
+            parameters: parameters
+        )
+        .map(Store.init(response:))
     }
     
     func fetchRegisteredStores(

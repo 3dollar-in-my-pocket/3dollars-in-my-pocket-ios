@@ -1,79 +1,96 @@
 import UIKit
+import AppTrackingTransparency
+import AdSupport
+
+import Base
+import ReactorKit
 import Kingfisher
 import RxSwift
 import RxDataSources
 import GoogleMobileAds
 import NMapsMap
-import AppTrackingTransparency
-import AdSupport
 import SPPermissions
 
-final class StoreDetailViewController: BaseVC, StoreDetailCoordinator {
-  private let storeDetailView = StoreDetailView()
-  private let viewModel: StoreDetailViewModel
-  private weak var coordinator: StoreDetailCoordinator?
-  private var myLocationFlag = false
-  private lazy var imagePicker = UIImagePickerController().then {
-    $0.delegate = self
-  }
-  
-  init(storeId: Int) {
-    self.viewModel = StoreDetailViewModel(
-      storeId: storeId,
-      userDefaults: UserDefaultsUtil(),
-      locationManager: LocationManager.shared,
-      storeService: StoreService(),
-      reviewService: ReviewService()
-    )
-    super.init(nibName: nil, bundle: nil)
-  }
-  
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-  
-  static func instance(storeId: Int) -> StoreDetailViewController {
-    return StoreDetailViewController(storeId: storeId).then {
-      $0.hidesBottomBarWhenPushed = true
+final class StoreDetailViewController:
+    BaseViewController,
+    View,
+    StoreDetailCoordinator
+{
+    private let storeDetailView = StoreDetailView()
+    private let storeDetailReactor: StoreDetailReactor
+    private weak var coordinator: StoreDetailCoordinator?
+    private var myLocationFlag = false
+    private lazy var imagePicker = UIImagePickerController().then {
+        $0.delegate = self
     }
-  }
   
-  override func viewDidLoad() {
-    super.viewDidLoad()
+    init(storeId: Int) {
+        self.storeDetailReactor = StoreDetailReactor(
+            storeId: storeId,
+            userDefaults: UserDefaultsUtil(),
+            locationManager: LocationManager.shared,
+            storeService: StoreService(),
+            reviewService: ReviewService()
+        )
+        super.init(nibName: nil, bundle: nil)
+    }
+  
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+  
+    static func instance(storeId: Int) -> StoreDetailViewController {
+        return StoreDetailViewController(storeId: storeId).then {
+            $0.hidesBottomBarWhenPushed = true
+        }
+    }
     
-    self.view = storeDetailView
-    self.coordinator = self
-  }
+    override func loadView() {
+        self.view = self.storeDetailView
+    }
   
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.reactor = self.storeDetailReactor
+        self.coordinator = self
+        self.storeDetailReactor.action.onNext(.viewDidLoad)
+    }
+  
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.tabBarController?.tabBar.barTintColor = .white
+        self.viewModel.clearKakaoLinkIfExisted()
+    }
     
-    self.tabBarController?.tabBar.barTintColor = .white
-    self.viewModel.clearKakaoLinkIfExisted()
-    self.viewModel.input.fetch.onNext(())
-  }
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//
+//        self.viewModel.input.popup.onNext(()) // TODO: 가게 업데이트 시, GlobalState 업데이트
+//    }
   
-  override func viewWillDisappear(_ animated: Bool) {
-    super.viewWillDisappear(animated)
+    override func bindEvent() {
+        self.storeDetailView.backButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.popup()
+            })
+            .disposed(by: self.eventDisposeBag)
+    }
     
-    self.viewModel.input.popup.onNext(())
-  }
-  
-  override func bindEvent() {
-    self.storeDetailView.backButton.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .back_button_clicked, page: .store_detail_page)
-      })
-      .bind(onNext: { [weak self] in
-        self?.coordinator?.popup()
-      })
-      .disposed(by: self.disposeBag)
-  }
+    func bind(reactor: StoreDetailReactor) {
+        // TODO: 내 위치 버튼 터치
+//        self.storeDetailView.storeOverview.currentLocationButton.rx.tap
+//            .bind(to: self.viewModel.input.fetch)
+//            .disposed(by: self.disposeBag)
+        
+        
+    }
   
   override func bindViewModelInput() {
-    self.storeDetailView.storeOverview.currentLocationButton.rx.tap
-      .bind(to: self.viewModel.input.fetch)
-      .disposed(by: self.disposeBag)
+    
     
     self.storeDetailView.deleteRequestButton.rx.tap
       .do(onNext: { _ in

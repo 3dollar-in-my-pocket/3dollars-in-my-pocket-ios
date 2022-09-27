@@ -7,7 +7,7 @@ struct Store: StoreProtocol {
     let categories: [StreetFoodStoreCategory]
     let isDeleted: Bool
     let distance: Int
-    let images: [Image]
+    var images: [Image]
     let latitude: Double
     let longitude: Double
     let menus: [Menu]

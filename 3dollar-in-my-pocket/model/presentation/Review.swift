@@ -1,5 +1,4 @@
 struct Review {
-    
     let category: StreetFoodStoreCategory
     var contents: String
     let createdAt: String
