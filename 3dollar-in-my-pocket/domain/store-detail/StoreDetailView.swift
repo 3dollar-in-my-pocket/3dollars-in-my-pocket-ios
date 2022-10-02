@@ -114,6 +114,12 @@ final class StoreDetailView: BaseView {
         self.mainCategoryImage.setImage(urlString: category.imageUrl)
     }
     
+    private func generateCompositionalLayout() -> UICollectionViewCompositionalLayout {
+        return .init { sectionIndex, _ in
+            switch S
+        }
+    }
+    
     private func hideVisitButton() {
         let originalVisitButtonTransform = self.visitButton.transform
         
@@ -136,8 +142,12 @@ final class StoreDetailView: BaseView {
 extension Reactive where Base: StoreDetailView {
     var store: Binder<Store> {
         return Binder(self.base) { view, store in
-            store.categories
-//            view.bind(category: store.categories[0])
+            if let firstCategory = store.categories.first,
+               let streetFoodCategory = MetaContext.shared.findStreetFoodCategory(
+                category: firstCategory
+               ) {
+                view.bind(category: streetFoodCategory)
+            }
         }
     }
 }
