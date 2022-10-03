@@ -56,20 +56,7 @@ final class StoreDetailViewController:
         self.coordinator = self
         self.storeDetailReactor.action.onNext(.viewDidLoad)
     }
-  
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        self.tabBarController?.tabBar.barTintColor = .white
-        self.viewModel.clearKakaoLinkIfExisted()
-    }
-    
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//
-//        self.viewModel.input.popup.onNext(()) // TODO: 가게 업데이트 시, GlobalState 업데이트
-//    }
-  
+      
     override func bindEvent() {
         self.storeDetailView.backButton.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
@@ -86,18 +73,17 @@ final class StoreDetailViewController:
 //            .bind(to: self.viewModel.input.fetch)
 //            .disposed(by: self.disposeBag)
         
-        
+        self.storeDetailView.deleteRequestButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapDeleteRequest }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
     }
   
   override func bindViewModelInput() {
     
     
-    self.storeDetailView.deleteRequestButton.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .store_delete_request_button_clicked, page: .store_edit_page)
-      })
-      .bind(to: self.viewModel.input.tapDeleteRequest)
-      .disposed(by: self.disposeBag)
+    
     
     self.storeDetailView.rx.tapShareButton
       .bind(to: self.viewModel.input.tapShareButton)

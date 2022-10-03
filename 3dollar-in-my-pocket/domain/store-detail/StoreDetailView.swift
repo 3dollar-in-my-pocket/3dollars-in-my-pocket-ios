@@ -57,11 +57,26 @@ final class StoreDetailView: BaseView {
             StoreReviewCollectionViewCell.self,
             forCellWithReuseIdentifier: StoreReviewCollectionViewCell.registerId
         )
+        $0.register(
+            StoreDetailHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: StoreDetailHeaderView.registerId
+        )
     }
     
     let visitButton = StoreDetailVisitButton()
     
     //  let storePhotoCollectionView = StorePhotoCollectionView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.collectionView.collectionViewLayout = self.generateCompositionalLayout()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func setup() {
         self.collectionView.delegate = self
@@ -116,7 +131,125 @@ final class StoreDetailView: BaseView {
     
     private func generateCompositionalLayout() -> UICollectionViewCompositionalLayout {
         return .init { sectionIndex, _ in
-            switch S
+            switch StreetFoodStoreDetailSection(rawValue: sectionIndex) {
+            case .overview:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreOverviewCollectionViewCell.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreOverviewCollectionViewCell.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                return section
+                
+            case .visitHistory:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreVisitHistoryCollectionViewCell.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreVisitHistoryCollectionViewCell.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                return section
+                
+            case .info:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreInfoCollectionViewCell.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreInfoCollectionViewCell.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreDetailHeaderView.height)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )]
+                
+                return section
+                
+            case .menus:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(StoreMenuCollectionViewCell.estimatedHeight)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(StoreMenuCollectionViewCell.estimatedHeight)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                return section
+                
+            case .photos:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .absolute(StorePhotoCollectionViewCell.cellSize.width),
+                    heightDimension: .absolute(StorePhotoCollectionViewCell.cellSize.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .absolute(StorePhotoCollectionViewCell.cellSize.width),
+                    heightDimension: .absolute(StorePhotoCollectionViewCell.cellSize.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.interGroupSpacing = 9
+                section.orthogonalScrollingBehavior = .continuous
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreDetailHeaderView.height)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )]
+                
+                return section
+                
+            case .reviewAndadvertisement:
+                let advertisementItem = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreAdCollectionViewCell.height)
+                ))
+                let reviewItem = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(StoreReviewCollectionViewCell.estimatedHeight)
+                ))
+                
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(StoreReviewCollectionViewCell.estimatedHeight)
+                ), subitems: [advertisementItem, reviewItem])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreDetailHeaderView.height)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )]
+                
+                return section
+                
+            case .unknown:
+                return nil
+                
+            case .none:
+                return nil
+            }
         }
     }
     
@@ -130,8 +263,6 @@ final class StoreDetailView: BaseView {
     }
     
     private func showVisitButton() {
-        let originalBtnTransform = self.visitButton.transform
-        
         UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
             self?.visitButton.transform = .identity
             self?.visitButton.alpha = 1

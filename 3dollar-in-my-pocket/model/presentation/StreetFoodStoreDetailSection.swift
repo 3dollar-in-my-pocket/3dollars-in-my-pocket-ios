@@ -14,12 +14,11 @@ enum StreetFoodStoreDetailSection: Int {
     case info
     case menus
     case photos
-    case advertisement
-    case reviews
+    case reviewAndadvertisement
     case unknown
     
-    init(rawValue: Int) {
-        switch rawValue {
+    init(sectionIndex: Int) {
+        switch sectionIndex {
         case 0:
             self = .overview
             
@@ -36,10 +35,7 @@ enum StreetFoodStoreDetailSection: Int {
             self = .photos
             
         case 5:
-            self = .advertisement
-            
-        case 6:
-            self = .reviews
+            self = .reviewAndadvertisement
             
         default:
             self = .unknown

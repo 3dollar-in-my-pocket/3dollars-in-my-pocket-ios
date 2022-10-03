@@ -7,6 +7,7 @@ import RxCocoa
 
 final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(StoreOverviewCollectionViewCell.self)"
+    static let height: CGFloat = UIScreen.main.bounds.height / 2.21 + 170
     
     private var marker = NMFMarker()
     

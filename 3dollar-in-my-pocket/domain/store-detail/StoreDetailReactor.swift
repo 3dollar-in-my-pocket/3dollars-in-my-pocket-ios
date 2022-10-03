@@ -57,10 +57,11 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     let presentVisitPublisher = PublishRelay<Store>()
     
     private let storeId: Int
-    private let userDefaults: UserDefaultsUtil
+    private var userDefaults: UserDefaultsUtil
     private let locationManager: LocationManagerProtocol
     private let storeService: StoreServiceProtocol
     private let reviewService: ReviewServiceProtocol
+    private let gaManager: GAManagerProtocol
     
     init(
         storeId: Int,
@@ -68,6 +69,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         locationManager: LocationManagerProtocol,
         storeService: StoreServiceProtocol,
         reviewService: ReviewServiceProtocol,
+        gaManager: GAManagerProtocol,
         state: State = State(
             currentLocation: CLLocation(latitude: 0, longitude: 0),
             store: Store(),
@@ -79,12 +81,17 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         self.locationManager = locationManager
         self.storeService = storeService
         self.reviewService = reviewService
+        self.gaManager = gaManager
         self.initialState = state
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
+            if !self.userDefaults.shareLink.isEmpty {
+                self.userDefaults.shareLink = ""
+            }
+            
             return .concat([
                 .just(.showLoading(isShow: true)),
                 self.locationManager.getCurrentLocation()
@@ -101,6 +108,11 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             ])
             
         case .tapDeleteRequest:
+            self.gaManager.logEvent(
+                event: .store_delete_request_button_clicked,
+                page: .store_detail_page
+            )
+            
             return .just(.presentDeleteModal(storeId: self.storeId))
             
         case .tapShare:

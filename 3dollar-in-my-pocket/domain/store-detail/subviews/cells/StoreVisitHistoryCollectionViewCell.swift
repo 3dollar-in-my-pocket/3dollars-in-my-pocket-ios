@@ -6,6 +6,7 @@ import RxCocoa
 
 final class StoreVisitHistoryCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(StoreVisitHistoryCollectionViewCell.self)"
+    static let height: CGFloat = 108
     
     private let titleLabel = UILabel().then {
         $0.font = .semiBold(size: 18)
