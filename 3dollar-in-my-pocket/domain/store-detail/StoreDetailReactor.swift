@@ -42,7 +42,6 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     struct State {
         var currentLocation: CLLocation
         var store: Store
-        var reviews: [Review]
     }
     
     let initialState: State
@@ -72,8 +71,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         gaManager: GAManagerProtocol,
         state: State = State(
             currentLocation: CLLocation(latitude: 0, longitude: 0),
-            store: Store(),
-            reviews: []
+            store: Store()
         )
     ) {
         self.storeId = storeId

@@ -37,3 +37,9 @@ struct Review {
         self.user = User(response: response.user)
     }
 }
+
+extension Review: Equatable {
+    static func == (lhs: Review, rhs: Review) -> Bool {
+        return lhs.reviewId == rhs.reviewId
+    }
+}

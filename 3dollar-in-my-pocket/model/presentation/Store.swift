@@ -199,7 +199,6 @@ extension Store {
 }
 
 extension Store: Equatable {
-    
     static func == (lhs: Store, rhs: Store) -> Bool {
         return lhs.storeId == rhs.storeId
     }

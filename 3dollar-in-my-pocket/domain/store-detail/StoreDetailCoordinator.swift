@@ -10,7 +10,7 @@ import UIKit
 import Base
 import SPPermissions
 
-protocol StoreDetailCoordinator: Coordinator, AnyObject {
+protocol StoreDetailCoordinator: BaseCoordinator, AnyObject {
     func showDeleteModal(storeId: Int)
     func goToModify(store: Store)
     func showReviewModal(storeId: Int, review: Review?)
@@ -34,7 +34,6 @@ extension StoreDetailCoordinator where Self: BaseViewController {
             $0.deleagete = self as? DeleteModalDelegate
         }
         
-        self.presenter.showRootDim(isShow: true)
         self.presenter.tabBarController?.present(
             deleteVC,
             animated: true,
@@ -53,7 +52,6 @@ extension StoreDetailCoordinator where Self: BaseViewController {
             $0.deleagete = self as? ReviewModalDelegate
         }
         
-        self.showRootDim(isShow: true)
         self.presenter.tabBarController?.present(reviewVC, animated: true, completion: nil)
     }
     
@@ -185,7 +183,6 @@ extension StoreDetailCoordinator where Self: BaseViewController {
         let viewController = VisitHistoryViewController.instance(visitHistories: visitHistories)
         
         viewController.delegate = self.presenter as? VisitHistoryViewControllerDelegate
-        self.presenter.showRootDim(isShow: true)
         self.presenter.navigationController?.parent?.present(
             viewController,
             animated: true,

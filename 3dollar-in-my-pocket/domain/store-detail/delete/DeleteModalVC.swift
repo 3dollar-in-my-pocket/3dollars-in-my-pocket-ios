@@ -2,8 +2,6 @@ import UIKit
 import RxSwift
 
 protocol DeleteModalDelegate: class {
-  
-  func onTapClose()
   func onRequest()
 }
 
@@ -111,7 +109,7 @@ class DeleteModalVC: BaseVC {
   }
   
   private func dismiss() {
-    self.deleagete?.onTapClose()
+//    self.deleagete?.onTapClose()
     self.dismiss(animated: true, completion: nil)
   }
   

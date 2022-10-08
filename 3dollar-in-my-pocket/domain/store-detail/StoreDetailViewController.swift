@@ -1,3 +1,5 @@
+// swiftlint:disable cyclomatic_complexity
+
 import UIKit
 import AppTrackingTransparency
 import AdSupport
@@ -13,32 +15,35 @@ import SPPermissions
 
 final class StoreDetailViewController:
     BaseViewController,
-    View,
+    ReactorKit.View,
     StoreDetailCoordinator
 {
     private let storeDetailView = StoreDetailView()
     private let storeDetailReactor: StoreDetailReactor
     private weak var coordinator: StoreDetailCoordinator?
-    private var myLocationFlag = false
     private lazy var imagePicker = UIImagePickerController().then {
         $0.delegate = self
     }
-  
+    private var storeDetailCollectionViewDataSource
+    : RxCollectionViewSectionedReloadDataSource<StoreDetailSectionModel>!
+    
     init(storeId: Int) {
         self.storeDetailReactor = StoreDetailReactor(
             storeId: storeId,
             userDefaults: UserDefaultsUtil(),
             locationManager: LocationManager.shared,
             storeService: StoreService(),
-            reviewService: ReviewService()
+            reviewService: ReviewService(),
+            gaManager: GAManager.shared
         )
         super.init(nibName: nil, bundle: nil)
+        self.setupDataSource()
     }
-  
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-  
+    
     static func instance(storeId: Int) -> StoreDetailViewController {
         return StoreDetailViewController(storeId: storeId).then {
             $0.hidesBottomBarWhenPushed = true
@@ -48,7 +53,7 @@ final class StoreDetailViewController:
     override func loadView() {
         self.view = self.storeDetailView
     }
-  
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -56,251 +61,331 @@ final class StoreDetailViewController:
         self.coordinator = self
         self.storeDetailReactor.action.onNext(.viewDidLoad)
     }
-      
+    
     override func bindEvent() {
         self.storeDetailView.backButton.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] _ in
-                self?.coordinator?.popup()
+                self?.coordinator?.presenter.navigationController?.popViewController(animated: true)
             })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.storeDetailReactor.presentDeleteModalPublisher
+            .asDriver(onErrorJustReturn: -1)
+            .drive { [weak self] storeId in
+                self?.coordinator?.showDeleteModal(storeId: storeId)
+            }
+            .disposed(by: self.eventDisposeBag)
+        
+        self.storeDetailReactor.presentVisitHistoriesPublisher
+            .asDriver(onErrorJustReturn: [])
+            .drive(onNext: { [weak self] visitHistories in
+                self?.coordinator?.showVisitHistories(visitHistories: visitHistories)
+            })
+            .disposed(by: self.disposeBag)
+        
+        self.storeDetailReactor.pushModifyPublisher
+            .asDriver(onErrorJustReturn: Store())
+            .drive(onNext: { [weak self] store in
+                self?.coordinator?.goToModify(store: store)
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.storeDetailReactor.presentPhotoDetailPublisher
+            .asDriver(onErrorJustReturn: (0, 0))
+            .drive(onNext: { storeId, index in
+                // TODO: 사진 뷰컨 리팩토링 후 적용 필요
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.storeDetailReactor.presentAddPhotoActionSheetPublisher
+            .asDriver(onErrorJustReturn: 0)
+            .drive { [weak self] storeId in
+                self?.coordinator?.showPictureActionSheet(storeId: storeId)
+            }
+            .disposed(by: self.eventDisposeBag)
+        
+        self.storeDetailReactor.presentPhotoListPublisher
+            .asDriver(onErrorJustReturn: 0)
+            .drive(onNext: { [weak self] storeId in
+                self?.coordinator?.goToPhotoList(storeId: storeId)
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.storeDetailReactor.presentReviewModalPublisher
+            .asDriver(onErrorJustReturn: (0, nil))
+            .drive(onNext: { [weak self] storeId, review in
+                self?.coordinator?.showReviewModal(storeId: storeId, review: review)
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.storeDetailReactor.presentVisitPublisher
+            .asDriver(onErrorJustReturn: Store())
+            .drive(onNext: { [weak self] store in
+                self?.coordinator?.showVisit(store: store)
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.storeDetailReactor.showLoadingPublisher
+            .asDriver(onErrorJustReturn: true)
+            .drive { [weak self] isShow in
+                self?.coordinator?.showLoading(isShow: isShow)
+            }
+            .disposed(by: self.eventDisposeBag)
+        
+        self.storeDetailReactor.showErrorAlertPublisher
+            .asDriver(onErrorJustReturn: BaseError.unknown)
+            .drive { [weak self] error in
+                self?.coordinator?.showErrorAlert(error: error)
+            }
             .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: StoreDetailReactor) {
-        // TODO: 내 위치 버튼 터치
-//        self.storeDetailView.storeOverview.currentLocationButton.rx.tap
-//            .bind(to: self.viewModel.input.fetch)
-//            .disposed(by: self.disposeBag)
-        
+        // Bind Action
         self.storeDetailView.deleteRequestButton.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .map { Reactor.Action.tapDeleteRequest }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
-    }
-  
-  override func bindViewModelInput() {
-    
-    
-    
-    
-    self.storeDetailView.rx.tapShareButton
-      .bind(to: self.viewModel.input.tapShareButton)
-      .disposed(by: self.disposeBag)
-    
-    self.storeDetailView.storeVisitHistoryView.rx.tap
-        .bind(to: self.viewModel.input.tapVisitHistoryButton)
-        .disposed(by: self.disposeBag)
-    
-    self.storeDetailView.rx.tapEditStore
-      .bind(to: self.viewModel.input.tapEditStoreButton)
-      .disposed(by: self.disposeBag)
-    
-    self.storeDetailView.rx.tapAddPhotoButton
-      .bind(to: self.viewModel.input.tapAddPhotoButton)
-      .disposed(by: self.disposeBag)
-        
-    self.storeDetailView.storePhotoCollectionView.photoCollectionView.rx.itemSelected
-      .map { $0.row }
-      .bind(to: self.viewModel.input.tapPhoto)
-      .disposed(by: self.disposeBag)
-    
-    self.storeDetailView.rx.tapWriteReviewButton
-      .bind(to: self.viewModel.input.tapWriteReview)
-      .disposed(by: self.disposeBag)
-    
-    self.storeDetailView.visitButton.rx.tap
-      .bind(to: self.viewModel.input.tapVisitButton)
-      .disposed(by: self.disposeBag)
-  }
-  
-  override func bindViewModelOutput() {
-    self.viewModel.output.store
-      .asDriver(onErrorJustReturn: Store())
-      .drive(self.storeDetailView.rx.store)
-      .disposed(by: self.disposeBag)
-        
-    self.viewModel.output.reviews
-      .asDriver(onErrorJustReturn: [])
-      .do(onNext: { [weak self] reviews in
-        self?.storeDetailView.updateReviewTableViewHeight(reviews: reviews)
-      })
-      .drive(self.storeDetailView.storeReviewTableView.reviewTableView.rx.items(
-        cellIdentifier: StoreDetailReviewCell.registerId,
-        cellType: StoreDetailReviewCell.self
-      )) { _, review, cell in
-        cell.bind(review: review, userId: self.viewModel.userDefaults.getUserId())
-        cell.moreButton.rx.tap
-          .asDriver()
-          .drive(onNext: { [weak self] in
-            guard let review = review else { return }
-            self?.coordinator?.showMoreActionSheet(
-              review: review,
-              onTapModify: {
-                self?.viewModel.input.tapEditReview.onNext(review)
-              },
-              onTapDelete: {
-                self?.viewModel.input.deleteReview.onNext(review.reviewId)
-              }
-            )
-          })
-          .disposed(by: cell.disposeBag)
-        cell.adBannerView.rootViewController = self
-      }
-      .disposed(by: self.disposeBag)
-    
-    self.viewModel.output.showDeleteModal
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: { [weak self] storeId in
-        self?.coordinator?.showDeleteModal(storeId: storeId)
-      })
-      .disposed(by: self.disposeBag)
-    
-    self.viewModel.output.showVisitHistories
-        .asDriver(onErrorJustReturn: [])
-        .drive(onNext: { [weak self] visitHistories in
-            self?.coordinator?.showVisitHistories(visitHistories: visitHistories)
-        })
-        .disposed(by: self.disposeBag)
-    
-    self.viewModel.output.goToModify
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: { [weak self] store in
-        self?.coordinator?.goToModify(store: store)
-      })
-      .disposed(by: self.disposeBag)
-    
-    self.viewModel.output.showPhotoDetail
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: { [weak self] (storeId, index, photos) in
-        self?.coordinator?.showPhotoDetail(storeId: storeId, index: index, photos: photos)
-      })
-      .disposed(by: self.disposeBag)
-    
-    self.viewModel.output.showAddPhotoActionSheet
-      .asDriver(onErrorJustReturn: 0)
-      .drive { [weak self] storeId in
-        self?.coordinator?.showPictureActionSheet(storeId: storeId)
-      }
-      .disposed(by: self.disposeBag)
-    
-    self.viewModel.output.goToPhotoList
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: { [weak self] storeId in
-        self?.coordinator?.goToPhotoList(storeId: storeId)
-      })
-      .disposed(by: self.disposeBag)
-    
-    self.viewModel.output.showReviewModal
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: { [weak self] (storeId, review) in
-        self?.coordinator?.showReviewModal(storeId: storeId, review: review)
-      })
-      .disposed(by: self.disposeBag)
-    
-    self.viewModel.output.popup
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.passStore(store:))
-      .disposed(by: self.disposeBag)
-    
-    self.viewModel.output.showVisit
-      .asDriver(onErrorJustReturn: Store())
-      .drive(onNext: { [weak self] store in
-        self?.coordinator?.showVisit(store: store)
-      })
-      .disposed(by: self.disposeBag)
-    
-    self.viewModel.showLoading
-      .observeOn(MainScheduler.instance)
-      .bind(onNext: self.showRootLoading(isShow:))
-      .disposed(by: self.disposeBag)
-    
-    self.viewModel.showErrorAlert
-      .asDriver(onErrorJustReturn: BaseError.unknown)
-      .drive { [weak self] error in
-        self?.coordinator?.showErrorAlert(error: error)
-      }
-      .disposed(by: self.disposeBag)
-  }
-    
-  private func passStore(store: Store) {
-      GlobalState.shared.updateStore.onNext(store)
-  }
-}
 
-extension StoreDetailViewController: ReviewModalDelegate {
-  
-  func onReviewSuccess() {
-    self.myLocationFlag = false
-    self.viewModel.input.fetch.onNext(())
-    self.showRootDim(isShow: false)
-  }
-  
-  func onTapClose() {
-    self.showRootDim(isShow: false)
-  }
+        self.storeDetailView.collectionView.rx.itemSelected
+            .filter { StreetFoodStoreDetailSection(sectionIndex: $0.section) == .photos }
+            .map { Reactor.Action.tapPhoto(row: $0.row) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+
+        self.storeDetailView.visitButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapVisit }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+
+        // Bind State
+        reactor.state
+            .map { $0.store }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: Store())
+            .drive(self.storeDetailView.rx.store)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .map { [
+                StoreDetailSectionModel(overView: $0.store),
+                StoreDetailSectionModel(visitOverview: $0.store.visitHistory),
+                StoreDetailSectionModel(info: $0.store),
+                StoreDetailSectionModel(menu: $0.store),
+                StoreDetailSectionModel(photo: $0.store),
+                StoreDetailSectionModel(review: $0.store)
+            ] }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: [])
+            .drive(self.storeDetailView.collectionView.rx.items(
+                dataSource: self.storeDetailCollectionViewDataSource
+            ))
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func setupDataSource() {
+        self.storeDetailCollectionViewDataSource
+        = RxCollectionViewSectionedReloadDataSource<StoreDetailSectionModel>(
+            configureCell: { _, collectionView, indexPath, item in
+                switch item {
+                case .overView(let store):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: StoreOverviewCollectionViewCell.registerId,
+                        for: indexPath
+                    ) as? StoreOverviewCollectionViewCell else { return BaseCollectionViewCell() }
+                    
+                    cell.bind(store: store)
+                    // TODO: 내위치 버튼 로직 필요
+//                    cell.currentLocationButton.rx.tap
+//                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                    cell.shareButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapShare }
+                        .bind(to: self.storeDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
+                    return cell
+                    
+                case .visitHistory(let visitOverview):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: StoreVisitHistoryCollectionViewCell.registerId,
+                        for: indexPath
+                    ) as? StoreVisitHistoryCollectionViewCell else {
+                        return BaseCollectionViewCell()
+                    }
+                    
+                    cell.bind(visitOverview: visitOverview)
+                    cell.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapVisitHistory }
+                        .bind(to: self.storeDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
+                    return cell
+                    
+                case .info(let store):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: StoreInfoCollectionViewCell.registerId,
+                        for: indexPath
+                    ) as? StoreInfoCollectionViewCell else { return BaseCollectionViewCell() }
+                    
+                    cell.bind(store: store)
+                    return cell
+                    
+                case .menu(let store):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: StoreMenuCollectionViewCell.registerId,
+                        for: indexPath
+                    ) as? StoreMenuCollectionViewCell else { return BaseCollectionViewCell() }
+                    
+                    cell.bind(store: store)
+                    return cell
+                    
+                case .photo(let store):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: StorePhotoCollectionViewCell.registerId,
+                        for: indexPath
+                    ) as? StorePhotoCollectionViewCell else { return BaseCollectionViewCell() }
+                    
+                    if store.images.isEmpty {
+                        cell.bind(image: nil, isLast: true, count: indexPath.row)
+                    } else {
+                        let image = store.images[indexPath.row]
+                        
+                        cell.bind(
+                            image: image,
+                            isLast: indexPath.row == store.images.count - 1,
+                            count: indexPath.row + 1
+                        )
+                    }
+                    
+                    return cell
+                    
+                case .advertisement:
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: StoreAdCollectionViewCell.registerId,
+                        for: indexPath
+                    ) as? StoreAdCollectionViewCell else { return BaseCollectionViewCell() }
+                    
+                    return cell
+                    
+                case .reivew(let review, let userId):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: StoreReviewCollectionViewCell.registerId,
+                        for: indexPath
+                    ) as? StoreReviewCollectionViewCell else { return BaseCollectionViewCell() }
+                    
+                    cell.bind(review: review, userId: userId)
+                    cell.moreButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .asDriver(onErrorJustReturn: ())
+                        .drive(onNext: { [weak self] in
+                            self?.coordinator?.showMoreActionSheet(
+                                review: review,
+                                onTapModify: {
+                                    self?.storeDetailReactor.action.onNext(
+                                        .tapEditReview(row: indexPath.row)
+                                    )
+                                },
+                                onTapDelete: {
+                                    self?.storeDetailReactor.action.onNext(
+                                        .deleteReview(row: indexPath.row)
+                                    )
+                                }
+                            )
+                        }).disposed(by: cell.disposeBag)
+                    return cell
+                }
+            })
+        
+        self.storeDetailCollectionViewDataSource.configureSupplementaryView
+        = { _, collectionView, kind, indexPath -> UICollectionReusableView in
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
+                guard let headerView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: UICollectionView.elementKindSectionHeader,
+                    withReuseIdentifier: StoreDetailHeaderView.registerId,
+                    for: indexPath
+                ) as? StoreDetailHeaderView else { return UICollectionReusableView() }
+                
+                switch StreetFoodStoreDetailSection(sectionIndex: indexPath.section) {
+                case .info:
+                    headerView.bind(type: StoreDetailHeaderType.info, updatedAt: nil)
+                    headerView.rightButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapEditStore }
+                        .bind(to: self.storeDetailReactor.action)
+                        .disposed(by: headerView.disposeBag)
+                    
+                case .photos:
+                    headerView.bind(type: StoreDetailHeaderType.photo, updatedAt: nil)
+                    headerView.rightButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapAddPhoto }
+                        .bind(to: self.storeDetailReactor.action)
+                        .disposed(by: headerView.disposeBag)
+                    
+                case .reviewAndadvertisement:
+                    headerView.bind(type: StoreDetailHeaderType.review, updatedAt: nil)
+                    headerView.rightButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapWriteReview }
+                        .bind(to: self.storeDetailReactor.action)
+                        .disposed(by: headerView.disposeBag)
+                    
+                default:
+                    break
+                }
+                
+                return headerView
+                
+            default:
+                return UICollectionReusableView()
+            }
+        }
+    }
 }
 
 extension StoreDetailViewController: DeleteModalDelegate {
-  
-  func onRequest() {
-    self.showRootDim(isShow: false)
-    self.navigationController?.popToRootViewController(animated: true)
-  }
-}
-
-extension StoreDetailViewController: RegisterPhotoDelegate {
-  func onSaveSuccess() {
-    self.myLocationFlag = false
-    self.viewModel.input.fetch.onNext(())
-  }
-}
-
-extension StoreDetailViewController: PhotoDetailDelegate {
-  func onClose() {
-    self.myLocationFlag = false
-    self.viewModel.input.fetch.onNext(())
-  }
+    func onRequest() {
+        self.coordinator?.presenter.navigationController?.popViewController(animated: true)
+    }
 }
 
 extension StoreDetailViewController: UIImagePickerControllerDelegate,
                                      UINavigationControllerDelegate {
-  
-  func imagePickerController(
-    _ picker: UIImagePickerController,
-    didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
-  ) {
-    if let photo = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-      self.viewModel.input.registerPhoto.onNext(photo)
+    func imagePickerController(
+        _ picker: UIImagePickerController,
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+    ) {
+        if let photo = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            self.storeDetailReactor.action.onNext(.registerPhoto(photo))
+        }
+        
+        picker.dismiss(animated: true, completion: nil)
     }
-
-    picker.dismiss(animated: true, completion: nil) // picker를 닫아줌
-  }
 }
 
 extension StoreDetailViewController: SPPermissionsDelegate {
-  func didAllow(permission: SPPermission) {
-    if permission == .camera {
-      self.coordinator?.showCamera()
-    } else if permission == .photoLibrary {
-      self.coordinator?.showRegisterPhoto(storeId: self.viewModel.storeId)
+    func didAllow(permission: SPPermission) {
+        if permission == .camera {
+            self.coordinator?.showCamera()
+        } else if permission == .photoLibrary {
+            self.storeDetailReactor.action.onNext(.tapAddPhoto)
+        }
     }
-  }
-  
-  func deniedData(for permission: SPPermission) -> SPPermissionDeniedAlertData? {
-    let data = SPPermissionDeniedAlertData()
     
-    data.alertOpenSettingsDeniedPermissionTitle = "permission_denied_title".localized
-    data.alertOpenSettingsDeniedPermissionDescription = "permission_denied_description".localized
-    data.alertOpenSettingsDeniedPermissionButtonTitle = "permission_setting_button".localized
-    data.alertOpenSettingsDeniedPermissionCancelTitle = "permission_setting_cancel".localized
-    return data
-  }
-}
-
-extension StoreDetailViewController: VisitHistoryViewControllerDelegate {
-    func onDismiss() {
-        self.coordinator?.showRootDim(isShow: false)
+    func deniedData(for permission: SPPermission) -> SPPermissionDeniedAlertData? {
+        let data = SPPermissionDeniedAlertData()
+        
+        data.alertOpenSettingsDeniedPermissionTitle = "permission_denied_title".localized
+        data.alertOpenSettingsDeniedPermissionDescription
+        = "permission_denied_description".localized
+        data.alertOpenSettingsDeniedPermissionButtonTitle = "permission_setting_button".localized
+        data.alertOpenSettingsDeniedPermissionCancelTitle = "permission_setting_cancel".localized
+        return data
     }
 }
+// swiftlint:enable cyclomatic_complexity

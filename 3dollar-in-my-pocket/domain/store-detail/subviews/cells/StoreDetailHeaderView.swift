@@ -7,6 +7,7 @@ import RxCocoa
 final class StoreDetailHeaderView: UICollectionReusableView {
     static let registerId = "\(StoreDetailHeaderView.self)"
     static let height: CGFloat = 72
+    var disposeBag = DisposeBag()
     
     private let titleLabel = UILabel().then {
         $0.textColor = .black
@@ -24,6 +25,12 @@ final class StoreDetailHeaderView: UICollectionReusableView {
         $0.layer.cornerRadius = 15
         $0.backgroundColor = R.color.red()?.withAlphaComponent(0.2)
         $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.disposeBag = DisposeBag()
     }
     
     override init(frame: CGRect) {

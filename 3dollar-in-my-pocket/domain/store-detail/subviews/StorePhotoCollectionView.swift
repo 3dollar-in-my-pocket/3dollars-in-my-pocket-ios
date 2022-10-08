@@ -74,7 +74,6 @@ final class StorePhotoCollectionView: BaseView {
       make.left.equalToSuperview()
       make.right.equalToSuperview()
       make.top.equalTo(self.titleLabel.snp.bottom).offset(18)
-      make.height.equalTo(StoreDetailPhotoCell.cellSize.height)
     }
     
     self.snp.makeConstraints { make in
@@ -87,15 +86,15 @@ final class StorePhotoCollectionView: BaseView {
     
     self.photoDisposeBag = DisposeBag()
     let photos = self.extractPhotos(from: store.images)
-    Observable.from(optional: photos)
-      .asDriver(onErrorJustReturn: [nil])
-      .drive(self.photoCollectionView.rx.items(
-              cellIdentifier: StoreDetailPhotoCell.registerId,
-              cellType: StoreDetailPhotoCell.self
-      )) { row, image, cell in
-        cell.bind(image: image, isLast: row == 3, count: store.images.count)
-      }
-      .disposed(by: self.photoDisposeBag)
+//    Observable.from(optional: photos)
+//      .asDriver(onErrorJustReturn: [nil])
+//      .drive(self.photoCollectionView.rx.items(
+//              cellIdentifier: StoreDetailPhotoCell.registerId,
+//              cellType: StoreDetailPhotoCell.self
+//      )) { row, image, cell in
+//        cell.bind(image: image, isLast: row == 3, count: store.images.count)
+//      }
+//      .disposed(by: self.photoDisposeBag)
   }
   
   private func extractPhotos(from photos: [Image]) -> [Image?] {

@@ -119,7 +119,7 @@ final class StoreInfoCollectionViewCell: BaseCollectionViewCell {
         }
     }
     
-    fileprivate func bind(store: Store) {
+    func bind(store: Store) {
         // 과거의 데이터중에서는 updatedAt이 Nil인 경우가 존재합니다.
 //        if let updatedAt = store.updatedAt {
 //            self.updatedAtLabel.text = DateUtils.toUpdatedAtFormat(dateString: updatedAt)

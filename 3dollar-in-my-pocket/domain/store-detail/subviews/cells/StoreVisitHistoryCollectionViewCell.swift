@@ -108,13 +108,12 @@ final class StoreVisitHistoryCollectionViewCell: BaseCollectionViewCell {
         }
     }
     
-    fileprivate func bind(visitHistories: [VisitHistory]) {
-        let existedCount = visitHistories.filter { $0.type == .exists }.count
-        let notExistedCount = visitHistories.filter { $0.type == .notExists }.count
+    func bind(visitOverview: VisitOverview) {
+        let isEmpty = visitOverview.existsCounts == 0 && visitOverview.notExistsCounts == 0
         
-        self.setupTitleLabel(isEmpty: visitHistories.isEmpty, count: existedCount)
-        self.setupExist(count: existedCount)
-        self.setupNotExist(count: notExistedCount)
+        self.setupTitleLabel(isEmpty: isEmpty, count: visitOverview.existsCounts)
+        self.setupExist(count: visitOverview.existsCounts)
+        self.setupNotExist(count: visitOverview.notExistsCounts)
     }
     
     private func setupTitleLabel(isEmpty: Bool, count: Int) {
@@ -165,11 +164,5 @@ final class StoreVisitHistoryCollectionViewCell: BaseCollectionViewCell {
 extension Reactive where Base: StoreVisitHistoryCollectionViewCell {
     var tap: ControlEvent<Void> {
         return base.plusButton.rx.tap
-    }
-    
-    var visitHistories: Binder<[VisitHistory]> {
-        return Binder(self.base) { view, visitHistories in
-            view.bind(visitHistories: visitHistories)
-        }
     }
 }

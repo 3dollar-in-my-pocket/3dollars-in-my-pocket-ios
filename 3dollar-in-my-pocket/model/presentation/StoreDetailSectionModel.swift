@@ -1,0 +1,50 @@
+import RxDataSources
+
+struct StoreDetailSectionModel: Equatable {
+    var items: [Item]
+}
+
+extension StoreDetailSectionModel: SectionModelType {
+    typealias Item = StoreDetailItemType
+    
+    enum StoreDetailItemType: Equatable {
+        case overView(Store)
+        case visitHistory(VisitOverview)
+        case info(Store)
+        case menu(Store)
+        case photo(Store)
+        case advertisement
+        case reivew(review: Review, userId: Int)
+    }
+    
+    init(original: StoreDetailSectionModel, items: [Item]) {
+        self = original
+        self.items = items
+    }
+    
+    init(overView store: Store) {
+        self.items = [.overView(store)]
+    }
+    
+    init(visitOverview: VisitOverview) {
+        self.items = [.visitHistory(visitOverview)]
+    }
+    
+    init(info store: Store) {
+        self.items = [.info(store)]
+    }
+    
+    init(menu store: Store) {
+        self.items = [.menu(store)]
+    }
+    
+    init(photo store: Store) {
+        self.items = store.images.map { _ in return StoreDetailItemType.photo(store) }
+    }
+    
+    init(review store: Store) {
+        self.items = [.advertisement] + store.reviews.map {
+            StoreDetailItemType.reivew(review: $0, userId: 0) // TODO: userId 가지고 와야함
+        }
+    }
+}

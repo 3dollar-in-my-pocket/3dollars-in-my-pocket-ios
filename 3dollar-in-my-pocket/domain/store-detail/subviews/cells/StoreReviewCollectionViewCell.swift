@@ -2,7 +2,7 @@ import UIKit
 
 import Base
 
-final class StoreReviewCollectionViewCell: BaseTableViewCell {
+final class StoreReviewCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(StoreReviewCollectionViewCell.self)"
     static let estimatedHeight: CGFloat = 140
     
@@ -52,7 +52,6 @@ final class StoreReviewCollectionViewCell: BaseTableViewCell {
             self.createdAtLabel,
             self.replyLabel
         ])
-        self.selectionStyle = .none
         self.contentView.isUserInteractionEnabled = false
         self.backgroundColor = .clear
     }

@@ -65,7 +65,7 @@ final class StoreMenuCollectionViewCell: BaseCollectionViewCell {
         }
     }
     
-    fileprivate func bind(store: Store) {
+    func bind(store: Store) {
         self.countLabel.text
         = R.string.localization.store_detail_menu_format(store.menus.count)
         self.clearMenuStackView()
@@ -114,13 +114,5 @@ final class StoreMenuCollectionViewCell: BaseCollectionViewCell {
         }
         
         return subViews
-    }
-}
-
-extension Reactive where Base: StoreMenuCollectionViewCell {
-    var store: Binder<Store> {
-        return Binder(self.base) { view, store in
-            view.bind(store: store)
-        }
     }
 }

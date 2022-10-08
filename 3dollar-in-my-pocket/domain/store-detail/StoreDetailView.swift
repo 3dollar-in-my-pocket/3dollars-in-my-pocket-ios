@@ -81,11 +81,11 @@ final class StoreDetailView: BaseView {
     override func setup() {
         self.collectionView.delegate = self
         self.addSubViews([
+            self.collectionView,
             self.navigationView,
             self.backButton,
             self.mainCategoryImage,
             self.deleteRequestButton,
-            self.collectionView,
             self.visitButton
         ])
         self.backgroundColor = UIColor(r: 250, g: 250, b: 250)

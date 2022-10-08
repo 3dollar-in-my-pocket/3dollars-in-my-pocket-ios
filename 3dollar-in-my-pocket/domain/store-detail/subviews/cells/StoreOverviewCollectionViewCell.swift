@@ -7,7 +7,7 @@ import RxCocoa
 
 final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(StoreOverviewCollectionViewCell.self)"
-    static let height: CGFloat = UIScreen.main.bounds.height / 2.21 + 170
+    static let height: CGFloat = UIScreen.main.bounds.height / 2.21 + 160
     
     private var marker = NMFMarker()
     
@@ -24,7 +24,8 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
         $0.layer.borderWidth = 1
         $0.layer.shadowColor = UIColor.black.cgColor
         $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowOpacity = 0.015
+        $0.layer.shadowOpacity = 0.15
+        $0.layer.cornerRadius = 24
     }
     
     private let overViewContainerView = UIView().then {
@@ -99,6 +100,8 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
         self.currentLocationButton.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-24)
             make.bottom.equalTo(self.overViewContainerView.snp.top).offset(-32)
+            make.width.equalTo(48)
+            make.height.equalTo(48)
         }
         
         self.overViewContainerView.snp.makeConstraints { make in
@@ -106,34 +109,39 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
             make.right.equalToSuperview().offset(-24)
             make.top.equalTo(self.mapView.snp.bottom).offset(-32)
             make.bottom.equalTo(self.shareButton).offset(10)
-            make.bottom.equalToSuperview()
         }
         
         self.nicknameLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(self.overViewContainerView).offset(20)
+            make.height.equalTo(16)
         }
         
         self.storeNameLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.left.equalTo(self.overViewContainerView).offset(16)
             make.right.equalTo(self.overViewContainerView).offset(-16)
-            make.top.equalTo(self.nicknameLabel.snp.bottom).offset(8)
+            make.top.equalTo(self.nicknameLabel.snp.bottom).offset(10)
+            make.height.equalTo(25)
+        }
+        
+        self.distanceImage.snp.makeConstraints { make in
+            make.top.equalTo(self.storeNameLabel.snp.bottom).offset(13)
+            make.right.equalTo(self.distanceLabel.snp.left).offset(-4)
+            make.width.equalTo(16)
+            make.height.equalTo(16)
         }
         
         self.distanceLabel.snp.makeConstraints { make in
             make.right.equalTo(self.snp.centerX).offset(-13)
-            make.top.equalTo(self.storeNameLabel.snp.bottom).offset(13)
-        }
-        
-        self.distanceImage.snp.makeConstraints { make in
-            make.centerY.equalTo(self.distanceLabel)
-            make.right.equalTo(self.distanceLabel.snp.left).offset(-4)
+            make.centerY.equalTo(self.distanceImage)
         }
         
         self.starImage.snp.makeConstraints { make in
             make.left.equalTo(self.snp.centerX).offset(8)
             make.centerY.equalTo(self.distanceLabel)
+            make.width.equalTo(16)
+            make.height.equalTo(16)
         }
         
         self.starLabel.snp.makeConstraints { make in
@@ -142,19 +150,14 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
         }
         
         self.shareButton.snp.makeConstraints { make in
-            make.top.equalTo(self.distanceLabel.snp.bottom).offset(36)
+            make.top.equalTo(self.distanceImage.snp.bottom).offset(17)
             make.left.equalTo(self.overViewContainerView)
             make.right.equalTo(self.overViewContainerView)
             make.height.equalTo(32)
         }
-        
-        self.snp.makeConstraints { make in
-            make.top.equalTo(self.mapView).priority(.high)
-            make.bottom.equalTo(self.overViewContainerView).priority(.high)
-        }
     }
     
-    fileprivate func bind(store: Store) {
+    func bind(store: Store) {
         self.setNicknameBold(name: store.user.name)
         self.storeNameLabel.text = store.storeName
         self.distanceLabel.text = "\(store.distance)m"
@@ -200,13 +203,5 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
         
         self.mapView.moveCamera(cameraUpdate)
         self.marker.mapView = self.mapView
-    }
-}
-
-extension Reactive where Base: StoreOverviewCollectionViewCell {
-    var store: Binder<Store> {
-        return Binder(self.base) { view, store in
-            view.bind(store: store)
-        }
     }
 }
