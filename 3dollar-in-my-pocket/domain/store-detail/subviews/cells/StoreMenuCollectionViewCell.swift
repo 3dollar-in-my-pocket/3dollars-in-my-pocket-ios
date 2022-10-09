@@ -6,7 +6,7 @@ import RxCocoa
 
 final class StoreMenuCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(StoreMenuCollectionViewCell.self)"
-    static let estimatedHeight: CGFloat = 140
+    static let estimatedHeight: CGFloat = 200
     
     private let containerView = UIView().then {
         $0.backgroundColor = .white
@@ -62,6 +62,11 @@ final class StoreMenuCollectionViewCell: BaseCollectionViewCell {
             make.left.equalToSuperview().offset(24)
             make.right.equalToSuperview().offset(-24)
             make.top.equalTo(self.titleLabel.snp.bottom).offset(14)
+        }
+        
+        self.snp.makeConstraints { make in
+            make.top.equalTo(self.containerView).offset(-12).priority(.high)
+            make.bottom.equalTo(self.containerView).priority(.high)
         }
     }
     

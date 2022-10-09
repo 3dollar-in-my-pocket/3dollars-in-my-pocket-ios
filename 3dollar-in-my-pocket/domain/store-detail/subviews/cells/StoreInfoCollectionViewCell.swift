@@ -6,7 +6,7 @@ import RxCocoa
 
 final class StoreInfoCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(StoreInfoCollectionViewCell.self)"
-    static let height: CGFloat = 133
+    static let height: CGFloat = 140
   
     private let infoContainer = UIView().then {
         $0.backgroundColor = .white
