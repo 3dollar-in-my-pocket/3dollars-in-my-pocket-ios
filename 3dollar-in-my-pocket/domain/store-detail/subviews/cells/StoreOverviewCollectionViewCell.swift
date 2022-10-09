@@ -166,7 +166,7 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
         self.setupMarker(latitude: store.latitude, longitude: store.longitude)
     }
     
-    private func moveToPosition(latitude: Double, longitude: Double) {
+    func moveToPosition(latitude: Double, longitude: Double) {
         let position = NMGLatLng(lat: latitude, lng: longitude)
         let cameraUpdate = NMFCameraUpdate(scrollTo: position).then {
             $0.animation = .easeIn

@@ -9,6 +9,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
         case tapDeleteRequest
+        case tapCurrentLocation
         case tapShare
         case tapVisitHistory
         case tapEditStore
@@ -23,7 +24,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     
     enum Mutation {
         case setStore(Store)
-        case setCurrentLocation(CLLocation)
+        case moveCamera(CLLocation)
         case appendPhotos([Image])
         case deleteReview(row: Int)
         case presentDeleteModal(storeId: Int)
@@ -54,6 +55,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     let presentPhotoListPublisher = PublishRelay<Int>()
     let presentReviewModalPublisher = PublishRelay<(Int, Review?)>()
     let presentVisitPublisher = PublishRelay<Store>()
+    let moveCameraPublisher = PublishRelay<CLLocation>()
     
     private let storeId: Int
     private var userDefaults: UserDefaultsUtil
@@ -96,10 +98,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
                     .flatMap { [weak self] location -> Observable<Mutation> in
                         guard let self = self else { return .error(BaseError.nilValue) }
                         
-                        return .merge([
-                            .just(.setCurrentLocation(location)),
-                            self.fetchStore(storeId: self.storeId, currentLocation: location)
-                        ])
+                        return self.fetchStore(storeId: self.storeId, currentLocation: location)
                     }
                     .catch { .just(.showErrorAlert(error: $0)) },
                 .just(.showLoading(isShow: false))
@@ -112,6 +111,11 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             )
             
             return .just(.presentDeleteModal(storeId: self.storeId))
+            
+        case .tapCurrentLocation:
+            return self.locationManager.getCurrentLocation()
+                .map { .moveCamera($0) }
+                .catch { .just(.showErrorAlert(error: $0)) }
             
         case .tapShare:
             return .just(.shareToKakao(store: self.currentState.store))
@@ -169,8 +173,8 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         case .setStore(let store):
             newState.store = store
             
-        case .setCurrentLocation(let currentLocation):
-            newState.currentLocation = currentLocation
+        case .moveCamera(let location):
+            self.moveCameraPublisher.accept(location)
             
         case .appendPhotos(let photos):
             newState.store.images.insert(contentsOf: photos, at: 0)

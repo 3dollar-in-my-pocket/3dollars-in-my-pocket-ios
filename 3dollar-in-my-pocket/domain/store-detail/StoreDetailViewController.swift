@@ -78,12 +78,19 @@ final class StoreDetailViewController:
             }
             .disposed(by: self.eventDisposeBag)
         
+        self.storeDetailReactor.shareToKakaoPublisher
+            .asDriver(onErrorJustReturn: Store())
+            .drive(onNext: { [weak self] store in
+                self?.coordinator?.shareToKakao(store: store)
+            })
+            .disposed(by: self.eventDisposeBag)
+        
         self.storeDetailReactor.presentVisitHistoriesPublisher
             .asDriver(onErrorJustReturn: [])
             .drive(onNext: { [weak self] visitHistories in
                 self?.coordinator?.showVisitHistories(visitHistories: visitHistories)
             })
-            .disposed(by: self.disposeBag)
+            .disposed(by: self.eventDisposeBag)
         
         self.storeDetailReactor.pushModifyPublisher
             .asDriver(onErrorJustReturn: Store())
@@ -199,14 +206,26 @@ final class StoreDetailViewController:
                     ) as? StoreOverviewCollectionViewCell else { return BaseCollectionViewCell() }
                     
                     cell.bind(store: store)
-                    // TODO: 내위치 버튼 로직 필요
-//                    cell.currentLocationButton.rx.tap
-//                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                    cell.currentLocationButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapCurrentLocation }
+                        .bind(to: self.storeDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
                     cell.shareButton.rx.tap
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
                         .map { Reactor.Action.tapShare }
                         .bind(to: self.storeDetailReactor.action)
                         .disposed(by: cell.disposeBag)
+                    
+                    self.storeDetailReactor.moveCameraPublisher
+                        .asDriver(onErrorJustReturn: CLLocation())
+                        .drive(onNext: { [weak cell] location in
+                            cell?.moveToPosition(
+                                latitude: location.coordinate.latitude,
+                                longitude: location.coordinate.longitude)
+                        })
+                        .disposed(by: cell.disposeBag)
+                    
                     return cell
                     
                 case .visitHistory(let visitOverview):
