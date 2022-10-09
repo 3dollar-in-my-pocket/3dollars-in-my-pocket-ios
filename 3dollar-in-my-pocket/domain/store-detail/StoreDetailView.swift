@@ -62,6 +62,8 @@ final class StoreDetailView: BaseView {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: StoreDetailHeaderView.registerId
         )
+        $0.backgroundColor = R.color.gray0()
+        $0.contentInset = .init(top: 0, left: 0, bottom: 64, right: 0)
     }
     
     let visitButton = StoreDetailVisitButton()
@@ -115,7 +117,7 @@ final class StoreDetailView: BaseView {
         
         self.collectionView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(safeAreaLayoutGuide)
+            make.bottom.equalToSuperview()
             make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
         }
         
@@ -178,6 +180,8 @@ final class StoreDetailView: BaseView {
                     alignment: .top
                 )]
                 
+                section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
+                
                 return section
                 
             case .menus:
@@ -190,6 +194,8 @@ final class StoreDetailView: BaseView {
                     heightDimension: .estimated(StoreMenuCollectionViewCell.estimatedHeight)
                 ), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
+                
+                section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
                 
                 return section
                 
@@ -205,6 +211,7 @@ final class StoreDetailView: BaseView {
                 let section = NSCollectionLayoutSection(group: group)
                 
                 section.interGroupSpacing = 9
+                section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
                 section.orthogonalScrollingBehavior = .continuous
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
@@ -233,6 +240,7 @@ final class StoreDetailView: BaseView {
                 ), subitems: [advertisementItem, reviewItem])
                 let section = NSCollectionLayoutSection(group: group)
                 
+                section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),

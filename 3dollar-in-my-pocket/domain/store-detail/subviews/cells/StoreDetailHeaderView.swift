@@ -14,7 +14,12 @@ final class StoreDetailHeaderView: UICollectionReusableView {
         $0.font = .semiBold(size: 18)
     }
     
-    private let rightLabel = UILabel().then {
+    private let subtitleLabel = UILabel().then {
+        $0.textColor = R.color.black()
+        $0.font = .medium(size: 18)
+    }
+    
+    private let descriptionLabel = UILabel().then {
         $0.textColor = R.color.gray30()
         $0.font = .semiBold(size: 12)
     }
@@ -44,33 +49,51 @@ final class StoreDetailHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(type: StoreDetailHeaderType, updatedAt: String?) {
+    func bind(type: StoreDetailHeaderType, rightText: String?) {
         self.titleLabel.text = type.title
+        
         self.rightButton.setTitle(type.rightButtonTitle, for: .normal)
+        switch type {
+        case .info:
+            self.descriptionLabel.text = rightText
+            self.descriptionLabel.isHidden = false
+            self.subtitleLabel.isHidden = true
+            
+        case .photo, .review:
+            self.subtitleLabel.text = rightText
+            self.descriptionLabel.isHidden = true
+            self.subtitleLabel.isHidden = false
+        }
     }
     
     private func setup() {
         self.backgroundColor = .clear
         self.addSubViews([
             self.titleLabel,
-            self.rightLabel,
+            self.descriptionLabel,
+            self.subtitleLabel,
             self.rightButton
         ])
     }
     
     private func bindConstratins() {
         self.titleLabel.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
+            make.left.equalToSuperview()
             make.centerY.equalTo(self.rightButton)
         }
         
-        self.rightLabel.snp.makeConstraints { make in
+        self.subtitleLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(self.titleLabel)
+            make.left.equalTo(self.titleLabel.snp.right).offset(5)
+        }
+        
+        self.descriptionLabel.snp.makeConstraints { make in
           make.centerY.equalTo(self.titleLabel)
           make.left.equalTo(self.titleLabel.snp.right).offset(8)
         }
         
         self.rightButton.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-24)
+            make.right.equalToSuperview()
             make.top.equalToSuperview().offset(32)
         }
     }

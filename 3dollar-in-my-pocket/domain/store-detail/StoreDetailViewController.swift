@@ -250,7 +250,7 @@ final class StoreDetailViewController:
                     ) as? StorePhotoCollectionViewCell else { return BaseCollectionViewCell() }
                     
                     if store.images.isEmpty {
-                        cell.bind(image: nil, isLast: true, count: indexPath.row)
+                        cell.bind(image: nil, isLast: false, count: indexPath.row)
                     } else {
                         let image = store.images[indexPath.row]
                         
@@ -269,6 +269,7 @@ final class StoreDetailViewController:
                         for: indexPath
                     ) as? StoreAdCollectionViewCell else { return BaseCollectionViewCell() }
                     
+                    cell.adBannerView.rootViewController = self
                     return cell
                     
                 case .reivew(let review, let userId):
@@ -301,7 +302,7 @@ final class StoreDetailViewController:
             })
         
         self.storeDetailCollectionViewDataSource.configureSupplementaryView
-        = { _, collectionView, kind, indexPath -> UICollectionReusableView in
+        = { datasource, collectionView, kind, indexPath -> UICollectionReusableView in
             switch kind {
             case UICollectionView.elementKindSectionHeader:
                 guard let headerView = collectionView.dequeueReusableSupplementaryView(
@@ -312,33 +313,55 @@ final class StoreDetailViewController:
                 
                 switch StreetFoodStoreDetailSection(sectionIndex: indexPath.section) {
                 case .info:
-                    headerView.bind(type: StoreDetailHeaderType.info, updatedAt: nil)
+                    if case .overView(let store) = datasource.sectionModels.first?.items.first,
+                       let updatedAt = store.updatedAt {
+                        let rightText = DateUtils.toUpdatedAtFormat(dateString: updatedAt)
+                        
+                        headerView.bind(
+                            type: StoreDetailHeaderType.info,
+                            rightText: rightText
+                        )
+                    }
                     headerView.rightButton.rx.tap
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
                         .map { Reactor.Action.tapEditStore }
                         .bind(to: self.storeDetailReactor.action)
                         .disposed(by: headerView.disposeBag)
-                    
+
                 case .photos:
-                    headerView.bind(type: StoreDetailHeaderType.photo, updatedAt: nil)
+                    if case .overView(let store) = datasource.sectionModels.first?.items.first {
+                        let photoCount = store.images.count
+                        
+                        headerView.bind(
+                            type: StoreDetailHeaderType.photo,
+                            rightText: "\(photoCount)개"
+                        )
+                    }
                     headerView.rightButton.rx.tap
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
                         .map { Reactor.Action.tapAddPhoto }
                         .bind(to: self.storeDetailReactor.action)
                         .disposed(by: headerView.disposeBag)
-                    
+
                 case .reviewAndadvertisement:
-                    headerView.bind(type: StoreDetailHeaderType.review, updatedAt: nil)
+                    if case .overView(let store) = datasource.sectionModels.first?.items.first {
+                        let reviewCount = store.reviews.count
+                        
+                        headerView.bind(
+                            type: StoreDetailHeaderType.review,
+                            rightText: "\(reviewCount)개"
+                        )
+                    }
                     headerView.rightButton.rx.tap
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
                         .map { Reactor.Action.tapWriteReview }
                         .bind(to: self.storeDetailReactor.action)
                         .disposed(by: headerView.disposeBag)
-                    
+
                 default:
                     break
                 }
-                
+
                 return headerView
                 
             default:

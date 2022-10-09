@@ -39,7 +39,11 @@ extension StoreDetailSectionModel: SectionModelType {
     }
     
     init(photo store: Store) {
-        self.items = store.images.map { _ in return StoreDetailItemType.photo(store) }
+        if store.images.isEmpty {
+            self.items = [.photo(Store())]
+        } else {
+            self.items = store.images.map { _ in return StoreDetailItemType.photo(store) }
+        }
     }
     
     init(review store: Store) {

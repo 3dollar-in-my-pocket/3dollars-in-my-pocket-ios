@@ -71,9 +71,9 @@ final class StoreInfoCollectionViewCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         self.infoContainer.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.right.equalToSuperview().offset(-24)
-            make.top.equalToSuperview().offset(19)
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.top.equalToSuperview().offset(7)
             make.bottom.equalTo(self.paymentLabel).offset(22)
         }
         
@@ -120,10 +120,6 @@ final class StoreInfoCollectionViewCell: BaseCollectionViewCell {
     }
     
     func bind(store: Store) {
-        // 과거의 데이터중에서는 updatedAt이 Nil인 경우가 존재합니다.
-//        if let updatedAt = store.updatedAt {
-//            self.updatedAtLabel.text = DateUtils.toUpdatedAtFormat(dateString: updatedAt)
-//        }
         self.setStoreType(storeType: store.storeType)
         self.setStoreDays(weekDays: store.appearanceDays)
         self.paymentMethodView.bind(paymentMethods: store.paymentMethods)

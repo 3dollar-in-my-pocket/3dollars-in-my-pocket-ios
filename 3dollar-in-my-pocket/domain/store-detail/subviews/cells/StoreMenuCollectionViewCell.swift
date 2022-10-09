@@ -42,8 +42,8 @@ final class StoreMenuCollectionViewCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         self.containerView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.right.equalToSuperview().offset(-24)
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
             make.top.equalToSuperview().offset(12)
             make.bottom.equalTo(self.menuStackView).offset(16)
         }

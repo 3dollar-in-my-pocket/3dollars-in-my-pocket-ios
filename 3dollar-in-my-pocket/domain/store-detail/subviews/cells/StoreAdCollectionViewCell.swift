@@ -9,14 +9,7 @@ final class StoreAdCollectionViewCell: BaseCollectionViewCell {
     static let height: CGFloat = 64
     
     let adBannerView = GADBannerView().then {
-        $0.isHidden = true
         $0.adUnitID = Bundle.admobUnitId
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        self.adBannerView.delegate = nil
     }
     
     override func setup() {
@@ -30,10 +23,10 @@ final class StoreAdCollectionViewCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         self.adBannerView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.right.equalToSuperview().offset(-24)
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
             make.top.equalToSuperview()
-            make.height.equalTo(64)
+            make.bottom.equalToSuperview()
         }
     }
     
@@ -78,4 +71,3 @@ extension StoreAdCollectionViewCell: GADBannerViewDelegate {
         print("adViewWillLeaveApplication")
     }
 }
-
