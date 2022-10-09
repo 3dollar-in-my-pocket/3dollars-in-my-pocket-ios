@@ -65,7 +65,7 @@ protocol StoreServiceProtocol {
     func deleteStore(
         storeId: Int,
         deleteReasonType: DeleteReason
-    ) -> Observable<StoreDeleteResponse>
+    ) -> Observable<Void>
     
     func fetchBossStore(
         bossStoreId: String,
@@ -434,31 +434,16 @@ struct StoreService: StoreServiceProtocol {
     func deleteStore(
         storeId: Int,
         deleteReasonType: DeleteReason
-    ) -> Observable<StoreDeleteResponse> {
-        return Observable.create { observer -> Disposable in
-            let urlString = HTTPUtils.url + "/api/v2/store/\(storeId)"
-            let headers = HTTPUtils.defaultHeader()
-            let parameters: [String: Any] = ["deleteReasonType": deleteReasonType.getValue()]
-            
-            HTTPUtils.defaultSession.request(
-                urlString,
-                method: .delete,
-                parameters: parameters,
-                headers: headers
-            ).responseJSON { response in
-                if response.isSuccess() {
-                    observer.processValue(class: StoreDeleteResponse.self, response: response)
-                } else if response.response?.statusCode == 409 {
-                    let error = CommonError(desc: "store_delete_already_request".localized)
-                    
-                    observer.onError(error)
-                } else {
-                    observer.processHTTPError(response: response)
-                }
-            }
-            
-            return Disposables.create()
-        }
+    ) -> Observable<Void> {
+        let urlString = HTTPUtils.url + "/api/v2/store/\(storeId)"
+        let headers = HTTPUtils.defaultHeader()
+        let parameters: [String: Any] = ["deleteReasonType": deleteReasonType.getValue()]
+        
+        return self.networkManager.createDeleteObservable(
+            urlString: urlString,
+            parameters: parameters,
+            headers: headers
+        )
     }
     
     func fetchBossStore(

@@ -30,12 +30,12 @@ protocol StoreDetailCoordinator: BaseCoordinator, AnyObject {
 
 extension StoreDetailCoordinator where Self: BaseViewController {
     func showDeleteModal(storeId: Int) {
-        let deleteVC = DeleteModalVC.instance(storeId: storeId).then {
+        let viewController = DeleteModalViewController.instance(storeId: storeId).then {
             $0.deleagete = self as? DeleteModalDelegate
         }
         
         self.presenter.tabBarController?.present(
-            deleteVC,
+            viewController,
             animated: true,
             completion: nil
         )

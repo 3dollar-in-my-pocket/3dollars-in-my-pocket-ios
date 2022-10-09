@@ -31,12 +31,14 @@ struct NetworkManager {
     
     func createDeleteObservable(
         urlString: String,
+        parameters: [String: Any]? = nil,
         headers: HTTPHeaders
     ) -> Observable<Void> {
         return .create { observer in
             HTTPUtils.defaultSession.request(
                 urlString,
                 method: .delete,
+                parameters: parameters,
                 headers: headers
             ).responseData { response in
                 if let statusCode = response.response?.statusCode,
@@ -44,7 +46,7 @@ struct NetworkManager {
                     observer.onNext(())
                     observer.onCompleted()
                 } else {
-                    observer.processHTTPError(response: response)
+                    observer.processAPIError(response: response)
                 }
             }
             
