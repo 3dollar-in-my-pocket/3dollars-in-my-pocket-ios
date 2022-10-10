@@ -95,10 +95,6 @@ class RegisterPhotoVC: BaseVC {
   }
   
   private func setupPhotoCollectionView() {
-    self.registerPhotoView.photoCollectionView.register(
-      RegisterPhotoCell.self,
-      forCellWithReuseIdentifier: RegisterPhotoCell.registerId
-    )
     self.registerPhotoView.photoCollectionView.rx
       .setDelegate(self)
       .disposed(by: disposeBag)

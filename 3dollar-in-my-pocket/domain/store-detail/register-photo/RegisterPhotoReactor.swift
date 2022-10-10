@@ -3,21 +3,36 @@ import Photos
 
 import RxSwift
 import RxCocoa
+import ReactorKit
 
-class RegisterPhotoViewModel: BaseViewModel{
-    
-    let input = Input()
-    let output = Output()
-    let storeService: StoreServiceProtocol
-    var assets: PHFetchResult<PHAsset>!
-    let storeId: Int
-    var selectedIndex: [Int] = []
-    var selectedPhoto: [UIImage] = []
-    
-    struct Input {
-        let selectPhoto = PublishSubject<(Int, UIImage)>()
-        let tapRegisterButton = PublishSubject<Void>()
+final class RegisterPhotoReactor: BaseReactor, Reactor {
+    enum Action {
+        case viewDidLoad
+        case selectPhoto(row: Int)
+        case deSelectPhoto(row: Int)
+        case tapRegister
     }
+    
+    enum Mutation {
+        case setPhotos([PHAsset])
+        case selectPhoto(PHAsset)
+        case showLoading(isShow: Bool)
+        case showErrorAlert(error: Error)
+    }
+    
+    struct State {
+        var selectedPhotos: [PHAsset]
+        var photos: [PHAsset]
+    }
+    
+    let initialState: State
+    let storeService: StoreServiceProtocol
+    let dismissPublisher = PublishRelay<Void>()
+    private let storeId: Int
+    private let globalState: GlobalState
+//    var assets: PHFetchResult<PHAsset>!
+//    var selectedIndex: [Int] = []
+//    var selectedPhoto: [UIImage] = []
     
     struct Output {
         let registerButtonIsEnable = PublishRelay<Bool>()
@@ -28,54 +43,80 @@ class RegisterPhotoViewModel: BaseViewModel{
         let showLoading = PublishRelay<Bool>()
     }
     
-    init(storeId: Int, storeService: StoreServiceProtocol) {
+    init(
+        storeId: Int,
+        storeService: StoreServiceProtocol,
+        globalState: GlobalState,
+        state: State = State(selectedPhotos: [], photos: [])
+    ) {
         self.storeId = storeId
         self.storeService = storeService
+        self.globalState = globalState
+        self.initialState = state
         super.init()
         
-        self.input.selectPhoto
-            .bind(onNext: self.selectPhoto)
-            .disposed(by: disposeBag)
-        
-        self.input.tapRegisterButton
-            .map { (self.storeId, self.selectedPhoto) }
-            .bind(onNext: self.savePhotos)
-            .disposed(by: disposeBag)
+//        self.input.selectPhoto
+//            .bind(onNext: self.selectPhoto)
+//            .disposed(by: disposeBag)
+//
+//        self.input.tapRegisterButton
+//            .map { (self.storeId, self.selectedPhoto) }
+//            .bind(onNext: self.savePhotos)
+//            .disposed(by: disposeBag)
     }
     
-    func requestPhotosPermission() {
+    func mutate(action: Action) -> Observable<Mutation> {
+        switch action {
+        case .viewDidLoad:
+            return self.requestPhotosPermission()
+            
+        case .selectPhoto(let row):
+            
+        case .deSelectPhoto(let row):
+        case .tapRegister:
+        }
+    }
+    
+    private func requestPhotosPermission() -> Observable<Mutation> {
         let photoAuthorizationStatusStatus = PHPhotoLibrary.authorizationStatus()
         
         switch photoAuthorizationStatusStatus {
         case .authorized:
-            self.requestPhotos()
+            return self.fetchPhotos()
+            
         case .denied:
-            print("Photo Authorization status is denied.")
+            return .just(.showErrorAlert(error: BaseError.custom("사진 제보를 위해 앨범 권한이 필요합니다.")))
+            
         case .notDetermined:
             PHPhotoLibrary.requestAuthorization { status in
                 switch status {
                 case .authorized:
-                    self.requestPhotos()
+                    return self.fetchPhotos()
+                    
                 case .denied:
-                    print("User denied.")
+                    return .just(.showErrorAlert(error: BaseError.custom("사진 제보를 위해 앨범 권한이 필요합니다.")))
+                    
                 default:
-                    break
+                    return .empty()
                 }
             }
         case .restricted:
-            print("Photo Authorization status is restricted.")
+            return .just(.showErrorAlert(error: BaseError.custom("사진 제보를 위해 앨범 권한이 필요합니다.")))
+            
         default:
-            break
+            return .empty()
         }
     }
     
-    private func requestPhotos() {
+    private func fetchPhotos() -> Observable<Mutation> {
         let fetchOption = PHFetchOptions().then {
             $0.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         }
         
-        self.assets = PHAsset.fetchAssets(with: .image, options: fetchOption)
-        self.output.photos.accept(self.assets.objects(at: IndexSet(0..<self.assets.count - 1)))
+        let fetchResult = PHAsset.fetchAssets(with: .image, options: fetchOption)
+        let photos = fetchResult.objects(at: IndexSet(0..<fetchResult.count - 1))
+        
+        return .just(.setPhotos(photos))
     }
     
     private func selectPhoto(selectedIndex: Int, image: UIImage) {
