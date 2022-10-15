@@ -65,11 +65,11 @@ extension StoreDetailCoordinator where Self: BaseViewController {
     }
     
     func showRegisterPhoto(storeId: Int) {
-        let registerPhotoVC = RegisterPhotoVC.instance(storeId: storeId).then {
+        let viewController = RegisterPhotoViewController.instance(storeId: storeId).then {
             $0.delegate = self as? RegisterPhotoDelegate
         }
         
-        self.presenter.tabBarController?.present(registerPhotoVC, animated: true, completion: nil)
+        self.presenter.tabBarController?.present(viewController, animated: true, completion: nil)
     }
     
     func showPhotoDetail(storeId: Int, index: Int, photos: [Image]) {

@@ -48,6 +48,12 @@ final class RegisterButton: BaseView {
             make.edges.equalTo(self.registerButtonBackground).priority(.high)
         }
     }
+    
+    fileprivate func bind(count: Int) {
+        let title = String(format: "register_photo_button_format".localized, count)
+        
+        self.registerButton.setTitle(title, for: .normal)
+    }
 }
 
 extension Reactive where Base: RegisterButton {
@@ -57,5 +63,11 @@ extension Reactive where Base: RegisterButton {
     
     var inEnable: Binder<Bool> {
         return base.registerButton.rx.isEnabled
+    }
+    
+    var photoCount: Binder<Int> {
+        return Binder(self.base) { view, count in
+            view.bind(count: count)
+        }
     }
 }

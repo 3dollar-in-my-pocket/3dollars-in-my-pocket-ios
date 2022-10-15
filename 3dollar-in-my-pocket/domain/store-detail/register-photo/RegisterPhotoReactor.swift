@@ -8,21 +8,23 @@ import ReactorKit
 final class RegisterPhotoReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
-        case selectPhoto(row: Int)
-        case deSelectPhoto(row: Int)
+        case selectAsset(row: Int)
+        case deSelectAsset(row: Int)
         case tapRegister
     }
     
     enum Mutation {
-        case setPhotos([PHAsset])
-        case selectPhoto(PHAsset)
+        case setAssets([PHAsset])
+        case appendToSelectedAsset(PHAsset)
+        case removeFromSelectedAsset(PHAsset)
+        case dismiss
         case showLoading(isShow: Bool)
         case showErrorAlert(error: Error)
     }
     
     struct State {
-        var selectedPhotos: [PHAsset]
-        var photos: [PHAsset]
+        var selectedAssets: [PHAsset]
+        var assets: [PHAsset]
     }
     
     let initialState: State
@@ -30,9 +32,9 @@ final class RegisterPhotoReactor: BaseReactor, Reactor {
     let dismissPublisher = PublishRelay<Void>()
     private let storeId: Int
     private let globalState: GlobalState
-//    var assets: PHFetchResult<PHAsset>!
-//    var selectedIndex: [Int] = []
-//    var selectedPhoto: [UIImage] = []
+    //    var assets: PHFetchResult<PHAsset>!
+    //    var selectedIndex: [Int] = []
+    //    var selectedPhoto: [UIImage] = []
     
     struct Output {
         let registerButtonIsEnable = PublishRelay<Bool>()
@@ -47,7 +49,7 @@ final class RegisterPhotoReactor: BaseReactor, Reactor {
         storeId: Int,
         storeService: StoreServiceProtocol,
         globalState: GlobalState,
-        state: State = State(selectedPhotos: [], photos: [])
+        state: State = State(selectedAssets: [], assets: [])
     ) {
         self.storeId = storeId
         self.storeService = storeService
@@ -55,14 +57,14 @@ final class RegisterPhotoReactor: BaseReactor, Reactor {
         self.initialState = state
         super.init()
         
-//        self.input.selectPhoto
-//            .bind(onNext: self.selectPhoto)
-//            .disposed(by: disposeBag)
-//
-//        self.input.tapRegisterButton
-//            .map { (self.storeId, self.selectedPhoto) }
-//            .bind(onNext: self.savePhotos)
-//            .disposed(by: disposeBag)
+        //        self.input.selectPhoto
+        //            .bind(onNext: self.selectPhoto)
+        //            .disposed(by: disposeBag)
+        //
+        //        self.input.tapRegisterButton
+        //            .map { (self.storeId, self.selectedPhoto) }
+        //            .bind(onNext: self.savePhotos)
+        //            .disposed(by: disposeBag)
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
@@ -70,11 +72,49 @@ final class RegisterPhotoReactor: BaseReactor, Reactor {
         case .viewDidLoad:
             return self.requestPhotosPermission()
             
-        case .selectPhoto(let row):
+        case .selectAsset(let row):
+            let selectedPhoto = self.currentState.assets[row]
             
-        case .deSelectPhoto(let row):
+            return .just(.appendToSelectedAsset(selectedPhoto))
+            
+        case .deSelectAsset(let row):
+            let deSelectedPhoto = self.currentState.assets[row]
+            
+            return .just(.removeFromSelectedAsset(deSelectedPhoto))
+            
         case .tapRegister:
+            let assets = self.currentState.selectedAssets
+            
+            return self.savePhotos(storeId: self.storeId, assets: assets)
         }
+    }
+    
+    func reduce(state: State, mutation: Mutation) -> State {
+        var newState = state
+        
+        switch mutation {
+        case .setAssets(let assets):
+            newState.assets = assets
+            
+        case .appendToSelectedAsset(let assets):
+            newState.selectedAssets.append(assets)
+            
+        case .removeFromSelectedAsset(let assets):
+            if let targetIndex = state.selectedAssets.firstIndex(of: assets) {
+                newState.selectedAssets.remove(at: targetIndex)
+            }
+            
+        case .dismiss:
+            self.dismissPublisher.accept(())
+            
+        case .showLoading(let isShow):
+            self.showLoadingPublisher.accept(isShow)
+            
+        case .showErrorAlert(let error):
+            self.showErrorAlertPublisher.accept(error)
+        }
+        
+        return newState
     }
     
     private func requestPhotosPermission() -> Observable<Mutation> {
@@ -88,18 +128,20 @@ final class RegisterPhotoReactor: BaseReactor, Reactor {
             return .just(.showErrorAlert(error: BaseError.custom("사진 제보를 위해 앨범 권한이 필요합니다.")))
             
         case .notDetermined:
-            PHPhotoLibrary.requestAuthorization { status in
-                switch status {
-                case .authorized:
-                    return self.fetchPhotos()
-                    
-                case .denied:
-                    return .just(.showErrorAlert(error: BaseError.custom("사진 제보를 위해 앨범 권한이 필요합니다.")))
-                    
-                default:
-                    return .empty()
-                }
-            }
+            return self.fetchPhotos()
+//            PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
+//                switch status {
+//                case .authorized:
+//                    return self.fetchPhotos()
+//
+//                case .denied:
+//                    return .just(.showErrorAlert(error: BaseError.custom("사진 제보를 위해 앨범 권한이 필요합니다.")))
+//
+//                default:
+//                    return .empty()
+//                }
+//            }
+            
         case .restricted:
             return .just(.showErrorAlert(error: BaseError.custom("사진 제보를 위해 앨범 권한이 필요합니다.")))
             
@@ -112,64 +154,20 @@ final class RegisterPhotoReactor: BaseReactor, Reactor {
         let fetchOption = PHFetchOptions().then {
             $0.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         }
-        
         let fetchResult = PHAsset.fetchAssets(with: .image, options: fetchOption)
-        let photos = fetchResult.objects(at: IndexSet(0..<fetchResult.count - 1))
+        let assets = fetchResult.objects(at: IndexSet(0..<fetchResult.count - 1))
         
-        return .just(.setPhotos(photos))
+        return .just(.setAssets(assets))
     }
     
-    private func selectPhoto(selectedIndex: Int, image: UIImage) {
-        if self.selectedIndex.contains(selectedIndex) {
-            if let index = self.selectedIndex.firstIndex(of: selectedIndex) {
-                self.selectedPhoto.remove(at: index)
-                self.selectedIndex.remove(at: index)
-            }
-        } else {
-            if self.selectedIndex.count != 3 {
-                self.selectedIndex.append(selectedIndex)
-                self.selectedPhoto.append(image)
-            } else {
-                self.output.deSelectPublisher.accept(selectedIndex)
-            }
+    private func savePhotos(storeId: Int, assets: [PHAsset]) -> Observable<Mutation> {
+        let photos = assets.map { ImageUtils.getImage(from: $0) }
+        let savePhotoObservables = photos.map {
+            return self.storeService.savePhoto(storeId: storeId, photos: [$0])
         }
         
-        self.output.registerButtonIsEnable.accept(!self.selectedIndex.isEmpty)
-        self.output.registerButtonText.accept(String(
-            format: "register_photo_button_format".localized,
-            self.selectedIndex.count
-        ))
-    }
-    
-    private func savePhotos(storeId: Int, photos: [UIImage]) {
-        let savePhotoObservables = photos
-            .map { self.storeService.savePhoto(storeId: storeId, photos: [$0])}
-        
-        self.output.showLoading.accept(true)
-        Observable.zip(savePhotoObservables)
-            .subscribe(
-                onNext: { [weak self] _ in
-                    guard let self = self else { return }
-                    
-                    self.output.dismiss.accept(())
-                    self.output.showLoading.accept(false)
-                },
-                onError: { [weak self] error in
-                    guard let self = self else { return }
-                    if let httpError = error as? HTTPError {
-                        self.httpErrorAlert.accept(httpError)
-                    }
-                    if let commonError = error as? CommonError {
-                        let alertContent = AlertContent(
-                            title: nil,
-                            message: commonError.description
-                        )
-                        
-                        self.showSystemAlert.accept(alertContent)
-                    }
-                    self.output.showLoading.accept(false)
-                }
-            )
-            .disposed(by: disposeBag)
+        return Observable.zip(savePhotoObservables)
+            .map { _ in .dismiss }
+            .catch { .just(.showErrorAlert(error: $0)) }
     }
 }
