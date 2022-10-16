@@ -40,6 +40,7 @@ final class RegisterPhotoView: BaseView {
     let registerButton = RegisterButton()
     
     override func setup() {
+        self.photoCollectionView.delegate = self
         self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
         self.addSubViews([
             self.navigationView,
@@ -95,5 +96,21 @@ final class RegisterPhotoView: BaseView {
             self?.registerButton.transform = .identity
             self?.registerButton.alpha = 1
         })
+    }
+}
+
+extension RegisterPhotoView: UICollectionViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.hideRegisterButton()
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            self.showRegisterButton()
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.showRegisterButton()
     }
 }

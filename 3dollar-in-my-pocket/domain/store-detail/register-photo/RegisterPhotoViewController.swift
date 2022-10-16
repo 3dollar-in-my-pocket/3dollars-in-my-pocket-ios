@@ -25,6 +25,7 @@ final class RegisterPhotoViewController: BaseViewController, View, RegisterPhoto
         self.registerPhotoReactor = RegisterPhotoReactor(
             storeId: storeId,
             storeService: StoreService(),
+            photoManager: PhotoManager.shared,
             globalState: GlobalState.shared
         )
         super.init(nibName: nil, bundle: nil)
@@ -41,7 +42,6 @@ final class RegisterPhotoViewController: BaseViewController, View, RegisterPhoto
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        self.setupPhotoCollectionView()
         self.coordinator = self
         self.reactor = self.registerPhotoReactor
         self.registerPhotoReactor.action.onNext(.viewDidLoad)
@@ -75,6 +75,13 @@ final class RegisterPhotoViewController: BaseViewController, View, RegisterPhoto
                 self?.coordinator?.showErrorAlert(error: error)
             })
             .disposed(by: self.eventDisposeBag)
+        
+        self.registerPhotoReactor.deSelectPublisher
+            .asDriver(onErrorJustReturn: 0)
+            .drive { [weak self] row in
+                self?.registerPhotoView.deselectCollectionItem(index: row)
+            }
+            .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: RegisterPhotoReactor) {
@@ -100,7 +107,7 @@ final class RegisterPhotoViewController: BaseViewController, View, RegisterPhoto
             .map { !$0.selectedAssets.isEmpty }
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: false)
-            .drive(self.registerPhotoView.registerButton.rx.isHidden)
+            .drive(self.registerPhotoView.registerButton.rx.inEnable)
             .disposed(by: self.disposeBag)
         
         reactor.state
@@ -132,20 +139,3 @@ final class RegisterPhotoViewController: BaseViewController, View, RegisterPhoto
 //            .disposed(by: self.disposeBag)
 //    }
 }
-
-//extension RegisterPhotoVC: UIScrollViewDelegate {
-//
-//  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-//    self.registerPhotoView.hideRegisterButton()
-//  }
-//
-//  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//    if !decelerate {
-//      self.registerPhotoView.showRegisterButton()
-//    }
-//  }
-//
-//  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//    self.registerPhotoView.showRegisterButton()
-//  }
-//}

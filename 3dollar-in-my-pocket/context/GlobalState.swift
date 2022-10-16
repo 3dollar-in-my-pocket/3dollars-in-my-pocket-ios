@@ -13,4 +13,7 @@ final class GlobalState {
     
     /// 카테고리 필터 선택한 경우
     let updateCategoryFilter = PublishSubject<Categorizable>()
+    
+    /// 사진 제보 완료된 경우
+    let addStorePhotos = PublishSubject<[Image]>()
 }

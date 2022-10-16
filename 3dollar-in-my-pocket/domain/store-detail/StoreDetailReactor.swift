@@ -63,6 +63,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     private let storeService: StoreServiceProtocol
     private let reviewService: ReviewServiceProtocol
     private let gaManager: GAManagerProtocol
+    private let globalState: GlobalState
     
     init(
         storeId: Int,
@@ -71,6 +72,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         storeService: StoreServiceProtocol,
         reviewService: ReviewServiceProtocol,
         gaManager: GAManagerProtocol,
+        globalState: GlobalState,
         state: State = State(
             currentLocation: CLLocation(latitude: 0, longitude: 0),
             store: Store()
@@ -82,6 +84,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         self.storeService = storeService
         self.reviewService = reviewService
         self.gaManager = gaManager
+        self.globalState = globalState
         self.initialState = state
     }
     
@@ -164,6 +167,14 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         case .tapVisit:
             return .just(.presentVisit(store: self.currentState.store))
         }
+    }
+    
+    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
+        return .merge([
+            mutation,
+            self.globalState.addStorePhotos
+                .map { .appendPhotos($0) }
+        ])
     }
     
     func reduce(state: State, mutation: Mutation) -> State {

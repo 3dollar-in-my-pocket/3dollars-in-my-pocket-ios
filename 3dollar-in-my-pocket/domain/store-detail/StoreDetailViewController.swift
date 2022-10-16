@@ -34,7 +34,8 @@ final class StoreDetailViewController:
             locationManager: LocationManager.shared,
             storeService: StoreService(),
             reviewService: ReviewService(),
-            gaManager: GAManager.shared
+            gaManager: GAManager.shared,
+            globalState: GlobalState.shared
         )
         super.init(nibName: nil, bundle: nil)
         self.setupDataSource()
