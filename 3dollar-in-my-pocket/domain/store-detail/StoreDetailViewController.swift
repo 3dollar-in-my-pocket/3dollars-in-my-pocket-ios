@@ -185,7 +185,7 @@ final class StoreDetailViewController:
                 StoreDetailSectionModel(info: $0.store),
                 StoreDetailSectionModel(menu: $0.store),
                 StoreDetailSectionModel(photo: $0.store),
-                StoreDetailSectionModel(review: $0.store)
+                StoreDetailSectionModel(review: $0.store, userId: $0.userId)
             ] }
             .asDriver(onErrorJustReturn: [])
             .drive(self.storeDetailView.collectionView.rx.items(
@@ -306,12 +306,12 @@ final class StoreDetailViewController:
                                 review: review,
                                 onTapModify: {
                                     self?.storeDetailReactor.action.onNext(
-                                        .tapEditReview(row: indexPath.row)
+                                        .tapEditReview(row: indexPath.row - 1)
                                     )
                                 },
                                 onTapDelete: {
                                     self?.storeDetailReactor.action.onNext(
-                                        .deleteReview(row: indexPath.row)
+                                        .deleteReview(row: indexPath.row - 1)
                                     )
                                 }
                             )

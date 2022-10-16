@@ -27,6 +27,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         case moveCamera(CLLocation)
         case appendPhotos([Image])
         case deletePhoto(photoId: Int)
+        case addReview(Review)
         case deleteReview(row: Int)
         case presentDeleteModal(storeId: Int)
         case shareToKakao(store: Store)
@@ -44,6 +45,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     struct State {
         var currentLocation: CLLocation
         var store: Store
+        var userId: Int
     }
     
     let initialState: State
@@ -76,7 +78,8 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         globalState: GlobalState,
         state: State = State(
             currentLocation: CLLocation(latitude: 0, longitude: 0),
-            store: Store()
+            store: Store(),
+            userId: 0
         )
     ) {
         self.storeId = storeId
@@ -86,7 +89,11 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         self.reviewService = reviewService
         self.gaManager = gaManager
         self.globalState = globalState
-        self.initialState = state
+        self.initialState = State(
+            currentLocation: state.currentLocation,
+            store: state.store,
+            userId: userDefaults.getUserId()
+        )
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
@@ -190,7 +197,9 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             self.globalState.addStorePhotos
                 .map { .appendPhotos($0) },
             self.globalState.deletedPhoto
-                .map { .deletePhoto(photoId: $0) }
+                .map { .deletePhoto(photoId: $0) },
+            self.globalState.addStoreReview
+                .map { .addReview($0) }
         ])
     }
     
@@ -213,6 +222,9 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             }) {
                 newState.store.images.remove(at: targetIndex)
             }
+            
+        case .addReview(let review):
+            newState.store.reviews.append(review)
             
         case .deleteReview(let row):
             newState.store.reviews.remove(at: row)

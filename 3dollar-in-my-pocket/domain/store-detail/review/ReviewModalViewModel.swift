@@ -9,6 +9,7 @@ class ReviewModalViewModel: BaseViewModel {
   let storeId: Int
   var review: Review?
   let reviewService: ReviewServiceProtocol
+  let globalState: GlobalState
   
   struct Input {
     let rating = BehaviorRelay<Int>(value: 0)
@@ -22,8 +23,14 @@ class ReviewModalViewModel: BaseViewModel {
     let showHTTPErrorAlert = PublishRelay<HTTPError>()
   }
   
-  init(reviewService: ReviewServiceProtocol, storeId: Int, review: Review? = nil) {
+  init(
+    reviewService: ReviewServiceProtocol,
+    globalState: GlobalState,
+    storeId: Int,
+    review: Review? = nil
+  ) {
     self.reviewService = reviewService
+    self.globalState = globalState
     self.storeId = storeId
     self.review = review
     super.init()
@@ -63,6 +70,8 @@ class ReviewModalViewModel: BaseViewModel {
         .subscribe(
           onNext: { [weak self] _ in
             guard let self = self else { return }
+              
+            self.globalState.updateStore.onNext(Store())
             self.output.showLoading.accept(false)
             self.output.dismissOnSaveReview.accept(())
           },
@@ -90,9 +99,11 @@ class ReviewModalViewModel: BaseViewModel {
       self.output.showLoading.accept(true)
       self.reviewService.saveReview(review: review, storeId: self.storeId)
         .subscribe(
-          onNext: { [weak self] _ in
+          onNext: { [weak self] review in
             guard let self = self else { return }
             self.output.showLoading.accept(false)
+            
+            self.globalState.updateStore.onNext(Store())
             self.output.dismissOnSaveReview.accept(())
           },
           onError: { [weak self] error in

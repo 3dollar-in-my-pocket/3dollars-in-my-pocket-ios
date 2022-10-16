@@ -20,6 +20,7 @@ class ReviewModalVC: BaseVC {
   init(storeId: Int, review: Review?) {
     self.viewModel = ReviewModalViewModel(
       reviewService: ReviewService(),
+      globalState: GlobalState.shared,
       storeId: storeId,
       review: review
     )
@@ -45,6 +46,9 @@ class ReviewModalVC: BaseVC {
     super.viewDidLoad()
     view = reviewModalView
     
+    if let parentView = self.presentingViewController?.view {
+        DimManager.shared.showDim(targetView: parentView)
+    }
     self.addObservers()
     if let review = self.review {
       self.reviewModalView.bind(review: review)
@@ -109,8 +113,7 @@ class ReviewModalVC: BaseVC {
     self.viewModel.output.dismissOnSaveReview
       .observeOn(MainScheduler.instance)
       .bind { [weak self] _ in
-        self?.dismiss(animated: true, completion: nil)
-        self?.deleagete?.onReviewSuccess()
+          self?.dismissModal()
       }
       .disposed(by: disposeBag)
     
@@ -156,6 +159,7 @@ class ReviewModalVC: BaseVC {
   }
   
   private func dismissModal() {
+    DimManager.shared.hideDim()
     self.dismiss(animated: true, completion: nil)
     self.deleagete?.onTapClose()
   }

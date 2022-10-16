@@ -227,7 +227,7 @@ final class StoreDetailView: BaseView {
             case .reviewAndadvertisement:
                 let advertisementItem = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(StoreAdCollectionViewCell.height)
+                    heightDimension: .estimated(StoreAdCollectionViewCell.height)
                 ))
                 let reviewItem = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),

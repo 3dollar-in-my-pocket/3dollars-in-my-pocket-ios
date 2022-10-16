@@ -58,8 +58,8 @@ final class StoreReviewCollectionViewCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         self.containerView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.right.equalToSuperview().offset(-24)
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
             make.top.equalToSuperview().offset(16)
             make.bottom.equalTo(self.replyLabel).offset(16)
             make.bottom.equalToSuperview()
@@ -95,6 +95,10 @@ final class StoreReviewCollectionViewCell: BaseCollectionViewCell {
             make.right.equalTo(self.containerView).offset(-12)
             make.bottom.equalTo(self.containerView).offset(-12)
             make.width.height.equalTo(24)
+        }
+        
+        self.snp.makeConstraints { make in
+            make.edges.equalTo(self.containerView).priority(.high)
         }
     }
     

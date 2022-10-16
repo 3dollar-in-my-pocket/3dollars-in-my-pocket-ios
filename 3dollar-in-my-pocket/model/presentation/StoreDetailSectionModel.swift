@@ -48,9 +48,9 @@ extension StoreDetailSectionModel: SectionModelType {
         }
     }
     
-    init(review store: Store) {
+    init(review store: Store, userId: Int) {
         self.items = [.advertisement] + store.reviews.map {
-            StoreDetailItemType.reivew(review: $0, userId: 0) // TODO: userId 가지고 와야함
+            StoreDetailItemType.reivew(review: $0, userId: userId)
         }
     }
 }
