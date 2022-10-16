@@ -187,7 +187,6 @@ final class StoreDetailViewController:
                 StoreDetailSectionModel(photo: $0.store),
                 StoreDetailSectionModel(review: $0.store)
             ] }
-            .distinctUntilChanged()
             .asDriver(onErrorJustReturn: [])
             .drive(self.storeDetailView.collectionView.rx.items(
                 dataSource: self.storeDetailCollectionViewDataSource

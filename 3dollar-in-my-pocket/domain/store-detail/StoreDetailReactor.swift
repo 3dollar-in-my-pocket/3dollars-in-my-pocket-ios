@@ -169,6 +169,20 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         }
     }
     
+    func transform(action: Observable<Action>) -> Observable<Action> {
+        return .merge([
+            action,
+            self.globalState.updateStore
+                .flatMap { storeProtocol -> Observable<Action> in
+                    if let _ = storeProtocol as? Store {
+                        return .just(.viewDidLoad)
+                    } else {
+                        return .empty()
+                    }
+                }
+        ])
+    }
+    
     func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
         return .merge([
             mutation,
