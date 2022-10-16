@@ -41,8 +41,10 @@ extension StoreDetailSectionModel: SectionModelType {
     init(photo store: Store) {
         if store.images.isEmpty {
             self.items = [.photo(Store())]
-        } else {
+        } else if store.images.count <= 4 {
             self.items = store.images.map { _ in return StoreDetailItemType.photo(store) }
+        } else {
+            self.items = store.images[..<4].map { _ in return StoreDetailItemType.photo(store) }
         }
     }
     

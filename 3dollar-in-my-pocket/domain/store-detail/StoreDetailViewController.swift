@@ -270,14 +270,14 @@ final class StoreDetailViewController:
                     ) as? StorePhotoCollectionViewCell else { return BaseCollectionViewCell() }
                     
                     if store.images.isEmpty {
-                        cell.bind(image: nil, isLast: false, count: indexPath.row)
+                        cell.bind(image: nil, isLast: false, count: store.images.count)
                     } else {
                         let image = store.images[indexPath.row]
                         
                         cell.bind(
                             image: image,
-                            isLast: indexPath.row == store.images.count - 1,
-                            count: indexPath.row + 1
+                            isLast: indexPath.row == 3,
+                            count: store.images.count
                         )
                     }
                     

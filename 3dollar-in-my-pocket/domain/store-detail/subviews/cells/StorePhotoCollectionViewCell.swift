@@ -91,11 +91,16 @@ final class StorePhotoCollectionViewCell: BaseCollectionViewCell {
         } else {
             self.emptyImage.isHidden = false
         }
-        self.dimView.isHidden = !isLast || count == 3
-        self.countLabel.isHidden = !isLast || count == 3
-        self.moreLabel.isHidden = !isLast || count == 3
+
         if isLast {
-            self.countLabel.text =  "+\(count - 3)"
+            self.dimView.isHidden = count == 4
+            self.countLabel.isHidden = count == 4
+            self.moreLabel.isHidden = count == 4
+            self.countLabel.text =  "+\(count - 4)"
+        } else {
+            self.dimView.isHidden = true
+            self.countLabel.isHidden = true
+            self.moreLabel.isHidden = true
         }
     }
 }
