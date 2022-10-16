@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Photos
 
 struct ImageUtils {
   
@@ -58,4 +59,25 @@ struct ImageUtils {
     
     return dataArray
   }
+    
+    static func getImage(from asset: PHAsset) -> UIImage {
+        let options = PHImageRequestOptions()
+        var resultImage = UIImage()
+        
+        options.isNetworkAccessAllowed = true
+        options.isSynchronous = true
+        
+        PHImageManager.default().requestImage(
+            for: asset,
+            targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight),
+            contentMode: .aspectFit,
+            options: options
+        ) { (image, _) in
+            guard let image = image else { return }
+            
+            resultImage = image
+        }
+        
+        return resultImage
+    }
 }

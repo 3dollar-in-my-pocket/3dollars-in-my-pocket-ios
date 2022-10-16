@@ -1,9 +1,12 @@
 import UIKit
 
+import Base
 import RxSwift
 import RxCocoa
 
-final class StoreVisitHistoryView: BaseView {
+final class StoreVisitHistoryCollectionViewCell: BaseCollectionViewCell {
+    static let registerId = "\(StoreVisitHistoryCollectionViewCell.self)"
+    static let height: CGFloat = 108
     
     private let titleLabel = UILabel().then {
         $0.font = .semiBold(size: 18)
@@ -105,13 +108,12 @@ final class StoreVisitHistoryView: BaseView {
         }
     }
     
-    func bind(visitHistories: [VisitHistory]) {
-        let existedCount = visitHistories.filter { $0.type == .exists }.count
-        let notExistedCount = visitHistories.filter { $0.type == .notExists }.count
+    func bind(visitOverview: VisitOverview) {
+        let isEmpty = visitOverview.existsCounts == 0 && visitOverview.notExistsCounts == 0
         
-        self.setupTitleLabel(isEmpty: visitHistories.isEmpty, count: existedCount)
-        self.setupExist(count: existedCount)
-        self.setupNotExist(count: notExistedCount)
+        self.setupTitleLabel(isEmpty: isEmpty, count: visitOverview.existsCounts)
+        self.setupExist(count: visitOverview.existsCounts)
+        self.setupNotExist(count: visitOverview.notExistsCounts)
     }
     
     private func setupTitleLabel(isEmpty: Bool, count: Int) {
@@ -142,18 +144,24 @@ final class StoreVisitHistoryView: BaseView {
     
     private func setupExist(count: Int) {
         self.existImage.image = count == 0 ? R.image.img_exist_empty() : R.image.img_exist()
-        self.existLabel.textColor = count == 0 ? R.color.gray30() : UIColor(r: 0, g: 198, b: 103)
+        self.existLabel.textColor =
+        count == 0
+        ? R.color.gray30()
+        : UIColor(r: 0, g: 198, b: 103)
         self.existLabel.text = "\(count) 명"
     }
     
     private func setupNotExist(count: Int) {
-        self.notExistImage.image = count == 0 ? R.image.img_not_exist_empty() : R.image.img_not_exist()
+        self.notExistImage.image =
+        count == 0
+        ? R.image.img_not_exist_empty()
+        : R.image.img_not_exist()
         self.notExistLabel.textColor = count == 0 ? R.color.gray30() : R.color.red()
         self.notExistLabel.text = "\(count) 명"
     }
 }
 
-extension Reactive where Base: StoreVisitHistoryView {
+extension Reactive where Base: StoreVisitHistoryCollectionViewCell {
     var tap: ControlEvent<Void> {
         return base.plusButton.rx.tap
     }

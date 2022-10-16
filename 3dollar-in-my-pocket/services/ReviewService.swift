@@ -13,6 +13,7 @@ protocol ReviewServiceProtocol {
 }
 
 struct ReviewService: ReviewServiceProtocol {
+    private let networkManager = NetworkManager()
   
   func saveReview(review: Review, storeId: Int) -> Observable<ReviewInfoResponse> {
     return Observable.create { observer -> Disposable in
@@ -64,28 +65,15 @@ struct ReviewService: ReviewServiceProtocol {
     }
   }
   
-  func deleteReview(reviewId: Int) -> Observable<Void> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v2/store/review/\(reviewId)"
-      let headers = HTTPUtils.defaultHeader()
-      
-      HTTPUtils.defaultSession.request(
-        urlString,
-        method: .delete,
-        headers: headers
-      ).responseJSON { response in
-        if let statusCode = response.response?.statusCode {
-          if "\(statusCode)".first! == "2" {
-            observer.onNext(())
-            observer.onCompleted()
-          }
-        }
-        observer.processHTTPError(response: response)
-      }
-      
-      return Disposables.create()
+    func deleteReview(reviewId: Int) -> Observable<Void> {
+        let urlString = HTTPUtils.url + "/api/v2/store/review/\(reviewId)"
+        let headers = HTTPUtils.defaultHeader()
+        
+        return self.networkManager.createDeleteObservable(
+            urlString: urlString,
+            headers: headers
+        )
     }
-  }
   
     func fetchMyReviews(cursor: Int?, size: Int) -> Observable<Pagination<ReviewDetailResponse>> {
     return Observable.create { observer -> Disposable in

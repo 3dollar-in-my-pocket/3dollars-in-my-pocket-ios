@@ -20,7 +20,8 @@ class ModifyVC: BaseVC {
     self.viewModel = ModifyViewModel(
       store: store,
       storeService: StoreService(),
-      mapService: MapService()
+      mapService: MapService(),
+      globalState: GlobalState.shared
     )
     super.init(nibName: nil, bundle: nil)
   }

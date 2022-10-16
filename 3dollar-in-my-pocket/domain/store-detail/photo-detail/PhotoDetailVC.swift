@@ -17,7 +17,8 @@ class PhotoDetailVC: BaseVC {
       storeId: storeId,
       selectedIndex: index,
       photos: photos,
-      storeService: StoreService()
+      storeService: StoreService(),
+      globalState: GlobalState.shared
     )
     super.init(nibName: nil, bundle: nil)
   }

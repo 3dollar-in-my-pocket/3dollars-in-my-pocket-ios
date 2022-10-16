@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct VisitOverview {
+struct VisitOverview: Equatable {
     var existsCounts: Int
     var isCertified: Bool
     var notExistsCounts: Int

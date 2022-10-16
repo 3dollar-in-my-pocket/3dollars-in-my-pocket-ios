@@ -1,267 +1,308 @@
 import UIKit
+
 import RxSwift
 import RxCocoa
 
 final class StoreDetailView: BaseView {
-  
-  private let navigationView = UIView().then {
-    $0.layer.cornerRadius = 20
-    $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-    $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-    $0.layer.shadowColor = UIColor.black.cgColor
-    $0.layer.shadowOpacity = 0.04
-    $0.backgroundColor = .white
-  }
-  
-  let backButton = UIButton().then {
-    $0.setImage(R.image.ic_back_black(), for: .normal)
-  }
-  
-  let mainCategoryImage = UIImageView()
-  
-  let deleteRequestButton = UIButton().then {
-    $0.setTitle(R.string.localization.store_detail_delete_request(), for: .normal)
-    $0.setTitleColor(R.color.red(), for: .normal)
-    $0.titleLabel?.font = .semiBold(size: 14)
-  }
-  
-  private let scrollView = UIScrollView()
-  
-  private let containerView = UIView()
-  
-  let storeOverview = StoreOverview()
-  
-  let storeVisitHistoryView = StoreVisitHistoryView()
-  
-  fileprivate let storeInfoView = StoreInfoView()
-  
-  fileprivate let storeMenuView = StoreMenuView()
-  
-  let storePhotoCollectionView = StorePhotoCollectionView()
-  
-  let storeReviewTableView = StoreReviewTableView()
-  
-  private let visitButtonBg = UIView().then {
-    $0.layer.cornerRadius = 37
-    
-    let shadowLayer = CAShapeLayer()
-    
-    shadowLayer.path = UIBezierPath(
-      roundedRect: CGRect(x: 0, y: 0, width: 232, height: 64),
-      cornerRadius: 37
-    ).cgPath
-    shadowLayer.fillColor = UIColor.init(r: 255, g: 255, b: 255, a: 0.6).cgColor
-    shadowLayer.shadowColor = UIColor.black.cgColor
-    shadowLayer.shadowPath = nil
-    shadowLayer.shadowOffset = CGSize(width: 0, height: 1)
-    shadowLayer.shadowOpacity = 0.3
-    shadowLayer.shadowRadius = 10
-    $0.layer.insertSublayer(shadowLayer, at: 0)
-  }
-  
-  let visitButton = UIButton().then {
-    $0.setTitle("store_detail_add_visit_history".localized, for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
-    $0.setBackgroundColor(UIColor(r: 255, g: 92, b: 67), for: .normal)
-    $0.layer.cornerRadius = 24
-    $0.layer.masksToBounds = true
-  }
-  
-  override func setup() {
-    self.scrollView.delegate = self
-    self.containerView.addSubViews([
-      self.storeOverview,
-      self.storeVisitHistoryView,
-      self.storeInfoView,
-      self.storeMenuView,
-      self.storePhotoCollectionView,
-      self.storeReviewTableView
-    ])
-    
-    self.scrollView.addSubview(self.containerView)
-    
-    self.addSubViews([
-      self.scrollView,
-      self.navigationView,
-      self.backButton,
-      self.mainCategoryImage,
-      self.deleteRequestButton,
-      self.visitButtonBg,
-      self.visitButton
-    ])
-    self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
-  }
-  
-  override func bindConstraints() {
-    self.navigationView.snp.makeConstraints { (make) in
-      make.left.right.top.equalToSuperview()
-      make.bottom.equalTo(self.safeAreaLayoutGuide.snp.top).offset(60)
+    private let navigationView = UIView().then {
+        $0.layer.cornerRadius = 20
+        $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+        $0.layer.shadowColor = UIColor.black.cgColor
+        $0.layer.shadowOpacity = 0.04
+        $0.backgroundColor = .white
     }
     
-    self.backButton.snp.makeConstraints { (make) in
-      make.left.equalToSuperview().offset(24)
-      make.centerY.equalTo(self.mainCategoryImage)
+    let backButton = UIButton().then {
+        $0.setImage(R.image.ic_back_black(), for: .normal)
     }
     
-    self.mainCategoryImage.snp.makeConstraints { (make) in
-      make.centerX.equalToSuperview()
-      make.width.height.equalTo(60)
-      make.bottom.equalTo(self.navigationView).offset(-3)
+    fileprivate let mainCategoryImage = UIImageView()
+    
+    let deleteRequestButton = UIButton().then {
+        $0.setTitle(R.string.localization.store_detail_delete_request(), for: .normal)
+        $0.setTitleColor(R.color.red(), for: .normal)
+        $0.titleLabel?.font = .semiBold(size: 14)
     }
     
-    self.deleteRequestButton.snp.makeConstraints { make in
-      make.centerY.equalTo(self.mainCategoryImage)
-      make.right.equalToSuperview().offset(-24)
+    let collectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: UICollectionViewLayout()
+    ).then {
+        $0.register(
+            StoreOverviewCollectionViewCell.self,
+            forCellWithReuseIdentifier: StoreOverviewCollectionViewCell.registerId
+        )
+        $0.register(
+            StoreVisitHistoryCollectionViewCell.self,
+            forCellWithReuseIdentifier: StoreVisitHistoryCollectionViewCell.registerId
+        )
+        $0.register(
+            StoreInfoCollectionViewCell.self,
+            forCellWithReuseIdentifier: StoreInfoCollectionViewCell.registerId
+        )
+        $0.register(
+            StoreMenuCollectionViewCell.self,
+            forCellWithReuseIdentifier: StoreMenuCollectionViewCell.registerId
+        )
+        $0.register(
+            StorePhotoCollectionViewCell.self,
+            forCellWithReuseIdentifier: StorePhotoCollectionViewCell.registerId
+        )
+        $0.register(
+            StoreAdCollectionViewCell.self,
+            forCellWithReuseIdentifier: StoreAdCollectionViewCell.registerId
+        )
+        $0.register(
+            StoreReviewCollectionViewCell.self,
+            forCellWithReuseIdentifier: StoreReviewCollectionViewCell.registerId
+        )
+        $0.register(
+            StoreDetailHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: StoreDetailHeaderView.registerId
+        )
+        $0.backgroundColor = R.color.gray0()
+        $0.contentInset = .init(top: 0, left: 0, bottom: 64, right: 0)
     }
     
-    self.scrollView.snp.makeConstraints { make in
-      make.left.right.equalToSuperview()
-      make.bottom.equalTo(safeAreaLayoutGuide)
-      make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
-    }
+    let visitButton = StoreDetailVisitButton()
     
-    self.containerView.snp.makeConstraints { make in
-      make.edges.equalTo(self.scrollView)
-      make.width.equalTo(UIScreen.main.bounds.width)
-      make.top.equalTo(self.storeOverview)
-      make.bottom.equalTo(self.storeReviewTableView)
-    }
+    //  let storePhotoCollectionView = StorePhotoCollectionView()
     
-    self.storeOverview.snp.makeConstraints { make in
-      make.top.equalToSuperview()
-      make.left.equalToSuperview()
-      make.right.equalToSuperview()
-    }
-    
-    self.storeVisitHistoryView.snp.makeConstraints { make in
-      make.left.equalToSuperview()
-      make.right.equalToSuperview()
-      make.top.equalTo(self.storeOverview.snp.bottom).offset(48)
-    }
-    
-    self.storeInfoView.snp.makeConstraints { make in
-      make.left.equalToSuperview()
-      make.right.equalToSuperview()
-      make.top.equalTo(self.storeVisitHistoryView.snp.bottom).offset(40)
-    }
-    
-    self.storeMenuView.snp.makeConstraints { make in
-      make.left.equalToSuperview()
-      make.right.equalToSuperview()
-      make.top.equalTo(self.storeInfoView.snp.bottom)
-    }
-    
-    self.storePhotoCollectionView.snp.makeConstraints { make in
-      make.left.equalToSuperview()
-      make.right.equalToSuperview()
-      make.top.equalTo(self.storeMenuView.snp.bottom)
-    }
-    
-    self.storeReviewTableView.snp.makeConstraints { make in
-      make.left.equalToSuperview()
-      make.right.equalToSuperview()
-      make.top.equalTo(self.storePhotoCollectionView.snp.bottom)
-      make.height.equalTo(0)
-    }
-    
-    self.visitButtonBg.snp.makeConstraints { (make) in
-      make.centerX.equalToSuperview()
-      make.width.equalTo(232)
-      make.height.equalTo(64)
-      make.bottom.equalToSuperview().offset(-32)
-    }
-    
-    self.visitButton.snp.makeConstraints { (make) in
-      make.left.equalTo(visitButtonBg.snp.left).offset(8)
-      make.right.equalTo(visitButtonBg.snp.right).offset(-8)
-      make.top.equalTo(visitButtonBg.snp.top).offset(8)
-      make.bottom.equalTo(visitButtonBg.snp.bottom).offset(-8)
-    }
-  }
-  
-  fileprivate func bind(category: StreetFoodStoreCategory) {
-    self.mainCategoryImage.image = UIImage(named: "img_60_\(category.lowcase)")
-  }
-  
-  func updateReviewTableViewHeight(reviews: [Review?]) {
-    self.storeReviewTableView.snp.updateConstraints { make in
-      make.height.equalTo(143 * reviews.count + 64)
-    }
-  }
-  
-  func hideRegisterButton() {
-    if visitButtonBg.alpha != 0 {
-      let originalBgTransform = self.visitButtonBg.transform
-      let originalBtnTransform = self.visitButton.transform
-      
-      UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-        self?.visitButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: 90)
-        self?.visitButtonBg.alpha = 0
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
-        self?.visitButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: 90)
-        self?.visitButton.alpha = 0
-      })
+        self.collectionView.collectionViewLayout = self.generateCompositionalLayout()
     }
-  }
-  
-  func showRegisterButton() {
-    if visitButtonBg.alpha != 1 {
-      let originalBgTransform = self.visitButtonBg.transform
-      let originalBtnTransform = self.visitButton.transform
-      
-      UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-        self?.visitButtonBg.transform = originalBgTransform.translatedBy(x: 0.0, y: -90)
-        self?.visitButtonBg.alpha = 1
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func setup() {
+        self.collectionView.delegate = self
+        self.addSubViews([
+            self.collectionView,
+            self.navigationView,
+            self.backButton,
+            self.mainCategoryImage,
+            self.deleteRequestButton,
+            self.visitButton
+        ])
+        self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
+    }
+    
+    override func bindConstraints() {
+        self.navigationView.snp.makeConstraints { (make) in
+            make.left.right.top.equalToSuperview()
+            make.bottom.equalTo(self.safeAreaLayoutGuide.snp.top).offset(60)
+        }
         
-        self?.visitButton.transform = originalBtnTransform.translatedBy(x: 0.0, y: -90)
-        self?.visitButton.alpha = 1
-      })
+        self.backButton.snp.makeConstraints { (make) in
+            make.left.equalToSuperview().offset(24)
+            make.centerY.equalTo(self.mainCategoryImage)
+        }
+        
+        self.mainCategoryImage.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(60)
+            make.bottom.equalTo(self.navigationView).offset(-3)
+        }
+        
+        self.deleteRequestButton.snp.makeConstraints { make in
+            make.centerY.equalTo(self.mainCategoryImage)
+            make.right.equalToSuperview().offset(-24)
+        }
+        
+        self.collectionView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
+        }
+        
+        self.visitButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-32)
+        }
     }
-  }
+    
+    fileprivate func bind(category: StreetFoodCategory) {
+        self.mainCategoryImage.setImage(urlString: category.imageUrl)
+    }
+    
+    private func generateCompositionalLayout() -> UICollectionViewCompositionalLayout {
+        return .init { sectionIndex, _ in
+            switch StreetFoodStoreDetailSection(rawValue: sectionIndex) {
+            case .overview:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreOverviewCollectionViewCell.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreOverviewCollectionViewCell.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                return section
+                
+            case .visitHistory:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreVisitHistoryCollectionViewCell.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreVisitHistoryCollectionViewCell.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                return section
+                
+            case .info:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreInfoCollectionViewCell.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreInfoCollectionViewCell.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreDetailHeaderView.height)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )]
+                
+                section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
+                
+                return section
+                
+            case .menus:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(StoreMenuCollectionViewCell.estimatedHeight)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(StoreMenuCollectionViewCell.estimatedHeight)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
+                
+                return section
+                
+            case .photos:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .absolute(StorePhotoCollectionViewCell.cellSize.width),
+                    heightDimension: .absolute(StorePhotoCollectionViewCell.cellSize.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .absolute(StorePhotoCollectionViewCell.cellSize.width),
+                    heightDimension: .absolute(StorePhotoCollectionViewCell.cellSize.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.interGroupSpacing = 9
+                section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
+                section.orthogonalScrollingBehavior = .continuous
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreDetailHeaderView.height)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )]
+                
+                return section
+                
+            case .reviewAndadvertisement:
+                let advertisementItem = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(StoreAdCollectionViewCell.height)
+                ))
+                let reviewItem = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(StoreReviewCollectionViewCell.estimatedHeight)
+                ))
+                
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(StoreReviewCollectionViewCell.estimatedHeight)
+                ), subitems: [advertisementItem, reviewItem])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreDetailHeaderView.height)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )]
+                
+                return section
+                
+            case .unknown:
+                return nil
+                
+            case .none:
+                return nil
+            }
+        }
+    }
+    
+    private func hideVisitButton() {
+        let originalVisitButtonTransform = self.visitButton.transform
+        
+        UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
+            self?.visitButton.transform = originalVisitButtonTransform.translatedBy(x: 0.0, y: 90)
+            self?.visitButton.alpha = 0
+        })
+    }
+    
+    private func showVisitButton() {
+        UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
+            self?.visitButton.transform = .identity
+            self?.visitButton.alpha = 1
+        })
+    }
 }
 
 extension Reactive where Base: StoreDetailView {
-  var store: Binder<Store> {
-    return Binder(self.base) { view, store in
-      view.bind(category: store.categories[0])
-      view.storeOverview.bind(store: store)
-      view.storeVisitHistoryView.bind(visitHistories: store.visitHistories)
-      view.storeInfoView.bind(store: store)
-      view.storeMenuView.bind(store: store)
-      view.storePhotoCollectionView.bind(store: store)
-      view.storeReviewTableView.bind(store: store, userId: UserDefaultsUtil().getUserId())
+    var store: Binder<Store> {
+        return Binder(self.base) { view, store in
+            if let firstCategory = store.categories.first,
+               let streetFoodCategory = MetaContext.shared.findStreetFoodCategory(
+                category: firstCategory
+               ) {
+                view.bind(category: streetFoodCategory)
+            }
+        }
     }
-  }
-  
-  var tapShareButton: ControlEvent<Void> {
-    return base.storeOverview.shareButton.rx.tap
-  }
-  
-  var tapEditStore: ControlEvent<Void> {
-    return base.storeInfoView.editButton.rx.tap
-  }
-  
-  var tapWriteReviewButton: ControlEvent<Void> {
-    return base.storeReviewTableView.addPhotoButton.rx.tap
-  }
-  
-  var tapAddPhotoButton: ControlEvent<Void> {
-    return base.storePhotoCollectionView.addPhotoButton.rx.tap
-  }
 }
 
-extension StoreDetailView: UIScrollViewDelegate {
-  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-    self.hideRegisterButton()
-  }
-  
-  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-    if !decelerate {
-      self.showRegisterButton()
+extension StoreDetailView: UICollectionViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.hideVisitButton()
     }
-  }
-  
-  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-    self.showRegisterButton()
-  }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            self.showVisitButton()
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.showVisitButton()
+    }
 }

@@ -2,15 +2,9 @@ import UIKit
 
 import Base
 
-protocol VisitHistoryViewControllerDelegate: AnyObject {
-    func onDismiss()
-}
-
-final class VisitHistoryViewController: BaseVC, VisitHistoryCoordinator {
-    weak var delegate: VisitHistoryViewControllerDelegate?
+final class VisitHistoryViewController: BaseViewController, VisitHistoryCoordinator {
     private var coordinator: VisitHistoryCoordinator?
     private let visitHistoryView = VisitHistoryView()
-    private let viewModel: VisitHistoryViewModel
     
     static func instance(visitHistories: [VisitHistory]) -> VisitHistoryViewController {
         return VisitHistoryViewController(visitHistories: visitHistories).then {
@@ -19,9 +13,9 @@ final class VisitHistoryViewController: BaseVC, VisitHistoryCoordinator {
     }
     
     init(visitHistories: [VisitHistory]) {
-        self.viewModel = VisitHistoryViewModel(visitHistories: visitHistories)
-        
         super.init(nibName: nil, bundle: nil)
+        
+        self.visitHistoryView.bind(visitHistories: visitHistories)
     }
     
     required init?(coder: NSCoder) {
@@ -35,8 +29,10 @@ final class VisitHistoryViewController: BaseVC, VisitHistoryCoordinator {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if let parentView = self.presentingViewController?.view {
+            DimManager.shared.showDim(targetView: parentView)
+        }
         self.coordinator = self
-        self.viewModel.input.viewDidLoad.onNext(())
     }
     
     override func bindEvent() {
@@ -44,25 +40,15 @@ final class VisitHistoryViewController: BaseVC, VisitHistoryCoordinator {
             .asDriver()
             .drive(onNext: { [weak self] in
                 self?.coordinator?.dismiss()
-                self?.delegate?.onDismiss()
             })
-            .disposed(by: self.disposeBag)
-    }
-    
-    override func bindViewModelOutput() {
-        self.viewModel.output.visitHistories
-            .asDriver(onErrorJustReturn: [])
-            .drive(self.visitHistoryView.rx.visitHistories)
-            .disposed(by: self.disposeBag)
+            .disposed(by: self.eventDisposeBag)
         
-        self.viewModel.output.visitHistories
-            .asDriver(onErrorJustReturn: [])
-            .drive(self.visitHistoryView.tableView.rx.items(
-                cellIdentifier: VisitHistoryTableViewCell.registerId,
-                cellType: VisitHistoryTableViewCell.self
-            )) { _, visitHistory, cell in
-                cell.bind(visitHistory: visitHistory)
-            }
-            .disposed(by: self.disposeBag)
+        self.visitHistoryView.tapBackgroundGesture.rx.event
+            .map { _ in () }
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.dismiss()
+            })
+            .disposed(by: self.eventDisposeBag)
     }
 }

@@ -1,15 +1,11 @@
-//
-//  StoreDetailCoordinator.swift
-//  3dollar-in-my-pocket
-//
-//  Created by Hyun Sik Yoo on 2021/10/25.
-//  Copyright © 2021 Macgongmon. All rights reserved.
-//
-
 import UIKit
-import SPPermissions
 
-protocol StoreDetailCoordinator: Coordinator, AnyObject {
+import Base
+import SPPermissions
+import KakaoSDKShare
+import KakaoSDKTemplate
+
+protocol StoreDetailCoordinator: BaseCoordinator, AnyObject {
     func showDeleteModal(storeId: Int)
     func goToModify(store: Store)
     func showReviewModal(storeId: Int, review: Review?)
@@ -25,17 +21,17 @@ protocol StoreDetailCoordinator: Coordinator, AnyObject {
     func showPictureActionSheet(storeId: Int)
     func showVisit(store: Store)
     func showVisitHistories(visitHistories: [VisitHistory])
+    func shareToKakao(store: Store)
 }
 
-extension StoreDetailCoordinator where Self: BaseVC {
+extension StoreDetailCoordinator where Self: BaseViewController {
     func showDeleteModal(storeId: Int) {
-        let deleteVC = DeleteModalVC.instance(storeId: storeId).then {
+        let viewController = DeleteModalViewController.instance(storeId: storeId).then {
             $0.deleagete = self as? DeleteModalDelegate
         }
         
-        self.presenter.showRootDim(isShow: true)
         self.presenter.tabBarController?.present(
-            deleteVC,
+            viewController,
             animated: true,
             completion: nil
         )
@@ -52,7 +48,6 @@ extension StoreDetailCoordinator where Self: BaseVC {
             $0.deleagete = self as? ReviewModalDelegate
         }
         
-        self.showRootDim(isShow: true)
         self.presenter.tabBarController?.present(reviewVC, animated: true, completion: nil)
     }
     
@@ -70,11 +65,11 @@ extension StoreDetailCoordinator where Self: BaseVC {
     }
     
     func showRegisterPhoto(storeId: Int) {
-        let registerPhotoVC = RegisterPhotoVC.instance(storeId: storeId).then {
+        let viewController = RegisterPhotoViewController.instance(storeId: storeId).then {
             $0.delegate = self as? RegisterPhotoDelegate
         }
         
-        self.presenter.tabBarController?.present(registerPhotoVC, animated: true, completion: nil)
+        self.presenter.tabBarController?.present(viewController, animated: true, completion: nil)
     }
     
     func showPhotoDetail(storeId: Int, index: Int, photos: [Image]) {
@@ -183,12 +178,52 @@ extension StoreDetailCoordinator where Self: BaseVC {
     func showVisitHistories(visitHistories: [VisitHistory]) {
         let viewController = VisitHistoryViewController.instance(visitHistories: visitHistories)
         
-        viewController.delegate = self.presenter as? VisitHistoryViewControllerDelegate
-        self.presenter.showRootDim(isShow: true)
         self.presenter.navigationController?.parent?.present(
             viewController,
             animated: true,
             completion: nil
         )
+    }
+    
+    func shareToKakao(store: Store) {
+        let urlString =
+        "https://map.kakao.com/link/map/\(store.storeName),\(store.latitude),\(store.longitude)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        let webURL = URL(string: urlString)
+        let link = Link(
+            webUrl: webURL,
+            mobileWebUrl: webURL,
+            androidExecutionParams: [
+                "storeId": String(store.id),
+                "storeType": "streetFood"
+            ],
+            iosExecutionParams: [
+                "storeId": String(store.id),
+                "storeType": "streetFood"
+            ]
+        )
+        let content = Content(
+            title: "store_detail_share_title".localized,
+            imageUrl: URL(string: "https://storage.threedollars.co.kr/share/share-with-kakao.png")!,
+            imageWidth: 500,
+            imageHeight: 500,
+            description: "store_detail_share_description".localized,
+            link: link
+        )
+        let feedTemplate = FeedTemplate(
+            content: content,
+            social: nil,
+            buttonTitle: nil,
+            buttons: [Button(title: "store_detail_share_button".localized, link: link)]
+        )
+        
+        ShareApi.shared.shareDefault(templatable: feedTemplate) { linkResult, error in
+            if let error = error {
+                self.showErrorAlert(error: error)
+            } else {
+                if let linkResult = linkResult {
+                    UIApplication.shared.open(linkResult.url, options: [:], completionHandler: nil)
+                }
+            }
+        }
     }
 }

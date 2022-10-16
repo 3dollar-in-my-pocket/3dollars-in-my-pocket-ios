@@ -12,4 +12,15 @@ final class MetaContext {
     
     /// 활성화된 푸드트럭 카테고리를 저장해둡니다.
     var foodTruckCategories: [Categorizable] = []
+    
+    func findStreetFoodCategory(category: StreetFoodStoreCategory) -> StreetFoodCategory? {
+        for categorizable in self.streetFoodCategories {
+            if let streetFoodCategory = categorizable as? StreetFoodCategory,
+               streetFoodCategory.category == category {
+                return streetFoodCategory
+            }
+        }
+        
+        return nil
+    }
 }

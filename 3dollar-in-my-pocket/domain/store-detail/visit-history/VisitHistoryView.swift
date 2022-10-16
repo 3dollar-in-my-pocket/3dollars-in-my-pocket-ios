@@ -4,6 +4,8 @@ import RxSwift
 import RxCocoa
 
 final class VisitHistoryView: BaseView {
+    let tapBackgroundGesture = UITapGestureRecognizer()
+    
     private let backgroundView = UIView()
     
     private let containerView = UIView().then {
@@ -54,7 +56,7 @@ final class VisitHistoryView: BaseView {
         $0.textColor = UIColor(r: 255, g: 92, b: 67)
     }
     
-    let tableView = UITableView().then {
+    private let tableView = UITableView().then {
         $0.tableFooterView = UIView()
         $0.backgroundColor = R.color.gray0()
         $0.layer.cornerRadius = 12
@@ -69,6 +71,7 @@ final class VisitHistoryView: BaseView {
     
     override func setup() {
         self.backgroundColor = .clear
+        self.backgroundView.addGestureRecognizer(self.tapBackgroundGesture)
         self.addSubViews([
             self.backgroundView,
             self.containerView,
@@ -154,13 +157,23 @@ final class VisitHistoryView: BaseView {
         }
     }
     
-    fileprivate func bind(visitHistories: [VisitHistory]) {
+    func bind(visitHistories: [VisitHistory]) {
         let existsCounts = visitHistories.filter { $0.type == .exists }.count
         let notExistsCounts = visitHistories.filter { $0.type == .notExists }.count
         
         self.successCountLabel.text = "\(existsCounts)명"
         self.failCountLabel.text = "\(notExistsCounts)명"
         self.setTotalCountLabel(count: visitHistories.count)
+        
+        Observable<[VisitHistory]>.just(visitHistories)
+            .asDriver(onErrorJustReturn: [])
+            .drive(self.tableView.rx.items(
+                cellIdentifier: VisitHistoryTableViewCell.registerId,
+                cellType: VisitHistoryTableViewCell.self
+            )) { _, visitHistory, cell in
+                cell.bind(visitHistory: visitHistory)
+            }
+            .disposed(by: self.disposeBag)
     }
     
     private func setTotalCountLabel(count: Int) {
@@ -174,13 +187,5 @@ final class VisitHistoryView: BaseView {
             range: range
         )
         self.titleLabel.attributedText = attributedString
-    }
-}
-
-extension Reactive where Base: VisitHistoryView {
-    var visitHistories: Binder<[VisitHistory]> {
-        return Binder(self.base) { view, visitHistories in
-            view.bind(visitHistories: visitHistories)
-        }
     }
 }
