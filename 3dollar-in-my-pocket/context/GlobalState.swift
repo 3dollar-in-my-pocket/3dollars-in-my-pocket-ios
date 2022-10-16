@@ -16,4 +16,7 @@ final class GlobalState {
     
     /// 사진 제보 완료된 경우
     let addStorePhotos = PublishSubject<[Image]>()
+    
+    /// 사진을 삭제한 경우: Image.imageId 를 전달
+    let deletedPhoto = PublishSubject<Int>()
 }

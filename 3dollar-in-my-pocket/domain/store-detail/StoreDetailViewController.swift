@@ -101,9 +101,9 @@ final class StoreDetailViewController:
             .disposed(by: self.eventDisposeBag)
         
         self.storeDetailReactor.presentPhotoDetailPublisher
-            .asDriver(onErrorJustReturn: (0, 0))
-            .drive(onNext: { storeId, index in
-                // TODO: 사진 뷰컨 리팩토링 후 적용 필요
+            .asDriver(onErrorJustReturn: (0, 0, []))
+            .drive(onNext: { [weak self] storeId, index, photos in
+                self?.coordinator?.showPhotoDetail(storeId: storeId, index: index, photos: photos)
             })
             .disposed(by: self.eventDisposeBag)
         

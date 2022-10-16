@@ -26,6 +26,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         case setStore(Store)
         case moveCamera(CLLocation)
         case appendPhotos([Image])
+        case deletePhoto(photoId: Int)
         case deleteReview(row: Int)
         case presentDeleteModal(storeId: Int)
         case shareToKakao(store: Store)
@@ -51,7 +52,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     let presentVisitHistoriesPublisher = PublishRelay<[VisitHistory]>()
     let pushModifyPublisher = PublishRelay<Store>()
     let presentAddPhotoActionSheetPublisher = PublishRelay<Int>()
-    let presentPhotoDetailPublisher = PublishRelay<(Int, Int)>()
+    let presentPhotoDetailPublisher = PublishRelay<(Int, Int, [Image])>()
     let presentPhotoListPublisher = PublishRelay<Int>()
     let presentReviewModalPublisher = PublishRelay<(Int, Review?)>()
     let presentVisitPublisher = PublishRelay<Store>()
@@ -187,7 +188,9 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         return .merge([
             mutation,
             self.globalState.addStorePhotos
-                .map { .appendPhotos($0) }
+                .map { .appendPhotos($0) },
+            self.globalState.deletedPhoto
+                .map { .deletePhoto(photoId: $0) }
         ])
     }
     
@@ -203,6 +206,13 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             
         case .appendPhotos(let photos):
             newState.store.images.insert(contentsOf: photos, at: 0)
+            
+        case .deletePhoto(let photoId):
+            if let targetIndex = newState.store.images.firstIndex(where: {
+                $0.imageId == photoId
+            }) {
+                newState.store.images.remove(at: targetIndex)
+            }
             
         case .deleteReview(let row):
             newState.store.reviews.remove(at: row)
@@ -226,10 +236,10 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             self.presentReviewModalPublisher.accept((storeId, review))
             
         case .presentPhotoDetail(let storeId, let index):
-            self.presentPhotoDetailPublisher.accept((storeId, index))
+            self.presentPhotoDetailPublisher.accept((storeId, index, state.store.images))
             
         case .presentPhotoList(let storeId):
-            self.presentPhotoDetailPublisher.accept((storeId, 0))
+            self.presentPhotoListPublisher.accept(storeId)
             
         case .presentVisit(let store):
             self.presentVisitPublisher.accept(store)

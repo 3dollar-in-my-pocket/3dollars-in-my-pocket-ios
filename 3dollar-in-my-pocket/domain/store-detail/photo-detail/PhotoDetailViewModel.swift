@@ -6,6 +6,7 @@ class PhotoDetailViewModel: BaseViewModel {
   let input = Input()
   let output = Output()
   let storeService: StoreServiceProtocol
+  let globalState: GlobalState
   let storeId: Int
   var selectedIndex: Int
   var photos: [Image]
@@ -28,12 +29,14 @@ class PhotoDetailViewModel: BaseViewModel {
     storeId: Int,
     selectedIndex: Int,
     photos: [Image],
-    storeService: StoreServiceProtocol
+    storeService: StoreServiceProtocol,
+    globalState: GlobalState
   ) {
     self.storeId = storeId
     self.selectedIndex = selectedIndex
     self.photos = photos
     self.storeService = storeService
+    self.globalState = globalState
     super.init()
     
     self.input.selectPhoto
@@ -55,9 +58,11 @@ class PhotoDetailViewModel: BaseViewModel {
   }
   
   private func deletePhoto(selectedIndex: Int) {
+    let targetPhoto = self.photos[selectedIndex]
+      
     self.output.showLoading.accept(true)
     
-    self.storeService.deletePhoto(photoId: self.photos[selectedIndex].imageId)
+    self.storeService.deletePhoto(photoId: targetPhoto.imageId)
       .subscribe(
         onNext: { [weak self] _ in
           guard let self = self else { return }
@@ -73,6 +78,7 @@ class PhotoDetailViewModel: BaseViewModel {
             }
             self.fetchPhotos()
           }
+          self.globalState.deletedPhoto.onNext(targetPhoto.imageId)
           self.output.showLoading.accept(false)
         },
         onError: { error in
