@@ -364,7 +364,11 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
         if locationError == .denied {
             self.coordinator?.showDenyAlert()
         } else {
-            AlertUtils.show(controller: self, title: nil, message: locationError.errorDescription)
+            AlertUtils.show(
+                controller: self,
+                title: nil,
+                message: locationError.localizedDescription
+            )
         }
     }
 }
