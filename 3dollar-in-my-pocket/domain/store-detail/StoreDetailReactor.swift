@@ -24,6 +24,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     
     enum Mutation {
         case setStore(Store)
+        case setCurrentLocation(CLLocation)
         case moveCamera(CLLocation)
         case appendPhotos([Image])
         case deletePhoto(photoId: Int)
@@ -109,7 +110,10 @@ final class StoreDetailReactor: BaseReactor, Reactor {
                     .flatMap { [weak self] location -> Observable<Mutation> in
                         guard let self = self else { return .error(BaseError.nilValue) }
                         
-                        return self.fetchStore(storeId: self.storeId, currentLocation: location)
+                        return .merge([
+                            self.fetchStore(storeId: self.storeId, currentLocation: location),
+                            .just(.setCurrentLocation(location))
+                        ])
                     }
                     .catch { .just(.showErrorAlert(error: $0)) },
                 .just(.showLoading(isShow: false))
@@ -210,6 +214,9 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         case .setStore(let store):
             newState.store = store
             
+        case .setCurrentLocation(let location):
+            newState.currentLocation = location
+            
         case .moveCamera(let location):
             self.moveCameraPublisher.accept(location)
             
@@ -290,7 +297,14 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         let targetReview = self.currentState.store.reviews[row]
         
         return self.reviewService.deleteReview(reviewId: targetReview.reviewId)
-            .map { .deleteReview(row: row) }
+            .flatMap { [weak self] _ -> Observable<Mutation> in
+                guard let self = self else { return .error(BaseError.nilValue) }
+                
+                return self.fetchStore(
+                    storeId: self.storeId,
+                    currentLocation: self.currentState.currentLocation
+                )
+            }
             .catch { .just(.showErrorAlert(error: $0)) }
     }
 }
