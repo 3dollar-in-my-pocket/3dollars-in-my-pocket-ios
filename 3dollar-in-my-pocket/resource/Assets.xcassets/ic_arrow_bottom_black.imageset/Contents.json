@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "ic_arrow_16.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "ic_arrow_16@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "ic_arrow_16@3x.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "down.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

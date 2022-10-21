@@ -28,4 +28,29 @@ struct NetworkManager {
             return Disposables.create()
         }
     }
+    
+    func createDeleteObservable(
+        urlString: String,
+        parameters: [String: Any]? = nil,
+        headers: HTTPHeaders
+    ) -> Observable<Void> {
+        return .create { observer in
+            HTTPUtils.defaultSession.request(
+                urlString,
+                method: .delete,
+                parameters: parameters,
+                headers: headers
+            ).responseData { response in
+                if let statusCode = response.response?.statusCode,
+                   "\(statusCode)".first! == "2" {
+                    observer.onNext(())
+                    observer.onCompleted()
+                } else {
+                    observer.processAPIError(response: response)
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
 }

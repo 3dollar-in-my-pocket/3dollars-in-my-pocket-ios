@@ -10,6 +10,7 @@ class ModifyViewModel: BaseViewModel {
   
   let storeService: StoreServiceProtocol
   let mapService: MapServiceProtocol
+  let globalState: GlobalState
   var store: Store
   
   var location: (Double, Double)
@@ -55,11 +56,13 @@ class ModifyViewModel: BaseViewModel {
   init(
     store: Store,
     storeService: StoreServiceProtocol,
-    mapService: MapServiceProtocol
+    mapService: MapServiceProtocol,
+    globalState: GlobalState
   ) {
     self.store = store
     self.storeService = storeService
     self.mapService = mapService
+    self.globalState = globalState
     self.location = (store.latitude, store.longitude)
     self.appearenceDay = store.appearanceDays
     self.paymentType = store.paymentMethods
@@ -316,6 +319,7 @@ class ModifyViewModel: BaseViewModel {
         guard let self = self else { return }
         
         self.output.showLoading.accept(false)
+        self.globalState.updateStore.onNext(store)
         self.output.popVC.accept(())
       } onError: { [weak self] error in
         guard let self = self else { return }

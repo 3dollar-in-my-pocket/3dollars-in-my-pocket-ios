@@ -22,7 +22,6 @@ final class StreetFoodListView: Base.BaseView {
     
     let categoryButton = UIButton().then {
         $0.setImage(R.image.ic_arrow_bottom_black(), for: .normal)
-        $0.contentEdgeInsets = .init(top: 5, left: 5, bottom: 5, right: 5)
     }
     
     let collectionView = UICollectionView(

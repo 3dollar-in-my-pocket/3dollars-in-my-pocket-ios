@@ -35,6 +35,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case setMaxDistance(Double)
         case setCameraPosition(CLLocation)
         case selectStore(index: Int?)
+        case selectCategory(Categorizable?)
         case setTooltipHidden(isHidden: Bool)
         case updateStore(store: StoreProtocol)
         case setHiddenResearchButton(Bool)
@@ -158,6 +159,7 @@ final class HomeReactor: BaseReactor, Reactor {
                         mapLocation: self.currentState.cameraPosition
                         ?? self.currentState.currentLocation
                     ),
+                    .just(.selectCategory(selectedCategory)),
                     .just(.selectStore(index: nil)),
                     .just(.setHiddenResearchButton(true)),
                     .just(.showLoading(false))
@@ -172,6 +174,7 @@ final class HomeReactor: BaseReactor, Reactor {
                         mapLocation: self.currentState.cameraPosition
                         ?? self.currentState.currentLocation
                     ),
+                    .just(.selectCategory(selectedCategory)),
                     .just(.selectStore(index: nil)),
                     .just(.setHiddenResearchButton(true)),
                     .just(.showLoading(false))
@@ -185,11 +188,12 @@ final class HomeReactor: BaseReactor, Reactor {
             if toggleStoreType == .streetFood {
                 return .concat([
                     .just(.showLoading(true)),
+                    .just(.selectCategory(nil)),
                     .just(.setStoreType(toggleStoreType)),
                     .just(.setCategories(toggleCateogires)),
                     .just(.shownTooltip),
                     self.searchNearStores(
-                        categoryId: self.currentState.selectedCategory?.id,
+                        categoryId: nil,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
                         mapLocation: self.currentState.cameraPosition
@@ -203,11 +207,12 @@ final class HomeReactor: BaseReactor, Reactor {
             } else {
                 return .concat([
                     .just(.showLoading(true)),
+                    .just(.selectCategory(nil)),
                     .just(.setStoreType(toggleStoreType)),
                     .just(.setCategories(toggleCateogires)),
                     .just(.shownTooltip),
                     self.searchNearBossStore(
-                        categoryId: self.currentState.selectedCategory?.id,
+                        categoryId: nil,
                         distance: self.currentState.mapMaxDistance,
                         currentLocation: self.currentState.currentLocation,
                         mapLocation: self.currentState.cameraPosition
@@ -460,6 +465,9 @@ final class HomeReactor: BaseReactor, Reactor {
             
         case .selectStore(let index):
             newState.selectedIndex = index
+            
+        case .selectCategory(let category):
+            newState.selectedCategory = category
             
         case .updateStore(let store):
             for index in newState.storeCellTypes.indices {

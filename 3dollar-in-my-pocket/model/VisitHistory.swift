@@ -9,7 +9,6 @@
 import Foundation
 
 struct VisitHistory {
-    
     let createdAt: String
     let storeId: Int
     let store: Store
@@ -33,5 +32,11 @@ struct VisitHistory {
         self.type = response.type
         self.user = User()
         self.visitHistoryId = response.visitHistoryId
+    }
+}
+
+extension VisitHistory: Equatable {
+    static func == (lhs: VisitHistory, rhs: VisitHistory) -> Bool {
+        return lhs.visitHistoryId == rhs.visitHistoryId
     }
 }

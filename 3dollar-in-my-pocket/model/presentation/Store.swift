@@ -7,7 +7,7 @@ struct Store: StoreProtocol {
     let categories: [StreetFoodStoreCategory]
     let isDeleted: Bool
     let distance: Int
-    let images: [Image]
+    var images: [Image]
     let latitude: Double
     let longitude: Double
     let menus: [Menu]
@@ -199,7 +199,6 @@ extension Store {
 }
 
 extension Store: Equatable {
-    
     static func == (lhs: Store, rhs: Store) -> Bool {
         return lhs.storeId == rhs.storeId
     }

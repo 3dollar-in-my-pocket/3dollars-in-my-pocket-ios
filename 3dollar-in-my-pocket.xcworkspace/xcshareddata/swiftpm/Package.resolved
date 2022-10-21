@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kakao/kakao-ios-sdk",
       "state" : {
-        "branch" : "master",
-        "revision" : "4aee2605de323bdb54d42fb5108a414838efac08"
+        "revision" : "8a68442660d411031888e6e42c4f628933f62401",
+        "version" : "2.11.1"
       }
     },
     {

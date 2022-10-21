@@ -1,5 +1,4 @@
 struct Review {
-    
     let category: StreetFoodStoreCategory
     var contents: String
     let createdAt: String
@@ -36,5 +35,11 @@ struct Review {
         self.rating = response.rating
         self.store = Store()
         self.user = User(response: response.user)
+    }
+}
+
+extension Review: Equatable {
+    static func == (lhs: Review, rhs: Review) -> Bool {
+        return lhs.reviewId == rhs.reviewId
     }
 }

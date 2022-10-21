@@ -1,21 +1,21 @@
 import UIKit
 
 public enum StreetFoodStoreCategory: String, Codable {
-  case BUNGEOPPANG = "BUNGEOPPANG"
-  case TAKOYAKI = "TAKOYAKI"
-  case GYERANPPANG = "GYERANPPANG"
-  case HOTTEOK = "HOTTEOK"
-  case EOMUK = "EOMUK"
-  case GUNGOGUMA = "GUNGOGUMA"
-  case TTEOKBOKKI = "TTEOKBOKKI"
-  case TTANGKONGPPANG = "TTANGKONGPPANG"
-  case GUNOKSUSU = "GUNOKSUSU"
-  case KKOCHI = "KKOCHI"
-  case TOAST = "TOAST"
-  case WAFFLE = "WAFFLE"
-  case GUKWAPPANG = "GUKWAPPANG"
-  case SUNDAE = "SUNDAE"
-  case DALGONA = "DALGONA"
+  case BUNGEOPPANG
+  case TAKOYAKI
+  case GYERANPPANG
+  case HOTTEOK
+  case EOMUK
+  case GUNGOGUMA
+  case TTEOKBOKKI
+  case TTANGKONGPPANG
+  case GUNOKSUSU
+  case KKOCHI
+  case TOAST
+  case WAFFLE
+  case GUKWAPPANG
+  case SUNDAE
+  case DALGONA
   
   var name: String {
       switch self {
