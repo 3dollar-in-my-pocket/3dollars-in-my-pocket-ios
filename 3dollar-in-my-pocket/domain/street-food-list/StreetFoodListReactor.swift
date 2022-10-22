@@ -131,9 +131,18 @@ final class StreetFoodListReactor: BaseReactor, Reactor {
             
         case .tapStore(let index):
             let selectedIndex = self.currentState.advertisement == nil ? index : index - 1
-            let selectedStore = self.currentState.stores[selectedIndex]
+            var selectedStore: Store?
             
-            return .just(.pushStoreDetail(storeId: Int(selectedStore.id) ?? 0))
+            if self.currentState.isOnlyCertificated {
+                let filteredStores = self.currentState.stores.filter {
+                    $0.visitHistory.isCertified
+                }
+                
+                selectedStore = filteredStores[selectedIndex]
+            } else {
+                selectedStore = self.currentState.stores[selectedIndex]
+            }
+            return .just(.pushStoreDetail(storeId: Int(selectedStore?.id ?? "0") ?? 0))
             
         case .tapAdvertisement:
             guard let advertisement = self.currentState.advertisement else { return .empty() }
