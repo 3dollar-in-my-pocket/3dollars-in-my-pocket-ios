@@ -156,8 +156,6 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             )
             
         case .tapPhoto(let row):
-            guard !self.currentState.store.images.isEmpty else { return .empty() }
-            
             if row == 3 {
                 return .just(.presentPhotoList(storeId: self.storeId))
             } else {
