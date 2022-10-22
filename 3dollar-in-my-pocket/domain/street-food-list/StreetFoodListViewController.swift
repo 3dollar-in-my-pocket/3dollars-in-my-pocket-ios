@@ -111,7 +111,10 @@ final class StreetFoodListViewController: BaseViewController, StreetFoodListCoor
         
         reactor.state
             .map { state -> [StreetFoodListSectionModel] in
-                let mapSection = StreetFoodListSectionModel(stores: state.stores)
+                let mapSection = StreetFoodListSectionModel(
+                    stores: state.stores,
+                    isOnlyCertificated: state.isOnlyCertificated
+                )
                 let storeSection = StreetFoodListSectionModel(
                     stores: state.stores,
                     advertisement: state.advertisement,
