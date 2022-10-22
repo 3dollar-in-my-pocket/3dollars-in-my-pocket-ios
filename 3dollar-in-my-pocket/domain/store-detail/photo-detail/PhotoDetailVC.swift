@@ -121,16 +121,18 @@ class PhotoDetailVC: BaseVC {
   }
   
   private func selectItem(indexPath: IndexPath) {
-    self.photoDetailView.mainCollectionView.selectItem(
-      at: indexPath,
-      animated: false,
-      scrollPosition: .centeredHorizontally
-    )
-    self.photoDetailView.subCollectionView.selectItem(
-      at: indexPath,
-      animated: true,
-      scrollPosition: .left
-    )
+      DispatchQueue.main.async { [weak self] in
+          self?.photoDetailView.mainCollectionView.selectItem(
+            at: indexPath,
+            animated: false,
+            scrollPosition: .centeredHorizontally
+          )
+          self?.photoDetailView.subCollectionView.selectItem(
+            at: indexPath,
+            animated: true,
+            scrollPosition: .left
+          )
+      }
   }
   
   private func selectSubItem(indexPath: IndexPath){
