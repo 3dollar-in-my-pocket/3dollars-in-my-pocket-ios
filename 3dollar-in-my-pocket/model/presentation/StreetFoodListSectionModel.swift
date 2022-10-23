@@ -19,8 +19,14 @@ extension StreetFoodListSectionModel: SectionModelType {
         self.items = items
     }
     
-    init(stores: [Store]) {
-        self.items = [.map(stores)]
+    init(stores: [Store], isOnlyCertificated: Bool) {
+        if isOnlyCertificated {
+            let filteredStores = stores.filter { $0.visitHistory.isCertified }
+            
+            self.items = [.map(filteredStores)]
+        } else {
+            self.items = [.map(stores)]
+        }
     }
     
     init(stores: [Store], advertisement: Advertisement?, isOnlyCertificated: Bool) {
