@@ -39,8 +39,8 @@ class PhotoListVC: BaseVC {
   
   override func bindViewModel() {
     self.viewModel.output.photos.bind(to: self.photoListView.photoCollectionView.rx.items(
-      cellIdentifier: PhotoListCell.registerId,
-      cellType: PhotoListCell.self
+      cellIdentifier: PhotoListCollectionViewCell.registerId,
+      cellType: PhotoListCollectionViewCell.self
     )) { row, photo, cell in
       cell.bind(photo: photo)
     }
@@ -60,11 +60,6 @@ class PhotoListVC: BaseVC {
   }
   
   private func setupCollectionView() {
-    self.photoListView.photoCollectionView.register(
-      PhotoListCell.self,
-      forCellWithReuseIdentifier: PhotoListCell.registerId
-    )
-    
     self.photoListView.photoCollectionView.rx.itemSelected
       .map { $0.row }
       .bind(to: self.viewModel.input.tapPhoto)
