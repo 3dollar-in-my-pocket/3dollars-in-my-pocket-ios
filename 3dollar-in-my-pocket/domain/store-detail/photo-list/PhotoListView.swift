@@ -32,7 +32,6 @@ final class PhotoListView: Base.BaseView {
         $0.collectionViewLayout = layout
         $0.backgroundColor = .clear
         $0.contentInset = UIEdgeInsets(top: 24, left: 24, bottom: 24, right: 24)
-        $0.allowsMultipleSelection = true
         $0.register(
             PhotoListCollectionViewCell.self,
           forCellWithReuseIdentifier: PhotoListCollectionViewCell.registerId

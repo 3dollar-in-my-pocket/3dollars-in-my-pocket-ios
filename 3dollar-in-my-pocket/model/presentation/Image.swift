@@ -1,4 +1,4 @@
-struct Image {
+struct Image: Equatable {
     let imageId: Int
     let url: String
     

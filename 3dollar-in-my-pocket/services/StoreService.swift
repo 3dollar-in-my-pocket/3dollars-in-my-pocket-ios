@@ -40,7 +40,7 @@ protocol StoreServiceProtocol {
     
     func savePhoto(storeId: Int, photos: [UIImage]) -> Observable<[Image]>
     
-    func getPhotos(storeId: Int) -> Observable<[StoreImageResponse]>
+    func fetchStorePhotos(storeId: Int) -> Observable<[Image]>
     
     func deletePhoto(photoId: Int) -> Observable<String>
     
@@ -297,26 +297,16 @@ struct StoreService: StoreServiceProtocol {
         .map { $0.map(Image.init(response:)) }
     }
     
-    func getPhotos(storeId: Int) -> Observable<[StoreImageResponse]> {
-        return Observable.create { observer -> Disposable in
-            let urlString = HTTPUtils.url + "/api/v2/store/\(storeId)/images"
-            let headers = HTTPUtils.defaultHeader()
-            
-            HTTPUtils.defaultSession.request(
-                urlString,
-                method: .get,
-                headers: headers
-            )
-            .responseJSON { response in
-                if response.isSuccess() {
-                    observer.processValue(class: [StoreImageResponse].self, response: response)
-                } else {
-                    observer.processHTTPError(response: response)
-                }
-            }
-            
-            return Disposables.create()
-        }
+    func fetchStorePhotos(storeId: Int) -> Observable<[Image]> {
+        let urlString = HTTPUtils.url + "/api/v2/store/\(storeId)/images"
+        let headers = HTTPUtils.defaultHeader()
+        
+        return self.networkManager.createGetObservable(
+            class: [StoreImageResponse].self,
+            urlString: urlString,
+            headers: headers
+        )
+        .map { $0.map(Image.init(response: )) }
     }
     
     func deletePhoto(photoId: Int) -> Observable<String> {

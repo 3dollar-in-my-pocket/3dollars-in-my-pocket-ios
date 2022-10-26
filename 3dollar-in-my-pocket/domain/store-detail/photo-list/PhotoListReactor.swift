@@ -9,6 +9,7 @@ final class PhotoListReactor: BaseReactor, Reactor {
     }
     
     enum Mutation {
+        case setPhotos([Image])
         case showLoading(isShow: Bool)
         case showPhotoDetail(storeId: Int, index: Int, photos: [Image])
         case showErrorAlert(Error)
@@ -18,6 +19,7 @@ final class PhotoListReactor: BaseReactor, Reactor {
         var photos: [Image]
     }
     
+    let initialState: State
     let presentPhotoDetailPublisher = PublishRelay<(Int, Int, [Image])>()
     private let storeId: Int
     private let storeService: StoreServiceProtocol
@@ -32,40 +34,59 @@ final class PhotoListReactor: BaseReactor, Reactor {
         let showLoading = PublishRelay<Bool>()
     }
     
-    init(storeId: Int, storeService: StoreServiceProtocol) {
+    init(
+        storeId: Int,
+        storeService: StoreServiceProtocol,
+        state: State = State(photos: [])
+    ) {
         self.storeId = storeId
         self.storeService = storeService
-        super.init()
+        self.initialState = state
         
-        self.input.tapPhoto
-            .withLatestFrom(self.output.photos) { (self.storeId, $0, $1)}
-            .bind(to: self.output.showPhotoDetail)
-            .disposed(by: disposeBag)
+        super.init()
     }
     
+    func mutate(action: Action) -> Observable<Mutation> {
+        switch action {
+        case .viewDidLoad:
+            return .concat([
+                .just(.showLoading(isShow: true)),
+                self.fetchPhotos(),
+                .just(.showLoading(isShow: false))
+            ])
+            
+        case .tapPhoto(let index):
+            return .just(.showPhotoDetail(
+                storeId: self.storeId,
+                index: index,
+                photos: self.currentState.photos
+            ))
+        }
+    }
     
+    func reduce(state: State, mutation: Mutation) -> State {
+        var newState = state
+        
+        switch mutation {
+        case .setPhotos(let photos):
+            newState.photos = photos
+            
+        case .showPhotoDetail(let storeId, let index, let photos):
+            self.presentPhotoDetailPublisher.accept((storeId, index, photos))
+            
+        case .showLoading(let isShow):
+            self.showLoadingPublisher.accept(isShow)
+            
+        case .showErrorAlert(let error):
+            self.showErrorAlertPublisher.accept(error)
+        }
+        
+        return newState
+    }
     
-    func fetchPhotos(){
-        self.output.showLoading.accept(true)
-        self.storeService.getPhotos(storeId: self.storeId)
-            .subscribe { [weak self] photoResponse in
-                guard let self = self else { return }
-                let photos = photoResponse.map { Image(response: $0) }
-                
-                self.output.photos.accept(photos)
-                self.output.showLoading.accept(false)
-            } onError: { [weak self] error in
-                guard let self = self else { return }
-                if let httpError = error as? HTTPError {
-                    self.httpErrorAlert.accept(httpError)
-                }
-                if let commonError = error as? CommonError {
-                    let alertContent = AlertContent(title: nil, message: commonError.description)
-                    
-                    self.showSystemAlert.accept(alertContent)
-                }
-                self.output.showLoading.accept(false)
-            }
-            .disposed(by: disposeBag)
+    private func fetchPhotos() -> Observable<Mutation> {
+        return self.storeService.fetchStorePhotos(storeId: self.storeId)
+            .map { .setPhotos($0) }
+            .catch { .just(.showErrorAlert($0)) }
     }
 }
