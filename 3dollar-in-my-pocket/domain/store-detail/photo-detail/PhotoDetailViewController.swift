@@ -91,15 +91,18 @@ final class PhotoDetailViewController: BaseViewController, View, PhotoDetailCoor
     
     func bind(reactor: PhotoDetailReactor) {
         // Bind Action
-        self.photoDetailView.mainPhotoCollectionView.rx.didScroll
+        self.photoDetailView.mainPhotoCollectionView.rx.didEndDecelerating
             .map { [weak self] _ -> IndexPath in
                 guard let self = self else { return IndexPath(row: 0, section: 0) }
-                let xContentOffste = self.photoDetailView.mainPhotoCollectionView.contentOffset.x
+                let xContentOffset = self.photoDetailView.mainPhotoCollectionView.contentOffset.x
                 let screenWidth = self.view.frame.width
-                let proportionalOffset = xContentOffste / screenWidth
+                let proportionalOffset = xContentOffset / screenWidth
                 
+                Log.debug("xContentOffset: \(xContentOffset)")
+                Log.debug("proportionalOffset: \(proportionalOffset)")
                 return IndexPath(row: Int(proportionalOffset), section: 0)
             }
+            .distinctUntilChanged()
             .map { Reactor.Action.scrollMainPhoto(index: $0.row) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
@@ -117,7 +120,7 @@ final class PhotoDetailViewController: BaseViewController, View, PhotoDetailCoor
             .drive(self.photoDetailView.mainPhotoCollectionView.rx.items(
                 cellIdentifier: PhotoMainCollectionViewCell.registerId,
                 cellType: PhotoMainCollectionViewCell.self
-            )) { row, image, cell in
+            )) { _, image, cell in
                 cell.bind(photo: image)
             }
             .disposed(by: self.disposeBag)
@@ -129,7 +132,7 @@ final class PhotoDetailViewController: BaseViewController, View, PhotoDetailCoor
             .drive(self.photoDetailView.subPhotoCollectionView.rx.items(
                 cellIdentifier: PhotoSubCollectionViewCell.registerId,
                 cellType: PhotoSubCollectionViewCell.self
-            )) { row, image, cell in
+            )) { _, image, cell in
                 cell.bind(photo: image)
             }
             .disposed(by: self.disposeBag)
