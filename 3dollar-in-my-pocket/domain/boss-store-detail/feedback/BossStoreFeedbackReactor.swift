@@ -108,6 +108,7 @@ final class BossStoreFeedbackReactor: BaseReactor, Reactor {
         selectedFeedbakcs: [BossStoreFeedbackType]
     ) -> Observable<Mutation> {
         return self.feedbackService.sendFeedbacks(
+            storeType: .foodTruck,
             bossStoreId: bossStoreId,
             feedbackTypes: selectedFeedbakcs
         )
@@ -121,6 +122,7 @@ final class BossStoreFeedbackReactor: BaseReactor, Reactor {
     
     private func fetchFeedbacks(bossStoreId: String) -> Observable<Mutation> {
         return self.feedbackService.fetchBossStoreFeedbacks(
+            storeType: .foodTruck,
             bossStoreId: self.bossStoreId
         )
         .do(onNext: { [weak self] feedbacks in
