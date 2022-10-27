@@ -73,23 +73,19 @@ extension StoreDetailCoordinator where Self: BaseViewController {
     }
     
     func showPhotoDetail(storeId: Int, index: Int, photos: [Image]) {
-        let photoDetailVC = PhotoDetailVC.instance(
+        let photoDetailVC = PhotoDetailViewController.instance(
             storeId: storeId,
             index: index,
             photos: photos
-        ).then {
-            $0.delegate = self as? PhotoDetailDelegate
-        }
+        )
         
         self.presenter.tabBarController?.present(photoDetailVC, animated: true, completion: nil)
     }
     
     func goToPhotoList(storeId: Int) {
-        let photoListVC = PhotoListVC.instance(storeid: storeId).then {
-            $0.hidesBottomBarWhenPushed = true
-        }
+        let viewController = PhotoListViewController.instance(storeid: storeId)
         
-        self.presenter.navigationController?.pushViewController(photoListVC, animated: true)
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
     func showMoreActionSheet(
