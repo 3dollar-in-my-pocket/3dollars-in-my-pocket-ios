@@ -12,7 +12,8 @@ final class PhotoListViewController: BaseViewController, View, PhotoListCoordina
     init(storeId: Int) {
         self.photoListReactor = PhotoListReactor(
             storeId: storeId,
-            storeService: StoreService()
+            storeService: StoreService(),
+            globalState: GlobalState.shared
         )
         
         super.init(nibName: nil, bundle: nil)
@@ -79,11 +80,5 @@ final class PhotoListViewController: BaseViewController, View, PhotoListCoordina
                 cell.bind(photo: photo)
             }
             .disposed(by: self.disposeBag)
-    }
-}
-
-extension PhotoListViewController: PhotoDetailDelegate {
-    func onClose() {
-        self.photoListReactor.action.onNext(.viewDidLoad)
     }
 }

@@ -10,6 +10,7 @@ final class PhotoListReactor: BaseReactor, Reactor {
     
     enum Mutation {
         case setPhotos([Image])
+        case removePhoto(photoId: Int)
         case showLoading(isShow: Bool)
         case showPhotoDetail(storeId: Int, index: Int, photos: [Image])
         case showErrorAlert(Error)
@@ -23,6 +24,7 @@ final class PhotoListReactor: BaseReactor, Reactor {
     let presentPhotoDetailPublisher = PublishRelay<(Int, Int, [Image])>()
     private let storeId: Int
     private let storeService: StoreServiceProtocol
+    private let globalState: GlobalState
     
     struct Input {
         let tapPhoto = PublishSubject<Int>()
@@ -37,10 +39,12 @@ final class PhotoListReactor: BaseReactor, Reactor {
     init(
         storeId: Int,
         storeService: StoreServiceProtocol,
+        globalState: GlobalState,
         state: State = State(photos: [])
     ) {
         self.storeId = storeId
         self.storeService = storeService
+        self.globalState = globalState
         self.initialState = state
         
         super.init()
@@ -64,12 +68,25 @@ final class PhotoListReactor: BaseReactor, Reactor {
         }
     }
     
+    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
+        return .merge([
+            mutation,
+            self.globalState.deletedPhoto
+                .map { .removePhoto(photoId: $0) }
+        ])
+    }
+    
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         
         switch mutation {
         case .setPhotos(let photos):
             newState.photos = photos
+            
+        case .removePhoto(let photoId):
+            if let targetIndex = newState.photos.firstIndex(where: { $0.imageId == photoId }) {
+                newState.photos.remove(at: targetIndex)
+            }
             
         case .showPhotoDetail(let storeId, let index, let photos):
             self.presentPhotoDetailPublisher.accept((storeId, index, photos))
