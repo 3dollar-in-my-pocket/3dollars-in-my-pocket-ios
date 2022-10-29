@@ -24,6 +24,16 @@ enum StoreType {
         }
     }
     
+    var targetType: String {
+        switch self {
+        case .foodTruck:
+            return "BOSS_STORE"
+            
+        case .streetFood:
+            return "USER_STORE"
+        }
+    }
+    
     func toggle() -> Self {
         switch self {
         case .streetFood:

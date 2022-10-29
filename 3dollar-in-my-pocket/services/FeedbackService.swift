@@ -2,13 +2,15 @@ import Alamofire
 import RxSwift
 
 protocol FeedbackServiceProtocol {
-    func fetchFeedbackTypes() -> Observable<[BossStoreFeedbackMeta]>
+    func fetchFeedbackTypes(storeType: StoreType) -> Observable<[BossStoreFeedbackMeta]>
     
     func fetchBossStoreFeedbacks(
+        storeType: StoreType,
         bossStoreId: String
     ) -> Observable<[BossStoreFeedback]>
     
     func sendFeedbacks(
+        storeType: StoreType,
         bossStoreId: String,
         feedbackTypes: [BossStoreFeedbackType]
     ) -> Observable<Void>
@@ -17,8 +19,8 @@ protocol FeedbackServiceProtocol {
 struct FeedbackService: FeedbackServiceProtocol {
     private let networkManager = NetworkManager()
     
-    func fetchFeedbackTypes() -> Observable<[BossStoreFeedbackMeta]> {
-        let urlString = HTTPUtils.url + "/api/v1/boss/store/feedback/types"
+    func fetchFeedbackTypes(storeType: StoreType) -> Observable<[BossStoreFeedbackMeta]> {
+        let urlString = HTTPUtils.url + "/api/v1/feedback/\(storeType.targetType)/types"
         
         return self.networkManager.createGetObservable(
             class: [BossStoreFeedbackTypeResponse].self,
@@ -29,9 +31,11 @@ struct FeedbackService: FeedbackServiceProtocol {
     }
     
     func fetchBossStoreFeedbacks(
+        storeType: StoreType,
         bossStoreId: String
     ) -> Observable<[BossStoreFeedback]> {
-        let urlString = HTTPUtils.url + "/api/v1/boss/store/\(bossStoreId)/feedbacks/full"
+        let urlString = HTTPUtils.url
+        + "/api/v1/feedback/\(storeType.targetType)/target/\(bossStoreId)/full"
         
         return self.networkManager.createGetObservable(
             class: [BossStoreFeedbackCountWithRatioResponse].self,
@@ -42,10 +46,12 @@ struct FeedbackService: FeedbackServiceProtocol {
     }
     
     func sendFeedbacks(
+        storeType: StoreType,
         bossStoreId: String,
         feedbackTypes: [BossStoreFeedbackType]
     ) -> Observable<Void> {
-        let urlString = HTTPUtils.url + "/api/v1/boss/store/\(bossStoreId)/feedback"
+        let urlString = HTTPUtils.url
+        + "/api/v1/feedback/\(storeType.targetType)/target/\(bossStoreId)"
         let parameters = ["feedbackTypes": feedbackTypes.map { $0.rawValue }]
         
         return .create { observer in

@@ -84,11 +84,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func initilizeNotification() {
         UNUserNotificationCenter.current().delegate = self
         UNUserNotificationCenter.current().requestAuthorization(
-            options: [.alert, .badge, .sound]) { _, error in
-            if let error = error {
-                Log.debug("error: \(error)")
+            options: [.alert, .badge, .sound]) { isGranted, error in
+                let userPropertyValue = isGranted ? "granted" : "denied"
+                
+                Analytics.setUserProperty(userPropertyValue, forName: "isPushGranted")
+                if let error = error {
+                    Log.debug("error: \(error)")
+                }
             }
-        }
     }
 }
 

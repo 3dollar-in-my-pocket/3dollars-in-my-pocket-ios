@@ -132,11 +132,11 @@ final class CategoryFilterViewController: BaseViewController, View, CategoryFilt
                     .map { $0.advertisement }
                     .distinctUntilChanged()
                     .do(onNext: { advertisement in
-                        if advertisement == nil {
-                            if let layout = collectionView.collectionViewLayout
-                                as? UICollectionViewFlowLayout {
-                                layout.headerReferenceSize = .zero
-                            }
+                        if let layout = collectionView.collectionViewLayout
+                            as? UICollectionViewFlowLayout {
+                            layout.headerReferenceSize = advertisement == nil
+                            ? .zero
+                            : CategoryFilterHeaderView.size
                         }
                     })
                     .asDriver(onErrorJustReturn: nil)

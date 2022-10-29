@@ -129,7 +129,7 @@ final class SplashViewModel: BaseViewModel {
     }
     
     private func fetchBossStoreTypes() {
-        self.feedbackService.fetchFeedbackTypes()
+        self.feedbackService.fetchFeedbackTypes(storeType: .foodTruck)
             .subscribe(onNext: { [weak self] feedbackTypes in
                 self?.metaContext.feedbackTypes = feedbackTypes
             }, onError: { [weak self] error in

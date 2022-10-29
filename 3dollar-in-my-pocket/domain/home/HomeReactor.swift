@@ -293,6 +293,7 @@ final class HomeReactor: BaseReactor, Reactor {
             ])
             
         case .selectStore(let index):
+            guard index < self.currentState.storeCellTypes.count else { return .empty() }
             let selectedStoreCell = self.currentState.storeCellTypes[index]
             
             switch selectedStoreCell {

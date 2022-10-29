@@ -58,7 +58,7 @@ final class CategoryFilterHeaderView: UICollectionReusableView {
     }
     
     fileprivate func bind(advertisement: Advertisement?) {
-        guard let advertisement = advertisement else { return}
+        guard let advertisement = advertisement else { return }
 
         self.titleLabel.text = advertisement.title
         self.titleLabel.textColor = .init(hex: advertisement.fontColor)
