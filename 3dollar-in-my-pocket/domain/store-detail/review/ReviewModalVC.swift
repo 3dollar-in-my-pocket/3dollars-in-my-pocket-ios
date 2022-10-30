@@ -57,43 +57,43 @@ class ReviewModalVC: BaseVC {
   
   override func bindViewModel() {
     // Bind input
-    self.reviewModalView.star1.rx.tap
-      .map { 1 }
-      .observeOn(MainScheduler.instance)
-      .do(onNext: self.reviewModalView.onTapStackView)
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .star_button_clicked, page: .review_write)
-      })
-      .bind(to: self.viewModel.input.rating)
-      .disposed(by: disposeBag)
-    
-    self.reviewModalView.star2.rx.tap
-      .map { 2 }
-      .observeOn(MainScheduler.instance)
-      .do(onNext: self.reviewModalView.onTapStackView)
-      .bind(to: self.viewModel.input.rating)
-      .disposed(by: disposeBag)
-    
-    self.reviewModalView.star3.rx.tap
-      .map { 3 }
-      .observeOn(MainScheduler.instance)
-      .do(onNext: self.reviewModalView.onTapStackView)
-      .bind(to: self.viewModel.input.rating)
-      .disposed(by: disposeBag)
-    
-    self.reviewModalView.star4.rx.tap
-      .map { 4 }
-      .observeOn(MainScheduler.instance)
-      .do(onNext: self.reviewModalView.onTapStackView)
-      .bind(to: self.viewModel.input.rating)
-      .disposed(by: disposeBag)
-    
-    self.reviewModalView.star5.rx.tap
-      .map { 5 }
-      .observeOn(MainScheduler.instance)
-      .do(onNext: self.reviewModalView.onTapStackView)
-      .bind(to: self.viewModel.input.rating)
-      .disposed(by: disposeBag)
+//    self.reviewModalView.star1.rx.tap
+//      .map { 1 }
+//      .observeOn(MainScheduler.instance)
+//      .do(onNext: self.reviewModalView.onTapStackView)
+//      .do(onNext: { _ in
+//        GA.shared.logEvent(event: .star_button_clicked, page: .review_write)
+//      })
+//      .bind(to: self.viewModel.input.rating)
+//      .disposed(by: disposeBag)
+//
+//    self.reviewModalView.star2.rx.tap
+//      .map { 2 }
+//      .observeOn(MainScheduler.instance)
+//      .do(onNext: self.reviewModalView.onTapStackView)
+//      .bind(to: self.viewModel.input.rating)
+//      .disposed(by: disposeBag)
+//
+//    self.reviewModalView.star3.rx.tap
+//      .map { 3 }
+//      .observeOn(MainScheduler.instance)
+//      .do(onNext: self.reviewModalView.onTapStackView)
+//      .bind(to: self.viewModel.input.rating)
+//      .disposed(by: disposeBag)
+//
+//    self.reviewModalView.star4.rx.tap
+//      .map { 4 }
+//      .observeOn(MainScheduler.instance)
+//      .do(onNext: self.reviewModalView.onTapStackView)
+//      .bind(to: self.viewModel.input.rating)
+//      .disposed(by: disposeBag)
+//
+//    self.reviewModalView.star5.rx.tap
+//      .map { 5 }
+//      .observeOn(MainScheduler.instance)
+//      .do(onNext: self.reviewModalView.onTapStackView)
+//      .bind(to: self.viewModel.input.rating)
+//      .disposed(by: disposeBag)
     
     self.reviewModalView.reviewTextView.rx.text.orEmpty
       .bind(to: self.viewModel.input.contents)
@@ -129,18 +129,18 @@ class ReviewModalVC: BaseVC {
   }
   
   override func bindEvent() {
-    self.reviewModalView.closeButton.rx.tap
-      .observeOn(MainScheduler.instance)
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .review_write_close_button_clicked, page: .review_write)
-      })
-      .bind(onNext: self.dismissModal)
-      .disposed(by: disposeBag)
-    
-    self.reviewModalView.tapBackground.rx.event.bind { [weak self] _ in
-      self?.dismissModal()
-    }
-    .disposed(by: disposeBag)
+//    self.reviewModalView.closeButton.rx.tap
+//      .observeOn(MainScheduler.instance)
+//      .do(onNext: { _ in
+//        GA.shared.logEvent(event: .review_write_close_button_clicked, page: .review_write)
+//      })
+//      .bind(onNext: self.dismissModal)
+//      .disposed(by: disposeBag)
+//    
+//    self.reviewModalView.tapBackground.rx.event.bind { [weak self] _ in
+//      self?.dismissModal()
+//    }
+//    .disposed(by: disposeBag)
   }
   
   private func addObservers() {
