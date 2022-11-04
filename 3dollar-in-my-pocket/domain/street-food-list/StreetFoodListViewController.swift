@@ -22,7 +22,7 @@ final class StreetFoodListViewController: BaseViewController, StreetFoodListCoor
     static func instance() -> UINavigationController {
         let viewController = StreetFoodListViewController(nibName: nil, bundle: nil).then {
             $0.tabBarItem = UITabBarItem(
-                title: nil,
+                title: R.string.localization.tab_street_food(),
                 image: UIImage(named: "ic_street_food"),
                 tag: TabBarTag.streetFood.rawValue
             )
@@ -57,14 +57,6 @@ final class StreetFoodListViewController: BaseViewController, StreetFoodListCoor
     }
   
     override func bindEvent() {
-        self.streetFoodListView.writeButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.presentWriteAddress()
-            })
-            .disposed(by: self.eventDisposeBag)
-        
         self.streetFoodListReactor.pushStoreDetailPublisher
             .asDriver(onErrorJustReturn: -1)
             .drive(onNext: { [weak self] storeId in
@@ -248,11 +240,5 @@ extension StreetFoodListViewController: NMFMapViewCameraDelegate {
                 self.streetFoodListReactor.action.onNext(.changeMapLocation(mapLocation))
             }
         }
-    }
-}
-
-extension StreetFoodListViewController: WriteAddressDelegate {
-    func onWriteSuccess(storeId: Int) {
-        self.coordinator?.pushStoreDetail(storeId: storeId)
     }
 }
