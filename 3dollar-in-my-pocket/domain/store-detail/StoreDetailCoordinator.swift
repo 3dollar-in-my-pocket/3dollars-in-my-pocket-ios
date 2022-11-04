@@ -44,11 +44,12 @@ extension StoreDetailCoordinator where Self: BaseViewController {
     }
     
     func showReviewModal(storeId: Int, review: Review? = nil) {
-        let reviewVC = ReviewModalVC.instance(storeId: storeId, review: review).then {
-            $0.deleagete = self as? ReviewModalDelegate
-        }
+        let viewController = ReviewModalViewController.instance(
+            storeId: storeId,
+            review: review
+        )
         
-        self.presenter.tabBarController?.present(reviewVC, animated: true, completion: nil)
+        self.presenter.tabBarController?.present(viewController, animated: true, completion: nil)
     }
     
     func showCamera() {

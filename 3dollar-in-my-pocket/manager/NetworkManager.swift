@@ -53,4 +53,54 @@ struct NetworkManager {
             return Disposables.create()
         }
     }
+    
+    func createPostObservable<T: Decodable>(
+        class: T.Type,
+        urlString: String,
+        headers: HTTPHeaders,
+        parameters: [String: Any]? = nil
+    ) -> Observable<T> {
+        return .create { observer in
+            HTTPUtils.defaultSession.request(
+                urlString,
+                method: .post,
+                parameters: parameters,
+                encoding: JSONEncoding.default,
+                headers: headers
+            ).responseData { response in
+                if response.isSuccess() {
+                    observer.processValue(class: T.self, response: response)
+                } else {
+                    observer.processHTTPError(response: response)
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func createPutObservable<T: Decodable>(
+        class: T.Type,
+        urlString: String,
+        headers: HTTPHeaders,
+        parameters: [String: Any]? = nil
+    ) -> Observable<T> {
+        return .create { observer in
+            HTTPUtils.defaultSession.request(
+                urlString,
+                method: .put,
+                parameters: parameters,
+                encoding: JSONEncoding.default,
+                headers: headers
+            ).responseData { response in
+                if response.isSuccess() {
+                    observer.processValue(class: T.self, response: response)
+                } else {
+                    observer.processHTTPError(response: response)
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
 }

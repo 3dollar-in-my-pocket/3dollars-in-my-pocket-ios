@@ -1,11 +1,11 @@
 import Alamofire
+
 import RxSwift
 
 protocol ReviewServiceProtocol {
+    func saveReview(review: Review) -> Observable<Review>
   
-  func saveReview(review: Review, storeId: Int) -> Observable<ReviewInfoResponse>
-  
-  func modifyReview(review: Review) -> Observable<ReviewInfoResponse>
+    func modifyReview(review: Review) -> Observable<Review>
   
   func deleteReview(reviewId: Int) -> Observable<Void>
   
@@ -15,55 +15,38 @@ protocol ReviewServiceProtocol {
 struct ReviewService: ReviewServiceProtocol {
     private let networkManager = NetworkManager()
   
-  func saveReview(review: Review, storeId: Int) -> Observable<ReviewInfoResponse> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v2/store/review"
-      let headers = HTTPUtils.jsonWithTokenHeader()
-      var parameter = AddReviewRequest(review: review).params
-      parameter["storeId"] = storeId
-      
-      HTTPUtils.defaultSession.request(
-        urlString,
-        method: .post,
-        parameters: parameter,
-        encoding: JSONEncoding.default,
-        headers: headers
-      ).responseJSON { response in
-        if response.isSuccess() {
-          observer.processValue(class: ReviewInfoResponse.self, response: response)
-        } else {
-          observer.processHTTPError(response: response)
-        }
-      }
-      
-      return Disposables.create()
+    func saveReview(review: Review) -> Observable<Review> {
+        let urlString = HTTPUtils.url + "/api/v2/store/review"
+        let headers = HTTPUtils.jsonWithTokenHeader()
+        
+        return self.networkManager.createPostObservable(
+            class: ReviewInfoResponse.self,
+            urlString: urlString,
+            headers: headers,
+            parameters: [
+                "contents": review.contents,
+                "rating": review.rating,
+                "storeId": review.store.id
+            ]
+        )
+        .map(Review.init(response:))
     }
-  }
   
-  func modifyReview(review: Review) -> Observable<ReviewInfoResponse> {
-    return Observable.create { observer -> Disposable in
-      let urlString = HTTPUtils.url + "/api/v2/store/review/\(review.reviewId)"
-      let headers = HTTPUtils.defaultHeader()
-      let parameter = UpdateReviewRequest(review: review).params
-      
-      HTTPUtils.defaultSession.request(
-        urlString,
-        method: .put,
-        parameters: parameter,
-        encoding: JSONEncoding.default,
-        headers: headers
-      )
-      .responseJSON { response in
-        if response.isSuccess() {
-          observer.processValue(class: ReviewInfoResponse.self, response: response)
-        } else {
-          observer.processHTTPError(response: response)
-        }
-      }
-      
-      return Disposables.create()
+    func modifyReview(review: Review) -> Observable<Review> {
+        let urlString = HTTPUtils.url + "/api/v2/store/review/\(review.reviewId)"
+        let headers = HTTPUtils.defaultHeader()
+        
+        return self.networkManager.createPutObservable(
+            class: ReviewInfoResponse.self,
+            urlString: urlString,
+            headers: headers,
+            parameters: [
+                "contents": review.contents,
+                "rating": review.rating
+            ]
+        )
+        .map(Review.init(response:))
     }
-  }
   
     func deleteReview(reviewId: Int) -> Observable<Void> {
         let urlString = HTTPUtils.url + "/api/v2/store/review/\(reviewId)"
