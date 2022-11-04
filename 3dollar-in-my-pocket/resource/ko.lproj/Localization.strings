@@ -21,6 +21,11 @@
 "error_location_default_message" = "위치 오류가 발생되었습니다.\n에러가 개발자에게 보고됩니다.";
 "splash_need_update_title" = "업데이트 필요";
 "splash_need_update_description" = "따끈따끈한 업데이트가 나왔어요!\n확인버튼을 눌러 업데이트를 진행해주세요!";
+"tab_home" = "홈";
+"tab_street_food" = "길거리음식";
+"tab_write" = "제보하기";
+"tab_food_truck" = "푸드트럭";
+"tab_my" = "MY";
 "setting_title" = "설정";
 "setting_nickname_modify" = "닉네임 수정";
 "setting_menu_question" = "문의사항";

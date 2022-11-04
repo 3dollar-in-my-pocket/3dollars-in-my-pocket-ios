@@ -77,14 +77,17 @@ def get_strings_from_csv(savepath, file_name):
 def write_strings(string_list, save_path):
     if not os.path.exists(save_path + "/resource/en.lproj/"):
         os.makedirs(save_path + "/resource/en.lproj/")
+        os.makedirs(save_path + "/resource/ko.lproj/")
 
-    string_file = open(save_path + "/resource/en.lproj/Localization.strings", "w")
+    en_string_file = open(save_path + "/resource/en.lproj/Localization.strings", "w")
+    ko_string_file = open(save_path + "/resource/ko.lproj/Localization.strings", "w")
 
     for item in string_list:
-        string_file.write("\"" + item["key"] + "\" = \"" + item["ko"] + "\";\n")
+        en_string_file.write("\"" + item["key"] + "\" = \"" + item["ko"] + "\";\n")
+        ko_string_file.write("\"" + item["key"] + "\" = \"" + item["ko"] + "\";\n")
 
-    string_file.close()
-
+    en_string_file.close()
+    ko_string_file.close()
 
 if __name__ == '__main__':
     get_gdoc_information()

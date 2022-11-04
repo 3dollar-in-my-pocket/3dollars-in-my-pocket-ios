@@ -21,7 +21,8 @@ class WriteDetailVC: BaseVC {
     self.viewModel = WriteDetailViewModel(
       address: address,
       location: location,
-      storeService: StoreService()
+      storeService: StoreService(),
+      globalState: GlobalState.shared
     )
     super.init(nibName: nil, bundle: nil)
   }
