@@ -9,6 +9,7 @@ class WriteDetailViewModel: BaseViewModel {
   let output = Output()
   
   let storeService: StoreServiceProtocol
+  let globalState: GlobalState
   let address: String
   let location: (Double, Double)
   var appearenceDay: [WeekDay] = []
@@ -49,11 +50,13 @@ class WriteDetailViewModel: BaseViewModel {
   init(
     address: String,
     location: (Double, Double),
-    storeService: StoreServiceProtocol
+    storeService: StoreServiceProtocol,
+    globalState: GlobalState
   ) {
     self.address = address
     self.location = location
     self.storeService = storeService
+    self.globalState = globalState
     super.init()
     
     self.input.storeName
@@ -235,6 +238,7 @@ class WriteDetailViewModel: BaseViewModel {
         onNext: { [weak self] store in
           guard let self = self else { return }
           
+          self.globalState.addStore.onNext(store)
           self.output.dismissAndGoDetail.accept(store.storeId)
           self.output.showLoading.accept(false)
         },
