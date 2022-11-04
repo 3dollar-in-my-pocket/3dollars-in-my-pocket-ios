@@ -140,7 +140,9 @@ final class RatingInputView: BaseView {
     }
     
     func onTapStackView(tappedIndex: Int) {
-        self.stackContainer.layer.borderColor = UIColor(r: 243, g: 162, b: 169).cgColor
+        self.stackContainer.layer.borderColor = tappedIndex == 0
+        ? UIColor(r: 223, g: 223, b: 223).cgColor
+        : UIColor(r: 243, g: 162, b: 169).cgColor
         for index in self.stackView.arrangedSubviews.indices {
             if let button = stackView.arrangedSubviews[index] as? UIButton {
                 button.isSelected = (index <= tappedIndex - 1)

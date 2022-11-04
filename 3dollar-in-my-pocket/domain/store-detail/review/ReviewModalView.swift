@@ -1,6 +1,8 @@
 import UIKit
 
 import Base
+import RxSwift
+import RxCocoa
 
 final class ReviewModalView: BaseView {
     fileprivate let tapBackground = UITapGestureRecognizer()
@@ -19,7 +21,7 @@ final class ReviewModalView: BaseView {
         $0.numberOfLines = 0
     }
     
-    private let closeButton = UIButton().then {
+    let closeButton = UIButton().then {
         $0.setImage(R.image.ic_close_24(), for: .normal)
     }
     
@@ -59,6 +61,7 @@ final class ReviewModalView: BaseView {
             self.containerView
         ])
         self.reviewTextView.delegate = self
+        self.addKeyboardObservers()
     }
     
     override func bindConstraints() {
@@ -103,18 +106,60 @@ final class ReviewModalView: BaseView {
         }
     }
     
-    func bind(review: Review) {
+    fileprivate func bind(review: Review) {
         self.titleLabel.text = R.string.localization.review_modal_modify_title()
-        self.registerButton.setTitle(R.string.localization.review_modal_modify(), for: .normal)
+        if review.isNewReview {
+            self.registerButton.setTitle(
+                R.string.localization.review_modal_register(),
+                for: .normal
+            )
+        } else {
+            self.registerButton.setTitle(R.string.localization.review_modal_modify(), for: .normal)
+        }
         self.ratingInputView.onTapStackView(tappedIndex: review.rating)
-        self.reviewTextView.text = review.contents
-        self.reviewTextView.textColor = .black
-        
-        if review.contents.isEmpty {
+        self.bindTextView(text: review.contents)
+    }
+    
+    private func addKeyboardObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    private func bindTextView(text: String) {
+        if text.isEmpty {
+            self.reviewTextView.text = R.string.localization.review_modal_placeholder()
+            self.reviewTextView.textColor = UIColor(r: 200, g: 200, b: 200)
             self.reviewTextView.layer.borderColor = UIColor(r: 223, g: 223, b: 223).cgColor
         } else {
+            self.reviewTextView.text = text
+            self.reviewTextView.textColor = .black
             self.reviewTextView.layer.borderColor = UIColor(r: 243, g: 162, b: 169).cgColor
         }
+    }
+    
+    @objc private func keyboardWillShow(_ sender: Notification) {
+        guard let userInfo = sender.userInfo as? [String: Any] else { return }
+        guard let keyboardFrame
+                = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        
+        self.containerView.transform = CGAffineTransform(
+            translationX: 0,
+            y: -keyboardFrame.cgRectValue.height
+        )
+    }
+    
+    @objc private func keyboardWillHide(_ sender: Notification) {
+        self.containerView.transform = .identity
     }
 }
 
@@ -157,5 +202,17 @@ extension ReviewModalView: UITextViewDelegate {
         }
         
         return count <= 100
+    }
+}
+
+extension Reactive where Base: ReviewModalView {
+    var tapBackground: ControlEvent<Void> {
+        return ControlEvent(events: base.tapBackground.rx.event.map { _ in () })
+    }
+    
+    var review: Binder<Review> {
+        return Binder(self.base) { view, review in
+            view.bind(review: review)
+        }
     }
 }
