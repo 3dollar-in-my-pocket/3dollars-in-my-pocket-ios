@@ -64,7 +64,11 @@ final class SigninReactor: BaseReactor, Reactor {
             ])
             
         case .tapWithoutSignin:
-            return .empty()
+            return .concat([
+                .just(.showLoading(isShow: true)),
+                self.signinAnonymous(),
+                .just(.showLoading(isShow: false))
+            ])
         }
     }
     
@@ -123,5 +127,15 @@ final class SigninReactor: BaseReactor, Reactor {
                     return .just(.showErrorAlert(error))
                 }
             }
+    }
+    
+    private func signinAnonymous() -> Observable<Mutation> {
+        return self.userService.signinAnonymous()
+            .do(onNext: { [weak self] signinResponse in
+                self?.userDefaults.userId = signinResponse.userId
+                self?.userDefaults.authToken = signinResponse.token
+            })
+            .map { _ in .goToMain }
+            .catch { .just(.showErrorAlert($0)) }
     }
 }

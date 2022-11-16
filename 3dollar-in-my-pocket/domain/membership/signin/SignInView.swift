@@ -35,8 +35,9 @@ final class SignInView: BaseView {
     }
     
     let signinWithoutIdButton = UIButton().then {
-        $0.setTitle("로그인 없이 사용하기", for: .normal)
+        $0.setTitle(R.string.localization.sign_in_without_id(), for: .normal)
         $0.setTitleColor(.white, for: .normal)
+        $0.titleLabel?.font = .medium(size: 14)
     }
     
     override func setup() {
@@ -84,7 +85,7 @@ final class SignInView: BaseView {
         
         self.signinWithoutIdButton.snp.makeConstraints { make in
             make.centerX.equalTo(self.kakaoButton)
-            make.top.equalTo(self.appleButton.snp.bottom).offset(24)
+            make.top.equalTo(self.appleButton.snp.bottom).offset(32)
         }
     }
     

@@ -4,7 +4,7 @@ import Base
 import ReactorKit
 import RxSwift
 
-final class SigninViewController: BaseViewController, View {
+final class SigninViewController: BaseViewController, View, SigninCoordinator {
     private let signInView = SignInView()
     private let signinReactor = SigninReactor(
         userDefaults: UserDefaultsUtil(),
@@ -12,6 +12,7 @@ final class SigninViewController: BaseViewController, View {
         kakaoManager: KakaoSigninManager(),
         appleManager: AppleSigninManager()
     )
+    private weak var coordinator: SigninCoordinator?
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -32,6 +33,7 @@ final class SigninViewController: BaseViewController, View {
         
         self.signInView.startFadeIn()
         self.reactor = self.signinReactor
+        self.coordinator = self
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }
@@ -62,15 +64,15 @@ final class SigninViewController: BaseViewController, View {
             .compactMap { $0 }
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] _ in
-                
+                self?.coordinator?.goToMain()
             })
             .disposed(by: self.disposeBag)
         
         reactor.pulse(\.$pushNickname)
             .compactMap { $0 }
-            .asDriver(onErrorJustReturn: ())
+            .asDriver(onErrorJustReturn: SigninRequest(socialType: .unknown, token: ""))
             .drive(onNext: { [weak self] signinRequest in
-                
+                self?.coordinator?.pushNickname(signinRequest: signinRequest)
             })
             .disposed(by: self.disposeBag)
         
@@ -78,15 +80,15 @@ final class SigninViewController: BaseViewController, View {
             .compactMap { $0 }
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] error in
-                
+                self?.coordinator?.showErrorAlert(error: BaseError.unknown)
             })
             .disposed(by: self.disposeBag)
         
         reactor.pulse(\.$showLoading)
             .compactMap { $0 }
-            .asDriver(onErrorJustReturn: ())
+            .asDriver(onErrorJustReturn: false)
             .drive(onNext: { [weak self] isShow in
-                
+                self?.coordinator?.showLoading(isShow: isShow)
             })
             .disposed(by: self.disposeBag)
     }

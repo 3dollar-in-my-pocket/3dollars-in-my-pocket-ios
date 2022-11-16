@@ -4,6 +4,8 @@ import RxSwift
 protocol UserServiceProtocol {
     func signin(request: SigninRequest) -> Observable<SigninResponse>
     
+    func signinAnonymous() -> Observable<SigninResponse>
+    
     func signup(request: SignupRequest) -> Observable<SigninResponse>
     
     func withdrawal() -> Observable<Void>
@@ -28,6 +30,17 @@ struct UserService: UserServiceProtocol {
             urlString: urlString,
             headers: headers,
             parameters: parameters
+        )
+    }
+    
+    func signinAnonymous() -> Observable<SigninResponse> {
+        let urlString = HTTPUtils.url + "/api/v1/signup/anonymous"
+        let headers = HTTPUtils.jsonHeader()
+        
+        return self.networkManager.createPostObservable(
+            class: SigninResponse.self,
+            urlString: urlString,
+            headers: headers
         )
     }
     
