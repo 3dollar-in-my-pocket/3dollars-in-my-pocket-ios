@@ -93,7 +93,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         self.initialState = State(
             currentLocation: state.currentLocation,
             store: state.store,
-            userId: userDefaults.getUserId()
+            userId: userDefaults.userId
         )
     }
     

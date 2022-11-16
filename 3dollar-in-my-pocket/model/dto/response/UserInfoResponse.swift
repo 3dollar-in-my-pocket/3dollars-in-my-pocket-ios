@@ -1,7 +1,7 @@
 struct UserInfoResponse: Decodable {
     let medal: MedalResponse
     let name: String
-    let socialType: SocialType
+    let socialType: String
     let userId: Int
     
     enum CodingKeys: String, CodingKey {
@@ -11,10 +11,9 @@ struct UserInfoResponse: Decodable {
         case userId
     }
     
-    
     init() {
         self.name = ""
-        self.socialType = .KAKAO
+        self.socialType = ""
         self.userId = -1
         self.medal = MedalResponse()
     }
@@ -28,9 +27,9 @@ struct UserInfoResponse: Decodable {
         ) ?? MedalResponse()
         self.name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
         self.socialType = try values.decodeIfPresent(
-            SocialType.self,
+            String.self,
             forKey: .socialType
-        ) ?? .KAKAO
+        ) ?? ""
         self.userId = try values.decodeIfPresent(Int.self, forKey: .userId) ?? -1
     }
 }

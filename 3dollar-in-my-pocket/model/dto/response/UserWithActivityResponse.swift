@@ -27,10 +27,13 @@ struct UserWithActivityResponse: Decodable {
             forKey: .medal
         ) ?? MedalResponse()
         self.name = try values.decodeIfPresent(String.self, forKey: .name) ?? ""
-        self.socialType = try values.decodeIfPresent(
-            SocialType.self,
+        
+        let socialTypeString = try values.decodeIfPresent(
+            String.self,
             forKey: .socialType
-        ) ?? .APPLE
+        ) ?? ""
+        
+        self.socialType = SocialType(value: socialTypeString)
         self.userId = try values.decodeIfPresent(Int.self, forKey: .userId) ?? 0
     }
 }

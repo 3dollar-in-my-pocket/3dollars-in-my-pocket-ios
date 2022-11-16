@@ -58,12 +58,15 @@ class SettingAccountCell: BaseTableViewCell {
   
   func bind(socialType: SocialType) {
     switch socialType {
-    case .APPLE:
+    case .apple:
       self.snsIconImage.image = R.image.ic_setting_apple()
       self.accountTypeLabel.text = "애플 계정 회원"
-    case .KAKAO, .GOOGLE:
+    case .kakao, .google:
       self.snsIconImage.image = R.image.ic_setting_kakao()
       self.accountTypeLabel.text = "카카오 계정 회원"
+        
+    default:
+        break
     }
   }
 }

@@ -17,7 +17,7 @@ final class SplashViewModel: BaseViewModel {
     
     let input = Input()
     let output = Output()
-    let userDefaults: UserDefaultsUtil
+    var userDefaults: UserDefaultsUtil
     let userService: UserServiceProtocol
     let remoteConfigService: RemoteConfigProtocol
     let metaContext: MetaContext
@@ -71,7 +71,7 @@ final class SplashViewModel: BaseViewModel {
     }
     
     private func validateToken() {
-        let token = self.userDefaults.getUserToken()
+        let token = self.userDefaults.authToken
         
         if self.validateTokenFromLocal(token: token) {
             self.validateTokenFromServer()
@@ -87,7 +87,7 @@ final class SplashViewModel: BaseViewModel {
     private func validateTokenFromServer() {
         self.userService.fetchUserInfo()
             .do(onNext: { [weak self] userInfoResponse in
-                self?.userDefaults.setUserId(id: userInfoResponse.userId)
+                self?.userDefaults.userId = userInfoResponse.userId
             })
             .map { _ in Void() }
             .subscribe(

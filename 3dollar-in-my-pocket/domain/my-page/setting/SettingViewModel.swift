@@ -82,9 +82,9 @@ class SettingViewModel: BaseViewModel {
   
   private func signOut(user: User) {
     switch user.socialType {
-    case .KAKAO:
+    case .kakao:
       self.signOutKakao()
-    case .APPLE:
+    case .apple:
       self.signOutApple()
     default:
       break
@@ -93,9 +93,9 @@ class SettingViewModel: BaseViewModel {
   
   private func withdrawal(user: User) {
     switch user.socialType {
-    case .KAKAO:
+    case .kakao:
       self.unlinkKakao()
-    case .APPLE:
+    case .apple:
       self.withdrawal()
     default:
       break
