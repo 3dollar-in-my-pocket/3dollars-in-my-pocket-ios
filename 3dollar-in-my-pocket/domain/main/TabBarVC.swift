@@ -216,6 +216,14 @@ extension TabBarVC: UITabBarControllerDelegate {
                 self.present(writeVC, animated: true, completion: nil)
                 return false
             }
+            
+            if navigationViewController.topViewController is MyPageViewController,
+               UserDefaultsUtil().isAnonymousUser {
+                let viewController = SigninAnonymousViewController.instance()
+                
+                self.present(viewController, animated: true)
+                return false
+            }
         }
         return true
     }

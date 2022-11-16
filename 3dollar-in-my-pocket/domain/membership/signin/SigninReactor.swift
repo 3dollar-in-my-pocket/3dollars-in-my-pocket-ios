@@ -134,6 +134,7 @@ final class SigninReactor: BaseReactor, Reactor {
             .do(onNext: { [weak self] signinResponse in
                 self?.userDefaults.userId = signinResponse.userId
                 self?.userDefaults.authToken = signinResponse.token
+                self?.userDefaults.isAnonymousUser = true
             })
             .map { _ in .goToMain }
             .catch { .just(.showErrorAlert($0)) }

@@ -34,6 +34,7 @@
 "setting_withdrawal" = "회원탈퇴";
 "sign_in_with_kakao" = "카카오 계정으로 로그인";
 "sign_in_without_id" = "로그인 없이 사용하기";
+"sign_in_anonymous_description" = "가슴속 3천원에 로그인하고\n더 많은 기능을 사용해 보세요!";
 "question_title" = "문의사항";
 "question_faq" = "FAQ";
 "question_email" = "1:1문의";

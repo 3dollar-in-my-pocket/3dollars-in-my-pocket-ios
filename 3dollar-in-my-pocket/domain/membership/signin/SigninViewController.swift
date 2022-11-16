@@ -5,7 +5,7 @@ import ReactorKit
 import RxSwift
 
 final class SigninViewController: BaseViewController, View, SigninCoordinator {
-    private let signInView = SignInView()
+    private let signinView = SigninView()
     private let signinReactor = SigninReactor(
         userDefaults: UserDefaultsUtil(),
         userService: UserService(),
@@ -25,13 +25,13 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
     }
     
     override func loadView() {
-        self.view = self.signInView
+        self.view = self.signinView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.signInView.startFadeIn()
+        self.signinView.startFadeIn()
         self.reactor = self.signinReactor
         self.coordinator = self
         self.navigationController?.isNavigationBarHidden = true
@@ -40,20 +40,20 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
     
     func bind(reactor: SigninReactor) {
         // Bind Action
-        self.signInView.kakaoButton.rx.tap
+        self.signinView.kakaoButton.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .map { Reactor.Action.tapKakaoButton }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
-        self.signInView.appleButton.rx
+        self.signinView.appleButton.rx
           .controlEvent(.touchUpInside)
           .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
           .map { _ in Reactor.Action.tapAppleButton }
           .bind(to: reactor.action)
           .disposed(by: self.disposeBag)
         
-        self.signInView.signinWithoutIdButton.rx.tap
+        self.signinView.signinWithoutIdButton.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .map { Reactor.Action.tapWithoutSignin }
             .bind(to: reactor.action)

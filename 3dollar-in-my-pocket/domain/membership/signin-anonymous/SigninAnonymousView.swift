@@ -4,7 +4,12 @@ import AuthenticationServices
 import Then
 import Lottie
 
-final class SignInView: BaseView {
+final class SigninAnonymousView: BaseView {
+    let backButton = UIButton().then {
+        $0.setImage(R.image.ic_back()?.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.tintColor = .white
+    }
+    
     let lottie = AnimationView(name: "signin").then {
         $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         $0.contentMode = .scaleAspectFill
@@ -21,7 +26,7 @@ final class SignInView: BaseView {
     
     private let kakaoLabel = UILabel().then {
         $0.text = R.string.localization.sign_in_with_kakao()
-        $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
+        $0.font = .bold(size: 14)
         $0.textColor = UIColor.init(r: 56, g: 30, b: 31)
         $0.isAccessibilityElement = false
     }
@@ -34,26 +39,47 @@ final class SignInView: BaseView {
         $0.cornerRadius = 24
     }
     
-    let signinWithoutIdButton = UIButton().then {
-        $0.setTitle(R.string.localization.sign_in_without_id(), for: .normal)
-        $0.setTitleColor(.white, for: .normal)
-        $0.titleLabel?.font = .medium(size: 14)
+    private let bottomContainerView = UIView().then {
+        $0.layer.cornerRadius = 20
+        $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        $0.backgroundColor = R.color.gray90()
+    }
+    
+    private let bottomImageView = UIImageView().then {
+        $0.image = R.image.img_anonymous()
+    }
+    
+    private let anonymousLabel = UILabel().then {
+        $0.font = .regular(size: 16)
+        $0.textColor = .white
+        $0.numberOfLines = 0
+        $0.text = R.string.localization.sign_in_anonymous_description()
+        $0.textAlignment = .center
     }
     
     override func setup() {
-        self.alpha = 0
         self.backgroundColor = UIColor(r: 28, g: 28, b: 28)
         self.addSubViews([
+            self.backButton,
             self.lottie,
             self.kakaoButton,
             self.kakaoImage,
             self.kakaoLabel,
             self.appleButton,
-            self.signinWithoutIdButton
+            self.bottomContainerView,
+            self.bottomImageView,
+            self.anonymousLabel
         ])
     }
     
     override func bindConstraints() {
+        self.backButton.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(24)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(13)
+            make.width.equalTo(24)
+            make.height.equalTo(24)
+        }
+        
         self.lottie.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalToSuperview().offset(109)
@@ -83,17 +109,23 @@ final class SignInView: BaseView {
             make.width.height.equalTo(16)
         }
         
-        self.signinWithoutIdButton.snp.makeConstraints { make in
-            make.centerX.equalTo(self.kakaoButton)
-            make.top.equalTo(self.appleButton.snp.bottom).offset(32)
+        self.anonymousLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-21)
         }
-    }
-    
-    func startFadeIn() {
-        DispatchQueue.main.async { [weak self] in
-            UIView.animate(withDuration: 0.5) {
-                self?.alpha = 1
-            }
+        
+        self.bottomImageView.snp.makeConstraints { make in
+            make.centerX.equalTo(self.anonymousLabel)
+            make.width.equalTo(40)
+            make.height.equalTo(40)
+            make.bottom.equalTo(self.anonymousLabel.snp.top).offset(-11)
+        }
+        
+        self.bottomContainerView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.top.equalTo(self.bottomImageView.snp.centerY)
         }
     }
 }

@@ -4,6 +4,7 @@ import CoreLocation
 struct UserDefaultsUtil {
     private let KEY_TOKEN = "KEY_TOKEN"
     private let KEY_USER_ID = "KEY_USER_ID"
+    private let KEY_IS_ANONYMOUS_USER = "KEY_IS_ANONYMOUS_USER"
     static let KEY_EVENT = "KEY_EVENT"
     static let KEY_CURRENT_LATITUDE = "KEY_CURRENT_LATITUDE"
     static let KEY_CURRENT_LONGITUDE = "KEY_CURRENT_LONGITUDE"
@@ -38,6 +39,15 @@ struct UserDefaultsUtil {
         }
         set {
             self.instance.integer(forKey: KEY_USER_ID)
+        }
+    }
+    
+    var isAnonymousUser: Bool {
+        get {
+            return self.instance.bool(forKey: self.KEY_IS_ANONYMOUS_USER)
+        }
+        set {
+            self.instance.set(newValue, forKey: self.KEY_IS_ANONYMOUS_USER)
         }
     }
     
