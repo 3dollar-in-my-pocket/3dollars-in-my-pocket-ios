@@ -68,6 +68,14 @@ final class SigninAnonymousViewController: BaseViewController, View, SigninAnony
             })
             .disposed(by: self.disposeBag)
         
+        reactor.pulse(\.$showAlreadyExist)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: SigninRequest(socialType: .unknown, token: ""))
+            .drive(onNext: { [weak self] signinRequest in
+                self?.coordinator?.showAlreadyExist(signinRequest: signinRequest)
+            })
+            .disposed(by: self.disposeBag)
+        
         reactor.pulse(\.$showErrorAlert)
             .compactMap { $0 }
             .asDriver(onErrorJustReturn: BaseError.unknown)

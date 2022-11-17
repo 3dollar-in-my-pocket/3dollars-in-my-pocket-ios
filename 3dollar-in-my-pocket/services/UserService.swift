@@ -75,16 +75,31 @@ struct UserService: UserServiceProtocol {
     }
     
     func connectAccount(request: SigninRequest) -> Observable<String> {
-        let urlString = HTTPUtils.url + "/api/v1/connect/account"
-        let headers = HTTPUtils.defaultHeader()
-        let params = request.params
-        
-        return self.networkManager.createPutObservable(
-            class: String.self,
-            urlString: urlString,
-            headers: headers,
-            parameters: params
-        )
+        return .create { observer in
+            let urlString = HTTPUtils.url + "/api/v1/connect/account"
+            let headers = HTTPUtils.defaultHeader()
+            let params = request.params
+            
+            HTTPUtils.defaultSession.request(
+                urlString,
+                method: .put,
+                parameters: params,
+                encoding: JSONEncoding.default,
+                headers: headers
+            ).responseData { response in
+                if response.isSuccess() {
+                    observer.processValue(class: String.self, response: response)
+                } else {
+                    if response.response?.statusCode == 409 {
+                        observer.onError(SignupError.alreadyExistedNickname)
+                    } else {
+                        observer.processAPIError(response: response)
+                    }
+                }
+            }
+            
+            return Disposables.create()
+        }
     }
     
     func withdrawal() -> Observable<Void> {

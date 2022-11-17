@@ -29,7 +29,7 @@ final class KakaoSigninManager: SigninManagerProtocol {
                     if sdkError.isClientFailed {
                         switch sdkError.getClientError().reason {
                         case .Cancelled:
-                            break
+                            self.publisher.onError(BaseError.custom("cancel"))
                         default:
                             let errorMessage = sdkError.getApiError().info?.msg ?? ""
                             let error = BaseError.custom(errorMessage)
