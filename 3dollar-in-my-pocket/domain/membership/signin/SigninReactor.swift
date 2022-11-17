@@ -116,7 +116,14 @@ final class SigninReactor: BaseReactor, Reactor {
                 
                 return self.signin(request: signinRequest)
             }
-            .catch { .just(.showErrorAlert($0)) }
+            .catch { error in
+                if case .custom(let message) = error as? BaseError,
+                   message == "cancel" {
+                    return .just(.showLoading(isShow: false))
+                } else {
+                    return .just(.showErrorAlert(error))
+                }
+            }
     }
   
     private func signin(request: SigninRequest) -> Observable<Mutation> {
