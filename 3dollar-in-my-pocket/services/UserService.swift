@@ -8,6 +8,8 @@ protocol UserServiceProtocol {
     
     func signup(request: SignupRequest) -> Observable<SigninResponse>
     
+    func connectAccount(request: SigninRequest) -> Observable<String>
+    
     func withdrawal() -> Observable<Void>
     
     func changeNickname(name: String) -> Observable<Void>
@@ -22,7 +24,7 @@ struct UserService: UserServiceProtocol {
     
     func signin(request: SigninRequest) -> Observable<SigninResponse> {
         let urlString = HTTPUtils.url + "/api/v2/login"
-        let parameters = request.parameters
+        let parameters = request.params
         let headers = HTTPUtils.jsonHeader()
         
         return self.networkManager.createPostObservable(
@@ -70,6 +72,19 @@ struct UserService: UserServiceProtocol {
             
             return Disposables.create()
         }
+    }
+    
+    func connectAccount(request: SigninRequest) -> Observable<String> {
+        let urlString = HTTPUtils.url + "/api/v1/connect/account"
+        let headers = HTTPUtils.defaultHeader()
+        let params = request.params
+        
+        return self.networkManager.createPutObservable(
+            class: String.self,
+            urlString: urlString,
+            headers: headers,
+            parameters: params
+        )
     }
     
     func withdrawal() -> Observable<Void> {

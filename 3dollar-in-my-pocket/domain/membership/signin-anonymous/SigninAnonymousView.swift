@@ -5,8 +5,8 @@ import Then
 import Lottie
 
 final class SigninAnonymousView: BaseView {
-    let backButton = UIButton().then {
-        $0.setImage(R.image.ic_back()?.withRenderingMode(.alwaysTemplate), for: .normal)
+    let closeButton = UIButton().then {
+        $0.setImage(R.image.ic_close_white(), for: .normal)
         $0.tintColor = .white
     }
     
@@ -60,7 +60,7 @@ final class SigninAnonymousView: BaseView {
     override func setup() {
         self.backgroundColor = UIColor(r: 28, g: 28, b: 28)
         self.addSubViews([
-            self.backButton,
+            self.closeButton,
             self.lottie,
             self.kakaoButton,
             self.kakaoImage,
@@ -73,8 +73,8 @@ final class SigninAnonymousView: BaseView {
     }
     
     override func bindConstraints() {
-        self.backButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
+        self.closeButton.snp.makeConstraints { make in
+            make.right.equalToSuperview().offset(-24)
             make.top.equalTo(self.safeAreaLayoutGuide).offset(13)
             make.width.equalTo(24)
             make.height.equalTo(24)

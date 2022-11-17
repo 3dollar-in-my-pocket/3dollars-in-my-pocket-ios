@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3BCC5E0521BC8C9F0EB79506 /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2150BCA4A1F1A8F0652699B1 /* Pods_3dollar_in_my_pocket.framework */; };
+		6E01277129266B65006B78DD /* SigninAnonymousReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01277029266B65006B78DD /* SigninAnonymousReactor.swift */; };
+		6E01277529267095006B78DD /* SigninAnonymousCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01277429267095006B78DD /* SigninAnonymousCoordinator.swift */; };
 		6E01AD1A23D094FF008BFCC0 /* HomeReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01AD1923D094FF008BFCC0 /* HomeReactor.swift */; };
 		6E07D44423B5906E0055AEE7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44323B5906E0055AEE7 /* HomeView.swift */; };
 		6E07D44623B590B30055AEE7 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44523B590B30055AEE7 /* HomeViewController.swift */; };
@@ -511,6 +513,8 @@
 		2150BCA4A1F1A8F0652699B1 /* Pods_3dollar_in_my_pocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4ECBEAC85F3CCBE26D668F75 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.release.xcconfig"; sourceTree = "<group>"; };
 		6C7D748F844F08727B81379C /* Pods_3dollar_in_my_pocketTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E01277029266B65006B78DD /* SigninAnonymousReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninAnonymousReactor.swift; sourceTree = "<group>"; };
+		6E01277429267095006B78DD /* SigninAnonymousCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninAnonymousCoordinator.swift; sourceTree = "<group>"; };
 		6E01AD1923D094FF008BFCC0 /* HomeReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeReactor.swift; sourceTree = "<group>"; };
 		6E07675728688E070078CE5B /* Base.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Base.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E07D44323B5906E0055AEE7 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -2337,6 +2341,8 @@
 			children = (
 				6EDDBBCA29253289000DD5F4 /* SigninAnonymousView.swift */,
 				6EDDBBCC292533E5000DD5F4 /* SigninAnonymousViewController.swift */,
+				6E01277029266B65006B78DD /* SigninAnonymousReactor.swift */,
+				6E01277429267095006B78DD /* SigninAnonymousCoordinator.swift */,
 			);
 			path = "signin-anonymous";
 			sourceTree = "<group>";
@@ -3097,6 +3103,7 @@
 				6E8C190627A8239B00FF5B4C /* PopupPosition.swift in Sources */,
 				6E89DCE928AA787300327829 /* StreetFoodListHeaderView.swift in Sources */,
 				6E4813EF28A9C8020083B122 /* StreetFoodListMapCell.swift in Sources */,
+				6E01277529267095006B78DD /* SigninAnonymousCoordinator.swift in Sources */,
 				6E9D64E025BD751B0075DE36 /* DeleteReason.swift in Sources */,
 				6EFBB8D328B5055E009E4FAF /* FoodTruckListSectionModel.swift in Sources */,
 				6ED6F1E925B51A0100357B80 /* MenuSection.swift in Sources */,
@@ -3175,6 +3182,7 @@
 				6ED516C62570AB2F00303105 /* SettingWithdrawalCell.swift in Sources */,
 				6EC0D67C26EB7EEF008AD34B /* StoresGroupByDistanceResponse.swift in Sources */,
 				6E447FF225E3DE2E00459551 /* CategoryFilterView.swift in Sources */,
+				6E01277129266B65006B78DD /* SigninAnonymousReactor.swift in Sources */,
 				6E74879E2723E8A30021DF93 /* RatingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

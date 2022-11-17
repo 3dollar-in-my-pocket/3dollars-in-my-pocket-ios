@@ -38,6 +38,16 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }
     
+    override func bindEvent() {
+        self.signinView.signinWithoutIdButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.showWarningAlert()
+            })
+            .disposed(by: self.eventDisposeBag)
+    }
+    
     func bind(reactor: SigninReactor) {
         // Bind Action
         self.signinView.kakaoButton.rx.tap
@@ -52,12 +62,6 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
           .map { _ in Reactor.Action.tapAppleButton }
           .bind(to: reactor.action)
           .disposed(by: self.disposeBag)
-        
-        self.signinView.signinWithoutIdButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapWithoutSignin }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
         
         // Bind State
         reactor.pulse(\.$goToMain)

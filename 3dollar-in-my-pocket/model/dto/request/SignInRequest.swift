@@ -1,8 +1,8 @@
-struct SigninRequest {
+struct SigninRequest: Requestable {
     let socialType: SocialType
     let token: String
     
-    var parameters: [String: Any] {
+    var params: [String : Any] {
         return [
             "socialType": self.socialType.value,
             "token": self.token

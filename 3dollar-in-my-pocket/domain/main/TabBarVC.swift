@@ -49,6 +49,7 @@ class TabBarVC: UITabBarController {
         self.feedbackGenerator.selectionChanged()
         switch item.tag {
         case TabBarTag.my.rawValue:
+            guard !UserDefaultsUtil().isAnonymousUser else { return }
             self.tabBar.barTintColor = R.color.gray100()
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()

@@ -1,0 +1,3 @@
+protocol SigninAnonymousCoordinator: BaseCoordinator, AnyObject {
+    
+}
