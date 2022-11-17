@@ -82,7 +82,7 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
         
         reactor.pulse(\.$showErrorAlert)
             .compactMap { $0 }
-            .asDriver(onErrorJustReturn: ())
+            .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in
                 self?.coordinator?.showErrorAlert(error: BaseError.unknown)
             })
