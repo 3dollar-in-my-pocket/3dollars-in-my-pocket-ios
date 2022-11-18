@@ -25,6 +25,7 @@ class TabBarVC: UITabBarController {
         self.setupTabBarController()
         self.addKakaoLinkObserver()
         self.feedbackGenerator.prepare()
+        self.delegate = self
         if #available(iOS 15, *) {
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
@@ -32,6 +33,10 @@ class TabBarVC: UITabBarController {
             self.tabBar.standardAppearance = appearance
             self.tabBar.scrollEdgeAppearance = appearance
         }
+        UITabBarItem.appearance().setTitleTextAttributes(
+            [.font: UIFont.bold(size: 10) as Any],
+            for: .normal
+        )
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -44,6 +49,7 @@ class TabBarVC: UITabBarController {
         self.feedbackGenerator.selectionChanged()
         switch item.tag {
         case TabBarTag.my.rawValue:
+            guard !UserDefaultsUtil().isAnonymousUser else { return }
             self.tabBar.barTintColor = R.color.gray100()
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()
@@ -106,6 +112,7 @@ class TabBarVC: UITabBarController {
         self.setViewControllers([
             HomeViewController.instance(),
             StreetFoodListViewController.instance(),
+            WriteAddressViewController.instance(delegate: self),
             FoodTruckListViewController.instance(),
             MyPageViewController.instance()
         ], animated: true)
@@ -183,5 +190,42 @@ class TabBarVC: UITabBarController {
                     }
                 })
             .disposed(by: self.disposeBag)
+    }
+}
+
+extension TabBarVC: WriteAddressDelegate {
+    func onWriteSuccess(storeId: Int) {
+        self.selectedIndex = 0
+        if let navigationViewController = self.viewControllers?[0] as? UINavigationController,
+           let homeViewController
+            = navigationViewController.viewControllers[0] as? HomeViewController {
+            navigationViewController.popToRootViewController(animated: false)
+            homeViewController.coordinator?.pushStoreDetail(storeId: String(storeId))
+        }
+    }
+}
+
+extension TabBarVC: UITabBarControllerDelegate {
+    func tabBarController(
+        _ tabBarController: UITabBarController,
+        shouldSelect viewController: UIViewController
+    ) -> Bool {
+        if let navigationViewController = viewController as? UINavigationController {
+            if navigationViewController.topViewController is WriteAddressViewController {
+                let writeVC = WriteAddressViewController.instance(delegate: self)
+                
+                self.present(writeVC, animated: true, completion: nil)
+                return false
+            }
+            
+            if navigationViewController.topViewController is MyPageViewController,
+               UserDefaultsUtil().isAnonymousUser {
+                let viewController = SigninAnonymousViewController.instance()
+                
+                self.present(viewController, animated: true)
+                return false
+            }
+        }
+        return true
     }
 }

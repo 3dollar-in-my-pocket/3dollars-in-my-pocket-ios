@@ -28,7 +28,7 @@ struct HTTPUtils {
   }
   
   static func defaultHeader() -> HTTPHeaders {
-    var headers = ["Authorization": UserDefaultsUtil().getUserToken()] as HTTPHeaders
+    var headers = ["Authorization": UserDefaultsUtil().authToken] as HTTPHeaders
     
     headers.add(self.defaultUserAgent)
     return headers
@@ -37,7 +37,7 @@ struct HTTPUtils {
   static func jsonWithTokenHeader() -> HTTPHeaders {
     var headers = [
       "Accept": "application/json",
-      "Authorization": UserDefaultsUtil().getUserToken()
+      "Authorization": UserDefaultsUtil().authToken
     ] as HTTPHeaders
     
     headers.add(self.defaultUserAgent)

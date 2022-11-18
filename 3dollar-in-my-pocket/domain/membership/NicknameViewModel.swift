@@ -16,7 +16,7 @@ class NicknameViewModel: BaseViewModel {
   let input = Input()
   let output = Output()
   let signinRequest: SigninRequest
-  let userDefaults: UserDefaultsUtil
+  var userDefaults: UserDefaultsUtil
   let userService: UserServiceProtocol
   
   
@@ -55,8 +55,8 @@ class NicknameViewModel: BaseViewModel {
       .subscribe(
         onNext: { [weak self] response in
           guard let self = self else { return }
-          self.userDefaults.setUserId(id: response.userId)
-          self.userDefaults.setUserToken(token: response.token)
+          self.userDefaults.userId = response.userId
+          self.userDefaults.authToken = response.token
           self.showLoading.accept(false)
           self.output.goToMain.accept(())
         },

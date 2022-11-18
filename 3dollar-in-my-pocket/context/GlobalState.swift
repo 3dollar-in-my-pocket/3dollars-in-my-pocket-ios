@@ -22,4 +22,7 @@ final class GlobalState {
     
     /// 길거리 음식점 리뷰를 남긴 경우
     let addStoreReview = PublishSubject<Review>()
+    
+    /// 가게 제보를 완료한 경우
+    let addStore = PublishSubject<Store>()
 }

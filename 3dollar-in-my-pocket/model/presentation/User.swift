@@ -9,7 +9,7 @@ struct User {
     init() {
         self.name = ""
         self.userId = -1
-        self.socialType = .KAKAO
+        self.socialType = .unknown
         self.activity = UserActivity()
         self.medal = Medal()
     }
@@ -17,7 +17,7 @@ struct User {
     init(response: UserInfoResponse) {
         self.name = response.name
         self.userId = response.userId
-        self.socialType = response.socialType
+        self.socialType = SocialType(value: response.socialType)
         self.activity = UserActivity()
         self.medal = Medal(response: response.medal)
     }

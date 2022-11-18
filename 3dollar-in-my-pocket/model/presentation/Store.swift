@@ -85,12 +85,12 @@ struct Store: StoreProtocol {
         self.visitHistory = VisitOverview()
     }
     
-    init() {
+    init(id: Int = 0) {
         self.appearanceDays = []
         self.categories = []
         self.isDeleted = false
         self.distance = 0
-        self.storeId = 0
+        self.storeId = id
         self.images = []
         self.latitude = 0
         self.longitude = 0

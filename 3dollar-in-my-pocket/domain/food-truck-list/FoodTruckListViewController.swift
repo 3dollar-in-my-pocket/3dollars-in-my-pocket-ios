@@ -22,7 +22,7 @@ final class FoodTruckListViewController: BaseViewController, View, FoodTruckList
     static func instance() -> UINavigationController {
         let viewController = FoodTruckListViewController(nibName: nil, bundle: nil).then {
             $0.tabBarItem = UITabBarItem(
-                title: nil,
+                title: R.string.localization.tab_food_truck(),
                 image: UIImage(named: "ic_food_truck"),
                 tag: TabBarTag.foodTruck.rawValue
             )

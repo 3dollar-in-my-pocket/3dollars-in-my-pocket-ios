@@ -28,6 +28,7 @@ final class HomeReactor: BaseReactor, Reactor {
     enum Mutation {
         case shownTooltip
         case setStoreType(StoreType)
+        case addStreetStore(Store)
         case setStoreCellTypes([StoreCellType])
         case setCategories([Categorizable])
         case setCurrentLocation(CLLocation)
@@ -428,7 +429,9 @@ final class HomeReactor: BaseReactor, Reactor {
         return .merge([
             mutation,
             self.globalState.updateStore
-                .map { .updateStore(store: $0) }
+                .map { .updateStore(store: $0) },
+            self.globalState.addStore
+                .map { .addStreetStore($0) }
         ])
     }
     
@@ -442,6 +445,11 @@ final class HomeReactor: BaseReactor, Reactor {
             
         case .setTooltipHidden(let isHidden):
             newState.isTooltipHidden = isHidden
+            
+        case .addStreetStore(let store):
+            if newState.storeType == .streetFood {
+                newState.storeCellTypes.insert(.store(store), at: 0)
+            }
             
         case .setStoreType(let storeType):
             newState.storeType = storeType

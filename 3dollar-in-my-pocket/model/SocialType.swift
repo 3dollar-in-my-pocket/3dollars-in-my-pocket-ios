@@ -1,5 +1,0 @@
-enum SocialType: String, Codable {
-    case KAKAO
-    case APPLE
-    case GOOGLE
-}
