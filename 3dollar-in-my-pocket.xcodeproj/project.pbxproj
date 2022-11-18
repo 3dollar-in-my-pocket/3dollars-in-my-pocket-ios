@@ -407,6 +407,8 @@
 		6ECCE9AB26BACF3F006B3C01 /* MenuRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECCE9AA26BACF3F006B3C01 /* MenuRequest.swift */; };
 		6ECCE9AD26BAD179006B3C01 /* AddStoreRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECCE9AC26BAD179006B3C01 /* AddStoreRequest.swift */; };
 		6ECCE9AF26BAD308006B3C01 /* Requestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECCE9AE26BAD308006B3C01 /* Requestable.swift */; };
+		6ED29693292726520007CAFE /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED29692292726520007CAFE /* Icon.swift */; };
+		6ED29698292758D50007CAFE /* PolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED29697292758D50007CAFE /* PolicyViewController.swift */; };
 		6ED37D8F23D5525D00E12711 /* MyPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */; };
 		6ED37D9123D58F1700E12711 /* RegisteredStoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED37D9023D58F1700E12711 /* RegisteredStoreViewModel.swift */; };
 		6ED516C62570AB2F00303105 /* SettingWithdrawalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED516C52570AB2F00303105 /* SettingWithdrawalCell.swift */; };
@@ -907,6 +909,8 @@
 		6ECCE9AC26BAD179006B3C01 /* AddStoreRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStoreRequest.swift; sourceTree = "<group>"; };
 		6ECCE9AE26BAD308006B3C01 /* Requestable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requestable.swift; sourceTree = "<group>"; };
 		6ECDCF3D28E4816E00407B07 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localization.strings; sourceTree = "<group>"; };
+		6ED29692292726520007CAFE /* Icon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
+		6ED29697292758D50007CAFE /* PolicyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyViewController.swift; sourceTree = "<group>"; };
 		6ED37D8E23D5525D00E12711 /* MyPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewModel.swift; sourceTree = "<group>"; };
 		6ED37D9023D58F1700E12711 /* RegisteredStoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreViewModel.swift; sourceTree = "<group>"; };
 		6ED516C52570AB2F00303105 /* SettingWithdrawalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingWithdrawalCell.swift; sourceTree = "<group>"; };
@@ -1077,6 +1081,7 @@
 		6E0EA39523ABB230008F7CB2 /* 3dollar-in-my-pocket */ = {
 			isa = PBXGroup;
 			children = (
+				6ED29690292726380007CAFE /* design-system */,
 				6E3493B72764BA770082B011 /* context */,
 				6EB8FB9F25988D3300C17B74 /* manager */,
 				6E62EED423AD1DE2007B7570 /* util */,
@@ -2295,6 +2300,22 @@
 			path = response;
 			sourceTree = "<group>";
 		};
+		6ED29690292726380007CAFE /* design-system */ = {
+			isa = PBXGroup;
+			children = (
+				6ED29691292726440007CAFE /* icon */,
+			);
+			path = "design-system";
+			sourceTree = "<group>";
+		};
+		6ED29691292726440007CAFE /* icon */ = {
+			isa = PBXGroup;
+			children = (
+				6ED29692292726520007CAFE /* Icon.swift */,
+			);
+			path = icon;
+			sourceTree = "<group>";
+		};
 		6ED79E0D25CFF10A00B3CFA9 /* modify-address */ = {
 			isa = PBXGroup;
 			children = (
@@ -2351,6 +2372,7 @@
 			isa = PBXGroup;
 			children = (
 				6EE4E3282917FB9A002D6110 /* PolicyView.swift */,
+				6ED29697292758D50007CAFE /* PolicyViewController.swift */,
 			);
 			path = policy;
 			sourceTree = "<group>";
@@ -3061,6 +3083,7 @@
 				6E6835BE23C2CEFB00D23F54 /* RegisteredStoreCell.swift in Sources */,
 				6E3E0B8F23C7078100E835AE /* ReviewModalView.swift in Sources */,
 				6E3AA4D625AD6C3C00D8C58C /* Land.swift in Sources */,
+				6ED29698292758D50007CAFE /* PolicyViewController.swift in Sources */,
 				6EBF4527276213CE00DC3BD2 /* VisitHistoryView.swift in Sources */,
 				6E81B84F25E123DC00748E02 /* PlaceDocument.swift in Sources */,
 				6E81B85125E1287500748E02 /* AddressCell.swift in Sources */,
@@ -3131,6 +3154,7 @@
 				6E53160F25DE9E38006C5CDC /* TabBarTag.swift in Sources */,
 				6E66040727BBA11A001EDF75 /* StreetFoodListAdvertisementCell.swift in Sources */,
 				6E12CF182573D67D003234D9 /* FAQHeaderView.swift in Sources */,
+				6ED29693292726520007CAFE /* Icon.swift in Sources */,
 				6E68683828ABCD3F003EE196 /* StreetFoodListSectionModel.swift in Sources */,
 				6E3AA4C325AD661800D8C58C /* MapService.swift in Sources */,
 				6EB46A5C2892BF390057B21A /* LoadingManager.swift in Sources */,
