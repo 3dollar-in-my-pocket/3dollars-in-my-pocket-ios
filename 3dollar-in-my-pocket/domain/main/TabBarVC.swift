@@ -49,6 +49,7 @@ class TabBarVC: UITabBarController {
         self.feedbackGenerator.selectionChanged()
         switch item.tag {
         case TabBarTag.my.rawValue:
+            guard !UserDefaultsUtil().isAnonymousUser else { return }
             self.tabBar.barTintColor = R.color.gray100()
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()
@@ -214,6 +215,14 @@ extension TabBarVC: UITabBarControllerDelegate {
                 let writeVC = WriteAddressViewController.instance(delegate: self)
                 
                 self.present(writeVC, animated: true, completion: nil)
+                return false
+            }
+            
+            if navigationViewController.topViewController is MyPageViewController,
+               UserDefaultsUtil().isAnonymousUser {
+                let viewController = SigninAnonymousViewController.instance()
+                
+                self.present(viewController, animated: true)
                 return false
             }
         }
