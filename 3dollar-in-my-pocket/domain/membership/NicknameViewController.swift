@@ -49,9 +49,11 @@ class NicknameViewController: BaseVC {
       .drive(self.nicknameView.rx.startButtonEnable)
       .disposed(by: self.disposeBag)
     
-    self.viewModel.output.goToMain
+    self.viewModel.output.presentPolicy
       .asDriver(onErrorJustReturn: ())
-      .drive(onNext: self.goToMain)
+      .drive(onNext: { [weak self] _ in
+          self?.presentPolicy()
+      })
       .disposed(by: self.disposeBag)
     
     self.viewModel.output.errorLabelHidden
@@ -106,4 +108,10 @@ class NicknameViewController: BaseVC {
       sceneDelegate.goToMain()
     }
   }
+    
+    private func presentPolicy() {
+        let viewController = PolicyViewController.instance()
+        
+        self.present(viewController, animated: true)
+    }
 }

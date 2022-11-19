@@ -12,8 +12,6 @@ final class PolicyReactor: Reactor {
         case toggleAll
         case togglePolicy
         case toggleMarketing
-        case pushPolicy
-        case pushMarketing
         case dismissAndGoHome
         case showLoading(Bool)
         case showErrorAlert(Error)
@@ -25,17 +23,17 @@ final class PolicyReactor: Reactor {
         var isCheckedMarketing: Bool
         var isEnableNextButton: Bool
         @Pulse var showErrorAlert: Error?
-        @Pulse var pushPolicy: Void?
-        @Pulse var pushMarketing: Void?
         @Pulse var isShowLoading: Bool?
         @Pulse var dismissAndGoHome: Void?
     }
     
     let initialState: State
     private let deviceService: DeviceServiceProtocol
+    private let analyticsManager: AnalyticsManagerProtocol
     
     init(
         deviceService: DeviceServiceProtocol,
+        analyticsManager: AnalyticsManagerProtocol,
         state: State = State(
             isCheckedAll: false,
             isCheckedPolicy: false,
@@ -45,6 +43,7 @@ final class PolicyReactor: Reactor {
     ) {
         self.initialState = state
         self.deviceService = deviceService
+        self.analyticsManager = analyticsManager
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
@@ -84,12 +83,6 @@ final class PolicyReactor: Reactor {
         case .toggleMarketing:
             newState.isCheckedMarketing.toggle()
             
-        case .pushPolicy:
-            newState.pushPolicy = ()
-            
-        case .pushMarketing:
-            newState.pushMarketing = ()
-            
         case .dismissAndGoHome:
             newState.dismissAndGoHome = ()
             
@@ -113,6 +106,9 @@ final class PolicyReactor: Reactor {
                     pushSettings: isMarketingOn ? [.advertisement] : [],
                     pushToken: pushToken
                 )
+                .do(onNext: { _ in
+                    self.analyticsManager.setPushEnable(isEnable: isMarketingOn)
+                })
             }
             .map { _ in .dismissAndGoHome }
             .catch {. just(.showErrorAlert($0)) }

@@ -1,6 +1,8 @@
 import UIKit
 
 final class PolicyView: BaseView {
+    let backgroundButton = UIButton()
+    
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 30
         $0.backgroundColor = R.color.gray80()
@@ -30,7 +32,7 @@ final class PolicyView: BaseView {
         $0.setTitleColor(R.color.gray5(), for: .normal)
     }
     
-    private let policyButton = UIButton().then {
+    let policyButton = UIButton().then {
         $0.setImage(R.image.ic_fwd(), for: .normal)
     }
     
@@ -44,7 +46,7 @@ final class PolicyView: BaseView {
         $0.setTitleColor(R.color.gray5(), for: .normal)
     }
     
-    private let marketingButton = UIButton().then {
+    let marketingButton = UIButton().then {
         $0.setImage(R.image.ic_fwd(), for: .normal)
     }
     
@@ -60,6 +62,7 @@ final class PolicyView: BaseView {
     
     override func setup() {
         self.addSubViews([
+            self.backgroundButton,
             self.containerView,
             self.allCheckButton,
             self.dividerView,
@@ -72,6 +75,13 @@ final class PolicyView: BaseView {
     }
     
     override func bindConstraints() {
+        self.backgroundButton.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.top.equalToSuperview()
+            make.right.equalToSuperview()
+            make.bottom.equalTo(self.containerView.snp.top)
+        }
+        
         self.containerView.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(16)
             make.right.equalToSuperview().offset(-16)

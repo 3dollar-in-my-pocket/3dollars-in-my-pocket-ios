@@ -2,11 +2,13 @@ import FirebaseAnalytics
 
 typealias GA = GAManager
 
-protocol GAManagerProtocol {
+protocol AnalyticsManagerProtocol {
     func logEvent(event: GAEvent, page: GAPage)
+    
+    func setPushEnable(isEnable: Bool)
 }
 
-final class GAManager: GAManagerProtocol {
+final class GAManager: AnalyticsManagerProtocol {
     static let shared = GAManager()
     
     func logEvent(event: GAEvent, page: GAPage) {
@@ -23,5 +25,9 @@ final class GAManager: GAManagerProtocol {
         default:
             Analytics.logEvent(event.name, parameters: ["referral": page.rawValue])
         }
+    }
+    
+    func setPushEnable(isEnable: Bool) {
+        Analytics.setUserProperty("\(isEnable)", forName: "isPushEnable")
     }
 }

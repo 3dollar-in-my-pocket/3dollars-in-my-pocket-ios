@@ -5,7 +5,10 @@ import ReactorKit
 
 final class PolicyViewController: BaseViewController, View, PolicyCoordinator {
     private let policyView = PolicyView()
-    private let policyReactor = PolicyReactor(deviceService: DeviceService())
+    private let policyReactor = PolicyReactor(
+        deviceService: DeviceService(),
+        analyticsManager: GA.shared
+    )
     private weak var coordinator: PolicyCoordinator?
     
     static func instance() -> PolicyViewController {
@@ -21,8 +24,37 @@ final class PolicyViewController: BaseViewController, View, PolicyCoordinator {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if let parentView = self.presentingViewController?.view {
+            DimManager.shared.showDim(targetView: parentView)
+        }
         self.coordinator = self
         self.reactor = self.policyReactor
+    }
+    
+    override func bindEvent() {
+        self.policyView.backgroundButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.dismiss()
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.policyView.policyButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.pushPolicyPage()
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.policyView.marketingButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.pushMarketingPage()
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: PolicyReactor) {
@@ -82,22 +114,6 @@ final class PolicyViewController: BaseViewController, View, PolicyCoordinator {
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in
                 self?.coordinator?.showErrorAlert(error: error)
-            })
-            .disposed(by: self.disposeBag)
-        
-        reactor.pulse(\.$pushPolicy)
-            .compactMap { $0 }
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.pushPolicyPage()
-            })
-            .disposed(by: self.disposeBag)
-        
-        reactor.pulse(\.$pushMarketing)
-            .compactMap { $0 }
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.pushMarketingPage()
             })
             .disposed(by: self.disposeBag)
         
