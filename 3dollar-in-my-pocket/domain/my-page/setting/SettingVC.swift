@@ -70,11 +70,7 @@ class SettingVC: BaseVC {
       .bind(onNext: self.popVC)
       .disposed(by: disposeBag)
     
-    self.settingView.nicknameModifyLabelButton.rx.tap
-      .bind(to: self.viewModel.input.tapRename)
-      .disposed(by: disposeBag)
-    
-    self.settingView.nicknameModifyButton.rx.tap
+    self.settingView.editNicknameButton.rx.tap
       .bind(to: self.viewModel.input.tapRename)
       .disposed(by: disposeBag)
   }

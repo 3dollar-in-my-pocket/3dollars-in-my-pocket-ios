@@ -1295,6 +1295,16 @@
 			path = utils;
 			sourceTree = "<group>";
 		};
+		6E391BF12928BC2200FBC210 /* subview */ = {
+			isa = PBXGroup;
+			children = (
+				6E681E4A256FEDA600892B9E /* SettingMenuCell.swift */,
+				6E681E4F256FF04E00892B9E /* SettingAccountCell.swift */,
+				6ED516C52570AB2F00303105 /* SettingWithdrawalCell.swift */,
+			);
+			path = subview;
+			sourceTree = "<group>";
+		};
 		6E3AA4C725AD6BB100D8C58C /* map */ = {
 			isa = PBXGroup;
 			children = (
@@ -1612,15 +1622,13 @@
 		6E681E23256FDD1A00892B9E /* setting */ = {
 			isa = PBXGroup;
 			children = (
+				6E391BF12928BC2200FBC210 /* subview */,
 				6E6835B523C2C3CD00D23F54 /* rename */,
 				6E5938FE2573E2AA00593DC8 /* privacy */,
 				6E511E6125710CE2009E4667 /* question */,
 				6E681E24256FDD3500892B9E /* SettingVIew.swift */,
 				6E681E45256FE42D00892B9E /* SettingVC.swift */,
-				6E681E4A256FEDA600892B9E /* SettingMenuCell.swift */,
-				6E681E4F256FF04E00892B9E /* SettingAccountCell.swift */,
 				6E681E54256FF98000892B9E /* SettingViewModel.swift */,
-				6ED516C52570AB2F00303105 /* SettingWithdrawalCell.swift */,
 			);
 			path = setting;
 			sourceTree = "<group>";
