@@ -12,7 +12,6 @@ final class PolicyReactor: Reactor {
         case toggleAll
         case togglePolicy
         case toggleMarketing
-        case setIsEnableNextButton(Bool)
         case pushPolicy
         case pushMarketing
         case dismissAndGoHome
@@ -68,15 +67,54 @@ final class PolicyReactor: Reactor {
         }
     }
     
+    func reduce(state: State, mutation: Mutation) -> State {
+        var newState = state
+        
+        switch mutation {
+        case .toggleAll:
+            newState.isCheckedAll.toggle()
+            newState.isCheckedPolicy = newState.isCheckedAll
+            newState.isCheckedMarketing = newState.isCheckedAll
+            newState.isEnableNextButton = newState.isCheckedPolicy
+            
+        case .togglePolicy:
+            newState.isCheckedPolicy.toggle()
+            newState.isEnableNextButton = newState.isCheckedPolicy
+            
+        case .toggleMarketing:
+            newState.isCheckedMarketing.toggle()
+            
+        case .pushPolicy:
+            newState.pushPolicy = ()
+            
+        case .pushMarketing:
+            newState.pushMarketing = ()
+            
+        case .dismissAndGoHome:
+            newState.dismissAndGoHome = ()
+            
+        case .showLoading(let isShow):
+            newState.isShowLoading = isShow
+            
+        case .showErrorAlert(let error):
+            newState.showErrorAlert = error
+        }
+        
+        return newState
+    }
+    
     private func registerPush(isMarketingOn: Bool) -> Observable<Mutation> {
         return self.deviceService.getFCMToken()
-            .flatMap { [weak self] token -> Observable<Mutation> in
+            .flatMap { [weak self] pushToken -> Observable<String> in
                 guard let self = self else { return .error(BaseError.unknown) }
+                
+                return self.deviceService.registerDevice(
+                    pushPlatformType: .fcm,
+                    pushSettings: isMarketingOn ? [.advertisement] : [],
+                    pushToken: pushToken
+                )
             }
-        
-        return self.deviceService.registerDevice(
-            pushPlatformType: .fcm,
-            pushSettings: isMarketingOn ? [.advertisement] : [],
-            pushToken: <#T##String#>)
+            .map { _ in .dismissAndGoHome }
+            .catch {. just(.showErrorAlert($0)) }
     }
 }

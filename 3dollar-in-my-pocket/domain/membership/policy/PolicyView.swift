@@ -6,7 +6,7 @@ final class PolicyView: BaseView {
         $0.backgroundColor = R.color.gray80()
     }
     
-    private let allCheckButton = UIButton().then {
+    let allCheckButton = UIButton().then {
         $0.setImage(Icon.Check.generate(isOn: true, style: .solid), for: .selected)
         $0.setImage(Icon.Check.generate(isOn: false, style: .solid), for: .normal)
         $0.setTitle(R.string.localization.policy_agree_all(), for: .normal)
@@ -20,7 +20,7 @@ final class PolicyView: BaseView {
         $0.backgroundColor = R.color.gray70()
     }
     
-    private let policyCheckButton = UIButton().then {
+    let policyCheckButton = UIButton().then {
         $0.setImage(Icon.Check.generate(isOn: true, style: .line), for: .selected)
         $0.setImage(Icon.Check.generate(isOn: false, style: .line), for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
@@ -34,7 +34,7 @@ final class PolicyView: BaseView {
         $0.setImage(R.image.ic_fwd(), for: .normal)
     }
     
-    private let marketingCheckButton = UIButton().then {
+    let marketingCheckButton = UIButton().then {
         $0.setImage(Icon.Check.generate(isOn: true, style: .line), for: .selected)
         $0.setImage(Icon.Check.generate(isOn: false, style: .line), for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
@@ -48,7 +48,7 @@ final class PolicyView: BaseView {
         $0.setImage(R.image.ic_fwd(), for: .normal)
     }
     
-    private let nextButton = UIButton().then {
+    let nextButton = UIButton().then {
         $0.setBackgroundColor(R.color.red() ?? .red, for: .normal)
         $0.setBackgroundColor(R.color.gray20() ?? .gray, for: .disabled)
         $0.isEnabled = false
