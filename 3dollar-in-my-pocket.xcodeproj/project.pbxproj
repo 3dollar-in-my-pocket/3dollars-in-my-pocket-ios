@@ -91,6 +91,9 @@
 		6E38402D26A6977D0047B2D8 /* VersionUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E38402C26A6977D0047B2D8 /* VersionUtilsTests.swift */; };
 		6E38402F26A6A7CC0047B2D8 /* RemoteConfigServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E38402E26A6A7CC0047B2D8 /* RemoteConfigServiceMock.swift */; };
 		6E391BF02928A79A00FBC210 /* PolicyCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E391BEF2928A79A00FBC210 /* PolicyCoordinator.swift */; };
+		6E391BF32928C5DD00FBC210 /* DeviceInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E391BF22928C5DD00FBC210 /* DeviceInfoResponse.swift */; };
+		6E391BF52928C70A00FBC210 /* PushInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E391BF42928C70A00FBC210 /* PushInfo.swift */; };
+		6E391BF72928CC9200FBC210 /* UpdateUserDeviceTokenRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E391BF62928CC9200FBC210 /* UpdateUserDeviceTokenRequest.swift */; };
 		6E3960F025F0AF3C004D4644 /* UILabelExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3960EF25F0AF3C004D4644 /* UILabelExtension.swift */; };
 		6E3AA4C325AD661800D8C58C /* MapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3AA4C225AD661800D8C58C /* MapService.swift */; };
 		6E3AA4C925AD6BBE00D8C58C /* NaverMapResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3AA4C825AD6BBE00D8C58C /* NaverMapResponse.swift */; };
@@ -255,7 +258,7 @@
 		6E681E46256FE42D00892B9E /* SettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E681E45256FE42D00892B9E /* SettingVC.swift */; };
 		6E681E4B256FEDA600892B9E /* SettingMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E681E4A256FEDA600892B9E /* SettingMenuCell.swift */; };
 		6E681E50256FF04E00892B9E /* SettingAccountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E681E4F256FF04E00892B9E /* SettingAccountCell.swift */; };
-		6E681E55256FF98000892B9E /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E681E54256FF98000892B9E /* SettingViewModel.swift */; };
+		6E681E55256FF98000892B9E /* SettingReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E681E54256FF98000892B9E /* SettingReactor.swift */; };
 		6E6835B723C2C3DE00D23F54 /* RenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835B623C2C3DE00D23F54 /* RenameView.swift */; };
 		6E6835B923C2C89400D23F54 /* RenameVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835B823C2C89400D23F54 /* RenameVC.swift */; };
 		6E6835BC23C2CC0800D23F54 /* RegisteredStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835BB23C2CC0800D23F54 /* RegisteredStoreView.swift */; };
@@ -604,6 +607,9 @@
 		6E38402C26A6977D0047B2D8 /* VersionUtilsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionUtilsTests.swift; sourceTree = "<group>"; };
 		6E38402E26A6A7CC0047B2D8 /* RemoteConfigServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigServiceMock.swift; sourceTree = "<group>"; };
 		6E391BEF2928A79A00FBC210 /* PolicyCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyCoordinator.swift; sourceTree = "<group>"; };
+		6E391BF22928C5DD00FBC210 /* DeviceInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoResponse.swift; sourceTree = "<group>"; };
+		6E391BF42928C70A00FBC210 /* PushInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushInfo.swift; sourceTree = "<group>"; };
+		6E391BF62928CC9200FBC210 /* UpdateUserDeviceTokenRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateUserDeviceTokenRequest.swift; sourceTree = "<group>"; };
 		6E3960EF25F0AF3C004D4644 /* UILabelExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelExtension.swift; sourceTree = "<group>"; };
 		6E3AA4C225AD661800D8C58C /* MapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapService.swift; sourceTree = "<group>"; };
 		6E3AA4C825AD6BBE00D8C58C /* NaverMapResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaverMapResponse.swift; sourceTree = "<group>"; };
@@ -760,7 +766,7 @@
 		6E681E45256FE42D00892B9E /* SettingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingVC.swift; sourceTree = "<group>"; };
 		6E681E4A256FEDA600892B9E /* SettingMenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingMenuCell.swift; sourceTree = "<group>"; };
 		6E681E4F256FF04E00892B9E /* SettingAccountCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingAccountCell.swift; sourceTree = "<group>"; };
-		6E681E54256FF98000892B9E /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
+		6E681E54256FF98000892B9E /* SettingReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingReactor.swift; sourceTree = "<group>"; };
 		6E6835B623C2C3DE00D23F54 /* RenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameView.swift; sourceTree = "<group>"; };
 		6E6835B823C2C89400D23F54 /* RenameVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameVC.swift; sourceTree = "<group>"; };
 		6E6835BB23C2CC0800D23F54 /* RegisteredStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreView.swift; sourceTree = "<group>"; };
@@ -1628,7 +1634,7 @@
 				6E511E6125710CE2009E4667 /* question */,
 				6E681E24256FDD3500892B9E /* SettingVIew.swift */,
 				6E681E45256FE42D00892B9E /* SettingVC.swift */,
-				6E681E54256FF98000892B9E /* SettingViewModel.swift */,
+				6E681E54256FF98000892B9E /* SettingReactor.swift */,
 			);
 			path = setting;
 			sourceTree = "<group>";
@@ -1909,6 +1915,7 @@
 				6E97041828E91727000FF67B /* StreetFoodStoreDetailSection.swift */,
 				6E766BD72928791A00033BC8 /* PushPlatformType.swift */,
 				6E766BD92928795E00033BC8 /* PushSettingType.swift */,
+				6E391BF42928C70A00FBC210 /* PushInfo.swift */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -2320,6 +2327,8 @@
 				6E4C1BE92753A932006C0F15 /* VisitHistoryWithStoreResponse.swift */,
 				6E4697D0273E36C7005A5902 /* VisitHistoryWithUserResponse.swift */,
 				6E4952C226B0349100D65042 /* SigninResponse.swift */,
+				6E391BF22928C5DD00FBC210 /* DeviceInfoResponse.swift */,
+				6E391BF62928CC9200FBC210 /* UpdateUserDeviceTokenRequest.swift */,
 			);
 			path = response;
 			sourceTree = "<group>";
@@ -2878,7 +2887,7 @@
 				6E81B84925E1214A00748E02 /* Meta.swift in Sources */,
 				6E681E50256FF04E00892B9E /* SettingAccountCell.swift in Sources */,
 				6E81B83E25E0E22F00748E02 /* SearchAddressView.swift in Sources */,
-				6E681E55256FF98000892B9E /* SettingViewModel.swift in Sources */,
+				6E681E55256FF98000892B9E /* SettingReactor.swift in Sources */,
 				6E09470526F4C5DE000D4858 /* ChangeNicknameError.swift in Sources */,
 				6EB7FA6A23B658B000BFB0B4 /* StreetFoodListStoreCell.swift in Sources */,
 				6E479B6926EA594500566384 /* UpdateReviewRequest.swift in Sources */,
@@ -2907,6 +2916,7 @@
 				6EDAC5E326D7DC1500979252 /* MyPageCoordinator.swift in Sources */,
 				6EFBB8CF28B50280009E4FAF /* FoodTruckListReactor.swift in Sources */,
 				6E6F35A325AC7990007931EC /* WriteAddressView.swift in Sources */,
+				6E391BF32928C5DD00FBC210 /* DeviceInfoResponse.swift in Sources */,
 				6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */,
 				6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */,
 				6E903BB5288CDC82002E43C9 /* BaseCoordinator.swift in Sources */,
@@ -3047,6 +3057,7 @@
 				6E4CB53028858FD2007D96A7 /* NetworkManager.swift in Sources */,
 				6E6B0EE423AD1836006E11CE /* SigninView.swift in Sources */,
 				6E7BF08625B7D82F00456D0B /* StreetFoodStoreType.swift in Sources */,
+				6E391BF72928CC9200FBC210 /* UpdateUserDeviceTokenRequest.swift in Sources */,
 				6EF63FB4276185BE0063A3B9 /* MyReviewCoordinator.swift in Sources */,
 				6ED79E0F25CFF11A00B3CFA9 /* ModifyAddressView.swift in Sources */,
 				6E3E925328DECB4500509A51 /* StoreDetailHeaderView.swift in Sources */,
@@ -3205,6 +3216,7 @@
 				6EF63FBF2761B3690063A3B9 /* MyVisitHistoryCoordinator.swift in Sources */,
 				6E3960F025F0AF3C004D4644 /* UILabelExtension.swift in Sources */,
 				6E6B0EDE23AD16F1006E11CE /* BaseVC.swift in Sources */,
+				6E391BF52928C70A00FBC210 /* PushInfo.swift in Sources */,
 				6E81B84B25E121FD00748E02 /* RoadAddress.swift in Sources */,
 				6E4952C126B033E100D65042 /* ResponseContainer.swift in Sources */,
 				6E79BAA525B07CF600A70408 /* WriteCategoryCell.swift in Sources */,
@@ -3476,7 +3488,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				URL_MARKETING = "https://massive-iguana-121.notion.site/3-ce03bfb025df48be99c858f0ebbaeee6";
 				URL_POLICY = "https://massive-iguana-121.notion.site/3-37f521af4ac842ccba75a4fb590c506d";
 			};
 			name = Debug;
@@ -3521,7 +3532,6 @@
 				PRODUCT_NAME = "dollar-in-my-pocket";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				URL_MARKETING = "https://massive-iguana-121.notion.site/3-ce03bfb025df48be99c858f0ebbaeee6";
 				URL_POLICY = "https://massive-iguana-121.notion.site/3-37f521af4ac842ccba75a4fb590c506d";
 			};
 			name = Release;

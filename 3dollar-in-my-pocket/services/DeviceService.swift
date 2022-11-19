@@ -8,6 +8,13 @@ protocol DeviceServiceProtocol {
         pushToken: String
     ) -> Observable<String>
     
+    func deleteDevice() -> Observable<Void>
+    
+    func refreshDeivce(
+        pushPlatformType: PushPlatformType,
+        pushToken: String
+    ) -> Observable<String>
+    
     func getFCMToken() -> Observable<String>
 }
 
@@ -32,6 +39,35 @@ struct DeviceService: DeviceServiceProtocol {
             urlString: urlString,
             headers: headers,
             parameters: registerUserDeviceRequest.params
+        )
+    }
+    
+    func deleteDevice() -> Observable<Void> {
+        let urlString = HTTPUtils.url + "/api/v1/device"
+        let headers = HTTPUtils.defaultHeader()
+        
+        return self.networkManager.createDeleteObservable(
+            urlString: urlString,
+            headers: headers
+        )
+    }
+    
+    func refreshDeivce(
+        pushPlatformType: PushPlatformType,
+        pushToken: String
+    ) -> Observable<String> {
+        let urlString = HTTPUtils.url + "/api/v1/device"
+        let headers = HTTPUtils.defaultHeader()
+        let updateUserDeviceTokenRequest = UpdateUserDeviceTokenRequest(
+            pushPlatformType: pushPlatformType,
+            pushToken: pushToken
+        )
+        
+        return self.networkManager.createPutObservable(
+            class: String.self,
+            urlString: urlString,
+            headers: headers,
+            parameters: updateUserDeviceTokenRequest.params
         )
     }
     

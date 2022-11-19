@@ -8,8 +8,4 @@ extension Bundle {
     static var policyURL: String {
         return Bundle.main.infoDictionary?["URL_POLICY"] as? String ?? ""
     }
-    
-    static var marketingURL: String {
-        return Bundle.main.infoDictionary?["URL_MARKETING"] as? String ?? ""
-    }
 }

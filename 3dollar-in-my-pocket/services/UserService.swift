@@ -14,7 +14,10 @@ protocol UserServiceProtocol {
     
     func changeNickname(name: String) -> Observable<Void>
     
+    @available(*, deprecated, message: "func fetchUser() -> Observable<User>를 사용해주세요.")
     func fetchUserInfo() -> Observable<UserInfoResponse>
+    
+    func fetchUser() -> Observable<User>
     
     func fetchUserActivity() -> Observable<UserWithActivityResponse>
 }
@@ -176,6 +179,18 @@ struct UserService: UserServiceProtocol {
             }
             return Disposables.create()
         }
+    }
+    
+    func fetchUser() -> Observable<User> {
+        let urlString = HTTPUtils.url + "/api/v2/user/me"
+        let headders = HTTPUtils.defaultHeader()
+        
+        return self.networkManager.createGetObservable(
+            class: UserInfoResponse.self,
+            urlString: urlString,
+            headers: headders
+        )
+        .map(User.init(response:))
     }
     
     func fetchUserActivity() -> Observable<UserWithActivityResponse> {

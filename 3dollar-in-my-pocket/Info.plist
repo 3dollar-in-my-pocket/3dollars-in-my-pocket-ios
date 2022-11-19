@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>URL_MARKETING</key>
-	<string>$(URL_MARKETING)</string>
 	<key>URL_POLICY</key>
 	<string>$(URL_POLICY)</string>
 	<key>ADMOB_UNIT_ID</key>

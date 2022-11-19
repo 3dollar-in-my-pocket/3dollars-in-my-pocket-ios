@@ -4,6 +4,7 @@ struct User {
     let socialType: SocialType
     let activity: UserActivity
     var medal: Medal
+    let pushInfo: PushInfo
     
     
     init() {
@@ -12,6 +13,7 @@ struct User {
         self.socialType = .unknown
         self.activity = UserActivity()
         self.medal = Medal()
+        self.pushInfo = PushInfo()
     }
     
     init(response: UserInfoResponse) {
@@ -20,6 +22,7 @@ struct User {
         self.socialType = SocialType(value: response.socialType)
         self.activity = UserActivity()
         self.medal = Medal(response: response.medal)
+        self.pushInfo = PushInfo(response: response.device)
     }
     
     init(response: UserWithActivityResponse) {
@@ -28,5 +31,6 @@ struct User {
         self.socialType = response.socialType
         self.activity = UserActivity(response: response.activity)
         self.medal = Medal(response: response.medal)
+        self.pushInfo = PushInfo()
     }
 }
