@@ -100,6 +100,9 @@ final class PolicyReactor: Reactor {
         return self.userService.changeMarketingConsent(
             marketingConsentType: isMarketingOn ? .approve : .deny
         )
+        .do(onNext: { [weak self] _ in
+            self?.analyticsManager.setPushEnable(isEnable: isMarketingOn)
+        })
         .map { _ in .dismiss }
         .catch {. just(.showErrorAlert($0)) }
     }

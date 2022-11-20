@@ -142,8 +142,8 @@ final class SettingReactor: BaseReactor, Reactor {
                     pushPlatformType: .fcm,
                     pushToken: pushToken
                 )
-                .do(onNext: { _ in
-                    self.analyticsManager.setPushEnable(isEnable: true)
+                .do(onNext: { [weak self] _ in
+                    self?.analyticsManager.setPushEnable(isEnable: true)
                 })
             }
             .map { _ in .setPushEnable(true) }
@@ -152,6 +152,9 @@ final class SettingReactor: BaseReactor, Reactor {
     
     private func setDisablePush() -> Observable<Mutation> {
         return self.deviceService.deleteDevice()
+            .do(onNext: { [weak self] _ in
+                self?.analyticsManager.setPushEnable(isEnable: false)
+            })
             .map { .setPushEnable(false) }
             .catch { .just(.showErrorAlert($0)) }
     }
