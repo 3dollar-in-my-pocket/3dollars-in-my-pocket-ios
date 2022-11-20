@@ -9,14 +9,15 @@ final class SettingReactor: BaseReactor, Reactor {
         case viewDidLoad
         case togglePushEnable(Bool)
         case tapEditNickname
+        case logout
         case signout
-        case withdrawal
     }
     
     enum Mutation {
         case setUser(User)
         case setPushEnable(Bool)
         case pushEditNickname(String)
+        case goToSignin
         case showLoading(isShow: Bool)
         case showErrorAlert(Error)
     }
@@ -34,31 +35,24 @@ final class SettingReactor: BaseReactor, Reactor {
     private let userService: UserServiceProtocol
     private let deviceService: DeviceServiceProtocol
     private let analyticsManager: AnalyticsManagerProtocol
-    
-//  struct Input {
-//    let signOut = PublishSubject<Void>()
-//    let tapRename = PublishSubject<Void>()
-//    let withdrawal = PublishSubject<Void>()
-//  }
-//
-//  struct Output {
-//    let user = BehaviorRelay<User>(value: User())
-//    let goToRename = PublishRelay<String>()
-//    let goToSignIn = PublishRelay<Void>()
-//    let showLoading = PublishRelay<Bool>()
-//  }
+    private let kakaoSigninManager: SigninManagerProtocol
+    private let appleSigninManager: SigninManagerProtocol
   
     init(
         userDefaults: UserDefaultsUtil,
         userService: UserServiceProtocol,
         deviceService: DeviceServiceProtocol,
         analyticsManager: AnalyticsManagerProtocol,
+        kakaoSigninManager: SigninManagerProtocol,
+        appleSigninManager: SigninManagerProtocol,
         state: State = State(user: User())
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
         self.deviceService = deviceService
         self.analyticsManager = analyticsManager
+        self.kakaoSigninManager = kakaoSigninManager
+        self.appleSigninManager = appleSigninManager
         self.initialState = state
         
         super.init()
@@ -85,34 +79,53 @@ final class SettingReactor: BaseReactor, Reactor {
             
             return .just(.pushEditNickname(nickname))
             
+        case .logout:
+            let socialType = self.currentState.user.socialType
+            
+            return .concat([
+                .just(.showLoading(isShow: true)),
+                self.logout(socialType: socialType),
+                .just(.showLoading(isShow: false))
+            ])
+            
         case .signout:
-        case .withdrawal:
+            let socialType = self.currentState.user.socialType
+            
+            return .concat([
+                .just(.showLoading(isShow: true)),
+                self.signout(socialType: socialType),
+                .just(.showLoading(isShow: false))
+            ])
         }
     }
-//        self.input.signOut
-//            .withLatestFrom(self.output.user)
-//            .do(onNext: { _ in
-//                GA.shared.logEvent(event: .logout_button_clicked, page: .setting_page)
-//            })
-//                .bind(onNext: self.signOut(user:))
-//                .disposed(by: disposeBag)
-//
-//                self.input.tapRename
-//                .withLatestFrom(self.output.user) { $1.name }
-//                .do(onNext: { _ in
-//                    GA.shared.logEvent(event: .nickname_change_page_button_clicked, page: .setting_page)
-//                })
-//                    .bind(to: self.output.goToRename)
-//                    .disposed(by: disposeBag)
-//
-//                    self.input.withdrawal
-//                    .withLatestFrom(self.output.user)
-//                    .do(onNext: { _ in
-//                        GA.shared.logEvent(event: .signout_button_clicked, page: .setting_page)
-//                    })
-//                        .bind(onNext: self.withdrawal(user:))
-//                        .disposed(by: disposeBag)
-//                        }
+    
+    // TODO: 닉네임 변경 시 GlobalState 적용 필요
+    
+    func reduce(state: State, mutation: Mutation) -> State {
+        var newState = state
+        
+        switch mutation {
+        case .setUser(let user):
+            newState.user = user
+            
+        case .setPushEnable(let isEnable):
+            newState.user.pushInfo.isPushEnable = isEnable
+            
+        case .pushEditNickname(let nickname):
+            newState.pushEditNickname = nickname
+            
+        case .goToSignin:
+            newState.goToSignin = ()
+            
+        case .showLoading(let isShow):
+            newState.showLoading = isShow
+            
+        case .showErrorAlert(let error):
+            newState.showErrorAlert = error
+        }
+        
+        return newState
+    }
     
     private func fetchMyInfo() -> Observable<Mutation> {
         return self.userService.fetchUser()
@@ -143,98 +156,62 @@ final class SettingReactor: BaseReactor, Reactor {
             .map { .setPushEnable(false) }
             .catch { .just(.showErrorAlert($0)) }
     }
-  
-    private func signOut(user: User) {
-        switch user.socialType {
+    
+    private func logout(socialType: SocialType) -> Observable<Mutation> {
+        switch socialType {
         case .kakao:
-            self.signOutKakao()
+            return self.kakaoSigninManager.logout()
+                .do(onNext: { [weak self] _ in
+                    self?.userDefaults.clear()
+                })
+                .map { .goToSignin }
+                .catch { .just(.showErrorAlert($0)) }
+            
         case .apple:
-            self.signOutApple()
+            return self.appleSigninManager.logout()
+                .do(onNext: { [weak self] _ in
+                    self?.userDefaults.clear()
+                })
+                .map { .goToSignin }
+                .catch { .just(.showErrorAlert($0)) }
+            
         default:
-            break
+            return .empty()
+        }
+    }
+    
+    private func signout(socialType: SocialType) -> Observable<Mutation> {
+        switch socialType {
+        case .kakao:
+            return self.kakaoSigninManager.signout()
+                .flatMap { [weak self] _ -> Observable<Void> in
+                    guard let self = self else { return .error(BaseError.unknown) }
+                    
+                    return self.signout()
+                }
+                .map { .goToSignin }
+                .catch { .just(.showErrorAlert($0)) }
+                
+            
+        case .apple:
+            return self.appleSigninManager.signout()
+                .flatMap { [weak self] _ -> Observable<Void> in
+                    guard let self = self else { return .error(BaseError.unknown) }
+                    
+                    return self.signout()
+                }
+                .map { .goToSignin }
+                .catch { .just(.showErrorAlert($0)) }
+            
+        default:
+            return .empty()
         }
     }
   
-  private func withdrawal(user: User) {
-    switch user.socialType {
-    case .kakao:
-      self.unlinkKakao()
-    case .apple:
-      self.withdrawal()
-    default:
-      break
+    private func signout() -> Observable<Void> {
+        return self.userService.signout()
+            .do(onNext: {
+                self.userDefaults.clear()
+            })
     }
-  }
-  
-  private func withdrawal() {
-    self.output.showLoading.accept(true)
-    self.userService.withdrawal()
-      .subscribe { [weak self] _ in
-        guard let self = self else { return }
-        self.userDefaults.clear()
-        self.output.goToSignIn.accept(())
-        self.output.showLoading.accept(false)
-      } onError: { [weak self] error in
-        guard let self = self else { return }
-        if let httpError = error as? HTTPError {
-          self.httpErrorAlert.accept(httpError)
-        } else if let error = error as? CommonError {
-          let alertContent = AlertContent(title: nil, message: error.description)
-          
-          self.showSystemAlert.accept(alertContent)
-        }
-        self.output.showLoading.accept(false)
-      }
-      .disposed(by: disposeBag)
-  }
-  
-  private func signOutKakao() {
-    UserApi.shared.logout { error in
-      if let kakaoError = error as? SdkError,
-         kakaoError.getApiError().reason == .InvalidAccessToken {
-        // KAKAO 토큰이 사라진 경우: 개발서버앱으로 왔다갔다 하는경우?
-        self.userDefaults.clear()
-        self.output.goToSignIn.accept(())
-      } else {
-        if let error = error {
-          let alertContent = AlertContent(
-            title: "Error in signOutKakao",
-            message: error.localizedDescription
-          )
-          
-          self.showSystemAlert.accept(alertContent)
-        }
-        else {
-          self.userDefaults.clear()
-          self.output.goToSignIn.accept(())
-        }
-      }
-    }
-  }
-  
-  private func signOutApple() {
-    self.userDefaults.clear()
-    self.output.goToSignIn.accept(())
-  }
-  
-  private func unlinkKakao() {
-    UserApi.shared.unlink { error in
-      if let kakaoError = error as? SdkError,
-         kakaoError.getApiError().reason == .InvalidAccessToken {
-        // KAKAO 토큰이 사라진 경우: 개발서버앱으로 왔다갔다 하는경우?
-        self.withdrawal()
-      } else {
-        if let error = error {
-          let alertContent = AlertContent(
-            title: "Error in unlinkKakao",
-            message: error.localizedDescription
-          )
-          
-          self.showSystemAlert.accept(alertContent)
-        } else {
-          self.withdrawal()
-        }
-      }
-    }
-  }
 }

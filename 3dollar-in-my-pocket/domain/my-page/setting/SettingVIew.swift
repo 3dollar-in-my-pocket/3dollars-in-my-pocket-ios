@@ -42,6 +42,18 @@ final class SettingView: BaseView {
         $0.tableFooterView = UIView()
         $0.separatorStyle = .none
         $0.contentInset = UIEdgeInsets(top: 12.5, left: 0, bottom: 0, right: 0)
+        $0.register(
+            SettingMenuTableViewCell.self,
+          forCellReuseIdentifier: SettingMenuTableViewCell.registerId
+        )
+        $0.register(
+            SettingAccountTableViewCell.self,
+          forCellReuseIdentifier: SettingAccountTableViewCell.registerId
+        )
+        $0.register(
+            SettingSignoutTableViewCell.self,
+          forCellReuseIdentifier: SettingSignoutTableViewCell.registerId
+        )
     }
     
     

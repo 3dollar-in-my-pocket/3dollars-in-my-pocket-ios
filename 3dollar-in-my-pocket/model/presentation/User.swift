@@ -1,11 +1,10 @@
-struct User {
+struct User: Equatable {
     let name: String
     let userId: Int
     let socialType: SocialType
     let activity: UserActivity
     var medal: Medal
-    let pushInfo: PushInfo
-    
+    var pushInfo: PushInfo
     
     init() {
         self.name = ""

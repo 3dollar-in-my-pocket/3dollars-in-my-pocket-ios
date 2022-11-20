@@ -29,9 +29,13 @@
 "setting_title" = "설정";
 "setting_nickname_modify" = "닉네임 수정";
 "setting_menu_question" = "문의사항";
+"setting_menu_push" = "푸시 알림";
+"setting_menu_policy" = "이용 약관";
 "setting_menu_privacy" = "개인정보처리방침";
 "setting_sign_out" = "로그아웃";
 "setting_withdrawal" = "회원탈퇴";
+"setting_logout_title" = "로그아웃 하시겠습니까?";
+"setting_signout_message" = "회원탈퇴 이후에 제보했던 가게와 작성한 댓글을 더이상 볼 수 없어요.\n정말로 탈퇴하시겠어요?";
 "sign_in_with_kakao" = "카카오 계정으로 로그인";
 "sign_in_without_id" = "로그인 없이 사용하기";
 "sign_in_anonymous_description" = "가슴속 3천원에 로그인하고\n더 많은 기능을 사용해 보세요!";

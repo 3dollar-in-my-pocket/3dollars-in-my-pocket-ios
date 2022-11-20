@@ -1,4 +1,4 @@
-struct PushInfo {
+struct PushInfo: Equatable {
     var isPushEnable: Bool
     var pushSetting: [PushSettingType]
     
