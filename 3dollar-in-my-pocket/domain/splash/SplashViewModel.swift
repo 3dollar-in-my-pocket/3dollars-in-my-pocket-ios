@@ -24,6 +24,7 @@ final class SplashViewModel: BaseViewModel {
     let medalService: MedalServiceProtocol
     private let feedbackService: FeedbackServiceProtocol
     private let categoryService: CategoryServiceProtocol
+    private let deviceService: DeviceServiceProtocol
     
     init(
         userDefaults: UserDefaultsUtil,
@@ -32,7 +33,8 @@ final class SplashViewModel: BaseViewModel {
         metaContext: MetaContext,
         medalService: MedalServiceProtocol,
         feedbackService: FeedbackServiceProtocol,
-        categoryService: CategoryServiceProtocol
+        categoryService: CategoryServiceProtocol,
+        deviceService: DeviceServiceProtocol
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
@@ -41,6 +43,7 @@ final class SplashViewModel: BaseViewModel {
         self.medalService = medalService
         self.feedbackService = feedbackService
         self.categoryService = categoryService
+        self.deviceService = deviceService
         
         super.init()
         
@@ -91,10 +94,28 @@ final class SplashViewModel: BaseViewModel {
             })
             .map { _ in Void() }
             .subscribe(
-                onNext: self.output.goToMain.accept(_:),
+                onNext: self.refreshPushToken,
                 onError: self.handelValidationError(error:)
             )
             .disposed(by: disposeBag)
+    }
+    
+    private func refreshPushToken() {
+        self.deviceService.getFCMToken()
+            .flatMap { [weak self] pushToken -> Observable<String> in
+                guard let self = self else { return .error(BaseError.unknown) }
+                
+                return self.deviceService.refreshDeivce(
+                    pushPlatformType: .fcm,
+                    pushToken: pushToken
+                )
+            }
+            .subscribe(onNext: { [weak self] _ in
+                self?.output.goToMain.accept(())
+            }) { error in
+                self.handelValidationError(error: error)
+            }
+            .disposed(by: self.disposeBag)
     }
     
     private func handelValidationError(error: Error) {

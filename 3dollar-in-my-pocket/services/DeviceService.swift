@@ -53,7 +53,7 @@ struct DeviceService: DeviceServiceProtocol {
         pushPlatformType: PushPlatformType,
         pushToken: String
     ) -> Observable<String> {
-        let urlString = HTTPUtils.url + "/api/v1/device"
+        let urlString = HTTPUtils.url + "/api/v1/device/token"
         let headers = HTTPUtils.defaultHeader()
         let updateUserDeviceTokenRequest = UpdateUserDeviceTokenRequest(
             pushPlatformType: pushPlatformType,
