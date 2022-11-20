@@ -12,15 +12,15 @@ protocol PolicyCoordinator: BaseCoordinator, AnyObject {
 
 extension PolicyCoordinator {
     func pushPolicyPage() {
-        guard let url = URL(string: Bundle.policyURL) else { return }
+        let viewController = WebViewController.instance(webviewType: .policy)
         
-        UIApplication.shared.open(url)
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
     func pushMarketingPage() {
-        guard let url = URL(string: Bundle.marketingURL) else { return }
+        let viewController = WebViewController.instance(webviewType: .marketing)
         
-        UIApplication.shared.open(url)
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
     func dismissAndGoHome() {

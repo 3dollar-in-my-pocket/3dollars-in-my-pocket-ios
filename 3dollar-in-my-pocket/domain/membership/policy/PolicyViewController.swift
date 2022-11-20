@@ -11,8 +11,11 @@ final class PolicyViewController: BaseViewController, View, PolicyCoordinator {
     )
     private weak var coordinator: PolicyCoordinator?
     
-    static func instance() -> PolicyViewController {
-        return PolicyViewController(nibName: nil, bundle: nil).then {
+    static func instance() -> UINavigationController {
+        let viewController = PolicyViewController(nibName: nil, bundle: nil)
+        
+        return UINavigationController(rootViewController: viewController).then {
+            $0.isNavigationBarHidden = true
             $0.modalPresentationStyle = .overCurrentContext
         }
     }
