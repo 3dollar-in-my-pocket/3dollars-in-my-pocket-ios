@@ -215,8 +215,8 @@
 		6E57F29E273AA724008C524A /* VisitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E57F29D273AA724008C524A /* VisitViewModel.swift */; };
 		6E58ED7027A7D1ED004819A9 /* StreetFoodCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E58ED6F27A7D1EC004819A9 /* StreetFoodCategory.swift */; };
 		6E590DAF23E7F56C006814BE /* PhotoMainCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E590DAE23E7F56C006814BE /* PhotoMainCollectionViewCell.swift */; };
-		6E5939002573E2CE00593DC8 /* PrivacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5938FF2573E2CE00593DC8 /* PrivacyView.swift */; };
-		6E5939052573E38900593DC8 /* PrivacyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5939042573E38900593DC8 /* PrivacyVC.swift */; };
+		6E5939002573E2CE00593DC8 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5938FF2573E2CE00593DC8 /* WebView.swift */; };
+		6E5939052573E38900593DC8 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5939042573E38900593DC8 /* WebViewController.swift */; };
 		6E59BEF926C8F3E300008DDA /* SigninViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E59BEF826C8F3E300008DDA /* SigninViewModelTests.swift */; };
 		6E59BEFC26C8F5BA00008DDA /* SigninManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E59BEFB26C8F5BA00008DDA /* SigninManagerMock.swift */; };
 		6E5B359C28B3ACFE0056C223 /* FoodTruckListStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5B359B28B3ACFE0056C223 /* FoodTruckListStoreCell.swift */; };
@@ -327,6 +327,8 @@
 		6E81B85125E1287500748E02 /* AddressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E81B85025E1287500748E02 /* AddressCell.swift */; };
 		6E826C4A2929B36200B73B8F /* SettingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E826C492929B36200B73B8F /* SettingCoordinator.swift */; };
 		6E826C4C2929B82E00B73B8F /* SettingTableViewCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E826C4B2929B82E00B73B8F /* SettingTableViewCellType.swift */; };
+		6E826C4E2929CF0400B73B8F /* WebViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E826C4D2929CF0400B73B8F /* WebViewType.swift */; };
+		6E826C502929D0C900B73B8F /* WebViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E826C4F2929D0C900B73B8F /* WebViewCoordinator.swift */; };
 		6E82F8CB23D5D8A600AB3593 /* MyReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E82F8CA23D5D8A600AB3593 /* MyReviewViewModel.swift */; };
 		6E860C0325B9288D008F42A1 /* AppleSDGothicNeoEB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E860C0225B9288D008F42A1 /* AppleSDGothicNeoEB00.ttf */; };
 		6E860C1825B96D5C008F42A1 /* StoreMenuCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E860C1725B96D5C008F42A1 /* StoreMenuCollectionViewCell.swift */; };
@@ -725,8 +727,8 @@
 		6E57F29D273AA724008C524A /* VisitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitViewModel.swift; sourceTree = "<group>"; };
 		6E58ED6F27A7D1EC004819A9 /* StreetFoodCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreetFoodCategory.swift; sourceTree = "<group>"; };
 		6E590DAE23E7F56C006814BE /* PhotoMainCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMainCollectionViewCell.swift; sourceTree = "<group>"; };
-		6E5938FF2573E2CE00593DC8 /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.swift; sourceTree = "<group>"; };
-		6E5939042573E38900593DC8 /* PrivacyVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyVC.swift; sourceTree = "<group>"; };
+		6E5938FF2573E2CE00593DC8 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		6E5939042573E38900593DC8 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		6E59BEF826C8F3E300008DDA /* SigninViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninViewModelTests.swift; sourceTree = "<group>"; };
 		6E59BEFB26C8F5BA00008DDA /* SigninManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninManagerMock.swift; sourceTree = "<group>"; };
 		6E5B359B28B3ACFE0056C223 /* FoodTruckListStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckListStoreCell.swift; sourceTree = "<group>"; };
@@ -837,6 +839,8 @@
 		6E81B85025E1287500748E02 /* AddressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressCell.swift; sourceTree = "<group>"; };
 		6E826C492929B36200B73B8F /* SettingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCoordinator.swift; sourceTree = "<group>"; };
 		6E826C4B2929B82E00B73B8F /* SettingTableViewCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCellType.swift; sourceTree = "<group>"; };
+		6E826C4D2929CF0400B73B8F /* WebViewType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewType.swift; sourceTree = "<group>"; };
+		6E826C4F2929D0C900B73B8F /* WebViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewCoordinator.swift; sourceTree = "<group>"; };
 		6E82F8CA23D5D8A600AB3593 /* MyReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewViewModel.swift; sourceTree = "<group>"; };
 		6E860C0225B9288D008F42A1 /* AppleSDGothicNeoEB00.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleSDGothicNeoEB00.ttf; sourceTree = "<group>"; };
 		6E860C1725B96D5C008F42A1 /* StoreMenuCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreMenuCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -1519,13 +1523,14 @@
 			path = cells;
 			sourceTree = "<group>";
 		};
-		6E5938FE2573E2AA00593DC8 /* privacy */ = {
+		6E5938FE2573E2AA00593DC8 /* webview */ = {
 			isa = PBXGroup;
 			children = (
-				6E5938FF2573E2CE00593DC8 /* PrivacyView.swift */,
-				6E5939042573E38900593DC8 /* PrivacyVC.swift */,
+				6E5938FF2573E2CE00593DC8 /* WebView.swift */,
+				6E5939042573E38900593DC8 /* WebViewController.swift */,
+				6E826C4F2929D0C900B73B8F /* WebViewCoordinator.swift */,
 			);
-			path = privacy;
+			path = webview;
 			sourceTree = "<group>";
 		};
 		6E59BEF726C8F3AE00008DDA /* membership */ = {
@@ -1634,7 +1639,6 @@
 			children = (
 				6E391BF12928BC2200FBC210 /* subview */,
 				6E6835B523C2C3CD00D23F54 /* rename */,
-				6E5938FE2573E2AA00593DC8 /* privacy */,
 				6E511E6125710CE2009E4667 /* question */,
 				6E681E24256FDD3500892B9E /* SettingVIew.swift */,
 				6E681E45256FE42D00892B9E /* SettingViewController.swift */,
@@ -1681,6 +1685,7 @@
 		6E6B0ED923AD169B006E11CE /* domain */ = {
 			isa = PBXGroup;
 			children = (
+				6E5938FE2573E2AA00593DC8 /* webview */,
 				6E09A75628B22F6600792F12 /* food-truck-list */,
 				6E7BF37C28A9250A00A00BF2 /* street-food-list */,
 				6E8BE65B2892CA8900D67938 /* boss-store-detail */,
@@ -1922,6 +1927,7 @@
 				6E766BD92928795E00033BC8 /* PushSettingType.swift */,
 				6E391BF42928C70A00FBC210 /* PushInfo.swift */,
 				6E826C4B2929B82E00B73B8F /* SettingTableViewCellType.swift */,
+				6E826C4D2929CF0400B73B8F /* WebViewType.swift */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -2865,6 +2871,7 @@
 				6E2C820F23B4A37F0025BB2B /* NicknameViewController.swift in Sources */,
 				6E29CF75258F190200F0BACB /* ErrorResponse.swift in Sources */,
 				6E07D44623B590B30055AEE7 /* HomeViewController.swift in Sources */,
+				6E826C4E2929CF0400B73B8F /* WebViewType.swift in Sources */,
 				6E7BF08125B7D5C000456D0B /* WriteDetailTypeStackView.swift in Sources */,
 				6E3493B2276481D10082B011 /* MedalCollectionCell.swift in Sources */,
 				6E4543ED25B7BD11000E60B8 /* MenuFooterView.swift in Sources */,
@@ -3057,7 +3064,7 @@
 				6E4697C9273E182F005A5902 /* VisitType.swift in Sources */,
 				6E48B7A326C154C100E2F02B /* Pagination.swift in Sources */,
 				6E57729D27809499001E39DE /* WriteAddressCoordinator.swift in Sources */,
-				6E5939002573E2CE00593DC8 /* PrivacyView.swift in Sources */,
+				6E5939002573E2CE00593DC8 /* WebView.swift in Sources */,
 				6EBBCB6925AD601F00F5912E /* WriteAddressReactor.swift in Sources */,
 				6E29966625E2869D003FC13A /* AddressDocument.swift in Sources */,
 				6EC0D67E26EB856D008AD34B /* StoresGroupByReviewResponse.swift in Sources */,
@@ -3101,12 +3108,13 @@
 				6E57F29A273A9FF0008C524A /* VisitViewController.swift in Sources */,
 				6EA205F4288817DC00BAB019 /* BossStoreOpenStatusResponse.swift in Sources */,
 				6E8BE65D2892CA9500D67938 /* BossStoreDetailView.swift in Sources */,
+				6E826C502929D0C900B73B8F /* WebViewCoordinator.swift in Sources */,
 				6E62EED623AD1DE9007B7570 /* AlertUtils.swift in Sources */,
 				6E5CA5802768777F001EDE19 /* MedalInfoViewModel.swift in Sources */,
 				6E3493B92764BA810082B011 /* MetaContext.swift in Sources */,
 				6E61C7AE290E86BE005E56F3 /* RatingInputView.swift in Sources */,
 				6E6835B923C2C89400D23F54 /* RenameVC.swift in Sources */,
-				6E5939052573E38900593DC8 /* PrivacyVC.swift in Sources */,
+				6E5939052573E38900593DC8 /* WebViewController.swift in Sources */,
 				6E35058E26A41E1600690C12 /* RemoteConfigService.swift in Sources */,
 				6EBF45292762258000DC3BD2 /* VisitHistoryViewController.swift in Sources */,
 				6E4952C326B0349200D65042 /* SigninResponse.swift in Sources */,
@@ -3498,6 +3506,7 @@
 				TARGETED_DEVICE_FAMILY = 1;
 				URL_MARKETING = "https://massive-iguana-121.notion.site/3-91156528267e426b9609d3ed57acb27d";
 				URL_POLICY = "https://massive-iguana-121.notion.site/3-37f521af4ac842ccba75a4fb590c506d";
+				URL_PRIVACY = "https://www.notion.so/3-3d0a9c55ddd74086b63582c308ca285e";
 			};
 			name = Debug;
 		};
@@ -3543,6 +3552,7 @@
 				TARGETED_DEVICE_FAMILY = 1;
 				URL_MARKETING = "https://massive-iguana-121.notion.site/3-91156528267e426b9609d3ed57acb27d";
 				URL_POLICY = "https://massive-iguana-121.notion.site/3-37f521af4ac842ccba75a4fb590c506d";
+				URL_PRIVACY = "https://www.notion.so/3-3d0a9c55ddd74086b63582c308ca285e";
 			};
 			name = Release;
 		};

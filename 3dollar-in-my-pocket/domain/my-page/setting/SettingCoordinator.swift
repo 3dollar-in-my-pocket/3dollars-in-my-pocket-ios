@@ -34,7 +34,7 @@ extension SettingCoordinator where Self: SettingViewController {
     }
     
     func pushPrivacy() {
-        let viewController = PrivacyVC.instance()
+        let viewController = WebViewController.instance(webviewType: .privacy)
         
         self.presenter.navigationController?.pushViewController(
             viewController,
@@ -43,7 +43,7 @@ extension SettingCoordinator where Self: SettingViewController {
     }
     
     func pushPolicyPage() {
-        let viewController = PrivacyVC.instance()
+        let viewController = WebViewController.instance(webviewType: .policy)
         
         self.presenter.navigationController?.pushViewController(
             viewController,

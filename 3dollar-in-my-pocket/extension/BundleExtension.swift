@@ -12,4 +12,8 @@ extension Bundle {
     static var marketingURL: String {
         return Bundle.main.infoDictionary?["URL_MARKETING"] as? String ?? ""
     }
+    
+    static var privacyURL: String {
+        return Bundle.main.infoDictionary?["URL_PRIVACY"] as? String ?? ""
+    }
 }

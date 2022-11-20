@@ -1,33 +1,37 @@
 import UIKit
 import WebKit
 
-class PrivacyView: BaseView {
-    
+import Base
+
+final class WebView: BaseView {
     let backButton = UIButton().then {
-        $0.setImage(UIImage(named: "ic_back_white"), for: .normal)
+        $0.setImage(R.image.ic_back_white(), for: .normal)
     }
     
-    let titleLabel = UILabel().then {
-        $0.text = "privacy_title".localized
+    private let titleLabel = UILabel().then {
         $0.textColor = .white
-        $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 16)
+        $0.font = .semiBold(size: 16)
     }
     
-    let topLineView = UIView().then {
+    private let topLineView = UIView().then {
         $0.backgroundColor = UIColor(r: 43, g: 43, b: 43)
     }
     
-    let webView = WKWebView()
-    
+    private let webView = WKWebView()
     
     override func setup() {
-        backgroundColor = UIColor(r: 28, g: 28, b: 28)
-        addSubViews(backButton, titleLabel, topLineView, webView)
+        self.backgroundColor = UIColor(r: 28, g: 28, b: 28)
+        self.addSubViews([
+            self.backButton,
+            self.titleLabel,
+            self.topLineView,
+            self.webView
+        ])
     }
     
     override func bindConstraints() {
         self.backButton.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(24 * RatioUtils.widthRatio)
+            make.left.equalToSuperview().offset(24)
             make.top.equalTo(safeAreaLayoutGuide).offset(15)
         }
         
@@ -46,5 +50,14 @@ class PrivacyView: BaseView {
             make.left.right.bottom.equalToSuperview()
             make.top.equalTo(self.topLineView.snp.bottom)
         }
+    }
+    
+    func bind(webviewType: WebViewType) {
+        self.titleLabel.text = webviewType.title
+        
+        guard let url = URL(string: webviewType.url) else { return }
+        let request = URLRequest(url: url)
+        
+        self.webView.load(request)
     }
 }
