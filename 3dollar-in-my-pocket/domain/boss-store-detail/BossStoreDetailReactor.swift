@@ -41,7 +41,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     private let locationService: LocationManagerProtocol
     private let globalState: GlobalState
     private var userDefaults: UserDefaultsUtil
-    private var gaManager: GAManagerProtocol
+    private var gaManager: AnalyticsManagerProtocol
     
     init(
         storeId: String,
@@ -49,7 +49,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         locationManaber: LocationManagerProtocol,
         globalState: GlobalState,
         userDefaults: UserDefaultsUtil,
-        gaManager: GAManagerProtocol,
+        gaManager: AnalyticsManagerProtocol,
         state: State = State(store: BossStore(), showTotalMenus: false)
     ) {
         self.storeId = storeId

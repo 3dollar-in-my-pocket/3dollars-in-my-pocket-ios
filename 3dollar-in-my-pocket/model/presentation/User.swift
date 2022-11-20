@@ -1,10 +1,11 @@
-struct User {
+struct User: Equatable {
     let name: String
     let userId: Int
     let socialType: SocialType
     let activity: UserActivity
     var medal: Medal
-    
+    var pushInfo: PushInfo
+    var marketingConsent: MarketingConsentType
     
     init() {
         self.name = ""
@@ -12,6 +13,8 @@ struct User {
         self.socialType = .unknown
         self.activity = UserActivity()
         self.medal = Medal()
+        self.pushInfo = PushInfo()
+        self.marketingConsent = .unknown
     }
     
     init(response: UserInfoResponse) {
@@ -20,6 +23,8 @@ struct User {
         self.socialType = SocialType(value: response.socialType)
         self.activity = UserActivity()
         self.medal = Medal(response: response.medal)
+        self.pushInfo = PushInfo(response: response.device)
+        self.marketingConsent = MarketingConsentType(value: response.marketingConsent)
     }
     
     init(response: UserWithActivityResponse) {
@@ -28,5 +33,7 @@ struct User {
         self.socialType = response.socialType
         self.activity = UserActivity(response: response.activity)
         self.medal = Medal(response: response.medal)
+        self.pushInfo = PushInfo()
+        self.marketingConsent = .unknown
     }
 }

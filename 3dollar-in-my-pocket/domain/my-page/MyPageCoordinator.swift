@@ -24,7 +24,7 @@ protocol MyPageCoordinator: Coordinator, AnyObject {
 
 extension MyPageCoordinator {
     func goToSetting() {
-        let viewController = SettingVC.instance()
+        let viewController = SettingViewController.instance()
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }

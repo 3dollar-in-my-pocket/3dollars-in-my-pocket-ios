@@ -10,13 +10,18 @@ protocol UserServiceProtocol {
     
     func connectAccount(request: SigninRequest) -> Observable<String>
     
-    func withdrawal() -> Observable<Void>
+    func signout() -> Observable<Void>
     
     func changeNickname(name: String) -> Observable<Void>
     
+    @available(*, deprecated, message: "func fetchUser() -> Observable<User>를 사용해주세요.")
     func fetchUserInfo() -> Observable<UserInfoResponse>
     
+    func fetchUser() -> Observable<User>
+    
     func fetchUserActivity() -> Observable<UserWithActivityResponse>
+    
+    func changeMarketingConsent(marketingConsentType: MarketingConsentType) -> Observable<String>
 }
 
 struct UserService: UserServiceProtocol {
@@ -102,29 +107,11 @@ struct UserService: UserServiceProtocol {
         }
     }
     
-    func withdrawal() -> Observable<Void> {
-        return Observable.create { observer -> Disposable in
-            let urlString = HTTPUtils.url + "/api/v2/signout"
-            let headers = HTTPUtils.defaultHeader()
-            
-            HTTPUtils.defaultSession.request(
-                urlString,
-                method: .delete,
-                headers: headers
-            )
-            .responseString(completionHandler: { (response) in
-                if let statusCode = response.response?.statusCode {
-                    if "\(statusCode)".first! == "2" {
-                        observer.onNext(())
-                        observer.onCompleted()
-                    }
-                } else {
-                    observer.processHTTPError(response: response)
-                }
-            })
-            
-            return Disposables.create()
-        }
+    func signout() -> Observable<Void> {
+        let urlString = HTTPUtils.url + "/api/v2/signout"
+        let headers = HTTPUtils.defaultHeader()
+        
+        return self.networkManager.createDeleteObservable(urlString: urlString, headers: headers)
     }
     
     func changeNickname(name: String) -> Observable<Void> {
@@ -178,6 +165,18 @@ struct UserService: UserServiceProtocol {
         }
     }
     
+    func fetchUser() -> Observable<User> {
+        let urlString = HTTPUtils.url + "/api/v2/user/me"
+        let headders = HTTPUtils.defaultHeader()
+        
+        return self.networkManager.createGetObservable(
+            class: UserInfoResponse.self,
+            urlString: urlString,
+            headers: headders
+        )
+        .map(User.init(response:))
+    }
+    
     func fetchUserActivity() -> Observable<UserWithActivityResponse> {
         return .create { observer in
             let urlString = HTTPUtils.url + "/api/v1/user/activity"
@@ -197,5 +196,18 @@ struct UserService: UserServiceProtocol {
             
             return Disposables.create()
         }
+    }
+    
+    func changeMarketingConsent(marketingConsentType: MarketingConsentType) -> Observable<String> {
+        let urlString = HTTPUtils.url + "/api/v1/user/me/marketing-consent"
+        let header = HTTPUtils.defaultHeader()
+        let parameters = ["marketingConsent": marketingConsentType.value]
+        
+        return self.networkManager.createPutObservable(
+            class: String.self,
+            urlString: urlString,
+            headers: header,
+            parameters: parameters
+        )
     }
 }

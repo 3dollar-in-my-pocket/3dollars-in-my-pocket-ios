@@ -26,20 +26,23 @@ final class SigninReactor: BaseReactor, Reactor {
     }
     
     let initialState: State
-    let userService: UserServiceProtocol
-    var userDefaults: UserDefaultsUtil
-    let kakaoManager: SigninManagerProtocol
-    let appleManager: SigninManagerProtocol
+    private let userService: UserServiceProtocol
+    private let deviceService: DeviceServiceProtocol
+    private var userDefaults: UserDefaultsUtil
+    private let kakaoManager: SigninManagerProtocol
+    private let appleManager: SigninManagerProtocol
     
     init(
         userDefaults: UserDefaultsUtil,
         userService: UserServiceProtocol,
+        deviceService: DeviceServiceProtocol,
         kakaoManager: SigninManagerProtocol,
         appleManager: SigninManagerProtocol,
         state: State = State()
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
+        self.deviceService = deviceService
         self.kakaoManager = kakaoManager
         self.appleManager = appleManager
         self.initialState = state
@@ -132,7 +135,18 @@ final class SigninReactor: BaseReactor, Reactor {
                 self?.userDefaults.userId = signinResponse.userId
                 self?.userDefaults.authToken = signinResponse.token
             })
-            .map { _ in .goToMain }
+            .flatMap { [weak self] _ -> Observable<Mutation> in
+                guard let self = self else { return .error(BaseError.unknown) }
+                
+                return self.deviceService.getFCMToken()
+                    .flatMap { pushToken -> Observable<String> in
+                        return self.deviceService.refreshDeivce(
+                            pushPlatformType: .fcm,
+                            pushToken: pushToken
+                        )
+                    }
+                    .map { _ in .goToMain }
+            }
             .catch { error in
                 if let httpError = error as? HTTPError,
                    httpError == .notFound {

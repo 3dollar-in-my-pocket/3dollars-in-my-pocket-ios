@@ -46,6 +46,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case pushWebView(url: String)
         case showLoading(Bool)
         case showErrorAlert(Error)
+        case presentPolicy
     }
     
     struct State {
@@ -60,6 +61,7 @@ final class HomeReactor: BaseReactor, Reactor {
         var cameraPosition: CLLocation?
         var currentLocation: CLLocation
         var isTooltipHidden: Bool
+        @Pulse var presentPolicy: Void?
     }
     
     let initialState: State
@@ -69,6 +71,7 @@ final class HomeReactor: BaseReactor, Reactor {
     private var foodTruckCategory: [Categorizable] = []
     private var streetFoodCategory: [Categorizable] = []
     private let storeService: StoreServiceProtocol
+    private let userService: UserServiceProtocol
     private let categoryService: CategoryServiceProtocol
     private let advertisementService: AdvertisementServiceProtocol
     private let locationManager: LocationManagerProtocol
@@ -78,6 +81,7 @@ final class HomeReactor: BaseReactor, Reactor {
     
     init(
         storeService: StoreServiceProtocol,
+        userService: UserServiceProtocol,
         categoryService: CategoryServiceProtocol,
         advertisementService: AdvertisementServiceProtocol,
         locationManager: LocationManagerProtocol,
@@ -94,10 +98,12 @@ final class HomeReactor: BaseReactor, Reactor {
             mapMaxDistance: 2000,
             cameraPosition: nil,
             currentLocation: CLLocation(latitude: 0, longitude: 0),
-            isTooltipHidden: true
+            isTooltipHidden: true,
+            presentPolicy: nil
         )
     ) {
         self.storeService = storeService
+        self.userService = userService
         self.categoryService = categoryService
         self.advertisementService = advertisementService
         self.locationManager = locationManager
@@ -124,7 +130,7 @@ final class HomeReactor: BaseReactor, Reactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            return Observable.zip(
+            let fetchStores = Observable.zip(
                 self.fetchStreedFoodCategories(),
                 self.fetchFoodTruckCategories()
             )
@@ -134,6 +140,12 @@ final class HomeReactor: BaseReactor, Reactor {
             })
             .map { Mutation.setCategories($0.0) }
             .catch { .just(.showErrorAlert($0)) }
+            let fetchMarketingPresent = self.fetchMarketingConsent()
+            
+            return .merge([
+                fetchStores,
+                fetchMarketingPresent
+            ])
             
         case .tapTooltip:
             return .just(.shownTooltip)
@@ -506,6 +518,9 @@ final class HomeReactor: BaseReactor, Reactor {
             
         case .showErrorAlert(let error):
             self.showErrorAlertPublisher.accept(error)
+            
+        case .presentPolicy:
+            newState.presentPolicy = ()
         }
         
         return newState
@@ -658,5 +673,12 @@ final class HomeReactor: BaseReactor, Reactor {
             
             return results
         }
+    }
+    
+    private func fetchMarketingConsent() -> Observable<Mutation> {
+        return self.userService.fetchUser()
+            .filter { $0.marketingConsent == .unverified }
+            .map { _ in .presentPolicy }
+            .catch { .just(.showErrorAlert($0)) }
     }
 }

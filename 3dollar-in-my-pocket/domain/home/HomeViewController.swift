@@ -10,6 +10,7 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
     private let homeView = HomeView()
     private let homeReactor = HomeReactor(
         storeService: StoreService(),
+        userService: UserService(),
         categoryService: CategoryService(),
         advertisementService: AdvertisementService(),
         locationManager: LocationManager.shared,
@@ -286,6 +287,14 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: true)
             .drive(self.homeView.rx.isTooltipHidden)
+            .disposed(by: self.disposeBag)
+        
+        reactor.pulse(\.$presentPolicy)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.presentPolicy()
+            })
             .disposed(by: self.disposeBag)
     }
     
