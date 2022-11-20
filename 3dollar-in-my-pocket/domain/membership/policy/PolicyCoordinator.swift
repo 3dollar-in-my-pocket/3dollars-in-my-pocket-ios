@@ -5,7 +5,7 @@ protocol PolicyCoordinator: BaseCoordinator, AnyObject {
     
     func pushMarketingPage()
     
-    func dismissAndGoHome()
+    func dismiss(completion: (() -> ())?)
     
     func dismiss()
 }
@@ -23,22 +23,15 @@ extension PolicyCoordinator {
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    func dismissAndGoHome() {
+    func dismiss(completion: (() -> ())?) {
         DimManager.shared.hideDim()
         self.presenter.dismiss(animated: true) {
-            self.goToMain()
+            completion?()
         }
     }
     
     func dismiss() {
         DimManager.shared.hideDim()
         self.presenter.dismiss(animated: true)
-    }
-    
-    private func goToMain() {
-        if let sceneDelegate
-            = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-            sceneDelegate.goToMain()
-        }
     }
 }

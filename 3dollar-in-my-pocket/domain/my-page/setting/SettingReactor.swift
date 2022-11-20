@@ -140,7 +140,6 @@ final class SettingReactor: BaseReactor, Reactor {
                 
                 return self.deviceService.registerDevice(
                     pushPlatformType: .fcm,
-                    pushSettings: [.advertisement],
                     pushToken: pushToken
                 )
                 .do(onNext: { _ in

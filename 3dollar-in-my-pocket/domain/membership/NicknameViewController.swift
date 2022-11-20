@@ -10,7 +10,8 @@ class NicknameViewController: BaseVC {
     self.viewModel = NicknameViewModel(
       signinRequest: signinRequest,
       userDefaults: UserDefaultsUtil(),
-      userService: UserService()
+      userService: UserService(),
+      deviceService: DeviceService()
     )
     super.init(nibName: nil, bundle: nil)
   }
@@ -110,8 +111,14 @@ class NicknameViewController: BaseVC {
   }
     
     private func presentPolicy() {
-        let viewController = PolicyViewController.instance()
+        let viewController = PolicyViewController.instance(delegate: self)
         
         self.present(viewController, animated: true)
+    }
+}
+
+extension NicknameViewController: PolicyViewControllerDelegate {
+    func onDismiss() {
+        self.goToMain()
     }
 }

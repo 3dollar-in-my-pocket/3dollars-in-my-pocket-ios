@@ -3,17 +3,23 @@ import UIKit
 import Base
 import ReactorKit
 
+protocol PolicyViewControllerDelegate: AnyObject {
+    func onDismiss()
+}
+
 final class PolicyViewController: BaseViewController, View, PolicyCoordinator {
     private let policyView = PolicyView()
     private let policyReactor = PolicyReactor(
-        deviceService: DeviceService(),
+        userService: UserService(),
         analyticsManager: GA.shared
     )
     private weak var coordinator: PolicyCoordinator?
+    private weak var delegate: PolicyViewControllerDelegate?
     
-    static func instance() -> UINavigationController {
+    static func instance(delegate: PolicyViewControllerDelegate? = nil) -> UINavigationController {
         let viewController = PolicyViewController(nibName: nil, bundle: nil)
         
+        viewController.delegate = delegate
         return UINavigationController(rootViewController: viewController).then {
             $0.isNavigationBarHidden = true
             $0.modalPresentationStyle = .overCurrentContext
@@ -128,11 +134,13 @@ final class PolicyViewController: BaseViewController, View, PolicyCoordinator {
             })
             .disposed(by: self.disposeBag)
         
-        reactor.pulse(\.$dismissAndGoHome)
+        reactor.pulse(\.$dismiss)
             .compactMap { $0 }
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] _ in
-                self?.coordinator?.dismissAndGoHome()
+                self?.coordinator?.dismiss(completion: {
+                    self?.delegate?.onDismiss()
+                })
             })
             .disposed(by: self.disposeBag)
     }

@@ -6,6 +6,8 @@ protocol AnalyticsManagerProtocol {
     func logEvent(event: GAEvent, page: GAPage)
     
     func setPushEnable(isEnable: Bool)
+    
+    func setUser(id: String?)
 }
 
 final class GAManager: AnalyticsManagerProtocol {
@@ -29,5 +31,9 @@ final class GAManager: AnalyticsManagerProtocol {
     
     func setPushEnable(isEnable: Bool) {
         Analytics.setUserProperty("\(isEnable)", forName: "isPushEnable")
+    }
+    
+    func setUser(id: String?) {
+        Analytics.setUserID(id)
     }
 }

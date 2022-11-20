@@ -5,6 +5,7 @@ struct User: Equatable {
     let activity: UserActivity
     var medal: Medal
     var pushInfo: PushInfo
+    var marketingConsent: MarketingConsentType
     
     init() {
         self.name = ""
@@ -13,6 +14,7 @@ struct User: Equatable {
         self.activity = UserActivity()
         self.medal = Medal()
         self.pushInfo = PushInfo()
+        self.marketingConsent = .unknown
     }
     
     init(response: UserInfoResponse) {
@@ -22,6 +24,7 @@ struct User: Equatable {
         self.activity = UserActivity()
         self.medal = Medal(response: response.medal)
         self.pushInfo = PushInfo(response: response.device)
+        self.marketingConsent = MarketingConsentType(value: response.marketingConsent)
     }
     
     init(response: UserWithActivityResponse) {
@@ -31,5 +34,6 @@ struct User: Equatable {
         self.activity = UserActivity(response: response.activity)
         self.medal = Medal(response: response.medal)
         self.pushInfo = PushInfo()
+        self.marketingConsent = .unknown
     }
 }

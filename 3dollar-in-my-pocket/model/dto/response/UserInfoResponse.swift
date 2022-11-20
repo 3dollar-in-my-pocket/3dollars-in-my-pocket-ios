@@ -4,6 +4,7 @@ struct UserInfoResponse: Decodable {
     let name: String
     let socialType: String
     let userId: Int
+    let marketingConsent: String
     
     enum CodingKeys: String, CodingKey {
         case device
@@ -11,6 +12,7 @@ struct UserInfoResponse: Decodable {
         case name
         case socialType
         case userId
+        case marketingConsent
     }
     
     init() {
@@ -19,6 +21,7 @@ struct UserInfoResponse: Decodable {
         self.userId = -1
         self.medal = MedalResponse()
         self.device = DeviceInfoResponse()
+        self.marketingConsent = ""
     }
     
     init(from decoder: Decoder) throws {
@@ -38,5 +41,9 @@ struct UserInfoResponse: Decodable {
             forKey: .socialType
         ) ?? ""
         self.userId = try values.decodeIfPresent(Int.self, forKey: .userId) ?? -1
+        self.marketingConsent = try values.decodeIfPresent(
+            String.self,
+            forKey: .marketingConsent
+        ) ?? ""
     }
 }

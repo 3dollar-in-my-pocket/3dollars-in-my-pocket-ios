@@ -12,7 +12,7 @@ final class PolicyReactor: Reactor {
         case toggleAll
         case togglePolicy
         case toggleMarketing
-        case dismissAndGoHome
+        case dismiss
         case showLoading(Bool)
         case showErrorAlert(Error)
     }
@@ -24,15 +24,15 @@ final class PolicyReactor: Reactor {
         var isEnableNextButton: Bool
         @Pulse var showErrorAlert: Error?
         @Pulse var isShowLoading: Bool?
-        @Pulse var dismissAndGoHome: Void?
+        @Pulse var dismiss: Void?
     }
     
     let initialState: State
-    private let deviceService: DeviceServiceProtocol
+    private let userService: UserServiceProtocol
     private let analyticsManager: AnalyticsManagerProtocol
     
     init(
-        deviceService: DeviceServiceProtocol,
+        userService: UserServiceProtocol,
         analyticsManager: AnalyticsManagerProtocol,
         state: State = State(
             isCheckedAll: false,
@@ -42,7 +42,7 @@ final class PolicyReactor: Reactor {
         )
     ) {
         self.initialState = state
-        self.deviceService = deviceService
+        self.userService = userService
         self.analyticsManager = analyticsManager
     }
     
@@ -60,7 +60,7 @@ final class PolicyReactor: Reactor {
         case .tapNext:
             return .concat([
                 .just(.showLoading(true)),
-                self.registerPush(isMarketingOn: self.currentState.isCheckedMarketing),
+                self.changeMarketingConsent(isMarketingOn: self.currentState.isCheckedMarketing),
                 .just(.showLoading(false))
             ])
         }
@@ -83,8 +83,8 @@ final class PolicyReactor: Reactor {
         case .toggleMarketing:
             newState.isCheckedMarketing.toggle()
             
-        case .dismissAndGoHome:
-            newState.dismissAndGoHome = ()
+        case .dismiss:
+            newState.dismiss = ()
             
         case .showLoading(let isShow):
             newState.isShowLoading = isShow
@@ -96,21 +96,11 @@ final class PolicyReactor: Reactor {
         return newState
     }
     
-    private func registerPush(isMarketingOn: Bool) -> Observable<Mutation> {
-        return self.deviceService.getFCMToken()
-            .flatMap { [weak self] pushToken -> Observable<String> in
-                guard let self = self else { return .error(BaseError.unknown) }
-                
-                return self.deviceService.registerDevice(
-                    pushPlatformType: .fcm,
-                    pushSettings: isMarketingOn ? [.advertisement] : [],
-                    pushToken: pushToken
-                )
-                .do(onNext: { _ in
-                    self.analyticsManager.setPushEnable(isEnable: isMarketingOn)
-                })
-            }
-            .map { _ in .dismissAndGoHome }
-            .catch {. just(.showErrorAlert($0)) }
+    private func changeMarketingConsent(isMarketingOn: Bool) -> Observable<Mutation> {
+        return self.userService.changeMarketingConsent(
+            marketingConsentType: isMarketingOn ? .approve : .deny
+        )
+        .map { _ in .dismiss }
+        .catch {. just(.showErrorAlert($0)) }
     }
 }

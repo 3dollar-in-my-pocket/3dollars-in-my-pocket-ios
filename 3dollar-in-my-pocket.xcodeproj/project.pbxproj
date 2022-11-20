@@ -299,7 +299,6 @@
 		6E74879C2723DD7F0021DF93 /* StoreReviewTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74879B2723DD7F0021DF93 /* StoreReviewTableView.swift */; };
 		6E74879E2723E8A30021DF93 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74879D2723E8A30021DF93 /* RatingView.swift */; };
 		6E766BD82928791A00033BC8 /* PushPlatformType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E766BD72928791A00033BC8 /* PushPlatformType.swift */; };
-		6E766BDA2928795E00033BC8 /* PushSettingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E766BD92928795E00033BC8 /* PushSettingType.swift */; };
 		6E766BDC29287A3800033BC8 /* RegisterUserDeviceRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E766BDB29287A3800033BC8 /* RegisterUserDeviceRequest.swift */; };
 		6E77F4DD25EDD10C00AF3DFC /* StoreInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E77F4DC25EDD10C00AF3DFC /* StoreInfoResponse.swift */; };
 		6E7938FE25B0064F007F23E5 /* DayStackInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7938FD25B0064F007F23E5 /* DayStackInputView.swift */; };
@@ -329,6 +328,7 @@
 		6E826C4C2929B82E00B73B8F /* SettingTableViewCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E826C4B2929B82E00B73B8F /* SettingTableViewCellType.swift */; };
 		6E826C4E2929CF0400B73B8F /* WebViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E826C4D2929CF0400B73B8F /* WebViewType.swift */; };
 		6E826C502929D0C900B73B8F /* WebViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E826C4F2929D0C900B73B8F /* WebViewCoordinator.swift */; };
+		6E826C52292A096600B73B8F /* MarketingConsentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E826C51292A096600B73B8F /* MarketingConsentType.swift */; };
 		6E82F8CB23D5D8A600AB3593 /* MyReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E82F8CA23D5D8A600AB3593 /* MyReviewViewModel.swift */; };
 		6E860C0325B9288D008F42A1 /* AppleSDGothicNeoEB00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E860C0225B9288D008F42A1 /* AppleSDGothicNeoEB00.ttf */; };
 		6E860C1825B96D5C008F42A1 /* StoreMenuCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E860C1725B96D5C008F42A1 /* StoreMenuCollectionViewCell.swift */; };
@@ -811,7 +811,6 @@
 		6E74879B2723DD7F0021DF93 /* StoreReviewTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreReviewTableView.swift; sourceTree = "<group>"; };
 		6E74879D2723E8A30021DF93 /* RatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingView.swift; sourceTree = "<group>"; };
 		6E766BD72928791A00033BC8 /* PushPlatformType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushPlatformType.swift; sourceTree = "<group>"; };
-		6E766BD92928795E00033BC8 /* PushSettingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushSettingType.swift; sourceTree = "<group>"; };
 		6E766BDB29287A3800033BC8 /* RegisterUserDeviceRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterUserDeviceRequest.swift; sourceTree = "<group>"; };
 		6E77F4DC25EDD10C00AF3DFC /* StoreInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoResponse.swift; sourceTree = "<group>"; };
 		6E7938FD25B0064F007F23E5 /* DayStackInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayStackInputView.swift; sourceTree = "<group>"; };
@@ -841,6 +840,7 @@
 		6E826C4B2929B82E00B73B8F /* SettingTableViewCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCellType.swift; sourceTree = "<group>"; };
 		6E826C4D2929CF0400B73B8F /* WebViewType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewType.swift; sourceTree = "<group>"; };
 		6E826C4F2929D0C900B73B8F /* WebViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewCoordinator.swift; sourceTree = "<group>"; };
+		6E826C51292A096600B73B8F /* MarketingConsentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingConsentType.swift; sourceTree = "<group>"; };
 		6E82F8CA23D5D8A600AB3593 /* MyReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewViewModel.swift; sourceTree = "<group>"; };
 		6E860C0225B9288D008F42A1 /* AppleSDGothicNeoEB00.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleSDGothicNeoEB00.ttf; sourceTree = "<group>"; };
 		6E860C1725B96D5C008F42A1 /* StoreMenuCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreMenuCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -1918,13 +1918,13 @@
 				6E56BD7C23CDE216002D7092 /* StreetFoodStoreCategory.swift */,
 				6E7BF08525B7D82F00456D0B /* StreetFoodStoreType.swift */,
 				6E72AE6223C980F600D3B257 /* User.swift */,
+				6E826C51292A096600B73B8F /* MarketingConsentType.swift */,
 				6E4543F125B7C44C000E60B8 /* WeekDay.swift */,
 				6E68683728ABCD3F003EE196 /* StreetFoodListSectionModel.swift */,
 				6EFBB8D228B5055E009E4FAF /* FoodTruckListSectionModel.swift */,
 				6E3E925428DECDD100509A51 /* StoreDetailHeaderType.swift */,
 				6E97041828E91727000FF67B /* StreetFoodStoreDetailSection.swift */,
 				6E766BD72928791A00033BC8 /* PushPlatformType.swift */,
-				6E766BD92928795E00033BC8 /* PushSettingType.swift */,
 				6E391BF42928C70A00FBC210 /* PushInfo.swift */,
 				6E826C4B2929B82E00B73B8F /* SettingTableViewCellType.swift */,
 				6E826C4D2929CF0400B73B8F /* WebViewType.swift */,
@@ -2904,7 +2904,6 @@
 				6E09470526F4C5DE000D4858 /* ChangeNicknameError.swift in Sources */,
 				6EB7FA6A23B658B000BFB0B4 /* StreetFoodListStoreCell.swift in Sources */,
 				6E479B6926EA594500566384 /* UpdateReviewRequest.swift in Sources */,
-				6E766BDA2928795E00033BC8 /* PushSettingType.swift in Sources */,
 				6E4697CD273E2766005A5902 /* StoreVisitHistoryCollectionViewCell.swift in Sources */,
 				6E1D427C23B6F99F0034A471 /* StoreReviewCollectionViewCell.swift in Sources */,
 				6E41D97725CA60EE009D7C3A /* PhotoListViewController.swift in Sources */,
@@ -3104,6 +3103,7 @@
 				6EF63FBB2761B0FD0063A3B9 /* MyVisitHistoryView.swift in Sources */,
 				6E57F298273A9209008C524A /* VisitView.swift in Sources */,
 				6E447FF425E3E1CD00459551 /* CategoryFilterViewController.swift in Sources */,
+				6E826C52292A096600B73B8F /* MarketingConsentType.swift in Sources */,
 				6ED79E1125CFF13B00B3CFA9 /* ModifyAddressVC.swift in Sources */,
 				6E57F29A273A9FF0008C524A /* VisitViewController.swift in Sources */,
 				6EA205F4288817DC00BAB019 /* BossStoreOpenStatusResponse.swift in Sources */,

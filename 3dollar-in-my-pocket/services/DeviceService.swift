@@ -4,7 +4,6 @@ import FirebaseMessaging
 protocol DeviceServiceProtocol {
     func registerDevice(
         pushPlatformType: PushPlatformType,
-        pushSettings: [PushSettingType],
         pushToken: String
     ) -> Observable<String>
     
@@ -23,14 +22,12 @@ struct DeviceService: DeviceServiceProtocol {
     
     func registerDevice(
         pushPlatformType: PushPlatformType,
-        pushSettings: [PushSettingType],
         pushToken: String
     ) -> Observable<String> {
         let urlString = HTTPUtils.url + "/api/v1/device"
         let headers = HTTPUtils.defaultHeader()
         let registerUserDeviceRequest = RegisterUserDeviceRequest(
             pushPlatformType: pushPlatformType,
-            pushSettings: pushSettings,
             pushToken: pushToken
         )
         

@@ -20,6 +20,8 @@ protocol UserServiceProtocol {
     func fetchUser() -> Observable<User>
     
     func fetchUserActivity() -> Observable<UserWithActivityResponse>
+    
+    func changeMarketingConsent(marketingConsentType: MarketingConsentType) -> Observable<String>
 }
 
 struct UserService: UserServiceProtocol {
@@ -194,5 +196,18 @@ struct UserService: UserServiceProtocol {
             
             return Disposables.create()
         }
+    }
+    
+    func changeMarketingConsent(marketingConsentType: MarketingConsentType) -> Observable<String> {
+        let urlString = HTTPUtils.url + "/api/v1/user/me/marketing-consent"
+        let header = HTTPUtils.defaultHeader()
+        let parameters = ["marketingConsent": marketingConsentType.value]
+        
+        return self.networkManager.createPutObservable(
+            class: String.self,
+            urlString: urlString,
+            headers: header,
+            parameters: parameters
+        )
     }
 }
