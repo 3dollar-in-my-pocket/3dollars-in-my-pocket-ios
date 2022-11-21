@@ -9,7 +9,7 @@ class NicknameViewModel: BaseViewModel {
   
   struct Output {
     let startButtonEnable = PublishRelay<Bool>()
-    let goToMain = PublishRelay<Void>()
+    let presentPolicy = PublishRelay<Void>()
     let errorLabelHidden = PublishRelay<Bool>()
   }
   
@@ -18,16 +18,20 @@ class NicknameViewModel: BaseViewModel {
   let signinRequest: SigninRequest
   var userDefaults: UserDefaultsUtil
   let userService: UserServiceProtocol
+    private let deviceService: DeviceServiceProtocol
+    var isSignupSuccess = false
   
   
   init(
     signinRequest: SigninRequest,
     userDefaults: UserDefaultsUtil,
-    userService: UserServiceProtocol
+    userService: UserServiceProtocol,
+    deviceService: DeviceServiceProtocol
   ) {
     self.signinRequest = signinRequest
     self.userDefaults = userDefaults
     self.userService = userService
+      self.deviceService = deviceService
     super.init()
     
     self.input.nickname
@@ -44,26 +48,42 @@ class NicknameViewModel: BaseViewModel {
       .disposed(by: disposeBag)
   }
   
-  private func setNickname(nickname: String) {
-    let signupRequest = SignupRequest(
-      name: nickname,
-      socialType: self.signinRequest.socialType,
-      token: self.signinRequest.token
-    )
-    self.showLoading.accept(true)
-    self.userService.signup(request: signupRequest)
-      .subscribe(
-        onNext: { [weak self] response in
-          guard let self = self else { return }
-          self.userDefaults.userId = response.userId
-          self.userDefaults.authToken = response.token
-          self.showLoading.accept(false)
-          self.output.goToMain.accept(())
-        },
-        onError: self.handleSignupError(error:)
-      )
-      .disposed(by: self.disposeBag)
-  }
+    private func setNickname(nickname: String) {
+        let signupRequest = SignupRequest(
+            name: nickname,
+            socialType: self.signinRequest.socialType,
+            token: self.signinRequest.token
+        )
+        if self.isSignupSuccess {
+            self.output.presentPolicy.accept(())
+        } else {
+            self.showLoading.accept(true)
+            self.userService.signup(request: signupRequest)
+                .subscribe(
+                    onNext: { [weak self] response in
+                        guard let self = self else { return }
+                        self.userDefaults.userId = response.userId
+                        self.userDefaults.authToken = response.token
+                        self.isSignupSuccess = true
+
+                        self.deviceService.getFCMToken()
+                            .flatMap { pushToken -> Observable<String> in
+                                return self.deviceService.registerDevice(
+                                    pushPlatformType: .fcm,
+                                    pushToken: pushToken
+                                )
+                            }
+                            .subscribe { _ in
+                                self.showLoading.accept(false)
+                                self.output.presentPolicy.accept(())
+                            }
+                            .disposed(by: self.disposeBag)
+                    },
+                    onError: self.handleSignupError(error:)
+                )
+                .disposed(by: self.disposeBag)
+        }
+    }
   
   private func handleSignupError(error: Error) {
     self.showLoading.accept(false)

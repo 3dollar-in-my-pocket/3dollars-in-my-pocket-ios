@@ -66,7 +66,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     private let locationManager: LocationManagerProtocol
     private let storeService: StoreServiceProtocol
     private let reviewService: ReviewServiceProtocol
-    private let gaManager: GAManagerProtocol
+    private let gaManager: AnalyticsManagerProtocol
     private let globalState: GlobalState
     
     init(
@@ -75,7 +75,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         locationManager: LocationManagerProtocol,
         storeService: StoreServiceProtocol,
         reviewService: ReviewServiceProtocol,
-        gaManager: GAManagerProtocol,
+        gaManager: AnalyticsManagerProtocol,
         globalState: GlobalState,
         state: State = State(
             currentLocation: CLLocation(latitude: 0, longitude: 0),

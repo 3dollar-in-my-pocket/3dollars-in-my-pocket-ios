@@ -1,6 +1,6 @@
 import Foundation
 
-struct UserActivity {
+struct UserActivity: Equatable {
     let medalsCounts: Int
     let reviewsCount: Int
     let storesCount: Int

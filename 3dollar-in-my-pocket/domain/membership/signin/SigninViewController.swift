@@ -9,6 +9,7 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
     private let signinReactor = SigninReactor(
         userDefaults: UserDefaultsUtil(),
         userService: UserService(),
+        deviceService: DeviceService(),
         kakaoManager: KakaoSigninManager(),
         appleManager: AppleSigninManager()
     )

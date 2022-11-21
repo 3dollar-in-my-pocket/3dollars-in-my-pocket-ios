@@ -11,7 +11,8 @@ class SplashVC: BaseVC {
     metaContext: MetaContext.shared,
     medalService: MedalService(),
     feedbackService: FeedbackService(),
-    categoryService: CategoryService()
+    categoryService: CategoryService(),
+    deviceService: DeviceService()
   )
   
   
