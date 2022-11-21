@@ -1,6 +1,7 @@
 ![KakaoTalk_Photo_2021-03-05-13-10-26](https://user-images.githubusercontent.com/7058293/110066182-30213500-7db4-11eb-881e-fa3ea0537b7a.png)
 ### 설명
-🐟**가슴속 3천원**🐟은 전국 붕어빵 지도로 시작하여 전국 길거리 음식점 정복을 꿈꾸는 프로젝트입니다. **디프만**(디자이너와 프로그래머가 만났을 때) 7기 파이널 프로젝트에서 개발되었으며 이후에 지속적으로 업데이트하고있습니다.
+🐟**가슴속 3천원**🐟은 전국 붕어빵 지도로 시작하여 전국 길거리 음식점 정복을 꿈꾸는 프로젝트입니다.   
+**디프만**(디자이너와 프로그래머가 만났을 때) 7기 파이널 프로젝트에서 개발되었으며 이후에 지속적으로 업데이트하고있습니다.
 
 ### 다운로드
 - [AppStore](https://apps.apple.com/kr/app/%EA%B0%80%EC%8A%B4%EC%86%8D3%EC%B2%9C%EC%9B%90-%EB%82%98%EC%99%80-%EA%B0%80%EA%B9%8C%EC%9A%B4-%EB%B6%95%EC%96%B4%EB%B9%B5/id1496099467)
@@ -15,9 +16,10 @@
 - [이데일리 인터뷰 기사](https://news.naver.com/main/read.nhn?mode=LSD&mid=sec&sid1=102&oid=018&aid=0004791608)
 - [헤이버니 인터뷰 기사](https://heybunny.io/blog/?q=YToxOntzOjEyOiJrZXl3b3JkX3R5cGUiO3M6MzoiYWxsIjt9&bmode=view&idx=5770611&t=board)
 - [jobsN 인터뷰 기사](https://post.naver.com/viewer/postView.nhn?volumeNo=30131742&memberNo=27908841&vType=VERTICAL)
+- [YouTube 진심인 사람들](https://www.youtube.com/watch?v=8hcB6u7rbtQ)
 
 ### 아키텍처 및 디자인 패턴
-- RxSwift + MVVM 사용
+- ReactorKit + Coordinator 사용 (기존 사용하던 ViewModel은 deprecated될 예정입니다.)
 - Code base로 UI 구현 (SnapKit 사용)
 - Feature별 디렉토리 구성 (실제 앱 화면 접근 플로우와 동일하게 디렉토리 구성)
 
