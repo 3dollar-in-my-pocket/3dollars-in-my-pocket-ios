@@ -8,7 +8,7 @@ target '3dollar-in-my-pocket' do
   # Pods for 3dollar-in-my-pocket
   pod 'Kingfisher', '~> 5.0'
   
-  pod 'Alamofire', '~> 5.2'
+#  pod 'Alamofire', '~> 5.2'
   
   pod 'lottie-ios'
   

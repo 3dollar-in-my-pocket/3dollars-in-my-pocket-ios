@@ -1,6 +1,5 @@
 import UIKit
 
-import Base
 import RxDataSources
 
 protocol MyMedalViewControllerDelegate: AnyObject {

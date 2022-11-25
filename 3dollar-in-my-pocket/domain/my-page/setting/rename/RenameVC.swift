@@ -86,7 +86,9 @@ class RenameVC: BaseVC {
     
     self.viewModel.showLoading
       .asDriver(onErrorJustReturn: false)
-      .drive(onNext: self.renameView.showLoading(isShow:))
+      .drive(onNext: { isShow in
+          LoadingManager.shared.showLoading(isShow: isShow)
+      })
       .disposed(by: self.disposeBag)
     
     self.viewModel.showErrorAlert

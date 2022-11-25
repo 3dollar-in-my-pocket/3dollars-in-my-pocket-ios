@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class StreetFoodListEmptyCell: BaseCollectionViewCell {
     static let registerId = "\(StreetFoodListEmptyCell.self)"
     static let height: CGFloat = 169

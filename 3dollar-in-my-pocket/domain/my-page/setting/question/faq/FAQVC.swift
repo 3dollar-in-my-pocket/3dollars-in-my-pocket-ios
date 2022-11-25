@@ -1,6 +1,5 @@
 import UIKit
 
-import Base
 import RxSwift
 
 class FAQVC: BaseVC {
@@ -45,7 +44,9 @@ class FAQVC: BaseVC {
     
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.faqView.showLoading(isShow:))
+      .bind(onNext: { isShow in
+          LoadingManager.shared.showLoading(isShow: isShow)
+      })
       .disposed(by: disposeBag)
     
     self.viewModel.httpErrorAlert

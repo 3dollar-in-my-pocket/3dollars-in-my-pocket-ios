@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 protocol BaseCoordinator {
     var presenter: BaseViewController { get }
     
@@ -19,7 +17,7 @@ extension BaseCoordinator where Self: BaseViewController {
     func showErrorAlert(error: Error) {
         if let httpError = error as? HTTPError,
            httpError == .unauthorized {
-            Base.AlertUtils.showWithAction(
+            AlertUtils.showWithAction(
                 viewController: self,
                 title: nil,
                 message: httpError.description,
@@ -29,13 +27,13 @@ extension BaseCoordinator where Self: BaseViewController {
                 self.goToSignin()
             }
         } else if let localizedError = error as? LocalizedError {
-            Base.AlertUtils.showWithAction(
+            AlertUtils.showWithAction(
                 viewController: self,
                 message: localizedError.errorDescription,
                 onTapOk: nil
             )
         } else {
-            Base.AlertUtils.showWithAction(
+            AlertUtils.showWithAction(
                 viewController: self,
                 message: error.localizedDescription,
                 onTapOk: nil

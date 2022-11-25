@@ -1,6 +1,5 @@
 import UIKit
 
-import Base
 import NMapsMap
 import RxSwift
 import RxDataSources
@@ -203,7 +202,9 @@ class WriteDetailVC: BaseVC {
     
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.writeDetailView.showLoading(isShow:))
+          .bind(onNext: { isShow in
+              LoadingManager.shared.showLoading(isShow: isShow)
+          })
       .disposed(by: disposeBag)
     
     self.viewModel.httpErrorAlert

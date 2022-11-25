@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class BossStoreInfoCell: BaseCollectionViewCell {
     static let registerId = "\(BossStoreInfoCell.self)"
     static let estimatedHeight: CGFloat = 436

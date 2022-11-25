@@ -4,7 +4,6 @@ import UIKit
 import AppTrackingTransparency
 import AdSupport
 
-import Base
 import ReactorKit
 import Kingfisher
 import RxSwift

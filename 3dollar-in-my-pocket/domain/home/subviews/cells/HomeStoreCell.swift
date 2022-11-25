@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class HomeStoreCell: BaseCollectionViewCell {
     static let registerId = "\(HomeStoreCell.self)"
     static let itemSize: CGSize = CGSize(width: 280, height: 120)

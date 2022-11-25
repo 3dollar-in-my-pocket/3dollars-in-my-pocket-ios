@@ -1,7 +1,6 @@
 import MessageUI
 import DeviceKit
 
-import Base
 import RxSwift
 
 class QuestionVC: BaseVC {
@@ -33,7 +32,9 @@ class QuestionVC: BaseVC {
     
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.questionView.showLoading(isShow:))
+      .bind(onNext: { isShow in
+          LoadingManager.shared.showLoading(isShow: isShow)
+      })
       .disposed(by: disposeBag)
     
     self.viewModel.showSystemAlert

@@ -1,11 +1,10 @@
 import UIKit
 
-import Base
 import RxSwift
 import RxCocoa
 import NMapsMap
 
-final class StreetFoodListView: Base.BaseView {
+final class StreetFoodListView: BaseView {
     private let topContainerView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]

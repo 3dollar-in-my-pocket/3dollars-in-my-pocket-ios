@@ -1,10 +1,9 @@
 import UIKit
 
-import Base
 import ReactorKit
 
 final class BossStoreFeedbackViewController:
-    Base.BaseViewController, View, BossStoreFeedbackCoordinator {
+    BaseViewController, View, BossStoreFeedbackCoordinator {
     private let bossStoreFeedbackView = BossStoreFeedbackView()
     private let bossStoreFeedbackReactor: BossStoreFeedbackReactor
     private weak var coordinator: BossStoreFeedbackCoordinator?

@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class BossStoreEmptyMenuCell: BaseCollectionViewCell {
     static let registerId = "\(BossStoreEmptyMenuCell.self)"
     static let height: CGFloat = 52

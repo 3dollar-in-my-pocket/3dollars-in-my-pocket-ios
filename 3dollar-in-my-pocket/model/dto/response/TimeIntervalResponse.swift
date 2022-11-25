@@ -1,7 +1,5 @@
 import Foundation
 
-import Base
-
 struct TimeIntervalResponse: Decodable {
     var endTime: String
     var startTime: String
@@ -20,8 +18,8 @@ struct TimeIntervalResponse: Decodable {
     
     init(
         
-        endTime: String = Base.DateUtils.toString(date: Date(), format: "HH:mm"),
-        startTime: String = Base.DateUtils.toString(date: Date(), format: "HH:mm")
+        endTime: String = DateUtils.toString(date: Date(), format: "HH:mm"),
+        startTime: String = DateUtils.toString(date: Date(), format: "HH:mm")
     ) {
         self.endTime = endTime
         self.startTime = startTime

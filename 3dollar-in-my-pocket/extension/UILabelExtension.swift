@@ -1,7 +1,6 @@
 import UIKit
 
 extension UILabel {
-    
     func setKern(kern: Float) {
         guard let text = self.text else { return }
         let attributedString = NSMutableAttributedString(string: text)
