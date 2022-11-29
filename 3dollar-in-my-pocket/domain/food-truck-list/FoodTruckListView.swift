@@ -1,11 +1,10 @@
 import UIKit
 
-import Base
 import RxSwift
 import RxCocoa
 import NMapsMap
 
-final class FoodTruckListView: Base.BaseView {
+final class FoodTruckListView: BaseView {
     private let topContainerView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]

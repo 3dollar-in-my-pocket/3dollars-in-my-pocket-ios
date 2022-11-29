@@ -1,6 +1,5 @@
 import UIKit
 
-import Base
 import SPPermissions
 import KakaoSDKShare
 import KakaoSDKTemplate

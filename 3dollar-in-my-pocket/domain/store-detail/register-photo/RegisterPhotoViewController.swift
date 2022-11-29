@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-import Base
 import RxSwift
 import ReactorKit
 

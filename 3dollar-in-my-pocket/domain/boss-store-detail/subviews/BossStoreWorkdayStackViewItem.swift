@@ -1,8 +1,6 @@
 import UIKit
 
-import Base
-
-final class BossStoreWorkdayStackViewItem: Base.BaseView {
+final class BossStoreWorkdayStackViewItem: BaseView {
     static let height: CGFloat = 66
     
     private let weekDayLabel = UILabel().then {
@@ -76,11 +74,11 @@ final class BossStoreWorkdayStackViewItem: Base.BaseView {
             self.timeLabel.textColor = .red
             self.locationLabel.text = "-"
         } else {
-            let startTime = Base.DateUtils.toString(
+            let startTime = DateUtils.toString(
                 date: appearanceDay.openingHours,
                 format: "HH:mm"
             )
-            let endTime = Base.DateUtils.toString(
+            let endTime = DateUtils.toString(
                 date: appearanceDay.closingHours,
                 format: "HH:mm"
             )

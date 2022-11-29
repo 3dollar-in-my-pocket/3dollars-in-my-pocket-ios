@@ -1,7 +1,6 @@
 import UIKit
 import AppTrackingTransparency
 
-import Base
 import GoogleMobileAds
 
 final class StoreAdCollectionViewCell: BaseCollectionViewCell {

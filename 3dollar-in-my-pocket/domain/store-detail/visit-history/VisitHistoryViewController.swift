@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class VisitHistoryViewController: BaseViewController, VisitHistoryCoordinator {
     private var coordinator: VisitHistoryCoordinator?
     private let visitHistoryView = VisitHistoryView()

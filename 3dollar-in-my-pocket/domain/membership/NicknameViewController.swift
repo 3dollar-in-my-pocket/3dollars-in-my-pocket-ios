@@ -64,7 +64,9 @@ class NicknameViewController: BaseVC {
       
     self.viewModel.showLoading
       .asDriver(onErrorJustReturn: false)
-      .drive(onNext: self.nicknameView.showLoading(isShow:))
+      .drive(onNext: { isShow in
+          LoadingManager.shared.showLoading(isShow: isShow)
+      })
       .disposed(by: self.disposeBag)
     
     self.viewModel.showErrorAlert

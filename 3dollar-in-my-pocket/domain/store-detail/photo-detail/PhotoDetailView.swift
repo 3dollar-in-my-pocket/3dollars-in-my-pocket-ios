@@ -1,10 +1,9 @@
 import UIKit
 
-import Base
 import RxSwift
 import RxCocoa
 
-final class PhotoDetailView: Base.BaseView {
+final class PhotoDetailView: BaseView {
     private let navigationView = UIVisualEffectView(
         effect: UIBlurEffect(style: .systemUltraThinMaterialDark)
     ).then {

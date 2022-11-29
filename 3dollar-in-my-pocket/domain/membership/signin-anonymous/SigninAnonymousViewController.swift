@@ -1,6 +1,5 @@
 import UIKit
 
-import Base
 import ReactorKit
 
 final class SigninAnonymousViewController: BaseViewController, View, SigninAnonymousCoordinator {

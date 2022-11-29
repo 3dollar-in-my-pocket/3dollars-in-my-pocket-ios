@@ -13,10 +13,13 @@ line_length: 99
 
 type_body_length:
   - 300 # warning
-  - 400 # error
+  - 500 # error
 
 function_body_length:
   - 50
+  
+large_tuple:
+  error: 5
 
 file_length:
   warning: 500

@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class BossStoreFeedbackHeaderView: UITableViewHeaderFooterView {
     static let registerId = "\(BossStoreFeedbackHeaderView.self)"
     static let height: CGFloat = 148

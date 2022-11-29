@@ -1,10 +1,9 @@
 import UIKit
 
-import Base
 import RxSwift
 import RxCocoa
 
-final class BossStoreFeedbackView: Base.BaseView {
+final class BossStoreFeedbackView: BaseView {
     private let navigationContainerView = UIView().then {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 20

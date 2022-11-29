@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class PhotoMainCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(PhotoMainCollectionViewCell.self)"
     static let itemSize = CGSize(

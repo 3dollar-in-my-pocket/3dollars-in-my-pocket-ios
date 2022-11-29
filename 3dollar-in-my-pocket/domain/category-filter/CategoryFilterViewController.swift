@@ -1,6 +1,5 @@
 import UIKit
 
-import Base
 import RxDataSources
 import ReactorKit
 

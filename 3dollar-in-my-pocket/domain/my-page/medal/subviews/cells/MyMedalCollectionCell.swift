@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class MyMedalCollectionCell: BaseCollectionViewCell {
     static let registerId = "\(MyMedalCollectionCell.self)"
     

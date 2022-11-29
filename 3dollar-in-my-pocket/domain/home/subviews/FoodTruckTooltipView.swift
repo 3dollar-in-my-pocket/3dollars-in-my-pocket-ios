@@ -1,10 +1,9 @@
 import UIKit
 
-import Base
 import RxSwift
 import RxCocoa
 
-final class FoodTruckTooltipView: Base.BaseView {
+final class FoodTruckTooltipView: BaseView {
     private let fingerImage = UIImageView().then {
         $0.image = R.image.img_tootip_finger()
     }
