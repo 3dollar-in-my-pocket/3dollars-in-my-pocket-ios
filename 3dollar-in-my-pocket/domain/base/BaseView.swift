@@ -33,7 +33,7 @@ class BaseView: UIView {
                 guard let self = self else { return }
                 self.addSubview(self.dimView)
                 UIView.animate(withDuration: 0.3) {
-                    self.dimView.backgroundColor = UIColor.init(r: 0, g: 0, b: 0, a:0.5)
+                    self.dimView.backgroundColor = UIColor.init(r: 0, g: 0, b: 0, a: 0.5)
                 }
             }
         } else {
