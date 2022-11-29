@@ -163,12 +163,6 @@ final class StoreDetailViewController:
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
 
-        self.storeDetailView.visitButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapVisit }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-
         // Bind State
         reactor.state
             .map { $0.store }

@@ -73,6 +73,19 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
     }
     
+    private let dividerView = UIView().then {
+        $0.backgroundColor = R.color.gray20()
+    }
+    
+    let bookmarkButton = UIButton().then {
+        $0.setImage(R.image.ic_bookmark_off(), for: .normal)
+        $0.setImage(R.image.ic_bookmark_on(), for: .selected)
+        $0.setTitle(R.string.localization.store_detail_bookmark(), for: .normal)
+        $0.titleLabel?.font = .medium(size: 16)
+        $0.setTitleColor(R.color.red(), for: .normal)
+        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
+    }
+    
     override func setup() {
         self.isUserInteractionEnabled = true
         self.backgroundColor = .clear
@@ -86,7 +99,9 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
             self.distanceLabel,
             self.starImage,
             self.starLabel,
-            self.shareButton
+            self.shareButton,
+            self.dividerView,
+            self.bookmarkButton
         ])
     }
     
@@ -148,9 +163,23 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
             make.centerY.equalTo(self.distanceLabel)
         }
         
+        self.dividerView.snp.makeConstraints { make in
+            make.centerX.equalTo(self.overViewContainerView)
+            make.top.equalTo(self.distanceImage.snp.bottom).offset(30)
+            make.height.equalTo(32)
+            make.width.equalTo(1)
+        }
+        
         self.shareButton.snp.makeConstraints { make in
-            make.top.equalTo(self.distanceImage.snp.bottom).offset(17)
+            make.centerY.equalTo(self.dividerView)
             make.left.equalTo(self.overViewContainerView)
+            make.right.equalTo(self.dividerView.snp.left)
+            make.height.equalTo(32)
+        }
+        
+        self.bookmarkButton.snp.makeConstraints { make in
+            make.centerY.equalTo(self.dividerView)
+            make.left.equalTo(self.dividerView.snp.right)
             make.right.equalTo(self.overViewContainerView)
             make.height.equalTo(32)
         }

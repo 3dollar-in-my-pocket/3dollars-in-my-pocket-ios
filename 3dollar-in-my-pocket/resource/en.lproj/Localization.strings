@@ -167,6 +167,7 @@
 "store_detail_days" = "출몰시기";
 "store_detail_payment" = "결제방식";
 "store_detail_payment_card" = "카드";
+"store_detail_bookmark" = "즐겨찾기";
 "store_detail_payment_transfer" = "계좌이체";
 "store_detail_payment_cash" = "현금";
 "store_detail_menu" = "카테고리 및 메뉴";
