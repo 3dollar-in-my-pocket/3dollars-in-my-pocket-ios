@@ -192,6 +192,7 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
         self.starLabel.text = "\(store.rating)점"
         self.moveToPosition(latitude: store.longitude, longitude: store.latitude)
         self.setupMarker(latitude: store.latitude, longitude: store.longitude)
+        self.bookmarkButton.isSelected = store.isBookmarked
     }
     
     func moveToPosition(latitude: Double, longitude: Double) {

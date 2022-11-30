@@ -33,6 +33,7 @@ final class StoreDetailViewController:
             locationManager: LocationManager.shared,
             storeService: StoreService(),
             reviewService: ReviewService(),
+            bookmarkService: BookmarkService(),
             gaManager: GAManager.shared,
             globalState: GlobalState.shared
         )
@@ -156,6 +157,18 @@ final class StoreDetailViewController:
             .map { Reactor.Action.tapDeleteRequest }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
+        
+        self.storeDetailView.bottomBar.rx.tapBookmark
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapBookmark }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        self.storeDetailView.bottomBar.rx.tapVisit
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapVisit }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
 
         self.storeDetailView.collectionView.rx.itemSelected
             .filter { StreetFoodStoreDetailSection(sectionIndex: $0.section) == .photos }
@@ -169,6 +182,13 @@ final class StoreDetailViewController:
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: Store())
             .drive(self.storeDetailView.rx.store)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .map { $0.store.isBookmarked }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: false)
+            .drive(self.storeDetailView.bottomBar.rx.isBookmarked)
             .disposed(by: self.disposeBag)
         
         reactor.state
@@ -202,6 +222,11 @@ final class StoreDetailViewController:
                     cell.currentLocationButton.rx.tap
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
                         .map { Reactor.Action.tapCurrentLocation }
+                        .bind(to: self.storeDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
+                    cell.bookmarkButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapBookmark }
                         .bind(to: self.storeDetailReactor.action)
                         .disposed(by: cell.disposeBag)
                     cell.shareButton.rx.tap

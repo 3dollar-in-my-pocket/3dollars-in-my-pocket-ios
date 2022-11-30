@@ -9,6 +9,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
         case tapDeleteRequest
+        case tapBookmark
         case tapCurrentLocation
         case tapShare
         case tapVisitHistory
@@ -25,6 +26,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     enum Mutation {
         case setStore(Store)
         case setCurrentLocation(CLLocation)
+        case setBookmark(Bool)
         case moveCamera(CLLocation)
         case appendPhotos([Image])
         case deletePhoto(photoId: Int)
@@ -66,6 +68,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     private let locationManager: LocationManagerProtocol
     private let storeService: StoreServiceProtocol
     private let reviewService: ReviewServiceProtocol
+    private let bookamrkService: BookmarkServiceProtocol
     private let gaManager: AnalyticsManagerProtocol
     private let globalState: GlobalState
     
@@ -75,6 +78,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         locationManager: LocationManagerProtocol,
         storeService: StoreServiceProtocol,
         reviewService: ReviewServiceProtocol,
+        bookmarkService: BookmarkServiceProtocol,
         gaManager: AnalyticsManagerProtocol,
         globalState: GlobalState,
         state: State = State(
@@ -88,6 +92,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         self.locationManager = locationManager
         self.storeService = storeService
         self.reviewService = reviewService
+        self.bookamrkService = bookmarkService
         self.gaManager = gaManager
         self.globalState = globalState
         self.initialState = State(
@@ -126,6 +131,16 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             )
             
             return .just(.presentDeleteModal(storeId: self.storeId))
+            
+        case .tapBookmark:
+            let isBookmarked = self.currentState.store.isBookmarked
+            let storeId = self.currentState.store.id
+            
+            if isBookmarked {
+                return self.unBookmarkStore(storeId: storeId)
+            } else {
+                return self.bookmarkStore(storeId: storeId)
+            }
             
         case .tapCurrentLocation:
             return self.locationManager.getCurrentLocation()
@@ -219,6 +234,9 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         case .setCurrentLocation(let location):
             newState.currentLocation = location
             
+        case .setBookmark(let isBookmarked):
+            newState.store.isBookmarked = isBookmarked
+            
         case .moveCamera(let location):
             self.moveCameraPublisher.accept(location)
             
@@ -307,6 +325,18 @@ final class StoreDetailReactor: BaseReactor, Reactor {
                     currentLocation: self.currentState.currentLocation
                 )
             }
+            .catch { .just(.showErrorAlert(error: $0)) }
+    }
+    
+    private func bookmarkStore(storeId: String) -> Observable<Mutation> {
+        return self.bookamrkService.bookmarkStore(storeType: .streetFood, storeId: storeId)
+            .map { .setBookmark(true) }
+            .catch { .just(.showErrorAlert(error: $0)) }
+    }
+    
+    private func unBookmarkStore(storeId: String) -> Observable<Mutation> {
+        return self.bookamrkService.unBookmarkStore(storeType: .streetFood, storeId: storeId)
+            .map { .setBookmark(false) }
             .catch { .just(.showErrorAlert(error: $0)) }
     }
 }
