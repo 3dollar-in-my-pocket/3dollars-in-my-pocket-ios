@@ -140,12 +140,16 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             if isBookmarked {
                 return .concat([
                     self.unBookmarkStore(storeId: storeId),
-                    .just(.showToast(message: "즐겨찾기가 추가 되었습니다!"))
+                    .just(.showToast(
+                        message: R.string.localization.store_detail_unbookmark_toast())
+                    )
                 ])
             } else {
                 return .concat([
                     self.bookmarkStore(storeId: storeId),
-                    .just(.showToast(message: "즐겨찾기가 삭제 되었습니다!"))
+                    .just(.showToast(
+                        message: R.string.localization.store_detail_bookmark_toast())
+                    )
                 ])
             }
             

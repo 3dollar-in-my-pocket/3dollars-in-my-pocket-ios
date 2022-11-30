@@ -2474,10 +2474,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6E0EA3BD23ABB232008F7CB2 /* Build configuration list for PBXNativeTarget "3dollar-in-my-pocket" */;
 			buildPhases = (
+				6EA92ED4258E3643009B6227 /* Sync String */,
 				1F0336659EDDB90592264AC2 /* [CP] Check Pods Manifest.lock */,
 				6E8E2414256A8D3C00AE6479 /* GoogleService Info */,
-				6EA92ED4258E3643009B6227 /* Sync String */,
-				6EFC89DD268B62AA00B3414F /* ShellScript */,
+				6EFC89DD268B62AA00B3414F /* R */,
 				6E0EA38F23ABB230008F7CB2 /* Sources */,
 				6E0EA39023ABB230008F7CB2 /* Frameworks */,
 				6E0EA39123ABB230008F7CB2 /* Resources */,
@@ -2774,7 +2774,7 @@
 			shellPath = /bin/sh;
 			shellScript = "${PODS_ROOT}/SwiftLint/swiftlint\n";
 		};
-		6EFC89DD268B62AA00B3414F /* ShellScript */ = {
+		6EFC89DD268B62AA00B3414F /* R */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2784,6 +2784,7 @@
 			inputPaths = (
 				"$TEMP_DIR/rswift-lastrun",
 			);
+			name = R;
 			outputFileListPaths = (
 			);
 			outputPaths = (

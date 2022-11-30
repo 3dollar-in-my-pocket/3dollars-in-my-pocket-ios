@@ -196,6 +196,8 @@
 "store_detail_add_visit_history" = "방문 인증하기";
 "store_detail_empty_visit_history" = "아직 방문 인증 내역이 없어요 :(";
 "store_detail_visit_history" = "1달 동안 %d명이 다녀간 가게에요!";
+"store_detail_bookmark_toast" = "즐겨찾기가 추가 되었습니다!";
+"store_detail_unbookmark_toast" = "즐겨찾기가 삭제 되었습니다!";
 "store_delete_title" = "삭제요청 하시는\n이유가 궁금해요!";
 "store_delete_description" = "3건 이상의 요청이 들어오면 자동 삭제됩니다.";
 "store_delete_menu_not_existed" = "없어진 가게에요.";
