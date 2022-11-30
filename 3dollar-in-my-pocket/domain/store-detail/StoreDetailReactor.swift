@@ -43,6 +43,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         case presentVisit(store: Store)
         case showLoading(isShow: Bool)
         case showErrorAlert(error: Error)
+        case showToast(message: String)
     }
     
     struct State {
@@ -137,9 +138,15 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             let storeId = self.currentState.store.id
             
             if isBookmarked {
-                return self.unBookmarkStore(storeId: storeId)
+                return .concat([
+                    self.unBookmarkStore(storeId: storeId),
+                    .just(.showToast(message: "즐겨찾기가 추가 되었습니다!"))
+                ])
             } else {
-                return self.bookmarkStore(storeId: storeId)
+                return .concat([
+                    self.bookmarkStore(storeId: storeId),
+                    .just(.showToast(message: "즐겨찾기가 삭제 되었습니다!"))
+                ])
             }
             
         case .tapCurrentLocation:
@@ -288,6 +295,9 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             
         case .showErrorAlert(let error):
             self.showErrorAlertPublisher.accept(error)
+            
+        case .showToast(let message):
+            self.showToastPublisher.accept(message)
         }
         
         return newState

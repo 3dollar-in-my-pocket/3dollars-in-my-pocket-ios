@@ -2,8 +2,8 @@ import UIKit
 
 final class ToastView: BaseView {
     private let containerView = UIView().then {
-        $0.backgroundColor = R.color.green()
-        $0.layer.cornerRadius = 20
+        $0.backgroundColor = R.color.gray95()
+        $0.layer.cornerRadius = 10
     }
     
     private let messageLabel = UILabel().then {

@@ -148,6 +148,18 @@ final class StoreDetailViewController:
                 self?.coordinator?.showErrorAlert(error: error)
             }
             .disposed(by: self.eventDisposeBag)
+        
+        self.storeDetailReactor.showToastPublisher
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] message in
+                guard let self = self else { return }
+                
+                self.coordinator?.showToast(
+                    message: message,
+                    baseView: self.storeDetailView.bottomBar
+                )
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: StoreDetailReactor) {
