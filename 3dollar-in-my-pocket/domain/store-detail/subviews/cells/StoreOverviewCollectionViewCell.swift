@@ -66,8 +66,8 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
     }
     
     let shareButton = UIButton().then {
-        $0.setImage(UIImage(named: "ic_share"), for: .normal)
-        $0.setTitle("store_detail_share".localized, for: .normal)
+        $0.setImage(R.image.ic_share(), for: .normal)
+        $0.setTitle(R.string.localization.boss_store_share(), for: .normal)
         $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = .medium(size: 16)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)

@@ -183,6 +183,8 @@ final class BossStoreDetailView: BaseView {
         $0.isHidden = true
     }
     
+    let bottomBar = BossStoreDetailBottomBar()
+    
     override func setup() {
         self.addSubViews([
             self.collectionView,
@@ -190,7 +192,8 @@ final class BossStoreDetailView: BaseView {
             self.backButton,
             self.categoryImageView,
             self.feedbackButton,
-            self.storeClosedTagView
+            self.storeClosedTagView,
+            self.bottomBar
         ])
     }
     
@@ -230,8 +233,14 @@ final class BossStoreDetailView: BaseView {
         
         self.storeClosedTagView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-20)
+            make.bottom.equalTo(self.bottomBar.snp.top).offset(-12)
             make.height.equalTo(40)
+        }
+        
+        self.bottomBar.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
     }
     

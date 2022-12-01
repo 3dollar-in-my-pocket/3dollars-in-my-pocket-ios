@@ -13,6 +13,7 @@ struct BossStore {
     let introduction: String?
     var feedbackCount: Int
     var feedbacks: [BossStoreFeedback]
+    var isBookmarked: Bool
     
     init(response: BossStoreAroundInfoResponse) {
         self.id = response.bossStoreId
@@ -29,6 +30,7 @@ struct BossStore {
         self.introduction = nil
         self.feedbackCount = response.totalFeedbacksCounts
         self.feedbacks = []
+        self.isBookmarked = false
     }
         
     init(response: BossStoreWithFeedbacksResponse) {
@@ -47,6 +49,7 @@ struct BossStore {
         self.introduction = response.store.introduction
         self.feedbackCount = response.feedbacks.map { $0.count }.reduce(0, +)
         self.feedbacks = response.feedbacks.map(BossStoreFeedback.init(response:))
+        self.isBookmarked = false
     }
     
     init() {
@@ -64,6 +67,7 @@ struct BossStore {
         self.introduction = nil
         self.feedbackCount = 0
         self.feedbacks = []
+        self.isBookmarked = false
     }
 }
 
