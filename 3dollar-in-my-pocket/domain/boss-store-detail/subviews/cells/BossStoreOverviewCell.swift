@@ -203,7 +203,6 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
         self.nameLabel.text = store.name
         self.distanceLabel.text = "\(store.distance)m"
         self.reviewCountLabel.text = "리뷰 \(store.feedbackCount)개"
-        self.bookmarkButton.isSelected = store.isBookmarked
     }
     
     func moveCamera(location: CLLocation) {

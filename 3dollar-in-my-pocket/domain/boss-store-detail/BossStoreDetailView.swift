@@ -228,7 +228,7 @@ final class BossStoreDetailView: BaseView {
             make.left.equalToSuperview()
             make.top.equalTo(self.navigationContainerView.snp.bottom).offset(-20)
             make.right.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.bottom.equalTo(self.bottomBar.snp.top)
         }
         
         self.storeClosedTagView.snp.makeConstraints { make in
