@@ -17,6 +17,7 @@ final class BossStoreDetailViewController:
         self.bossStoreDetailReactor = BossStoreDetailReactor(
             storeId: storeId,
             storeService: StoreService(),
+            bookmarkService: BookmarkService(),
             locationManaber: LocationManager.shared,
             globalState: GlobalState.shared,
             userDefaults: UserDefaultsUtil(),
