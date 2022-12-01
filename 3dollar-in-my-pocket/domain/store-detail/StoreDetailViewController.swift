@@ -164,12 +164,6 @@ final class StoreDetailViewController:
     
     func bind(reactor: StoreDetailReactor) {
         // Bind Action
-        self.storeDetailView.deleteRequestButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapDeleteRequest }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-        
         self.storeDetailView.bottomBar.rx.tapBookmark
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .map { Reactor.Action.tapBookmark }
@@ -244,6 +238,11 @@ final class StoreDetailViewController:
                     cell.shareButton.rx.tap
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
                         .map { Reactor.Action.tapShare }
+                        .bind(to: self.storeDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
+                    cell.deleteRequestButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapDeleteRequest }
                         .bind(to: self.storeDetailReactor.action)
                         .disposed(by: cell.disposeBag)
                     

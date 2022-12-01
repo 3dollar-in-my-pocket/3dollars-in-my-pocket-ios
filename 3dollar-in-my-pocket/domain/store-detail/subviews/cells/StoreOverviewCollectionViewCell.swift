@@ -6,7 +6,7 @@ import RxCocoa
 
 final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(StoreOverviewCollectionViewCell.self)"
-    static let height: CGFloat = UIScreen.main.bounds.height / 2.21 + 160
+    static let height: CGFloat = UIScreen.main.bounds.height / 2.21 + 180
     
     private var marker = NMFMarker()
     
@@ -86,6 +86,16 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
     }
     
+    let deleteRequestButton = UIButton().then {
+        $0.setImage(R.image.ic_info()?.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.setTitle(R.string.localization.store_detail_delete_request(), for: .normal)
+        $0.setTitleColor(R.color.gray40(), for: .normal)
+        $0.titleLabel?.font = .medium(size: 14)
+        $0.titleLabel?.textAlignment = .right
+        $0.tintColor = R.color.gray40()
+        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: -4)
+    }
+    
     override func setup() {
         self.isUserInteractionEnabled = true
         self.backgroundColor = .clear
@@ -101,7 +111,8 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
             self.starLabel,
             self.shareButton,
             self.dividerView,
-            self.bookmarkButton
+            self.bookmarkButton,
+            self.deleteRequestButton
         ])
     }
     
@@ -182,6 +193,11 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
             make.left.equalTo(self.dividerView.snp.right)
             make.right.equalTo(self.overViewContainerView)
             make.height.equalTo(32)
+        }
+        
+        self.deleteRequestButton.snp.makeConstraints { make in
+            make.right.equalToSuperview().offset(-24)
+            make.top.equalTo(self.overViewContainerView.snp.bottom).offset(20)
         }
     }
     

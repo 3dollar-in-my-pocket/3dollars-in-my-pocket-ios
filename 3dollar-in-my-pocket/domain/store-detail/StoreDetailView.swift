@@ -19,12 +19,6 @@ final class StoreDetailView: BaseView {
     
     fileprivate let mainCategoryImage = UIImageView()
     
-    let deleteRequestButton = UIButton().then {
-        $0.setTitle(R.string.localization.store_detail_delete_request(), for: .normal)
-        $0.setTitleColor(R.color.red(), for: .normal)
-        $0.titleLabel?.font = .semiBold(size: 14)
-    }
-    
     let collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewLayout()
@@ -84,7 +78,6 @@ final class StoreDetailView: BaseView {
             self.navigationView,
             self.backButton,
             self.mainCategoryImage,
-            self.deleteRequestButton,
             self.bottomBar
         ])
         self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
@@ -105,11 +98,6 @@ final class StoreDetailView: BaseView {
             make.centerX.equalToSuperview()
             make.width.height.equalTo(60)
             make.bottom.equalTo(self.navigationView).offset(-3)
-        }
-        
-        self.deleteRequestButton.snp.makeConstraints { make in
-            make.centerY.equalTo(self.mainCategoryImage)
-            make.right.equalToSuperview().offset(-24)
         }
         
         self.collectionView.snp.makeConstraints { make in
