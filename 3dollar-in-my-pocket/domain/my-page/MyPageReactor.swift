@@ -1,7 +1,51 @@
+import ReactorKit
 import RxSwift
-import RxCocoa
 
-final class MyPageViewModel: BaseViewModel {
+final class MyPageReactor: BaseReactor, Reactor {
+    enum Action {
+        case viewDidLoad
+        case tapMyMedal
+        case tapVisitHistory(row: Int)
+        case tapBookmark(row: Int)
+    }
+    
+    enum Mutation {
+        case setUser(User)
+        case showErrorAlert(Error)
+    }
+    
+    struct State {
+        var user: User
+        var visitHistories: [VisitHistory]
+        @Pulse var endRefreshing: Void?
+        @Pulse var pushStoreDetail: Int?
+        @Pulse var pushMyMedal: Medal?
+    }
+    
+    let initialState: State
+    private let userService: UserServiceProtocol
+    private let visitHistoryService: VisitHistoryServiceProtocol
+    private let bookmarkService: BookmarkServiceProtocol
+    private let size = 5
+    
+    init(
+        userService: UserServiceProtocol,
+        visitHistoryService: VisitHistoryServiceProtocol,
+        bookmarkService: BookmarkServiceProtocol,
+        state: State = State(user: User(), visitHistories: [])
+    ) {
+        self.userService = userService
+        self.visitHistoryService = visitHistoryService
+        self.bookmarkService = bookmarkService
+        self.initialState = state
+    }
+    
+    func mutate(action: Action) -> Observable<Mutation> {
+        switch action {
+        case .viewDidLoad:
+            
+        }
+    }
     
     struct Input {
         let viewDidLoad = PublishSubject<Void>()
@@ -18,22 +62,6 @@ final class MyPageViewModel: BaseViewModel {
         let goToStoreDetail = PublishRelay<Int>()
         let goToMyMedal = PublishRelay<Medal>()
         let goToRename = PublishRelay<String>()
-    }
-    
-    let input = Input()
-    let output = Output()
-    let userService: UserServiceProtocol
-    let visitHistoryService: VisitHistoryServiceProtocol
-    private let size = 5
-    
-    
-    init(
-        userService: UserServiceProtocol,
-        visitHistoryService: VisitHistoryServiceProtocol
-    ) {
-        self.userService = userService
-        self.visitHistoryService = visitHistoryService
-        super.init()
     }
     
     override func bind() {
@@ -72,20 +100,10 @@ final class MyPageViewModel: BaseViewModel {
             .disposed(by: self.disposeBag)
     }
     
-    private func fetchMyActivityInfo() {
-        self.userService.fetchUserActivity()
-            .map(User.init)
-            .subscribe(
-                onNext: { [weak self] user in
-                    self?.output.user.accept(user)
-                    self?.output.isRefreshing.accept(false)
-                },
-                onError: { [weak self] error in
-                    self?.showErrorAlert.accept(error)
-                    self?.output.isRefreshing.accept(false)
-                }
-            )
-            .disposed(by: self.disposeBag)
+    private func fetchMyActivityInfo() -> Observable<Mutation> {
+        return self.userService.fetchUserActivity()
+            .map { .setUser($0) }
+            .catch { .just(.showErrorAlert($0)) }
     }
     
     private func fetchVisitHistories() {
