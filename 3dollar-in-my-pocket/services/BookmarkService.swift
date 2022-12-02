@@ -5,6 +5,8 @@ protocol BookmarkServiceProtocol {
     func bookmarkStore(storeType: StoreType, storeId: String) -> Observable<Void>
     
     func unBookmarkStore(storeType: StoreType, storeId: String) -> Observable<Void>
+    
+    func fetchMyBookmarks(cursor: String?) -> Observable<(Cursor, BookmarkFolder)>
 }
 
 struct BookmarkService: BookmarkServiceProtocol {
@@ -32,5 +34,19 @@ struct BookmarkService: BookmarkServiceProtocol {
             urlString: urlString,
             headers: headers
         )
+    }
+    
+    func fetchMyBookmarks(cursor: String?) -> Observable<(Cursor, BookmarkFolder)> {
+        let urlString = HTTPUtils.url + "/api/v1/favorite/store/folder/my"
+        let headers = HTTPUtils.defaultHeader()
+        let parameters: [String: Any] = ["cursor": cursor as Any, "size": 20]
+        
+        return self.networkManager.createGetObservable(
+            class: UserFavoriteStoreFolderResponse.self,
+            urlString: urlString,
+            headers: headers,
+            parameters: parameters
+        )
+        .map { (Cursor(response: $0.cursor), BookmarkFolder(response: $0)) }
     }
 }
