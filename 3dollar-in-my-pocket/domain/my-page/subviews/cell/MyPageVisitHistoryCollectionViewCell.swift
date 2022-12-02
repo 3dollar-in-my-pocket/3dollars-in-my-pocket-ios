@@ -1,8 +1,7 @@
 import UIKit
 
-final class MyVisitHistoryCell: BaseCollectionViewCell {
-    
-    static let registerId = "\(MyVisitHistoryCell.self)"
+final class MyPageVisitHistoryCollectionViewCell: BaseCollectionViewCell {
+    static let registerId = "\(MyPageVisitHistoryCollectionViewCell.self)"
     static let size = CGSize(width: 250, height: 112)
     
     private let visitDateLabel = VisitDateView()

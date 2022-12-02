@@ -4,12 +4,7 @@ import RxSwift
 import RxCocoa
 
 final class MyPageView: BaseView {
-    
     let refreshControl = UIRefreshControl()
-    
-    private let scrollView = UIScrollView()
-    
-    private let containerView = UIView()
     
     private let navigationBackgroundView = UIView().then {
         $0.backgroundColor = R.color.gray95()
@@ -25,101 +20,65 @@ final class MyPageView: BaseView {
         $0.setImage(UIImage.init(named: "ic_setting"), for: .normal)
     }
     
-    private let bgCloud = UIImageView().then {
-        $0.image = R.image.bg_cloud_my_page()
-    }
-    
-    let medalImageButton = UIButton()
-    
-    private let myTitleLabel = TitleLabel(type: .big)
-    
-    private let nicknameLabel = UILabel().then {
-        $0.font = .bold(size: 30)
-        $0.textAlignment = .center
-        $0.textColor = .white
-    }
-    
-    let storeCountButton = CountButton(type: .store)
-    
-    let reviewCountButton = CountButton(type: .review)
-    
-    let medalCountButton = CountButton(type: .title)
-    
-    private let topBackgroundView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
-        $0.layer.cornerRadius = 10
-        $0.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-    }
-    
-    private let visitBedgeImage = UIImageView().then {
-        $0.image = R.image.ic_bedge()
-    }
-    
-    private let visitLabel = UILabel().then {
-        $0.text = R.string.localization.my_page_visit()
-        $0.textColor = .white
-        $0.font = .bold(size: 12)
-    }
-    
-    let visitHistoryButton = UIButton().then {
-        $0.setTitle(R.string.localization.my_page_visit_description(), for: .normal)
-        $0.setTitleColor(.white, for: .normal)
-        $0.titleLabel?.font = .regular(size: 24)
-        $0.semanticContentAttribute = .forceRightToLeft
-        $0.setImage(R.image.ic_right_arrow(), for: .normal)
-    }
-    
-    let visitHistoryCollectionView = UICollectionView(
+    let collectionView = UICollectionView(
         frame: .zero,
-        collectionViewLayout: UICollectionViewFlowLayout()
+        collectionViewLayout: UICollectionViewLayout()
     ).then {
-        let layout = UICollectionViewFlowLayout()
-        
-        layout.itemSize = MyVisitHistoryCell.size
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 16
-        
-        $0.collectionViewLayout = layout
-        $0.showsHorizontalScrollIndicator = false
-        $0.contentInset = .init(top: 0, left: 24, bottom: 0, right: 24)
-        $0.backgroundColor = .clear
         $0.register(
-            MyVisitHistoryCell.self,
-            forCellWithReuseIdentifier: MyVisitHistoryCell.registerId
+            MyPageOverviewCollectionViewCell.self,
+            forCellWithReuseIdentifier: MyPageOverviewCollectionViewCell.registerId
         )
+        $0.register(
+            MyPageVisitHistoryCollectionViewCell.self,
+            forCellWithReuseIdentifier: MyPageVisitHistoryCollectionViewCell.registerId
+        )
+        $0.register(
+            MyPageBookmarkCollectionViewCell.self,
+            forCellWithReuseIdentifier: MyPageBookmarkCollectionViewCell.registerId
+        )
+        $0.register(
+            MyPageSectionHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: MyPageSectionHeaderView.registerId
+        )
+        $0.backgroundColor = R.color.gray100()
     }
     
-    let visitHistoryEmptyView = VisitHistoryEmptyView().then {
-        $0.isHidden = true
-    }
-    
+//    let visitHistoryCollectionView = UICollectionView(
+//        frame: .zero,
+//        collectionViewLayout: UICollectionViewFlowLayout()
+//    ).then {
+//        let layout = UICollectionViewFlowLayout()
+//
+//        layout.itemSize = MyVisitHistoryCell.size
+//        layout.scrollDirection = .horizontal
+//        layout.minimumInteritemSpacing = 16
+//
+//        $0.collectionViewLayout = layout
+//        $0.showsHorizontalScrollIndicator = false
+//        $0.contentInset = .init(top: 0, left: 24, bottom: 0, right: 24)
+//        $0.backgroundColor = .clear
+//        $0.register(
+//            MyVisitHistoryCell.self,
+//            forCellWithReuseIdentifier: MyVisitHistoryCell.registerId
+//        )
+//    }
+//
+//    let visitHistoryEmptyView = VisitHistoryEmptyView().then {
+//        $0.isHidden = true
+//    }
+//
     
     override func setup() {
         self.backgroundColor = R.color.gray100()
-        self.scrollView.refreshControl = self.refreshControl
-        self.containerView.addSubViews([
-            self.topBackgroundView,
-            self.bgCloud,
-            self.medalImageButton,
-            self.myTitleLabel,
-            self.nicknameLabel,
-            self.storeCountButton,
-            self.reviewCountButton,
-            self.medalCountButton,
-            self.visitBedgeImage,
-            self.visitLabel,
-            self.visitHistoryButton,
-            self.visitHistoryCollectionView,
-            self.visitHistoryEmptyView
-        ])
-        self.scrollView.addSubview(self.containerView)
+        self.collectionView.collectionViewLayout = self.generateCompositionalLayout()
+        self.collectionView.refreshControl = self.refreshControl
         self.addSubViews([
             self.navigationBackgroundView,
             self.titleLabel,
             self.settingButton,
-            self.scrollView
+            self.collectionView
         ])
-        self.myTitleLabel.bind(title: "붕어빵 챌린저")
     }
     
     override func bindConstraints() {
@@ -127,8 +86,9 @@ final class MyPageView: BaseView {
             make.left.equalToSuperview()
             make.right.equalToSuperview()
             make.top.equalToSuperview()
-            make.bottom.equalTo(self.scrollView.snp.top)
+            make.bottom.equalTo(self.titleLabel).offset(23)
         }
+        
         self.titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(self.safeAreaLayoutGuide).offset(23)
@@ -140,112 +100,77 @@ final class MyPageView: BaseView {
             make.width.height.equalTo(24)
         }
         
-        self.scrollView.snp.makeConstraints { make in
+        self.collectionView.snp.makeConstraints { make in
             make.left.equalToSuperview()
             make.right.equalToSuperview()
-            make.top.equalTo(self.titleLabel.snp.bottom).offset(23)
-            make.bottom.equalTo(safeAreaLayoutGuide)
-        }
-        
-        self.bgCloud.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
-            make.height.equalTo(154)
-        }
-        
-        self.topBackgroundView.snp.makeConstraints { make in
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
-            make.top.equalToSuperview()
-            make.bottom.equalTo(self.storeCountButton).offset(32)
-        }
-        
-        self.medalImageButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(self.bgCloud).offset(11)
-            make.width.equalTo(120)
-            make.height.equalTo(120)
-        }
-        
-        self.myTitleLabel.snp.makeConstraints { (make) in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(self.medalImageButton.snp.bottom).offset(20)
-        }
-        
-        self.nicknameLabel.snp.makeConstraints { (make) in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(self.myTitleLabel.snp.bottom).offset(10)
-        }
-        
-        self.storeCountButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(36)
-            make.top.equalTo(self.nicknameLabel.snp.bottom).offset(24)
-            make.size.equalTo(CountButton.size)
-        }
-        
-        self.reviewCountButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalTo(self.storeCountButton)
-            make.size.equalTo(CountButton.size)
-        }
-        
-        self.medalCountButton.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-36)
-            make.centerY.equalTo(self.storeCountButton)
-            make.size.equalTo(CountButton.size)
-        }
-        
-        self.visitBedgeImage.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.top.equalTo(self.storeCountButton.snp.bottom).offset(60)
-            make.width.height.equalTo(16)
-        }
-        
-        self.visitLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(self.visitBedgeImage)
-            make.left.equalTo(self.visitBedgeImage.snp.right).offset(4)
-        }
-        
-        self.visitHistoryButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.top.equalTo(self.visitBedgeImage.snp.bottom).offset(12)
-        }
-        
-        self.visitHistoryCollectionView.snp.makeConstraints { make in
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
-            make.top.equalTo(self.visitHistoryButton.snp.bottom).offset(23)
-            make.height.equalTo(112)
-        }
-        
-        self.visitHistoryEmptyView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.top.equalTo(visitHistoryButton.snp.bottom).offset(24)
-        }
-        
-        self.containerView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.width.equalTo(self.scrollView)
-            make.top.equalTo(self.bgCloud).priority(.high)
-            make.bottom.equalTo(self.visitHistoryCollectionView).offset(24).priority(.high)
+            make.top.equalTo(self.navigationBackgroundView.snp.bottom)
+            make.bottom.equalTo(self.safeAreaLayoutGuide)
         }
     }
     
-    fileprivate func bind(user: User) {
-        self.nicknameLabel.text = user.name
-        self.medalImageButton.setImage(urlString: user.medal.iconUrl, state: .normal)
-        self.myTitleLabel.bind(title: user.medal.name)
-        self.storeCountButton.bind(count: user.activity.storesCount)
-        self.reviewCountButton.bind(count: user.activity.reviewsCount)
-        self.medalCountButton.bind(count: user.activity.medalsCounts)
-    }
-}
-
-extension Reactive where Base: MyPageView {
-    var user: Binder<User> {
-        return Binder(self.base) { view, user in
-            view.bind(user: user)
+    private func generateCompositionalLayout() -> UICollectionViewCompositionalLayout {
+        return .init { sectionIndex, _ in
+            switch sectionIndex {
+            case 0:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(MyPageOverviewCollectionViewCell.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(MyPageOverviewCollectionViewCell.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                return section
+                
+            case 1:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .absolute(MyPageVisitHistoryCollectionViewCell.size.width),
+                    heightDimension: .absolute(MyPageVisitHistoryCollectionViewCell.size.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .absolute(MyPageVisitHistoryCollectionViewCell.size.width),
+                    heightDimension: .absolute(MyPageVisitHistoryCollectionViewCell.size.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(MyPageSectionHeaderView.height)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )]
+                
+                return section
+                
+            case 2:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .absolute(MyPageBookmarkCollectionViewCell.size.width),
+                    heightDimension: .absolute(MyPageBookmarkCollectionViewCell.size.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .absolute(MyPageBookmarkCollectionViewCell.size.width),
+                    heightDimension: .absolute(MyPageBookmarkCollectionViewCell.size.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(MyPageSectionHeaderView.height)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )]
+                
+                return section
+                
+            default:
+                return nil
+            }
         }
     }
 }

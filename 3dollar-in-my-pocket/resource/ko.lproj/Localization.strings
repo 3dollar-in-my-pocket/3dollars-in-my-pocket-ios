@@ -228,7 +228,9 @@
 "my_page_title" = "마이 페이지";
 "my_page_visit" = "방문 인증";
 "my_page_visit_description" = "최근 내가 들린 가게는?";
+"my_page_bookmark_description" = "내 음식 플리 들어볼래?";
 "my_page_medals" = "내 칭호";
+"my_page_more" = "더보기";
 "my_page_visit_history_empty_title" = "방문을 인증해보세요!";
 "my_page_visit_history_empty_description" = "아직 내가 인증한 가게가 없어요ㅠㅠ";
 "registered_store_title" = "제보한 가게";
