@@ -4,9 +4,10 @@ import RxSwift
 final class MyPageViewController: BaseVC, MyPageCoordinator {
     private weak var coordinator: MyPageCoordinator?
     private let myPageView = MyPageView()
-    private let viewModel = MyPageViewModel(
+    private let myPageReactor = MyPageReactor(
         userService: UserService(),
-        visitHistoryService: VisitHistoryService()
+        visitHistoryService: VisitHistoryService(),
+        bookmarkService: BookmarkService()
     )
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -42,7 +43,6 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.viewModel.input.viewDidLoad.onNext(())
         self.tabBarController?.tabBar.barTintColor = R.color.gray100()
     }
     
@@ -145,8 +145,8 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
     }
 }
 
-extension MyPageViewController: MyMedalViewControllerDelegate {
-    func onChangeMedal(medal: Medal) {
-        self.viewModel.input.onChangeMedal.onNext(medal)
-    }
-}
+//extension MyPageViewController: MyMedalViewControllerDelegate {
+//    func onChangeMedal(medal: Medal) {
+//        self.viewModel.input.onChangeMedal.onNext(medal)
+//    }
+//}
