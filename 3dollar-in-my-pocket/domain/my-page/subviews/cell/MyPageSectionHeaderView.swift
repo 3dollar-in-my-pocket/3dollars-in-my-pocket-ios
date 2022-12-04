@@ -28,7 +28,7 @@ final class MyPageSectionHeaderView: BaseCollectionReusableView {
     }
     
     override func setup() {
-        self.backgroundColor = .clear
+        self.backgroundColor = R.color.gray100()
         self.addSubViews([
             self.iconView,
             self.iconLabel,

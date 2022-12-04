@@ -4,7 +4,9 @@ import RxSwift
 import RxCocoa
 
 final class MyPageView: BaseView {
-    let refreshControl = UIRefreshControl()
+    let refreshControl = UIRefreshControl().then {
+        $0.tintColor = .white
+    }
     
     private let navigationBackgroundView = UIView().then {
         $0.backgroundColor = R.color.gray95()
@@ -54,6 +56,17 @@ final class MyPageView: BaseView {
             self.settingButton,
             self.collectionView
         ])
+        
+        self.collectionView.rx.contentOffset
+            .map { $0.y >= 0 }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: { [weak self] isPlusOffset in
+                self?.collectionView.backgroundColor = isPlusOffset
+                ? R.color.gray100()
+                : R.color.gray95()
+            })
+            .disposed(by: self.disposeBag)
     }
     
     override func bindConstraints() {
@@ -84,7 +97,7 @@ final class MyPageView: BaseView {
     }
     
     private func generateCompositionalLayout() -> UICollectionViewCompositionalLayout {
-        return .init { sectionIndex, _ in
+        let compositionLayout = UICollectionViewCompositionalLayout { sectionIndex, _ in
             switch sectionIndex {
             case 0:
                 let item = NSCollectionLayoutItem(layoutSize: .init(
@@ -119,6 +132,9 @@ final class MyPageView: BaseView {
                     alignment: .top
                 )]
                 section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
+                section.decorationItems = [
+                    .background(elementKind: MyPageDecorationView.registerId)
+                ]
                 
                 return section
                 
@@ -142,6 +158,9 @@ final class MyPageView: BaseView {
                     alignment: .top
                 )]
                 section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
+                section.decorationItems = [
+                    .background(elementKind: MyPageDecorationView.registerId)
+                ]
                 
                 return section
                 
@@ -149,5 +168,11 @@ final class MyPageView: BaseView {
                 return nil
             }
         }
+        
+        compositionLayout.register(
+            MyPageDecorationView.self,
+            forDecorationViewOfKind: MyPageDecorationView.registerId
+        )
+        return compositionLayout
     }
 }

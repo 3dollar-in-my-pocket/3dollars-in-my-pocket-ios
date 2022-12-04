@@ -241,7 +241,6 @@
 		6E5CA57A27686EFB001EDE19 /* MedalInfoCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA57927686EFB001EDE19 /* MedalInfoCoordinator.swift */; };
 		6E5CA57E2768728F001EDE19 /* MedalInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA57D2768728F001EDE19 /* MedalInfoTableViewCell.swift */; };
 		6E5CA5802768777F001EDE19 /* MedalInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA57F2768777F001EDE19 /* MedalInfoViewModel.swift */; };
-		6E5CA58227688D1C001EDE19 /* VisitHistoryEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA58127688D1C001EDE19 /* VisitHistoryEmptyView.swift */; };
 		6E5CA5842768AEC4001EDE19 /* RegisteredStoreEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA5832768AEC4001EDE19 /* RegisteredStoreEmptyView.swift */; };
 		6E5CA5862768B2F7001EDE19 /* MyVisitHistoryEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA5852768B2F7001EDE19 /* MyVisitHistoryEmptyView.swift */; };
 		6E5CA5882768B50D001EDE19 /* MyReviewEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5CA5872768B50D001EDE19 /* MyReviewEmptyView.swift */; };
@@ -430,6 +429,7 @@
 		6EC24DBF290919EA0087C2B3 /* PhotoDetailCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC24DBE290919EA0087C2B3 /* PhotoDetailCoordinator.swift */; };
 		6EC8303B289FC11C00C0324F /* BossStoreMoreMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC8303A289FC11C00C0324F /* BossStoreMoreMenuCell.swift */; };
 		6EC83C0E293C37570019C3AA /* MyPageSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC83C0D293C37570019C3AA /* MyPageSectionModel.swift */; };
+		6EC83C10293C8B840019C3AA /* MyPageDecorationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC83C0F293C8B840019C3AA /* MyPageDecorationView.swift */; };
 		6EC8685C25BF07F10082521C /* splash.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EC8685B25BF07F10082521C /* splash.json */; };
 		6EC9D6CF28F2BED7000924E8 /* DeleteModalCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC9D6CE28F2BED7000924E8 /* DeleteModalCoordinator.swift */; };
 		6ECCE9AB26BACF3F006B3C01 /* MenuRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECCE9AA26BACF3F006B3C01 /* MenuRequest.swift */; };
@@ -757,7 +757,6 @@
 		6E5CA57927686EFB001EDE19 /* MedalInfoCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalInfoCoordinator.swift; sourceTree = "<group>"; };
 		6E5CA57D2768728F001EDE19 /* MedalInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalInfoTableViewCell.swift; sourceTree = "<group>"; };
 		6E5CA57F2768777F001EDE19 /* MedalInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalInfoViewModel.swift; sourceTree = "<group>"; };
-		6E5CA58127688D1C001EDE19 /* VisitHistoryEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitHistoryEmptyView.swift; sourceTree = "<group>"; };
 		6E5CA5832768AEC4001EDE19 /* RegisteredStoreEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreEmptyView.swift; sourceTree = "<group>"; };
 		6E5CA5852768B2F7001EDE19 /* MyVisitHistoryEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVisitHistoryEmptyView.swift; sourceTree = "<group>"; };
 		6E5CA5872768B50D001EDE19 /* MyReviewEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyReviewEmptyView.swift; sourceTree = "<group>"; };
@@ -948,6 +947,7 @@
 		6EC24DBE290919EA0087C2B3 /* PhotoDetailCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailCoordinator.swift; sourceTree = "<group>"; };
 		6EC8303A289FC11C00C0324F /* BossStoreMoreMenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BossStoreMoreMenuCell.swift; sourceTree = "<group>"; };
 		6EC83C0D293C37570019C3AA /* MyPageSectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageSectionModel.swift; sourceTree = "<group>"; };
+		6EC83C0F293C8B840019C3AA /* MyPageDecorationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageDecorationView.swift; sourceTree = "<group>"; };
 		6EC8685B25BF07F10082521C /* splash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = splash.json; sourceTree = "<group>"; };
 		6EC9D6CE28F2BED7000924E8 /* DeleteModalCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteModalCoordinator.swift; sourceTree = "<group>"; };
 		6ECCE9AA26BACF3F006B3C01 /* MenuRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuRequest.swift; sourceTree = "<group>"; };
@@ -1460,7 +1460,7 @@
 				6E4C1BE027532E0D006C0F15 /* TitleLabel.swift */,
 				6E4C1BE2275330CF006C0F15 /* CountButton.swift */,
 				6E4C1BE727534DC0006C0F15 /* VisitDateView.swift */,
-				6E5CA58127688D1C001EDE19 /* VisitHistoryEmptyView.swift */,
+				6EC83C0F293C8B840019C3AA /* MyPageDecorationView.swift */,
 			);
 			path = subviews;
 			sourceTree = "<group>";
@@ -3133,6 +3133,7 @@
 				6E5F3F7128993EC00066E318 /* BossStoreFeedbackItemView.swift in Sources */,
 				6EDBBB802754C1EC00470F71 /* StoreWithVisitsResponse.swift in Sources */,
 				6E09A75828B22F7D00792F12 /* FoodTruckListView.swift in Sources */,
+				6EC83C10293C8B840019C3AA /* MyPageDecorationView.swift in Sources */,
 				6E0EA39B23ABB230008F7CB2 /* SigninViewController.swift in Sources */,
 				6E7112C62781587D00396CC0 /* CheckExistStoresNearbyResponse.swift in Sources */,
 				6E81B84725E11FF300748E02 /* LocalResponse.swift in Sources */,
@@ -3273,7 +3274,6 @@
 				6E56BD8123CDE359002D7092 /* Menu.swift in Sources */,
 				6E4FCD722939984B00B63C8B /* MyPageBookmarkCollectionViewCell.swift in Sources */,
 				6E8E251E256AADE200AE6479 /* JsonUtils.swift in Sources */,
-				6E5CA58227688D1C001EDE19 /* VisitHistoryEmptyView.swift in Sources */,
 				6E94272828FBE7BA003F7EE5 /* PhotoManager.swift in Sources */,
 				6E5CA57627686CAC001EDE19 /* MedalInfoView.swift in Sources */,
 				6E46CFF6258B58370000421B /* QuestionViewModel.swift in Sources */,
