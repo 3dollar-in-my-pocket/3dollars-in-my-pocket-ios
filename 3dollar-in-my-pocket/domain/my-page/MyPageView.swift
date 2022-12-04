@@ -44,31 +44,6 @@ final class MyPageView: BaseView {
         $0.backgroundColor = R.color.gray100()
     }
     
-//    let visitHistoryCollectionView = UICollectionView(
-//        frame: .zero,
-//        collectionViewLayout: UICollectionViewFlowLayout()
-//    ).then {
-//        let layout = UICollectionViewFlowLayout()
-//
-//        layout.itemSize = MyVisitHistoryCell.size
-//        layout.scrollDirection = .horizontal
-//        layout.minimumInteritemSpacing = 16
-//
-//        $0.collectionViewLayout = layout
-//        $0.showsHorizontalScrollIndicator = false
-//        $0.contentInset = .init(top: 0, left: 24, bottom: 0, right: 24)
-//        $0.backgroundColor = .clear
-//        $0.register(
-//            MyVisitHistoryCell.self,
-//            forCellWithReuseIdentifier: MyVisitHistoryCell.registerId
-//        )
-//    }
-//
-//    let visitHistoryEmptyView = VisitHistoryEmptyView().then {
-//        $0.isHidden = true
-//    }
-//
-    
     override func setup() {
         self.backgroundColor = R.color.gray100()
         self.collectionView.collectionViewLayout = self.generateCompositionalLayout()
@@ -143,6 +118,7 @@ final class MyPageView: BaseView {
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .top
                 )]
+                section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
                 
                 return section
                 
@@ -165,6 +141,7 @@ final class MyPageView: BaseView {
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .top
                 )]
+                section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
                 
                 return section
                 

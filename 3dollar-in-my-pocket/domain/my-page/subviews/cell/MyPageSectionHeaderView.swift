@@ -24,6 +24,7 @@ final class MyPageSectionHeaderView: BaseCollectionReusableView {
         $0.backgroundColor = R.color.gray80()
         $0.titleLabel?.font = .bold(size: 12)
         $0.setTitleColor(R.color.gray20(), for: .normal)
+        $0.contentEdgeInsets = .init(top: 0, left: 16, bottom: 0, right: 16)
     }
     
     override func setup() {
@@ -38,7 +39,7 @@ final class MyPageSectionHeaderView: BaseCollectionReusableView {
     
     override func bindConstraints() {
         self.iconView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
+            make.left.equalToSuperview()
             make.top.equalToSuperview().offset(36)
             make.width.equalTo(16)
             make.height.equalTo(16)
@@ -55,14 +56,15 @@ final class MyPageSectionHeaderView: BaseCollectionReusableView {
         }
         
         self.moreButton.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-24)
+            make.right.equalToSuperview()
             make.centerY.equalTo(self.titleLabel)
             make.height.equalTo(30)
         }
     }
     
-    func bind(type: MyPageSecionType) {
+    func bind(type: MyPageSectionType) {
         self.iconView.image = type.icon
-        
+        self.iconLabel.text = type.iconLabel
+        self.titleLabel.text = type.title
     }
 }

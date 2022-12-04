@@ -1,11 +1,25 @@
 import UIKit
 
-enum MyPageSecionType {
+enum MyPageSectionType {
     case visitHistory
     case bookmark
+    case unknown
+    
+    init(sectionIndex: Int) {
+        switch sectionIndex {
+        case 1:
+            self = .visitHistory
+            
+        case 2:
+            self = .bookmark
+            
+        default:
+            self = .unknown
+        }
+    }
 }
 
-extension MyPageSecionType {
+extension MyPageSectionType {
     var icon: UIImage? {
         switch self {
         case .visitHistory:
@@ -13,6 +27,9 @@ extension MyPageSecionType {
             
         case .bookmark:
             return R.image.ic_bookmark_on()?.withRenderingMode(.alwaysTemplate)
+            
+        case .unknown:
+            return nil
         }
     }
     
@@ -23,6 +40,9 @@ extension MyPageSecionType {
             
         case .bookmark:
             return R.string.localization.store_detail_bookmark()
+            
+        case .unknown:
+            return ""
         }
     }
     
@@ -33,6 +53,9 @@ extension MyPageSecionType {
             
         case .bookmark:
             return "my_page_bookmark_description".localized
+            
+        case .unknown:
+            return ""
         }
     }
 }

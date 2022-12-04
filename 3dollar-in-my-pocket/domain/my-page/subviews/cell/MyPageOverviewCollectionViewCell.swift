@@ -2,7 +2,7 @@ import UIKit
 
 final class MyPageOverviewCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(MyPageOverviewCollectionViewCell.self)"
-    static let height: CGFloat = 336
+    static let height: CGFloat = 390
     
     private let containerBackgroundView = UIView().then {
         $0.backgroundColor = R.color.gray95()
@@ -39,7 +39,7 @@ final class MyPageOverviewCollectionViewCell: BaseCollectionViewCell {
             self.nicknameLabel,
             self.storeCountButton,
             self.reviewCountButton,
-            self.medalCountButton,
+            self.medalCountButton
         ])
     }
     

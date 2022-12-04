@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol MyPageCoordinator: Coordinator, AnyObject {
+protocol MyPageCoordinator: BaseCoordinator, AnyObject {
     func goToSetting()
     
     func goToMyMedal(medal: Medal)

@@ -41,7 +41,11 @@ struct BookmarkService: BookmarkServiceProtocol {
     -> Observable<(cursor: Cursor, bookmarkFolder: BookmarkFolder)> {
         let urlString = HTTPUtils.url + "/api/v1/favorite/store/folder/my"
         let headers = HTTPUtils.defaultHeader()
-        let parameters: [String: Any] = ["cursor": cursor as Any, "size": size]
+        var parameters: [String: Any] = ["size": size]
+        
+        if let cursor = cursor {
+            parameters["cursor"] = cursor
+        }
         
         return self.networkManager.createGetObservable(
             class: UserFavoriteStoreFolderResponse.self,
