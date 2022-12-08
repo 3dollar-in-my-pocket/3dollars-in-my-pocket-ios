@@ -74,11 +74,13 @@ final class MyPageReactor: BaseReactor, Reactor {
             return .just(.pushMyMedal(currentMedal))
             
         case .tapVisitHistory(let row):
+            guard !self.currentState.visitHistories.isEmpty else { return .empty() }
             let tappedVisitHistory = self.currentState.visitHistories[row]
             
             return .just(.pushStoreDetail(storeId: tappedVisitHistory.storeId))
             
         case .tapBookmark(let row):
+            guard !self.currentState.bookmarks.isEmpty else { return .empty() }
             let tappedBookmark = self.currentState.bookmarks[row]
             
             return .just(.pushStoreDetail(storeId: Int(tappedBookmark.id) ?? 0))

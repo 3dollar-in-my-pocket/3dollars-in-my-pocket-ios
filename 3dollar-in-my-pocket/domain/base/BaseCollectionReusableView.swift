@@ -12,6 +12,12 @@ class BaseCollectionReusableView: UICollectionReusableView {
         self.bindConstraints()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.disposeBag = DisposeBag()
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

@@ -1,5 +1,8 @@
 import UIKit
 
+import RxSwift
+import RxCocoa
+
 final class MyPageSectionHeaderView: BaseCollectionReusableView {
     static let registerId = "\(MyPageSectionHeaderView.self)"
     static let height: CGFloat = 115
@@ -66,5 +69,11 @@ final class MyPageSectionHeaderView: BaseCollectionReusableView {
         self.iconView.image = type.icon
         self.iconLabel.text = type.iconLabel
         self.titleLabel.text = type.title
+    }
+}
+
+extension Reactive where Base: MyPageSectionHeaderView {
+    var tapMoreButton: ControlEvent<Void> {
+        return base.moreButton.rx.tap
     }
 }

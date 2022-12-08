@@ -44,6 +44,7 @@ final class MyPageView: BaseView {
             withReuseIdentifier: MyPageSectionHeaderView.registerId
         )
         $0.backgroundColor = R.color.gray100()
+        $0.contentInset = .init(top: 0, left: 0, bottom: 24, right: 0)
     }
     
     override func setup() {

@@ -7,6 +7,7 @@ final class MyPageVisitHistoryCollectionViewCell: BaseCollectionViewCell {
     private let verticalStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 8
+        $0.alignment = .leading
     }
     
     private let visitDateLabel = VisitDateView()
@@ -55,6 +56,7 @@ final class MyPageVisitHistoryCollectionViewCell: BaseCollectionViewCell {
         
         self.storeContainerView.snp.makeConstraints { make in
             make.height.equalTo(80)
+            make.width.equalTo(Self.size.width)
         }
         
         self.categoryImage.snp.makeConstraints { make in
@@ -87,7 +89,7 @@ final class MyPageVisitHistoryCollectionViewCell: BaseCollectionViewCell {
         self.storeNameLabel.text = visitHitory.store.storeName
         self.storeNameLabel.textColor = .white
         self.categoryLabel.text = visitHitory.store.categoriesString
-        self.categoryLabel.textColor = UIColor(named: "gray30")
+        self.categoryLabel.textColor = R.color.gray30()
         self.verticalStackView.addArrangedSubview(self.visitDateLabel)
         self.verticalStackView.addArrangedSubview(self.storeContainerView)
     }

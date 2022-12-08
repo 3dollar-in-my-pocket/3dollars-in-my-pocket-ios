@@ -201,6 +201,28 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
                 ) as? MyPageSectionHeaderView else { return UICollectionReusableView() }
                 let sectionType = MyPageSectionType(sectionIndex: indexPath.section)
                 
+                switch sectionType {
+                case .visitHistory:
+                    headerView.rx.tapMoreButton
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .asDriver(onErrorJustReturn: ())
+                        .drive(onNext: { [weak self] _ in
+                            self?.coordinator?.goToMyVisitHistory()
+                        })
+                        .disposed(by: headerView.disposeBag)
+                    
+                case .bookmark:
+                    headerView.rx.tapMoreButton
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .asDriver(onErrorJustReturn: ())
+                        .drive(onNext: { [weak self] _ in
+                            // TODO: 즐겨찾기 리스트화면으로 이동
+                        })
+                        .disposed(by: headerView.disposeBag)
+                    
+                case .unknown:
+                    break
+                }
                 headerView.bind(type: sectionType)
                 return headerView
                 

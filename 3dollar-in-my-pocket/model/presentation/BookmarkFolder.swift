@@ -6,7 +6,7 @@ struct BookmarkFolder {
     let user: User
     
     init(response: UserFavoriteStoreFolderResponse) {
-        self.bookmarks = []
+        self.bookmarks = 
         self.folderId = response.folderId
         self.introduction = response.introduction
         self.name = response.name
