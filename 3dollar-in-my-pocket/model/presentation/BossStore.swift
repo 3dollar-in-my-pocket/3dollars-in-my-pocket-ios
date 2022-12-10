@@ -49,7 +49,7 @@ struct BossStore {
         self.introduction = response.store.introduction
         self.feedbackCount = response.feedbacks.map { $0.count }.reduce(0, +)
         self.feedbacks = response.feedbacks.map(BossStoreFeedback.init(response:))
-        self.isBookmarked = false
+        self.isBookmarked = response.store.favorite.isFavorite
     }
     
     init() {

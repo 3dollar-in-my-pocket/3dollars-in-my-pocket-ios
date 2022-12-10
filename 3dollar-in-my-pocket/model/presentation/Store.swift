@@ -159,7 +159,7 @@ struct Store: StoreProtocol {
         self.user = User(response: response.user)
         self.visitHistories = response.visitHistories.map { VisitHistory(response: $0) }
         self.visitHistory = VisitOverview(response: response.visitHistory)
-        self.isBookmarked = false
+        self.isBookmarked = response.favorite.isFavorite
     }
     
     init(response: StoreWithVisitsResponse) {

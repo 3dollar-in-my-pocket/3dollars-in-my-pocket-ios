@@ -2,6 +2,7 @@ struct StoreDetailResponse: Decodable {
     let appearanceDays: [WeekDay]
     let categories: [StreetFoodStoreCategory]
     let distance: Int
+    var favorite: FavoriteStoreResponse
     let images: [StoreImageResponse]
     let latitude: Double
     let longitude: Double
@@ -21,6 +22,7 @@ struct StoreDetailResponse: Decodable {
         case appearanceDays
         case categories
         case distance
+        case favorite
         case images
         case latitude
         case longitude
@@ -50,6 +52,10 @@ struct StoreDetailResponse: Decodable {
             forKey: .categories
         ) ?? []
         self.distance = try values.decodeIfPresent(Int.self, forKey: .distance) ?? 0
+        self.favorite = try values.decodeIfPresent(
+            FavoriteStoreResponse.self,
+            forKey: .favorite
+        ) ?? FavoriteStoreResponse(isFavorite: false)
         self.images = try values.decodeIfPresent(
             [StoreImageResponse].self,
             forKey: .images
