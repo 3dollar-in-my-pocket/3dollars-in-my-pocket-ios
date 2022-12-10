@@ -70,21 +70,12 @@ final class MyPageBookmarkCollectionViewCell: BaseCollectionViewCell {
         self.storeNameLabel.textColor = .white
         self.categoryLabel.textColor = R.color.gray30()
         
-        if let streetFoodStore = store as? Store {
-            self.storeNameLabel.text = streetFoodStore.storeName
-            self.categoryLabel.text = streetFoodStore.categoriesString
-            self.categoryImage.image = streetFoodStore.categories.first?.image
-            
-            if let category = streetFoodStore.categories.first,
-               let streetFoodCategory = MetaContext.shared.findStreetFoodCategory(category: category) {
-                self.categoryImage.setImage(urlString: streetFoodCategory.imageUrl)
-            }
-        } else if let foodTruckStore = store as? BossStore {
-            if let foodTruckCategory = foodTruckStore.categories.first as? FoodTruckCategory {
-                self.categoryImage.setImage(urlString: foodTruckCategory.imageUrl)
-            }
-            self.storeNameLabel.text = foodTruckStore.name
-            self.categoryLabel.text = foodTruckStore.categoriesString
+        guard let platformStore = store as? PlatformStore else { return }
+        
+        self.storeNameLabel.text = platformStore.name
+        self.categoryLabel.text = platformStore.categoriesString
+        if let firstCategory = platformStore.categories.first {
+            self.categoryImage.setImage(urlString: firstCategory.imageUrl)
         }
     }
     
