@@ -79,6 +79,10 @@ extension BossStore {
 }
 
 extension BossStore: StoreProtocol {
+    var storeCategory: StoreType {
+        return .foodTruck
+    }
+    
     var latitude: Double {
         return self.location?.latitude ?? 0
     }

@@ -3,6 +3,14 @@ struct Store: StoreProtocol {
         return String(self.storeId)
     }
     
+    var name: String {
+        return self.storeName
+    }
+    
+    var storeCategory: StoreType {
+        return .streetFood
+    }
+    
     let appearanceDays: [WeekDay]
     let categories: [StreetFoodStoreCategory]
     let isDeleted: Bool
