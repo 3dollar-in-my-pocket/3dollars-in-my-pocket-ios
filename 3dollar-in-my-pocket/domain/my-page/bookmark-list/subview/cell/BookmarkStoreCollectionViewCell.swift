@@ -2,7 +2,7 @@ import UIKit
 
 final class BookmarkStoreCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(BookmarkStoreCollectionViewCell.self)"
-    static let size = CGSize(width: UIScreen.main.bounds.width, height: 102)
+    static let height: CGFloat = 102
     
     private let containerView = UIView().then {
         $0.backgroundColor = R.color.gray95()

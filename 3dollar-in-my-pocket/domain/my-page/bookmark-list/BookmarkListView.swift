@@ -20,6 +20,19 @@ final class BookmarkListView: BaseView {
         collectionViewLayout: UICollectionViewLayout()
     ).then {
         $0.backgroundColor = .clear
+        $0.register(
+            BookmarkOverviewCollectionViewCell.self,
+            forCellWithReuseIdentifier: BookmarkOverviewCollectionViewCell.registerId
+        )
+        $0.register(
+            BookmarkStoreCollectionViewCell.self,
+            forCellWithReuseIdentifier: BookmarkStoreCollectionViewCell.registerId
+        )
+        $0.register(
+            BookmarkSectionHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: BookmarkSectionHeaderView.registerId
+        )
     }
     
     override func setup() {
@@ -29,6 +42,7 @@ final class BookmarkListView: BaseView {
             self.titleLabel,
             self.collectionView
         ])
+        self.setCompositionalLayout()
     }
     
     override func bindConstraints() {
@@ -50,5 +64,45 @@ final class BookmarkListView: BaseView {
             make.bottom.equalToSuperview()
             make.top.equalTo(self.backButton.snp.bottom).offset(21)
         }
+    }
+    
+    private func setCompositionalLayout() {
+        let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
+            if sectionIndex == 0 {
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(BookmarkOverviewCollectionViewCell.height)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(BookmarkOverviewCollectionViewCell.height)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                return section
+            } else {
+                let storeItem = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(BookmarkStoreCollectionViewCell.height)
+                ))
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(BookmarkStoreCollectionViewCell.height)
+                ), subitems: [storeItem])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(BookmarkSectionHeaderView.height)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .topLeading
+                )]
+                return section
+            }
+        }
+        
+        self.collectionView.collectionViewLayout = layout
     }
 }

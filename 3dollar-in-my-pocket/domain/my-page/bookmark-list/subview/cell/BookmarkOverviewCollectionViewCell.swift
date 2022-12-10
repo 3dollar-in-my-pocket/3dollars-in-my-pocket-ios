@@ -2,7 +2,7 @@ import UIKit
 
 final class BookmarkOverviewCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(BookmarkOverviewCollectionViewCell.self)"
-    static let size = CGSize(width: UIScreen.main.bounds.width, height: 256)
+    static let height: CGFloat = 256
     
     private let contaienrView = UIView().then {
         $0.layer.cornerRadius = 10

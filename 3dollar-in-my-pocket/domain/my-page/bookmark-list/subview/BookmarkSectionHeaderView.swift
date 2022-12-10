@@ -2,10 +2,7 @@ import UIKit
 
 final class BookmarkSectionHeaderView: BaseCollectionReusableView {
     static let registerId = "\(BookmarkSectionHeaderView.self)"
-    static let size = CGSize(
-        width: UIScreen.main.bounds.width,
-        height: 50
-    )
+    static let height: CGFloat = 50
     
     private let countLabel = UILabel().then {
         $0.font = .bold(size: 12)
