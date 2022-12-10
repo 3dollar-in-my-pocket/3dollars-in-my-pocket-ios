@@ -448,6 +448,7 @@
 		6ED65D1E2944491A000E71B4 /* BookmarkListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED65D1D2944491A000E71B4 /* BookmarkListView.swift */; };
 		6ED65D2029444BB3000E71B4 /* BookmarkListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED65D1F29444BB3000E71B4 /* BookmarkListViewController.swift */; };
 		6ED65D2229444C0C000E71B4 /* BookmarkListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED65D2129444C0C000E71B4 /* BookmarkListCoordinator.swift */; };
+		6ED65D2629444D19000E71B4 /* BookmarkOverviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED65D2529444D19000E71B4 /* BookmarkOverviewCollectionViewCell.swift */; };
 		6ED6F1E925B51A0100357B80 /* MenuSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED6F1E825B51A0100357B80 /* MenuSection.swift */; };
 		6ED6F1EE25B5561A00357B80 /* MenuHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED6F1ED25B5561A00357B80 /* MenuHeaderView.swift */; };
 		6ED79E0F25CFF11A00B3CFA9 /* ModifyAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED79E0E25CFF11A00B3CFA9 /* ModifyAddressView.swift */; };
@@ -974,6 +975,7 @@
 		6ED65D1D2944491A000E71B4 /* BookmarkListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkListView.swift; sourceTree = "<group>"; };
 		6ED65D1F29444BB3000E71B4 /* BookmarkListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkListViewController.swift; sourceTree = "<group>"; };
 		6ED65D2129444C0C000E71B4 /* BookmarkListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkListCoordinator.swift; sourceTree = "<group>"; };
+		6ED65D2529444D19000E71B4 /* BookmarkOverviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkOverviewCollectionViewCell.swift; sourceTree = "<group>"; };
 		6ED6F1E825B51A0100357B80 /* MenuSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuSection.swift; sourceTree = "<group>"; };
 		6ED6F1ED25B5561A00357B80 /* MenuHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuHeaderView.swift; sourceTree = "<group>"; };
 		6ED79E0E25CFF11A00B3CFA9 /* ModifyAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyAddressView.swift; sourceTree = "<group>"; };
@@ -2419,11 +2421,28 @@
 		6ED65D1C2944490D000E71B4 /* bookmark-list */ = {
 			isa = PBXGroup;
 			children = (
+				6ED65D2329444D0B000E71B4 /* subview */,
 				6ED65D1D2944491A000E71B4 /* BookmarkListView.swift */,
 				6ED65D1F29444BB3000E71B4 /* BookmarkListViewController.swift */,
 				6ED65D2129444C0C000E71B4 /* BookmarkListCoordinator.swift */,
 			);
 			path = "bookmark-list";
+			sourceTree = "<group>";
+		};
+		6ED65D2329444D0B000E71B4 /* subview */ = {
+			isa = PBXGroup;
+			children = (
+				6ED65D2429444D0F000E71B4 /* cell */,
+			);
+			path = subview;
+			sourceTree = "<group>";
+		};
+		6ED65D2429444D0F000E71B4 /* cell */ = {
+			isa = PBXGroup;
+			children = (
+				6ED65D2529444D19000E71B4 /* BookmarkOverviewCollectionViewCell.swift */,
+			);
+			path = cell;
 			sourceTree = "<group>";
 		};
 		6ED79E0D25CFF10A00B3CFA9 /* modify-address */ = {
@@ -3260,6 +3279,7 @@
 				6E5CA5842768AEC4001EDE19 /* RegisteredStoreEmptyView.swift in Sources */,
 				6E57F29C273AA04D008C524A /* VisitCoordinator.swift in Sources */,
 				6E9D64D625BD6F160075DE36 /* DeleteMenuStackView.swift in Sources */,
+				6ED65D2629444D19000E71B4 /* BookmarkOverviewCollectionViewCell.swift in Sources */,
 				6ED6F1EE25B5561A00357B80 /* MenuHeaderView.swift in Sources */,
 				6E451BDF26DD10D20056CDC4 /* UICollectionExtension.swift in Sources */,
 				6EF63FBD2761B2E90063A3B9 /* MyVisitHistoryViewController.swift in Sources */,
