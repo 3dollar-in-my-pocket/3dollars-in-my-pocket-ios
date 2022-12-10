@@ -216,7 +216,7 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
                         .asDriver(onErrorJustReturn: ())
                         .drive(onNext: { [weak self] _ in
-                            // TODO: 즐겨찾기 리스트화면으로 이동
+                            self?.coordinator?.pushBookmarkList()
                         })
                         .disposed(by: headerView.disposeBag)
                     

@@ -20,6 +20,8 @@ protocol MyPageCoordinator: BaseCoordinator, AnyObject {
     func goToStoreDetail(storeId: Int)
     
     func goToMyVisitHistory()
+    
+    func pushBookmarkList()
 }
 
 extension MyPageCoordinator {
@@ -59,5 +61,14 @@ extension MyPageCoordinator {
         let viewController = MyVisitHistoryViewController.instance()
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    func pushBookmarkList() {
+        let viewController = BookmarkListViewController.instance()
+        
+        self.presenter.navigationController?.pushViewController(
+            viewController,
+            animated: true
+        )
     }
 }
