@@ -1,9 +1,23 @@
 struct BookmarkFolder {
-    let bookmarks: [StoreProtocol]
+    var bookmarks: [StoreProtocol]
     let folderId: String?
     let introduction: String
     let name: String
     let user: User
+    
+    init(
+        bookmarks: [StoreProtocol] = [],
+        folderId: String? = nil,
+        introduction: String = "",
+        name: String = "",
+        user: User = User()
+    ) {
+        self.bookmarks = bookmarks
+        self.folderId = folderId
+        self.introduction = introduction
+        self.name = name
+        self.user = user
+    }
     
     init(response: UserFavoriteStoreFolderResponse) {
         self.bookmarks = response.favorites.map(PlatformStore.init(response:))
