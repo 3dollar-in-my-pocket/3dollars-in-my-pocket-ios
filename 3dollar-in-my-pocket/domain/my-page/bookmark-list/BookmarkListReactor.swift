@@ -111,7 +111,10 @@ final class BookmarkListReactor: BaseReactor, Reactor {
             mutation,
             self.globalState.deleteBookmarkStore
                 .flatMap { storeIds -> Observable<Mutation> in
-                    return .merge(storeIds.map { .just(.deleteBookamrk(storeId: $0)) })
+                    return .merge(storeIds.map { .merge([
+                        .just(.deleteBookamrk(storeId: $0)),
+                        .just(.decreaseTotalCount)
+                    ]) })
                 }
         ])
     }

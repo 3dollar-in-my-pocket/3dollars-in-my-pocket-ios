@@ -90,24 +90,24 @@ final class BookmarkListViewController:
             ))
             .disposed(by: self.disposeBag)
         
-        reactor.state
-            .compactMap { $0.pushStoreDetail }
+        reactor.pulse(\.$pushStoreDetail)
+            .compactMap { $0 }
             .asDriver(onErrorJustReturn: "")
             .drive(onNext: { [weak self] storeId in
                 self?.coordinator?.pushStoreDetail(storeId: storeId)
             })
             .disposed(by: self.disposeBag)
         
-        reactor.state
-            .compactMap { $0.pushFoodtruckDetail }
+        reactor.pulse(\.$pushFoodtruckDetail)
+            .compactMap { $0 }
             .asDriver(onErrorJustReturn: "")
             .drive(onNext: { [weak self] storeId in
                 self?.coordinator?.pushFoodTruckDetail(storeId: storeId)
             })
             .disposed(by: self.disposeBag)
         
-        reactor.state
-            .compactMap { $0.pushEditBookmarkFolder }
+        reactor.pulse(\.$pushEditBookmarkFolder)
+            .compactMap { $0 }
             .asDriver(onErrorJustReturn: BookmarkFolder())
             .drive(onNext: { [weak self] bookmarkFolder in
                 
