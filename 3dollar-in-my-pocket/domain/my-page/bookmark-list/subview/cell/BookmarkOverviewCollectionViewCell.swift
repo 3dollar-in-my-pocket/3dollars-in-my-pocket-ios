@@ -16,18 +16,16 @@ final class BookmarkOverviewCollectionViewCell: BaseCollectionViewCell {
         $0.textColor = .white
         $0.numberOfLines = 2
         $0.textAlignment = .left
-        $0.text = "마포구 몽키스패너님의\n즐겨찾기"
     }
     
     private let descriptionLabel = UILabel().then {
         $0.font = .regular(size: 12)
         $0.textColor = R.color.gray50()
         $0.numberOfLines = 0
-        $0.text = "제가 엄선한 가게입니다 제가 엄선한 가게입니다 제가 엄선한 가게입니다 제가 엄선한 가게입니다 제가 엄선한 가게입니다 제가 엄선한 가게입니다 제가 엄선한 가게입니다 제가 엄선한 가게입니다 제가 엄선한 가게입니다 제가 엄선한 가게입니다 제가 엄선한 가게입니다"
     }
     
     let editButton = UIButton().then {
-        $0.setTitle("정보 수정하기", for: .normal)
+        $0.setTitle("bookmark_list_edit_folder".localized, for: .normal)
         $0.backgroundColor = R.color.gray80()
         $0.setTitleColor(R.color.gray20(), for: .normal)
         $0.titleLabel?.font = .bold(size: 12)
@@ -59,6 +57,7 @@ final class BookmarkOverviewCollectionViewCell: BaseCollectionViewCell {
         
         self.descriptionLabel.snp.makeConstraints { make in
             make.left.equalTo(self.titleLabel)
+            make.right.equalTo(self.contaienrView).offset(-24)
             make.top.equalTo(self.titleLabel.snp.bottom).offset(12)
         }
         
@@ -67,5 +66,10 @@ final class BookmarkOverviewCollectionViewCell: BaseCollectionViewCell {
             make.bottom.equalTo(self.contaienrView).offset(-18)
             make.height.equalTo(30)
         }
+    }
+    
+    func bind(bookmarkFolder: BookmarkFolder) {
+        self.titleLabel.text = bookmarkFolder.name
+        self.descriptionLabel.text = bookmarkFolder.introduction
     }
 }

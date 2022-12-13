@@ -21,8 +21,8 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         case pushEditBookmarkFolder
         case clearBookmakrs
         case removeBookmark(row: Int)
-        case addWillDeleteStores([StoreProtocol])
         case pushStoreDetail(storeId: String)
+        case pushFoodTruckDetail(storeId: String)
         case showLoading(isShow: Bool)
         case showErrorAlert(Error)
     }
@@ -31,8 +31,8 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         var bookmarkFolder: BookmarkFolder
         var totalCount: Int?
         var isDeleteMode: Bool
-        var willDeleteStore: [StoreProtocol]
         @Pulse var pushStoreDetail: String?
+        @Pulse var pushFoodtruckDetail: String?
         @Pulse var pushEditBookmarkFolder: BookmarkFolder?
     }
     
@@ -46,8 +46,7 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         hasMore: Bool = true,
         state: State = State(
             bookmarkFolder: BookmarkFolder(),
-            isDeleteMode: false,
-            willDeleteStore: []
+            isDeleteMode: false
         )
     ) {
         self.bookmarkService = bookmarkService
@@ -76,32 +75,28 @@ final class BookmarkListReactor: BaseReactor, Reactor {
             return .just(.toggleDeleteMode)
             
         case .tapDeleteAll:
-            return .merge([
-                .just(.clearBookmakrs),
-                .just(.addWillDeleteStores(self.currentState.bookmarkFolder.bookmarks))
-            ])
+            return .just(.clearBookmakrs)
             
         case .tapDelete(let row):
-            return .merge([
-                .just(.addWillDeleteStores([self.currentState.bookmarkFolder.bookmarks[row]])),
-                .just(.removeBookmark(row: row))
-            ])
+            return self.deleteBookamrk(row: row)
             
         case .tapFinish:
-            guard !self.currentState.willDeleteStore.isEmpty else {
-                return .just(.toggleDeleteMode)
-            }
-            
-            return .concat([
-                .just(.showLoading(isShow: true)),
-                self.deleteBookmark(stores: self.currentState.willDeleteStore),
-                .just(.showLoading(isShow: false))
-            ])
+            return .just(.toggleDeleteMode)
             
         case .tapStore(let row):
+            guard !self.currentState.isDeleteMode else { return .empty() }
             let tappedStore = self.currentState.bookmarkFolder.bookmarks[row]
             
-            return .just(.pushStoreDetail(storeId: tappedStore.id))
+            switch tappedStore.storeCategory {
+            case .streetFood:
+                return .just(.pushStoreDetail(storeId: tappedStore.id))
+                
+            case .foodTruck:
+                return .just(.pushFoodTruckDetail(storeId: tappedStore.id))
+                
+            case .unknown:
+                return .empty()
+            }
         }
     }
     
@@ -117,7 +112,6 @@ final class BookmarkListReactor: BaseReactor, Reactor {
             
         case .toggleDeleteMode:
             newState.isDeleteMode.toggle()
-            newState.willDeleteStore.removeAll()
             
         case .pushEditBookmarkFolder:
             newState.pushEditBookmarkFolder = newState.bookmarkFolder
@@ -128,11 +122,11 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         case .removeBookmark(let row):
             newState.bookmarkFolder.bookmarks.remove(at: row)
             
-        case .addWillDeleteStores(let stores):
-            newState.willDeleteStore.append(contentsOf: stores)
-            
         case .pushStoreDetail(let storeId):
             newState.pushStoreDetail = storeId
+            
+        case .pushFoodTruckDetail(let storeId):
+            newState.pushFoodtruckDetail = storeId
             
         case .showLoading(let isShow):
             self.showLoadingPublisher.accept(isShow)
@@ -163,13 +157,14 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         return row == self.currentState.bookmarkFolder.bookmarks.count && self.hasMore
     }
     
-    private func deleteBookmark(stores: [StoreProtocol]) -> Observable<Mutation> {
-        let observables = stores.map {
-            self.bookmarkService.unBookmarkStore(storeType: $0.storeCategory, storeId: $0.id)
-        }
+    private func deleteBookamrk(row: Int) -> Observable<Mutation> {
+        let store = self.currentState.bookmarkFolder.bookmarks[row]
         
-        return Observable.zip(observables)
-            .map { _ in .toggleDeleteMode }
-            .catch { .just(.showErrorAlert($0)) }
+        return self.bookmarkService.unBookmarkStore(
+            storeType: store.storeCategory,
+            storeId: store.id
+        )
+        .map { .removeBookmark(row: row) }
+        .catch { .just(.showErrorAlert($0)) }
     }
 }

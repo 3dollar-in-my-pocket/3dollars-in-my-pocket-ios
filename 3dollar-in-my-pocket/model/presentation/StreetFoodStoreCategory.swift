@@ -131,4 +131,8 @@ extension StreetFoodStoreCategory: Categorizable {
     var id: String {
         return ""
     }
+    
+    var imageUrl: String {
+        return ""
+    }
 }

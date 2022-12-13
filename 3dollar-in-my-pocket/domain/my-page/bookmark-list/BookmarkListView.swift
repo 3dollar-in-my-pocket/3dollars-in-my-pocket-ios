@@ -1,6 +1,10 @@
 import UIKit
 
 final class BookmarkListView: BaseView {
+    private let topBackgroundView = UIView().then {
+        $0.backgroundColor = R.color.gray95()
+    }
+    
     let backButton = UIButton().then {
         $0.setImage(
             R.image.ic_back()?.withRenderingMode(.alwaysTemplate),
@@ -10,7 +14,7 @@ final class BookmarkListView: BaseView {
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = "즐겨찾기"
+        $0.text = "bookmark_list_title".localized
         $0.font = .semiBold(size: 16)
         $0.textColor = .white
     }
@@ -38,14 +42,35 @@ final class BookmarkListView: BaseView {
     override func setup() {
         self.backgroundColor = R.color.gray100()
         self.addSubViews([
+            self.topBackgroundView,
             self.backButton,
             self.titleLabel,
             self.collectionView
         ])
         self.setCompositionalLayout()
+        self.collectionView.rx.contentOffset
+            .filter { $0.y < 0 }
+            .map { abs($0.y) }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: 0)
+            .drive(onNext: { [weak self] offset in
+                guard let self = self else { return }
+                
+                self.topBackgroundView.snp.updateConstraints { make in
+                    make.bottom.equalTo(self.collectionView.snp.top).offset(offset)
+                }
+            })
+            .disposed(by: self.disposeBag)
     }
     
     override func bindConstraints() {
+        self.topBackgroundView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.top.equalToSuperview()
+            make.bottom.equalTo(self.collectionView.snp.top)
+        }
+        
         self.backButton.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(24)
             make.top.equalTo(self.safeAreaLayoutGuide).offset(15)
@@ -99,9 +124,17 @@ final class BookmarkListView: BaseView {
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .topLeading
                 )]
+                section.decorationItems = [
+                    .background(elementKind: MyPageDecorationView.registerId)
+                ]
                 return section
             }
         }
+        
+        layout.register(
+            MyPageDecorationView.self,
+            forDecorationViewOfKind: MyPageDecorationView.registerId
+        )
         
         self.collectionView.collectionViewLayout = layout
     }

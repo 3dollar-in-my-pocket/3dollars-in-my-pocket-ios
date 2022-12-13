@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		32AB929058D093B61E41A72B /* Pods_3dollar_in_my_pocketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4823198B2B9984D45D91637F /* Pods_3dollar_in_my_pocketTests.framework */; };
 		3BCC5E0521BC8C9F0EB79506 /* Pods_3dollar_in_my_pocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2150BCA4A1F1A8F0652699B1 /* Pods_3dollar_in_my_pocket.framework */; };
+		6E0113092947049700DD2A01 /* BookmarkListSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0113082947049700DD2A01 /* BookmarkListSectionModel.swift */; };
 		6E01277129266B65006B78DD /* SigninAnonymousReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01277029266B65006B78DD /* SigninAnonymousReactor.swift */; };
 		6E01277529267095006B78DD /* SigninAnonymousCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01277429267095006B78DD /* SigninAnonymousCoordinator.swift */; };
 		6E01AD1A23D094FF008BFCC0 /* HomeReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01AD1923D094FF008BFCC0 /* HomeReactor.swift */; };
@@ -478,6 +479,7 @@
 		6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B85F23BEBF3E00BAD8E9 /* UIButtonExt.swift */; };
 		6EE2B86423BF20D500BAD8E9 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */; };
 		6EE4E3292917FB9A002D6110 /* PolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE4E3282917FB9A002D6110 /* PolicyView.swift */; };
+		6EE66D7C29474DFF00E1F2F1 /* BookmarkListSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE66D7B29474DFF00E1F2F1 /* BookmarkListSection.swift */; };
 		6EE6D2012938E2BD00B3DF3B /* MyPageOverviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE6D2002938E2BD00B3DF3B /* MyPageOverviewCollectionViewCell.swift */; };
 		6EE8299126B2E5D900F201EF /* SignupRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE8299026B2E5D900F201EF /* SignupRequest.swift */; };
 		6EEE30B226FEDA9800696467 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EEE30B126FEDA9800696467 /* LocationManager.swift */; };
@@ -543,6 +545,7 @@
 		2150BCA4A1F1A8F0652699B1 /* Pods_3dollar_in_my_pocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4823198B2B9984D45D91637F /* Pods_3dollar_in_my_pocketTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3dollar_in_my_pocketTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4ECBEAC85F3CCBE26D668F75 /* Pods-3dollar-in-my-pocketTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3dollar-in-my-pocketTests.release.xcconfig"; path = "Target Support Files/Pods-3dollar-in-my-pocketTests/Pods-3dollar-in-my-pocketTests.release.xcconfig"; sourceTree = "<group>"; };
+		6E0113082947049700DD2A01 /* BookmarkListSectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkListSectionModel.swift; sourceTree = "<group>"; };
 		6E01277029266B65006B78DD /* SigninAnonymousReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninAnonymousReactor.swift; sourceTree = "<group>"; };
 		6E01277429267095006B78DD /* SigninAnonymousCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninAnonymousCoordinator.swift; sourceTree = "<group>"; };
 		6E01AD1923D094FF008BFCC0 /* HomeReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeReactor.swift; sourceTree = "<group>"; };
@@ -1008,6 +1011,7 @@
 		6EE2B85F23BEBF3E00BAD8E9 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
 		6EE2B86323BF20D500BAD8E9 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
 		6EE4E3282917FB9A002D6110 /* PolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyView.swift; sourceTree = "<group>"; };
+		6EE66D7B29474DFF00E1F2F1 /* BookmarkListSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkListSection.swift; sourceTree = "<group>"; };
 		6EE6D2002938E2BD00B3DF3B /* MyPageOverviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageOverviewCollectionViewCell.swift; sourceTree = "<group>"; };
 		6EE8299026B2E5D900F201EF /* SignupRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupRequest.swift; sourceTree = "<group>"; };
 		6EEE30B126FEDA9800696467 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -1983,6 +1987,8 @@
 				6EC83C0D293C37570019C3AA /* MyPageSectionModel.swift */,
 				6ED65D1629443ED6000E71B4 /* PlatformStore.swift */,
 				6ED65D1829444038000E71B4 /* PlatformStoreCategory.swift */,
+				6E0113082947049700DD2A01 /* BookmarkListSectionModel.swift */,
+				6EE66D7B29474DFF00E1F2F1 /* BookmarkListSection.swift */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -2963,6 +2969,7 @@
 				6E2C820F23B4A37F0025BB2B /* NicknameViewController.swift in Sources */,
 				6E29CF75258F190200F0BACB /* ErrorResponse.swift in Sources */,
 				6E07D44623B590B30055AEE7 /* HomeViewController.swift in Sources */,
+				6EE66D7C29474DFF00E1F2F1 /* BookmarkListSection.swift in Sources */,
 				6E4FCD6C2939927A00B63C8B /* BaseCollectionReusableView.swift in Sources */,
 				6E3817B8293772B0008DA98A /* BookmarkService.swift in Sources */,
 				6E826C4E2929CF0400B73B8F /* WebViewType.swift in Sources */,
@@ -3027,6 +3034,7 @@
 				6EDAC5E326D7DC1500979252 /* MyPageCoordinator.swift in Sources */,
 				6EFBB8CF28B50280009E4FAF /* FoodTruckListReactor.swift in Sources */,
 				6E6F35A325AC7990007931EC /* WriteAddressView.swift in Sources */,
+				6E0113092947049700DD2A01 /* BookmarkListSectionModel.swift in Sources */,
 				6E391BF32928C5DD00FBC210 /* DeviceInfoResponse.swift in Sources */,
 				6EE2B86023BEBF3E00BAD8E9 /* UIButtonExt.swift in Sources */,
 				6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */,

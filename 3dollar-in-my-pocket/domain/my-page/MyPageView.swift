@@ -133,6 +133,8 @@ final class MyPageView: BaseView {
                     alignment: .top
                 )]
                 section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
+                section.interGroupSpacing = 16
+                section.orthogonalScrollingBehavior = .continuous
                 section.decorationItems = [
                     .background(elementKind: MyPageDecorationView.registerId)
                 ]
@@ -159,6 +161,8 @@ final class MyPageView: BaseView {
                     alignment: .top
                 )]
                 section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
+                section.interGroupSpacing = 16
+                section.orthogonalScrollingBehavior = .continuous
                 section.decorationItems = [
                     .background(elementKind: MyPageDecorationView.registerId)
                 ]
