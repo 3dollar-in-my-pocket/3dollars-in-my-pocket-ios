@@ -14,6 +14,8 @@ final class MyPageReactor: BaseReactor, Reactor {
         case setUser(User)
         case setVisitHistories([VisitHistory])
         case setBookmarks([StoreProtocol])
+        case appendBookmark(StoreProtocol)
+        case deleteBookamrk(storeId: String)
         case endRefresh
         case pushMyMedal(Medal)
         case pushStoreDetail(storeId: Int)
@@ -33,17 +35,20 @@ final class MyPageReactor: BaseReactor, Reactor {
     private let userService: UserServiceProtocol
     private let visitHistoryService: VisitHistoryServiceProtocol
     private let bookmarkService: BookmarkServiceProtocol
+    private let globalState: GlobalState
     private let size = 5
     
     init(
         userService: UserServiceProtocol,
         visitHistoryService: VisitHistoryServiceProtocol,
         bookmarkService: BookmarkServiceProtocol,
+        globalState: GlobalState,
         state: State = State(user: User(), visitHistories: [], bookmarks: [])
     ) {
         self.userService = userService
         self.visitHistoryService = visitHistoryService
         self.bookmarkService = bookmarkService
+        self.globalState = globalState
         self.initialState = state
     }
     
@@ -87,6 +92,18 @@ final class MyPageReactor: BaseReactor, Reactor {
         }
     }
     
+    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
+        return .merge([
+            mutation,
+            self.globalState.deleteBookmarkStore
+                .flatMap { storeIds -> Observable<Mutation> in
+                        .merge(storeIds.map { .just(.deleteBookamrk(storeId: $0)) })
+                },
+            self.globalState.addBookmarkStore
+                .map { .appendBookmark($0) }
+        ])
+    }
+    
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         
@@ -99,6 +116,14 @@ final class MyPageReactor: BaseReactor, Reactor {
             
         case .setBookmarks(let stores):
             newState.bookmarks = stores
+            
+        case .appendBookmark(let store):
+            newState.bookmarks.append(store)
+            
+        case .deleteBookamrk(let storeId):
+            if let targetIndex = newState.bookmarks.firstIndex(where: { $0.id == storeId }) {
+                newState.bookmarks.remove(at: targetIndex)
+            }
             
         case .endRefresh:
             newState.endRefreshing = ()

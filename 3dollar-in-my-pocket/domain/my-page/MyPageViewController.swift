@@ -10,7 +10,8 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
     private let myPageReactor = MyPageReactor(
         userService: UserService(),
         visitHistoryService: VisitHistoryService(),
-        bookmarkService: BookmarkService()
+        bookmarkService: BookmarkService(),
+        globalState: GlobalState.shared
     )
     private var myPageCollectionViewDataSource:
     RxCollectionViewSectionedReloadDataSource<MyPageSectionModel>!

@@ -87,18 +87,18 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             
         case .tapBookmark:
             let isBookmarked = self.currentState.store.isBookmarked
-            let storeId = self.currentState.store.id
+            let store = self.currentState.store
             
             if isBookmarked {
                 return .concat([
-                    self.unBookmarkStore(storeId: storeId),
+                    self.unBookmarkStore(storeId: store.id),
                     .just(.showToast(
                         message: R.string.localization.store_detail_unbookmark_toast())
                     )
                 ])
             } else {
                 return .concat([
-                    self.bookmarkStore(storeId: storeId),
+                    self.bookmarkStore(store: store),
                     .just(.showToast(
                         message: R.string.localization.store_detail_bookmark_toast())
                     )
@@ -195,14 +195,20 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         }
     }
     
-    private func bookmarkStore(storeId: String) -> Observable<Mutation> {
-        return self.bookamrkService.bookmarkStore(storeType: .foodTruck, storeId: storeId)
+    private func bookmarkStore(store: BossStore) -> Observable<Mutation> {
+        return self.bookamrkService.bookmarkStore(storeType: .foodTruck, storeId: store.id)
+            .do(onNext: { [weak self] _ in
+                self?.globalState.addBookmarkStore.onNext(store)
+            })
             .map { .setBookmark(true) }
             .catch { .just(.showErrorAlert($0)) }
     }
     
     private func unBookmarkStore(storeId: String) -> Observable<Mutation> {
         return self.bookamrkService.unBookmarkStore(storeType: .foodTruck, storeId: storeId)
+            .do(onNext: { [weak self] _ in
+                self?.globalState.deleteBookmarkStore.onNext([storeId])
+            })
             .map { .setBookmark(false) }
             .catch { .just(.showErrorAlert($0)) }
     }

@@ -8,7 +8,8 @@ final class BookmarkListViewController:
     BaseViewController, View, BookmarkListCoordinator {
     private let bookmarkListView = BookmarkListView()
     private let bookmarkListReactor = BookmarkListReactor(
-        bookmarkService: BookmarkService()
+        bookmarkService: BookmarkService(),
+        globalState: GlobalState.shared
     )
     private weak var coordinator: BookmarkListCoordinator?
     private var bookmarkCollectionViewDataSource:

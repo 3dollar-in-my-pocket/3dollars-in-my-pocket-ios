@@ -21,7 +21,7 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         case toggleDeleteMode
         case pushEditBookmarkFolder
         case clearBookmakrs
-        case deleteBookmark(row: Int)
+        case deleteBookamrk(storeId: String)
         case pushStoreDetail(storeId: String)
         case pushFoodTruckDetail(storeId: String)
         case showLoading(isShow: Bool)
@@ -39,11 +39,13 @@ final class BookmarkListReactor: BaseReactor, Reactor {
     
     let initialState: State
     private let bookmarkService: BookmarkServiceProtocol
+    private let globalState: GlobalState
     private var cursor: String?
     private var hasMore: Bool
     
     init(
         bookmarkService: BookmarkServiceProtocol,
+        globalState: GlobalState,
         hasMore: Bool = true,
         state: State = State(
             bookmarkFolder: BookmarkFolder(),
@@ -51,6 +53,7 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         )
     ) {
         self.bookmarkService = bookmarkService
+        self.globalState = globalState
         self.initialState = state
         self.hasMore = hasMore
     }
@@ -76,6 +79,8 @@ final class BookmarkListReactor: BaseReactor, Reactor {
             return .just(.toggleDeleteMode)
             
         case .tapDeleteAll:
+            guard !self.currentState.bookmarkFolder.bookmarks.isEmpty else { return .empty() }
+            
             return self.clearBookamrks()
             
         case .tapDelete(let row):
@@ -99,6 +104,16 @@ final class BookmarkListReactor: BaseReactor, Reactor {
                 return .empty()
             }
         }
+    }
+    
+    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
+        return .merge([
+            mutation,
+            self.globalState.deleteBookmarkStore
+                .flatMap { storeIds -> Observable<Mutation> in
+                    return .merge(storeIds.map { .just(.deleteBookamrk(storeId: $0)) })
+                }
+        ])
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
@@ -125,8 +140,12 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         case .clearBookmakrs:
             newState.bookmarkFolder.bookmarks = []
             
-        case .deleteBookmark(let row):
-            newState.bookmarkFolder.bookmarks.remove(at: row)
+        case .deleteBookamrk(let storeId):
+            if let targetIndex = newState.bookmarkFolder.bookmarks.firstIndex(where: {
+                $0.id == storeId
+            }) {
+                newState.bookmarkFolder.bookmarks.remove(at: targetIndex)
+            }
             
         case .pushStoreDetail(let storeId):
             newState.pushStoreDetail = storeId
@@ -170,9 +189,11 @@ final class BookmarkListReactor: BaseReactor, Reactor {
             storeType: store.storeCategory,
             storeId: store.id
         )
+        .do(onNext: { [weak self] _ in
+            self?.globalState.deleteBookmarkStore.onNext([store.id])
+        })
         .flatMap { _ -> Observable<Mutation> in
             return .merge([
-                .just(.deleteBookmark(row: row)),
                 .just(.decreaseTotalCount)
             ])
         }
@@ -181,9 +202,12 @@ final class BookmarkListReactor: BaseReactor, Reactor {
     
     private func clearBookamrks() -> Observable<Mutation> {
         return self.bookmarkService.clearBookmarks()
+            .do(onNext: { [weak self] _ in
+                self?.globalState.deleteBookmarkStore
+                    .onNext(self?.currentState.bookmarkFolder.bookmarks.map { $0.id } ?? [])
+            })
             .flatMap { _ -> Observable<Mutation> in
                 return .merge([
-                    .just(.clearBookmakrs),
                     .just(.setTotalCount(0)),
                     .just(.toggleDeleteMode)
                 ])
