@@ -184,8 +184,10 @@ final class BookmarkListViewController:
                 
                 headerView.deleteAllButton.rx.tap
                     .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-                    .map { Reactor.Action.tapDeleteAll }
-                    .bind(to: self.bookmarkListReactor.action)
+                    .asDriver(onErrorJustReturn: ())
+                    .drive(onNext: { [weak self] _ in
+                        self?.coordinator?.showDeleteAllPopup()
+                    })
                     .disposed(by: headerView.disposeBag)
                 
                 headerView.finishButton.rx.tap
@@ -213,5 +215,11 @@ final class BookmarkListViewController:
                 return UICollectionReusableView()
             }
         }
+    }
+}
+
+extension BookmarkListViewController: BookmarkDeletePopupDelegate {
+    func onTapDelete() {
+        self.reactor?.action.onNext(.tapDeleteAll)
     }
 }

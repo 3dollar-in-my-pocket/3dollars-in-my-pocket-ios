@@ -2,6 +2,8 @@ protocol BookmarkListCoordinator: BaseCoordinator, AnyObject {
     func pushStoreDetail(storeId: String)
     
     func pushFoodTruckDetail(storeId: String)
+    
+    func showDeleteAllPopup()
 }
 
 extension BookmarkListCoordinator {
@@ -16,5 +18,12 @@ extension BookmarkListCoordinator {
         let viewController = BossStoreDetailViewController.instance(storeId: storeId)
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    func showDeleteAllPopup() {
+        let viewController = BookmarkDeletePopupViewController.instance()
+        
+        viewController.delegate = self as? BookmarkDeletePopupDelegate
+        self.presenter.present(viewController, animated: true)
     }
 }
