@@ -110,7 +110,7 @@ final class BookmarkListViewController:
             .compactMap { $0 }
             .asDriver(onErrorJustReturn: BookmarkFolder())
             .drive(onNext: { [weak self] bookmarkFolder in
-                
+                self?.coordinator?.pushEditBookmarkFolder(bookmarkFolder: bookmarkFolder)
             })
             .disposed(by: self.disposeBag)
     }

@@ -4,6 +4,8 @@ protocol BookmarkListCoordinator: BaseCoordinator, AnyObject {
     func pushFoodTruckDetail(storeId: String)
     
     func showDeleteAllPopup()
+    
+    func pushEditBookmarkFolder(bookmarkFolder: BookmarkFolder)
 }
 
 extension BookmarkListCoordinator {
@@ -25,5 +27,11 @@ extension BookmarkListCoordinator {
         
         viewController.delegate = self as? BookmarkDeletePopupDelegate
         self.presenter.present(viewController, animated: true)
+    }
+    
+    func pushEditBookmarkFolder(bookmarkFolder: BookmarkFolder) {
+        let viewController = BookmarkEditViewController.instance(bookamrkFolder: bookmarkFolder)
+        
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
 }
