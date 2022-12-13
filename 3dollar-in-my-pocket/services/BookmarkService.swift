@@ -6,6 +6,8 @@ protocol BookmarkServiceProtocol {
     
     func unBookmarkStore(storeType: StoreType, storeId: String) -> Observable<Void>
     
+    func clearBookmarks() -> Observable<Void>
+    
     func fetchMyBookmarks(cursor: String?, size: Int)
     -> Observable<(cursor: Cursor, bookmarkFolder: BookmarkFolder)>
 }
@@ -29,6 +31,16 @@ struct BookmarkService: BookmarkServiceProtocol {
     func unBookmarkStore(storeType: StoreType, storeId: String) -> Observable<Void> {
         let urlString = HTTPUtils.url
         + "/api/v1/favorite/subscription/store/target/\(storeType.targetType)/\(storeId)"
+        let headers = HTTPUtils.defaultHeader()
+        
+        return self.networkManager.createDeleteObservable(
+            urlString: urlString,
+            headers: headers
+        )
+    }
+    
+    func clearBookmarks() -> Observable<Void> {
+        let urlString = HTTPUtils.url + "/api/v1/favorite/subscription/store/clear"
         let headers = HTTPUtils.defaultHeader()
         
         return self.networkManager.createDeleteObservable(

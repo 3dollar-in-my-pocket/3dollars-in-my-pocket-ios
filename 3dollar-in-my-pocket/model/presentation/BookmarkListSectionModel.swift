@@ -10,6 +10,7 @@ extension BookmarkListSectionModel: SectionModelType {
     enum BookmarkListItemType: Equatable {
         case overview(BookmarkFolder)
         case bookmarkStore(StoreProtocol)
+        case empty
         
         static func == (
             lhs: BookmarkListSectionModel.BookmarkListItemType,
@@ -21,6 +22,9 @@ extension BookmarkListSectionModel: SectionModelType {
                 
             case (.bookmarkStore(let store1), .bookmarkStore(let store2)):
                 return store1.id == store2.id
+                
+            case (.empty, .empty):
+                return true
                 
             default:
                 return false
@@ -38,6 +42,10 @@ extension BookmarkListSectionModel: SectionModelType {
     }
     
     init(stores: BookmarkFolder) {
-        self.items = stores.bookmarks.map { .bookmarkStore($0) }
+        if stores.bookmarks.isEmpty {
+            self.items = [.empty]
+        } else {
+            self.items = stores.bookmarks.map { .bookmarkStore($0) }
+        }
     }
 }

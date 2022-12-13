@@ -33,6 +33,10 @@ final class BookmarkListView: BaseView {
             forCellWithReuseIdentifier: BookmarkStoreCollectionViewCell.registerId
         )
         $0.register(
+            BookmarkEmptyCollectionViewCell.self,
+            forCellWithReuseIdentifier: BookmarkEmptyCollectionViewCell.registerId
+        )
+        $0.register(
             BookmarkSectionHeaderView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: BookmarkSectionHeaderView.registerId
@@ -110,10 +114,14 @@ final class BookmarkListView: BaseView {
                     widthDimension: .fractionalWidth(1),
                     heightDimension: .estimated(BookmarkStoreCollectionViewCell.height)
                 ))
+                let emptyItem = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(BookmarkEmptyCollectionViewCell.height)
+                ))
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .estimated(BookmarkStoreCollectionViewCell.height)
-                ), subitems: [storeItem])
+                    heightDimension: .estimated(BookmarkEmptyCollectionViewCell.height)
+                ), subitems: [storeItem, emptyItem])
                 let section = NSCollectionLayoutSection(group: group)
                 
                 section.boundarySupplementaryItems = [.init(

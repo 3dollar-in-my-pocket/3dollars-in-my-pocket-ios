@@ -17,10 +17,11 @@ final class BookmarkListReactor: BaseReactor, Reactor {
     enum Mutation {
         case setBookmarkFolder(BookmarkFolder)
         case setTotalCount(Int)
+        case decreaseTotalCount
         case toggleDeleteMode
         case pushEditBookmarkFolder
         case clearBookmakrs
-        case removeBookmark(row: Int)
+        case deleteBookmark(row: Int)
         case pushStoreDetail(storeId: String)
         case pushFoodTruckDetail(storeId: String)
         case showLoading(isShow: Bool)
@@ -75,7 +76,7 @@ final class BookmarkListReactor: BaseReactor, Reactor {
             return .just(.toggleDeleteMode)
             
         case .tapDeleteAll:
-            return .just(.clearBookmakrs)
+            return self.clearBookamrks()
             
         case .tapDelete(let row):
             return self.deleteBookamrk(row: row)
@@ -110,6 +111,11 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         case .setTotalCount(let count):
             newState.totalCount = count
             
+        case .decreaseTotalCount:
+            guard let totalCount = newState.totalCount else { break }
+            
+            newState.totalCount = totalCount - 1
+            
         case .toggleDeleteMode:
             newState.isDeleteMode.toggle()
             
@@ -119,7 +125,7 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         case .clearBookmakrs:
             newState.bookmarkFolder.bookmarks = []
             
-        case .removeBookmark(let row):
+        case .deleteBookmark(let row):
             newState.bookmarkFolder.bookmarks.remove(at: row)
             
         case .pushStoreDetail(let storeId):
@@ -164,7 +170,24 @@ final class BookmarkListReactor: BaseReactor, Reactor {
             storeType: store.storeCategory,
             storeId: store.id
         )
-        .map { .removeBookmark(row: row) }
+        .flatMap { _ -> Observable<Mutation> in
+            return .merge([
+                .just(.deleteBookmark(row: row)),
+                .just(.decreaseTotalCount)
+            ])
+        }
         .catch { .just(.showErrorAlert($0)) }
+    }
+    
+    private func clearBookamrks() -> Observable<Mutation> {
+        return self.bookmarkService.clearBookmarks()
+            .flatMap { _ -> Observable<Mutation> in
+                return .merge([
+                    .just(.clearBookmakrs),
+                    .just(.setTotalCount(0)),
+                    .just(.toggleDeleteMode)
+                ])
+            }
+            .catch { .just(.showErrorAlert($0)) }
     }
 }

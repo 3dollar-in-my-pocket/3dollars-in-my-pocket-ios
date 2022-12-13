@@ -142,6 +142,11 @@ final class BookmarkListViewController:
                     ) as? BookmarkStoreCollectionViewCell else { return BaseCollectionViewCell() }
                     
                     cell.bind(store: store)
+                    cell.deleteButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapDelete(row: indexPath.row) }
+                        .bind(to: self.bookmarkListReactor.action)
+                        .disposed(by: cell.disposeBag)
                     self.bookmarkListReactor.state
                         .map { $0.isDeleteMode }
                         .distinctUntilChanged()
@@ -149,6 +154,14 @@ final class BookmarkListViewController:
                         .asDriver(onErrorJustReturn: false)
                         .drive(cell.rx.isDeleteMode)
                         .disposed(by: cell.disposeBag)
+                    return cell
+                    
+                case .empty:
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: BookmarkEmptyCollectionViewCell.registerId,
+                        for: indexPath
+                    ) as? BookmarkEmptyCollectionViewCell else { return BaseCollectionViewCell() }
+                    
                     return cell
                 }
         })
