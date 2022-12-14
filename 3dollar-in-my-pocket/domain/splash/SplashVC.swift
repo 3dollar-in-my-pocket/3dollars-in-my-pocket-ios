@@ -12,7 +12,8 @@ class SplashVC: BaseVC {
     medalService: MedalService(),
     feedbackService: FeedbackService(),
     categoryService: CategoryService(),
-    deviceService: DeviceService()
+    deviceService: DeviceService(),
+    advertisementService: AdvertisementService()
   )
   
   

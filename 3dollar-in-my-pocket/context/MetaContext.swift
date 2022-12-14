@@ -13,6 +13,9 @@ final class MetaContext {
     /// 활성화된 푸드트럭 카테고리를 저장해둡니다.
     var foodTruckCategories: [Categorizable] = []
     
+    /// 활성화되어있는 마커 이미지를 저장해둡니다.
+    var advertisementMarker: Advertisement?
+    
     func findStreetFoodCategory(category: StreetFoodStoreCategory) -> StreetFoodCategory? {
         for categorizable in self.streetFoodCategories {
             if let streetFoodCategory = categorizable as? StreetFoodCategory,

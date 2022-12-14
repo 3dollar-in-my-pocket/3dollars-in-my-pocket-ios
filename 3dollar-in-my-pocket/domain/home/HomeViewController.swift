@@ -15,7 +15,8 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
         locationManager: LocationManager.shared,
         mapService: MapService(),
         userDefaults: UserDefaultsUtil(),
-        globalState: GlobalState.shared
+        globalState: GlobalState.shared,
+        metaContext: MetaContext.shared
     )
   
     var mapAnimatedFlag = false
@@ -144,6 +145,11 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
             .map { Reactor.Action.tapStore(index: $0.row) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
+        
+        self.homeView.mapView.locationOverlay.touchHandler = { _ in
+            reactor.action.onNext(.tapCurrentMarker)
+            return true
+        }
         
         if let layout
             = self.homeView.storeCollectionView.collectionViewLayout as? HomeStoreFlowLayout {
@@ -288,11 +294,26 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
             .drive(self.homeView.rx.isTooltipHidden)
             .disposed(by: self.disposeBag)
         
+        reactor.state
+            .compactMap { $0.advertisementMarker }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: Advertisement())
+            .drive(self.homeView.rx.advertisementMarker)
+            .disposed(by: self.disposeBag)
+        
         reactor.pulse(\.$presentPolicy)
             .compactMap { $0 }
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] _ in
                 self?.coordinator?.presentPolicy()
+            })
+            .disposed(by: self.disposeBag)
+        
+        reactor.pulse(\.$presentMarkerAdvertisement)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.presentMarkerAdvertisement()
             })
             .disposed(by: self.disposeBag)
     }

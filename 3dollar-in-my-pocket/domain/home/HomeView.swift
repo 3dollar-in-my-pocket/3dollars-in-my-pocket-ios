@@ -3,6 +3,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import NMapsMap
+import Kingfisher
 
 final class HomeView: BaseView {
     let mapView = NMFMapView().then {
@@ -97,6 +98,8 @@ final class HomeView: BaseView {
             self.currentLocationButton,
             self.tooltipView
         ])
+        
+//        self.mapView.locationOverlay.icon = NMFOverlayImage(name: "img_60_gungoguma")
     }
   
     override func bindConstraints() {
@@ -181,6 +184,19 @@ final class HomeView: BaseView {
             self.currentLocationButton.setImage(R.image.ic_location_pink(), for: .normal)
         }
     }
+    
+    fileprivate func setMarker(advertisement: Advertisement) {
+        guard let url = URL(string: advertisement.imageUrl) else { return }
+        KingfisherManager.shared.retrieveImage(with: url) { [weak self] result in
+            switch result {
+            case .success(let result):
+                self?.mapView.locationOverlay.icon = NMFOverlayImage(image: result.image)
+                
+            case .failure:
+                self?.mapView.locationOverlay.icon = NMFOverlayImage(name: "")
+            }
+        }
+    }
 }
 
 
@@ -206,5 +222,11 @@ extension Reactive where Base: HomeView {
     
     var isTooltipHidden: Binder<Bool> {
         return base.tooltipView.rx.isTooltipHidden
+    }
+    
+    var advertisementMarker: Binder<Advertisement> {
+        return Binder(self.base) { view, advertisement in
+            view.setMarker(advertisement: advertisement)
+        }
     }
 }
