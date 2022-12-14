@@ -1,8 +1,8 @@
 struct BookmarkFolder {
     var bookmarks: [StoreProtocol]
     let folderId: String?
-    let introduction: String
-    let name: String
+    var introduction: String
+    var name: String
     let user: User
     
     init(

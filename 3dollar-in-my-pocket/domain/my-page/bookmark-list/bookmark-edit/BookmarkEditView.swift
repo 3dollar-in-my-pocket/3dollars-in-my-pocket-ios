@@ -25,7 +25,7 @@ final class BookmarkEditView: BaseView {
         $0.textColor = R.color.gray50()
     }
     
-    private let titleTextView = UITextView().then {
+    let titleTextView = UITextView().then {
         $0.textColor = .white
         $0.font = .regular(size: 24)
         $0.backgroundColor = .clear
@@ -38,12 +38,18 @@ final class BookmarkEditView: BaseView {
         $0.textColor = R.color.gray50()
     }
     
-    private let descriptionTextView = UITextView().then {
+    let descriptionTextView = UITextView().then {
         $0.textColor = .white
         $0.font = .regular(size: 12)
         $0.backgroundColor = .clear
         $0.textContainer.lineBreakMode = .byTruncatingTail
         $0.textContainer.maximumNumberOfLines = 6
+    }
+    
+    private let descriptionPlaceholderLabel = UILabel().then {
+        $0.textColor = R.color.gray40()
+        $0.font = .regular(size: 12)
+        $0.text = "리스트에 대한 한줄평을 입력해주세요! 공유 시 사용됩니다."
     }
     
     let saveButton = UIButton().then {
@@ -71,6 +77,7 @@ final class BookmarkEditView: BaseView {
             self.titleTextView,
             self.descriptionCountLabel,
             self.descriptionTextView,
+            self.descriptionPlaceholderLabel,
             self.safeAreaView,
             self.saveButton
         ])
@@ -90,6 +97,11 @@ final class BookmarkEditView: BaseView {
             .asDriver()
             .map { "\($0.trimmingCharacters(in: .whitespacesAndNewlines).count)/150" }
             .drive(self.descriptionCountLabel.rx.text)
+            .disposed(by: self.disposeBag)
+        self.descriptionTextView.rx.text.orEmpty
+            .map { !$0.isEmpty }
+            .asDriver(onErrorJustReturn: false)
+            .drive(self.descriptionPlaceholderLabel.rx.isHidden)
             .disposed(by: self.disposeBag)
         
         self.setupKeyboardEvent()
@@ -134,6 +146,13 @@ final class BookmarkEditView: BaseView {
             make.height.equalTo(110)
         }
         
+        self.descriptionPlaceholderLabel.snp.makeConstraints { make in
+            make.left.equalTo(self.descriptionTextView)
+                .offset(self.descriptionTextView.textContainerInset.left)
+            make.top.equalTo(self.descriptionTextView)
+                .offset(self.descriptionTextView.textContainerInset.top)
+        }
+        
         self.saveButton.snp.makeConstraints { make in
             make.left.equalToSuperview()
             make.right.equalToSuperview()
@@ -147,6 +166,11 @@ final class BookmarkEditView: BaseView {
             make.bottom.equalToSuperview()
             make.top.equalTo(self.safeAreaLayoutGuide.snp.bottom)
         }
+    }
+    
+    func bind(bookmakrFolder: BookmarkFolder) {
+        self.titleTextView.text = bookmakrFolder.name
+        self.descriptionTextView.text = bookmakrFolder.introduction
     }
     
     private func setupKeyboardEvent() {
@@ -218,6 +242,14 @@ extension BookmarkEditView: UITextViewDelegate {
             return count <= 20 && newLinesCount < 2
         } else {
             return count <= 150 && newLinesCount < 6
+        }
+    }
+}
+
+extension Reactive where Base: BookmarkEditView {
+    var bookmarkFolder: Binder<BookmarkFolder> {
+        return Binder(self.base) { base, bookmarkFolder in
+            base.bind(bookmakrFolder: bookmarkFolder)
         }
     }
 }

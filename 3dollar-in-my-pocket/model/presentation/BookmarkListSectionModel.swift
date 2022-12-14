@@ -19,6 +19,8 @@ extension BookmarkListSectionModel: SectionModelType {
             switch (lhs, rhs) {
             case (.overview(let bookmarkFolder1), .overview(let bookmarkFolder2)):
                 return bookmarkFolder1.folderId == bookmarkFolder2.folderId
+                && bookmarkFolder1.name == bookmarkFolder2.name
+                && bookmarkFolder1.introduction == bookmarkFolder2.introduction
                 
             case (.bookmarkStore(let store1), .bookmarkStore(let store2)):
                 return store1.id == store2.id

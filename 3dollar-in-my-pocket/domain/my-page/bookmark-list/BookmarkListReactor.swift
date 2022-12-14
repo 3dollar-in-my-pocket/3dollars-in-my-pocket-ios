@@ -16,6 +16,7 @@ final class BookmarkListReactor: BaseReactor, Reactor {
     
     enum Mutation {
         case setBookmarkFolder(BookmarkFolder)
+        case updateBookmarkFolder(BookmarkFolder)
         case setTotalCount(Int)
         case decreaseTotalCount
         case toggleDeleteMode
@@ -115,7 +116,9 @@ final class BookmarkListReactor: BaseReactor, Reactor {
                         .just(.deleteBookamrk(storeId: $0)),
                         .just(.decreaseTotalCount)
                     ]) })
-                }
+                },
+            self.globalState.updateBookmarkFolder
+                .map { .updateBookmarkFolder($0) }
         ])
     }
     
@@ -125,6 +128,10 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         switch mutation {
         case .setBookmarkFolder(let bookmarkFolder):
             newState.bookmarkFolder = bookmarkFolder
+            
+        case .updateBookmarkFolder(let bookmarkFolder):
+            newState.bookmarkFolder.introduction = bookmarkFolder.introduction
+            newState.bookmarkFolder.name = bookmarkFolder.name
             
         case .setTotalCount(let count):
             newState.totalCount = count

@@ -30,7 +30,7 @@ extension BookmarkListCoordinator {
     }
     
     func pushEditBookmarkFolder(bookmarkFolder: BookmarkFolder) {
-        let viewController = BookmarkEditViewController.instance(bookamrkFolder: bookmarkFolder)
+        let viewController = BookmarkEditViewController.instance(bookmarkFolder: bookmarkFolder)
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }

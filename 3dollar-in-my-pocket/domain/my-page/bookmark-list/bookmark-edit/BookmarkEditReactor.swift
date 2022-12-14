@@ -54,11 +54,39 @@ final class BookmarkEditReactor: BaseReactor, Reactor {
         }
     }
     
+    func reduce(state: State, mutation: Mutation) -> State {
+        var newState = state
+        
+        switch mutation {
+        case .setTitle(let title):
+            newState.bookmarkFolder.name = title
+            
+        case .setDescription(let description):
+            newState.bookmarkFolder.introduction = description
+            
+        case .pop:
+            newState.pop = ()
+            
+        case .showLoading(let isShow):
+            newState.showLading = isShow
+            
+        case .showErrorAlert(let error):
+            newState.showErrorAlert = error
+        }
+        
+        return newState
+    }
+    
     private func editBookmarkFolder() -> Observable<Mutation> {
         return self.bookmarkService.editBookmarkFolder(
             introduction: self.currentState.bookmarkFolder.introduction,
             name: self.currentState.bookmarkFolder.name
         )
+        .do(onNext: { [weak self] _ in
+            guard let bookmarkFolder = self?.currentState.bookmarkFolder else { return }
+            
+            self?.globalState.updateBookmarkFolder.onNext(bookmarkFolder)
+        })
         .map { _ in .pop }
         .catch { .just(.showErrorAlert($0)) }
     }
