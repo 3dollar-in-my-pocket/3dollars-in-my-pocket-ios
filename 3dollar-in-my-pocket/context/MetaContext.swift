@@ -22,5 +22,5 @@ final class MetaContext {
         }
         
         return nil
-    } 
+    }
 }

@@ -631,7 +631,7 @@ final class HomeReactor: BaseReactor, Reactor {
     private func fetchAdvertisement() -> Observable<Advertisement?> {
         return self.advertisementService
             .fetchAdvertisements(position: .mainPageCard)
-            .map { $0.map(Advertisement.init(response:)).first }
+            .map { $0.first }
     }
     
     private func fetchAddressFromLocation(location: CLLocation?) -> Observable<Mutation> {
