@@ -25,5 +25,8 @@ platform :ios do
   lane :match_full do
     match(type: "development", app_identifier: "com.macgongmon.-dollar-in-my-pocket-debug", force_for_new_devices: true)
     match(type: "appstore", app_identifier: "com.macgongmon.-dollar-in-my-pocket", force_for_new_devices: true)
+    match(type: "adhoc", app_identifier: "com.macgongmon.-dollar-in-my-pocket-debug", force_for_new_devices: true)
+    match(type: "adhoc", app_identifier: "com.macgongmon.-dollar-in-my-pocket-debug.service-extension", force_for_new_devices: true)
+    match(type: "adhoc", app_identifier: "com.macgongmon.-dollar-in-my-pocket-debug.content-extension", force_for_new_devices: true)
   end
 end
