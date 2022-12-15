@@ -126,3 +126,13 @@ public enum StreetFoodStoreCategory: String, Codable {
     return self.rawValue
   }
 }
+
+extension StreetFoodStoreCategory: Categorizable {
+    var id: String {
+        return ""
+    }
+    
+    var imageUrl: String {
+        return ""
+    }
+}

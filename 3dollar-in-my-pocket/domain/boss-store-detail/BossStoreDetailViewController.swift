@@ -17,6 +17,7 @@ final class BossStoreDetailViewController:
         self.bossStoreDetailReactor = BossStoreDetailReactor(
             storeId: storeId,
             storeService: StoreService(),
+            bookmarkService: BookmarkService(),
             locationManaber: LocationManager.shared,
             globalState: GlobalState.shared,
             userDefaults: UserDefaultsUtil(),
@@ -93,11 +94,35 @@ final class BossStoreDetailViewController:
                 self?.coordinator?.showErrorAlert(error: error)
             })
             .disposed(by: self.eventDisposeBag)
+        
+        self.bossStoreDetailReactor.showToastPublisher
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] message in
+                guard let self = self else { return }
+                
+                self.coordinator?.showToast(
+                    message: message,
+                    baseView: self.bossStoreDetailView.bottomBar
+                )
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: BossStoreDetailReactor) {
         // Bind acion
         self.bossStoreDetailView.feedbackButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapFeedback }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        self.bossStoreDetailView.bottomBar.rx.tapBookmark
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapBookmark }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        self.bossStoreDetailView.bottomBar.rx.tapFeedback
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .map { Reactor.Action.tapFeedback }
             .bind(to: reactor.action)
@@ -114,6 +139,13 @@ final class BossStoreDetailViewController:
             .map { $0.store.status == .open }
             .asDriver(onErrorJustReturn: false)
             .drive(self.bossStoreDetailView.rx.isStoreOpen)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .map { $0.store.isBookmarked }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: false)
+            .drive(self.bossStoreDetailView.bottomBar.rx.isBookmarked)
             .disposed(by: self.disposeBag)
         
         reactor.state
@@ -155,7 +187,12 @@ final class BossStoreDetailViewController:
                         .disposed(by: cell.disposeBag)
                     cell.shareButton.rx.tap
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-                        .map { Reactor.Action.tapShare}
+                        .map { Reactor.Action.tapShare }
+                        .bind(to: self.bossStoreDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
+                    cell.bookmarkButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapBookmark }
                         .bind(to: self.bossStoreDetailReactor.action)
                         .disposed(by: cell.disposeBag)
                     self.bossStoreDetailReactor.moveCameraPublisher
@@ -163,6 +200,12 @@ final class BossStoreDetailViewController:
                         .bind(onNext: { [weak cell] location in
                             cell?.moveCamera(location: location)
                         })
+                        .disposed(by: cell.disposeBag)
+                    self.bossStoreDetailReactor.state
+                        .map { $0.store.isBookmarked }
+                        .distinctUntilChanged()
+                        .asDriver(onErrorJustReturn: false)
+                        .drive(cell.bookmarkButton.rx.isSelected)
                         .disposed(by: cell.disposeBag)
                     return cell
                     

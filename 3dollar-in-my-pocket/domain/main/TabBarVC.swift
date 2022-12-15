@@ -168,7 +168,6 @@ class TabBarVC: UITabBarController {
     
     private func checkIfBannerExisted() {
         AdvertisementService().fetchAdvertisements(position: .splash)
-            .map { $0.map { Advertisement.init(response: $0)} }
             .subscribe(
                 onNext: { [weak self] advertisements in
                     if !advertisements.isEmpty {

@@ -3,6 +3,14 @@ struct Store: StoreProtocol {
         return String(self.storeId)
     }
     
+    var name: String {
+        return self.storeName
+    }
+    
+    var storeCategory: StoreType {
+        return .streetFood
+    }
+    
     let appearanceDays: [WeekDay]
     let categories: [StreetFoodStoreCategory]
     let isDeleted: Bool
@@ -21,6 +29,7 @@ struct Store: StoreProtocol {
     let user: User
     let visitHistories: [VisitHistory]
     var visitHistory: VisitOverview
+    var isBookmarked: Bool
     
     init(
         category: StreetFoodStoreCategory,
@@ -47,6 +56,7 @@ struct Store: StoreProtocol {
         self.user = User()
         self.visitHistories = []
         self.visitHistory = VisitOverview()
+        self.isBookmarked = false
     }
     
     init(
@@ -83,6 +93,7 @@ struct Store: StoreProtocol {
         self.user = User()
         self.visitHistories = []
         self.visitHistory = VisitOverview()
+        self.isBookmarked = false
     }
     
     init(id: Int = 0) {
@@ -104,6 +115,7 @@ struct Store: StoreProtocol {
         self.user = User()
         self.visitHistories = []
         self.visitHistory = VisitOverview()
+        self.isBookmarked = false
     }
     
     init(response: StoreInfoResponse) {
@@ -125,6 +137,7 @@ struct Store: StoreProtocol {
         self.user = User()
         self.visitHistories = []
         self.visitHistory = VisitOverview()
+        self.isBookmarked = false
     }
     
     init(response: StoreDetailResponse) {
@@ -146,6 +159,7 @@ struct Store: StoreProtocol {
         self.user = User(response: response.user)
         self.visitHistories = response.visitHistories.map { VisitHistory(response: $0) }
         self.visitHistory = VisitOverview(response: response.visitHistory)
+        self.isBookmarked = response.favorite.isFavorite
     }
     
     init(response: StoreWithVisitsResponse) {
@@ -167,6 +181,7 @@ struct Store: StoreProtocol {
         self.user = User()
         self.visitHistories = []
         self.visitHistory = VisitOverview(response: response.visitHistory)
+        self.isBookmarked = false
     }
     
     init(response: StoreWithVisitsAndDistanceResponse) {
@@ -188,6 +203,7 @@ struct Store: StoreProtocol {
         self.user = User()
         self.visitHistories = []
         self.visitHistory = VisitOverview(response: response.visitHistory)
+        self.isBookmarked = false
     }
 }
 

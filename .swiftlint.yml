@@ -1,5 +1,6 @@
 disabled_rules:
   - multiple_closures_with_trailing_closure
+  - cyclomatic_complexity
 
 excluded:
   - Pods
@@ -46,9 +47,6 @@ trailing_whitespace:
   
 vertical_whitespace:
   max_empty_lines: 2
-  
-cyclomatic_complexity:
-  warning: 20
   
 function_body_length:
   warning: 100

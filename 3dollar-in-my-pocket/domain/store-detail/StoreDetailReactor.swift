@@ -9,6 +9,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
         case tapDeleteRequest
+        case tapBookmark
         case tapCurrentLocation
         case tapShare
         case tapVisitHistory
@@ -25,6 +26,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     enum Mutation {
         case setStore(Store)
         case setCurrentLocation(CLLocation)
+        case setBookmark(Bool)
         case moveCamera(CLLocation)
         case appendPhotos([Image])
         case deletePhoto(photoId: Int)
@@ -41,6 +43,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         case presentVisit(store: Store)
         case showLoading(isShow: Bool)
         case showErrorAlert(error: Error)
+        case showToast(message: String)
     }
     
     struct State {
@@ -66,6 +69,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
     private let locationManager: LocationManagerProtocol
     private let storeService: StoreServiceProtocol
     private let reviewService: ReviewServiceProtocol
+    private let bookamrkService: BookmarkServiceProtocol
     private let gaManager: AnalyticsManagerProtocol
     private let globalState: GlobalState
     
@@ -75,6 +79,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         locationManager: LocationManagerProtocol,
         storeService: StoreServiceProtocol,
         reviewService: ReviewServiceProtocol,
+        bookmarkService: BookmarkServiceProtocol,
         gaManager: AnalyticsManagerProtocol,
         globalState: GlobalState,
         state: State = State(
@@ -88,6 +93,7 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         self.locationManager = locationManager
         self.storeService = storeService
         self.reviewService = reviewService
+        self.bookamrkService = bookmarkService
         self.gaManager = gaManager
         self.globalState = globalState
         self.initialState = State(
@@ -126,6 +132,26 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             )
             
             return .just(.presentDeleteModal(storeId: self.storeId))
+            
+        case .tapBookmark:
+            let isBookmarked = self.currentState.store.isBookmarked
+            let store = self.currentState.store
+            
+            if isBookmarked {
+                return .concat([
+                    self.unBookmarkStore(storeId: store.id),
+                    .just(.showToast(
+                        message: R.string.localization.store_detail_unbookmark_toast())
+                    )
+                ])
+            } else {
+                return .concat([
+                    self.bookmarkStore(store: store),
+                    .just(.showToast(
+                        message: R.string.localization.store_detail_bookmark_toast())
+                    )
+                ])
+            }
             
         case .tapCurrentLocation:
             return self.locationManager.getCurrentLocation()
@@ -219,6 +245,9 @@ final class StoreDetailReactor: BaseReactor, Reactor {
         case .setCurrentLocation(let location):
             newState.currentLocation = location
             
+        case .setBookmark(let isBookmarked):
+            newState.store.isBookmarked = isBookmarked
+            
         case .moveCamera(let location):
             self.moveCameraPublisher.accept(location)
             
@@ -270,6 +299,9 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             
         case .showErrorAlert(let error):
             self.showErrorAlertPublisher.accept(error)
+            
+        case .showToast(let message):
+            self.showToastPublisher.accept(message)
         }
         
         return newState
@@ -307,6 +339,24 @@ final class StoreDetailReactor: BaseReactor, Reactor {
                     currentLocation: self.currentState.currentLocation
                 )
             }
+            .catch { .just(.showErrorAlert(error: $0)) }
+    }
+    
+    private func bookmarkStore(store: Store) -> Observable<Mutation> {
+        return self.bookamrkService.bookmarkStore(storeType: .streetFood, storeId: store.id)
+            .do(onNext: { [weak self] _ in
+                self?.globalState.addBookmarkStore.onNext(store)
+            })
+            .map { .setBookmark(true) }
+            .catch { .just(.showErrorAlert(error: $0)) }
+    }
+    
+    private func unBookmarkStore(storeId: String) -> Observable<Mutation> {
+        return self.bookamrkService.unBookmarkStore(storeType: .streetFood, storeId: storeId)
+            .do(onNext: { [weak self] _ in
+                self?.globalState.deleteBookmarkStore.onNext([storeId])
+            })
+            .map { .setBookmark(false) }
             .catch { .just(.showErrorAlert(error: $0)) }
     }
 }

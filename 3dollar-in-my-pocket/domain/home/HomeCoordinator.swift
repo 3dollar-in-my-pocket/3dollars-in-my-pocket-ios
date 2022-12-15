@@ -8,6 +8,7 @@ protocol HomeCoordinator: BaseCoordinator, AnyObject {
     func showSearchAddress()
     func presentVisit(store: Store)
     func presentPolicy()
+    func presentMarkerAdvertisement()
 }
 
 extension HomeCoordinator where Self: UIViewController {
@@ -66,6 +67,12 @@ extension HomeCoordinator where Self: UIViewController {
     
     func presentPolicy() {
         let viewController = PolicyViewController.instance()
+        
+        self.tabBarController?.present(viewController, animated: true)
+    }
+    
+    func presentMarkerAdvertisement() {
+        let viewController = MarkerPopupViewController.instacne()
         
         self.tabBarController?.present(viewController, animated: true)
     }

@@ -7,6 +7,7 @@ protocol BaseCoordinator {
     func openURL(url: String)
     func showLoading(isShow: Bool)
     func showToast(message: String)
+    func showToast(message: String, baseView: UIView)
 }
 
 extension BaseCoordinator where Self: BaseViewController {
@@ -51,9 +52,14 @@ extension BaseCoordinator where Self: BaseViewController {
         LoadingManager.shared.showLoading(isShow: isShow)
     }
     
+    func showToast(message: String, baseView: UIView) {
+        ToastManager.shared.show(message: message, baseView: baseView)
+    }
+    
     func showToast(message: String) {
         ToastManager.shared.show(message: message)
     }
+    
     
     private func goToSignin() {
         if let sceneDelegate

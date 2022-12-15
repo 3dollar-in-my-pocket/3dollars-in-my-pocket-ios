@@ -61,6 +61,9 @@ final class HomeCategoryCollectionViewCell: BaseCollectionViewCell {
                 
             case .foodTruck:
                 self.containerView.backgroundColor = R.color.green()
+                
+            case .unknown:
+                break
             }
             self.titleLabel.textColor = .white
         } else {

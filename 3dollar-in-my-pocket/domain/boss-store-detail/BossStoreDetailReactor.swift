@@ -8,6 +8,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
         case tapCurrentLocation
+        case tapBookmark
         case tapSNSButton
         case tapShare
         case showTotalMenus
@@ -17,6 +18,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     enum Mutation {
         case setStore(BossStore)
         case pushShare(BossStore)
+        case setBookmark(Bool)
         case pushFeedback(storeId: String)
         case moveCamera(location: CLLocation)
         case pushURL(url: String?)
@@ -24,6 +26,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         case showTotalMenus
         case showLoading(isShow: Bool)
         case showErrorAlert(Error)
+        case showToast(message: String)
     }
     
     struct State {
@@ -39,6 +42,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     let pushURLPublisher = PublishRelay<String?>()
     private let storeService: StoreServiceProtocol
     private let locationService: LocationManagerProtocol
+    private let bookamrkService: BookmarkServiceProtocol
     private let globalState: GlobalState
     private var userDefaults: UserDefaultsUtil
     private var gaManager: AnalyticsManagerProtocol
@@ -46,6 +50,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     init(
         storeId: String,
         storeService: StoreServiceProtocol,
+        bookmarkService: BookmarkServiceProtocol,
         locationManaber: LocationManagerProtocol,
         globalState: GlobalState,
         userDefaults: UserDefaultsUtil,
@@ -54,6 +59,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     ) {
         self.storeId = storeId
         self.storeService = storeService
+        self.bookamrkService = bookmarkService
         self.locationService = locationManaber
         self.globalState = globalState
         self.userDefaults = userDefaults
@@ -78,6 +84,26 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             
         case .tapCurrentLocation:
             return self.fetchCurrentLocation()
+            
+        case .tapBookmark:
+            let isBookmarked = self.currentState.store.isBookmarked
+            let store = self.currentState.store
+            
+            if isBookmarked {
+                return .concat([
+                    self.unBookmarkStore(storeId: store.id),
+                    .just(.showToast(
+                        message: R.string.localization.store_detail_unbookmark_toast())
+                    )
+                ])
+            } else {
+                return .concat([
+                    self.bookmarkStore(store: store),
+                    .just(.showToast(
+                        message: R.string.localization.store_detail_bookmark_toast())
+                    )
+                ])
+            }
             
         case .tapSNSButton:
             return .just(.pushURL(url: self.currentState.store.snsUrl))
@@ -111,6 +137,9 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         case .pushShare(let store):
             self.pushSharePublisher.accept(store)
             
+        case .setBookmark(let isBookmarked):
+            newState.store.isBookmarked = isBookmarked
+            
         case .pushFeedback(let storeId):
             self.pushFeedbackPublisher.accept(storeId)
             
@@ -132,6 +161,9 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             
         case .showErrorAlert(let error):
             self.showErrorAlertPublisher.accept(error)
+            
+        case .showToast(let message):
+            self.showToastPublisher.accept(message)
         }
         
         return newState
@@ -161,5 +193,23 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         if !self.userDefaults.shareLink.isEmpty {
             self.userDefaults.shareLink = ""
         }
+    }
+    
+    private func bookmarkStore(store: BossStore) -> Observable<Mutation> {
+        return self.bookamrkService.bookmarkStore(storeType: .foodTruck, storeId: store.id)
+            .do(onNext: { [weak self] _ in
+                self?.globalState.addBookmarkStore.onNext(store)
+            })
+            .map { .setBookmark(true) }
+            .catch { .just(.showErrorAlert($0)) }
+    }
+    
+    private func unBookmarkStore(storeId: String) -> Observable<Mutation> {
+        return self.bookamrkService.unBookmarkStore(storeType: .foodTruck, storeId: storeId)
+            .do(onNext: { [weak self] _ in
+                self?.globalState.deleteBookmarkStore.onNext([storeId])
+            })
+            .map { .setBookmark(false) }
+            .catch { .just(.showErrorAlert($0)) }
     }
 }

@@ -27,6 +27,16 @@ struct Medal: Equatable {
         self.isOwned = false
     }
     
+    init(response: UserMedalResponse) {
+        self.acquisition = Acquisition()
+        self.disableUrl = response.disableIconUrl
+        self.iconUrl = response.iconUrl
+        self.introduction = ""
+        self.medalId = response.medalId
+        self.name = response.name
+        self.isOwned = false
+    }
+    
     static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.medalId == rhs.medalId
     }

@@ -15,7 +15,7 @@ protocol CategoryServiceProtocol {
         mapLocation: CLLocation?
     ) -> Observable<StoresGroupByReviewResponse>
     
-    func fetchCategories() -> Observable<[MenuCategoryResponse]>
+    func fetchCategories() -> Observable<[PlatformStoreCategoryResponse]>
     
     func fetchStreetFoodCategories() -> Observable<[Categorizable]>
     
@@ -95,7 +95,7 @@ struct CategoryService: CategoryServiceProtocol {
     }
   }
   
-  func fetchCategories() -> Observable<[MenuCategoryResponse]> {
+  func fetchCategories() -> Observable<[PlatformStoreCategoryResponse]> {
     return .create { observer in
       let urlString = HTTPUtils.url + "/api/v2/store/menu/categories"
       let headers = HTTPUtils.jsonHeader()
@@ -106,7 +106,7 @@ struct CategoryService: CategoryServiceProtocol {
         headers: headers
       ).responseJSON { response in
         if response.isSuccess() {
-          observer.processValue(class: [MenuCategoryResponse].self, response: response)
+          observer.processValue(class: [PlatformStoreCategoryResponse].self, response: response)
         } else {
           observer.processHTTPError(response: response)
         }
@@ -121,7 +121,7 @@ struct CategoryService: CategoryServiceProtocol {
         let headers = HTTPUtils.jsonHeader()
 
         return self.networkManager.createGetObservable(
-            class: [MenuCategoryResponse].self,
+            class: [PlatformStoreCategoryResponse].self,
             urlString: urlString,
             headers: headers
         )

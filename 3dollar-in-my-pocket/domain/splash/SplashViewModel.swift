@@ -1,6 +1,7 @@
 import RxSwift
 import RxCocoa
 import FirebaseRemoteConfig
+import Kingfisher
 
 final class SplashViewModel: BaseViewModel {
     struct Input {
@@ -25,6 +26,7 @@ final class SplashViewModel: BaseViewModel {
     private let feedbackService: FeedbackServiceProtocol
     private let categoryService: CategoryServiceProtocol
     private let deviceService: DeviceServiceProtocol
+    private let advertisementService: AdvertisementServiceProtocol
     
     init(
         userDefaults: UserDefaultsUtil,
@@ -34,7 +36,8 @@ final class SplashViewModel: BaseViewModel {
         medalService: MedalServiceProtocol,
         feedbackService: FeedbackServiceProtocol,
         categoryService: CategoryServiceProtocol,
-        deviceService: DeviceServiceProtocol
+        deviceService: DeviceServiceProtocol,
+        advertisementService: AdvertisementServiceProtocol
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
@@ -44,12 +47,14 @@ final class SplashViewModel: BaseViewModel {
         self.feedbackService = feedbackService
         self.categoryService = categoryService
         self.deviceService = deviceService
+        self.advertisementService = advertisementService
         
         super.init()
         
         self.input.viewDidLoad
             .bind(onNext: { [weak self] in
                 self?.fetchBossStoreTypes()
+                self?.fetchMarkerImage()
                 self?.fetchMedals()
                 self?.fetchStreetFoodCategories()
                 self?.fetchFoodTurckCategories()
@@ -175,6 +180,15 @@ final class SplashViewModel: BaseViewModel {
                 self?.metaContext.foodTruckCategories = categories
             }, onError: { [weak self] error in
                 self?.showErrorAlert.accept(error)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func fetchMarkerImage() {
+        self.advertisementService.fetchAdvertisements(position: .storeMarker)
+            .compactMap { $0.first }
+            .subscribe(onNext: { [weak self] advertisement in
+                self?.metaContext.advertisementMarker = advertisement
             })
             .disposed(by: self.disposeBag)
     }

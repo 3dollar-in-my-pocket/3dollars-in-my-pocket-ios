@@ -92,8 +92,7 @@ final class CategoryFilterReactor: BaseReactor, Reactor {
     
     private func fetchAdvertisement() -> Observable<Mutation> {
         return self.advertisementService.fetchAdvertisements(position: .menuCategoryBanner)
-            .map { $0.map(Advertisement.init(response:)).first }
-            .map { .setAdvertisement($0) }
+            .map { .setAdvertisement($0.first) }
             .catch { .just(.showErrorAlert($0)) }
     }
 }

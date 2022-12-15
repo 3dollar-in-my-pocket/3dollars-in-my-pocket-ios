@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol MyPageCoordinator: Coordinator, AnyObject {
+protocol MyPageCoordinator: BaseCoordinator, AnyObject {
     func goToSetting()
     
     func goToMyMedal(medal: Medal)
@@ -20,6 +20,8 @@ protocol MyPageCoordinator: Coordinator, AnyObject {
     func goToStoreDetail(storeId: Int)
     
     func goToMyVisitHistory()
+    
+    func pushBookmarkList(userName: String)
 }
 
 extension MyPageCoordinator {
@@ -59,5 +61,14 @@ extension MyPageCoordinator {
         let viewController = MyVisitHistoryViewController.instance()
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    func pushBookmarkList(userName: String) {
+        let viewController = BookmarkListViewController.instance(userName: userName)
+        
+        self.presenter.navigationController?.pushViewController(
+            viewController,
+            animated: true
+        )
     }
 }

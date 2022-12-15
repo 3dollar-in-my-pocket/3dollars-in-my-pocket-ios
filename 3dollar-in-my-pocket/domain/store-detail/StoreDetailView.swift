@@ -19,12 +19,6 @@ final class StoreDetailView: BaseView {
     
     fileprivate let mainCategoryImage = UIImageView()
     
-    let deleteRequestButton = UIButton().then {
-        $0.setTitle(R.string.localization.store_detail_delete_request(), for: .normal)
-        $0.setTitleColor(R.color.red(), for: .normal)
-        $0.titleLabel?.font = .semiBold(size: 14)
-    }
-    
     let collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewLayout()
@@ -66,9 +60,7 @@ final class StoreDetailView: BaseView {
         $0.contentInset = .init(top: 0, left: 0, bottom: 64, right: 0)
     }
     
-    let visitButton = StoreDetailVisitButton()
-    
-    //  let storePhotoCollectionView = StorePhotoCollectionView()
+    let bottomBar = StoreDetailBottomBar()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -81,14 +73,12 @@ final class StoreDetailView: BaseView {
     }
     
     override func setup() {
-        self.collectionView.delegate = self
         self.addSubViews([
             self.collectionView,
             self.navigationView,
             self.backButton,
             self.mainCategoryImage,
-            self.deleteRequestButton,
-            self.visitButton
+            self.bottomBar
         ])
         self.backgroundColor = UIColor(r: 250, g: 250, b: 250)
     }
@@ -110,20 +100,16 @@ final class StoreDetailView: BaseView {
             make.bottom.equalTo(self.navigationView).offset(-3)
         }
         
-        self.deleteRequestButton.snp.makeConstraints { make in
-            make.centerY.equalTo(self.mainCategoryImage)
-            make.right.equalToSuperview().offset(-24)
-        }
-        
         self.collectionView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview()
             make.top.equalTo(self.navigationView.snp.bottom).offset(-20)
         }
         
-        self.visitButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-32)
+        self.bottomBar.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
     }
     
@@ -260,22 +246,6 @@ final class StoreDetailView: BaseView {
             }
         }
     }
-    
-    private func hideVisitButton() {
-        let originalVisitButtonTransform = self.visitButton.transform
-        
-        UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-            self?.visitButton.transform = originalVisitButtonTransform.translatedBy(x: 0.0, y: 90)
-            self?.visitButton.alpha = 0
-        })
-    }
-    
-    private func showVisitButton() {
-        UIView.animateKeyframes(withDuration: 0.2, delay: 0, animations: { [weak self] in
-            self?.visitButton.transform = .identity
-            self?.visitButton.alpha = 1
-        })
-    }
 }
 
 extension Reactive where Base: StoreDetailView {
@@ -288,21 +258,5 @@ extension Reactive where Base: StoreDetailView {
                 view.bind(category: streetFoodCategory)
             }
         }
-    }
-}
-
-extension StoreDetailView: UICollectionViewDelegate {
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        self.hideVisitButton()
-    }
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            self.showVisitButton()
-        }
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        self.showVisitButton()
     }
 }

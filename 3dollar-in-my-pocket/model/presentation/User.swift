@@ -36,4 +36,14 @@ struct User: Equatable {
         self.pushInfo = PushInfo()
         self.marketingConsent = .unknown
     }
+    
+    init(response: UserPublicInfoResponse) {
+        self.name = response.name
+        self.userId = -1
+        self.socialType = .unknown
+        self.activity = UserActivity()
+        self.medal = Medal(response: response.medal)
+        self.pushInfo = PushInfo()
+        self.marketingConsent = .unknown
+    }
 }
