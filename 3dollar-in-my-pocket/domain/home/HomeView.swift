@@ -98,8 +98,6 @@ final class HomeView: BaseView {
             self.currentLocationButton,
             self.tooltipView
         ])
-        
-//        self.mapView.locationOverlay.icon = NMFOverlayImage(name: "img_60_gungoguma")
     }
   
     override func bindConstraints() {
@@ -191,6 +189,8 @@ final class HomeView: BaseView {
             switch result {
             case .success(let result):
                 self?.mapView.locationOverlay.icon = NMFOverlayImage(image: result.image)
+                self?.mapView.locationOverlay.iconWidth = 48
+                self?.mapView.locationOverlay.iconHeight = 58
                 
             case .failure:
                 self?.mapView.locationOverlay.icon = NMFOverlayImage(name: "")

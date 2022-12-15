@@ -393,6 +393,9 @@
 		6E9AFD1A2760376600402441 /* ReviewTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AFD192760376600402441 /* ReviewTitleLabel.swift */; };
 		6E9B6048288133F300B80D41 /* AddressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9B6047288133F300B80D41 /* AddressButton.swift */; };
 		6E9B604A288137FE00B80D41 /* StoreTypeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9B6049288137FE00B80D41 /* StoreTypeButton.swift */; };
+		6E9BE84A294AB2E00087FC6D /* MarkerPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9BE849294AB2E00087FC6D /* MarkerPopupView.swift */; };
+		6E9BE84C294AB73A0087FC6D /* MarkerPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9BE84B294AB73A0087FC6D /* MarkerPopupViewController.swift */; };
+		6E9BE84E294AB7BA0087FC6D /* MarkerPopupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9BE84D294AB7BA0087FC6D /* MarkerPopupCoordinator.swift */; };
 		6E9C21B627047F7E00A2682D /* SignupError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9C21B527047F7E00A2682D /* SignupError.swift */; };
 		6E9D64D625BD6F160075DE36 /* DeleteMenuStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D64D525BD6F160075DE36 /* DeleteMenuStackView.swift */; };
 		6E9D64DB25BD73E10075DE36 /* DeleteModalReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D64DA25BD73E10075DE36 /* DeleteModalReactor.swift */; };
@@ -931,6 +934,9 @@
 		6E9AFD192760376600402441 /* ReviewTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewTitleLabel.swift; sourceTree = "<group>"; };
 		6E9B6047288133F300B80D41 /* AddressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressButton.swift; sourceTree = "<group>"; };
 		6E9B6049288137FE00B80D41 /* StoreTypeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreTypeButton.swift; sourceTree = "<group>"; };
+		6E9BE849294AB2E00087FC6D /* MarkerPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerPopupView.swift; sourceTree = "<group>"; };
+		6E9BE84B294AB73A0087FC6D /* MarkerPopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerPopupViewController.swift; sourceTree = "<group>"; };
+		6E9BE84D294AB7BA0087FC6D /* MarkerPopupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerPopupCoordinator.swift; sourceTree = "<group>"; };
 		6E9C21B527047F7E00A2682D /* SignupError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupError.swift; sourceTree = "<group>"; };
 		6E9D64D525BD6F160075DE36 /* DeleteMenuStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMenuStackView.swift; sourceTree = "<group>"; };
 		6E9D64DA25BD73E10075DE36 /* DeleteModalReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteModalReactor.swift; sourceTree = "<group>"; };
@@ -2245,6 +2251,16 @@
 			path = cells;
 			sourceTree = "<group>";
 		};
+		6E9BE848294AB2D40087FC6D /* marker-popup */ = {
+			isa = PBXGroup;
+			children = (
+				6E9BE849294AB2E00087FC6D /* MarkerPopupView.swift */,
+				6E9BE84B294AB73A0087FC6D /* MarkerPopupViewController.swift */,
+				6E9BE84D294AB7BA0087FC6D /* MarkerPopupCoordinator.swift */,
+			);
+			path = "marker-popup";
+			sourceTree = "<group>";
+		};
 		6EA3207B2762F1E1002AA2F5 /* subviews */ = {
 			isa = PBXGroup;
 			children = (
@@ -2273,6 +2289,7 @@
 		6EA5EC0623B57EE10028F86B /* home */ = {
 			isa = PBXGroup;
 			children = (
+				6E9BE848294AB2D40087FC6D /* marker-popup */,
 				6E451BE026DD110C0056CDC4 /* subviews */,
 				6E81B83C25E0E21100748E02 /* search */,
 				6E07D44323B5906E0055AEE7 /* HomeView.swift */,
@@ -2997,6 +3014,7 @@
 				6E54BFF528964A2300B7E608 /* BossStoreHeaderView.swift in Sources */,
 				6EA205FE28881CF700BAB019 /* OpenStatus.swift in Sources */,
 				6E766BD82928791A00033BC8 /* PushPlatformType.swift in Sources */,
+				6E9BE84C294AB73A0087FC6D /* MarkerPopupViewController.swift in Sources */,
 				6E841F0B294837C100956BBD /* BookmarkEmptyCollectionViewCell.swift in Sources */,
 				6E09A75D28B2305F00792F12 /* FoodTruckListHeaderView.swift in Sources */,
 				6E31577925BA9F180022D6F3 /* StorePhotoCollectionViewCell.swift in Sources */,
@@ -3025,6 +3043,7 @@
 				6ED65D1E2944491A000E71B4 /* BookmarkListView.swift in Sources */,
 				6E66040927BBAA7B001EDF75 /* StreetFoodListEmptyCell.swift in Sources */,
 				6E72AE6523C9B7DE00D3B257 /* SignIn.swift in Sources */,
+				6E9BE84A294AB2E00087FC6D /* MarkerPopupView.swift in Sources */,
 				6EBF20022927C4F80074A8F1 /* DeviceService.swift in Sources */,
 				6E4FCD6E293992EA00B63C8B /* MyPageSectionHeaderView.swift in Sources */,
 				6E54BFF028963D6900B7E608 /* DayOfTheWeek.swift in Sources */,
@@ -3283,6 +3302,7 @@
 				6E5939052573E38900593DC8 /* WebViewController.swift in Sources */,
 				6E35058E26A41E1600690C12 /* RemoteConfigService.swift in Sources */,
 				6EBF45292762258000DC3BD2 /* VisitHistoryViewController.swift in Sources */,
+				6E9BE84E294AB7BA0087FC6D /* MarkerPopupCoordinator.swift in Sources */,
 				6E4952C326B0349200D65042 /* SigninResponse.swift in Sources */,
 				6E71BF5825B447CD00ECFBD9 /* AddCategoryCell.swift in Sources */,
 				6E18C3232571F4AB00F37C3A /* FAQService.swift in Sources */,

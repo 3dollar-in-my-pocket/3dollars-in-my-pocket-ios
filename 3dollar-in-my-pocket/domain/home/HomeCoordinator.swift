@@ -72,6 +72,8 @@ extension HomeCoordinator where Self: UIViewController {
     }
     
     func presentMarkerAdvertisement() {
-        print("에베벱베ㅔ")
+        let viewController = MarkerPopupViewController.instacne()
+        
+        self.tabBarController?.present(viewController, animated: true)
     }
 }
