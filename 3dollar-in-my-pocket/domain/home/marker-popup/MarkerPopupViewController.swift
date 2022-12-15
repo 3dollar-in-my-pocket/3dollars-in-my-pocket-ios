@@ -51,7 +51,7 @@ final class MarkerPopupViewController: BaseViewController, View, MarkerPopupCoor
     
     func bind(reactor: MarkerPopupReactor) {
         // Bind Action
-        self.markerPopupView.downloadButton.rx.tap
+        self.markerPopupView.bottomButton.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .map { Reactor.Action.tapDownload }
             .bind(to: reactor.action)

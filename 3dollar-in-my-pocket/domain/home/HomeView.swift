@@ -189,8 +189,8 @@ final class HomeView: BaseView {
             switch result {
             case .success(let result):
                 self?.mapView.locationOverlay.icon = NMFOverlayImage(image: result.image)
-                self?.mapView.locationOverlay.iconWidth = 48
-                self?.mapView.locationOverlay.iconHeight = 58
+                self?.mapView.locationOverlay.iconWidth = CGFloat(advertisement.imageWidth)
+                self?.mapView.locationOverlay.iconHeight = CGFloat(advertisement.imageHeight)
                 
             case .failure:
                 self?.mapView.locationOverlay.icon = NMFOverlayImage(name: "")

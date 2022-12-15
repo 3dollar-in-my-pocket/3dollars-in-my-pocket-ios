@@ -2,6 +2,9 @@ import Foundation
 
 struct AdvertisementResponse: Decodable {
     let bgColor: String
+    let extraContent: String?
+    let imageHeight: Int
+    let imageWidth: Int
     let fontColor: String
     let imageUrl: String
     let linkUrl: String
@@ -10,6 +13,9 @@ struct AdvertisementResponse: Decodable {
     
     enum CodingKeys: String, CodingKey {
         case bgColor
+        case extraContent
+        case imageHeight
+        case imageWidth
         case fontColor
         case imageUrl
         case linkUrl
@@ -19,6 +25,9 @@ struct AdvertisementResponse: Decodable {
     
     init() {
         self.bgColor = ""
+        self.extraContent = nil
+        self.imageHeight = 0
+        self.imageWidth = 0
         self.fontColor = ""
         self.imageUrl = ""
         self.linkUrl = ""
@@ -30,6 +39,9 @@ struct AdvertisementResponse: Decodable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
         self.bgColor = try values.decodeIfPresent(String.self, forKey: .bgColor) ?? ""
+        self.extraContent = try values.decodeIfPresent(String.self, forKey: .extraContent)
+        self.imageHeight = try values.decodeIfPresent(Int.self, forKey: .imageHeight) ?? 0
+        self.imageWidth = try values.decodeIfPresent(Int.self, forKey: .imageWidth) ?? 0
         self.fontColor = try values.decodeIfPresent(String.self, forKey: .fontColor) ?? ""
         self.imageUrl = try values.decodeIfPresent(String.self, forKey: .imageUrl) ?? ""
         self.linkUrl = try values.decodeIfPresent(String.self, forKey: .linkUrl) ?? ""

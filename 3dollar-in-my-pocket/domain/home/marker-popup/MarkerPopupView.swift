@@ -32,7 +32,7 @@ final class MarkerPopupView: BaseView {
         $0.textAlignment = .center
     }
     
-    let downloadButton = UIButton().then {
+    let bottomButton = UIButton().then {
         $0.layer.cornerRadius = 24
         $0.backgroundColor = R.color.red()
         $0.titleLabel?.font = .bold(size: 16)
@@ -43,7 +43,7 @@ final class MarkerPopupView: BaseView {
             self.imageView,
             self.titleLabel,
             self.descriptionLabel,
-            self.downloadButton,
+            self.bottomButton,
             self.closeButton
         ])
         self.addSubViews([
@@ -64,7 +64,7 @@ final class MarkerPopupView: BaseView {
             make.top.equalTo(self.imageView)
         }
         
-        self.downloadButton.snp.makeConstraints { make in
+        self.bottomButton.snp.makeConstraints { make in
             make.left.equalTo(self.containerView).offset(24)
             make.right.equalTo(self.containerView).offset(-24)
             make.bottom.equalTo(self.containerView).offset(-24)
@@ -74,7 +74,7 @@ final class MarkerPopupView: BaseView {
         self.descriptionLabel.snp.makeConstraints { make in
             make.left.equalTo(self.containerView).offset(24)
             make.right.equalTo(self.containerView).offset(-24)
-            make.bottom.equalTo(self.downloadButton.snp.top).offset(-24)
+            make.bottom.equalTo(self.bottomButton.snp.top).offset(-24)
         }
         
         self.titleLabel.snp.makeConstraints { make in
@@ -102,6 +102,7 @@ final class MarkerPopupView: BaseView {
         self.imageView.setImage(urlString: advertisement.imageUrl)
         self.titleLabel.text = advertisement.title
         self.descriptionLabel.text = advertisement.subTitle
+        self.bottomButton.setTitle(advertisement.extraContent, for: .normal)
     }
 }
 
