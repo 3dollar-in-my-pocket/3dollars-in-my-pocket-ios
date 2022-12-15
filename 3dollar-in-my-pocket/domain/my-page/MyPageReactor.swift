@@ -20,6 +20,7 @@ final class MyPageReactor: BaseReactor, Reactor {
         case endRefresh
         case pushMyMedal(Medal)
         case pushStoreDetail(storeId: Int)
+        case pushFoodTruckDetail(storeId: String)
         case pushBookmarkList(userName: String)
         case showErrorAlert(Error)
     }
@@ -32,6 +33,7 @@ final class MyPageReactor: BaseReactor, Reactor {
         @Pulse var pushStoreDetail: Int?
         @Pulse var pushMyMedal: Medal?
         @Pulse var pushBookmarkList: String?
+        @Pulse var pushFoodTruckDetail: String?
     }
     
     let initialState: State
@@ -94,7 +96,16 @@ final class MyPageReactor: BaseReactor, Reactor {
             guard !self.currentState.bookmarks.isEmpty else { return .empty() }
             let tappedBookmark = self.currentState.bookmarks[row]
             
-            return .just(.pushStoreDetail(storeId: Int(tappedBookmark.id) ?? 0))
+            switch tappedBookmark.storeCategory {
+            case .streetFood:
+                return .just(.pushStoreDetail(storeId: Int(tappedBookmark.id) ?? 0))
+                
+            case .foodTruck:
+                return .just(.pushFoodTruckDetail(storeId: tappedBookmark.id))
+                
+            case .unknown:
+                return .empty()
+            }
         }
     }
     
@@ -139,6 +150,9 @@ final class MyPageReactor: BaseReactor, Reactor {
             
         case .pushStoreDetail(let storeId):
             newState.pushStoreDetail = storeId
+            
+        case .pushFoodTruckDetail(let storeId):
+            newState.pushFoodTruckDetail = storeId
             
         case .pushBookmarkList(let userName):
             newState.pushBookmarkList = userName

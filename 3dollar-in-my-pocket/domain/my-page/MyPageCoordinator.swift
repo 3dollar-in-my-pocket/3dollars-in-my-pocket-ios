@@ -19,6 +19,8 @@ protocol MyPageCoordinator: BaseCoordinator, AnyObject {
     
     func goToStoreDetail(storeId: Int)
     
+    func pushFoodtruckDetail(storeId: String)
+    
     func goToMyVisitHistory()
     
     func pushBookmarkList(userName: String)
@@ -53,6 +55,12 @@ extension MyPageCoordinator {
     
     func goToStoreDetail(storeId: Int) {
         let viewController = StoreDetailViewController.instance(storeId: storeId)
+        
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    func pushFoodtruckDetail(storeId: String) {
+        let viewController = BossStoreDetailViewController.instance(storeId: storeId)
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }

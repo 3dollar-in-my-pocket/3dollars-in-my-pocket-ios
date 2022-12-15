@@ -21,7 +21,7 @@ struct NetworkManager {
                 if response.isSuccess() {
                     observer.processValue(class: T.self, response: response)
                 } else {
-                    observer.processHTTPError(response: response)
+                    observer.processAPIError(response: response)
                 }
             }
             

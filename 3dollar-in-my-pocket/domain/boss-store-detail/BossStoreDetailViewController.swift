@@ -91,7 +91,13 @@ final class BossStoreDetailViewController:
         self.bossStoreDetailReactor.showErrorAlertPublisher
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in
-                self?.coordinator?.showErrorAlert(error: error)
+                if let baseError = error as? BaseError,
+                   case .errorContainer(let responseContainer) = baseError,
+                   responseContainer.resultCode == "NF002" {
+                    self?.coordinator?.showNotFoundError(message: responseContainer.message)
+                } else {
+                    self?.coordinator?.showErrorAlert(error: error)
+                }
             })
             .disposed(by: self.eventDisposeBag)
         

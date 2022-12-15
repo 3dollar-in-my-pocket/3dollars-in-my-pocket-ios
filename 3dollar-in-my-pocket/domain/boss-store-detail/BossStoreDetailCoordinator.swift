@@ -7,9 +7,13 @@ protocol BossStoreDetailCoordinator: AnyObject, BaseCoordinator {
     func pushFeedback(storeId: String)
     
     func pushURL(url: String?)
+    
+    func shareToKakao(store: BossStore)
+    
+    func showNotFoundError(message: String)
 }
 
-extension BossStoreDetailCoordinator {
+extension BossStoreDetailCoordinator where Self: BossStoreDetailViewController {
     func pushFeedback(storeId: String) {
         let viewController = BossStoreFeedbackViewController.instacne(storeId: storeId)
         
@@ -73,6 +77,15 @@ extension BossStoreDetailCoordinator {
                     )
                 }
             }
+        }
+    }
+    
+    func showNotFoundError(message: String) {
+        AlertUtils.showWithAction(
+            viewController: self,
+            message: message
+        ) {
+            self.navigationController?.popViewController(animated: true)
         }
     }
 }
