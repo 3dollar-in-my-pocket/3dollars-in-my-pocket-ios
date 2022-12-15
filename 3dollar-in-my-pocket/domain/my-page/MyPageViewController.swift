@@ -129,6 +129,14 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
                 self?.coordinator?.goToMyMedal(medal: medal)
             })
             .disposed(by: self.disposeBag)
+        
+        reactor.pulse(\.$pushBookmarkList)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] userName in
+                self?.coordinator?.pushBookmarkList(userName: userName)
+            })
+            .disposed(by: self.disposeBag)
     }
     
     private func setupDataSource() {
@@ -215,10 +223,8 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
                 case .bookmark:
                     headerView.rx.tapMoreButton
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-                        .asDriver(onErrorJustReturn: ())
-                        .drive(onNext: { [weak self] _ in
-                            self?.coordinator?.pushBookmarkList()
-                        })
+                        .map { Reactor.Action.tapBookmarkMore }
+                        .bind(to: self.myPageReactor.action)
                         .disposed(by: headerView.disposeBag)
                     
                 case .unknown:

@@ -7,10 +7,7 @@ import RxDataSources
 final class BookmarkListViewController:
     BaseViewController, View, BookmarkListCoordinator {
     private let bookmarkListView = BookmarkListView()
-    private let bookmarkListReactor = BookmarkListReactor(
-        bookmarkService: BookmarkService(),
-        globalState: GlobalState.shared
-    )
+    private let bookmarkListReactor: BookmarkListReactor
     private weak var coordinator: BookmarkListCoordinator?
     private var bookmarkCollectionViewDataSource:
     RxCollectionViewSectionedReloadDataSource<BookmarkListSectionModel>!
@@ -19,10 +16,24 @@ final class BookmarkListViewController:
         return .lightContent
     }
     
-    static func instance() -> BookmarkListViewController {
-        return BookmarkListViewController(nibName: nil, bundle: nil).then {
+    static func instance(userName: String) -> BookmarkListViewController {
+        return BookmarkListViewController(userName: userName).then {
             $0.hidesBottomBarWhenPushed = true
         }
+    }
+    
+    init(userName: String) {
+        self.bookmarkListReactor = BookmarkListReactor(
+            userName: userName,
+            bookmarkService: BookmarkService(),
+            globalState: GlobalState.shared
+        )
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func loadView() {

@@ -33,6 +33,7 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         var bookmarkFolder: BookmarkFolder
         var totalCount: Int?
         var isDeleteMode: Bool
+        var userName: String
         @Pulse var pushStoreDetail: String?
         @Pulse var pushFoodtruckDetail: String?
         @Pulse var pushEditBookmarkFolder: BookmarkFolder?
@@ -45,17 +46,23 @@ final class BookmarkListReactor: BaseReactor, Reactor {
     private var hasMore: Bool
     
     init(
+        userName: String,
         bookmarkService: BookmarkServiceProtocol,
         globalState: GlobalState,
         hasMore: Bool = true,
         state: State = State(
             bookmarkFolder: BookmarkFolder(),
-            isDeleteMode: false
+            isDeleteMode: false,
+            userName: ""
         )
     ) {
         self.bookmarkService = bookmarkService
         self.globalState = globalState
-        self.initialState = state
+        self.initialState = State(
+            bookmarkFolder: state.bookmarkFolder,
+            isDeleteMode: state.isDeleteMode,
+            userName: userName
+        )
         self.hasMore = hasMore
     }
     
@@ -131,7 +138,11 @@ final class BookmarkListReactor: BaseReactor, Reactor {
             
         case .updateBookmarkFolder(let bookmarkFolder):
             newState.bookmarkFolder.introduction = bookmarkFolder.introduction
-            newState.bookmarkFolder.name = bookmarkFolder.name
+            if bookmarkFolder.name.isEmpty {
+                newState.bookmarkFolder.name = "\(newState.userName)님의 즐겨찾기"
+            } else {
+                newState.bookmarkFolder.name = bookmarkFolder.name
+            }
             
         case .setTotalCount(let count):
             newState.totalCount = count
