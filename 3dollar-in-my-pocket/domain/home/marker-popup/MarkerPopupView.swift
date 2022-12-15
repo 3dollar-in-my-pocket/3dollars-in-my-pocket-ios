@@ -1,5 +1,8 @@
 import UIKit
 
+import RxSwift
+import RxCocoa
+
 final class MarkerPopupView: BaseView {
     let backgroundButton = UIButton()
     
@@ -17,14 +20,12 @@ final class MarkerPopupView: BaseView {
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = "일이삼사오육칠팔구십일이삼사오육칠팔"
         $0.font = .extraBold(size: 18)
         $0.textColor = R.color.gray100()
         $0.textAlignment = .center
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.text = "일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십"
         $0.font = .regular(size: 16)
         $0.textColor = R.color.gray50()
         $0.numberOfLines = 0
@@ -34,7 +35,6 @@ final class MarkerPopupView: BaseView {
     let downloadButton = UIButton().then {
         $0.layer.cornerRadius = 24
         $0.backgroundColor = R.color.red()
-        $0.setTitle("다운로드 하러 가기", for: .normal)
         $0.titleLabel?.font = .bold(size: 16)
     }
     
@@ -98,9 +98,17 @@ final class MarkerPopupView: BaseView {
         }
     }
     
-    func bind(advertisement: Advertisement) {
+    fileprivate func bind(advertisement: Advertisement) {
         self.imageView.setImage(urlString: advertisement.imageUrl)
         self.titleLabel.text = advertisement.title
         self.descriptionLabel.text = advertisement.subTitle
+    }
+}
+
+extension Reactive where Base: MarkerPopupView {
+    var advertisement: Binder<Advertisement> {
+        return Binder(self.base) { view, advertisement in
+            view.bind(advertisement: advertisement)
+        }
     }
 }
