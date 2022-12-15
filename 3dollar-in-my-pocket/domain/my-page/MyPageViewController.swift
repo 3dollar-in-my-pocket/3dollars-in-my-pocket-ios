@@ -248,8 +248,8 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
     }
 }
 
-//extension MyPageViewController: MyMedalViewControllerDelegate {
-//    func onChangeMedal(medal: Medal) {
-//        self.viewModel.input.onChangeMedal.onNext(medal)
-//    }
-//}
+extension MyPageViewController: MyMedalViewControllerDelegate {
+    func onChangeMedal(medal: Medal) {
+        self.myPageReactor.action.onNext(.changeMedal(medal: medal))
+    }
+}
