@@ -20,12 +20,15 @@ final class MarkerPopupReactor: BaseReactor, Reactor {
     
     let initialState: State
     private let advertisementService: AdvertisementServiceProtocol
+    private let eventService: EventServiceProtocol
     
     init(
         advertisementService: AdvertisementServiceProtocol,
+        eventService: EventServiceProtocol,
         state: State = State(advertisement: Advertisement())
     ) {
         self.advertisementService = advertisementService
+        self.eventService = eventService
         self.initialState = state
     }
     
@@ -35,7 +38,10 @@ final class MarkerPopupReactor: BaseReactor, Reactor {
             return self.fetchAdvertisement()
             
         case .tapDownload:
-            return .just(.goToURL(urlString: self.currentState.advertisement.linkUrl))
+            return .merge([
+                self.sendClickEvent(),
+                .just(.goToURL(urlString: self.currentState.advertisement.linkUrl))
+            ])
         }
     }
     
@@ -61,5 +67,15 @@ final class MarkerPopupReactor: BaseReactor, Reactor {
             .compactMap { $0.first }
             .map { .setAdvertisement($0) }
             .catch { .just(.showErrorAlert($0)) }
+    }
+    
+    private func sendClickEvent() -> Observable<Mutation> {
+        return self.eventService.sendClickEvent(
+            targetId: self.currentState.advertisement.id,
+            targetType: "ADVERTISEMENT"
+        )
+        .flatMap { _ -> Observable<Mutation> in
+            return .empty()
+        }
     }
 }
