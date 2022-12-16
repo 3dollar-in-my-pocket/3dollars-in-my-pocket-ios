@@ -83,6 +83,7 @@ final class HomeReactor: BaseReactor, Reactor {
     private var userDefaults: UserDefaultsUtil
     private let globalState: GlobalState
     private let metaContext: MetaContext
+    private let analyticsManager: AnalyticsManagerProtocol
     
     init(
         storeService: StoreServiceProtocol,
@@ -94,6 +95,7 @@ final class HomeReactor: BaseReactor, Reactor {
         userDefaults: UserDefaultsUtil,
         globalState: GlobalState,
         metaContext: MetaContext,
+        analyticsManager: AnalyticsManagerProtocol,
         state: State = State(
             storeType: .streetFood,
             categories: [],
@@ -118,6 +120,7 @@ final class HomeReactor: BaseReactor, Reactor {
         self.userDefaults = userDefaults
         self.globalState = globalState
         self.metaContext = metaContext
+        self.analyticsManager = analyticsManager
         self.initialState = State(
             storeType: state.storeType,
             categories: state.categories,
@@ -363,6 +366,11 @@ final class HomeReactor: BaseReactor, Reactor {
                     }
                     
                 case .advertisement(let advertisement):
+                    self.analyticsManager.logEvent(
+                        event: .homeAdBannerClicked(id: String(advertisement.id)),
+                        screen: .home
+                    )
+                    
                     return .just(.pushWebView(url: advertisement.linkUrl))
                     
                 case .empty:

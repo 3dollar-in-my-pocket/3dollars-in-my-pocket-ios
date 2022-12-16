@@ -74,9 +74,6 @@ class ModifyVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.modifyView.editButton.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .address_edit_button_clicked, page: .store_edit_page)
-      })
       .bind(to: self.viewModel.input.tapEdit)
       .disposed(by: disposeBag)
     
@@ -151,9 +148,6 @@ class ModifyVC: BaseVC {
     
     self.modifyView.registerButton.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .store_edit_submit_button_clicked, page: .store_edit_page)
-      })
       .bind(to: self.viewModel.input.tapModify)
       .disposed(by: disposeBag)
     
@@ -242,9 +236,6 @@ class ModifyVC: BaseVC {
     
     self.modifyView.backButton.rx.tap
       .observeOn(MainScheduler.instance)
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .back_button_clicked, page: .store_edit_page)
-      })
       .bind(onNext: self.popupVC)
       .disposed(by: disposeBag)
   }

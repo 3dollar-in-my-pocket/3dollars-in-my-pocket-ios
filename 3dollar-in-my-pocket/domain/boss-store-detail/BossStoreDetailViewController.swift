@@ -21,7 +21,7 @@ final class BossStoreDetailViewController:
             locationManaber: LocationManager.shared,
             globalState: GlobalState.shared,
             userDefaults: UserDefaultsUtil(),
-            gaManager: GAManager.shared
+            analyticsManager: AnalyticsManager.shared
         )
         
         super.init(nibName: nil, bundle: nil)

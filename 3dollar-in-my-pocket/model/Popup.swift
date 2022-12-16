@@ -11,7 +11,7 @@ struct Advertisement: Equatable {
     let title: String
     
     init(response: AdvertisementResponse) {
-        self.id = 0
+        self.id = response.id
         self.bgColor = response.bgColor
         self.extraContent = response.extraContent
         self.imageWidth = response.imageWidth

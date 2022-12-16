@@ -34,7 +34,7 @@ final class StoreDetailViewController:
             storeService: StoreService(),
             reviewService: ReviewService(),
             bookmarkService: BookmarkService(),
-            gaManager: GAManager.shared,
+            gaManager: AnalyticsManager.shared,
             globalState: GlobalState.shared
         )
         super.init(nibName: nil, bundle: nil)

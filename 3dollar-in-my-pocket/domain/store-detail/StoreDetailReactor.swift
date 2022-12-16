@@ -126,11 +126,6 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             ])
             
         case .tapDeleteRequest:
-            self.gaManager.logEvent(
-                event: .store_delete_request_button_clicked,
-                page: .store_detail_page
-            )
-            
             return .just(.presentDeleteModal(storeId: self.storeId))
             
         case .tapBookmark:
