@@ -1,10 +1,9 @@
 import UIKit
 
-import Base
 import Lottie
 
-final class LoadingView: Base.BaseView {
-    let lottieView = AnimationView(name: "loading").then {
+final class LoadingView: BaseView {
+    let lottieView = LottieAnimationView(name: "loading").then {
         $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         $0.contentMode = .scaleAspectFit
         $0.loopMode = .loop

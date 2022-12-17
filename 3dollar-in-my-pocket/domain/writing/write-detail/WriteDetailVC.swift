@@ -1,6 +1,5 @@
 import UIKit
 
-import Base
 import NMapsMap
 import RxSwift
 import RxDataSources
@@ -144,9 +143,6 @@ class WriteDetailVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.writeDetailView.registerButton.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .store_register_submit_button_clicked, page: .store_register_page)
-      })
       .bind(to: self.viewModel.input.tapRegister)
       .disposed(by: disposeBag)
     
@@ -203,7 +199,9 @@ class WriteDetailVC: BaseVC {
     
     self.viewModel.output.showLoading
       .observeOn(MainScheduler.instance)
-      .bind(onNext: self.writeDetailView.showLoading(isShow:))
+          .bind(onNext: { isShow in
+              LoadingManager.shared.showLoading(isShow: isShow)
+          })
       .disposed(by: disposeBag)
     
     self.viewModel.httpErrorAlert
@@ -225,16 +223,10 @@ class WriteDetailVC: BaseVC {
     
     self.writeDetailView.backButton.rx.tap
       .observeOn(MainScheduler.instance)
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .back_button_clicked, page: .store_register_page)
-      })
       .bind(onNext: self.popupVC)
       .disposed(by: disposeBag)
     
     self.writeDetailView.modifyLocationButton.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .edit_address_button_clicked, page: .store_register_page)
-      })
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.popupVC)
       .disposed(by: disposeBag)

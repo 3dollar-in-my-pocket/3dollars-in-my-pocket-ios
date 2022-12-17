@@ -23,6 +23,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case tapStore(index: Int)
         case tapVisitButton(index: Int)
         case tapMarker(index: Int)
+        case tapCurrentMarker
     }
     
     enum Mutation {
@@ -47,6 +48,7 @@ final class HomeReactor: BaseReactor, Reactor {
         case showLoading(Bool)
         case showErrorAlert(Error)
         case presentPolicy
+        case presentMarkerAdvertisement
     }
     
     struct State {
@@ -61,7 +63,9 @@ final class HomeReactor: BaseReactor, Reactor {
         var cameraPosition: CLLocation?
         var currentLocation: CLLocation
         var isTooltipHidden: Bool
+        var advertisementMarker: Advertisement?
         @Pulse var presentPolicy: Void?
+        @Pulse var presentMarkerAdvertisement: Void?
     }
     
     let initialState: State
@@ -78,6 +82,8 @@ final class HomeReactor: BaseReactor, Reactor {
     private let mapService: MapServiceProtocol
     private var userDefaults: UserDefaultsUtil
     private let globalState: GlobalState
+    private let metaContext: MetaContext
+    private let analyticsManager: AnalyticsManagerProtocol
     
     init(
         storeService: StoreServiceProtocol,
@@ -88,6 +94,8 @@ final class HomeReactor: BaseReactor, Reactor {
         mapService: MapServiceProtocol,
         userDefaults: UserDefaultsUtil,
         globalState: GlobalState,
+        metaContext: MetaContext,
+        analyticsManager: AnalyticsManagerProtocol,
         state: State = State(
             storeType: .streetFood,
             categories: [],
@@ -99,6 +107,7 @@ final class HomeReactor: BaseReactor, Reactor {
             cameraPosition: nil,
             currentLocation: CLLocation(latitude: 0, longitude: 0),
             isTooltipHidden: true,
+            advertisementMarker: nil,
             presentPolicy: nil
         )
     ) {
@@ -110,6 +119,8 @@ final class HomeReactor: BaseReactor, Reactor {
         self.mapService = mapService
         self.userDefaults = userDefaults
         self.globalState = globalState
+        self.metaContext = metaContext
+        self.analyticsManager = analyticsManager
         self.initialState = State(
             storeType: state.storeType,
             categories: state.categories,
@@ -121,7 +132,8 @@ final class HomeReactor: BaseReactor, Reactor {
             mapMaxDistance: state.mapMaxDistance,
             cameraPosition: state.cameraPosition,
             currentLocation: state.currentLocation,
-            isTooltipHidden: userDefaults.isFoodTruckTooltipShown
+            isTooltipHidden: userDefaults.isFoodTruckTooltipShown,
+            advertisementMarker: metaContext.advertisementMarker
         )
         
         super.init()
@@ -354,6 +366,11 @@ final class HomeReactor: BaseReactor, Reactor {
                     }
                     
                 case .advertisement(let advertisement):
+                    self.analyticsManager.logEvent(
+                        event: .homeAdBannerClicked(id: String(advertisement.id)),
+                        screen: .home
+                    )
+                    
                     return .just(.pushWebView(url: advertisement.linkUrl))
                     
                 case .empty:
@@ -434,6 +451,11 @@ final class HomeReactor: BaseReactor, Reactor {
             } else {
                 return .just(.selectStore(index: index))
             }
+            
+        case .tapCurrentMarker:
+            guard self.currentState.advertisementMarker != nil else { return .empty() }
+            
+            return .just(.presentMarkerAdvertisement)
         }
     }
     
@@ -521,6 +543,9 @@ final class HomeReactor: BaseReactor, Reactor {
             
         case .presentPolicy:
             newState.presentPolicy = ()
+            
+        case .presentMarkerAdvertisement:
+            newState.presentMarkerAdvertisement = ()
         }
         
         return newState
@@ -631,7 +656,7 @@ final class HomeReactor: BaseReactor, Reactor {
     private func fetchAdvertisement() -> Observable<Advertisement?> {
         return self.advertisementService
             .fetchAdvertisements(position: .mainPageCard)
-            .map { $0.map(Advertisement.init(response:)).first }
+            .map { $0.first }
     }
     
     private func fetchAddressFromLocation(location: CLLocation?) -> Observable<Mutation> {

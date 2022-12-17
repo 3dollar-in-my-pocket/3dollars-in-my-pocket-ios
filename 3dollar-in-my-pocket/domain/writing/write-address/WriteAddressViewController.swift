@@ -49,23 +49,11 @@ final class WriteAddressViewController: BaseVC, View, WriteAddressCoordinator {
     
     func bind(reactor: WriteAddressReactor) {
         self.writeAddressView.addressButton.rx.tap
-            .do(onNext: { _ in
-                GA.shared.logEvent(
-                    event: .set_address_button_clicked,
-                    page: .store_register_address_page
-                )
-            })
             .map { Reactor.Action.tapSetAddress }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
         self.writeAddressView.currentLocationButton.rx.tap
-            .do(onNext: { _ in
-                GA.shared.logEvent(
-                    event: .current_location_button_clicked,
-                    page: .store_register_address_page
-                )
-            })
             .map { Reactor.Action.tapCurrentLocation }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
@@ -98,12 +86,6 @@ final class WriteAddressViewController: BaseVC, View, WriteAddressCoordinator {
     
     override func bindEvent() {
         self.writeAddressView.closeButton.rx.tap
-            .do(onNext: { _ in
-                GA.shared.logEvent(
-                    event: .close_button_clicked,
-                    page: .store_register_address_page
-                )
-            })
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] in
                 self?.coordinator?.dismiss()

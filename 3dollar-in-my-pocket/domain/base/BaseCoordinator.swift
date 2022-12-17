@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 protocol BaseCoordinator {
     var presenter: BaseViewController { get }
     
@@ -9,6 +7,7 @@ protocol BaseCoordinator {
     func openURL(url: String)
     func showLoading(isShow: Bool)
     func showToast(message: String)
+    func showToast(message: String, baseView: UIView)
 }
 
 extension BaseCoordinator where Self: BaseViewController {
@@ -17,25 +16,32 @@ extension BaseCoordinator where Self: BaseViewController {
     }
     
     func showErrorAlert(error: Error) {
-        if let httpError = error as? HTTPError,
-           httpError == .unauthorized {
-            Base.AlertUtils.showWithAction(
-                viewController: self,
-                title: nil,
-                message: httpError.description,
-                okbuttonTitle: "common_ok".localized
-            ) {
-                UserDefaultsUtil().clear()
-                self.goToSignin()
+        if let httpError = error as? HTTPError {
+            if httpError == .unauthorized {
+                AlertUtils.showWithAction(
+                    viewController: self,
+                    title: nil,
+                    message: httpError.description,
+                    okbuttonTitle: "common_ok".localized
+                ) {
+                    UserDefaultsUtil().clear()
+                    self.goToSignin()
+                }
+            } else {
+                AlertUtils.showWithAction(
+                    viewController: self,
+                    message: httpError.description,
+                    onTapOk: nil
+                )
             }
         } else if let localizedError = error as? LocalizedError {
-            Base.AlertUtils.showWithAction(
+            AlertUtils.showWithAction(
                 viewController: self,
                 message: localizedError.errorDescription,
                 onTapOk: nil
             )
         } else {
-            Base.AlertUtils.showWithAction(
+            AlertUtils.showWithAction(
                 viewController: self,
                 message: error.localizedDescription,
                 onTapOk: nil
@@ -53,9 +59,14 @@ extension BaseCoordinator where Self: BaseViewController {
         LoadingManager.shared.showLoading(isShow: isShow)
     }
     
+    func showToast(message: String, baseView: UIView) {
+        ToastManager.shared.show(message: message, baseView: baseView)
+    }
+    
     func showToast(message: String) {
         ToastManager.shared.show(message: message)
     }
+    
     
     private func goToSignin() {
         if let sceneDelegate

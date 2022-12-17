@@ -1,13 +1,12 @@
 import UIKit
 
-import Base
 import NMapsMap
 import RxSwift
 import RxCocoa
 
 final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(StoreOverviewCollectionViewCell.self)"
-    static let height: CGFloat = UIScreen.main.bounds.height / 2.21 + 160
+    static let height: CGFloat = UIScreen.main.bounds.height / 2.21 + 180
     
     private var marker = NMFMarker()
     
@@ -67,11 +66,34 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
     }
     
     let shareButton = UIButton().then {
-        $0.setImage(UIImage(named: "ic_share"), for: .normal)
-        $0.setTitle("store_detail_share".localized, for: .normal)
+        $0.setImage(R.image.ic_share(), for: .normal)
+        $0.setTitle(R.string.localization.boss_store_share(), for: .normal)
         $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = .medium(size: 16)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
+    }
+    
+    private let dividerView = UIView().then {
+        $0.backgroundColor = R.color.gray20()
+    }
+    
+    let bookmarkButton = UIButton().then {
+        $0.setImage(R.image.ic_bookmark_off(), for: .normal)
+        $0.setImage(R.image.ic_bookmark_on(), for: .selected)
+        $0.setTitle(R.string.localization.store_detail_bookmark(), for: .normal)
+        $0.titleLabel?.font = .medium(size: 16)
+        $0.setTitleColor(R.color.red(), for: .normal)
+        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
+    }
+    
+    let deleteRequestButton = UIButton().then {
+        $0.setImage(R.image.ic_info()?.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.setTitle(R.string.localization.store_detail_delete_request(), for: .normal)
+        $0.setTitleColor(R.color.gray40(), for: .normal)
+        $0.titleLabel?.font = .medium(size: 14)
+        $0.titleLabel?.textAlignment = .right
+        $0.tintColor = R.color.gray40()
+        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: -4)
     }
     
     override func setup() {
@@ -87,7 +109,10 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
             self.distanceLabel,
             self.starImage,
             self.starLabel,
-            self.shareButton
+            self.shareButton,
+            self.dividerView,
+            self.bookmarkButton,
+            self.deleteRequestButton
         ])
     }
     
@@ -149,11 +174,30 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
             make.centerY.equalTo(self.distanceLabel)
         }
         
+        self.dividerView.snp.makeConstraints { make in
+            make.centerX.equalTo(self.overViewContainerView)
+            make.top.equalTo(self.distanceImage.snp.bottom).offset(30)
+            make.height.equalTo(32)
+            make.width.equalTo(1)
+        }
+        
         self.shareButton.snp.makeConstraints { make in
-            make.top.equalTo(self.distanceImage.snp.bottom).offset(17)
+            make.centerY.equalTo(self.dividerView)
             make.left.equalTo(self.overViewContainerView)
+            make.right.equalTo(self.dividerView.snp.left)
+            make.height.equalTo(32)
+        }
+        
+        self.bookmarkButton.snp.makeConstraints { make in
+            make.centerY.equalTo(self.dividerView)
+            make.left.equalTo(self.dividerView.snp.right)
             make.right.equalTo(self.overViewContainerView)
             make.height.equalTo(32)
+        }
+        
+        self.deleteRequestButton.snp.makeConstraints { make in
+            make.right.equalToSuperview().offset(-24)
+            make.top.equalTo(self.overViewContainerView.snp.bottom).offset(20)
         }
     }
     
@@ -164,6 +208,7 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
         self.starLabel.text = "\(store.rating)점"
         self.moveToPosition(latitude: store.longitude, longitude: store.latitude)
         self.setupMarker(latitude: store.latitude, longitude: store.longitude)
+        self.bookmarkButton.isSelected = store.isBookmarked
     }
     
     func moveToPosition(latitude: Double, longitude: Double) {

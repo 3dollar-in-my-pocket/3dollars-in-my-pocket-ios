@@ -4,7 +4,6 @@ import UIKit
 import AppTrackingTransparency
 import AdSupport
 
-import Base
 import ReactorKit
 import Kingfisher
 import RxSwift
@@ -34,7 +33,8 @@ final class StoreDetailViewController:
             locationManager: LocationManager.shared,
             storeService: StoreService(),
             reviewService: ReviewService(),
-            gaManager: GAManager.shared,
+            bookmarkService: BookmarkService(),
+            gaManager: AnalyticsManager.shared,
             globalState: GlobalState.shared
         )
         super.init(nibName: nil, bundle: nil)
@@ -68,7 +68,8 @@ final class StoreDetailViewController:
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] _ in
-                self?.coordinator?.presenter.navigationController?.popViewController(animated: true)
+                self?.coordinator?.presenter.navigationController?
+                    .popViewController(animated: true)
             })
             .disposed(by: self.eventDisposeBag)
         
@@ -145,16 +146,40 @@ final class StoreDetailViewController:
         self.storeDetailReactor.showErrorAlertPublisher
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive { [weak self] error in
-                self?.coordinator?.showErrorAlert(error: error)
+                if let baseError = error as? BaseError,
+                   case .errorContainer(let responseContainer) = baseError,
+                   responseContainer.resultCode == "NF002" {
+                    self?.coordinator?.showNotFoundError(message: responseContainer.message)
+                } else {
+                    self?.coordinator?.showErrorAlert(error: error)
+                }
             }
+            .disposed(by: self.eventDisposeBag)
+        
+        self.storeDetailReactor.showToastPublisher
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] message in
+                guard let self = self else { return }
+                
+                self.coordinator?.showToast(
+                    message: message,
+                    baseView: self.storeDetailView.bottomBar
+                )
+            })
             .disposed(by: self.eventDisposeBag)
     }
     
     func bind(reactor: StoreDetailReactor) {
         // Bind Action
-        self.storeDetailView.deleteRequestButton.rx.tap
+        self.storeDetailView.bottomBar.rx.tapBookmark
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapDeleteRequest }
+            .map { Reactor.Action.tapBookmark }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        self.storeDetailView.bottomBar.rx.tapVisit
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapVisit }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
 
@@ -164,18 +189,19 @@ final class StoreDetailViewController:
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
 
-        self.storeDetailView.visitButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapVisit }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-
         // Bind State
         reactor.state
             .map { $0.store }
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: Store())
             .drive(self.storeDetailView.rx.store)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .map { $0.store.isBookmarked }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: false)
+            .drive(self.storeDetailView.bottomBar.rx.isBookmarked)
             .disposed(by: self.disposeBag)
         
         reactor.state
@@ -211,9 +237,19 @@ final class StoreDetailViewController:
                         .map { Reactor.Action.tapCurrentLocation }
                         .bind(to: self.storeDetailReactor.action)
                         .disposed(by: cell.disposeBag)
+                    cell.bookmarkButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapBookmark }
+                        .bind(to: self.storeDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
                     cell.shareButton.rx.tap
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
                         .map { Reactor.Action.tapShare }
+                        .bind(to: self.storeDetailReactor.action)
+                        .disposed(by: cell.disposeBag)
+                    cell.deleteRequestButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapDeleteRequest }
                         .bind(to: self.storeDetailReactor.action)
                         .disposed(by: cell.disposeBag)
                     

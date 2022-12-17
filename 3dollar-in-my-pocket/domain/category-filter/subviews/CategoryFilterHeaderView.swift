@@ -3,13 +3,12 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class CategoryFilterHeaderView: UICollectionReusableView {
+final class CategoryFilterHeaderView: BaseCollectionReusableView {
     static let registerID = "\(CategoryFilterHeaderView.self)"
     static let size = CGSize(
         width: UIScreen.main.bounds.width - 48,
         height: 100
     )
-    var disposeBag = DisposeBag()
     
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 12
@@ -35,18 +34,7 @@ final class CategoryFilterHeaderView: UICollectionReusableView {
     
     fileprivate let button = UIButton()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        self.setup()
-        self.bindConstraints()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setup() {
+    override func setup() {
         self.stackView.addArrangedSubview(self.titleLabel)
         self.stackView.addArrangedSubview(self.descriptionLabel)
         self.addSubViews([
@@ -57,25 +45,7 @@ final class CategoryFilterHeaderView: UICollectionReusableView {
         ])
     }
     
-    fileprivate func bind(advertisement: Advertisement?) {
-        guard let advertisement = advertisement else { return }
-
-        self.titleLabel.text = advertisement.title
-        self.titleLabel.textColor = .init(hex: advertisement.fontColor)
-        self.titleLabel.setKern(kern: -0.4)
-        self.descriptionLabel.text = advertisement.subTitle
-        self.descriptionLabel.textColor = .init(hex: advertisement.fontColor)
-        self.descriptionLabel.setKern(kern: -0.2)
-        self.rightImageView.setImage(urlString: advertisement.imageUrl)
-        self.containerView.backgroundColor = .init(hex: advertisement.bgColor)
-        if advertisement.subTitle.count < 21 {
-            self.stackView.spacing = 0
-        } else {
-            self.stackView.spacing = 8
-        }
-    }
-    
-    private func bindConstraints() {
+    override func bindConstraints() {
         self.containerView.snp.makeConstraints { make in
             make.left.equalToSuperview()
             make.right.equalToSuperview()
@@ -97,6 +67,24 @@ final class CategoryFilterHeaderView: UICollectionReusableView {
         
         self.button.snp.makeConstraints { make in
             make.edges.equalTo(containerView)
+        }
+    }
+    
+    fileprivate func bind(advertisement: Advertisement?) {
+        guard let advertisement = advertisement else { return }
+
+        self.titleLabel.text = advertisement.title
+        self.titleLabel.textColor = .init(hex: advertisement.fontColor)
+        self.titleLabel.setKern(kern: -0.4)
+        self.descriptionLabel.text = advertisement.subTitle
+        self.descriptionLabel.textColor = .init(hex: advertisement.fontColor)
+        self.descriptionLabel.setKern(kern: -0.2)
+        self.rightImageView.setImage(urlString: advertisement.imageUrl)
+        self.containerView.backgroundColor = .init(hex: advertisement.bgColor)
+        if advertisement.subTitle.count < 21 {
+            self.stackView.spacing = 0
+        } else {
+            self.stackView.spacing = 8
         }
     }
 }

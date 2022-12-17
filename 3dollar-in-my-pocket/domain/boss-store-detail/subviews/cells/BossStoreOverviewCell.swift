@@ -1,6 +1,5 @@
 import UIKit
 
-import Base
 import NMapsMap
 import Kingfisher
 
@@ -77,6 +76,20 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
         $0.titleEdgeInsets = .init(top: 0, left: 8, bottom: 0, right: 0)
     }
     
+    private let dividerView = UIView().then {
+        $0.backgroundColor = R.color.gray20()
+    }
+    
+    let bookmarkButton = UIButton().then {
+        $0.setImage(R.image.ic_bookmark_off()?.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.setImage(R.image.ic_bookmark_on()?.withRenderingMode(.alwaysTemplate), for: .selected)
+        $0.setTitle(R.string.localization.store_detail_bookmark(), for: .normal)
+        $0.titleLabel?.font = .medium(size: 16)
+        $0.setTitleColor(R.color.green(), for: .normal)
+        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
+        $0.tintColor = R.color.green()
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -96,7 +109,9 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
             self.distanceLabel,
             self.reviewIcon,
             self.reviewCountLabel,
-            self.shareButton
+            self.shareButton,
+            self.dividerView,
+            self.bookmarkButton
         ])
     }
     
@@ -119,7 +134,7 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
             make.left.equalToSuperview().offset(24)
             make.right.equalToSuperview().offset(-24)
             make.top.equalTo(self.mapView.snp.bottom).offset(-32)
-            make.bottom.equalTo(self.shareButton)
+            make.bottom.equalTo(self.shareButton).offset(10)
         }
         
         self.categoryStackView.snp.makeConstraints { make in
@@ -158,11 +173,25 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
             make.height.equalTo(16)
         }
         
+        self.dividerView.snp.makeConstraints { make in
+            make.centerX.equalTo(self.containerView)
+            make.top.equalTo(self.distanceIcon.snp.bottom).offset(30)
+            make.height.equalTo(32)
+            make.width.equalTo(1)
+        }
+        
         self.shareButton.snp.makeConstraints { make in
+            make.centerY.equalTo(self.dividerView)
             make.left.equalTo(self.containerView)
+            make.right.equalTo(self.dividerView.snp.left)
+            make.height.equalTo(32)
+        }
+        
+        self.bookmarkButton.snp.makeConstraints { make in
+            make.centerY.equalTo(self.dividerView)
+            make.left.equalTo(self.dividerView.snp.right)
             make.right.equalTo(self.containerView)
-            make.top.equalTo(self.reviewIcon.snp.bottom).offset(5)
-            make.height.equalTo(56)
+            make.height.equalTo(32)
         }
     }
     

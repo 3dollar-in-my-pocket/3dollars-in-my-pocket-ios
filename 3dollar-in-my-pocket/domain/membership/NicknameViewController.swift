@@ -64,7 +64,9 @@ class NicknameViewController: BaseVC {
       
     self.viewModel.showLoading
       .asDriver(onErrorJustReturn: false)
-      .drive(onNext: self.nicknameView.showLoading(isShow:))
+      .drive(onNext: { isShow in
+          LoadingManager.shared.showLoading(isShow: isShow)
+      })
       .disposed(by: self.disposeBag)
     
     self.viewModel.showErrorAlert
@@ -82,9 +84,6 @@ class NicknameViewController: BaseVC {
     self.nicknameView.backButton.rx.tap
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
       .asDriver(onErrorJustReturn: ())
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .back_button_clicked, page: .nickname_initialize_page)
-      })
       .drive(onNext: self.popupVC)
       .disposed(by: self.disposeBag)
     

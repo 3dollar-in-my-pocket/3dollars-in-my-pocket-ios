@@ -1,8 +1,6 @@
 import UIKit
 import WebKit
 
-import Base
-
 final class WebView: BaseView {
     let backButton = UIButton().then {
         $0.setImage(R.image.ic_back_white(), for: .normal)

@@ -8,6 +8,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
         case tapCurrentLocation
+        case tapBookmark
         case tapSNSButton
         case tapShare
         case showTotalMenus
@@ -17,6 +18,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     enum Mutation {
         case setStore(BossStore)
         case pushShare(BossStore)
+        case setBookmark(Bool)
         case pushFeedback(storeId: String)
         case moveCamera(location: CLLocation)
         case pushURL(url: String?)
@@ -24,6 +26,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         case showTotalMenus
         case showLoading(isShow: Bool)
         case showErrorAlert(Error)
+        case showToast(message: String)
     }
     
     struct State {
@@ -39,25 +42,28 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     let pushURLPublisher = PublishRelay<String?>()
     private let storeService: StoreServiceProtocol
     private let locationService: LocationManagerProtocol
+    private let bookamrkService: BookmarkServiceProtocol
     private let globalState: GlobalState
     private var userDefaults: UserDefaultsUtil
-    private var gaManager: AnalyticsManagerProtocol
+    private var analyticsManager: AnalyticsManagerProtocol
     
     init(
         storeId: String,
         storeService: StoreServiceProtocol,
+        bookmarkService: BookmarkServiceProtocol,
         locationManaber: LocationManagerProtocol,
         globalState: GlobalState,
         userDefaults: UserDefaultsUtil,
-        gaManager: AnalyticsManagerProtocol,
+        analyticsManager: AnalyticsManagerProtocol,
         state: State = State(store: BossStore(), showTotalMenus: false)
     ) {
         self.storeId = storeId
         self.storeService = storeService
+        self.bookamrkService = bookmarkService
         self.locationService = locationManaber
         self.globalState = globalState
         self.userDefaults = userDefaults
-        self.gaManager = gaManager
+        self.analyticsManager = analyticsManager
         self.initialState = state
     }
     
@@ -65,9 +71,9 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         switch action {
         case .viewDidLoad:
             self.clearKakaoLinkIfExisted()
-            self.gaManager.logEvent(
-                event: .view_boss_store_detail(storeId: self.storeId),
-                page: .boss_store_detail
+            self.analyticsManager.logEvent(
+                event: .viewBossStoreDetail(storeId: self.storeId),
+                screen: .bossStoreDetail
             )
             
             return .concat([
@@ -78,6 +84,16 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             
         case .tapCurrentLocation:
             return self.fetchCurrentLocation()
+            
+        case .tapBookmark:
+            let isBookmarked = self.currentState.store.isBookmarked
+            let store = self.currentState.store
+            
+            if isBookmarked {
+                return self.unBookmarkStore(storeId: store.id)
+            } else {
+                return self.bookmarkStore(store: store)
+            }
             
         case .tapSNSButton:
             return .just(.pushURL(url: self.currentState.store.snsUrl))
@@ -111,6 +127,9 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         case .pushShare(let store):
             self.pushSharePublisher.accept(store)
             
+        case .setBookmark(let isBookmarked):
+            newState.store.isBookmarked = isBookmarked
+            
         case .pushFeedback(let storeId):
             self.pushFeedbackPublisher.accept(storeId)
             
@@ -132,6 +151,9 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             
         case .showErrorAlert(let error):
             self.showErrorAlertPublisher.accept(error)
+            
+        case .showToast(let message):
+            self.showToastPublisher.accept(message)
         }
         
         return newState
@@ -161,5 +183,37 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         if !self.userDefaults.shareLink.isEmpty {
             self.userDefaults.shareLink = ""
         }
+    }
+    
+    private func bookmarkStore(store: BossStore) -> Observable<Mutation> {
+        return self.bookamrkService.bookmarkStore(storeType: .foodTruck, storeId: store.id)
+            .do(onNext: { [weak self] _ in
+                self?.globalState.addBookmarkStore.onNext(store)
+            })
+            .flatMap { _ -> Observable<Mutation> in
+                return .merge([
+                    .just(.setBookmark(true)),
+                    .just(.showToast(
+                        message: R.string.localization.store_detail_bookmark_toast())
+                    )
+                ])
+            }
+            .catch { .just(.showErrorAlert($0)) }
+    }
+    
+    private func unBookmarkStore(storeId: String) -> Observable<Mutation> {
+        return self.bookamrkService.unBookmarkStore(storeType: .foodTruck, storeId: storeId)
+            .do(onNext: { [weak self] _ in
+                self?.globalState.deleteBookmarkStore.onNext([storeId])
+            })
+                .flatMap { _ -> Observable<Mutation> in
+                    return .merge([
+                        .just(.setBookmark(false)),
+                        .just(.showToast(
+                            message: R.string.localization.store_detail_unbookmark_toast())
+                        )
+                    ])
+                }
+            .catch { .just(.showErrorAlert($0)) }
     }
 }

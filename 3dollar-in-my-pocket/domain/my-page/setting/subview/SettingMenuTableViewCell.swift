@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class SettingMenuTableViewCell: BaseTableViewCell {
     static let registerId = "\(SettingMenuTableViewCell.self)"
     

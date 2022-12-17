@@ -22,7 +22,7 @@ struct StreetFoodCategory: Categorizable, Equatable {
         self.name = name
     }
     
-    init(response: MenuCategoryResponse) {
+    init(response: PlatformStoreCategoryResponse) {
         self.id = response.categoryId
         self.category
         = StreetFoodStoreCategory(rawValue: response.category) ?? .BUNGEOPPANG

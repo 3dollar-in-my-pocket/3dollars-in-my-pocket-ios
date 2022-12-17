@@ -3,11 +3,10 @@ import Lottie
 
 class SplashView: BaseView {
   
-  let lottie = AnimationView(name: "splash").then {
+  let lottie = LottieAnimationView(name: "splash").then {
     $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
     $0.contentMode = .scaleAspectFit
   }
-  
   
   override func setup() {
     self.backgroundColor = UIColor(r: 28, g: 28, b: 28)

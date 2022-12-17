@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class SettingSignoutTableViewCell: BaseTableViewCell {
     static let registerId = "\(SettingSignoutTableViewCell.self)"
     

@@ -45,6 +45,7 @@ final class FoodTruckListReactor: BaseReactor, Reactor {
     private let locationManager: LocationManagerProtocol
     private let metaContext: MetaContext
     private let globalState: GlobalState
+    private let analyticsManager: AnalyticsManagerProtocol
     
     init(
         storeService: StoreServiceProtocol,
@@ -52,6 +53,7 @@ final class FoodTruckListReactor: BaseReactor, Reactor {
         locationManager: LocationManagerProtocol,
         metaContext: MetaContext,
         globalState: GlobalState,
+        analyticsManager: AnalyticsManagerProtocol,
         state: State = State(
             category: FoodTruckCategory.totalCategory,
             cameraPosition: nil,
@@ -66,6 +68,7 @@ final class FoodTruckListReactor: BaseReactor, Reactor {
         self.advertisementService = advertisementService
         self.metaContext = metaContext
         self.globalState = globalState
+        self.analyticsManager = analyticsManager
         
         guard let firstCategory
                 = metaContext.foodTruckCategories.first as? FoodTruckCategory else {
@@ -130,6 +133,10 @@ final class FoodTruckListReactor: BaseReactor, Reactor {
         case .tapAdvertisement:
             guard let advertisement = self.currentState.advertisement else { return .empty() }
             
+            self.analyticsManager.logEvent(
+                event: .foodtruckListAdBannerClicked(id: String(advertisement.id)),
+                screen: .foodTruckList
+            )
             return .just(.pushWebView(url: advertisement.linkUrl))
         }
     }
@@ -235,8 +242,7 @@ final class FoodTruckListReactor: BaseReactor, Reactor {
     private func fetchAdvertisement() -> Observable<Mutation> {
         return self.advertisementService
             .fetchAdvertisements(position: .storeCategoryList)
-            .map { $0.map(Advertisement.init(response:)).first }
-            .map { .setAdvertisement($0) }
+            .map { .setAdvertisement($0.first) }
             .catch { .just(.showErrorAlert($0)) }
     }
 }

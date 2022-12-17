@@ -1,0 +1,36 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+# Github에서 만든 AccessToken을 사용해서 Base64토큰을 새로 만들어서 넣어주세요.
+# echo -n your_github_username:your_personal_access_token | base64 명령어를 사용해서 만들 수 있습니다.
+ENV['MATCH_GIT_BASIC_AUTHORIZATION'] = 'SHl1bnNpay1Zb286Z2hwXzk3YmZtaWt4VGhMVjZScG1FZzVyb2tZZ0FqMURlMDFzQkFBQQ==' 
+ENV['MATCH_USERNAME'] = 'dbgustlr92@naver.com' # APPLE 계정을 적어주세요
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Description of what the lane does"
+  lane :match_full do
+    match(type: "development", app_identifier: "com.macgongmon.-dollar-in-my-pocket-debug", force_for_new_devices: true)
+    match(type: "development", app_identifier: "com.macgongmon.-dollar-in-my-pocket-debug.service-extension", force_for_new_devices: true)
+    match(type: "development", app_identifier: "com.macgongmon.-dollar-in-my-pocket-debug.content-extension", force_for_new_devices: true)
+    match(type: "adhoc", app_identifier: "com.macgongmon.-dollar-in-my-pocket-debug", force_for_new_devices: true)
+    match(type: "adhoc", app_identifier: "com.macgongmon.-dollar-in-my-pocket-debug.service-extension", force_for_new_devices: true)
+    match(type: "adhoc", app_identifier: "com.macgongmon.-dollar-in-my-pocket-debug.content-extension", force_for_new_devices: true)
+    match(type: "appstore", app_identifier: "com.macgongmon.-dollar-in-my-pocket", force_for_new_devices: true)
+    match(type: "appstore", app_identifier: "com.macgongmon.-dollar-in-my-pocket.service-extension", force_for_new_devices: true)
+    match(type: "appstore", app_identifier: "com.macgongmon.-dollar-in-my-pocket.content-extension", force_for_new_devices: true)
+  end
+end

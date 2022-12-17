@@ -1,18 +1,24 @@
 import UIKit
-import RxSwift
 
-final class MyPageViewController: BaseVC, MyPageCoordinator {
+import ReactorKit
+import RxSwift
+import RxDataSources
+
+final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
     private weak var coordinator: MyPageCoordinator?
     private let myPageView = MyPageView()
-    private let viewModel = MyPageViewModel(
+    private let myPageReactor = MyPageReactor(
         userService: UserService(),
-        visitHistoryService: VisitHistoryService()
+        visitHistoryService: VisitHistoryService(),
+        bookmarkService: BookmarkService(),
+        globalState: GlobalState.shared
     )
+    private var myPageCollectionViewDataSource:
+    RxCollectionViewSectionedReloadDataSource<MyPageSectionModel>!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
     
     static func instance() -> UINavigationController {
         let viewController = MyPageViewController(nibName: nil, bundle: nil).then {
@@ -36,49 +42,28 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.setupDataSource()
+        self.reactor = self.myPageReactor
         self.coordinator = self
+        self.myPageReactor.action.onNext(.viewDidLoad)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.viewModel.input.viewDidLoad.onNext(())
         self.tabBarController?.tabBar.barTintColor = R.color.gray100()
     }
     
     override func bindEvent() {
         self.myPageView.settingButton.rx.tap
-            .asDriver()
-            .do(onNext: { _ in
-                GA.shared.logEvent(event: .setting_button_clicked, page: .my_info_page)
-            })
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] in
                 self?.coordinator?.goToSetting()
             })
-            .disposed(by: self.disposeBag)
+            .disposed(by: self.eventDisposeBag)
         
-        self.myPageView.storeCountButton.rx.tap
-            .asDriver()
-            .drive(onNext: { [weak self] in
-                self?.coordinator?.goToTotalRegisteredStore()
-            })
-            .disposed(by: self.disposeBag)
-        
-        self.myPageView.reviewCountButton.rx.tap
-            .asDriver()
-            .drive(onNext: { [weak self] in
-                self?.coordinator?.goToMyReview()
-            })
-            .disposed(by: self.disposeBag)
-        
-        self.myPageView.visitHistoryButton.rx.tap
-            .asDriver()
-            .drive(onNext: { [weak self] in
-                self?.coordinator?.goToMyVisitHistory()
-            })
-            .disposed(by: self.disposeBag)
-        
-        self.viewModel.showErrorAlert
+        self.myPageReactor.showErrorAlertPublisher
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in
                 self?.coordinator?.showErrorAlert(error: error)
@@ -86,67 +71,185 @@ final class MyPageViewController: BaseVC, MyPageCoordinator {
             .disposed(by: self.disposeBag)
     }
     
-    override func bindViewModelInput() {
+    func bind(reactor: MyPageReactor) {
+        // Bind Action
         self.myPageView.refreshControl.rx.controlEvent(.valueChanged)
-            .bind(to: self.viewModel.input.viewDidLoad)
+            .map { Reactor.Action.refresh }
+            .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
-        self.myPageView.medalCountButton.rx.tap
-            .bind(to: self.viewModel.input.tapMyMedal)
+        self.myPageView.collectionView.rx.itemSelected
+            .filter { MyPageSectionType(sectionIndex: $0.section) == .visitHistory }
+            .map { Reactor.Action.tapVisitHistory(row: $0.row) }
+            .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
-        self.myPageView.medalImageButton.rx.tap
-            .bind(to: self.viewModel.input.tapMyMedal)
+        self.myPageView.collectionView.rx.itemSelected
+            .filter { MyPageSectionType(sectionIndex: $0.section) == .bookmark }
+            .map { Reactor.Action.tapBookmark(row: $0.row) }
+            .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
-        self.myPageView.visitHistoryCollectionView.rx.itemSelected
-            .map { $0.row }
-            .bind(to: self.viewModel.input.tapVisitHistory)
-            .disposed(by: self.disposeBag)
-    }
-    
-    override func bindViewModelOutput() {
-        self.viewModel.output.user
-            .asDriver(onErrorJustReturn: User())
-            .drive(self.myPageView.rx.user)
-            .disposed(by: self.disposeBag)
-        
-        self.viewModel.output.visitHistories
-            .asDriver(onErrorJustReturn: [])
-            .do(onNext: { [weak self] visitHistories in
-                self?.myPageView.visitHistoryEmptyView.isHidden = !visitHistories.isEmpty
-            })
-            .drive(self.myPageView.visitHistoryCollectionView.rx.items(
-                cellIdentifier: MyVisitHistoryCell.registerId,
-                cellType: MyVisitHistoryCell.self
-            )) { _, visitHistory, cell in
-                cell.bind(visitHitory: visitHistory)
+        // Bind State
+        reactor.state
+            .map { state in
+                [
+                    MyPageSectionModel(user: state.user),
+                    MyPageSectionModel(visitHistories: state.visitHistories),
+                    MyPageSectionModel(bookmarks: state.bookmarks)
+                ]
             }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: [])
+            .drive(self.myPageView.collectionView.rx.items(
+                dataSource: self.myPageCollectionViewDataSource
+            ))
             .disposed(by: self.disposeBag)
         
-        self.viewModel.output.isRefreshing
-            .asDriver(onErrorJustReturn: false)
-            .drive(self.myPageView.refreshControl.rx.isRefreshing)
+        reactor.pulse(\.$endRefreshing)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.myPageView.refreshControl.endRefreshing()
+            })
             .disposed(by: self.disposeBag)
         
-        self.viewModel.output.goToMyMedal
+        reactor.pulse(\.$pushStoreDetail)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: -1)
+            .drive(onNext: { [weak self] storeId in
+                self?.coordinator?.goToStoreDetail(storeId: storeId)
+            })
+            .disposed(by: self.disposeBag)
+        
+        reactor.pulse(\.$pushFoodTruckDetail)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] storeId in
+                self?.coordinator?.pushFoodtruckDetail(storeId: storeId)
+            })
+            .disposed(by: self.disposeBag)
+        
+        reactor.pulse(\.$pushMyMedal)
+            .compactMap { $0 }
             .asDriver(onErrorJustReturn: Medal())
             .drive(onNext: { [weak self] medal in
                 self?.coordinator?.goToMyMedal(medal: medal)
             })
             .disposed(by: self.disposeBag)
         
-        self.viewModel.output.goToStoreDetail
-            .asDriver(onErrorJustReturn: -1)
-            .drive(onNext: { [weak self] storeId in
-                self?.coordinator?.goToStoreDetail(storeId: storeId)
+        reactor.pulse(\.$pushBookmarkList)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] userName in
+                self?.coordinator?.pushBookmarkList(userName: userName)
             })
             .disposed(by: self.disposeBag)
+    }
+    
+    private func setupDataSource() {
+        self.myPageCollectionViewDataSource
+        = RxCollectionViewSectionedReloadDataSource(
+            configureCell: { _, collectionView, indexPath, item in
+                switch item {
+                case .overview(let user):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: MyPageOverviewCollectionViewCell.registerId,
+                        for: indexPath
+                    ) as? MyPageOverviewCollectionViewCell else { return BaseCollectionViewCell() }
+                    
+                    cell.bind(user: user)
+                    cell.medalImageButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapMyMedal }
+                        .bind(to: self.myPageReactor.action)
+                        .disposed(by: cell.disposeBag)
+                    cell.medalCountButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapMyMedal }
+                        .bind(to: self.myPageReactor.action)
+                        .disposed(by: cell.disposeBag)
+                    cell.reviewCountButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .asDriver(onErrorJustReturn: ())
+                        .drive(onNext: { [weak self] in
+                            self?.coordinator?.goToMyReview()
+                        })
+                        .disposed(by: cell.disposeBag)
+                    cell.storeCountButton.rx.tap
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .asDriver(onErrorJustReturn: ())
+                        .drive(onNext: { [weak self] in
+                            self?.coordinator?.goToTotalRegisteredStore()
+                        })
+                        .disposed(by: cell.disposeBag)
+                    return cell
+                    
+                case .visitHistory(let visitHistory):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: MyPageVisitHistoryCollectionViewCell.registerId,
+                        for: indexPath
+                    ) as? MyPageVisitHistoryCollectionViewCell else {
+                        return BaseCollectionViewCell()
+                    }
+                    
+                    cell.bind(visitHitory: visitHistory)
+                    return cell
+                    
+                case .bookmark(let store):
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: MyPageBookmarkCollectionViewCell.registerId,
+                        for: indexPath
+                    ) as? MyPageBookmarkCollectionViewCell else { return BaseCollectionViewCell() }
+                    
+                    cell.bind(store: store)
+                    return cell
+                }
+        })
+        
+        self.myPageCollectionViewDataSource.configureSupplementaryView
+        = { _, collectionView, kind, indexPath -> UICollectionReusableView in
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
+                guard let headerView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: UICollectionView.elementKindSectionHeader,
+                    withReuseIdentifier: MyPageSectionHeaderView.registerId,
+                    for: indexPath
+                ) as? MyPageSectionHeaderView else { return UICollectionReusableView() }
+                let sectionType = MyPageSectionType(sectionIndex: indexPath.section)
+                
+                switch sectionType {
+                case .visitHistory:
+                    headerView.rx.tapMoreButton
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .asDriver(onErrorJustReturn: ())
+                        .drive(onNext: { [weak self] _ in
+                            self?.coordinator?.goToMyVisitHistory()
+                        })
+                        .disposed(by: headerView.disposeBag)
+                    
+                case .bookmark:
+                    headerView.rx.tapMoreButton
+                        .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                        .map { Reactor.Action.tapBookmarkMore }
+                        .bind(to: self.myPageReactor.action)
+                        .disposed(by: headerView.disposeBag)
+                    
+                case .unknown:
+                    break
+                }
+                headerView.bind(type: sectionType)
+                return headerView
+                
+            default:
+                return UICollectionReusableView()
+            }
+        }
     }
 }
 
 extension MyPageViewController: MyMedalViewControllerDelegate {
     func onChangeMedal(medal: Medal) {
-        self.viewModel.input.onChangeMedal.onNext(medal)
+        self.myPageReactor.action.onNext(.changeMedal(medal: medal))
     }
 }

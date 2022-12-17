@@ -19,7 +19,7 @@ protocol UserServiceProtocol {
     
     func fetchUser() -> Observable<User>
     
-    func fetchUserActivity() -> Observable<UserWithActivityResponse>
+    func fetchUserActivity() -> Observable<User>
     
     func changeMarketingConsent(marketingConsentType: MarketingConsentType) -> Observable<String>
 }
@@ -177,25 +177,16 @@ struct UserService: UserServiceProtocol {
         .map(User.init(response:))
     }
     
-    func fetchUserActivity() -> Observable<UserWithActivityResponse> {
-        return .create { observer in
-            let urlString = HTTPUtils.url + "/api/v1/user/activity"
-            let headers = HTTPUtils.defaultHeader()
-            
-            HTTPUtils.defaultSession.request(
-                urlString,
-                method: .get,
-                headers: headers
-            ).responseJSON { response in
-                if response.isSuccess() {
-                    observer.processValue(class: UserWithActivityResponse.self, response: response)
-                } else {
-                    observer.processHTTPError(response: response)
-                }
-            }
-            
-            return Disposables.create()
-        }
+    func fetchUserActivity() -> Observable<User> {
+        let urlString = HTTPUtils.url + "/api/v1/user/activity"
+        let headers = HTTPUtils.defaultHeader()
+        
+        return self.networkManager.createGetObservable(
+            class: UserWithActivityResponse.self,
+            urlString: urlString,
+            headers: headers
+        )
+        .map { User.init(response: $0) }
     }
     
     func changeMarketingConsent(marketingConsentType: MarketingConsentType) -> Observable<String> {

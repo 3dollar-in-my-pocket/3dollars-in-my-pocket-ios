@@ -1,8 +1,6 @@
 import UIKit
 
-import Base
-
-final class BossStoreFeedbackItemView: Base.BaseView {
+final class BossStoreFeedbackItemView: BaseView {
     static let height: CGFloat = 50
     
     private let titleLabel = UILabel().then {

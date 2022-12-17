@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class HomeCategoryCollectionViewCell: BaseCollectionViewCell {
     static let registerId = "\(HomeCategoryCollectionViewCell.self)"
     static let itemSize = CGSize(width: 55, height: 28)
@@ -63,6 +61,9 @@ final class HomeCategoryCollectionViewCell: BaseCollectionViewCell {
                 
             case .foodTruck:
                 self.containerView.backgroundColor = R.color.green()
+                
+            case .unknown:
+                break
             }
             self.titleLabel.textColor = .white
         } else {

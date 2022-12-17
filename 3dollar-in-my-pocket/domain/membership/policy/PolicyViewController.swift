@@ -1,6 +1,5 @@
 import UIKit
 
-import Base
 import ReactorKit
 
 protocol PolicyViewControllerDelegate: AnyObject {
@@ -11,7 +10,7 @@ final class PolicyViewController: BaseViewController, View, PolicyCoordinator {
     private let policyView = PolicyView()
     private let policyReactor = PolicyReactor(
         userService: UserService(),
-        analyticsManager: GA.shared
+        analyticsManager: AnalyticsManager.shared
     )
     private weak var coordinator: PolicyCoordinator?
     private weak var delegate: PolicyViewControllerDelegate?

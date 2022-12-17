@@ -1,7 +1,6 @@
 import UIKit
 import Photos
 
-import Base
 import RxSwift
 
 final class RegisterPhotoCollectionViewCell: BaseCollectionViewCell {

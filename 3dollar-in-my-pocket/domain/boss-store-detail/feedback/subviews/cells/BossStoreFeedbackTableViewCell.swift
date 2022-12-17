@@ -1,8 +1,6 @@
 import UIKit
 
-import Base
-
-final class BossStoreFeedbackTableViewCell: Base.BaseTableViewCell {
+final class BossStoreFeedbackTableViewCell: BaseTableViewCell {
     static let registerId = "\(BossStoreFeedbackTableViewCell.self)"
     static let height: CGFloat = 60
     

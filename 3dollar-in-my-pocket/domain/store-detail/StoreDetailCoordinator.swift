@@ -1,6 +1,5 @@
 import UIKit
 
-import Base
 import SPPermissions
 import KakaoSDKShare
 import KakaoSDKTemplate
@@ -22,6 +21,7 @@ protocol StoreDetailCoordinator: BaseCoordinator, AnyObject {
     func showVisit(store: Store)
     func showVisitHistories(visitHistories: [VisitHistory])
     func shareToKakao(store: Store)
+    func showNotFoundError(message: String)
 }
 
 extension StoreDetailCoordinator where Self: BaseViewController {
@@ -221,6 +221,15 @@ extension StoreDetailCoordinator where Self: BaseViewController {
                     UIApplication.shared.open(linkResult.url, options: [:], completionHandler: nil)
                 }
             }
+        }
+    }
+    
+    func showNotFoundError(message: String) {
+        AlertUtils.showWithAction(
+            viewController: self,
+            message: message
+        ) {
+            self.navigationController?.popViewController(animated: true)
         }
     }
 }

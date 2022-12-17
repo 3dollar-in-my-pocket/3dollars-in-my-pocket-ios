@@ -1,8 +1,6 @@
 import UIKit
 
-import Base
-
-final class PhotoListView: Base.BaseView {
+final class PhotoListView: BaseView {
     private let navigationView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]

@@ -1,7 +1,5 @@
 import UIKit
 
-import Base
-
 final class BossStoreWorkdayCell: BaseCollectionViewCell {
     static let registerId = "\(BossStoreWorkdayCell.self)"
     static let height: CGFloat = 466

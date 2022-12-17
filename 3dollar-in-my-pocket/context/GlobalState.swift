@@ -25,4 +25,13 @@ final class GlobalState {
     
     /// 가게 제보를 완료한 경우
     let addStore = PublishSubject<Store>()
+    
+    /// 즐겨찾기 추가한 경우
+    let addBookmarkStore = PublishSubject<StoreProtocol>()
+    
+    /// 즐겨찾기 해제한 경우
+    let deleteBookmarkStore = PublishSubject<[String]>()
+    
+    /// 즐겨찾기 제목, 설명을 수정한 경우
+    let updateBookmarkFolder = PublishSubject<BookmarkFolder>()
 }

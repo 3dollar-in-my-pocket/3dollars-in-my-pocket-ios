@@ -29,17 +29,20 @@ final class CategoryFilterReactor: BaseReactor, Reactor {
     private let advertisementService: AdvertisementServiceProtocol
     private let metaContext: MetaContext
     private let globalState: GlobalState
+    private let analyticsManager: AnalyticsManagerProtocol
     
     init(
         storeType: StoreType,
         advertisementService: AdvertisementServiceProtocol,
         metaContext: MetaContext,
-        globalState: GlobalState
+        globalState: GlobalState,
+        analyticsManager: AnalyticsManagerProtocol
     ) {
         self.storeType = storeType
         self.advertisementService = advertisementService
         self.metaContext = metaContext
         self.globalState = globalState
+        self.analyticsManager = analyticsManager
         if storeType == .streetFood {
             self.initialState = State(categories: metaContext.streetFoodCategories)
         } else {
@@ -53,11 +56,16 @@ final class CategoryFilterReactor: BaseReactor, Reactor {
             return self.fetchAdvertisement()
             
         case .tapBanner:
-            guard let url = self.currentState.advertisement?.linkUrl else {
+            guard let advertisement = self.currentState.advertisement else {
                 return .just(.showErrorAlert(BaseError.custom("연결된 광고가 없습니다.")))
             }
             
-            return .just(.goToWeb(url: url))
+            self.analyticsManager.logEvent(
+                event: .categoryAdBannerClicked(id: String(advertisement.id)),
+                screen: .categoryFilter
+            )
+            
+            return .just(.goToWeb(url: advertisement.linkUrl))
             
         case .tapCategory(let index):
             let tappedCategory = self.currentState.categories[index]
@@ -92,8 +100,7 @@ final class CategoryFilterReactor: BaseReactor, Reactor {
     
     private func fetchAdvertisement() -> Observable<Mutation> {
         return self.advertisementService.fetchAdvertisements(position: .menuCategoryBanner)
-            .map { $0.map(Advertisement.init(response:)).first }
-            .map { .setAdvertisement($0) }
+            .map { .setAdvertisement($0.first) }
             .catch { .just(.showErrorAlert($0)) }
     }
 }

@@ -1,10 +1,9 @@
 import UIKit
 
-import Base
 import RxSwift
 import RxCocoa
 
-final class BossStoreMoreMenuCell: Base.BaseCollectionViewCell {
+final class BossStoreMoreMenuCell: BaseCollectionViewCell {
     static let registerId = "\(BossStoreMoreMenuCell.self)"
     static let height: CGFloat = 48
     
