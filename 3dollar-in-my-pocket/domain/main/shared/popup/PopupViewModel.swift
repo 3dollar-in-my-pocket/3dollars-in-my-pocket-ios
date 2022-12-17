@@ -46,7 +46,10 @@ final class PopupViewModel: BaseViewModel {
                 self?.model.advertisement
             }
             .bind(onNext: { [weak self] advertisement in
-                GA.shared.logEvent(event: .splash_popup_clicked, page: .splash_popup_page)
+                AnalyticsManager.shared.logEvent(
+                    event: .splashPopupClicked(id: String(advertisement.id)),
+                    screen: .splashPopup
+                )
                 self?.openEventURL(advertisement: advertisement)
             })
             .disposed(by: self.disposeBag)

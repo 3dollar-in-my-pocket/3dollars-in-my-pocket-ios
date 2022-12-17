@@ -34,7 +34,7 @@ final class StoreDetailViewController:
             storeService: StoreService(),
             reviewService: ReviewService(),
             bookmarkService: BookmarkService(),
-            gaManager: GAManager.shared,
+            gaManager: AnalyticsManager.shared,
             globalState: GlobalState.shared
         )
         super.init(nibName: nil, bundle: nil)
@@ -68,7 +68,8 @@ final class StoreDetailViewController:
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] _ in
-                self?.coordinator?.presenter.navigationController?.popViewController(animated: true)
+                self?.coordinator?.presenter.navigationController?
+                    .popViewController(animated: true)
             })
             .disposed(by: self.eventDisposeBag)
         
@@ -145,7 +146,13 @@ final class StoreDetailViewController:
         self.storeDetailReactor.showErrorAlertPublisher
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive { [weak self] error in
-                self?.coordinator?.showErrorAlert(error: error)
+                if let baseError = error as? BaseError,
+                   case .errorContainer(let responseContainer) = baseError,
+                   responseContainer.resultCode == "NF002" {
+                    self?.coordinator?.showNotFoundError(message: responseContainer.message)
+                } else {
+                    self?.coordinator?.showErrorAlert(error: error)
+                }
             }
             .disposed(by: self.eventDisposeBag)
         

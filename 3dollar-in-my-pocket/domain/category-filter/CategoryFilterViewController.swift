@@ -21,7 +21,8 @@ final class CategoryFilterViewController: BaseViewController, View, CategoryFilt
             storeType: storeType,
             advertisementService: AdvertisementService(),
             metaContext: MetaContext.shared,
-            globalState: GlobalState.shared
+            globalState: GlobalState.shared,
+            analyticsManager: AnalyticsManager.shared
         )
         
         super.init(nibName: nil, bundle: nil)

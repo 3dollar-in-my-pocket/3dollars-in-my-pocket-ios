@@ -1,6 +1,7 @@
 import Foundation
 
 struct AdvertisementResponse: Decodable {
+    let id: Int
     let bgColor: String
     let extraContent: String?
     let imageHeight: Int
@@ -12,6 +13,7 @@ struct AdvertisementResponse: Decodable {
     let title: String
     
     enum CodingKeys: String, CodingKey {
+        case id = "advertisementId"
         case bgColor
         case extraContent
         case imageHeight
@@ -24,6 +26,7 @@ struct AdvertisementResponse: Decodable {
     }
     
     init() {
+        self.id = 0
         self.bgColor = ""
         self.extraContent = nil
         self.imageHeight = 0
@@ -38,6 +41,7 @@ struct AdvertisementResponse: Decodable {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
+        self.id = try values.decodeIfPresent(Int.self, forKey: .id) ?? 0
         self.bgColor = try values.decodeIfPresent(String.self, forKey: .bgColor) ?? ""
         self.extraContent = try values.decodeIfPresent(String.self, forKey: .extraContent)
         self.imageHeight = try values.decodeIfPresent(Int.self, forKey: .imageHeight) ?? 0

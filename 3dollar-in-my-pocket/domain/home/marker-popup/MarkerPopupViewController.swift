@@ -6,7 +6,8 @@ import RxSwift
 final class MarkerPopupViewController: BaseViewController, View, MarkerPopupCoordinator {
     private let markerPopupView = MarkerPopupView()
     private let markerPopupReactor = MarkerPopupReactor(
-        advertisementService: AdvertisementService()
+        advertisementService: AdvertisementService(),
+        eventService: EventService()
     )
     private weak var coordinator: MarkerPopupCoordinator?
     

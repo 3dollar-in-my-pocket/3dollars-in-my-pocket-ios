@@ -21,7 +21,7 @@ final class BossStoreDetailViewController:
             locationManaber: LocationManager.shared,
             globalState: GlobalState.shared,
             userDefaults: UserDefaultsUtil(),
-            gaManager: GAManager.shared
+            analyticsManager: AnalyticsManager.shared
         )
         
         super.init(nibName: nil, bundle: nil)
@@ -91,7 +91,13 @@ final class BossStoreDetailViewController:
         self.bossStoreDetailReactor.showErrorAlertPublisher
             .asDriver(onErrorJustReturn: BaseError.unknown)
             .drive(onNext: { [weak self] error in
-                self?.coordinator?.showErrorAlert(error: error)
+                if let baseError = error as? BaseError,
+                   case .errorContainer(let responseContainer) = baseError,
+                   responseContainer.resultCode == "NF002" {
+                    self?.coordinator?.showNotFoundError(message: responseContainer.message)
+                } else {
+                    self?.coordinator?.showErrorAlert(error: error)
+                }
             })
             .disposed(by: self.eventDisposeBag)
         

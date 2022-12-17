@@ -12,7 +12,8 @@ final class FoodTruckListViewController: BaseViewController, View, FoodTruckList
         advertisementService: AdvertisementService(),
         locationManager: LocationManager.shared,
         metaContext: MetaContext.shared,
-        globalState: GlobalState.shared
+        globalState: GlobalState.shared,
+        analyticsManager: AnalyticsManager.shared
     )
     private weak var coordinator: FoodTruckListCoordinator?
     private var foodTruckStoreCollectionViewDataSource:

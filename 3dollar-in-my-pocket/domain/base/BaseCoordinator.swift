@@ -16,16 +16,23 @@ extension BaseCoordinator where Self: BaseViewController {
     }
     
     func showErrorAlert(error: Error) {
-        if let httpError = error as? HTTPError,
-           httpError == .unauthorized {
-            AlertUtils.showWithAction(
-                viewController: self,
-                title: nil,
-                message: httpError.description,
-                okbuttonTitle: "common_ok".localized
-            ) {
-                UserDefaultsUtil().clear()
-                self.goToSignin()
+        if let httpError = error as? HTTPError {
+            if httpError == .unauthorized {
+                AlertUtils.showWithAction(
+                    viewController: self,
+                    title: nil,
+                    message: httpError.description,
+                    okbuttonTitle: "common_ok".localized
+                ) {
+                    UserDefaultsUtil().clear()
+                    self.goToSignin()
+                }
+            } else {
+                AlertUtils.showWithAction(
+                    viewController: self,
+                    message: httpError.description,
+                    onTapOk: nil
+                )
             }
         } else if let localizedError = error as? LocalizedError {
             AlertUtils.showWithAction(

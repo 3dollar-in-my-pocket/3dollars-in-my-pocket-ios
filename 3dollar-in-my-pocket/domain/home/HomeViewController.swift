@@ -16,7 +16,8 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
         mapService: MapService(),
         userDefaults: UserDefaultsUtil(),
         globalState: GlobalState.shared,
-        metaContext: MetaContext.shared
+        metaContext: MetaContext.shared,
+        analyticsManager: AnalyticsManager.shared
     )
   
     var mapAnimatedFlag = false
@@ -63,9 +64,6 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
     override func bindEvent() {
         self.homeView.addressButton.rx.tap
             .asDriver()
-            .do(onNext: { _ in
-                GA.shared.logEvent(event: .search_button_clicked, page: .home_page)
-            })
             .drive(onNext: { [weak self] in
                 self?.coordinator?.showSearchAddress()
             })

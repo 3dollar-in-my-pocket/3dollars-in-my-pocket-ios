@@ -58,7 +58,7 @@ class TabBarVC: UITabBarController {
                 self.tabBar.standardAppearance = appearance
                 self.tabBar.scrollEdgeAppearance = appearance
             }
-        case TabBarTag.home.rawValue, TabBarTag.streetFood.rawValue:
+        case TabBarTag.home.rawValue, TabBarTag.streetFood.rawValue, TabBarTag.foodTruck.rawValue:
             self.tabBar.barTintColor = .white
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()

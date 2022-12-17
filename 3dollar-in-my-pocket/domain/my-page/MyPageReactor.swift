@@ -9,10 +9,12 @@ final class MyPageReactor: BaseReactor, Reactor {
         case tapVisitHistory(row: Int)
         case tapBookmarkMore
         case tapBookmark(row: Int)
+        case changeMedal(medal: Medal)
     }
     
     enum Mutation {
         case setUser(User)
+        case changeMedal(medal: Medal)
         case setVisitHistories([VisitHistory])
         case setBookmarks([StoreProtocol])
         case appendBookmark(StoreProtocol)
@@ -20,6 +22,7 @@ final class MyPageReactor: BaseReactor, Reactor {
         case endRefresh
         case pushMyMedal(Medal)
         case pushStoreDetail(storeId: Int)
+        case pushFoodTruckDetail(storeId: String)
         case pushBookmarkList(userName: String)
         case showErrorAlert(Error)
     }
@@ -32,6 +35,7 @@ final class MyPageReactor: BaseReactor, Reactor {
         @Pulse var pushStoreDetail: Int?
         @Pulse var pushMyMedal: Medal?
         @Pulse var pushBookmarkList: String?
+        @Pulse var pushFoodTruckDetail: String?
     }
     
     let initialState: State
@@ -94,7 +98,19 @@ final class MyPageReactor: BaseReactor, Reactor {
             guard !self.currentState.bookmarks.isEmpty else { return .empty() }
             let tappedBookmark = self.currentState.bookmarks[row]
             
-            return .just(.pushStoreDetail(storeId: Int(tappedBookmark.id) ?? 0))
+            switch tappedBookmark.storeCategory {
+            case .streetFood:
+                return .just(.pushStoreDetail(storeId: Int(tappedBookmark.id) ?? 0))
+                
+            case .foodTruck:
+                return .just(.pushFoodTruckDetail(storeId: tappedBookmark.id))
+                
+            case .unknown:
+                return .empty()
+            }
+            
+        case .changeMedal(let medal):
+            return .just(.changeMedal(medal: medal))
         }
     }
     
@@ -116,6 +132,9 @@ final class MyPageReactor: BaseReactor, Reactor {
         switch mutation {
         case .setUser(let user):
             newState.user = user
+            
+        case .changeMedal(let medal):
+            newState.user.medal = medal
             
         case .setVisitHistories(let visitHistories):
             newState.visitHistories = visitHistories
@@ -139,6 +158,9 @@ final class MyPageReactor: BaseReactor, Reactor {
             
         case .pushStoreDetail(let storeId):
             newState.pushStoreDetail = storeId
+            
+        case .pushFoodTruckDetail(let storeId):
+            newState.pushFoodTruckDetail = storeId
             
         case .pushBookmarkList(let userName):
             newState.pushBookmarkList = userName

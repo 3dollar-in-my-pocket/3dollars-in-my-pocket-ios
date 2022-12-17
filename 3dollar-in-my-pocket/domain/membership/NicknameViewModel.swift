@@ -41,9 +41,6 @@ class NicknameViewModel: BaseViewModel {
     
     self.input.tapStartButton
       .withLatestFrom(self.input.nickname)
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .nickname_change_button_clicked, page: .nickname_initialize_page)
-      })
       .bind(onNext: self.setNickname(nickname:))
       .disposed(by: disposeBag)
   }
@@ -91,7 +88,7 @@ class NicknameViewModel: BaseViewModel {
       switch signupError {
       case .alreadyExistedNickname:
         self.output.errorLabelHidden.accept(false)
-        GA.shared.logEvent(event: .nickname_already_existed, page: .nickname_initialize_page)
+        
       case .badRequest:
         let alertContent = AlertContent(
           title: nil,

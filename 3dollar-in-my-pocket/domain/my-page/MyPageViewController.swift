@@ -122,6 +122,14 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
             })
             .disposed(by: self.disposeBag)
         
+        reactor.pulse(\.$pushFoodTruckDetail)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] storeId in
+                self?.coordinator?.pushFoodtruckDetail(storeId: storeId)
+            })
+            .disposed(by: self.disposeBag)
+        
         reactor.pulse(\.$pushMyMedal)
             .compactMap { $0 }
             .asDriver(onErrorJustReturn: Medal())
@@ -240,8 +248,8 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
     }
 }
 
-//extension MyPageViewController: MyMedalViewControllerDelegate {
-//    func onChangeMedal(medal: Medal) {
-//        self.viewModel.input.onChangeMedal.onNext(medal)
-//    }
-//}
+extension MyPageViewController: MyMedalViewControllerDelegate {
+    func onChangeMedal(medal: Medal) {
+        self.myPageReactor.action.onNext(.changeMedal(medal: medal))
+    }
+}

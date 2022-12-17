@@ -45,7 +45,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
     private let bookamrkService: BookmarkServiceProtocol
     private let globalState: GlobalState
     private var userDefaults: UserDefaultsUtil
-    private var gaManager: AnalyticsManagerProtocol
+    private var analyticsManager: AnalyticsManagerProtocol
     
     init(
         storeId: String,
@@ -54,7 +54,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         locationManaber: LocationManagerProtocol,
         globalState: GlobalState,
         userDefaults: UserDefaultsUtil,
-        gaManager: AnalyticsManagerProtocol,
+        analyticsManager: AnalyticsManagerProtocol,
         state: State = State(store: BossStore(), showTotalMenus: false)
     ) {
         self.storeId = storeId
@@ -63,7 +63,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         self.locationService = locationManaber
         self.globalState = globalState
         self.userDefaults = userDefaults
-        self.gaManager = gaManager
+        self.analyticsManager = analyticsManager
         self.initialState = state
     }
     
@@ -71,9 +71,9 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
         switch action {
         case .viewDidLoad:
             self.clearKakaoLinkIfExisted()
-            self.gaManager.logEvent(
-                event: .view_boss_store_detail(storeId: self.storeId),
-                page: .boss_store_detail
+            self.analyticsManager.logEvent(
+                event: .viewBossStoreDetail(storeId: self.storeId),
+                screen: .bossStoreDetail
             )
             
             return .concat([
@@ -90,19 +90,9 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             let store = self.currentState.store
             
             if isBookmarked {
-                return .concat([
-                    self.unBookmarkStore(storeId: store.id),
-                    .just(.showToast(
-                        message: R.string.localization.store_detail_unbookmark_toast())
-                    )
-                ])
+                return self.unBookmarkStore(storeId: store.id)
             } else {
-                return .concat([
-                    self.bookmarkStore(store: store),
-                    .just(.showToast(
-                        message: R.string.localization.store_detail_bookmark_toast())
-                    )
-                ])
+                return self.bookmarkStore(store: store)
             }
             
         case .tapSNSButton:
@@ -200,7 +190,14 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             .do(onNext: { [weak self] _ in
                 self?.globalState.addBookmarkStore.onNext(store)
             })
-            .map { .setBookmark(true) }
+            .flatMap { _ -> Observable<Mutation> in
+                return .merge([
+                    .just(.setBookmark(true)),
+                    .just(.showToast(
+                        message: R.string.localization.store_detail_bookmark_toast())
+                    )
+                ])
+            }
             .catch { .just(.showErrorAlert($0)) }
     }
     
@@ -209,7 +206,14 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             .do(onNext: { [weak self] _ in
                 self?.globalState.deleteBookmarkStore.onNext([storeId])
             })
-            .map { .setBookmark(false) }
+                .flatMap { _ -> Observable<Mutation> in
+                    return .merge([
+                        .just(.setBookmark(false)),
+                        .just(.showToast(
+                            message: R.string.localization.store_detail_unbookmark_toast())
+                        )
+                    ])
+                }
             .catch { .just(.showErrorAlert($0)) }
     }
 }

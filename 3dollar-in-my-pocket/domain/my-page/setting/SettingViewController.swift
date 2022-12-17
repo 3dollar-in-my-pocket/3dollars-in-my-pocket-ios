@@ -9,7 +9,7 @@ final class SettingViewController: BaseViewController, View, SettingCoordinator 
         userDefaults: UserDefaultsUtil(),
         userService: UserService(),
         deviceService: DeviceService(),
-        analyticsManager: GA.shared,
+        analyticsManager: AnalyticsManager.shared,
         kakaoSigninManager: KakaoSigninManager(),
         appleSigninManager: AppleSigninManager()
     )

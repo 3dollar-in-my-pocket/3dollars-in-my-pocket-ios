@@ -126,11 +126,6 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             ])
             
         case .tapDeleteRequest:
-            self.gaManager.logEvent(
-                event: .store_delete_request_button_clicked,
-                page: .store_detail_page
-            )
-            
             return .just(.presentDeleteModal(storeId: self.storeId))
             
         case .tapBookmark:
@@ -138,19 +133,9 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             let store = self.currentState.store
             
             if isBookmarked {
-                return .concat([
-                    self.unBookmarkStore(storeId: store.id),
-                    .just(.showToast(
-                        message: R.string.localization.store_detail_unbookmark_toast())
-                    )
-                ])
+                return self.unBookmarkStore(storeId: store.id)
             } else {
-                return .concat([
-                    self.bookmarkStore(store: store),
-                    .just(.showToast(
-                        message: R.string.localization.store_detail_bookmark_toast())
-                    )
-                ])
+                return self.bookmarkStore(store: store)
             }
             
         case .tapCurrentLocation:
@@ -347,7 +332,14 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             .do(onNext: { [weak self] _ in
                 self?.globalState.addBookmarkStore.onNext(store)
             })
-            .map { .setBookmark(true) }
+            .flatMap { _ -> Observable<Mutation> in
+                return .merge([
+                    .just(.setBookmark(true)),
+                    .just(.showToast(
+                        message: R.string.localization.store_detail_bookmark_toast())
+                    )
+                ])
+            }
             .catch { .just(.showErrorAlert(error: $0)) }
     }
     
@@ -356,7 +348,14 @@ final class StoreDetailReactor: BaseReactor, Reactor {
             .do(onNext: { [weak self] _ in
                 self?.globalState.deleteBookmarkStore.onNext([storeId])
             })
-            .map { .setBookmark(false) }
+            .flatMap { _ -> Observable<Mutation> in
+                return .merge([
+                    .just(.setBookmark(false)),
+                    .just(.showToast(
+                        message: R.string.localization.store_detail_unbookmark_toast())
+                    )
+                ])
+            }
             .catch { .just(.showErrorAlert(error: $0)) }
     }
 }

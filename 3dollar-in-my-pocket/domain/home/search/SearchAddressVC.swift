@@ -70,17 +70,11 @@ class SearchAddressVC: BaseVC {
   
   override func bindEvent() {
     self.searchAddressView.closeButton.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .close_button_clicked, page: .search_page)
-      })
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.dismiss)
       .disposed(by: disposeBag)
     
     self.searchAddressView.currentLocationButton.rx.tap
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .current_location_button_clicked, page: .search_page)
-      })
       .observeOn(MainScheduler.instance)
       .bind(onNext: self.initilizeLocationManager)
       .disposed(by: disposeBag)
@@ -96,9 +90,6 @@ class SearchAddressVC: BaseVC {
       .disposed(by: disposeBag)
     
     self.searchAddressView.addressTableVIew.rx.itemSelected
-      .do(onNext: { _ in
-        GA.shared.logEvent(event: .location_item_clicked, page: .search_page)
-      })
       .map { $0.row }
       .debug()
       .bind(to: self.viewModel.input.tapAddress)
