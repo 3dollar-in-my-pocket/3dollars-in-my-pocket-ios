@@ -14,7 +14,7 @@ final class StoreDetailView: BaseView {
     }
     
     let backButton = UIButton().then {
-        $0.setImage(R.image.ic_back_black(), for: .normal)
+        $0.setImage(UIImage(named: "ic_back_black"), for: .normal)
     }
     
     fileprivate let mainCategoryImage = UIImageView()
@@ -56,7 +56,7 @@ final class StoreDetailView: BaseView {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: StoreDetailHeaderView.registerId
         )
-        $0.backgroundColor = R.color.gray0()
+        $0.backgroundColor = Color.gray0
         $0.contentInset = .init(top: 0, left: 0, bottom: 64, right: 0)
     }
     

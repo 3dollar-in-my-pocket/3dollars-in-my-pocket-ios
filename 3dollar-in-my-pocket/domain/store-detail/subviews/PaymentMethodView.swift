@@ -2,42 +2,42 @@ import UIKit
 
 final class PaymentMethodView: BaseView {
     private let cardLabel = UILabel().then {
-        $0.textColor = R.color.gray40()
+        $0.textColor = Color.gray40
         $0.font = .regular(size: 14)
-        $0.text = R.string.localization.store_detail_payment_card()
+        $0.text = "store_detail_payment_card".localized
     }
     
     private let cardCircleView = UIView().then {
-        $0.backgroundColor = R.color.gray30()
+        $0.backgroundColor = Color.gray30
         $0.layer.cornerRadius = 4
     }
     
     private let transferLabel = UILabel().then {
-        $0.textColor = R.color.gray40()
+        $0.textColor = Color.gray40
         $0.font = .regular(size: 14)
-        $0.text = R.string.localization.store_detail_payment_transfer()
+        $0.text = "store_detail_payment_transfer".localized
     }
     
     private let transferCircleView = UIView().then {
-        $0.backgroundColor = R.color.gray30()
+        $0.backgroundColor = Color.gray30
         $0.layer.cornerRadius = 4
     }
     
     private let cashLabel = UILabel().then {
-        $0.textColor = R.color.gray40()
+        $0.textColor = Color.gray40
         $0.font = .regular(size: 14)
-        $0.text = R.string.localization.store_detail_payment_cash()
+        $0.text = "store_detail_payment_cash".localized
     }
     
     private let cashCircleView = UIView().then {
-        $0.backgroundColor = R.color.gray30()
+        $0.backgroundColor = Color.gray30
         $0.layer.cornerRadius = 4
     }
     
     private let storePaymentEmptyLabel = UILabel().then {
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
         $0.font = .regular(size: 14)
-        $0.text = R.string.localization.store_detail_info_empty()
+        $0.text = "store_detail_info_empty".localized
         $0.isHidden = true
     }
     
@@ -106,23 +106,23 @@ final class PaymentMethodView: BaseView {
         
         if !paymentMethods.isEmpty {
             self.cardCircleView.backgroundColor = paymentMethods.contains(.card)
-            ? R.color.pink()
-            : R.color.gray30()
+            ? Color.pink
+            : Color.gray30
             self.cardLabel.textColor = paymentMethods.contains(.card)
-            ? R.color.pink()
-            : R.color.gray30()
+            ? Color.pink
+            : Color.gray30
             self.cashCircleView.backgroundColor = paymentMethods.contains(.cash)
-            ? R.color.pink()
-            : R.color.gray30()
+            ? Color.pink
+            : Color.gray30
             self.cashLabel.textColor = paymentMethods.contains(.cash)
-            ? R.color.pink()
-            : R.color.gray30()
+            ? Color.pink
+            : Color.gray30
             self.transferCircleView.backgroundColor = paymentMethods.contains(.transfer)
-            ? R.color.pink()
-            : R.color.gray30()
+            ? Color.pink
+            : Color.gray30
             self.transferLabel.textColor = paymentMethods.contains(.transfer)
-            ? R.color.pink()
-            : R.color.gray30()
+            ? Color.pink
+            : Color.gray30
         }
     }
 }

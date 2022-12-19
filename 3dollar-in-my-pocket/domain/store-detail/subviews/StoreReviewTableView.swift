@@ -4,24 +4,24 @@ import RxSwift
 final class StoreReviewTableView: BaseView {
   
   private let titleLabel = UILabel().then {
-    $0.textColor = R.color.black()
+    $0.textColor = Color.black
     $0.font = .semiBold(size: 18)
-    $0.text = R.string.localization.store_detail_header_review()
+      $0.text = "store_detail_header_review".localized
     $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
   }
   
   private let countLabel = UILabel().then {
     $0.font = .medium(size: 16)
-    $0.textColor = R.color.black()
+      $0.textColor = Color.black
   }
   
   let addPhotoButton = UIButton().then {
-    $0.setTitle(R.string.localization.store_detail_header_add_review(), for: .normal)
-    $0.setTitleColor(R.color.red(), for: .normal)
+      $0.setTitle("store_detail_header_add_review".localized, for: .normal)
+    $0.setTitleColor(Color.red, for: .normal)
     $0.titleLabel?.font = .bold(size: 12)
     $0.layer.cornerRadius = 15
-    $0.backgroundColor = R.color.red()?.withAlphaComponent(0.2)
+    $0.backgroundColor = Color.red?.withAlphaComponent(0.2)
     $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
   }
   
@@ -74,6 +74,9 @@ final class StoreReviewTableView: BaseView {
   }
   
   func bind(store: Store, userId: Int) {
-    self.countLabel.text = R.string.localization.store_detail_header_count(store.reviews.count)
+      self.countLabel.text = String(
+        format: "store_detail_header_count".localized,
+        store.reviews.count
+      )
   }
 }

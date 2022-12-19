@@ -5,18 +5,18 @@ import RxCocoa
 
 final class StoreDetailBottomBar: BaseView {
     fileprivate let bookmarkButton = UIButton().then {
-        $0.setImage(R.image.ic_bookmark_off(), for: .normal)
-        $0.setImage(R.image.ic_bookmark_on(), for: .selected)
-        $0.setTitle(R.string.localization.store_detail_bookmark(), for: .normal)
+        $0.setImage(UIImage(named: "ic_bookmark_off"), for: .normal)
+        $0.setImage(UIImage(named: "ic_bookmark_on"), for: .selected)
+        $0.setTitle("store_detail_bookmark".localized, for: .normal)
         $0.titleLabel?.font = .medium(size: 14)
-        $0.setTitleColor(R.color.red(), for: .normal)
+        $0.setTitleColor(Color.red, for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -4)
     }
     
     fileprivate let visitButton = UIButton().then {
-        $0.backgroundColor = R.color.red()
+        $0.backgroundColor = Color.red
         $0.layer.cornerRadius = 24
-        $0.setTitle(R.string.localization.store_detail_add_visit_history(), for: .normal)
+        $0.setTitle("store_detail_add_visit_history".localized, for: .normal)
         $0.titleLabel?.font = .bold(size: 16)
         $0.setTitleColor(.white, for: .normal)
     }

@@ -14,13 +14,13 @@ final class StoreMenuCollectionViewCell: BaseCollectionViewCell {
     
     private let titleLabel = UILabel().then {
         $0.font = .bold(size: 16)
-        $0.textColor = R.color.black()
-        $0.text = R.string.localization.store_detail_menu()
+        $0.textColor = Color.black
+        $0.text = "store_detail_menu".localized
     }
     
     private let countLabel = UILabel().then {
         $0.font = .medium(size: 16)
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
     }
     
     private let menuStackView = UIStackView().then {
@@ -71,7 +71,7 @@ final class StoreMenuCollectionViewCell: BaseCollectionViewCell {
     
     func bind(store: Store) {
         self.countLabel.text
-        = R.string.localization.store_detail_menu_format(store.menus.count)
+        = String(format: "store_detail_menu_format".localized, store.menus.count)
         self.clearMenuStackView()
         
         let subViews = self.generateMenuViews(

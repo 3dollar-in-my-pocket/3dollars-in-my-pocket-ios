@@ -8,29 +8,29 @@ final class RatingInputView: BaseView {
     
     private let star1 = UIButton().then {
         $0.imageView?.contentMode = .scaleAspectFill
-        $0.setImage(R.image.ic_star_32_on(), for: .selected)
-        $0.setImage(R.image.ic_star_32_off(), for: .normal)
+        $0.setImage(UIImage(named: "ic_star_32_on"), for: .selected)
+        $0.setImage(UIImage(named: "ic_star_32_off"), for: .normal)
         $0.showsTouchWhenHighlighted = false
     }
     
     private let star2 = UIButton().then {
-        $0.setImage(R.image.ic_star_32_on(), for: .selected)
-        $0.setImage(R.image.ic_star_32_off(), for: .normal)
+        $0.setImage(UIImage(named: "ic_star_32_on"), for: .selected)
+        $0.setImage(UIImage(named: "ic_star_32_off"), for: .normal)
     }
     
     private let star3 = UIButton().then {
-        $0.setImage(R.image.ic_star_32_on(), for: .selected)
-        $0.setImage(R.image.ic_star_32_off(), for: .normal)
+        $0.setImage(UIImage(named: "ic_star_32_on"), for: .selected)
+        $0.setImage(UIImage(named: "ic_star_32_off"), for: .normal)
     }
     
     private let star4 = UIButton().then {
-        $0.setImage(R.image.ic_star_32_on(), for: .selected)
-        $0.setImage(R.image.ic_star_32_off(), for: .normal)
+        $0.setImage(UIImage(named: "ic_star_32_on"), for: .selected)
+        $0.setImage(UIImage(named: "ic_star_32_off"), for: .normal)
     }
     
     private let star5 = UIButton().then {
-        $0.setImage(R.image.ic_star_32_on(), for: .selected)
-        $0.setImage(R.image.ic_star_32_off(), for: .normal)
+        $0.setImage(UIImage(named: "ic_star_32_on"), for: .selected)
+        $0.setImage(UIImage(named: "ic_star_32_off"), for: .normal)
     }
     
     private let stackView = UIStackView().then {

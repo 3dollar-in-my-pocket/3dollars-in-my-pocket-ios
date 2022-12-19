@@ -50,13 +50,13 @@ final class VisitBedgeView: BaseView {
     
     func bind(visitHistory: VisitOverview, isDeleted: Bool) {
         if isDeleted {
-            self.containerView.backgroundColor = R.color.gray60()
-            self.countLabel.textColor = R.color.gray10()
-            self.bedgeImage.image = R.image.img_bedge_gray()
+            self.containerView.backgroundColor = Color.gray60
+            self.countLabel.textColor = Color.gray10
+            self.bedgeImage.image = UIImage(named: "img_bedge_gray")
         } else {
             self.containerView.backgroundColor = UIColor(r: 0, g: 198, b: 103)
             self.countLabel.textColor = .white
-            self.bedgeImage.image = R.image.img_bedge()
+            self.bedgeImage.image = UIImage(named: "img_bedge")
         }
         self.countLabel.text = "\(visitHistory.existsCounts)명"
     }

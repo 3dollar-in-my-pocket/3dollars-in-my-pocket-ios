@@ -9,13 +9,13 @@ final class VisitHistoryTableViewCell: BaseTableViewCell {
     
     private let dateLabel = UILabel().then {
         $0.font = .semiBold(size: 12)
-        $0.textColor = R.color.gray40()
+        $0.textColor = Color.gray40
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
     
     private let timeLabel = UILabel().then {
         $0.font = .light(size: 12)
-        $0.textColor = R.color.gray40()
+        $0.textColor = Color.gray40
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
     
@@ -66,7 +66,7 @@ final class VisitHistoryTableViewCell: BaseTableViewCell {
             self.pointView.backgroundColor = UIColor(r: 0, g: 198, b: 103)
             
         case .notExists:
-            self.pointView.backgroundColor = R.color.red()
+            self.pointView.backgroundColor = Color.red
         }
         
         self.dateLabel.text = DateUtils.toString(

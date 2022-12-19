@@ -9,7 +9,6 @@ target '3dollar-in-my-pocket' do
   pod 'Google-Mobile-Ads-SDK'
   pod 'NMapsMap'
   pod 'SwiftLint'
-  pod 'R.swift'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths

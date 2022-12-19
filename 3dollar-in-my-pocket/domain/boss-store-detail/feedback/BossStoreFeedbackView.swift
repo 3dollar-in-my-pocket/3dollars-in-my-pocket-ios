@@ -11,13 +11,13 @@ final class BossStoreFeedbackView: BaseView {
     }
     
     let backButton = UIButton().then {
-        $0.setImage(R.image.ic_back_black(), for: .normal)
+        $0.setImage(UIImage(named: "ic_back_black"), for: .normal)
     }
     
     private let titleLabel = UILabel().then {
         $0.font = .bold(size: 16)
-        $0.textColor = R.color.gray100()
-        $0.text = R.string.localization.boss_store_feedback_title()
+        $0.textColor = Color.gray100
+        $0.text = "boss_store_feedback_title".localized
     }
         
     let feedbackTableView = UITableView().then {
@@ -44,14 +44,14 @@ final class BossStoreFeedbackView: BaseView {
     }
     
     let sendFeedbackButton = UIButton().then {
-        $0.backgroundColor = R.color.green()
-        $0.setTitle(R.string.localization.boss_store_feedback_send_feedback(), for: .normal)
+        $0.backgroundColor = Color.green
+        $0.setTitle("boss_store_feedback_send_feedback".localized, for: .normal)
         $0.titleLabel?.font = .medium(size: 16)
         $0.setTitleColor(.white, for: .normal)
     }
     
     private let bottomBackgroundView = UIView().then {
-        $0.backgroundColor = R.color.green()
+        $0.backgroundColor = Color.green
     }
     
     override func setup() {
@@ -111,11 +111,11 @@ final class BossStoreFeedbackView: BaseView {
     fileprivate func setEnableSendFeedbackButton(isEnable: Bool) {
         self.sendFeedbackButton.isEnabled = isEnable
         if isEnable {
-            self.sendFeedbackButton.backgroundColor = R.color.green()
-            self.bottomBackgroundView.backgroundColor = R.color.green()
+            self.sendFeedbackButton.backgroundColor = Color.green
+            self.bottomBackgroundView.backgroundColor = Color.green
         } else {
-            self.sendFeedbackButton.backgroundColor = R.color.gray30()
-            self.bottomBackgroundView.backgroundColor = R.color.gray30()
+            self.sendFeedbackButton.backgroundColor = Color.gray30
+            self.bottomBackgroundView.backgroundColor = Color.gray30
         }
     }
 }

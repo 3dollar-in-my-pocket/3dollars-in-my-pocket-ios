@@ -10,13 +10,13 @@ final class BossStoreEmptyMenuCell: BaseCollectionViewCell {
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = R.string.localization.boss_store_empty_menu()
-        $0.textColor = R.color.gray30()
+        $0.text = "boss_store_empty_menu".localized
+        $0.textColor = Color.gray30
         $0.font = .regular(size: 14)
     }
     
     private let emptyImage = UIImageView().then {
-        $0.image = R.image.img_boss_empty_menu()
+        $0.image = UIImage(named: "img_boss_empty_menu")
     }
     
     override func setup() {

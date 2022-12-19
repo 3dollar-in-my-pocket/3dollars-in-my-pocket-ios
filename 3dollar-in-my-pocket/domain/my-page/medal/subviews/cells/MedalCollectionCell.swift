@@ -9,7 +9,7 @@ final class MedalCollectionCell: BaseCollectionViewCell {
     )
     
     private let containerView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 8
     }
     
@@ -24,7 +24,7 @@ final class MedalCollectionCell: BaseCollectionViewCell {
     
     private let nameLabel = UILabel().then {
         $0.font = .bold(size: 14)
-        $0.textColor = R.color.pink()
+        $0.textColor = Color.pink
     }
     
     override var isSelected: Bool {
@@ -92,10 +92,10 @@ final class MedalCollectionCell: BaseCollectionViewCell {
             self.nameContainerView.layer.borderWidth = 1
             self.nameContainerView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
             self.nameContainerView.backgroundColor = .clear
-            self.nameLabel.textColor = R.color.pink()
+            self.nameLabel.textColor = Color.pink
         } else {
             self.medalImage.setImage(urlString: medal.disableUrl)
-            self.nameLabel.textColor = R.color.gray60()
+            self.nameLabel.textColor = Color.gray60
             self.nameContainerView.layer.borderColor = UIColor(r: 90, g: 90, b: 90).cgColor
             self.nameContainerView.layer.borderWidth = 1
         }

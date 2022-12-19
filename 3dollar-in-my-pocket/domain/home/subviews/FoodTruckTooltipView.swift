@@ -5,11 +5,11 @@ import RxCocoa
 
 final class FoodTruckTooltipView: BaseView {
     private let fingerImage = UIImageView().then {
-        $0.image = R.image.img_tootip_finger()
+        $0.image = UIImage(named: "img_tootip_finger")
     }
     
     private let containerView = UIView().then {
-        $0.backgroundColor = R.color.gray80()
+        $0.backgroundColor = Color.gray80
         $0.layer.cornerRadius = 12
     }
     
@@ -17,7 +17,7 @@ final class FoodTruckTooltipView: BaseView {
         $0.font = .medium(size: 14)
         $0.textColor = .white
         $0.numberOfLines = 0
-        $0.text = R.string.localization.home_foodtruck_tooltip()
+        $0.text = "home_foodtruck_tooltip".localized
     }
     
     deinit {

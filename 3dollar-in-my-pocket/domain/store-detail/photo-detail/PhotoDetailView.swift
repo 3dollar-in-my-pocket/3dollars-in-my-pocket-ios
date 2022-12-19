@@ -13,17 +13,17 @@ final class PhotoDetailView: BaseView {
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(R.image.ic_close_white(), for: .normal)
+        $0.setImage(UIImage(named: "ic_close_white"), for: .normal)
     }
   
     private let titleLabel = UILabel().then {
         $0.textColor = .white
         $0.font = .semiBold(size: 16)
-        $0.text = R.string.localization.photo_detail_title()
+        $0.text = "photo_detail_title".localized
     }
   
     let deleteButton = UIButton().then {
-        $0.setImage(R.image.ic_trash(), for: .normal)
+        $0.setImage(UIImage(named: "ic_trash"), for: .normal)
     }
   
     let mainPhotoCollectionView = UICollectionView(

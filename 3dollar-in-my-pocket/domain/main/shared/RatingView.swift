@@ -2,32 +2,32 @@ import UIKit
 
 final class RatingView: BaseView {
     private let star1 = UIButton().then {
-        $0.setImage(R.image.ic_star_on(), for: .selected)
-        $0.setImage(R.image.ic_star_off(), for: .normal)
+        $0.setImage(UIImage(named: "ic_star_on"), for: .selected)
+        $0.setImage(UIImage(named: "ic_star_off"), for: .normal)
         $0.isUserInteractionEnabled = false
     }
     
     private let star2 = UIButton().then {
-        $0.setImage(R.image.ic_star_on(), for: .selected)
-        $0.setImage(R.image.ic_star_off(), for: .normal)
+        $0.setImage(UIImage(named: "ic_star_on"), for: .selected)
+        $0.setImage(UIImage(named: "ic_star_off"), for: .normal)
         $0.isUserInteractionEnabled = false
     }
     
     private let star3 = UIButton().then {
-        $0.setImage(R.image.ic_star_on(), for: .selected)
-        $0.setImage(R.image.ic_star_off(), for: .normal)
+        $0.setImage(UIImage(named: "ic_star_on"), for: .selected)
+        $0.setImage(UIImage(named: "ic_star_off"), for: .normal)
         $0.isUserInteractionEnabled = false
     }
     
     private let star4 = UIButton().then {
-        $0.setImage(R.image.ic_star_on(), for: .selected)
-        $0.setImage(R.image.ic_star_off(), for: .normal)
+        $0.setImage(UIImage(named: "ic_star_on"), for: .selected)
+        $0.setImage(UIImage(named: "ic_star_off"), for: .normal)
         $0.isUserInteractionEnabled = false
     }
     
     private let star5 = UIButton().then {
-        $0.setImage(R.image.ic_star_on(), for: .selected)
-        $0.setImage(R.image.ic_star_off(), for: .normal)
+        $0.setImage(UIImage(named: "ic_star_on"), for: .selected)
+        $0.setImage(UIImage(named: "ic_star_off"), for: .normal)
         $0.isUserInteractionEnabled = false
     }
     

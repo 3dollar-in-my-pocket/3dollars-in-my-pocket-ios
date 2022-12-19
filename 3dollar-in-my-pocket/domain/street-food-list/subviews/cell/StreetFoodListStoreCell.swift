@@ -19,34 +19,34 @@ final class StreetFoodListStoreCell: BaseCollectionViewCell {
     }
     
     private let bedgedImage = UIImageView().then {
-        $0.image = R.image.img_bedge()
+        $0.image = UIImage(named: "img_bedge")
     }
     
     private let titleLabel = UILabel().then {
-        $0.textColor = R.color.black()
-        $0.font = R.font.appleSDGothicNeoEB00(size: 16)
+        $0.textColor = Color.black
+        $0.font = .extraBold(size: 16)
     }
     
     private let categoriesLabel = UILabel().then {
-        $0.textColor = R.color.gray60()
+        $0.textColor = Color.gray60
         $0.font = .regular(size: 12)
     }
     
     private let distanceImage = UIImageView().then {
-        $0.image = R.image.ic_near_filled_pink()
+        $0.image = UIImage(named: "ic_near_filled_pink")
     }
     
     private let distanceLabel = UILabel().then {
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
         $0.font = .medium(size: 14)
     }
     
     private let ratingImage = UIImageView().then {
-        $0.image = R.image.ic_star_gray()
+        $0.image = UIImage(named: "ic_star_gray")
     }
     
     private let ratingLabel = UILabel().then {
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
         $0.font = .medium(size: 14)
     }
     

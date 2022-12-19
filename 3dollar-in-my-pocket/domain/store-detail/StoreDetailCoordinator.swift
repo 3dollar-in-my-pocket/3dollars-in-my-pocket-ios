@@ -103,19 +103,19 @@ extension StoreDetailCoordinator where Self: StoreDetailViewController {
             preferredStyle: .actionSheet
         )
         let modifyAction = UIAlertAction(
-            title: R.string.localization.store_detail_modify_review(),
+            title: "store_detail_modify_review".localized,
             style: .default
         ) { _ in
             onTapModify()
         }
         let deleteAction = UIAlertAction(
-            title: R.string.localization.store_detail_delete_review(),
+            title: "store_detail_delete_review".localized,
             style: .destructive
         ) { _ in
             onTapDelete()
         }
         let cancelAction = UIAlertAction(
-            title: R.string.localization.store_detail_cancel(),
+            title: "store_detail_cancel".localized,
             style: .cancel
         ) { _ in }
         
@@ -127,7 +127,7 @@ extension StoreDetailCoordinator where Self: StoreDetailViewController {
     
     func showPictureActionSheet(storeId: Int) {
         let alert = UIAlertController(
-            title: R.string.localization.store_detail_register_photo(),
+            title: "store_detail_register_photo".localized,
             message: nil,
             preferredStyle: .actionSheet
         )
@@ -165,7 +165,7 @@ extension StoreDetailCoordinator where Self: StoreDetailViewController {
             }
         }
         let cancelAction = UIAlertAction(
-            title: R.string.localization.store_detail_cancel(),
+            title: "store_detail_cancel".localized,
             style: .cancel,
             handler: nil
         )

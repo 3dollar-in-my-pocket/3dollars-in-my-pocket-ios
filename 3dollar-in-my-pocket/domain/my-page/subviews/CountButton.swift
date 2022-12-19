@@ -49,17 +49,17 @@ final class CountButton: UIButton {
     }
     
     private func setup(type: CountType) {
-        self.backgroundColor = R.color.gray90()
+        self.backgroundColor = Color.gray90
         
         switch type {
         case .store:
-            self.nameLabel.text = R.string.localization.my_page_registered_store()
+            self.nameLabel.text = "my_page_registered_store".localized
             
         case .review:
-            self.nameLabel.text = R.string.localization.my_page_registered_review()
+            self.nameLabel.text = "my_page_registered_review".localized
             
         case .title:
-            self.nameLabel.text = R.string.localization.my_page_medals()
+            self.nameLabel.text = "my_page_medals".localized
         }
         
         self.layer.cornerRadius = 20

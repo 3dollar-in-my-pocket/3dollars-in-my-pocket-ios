@@ -9,7 +9,7 @@ final class MedalHeaderView: UICollectionReusableView {
     var disposeBag = DisposeBag()
     
     private let dividorView = UIView().then {
-        $0.backgroundColor = R.color.gray80()
+        $0.backgroundColor = Color.gray80
         $0.layer.cornerRadius = 0.5
     }
     
@@ -19,7 +19,7 @@ final class MedalHeaderView: UICollectionReusableView {
     }
     
     let infoButton = UIButton().then {
-        $0.setImage(R.image.ic_info(), for: .normal)
+        $0.setImage(UIImage(named: "ic_info"), for: .normal)
     }
     
     override init(frame: CGRect) {

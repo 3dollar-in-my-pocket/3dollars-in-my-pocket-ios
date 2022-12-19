@@ -15,7 +15,7 @@ final class SettingAccountTableViewCell: BaseTableViewCell {
     }
     
     let logoutButton = UIButton().then {
-        $0.setTitle(R.string.localization.setting_sign_out(), for: .normal)
+        $0.setTitle("setting_sign_out".localized, for: .normal)
         $0.setTitleColor(UIColor(r: 238, g: 98, b: 76), for: .normal)
         $0.titleLabel?.font = .medium(size: 13)
     }
@@ -62,10 +62,10 @@ final class SettingAccountTableViewCell: BaseTableViewCell {
     func bind(socialType: SocialType) {
         switch socialType {
         case .apple:
-            self.snsIconImage.image = R.image.ic_setting_apple()
+            self.snsIconImage.image = UIImage(named: "ic_setting_apple")
             self.accountTypeLabel.text = "애플 계정 회원"
         case .kakao, .google:
-            self.snsIconImage.image = R.image.ic_setting_kakao()
+            self.snsIconImage.image = UIImage(named: "ic_setting_kakao")
             self.accountTypeLabel.text = "카카오 계정 회원"
             
         default:

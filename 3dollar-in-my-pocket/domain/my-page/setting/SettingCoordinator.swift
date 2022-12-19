@@ -63,7 +63,7 @@ extension SettingCoordinator where Self: SettingViewController {
     func showLogoutAlert() {
         AlertUtils.showWithCancel(
             controller: self,
-            title: R.string.localization.setting_logout_title()
+            title: "setting_logout_title".localized
         ) {
             self.reactor?.action.onNext(.logout)
         }
@@ -72,8 +72,8 @@ extension SettingCoordinator where Self: SettingViewController {
     func showSignoutAlert() {
         AlertUtils.showWithCancel(
             controller: self,
-            title: R.string.localization.setting_withdrawal(),
-            message: R.string.localization.setting_signout_message()
+            title: "setting_withdrawal".localized,
+            message: "setting_signout_message".localized
         ) {
             self.reactor?.action.onNext(.signout)
         }

@@ -23,7 +23,7 @@ final class VisitHistoryView: BaseView {
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(R.image.ic_close_24(), for: .normal)
+        $0.setImage(UIImage(named: "ic_close_24"), for: .normal)
     }
     
     private let successContainerView = UIView().then {
@@ -33,7 +33,7 @@ final class VisitHistoryView: BaseView {
     }
     
     private let successImage = UIImageView().then {
-        $0.image = R.image.img_face_success()
+        $0.image = UIImage(named: "img_face_success")
     }
     
     private let successCountLabel = UILabel().then {
@@ -48,7 +48,7 @@ final class VisitHistoryView: BaseView {
     }
     
     private let failImage = UIImageView().then {
-        $0.image = R.image.img_face_fail()
+        $0.image = UIImage(named: "img_face_fail")
     }
     
     private let failCountLabel = UILabel().then {
@@ -58,7 +58,7 @@ final class VisitHistoryView: BaseView {
     
     private let tableView = UITableView().then {
         $0.tableFooterView = UIView()
-        $0.backgroundColor = R.color.gray0()
+        $0.backgroundColor = Color.gray0
         $0.layer.cornerRadius = 12
         $0.rowHeight = UITableView.automaticDimension
         $0.contentInset = .init(top: 12, left: 0, bottom: 12, right: 0)
@@ -177,7 +177,7 @@ final class VisitHistoryView: BaseView {
     }
     
     private func setTotalCountLabel(count: Int) {
-        let string = R.string.localization.visit_history_total_count(count)
+        let string = String(format: "visit_history_total_count".localized, count)
         let attributedString = NSMutableAttributedString(string: string)
         let range = (string as NSString).range(of: "\(count)명")
         

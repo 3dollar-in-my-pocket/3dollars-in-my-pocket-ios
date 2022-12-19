@@ -2,7 +2,7 @@ import UIKit
 
 final class ToastView: BaseView {
     private let containerView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 10
     }
     

@@ -16,7 +16,7 @@ final class MyMedalCollectionCell: BaseCollectionViewCell {
     private let containerView = UIView().then {
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 8
     }
     
@@ -64,7 +64,7 @@ final class MyMedalCollectionCell: BaseCollectionViewCell {
         
         attributedString.addAttribute(
             .foregroundColor,
-            value: R.color.pink() as Any,
+            value: Color.pink as Any,
             range: range
         )
         

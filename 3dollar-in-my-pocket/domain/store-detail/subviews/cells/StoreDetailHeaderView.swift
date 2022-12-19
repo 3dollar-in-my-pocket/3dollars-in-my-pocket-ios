@@ -14,20 +14,20 @@ final class StoreDetailHeaderView: UICollectionReusableView {
     }
     
     private let subtitleLabel = UILabel().then {
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
         $0.font = .medium(size: 18)
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
         $0.font = .semiBold(size: 12)
     }
     
     let rightButton = UIButton().then {
-        $0.setTitleColor(R.color.red(), for: .normal)
+        $0.setTitleColor(Color.red, for: .normal)
         $0.titleLabel?.font = .bold(size: 12)
         $0.layer.cornerRadius = 15
-        $0.backgroundColor = R.color.red()?.withAlphaComponent(0.2)
+        $0.backgroundColor = Color.red?.withAlphaComponent(0.2)
         $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
     }
     

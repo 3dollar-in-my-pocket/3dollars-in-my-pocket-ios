@@ -23,35 +23,35 @@ final class HomeStoreCell: BaseCollectionViewCell {
     private let categoryImage = UIImageView()
   
     private let titleLabel = UILabel().then {
-        $0.textColor = R.color.gray100()
+        $0.textColor = Color.gray100
         $0.font = .extraBold(size: 16)
     }
   
     private let bedgeImage = UIImageView().then {
-        $0.image = R.image.img_bedge()
+        $0.image = UIImage(named: "img_bedge")
         $0.isHidden = true
     }
   
     private let categoriesLabel = UILabel().then {
         $0.font = .regular(size: 12)
-        $0.textColor = R.color.gray40()
+        $0.textColor = Color.gray40
     }
   
     private let distanceImage = UIImageView().then {
-        $0.image = R.image.ic_near_filled_pink()
+        $0.image = UIImage(named: "ic_near_filled_pink")
     }
   
     private let distanceLabel = UILabel().then {
-        $0.textColor = R.color.gray40()
+        $0.textColor = Color.gray40
         $0.font = .medium(size: 12)
     }
   
     private let starImage = UIImageView().then {
-        $0.image = R.image.ic_star()
+        $0.image = UIImage(named: "ic_star")
     }
   
     private let rankLabel = UILabel().then {
-        $0.textColor = R.color.gray40()
+        $0.textColor = Color.gray40
         $0.font = .medium(size: 12)
     }
     
@@ -62,8 +62,8 @@ final class HomeStoreCell: BaseCollectionViewCell {
         rightInset: 8
     ).then {
         $0.layer.cornerRadius = 8
-        $0.backgroundColor = R.color.gray60()
-        $0.text = R.string.localization.home_foodtruck_closed()
+        $0.backgroundColor = Color.gray60
+        $0.text = "home_foodtruck_closed".localized
         $0.font = .regular(size: 12)
         $0.isHidden = true
         $0.layer.masksToBounds = true
@@ -71,12 +71,12 @@ final class HomeStoreCell: BaseCollectionViewCell {
     }
   
     let visitButton = UIButton().then {
-        $0.backgroundColor = R.color.red()
+        $0.backgroundColor = Color.red
         $0.layer.cornerRadius = 13
-        $0.setTitle(R.string.localization.home_visit(), for: .normal)
+        $0.setTitle("home_visit".localized, for: .normal)
         $0.titleEdgeInsets = .init(top: 0, left: 2, bottom: 0, right: 0)
         $0.titleLabel?.font = .bold(size: 12)
-        $0.setImage(R.image.ic_dest(), for: .normal)
+        $0.setImage(UIImage(named: "ic_dest"), for: .normal)
     }
   
     override func prepareForReuse() {
@@ -180,8 +180,8 @@ final class HomeStoreCell: BaseCollectionViewCell {
             self.setCategories(categories: store.categories)
             self.bedgeImage.isHidden = !store.visitHistory.isCertified
             self.visitButton.isHidden = false
-            self.starImage.image = R.image.ic_star()
-            self.distanceImage.image = R.image.ic_near_filled_pink()
+            self.starImage.image = UIImage(named: "ic_star")
+            self.distanceImage.image = UIImage(named: "ic_near_filled_pink")
             self.isClosedTagView.isHidden = true
         } else if let bossStore = store as? BossStore {
             self.storeType = .foodTruck
@@ -190,10 +190,10 @@ final class HomeStoreCell: BaseCollectionViewCell {
             }
             self.setDistance(distance: bossStore.distance)
             self.titleLabel.text = bossStore.name
-            self.starImage.image = R.image.ic_review_green()
+            self.starImage.image = UIImage(named: "ic_review_green")
             self.rankLabel.text = "\(bossStore.feedbackCount)개"
             self.setCategories(categories: bossStore.categories)
-            self.distanceImage.image = R.image.ic_near_filled_green()
+            self.distanceImage.image = UIImage(named: "ic_near_filled_green")
             self.bedgeImage.isHidden = true
             self.visitButton.isHidden = true
             self.isClosedTagView.isHidden = bossStore.status == .open
@@ -204,11 +204,11 @@ final class HomeStoreCell: BaseCollectionViewCell {
     private func setSelected(isSelected: Bool) {
         if isSelected {
             if self.storeType == .foodTruck {
-                self.starImage.image = R.image.ic_review_white()
+                self.starImage.image = UIImage(named: "ic_review_white")
             } else {
-                self.starImage.image = R.image.ic_star_white()
+                self.starImage.image = UIImage(named: "ic_star_white")
             }
-            self.distanceImage.image = R.image.ic_near_white()
+            self.distanceImage.image = UIImage(named: "ic_near_white")
             self.containerView.backgroundColor = .black
             self.titleLabel.textColor = .white
             self.categoriesLabel.textColor = self.storeType.themeColor
@@ -216,18 +216,18 @@ final class HomeStoreCell: BaseCollectionViewCell {
             self.rankLabel.textColor = .white
         } else {
             if self.storeType == .foodTruck {
-                self.starImage.image = R.image.ic_review_green()
-                self.distanceImage.image = R.image.ic_near_filled_green()
+                self.starImage.image = UIImage(named: "ic_review_green")
+                self.distanceImage.image = UIImage(named: "ic_near_filled_green")
             } else {
-                self.starImage.image = R.image.ic_star()
-                self.distanceImage.image = R.image.ic_near_filled_pink()
+                self.starImage.image = UIImage(named: "ic_star")
+                self.distanceImage.image = UIImage(named: "ic_near_filled_pink")
             }
             self.containerView.backgroundColor = .white
             self.titleLabel.textColor = .black
-            self.categoriesLabel.textColor = R.color.gray60()
-            self.distanceLabel.textColor = R.color.gray90()
-            self.distanceImage.image = R.image.ic_near_filled_pink()
-            self.rankLabel.textColor = R.color.gray90()
+            self.categoriesLabel.textColor = Color.gray60
+            self.distanceLabel.textColor = Color.gray90
+            self.distanceImage.image = UIImage(named: "ic_near_filled_pink")
+            self.rankLabel.textColor = Color.gray90
         }
   }
   

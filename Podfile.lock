@@ -48,9 +48,6 @@ PODS:
   - Nimble (9.2.1)
   - NMapsMap (3.16.0)
   - PromisesObjC (2.1.1)
-  - R.swift (6.1.0):
-    - R.swift.Library (~> 5.3.0)
-  - R.swift.Library (5.3.0)
   - RxNimble/Core (5.0.0):
     - Nimble (~> 9.0)
     - RxSwift (~> 5.0)
@@ -65,7 +62,6 @@ PODS:
 DEPENDENCIES:
   - Google-Mobile-Ads-SDK
   - NMapsMap
-  - R.swift
   - RxNimble/RxTest
   - RxTest (~> 5)
   - SwiftLint
@@ -80,8 +76,6 @@ SPEC REPOS:
     - Nimble
     - NMapsMap
     - PromisesObjC
-    - R.swift
-    - R.swift.Library
     - RxNimble
     - RxSwift
     - RxTest
@@ -96,13 +90,11 @@ SPEC CHECKSUMS:
   Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
   NMapsMap: a2593320fca2bb09e521c05b4dffee4da42e96ed
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  R.swift: ec98ff71c4ab2f6fd01dd077e5afd15e63a4834c
-  R.swift.Library: 0fc583cb55a99e28901299cc451614cad1161962
   RxNimble: 3b757b0f8fb4dc487c3f9a383bc61a6f5bd72d28
   RxSwift: 915abbdfb62214aa89ccd0b194d44fb478019b27
   RxTest: 937ba521d3f6dca7db49f76cd5d372cfce6091cb
   SwiftLint: 9cbf846727f3312f3ba722f2d7108a162cd050a5
 
-PODFILE CHECKSUM: cb1c0fd962b503013247b00d2d82a5d2a63fffb9
+PODFILE CHECKSUM: cf62dcba8208ba0b6e7c5d7fc0e254be5fe93986
 
 COCOAPODS: 1.11.3

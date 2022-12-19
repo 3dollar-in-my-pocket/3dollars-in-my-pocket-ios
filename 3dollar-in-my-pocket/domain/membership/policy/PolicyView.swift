@@ -5,21 +5,21 @@ final class PolicyView: BaseView {
     
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 30
-        $0.backgroundColor = R.color.gray80()
+        $0.backgroundColor = Color.gray80
     }
     
     let allCheckButton = UIButton().then {
         $0.setImage(Icon.Check.generate(isOn: true, style: .solid), for: .selected)
         $0.setImage(Icon.Check.generate(isOn: false, style: .solid), for: .normal)
-        $0.setTitle(R.string.localization.policy_agree_all(), for: .normal)
+        $0.setTitle("policy_agree_all".localized, for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: -12)
         $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 12)
         $0.titleLabel?.font = .bold(size: 16)
-        $0.setTitleColor(R.color.gray5(), for: .normal)
+        $0.setTitleColor(Color.gray5, for: .normal)
     }
     
     private let dividerView = UIView().then {
-        $0.backgroundColor = R.color.gray70()
+        $0.backgroundColor = Color.gray70
     }
     
     let policyCheckButton = UIButton().then {
@@ -27,13 +27,13 @@ final class PolicyView: BaseView {
         $0.setImage(Icon.Check.generate(isOn: false, style: .line), for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
         $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
-        $0.setTitle(R.string.localization.policy_policy_label(), for: .normal)
+        $0.setTitle("policy_policy_label".localized, for: .normal)
         $0.titleLabel?.font = .regular(size: 14)
-        $0.setTitleColor(R.color.gray5(), for: .normal)
+        $0.setTitleColor(Color.gray5, for: .normal)
     }
     
     let policyButton = UIButton().then {
-        $0.setImage(R.image.ic_fwd(), for: .normal)
+        $0.setImage(UIImage(named: "ic_fwd"), for: .normal)
     }
     
     let marketingCheckButton = UIButton().then {
@@ -41,22 +41,22 @@ final class PolicyView: BaseView {
         $0.setImage(Icon.Check.generate(isOn: false, style: .line), for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
         $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
-        $0.setTitle(R.string.localization.policy_marketing_label(), for: .normal)
+        $0.setTitle("policy_marketing_label".localized, for: .normal)
         $0.titleLabel?.font = .regular(size: 14)
-        $0.setTitleColor(R.color.gray5(), for: .normal)
+        $0.setTitleColor(Color.gray5, for: .normal)
     }
     
     let marketingButton = UIButton().then {
-        $0.setImage(R.image.ic_fwd(), for: .normal)
+        $0.setImage(UIImage(named: "ic_fwd"), for: .normal)
     }
     
     let nextButton = UIButton().then {
-        $0.setBackgroundColor(R.color.red() ?? .red, for: .normal)
-        $0.setBackgroundColor(R.color.gray20() ?? .gray, for: .disabled)
+        $0.setBackgroundColor(Color.red ?? .red, for: .normal)
+        $0.setBackgroundColor(Color.gray20 ?? .gray, for: .disabled)
         $0.isEnabled = false
         $0.layer.cornerRadius = 24
         $0.layer.masksToBounds = true
-        $0.setTitle(R.string.localization.policy_next_button(), for: .normal)
+        $0.setTitle("policy_next_button".localized, for: .normal)
         $0.titleLabel?.font = .bold(size: 16)
     }
     

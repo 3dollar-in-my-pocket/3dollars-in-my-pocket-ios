@@ -14,20 +14,20 @@ final class ReviewModalView: BaseView {
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = R.string.localization.review_modal_title()
+        $0.text = "review_modal_title".localized
         $0.font = .light(size: 24)
         $0.textColor = .black
         $0.numberOfLines = 0
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(R.image.ic_close_24(), for: .normal)
+        $0.setImage(UIImage(named: "ic_close_24"), for: .normal)
     }
     
     let ratingInputView = RatingInputView()
     
     let reviewTextView = UITextView().then {
-        $0.text = R.string.localization.review_modal_placeholder()
+        $0.text = "review_modal_placeholder".localized
         $0.font = .regular(size: 16)
         $0.contentInset = UIEdgeInsets(top: 8, left: 5, bottom: 10, right: 0)
         $0.backgroundColor = .clear
@@ -39,7 +39,7 @@ final class ReviewModalView: BaseView {
     }
     
     let registerButton = UIButton().then {
-        $0.setTitle(R.string.localization.review_modal_register(), for: .normal)
+        $0.setTitle("review_modal_register".localized, for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = .bold(size: 16)
         $0.backgroundColor = UIColor(r: 238, g: 98, b: 76)
@@ -106,14 +106,14 @@ final class ReviewModalView: BaseView {
     }
     
     fileprivate func bind(review: Review) {
-        self.titleLabel.text = R.string.localization.review_modal_modify_title()
+        self.titleLabel.text = "review_modal_modify_title".localized
         if review.isNewReview {
             self.registerButton.setTitle(
-                R.string.localization.review_modal_register(),
+                "review_modal_register".localized,
                 for: .normal
             )
         } else {
-            self.registerButton.setTitle(R.string.localization.review_modal_modify(), for: .normal)
+            self.registerButton.setTitle("review_modal_modify".localized, for: .normal)
         }
         self.ratingInputView.onTapStackView(tappedIndex: review.rating)
         self.bindTextView(text: review.contents)
@@ -136,7 +136,7 @@ final class ReviewModalView: BaseView {
     
     private func bindTextView(text: String) {
         if text.isEmpty {
-            self.reviewTextView.text = R.string.localization.review_modal_placeholder()
+            self.reviewTextView.text = "review_modal_placeholder".localized
             self.reviewTextView.textColor = UIColor(r: 200, g: 200, b: 200)
             self.reviewTextView.layer.borderColor = UIColor(r: 223, g: 223, b: 223).cgColor
         } else {
@@ -165,7 +165,7 @@ final class ReviewModalView: BaseView {
 // MARK: UITextViewDelegate
 extension ReviewModalView: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == R.string.localization.review_modal_placeholder() {
+        if textView.text == "review_modal_placeholder".localized {
             textView.text = ""
             textView.textColor = .black
         }
@@ -173,7 +173,7 @@ extension ReviewModalView: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text == "" {
-            textView.text = R.string.localization.review_modal_placeholder()
+            textView.text = "review_modal_placeholder".localized
             textView.textColor = UIColor(r: 200, g: 200, b: 200)
         }
     }

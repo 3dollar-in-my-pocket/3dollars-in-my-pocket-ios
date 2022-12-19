@@ -7,12 +7,12 @@ final class MyPageBookmarkCollectionViewCell: BaseCollectionViewCell {
     static let size = CGSize(width: 260, height: 80)
     
     private let storeContainerView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 15
     }
     
     private let categoryImage = UIImageView().then {
-        $0.image = R.image.img_32_bungeoppang_on()
+        $0.image = UIImage(named: "img_32_bungeoppang_on")
     }
     
     private let storeNameLabel = UILabel().then {
@@ -22,7 +22,7 @@ final class MyPageBookmarkCollectionViewCell: BaseCollectionViewCell {
     
     private let categoryLabel = UILabel().then {
         $0.font = .regular(size: 12)
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
     }
     
     override func setup() {
@@ -68,7 +68,7 @@ final class MyPageBookmarkCollectionViewCell: BaseCollectionViewCell {
             return
         }
         self.storeNameLabel.textColor = .white
-        self.categoryLabel.textColor = R.color.gray30()
+        self.categoryLabel.textColor = Color.gray30
         
         if let platformStore = store as? PlatformStore {
             self.storeNameLabel.text = platformStore.name
@@ -94,8 +94,8 @@ final class MyPageBookmarkCollectionViewCell: BaseCollectionViewCell {
     private func setEmpty() {
         self.categoryImage.image = UIImage(named: "img_empty_my")
         self.storeNameLabel.text = "my_page_bookmark_empty_title".localized
-        self.storeNameLabel.textColor = R.color.gray30()
+        self.storeNameLabel.textColor = Color.gray30
         self.categoryLabel.text = "my_page_bookmark_empty_description".localized
-        self.categoryLabel.textColor = R.color.gray60()
+        self.categoryLabel.textColor = Color.gray60
     }
 }

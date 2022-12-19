@@ -20,7 +20,7 @@ final class StreetFoodListView: BaseView {
     }
     
     let categoryButton = UIButton().then {
-        $0.setImage(R.image.ic_arrow_bottom_black(), for: .normal)
+        $0.setImage(UIImage(named: "ic_arrow_bottom_black"), for: .normal)
     }
     
     let collectionView = UICollectionView(
@@ -63,7 +63,7 @@ final class StreetFoodListView: BaseView {
             }
         }
         $0.collectionViewLayout = layout
-        $0.backgroundColor = R.color.gray0()
+        $0.backgroundColor = Color.gray0
         $0.register(
             StreetFoodListMapCell.self,
             forCellWithReuseIdentifier: StreetFoodListMapCell.registerId
@@ -88,7 +88,7 @@ final class StreetFoodListView: BaseView {
     }
         
     override func setup() {
-        self.backgroundColor = R.color.gray0()
+        self.backgroundColor = Color.gray0
         self.addSubViews([
             self.collectionView,
             self.topContainerView,

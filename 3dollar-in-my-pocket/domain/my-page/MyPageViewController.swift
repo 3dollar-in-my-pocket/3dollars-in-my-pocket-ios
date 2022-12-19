@@ -23,8 +23,8 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
     static func instance() -> UINavigationController {
         let viewController = MyPageViewController(nibName: nil, bundle: nil).then {
             $0.tabBarItem = UITabBarItem(
-                title: R.string.localization.tab_my(),
-                image: R.image.ic_my(),
+                title: "tab_my".localized,
+                image: UIImage(named: "ic_my"),
                 tag: TabBarTag.my.rawValue
             )
         }
@@ -51,7 +51,7 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.tabBarController?.tabBar.barTintColor = R.color.gray100()
+        self.tabBarController?.tabBar.barTintColor = Color.gray100
     }
     
     override func bindEvent() {

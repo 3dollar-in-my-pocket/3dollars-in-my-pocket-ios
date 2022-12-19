@@ -34,10 +34,10 @@ enum StoreType {
     var themeColor: UIColor? {
         switch self {
         case .foodTruck:
-            return R.color.green()
+            return Color.green
             
         case .streetFood:
-            return R.color.pink()
+            return Color.pink
             
         case .unknown:
             return nil

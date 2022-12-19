@@ -50,11 +50,11 @@ class TabBarVC: UITabBarController {
         switch item.tag {
         case TabBarTag.my.rawValue:
             guard !UserDefaultsUtil().isAnonymousUser else { return }
-            self.tabBar.barTintColor = R.color.gray100()
+            self.tabBar.barTintColor = Color.gray100
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()
                 appearance.configureWithOpaqueBackground()
-                appearance.backgroundColor = R.color.gray100()
+                appearance.backgroundColor = Color.gray100
                 self.tabBar.standardAppearance = appearance
                 self.tabBar.scrollEdgeAppearance = appearance
             }
@@ -116,7 +116,7 @@ class TabBarVC: UITabBarController {
             FoodTruckListViewController.instance(),
             MyPageViewController.instance()
         ], animated: true)
-        self.tabBar.tintColor = R.color.red()
+        self.tabBar.tintColor = Color.red
         self.tabBar.layer.borderWidth = 0
         self.tabBar.layer.borderColor = UIColor.clear.cgColor
         self.tabBar.clipsToBounds = true

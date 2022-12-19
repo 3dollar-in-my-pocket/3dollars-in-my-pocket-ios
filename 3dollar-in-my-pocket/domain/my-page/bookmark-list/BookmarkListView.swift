@@ -2,12 +2,12 @@ import UIKit
 
 final class BookmarkListView: BaseView {
     private let topBackgroundView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
     }
     
     let backButton = UIButton().then {
         $0.setImage(
-            R.image.ic_back()?.withRenderingMode(.alwaysTemplate),
+            UIImage(named: "ic_back")?.withRenderingMode(.alwaysTemplate),
             for: .normal
         )
         $0.tintColor = .white
@@ -44,7 +44,7 @@ final class BookmarkListView: BaseView {
     }
     
     override func setup() {
-        self.backgroundColor = R.color.gray100()
+        self.backgroundColor = Color.gray100
         self.addSubViews([
             self.topBackgroundView,
             self.backButton,

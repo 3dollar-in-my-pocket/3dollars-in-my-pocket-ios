@@ -18,12 +18,12 @@ final class TitleLabel: BaseView {
     
     private let outlineView = UIView().then {
         $0.layer.cornerRadius = 15
-        $0.layer.borderColor = R.color.pink()?.cgColor
+        $0.layer.borderColor = Color.pink?.cgColor
         $0.layer.borderWidth = 1
     }
     
     private let titleLabel = UILabel().then {
-        $0.textColor = R.color.pink()
+        $0.textColor = Color.pink
     }
     
     init(type: TitleType) {

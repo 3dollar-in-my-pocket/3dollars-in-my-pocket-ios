@@ -14,13 +14,13 @@ enum BaseError: LocalizedError {
         case .custom(let message):
             return message
         case .unknown:
-            return R.string.localization.error_unknown()
+            return "error_unknown".localized
         case .timeout:
-            return R.string.localization.http_error_timeout()
+            return "http_error_timeout".localized
         case .failDecoding:
-            return R.string.localization.error_failed_to_json()
+            return "error_failed_to_json".localized
         case .nilValue:
-            return R.string.localization.error_value_is_nil()
+            return "error_value_is_nil".localized
         case .errorContainer(let errorContainer):
             return errorContainer.message
         }

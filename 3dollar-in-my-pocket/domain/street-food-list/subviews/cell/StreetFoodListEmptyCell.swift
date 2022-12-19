@@ -5,12 +5,12 @@ final class StreetFoodListEmptyCell: BaseCollectionViewCell {
     static let height: CGFloat = 169
     
     private let emptyImage = UIImageView().then {
-        $0.image = R.image.img_empty()
+        $0.image = UIImage(named: "img_empty")
     }
     
     private let emptyLabel = UILabel().then {
-        $0.text = R.string.localization.category_list_empty()
-        $0.textColor = R.color.gray1()
+        $0.text = "category_list_empty".localized
+        $0.textColor = Color.gray1
         $0.font = .bold(size: 16)
     }
     
