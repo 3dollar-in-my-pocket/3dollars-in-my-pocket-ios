@@ -5,7 +5,7 @@ import Then
 import Lottie
 
 final class SigninView: BaseView {
-    let lottie = AnimationView(name: "signin").then {
+    let lottie = LottieAnimationView(name: "signin").then {
         $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         $0.contentMode = .scaleAspectFill
         $0.loopMode = .loop

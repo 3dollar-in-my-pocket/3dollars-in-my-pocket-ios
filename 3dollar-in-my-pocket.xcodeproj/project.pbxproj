@@ -401,6 +401,23 @@
 		6E9D64D625BD6F160075DE36 /* DeleteMenuStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D64D525BD6F160075DE36 /* DeleteMenuStackView.swift */; };
 		6E9D64DB25BD73E10075DE36 /* DeleteModalReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D64DA25BD73E10075DE36 /* DeleteModalReactor.swift */; };
 		6E9D64E025BD751B0075DE36 /* DeleteReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D64DF25BD751B0075DE36 /* DeleteReason.swift */; };
+		6E9FD15D295028BA00FA286E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD15C295028BA00FA286E /* Kingfisher */; };
+		6E9FD16029502AEF00FA286E /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD15F29502AEF00FA286E /* Lottie */; };
+		6E9FD16329502C1600FA286E /* SwiftyBeaver in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD16229502C1600FA286E /* SwiftyBeaver */; };
+		6E9FD16629502C7F00FA286E /* DeviceKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD16529502C7F00FA286E /* DeviceKit */; };
+		6E9FD16929502D1000FA286E /* CameraPermission in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD16829502D1000FA286E /* CameraPermission */; };
+		6E9FD16B29502D1000FA286E /* LocationAlwaysPermission in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD16A29502D1000FA286E /* LocationAlwaysPermission */; };
+		6E9FD16D29502D1000FA286E /* LocationWhenInUsePermission in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD16C29502D1000FA286E /* LocationWhenInUsePermission */; };
+		6E9FD16F29502D1000FA286E /* PhotoLibraryPermission in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD16E29502D1000FA286E /* PhotoLibraryPermission */; };
+		6E9FD172295032E300FA286E /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD171295032E300FA286E /* FirebaseAnalytics */; };
+		6E9FD174295032E300FA286E /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD173295032E300FA286E /* FirebaseCrashlytics */; };
+		6E9FD176295032E300FA286E /* FirebaseDynamicLinks in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD175295032E300FA286E /* FirebaseDynamicLinks */; };
+		6E9FD178295032E300FA286E /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD177295032E300FA286E /* FirebaseFirestore */; };
+		6E9FD17A295032E300FA286E /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD179295032E300FA286E /* FirebaseMessaging */; };
+		6E9FD17C295032E300FA286E /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD17B295032E300FA286E /* FirebaseRemoteConfig */; };
+		6E9FD17F295034E700FA286E /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD17E295034E700FA286E /* RxCocoa */; };
+		6E9FD181295034E700FA286E /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD180295034E700FA286E /* RxRelay */; };
+		6E9FD183295034E700FA286E /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9FD182295034E700FA286E /* RxSwift */; };
 		6E9FE7F8293606C5000843C3 /* StoreDetailBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9FE7F7293606C5000843C3 /* StoreDetailBottomBar.swift */; };
 		6EA205EE2888176E00BAB019 /* BossStoreAroundInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA205ED2888176E00BAB019 /* BossStoreAroundInfoResponse.swift */; };
 		6EA205F0288817B600BAB019 /* LocationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA205EF288817B600BAB019 /* LocationResponse.swift */; };
@@ -1068,15 +1085,32 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E4AFC8A28770B0C00D42996 /* KakaoSDKCommon in Frameworks */,
+				6E9FD16629502C7F00FA286E /* DeviceKit in Frameworks */,
+				6E9FD181295034E700FA286E /* RxRelay in Frameworks */,
+				6E9FD16929502D1000FA286E /* CameraPermission in Frameworks */,
+				6E9FD16029502AEF00FA286E /* Lottie in Frameworks */,
+				6E9FD16329502C1600FA286E /* SwiftyBeaver in Frameworks */,
+				6E9FD178295032E300FA286E /* FirebaseFirestore in Frameworks */,
+				6E9FD174295032E300FA286E /* FirebaseCrashlytics in Frameworks */,
+				6E9FD17A295032E300FA286E /* FirebaseMessaging in Frameworks */,
 				6E4AFC952877107000D42996 /* RxDataSources in Frameworks */,
 				6E4AFC8828770B0C00D42996 /* KakaoSDKAuth in Frameworks */,
+				6E9FD16B29502D1000FA286E /* LocationAlwaysPermission in Frameworks */,
+				6E9FD176295032E300FA286E /* FirebaseDynamicLinks in Frameworks */,
 				6E4AFC9028770B0C00D42996 /* KakaoSDKTemplate in Frameworks */,
+				6E9FD16D29502D1000FA286E /* LocationWhenInUsePermission in Frameworks */,
 				6E2E39B92875B48000B524BF /* ReactorKit in Frameworks */,
 				3BCC5E0521BC8C9F0EB79506 /* Pods_3dollar_in_my_pocket.framework in Frameworks */,
 				6E2E39BC2875B57700B524BF /* Then in Frameworks */,
 				6E0BCC9F2875C63B00B7A5AD /* SnapKit in Frameworks */,
+				6E9FD183295034E700FA286E /* RxSwift in Frameworks */,
+				6E9FD17F295034E700FA286E /* RxCocoa in Frameworks */,
+				6E9FD172295032E300FA286E /* FirebaseAnalytics in Frameworks */,
+				6E9FD16F29502D1000FA286E /* PhotoLibraryPermission in Frameworks */,
+				6E9FD15D295028BA00FA286E /* Kingfisher in Frameworks */,
 				6E4AFC9228770B0C00D42996 /* KakaoSDKUser in Frameworks */,
 				6E4AFC8E28770B0C00D42996 /* KakaoSDKTalk in Frameworks */,
+				6E9FD17C295032E300FA286E /* FirebaseRemoteConfig in Frameworks */,
 				6E4AFC8628770B0C00D42996 /* KakaoSDK in Frameworks */,
 				6E4AFC8C28770B0C00D42996 /* KakaoSDKShare in Frameworks */,
 			);
@@ -2674,6 +2708,23 @@
 				6E4AFC8F28770B0C00D42996 /* KakaoSDKTemplate */,
 				6E4AFC9128770B0C00D42996 /* KakaoSDKUser */,
 				6E4AFC942877107000D42996 /* RxDataSources */,
+				6E9FD15C295028BA00FA286E /* Kingfisher */,
+				6E9FD15F29502AEF00FA286E /* Lottie */,
+				6E9FD16229502C1600FA286E /* SwiftyBeaver */,
+				6E9FD16529502C7F00FA286E /* DeviceKit */,
+				6E9FD16829502D1000FA286E /* CameraPermission */,
+				6E9FD16A29502D1000FA286E /* LocationAlwaysPermission */,
+				6E9FD16C29502D1000FA286E /* LocationWhenInUsePermission */,
+				6E9FD16E29502D1000FA286E /* PhotoLibraryPermission */,
+				6E9FD171295032E300FA286E /* FirebaseAnalytics */,
+				6E9FD173295032E300FA286E /* FirebaseCrashlytics */,
+				6E9FD175295032E300FA286E /* FirebaseDynamicLinks */,
+				6E9FD177295032E300FA286E /* FirebaseFirestore */,
+				6E9FD179295032E300FA286E /* FirebaseMessaging */,
+				6E9FD17B295032E300FA286E /* FirebaseRemoteConfig */,
+				6E9FD17E295034E700FA286E /* RxCocoa */,
+				6E9FD180295034E700FA286E /* RxRelay */,
+				6E9FD182295034E700FA286E /* RxSwift */,
 			);
 			productName = "3dollar-in-my-pocket";
 			productReference = 6E0EA39323ABB230008F7CB2 /* dollar-in-my-pocket-debug.app */;
@@ -2774,6 +2825,13 @@
 				6E0BCC9D2875C63B00B7A5AD /* XCRemoteSwiftPackageReference "SnapKit" */,
 				6E4AFC8428770B0C00D42996 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 				6E4AFC932877107000D42996 /* XCRemoteSwiftPackageReference "RxDataSources" */,
+				6E9FD15B295028BA00FA286E /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				6E9FD15E29502AEF00FA286E /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				6E9FD16129502C1600FA286E /* XCRemoteSwiftPackageReference "SwiftyBeaver" */,
+				6E9FD16429502C7F00FA286E /* XCRemoteSwiftPackageReference "DeviceKit" */,
+				6E9FD16729502D1000FA286E /* XCRemoteSwiftPackageReference "PermissionsKit" */,
+				6E9FD170295032E300FA286E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				6E9FD17D295034E700FA286E /* XCRemoteSwiftPackageReference "RxSwift" */,
 			);
 			productRefGroup = 6E0EA39423ABB230008F7CB2 /* Products */;
 			projectDirPath = "";
@@ -2923,7 +2981,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
 		};
 		6EFC89DC268B51C100B3414F /* Swift Lint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3701,8 +3759,6 @@
 					"\"Accelerate\"",
 					"-framework",
 					"\"CFNetwork\"",
-					"-framework",
-					"\"Kingfisher\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket-debug";
 				PRODUCT_MODULE_NAME = dollar_in_my_pocket;
@@ -3752,8 +3808,6 @@
 					"\"Accelerate\"",
 					"-framework",
 					"\"CFNetwork\"",
-					"-framework",
-					"\"Kingfisher\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.macgongmon.-dollar-in-my-pocket";
 				PRODUCT_NAME = "dollar-in-my-pocket";
@@ -4022,6 +4076,62 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		6E9FD15B295028BA00FA286E /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = exactVersion;
+				version = 7.4.1;
+			};
+		};
+		6E9FD15E29502AEF00FA286E /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			requirement = {
+				kind = exactVersion;
+				version = 4.0.1;
+			};
+		};
+		6E9FD16129502C1600FA286E /* XCRemoteSwiftPackageReference "SwiftyBeaver" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftyBeaver/SwiftyBeaver.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.9.6;
+			};
+		};
+		6E9FD16429502C7F00FA286E /* XCRemoteSwiftPackageReference "DeviceKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/devicekit/DeviceKit.git";
+			requirement = {
+				kind = exactVersion;
+				version = 5.0.0;
+			};
+		};
+		6E9FD16729502D1000FA286E /* XCRemoteSwiftPackageReference "PermissionsKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparrowcode/PermissionsKit";
+			requirement = {
+				kind = exactVersion;
+				version = 9.0.2;
+			};
+		};
+		6E9FD170295032E300FA286E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = exactVersion;
+				version = 9.6.0;
+			};
+		};
+		6E9FD17D295034E700FA286E /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 6.5.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -4079,6 +4189,91 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6E4AFC932877107000D42996 /* XCRemoteSwiftPackageReference "RxDataSources" */;
 			productName = RxDataSources;
+		};
+		6E9FD15C295028BA00FA286E /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD15B295028BA00FA286E /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+		6E9FD15F29502AEF00FA286E /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD15E29502AEF00FA286E /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+		6E9FD16229502C1600FA286E /* SwiftyBeaver */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD16129502C1600FA286E /* XCRemoteSwiftPackageReference "SwiftyBeaver" */;
+			productName = SwiftyBeaver;
+		};
+		6E9FD16529502C7F00FA286E /* DeviceKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD16429502C7F00FA286E /* XCRemoteSwiftPackageReference "DeviceKit" */;
+			productName = DeviceKit;
+		};
+		6E9FD16829502D1000FA286E /* CameraPermission */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD16729502D1000FA286E /* XCRemoteSwiftPackageReference "PermissionsKit" */;
+			productName = CameraPermission;
+		};
+		6E9FD16A29502D1000FA286E /* LocationAlwaysPermission */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD16729502D1000FA286E /* XCRemoteSwiftPackageReference "PermissionsKit" */;
+			productName = LocationAlwaysPermission;
+		};
+		6E9FD16C29502D1000FA286E /* LocationWhenInUsePermission */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD16729502D1000FA286E /* XCRemoteSwiftPackageReference "PermissionsKit" */;
+			productName = LocationWhenInUsePermission;
+		};
+		6E9FD16E29502D1000FA286E /* PhotoLibraryPermission */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD16729502D1000FA286E /* XCRemoteSwiftPackageReference "PermissionsKit" */;
+			productName = PhotoLibraryPermission;
+		};
+		6E9FD171295032E300FA286E /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD170295032E300FA286E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		6E9FD173295032E300FA286E /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD170295032E300FA286E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		6E9FD175295032E300FA286E /* FirebaseDynamicLinks */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD170295032E300FA286E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDynamicLinks;
+		};
+		6E9FD177295032E300FA286E /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD170295032E300FA286E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		6E9FD179295032E300FA286E /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD170295032E300FA286E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		6E9FD17B295032E300FA286E /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD170295032E300FA286E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
+		};
+		6E9FD17E295034E700FA286E /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD17D295034E700FA286E /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		6E9FD180295034E700FA286E /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD17D295034E700FA286E /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+		6E9FD182295034E700FA286E /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E9FD17D295034E700FA286E /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
