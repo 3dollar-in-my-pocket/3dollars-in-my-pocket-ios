@@ -11,7 +11,8 @@ final class SettingViewController: BaseViewController, View, SettingCoordinator 
         deviceService: DeviceService(),
         analyticsManager: AnalyticsManager.shared,
         kakaoSigninManager: KakaoSigninManager(),
-        appleSigninManager: AppleSigninManager()
+        appleSigninManager: AppleSigninManager(),
+        globalState: GlobalState.shared
     )
     private weak var cooridnator: SettingCoordinator?
     

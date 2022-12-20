@@ -12,7 +12,7 @@ protocol UserServiceProtocol {
     
     func signout() -> Observable<Void>
     
-    func changeNickname(name: String) -> Observable<Void>
+    func editNickname(name: String) -> Observable<Void>
     
     @available(*, deprecated, message: "func fetchUser() -> Observable<User>를 사용해주세요.")
     func fetchUserInfo() -> Observable<UserInfoResponse>
@@ -114,7 +114,7 @@ struct UserService: UserServiceProtocol {
         return self.networkManager.createDeleteObservable(urlString: urlString, headers: headers)
     }
     
-    func changeNickname(name: String) -> Observable<Void> {
+    func editNickname(name: String) -> Observable<Void> {
         return Observable.create { observer -> Disposable in
             let urlString = HTTPUtils.url + "/api/v2/user/me"
             let headers = HTTPUtils.defaultHeader()
@@ -126,17 +126,17 @@ struct UserService: UserServiceProtocol {
                 parameters: parameters,
                 encoding: JSONEncoding.default,
                 headers: headers
-            ).responseJSON { response in
+            ).responseData { response in
                 if response.isSuccess() {
                     observer.onNext(())
                     observer.onCompleted()
                 } else {
-                    if response.response?.statusCode == 409 {
-                        observer.onError(ChangeNicknameError.alreadyExistedNickname)
-                    } else if response.response?.statusCode == 400 {
-                        observer.onError(ChangeNicknameError.badRequest)
+                    if let editNicknameError = EditNicknameError(
+                        statusCode: response.response?.statusCode
+                    ) {
+                        observer.onError(editNicknameError)
                     } else {
-                        observer.processHTTPError(response: response)
+                        observer.processAPIError(response: response)
                     }
                 }
             }

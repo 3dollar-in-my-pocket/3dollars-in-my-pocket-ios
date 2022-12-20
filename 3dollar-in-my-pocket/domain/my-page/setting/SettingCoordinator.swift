@@ -18,7 +18,7 @@ protocol SettingCoordinator: BaseCoordinator, AnyObject {
 
 extension SettingCoordinator where Self: SettingViewController {
     func pushEditNickname(nickname: String) {
-        let viewController = RenameVC.instance(currentName: nickname)
+        let viewController = EditNicknameViewController.instance(currentName: nickname)
         
         self.presenter.navigationController?.pushViewController(
             viewController,
