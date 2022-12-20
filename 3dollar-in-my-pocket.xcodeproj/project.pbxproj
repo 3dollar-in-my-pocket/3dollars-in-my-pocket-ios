@@ -19,8 +19,8 @@
 		6E07D44A23B591160055AEE7 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44923B591160055AEE7 /* MyPageViewController.swift */; };
 		6E07D44C23B5916C0055AEE7 /* WriteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44B23B5916C0055AEE7 /* WriteDetailView.swift */; };
 		6E07D44E23B5918B0055AEE7 /* WriteDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E07D44D23B5918B0055AEE7 /* WriteDetailVC.swift */; };
-		6E09470326F4BE27000D4858 /* RenameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09470226F4BE27000D4858 /* RenameViewModel.swift */; };
-		6E09470526F4C5DE000D4858 /* ChangeNicknameError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09470426F4C5DE000D4858 /* ChangeNicknameError.swift */; };
+		6E09470326F4BE27000D4858 /* EditNicknameReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09470226F4BE27000D4858 /* EditNicknameReactor.swift */; };
+		6E09470526F4C5DE000D4858 /* EditNicknameError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09470426F4C5DE000D4858 /* EditNicknameError.swift */; };
 		6E09A75828B22F7D00792F12 /* FoodTruckListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09A75728B22F7D00792F12 /* FoodTruckListView.swift */; };
 		6E09A75A28B22F9500792F12 /* FoodTruckListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09A75928B22F9500792F12 /* FoodTruckListViewController.swift */; };
 		6E09A75D28B2305F00792F12 /* FoodTruckListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E09A75C28B2305F00792F12 /* FoodTruckListHeaderView.swift */; };
@@ -274,8 +274,8 @@
 		6E681E4B256FEDA600892B9E /* SettingMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E681E4A256FEDA600892B9E /* SettingMenuTableViewCell.swift */; };
 		6E681E50256FF04E00892B9E /* SettingAccountTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E681E4F256FF04E00892B9E /* SettingAccountTableViewCell.swift */; };
 		6E681E55256FF98000892B9E /* SettingReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E681E54256FF98000892B9E /* SettingReactor.swift */; };
-		6E6835B723C2C3DE00D23F54 /* RenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835B623C2C3DE00D23F54 /* RenameView.swift */; };
-		6E6835B923C2C89400D23F54 /* RenameVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835B823C2C89400D23F54 /* RenameVC.swift */; };
+		6E6835B723C2C3DE00D23F54 /* EditNicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835B623C2C3DE00D23F54 /* EditNicknameView.swift */; };
+		6E6835B923C2C89400D23F54 /* EditNicknameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835B823C2C89400D23F54 /* EditNicknameViewController.swift */; };
 		6E6835BC23C2CC0800D23F54 /* RegisteredStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835BB23C2CC0800D23F54 /* RegisteredStoreView.swift */; };
 		6E6835BE23C2CEFB00D23F54 /* RegisteredStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835BD23C2CEFB00D23F54 /* RegisteredStoreCell.swift */; };
 		6E6835C023C2D2BC00D23F54 /* RegisteredStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6835BF23C2D2BC00D23F54 /* RegisteredStoreViewController.swift */; };
@@ -302,6 +302,7 @@
 		6E71BF4925B4209C00ECFBD9 /* AddCategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E71BF4825B4209C00ECFBD9 /* AddCategoryVC.swift */; };
 		6E71BF5325B4274900ECFBD9 /* AddCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E71BF5225B4274900ECFBD9 /* AddCategoryViewModel.swift */; };
 		6E71BF5825B447CD00ECFBD9 /* AddCategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E71BF5725B447CD00ECFBD9 /* AddCategoryCell.swift */; };
+		6E7294FF295152FF00F5A330 /* EditNicknameCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7294FE295152FF00F5A330 /* EditNicknameCoordinator.swift */; };
 		6E72AE5823C9713600D3B257 /* UserDefaultsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E72AE5723C9713600D3B257 /* UserDefaultsUtil.swift */; };
 		6E72AE5A23C971FF00D3B257 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E72AE5923C971FF00D3B257 /* SplashView.swift */; };
 		6E72AE5C23C9727100D3B257 /* SplashVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E72AE5B23C9727100D3B257 /* SplashVC.swift */; };
@@ -585,8 +586,8 @@
 		6E07D44923B591160055AEE7 /* MyPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
 		6E07D44B23B5916C0055AEE7 /* WriteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailView.swift; sourceTree = "<group>"; };
 		6E07D44D23B5918B0055AEE7 /* WriteDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDetailVC.swift; sourceTree = "<group>"; };
-		6E09470226F4BE27000D4858 /* RenameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameViewModel.swift; sourceTree = "<group>"; };
-		6E09470426F4C5DE000D4858 /* ChangeNicknameError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeNicknameError.swift; sourceTree = "<group>"; };
+		6E09470226F4BE27000D4858 /* EditNicknameReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNicknameReactor.swift; sourceTree = "<group>"; };
+		6E09470426F4C5DE000D4858 /* EditNicknameError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNicknameError.swift; sourceTree = "<group>"; };
 		6E09A75728B22F7D00792F12 /* FoodTruckListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckListView.swift; sourceTree = "<group>"; };
 		6E09A75928B22F9500792F12 /* FoodTruckListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckListViewController.swift; sourceTree = "<group>"; };
 		6E09A75C28B2305F00792F12 /* FoodTruckListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckListHeaderView.swift; sourceTree = "<group>"; };
@@ -833,8 +834,8 @@
 		6E681E4A256FEDA600892B9E /* SettingMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingMenuTableViewCell.swift; sourceTree = "<group>"; };
 		6E681E4F256FF04E00892B9E /* SettingAccountTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingAccountTableViewCell.swift; sourceTree = "<group>"; };
 		6E681E54256FF98000892B9E /* SettingReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingReactor.swift; sourceTree = "<group>"; };
-		6E6835B623C2C3DE00D23F54 /* RenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameView.swift; sourceTree = "<group>"; };
-		6E6835B823C2C89400D23F54 /* RenameVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameVC.swift; sourceTree = "<group>"; };
+		6E6835B623C2C3DE00D23F54 /* EditNicknameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNicknameView.swift; sourceTree = "<group>"; };
+		6E6835B823C2C89400D23F54 /* EditNicknameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNicknameViewController.swift; sourceTree = "<group>"; };
 		6E6835BB23C2CC0800D23F54 /* RegisteredStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreView.swift; sourceTree = "<group>"; };
 		6E6835BD23C2CEFB00D23F54 /* RegisteredStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreCell.swift; sourceTree = "<group>"; };
 		6E6835BF23C2D2BC00D23F54 /* RegisteredStoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredStoreViewController.swift; sourceTree = "<group>"; };
@@ -861,6 +862,7 @@
 		6E71BF4825B4209C00ECFBD9 /* AddCategoryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryVC.swift; sourceTree = "<group>"; };
 		6E71BF5225B4274900ECFBD9 /* AddCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryViewModel.swift; sourceTree = "<group>"; };
 		6E71BF5725B447CD00ECFBD9 /* AddCategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryCell.swift; sourceTree = "<group>"; };
+		6E7294FE295152FF00F5A330 /* EditNicknameCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNicknameCoordinator.swift; sourceTree = "<group>"; };
 		6E72AE5723C9713600D3B257 /* UserDefaultsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsUtil.swift; sourceTree = "<group>"; };
 		6E72AE5923C971FF00D3B257 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		6E72AE5B23C9727100D3B257 /* SplashVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashVC.swift; sourceTree = "<group>"; };
@@ -1595,7 +1597,7 @@
 				6E29CF74258F190200F0BACB /* ErrorResponse.swift */,
 				6E8E2518256AADB100AE6479 /* CommonError.swift */,
 				6E8F3798269897D7004FAC70 /* BaseError.swift */,
-				6E09470426F4C5DE000D4858 /* ChangeNicknameError.swift */,
+				6E09470426F4C5DE000D4858 /* EditNicknameError.swift */,
 				6E9C21B527047F7E00A2682D /* SignupError.swift */,
 			);
 			path = error;
@@ -1745,7 +1747,7 @@
 			isa = PBXGroup;
 			children = (
 				6E391BF12928BC2200FBC210 /* subview */,
-				6E6835B523C2C3CD00D23F54 /* rename */,
+				6E6835B523C2C3CD00D23F54 /* edit-nickname */,
 				6E511E6125710CE2009E4667 /* question */,
 				6E681E24256FDD3500892B9E /* SettingVIew.swift */,
 				6E681E45256FE42D00892B9E /* SettingViewController.swift */,
@@ -1755,14 +1757,15 @@
 			path = setting;
 			sourceTree = "<group>";
 		};
-		6E6835B523C2C3CD00D23F54 /* rename */ = {
+		6E6835B523C2C3CD00D23F54 /* edit-nickname */ = {
 			isa = PBXGroup;
 			children = (
-				6E6835B623C2C3DE00D23F54 /* RenameView.swift */,
-				6E6835B823C2C89400D23F54 /* RenameVC.swift */,
-				6E09470226F4BE27000D4858 /* RenameViewModel.swift */,
+				6E6835B623C2C3DE00D23F54 /* EditNicknameView.swift */,
+				6E6835B823C2C89400D23F54 /* EditNicknameViewController.swift */,
+				6E09470226F4BE27000D4858 /* EditNicknameReactor.swift */,
+				6E7294FE295152FF00F5A330 /* EditNicknameCoordinator.swift */,
 			);
-			path = rename;
+			path = "edit-nickname";
 			sourceTree = "<group>";
 		};
 		6E6835BA23C2CBE800D23F54 /* registered-store */ = {
@@ -3118,7 +3121,7 @@
 				6E681E50256FF04E00892B9E /* SettingAccountTableViewCell.swift in Sources */,
 				6E81B83E25E0E22F00748E02 /* SearchAddressView.swift in Sources */,
 				6E681E55256FF98000892B9E /* SettingReactor.swift in Sources */,
-				6E09470526F4C5DE000D4858 /* ChangeNicknameError.swift in Sources */,
+				6E09470526F4C5DE000D4858 /* EditNicknameError.swift in Sources */,
 				6EB7FA6A23B658B000BFB0B4 /* StreetFoodListStoreCell.swift in Sources */,
 				6E479B6926EA594500566384 /* UpdateReviewRequest.swift in Sources */,
 				6E4697CD273E2766005A5902 /* StoreVisitHistoryCollectionViewCell.swift in Sources */,
@@ -3209,7 +3212,7 @@
 				6E93C83A23F22CA1002E737F /* DateUtils.swift in Sources */,
 				6E57729B2780893E001E39DE /* BaseReactor.swift in Sources */,
 				6E24690828F434330026CA82 /* RegisterButton.swift in Sources */,
-				6E6835B723C2C3DE00D23F54 /* RenameView.swift in Sources */,
+				6E6835B723C2C3DE00D23F54 /* EditNicknameView.swift in Sources */,
 				6E5F3F73289944800066E318 /* FeedbackService.swift in Sources */,
 				6ECCE9AB26BACF3F006B3C01 /* MenuRequest.swift in Sources */,
 				6EE4E3292917FB9A002D6110 /* PolicyView.swift in Sources */,
@@ -3220,7 +3223,7 @@
 				6E5CA5862768B2F7001EDE19 /* MyVisitHistoryEmptyView.swift in Sources */,
 				6E628A2F28DE75FC001DFFFA /* StoreDetailReactor.swift in Sources */,
 				6EA205F0288817B600BAB019 /* LocationResponse.swift in Sources */,
-				6E09470326F4BE27000D4858 /* RenameViewModel.swift in Sources */,
+				6E09470326F4BE27000D4858 /* EditNicknameReactor.swift in Sources */,
 				6E4952CA26B03C7800D65042 /* AppleSigninManager.swift in Sources */,
 				6E5CA57A27686EFB001EDE19 /* MedalInfoCoordinator.swift in Sources */,
 				6EDDBBCD292533E5000DD5F4 /* SigninAnonymousViewController.swift in Sources */,
@@ -3351,7 +3354,7 @@
 				6E5CA5802768777F001EDE19 /* MedalInfoViewModel.swift in Sources */,
 				6E3493B92764BA810082B011 /* MetaContext.swift in Sources */,
 				6E61C7AE290E86BE005E56F3 /* RatingInputView.swift in Sources */,
-				6E6835B923C2C89400D23F54 /* RenameVC.swift in Sources */,
+				6E6835B923C2C89400D23F54 /* EditNicknameViewController.swift in Sources */,
 				6E5939052573E38900593DC8 /* WebViewController.swift in Sources */,
 				6E35058E26A41E1600690C12 /* RemoteConfigService.swift in Sources */,
 				6EBF45292762258000DC3BD2 /* VisitHistoryViewController.swift in Sources */,
@@ -3462,6 +3465,7 @@
 				6E68683828ABCD3F003EE196 /* StreetFoodListSectionModel.swift in Sources */,
 				6E3AA4C325AD661800D8C58C /* MapService.swift in Sources */,
 				6EB46A5C2892BF390057B21A /* LoadingManager.swift in Sources */,
+				6E7294FF295152FF00F5A330 /* EditNicknameCoordinator.swift in Sources */,
 				6E81B84025E0E72800748E02 /* SearchAddressVC.swift in Sources */,
 				6EC24DBB290907130087C2B3 /* PhotoListCoordinator.swift in Sources */,
 				6E18C3372572249E00F37C3A /* LeftAlignedCollectionViewFlowLayout.swift in Sources */,
