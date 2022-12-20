@@ -4,7 +4,10 @@ import ReactorKit
 
 final class EditNicknameViewController: BaseViewController, View, EditNicknameCoordinator {
     private let editNicknameView = EditNicknameView()
-    private let editNicknameReactor = EditNicknameReactor(userService: UserService())
+    private let editNicknameReactor = EditNicknameReactor(
+        userService: UserService(),
+        globalState: GlobalState.shared
+    )
     private weak var coordinator: EditNicknameCoordinator?
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

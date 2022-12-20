@@ -15,6 +15,7 @@ final class SettingReactor: BaseReactor, Reactor {
     
     enum Mutation {
         case setUser(User)
+        case updateNickname(String)
         case setPushEnable(Bool)
         case pushEditNickname(String)
         case goToSignin
@@ -37,6 +38,7 @@ final class SettingReactor: BaseReactor, Reactor {
     private let analyticsManager: AnalyticsManagerProtocol
     private let kakaoSigninManager: SigninManagerProtocol
     private let appleSigninManager: SigninManagerProtocol
+    private let globalState: GlobalState
   
     init(
         userDefaults: UserDefaultsUtil,
@@ -45,6 +47,7 @@ final class SettingReactor: BaseReactor, Reactor {
         analyticsManager: AnalyticsManagerProtocol,
         kakaoSigninManager: SigninManagerProtocol,
         appleSigninManager: SigninManagerProtocol,
+        globalState: GlobalState,
         state: State = State(user: User())
     ) {
         self.userDefaults = userDefaults
@@ -53,6 +56,7 @@ final class SettingReactor: BaseReactor, Reactor {
         self.analyticsManager = analyticsManager
         self.kakaoSigninManager = kakaoSigninManager
         self.appleSigninManager = appleSigninManager
+        self.globalState = globalState
         self.initialState = state
         
         super.init()
@@ -99,7 +103,13 @@ final class SettingReactor: BaseReactor, Reactor {
         }
     }
     
-    // TODO: 닉네임 변경 시 GlobalState 적용 필요
+    func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
+        return .merge([
+            mutation,
+            self.globalState.updateNickname
+                .map { .updateNickname($0) }
+        ])
+    }
     
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
@@ -107,6 +117,9 @@ final class SettingReactor: BaseReactor, Reactor {
         switch mutation {
         case .setUser(let user):
             newState.user = user
+            
+        case .updateNickname(let nickname):
+            newState.user.name = nickname
             
         case .setPushEnable(let isEnable):
             newState.user.pushInfo.isPushEnable = isEnable

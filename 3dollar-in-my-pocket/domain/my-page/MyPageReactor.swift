@@ -14,6 +14,7 @@ final class MyPageReactor: BaseReactor, Reactor {
     
     enum Mutation {
         case setUser(User)
+        case updateNickname(String)
         case changeMedal(medal: Medal)
         case setVisitHistories([VisitHistory])
         case setBookmarks([StoreProtocol])
@@ -122,7 +123,9 @@ final class MyPageReactor: BaseReactor, Reactor {
                         .merge(storeIds.map { .just(.deleteBookamrk(storeId: $0)) })
                 },
             self.globalState.addBookmarkStore
-                .map { .appendBookmark($0) }
+                .map { .appendBookmark($0) },
+            self.globalState.updateNickname
+                .map { .updateNickname($0) }
         ])
     }
     
@@ -132,6 +135,9 @@ final class MyPageReactor: BaseReactor, Reactor {
         switch mutation {
         case .setUser(let user):
             newState.user = user
+            
+        case .updateNickname(let nickname):
+            newState.user.name = nickname
             
         case .changeMedal(let medal):
             newState.user.medal = medal
