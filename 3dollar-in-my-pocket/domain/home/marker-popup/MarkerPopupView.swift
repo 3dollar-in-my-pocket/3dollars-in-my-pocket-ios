@@ -9,6 +9,7 @@ final class MarkerPopupView: BaseView {
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 30
         $0.backgroundColor = .white
+        $0.layer.masksToBounds = true
     }
     
     private let imageView = UIImageView().then {
