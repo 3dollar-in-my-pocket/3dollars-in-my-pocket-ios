@@ -18,20 +18,17 @@ class NicknameViewModel: BaseViewModel {
   let signinRequest: SigninRequest
   var userDefaults: UserDefaultsUtil
   let userService: UserServiceProtocol
-    private let deviceService: DeviceServiceProtocol
     var isSignupSuccess = false
   
   
   init(
     signinRequest: SigninRequest,
     userDefaults: UserDefaultsUtil,
-    userService: UserServiceProtocol,
-    deviceService: DeviceServiceProtocol
+    userService: UserServiceProtocol
   ) {
     self.signinRequest = signinRequest
     self.userDefaults = userDefaults
     self.userService = userService
-      self.deviceService = deviceService
     super.init()
     
     self.input.nickname
@@ -59,22 +56,12 @@ class NicknameViewModel: BaseViewModel {
                 .subscribe(
                     onNext: { [weak self] response in
                         guard let self = self else { return }
+                        
                         self.userDefaults.userId = response.userId
                         self.userDefaults.authToken = response.token
                         self.isSignupSuccess = true
-
-                        self.deviceService.getFCMToken()
-                            .flatMap { pushToken -> Observable<String> in
-                                return self.deviceService.registerDevice(
-                                    pushPlatformType: .fcm,
-                                    pushToken: pushToken
-                                )
-                            }
-                            .subscribe { _ in
-                                self.showLoading.accept(false)
-                                self.output.presentPolicy.accept(())
-                            }
-                            .disposed(by: self.disposeBag)
+                        self.showLoading.accept(false)
+                        self.output.presentPolicy.accept(())
                     },
                     onError: self.handleSignupError(error:)
                 )

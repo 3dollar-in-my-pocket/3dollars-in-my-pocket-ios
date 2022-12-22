@@ -29,10 +29,12 @@ final class PolicyReactor: Reactor {
     
     let initialState: State
     private let userService: UserServiceProtocol
+    private let deviceService: DeviceServiceProtocol
     private let analyticsManager: AnalyticsManagerProtocol
     
     init(
         userService: UserServiceProtocol,
+        deviceService: DeviceServiceProtocol,
         analyticsManager: AnalyticsManagerProtocol,
         state: State = State(
             isCheckedAll: false,
@@ -43,6 +45,7 @@ final class PolicyReactor: Reactor {
     ) {
         self.initialState = state
         self.userService = userService
+        self.deviceService = deviceService
         self.analyticsManager = analyticsManager
     }
     
@@ -60,6 +63,7 @@ final class PolicyReactor: Reactor {
         case .tapNext:
             return .concat([
                 .just(.showLoading(true)),
+                self.registerDevice(),
                 self.changeMarketingConsent(isMarketingOn: self.currentState.isCheckedMarketing),
                 .just(.showLoading(false))
             ])
@@ -105,5 +109,20 @@ final class PolicyReactor: Reactor {
         })
         .map { _ in .dismiss }
         .catch {. just(.showErrorAlert($0)) }
+    }
+    
+    private func registerDevice() -> Observable<Mutation> {
+        return self.deviceService.getFCMToken()
+            .flatMap { [weak self] pushToken -> Observable<Mutation> in
+                guard let self = self else { return .error(BaseError.unknown) }
+                
+                return self.deviceService.registerDevice(
+                    pushPlatformType: .fcm,
+                    pushToken: pushToken
+                )
+                .flatMap { _ -> Observable<Mutation> in
+                    return .empty()
+                }
+            }
     }
 }
