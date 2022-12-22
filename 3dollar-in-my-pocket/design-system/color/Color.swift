@@ -33,7 +33,7 @@ struct Color {
     
     static let green = UIColor(named: "green")
     
-    static let kakaoYellow = UIColor(named: "kakaoYellow")
+    static let kakaoYellow = UIColor(named: "kakao-yellow")
     
     static let pink = UIColor(named: "pink")
     
