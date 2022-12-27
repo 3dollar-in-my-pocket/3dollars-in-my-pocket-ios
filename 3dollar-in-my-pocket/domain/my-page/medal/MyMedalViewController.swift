@@ -1,17 +1,14 @@
 import UIKit
 
+import ReactorKit
 import RxDataSources
 
-protocol MyMedalViewControllerDelegate: AnyObject {
-    func onChangeMedal(medal: Medal)
-}
-
-final class MyMedalViewController: BaseVC, MyMedalCoordinator {
-    weak var delegate: MyMedalViewControllerDelegate?
+final class MyMedalViewController: BaseViewController, View, MyMedalCoordinator {
     private let myMedalView = MyMedalView()
-    private let viewModel: MyMedalViewModel
+    private let myMedalReactor: MyMedalReator
     private weak var coordinator: MyMedalCoordinator?
-    private var dataSource: RxCollectionViewSectionedReloadDataSource<SectionModel<String, Medal>>!
+    private var medalCollectionViewdataSource
+    : RxCollectionViewSectionedReloadDataSource<MyMedalSectionModel>!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -24,10 +21,11 @@ final class MyMedalViewController: BaseVC, MyMedalCoordinator {
     }
     
     init(medal: Medal) {
-        self.viewModel = MyMedalViewModel(
+        self.myMedalReactor = MyMedalReator(
             medal: medal,
             metaContext: MetaContext.shared,
-            medalService: MedalService()
+            medalService: MedalService(),
+            globalState: GlobalState.shared
         )
         
         super.init(nibName: nil, bundle: nil)
@@ -46,85 +44,91 @@ final class MyMedalViewController: BaseVC, MyMedalCoordinator {
         super.viewDidLoad()
         
         self.coordinator = self
-        self.viewModel.input.viewDidLoad.onNext(())
+        self.reactor = self.myMedalReactor
+        self.myMedalReactor.action.onNext(.viewDidLoad)
     }
     
     override func bindEvent() {
         self.myMedalView.backButton.rx.tap
-            .asDriver()
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] in
-                self?.coordinator?.popup()
+                self?.coordinator?
+                    .presenter
+                    .navigationController?
+                    .popViewController(animated: true)
             })
-            .disposed(by: self.disposeBag)
+            .disposed(by: self.eventDisposeBag)
+        
+        self.myMedalReactor.showErrorAlertPublisher
+            .asDriver(onErrorJustReturn: BaseError.unknown)
+            .drive(onNext: { [weak self] error in
+                self?.coordinator?.showErrorAlert(error: error)
+            })
+            .disposed(by: self.eventDisposeBag)
     }
     
-    override func bindViewModelInput() {
+    func bind(reactor: MyMedalReator) {
+        // Bind Action
         self.myMedalView.collectionView.rx.itemSelected
             .filter { $0.section == 1 }
-            .map { $0.row }
-            .bind(to: self.viewModel.input.tapMedal)
+            .map { Reactor.Action.tapMedal(row: $0.row) }
+            .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
-    }
-    
-    override func bindViewModelOutput() {
-        self.viewModel.output.medalsPublisher
+        
+        // Bind State
+        reactor.state
+            .map { [
+                MyMedalSectionModel(currentMedal: $0.currentMedal),
+                MyMedalSectionModel(medals: $0.medals)
+            ]}
+            .distinctUntilChanged()
             .asDriver(onErrorJustReturn: [])
-            .drive(self.myMedalView.collectionView.rx.items(dataSource: self.dataSource))
+            .drive(self.myMedalView.collectionView.rx.items(
+                dataSource: self.medalCollectionViewdataSource
+            ))
             .disposed(by: self.disposeBag)
         
-        self.viewModel.output.selectMedalPublisher
-            .asDriver(onErrorJustReturn: 0)
-            .drive(self.myMedalView.rx.selectMedal)
-            .disposed(by: self.disposeBag)
-        
-        self.viewModel.output.updateMyPageMedalPublisher
-            .asDriver(onErrorJustReturn: Medal())
-            .drive(onNext: { [weak self] medal in
-                self?.delegate?.onChangeMedal(medal: medal)
-            })
-            .disposed(by: self.disposeBag)
-        
-        self.viewModel.output.showMedalInfoPublisher
+        reactor.pulse(\.$presentMedalInfo)
+            .compactMap { $0 }
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] _ in
                 self?.coordinator?.showMedalInfo()
             })
             .disposed(by: self.disposeBag)
-            
-        self.viewModel.showErrorAlert
-            .asDriver(onErrorJustReturn: BaseError.unknown)
-            .drive(onNext: { [weak self] error in
-                self?.coordinator?.showErrorAlert(error: error)
-            })
-            .disposed(by: self.disposeBag)
     }
     
     private func setupDataSource() {
-        self.dataSource = RxCollectionViewSectionedReloadDataSource<SectionModel<String, Medal>> { _, collectionView, indexPath, item in
-            if indexPath.section == 0 {
+        self.medalCollectionViewdataSource
+        = RxCollectionViewSectionedReloadDataSource<MyMedalSectionModel>
+        { _, collectionView, indexPath, item in
+            switch item {
+            case .currentMedal(let medal):
                 guard let cell = collectionView.dequeueReusableCell(
-                        withReuseIdentifier: MyMedalCollectionCell.registerId,
-                        for: indexPath
+                    withReuseIdentifier: MyMedalCollectionCell.registerId,
+                    for: indexPath
                 ) as? MyMedalCollectionCell else {
                     return BaseCollectionViewCell()
                 }
-                cell.bind(medal: item)
+                cell.bind(medal: medal)
                 
                 return cell
-            } else {
+                
+            case .medal(let medal):
                 guard let cell = collectionView.dequeueReusableCell(
-                        withReuseIdentifier: MedalCollectionCell.registerId,
-                        for: indexPath
+                    withReuseIdentifier: MedalCollectionCell.registerId,
+                    for: indexPath
                 ) as? MedalCollectionCell else {
                     return BaseCollectionViewCell()
                 }
-                cell.bind(medal: item)
+                cell.bind(medal: medal)
                 
                 return cell
             }
         }
         
-        self.dataSource.configureSupplementaryView = { dataSource, collectionView, kind, indexPath in
+        self.medalCollectionViewdataSource.configureSupplementaryView =
+        { dataSource, collectionView, kind, indexPath in
             guard let cell = collectionView.dequeueReusableSupplementaryView(
                     ofKind: kind,
                     withReuseIdentifier: MedalHeaderView.registerId,
@@ -133,14 +137,14 @@ final class MyMedalViewController: BaseVC, MyMedalCoordinator {
                 return UICollectionReusableView()
             }
             
-            cell.bind(title: dataSource.sectionModels[indexPath.section].model)
             cell.infoButton.rx.tap
-                .asDriver()
+                .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+                .asDriver(onErrorJustReturn: ())
                 .drive(onNext: { [weak self] in
                     self?.coordinator?.showMedalInfo()
                 })
                 .disposed(by: cell.disposeBag)
-                
+            
             return cell
         }
     }

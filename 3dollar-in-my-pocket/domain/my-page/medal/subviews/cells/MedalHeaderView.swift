@@ -16,6 +16,7 @@ final class MedalHeaderView: UICollectionReusableView {
     private let titleLabel = UILabel().then {
         $0.font = .bold(size: 12)
         $0.textColor = .white
+        $0.text = "내 칭호"
     }
     
     let infoButton = UIButton().then {

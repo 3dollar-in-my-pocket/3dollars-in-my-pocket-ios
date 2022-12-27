@@ -247,9 +247,3 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
         }
     }
 }
-
-extension MyPageViewController: MyMedalViewControllerDelegate {
-    func onChangeMedal(medal: Medal) {
-        self.myPageReactor.action.onNext(.changeMedal(medal: medal))
-    }
-}
