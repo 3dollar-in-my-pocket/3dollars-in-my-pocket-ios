@@ -1,4 +1,4 @@
-protocol MyMedalCoordinator: Coordinator, AnyObject {
+protocol MyMedalCoordinator: BaseCoordinator, AnyObject {
     func showMedalInfo()
 }
 

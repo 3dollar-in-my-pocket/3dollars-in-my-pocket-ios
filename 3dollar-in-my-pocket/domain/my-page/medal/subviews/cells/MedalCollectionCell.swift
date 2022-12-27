@@ -27,21 +27,6 @@ final class MedalCollectionCell: BaseCollectionViewCell {
         $0.textColor = Color.pink
     }
     
-    override var isSelected: Bool {
-        didSet {
-            if isSelected {
-                self.containerView.layer.borderWidth = 1
-                self.containerView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
-                self.nameContainerView.layer.borderWidth = 0
-                self.nameContainerView.backgroundColor = .white
-            } else {
-                self.containerView.layer.borderWidth = 0
-                self.nameContainerView.layer.borderWidth = 1
-                self.nameContainerView.backgroundColor = .clear
-            }
-        }
-    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -100,5 +85,19 @@ final class MedalCollectionCell: BaseCollectionViewCell {
             self.nameContainerView.layer.borderWidth = 1
         }
         self.nameLabel.text = medal.name
+        self.setSelected(isSelected: medal.isCurrentMedal)
+    }
+    
+    private func setSelected(isSelected: Bool) {
+        if isSelected {
+            self.containerView.layer.borderWidth = 1
+            self.containerView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
+            self.nameContainerView.layer.borderWidth = 0
+            self.nameContainerView.backgroundColor = .white
+        } else {
+            self.containerView.layer.borderWidth = 0
+            self.nameContainerView.layer.borderWidth = 1
+            self.nameContainerView.backgroundColor = .clear
+        }
     }
 }

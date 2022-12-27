@@ -81,7 +81,7 @@
 		6E326B27274286D100E68666 /* StreetFoodListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E326B26274286D100E68666 /* StreetFoodListCoordinator.swift */; };
 		6E33F49226FF471C000BF5AA /* StoreServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */; };
 		6E3493B2276481D10082B011 /* MedalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B1276481D10082B011 /* MedalCollectionCell.swift */; };
-		6E3493B4276491B20082B011 /* MyMedalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B3276491B20082B011 /* MyMedalViewModel.swift */; };
+		6E3493B4276491B20082B011 /* MyMedalReator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B3276491B20082B011 /* MyMedalReator.swift */; };
 		6E3493B62764924B0082B011 /* MedalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B52764924B0082B011 /* MedalService.swift */; };
 		6E3493B92764BA810082B011 /* MetaContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493B82764BA810082B011 /* MetaContext.swift */; };
 		6E3493BB2764C8F50082B011 /* MedalHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3493BA2764C8F50082B011 /* MedalHeaderView.swift */; };
@@ -503,6 +503,7 @@
 		6EDBD8A523D87A3D0075EF8F /* DeleteModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDBD8A423D87A3D0075EF8F /* DeleteModalView.swift */; };
 		6EDBD8A723D87C930075EF8F /* DeleteModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDBD8A623D87C930075EF8F /* DeleteModalViewController.swift */; };
 		6EDC433C27A8E0CA0053F4AE /* CategoryFilterHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDC433B27A8E0CA0053F4AE /* CategoryFilterHeaderView.swift */; };
+		6EDD7F1F295A70AB00A5325B /* MyMedalSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDD7F1E295A70AB00A5325B /* MyMedalSectionModel.swift */; };
 		6EDDBBCB29253289000DD5F4 /* SigninAnonymousView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDDBBCA29253289000DD5F4 /* SigninAnonymousView.swift */; };
 		6EDDBBCD292533E5000DD5F4 /* SigninAnonymousViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDDBBCC292533E5000DD5F4 /* SigninAnonymousViewController.swift */; };
 		6EDEC58B256B920D0067FCF0 /* NicknameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDEC58A256B920D0067FCF0 /* NicknameViewModel.swift */; };
@@ -649,7 +650,7 @@
 		6E326B26274286D100E68666 /* StreetFoodListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreetFoodListCoordinator.swift; sourceTree = "<group>"; };
 		6E33F49126FF471C000BF5AA /* StoreServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreServiceMock.swift; sourceTree = "<group>"; };
 		6E3493B1276481D10082B011 /* MedalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalCollectionCell.swift; sourceTree = "<group>"; };
-		6E3493B3276491B20082B011 /* MyMedalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalViewModel.swift; sourceTree = "<group>"; };
+		6E3493B3276491B20082B011 /* MyMedalReator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalReator.swift; sourceTree = "<group>"; };
 		6E3493B52764924B0082B011 /* MedalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalService.swift; sourceTree = "<group>"; };
 		6E3493B82764BA810082B011 /* MetaContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaContext.swift; sourceTree = "<group>"; };
 		6E3493BA2764C8F50082B011 /* MedalHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalHeaderView.swift; sourceTree = "<group>"; };
@@ -1049,6 +1050,7 @@
 		6EDBD8A423D87A3D0075EF8F /* DeleteModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteModalView.swift; sourceTree = "<group>"; };
 		6EDBD8A623D87C930075EF8F /* DeleteModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteModalViewController.swift; sourceTree = "<group>"; };
 		6EDC433B27A8E0CA0053F4AE /* CategoryFilterHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryFilterHeaderView.swift; sourceTree = "<group>"; };
+		6EDD7F1E295A70AB00A5325B /* MyMedalSectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalSectionModel.swift; sourceTree = "<group>"; };
 		6EDDBBCA29253289000DD5F4 /* SigninAnonymousView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninAnonymousView.swift; sourceTree = "<group>"; };
 		6EDDBBCC292533E5000DD5F4 /* SigninAnonymousViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninAnonymousViewController.swift; sourceTree = "<group>"; };
 		6EDEC58A256B920D0067FCF0 /* NicknameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameViewModel.swift; sourceTree = "<group>"; };
@@ -2052,6 +2054,7 @@
 				6ED65D1829444038000E71B4 /* PlatformStoreCategory.swift */,
 				6E0113082947049700DD2A01 /* BookmarkListSectionModel.swift */,
 				6EE66D7B29474DFF00E1F2F1 /* BookmarkListSection.swift */,
+				6EDD7F1E295A70AB00A5325B /* MyMedalSectionModel.swift */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -2076,7 +2079,7 @@
 				6E7E3E4B27642AB000A4C6E2 /* MyMedalView.swift */,
 				6E7E3E4D27642C6900A4C6E2 /* MyMedalViewController.swift */,
 				6E7E3E4F27642CBF00A4C6E2 /* MyMedalCoordinator.swift */,
-				6E3493B3276491B20082B011 /* MyMedalViewModel.swift */,
+				6E3493B3276491B20082B011 /* MyMedalReator.swift */,
 			);
 			path = medal;
 			sourceTree = "<group>";
@@ -3069,6 +3072,7 @@
 				6EA205FE28881CF700BAB019 /* OpenStatus.swift in Sources */,
 				6E766BD82928791A00033BC8 /* PushPlatformType.swift in Sources */,
 				6E9BE84C294AB73A0087FC6D /* MarkerPopupViewController.swift in Sources */,
+				6EDD7F1F295A70AB00A5325B /* MyMedalSectionModel.swift in Sources */,
 				6E841F0B294837C100956BBD /* BookmarkEmptyCollectionViewCell.swift in Sources */,
 				6E09A75D28B2305F00792F12 /* FoodTruckListHeaderView.swift in Sources */,
 				6E31577925BA9F180022D6F3 /* StorePhotoCollectionViewCell.swift in Sources */,
@@ -3312,7 +3316,7 @@
 				6E4C1BE3275330CF006C0F15 /* CountButton.swift in Sources */,
 				6E470A892930F6120026FAD3 /* BaseTableViewCell.swift in Sources */,
 				6E4C1BE827534DC0006C0F15 /* VisitDateView.swift in Sources */,
-				6E3493B4276491B20082B011 /* MyMedalViewModel.swift in Sources */,
+				6E3493B4276491B20082B011 /* MyMedalReator.swift in Sources */,
 				6ECCE9AF26BAD308006B3C01 /* Requestable.swift in Sources */,
 				6EB6F9ED289CE92F00D41AE3 /* ToastManager.swift in Sources */,
 				6E49B0FC27506C86009897C1 /* AdvertisementResponse.swift in Sources */,

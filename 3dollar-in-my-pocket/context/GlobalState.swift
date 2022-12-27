@@ -37,4 +37,7 @@ final class GlobalState {
     
     /// 닉네임 변경된 경우
     let updateNickname = PublishSubject<String>()
+    
+    /// 칭호 변경한 경우
+    let updateMedal = PublishSubject<Medal>()
 }
