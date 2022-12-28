@@ -5,15 +5,15 @@ import RxCocoa
 
 final class SettingView: BaseView {
     private let topBackground = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
     }
     
     let backButton = UIButton().then {
-        $0.setImage(R.image.ic_back_white(), for: .normal)
+        $0.setImage(UIImage(named: "ic_back_white"), for: .normal)
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = R.string.localization.setting_title()
+        $0.text = "setting_title".localized
         $0.textColor = .white
         $0.font = .semiBold(size: 16)
     }
@@ -24,12 +24,12 @@ final class SettingView: BaseView {
     }
     
     let editNicknameButton = UIButton().then {
-        $0.setTitle(R.string.localization.setting_nickname_modify(), for: .normal)
+        $0.setTitle("setting_nickname_modify".localized, for: .normal)
         $0.setTitleColor(UIColor(r: 243, g: 162, b: 169), for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
         $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
         $0.titleLabel?.font = .medium(size: 14)
-        $0.setImage(R.image.ic_pencil(), for: .normal)
+        $0.setImage(UIImage(named: "ic_pencil"), for: .normal)
     }
     
     private let middleLineView = UIView().then {
@@ -37,7 +37,7 @@ final class SettingView: BaseView {
     }
     
     let tableView = UITableView().then {
-        $0.backgroundColor = R.color.gray100()
+        $0.backgroundColor = Color.gray100
         $0.tableFooterView = UIView()
         $0.separatorStyle = .none
         $0.contentInset = UIEdgeInsets(top: 12.5, left: 0, bottom: 0, right: 0)
@@ -57,7 +57,7 @@ final class SettingView: BaseView {
     
     
     override func setup() {
-        self.backgroundColor = R.color.gray100()
+        self.backgroundColor = Color.gray100
         self.addSubViews([
             self.topBackground,
             self.backButton,

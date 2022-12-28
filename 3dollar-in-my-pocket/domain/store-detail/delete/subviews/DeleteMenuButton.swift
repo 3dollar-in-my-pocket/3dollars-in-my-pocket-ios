@@ -2,7 +2,7 @@ import UIKit
 
 final class DeleteMenuButton: UIButton {
     let checkImage = UIImageView().then {
-        $0.image = R.image.ic_check()
+        $0.image = UIImage(named: "ic_check")
         $0.isHidden = true
     }
   

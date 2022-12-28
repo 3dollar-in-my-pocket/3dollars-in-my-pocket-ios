@@ -10,11 +10,11 @@ final class CategoryFilterView: BaseView {
     }
     
     private let topIndicator = UIImageView().then {
-        $0.image = R.image.img_top_indicator()
+        $0.image = UIImage(named: "img_top_indicator")
     }
     
     private let titleLabel = UILabel().then {
-        let text = R.string.localization.category_title()
+        let text = "category_title".localized
         let attributedString = NSMutableAttributedString(string: text)
         let boldTextRange = (text as NSString).range(of: "네 최애")
         

@@ -8,11 +8,11 @@ final class PhotoListView: BaseView {
     }
     
     let backButton = UIButton().then {
-        $0.setImage(R.image.ic_back_black(), for: .normal)
+        $0.setImage(UIImage(named: "ic_back_black"), for: .normal)
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = R.string.localization.photo_list_title()
+        $0.text = "photo_list_title".localized
         $0.textColor = .black
         $0.font = .semiBold(size: 16)
     }

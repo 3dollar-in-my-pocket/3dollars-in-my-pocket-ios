@@ -12,12 +12,14 @@ import RxSwift
 protocol MedalServiceProtocol {
     func fetchMedals() -> Observable<[MedalResponse]>
     
-    func fetchMyMedals() -> Observable<[MedalResponse]>
+    func fetchMyMedals() -> Observable<[Medal]>
     
-    func changeMyMdal(medalId: Int) -> Observable<UserInfoResponse>
+    func changeMyMedal(medalId: Int) -> Observable<User>
 }
 
 struct MedalService: MedalServiceProtocol {
+    private let networkManager = NetworkManager()
+    
     func fetchMedals() -> Observable<[MedalResponse]> {
         return .create { observer in
             let urlString = HTTPUtils.url + "/api/v1/medals"
@@ -37,48 +39,29 @@ struct MedalService: MedalServiceProtocol {
         }
     }
     
-    func fetchMyMedals() -> Observable<[MedalResponse]> {
-        return .create { observer in
-            let urlString = HTTPUtils.url + "/api/v1/user/medals"
-            let header = HTTPUtils.defaultHeader()
-            
-            HTTPUtils.defaultSession.request(
-                urlString,
-                method: .get,
-                headers: header
-            ).responseJSON { response in
-                if response.isSuccess() {
-                    observer.processValue(class: [MedalResponse].self, response: response)
-                } else {
-                    observer.processHTTPError(response: response)
-                }
-            }
-            
-            return Disposables.create()
-        }
+    func fetchMyMedals() -> Observable<[Medal]> {
+        let urlString = HTTPUtils.url + "/api/v1/user/medals"
+        let header = HTTPUtils.defaultHeader()
+        
+        return self.networkManager.createGetObservable(
+            class: [MedalResponse].self,
+            urlString: urlString,
+            headers: header
+        )
+        .map( { $0.map(Medal.init(response: )) })
     }
     
-    func changeMyMdal(medalId: Int) -> Observable<UserInfoResponse> {
-        return .create { observer in
-            let urlString = HTTPUtils.url + "/api/v1/user/medal"
-            let header = HTTPUtils.defaultHeader()
-            let parameter: [String: Any] = ["medalId": medalId]
-            
-            HTTPUtils.defaultSession.request(
-                urlString,
-                method: .put,
-                parameters: parameter,
-                encoding: JSONEncoding.default,
-                headers: header
-            ).responseJSON { response in
-                if response.isSuccess() {
-                    observer.processValue(class: UserInfoResponse.self, response: response)
-                } else {
-                    observer.processHTTPError(response: response)
-                }
-            }
-            
-            return Disposables.create()
-        }
+    func changeMyMedal(medalId: Int) -> Observable<User> {
+        let urlString = HTTPUtils.url + "/api/v1/user/medal"
+        let header = HTTPUtils.defaultHeader()
+        let parameter: [String: Any] = ["medalId": medalId]
+        
+        return self.networkManager.createPutObservable(
+            class: UserInfoResponse.self,
+            urlString: urlString,
+            headers: header,
+            parameters: parameter
+        )
+        .map(User.init(response:))
     }
 }

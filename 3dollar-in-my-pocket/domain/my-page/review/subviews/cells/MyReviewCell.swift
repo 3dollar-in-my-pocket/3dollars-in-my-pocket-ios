@@ -11,14 +11,14 @@ final class MyReviewCell: BaseTableViewCell {
     }
     
     private let containerView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 12
     }
     
     private let ratingView = RatingView()
     
     private let dateLabel = UILabel().then {
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
         $0.font = .regular(size: 12)
     }
     
@@ -36,7 +36,7 @@ final class MyReviewCell: BaseTableViewCell {
     }
     
     let moreButton = UIButton().then {
-        $0.setImage(R.image.ic_more_horizontal(), for: .normal)
+        $0.setImage(UIImage(named: "ic_more_horizontal"), for: .normal)
     }
     
     override func setup() {

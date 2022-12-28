@@ -8,7 +8,7 @@ final class BookmarkEditView: BaseView {
     
     let backButton = UIButton().then {
         $0.setImage(
-            R.image.ic_back()?.withRenderingMode(.alwaysTemplate),
+            UIImage(named: "ic_back")?.withRenderingMode(.alwaysTemplate),
             for: .normal
         )
         $0.tintColor = .white
@@ -22,7 +22,7 @@ final class BookmarkEditView: BaseView {
     
     private let titleCountLabel = UILabel().then {
         $0.font = .regular(size: 12)
-        $0.textColor = R.color.gray50()
+        $0.textColor = Color.gray50
     }
     
     let titleTextView = UITextView().then {
@@ -35,7 +35,7 @@ final class BookmarkEditView: BaseView {
     
     private let descriptionCountLabel = UILabel().then {
         $0.font = .regular(size: 12)
-        $0.textColor = R.color.gray50()
+        $0.textColor = Color.gray50
     }
     
     let descriptionTextView = UITextView().then {
@@ -47,7 +47,7 @@ final class BookmarkEditView: BaseView {
     }
     
     private let descriptionPlaceholderLabel = UILabel().then {
-        $0.textColor = R.color.gray40()
+        $0.textColor = Color.gray40
         $0.font = .regular(size: 12)
         $0.text = "리스트에 대한 한줄평을 입력해주세요! 공유 시 사용됩니다."
     }
@@ -56,11 +56,11 @@ final class BookmarkEditView: BaseView {
         $0.setTitle("bookmark_edit_save".localized, for: .normal)
         $0.titleLabel?.font = .medium(size: 16)
         $0.setTitleColor(.white, for: .normal)
-        $0.backgroundColor = R.color.red()
+        $0.backgroundColor = Color.red
     }
     
     private let safeAreaView = UIView().then {
-        $0.backgroundColor = R.color.red()
+        $0.backgroundColor = Color.red
     }
     
     deinit {
@@ -69,7 +69,7 @@ final class BookmarkEditView: BaseView {
     
     override func setup() {
         self.addGestureRecognizer(self.tapGesture)
-        self.backgroundColor = R.color.gray100()
+        self.backgroundColor = Color.gray100
         self.addSubViews([
             self.backButton,
             self.titleLabel,

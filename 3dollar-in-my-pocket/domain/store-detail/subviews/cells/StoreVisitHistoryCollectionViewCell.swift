@@ -13,7 +13,7 @@ final class StoreVisitHistoryCollectionViewCell: BaseCollectionViewCell {
     }
     
     private let bedgeImage = UIImageView().then {
-        $0.image = R.image.img_bedge()
+        $0.image = UIImage(named: "img_bedge")
     }
     
     private let containerView = UIView().then {
@@ -25,18 +25,18 @@ final class StoreVisitHistoryCollectionViewCell: BaseCollectionViewCell {
     
     private let existLabel = UILabel().then {
         $0.font = .bold(size: 16)
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
     }
     
     private let notExistImage = UIImageView()
     
     private let notExistLabel = UILabel().then {
         $0.font = .bold(size: 16)
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
     }
     
     fileprivate let plusButton = UIButton().then {
-        $0.setImage(R.image.ic_plus_black(), for: .normal)
+        $0.setImage(UIImage(named: "ic_plus_black"), for: .normal)
     }
     
     override func setup() {
@@ -117,24 +117,24 @@ final class StoreVisitHistoryCollectionViewCell: BaseCollectionViewCell {
     
     private func setupTitleLabel(isEmpty: Bool, count: Int) {
         if isEmpty {
-            let text = R.string.localization.store_detail_empty_visit_history()
+            let text = "store_detail_empty_visit_history".localized
             let attributedString = NSMutableAttributedString(string: text)
             let boldTextRange = (text as NSString).range(of: "방문 인증")
             
             attributedString.addAttribute(
                 .font,
-                value: R.font.appleSDGothicNeoEB00(size: 18) as Any,
+                value: UIFont.extraBold(size: 18) as Any,
                 range: boldTextRange
             )
             self.titleLabel.attributedText = attributedString
         } else {
-            let text = R.string.localization.store_detail_visit_history(count)
+            let text = String(format: "store_detail_visit_history".localized, count)
             let attributedString = NSMutableAttributedString(string: text)
             let boldTextRange = (text as NSString).range(of: "\(count)명")
             
             attributedString.addAttribute(
                 .font,
-                value: R.font.appleSDGothicNeoEB00(size: 18) as Any,
+                value: UIFont.extraBold(size: 18) as Any,
                 range: boldTextRange
             )
             self.titleLabel.attributedText = attributedString
@@ -142,20 +142,19 @@ final class StoreVisitHistoryCollectionViewCell: BaseCollectionViewCell {
     }
     
     private func setupExist(count: Int) {
-        self.existImage.image = count == 0 ? R.image.img_exist_empty() : R.image.img_exist()
-        self.existLabel.textColor =
-        count == 0
-        ? R.color.gray30()
-        : UIColor(r: 0, g: 198, b: 103)
+        self.existImage.image = count == 0
+        ? UIImage(named: "img_exist_empty")
+        : UIImage(named: "img_exist")
+        self.existLabel.textColor = count == 0 ? Color.gray30 : UIColor(r: 0, g: 198, b: 103)
         self.existLabel.text = "\(count) 명"
     }
     
     private func setupNotExist(count: Int) {
         self.notExistImage.image =
         count == 0
-        ? R.image.img_not_exist_empty()
-        : R.image.img_not_exist()
-        self.notExistLabel.textColor = count == 0 ? R.color.gray30() : R.color.red()
+        ? UIImage(named: "img_not_exist_empty")
+        : UIImage(named: "img_not_exist")
+        self.notExistLabel.textColor = count == 0 ? Color.gray30 : Color.red
         self.notExistLabel.text = "\(count) 명"
     }
 }

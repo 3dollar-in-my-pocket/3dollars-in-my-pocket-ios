@@ -13,12 +13,12 @@ final class MyPageVisitHistoryCollectionViewCell: BaseCollectionViewCell {
     private let visitDateLabel = VisitDateView()
     
     private let storeContainerView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 15
     }
     
     private let categoryImage = UIImageView().then {
-        $0.image = R.image.img_32_bungeoppang_on()
+        $0.image = UIImage(named: "img_32_bungeoppang_on")
     }
     
     private let storeNameLabel = UILabel().then {
@@ -28,7 +28,7 @@ final class MyPageVisitHistoryCollectionViewCell: BaseCollectionViewCell {
     
     private let categoryLabel = UILabel().then {
         $0.font = .regular(size: 12)
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
     }
     
     override func prepareForReuse() {
@@ -89,7 +89,7 @@ final class MyPageVisitHistoryCollectionViewCell: BaseCollectionViewCell {
         self.storeNameLabel.text = visitHitory.store.storeName
         self.storeNameLabel.textColor = .white
         self.categoryLabel.text = visitHitory.store.categoriesString
-        self.categoryLabel.textColor = R.color.gray30()
+        self.categoryLabel.textColor = Color.gray30
         self.verticalStackView.addArrangedSubview(self.visitDateLabel)
         self.verticalStackView.addArrangedSubview(self.storeContainerView)
     }
@@ -98,9 +98,9 @@ final class MyPageVisitHistoryCollectionViewCell: BaseCollectionViewCell {
         self.visitDateLabel.isHidden = true
         self.categoryImage.image = UIImage(named: "img_empty_my")
         self.storeNameLabel.text = "my_page_visit_history_empty_title".localized
-        self.storeNameLabel.textColor = R.color.gray30()
+        self.storeNameLabel.textColor = Color.gray30
         self.categoryLabel.text = "my_page_visit_history_empty_description".localized
-        self.categoryLabel.textColor = R.color.gray60()
+        self.categoryLabel.textColor = Color.gray60
         self.verticalStackView.addArrangedSubview(self.storeContainerView)
     }
 }

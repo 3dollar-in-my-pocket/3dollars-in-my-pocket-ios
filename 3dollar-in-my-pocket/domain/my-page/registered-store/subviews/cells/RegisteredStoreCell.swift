@@ -10,7 +10,7 @@ final class RegisteredStoreCell: BaseTableViewCell {
     
     
     private let containerView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 24
     }
     
@@ -22,12 +22,12 @@ final class RegisteredStoreCell: BaseTableViewCell {
     }
     
     private let categoriesLabel = UILabel().then {
-        $0.textColor = R.color.gray50()
+        $0.textColor = Color.gray50
         $0.font = .regular(size: 12)
     }
     
     private let starImage = UIImageView().then {
-        $0.image = R.image.ic_star_white()
+        $0.image = UIImage(named: "ic_star_white")
     }
     
     private let rankLabel = UILabel().then {
@@ -102,12 +102,12 @@ final class RegisteredStoreCell: BaseTableViewCell {
         
         if store.isDeleted {
             self.titleLabel.text = "없어진 가게에요 :("
-            self.categoriesLabel.textColor = R.color.gray50()
+            self.categoriesLabel.textColor = Color.gray50
             self.starImage.alpha = 0.5
-            self.rankLabel.textColor = R.color.gray60()
+            self.rankLabel.textColor = Color.gray60
         } else {
             self.titleLabel.text = store.storeName
-            self.categoriesLabel.textColor = R.color.pink()
+            self.categoriesLabel.textColor = Color.pink
             self.starImage.alpha = 1
             self.rankLabel.textColor = .white
         }

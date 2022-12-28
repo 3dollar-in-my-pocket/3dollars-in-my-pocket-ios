@@ -9,14 +9,14 @@ final class MyVisitHistoryTableViewCell: BaseTableViewCell {
     }
     
     private let dividorView = UIView().then {
-        $0.backgroundColor = R.color.gray80()
+        $0.backgroundColor = Color.gray80
         $0.layer.cornerRadius = 0.5
     }
     
     private let visitImageView = MyVisitHistoryImageView()
     
     private let containerView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 15
     }
     
@@ -29,7 +29,7 @@ final class MyVisitHistoryTableViewCell: BaseTableViewCell {
     
     private let categoryLabel = UILabel().then {
         $0.font = .regular(size: 12)
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
     }
     
     override func setup() {

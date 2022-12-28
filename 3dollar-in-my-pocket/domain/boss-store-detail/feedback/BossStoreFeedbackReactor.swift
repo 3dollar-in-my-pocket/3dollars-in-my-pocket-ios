@@ -130,9 +130,7 @@ final class BossStoreFeedbackReactor: BaseReactor, Reactor {
         .flatMap { _ -> Observable<Mutation> in
             return .merge([
                 .just(.pop),
-                .just(.showToast(
-                    R.string.localization.boss_store_feedback_send_feedback()
-                ))
+                .just(.showToast("boss_store_feedback_send_feedback".localized))
             ])
         }
         .catch { .just(.showErrorAlert($0)) }

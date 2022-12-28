@@ -11,25 +11,25 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
     
     private let snsTitleLabel = UILabel().then {
         $0.font = .bold(size: 14)
-        $0.textColor = R.color.black()
-        $0.text = R.string.localization.boss_store_sns()
+        $0.textColor = Color.black
+        $0.text = "boss_store_sns".localized
     }
     
     let snsButton = UIButton().then {
-        $0.setTitle(R.string.localization.boss_store_sns_shortcut(), for: .normal)
+        $0.setTitle("boss_store_sns_shortcut".localized, for: .normal)
         $0.titleLabel?.font = .regular(size: 14)
-        $0.setTitleColor(R.color.green(), for: .normal)
+        $0.setTitleColor(Color.green, for: .normal)
     }
     
     private let introductionTitleLabel = UILabel().then {
         $0.font = .bold(size: 14)
-        $0.textColor = R.color.black()
-        $0.text = R.string.localization.boss_store_introduction()
+        $0.textColor = Color.black
+        $0.text = "boss_store_introduction".localized
     }
     
     private let introductionValueLabel = UILabel().then {
         $0.font = .regular(size: 14)
-        $0.textColor = R.color.gray50()
+        $0.textColor = Color.gray50
         $0.numberOfLines = 0
         $0.textAlignment = .left
     }

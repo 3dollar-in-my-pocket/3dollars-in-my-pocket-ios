@@ -9,6 +9,7 @@ final class MarkerPopupView: BaseView {
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 30
         $0.backgroundColor = .white
+        $0.layer.masksToBounds = true
     }
     
     private let imageView = UIImageView().then {
@@ -16,25 +17,25 @@ final class MarkerPopupView: BaseView {
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(R.image.ic_close_24(), for: .normal)
+        $0.setImage(UIImage(named: "ic_close_24"), for: .normal)
     }
     
     private let titleLabel = UILabel().then {
         $0.font = .extraBold(size: 18)
-        $0.textColor = R.color.gray100()
+        $0.textColor = Color.gray100
         $0.textAlignment = .center
     }
     
     private let descriptionLabel = UILabel().then {
         $0.font = .regular(size: 16)
-        $0.textColor = R.color.gray50()
+        $0.textColor = Color.gray50
         $0.numberOfLines = 0
         $0.textAlignment = .center
     }
     
     let bottomButton = UIButton().then {
         $0.layer.cornerRadius = 24
-        $0.backgroundColor = R.color.red()
+        $0.backgroundColor = Color.red
         $0.titleLabel?.font = .bold(size: 16)
     }
     

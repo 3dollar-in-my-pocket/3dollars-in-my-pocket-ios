@@ -4,7 +4,7 @@ final class DayStackView: UIStackView {
     private let sundayButton = UIButton().then {
         $0.layer.masksToBounds = true
         $0.layer.borderWidth = 1
-        $0.setTitle(R.string.localization.write_store_sunday(), for: .normal)
+        $0.setTitle("write_store_sunday".localized, for: .normal)
         $0.titleLabel?.font = .regular(size: 12)
         $0.layer.cornerRadius = CGFloat(12)
     }
@@ -12,7 +12,7 @@ final class DayStackView: UIStackView {
     private let mondayButton = UIButton().then {
         $0.layer.masksToBounds = true
         $0.layer.borderWidth = 1
-        $0.setTitle(R.string.localization.write_store_monday(), for: .normal)
+        $0.setTitle("write_store_monday".localized, for: .normal)
         $0.titleLabel?.font = .regular(size: 12)
         $0.layer.cornerRadius = CGFloat(12)
     }
@@ -20,7 +20,7 @@ final class DayStackView: UIStackView {
     private let tuesdayButton = UIButton().then {
         $0.layer.masksToBounds = true
         $0.layer.borderWidth = 1
-        $0.setTitle(R.string.localization.write_store_tuesday(), for: .normal)
+        $0.setTitle("write_store_tuesday".localized, for: .normal)
         $0.titleLabel?.font = .regular(size: 12)
         $0.layer.cornerRadius = CGFloat(12)
     }
@@ -28,7 +28,7 @@ final class DayStackView: UIStackView {
     private let wednesday = UIButton().then {
         $0.layer.masksToBounds = true
         $0.layer.borderWidth = 1
-        $0.setTitle(R.string.localization.write_store_wednesday(), for: .normal)
+        $0.setTitle("write_store_wednesday".localized, for: .normal)
         $0.titleLabel?.font = .regular(size: 12)
         $0.layer.cornerRadius = CGFloat(12)
     }
@@ -36,7 +36,7 @@ final class DayStackView: UIStackView {
     private let thursday = UIButton().then {
         $0.layer.masksToBounds = true
         $0.layer.borderWidth = 1
-        $0.setTitle(R.string.localization.write_store_thursday(), for: .normal)
+        $0.setTitle("write_store_thursday".localized, for: .normal)
         $0.titleLabel?.font = .regular(size: 12)
         $0.layer.cornerRadius = CGFloat(12)
     }
@@ -44,7 +44,7 @@ final class DayStackView: UIStackView {
     private let friday = UIButton().then {
         $0.layer.masksToBounds = true
         $0.layer.borderWidth = 1
-        $0.setTitle(R.string.localization.write_store_friday(), for: .normal)
+        $0.setTitle("write_store_friday".localized, for: .normal)
         $0.titleLabel?.font = .regular(size: 12)
         $0.layer.cornerRadius = CGFloat(12)
     }
@@ -52,7 +52,7 @@ final class DayStackView: UIStackView {
     private let saturday = UIButton().then {
         $0.layer.masksToBounds = true
         $0.layer.borderWidth = 1
-        $0.setTitle(R.string.localization.write_store_saturday(), for: .normal)
+        $0.setTitle("write_store_saturday".localized, for: .normal)
         $0.titleLabel?.font = .regular(size: 12)
         $0.layer.cornerRadius = CGFloat(12)
     }

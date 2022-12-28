@@ -10,17 +10,17 @@ final class BossStoreMoreMenuCell: BaseCollectionViewCell {
     fileprivate let tapGesture = UITapGestureRecognizer()
     
     private let containerView = UIView().then {
-        $0.backgroundColor = R.color.gray5()
+        $0.backgroundColor = Color.gray5
         $0.layer.cornerRadius = 16
     }
     
     private let bottomArrowImage = UIImageView().then {
-        $0.image = R.image.ic_arrow_bottom()
+        $0.image = UIImage(named: "ic_arrow_bottom")
     }
     
     private let titleLabel = UILabel().then {
         $0.font = .bold(size: 14)
-        $0.textColor = R.color.gray40()
+        $0.textColor = Color.gray40
     }
     
     private let stackView = UIStackView().then {
@@ -74,7 +74,7 @@ final class BossStoreMoreMenuCell: BaseCollectionViewCell {
     
     func bind(menus: [BossStoreMenu]) {
         self.titleLabel.text = String.init(
-            format: R.string.localization.boss_store_more_menu(menus.count)
+            format: String(format: "localization.boss_store_more_menu".localized, menus.count)
         )
         
         for menu in menus {

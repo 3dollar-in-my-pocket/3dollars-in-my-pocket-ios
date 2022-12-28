@@ -10,8 +10,7 @@ class NicknameViewController: BaseVC {
     self.viewModel = NicknameViewModel(
       signinRequest: signinRequest,
       userDefaults: UserDefaultsUtil(),
-      userService: UserService(),
-      deviceService: DeviceService()
+      userService: UserService()
     )
     super.init(nibName: nil, bundle: nil)
   }

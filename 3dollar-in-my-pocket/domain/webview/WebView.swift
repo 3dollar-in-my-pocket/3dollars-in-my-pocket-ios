@@ -3,7 +3,7 @@ import WebKit
 
 final class WebView: BaseView {
     let backButton = UIButton().then {
-        $0.setImage(R.image.ic_back_white(), for: .normal)
+        $0.setImage(UIImage(named: "ic_back_white"), for: .normal)
     }
     
     private let titleLabel = UILabel().then {

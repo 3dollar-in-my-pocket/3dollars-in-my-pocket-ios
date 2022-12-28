@@ -6,22 +6,22 @@ final class StorePhotoCollectionView: BaseView {
   var photoDisposeBag = DisposeBag()
   
   let titleLabel = UILabel().then {
-    $0.textColor = R.color.black()
+    $0.textColor = Color.black
     $0.font = .semiBold(size: 18)
-    $0.text = R.string.localization.store_detail_header_photo()
+      $0.text = "store_detail_header_photo".localized
   }
   
   let countLabel = UILabel().then {
     $0.font = .medium(size: 16)
-    $0.textColor = R.color.black()
+    $0.textColor = Color.black
   }
   
   let addPhotoButton = UIButton().then {
-    $0.setTitle(R.string.localization.store_detail_header_add_photo(), for: .normal)
-    $0.setTitleColor(R.color.red(), for: .normal)
+      $0.setTitle("store_detail_header_add_photo".localized, for: .normal)
+    $0.setTitleColor(Color.red, for: .normal)
     $0.titleLabel?.font = .bold(size: 12)
     $0.layer.cornerRadius = 15
-    $0.backgroundColor = R.color.red()?.withAlphaComponent(0.2)
+    $0.backgroundColor = Color.red?.withAlphaComponent(0.2)
     $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
   }
   
@@ -82,7 +82,10 @@ final class StorePhotoCollectionView: BaseView {
   }
   
   func bind(store: Store) {
-    self.countLabel.text = R.string.localization.store_detail_header_count(store.images.count)
+      self.countLabel.text = String(
+        format: "store_detail_header_count".localized,
+        store.images.count
+      )
     
     self.photoDisposeBag = DisposeBag()
     let photos = self.extractPhotos(from: store.images)

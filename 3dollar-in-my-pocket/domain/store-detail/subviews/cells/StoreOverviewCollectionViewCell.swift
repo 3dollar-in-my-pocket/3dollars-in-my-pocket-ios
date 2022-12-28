@@ -19,7 +19,7 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
         $0.setImage(UIImage(named: "ic_location_pink"), for: .normal)
         $0.backgroundColor = .white
         $0.contentEdgeInsets = .init(top: 12, left: 12, bottom: 12, right: 12)
-        $0.layer.borderColor = R.color.gray20()?.cgColor
+        $0.layer.borderColor = Color.gray20?.cgColor
         $0.layer.borderWidth = 1
         $0.layer.shadowColor = UIColor.black.cgColor
         $0.layer.shadowOffset = CGSize(width: 0, height: 4)
@@ -36,7 +36,7 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
     }
     
     private let nicknameLabel = UILabel().then {
-        $0.textColor = R.color.pink()
+        $0.textColor = Color.pink
         $0.font = .medium(size: 14)
     }
     
@@ -66,33 +66,33 @@ final class StoreOverviewCollectionViewCell: BaseCollectionViewCell {
     }
     
     let shareButton = UIButton().then {
-        $0.setImage(R.image.ic_share(), for: .normal)
-        $0.setTitle(R.string.localization.boss_store_share(), for: .normal)
+        $0.setImage(UIImage(named: "ic_share"), for: .normal)
+        $0.setTitle("boss_store_share".localized, for: .normal)
         $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = .medium(size: 16)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
     }
     
     private let dividerView = UIView().then {
-        $0.backgroundColor = R.color.gray20()
+        $0.backgroundColor = Color.gray20
     }
     
     let bookmarkButton = UIButton().then {
-        $0.setImage(R.image.ic_bookmark_off(), for: .normal)
-        $0.setImage(R.image.ic_bookmark_on(), for: .selected)
-        $0.setTitle(R.string.localization.store_detail_bookmark(), for: .normal)
+        $0.setImage(UIImage(named: "ic_bookmark_off"), for: .normal)
+        $0.setImage(UIImage(named: "ic_bookmark_on"), for: .selected)
+        $0.setTitle("store_detail_bookmark".localized, for: .normal)
         $0.titleLabel?.font = .medium(size: 16)
-        $0.setTitleColor(R.color.red(), for: .normal)
+        $0.setTitleColor(Color.red, for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
     }
     
     let deleteRequestButton = UIButton().then {
-        $0.setImage(R.image.ic_info()?.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.setTitle(R.string.localization.store_detail_delete_request(), for: .normal)
-        $0.setTitleColor(R.color.gray40(), for: .normal)
+        $0.setImage(UIImage(named: "ic_info")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.setTitle("store_detail_delete_request".localized, for: .normal)
+        $0.setTitleColor(Color.gray40, for: .normal)
         $0.titleLabel?.font = .medium(size: 14)
         $0.titleLabel?.textAlignment = .right
-        $0.tintColor = R.color.gray40()
+        $0.tintColor = Color.gray40
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: -4)
     }
     

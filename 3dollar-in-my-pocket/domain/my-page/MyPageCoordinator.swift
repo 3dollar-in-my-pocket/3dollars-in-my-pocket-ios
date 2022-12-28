@@ -36,8 +36,6 @@ extension MyPageCoordinator {
     func goToMyMedal(medal: Medal) {
         let viewController = MyMedalViewController.instance(medal: medal)
         
-        viewController.delegate = self as? MyMedalViewControllerDelegate
-        
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     

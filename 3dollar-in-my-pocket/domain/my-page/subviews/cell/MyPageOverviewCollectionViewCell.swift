@@ -5,13 +5,13 @@ final class MyPageOverviewCollectionViewCell: BaseCollectionViewCell {
     static let height: CGFloat = 390
     
     private let containerBackgroundView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 10
         $0.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
     }
     
     private let bgCloud = UIImageView().then {
-        $0.image = R.image.bg_cloud_my_page()
+        $0.image = UIImage(named: "bg_cloud_my_page")
     }
     
     let medalImageButton = UIButton()

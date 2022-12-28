@@ -59,11 +59,11 @@ final class VisitDateView: BaseView {
         switch visitType {
         case .exists:
             self.visitDateContainerView.backgroundColor = UIColor(r: 0, g: 198, b: 103)
-            self.visitImage.image = R.image.img_exist()
+            self.visitImage.image = UIImage(named: "img_exist")
             
         case .notExists:
-            self.visitDateContainerView.backgroundColor = R.color.red()
-            self.visitImage.image = R.image.img_not_exist()
+            self.visitDateContainerView.backgroundColor = Color.red
+            self.visitImage.image = UIImage(named: "img_not_exist")
         }
         
         self.dateLabel.text = DateUtils.toString(dateString: visitDate, format: "MM월 d일 HH:mm:ss")

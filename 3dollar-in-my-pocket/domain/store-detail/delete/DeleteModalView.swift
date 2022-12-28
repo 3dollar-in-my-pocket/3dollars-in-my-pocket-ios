@@ -18,7 +18,7 @@ final class DeleteModalView: BaseView {
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(R.image.ic_close_24(), for: .normal)
+        $0.setImage(UIImage(named: "ic_close_24"), for: .normal)
     }
     
     private let descLabel = UILabel().then {

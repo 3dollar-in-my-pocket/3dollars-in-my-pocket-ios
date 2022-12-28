@@ -28,8 +28,8 @@ final class HomeViewController: BaseViewController, View, HomeCoordinator {
     static func instance() -> UINavigationController {
         let viewController = HomeViewController(nibName: nil, bundle: nil).then {
             $0.tabBarItem = UITabBarItem(
-                title: R.string.localization.tab_home(),
-                image: R.image.ic_home(),
+                title: "tab_home".localized,
+                image: UIImage(named: "ic_home"),
                 tag: TabBarTag.home.rawValue
             )
         }

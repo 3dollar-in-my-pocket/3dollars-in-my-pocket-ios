@@ -11,7 +11,7 @@ final class PopupView: BaseView {
     }
     
     let cancelButton = UIButton().then {
-        $0.setTitle(R.string.localization.popup_close(), for: .normal)
+        $0.setTitle("popup_close".localized, for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.backgroundColor = UIColor(r: 44, g: 44, b: 44)
         $0.contentVerticalAlignment = .top
@@ -20,7 +20,7 @@ final class PopupView: BaseView {
     }
     
     let disableTodayButton = UIButton().then {
-        $0.setTitle(R.string.localization.popup_disable_today(), for: .normal)
+        $0.setTitle("popup_disable_today".localized, for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.backgroundColor = UIColor(r: 44, g: 44, b: 44)
         $0.contentVerticalAlignment = .top

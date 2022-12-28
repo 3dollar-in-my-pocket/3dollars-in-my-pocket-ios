@@ -12,41 +12,41 @@ final class AddressConfirmPopupView: BaseView {
     
     private let titleLabel = UILabel().then {
         $0.font = .light(size: 24)
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
         $0.attributedText = NSMutableAttributedString(
-            string: R.string.localization.write_address_confirm_popup_title(),
+            string: "write_address_confirm_popup_title".localized,
             attributes: [.kern: -0.5]
         )
         $0.numberOfLines = 0
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(R.image.ic_close_24(), for: .normal)
+        $0.setImage(UIImage(named: "ic_close_24"), for: .normal)
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.text = R.string.localization.write_address_confirm_popup_description()
+        $0.text = "write_address_confirm_popup_description".localized
         $0.font = .semiBold(size: 14)
-        $0.textColor = R.color.gray50()
+        $0.textColor = Color.gray50
     }
     
     private let addressContainerView = UIView().then {
-        $0.backgroundColor = R.color.gray0()
+        $0.backgroundColor = Color.gray0
         $0.layer.cornerRadius = 8
     }
     
     private let addressLabel = UILabel().then {
-        $0.textColor = R.color.gray100()
+        $0.textColor = Color.gray100
         $0.font = .semiBold(size: 16)
         $0.textAlignment = .center
     }
     
     let okButton = UIButton().then {
         $0.layer.cornerRadius = 24
-        $0.backgroundColor = R.color.red()
+        $0.backgroundColor = Color.red
         $0.titleLabel?.font = .bold(size: 16)
         $0.setTitleColor(.white, for: .normal)
-        $0.setTitle(R.string.localization.write_address_confirm_popup_ok(), for: .normal)
+        $0.setTitle("write_address_confirm_popup_ok".localized, for: .normal)
     }
     
     override func setup() {

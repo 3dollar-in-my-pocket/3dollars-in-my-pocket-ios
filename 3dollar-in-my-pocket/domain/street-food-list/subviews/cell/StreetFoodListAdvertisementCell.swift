@@ -21,31 +21,31 @@ final class StreetFoodListAdvertisementCell: BaseCollectionViewCell {
     ).then {
         $0.backgroundColor = UIColor(r: 255, g: 92, b: 67, a: 0.2)
         $0.layer.cornerRadius = 11
-        $0.textColor = R.color.red()
-        $0.text = R.string.localization.shared_advertisement()
+        $0.textColor = Color.red
+        $0.text = "shared_advertisement".localized
         $0.font = .medium(size: 12)
         $0.layer.masksToBounds = true
     }
     
     private let moreLabel = UILabel().then {
-        $0.text = R.string.localization.shared_advertisement_more()
-        $0.textColor = R.color.pink()
+        $0.text = "shared_advertisement_more".localized
+        $0.textColor = Color.pink
         $0.font = .regular(size: 12)
     }
     
     private let titleLabel = UILabel().then {
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
         $0.font = .extraBold(size: 16)
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.textColor = R.color.gray60()
+        $0.textColor = Color.gray60
         $0.font = .regular(size: 12)
         $0.numberOfLines = 2
     }
     
     private let image = UIImageView().then {
-        $0.backgroundColor = R.color.gray5()
+        $0.backgroundColor = Color.gray5
         $0.layer.cornerRadius = 8
         $0.layer.masksToBounds = true
         $0.contentMode = .scaleAspectFit

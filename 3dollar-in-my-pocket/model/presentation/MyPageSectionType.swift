@@ -23,10 +23,10 @@ extension MyPageSectionType {
     var icon: UIImage? {
         switch self {
         case .visitHistory:
-            return R.image.ic_bedge()?.withRenderingMode(.alwaysTemplate)
+            return UIImage(named: "ic_bedge")?.withRenderingMode(.alwaysTemplate)
             
         case .bookmark:
-            return R.image.ic_bookmark_on()?.withRenderingMode(.alwaysTemplate)
+            return UIImage(named: "ic_bookmark_on")?.withRenderingMode(.alwaysTemplate)
             
         case .unknown:
             return nil
@@ -36,10 +36,10 @@ extension MyPageSectionType {
     var iconLabel: String {
         switch self {
         case .visitHistory:
-            return R.string.localization.my_page_visit()
+            return "my_page_visit".localized
             
         case .bookmark:
-            return R.string.localization.store_detail_bookmark()
+            return "store_detail_bookmark".localized
             
         case .unknown:
             return ""
@@ -49,7 +49,7 @@ extension MyPageSectionType {
     var title: String {
         switch self {
         case .visitHistory:
-            return R.string.localization.my_page_visit_description()
+            return "my_page_visit_description".localized
             
         case .bookmark:
             return "my_page_bookmark_description".localized

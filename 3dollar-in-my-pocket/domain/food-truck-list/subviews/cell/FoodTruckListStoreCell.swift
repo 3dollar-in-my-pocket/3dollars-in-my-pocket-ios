@@ -19,30 +19,30 @@ final class FoodTruckListStoreCell: BaseCollectionViewCell {
     }
     
     private let titleLabel = UILabel().then {
-        $0.textColor = R.color.black()
-        $0.font = R.font.appleSDGothicNeoEB00(size: 16)
+        $0.textColor = Color.black
+        $0.font = .extraBold(size: 16)
     }
     
     private let categoriesLabel = UILabel().then {
-        $0.textColor = R.color.gray60()
+        $0.textColor = Color.gray60
         $0.font = .regular(size: 12)
     }
     
     private let distanceImage = UIImageView().then {
-        $0.image = R.image.ic_near_filled_green()
+        $0.image = UIImage(named: "ic_near_filled_green")
     }
     
     private let distanceLabel = UILabel().then {
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
         $0.font = .medium(size: 14)
     }
     
     private let ratingImage = UIImageView().then {
-        $0.image = R.image.ic_review_green()
+        $0.image = UIImage(named: "ic_review_green")
     }
     
     private let reviewCountLabel = UILabel().then {
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
         $0.font = .medium(size: 14)
     }
     

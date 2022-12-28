@@ -6,11 +6,11 @@ import Lottie
 
 final class SigninAnonymousView: BaseView {
     let closeButton = UIButton().then {
-        $0.setImage(R.image.ic_close_white(), for: .normal)
+        $0.setImage(UIImage(named: "ic_close_white"), for: .normal)
         $0.tintColor = .white
     }
     
-    let lottie = AnimationView(name: "signin").then {
+    let lottie = LottieAnimationView(name: "signin").then {
         $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         $0.contentMode = .scaleAspectFill
         $0.loopMode = .loop
@@ -20,19 +20,19 @@ final class SigninAnonymousView: BaseView {
     
     let kakaoButton = UIButton().then {
         $0.layer.cornerRadius = 20
-        $0.backgroundColor = R.color.kakaoYellow()
-        $0.accessibilityLabel = R.string.localization.sign_in_with_kakao()
+        $0.backgroundColor = Color.kakaoYellow
+        $0.accessibilityLabel = "sign_in_with_kakao".localized
     }
     
     private let kakaoLabel = UILabel().then {
-        $0.text = R.string.localization.sign_in_with_kakao()
+        $0.text = "sign_in_with_kakao".localized
         $0.font = .bold(size: 14)
         $0.textColor = UIColor.init(r: 56, g: 30, b: 31)
         $0.isAccessibilityElement = false
     }
     
     let kakaoImage = UIImageView().then {
-        $0.image = R.image.ic_kakao()
+        $0.image = UIImage(named: "ic_kakao")
     }
     
     let appleButton = ASAuthorizationAppleIDButton(type: .signIn, style: .white).then {
@@ -42,18 +42,18 @@ final class SigninAnonymousView: BaseView {
     private let bottomContainerView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        $0.backgroundColor = R.color.gray90()
+        $0.backgroundColor = Color.gray90
     }
     
     private let bottomImageView = UIImageView().then {
-        $0.image = R.image.img_anonymous()
+        $0.image = UIImage(named: "img_anonymous")
     }
     
     private let anonymousLabel = UILabel().then {
         $0.font = .regular(size: 16)
         $0.textColor = .white
         $0.numberOfLines = 0
-        $0.text = R.string.localization.sign_in_anonymous_description()
+        $0.text = "sign_in_anonymous_description".localized
         $0.textAlignment = .center
     }
     

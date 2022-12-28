@@ -2,29 +2,29 @@ import UIKit
 
 final class MyVisitHistoryEmptyView: BaseView {
     private let emptyBackground = UIImageView().then {
-        $0.image = R.image.img_empty_my_visit_history_background()
+        $0.image = UIImage(named: "img_empty_my_visit_history_background")
         $0.contentMode = .scaleAspectFit
     }
     
     private let emptyContainerView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 15
     }
     
     private let emptyImageView = UIImageView().then {
-        $0.image = R.image.img_empty_my()
+        $0.image = UIImage(named: "img_empty_my")
     }
     
     private let emptyTitleLabel = UILabel().then {
         $0.font = .medium(size: 16)
-        $0.textColor = R.color.gray30()
-        $0.text = R.string.localization.my_visit_history_empty_title()
+        $0.textColor = Color.gray30
+        $0.text = "my_visit_history_empty_title".localized
     }
     
     private let emptyDescriptionLabel = UILabel().then {
-        $0.textColor = R.color.gray60()
+        $0.textColor = Color.gray60
         $0.font = .regular(size: 12)
-        $0.text = R.string.localization.my_visit_history_empty_description()
+        $0.text = "my_visit_history_empty_description".localized
     }
     
     override func setup() {

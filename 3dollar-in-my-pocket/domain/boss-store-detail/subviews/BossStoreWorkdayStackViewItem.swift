@@ -10,18 +10,18 @@ final class BossStoreWorkdayStackViewItem: BaseView {
     
     private let timeLabel = UILabel().then {
         $0.font = .bold(size: 14)
-        $0.textColor = R.color.gray70()
+        $0.textColor = Color.gray70
         $0.textAlignment = .right
     }
     
     private let locationLabel = UILabel().then {
         $0.font = .regular(size: 14)
-        $0.textColor = R.color.gray70()
+        $0.textColor = Color.gray70
         $0.textAlignment = .right
     }
     
     private let dividerView = UIImageView().then {
-        $0.image = R.image.img_divider()
+        $0.image = UIImage(named: "img_divider")
     }
     
     override func setup() {
@@ -65,12 +65,12 @@ final class BossStoreWorkdayStackViewItem: BaseView {
         self.weekDayLabel.text = appearanceDay.dayOfTheWeek.fullText
         self.dividerView.isHidden = appearanceDay.dayOfTheWeek == .sunday
         if appearanceDay.dayOfTheWeek == .saturday || appearanceDay.dayOfTheWeek == .sunday {
-            self.weekDayLabel.textColor = R.color.red()
+            self.weekDayLabel.textColor = Color.red
         } else {
-            self.weekDayLabel.textColor = R.color.gray70()
+            self.weekDayLabel.textColor = Color.gray70
         }
         if appearanceDay.isClosedDay {
-            self.timeLabel.text = R.string.localization.boss_store_closed_day()
+            self.timeLabel.text = "boss_store_closed_day".localized
             self.timeLabel.textColor = .red
             self.locationLabel.text = "-"
         } else {
@@ -84,7 +84,7 @@ final class BossStoreWorkdayStackViewItem: BaseView {
             )
             
             self.timeLabel.text = "\(startTime) - \(endTime)"
-            self.timeLabel.textColor = R.color.gray70()
+            self.timeLabel.textColor = Color.gray70
             self.locationLabel.text = appearanceDay.locationDescription
         }
     }

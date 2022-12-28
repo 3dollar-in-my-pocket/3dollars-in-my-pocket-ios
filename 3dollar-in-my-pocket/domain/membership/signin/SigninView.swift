@@ -5,7 +5,7 @@ import Then
 import Lottie
 
 final class SigninView: BaseView {
-    let lottie = AnimationView(name: "signin").then {
+    let lottie = LottieAnimationView(name: "signin").then {
         $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         $0.contentMode = .scaleAspectFill
         $0.loopMode = .loop
@@ -15,19 +15,19 @@ final class SigninView: BaseView {
     
     let kakaoButton = UIButton().then {
         $0.layer.cornerRadius = 20
-        $0.backgroundColor = R.color.kakaoYellow()
-        $0.accessibilityLabel = R.string.localization.sign_in_with_kakao()
+        $0.backgroundColor = Color.kakaoYellow
+        $0.accessibilityLabel = "sign_in_with_kakao".localized
     }
     
     private let kakaoLabel = UILabel().then {
-        $0.text = R.string.localization.sign_in_with_kakao()
+        $0.text = "sign_in_with_kakao".localized
         $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
         $0.textColor = UIColor.init(r: 56, g: 30, b: 31)
         $0.isAccessibilityElement = false
     }
     
     let kakaoImage = UIImageView().then {
-        $0.image = R.image.ic_kakao()
+        $0.image = UIImage(named: "ic_kakao")
     }
     
     let appleButton = ASAuthorizationAppleIDButton(type: .signIn, style: .white).then {
@@ -35,7 +35,7 @@ final class SigninView: BaseView {
     }
     
     let signinWithoutIdButton = UIButton().then {
-        $0.setTitle(R.string.localization.sign_in_without_id(), for: .normal)
+        $0.setTitle("sign_in_without_id".localized, for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = .medium(size: 14)
     }

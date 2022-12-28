@@ -12,7 +12,7 @@ final class CategoryFilterCell: BaseCollectionViewCell {
         $0.font = .semiBold(size: 12)
         $0.textColor = .white
         $0.textAlignment = .center
-        $0.backgroundColor = R.color.red()
+        $0.backgroundColor = Color.red
         $0.layer.masksToBounds = true
         $0.layer.cornerRadius = 9
         $0.layer.shadowColor = UIColor(r: 255, g: 92, b: 67, a: 0.5).cgColor

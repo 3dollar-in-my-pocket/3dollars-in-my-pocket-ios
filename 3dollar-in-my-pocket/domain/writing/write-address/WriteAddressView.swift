@@ -16,13 +16,13 @@ final class WriteAddressView: BaseView {
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = R.string.localization.write_title()
+        $0.text = "write_title".localized
         $0.font = .semiBold(size: 16)
         $0.textColor = .black
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(R.image.ic_close(), for: .normal)
+        $0.setImage(UIImage(named: "ic_close"), for: .normal)
     }
     
     let mapView = NMFMapView().then {
@@ -31,17 +31,17 @@ final class WriteAddressView: BaseView {
     }
     
     private let marker = UIImageView().then {
-        $0.image = R.image.ic_marker()
+        $0.image = UIImage(named: "ic_marker")
     }
     
     let currentLocationButton = UIButton().then {
-        $0.setImage(R.image.ic_location_pink(), for: .normal)
+        $0.setImage(UIImage(named: "ic_location_pink"), for: .normal)
         $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
         $0.layer.shadowColor = UIColor.black.cgColor
         $0.layer.shadowOffset = CGSize(width: 0, height: 4)
         $0.layer.shadowOpacity = 0.15
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = R.color.gray20()?.cgColor
+        $0.layer.borderColor = Color.gray20?.cgColor
         $0.layer.cornerRadius = 24
         $0.backgroundColor = .white
     }
@@ -53,7 +53,7 @@ final class WriteAddressView: BaseView {
     }
     
     private let addressTitleLabel = UILabel().then {
-        $0.text = R.string.localization.write_address_bottom_title()
+        $0.text = "write_address_bottom_title".localized
         $0.font = .bold(size: 20)
         $0.textColor = .black
     }
@@ -61,18 +61,18 @@ final class WriteAddressView: BaseView {
     private let addressContainer = UIView().then {
         $0.layer.cornerRadius = 8
         $0.layer.masksToBounds = true
-        $0.backgroundColor = R.color.gray0()
+        $0.backgroundColor = Color.gray0
     }
     
     let addressLabel = UILabel().then {
         $0.textAlignment = .center
-        $0.textColor = R.color.gray100()
+        $0.textColor = Color.gray100
         $0.font = .semiBold(size: 16)
     }
     
     let addressButton = UIButton().then {
-        $0.backgroundColor = R.color.red()
-        $0.setTitle(R.string.localization.write_address_button(), for: .normal)
+        $0.backgroundColor = Color.red
+        $0.setTitle("write_address_button".localized, for: .normal)
         $0.titleLabel?.font = .bold(size: 16)
         $0.layer.cornerRadius = 24
         $0.layer.masksToBounds = true

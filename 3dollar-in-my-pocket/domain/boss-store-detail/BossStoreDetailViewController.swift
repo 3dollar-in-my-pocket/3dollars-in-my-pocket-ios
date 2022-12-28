@@ -291,25 +291,18 @@ final class BossStoreDetailViewController:
                 ) as? BossStoreHeaderView else { return UICollectionReusableView() }
                 
                 if indexPath.section == 1 {
-                    headerView.titleLabel.text
-                    = R.string.localization.boss_store_store_info()
+                    headerView.titleLabel.text = "boss_store_store_info".localized
                     headerView.rightButton.isHidden = true
                 } else if indexPath.section == 2 {
-                    headerView.titleLabel.text
-                    = R.string.localization.boss_store_menu_info()
+                    headerView.titleLabel.text = "boss_store_menu_info".localized
                     headerView.rightButton.isHidden = true
                 } else if indexPath.section == 3 {
-                    headerView.titleLabel.text
-                    = R.string.localization.boss_store_workday()
+                    headerView.titleLabel.text = "boss_store_workday".localized
                     headerView.rightButton.isHidden = true
                 } else {
-                    headerView.titleLabel.text
-                    = R.string.localization.boss_store_store_feedback()
+                    headerView.titleLabel.text = "boss_store_store_feedback".localized
                     headerView.rightButton.isHidden = false
-                    headerView.rightButton.setTitle(
-                        R.string.localization.boss_store_feedback(),
-                        for: .normal
-                    )
+                    headerView.rightButton.setTitle("boss_store_feedback".localized, for: .normal)
                     headerView.rightButton.rx.tap
                         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
                         .map { Reactor.Action.tapFeedback }

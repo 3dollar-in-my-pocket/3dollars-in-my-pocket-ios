@@ -14,13 +14,13 @@ final class StreetFoodListMapCell: BaseCollectionViewCell {
     }
     
     let currentLocationButton = UIButton().then {
-        $0.setImage(R.image.ic_location_pink(), for: .normal)
+        $0.setImage(UIImage(named: "ic_location_pink"), for: .normal)
         $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
         $0.layer.shadowColor = UIColor.black.cgColor
         $0.layer.shadowOffset = CGSize(width: 0, height: 4)
         $0.layer.shadowOpacity = 0.15
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = R.color.gray20()?.cgColor
+        $0.layer.borderColor = Color.gray20?.cgColor
         $0.layer.cornerRadius = 24
         $0.backgroundColor = .white
     }

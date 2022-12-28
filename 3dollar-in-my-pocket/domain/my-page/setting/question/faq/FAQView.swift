@@ -47,7 +47,7 @@ class FAQView: BaseView {
     }
     
     override func setup() {
-        backgroundColor = R.color.gray100()
+        backgroundColor = Color.gray100
         addSubViews(
             backButton, titleLabel, topLineView,
             questionLabel, tagCollectionView, faqTableView

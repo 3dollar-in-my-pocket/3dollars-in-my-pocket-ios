@@ -11,15 +11,15 @@ final class BossStoreDetailView: BaseView {
     }
     
     let backButton = UIButton().then {
-        $0.setImage(R.image.ic_back_black(), for: .normal)
+        $0.setImage(UIImage(named: "ic_back_black"), for: .normal)
     }
     
     private let categoryImageView = UIImageView()
     
     let feedbackButton = UIButton().then {
-        $0.setTitle(R.string.localization.boss_store_feedback(), for: .normal)
+        $0.setTitle("boss_store_feedback".localized, for: .normal)
         $0.titleLabel?.font = .semiBold(size: 14)
-        $0.setTitleColor(R.color.green(), for: .normal)
+        $0.setTitleColor(Color.green, for: .normal)
     }
     
     let collectionView = UICollectionView(
@@ -132,7 +132,7 @@ final class BossStoreDetailView: BaseView {
         }
         
         $0.collectionViewLayout = layout
-        $0.backgroundColor = R.color.gray0()
+        $0.backgroundColor = Color.gray0
         $0.register(
             BossStoreOverviewCell.self,
             forCellWithReuseIdentifier: BossStoreOverviewCell.registerId
@@ -174,9 +174,9 @@ final class BossStoreDetailView: BaseView {
         leftInset: 16,
         rightInset: 16
     ).then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 20
-        $0.text = R.string.localization.boss_store_closed()
+        $0.text = "boss_store_closed".localized
         $0.font = .medium(size: 14)
         $0.textColor = .white
         $0.layer.masksToBounds = true

@@ -5,21 +5,21 @@ final class BookmarkDeletePopupView: BaseView {
     
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 30
-        $0.backgroundColor = R.color.gray80()
+        $0.backgroundColor = Color.gray80
     }
     
     private let titleLabel = UILabel().then {
         $0.font = .semiBold(size: 18)
         $0.text = "bookmark_list_delete_popup_title".localized
         $0.numberOfLines = 0
-        $0.textColor = R.color.gray0()
+        $0.textColor = Color.gray0
     }
     
     let cancelButton = UIButton().then {
         $0.setTitle("bookmark_list_delete_popup_cancel".localized, for: .normal)
         $0.titleLabel?.font = .bold(size: 16)
-        $0.setTitleColor(R.color.gray5(), for: .normal)
-        $0.backgroundColor = R.color.gray60()
+        $0.setTitleColor(Color.gray5, for: .normal)
+        $0.backgroundColor = Color.gray60
         $0.layer.cornerRadius = 24
         $0.contentEdgeInsets = .init(top: 0, left: 44, bottom: 0, right: 44)
     }
@@ -28,7 +28,7 @@ final class BookmarkDeletePopupView: BaseView {
         $0.setTitle("bookmark_list_delete_popup_delete".localized, for: .normal)
         $0.titleLabel?.font = .bold(size: 16)
         $0.setTitleColor(.white, for: .normal)
-        $0.backgroundColor = R.color.red()
+        $0.backgroundColor = Color.red
         $0.layer.cornerRadius = 24
         $0.contentEdgeInsets = .init(top: 0, left: 44, bottom: 0, right: 44)
     }
