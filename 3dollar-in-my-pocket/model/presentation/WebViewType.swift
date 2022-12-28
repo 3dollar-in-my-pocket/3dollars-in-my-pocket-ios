@@ -23,13 +23,13 @@ extension WebViewType {
     var title: String {
         switch self {
         case .policy:
-            return R.string.localization.setting_menu_policy()
+            return "setting_menu_policy".localized
             
         case .privacy:
-            return R.string.localization.privacy_title()
+            return "privacy_title".localized
             
         case .marketing:
-            return R.string.localization.setting_marketing()
+            return "setting_marketing".localized
         }
     }
 }

@@ -5,19 +5,19 @@ import RxCocoa
 
 final class BossStoreDetailBottomBar: BaseView {
     fileprivate let bookmarkButton = UIButton().then {
-        $0.setImage(R.image.ic_bookmark_off()?.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.setImage(R.image.ic_bookmark_on()?.withRenderingMode(.alwaysTemplate), for: .selected)
-        $0.setTitle(R.string.localization.store_detail_bookmark(), for: .normal)
+        $0.setImage(UIImage(named: "ic_bookmark_off")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.setImage(UIImage(named: "ic_bookmark_on")?.withRenderingMode(.alwaysTemplate), for: .selected)
+        $0.setTitle("store_detail_bookmark".localized, for: .normal)
         $0.titleLabel?.font = .medium(size: 14)
-        $0.setTitleColor(R.color.green(), for: .normal)
+        $0.setTitleColor(Color.green, for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -4)
-        $0.tintColor = R.color.green()
+        $0.tintColor = Color.green
     }
     
     fileprivate let feedbackButton = UIButton().then {
-        $0.backgroundColor = R.color.green()
+        $0.backgroundColor = Color.green
         $0.layer.cornerRadius = 24
-        $0.setTitle(R.string.localization.boss_store_feedback(), for: .normal)
+        $0.setTitle("boss_store_feedback".localized, for: .normal)
         $0.titleLabel?.font = .bold(size: 16)
         $0.setTitleColor(.white, for: .normal)
     }

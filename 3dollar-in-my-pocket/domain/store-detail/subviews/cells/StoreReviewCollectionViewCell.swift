@@ -13,7 +13,7 @@ final class StoreReviewCollectionViewCell: BaseCollectionViewCell {
     private let ratingView = RatingView()
     
     let moreButton = UIButton().then {
-        $0.setImage(R.image.ic_more_horizontal(), for: .normal)
+        $0.setImage(UIImage(named: "ic_more_horizontal"), for: .normal)
         $0.isHidden = true
     }
     
@@ -25,12 +25,12 @@ final class StoreReviewCollectionViewCell: BaseCollectionViewCell {
     }
     
     private let createdAtLabel = UILabel().then {
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
         $0.font = .regular(size: 12)
     }
     
     private let replyLabel = UILabel().then {
-        $0.textColor = R.color.gray90()
+        $0.textColor = Color.gray90
         $0.numberOfLines = 0
         $0.font = .regular(size: 14)
     }

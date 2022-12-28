@@ -300,3 +300,8 @@
 "boss_store_feedback_header_description" = "여러개의 리뷰를 선택할 수 있습니다.";
 "boss_store_feedback_send_feedback" = "리뷰 남기기 완료!";
 "boss_store_feedback_success" = "소중한 리뷰가 사장님께 전달되었습니다!";
+"edit_nickname_title" = "닉네임 수정";
+"edit_nickname_label1" = "를";
+"edit_nickname_label2" = "로";
+"edit_nickname_placeholder" = "닉네임 입력";
+"edit_nickname_edit_label" = "수정할래요";

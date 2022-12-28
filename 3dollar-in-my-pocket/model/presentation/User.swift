@@ -1,5 +1,5 @@
 struct User: Equatable {
-    let name: String
+    var name: String
     let userId: Int
     let socialType: SocialType
     let activity: UserActivity

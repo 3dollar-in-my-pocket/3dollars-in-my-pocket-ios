@@ -15,7 +15,7 @@ final class StorePhotoCollectionViewCell: BaseCollectionViewCell {
     }
     
     private let emptyImage = UIImageView().then {
-        $0.image = R.image.img_detail_bungeoppang()
+        $0.image = UIImage(named: "img_detail_bungeoppang")
     }
     
     private let dimView = UIView().then {
@@ -32,7 +32,7 @@ final class StorePhotoCollectionViewCell: BaseCollectionViewCell {
     }
     
     private let moreLabel = UILabel().then {
-        $0.text = R.string.localization.store_detail_more_photo()
+        $0.text = "store_detail_more_photo".localized
         $0.textColor = .white
         $0.font = .bold(size: 14)
         $0.isHidden = true

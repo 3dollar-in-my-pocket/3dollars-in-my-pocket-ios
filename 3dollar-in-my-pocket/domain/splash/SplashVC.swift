@@ -113,8 +113,8 @@ class SplashVC: BaseVC {
   
   private func showUpdateAlert() {
     AlertUtils.showWithAction(
-      title: R.string.localization.splash_need_update_title(),
-      message: R.string.localization.splash_need_update_description()
+        title: "splash_need_update_title".localized,
+        message: "splash_need_update_description".localized
     ) { _ in
       if let url = URL(string: "itms-apps://itunes.apple.com/app/1496099467"),
          UIApplication.shared.canOpenURL(url) {

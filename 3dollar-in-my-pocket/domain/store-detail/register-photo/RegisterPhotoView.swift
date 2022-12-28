@@ -8,7 +8,7 @@ final class RegisterPhotoView: BaseView {
     }
   
     let closeButton = UIButton().then {
-        $0.setImage(R.image.ic_close(), for: .normal)
+        $0.setImage(UIImage(named: "ic_close"), for: .normal)
     }
   
     private let titleLabel = UILabel().then {

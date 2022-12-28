@@ -8,7 +8,7 @@ final class BookmarkStoreCollectionViewCell: BaseCollectionViewCell {
     static let height: CGFloat = 102
     
     private let containerView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
         $0.layer.cornerRadius = 15
     }
     
@@ -23,13 +23,13 @@ final class BookmarkStoreCollectionViewCell: BaseCollectionViewCell {
     
     private let categoriesLabel = UILabel().then {
         $0.font = .regular(size: 12)
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
         $0.numberOfLines = 1
         $0.textAlignment = .left
     }
     
     let deleteButton = UIButton().then {
-        $0.setImage(R.image.ic_delete_small(), for: .normal)
+        $0.setImage(UIImage(named: "ic_delete_small"), for: .normal)
         $0.alpha = 0
     }
     

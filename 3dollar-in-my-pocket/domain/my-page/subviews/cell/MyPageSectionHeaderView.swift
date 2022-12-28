@@ -8,12 +8,12 @@ final class MyPageSectionHeaderView: BaseCollectionReusableView {
     static let height: CGFloat = 115
     
     private let iconView = UIImageView().then {
-        $0.tintColor = R.color.gray20()
+        $0.tintColor = Color.gray20
     }
     
     private let iconLabel = UILabel().then {
         $0.font = .bold(size: 12)
-        $0.textColor = R.color.gray20()
+        $0.textColor = Color.gray20
     }
     
     private let titleLabel = UILabel().then {
@@ -24,14 +24,14 @@ final class MyPageSectionHeaderView: BaseCollectionReusableView {
     fileprivate let moreButton = UIButton().then {
         $0.setTitle("my_page_more".localized, for: .normal)
         $0.layer.cornerRadius = 15
-        $0.backgroundColor = R.color.gray80()
+        $0.backgroundColor = Color.gray80
         $0.titleLabel?.font = .bold(size: 12)
-        $0.setTitleColor(R.color.gray20(), for: .normal)
+        $0.setTitleColor(Color.gray20, for: .normal)
         $0.contentEdgeInsets = .init(top: 0, left: 16, bottom: 0, right: 16)
     }
     
     override func setup() {
-        self.backgroundColor = R.color.gray100()
+        self.backgroundColor = Color.gray100
         self.addSubViews([
             self.iconView,
             self.iconLabel,

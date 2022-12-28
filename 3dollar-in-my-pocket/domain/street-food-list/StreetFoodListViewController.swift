@@ -22,7 +22,7 @@ final class StreetFoodListViewController: BaseViewController, StreetFoodListCoor
     static func instance() -> UINavigationController {
         let viewController = StreetFoodListViewController(nibName: nil, bundle: nil).then {
             $0.tabBarItem = UITabBarItem(
-                title: R.string.localization.tab_street_food(),
+                title: "tab_street_food".localized,
                 image: UIImage(named: "ic_street_food"),
                 tag: TabBarTag.streetFood.rawValue
             )

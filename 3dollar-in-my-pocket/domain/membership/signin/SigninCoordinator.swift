@@ -24,7 +24,7 @@ extension SigninCoordinator where Self: SigninViewController {
     func showWarningAlert() {
         AlertUtils.showWithCancel(
             controller: self,
-            message: R.string.localization.sign_in_anonymous_warning()
+            message: "sign_in_anonymous_warning".localized
         ) {
             self.reactor?.action.onNext(.tapWithoutSignin)
         }

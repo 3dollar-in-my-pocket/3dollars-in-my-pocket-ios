@@ -25,20 +25,20 @@ final class HomeAdvertisementCell: BaseCollectionViewCell {
     ).then {
         $0.backgroundColor = UIColor(r: 255, g: 92, b: 67, a: 0.2)
         $0.layer.cornerRadius = 11
-        $0.textColor = R.color.red()
+        $0.textColor = Color.red
         $0.text = "shared_advertisement".localized
         $0.font = .medium(size: 12)
         $0.layer.masksToBounds = true
     }
   
     private let titleLabel = UILabel().then {
-        $0.textColor = R.color.gray100()
+        $0.textColor = Color.gray100
         $0.font = .extraBold(size: 16)
     }
   
     private let descriptionLabel = UILabel().then {
         $0.font = .light(size: 14)
-        $0.textColor = R.color.pink()
+        $0.textColor = Color.pink
         $0.numberOfLines = 2
     }
     
@@ -110,7 +110,7 @@ final class HomeAdvertisementCell: BaseCollectionViewCell {
         } else {
             self.containerView.backgroundColor = .white
             self.titleLabel.textColor = .black
-            self.descriptionLabel.textColor = R.color.pink()
+            self.descriptionLabel.textColor = Color.pink
         }
     }
 }

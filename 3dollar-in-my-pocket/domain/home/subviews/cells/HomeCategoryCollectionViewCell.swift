@@ -21,7 +21,7 @@ final class HomeCategoryCollectionViewCell: BaseCollectionViewCell {
     
     private let titleLabel = UILabel().then {
         $0.font = .regular(size: 12)
-        $0.textColor = R.color.gray40()
+        $0.textColor = Color.gray40
         $0.text = "붕어빵"
     }
     
@@ -57,10 +57,10 @@ final class HomeCategoryCollectionViewCell: BaseCollectionViewCell {
         if isSelected {
             switch self.storeType {
             case .streetFood:
-                self.containerView.backgroundColor = R.color.pink()
+                self.containerView.backgroundColor = Color.pink
                 
             case .foodTruck:
-                self.containerView.backgroundColor = R.color.green()
+                self.containerView.backgroundColor = Color.green
                 
             case .unknown:
                 break
@@ -68,7 +68,7 @@ final class HomeCategoryCollectionViewCell: BaseCollectionViewCell {
             self.titleLabel.textColor = .white
         } else {
             self.containerView.backgroundColor = .white
-            self.titleLabel.textColor = R.color.gray40()
+            self.titleLabel.textColor = Color.gray40
         }
     }
 }

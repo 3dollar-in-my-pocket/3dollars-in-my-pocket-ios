@@ -6,75 +6,75 @@ class NicknameView: BaseView {
   let tapGestureView = UITapGestureRecognizer()
   
   let backButton = UIButton().then {
-    $0.setImage(R.image.ic_back_white(), for: .normal)
+    $0.setImage(UIImage(named: "ic_back_white"), for: .normal)
   }
   
   let bgCloud = UIImageView().then {
-    $0.image = R.image.bg_cloud()
+    $0.image = UIImage(named: "bg_cloud")
     $0.contentMode = .scaleToFill
   }
   
   let nicknameLabel1 = UILabel().then {
-    $0.text = R.string.localization.nickname_label_1()
-    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 32)
+      $0.text = "nickname_label_1".localized
+      $0.font = .bold(size: 32)
     $0.textColor = .white
   }
   
   let nicknameFieldBg = UIView().then {
     $0.layer.cornerRadius = 28
     $0.layer.borderWidth = 2
-    $0.layer.borderColor = R.color.pink()?.cgColor
+    $0.layer.borderColor = Color.pink?.cgColor
     $0.backgroundColor = .clear
   }
   
   let nicknameField = UITextField().then {
     $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 32)
-    $0.textColor = R.color.pink()
+    $0.textColor = Color.pink
     $0.returnKeyType = .done
     $0.attributedPlaceholder = NSAttributedString(
-      string: R.string.localization.nickname_placeholder(),
+        string: "nickname_placeholder".localized,
       attributes: [
-        NSAttributedString.Key.foregroundColor: R.color.pink()?.withAlphaComponent(0.3) as Any
+        NSAttributedString.Key.foregroundColor: Color.pink?.withAlphaComponent(0.3) as Any
       ]
     )
   }
   
   let nicknameLabel2 = UILabel().then {
-    $0.text = R.string.localization.nickname_label_2()
-    $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 32)
+      $0.text = "nickname_label_2".localized
+      $0.font = .bold(size: 32)
     $0.textColor = .white
   }
   
   let startButton1 = UIButton().then {
-    $0.setTitle(R.string.localization.nickname_label_3(), for: .normal)
-    $0.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 32)
+      $0.setTitle("nickname_label_3".localized, for: .normal)
+      $0.titleLabel?.font = .bold(size: 32)
     $0.setTitleColor(.white, for: .disabled)
-    $0.setTitleColor(R.color.red(), for: .normal)
+    $0.setTitleColor(Color.red, for: .normal)
     $0.isEnabled = false
   }
   
   let startButton2 = UIButton().then {
-    $0.setImage(R.image.img_start_off_disable(), for: .disabled)
-    $0.setImage(R.image.img_start_off_normal(), for: .normal)
+    $0.setImage(UIImage(named: "img_start_off_disable"), for: .disabled)
+    $0.setImage(UIImage(named: "img_start_off_normal"), for: .normal)
     $0.backgroundColor = .clear
     $0.isEnabled = false
   }
   
   let warningImage = UIImageView().then {
-    $0.image = R.image.ic_warning()
+    $0.image = UIImage(named: "ic_warning")
     $0.isHidden = true
   }
   
   let warningLabel = UILabel().then {
-    $0.text = R.string.localization.nickname_alreay_existed()
-    $0.textColor = R.color.red()
+      $0.text = "nickname_alreay_existed".localized
+    $0.textColor = Color.red
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 13)
     $0.isHidden = true
   }
   
   
   override func setup() {
-    self.backgroundColor = R.color.gray100()
+      self.backgroundColor = Color.gray100
     self.isUserInteractionEnabled = true
     self.addGestureRecognizer(self.tapGestureView)
     self.nicknameField.delegate = self

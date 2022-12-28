@@ -5,11 +5,11 @@ import RxCocoa
 final class RegisteredStoreView: BaseView {
     
     let backButton = UIButton().then {
-        $0.setImage(R.image.ic_back_white(), for: .normal)
+        $0.setImage(UIImage(named: "ic_back_white"), for: .normal)
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = R.string.localization.registered_store_title()
+        $0.text = "registered_store_title".localized
         $0.textColor = .white
         $0.font = .semiBold(size: 16)
     }

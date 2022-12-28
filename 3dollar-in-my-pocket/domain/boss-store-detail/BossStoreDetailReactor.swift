@@ -193,9 +193,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
             .flatMap { _ -> Observable<Mutation> in
                 return .merge([
                     .just(.setBookmark(true)),
-                    .just(.showToast(
-                        message: R.string.localization.store_detail_bookmark_toast())
-                    )
+                    .just(.showToast(message: "store_detail_bookmark_toast".localized))
                 ])
             }
             .catch { .just(.showErrorAlert($0)) }
@@ -209,9 +207,7 @@ final class BossStoreDetailReactor: BaseReactor, Reactor {
                 .flatMap { _ -> Observable<Mutation> in
                     return .merge([
                         .just(.setBookmark(false)),
-                        .just(.showToast(
-                            message: R.string.localization.store_detail_unbookmark_toast())
-                        )
+                        .just(.showToast(message: "store_detail_unbookmark_toast".localized))
                     ])
                 }
             .catch { .just(.showErrorAlert($0)) }

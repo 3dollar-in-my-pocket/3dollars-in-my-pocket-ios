@@ -7,7 +7,7 @@ final class MedalInfoTableViewCell: BaseTableViewCell {
     
     private let medalNameLabel = UILabel().then {
         $0.font = .medium(size: 16)
-        $0.textColor = R.color.pink()
+        $0.textColor = Color.pink
     }
     
     private let acquisitionLabel = UILabel().then {

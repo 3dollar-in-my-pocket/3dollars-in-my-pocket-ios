@@ -5,7 +5,7 @@ final class BossStoreFeedbackItemView: BaseView {
     
     private let titleLabel = UILabel().then {
         $0.font = .bold(size: 14)
-        $0.textColor = R.color.gray95()
+        $0.textColor = Color.gray95
     }
     
     private let countLabel = PaddingLabel(
@@ -15,8 +15,8 @@ final class BossStoreFeedbackItemView: BaseView {
         rightInset: 8
     ).then {
         $0.font = .regular(size: 12)
-        $0.textColor = R.color.green()
-        $0.layer.borderColor = R.color.green()?.cgColor
+        $0.textColor = Color.green
+        $0.layer.borderColor = Color.green?.cgColor
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 11
     }
@@ -27,7 +27,7 @@ final class BossStoreFeedbackItemView: BaseView {
     }
     
     private let progressView = UIProgressView().then {
-        $0.progressTintColor = R.color.green()
+        $0.progressTintColor = Color.green
         $0.layer.cornerRadius = 4
         $0.trackTintColor = .clear
     }
@@ -82,8 +82,8 @@ final class BossStoreFeedbackItemView: BaseView {
     
     private func setProgressBar(isTopRate: Bool) {
         self.progressBackgroundView.backgroundColor
-        = isTopRate ? UIColor(r: 242, g: 251, b: 247) : R.color.gray5()
+        = isTopRate ? UIColor(r: 242, g: 251, b: 247) : Color.gray5
         self.progressView.progressTintColor
-        = isTopRate ? R.color.green() : R.color.gray10()
+        = isTopRate ? Color.green : Color.gray10
     }
 }

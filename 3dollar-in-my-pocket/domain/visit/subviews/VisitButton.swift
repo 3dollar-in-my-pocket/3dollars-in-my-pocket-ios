@@ -51,16 +51,16 @@ final class VisitButton: UIButton {
   func bind(type: VisitType) {
     switch type {
     case .exists:
-      self.visitImage.image = R.image.img_visit_success()
-      self.subjectLabel.text = R.string.localization.visit_success()
+      self.visitImage.image = UIImage(named: "img_visit_success")
+        self.subjectLabel.text = "visit_success".localized
       self.subjectLabel.textColor = UIColor(r: 0, g: 198, b: 103)
       self.subjectContainerView.backgroundColor = UIColor(r: 0, g: 198, b: 103)
       
     case .notExists:
-      self.visitImage.image = R.image.img_visit_fail()
-      self.subjectLabel.text = R.string.localization.visit_fail()
-      self.subjectLabel.textColor = R.color.red()
-      self.subjectContainerView.backgroundColor = R.color.red()
+      self.visitImage.image = UIImage(named: "img_visit_fail")
+        self.subjectLabel.text = "visit_fail".localized
+      self.subjectLabel.textColor = Color.red
+      self.subjectContainerView.backgroundColor = Color.red
     }
   }
   

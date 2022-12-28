@@ -34,4 +34,10 @@ final class GlobalState {
     
     /// 즐겨찾기 제목, 설명을 수정한 경우
     let updateBookmarkFolder = PublishSubject<BookmarkFolder>()
+    
+    /// 닉네임 변경된 경우
+    let updateNickname = PublishSubject<String>()
+    
+    /// 칭호 변경한 경우
+    let updateMedal = PublishSubject<Medal>()
 }

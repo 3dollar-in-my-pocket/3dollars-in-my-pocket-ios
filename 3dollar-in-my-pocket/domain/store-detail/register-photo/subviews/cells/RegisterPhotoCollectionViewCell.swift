@@ -25,7 +25,7 @@ final class RegisterPhotoCollectionViewCell: BaseCollectionViewCell {
     }
     
     private let checkBox = UIImageView().then {
-        $0.image = R.image.ic_check_circle_off()
+        $0.image = UIImage(named: "ic_check_circle_off")
     }
     
     override var isSelected: Bool {
@@ -33,9 +33,9 @@ final class RegisterPhotoCollectionViewCell: BaseCollectionViewCell {
             if isSelected {
                 self.dimView.layer.borderWidth = 2
                 self.dimView.layer.borderColor = UIColor(r: 255, g: 161, b: 170).cgColor
-                self.checkBox.image = R.image.ic_check_circle_on()
+                self.checkBox.image = UIImage(named: "ic_check_circle_on")
             } else {
-                self.checkBox.image = R.image.ic_check_circle_off()
+                self.checkBox.image = UIImage(named: "ic_check_circle_off")
             }
             self.dimView.isHidden = !isSelected
         }

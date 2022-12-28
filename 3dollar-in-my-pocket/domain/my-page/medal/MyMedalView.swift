@@ -5,11 +5,11 @@ import RxCocoa
 
 final class MyMedalView: BaseView {
     let backButton = UIButton().then {
-        $0.setImage(R.image.ic_back_white(), for: .normal)
+        $0.setImage(UIImage(named: "ic_back_white"), for: .normal)
     }
     
     let titleLabel = UILabel().then {
-        $0.text = R.string.localization.my_medal_title()
+        $0.text = "my_medal_title".localized
         $0.textColor = .white
         $0.font = .semiBold(size: 16)
     }
@@ -41,7 +41,7 @@ final class MyMedalView: BaseView {
     }
     
     override func setup() {
-        self.backgroundColor = R.color.gray100()
+        self.backgroundColor = Color.gray100
         self.collectionView.delegate = self
         self.addSubViews([
             self.backButton,

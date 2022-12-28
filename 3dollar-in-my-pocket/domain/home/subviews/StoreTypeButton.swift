@@ -5,7 +5,7 @@ import RxCocoa
 
 final class StoreTypeButton: BaseView {
     fileprivate let containerButton = UIButton().then {
-        $0.backgroundColor = R.color.gray90()
+        $0.backgroundColor = Color.gray90
         $0.layer.cornerRadius = 10
         $0.layer.shadowColor = UIColor.black.cgColor
         $0.layer.shadowOpacity = 0.08
@@ -14,12 +14,12 @@ final class StoreTypeButton: BaseView {
     
     fileprivate let iconView = UIImageView().then {
         $0.image = UIImage(named: "ic_sync")?.withRenderingMode(.alwaysTemplate)
-        $0.tintColor = R.color.green()
+        $0.tintColor = Color.green
     }
     
     fileprivate let titleLabel = UILabel().then {
         $0.font = .bold(size: 12)
-        $0.textColor = R.color.green()
+        $0.textColor = Color.green
         $0.text = "푸드트럭"
     }
     

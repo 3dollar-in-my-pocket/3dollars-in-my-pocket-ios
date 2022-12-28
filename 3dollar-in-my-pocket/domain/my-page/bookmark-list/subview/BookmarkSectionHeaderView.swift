@@ -9,27 +9,27 @@ final class BookmarkSectionHeaderView: BaseCollectionReusableView {
     
     private let countLabel = UILabel().then {
         $0.font = .bold(size: 12)
-        $0.textColor = R.color.gray20()
+        $0.textColor = Color.gray20
         $0.text = "4개의 리스트"
     }
     
     let deleteButton = UIButton().then {
         $0.setTitle("bookmark_list_delete".localized, for: .normal)
-        $0.setTitleColor(R.color.gray20(), for: .normal)
+        $0.setTitleColor(Color.gray20, for: .normal)
         $0.titleLabel?.font = .medium(size: 12)
     }
     
     let deleteAllButton = UIButton().then {
         $0.setTitle("bookmark_list_delete_all".localized, for: .normal)
-        $0.setTitleColor(R.color.gray20(), for: .normal)
+        $0.setTitleColor(Color.gray20, for: .normal)
         $0.titleLabel?.font = .medium(size: 12)
     }
     
     let finishButton = UIButton().then {
         $0.setTitle("bookmark_list_finish".localized, for: .normal)
-        $0.setTitleColor(R.color.gray20(), for: .normal)
+        $0.setTitleColor(Color.gray20, for: .normal)
         $0.titleLabel?.font = .medium(size: 12)
-        $0.backgroundColor = R.color.gray80()
+        $0.backgroundColor = Color.gray80
         $0.layer.cornerRadius = 13
         $0.contentEdgeInsets = .init(top: 4, left: 13, bottom: 4, right: 13)
     }

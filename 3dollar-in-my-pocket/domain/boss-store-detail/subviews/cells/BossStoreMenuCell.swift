@@ -17,12 +17,12 @@ final class BossStoreMenuCell: BaseCollectionViewCell {
     
     private let nameLabel = UILabel().then {
         $0.font = .bold(size: 14)
-        $0.textColor = R.color.gray95()
+        $0.textColor = Color.gray95
     }
     
     private let priceLabel = UILabel().then {
         $0.font = .medium(size: 14)
-        $0.textColor = R.color.gray95()
+        $0.textColor = Color.gray95
     }
     
     private let photoView = UIImageView().then {

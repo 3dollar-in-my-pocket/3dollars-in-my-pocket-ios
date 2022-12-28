@@ -7,17 +7,17 @@ final class OrderFilterButton: BaseView {
     fileprivate let orderType = PublishSubject<StoreOrder>()
     
     private let distanceOrderButton = UIButton().then {
-        $0.setTitle(R.string.localization.category_ordering_distance(), for: .normal)
-        $0.setTitleColor(R.color.pink(), for: .selected)
-        $0.setTitleColor(R.color.gray40(), for: .normal)
+        $0.setTitle("category_ordering_distance".localized, for: .normal)
+        $0.setTitleColor(Color.pink, for: .selected)
+        $0.setTitleColor(Color.gray40, for: .normal)
         $0.titleLabel?.font = .regular(size: 14)
         $0.isSelected = true
     }
     
     private let reviewOrderButton = UIButton().then {
-        $0.setTitle(R.string.localization.category_ordering_review(), for: .normal)
-        $0.setTitleColor(R.color.pink(), for: .selected)
-        $0.setTitleColor(R.color.gray40(), for: .normal)
+        $0.setTitle("category_ordering_review".localized, for: .normal)
+        $0.setTitleColor(Color.pink, for: .selected)
+        $0.setTitleColor(Color.gray40, for: .normal)
         $0.titleLabel?.font = .regular(size: 14)
     }
     
@@ -33,11 +33,11 @@ final class OrderFilterButton: BaseView {
         super.init(frame: .zero)
         
         if storeType == .streetFood {
-            self.distanceOrderButton.setTitleColor(R.color.pink(), for: .selected)
-            self.reviewOrderButton.setTitleColor(R.color.pink(), for: .selected)
+            self.distanceOrderButton.setTitleColor(Color.pink, for: .selected)
+            self.reviewOrderButton.setTitleColor(Color.pink, for: .selected)
         } else {
-            self.distanceOrderButton.setTitleColor(R.color.green(), for: .selected)
-            self.reviewOrderButton.setTitleColor(R.color.green(), for: .selected)
+            self.distanceOrderButton.setTitleColor(Color.green, for: .selected)
+            self.reviewOrderButton.setTitleColor(Color.green, for: .selected)
         }
     }
     
@@ -47,7 +47,7 @@ final class OrderFilterButton: BaseView {
     
     override func setup() {
         self.layer.cornerRadius = 12
-        self.backgroundColor = R.color.gray5()
+        self.backgroundColor = Color.gray5
         self.addSubViews([
             self.selectedContainer,
             self.distanceOrderButton,

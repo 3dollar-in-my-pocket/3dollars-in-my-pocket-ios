@@ -13,41 +13,41 @@ final class StoreInfoCollectionViewCell: BaseCollectionViewCell {
     }
   
     private let storeTypeLabel = UILabel().then {
-        $0.text = R.string.localization.store_detail_type()
-        $0.textColor = R.color.black()
+        $0.text = "store_detail_type".localized
+        $0.textColor = Color.black
         $0.font = .bold(size: 14)
     }
   
     private let storeTypeValueLabel = UILabel().then {
-        $0.textColor = R.color.pink()
+        $0.textColor = Color.pink
         $0.font = .regular(size: 14)
     }
   
     private let storeTypeEmptyLabel = UILabel().then {
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
         $0.font = .regular(size: 14)
-        $0.text = R.string.localization.store_detail_info_empty()
+        $0.text = "store_detail_info_empty".localized
         $0.isHidden = false
     }
   
     private let storeDaysLabel = UILabel().then {
-        $0.text = R.string.localization.store_detail_days()
-        $0.textColor = R.color.black()
+        $0.text = "store_detail_days".localized
+        $0.textColor = Color.black
         $0.font = .bold(size: 14)
     }
   
     private let dayStackView = DayStackView()
   
     private let storeDaysEmptyLabel = UILabel().then {
-        $0.textColor = R.color.gray30()
+        $0.textColor = Color.gray30
         $0.font = .regular(size: 14)
-        $0.text = R.string.localization.store_detail_info_empty()
+        $0.text = "store_detail_info_empty".localized
         $0.isHidden = true
     }
   
     private let paymentLabel = UILabel().then {
-        $0.text = R.string.localization.store_detail_payment()
-        $0.textColor = R.color.black()
+        $0.text = "store_detail_payment".localized
+        $0.textColor = Color.black
         $0.font = .bold(size: 14)
     }
   

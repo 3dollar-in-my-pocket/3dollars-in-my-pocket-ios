@@ -11,11 +11,11 @@ final class BossStoreHeaderView: UICollectionReusableView {
     
     let titleLabel = UILabel().then {
         $0.font = .extraBold(size: 18)
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
     }
     
     let rightButton = UIButton().then {
-        $0.setTitleColor(R.color.green(), for: .normal)
+        $0.setTitleColor(Color.green, for: .normal)
         $0.titleLabel?.font = .bold(size: 12)
         $0.layer.cornerRadius = 15
         $0.backgroundColor = UIColor(r: 0, g: 198, b: 103, a: 0.13)

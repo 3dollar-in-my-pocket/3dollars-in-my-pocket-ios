@@ -6,7 +6,7 @@ final class BossStoreFeedbackTableViewCell: BaseTableViewCell {
     
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 24
-        $0.layer.borderColor = R.color.gray10()?.cgColor
+        $0.layer.borderColor = Color.gray10?.cgColor
         $0.layer.borderWidth = 1
         $0.backgroundColor = .white
     }
@@ -15,7 +15,7 @@ final class BossStoreFeedbackTableViewCell: BaseTableViewCell {
     
     private let titleLabel = UILabel().then {
         $0.font = .bold(size: 14)
-        $0.textColor = R.color.gray95()
+        $0.textColor = Color.gray95
     }
     
     override func setup() {
@@ -52,11 +52,11 @@ final class BossStoreFeedbackTableViewCell: BaseTableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         if selected {
             self.containerView.backgroundColor = UIColor(r: 242, g: 251, b: 247)
-            self.containerView.layer.borderColor = R.color.green()?.cgColor
+            self.containerView.layer.borderColor = Color.green?.cgColor
             self.checkImage.image = UIImage(named: "ic_check_on_green")
         } else {
             self.containerView.backgroundColor = .white
-            self.containerView.layer.borderColor = R.color.gray10()?.cgColor
+            self.containerView.layer.borderColor = Color.gray10?.cgColor
             self.checkImage.image = UIImage(named: "ic_check_off_green")
         }
         super.setSelected(selected, animated: animated)

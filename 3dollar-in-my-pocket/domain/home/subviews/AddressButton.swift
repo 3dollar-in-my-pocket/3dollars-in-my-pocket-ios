@@ -21,7 +21,7 @@ final class AddressButton: BaseView {
     private let rightArrowImage = UIImageView().then {
         $0.image = UIImage(named: "ic_right_arrow")?
             .withRenderingMode(.alwaysTemplate)
-        $0.tintColor = R.color.gray30()
+        $0.tintColor = Color.gray30
     }
     
     override func setup() {

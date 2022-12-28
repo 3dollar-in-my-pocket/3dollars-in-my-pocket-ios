@@ -98,8 +98,8 @@ class BaseVC: UIViewController {
     private func showHTTPErrorAlert2(error: HTTPError) {
         if error == HTTPError.maintenance {
             AlertUtils.showWithAction(
-                title: R.string.localization.error_maintenance_title(),
-                message: R.string.localization.error_maintenance_message()
+                title: "error_maintenance_title".localized,
+                message: "error_maintenance_message".localized
             ) { _ in
                 UIControl().sendAction(
                     #selector(URLSessionTask.suspend),

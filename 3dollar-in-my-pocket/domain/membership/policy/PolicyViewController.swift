@@ -10,6 +10,7 @@ final class PolicyViewController: BaseViewController, View, PolicyCoordinator {
     private let policyView = PolicyView()
     private let policyReactor = PolicyReactor(
         userService: UserService(),
+        deviceService: DeviceService(),
         analyticsManager: AnalyticsManager.shared
     )
     private weak var coordinator: PolicyCoordinator?

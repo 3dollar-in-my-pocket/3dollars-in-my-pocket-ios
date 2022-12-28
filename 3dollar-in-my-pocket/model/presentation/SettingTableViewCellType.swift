@@ -24,16 +24,16 @@ extension SettingTableViewCellType {
     var icon: UIImage? {
         switch self {
         case .push:
-            return R.image.ic_push()
+            return UIImage(named: "ic_push")
             
         case .question:
-            return R.image.ic_setting_notice()
+            return UIImage(named: "ic_setting_notice")
             
         case .policy:
-            return R.image.ic_setting_message()
+            return UIImage(named: "ic_setting_message")
             
         case .privacy:
-            return R.image.ic_setting_message()
+            return UIImage(named: "ic_setting_message")
             
         case .account:
             return nil
@@ -46,16 +46,16 @@ extension SettingTableViewCellType {
     var title: String? {
         switch self {
         case .push:
-            return R.string.localization.setting_menu_push()
+            return "setting_menu_push".localized
             
         case .question:
-            return R.string.localization.setting_menu_question()
+            return "setting_menu_question".localized
             
         case .policy:
-            return R.string.localization.setting_menu_policy()
+            return "setting_menu_policy".localized
             
         case .privacy:
-            return R.string.localization.setting_menu_privacy()
+            return "setting_menu_privacy".localized
             
         case .account:
             return nil

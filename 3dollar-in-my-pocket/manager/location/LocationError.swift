@@ -18,13 +18,13 @@ enum LocationError: LocalizedError {
     var localizedDescription: String {
         switch self {
         case .denied:
-            return R.string.localization.location_deny_description()
+            return "location_deny_description".localized
         case .unknown:
-            return R.string.localization.error_unknown()
+            return "error_unknown".localized
         case .unknownLocation:
-            return R.string.localization.location_unknown_description()
+            return "location_unknown_description".localized
         case .disableLocationService:
-            return R.string.localization.error_location_permission_denied_message()
+            return "error_location_permission_denied_message".localized
         }
     }
 }

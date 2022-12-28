@@ -4,7 +4,7 @@ final class MyPageDecorationView: BaseCollectionReusableView {
     static let registerId = "\(MyPageDecorationView.self)"
     
     private let backgroundView = UIView().then {
-        $0.backgroundColor = R.color.gray100()
+        $0.backgroundColor = Color.gray100
     }
 
     override func setup() {

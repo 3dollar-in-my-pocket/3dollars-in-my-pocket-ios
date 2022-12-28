@@ -8,20 +8,20 @@ final class CertificateButton: UIButton {
     fileprivate let isCertificatedPublisher = PublishSubject<Bool>()
     
     private let checkImage = UIImageView().then {
-        $0.image = R.image.ic_check_off()
+        $0.image = UIImage(named: "ic_check_off")
     }
     
     private let subjectLabel = UILabel().then {
         $0.font = .regular(size: 14)
-        $0.textColor = R.color.pink()
-        $0.text = R.string.localization.category_list_certificated()
+        $0.textColor = Color.pink
+        $0.text = "category_list_certificated".localized
     }
     
     override var isSelected: Bool {
         didSet {
             self.checkImage.image = self.isSelected
-            ? R.image.ic_check_on()
-            : R.image.ic_check_off()
+            ? UIImage(named: "ic_check_on")
+            : UIImage(named: "ic_check_off")
         }
     }
     
@@ -39,7 +39,7 @@ final class CertificateButton: UIButton {
     private func setup() {
         self.backgroundColor = UIColor(r: 255, g: 161, b: 170, a: 0.1)
         self.layer.cornerRadius = 12
-        self.accessibilityLabel = R.string.localization.category_list_certificated()
+        self.accessibilityLabel = "category_list_certificated".localized
         self.addSubViews([
             self.subjectLabel,
             self.checkImage

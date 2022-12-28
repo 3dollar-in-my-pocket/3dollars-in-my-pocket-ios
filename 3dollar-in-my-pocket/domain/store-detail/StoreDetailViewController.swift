@@ -10,7 +10,7 @@ import RxSwift
 import RxDataSources
 import GoogleMobileAds
 import NMapsMap
-import SPPermissions
+import PermissionsKit
 
 final class StoreDetailViewController:
     BaseViewController,
@@ -443,27 +443,6 @@ extension StoreDetailViewController: UIImagePickerControllerDelegate,
         }
         
         picker.dismiss(animated: true, completion: nil)
-    }
-}
-
-extension StoreDetailViewController: SPPermissionsDelegate {
-    func didAllow(permission: SPPermission) {
-        if permission == .camera {
-            self.coordinator?.showCamera()
-        } else if permission == .photoLibrary {
-            self.storeDetailReactor.action.onNext(.tapAddPhoto)
-        }
-    }
-    
-    func deniedData(for permission: SPPermission) -> SPPermissionDeniedAlertData? {
-        let data = SPPermissionDeniedAlertData()
-        
-        data.alertOpenSettingsDeniedPermissionTitle = "permission_denied_title".localized
-        data.alertOpenSettingsDeniedPermissionDescription
-        = "permission_denied_description".localized
-        data.alertOpenSettingsDeniedPermissionButtonTitle = "permission_setting_button".localized
-        data.alertOpenSettingsDeniedPermissionCancelTitle = "permission_setting_cancel".localized
-        return data
     }
 }
 // swiftlint:enable cyclomatic_complexity

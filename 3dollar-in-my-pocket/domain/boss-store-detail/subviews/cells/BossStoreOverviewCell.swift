@@ -16,13 +16,13 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
     }
     
     let currentLocationButton = UIButton().then {
-        $0.setImage(R.image.ic_location_green(), for: .normal)
+        $0.setImage(UIImage(named: "ic_location_green"), for: .normal)
         $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
         $0.layer.shadowColor = UIColor.black.cgColor
         $0.layer.shadowOffset = CGSize(width: 0, height: 4)
         $0.layer.shadowOpacity = 0.15
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = R.color.gray20()?.cgColor
+        $0.layer.borderColor = Color.gray20?.cgColor
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 24
     }
@@ -44,50 +44,50 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
     
     private let nameLabel = UILabel().then {
         $0.font = .bold(size: 24)
-        $0.textColor = R.color.gray100()
+        $0.textColor = Color.gray100
         $0.textAlignment = .center
     }
     
     private let distanceIcon = UIImageView().then {
-        $0.image = R.image.ic_near_filled_green()
+        $0.image = UIImage(named: "ic_near_filled_green")
     }
     
     private let distanceLabel = UILabel().then {
         $0.font = .medium(size: 14)
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
     }
     
     private let reviewIcon = UIImageView().then {
-        $0.image = R.image.ic_review_green()
+        $0.image = UIImage(named: "ic_review_green")
     }
     
     private let reviewCountLabel = UILabel().then {
         $0.font = .medium(size: 14)
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
         $0.textAlignment = .left
     }
     
     let shareButton = UIButton().then {
-        $0.setImage(R.image.ic_share(), for: .normal)
-        $0.setTitle(R.string.localization.boss_store_share(), for: .normal)
-        $0.setTitleColor(R.color.black(), for: .normal)
+        $0.setImage(UIImage(named: "ic_share"), for: .normal)
+        $0.setTitle("boss_store_share".localized, for: .normal)
+        $0.setTitleColor(Color.black, for: .normal)
         $0.titleLabel?.font = .medium(size: 16)
         $0.imageEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 8)
         $0.titleEdgeInsets = .init(top: 0, left: 8, bottom: 0, right: 0)
     }
     
     private let dividerView = UIView().then {
-        $0.backgroundColor = R.color.gray20()
+        $0.backgroundColor = Color.gray20
     }
     
     let bookmarkButton = UIButton().then {
-        $0.setImage(R.image.ic_bookmark_off()?.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.setImage(R.image.ic_bookmark_on()?.withRenderingMode(.alwaysTemplate), for: .selected)
-        $0.setTitle(R.string.localization.store_detail_bookmark(), for: .normal)
+        $0.setImage(UIImage(named: "ic_bookmark_off")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.setImage(UIImage(named: "ic_bookmark_on")?.withRenderingMode(.alwaysTemplate), for: .selected)
+        $0.setTitle("store_detail_bookmark".localized, for: .normal)
         $0.titleLabel?.font = .medium(size: 16)
-        $0.setTitleColor(R.color.green(), for: .normal)
+        $0.setTitleColor(Color.green, for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
-        $0.tintColor = R.color.green()
+        $0.tintColor = Color.green
     }
     
     override func prepareForReuse() {
@@ -241,7 +241,7 @@ final class BossStoreOverviewCell: BaseCollectionViewCell {
                 rightInset: 8
             ).then {
                 $0.backgroundColor = UIColor(r: 0, g: 198, b: 103, a: 0.1)
-                $0.textColor = R.color.green()
+                $0.textColor = Color.green
                 $0.layer.cornerRadius = 8
                 $0.text = category.name
                 $0.font = .regular(size: 14)

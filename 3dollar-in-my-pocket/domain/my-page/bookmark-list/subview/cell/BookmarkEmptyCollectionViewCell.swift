@@ -8,13 +8,13 @@ final class BookmarkEmptyCollectionViewCell: BaseCollectionViewCell {
     static let height: CGFloat = 270
     
     private let emptyImageView = UIImageView().then {
-        $0.image = R.image.img_empty()
+        $0.image = UIImage(named: "img_empty")
     }
     
     private let emptyLabel = UILabel().then {
         $0.text = "bookmark_list_empty".localized
         $0.font = .medium(size: 16)
-        $0.textColor = R.color.gray1()
+        $0.textColor = Color.gray1
         $0.textAlignment = .center
         $0.numberOfLines = 0
     }

@@ -4,11 +4,11 @@ final class SettingSignoutTableViewCell: BaseTableViewCell {
     static let registerId = "\(SettingSignoutTableViewCell.self)"
     
     private let warningImage = UIImageView().then {
-        $0.image = R.image.ic_warning_white()
+        $0.image = UIImage(named: "ic_warning_white")
     }
     
     private let withdrawalLabel = UILabel().then {
-        $0.text = R.string.localization.setting_withdrawal()
+        $0.text = "setting_withdrawal".localized
         $0.font = .medium(size: 14)
         $0.textColor = UIColor(r: 153, g: 153, b: 153)
     }

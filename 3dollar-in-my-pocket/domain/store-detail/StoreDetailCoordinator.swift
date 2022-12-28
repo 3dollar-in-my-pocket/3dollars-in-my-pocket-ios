@@ -1,6 +1,8 @@
 import UIKit
 
-import SPPermissions
+import PermissionsKit
+import PhotoLibraryPermission
+import CameraPermission
 import KakaoSDKShare
 import KakaoSDKTemplate
 
@@ -22,12 +24,13 @@ protocol StoreDetailCoordinator: BaseCoordinator, AnyObject {
     func showVisitHistories(visitHistories: [VisitHistory])
     func shareToKakao(store: Store)
     func showNotFoundError(message: String)
+    func showPermissionDeniedAlert()
 }
 
-extension StoreDetailCoordinator where Self: BaseViewController {
+extension StoreDetailCoordinator where Self: StoreDetailViewController {
     func showDeleteModal(storeId: Int) {
         let viewController = DeleteModalViewController.instance(storeId: storeId).then {
-            $0.deleagete = self as? DeleteModalDelegate
+            $0.deleagete = self
         }
         
         self.presenter.tabBarController?.present(
@@ -54,7 +57,7 @@ extension StoreDetailCoordinator where Self: BaseViewController {
     
     func showCamera() {
         let imagePicker = UIImagePickerController().then {
-            $0.delegate = self as? UIImagePickerControllerDelegate & UINavigationControllerDelegate
+            $0.delegate = self
             $0.sourceType = .camera
             $0.cameraCaptureMode = .photo
         }
@@ -100,19 +103,19 @@ extension StoreDetailCoordinator where Self: BaseViewController {
             preferredStyle: .actionSheet
         )
         let modifyAction = UIAlertAction(
-            title: R.string.localization.store_detail_modify_review(),
+            title: "store_detail_modify_review".localized,
             style: .default
         ) { _ in
             onTapModify()
         }
         let deleteAction = UIAlertAction(
-            title: R.string.localization.store_detail_delete_review(),
+            title: "store_detail_delete_review".localized,
             style: .destructive
         ) { _ in
             onTapDelete()
         }
         let cancelAction = UIAlertAction(
-            title: R.string.localization.store_detail_cancel(),
+            title: "store_detail_cancel".localized,
             style: .cancel
         ) { _ in }
         
@@ -124,7 +127,7 @@ extension StoreDetailCoordinator where Self: BaseViewController {
     
     func showPictureActionSheet(storeId: Int) {
         let alert = UIAlertController(
-            title: R.string.localization.store_detail_register_photo(),
+            title: "store_detail_register_photo".localized,
             message: nil,
             preferredStyle: .actionSheet
         )
@@ -132,30 +135,37 @@ extension StoreDetailCoordinator where Self: BaseViewController {
             title: "store_detail_album".localized,
             style: .default
         ) { _ in
-            if SPPermission.photoLibrary.isAuthorized {
+            if Permission.photoLibrary.authorized {
                 self.showRegisterPhoto(storeId: storeId)
             } else {
-                let controller = SPPermissions.native([.photoLibrary])
-                
-                controller.delegate = self as? SPPermissionsDelegate
-                controller.present(on: self)
+                Permission.photoLibrary.request { [weak self] in
+                    if Permission.photoLibrary.authorized {
+                        self?.reactor?.action.onNext(.tapAddPhoto)
+                    } else {
+                        self?.showPermissionDeniedAlert()
+                    }
+                    
+                }
             }
         }
         let cameraAction = UIAlertAction(
             title: "store_detail_camera".localized,
             style: .default
         ) { _ in
-            if SPPermission.camera.isAuthorized {
+            if Permission.camera.authorized {
                 self.showCamera()
             } else {
-                let controller = SPPermissions.native([.camera])
-                
-                controller.delegate = self as? SPPermissionsDelegate
-                controller.present(on: self)
+                Permission.camera.request { [weak self] in
+                    if Permission.camera.authorized {
+                        self?.showCamera()
+                    } else {
+                        self?.showPermissionDeniedAlert()
+                    }
+                }
             }
         }
         let cancelAction = UIAlertAction(
-            title: R.string.localization.store_detail_cancel(),
+            title: "store_detail_cancel".localized,
             style: .cancel,
             handler: nil
         )
@@ -230,6 +240,19 @@ extension StoreDetailCoordinator where Self: BaseViewController {
             message: message
         ) {
             self.navigationController?.popViewController(animated: true)
+        }
+    }
+    
+    func showPermissionDeniedAlert() {
+        AlertUtils.showWithCancel(
+            viewController: self,
+            title: "permission_denied_title".localized,
+            message: "permission_denied_description".localized,
+            okButtonTitle: "permission_setting_button".localized
+        ) {
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
         }
     }
 }

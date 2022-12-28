@@ -12,19 +12,19 @@ final class HomeEmptyStoreCell: BaseCollectionViewCell {
     }
   
     private let emptyImage = UIImageView().then {
-        $0.image = R.image.img_empty_home()
+        $0.image = UIImage(named: "img_empty_home")
     }
   
     private let emptyTitleLabel = UILabel().then {
-        $0.text = R.string.localization.home_empty_title()
+        $0.text = "home_empty_title".localized
         $0.font = .bold(size: 14)
-        $0.textColor = R.color.black()
+        $0.textColor = Color.black
         $0.setKern(kern: -0.5)
     }
   
     private let emptyDescriptionLabel = UILabel().then {
-        $0.text = R.string.localization.home_empty_description()
-        $0.textColor = R.color.gray40()
+        $0.text = "home_empty_description".localized
+        $0.textColor = Color.gray40
         $0.font = .regular(size: 12)
         $0.numberOfLines = 0
         $0.setKern(kern: -0.2)
@@ -67,11 +67,11 @@ final class HomeEmptyStoreCell: BaseCollectionViewCell {
     
     func bind(storeType: StoreType) {
         if storeType == .streetFood {
-            self.emptyTitleLabel.text = R.string.localization.home_empty_title()
-            self.emptyDescriptionLabel.text = R.string.localization.home_empty_description()
+            self.emptyTitleLabel.text = "home_empty_title".localized
+            self.emptyDescriptionLabel.text = "home_empty_description".localized
         } else {
-            self.emptyTitleLabel.text = R.string.localization.home_empty_boss_title()
-            self.emptyDescriptionLabel.text = R.string.localization.home_empty_boss_description()
+            self.emptyTitleLabel.text = "home_empty_boss_title".localized
+            self.emptyDescriptionLabel.text = "home_empty_boss_description".localized
         }
     }
 }

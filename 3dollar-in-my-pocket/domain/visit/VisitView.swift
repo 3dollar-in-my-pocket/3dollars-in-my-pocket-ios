@@ -7,18 +7,18 @@ import NMapsMap
 final class VisitView: BaseView {
   
   let closeButton = UIButton().then {
-    $0.setImage(R.image.ic_close_white(), for: .normal)
+    $0.setImage(UIImage(named: "ic_close_white"), for: .normal)
   }
   
   let bedgeImage = UIImageView().then {
-    $0.image = R.image.img_bedge()
+    $0.image = UIImage(named: "img_bedge")
   }
   
   let titleLabel = UILabel().then {
-    $0.textColor = R.color.gray0()
+    $0.textColor = Color.gray0
     $0.font = UIFont.regular(size: 28)
     $0.textAlignment = .center
-    let text = R.string.localization.visit_title_disable()
+      let text = "visit_title_disable".localized
     let attributedString = NSMutableAttributedString(string: text)
     let boldTextRange = (text as NSString).range(of: "방문을 인증")
     
@@ -33,19 +33,19 @@ final class VisitView: BaseView {
   
   let mapContainerView = UIView().then {
     $0.layer.cornerRadius = 20
-    $0.backgroundColor = R.color.gray95()
+    $0.backgroundColor = Color.gray95
   }
   
   let storeCategoryImage = UIImageView()
   
   let storeNameLabel = UILabel().then {
-    $0.font = R.font.appleSDGothicNeoEB00(size: 16)
-    $0.textColor = R.color.gray0()
+      $0.font = .extraBold(size: 16)
+    $0.textColor = Color.gray0
   }
   
   let storeCategoryLabel = UILabel().then {
     $0.font = .regular(size: 12)
-    $0.textColor = R.color.pink()
+    $0.textColor = Color.pink
   }
   
   let mapView = NMFMapView().then {
@@ -54,12 +54,12 @@ final class VisitView: BaseView {
   }
   
   let currentLocationButton = UIButton().then {
-    $0.setImage(R.image.ic_location_pink(), for: .normal)
+    $0.setImage(UIImage(named: "ic_location_pink"), for: .normal)
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     $0.layer.shadowOpacity = 0.15
       $0.layer.borderWidth = 1
-      $0.layer.borderColor = R.color.gray20()?.cgColor
+      $0.layer.borderColor = Color.gray20?.cgColor
       $0.layer.cornerRadius = 20
       $0.backgroundColor = .white
   }
@@ -67,28 +67,28 @@ final class VisitView: BaseView {
   let bottomContainerView = UIView().then {
     $0.layer.cornerRadius = 21
     $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-    $0.backgroundColor = R.color.gray95()
+    $0.backgroundColor = Color.gray95
   }
   
   let bottomRightCircleView = UIView().then {
     $0.layer.cornerRadius = 24 * RatioUtils.heightRatio
-    $0.backgroundColor = R.color.gray90()
+    $0.backgroundColor = Color.gray90
   }
   
   let bottomRightCategoryImage = UIImageView()
   
   let indicatorImage = UIImageView().then {
-    $0.image = R.image.img_distance_indicator()
+    $0.image = UIImage(named: "img_distance_indicator")
   }
   
   private let progressBackgroundView = UIView().then {
-    $0.backgroundColor = R.color.gray90()
+    $0.backgroundColor = Color.gray90
     $0.layer.cornerRadius = 6
   }
   
   private let progressView = UIProgressView().then {
     $0.trackTintColor = .clear
-    $0.progressTintColor = R.color.red()
+    $0.progressTintColor = Color.red
     $0.layer.cornerRadius = 3
   }
   
@@ -301,7 +301,7 @@ final class VisitView: BaseView {
       }
       UIView.animate(withDuration: 0.3) { [weak self] in
         guard let self = self else { return }
-        self.backgroundColor = R.color.pink()
+        self.backgroundColor = Color.pink
         self.bottomContainerView.alpha = 0
         self.mapContainerView.backgroundColor = UIColor(r: 243, g: 132, b: 141)
         self.layoutIfNeeded()
@@ -323,10 +323,10 @@ final class VisitView: BaseView {
         guard let self = self else { return }
         self.backgroundColor = .black
         self.bottomContainerView.alpha = 1
-        self.mapContainerView.backgroundColor = R.color.gray95()
+        self.mapContainerView.backgroundColor = Color.gray95
         self.layoutIfNeeded()
       }
-      self.storeCategoryLabel.textColor = R.color.pink()
+      self.storeCategoryLabel.textColor = Color.pink
       self.titleLabel.textColor = .white
     }
     self.setupTitleLabel(isVisitable: isVisitable)
@@ -363,7 +363,7 @@ final class VisitView: BaseView {
     let rangeOverlayView = NMFCircleOverlay().then {
       $0.center = NMGLatLng(lat: latitude, lng: longitude)
       $0.radius = 100
-      $0.fillColor = R.color.pink()?.withAlphaComponent(0.2) ?? .clear
+      $0.fillColor = Color.pink?.withAlphaComponent(0.2) ?? .clear
     }
     
     rangeOverlayView.mapView = self.mapView
@@ -383,8 +383,8 @@ final class VisitView: BaseView {
   
   private func setupTitleLabel(isVisitable: Bool) {
     let text = isVisitable
-      ? R.string.localization.visit_title_enable()
-      : R.string.localization.visit_title_disable()
+      ? "visit_title_enable".localized
+      : "visit_title_disable".localized
     let attributedString = NSMutableAttributedString(string: text)
     let boldTextRange = (text as NSString).range(of: "방문을 인증")
     

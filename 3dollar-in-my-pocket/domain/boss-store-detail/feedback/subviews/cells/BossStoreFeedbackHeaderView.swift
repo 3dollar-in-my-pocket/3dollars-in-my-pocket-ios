@@ -6,16 +6,16 @@ final class BossStoreFeedbackHeaderView: UITableViewHeaderFooterView {
     
     private let titleLabel = UILabel().then {
         $0.font = .bold(size: 30)
-        $0.textColor = R.color.gray95()
-        $0.text = R.string.localization.boss_store_feedback_header_title()
+        $0.textColor = Color.gray95
+        $0.text = "boss_store_feedback_header_title".localized
         $0.numberOfLines = 0
         $0.textAlignment = .center
     }
     
     private let descriptionLabel = UILabel().then {
         $0.font = .bold(size: 12)
-        $0.textColor = R.color.green()
-        $0.text = R.string.localization.boss_store_feedback_header_description()
+        $0.textColor = Color.green
+        $0.text = "boss_store_feedback_header_description".localized
     }
     
     override init(reuseIdentifier: String?) {

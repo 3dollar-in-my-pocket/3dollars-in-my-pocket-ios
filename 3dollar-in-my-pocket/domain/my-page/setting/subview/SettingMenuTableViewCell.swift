@@ -11,11 +11,11 @@ final class SettingMenuTableViewCell: BaseTableViewCell {
     }
     
     private let rightArrow = UIImageView().then {
-        $0.image = R.image.ic_right_arrow()
+        $0.image = UIImage(named: "ic_right_arrow")
     }
     
     let switchButton = UISwitch().then {
-        $0.onTintColor = R.color.pink()
+        $0.onTintColor = Color.pink
     }
     
     override func prepareForReuse() {

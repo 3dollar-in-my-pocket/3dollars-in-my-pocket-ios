@@ -9,13 +9,13 @@ final class MyPageView: BaseView {
     }
     
     private let navigationBackgroundView = UIView().then {
-        $0.backgroundColor = R.color.gray95()
+        $0.backgroundColor = Color.gray95
     }
     
     private let titleLabel = UILabel().then {
         $0.textColor = .white
         $0.font = .semiBold(size: 16)
-        $0.text = R.string.localization.my_page_title()
+        $0.text = "my_page_title".localized
     }
     
     let settingButton = UIButton().then {
@@ -43,12 +43,12 @@ final class MyPageView: BaseView {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: MyPageSectionHeaderView.registerId
         )
-        $0.backgroundColor = R.color.gray100()
+        $0.backgroundColor = Color.gray100
         $0.contentInset = .init(top: 0, left: 0, bottom: 24, right: 0)
     }
     
     override func setup() {
-        self.backgroundColor = R.color.gray100()
+        self.backgroundColor = Color.gray100
         self.collectionView.collectionViewLayout = self.generateCompositionalLayout()
         self.collectionView.refreshControl = self.refreshControl
         self.addSubViews([
@@ -64,8 +64,8 @@ final class MyPageView: BaseView {
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: { [weak self] isPlusOffset in
                 self?.collectionView.backgroundColor = isPlusOffset
-                ? R.color.gray100()
-                : R.color.gray95()
+                ? Color.gray100
+                : Color.gray95
             })
             .disposed(by: self.disposeBag)
     }

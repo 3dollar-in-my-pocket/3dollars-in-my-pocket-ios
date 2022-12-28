@@ -6,33 +6,9 @@ target '3dollar-in-my-pocket' do
   use_frameworks!
 
   # Pods for 3dollar-in-my-pocket
-  pod 'Kingfisher', '~> 5.0'
-  
-#  pod 'Alamofire', '~> 5.2'
-  
-  pod 'lottie-ios'
-  
-  pod 'Firebase/Crashlytics'
-  pod 'Firebase/Analytics'
-  pod 'Firebase/Core'
-  pod 'Firebase/Firestore'
-  pod 'Firebase/RemoteConfig'
-  pod 'Firebase/Messaging'
-  
   pod 'Google-Mobile-Ads-SDK'
-  
   pod 'NMapsMap'
-  
-  pod 'SwiftyBeaver'
-  
-  pod 'DeviceKit', '~> 4.0'
-  
-  pod 'SPPermissions/Camera'
-  pod 'SPPermissions/Location'
-  pod 'SPPermissions/PhotoLibrary'
-  
   pod 'SwiftLint'
-  pod 'R.swift'
 
   target '3dollar-in-my-pocketTests' do
     inherit! :search_paths
