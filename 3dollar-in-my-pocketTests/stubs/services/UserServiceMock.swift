@@ -44,4 +44,32 @@ struct UserServiceMock: UserServiceProtocol {
     func fetchUserActivity() -> Observable<UserWithActivityResponse> {
         return .empty()
     }
+    
+    func signinAnonymous() -> Observable<SigninResponse> {
+        return .empty()
+    }
+    
+    func connectAccount(request: SigninRequest) -> Observable<String> {
+        return .empty()
+    }
+    
+    func signout() -> Observable<Void> {
+        return .empty()
+    }
+    
+    func editNickname(name: String) -> Observable<Void> {
+        return .empty()
+    }
+    
+    func fetchUser() -> Observable<User> {
+        return .empty()
+    }
+    
+    func fetchUserActivity() -> Observable<User> {
+        return .empty()
+    }
+    
+    func changeMarketingConsent(marketingConsentType: MarketingConsentType) -> Observable<String> {
+        return .empty()
+    }
 }
