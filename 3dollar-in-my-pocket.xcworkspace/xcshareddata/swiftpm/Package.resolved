@@ -154,15 +154,6 @@
       }
     },
     {
-      "identity" : "quick",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Quick/Quick.git",
-      "state" : {
-        "revision" : "6a3d1f575610172f2f87aa155aecf37b9dd88514",
-        "version" : "5.0.0"
-      }
-    },
-    {
       "identity" : "reactorkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ReactorKit/ReactorKit.git",
