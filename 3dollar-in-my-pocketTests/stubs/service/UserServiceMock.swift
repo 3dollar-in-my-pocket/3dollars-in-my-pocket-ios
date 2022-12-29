@@ -11,6 +11,7 @@ import RxSwift
 @testable import dollar_in_my_pocket
 
 struct UserServiceMock: UserServiceProtocol {
+    var editNicknameObservable: Observable<Void>?
     var signinObservable: Observable<SigninResponse>?
     var signupObservable: Observable<SigninResponse>?
     var fetchUserInfoObservable: Observable<UserInfoResponse>?
@@ -58,7 +59,8 @@ struct UserServiceMock: UserServiceProtocol {
     }
     
     func editNickname(name: String) -> Observable<Void> {
-        return .empty()
+        return self.editNicknameObservable
+        ?? .error(BaseError.custom("editNicknameObservable가 정의되지 않았습니다."))
     }
     
     func fetchUser() -> Observable<User> {
