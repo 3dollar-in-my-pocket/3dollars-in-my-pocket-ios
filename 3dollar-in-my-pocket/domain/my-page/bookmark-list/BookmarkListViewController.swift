@@ -76,6 +76,12 @@ final class BookmarkListViewController:
     
     func bind(reactor: BookmarkListReactor) {
         // Bind Action
+        self.bookmarkListView.shareButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .map { Reactor.Action.tapShare }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
         self.bookmarkListView.collectionView.rx.willDisplayCell
             .filter { BookmarkListSection(sectionIndex: $0.at.section) == .bookmarkStores }
             .map { BookmarkListReactor.Action.willDisplayCell(row: $0.at.row) }
@@ -99,6 +105,21 @@ final class BookmarkListViewController:
             .drive(self.bookmarkListView.collectionView.rx.items(
                 dataSource: self.bookmarkCollectionViewDataSource
             ))
+            .disposed(by: self.disposeBag)
+        
+        reactor.state
+            .map { $0.bookmarkFolder.bookmarks.isEmpty }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: true)
+            .drive(self.bookmarkListView.shareButton.rx.isHidden)
+            .disposed(by: self.disposeBag)
+        
+        reactor.pulse(\.$presentSharePannel)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] bookmarkURL in
+                self?.coordinator?.presentSharePannel(url: bookmarkURL)
+            })
             .disposed(by: self.disposeBag)
         
         reactor.pulse(\.$pushStoreDetail)

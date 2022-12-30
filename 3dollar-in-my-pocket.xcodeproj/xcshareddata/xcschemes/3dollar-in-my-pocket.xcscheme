@@ -38,16 +38,6 @@
                ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6E0EA3B323ABB232008F7CB2"
-               BuildableName = "3dollar-in-my-pocketUITests.xctest"
-               BlueprintName = "3dollar-in-my-pocketUITests"
-               ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

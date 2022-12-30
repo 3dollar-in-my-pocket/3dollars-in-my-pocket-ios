@@ -19,6 +19,14 @@ final class BookmarkListView: BaseView {
         $0.textColor = .white
     }
     
+    let shareButton = UIButton().then {
+        $0.setImage(
+            UIImage(named: "ic_share")?.withRenderingMode(.alwaysTemplate),
+            for: .normal
+        )
+        $0.tintColor = Color.pink
+    }
+    
     let collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewLayout()
@@ -49,6 +57,7 @@ final class BookmarkListView: BaseView {
             self.topBackgroundView,
             self.backButton,
             self.titleLabel,
+            self.shareButton,
             self.collectionView
         ])
         self.setCompositionalLayout()
@@ -85,6 +94,13 @@ final class BookmarkListView: BaseView {
         self.titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalTo(self.backButton)
+        }
+        
+        self.shareButton.snp.makeConstraints { make in
+            make.right.equalToSuperview().offset(-24)
+            make.centerY.equalTo(self.backButton)
+            make.width.equalTo(24)
+            make.height.equalTo(24)
         }
         
         self.collectionView.snp.makeConstraints { make in
