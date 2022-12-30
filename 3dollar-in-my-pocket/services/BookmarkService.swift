@@ -1,5 +1,6 @@
 import RxSwift
 import Alamofire
+import FirebaseDynamicLinks
 
 protocol BookmarkServiceProtocol {
     func bookmarkStore(storeType: StoreType, storeId: String) -> Observable<Void>
@@ -12,6 +13,8 @@ protocol BookmarkServiceProtocol {
     -> Observable<(cursor: Cursor, bookmarkFolder: BookmarkFolder)>
     
     func editBookmarkFolder(introduction: String, name: String) -> Observable<String>
+    
+    func createBookmarkURL(folderId: String) -> Observable<String>
 }
 
 struct BookmarkService: BookmarkServiceProtocol {
@@ -84,5 +87,26 @@ struct BookmarkService: BookmarkServiceProtocol {
             headers: headers,
             parameters: parameters
         )
+    }
+    
+    func createBookmarkURL(folderId: String) -> Observable<String> {
+        guard let link = URL(string: "\(Bundle.bookmarkURL)/\(folderId)") else {
+            return .error(BaseError.custom("URL 형식이 잘못되었습니다."))
+        }
+        let dynamicLinksDomainURIPrefix = Bundle.bookmarkURL
+        let linkBuilder = DynamicLinkComponents(
+            link: link,
+            domainURIPrefix: dynamicLinksDomainURIPrefix
+        )
+        
+        linkBuilder?.iOSParameters = DynamicLinkIOSParameters(bundleID: Bundle.bundleId)
+        linkBuilder?.androidParameters
+        = DynamicLinkAndroidParameters(packageName: "com.zion830.threedollars")
+
+        guard let longDynamicLink = linkBuilder?.url else {
+            return .error(BaseError.custom("링크 형식이 올바르지 않습니다."))
+        }
+        
+        return .just(longDynamicLink.absoluteString)
     }
 }
