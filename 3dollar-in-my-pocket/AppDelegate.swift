@@ -7,7 +7,6 @@ import GoogleMobileAds
 import KakaoSDKCommon
 import FirebaseMessaging
 
-
 typealias Log = SwiftyBeaver
 
 @UIApplicationMain
@@ -92,6 +91,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     Log.debug("error: \(error)")
                 }
             }
+    }
+    
+    func application(
+        _ application: UIApplication,
+        continue userActivity: NSUserActivity,
+        restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
+    ) -> Bool {
+        guard let url = userActivity.webpageURL else { return false }
+        let handled = DynamicLinks.dynamicLinks().handleUniversalLink(url) { dynamiclink, error in
+            Log.debug("dynamic link url: \(dynamiclink?.url?.absoluteString ?? "")")
+        }
+        
+        return handled
     }
 }
 
