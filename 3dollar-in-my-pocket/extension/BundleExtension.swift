@@ -17,6 +17,10 @@ extension Bundle {
         return Bundle.main.infoDictionary?["URL_PRIVACY"] as? String ?? ""
     }
     
+    static var dynamicLinkURL: String {
+        return Bundle.main.infoDictionary?["DYNAMIC_LINK_URL"] as? String ?? ""
+    }
+    
     static var bookmarkURL: String {
         return Bundle.main.infoDictionary?["BOOKMARK_URL"] as? String ?? ""
     }

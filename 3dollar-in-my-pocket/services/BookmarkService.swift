@@ -90,23 +90,36 @@ struct BookmarkService: BookmarkServiceProtocol {
     }
     
     func createBookmarkURL(folderId: String) -> Observable<String> {
-        guard let link = URL(string: "\(Bundle.bookmarkURL)/\(folderId)") else {
-            return .error(BaseError.custom("URL 형식이 잘못되었습니다."))
+        return .create { observer in
+            guard let link = URL(string: Bundle.bookmarkURL + "?folderId=\(folderId)") else {
+                observer.onError(BaseError.custom("URL 형식이 잘못되었습니다."))
+                return Disposables.create()
+            }
+            let dynamicLinksDomainURIPrefix = Bundle.dynamicLinkURL
+            let linkBuilder = DynamicLinkComponents(
+                link: link,
+                domainURIPrefix: dynamicLinksDomainURIPrefix
+            )
+            
+            linkBuilder?.iOSParameters = DynamicLinkIOSParameters(bundleID: Bundle.bundleId)
+            linkBuilder?.androidParameters
+            = DynamicLinkAndroidParameters(packageName: "com.zion830.threedollars")
+            
+            linkBuilder?.shorten(completion: { url, _, _ in
+                if let shortURL = url {
+                    observer.onNext(shortURL.absoluteString)
+                    observer.onCompleted()
+                } else {
+                    guard let longDynamicLink = linkBuilder?.url else {
+                        return observer.onError(BaseError.custom("링크 형식이 올바르지 않습니다."))
+                    }
+                    
+                    observer.onNext(longDynamicLink.absoluteString)
+                    observer.onCompleted()
+                }
+            })
+            
+            return Disposables.create()
         }
-        let dynamicLinksDomainURIPrefix = Bundle.bookmarkURL
-        let linkBuilder = DynamicLinkComponents(
-            link: link,
-            domainURIPrefix: dynamicLinksDomainURIPrefix
-        )
-        
-        linkBuilder?.iOSParameters = DynamicLinkIOSParameters(bundleID: Bundle.bundleId)
-        linkBuilder?.androidParameters
-        = DynamicLinkAndroidParameters(packageName: "com.zion830.threedollars")
-
-        guard let longDynamicLink = linkBuilder?.url else {
-            return .error(BaseError.custom("링크 형식이 올바르지 않습니다."))
-        }
-        
-        return .just(longDynamicLink.absoluteString)
     }
 }
