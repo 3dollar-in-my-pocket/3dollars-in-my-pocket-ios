@@ -7,12 +7,12 @@
 #  Copyright © 2022 Macgongmon. All rights reserved.
 
 # Install CocoaPods using Homebrew.
-brew update
-brew install cocoapods
 brew install git-lfs
+brew install cocoapods
 
-git lfs pull
 git lfs install
+
+pod cache clean NMapsMap
 
 # Install dependencies you manage with CocoaPods.
 pod install
