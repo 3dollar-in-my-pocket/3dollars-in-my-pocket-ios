@@ -329,6 +329,8 @@
 		6E7E3E4E27642C6900A4C6E2 /* MyMedalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7E3E4D27642C6900A4C6E2 /* MyMedalViewController.swift */; };
 		6E7E3E5027642CBF00A4C6E2 /* MyMedalCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7E3E4F27642CBF00A4C6E2 /* MyMedalCoordinator.swift */; };
 		6E7E3E5427642F8B00A4C6E2 /* MyMedalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7E3E5327642F8B00A4C6E2 /* MyMedalCollectionCell.swift */; };
+		6E7E5F5929814D24003747FC /* DeeplinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7E5F5829814D24003747FC /* DeeplinkManager.swift */; };
+		6E7E5F5C29815AE5003747FC /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7E5F5B29815AE5003747FC /* Deeplink.swift */; };
 		6E7EF40A25DE978C0014CD2B /* TabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EF40925DE978C0014CD2B /* TabBarVC.swift */; };
 		6E802088269A9608000A646E /* UserServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E802087269A9608000A646E /* UserServiceMock.swift */; };
 		6E810B0F259AEA3A0035315F /* AnalyticsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E810B0E259AEA3A0035315F /* AnalyticsScreen.swift */; };
@@ -886,6 +888,8 @@
 		6E7E3E4D27642C6900A4C6E2 /* MyMedalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalViewController.swift; sourceTree = "<group>"; };
 		6E7E3E4F27642CBF00A4C6E2 /* MyMedalCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalCoordinator.swift; sourceTree = "<group>"; };
 		6E7E3E5327642F8B00A4C6E2 /* MyMedalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMedalCollectionCell.swift; sourceTree = "<group>"; };
+		6E7E5F5829814D24003747FC /* DeeplinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeeplinkManager.swift; sourceTree = "<group>"; };
+		6E7E5F5B29815AE5003747FC /* Deeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deeplink.swift; sourceTree = "<group>"; };
 		6E7EF40925DE978C0014CD2B /* TabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarVC.swift; sourceTree = "<group>"; };
 		6E802087269A9608000A646E /* UserServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserServiceMock.swift; sourceTree = "<group>"; };
 		6E810B0E259AEA3A0035315F /* AnalyticsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsScreen.swift; sourceTree = "<group>"; };
@@ -2120,6 +2124,15 @@
 			path = cells;
 			sourceTree = "<group>";
 		};
+		6E7E5F5A29815AD6003747FC /* deeplink */ = {
+			isa = PBXGroup;
+			children = (
+				6E7E5F5829814D24003747FC /* DeeplinkManager.swift */,
+				6E7E5F5B29815AE5003747FC /* Deeplink.swift */,
+			);
+			path = deeplink;
+			sourceTree = "<group>";
+		};
 		6E810B10259AEA4A0035315F /* analytics */ = {
 			isa = PBXGroup;
 			children = (
@@ -2400,6 +2413,7 @@
 		6EB8FB9F25988D3300C17B74 /* manager */ = {
 			isa = PBXGroup;
 			children = (
+				6E7E5F5A29815AD6003747FC /* deeplink */,
 				6EB6F9EB289CE92A00D41AE3 /* toast */,
 				6EB46A5D2892BF630057B21A /* loading */,
 				6EEE30B326FEDAE600696467 /* location */,
@@ -3180,6 +3194,7 @@
 				6EC0D68026EB8891008AD34B /* FQAResponse.swift in Sources */,
 				6E1B64E02587A396003225F4 /* AFDataResponseExt.swift in Sources */,
 				6EA205F2288817C800BAB019 /* BossStoreMenuResponse.swift in Sources */,
+				6E7E5F5929814D24003747FC /* DeeplinkManager.swift in Sources */,
 				6ED65D2029444BB3000E71B4 /* BookmarkListViewController.swift in Sources */,
 				6E56BD7F23CDE291002D7092 /* Image.swift in Sources */,
 				6E25244625945BF0006EBDDB /* PopupViewModel.swift in Sources */,
@@ -3379,6 +3394,7 @@
 				6E5B359C28B3ACFE0056C223 /* FoodTruckListStoreCell.swift in Sources */,
 				6E54BFFB2896539100B7E608 /* BossStoreSectionModel.swift in Sources */,
 				6E9D64DB25BD73E10075DE36 /* DeleteModalReactor.swift in Sources */,
+				6E7E5F5C29815AE5003747FC /* Deeplink.swift in Sources */,
 				6E6835BE23C2CEFB00D23F54 /* RegisteredStoreCell.swift in Sources */,
 				6E3E0B8F23C7078100E835AE /* ReviewModalView.swift in Sources */,
 				6E3AA4D625AD6C3C00D8C58C /* Land.swift in Sources */,
@@ -3717,12 +3733,12 @@
 				API_URL = "https://dev.threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원-Dev";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				BOOKMARK_URL = "https://3dollarsdev.share.link/bookmark";
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEEPLINK_HOST = "https://3dollars.share.link/";
 				DEVELOPMENT_TEAM = X975A2HM62;
 				DYNAMIC_LINK_URL = "https://3dollarsdev.page.link";
 				ENABLE_BITCODE = NO;
@@ -3766,11 +3782,11 @@
 				API_URL = "https://threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				BOOKMARK_URL = "https://3dollars.share.link/bookmark";
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEEPLINK_HOST = "https://3dollars.share.link/";
 				DEVELOPMENT_TEAM = X975A2HM62;
 				DYNAMIC_LINK_URL = "https://3dollars.page.link/bookmark";
 				ENABLE_BITCODE = NO;

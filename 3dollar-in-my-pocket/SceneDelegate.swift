@@ -18,6 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         window?.rootViewController = SplashVC.instance()
         window?.makeKeyAndVisible()
+        
         self.scene(scene, openURLContexts: connectionOptions.urlContexts)
     }
     
@@ -40,7 +41,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         guard let incomingURL = userActivity.webpageURL else { return }
         let linkHandled = DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, error in
-            Log.debug("url: \(dynamicLink?.url?.absoluteString ?? "")")
+            DeepLinkManager.shared.handleDeepLink(url: dynamicLink?.url)
         }
     }
     
