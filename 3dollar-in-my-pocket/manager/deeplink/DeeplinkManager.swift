@@ -24,6 +24,6 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     }
     
     private func validateHost(host: String) -> Bool {
-        
+        return false
     }
 }

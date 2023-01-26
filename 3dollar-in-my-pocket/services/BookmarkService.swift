@@ -91,7 +91,7 @@ struct BookmarkService: BookmarkServiceProtocol {
     
     func createBookmarkURL(folderId: String) -> Observable<String> {
         return .create { observer in
-            guard let link = URL(string: Bundle.bookmarkURL + "?folderId=\(folderId)") else {
+            guard let link = Deeplink.bookmark(folderId: folderId).url else {
                 observer.onError(BaseError.custom("URL 형식이 잘못되었습니다."))
                 return Disposables.create()
             }
