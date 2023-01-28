@@ -3,10 +3,10 @@ import Foundation
 enum Deeplink {
     case bookmark(folderId: String)
     
-    var path: String {
+    var type: DeeplinkType {
         switch self {
         case .bookmark:
-            return "bookmark"
+            return .bookmark
         }
     }
     
@@ -18,7 +18,7 @@ enum Deeplink {
     }
     
     var url: URL? {
-        var component = URLComponents(string: Bundle.deeplinkHost + path + "?")
+        var component = URLComponents(string: Bundle.deeplinkHost + type.path + "?")
         
         if let parameters = parameters {
             for parameter in parameters {
