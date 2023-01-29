@@ -14,7 +14,8 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
         case setUser(User)
         case setTotalCount(Int)
         case appendStores([StoreProtocol])
-        case pushStoreDetail(StoreProtocol)
+        case pushStoreDetail(String)
+        case pushFoodTruckDetail(String)
         case showErrorAlert(Error)
     }
     
@@ -24,7 +25,8 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
         var user: User
         var totalCount: Int
         var stores: [StoreProtocol]
-        @Pulse var pushStoreDetail: StoreProtocol?
+        @Pulse var pushStoreDetail: String?
+        @Pulse var pushFoodTruckDetail: String?
     }
     
     let initialState: State
@@ -62,7 +64,16 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
         case .tapStore(let row):
             let tappedStore = self.currentState.stores[row]
             
-            return .just(.pushStoreDetail(tappedStore))
+            switch tappedStore.storeCategory {
+            case .streetFood:
+                return .just(.pushStoreDetail(tappedStore.id))
+                
+            case .foodTruck:
+                return .just(.pushFoodTruckDetail(tappedStore.id))
+                
+            case .unknown:
+                return .empty()
+            }
         }
     }
     
@@ -85,8 +96,11 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
         case .appendStores(let stores):
             newState.stores.append(contentsOf: stores)
             
-        case .pushStoreDetail(let store):
-            newState.pushStoreDetail = store
+        case .pushStoreDetail(let storeId):
+            newState.pushStoreDetail = storeId
+            
+        case .pushFoodTruckDetail(let storeId):
+            newState.pushFoodTruckDetail = storeId
             
         case .showErrorAlert(let error):
             self.showErrorAlertPublisher.accept(error)

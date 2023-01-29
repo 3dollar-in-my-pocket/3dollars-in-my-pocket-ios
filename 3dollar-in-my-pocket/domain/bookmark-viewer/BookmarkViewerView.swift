@@ -1,6 +1,10 @@
 import UIKit
 
 final class BookmarkViewerView: BaseView {
+    private let topBackgroundView = UIView().then {
+        $0.backgroundColor = Color.gray95
+    }
+    
     let closeButton = UIButton().then {
         $0.setImage(UIImage(named: "ic_close_white"), for: .normal)
     }
@@ -40,12 +44,34 @@ final class BookmarkViewerView: BaseView {
     override func setup() {
         self.backgroundColor = Color.gray100
         self.addSubViews([
-            self.closeButton,
-            self.collectionView
+            self.collectionView,
+            self.topBackgroundView,
+            self.closeButton
         ])
+        
+        self.collectionView.rx.contentOffset
+            .filter { $0.y <= 0 }
+            .map { abs($0.y) }
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: 0)
+            .drive(onNext: { [weak self] offset in
+                guard let self = self else { return }
+                let topSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
+                
+                self.topBackgroundView.snp.updateConstraints({ make in
+                    make.height.equalTo(topSafeAreaInset + 35 + offset)
+                })
+            })
+            .disposed(by: self.disposeBag)
     }
     
     override func bindConstraints() {
+        self.topBackgroundView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.top.equalToSuperview()
+        }
+        
         self.closeButton.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-25)
             make.top.equalTo(self.safeAreaLayoutGuide).offset(10)

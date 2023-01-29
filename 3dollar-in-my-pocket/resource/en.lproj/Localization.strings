@@ -254,6 +254,8 @@
 "bookmark_edit_title" = "정보 수정하기";
 "bookmark_edit_placeholder_description" = "리스트에 대한 한줄평을 입력해주세요! 공유 시 사용됩니다.";
 "bookmark_edit_save" = "저장하기";
+"bookmark_viewer_count_format" = "%d개의 리스트";
+"bookmark_viewer_name_format" = "%@님의 즐겨찾기";
 "home_research" = "현재 지도에서 가게 재검색";
 "home_empty_title" = "주변에 가게가 없어요.";
 "home_empty_description" = "다른 주소로 검색하거나\n직접 제보해보세요!";

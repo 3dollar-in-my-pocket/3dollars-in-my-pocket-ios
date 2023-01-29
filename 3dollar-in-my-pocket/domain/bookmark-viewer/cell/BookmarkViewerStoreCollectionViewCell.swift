@@ -8,21 +8,17 @@ final class BookmarkViewerStoreCollectionViewCell: BaseCollectionViewCell {
         $0.layer.cornerRadius = 15
     }
     
-    private let categoryImageView = UIImageView().then {
-        $0.backgroundColor = .green
-    }
+    private let categoryImageView = UIImageView()
     
     private let storeTitleLabel = UILabel().then {
         $0.font = .medium(size: 16)
         $0.textColor = .white
-        $0.text = "강남역 0번 출구"
         $0.textAlignment = .left
     }
     
     private let categoryLabel = UILabel().then {
         $0.font = .regular(size: 12)
         $0.textColor = Color.gray30
-        $0.text = "#붕어빵 #땅콩과자 #호떡"
         $0.textAlignment = .left
     }
     
@@ -74,5 +70,15 @@ final class BookmarkViewerStoreCollectionViewCell: BaseCollectionViewCell {
             make.width.equalTo(14)
             make.height.equalTo(14)
         }
+    }
+    
+    func bind(store: StoreProtocol) {
+        guard let platformStore = store as? PlatformStore else { return }
+        
+        self.categoryImageView.setImage(
+            urlString: platformStore.categories.first?.imageUrl ?? ""
+        )
+        self.categoryLabel.text = platformStore.categoriesString
+        self.storeTitleLabel.text = platformStore.name
     }
 }
