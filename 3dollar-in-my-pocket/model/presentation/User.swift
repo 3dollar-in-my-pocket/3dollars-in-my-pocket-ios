@@ -37,10 +37,10 @@ struct User: Equatable {
         self.marketingConsent = .unknown
     }
     
-    init(response: UserPublicInfoResponse) {
+    init(response: UserResponse) {
         self.name = response.name
-        self.userId = -1
-        self.socialType = .unknown
+        self.userId = response.userId
+        self.socialType = SocialType(value: response.socialType)
         self.activity = UserActivity()
         self.medal = Medal(response: response.medal)
         self.pushInfo = PushInfo()
