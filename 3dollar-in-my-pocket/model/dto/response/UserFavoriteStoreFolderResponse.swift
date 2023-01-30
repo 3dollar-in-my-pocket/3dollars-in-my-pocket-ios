@@ -4,5 +4,5 @@ struct UserFavoriteStoreFolderResponse: Decodable {
     let folderId: String?
     let introduction: String
     let name: String
-    let user: UserPublicInfoResponse
+    let user: UserResponse
 }
