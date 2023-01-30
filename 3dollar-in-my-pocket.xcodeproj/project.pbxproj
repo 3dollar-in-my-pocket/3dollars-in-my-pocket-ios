@@ -121,6 +121,7 @@
 		6E3EDF3725694F7A0038E6A1 /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */; };
 		6E3EDF3C25694F8C0038E6A1 /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3EDF3B25694F8C0038E6A1 /* BaseViewModel.swift */; };
 		6E40195C29860E1D002DA1F6 /* UserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E40195B29860E1D002DA1F6 /* UserResponse.swift */; };
+		6E40195E298613F6002DA1F6 /* BookmarkViewerReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E40195D298613F6002DA1F6 /* BookmarkViewerReactor.swift */; };
 		6E41661227464C8A0088E69C /* VisitOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41661127464C8A0088E69C /* VisitOverview.swift */; };
 		6E41755226EE437500EA66B7 /* FAQCategoryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41755126EE437500EA66B7 /* FAQCategoryResponse.swift */; };
 		6E41755426EE458600EA66B7 /* FAQCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E41755326EE458600EA66B7 /* FAQCategory.swift */; };
@@ -700,6 +701,7 @@
 		6E3EDF3625694F7A0038E6A1 /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
 		6E3EDF3B25694F8C0038E6A1 /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
 		6E40195B29860E1D002DA1F6 /* UserResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserResponse.swift; sourceTree = "<group>"; };
+		6E40195D298613F6002DA1F6 /* BookmarkViewerReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkViewerReactor.swift; sourceTree = "<group>"; };
 		6E41661127464C8A0088E69C /* VisitOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitOverview.swift; sourceTree = "<group>"; };
 		6E41755126EE437500EA66B7 /* FAQCategoryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQCategoryResponse.swift; sourceTree = "<group>"; };
 		6E41755326EE458600EA66B7 /* FAQCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQCategory.swift; sourceTree = "<group>"; };
@@ -1468,6 +1470,7 @@
 				6E3BFD912985216000563160 /* cell */,
 				6E3BFD8B29850BAB00563160 /* BookmarkViewerViewController.swift */,
 				6E3BFD8F298510F500563160 /* BookmarkViewerView.swift */,
+				6E40195D298613F6002DA1F6 /* BookmarkViewerReactor.swift */,
 			);
 			path = "bookmark-viewer";
 			sourceTree = "<group>";
@@ -3431,6 +3434,7 @@
 				6ED65D2229444C0C000E71B4 /* BookmarkListCoordinator.swift in Sources */,
 				6E4FCD782939E41F00B63C8B /* UserPublicInfoResponse.swift in Sources */,
 				6E4C1BEA2753A932006C0F15 /* VisitHistoryWithStoreResponse.swift in Sources */,
+				6E40195E298613F6002DA1F6 /* BookmarkViewerReactor.swift in Sources */,
 				6E31574D25BA60B60022D6F3 /* StoreDetailMenuCategoryView.swift in Sources */,
 				6E5B359C28B3ACFE0056C223 /* FoodTruckListStoreCell.swift in Sources */,
 				6E54BFFB2896539100B7E608 /* BossStoreSectionModel.swift in Sources */,
