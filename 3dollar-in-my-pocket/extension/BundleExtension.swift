@@ -21,8 +21,8 @@ extension Bundle {
         return Bundle.main.infoDictionary?["DYNAMIC_LINK_URL"] as? String ?? ""
     }
     
-    static var bookmarkURL: String {
-        return Bundle.main.infoDictionary?["BOOKMARK_URL"] as? String ?? ""
+    static var deeplinkHost: String {
+        return Bundle.main.infoDictionary?["DEEPLINK_HOST"] as? String ?? ""
     }
     
     static var bundleId: String {

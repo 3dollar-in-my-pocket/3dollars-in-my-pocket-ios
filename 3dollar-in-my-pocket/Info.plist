@@ -4,8 +4,8 @@
 <dict>
 	<key>DYNAMIC_LINK_URL</key>
 	<string>$(DYNAMIC_LINK_URL)</string>
-	<key>BOOKMARK_URL</key>
-	<string>$(BOOKMARK_URL)</string>
+	<key>DEEPLINK_HOST</key>
+	<string>$(DEEPLINK_HOST)</string>
 	<key>ADMOB_UNIT_ID</key>
 	<string>$(ADMOB_UNIT_ID)</string>
 	<key>API_URL</key>
