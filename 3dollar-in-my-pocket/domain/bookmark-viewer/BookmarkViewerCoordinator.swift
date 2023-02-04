@@ -4,6 +4,10 @@ protocol BookmarkViewerCoordinator: BaseCoordinator, AnyObject {
     func pushFoodTruckDetail(storeId: String)
     
     func presentSigninDialog()
+    
+    func goToMain(with folderId: String)
+    
+    func pushNickname(signinRequest: SigninRequest)
 }
 
 extension BookmarkViewerCoordinator {
@@ -23,6 +27,29 @@ extension BookmarkViewerCoordinator {
     func presentSigninDialog() {
         let viewController = BookmarkSigninDialogViewController.instance()
         
+        viewController.delegate = self as? BookmarkSigninDialogViewControllerDelegate
         self.presenter.present(viewController, animated: true)
+    }
+    
+    func goToMain(with folderId: String) {
+        let viewController = BookmarkViewerViewController.instance(folderId: folderId)
+        let deeplinkContents = DeepLinkContents(
+            targetViewController: viewController,
+            transitionType: .present
+        )
+        
+        self.presenter.dismiss(animated: true) {
+            SceneDelegate.shared?.goToMain()
+            DeeplinkManager.shared.deeplinkPublisher.accept(deeplinkContents)
+        }
+    }
+    
+    func pushNickname(signinRequest: SigninRequest) {
+        let viewController = NicknameViewController.instance(signinRequest: signinRequest)
+        
+        self.presenter.navigationController?.pushViewController(
+            viewController,
+            animated: true
+        )
     }
 }

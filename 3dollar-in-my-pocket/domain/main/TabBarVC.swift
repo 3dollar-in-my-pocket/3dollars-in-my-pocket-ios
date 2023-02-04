@@ -4,6 +4,7 @@ import RxSwift
 class TabBarVC: UITabBarController {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
     private let disposeBag = DisposeBag()
+    private var deeplinkDisposeBag = DisposeBag()
     private let loadingView = LoadingView()
     private lazy var dimView = UIView(frame: self.view.frame).then {
         $0.backgroundColor = .clear
@@ -24,7 +25,6 @@ class TabBarVC: UITabBarController {
         self.checkIfBannerExisted()
         self.setupTabBarController()
         self.addKakaoLinkObserver()
-        self.setupDeeplinkHandler()
         self.feedbackGenerator.prepare()
         self.delegate = self
         if #available(iOS 15, *) {
@@ -44,6 +44,13 @@ class TabBarVC: UITabBarController {
         super.viewDidAppear(animated)
         
         self.processKakaoLinkIfExisted()
+        self.setupDeeplinkHandler()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        self.deeplinkDisposeBag = DisposeBag()
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -189,7 +196,7 @@ class TabBarVC: UITabBarController {
                         }
                     }
                 })
-            .disposed(by: self.disposeBag)
+            .disposed(by: self.deeplinkDisposeBag)
     }
     
     private func setupDeeplinkHandler() {

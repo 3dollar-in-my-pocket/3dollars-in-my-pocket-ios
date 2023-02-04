@@ -11,6 +11,7 @@ final class SocialSigninButton: BaseView {
     private let stackView = UIStackView().then {
         $0.spacing = 8
         $0.axis = .horizontal
+        $0.isUserInteractionEnabled = false
     }
     
     private let titleLabel = UILabel().then {

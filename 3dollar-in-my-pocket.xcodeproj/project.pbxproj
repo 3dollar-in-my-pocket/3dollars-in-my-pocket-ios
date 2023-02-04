@@ -456,6 +456,7 @@
 		6EB52FD1298E38DE00F42100 /* SocialSigninButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB52FD0298E38DE00F42100 /* SocialSigninButton.swift */; };
 		6EB52FD3298E3B8C00F42100 /* BookmarkSigninDialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB52FD2298E3B8C00F42100 /* BookmarkSigninDialogViewController.swift */; };
 		6EB52FD5298E3C2200F42100 /* BookmarkSigninDialogCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB52FD4298E3C2200F42100 /* BookmarkSigninDialogCoordinator.swift */; };
+		6EB52FD9298E452000F42100 /* BookmarkSigninDialogReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB52FD8298E452000F42100 /* BookmarkSigninDialogReactor.swift */; };
 		6EB6D0A525E728390017E09A /* StoreOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB6D0A425E728390017E09A /* StoreOrder.swift */; };
 		6EB6F9ED289CE92F00D41AE3 /* ToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB6F9EC289CE92F00D41AE3 /* ToastManager.swift */; };
 		6EB6F9EF289D3F9300D41AE3 /* FoodTruckTooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB6F9EE289D3F9300D41AE3 /* FoodTruckTooltipView.swift */; };
@@ -1015,6 +1016,7 @@
 		6EB52FD0298E38DE00F42100 /* SocialSigninButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialSigninButton.swift; sourceTree = "<group>"; };
 		6EB52FD2298E3B8C00F42100 /* BookmarkSigninDialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkSigninDialogViewController.swift; sourceTree = "<group>"; };
 		6EB52FD4298E3C2200F42100 /* BookmarkSigninDialogCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkSigninDialogCoordinator.swift; sourceTree = "<group>"; };
+		6EB52FD8298E452000F42100 /* BookmarkSigninDialogReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkSigninDialogReactor.swift; sourceTree = "<group>"; };
 		6EB6D0A425E728390017E09A /* StoreOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOrder.swift; sourceTree = "<group>"; };
 		6EB6F9EC289CE92F00D41AE3 /* ToastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastManager.swift; sourceTree = "<group>"; };
 		6EB6F9EE289D3F9300D41AE3 /* FoodTruckTooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTruckTooltipView.swift; sourceTree = "<group>"; };
@@ -2465,6 +2467,7 @@
 				6EB52FCD298E36EF00F42100 /* BookmarkSigninDialogView.swift */,
 				6EB52FD2298E3B8C00F42100 /* BookmarkSigninDialogViewController.swift */,
 				6EB52FD4298E3C2200F42100 /* BookmarkSigninDialogCoordinator.swift */,
+				6EB52FD8298E452000F42100 /* BookmarkSigninDialogReactor.swift */,
 			);
 			path = "bookmark-signin-dialog";
 			sourceTree = "<group>";
@@ -3428,6 +3431,7 @@
 				6E5E9B44292460F0002AEE59 /* SigninCoordinator.swift in Sources */,
 				6E3AA4DB25AD6C5400D8C58C /* Addition.swift in Sources */,
 				6E4FCD802939E9F700B63C8B /* BookmarkFolder.swift in Sources */,
+				6EB52FD9298E452000F42100 /* BookmarkSigninDialogReactor.swift in Sources */,
 				6E0EA39723ABB230008F7CB2 /* AppDelegate.swift in Sources */,
 				6E177FE2289A8EE200615800 /* BossStoreFeedbackHeaderView.swift in Sources */,
 				6E681E4B256FEDA600892B9E /* SettingMenuTableViewCell.swift in Sources */,
