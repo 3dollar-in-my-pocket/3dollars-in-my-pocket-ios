@@ -38,6 +38,7 @@
 "setting_signout_message" = "회원탈퇴 이후에 제보했던 가게와 작성한 댓글을 더이상 볼 수 없어요.\n정말로 탈퇴하시겠어요?";
 "setting_marketing" = "가슴속 3천원 마케팅 수신 동의";
 "sign_in_with_kakao" = "카카오 계정으로 로그인";
+"sign_in_with_apple" = "Apple로 로그인";
 "sign_in_without_id" = "로그인 없이 사용하기";
 "sign_in_anonymous_description" = "가슴속 3천원에 로그인하고\n더 많은 기능을 사용해 보세요!";
 "sign_in_anonymous_warning" = "비로그인 상태로 남겨주신 제보, 리뷰는 비로그인 상태로 일정 기간 접속하지 않거나 앱 삭제 시, 볼 수 없습니다.";

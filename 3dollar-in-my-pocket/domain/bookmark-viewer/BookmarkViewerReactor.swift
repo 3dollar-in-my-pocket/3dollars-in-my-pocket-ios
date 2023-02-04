@@ -16,6 +16,7 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
         case appendStores([StoreProtocol])
         case pushStoreDetail(String)
         case pushFoodTruckDetail(String)
+        case presentSigninDialog
         case showErrorAlert(Error)
     }
     
@@ -27,10 +28,12 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
         var stores: [StoreProtocol]
         @Pulse var pushStoreDetail: String?
         @Pulse var pushFoodTruckDetail: String?
+        @Pulse var presentSigninDialog: Void?
     }
     
     let initialState: State
     private let bookmarkService: BookmarkServiceProtocol
+    private let userDefaults: UserDefaultsUtil
     private let folderId: String
     private var hasMore: Bool = true
     private var nextCursor: String?
@@ -38,6 +41,7 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
     init(
         folderId: String,
         bookmarkService: BookmarkServiceProtocol,
+        userDefaults: UserDefaultsUtil,
         state: State = State(
             bookmarkTitle: "",
             bookmarkDescription: "",
@@ -48,6 +52,7 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
     ) {
         self.folderId = folderId
         self.bookmarkService = bookmarkService
+        self.userDefaults = userDefaults
         self.initialState = state
     }
     
@@ -62,17 +67,21 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
             return self.fetchBookmarkFolder(folderId: folderId, cursor: self.nextCursor)
             
         case .tapStore(let row):
-            let tappedStore = self.currentState.stores[row]
-            
-            switch tappedStore.storeCategory {
-            case .streetFood:
-                return .just(.pushStoreDetail(tappedStore.id))
+            if userDefaults.authToken.isEmpty {
+                return .just(.presentSigninDialog)
+            } else {
+                let tappedStore = self.currentState.stores[row]
                 
-            case .foodTruck:
-                return .just(.pushFoodTruckDetail(tappedStore.id))
-                
-            case .unknown:
-                return .empty()
+                switch tappedStore.storeCategory {
+                case .streetFood:
+                    return .just(.pushStoreDetail(tappedStore.id))
+                    
+                case .foodTruck:
+                    return .just(.pushFoodTruckDetail(tappedStore.id))
+                    
+                case .unknown:
+                    return .empty()
+                }
             }
         }
     }
@@ -101,6 +110,9 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
             
         case .pushFoodTruckDetail(let storeId):
             newState.pushFoodTruckDetail = storeId
+            
+        case .presentSigninDialog:
+            newState.presentSigninDialog = ()
             
         case .showErrorAlert(let error):
             self.showErrorAlertPublisher.accept(error)

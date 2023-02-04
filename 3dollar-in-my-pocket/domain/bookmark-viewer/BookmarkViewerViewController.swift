@@ -17,7 +17,8 @@ final class BookmarkViewerViewController: BaseViewController, View, BookmarkView
     init(folderId: String) {
         self.bookmarkViewerReactor = BookmarkViewerReactor(
             folderId: folderId,
-            bookmarkService: BookmarkService()
+            bookmarkService: BookmarkService(),
+            userDefaults: UserDefaultsUtil()
         )
         
         super.init(nibName: nil, bundle: nil)
@@ -93,6 +94,14 @@ final class BookmarkViewerViewController: BaseViewController, View, BookmarkView
             .asDriver(onErrorJustReturn: "")
             .drive(onNext: { [weak self] storeId in
                 self?.coodinator?.pushFoodTruckDetail(storeId: storeId)
+            })
+            .disposed(by: self.disposeBag)
+        
+        reactor.pulse(\.$presentSigninDialog)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coodinator?.presentSigninDialog()
             })
             .disposed(by: self.disposeBag)
     }
