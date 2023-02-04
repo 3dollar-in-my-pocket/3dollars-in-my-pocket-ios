@@ -26,6 +26,6 @@ extension Bundle {
     }
     
     static var bundleId: String {
-        return Bundle.main.infoDictionary?["Bundle identifier"] as? String ?? ""
+        return Bundle.main.bundleIdentifier ?? ""
     }
 }

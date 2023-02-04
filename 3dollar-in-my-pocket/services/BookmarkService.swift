@@ -107,6 +107,10 @@ struct BookmarkService: BookmarkServiceProtocol {
             linkBuilder?.iOSParameters = DynamicLinkIOSParameters(bundleID: Bundle.bundleId)
             linkBuilder?.androidParameters
             = DynamicLinkAndroidParameters(packageName: "com.zion830.threedollars")
+            linkBuilder?.socialMetaTagParameters = DynamicLinkSocialMetaTagParameters()
+            linkBuilder?.socialMetaTagParameters?.title = "테스트입니다."
+            linkBuilder?.socialMetaTagParameters?.descriptionText = "테스트설명입니다."
+            linkBuilder?.socialMetaTagParameters?.imageURL = URL(string: "https://i.postimg.cc/7ZqTsmSG/img-heart.png")
             
             linkBuilder?.shorten(completion: { url, _, _ in
                 if let shortURL = url {
@@ -130,10 +134,13 @@ struct BookmarkService: BookmarkServiceProtocol {
     -> Observable<(cursor: Cursor, BookmarkFolder: BookmarkFolder)> {
         let urlString = HTTPUtils.url + "/api/v1/favorite/store/folder/target/\(folderId)"
         let headers = HTTPUtils.defaultHeader()
-        let parameters: [String: Any] = [
-            "cursor": cursor as Any,
+        var parameters: [String: Any] = [
             "size": 20
         ]
+        
+        if let cursor = cursor {
+            parameters["cursor"] = cursor
+        }
         
         return self.networkManager.createGetObservable(
             class: UserFavoriteStoreFolderResponse.self,
