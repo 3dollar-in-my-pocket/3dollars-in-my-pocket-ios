@@ -7,7 +7,7 @@ protocol BookmarkViewerCoordinator: BaseCoordinator, AnyObject {
     
     func goToMain(with folderId: String)
     
-    func pushNickname(signinRequest: SigninRequest)
+    func pushNickname(signinRequest: SigninRequest, bookmarkFolderId: String?)
 }
 
 extension BookmarkViewerCoordinator {
@@ -44,8 +44,11 @@ extension BookmarkViewerCoordinator {
         }
     }
     
-    func pushNickname(signinRequest: SigninRequest) {
-        let viewController = NicknameViewController.instance(signinRequest: signinRequest)
+    func pushNickname(signinRequest: SigninRequest, bookmarkFolderId: String?) {
+        let viewController = NicknameViewController.instance(
+            signinRequest: signinRequest,
+            bookmarkFolderId: bookmarkFolderId
+        )
         
         self.presenter.navigationController?.pushViewController(
             viewController,
