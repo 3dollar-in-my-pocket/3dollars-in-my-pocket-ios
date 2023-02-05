@@ -17,7 +17,8 @@ final class BookmarkViewerViewController: BaseViewController, View, BookmarkView
     init(folderId: String) {
         self.bookmarkViewerReactor = BookmarkViewerReactor(
             folderId: folderId,
-            bookmarkService: BookmarkService()
+            bookmarkService: BookmarkService(),
+            userDefaults: UserDefaultsUtil()
         )
         
         super.init(nibName: nil, bundle: nil)
@@ -95,6 +96,22 @@ final class BookmarkViewerViewController: BaseViewController, View, BookmarkView
                 self?.coodinator?.pushFoodTruckDetail(storeId: storeId)
             })
             .disposed(by: self.disposeBag)
+        
+        reactor.pulse(\.$presentSigninDialog)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coodinator?.presentSigninDialog()
+            })
+            .disposed(by: self.disposeBag)
+        
+        reactor.pulse(\.$goToMainWithFolderId)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] folderId in
+                self?.coodinator?.goToMain(with: folderId)
+            })
+            .disposed(by: self.disposeBag)
     }
     
     private func setupDataSource() {
@@ -152,5 +169,15 @@ final class BookmarkViewerViewController: BaseViewController, View, BookmarkView
                 return UICollectionReusableView()
             }
         }
+    }
+}
+
+extension BookmarkViewerViewController: BookmarkSigninDialogViewControllerDelegate {
+    func onSigninSuccess() {
+        self.bookmarkViewerReactor.action.onNext(.onSuccessSignin)
+    }
+    
+    func whenAccountNotExisted(signinRequest: SigninRequest) {
+        self.coodinator?.pushNickname(signinRequest: signinRequest)
     }
 }

@@ -1,11 +1,18 @@
 import UIKit
 
+import RxSwift
+import RxRelay
+
 protocol DeeplinkManagerProtocol: AnyObject {
+    var deeplinkPublisher: PublishRelay<DeepLinkContents> { get }
+    
     func handleDeeplink(url: URL?)
 }
 
 final class DeeplinkManager: DeeplinkManagerProtocol {
     static let shared = DeeplinkManager()
+    
+    let deeplinkPublisher = PublishRelay<DeepLinkContents>()
     
     func handleDeeplink(url: URL?) {
         guard let url = url,
@@ -21,15 +28,12 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
                   param.key == "folderId",
                   let folderId = param.value as? String else { return }
             let viewController = BookmarkViewerViewController.instance(folderId: folderId)
+            let deeplinkContents = DeepLinkContents(
+                targetViewController: viewController,
+                transitionType: .present
+            )
             
-            
-            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-                sceneDelegate.window?.rootViewController?.present(viewController, animated: true)
-            }
-            
-            
-            Log.debug("params: \(url.params())")
-            
+            self.deeplinkPublisher.accept(deeplinkContents)
         default:
             Log.debug("지원하는 Deeplink가 아닙니다.")
             break
@@ -40,3 +44,4 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         return host == URL(string: Bundle.deeplinkHost)?.host
     }
 }
+

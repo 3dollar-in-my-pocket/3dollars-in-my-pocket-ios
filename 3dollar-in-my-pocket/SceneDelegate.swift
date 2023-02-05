@@ -6,6 +6,10 @@ import FirebaseDynamicLinks
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
+    static var shared: SceneDelegate? {
+        UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+    }
+    
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
