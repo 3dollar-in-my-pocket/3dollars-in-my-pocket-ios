@@ -1,26 +1,27 @@
 import UIKit
+
 import RxSwift
 import RxCocoa
 
-class NicknameView: BaseView {
-    let tapGestureView = UITapGestureRecognizer()
+final class NicknameView: BaseView {
+    fileprivate let tapGestureView = UITapGestureRecognizer()
     
     let backButton = UIButton().then {
         $0.setImage(UIImage(named: "ic_back_white"), for: .normal)
     }
     
-    let bgCloud = UIImageView().then {
+    private let backgroundCloud = UIImageView().then {
         $0.image = UIImage(named: "bg_cloud")
         $0.contentMode = .scaleToFill
     }
     
-    let nicknameLabel1 = UILabel().then {
+    private let nicknameLabel1 = UILabel().then {
         $0.text = "nickname_label_1".localized
         $0.font = .bold(size: 32)
         $0.textColor = .white
     }
     
-    let nicknameFieldBg = UIView().then {
+    private let nicknameFieldBackground = UIView().then {
         $0.layer.cornerRadius = 28
         $0.layer.borderWidth = 2
         $0.layer.borderColor = Color.pink?.cgColor
@@ -28,18 +29,18 @@ class NicknameView: BaseView {
     }
     
     let nicknameField = UITextField().then {
-        $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 32)
+        $0.font = .bold(size: 32)
         $0.textColor = Color.pink
         $0.returnKeyType = .done
         $0.attributedPlaceholder = NSAttributedString(
             string: "nickname_placeholder".localized,
             attributes: [
-                NSAttributedString.Key.foregroundColor: Color.pink?.withAlphaComponent(0.3) as Any
+                .foregroundColor: Color.pink?.withAlphaComponent(0.3) as Any
             ]
         )
     }
     
-    let nicknameLabel2 = UILabel().then {
+    private let nicknameLabel2 = UILabel().then {
         $0.text = "nickname_label_2".localized
         $0.font = .bold(size: 32)
         $0.textColor = .white
@@ -60,15 +61,15 @@ class NicknameView: BaseView {
         $0.isEnabled = false
     }
     
-    let warningImage = UIImageView().then {
+    fileprivate let warningImage = UIImageView().then {
         $0.image = UIImage(named: "ic_warning")
         $0.isHidden = true
     }
     
-    let warningLabel = UILabel().then {
+    fileprivate let warningLabel = UILabel().then {
         $0.text = "nickname_alreay_existed".localized
         $0.textColor = Color.red
-        $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 13)
+        $0.font = .medium(size: 13)
         $0.isHidden = true
     }
     
@@ -80,9 +81,9 @@ class NicknameView: BaseView {
         self.nicknameField.delegate = self
         self.addSubViews([
             backButton,
-            bgCloud,
+            backgroundCloud,
             nicknameLabel1,
-            nicknameFieldBg,
+            nicknameFieldBackground,
             nicknameField,
             nicknameLabel2,
             startButton1,
@@ -98,17 +99,17 @@ class NicknameView: BaseView {
             make.top.equalToSuperview().offset(48)
         }
         
-        self.bgCloud.snp.makeConstraints { (make) in
+        self.backgroundCloud.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
             make.top.equalTo(backButton.snp.bottom).offset(44)
         }
         
         self.nicknameLabel1.snp.makeConstraints { (make) in
-            make.left.equalTo(bgCloud.snp.left).offset(24)
-            make.top.equalTo(bgCloud.snp.top).offset(161)
+            make.left.equalTo(backgroundCloud.snp.left).offset(24)
+            make.top.equalTo(backgroundCloud.snp.top).offset(161)
         }
         
-        self.nicknameFieldBg.snp.makeConstraints { (make) in
+        self.nicknameFieldBackground.snp.makeConstraints { (make) in
             make.left.equalTo(nicknameLabel1.snp.left)
             make.top.equalTo(nicknameLabel1.snp.bottom).offset(16)
             make.height.equalTo(56)
@@ -116,20 +117,20 @@ class NicknameView: BaseView {
         }
         
         self.nicknameField.snp.makeConstraints { (make) in
-            make.left.equalTo(nicknameFieldBg.snp.left).offset(20)
-            make.top.equalTo(nicknameFieldBg.snp.top)
-            make.bottom.equalTo(nicknameFieldBg.snp.bottom)
-            make.right.equalTo(nicknameFieldBg.snp.right).offset(-20)
+            make.left.equalTo(nicknameFieldBackground.snp.left).offset(20)
+            make.top.equalTo(nicknameFieldBackground.snp.top)
+            make.bottom.equalTo(nicknameFieldBackground.snp.bottom)
+            make.right.equalTo(nicknameFieldBackground.snp.right).offset(-20)
         }
         
         self.nicknameLabel2.snp.makeConstraints { (make) in
-            make.centerY.equalTo(nicknameFieldBg.snp.centerY)
-            make.left.equalTo(nicknameFieldBg.snp.right).offset(14)
+            make.centerY.equalTo(nicknameFieldBackground.snp.centerY)
+            make.left.equalTo(nicknameFieldBackground.snp.right).offset(14)
         }
         
         self.startButton1.snp.makeConstraints { (make) in
             make.left.equalTo(nicknameLabel1.snp.left)
-            make.top.equalTo(nicknameFieldBg.snp.bottom).offset(16)
+            make.top.equalTo(nicknameFieldBackground.snp.bottom).offset(16)
             make.height.equalTo(38)
         }
         
@@ -160,7 +161,6 @@ class NicknameView: BaseView {
 }
 
 extension NicknameView: UITextFieldDelegate {
-    
     func textField(
         _ textField: UITextField,
         shouldChangeCharactersIn range: NSRange,
@@ -184,15 +184,18 @@ extension NicknameView: UITextFieldDelegate {
 }
 
 extension Reactive where Base: NicknameView {
+    var tapBackground: ControlEvent<Void> {
+        return ControlEvent(events: base.tapGestureView.rx.event.map { _ in () })
+    }
     
-    var startButtonEnable: Binder<Bool> {
+    var isStartButtonEnable: Binder<Bool> {
         return Binder(self.base) { view, isEnable in
             view.startButton1.isEnabled = isEnable
             view.startButton2.isEnabled = isEnable
         }
     }
     
-    var errorLabelHidden: Binder<Bool> {
+    var isErrorLabelHidden: Binder<Bool> {
         return Binder(self.base) { view, isHidden in
             view.warningImage.isHidden = isHidden
             view.warningLabel.isHidden = isHidden

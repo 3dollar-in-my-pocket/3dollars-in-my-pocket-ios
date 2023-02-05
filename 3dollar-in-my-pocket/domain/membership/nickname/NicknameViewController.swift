@@ -46,7 +46,7 @@ class NicknameViewController: BaseVC {
     // Bind output
     self.viewModel.output.startButtonEnable
       .asDriver(onErrorJustReturn: false)
-      .drive(self.nicknameView.rx.startButtonEnable)
+      .drive(self.nicknameView.rx.isStartButtonEnable)
       .disposed(by: self.disposeBag)
     
     self.viewModel.output.presentPolicy
@@ -58,7 +58,7 @@ class NicknameViewController: BaseVC {
     
     self.viewModel.output.errorLabelHidden
       .asDriver(onErrorJustReturn: true)
-      .drive(self.nicknameView.rx.errorLabelHidden)
+      .drive(self.nicknameView.rx.isErrorLabelHidden)
       .disposed(by: self.disposeBag)
       
     self.viewModel.showLoading
@@ -86,9 +86,8 @@ class NicknameViewController: BaseVC {
       .drive(onNext: self.popupVC)
       .disposed(by: self.disposeBag)
     
-    self.nicknameView.tapGestureView.rx.event
+      self.nicknameView.rx.tapBackground
       .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-      .map { _ in Void() }
       .asDriver(onErrorJustReturn: ())
       .drive(onNext: self.nicknameView.hideKeyboard)
       .disposed(by: self.disposeBag)
