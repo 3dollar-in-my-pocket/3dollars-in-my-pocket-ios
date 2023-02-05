@@ -10,9 +10,9 @@
 brew install git-lfs
 brew install cocoapods
 
-git lfs install
+git lfs install --skip-smudge
 
 pod cache clean NMapsMap
 
 # Install dependencies you manage with CocoaPods.
-pod install
+pod install --repo-update
