@@ -7,6 +7,7 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
         case willDisplay(row: Int)
         case tapStore(row: Int)
         case onSuccessSignin
+        case onFailSignin(SigninRequest)
     }
     
     enum Mutation {
@@ -19,6 +20,10 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
         case pushFoodTruckDetail(String)
         case presentSigninDialog
         case goToMainWithFolderId(String)
+        case pushNicknameWithFolderId(
+            signinRequest: SigninRequest,
+            folderId: String
+        )
         case showErrorAlert(Error)
     }
     
@@ -32,6 +37,7 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
         @Pulse var pushFoodTruckDetail: String?
         @Pulse var presentSigninDialog: Void?
         @Pulse var goToMainWithFolderId: String?
+        @Pulse var pushNicknameWithFolderId: (SigninRequest, String)?
     }
     
     let initialState: State
@@ -89,6 +95,12 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
             
         case .onSuccessSignin:
             return .just(.goToMainWithFolderId(self.folderId))
+            
+        case .onFailSignin(let signinRequest):
+            return .just(.pushNicknameWithFolderId(
+                signinRequest: signinRequest,
+                folderId: self.folderId
+            ))
         }
     }
     
@@ -122,6 +134,9 @@ final class BookmarkViewerReactor: BaseReactor, Reactor {
             
         case .goToMainWithFolderId(let folderId):
             newState.goToMainWithFolderId = folderId
+            
+        case .pushNicknameWithFolderId(let signinRequest, let folderId):
+            newState.pushNicknameWithFolderId = (signinRequest, folderId)
             
         case .showErrorAlert(let error):
             self.showErrorAlertPublisher.accept(error)

@@ -1,7 +1,7 @@
 protocol NicknameCoordinator: BaseCoordinator, AnyObject {
     func presentPolicy()
     
-    func goToMain()
+    func goToMain(with bookmarkFolderId: String?)
 }
 
 extension NicknameCoordinator where Self: NicknameViewController {
@@ -11,7 +11,18 @@ extension NicknameCoordinator where Self: NicknameViewController {
         self.present(viewController, animated: true)
     }
     
-    func goToMain() {
+    func goToMain(with bookmarkFolderId: String?) {
         SceneDelegate.shared?.goToMain()
+        
+        if let bookmarkFolderId {
+            let targetViewController = BookmarkViewerViewController.instance(
+                folderId: bookmarkFolderId
+            )
+            let deepLinkContents = DeepLinkContents(
+                targetViewController: targetViewController,
+                transitionType: .present
+            )
+            DeeplinkManager.shared.deeplinkPublisher.accept(deepLinkContents)
+        }
     }
 }

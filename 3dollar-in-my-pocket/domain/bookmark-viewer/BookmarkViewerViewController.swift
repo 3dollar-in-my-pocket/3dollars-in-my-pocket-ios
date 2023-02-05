@@ -112,6 +112,14 @@ final class BookmarkViewerViewController: BaseViewController, View, BookmarkView
                 self?.coodinator?.goToMain(with: folderId)
             })
             .disposed(by: self.disposeBag)
+        
+        reactor.pulse(\.$pushNicknameWithFolderId)
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: (SigninRequest(socialType: .unknown, token: ""), ""))
+            .drive(onNext: { [weak self] parameters in
+                self?.coodinator?.pushNickname(signinRequest: parameters.0, bookmarkFolderId: parameters.1)
+            })
+            .disposed(by: self.disposeBag)
     }
     
     private func setupDataSource() {
@@ -178,6 +186,6 @@ extension BookmarkViewerViewController: BookmarkSigninDialogViewControllerDelega
     }
     
     func whenAccountNotExisted(signinRequest: SigninRequest) {
-        self.coodinator?.pushNickname(signinRequest: signinRequest)
+        self.bookmarkViewerReactor.action.onNext(.onFailSignin(signinRequest))
     }
 }

@@ -6,6 +6,7 @@ final class NicknameReactor: BaseReactor, Reactor {
     enum Action {
         case inputNickname(String)
         case tapStartButton
+        case onSignupSuccess
     }
     
     enum Mutation {
@@ -13,6 +14,7 @@ final class NicknameReactor: BaseReactor, Reactor {
         case setStartButtonEnable(Bool)
         case setErrorLabelHidden(Bool)
         case presentPolicy
+        case goToMain(bookmarkFolderId: String?)
         case showLoading(isShow: Bool)
         case showErrorAlert(error: Error)
     }
@@ -25,13 +27,16 @@ final class NicknameReactor: BaseReactor, Reactor {
     }
     
     let initialState: State
+    let goToMainPublisher = PublishRelay<String?>()
     private let signinRequest: SigninRequest
+    private let bookmarkFolderId: String?
     private var userDefaults: UserDefaultsUtil
     private let userService: UserServiceProtocol
     var isSignupSuccess = false
     
     init(
         signinRequest: SigninRequest,
+        bookmarkFolderId: String? = nil,
         userDefaults: UserDefaultsUtil,
         userService: UserServiceProtocol,
         state: State = State(
@@ -41,6 +46,7 @@ final class NicknameReactor: BaseReactor, Reactor {
         )
     ) {
         self.signinRequest = signinRequest
+        self.bookmarkFolderId = bookmarkFolderId
         self.userDefaults = userDefaults
         self.userService = userService
         self.initialState = state
@@ -64,6 +70,9 @@ final class NicknameReactor: BaseReactor, Reactor {
                 self.setNickname(nickname: nickname),
                 .just(.showLoading(isShow: false))
             ])
+            
+        case .onSignupSuccess:
+            return .just(.goToMain(bookmarkFolderId: self.bookmarkFolderId))
         }
     }
     
@@ -82,6 +91,9 @@ final class NicknameReactor: BaseReactor, Reactor {
             
         case .presentPolicy:
             newState.presentPolicy = ()
+            
+        case .goToMain(let bookmarkFolderId):
+            self.goToMainPublisher.accept(bookmarkFolderId)
             
         case .showLoading(let isShow):
             self.showLoadingPublisher.accept(isShow)

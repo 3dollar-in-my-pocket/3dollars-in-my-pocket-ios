@@ -12,13 +12,20 @@ final class NicknameViewController: BaseViewController, View, NicknameCoordinato
         return .lightContent
     }
     
-    static func instance(signinRequest: SigninRequest) -> NicknameViewController {
-        return NicknameViewController(signinRequest: signinRequest)
+    static func instance(
+        signinRequest: SigninRequest,
+        bookmarkFolderId: String? = nil
+    ) -> NicknameViewController {
+        return NicknameViewController(
+            signinRequest: signinRequest,
+            bookmarkFolderId: bookmarkFolderId
+        )
     }
   
-    init(signinRequest: SigninRequest) {
+    init(signinRequest: SigninRequest, bookmarkFolderId: String?) {
         self.nicknameReactor = NicknameReactor(
             signinRequest: signinRequest,
+            bookmarkFolderId: bookmarkFolderId,
             userDefaults: UserDefaultsUtil(),
             userService: UserService()
         )
@@ -57,6 +64,13 @@ final class NicknameViewController: BaseViewController, View, NicknameCoordinato
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: { [weak self] _ in
                 self?.nicknameView.hideKeyboard()
+            })
+            .disposed(by: self.eventDisposeBag)
+        
+        self.nicknameReactor.goToMainPublisher
+            .asDriver(onErrorJustReturn: nil)
+            .drive(onNext: { [weak self] bookmarkFolderId in
+                self?.coordinator?.goToMain(with: bookmarkFolderId)
             })
             .disposed(by: self.eventDisposeBag)
         
@@ -122,6 +136,6 @@ final class NicknameViewController: BaseViewController, View, NicknameCoordinato
 
 extension NicknameViewController: PolicyViewControllerDelegate {
     func onDismiss() {
-        self.coordinator?.goToMain()
+        self.nicknameReactor.action.onNext(.onSignupSuccess)
     }
 }
