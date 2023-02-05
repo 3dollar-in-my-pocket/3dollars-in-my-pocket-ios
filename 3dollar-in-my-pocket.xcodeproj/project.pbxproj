@@ -1909,12 +1909,10 @@
 		6E6B0EE223AD17D7006E11CE /* membership */ = {
 			isa = PBXGroup;
 			children = (
+				6EA45EC6298F5FDA001508DE /* nickname */,
 				6EDDBBC92925326D000DD5F4 /* signin-anonymous */,
 				6E2835A229239338004F197D /* signin */,
 				6EE4E3272917FB8C002D6110 /* policy */,
-				6E2C820C23B4A2880025BB2B /* NicknameView.swift */,
-				6E2C820E23B4A37F0025BB2B /* NicknameViewController.swift */,
-				6EDEC58A256B920D0067FCF0 /* NicknameViewModel.swift */,
 			);
 			path = membership;
 			sourceTree = "<group>";
@@ -2427,6 +2425,16 @@
 				6EA3207D2762F1F9002AA2F5 /* VisitHistoryTableViewCell.swift */,
 			);
 			path = cells;
+			sourceTree = "<group>";
+		};
+		6EA45EC6298F5FDA001508DE /* nickname */ = {
+			isa = PBXGroup;
+			children = (
+				6E2C820C23B4A2880025BB2B /* NicknameView.swift */,
+				6E2C820E23B4A37F0025BB2B /* NicknameViewController.swift */,
+				6EDEC58A256B920D0067FCF0 /* NicknameViewModel.swift */,
+			);
+			path = nickname;
 			sourceTree = "<group>";
 		};
 		6EA5EC0523B57ED20028F86B /* main */ = {
