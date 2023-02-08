@@ -1,3 +1,5 @@
+import UIKit
+
 protocol BookmarkListCoordinator: BaseCoordinator, AnyObject {
     func pushStoreDetail(storeId: String)
     
@@ -6,6 +8,8 @@ protocol BookmarkListCoordinator: BaseCoordinator, AnyObject {
     func showDeleteAllPopup()
     
     func pushEditBookmarkFolder(bookmarkFolder: BookmarkFolder)
+    
+    func presentSharePannel(url: String)
 }
 
 extension BookmarkListCoordinator {
@@ -33,5 +37,15 @@ extension BookmarkListCoordinator {
         let viewController = BookmarkEditViewController.instance(bookmarkFolder: bookmarkFolder)
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    func presentSharePannel(url: String) {
+        let viewController = UIActivityViewController(
+            activityItems : [url],
+            applicationActivities: nil
+        )
+        
+        viewController.popoverPresentationController?.sourceView = self.presenter.view
+        self.presenter.present(viewController, animated: true, completion: nil)
     }
 }

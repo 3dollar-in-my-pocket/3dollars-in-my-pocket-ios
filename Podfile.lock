@@ -45,25 +45,13 @@ PODS:
     - nanopb/encode (= 2.30909.0)
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
-  - Nimble (9.2.1)
   - NMapsMap (3.16.0)
   - PromisesObjC (2.1.1)
-  - RxNimble/Core (5.0.0):
-    - Nimble (~> 9.0)
-    - RxSwift (~> 5.0)
-  - RxNimble/RxTest (5.0.0):
-    - RxNimble/Core
-    - RxTest
-  - RxSwift (5.1.3)
-  - RxTest (5.1.3):
-    - RxSwift (~> 5)
   - SwiftLint (0.50.0)
 
 DEPENDENCIES:
   - Google-Mobile-Ads-SDK
   - NMapsMap
-  - RxNimble/RxTest
-  - RxTest (~> 5)
   - SwiftLint
 
 SPEC REPOS:
@@ -73,12 +61,8 @@ SPEC REPOS:
     - GoogleUserMessagingPlatform
     - GoogleUtilities
     - nanopb
-    - Nimble
     - NMapsMap
     - PromisesObjC
-    - RxNimble
-    - RxSwift
-    - RxTest
     - SwiftLint
 
 SPEC CHECKSUMS:
@@ -87,14 +71,10 @@ SPEC CHECKSUMS:
   GoogleUserMessagingPlatform: 5f8b30daf181805317b6b985bb51c1ff3beca054
   GoogleUtilities: bad72cb363809015b1f7f19beb1f1cd23c589f95
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
-  Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
   NMapsMap: a2593320fca2bb09e521c05b4dffee4da42e96ed
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  RxNimble: 3b757b0f8fb4dc487c3f9a383bc61a6f5bd72d28
-  RxSwift: 915abbdfb62214aa89ccd0b194d44fb478019b27
-  RxTest: 937ba521d3f6dca7db49f76cd5d372cfce6091cb
   SwiftLint: 9cbf846727f3312f3ba722f2d7108a162cd050a5
 
-PODFILE CHECKSUM: cf62dcba8208ba0b6e7c5d7fc0e254be5fe93986
+PODFILE CHECKSUM: 6a3827a564780ec66be856821924f4bd134201df
 
 COCOAPODS: 1.11.3

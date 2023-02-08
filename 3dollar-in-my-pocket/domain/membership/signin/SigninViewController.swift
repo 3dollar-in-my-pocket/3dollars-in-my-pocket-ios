@@ -33,6 +33,7 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
         
         self.signinView.startFadeIn()
         self.reactor = self.signinReactor
+        DeeplinkManager.shared.flushDelayedDeeplink()
         self.coordinator = self
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
@@ -57,11 +58,11 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
             .disposed(by: self.disposeBag)
         
         self.signinView.appleButton.rx
-          .controlEvent(.touchUpInside)
-          .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-          .map { _ in Reactor.Action.tapAppleButton }
-          .bind(to: reactor.action)
-          .disposed(by: self.disposeBag)
+            .controlEvent(.touchUpInside)
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .map { _ in Reactor.Action.tapAppleButton }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
         
         // Bind State
         reactor.pulse(\.$goToMain)
@@ -95,5 +96,24 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
                 self?.coordinator?.showLoading(isShow: isShow)
             })
             .disposed(by: self.disposeBag)
+    }
+    
+    private func handleDeeplink(contents: DeepLinkContents) {
+        let rootViewController = SceneDelegate.shared?.window?.rootViewController
+        
+        switch contents.transitionType {
+        case .push:
+            if let navigationController = rootViewController as? UINavigationController {
+                navigationController.pushViewController(
+                    contents.targetViewController,
+                    animated: true
+                )
+            } else {
+                Log.error("UINavigationViewController가 없습니다.")
+            }
+            
+        case .present:
+            rootViewController?.present(contents.targetViewController, animated: true)
+        }
     }
 }

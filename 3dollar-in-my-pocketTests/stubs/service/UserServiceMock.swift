@@ -11,6 +11,7 @@ import RxSwift
 @testable import dollar_in_my_pocket
 
 struct UserServiceMock: UserServiceProtocol {
+    var editNicknameObservable: Observable<Void>?
     var signinObservable: Observable<SigninResponse>?
     var signupObservable: Observable<SigninResponse>?
     var fetchUserInfoObservable: Observable<UserInfoResponse>?
@@ -42,6 +43,35 @@ struct UserServiceMock: UserServiceProtocol {
     }
     
     func fetchUserActivity() -> Observable<UserWithActivityResponse> {
+        return .empty()
+    }
+    
+    func signinAnonymous() -> Observable<SigninResponse> {
+        return .empty()
+    }
+    
+    func connectAccount(request: SigninRequest) -> Observable<String> {
+        return .empty()
+    }
+    
+    func signout() -> Observable<Void> {
+        return .empty()
+    }
+    
+    func editNickname(name: String) -> Observable<Void> {
+        return self.editNicknameObservable
+        ?? .error(BaseError.custom("editNicknameObservable가 정의되지 않았습니다."))
+    }
+    
+    func fetchUser() -> Observable<User> {
+        return .empty()
+    }
+    
+    func fetchUserActivity() -> Observable<User> {
+        return .empty()
+    }
+    
+    func changeMarketingConsent(marketingConsentType: MarketingConsentType) -> Observable<String> {
         return .empty()
     }
 }
