@@ -44,7 +44,7 @@ class TabBarVC: UITabBarController {
         super.viewDidAppear(animated)
         
         self.processKakaoLinkIfExisted()
-        self.setupDeeplinkHandler()
+        DeeplinkManager.shared.flushDelayedDeeplink()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -197,37 +197,6 @@ class TabBarVC: UITabBarController {
                     }
                 })
             .disposed(by: self.deeplinkDisposeBag)
-    }
-    
-    private func setupDeeplinkHandler() {
-        DeeplinkManager.shared.deeplinkPublisher
-            .asDriver(onErrorJustReturn: DeepLinkContents(
-                targetViewController: BaseViewController(nibName: nil, bundle: nil),
-                transitionType: .push
-            ))
-            .drive(onNext: { [weak self] deeplinkContents in
-                self?.handleDeeplink(contents: deeplinkContents)
-            })
-            .disposed(by: self.disposeBag)
-    }
-    
-    private func handleDeeplink(contents: DeepLinkContents) {
-        let rootViewController = SceneDelegate.shared?.window?.rootViewController
-        
-        switch contents.transitionType {
-        case .push:
-            if let navigationController = rootViewController as? UINavigationController {
-                navigationController.pushViewController(
-                    contents.targetViewController,
-                    animated: true
-                )
-            } else {
-                Log.error("UINavigationViewController가 없습니다.")
-            }
-            
-        case .present:
-            rootViewController?.present(contents.targetViewController, animated: true)
-        }
     }
 }
 

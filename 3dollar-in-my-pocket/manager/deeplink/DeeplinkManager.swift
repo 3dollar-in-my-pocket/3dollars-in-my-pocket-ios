@@ -4,39 +4,87 @@ import RxSwift
 import RxRelay
 
 protocol DeeplinkManagerProtocol: AnyObject {
-    var deeplinkPublisher: PublishRelay<DeepLinkContents> { get }
-    
     func handleDeeplink(url: URL?)
+    
+    func reserveDeeplink(url: URL?)
+    
+    func reserveDeeplink(deeplinkContents: DeepLinkContents)
+    
+    func flushDelayedDeeplink()
 }
 
 final class DeeplinkManager: DeeplinkManagerProtocol {
     static let shared = DeeplinkManager()
     
-    let deeplinkPublisher = PublishRelay<DeepLinkContents>()
+    private var delayedDeeplink: DeepLinkContents?
     
     func handleDeeplink(url: URL?) {
+        guard let deeplinkContents = self.extractDeeplinkContents(url: url) else { return }
+        
+        self.navigateDeeplink(contents: deeplinkContents)
+    }
+    
+    func reserveDeeplink(url: URL?) {
+        guard let deeplinkContents = self.extractDeeplinkContents(url: url) else { return }
+        
+        self.delayedDeeplink = deeplinkContents
+    }
+    
+    func reserveDeeplink(deeplinkContents: DeepLinkContents) {
+        self.delayedDeeplink = deeplinkContents
+    }
+    
+    func flushDelayedDeeplink() {
+        guard let delayedDeeplink = self.delayedDeeplink else { return }
+        
+        self.navigateDeeplink(contents: delayedDeeplink)
+        self.delayedDeeplink = nil
+    }
+    
+    private func extractDeeplinkContents(url: URL?) -> DeepLinkContents? {
         guard let url = url,
         self.validateHost(host: url.host) else {
             Log.debug("URL 형식이 아닙니다.")
-            return
+            return nil
         }
+        
+        var deeplinkContents: DeepLinkContents?
         
         switch DeeplinkType(rawValue: url.relativePath) {
         case .bookmark:
             guard let params = url.params(),
                   let param = params.first,
                   param.key == "folderId",
-                  let folderId = param.value as? String else { return }
+                  let folderId = param.value as? String else { return nil }
             let viewController = BookmarkViewerViewController.instance(folderId: folderId)
-            let deeplinkContents = DeepLinkContents(
+            deeplinkContents = DeepLinkContents(
                 targetViewController: viewController,
                 transitionType: .present
             )
             
-            self.deeplinkPublisher.accept(deeplinkContents)
         default:
             Log.debug("지원하는 Deeplink가 아닙니다.")
-            break
+        }
+        
+        return deeplinkContents
+    }
+    
+    private func navigateDeeplink(contents: DeepLinkContents) {
+        let rootViewController = SceneDelegate.shared?.window?.rootViewController
+        
+        switch contents.transitionType {
+        case .push:
+            if let navigationController = rootViewController as? UINavigationController {
+                navigationController.pushViewController(
+                    contents.targetViewController,
+                    animated: true
+                )
+            } else {
+                Log.error("UINavigationViewController가 없습니다.")
+            }
+            
+        case .present:
+            rootViewController?.present(contents.targetViewController, animated: true)
         }
     }
     
@@ -44,4 +92,3 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         return host == URL(string: Bundle.deeplinkHost)?.host
     }
 }
-

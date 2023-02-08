@@ -33,7 +33,7 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
         
         self.signinView.startFadeIn()
         self.reactor = self.signinReactor
-        self.setupDeeplinkHandler()
+        DeeplinkManager.shared.flushDelayedDeeplink()
         self.coordinator = self
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
@@ -94,18 +94,6 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: { [weak self] isShow in
                 self?.coordinator?.showLoading(isShow: isShow)
-            })
-            .disposed(by: self.disposeBag)
-    }
-    
-    private func setupDeeplinkHandler() {
-        DeeplinkManager.shared.deeplinkPublisher
-            .asDriver(onErrorJustReturn: DeepLinkContents(
-                targetViewController: BaseViewController(nibName: nil, bundle: nil),
-                transitionType: .push
-            ))
-            .drive(onNext: { [weak self] deeplinkContents in
-                self?.handleDeeplink(contents: deeplinkContents)
             })
             .disposed(by: self.disposeBag)
     }

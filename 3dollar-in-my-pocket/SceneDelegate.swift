@@ -23,6 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = SplashVC.instance()
         window?.makeKeyAndVisible()
         
+        self.reserveDynamicLinkIfExisted(connectionOptions: connectionOptions)
         self.scene(scene, openURLContexts: connectionOptions.urlContexts)
     }
     
@@ -44,7 +45,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         guard let incomingURL = userActivity.webpageURL else { return }
-        let linkHandled = DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, error in
+        let _ = DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, error in
             DeeplinkManager.shared.handleDeeplink(url: dynamicLink?.url)
         }
     }
@@ -63,5 +64,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let kakaoAppKey = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as? String ?? ""
         
         return url.absoluteString.hasPrefix("kakao\(kakaoAppKey)://kakaolink")
+    }
+    
+    private func reserveDynamicLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
+        for userActivity in connectionOptions.userActivities {
+            if let incomingURL = userActivity.webpageURL {
+                let _ = DynamicLinks.dynamicLinks()
+                    .handleUniversalLink(incomingURL) { (dynamicLink, error) in
+                        guard error == nil else {
+                            Log.debug("Found an error \(error!.localizedDescription)")
+                            return
+                        }
+                        
+                        DeeplinkManager.shared.reserveDeeplink(url: dynamicLink?.url)
+                    }
+                break
+            }
+        }
     }
 }

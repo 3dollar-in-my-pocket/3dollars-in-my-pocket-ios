@@ -40,7 +40,7 @@ extension BookmarkViewerCoordinator {
         
         self.presenter.dismiss(animated: true) {
             SceneDelegate.shared?.goToMain()
-            DeeplinkManager.shared.deeplinkPublisher.accept(deeplinkContents)
+            DeeplinkManager.shared.reserveDeeplink(deeplinkContents: deeplinkContents)
         }
     }
     

@@ -22,7 +22,7 @@ extension NicknameCoordinator where Self: NicknameViewController {
                 targetViewController: targetViewController,
                 transitionType: .present
             )
-            DeeplinkManager.shared.deeplinkPublisher.accept(deepLinkContents)
+            DeeplinkManager.shared.reserveDeeplink(deeplinkContents: deepLinkContents)
         }
     }
 }
