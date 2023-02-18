@@ -246,9 +246,9 @@ final class BookmarkListReactor: BaseReactor, Reactor {
     }
     
     private func createBookmarkURL() -> Observable<Mutation> {
-        guard let folderId = self.currentState.bookmarkFolder.folderId else { return .empty() }
+        let bookmarkFolder = self.currentState.bookmarkFolder
         
-        return self.bookmarkService.createBookmarkURL(folderId: folderId)
+        return self.bookmarkService.createBookmarkURL(bookmarkFolder: bookmarkFolder)
             .map { .presentSharePannel(bookmarkURL: $0) }
             .catch { .just(.showErrorAlert($0)) }
     }

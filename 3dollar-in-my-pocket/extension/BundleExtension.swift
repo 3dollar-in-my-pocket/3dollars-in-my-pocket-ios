@@ -28,4 +28,8 @@ extension Bundle {
     static var bundleId: String {
         return Bundle.main.bundleIdentifier ?? ""
     }
+    
+    static var androidPackageName: String {
+        return Bundle.main.infoDictionary?["ANDROID_PACKAGE_NAME"] as? String ?? ""
+    }
 }

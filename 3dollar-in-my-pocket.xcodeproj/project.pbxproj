@@ -3838,6 +3838,7 @@
 			buildSettings = {
 				ADMOB_UNIT_ID = "ca-app-pub-3940256099942544/2934735716";
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ANDROID_PACKAGE_NAME = com.zion830.threedollars.dev;
 				API_URL = "https://dev.threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원-Dev";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -3890,6 +3891,7 @@
 			buildSettings = {
 				ADMOB_UNIT_ID = "ca-app-pub-1527951560812478/3327283605";
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ANDROID_PACKAGE_NAME = com.zion830.threedollars;
 				API_URL = "https://threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
