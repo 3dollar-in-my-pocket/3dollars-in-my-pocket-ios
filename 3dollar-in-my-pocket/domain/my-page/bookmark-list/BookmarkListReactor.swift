@@ -6,6 +6,7 @@ final class BookmarkListReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad
         case willDisplayCell(row: Int)
+        case tapShare
         case tapEditOverview
         case tapDeleteMode
         case tapDeleteAll
@@ -22,6 +23,7 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         case toggleDeleteMode
         case pushEditBookmarkFolder
         case clearBookmakrs
+        case presentSharePannel(bookmarkURL: String)
         case deleteBookamrk(storeId: String)
         case pushStoreDetail(storeId: String)
         case pushFoodTruckDetail(storeId: String)
@@ -34,6 +36,7 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         var totalCount: Int?
         var isDeleteMode: Bool
         var userName: String
+        @Pulse var presentSharePannel: String?
         @Pulse var pushStoreDetail: String?
         @Pulse var pushFoodtruckDetail: String?
         @Pulse var pushEditBookmarkFolder: BookmarkFolder?
@@ -79,6 +82,9 @@ final class BookmarkListReactor: BaseReactor, Reactor {
             guard self.canFetchNextPage(row: row) else { return .empty() }
             
             return self.fetchBookmarks()
+            
+        case .tapShare:
+            return self.createBookmarkURL()
             
         case .tapEditOverview:
             return .just(.pushEditBookmarkFolder)
@@ -161,6 +167,9 @@ final class BookmarkListReactor: BaseReactor, Reactor {
         case .clearBookmakrs:
             newState.bookmarkFolder.bookmarks = []
             
+        case .presentSharePannel(let bookmarkURL):
+            newState.presentSharePannel = bookmarkURL
+            
         case .deleteBookamrk(let storeId):
             if let targetIndex = newState.bookmarkFolder.bookmarks.firstIndex(where: {
                 $0.id == storeId
@@ -233,6 +242,14 @@ final class BookmarkListReactor: BaseReactor, Reactor {
                     .just(.toggleDeleteMode)
                 ])
             }
+            .catch { .just(.showErrorAlert($0)) }
+    }
+    
+    private func createBookmarkURL() -> Observable<Mutation> {
+        let bookmarkFolder = self.currentState.bookmarkFolder
+        
+        return self.bookmarkService.createBookmarkURL(bookmarkFolder: bookmarkFolder)
+            .map { .presentSharePannel(bookmarkURL: $0) }
             .catch { .just(.showErrorAlert($0)) }
     }
 }

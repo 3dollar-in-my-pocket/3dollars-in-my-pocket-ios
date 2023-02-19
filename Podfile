@@ -9,12 +9,6 @@ target '3dollar-in-my-pocket' do
   pod 'Google-Mobile-Ads-SDK'
   pod 'NMapsMap'
   pod 'SwiftLint'
-
-  target '3dollar-in-my-pocketTests' do
-    inherit! :search_paths
-    pod 'RxTest', '~> 5'
-    pod 'RxNimble/RxTest'
-  end
 end
 
 # M1에서 시뮬레이터 빌드를 하기위해 추가했습니다.
