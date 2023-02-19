@@ -3838,6 +3838,7 @@
 			buildSettings = {
 				ADMOB_UNIT_ID = "ca-app-pub-3940256099942544/2934735716";
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ANDROID_PACKAGE_NAME = com.zion830.threedollars.dev;
 				API_URL = "https://dev.threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원-Dev";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -3863,7 +3864,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.1;
+				MARKETING_VERSION = 3.3.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -3890,6 +3891,7 @@
 			buildSettings = {
 				ADMOB_UNIT_ID = "ca-app-pub-1527951560812478/3327283605";
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ANDROID_PACKAGE_NAME = com.zion830.threedollars;
 				API_URL = "https://threedollars.co.kr";
 				APP_DISPLAY_NAME = "가슴속3천원";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -3901,7 +3903,7 @@
 				DEEPLINK_HOST = "https://link.threedollars.co.kr";
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = X975A2HM62;
-				DYNAMIC_LINK_URL = "https://3dollars.page.link/bookmark";
+				DYNAMIC_LINK_URL = "https://3dollars.page.link";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3914,7 +3916,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.1;
+				MARKETING_VERSION = 3.3.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",

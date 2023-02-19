@@ -14,7 +14,7 @@ protocol BookmarkServiceProtocol {
     
     func editBookmarkFolder(introduction: String, name: String) -> Observable<String>
     
-    func createBookmarkURL(folderId: String) -> Observable<String>
+    func createBookmarkURL(bookmarkFolder: BookmarkFolder) -> Observable<String>
     
     func fetchBookmarkFolder(folderId: String, cursor: String?)
     -> Observable<(cursor: Cursor, BookmarkFolder: BookmarkFolder)>
@@ -92,9 +92,10 @@ struct BookmarkService: BookmarkServiceProtocol {
         )
     }
     
-    func createBookmarkURL(folderId: String) -> Observable<String> {
+    func createBookmarkURL(bookmarkFolder: BookmarkFolder) -> Observable<String> {
         return .create { observer in
-            guard let link = Deeplink.bookmark(folderId: folderId).url else {
+            guard let folderId = bookmarkFolder.folderId,
+                  let link = Deeplink.bookmark(folderId: folderId).url else {
                 observer.onError(BaseError.custom("URL 형식이 잘못되었습니다."))
                 return Disposables.create()
             }
@@ -106,11 +107,12 @@ struct BookmarkService: BookmarkServiceProtocol {
             
             linkBuilder?.iOSParameters = DynamicLinkIOSParameters(bundleID: Bundle.bundleId)
             linkBuilder?.androidParameters
-            = DynamicLinkAndroidParameters(packageName: "com.zion830.threedollars")
+            = DynamicLinkAndroidParameters(packageName: Bundle.androidPackageName)
             linkBuilder?.socialMetaTagParameters = DynamicLinkSocialMetaTagParameters()
-            linkBuilder?.socialMetaTagParameters?.title = "테스트입니다."
-            linkBuilder?.socialMetaTagParameters?.descriptionText = "테스트설명입니다."
-            linkBuilder?.socialMetaTagParameters?.imageURL = URL(string: "https://i.postimg.cc/7ZqTsmSG/img-heart.png")
+            linkBuilder?.socialMetaTagParameters?.title = "my_page_bookmark_description".localized
+            linkBuilder?.socialMetaTagParameters?.descriptionText = bookmarkFolder.name
+            linkBuilder?.socialMetaTagParameters?.imageURL
+            = URL(string: "https://storage.threedollars.co.kr/share/favorite_share.png")
             
             linkBuilder?.shorten(completion: { url, _, _ in
                 if let shortURL = url {
