@@ -112,7 +112,7 @@ struct BookmarkService: BookmarkServiceProtocol {
             linkBuilder?.socialMetaTagParameters?.title = "my_page_bookmark_description".localized
             linkBuilder?.socialMetaTagParameters?.descriptionText = bookmarkFolder.name
             linkBuilder?.socialMetaTagParameters?.imageURL
-            = URL(string: "https://i.postimg.cc/7ZqTsmSG/img-heart.png")
+            = URL(string: "https://storage.threedollars.co.kr/share/favorite_share.png")
             
             linkBuilder?.shorten(completion: { url, _, _ in
                 if let shortURL = url {
