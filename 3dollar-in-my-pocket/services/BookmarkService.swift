@@ -106,6 +106,8 @@ struct BookmarkService: BookmarkServiceProtocol {
             )
             
             linkBuilder?.iOSParameters = DynamicLinkIOSParameters(bundleID: Bundle.bundleId)
+            linkBuilder?.iOSParameters?.appStoreID = Bundle.appstoreId
+            linkBuilder?.iOSParameters?.minimumAppVersion = "3.3.0"
             linkBuilder?.androidParameters
             = DynamicLinkAndroidParameters(packageName: Bundle.androidPackageName)
             linkBuilder?.socialMetaTagParameters = DynamicLinkSocialMetaTagParameters()
