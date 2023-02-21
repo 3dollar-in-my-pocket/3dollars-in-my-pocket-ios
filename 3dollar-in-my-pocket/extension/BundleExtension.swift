@@ -32,4 +32,8 @@ extension Bundle {
     static var androidPackageName: String {
         return Bundle.main.infoDictionary?["ANDROID_PACKAGE_NAME"] as? String ?? ""
     }
+    
+    static var appstoreId: String {
+        return Bundle.main.infoDictionary?["APPSTORE_ID"] as? String ?? ""
+    }
 }

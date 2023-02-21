@@ -3840,6 +3840,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ANDROID_PACKAGE_NAME = com.zion830.threedollars.dev;
 				API_URL = "https://dev.threedollars.co.kr";
+				APPSTORE_ID = 1496099467;
 				APP_DISPLAY_NAME = "가슴속3천원-Dev";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
@@ -3893,6 +3894,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ANDROID_PACKAGE_NAME = com.zion830.threedollars;
 				API_URL = "https://threedollars.co.kr";
+				APPSTORE_ID = 1496099467;
 				APP_DISPLAY_NAME = "가슴속3천원";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "3dollar-in-my-pocket/3dollar-in-my-pocket.entitlements";
