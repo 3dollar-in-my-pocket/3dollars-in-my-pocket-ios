@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>APPSTORE_ID</key>
+	<string>$(APPSTORE_ID)</string>
 	<key>ANDROID_PACKAGE_NAME</key>
 	<string>$(ANDROID_PACKAGE_NAME)</string>
 	<key>DYNAMIC_LINK_URL</key>
