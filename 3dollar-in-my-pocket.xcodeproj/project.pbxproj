@@ -4199,7 +4199,7 @@
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
 			requirement = {
 				kind = exactVersion;
-				version = 7.4.1;
+				version = 7.6.2;
 			};
 		};
 		6E9FD15E29502AEF00FA286E /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
