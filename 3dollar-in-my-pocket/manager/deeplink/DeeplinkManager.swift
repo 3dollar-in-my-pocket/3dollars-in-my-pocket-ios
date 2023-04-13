@@ -4,9 +4,9 @@ import RxSwift
 import RxRelay
 
 protocol DeeplinkManagerProtocol: AnyObject {
-    func handleDeeplink(url: URL?)
+    func handleDynamiclink(url: URL?)
     
-    func reserveDeeplink(url: URL?)
+    func reserveDynamiclink(url: URL?)
     
     func reserveDeeplink(deeplinkContents: DeepLinkContents)
     
@@ -18,14 +18,14 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     
     private var delayedDeeplink: DeepLinkContents?
     
-    func handleDeeplink(url: URL?) {
-        guard let deeplinkContents = self.extractDeeplinkContents(url: url) else { return }
+    func handleDynamiclink(url: URL?) {
+        guard let deeplinkContents = self.extractDynamiclinkContents(url: url) else { return }
         
         self.navigateDeeplink(contents: deeplinkContents)
     }
     
-    func reserveDeeplink(url: URL?) {
-        guard let deeplinkContents = self.extractDeeplinkContents(url: url) else { return }
+    func reserveDynamiclink(url: URL?) {
+        guard let deeplinkContents = self.extractDynamiclinkContents(url: url) else { return }
         
         self.delayedDeeplink = deeplinkContents
     }
@@ -41,7 +41,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         self.delayedDeeplink = nil
     }
     
-    private func extractDeeplinkContents(url: URL?) -> DeepLinkContents? {
+    private func extractDynamiclinkContents(url: URL?) -> DeepLinkContents? {
         guard let url = url,
         self.validateHost(host: url.host) else {
             Log.debug("URL 형식이 아닙니다.")
@@ -89,6 +89,6 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     }
     
     private func validateHost(host: String?) -> Bool {
-        return host == URL(string: Bundle.deeplinkHost)?.host
+        return host == URL(string: Bundle.dynamiclinkHost)?.host
     }
 }

@@ -46,7 +46,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         guard let incomingURL = userActivity.webpageURL else { return }
         let _ = DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, error in
-            DeeplinkManager.shared.handleDeeplink(url: dynamicLink?.url)
+            DeeplinkManager.shared.handleDynamiclink(url: dynamicLink?.url)
         }
     }
     
@@ -76,7 +76,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             return
                         }
                         
-                        DeeplinkManager.shared.reserveDeeplink(url: dynamicLink?.url)
+                        DeeplinkManager.shared.reserveDynamiclink(url: dynamicLink?.url)
                     }
                 break
             }

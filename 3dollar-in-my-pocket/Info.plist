@@ -2,18 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>APPSTORE_ID</key>
-	<string>$(APPSTORE_ID)</string>
-	<key>ANDROID_PACKAGE_NAME</key>
-	<string>$(ANDROID_PACKAGE_NAME)</string>
-	<key>DYNAMIC_LINK_URL</key>
-	<string>$(DYNAMIC_LINK_URL)</string>
-	<key>DEEPLINK_HOST</key>
-	<string>$(DEEPLINK_HOST)</string>
 	<key>ADMOB_UNIT_ID</key>
 	<string>$(ADMOB_UNIT_ID)</string>
+	<key>ANDROID_PACKAGE_NAME</key>
+	<string>$(ANDROID_PACKAGE_NAME)</string>
 	<key>API_URL</key>
 	<string>$(API_URL)</string>
+	<key>APPSTORE_ID</key>
+	<string>$(APPSTORE_ID)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>ko_KR</string>
 	<key>CFBundleDisplayName</key>
@@ -76,9 +72,23 @@
 				<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>deeplink</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>$(DEEP_LINK_SCHEME)</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>DYNAMICLINK_HOST</key>
+	<string>$(DYNAMICLINK_HOST)</string>
+	<key>DYNAMIC_LINK_URL</key>
+	<string>$(DYNAMIC_LINK_URL)</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-1527951560812478~1242588198</string>
 	<key>KAKAO_APP_KEY</key>

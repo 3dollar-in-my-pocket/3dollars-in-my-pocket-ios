@@ -3849,9 +3849,10 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEEPLINK_HOST = "https://link.threedollars.co.kr";
+				DEEP_LINK_SCHEME = dollars;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = X975A2HM62;
+				DYNAMICLINK_HOST = "https://link.threedollars.co.kr";
 				DYNAMIC_LINK_URL = "https://3dollarsdev.page.link";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3902,9 +3903,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEEPLINK_HOST = "https://link.threedollars.co.kr";
+				DEEP_LINK_SCHEME = dollars;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = X975A2HM62;
+				DYNAMICLINK_HOST = "https://link.threedollars.co.kr";
 				DYNAMIC_LINK_URL = "https://3dollars.page.link";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
