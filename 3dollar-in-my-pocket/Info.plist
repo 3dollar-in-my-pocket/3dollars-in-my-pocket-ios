@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>DEEP_LINK_SCHEME</key>
+	<string>$(DEEP_LINK_SCHEME)</string>
 	<key>ADMOB_UNIT_ID</key>
 	<string>$(ADMOB_UNIT_ID)</string>
 	<key>ANDROID_PACKAGE_NAME</key>

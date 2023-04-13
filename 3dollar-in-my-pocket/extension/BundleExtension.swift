@@ -36,4 +36,8 @@ extension Bundle {
     static var appstoreId: String {
         return Bundle.main.infoDictionary?["APPSTORE_ID"] as? String ?? ""
     }
+    
+    static var deeplinkScheme: String {
+        return Bundle.main.infoDictionary?["DEEP_LINK_SCHEME"] as? String ?? ""
+    }
 }

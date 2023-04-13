@@ -1,5 +1,6 @@
 enum DeeplinkType: String {
-    case bookmark = "/bookmark"
+    case bookmark
+    case store
     
     var path: String {
         self.rawValue
