@@ -74,7 +74,7 @@ final class BossStoreMoreMenuCell: BaseCollectionViewCell {
     
     func bind(menus: [BossStoreMenu]) {
         self.titleLabel.text = String.init(
-            format: String(format: "localization.boss_store_more_menu".localized, menus.count)
+            format: String(format: "boss_store_more_menu".localized, menus.count)
         )
         
         for menu in menus {
