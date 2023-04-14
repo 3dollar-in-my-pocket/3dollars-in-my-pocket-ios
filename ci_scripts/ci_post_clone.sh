@@ -8,8 +8,10 @@
 
 brew update
 brew install rbenv ruby-build
+rbenv install -l
 rbenv install 3.1.3
 rbenv global 3.1.3
+rbenv versions
 
 gem install bundler
 bundle install
