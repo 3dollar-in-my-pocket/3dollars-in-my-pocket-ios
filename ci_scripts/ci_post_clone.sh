@@ -11,7 +11,12 @@ brew install rbenv ruby-build
 rbenv install -l
 rbenv install 3.1.3
 rbenv global 3.1.3
-rbenv versions
+
+echo ">>> SETUP LOCAL GEM PATH"
+echo 'export GEM_HOME=$HOME/gems' >>~/.bash_profile
+echo 'export PATH=$HOME/gems/bin:$PATH' >>~/.bash_profile
+export GEM_HOME=$HOME/gems
+export PATH="$GEM_HOME/bin:$PATH"
 
 gem install bundler
 bundle install
