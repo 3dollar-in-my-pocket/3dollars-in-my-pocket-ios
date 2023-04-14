@@ -6,6 +6,11 @@
 #  Created by Hyun Sik Yoo on 2022/12/29.
 #  Copyright © 2022 Macgongmon. All rights reserved.
 
+brew update
+brew install rbenv ruby-build
+rbenv install 3.1.3
+rbenv global 3.1.3
+
 gem install bundler
 bundle install
 brew install git-lfs
