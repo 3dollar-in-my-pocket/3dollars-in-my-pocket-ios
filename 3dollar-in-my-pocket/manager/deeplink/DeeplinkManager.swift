@@ -95,6 +95,9 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         case .store:
             deeplinkContents = self.createStoreDetailContents(query: url.params())
             
+        case .home:
+            deeplinkContents = self.createHomeContents()
+            
         default:
             Log.debug("지원하는 Deeplink가 아닙니다.")
             
@@ -110,18 +113,27 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     private func navigateDeeplink(contents: DeepLinkContents) {
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
         
-        switch contents.transitionType {
+        if let tab = contents.selectedTab {
+            if let tabBarViewController = rootViewController as? TabBarVC {
+                tabBarViewController.selectTab(tab: tab)
+            }
+        }
+        
+        guard let transitionType = contents.transitionType,
+              let targetViewController = contents.targetViewController else  { return }
+        
+        switch transitionType {
         case .push:
             if let navigationController = rootViewController as? UINavigationController {
                 navigationController.pushViewController(
-                    contents.targetViewController,
+                    targetViewController,
                     animated: true
                 )
             } else if let tabBarViewController = rootViewController as? TabBarVC,
                  let navigationController
                         = tabBarViewController.selectedViewController as? UINavigationController {
                 navigationController.pushViewController(
-                    contents.targetViewController,
+                    targetViewController,
                     animated: true
                 )
             } else {
@@ -129,7 +141,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
             }
             
         case .present:
-            rootViewController?.present(contents.targetViewController, animated: true)
+            rootViewController?.present(targetViewController, animated: true)
         }
     }
     
@@ -172,5 +184,9 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
             targetViewController: viewController,
             transitionType: .push
         )
+    }
+    
+    private func createHomeContents() -> DeepLinkContents {
+        return DeepLinkContents(selectedTab: .home)
     }
 }

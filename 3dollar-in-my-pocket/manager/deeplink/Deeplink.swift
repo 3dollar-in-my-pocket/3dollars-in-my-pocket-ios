@@ -3,13 +3,18 @@ import Foundation
 enum Deeplink {
     case bookmark(folderId: String)
     case storeDetail(storeType: StoreType, storeId: String)
+    case home
     
     var type: DeeplinkType {
         switch self {
         case .bookmark:
             return .bookmark
+            
         case .storeDetail:
             return .store
+            
+        case .home:
+            return .home
         }
     }
     
@@ -17,11 +22,15 @@ enum Deeplink {
         switch self {
         case .bookmark(let folderId):
             return ["folderId": folderId]
+            
         case .storeDetail(let storeType, let storeId):
             return [
                 "storeType": storeType.targetType,
                 "storeId": storeId
             ]
+            
+        default:
+            return nil
         }
     }
     
