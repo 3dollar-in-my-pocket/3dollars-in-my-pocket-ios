@@ -4,6 +4,7 @@ enum Deeplink {
     case bookmark(folderId: String)
     case storeDetail(storeType: StoreType, storeId: String)
     case home
+    case medal
     
     var type: DeeplinkType {
         switch self {
@@ -15,6 +16,9 @@ enum Deeplink {
             
         case .home:
             return .home
+            
+        case .medal:
+            return .medal
         }
     }
     
