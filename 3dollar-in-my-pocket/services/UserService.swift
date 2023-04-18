@@ -178,7 +178,7 @@ struct UserService: UserServiceProtocol {
     }
     
     func fetchUserActivity() -> Observable<User> {
-        let urlString = HTTPUtils.url + "/api/v1/user/activity"
+        let urlString = HTTPUtils.url + "/api/v1/user/me/activity"
         let headers = HTTPUtils.defaultHeader()
         
         return self.networkManager.createGetObservable(
