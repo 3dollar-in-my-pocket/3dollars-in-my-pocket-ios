@@ -20,7 +20,7 @@ final class MyPageReactor: BaseReactor, Reactor {
         case appendBookmark(StoreProtocol)
         case deleteBookamrk(storeId: String)
         case endRefresh
-        case pushMyMedal(Medal)
+        case pushMyMedal
         case pushStoreDetail(storeId: Int)
         case pushFoodTruckDetail(storeId: String)
         case pushBookmarkList(userName: String)
@@ -33,7 +33,7 @@ final class MyPageReactor: BaseReactor, Reactor {
         var bookmarks: [StoreProtocol]
         @Pulse var endRefreshing: Void?
         @Pulse var pushStoreDetail: Int?
-        @Pulse var pushMyMedal: Medal?
+        @Pulse var pushMyMedal: Void?
         @Pulse var pushBookmarkList: String?
         @Pulse var pushFoodTruckDetail: String?
     }
@@ -81,9 +81,7 @@ final class MyPageReactor: BaseReactor, Reactor {
             ])
             
         case .tapMyMedal:
-            let currentMedal = self.currentState.user.medal
-            
-            return .just(.pushMyMedal(currentMedal))
+            return .just(.pushMyMedal)
             
         case .tapVisitHistory(let row):
             guard !self.currentState.visitHistories.isEmpty else { return .empty() }
@@ -157,8 +155,8 @@ final class MyPageReactor: BaseReactor, Reactor {
         case .endRefresh:
             newState.endRefreshing = ()
             
-        case .pushMyMedal(let medal):
-            newState.pushMyMedal = medal
+        case .pushMyMedal:
+            newState.pushMyMedal = ()
             
         case .pushStoreDetail(let storeId):
             newState.pushStoreDetail = storeId

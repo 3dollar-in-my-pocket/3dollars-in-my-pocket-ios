@@ -132,9 +132,9 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
         
         reactor.pulse(\.$pushMyMedal)
             .compactMap { $0 }
-            .asDriver(onErrorJustReturn: Medal())
-            .drive(onNext: { [weak self] medal in
-                self?.coordinator?.goToMyMedal(medal: medal)
+            .asDriver(onErrorJustReturn: ())
+            .drive(onNext: { [weak self] _ in
+                self?.coordinator?.goToMyMedal()
             })
             .disposed(by: self.disposeBag)
         

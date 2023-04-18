@@ -11,7 +11,7 @@ import Foundation
 protocol MyPageCoordinator: BaseCoordinator, AnyObject {
     func goToSetting()
     
-    func goToMyMedal(medal: Medal)
+    func goToMyMedal()
     
     func goToTotalRegisteredStore()
     
@@ -33,8 +33,8 @@ extension MyPageCoordinator {
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    func goToMyMedal(medal: Medal) {
-        let viewController = MyMedalViewController.instance(medal: medal)
+    func goToMyMedal() {
+        let viewController = MyMedalViewController.instance()
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
