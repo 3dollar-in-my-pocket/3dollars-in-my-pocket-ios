@@ -98,6 +98,9 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         case .home:
             deeplinkContents = self.createHomeContents()
             
+        case .medal:
+            deeplinkContents = self.createMedalContents()
+            
         default:
             Log.debug("지원하는 Deeplink가 아닙니다.")
             
@@ -188,5 +191,14 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     
     private func createHomeContents() -> DeepLinkContents {
         return DeepLinkContents(selectedTab: .home)
+    }
+    
+    private func createMedalContents() -> DeepLinkContents {
+        let targetViewController = MyMedalViewController.instance()
+        
+        return DeepLinkContents(
+            targetViewController: targetViewController,
+            transitionType: .push
+        )
     }
 }
