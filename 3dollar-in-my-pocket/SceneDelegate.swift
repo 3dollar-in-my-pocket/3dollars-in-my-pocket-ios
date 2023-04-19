@@ -24,6 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
         
         self.reserveDynamicLinkIfExisted(connectionOptions: connectionOptions)
+        self.reserveDeepLinkIfExisted(connectionOptions: connectionOptions)
         self.scene(scene, openURLContexts: connectionOptions.urlContexts)
     }
     
@@ -40,13 +41,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     userDefaultsUtil.shareLink = "\(storeType):\(storeId)"
                 }
             }
+            DeeplinkManager.shared.handleDeeplink(url: url)
         }
+        
     }
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         guard let incomingURL = userActivity.webpageURL else { return }
         let _ = DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, error in
-            DeeplinkManager.shared.handleDeeplink(url: dynamicLink?.url)
+            DeeplinkManager.shared.handleDynamiclink(url: dynamicLink?.url)
         }
     }
     
@@ -76,10 +79,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             return
                         }
                         
-                        DeeplinkManager.shared.reserveDeeplink(url: dynamicLink?.url)
+                        DeeplinkManager.shared.reserveDynamiclink(url: dynamicLink?.url)
                     }
                 break
             }
         }
+    }
+    
+    private func reserveDeepLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
+        guard let url = connectionOptions.urlContexts.first?.url else { return }
+        
+        DeeplinkManager.shared.reserveDeeplink(url: url)
     }
 }
