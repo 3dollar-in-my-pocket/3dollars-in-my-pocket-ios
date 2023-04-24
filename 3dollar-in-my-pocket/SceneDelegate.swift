@@ -95,8 +95,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func reserveNotificationDeepLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
         guard let userInfo = connectionOptions.notificationResponse?.notification.request.content.userInfo,
-              let data = userInfo["data"] as? [String: Any],
-              let deeplink = data["link"] as? String else { return }
+              let deeplink = userInfo["link"] as? String else { return }
         DeeplinkManager.shared.reserveDeeplink(url: URL(string: deeplink))
     }
 }

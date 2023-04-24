@@ -130,8 +130,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     ) async {
         let userInfo = response.notification.request.content.userInfo
         
-        if let data = userInfo["data"] as? [String: Any],
-            let deeplink = data["link"] as? String {
+        if let deeplink = userInfo["link"] as? String {
             DeeplinkManager.shared.handleDeeplink(url: URL(string: deeplink))
         }
     }
