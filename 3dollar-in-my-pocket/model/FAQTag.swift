@@ -5,9 +5,9 @@ struct FAQTag: Codable, Hashable {
   let displayOrder: Int
   
   enum CodingKeys: String, CodingKey {
-    case id = "id"
-    case name = "name"
-    case displayOrder = "displayOrder"
+    case id
+    case name
+    case displayOrder
   }
   
   init(from decoder: Decoder) throws {

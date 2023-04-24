@@ -92,7 +92,7 @@ class ModifyViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.input.storeName
-      .map { !$0.isEmpty && !self.categories.compactMap{ $0 }.isEmpty }
+      .map { !$0.isEmpty && !self.categories.compactMap { $0 }.isEmpty }
       .bind(to: self.output.registerButtonIsEnable)
       .disposed(by: disposeBag)
     
@@ -138,7 +138,7 @@ class ModifyViewModel: BaseViewModel {
       .map { Store(
         id: self.store.storeId,
         appearanceDays: self.appearenceDay,
-        categories: self.categories.compactMap{ $0 },
+        categories: self.categories.compactMap { $0 },
         latitude: self.location.0,
         longitude: self.location.1,
         menuSections: self.menuSections,
@@ -150,7 +150,7 @@ class ModifyViewModel: BaseViewModel {
       .disposed(by: disposeBag)
     
     self.output.categories
-      .withLatestFrom(self.input.storeName) { !$0.compactMap{ $0 }.isEmpty && !$1.isEmpty }
+      .withLatestFrom(self.input.storeName) { !$0.compactMap { $0 }.isEmpty && !$1.isEmpty }
       .bind(to: self.output.registerButtonIsEnable)
       .disposed(by: disposeBag)
   }
@@ -171,10 +171,8 @@ class ModifyViewModel: BaseViewModel {
     
     for category in categories {
       var menuSection = MenuSection(category: category, items: [])
-      for menu in menus {
-        if menu.category == category {
-          menuSection.items.append(menu)
-        }
+        for menu in menus where menu.category == category {
+            menuSection.items.append(menu)
       }
       menuSection.items.append(Menu(category: category))
       menuSections.append(menuSection)
@@ -186,10 +184,8 @@ class ModifyViewModel: BaseViewModel {
   private func categoryFromMenus(menus: [Menu]) -> [StreetFoodStoreCategory?] {
     var categories: [StreetFoodStoreCategory?] = [nil]
     
-    for menu in menus {
-      if !categories.contains(menu.category) {
+    for menu in menus where !categories.contains(menu.category) {
         categories.append(menu.category)
-      }
     }
     return categories
   }
@@ -242,13 +238,11 @@ class ModifyViewModel: BaseViewModel {
   private func onAddCategory(categories: [StreetFoodStoreCategory]) {
     var newMenuSection: [MenuSection] = []
     
-    for category in categories{
-      if self.categories.contains(category){
-        for menuSection in self.menuSections {
-          if menuSection.category == category {
+    for category in categories {
+      if self.categories.contains(category) {
+        for menuSection in self.menuSections where menuSection.category == category {
             newMenuSection.append(menuSection)
             break
-          }
         }
       } else {
         newMenuSection.append(MenuSection(category: category, items: [Menu(category: category)]))

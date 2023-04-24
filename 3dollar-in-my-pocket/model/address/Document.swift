@@ -1,2 +1,2 @@
-protocol Document {  
+protocol Document {
 }

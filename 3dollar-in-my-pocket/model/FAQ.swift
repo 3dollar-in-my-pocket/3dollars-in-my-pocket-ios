@@ -5,9 +5,9 @@ struct FAQ: Decodable {
   let category: FAQCategory
   
   enum CodingKeys: String, CodingKey {
-    case answer = "answer"
-    case id = "id"
-    case question = "question"
+    case answer
+    case id
+    case question
     case category
   }
   

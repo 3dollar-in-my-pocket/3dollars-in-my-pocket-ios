@@ -63,7 +63,7 @@ final class CategoryFilterView: BaseView {
             UIColor.white.withAlphaComponent(0).cgColor,
             UIColor.white.withAlphaComponent(1).cgColor
         ]
-        gradient.locations = [0.0 , 1.0]
+        gradient.locations = [0.0, 1.0]
         gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
         gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
         gradient.frame = CGRect(

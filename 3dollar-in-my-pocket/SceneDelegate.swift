@@ -49,7 +49,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         guard let incomingURL = userActivity.webpageURL else { return }
-        let _ = DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, error in
+        DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, _ in
             DeeplinkManager.shared.handleDynamiclink(url: dynamicLink?.url)
         }
     }
@@ -73,8 +73,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func reserveDynamicLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
         for userActivity in connectionOptions.userActivities {
             if let incomingURL = userActivity.webpageURL {
-                let _ = DynamicLinks.dynamicLinks()
-                    .handleUniversalLink(incomingURL) { (dynamicLink, error) in
+                DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { (dynamicLink, error) in
                         guard error == nil else {
                             Log.debug("Found an error \(error!.localizedDescription)")
                             return

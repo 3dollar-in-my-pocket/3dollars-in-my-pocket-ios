@@ -48,10 +48,14 @@ class FAQView: BaseView {
     
     override func setup() {
         backgroundColor = Color.gray100
-        addSubViews(
-            backButton, titleLabel, topLineView,
-            questionLabel, tagCollectionView, faqTableView
-        )
+        self.addSubViews([
+            self.backButton,
+            self.titleLabel,
+            self.topLineView,
+            self.questionLabel,
+            self.tagCollectionView,
+            self.faqTableView
+        ])
     }
     
     override func bindConstraints() {
@@ -62,7 +66,7 @@ class FAQView: BaseView {
         
         self.titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalTo(self.backButton)             
+            make.centerY.equalTo(self.backButton)
         }
         
         self.topLineView.snp.makeConstraints { make in

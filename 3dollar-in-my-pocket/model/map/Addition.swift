@@ -2,7 +2,7 @@ struct Addition: Codable {
   let value: String
   
   enum CodingKeys: String, CodingKey {
-    case value = "value"
+    case value
   }
   
   

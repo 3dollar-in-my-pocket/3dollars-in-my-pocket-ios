@@ -46,7 +46,7 @@ struct AlertUtils {
     title: String? = nil,
     message: String? = nil,
     onTapOk: @escaping (() -> Void)) {
-    let okAction = UIAlertAction(title: "확인", style: .default) { action in
+    let okAction = UIAlertAction(title: "확인", style: .default) { _ in
       onTapOk()
     }
     
@@ -61,7 +61,7 @@ struct AlertUtils {
     okButtonTitle: String? = "확인",
     onTapOk: @escaping () -> Void
   ) {
-    let okAction = UIAlertAction(title: okButtonTitle, style: .default) { (action) in
+    let okAction = UIAlertAction(title: okButtonTitle, style: .default) { _ in
       onTapOk()
     }
     let cancelAction = UIAlertAction(title: "취소", style: .cancel)
@@ -122,7 +122,7 @@ struct AlertUtils {
         okbuttonTitle: String = "확인",
         onTapOk: (() -> Void)?
     ) {
-        let okAction = UIAlertAction(title: okbuttonTitle, style: .default) { action in
+        let okAction = UIAlertAction(title: okbuttonTitle, style: .default) { _ in
             onTapOk?()
         }
         
@@ -136,7 +136,7 @@ struct AlertUtils {
         okButtonTitle: String = "확인",
         onTapOk: @escaping () -> Void
     ) {
-        let okAction = UIAlertAction(title: okButtonTitle, style: .default) { (action) in
+        let okAction = UIAlertAction(title: okButtonTitle, style: .default) { _ in
             onTapOk()
         }
         let cancelAction = UIAlertAction(title: "취소", style: .cancel)
@@ -159,5 +159,3 @@ struct AlertUtils {
         viewController.present(controller, animated: true)
     }
 }
-
-

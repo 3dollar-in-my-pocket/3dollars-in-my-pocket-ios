@@ -4,9 +4,9 @@ struct ReverseGeoLocation: Codable {
   let land: Land?
   
   enum CodingKeys: String, CodingKey {
-    case name = "name"
-    case region = "region"
-    case land = "land"
+    case name
+    case region
+    case land
   }
   
   

@@ -24,7 +24,7 @@ class AddCategoryViewModel: BaseViewModel {
     .TOAST,
     .TTANGKONGPPANG,
     .TTEOKBOKKI,
-    .WAFFLE,
+    .WAFFLE
   ]
   
   struct Input {
@@ -57,7 +57,7 @@ class AddCategoryViewModel: BaseViewModel {
   
   func fetchSelectedCategory() {
     Observable.just(self.categories)
-      .map{ $0.map {($0, self.selectedCategory.contains($0))} }
+      .map { $0.map {($0, self.selectedCategory.contains($0))} }
       .bind(to: self.output.category)
       .disposed(by: disposeBag)
     Observable.just(self.selectedCategory)

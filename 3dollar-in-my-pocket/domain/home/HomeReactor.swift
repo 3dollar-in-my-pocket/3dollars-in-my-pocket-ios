@@ -402,7 +402,7 @@ final class HomeReactor: BaseReactor, Reactor {
                         return .error(BaseError.unknown)
                     }
                     
-                case .advertisement(_):
+                case .advertisement:
                     return .just(.selectStore(index: index))
                     
                 case .empty:
