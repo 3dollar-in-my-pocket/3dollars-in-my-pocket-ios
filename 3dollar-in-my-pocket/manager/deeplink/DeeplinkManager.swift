@@ -123,7 +123,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         }
         
         guard let transitionType = contents.transitionType,
-              let targetViewController = contents.targetViewController else  { return }
+              let targetViewController = contents.targetViewController else { return }
         
         switch transitionType {
         case .push:
