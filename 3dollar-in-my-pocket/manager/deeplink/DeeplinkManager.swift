@@ -139,6 +139,8 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
                     targetViewController,
                     animated: true
                 )
+            } else if let splashViewController = rootViewController as? SplashVC {
+                self.reserveDeeplink(deeplinkContents: contents)
             } else {
                 Log.error("UINavigationViewController가 없습니다.")
             }
