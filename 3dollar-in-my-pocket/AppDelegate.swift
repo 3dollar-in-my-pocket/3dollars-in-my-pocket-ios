@@ -47,8 +47,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didReceiveRemoteNotification userInfo: [AnyHashable: Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
-        print(userInfo)
-        
         completionHandler(UIBackgroundFetchResult.newData)
     }
     
@@ -119,12 +117,21 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        let userInfo = notification.request.content.userInfo
-    
         if #available(iOS 14.0, *) {
-            completionHandler([[.sound, .banner, .alert]])
+            completionHandler([[.sound, .banner]])
         } else {
             completionHandler([[.alert, .sound]])
+        }
+    }
+    
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse
+    ) async {
+        let userInfo = response.notification.request.content.userInfo
+        
+        if let deeplink = userInfo["link"] as? String {
+            DeeplinkManager.shared.handleDeeplink(url: URL(string: deeplink))
         }
     }
 }

@@ -25,6 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         self.reserveDynamicLinkIfExisted(connectionOptions: connectionOptions)
         self.reserveDeepLinkIfExisted(connectionOptions: connectionOptions)
+        self.reserveNotificationDeepLinkIfExisted(connectionOptions: connectionOptions)
         self.scene(scene, openURLContexts: connectionOptions.urlContexts)
     }
     
@@ -90,5 +91,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let url = connectionOptions.urlContexts.first?.url else { return }
         
         DeeplinkManager.shared.reserveDeeplink(url: url)
+    }
+    
+    private func reserveNotificationDeepLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
+        guard let userInfo = connectionOptions.notificationResponse?.notification.request.content.userInfo,
+              let deeplink = userInfo["link"] as? String else { return }
+        DeeplinkManager.shared.reserveDeeplink(url: URL(string: deeplink))
     }
 }

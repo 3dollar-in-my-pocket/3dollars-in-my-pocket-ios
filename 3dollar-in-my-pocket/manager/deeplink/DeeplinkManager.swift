@@ -123,7 +123,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         }
         
         guard let transitionType = contents.transitionType,
-              let targetViewController = contents.targetViewController else  { return }
+              let targetViewController = contents.targetViewController else { return }
         
         switch transitionType {
         case .push:
@@ -139,6 +139,8 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
                     targetViewController,
                     animated: true
                 )
+            } else if rootViewController is SplashVC {
+                self.reserveDeeplink(deeplinkContents: contents)
             } else {
                 Log.error("UINavigationViewController가 없습니다.")
             }
