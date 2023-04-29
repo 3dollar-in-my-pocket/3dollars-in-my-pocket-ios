@@ -41,7 +41,7 @@ extension BookmarkListCoordinator {
     
     func presentSharePannel(url: String) {
         let viewController = UIActivityViewController(
-            activityItems : [url],
+            activityItems: [url],
             applicationActivities: nil
         )
         

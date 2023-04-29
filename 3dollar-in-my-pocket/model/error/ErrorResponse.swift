@@ -4,8 +4,8 @@ struct ErrorResponse: Decodable {
   let message: String
   
   enum CodingKeys: String, CodingKey {
-    case resultCode = "resultCode"
-    case message = "message"
+    case resultCode
+    case message
   }
   
   init(from decoder: Decoder) throws {

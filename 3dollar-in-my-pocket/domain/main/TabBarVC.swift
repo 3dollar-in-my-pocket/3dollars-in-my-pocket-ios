@@ -10,7 +10,6 @@ class TabBarVC: UITabBarController {
         $0.backgroundColor = .clear
     }
     
-    
     deinit {
         self.removeKakaoLinkObserver()
     }
@@ -55,29 +54,9 @@ class TabBarVC: UITabBarController {
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         self.feedbackGenerator.selectionChanged()
-        switch item.tag {
-        case TabBarTag.my.rawValue:
-            guard !UserDefaultsUtil().isAnonymousUser else { return }
-            self.tabBar.barTintColor = Color.gray100
-            if #available(iOS 15, *) {
-                let appearance = UITabBarAppearance()
-                appearance.configureWithOpaqueBackground()
-                appearance.backgroundColor = Color.gray100
-                self.tabBar.standardAppearance = appearance
-                self.tabBar.scrollEdgeAppearance = appearance
-            }
-        case TabBarTag.home.rawValue, TabBarTag.streetFood.rawValue, TabBarTag.foodTruck.rawValue:
-            self.tabBar.barTintColor = .white
-            if #available(iOS 15, *) {
-                let appearance = UITabBarAppearance()
-                appearance.configureWithOpaqueBackground()
-                appearance.backgroundColor = .white
-                self.tabBar.standardAppearance = appearance
-                self.tabBar.scrollEdgeAppearance = appearance
-            }
-        default:
-            break
-        }
+        
+        guard let tab = TabBarTag(rawValue: item.tag) else { return }
+        self.setTabBarColor(tab: tab)
     }
     
     func showLoading(isShow: Bool) {
@@ -113,6 +92,38 @@ class TabBarVC: UITabBarController {
                     self.dimView.removeFromSuperview()
                 }
             }
+        }
+    }
+    
+    func selectTab(tab: TabBarTag) {
+        self.selectedIndex = tab.rawValue
+        self.setTabBarColor(tab: tab)
+    }
+    
+    private func setTabBarColor(tab: TabBarTag) {
+        switch tab {
+        case .my:
+            guard !UserDefaultsUtil().isAnonymousUser else { return }
+            self.tabBar.barTintColor = Color.gray100
+            if #available(iOS 15, *) {
+                let appearance = UITabBarAppearance()
+                appearance.configureWithOpaqueBackground()
+                appearance.backgroundColor = Color.gray100
+                self.tabBar.standardAppearance = appearance
+                self.tabBar.scrollEdgeAppearance = appearance
+            }
+        case .home, .streetFood, .foodTruck:
+            self.tabBar.barTintColor = .white
+            if #available(iOS 15, *) {
+                let appearance = UITabBarAppearance()
+                appearance.configureWithOpaqueBackground()
+                appearance.backgroundColor = .white
+                self.tabBar.standardAppearance = appearance
+                self.tabBar.scrollEdgeAppearance = appearance
+            }
+            
+        case .write:
+            break
         }
     }
     

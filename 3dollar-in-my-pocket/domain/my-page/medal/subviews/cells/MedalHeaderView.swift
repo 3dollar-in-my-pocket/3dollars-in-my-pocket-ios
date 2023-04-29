@@ -40,7 +40,7 @@ final class MedalHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setup() { 
+    private func setup() {
         self.backgroundColor = .clear
         self.addSubViews([
             self.dividorView,

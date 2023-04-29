@@ -6,11 +6,11 @@ struct Region: Codable {
   let area4: Area
   
   enum CodingKeys: String, CodingKey {
-    case area0 = "area0"
-    case area1 = "area1"
-    case area2 = "area2"
-    case area3 = "area3"
-    case area4 = "area4"
+    case area0
+    case area1
+    case area2
+    case area3
+    case area4
   }
   
   init() {

@@ -2,7 +2,7 @@ import UIKit
 import RxSwift
 import NMapsMap
 
-protocol ModifyAddressDelegate: class {
+protocol ModifyAddressDelegate: AnyObject {
   func onModifyAddress(address: String, location: (Double, Double))
 }
 
@@ -124,4 +124,3 @@ extension ModifyAddressVC: CLLocationManagerDelegate {
     }
   }
 }
-

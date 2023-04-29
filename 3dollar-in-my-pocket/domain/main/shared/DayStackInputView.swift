@@ -72,7 +72,7 @@ class DayStackInputView: UIStackView {
     $0.layer.cornerRadius = CGFloat(18)
   }
   
-  override init(frame: CGRect){
+  override init(frame: CGRect) {
     super.init(frame: frame)
     
     self.setup()

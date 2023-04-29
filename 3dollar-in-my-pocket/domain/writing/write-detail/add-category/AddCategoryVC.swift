@@ -2,7 +2,7 @@ import UIKit
 
 import RxSwift
 
-protocol AddCategoryDelegate: class {
+protocol AddCategoryDelegate: AnyObject {
   
   func onDismiss()
   func onSuccess(selectedCategories: [StreetFoodStoreCategory])
@@ -58,12 +58,12 @@ class AddCategoryVC: BaseVC {
     self.viewModel.output.category.bind(to: self.addCategoryView.categoryCollectionView.rx.items(
       cellIdentifier: AddCategoryCell.registerId,
       cellType: AddCategoryCell.self
-    )) { row, category, cell in
+    )) { _, category, cell in
       cell.bind(category: category.category, isSelected: category.isSelected)
     }.disposed(by: disposeBag)
     
     self.viewModel.output.selectCategories
-      .observeOn(MainScheduler.instance)
+      .observe(on: MainScheduler.instance)
       .bind(onNext: self.selectCategories(selectedCategories:))
       .disposed(by: disposeBag)
   }

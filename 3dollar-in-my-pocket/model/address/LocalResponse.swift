@@ -4,8 +4,8 @@ struct LocalResponse<T: Decodable>: Decodable {
   let documents: [T]
   
   enum CodingKeys: String, CodingKey {
-    case meta = "meta"
-    case documents = "documents"
+    case meta
+    case documents
   }
   
   

@@ -48,7 +48,7 @@ struct MedalService: MedalServiceProtocol {
             urlString: urlString,
             headers: header
         )
-        .map( { $0.map(Medal.init(response: )) })
+        .map({ $0.map(Medal.init(response: )) })
     }
     
     func changeMyMedal(medalId: Int) -> Observable<User> {

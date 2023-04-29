@@ -2,7 +2,7 @@ struct Area: Codable {
   let name: String
   
   enum CodingKeys: String, CodingKey {
-    case name = "name"
+    case name
   }
   
   

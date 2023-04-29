@@ -5,10 +5,10 @@ struct Land: Codable {
   let addition0: Addition?
   
   enum CodingKeys: String, CodingKey {
-    case number1 = "number1"
-    case number2 = "number2"
-    case name = "name"
-    case addition0 = "addition0"
+    case number1
+    case number2
+    case name
+    case addition0
   }
   
   

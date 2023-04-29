@@ -112,7 +112,7 @@ extension QuestionVC: UITableViewDelegate, UITableViewDataSource {
       return BaseTableViewCell()
     }
     
-    if indexPath.row == 0{
+    if indexPath.row == 0 {
       cell.bind(title: "question_faq".localized)
     } else {
       cell.bind(title: "question_email".localized)

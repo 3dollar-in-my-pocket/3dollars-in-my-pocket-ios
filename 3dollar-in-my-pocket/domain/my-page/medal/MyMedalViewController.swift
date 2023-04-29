@@ -5,7 +5,7 @@ import RxDataSources
 
 final class MyMedalViewController: BaseViewController, View, MyMedalCoordinator {
     private let myMedalView = MyMedalView()
-    private let myMedalReactor: MyMedalReator
+    private let myMedalReactor = MyMedalReator()
     private weak var coordinator: MyMedalCoordinator?
     private var medalCollectionViewdataSource
     : RxCollectionViewSectionedReloadDataSource<MyMedalSectionModel>!
@@ -14,25 +14,10 @@ final class MyMedalViewController: BaseViewController, View, MyMedalCoordinator 
         return .lightContent
     }
     
-    static func instance(medal: Medal) -> MyMedalViewController {
-        return MyMedalViewController(medal: medal).then {
+    static func instance() -> MyMedalViewController {
+        return MyMedalViewController().then {
             $0.hidesBottomBarWhenPushed = true
         }
-    }
-    
-    init(medal: Medal) {
-        self.myMedalReactor = MyMedalReator(
-            medal: medal,
-            metaContext: MetaContext.shared,
-            medalService: MedalService(),
-            globalState: GlobalState.shared
-        )
-        
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     override func loadView() {

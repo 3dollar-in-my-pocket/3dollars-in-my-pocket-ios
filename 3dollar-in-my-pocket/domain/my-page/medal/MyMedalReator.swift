@@ -21,21 +21,23 @@ final class MyMedalReator: BaseReactor, Reactor {
     }
     
     let initialState: State
+    private let userService: UserServiceProtocol
     private let medalService: MedalServiceProtocol
     private let metaContext: MetaContext
     private let globalState: GlobalState
     
     init(
-        medal: Medal,
-        metaContext: MetaContext,
-        medalService: MedalServiceProtocol,
-        globalState: GlobalState,
+        userService: UserServiceProtocol = UserService(),
+        metaContext: MetaContext = .shared ,
+        medalService: MedalServiceProtocol = MedalService(),
+        globalState: GlobalState = .shared,
         state: State = State(currentMedal: Medal(), medals: [])
     ) {
+        self.userService = userService
         self.medalService = medalService
         self.metaContext = metaContext
         self.globalState = globalState
-        self.initialState = State(currentMedal: medal, medals: metaContext.medals)
+        self.initialState = State(currentMedal: state.currentMedal, medals: metaContext.medals)
         
         super.init()
     }
@@ -43,7 +45,25 @@ final class MyMedalReator: BaseReactor, Reactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            return self.fetchMyMedals()
+            return Observable.zip(self.fetchCurrentMedals(), self.fetchMyMedals())
+                .flatMap { [weak self] currentMedal, myMedals -> Observable<Mutation> in
+                    guard let self = self else { return .error(BaseError.unknown) }
+                    
+                    var medals = self.metaContext.medals
+                    
+                    for index in medals.indices {
+                        medals[index].isOwned = myMedals.contains(medals[index])
+                        
+                        medals[index].isCurrentMedal
+                        = medals[index].medalId == self.currentState.currentMedal.medalId
+                    }
+                    
+                    return .merge([
+                        .just(.setMedals(medals)),
+                        .just(.setCurrentMedal(currentMedal))
+                    ])
+                }
+                .catch { .just(.showErrorAlert($0)) }
             
         case .tapMedal(let row):
             let tappedMedal = self.currentState.medals[row]
@@ -81,23 +101,13 @@ final class MyMedalReator: BaseReactor, Reactor {
         return newState
     }
     
-    private func fetchMyMedals() -> Observable<Mutation> {
+    private func fetchMyMedals() -> Observable<[Medal]> {
         return self.medalService.fetchMyMedals()
-            .flatMap { [weak self] myMedals -> Observable<Mutation> in
-                guard let self = self else { return .error(BaseError.unknown) }
-                
-                var medals = self.metaContext.medals
-
-                for index in medals.indices {
-                    medals[index].isOwned = myMedals.contains(medals[index])
-                    
-                    medals[index].isCurrentMedal
-                    = medals[index].medalId == self.currentState.currentMedal.medalId
-                }
-                
-                return .just(.setMedals(medals))
-            }
-            .catch { .just(.showErrorAlert($0)) }
+    }
+    
+    private func fetchCurrentMedals() -> Observable<Medal> {
+        return self.userService.fetchUserActivity()
+            .map { $0.medal }
     }
     
     private func changeMyMedal(medalId: Int) -> Observable<Mutation> {

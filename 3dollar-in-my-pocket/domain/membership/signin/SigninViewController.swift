@@ -101,11 +101,14 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
     private func handleDeeplink(contents: DeepLinkContents) {
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
         
-        switch contents.transitionType {
+        guard let targetViewController = contents.targetViewController,
+              let transitionType = contents.transitionType else { return }
+        
+        switch transitionType {
         case .push:
             if let navigationController = rootViewController as? UINavigationController {
                 navigationController.pushViewController(
-                    contents.targetViewController,
+                    targetViewController,
                     animated: true
                 )
             } else {
@@ -113,7 +116,7 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
             }
             
         case .present:
-            rootViewController?.present(contents.targetViewController, animated: true)
+            rootViewController?.present(targetViewController, animated: true)
         }
     }
 }
