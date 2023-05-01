@@ -131,12 +131,23 @@ struct BuildSetting {
     }
     
     struct AppTest {
-        static let debug: SettingsDictionary = [
+        static let base: SettingsDictionary = [
+            "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES": "YES",
+            "BUNDLE_LOADER": "$(TEST_HOST)",
+            "CODE_SIGN_STYLE": "Automatic",
+            "DEVELOPMENT_TEAM": "X975A2HM62",
+            "PRODUCT_NAME": "$(TARGET_NAME)",
+            "SWIFT_VERSION": "5.0",
+            "TARGETED_DEVICE_FAMILY": "1,2",
             "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/dollar-in-my-pocket-debug.app/dollar-in-my-pocket-debug"
         ]
         
+        static let debug: SettingsDictionary = [
+            "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @loader_path/Frameworks"
+        ]
+        
         static let release: SettingsDictionary = [
-            "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/dollar-in-my-pocket-debug.app/dollar-in-my-pocket-debug"
+            "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @loader_path/Frameworks"
         ]
     }
     
@@ -308,6 +319,7 @@ let project = Project(
             platform: .iOS,
             product: .unitTests,
             bundleId: "com.macgongmon.-dollar-in-my-pocketTests",
+            deploymentTarget: .iOS(targetVersion: "14.0", devices: .iphone),
             infoPlist: "Targets/three-dollar-in-my-pocketTests/Info.plist",
             sources: ["Targets/three-dollar-in-my-pocketTests/Sources/**"],
             resources: ["Targets/three-dollar-in-my-pocketTests/Resources/**"],
@@ -319,10 +331,12 @@ let project = Project(
                 .package(product: "RxCocoa"),
                 .package(product: "RxSwift")
             ],
-            settings: .settings(configurations: [
-                .debug(name: .debug, settings: BuildSetting.AppTest.debug),
-                .release(name: .release, settings: BuildSetting.AppTest.release)
-            ])
+            settings: .settings(
+                base: BuildSetting.AppTest.base,
+                configurations: [
+                    .debug(name: .debug, settings: BuildSetting.AppTest.debug),
+                    .release(name: .release, settings: BuildSetting.AppTest.release)
+                ])
         ),
         Target(
             name: "service-extension",
@@ -368,7 +382,8 @@ let project = Project(
                 configuration: .debug,
                 attachDebugger: true,
                 arguments: Arguments(launchArguments: [LaunchArgument(name: "-FIRDebugEnabled", isEnabled: true)])
-            )
+            ),
+            archiveAction: .archiveAction(configuration: .debug)
         ),
         Scheme(
             name: "three-dollar-in-my-pocket",

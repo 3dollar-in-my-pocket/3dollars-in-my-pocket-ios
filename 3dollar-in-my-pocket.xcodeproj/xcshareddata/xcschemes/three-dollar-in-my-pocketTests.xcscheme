@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3659D9902FF8CCEA12AD31B9"
-               BuildableName = "three_dollar_in_my_pocketTests.xctest"
+               BuildableName = "three-dollar-in-my-pocketTests.xctest"
                BlueprintName = "three-dollar-in-my-pocketTests"
                ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3659D9902FF8CCEA12AD31B9"
-               BuildableName = "three_dollar_in_my_pocketTests.xctest"
+               BuildableName = "three-dollar-in-my-pocketTests.xctest"
                BlueprintName = "three-dollar-in-my-pocketTests"
                ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
             </BuildableReference>
@@ -54,7 +54,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3659D9902FF8CCEA12AD31B9"
-            BuildableName = "three_dollar_in_my_pocketTests.xctest"
+            BuildableName = "three-dollar-in-my-pocketTests.xctest"
             BlueprintName = "three-dollar-in-my-pocketTests"
             ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
          </BuildableReference>
@@ -70,7 +70,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3659D9902FF8CCEA12AD31B9"
-            BuildableName = "three_dollar_in_my_pocketTests.xctest"
+            BuildableName = "three-dollar-in-my-pocketTests.xctest"
             BlueprintName = "three-dollar-in-my-pocketTests"
             ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
          </BuildableReference>
