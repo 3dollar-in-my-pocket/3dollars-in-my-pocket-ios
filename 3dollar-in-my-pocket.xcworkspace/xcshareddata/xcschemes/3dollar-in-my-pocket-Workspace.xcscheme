@@ -15,6 +15,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2EFCCAA79F65644E7B3D8DDB"
+               BuildableName = "content-extension.appex"
+               BlueprintName = "content-extension"
+               ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "428E4341EA00FDED5044AD79"
                BuildableName = "service-extension.appex"
                BlueprintName = "service-extension"
@@ -35,15 +49,38 @@
                ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3659D9902FF8CCEA12AD31B9"
+               BuildableName = "three_dollar_in_my_pocketTests.xctest"
+               BlueprintName = "three-dollar-in-my-pocketTests"
+               ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      disableMainThreadChecker = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3659D9902FF8CCEA12AD31B9"
+               BuildableName = "three_dollar_in_my_pocketTests.xctest"
+               BlueprintName = "three-dollar-in-my-pocketTests"
+               ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -62,9 +99,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "428E4341EA00FDED5044AD79"
-            BuildableName = "service-extension.appex"
-            BlueprintName = "service-extension"
+            BlueprintIdentifier = "2EFCCAA79F65644E7B3D8DDB"
+            BuildableName = "content-extension.appex"
+            BlueprintName = "content-extension"
             ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -79,9 +116,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "428E4341EA00FDED5044AD79"
-            BuildableName = "service-extension.appex"
-            BlueprintName = "service-extension"
+            BlueprintIdentifier = "2EFCCAA79F65644E7B3D8DDB"
+            BuildableName = "content-extension.appex"
+            BlueprintName = "content-extension"
             ReferencedContainer = "container:3dollar-in-my-pocket.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
