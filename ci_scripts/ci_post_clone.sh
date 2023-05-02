@@ -27,11 +27,9 @@ git lfs pull
 git lfs install --force
 
 # Install Tuist
-curl -Ls https://install.tuist.io | bash
-tuist generate -n
+tuist generate -n && bundle exec pod install
 
 bundle exec pod cache clean NMapsMap
 
 # Install dependencies you manage with CocoaPods.
-bundle exec pod init
 bundle exec pod install --repo-update
