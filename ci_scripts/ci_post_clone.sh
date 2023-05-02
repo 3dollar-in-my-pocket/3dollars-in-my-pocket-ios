@@ -33,4 +33,5 @@ tuist generate -n
 bundle exec pod cache clean NMapsMap
 
 # Install dependencies you manage with CocoaPods.
+bundle exec pod init
 bundle exec pod install --repo-update
