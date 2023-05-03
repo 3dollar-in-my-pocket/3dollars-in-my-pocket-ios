@@ -285,7 +285,6 @@ let project = Project(
                 .package(product: "FirebaseFirestore"),
                 .package(product: "FirebaseMessaging"),
                 .package(product: "FirebaseRemoteConfig"),
-                .package(product: "FirebaseRemoteConfig"),
                 .package(product: "KakaoSDK"),
                 .package(product: "KakaoSDKAuth"),
                 .package(product: "KakaoSDKCommon"),
