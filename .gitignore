@@ -18,6 +18,8 @@ Pods/
 ## Build generated
 build/
 DerivedData/
+*.xcodeproj
+*.xcworkspace
 
 ## Various settings
 *.pbxuser
