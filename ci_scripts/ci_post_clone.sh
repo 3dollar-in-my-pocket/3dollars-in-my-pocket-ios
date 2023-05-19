@@ -27,7 +27,7 @@ git lfs pull
 git lfs install --force
 
 # Install Tuist
-./.tuist-bin/tuist generate -n
+../.tuist-bin/tuist generate -n
 bundle exec pod install
 
 bundle exec pod cache clean NMapsMap
