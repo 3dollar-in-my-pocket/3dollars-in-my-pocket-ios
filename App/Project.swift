@@ -271,8 +271,7 @@ let project = Project(
                 .post(script: Script.firebaseCrashlytics, name: "FirebaseCrashlytics", inputPaths: [
                     .relativeToManifest("${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}"),
                     .relativeToManifest("$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)")
-                ]),
-                .post(script: "${PODS_ROOT}/SwiftLint/swiftlint", name: "Swift Lint")
+                ])
             ],
             dependencies: [
                 .target(name: "service-extension"),
