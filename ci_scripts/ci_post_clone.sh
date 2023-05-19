@@ -18,7 +18,7 @@ echo 'export PATH=$HOME/gems/bin:$PATH' >>~/.bash_profile
 export GEM_HOME=$HOME/gems
 export PATH="$GEM_HOME/bin:$PATH"
 
-gem install bundler
+gem install bundler:2.3.26
 bundle install
 brew install git-lfs
 
