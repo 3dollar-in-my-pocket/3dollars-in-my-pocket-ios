@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ic_review_green.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

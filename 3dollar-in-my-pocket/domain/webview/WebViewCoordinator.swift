@@ -1,3 +1,0 @@
-protocol WebViewCoordinator: BaseCoordinator, AnyObject {
-    
-}

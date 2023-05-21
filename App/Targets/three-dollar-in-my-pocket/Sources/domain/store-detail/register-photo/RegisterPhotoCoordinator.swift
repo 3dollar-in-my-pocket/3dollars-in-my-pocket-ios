@@ -1,0 +1,3 @@
+protocol RegisterPhotoCoordinator: BaseCoordinator, AnyObject {
+    
+}

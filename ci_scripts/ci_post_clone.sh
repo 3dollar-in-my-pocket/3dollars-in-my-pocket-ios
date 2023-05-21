@@ -18,13 +18,17 @@ echo 'export PATH=$HOME/gems/bin:$PATH' >>~/.bash_profile
 export GEM_HOME=$HOME/gems
 export PATH="$GEM_HOME/bin:$PATH"
 
-gem install bundler
+gem install bundler:2.3.26
 bundle install
 brew install git-lfs
 
 git lfs install --skip-smudge
 git lfs pull
 git lfs install --force
+
+# Install Tuist
+../.tuist-bin/tuist generate -n -p ../
+bundle exec pod install
 
 bundle exec pod cache clean NMapsMap
 
