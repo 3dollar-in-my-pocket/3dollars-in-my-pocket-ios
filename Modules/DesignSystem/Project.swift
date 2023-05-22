@@ -38,6 +38,5 @@ let project = Project(
             resources: ["Resources/**"],
             dependencies: []
         )
-    ],
-    resourceSynthesizers: []
+    ]
 )
