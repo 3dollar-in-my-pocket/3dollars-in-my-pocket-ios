@@ -18,9 +18,10 @@
 public enum DesignSystemFontFamily {
   public enum Pretendard {
     public static let bold = DesignSystemFontConvertible(name: "Pretendard-Bold", family: "Pretendard", path: "Pretendard-Bold.otf")
+    public static let medium = DesignSystemFontConvertible(name: "Pretendard-Medium", family: "Pretendard", path: "Pretendard-Medium.otf")
     public static let regular = DesignSystemFontConvertible(name: "Pretendard-Regular", family: "Pretendard", path: "Pretendard-Regular.otf")
     public static let semiBold = DesignSystemFontConvertible(name: "Pretendard-SemiBold", family: "Pretendard", path: "Pretendard-SemiBold.otf")
-    public static let all: [DesignSystemFontConvertible] = [bold, regular, semiBold]
+    public static let all: [DesignSystemFontConvertible] = [bold, medium, regular, semiBold]
   }
   public static let allCustomFonts: [DesignSystemFontConvertible] = [Pretendard.all].flatMap { $0 }
   public static func registerAllCustomFonts() {

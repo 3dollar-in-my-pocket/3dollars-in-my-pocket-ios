@@ -106,7 +106,7 @@
 "popup_disable_today" = "오늘 하루 보지않기";
 "write_title" = "가게 제보";
 "write_address_bottom_title" = "맛집 위치는 바로 여기!";
-"write_address_button" = "이 위치로 주소 설정";
+"write_address_button" = "이 위치로 하기";
 "write_address_unknown" = "주소를 알 수 없는 위치입니다.";
 "write_address_confirm_popup_title" = "10m이내에 이미 제보된\n가게가 있어요! ";
 "write_address_confirm_popup_description" = "중복된 가게 제보인지 확인해 주세요.";
