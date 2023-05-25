@@ -590,7 +590,7 @@ public enum ThreeDollarInMyPocketStrings {
   public static let wednesdayFull = ThreeDollarInMyPocketStrings.tr("Localization", "wednesday_full")
   /// 맛집 위치는 바로 여기!
   public static let writeAddressBottomTitle = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_bottom_title")
-  /// 이 위치로 주소 설정
+  /// 이 위치로 하기
   public static let writeAddressButton = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_button")
   /// 중복된 가게 제보인지 확인해 주세요.
   public static let writeAddressConfirmPopupDescription = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_confirm_popup_description")
