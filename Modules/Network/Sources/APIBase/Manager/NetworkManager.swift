@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 final public class NetworkManager {
     public var configuration: NetworkConfiguration
@@ -20,5 +21,11 @@ final public class NetworkManager {
         } catch {
             return .failure(error)
         }
+    }
+}
+
+extension Result {
+    func publish() -> AnyPublisher<Success, Failure> {
+        return Result.Publisher(self).eraseToAnyPublisher()
     }
 }
