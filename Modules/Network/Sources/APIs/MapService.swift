@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-protocol MapServiceProtocol {
+public protocol MapServiceProtocol {
     func getAddressFromLocation(latitude: Double, longitude: Double) -> AnyPublisher<String, Error>
     
     func searchAddress(keyword: String) -> AnyPublisher<LocalResponse<PlaceDocument>, Error>
