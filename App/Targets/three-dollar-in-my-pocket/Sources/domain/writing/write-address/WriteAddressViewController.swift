@@ -16,7 +16,8 @@ final class WriteAddressViewController: BaseVC, WriteAddressCoordinator {
     private let viewModel = WriteAddressViewModel(
         mapService: Networking.MapService(),
         storeService: Networking.StoreService(),
-        locationManager: Common.LocationManager.shared
+        locationManager: Common.LocationManager.shared,
+        analyticsManager: AnalyticsManager.shared
     )
     private weak var coordinator: WriteAddressCoordinator?
     private var cancellables = Set<AnyCancellable>()
@@ -48,6 +49,12 @@ final class WriteAddressViewController: BaseVC, WriteAddressCoordinator {
         coordinator = self
         setupMap()
         viewModel.input.tapCurrentLocation.send(())
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        viewModel.input.viewWillAppear.send(())
     }
     
     override func bindEvent() {

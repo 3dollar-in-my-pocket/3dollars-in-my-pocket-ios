@@ -7,6 +7,7 @@ import Common
 
 final class WriteAddressViewModel {
     struct Input {
+        let viewWillAppear = PassthroughSubject<Void, Never>()
         let moveMapCenter = PassthroughSubject<Location, Never>()
         let tapCurrentLocation = PassthroughSubject<Void, Never>()
         let tapSetAddress = PassthroughSubject<Void, Never>()
@@ -30,6 +31,7 @@ final class WriteAddressViewModel {
         var address = ""
         var nearStores: [Store] = []
         var cameraPosition: Location?
+        let screen: AnalyticsScreen = .writeAddress
     }
     
     let input = Input()
@@ -39,15 +41,18 @@ final class WriteAddressViewModel {
     private let mapService: Networking.MapServiceProtocol
     private let storeService: Networking.StoreServiceProtocol
     private let locationManager: Common.LocationManagerProtocol
+    private let analyticsManager: AnalyticsManagerProtocol
     
     init(
         mapService: Networking.MapServiceProtocol,
         storeService: Networking.StoreServiceProtocol,
-        locationManager: Common.LocationManagerProtocol
+        locationManager: Common.LocationManagerProtocol,
+        analyticsManager: AnalyticsManagerProtocol
     ) {
         self.mapService = mapService
         self.storeService = storeService
         self.locationManager = locationManager
+        self.analyticsManager = analyticsManager
         
         bind()
     }
@@ -67,6 +72,16 @@ final class WriteAddressViewModel {
 //            .map { .setNearStores(stores: $0.map(Store.init)) }
 //            .catchError { .just(.showErrorAlert($0)) }
 //        }
+        
+        input.viewWillAppear
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.analyticsManager.logPageView(
+                    screen: owner.state.screen,
+                    type: WriteAddressViewController.self
+                )
+            }
+            .store(in: &cancellables)
         
         
         let moveCamera = input.moveMapCenter
@@ -98,6 +113,9 @@ final class WriteAddressViewModel {
         
         let currentLocation = input.tapCurrentLocation
             .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, _ in
+                owner.sendClickCurrentLocationLog()
+            })
             .flatMap { owner, _ in
                 owner.locationManager.getCurrentLocationPublisher()
                     .catch { error -> AnyPublisher<CLLocation, Never> in
@@ -143,6 +161,9 @@ final class WriteAddressViewModel {
         
         input.tapSetAddress
             .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, _ in
+                owner.sendClickSetAddressLog(address: owner.state.address)
+            })
             .sink(receiveValue: { owner, _ in
                 guard let cameraPosition = owner.state.cameraPosition else { return }
                 
@@ -183,5 +204,15 @@ final class WriteAddressViewModel {
                 output.error.send(error)
             }
         }
+    }
+}
+
+extension WriteAddressViewModel {
+    private func sendClickCurrentLocationLog() {
+        analyticsManager.logEvent(event: .clickCurrentLocation, screen: state.screen)
+    }
+    
+    private func sendClickSetAddressLog(address: String) {
+        analyticsManager.logEvent(event: .clickSetAddress(address: address), screen: state.screen)
     }
 }

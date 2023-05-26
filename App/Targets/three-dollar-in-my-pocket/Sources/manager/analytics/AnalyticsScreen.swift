@@ -7,4 +7,9 @@ enum AnalyticsScreen: String {
     
     /// 푸드트럭 상세화면
     case bossStoreDetail = "boss_store_detail"
+    
+    // MARK: v4
+    
+    /// 제보 주소 화면
+    case writeAddress = "write_address"
 }

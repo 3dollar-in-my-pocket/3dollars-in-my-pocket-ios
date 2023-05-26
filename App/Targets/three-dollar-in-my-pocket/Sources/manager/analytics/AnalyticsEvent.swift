@@ -6,6 +6,13 @@ enum AnalyticsEvent {
     case foodtruckListAdBannerClicked(id: String)
     case viewBossStoreDetail(storeId: String)
     
+    // MARK: v4
+    /// 공용
+    case clickCurrentLocation
+    
+    /// write-address 제보주소화면
+    case clickSetAddress(address: String)
+    
     var name: String {
         switch self {
         case .splashPopupClicked:
@@ -25,6 +32,12 @@ enum AnalyticsEvent {
             
         case .viewBossStoreDetail:
             return "view_boss_store_detail"
+            
+        case .clickCurrentLocation:
+            return "click_current_location"
+            
+        case .clickSetAddress:
+            return "click_set_address"
         }
     }
     
@@ -47,6 +60,12 @@ enum AnalyticsEvent {
             
         case .viewBossStoreDetail(let id):
             return ["id": id]
+            
+        case .clickCurrentLocation:
+            return [:]
+            
+        case .clickSetAddress(let address):
+            return ["address": address]
         }
     }
 }
