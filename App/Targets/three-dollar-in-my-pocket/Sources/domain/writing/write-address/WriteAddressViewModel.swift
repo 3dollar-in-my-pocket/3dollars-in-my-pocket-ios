@@ -70,6 +70,9 @@ final class WriteAddressViewModel {
         
         let moveCamera = input.moveMapCenter
             .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, location in
+                owner.state.cameraPosition = location
+            })
             .share()
         
         moveCamera
@@ -90,13 +93,6 @@ final class WriteAddressViewModel {
                     owner.output.error.send(error)
                 }
             }
-            .store(in: &cancellables)
-        
-        input.moveMapCenter
-            .handleEvents(receiveOutput: { [weak self] location in
-                self?.state.cameraPosition = location
-            })
-            .subscribe(output.moveCamera)
             .store(in: &cancellables)
         
         let currentLocation = input.tapCurrentLocation
@@ -175,11 +171,11 @@ final class WriteAddressViewModel {
             switch result {
             case .success(let response):
                 if response.isExists {
+                    output.route.send(.presentConfirmPopup(address: state.address))
+                } else {
                     output.route.send(
                         .pushAddressDetail(address: state.address, location: location)
                     )
-                } else {
-                    output.route.send(.presentConfirmPopup(address: state.address))
                 }
                 
             case .failure(let error):
