@@ -1,20 +1,21 @@
+import Foundation
 import CoreLocation
 import Combine
 
-protocol CombineLocationManagerProtocol {
-    func getCurrentLocationPublisher() -> CombineLocationManager.LocationPublisher
+public protocol LocationManagerProtocol {
+    func getCurrentLocationPublisher() -> LocationManager.LocationPublisher
 }
 
-final class CombineLocationManager: NSObject, CombineLocationManagerProtocol {
-    static let shared = CombineLocationManager()
+public class LocationManager: NSObject, LocationManagerProtocol {
+    public static let shared = LocationManager()
     
-    func getCurrentLocationPublisher() -> LocationPublisher {
+    public func getCurrentLocationPublisher() -> LocationPublisher {
         return LocationPublisher()
     }
 }
 
-extension CombineLocationManager {
-    struct LocationPublisher: Publisher {
+extension LocationManager {
+    public struct LocationPublisher: Publisher {
         public typealias Output = CLLocation
         public typealias Failure = Error
         

@@ -16,7 +16,7 @@ struct BuildSetting {
 
 
 let project = Project(
-    name: "Networking",
+    name: "Logger",
     organizationName: "macgongmon",
     packages: [],
     settings: .settings(
@@ -28,10 +28,10 @@ let project = Project(
     ),
     targets: [
         Target(
-            name: "Networking",
+            name: "Logger",
             platform: .iOS,
             product: .staticLibrary,
-            bundleId: "com.macgongmon.-dollar-in-my-pocket.networking",
+            bundleId: "com.macgongmon.-dollar-in-my-pocket.logger",
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
             sources: ["Sources/**"],
             dependencies: []

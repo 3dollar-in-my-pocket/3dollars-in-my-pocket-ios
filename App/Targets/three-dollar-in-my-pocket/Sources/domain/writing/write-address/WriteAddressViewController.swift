@@ -3,6 +3,7 @@ import Combine
 
 import DesignSystem
 import Networking
+import Common
 import NMapsMap
 
 protocol WriteAddressDelegate: AnyObject {
@@ -15,7 +16,7 @@ final class WriteAddressViewController: BaseVC, WriteAddressCoordinator {
     private let viewModel = WriteAddressViewModel(
         mapService: Networking.MapService(),
         storeService: Networking.StoreService(),
-        locationManager: CombineLocationManager.shared
+        locationManager: Common.LocationManager.shared
     )
     private weak var coordinator: WriteAddressCoordinator?
     private var cancellables = Set<AnyCancellable>()

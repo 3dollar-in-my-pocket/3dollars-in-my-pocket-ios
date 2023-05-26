@@ -3,6 +3,7 @@ import CoreLocation
 import Combine
 
 import Networking
+import Common
 
 final class WriteAddressViewModel {
     struct Input {
@@ -37,12 +38,12 @@ final class WriteAddressViewModel {
     private var cancellables = Set<AnyCancellable>()
     private let mapService: Networking.MapServiceProtocol
     private let storeService: Networking.StoreServiceProtocol
-    private let locationManager: CombineLocationManagerProtocol
+    private let locationManager: Common.LocationManagerProtocol
     
     init(
         mapService: Networking.MapServiceProtocol,
         storeService: Networking.StoreServiceProtocol,
-        locationManager: CombineLocationManagerProtocol
+        locationManager: Common.LocationManagerProtocol
     ) {
         self.mapService = mapService
         self.storeService = storeService
