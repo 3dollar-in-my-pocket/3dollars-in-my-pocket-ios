@@ -15,7 +15,7 @@ final class WriteAddressViewModel {
     struct Output {
         let setNearStores = PassthroughSubject<[Store], Never>()
         let moveCamera = PassthroughSubject<Location, Never>()
-        let setAddress = PassthroughSubject<String, Error>()
+        let setAddress = PassthroughSubject<String, Never>()
         let error = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
@@ -73,13 +73,22 @@ final class WriteAddressViewModel {
             .share()
         
         moveCamera
-            .flatMap { owner, location in
-                owner.mapService.getAddressFromLocation(
+            .asyncMap { owner, location in
+                await owner.mapService.getAddressFromLocation(
                     latitude: location.latitude,
                     longitude: location.longitude
                 )
             }
-            .subscribe(output.setAddress)
+            .withUnretained(self)
+            .sink { owner, result in
+                switch result {
+                case .success(let address):
+                    owner.output.setAddress.send(address)
+                    
+                case .failure(let error):
+                    owner.output.error.send(error)
+                }
+            }
             .store(in: &cancellables)
         
         // TODO: 주변 가게 조회 API는 새로 나오면 조회
@@ -92,22 +101,34 @@ final class WriteAddressViewModel {
             .withUnretained(self)
             .flatMap { owner, _ in
                 owner.locationManager.getCurrentLocationPublisher()
+                    .catch { error -> AnyPublisher<CLLocation, Never> in
+                        owner.output.error.send(error)
+                        return Empty().eraseToAnyPublisher()
+                    }
             }
             .share()
         
         currentLocation
             .withUnretained(self)
-            .flatMap { owner, location -> AnyPublisher<String, Error> in
-                owner.mapService.getAddressFromLocation(
+            .asyncMap { owner, location in
+                await owner.mapService.getAddressFromLocation(
                     latitude: location.coordinate.latitude,
                     longitude: location.coordinate.longitude
                 )
             }
-            .subscribe(output.setAddress)
+            .withUnretained(self)
+            .sink { owner, result in
+                switch result {
+                case .success(let address):
+                    owner.output.setAddress.send(address)
+                    
+                case .failure(let error):
+                    owner.output.error.send(error)
+                }
+            }
             .store(in: &cancellables)
         
         currentLocation
-            .assertNoFailure()
             .map { location in
                 Location(
                     latitude: location.coordinate.latitude,
