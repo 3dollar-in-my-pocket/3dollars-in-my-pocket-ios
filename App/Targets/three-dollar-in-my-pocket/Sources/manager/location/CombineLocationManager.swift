@@ -2,63 +2,83 @@ import CoreLocation
 import Combine
 
 protocol CombineLocationManagerProtocol {
-    func getCurrentLocation() -> AnyPublisher<CLLocation, Error>
+    func getCurrentLocationPublisher() -> CombineLocationManager.LocationPublisher
 }
 
 final class CombineLocationManager: NSObject, CombineLocationManagerProtocol {
     static let shared = CombineLocationManager()
-    fileprivate var locationPublisher = PassthroughSubject<CLLocation, Error>()
-    private var manager = CLLocationManager()
     
-    override init() {
-        super.init()
-        
-        self.manager.delegate = self
-    }
-    
-    func getCurrentLocation() -> AnyPublisher<CLLocation, Error> {
-        if CLLocationManager.locationServicesEnabled() {
-            if manager.authorizationStatus == .notDetermined {
-                manager.requestWhenInUseAuthorization()
-            } else {
-                locationPublisher = PassthroughSubject<CLLocation, Error>()
-                manager.startUpdatingLocation()
-            }
-            
-            return locationPublisher.eraseToAnyPublisher()
-        } else {
-            return Fail(error: LocationError.disableLocationService).eraseToAnyPublisher()
-        }
+    func getCurrentLocationPublisher() -> LocationPublisher {
+        return LocationPublisher()
     }
 }
 
-extension CombineLocationManager: CLLocationManagerDelegate {
-    
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-        case .denied, .restricted:
-            self.locationPublisher.send(completion: .failure(LocationError.denied))
-            
-        case .authorizedAlways, .authorizedWhenInUse:
-            self.manager.startUpdatingHeading()
-            
-        case .notDetermined:
-            self.manager.requestWhenInUseAuthorization()
-            
-        default:
-            self.locationPublisher.send(completion: .failure(LocationError.unknown))
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        self.manager.stopUpdatingHeading()
+extension CombineLocationManager {
+    struct LocationPublisher: Publisher {
+        public typealias Output = CLLocation
+        public typealias Failure = Error
         
-        guard let lastLocation = locations.last else {
-            self.locationPublisher.send(completion: .failure(LocationError.unknown))
-            return
+        public func receive<S>(subscriber: S) where S : Subscriber, Failure == S.Failure, Output == S.Input {
+            let subscription = LocationSubscription(subscriber: subscriber)
+            subscriber.receive(subscription: subscription)
         }
         
-        self.locationPublisher.send(lastLocation)
-        self.locationPublisher.send(completion: .finished)
+        final class LocationSubscription<S: Subscriber> : NSObject, CLLocationManagerDelegate, Subscription where S.Input == Output, S.Failure == Failure{
+            var subscriber: S
+            var locationManager = CLLocationManager()
+            
+            init(subscriber: S) {
+                self.subscriber = subscriber
+                super.init()
+                locationManager.delegate = self
+            }
+            
+            func request(_ demand: Subscribers.Demand) {
+                DispatchQueue.global().async { [weak self] in
+                    if CLLocationManager.locationServicesEnabled() {
+                        if self?.locationManager.authorizationStatus == .notDetermined {
+                            self?.locationManager.requestWhenInUseAuthorization()
+                        } else {
+                            self?.locationManager.startUpdatingLocation()
+                        }
+                    } else {
+                        self?.subscriber.receive(completion: .failure(LocationError.disableLocationService))
+                    }
+                    self?.locationManager.startUpdatingLocation()
+                    self?.locationManager.requestWhenInUseAuthorization()
+                }
+            }
+            
+            func cancel() {
+                locationManager.stopUpdatingLocation()
+            }
+            
+            func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+                locationManager.stopUpdatingHeading()
+                
+                guard let lastLocation = locations.last else {
+                    subscriber.receive(completion: .failure(LocationError.unknown))
+                    return
+                }
+                
+                _ = subscriber.receive(lastLocation)
+            }
+            
+            func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+                switch manager.authorizationStatus {
+                case .denied, .restricted:
+                    subscriber.receive(completion: .failure(LocationError.denied))
+                    
+                case .authorizedAlways, .authorizedWhenInUse:
+                    locationManager.startUpdatingHeading()
+                    
+                case .notDetermined:
+                    locationManager.requestWhenInUseAuthorization()
+                    
+                default:
+                    subscriber.receive(completion: .failure(LocationError.unknown))
+                }
+            }
+        }
     }
 }

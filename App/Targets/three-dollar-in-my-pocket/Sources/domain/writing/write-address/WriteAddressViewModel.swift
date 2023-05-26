@@ -91,7 +91,7 @@ final class WriteAddressViewModel {
         let currentLocation = input.tapCurrentLocation
             .withUnretained(self)
             .flatMap { owner, _ in
-                owner.locationManager.getCurrentLocation()
+                owner.locationManager.getCurrentLocationPublisher()
             }
             .share()
         
