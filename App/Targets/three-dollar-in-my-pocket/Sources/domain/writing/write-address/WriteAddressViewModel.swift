@@ -33,7 +33,7 @@ final class WriteAddressViewModel {
     
     let input = Input()
     let output = Output()
-    private let state = State()
+    private var state = State()
     private var cancellables = Set<AnyCancellable>()
     private let mapService: Networking.MapServiceProtocol
     private let storeService: Networking.StoreServiceProtocol
@@ -83,6 +83,7 @@ final class WriteAddressViewModel {
             .sink { owner, result in
                 switch result {
                 case .success(let address):
+                    owner.state.address = address
                     owner.output.setAddress.send(address)
                     
                 case .failure(let error):
@@ -94,6 +95,9 @@ final class WriteAddressViewModel {
         // TODO: 주변 가게 조회 API는 새로 나오면 조회
         
         input.moveMapCenter
+            .handleEvents(receiveOutput: { [weak self] location in
+                self?.state.cameraPosition = location
+            })
             .subscribe(output.moveCamera)
             .store(in: &cancellables)
         
@@ -120,6 +124,7 @@ final class WriteAddressViewModel {
             .sink { owner, result in
                 switch result {
                 case .success(let address):
+                    owner.state.address = address
                     owner.output.setAddress.send(address)
                     
                 case .failure(let error):
@@ -135,6 +140,9 @@ final class WriteAddressViewModel {
                     longitude: location.coordinate.longitude
                 )
             }
+            .handleEvents(receiveOutput: { [weak self] location in
+                self?.state.cameraPosition = location
+            })
             .subscribe(output.moveCamera)
             .store(in: &cancellables)
         
@@ -167,8 +175,8 @@ final class WriteAddressViewModel {
             )
             
             switch result {
-            case .success(let isExisted):
-                if isExisted {
+            case .success(let response):
+                if response.isExists {
                     output.route.send(
                         .pushAddressDetail(address: state.address, location: location)
                     )

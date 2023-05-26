@@ -79,7 +79,11 @@ class BaseVC: UIViewController {
         } else if let baseError = error as? BaseError {
             self.showBaseErrorAlert(error: baseError)
         } else {
-            self.showErrorAlert(error: error)
+            AlertUtils.showWithAction(
+                viewController: self,
+                message: error.localizedDescription,
+                onTapOk: nil
+            )
         }
     }
     

@@ -1,6 +1,10 @@
 import Foundation
 
 extension Bundle {
+    static var baseURL: String {
+        return Bundle.main.infoDictionary?["API_URL"] as? String ?? ""
+    }
+    
     static var admobUnitId: String {
         return Bundle.main.infoDictionary?["ADMOB_UNIT_ID"] as? String ?? ""
     }

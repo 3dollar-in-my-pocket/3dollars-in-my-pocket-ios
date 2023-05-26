@@ -5,8 +5,8 @@ final public class NetworkManager {
     public static let shared = NetworkManager(config: NetworkConfiguration.defaultConfig)
     
     public var configuration: NetworkConfiguration {
-        didSet(newValue) {
-            requestProvider.config = newValue
+        didSet {
+            requestProvider.config = configuration
         }
     }
     private let requestProvider: RequestProvider
