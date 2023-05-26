@@ -38,7 +38,7 @@ final class WriteAddressViewController: BaseVC, WriteAddressCoordinator {
     }
     
     override func loadView() {
-        self.view = self.writeAddressView
+        view = writeAddressView
     }
     
     override func viewDidLoad() {
@@ -132,7 +132,7 @@ final class WriteAddressViewController: BaseVC, WriteAddressCoordinator {
     }
     
     private func setupMap() {
-        self.writeAddressView.mapView.addCameraDelegate(delegate: self)
+        writeAddressView.mapView.addCameraDelegate(delegate: self)
     }
 }
 
@@ -151,7 +151,7 @@ extension WriteAddressViewController: NMFMapViewCameraDelegate {
 
 extension WriteAddressViewController: WriteDetailDelegate {
     func onWriteSuccess(storeId: Int) {
-        self.delegate?.onWriteSuccess(storeId: storeId)
+        delegate?.onWriteSuccess(storeId: storeId)
     }
 }
 
