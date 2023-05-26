@@ -1,15 +1,16 @@
 import Foundation
 import CoreLocation
-import Combine
 
 public protocol StoreServiceProtocol {
-    func isStoresExistedAround(distance: Double, mapLocation: CLLocation) -> AnyPublisher<Bool, Error>
+    func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<Bool, Error>
 }
 
 public struct StoreService: StoreServiceProtocol {
-    public func isStoresExistedAround(distance: Double, mapLocation: CLLocation) -> AnyPublisher<Bool, Error> {
+    public init() { }
+    
+    public func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<Bool, Error> {
         let request = IsStoreExistNearbyRequest(distance: distance, mapLocation: mapLocation)
         
-        return NetworkManager(config: <#T##NetworkConfiguration#>)
+        return await NetworkManager.shared.request(requestType: request)
     }
 }

@@ -162,17 +162,17 @@ final class WriteAddressView: BaseView {
         }
     }
     
-    fileprivate func moveCamera(latitude: Double, longitude: Double) {
+    func moveCamera(location: Location) {
         let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
-            lat: latitude,
-            lng: longitude
+            lat: location.latitude,
+            lng: location.longitude
         ))
         
         camera.animation = .easeIn
         mapView.moveCamera(camera)
     }
     
-    fileprivate func setNearStores(stores: [Store]) {
+    func setNearStores(stores: [Store]) {
         clearMarkers()
         
         for store in stores {
@@ -188,26 +188,13 @@ final class WriteAddressView: BaseView {
         }
     }
     
+    func setAddress(_ address: String) {
+        addressLabel.text = address
+    }
+    
     private func clearMarkers() {
         for marker in markers {
             marker.mapView = nil
-        }
-    }
-}
-
-extension Reactive where Base: WriteAddressView {
-    var cameraPosition: Binder<(Double, Double)> {
-        return Binder(self.base) { view, position in
-            view.moveCamera(
-                latitude: position.0,
-                longitude: position.1
-            )
-        }
-    }
-    
-    var nearStores: Binder<[Store]> {
-        return Binder(self.base) { view, stores in
-            view.setNearStores(stores: stores)
         }
     }
 }

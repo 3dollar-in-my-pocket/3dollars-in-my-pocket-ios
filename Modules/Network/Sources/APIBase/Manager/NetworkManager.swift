@@ -2,7 +2,13 @@ import Foundation
 import Combine
 
 final public class NetworkManager {
-    public var configuration: NetworkConfiguration
+    public static let shared = NetworkManager(config: NetworkConfiguration.defaultConfig)
+    
+    public var configuration: NetworkConfiguration {
+        didSet(newValue) {
+            requestProvider.config = newValue
+        }
+    }
     private let requestProvider: RequestProvider
     private let responseProvider: ResponseProvider
 

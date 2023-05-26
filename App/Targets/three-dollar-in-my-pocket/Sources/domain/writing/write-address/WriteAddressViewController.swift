@@ -1,30 +1,32 @@
 import UIKit
+import Combine
 
-import RxSwift
+import DesignSystem
+import Networking
 import NMapsMap
-import ReactorKit
 
 protocol WriteAddressDelegate: AnyObject {
     func onWriteSuccess(storeId: Int)
 }
 
-final class WriteAddressViewController: BaseVC, View, WriteAddressCoordinator {
+final class WriteAddressViewController: BaseVC, WriteAddressCoordinator {
     weak var delegate: WriteAddressDelegate?
     private let writeAddressView = WriteAddressView()
-    private let writeAddressReactor = WriteAddressReactor(
-        mapService: MapService(),
-        storeService: StoreService(),
-        locationManager: LocationManager.shared
+    private let viewModel = WriteAddressViewModel(
+        mapService: Networking.MapService(),
+        storeService: Networking.StoreService(),
+        locationManager: CombineLocationManager.shared
     )
     private weak var coordinator: WriteAddressCoordinator?
+    private var cancellables = Set<AnyCancellable>()
     
     
     static func instance(delegate: WriteAddressDelegate) -> UINavigationController {
         let writeAddressVC = WriteAddressViewController(nibName: nil, bundle: nil).then {
             $0.delegate = delegate
             $0.tabBarItem = UITabBarItem(
-                title: "tab_write".localized,
-                image: UIImage(named: "ic_write"),
+                title: nil,
+                image: DesignSystemAsset.Icons.writeSolid.image,
                 tag: TabBarTag.write.rawValue
             )
         }
@@ -42,69 +44,91 @@ final class WriteAddressViewController: BaseVC, View, WriteAddressCoordinator {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.reactor = self.writeAddressReactor
-        self.coordinator = self
-        self.setupMap()
-    }
-    
-    func bind(reactor: WriteAddressReactor) {
-        self.writeAddressView.addressButton.rx.tap
-            .map { Reactor.Action.tapSetAddress }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-        
-        self.writeAddressView.currentLocationButton.rx.tap
-            .map { Reactor.Action.tapCurrentLocation }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-        
-        reactor.state
-            .map { $0.address }
-            .distinctUntilChanged()
-            .asDriver(onErrorJustReturn: "")
-            .drive(self.writeAddressView.addressLabel.rx.text)
-            .disposed(by: self.disposeBag)
-        
-        reactor.state
-            .map { $0.nearStores }
-            .distinctUntilChanged()
-            .asDriver(onErrorJustReturn: [])
-            .drive(self.writeAddressView.rx.nearStores)
-            .disposed(by: self.disposeBag)
-        
-        reactor.state
-            .compactMap { $0.cameraPosition }
-            .distinctUntilChanged({ oldPosition, newPosition in
-                return oldPosition == newPosition
-            })
-            .debug()
-            .asDriver(onErrorJustReturn: (0, 0))
-            .drive(self.writeAddressView.rx.cameraPosition)
-            .disposed(by: self.disposeBag)
-        
+        coordinator = self
+        setupMap()
+        viewModel.input.tapCurrentLocation.send(())
     }
     
     override func bindEvent() {
-        self.writeAddressView.closeButton.rx.tap
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] in
-                self?.coordinator?.dismiss()
-            })
-            .disposed(by: self.eventDisposeBag)
-                
-        self.writeAddressReactor.pushWriteDetailPublisher
-            .asDriver(onErrorJustReturn: ("", (0, 0)))
-            .drive(onNext: { [weak self] (address, location) in
-                self?.coordinator?.goToWriteDetail(address: address, location: location)
-            })
-            .disposed(by: self.eventDisposeBag)
+        writeAddressView.closeButton
+            .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.coordinator?.dismiss()
+            }
+            .store(in: &cancellables)
+    }
+    
+    override func bindViewModelInput() {
+        writeAddressView.addressButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.tapSetAddress)
+            .store(in: &cancellables)
         
-        self.writeAddressReactor.presentConfirmPopupPublisher
-            .asDriver(onErrorJustReturn: "")
-            .drive(onNext: { [weak self] address in
-                self?.coordinator?.presentConfirmPopup(address: address)
-            })
-            .disposed(by: self.eventDisposeBag)
+        writeAddressView.currentLocationButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.tapCurrentLocation)
+            .store(in: &cancellables)
+    }
+    
+    override func bindViewModelOutput() {
+        viewModel.output.setNearStores
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, stores in
+                owner.writeAddressView.setNearStores(stores: stores)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.moveCamera
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, location in
+                owner.writeAddressView.moveCamera(location: location)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.setAddress
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { [weak self] completion in
+                switch completion {
+                case .failure(let error):
+                    self?.showErrorAlert(error: error)
+                case .finished:
+                    break
+                }
+            } receiveValue: { owner, address in
+                owner.writeAddressView.setAddress(address)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.error
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, error in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.route
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, route in
+                switch route {
+                case .pushAddressDetail(let address, let location):
+                    owner.coordinator?.goToWriteDetail(
+                        address: address,
+                        location: (location.latitude, location.longitude)
+                    )
+                    
+                case .presentConfirmPopup(let address):
+                    owner.coordinator?.presentConfirmPopup(address: address)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func setupMap() {
@@ -115,10 +139,12 @@ final class WriteAddressViewController: BaseVC, View, WriteAddressCoordinator {
 extension WriteAddressViewController: NMFMapViewCameraDelegate {
     func mapView(_ mapView: NMFMapView, cameraDidChangeByReason reason: Int, animated: Bool) {
         if animated && reason == NMFMapChangedByGesture {
-            self.writeAddressReactor.action.onNext(.moveMapCenter(
+            let location = Location(
                 latitude: mapView.cameraPosition.target.lat,
                 longitude: mapView.cameraPosition.target.lng
-            ))
+            )
+            
+            viewModel.input.moveMapCenter.send(location)
         }
     }
 }
@@ -131,11 +157,11 @@ extension WriteAddressViewController: WriteDetailDelegate {
 
 extension WriteAddressViewController: AddressConfirmPopupViewControllerDelegate {
     func onDismiss() {
-        self.showRootDim(isShow: false)
+        showRootDim(isShow: false)
     }
     
     func onClickOk() {
-        self.showRootDim(isShow: false)
-        self.writeAddressReactor.action.onNext(.tapConfirmAddress)
+        showRootDim(isShow: false)
+        viewModel.input.tapConfirmAddress.send(())
     }
 }

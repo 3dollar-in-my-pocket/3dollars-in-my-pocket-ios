@@ -1,8 +1,8 @@
 import Foundation
 
 final class RequestProvider {
+    var config: NetworkConfiguration
     private let sesseion: URLSession
-    private let config: NetworkConfiguration
 
     init(config: NetworkConfiguration) {
         self.config = config
