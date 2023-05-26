@@ -92,8 +92,6 @@ final class WriteAddressViewModel {
             }
             .store(in: &cancellables)
         
-        // TODO: 주변 가게 조회 API는 새로 나오면 조회
-        
         input.moveMapCenter
             .handleEvents(receiveOutput: { [weak self] location in
                 self?.state.cameraPosition = location
