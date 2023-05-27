@@ -12,4 +12,5 @@ enum AnalyticsScreen: String {
     
     /// 제보 주소 화면
     case writeAddress = "write_address"
+    case writeAddressPopup = "write_address_popop"
 }

@@ -12,6 +12,7 @@ enum AnalyticsEvent {
     
     /// write-address 제보주소화면
     case clickSetAddress(address: String)
+    case clickAddressOk(address: String)
     
     var name: String {
         switch self {
@@ -38,6 +39,9 @@ enum AnalyticsEvent {
             
         case .clickSetAddress:
             return "click_set_address"
+            
+        case .clickAddressOk:
+            return "click_address_ok"
         }
     }
     
@@ -65,6 +69,9 @@ enum AnalyticsEvent {
             return [:]
             
         case .clickSetAddress(let address):
+            return ["address": address]
+            
+        case .clickAddressOk(let address):
             return ["address": address]
         }
     }
