@@ -8,6 +8,7 @@ final class AddressConfirmPopupView: BaseView {
     private let containerView = UIView().then {
         $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         $0.layer.cornerRadius = 30
+        $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
     }
     
     private let titleLabel = UILabel().then {
