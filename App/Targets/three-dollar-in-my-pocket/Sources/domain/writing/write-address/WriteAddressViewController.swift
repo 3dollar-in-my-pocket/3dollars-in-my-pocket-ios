@@ -10,7 +10,7 @@ protocol WriteAddressDelegate: AnyObject {
     func onWriteSuccess(storeId: Int)
 }
 
-final class WriteAddressViewController: BaseVC, WriteAddressCoordinator {
+final class WriteAddressViewController: BaseViewController, WriteAddressCoordinator {
     weak var delegate: WriteAddressDelegate?
     private let writeAddressView = WriteAddressView()
     private let viewModel = WriteAddressViewModel(
@@ -20,8 +20,6 @@ final class WriteAddressViewController: BaseVC, WriteAddressCoordinator {
         analyticsManager: AnalyticsManager.shared
     )
     private weak var coordinator: WriteAddressCoordinator?
-    private var cancellables = Set<AnyCancellable>()
-    
     
     static func instance(delegate: WriteAddressDelegate) -> UINavigationController {
         let writeAddressVC = WriteAddressViewController(nibName: nil, bundle: nil).then {
@@ -164,12 +162,7 @@ extension WriteAddressViewController: WriteDetailDelegate {
 }
 
 extension WriteAddressViewController: AddressConfirmPopupViewControllerDelegate {
-    func onDismiss() {
-        showRootDim(isShow: false)
-    }
-    
     func onClickOk() {
-        showRootDim(isShow: false)
         viewModel.input.tapConfirmAddress.send(())
     }
 }
