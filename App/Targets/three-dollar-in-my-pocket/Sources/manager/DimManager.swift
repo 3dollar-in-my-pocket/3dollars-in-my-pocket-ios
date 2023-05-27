@@ -1,5 +1,7 @@
 import UIKit
 
+import DesignSystem
+
 final class DimManager {
     static let shared = DimManager()
     
@@ -10,7 +12,7 @@ final class DimManager {
         targetView.addSubview(self.dimView)
         
         UIView.animate(withDuration: 0.3) { [weak self] in
-            self?.dimView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+            self?.dimView.backgroundColor = DesignSystemAsset.Colors.systemBlack.color.withAlphaComponent(0.8)
         }
     }
     
