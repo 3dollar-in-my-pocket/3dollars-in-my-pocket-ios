@@ -3,9 +3,7 @@ import UIKit
 import DesignSystem
 
 final class AddressConfirmPopupView: BaseView {
-    let tapBackground = UITapGestureRecognizer()
-    
-    private let backgroundView = UIView()
+    let backgroundView = UIView()
     
     private let containerView = UIView().then {
         $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
@@ -59,7 +57,6 @@ final class AddressConfirmPopupView: BaseView {
     
     override func setup() {
         backgroundColor = .clear
-        backgroundView.addGestureRecognizer(tapBackground)
         addSubViews([
             backgroundView,
             containerView,

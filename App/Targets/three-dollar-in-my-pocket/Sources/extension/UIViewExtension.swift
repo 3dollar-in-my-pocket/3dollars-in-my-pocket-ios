@@ -13,4 +13,8 @@ extension UIView {
             self.addSubview(view)
         }
     }
+    
+    func gesture(_ type: UIGestureRecognizer.GestureType) -> UIGestureRecognizer.GesturePublisher {
+        return .init(view: self, gestureType: type)
+    }
 }

@@ -17,7 +17,6 @@ extension WriteAddressCoordinator where Self: BaseVC {
         let viewController = AddressConfirmPopupViewController.instacne(address: address)
         
         viewController.delegate = self as? AddressConfirmPopupViewControllerDelegate
-        showRootDim(isShow: true)
         presenter.present(viewController, animated: true, completion: nil)
     }
 }
