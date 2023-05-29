@@ -116,9 +116,6 @@
 "write_store_option" = "(선택)";
 "write_store_payment_type" = "결제방식";
 "write_store_payment_multi" = "다중선택 가능";
-"write_store_payment_cash" = "현금";
-"write_store_payment_transfer" = "계좌이체";
-"write_store_payment_card" = "카드";
 "write_store_days" = "출몰시기";
 "write_store_sunday" = "일";
 "write_store_monday" = "월";
@@ -312,4 +309,6 @@
 "store_type_road" = "길거리";
 "store_type_store" = "매장";
 "store_type_convenience_store" = "편의점";
-
+"store_payment_cash" = "현금";
+"store_payment_transfer" = "계좌이체";
+"store_payment_card" = "카드";
