@@ -2,7 +2,7 @@ import UIKit
 
 import DesignSystem
 
-final class WriteDetailAddressLocationCell: BaseCollectionViewCell {
+final class WriteDetailLocationCell: BaseCollectionViewCell {
     enum Layout {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
     }

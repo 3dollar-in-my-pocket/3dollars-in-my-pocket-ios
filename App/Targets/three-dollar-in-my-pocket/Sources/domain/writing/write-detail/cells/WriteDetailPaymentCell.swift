@@ -3,7 +3,11 @@ import UIKit
 import DesignSystem
 
 final class WriteDetailPaymentCell: BaseCollectionViewCell {
-    let paymentStackView = WriteDetailPaymentStackView()
+    enum Layout {
+        static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
+    }
+    
+    private let paymentStackView = WriteDetailPaymentStackView()
     
     override func setup() {
         contentView.addSubview(paymentStackView)
@@ -12,7 +16,6 @@ final class WriteDetailPaymentCell: BaseCollectionViewCell {
     override func bindConstraints() {
         paymentStackView.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-16)
         }
@@ -59,7 +62,6 @@ extension WriteDetailPaymentCell {
             alignment = .leading
             axis = .horizontal
             backgroundColor = .clear
-            distribution = .equalSpacing
             spacing = Layout.space
             
             addArrangedSubview(cashCheckButton)
@@ -94,6 +96,7 @@ extension WriteDetailPaymentCell {
         override var isSelected: Bool {
             didSet {
                 layer.borderColor = isSelected ? DesignSystemAsset.Colors.mainPink.color.cgColor : DesignSystemAsset.Colors.gray30.color.cgColor
+                tintColor = isSelected ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray40.color
             }
         }
         
@@ -110,8 +113,21 @@ extension WriteDetailPaymentCell {
         private func setup(title: String) {
             setTitle(title, for: .normal)
             titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
+            setImage(
+                DesignSystemAsset.Icons.check.image.withRenderingMode(.alwaysTemplate),
+                for: .normal
+            )
+            tintColor = DesignSystemAsset.Colors.gray40.color
             setTitleColor(DesignSystemAsset.Colors.gray40.color, for: .normal)
             setTitleColor(DesignSystemAsset.Colors.mainPink.color, for: .selected)
+            
+            if let titleLabel = titleLabel {
+                imageView?.snp.makeConstraints {
+                    $0.centerY.equalTo(titleLabel)
+                    $0.right.equalTo(titleLabel.snp.left).offset(-4)
+                    $0.width.height.equalTo(16)
+                }
+            }
             layer.cornerRadius = 8
             layer.borderWidth = 1
             layer.borderColor = DesignSystemAsset.Colors.gray30.color.cgColor

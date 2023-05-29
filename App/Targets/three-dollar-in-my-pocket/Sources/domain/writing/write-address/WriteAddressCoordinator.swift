@@ -6,7 +6,7 @@ protocol WriteAddressCoordinator: AnyObject, BaseCoordinator {
 
 extension WriteAddressCoordinator where Self: BaseViewController {
     func goToWriteDetail(address: String, location: (Double, Double)) {
-        let viewController = WriteDetailVC.instance(address: address, location: location)
+        let viewController = WriteDetailViewController.instance(address: address, location: location)
         
         viewController.deleagte = self as? WriteDetailDelegate
         

@@ -3,7 +3,11 @@ import UIKit
 import DesignSystem
 
 final class WriteDetailTypeCell: BaseCollectionViewCell {
-    let typeStackView = WriteDetailTypeStackView()
+    enum Layout {
+        static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
+    }
+    
+    private let typeStackView = WriteDetailTypeStackView()
     
     override func setup() {
         contentView.addSubview(typeStackView)
@@ -12,7 +16,6 @@ final class WriteDetailTypeCell: BaseCollectionViewCell {
     override func bindConstraints() {
         typeStackView.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-16)
         }
@@ -22,15 +25,15 @@ final class WriteDetailTypeCell: BaseCollectionViewCell {
 extension WriteDetailTypeCell {
     final class WriteDetailTypeStackView: UIStackView {
         enum Layout {
-            static let size = CGSize(width: 84, height: 36)
+            static let size = CGSize(width: 90, height: 36)
             static let space: CGFloat = 8
         }
         
-        let roadRadioButton = TypeRadioButton(title: "·" + ThreeDollarInMyPocketStrings.storeTypeRoad)
+        let roadRadioButton = TypeRadioButton(title: ThreeDollarInMyPocketStrings.storeTypeRoad)
         
-        let storeRadioButton = TypeRadioButton(title: "·" + ThreeDollarInMyPocketStrings.storeTypeStore)
+        let storeRadioButton = TypeRadioButton(title:ThreeDollarInMyPocketStrings.storeTypeStore)
         
-        let convenienceStoreRadioButton = TypeRadioButton(title: "·" + ThreeDollarInMyPocketStrings.storeTypeConvenienceStore)
+        let convenienceStoreRadioButton = TypeRadioButton(title: ThreeDollarInMyPocketStrings.storeTypeConvenienceStore)
         
         override init(frame: CGRect) {
             super.init(frame: frame)
@@ -59,7 +62,6 @@ extension WriteDetailTypeCell {
             self.alignment = .leading
             self.axis = .horizontal
             self.backgroundColor = .clear
-            self.distribution = .equalSpacing
             self.spacing = Layout.space
             
             self.addArrangedSubview(roadRadioButton)
@@ -94,7 +96,13 @@ extension WriteDetailTypeCell {
         override var isSelected: Bool {
             didSet {
                 layer.borderColor = isSelected ? DesignSystemAsset.Colors.mainPink.color.cgColor : DesignSystemAsset.Colors.gray30.color.cgColor
+                tintColor = isSelected ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
             }
+        }
+        
+        let dotImage = UIView().then {
+            $0.layer.cornerRadius = 3
+            $0.backgroundColor = DesignSystemAsset.Colors.gray40.color
         }
         
         init(title: String) {
@@ -108,7 +116,18 @@ extension WriteDetailTypeCell {
         }
         
         private func setupUI(title: String) {
-            setTitle("·" + title, for: .normal)
+            setTitle(title, for: .normal)
+            
+            addSubview(dotImage)
+            if let titleLabel = titleLabel {
+                dotImage.snp.makeConstraints {
+                    $0.centerY.equalTo(titleLabel)
+                    $0.right.equalTo(titleLabel.snp.left).offset(-8)
+                    $0.width.height.equalTo(6)
+                }
+            }
+
+            tintColor = DesignSystemAsset.Colors.gray40.color
             titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
             setTitleColor(DesignSystemAsset.Colors.gray40.color, for: .normal)
             setTitleColor(DesignSystemAsset.Colors.mainPink.color, for: .selected)

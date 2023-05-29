@@ -112,35 +112,35 @@ class ModifyVC: BaseVC {
             .bind(to: self.viewModel.input.tapDay)
             .disposed(by: disposeBag)
         
-        self.modifyView.storeTypeStackView.roadRadioButton.rx.tap
-            .map { StreetFoodStoreType.road }
-            .bind(to: self.viewModel.input.tapStoreType)
-            .disposed(by: disposeBag)
-        
-        self.modifyView.storeTypeStackView.storeRadioButton.rx.tap
-            .map { StreetFoodStoreType.store }
-            .bind(to: self.viewModel.input.tapStoreType)
-            .disposed(by: disposeBag)
-        
-        self.modifyView.storeTypeStackView.convenienceStoreRadioButton.rx.tap
-            .map { StreetFoodStoreType.convenienceStore }
-            .bind(to: self.viewModel.input.tapStoreType)
-            .disposed(by: disposeBag)
-        
-        self.modifyView.paymentStackView.cashCheckButton.rx.tap
-            .map { PaymentType.cash }
-            .bind(to: self.viewModel.input.tapPaymentType)
-            .disposed(by: disposeBag)
-        
-        self.modifyView.paymentStackView.cardCheckButton.rx.tap
-            .map { PaymentType.card }
-            .bind(to: self.viewModel.input.tapPaymentType)
-            .disposed(by: disposeBag)
-        
-        self.modifyView.paymentStackView.transferCheckButton.rx.tap
-            .map { PaymentType.transfer }
-            .bind(to: self.viewModel.input.tapPaymentType)
-            .disposed(by: disposeBag)
+//        self.modifyView.storeTypeStackView.roadRadioButton.rx.tap
+//            .map { StreetFoodStoreType.road }
+//            .bind(to: self.viewModel.input.tapStoreType)
+//            .disposed(by: disposeBag)
+//
+//        self.modifyView.storeTypeStackView.storeRadioButton.rx.tap
+//            .map { StreetFoodStoreType.store }
+//            .bind(to: self.viewModel.input.tapStoreType)
+//            .disposed(by: disposeBag)
+//
+//        self.modifyView.storeTypeStackView.convenienceStoreRadioButton.rx.tap
+//            .map { StreetFoodStoreType.convenienceStore }
+//            .bind(to: self.viewModel.input.tapStoreType)
+//            .disposed(by: disposeBag)
+//
+//        self.modifyView.paymentStackView.cashCheckButton.rx.tap
+//            .map { PaymentType.cash }
+//            .bind(to: self.viewModel.input.tapPaymentType)
+//            .disposed(by: disposeBag)
+//
+//        self.modifyView.paymentStackView.cardCheckButton.rx.tap
+//            .map { PaymentType.card }
+//            .bind(to: self.viewModel.input.tapPaymentType)
+//            .disposed(by: disposeBag)
+//
+//        self.modifyView.paymentStackView.transferCheckButton.rx.tap
+//            .map { PaymentType.transfer }
+//            .bind(to: self.viewModel.input.tapPaymentType)
+//            .disposed(by: disposeBag)
         
         self.modifyView.deleteAllButton.rx.tap
             .bind(to: self.viewModel.input.deleteAllCategories)
@@ -171,15 +171,15 @@ class ModifyVC: BaseVC {
             .bind(onNext: self.modifyView.setStoreNameBorderColoe(isEmpty:))
             .disposed(by: disposeBag)
         
-        self.viewModel.output.selectType
-            .observe(on: MainScheduler.instance)
-            .bind(onNext: self.modifyView.storeTypeStackView.selectType(type:))
-            .disposed(by: disposeBag)
-        
-        self.viewModel.output.selectPaymentType
-            .observe(on: MainScheduler.instance)
-            .bind(onNext: self.modifyView.paymentStackView.selectPaymentType(paymentTypes:))
-            .disposed(by: disposeBag)
+//        self.viewModel.output.selectType
+//            .observe(on: MainScheduler.instance)
+//            .bind(onNext: self.modifyView.storeTypeStackView.selectType(type:))
+//            .disposed(by: disposeBag)
+//        
+//        self.viewModel.output.selectPaymentType
+//            .observe(on: MainScheduler.instance)
+//            .bind(onNext: self.modifyView.paymentStackView.selectPaymentType(paymentTypes:))
+//            .disposed(by: disposeBag)
         
         self.viewModel.output.selectDays
             .observe(on: MainScheduler.instance)

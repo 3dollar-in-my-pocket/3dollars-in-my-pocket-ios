@@ -96,7 +96,7 @@ class ModifyView: BaseView {
     $0.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 14)
   }
   
-  let storeTypeStackView = WriteDetailTypeStackView()
+//  let storeTypeStackView = WriteDetailTypeStackView()
   
   let paymentTypeLabel = UILabel().then {
     $0.text = "write_store_payment_type".localized
@@ -116,7 +116,7 @@ class ModifyView: BaseView {
     $0.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12)
   }
   
-  let paymentStackView = WriteDetailPaymentStackView()
+//  let paymentStackView = WriteDetailPaymentStackView()
   
   let daysLabel = UILabel().then {
     $0.text = "write_store_days".localized
@@ -221,8 +221,8 @@ class ModifyView: BaseView {
       mapView, addressContainer, addressLabel, editButton,
       storeInfoLabel, storeInfoContainer, storeNameLabel,
       storeNameContainer, storeNameField, storeTypeLabel, storeTypeOptionLabel,
-      storeTypeStackView, paymentTypeLabel, paymentTypeOptionLabel,
-      paymentTypeMultiLabel, paymentStackView, daysLabel, daysOptionLabel,
+      paymentTypeLabel, paymentTypeOptionLabel,
+      paymentTypeMultiLabel, daysLabel, daysOptionLabel,
       dayStackView, categoryLabel, deleteAllButton, categoryContainer,
       categoryCollectionView, menuLabel, menuOptionLabel, menuTableView
     )
@@ -323,14 +323,9 @@ class ModifyView: BaseView {
       make.centerY.equalTo(self.storeTypeLabel)
     }
     
-    self.storeTypeStackView.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(24)
-      make.top.equalTo(self.storeTypeLabel.snp.bottom).offset(17)
-    }
-    
     self.paymentTypeLabel.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.top.equalTo(self.storeTypeStackView.snp.bottom).offset(40)
+      make.top.equalTo(self.storeTypeOptionLabel.snp.bottom).offset(40)
     }
 
     self.paymentTypeOptionLabel.snp.makeConstraints { make in
@@ -343,14 +338,9 @@ class ModifyView: BaseView {
       make.centerY.equalTo(self.paymentTypeLabel)
     }
     
-    self.paymentStackView.snp.makeConstraints { make in
-      make.left.equalToSuperview().offset(24)
-      make.top.equalTo(self.paymentTypeLabel.snp.bottom).offset(16)
-    }
-    
     self.daysLabel.snp.makeConstraints { make in
       make.left.equalToSuperview().offset(24)
-      make.top.equalTo(self.paymentStackView.snp.bottom).offset(40)
+      make.top.equalTo(self.paymentTypeMultiLabel.snp.bottom).offset(40)
     }
     
     self.daysOptionLabel.snp.makeConstraints { make in

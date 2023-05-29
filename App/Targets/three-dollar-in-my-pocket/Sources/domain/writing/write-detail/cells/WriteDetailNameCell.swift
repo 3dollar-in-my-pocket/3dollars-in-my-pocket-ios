@@ -3,6 +3,10 @@ import UIKit
 import DesignSystem
 
 final class WriteDetailNameCell: BaseCollectionViewCell {
+    enum Layout {
+        static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
+    }
+    
     private let containerView = UIView().then {
         $0.backgroundColor = DesignSystemAsset.Colors.gray10.color
         $0.layer.cornerRadius = 8

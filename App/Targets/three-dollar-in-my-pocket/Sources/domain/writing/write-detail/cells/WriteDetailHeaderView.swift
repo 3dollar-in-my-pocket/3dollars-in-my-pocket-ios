@@ -2,7 +2,11 @@ import UIKit
 
 import DesignSystem
 
-final class WriteHeaderCell: UICollectionReusableView {
+final class WriteDetailHeaderView: UICollectionReusableView {
+    enum Layout {
+        static let size = CGSize(width: UIScreen.main.bounds.width, height: 44)
+    }
+    
     private let stackView = UIStackView()
     
     private let titleLabel = UILabel().then {
@@ -45,13 +49,18 @@ final class WriteHeaderCell: UICollectionReusableView {
     func bind(type: HeaderType) {
         setTitleLabel()
         switch type {
-        case .normal:
+        case .none:
             break
             
-        case .option:
+        case .normal(let title):
+            titleLabel.text = title
+            
+        case .option(let title):
+            titleLabel.text = title
             setOptionLabel()
             
-        case .multi:
+        case .multi(let title):
+            titleLabel.text = title
             setOptionLabel()
             setMultiLabel()
         }
@@ -84,10 +93,11 @@ final class WriteHeaderCell: UICollectionReusableView {
     }
 }
 
-extension WriteHeaderCell {
+extension WriteDetailHeaderView {
     enum HeaderType {
-        case normal
-        case option
-        case multi
+        case none
+        case normal(title: String)
+        case option(title: String)
+        case multi(title: String)
     }
 }

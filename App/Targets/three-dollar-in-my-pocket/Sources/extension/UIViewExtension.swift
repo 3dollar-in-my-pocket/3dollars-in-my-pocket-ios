@@ -17,4 +17,12 @@ extension UIView {
     func gesture(_ type: UIGestureRecognizer.GestureType) -> UIGestureRecognizer.GesturePublisher {
         return .init(view: self, gestureType: type)
     }
+    
+    func asImage() -> UIImage {
+        let renderer = UIGraphicsImageRenderer(bounds: bounds)
+        
+        return renderer.image { rendererContext in
+            layer.render(in: rendererContext.cgContext)
+        }
+    }
 }
