@@ -3,6 +3,7 @@ import UIKit
 final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetailSection, WriteDetailSectionItem> {
     init(collectionView: UICollectionView) {
         collectionView.register([
+            WriteDetailMapCell.self,
             WriteDetailLocationCell.self,
             WriteDetailNameCell.self,
             WriteDetailTypeCell.self,
@@ -11,6 +12,11 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
         collectionView.registerSectionHeader([WriteDetailHeaderView.self])
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
+            case .map:
+                let cell: WriteDetailMapCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                
+                return cell
+                
             case .location:
                 let cell: WriteDetailLocationCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 
@@ -33,16 +39,25 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
             }
         }
         
-        supplementaryViewProvider = { collectionView, type, indexPath in
-            guard let section = self.sectionIdentifier(section: indexPath.section),
-                  let headerView = collectionView.dequeueReusableSupplementaryView(
-                      ofKind: UICollectionView.elementKindSectionHeader,
-                      withReuseIdentifier: "\(WriteDetailHeaderView.self)",
-                      for: indexPath
-                  ) as? WriteDetailHeaderView else { return nil }
+        self.supplementaryViewProvider = { [weak self] collectionView, type, indexPath -> UICollectionReusableView? in
+            guard let section = self?.sectionIdentifier(section: indexPath.section) else {
+                return nil
+            }
             
-            headerView.bind(type: section.type.headerType)
-            return headerView
+            switch section.type.headerType {
+            case .none:
+                return nil
+                
+            case .normal, .multi, .option:
+                let headerView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: UICollectionView.elementKindSectionHeader,
+                    withReuseIdentifier: "\(WriteDetailHeaderView.self)",
+                    for: indexPath
+                ) as? WriteDetailHeaderView
+                
+                headerView?.bind(type: section.type.headerType)
+                return headerView
+            }
         }
         
         collectionView.delegate = self
@@ -51,7 +66,7 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
 
 struct WriteDetailSection: Hashable {
     enum SectionType: Hashable {
-    //    case map
+        case map
         case location
         case name
         case storeType
@@ -59,6 +74,9 @@ struct WriteDetailSection: Hashable {
         
         var headerType: WriteDetailHeaderView.HeaderType {
             switch self {
+            case .map:
+                return .none
+                
             case .location:
                 return .normal(title: ThreeDollarInMyPocketStrings.writeDetailHeaderLocation)
                 
@@ -79,7 +97,7 @@ struct WriteDetailSection: Hashable {
 }
 
 enum WriteDetailSectionItem: Hashable {
-//    case map
+    case map
     case location
     case name
     case storeType
@@ -87,6 +105,9 @@ enum WriteDetailSectionItem: Hashable {
     
     var size: CGSize {
         switch self {
+        case .map:
+            return WriteDetailMapCell.Layout.size
+            
         case .location:
             return WriteDetailLocationCell.Layout.size
             
@@ -111,6 +132,14 @@ extension WriteDetailDataSource: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return WriteDetailHeaderView.Layout.size
+        guard let section = self.sectionIdentifier(section: section) else { return .zero }
+        
+        switch section.type.headerType {
+        case .none:
+            return .zero
+            
+        case .option, .normal, .multi:
+            return WriteDetailHeaderView.Layout.size
+        }
     }
 }
