@@ -112,10 +112,6 @@
 "write_address_confirm_popup_description" = "중복된 가게 제보인지 확인해 주세요.";
 "write_address_confirm_popup_ok" = "여기가 확실해요";
 "write_location" = "가게 위치";
-"write_modify_location" = "수정하기";
-"write_store_info" = "가게 정보";
-"write_store_info_name" = "가게이름";
-"write_store_info_name_placeholder" = "ex. 신촌역 0번 출구";
 "write_store_type" = "가게형태";
 "write_store_option" = "(선택)";
 "write_store_type_road" = "길거리";
@@ -308,3 +304,9 @@
 "edit_nickname_label2" = "로";
 "edit_nickname_placeholder" = "닉네임 입력";
 "edit_nickname_edit_label" = "수정할래요";
+
+// MARK: v4
+
+// 가게 제보 상세화면
+"write_detail_edit_location" = "수정";
+"write_detail_store_name" = "가게 이름";

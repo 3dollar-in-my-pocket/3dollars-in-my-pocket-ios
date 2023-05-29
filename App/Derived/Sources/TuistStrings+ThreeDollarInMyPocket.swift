@@ -600,10 +600,10 @@ public enum ThreeDollarInMyPocketStrings {
   public static let writeAddressConfirmPopupTitle = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_confirm_popup_title")
   /// 주소를 알 수 없는 위치입니다.
   public static let writeAddressUnknown = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_unknown")
+  /// 수정
+  public static let writeEditLocation = ThreeDollarInMyPocketStrings.tr("Localization", "write_edit_location")
   /// 가게 위치
   public static let writeLocation = ThreeDollarInMyPocketStrings.tr("Localization", "write_location")
-  /// 수정하기
-  public static let writeModifyLocation = ThreeDollarInMyPocketStrings.tr("Localization", "write_modify_location")
   /// 추가하기
   public static let writeStoreAddCategory = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_add_category")
   /// 카테고리

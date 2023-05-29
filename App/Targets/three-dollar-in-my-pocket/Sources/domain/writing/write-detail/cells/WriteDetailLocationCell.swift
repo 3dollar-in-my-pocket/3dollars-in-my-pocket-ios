@@ -2,7 +2,7 @@ import UIKit
 
 import DesignSystem
 
-final class WriteAddressLocationCell: BaseCollectionViewCell {
+final class WriteDetailAddressLocationCell: BaseCollectionViewCell {
     enum Layout {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
     }
@@ -21,7 +21,7 @@ final class WriteAddressLocationCell: BaseCollectionViewCell {
     let editAddressButton = UIButton().then {
         $0.setTitleColor(DesignSystemAsset.Colors.mainPink.color, for: .normal)
         $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-        $0.setTitle("write_modify_location".localized, for: .normal)
+        $0.setTitle(ThreeDollarInMyPocketStrings.writeEditLocation, for: .normal)
     }
     
     override func setup() {
