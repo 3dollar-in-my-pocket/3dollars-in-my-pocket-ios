@@ -614,8 +614,12 @@ public enum ThreeDollarInMyPocketStrings {
   public static let writeAddressUnknown = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_unknown")
   /// 수정
   public static let writeDetailEditLocation = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_edit_location")
+  /// 다중선택 가능
+  public static let writeDetailStoreCanSelectMulti = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_store_can_select_multi")
   /// 가게 이름
   public static let writeDetailStoreName = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_store_name")
+  /// (선택)
+  public static let writeDetailStoreOption = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_store_option")
   /// 가게 위치
   public static let writeLocation = ThreeDollarInMyPocketStrings.tr("Localization", "write_location")
   /// 추가하기
@@ -632,10 +636,6 @@ public enum ThreeDollarInMyPocketStrings {
   public static let writeStoreMenu = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_menu")
   /// 월
   public static let writeStoreMonday = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_monday")
-  /// (선택)
-  public static let writeStoreOption = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_option")
-  /// 다중선택 가능
-  public static let writeStorePaymentMulti = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_payment_multi")
   /// 결제방식
   public static let writeStorePaymentType = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_payment_type")
   /// 가게 등록하기

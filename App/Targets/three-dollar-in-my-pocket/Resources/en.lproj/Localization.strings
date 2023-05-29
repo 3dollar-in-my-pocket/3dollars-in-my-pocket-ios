@@ -113,9 +113,7 @@
 "write_address_confirm_popup_ok" = "여기가 확실해요";
 "write_location" = "가게 위치";
 "write_store_type" = "가게형태";
-"write_store_option" = "(선택)";
 "write_store_payment_type" = "결제방식";
-"write_store_payment_multi" = "다중선택 가능";
 "write_store_days" = "출몰시기";
 "write_store_sunday" = "일";
 "write_store_monday" = "월";
@@ -304,6 +302,8 @@
 // 가게 제보 상세화면
 "write_detail_edit_location" = "수정";
 "write_detail_store_name" = "가게 이름";
+"write_detail_store_option" = "(선택)";
+"write_detail_store_can_select_multi" = "다중선택 가능";
 
 // 공통
 "store_type_road" = "길거리";
