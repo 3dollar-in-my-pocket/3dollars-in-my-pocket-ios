@@ -21,7 +21,7 @@ final class WriteDetailAddressLocationCell: BaseCollectionViewCell {
     let editAddressButton = UIButton().then {
         $0.setTitleColor(DesignSystemAsset.Colors.mainPink.color, for: .normal)
         $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-        $0.setTitle(ThreeDollarInMyPocketStrings.writeEditLocation, for: .normal)
+        $0.setTitle(ThreeDollarInMyPocketStrings.writeDetailEditLocation, for: .normal)
     }
     
     override func setup() {
