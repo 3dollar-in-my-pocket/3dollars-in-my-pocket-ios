@@ -1,3 +1,3 @@
-protocol AddressConfirmPopupCoordinator: AnyObject, Coordinator {
+protocol AddressConfirmPopupCoordinator: AnyObject, BaseCoordinator {
     
 }

@@ -8,6 +8,8 @@ protocol BaseCoordinator {
     func showLoading(isShow: Bool)
     func showToast(message: String)
     func showToast(message: String, baseView: UIView)
+    func dismiss(completion: (() -> Void)?)
+    func dismiss()
 }
 
 extension BaseCoordinator where Self: BaseViewController {
@@ -67,6 +69,16 @@ extension BaseCoordinator where Self: BaseViewController {
         ToastManager.shared.show(message: message)
     }
     
+    func dismiss(completion: (() -> Void)? = nil) {
+        if presenter is BaseBottomSheetViewController {
+            DimManager.shared.hideDim()
+        }
+        presenter.dismiss(animated: true, completion: completion)
+    }
+    
+    func dismiss() {
+        dismiss(completion: nil)
+    }
     
     private func goToSignin() {
         if let sceneDelegate

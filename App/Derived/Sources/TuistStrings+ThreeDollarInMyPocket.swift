@@ -594,7 +594,7 @@ public enum ThreeDollarInMyPocketStrings {
   public static let writeAddressButton = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_button")
   /// 중복된 가게 제보인지 확인해 주세요.
   public static let writeAddressConfirmPopupDescription = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_confirm_popup_description")
-  /// 이 위치가 맞아요!
+  /// 여기가 확실해요
   public static let writeAddressConfirmPopupOk = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_confirm_popup_ok")
   /// 10m이내에 이미 제보된\n가게가 있어요! 
   public static let writeAddressConfirmPopupTitle = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_confirm_popup_title")

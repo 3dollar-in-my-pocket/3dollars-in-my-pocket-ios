@@ -1,26 +1,22 @@
 import Foundation
 
 protocol AddressConfirmPopupViewControllerDelegate: AnyObject {
-    func onDismiss()
-    
     func onClickOk()
 }
 
-final class AddressConfirmPopupViewController: BaseVC, AddressConfirmPopupCoordinator {
+final class AddressConfirmPopupViewController: BaseBottomSheetViewController, AddressConfirmPopupCoordinator {
     weak var delegate: AddressConfirmPopupViewControllerDelegate?
     private let addressConfirmPopupView = AddressConfirmPopupView()
+    private let viewModel: AddressConfirmPopupViewModel
     private weak var coordinator: AddressConfirmPopupCoordinator?
     
     static func instacne(address: String) -> AddressConfirmPopupViewController {
-        return AddressConfirmPopupViewController(address: address).then {
-            $0.modalPresentationStyle = .overCurrentContext
-        }
+        return AddressConfirmPopupViewController(address: address)
     }
     
     init(address: String) {
+        self.viewModel = AddressConfirmPopupViewModel(address: address)
         super.init(nibName: nil, bundle: nil)
-        
-        self.addressConfirmPopupView.bind(address: address)
     }
     
     required init?(coder: NSCoder) {
@@ -28,38 +24,72 @@ final class AddressConfirmPopupViewController: BaseVC, AddressConfirmPopupCoordi
     }
     
     override func loadView() {
-        self.view = self.addressConfirmPopupView
+        view = addressConfirmPopupView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.coordinator = self
+        coordinator = self
+        viewModel.input.viewDidLoad.send(())
     }
     
     override func bindEvent() {
-        self.addressConfirmPopupView.tapBackground.rx.event
-            .asDriver()
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.dismiss()
-                self?.delegate?.onDismiss()
-            })
-            .disposed(by: self.eventDisposeBag)
+        addressConfirmPopupView.backgroundView
+            .gesture(.tap())
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.coordinator?.dismiss()
+            }
+            .store(in: &cancellables)
         
-        self.addressConfirmPopupView.closeButton.rx.tap
-            .asDriver()
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.dismiss()
-                self?.delegate?.onDismiss()
-            })
-            .disposed(by: self.eventDisposeBag)
+        addressConfirmPopupView.closeButton
+            .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.coordinator?.dismiss()
+            }
+            .store(in: &cancellables)
         
-        self.addressConfirmPopupView.okButton.rx.tap
-            .asDriver()
-            .drive(onNext: { [weak self] in
-                self?.coordinator?.dismiss()
-                self?.delegate?.onClickOk()
+        addressConfirmPopupView.okButton
+            .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, _ in
+                owner.coordinator?.dismiss(completion: {
+                    owner.delegate?.onClickOk()
+                })
             })
-            .disposed(by: self.eventDisposeBag)
+            .store(in: &cancellables)
+    }
+    
+    override func bindViewModelInput() {
+        addressConfirmPopupView.okButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.tapOk)
+            .store(in: &cancellables)
+    }
+    
+    override func bindViewModelOutput() {
+        viewModel.output.address
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, address in
+                owner.addressConfirmPopupView.bind(address: address)
+            })
+            .store(in: &cancellables)
+        
+        viewModel.output.route
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, route in
+                switch route {
+                case .dismiss:
+                    owner.coordinator?.dismiss(completion: {
+                        owner.delegate?.onClickOk()
+                    })
+                }
+            }
+            .store(in: &cancellables)
     }
 }
