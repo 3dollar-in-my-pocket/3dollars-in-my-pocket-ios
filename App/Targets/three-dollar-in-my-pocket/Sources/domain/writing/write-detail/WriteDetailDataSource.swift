@@ -7,7 +7,8 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
             WriteDetailLocationCell.self,
             WriteDetailNameCell.self,
             WriteDetailTypeCell.self,
-            WriteDetailPaymentCell.self
+            WriteDetailPaymentCell.self,
+            WriteDetailDayCell.self
         ])
         collectionView.registerSectionHeader([WriteDetailHeaderView.self])
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
@@ -34,6 +35,11 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
             case .payment:
                 let cell: WriteDetailPaymentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                
+                return cell
+                
+            case .day:
+                let cell: WriteDetailDayCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 
                 return cell
             }
@@ -71,6 +77,7 @@ struct WriteDetailSection: Hashable {
         case name
         case storeType
         case payment
+        case day
         
         var headerType: WriteDetailHeaderView.HeaderType {
             switch self {
@@ -88,6 +95,9 @@ struct WriteDetailSection: Hashable {
                 
             case .payment:
                 return .multi(title: ThreeDollarInMyPocketStrings.writeDetailHeaderPaymentType)
+                
+            case .day:
+                return .multi(title: ThreeDollarInMyPocketStrings.writeDetailHeaderDay)
             }
         }
     }
@@ -102,6 +112,7 @@ enum WriteDetailSectionItem: Hashable {
     case name
     case storeType
     case payment
+    case day
     
     var size: CGSize {
         switch self {
@@ -119,6 +130,9 @@ enum WriteDetailSectionItem: Hashable {
             
         case .payment:
             return WriteDetailPaymentCell.Layout.size
+            
+        case .day:
+            return WriteDetailDayCell.Layout.size
         }
     }
 }

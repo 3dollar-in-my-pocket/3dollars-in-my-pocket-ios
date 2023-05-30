@@ -35,4 +35,29 @@ enum DayOfTheWeek: String {
             return "sunday_full".localized
         }
     }
+    
+    var shortText: String {
+        switch self {
+        case .monday:
+            return "월"
+            
+        case .tuesday:
+            return "화"
+            
+        case .wednesday:
+            return "수"
+            
+        case .thursday:
+            return "목"
+            
+        case .friday:
+            return "금"
+            
+        case .saturday:
+            return "토"
+            
+        case .sunday:
+            return "일"
+        }
+    }
 }

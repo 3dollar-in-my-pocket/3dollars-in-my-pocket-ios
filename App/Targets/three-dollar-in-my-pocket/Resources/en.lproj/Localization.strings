@@ -110,7 +110,6 @@
 "write_address_confirm_popup_title" = "10m이내에 이미 제보된\n가게가 있어요! ";
 "write_address_confirm_popup_description" = "중복된 가게 제보인지 확인해 주세요.";
 "write_address_confirm_popup_ok" = "여기가 확실해요";
-"write_store_days" = "출몰시기";
 "write_store_sunday" = "일";
 "write_store_monday" = "월";
 "write_store_tuesday" = "화";
@@ -301,6 +300,7 @@
 "write_detail_header_name" = "가게 위치";
 "write_detail_header_store_type" = "가게형태";
 "write_detail_header_payment_type" = "결제방식";
+"write_detail_header_day" = "출몰시기";
 
 "write_detail_edit_location" = "수정";
 "write_detail_store_name" = "가게 이름";

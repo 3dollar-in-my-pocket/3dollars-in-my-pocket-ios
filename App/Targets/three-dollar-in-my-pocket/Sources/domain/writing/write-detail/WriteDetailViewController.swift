@@ -56,17 +56,13 @@ final class WriteDetailViewController: BaseViewController {
         
         var snapshot = WriteDetailSanpshot()
         
-        let mapSection = WriteDetailSection(type: .map, items: [.map])
-        let locationSection = WriteDetailSection(type: .location, items: [.location])
-        let nameSection = WriteDetailSection(type: .name, items: [.name])
-        let storeTypeSection = WriteDetailSection(type: .storeType, items: [.storeType])
-        let paymentSection = WriteDetailSection(type: .payment, items: [.payment])
         let sections = [
-            mapSection,
-            locationSection,
-            nameSection,
-            storeTypeSection,
-            paymentSection
+            WriteDetailSection(type: .map, items: [.map]),
+            WriteDetailSection(type: .location, items: [.location]),
+            WriteDetailSection(type: .name, items: [.name]),
+            WriteDetailSection(type: .storeType, items: [.storeType]),
+            WriteDetailSection(type: .payment, items: [.payment]),
+            WriteDetailSection(type: .day, items: [.day])
         ]
         
         sections.forEach {
