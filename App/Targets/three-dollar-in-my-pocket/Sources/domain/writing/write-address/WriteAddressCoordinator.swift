@@ -10,14 +10,14 @@ extension WriteAddressCoordinator where Self: BaseVC {
         
         viewController.deleagte = self as? WriteDetailDelegate
         
-        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+        presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
     func presentConfirmPopup(address: String) {
         let viewController = AddressConfirmPopupViewController.instacne(address: address)
         
         viewController.delegate = self as? AddressConfirmPopupViewControllerDelegate
-        self.showRootDim(isShow: true)
-        self.presenter.present(viewController, animated: true, completion: nil)
+        showRootDim(isShow: true)
+        presenter.present(viewController, animated: true, completion: nil)
     }
 }

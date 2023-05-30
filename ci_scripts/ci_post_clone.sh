@@ -33,4 +33,4 @@ bundle exec pod install
 bundle exec pod cache clean NMapsMap
 
 # Install dependencies you manage with CocoaPods.
-bundle exec pod install --repo-update
+bundle exec pod install

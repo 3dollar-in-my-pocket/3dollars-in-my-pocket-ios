@@ -1,5 +1,6 @@
 import UIKit
 
+import Networking
 import SnapKit
 import Firebase
 import SwiftyBeaver
@@ -23,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         initilizeSwiftyBeaver()
         initilizeKakao()
         initilizeAdmob()
+        initializationNetworkModule()
         application.registerForRemoteNotifications()
         return true
     }
@@ -89,6 +91,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     Log.debug("error: \(error)")
                 }
             }
+    }
+    
+    private func initializationNetworkModule() {
+        Networking.NetworkManager.shared.configuration.endPoint = Bundle.baseURL
+        Networking.NetworkManager.shared.configuration.userAgent = HTTPUtils.userAgent
     }
     
     func application(

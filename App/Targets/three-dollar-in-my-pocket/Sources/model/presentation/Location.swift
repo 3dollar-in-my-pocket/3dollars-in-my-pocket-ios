@@ -10,4 +10,9 @@ struct Location {
             return nil
         }
     }
+    
+    init(latitude: Double, longitude: Double) {
+        self.latitude = latitude
+        self.longitude = longitude
+    }
 }

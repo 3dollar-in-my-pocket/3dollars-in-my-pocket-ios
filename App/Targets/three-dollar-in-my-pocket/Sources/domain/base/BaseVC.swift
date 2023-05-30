@@ -10,11 +10,20 @@ class BaseVC: UIViewController {
         $0.backgroundColor = .clear
     }
     
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        
+        bindViewModelInput()
+        bindViewModelOutput()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         bindViewModel()
-        self.bindViewModelInput()
-        self.bindViewModelOutput()
         bindEvent()
     }
     
@@ -70,7 +79,11 @@ class BaseVC: UIViewController {
         } else if let baseError = error as? BaseError {
             self.showBaseErrorAlert(error: baseError)
         } else {
-            self.showErrorAlert(error: error)
+            AlertUtils.showWithAction(
+                viewController: self,
+                message: error.localizedDescription,
+                onTapOk: nil
+            )
         }
     }
     

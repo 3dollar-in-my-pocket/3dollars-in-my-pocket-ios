@@ -1,7 +1,14 @@
 import Foundation
+import Combine
 
 final public class NetworkManager {
-    public var configuration: NetworkConfiguration
+    public static let shared = NetworkManager(config: NetworkConfiguration.defaultConfig)
+    
+    public var configuration: NetworkConfiguration {
+        didSet {
+            requestProvider.config = configuration
+        }
+    }
     private let requestProvider: RequestProvider
     private let responseProvider: ResponseProvider
 
@@ -20,5 +27,11 @@ final public class NetworkManager {
         } catch {
             return .failure(error)
         }
+    }
+}
+
+extension Result {
+    func publish() -> AnyPublisher<Success, Failure> {
+        return Result.Publisher(self).eraseToAnyPublisher()
     }
 }

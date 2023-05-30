@@ -1,28 +1,27 @@
 import UIKit
 
+import DesignSystem
 import RxSwift
 import RxCocoa
 import NMapsMap
 
 final class WriteAddressView: BaseView {
     private var markers: [NMFMarker] = []
+    
     private let navigationView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOpacity = 0.04
-        $0.backgroundColor = .white
+        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
     }
     
     private let titleLabel = UILabel().then {
         $0.text = "write_title".localized
-        $0.font = .semiBold(size: 16)
-        $0.textColor = .black
+        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 16)
+        $0.textColor = DesignSystemAsset.Colors.gray100.color
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(UIImage(named: "ic_close"), for: .normal)
+        $0.setImage(DesignSystemAsset.Icons.close.image, for: .normal)
     }
     
     let mapView = NMFMapView().then {
@@ -30,151 +29,151 @@ final class WriteAddressView: BaseView {
         $0.zoomLevel = 17
     }
     
-    private let marker = UIImageView().then {
-        $0.image = UIImage(named: "ic_marker")
-    }
+    private let marker = UIImageView(image: DesignSystemAsset.Icons.markerFocuesd.image)
     
     let currentLocationButton = UIButton().then {
-        $0.setImage(UIImage(named: "ic_location_pink"), for: .normal)
+        $0.setImage(DesignSystemAsset.Icons.locationCurrent.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.tintColor = DesignSystemAsset.Colors.gray70.color
         $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowOpacity = 0.15
+        $0.layer.shadowColor = DesignSystemAsset.Colors.systemBlack.color.cgColor
+        $0.layer.shadowOffset = CGSize(width: 2, height: 2)
+        $0.layer.shadowOpacity = 0.1
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = Color.gray20?.cgColor
-        $0.layer.cornerRadius = 24
-        $0.backgroundColor = .white
+        $0.layer.borderColor = DesignSystemAsset.Colors.gray20.color.cgColor
+        $0.layer.cornerRadius = 23
+        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
     }
     
     private let bottomContainer = UIView().then {
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 16
+        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.layer.cornerRadius = 12
         $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
     }
     
     private let addressTitleLabel = UILabel().then {
         $0.text = "write_address_bottom_title".localized
-        $0.font = .bold(size: 20)
-        $0.textColor = .black
+        $0.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 20)
+        $0.textColor = DesignSystemAsset.Colors.gray100.color
     }
     
     private let addressContainer = UIView().then {
-        $0.layer.cornerRadius = 8
+        $0.layer.cornerRadius = 12
         $0.layer.masksToBounds = true
-        $0.backgroundColor = Color.gray0
+        $0.backgroundColor = DesignSystemAsset.Colors.gray10.color
     }
     
     let addressLabel = UILabel().then {
         $0.textAlignment = .center
-        $0.textColor = Color.gray100
-        $0.font = .semiBold(size: 16)
+        $0.textColor = DesignSystemAsset.Colors.gray70.color
+        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
     }
     
     let addressButton = UIButton().then {
-        $0.backgroundColor = Color.red
+        $0.backgroundColor = DesignSystemAsset.Colors.mainPink.color
         $0.setTitle("write_address_button".localized, for: .normal)
-        $0.titleLabel?.font = .bold(size: 16)
-        $0.layer.cornerRadius = 24
+        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
+        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        $0.layer.cornerRadius = 12
         $0.layer.masksToBounds = true
     }
     
     
     override func setup() {
-        self.backgroundColor = .white
-        self.addSubViews([
-            self.mapView,
-            self.navigationView,
-            self.closeButton,
-            self.titleLabel,
-            self.marker,
-            self.currentLocationButton,
-            self.bottomContainer,
-            self.addressTitleLabel,
-            self.addressContainer,
-            self.addressLabel,
-            self.addressButton
+        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        addSubViews([
+            mapView,
+            navigationView,
+            closeButton,
+            titleLabel,
+            marker,
+            currentLocationButton,
+            bottomContainer,
+            addressTitleLabel,
+            addressContainer,
+            addressLabel,
+            addressButton
         ])
     }
     
     override func bindConstraints() {
-        self.navigationView.snp.makeConstraints { make in
+        navigationView.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
-            make.bottom.equalTo(self.safeAreaLayoutGuide.snp.top).offset(60)
+            make.bottom.equalTo(safeAreaLayoutGuide.snp.top).offset(56)
         }
         
-        self.closeButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.centerY.equalTo(self.titleLabel)
+        closeButton.snp.makeConstraints { make in
+            make.right.equalToSuperview().offset(-16)
+            make.centerY.equalTo(titleLabel)
         }
         
-        self.titleLabel.snp.makeConstraints { make in
+        titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(self.navigationView).offset(-22)
+            make.bottom.equalTo(navigationView).offset(-16)
         }
         
-        self.marker.snp.makeConstraints { make in
+        marker.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(self.mapView.snp.centerY)
-            make.width.equalTo(30)
+            make.centerY.equalTo(mapView).offset(20)
+            make.width.equalTo(32)
             make.height.equalTo(40)
         }
         
-        self.mapView.snp.makeConstraints { make in
+        mapView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(50)
-            make.bottom.equalTo(self.bottomContainer.snp.top).offset(10)
+            make.top.equalTo(navigationView).offset(-10)
+            make.bottom.equalTo(bottomContainer.snp.top).offset(10)
         }
         
-        self.bottomContainer.snp.makeConstraints { make in
+        bottomContainer.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(self.addressTitleLabel).offset(-32)
+            make.top.equalTo(addressTitleLabel).offset(-26)
         }
         
-        self.currentLocationButton.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-24)
-            make.bottom.equalTo(self.bottomContainer.snp.top).offset(-27)
-            make.width.equalTo(48)
+        currentLocationButton.snp.makeConstraints { make in
+            make.right.equalToSuperview().offset(-20)
+            make.bottom.equalTo(bottomContainer.snp.top).offset(-28)
+            make.width.equalTo(46)
+            make.height.equalTo(46)
+        }
+        
+        addressButton.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+            make.bottom.equalTo(safeAreaLayoutGuide).offset(-12)
             make.height.equalTo(48)
         }
         
-        self.addressButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.right.equalToSuperview().offset(-24)
-            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-20)
+        addressContainer.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+            make.bottom.equalTo(addressButton.snp.top).offset(-21)
             make.height.equalTo(48)
         }
         
-        self.addressContainer.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.right.equalToSuperview().offset(-24)
-            make.bottom.equalTo(self.addressButton.snp.top).offset(-29)
-            make.height.equalTo(48)
+        addressLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(addressContainer)
+            make.left.equalTo(addressContainer).offset(8)
+            make.right.equalTo(addressContainer).offset(-8)
         }
         
-        self.addressLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(self.addressContainer)
-            make.left.equalTo(self.addressContainer).offset(8)
-            make.right.equalTo(self.addressContainer).offset(-8)
-        }
-        
-        self.addressTitleLabel.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.bottom.equalTo(self.addressContainer.snp.top).offset(-20)
+        addressTitleLabel.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(20)
+            make.bottom.equalTo(addressContainer.snp.top).offset(-20)
         }
     }
     
-    fileprivate func moveCamera(latitude: Double, longitude: Double) {
+    func moveCamera(location: Location) {
         let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
-            lat: latitude,
-            lng: longitude
+            lat: location.latitude,
+            lng: location.longitude
         ))
         
         camera.animation = .easeIn
-        self.mapView.moveCamera(camera)
+        mapView.moveCamera(camera)
     }
     
-    fileprivate func setNearStores(stores: [Store]) {
-        self.clearMarkers()
+    func setNearStores(stores: [Store]) {
+        clearMarkers()
         
         for store in stores {
             let marker = NMFMarker(
@@ -184,31 +183,18 @@ final class WriteAddressView: BaseView {
             
             marker.width = 24
             marker.height = 24
-            marker.mapView = self.mapView
-            self.markers.append(marker)
+            marker.mapView = mapView
+            markers.append(marker)
         }
+    }
+    
+    func setAddress(_ address: String) {
+        addressLabel.text = address
     }
     
     private func clearMarkers() {
-        for marker in self.markers {
+        for marker in markers {
             marker.mapView = nil
-        }
-    }
-}
-
-extension Reactive where Base: WriteAddressView {
-    var cameraPosition: Binder<(Double, Double)> {
-        return Binder(self.base) { view, position in
-            view.moveCamera(
-                latitude: position.0,
-                longitude: position.1
-            )
-        }
-    }
-    
-    var nearStores: Binder<[Store]> {
-        return Binder(self.base) { view, stores in
-            view.setNearStores(stores: stores)
         }
     }
 }

@@ -1,5 +1,4 @@
 import ProjectDescription
-import ProjectDescription
 
 struct Version {
     static let version: SettingValue = "1.0.0"
