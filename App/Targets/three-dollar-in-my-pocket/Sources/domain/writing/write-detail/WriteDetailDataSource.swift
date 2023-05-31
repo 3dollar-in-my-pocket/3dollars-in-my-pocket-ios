@@ -10,7 +10,10 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
             WriteDetailPaymentCell.self,
             WriteDetailDayCell.self
         ])
-        collectionView.registerSectionHeader([WriteDetailHeaderView.self])
+        collectionView.registerSectionHeader([
+            WriteDetailHeaderView.self,
+            WriteDetailCategoryHeaderView.self
+        ])
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .map:
@@ -62,6 +65,15 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 ) as? WriteDetailHeaderView
                 
                 headerView?.bind(type: section.type.headerType)
+                return headerView
+                
+            case .category:
+                let headerView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: UICollectionView.elementKindSectionHeader,
+                    withReuseIdentifier: "\(WriteDetailCategoryHeaderView.self)",
+                    for: indexPath
+                ) as? WriteDetailCategoryHeaderView
+                
                 return headerView
             }
         }
@@ -154,6 +166,9 @@ extension WriteDetailDataSource: UICollectionViewDelegateFlowLayout {
             
         case .option, .normal, .multi:
             return WriteDetailHeaderView.Layout.size
+            
+        case .category:
+            return WriteDetailCategoryHeaderView.Layout.size
         }
     }
 }

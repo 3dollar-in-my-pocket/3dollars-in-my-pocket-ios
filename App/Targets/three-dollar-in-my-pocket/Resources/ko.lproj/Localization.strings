@@ -117,8 +117,6 @@
 "write_store_thursday" = "목";
 "write_store_friday" = "금";
 "write_store_saturday" = "토";
-"write_store_category" = "카테고리";
-"write_store_delete_all_menu" = "전체 삭제";
 "write_store_add_category" = "추가하기";
 "write_store_menu" = "상세 메뉴";
 "add_category_title" = "카테고리 선택";
@@ -297,13 +295,13 @@
 // 가게 제보 상세화면
 "write_detail_title" = "가게 제보";
 "write_detail_header_location" = "가게 위치";
-"write_detail_header_name" = "가게 위치";
+"write_detail_edit_location" = "수정";
+"write_detail_header_name" = "가게 이름";
 "write_detail_header_store_type" = "가게형태";
 "write_detail_header_payment_type" = "결제방식";
 "write_detail_header_day" = "출몰시기";
-
-"write_detail_edit_location" = "수정";
-"write_detail_store_name" = "가게 이름";
+"write_detail_header_category" = "메뉴 카테고리";
+"write_detail_header_delete_all_menu" = "전체 삭제";
 "write_detail_store_option" = "(선택)";
 "write_detail_store_can_select_multi" = "*다중선택 가능";
 

@@ -99,5 +99,6 @@ extension WriteDetailHeaderView {
         case normal(title: String)
         case option(title: String)
         case multi(title: String)
+        case category
     }
 }
