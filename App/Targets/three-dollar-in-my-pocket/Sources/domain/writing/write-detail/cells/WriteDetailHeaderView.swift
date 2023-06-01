@@ -49,7 +49,7 @@ final class WriteDetailHeaderView: UICollectionReusableView {
     func bind(type: HeaderType) {
         setTitleLabel()
         switch type {
-        case .none:
+        case .none, .category:
             break
             
         case .normal(let title):
