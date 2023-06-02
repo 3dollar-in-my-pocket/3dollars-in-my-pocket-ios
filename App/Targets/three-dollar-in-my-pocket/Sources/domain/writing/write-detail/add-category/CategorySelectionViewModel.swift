@@ -48,7 +48,7 @@ final class CategorySelectionViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
-                // 페이지 뷰
+                owner.sendPageViewLog()
             })
             .asyncMap { owner, _ in
                 await owner.categoryService.fetchCategoires()
@@ -92,10 +92,23 @@ final class CategorySelectionViewModel {
         
         input.tapSelect
             .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, _ in
+                let selectedCategoryIds = owner.state.selectedCategories.map { $0.id }
+                
+                owner.sendClickCategoryLog(categoryIds: selectedCategoryIds)
+            })
             .map { owner, _ in
                 Route.dismissWithCategories(owner.state.selectedCategories)
             }
             .subscribe(output.route)
             .store(in: &cancellables)
+    }
+    
+    private func sendPageViewLog() {
+        analyticsManager.logPageView(screen: .categorySelection, type: CategorySelectionViewController.self)
+    }
+    
+    private func sendClickCategoryLog(categoryIds: [String]) {
+        analyticsManager.logEvent(event: .clickSelectCategory(categoryIds: categoryIds), screen: .categorySelection)
     }
 }
