@@ -29,20 +29,24 @@ final class CategorySelectionView: BaseView {
     }
     
     lazy var categoryCollectionView = UICollectionView(
-      frame: .zero,
-      collectionViewLayout: generateLayout()
+        frame: .zero,
+        collectionViewLayout: generateLayout()
     ).then {
-      $0.backgroundColor = .clear
-      $0.showsVerticalScrollIndicator = false
-      $0.showsHorizontalScrollIndicator = false
+        $0.backgroundColor = .clear
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+        $0.allowsMultipleSelection = true
     }
     
     let selectButton = UIButton().then {
         $0.layer.cornerRadius = 12
-        $0.backgroundColor = DesignSystemAsset.Colors.gray30.color
+        $0.layer.masksToBounds = true
         $0.setTitle(ThreeDollarInMyPocketStrings.categorySelectionOk, for: .normal)
         $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        $0.setBackgroundColor(DesignSystemAsset.Colors.gray30.color, for: .disabled)
+        $0.setBackgroundColor(DesignSystemAsset.Colors.mainPink.color, for: .normal)
         $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
+        $0.isEnabled = false
     }
     
     override func setup() {
@@ -97,10 +101,20 @@ final class CategorySelectionView: BaseView {
         }
     }
     
+    func updateCollectionViewHeight(itemCount: Int) {
+        let row = CGFloat(itemCount / 5 + 1)
+        let height = (CategorySelectionCell.Layout.size.height * row) + (Layout.lineSpace * (row - 1))
+        
+        categoryCollectionView.snp.updateConstraints {
+            $0.height.equalTo(height)
+        }
+        layoutIfNeeded()
+    }
+    
     private func generateLayout() -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: 52, height: 72)
+        layout.itemSize = CategorySelectionCell.Layout.size
         layout.minimumInteritemSpacing = Layout.itemSpace
         layout.minimumLineSpacing = Layout.lineSpace
         

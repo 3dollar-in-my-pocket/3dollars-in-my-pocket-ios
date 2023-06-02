@@ -8,11 +8,11 @@ public protocol RequestType {
 }
 
 extension RequestType {
-    var queryItems: [URLQueryItem] {
+    var queryItems: [URLQueryItem]? {
         if let param = param {
             return param.map { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
         } else {
-            return []
+            return nil
         }
     }
     

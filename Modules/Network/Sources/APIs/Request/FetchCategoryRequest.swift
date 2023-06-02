@@ -10,6 +10,6 @@ struct FetchCategoryRequest: RequestType {
     }
     
     var path: String {
-        return "/api/v4/stores/categories"
+        return "/api/v4/store/categories"
     }
 }

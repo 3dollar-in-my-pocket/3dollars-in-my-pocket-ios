@@ -2,29 +2,29 @@ import Foundation
 import Combine
 
 import Networking
-import Common
 
 final class CategorySelectionViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<Int, Never>()
         let deSelectCategory = PassthroughSubject<Int, Never>()
-        let tapSelect = PassthroughSubject<Int, Never>()
+        let tapSelect = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
-        let categories = PassthroughSubject<[Networking.PlatformStoreCategoryResponse], Never>()
+        let categories = PassthroughSubject<[PlatformStoreCategory], Never>()
+        let isEnableSelectButton = PassthroughSubject<Bool, Never>()
         let error = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
     enum Route {
-        case dismissWithCategories([Networking.PlatformStoreCategoryResponse])
+        case dismissWithCategories([PlatformStoreCategory])
     }
     
     private struct State {
-        var categories: [Networking.PlatformStoreCategoryResponse] = []
-        var selectedCategories: [Networking.PlatformStoreCategoryResponse] = []
+        var categories: [PlatformStoreCategory] = []
+        var selectedCategories: [PlatformStoreCategory] = []
     }
     
     let input = Input()
@@ -56,7 +56,9 @@ final class CategorySelectionViewModel {
             .withUnretained(self)
             .sink { owner, result in
                 switch result {
-                case .success(let categories):
+                case .success(let categoryResponse):
+                    let categories = categoryResponse.map(PlatformStoreCategory.init(response:))
+                    
                     owner.state.categories = categories
                     owner.output.categories.send(categories)
                     
@@ -72,6 +74,7 @@ final class CategorySelectionViewModel {
                 guard let selectedCategory = owner.state.categories[safe: index] else { return }
                 
                 owner.state.selectedCategories.append(selectedCategory)
+                owner.output.isEnableSelectButton.send(owner.state.selectedCategories.isNotEmpty)
             }
             .store(in: &cancellables)
         
@@ -79,10 +82,11 @@ final class CategorySelectionViewModel {
             .withUnretained(self)
             .sink { owner, index in
                 guard let selectedCategory = owner.state.categories[safe: index],
-                      let targetIndex = owner.state.selectedCategories.firstIndex(where: { $0.categoryId == selectedCategory.categoryId })
+                      let targetIndex = owner.state.selectedCategories.firstIndex(of: selectedCategory)
                 else { return }
                 
                 owner.state.selectedCategories.remove(at: targetIndex)
+                owner.output.isEnableSelectButton.send(owner.state.selectedCategories.isNotEmpty)
             }
             .store(in: &cancellables)
         
