@@ -38,14 +38,7 @@ final class CategorySelectionView: BaseView {
         $0.allowsMultipleSelection = true
     }
     
-    let selectButton = UIButton().then {
-        $0.layer.cornerRadius = 12
-        $0.layer.masksToBounds = true
-        $0.setTitle(ThreeDollarInMyPocketStrings.categorySelectionOk, for: .normal)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        $0.setBackgroundColor(DesignSystemAsset.Colors.gray30.color, for: .disabled)
-        $0.setBackgroundColor(DesignSystemAsset.Colors.mainPink.color, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
+    let selectButton = Button.Normal(size: .h52, text: ThreeDollarInMyPocketStrings.categorySelectionOk).then {
         $0.isEnabled = false
     }
     
@@ -97,7 +90,6 @@ final class CategorySelectionView: BaseView {
             $0.left.equalToSuperview().offset(20)
             $0.right.equalToSuperview().offset(-20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-20)
-            $0.height.equalTo(48)
         }
     }
     
