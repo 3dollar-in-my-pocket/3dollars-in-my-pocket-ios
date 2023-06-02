@@ -558,6 +558,18 @@ public enum ThreeDollarInMyPocketStrings {
   public static let storeModifyAddressTitle = ThreeDollarInMyPocketStrings.tr("Localization", "store_modify_address_title")
   /// 가게 정보 수정
   public static let storeModifyTitle = ThreeDollarInMyPocketStrings.tr("Localization", "store_modify_title")
+  /// 카드
+  public static let storePaymentCard = ThreeDollarInMyPocketStrings.tr("Localization", "store_payment_card")
+  /// 현금
+  public static let storePaymentCash = ThreeDollarInMyPocketStrings.tr("Localization", "store_payment_cash")
+  /// 계좌이체
+  public static let storePaymentTransfer = ThreeDollarInMyPocketStrings.tr("Localization", "store_payment_transfer")
+  /// 편의점
+  public static let storeTypeConvenienceStore = ThreeDollarInMyPocketStrings.tr("Localization", "store_type_convenience_store")
+  /// 길거리
+  public static let storeTypeRoad = ThreeDollarInMyPocketStrings.tr("Localization", "store_type_road")
+  /// 매장
+  public static let storeTypeStore = ThreeDollarInMyPocketStrings.tr("Localization", "store_type_store")
   /// 일요일
   public static let sundayFull = ThreeDollarInMyPocketStrings.tr("Localization", "sunday_full")
   /// 푸드트럭
@@ -600,42 +612,36 @@ public enum ThreeDollarInMyPocketStrings {
   public static let writeAddressConfirmPopupTitle = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_confirm_popup_title")
   /// 주소를 알 수 없는 위치입니다.
   public static let writeAddressUnknown = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_unknown")
+  /// 수정
+  public static let writeDetailEditLocation = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_edit_location")
+  /// 메뉴 카테고리
+  public static let writeDetailHeaderCategory = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_header_category")
+  /// 출몰시기
+  public static let writeDetailHeaderDay = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_header_day")
+  /// 전체 삭제
+  public static let writeDetailHeaderDeleteAllMenu = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_header_delete_all_menu")
   /// 가게 위치
-  public static let writeLocation = ThreeDollarInMyPocketStrings.tr("Localization", "write_location")
-  /// 수정하기
-  public static let writeModifyLocation = ThreeDollarInMyPocketStrings.tr("Localization", "write_modify_location")
+  public static let writeDetailHeaderLocation = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_header_location")
+  /// 가게 이름
+  public static let writeDetailHeaderName = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_header_name")
+  /// 결제방식
+  public static let writeDetailHeaderPaymentType = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_header_payment_type")
+  /// 가게형태
+  public static let writeDetailHeaderStoreType = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_header_store_type")
+  /// *다중선택 가능
+  public static let writeDetailStoreCanSelectMulti = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_store_can_select_multi")
+  /// (선택)
+  public static let writeDetailStoreOption = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_store_option")
+  /// 가게 제보
+  public static let writeDetailTitle = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_title")
   /// 추가하기
   public static let writeStoreAddCategory = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_add_category")
-  /// 카테고리
-  public static let writeStoreCategory = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_category")
-  /// 출몰시기
-  public static let writeStoreDays = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_days")
-  /// 전체 삭제
-  public static let writeStoreDeleteAllMenu = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_delete_all_menu")
   /// 금
   public static let writeStoreFriday = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_friday")
-  /// 가게 정보
-  public static let writeStoreInfo = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_info")
-  /// 가게이름
-  public static let writeStoreInfoName = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_info_name")
-  /// ex. 신촌역 0번 출구
-  public static let writeStoreInfoNamePlaceholder = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_info_name_placeholder")
   /// 상세 메뉴
   public static let writeStoreMenu = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_menu")
   /// 월
   public static let writeStoreMonday = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_monday")
-  /// (선택)
-  public static let writeStoreOption = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_option")
-  /// 카드
-  public static let writeStorePaymentCard = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_payment_card")
-  /// 현금
-  public static let writeStorePaymentCash = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_payment_cash")
-  /// 다중선택 가능
-  public static let writeStorePaymentMulti = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_payment_multi")
-  /// 계좌이체
-  public static let writeStorePaymentTransfer = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_payment_transfer")
-  /// 결제방식
-  public static let writeStorePaymentType = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_payment_type")
   /// 가게 등록하기
   public static let writeStoreRegisterButton = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_register_button")
   /// 토
@@ -646,18 +652,8 @@ public enum ThreeDollarInMyPocketStrings {
   public static let writeStoreThursday = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_thursday")
   /// 화
   public static let writeStoreTuesday = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_tuesday")
-  /// 가게형태
-  public static let writeStoreType = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_type")
-  /// 편의점
-  public static let writeStoreTypeConvenienceStore = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_type_convenience_store")
-  /// 길거리
-  public static let writeStoreTypeRoad = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_type_road")
-  /// 매장
-  public static let writeStoreTypeStore = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_type_store")
   /// 수
   public static let writeStoreWednesday = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_wednesday")
-  /// 가게 제보
-  public static let writeTitle = ThreeDollarInMyPocketStrings.tr("Localization", "write_title")
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

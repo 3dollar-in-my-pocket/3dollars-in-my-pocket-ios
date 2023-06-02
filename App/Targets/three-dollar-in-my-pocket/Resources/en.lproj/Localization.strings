@@ -104,29 +104,12 @@
 "review_modal_modify" = "리뷰 수정";
 "popup_close" = "닫기";
 "popup_disable_today" = "오늘 하루 보지않기";
-"write_title" = "가게 제보";
 "write_address_bottom_title" = "맛집 위치는 바로 여기!";
 "write_address_button" = "이 위치로 하기";
 "write_address_unknown" = "주소를 알 수 없는 위치입니다.";
 "write_address_confirm_popup_title" = "10m이내에 이미 제보된\n가게가 있어요! ";
 "write_address_confirm_popup_description" = "중복된 가게 제보인지 확인해 주세요.";
 "write_address_confirm_popup_ok" = "여기가 확실해요";
-"write_location" = "가게 위치";
-"write_modify_location" = "수정하기";
-"write_store_info" = "가게 정보";
-"write_store_info_name" = "가게이름";
-"write_store_info_name_placeholder" = "ex. 신촌역 0번 출구";
-"write_store_type" = "가게형태";
-"write_store_option" = "(선택)";
-"write_store_type_road" = "길거리";
-"write_store_type_store" = "매장";
-"write_store_type_convenience_store" = "편의점";
-"write_store_payment_type" = "결제방식";
-"write_store_payment_multi" = "다중선택 가능";
-"write_store_payment_cash" = "현금";
-"write_store_payment_transfer" = "계좌이체";
-"write_store_payment_card" = "카드";
-"write_store_days" = "출몰시기";
 "write_store_sunday" = "일";
 "write_store_monday" = "월";
 "write_store_tuesday" = "화";
@@ -134,8 +117,6 @@
 "write_store_thursday" = "목";
 "write_store_friday" = "금";
 "write_store_saturday" = "토";
-"write_store_category" = "카테고리";
-"write_store_delete_all_menu" = "전체 삭제";
 "write_store_add_category" = "추가하기";
 "write_store_menu" = "상세 메뉴";
 "add_category_title" = "카테고리 선택";
@@ -308,3 +289,26 @@
 "edit_nickname_label2" = "로";
 "edit_nickname_placeholder" = "닉네임 입력";
 "edit_nickname_edit_label" = "수정할래요";
+
+// MARK: v4
+
+// 가게 제보 상세화면
+"write_detail_title" = "가게 제보";
+"write_detail_header_location" = "가게 위치";
+"write_detail_edit_location" = "수정";
+"write_detail_header_name" = "가게 이름";
+"write_detail_header_store_type" = "가게형태";
+"write_detail_header_payment_type" = "결제방식";
+"write_detail_header_day" = "출몰시기";
+"write_detail_header_category" = "메뉴 카테고리";
+"write_detail_header_delete_all_menu" = "전체 삭제";
+"write_detail_store_option" = "(선택)";
+"write_detail_store_can_select_multi" = "*다중선택 가능";
+
+// 공통
+"store_type_road" = "길거리";
+"store_type_store" = "매장";
+"store_type_convenience_store" = "편의점";
+"store_payment_cash" = "현금";
+"store_payment_transfer" = "계좌이체";
+"store_payment_card" = "카드";
