@@ -14,6 +14,9 @@ enum AnalyticsEvent {
     case clickSetAddress(address: String)
     case clickAddressOk(address: String)
     
+    /// category-selection 카테고리 선택 화면
+    case clickSelectCategory(categoryIds: [String])
+    
     var name: String {
         switch self {
         case .splashPopupClicked:
@@ -42,6 +45,9 @@ enum AnalyticsEvent {
             
         case .clickAddressOk:
             return "click_address_ok"
+            
+        case .clickSelectCategory:
+            return "click_select_category"
         }
     }
     
@@ -73,6 +79,9 @@ enum AnalyticsEvent {
             
         case .clickAddressOk(let address):
             return ["address": address]
+            
+        case .clickSelectCategory(let categoryIds):
+            return ["category_id": categoryIds]
         }
     }
 }

@@ -26,8 +26,9 @@ final class RequestProvider {
         var urlComponents = URLComponents(string: config.endPoint)
         urlComponents?.path = requestType.path
         
-        if requestType.method == .get {
-            urlComponents?.queryItems = requestType.queryItems
+        if requestType.method == .get,
+           let queryItems = requestType.queryItems {
+            urlComponents?.queryItems = queryItems
         }
         
         guard let url = urlComponents?.url else {

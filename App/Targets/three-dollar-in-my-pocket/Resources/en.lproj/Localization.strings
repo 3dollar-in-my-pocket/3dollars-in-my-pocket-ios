@@ -119,8 +119,6 @@
 "write_store_saturday" = "토";
 "write_store_add_category" = "추가하기";
 "write_store_menu" = "상세 메뉴";
-"add_category_title" = "카테고리 선택";
-"add_category_multi" = "다중선택 가능";
 "add_category_number_format" = "총 %d개 선택하기";
 "write_store_register_button" = "가게 등록하기";
 "shared_category_bungeoppang" = "붕어빵";
@@ -304,6 +302,11 @@
 "write_detail_header_delete_all_menu" = "전체 삭제";
 "write_detail_store_option" = "(선택)";
 "write_detail_store_can_select_multi" = "*다중선택 가능";
+
+// 카테고리 선택 화면
+"category_selection_title" = "카테고리 선택";
+"category_selection_multi" = "* 다중선택 가능";
+"category_selection_ok" = "카테고리 선택 완료";
 
 // 공통
 "store_type_road" = "길거리";

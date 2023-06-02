@@ -12,14 +12,10 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
 public enum ThreeDollarInMyPocketStrings {
-  /// 다중선택 가능
-  public static let addCategoryMulti = ThreeDollarInMyPocketStrings.tr("Localization", "add_category_multi")
   /// 총 %d개 선택하기
   public static func addCategoryNumberFormat(_ p1: Int) -> String {
     return ThreeDollarInMyPocketStrings.tr("Localization", "add_category_number_format", p1)
   }
-  /// 카테고리 선택
-  public static let addCategoryTitle = ThreeDollarInMyPocketStrings.tr("Localization", "add_category_title")
   /// 리스트에 대한 한줄평을 입력해주세요! 공유 시 사용됩니다.
   public static let bookmarkEditPlaceholderDescription = ThreeDollarInMyPocketStrings.tr("Localization", "bookmark_edit_placeholder_description")
   /// 저장하기
@@ -156,6 +152,12 @@ public enum ThreeDollarInMyPocketStrings {
   public static let categoryOrderingDistance = ThreeDollarInMyPocketStrings.tr("Localization", "category_ordering_distance")
   /// 별점순
   public static let categoryOrderingReview = ThreeDollarInMyPocketStrings.tr("Localization", "category_ordering_review")
+  /// * 다중선택 가능
+  public static let categorySelectionMulti = ThreeDollarInMyPocketStrings.tr("Localization", "category_selection_multi")
+  /// 카테고리 선택 완료
+  public static let categorySelectionOk = ThreeDollarInMyPocketStrings.tr("Localization", "category_selection_ok")
+  /// 카테고리 선택
+  public static let categorySelectionTitle = ThreeDollarInMyPocketStrings.tr("Localization", "category_selection_title")
   /// 만나기 30초 전
   public static let categorySubTextBungeoppang = ThreeDollarInMyPocketStrings.tr("Localization", "category_sub_text_bungeoppang")
   /// 내 입으로
