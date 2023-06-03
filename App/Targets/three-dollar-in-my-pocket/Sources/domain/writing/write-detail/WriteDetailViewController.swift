@@ -63,7 +63,7 @@ final class WriteDetailViewController: BaseViewController {
             WriteDetailSection(type: .storeType, items: [.storeType]),
             WriteDetailSection(type: .payment, items: [.payment]),
             WriteDetailSection(type: .day, items: [.day]),
-            WriteDetailSection(type: .category, items: [.categoryCollection])
+            WriteDetailSection(type: .category, items: [.categoryCollection, .menuGroup]),
         ]
         
         sections.forEach {

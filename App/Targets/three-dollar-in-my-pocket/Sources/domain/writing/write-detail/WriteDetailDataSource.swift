@@ -9,7 +9,8 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
             WriteDetailTypeCell.self,
             WriteDetailPaymentCell.self,
             WriteDetailDayCell.self,
-            WriteDetailCategoryCollectionCell.self
+            WriteDetailCategoryCollectionCell.self,
+            WriteDetailMenuGroupCell.self
         ])
         collectionView.registerSectionHeader([
             WriteDetailHeaderView.self,
@@ -49,6 +50,11 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
             case .categoryCollection:
                 let cell: WriteDetailCategoryCollectionCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                
+                return cell
+                
+            case .menuGroup:
+                let cell: WriteDetailMenuGroupCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 
                 return cell
             }
@@ -136,6 +142,7 @@ enum WriteDetailSectionItem: Hashable {
     case payment
     case day
     case categoryCollection
+    case menuGroup
     
     var size: CGSize {
         switch self {
@@ -159,6 +166,9 @@ enum WriteDetailSectionItem: Hashable {
             
         case .categoryCollection:
             return WriteDetailCategoryCollectionCell.Layout.size(count: 0)
+            
+        case .menuGroup:
+            return WriteDetailMenuGroupCell.Layout.size
         }
     }
 }
