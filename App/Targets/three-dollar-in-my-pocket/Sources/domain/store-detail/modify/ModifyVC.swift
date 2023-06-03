@@ -328,12 +328,7 @@ class ModifyVC: BaseVC {
     }
     
     private func showCategoryDialog(selectedCategories: [StreetFoodStoreCategory?]) {
-        let addCategoryVC = AddCategoryVC.instance(selectedCategory: selectedCategories).then {
-            $0.delegate = self
-        }
         
-        self.modifyView.showDim(isShow: true)
-        self.present(addCategoryVC, animated: true, completion: nil)
     }
     
     private func initilizeNaverMap() {
@@ -392,19 +387,6 @@ extension ModifyVC: UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.modifyView.showRegisterButton()
-    }
-}
-
-
-extension ModifyVC: AddCategoryDelegate {
-    
-    func onDismiss() {
-        self.modifyView.showDim(isShow: false)
-    }
-    
-    func onSuccess(selectedCategories: [StreetFoodStoreCategory]) {
-        self.viewModel.input.addCategories.onNext(selectedCategories)
-        self.modifyView.showDim(isShow: false)
     }
 }
 
