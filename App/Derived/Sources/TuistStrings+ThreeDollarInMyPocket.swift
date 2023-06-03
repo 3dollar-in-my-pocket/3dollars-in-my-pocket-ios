@@ -612,6 +612,8 @@ public enum ThreeDollarInMyPocketStrings {
   public static let writeAddressConfirmPopupOk = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_confirm_popup_ok")
   /// 10m이내에 이미 제보된\n가게가 있어요! 
   public static let writeAddressConfirmPopupTitle = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_confirm_popup_title")
+  /// 가게 제보
+  public static let writeAddressTitle = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_title")
   /// 주소를 알 수 없는 위치입니다.
   public static let writeAddressUnknown = ThreeDollarInMyPocketStrings.tr("Localization", "write_address_unknown")
   /// 수정

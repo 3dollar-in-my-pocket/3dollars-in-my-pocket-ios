@@ -63,6 +63,7 @@ extension LocationManager {
                 }
                 
                 _ = subscriber.receive(lastLocation)
+                subscriber.receive(completion: .finished)
             }
             
             func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {

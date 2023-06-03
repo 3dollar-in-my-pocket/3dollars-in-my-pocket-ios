@@ -50,16 +50,6 @@ final class AddressConfirmPopupViewController: BaseBottomSheetViewController, Ad
                 owner.coordinator?.dismiss()
             }
             .store(in: &cancellables)
-        
-        addressConfirmPopupView.okButton
-            .controlPublisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink(receiveValue: { owner, _ in
-                owner.coordinator?.dismiss(completion: {
-                    owner.delegate?.onClickOk()
-                })
-            })
-            .store(in: &cancellables)
     }
     
     override func bindViewModelInput() {

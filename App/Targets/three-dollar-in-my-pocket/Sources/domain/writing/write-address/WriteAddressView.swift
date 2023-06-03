@@ -15,7 +15,7 @@ final class WriteAddressView: BaseView {
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = "write_title".localized
+        $0.text = ThreeDollarInMyPocketStrings.writeAddressTitle
         $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 16)
         $0.textColor = DesignSystemAsset.Colors.gray100.color
     }
@@ -51,7 +51,7 @@ final class WriteAddressView: BaseView {
     }
     
     private let addressTitleLabel = UILabel().then {
-        $0.text = "write_address_bottom_title".localized
+        $0.text = ThreeDollarInMyPocketStrings.writeAddressBottomTitle
         $0.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 20)
         $0.textColor = DesignSystemAsset.Colors.gray100.color
     }
@@ -70,7 +70,7 @@ final class WriteAddressView: BaseView {
     
     let addressButton = UIButton().then {
         $0.backgroundColor = DesignSystemAsset.Colors.mainPink.color
-        $0.setTitle("write_address_button".localized, for: .normal)
+        $0.setTitle(ThreeDollarInMyPocketStrings.writeAddressButton, for: .normal)
         $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
         $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
         $0.layer.cornerRadius = 12

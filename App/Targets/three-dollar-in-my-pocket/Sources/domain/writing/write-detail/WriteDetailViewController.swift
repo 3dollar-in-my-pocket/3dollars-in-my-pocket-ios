@@ -95,6 +95,21 @@ final class WriteDetailViewController: BaseViewController {
     //  }
     
     override func bindEvent() {
+        writeDetailView.backButton
+            .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.navigationController?.popViewController(animated: true)
+            }
+            .store(in: &cancellables)
+        
+        writeDetailView.closeButton
+            .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.navigationController?.dismiss(animated: true)
+            }
+            .store(in: &cancellables)
         //    self.writeDetailView.bgTap.rx.event
         //      .subscribe { [weak self] event in
         //        self?.writeDetailView.endEditing(true)
