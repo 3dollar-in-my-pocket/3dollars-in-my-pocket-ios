@@ -1,7 +1,7 @@
 import Foundation
 
 public protocol RequestType {
-    var param: [String: Any]? { get }
+    var param: Encodable? { get }
     var method: RequestMethod { get }
     var header: HTTPHeaderType { get }
     var path: String { get }
@@ -9,8 +9,9 @@ public protocol RequestType {
 
 extension RequestType {
     var queryItems: [URLQueryItem]? {
-        if let param = param {
-            return param.map { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
+        if let param = param,
+           let dictionary = param.dictionary {
+            return dictionary.map { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
         } else {
             return nil
         }
