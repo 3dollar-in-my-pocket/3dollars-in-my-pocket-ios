@@ -4,15 +4,18 @@ import DesignSystem
 import NMapsMap
 
 final class WriteDetailMapCell: BaseCollectionViewCell {
+    var marker: NMFMarker?
+    
     enum Layout {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 166)
     }
     
     let mapView = NMFMapView().then {
         $0.positionMode = .direction
-        $0.zoomLevel = 10
+        $0.zoomLevel = 15
         $0.layer.cornerRadius = 20
         $0.layer.masksToBounds = true
+        $0.isUserInteractionEnabled = false
     }
     
     let zoomButton = UIButton().then {
@@ -26,6 +29,11 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
         $0.layer.shadowOpacity = 0.1
         $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
         $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        marker?.mapView = nil
     }
     
     override func setup() {
@@ -48,5 +56,18 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
             $0.bottom.equalTo(mapView).offset(-8)
             $0.right.equalTo(mapView).offset(-8)
         }
+    }
+    
+    func bind(location: Location) {
+        marker = NMFMarker()
+        let targetLocation = NMGLatLng(lat: location.latitude, lng: location.longitude)
+        marker?.position = targetLocation
+        marker?.iconImage = NMFOverlayImage(image: DesignSystemAsset.Icons.markerFocuesd.image)
+        marker?.width = 32
+        marker?.height = 40
+        marker?.mapView = mapView
+        
+        let cameraUpdate = NMFCameraUpdate(position: .init(targetLocation, zoom: 10))
+        mapView.moveCamera(cameraUpdate)
     }
 }

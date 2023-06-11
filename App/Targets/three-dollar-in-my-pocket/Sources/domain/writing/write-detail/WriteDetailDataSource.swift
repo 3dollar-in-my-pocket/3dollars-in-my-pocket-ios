@@ -24,8 +24,9 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
         ])
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .map:
+            case .map(let location):
                 let cell: WriteDetailMapCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(location: location)
                 cell.zoomButton
                     .controlPublisher(for: .touchUpInside)
                     .mapVoid
