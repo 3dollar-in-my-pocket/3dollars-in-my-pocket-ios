@@ -65,6 +65,9 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
             case .paymentMethod:
                 let cell: WriteDetailPaymentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.tapPublisher
+                    .subscribe(viewModel.input.tapPaymentMethod)
+                    .store(in: &cell.cancellables)
                 
                 return cell
                 

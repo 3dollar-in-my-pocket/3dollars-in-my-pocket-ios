@@ -1,10 +1,15 @@
 import UIKit
+import Combine
 
 import DesignSystem
 
 final class WriteDetailPaymentCell: BaseCollectionViewCell {
     enum Layout {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
+    }
+    
+    var tapPublisher: PassthroughSubject<PaymentType, Never> {
+        return paymentStackView.tapPublisher
     }
     
     private let paymentStackView = WriteDetailPaymentStackView()
@@ -16,6 +21,7 @@ final class WriteDetailPaymentCell: BaseCollectionViewCell {
     override func bindConstraints() {
         paymentStackView.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20)
+            $0.right.equalToSuperview().offset(-20)
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-16)
         }
@@ -29,11 +35,15 @@ extension WriteDetailPaymentCell {
             static let space: CGFloat = 8
         }
         
+        let tapPublisher = PassthroughSubject<PaymentType, Never>()
+        
         let cashCheckButton = PaymentCheckButton(title: ThreeDollarInMyPocketStrings.storePaymentCash)
         
         let cardCheckButton = PaymentCheckButton(title: ThreeDollarInMyPocketStrings.storePaymentCard)
         
         let transferCheckButton = PaymentCheckButton(title: ThreeDollarInMyPocketStrings.storePaymentTransfer)
+        
+        var cancellables = Set<AnyCancellable>()
         
         override init(frame: CGRect) {
             super.init(frame: frame)
@@ -46,35 +56,40 @@ extension WriteDetailPaymentCell {
             fatalError("init(coder:) has not been implemented")
         }
         
-        func selectPaymentType(paymentTypes: [PaymentType]) {
-            clearSelect()
-            
-            for paymentType in paymentTypes {
-                let index = paymentType.getIndexValue()
-                
-                if let button = arrangedSubviews[index] as? UIButton {
-                    button.isSelected = true
-                }
-            }
-        }
-        
         private func setup() {
             alignment = .leading
             axis = .horizontal
             backgroundColor = .clear
             spacing = Layout.space
+            distribution = .fillEqually
             
             addArrangedSubview(cashCheckButton)
             addArrangedSubview(cardCheckButton)
             addArrangedSubview(transferCheckButton)
-        }
-        
-        private func clearSelect() {
-            for subView in arrangedSubviews {
-                if let button = subView as? UIButton {
-                    button.isSelected = false
-                }
-            }
+            
+            cashCheckButton.controlPublisher(for: .touchUpInside)
+                .withUnretained(self)
+                .sink(receiveValue: { owner, _ in
+                    owner.cashCheckButton.isSelected.toggle()
+                    owner.tapPublisher.send(.cash)
+                })
+                .store(in: &cancellables)
+            
+            cardCheckButton.controlPublisher(for: .touchUpInside)
+                .withUnretained(self)
+                .sink(receiveValue: { owner, _ in
+                    owner.cardCheckButton.isSelected.toggle()
+                    owner.tapPublisher.send(.card)
+                })
+                .store(in: &cancellables)
+            
+            transferCheckButton.controlPublisher(for: .touchUpInside)
+                .withUnretained(self)
+                .sink(receiveValue: { owner, _ in
+                    owner.transferCheckButton.isSelected.toggle()
+                    owner.tapPublisher.send(.transfer)
+                })
+                .store(in: &cancellables)
         }
         
         private func bindConstraints() {
