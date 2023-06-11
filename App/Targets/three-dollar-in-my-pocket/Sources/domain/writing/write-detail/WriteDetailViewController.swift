@@ -163,6 +163,12 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
         dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
+
+extension WriteDetailViewController: CategorySelectionDelegate {
+    func onSelectCategories(categories: [PlatformStoreCategory]) {
+        viewModel.input.addCategories.send(categories)
+    }
+}
   
 //  private func addObservers() {
 //    self.writeDetailView.menuTableView.addObserver(

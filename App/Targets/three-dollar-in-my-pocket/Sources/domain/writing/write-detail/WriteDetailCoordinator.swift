@@ -16,6 +16,9 @@ extension WriteDetailCoordinator where Self: BaseViewController {
     }
     
     func presentCategorySelection() {
+        let viewController = CategorySelectionViewController.instance()
+        viewController.delegate = self as? CategorySelectionDelegate
         
+        presenter.present(viewController, animated: true)
     }
 }

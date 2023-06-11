@@ -524,6 +524,7 @@ final class WriteDetailView: BaseView {
     }
     
     func setSaveButtonEnable(isEnable: Bool) {
+        writeButton.isUserInteractionEnabled = isEnable
         writeButton.backgroundColor = isEnable ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
         writeButtonBg.backgroundColor = isEnable ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
     }

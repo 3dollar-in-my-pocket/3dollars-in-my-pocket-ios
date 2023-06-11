@@ -79,8 +79,10 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
                 return cell
                 
-            case .categoryCollection:
+            case .categoryCollection(let categories):
                 let cell: WriteDetailCategoryCollectionCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(categories: categories)
+                cell.bindViewModel(viewModel)
                 
                 return cell
                 
@@ -116,6 +118,14 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                     withReuseIdentifier: "\(WriteDetailCategoryHeaderView.self)",
                     for: indexPath
                 ) as? WriteDetailCategoryHeaderView
+                
+                if let headerView = headerView {
+                    headerView.deleteButton
+                        .controlPublisher(for: .touchUpInside)
+                        .mapVoid
+                        .subscribe(viewModel.input.deleteAllCategories)
+                        .store(in: &headerView.cancellables)
+                }
                 
                 return headerView
             }
