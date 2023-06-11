@@ -11,6 +11,10 @@ struct StoreCreateRequest: RequestType {
         return .post
     }
     
+    var header: HTTPHeaderType {
+        return .auth
+    }
+    
     var path: String {
         return "/api/v2/store"
     }

@@ -1,12 +1,12 @@
 protocol WriteAddressCoordinator: AnyObject, BaseCoordinator {
-    func goToWriteDetail(address: String, location: (Double, Double))
+    func goToWriteDetail(address: String, location: Location)
     
     func presentConfirmPopup(address: String)
 }
 
 extension WriteAddressCoordinator where Self: BaseViewController {
-    func goToWriteDetail(address: String, location: (Double, Double)) {
-        let viewController = WriteDetailViewController.instance(address: address, location: location)
+    func goToWriteDetail(address: String, location: Location) {
+        let viewController = WriteDetailViewController.instance(location: location, address: address)
         
         viewController.deleagte = self as? WriteDetailDelegate
         

@@ -13,7 +13,7 @@ final class WriteDetailNameCell: BaseCollectionViewCell {
         $0.layer.masksToBounds = true
     }
     
-    private let nameField = UITextField().then {
+    let nameField = UITextField().then {
         $0.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
         $0.textColor = DesignSystemAsset.Colors.gray50.color
         $0.placeholder = "플레이스 홀더"
