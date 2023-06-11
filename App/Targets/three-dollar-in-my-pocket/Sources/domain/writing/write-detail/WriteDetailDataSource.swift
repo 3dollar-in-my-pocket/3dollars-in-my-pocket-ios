@@ -57,6 +57,9 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
             case .storeType:
                 let cell: WriteDetailTypeCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.tapPublisher
+                    .subscribe(viewModel.input.tapStoreType)
+                    .store(in: &cell.cancellables)
                 
                 return cell
                 
