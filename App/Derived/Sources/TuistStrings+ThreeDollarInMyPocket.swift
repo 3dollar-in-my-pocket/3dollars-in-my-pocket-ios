@@ -632,6 +632,8 @@ public enum ThreeDollarInMyPocketStrings {
   public static let writeDetailHeaderPaymentType = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_header_payment_type")
   /// 가게형태
   public static let writeDetailHeaderStoreType = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_header_store_type")
+  /// 가게 이름
+  public static let writeDetailNamePlaceholer = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_name_placeholer")
   /// *다중선택 가능
   public static let writeDetailStoreCanSelectMulti = ThreeDollarInMyPocketStrings.tr("Localization", "write_detail_store_can_select_multi")
   /// (선택)

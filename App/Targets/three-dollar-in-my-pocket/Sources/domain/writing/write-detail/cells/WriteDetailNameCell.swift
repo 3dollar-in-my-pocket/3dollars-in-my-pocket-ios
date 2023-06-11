@@ -15,8 +15,8 @@ final class WriteDetailNameCell: BaseCollectionViewCell {
     
     let nameField = UITextField().then {
         $0.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
-        $0.textColor = DesignSystemAsset.Colors.gray50.color
-        $0.placeholder = "플레이스 홀더"
+        $0.textColor = DesignSystemAsset.Colors.gray100.color
+        $0.attributedPlaceholder = NSAttributedString(string: ThreeDollarInMyPocketStrings.writeDetailNamePlaceholer, attributes: [.foregroundColor: DesignSystemAsset.Colors.gray50.color])
     }
     
     override func setup() {
