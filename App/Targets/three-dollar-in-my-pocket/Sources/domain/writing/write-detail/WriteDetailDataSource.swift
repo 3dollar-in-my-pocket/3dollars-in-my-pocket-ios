@@ -73,6 +73,9 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
             case .appearanceDay:
                 let cell: WriteDetailDayCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.tapPublisher
+                    .subscribe(viewModel.input.tapDay)
+                    .store(in: &cell.cancellables)
                 
                 return cell
                 

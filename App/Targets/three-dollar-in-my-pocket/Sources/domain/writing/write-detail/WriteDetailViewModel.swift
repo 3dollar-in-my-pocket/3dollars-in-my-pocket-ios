@@ -12,7 +12,7 @@ final class WriteDetailViewModel {
         let storeName = PassthroughSubject<String, Never>()
         let tapStoreType = PassthroughSubject<StreetFoodStoreType, Never>()
         let tapPaymentMethod = PassthroughSubject<PaymentType, Never>()
-        let tapDay = PassthroughSubject<WeekDay, Never>()
+        let tapDay = PassthroughSubject<DayOfTheWeek, Never>()
         let tapAddCategory = PassthroughSubject<Void, Never>()
         let tapDeleteCategory = PassthroughSubject<Int, Never>()
         let addCategories = PassthroughSubject<[PlatformStoreCategory], Never>()
@@ -36,7 +36,7 @@ final class WriteDetailViewModel {
         var name = ""
         var storeType: StreetFoodStoreType?
         var paymentMethods: [PaymentType] = []
-        var appearanceDays: [WeekDay] = []
+        var appearanceDays: [DayOfTheWeek] = []
         var categories: [PlatformStoreCategory] = []
         var menu: [[Menu]] = []
     }
@@ -112,11 +112,11 @@ final class WriteDetailViewModel {
         
         input.tapDay
             .withUnretained(self)
-            .sink { owner, weedDay in
-                if let targetIndex = owner.state.appearanceDays.firstIndex(of: weedDay) {
+            .sink { owner, dayOfTheWeek in
+                if let targetIndex = owner.state.appearanceDays.firstIndex(of: dayOfTheWeek) {
                     owner.state.appearanceDays.remove(at: targetIndex)
                 } else {
-                    owner.state.appearanceDays.append(weedDay)
+                    owner.state.appearanceDays.append(dayOfTheWeek)
                 }
             }
             .store(in: &cancellables)
