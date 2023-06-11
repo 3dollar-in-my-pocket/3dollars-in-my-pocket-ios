@@ -35,8 +35,9 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
                 return cell
                 
-            case .address:
+            case .address(let address):
                 let cell: WriteDetailAddressCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(address: address)
                 cell.editAddressButton
                     .controlPublisher(for: .touchUpInside)
                     .mapVoid
