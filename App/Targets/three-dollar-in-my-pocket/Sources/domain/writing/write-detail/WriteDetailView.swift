@@ -522,4 +522,9 @@ final class WriteDetailView: BaseView {
         layout.scrollDirection = .vertical
         return layout
     }
+    
+    func setSaveButtonEnable(isEnable: Bool) {
+        writeButton.backgroundColor = isEnable ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
+        writeButtonBg.backgroundColor = isEnable ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
+    }
 }

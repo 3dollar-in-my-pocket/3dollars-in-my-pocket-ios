@@ -97,7 +97,10 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
     override func bindViewModelOutput() {
         viewModel.output.isSaveButtonEnable
             .receive(on: DispatchQueue.main)
-            .assign(to: \.isEnabled, on: writeDetailView.writeButton)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, isEnable in
+                owner.writeDetailView.setSaveButtonEnable(isEnable: isEnable)
+            })
             .store(in: &cancellables)
         
         viewModel.output.showLoading
