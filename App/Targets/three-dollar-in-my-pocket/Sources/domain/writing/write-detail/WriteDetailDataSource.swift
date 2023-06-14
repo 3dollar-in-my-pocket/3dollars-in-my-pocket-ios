@@ -86,8 +86,9 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
                 return cell
                 
-            case .menuGroup:
+            case .menuGroup(let category):
                 let cell: WriteDetailMenuGroupCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(category: category)
                 
                 return cell
             }
@@ -183,7 +184,7 @@ enum WriteDetailSectionItem: Hashable {
     case paymentMethod
     case appearanceDay
     case categoryCollection([PlatformStoreCategory?])
-    case menuGroup
+    case menuGroup(PlatformStoreCategory)
     
     var size: CGSize {
         switch self {

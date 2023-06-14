@@ -206,6 +206,8 @@ final class WriteDetailViewModel {
     }
     
     private func updateSections() {
+        let menuGroup = state.categories.map { WriteDetailSectionItem.menuGroup($0) }
+        
         var sections: [WriteDetailSection] = [
             WriteDetailSection(type: .map, items: [.map(state.location)]),
             WriteDetailSection(type: .address, items: [.address(state.addess)]),
@@ -213,7 +215,7 @@ final class WriteDetailViewModel {
             WriteDetailSection(type: .storeType, items: [.storeType]),
             WriteDetailSection(type: .paymentMethod, items: [.paymentMethod]),
             WriteDetailSection(type: .appearanceDay, items: [.appearanceDay]),
-            WriteDetailSection(type: .category, items: [.categoryCollection([nil] + state.categories)])
+            WriteDetailSection(type: .category, items: [ .categoryCollection([nil] + state.categories)] + menuGroup)
         ]
         
         // TODO: 메뉴 그룹 설정 필요

@@ -4,7 +4,8 @@ import DesignSystem
 
 final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 160)
+        static let size = CGSize(width: UIScreen.main.bounds.width, height: 160 + topOffset)
+        static let topOffset: CGFloat = 12
     }
     
     private let containerView = UIView().then {
@@ -15,7 +16,10 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     
     private let categoryImageView = UIImageView()
     
-    private let categoryNameLabel = UILabel()
+    private let categoryNameLabel = UILabel().then {
+        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 14)
+        $0.textColor = DesignSystemAsset.Colors.gray90.color
+    }
     
     private let closeButton = UIButton().then {
         $0.backgroundColor = DesignSystemAsset.Colors.mainRed.color
@@ -47,7 +51,7 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
             $0.left.equalToSuperview().offset(20)
             $0.right.equalToSuperview().offset(-20)
             $0.top.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-Layout.topOffset)
         }
         
         categoryImageView.snp.makeConstraints {
@@ -73,6 +77,11 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
             $0.top.equalTo(categoryImageView.snp.bottom).offset(16)
             $0.bottom.equalToSuperview()
         }
+    }
+    
+    func bind(category: PlatformStoreCategory) {
+        categoryImageView.setImage(urlString: category.imageUrl)
+        categoryNameLabel.text = category.name
     }
     
     

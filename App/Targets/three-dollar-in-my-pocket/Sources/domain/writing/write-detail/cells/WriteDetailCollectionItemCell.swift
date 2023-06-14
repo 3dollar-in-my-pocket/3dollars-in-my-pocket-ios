@@ -9,7 +9,7 @@ final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
     }
     
     let categoryButton = UIButton().then {
-        $0.layer.cornerRadius = Layout.width / 2
+        $0.layer.cornerRadius = (Layout.width - 14) / 2
         $0.layer.masksToBounds = true
         $0.layer.borderColor = DesignSystemAsset.Colors.mainPink.color.cgColor
         $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
@@ -49,7 +49,7 @@ final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
         categoryButton.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.centerX.equalToSuperview()
-            $0.width.height.equalTo(Layout.width)
+            $0.width.height.equalTo(Layout.width - 14)
         }
         
         closeButton.snp.makeConstraints {
@@ -61,7 +61,7 @@ final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
         titleLabel.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.top.equalTo(categoryButton.snp.bottom).offset(4)
         }
     }
     

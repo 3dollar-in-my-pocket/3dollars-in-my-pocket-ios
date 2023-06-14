@@ -5,7 +5,7 @@ import DesignSystem
 final class WriteDetailCategoryCollectionCell: BaseCollectionViewCell {
     enum Layout {
         static func size(count: Int) -> CGSize {
-            return CGSize(width: UIScreen.main.bounds.width, height: height(count: count) + 24)
+            return CGSize(width: UIScreen.main.bounds.width, height: height(count: count) + 24 + 12)
         }
         static func height(count: Int) -> CGFloat {
             let numberOfRow = numberOfRow(count: count)
@@ -48,7 +48,7 @@ final class WriteDetailCategoryCollectionCell: BaseCollectionViewCell {
             $0.left.equalToSuperview().offset(20)
             $0.right.equalToSuperview().offset(-20)
             $0.top.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-12)
         }
     }
     

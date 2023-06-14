@@ -520,6 +520,8 @@ final class WriteDetailView: BaseView {
         let layout = UICollectionViewFlowLayout()
         
         layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
         return layout
     }
     
