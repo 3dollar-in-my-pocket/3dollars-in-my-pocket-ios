@@ -5,10 +5,24 @@ import DesignSystem
 final class WriteDetailCategoryCollectionCell: BaseCollectionViewCell {
     enum Layout {
         static func size(count: Int) -> CGSize {
-            return CGSize(width: UIScreen.main.bounds.width, height: WriteDetailCollectionItemCell.Layout.size.height + 24)
+            return CGSize(width: UIScreen.main.bounds.width, height: height(count: count) + 24)
+        }
+        static func height(count: Int) -> CGFloat {
+            let numberOfRow = numberOfRow(count: count)
+            let space = lineSpace * (numberOfRow - 1)
+            
+            return WriteDetailCollectionItemCell.Layout.size.height * numberOfRow + space
+        }
+        static func numberOfRow(count: Int) -> CGFloat {
+            if count <= numberOfItemInRow {
+                return 1
+            } else {
+                return CGFloat(count / numberOfItemInRow) + 1
+            }
         }
         static let lineSpace: CGFloat = 16
         static let itemSpace: CGFloat = 10
+        static let numberOfItemInRow = 5
     }
     
     private var viewModel: WriteDetailViewModel?

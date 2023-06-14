@@ -205,8 +205,8 @@ enum WriteDetailSectionItem: Hashable {
         case .appearanceDay:
             return WriteDetailDayCell.Layout.size
             
-        case .categoryCollection:
-            return WriteDetailCategoryCollectionCell.Layout.size(count: 0)
+        case .categoryCollection(let categories):
+            return WriteDetailCategoryCollectionCell.Layout.size(count: categories.count)
             
         case .menuGroup:
             return WriteDetailMenuGroupCell.Layout.size
