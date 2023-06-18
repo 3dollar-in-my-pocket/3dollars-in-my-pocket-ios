@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 import DesignSystem
 
@@ -39,19 +40,15 @@ final class WriteDetailMenuItemCell: BaseCollectionViewCell {
 
 extension WriteDetailMenuItemCell {
     final class TextField: UITextField {
+        private var cancellables = Set<AnyCancellable>()
+        
         init(placeholder: String? = nil) {
             super.init(frame: .zero)
             
             setup()
-            
+            bindEvent()
             if let placeholder = placeholder {
-                let attributedString = NSAttributedString(
-                    string: placeholder,
-                    attributes: [
-                        .font: DesignSystemFontFamily.Pretendard.regular.font(size: 14),
-                        .foregroundColor: DesignSystemAsset.Colors.gray40.color
-                    ])
-                attributedPlaceholder = attributedString
+                setPlaceholder(text: placeholder)
             }
         }
         
@@ -61,7 +58,7 @@ extension WriteDetailMenuItemCell {
         
         private func setup() {
             layer.cornerRadius = 12
-            layer.borderWidth = 1
+            layer.borderWidth = 0
             layer.borderColor = DesignSystemAsset.Colors.mainPink.color.cgColor
             leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 44))
             leftViewMode = .always
@@ -69,6 +66,33 @@ extension WriteDetailMenuItemCell {
             rightViewMode = .always
             font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
             backgroundColor = DesignSystemAsset.Colors.gray10.color
+            returnKeyType = .done
+        }
+        
+        private func setPlaceholder(text: String) {
+            let attributedString = NSAttributedString(
+                string: text,
+                attributes: [
+                    .font: DesignSystemFontFamily.Pretendard.regular.font(size: 14),
+                    .foregroundColor: DesignSystemAsset.Colors.gray40.color
+                ])
+            attributedPlaceholder = attributedString
+        }
+        
+        private func bindEvent() {
+            controlPublisher(for: .editingDidBegin)
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.layer.borderWidth = 1
+                }
+                .store(in: &cancellables)
+            
+            controlPublisher(for: .editingDidEnd)
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.layer.borderWidth = 0
+                }
+                .store(in: &cancellables)
         }
     }
 }

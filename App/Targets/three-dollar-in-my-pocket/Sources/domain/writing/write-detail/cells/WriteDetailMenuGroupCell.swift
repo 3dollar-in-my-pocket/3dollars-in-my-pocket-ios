@@ -21,13 +21,11 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
         $0.textColor = DesignSystemAsset.Colors.gray90.color
     }
     
-    private let closeButton = UIButton().then {
+    let closeButton = UIButton().then {
         $0.backgroundColor = DesignSystemAsset.Colors.mainRed.color
         $0.layer.cornerRadius = 10
-        $0.layer.masksToBounds = true
-        $0.setImage(DesignSystemAsset.Icons.close.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.tintColor = DesignSystemAsset.Colors.gray0.color
-        $0.contentEdgeInsets = .init(top: 6.4, left: 6.4, bottom: 6.4, right: 6.4)
+        $0.setImage(DesignSystemAsset.Icons.close.image.withTintColor(DesignSystemAsset.Colors.gray0.color), for: .normal)
+        $0.contentEdgeInsets = .init(top: 4, left: 4, bottom: 4, right: 4)
     }
     
     lazy var menuCollectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {

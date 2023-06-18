@@ -89,6 +89,10 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
             case .menuGroup(let category):
                 let cell: WriteDetailMenuGroupCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(category: category)
+                cell.closeButton.controlPublisher(for: .touchUpInside)
+                    .map { _ in indexPath.row - 1 }
+                    .subscribe(viewModel.input.tapDeleteCategory)
+                    .store(in: &cell.cancellables)
                 
                 return cell
             }

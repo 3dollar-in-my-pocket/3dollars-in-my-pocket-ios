@@ -27,7 +27,6 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
     
     deinit {
         NotificationCenter.default.removeObserver(self)
-        //    self.writeDetailView.menuTableView.removeObserver(self, forKeyPath: "contentSize")
     }
     
     static func instance(location: Location, address: String) -> WriteDetailViewController {
@@ -35,33 +34,12 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
     }
     
     override func viewDidLoad() {
-        //    self.setupMenuTableView()
-        //    self.setupCategoryCollectionView()
-        //    self.setupKeyboardEvent()
-        
         super.viewDidLoad()
         view = writeDetailView
         coordinator = self
-        
+        observeKeyboardEvent()
         viewModel.input.viewDidLoad.send(())
-        
-        //    self.writeDetailView.scrollView.delegate = self
-        //    self.viewModel.fetchInitialData()
-        //    self.addObservers()
     }
-    
-    //  override func observeValue(
-    //    forKeyPath keyPath: String?,
-    //    of object: Any?,
-    //    change: [NSKeyValueChangeKey : Any]?,
-    //    context: UnsafeMutableRawPointer?
-    //  ) {
-    //    if let obj = object as? UITableView {
-    //      if obj == self.writeDetailView.menuTableView && keyPath == "contentSize" {
-    //        self.writeDetailView.refreshMenuTableViewHeight()
-    //      }
-    //    }
-    //  }
     
     override func bindEvent() {
         writeDetailView.backButton
@@ -79,11 +57,6 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
                 owner.coordinator?.dismiss()
             }
             .store(in: &cancellables)
-        
-        //    self.writeDetailView.bgTap.rx.event
-        //      .subscribe { [weak self] event in
-        //        self?.writeDetailView.endEditing(true)
-        //      }.disposed(by: disposeBag)
     }
     
     override func bindViewModelInput() {
@@ -162,6 +135,23 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
         
         dataSource.apply(snapshot, animatingDifferences: true)
     }
+    
+    private func observeKeyboardEvent() {
+        NotificationCenter.default.addObserver(self, selector: #selector(onShowKeyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc func onShowKeyboard(notification: NSNotification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardRect: CGRect = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+        let keyboardHeight: CGFloat = keyboardRect.height
+        
+        writeDetailView.updateCollectionViewLayout(keyboardHeight: keyboardHeight)
+    }
+    
+    @objc func onHideKeyboard(notification: NSNotification) {
+        writeDetailView.updateCollectionViewLayout(keyboardHeight: 0)
+    }
 }
 
 extension WriteDetailViewController: CategorySelectionDelegate {
@@ -169,64 +159,3 @@ extension WriteDetailViewController: CategorySelectionDelegate {
         viewModel.input.addCategories.send(categories)
     }
 }
-  
-//  private func addObservers() {
-//    self.writeDetailView.menuTableView.addObserver(
-//      self,
-//      forKeyPath: "contentSize",
-//      options: .new,
-//      context: nil
-//    )
-//  }
-//
-//  private func setupKeyboardEvent() {
-//    NotificationCenter.default.addObserver(self, selector: #selector(onShowKeyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-//    NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-//  }
-//
-//  @objc func onShowKeyboard(notification: NSNotification) {
-//    let userInfo = notification.userInfo!
-//    var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
-//    keyboardFrame = self.view.convert(keyboardFrame, from: nil)
-//
-//    var contentInset:UIEdgeInsets = self.writeDetailView.scrollView.contentInset
-//    contentInset.bottom = keyboardFrame.size.height + 50
-//    self.writeDetailView.scrollView.contentInset = contentInset
-//  }
-//
-//  @objc func onHideKeyboard(notification: NSNotification) {
-//    let contentInset:UIEdgeInsets = UIEdgeInsets.zero
-//
-//    self.writeDetailView.scrollView.contentInset = contentInset
-//  }
-//}
-//
-//extension WriteDetailVC: UIScrollViewDelegate {
-//
-//  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-//    self.writeDetailView.endEditing(true)
-//    self.writeDetailView.hideRegisterButton()
-//  }
-//
-//  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//    if !decelerate {
-//      self.writeDetailView.showRegisterButton()
-//    }
-//  }
-//
-//  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//    self.writeDetailView.showRegisterButton()
-//  }
-//}
-//
-//extension WriteDetailVC: AddCategoryDelegate {
-//
-//  func onDismiss() {
-//    self.writeDetailView.showDim(isShow: false)
-//  }
-//
-//  func onSuccess(selectedCategories: [StreetFoodStoreCategory]) {
-//    self.viewModel.input.addCategories.onNext(selectedCategories)
-//    self.writeDetailView.showDim(isShow: false)
-//  }
-//}
