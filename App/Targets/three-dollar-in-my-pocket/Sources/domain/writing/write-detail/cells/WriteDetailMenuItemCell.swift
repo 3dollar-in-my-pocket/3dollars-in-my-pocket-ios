@@ -12,19 +12,19 @@ final class WriteDetailMenuItemCell: BaseCollectionViewCell {
     
     let nameField = TextField(placeholder: "ex) 슈크림")
     
-    let descriptionField = TextField(placeholder: "ex) 3개 2천원")
+    let priceField = TextField(placeholder: "ex) 3개 2천원")
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
         nameField.text = nil
-        descriptionField.text = nil
+        priceField.text = nil
     }
     
     override func setup() {
         contentView.addSubViews([
             nameField,
-            descriptionField
+            priceField
         ])
     }
     
@@ -36,12 +36,33 @@ final class WriteDetailMenuItemCell: BaseCollectionViewCell {
             $0.width.equalTo(Layout.nameWidth)
         }
         
-        descriptionField.snp.makeConstraints {
+        priceField.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.right.equalToSuperview()
             $0.left.equalTo(nameField.snp.right).offset(Layout.space)
         }
+    }
+    
+    func bind(viewModel: WriteDetailMenuGroupViewModel?, index: Int) {
+        guard let viewModel = viewModel else { return }
+        
+        nameField.text = viewModel.output.menus[safe: index]?.name
+        priceField.text = viewModel.output.menus[safe: index]?.price
+        
+        nameField.publisher(for: \.text)
+            .dropFirst()
+            .map { $0 ?? "" }
+            .map { (index, $0) }
+            .subscribe(viewModel.input.inputMenuName)
+            .store(in: &cancellables)
+        
+        priceField.publisher(for: \.text)
+            .dropFirst()
+            .map { $0 ?? "" }
+            .map { (index, $0) }
+            .subscribe(viewModel.input.inputMenuPrice)
+            .store(in: &cancellables)
     }
 }
 

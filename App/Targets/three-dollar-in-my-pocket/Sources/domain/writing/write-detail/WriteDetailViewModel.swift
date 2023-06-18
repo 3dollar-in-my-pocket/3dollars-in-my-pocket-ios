@@ -38,7 +38,7 @@ final class WriteDetailViewModel {
         var paymentMethods: [PaymentType] = []
         var appearanceDays: [DayOfTheWeek] = []
         var categories: [PlatformStoreCategory] = []
-        var menu: [[Menu]] = []
+        var menu: [[NewMenu]] = []
     }
     
     enum Route {
@@ -130,6 +130,7 @@ final class WriteDetailViewModel {
             .withUnretained(self)
             .sink { owner, index in
                 owner.state.categories.remove(at: index)
+                owner.state.menu.remove(at: index)
                 owner.updateSaveButtonEnable()
                 owner.updateSections()
             }
@@ -138,7 +139,12 @@ final class WriteDetailViewModel {
         input.addCategories
             .withUnretained(self)
             .sink { owner, addedCategories in
+                let menuGroups = addedCategories.map { category in
+                    return [NewMenu(category: category), NewMenu(category: category)]
+                }
+                
                 owner.state.categories.append(contentsOf: addedCategories)
+                owner.state.menu.append(contentsOf: menuGroups)
                 owner.updateSaveButtonEnable()
                 owner.updateSections()
             }
@@ -148,6 +154,7 @@ final class WriteDetailViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.state.categories.removeAll()
+                owner.state.menu.removeAll()
                 owner.updateSaveButtonEnable()
                 owner.updateSections()
             }
@@ -160,6 +167,11 @@ final class WriteDetailViewModel {
                 guard owner.isExistMenu(indexPath: indexPath) else { return }
                 
                 owner.state.menu[indexPath.section][indexPath.row].name = name
+                
+                if owner.isAllMenuEntered(section: indexPath.section) {
+                    owner.addEmptyMenu(section: indexPath.section)
+                    owner.updateSections()
+                }
             }
             .store(in: &cancellables)
         
@@ -170,6 +182,11 @@ final class WriteDetailViewModel {
                 guard owner.isExistMenu(indexPath: indexPath) else { return }
                 
                 owner.state.menu[indexPath.section][indexPath.row].price = price
+                
+                if owner.isAllMenuEntered(section: indexPath.section) {
+                    owner.addEmptyMenu(section: indexPath.section)
+                    owner.updateSections()
+                }
             }
             .store(in: &cancellables)
         
@@ -206,7 +223,17 @@ final class WriteDetailViewModel {
     }
     
     private func updateSections() {
-        let menuGroup = state.categories.map { WriteDetailSectionItem.menuGroup($0) }
+        var menuGroupViewModels: [WriteDetailMenuGroupViewModel] = []
+        
+        for (index, category) in state.categories.enumerated() {
+            let menus = state.menu[safe: index] ?? []
+            let state = WriteDetailMenuGroupViewModel.State(menuIndex: index, category: category, menu: menus)
+            let viewModel = WriteDetailMenuGroupViewModel(state: state)
+            
+            bindCellViewModel(viewModel)
+            menuGroupViewModels.append(viewModel)
+        }
+        let menuGroups = menuGroupViewModels.map { WriteDetailSectionItem.menuGroup($0) }
         
         let sections: [WriteDetailSection] = [
             WriteDetailSection(type: .map, items: [.map(state.location)]),
@@ -215,10 +242,8 @@ final class WriteDetailViewModel {
             WriteDetailSection(type: .storeType, items: [.storeType]),
             WriteDetailSection(type: .paymentMethod, items: [.paymentMethod]),
             WriteDetailSection(type: .appearanceDay, items: [.appearanceDay]),
-            WriteDetailSection(type: .category, items: [ .categoryCollection([nil] + state.categories)] + menuGroup)
+            WriteDetailSection(type: .category, items: [ .categoryCollection([nil] + state.categories)] + menuGroups)
         ]
-        
-        // TODO: 메뉴 그룹 설정 필요
         output.sections.send(sections)
     }
     
@@ -239,5 +264,27 @@ final class WriteDetailViewModel {
             paymentMethods: state.paymentMethods.map { $0.rawValue },
             menus: []
         )
+    }
+    
+    private func bindCellViewModel(_ viewModel: WriteDetailMenuGroupViewModel) {
+        viewModel.output.inputMenuName
+            .subscribe(input.inputMenuName)
+            .store(in: &cancellables)
+        
+        viewModel.output.inputMenuPrice
+            .subscribe(input.inputMenuPrice)
+            .store(in: &cancellables)
+    }
+    
+    private func isAllMenuEntered(section: Int) -> Bool {
+        guard let menus = state.menu[safe: section] else { return false }
+        
+        return !menus.map { $0.isValid }.contains(false)
+    }
+    
+    private func addEmptyMenu(section: Int) {
+        guard let category = state.menu[safe: section]?.first?.category else { return }
+        
+        state.menu[section].append(NewMenu(category: category))
     }
 }

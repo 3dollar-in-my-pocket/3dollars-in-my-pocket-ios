@@ -86,9 +86,10 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
                 return cell
                 
-            case .menuGroup(let category):
+            case .menuGroup(let cellViewModel):
                 let cell: WriteDetailMenuGroupCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                cell.bind(category: category)
+                
+                cell.bind(viewModel: cellViewModel)
                 cell.closeButton.controlPublisher(for: .touchUpInside)
                     .map { _ in indexPath.row - 1 }
                     .subscribe(viewModel.input.tapDeleteCategory)
@@ -188,7 +189,7 @@ enum WriteDetailSectionItem: Hashable {
     case paymentMethod
     case appearanceDay
     case categoryCollection([PlatformStoreCategory?])
-    case menuGroup(PlatformStoreCategory)
+    case menuGroup(WriteDetailMenuGroupViewModel)
     
     var size: CGSize {
         switch self {
@@ -213,8 +214,8 @@ enum WriteDetailSectionItem: Hashable {
         case .categoryCollection(let categories):
             return WriteDetailCategoryCollectionCell.Layout.size(count: categories.count)
             
-        case .menuGroup:
-            return WriteDetailMenuGroupCell.Layout.size
+        case .menuGroup(let viewModel):
+            return WriteDetailMenuGroupCell.Layout.size(count: viewModel.output.menus.count)
         }
     }
 }

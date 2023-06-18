@@ -4,9 +4,23 @@ import DesignSystem
 
 final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 160 + topOffset)
+        static func size(count: Int) -> CGSize {
+            let width = UIScreen.main.bounds.width
+            let itemGroupHeight = itemGroupHeight(count: count)
+            
+            return CGSize(width: width, height: itemGroupHeight + topOffset + 64)
+        }
         static let topOffset: CGFloat = 12
+        static func itemGroupHeight(count: Int) -> CGFloat {
+            let itemHeight = WriteDetailMenuItemCell.Layout.size.height * CGFloat(count)
+            let space = count - 1 > 0 ? space * CGFloat(count - 1) : 0
+            
+            return itemHeight + space + topOffset
+        }
+        static let space: CGFloat = 8
     }
+    
+    private var viewModel: WriteDetailMenuGroupViewModel?
     
     private let containerView = UIView().then {
         $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
@@ -77,11 +91,13 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(category: PlatformStoreCategory) {
-        categoryImageView.setImage(urlString: category.imageUrl)
-        categoryNameLabel.text = category.name
+    func bind(viewModel: WriteDetailMenuGroupViewModel) {
+        self.viewModel = viewModel
+        
+        categoryImageView.setImage(urlString: viewModel.output.category.imageUrl)
+        categoryNameLabel.text = viewModel.output.category.name
+        menuCollectionView.reloadData()
     }
-    
     
     private func generateLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
@@ -96,11 +112,12 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
 
 extension WriteDetailMenuGroupCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+        return viewModel?.output.menus.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: WriteDetailMenuItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        cell.bind(viewModel: viewModel, index: indexPath.row)
         
         return cell
     }
