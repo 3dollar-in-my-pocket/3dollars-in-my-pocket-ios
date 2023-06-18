@@ -14,6 +14,13 @@ final class WriteDetailMenuItemCell: BaseCollectionViewCell {
     
     let descriptionField = TextField(placeholder: "ex) 3개 2천원")
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        nameField.text = nil
+        descriptionField.text = nil
+    }
+    
     override func setup() {
         contentView.addSubViews([
             nameField,
@@ -57,6 +64,7 @@ extension WriteDetailMenuItemCell {
         }
         
         private func setup() {
+            delegate = self
             layer.cornerRadius = 12
             layer.borderWidth = 0
             layer.borderColor = DesignSystemAsset.Colors.mainPink.color.cgColor
@@ -94,5 +102,12 @@ extension WriteDetailMenuItemCell {
                 }
                 .store(in: &cancellables)
         }
+    }
+}
+
+extension WriteDetailMenuItemCell.TextField: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return false
     }
 }

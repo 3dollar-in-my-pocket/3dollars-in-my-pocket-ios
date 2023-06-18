@@ -25,6 +25,7 @@ final class WriteDetailAddressCell: BaseCollectionViewCell {
     }
     
     override func setup() {
+        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         contentView.addSubViews([
             containerView,
             addressLabel,

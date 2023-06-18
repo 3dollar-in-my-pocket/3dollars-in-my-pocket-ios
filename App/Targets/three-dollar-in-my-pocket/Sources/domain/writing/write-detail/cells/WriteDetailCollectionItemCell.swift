@@ -5,7 +5,7 @@ import DesignSystem
 final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
     enum Layout {
         static let width = (UIScreen.main.bounds.width - 40 - 24 - 40)/5
-        static let size = CGSize(width: width, height: width + 22)
+        static let size = CGSize(width: width, height: width - 14 + 22)
     }
     
     let categoryButton = UIButton().then {

@@ -15,6 +15,7 @@ final class WriteDetailPaymentCell: BaseCollectionViewCell {
     private let paymentStackView = WriteDetailPaymentStackView()
     
     override func setup() {
+        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         contentView.addSubview(paymentStackView)
     }
     

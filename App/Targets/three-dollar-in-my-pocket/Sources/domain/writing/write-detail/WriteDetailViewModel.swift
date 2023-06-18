@@ -201,14 +201,14 @@ final class WriteDetailViewModel {
     }
     
     private func updateSaveButtonEnable() {
-        let isEnable = state.name.isNotEmpty && state.menu.isNotEmpty
+        let isEnable = state.name.isNotEmpty && state.categories.isNotEmpty
         output.isSaveButtonEnable.send(isEnable)
     }
     
     private func updateSections() {
         let menuGroup = state.categories.map { WriteDetailSectionItem.menuGroup($0) }
         
-        var sections: [WriteDetailSection] = [
+        let sections: [WriteDetailSection] = [
             WriteDetailSection(type: .map, items: [.map(state.location)]),
             WriteDetailSection(type: .address, items: [.address(state.addess)]),
             WriteDetailSection(type: .name, items: [.name(state.name)]),

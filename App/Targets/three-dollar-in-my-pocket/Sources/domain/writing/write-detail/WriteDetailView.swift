@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 import DesignSystem
 
@@ -54,6 +55,7 @@ final class WriteDetailView: BaseView {
         ])
         
         bgTap.addTarget(self, action: #selector(onTapBackground))
+        setBackgroundColorObserver()
     }
     
     override func bindConstraints() {
@@ -133,6 +135,16 @@ final class WriteDetailView: BaseView {
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         return layout
+    }
+    
+    private func setBackgroundColorObserver() {
+        collectionView.publisher(for: \.contentOffset)
+            .withUnretained(self)
+            .sink { owner, contentOffset in
+                let isMinus = contentOffset.y <= 0
+                owner.collectionView.backgroundColor = isMinus ? DesignSystemAsset.Colors.systemWhite.color : DesignSystemAsset.Colors.gray0.color
+            }
+            .store(in: &cancellables)
     }
     
     @objc private func onTapBackground() {

@@ -37,6 +37,7 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
     }
     
     override func setup() {
+        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         contentView.addSubViews([
             mapView,
             zoomButton
@@ -67,7 +68,7 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
         marker?.height = 40
         marker?.mapView = mapView
         
-        let cameraUpdate = NMFCameraUpdate(position: .init(targetLocation, zoom: 10))
+        let cameraUpdate = NMFCameraUpdate(position: .init(targetLocation, zoom: 15))
         mapView.moveCamera(cameraUpdate)
     }
 }

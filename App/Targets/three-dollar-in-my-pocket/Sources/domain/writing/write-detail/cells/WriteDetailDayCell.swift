@@ -15,6 +15,7 @@ final class WriteDetailDayCell: BaseCollectionViewCell {
     private let dayStackView = DayStackView()
     
     override func setup() {
+        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         contentView.addSubview(dayStackView)
     }
     

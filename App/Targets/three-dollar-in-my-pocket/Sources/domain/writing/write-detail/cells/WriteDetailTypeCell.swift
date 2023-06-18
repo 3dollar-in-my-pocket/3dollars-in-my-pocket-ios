@@ -15,6 +15,7 @@ final class WriteDetailTypeCell: BaseCollectionViewCell {
     private let typeStackView = WriteDetailTypeStackView()
     
     override func setup() {
+        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         contentView.addSubview(typeStackView)
     }
     

@@ -17,9 +17,12 @@ final class WriteDetailNameCell: BaseCollectionViewCell {
         $0.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
         $0.textColor = DesignSystemAsset.Colors.gray100.color
         $0.attributedPlaceholder = NSAttributedString(string: ThreeDollarInMyPocketStrings.writeDetailNamePlaceholer, attributes: [.foregroundColor: DesignSystemAsset.Colors.gray50.color])
+        $0.returnKeyType = .done
     }
     
     override func setup() {
+        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        nameField.delegate = self
         contentView.addSubViews([
             containerView,
             nameField
@@ -39,5 +42,12 @@ final class WriteDetailNameCell: BaseCollectionViewCell {
             $0.right.equalTo(containerView).offset(-12)
             $0.centerY.equalTo(containerView)
         }
+    }
+}
+
+extension WriteDetailNameCell: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return false
     }
 }
