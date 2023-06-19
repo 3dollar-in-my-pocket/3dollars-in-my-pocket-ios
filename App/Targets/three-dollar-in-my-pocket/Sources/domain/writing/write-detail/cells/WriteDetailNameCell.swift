@@ -43,6 +43,10 @@ final class WriteDetailNameCell: BaseCollectionViewCell {
             $0.centerY.equalTo(containerView)
         }
     }
+    
+    func bind(name: String) {
+        nameField.text = name
+    }
 }
 
 extension WriteDetailNameCell: UITextFieldDelegate {

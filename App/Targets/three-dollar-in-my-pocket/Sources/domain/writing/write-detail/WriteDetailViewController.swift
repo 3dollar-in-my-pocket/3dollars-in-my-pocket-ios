@@ -117,8 +117,8 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
         case .presentFullMap:
             coordinator?.presentFullMap()
             
-        case .presentCategorySelection:
-            coordinator?.presentCategorySelection()
+        case .presentCategorySelection(let selectedCategories):
+            coordinator?.presentCategorySelection(selectedCategories: selectedCategories)
             
         case .dismiss:
             coordinator?.dismiss()

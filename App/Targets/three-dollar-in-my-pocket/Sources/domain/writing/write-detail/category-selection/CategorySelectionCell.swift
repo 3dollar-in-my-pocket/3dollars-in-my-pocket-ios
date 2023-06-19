@@ -11,6 +11,7 @@ final class CategorySelectionCell: BaseCollectionViewCell {
     override var isSelected: Bool {
         didSet {
             categoryButton.layer.borderColor = isSelected ? DesignSystemAsset.Colors.mainPink.color.cgColor : DesignSystemAsset.Colors.gray30.color.cgColor
+            categoryButton.isSelected = isSelected
         }
     }
     

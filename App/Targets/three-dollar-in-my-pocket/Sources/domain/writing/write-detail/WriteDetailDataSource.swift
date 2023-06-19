@@ -46,8 +46,9 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
                 return cell
                 
-            case .name:
+            case .name(let name):
                 let cell: WriteDetailNameCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(name: name)
                 cell.nameField.publisher(for: \.text)
                     .map { $0 ?? "" }
                     .subscribe(viewModel.input.storeName)

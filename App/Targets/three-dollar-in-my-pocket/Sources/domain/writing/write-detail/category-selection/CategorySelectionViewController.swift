@@ -9,12 +9,22 @@ protocol CategorySelectionDelegate: AnyObject {
 final class CategorySelectionViewController: BaseBottomSheetViewController, CategorySelectionCoordinator {
     weak var delegate: CategorySelectionDelegate?
     private let categorySelectionView = CategorySelectionView()
-    private let viewModel = CategorySelectionViewModel()
+    private let viewModel: CategorySelectionViewModel
     private weak var coordinator: CategorySelectionCoordinator?
     private lazy var dataSource = CategorySelectionDataSource(collectionView: categorySelectionView.categoryCollectionView, viewModel: viewModel)
     
-    static func instance() -> CategorySelectionViewController {
-        return CategorySelectionViewController(nibName: nil, bundle: nil)
+    static func instance(selectedCategories: [PlatformStoreCategory]) -> CategorySelectionViewController {
+        return CategorySelectionViewController(selectedCategories: selectedCategories)
+    }
+    
+    init(selectedCategories: [PlatformStoreCategory]) {
+        self.viewModel = CategorySelectionViewModel(state: CategorySelectionViewModel.State(selectedCategories: selectedCategories))
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func loadView() {
@@ -65,6 +75,19 @@ final class CategorySelectionViewController: BaseBottomSheetViewController, Cate
                 snapshot.appendItems(section.items)
                 
                 owner.dataSource.apply(snapshot, animatingDifferences: true)
+                owner.viewModel.input.onLoadDataSource.send(())
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.selectCategories
+            .withUnretained(self)
+            .sink { owner, selectedCategories in
+                for category in selectedCategories {
+                    if let index = owner.dataSource.snapshot().indexOfItem(.category(category)) {
+                        let indexPath = IndexPath(row: index, section: 0)
+                        owner.categorySelectionView.categoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredVertically)
+                    }
+                }
             }
             .store(in: &cancellables)
         

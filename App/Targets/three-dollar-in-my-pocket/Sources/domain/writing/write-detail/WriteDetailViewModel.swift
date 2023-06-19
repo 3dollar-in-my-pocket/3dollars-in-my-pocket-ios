@@ -44,7 +44,7 @@ final class WriteDetailViewModel {
     enum Route {
         case pop
         case presentFullMap
-        case presentCategorySelection
+        case presentCategorySelection([PlatformStoreCategory])
         case dismiss
     }
     
@@ -122,7 +122,10 @@ final class WriteDetailViewModel {
             .store(in: &cancellables)
         
         input.tapAddCategory
-            .map { .presentCategorySelection }
+            .withUnretained(self)
+            .map { owner, _ in
+                Route.presentCategorySelection(owner.state.categories)
+            }
             .subscribe(output.route)
             .store(in: &cancellables)
         
@@ -138,13 +141,18 @@ final class WriteDetailViewModel {
         
         input.addCategories
             .withUnretained(self)
-            .sink { owner, addedCategories in
-                let menuGroups = addedCategories.map { category in
-                    return [NewMenu(category: category), NewMenu(category: category)]
+            .sink { owner, categories in
+                var updatedMenus = [[NewMenu]]()
+                for category in categories {
+                    if let index = owner.state.categories.firstIndex(of: category) {
+                        updatedMenus.append(owner.state.menu[index])
+                    } else {
+                        updatedMenus.append([NewMenu(category: category), NewMenu(category: category)])
+                    }
                 }
                 
-                owner.state.categories.append(contentsOf: addedCategories)
-                owner.state.menu.append(contentsOf: menuGroups)
+                owner.state.categories = categories
+                owner.state.menu = updatedMenus
                 owner.updateSaveButtonEnable()
                 owner.updateSections()
             }
