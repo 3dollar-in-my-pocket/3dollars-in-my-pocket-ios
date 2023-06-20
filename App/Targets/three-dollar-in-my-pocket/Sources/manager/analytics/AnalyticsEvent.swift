@@ -17,6 +17,9 @@ enum AnalyticsEvent {
     /// category-selection 카테고리 선택 화면
     case clickSelectCategory(categoryIds: [String])
     
+    /// write-detail
+    case clickSave
+    
     var name: String {
         switch self {
         case .splashPopupClicked:
@@ -48,6 +51,9 @@ enum AnalyticsEvent {
             
         case .clickSelectCategory:
             return "click_select_category"
+            
+        case .clickSave:
+            return "click_save"
         }
     }
     
@@ -82,6 +88,9 @@ enum AnalyticsEvent {
             
         case .clickSelectCategory(let categoryIds):
             return ["category_id": categoryIds]
+            
+        case .clickSave:
+            return [:]
         }
     }
 }

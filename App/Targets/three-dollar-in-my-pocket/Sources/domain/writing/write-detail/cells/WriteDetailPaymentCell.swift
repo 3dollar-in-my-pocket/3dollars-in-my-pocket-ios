@@ -21,8 +21,8 @@ final class WriteDetailPaymentCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         paymentStackView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.left.equalToSuperview().offset(20).priority(.high)
+            $0.right.equalToSuperview().offset(-20).priority(.high)
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-16)
         }
@@ -95,15 +95,15 @@ extension WriteDetailPaymentCell {
         
         private func bindConstraints() {
             cashCheckButton.snp.makeConstraints {
-                $0.size.equalTo(Layout.size)
+                $0.size.equalTo(Layout.size).priority(.high)
             }
             
             cardCheckButton.snp.makeConstraints {
-                $0.size.equalTo(Layout.size)
+                $0.size.equalTo(Layout.size).priority(.high)
             }
             
             transferCheckButton.snp.makeConstraints {
-                $0.size.equalTo(Layout.size)
+                $0.size.equalTo(Layout.size).priority(.high)
             }
         }
     }
@@ -140,7 +140,7 @@ extension WriteDetailPaymentCell {
             if let titleLabel = titleLabel {
                 imageView?.snp.makeConstraints {
                     $0.centerY.equalTo(titleLabel)
-                    $0.right.equalTo(titleLabel.snp.left).offset(-4)
+                    $0.right.equalTo(titleLabel.snp.left).offset(-4).priority(.high)
                     $0.width.height.equalTo(16)
                 }
             }

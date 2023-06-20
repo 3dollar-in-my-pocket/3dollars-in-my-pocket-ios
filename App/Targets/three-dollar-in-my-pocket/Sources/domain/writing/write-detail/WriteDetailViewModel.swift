@@ -52,15 +52,18 @@ final class WriteDetailViewModel {
     let output = Output()
     private var state: State
     private let storeService: Networking.StoreServiceProtocol
+    private let analyticsManager: AnalyticsManagerProtocol
     private var cancellables = Set<AnyCancellable>()
     
     init(
         location: Location,
         address: String,
-        storeService: Networking.StoreServiceProtocol = Networking.StoreService()
+        storeService: Networking.StoreServiceProtocol = Networking.StoreService(),
+        analyticsManager: AnalyticsManagerProtocol = AnalyticsManager.shared
     ) {
         self.state = State(location: location, addess: address)
         self.storeService = storeService
+        self.analyticsManager = analyticsManager
         
         bind()
     }
@@ -71,6 +74,7 @@ final class WriteDetailViewModel {
             .sink { owner, _ in
                 owner.updateSections()
                 owner.updateSaveButtonEnable()
+                owner.sendPageViewLog()
             }
             .store(in: &cancellables)
         
@@ -213,6 +217,7 @@ final class WriteDetailViewModel {
             .withUnretained(self)
             .sink { owner, result in
                 owner.output.showLoading.send(false)
+                owner.sendSaveClickLog()
                 switch result {
                 case .success(let response):
                     // TODO: GlobalEvnet로 응답 전달 필요. (홈 화면에 새로운 카드 추가, 가게 상세화면 이동)
@@ -311,5 +316,13 @@ final class WriteDetailViewModel {
         guard let category = state.menu[safe: section]?.first?.category else { return }
         
         state.menu[section].append(NewMenu(category: category))
+    }
+    
+    private func sendPageViewLog() {
+        analyticsManager.logPageView(screen: .writeAddressDetail, type: WriteDetailViewController.self)
+    }
+    
+    private func sendSaveClickLog() {
+        analyticsManager.logEvent(event: .clickSave, screen: .writeAddressDetail)
     }
 }

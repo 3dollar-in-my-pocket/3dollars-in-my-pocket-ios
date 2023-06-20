@@ -13,6 +13,7 @@ enum AnalyticsScreen: String {
     /// 제보 주소 화면
     case writeAddress = "write_address"
     case writeAddressPopup = "write_address_popop"
+    case writeAddressDetail = "write_address_detail"
     
     case categorySelection = "category_selection"
 }

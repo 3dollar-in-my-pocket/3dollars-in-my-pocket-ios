@@ -47,7 +47,7 @@ final class WriteDetailCategoryHeaderView: UICollectionReusableView {
         if let buttonTitleLabel = deleteButton.titleLabel {
             deleteButton.imageView?.snp.makeConstraints {
                 $0.centerY.equalTo(buttonTitleLabel)
-                $0.right.equalTo(buttonTitleLabel.snp.left).offset(-4)
+                $0.right.equalTo(buttonTitleLabel.snp.left).offset(-4).priority(.high)
                 $0.width.height.equalTo(12)
             }
         }
