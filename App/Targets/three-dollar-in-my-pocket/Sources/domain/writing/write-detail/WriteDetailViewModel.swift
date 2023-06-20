@@ -265,7 +265,15 @@ final class WriteDetailViewModel {
     private func createStoreCreateRequestInput() -> StoreCreateRequestInput {
         var menuRequestInputs = [Networking.StoreMenuRequestInput]()
         for menuGroup in state.menu {
-            let requests = menuGroup.map { menu in
+            let emptyMenuCount = menuGroup.filter { !$0.isValid }.count
+            var filteredMenuGroup = [NewMenu]()
+            if emptyMenuCount == menuGroup.count {
+                filteredMenuGroup = [menuGroup[0]]
+            } else {
+                filteredMenuGroup = menuGroup.filter { $0.isValid }
+            }
+            
+            let requests = filteredMenuGroup.map { menu in
                 Networking.StoreMenuRequestInput(name: menu.name, price: menu.price, category: menu.category.category)
             }
             
