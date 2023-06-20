@@ -19,7 +19,7 @@ extension RequestType {
     
     var body: Data? {
         guard let param = param,
-              let data = try? JSONSerialization.data(withJSONObject: param, options: []) else {
+              let data = try? JSONEncoder().encode(param) else {
             return nil
         }
         

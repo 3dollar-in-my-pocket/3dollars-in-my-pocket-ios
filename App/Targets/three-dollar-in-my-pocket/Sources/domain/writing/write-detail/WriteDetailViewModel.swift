@@ -263,6 +263,15 @@ final class WriteDetailViewModel {
     }
     
     private func createStoreCreateRequestInput() -> StoreCreateRequestInput {
+        var menuRequestInputs = [Networking.StoreMenuRequestInput]()
+        for menuGroup in state.menu {
+            let requests = menuGroup.map { menu in
+                Networking.StoreMenuRequestInput(name: menu.name, price: menu.price, category: [menu.category.category])
+            }
+            
+            menuRequestInputs.append(contentsOf: requests)
+        }
+        
         return StoreCreateRequestInput(
             latitude: state.location.latitude,
             longitude: state.location.longitude,
@@ -270,7 +279,7 @@ final class WriteDetailViewModel {
             storeType: state.storeType?.rawValue,
             appearanceDays: state.appearanceDays.map { $0.rawValue },
             paymentMethods: state.paymentMethods.map { $0.rawValue },
-            menus: []
+            menus: menuRequestInputs
         )
     }
     
