@@ -1,5 +1,5 @@
 enum DayOfTheWeek: String {
-    case monday = "MONEDAY"
+    case monday = "MONDAY"
     case tuesday = "TUESDAY"
     case wednesday = "WEDNESDAY"
     case thursday = "THURSDAY"

@@ -266,7 +266,7 @@ final class WriteDetailViewModel {
         var menuRequestInputs = [Networking.StoreMenuRequestInput]()
         for menuGroup in state.menu {
             let requests = menuGroup.map { menu in
-                Networking.StoreMenuRequestInput(name: menu.name, price: menu.price, category: [menu.category.category])
+                Networking.StoreMenuRequestInput(name: menu.name, price: menu.price, category: menu.category.category)
             }
             
             menuRequestInputs.append(contentsOf: requests)
