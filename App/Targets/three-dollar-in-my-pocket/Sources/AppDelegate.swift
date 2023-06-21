@@ -96,6 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func initializationNetworkModule() {
         Networking.NetworkManager.shared.configuration.endPoint = Bundle.baseURL
         Networking.NetworkManager.shared.configuration.userAgent = HTTPUtils.userAgent
+        Networking.NetworkManager.shared.configuration.authToken = UserDefaultsUtil().authToken
     }
     
     func application(

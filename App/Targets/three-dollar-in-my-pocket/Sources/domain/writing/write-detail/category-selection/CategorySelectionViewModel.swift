@@ -6,6 +6,7 @@ import Networking
 final class CategorySelectionViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
+        let onLoadDataSource = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<Int, Never>()
         let deSelectCategory = PassthroughSubject<Int, Never>()
         let tapSelect = PassthroughSubject<Void, Never>()
@@ -13,6 +14,7 @@ final class CategorySelectionViewModel {
     
     struct Output {
         let categories = PassthroughSubject<[PlatformStoreCategory], Never>()
+        let selectCategories = PassthroughSubject<[PlatformStoreCategory], Never>()
         let isEnableSelectButton = PassthroughSubject<Bool, Never>()
         let error = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -22,24 +24,26 @@ final class CategorySelectionViewModel {
         case dismissWithCategories([PlatformStoreCategory])
     }
     
-    private struct State {
+    struct State {
         var categories: [PlatformStoreCategory] = []
         var selectedCategories: [PlatformStoreCategory] = []
     }
     
     let input = Input()
     let output = Output()
-    private var state = State()
+    private var state: State
     private var cancellables = Set<AnyCancellable>()
-    private let categoryService: Networking.CategoryServiceProtocol
     private let analyticsManager: AnalyticsManagerProtocol
+    private let metadataManager: MetadataManager
     
     init(
-        categoryService: Networking.CategoryServiceProtocol = Networking.CategoryService(),
-        analyticsManager: AnalyticsManagerProtocol = AnalyticsManager.shared
+        state: State,
+        analyticsManager: AnalyticsManagerProtocol = AnalyticsManager.shared,
+        metadataManager: MetadataManager = .shared
     ) {
-        self.categoryService = categoryService
+        self.state = state
         self.analyticsManager = analyticsManager
+        self.metadataManager = metadataManager
         
         bind()
     }
@@ -50,22 +54,21 @@ final class CategorySelectionViewModel {
             .handleEvents(receiveOutput: { owner, _ in
                 owner.sendPageViewLog()
             })
-            .asyncMap { owner, _ in
-                await owner.categoryService.fetchCategoires()
-            }
             .withUnretained(self)
-            .sink { owner, result in
-                switch result {
-                case .success(let categoryResponse):
-                    let categories = categoryResponse.map(PlatformStoreCategory.init(response:))
-                    
-                    owner.state.categories = categories
-                    owner.output.categories.send(categories)
-                    
-                case .failure(let error):
-                    owner.output.error.send(error)
-                }
+            .sink { owner, _ in
+                let categories = owner.metadataManager.categories
+                owner.state.categories = categories
+                owner.output.categories.send(categories)
+                owner.output.selectCategories.send(owner.state.selectedCategories)
             }
+            .store(in: &cancellables)
+        
+        input.onLoadDataSource
+            .withUnretained(self)
+            .map { owner, _ in
+                owner.state.selectedCategories
+            }
+            .subscribe(output.selectCategories)
             .store(in: &cancellables)
         
         input.selectCategory

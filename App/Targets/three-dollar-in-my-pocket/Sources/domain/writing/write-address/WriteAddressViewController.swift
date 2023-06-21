@@ -127,7 +127,7 @@ final class WriteAddressViewController: BaseViewController, WriteAddressCoordina
                 case .pushAddressDetail(let address, let location):
                     owner.coordinator?.goToWriteDetail(
                         address: address,
-                        location: (location.latitude, location.longitude)
+                        location: location
                     )
                     
                 case .presentConfirmPopup(let address):

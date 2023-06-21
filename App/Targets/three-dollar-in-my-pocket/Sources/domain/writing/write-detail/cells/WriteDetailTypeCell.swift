@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 import DesignSystem
 
@@ -7,15 +8,21 @@ final class WriteDetailTypeCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
     }
     
+    var tapPublisher: PassthroughSubject<StreetFoodStoreType, Never> {
+        return typeStackView.tapPublisher
+    }
+    
     private let typeStackView = WriteDetailTypeStackView()
     
     override func setup() {
+        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         contentView.addSubview(typeStackView)
     }
     
     override func bindConstraints() {
         typeStackView.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20)
+            $0.right.equalToSuperview().offset(-20)
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-16)
         }
@@ -25,9 +32,11 @@ final class WriteDetailTypeCell: BaseCollectionViewCell {
 extension WriteDetailTypeCell {
     final class WriteDetailTypeStackView: UIStackView {
         enum Layout {
-            static let size = CGSize(width: 90, height: 36)
+            static let height: CGFloat = 36
             static let space: CGFloat = 8
         }
+        
+        let tapPublisher = PassthroughSubject<StreetFoodStoreType, Never>()
         
         let roadRadioButton = TypeRadioButton(title: ThreeDollarInMyPocketStrings.storeTypeRoad)
         
@@ -35,11 +44,13 @@ extension WriteDetailTypeCell {
         
         let convenienceStoreRadioButton = TypeRadioButton(title: ThreeDollarInMyPocketStrings.storeTypeConvenienceStore)
         
+        var cancellables = Set<AnyCancellable>()
+        
         override init(frame: CGRect) {
             super.init(frame: frame)
             
-            self.setup()
-            self.bindConstraints()
+            setup()
+            bindConstraints()
         }
         
         required init(coder: NSCoder) {
@@ -47,39 +58,64 @@ extension WriteDetailTypeCell {
         }
         
         func selectType(type: StreetFoodStoreType?) {
-            self.clearSelect()
+            clearSelect()
             
             if let type = type {
                 let index = type.getIndexValue()
                 
-                if let button = self.arrangedSubviews[index] as? UIButton {
+                if let button = arrangedSubviews[index] as? UIButton {
                     button.isSelected = true
                 }
             }
         }
         
         private func setup() {
-            self.alignment = .leading
-            self.axis = .horizontal
-            self.backgroundColor = .clear
-            self.spacing = Layout.space
+            alignment = .center
+            axis = .horizontal
+            backgroundColor = .clear
+            spacing = Layout.space
+            distribution = .fillEqually
             
-            self.addArrangedSubview(roadRadioButton)
-            self.addArrangedSubview(storeRadioButton)
-            self.addArrangedSubview(convenienceStoreRadioButton)
+            addArrangedSubview(roadRadioButton)
+            addArrangedSubview(storeRadioButton)
+            addArrangedSubview(convenienceStoreRadioButton)
+            
+            roadRadioButton.controlPublisher(for: .touchUpInside)
+                .withUnretained(self)
+                .sink(receiveValue: { owner, _ in
+                    owner.selectType(type: .road)
+                    owner.tapPublisher.send(.road)
+                })
+                .store(in: &cancellables)
+            
+            storeRadioButton.controlPublisher(for: .touchUpInside)
+                .withUnretained(self)
+                .sink(receiveValue: { owner, _ in
+                    owner.selectType(type: .store)
+                    owner.tapPublisher.send(.store)
+                })
+                .store(in: &cancellables)
+            
+            convenienceStoreRadioButton.controlPublisher(for: .touchUpInside)
+                .withUnretained(self)
+                .sink(receiveValue: { owner, _ in
+                    owner.selectType(type: .convenienceStore)
+                    owner.tapPublisher.send(.convenienceStore)
+                })
+                .store(in: &cancellables)
         }
         
         private func bindConstraints() {
-            self.roadRadioButton.snp.makeConstraints {
-                $0.size.equalTo(Layout.size)
+            roadRadioButton.snp.makeConstraints {
+                $0.height.equalTo(Layout.height)
             }
             
-            self.storeRadioButton.snp.makeConstraints {
-                $0.size.equalTo(Layout.size)
+            storeRadioButton.snp.makeConstraints {
+                $0.height.equalTo(Layout.height)
             }
             
-            self.convenienceStoreRadioButton.snp.makeConstraints {
-                $0.size.equalTo(Layout.size)
+            convenienceStoreRadioButton.snp.makeConstraints {
+                $0.height.equalTo(Layout.height)
             }
         }
         
@@ -97,6 +133,7 @@ extension WriteDetailTypeCell {
             didSet {
                 layer.borderColor = isSelected ? DesignSystemAsset.Colors.mainPink.color.cgColor : DesignSystemAsset.Colors.gray30.color.cgColor
                 tintColor = isSelected ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
+                dotImage.backgroundColor = isSelected ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
             }
         }
         
@@ -117,6 +154,8 @@ extension WriteDetailTypeCell {
         
         private func setupUI(title: String) {
             setTitle(title, for: .normal)
+            contentEdgeInsets = .init(top: 0, left: 4, bottom: 0, right: 0)
+            titleEdgeInsets = .init(top: 0, left: 4, bottom: 0, right: 0)
             
             addSubview(dotImage)
             if let titleLabel = titleLabel {

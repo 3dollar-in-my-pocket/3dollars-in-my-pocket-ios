@@ -1,15 +1,22 @@
 import UIKit
 
+import RxCocoa
+
 final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetailSection, WriteDetailSectionItem> {
-    init(collectionView: UICollectionView) {
+    let viewModel: WriteDetailViewModel
+    
+    init(collectionView: UICollectionView, viewModel: WriteDetailViewModel) {
+        self.viewModel = viewModel
+        
         collectionView.register([
             WriteDetailMapCell.self,
-            WriteDetailLocationCell.self,
+            WriteDetailAddressCell.self,
             WriteDetailNameCell.self,
             WriteDetailTypeCell.self,
             WriteDetailPaymentCell.self,
             WriteDetailDayCell.self,
-            WriteDetailCategoryCollectionCell.self
+            WriteDetailCategoryCollectionCell.self,
+            WriteDetailMenuGroupCell.self
         ])
         collectionView.registerSectionHeader([
             WriteDetailHeaderView.self,
@@ -17,38 +24,77 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
         ])
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .map:
+            case .map(let location):
                 let cell: WriteDetailMapCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(location: location)
+                cell.zoomButton
+                    .controlPublisher(for: .touchUpInside)
+                    .mapVoid
+                    .subscribe(viewModel.input.tapFullMap)
+                    .store(in: &cell.cancellables)
                 
                 return cell
                 
-            case .location:
-                let cell: WriteDetailLocationCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            case .address(let address):
+                let cell: WriteDetailAddressCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(address: address)
+                cell.editAddressButton
+                    .controlPublisher(for: .touchUpInside)
+                    .mapVoid
+                    .subscribe(viewModel.input.tapEditLocation)
+                    .store(in: &cell.cancellables)
                 
                 return cell
                 
-            case .name:
+            case .name(let name):
                 let cell: WriteDetailNameCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(name: name)
+                cell.nameField.publisher(for: \.text)
+                    .map { $0 ?? "" }
+                    .subscribe(viewModel.input.storeName)
+                    .store(in: &cell.cancellables)
                 
                 return cell
                 
             case .storeType:
                 let cell: WriteDetailTypeCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.tapPublisher
+                    .subscribe(viewModel.input.tapStoreType)
+                    .store(in: &cell.cancellables)
                 
                 return cell
                 
-            case .payment:
+            case .paymentMethod:
                 let cell: WriteDetailPaymentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.tapPublisher
+                    .subscribe(viewModel.input.tapPaymentMethod)
+                    .store(in: &cell.cancellables)
                 
                 return cell
                 
-            case .day:
+            case .appearanceDay:
                 let cell: WriteDetailDayCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.tapPublisher
+                    .subscribe(viewModel.input.tapDay)
+                    .store(in: &cell.cancellables)
                 
                 return cell
                 
-            case .categoryCollection:
+            case .categoryCollection(let categories):
                 let cell: WriteDetailCategoryCollectionCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(categories: categories)
+                cell.bindViewModel(viewModel)
+                
+                return cell
+                
+            case .menuGroup(let cellViewModel):
+                let cell: WriteDetailMenuGroupCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                
+                cell.bind(viewModel: cellViewModel)
+                cell.closeButton.controlPublisher(for: .touchUpInside)
+                    .map { _ in indexPath.row - 1 }
+                    .subscribe(viewModel.input.tapDeleteCategory)
+                    .store(in: &cell.cancellables)
                 
                 return cell
             }
@@ -80,6 +126,14 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                     for: indexPath
                 ) as? WriteDetailCategoryHeaderView
                 
+                if let headerView = headerView {
+                    headerView.deleteButton
+                        .controlPublisher(for: .touchUpInside)
+                        .mapVoid
+                        .subscribe(viewModel.input.deleteAllCategories)
+                        .store(in: &headerView.cancellables)
+                }
+                
                 return headerView
             }
         }
@@ -91,11 +145,11 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
 struct WriteDetailSection: Hashable {
     enum SectionType: Hashable {
         case map
-        case location
+        case address
         case name
         case storeType
-        case payment
-        case day
+        case paymentMethod
+        case appearanceDay
         case category
         
         var headerType: WriteDetailHeaderView.HeaderType {
@@ -103,7 +157,7 @@ struct WriteDetailSection: Hashable {
             case .map:
                 return .none
                 
-            case .location:
+            case .address:
                 return .normal(title: ThreeDollarInMyPocketStrings.writeDetailHeaderLocation)
                 
             case .name:
@@ -112,10 +166,10 @@ struct WriteDetailSection: Hashable {
             case .storeType:
                 return .option(title: ThreeDollarInMyPocketStrings.writeDetailHeaderStoreType)
                 
-            case .payment:
+            case .paymentMethod:
                 return .multi(title: ThreeDollarInMyPocketStrings.writeDetailHeaderPaymentType)
                 
-            case .day:
+            case .appearanceDay:
                 return .multi(title: ThreeDollarInMyPocketStrings.writeDetailHeaderDay)
                 
             case .category:
@@ -129,21 +183,22 @@ struct WriteDetailSection: Hashable {
 }
 
 enum WriteDetailSectionItem: Hashable {
-    case map
-    case location
-    case name
+    case map(Location)
+    case address(String)
+    case name(String)
     case storeType
-    case payment
-    case day
-    case categoryCollection
+    case paymentMethod
+    case appearanceDay
+    case categoryCollection([PlatformStoreCategory?])
+    case menuGroup(WriteDetailMenuGroupViewModel)
     
     var size: CGSize {
         switch self {
         case .map:
             return WriteDetailMapCell.Layout.size
             
-        case .location:
-            return WriteDetailLocationCell.Layout.size
+        case .address:
+            return WriteDetailAddressCell.Layout.size
             
         case .name:
             return WriteDetailNameCell.Layout.size
@@ -151,14 +206,17 @@ enum WriteDetailSectionItem: Hashable {
         case .storeType:
             return WriteDetailTypeCell.Layout.size
             
-        case .payment:
+        case .paymentMethod:
             return WriteDetailPaymentCell.Layout.size
             
-        case .day:
+        case .appearanceDay:
             return WriteDetailDayCell.Layout.size
             
-        case .categoryCollection:
-            return WriteDetailCategoryCollectionCell.Layout.size(count: 0)
+        case .categoryCollection(let categories):
+            return WriteDetailCategoryCollectionCell.Layout.size(count: categories.count)
+            
+        case .menuGroup(let viewModel):
+            return WriteDetailMenuGroupCell.Layout.size(count: viewModel.output.menus.count)
         }
     }
 }

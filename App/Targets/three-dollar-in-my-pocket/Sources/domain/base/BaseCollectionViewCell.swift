@@ -1,9 +1,11 @@
 import UIKit
+import Combine
 
 import RxSwift
 
 class BaseCollectionViewCell: UICollectionViewCell {
     var disposeBag = DisposeBag()
+    var cancellables = Set<AnyCancellable>()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -20,6 +22,7 @@ class BaseCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         
         self.disposeBag = DisposeBag()
+        cancellables = Set<AnyCancellable>()
     }
     
     /// adSubviews와 화면의 기본 속성을 설정합니다.

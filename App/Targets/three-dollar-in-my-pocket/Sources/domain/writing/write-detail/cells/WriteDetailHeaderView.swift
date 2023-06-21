@@ -34,6 +34,7 @@ final class WriteDetailHeaderView: UICollectionReusableView {
     }
     
     private func setup() {
+        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         stackView.addArrangedSubview(titleLabel)
         addSubview(stackView)
     }

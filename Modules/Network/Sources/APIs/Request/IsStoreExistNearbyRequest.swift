@@ -5,7 +5,7 @@ struct IsStoreExistNearbyRequest: RequestType {
     let distance: Double
     let mapLocation: CLLocation
     
-    var param: [String : Any]? {
+    var param: Encodable? {
         return [
             "distance": distance,
             "mapLatitude": mapLocation.coordinate.latitude,

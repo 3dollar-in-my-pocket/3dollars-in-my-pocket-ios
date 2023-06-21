@@ -13,7 +13,8 @@ class SplashVC: BaseVC {
     feedbackService: FeedbackService(),
     categoryService: CategoryService(),
     deviceService: DeviceService(),
-    advertisementService: AdvertisementService()
+    advertisementService: AdvertisementService(),
+    metadataManager: MetadataManager.shared
   )
   
   

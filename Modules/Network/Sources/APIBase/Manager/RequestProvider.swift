@@ -48,6 +48,7 @@ final class RequestProvider {
     private func generateHeader(type: HTTPHeaderType) -> [String: String] {
         var header = [
             "Accept": "application/json",
+            "Content-Type": "application/json",
             "User-Agent": config.userAgent
         ]
         

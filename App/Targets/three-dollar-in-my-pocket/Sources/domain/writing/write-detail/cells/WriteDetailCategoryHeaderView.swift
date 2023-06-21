@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 import DesignSystem
 
@@ -13,13 +14,15 @@ final class WriteDetailCategoryHeaderView: UICollectionReusableView {
         $0.text = ThreeDollarInMyPocketStrings.writeDetailHeaderCategory
     }
     
-    private let deleteButton = UIButton().then {
+    let deleteButton = UIButton().then {
         $0.setTitle(ThreeDollarInMyPocketStrings.writeDetailHeaderDeleteAllMenu, for: .normal)
         $0.setTitleColor(DesignSystemAsset.Colors.mainRed.color, for: .normal)
         $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 12)
         $0.setImage(DesignSystemAsset.Icons.delete.image.withRenderingMode(.alwaysTemplate), for: .normal)
         $0.tintColor = DesignSystemAsset.Colors.mainRed.color
     }
+    
+    var cancellables = Set<AnyCancellable>()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -44,7 +47,7 @@ final class WriteDetailCategoryHeaderView: UICollectionReusableView {
         if let buttonTitleLabel = deleteButton.titleLabel {
             deleteButton.imageView?.snp.makeConstraints {
                 $0.centerY.equalTo(buttonTitleLabel)
-                $0.right.equalTo(buttonTitleLabel.snp.left).offset(-4)
+                $0.right.equalTo(buttonTitleLabel.snp.left).offset(-4).priority(.high)
                 $0.width.height.equalTo(12)
             }
         }

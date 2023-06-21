@@ -1,7 +1,7 @@
 import Foundation
 
 struct FetchCategoryRequest: RequestType {
-    var param: [String : Any]? {
+    var param: Encodable? {
         return nil
     }
     

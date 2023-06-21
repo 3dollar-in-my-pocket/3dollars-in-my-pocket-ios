@@ -1,261 +1,328 @@
 import Foundation
+import Combine
 
-import RxSwift
-import RxCocoa
+import Networking
+import Common
 
-class WriteDetailViewModel: BaseViewModel {
-  
-  let input = Input()
-  let output = Output()
-  
-  let storeService: StoreServiceProtocol
-  let globalState: GlobalState
-  let address: String
-  let location: (Double, Double)
-  var appearenceDay: [WeekDay] = []
-  var categoryies: [StreetFoodStoreCategory?] = [nil]
-  var menusSections: [MenuSection] = []
-  var paymentType: [PaymentType] = []
-  
-  struct Input {
-    let storeName = PublishSubject<String>()
-    let tapDay = PublishSubject<WeekDay>()
-    let tapStoreType = BehaviorSubject<StreetFoodStoreType?>(value: nil)
-    let tapPaymentType = PublishSubject<PaymentType>()
-    let tapAddCategory = PublishSubject<Void>()
-    let tapCategoryDelete = PublishSubject<Int>()
-    let addCategories = PublishSubject<[StreetFoodStoreCategory]>()
-    let deleteAllCategories = PublishSubject<Void>()
-    let menuName = PublishSubject<(IndexPath, String)>()
-    let menuPrice = PublishSubject<(IndexPath, String)>()
-    let deleteCategory = PublishSubject<Int>()
-    let tapRegister = PublishSubject<Void>()
-  }
-  
-  struct Output {
-    let address = PublishRelay<String>()
-    let storeNameIsEmpty = PublishRelay<Bool>()
-    let selectType = PublishRelay<StreetFoodStoreType?>()
-    let selectPaymentType = PublishRelay<[PaymentType]>()
-    let selectDays = PublishRelay<[WeekDay]>()
-    let categories = PublishRelay<[StreetFoodStoreCategory?]>()
-    let showCategoryDialog = PublishRelay<[StreetFoodStoreCategory?]>()
-    let menus = PublishRelay<[MenuSection]>()
-    let fetchMenuTableViewHeight = PublishRelay<Void>()
-    let registerButtonIsEnable = PublishRelay<Bool>()
-    let dismissAndGoDetail = PublishRelay<Int>()
-    let showLoading = PublishRelay<Bool>()
-  }
-  
-  init(
-    address: String,
-    location: (Double, Double),
-    storeService: StoreServiceProtocol,
-    globalState: GlobalState
-  ) {
-    self.address = address
-    self.location = location
-    self.storeService = storeService
-    self.globalState = globalState
-    super.init()
-    
-    self.input.storeName
-      .map { $0.isEmpty }
-      .bind(to: self.output.storeNameIsEmpty)
-      .disposed(by: disposeBag)
-    
-    self.input.storeName
-      .map { !$0.isEmpty && !self.categoryies.compactMap { $0 }.isEmpty }
-      .bind(to: self.output.registerButtonIsEnable)
-      .disposed(by: disposeBag)
-    
-    self.input.tapDay
-      .bind(onNext: self.onTapDay(weekDay:))
-      .disposed(by: disposeBag)
-    
-    self.input.tapStoreType
-      .bind(to: self.output.selectType)
-      .disposed(by: disposeBag)
-    
-    self.input.tapPaymentType
-      .bind(onNext: self.onTapPayment(paymentType:))
-      .disposed(by: disposeBag)
-    
-    self.input.tapAddCategory
-      .map { self.categoryies }
-      .bind(to: self.output.showCategoryDialog)
-      .disposed(by: disposeBag)
-    
-    self.input.addCategories
-      .bind(onNext: self.onAddCategory(categories:))
-      .disposed(by: disposeBag)
-    
-    self.input.deleteAllCategories
-      .bind(onNext: self.onTapDeleteAllCategories)
-      .disposed(by: disposeBag)
-    
-    self.input.menuName
-      .bind(onNext: self.onEditMenuName)
-      .disposed(by: disposeBag)
-    
-    self.input.menuPrice
-      .bind(onNext: self.onEditMenuPrice)
-      .disposed(by: disposeBag)
-    
-    self.input.deleteCategory
-      .bind(onNext: self.deleteCategory(index:))
-      .disposed(by: disposeBag)
-    
-    self.input.tapRegister
-      .withLatestFrom(Observable.combineLatest(self.input.storeName, self.input.tapStoreType))
-      .map { Store(
-        appearanceDays: self.appearenceDay,
-        categories: self.categoryies.compactMap { $0 },
-        latitude: self.location.0,
-        longitude: self.location.1,
-        menuSections: self.menusSections,
-        paymentType: self.paymentType,
-        storeName: $0.0,
-        storeType: $0.1
-      ) }
-      .bind(onNext: self.saveStore(store:))
-      .disposed(by: disposeBag)
-    
-    self.output.categories
-      .withLatestFrom(self.input.storeName) { !$0.compactMap { $0 }.isEmpty && !$1.isEmpty }
-      .bind(to: self.output.registerButtonIsEnable)
-      .disposed(by: disposeBag)
-  }
-  
-  func fetchInitialData() {
-    Observable.just(self.address)
-      .bind(to: self.output.address)
-      .disposed(by: disposeBag)
-    
-    Observable.just(self.categoryies)
-      .bind(to: self.output.categories)
-      .disposed(by: disposeBag)
-  }
-  
-  private func deleteCategory(index: Int) {
-    if self.categoryies.count >= index + 1 {
-      self.categoryies.remove(at: index + 1)
-      Observable.just(self.categoryies)
-        .bind(to: self.output.categories)
-        .disposed(by: disposeBag)
+final class WriteDetailViewModel {
+    struct Input {
+        let viewDidLoad = PassthroughSubject<Void, Never>()
+        let tapFullMap = PassthroughSubject<Void, Never>()
+        let tapEditLocation = PassthroughSubject<Void, Never>()
+        let storeName = PassthroughSubject<String, Never>()
+        let tapStoreType = PassthroughSubject<StreetFoodStoreType, Never>()
+        let tapPaymentMethod = PassthroughSubject<PaymentType, Never>()
+        let tapDay = PassthroughSubject<DayOfTheWeek, Never>()
+        let tapAddCategory = PassthroughSubject<Void, Never>()
+        let tapDeleteCategory = PassthroughSubject<Int, Never>()
+        let addCategories = PassthroughSubject<[PlatformStoreCategory], Never>()
+        let deleteAllCategories = PassthroughSubject<Void, Never>()
+        let inputMenuName = PassthroughSubject<(IndexPath, String), Never>()
+        let inputMenuPrice = PassthroughSubject<(IndexPath, String), Never>()
+        let tapSave = PassthroughSubject<Void, Never>()
     }
     
-    self.menusSections.remove(at: index)
-    Observable.just(self.menusSections)
-      .bind(to: self.output.menus)
-      .disposed(by: disposeBag)
-  }
-  
-  private func onTapDay(weekDay: WeekDay) {
-    if self.appearenceDay.contains(weekDay) {
-      let removeIndex = self.appearenceDay.firstIndex(of: weekDay)!
-      
-      self.appearenceDay.remove(at: removeIndex)
-    } else {
-      self.appearenceDay.append(weekDay)
+    struct Output {
+        let isSaveButtonEnable = PassthroughSubject<Bool, Never>()
+        let showLoading = PassthroughSubject<Bool, Never>()
+        let route = PassthroughSubject<Route, Never>()
+        let error = PassthroughSubject<Error, Never>()
+        let sections = PassthroughSubject<[WriteDetailSection], Never>()
     }
     
-    Observable.just(self.appearenceDay)
-      .bind(to: self.output.selectDays)
-      .disposed(by: disposeBag)
-  }
-  
-  private func onTapPayment(paymentType: PaymentType) {
-    if self.paymentType.contains(paymentType) {
-      let removeIndex = self.paymentType.firstIndex(of: paymentType)!
-      
-      self.paymentType.remove(at: removeIndex)
-    } else {
-      self.paymentType.append(paymentType)
+    private struct State {
+        var location: Location
+        var addess: String
+        var name = ""
+        var storeType: StreetFoodStoreType?
+        var paymentMethods: [PaymentType] = []
+        var appearanceDays: [DayOfTheWeek] = []
+        var categories: [PlatformStoreCategory] = []
+        var menu: [[NewMenu]] = []
     }
     
-    Observable.just(self.paymentType)
-      .bind(to: self.output.selectPaymentType)
-      .disposed(by: disposeBag)
-  }
-  
-  private func onAddCategory(categories: [StreetFoodStoreCategory]) {
-    var newMenuSection: [MenuSection] = []
-    
-    for category in categories{
-      if self.categoryies.contains(category){
-        for menuSection in self.menusSections {
-          if menuSection.category == category {
-            newMenuSection.append(menuSection)
-            break
-          }
-        }
-      } else {
-        newMenuSection.append(MenuSection(category: category, items: [Menu(category: category)]))
-      }
+    enum Route {
+        case pop
+        case presentFullMap
+        case presentCategorySelection([PlatformStoreCategory])
+        case dismiss
     }
     
-    self.menusSections = newMenuSection
-    self.categoryies = [nil] + categories
-    self.output.categories.accept(self.categoryies)
-    self.output.menus.accept(self.menusSections)
-  }
-  
-  private func onTapDeleteAllCategories() {
-    self.categoryies = [nil]
-    self.menusSections = []
+    let input = Input()
+    let output = Output()
+    private var state: State
+    private let storeService: Networking.StoreServiceProtocol
+    private let analyticsManager: AnalyticsManagerProtocol
+    private var cancellables = Set<AnyCancellable>()
     
-    self.output.categories.accept(categoryies)
-    self.output.menus.accept(menusSections)
-  }
-  
-  private func onEditMenuName(indexPath: IndexPath, name: String) {
-    if !name.isEmpty {
-      self.menusSections[indexPath.section].items[indexPath.row].name = name
-      if self.menusSections[indexPath.section].items.count == indexPath.row + 1 {
-        self.menusSections[indexPath.section].items.append(Menu(category: self.menusSections[indexPath.section].category))
+    init(
+        location: Location,
+        address: String,
+        storeService: Networking.StoreServiceProtocol = Networking.StoreService(),
+        analyticsManager: AnalyticsManagerProtocol = AnalyticsManager.shared
+    ) {
+        self.state = State(location: location, addess: address)
+        self.storeService = storeService
+        self.analyticsManager = analyticsManager
         
-        self.output.menus.accept(self.menusSections)
-      }
+        bind()
     }
-  }
-  
-  private func onEditMenuPrice(indexPath: IndexPath, price: String) {
-    if !price.isEmpty {
-      self.menusSections[indexPath.section].items[indexPath.row].price = price
-      if self.menusSections[indexPath.section].items.count == indexPath.row + 1 {
-        self.menusSections[indexPath.section].items.append(Menu(category: self.menusSections[indexPath.section].category))
+    
+    private func bind() {
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.updateSections()
+                owner.updateSaveButtonEnable()
+                owner.sendPageViewLog()
+            }
+            .store(in: &cancellables)
         
-        self.output.menus.accept(self.menusSections)
-      }
+        input.tapFullMap
+            .map { .presentFullMap }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+        
+        input.tapEditLocation
+            .map { .pop }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+        
+        input.storeName
+            .withUnretained(self)
+            .sink { owner, name in
+                owner.state.name = name
+                owner.updateSaveButtonEnable()
+            }
+            .store(in: &cancellables)
+        
+        input.tapStoreType
+            .withUnretained(self)
+            .sink { owner, storeType in
+                owner.state.storeType = storeType
+            }
+            .store(in: &cancellables)
+        
+        input.tapPaymentMethod
+            .withUnretained(self)
+            .sink { owner, paymentMethod in
+                if let targetIndex = owner.state.paymentMethods.firstIndex(of: paymentMethod) {
+                    owner.state.paymentMethods.remove(at: targetIndex)
+                } else {
+                    owner.state.paymentMethods.append(paymentMethod)
+                }
+            }
+            .store(in: &cancellables)
+        
+        input.tapDay
+            .withUnretained(self)
+            .sink { owner, dayOfTheWeek in
+                if let targetIndex = owner.state.appearanceDays.firstIndex(of: dayOfTheWeek) {
+                    owner.state.appearanceDays.remove(at: targetIndex)
+                } else {
+                    owner.state.appearanceDays.append(dayOfTheWeek)
+                }
+            }
+            .store(in: &cancellables)
+        
+        input.tapAddCategory
+            .withUnretained(self)
+            .map { owner, _ in
+                Route.presentCategorySelection(owner.state.categories)
+            }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+        
+        input.tapDeleteCategory
+            .withUnretained(self)
+            .sink { owner, index in
+                owner.state.categories.remove(at: index)
+                owner.state.menu.remove(at: index)
+                owner.updateSaveButtonEnable()
+                owner.updateSections()
+            }
+            .store(in: &cancellables)
+        
+        input.addCategories
+            .withUnretained(self)
+            .sink { owner, categories in
+                var updatedMenus = [[NewMenu]]()
+                for category in categories {
+                    if let index = owner.state.categories.firstIndex(of: category) {
+                        updatedMenus.append(owner.state.menu[index])
+                    } else {
+                        updatedMenus.append([NewMenu(category: category), NewMenu(category: category)])
+                    }
+                }
+                
+                owner.state.categories = categories
+                owner.state.menu = updatedMenus
+                owner.updateSaveButtonEnable()
+                owner.updateSections()
+            }
+            .store(in: &cancellables)
+        
+        input.deleteAllCategories
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.state.categories.removeAll()
+                owner.state.menu.removeAll()
+                owner.updateSaveButtonEnable()
+                owner.updateSections()
+            }
+            .store(in: &cancellables)
+        
+        input.inputMenuName
+            .withUnretained(self)
+            .sink { owner, nameWithIndex in
+                let (indexPath, name) = nameWithIndex
+                guard owner.isExistMenu(indexPath: indexPath) else { return }
+                
+                owner.state.menu[indexPath.section][indexPath.row].name = name
+                
+                if owner.isAllMenuEntered(section: indexPath.section) {
+                    owner.addEmptyMenu(section: indexPath.section)
+                    owner.updateSections()
+                }
+            }
+            .store(in: &cancellables)
+        
+        input.inputMenuPrice
+            .withUnretained(self)
+            .sink { owner, priceWithIndex in
+                let (indexPath, price) = priceWithIndex
+                guard owner.isExistMenu(indexPath: indexPath) else { return }
+                
+                owner.state.menu[indexPath.section][indexPath.row].price = price
+                
+                if owner.isAllMenuEntered(section: indexPath.section) {
+                    owner.addEmptyMenu(section: indexPath.section)
+                    owner.updateSections()
+                }
+            }
+            .store(in: &cancellables)
+        
+        input.tapSave
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, _ in
+                owner.output.showLoading.send(true)
+            })
+            .map { owner, _ in
+                owner.createStoreCreateRequestInput()
+            }
+            .withUnretained(self)
+            .asyncMap { owner, input in
+                await owner.storeService.createStore(input: input)
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                owner.output.showLoading.send(false)
+                owner.sendSaveClickLog()
+                switch result {
+                case .success(let response):
+                    // TODO: GlobalEvnet로 응답 전달 필요. (홈 화면에 새로운 카드 추가, 가게 상세화면 이동)
+                    owner.output.route.send(.dismiss)
+
+                case .failure(let error):
+                    owner.output.error.send(error)
+                }
+            }
+            .store(in: &cancellables)
     }
-  }
-  
-  private func saveStore(store: Store) {
-    self.output.showLoading.accept(true)
-    self.storeService.saveStore(store: store)
-      .subscribe(
-        onNext: { [weak self] store in
-          guard let self = self else { return }
-          
-          self.globalState.addStore.onNext(store)
-          self.output.dismissAndGoDetail.accept(store.storeId)
-          self.output.showLoading.accept(false)
-        },
-        onError: { [weak self] error in
-          guard let self = self else { return }
-          if let httpError = error as? HTTPError{
-            self.httpErrorAlert.accept(httpError)
-          }
-          if let commonError = error as? CommonError {
-            let alertContent = AlertContent(title: nil, message: commonError.description)
+    
+    private func updateSaveButtonEnable() {
+        let isEnable = state.name.isNotEmpty && state.categories.isNotEmpty
+        output.isSaveButtonEnable.send(isEnable)
+    }
+    
+    private func updateSections() {
+        var menuGroupViewModels: [WriteDetailMenuGroupViewModel] = []
+        
+        for (index, category) in state.categories.enumerated() {
+            let menus = state.menu[safe: index] ?? []
+            let state = WriteDetailMenuGroupViewModel.State(menuIndex: index, category: category, menu: menus)
+            let viewModel = WriteDetailMenuGroupViewModel(state: state)
             
-            self.showSystemAlert.accept(alertContent)
-          }
-          
-          self.output.showLoading.accept(false)
+            bindCellViewModel(viewModel)
+            menuGroupViewModels.append(viewModel)
         }
-      )
-      .disposed(by: disposeBag)
-  }
+        let menuGroups = menuGroupViewModels.map { WriteDetailSectionItem.menuGroup($0) }
+        
+        let sections: [WriteDetailSection] = [
+            WriteDetailSection(type: .map, items: [.map(state.location)]),
+            WriteDetailSection(type: .address, items: [.address(state.addess)]),
+            WriteDetailSection(type: .name, items: [.name(state.name)]),
+            WriteDetailSection(type: .storeType, items: [.storeType]),
+            WriteDetailSection(type: .paymentMethod, items: [.paymentMethod]),
+            WriteDetailSection(type: .appearanceDay, items: [.appearanceDay]),
+            WriteDetailSection(type: .category, items: [ .categoryCollection([nil] + state.categories)] + menuGroups)
+        ]
+        output.sections.send(sections)
+    }
+    
+    private func isExistMenu(indexPath: IndexPath) -> Bool {
+        guard let categoryMenus = state.menu[safe: indexPath.section],
+              let _ = categoryMenus[safe: indexPath.row] else { return false }
+        
+        return true
+    }
+    
+    private func createStoreCreateRequestInput() -> StoreCreateRequestInput {
+        var menuRequestInputs = [Networking.StoreMenuRequestInput]()
+        for menuGroup in state.menu {
+            let emptyMenuCount = menuGroup.filter { !$0.isValid }.count
+            var filteredMenuGroup = [NewMenu]()
+            if emptyMenuCount == menuGroup.count {
+                filteredMenuGroup = [menuGroup[0]]
+            } else {
+                filteredMenuGroup = menuGroup.filter { $0.isValid }
+            }
+            
+            let requests = filteredMenuGroup.map { menu in
+                Networking.StoreMenuRequestInput(name: menu.name, price: menu.price, category: menu.category.category)
+            }
+            
+            menuRequestInputs.append(contentsOf: requests)
+        }
+        
+        return StoreCreateRequestInput(
+            latitude: state.location.latitude,
+            longitude: state.location.longitude,
+            storeName: state.name,
+            storeType: state.storeType?.rawValue,
+            appearanceDays: state.appearanceDays.map { $0.rawValue },
+            paymentMethods: state.paymentMethods.map { $0.rawValue },
+            menus: menuRequestInputs
+        )
+    }
+    
+    private func bindCellViewModel(_ viewModel: WriteDetailMenuGroupViewModel) {
+        viewModel.output.inputMenuName
+            .subscribe(input.inputMenuName)
+            .store(in: &cancellables)
+        
+        viewModel.output.inputMenuPrice
+            .subscribe(input.inputMenuPrice)
+            .store(in: &cancellables)
+    }
+    
+    private func isAllMenuEntered(section: Int) -> Bool {
+        guard let menus = state.menu[safe: section] else { return false }
+        
+        return !menus.map { $0.isValid }.contains(false)
+    }
+    
+    private func addEmptyMenu(section: Int) {
+        guard let category = state.menu[safe: section]?.first?.category else { return }
+        
+        state.menu[section].append(NewMenu(category: category))
+    }
+    
+    private func sendPageViewLog() {
+        analyticsManager.logPageView(screen: .writeAddressDetail, type: WriteDetailViewController.self)
+    }
+    
+    private func sendSaveClickLog() {
+        analyticsManager.logEvent(event: .clickSave, screen: .writeAddressDetail)
+    }
 }

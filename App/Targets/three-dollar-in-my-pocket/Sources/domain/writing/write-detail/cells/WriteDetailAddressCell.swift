@@ -2,7 +2,7 @@ import UIKit
 
 import DesignSystem
 
-final class WriteDetailLocationCell: BaseCollectionViewCell {
+final class WriteDetailAddressCell: BaseCollectionViewCell {
     enum Layout {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
     }
@@ -25,6 +25,7 @@ final class WriteDetailLocationCell: BaseCollectionViewCell {
     }
     
     override func setup() {
+        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         contentView.addSubViews([
             containerView,
             addressLabel,

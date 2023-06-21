@@ -27,6 +27,7 @@ final class SplashViewModel: BaseViewModel {
     private let categoryService: CategoryServiceProtocol
     private let deviceService: DeviceServiceProtocol
     private let advertisementService: AdvertisementServiceProtocol
+    private let metadataManager: MetadataManager
     
     init(
         userDefaults: UserDefaultsUtil,
@@ -37,7 +38,8 @@ final class SplashViewModel: BaseViewModel {
         feedbackService: FeedbackServiceProtocol,
         categoryService: CategoryServiceProtocol,
         deviceService: DeviceServiceProtocol,
-        advertisementService: AdvertisementServiceProtocol
+        advertisementService: AdvertisementServiceProtocol,
+        metadataManager: MetadataManager = .shared
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
@@ -48,6 +50,7 @@ final class SplashViewModel: BaseViewModel {
         self.categoryService = categoryService
         self.deviceService = deviceService
         self.advertisementService = advertisementService
+        self.metadataManager = metadataManager
         
         super.init()
         
@@ -58,6 +61,7 @@ final class SplashViewModel: BaseViewModel {
                 self?.fetchMedals()
                 self?.fetchStreetFoodCategories()
                 self?.fetchFoodTurckCategories()
+                self?.fetchMetadata()
             })
             .disposed(by: self.disposeBag)
     }
@@ -191,5 +195,9 @@ final class SplashViewModel: BaseViewModel {
                 self?.metaContext.advertisementMarker = advertisement
             })
             .disposed(by: self.disposeBag)
+    }
+    
+    private func fetchMetadata() {
+        self.metadataManager.fetchCategories()
     }
 }

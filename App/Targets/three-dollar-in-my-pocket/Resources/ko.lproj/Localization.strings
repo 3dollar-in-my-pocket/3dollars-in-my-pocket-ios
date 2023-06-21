@@ -300,6 +300,7 @@
 "write_detail_header_location" = "가게 위치";
 "write_detail_edit_location" = "수정";
 "write_detail_header_name" = "가게 이름";
+"write_detail_name_placeholer" = "가게 이름";
 "write_detail_header_store_type" = "가게형태";
 "write_detail_header_payment_type" = "결제방식";
 "write_detail_header_day" = "출몰시기";

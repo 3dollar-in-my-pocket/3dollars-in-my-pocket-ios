@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 import DesignSystem
 
@@ -7,9 +8,14 @@ final class WriteDetailDayCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 64)
     }
     
+    var tapPublisher: PassthroughSubject<DayOfTheWeek, Never> {
+        return dayStackView.tapPublisher
+    }
+    
     private let dayStackView = DayStackView()
     
     override func setup() {
+        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         contentView.addSubview(dayStackView)
     }
     
@@ -25,6 +31,10 @@ final class WriteDetailDayCell: BaseCollectionViewCell {
 
 extension WriteDetailDayCell {
     final class DayStackView: UIStackView {
+        let tapPublisher = PassthroughSubject<DayOfTheWeek, Never>()
+        
+        var cancellables = Set<AnyCancellable>()
+        
         private let dayButtons: [DayButton] = [
             DayButton(.monday),
             DayButton(.tuesday),
@@ -46,13 +56,20 @@ extension WriteDetailDayCell {
         }
         
         private func setup() {
-            alignment = .leading
+            alignment = .center
             axis = .horizontal
             distribution = .equalSpacing
             spacing = 12
             
-            dayButtons.forEach {
-                addArrangedSubview($0)
+            dayButtons.forEach { button in
+                addArrangedSubview(button)
+                button.controlPublisher(for: .touchUpInside)
+                    .withUnretained(self)
+                    .sink { owner, _ in
+                        owner.tapPublisher.send(button.dayOfTheWeek)
+                        button.isSelected.toggle()
+                    }
+                    .store(in: &cancellables)
             }
         }
     }
@@ -73,7 +90,7 @@ extension WriteDetailDayCell {
             }
         }
         
-        private let dayOfTheWeek: DayOfTheWeek
+        let dayOfTheWeek: DayOfTheWeek
         
         init(_ dayOfTheWeek: DayOfTheWeek) {
             self.dayOfTheWeek = dayOfTheWeek
