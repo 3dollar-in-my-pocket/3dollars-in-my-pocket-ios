@@ -1,6 +1,6 @@
 import UIKit
 
-extension UICollectionView {
+public extension UICollectionView {
     func register(_ cellTypes: [UICollectionViewCell.Type]) {
         for cellType in cellTypes {
             self.register(cellType, forCellWithReuseIdentifier: "\(cellType.self)")
