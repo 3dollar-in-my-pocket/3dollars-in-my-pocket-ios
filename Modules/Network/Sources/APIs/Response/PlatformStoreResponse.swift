@@ -1,14 +1,14 @@
 import Foundation
 
 public struct PlatformStoreResponse: Decodable {
-    let storeType: String
-    let storeId: String
-    let account: AccountResponse?
-    let storeName: String
-    let address: AddressResponse?
-    let location: LocationResponse?
-    let categories: [PlatformStoreCategoryResponse]
-    let isDeleted: Bool
-    let createdAt: String?
-    let updatedAt: String?
+    public let storeType: String
+    public let storeId: String
+    public let account: AccountResponse?
+    public let storeName: String
+    public let address: AddressResponse?
+    public let location: LocationResponse?
+    public let categories: [PlatformStoreCategoryResponse]
+    public let isDeleted: Bool
+    public let createdAt: String?
+    public let updatedAt: String?
 }

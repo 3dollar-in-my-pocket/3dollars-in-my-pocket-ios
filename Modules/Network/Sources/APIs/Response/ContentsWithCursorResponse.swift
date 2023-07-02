@@ -1,6 +1,6 @@
 import Foundation
 
 public struct ContentsWithCursorResposne<T: Decodable>: Decodable {
-    let contents: [T]
-    let cursor: CursorResponse
+    public let contents: [T]
+    public let cursor: CursorResponse
 }

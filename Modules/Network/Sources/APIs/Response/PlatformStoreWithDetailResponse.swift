@@ -1,7 +1,7 @@
 import Foundation
 
 public struct PlatformStoreWithDetailResponse: Decodable {
-    let store: PlatformStoreResponse
-    let distanceM: Int
-    let extra: PlatformStoreExtraResponse
+    public let store: PlatformStoreResponse
+    public let distanceM: Int
+    public let extra: PlatformStoreExtraResponse
 }

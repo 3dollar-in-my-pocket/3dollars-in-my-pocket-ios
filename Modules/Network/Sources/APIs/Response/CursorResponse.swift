@@ -1,6 +1,6 @@
 import Foundation
 
 public struct CursorResponse: Decodable {
-    let nextCursor: String?
-    let hasMore: Bool
+    public let nextCursor: String?
+    public let hasMore: Bool
 }

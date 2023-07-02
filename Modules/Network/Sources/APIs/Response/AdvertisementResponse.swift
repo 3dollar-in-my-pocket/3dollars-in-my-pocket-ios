@@ -1,14 +1,14 @@
 import Foundation
 
-struct AdvertisementResponse: Decodable {
-    let advertisementId: Int
-    let title: String
-    let subTitle: String
-    let extraContent: String?
-    let imageUrl: String
-    let imageWidth: Int
-    let imageHeight: Int
-    let linkUrl: String
-    let bgColor: String
-    let fontColor: String
+public struct AdvertisementResponse: Decodable {
+    public let advertisementId: Int
+    public let title: String?
+    public let subTitle: String?
+    public let extraContent: String?
+    public let imageUrl: String?
+    public let imageWidth: Int
+    public let imageHeight: Int
+    public let linkUrl: String?
+    public let bgColor: String?
+    public let fontColor: String?
 }

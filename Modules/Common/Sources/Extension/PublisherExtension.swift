@@ -1,6 +1,6 @@
 import Combine
 
-extension Publisher {
+public extension Publisher {
     var mapVoid : Publishers.Map<Self, Void> {
         map { _ in () }
     }

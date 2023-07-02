@@ -1,7 +1,7 @@
 import Foundation
 
 public struct PlatformStoreExtraResponse: Decodable {
-    let reviewsCount: Int?
-    let rating: Double?
-    let visitCounts: StoreVisitCountsResponse?
+    public let reviewsCount: Int?
+    public let rating: Double?
+    public let visitCounts: StoreVisitCountsResponse?
 }
