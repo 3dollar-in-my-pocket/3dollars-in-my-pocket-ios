@@ -8,7 +8,6 @@ import Common
 final class HomeViewModel: BaseViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
-        let onCollecitonViewLoaded = PassthroughSubject<Void, Never>()
         let changeMaxDistance = PassthroughSubject<Double, Never>()
         let changeMapLocation = PassthroughSubject<CLLocation, Never>()
         let selectCategory = PassthroughSubject<Category?, Never>()
@@ -26,7 +25,6 @@ final class HomeViewModel: BaseViewModel {
     struct Output {
         let address = PassthroughSubject<String, Never>()
         let categoryFilter = PassthroughSubject<Category?, Never>()
-        let sortType = PassthroughSubject<StoreSortType, Never>()
         let isOnlyBossStore = PassthroughSubject<Bool, Never>()
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
@@ -122,7 +120,69 @@ final class HomeViewModel: BaseViewModel {
                 }
             })
             .store(in: &cancellables)
-            
+        
+        input.changeMaxDistance
+            .withUnretained(self)
+            .sink { owner, distance in
+                owner.state.mapMaxDistance = distance
+            }
+            .store(in: &cancellables)
+        
+        input.changeMapLocation
+            .withUnretained(self)
+            .sink { owner, location in
+                owner.state.cameraPosition = CLLocation(
+                    latitude: location.coordinate.latitude,
+                    longitude: location.coordinate.longitude
+                )
+            }
+            .store(in: &cancellables)
+        
+        input.selectCategory
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, categoryFilter in
+                owner.state.categoryFilter = categoryFilter
+            })
+            .asyncMap { owner, _ in
+                await owner.fetchAroundStore()
+            }
+            .withUnretained(self)
+            .sink(receiveValue: { owner, result in
+                owner.output.showLoading.send(false)
+                
+                switch result {
+                case .success(let storeCard):
+                    owner.state.stores = storeCard
+                    owner.output.storeCards.send(storeCard)
+                    
+                case .failure(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            })
+            .store(in: &cancellables)
+        
+        input.onToggleSort
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, sortType in
+                owner.state.sortType = sortType
+            })
+            .asyncMap { owner, _ in
+                await owner.fetchAroundStore()
+            }
+            .withUnretained(self)
+            .sink(receiveValue: { owner, result in
+                owner.output.showLoading.send(false)
+                
+                switch result {
+                case .success(let storeCard):
+                    owner.state.stores = storeCard
+                    owner.output.storeCards.send(storeCard)
+                    
+                case .failure(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            })
+            .store(in: &cancellables)
     }
     
     private func fetchAroundStore() async -> Result<[StoreCard], Error> {

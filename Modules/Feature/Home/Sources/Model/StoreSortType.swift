@@ -6,4 +6,15 @@ enum StoreSortType: String {
     init(value: String) {
         self = StoreSortType(rawValue: value) ?? .unknown
     }
+    
+    func toggled() -> StoreSortType {
+        switch self {
+        case .distanceAsc:
+            return .latest
+        case .latest:
+            return .distanceAsc
+        case .unknown:
+            return .distanceAsc
+        }
+    }
 }

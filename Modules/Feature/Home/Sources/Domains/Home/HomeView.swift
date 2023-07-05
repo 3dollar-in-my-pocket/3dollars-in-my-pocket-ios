@@ -29,20 +29,7 @@ final class HomeView: BaseView {
         $0.contentEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 14)
     }
     
-    let sortingButton = UIButton().then {
-        $0.layer.borderColor = DesignSystemAsset.Colors.gray30.color.cgColor
-        $0.layer.borderWidth = 1
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
-        $0.layer.cornerRadius = 10
-        $0.setTitle("거리순 보기", for: .normal)
-        $0.setTitleColor(DesignSystemAsset.Colors.gray70.color, for: .normal)
-        $0.setImage(DesignSystemAsset.Icons.change.image
-            .resizeImage(scaledTo: 16)
-            .withTintColor(DesignSystemAsset.Colors.gray70.color), for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
-        $0.contentEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 14)
-    }
+    let sortingButton = SortingButton()
     
     let onlyBossToggleButton = OnlyBossToggleButton()
     
