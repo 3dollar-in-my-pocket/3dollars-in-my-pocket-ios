@@ -33,6 +33,16 @@ final class HomeView: BaseView {
     
     let onlyBossToggleButton = OnlyBossToggleButton()
     
+    let researchButton = UIButton().then {
+        $0.setTitle("현재 지도에서 가게 재검색", for: .normal)
+        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 12)
+        $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+        $0.backgroundColor = DesignSystemAsset.Colors.mainRed.color
+        $0.layer.cornerRadius = 17
+        $0.alpha = 0.0
+    }
+    
     let currentLocationButton = UIButton().then {
         $0.setImage(DesignSystemAsset.Icons.locationCurrent.image.withTintColor(DesignSystemAsset.Colors.systemBlack.color), for: .normal)
         $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
@@ -70,6 +80,7 @@ final class HomeView: BaseView {
     override func setup() {
         addSubViews([
             mapView,
+            researchButton,
             addressButton,
             categoryFilterButton,
             sortingButton,
@@ -109,6 +120,12 @@ final class HomeView: BaseView {
             $0.height.equalTo(34)
         }
         
+        researchButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(sortingButton)
+            make.height.equalTo(34)
+        }
+        
         currentLocationButton.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20)
             $0.bottom.equalTo(collectionView.snp.top).offset(-16)
@@ -126,6 +143,17 @@ final class HomeView: BaseView {
             $0.right.equalToSuperview()
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-15)
             $0.height.equalTo(HomeCell.Layout.size.height)
+        }
+    }
+    
+    func setHiddenResearchButton(isHidden: Bool) {
+        UIView.transition(
+            with: researchButton,
+            duration: 0.3,
+            options: .curveEaseInOut
+        ) { [weak self] in
+            self?.researchButton.transform = isHidden ? .identity : .init(translationX: 0, y: 56)
+            self?.researchButton.alpha = isHidden ? 0.0 : 1.0
         }
     }
     

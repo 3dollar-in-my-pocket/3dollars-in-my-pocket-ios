@@ -37,10 +37,7 @@ public final class HomeViewController: BaseViewController {
     
     public override func bindViewModelInput() {
 //        let selectCategory = PassthroughSubject<Category?, Never>()
-//        let onToggleSort = PassthroughSubject<StoreSortType, Never>()
 //        let searchByAddress = PassthroughSubject<CLLocation, Never>()
-//        let onTapResearch = PassthroughSubject<Void, Never>()
-//        let onTapCurrentLocation = PassthroughSubject<Void, Never>()
 //        let selectStore = PassthroughSubject<Int, Never>()
 //        let onTapStore = PassthroughSubject<Int, Never>()
 //        let onTapVisitButton = PassthroughSubject<Int, Never>()
@@ -51,10 +48,26 @@ public final class HomeViewController: BaseViewController {
             .subscribe(viewModel.input.onToggleSort)
             .store(in: &cancellables)
         
+        homeView.researchButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapResearch)
+            .store(in: &cancellables)
+        
+        homeView.currentLocationButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapCurrentLocation)
+            .store(in: &cancellables)
     }
     
     public override func bindViewModelOutput() {
-
+        viewModel.output.isHiddenResearchButton
+            .withUnretained(self)
+            .sink { owner, isHidden in
+                owner.homeView.setHiddenResearchButton(isHidden: isHidden)
+            }
+            .store(in: &cancellables)
     }
 }
 

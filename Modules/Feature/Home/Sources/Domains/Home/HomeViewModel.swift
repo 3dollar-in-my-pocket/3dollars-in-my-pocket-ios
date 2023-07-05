@@ -40,7 +40,6 @@ final class HomeViewModel: BaseViewModel {
         var categoryFilter: Category?
         var sortType: StoreSortType = .distanceAsc
         var isOnlyBossStore = false
-        var isHiddenResearchButton = false
         var mapMaxDistance: Double?
         var cameraPosition: CLLocation?
         var currentLocation: CLLocation?
@@ -125,6 +124,7 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, distance in
                 owner.state.mapMaxDistance = distance
+                owner.output.isHiddenResearchButton.send(false)
             }
             .store(in: &cancellables)
         
@@ -135,6 +135,7 @@ final class HomeViewModel: BaseViewModel {
                     latitude: location.coordinate.latitude,
                     longitude: location.coordinate.longitude
                 )
+                owner.output.isHiddenResearchButton.send(false)
             }
             .store(in: &cancellables)
         
