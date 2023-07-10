@@ -171,6 +171,7 @@ public enum ThreeDollarInMyPocketAsset {
     public static let imgTopIndicator = ThreeDollarInMyPocketImages(name: "img_top_indicator")
     public static let imgVisitFail = ThreeDollarInMyPocketImages(name: "img_visit_fail")
     public static let imgVisitSuccess = ThreeDollarInMyPocketImages(name: "img_visit_success")
+    public static let imgSigninBackground = ThreeDollarInMyPocketImages(name: "img_signin_background")
   }
   public enum Colors {
     public static let black = ThreeDollarInMyPocketColors(name: "black")

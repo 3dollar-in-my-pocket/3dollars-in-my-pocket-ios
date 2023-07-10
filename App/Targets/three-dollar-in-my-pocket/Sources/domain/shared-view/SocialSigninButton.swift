@@ -5,7 +5,7 @@ import RxCocoa
 
 final class SocialSigninButton: BaseView {
     fileprivate let containerButton = UIButton().then {
-        $0.layer.cornerRadius = 20
+        $0.layer.cornerRadius = 12
     }
     
     private let stackView = UIStackView().then {
@@ -47,7 +47,7 @@ final class SocialSigninButton: BaseView {
             make.top.equalToSuperview()
             make.right.equalToSuperview()
             make.bottom.equalToSuperview()
-            make.height.equalTo(40)
+            make.height.equalTo(48)
         }
         
         self.stackView.snp.makeConstraints { make in
@@ -70,9 +70,9 @@ final class SocialSigninButton: BaseView {
             
         case .apple:
             self.containerButton.accessibilityLabel = "sign_in_with_apple".localized
-            self.containerButton.backgroundColor = .white
+            self.containerButton.backgroundColor = .black
             self.titleLabel.text = "sign_in_with_apple".localized
-            self.titleLabel.textColor = .black
+            self.titleLabel.textColor = .white
             self.socialImage.image = UIImage(named: "ic_apple")
             
         default:

@@ -57,8 +57,7 @@ final class SigninViewController: BaseViewController, View, SigninCoordinator {
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
-        self.signinView.appleButton.rx
-            .controlEvent(.touchUpInside)
+        self.signinView.appleButton.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .map { _ in Reactor.Action.tapAppleButton }
             .bind(to: reactor.action)

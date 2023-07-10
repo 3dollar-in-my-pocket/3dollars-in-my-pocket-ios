@@ -51,7 +51,7 @@ final class SigninAnonymousViewController: BaseViewController, View, SigninAnony
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
-        self.signinAnonymousView.appleButton.rx.controlEvent(.touchUpInside)
+        self.signinAnonymousView.appleButton.rx.tap
             .map { _ in () }
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .map { Reactor.Action.tapAppleButton }
