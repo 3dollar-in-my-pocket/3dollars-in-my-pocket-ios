@@ -125,18 +125,12 @@ extension HomeViewController: NMFMapViewCameraDelegate {
             viewModel.input.changeMapLocation.send(mapLocation)
         } else if reason == NMFMapChangedByDeveloper && isFirstLoad {
             isFirstLoad = false
-            let mapLocation = CLLocation(
-                latitude: mapView.cameraPosition.target.lat,
-                longitude: mapView.cameraPosition.target.lng
-            )
             let distance = mapView
                 .contentBounds
                 .boundsLatLngs[0]
                 .distance(to: mapView.contentBounds.boundsLatLngs[1])
             
-            viewModel.input.changeMaxDistance.send(distance / 3)
-            viewModel.input.changeMapLocation.send(mapLocation)
-            viewModel.input.viewDidLoad.send(())
+            viewModel.input.viewDidLoad.send(distance)
         }
     }
     

@@ -7,7 +7,7 @@ import Common
 
 final class HomeViewModel: BaseViewModel {
     struct Input {
-        let viewDidLoad = PassthroughSubject<Void, Never>()
+        let viewDidLoad = PassthroughSubject<Double, Never>()
         let changeMaxDistance = PassthroughSubject<Double, Never>()
         let changeMapLocation = PassthroughSubject<CLLocation, Never>()
         let selectCategory = PassthroughSubject<Category?, Never>()
@@ -41,7 +41,9 @@ final class HomeViewModel: BaseViewModel {
         var sortType: StoreSortType = .distanceAsc
         var isOnlyBossStore = false
         var mapMaxDistance: Double?
-        var cameraPosition: CLLocation?
+        var newCameraPosition: CLLocation?
+        var newMapMaxDistance: Double?
+        var resultCameraPosition: CLLocation?
         var currentLocation: CLLocation?
         var advertisementMarker: Advertisement? // Splash에서 조회하여 Context로 전달 받아야 함
         var stores: [StoreCard] = []
@@ -84,7 +86,8 @@ final class HomeViewModel: BaseViewModel {
     override func bind() {
         input.viewDidLoad
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, _ in
+            .handleEvents(receiveOutput: { owner, distance in
+                owner.state.mapMaxDistance = distance
                 owner.output.showLoading.send(true)
             })
             .flatMap { owner, _  in
@@ -96,8 +99,8 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, location in
-                owner.state.cameraPosition = location
-                owner.state.currentLocation = owner.state.cameraPosition
+                owner.state.resultCameraPosition = location
+                owner.state.currentLocation = owner.state.resultCameraPosition
                 owner.output.cameraPosition.send(location)
             })
             .asyncMap { owner, _ in
@@ -121,7 +124,7 @@ final class HomeViewModel: BaseViewModel {
         input.changeMaxDistance
             .withUnretained(self)
             .sink { owner, distance in
-                owner.state.mapMaxDistance = distance
+                owner.state.newMapMaxDistance = distance
                 owner.output.isHiddenResearchButton.send(false)
             }
             .store(in: &cancellables)
@@ -129,10 +132,7 @@ final class HomeViewModel: BaseViewModel {
         input.changeMapLocation
             .withUnretained(self)
             .sink { owner, location in
-                owner.state.cameraPosition = CLLocation(
-                    latitude: location.coordinate.latitude,
-                    longitude: location.coordinate.longitude
-                )
+                owner.state.newCameraPosition = location
                 owner.output.isHiddenResearchButton.send(false)
             }
             .store(in: &cancellables)
@@ -214,10 +214,9 @@ final class HomeViewModel: BaseViewModel {
             filterCertifiedStores: false,
             size: 10,
             cursor: nil,
-            mapLatitude: state.cameraPosition?.coordinate.latitude ?? 0,
-            mapLongitude: state.cameraPosition?.coordinate.longitude ?? 0
+            mapLatitude: state.resultCameraPosition?.coordinate.latitude ?? 0,
+            mapLongitude: state.resultCameraPosition?.coordinate.longitude ?? 0
         )
-        
         
         return await storeService.fetchAroundStores(
             input: input,
