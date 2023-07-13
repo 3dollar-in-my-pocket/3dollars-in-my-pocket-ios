@@ -14,7 +14,6 @@ final class HomeCellTagView: BaseView {
     
     private let titleLabel = UILabel().then {
         $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 12)
-        $0.text = "최근 방문 5명"
         $0.textColor = DesignSystemAsset.Colors.systemWhite.color
     }
     
@@ -44,5 +43,11 @@ final class HomeCellTagView: BaseView {
         snp.makeConstraints {
             $0.edges.equalTo(containerView).priority(.high)
         }
+    }
+    
+    func bind(existsCount: Int?) {
+        let existsCount = existsCount ?? 0
+        
+        titleLabel.text = "최근 방문 \(existsCount)명"
     }
 }

@@ -9,7 +9,6 @@ final class HomeCellInfoView: BaseView {
     private let reviewCountLabel = UILabel().then {
         $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
         $0.textColor = DesignSystemAsset.Colors.gray40.color
-        $0.text = "12개"
     }
     
     private let dividorView = UIView().then {
@@ -21,7 +20,6 @@ final class HomeCellInfoView: BaseView {
     private let locationLabel = UILabel().then {
         $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
         $0.textColor = DesignSystemAsset.Colors.gray40.color
-        $0.text = "1km +"
     }
     
     override func setup() {
@@ -69,6 +67,17 @@ final class HomeCellInfoView: BaseView {
             $0.left.equalTo(reviewImage).priority(.high)
             $0.height.equalTo(18)
             $0.right.equalTo(locationLabel).priority(.high)
+        }
+    }
+    
+    func bind(reviewCount: Int?, distance: Int) {
+        let reviewCount = reviewCount ?? 0
+        reviewCountLabel.text = "\(reviewCount)개"
+        
+        if distance > 1000 {
+            locationLabel.text = "1km +"
+        } else {
+            locationLabel.text = "\(distance)km"
         }
     }
 }

@@ -21,6 +21,6 @@ struct FetchAroundStoreRequest: RequestType {
     }
     
     var path: String {
-        return "/api/v4/around"
+        return "/api/v4/stores/around"
     }
 }

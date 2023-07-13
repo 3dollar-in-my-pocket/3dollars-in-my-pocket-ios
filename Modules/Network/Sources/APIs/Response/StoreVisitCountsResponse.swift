@@ -1,7 +1,7 @@
 import Foundation
 
 public struct StoreVisitCountsResponse: Decodable {
-    let existsCounts: Int?
-    let notExistsCounts: Int?
-    let isCertified: Bool
+    public let existsCounts: Int?
+    public let notExistsCounts: Int?
+    public let isCertified: Bool
 }

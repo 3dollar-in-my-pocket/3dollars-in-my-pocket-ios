@@ -11,6 +11,7 @@ struct StoreCard {
     let distance: Int
     let reviewsCount: Int?
     let rating: Double?
+    let existsCounts: Int?
     
     init(response: PlatformStoreWithDetailResponse) {
         self.storeType = StoreType(value: response.store.storeType)
@@ -21,6 +22,24 @@ struct StoreCard {
         self.distance = response.distanceM
         self.reviewsCount = response.extra.reviewsCount
         self.rating = response.extra.rating
+        self.existsCounts = response.extra.visitCounts?.existsCounts
+    }
+}
+
+extension StoreCard {
+    /// 카테고리들 나열된 문자열 ex.) #붕어빵 #땅콩과자 #호떡
+    var categoriesString: String {
+        return self.categories.map { "#\($0.name)"}.joined(separator: " ")
+    }
+}
+
+extension StoreCard: Hashable {
+    static func == (lhs: StoreCard, rhs: StoreCard) -> Bool {
+        return lhs.storeId == rhs.storeId
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(storeId)
     }
 }
 

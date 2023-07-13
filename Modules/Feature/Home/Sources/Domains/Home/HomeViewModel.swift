@@ -96,11 +96,9 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, location in
-                owner.state.cameraPosition = CLLocation(
-                    latitude: location.coordinate.latitude,
-                    longitude: location.coordinate.longitude
-                )
+                owner.state.cameraPosition = location
                 owner.state.currentLocation = owner.state.cameraPosition
+                owner.output.cameraPosition.send(location)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -183,6 +181,22 @@ final class HomeViewModel: BaseViewModel {
                     owner.output.route.send(.showErrorAlert(error))
                 }
             })
+            .store(in: &cancellables)
+        
+        input.onTapCurrentLocation
+            .withUnretained(self)
+            .flatMap { owner, _ in
+                owner.locationManager.getCurrentLocationPublisher()
+                    .catch { error -> AnyPublisher<CLLocation, Never> in
+                        owner.output.route.send(.showErrorAlert(error))
+                        return Empty().eraseToAnyPublisher()
+                    }
+            }
+            .withUnretained(self)
+            .sink { owner, location in
+                owner.state.currentLocation = location
+                owner.output.cameraPosition.send(location)
+            }
             .store(in: &cancellables)
     }
     

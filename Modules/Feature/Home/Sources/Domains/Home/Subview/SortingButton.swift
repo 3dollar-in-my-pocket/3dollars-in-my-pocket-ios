@@ -4,7 +4,7 @@ import Combine
 import DesignSystem
 
 final class SortingButton: UIButton {
-    let sortTypePublisher = CurrentValueSubject<StoreSortType, Never>(.distanceAsc)
+    let sortTypePublisher = PassthroughSubject<StoreSortType, Never>()
     
     private var sortType: StoreSortType = .distanceAsc
     private var cancellables = Set<AnyCancellable>()

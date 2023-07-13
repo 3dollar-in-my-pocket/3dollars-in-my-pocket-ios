@@ -70,7 +70,6 @@ final class HomeView: BaseView {
     }
     
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.register([HomeCell.self])
         $0.backgroundColor = .clear
         $0.contentInset = .init(top: 0, left: 20, bottom: 0, right: 20)
         $0.showsHorizontalScrollIndicator = false
@@ -142,7 +141,7 @@ final class HomeView: BaseView {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-15)
-            $0.height.equalTo(HomeCell.Layout.size.height)
+            $0.height.equalTo(HomeStoreCardCell.Layout.size.height)
         }
     }
     
@@ -157,9 +156,18 @@ final class HomeView: BaseView {
         }
     }
     
+    func moveCamera(location: CLLocation) {
+        let target = NMGLatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
+        let cameraPosition = NMFCameraPosition(target, zoom: mapView.zoomLevel)
+        let cameraUpdate = NMFCameraUpdate(position: cameraPosition)
+        
+        cameraUpdate.animation = .easeIn
+        mapView.moveCamera(cameraUpdate)
+    }
+    
     private func generateLayout() -> UICollectionViewLayout {
         let layout = HomeCardFlowLayout()
-        layout.itemSize = HomeCell.Layout.size
+        layout.itemSize = HomeStoreCardCell.Layout.size
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 12
         layout.minimumInteritemSpacing = 12

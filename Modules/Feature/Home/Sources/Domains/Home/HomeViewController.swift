@@ -4,9 +4,14 @@ import Common
 import DesignSystem
 import NMapsMap
 
+typealias HomeStoreCardSanpshot = NSDiffableDataSourceSnapshot<HomeSection, HomeSectionItem>
+
 public final class HomeViewController: BaseViewController {
     private let homeView = HomeView()
     private let viewModel = HomeViewModel()
+    private lazy var dataSource = HomeDataSource(collectionView: homeView.collectionView, viewModel: viewModel)
+    
+    private var isFirstLoad = true
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -30,8 +35,6 @@ public final class HomeViewController: BaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewModel.input.viewDidLoad.send(())
-        homeView.collectionView.dataSource = self
         homeView.mapView.addCameraDelegate(delegate: self)
     }
     
@@ -63,23 +66,42 @@ public final class HomeViewController: BaseViewController {
     
     public override func bindViewModelOutput() {
         viewModel.output.isHiddenResearchButton
+            .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, isHidden in
                 owner.homeView.setHiddenResearchButton(isHidden: isHidden)
             }
             .store(in: &cancellables)
-    }
-}
-
-extension HomeViewController: UICollectionViewDataSource {
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        
+        viewModel.output.storeCards
+            .receive(on: DispatchQueue.main)
+            .map { storeCards in
+                HomeSection(items: storeCards.map { HomeSectionItem.storeCard($0) })
+            }
+            .withUnretained(self)
+            .sink { owner, section in
+                owner.updateDataSource(section: [section])
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.cameraPosition
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, location in
+                owner.homeView.moveCamera(location: location)
+            }
+            .store(in: &cancellables)
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: HomeCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+    private func updateDataSource(section: [HomeSection]) {
+        var snapshot = HomeStoreCardSanpshot()
         
-        return cell
+        section.forEach {
+            snapshot.appendSections([$0])
+            snapshot.appendItems($0.items)
+        }
+        
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
 
@@ -101,6 +123,20 @@ extension HomeViewController: NMFMapViewCameraDelegate {
             
             viewModel.input.changeMaxDistance.send(distance / 3)
             viewModel.input.changeMapLocation.send(mapLocation)
+        } else if reason == NMFMapChangedByDeveloper && isFirstLoad {
+            isFirstLoad = false
+            let mapLocation = CLLocation(
+                latitude: mapView.cameraPosition.target.lat,
+                longitude: mapView.cameraPosition.target.lng
+            )
+            let distance = mapView
+                .contentBounds
+                .boundsLatLngs[0]
+                .distance(to: mapView.contentBounds.boundsLatLngs[1])
+            
+            viewModel.input.changeMaxDistance.send(distance / 3)
+            viewModel.input.changeMapLocation.send(mapLocation)
+            viewModel.input.viewDidLoad.send(())
         }
     }
     

@@ -25,12 +25,15 @@ final class ResponseProvider {
     private func decode<T: Decodable>(data: Data) throws -> T {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-
-        guard let result = try? decoder.decode(T.self, from: data) else {
+        
+        do {
+            let result = try decoder.decode(T.self, from: data)
+            
+            return result
+        } catch {
+            print("⛔️[ResponseProvider]: Decoding error\n\(error)")
             throw NetworkError.decodingError
         }
-
-        return result
     }
     
     private func decodeError(data: Data) -> ResponseContainer<String>? {

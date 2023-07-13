@@ -1,8 +1,9 @@
 import UIKit
 
+import Common
 import DesignSystem
 
-final class HomeCell: UICollectionViewCell {
+final class HomeStoreCardCell: UICollectionViewCell {
     enum Layout {
         static let size = CGSize(width: UIScreen.main.bounds.width - 81, height: 152)
     }
@@ -17,7 +18,6 @@ final class HomeCell: UICollectionViewCell {
     private let categoryLabel = UILabel().then {
         $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
         $0.textColor = DesignSystemAsset.Colors.gray40.color
-        $0.text = "#붕어빵 #한식"
         $0.numberOfLines = 0
         $0.textAlignment = .left
     }
@@ -25,7 +25,6 @@ final class HomeCell: UICollectionViewCell {
     private let titleLabel = UILabel().then {
         $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
         $0.textColor = DesignSystemAsset.Colors.systemWhite.color
-        $0.text = "강남역 0번 출구 앞 붕어빵"
         $0.numberOfLines = 0
         $0.textAlignment = .left
     }
@@ -56,6 +55,14 @@ final class HomeCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func bind(storeCard: StoreCard) {
+        categoryImage.setImage(urlString: storeCard.categories.first?.imageUrl)
+        categoryLabel.text = storeCard.categoriesString
+        titleLabel.text = storeCard.storeName
+        tagView.bind(existsCount: storeCard.existsCounts)
+        infoView.bind(reviewCount: storeCard.reviewsCount, distance: storeCard.distance)
     }
     
     private func setup() {

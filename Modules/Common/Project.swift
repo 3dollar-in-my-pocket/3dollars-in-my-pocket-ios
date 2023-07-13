@@ -34,7 +34,9 @@ let project = Project(
             bundleId: "com.macgongmon.-dollar-in-my-pocket.common",
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
             sources: ["Sources/**"],
-            dependencies: []
+            dependencies: [
+                .external(name: "Kingfisher")
+            ]
         )
     ]
 )
