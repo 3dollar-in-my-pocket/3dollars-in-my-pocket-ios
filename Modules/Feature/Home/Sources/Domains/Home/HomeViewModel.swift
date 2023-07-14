@@ -66,6 +66,7 @@ final class HomeViewModel: BaseViewModel {
     private let storeService: StoreServiceProtocol
     private let advertisementService: AdvertisementServiceProtocol
     private let userService: UserServiceProtocol
+    private let mapService: MapServiceProtocol
     private let locationManager: LocationManagerProtocol
     
     init(
@@ -73,18 +74,20 @@ final class HomeViewModel: BaseViewModel {
         storeService: StoreServiceProtocol = StoreService(),
         advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
         userService: UserServiceProtocol = UserService(),
+        mapService: MapServiceProtocol = MapService(),
         locationManager: LocationManagerProtocol = LocationManager.shared
     ) {
         self.state = state
         self.storeService = storeService
         self.advertisementService = advertisementService
         self.userService = userService
+        self.mapService = mapService
         self.locationManager = locationManager
         super.init()
     }
     
     override func bind() {
-        input.viewDidLoad
+        let getCurrentLocation = input.viewDidLoad
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, distance in
                 owner.state.mapMaxDistance = distance
@@ -97,6 +100,30 @@ final class HomeViewModel: BaseViewModel {
                         return Empty().eraseToAnyPublisher()
                     }
             }
+            .share()
+        
+        getCurrentLocation
+            .withUnretained(self)
+            .asyncMap { owner, locaiton in
+                await owner.mapService.getAddressFromLocation(
+                    latitude: locaiton.coordinate.latitude,
+                    longitude: locaiton.coordinate.longitude
+                )
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                switch result {
+                case .success(let address):
+                    owner.state.address = address
+                    owner.output.address.send(address)
+                    
+                case .failure(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            }
+            .store(in: &cancellables)
+        
+        getCurrentLocation
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, location in
                 owner.state.resultCameraPosition = location
@@ -182,6 +209,34 @@ final class HomeViewModel: BaseViewModel {
                 }
             })
             .store(in: &cancellables)
+        
+        
+        input.onTapResearch
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, _ in
+                owner.output.showLoading.send(true)
+                owner.state.mapMaxDistance = owner.state.newMapMaxDistance
+                owner.state.resultCameraPosition = owner.state.newCameraPosition
+            })
+            .asyncMap { owner, _ in
+                await owner.fetchAroundStore()
+            }
+            .withUnretained(self)
+            .sink(receiveValue: { owner, result in
+                owner.output.showLoading.send(false)
+                owner.output.isHiddenResearchButton.send(true)
+                
+                switch result {
+                case .success(let storeCard):
+                    owner.state.stores = storeCard
+                    owner.output.storeCards.send(storeCard)
+                    
+                case .failure(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            })
+            .store(in: &cancellables)
+            
         
         input.onTapCurrentLocation
             .withUnretained(self)

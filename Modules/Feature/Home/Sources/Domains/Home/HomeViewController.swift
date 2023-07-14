@@ -62,9 +62,23 @@ public final class HomeViewController: BaseViewController {
             .mapVoid
             .subscribe(viewModel.input.onTapCurrentLocation)
             .store(in: &cancellables)
+        
+        homeView.researchButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapResearch)
+            .store(in: &cancellables)
     }
     
     public override func bindViewModelOutput() {
+        viewModel.output.address
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, address in
+                owner.homeView.addressButton.bind(address: address)
+            }
+            .store(in: &cancellables)
+        
         viewModel.output.isHiddenResearchButton
             .receive(on: DispatchQueue.main)
             .withUnretained(self)

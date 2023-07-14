@@ -50,6 +50,10 @@ public final class AddressButton: BaseView {
             make.edges.equalTo(containerView).priority(.high)
         }
     }
+    
+    func bind(address: String) {
+        addressButton.setTitle(address, for: .normal)
+    }
 }
 
 extension AddressButton {
