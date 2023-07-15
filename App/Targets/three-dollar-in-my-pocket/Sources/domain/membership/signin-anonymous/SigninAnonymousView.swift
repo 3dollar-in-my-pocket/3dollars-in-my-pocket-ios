@@ -7,7 +7,7 @@ import Then
 final class SigninAnonymousView: BaseView {
     let closeButton = UIButton().then {
         $0.setImage(UIImage(named: "ic_close_white"), for: .normal)
-        $0.tintColor = .white
+        $0.tintColor = DesignSystemAsset.Colors.systemWhite.color
     }
     
     let logoText = UIImageView().then {
@@ -20,12 +20,12 @@ final class SigninAnonymousView: BaseView {
     let appleButton = SocialSigninButton(socialType: .apple)
     
     private let anonymousLabel = UILabel().then {
-        $0.font = .regular(size: 14)
-        $0.textColor = .white
+        $0.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
+        $0.textColor = DesignSystemAsset.Colors.systemWhite.color
         $0.numberOfLines = 0
         $0.text = "sign_in_anonymous_description".localized
-        $0.textAlignment = .center
         $0.setLineHeight(lineHeight: 20)
+        $0.textAlignment = .center
     }
     
     override func setup() {

@@ -1,5 +1,6 @@
 import UIKit
 
+import DesignSystem
 import RxSwift
 import RxCocoa
 
@@ -70,9 +71,9 @@ final class SocialSigninButton: BaseView {
             
         case .apple:
             self.containerButton.accessibilityLabel = "sign_in_with_apple".localized
-            self.containerButton.backgroundColor = .black
+            self.containerButton.backgroundColor = DesignSystemAsset.Colors.systemBlack.color
             self.titleLabel.text = "sign_in_with_apple".localized
-            self.titleLabel.textColor = .white
+            self.titleLabel.textColor = DesignSystemAsset.Colors.systemWhite.color
             self.socialImage.image = UIImage(named: "ic_apple")
             
         default:

@@ -1,4 +1,3 @@
-// MARK: - 버튼 수정 중 가은
 import UIKit
 import AuthenticationServices
 
@@ -17,8 +16,8 @@ final class SigninView: BaseView {
     
     let signinWithoutIdButton = UIButton().then {
         $0.setTitle("sign_in_without_id".localized, for: .normal)
-        $0.setTitleColor(.white, for: .normal)
-        $0.titleLabel?.font = .medium(size: 14)
+        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.medium.font(size: 14)
     }
     
     override func setup() {
@@ -37,7 +36,6 @@ final class SigninView: BaseView {
             make.left.equalToSuperview().offset(32)
             make.right.equalToSuperview().offset(-33)
             make.top.equalToSuperview().offset(213)
-            make.height.equalTo(178)
         }
         
         self.kakaoButton.snp.makeConstraints { make in
