@@ -7,7 +7,8 @@ import Common
 
 final class HomeViewModel: BaseViewModel {
     struct Input {
-        let viewDidLoad = PassthroughSubject<Double, Never>()
+        let viewDidLoad = PassthroughSubject<Void, Never>()
+        let onMapLoad = PassthroughSubject<Double, Never>()
         let changeMaxDistance = PassthroughSubject<Double, Never>()
         let changeMapLocation = PassthroughSubject<CLLocation, Never>()
         let selectCategory = PassthroughSubject<Category?, Never>()
@@ -88,7 +89,7 @@ final class HomeViewModel: BaseViewModel {
     }
     
     override func bind() {
-        let getCurrentLocation = input.viewDidLoad
+        let getCurrentLocation = input.onMapLoad
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, distance in
                 owner.state.mapMaxDistance = distance
@@ -147,6 +148,17 @@ final class HomeViewModel: BaseViewModel {
                     owner.output.route.send(.showErrorAlert(error))
                 }
             })
+            .store(in: &cancellables)
+        
+        input.viewDidLoad
+            .withUnretained(self)
+            .asyncMap { owner, _ in
+                await owner.userService.fetchUser()
+            }
+            .compactMapValue()
+            .filter { $0.marketingConsent == .unverified }
+            .map { _ in Route.presentPolicy }
+            .subscribe(output.route)
             .store(in: &cancellables)
         
         input.changeMaxDistance

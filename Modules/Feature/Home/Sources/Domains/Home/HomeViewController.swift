@@ -36,6 +36,7 @@ public final class HomeViewController: BaseViewController {
         super.viewDidLoad()
         
         homeView.mapView.addCameraDelegate(delegate: self)
+        viewModel.input.viewDidLoad.send(())
     }
     
     public override func bindViewModelInput() {
@@ -150,7 +151,7 @@ extension HomeViewController: NMFMapViewCameraDelegate {
                 .boundsLatLngs[0]
                 .distance(to: mapView.contentBounds.boundsLatLngs[1])
             
-            viewModel.input.viewDidLoad.send(distance)
+            viewModel.input.onMapLoad.send(distance)
         }
     }
     

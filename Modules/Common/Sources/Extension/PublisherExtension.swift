@@ -24,5 +24,28 @@ public extension Publisher {
             }
         }
     }
+    
+    func compactMapValue<T: Any>() -> Publishers.CompactMap<Self, T> where Output == Result<T, Error> {
+        compactMap { output in
+            switch output {
+            case .success(let value):
+                return value
+                
+            default:
+                return nil
+            }
+        }
+    }
+    
+    func compactMapError<T: Any>() -> Publishers.CompactMap<Self, Error> where Output == Result<T, Error> {
+        compactMap { output in
+            switch output {
+            case .failure(let error):
+                return error
+                
+            default:
+                return nil
+            }
+        }
+    }
 }
-
