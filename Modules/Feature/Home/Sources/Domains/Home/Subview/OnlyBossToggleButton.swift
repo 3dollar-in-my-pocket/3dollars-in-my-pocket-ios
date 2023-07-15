@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 import DesignSystem
 
@@ -14,6 +15,8 @@ public final class OnlyBossToggleButton: UIButton {
         
         setup()
     }
+    
+    private var cancellables = Set<AnyCancellable>()
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -34,6 +37,13 @@ public final class OnlyBossToggleButton: UIButton {
         titleLabel?.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
         titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
         contentEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 14)
+        
+        controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.isSelected.toggle()
+            }
+            .store(in: &cancellables)
     }
     
     private func setSelected(_ isSelected: Bool) {

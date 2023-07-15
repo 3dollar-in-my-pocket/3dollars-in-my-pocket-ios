@@ -51,6 +51,12 @@ public final class HomeViewController: BaseViewController {
             .subscribe(viewModel.input.onToggleSort)
             .store(in: &cancellables)
         
+        homeView.onlyBossToggleButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapOnlyBoss)
+            .store(in: &cancellables)
+        
         homeView.researchButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid

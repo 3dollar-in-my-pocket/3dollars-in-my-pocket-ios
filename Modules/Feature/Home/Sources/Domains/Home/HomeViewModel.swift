@@ -12,6 +12,7 @@ final class HomeViewModel: BaseViewModel {
         let changeMapLocation = PassthroughSubject<CLLocation, Never>()
         let selectCategory = PassthroughSubject<Category?, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
+        let onTapOnlyBoss = PassthroughSubject<Void, Never>()
         let searchByAddress = PassthroughSubject<CLLocation, Never>()
         let onTapResearch = PassthroughSubject<Void, Never>()
         let onTapCurrentLocation = PassthroughSubject<Void, Never>()
@@ -210,6 +211,26 @@ final class HomeViewModel: BaseViewModel {
             })
             .store(in: &cancellables)
         
+        input.onTapOnlyBoss
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, isOnlyBoss in
+                owner.state.isOnlyBossStore.toggle()
+            })
+            .asyncMap { owner, _ in
+                await owner.fetchAroundStore()
+            }
+            .withUnretained(self)
+            .sink(receiveValue: { owner, result in
+                switch result {
+                case .success(let storeCard):
+                    owner.state.stores = storeCard
+                    owner.output.storeCards.send(storeCard)
+                    
+                case .failure(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            })
+            .store(in: &cancellables)
         
         input.onTapResearch
             .withUnretained(self)
@@ -266,7 +287,7 @@ final class HomeViewModel: BaseViewModel {
             categoryIds: categoryIds,
             targetStores: targetStores.map { $0.rawValue },
             sortType: state.sortType.rawValue,
-            filterCertifiedStores: false,
+            filterCertifiedStores: state.isOnlyBossStore,
             size: 10,
             cursor: nil,
             mapLatitude: state.resultCameraPosition?.coordinate.latitude ?? 0,
