@@ -4,6 +4,7 @@ import Combine
 import Common
 import DesignSystem
 import NMapsMap
+import Then
 
 typealias HomeStoreCardSanpshot = NSDiffableDataSourceSnapshot<HomeSection, HomeSectionItem>
 
@@ -18,7 +19,6 @@ public final class HomeViewController: BaseViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         
-        // TODO: 태그 정의 필요
         tabBarItem = UITabBarItem(title: nil, image: DesignSystemAsset.Icons.homeSolid.image, tag: 0)
     }
     
@@ -26,8 +26,13 @@ public final class HomeViewController: BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public static func instance() -> HomeViewController {
-        return HomeViewController()
+    public static func instance() -> UINavigationController {
+        let viewController = HomeViewController()
+        
+        return UINavigationController(rootViewController: viewController).then {
+            $0.isNavigationBarHidden = true
+            $0.interactivePopGestureRecognizer?.delegate = nil
+        }
     }
     
     public override func loadView() {
@@ -112,10 +117,14 @@ public final class HomeViewController: BaseViewController {
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, storeCards in
-                let section = HomeSection(items: storeCards.map { HomeSectionItem.storeCard($0) })
+                var section: HomeSection
                 
+                if storeCards.isEmpty {
+                    section = HomeSection(items: [HomeSectionItem.empty])
+                } else {
+                    section = HomeSection(items: storeCards.map { HomeSectionItem.storeCard($0) })
+                }
                 owner.updateDataSource(section: [section])
-                
             }
             .store(in: &cancellables)
         
@@ -125,7 +134,10 @@ public final class HomeViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, storeCardWithSelectIndex in
                 let (selectIndex, storeCards) = storeCardWithSelectIndex
-                guard storeCards.count > selectIndex else { return }
+                guard storeCards.count > selectIndex else {
+                    owner.clearMarker()
+                    return
+                }
                 
                 let indexPath = IndexPath(row: selectIndex, section: 0)
                 

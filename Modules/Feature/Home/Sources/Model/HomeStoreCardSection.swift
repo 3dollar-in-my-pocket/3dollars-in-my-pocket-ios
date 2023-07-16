@@ -6,4 +6,5 @@ struct HomeSection: Hashable {
 
 enum HomeSectionItem: Hashable {
     case storeCard(StoreCard)
+    case empty
 }

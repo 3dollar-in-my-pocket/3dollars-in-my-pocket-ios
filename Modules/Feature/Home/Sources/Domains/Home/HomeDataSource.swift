@@ -7,7 +7,8 @@ final class HomeDataSource: UICollectionViewDiffableDataSource<HomeSection, Home
         self.viewModel = viewModel
         
         collectionView.register([
-            HomeStoreCardCell.self
+            HomeStoreCardCell.self,
+            HomeStoreEmptyCell.self
         ])
         
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
@@ -21,6 +22,11 @@ final class HomeDataSource: UICollectionViewDiffableDataSource<HomeSection, Home
                     .map { _ in indexPath.row }
                     .subscribe(viewModel.input.onTapVisitButton)
                     .store(in: &cell.cancellables)
+                return cell
+                
+            case .empty:
+                let cell: HomeStoreEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                
                 return cell
             }
         }
