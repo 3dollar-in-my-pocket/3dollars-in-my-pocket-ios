@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 import Common
 import DesignSystem
@@ -10,6 +11,7 @@ public final class HomeViewController: BaseViewController {
     private let homeView = HomeView()
     private let viewModel = HomeViewModel()
     private lazy var dataSource = HomeDataSource(collectionView: homeView.collectionView, viewModel: viewModel)
+    private var markers: [NMFMarker] = []
     
     private var isFirstLoad = true
     
@@ -35,17 +37,15 @@ public final class HomeViewController: BaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
+        homeView.collectionView.delegate = self
         homeView.mapView.addCameraDelegate(delegate: self)
         viewModel.input.viewDidLoad.send(())
     }
     
     public override func bindViewModelInput() {
+        // TODO: 다른 화면 구현 후 바인딩 필요
 //        let selectCategory = PassthroughSubject<Category?, Never>()
 //        let searchByAddress = PassthroughSubject<CLLocation, Never>()
-//        let selectStore = PassthroughSubject<Int, Never>()
-//        let onTapStore = PassthroughSubject<Int, Never>()
-//        let onTapVisitButton = PassthroughSubject<Int, Never>()
-//        let onTapMarker = PassthroughSubject<Int, Never>()
 //        let onTapCurrentMarker = PassthroughSubject<Void, Never>()
         
         homeView.sortingButton.sortTypePublisher
@@ -75,6 +75,12 @@ public final class HomeViewController: BaseViewController {
             .mapVoid
             .subscribe(viewModel.input.onTapResearch)
             .store(in: &cancellables)
+        
+        if let layout = homeView.collectionView.collectionViewLayout as? HomeCardFlowLayout {
+            layout.currentIndexPublisher
+                .subscribe(viewModel.input.selectStore)
+                .store(in: &cancellables)
+        }
     }
     
     public override func bindViewModelOutput() {
@@ -94,22 +100,37 @@ public final class HomeViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.storeCards
-            .receive(on: DispatchQueue.main)
-            .map { storeCards in
-                HomeSection(items: storeCards.map { HomeSectionItem.storeCard($0) })
-            }
-            .withUnretained(self)
-            .sink { owner, section in
-                owner.updateDataSource(section: [section])
-            }
-            .store(in: &cancellables)
-        
         viewModel.output.cameraPosition
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, location in
                 owner.homeView.moveCamera(location: location)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.storeCards
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, storeCards in
+                let section = HomeSection(items: storeCards.map { HomeSectionItem.storeCard($0) })
+                
+                owner.updateDataSource(section: [section])
+                
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.scrollToIndex
+            .combineLatest(viewModel.output.storeCards)
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, storeCardWithSelectIndex in
+                let (selectIndex, storeCards) = storeCardWithSelectIndex
+                guard storeCards.count > selectIndex else { return }
+                
+                let indexPath = IndexPath(row: selectIndex, section: 0)
+                
+                owner.selectMarker(selectedIndex: selectIndex, storeCards: storeCards)
+                owner.homeView.collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
             }
             .store(in: &cancellables)
     }
@@ -123,6 +144,42 @@ public final class HomeViewController: BaseViewController {
         }
         
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func selectMarker(selectedIndex: Int?, storeCards: [StoreCard]) {
+        clearMarker()
+        
+        for value in storeCards.enumerated() {
+            let marker = NMFMarker()
+            
+            if selectedIndex == value.offset {
+                marker.width = 32
+                marker.height = 40
+                marker.iconImage = NMFOverlayImage(image: ImageProvider.image(name: "icon_marker_focused"))
+            } else {
+                marker.width = 24
+                marker.height = 24
+                marker.iconImage = NMFOverlayImage(image: ImageProvider.image(name: "icon_marker_unfocused"))
+            }
+            guard let latitude = value.element.location?.latitude,
+                  let longitude = value.element.location?.longitude else { break }
+            let position = NMGLatLng(lat: latitude, lng: longitude)
+            
+            marker.position = position
+            marker.mapView = homeView.mapView
+            marker.touchHandler = { [weak self] _ in
+                self?.viewModel.input.onTapMarker.send(value.offset)
+                return true
+            }
+            markers.append(marker)
+        }
+    }
+    
+    private func clearMarker() {
+        for marker in self.markers {
+            marker.mapView = nil
+        }
+        self.markers.removeAll()
     }
 }
 
@@ -169,5 +226,11 @@ extension HomeViewController: NMFMapViewCameraDelegate {
             viewModel.input.changeMaxDistance.send(distance / 3)
             viewModel.input.changeMapLocation.send(mapLocation)
         }
+    }
+}
+
+extension HomeViewController: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.input.onTapStore.send(indexPath.row)
     }
 }

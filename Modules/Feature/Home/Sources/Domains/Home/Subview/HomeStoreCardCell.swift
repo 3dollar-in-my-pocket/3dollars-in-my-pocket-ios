@@ -3,7 +3,7 @@ import UIKit
 import Common
 import DesignSystem
 
-final class HomeStoreCardCell: UICollectionViewCell {
+final class HomeStoreCardCell: BaseCollectionViewCell {
     enum Layout {
         static let size = CGSize(width: UIScreen.main.bounds.width - 81, height: 152)
     }
@@ -33,7 +33,7 @@ final class HomeStoreCardCell: UICollectionViewCell {
     
     private let infoView = HomeCellInfoView()
     
-    private let visitButton = UIButton().then {
+    let visitButton = UIButton().then {
         $0.backgroundColor = DesignSystemAsset.Colors.mainPink.color
         $0.layer.cornerRadius = 10
         $0.setImage(DesignSystemAsset.Icons.locationSolid.image
@@ -46,17 +46,6 @@ final class HomeStoreCardCell: UICollectionViewCell {
         $0.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        setup()
-        bindConstraints()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     func bind(storeCard: StoreCard) {
         categoryImage.setImage(urlString: storeCard.categories.first?.imageUrl)
         categoryLabel.text = storeCard.categoriesString
@@ -65,7 +54,7 @@ final class HomeStoreCardCell: UICollectionViewCell {
         infoView.bind(reviewCount: storeCard.reviewsCount, distance: storeCard.distance)
     }
     
-    private func setup() {
+    override func setup() {
         contentView.addSubViews([
             containerView,
             categoryImage,
@@ -77,7 +66,7 @@ final class HomeStoreCardCell: UICollectionViewCell {
         ])
     }
     
-    private func bindConstraints() {
+    override func bindConstraints() {
         containerView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }

@@ -27,7 +27,6 @@ final class HomeViewModel: BaseViewModel {
     struct Output {
         let address = PassthroughSubject<String, Never>()
         let categoryFilter = PassthroughSubject<Category?, Never>()
-        let isOnlyBossStore = PassthroughSubject<Bool, Never>()
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let advertisementMarker = PassthroughSubject<Advertisement, Never>()
@@ -56,7 +55,7 @@ final class HomeViewModel: BaseViewModel {
         case presentCategoryFilter
         case presentListView
         case pushStoreDetail(storeId: String)
-        case presentVisit // 파라미터 필요
+        case presentVisit(StoreCard)
         case presentPolicy
         case presentMarkerAdvertisement
         case showErrorAlert(Error)
@@ -143,6 +142,7 @@ final class HomeViewModel: BaseViewModel {
                 case .success(let storeCard):
                     owner.state.stores = storeCard
                     owner.output.storeCards.send(storeCard)
+                    owner.output.scrollToIndex.send(0)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -193,6 +193,7 @@ final class HomeViewModel: BaseViewModel {
                 case .success(let storeCard):
                     owner.state.stores = storeCard
                     owner.output.storeCards.send(storeCard)
+                    owner.output.scrollToIndex.send(0)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -216,6 +217,7 @@ final class HomeViewModel: BaseViewModel {
                 case .success(let storeCard):
                     owner.state.stores = storeCard
                     owner.output.storeCards.send(storeCard)
+                    owner.output.scrollToIndex.send(0)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -237,6 +239,7 @@ final class HomeViewModel: BaseViewModel {
                 case .success(let storeCard):
                     owner.state.stores = storeCard
                     owner.output.storeCards.send(storeCard)
+                    owner.output.scrollToIndex.send(0)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -263,6 +266,7 @@ final class HomeViewModel: BaseViewModel {
                 case .success(let storeCard):
                     owner.state.stores = storeCard
                     owner.output.storeCards.send(storeCard)
+                    owner.output.scrollToIndex.send(0)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -284,6 +288,54 @@ final class HomeViewModel: BaseViewModel {
             .sink { owner, location in
                 owner.state.currentLocation = location
                 owner.output.cameraPosition.send(location)
+            }
+            .store(in: &cancellables)
+        
+        input.selectStore
+            .withUnretained(self)
+            .sink { owner, selectIndex in
+                guard let store = owner.state.stores[safe: selectIndex],
+                      let location = store.location else { return }
+                let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                owner.output.cameraPosition.send(cameraPosition)
+                owner.output.scrollToIndex.send(selectIndex)
+            }
+            .store(in: &cancellables)
+        
+        input.onTapMarker
+            .withUnretained(self)
+            .sink { owner, selectIndex in
+                guard let store = owner.state.stores[safe: selectIndex],
+                      let location = store.location else { return }
+                let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                owner.output.cameraPosition.send(cameraPosition)
+                owner.output.scrollToIndex.send(selectIndex)
+            }
+            .store(in: &cancellables)
+        
+        input.onTapStore
+            .withUnretained(self)
+            .sink { owner, selectIndex in
+                guard let store = owner.state.stores[safe: selectIndex],
+                      let location = store.location else { return }
+                
+                if selectIndex == owner.state.selectedIndex {
+                    owner.output.route.send(.pushStoreDetail(storeId: store.storeId))
+                } else {
+                    let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                    owner.output.cameraPosition.send(cameraPosition)
+                    owner.output.scrollToIndex.send(selectIndex)
+                    owner.state.selectedIndex = selectIndex
+                }
+            }
+            .store(in: &cancellables)
+        
+        input.onTapVisitButton
+            .withUnretained(self)
+            .sink { owner, selectIndex in
+                guard let store = owner.state.stores[safe: selectIndex] else { return }
+                
+                owner.output.route.send(.presentVisit(store))
             }
             .store(in: &cancellables)
     }

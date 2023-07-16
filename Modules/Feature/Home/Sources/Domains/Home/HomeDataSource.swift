@@ -16,6 +16,11 @@ final class HomeDataSource: UICollectionViewDiffableDataSource<HomeSection, Home
                 let cell: HomeStoreCardCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 
                 cell.bind(storeCard: storeCard)
+                cell.visitButton
+                    .controlPublisher(for: .touchUpInside)
+                    .map { _ in indexPath.row }
+                    .subscribe(viewModel.input.onTapVisitButton)
+                    .store(in: &cell.cancellables)
                 return cell
             }
         }
