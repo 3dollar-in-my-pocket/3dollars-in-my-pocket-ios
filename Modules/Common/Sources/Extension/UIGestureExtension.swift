@@ -1,10 +1,10 @@
 import UIKit
 import Combine
 
-extension UIGestureRecognizer {
+public extension UIGestureRecognizer {
     struct GesturePublisher: Publisher {
-        typealias Output = GestureType
-        typealias Failure = Never
+        public typealias Output = GestureType
+        public typealias Failure = Never
         
         private let view: UIView
         private let gestureType: GestureType
@@ -14,7 +14,7 @@ extension UIGestureRecognizer {
             self.gestureType = gestureType
         }
         
-        func receive<S>(subscriber: S) where S : Subscriber,
+        public func receive<S>(subscriber: S) where S : Subscriber,
                                              GesturePublisher.Failure == S.Failure, GesturePublisher.Output
                                                  == S.Input {
             let subscription = GestureSubscription(
@@ -44,9 +44,9 @@ extension UIGestureRecognizer {
             view.addGestureRecognizer(gesture)
         }
         
-        func request(_ demand: Subscribers.Demand) { }
+        public func request(_ demand: Subscribers.Demand) { }
         
-        func cancel() {
+        public func cancel() {
             subscriber = nil
         }
         

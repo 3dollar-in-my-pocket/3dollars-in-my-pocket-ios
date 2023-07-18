@@ -237,11 +237,8 @@ let project = Project(
     organizationName: "macgongmon",
     packages: [
         .remote(url: "https://github.com/ReactorKit/ReactorKit.git", requirement: .upToNextMajor(from: "3.0.0")),
-        .remote(url: "https://github.com/devxoul/Then", requirement: .upToNextMajor(from: "2.0.0")),
-        .remote(url: "https://github.com/SnapKit/SnapKit", requirement: .upToNextMajor(from: "5.0.0")),
         .remote(url: "https://github.com/kakao/kakao-ios-sdk", requirement: .exact("2.11.1")),
         .remote(url: "https://github.com/RxSwiftCommunity/RxDataSources.git", requirement: .upToNextMajor(from: "5.0.0")),
-        .remote(url: "https://github.com/onevcat/Kingfisher.git", requirement: .exact("7.6.2")),
         .remote(url: "https://github.com/airbnb/lottie-ios.git", requirement: .exact("4.0.1")),
         .remote(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", requirement: .exact("1.9.6")),
         .remote(url: "https://github.com/devicekit/DeviceKit.git", requirement: .exact("5.0.0")),
@@ -274,6 +271,7 @@ let project = Project(
                 ])
             ],
             dependencies: [
+                .project(target: "Home", path: "../Modules/Feature/Home"),
                 .project(target: "Networking", path: "../Modules/Network"),
                 .project(target: "DesignSystem", path: "../Modules/DesignSystem"),
                 .project(target: "Common", path: "../Modules/Common"),
@@ -294,7 +292,6 @@ let project = Project(
                 .package(product: "KakaoSDKTalk"),
                 .package(product: "KakaoSDKTemplate"),
                 .package(product: "KakaoSDKUser"),
-                .package(product: "Kingfisher"),
                 .package(product: "LocationAlwaysPermission"),
                 .package(product: "LocationWhenInUsePermission"),
                 .package(product: "Lottie"),
@@ -304,9 +301,10 @@ let project = Project(
                 .package(product: "RxDataSources"),
                 .package(product: "RxRelay"),
                 .package(product: "RxSwift"),
-                .package(product: "SnapKit"),
+                .external(name: "SnapKit"),
+                .external(name: "Then"),
+                .external(name: "Kingfisher"),
                 .package(product: "SwiftyBeaver"),
-                .package(product: "Then")
             ],
             settings: .settings(
                 base: BuildSetting.App.base,

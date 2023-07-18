@@ -1,6 +1,8 @@
 import UIKit
 import RxSwift
 
+import Home
+
 class TabBarVC: UITabBarController {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
     private let disposeBag = DisposeBag()
@@ -129,7 +131,7 @@ class TabBarVC: UITabBarController {
     
     private func setupTabBarController() {
         self.setViewControllers([
-            HomeViewController.instance(),
+            Home.HomeViewController.instance(),
             StreetFoodListViewController.instance(),
             WriteAddressViewController.instance(delegate: self),
             FoodTruckListViewController.instance(),

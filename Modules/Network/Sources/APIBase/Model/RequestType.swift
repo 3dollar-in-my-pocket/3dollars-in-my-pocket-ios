@@ -8,10 +8,22 @@ public protocol RequestType {
 }
 
 extension RequestType {
+    var param: Encodable? {
+        return nil
+    }
+    
     var queryItems: [URLQueryItem]? {
         if let param = param,
            let dictionary = param.dictionary {
-            return dictionary.map { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
+            return dictionary.map {
+                var value = ""
+                if let arrayValue = $0.value as? [String] {
+                    value = arrayValue.joined(separator: ",")
+                } else {
+                    value = String(describing: $0.value)
+                }
+                return URLQueryItem(name: $0.key, value: value)
+            }
         } else {
             return nil
         }

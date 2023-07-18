@@ -16,7 +16,7 @@ struct BuildSetting {
 
 
 let project = Project(
-    name: "Common",
+    name: "Home",
     organizationName: "macgongmon",
     packages: [],
     settings: .settings(
@@ -28,14 +28,18 @@ let project = Project(
     ),
     targets: [
         Target(
-            name: "Common",
+            name: "Home",
             platform: .iOS,
-            product: .staticLibrary,
-            bundleId: "com.macgongmon.-dollar-in-my-pocket.common",
+            product: .framework,
+            bundleId: "com.macgongmon.-dollar-in-my-pocket.home",
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
             sources: ["Sources/**"],
             dependencies: [
-                .external(name: "Kingfisher")
+                .project(target: "Networking", path: "../../Network"),
+                .project(target: "DesignSystem", path: "../../DesignSystem"),
+                .project(target: "Common", path: "../../Common"),
+                .external(name: "SnapKit"),
+                .external(name: "Then"),
             ]
         )
     ]
