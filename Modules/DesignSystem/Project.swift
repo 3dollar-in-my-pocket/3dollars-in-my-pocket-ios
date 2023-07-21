@@ -35,7 +35,9 @@ let project = Project(
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
             sources: ["Sources/**"],
             resources: ["Resources/**"],
-            dependencies: []
+            dependencies: [
+                .external(name: "Lottie")
+            ]
         )
     ]
 )
