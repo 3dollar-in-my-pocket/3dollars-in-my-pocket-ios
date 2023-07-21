@@ -239,7 +239,6 @@ let project = Project(
         .remote(url: "https://github.com/ReactorKit/ReactorKit.git", requirement: .upToNextMajor(from: "3.0.0")),
         .remote(url: "https://github.com/kakao/kakao-ios-sdk", requirement: .exact("2.11.1")),
         .remote(url: "https://github.com/RxSwiftCommunity/RxDataSources.git", requirement: .upToNextMajor(from: "5.0.0")),
-        .remote(url: "https://github.com/airbnb/lottie-ios.git", requirement: .exact("4.0.1")),
         .remote(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", requirement: .exact("1.9.6")),
         .remote(url: "https://github.com/devicekit/DeviceKit.git", requirement: .exact("5.0.0")),
         .remote(url: "https://github.com/sparrowcode/PermissionsKit", requirement: .exact("9.0.2")),
@@ -294,7 +293,6 @@ let project = Project(
                 .package(product: "KakaoSDKUser"),
                 .package(product: "LocationAlwaysPermission"),
                 .package(product: "LocationWhenInUsePermission"),
-                .package(product: "Lottie"),
                 .package(product: "PhotoLibraryPermission"),
                 .package(product: "ReactorKit"),
                 .package(product: "RxCocoa"),
@@ -304,6 +302,7 @@ let project = Project(
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "Kingfisher"),
+                .external(name: "Lottie"),
                 .package(product: "SwiftyBeaver"),
             ],
             settings: .settings(
