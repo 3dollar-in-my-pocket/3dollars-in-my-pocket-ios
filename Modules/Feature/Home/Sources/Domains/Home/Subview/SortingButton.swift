@@ -24,7 +24,7 @@ final class SortingButton: UIButton {
         layer.borderWidth = 1
         backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         layer.cornerRadius = 10
-        setTitle("거리순 보기", for: .normal)
+        setTitle(HomeStrings.homeSortingButtonDistance, for: .normal)
         setTitleColor(DesignSystemAsset.Colors.gray70.color, for: .normal)
         setImage(DesignSystemAsset.Icons.change.image
             .resizeImage(scaledTo: 16)
@@ -50,9 +50,9 @@ final class SortingButton: UIButton {
     private func bind(_ sortType: StoreSortType) {
         switch sortType {
         case .distanceAsc:
-            setTitle("거리순 보기", for: .normal)
+            setTitle(HomeStrings.homeSortingButtonDistance, for: .normal)
         case .latest:
-            setTitle("최근 등록순 보기", for: .normal)
+            setTitle(HomeStrings.homeSortingButtonLatest, for: .normal)
         case .unknown:
             break
         }

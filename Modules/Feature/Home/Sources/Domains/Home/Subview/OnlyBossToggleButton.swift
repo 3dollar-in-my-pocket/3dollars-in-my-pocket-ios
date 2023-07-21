@@ -27,7 +27,7 @@ public final class OnlyBossToggleButton: UIButton {
         layer.borderWidth = 1
         backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         layer.cornerRadius = 10
-        setTitle("사장님 직영점만", for: .normal)
+        setTitle(HomeStrings.homeOnlyBossButton, for: .normal)
         setTitleColor(DesignSystemAsset.Colors.gray40.color, for: .normal)
         setTitleColor(DesignSystemAsset.Colors.gray70.color, for: .selected)
         setImage(DesignSystemAsset.Icons.check.image

@@ -39,7 +39,7 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
         $0.setImage(DesignSystemAsset.Icons.locationSolid.image
             .resizeImage(scaledTo: 16)
             .withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
-        $0.setTitle("방문하기", for: .normal)
+        $0.setTitle(HomeStrings.homeVisitButton, for: .normal)
         $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
         $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 12)
         $0.contentEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 14)
