@@ -34,6 +34,7 @@ let project = Project(
             bundleId: "com.macgongmon.-dollar-in-my-pocket.home",
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
             sources: ["Sources/**"],
+            resources: ["Resources/**"],
             dependencies: [
                 .project(target: "Networking", path: "../../Network"),
                 .project(target: "DesignSystem", path: "../../DesignSystem"),
