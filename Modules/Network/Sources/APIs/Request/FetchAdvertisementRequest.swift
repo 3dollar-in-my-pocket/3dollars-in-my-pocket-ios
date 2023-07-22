@@ -16,6 +16,6 @@ struct FetchAdvertisementRequest: RequestType {
     }
     
     var path: String {
-        return "/v1/advertisements"
+        return "/api/v1/advertisements"
     }
 }
