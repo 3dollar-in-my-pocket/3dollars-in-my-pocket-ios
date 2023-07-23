@@ -15,7 +15,7 @@ public final class NetworkLogger {
         💚[NetworkModule -> RequestProvider]
         👉 URL: \(urlString)
         👉 Headers: \(headers.prettyString)
-        👉 Data: \(request.httpBody?.prettyString ?? "null")
+        👉 Data: \(request.httpBody?.prettyRequestString ?? "null")
         ============================================
         """
         
@@ -34,7 +34,7 @@ public final class NetworkLogger {
         👉 Status: \(httpResponse.statusCode)
         👉 URL: \(urlString)
         👉 Headers: \(headers.prettyString)
-        👉 Value: \(data.prettyString)
+        👉 Value: \(data.prettyResponseString)
         ============================================
         """
         print(message)
@@ -53,7 +53,7 @@ fileprivate extension Dictionary where Key == String {
 }
 
 fileprivate extension Data {
-    var prettyString: String {
+    var prettyRequestString: String {
         guard let jsonObject = try? JSONSerialization.jsonObject(
             with: self,
             options: []
@@ -62,5 +62,18 @@ fileprivate extension Data {
         }
 
         return String(describing: jsonObject)
+    }
+    
+    var prettyResponseString: String {
+        guard let jsonObject = try? JSONSerialization.jsonObject(with: self, options: .mutableContainers),
+              let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
+            return "⚠️Fail convert to String"
+        }
+        
+        if let prettyString = String(data: prettyData, encoding: .utf8) {
+            return prettyString
+        } else {
+            return "⚠️Fail encode to utf8"
+        }
     }
 }
