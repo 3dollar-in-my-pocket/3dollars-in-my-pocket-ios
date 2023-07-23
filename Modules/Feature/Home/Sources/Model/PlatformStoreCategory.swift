@@ -24,3 +24,9 @@ struct PlatformStoreCategory {
         self.isNew = response.isNew
     }
 }
+
+extension PlatformStoreCategory: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(categoryId)
+    }
+}

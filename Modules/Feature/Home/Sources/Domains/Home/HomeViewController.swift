@@ -5,6 +5,7 @@ import Common
 import DesignSystem
 import NMapsMap
 import Then
+import PanModal
 
 typealias HomeStoreCardSanpshot = NSDiffableDataSourceSnapshot<HomeSection, HomeSectionItem>
 
@@ -172,7 +173,7 @@ public final class HomeViewController: BaseViewController {
             .sink { owner, route in
                 switch route {
                 case .presentCategoryFilter(let category):
-                    print("🔥 카테고리 필터 화면 구현 필요")
+                    owner.presentPanModal(CategoryFilterViewController.instance())
                     
                 case .presentListView:
                     print("🔥 리스트뷰 구현 필요")

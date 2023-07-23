@@ -27,3 +27,9 @@ struct Advertisement {
         self.fontColor = response.fontColor
     }
 }
+
+extension Advertisement: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(advertisementId)
+    }
+}
