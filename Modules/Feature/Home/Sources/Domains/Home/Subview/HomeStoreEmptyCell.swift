@@ -13,14 +13,14 @@ final class HomeStoreEmptyCell: BaseCollectionViewCell {
         $0.backgroundColor = DesignSystemAsset.Colors.gray100.color
     }
     
-    private let categoryImage = UIImageView(image: ImageProvider.image(name: "image_empty_category"))
+    private let categoryImage = UIImageView(image: HomeAsset.imageEmptyCategory.image)
     
     private let titleLabel = UILabel().then {
         $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
         $0.textColor = DesignSystemAsset.Colors.systemWhite.color
         $0.numberOfLines = 2
         $0.textAlignment = .left
-        $0.text = "주변 2km 이내에\n가게가 없어요."
+        $0.text = HomeStrings.homeEmptyTitle
     }
     
     private let descriptionLabel = UILabel().then {
@@ -28,7 +28,7 @@ final class HomeStoreEmptyCell: BaseCollectionViewCell {
         $0.textColor = DesignSystemAsset.Colors.gray50.color
         $0.numberOfLines = 1
         $0.textAlignment = .left
-        $0.text = "다른 주소로 검색하거나 직접 제보해보세요!"
+        $0.text = HomeStrings.homeEmptyDescription
     }
     
     override func setup() {

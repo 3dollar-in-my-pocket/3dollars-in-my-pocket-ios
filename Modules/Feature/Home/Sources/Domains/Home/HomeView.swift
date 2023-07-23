@@ -19,7 +19,7 @@ final class HomeView: BaseView {
         $0.layer.borderWidth = 1
         $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
         $0.layer.cornerRadius = 10
-        $0.setTitle("전체 메뉴", for: .normal)
+        $0.setTitle(HomeStrings.homeCategoryFilterButton, for: .normal)
         $0.setTitleColor(DesignSystemAsset.Colors.gray70.color, for: .normal)
         $0.setImage(DesignSystemAsset.Icons.category.image
             .resizeImage(scaledTo: 16)
@@ -34,7 +34,7 @@ final class HomeView: BaseView {
     let onlyBossToggleButton = OnlyBossToggleButton()
     
     let researchButton = UIButton().then {
-        $0.setTitle("현재 지도에서 가게 재검색", for: .normal)
+        $0.setTitle(HomeStrings.homeResearchButton, for: .normal)
         $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
         $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 12)
         $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
@@ -55,9 +55,9 @@ final class HomeView: BaseView {
         $0.layer.shadowOpacity = 0.1
     }
     
-    let viewTypeButton = UIButton().then {
+    let listViewButton = UIButton().then {
         $0.setImage(DesignSystemAsset.Icons.list.image.resizeImage(scaledTo: 16).withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
-        $0.setTitle("리스트뷰", for: .normal)
+        $0.setTitle(HomeStrings.homeListViewButton, for: .normal)
         $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
         $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
         $0.layer.cornerRadius = 20
@@ -85,7 +85,7 @@ final class HomeView: BaseView {
             sortingButton,
             onlyBossToggleButton,
             currentLocationButton,
-            viewTypeButton,
+            listViewButton,
             collectionView
         ])
     }
@@ -131,7 +131,7 @@ final class HomeView: BaseView {
             $0.width.height.equalTo(40)
         }
         
-        viewTypeButton.snp.makeConstraints {
+        listViewButton.snp.makeConstraints {
             $0.centerY.equalTo(currentLocationButton)
             $0.right.equalToSuperview().offset(-20)
             $0.height.equalTo(40)

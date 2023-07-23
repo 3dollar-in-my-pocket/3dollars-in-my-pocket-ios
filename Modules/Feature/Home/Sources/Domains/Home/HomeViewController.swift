@@ -53,6 +53,12 @@ public final class HomeViewController: BaseViewController {
 //        let searchByAddress = PassthroughSubject<CLLocation, Never>()
 //        let onTapCurrentMarker = PassthroughSubject<Void, Never>()
         
+        homeView.categoryFilterButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapCategoryFilter)
+            .store(in: &cancellables)
+        
         homeView.sortingButton.sortTypePublisher
             .subscribe(viewModel.input.onToggleSort)
             .store(in: &cancellables)
@@ -73,6 +79,12 @@ public final class HomeViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.onTapCurrentLocation)
+            .store(in: &cancellables)
+        
+        homeView.listViewButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapListView)
             .store(in: &cancellables)
         
         homeView.researchButton
@@ -145,6 +157,43 @@ public final class HomeViewController: BaseViewController {
                 owner.homeView.collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
             }
             .store(in: &cancellables)
+        
+        viewModel.output.showLoading
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, isShow in
+                LoadingManager.shared.showLoading(isShow: isShow)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.route
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, route in
+                switch route {
+                case .presentCategoryFilter(let category):
+                    print("🔥 카테고리 필터 화면 구현 필요")
+                    
+                case .presentListView:
+                    print("🔥 리스트뷰 구현 필요")
+                    
+                case .pushStoreDetail(let storeId):
+                    print("🔥 상품 상세화면 구현 필요")
+                    
+                case .presentVisit(let storeCard):
+                    print("🔥 방문 화면 구현 필요")
+                    
+                case .presentPolicy:
+                    print("🔥 처리 방침 구현 필요")
+                    
+                case .presentMarkerAdvertisement:
+                    print("🔥 마커 광고 화면 구현 필요")
+                    
+                case .showErrorAlert(let error):
+                    print("🔥 Common 모듈에 AlertUtils 구현 필요")
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func updateDataSource(section: [HomeSection]) {
@@ -167,11 +216,11 @@ public final class HomeViewController: BaseViewController {
             if selectedIndex == value.offset {
                 marker.width = 32
                 marker.height = 40
-                marker.iconImage = NMFOverlayImage(image: ImageProvider.image(name: "icon_marker_focused"))
+                marker.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerFocused.image)
             } else {
                 marker.width = 24
                 marker.height = 24
-                marker.iconImage = NMFOverlayImage(image: ImageProvider.image(name: "icon_marker_unfocused"))
+                marker.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerUnfocused.image)
             }
             guard let latitude = value.element.location?.latitude,
                   let longitude = value.element.location?.longitude else { break }

@@ -11,12 +11,14 @@ final class HomeViewModel: BaseViewModel {
         let onMapLoad = PassthroughSubject<Double, Never>()
         let changeMaxDistance = PassthroughSubject<Double, Never>()
         let changeMapLocation = PassthroughSubject<CLLocation, Never>()
+        let onTapCategoryFilter = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<Category?, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
         let searchByAddress = PassthroughSubject<CLLocation, Never>()
         let onTapResearch = PassthroughSubject<Void, Never>()
         let onTapCurrentLocation = PassthroughSubject<Void, Never>()
+        let onTapListView = PassthroughSubject<Void, Never>()
         let selectStore = PassthroughSubject<Int, Never>()
         let onTapStore = PassthroughSubject<Int, Never>()
         let onTapVisitButton = PassthroughSubject<Int, Never>()
@@ -52,7 +54,7 @@ final class HomeViewModel: BaseViewModel {
     }
     
     enum Route {
-        case presentCategoryFilter
+        case presentCategoryFilter(Category?)
         case presentListView
         case pushStoreDetail(storeId: String)
         case presentVisit(StoreCard)
@@ -177,6 +179,14 @@ final class HomeViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
+        input.onTapCategoryFilter
+            .withUnretained(self)
+            .map { owner, _ in
+                Route.presentCategoryFilter(owner.state.categoryFilter)
+            }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+        
         input.selectCategory
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, categoryFilter in
@@ -289,6 +299,13 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.currentLocation = location
                 owner.output.cameraPosition.send(location)
             }
+            .store(in: &cancellables)
+        
+        input.onTapListView
+            .map { _ in
+                Route.presentListView
+            }
+            .subscribe(output.route)
             .store(in: &cancellables)
         
         input.selectStore
