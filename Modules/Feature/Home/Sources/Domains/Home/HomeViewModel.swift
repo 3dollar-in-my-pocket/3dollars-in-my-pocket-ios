@@ -12,7 +12,7 @@ final class HomeViewModel: BaseViewModel {
         let changeMaxDistance = PassthroughSubject<Double, Never>()
         let changeMapLocation = PassthroughSubject<CLLocation, Never>()
         let onTapCategoryFilter = PassthroughSubject<Void, Never>()
-        let selectCategory = PassthroughSubject<Category?, Never>()
+        let selectCategory = PassthroughSubject<PlatformStoreCategory?, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
         let searchByAddress = PassthroughSubject<CLLocation, Never>()
@@ -28,7 +28,7 @@ final class HomeViewModel: BaseViewModel {
     
     struct Output {
         let address = PassthroughSubject<String, Never>()
-        let categoryFilter = PassthroughSubject<Category?, Never>()
+        let categoryFilter = PassthroughSubject<PlatformStoreCategory?, Never>()
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let advertisementMarker = PassthroughSubject<Advertisement, Never>()
@@ -40,7 +40,7 @@ final class HomeViewModel: BaseViewModel {
     
     struct State {
         var address = ""
-        var categoryFilter: Category?
+        var categoryFilter: PlatformStoreCategory?
         var sortType: StoreSortType = .distanceAsc
         var isOnlyBossStore = false
         var mapMaxDistance: Double?
@@ -54,7 +54,7 @@ final class HomeViewModel: BaseViewModel {
     }
     
     enum Route {
-        case presentCategoryFilter(Category?)
+        case presentCategoryFilter(PlatformStoreCategory?)
         case presentListView
         case pushStoreDetail(storeId: String)
         case presentVisit(StoreCard)
@@ -204,6 +204,7 @@ final class HomeViewModel: BaseViewModel {
                     owner.state.stores = storeCard
                     owner.output.storeCards.send(storeCard)
                     owner.output.scrollToIndex.send(0)
+                    owner.output.categoryFilter.send(owner.state.categoryFilter)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))

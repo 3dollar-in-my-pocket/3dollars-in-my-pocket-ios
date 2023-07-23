@@ -110,6 +110,14 @@ public final class HomeViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
+        viewModel.output.categoryFilter
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, category in
+                owner.homeView.categoryFilterButton.setCategory(category)
+            }
+            .store(in: &cancellables)
+        
         viewModel.output.isHiddenResearchButton
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
@@ -173,7 +181,9 @@ public final class HomeViewController: BaseViewController {
             .sink { owner, route in
                 switch route {
                 case .presentCategoryFilter(let category):
-                    owner.presentPanModal(CategoryFilterViewController.instance())
+                    let categoryFilterViewController = CategoryFilterViewController.instance(selectedCategory: category)
+                    categoryFilterViewController.delegate = self
+                    owner.presentPanModal(categoryFilterViewController)
                     
                 case .presentListView:
                     print("🔥 리스트뷰 구현 필요")
@@ -294,5 +304,11 @@ extension HomeViewController: NMFMapViewCameraDelegate {
 extension HomeViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel.input.onTapStore.send(indexPath.row)
+    }
+}
+
+extension HomeViewController: CategoryFilterDelegate {
+    func onSelectCategory(category: PlatformStoreCategory?) {
+        viewModel.input.selectCategory.send(category)
     }
 }
