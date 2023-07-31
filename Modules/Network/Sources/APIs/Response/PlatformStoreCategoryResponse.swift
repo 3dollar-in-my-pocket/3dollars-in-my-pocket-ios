@@ -5,6 +5,6 @@ public struct PlatformStoreCategoryResponse: Decodable {
     public let imageUrl: String
     public let disableImageUrl: String
     public let description: String
-    public let classificationType: String
+    public let classification: PlatformStoreCategoryClassificationResponse
     public let isNew: Bool
 }

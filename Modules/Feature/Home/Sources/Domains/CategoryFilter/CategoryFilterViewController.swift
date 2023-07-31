@@ -53,11 +53,11 @@ final class CategoryFilterViewController: BaseViewController {
                 
                 categorySections.append(advertisementSection)
                 
-                let groupingByCategoryType = Dictionary(grouping: categories) { $0.classificationType }
+                let groupingByCategoryType = Dictionary(grouping: categories) { $0.classification }
                 
                 for categoryType in groupingByCategoryType.keys {
                     if let categories = groupingByCategoryType[categoryType] {
-                        let categorySection = CategorySection(title: categoryType, items: categories.map { CategorySectionItem.category($0) })
+                        let categorySection = CategorySection(title: categoryType.description, items: categories.map { CategorySectionItem.category($0) })
                         
                         categorySections.append(categorySection)
                     }
