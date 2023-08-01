@@ -128,4 +128,8 @@ extension CategoryFilterViewController: PanModalPresentable {
     var allowsExtendedPanScrolling: Bool {
         return true
     }
+    
+    var showDragIndicator: Bool {
+        return false
+    }
 }
