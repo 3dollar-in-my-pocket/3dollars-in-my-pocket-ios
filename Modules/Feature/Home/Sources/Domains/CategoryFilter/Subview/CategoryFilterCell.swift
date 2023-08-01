@@ -10,7 +10,7 @@ final class CategoryFilterCell: BaseCollectionViewCell {
     )
     
     private let newLabel = UILabel().then {
-        $0.text = "new"
+        $0.text = HomeStrings.categoryFilterNew
         $0.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 12)
         $0.textColor = DesignSystemAsset.Colors.systemWhite.color
         $0.textAlignment = .center

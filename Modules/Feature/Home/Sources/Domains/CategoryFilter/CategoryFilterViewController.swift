@@ -49,7 +49,7 @@ final class CategoryFilterViewController: BaseViewController {
                 var categorySections: [CategorySection] = []
                 let (categories, advertisement) = dataSourceItems
                 let advertisementSectionItems = advertisement == nil ? [] : [CategorySectionItem.advertisement(advertisement)]
-                let advertisementSection = CategorySection(title: "이 안에 네 최애 하나쯤은 있겠지!", items: advertisementSectionItems)
+                let advertisementSection = CategorySection(title: HomeStrings.categoryFilterTitle, items: advertisementSectionItems)
                 
                 categorySections.append(advertisementSection)
                 
