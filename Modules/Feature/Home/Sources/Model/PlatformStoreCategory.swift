@@ -32,7 +32,11 @@ extension PlatformStoreCategory: Hashable {
 }
 
 
-struct PlatformStoreCategoryClassification: Hashable {
+struct PlatformStoreCategoryClassification: Hashable, Comparable {
+    static func < (lhs: PlatformStoreCategoryClassification, rhs: PlatformStoreCategoryClassification) -> Bool {
+        return lhs.description < rhs.description
+    }
+    
     enum ClassificationType: String {
         case meal = "MEAL"
         case snack = "SNACK"

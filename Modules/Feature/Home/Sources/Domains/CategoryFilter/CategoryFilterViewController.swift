@@ -55,7 +55,7 @@ final class CategoryFilterViewController: BaseViewController {
                 
                 let groupingByCategoryType = Dictionary(grouping: categories) { $0.classification }
                 
-                for categoryType in groupingByCategoryType.keys {
+                for categoryType in groupingByCategoryType.keys.sorted(by: <) {
                     if let categories = groupingByCategoryType[categoryType] {
                         let categorySection = CategorySection(title: categoryType.description, items: categories.map { CategorySectionItem.category($0) })
                         
