@@ -22,15 +22,9 @@ gem install bundler:2.3.26
 bundle install
 brew install git-lfs
 
-git lfs install --skip-smudge
-git lfs pull
-git lfs install --force
-
 # Install Tuist
 ../.tuist-bin/tuist fetch -p ../
 ../.tuist-bin/tuist generate -n -p ../
-
-bundle exec pod cache clean NMapsMap
 
 # Install dependencies you manage with CocoaPods.
 bundle exec pod install
