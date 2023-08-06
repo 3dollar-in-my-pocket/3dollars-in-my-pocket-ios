@@ -7,6 +7,7 @@ import SwiftyBeaver
 import GoogleMobileAds
 import KakaoSDKCommon
 import FirebaseMessaging
+import Home
 
 typealias Log = SwiftyBeaver
 
@@ -97,6 +98,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Networking.NetworkManager.shared.configuration.endPoint = Bundle.baseURL
         Networking.NetworkManager.shared.configuration.userAgent = HTTPUtils.userAgent
         Networking.NetworkManager.shared.configuration.authToken = UserDefaultsUtil().authToken
+        
+        Home.EnviromentManager.shared.networkConfiguration.endPoint = Bundle.baseURL
+        Home.EnviromentManager.shared.networkConfiguration.userAgent = HTTPUtils.userAgent
+        Home.EnviromentManager.shared.networkConfiguration.authToken = UserDefaultsUtil().authToken
     }
     
     func application(

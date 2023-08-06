@@ -9,7 +9,7 @@ struct PlatformStoreCategory {
     let imageUrl: String
     let disableImageUrl: String
     let description: String
-    let classificationType: String
+    let classification: PlatformStoreCategoryClassification
     let isNew: Bool
     
     
@@ -20,7 +20,7 @@ struct PlatformStoreCategory {
         self.imageUrl = response.imageUrl
         self.disableImageUrl = response.disableImageUrl
         self.description = response.description
-        self.classificationType = response.classificationType
+        self.classification = PlatformStoreCategoryClassification(response: response.classification)
         self.isNew = response.isNew
     }
 }
@@ -28,5 +28,29 @@ struct PlatformStoreCategory {
 extension PlatformStoreCategory: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(categoryId)
+    }
+}
+
+
+struct PlatformStoreCategoryClassification: Hashable, Comparable {
+    static func < (lhs: PlatformStoreCategoryClassification, rhs: PlatformStoreCategoryClassification) -> Bool {
+        return lhs.description < rhs.description
+    }
+    
+    enum ClassificationType: String {
+        case meal = "MEAL"
+        case snack = "SNACK"
+        
+        init(value: String) {
+            self = ClassificationType(rawValue: value) ?? .snack
+        }
+    }
+    
+    let type: ClassificationType
+    let description: String
+    
+    init(response: PlatformStoreCategoryClassificationResponse) {
+        self.type = ClassificationType(value: response.type)
+        self.description = response.description
     }
 }

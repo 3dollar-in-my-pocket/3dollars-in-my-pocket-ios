@@ -33,6 +33,7 @@ let project = Project(
             product: .framework,
             bundleId: "com.macgongmon.-dollar-in-my-pocket.home",
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
+            infoPlist: .default,
             sources: ["Sources/**"],
             resources: ["Resources/**"],
             dependencies: [

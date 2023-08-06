@@ -12,6 +12,10 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
 public enum HomeStrings {
+  /// new
+  public static let categoryFilterNew = HomeStrings.tr("Localization", "category_filter_new")
+  /// 이 안에 네 최애 하나쯤은 있겠지!
+  public static let categoryFilterTitle = HomeStrings.tr("Localization", "category_filter_title")
   /// 전체 메뉴
   public static let homeCategoryFilterButton = HomeStrings.tr("Localization", "home_category_filter_button")
   /// 다른 주소로 검색하거나 직접 제보해보세요!
