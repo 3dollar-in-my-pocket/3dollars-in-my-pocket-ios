@@ -9,15 +9,7 @@ final class CategoryFilterCell: BaseCollectionViewCell {
         height: (UIScreen.main.bounds.width - 48 - 36)/4 + 2
     )
     
-    private let newLabel = UILabel().then {
-        $0.text = HomeStrings.categoryFilterNew
-        $0.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 12)
-        $0.textColor = DesignSystemAsset.Colors.systemWhite.color
-        $0.textAlignment = .center
-        $0.backgroundColor = DesignSystemAsset.Colors.mainRed.color
-        $0.layer.masksToBounds = true
-        $0.layer.cornerRadius = 7
-    }
+    private let newBadge = UIImageView(image: HomeAsset.imageNewBadge.image)
     
     private let categoryImage = UIImageView()
     
@@ -27,17 +19,37 @@ final class CategoryFilterCell: BaseCollectionViewCell {
         $0.textAlignment = .center
     }
     
+    private let selectIndicator = UIView().then {
+        $0.backgroundColor = DesignSystemAsset.Colors.pink100.color
+        $0.layer.cornerRadius = 28
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = DesignSystemAsset.Colors.mainPink.color.cgColor
+        $0.isHidden = true
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            selectIndicator.isHidden = !isSelected
+        }
+    }
+    
     override func setup() {
         backgroundColor = .clear
         addSubViews([
+            selectIndicator,
             categoryImage,
             categoryLabel,
-            newLabel
+            newBadge
         ])
     }
     
     override func bindConstraints() {
-        newLabel.snp.makeConstraints {
+        selectIndicator.snp.makeConstraints {
+            $0.center.equalTo(categoryImage)
+            $0.width.height.equalTo(58)
+        }
+        
+        newBadge.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.top.equalToSuperview()
             $0.width.equalTo(32)
@@ -62,6 +74,6 @@ final class CategoryFilterCell: BaseCollectionViewCell {
     func bind(category: PlatformStoreCategory) {
         categoryLabel.text = category.name
         categoryImage.setImage(urlString: category.imageUrl)
-        newLabel.isHidden = category.isNew
+        newBadge.isHidden = !category.isNew
     }
 }

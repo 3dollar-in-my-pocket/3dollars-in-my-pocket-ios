@@ -64,6 +64,7 @@ final class CategoryFilterViewController: BaseViewController {
                 }
                 
                 owner.updateDataSource(section: categorySections)
+                owner.viewModel.input.onCollectionViewLoaded.send(())
             }
             .store(in: &cancellables)
         
@@ -82,6 +83,16 @@ final class CategoryFilterViewController: BaseViewController {
                 case .goToWeb(let urlString):
                     owner.openURLWithSafari(urlString: urlString)
                 }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.selectCategory
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
+            .withUnretained(self)
+            .sink { owner, index in
+                let indexPath = IndexPath(row: index, section: 1)
+                owner.categoryFilterView.collectionView.cellForItem(at: indexPath)?.isSelected = true
             }
             .store(in: &cancellables)
     }
