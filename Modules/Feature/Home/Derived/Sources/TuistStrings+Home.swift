@@ -12,6 +12,8 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
 public enum HomeStrings {
+  /// 지도뷰
+  public static let categoryFileterMapView = HomeStrings.tr("Localization", "category_fileter_map_view")
   /// new
   public static let categoryFilterNew = HomeStrings.tr("Localization", "category_filter_new")
   /// 이 안에 네 최애 하나쯤은 있겠지!

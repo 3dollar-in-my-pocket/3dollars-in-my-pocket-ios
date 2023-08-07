@@ -186,7 +186,7 @@ public final class HomeViewController: BaseViewController {
                     owner.presentPanModal(categoryFilterViewController)
                     
                 case .presentListView:
-                    print("🔥 리스트뷰 구현 필요")
+                    owner.present(HomeListViewController.instance(), animated: true)
                     
                 case .pushStoreDetail(let storeId):
                     print("🔥 상품 상세화면 구현 필요")
