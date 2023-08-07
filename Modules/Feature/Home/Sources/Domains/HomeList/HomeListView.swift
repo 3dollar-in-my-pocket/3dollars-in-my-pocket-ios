@@ -16,8 +16,6 @@ final class HomeListView: BaseView {
     
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
-        $0.register([HomeListCell.self])
-        $0.registerSectionHeader([HomeListHeaderCell.self])
     }
     
     let mapViewButton = UIButton().then {
@@ -35,7 +33,7 @@ final class HomeListView: BaseView {
     }
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        backgroundColor = DesignSystemAsset.Colors.gray0.color
         
         addSubViews([
             categoryFilterButton,
@@ -90,6 +88,7 @@ final class HomeListView: BaseView {
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 8
         layout.minimumInteritemSpacing = 8
+        layout.headerReferenceSize = HomeListHeaderCell.Layout.size
         
         return layout
     }

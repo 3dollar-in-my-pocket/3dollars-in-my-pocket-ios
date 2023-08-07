@@ -47,7 +47,7 @@ final class SortingButton: UIButton {
             .store(in: &cancellables)
     }
     
-    private func bind(_ sortType: StoreSortType) {
+    func bind(_ sortType: StoreSortType) {
         switch sortType {
         case .distanceAsc:
             setTitle(HomeStrings.homeSortingButtonDistance, for: .normal)

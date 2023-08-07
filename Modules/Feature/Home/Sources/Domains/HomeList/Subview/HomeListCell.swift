@@ -24,7 +24,7 @@ public class HomeListCell: BaseCollectionViewCell {
     
     private let titleLabel = UILabel().then {
         $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
-        $0.textColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.textColor = DesignSystemAsset.Colors.gray100.color
         $0.numberOfLines = 0
         $0.textAlignment = .left
     }
@@ -59,8 +59,8 @@ public class HomeListCell: BaseCollectionViewCell {
         }
         
         categoryLabel.snp.makeConstraints {
-            $0.top.equalTo(categoryLabel)
-            $0.left.equalTo(categoryLabel.snp.right).offset(16)
+            $0.top.equalTo(categoryImage)
+            $0.left.equalTo(categoryImage.snp.right).offset(16)
         }
         
         titleLabel.snp.makeConstraints {

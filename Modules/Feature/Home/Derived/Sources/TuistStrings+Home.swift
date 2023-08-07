@@ -24,6 +24,10 @@ public enum HomeStrings {
   public static let homeEmptyDescription = HomeStrings.tr("Localization", "home_empty_description")
   /// 주변 2km 이내에\n가게가 없어요.
   public static let homeEmptyTitle = HomeStrings.tr("Localization", "home_empty_title")
+  /// 전체 메뉴
+  public static let homeListHeaderTotal = HomeStrings.tr("Localization", "home_list_header_total")
+  /// 방문 인증 가게
+  public static let homeListIsOnlyCertified = HomeStrings.tr("Localization", "home_list_is_only_certified")
   /// 리스트뷰
   public static let homeListViewButton = HomeStrings.tr("Localization", "home_list_view_button")
   /// 사장님 직영점만

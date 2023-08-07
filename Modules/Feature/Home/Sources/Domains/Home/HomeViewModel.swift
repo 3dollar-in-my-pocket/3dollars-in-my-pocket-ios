@@ -55,7 +55,7 @@ final class HomeViewModel: BaseViewModel {
     
     enum Route {
         case presentCategoryFilter(PlatformStoreCategory?)
-        case presentListView
+        case presentListView(HomeListViewModel.State)
         case pushStoreDetail(storeId: String)
         case presentVisit(StoreCard)
         case presentPolicy
@@ -303,8 +303,19 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onTapListView
-            .map { _ in
-                Route.presentListView
+            .withUnretained(self)
+            .map { owner, _ in
+                let state = HomeListViewModel.State(
+                    categoryFilter: owner.state.categoryFilter,
+                    sortType: owner.state.sortType,
+                    isOnlyBossStore: owner.state.isOnlyBossStore,
+                    mapLocation: owner.state.resultCameraPosition,
+                    currentLocation: owner.state.currentLocation,
+                    stores: owner.state.stores,
+                    mapMaxDistance: owner.state.mapMaxDistance
+                )
+                
+                return Route.presentListView(state)
             }
             .subscribe(output.route)
             .store(in: &cancellables)

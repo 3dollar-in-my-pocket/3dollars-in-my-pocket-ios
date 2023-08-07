@@ -10,16 +10,18 @@ final class HomeListViewModel: BaseViewModel {
         let willDisplay = PassthroughSubject<Int, Never>()
         let onTapCategoryFilter = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<PlatformStoreCategory?, Never>()
-        let onToggleCertifiedStore = PassthroughSubject<Void, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
+        let onToggleCertifiedStore = PassthroughSubject<Void, Never>()
         let onTapStore = PassthroughSubject<Int, Never>()
     }
     
     struct Output {
-        let categoryFilter = PassthroughSubject<PlatformStoreCategory?, Never>()
-        let stores = PassthroughSubject<[StoreCard], Never>()
-//        let advertisement = PassthroughSubject<Advertisement
+        let categoryFilter: CurrentValueSubject<PlatformStoreCategory?, Never>
+        let stores: CurrentValueSubject<[StoreCard], Never>
+        let sortType: CurrentValueSubject<StoreSortType, Never>
+        let isOnlyBoss: CurrentValueSubject<Bool, Never>
+        let isOnlyCertified = CurrentValueSubject<Bool, Never>(false)
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -28,8 +30,8 @@ final class HomeListViewModel: BaseViewModel {
         var sortType: StoreSortType = .distanceAsc
         var isOnlyBossStore = false
         var isOnleyCertifiedStore = false
-        var mapLocation: CLLocation
-        let currentLocation: CLLocation
+        var mapLocation: CLLocation?
+        let currentLocation: CLLocation?
         var stores: [StoreCard] = []
         var nextCursor: String? = nil
         var hasMore: Bool = true
@@ -43,11 +45,20 @@ final class HomeListViewModel: BaseViewModel {
     }
     
     let input = Input()
-    let output = Output()
+    let output: Output
     private var state: State
     private let storeService: StoreServiceProtocol
     
-    init(state: State, storeService: StoreServiceProtocol) {
+    init(
+        state: State,
+        storeService: StoreServiceProtocol = StoreService()
+    ) {
+        self.output = Output(
+            categoryFilter: .init(state.categoryFilter),
+            stores: .init(state.stores),
+            sortType: .init(state.sortType),
+            isOnlyBoss: .init(state.isOnlyBossStore)
+        )
         self.state = state
         self.storeService = storeService
         super.init()
@@ -67,6 +78,7 @@ final class HomeListViewModel: BaseViewModel {
                 switch result {
                 case .success(let storeCards):
                     owner.state.stores += storeCards
+                    owner.output.stores.send(owner.state.stores)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -88,8 +100,8 @@ final class HomeListViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { owner, category in
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
-                owner.state.stores = []
                 owner.state.categoryFilter = category
+                owner.output.categoryFilter.send(category)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -99,6 +111,7 @@ final class HomeListViewModel: BaseViewModel {
                 switch result {
                 case .success(let stores):
                     owner.state.stores = stores
+                    owner.output.stores.send(stores)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -111,8 +124,8 @@ final class HomeListViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { owner, _ in
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
-                owner.state.stores = []
                 owner.state.isOnleyCertifiedStore.toggle()
+                owner.output.isOnlyCertified.send(owner.state.isOnleyCertifiedStore)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -122,6 +135,7 @@ final class HomeListViewModel: BaseViewModel {
                 switch result {
                 case .success(let stores):
                     owner.state.stores = stores
+                    owner.output.stores.send(stores)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -134,7 +148,6 @@ final class HomeListViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { owner, _ in
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
-                owner.state.stores = []
                 owner.state.sortType = owner.state.sortType.toggled()
             })
             .asyncMap { owner, _ in
@@ -145,6 +158,7 @@ final class HomeListViewModel: BaseViewModel {
                 switch result {
                 case .success(let stores):
                     owner.state.stores = stores
+                    owner.output.stores.send(stores)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -157,7 +171,6 @@ final class HomeListViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { owner, _ in
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
-                owner.state.stores = []
                 owner.state.isOnlyBossStore.toggle()
             })
             .asyncMap { owner, _ in
@@ -168,6 +181,7 @@ final class HomeListViewModel: BaseViewModel {
                 switch result {
                 case .success(let stores):
                     owner.state.stores = stores
+                    owner.output.stores.send(stores)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -203,14 +217,14 @@ final class HomeListViewModel: BaseViewModel {
             filterCertifiedStores: state.isOnleyCertifiedStore,
             size: 10,
             cursor: state.nextCursor,
-            mapLatitude: state.mapLocation.coordinate.latitude,
-            mapLongitude: state.mapLocation.coordinate.longitude
+            mapLatitude: state.mapLocation?.coordinate.latitude ?? 0,
+            mapLongitude: state.mapLocation?.coordinate.longitude ?? 0
         )
         
         return await storeService.fetchAroundStores(
             input: input,
-            latitude: state.currentLocation.coordinate.latitude,
-            longitude: state.currentLocation.coordinate.longitude
+            latitude: state.currentLocation?.coordinate.latitude ?? 0,
+            longitude: state.currentLocation?.coordinate.longitude ?? 0
         )
         .map{ [weak self] response in
             self?.state.hasMore = response.cursor.hasMore
