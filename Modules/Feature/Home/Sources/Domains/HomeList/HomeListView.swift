@@ -10,8 +10,15 @@ final class HomeListView: BaseView {
     
     let onlyBossToggleButton = OnlyBossToggleButton()
     
-    let adView = UIView().then {
-        $0.backgroundColor = .red
+    /// 임시 생성
+    private let adView = UIView().then {
+        $0.backgroundColor = .gray
+    }
+    
+    /// 임시 생성
+    private let adTitleLabel = UILabel().then {
+        $0.textColor = .black
+        $0.text = "광고가 들어갈 예정입니다."
     }
     
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
@@ -40,6 +47,7 @@ final class HomeListView: BaseView {
             sortingButton,
             onlyBossToggleButton,
             adView,
+            adTitleLabel,
             collectionView,
             mapViewButton
         ])
@@ -66,6 +74,10 @@ final class HomeListView: BaseView {
             $0.right.equalToSuperview()
             $0.top.equalTo(categoryFilterButton.snp.bottom).offset(13)
             $0.height.equalTo(49)
+        }
+        
+        adTitleLabel.snp.makeConstraints {
+            $0.center.equalTo(adView)
         }
         
         collectionView.snp.makeConstraints {
