@@ -19,7 +19,9 @@
 public enum HomeAsset {
   public static let iconMarkerFocused = HomeImages(name: "icon_marker_focused")
   public static let iconMarkerUnfocused = HomeImages(name: "icon_marker_unfocused")
+  public static let iconNewBadgeShort = HomeImages(name: "icon_new_badge_short")
   public static let imageEmptyCategory = HomeImages(name: "image_empty_category")
+  public static let imageNewBadge = HomeImages(name: "image_new_badge")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
 

@@ -51,11 +51,13 @@ final class HomeViewModel: BaseViewModel {
         var advertisementMarker: Advertisement? // Splash에서 조회하여 Context로 전달 받아야 함
         var stores: [StoreCard] = []
         var selectedIndex = 0
+        var hasMore: Bool = true
+        var nextCursor: String? = nil
     }
     
     enum Route {
         case presentCategoryFilter(PlatformStoreCategory?)
-        case presentListView
+        case presentListView(HomeListViewModel.State)
         case pushStoreDetail(storeId: String)
         case presentVisit(StoreCard)
         case presentPolicy
@@ -139,11 +141,10 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { owner, result in
                 owner.output.showLoading.send(false)
-                
                 switch result {
-                case .success(let storeCard):
-                    owner.state.stores = storeCard
-                    owner.output.storeCards.send(storeCard)
+                case .success(let storeCards):
+                    owner.state.stores = storeCards
+                    owner.output.storeCards.send(storeCards)
                     owner.output.scrollToIndex.send(0)
                     
                 case .failure(let error):
@@ -303,8 +304,21 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onTapListView
-            .map { _ in
-                Route.presentListView
+            .withUnretained(self)
+            .map { owner, _ in
+                let state = HomeListViewModel.State(
+                    categoryFilter: owner.state.categoryFilter,
+                    sortType: owner.state.sortType,
+                    isOnlyBossStore: owner.state.isOnlyBossStore,
+                    mapLocation: owner.state.resultCameraPosition,
+                    currentLocation: owner.state.currentLocation,
+                    stores: owner.state.stores,
+                    nextCursor: owner.state.nextCursor,
+                    hasMore: owner.state.hasMore,
+                    mapMaxDistance: owner.state.mapMaxDistance
+                )
+                
+                return Route.presentListView(state)
             }
             .subscribe(output.route)
             .store(in: &cancellables)
@@ -381,8 +395,11 @@ final class HomeViewModel: BaseViewModel {
             latitude: state.currentLocation?.coordinate.latitude ?? 0,
             longitude: state.currentLocation?.coordinate.longitude ?? 0
         )
-        .map{ response in
-            response.contents.map(StoreCard.init(response:))
+        .map{ [weak self] response in
+            self?.state.nextCursor = response.cursor.nextCursor
+            self?.state.hasMore = response.cursor.hasMore
+            
+            return response.contents.map(StoreCard.init(response:))
         }
     }
 }

@@ -46,7 +46,7 @@ public final class OnlyBossToggleButton: UIButton {
             .store(in: &cancellables)
     }
     
-    private func setSelected(_ isSelected: Bool) {
+    func setSelected(_ isSelected: Bool) {
         imageView?.tintColor = isSelected ? DesignSystemAsset.Colors.gray70.color : DesignSystemAsset.Colors.gray40.color
     }
 }

@@ -9,11 +9,13 @@ final class CategoryFilterViewModel: BaseViewModel {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let onTapBanner = PassthroughSubject<Void, Never>()
         let onTapCategory = PassthroughSubject<Int, Never>()
+        let onCollectionViewLoaded = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
         let advertisement = PassthroughSubject<Advertisement?, Never>()
         let categories = PassthroughSubject<[PlatformStoreCategory], Never>()
+        let selectCategory = PassthroughSubject<Int?, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -125,6 +127,15 @@ final class CategoryFilterViewModel: BaseViewModel {
                     owner.output.route.send(.dismissWithCategory(selectedCategory))
                 }
             }
+            .store(in: &cancellables)
+        
+        input.onCollectionViewLoaded
+            .withUnretained(self)
+            .map { owner, _ -> Int? in
+                guard let currentCategory = owner.state.currentCategory else { return nil }
+                return owner.state.categories.firstIndex(of: currentCategory)
+            }
+            .subscribe(output.selectCategory)
             .store(in: &cancellables)
     }
 }

@@ -1,4 +1,4 @@
-// 홈 화면
+// 홈 지도 화면
 "home_category_filter_button" = "전체 메뉴";
 "home_research_button" = "현재 지도에서 가게 재검색";
 "home_list_view_button" = "리스트뷰";
@@ -12,3 +12,9 @@
 // 카테고리 필터 화면
 "category_filter_new" = "new";
 "category_filter_title" = "이 안에 네 최애 하나쯤은 있겠지!";
+"category_fileter_map_view" = "지도뷰";
+
+
+// 홈 리스트 뷰 화면
+"home_list_header_total" = "전체 메뉴";
+"home_list_is_only_certified" = "방문 인증 가게";
