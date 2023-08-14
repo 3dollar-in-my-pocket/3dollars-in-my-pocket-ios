@@ -33,8 +33,8 @@ final class HomeListViewModel: BaseViewModel {
         var mapLocation: CLLocation?
         let currentLocation: CLLocation?
         var stores: [StoreCard] = []
-        var nextCursor: String? = nil
-        var hasMore: Bool = true
+        var nextCursor: String?
+        var hasMore: Bool
         let mapMaxDistance: Double?
     }
     
