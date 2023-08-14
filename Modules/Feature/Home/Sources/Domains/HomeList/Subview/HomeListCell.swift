@@ -31,12 +31,13 @@ public class HomeListCell: BaseCollectionViewCell {
     
     private let tagView = HomeListCellTagView()
     
-    private let infoView = HomeCellInfoView()
+    private let infoView = HomeListCellInfoView()
     
     public override func prepareForReuse() {
         super.prepareForReuse()
         
         tagView.prepareForReuse()
+        infoView.prepareForReuse()
     }
     
     public override func setup() {
@@ -90,7 +91,7 @@ public class HomeListCell: BaseCollectionViewCell {
         categoryImage.setImage(urlString: storeCard.categories.first?.imageUrl)
         categoryLabel.text = storeCard.categoriesString
         titleLabel.text = storeCard.storeName
-        infoView.bind(reviewCount: storeCard.reviewsCount, distance: storeCard.distance)
+        infoView.bind(storeCard: storeCard)
         
         if storeCard.storeType == .bossStore {
             tagView.bind(type: .boss)
