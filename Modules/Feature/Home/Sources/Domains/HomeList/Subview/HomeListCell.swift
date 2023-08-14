@@ -99,7 +99,7 @@ public class HomeListCell: BaseCollectionViewCell {
     func bind(storeCard: StoreCard) {
         categoryImage.setImage(urlString: storeCard.categories.first?.imageUrl)
         categoryLabel.text = storeCard.categoriesString
-        titleLabel.text = storeCard.storeName
+        titleLabel.text = storeCard.storeName.maxLength(length: 10)
         newBadge.isHidden = !storeCard.isNew
         infoView.bind(storeCard: storeCard)
         
