@@ -12,6 +12,7 @@ struct StoreCard {
     let reviewsCount: Int?
     let rating: Double?
     let existsCounts: Int?
+    let isNew: Bool
     
     init(response: PlatformStoreWithDetailResponse) {
         self.storeType = StoreType(value: response.store.storeType)
@@ -23,6 +24,7 @@ struct StoreCard {
         self.reviewsCount = response.extra.reviewsCount
         self.rating = response.extra.rating
         self.existsCounts = response.extra.visitCounts?.existsCounts
+        self.isNew = response.extra.tags.isNew
     }
 }
 

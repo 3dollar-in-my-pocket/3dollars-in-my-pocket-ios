@@ -29,6 +29,8 @@ public class HomeListCell: BaseCollectionViewCell {
         $0.textAlignment = .left
     }
     
+    private let newBadge = UIImageView(image: HomeAsset.iconNewBadgeShort.image)
+    
     private let tagView = HomeListCellTagView()
     
     private let infoView = HomeListCellInfoView()
@@ -46,6 +48,7 @@ public class HomeListCell: BaseCollectionViewCell {
             categoryImage,
             categoryLabel,
             titleLabel,
+            newBadge,
             tagView,
             infoView
         ])
@@ -76,6 +79,12 @@ public class HomeListCell: BaseCollectionViewCell {
             $0.height.equalTo(24)
         }
         
+        newBadge.snp.makeConstraints {
+            $0.width.height.equalTo(14)
+            $0.left.equalTo(titleLabel.snp.right).offset(4)
+            $0.top.equalTo(titleLabel).offset(2)
+        }
+        
         tagView.snp.makeConstraints {
             $0.left.equalTo(categoryLabel)
             $0.top.equalTo(titleLabel.snp.bottom).offset(2)
@@ -91,6 +100,7 @@ public class HomeListCell: BaseCollectionViewCell {
         categoryImage.setImage(urlString: storeCard.categories.first?.imageUrl)
         categoryLabel.text = storeCard.categoriesString
         titleLabel.text = storeCard.storeName
+        newBadge.isHidden = !storeCard.isNew
         infoView.bind(storeCard: storeCard)
         
         if storeCard.storeType == .bossStore {
