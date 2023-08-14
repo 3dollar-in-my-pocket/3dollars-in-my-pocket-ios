@@ -29,9 +29,15 @@ public class HomeListCell: BaseCollectionViewCell {
         $0.textAlignment = .left
     }
     
-    private let tagView = HomeCellTagView()
+    private let tagView = HomeListCellTagView()
     
     private let infoView = HomeCellInfoView()
+    
+    public override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        tagView.prepareForReuse()
+    }
     
     public override func setup() {
         addSubViews([
@@ -55,7 +61,7 @@ public class HomeListCell: BaseCollectionViewCell {
         categoryImage.snp.makeConstraints {
             $0.left.equalTo(containerView).offset(16)
             $0.top.equalTo(containerView).offset(12)
-            $0.width.height.equalTo(38)
+            $0.width.height.equalTo(48)
         }
         
         categoryLabel.snp.makeConstraints {
@@ -66,6 +72,7 @@ public class HomeListCell: BaseCollectionViewCell {
         titleLabel.snp.makeConstraints {
             $0.left.equalTo(categoryLabel)
             $0.top.equalTo(categoryLabel.snp.bottom).offset(4)
+            $0.height.equalTo(24)
         }
         
         tagView.snp.makeConstraints {
@@ -83,7 +90,12 @@ public class HomeListCell: BaseCollectionViewCell {
         categoryImage.setImage(urlString: storeCard.categories.first?.imageUrl)
         categoryLabel.text = storeCard.categoriesString
         titleLabel.text = storeCard.storeName
-        tagView.bind(existsCount: storeCard.existsCounts)
         infoView.bind(reviewCount: storeCard.reviewsCount, distance: storeCard.distance)
+        
+        if storeCard.storeType == .bossStore {
+            tagView.bind(type: .boss)
+        } else {
+            tagView.bind(type: .recentVisit(count: storeCard.existsCounts ?? 0))
+        }
     }
 }
