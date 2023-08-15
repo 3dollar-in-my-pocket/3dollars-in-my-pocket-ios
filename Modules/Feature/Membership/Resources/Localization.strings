@@ -1,0 +1,5 @@
+// Signin 화면
+"signin_kakao" = "카카오 계정으로 로그인";
+"signin_apple" = "Sign in with Apple";
+"signin_non_member" = "로그인 없이 둘러보기";
+
