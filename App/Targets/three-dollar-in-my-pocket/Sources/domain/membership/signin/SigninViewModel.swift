@@ -4,6 +4,8 @@ import Combine
 import Networking
 import Common
 
+import FirebaseMessaging
+
 final class SigninViewModel: Common.BaseViewModel {
     enum SigninType {
         case kakao
@@ -12,7 +14,7 @@ final class SigninViewModel: Common.BaseViewModel {
     
     enum Route {
         case goToMain
-        case pushNickname(SigninRequest)
+        case pushNickname(SocialType, String)
         case showErrorAlert(Error)
         case showLoading(isShow: Bool)
     }
@@ -30,15 +32,21 @@ final class SigninViewModel: Common.BaseViewModel {
     private var userDefaults: UserDefaultsUtil
     private let kakaoManager: NewKakaoSigninManager
     private let appleManager: NewAppleSigninManager
+    private let userService: Networking.UserServiceProtocol
+    private let deviceService: Networking.DeviceProtocol
     
     init(
         userDefaults: UserDefaultsUtil = UserDefaultsUtil(),
         kakaoManager: NewKakaoSigninManager = .init(),
-        appleManager: NewAppleSigninManager = .init()
+        appleManager: NewAppleSigninManager = .init(),
+        userService: Networking.UserServiceProtocol = Networking.UserService(),
+        deviceService: Networking.DeviceProtocol = Networking.DeviceService()
     ) {
         self.userDefaults = userDefaults
         self.kakaoManager = kakaoManager
         self.appleManager = appleManager
+        self.userService = userService
+        self.deviceService = deviceService
         
         super.init()
     }
@@ -74,9 +82,7 @@ final class SigninViewModel: Common.BaseViewModel {
                     self?.output.route.send(.showLoading(isShow: false))
                 }
             } receiveValue: { owner, accessToken in
-                let signinRequest = SigninRequest(socialType: .kakao, token: accessToken)
-                
-                owner.output.route.send(.pushNickname(signinRequest))
+                owner.output.route.send(.pushNickname(.kakao, accessToken))
             }
             .store(in: &cancellables)
     }
@@ -97,10 +103,65 @@ final class SigninViewModel: Common.BaseViewModel {
                     self?.output.route.send(.showLoading(isShow: false))
                 }
             } receiveValue: { owner, accessToken in
-                let signinRequest = SigninRequest(socialType: .kakao, token: accessToken)
-                
-                owner.output.route.send(.pushNickname(signinRequest))
+                owner.output.route.send(.pushNickname(.apple, accessToken))
             }
             .store(in: &cancellables)
     }
+    
+    private func signin(socialType: SocialType, accessToken: String) {
+        Task {
+            let result = await userService.signin(socialType: socialType.value, accessToken: accessToken)
+            
+            switch result {
+            case .success(let signinResponse):
+                userDefaults.userId = signinResponse.userId
+                userDefaults.authToken = signinResponse.token
+                sendFCMToken(socialType: socialType)
+                
+            case .failure(let error):
+                if let httpError = error as? Networking.HTTPError,
+                   httpError == .notFound {
+                    output.route.send(.pushNickname(socialType, accessToken))
+                } else {
+                    output.route.send(.showErrorAlert(error))
+                }
+            }
+        }
+    }
+    
+    private func sendFCMToken(socialType: SocialType) {
+        Messaging.messaging().token { [weak self] token, error in
+            guard let self = self else { return }
+            
+            if let token = token {
+                Task {
+                    let refreshDevice = await self.deviceService.refreshDevice(
+                        pushPlatformType: socialType.value,
+                        pushToken: token
+                    )
+                    
+                    switch refreshDevice {
+                    case .success(_):
+                        self.output.route.send(.goToMain)
+                        
+                    case .failure(let error):
+                        self.output.route.send(.showErrorAlert(error))
+                    }
+                }
+            } else {
+                print("💜Error in send FCM token")
+            }
+        }
+    }
+    
+//    private func signinAnonymous() -> Observable<Mutation> {
+//        return self.userService.signinAnonymous()
+//            .do(onNext: { [weak self] signinResponse in
+//                self?.userDefaults.userId = signinResponse.userId
+//                self?.userDefaults.authToken = signinResponse.token
+//                self?.userDefaults.isAnonymousUser = true
+//            })
+//            .map { _ in .goToMain }
+//            .catch { .just(.showErrorAlert($0)) }
+//    }
 }
