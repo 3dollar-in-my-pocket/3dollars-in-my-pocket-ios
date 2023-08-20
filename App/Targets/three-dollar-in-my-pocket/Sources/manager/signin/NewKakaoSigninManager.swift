@@ -5,8 +5,6 @@ import KakaoSDKAuth
 import KakaoSDKCommon
 
 final class NewKakaoSigninManager: NewSigninManagerProtocol {
-    static let shared = NewKakaoSigninManager()
-    
     private var publisher = PassthroughSubject<String, Error>()
     
     
