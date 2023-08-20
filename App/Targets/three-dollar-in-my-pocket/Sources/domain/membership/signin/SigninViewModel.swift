@@ -7,11 +7,6 @@ import Common
 import FirebaseMessaging
 
 final class SigninViewModel: Common.BaseViewModel {
-    enum SigninType {
-        case kakao
-        case apple
-    }
-    
     enum Route {
         case goToMain
         case pushNickname(SocialType, String)
@@ -20,7 +15,7 @@ final class SigninViewModel: Common.BaseViewModel {
     }
     
     struct Input {
-        let onTapSignin = PassthroughSubject<SigninType, Never>()
+        let onTapSignin = PassthroughSubject<SocialType, Never>()
     }
     
     struct Output {
@@ -54,13 +49,16 @@ final class SigninViewModel: Common.BaseViewModel {
     override func bind() {
         input.onTapSignin
             .withUnretained(self)
-            .sink { owner, signinType in
-                switch signinType {
+            .sink { owner, socialType in
+                switch socialType {
                 case .kakao:
                     owner.signinWithKakao()
                     
                 case .apple:
                     owner.signinWithApple()
+                    
+                default:
+                    break
                 }
             }
             .store(in: &cancellables)
@@ -82,7 +80,7 @@ final class SigninViewModel: Common.BaseViewModel {
                     self?.output.route.send(.showLoading(isShow: false))
                 }
             } receiveValue: { owner, accessToken in
-                owner.output.route.send(.pushNickname(.kakao, accessToken))
+                owner.signin(socialType: .kakao, accessToken: accessToken)
             }
             .store(in: &cancellables)
     }
@@ -103,7 +101,7 @@ final class SigninViewModel: Common.BaseViewModel {
                     self?.output.route.send(.showLoading(isShow: false))
                 }
             } receiveValue: { owner, accessToken in
-                owner.output.route.send(.pushNickname(.apple, accessToken))
+                owner.signin(socialType: .apple, accessToken: accessToken)
             }
             .store(in: &cancellables)
     }
@@ -135,10 +133,7 @@ final class SigninViewModel: Common.BaseViewModel {
             
             if let token = token {
                 Task {
-                    let refreshDevice = await self.deviceService.refreshDevice(
-                        pushPlatformType: socialType.value,
-                        pushToken: token
-                    )
+                    let refreshDevice = await self.deviceService.refreshDevice(pushToken: token)
                     
                     switch refreshDevice {
                     case .success(_):

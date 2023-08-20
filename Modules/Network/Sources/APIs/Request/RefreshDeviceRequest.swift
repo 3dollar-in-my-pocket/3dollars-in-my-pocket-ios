@@ -12,7 +12,7 @@ struct RefreshDeviceRequest: RequestType {
     }
     
     var header: HTTPHeaderType {
-        return .json
+        return .auth
     }
     
     var path: String {

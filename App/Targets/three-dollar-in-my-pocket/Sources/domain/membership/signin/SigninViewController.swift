@@ -1,26 +1,30 @@
 import UIKit
 
-import ReactorKit
-import RxSwift
+import Common
 
-final class SigninViewController: BaseViewController {
+final class SigninViewController: Common.BaseViewController {
     private let signinView = SigninView()
-    private let signinReactor = SigninReactor(
-        userDefaults: UserDefaultsUtil(),
-        userService: UserService(),
-        deviceService: DeviceService(),
-        kakaoManager: KakaoSigninManager(),
-        appleManager: AppleSigninManager()
-    )
+    private let viewModel = SigninViewModel()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
     static func instance() -> UINavigationController {
-        let controller = SigninViewController(nibName: nil, bundle: nil)
+        let controller = SigninViewController()
         
         return UINavigationController(rootViewController: controller)
+    }
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        
+        navigationController?.isNavigationBarHidden = true
+        navigationController?.interactivePopGestureRecognizer?.delegate = nil
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func loadView() {
@@ -31,35 +35,33 @@ final class SigninViewController: BaseViewController {
         super.viewDidLoad()
         
         DeeplinkManager.shared.flushDelayedDeeplink()
-        self.navigationController?.isNavigationBarHidden = true
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }
     
-    override func bindEvent() {
-//        self.signinView.signinWithoutIdButton.rx.tap
-//            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-//            .asDriver(onErrorJustReturn: ())
-//            .drive(onNext: { [weak self] _ in
-//                self?.coordinator?.showWarningAlert()
-//            })
-//            .disposed(by: self.eventDisposeBag)
+    override func bindViewModelInput() {
+        signinView.kakaoButton
+            .controlPublisher(for: .touchUpInside)
+            .map { _ in .kakao }
+            .subscribe(viewModel.input.onTapSignin)
+            .store(in: &cancellables)
+        
+        signinView.appleButton
+            .controlPublisher(for: .touchUpInside)
+            .map { _ in .apple }
+            .subscribe(viewModel.input.onTapSignin)
+            .store(in: &cancellables)
+    }
+    
+    override func bindViewModelOutput() {
+        viewModel.output.route
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, route in
+                print("💜route: \(route)")
+            }
+            .store(in: &cancellables)
     }
     
     func bind(reactor: SigninReactor) {
-//        // Bind Action
-//        self.signinView.kakaoButton.rx.tap
-//            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-//            .map { Reactor.Action.tapKakaoButton }
-//            .bind(to: reactor.action)
-//            .disposed(by: self.disposeBag)
-//        
-//        self.signinView.appleButton.rx
-//            .controlEvent(.touchUpInside)
-//            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-//            .map { _ in Reactor.Action.tapAppleButton }
-//            .bind(to: reactor.action)
-//            .disposed(by: self.disposeBag)
-//        
 //        // Bind State
 //        reactor.pulse(\.$goToMain)
 //            .compactMap { $0 }
