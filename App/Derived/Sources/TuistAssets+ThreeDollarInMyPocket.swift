@@ -100,6 +100,7 @@ public enum ThreeDollarInMyPocketAsset {
     public static let icWarning = ThreeDollarInMyPocketImages(name: "ic_warning")
     public static let icWarningWhite = ThreeDollarInMyPocketImages(name: "ic_warning_white")
     public static let icWrite = ThreeDollarInMyPocketImages(name: "ic_write")
+    public static let imageSplash = ThreeDollarInMyPocketImages(name: "image_splash")
     public static let img32BungeoppangOff = ThreeDollarInMyPocketImages(name: "img_32_bungeoppang_off")
     public static let img32BungeoppangOn = ThreeDollarInMyPocketImages(name: "img_32_bungeoppang_on")
     public static let img32DalgonaOff = ThreeDollarInMyPocketImages(name: "img_32_dalgona_off")

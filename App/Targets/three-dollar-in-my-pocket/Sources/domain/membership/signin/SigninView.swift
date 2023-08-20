@@ -1,99 +1,56 @@
 import UIKit
-import AuthenticationServices
 
+import Common
+import DesignSystem
 import Then
-import Lottie
 
 final class SigninView: BaseView {
-    let lottie = LottieAnimationView(name: "signin").then {
-        $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        $0.contentMode = .scaleAspectFill
-        $0.loopMode = .loop
-        $0.play()
-        $0.clipsToBounds = false
-    }
+    private let logoImage = UIImageView(image: ThreeDollarInMyPocketAsset.Assets.imageSplash.image)
     
-    let kakaoButton = UIButton().then {
-        $0.layer.cornerRadius = 20
-        $0.backgroundColor = Color.kakaoYellow
-        $0.accessibilityLabel = "sign_in_with_kakao".localized
-    }
+    let kakaoButton = SigninButton(type: .kakao)
     
-    private let kakaoLabel = UILabel().then {
-        $0.text = "sign_in_with_kakao".localized
-        $0.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 14)
-        $0.textColor = UIColor.init(r: 56, g: 30, b: 31)
-        $0.isAccessibilityElement = false
-    }
+    let appleButton = SigninButton(type: .apple)
     
-    let kakaoImage = UIImageView().then {
-        $0.image = UIImage(named: "ic_kakao")
-    }
-    
-    let appleButton = ASAuthorizationAppleIDButton(type: .signIn, style: .white).then {
-        $0.cornerRadius = 24
-    }
-    
-    let signinWithoutIdButton = UIButton().then {
-        $0.setTitle("sign_in_without_id".localized, for: .normal)
-        $0.setTitleColor(.white, for: .normal)
-        $0.titleLabel?.font = .medium(size: 14)
+    let signinNonMemberButton = UIButton().then {
+        $0.setTitle("로그인 없이 둘러보기", for: .normal)
+        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
     }
     
     override func setup() {
-        self.alpha = 0
-        self.backgroundColor = UIColor(r: 28, g: 28, b: 28)
-        self.addSubViews([
-            self.lottie,
-            self.kakaoButton,
-            self.kakaoImage,
-            self.kakaoLabel,
-            self.appleButton,
-            self.signinWithoutIdButton
+        backgroundColor = DesignSystemAsset.Colors.mainPink.color
+        addSubViews([
+            logoImage,
+            kakaoButton,
+            appleButton,
+            signinNonMemberButton
         ])
     }
     
     override func bindConstraints() {
-        self.lottie.snp.makeConstraints { make in
-            make.left.right.equalToSuperview()
-            make.top.equalToSuperview().offset(109)
-            make.height.equalTo(350)
+        logoImage.snp.makeConstraints {
+            $0.left.equalToSuperview().offset(32)
+            $0.right.equalToSuperview().offset(-32)
+            $0.bottom.equalTo(kakaoButton.snp.top).offset(-48)
         }
         
-        self.appleButton.snp.makeConstraints { make in
-            make.left.right.equalTo(kakaoButton)
-            make.top.equalTo(self.kakaoButton.snp.bottom).offset(16)
-            make.height.equalTo(40)
+        kakaoButton.snp.makeConstraints {
+            $0.centerY.equalToSuperview().offset(48)
+            $0.left.equalToSuperview().offset(20)
+            $0.right.equalToSuperview().offset(-20)
+            $0.height.equalTo(48)
         }
         
-        self.kakaoButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(31)
-            make.right.equalToSuperview().offset(-32)
-            make.top.equalTo(self.lottie.snp.bottom).offset(30)
-            make.height.equalTo(40)
+        appleButton.snp.makeConstraints {
+            $0.left.equalTo(kakaoButton)
+            $0.right.equalTo(kakaoButton)
+            $0.top.equalTo(kakaoButton.snp.bottom).offset(12)
+            $0.height.equalTo(48)
         }
         
-        self.kakaoLabel.snp.makeConstraints { make in
-            make.center.equalTo(self.kakaoButton)
-        }
-        
-        self.kakaoImage.snp.makeConstraints { (make) in
-            make.centerY.equalTo(self.kakaoLabel)
-            make.right.equalTo(self.kakaoLabel.snp.left).offset(-6)
-            make.width.height.equalTo(16)
-        }
-        
-        self.signinWithoutIdButton.snp.makeConstraints { make in
-            make.centerX.equalTo(self.kakaoButton)
-            make.top.equalTo(self.appleButton.snp.bottom).offset(32)
-        }
-    }
-    
-    func startFadeIn() {
-        DispatchQueue.main.async { [weak self] in
-            UIView.animate(withDuration: 0.5) {
-                self?.alpha = 1
-            }
+        signinNonMemberButton.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(appleButton.snp.bottom).offset(20)
         }
     }
 }

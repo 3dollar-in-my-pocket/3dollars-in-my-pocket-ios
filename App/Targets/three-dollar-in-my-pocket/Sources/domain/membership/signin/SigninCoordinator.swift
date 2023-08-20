@@ -26,7 +26,7 @@ extension SigninCoordinator where Self: SigninViewController {
             controller: self,
             message: "sign_in_anonymous_warning".localized
         ) {
-            self.reactor?.action.onNext(.tapWithoutSignin)
+//            self.reactor?.action.onNext(.tapWithoutSignin)
         }
     }
 }
