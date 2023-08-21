@@ -18,7 +18,6 @@
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum ThreeDollarInMyPocketAsset {
   public enum Assets {
-    public static let bgCloud = ThreeDollarInMyPocketImages(name: "bg_cloud")
     public static let bgCloudMyPage = ThreeDollarInMyPocketImages(name: "bg_cloud_my_page")
     public static let icApple = ThreeDollarInMyPocketImages(name: "ic_apple")
     public static let icArrowBottom = ThreeDollarInMyPocketImages(name: "ic_arrow_bottom")
@@ -97,9 +96,9 @@ public enum ThreeDollarInMyPocketAsset {
     public static let icStreetFood = ThreeDollarInMyPocketImages(name: "ic_street_food")
     public static let icSync = ThreeDollarInMyPocketImages(name: "ic_sync")
     public static let icTrash = ThreeDollarInMyPocketImages(name: "ic_trash")
-    public static let icWarning = ThreeDollarInMyPocketImages(name: "ic_warning")
     public static let icWarningWhite = ThreeDollarInMyPocketImages(name: "ic_warning_white")
     public static let icWrite = ThreeDollarInMyPocketImages(name: "ic_write")
+    public static let imageBungeoppang = ThreeDollarInMyPocketImages(name: "image_bungeoppang")
     public static let imageSplash = ThreeDollarInMyPocketImages(name: "image_splash")
     public static let img32BungeoppangOff = ThreeDollarInMyPocketImages(name: "img_32_bungeoppang_off")
     public static let img32BungeoppangOn = ThreeDollarInMyPocketImages(name: "img_32_bungeoppang_on")
@@ -166,8 +165,6 @@ public enum ThreeDollarInMyPocketAsset {
     public static let imgMyPageEmpty = ThreeDollarInMyPocketImages(name: "img_my_page_empty")
     public static let imgNotExist = ThreeDollarInMyPocketImages(name: "img_not_exist")
     public static let imgNotExistEmpty = ThreeDollarInMyPocketImages(name: "img_not_exist_empty")
-    public static let imgStartOffDisable = ThreeDollarInMyPocketImages(name: "img_start_off_disable")
-    public static let imgStartOffNormal = ThreeDollarInMyPocketImages(name: "img_start_off_normal")
     public static let imgTootipFinger = ThreeDollarInMyPocketImages(name: "img_tootip_finger")
     public static let imgTopIndicator = ThreeDollarInMyPocketImages(name: "img_top_indicator")
     public static let imgVisitFail = ThreeDollarInMyPocketImages(name: "img_visit_fail")

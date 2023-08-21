@@ -56,6 +56,16 @@ final class SigninViewController: Common.BaseViewController {
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, route in
+                switch route {
+                case .pushNickname(let socialType, let accessToken):
+                    let signinRequest = SigninRequest(socialType: socialType, token: accessToken)
+                    let viewController = NicknameViewController.instance(signinRequest: signinRequest)
+                    
+                    owner.navigationController?.pushViewController(viewController, animated: true)
+                    
+                default:
+                    break
+                }
                 print("💜route: \(route)")
             }
             .store(in: &cancellables)

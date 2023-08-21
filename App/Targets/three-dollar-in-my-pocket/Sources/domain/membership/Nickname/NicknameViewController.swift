@@ -5,8 +5,6 @@ import RxSwift
 
 final class NicknameViewController: BaseViewController, View, NicknameCoordinator {
     private let nicknameView = NicknameView()
-    private let nicknameReactor: NicknameReactor
-    private weak var coordinator: NicknameCoordinator?
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -23,13 +21,6 @@ final class NicknameViewController: BaseViewController, View, NicknameCoordinato
     }
   
     init(signinRequest: SigninRequest, bookmarkFolderId: String?) {
-        self.nicknameReactor = NicknameReactor(
-            signinRequest: signinRequest,
-            bookmarkFolderId: bookmarkFolderId,
-            userDefaults: UserDefaultsUtil(),
-            userService: UserService()
-        )
-        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,99 +34,96 @@ final class NicknameViewController: BaseViewController, View, NicknameCoordinato
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.coordinator = self
-        self.reactor = self.nicknameReactor
     }
     
     override func bindEvent() {
-        self.nicknameView.backButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.presenter
-                    .navigationController?
-                    .popViewController(animated: true)
-            })
-            .disposed(by: self.eventDisposeBag)
-        
-        self.nicknameView.rx.tapBackground
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] _ in
-                self?.nicknameView.hideKeyboard()
-            })
-            .disposed(by: self.eventDisposeBag)
-        
-        self.nicknameReactor.goToMainPublisher
-            .asDriver(onErrorJustReturn: nil)
-            .drive(onNext: { [weak self] bookmarkFolderId in
-                self?.coordinator?.goToMain(with: bookmarkFolderId)
-            })
-            .disposed(by: self.eventDisposeBag)
-        
-        self.nicknameReactor.showLoadingPublisher
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: { [weak self] isShow in
-                self?.coordinator?.showLoading(isShow: isShow)
-            })
-            .disposed(by: self.eventDisposeBag)
-        
-        self.nicknameReactor.showErrorAlertPublisher
-            .asDriver(onErrorJustReturn: BaseError.unknown)
-            .drive(onNext: { [weak self] error in
-                self?.coordinator?.showErrorAlert(error: error)
-            })
-            .disposed(by: self.eventDisposeBag)
+//        self.nicknameView.backButton.rx.tap
+//            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+//            .asDriver(onErrorJustReturn: ())
+//            .drive(onNext: { [weak self] _ in
+//                self?.coordinator?.presenter
+//                    .navigationController?
+//                    .popViewController(animated: true)
+//            })
+//            .disposed(by: self.eventDisposeBag)
+//
+//        self.nicknameView.rx.tapBackground
+//            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+//            .asDriver(onErrorJustReturn: ())
+//            .drive(onNext: { [weak self] _ in
+//                self?.nicknameView.hideKeyboard()
+//            })
+//            .disposed(by: self.eventDisposeBag)
+//
+//        self.nicknameReactor.goToMainPublisher
+//            .asDriver(onErrorJustReturn: nil)
+//            .drive(onNext: { [weak self] bookmarkFolderId in
+//                self?.coordinator?.goToMain(with: bookmarkFolderId)
+//            })
+//            .disposed(by: self.eventDisposeBag)
+//
+//        self.nicknameReactor.showLoadingPublisher
+//            .asDriver(onErrorJustReturn: false)
+//            .drive(onNext: { [weak self] isShow in
+//                self?.coordinator?.showLoading(isShow: isShow)
+//            })
+//            .disposed(by: self.eventDisposeBag)
+//
+//        self.nicknameReactor.showErrorAlertPublisher
+//            .asDriver(onErrorJustReturn: BaseError.unknown)
+//            .drive(onNext: { [weak self] error in
+//                self?.coordinator?.showErrorAlert(error: error)
+//            })
+//            .disposed(by: self.eventDisposeBag)
     }
     
     
     func bind(reactor: NicknameReactor) {
         // Bind Action
-        self.nicknameView.nicknameField.rx.text.orEmpty
-            .map { Reactor.Action.inputNickname($0) }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-        
-        self.nicknameView.startButton1.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapStartButton }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-        
-        self.nicknameView.startButton2.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapStartButton }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-        
-        // Bind State
-        reactor.state
-            .map { $0.isStartButtonEnable }
-            .distinctUntilChanged()
-            .asDriver(onErrorJustReturn: false)
-            .drive(self.nicknameView.rx.isStartButtonEnable)
-            .disposed(by: self.disposeBag)
-        
-        reactor.state
-            .map { $0.isErrorLabelHidden }
-            .distinctUntilChanged()
-            .asDriver(onErrorJustReturn: true)
-            .drive(self.nicknameView.rx.isErrorLabelHidden)
-            .disposed(by: self.disposeBag)
-        
-        reactor.pulse(\.$presentPolicy)
-            .compactMap { $0 }
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.presentPolicy()
-            })
-            .disposed(by: self.disposeBag)
+//        self.nicknameView.nicknameField.rx.text.orEmpty
+//            .map { Reactor.Action.inputNickname($0) }
+//            .bind(to: reactor.action)
+//            .disposed(by: self.disposeBag)
+//
+//        self.nicknameView.startButton1.rx.tap
+//            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+//            .map { Reactor.Action.tapStartButton }
+//            .bind(to: reactor.action)
+//            .disposed(by: self.disposeBag)
+//
+//        self.nicknameView.startButton2.rx.tap
+//            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+//            .map { Reactor.Action.tapStartButton }
+//            .bind(to: reactor.action)
+//            .disposed(by: self.disposeBag)
+//
+//        // Bind State
+//        reactor.state
+//            .map { $0.isStartButtonEnable }
+//            .distinctUntilChanged()
+//            .asDriver(onErrorJustReturn: false)
+//            .drive(self.nicknameView.rx.isStartButtonEnable)
+//            .disposed(by: self.disposeBag)
+//
+//        reactor.state
+//            .map { $0.isErrorLabelHidden }
+//            .distinctUntilChanged()
+//            .asDriver(onErrorJustReturn: true)
+//            .drive(self.nicknameView.rx.isErrorLabelHidden)
+//            .disposed(by: self.disposeBag)
+//
+//        reactor.pulse(\.$presentPolicy)
+//            .compactMap { $0 }
+//            .asDriver(onErrorJustReturn: ())
+//            .drive(onNext: { [weak self] _ in
+//                self?.coordinator?.presentPolicy()
+//            })
+//            .disposed(by: self.disposeBag)
     }
 }
 
 extension NicknameViewController: PolicyViewControllerDelegate {
     func onDismiss() {
-        self.nicknameReactor.action.onNext(.onSignupSuccess)
+//        self.nicknameReactor.action.onNext(.onSignupSuccess)
     }
 }
