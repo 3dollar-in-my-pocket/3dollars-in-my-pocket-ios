@@ -27,6 +27,7 @@ final class NicknameView: Common.BaseView {
     }
     
     let nicknameField = UITextField().then {
+        $0.textAlignment = .center
         $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 30)
         $0.textColor = DesignSystemAsset.Colors.mainPink.color
         $0.returnKeyType = .done
