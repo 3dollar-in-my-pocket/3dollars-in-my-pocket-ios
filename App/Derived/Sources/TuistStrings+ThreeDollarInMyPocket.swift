@@ -306,16 +306,16 @@ public enum ThreeDollarInMyPocketStrings {
   public static let myVisitHistoryEmptyTitle = ThreeDollarInMyPocketStrings.tr("Localization", "my_visit_history_empty_title")
   /// 방문 인증 내역
   public static let myVisitHistoryTitle = ThreeDollarInMyPocketStrings.tr("Localization", "my_visit_history_title")
-  /// 이미 존재하는 닉네임입니다.
+  /// 중복된 이름이에요!
   public static let nicknameAlreayExisted = ThreeDollarInMyPocketStrings.tr("Localization", "nickname_alreay_existed")
-  /// 저는 닉네임
+  /// 닉네임
   public static let nicknameLabel1 = ThreeDollarInMyPocketStrings.tr("Localization", "nickname_label_1")
-  /// 로
+  /// 로 시작할래요
   public static let nicknameLabel2 = ThreeDollarInMyPocketStrings.tr("Localization", "nickname_label_2")
-  /// 시작할래요
-  public static let nicknameLabel3 = ThreeDollarInMyPocketStrings.tr("Localization", "nickname_label_3")
-  /// 닉네임 입력
+  /// 닉네임을 입력해주세요.
   public static let nicknamePlaceholder = ThreeDollarInMyPocketStrings.tr("Localization", "nickname_placeholder")
+  /// 회원가입
+  public static let nicknameSignup = ThreeDollarInMyPocketStrings.tr("Localization", "nickname_signup")
   /// 설정에서 해당 권한을 허용해 주세요!!
   public static let permissionDeniedDescription = ThreeDollarInMyPocketStrings.tr("Localization", "permission_denied_description")
   /// 권한이 거절되었어요😭

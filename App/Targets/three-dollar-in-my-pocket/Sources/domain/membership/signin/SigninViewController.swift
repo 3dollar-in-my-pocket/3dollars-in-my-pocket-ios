@@ -12,15 +12,15 @@ final class SigninViewController: Common.BaseViewController {
     
     static func instance() -> UINavigationController {
         let controller = SigninViewController()
+        let navigationController = UINavigationController(rootViewController: controller)
         
-        return UINavigationController(rootViewController: controller)
+        navigationController.isNavigationBarHidden = true
+        navigationController.interactivePopGestureRecognizer?.delegate = nil
+        return navigationController
     }
     
     init() {
         super.init(nibName: nil, bundle: nil)
-        
-        navigationController?.isNavigationBarHidden = true
-        navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }
     
     required init?(coder: NSCoder) {
@@ -59,7 +59,10 @@ final class SigninViewController: Common.BaseViewController {
                 switch route {
                 case .pushNickname(let socialType, let accessToken):
                     let signinRequest = SigninRequest(socialType: socialType, token: accessToken)
-                    let viewController = NicknameViewController.instance(signinRequest: signinRequest)
+                    let viewController = NicknameViewController.instance(
+                        socialType: socialType,
+                        accessToken: accessToken
+                    )
                     
                     owner.navigationController?.pushViewController(viewController, animated: true)
                     

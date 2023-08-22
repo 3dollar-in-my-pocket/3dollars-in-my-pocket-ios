@@ -9,6 +9,10 @@ import RxCocoa
 final class NicknameView: Common.BaseView {
     private let tapGestureView = UITapGestureRecognizer()
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     let backButton = UIButton().then {
         $0.setImage(
             DesignSystemAsset.Icons.arrowLeft.image.withTintColor(DesignSystemAsset.Colors.systemWhite.color),
@@ -37,6 +41,7 @@ final class NicknameView: Common.BaseView {
                 .foregroundColor: DesignSystemAsset.Colors.gray80.color as Any
             ]
         )
+        $0.tintColor = DesignSystemAsset.Colors.mainPink.color
     }
     
     private let nicknameLabel2 = UILabel().then {
@@ -55,11 +60,12 @@ final class NicknameView: Common.BaseView {
         $0.textColor = DesignSystemAsset.Colors.mainRed.color
         $0.backgroundColor = DesignSystemAsset.Colors.mainRed.color.withAlphaComponent(0.1)
         $0.layer.cornerRadius = 16
+        $0.layer.masksToBounds = true
         $0.isHidden = true
     }
     
-    let signinButton = UIButton().then {
-        $0.setTitle(ThreeDollarInMyPocketStrings.nicknameAlreayExisted, for: .normal)
+    let signupButton = UIButton().then {
+        $0.setTitle(ThreeDollarInMyPocketStrings.nicknameSignup, for: .normal)
         $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
         $0.setTitleColor(DesignSystemAsset.Colors.gray60.color, for: .disabled)
         $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
@@ -78,6 +84,7 @@ final class NicknameView: Common.BaseView {
         isUserInteractionEnabled = true
         addGestureRecognizer(tapGestureView)
         nicknameField.delegate = self
+        tapGestureView.addTarget(self, action: #selector(onTapBackground))
         
         addSubViews([
             backButton,
@@ -87,9 +94,10 @@ final class NicknameView: Common.BaseView {
             nicknameLabel2,
             warningImage,
             warningLabel,
-            signinButton,
+            signupButton,
             bottomBackground
         ])
+        setupKeyboardEvent()
     }
     
     override func bindConstraints() {
@@ -119,6 +127,18 @@ final class NicknameView: Common.BaseView {
             $0.top.equalTo(nicknameField.snp.bottom).offset(6)
             $0.centerX.equalToSuperview()
         }
+        
+        warningLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(nicknameLabel2.snp.bottom).offset(12)
+            $0.height.equalTo(32)
+        }
+        
+        warningImage.snp.makeConstraints {
+            $0.centerY.equalTo(nicknameField)
+            $0.left.equalTo(nicknameField.snp.right).offset(4)
+            $0.width.height.equalTo(20)
+        }
 
         bottomBackground.snp.makeConstraints {
             $0.left.equalToSuperview()
@@ -127,12 +147,23 @@ final class NicknameView: Common.BaseView {
             $0.top.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
 
-        signinButton.snp.makeConstraints {
+        signupButton.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()
             $0.bottom.equalTo(bottomBackground.snp.top)
             $0.height.equalTo(64)
         }
+    }
+    
+    func setHiddenWarning(isHidden: Bool) {
+        warningImage.isHidden = isHidden
+        warningLabel.isHidden = isHidden
+        nicknameField.textColor = isHidden ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.mainRed.color
+    }
+    
+    func setEnableSignupButton(_ isEnabled: Bool) {
+        signupButton.isEnabled = isEnabled
+        bottomBackground.backgroundColor = isEnabled ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray80.color
     }
     
     func hideKeyboard() {
@@ -141,6 +172,68 @@ final class NicknameView: Common.BaseView {
     
     private func showKeyboard() {
         self.nicknameField.becomeFirstResponder()
+    }
+    
+    private func setupKeyboardEvent() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onShowKeyboard(notification:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onHideKeyboard(notification:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func onShowKeyboard(notification: NSNotification) {
+        guard let keyboardFrameInfo
+                = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {
+            return
+        }
+        var keyboardFrame = keyboardFrameInfo.cgRectValue
+        
+        keyboardFrame = self.convert(keyboardFrame, from: nil)
+        
+        let window = UIApplication.shared.windows.first
+        let bottomPadding = window?.safeAreaInsets.bottom ?? 0
+        
+        nicknameField.snp.remakeConstraints {
+            $0.centerY.equalToSuperview().offset(-keyboardFrame.size.height/3)
+            $0.centerX.equalToSuperview()
+        }
+        
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.signupButton.transform = .init(
+                translationX: 0,
+                y: -keyboardFrame.size.height + bottomPadding
+            )
+            self?.bottomBackground.transform = .init(
+                translationX: 0,
+                y: -keyboardFrame.size.height + bottomPadding
+            )
+            self?.layoutIfNeeded()
+        }
+    }
+    
+    @objc private func onHideKeyboard(notification: NSNotification) {
+        nicknameField.snp.remakeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.centerX.equalToSuperview()
+        }
+        
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.signupButton.transform = .identity
+            self?.bottomBackground.transform = .identity
+            self?.layoutIfNeeded()
+        }
+    }
+    
+    @objc private func onTapBackground() {
+        hideKeyboard()
     }
 }
 
@@ -166,23 +259,3 @@ extension NicknameView: UITextFieldDelegate {
         return true
     }
 }
-
-//extension Reactive where Base: NicknameView {
-//    var tapBackground: ControlEvent<Void> {
-//        return ControlEvent(events: base.tapGestureView.rx.event.map { _ in () })
-//    }
-//    
-//    var isStartButtonEnable: Binder<Bool> {
-//        return Binder(self.base) { view, isEnable in
-//            view.startButton1.isEnabled = isEnable
-//            view.startButton2.isEnabled = isEnable
-//        }
-//    }
-//    
-//    var isErrorLabelHidden: Binder<Bool> {
-//        return Binder(self.base) { view, isHidden in
-//            view.warningImage.isHidden = isHidden
-//            view.warningLabel.isHidden = isHidden
-//        }
-//    }
-//}

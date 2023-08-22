@@ -321,5 +321,5 @@
 "nickname_label_1" = "닉네임";
 "nickname_placeholder" = "닉네임을 입력해주세요.";
 "nickname_label_2" = "로 시작할래요";
-"nickname_signin" = "회원가입";
+"nickname_signup" = "회원가입";
 "nickname_alreay_existed" = "중복된 이름이에요!";

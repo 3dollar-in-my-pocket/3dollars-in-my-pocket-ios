@@ -41,6 +41,7 @@ final class NicknameViewModel: Common.BaseViewModel {
     init(
         socialType: SocialType,
         accessToken: String,
+        bookmarkFolderId: String? = nil,
         userDefaults : UserDefaultsUtil = .init(),
         userService: Networking.UserServiceProtocol = Networking.UserService()
     ) {
@@ -53,7 +54,7 @@ final class NicknameViewModel: Common.BaseViewModel {
         input.inputNickname
             .withUnretained(self)
             .sink(receiveValue: { owner, nickname in
-                let isEnableSignup = owner.state.nickname.trimmingCharacters(in: .whitespaces).isEmpty
+                let isEnableSignup = nickname.trimmingCharacters(in: .whitespaces).isNotEmpty
                 
                 owner.state.nickname = nickname
                 owner.output.isEnableSignupButton.send(isEnableSignup)
@@ -104,16 +105,11 @@ final class NicknameViewModel: Common.BaseViewModel {
     }
     
     private func handleSignupError(error: Error) {
-        if let httpError = error as? Networking.HTTPError {
-            switch httpError {
-            case .conflict:
+        if let networkError = error as? NetworkError,
+           case .errorContainer(let errorContainer) = networkError {
+            if errorContainer.resultCode == "CF001" {
                 output.isHiddenWarningLabel.send(false)
-                
-            case .badRequest:
-                let error = BaseError.custom("잘못된 형식의 닉네임입니다.")
-                output.route.send(.showErrorAlert(error))
-                
-            default:
+            } else {
                 output.route.send(.showErrorAlert(error))
             }
         } else {

@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
-        window?.rootViewController = NicknameViewController.instance(signinRequest: .init(socialType: .kakao, token: ""))
+        window?.rootViewController = SigninViewController.instance()
         window?.makeKeyAndVisible()
         
         self.reserveDynamicLinkIfExisted(connectionOptions: connectionOptions)

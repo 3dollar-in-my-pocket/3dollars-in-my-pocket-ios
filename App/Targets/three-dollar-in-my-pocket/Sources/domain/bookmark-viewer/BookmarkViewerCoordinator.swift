@@ -46,7 +46,8 @@ extension BookmarkViewerCoordinator {
     
     func pushNickname(signinRequest: SigninRequest, bookmarkFolderId: String?) {
         let viewController = NicknameViewController.instance(
-            signinRequest: signinRequest,
+            socialType: signinRequest.socialType,
+            accessToken: signinRequest.token,
             bookmarkFolderId: bookmarkFolderId
         )
         

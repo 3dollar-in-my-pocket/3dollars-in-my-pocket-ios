@@ -16,9 +16,9 @@ extension SigninCoordinator where Self: SigninViewController {
     }
     
     func pushNickname(signinRequest: SigninRequest) {
-        let nicknameVC = NicknameViewController.instance(signinRequest: signinRequest)
-        
-        self.presenter.navigationController?.pushViewController(nicknameVC, animated: true)
+//        let nicknameVC = NicknameViewController.instance(signinRequest: signinRequest)
+//        
+//        self.presenter.navigationController?.pushViewController(nicknameVC, animated: true)
     }
     
     func showWarningAlert() {

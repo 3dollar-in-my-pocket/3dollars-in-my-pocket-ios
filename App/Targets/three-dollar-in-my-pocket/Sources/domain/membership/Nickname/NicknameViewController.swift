@@ -1,27 +1,39 @@
 import UIKit
 
+import DesignSystem
+
 import ReactorKit
 import RxSwift
 
-final class NicknameViewController: BaseViewController, View, NicknameCoordinator {
+final class NicknameViewController: BaseViewController {
     private let nicknameView = NicknameView()
+    private let viewModel: NicknameViewModel
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
     static func instance(
-        signinRequest: SigninRequest,
+        socialType: SocialType,
+        accessToken: String,
         bookmarkFolderId: String? = nil
     ) -> NicknameViewController {
         return NicknameViewController(
-            signinRequest: signinRequest,
+            socialType: socialType,
+            accessToken: accessToken,
             bookmarkFolderId: bookmarkFolderId
         )
     }
   
-    init(signinRequest: SigninRequest, bookmarkFolderId: String?) {
+    init(socialType: SocialType, accessToken: String, bookmarkFolderId: String?) {
+        self.viewModel = NicknameViewModel(
+            socialType: socialType,
+            accessToken: accessToken,
+            bookmarkFolderId: bookmarkFolderId
+        )
+        
         super.init(nibName: nil, bundle: nil)
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     required init?(coder: NSCoder) {
@@ -32,93 +44,77 @@ final class NicknameViewController: BaseViewController, View, NicknameCoordinato
         self.view = self.nicknameView
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func bindViewModelInput() {
+        nicknameView.nicknameField
+            .controlPublisher(for: .editingChanged)
+            .withUnretained(self)
+            .compactMap { owner, _ in
+                owner.nicknameView.nicknameField.text ?? ""
+            }
+            .subscribe(viewModel.input.inputNickname)
+            .store(in: &cancellables)
+        
+        nicknameView.signupButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapSigninButton)
+            .store(in: &cancellables)
+    }
+    
+    override func bindViewModelOutput() {
+        viewModel.output.isEnableSignupButton
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, isEnabled in
+                owner.nicknameView.setEnableSignupButton(isEnabled)
+            })
+            .store(in: &cancellables)
+        
+        viewModel.output.isHiddenWarningLabel
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, isHidden in
+                owner.nicknameView.setHiddenWarning(isHidden: isHidden)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.route
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, route in
+                switch route {
+                case .presentPolicy:
+                    print("💜present policy")
+                    
+                case .goToMain(let bookmarkFolderId):
+                    print("💜go to main")
+                    
+                case .showErrorAlert(let error):
+                    print("💜show error alert: \(error)")
+                    
+                case .showLoading(let isShow):
+                    DesignSystem.LoadingManager.shared.showLoading(isShow: isShow)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     override func bindEvent() {
-//        self.nicknameView.backButton.rx.tap
-//            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-//            .asDriver(onErrorJustReturn: ())
-//            .drive(onNext: { [weak self] _ in
-//                self?.coordinator?.presenter
-//                    .navigationController?
-//                    .popViewController(animated: true)
-//            })
-//            .disposed(by: self.eventDisposeBag)
-//
-//        self.nicknameView.rx.tapBackground
-//            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-//            .asDriver(onErrorJustReturn: ())
-//            .drive(onNext: { [weak self] _ in
-//                self?.nicknameView.hideKeyboard()
-//            })
-//            .disposed(by: self.eventDisposeBag)
-//
-//        self.nicknameReactor.goToMainPublisher
-//            .asDriver(onErrorJustReturn: nil)
-//            .drive(onNext: { [weak self] bookmarkFolderId in
-//                self?.coordinator?.goToMain(with: bookmarkFolderId)
-//            })
-//            .disposed(by: self.eventDisposeBag)
-//
-//        self.nicknameReactor.showLoadingPublisher
-//            .asDriver(onErrorJustReturn: false)
-//            .drive(onNext: { [weak self] isShow in
-//                self?.coordinator?.showLoading(isShow: isShow)
-//            })
-//            .disposed(by: self.eventDisposeBag)
-//
+        nicknameView.backButton
+            .controlPublisher(for: .touchUpInside)
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.navigationController?.popViewController(animated: true)
+            }
+            .store(in: &cancellables)
+
 //        self.nicknameReactor.showErrorAlertPublisher
 //            .asDriver(onErrorJustReturn: BaseError.unknown)
 //            .drive(onNext: { [weak self] error in
 //                self?.coordinator?.showErrorAlert(error: error)
 //            })
 //            .disposed(by: self.eventDisposeBag)
-    }
-    
-    
-    func bind(reactor: NicknameReactor) {
-        // Bind Action
-//        self.nicknameView.nicknameField.rx.text.orEmpty
-//            .map { Reactor.Action.inputNickname($0) }
-//            .bind(to: reactor.action)
-//            .disposed(by: self.disposeBag)
-//
-//        self.nicknameView.startButton1.rx.tap
-//            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-//            .map { Reactor.Action.tapStartButton }
-//            .bind(to: reactor.action)
-//            .disposed(by: self.disposeBag)
-//
-//        self.nicknameView.startButton2.rx.tap
-//            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-//            .map { Reactor.Action.tapStartButton }
-//            .bind(to: reactor.action)
-//            .disposed(by: self.disposeBag)
-//
-//        // Bind State
-//        reactor.state
-//            .map { $0.isStartButtonEnable }
-//            .distinctUntilChanged()
-//            .asDriver(onErrorJustReturn: false)
-//            .drive(self.nicknameView.rx.isStartButtonEnable)
-//            .disposed(by: self.disposeBag)
-//
-//        reactor.state
-//            .map { $0.isErrorLabelHidden }
-//            .distinctUntilChanged()
-//            .asDriver(onErrorJustReturn: true)
-//            .drive(self.nicknameView.rx.isErrorLabelHidden)
-//            .disposed(by: self.disposeBag)
-//
-//        reactor.pulse(\.$presentPolicy)
-//            .compactMap { $0 }
-//            .asDriver(onErrorJustReturn: ())
-//            .drive(onNext: { [weak self] _ in
-//                self?.coordinator?.presentPolicy()
-//            })
-//            .disposed(by: self.disposeBag)
     }
 }
 

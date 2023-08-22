@@ -117,9 +117,13 @@ final class SigninViewModel: Common.BaseViewModel {
                 sendFCMToken(socialType: socialType)
                 
             case .failure(let error):
-                if let httpError = error as? Networking.HTTPError,
-                   httpError == .notFound {
-                    output.route.send(.pushNickname(socialType, accessToken))
+                if let networkError = error as? NetworkError,
+                   case .errorContainer(let errorContainer) = networkError {
+                    if errorContainer.resultCode == "NF001" {
+                        output.route.send(.pushNickname(socialType, accessToken))
+                    } else {
+                        output.route.send(.showErrorAlert(error))
+                    }
                 } else {
                     output.route.send(.showErrorAlert(error))
                 }
