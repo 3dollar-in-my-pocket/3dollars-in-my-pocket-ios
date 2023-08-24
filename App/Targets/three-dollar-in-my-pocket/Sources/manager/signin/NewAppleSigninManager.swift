@@ -46,7 +46,7 @@ extension NewAppleSigninManager: ASAuthorizationControllerDelegate {
         if let authorizationError = error as? ASAuthorizationError {
             switch authorizationError.code {
             case .canceled:
-                publisher.send(completion: .failure(BaseError.custom("cancel")))
+                break
                 
             case .failed, .invalidResponse, .notHandled, .unknown:
                 let error = BaseError.custom(authorizationError.localizedDescription)

@@ -1,6 +1,7 @@
 import UIKit
 
 import Common
+import DesignSystem
 
 final class SigninViewController: Common.BaseViewController {
     private let signinView = SigninView()
@@ -49,6 +50,12 @@ final class SigninViewController: Common.BaseViewController {
             .map { _ in .apple }
             .subscribe(viewModel.input.onTapSignin)
             .store(in: &cancellables)
+        
+        signinView.signinAnonymousButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapSigninAnonymous)
+            .store(in: &cancellables)
     }
     
     override func bindViewModelOutput() {
@@ -57,8 +64,10 @@ final class SigninViewController: Common.BaseViewController {
             .withUnretained(self)
             .sink { owner, route in
                 switch route {
+                case .goToMain:
+                    owner.goToMain()
+                    
                 case .pushNickname(let socialType, let accessToken):
-                    let signinRequest = SigninRequest(socialType: socialType, token: accessToken)
                     let viewController = NicknameViewController.instance(
                         socialType: socialType,
                         accessToken: accessToken
@@ -66,47 +75,14 @@ final class SigninViewController: Common.BaseViewController {
                     
                     owner.navigationController?.pushViewController(viewController, animated: true)
                     
-                default:
-                    break
+                case .showErrorAlert(let error):
+                    owner.showErrorAlert(error: error)
+                    
+                case .showLoading(let isShow):
+                    DesignSystem.LoadingManager.shared.showLoading(isShow: isShow)
                 }
-                print("💜route: \(route)")
             }
             .store(in: &cancellables)
-    }
-    
-    func bind(reactor: SigninReactor) {
-//        // Bind State
-//        reactor.pulse(\.$goToMain)
-//            .compactMap { $0 }
-//            .asDriver(onErrorJustReturn: ())
-//            .drive(onNext: { [weak self] _ in
-//                self?.coordinator?.goToMain()
-//            })
-//            .disposed(by: self.disposeBag)
-//        
-//        reactor.pulse(\.$pushNickname)
-//            .compactMap { $0 }
-//            .asDriver(onErrorJustReturn: SigninRequest(socialType: .unknown, token: ""))
-//            .drive(onNext: { [weak self] signinRequest in
-//                self?.coordinator?.pushNickname(signinRequest: signinRequest)
-//            })
-//            .disposed(by: self.disposeBag)
-//        
-//        reactor.pulse(\.$showErrorAlert)
-//            .compactMap { $0 }
-//            .asDriver(onErrorJustReturn: BaseError.unknown)
-//            .drive(onNext: { [weak self] error in
-//                self?.coordinator?.showErrorAlert(error: BaseError.unknown)
-//            })
-//            .disposed(by: self.disposeBag)
-//        
-//        reactor.pulse(\.$showLoading)
-//            .compactMap { $0 }
-//            .asDriver(onErrorJustReturn: false)
-//            .drive(onNext: { [weak self] isShow in
-//                self?.coordinator?.showLoading(isShow: isShow)
-//            })
-//            .disposed(by: self.disposeBag)
     }
     
     private func handleDeeplink(contents: DeepLinkContents) {
@@ -129,5 +105,10 @@ final class SigninViewController: Common.BaseViewController {
         case .present:
             rootViewController?.present(targetViewController, animated: true)
         }
+    }
+    
+    private func goToMain() {
+        guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+        sceneDelegate.goToMain()
     }
 }

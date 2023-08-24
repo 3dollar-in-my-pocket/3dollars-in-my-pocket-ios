@@ -11,7 +11,7 @@ final class SigninView: BaseView {
     
     let appleButton = SigninButton(type: .apple)
     
-    let signinNonMemberButton = UIButton().then {
+    let signinAnonymousButton = UIButton().then {
         $0.setTitle("로그인 없이 둘러보기", for: .normal)
         $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
         $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
@@ -23,7 +23,7 @@ final class SigninView: BaseView {
             logoImage,
             kakaoButton,
             appleButton,
-            signinNonMemberButton
+            signinAnonymousButton
         ])
     }
     
@@ -48,7 +48,7 @@ final class SigninView: BaseView {
             $0.height.equalTo(48)
         }
         
-        signinNonMemberButton.snp.makeConstraints {
+        signinAnonymousButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(appleButton.snp.bottom).offset(20)
         }

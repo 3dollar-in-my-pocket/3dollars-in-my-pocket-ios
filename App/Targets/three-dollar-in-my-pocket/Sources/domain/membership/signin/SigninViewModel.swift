@@ -16,6 +16,7 @@ final class SigninViewModel: Common.BaseViewModel {
     
     struct Input {
         let onTapSignin = PassthroughSubject<SocialType, Never>()
+        let onTapSigninAnonymous = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -62,6 +63,31 @@ final class SigninViewModel: Common.BaseViewModel {
                 }
             }
             .store(in: &cancellables)
+        
+        input.onTapSigninAnonymous
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, _ in
+                owner.output.route.send(.showLoading(isShow: true))
+            })
+            .asyncMap { owner, _ in
+                await owner.userService.signinAnonymous()
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                owner.output.route.send(.showLoading(isShow: false))
+                
+                switch result {
+                case .success(let signinResponse):
+                    owner.userDefaults.userId = signinResponse.userId
+                    owner.userDefaults.authToken = signinResponse.token
+                    owner.userDefaults.isAnonymousUser = true
+                    owner.output.route.send(.goToMain)
+                    
+                case .failure(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func signinWithKakao() {
@@ -97,8 +123,8 @@ final class SigninViewModel: Common.BaseViewModel {
                     break
                     
                 case .failure(let error):
-                    self?.output.route.send(.showErrorAlert(error))
                     self?.output.route.send(.showLoading(isShow: false))
+                    self?.output.route.send(.showErrorAlert(error))
                 }
             } receiveValue: { owner, accessToken in
                 owner.signin(socialType: .apple, accessToken: accessToken)
@@ -117,6 +143,8 @@ final class SigninViewModel: Common.BaseViewModel {
                 sendFCMToken(socialType: socialType)
                 
             case .failure(let error):
+                output.route.send(.showLoading(isShow: false))
+                
                 if let networkError = error as? NetworkError,
                    case .errorContainer(let errorContainer) = networkError {
                     if errorContainer.resultCode == "NF001" {
@@ -139,6 +167,8 @@ final class SigninViewModel: Common.BaseViewModel {
                 Task {
                     let refreshDevice = await self.deviceService.refreshDevice(pushToken: token)
                     
+                    self.output.route.send(.showLoading(isShow: false))
+                    
                     switch refreshDevice {
                     case .success(_):
                         self.output.route.send(.goToMain)
@@ -152,15 +182,4 @@ final class SigninViewModel: Common.BaseViewModel {
             }
         }
     }
-    
-//    private func signinAnonymous() -> Observable<Mutation> {
-//        return self.userService.signinAnonymous()
-//            .do(onNext: { [weak self] signinResponse in
-//                self?.userDefaults.userId = signinResponse.userId
-//                self?.userDefaults.authToken = signinResponse.token
-//                self?.userDefaults.isAnonymousUser = true
-//            })
-//            .map { _ in .goToMain }
-//            .catch { .just(.showErrorAlert($0)) }
-//    }
 }
