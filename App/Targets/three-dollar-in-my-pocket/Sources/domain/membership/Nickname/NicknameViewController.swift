@@ -1,11 +1,9 @@
 import UIKit
 
+import Common
 import DesignSystem
 
-import ReactorKit
-import RxSwift
-
-final class NicknameViewController: BaseViewController {
+final class NicknameViewController: Common.BaseViewController {
     private let nicknameView = NicknameView()
     private let viewModel: NicknameViewModel
     
@@ -84,13 +82,13 @@ final class NicknameViewController: BaseViewController {
             .sink { owner, route in
                 switch route {
                 case .presentPolicy:
-                    print("💜present policy")
+                    owner.presentPolicy()
                     
                 case .goToMain(let bookmarkFolderId):
-                    print("💜go to main")
+                    owner.goToMain(with: bookmarkFolderId)
                     
                 case .showErrorAlert(let error):
-                    print("💜show error alert: \(error)")
+                    owner.showErrorAlert(error: error)
                     
                 case .showLoading(let isShow):
                     DesignSystem.LoadingManager.shared.showLoading(isShow: isShow)
@@ -108,18 +106,32 @@ final class NicknameViewController: BaseViewController {
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)
-
-//        self.nicknameReactor.showErrorAlertPublisher
-//            .asDriver(onErrorJustReturn: BaseError.unknown)
-//            .drive(onNext: { [weak self] error in
-//                self?.coordinator?.showErrorAlert(error: error)
-//            })
-//            .disposed(by: self.eventDisposeBag)
+    }
+    
+    private func presentPolicy() {
+        let viewController = PolicyViewController.instance(delegate: self)
+        
+        present(viewController, animated: true)
+    }
+    
+    private func goToMain(with bookmarkFolderId: String?) {
+        SceneDelegate.shared?.goToMain()
+        
+        if let bookmarkFolderId {
+            let targetViewController = BookmarkViewerViewController.instance(
+                folderId: bookmarkFolderId
+            )
+            let deepLinkContents = DeepLinkContents(
+                targetViewController: targetViewController,
+                transitionType: .present
+            )
+            DeeplinkManager.shared.reserveDeeplink(deeplinkContents: deepLinkContents)
+        }
     }
 }
 
 extension NicknameViewController: PolicyViewControllerDelegate {
     func onDismiss() {
-//        self.nicknameReactor.action.onNext(.onSignupSuccess)
+        viewModel.input.onDismissPolicy.send(())
     }
 }

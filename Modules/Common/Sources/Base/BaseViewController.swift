@@ -7,6 +7,7 @@ open class BaseViewController: UIViewController {
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
+        bindEvent()
         bindViewModelInput()
         bindViewModelOutput()
     }
@@ -14,6 +15,8 @@ open class BaseViewController: UIViewController {
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    open func bindEvent() { }
     
     open func bindViewModelInput() { }
     
