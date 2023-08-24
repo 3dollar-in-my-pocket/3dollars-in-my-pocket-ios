@@ -31,8 +31,6 @@ public enum ThreeDollarInMyPocketAsset {
     public static let icCheck = ThreeDollarInMyPocketImages(name: "ic_check")
     public static let icCheckCircleOff = ThreeDollarInMyPocketImages(name: "ic_check_circle_off")
     public static let icCheckCircleOn = ThreeDollarInMyPocketImages(name: "ic_check_circle_on")
-    public static let icCheckLineOff = ThreeDollarInMyPocketImages(name: "ic_check_line_off")
-    public static let icCheckLineOn = ThreeDollarInMyPocketImages(name: "ic_check_line_on")
     public static let icCheckOff = ThreeDollarInMyPocketImages(name: "ic_check_off")
     public static let icCheckOffGreen = ThreeDollarInMyPocketImages(name: "ic_check_off_green")
     public static let icCheckOn = ThreeDollarInMyPocketImages(name: "ic_check_on")

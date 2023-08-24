@@ -4,12 +4,16 @@ public class Button {
     public class Normal: UIButton {
         public enum Size {
             case h52
+            case h48
             case h34
             
             var height: CGFloat {
                 switch self {
                 case .h34:
                     return 34
+                    
+                case .h48:
+                    return 48
                     
                 case .h52:
                     return 52
@@ -20,6 +24,9 @@ public class Button {
                 switch self {
                 case .h34:
                     return CGSize(width: 16, height: 16)
+                    
+                case .h48:
+                    return CGSize(width: 24, height: 24)
                     
                 case .h52:
                     return CGSize(width: 24, height: 24)
@@ -81,6 +88,9 @@ public class Button {
             switch size {
             case .h34:
                 titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 12)
+                
+            case .h48:
+                titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
                 
             case .h52:
                 titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)

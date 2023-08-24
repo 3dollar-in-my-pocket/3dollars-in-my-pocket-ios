@@ -1,138 +1,133 @@
 import UIKit
 
-final class PolicyView: BaseView {
+import Common
+import DesignSystem
+
+final class PolicyView: Common.BaseView {
     let backgroundButton = UIButton()
     
     private let containerView = UIView().then {
-        $0.layer.cornerRadius = 30
-        $0.backgroundColor = Color.gray80
+        $0.layer.cornerRadius = 24
+        $0.backgroundColor = DesignSystemAsset.Colors.gray90.color
     }
     
     let allCheckButton = UIButton().then {
-        $0.setImage(Icon.Check.generate(isOn: true, style: .solid), for: .selected)
-        $0.setImage(Icon.Check.generate(isOn: false, style: .solid), for: .normal)
-        $0.setTitle("policy_agree_all".localized, for: .normal)
-        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: -12)
-        $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 12)
-        $0.titleLabel?.font = .bold(size: 16)
-        $0.setTitleColor(Color.gray5, for: .normal)
+        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOn.image, for: .selected)
+        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOff.image, for: .normal)
+        $0.setTitle(ThreeDollarInMyPocketStrings.policyAgreeAll, for: .normal)
+        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
+        $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
+        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
+        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
     }
     
     private let dividerView = UIView().then {
-        $0.backgroundColor = Color.gray70
+        $0.backgroundColor = DesignSystemAsset.Colors.gray80.color
     }
     
     let policyCheckButton = UIButton().then {
-        $0.setImage(Icon.Check.generate(isOn: true, style: .line), for: .selected)
-        $0.setImage(Icon.Check.generate(isOn: false, style: .line), for: .normal)
+        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOn.image, for: .selected)
+        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOff.image, for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
         $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
-        $0.setTitle("policy_policy_label".localized, for: .normal)
-        $0.titleLabel?.font = .regular(size: 14)
-        $0.setTitleColor(Color.gray5, for: .normal)
+        $0.setTitle(ThreeDollarInMyPocketStrings.policyPolicyLabel, for: .normal)
+        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
+        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
     }
     
     let policyButton = UIButton().then {
-        $0.setImage(UIImage(named: "ic_fwd"), for: .normal)
+        $0.setImage(
+            DesignSystemAsset.Icons.arrowRight.image.withTintColor(DesignSystemAsset.Colors.gray70.color),
+            for: .normal
+        )
     }
     
     let marketingCheckButton = UIButton().then {
-        $0.setImage(Icon.Check.generate(isOn: true, style: .line), for: .selected)
-        $0.setImage(Icon.Check.generate(isOn: false, style: .line), for: .normal)
+        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOn.image, for: .selected)
+        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOff.image, for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
         $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
-        $0.setTitle("policy_marketing_label".localized, for: .normal)
-        $0.titleLabel?.font = .regular(size: 14)
-        $0.setTitleColor(Color.gray5, for: .normal)
+        $0.setTitle(ThreeDollarInMyPocketStrings.policyMarketingLabel, for: .normal)
+        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
+        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
     }
     
     let marketingButton = UIButton().then {
-        $0.setImage(UIImage(named: "ic_fwd"), for: .normal)
+        $0.setImage(
+            DesignSystemAsset.Icons.arrowRight.image.withTintColor(DesignSystemAsset.Colors.gray70.color),
+            for: .normal
+        )
     }
     
-    let nextButton = UIButton().then {
-        $0.setBackgroundColor(Color.red ?? .red, for: .normal)
-        $0.setBackgroundColor(Color.gray20 ?? .gray, for: .disabled)
-        $0.isEnabled = false
-        $0.layer.cornerRadius = 24
-        $0.layer.masksToBounds = true
-        $0.setTitle("policy_next_button".localized, for: .normal)
-        $0.titleLabel?.font = .bold(size: 16)
-    }
+    let nextButton = Button.Normal(size: .h48, text: ThreeDollarInMyPocketStrings.policyNextButton)
     
     override func setup() {
-        self.addSubViews([
-            self.backgroundButton,
-            self.containerView,
-            self.allCheckButton,
-            self.dividerView,
-            self.policyCheckButton,
-            self.policyButton,
-            self.marketingCheckButton,
-            self.marketingButton,
-            self.nextButton
+        addSubViews([
+            backgroundButton,
+            containerView,
+            allCheckButton,
+            dividerView,
+            policyCheckButton,
+            policyButton,
+            marketingCheckButton,
+            marketingButton,
+            nextButton
         ])
     }
     
     override func bindConstraints() {
-        self.backgroundButton.snp.makeConstraints { make in
-            make.left.equalToSuperview()
-            make.top.equalToSuperview()
-            make.right.equalToSuperview()
-            make.bottom.equalTo(self.containerView.snp.top)
+        backgroundButton.snp.makeConstraints {
+            $0.left.equalToSuperview()
+            $0.top.equalToSuperview()
+            $0.right.equalToSuperview()
+            $0.bottom.equalTo(containerView.snp.top)
         }
         
-        self.containerView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(16)
-            make.right.equalToSuperview().offset(-16)
-            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-9)
-            make.top.equalTo(self.allCheckButton).offset(-22)
+        containerView.snp.makeConstraints {
+            $0.left.equalToSuperview()
+            $0.right.equalToSuperview()
+            $0.bottom.equalToSuperview()
+            $0.top.equalTo(allCheckButton).offset(-24)
         }
         
-        self.nextButton.snp.makeConstraints { make in
-            make.left.equalTo(self.containerView).offset(24)
-            make.right.equalTo(self.containerView).offset(-24)
-            make.height.equalTo(48)
-            make.bottom.equalTo(self.containerView).offset(-24)
+        nextButton.snp.makeConstraints {
+            $0.left.equalTo(containerView).offset(20)
+            $0.right.equalTo(containerView).offset(-20)
+            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-20)
         }
         
-        self.marketingCheckButton.snp.makeConstraints { make in
-            make.left.equalTo(self.containerView).offset(28)
-            make.height.equalTo(24)
-            make.bottom.equalTo(self.nextButton.snp.top).offset(-32)
+        marketingButton.snp.makeConstraints {
+            $0.right.equalToSuperview().offset(-20)
+            $0.width.height.equalTo(16)
+            $0.bottom.equalTo(nextButton.snp.top).offset(-42)
         }
         
-        self.marketingButton.snp.makeConstraints { make in
-            make.centerY.equalTo(self.marketingCheckButton)
-            make.right.equalTo(self.containerView).offset(-24)
-            make.width.equalTo(16)
-            make.height.equalTo(16)
+        marketingCheckButton.snp.makeConstraints {
+            $0.centerY.equalTo(marketingButton)
+            $0.left.equalToSuperview().offset(20)
         }
         
-        self.policyCheckButton.snp.makeConstraints { make in
-            make.left.equalTo(self.marketingCheckButton)
-            make.height.equalTo(24)
-            make.bottom.equalTo(self.marketingCheckButton.snp.top).offset(-11)
+        policyCheckButton.snp.makeConstraints {
+            $0.bottom.equalTo(marketingCheckButton.snp.top).offset(-28)
+            $0.left.equalToSuperview().offset(20)
         }
         
-        self.policyButton.snp.makeConstraints { make in
-            make.centerY.equalTo(self.policyCheckButton)
-            make.right.equalTo(self.containerView).offset(-24)
-            make.width.equalTo(16)
-            make.height.equalTo(16)
+        policyButton.snp.makeConstraints {
+            $0.right.equalToSuperview().offset(-20)
+            $0.width.height.equalTo(16)
+            $0.centerY.equalTo(policyCheckButton)
         }
         
-        self.dividerView.snp.makeConstraints { make in
-            make.height.equalTo(1)
-            make.left.equalTo(self.containerView).offset(24)
-            make.right.equalTo(self.containerView).offset(-24)
-            make.bottom.equalTo(self.policyCheckButton.snp.top).offset(-16)
+        dividerView.snp.makeConstraints {
+            $0.height.equalTo(1)
+            $0.left.equalToSuperview().offset(20)
+            $0.right.equalToSuperview().offset(-20)
+            $0.bottom.equalTo(policyCheckButton.snp.top).offset(-24)
         }
         
-        self.allCheckButton.snp.makeConstraints { make in
-            make.left.equalTo(self.marketingCheckButton)
-            make.bottom.equalTo(self.dividerView.snp.top).offset(-20)
-            make.height.equalTo(24)
+        allCheckButton.snp.makeConstraints {
+            $0.left.equalTo(marketingCheckButton)
+            $0.bottom.equalTo(dividerView.snp.top).offset(-18)
         }
     }
 }
