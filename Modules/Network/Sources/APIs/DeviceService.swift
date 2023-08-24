@@ -1,12 +1,12 @@
 import Foundation
 
-public protocol DeviceProtocol {
+public protocol DeviceServiceProtocol {
     func registerDevice(pushToken: String) async -> Result<String, Error>
     
     func refreshDevice(pushToken: String) async -> Result<String, Error>
 }
 
-public struct DeviceService: DeviceProtocol {
+public struct DeviceService: DeviceServiceProtocol {
     public init() { }
     
     public func registerDevice(pushToken: String) async -> Result<String, Error> {

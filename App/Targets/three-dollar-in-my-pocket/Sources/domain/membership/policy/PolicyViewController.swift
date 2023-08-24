@@ -1,20 +1,17 @@
 import UIKit
 
-import ReactorKit
+import Combine
+import Common
+import DesignSystem
 
 protocol PolicyViewControllerDelegate: AnyObject {
     func onDismiss()
 }
 
-final class PolicyViewController: BaseViewController, View, PolicyCoordinator {
-    private let policyView = PolicyView()
-    private let policyReactor = PolicyReactor(
-        userService: UserService(),
-        deviceService: DeviceService(),
-        analyticsManager: AnalyticsManager.shared
-    )
-    private weak var coordinator: PolicyCoordinator?
+final class PolicyViewController: Common.BaseViewController {
     private weak var delegate: PolicyViewControllerDelegate?
+    private let policyView = PolicyView()
+    private let viewModel = PolicyViewModel()
     
     static func instance(delegate: PolicyViewControllerDelegate? = nil) -> UINavigationController {
         let viewController = PolicyViewController(nibName: nil, bundle: nil)
@@ -27,7 +24,7 @@ final class PolicyViewController: BaseViewController, View, PolicyCoordinator {
     }
     
     override func loadView() {
-        self.view = self.policyView
+        view = policyView
     }
     
     override func viewDidLoad() {
@@ -36,112 +33,111 @@ final class PolicyViewController: BaseViewController, View, PolicyCoordinator {
         if let parentView = self.presentingViewController?.view {
             DimManager.shared.showDim(targetView: parentView)
         }
-        self.coordinator = self
-        self.reactor = self.policyReactor
     }
     
     override func bindEvent() {
-        self.policyView.backgroundButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.dismiss()
-            })
-            .disposed(by: self.eventDisposeBag)
+        policyView.backgroundButton
+            .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.dismiss(animated: true)
+            }
+            .store(in: &cancellables)
         
-        self.policyView.policyButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.pushPolicyPage()
-            })
-            .disposed(by: self.eventDisposeBag)
+        policyView.policyButton
+            .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.pushPolicyPage()
+            }
+            .store(in: &cancellables)
         
-        self.policyView.marketingButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.pushMarketingPage()
-            })
-            .disposed(by: self.eventDisposeBag)
+        policyView.marketingButton
+            .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.pushMarketingPage()
+            }
+            .store(in: &cancellables)
     }
     
-    func bind(reactor: PolicyReactor) {
-        // Bind Action
-        self.policyView.allCheckButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapAllCheckButton }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
+    override func bindViewModelInput() {
+        policyView.allCheckButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapAllCheckButton)
+            .store(in: &cancellables)
         
-        self.policyView.policyCheckButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapPolicyCheck }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
+        policyView.policyCheckButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapPolicyCheckButton)
+            .store(in: &cancellables)
         
-        self.policyView.marketingCheckButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapMarketingCheck }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
+        policyView.marketingCheckButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapMarketingCheckButton)
+            .store(in: &cancellables)
         
-        self.policyView.nextButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapNext }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
+        policyView.nextButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapNextButton)
+            .store(in: &cancellables)
+    }
+    
+    override func bindViewModelOutput() {
+        viewModel.output.isCheckedAll
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.isSelected, on: policyView.allCheckButton)
+            .store(in: &cancellables)
         
-        // Bind State
-        reactor.state
-            .map { $0.isCheckedAll }
-            .asDriver(onErrorJustReturn: false)
-            .drive(self.policyView.allCheckButton.rx.isSelected)
-            .disposed(by: self.disposeBag)
+        viewModel.output.isCheckedPolicy
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.isSelected, on: policyView.policyCheckButton)
+            .store(in: &cancellables)
         
-        reactor.state
-            .map { $0.isCheckedPolicy }
-            .asDriver(onErrorJustReturn: false)
-            .drive(self.policyView.policyCheckButton.rx.isSelected)
-            .disposed(by: self.disposeBag)
+        viewModel.output.isCheckedMarketing
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.isSelected, on: policyView.marketingCheckButton)
+            .store(in: &cancellables)
         
-        reactor.state
-            .map { $0.isCheckedMarketing }
-            .asDriver(onErrorJustReturn: false)
-            .drive(self.policyView.marketingCheckButton.rx.isSelected)
-            .disposed(by: self.disposeBag)
+        viewModel.output.isEnableNextButton
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.isEnabled, on: policyView.nextButton)
+            .store(in: &cancellables)
         
-        reactor.state
-            .map { $0.isEnableNextButton }
-            .asDriver(onErrorJustReturn: false)
-            .drive(self.policyView.nextButton.rx.isEnabled)
-            .disposed(by: self.disposeBag)
+        viewModel.output.route
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, route in
+                switch route {
+                case .showErrorAlert(let error):
+                    owner.showErrorAlert(error: error)
+                    
+                case .showLoading(let isShow):
+                    DesignSystem.LoadingManager.shared.showLoading(isShow: isShow)
+                    
+                case .dismiss:
+                    DimManager.shared.hideDim()
+                    owner.dismiss(animated: true) {
+                        owner.delegate?.onDismiss()
+                    }
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func pushPolicyPage() {
+        let viewController = WebViewController.instance(webviewType: .policy)
         
-        // Bind Pulse
-        reactor.pulse(\.$showErrorAlert)
-            .compactMap { $0 }
-            .asDriver(onErrorJustReturn: BaseError.unknown)
-            .drive(onNext: { [weak self] error in
-                self?.coordinator?.showErrorAlert(error: error)
-            })
-            .disposed(by: self.disposeBag)
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func pushMarketingPage() {
+        let viewController = WebViewController.instance(webviewType: .marketing)
         
-        reactor.pulse(\.$isShowLoading)
-            .compactMap { $0 }
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: { [weak self] isShow in
-                self?.coordinator?.showLoading(isShow: isShow)
-            })
-            .disposed(by: self.disposeBag)
-        
-        reactor.pulse(\.$dismiss)
-            .compactMap { $0 }
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.dismiss(completion: {
-                    self?.delegate?.onDismiss()
-                })
-            })
-            .disposed(by: self.disposeBag)
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }

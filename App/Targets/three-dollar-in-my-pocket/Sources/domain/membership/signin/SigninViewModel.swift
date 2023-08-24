@@ -29,14 +29,14 @@ final class SigninViewModel: Common.BaseViewModel {
     private let kakaoManager: NewKakaoSigninManager
     private let appleManager: NewAppleSigninManager
     private let userService: Networking.UserServiceProtocol
-    private let deviceService: Networking.DeviceProtocol
+    private let deviceService: Networking.DeviceServiceProtocol
     
     init(
         userDefaults: UserDefaultsUtil = UserDefaultsUtil(),
         kakaoManager: NewKakaoSigninManager = .init(),
         appleManager: NewAppleSigninManager = .init(),
         userService: Networking.UserServiceProtocol = Networking.UserService(),
-        deviceService: Networking.DeviceProtocol = Networking.DeviceService()
+        deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService()
     ) {
         self.userDefaults = userDefaults
         self.kakaoManager = kakaoManager

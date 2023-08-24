@@ -1,14 +1,14 @@
 import Foundation
 
-struct RegisterDeviceRequest: RequestType {
-    let requestInput: DeviceRequestInput
+struct ChangeMarketingConsentRequest: RequestType {
+    let requestInput: ChangeMarketingConsentInput
     
     var param: Encodable? {
         return requestInput
     }
     
     var method: RequestMethod {
-        return .post
+        return .put
     }
     
     var header: HTTPHeaderType {
@@ -16,6 +16,6 @@ struct RegisterDeviceRequest: RequestType {
     }
     
     var path: String {
-        return "/api/v1/device"
+        return "/api/v1/user/me/marketing-consent"
     }
 }
