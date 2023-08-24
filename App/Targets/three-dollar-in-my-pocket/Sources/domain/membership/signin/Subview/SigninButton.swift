@@ -11,10 +11,10 @@ final class SigninButton: UIButton {
         var title: String {
             switch self {
             case .kakao:
-                return "카카오 계정으로 로그인"
+                return ThreeDollarInMyPocketStrings.signinWithKakao
                 
             case .apple:
-                return "Sign in with Apple"
+                return ThreeDollarInMyPocketStrings.signinWithApple
             }
         }
         

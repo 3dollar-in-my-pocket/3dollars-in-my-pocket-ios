@@ -458,6 +458,12 @@ public enum ThreeDollarInMyPocketStrings {
   public static let signInWithKakao = ThreeDollarInMyPocketStrings.tr("Localization", "sign_in_with_kakao")
   /// 로그인 없이 사용하기
   public static let signInWithoutId = ThreeDollarInMyPocketStrings.tr("Localization", "sign_in_without_id")
+  /// 로그인 없이 둘러보기
+  public static let signinAnonymous = ThreeDollarInMyPocketStrings.tr("Localization", "signin_anonymous")
+  /// Sign in with Apple
+  public static let signinWithApple = ThreeDollarInMyPocketStrings.tr("Localization", "signin_with_apple")
+  /// 카카오 계정으로 로그인
+  public static let signinWithKakao = ThreeDollarInMyPocketStrings.tr("Localization", "signin_with_kakao")
   /// 따끈따끈한 업데이트가 나왔어요!\n확인버튼을 눌러 업데이트를 진행해주세요!
   public static let splashNeedUpdateDescription = ThreeDollarInMyPocketStrings.tr("Localization", "splash_need_update_description")
   /// 업데이트 필요

@@ -317,6 +317,11 @@
 "store_payment_transfer" = "계좌이체";
 "store_payment_card" = "카드";
 
+// 로그인 화면
+"signin_with_kakao" = "카카오 계정으로 로그인";
+"signin_with_apple" = "Sign in with Apple";
+"signin_anonymous" = "로그인 없이 둘러보기";
+
 // 닉네임 설정 화면
 "nickname_label_1" = "닉네임";
 "nickname_placeholder" = "닉네임을 입력해주세요.";

@@ -12,7 +12,7 @@ final class SigninView: BaseView {
     let appleButton = SigninButton(type: .apple)
     
     let signinAnonymousButton = UIButton().then {
-        $0.setTitle("로그인 없이 둘러보기", for: .normal)
+        $0.setTitle(ThreeDollarInMyPocketStrings.signinAnonymous, for: .normal)
         $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
         $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
     }
