@@ -1,6 +1,8 @@
 import Foundation
 import CoreLocation
 
+import Networking
+
 struct UserDefaultsUtil {
     private let KEY_TOKEN = "KEY_TOKEN"
     private let KEY_USER_ID = "KEY_USER_ID"
@@ -30,6 +32,7 @@ struct UserDefaultsUtil {
         }
         set {
             self.instance.set(newValue, forKey: KEY_TOKEN)
+            Networking.NetworkManager.shared.configuration.authToken = newValue
         }
     }
     

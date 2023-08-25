@@ -39,7 +39,7 @@ final class RequestProvider {
         urlRequest.httpMethod = requestType.method.rawValue
         urlRequest.allHTTPHeaderFields = generateHeader(type: requestType.header)
         
-        if requestType.method == .post {
+        if requestType.method == .post || requestType.method == .put {
             urlRequest.httpBody = requestType.body
         }
         return urlRequest

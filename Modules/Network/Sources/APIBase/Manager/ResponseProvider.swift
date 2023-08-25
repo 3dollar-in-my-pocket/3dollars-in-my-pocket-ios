@@ -15,7 +15,10 @@ final class ResponseProvider {
             }
         } else {
             if let errorContainer = decodeError(data: data) {
-                throw NetworkError.message(errorContainer.message)
+                throw NetworkError.errorContainer(.init(
+                    message: errorContainer.message,
+                    resultCode: errorContainer.resultCode
+                ))
             } else {
                 throw response.httpError
             }

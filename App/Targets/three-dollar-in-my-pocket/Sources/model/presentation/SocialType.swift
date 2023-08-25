@@ -1,41 +1,16 @@
-enum SocialType {
-    case kakao
-    case apple
-    case google
+enum SocialType: String {
+    case kakao = "KAKAO"
+    case apple = "APPLE"
+    case google = "GOOGLE"
     case unknown
     
     init(value: String) {
-        switch value {
-        case "KAKAO":
-            self = .kakao
-            
-        case "APPLE":
-            self = .apple
-            
-        case "GOOGLE":
-            self = .google
-            
-        default:
-            self = .unknown
-        }
+        self = SocialType(rawValue: value) ?? .unknown
     }
-    
 }
 
 extension SocialType {
     var value: String {
-        switch self {
-        case .kakao:
-            return "KAKAO"
-            
-        case .apple:
-            return "APPLE"
-            
-        case .google:
-            return "GOOGLE"
-            
-        case .unknown:
-            return ""
-        }
+        self.rawValue
     }
 }

@@ -30,7 +30,7 @@ let project = Project(
         Target(
             name: "Networking",
             platform: .iOS,
-            product: .staticLibrary,
+            product: .framework,
             bundleId: "com.macgongmon.-dollar-in-my-pocket.networking",
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
             sources: ["Sources/**"],
