@@ -446,22 +446,16 @@ public enum ThreeDollarInMyPocketStrings {
   public static let sharedStoreTypeRoad = ThreeDollarInMyPocketStrings.tr("Localization", "shared_store_type_road")
   /// 매장
   public static let sharedStoreTypeStore = ThreeDollarInMyPocketStrings.tr("Localization", "shared_store_type_store")
-  /// 가슴속 3천원에 로그인하고\n더 많은 기능을 사용해 보세요!
-  public static let signInAnonymousDescription = ThreeDollarInMyPocketStrings.tr("Localization", "sign_in_anonymous_description")
-  /// 비로그인 상태로 남겨주신 제보, 리뷰는 비로그인 상태로 일정 기간 접속하지 않거나 앱 삭제 시, 볼 수 없습니다.
-  public static let signInAnonymousWarning = ThreeDollarInMyPocketStrings.tr("Localization", "sign_in_anonymous_warning")
-  /// Apple로 로그인
-  public static let signInWithApple = ThreeDollarInMyPocketStrings.tr("Localization", "sign_in_with_apple")
-  /// 이미 가입한 계정이 있습니다.\n해당 계정으로 로그인 하시겠습니까?\n비로그인으로 활동한 이력들은 유지되지 않습니다
-  public static let signInWithExistedAccount = ThreeDollarInMyPocketStrings.tr("Localization", "sign_in_with_existed_account")
-  /// 카카오 계정으로 로그인
-  public static let signInWithKakao = ThreeDollarInMyPocketStrings.tr("Localization", "sign_in_with_kakao")
-  /// 로그인 없이 사용하기
-  public static let signInWithoutId = ThreeDollarInMyPocketStrings.tr("Localization", "sign_in_without_id")
   /// 로그인 없이 둘러보기
   public static let signinAnonymous = ThreeDollarInMyPocketStrings.tr("Localization", "signin_anonymous")
+  /// 가슴속 3천원에 로그인하고\n더 많은 기능을 사용해 보세요!
+  public static let signinAnonymousDescription = ThreeDollarInMyPocketStrings.tr("Localization", "signin_anonymous_description")
+  /// 비로그인 상태로 남겨주신 제보, 리뷰는 비로그인 상태로 일정 기간 접속하지 않거나 앱 삭제 시, 볼 수 없습니다.
+  public static let signinAnonymousWarning = ThreeDollarInMyPocketStrings.tr("Localization", "signin_anonymous_warning")
   /// Sign in with Apple
   public static let signinWithApple = ThreeDollarInMyPocketStrings.tr("Localization", "signin_with_apple")
+  /// 이미 가입한 계정이 있습니다.\n해당 계정으로 로그인 하시겠습니까?\n비로그인으로 활동한 이력들은 유지되지 않습니다
+  public static let signinWithExistedAccount = ThreeDollarInMyPocketStrings.tr("Localization", "signin_with_existed_account")
   /// 카카오 계정으로 로그인
   public static let signinWithKakao = ThreeDollarInMyPocketStrings.tr("Localization", "signin_with_kakao")
   /// 따끈따끈한 업데이트가 나왔어요!\n확인버튼을 눌러 업데이트를 진행해주세요!

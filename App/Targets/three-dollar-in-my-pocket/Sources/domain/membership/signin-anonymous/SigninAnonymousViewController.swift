@@ -1,16 +1,12 @@
 import UIKit
+import Combine
 
-import ReactorKit
+import Common
+import DesignSystem
 
-final class SigninAnonymousViewController: BaseViewController, View, SigninAnonymousCoordinator {
+final class SigninAnonymousViewController: Common.BaseViewController {
     private let signinAnonymousView = SigninAnonymousView()
-    private let signinAnonymousReactor = SigninAnonymousReactor(
-        userDefaults: UserDefaultsUtil(),
-        userService: UserService(),
-        kakaoManager: KakaoSigninManager(),
-        appleManager: AppleSigninManager()
-    )
-    private weak var coordinator: SigninAnonymousCoordinator?
+    private let viewModel = SigninAnonymousViewModel()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -29,66 +25,60 @@ final class SigninAnonymousViewController: BaseViewController, View, SigninAnony
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.reactor = self.signinAnonymousReactor
-        self.coordinator = self
     }
     
     override func bindEvent() {
-        self.signinAnonymousView.closeButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] _ in
-                self?.coordinator?.presenter.dismiss(animated: true)
+        signinAnonymousView.closeButton
+            .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, _ in
+                owner.dismiss(animated: true)
             })
-            .disposed(by: self.eventDisposeBag)
+            .store(in: &cancellables)
     }
     
-    func bind(reactor: SigninAnonymousReactor) {
-        // Bind Action
-        self.signinAnonymousView.kakaoButton.rx.tap
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapKakaoButton }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
+    override func bindViewModelInput() {
+        signinAnonymousView.kakaoButton
+            .controlPublisher(for: .touchUpInside)
+            .map { _ in SocialType.kakao }
+            .subscribe(viewModel.input.onTapSignin)
+            .store(in: &cancellables)
         
-        self.signinAnonymousView.appleButton.rx.controlEvent(.touchUpInside)
-            .map { _ in () }
-            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
-            .map { Reactor.Action.tapAppleButton }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-        
-        // Bind State
-        reactor.pulse(\.$dismiss)
-            .compactMap { $0 }
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: { [weak self] in
-                self?.coordinator?.presenter.dismiss(animated: true)
-            })
-            .disposed(by: self.disposeBag)
-        
-        reactor.pulse(\.$showAlreadyExist)
-            .compactMap { $0 }
-            .asDriver(onErrorJustReturn: SigninRequest(socialType: .unknown, token: ""))
-            .drive(onNext: { [weak self] signinRequest in
-                self?.coordinator?.showAlreadyExist(signinRequest: signinRequest)
-            })
-            .disposed(by: self.disposeBag)
-        
-        reactor.pulse(\.$showErrorAlert)
-            .compactMap { $0 }
-            .asDriver(onErrorJustReturn: BaseError.unknown)
-            .drive(onNext: { [weak self] error in
-                self?.coordinator?.showErrorAlert(error: error)
-            })
-            .disposed(by: self.disposeBag)
-        
-        reactor.pulse(\.$showLoading)
-            .compactMap { $0 }
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: { [weak self] isShow in
-                self?.coordinator?.showLoading(isShow: isShow)
-            })
-            .disposed(by: self.disposeBag)
+        signinAnonymousView.appleButton
+            .controlPublisher(for: .touchUpInside)
+            .map { _ in SocialType.apple }
+            .subscribe(viewModel.input.onTapSignin)
+            .store(in: &cancellables)
+    }
+    
+    override func bindViewModelOutput() {
+        viewModel.output.route
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, route in
+                switch route {
+                case .dismiss:
+                    owner.dismiss(animated: true)
+                    
+                case .showAlreadyExist(let signinRequest):
+                    owner.showAlreadyExist(signinRequest: signinRequest)
+                    
+                case .showErrorAlert(let error):
+                    owner.showErrorAlert(error: error)
+                    
+                case .showLoading(let isShow):
+                    DesignSystem.LoadingManager.shared.showLoading(isShow: isShow)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func showAlreadyExist(signinRequest: SigninRequest) {
+        AlertUtils.showWithCancel(
+            viewController: self,
+            message: ThreeDollarInMyPocketStrings.signinWithExistedAccount
+        ) { [weak self] in
+            self?.viewModel.input.signin.send(signinRequest)
+        }
     }
 }

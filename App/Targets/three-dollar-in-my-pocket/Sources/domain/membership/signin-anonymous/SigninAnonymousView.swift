@@ -1,131 +1,73 @@
 import UIKit
 import AuthenticationServices
 
+import DesignSystem
 import Then
-import Lottie
 
 final class SigninAnonymousView: BaseView {
-    let closeButton = UIButton().then {
-        $0.setImage(UIImage(named: "ic_close_white"), for: .normal)
-        $0.tintColor = .white
-    }
+    let closeButton: UIButton = {
+        let button = UIButton()
+        button.setImage(DesignSystemAsset.Icons.close.image.withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
+        
+        return button
+    }()
     
-    let lottie = LottieAnimationView(name: "signin").then {
-        $0.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        $0.contentMode = .scaleAspectFill
-        $0.loopMode = .loop
-        $0.play()
-        $0.clipsToBounds = false
-    }
+    private let logoImage = UIImageView(image: ThreeDollarInMyPocketAsset.Assets.imageSplash.image)
     
-    let kakaoButton = UIButton().then {
-        $0.layer.cornerRadius = 20
-        $0.backgroundColor = Color.kakaoYellow
-        $0.accessibilityLabel = "sign_in_with_kakao".localized
-    }
+    let kakaoButton = SigninButton(type: .kakao)
     
-    private let kakaoLabel = UILabel().then {
-        $0.text = "sign_in_with_kakao".localized
-        $0.font = .bold(size: 14)
-        $0.textColor = UIColor.init(r: 56, g: 30, b: 31)
-        $0.isAccessibilityElement = false
-    }
-    
-    let kakaoImage = UIImageView().then {
-        $0.image = UIImage(named: "ic_kakao")
-    }
-    
-    let appleButton = ASAuthorizationAppleIDButton(type: .signIn, style: .white).then {
-        $0.cornerRadius = 24
-    }
-    
-    private let bottomContainerView = UIView().then {
-        $0.layer.cornerRadius = 20
-        $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        $0.backgroundColor = Color.gray90
-    }
-    
-    private let bottomImageView = UIImageView().then {
-        $0.image = UIImage(named: "img_anonymous")
-    }
+    let appleButton = SigninButton(type: .apple)
     
     private let anonymousLabel = UILabel().then {
-        $0.font = .regular(size: 16)
-        $0.textColor = .white
+        $0.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
+        $0.textColor = DesignSystemAsset.Colors.systemWhite.color
         $0.numberOfLines = 0
-        $0.text = "sign_in_anonymous_description".localized
+        $0.text = ThreeDollarInMyPocketStrings.signinAnonymousDescription
         $0.textAlignment = .center
     }
     
     override func setup() {
-        self.backgroundColor = UIColor(r: 28, g: 28, b: 28)
-        self.addSubViews([
-            self.closeButton,
-            self.lottie,
-            self.kakaoButton,
-            self.kakaoImage,
-            self.kakaoLabel,
-            self.appleButton,
-            self.bottomContainerView,
-            self.bottomImageView,
-            self.anonymousLabel
+        backgroundColor = DesignSystemAsset.Colors.mainPink.color
+        addSubViews([
+            closeButton,
+            logoImage,
+            kakaoButton,
+            appleButton,
+            anonymousLabel
         ])
     }
     
     override func bindConstraints() {
-        self.closeButton.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-24)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(13)
-            make.width.equalTo(24)
-            make.height.equalTo(24)
+        closeButton.snp.makeConstraints {
+            $0.right.equalToSuperview().offset(-16)
+            $0.top.equalTo(safeAreaLayoutGuide).offset(16)
+            $0.width.equalTo(24)
+            $0.height.equalTo(24)
         }
         
-        self.lottie.snp.makeConstraints { make in
-            make.left.right.equalToSuperview()
-            make.top.equalToSuperview().offset(109)
-            make.height.equalTo(350)
+        logoImage.snp.makeConstraints {
+            $0.left.equalToSuperview().offset(32)
+            $0.right.equalToSuperview().offset(-32)
+            $0.bottom.equalTo(kakaoButton.snp.top).offset(-48)
         }
         
-        self.appleButton.snp.makeConstraints { make in
-            make.left.right.equalTo(kakaoButton)
-            make.top.equalTo(self.kakaoButton.snp.bottom).offset(16)
-            make.height.equalTo(40)
+        kakaoButton.snp.makeConstraints {
+            $0.centerY.equalToSuperview().offset(48)
+            $0.left.equalToSuperview().offset(20)
+            $0.right.equalToSuperview().offset(-20)
+            $0.height.equalTo(48)
         }
         
-        self.kakaoButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(31)
-            make.right.equalToSuperview().offset(-32)
-            make.top.equalTo(self.lottie.snp.bottom).offset(30)
-            make.height.equalTo(40)
+        appleButton.snp.makeConstraints {
+            $0.left.equalTo(kakaoButton)
+            $0.right.equalTo(kakaoButton)
+            $0.top.equalTo(kakaoButton.snp.bottom).offset(12)
+            $0.height.equalTo(48)
         }
         
-        self.kakaoLabel.snp.makeConstraints { make in
-            make.center.equalTo(self.kakaoButton)
-        }
-        
-        self.kakaoImage.snp.makeConstraints { (make) in
-            make.centerY.equalTo(self.kakaoLabel)
-            make.right.equalTo(self.kakaoLabel.snp.left).offset(-6)
-            make.width.height.equalTo(16)
-        }
-        
-        self.anonymousLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-21)
-        }
-        
-        self.bottomImageView.snp.makeConstraints { make in
-            make.centerX.equalTo(self.anonymousLabel)
-            make.width.equalTo(40)
-            make.height.equalTo(40)
-            make.bottom.equalTo(self.anonymousLabel.snp.top).offset(-11)
-        }
-        
-        self.bottomContainerView.snp.makeConstraints { make in
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
-            make.bottom.equalToSuperview()
-            make.top.equalTo(self.bottomImageView.snp.centerY)
+        anonymousLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(appleButton.snp.bottom).offset(36)
         }
     }
 }

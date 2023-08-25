@@ -48,7 +48,6 @@ public enum ThreeDollarInMyPocketAsset {
     public static let icEdit = ThreeDollarInMyPocketImages(name: "ic_edit")
     public static let icFoodTruck = ThreeDollarInMyPocketImages(name: "ic_food_truck")
     public static let icFrontWhite = ThreeDollarInMyPocketImages(name: "ic_front_white")
-    public static let icFwd = ThreeDollarInMyPocketImages(name: "ic_fwd")
     public static let icHome = ThreeDollarInMyPocketImages(name: "ic_home")
     public static let icInfo = ThreeDollarInMyPocketImages(name: "ic_info")
     public static let icKakao = ThreeDollarInMyPocketImages(name: "ic_kakao")
