@@ -3,9 +3,6 @@ import UIKit
 import Common
 import DesignSystem
 
-import RxSwift
-import RxCocoa
-
 final class NicknameView: Common.BaseView {
     private let tapGestureView = UITapGestureRecognizer()
     
