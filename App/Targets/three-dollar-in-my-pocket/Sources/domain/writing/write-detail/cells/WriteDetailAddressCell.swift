@@ -8,24 +8,24 @@ final class WriteDetailAddressCell: BaseCollectionViewCell {
     }
     
     private let containerView = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.gray10.color
+        $0.backgroundColor = Colors.gray10.color
         $0.layer.cornerRadius = 8
         $0.layer.masksToBounds = true
     }
     
     private let addressLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
-        $0.textColor = DesignSystemAsset.Colors.gray50.color
+        $0.font = Fonts.Pretendard.regular.font(size: 14)
+        $0.textColor = Colors.gray50.color
     }
     
     let editAddressButton = UIButton().then {
-        $0.setTitleColor(DesignSystemAsset.Colors.mainPink.color, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-        $0.setTitle(ThreeDollarInMyPocketStrings.writeDetailEditLocation, for: .normal)
+        $0.setTitleColor(Colors.mainPink.color, for: .normal)
+        $0.titleLabel?.font = Fonts.Pretendard.semiBold.font(size: 14)
+        $0.setTitle(Strings.writeDetailEditLocation, for: .normal)
     }
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        backgroundColor = Colors.systemWhite.color
         contentView.addSubViews([
             containerView,
             addressLabel,

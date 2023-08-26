@@ -15,7 +15,7 @@ final class WriteDetailPaymentCell: BaseCollectionViewCell {
     private let paymentStackView = WriteDetailPaymentStackView()
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        backgroundColor = Colors.systemWhite.color
         contentView.addSubview(paymentStackView)
     }
     
@@ -38,11 +38,11 @@ extension WriteDetailPaymentCell {
         
         let tapPublisher = PassthroughSubject<PaymentType, Never>()
         
-        let cashCheckButton = PaymentCheckButton(title: ThreeDollarInMyPocketStrings.storePaymentCash)
+        let cashCheckButton = PaymentCheckButton(title: Strings.storePaymentCash)
         
-        let cardCheckButton = PaymentCheckButton(title: ThreeDollarInMyPocketStrings.storePaymentCard)
+        let cardCheckButton = PaymentCheckButton(title: Strings.storePaymentCard)
         
-        let transferCheckButton = PaymentCheckButton(title: ThreeDollarInMyPocketStrings.storePaymentTransfer)
+        let transferCheckButton = PaymentCheckButton(title: Strings.storePaymentTransfer)
         
         var cancellables = Set<AnyCancellable>()
         
@@ -111,8 +111,8 @@ extension WriteDetailPaymentCell {
     final class PaymentCheckButton: UIButton {
         override var isSelected: Bool {
             didSet {
-                layer.borderColor = isSelected ? DesignSystemAsset.Colors.mainPink.color.cgColor : DesignSystemAsset.Colors.gray30.color.cgColor
-                tintColor = isSelected ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray40.color
+                layer.borderColor = isSelected ? Colors.mainPink.color.cgColor : Colors.gray30.color.cgColor
+                tintColor = isSelected ? Colors.mainPink.color : Colors.gray40.color
             }
         }
         
@@ -128,14 +128,14 @@ extension WriteDetailPaymentCell {
         
         private func setup(title: String) {
             setTitle(title, for: .normal)
-            titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
+            titleLabel?.font = Fonts.Pretendard.semiBold.font(size: 14)
             setImage(
-                DesignSystemAsset.Icons.check.image.withRenderingMode(.alwaysTemplate),
+                Icons.check.image.withRenderingMode(.alwaysTemplate),
                 for: .normal
             )
-            tintColor = DesignSystemAsset.Colors.gray40.color
-            setTitleColor(DesignSystemAsset.Colors.gray40.color, for: .normal)
-            setTitleColor(DesignSystemAsset.Colors.mainPink.color, for: .selected)
+            tintColor = Colors.gray40.color
+            setTitleColor(Colors.gray40.color, for: .normal)
+            setTitleColor(Colors.mainPink.color, for: .selected)
             
             if let titleLabel = titleLabel {
                 imageView?.snp.makeConstraints {
@@ -146,7 +146,7 @@ extension WriteDetailPaymentCell {
             }
             layer.cornerRadius = 8
             layer.borderWidth = 1
-            layer.borderColor = DesignSystemAsset.Colors.gray30.color.cgColor
+            layer.borderColor = Colors.gray30.color.cgColor
         }
     }
 }

@@ -1,7 +1,5 @@
 import UIKit
 
-import RxCocoa
-
 final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetailSection, WriteDetailSectionItem> {
     let viewModel: WriteDetailViewModel
     

@@ -88,13 +88,13 @@ extension WriteDetailMenuItemCell {
             delegate = self
             layer.cornerRadius = 12
             layer.borderWidth = 0
-            layer.borderColor = DesignSystemAsset.Colors.mainPink.color.cgColor
+            layer.borderColor = Colors.mainPink.color.cgColor
             leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 44))
             leftViewMode = .always
             rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 44))
             rightViewMode = .always
-            font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
-            backgroundColor = DesignSystemAsset.Colors.gray10.color
+            font = Fonts.Pretendard.regular.font(size: 14)
+            backgroundColor = Colors.gray10.color
             returnKeyType = .done
         }
         
@@ -102,8 +102,8 @@ extension WriteDetailMenuItemCell {
             let attributedString = NSAttributedString(
                 string: text,
                 attributes: [
-                    .font: DesignSystemFontFamily.Pretendard.regular.font(size: 14),
-                    .foregroundColor: DesignSystemAsset.Colors.gray40.color
+                    .font: Fonts.Pretendard.regular.font(size: 14),
+                    .foregroundColor: Colors.gray40.color
                 ])
             attributedPlaceholder = attributedString
         }

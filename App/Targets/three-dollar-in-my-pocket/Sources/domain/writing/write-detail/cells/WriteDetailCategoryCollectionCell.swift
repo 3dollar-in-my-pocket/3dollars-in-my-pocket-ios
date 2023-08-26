@@ -29,7 +29,7 @@ final class WriteDetailCategoryCollectionCell: BaseCollectionViewCell {
     private var categories: [PlatformStoreCategory?] = []
     
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.backgroundColor = Colors.systemWhite.color
         $0.layer.cornerRadius = 16
         $0.layer.masksToBounds = true
         $0.contentInset = .init(top: 12, left: 12, bottom: 12, right: 12)
@@ -37,7 +37,7 @@ final class WriteDetailCategoryCollectionCell: BaseCollectionViewCell {
     }
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.gray0.color
+        backgroundColor = Colors.gray0.color
         contentView.addSubview(collectionView)
            
         collectionView.dataSource = self

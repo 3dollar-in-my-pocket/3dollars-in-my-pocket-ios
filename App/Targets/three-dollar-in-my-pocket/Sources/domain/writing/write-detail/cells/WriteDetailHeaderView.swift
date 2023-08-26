@@ -10,8 +10,8 @@ final class WriteDetailHeaderView: UICollectionReusableView {
     private let stackView = UIStackView()
     
     private let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
+        $0.font = Fonts.Pretendard.semiBold.font(size: 14)
+        $0.textColor = Colors.gray100.color
     }
     
     override init(frame: CGRect) {
@@ -34,7 +34,7 @@ final class WriteDetailHeaderView: UICollectionReusableView {
     }
     
     private func setup() {
-        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        backgroundColor = Colors.systemWhite.color
         stackView.addArrangedSubview(titleLabel)
         addSubview(stackView)
     }
@@ -73,9 +73,9 @@ final class WriteDetailHeaderView: UICollectionReusableView {
         
     private func setOptionLabel() {
         let optionLabel = UILabel()
-        optionLabel.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
-        optionLabel.textColor = DesignSystemAsset.Colors.gray40.color
-        optionLabel.text = ThreeDollarInMyPocketStrings.writeDetailStoreOption
+        optionLabel.font = Fonts.Pretendard.regular.font(size: 14)
+        optionLabel.textColor = Colors.gray40.color
+        optionLabel.text = Strings.writeDetailStoreOption
         
         stackView.setCustomSpacing(4, after: titleLabel)
         stackView.addArrangedSubview(optionLabel)
@@ -83,9 +83,9 @@ final class WriteDetailHeaderView: UICollectionReusableView {
     
     private func setMultiLabel() {
         let multiSelectLabel = UILabel()
-        multiSelectLabel.font = DesignSystemFontFamily.Pretendard.bold.font(size: 12)
-        multiSelectLabel.textColor = DesignSystemAsset.Colors.mainPink.color
-        multiSelectLabel.text = ThreeDollarInMyPocketStrings.writeDetailStoreCanSelectMulti
+        multiSelectLabel.font = Fonts.Pretendard.bold.font(size: 12)
+        multiSelectLabel.textColor = Colors.mainPink.color
+        multiSelectLabel.text = Strings.writeDetailStoreCanSelectMulti
         
         if let lastView = stackView.subviews.last {
             stackView.setCustomSpacing(8, after: lastView)
