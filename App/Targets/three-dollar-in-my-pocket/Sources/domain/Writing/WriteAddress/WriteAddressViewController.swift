@@ -84,7 +84,7 @@ final class WriteAddressViewController: BaseViewController, WriteAddressCoordina
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, stores in
-                owner.writeAddressView.setNearStores(stores: stores)
+                owner.writeAddressView.setNearStores(locations: stores)
             }
             .store(in: &cancellables)
         
