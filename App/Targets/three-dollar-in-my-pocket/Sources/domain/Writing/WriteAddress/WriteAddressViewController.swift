@@ -10,7 +10,7 @@ protocol WriteAddressDelegate: AnyObject {
     func onWriteSuccess(storeId: Int)
 }
 
-final class WriteAddressViewController: BaseViewController, WriteAddressCoordinator {
+final class WriteAddressViewController: Common.BaseViewController {
     weak var delegate: WriteAddressDelegate?
     private let writeAddressView = WriteAddressView()
     private let viewModel = WriteAddressViewModel(
@@ -19,7 +19,6 @@ final class WriteAddressViewController: BaseViewController, WriteAddressCoordina
         locationManager: Common.LocationManager.shared,
         analyticsManager: AnalyticsManager.shared
     )
-    private weak var coordinator: WriteAddressCoordinator?
     
     static func instance(delegate: WriteAddressDelegate) -> UINavigationController {
         let writeAddressVC = WriteAddressViewController(nibName: nil, bundle: nil).then {
@@ -44,7 +43,6 @@ final class WriteAddressViewController: BaseViewController, WriteAddressCoordina
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        coordinator = self
         setupMap()
         viewModel.input.tapCurrentLocation.send(())
     }
@@ -60,7 +58,7 @@ final class WriteAddressViewController: BaseViewController, WriteAddressCoordina
             .controlPublisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.coordinator?.dismiss()
+                owner.dismiss(animated: true)
             }
             .store(in: &cancellables)
     }
@@ -84,7 +82,7 @@ final class WriteAddressViewController: BaseViewController, WriteAddressCoordina
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, stores in
-                owner.writeAddressView.setNearStores(stores: stores)
+                owner.writeAddressView.setNearStores(locations: stores)
             }
             .store(in: &cancellables)
         
@@ -125,13 +123,10 @@ final class WriteAddressViewController: BaseViewController, WriteAddressCoordina
             .sink { owner, route in
                 switch route {
                 case .pushAddressDetail(let address, let location):
-                    owner.coordinator?.goToWriteDetail(
-                        address: address,
-                        location: location
-                    )
+                    owner.goToWriteDetail(address: address, location: location)
                     
                 case .presentConfirmPopup(let address):
-                    owner.coordinator?.presentConfirmPopup(address: address)
+                    owner.presentConfirmPopup(address: address)
                 }
             }
             .store(in: &cancellables)
@@ -139,6 +134,21 @@ final class WriteAddressViewController: BaseViewController, WriteAddressCoordina
     
     private func setupMap() {
         writeAddressView.mapView.addCameraDelegate(delegate: self)
+    }
+    
+    private func goToWriteDetail(address: String, location: Location) {
+        let viewController = WriteDetailViewController.instance(location: location, address: address)
+        
+        viewController.deleagte = self
+        
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func presentConfirmPopup(address: String) {
+        let viewController = AddressConfirmPopupViewController.instacne(address: address)
+        
+        viewController.delegate = self
+        present(viewController, animated: true, completion: nil)
     }
 }
 

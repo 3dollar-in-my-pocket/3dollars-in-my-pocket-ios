@@ -56,7 +56,11 @@ extension CategoryFilterDataSource: UICollectionViewDelegate {
         if indexPath.section == 0 {
             viewModel.input.onTapBanner.send(())
         } else {
-            viewModel.input.onTapCategory.send(indexPath.row)
+            guard let section = snapshot().sectionIdentifiers[safe: indexPath.section],
+                  let item = section.items[safe: indexPath.row],
+                  case .category(let category) = item else { return }
+            
+            viewModel.input.onTapCategory.send(category.categoryId)
         }
     }
 }

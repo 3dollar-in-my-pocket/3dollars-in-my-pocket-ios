@@ -8,14 +8,14 @@ final class CategoryFilterViewModel: BaseViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let onTapBanner = PassthroughSubject<Void, Never>()
-        let onTapCategory = PassthroughSubject<Int, Never>()
+        let onTapCategory = PassthroughSubject<String, Never>()
         let onCollectionViewLoaded = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
         let advertisement = PassthroughSubject<Advertisement?, Never>()
         let categories = PassthroughSubject<[PlatformStoreCategory], Never>()
-        let selectCategory = PassthroughSubject<Int?, Never>()
+        let selectCategory = PassthroughSubject<PlatformStoreCategory?, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -118,8 +118,8 @@ final class CategoryFilterViewModel: BaseViewModel {
         
         input.onTapCategory
             .withUnretained(self)
-            .sink { owner, index in
-                guard let selectedCategory = owner.state.categories[safe: index] else { return }
+            .sink { owner, categoryId in
+                guard let selectedCategory = owner.state.categories.first(where: { $0.categoryId == categoryId }) else { return }
                 
                 if selectedCategory == owner.state.currentCategory {
                     owner.output.route.send(.dismissWithCategory(nil))
@@ -131,9 +131,8 @@ final class CategoryFilterViewModel: BaseViewModel {
         
         input.onCollectionViewLoaded
             .withUnretained(self)
-            .map { owner, _ -> Int? in
-                guard let currentCategory = owner.state.currentCategory else { return nil }
-                return owner.state.categories.firstIndex(of: currentCategory)
+            .map { owner, _ -> PlatformStoreCategory? in
+                return owner.state.currentCategory
             }
             .subscribe(output.selectCategory)
             .store(in: &cancellables)

@@ -1,6 +1,8 @@
 import UIKit
 
 import NMapsMap
+import Common
+import DesignSystem
 
 typealias WriteDetailSanpshot = NSDiffableDataSourceSnapshot<WriteDetailSection, WriteDetailSectionItem>
 
@@ -8,10 +10,9 @@ protocol WriteDetailDelegate: AnyObject {
     func onWriteSuccess(storeId: Int)
 }
 
-final class WriteDetailViewController: BaseViewController, WriteDetailCoordinator {
+final class WriteDetailViewController: Common.BaseViewController {
     weak var deleagte: WriteDetailDelegate?
     
-    private weak var coordinator: WriteDetailCoordinator?
     private let writeDetailView = WriteDetailView()
     private lazy var dataSource = WriteDetailDataSource(collectionView: writeDetailView.collectionView, viewModel: viewModel)
     private let viewModel: WriteDetailViewModel
@@ -36,7 +37,6 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
     override func viewDidLoad() {
         super.viewDidLoad()
         view = writeDetailView
-        coordinator = self
         observeKeyboardEvent()
         viewModel.input.viewDidLoad.send(())
     }
@@ -46,7 +46,7 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
             .controlPublisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.coordinator?.pop()
+                owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)
         
@@ -54,7 +54,7 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
             .controlPublisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.coordinator?.dismiss()
+                owner.dismiss(animated: true)
             }
             .store(in: &cancellables)
     }
@@ -80,7 +80,7 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, isShow in
-                owner.coordinator?.showLoading(isShow: isShow)
+                DesignSystem.LoadingManager.shared.showLoading(isShow: isShow)
             }
             .store(in: &cancellables)
         
@@ -96,7 +96,7 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, error in
-                owner.coordinator?.showErrorAlert(error: error)
+                owner.showErrorAlert(error: error)
             }
             .store(in: &cancellables)
         
@@ -112,16 +112,17 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
     private func handleRoute(route: WriteDetailViewModel.Route) {
         switch route {
         case .pop:
-            coordinator?.pop()
+            navigationController?.popViewController(animated: true)
             
         case .presentFullMap:
-            coordinator?.presentFullMap()
+            // TODO: 전체 지도 디자인 필요
+            break
             
         case .presentCategorySelection(let selectedCategories):
-            coordinator?.presentCategorySelection(selectedCategories: selectedCategories)
+            presentCategorySelection(selectedCategories: selectedCategories)
             
         case .dismiss:
-            coordinator?.dismiss()
+            dismiss(animated: true)
         }
     }
     
@@ -139,6 +140,13 @@ final class WriteDetailViewController: BaseViewController, WriteDetailCoordinato
     private func observeKeyboardEvent() {
         NotificationCenter.default.addObserver(self, selector: #selector(onShowKeyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onHideKeyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func presentCategorySelection(selectedCategories: [PlatformStoreCategory]) {
+        let viewController = CategorySelectionViewController.instance(selectedCategories: selectedCategories)
+        viewController.delegate = self
+        
+        present(viewController, animated: true)
     }
     
     @objc func onShowKeyboard(notification: NSNotification) {

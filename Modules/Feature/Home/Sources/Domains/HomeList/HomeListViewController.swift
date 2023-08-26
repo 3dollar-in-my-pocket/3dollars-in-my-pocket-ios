@@ -58,7 +58,7 @@ final class HomeListViewController: BaseViewController {
         homeListView.onlyBossToggleButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
-            .subscribe(viewModel.input.onToggleCertifiedStore)
+            .subscribe(viewModel.input.onTapOnlyBoss)
             .store(in: &cancellables)
     }
     

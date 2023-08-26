@@ -12,13 +12,13 @@ public struct FetchAroundStoreInput: Encodable {
     public let mapLongitude: Double
     
     public init(
-        distanceM: Double?,
-        categoryIds: [String]?,
-        targetStores: [String],
-        sortType: String?,
-        filterCertifiedStores: Bool?,
-        size: Int?,
-        cursor: String?,
+        distanceM: Double? = nil,
+        categoryIds: [String]? = nil,
+        targetStores: [String] = ["BOSS_STORE", "USER_STORE"],
+        sortType: String? = nil,
+        filterCertifiedStores: Bool? = false,
+        size: Int? = nil,
+        cursor: String? = nil,
         mapLatitude: Double,
         mapLongitude: Double
     ) {

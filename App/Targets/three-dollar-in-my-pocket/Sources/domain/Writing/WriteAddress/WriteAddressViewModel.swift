@@ -15,7 +15,7 @@ final class WriteAddressViewModel {
     }
     
     struct Output {
-        let setNearStores = PassthroughSubject<[Store], Never>()
+        let setNearStores = PassthroughSubject<[Location], Never>()
         let moveCamera = PassthroughSubject<Location, Never>()
         let setAddress = PassthroughSubject<String, Never>()
         let error = PassthroughSubject<Error, Never>()
@@ -58,21 +58,6 @@ final class WriteAddressViewModel {
     }
     
     private func bind() {
-        // TODO: 주변 가게 조회 API 나오면 적용 예정 (아래 Reactor 함수 참고)
-        // 1. 카메라 움직였을 때 조회하여 주변에 마커 찍어주기
-        // 2. 내 위치 버튼 눌렀을 때도 동일하게 적용
-//        private func fetchNearStores(latitude: Double, longitude: Double) -> Observable<Mutation> {
-//            return self.storeService.searchNearStores(
-//                currentLocation: nil,
-//                mapLocation: CLLocation(latitude: latitude, longitude: longitude),
-//                distance: 200,
-//                category: nil,
-//                orderType: nil
-//            )
-//            .map { .setNearStores(stores: $0.map(Store.init)) }
-//            .catchError { .just(.showErrorAlert($0)) }
-//        }
-        
         input.viewWillAppear
             .withUnretained(self)
             .sink { owner, _ in
@@ -110,6 +95,15 @@ final class WriteAddressViewModel {
                 }
             }
             .store(in: &cancellables)
+        
+        moveCamera
+            .asyncMap { owner, location in
+                await owner.fetchAroundStores(cameraPosition: location)
+            }
+            .compactMapValue()
+            .subscribe(output.setNearStores)
+            .store(in: &cancellables)
+            
         
         let currentLocation = input.tapCurrentLocation
             .withUnretained(self)
@@ -159,6 +153,20 @@ final class WriteAddressViewModel {
             .subscribe(output.moveCamera)
             .store(in: &cancellables)
         
+        currentLocation
+            .withUnretained(self)
+            .asyncMap { owner, location in
+                let location = Location(
+                    latitude: location.coordinate.latitude,
+                    longitude: location.coordinate.longitude
+                )
+                
+                return await owner.fetchAroundStores(cameraPosition: location)
+            }
+            .compactMapValue()
+            .subscribe(output.setNearStores)
+            .store(in: &cancellables)
+        
         input.tapSetAddress
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
@@ -202,6 +210,31 @@ final class WriteAddressViewModel {
                 
             case .failure(let error):
                 output.error.send(error)
+            }
+        }
+    }
+    
+    private func fetchAroundStores(cameraPosition: Location) async -> Result<[Location], Error> {
+        let input = FetchAroundStoreInput(
+            distanceM: 100,
+            targetStores: ["BOSS_STORE", "USER_STORE"],
+            sortType: "DISTANCE_ASC",
+            size: 20,
+            mapLatitude: cameraPosition.latitude,
+            mapLongitude: cameraPosition.longitude
+        )
+        
+        return await storeService.fetchAroundStores(
+            input: input,
+            latitude: cameraPosition.latitude,
+            longitude: cameraPosition.longitude
+        )
+        .map { result in
+            result.contents.map { storeDetail in
+                return Location(
+                    latitude: storeDetail.store.location?.latitude ?? 0,
+                    longitude: storeDetail.store.location?.longitude ?? 0
+                )
             }
         }
     }

@@ -170,12 +170,12 @@ final class WriteAddressView: BaseView {
         mapView.moveCamera(camera)
     }
     
-    func setNearStores(stores: [Store]) {
+    func setNearStores(locations: [Location]) {
         clearMarkers()
         
-        for store in stores {
+        for location in locations {
             let marker = NMFMarker(
-                position: NMGLatLng(lat: store.latitude, lng: store.longitude),
+                position: NMGLatLng(lat: location.latitude, lng: location.longitude),
                 iconImage: NMFOverlayImage(name: "ic_marker_store_off")
             )
             

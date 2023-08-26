@@ -4,7 +4,7 @@ public struct StoreCategoryResponse: Decodable {
     let storeId: Int
     let userId: Int
     let storeName: String
-    let salesType: String
+    let salesType: String?
     let latitude: Double
     let longitude: Double
     let address: AddressResponse
