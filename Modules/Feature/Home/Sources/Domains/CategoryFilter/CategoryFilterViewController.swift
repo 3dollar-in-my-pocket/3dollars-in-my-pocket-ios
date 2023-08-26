@@ -90,9 +90,17 @@ final class CategoryFilterViewController: BaseViewController {
             .receive(on: DispatchQueue.main)
             .compactMap { $0 }
             .withUnretained(self)
-            .sink { owner, index in
-                let indexPath = IndexPath(row: index, section: 1)
-                owner.categoryFilterView.collectionView.cellForItem(at: indexPath)?.isSelected = true
+            .sink { owner, selectedCategory in
+                for (sectionIndex, section) in owner.dataSource.snapshot().sectionIdentifiers.enumerated() {
+                    for (itemIndex, item) in section.items.enumerated() {
+                        if case .category(let category) = item,
+                           category == selectedCategory {
+                            let indexPath = IndexPath(row: itemIndex, section: sectionIndex)
+                            owner.categoryFilterView.collectionView.cellForItem(at: indexPath)?.isSelected = true
+                            break
+                        }
+                    }
+                }
             }
             .store(in: &cancellables)
     }
