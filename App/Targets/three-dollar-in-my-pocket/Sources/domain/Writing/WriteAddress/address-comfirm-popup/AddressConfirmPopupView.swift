@@ -6,54 +6,54 @@ final class AddressConfirmPopupView: BaseView {
     let backgroundView = UIView()
     
     private let containerView = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.backgroundColor = Colors.systemWhite.color
         $0.layer.cornerRadius = 30
         $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
     }
     
     private let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 20)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
+        $0.font = Fonts.Pretendard.semiBold.font(size: 20)
+        $0.textColor = Colors.gray100.color
         $0.attributedText = NSMutableAttributedString(
-            string: "write_address_confirm_popup_title".localized,
+            string: Strings.writeAddressConfirmPopupTitle,
             attributes: [.kern: -1]
         )
         $0.numberOfLines = 2
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(UIImage(named: "ic_close_24"), for: .normal)
+        $0.setImage(Icons.close.image, for: .normal)
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.textColor = DesignSystemAsset.Colors.gray50.color
+        $0.font = Fonts.Pretendard.medium.font(size: 12)
+        $0.textColor = Colors.gray50.color
         
-        let text = "write_address_confirm_popup_description".localized
+        let text = Strings.writeAddressConfirmPopupDescription
         let attributedText = NSMutableAttributedString(string: text)
         let range = (text as NSString).range(of: "중복된 가게 제보")
         
-        attributedText.addAttribute(.foregroundColor, value: DesignSystemAsset.Colors.gray80.color, range: range)
+        attributedText.addAttribute(.foregroundColor, value: Colors.gray80.color, range: range)
         $0.attributedText = attributedText
     }
     
     private let addressContainerView = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.gray10.color
+        $0.backgroundColor = Colors.gray10.color
         $0.layer.cornerRadius = 12
     }
     
     private let addressLabel = UILabel().then {
-        $0.textColor = DesignSystemAsset.Colors.gray70.color
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
+        $0.textColor = Colors.gray70.color
+        $0.font = Fonts.Pretendard.bold.font(size: 16)
         $0.textAlignment = .center
     }
     
     let okButton = UIButton().then {
         $0.layer.cornerRadius = 12
-        $0.backgroundColor = DesignSystemAsset.Colors.mainPink.color
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        $0.setTitle("write_address_confirm_popup_ok".localized, for: .normal)
+        $0.backgroundColor = Colors.mainPink.color
+        $0.titleLabel?.font = Fonts.Pretendard.semiBold.font(size: 14)
+        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
+        $0.setTitle(Strings.writeAddressConfirmPopupOk, for: .normal)
     }
     
     override func setup() {

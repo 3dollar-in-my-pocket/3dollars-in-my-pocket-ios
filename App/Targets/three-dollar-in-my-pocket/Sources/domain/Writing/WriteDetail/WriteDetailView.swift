@@ -11,39 +11,39 @@ final class WriteDetailView: BaseView {
     private let navigationView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.backgroundColor = Colors.systemWhite.color
     }
     
     let backButton = UIButton().then {
-        $0.setImage(DesignSystemAsset.Icons.arrowLeft.image, for: .normal)
+        $0.setImage(Icons.arrowLeft.image, for: .normal)
     }
     
     let titleLabel = UILabel().then {
-        $0.text = "write_detail_title".localized
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 16)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
+        $0.text = Strings.writeDetailTitle
+        $0.font = Fonts.Pretendard.medium.font(size: 16)
+        $0.textColor = Colors.gray100.color
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(DesignSystemAsset.Icons.close.image, for: .normal)
+        $0.setImage(Icons.close.image, for: .normal)
     }
     
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
     
     let writeButton = UIButton().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.mainPink.color
-        $0.setTitle("write_store_register_button".localized, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        $0.backgroundColor = Colors.mainPink.color
+        $0.setTitle(Strings.writeStoreRegisterButton, for: .normal)
+        $0.titleLabel?.font = Fonts.Pretendard.bold.font(size: 16)
+        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
     }
     
     private let writeButtonBg = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.mainPink.color
+        $0.backgroundColor = Colors.mainPink.color
     }
     
     override func setup() {
         addGestureRecognizer(bgTap)
-        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        backgroundColor = Colors.systemWhite.color
         addSubViews([
             navigationView,
             titleLabel,
@@ -106,8 +106,8 @@ final class WriteDetailView: BaseView {
     
     func setSaveButtonEnable(isEnable: Bool) {
         writeButton.isUserInteractionEnabled = isEnable
-        writeButton.backgroundColor = isEnable ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
-        writeButtonBg.backgroundColor = isEnable ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
+        writeButton.backgroundColor = isEnable ? Colors.mainPink.color : Colors.gray30.color
+        writeButtonBg.backgroundColor = isEnable ? Colors.mainPink.color : Colors.gray30.color
     }
     
     func updateCollectionViewLayout(keyboardHeight: CGFloat) {
@@ -142,7 +142,7 @@ final class WriteDetailView: BaseView {
             .withUnretained(self)
             .sink { owner, contentOffset in
                 let isMinus = contentOffset.y <= 0
-                owner.collectionView.backgroundColor = isMinus ? DesignSystemAsset.Colors.systemWhite.color : DesignSystemAsset.Colors.gray0.color
+                owner.collectionView.backgroundColor = isMinus ? Colors.systemWhite.color : Colors.gray0.color
             }
             .store(in: &cancellables)
     }

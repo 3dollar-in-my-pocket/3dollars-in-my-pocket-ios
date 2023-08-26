@@ -11,21 +11,21 @@ final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
     let categoryButton = UIButton().then {
         $0.layer.cornerRadius = (Layout.width - 14) / 2
         $0.layer.masksToBounds = true
-        $0.layer.borderColor = DesignSystemAsset.Colors.mainPink.color.cgColor
+        $0.layer.borderColor = Colors.mainPink.color.cgColor
         $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
     }
     
     let closeButton = UIButton().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.mainRed.color
+        $0.backgroundColor = Colors.mainRed.color
         $0.layer.cornerRadius = 8
-        $0.setImage(DesignSystemAsset.Icons.close.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.tintColor = DesignSystemAsset.Colors.gray0.color
+        $0.setImage(Icons.close.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.tintColor = Colors.gray0.color
         $0.contentEdgeInsets = .init(top: 3, left: 3, bottom: 3, right: 3)
     }
     
     let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.textColor = DesignSystemAsset.Colors.gray80.color
+        $0.font = Fonts.Pretendard.medium.font(size: 12)
+        $0.textColor = Colors.gray80.color
         $0.textAlignment = .center
     }
     
@@ -77,8 +77,8 @@ final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
     
     private func setAddButton() {
         closeButton.isHidden = true
-        categoryButton.backgroundColor = DesignSystemAsset.Colors.gray100.color
-        categoryButton.setImage(DesignSystemAsset.Icons.plus.image.withTintColor(DesignSystemAsset.Colors.mainPink.color), for: .normal)
+        categoryButton.backgroundColor = Colors.gray100.color
+        categoryButton.setImage(Icons.plus.image.withTintColor(Colors.mainPink.color), for: .normal)
         categoryButton.layer.borderWidth = 0
         titleLabel.text = "추가하기"
     }

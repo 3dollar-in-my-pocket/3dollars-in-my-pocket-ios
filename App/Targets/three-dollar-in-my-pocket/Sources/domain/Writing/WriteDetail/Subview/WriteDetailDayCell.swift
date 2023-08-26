@@ -15,7 +15,7 @@ final class WriteDetailDayCell: BaseCollectionViewCell {
     private let dayStackView = DayStackView()
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        backgroundColor = Colors.systemWhite.color
         contentView.addSubview(dayStackView)
     }
     
@@ -82,9 +82,9 @@ extension WriteDetailDayCell {
         override var isSelected: Bool {
             didSet {
                 if isSelected {
-                    layer.borderColor = DesignSystemAsset.Colors.mainPink.color.cgColor
+                    layer.borderColor = Colors.mainPink.color.cgColor
                 } else {
-                    layer.borderColor = DesignSystemAsset.Colors.gray30.color.cgColor
+                    layer.borderColor = Colors.gray30.color.cgColor
                 }
                 
             }
@@ -108,11 +108,11 @@ extension WriteDetailDayCell {
             layer.cornerRadius = 18
             layer.masksToBounds = true
             layer.borderWidth = 1
-            layer.borderColor = DesignSystemAsset.Colors.gray30.color.cgColor
+            layer.borderColor = Colors.gray30.color.cgColor
             setTitle(dayOfTheWeek.shortText, for: .normal)
-            setTitleColor(DesignSystemAsset.Colors.gray40.color, for: .normal)
-            setTitleColor(DesignSystemAsset.Colors.mainPink.color, for: .selected)
-            titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
+            setTitleColor(Colors.gray40.color, for: .normal)
+            setTitleColor(Colors.mainPink.color, for: .selected)
+            titleLabel?.font = Fonts.Pretendard.semiBold.font(size: 14)
         }
         
         private func bindConstratins() {

@@ -23,7 +23,7 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     private var viewModel: WriteDetailMenuGroupViewModel?
     
     private let containerView = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.backgroundColor = Colors.systemWhite.color
         $0.layer.cornerRadius = 16
         $0.layer.masksToBounds = true
     }
@@ -31,14 +31,14 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     private let categoryImageView = UIImageView()
     
     private let categoryNameLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 14)
-        $0.textColor = DesignSystemAsset.Colors.gray90.color
+        $0.font = Fonts.Pretendard.bold.font(size: 14)
+        $0.textColor = Colors.gray90.color
     }
     
     let closeButton = UIButton().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.mainRed.color
+        $0.backgroundColor = Colors.mainRed.color
         $0.layer.cornerRadius = 10
-        $0.setImage(DesignSystemAsset.Icons.close.image.withTintColor(DesignSystemAsset.Colors.gray0.color), for: .normal)
+        $0.setImage(Icons.close.image.withTintColor(Colors.gray0.color), for: .normal)
         $0.contentEdgeInsets = .init(top: 4, left: 4, bottom: 4, right: 4)
     }
     
@@ -48,7 +48,7 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     }
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.gray0.color
+        backgroundColor = Colors.gray0.color
         containerView.addSubViews([
             categoryImageView,
             categoryNameLabel,

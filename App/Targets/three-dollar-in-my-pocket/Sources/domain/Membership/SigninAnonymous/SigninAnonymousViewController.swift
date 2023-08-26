@@ -19,7 +19,7 @@ final class SigninAnonymousViewController: Common.BaseViewController {
     }
     
     override func loadView() {
-        self.view = self.signinAnonymousView
+        self.view = signinAnonymousView
     }
     
     override func viewDidLoad() {
@@ -76,7 +76,7 @@ final class SigninAnonymousViewController: Common.BaseViewController {
     private func showAlreadyExist(signinRequest: SigninRequest) {
         AlertUtils.showWithCancel(
             viewController: self,
-            message: ThreeDollarInMyPocketStrings.signinWithExistedAccount
+            message: Strings.signinWithExistedAccount
         ) { [weak self] in
             self?.viewModel.input.signin.send(signinRequest)
         }

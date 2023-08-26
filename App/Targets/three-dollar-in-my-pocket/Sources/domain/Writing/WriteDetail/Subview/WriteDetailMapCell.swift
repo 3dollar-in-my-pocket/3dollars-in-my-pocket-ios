@@ -19,16 +19,16 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
     }
     
     let zoomButton = UIButton().then {
-        $0.setImage(DesignSystemAsset.Icons.zoom.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.tintColor = DesignSystemAsset.Colors.gray50.color
+        $0.setImage(Icons.zoom.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.tintColor = Colors.gray50.color
         $0.layer.cornerRadius = 18
-        $0.layer.borderColor = DesignSystemAsset.Colors.gray20.color.cgColor
+        $0.layer.borderColor = Colors.gray20.color.cgColor
         $0.layer.borderWidth = 1
         $0.layer.shadowOffset = CGSize(width: 2, height: 2)
-        $0.layer.shadowColor = DesignSystemAsset.Colors.systemBlack.color.cgColor
+        $0.layer.shadowColor = Colors.systemBlack.color.cgColor
         $0.layer.shadowOpacity = 0.1
         $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.backgroundColor = Colors.systemWhite.color
     }
     
     override func prepareForReuse() {
@@ -37,7 +37,7 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
     }
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        backgroundColor = Colors.systemWhite.color
         contentView.addSubViews([
             mapView,
             zoomButton
@@ -63,7 +63,7 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
         marker = NMFMarker()
         let targetLocation = NMGLatLng(lat: location.latitude, lng: location.longitude)
         marker?.position = targetLocation
-        marker?.iconImage = NMFOverlayImage(image: DesignSystemAsset.Icons.markerFocuesd.image)
+        marker?.iconImage = NMFOverlayImage(image: Icons.markerFocuesd.image)
         marker?.width = 32
         marker?.height = 40
         marker?.mapView = mapView

@@ -9,17 +9,17 @@ final class WriteDetailCategoryHeaderView: UICollectionReusableView {
     }
     
     private let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
-        $0.text = ThreeDollarInMyPocketStrings.writeDetailHeaderCategory
+        $0.font = Fonts.Pretendard.semiBold.font(size: 14)
+        $0.textColor = Colors.gray100.color
+        $0.text = Strings.writeDetailHeaderCategory
     }
     
     let deleteButton = UIButton().then {
-        $0.setTitle(ThreeDollarInMyPocketStrings.writeDetailHeaderDeleteAllMenu, for: .normal)
-        $0.setTitleColor(DesignSystemAsset.Colors.mainRed.color, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 12)
-        $0.setImage(DesignSystemAsset.Icons.delete.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.tintColor = DesignSystemAsset.Colors.mainRed.color
+        $0.setTitle(Strings.writeDetailHeaderDeleteAllMenu, for: .normal)
+        $0.setTitleColor(Colors.mainRed.color, for: .normal)
+        $0.titleLabel?.font = Fonts.Pretendard.bold.font(size: 12)
+        $0.setImage(Icons.delete.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.tintColor = Colors.mainRed.color
     }
     
     var cancellables = Set<AnyCancellable>()
@@ -36,7 +36,7 @@ final class WriteDetailCategoryHeaderView: UICollectionReusableView {
     }
     
     private func setup() {
-        backgroundColor = DesignSystemAsset.Colors.gray0.color
+        backgroundColor = Colors.gray0.color
         addSubViews([
             titleLabel,
             deleteButton

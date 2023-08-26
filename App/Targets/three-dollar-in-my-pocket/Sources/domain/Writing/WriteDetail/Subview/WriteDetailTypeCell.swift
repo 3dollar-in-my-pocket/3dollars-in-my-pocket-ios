@@ -15,7 +15,7 @@ final class WriteDetailTypeCell: BaseCollectionViewCell {
     private let typeStackView = WriteDetailTypeStackView()
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        backgroundColor = Colors.systemWhite.color
         contentView.addSubview(typeStackView)
     }
     
@@ -38,11 +38,11 @@ extension WriteDetailTypeCell {
         
         let tapPublisher = PassthroughSubject<StreetFoodStoreType, Never>()
         
-        let roadRadioButton = TypeRadioButton(title: ThreeDollarInMyPocketStrings.storeTypeRoad)
+        let roadRadioButton = TypeRadioButton(title: Strings.storeTypeRoad)
         
-        let storeRadioButton = TypeRadioButton(title:ThreeDollarInMyPocketStrings.storeTypeStore)
+        let storeRadioButton = TypeRadioButton(title:Strings.storeTypeStore)
         
-        let convenienceStoreRadioButton = TypeRadioButton(title: ThreeDollarInMyPocketStrings.storeTypeConvenienceStore)
+        let convenienceStoreRadioButton = TypeRadioButton(title: Strings.storeTypeConvenienceStore)
         
         var cancellables = Set<AnyCancellable>()
         
@@ -131,15 +131,15 @@ extension WriteDetailTypeCell {
     final class TypeRadioButton: UIButton {
         override var isSelected: Bool {
             didSet {
-                layer.borderColor = isSelected ? DesignSystemAsset.Colors.mainPink.color.cgColor : DesignSystemAsset.Colors.gray30.color.cgColor
-                tintColor = isSelected ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
-                dotImage.backgroundColor = isSelected ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
+                layer.borderColor = isSelected ? Colors.mainPink.color.cgColor : Colors.gray30.color.cgColor
+                tintColor = isSelected ? Colors.mainPink.color : Colors.gray30.color
+                dotImage.backgroundColor = isSelected ? Colors.mainPink.color : Colors.gray30.color
             }
         }
         
         let dotImage = UIView().then {
             $0.layer.cornerRadius = 3
-            $0.backgroundColor = DesignSystemAsset.Colors.gray40.color
+            $0.backgroundColor = Colors.gray40.color
         }
         
         init(title: String) {
@@ -166,13 +166,13 @@ extension WriteDetailTypeCell {
                 }
             }
 
-            tintColor = DesignSystemAsset.Colors.gray40.color
-            titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-            setTitleColor(DesignSystemAsset.Colors.gray40.color, for: .normal)
-            setTitleColor(DesignSystemAsset.Colors.mainPink.color, for: .selected)
+            tintColor = Colors.gray40.color
+            titleLabel?.font = Fonts.Pretendard.semiBold.font(size: 14)
+            setTitleColor(Colors.gray40.color, for: .normal)
+            setTitleColor(Colors.mainPink.color, for: .selected)
             layer.cornerRadius = 8
             layer.borderWidth = 1
-            layer.borderColor = DesignSystemAsset.Colors.gray30.color.cgColor
+            layer.borderColor = Colors.gray30.color.cgColor
         }
     }
 }

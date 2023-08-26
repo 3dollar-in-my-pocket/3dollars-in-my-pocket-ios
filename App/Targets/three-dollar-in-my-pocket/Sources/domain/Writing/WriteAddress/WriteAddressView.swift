@@ -1,8 +1,6 @@
 import UIKit
 
 import DesignSystem
-import RxSwift
-import RxCocoa
 import NMapsMap
 
 final class WriteAddressView: BaseView {
@@ -11,17 +9,17 @@ final class WriteAddressView: BaseView {
     private let navigationView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.backgroundColor = Colors.systemWhite.color
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = ThreeDollarInMyPocketStrings.writeAddressTitle
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 16)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
+        $0.text = Strings.writeAddressTitle
+        $0.font = Fonts.Pretendard.medium.font(size: 16)
+        $0.textColor = Colors.gray100.color
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(DesignSystemAsset.Icons.close.image, for: .normal)
+        $0.setImage(Icons.close.image, for: .normal)
     }
     
     let mapView = NMFMapView().then {
@@ -29,57 +27,57 @@ final class WriteAddressView: BaseView {
         $0.zoomLevel = 17
     }
     
-    private let marker = UIImageView(image: DesignSystemAsset.Icons.markerFocuesd.image)
+    private let marker = UIImageView(image: Icons.markerFocuesd.image)
     
     let currentLocationButton = UIButton().then {
-        $0.setImage(DesignSystemAsset.Icons.locationCurrent.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.tintColor = DesignSystemAsset.Colors.gray70.color
+        $0.setImage(Icons.locationCurrent.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.tintColor = Colors.gray70.color
         $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
-        $0.layer.shadowColor = DesignSystemAsset.Colors.systemBlack.color.cgColor
+        $0.layer.shadowColor = Colors.systemBlack.color.cgColor
         $0.layer.shadowOffset = CGSize(width: 2, height: 2)
         $0.layer.shadowOpacity = 0.1
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = DesignSystemAsset.Colors.gray20.color.cgColor
+        $0.layer.borderColor = Colors.gray20.color.cgColor
         $0.layer.cornerRadius = 23
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.backgroundColor = Colors.systemWhite.color
     }
     
     private let bottomContainer = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.backgroundColor = Colors.systemWhite.color
         $0.layer.cornerRadius = 12
         $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
     }
     
     private let addressTitleLabel = UILabel().then {
-        $0.text = ThreeDollarInMyPocketStrings.writeAddressBottomTitle
-        $0.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 20)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
+        $0.text = Strings.writeAddressBottomTitle
+        $0.font = Fonts.Pretendard.semiBold.font(size: 20)
+        $0.textColor = Colors.gray100.color
     }
     
     private let addressContainer = UIView().then {
         $0.layer.cornerRadius = 12
         $0.layer.masksToBounds = true
-        $0.backgroundColor = DesignSystemAsset.Colors.gray10.color
+        $0.backgroundColor = Colors.gray10.color
     }
     
     let addressLabel = UILabel().then {
         $0.textAlignment = .center
-        $0.textColor = DesignSystemAsset.Colors.gray70.color
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
+        $0.textColor = Colors.gray70.color
+        $0.font = Fonts.Pretendard.bold.font(size: 16)
     }
     
     let addressButton = UIButton().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.mainPink.color
-        $0.setTitle(ThreeDollarInMyPocketStrings.writeAddressButton, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        $0.backgroundColor = Colors.mainPink.color
+        $0.setTitle(Strings.writeAddressButton, for: .normal)
+        $0.titleLabel?.font = Fonts.Pretendard.semiBold.font(size: 14)
+        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
         $0.layer.cornerRadius = 12
         $0.layer.masksToBounds = true
     }
     
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        backgroundColor = Colors.systemWhite.color
         addSubViews([
             mapView,
             navigationView,

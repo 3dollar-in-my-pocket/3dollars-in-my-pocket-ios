@@ -7,27 +7,27 @@ import Then
 final class SigninAnonymousView: BaseView {
     let closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(DesignSystemAsset.Icons.close.image.withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
+        button.setImage(Icons.close.image.withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
         
         return button
     }()
     
-    private let logoImage = UIImageView(image: ThreeDollarInMyPocketAsset.Assets.imageSplash.image)
+    private let logoImage = UIImageView(image: Assets.imageSplash.image)
     
     let kakaoButton = SigninButton(type: .kakao)
     
     let appleButton = SigninButton(type: .apple)
     
     private let anonymousLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
-        $0.textColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.font = Fonts.Pretendard.regular.font(size: 14)
+        $0.textColor = Colors.systemWhite.color
         $0.numberOfLines = 0
-        $0.text = ThreeDollarInMyPocketStrings.signinAnonymousDescription
+        $0.text = Strings.signinAnonymousDescription
         $0.textAlignment = .center
     }
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.mainPink.color
+        backgroundColor = Colors.mainPink.color
         addSubViews([
             closeButton,
             logoImage,

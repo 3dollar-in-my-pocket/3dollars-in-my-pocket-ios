@@ -12,72 +12,72 @@ final class NicknameView: Common.BaseView {
     
     let backButton = UIButton().then {
         $0.setImage(
-            DesignSystemAsset.Icons.arrowLeft.image.withTintColor(DesignSystemAsset.Colors.systemWhite.color),
+            Icons.arrowLeft.image.withTintColor(Colors.systemWhite.color),
             for: .normal
         )
     }
     
-    private let imageView = UIImageView(image: ThreeDollarInMyPocketAsset.Assets.imageBungeoppang.image).then {
+    private let imageView = UIImageView(image: Assets.imageBungeoppang.image).then {
         $0.contentMode = .scaleAspectFit
     }
     
     private let nicknameLabel1 = UILabel().then {
-        $0.text = ThreeDollarInMyPocketStrings.nicknameLabel1
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 30)
-        $0.textColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.text = Strings.nicknameLabel1
+        $0.font = Fonts.Pretendard.bold.font(size: 30)
+        $0.textColor = Colors.systemWhite.color
     }
     
     let nicknameField = UITextField().then {
         $0.textAlignment = .center
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 30)
-        $0.textColor = DesignSystemAsset.Colors.mainPink.color
+        $0.font = Fonts.Pretendard.bold.font(size: 30)
+        $0.textColor = Colors.mainPink.color
         $0.returnKeyType = .done
         $0.attributedPlaceholder = NSAttributedString(
-            string: ThreeDollarInMyPocketStrings.nicknamePlaceholder,
+            string: Strings.nicknamePlaceholder,
             attributes: [
-                .foregroundColor: DesignSystemAsset.Colors.gray80.color as Any
+                .foregroundColor: Colors.gray80.color as Any
             ]
         )
-        $0.tintColor = DesignSystemAsset.Colors.mainPink.color
+        $0.tintColor = Colors.mainPink.color
     }
     
     private let nicknameLabel2 = UILabel().then {
-        $0.text = ThreeDollarInMyPocketStrings.nicknameLabel2
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 30)
-        $0.textColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.text = Strings.nicknameLabel2
+        $0.font = Fonts.Pretendard.bold.font(size: 30)
+        $0.textColor = Colors.systemWhite.color
     }
     
     private let warningImage = UIImageView().then {
-        $0.image = DesignSystemAsset.Icons.infomation.image.withTintColor(DesignSystemAsset.Colors.mainRed.color)
+        $0.image = Icons.infomation.image.withTintColor(Colors.mainRed.color)
         $0.isHidden = true
     }
     
     private let warningLabel = PaddingLabel(topInset: 8, bottomInset: 8, leftInset: 12, rightInset: 12).then {
-        $0.text = ThreeDollarInMyPocketStrings.nicknameAlreayExisted
-        $0.textColor = DesignSystemAsset.Colors.mainRed.color
-        $0.backgroundColor = DesignSystemAsset.Colors.mainRed.color.withAlphaComponent(0.1)
+        $0.text = Strings.nicknameAlreayExisted
+        $0.textColor = Colors.mainRed.color
+        $0.backgroundColor = Colors.mainRed.color.withAlphaComponent(0.1)
         $0.layer.cornerRadius = 16
         $0.layer.masksToBounds = true
         $0.isHidden = true
     }
     
     let signupButton = UIButton().then {
-        $0.setTitle(ThreeDollarInMyPocketStrings.nicknameSignup, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
-        $0.setTitleColor(DesignSystemAsset.Colors.gray60.color, for: .disabled)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        $0.setBackgroundColor(DesignSystemAsset.Colors.gray80.color, for: .disabled)
-        $0.setBackgroundColor(DesignSystemAsset.Colors.mainPink.color, for: .normal)
+        $0.setTitle(Strings.nicknameSignup, for: .normal)
+        $0.titleLabel?.font = Fonts.Pretendard.bold.font(size: 16)
+        $0.setTitleColor(Colors.gray60.color, for: .disabled)
+        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
+        $0.setBackgroundColor(Colors.gray80.color, for: .disabled)
+        $0.setBackgroundColor(Colors.mainPink.color, for: .normal)
         $0.isEnabled = false
     }
     
     private let bottomBackground = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.gray80.color
+        $0.backgroundColor = Colors.gray80.color
     }
     
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.gray100.color
+        backgroundColor = Colors.gray100.color
         isUserInteractionEnabled = true
         addGestureRecognizer(tapGestureView)
         nicknameField.delegate = self
@@ -155,12 +155,12 @@ final class NicknameView: Common.BaseView {
     func setHiddenWarning(isHidden: Bool) {
         warningImage.isHidden = isHidden
         warningLabel.isHidden = isHidden
-        nicknameField.textColor = isHidden ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.mainRed.color
+        nicknameField.textColor = isHidden ? Colors.mainPink.color : Colors.mainRed.color
     }
     
     func setEnableSignupButton(_ isEnabled: Bool) {
         signupButton.isEnabled = isEnabled
-        bottomBackground.backgroundColor = isEnabled ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray80.color
+        bottomBackground.backgroundColor = isEnabled ? Colors.mainPink.color : Colors.gray80.color
     }
     
     func hideKeyboard() {

@@ -12,6 +12,7 @@ edit:
 
 clean:
 	./.tuist-bin/tuist clean
+	./.tuist-bin/tuist clean dependencies
 	bundle exec pod cache clean --all
 	bundle exec pod deintegrate App/3dollar-in-my-pocket.xcodeproj
 	rm -rf **/*.xcodeproj

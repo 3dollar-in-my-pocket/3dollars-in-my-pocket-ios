@@ -8,20 +8,20 @@ final class WriteDetailNameCell: BaseCollectionViewCell {
     }
     
     private let containerView = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.gray10.color
+        $0.backgroundColor = Colors.gray10.color
         $0.layer.cornerRadius = 8
         $0.layer.masksToBounds = true
     }
     
     let nameField = UITextField().then {
-        $0.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
-        $0.attributedPlaceholder = NSAttributedString(string: ThreeDollarInMyPocketStrings.writeDetailNamePlaceholer, attributes: [.foregroundColor: DesignSystemAsset.Colors.gray50.color])
+        $0.font = Fonts.Pretendard.regular.font(size: 14)
+        $0.textColor = Colors.gray100.color
+        $0.attributedPlaceholder = NSAttributedString(string: Strings.writeDetailNamePlaceholer, attributes: [.foregroundColor: Colors.gray50.color])
         $0.returnKeyType = .done
     }
     
     override func setup() {
-        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        backgroundColor = Colors.systemWhite.color
         nameField.delegate = self
         contentView.addSubViews([
             containerView,
