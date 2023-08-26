@@ -11,20 +11,20 @@ final class SigninButton: UIButton {
         var title: String {
             switch self {
             case .kakao:
-                return ThreeDollarInMyPocketStrings.signinWithKakao
+                return Strings.signinWithKakao
                 
             case .apple:
-                return ThreeDollarInMyPocketStrings.signinWithApple
+                return Strings.signinWithApple
             }
         }
         
         var icon: UIImage {
             switch self {
             case .kakao:
-                return DesignSystemAsset.Icons.kakao.image
+                return Icons.kakao.image
                 
             case .apple:
-                return DesignSystemAsset.Icons.apple.image.withTintColor(DesignSystemAsset.Colors.systemWhite.color)
+                return Icons.apple.image.withTintColor(Colors.systemWhite.color)
             }
         }
         
@@ -34,7 +34,7 @@ final class SigninButton: UIButton {
                 return UIColor(hex: "#F7E317")
                 
             case .apple:
-                return DesignSystemAsset.Colors.systemBlack.color
+                return Colors.systemBlack.color
             }
         }
         
@@ -44,7 +44,7 @@ final class SigninButton: UIButton {
                 return UIColor(hex: "#381E1F")
                 
             case .apple:
-                return DesignSystemAsset.Colors.systemWhite.color
+                return Colors.systemWhite.color
             }
         }
     }
@@ -69,6 +69,6 @@ final class SigninButton: UIButton {
         setTitle(socialType.title, for: .normal)
         setImage(socialType.icon, for: .normal)
         backgroundColor = socialType.backgroundColor
-        titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
+        titleLabel?.font = Fonts.Pretendard.semiBold.font(size: 14)
     }
 }

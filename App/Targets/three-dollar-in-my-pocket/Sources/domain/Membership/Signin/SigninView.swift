@@ -5,16 +5,16 @@ import DesignSystem
 import Then
 
 final class SigninView: BaseView {
-    private let logoImage = UIImageView(image: ThreeDollarInMyPocketAsset.Assets.imageSplash.image)
+    private let logoImage = UIImageView(image: Assets.imageSplash.image)
     
     let kakaoButton = SigninButton(type: .kakao)
     
     let appleButton = SigninButton(type: .apple)
     
     let signinAnonymousButton = UIButton().then {
-        $0.setTitle(ThreeDollarInMyPocketStrings.signinAnonymous, for: .normal)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
+        $0.setTitle(Strings.signinAnonymous, for: .normal)
+        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
+        $0.titleLabel?.font = Fonts.Pretendard.regular.font(size: 14)
     }
     
     override func setup() {

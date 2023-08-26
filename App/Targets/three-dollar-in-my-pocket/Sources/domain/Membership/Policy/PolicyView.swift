@@ -8,58 +8,58 @@ final class PolicyView: Common.BaseView {
     
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 24
-        $0.backgroundColor = DesignSystemAsset.Colors.gray90.color
+        $0.backgroundColor = Colors.gray90.color
     }
     
     let allCheckButton = UIButton().then {
-        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOn.image, for: .selected)
-        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOff.image, for: .normal)
-        $0.setTitle(ThreeDollarInMyPocketStrings.policyAgreeAll, for: .normal)
+        $0.setImage(Assets.icCheckSolidOn.image, for: .selected)
+        $0.setImage(Assets.icCheckSolidOff.image, for: .normal)
+        $0.setTitle(Strings.policyAgreeAll, for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
         $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        $0.titleLabel?.font = Fonts.Pretendard.bold.font(size: 16)
+        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
     }
     
     private let dividerView = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.gray80.color
+        $0.backgroundColor = Colors.gray80.color
     }
     
     let policyCheckButton = UIButton().then {
-        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOn.image, for: .selected)
-        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOff.image, for: .normal)
+        $0.setImage(Assets.icCheckSolidOn.image, for: .selected)
+        $0.setImage(Assets.icCheckSolidOff.image, for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
         $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
-        $0.setTitle(ThreeDollarInMyPocketStrings.policyPolicyLabel, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        $0.setTitle(Strings.policyPolicyLabel, for: .normal)
+        $0.titleLabel?.font = Fonts.Pretendard.regular.font(size: 14)
+        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
     }
     
     let policyButton = UIButton().then {
         $0.setImage(
-            DesignSystemAsset.Icons.arrowRight.image.withTintColor(DesignSystemAsset.Colors.gray70.color),
+            Icons.arrowRight.image.withTintColor(Colors.gray70.color),
             for: .normal
         )
     }
     
     let marketingCheckButton = UIButton().then {
-        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOn.image, for: .selected)
-        $0.setImage(ThreeDollarInMyPocketAsset.Assets.icCheckSolidOff.image, for: .normal)
+        $0.setImage(Assets.icCheckSolidOn.image, for: .selected)
+        $0.setImage(Assets.icCheckSolidOff.image, for: .normal)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
         $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
-        $0.setTitle(ThreeDollarInMyPocketStrings.policyMarketingLabel, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        $0.setTitle(Strings.policyMarketingLabel, for: .normal)
+        $0.titleLabel?.font = Fonts.Pretendard.regular.font(size: 14)
+        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
     }
     
     let marketingButton = UIButton().then {
         $0.setImage(
-            DesignSystemAsset.Icons.arrowRight.image.withTintColor(DesignSystemAsset.Colors.gray70.color),
+            Icons.arrowRight.image.withTintColor(Colors.gray70.color),
             for: .normal
         )
     }
     
-    let nextButton = Button.Normal(size: .h48, text: ThreeDollarInMyPocketStrings.policyNextButton)
+    let nextButton = Button.Normal(size: .h48, text: Strings.policyNextButton)
     
     override func setup() {
         addSubViews([
