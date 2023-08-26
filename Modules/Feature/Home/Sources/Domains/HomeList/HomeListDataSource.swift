@@ -51,6 +51,12 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
                     headerView.isOnlyCertifiedButton.isSelected = isOnlyCertified
                 }
                 .store(in: &headerView.cancellables)
+            
+            viewModel.output.isOnlyBoss
+                .receive(on: DispatchQueue.main)
+                .assign(to: \.isHidden, on: headerView.isOnlyCertifiedButton)
+                .store(in: &headerView.cancellables)
+            
             return headerView
         }
     }

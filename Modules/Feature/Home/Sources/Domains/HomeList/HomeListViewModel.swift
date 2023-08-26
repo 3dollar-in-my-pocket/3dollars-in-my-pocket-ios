@@ -178,6 +178,8 @@ final class HomeListViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink { owner, result in
+                owner.output.isOnlyBoss.send(owner.state.isOnlyBossStore)
+                
                 switch result {
                 case .success(let stores):
                     owner.state.stores = stores
