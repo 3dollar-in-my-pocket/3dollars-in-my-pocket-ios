@@ -6,11 +6,10 @@ protocol CategorySelectionDelegate: AnyObject {
     func onSelectCategories(categories: [PlatformStoreCategory])
 }
 
-final class CategorySelectionViewController: BaseBottomSheetViewController, CategorySelectionCoordinator {
+final class CategorySelectionViewController: BaseBottomSheetViewController {
     weak var delegate: CategorySelectionDelegate?
     private let categorySelectionView = CategorySelectionView()
     private let viewModel: CategorySelectionViewModel
-    private weak var coordinator: CategorySelectionCoordinator?
     private lazy var dataSource = CategorySelectionDataSource(collectionView: categorySelectionView.categoryCollectionView, viewModel: viewModel)
     
     static func instance(selectedCategories: [PlatformStoreCategory]) -> CategorySelectionViewController {
@@ -34,7 +33,6 @@ final class CategorySelectionViewController: BaseBottomSheetViewController, Cate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        coordinator = self
         viewModel.input.viewDidLoad.send(())
     }
     
@@ -100,7 +98,7 @@ final class CategorySelectionViewController: BaseBottomSheetViewController, Cate
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, error in
-                owner.coordinator?.showErrorAlert(error: error)
+                owner.showErrorAlert(error: error)
             }
             .store(in: &cancellables)
         
@@ -108,8 +106,16 @@ final class CategorySelectionViewController: BaseBottomSheetViewController, Cate
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, route in
-                owner.coordinator?.handleRoute(route: route)
+                owner.handleRoute(route: route)
             }
             .store(in: &cancellables)
+    }
+    
+    private func handleRoute(route: CategorySelectionViewModel.Route) {
+        switch route {
+        case .dismissWithCategories(let selectedCategories):
+            delegate?.onSelectCategories(categories: selectedCategories)
+            dismiss()
+        }
     }
 }

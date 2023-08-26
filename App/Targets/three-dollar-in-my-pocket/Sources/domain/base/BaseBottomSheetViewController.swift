@@ -23,4 +23,13 @@ class BaseBottomSheetViewController: BaseViewController {
         DimManager.shared.hideDim()
         dismiss(animated: true, completion: completion)
     }
+    
+    func showErrorAlert(error: Error) {
+        // TODO: 에러 종류에 따라 다르게 노출시켜야하는 로직 필요
+        AlertUtils.showWithAction(
+            viewController: self,
+            title: error.localizedDescription,
+            onTapOk: nil
+        )
+    }
 }
