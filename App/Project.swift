@@ -270,6 +270,8 @@ let project = Project(
                 ])
             ],
             dependencies: [
+                .project(target: "AppInterface", path: "./"),
+                .project(target: "Membership", path: "../Modules/Feature/Membership"),
                 .project(target: "Home", path: "../Modules/Feature/Home"),
                 .project(target: "Networking", path: "../Modules/Network"),
                 .project(target: "DesignSystem", path: "../Modules/DesignSystem"),
@@ -371,6 +373,19 @@ let project = Project(
                     .debug(name: .debug, settings: BuildSetting.ContentExtension.debug),
                     .release(name: .release, settings: BuildSetting.ContentExtension.release)
                 ])
+        ),
+        Target(
+            name: "AppInterface",
+            platform: .iOS,
+            product: .framework,
+            bundleId: "com.macgongmon.-dollar-in-my-pocket.app-interface",
+            deploymentTarget: .iOS(targetVersion: "14.0", devices: .iphone),
+            infoPlist: .default,
+            sources: ["Targets/AppInterface/Sources/**"],
+            dependencies: [
+                .project(target: "DependencyInjection", path: "../Modules/DependencyInjection"),
+                .project(target: "Model", path: "../Modules/Common")
+            ]
         )
     ],
     schemes: [

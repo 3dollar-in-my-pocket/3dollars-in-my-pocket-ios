@@ -1,9 +1,10 @@
 import Foundation
 import CoreLocation
 
+import AppInterface
 import Networking
 
-struct UserDefaultsUtil {
+struct UserDefaultsUtil: UserDefaultProtocol {
     private let KEY_TOKEN = "KEY_TOKEN"
     private let KEY_USER_ID = "KEY_USER_ID"
     private let KEY_IS_ANONYMOUS_USER = "KEY_IS_ANONYMOUS_USER"

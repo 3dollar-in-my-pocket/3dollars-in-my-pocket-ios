@@ -33,9 +33,28 @@ let project = Project(
             product: .staticLibrary,
             bundleId: "com.macgongmon.-dollar-in-my-pocket.common",
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
-            sources: ["Sources/**"],
+            sources: ["Targets/Common/Sources/**"],
             dependencies: [
                 .external(name: "Kingfisher")
+            ]
+        ),
+        Target(
+            name: "Resource",
+            platform: .iOS,
+            product: .framework,
+            bundleId: "com.macgongmon.-dollar-in-my-pocket.resource",
+            deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
+            resources: ["Targets/Resource/Resources/**"]
+        ),
+        Target(
+            name: "Model",
+            platform: .iOS,
+            product: .framework,
+            bundleId: "com.macgongmon.-dollar-in-my-pocket.model",
+            deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
+            sources: ["Targets/Model/Sources/**"],
+            dependencies: [
+                .project(target: "Networking", path: "../Network")
             ]
         )
     ]

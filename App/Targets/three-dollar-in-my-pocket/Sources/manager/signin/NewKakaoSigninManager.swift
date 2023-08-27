@@ -1,12 +1,15 @@
 import Combine
 
+import AppInterface
+
 import KakaoSDKUser
 import KakaoSDKAuth
 import KakaoSDKCommon
 
-final class NewKakaoSigninManager: NewSigninManagerProtocol {
-    private var publisher = PassthroughSubject<String, Error>()
+final class NewKakaoSigninManager: AppInterface.SigninManagerProtocol {
+    static let shared = NewKakaoSigninManager()
     
+    private var publisher = PassthroughSubject<String, Error>()
     
     func signin() -> PassthroughSubject<String, Error> {
         publisher = PassthroughSubject<String, Error>()

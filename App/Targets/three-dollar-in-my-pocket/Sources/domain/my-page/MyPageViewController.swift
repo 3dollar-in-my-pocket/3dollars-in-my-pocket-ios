@@ -1,5 +1,7 @@
 import UIKit
 
+import Model
+
 import ReactorKit
 import RxSwift
 import RxDataSources

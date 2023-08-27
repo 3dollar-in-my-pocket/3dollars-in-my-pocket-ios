@@ -4,6 +4,8 @@ import Combine
 import DesignSystem
 import Networking
 import Common
+import Model
+
 import NMapsMap
 
 protocol WriteAddressDelegate: AnyObject {

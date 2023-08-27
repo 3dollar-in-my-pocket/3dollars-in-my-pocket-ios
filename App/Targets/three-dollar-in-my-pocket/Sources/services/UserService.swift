@@ -3,11 +3,11 @@ import RxSwift
 
 protocol UserServiceProtocol {
     func signin(request: SigninRequest) -> Observable<SigninResponse>
-    
+
     func signinAnonymous() -> Observable<SigninResponse>
-    
+
     func signup(request: SignupRequest) -> Observable<SigninResponse>
-    
+
     func connectAccount(request: SigninRequest) -> Observable<String>
     
     func signout() -> Observable<Void>
@@ -31,7 +31,7 @@ struct UserService: UserServiceProtocol {
         let urlString = HTTPUtils.url + "/api/v2/login"
         let parameters = request.params
         let headers = HTTPUtils.jsonHeader()
-        
+
         return self.networkManager.createPostObservable(
             class: SigninResponse.self,
             urlString: urlString,
@@ -39,22 +39,22 @@ struct UserService: UserServiceProtocol {
             parameters: parameters
         )
     }
-    
+
     func signinAnonymous() -> Observable<SigninResponse> {
         let urlString = HTTPUtils.url + "/api/v1/signup/anonymous"
         let headers = HTTPUtils.jsonHeader()
-        
+
         return self.networkManager.createPostObservable(
             class: SigninResponse.self,
             urlString: urlString,
             headers: headers
         )
     }
-    
+
     func signup(request: SignupRequest) -> Observable<SigninResponse> {
         return Observable.create { observer in
             let urlString = HTTPUtils.url + "/api/v2/signup"
-            
+
             HTTPUtils.defaultSession.request(
                 urlString,
                 method: .post,
@@ -74,17 +74,17 @@ struct UserService: UserServiceProtocol {
                     }
                 }
             }
-            
+
             return Disposables.create()
         }
     }
-    
+
     func connectAccount(request: SigninRequest) -> Observable<String> {
         return .create { observer in
             let urlString = HTTPUtils.url + "/api/v1/connect/account"
             let headers = HTTPUtils.defaultHeader()
             let params = request.params
-            
+
             HTTPUtils.defaultSession.request(
                 urlString,
                 method: .put,
@@ -102,7 +102,7 @@ struct UserService: UserServiceProtocol {
                     }
                 }
             }
-            
+
             return Disposables.create()
         }
     }
