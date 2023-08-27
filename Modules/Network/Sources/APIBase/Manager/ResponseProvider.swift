@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 final class ResponseProvider {
     func processResponse<T: Decodable>(data: Data, response: URLResponse) throws -> T {
         NetworkLogger.logResponse(response: response, data: data)

@@ -2,6 +2,7 @@ import Foundation
 import Combine
 
 import DependencyInjection
+import Model
 
 final public class NetworkManager {
     public static let shared = NetworkManager()

@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct FetchAdvertisementRequest: RequestType {
     let input: FetchAdvertisementInput
     

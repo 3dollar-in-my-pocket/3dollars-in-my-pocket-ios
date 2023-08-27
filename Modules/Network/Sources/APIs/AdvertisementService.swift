@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 public protocol AdvertisementServiceProtocol {
     func fetchAdvertisements(input: FetchAdvertisementInput) async -> Result<[AdvertisementResponse], Error>
 }

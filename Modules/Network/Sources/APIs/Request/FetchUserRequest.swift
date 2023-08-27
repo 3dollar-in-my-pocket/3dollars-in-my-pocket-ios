@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct FetchUserRequest: RequestType {
     var param: Encodable?
     

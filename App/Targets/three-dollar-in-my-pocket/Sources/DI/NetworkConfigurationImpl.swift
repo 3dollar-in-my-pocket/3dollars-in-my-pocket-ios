@@ -1,7 +1,7 @@
 import Foundation
 
 import DependencyInjection
-import Networking
+import Model
 
 struct NetworkConfigurationImpl: NetworkConfigurable {
     var endPoint: String {

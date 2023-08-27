@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 public protocol DeviceServiceProtocol {
     func registerDevice(pushToken: String) async -> Result<String, Error>
     

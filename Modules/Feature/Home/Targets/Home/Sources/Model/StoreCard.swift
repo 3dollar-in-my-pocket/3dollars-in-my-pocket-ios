@@ -1,6 +1,6 @@
 import Foundation
 
-import Networking
+import Model
 
 struct StoreCard {
     let storeType: StoreType

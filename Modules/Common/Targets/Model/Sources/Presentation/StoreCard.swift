@@ -1,7 +1,5 @@
 import Foundation
 
-import Networking
-
 public struct StoreCard {
     let storeType: StoreType
     let storeId: String

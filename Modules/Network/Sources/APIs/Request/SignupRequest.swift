@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct SignupRequest: RequestType {
     let requestInput: SignupInput
 

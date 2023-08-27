@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 public protocol UserServiceProtocol {
     func signin(socialType: String, accessToken: String) async -> Result<SigninResponse, Error>
     

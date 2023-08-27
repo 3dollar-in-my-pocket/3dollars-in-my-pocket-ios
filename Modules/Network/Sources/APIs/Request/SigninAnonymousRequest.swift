@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct SigninAnonymousRequest: RequestType {
     var method: RequestMethod {
         return .post

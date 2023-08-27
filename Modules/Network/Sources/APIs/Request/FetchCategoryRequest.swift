@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct FetchCategoryRequest: RequestType {
     var param: Encodable? {
         return nil

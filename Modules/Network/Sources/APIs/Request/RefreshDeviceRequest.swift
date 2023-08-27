@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct RefreshDeviceRequest: RequestType {
     let requestInput: DeviceRequestInput
     

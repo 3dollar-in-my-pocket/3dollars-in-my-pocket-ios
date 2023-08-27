@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 public protocol CategoryServiceProtocol {
     func fetchCategoires() async -> Result<[PlatformStoreCategoryResponse], Error>
 }

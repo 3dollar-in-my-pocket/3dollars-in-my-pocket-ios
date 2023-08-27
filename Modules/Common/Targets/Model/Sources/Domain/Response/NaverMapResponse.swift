@@ -1,10 +1,10 @@
 import Foundation
 
-struct NaverMapResponse: Decodable {
-    let results: [ReverseGeoLocation]
+public struct NaverMapResponse: Decodable {
+    public let results: [ReverseGeoLocation]
 }
 
-extension NaverMapResponse {
+public extension NaverMapResponse {
     struct ReverseGeoLocation: Decodable {
         let name: String
         let region: Region

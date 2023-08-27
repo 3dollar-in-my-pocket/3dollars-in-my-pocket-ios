@@ -112,7 +112,7 @@ final class HomeListViewController: BaseViewController {
                     print("🔥 상품 상세화면 구현 필요")
                     
                 case .showErrorAlert(let error):
-                    print("🔥 Common 모듈에 AlertUtils 구현 필요")
+                    owner.showErrorAlert(error: error)
                 }
             }
             .store(in: &cancellables)

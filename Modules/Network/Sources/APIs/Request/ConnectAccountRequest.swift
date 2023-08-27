@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct ConnectAccountRequest: RequestType {
     let requestInput: SigninRequestInput
     

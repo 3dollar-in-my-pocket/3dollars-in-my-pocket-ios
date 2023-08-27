@@ -97,9 +97,7 @@ public final class NicknameViewController: Common.BaseViewController {
                     owner.goToMain(with: bookmarkFolderId)
                     
                 case .showErrorAlert(let error):
-                    fatalError("에러처리 로직 구현 필요")
-//                    owner.showErrorAlert(error: error)
-                    
+                    owner.showErrorAlert(error: error)
                     
                 case .showLoading(let isShow):
                     DesignSystem.LoadingManager.shared.showLoading(isShow: isShow)

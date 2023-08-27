@@ -84,8 +84,7 @@ public final class SigninViewController: BaseViewController {
                     owner.navigationController?.pushViewController(viewController, animated: true)
                     
                 case .showErrorAlert(let error):
-                    fatalError("에러처리 로직 구현 필요")
-//                    owner.showErrorAlert(error: error)
+                    owner.showErrorAlert(error: error)
                     
                 case .showLoading(let isShow):
                     LoadingManager.shared.showLoading(isShow: isShow)

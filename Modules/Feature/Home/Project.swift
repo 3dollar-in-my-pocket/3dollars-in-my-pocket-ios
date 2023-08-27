@@ -38,6 +38,7 @@ let project = Project(
                 .project(target: "Networking", path: "../../Network"),
                 .project(target: "DesignSystem", path: "../../DesignSystem"),
                 .project(target: "Common", path: "../../Common"),
+                .project(target: "Model", path: "../../Common"),
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "PanModal")

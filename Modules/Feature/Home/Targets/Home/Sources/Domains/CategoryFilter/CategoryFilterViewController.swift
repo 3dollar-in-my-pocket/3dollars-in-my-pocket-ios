@@ -74,7 +74,7 @@ final class CategoryFilterViewController: BaseViewController {
             .sink { owner, route in
                 switch route {
                 case .showErrorAlert(let error):
-                    print("🔥 Common 모듈에 AlertUtils 구현 필요")
+                    owner.showErrorAlert(error: error)
                     
                 case .dismissWithCategory(let category):
                     owner.delegate?.onSelectCategory(category: category)

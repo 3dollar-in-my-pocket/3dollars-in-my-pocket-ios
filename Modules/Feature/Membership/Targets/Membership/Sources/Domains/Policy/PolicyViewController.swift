@@ -130,11 +130,10 @@ final class PolicyViewController: Common.BaseViewController {
             .sink { owner, route in
                 switch route {
                 case .showErrorAlert(let error):
-                    fatalError("에러처리 로직 구현 필요")
-//                    owner.showErrorAlert(error: error)
+                    owner.showErrorAlert(error: error)
                     
                 case .showLoading(let isShow):
-                    DesignSystem.LoadingManager.shared.showLoading(isShow: isShow)
+                    LoadingManager.shared.showLoading(isShow: isShow)
                     
                 case .dismiss:
                     DimManager.shared.hideDim()

@@ -1,7 +1,5 @@
 import Foundation
 
-import Networking
-
 public struct PlatformStoreCategory {
     let category: String
     let categoryId: String

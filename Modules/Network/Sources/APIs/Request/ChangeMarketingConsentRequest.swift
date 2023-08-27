@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct ChangeMarketingConsentRequest: RequestType {
     let requestInput: ChangeMarketingConsentInput
     

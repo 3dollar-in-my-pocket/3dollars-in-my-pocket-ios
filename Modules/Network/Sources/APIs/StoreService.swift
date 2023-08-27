@@ -1,6 +1,8 @@
 import Foundation
 import CoreLocation
 
+import Model
+
 public protocol StoreServiceProtocol {
     func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<IsStoresExistedAroundResponse, Error>
     

@@ -1,13 +1,13 @@
 import Foundation
 
 public struct StoreCreateRequestInput: Encodable {
-    let latitude: Double
-    let longitude: Double
-    let storeName: String
-    let storeType: String?
-    let appearanceDays: [String]
-    let paymentMethods: [String]
-    let menus: [StoreMenuRequestInput]
+    public let latitude: Double
+    public let longitude: Double
+    public let storeName: String
+    public let storeType: String?
+    public let appearanceDays: [String]
+    public let paymentMethods: [String]
+    public let menus: [StoreMenuRequestInput]
     
     public init(
         latitude: Double,

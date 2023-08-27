@@ -1,7 +1,5 @@
 import Foundation
 
-import Networking
-
 public struct Location {
     let latitude: Double
     let longitude: Double

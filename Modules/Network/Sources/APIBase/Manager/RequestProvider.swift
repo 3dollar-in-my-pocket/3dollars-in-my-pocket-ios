@@ -1,6 +1,7 @@
 import Foundation
 
 import DependencyInjection
+import Model
 
 final class RequestProvider {
     var config: NetworkConfigurable
