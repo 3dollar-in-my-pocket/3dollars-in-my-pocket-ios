@@ -1,6 +1,6 @@
 import UIKit
 
-import Home
+import Membership
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = HomeViewController.instance()
+        window?.rootViewController = SigninViewController.instance()
         window?.makeKeyAndVisible()
     }
 }
