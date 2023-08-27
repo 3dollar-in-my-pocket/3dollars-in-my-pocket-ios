@@ -32,7 +32,6 @@ struct UserDefaultsUtil {
         }
         set {
             self.instance.set(newValue, forKey: KEY_TOKEN)
-            Networking.NetworkManager.shared.configuration.authToken = newValue
         }
     }
     

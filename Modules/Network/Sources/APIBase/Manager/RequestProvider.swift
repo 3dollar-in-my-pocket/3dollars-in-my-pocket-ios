@@ -1,11 +1,13 @@
 import Foundation
 
+import DependencyInjection
+
 final class RequestProvider {
-    var config: NetworkConfiguration
+    var config: NetworkConfigurable
     private let sesseion: URLSession
 
-    init(config: NetworkConfiguration) {
-        self.config = config
+    init(config: NetworkConfigurable) {
+        self.config = DIContainer.shared.container.resolve(NetworkConfigurable.self)!
 
         let defaultConfiguration = URLSessionConfiguration.default
         defaultConfiguration.timeoutIntervalForRequest = config.timeoutForRequest

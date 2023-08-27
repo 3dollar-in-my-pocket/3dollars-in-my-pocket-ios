@@ -16,7 +16,7 @@ struct BuildSetting {
 
 
 let project = Project(
-    name: "Home-Demo",
+    name: "DependencyInjection",
     organizationName: "macgongmon",
     packages: [],
     settings: .settings(
@@ -28,15 +28,14 @@ let project = Project(
     ),
     targets: [
         Target(
-            name: "Home-Demo",
+            name: "DependencyInjection",
             platform: .iOS,
-            product: .app,
-            bundleId: "com.macgongmon.-dollar-in-my-pocket.home-demo",
+            product: .framework,
+            bundleId: "com.macgongmon.-dollar-in-my-pocket.dependency-injection",
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
-            infoPlist: "Info.plist",
             sources: ["Sources/**"],
             dependencies: [
-                .project(target: "Home", path: "../")
+                .external(name: "Swinject")
             ]
         )
     ]

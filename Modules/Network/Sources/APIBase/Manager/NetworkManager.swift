@@ -1,19 +1,19 @@
 import Foundation
 import Combine
 
+import DependencyInjection
+
 final public class NetworkManager {
-    public static let shared = NetworkManager(config: NetworkConfiguration.defaultConfig)
+    public static let shared = NetworkManager()
     
-    public var configuration: NetworkConfiguration {
-        didSet {
-            requestProvider.config = configuration
-        }
-    }
     private let requestProvider: RequestProvider
     private let responseProvider: ResponseProvider
 
-    public init(config: NetworkConfiguration) {
-        self.configuration = config
+    public init() {
+        guard let config = DIContainer.shared.container.resolve(NetworkConfigurable.self) else {
+            fatalError("⚠️ NetworkConfigurable가 등록되지 않았습니다.")
+        }
+        
         self.requestProvider = RequestProvider(config: config)
         self.responseProvider = ResponseProvider()
     }

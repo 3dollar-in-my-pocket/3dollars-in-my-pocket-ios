@@ -7,8 +7,8 @@ import SwiftyBeaver
 import GoogleMobileAds
 import KakaoSDKCommon
 import FirebaseMessaging
-import Home
 import DesignSystem
+import DependencyInjection
 
 typealias Log = SwiftyBeaver
 typealias Fonts = DesignSystemFontFamily
@@ -25,13 +25,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         // Override point for customization after application launch.
-        self.initilizeNotification()
+        initializeNotification()
+        initializeDI()
         initializeFirebase()
         initializeNetworkLogger()
-        initilizeSwiftyBeaver()
-        initilizeKakao()
-        initilizeAdmob()
-        initializationNetworkModule()
+        initializeSwiftyBeaver()
+        initializeKakao()
+        initializeAdmob()
         application.registerForRemoteNotifications()
         return true
     }
@@ -69,25 +69,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Messaging.messaging().delegate = self
     }
     
-    private func initilizeAdmob() {
+    private func initializeAdmob() {
         GADMobileAds.sharedInstance().start(completionHandler: nil)
     }
     
-    private func initilizeSwiftyBeaver() {
+    private func initializeSwiftyBeaver() {
         let console = ConsoleDestination()
         
         console.format = "$DHH:mm:ss.SSS$d $C$L$c $N.$F:$l - $M"
         Log.addDestination(console)
     }
     
-    private func initilizeKakao() {
+    private func initializeKakao() {
         let kakaoAppKey
             = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as? String ?? ""
         Log.debug("kakaoAppKey: \(kakaoAppKey)")
         KakaoSDK.initSDK(appKey: kakaoAppKey)
     }
     
-    private func initilizeNotification() {
+    private func initializeNotification() {
         UNUserNotificationCenter.current().delegate = self
         UNUserNotificationCenter.current().requestAuthorization(
             options: [.alert, .badge, .sound]) { isGranted, error in
@@ -100,14 +100,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
     }
     
-    private func initializationNetworkModule() {
-        Networking.NetworkManager.shared.configuration.endPoint = Bundle.baseURL
-        Networking.NetworkManager.shared.configuration.userAgent = HTTPUtils.userAgent
-        Networking.NetworkManager.shared.configuration.authToken = UserDefaultsUtil().authToken
-        
-        Home.EnviromentManager.shared.networkConfiguration.endPoint = Bundle.baseURL
-        Home.EnviromentManager.shared.networkConfiguration.userAgent = HTTPUtils.userAgent
-        Home.EnviromentManager.shared.networkConfiguration.authToken = UserDefaultsUtil().authToken
+    private func initializeDI() {
+        NetworkConfigurationImpl.registerNetworkConfiguration()
     }
     
     func application(

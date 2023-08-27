@@ -44,6 +44,18 @@ let project = Project(
                 .external(name: "Then"),
                 .external(name: "PanModal")
             ]
+        ),
+        Target(
+            name: "Home-Demo",
+            platform: .iOS,
+            product: .app,
+            bundleId: "com.macgongmon.-dollar-in-my-pocket.home-demo",
+            deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
+            infoPlist: "Demo/Info.plist",
+            sources: ["Demo/Sources/**"],
+            dependencies: [
+                .project(target: "Home", path: "./")
+            ]
         )
     ]
 )

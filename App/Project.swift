@@ -274,6 +274,7 @@ let project = Project(
                 .project(target: "Networking", path: "../Modules/Network"),
                 .project(target: "DesignSystem", path: "../Modules/DesignSystem"),
                 .project(target: "Common", path: "../Modules/Common"),
+                .project(target: "DependencyInjection", path: "../Modules/DependencyInjection"),
                 .target(name: "service-extension"),
                 .target(name: "content-extension"),
                 .package(product: "CameraPermission"),
