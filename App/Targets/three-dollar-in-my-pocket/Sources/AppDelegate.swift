@@ -9,6 +9,7 @@ import KakaoSDKCommon
 import FirebaseMessaging
 import DesignSystem
 import DependencyInjection
+import Membership
 
 typealias Log = SwiftyBeaver
 typealias Fonts = DesignSystemFontFamily
@@ -102,6 +103,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func initializeDI() {
         NetworkConfigurationImpl.registerNetworkConfiguration()
+        MembershipInterfaceImpl.registerMembershipInterface()
+        AppModuleInterfaceImpl.registerAppModuleInterface()
     }
     
     func application(

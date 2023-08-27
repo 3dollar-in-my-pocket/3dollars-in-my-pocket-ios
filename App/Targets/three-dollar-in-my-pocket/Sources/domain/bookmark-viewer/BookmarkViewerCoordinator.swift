@@ -1,3 +1,6 @@
+import Model
+import Membership
+
 protocol BookmarkViewerCoordinator: BaseCoordinator, AnyObject {
     func pushStoreDetail(storeId: String)
     
@@ -45,8 +48,12 @@ extension BookmarkViewerCoordinator {
     }
     
     func pushNickname(signinRequest: SigninRequest, bookmarkFolderId: String?) {
+        let newRequest = Model.SigninRequest(
+            socialType: .init(value: signinRequest.socialType.rawValue),
+            token: signinRequest.token
+        )
         let viewController = NicknameViewController.instance(
-            socialType: signinRequest.socialType,
+            socialType: newRequest.socialType,
             accessToken: signinRequest.token,
             bookmarkFolderId: bookmarkFolderId
         )

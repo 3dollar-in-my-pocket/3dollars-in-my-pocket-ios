@@ -1,5 +1,7 @@
 import UIKit
 
+import Membership
+
 import KakaoSDKAuth
 import FirebaseDynamicLinks
 

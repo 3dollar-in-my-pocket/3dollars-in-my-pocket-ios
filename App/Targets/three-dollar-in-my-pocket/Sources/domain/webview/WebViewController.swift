@@ -1,5 +1,7 @@
 import UIKit
 
+import Model
+
 import RxSwift
 
 final class WebViewController: BaseViewController, WebViewCoordinator {

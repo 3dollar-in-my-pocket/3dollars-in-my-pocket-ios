@@ -66,9 +66,9 @@ extension HomeCoordinator where Self: UIViewController {
     }
     
     func presentPolicy() {
-        let viewController = PolicyViewController.instance()
-        
-        self.tabBarController?.present(viewController, animated: true)
+//        let viewController = PolicyViewController.instance()
+//
+//        self.tabBarController?.present(viewController, animated: true)
     }
     
     func presentMarkerAdvertisement() {

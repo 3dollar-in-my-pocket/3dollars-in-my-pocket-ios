@@ -1,7 +1,11 @@
 import AuthenticationServices
 import Combine
 
-final class NewAppleSigninManager: NSObject, NewSigninManagerProtocol {
+import AppInterface
+
+final class NewAppleSigninManager: NSObject, AppInterface.SigninManagerProtocol {
+    static let shared = NewAppleSigninManager()
+    
     private var publisher = PassthroughSubject<String, Error>()
     
     deinit {

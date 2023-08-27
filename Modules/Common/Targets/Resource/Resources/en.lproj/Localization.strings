@@ -1,0 +1,43 @@
+// 로그인 화면
+"signin_with_kakao" = "카카오 계정으로 로그인";
+"signin_with_apple" = "Sign in with Apple";
+"signin_anonymous" = "로그인 없이 둘러보기";
+
+// 로그인 화면 (팝업)
+"signin_anonymous_description" = "가슴속 3천원에 로그인하고\n더 많은 기능을 사용해 보세요!";
+"signin_anonymous_warning" = "비로그인 상태로 남겨주신 제보, 리뷰는 비로그인 상태로 일정 기간 접속하지 않거나 앱 삭제 시, 볼 수 없습니다.";
+"signin_with_existed_account" = "이미 가입한 계정이 있습니다.\n해당 계정으로 로그인 하시겠습니까?\n비로그인으로 활동한 이력들은 유지되지 않습니다";
+
+// 닉네임 설정 화면
+"nickname_label_1" = "닉네임";
+"nickname_placeholder" = "닉네임을 입력해주세요.";
+"nickname_label_2" = "로 시작할래요";
+"nickname_signup" = "회원가입";
+"nickname_alreay_existed" = "중복된 이름이에요!";
+
+// 정책 화면
+"policy_agree_all" = "전체 동의하기";
+"policy_policy_label" = "(필수) 이용약관 동의";
+"policy_marketing_label" = "(선택) 마케팅 활용 및 광고성 정보 수신 동의";
+"policy_next_button" = "동의하고 계속하기";
+
+// 홈 지도 화면
+"home_category_filter_button" = "전체 메뉴";
+"home_research_button" = "현재 지도에서 가게 재검색";
+"home_list_view_button" = "리스트뷰";
+"home_visit_button" = "방문하기";
+"home_empty_title" = "주변 2km 이내에\n가게가 없어요.";
+"home_empty_description" = "다른 주소로 검색하거나 직접 제보해보세요!";
+"home_only_boss_button" = "사장님 직영점만";
+"home_sorting_button_distance" = "거리순 보기";
+"home_sorting_button_latest" = "최근 등록순 보기";
+
+// 카테고리 필터 화면
+"category_filter_new" = "new";
+"category_filter_title" = "이 안에 네 최애 하나쯤은 있겠지!";
+"category_fileter_map_view" = "지도뷰";
+
+
+// 홈 리스트 뷰 화면
+"home_list_header_total" = "전체 메뉴";
+"home_list_is_only_certified" = "방문 인증 가게";

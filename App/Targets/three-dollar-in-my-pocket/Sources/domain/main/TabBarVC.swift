@@ -2,6 +2,9 @@ import UIKit
 import RxSwift
 
 import Home
+import Model
+import DependencyInjection
+import MembershipInterface
 
 class TabBarVC: UITabBarController {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
@@ -11,13 +14,27 @@ class TabBarVC: UITabBarController {
     private lazy var dimView = UIView(frame: self.view.frame).then {
         $0.backgroundColor = .clear
     }
+    private let membershipInterface: MembershipInterface
+    
+    static func instance() -> TabBarVC {
+        return TabBarVC()
+    }
     
     deinit {
         self.removeKakaoLinkObserver()
     }
     
-    static func instance() -> TabBarVC {
-        return TabBarVC(nibName: nil, bundle: nil)
+    init() {
+        guard let membershipInterface = DIContainer.shared.container.resolve(MembershipInterface.self) else {
+            fatalError("⚠️ MembershipInterface가 등록되지 않았습니다.")
+        }
+        
+        self.membershipInterface = membershipInterface
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -240,7 +257,7 @@ extension TabBarVC: UITabBarControllerDelegate {
             
             if navigationViewController.topViewController is MyPageViewController,
                UserDefaultsUtil().isAnonymousUser {
-                let viewController = SigninAnonymousViewController.instance()
+                let viewController = membershipInterface.createSigninAnonymousViewController()
                 
                 self.present(viewController, animated: true)
                 return false

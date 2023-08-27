@@ -1,8 +1,6 @@
 import ProjectDescription
 
 struct Version {
-    static let version: SettingValue = "1.0.0"
-    static let buildNumber: SettingValue = "1"
     static let targetVersion = "14.0"
 }
 
@@ -34,8 +32,8 @@ let project = Project(
             bundleId: "com.macgongmon.-dollar-in-my-pocket.home",
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
             infoPlist: .default,
-            sources: ["Sources/**"],
-            resources: ["Resources/**"],
+            sources: ["Targets/Home/Sources/**"],
+            resources: ["Targets/Home/Resources/**"],
             dependencies: [
                 .project(target: "Networking", path: "../../Network"),
                 .project(target: "DesignSystem", path: "../../DesignSystem"),
@@ -46,13 +44,13 @@ let project = Project(
             ]
         ),
         Target(
-            name: "Home-Demo",
+            name: "HomeDemo",
             platform: .iOS,
             product: .app,
             bundleId: "com.macgongmon.-dollar-in-my-pocket.home-demo",
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
-            infoPlist: "Demo/Info.plist",
-            sources: ["Demo/Sources/**"],
+            infoPlist: "Targets/Demo/Info.plist",
+            sources: ["Targets/Demo/Sources/**"],
             dependencies: [
                 .project(target: "Home", path: "./")
             ]

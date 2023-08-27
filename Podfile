@@ -17,7 +17,7 @@ target 'Home' do
   pod 'NMapsMap'
 end
 
-target 'Home-Demo' do
+target 'HomeDemo' do
   project 'Modules/Feature/Home/Home.xcodeproj'
   use_frameworks!
   

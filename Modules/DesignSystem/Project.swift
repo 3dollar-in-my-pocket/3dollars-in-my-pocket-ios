@@ -1,8 +1,6 @@
 import ProjectDescription
 
 struct Version {
-    static let version: SettingValue = "1.0.0"
-    static let buildNumber: SettingValue = "1"
     static let targetVersion = "14.0"
 }
 

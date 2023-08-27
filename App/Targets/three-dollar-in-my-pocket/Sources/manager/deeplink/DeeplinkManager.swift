@@ -1,21 +1,13 @@
 import UIKit
 
+import AppInterface
+import Model
+
 import RxSwift
 import RxRelay
 
-protocol DeeplinkManagerProtocol: AnyObject {
-    func handleDynamiclink(url: URL?)
-    
-    func reserveDynamiclink(url: URL?)
-    
-    func handleDeeplink(url: URL?)
-    
-    func reserveDeeplink(deeplinkContents: DeepLinkContents)
-    
-    func flushDelayedDeeplink()
-}
-
 final class DeeplinkManager: DeeplinkManagerProtocol {
+    
     static let shared = DeeplinkManager()
     
     private var delayedDeeplink: DeepLinkContents?

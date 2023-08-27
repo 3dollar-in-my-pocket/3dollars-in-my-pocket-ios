@@ -1,5 +1,7 @@
 import UIKit
 
+import Model
+
 import RxSwift
 import NMapsMap
 import ReactorKit
