@@ -2,6 +2,7 @@ import Foundation
 import Combine
 
 import DependencyInjection
+import Model
 
 final public class NetworkManager {
     public static let shared = NetworkManager()
@@ -10,11 +11,7 @@ final public class NetworkManager {
     private let responseProvider: ResponseProvider
 
     public init() {
-        guard let config = DIContainer.shared.container.resolve(NetworkConfigurable.self) else {
-            fatalError("⚠️ NetworkConfigurable가 등록되지 않았습니다.")
-        }
-        
-        self.requestProvider = RequestProvider(config: config)
+        self.requestProvider = RequestProvider()
         self.responseProvider = ResponseProvider()
     }
 

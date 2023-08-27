@@ -3,6 +3,7 @@ import Combine
 
 import Common
 import Networking
+import Model
 
 final class CategoryFilterViewModel: BaseViewModel {
     struct Input {

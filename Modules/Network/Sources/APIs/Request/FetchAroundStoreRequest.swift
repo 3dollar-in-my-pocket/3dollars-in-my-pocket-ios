@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct FetchAroundStoreRequest: RequestType {
     let requestInput: FetchAroundStoreInput
     let latitude: Double

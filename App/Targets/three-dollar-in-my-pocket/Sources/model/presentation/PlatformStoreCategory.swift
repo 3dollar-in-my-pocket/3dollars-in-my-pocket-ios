@@ -1,4 +1,4 @@
-import Networking
+import Model
 
 struct PlatformStoreCategory: Categorizable {
     let id: String
@@ -19,7 +19,7 @@ struct PlatformStoreCategory: Categorizable {
         self.name = response.name
     }
     
-    init(response: Networking.PlatformStoreCategoryResponse) {
+    init(response: Model.PlatformStoreCategoryResponse) {
         self.id = response.categoryId
         self.category = response.category
         self.description = response.description

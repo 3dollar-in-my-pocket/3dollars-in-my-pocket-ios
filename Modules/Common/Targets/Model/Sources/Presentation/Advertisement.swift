@@ -1,7 +1,5 @@
 import Foundation
 
-import Networking
-
 public struct Advertisement {
     let advertisementId: Int
     let title: String?

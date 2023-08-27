@@ -72,5 +72,20 @@ let project = Project(
                 .project(target: "Model", path: "../../Common")
             ]
         )
+    ],
+    schemes: [
+        Scheme(
+            name: "Membership",
+            buildAction: BuildAction(targets: ["Membership"])
+        ),
+        Scheme(
+            name: "MembershipDemo",
+            buildAction: BuildAction(targets: ["MembershipDemo", "Membership"]),
+            runAction: .runAction(
+                configuration: .debug,
+                attachDebugger: true
+            ),
+            archiveAction: .archiveAction(configuration: .debug)
+        ),
     ]
 )

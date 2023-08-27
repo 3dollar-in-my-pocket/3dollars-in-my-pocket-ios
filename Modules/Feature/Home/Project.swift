@@ -38,6 +38,7 @@ let project = Project(
                 .project(target: "Networking", path: "../../Network"),
                 .project(target: "DesignSystem", path: "../../DesignSystem"),
                 .project(target: "Common", path: "../../Common"),
+                .project(target: "Model", path: "../../Common"),
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "PanModal")
@@ -55,5 +56,20 @@ let project = Project(
                 .project(target: "Home", path: "./")
             ]
         )
+    ],
+    schemes: [
+        Scheme(
+            name: "Home",
+            buildAction: BuildAction(targets: ["Home"])
+        ),
+        Scheme(
+            name: "HomeDemo",
+            buildAction: BuildAction(targets: ["HomeDemo", "Home"]),
+            runAction: .runAction(
+                configuration: .debug,
+                attachDebugger: true
+            ),
+            archiveAction: .archiveAction(configuration: .debug)
+        ),
     ]
 )

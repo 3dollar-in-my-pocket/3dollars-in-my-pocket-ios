@@ -1,15 +1,14 @@
-import Foundation
-
-import DependencyInjection
 import Model
 
-struct NetworkConfigurationImpl: NetworkConfigurable {
+import DependencyInjection
+
+struct MockNetworkConfiguration: NetworkConfigurable {
     var endPoint: String {
-        return HTTPUtils.url
+        return "https://dev.threedollars.co.kr"
     }
     
     var timeoutForRequest: Double {
-        return 4
+        return 15
     }
     
     var timeoutForResource: Double {
@@ -17,25 +16,22 @@ struct NetworkConfigurationImpl: NetworkConfigurable {
     }
     
     var appStoreVersion: String? {
-        let info = Bundle.main.infoDictionary
-        let appVersion = info?["CFBundleShortVersionString"] as? String
-        
-        return appVersion
+        return "3.4.0"
     }
     
     var userAgent: String {
-        return HTTPUtils.userAgent
+        return "3.4.0 (com.macgongmon.-dollar-in-my-pocket-debug; build:1; iOS 16.6.0)"
     }
     
     var authToken: String? {
-        return UserDefaultsUtil().authToken
+        return nil
     }
 }
 
-extension NetworkConfigurationImpl {
+extension MockNetworkConfiguration {
     static func registerNetworkConfiguration() {
         DIContainer.shared.container.register(NetworkConfigurable.self) { _ in
-            return NetworkConfigurationImpl()
+            return MockNetworkConfiguration()
         }
     }
 }

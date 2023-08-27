@@ -1,6 +1,8 @@
 import Foundation
 import CoreLocation
 
+import Model
+
 struct IsStoreExistNearbyRequest: RequestType {
     let distance: Double
     let mapLocation: CLLocation

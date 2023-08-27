@@ -65,8 +65,7 @@ final class SigninAnonymousViewController: BaseViewController {
                     owner.showAlreadyExist(signinRequest: signinRequest)
                     
                 case .showErrorAlert(let error):
-                    fatalError("AlertUtils 구현 필요")
-//                    owner.showErrorAlert(error: error)
+                    owner.showErrorAlert(error: error)
                     
                 case .showLoading(let isShow):
                     DesignSystem.LoadingManager.shared.showLoading(isShow: isShow)
@@ -76,12 +75,11 @@ final class SigninAnonymousViewController: BaseViewController {
     }
     
     private func showAlreadyExist(signinRequest: SigninRequest) {
-        fatalError("AlertUtils 구현 필요")
-//        AlertUtils.showWithCancel(
-//            viewController: self,
-//            message: Strings.signinWithExistedAccount
-//        ) { [weak self] in
-//            self?.viewModel.input.signin.send(signinRequest)
-//        }
+        AlertUtils.showWithCancel(
+            viewController: self,
+            message: Strings.signinWithExistedAccount
+        ) { [weak self] in
+            self?.viewModel.input.signin.send(signinRequest)
+        }
     }
 }

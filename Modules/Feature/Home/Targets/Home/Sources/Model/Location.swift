@@ -1,6 +1,6 @@
 import Foundation
 
-import Networking
+import Model
 
 struct Location {
     let latitude: Double

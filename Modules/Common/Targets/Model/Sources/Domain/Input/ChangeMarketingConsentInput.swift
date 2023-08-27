@@ -1,7 +1,7 @@
 import Foundation
 
-struct ChangeMarketingConsentInput: Encodable {
-    let marketingConsent: String
+public struct ChangeMarketingConsentInput: Encodable {
+    public let marketingConsent: String
     
     public init(marketingConsent: String) {
         self.marketingConsent = marketingConsent

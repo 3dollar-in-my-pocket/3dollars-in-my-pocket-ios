@@ -11,7 +11,7 @@ public enum HTTPError: Int, LocalizedError {
     case maintenance = 503
     case unknown
     
-    init(fromRawValue: Int) {
+    public init(fromRawValue: Int) {
         self = HTTPError(rawValue: fromRawValue) ?? .unknown
     }
 }

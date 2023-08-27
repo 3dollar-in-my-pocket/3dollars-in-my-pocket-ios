@@ -3,6 +3,7 @@ import CoreLocation
 import Combine
 
 import Networking
+import Model
 import Common
 
 final class WriteAddressViewModel {

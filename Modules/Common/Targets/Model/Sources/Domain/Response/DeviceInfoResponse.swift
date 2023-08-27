@@ -1,3 +1,3 @@
 public struct DeviceInfoResponse: Decodable {
-    let isSetupNotification: Bool
+    public let isSetupNotification: Bool
 }

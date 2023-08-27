@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct StoreCreateRequest: RequestType {
     let requestInput: StoreCreateRequestInput
 

@@ -1,11 +1,11 @@
 import Foundation
 
 public struct LocalResponse<T: Decodable>: Decodable {
-    let meta: Meta
-    let documents: [T]
+    public let meta: Meta
+    public let documents: [T]
 }
 
-extension LocalResponse {
+public extension LocalResponse {
     struct Meta: Decodable {
         let totalCount: Int
         let pageableCount: Int

@@ -8,7 +8,7 @@ import DependencyInjection
 public final class SigninViewController: BaseViewController {
     private let signinView = SigninView()
     private let viewModel = SigninViewModel()
-    private let appInterface: AppModuleInterface
+    private let appInterface: AppModuleInterface?
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -24,11 +24,7 @@ public final class SigninViewController: BaseViewController {
     }
     
     init() {
-        guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("⚠️ AppModuleInterface가 등록되지 않았습니다.")
-        }
-        
-        self.appInterface = appInterface
+        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,7 +39,7 @@ public final class SigninViewController: BaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        appInterface.deeplinkManager.flushDelayedDeeplink()
+        appInterface?.deeplinkManager.flushDelayedDeeplink()
     }
     
     public override func bindViewModelInput() {
@@ -73,7 +69,7 @@ public final class SigninViewController: BaseViewController {
             .sink { owner, route in
                 switch route {
                 case .goToMain:
-                    owner.appInterface.goToMain()
+                    owner.appInterface?.goToMain()
                     
                 case .pushNickname(let socialType, let accessToken):
                     let viewController = NicknameViewController.instance(
@@ -84,8 +80,7 @@ public final class SigninViewController: BaseViewController {
                     owner.navigationController?.pushViewController(viewController, animated: true)
                     
                 case .showErrorAlert(let error):
-                    fatalError("에러처리 로직 구현 필요")
-//                    owner.showErrorAlert(error: error)
+                    owner.showErrorAlert(error: error)
                     
                 case .showLoading(let isShow):
                     LoadingManager.shared.showLoading(isShow: isShow)

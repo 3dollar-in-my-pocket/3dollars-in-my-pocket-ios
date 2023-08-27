@@ -1,9 +1,9 @@
 import Foundation
 
 public struct SignupInput: Encodable {
-    let name: String
-    let socialType: String
-    let token: String
+    public let name: String
+    public let socialType: String
+    public let token: String
     
     public init(name: String, socialType: String, token: String) {
         self.name = name

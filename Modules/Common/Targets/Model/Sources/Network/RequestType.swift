@@ -7,7 +7,7 @@ public protocol RequestType {
     var path: String { get }
 }
 
-extension RequestType {
+public extension RequestType {
     var param: Encodable? {
         return nil
     }

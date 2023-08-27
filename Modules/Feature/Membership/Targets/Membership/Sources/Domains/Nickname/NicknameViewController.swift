@@ -9,7 +9,7 @@ import DependencyInjection
 public final class NicknameViewController: Common.BaseViewController {
     private let nicknameView = NicknameView()
     private let viewModel: NicknameViewModel
-    private let appInterface: AppModuleInterface
+    private let appInterface: AppModuleInterface?
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -28,11 +28,7 @@ public final class NicknameViewController: Common.BaseViewController {
     }
   
     init(socialType: SocialType, accessToken: String, bookmarkFolderId: String?) {
-        guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("⚠️ AppModuleInterface가 등록되지 않았습니다.")
-        }
-        
-        self.appInterface = appInterface
+        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
         self.viewModel = NicknameViewModel(
             socialType: socialType,
             accessToken: accessToken,
@@ -97,9 +93,7 @@ public final class NicknameViewController: Common.BaseViewController {
                     owner.goToMain(with: bookmarkFolderId)
                     
                 case .showErrorAlert(let error):
-                    fatalError("에러처리 로직 구현 필요")
-//                    owner.showErrorAlert(error: error)
-                    
+                    owner.showErrorAlert(error: error)
                     
                 case .showLoading(let isShow):
                     DesignSystem.LoadingManager.shared.showLoading(isShow: isShow)
@@ -126,16 +120,16 @@ public final class NicknameViewController: Common.BaseViewController {
     }
     
     private func goToMain(with bookmarkFolderId: String?) {
-        appInterface.goToMain()
+        appInterface?.goToMain()
         
         if let bookmarkFolderId {
-            let targetViewController = appInterface.createBookmarkViewerViewController(folderId: bookmarkFolderId)
+            let targetViewController = appInterface?.createBookmarkViewerViewController(folderId: bookmarkFolderId)
             let deepLinkContents = DeepLinkContents(
                 targetViewController: targetViewController,
                 transitionType: .present
             )
             
-            appInterface.deeplinkManager.reserveDeeplink(deeplinkContents: deepLinkContents)
+            appInterface?.deeplinkManager.reserveDeeplink(deeplinkContents: deepLinkContents)
         }
     }
 }

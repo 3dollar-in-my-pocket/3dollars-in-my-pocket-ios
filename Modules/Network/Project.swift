@@ -33,8 +33,15 @@ let project = Project(
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
             sources: ["Sources/**"],
             dependencies: [
+                .project(target: "Model", path: "../Common"),
                 .project(target: "DependencyInjection", path: "../DependencyInjection")
             ]
+        )
+    ],
+    schemes: [
+        Scheme(
+            name: "Networking",
+            buildAction: BuildAction(targets: ["Networking"])
         )
     ]
 )

@@ -33,6 +33,7 @@ let project = Project(
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
             sources: ["Targets/Common/Sources/**"],
             dependencies: [
+                .project(target: "Model", path: "./"),
                 .external(name: "Kingfisher")
             ]
         ),
@@ -51,9 +52,21 @@ let project = Project(
             bundleId: "com.macgongmon.-dollar-in-my-pocket.model",
             deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
             sources: ["Targets/Model/Sources/**"],
-            dependencies: [
-                .project(target: "Networking", path: "../Network")
-            ]
+            dependencies: []
         )
+    ],
+    schemes: [
+        Scheme(
+            name: "Common",
+            buildAction: BuildAction(targets: ["Common"])
+        ),
+        Scheme(
+            name: "Resource",
+            buildAction: BuildAction(targets: ["Resource"])
+        ),
+        Scheme(
+            name: "Model",
+            buildAction: BuildAction(targets: ["Model"])
+        ),
     ]
 )

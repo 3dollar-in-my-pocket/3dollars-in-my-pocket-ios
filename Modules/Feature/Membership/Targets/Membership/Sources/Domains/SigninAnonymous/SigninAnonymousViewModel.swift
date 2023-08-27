@@ -26,7 +26,7 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
     
     let input = Input()
     let output = Output()
-    private var appInterface: AppModuleInterface
+    private var appInterface: AppModuleInterface?
     private let userService: Networking.UserServiceProtocol
     private let deviceService: Networking.DeviceServiceProtocol
     
@@ -34,10 +34,7 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
         userService: Networking.UserServiceProtocol = Networking.UserService(),
         deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService()
     ) {
-        guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("⚠️ AppModuleInterface가 등록되지 않았습니다.")
-        }
-        self.appInterface = appInterface
+        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
         self.userService = userService
         self.deviceService = deviceService
         
@@ -70,7 +67,7 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
     }
     
     private func signinWithKakao() {
-        appInterface.kakaoSigninManager.signin()
+        appInterface?.kakaoSigninManager.signin()
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.route.send(.showLoading(isShow: true))
@@ -91,7 +88,7 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
     }
     
     private func signinWithApple() {
-        appInterface.appleSigninManager.signin()
+        appInterface?.appleSigninManager.signin()
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.route.send(.showLoading(isShow: true))
@@ -117,7 +114,7 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
             
             switch connectAccount {
             case .success(_):
-                appInterface.userDefaults.isAnonymousUser = false
+                appInterface?.userDefaults.isAnonymousUser = false
                 output.route.send(.showLoading(isShow: false))
                 output.route.send(.dismiss)
                 
@@ -145,9 +142,9 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
             
             switch result {
             case .success(let signinResponse):
-                appInterface.userDefaults.userId = signinResponse.userId
-                appInterface.userDefaults.authToken = signinResponse.token
-                appInterface.userDefaults.isAnonymousUser = false
+                appInterface?.userDefaults.userId = signinResponse.userId
+                appInterface?.userDefaults.authToken = signinResponse.token
+                appInterface?.userDefaults.isAnonymousUser = false
                 output.route.send(.showLoading(isShow: false))
                 output.route.send(.dismiss)
                 

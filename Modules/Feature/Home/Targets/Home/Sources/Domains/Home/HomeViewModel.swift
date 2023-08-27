@@ -3,6 +3,7 @@ import Combine
 import CoreLocation
 
 import Networking
+import Model
 import Common
 
 final class HomeViewModel: BaseViewModel {

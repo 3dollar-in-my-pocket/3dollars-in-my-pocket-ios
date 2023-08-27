@@ -2,6 +2,7 @@ import Foundation
 import Combine
 
 import Networking
+import Model
 import Common
 
 final class WriteDetailViewModel {
@@ -268,7 +269,7 @@ final class WriteDetailViewModel {
     }
     
     private func createStoreCreateRequestInput() -> StoreCreateRequestInput {
-        var menuRequestInputs = [Networking.StoreMenuRequestInput]()
+        var menuRequestInputs = [Model.StoreMenuRequestInput]()
         for menuGroup in state.menu {
             let emptyMenuCount = menuGroup.filter { !$0.isValid }.count
             var filteredMenuGroup = [NewMenu]()
@@ -279,7 +280,7 @@ final class WriteDetailViewModel {
             }
             
             let requests = filteredMenuGroup.map { menu in
-                Networking.StoreMenuRequestInput(name: menu.name, price: menu.price, category: menu.category.category)
+                Model.StoreMenuRequestInput(name: menu.name, price: menu.price, category: menu.category.category)
             }
             
             menuRequestInputs.append(contentsOf: requests)

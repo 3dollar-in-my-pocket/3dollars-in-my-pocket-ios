@@ -1,6 +1,6 @@
 import Foundation
 
-extension Encodable {
+public extension Encodable {
     subscript(key: String) -> Any? {
         return dictionary?[key]
     }

@@ -14,7 +14,7 @@ final class PolicyViewController: Common.BaseViewController {
     private weak var delegate: PolicyViewControllerDelegate?
     private let policyView = PolicyView()
     private let viewModel = PolicyViewModel()
-    private let appInterface: AppModuleInterface
+    private let appInterface: AppModuleInterface?
     
     static func instance(delegate: PolicyViewControllerDelegate? = nil) -> UINavigationController {
         let viewController = PolicyViewController()
@@ -27,11 +27,7 @@ final class PolicyViewController: Common.BaseViewController {
     }
     
     init() {
-        guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("⚠️ AppModuleInterface가 등록되지 않았습니다.")
-        }
-        
-        self.appInterface = appInterface
+        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -130,11 +126,10 @@ final class PolicyViewController: Common.BaseViewController {
             .sink { owner, route in
                 switch route {
                 case .showErrorAlert(let error):
-                    fatalError("에러처리 로직 구현 필요")
-//                    owner.showErrorAlert(error: error)
+                    owner.showErrorAlert(error: error)
                     
                 case .showLoading(let isShow):
-                    DesignSystem.LoadingManager.shared.showLoading(isShow: isShow)
+                    LoadingManager.shared.showLoading(isShow: isShow)
                     
                 case .dismiss:
                     DimManager.shared.hideDim()
@@ -147,13 +142,13 @@ final class PolicyViewController: Common.BaseViewController {
     }
     
     private func pushPolicyPage() {
-        let viewController = appInterface.createWebViewController(webviewType: .policy)
+        guard let viewController = appInterface?.createWebViewController(webviewType: .policy) else { return }
         
         navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func pushMarketingPage() {
-        let viewController = appInterface.createWebViewController(webviewType: .marketing)
+        guard let viewController = appInterface?.createWebViewController(webviewType: .marketing) else { return }
         
         navigationController?.pushViewController(viewController, animated: true)
     }

@@ -1,6 +1,8 @@
 import Foundation
 import Combine
 
+import Model
+
 public protocol MapServiceProtocol {
     func getAddressFromLocation(latitude: Double, longitude: Double) async -> Result<String, Error>
     

@@ -1,11 +1,11 @@
 import Foundation
 
 public struct AddressDocument: Decodable {
-    let roadAddress: RoadAddress
-    let address: Address
+    public let roadAddress: RoadAddress
+    public let address: Address
 }
 
-extension AddressDocument {
+public extension AddressDocument {
     struct RoadAddress: Decodable {
         let addressName: String
         let region1DepthName: String

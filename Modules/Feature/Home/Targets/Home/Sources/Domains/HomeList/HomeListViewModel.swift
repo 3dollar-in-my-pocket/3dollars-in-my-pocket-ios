@@ -4,6 +4,7 @@ import CoreLocation
 
 import Networking
 import Common
+import Model
 
 final class HomeListViewModel: BaseViewModel {
     struct Input {
