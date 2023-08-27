@@ -36,5 +36,11 @@ let project = Project(
                 .external(name: "Swinject")
             ]
         )
+    ],
+    schemes: [
+        Scheme(
+            name: "DependencyInjection",
+            buildAction: BuildAction(targets: ["DependencyInjection"])
+        )
     ]
 )

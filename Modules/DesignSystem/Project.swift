@@ -37,5 +37,11 @@ let project = Project(
                 .external(name: "Lottie")
             ]
         )
+    ],
+    schemes: [
+        Scheme(
+            name: "DesignSystem",
+            buildAction: BuildAction(targets: ["DesignSystem"])
+        )
     ]
 )

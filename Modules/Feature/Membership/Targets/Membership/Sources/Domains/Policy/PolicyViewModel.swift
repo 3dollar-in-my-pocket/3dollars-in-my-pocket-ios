@@ -39,18 +39,15 @@ final class PolicyViewModel: Common.BaseViewModel {
     private var state = State()
     private let userService: Networking.UserServiceProtocol
     private let deviceService: Networking.DeviceServiceProtocol
-    private let appInterface: AppModuleInterface
+    private let appInterface: AppModuleInterface?
     
     init(
         userService: Networking.UserServiceProtocol = Networking.UserService(),
         deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService()
     ) {
-        guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("⚠️ MembershipInterface가 등록되지 않았습니다.")
-        }
         self.userService = userService
         self.deviceService = deviceService
-        self.appInterface = appInterface
+        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
     }
     
     override func bind() {
@@ -112,7 +109,7 @@ final class PolicyViewModel: Common.BaseViewModel {
     }
     
     private func registerDevice() {
-        appInterface.getFCMToken { [weak self] token in
+        appInterface?.getFCMToken { [weak self] token in
             guard let self = self else { return }
             Task {
                 await self.deviceService.registerDevice(pushToken: token)

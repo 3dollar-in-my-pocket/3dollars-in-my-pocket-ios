@@ -37,5 +37,11 @@ let project = Project(
                 .project(target: "DependencyInjection", path: "../DependencyInjection")
             ]
         )
+    ],
+    schemes: [
+        Scheme(
+            name: "Networking",
+            buildAction: BuildAction(targets: ["Networking"])
+        )
     ]
 )

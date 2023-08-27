@@ -26,7 +26,7 @@ final class SigninViewModel: BaseViewModel {
     
     let input = Input()
     let output = Output()
-    private var appInterface: AppModuleInterface
+    private var appInterface: AppModuleInterface?
     private let userService: Networking.UserServiceProtocol
     private let deviceService: Networking.DeviceServiceProtocol
     
@@ -34,10 +34,7 @@ final class SigninViewModel: BaseViewModel {
         userService: Networking.UserServiceProtocol = Networking.UserService(),
         deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService()
     ) {
-        guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("⚠️ AppModuleInterface가 등록되지 않았습니다.")
-        }
-        self.appInterface = appInterface
+        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
         self.userService = userService
         self.deviceService = deviceService
         
@@ -75,9 +72,9 @@ final class SigninViewModel: BaseViewModel {
                 
                 switch result {
                 case .success(let signinResponse):
-                    owner.appInterface.userDefaults.userId = signinResponse.userId
-                    owner.appInterface.userDefaults.authToken = signinResponse.token
-                    owner.appInterface.userDefaults.isAnonymousUser = true
+                    owner.appInterface?.userDefaults.userId = signinResponse.userId
+                    owner.appInterface?.userDefaults.authToken = signinResponse.token
+                    owner.appInterface?.userDefaults.isAnonymousUser = true
                     owner.output.route.send(.goToMain)
                     
                 case .failure(let error):
@@ -88,7 +85,7 @@ final class SigninViewModel: BaseViewModel {
     }
     
     private func signinWithKakao() {
-        appInterface.kakaoSigninManager.signin()
+        appInterface?.kakaoSigninManager.signin()
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.route.send(.showLoading(isShow: true))
@@ -109,7 +106,7 @@ final class SigninViewModel: BaseViewModel {
     }
     
     private func signinWithApple() {
-        appInterface.appleSigninManager.signin()
+        appInterface?.appleSigninManager.signin()
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.route.send(.showLoading(isShow: true))
@@ -135,8 +132,8 @@ final class SigninViewModel: BaseViewModel {
             
             switch result {
             case .success(let signinResponse):
-                appInterface.userDefaults.userId = signinResponse.userId
-                appInterface.userDefaults.authToken = signinResponse.token
+                appInterface?.userDefaults.userId = signinResponse.userId
+                appInterface?.userDefaults.authToken = signinResponse.token
                 sendFCMToken(socialType: socialType)
                 
             case .failure(let error):
@@ -157,7 +154,7 @@ final class SigninViewModel: BaseViewModel {
     }
     
     private func sendFCMToken(socialType: SocialType) {
-        appInterface.getFCMToken { [weak self] token in
+        appInterface?.getFCMToken { [weak self] token in
             guard let self = self else { return }
             
             Task {

@@ -4,11 +4,14 @@ import DependencyInjection
 import Model
 
 final class RequestProvider {
-    var config: NetworkConfigurable
+    private var config: NetworkConfigurable
     private let sesseion: URLSession
 
-    init(config: NetworkConfigurable) {
-        self.config = DIContainer.shared.container.resolve(NetworkConfigurable.self)!
+    init() {
+        guard let config = DIContainer.shared.container.resolve(NetworkConfigurable.self) else {
+            fatalError("⚠️ NetworkConfigurable가 등록되지 않았습니다.")
+        }
+        self.config = config
 
         let defaultConfiguration = URLSessionConfiguration.default
         defaultConfiguration.timeoutIntervalForRequest = config.timeoutForRequest

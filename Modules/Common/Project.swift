@@ -54,5 +54,19 @@ let project = Project(
             sources: ["Targets/Model/Sources/**"],
             dependencies: []
         )
+    ],
+    schemes: [
+        Scheme(
+            name: "Common",
+            buildAction: BuildAction(targets: ["Common"])
+        ),
+        Scheme(
+            name: "Resource",
+            buildAction: BuildAction(targets: ["Resource"])
+        ),
+        Scheme(
+            name: "Model",
+            buildAction: BuildAction(targets: ["Model"])
+        ),
     ]
 )

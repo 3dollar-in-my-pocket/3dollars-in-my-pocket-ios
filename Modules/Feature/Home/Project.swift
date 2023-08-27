@@ -56,5 +56,20 @@ let project = Project(
                 .project(target: "Home", path: "./")
             ]
         )
+    ],
+    schemes: [
+        Scheme(
+            name: "Home",
+            buildAction: BuildAction(targets: ["Home"])
+        ),
+        Scheme(
+            name: "HomeDemo",
+            buildAction: BuildAction(targets: ["HomeDemo", "Home"]),
+            runAction: .runAction(
+                configuration: .debug,
+                attachDebugger: true
+            ),
+            archiveAction: .archiveAction(configuration: .debug)
+        ),
     ]
 )

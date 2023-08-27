@@ -1,7 +1,6 @@
 import UIKit
 
 import Home
-import Networking
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func initializationNetworkModule() {
-        Networking.NetworkManager.shared.configuration.endPoint = "https://dev.threedollars.co.kr"
+        MockNetworkConfiguration.registerNetworkConfiguration()
     }
 }
