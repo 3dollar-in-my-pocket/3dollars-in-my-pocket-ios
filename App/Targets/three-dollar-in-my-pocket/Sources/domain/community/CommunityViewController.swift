@@ -6,6 +6,8 @@ import DesignSystem
 final class CommunityViewController: BaseViewController {
 
     private let communityView = CommunityView()
+    private let viewModel = CommunityViewModel()
+    private lazy var dataSource = CommunityDataSource(collectionView: communityView.collectionView)
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -34,9 +36,24 @@ final class CommunityViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        communityView.collectionView.delegate = self
+
+        dataSource.reloadData()
     }
 
     override func bindEvent() {
         super.bindEvent()
+    }
+}
+
+extension CommunityViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        switch dataSource.itemIdentifier(for: indexPath) {
+        case .poll:
+            return CommunityPollListCell.Layout.size
+        default:
+            return .zero
+        }
     }
 }
