@@ -52,6 +52,8 @@ extension CommunityViewController: UICollectionViewDelegateFlowLayout {
         switch dataSource.itemIdentifier(for: indexPath) {
         case .poll:
             return CommunityPollListCell.Layout.size
+        case .store:
+            return CommunityStoreTabCell.Layout.size
         default:
             return .zero
         }
