@@ -40,6 +40,10 @@ public enum HomeStrings {
   public static let homeSortingButtonLatest = HomeStrings.tr("Localization", "home_sorting_button_latest")
   /// 방문하기
   public static let homeVisitButton = HomeStrings.tr("Localization", "home_visit_button")
+  /// 현재 내 위치와 가까운 가게를 찾기 위해 위치 권한이 필요합니다. 설정에서 위치 권한을 허용시켜주세요.
+  public static let locationDenyDescription = HomeStrings.tr("Localization", "location_deny_description")
+  /// 위치 권한 거절
+  public static let locationDenyTitle = HomeStrings.tr("Localization", "location_deny_title")
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

@@ -102,6 +102,7 @@ final class HomeViewModel: BaseViewModel {
             .flatMap { owner, _  in
                 owner.locationManager.getCurrentLocationPublisher()
                     .catch { error -> AnyPublisher<CLLocation, Never> in
+                        owner.output.showLoading.send(false)
                         owner.output.route.send(.showErrorAlert(error))
                         return Empty().eraseToAnyPublisher()
                     }
