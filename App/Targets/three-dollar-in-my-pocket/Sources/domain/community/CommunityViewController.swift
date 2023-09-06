@@ -7,7 +7,10 @@ final class CommunityViewController: BaseViewController {
 
     private let communityView = CommunityView()
     private let viewModel = CommunityViewModel()
-    private lazy var dataSource = CommunityDataSource(collectionView: communityView.collectionView)
+    private lazy var dataSource = CommunityDataSource(
+        collectionView: communityView.collectionView,
+        viewModel: viewModel
+    )
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -44,6 +47,18 @@ final class CommunityViewController: BaseViewController {
 
     override func bindEvent() {
         super.bindEvent()
+
+        viewModel.output.route
+            .main
+            .withUnretained(self)
+            .sink { owner, route in
+                switch route {
+                case .poll:
+                    let vc = CommunityPollTabViewController()
+                    owner.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+            .store(in: &cancellables)
     }
 }
 

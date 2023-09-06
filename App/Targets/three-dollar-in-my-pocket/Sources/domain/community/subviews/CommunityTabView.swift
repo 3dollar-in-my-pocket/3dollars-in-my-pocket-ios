@@ -10,7 +10,7 @@ final class CommunityTabView: UIView {
         static let lineHeight: CGFloat = 2
     }
 
-    let didTap = PassthroughSubject<UIButton, Never>()
+    let didTap = PassthroughSubject<Int, Never>()
 
     private lazy var tabButtonStackView = UIStackView()
     private lazy var tabButtonUnderlinedView = UIView()
@@ -79,13 +79,10 @@ final class CommunityTabView: UIView {
     }
 
     @objc private func didTapButton(_ sender: UIButton) {
-        didTap.send(sender)
+        let tabIndex = sender.tag
 
-        tabButtons.forEach {
-            $0.isSelected = (sender.tag == $0.tag)
-        }
-
-        transformUnderlinedView(index: sender.tag)
+        didTap.send(tabIndex)
+        updateSelect(tabIndex)
     }
 
     private func transformUnderlinedView(index: Int) {
@@ -116,5 +113,13 @@ final class CommunityTabView: UIView {
         }
 
         transformUnderlinedView(index: 0)
+    }
+
+    func updateSelect(_ index: Int) {
+        tabButtons.forEach {
+            $0.isSelected = (index == $0.tag)
+        }
+
+        transformUnderlinedView(index: index)
     }
 }
