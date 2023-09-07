@@ -201,7 +201,11 @@ public final class HomeViewController: BaseViewController {
                     print("🔥 마커 광고 화면 구현 필요")
                     
                 case .showErrorAlert(let error):
-                    owner.showErrorAlert(error: error)
+                    if error is LocationError {
+                        owner.showDenyAlert()
+                    } else {
+                        owner.showErrorAlert(error: error)
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -252,6 +256,26 @@ public final class HomeViewController: BaseViewController {
             marker.mapView = nil
         }
         self.markers.removeAll()
+    }
+    
+    private func showDenyAlert() {
+        AlertUtils.showWithAction(
+            viewController: self,
+            title: HomeStrings.locationDenyTitle,
+            message: HomeStrings.locationDenyDescription
+        ) { [weak self] in
+            self?.goToAppSetting()
+        }
+    }
+    
+    private func goToAppSetting() {
+        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+        
+        if UIApplication.shared.canOpenURL(settingsUrl) {
+            UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
+        }
     }
 }
 

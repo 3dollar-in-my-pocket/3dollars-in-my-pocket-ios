@@ -7,6 +7,10 @@ import Model
 import Common
 
 final class HomeViewModel: BaseViewModel {
+    enum Constent {
+        static let defaultLocation = CLLocation(latitude: 37.497941, longitude: 127.027616)
+    }
+    
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let onMapLoad = PassthroughSubject<Double, Never>()
@@ -102,8 +106,10 @@ final class HomeViewModel: BaseViewModel {
             .flatMap { owner, _  in
                 owner.locationManager.getCurrentLocationPublisher()
                     .catch { error -> AnyPublisher<CLLocation, Never> in
+                        owner.output.showLoading.send(false)
                         owner.output.route.send(.showErrorAlert(error))
-                        return Empty().eraseToAnyPublisher()
+                        
+                        return Just(Constent.defaultLocation).eraseToAnyPublisher()
                     }
             }
             .share()
@@ -285,6 +291,30 @@ final class HomeViewModel: BaseViewModel {
                     owner.output.route.send(.showErrorAlert(error))
                 }
             })
+            .store(in: &cancellables)
+        
+        input.onTapResearch
+            .withUnretained(self)
+            .asyncMap { owner, _ in
+                let latitude = owner.state.newCameraPosition?.coordinate.latitude ?? Constent.defaultLocation.coordinate.latitude
+                let longitude = owner.state.newCameraPosition?.coordinate.longitude ?? Constent.defaultLocation.coordinate.longitude
+                
+                return await owner.mapService.getAddressFromLocation(
+                    latitude: latitude,
+                    longitude: longitude
+                )
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                switch result {
+                case .success(let address):
+                    owner.state.address = address
+                    owner.output.address.send(address)
+                    
+                case .failure(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            }
             .store(in: &cancellables)
             
         
