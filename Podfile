@@ -23,3 +23,17 @@ target 'HomeDemo' do
   
   pod 'NMapsMap'
 end
+
+target 'Store' do
+  project 'Modules/Feature/Store/Store.xcodeproj'
+  use_frameworks!
+  
+  pod 'NMapsMap'
+end
+
+target 'StoreDemo' do
+  project 'Modules/Feature/Store/Store.xcodeproj'
+  use_frameworks!
+  
+  pod 'NMapsMap'
+end
