@@ -69,6 +69,17 @@ final class PollCategoryTabViewController: BaseViewController {
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)
+
+
+        createPollButton
+            .controlPublisher(for: .touchUpInside)
+            .main
+            .withUnretained(self)
+            .sink { owner, index in
+                let modal = CreatePollModalViewController()
+                owner.present(modal, animated: true, completion: nil)
+            }
+            .store(in: &cancellables)
     }
 
     private func setupUI() {
