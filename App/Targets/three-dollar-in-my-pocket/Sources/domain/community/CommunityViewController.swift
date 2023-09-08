@@ -40,8 +40,6 @@ final class CommunityViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        communityView.collectionView.delegate = self
-
         dataSource.reloadData()
     }
 
@@ -59,18 +57,5 @@ final class CommunityViewController: BaseViewController {
                 }
             }
             .store(in: &cancellables)
-    }
-}
-
-extension CommunityViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        switch dataSource.itemIdentifier(for: indexPath) {
-        case .poll:
-            return CommunityPollListCell.Layout.size
-        case .store:
-            return CommunityStoreTabCell.Layout.size
-        default:
-            return .zero
-        }
     }
 }

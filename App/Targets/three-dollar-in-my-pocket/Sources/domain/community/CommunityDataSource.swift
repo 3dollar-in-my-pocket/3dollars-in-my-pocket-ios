@@ -11,9 +11,10 @@ enum CommunitySectionItem: Hashable {
     case store
 }
 
-typealias CommunityDataSourceSanpshot = NSDiffableDataSourceSnapshot<CommunitySection, CommunitySectionItem>
-
 final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySection, CommunitySectionItem> {
+
+    typealias Snapshot = NSDiffableDataSourceSnapshot<CommunitySection, CommunitySectionItem>
+
     init(collectionView: UICollectionView, viewModel: CommunityViewModel) {
         collectionView.register([
             CommunityPollListCell.self,
@@ -38,10 +39,12 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
                 return cell
             }
         }
+
+        collectionView.delegate = self
     }
 
     func reloadData() {
-        var snapshot = CommunityDataSourceSanpshot()
+        var snapshot = Snapshot()
 
         let sections = [CommunitySection(items: [
             .poll, .store
@@ -53,5 +56,18 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
         }
 
         apply(snapshot, animatingDifferences: true)
+    }
+}
+
+extension CommunityDataSource: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        switch self[indexPath] {
+        case .poll:
+            return CommunityPollListCell.Layout.size
+        case .store:
+            return CommunityStoreTabCell.Layout.size
+        default:
+            return .zero
+        }
     }
 }
