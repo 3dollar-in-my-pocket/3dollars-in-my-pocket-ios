@@ -39,6 +39,16 @@ final class PollDetailViewController: BaseViewController {
 
     override func bindEvent() {
         super.bindEvent()
+
+        reportButton
+            .controlPublisher(for: .touchUpInside)
+            .main
+            .withUnretained(self)
+            .sink { owner, index in
+                let vc = ReportPollViewController()
+                owner.present(vc, animated: true, completion: nil)
+            }
+            .store(in: &cancellables)
     }
 
     private func setupUI() {
