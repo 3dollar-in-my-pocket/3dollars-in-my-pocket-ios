@@ -15,7 +15,11 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
 
     typealias Snapshot = NSDiffableDataSourceSnapshot<CommunitySection, CommunitySectionItem>
 
+    private let viewModel: CommunityViewModel
+
     init(collectionView: UICollectionView, viewModel: CommunityViewModel) {
+        self.viewModel = viewModel
+
         collectionView.register([
             CommunityPollListCell.self,
             CommunityStoreTabCell.self
@@ -27,10 +31,13 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
             switch itemIdentifier {
             case .poll:
                 let cell: CommunityPollListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                cell.moreButton
+                cell.categoryButton
                     .controlPublisher(for: .touchUpInside)
                     .mapVoid
-                    .subscribe(viewModel.input.didTapMorePollButton)
+                    .subscribe(viewModel.input.didTapPollCategoryButton)
+                    .store(in: &cell.cancellables)
+                cell.didSelectItem
+                    .subscribe(viewModel.input.didSelectPollItem)
                     .store(in: &cell.cancellables)
                 return cell
             case .store:

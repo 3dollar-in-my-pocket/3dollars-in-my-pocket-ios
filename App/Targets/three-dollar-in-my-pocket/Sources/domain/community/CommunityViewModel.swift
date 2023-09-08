@@ -8,7 +8,8 @@ import Common
 final class CommunityViewModel: BaseViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
-        let didTapMorePollButton = PassthroughSubject<Void, Never>()
+        let didTapPollCategoryButton = PassthroughSubject<Void, Never>()
+        let didSelectPollItem = PassthroughSubject<String, Never>()
     }
 
     struct Output {
@@ -21,7 +22,8 @@ final class CommunityViewModel: BaseViewModel {
     }
 
     enum Route {
-        case poll
+        case pollCategoryTab
+        case pollDetail
     }
 
     let input = Input()
@@ -36,10 +38,14 @@ final class CommunityViewModel: BaseViewModel {
     override func bind() {
         super.bind()
 
-        input.didTapMorePollButton
-            .sink { [weak self] _ in
-                self?.output.route.send(.poll)
-            }
+        input.didTapPollCategoryButton
+            .map { _ in .pollCategoryTab }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+
+        input.didSelectPollItem
+            .map { _ in .pollDetail }
+            .subscribe(output.route)
             .store(in: &cancellables)
     }
 }

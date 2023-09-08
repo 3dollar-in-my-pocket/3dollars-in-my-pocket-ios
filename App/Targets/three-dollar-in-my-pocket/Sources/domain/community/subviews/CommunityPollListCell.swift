@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 import Common
 import DesignSystem
@@ -9,6 +10,8 @@ final class CommunityPollListCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 426)
     }
 
+    let didSelectItem = PassthroughSubject<String, Never>()
+
     private let titleLabel = UILabel().then {
         $0.font = Fonts.Pretendard.bold.font(size: 24)
         $0.textColor = Colors.gray100.color
@@ -16,7 +19,7 @@ final class CommunityPollListCell: BaseCollectionViewCell {
         $0.text = "그만싸워 얘덜아...\n먹을걸로 왜그래..."
     }
 
-    let moreButton = UIButton().then {
+    let categoryButton = UIButton().then {
         $0.titleLabel?.font = Fonts.Pretendard.bold.font(size: 18)
         $0.setTitle("맛짱 투표", for: .normal)
         $0.setTitleColor(Colors.gray80.color, for: .normal)
@@ -45,7 +48,7 @@ final class CommunityPollListCell: BaseCollectionViewCell {
 
         contentView.addSubViews([
             titleLabel,
-            moreButton,
+            categoryButton,
             arrowImageView,
             collectionView
         ])
@@ -59,18 +62,18 @@ final class CommunityPollListCell: BaseCollectionViewCell {
             $0.leading.trailing.equalToSuperview().inset(20)
         }
 
-        moreButton.snp.makeConstraints {
+        categoryButton.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(24)
             $0.leading.equalToSuperview().inset(20)
         }
 
         arrowImageView.snp.makeConstraints {
-            $0.centerY.equalTo(moreButton)
-            $0.leading.equalTo(moreButton.snp.trailing).offset(2)
+            $0.centerY.equalTo(categoryButton)
+            $0.leading.equalTo(categoryButton.snp.trailing).offset(2)
         }
 
         collectionView.snp.makeConstraints {
-            $0.top.equalTo(moreButton.snp.bottom).offset(12)
+            $0.top.equalTo(categoryButton.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
@@ -104,5 +107,7 @@ extension CommunityPollListCell: UICollectionViewDataSource {
 }
 
 extension CommunityPollListCell: UICollectionViewDelegate {
-
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        didSelectItem.send("ID")
+    }
 }
