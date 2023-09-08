@@ -54,7 +54,7 @@ final class CommunityViewController: BaseViewController {
             .sink { owner, route in
                 switch route {
                 case .poll:
-                    let vc = CommunityPollTabViewController()
+                    let vc = PollDetailViewController()
                     owner.navigationController?.pushViewController(vc, animated: true)
                 }
             }

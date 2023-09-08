@@ -12,21 +12,28 @@ final class CommunityNavigationBar: BaseView {
 
     let backButton = UIButton().then {
         $0.setImage(
-            DesignSystemAsset.Icons.arrowLeft.image
+            Icons.arrowLeft.image
                 .resizeImage(scaledTo: 24)
-                .withTintColor(DesignSystemAsset.Colors.gray100.color), for: .normal)
+                .withTintColor(Colors.gray100.color), for: .normal)
         $0.contentEdgeInsets = .init(top: 16, left: 16, bottom: 16, right: 16)
     }
 
     let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 16)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
+        $0.font = Fonts.Pretendard.medium.font(size: 16)
+        $0.textColor = Colors.gray100.color
     }
 
-    init(title: String) {
+    let rightStackView = UIStackView().then {
+        $0.axis = .horizontal
+    }
+
+    init(title: String? = nil, rightButtons: [UIButton] = []) {
         super.init(frame: .zero)
 
         titleLabel.text = title
+        rightButtons.forEach {
+            rightStackView.addArrangedSubview($0)
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -38,7 +45,8 @@ final class CommunityNavigationBar: BaseView {
 
         addSubViews([
             backButton,
-            titleLabel
+            titleLabel,
+            rightStackView
         ])
     }
 
@@ -56,6 +64,11 @@ final class CommunityNavigationBar: BaseView {
 
         titleLabel.snp.makeConstraints {
             $0.center.equalToSuperview()
+        }
+
+        rightStackView.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(16)
+            $0.centerY.equalToSuperview()
         }
     }
 }
