@@ -35,7 +35,7 @@ final class CommunityPollListCell: BaseCollectionViewCell {
         $0.backgroundColor = .clear
         $0.contentInset = .init(top: 0, left: 20, bottom: 0, right: 20)
         $0.showsHorizontalScrollIndicator = false
-        $0.register([CommunityPollItemCell.self])
+        $0.register([PollItemCell.self])
         $0.dataSource = self
         $0.delegate = self
     }
@@ -78,7 +78,7 @@ final class CommunityPollListCell: BaseCollectionViewCell {
 
     private func generateLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CommunityPollItemCell.Layout.size
+        layout.itemSize = PollItemCell.Layout.size
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 16
         layout.minimumInteritemSpacing = 16
@@ -97,7 +97,7 @@ extension CommunityPollListCell: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: CommunityPollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: PollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
         cell.bind()
         return cell
     }

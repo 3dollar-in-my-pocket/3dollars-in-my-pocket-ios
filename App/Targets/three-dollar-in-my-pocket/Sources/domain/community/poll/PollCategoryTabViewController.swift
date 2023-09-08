@@ -3,7 +3,7 @@ import Combine
 
 import DesignSystem
 
-final class CommunityPollTabViewController: BaseViewController {
+final class PollCategoryTabViewController: BaseViewController {
 
     private let navigationBar = CommunityNavigationBar(title: "맛대맛 투표")
     private let tabView = CommunityTabView(titles: ["실시간 참여순", "최신순"])
@@ -12,10 +12,10 @@ final class CommunityPollTabViewController: BaseViewController {
         transitionStyle: .scroll,
         navigationOrientation: .horizontal
     )
-    private lazy var pageContentViewControllers: [CommunityPollListViewController] = {
+    private lazy var pageContentViewControllers: [PollListViewController] = {
         return [
-            CommunityPollListViewController(),
-            CommunityPollListViewController()
+            PollListViewController(),
+            PollListViewController()
         ]
     }()
     private let createPollButton = UIButton().then {
@@ -142,7 +142,7 @@ final class CommunityPollTabViewController: BaseViewController {
 }
 
 // MARK: - UIPageViewControllerDataSource
-extension CommunityPollTabViewController: UIPageViewControllerDataSource {
+extension PollCategoryTabViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let index = pageContentViewControllers.firstIndex(where: { $0 == viewController }) else { return nil }
 
@@ -157,9 +157,9 @@ extension CommunityPollTabViewController: UIPageViewControllerDataSource {
 }
 
 // MARK: - UIPageViewControllerDelegate
-extension CommunityPollTabViewController: UIPageViewControllerDelegate {
+extension PollCategoryTabViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        guard let changedViewController = pageViewController.viewControllers?.first as? CommunityPollListViewController,
+        guard let changedViewController = pageViewController.viewControllers?.first as? PollListViewController,
               let changedIndex = pageContentViewControllers.firstIndex(of: changedViewController) else { return }
 
         tabView.updateSelect(changedIndex)

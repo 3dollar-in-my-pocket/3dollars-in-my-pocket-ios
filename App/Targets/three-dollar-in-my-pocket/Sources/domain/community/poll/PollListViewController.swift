@@ -2,11 +2,11 @@ import UIKit
 
 import DesignSystem
 
-final class CommunityPollListViewController: BaseViewController {
+final class PollListViewController: BaseViewController {
 
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
-        $0.register([CommunityPollItemCell.self])
+        $0.register([PollItemCell.self])
         $0.dataSource = self
         $0.delegate = self
     }
@@ -45,7 +45,7 @@ final class CommunityPollListViewController: BaseViewController {
     }
 }
 
-extension CommunityPollListViewController: UICollectionViewDataSource {
+extension PollListViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -55,18 +55,18 @@ extension CommunityPollListViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: CommunityPollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: PollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
         cell.bind()
         return cell
     }
 }
 
-extension CommunityPollListViewController: UICollectionViewDelegateFlowLayout {
+extension PollListViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: UIScreen.main.bounds.width - 40, height: 246)
     }
 }
 
-extension CommunityPollListViewController: UICollectionViewDelegate {
+extension PollListViewController: UICollectionViewDelegate {
 
 }

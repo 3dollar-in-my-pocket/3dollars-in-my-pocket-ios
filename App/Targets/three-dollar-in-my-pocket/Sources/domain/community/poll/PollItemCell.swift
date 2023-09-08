@@ -3,7 +3,7 @@ import UIKit
 import Common
 import DesignSystem
 
-final class CommunityPollItemCell: BaseCollectionViewCell {
+final class PollItemCell: BaseCollectionViewCell {
 
     enum Layout {
         static let size = CGSize(width: 280, height: 242)
