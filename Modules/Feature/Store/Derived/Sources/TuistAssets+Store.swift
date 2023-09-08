@@ -17,7 +17,7 @@
 
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum StoreAsset {
-  public static let imageSplash = StoreImages(name: "image_splash")
+  public static let iconNewBadge = StoreImages(name: "icon_new_badge")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
 

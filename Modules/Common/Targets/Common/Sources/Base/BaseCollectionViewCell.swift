@@ -27,4 +27,3 @@ open class BaseCollectionViewCell: UICollectionViewCell {
     /// Autolayout설정을 진행합니다.
     open func bindConstraints() { }
 }
-

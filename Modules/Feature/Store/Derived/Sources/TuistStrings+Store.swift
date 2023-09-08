@@ -20,6 +20,14 @@ public enum StoreStrings {
       /// 방문 인증하기
       public static let visit = StoreStrings.tr("Localization", "store_detail.bottom_sticky.visit")
     }
+    public enum Menu {
+      /// 길 안내
+      public static let navigation = StoreStrings.tr("Localization", "store_detail.menu.navigation")
+      /// 리뷰쓰기
+      public static let review = StoreStrings.tr("Localization", "store_detail.menu.review")
+      /// 공유하기
+      public static let share = StoreStrings.tr("Localization", "store_detail.menu.share")
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

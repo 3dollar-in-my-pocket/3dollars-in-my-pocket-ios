@@ -16,7 +16,10 @@ final class StoreDetailView: BaseView {
         $0.setImage(Icons.deletion.image.withTintColor(Colors.mainRed.color), for: .normal)
     }
     
-    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+    let collectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: UICollectionViewLayout()
+    )
     
     let bottomStickyView = BottomStickyView()
     
@@ -57,13 +60,5 @@ final class StoreDetailView: BaseView {
             $0.right.equalToSuperview()
             $0.height.equalTo(BottomStickyView.Layout.height)
         }
-    }
-    
-    private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
-            return .init(group: .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(100))))
-        }
-        
-        return layout
     }
 }

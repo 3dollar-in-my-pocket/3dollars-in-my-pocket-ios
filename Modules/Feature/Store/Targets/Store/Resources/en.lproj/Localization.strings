@@ -1,3 +1,6 @@
 // 가게 상세 화면
 "store_detail.bottom_sticky.save" = "즐겨찾기";
 "store_detail.bottom_sticky.visit" = "방문 인증하기";
+"store_detail.menu.share" = "공유하기";
+"store_detail.menu.navigation" = "길 안내";
+"store_detail.menu.review" = "리뷰쓰기";
