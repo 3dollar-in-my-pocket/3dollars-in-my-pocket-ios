@@ -47,7 +47,7 @@ final class CommunityTabView: UIView {
         addSubview(tabButtonStackView)
         addSubview(tabButtonUnderlinedView)
 
-        tabButtonUnderlinedView.backgroundColor = DesignSystemAsset.Colors.mainPink.color
+        tabButtonUnderlinedView.backgroundColor = Colors.mainPink.color
 
         tabButtonStackView.axis = .horizontal
         tabButtonStackView.spacing = 16
@@ -61,9 +61,9 @@ final class CommunityTabView: UIView {
     private func createTabButton(title: String, index: Int) {
         let button = UIButton()
         button.setTitle(title, for: .normal)
-        button.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-        button.setTitleColor(DesignSystemAsset.Colors.mainPink.color, for: .selected)
-        button.setTitleColor(DesignSystemAsset.Colors.gray30.color, for: .normal)
+        button.titleLabel?.font = Fonts.Pretendard.semiBold.font(size: 14)
+        button.setTitleColor(Colors.mainPink.color, for: .selected)
+        button.setTitleColor(Colors.gray30.color, for: .normal)
         button.addTarget(self, action: #selector(didTapButton(_:)), for: .touchUpInside)
         button.tag = index
         tabButtons.append(button)

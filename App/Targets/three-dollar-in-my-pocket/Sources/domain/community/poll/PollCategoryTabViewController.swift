@@ -19,16 +19,16 @@ final class PollCategoryTabViewController: BaseViewController {
         ]
     }()
     private let createPollButton = UIButton().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.mainRed.color
+        $0.backgroundColor = Colors.mainRed.color
         $0.layer.cornerRadius = 22
         $0.clipsToBounds = true
         $0.contentEdgeInsets = .init(top: 12, left: 12, bottom: 12, right: 12)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
+        $0.titleLabel?.font = Fonts.Pretendard.semiBold.font(size: 14)
         $0.setTitle("투표 만들기 0/1회", for: .normal)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        $0.setImage(DesignSystemAsset.Icons.fireSolid.image
+        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
+        $0.setImage(Icons.fireSolid.image
             .resizeImage(scaledTo: 20)
-            .withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
+            .withTintColor(Colors.systemWhite.color), for: .normal)
         $0.layer.shadowColor = UIColor.black.cgColor
         $0.layer.shadowOffset = CGSize(width: 8, height: 8)
         $0.layer.shadowOpacity = 0.1
@@ -72,7 +72,7 @@ final class PollCategoryTabViewController: BaseViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = DesignSystemAsset.Colors.gray0.color
+        view.backgroundColor = Colors.gray0.color
 
         view.addSubViews([
             navigationBar,

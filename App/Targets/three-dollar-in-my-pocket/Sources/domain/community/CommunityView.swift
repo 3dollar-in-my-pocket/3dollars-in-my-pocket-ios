@@ -7,7 +7,7 @@ import SnapKit
 final class CommunityView: BaseView {
 
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = DesignSystemAsset.Colors.gray0.color
+        $0.backgroundColor = Colors.gray0.color
         $0.contentInset = .init(top: 0, left: 4, bottom: 0, right: 4)
         $0.showsVerticalScrollIndicator = false
         $0.isPagingEnabled = true

@@ -15,7 +15,7 @@ final class CommunityViewController: BaseViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
 
-        tabBarItem = UITabBarItem(title: nil, image: DesignSystemAsset.Icons.communitySolid.image, tag: 0)
+        tabBarItem = UITabBarItem(title: nil, image: Icons.communitySolid.image, tag: 0)
     }
 
     required init?(coder: NSCoder) {

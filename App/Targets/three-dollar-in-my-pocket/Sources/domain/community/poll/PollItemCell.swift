@@ -12,12 +12,12 @@ final class PollItemCell: BaseCollectionViewCell {
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.clipsToBounds = true
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        $0.backgroundColor = Colors.systemWhite.color
     }
 
     private let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 20)
-        $0.textColor = DesignSystemAsset.Colors.gray90.color
+        $0.font = Fonts.Pretendard.semiBold.font(size: 20)
+        $0.textColor = Colors.gray90.color
     }
 
     private let userInfoStackView = UIStackView().then {
@@ -26,8 +26,8 @@ final class PollItemCell: BaseCollectionViewCell {
     }
 
     private let userNameLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.textColor = DesignSystemAsset.Colors.gray80.color
+        $0.font = Fonts.Pretendard.medium.font(size: 12)
+        $0.textColor = Colors.gray80.color
     }
 
     private let selectionStackView = UIStackView().then {
@@ -40,24 +40,24 @@ final class PollItemCell: BaseCollectionViewCell {
     private let secondSelectionView = CommunityPollSelectionView()
 
     private let commentButton = UIButton().then {
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.setTitleColor(DesignSystemAsset.Colors.gray50.color, for: .normal)
-        $0.setImage(DesignSystemAsset.Icons.communityLine.image
+        $0.titleLabel?.font = Fonts.Pretendard.medium.font(size: 12)
+        $0.setTitleColor(Colors.gray50.color, for: .normal)
+        $0.setImage(Icons.communityLine.image
             .resizeImage(scaledTo: 16)
-            .withTintColor(DesignSystemAsset.Colors.gray50.color), for: .normal)
+            .withTintColor(Colors.gray50.color), for: .normal)
     }
 
     private let countButton = UIButton().then {
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.setTitleColor(DesignSystemAsset.Colors.gray50.color, for: .normal)
-        $0.setImage(DesignSystemAsset.Icons.fireLine.image
+        $0.titleLabel?.font = Fonts.Pretendard.medium.font(size: 12)
+        $0.setTitleColor(Colors.gray50.color, for: .normal)
+        $0.setImage(Icons.fireLine.image
             .resizeImage(scaledTo: 16)
-            .withTintColor(DesignSystemAsset.Colors.gray50.color), for: .normal)
+            .withTintColor(Colors.gray50.color), for: .normal)
     }
 
     private let deadlineLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.textColor = DesignSystemAsset.Colors.gray50.color
+        $0.font = Fonts.Pretendard.medium.font(size: 12)
+        $0.textColor = Colors.gray50.color
     }
 
     override func setup() {
@@ -142,13 +142,13 @@ final class CommunityPollSelectionView: BaseView {
 
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 12
-        $0.layer.borderColor = DesignSystemAsset.Colors.gray30.color.cgColor
+        $0.layer.borderColor = Colors.gray30.color.cgColor
         $0.layer.borderWidth = 1
     }
 
     let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 16)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
+        $0.font = Fonts.Pretendard.medium.font(size: 16)
+        $0.textColor = Colors.gray100.color
     }
 
     override func setup() {

@@ -10,25 +10,25 @@ final class CommunityPollListCell: BaseCollectionViewCell {
     }
 
     private let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 24)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
+        $0.font = Fonts.Pretendard.bold.font(size: 24)
+        $0.textColor = Colors.gray100.color
         $0.numberOfLines = 2
         $0.text = "그만싸워 얘덜아...\n먹을걸로 왜그래..."
     }
 
     let moreButton = UIButton().then {
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 18)
+        $0.titleLabel?.font = Fonts.Pretendard.bold.font(size: 18)
         $0.setTitle("맛짱 투표", for: .normal)
-        $0.setTitleColor(DesignSystemAsset.Colors.gray80.color, for: .normal)
-        $0.setImage(DesignSystemAsset.Icons.fireSolid.image
+        $0.setTitleColor(Colors.gray80.color, for: .normal)
+        $0.setImage(Icons.fireSolid.image
             .resizeImage(scaledTo: 16)
-            .withTintColor(DesignSystemAsset.Colors.mainRed.color), for: .normal)
+            .withTintColor(Colors.mainRed.color), for: .normal)
     }
 
     private let arrowImageView = UIImageView().then {
-        $0.image = DesignSystemAsset.Icons.arrowRight.image
+        $0.image = Icons.arrowRight.image
             .resizeImage(scaledTo: 16)
-            .withTintColor(DesignSystemAsset.Colors.gray80.color)
+            .withTintColor(Colors.gray80.color)
     }
 
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {

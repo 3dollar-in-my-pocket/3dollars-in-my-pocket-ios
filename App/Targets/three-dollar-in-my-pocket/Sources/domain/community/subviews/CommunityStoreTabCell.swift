@@ -10,29 +10,29 @@ final class CommunityStoreTabCell: BaseCollectionViewCell {
     }
 
     private let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
-        $0.textColor = DesignSystemAsset.Colors.systemBlack.color
+        $0.font = Fonts.Pretendard.bold.font(size: 16)
+        $0.textColor = Colors.systemBlack.color
         $0.text = "이번 주 동네 인기 가게"
     }
 
     private let descriptionLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.textColor = DesignSystemAsset.Colors.gray60.color
+        $0.font = Fonts.Pretendard.medium.font(size: 12)
+        $0.textColor = Colors.gray60.color
         $0.text = "아직 서울만 볼 수 있어요! 조금만 기다려 주세요 :)"
     }
 
     private let locationButton = UIButton().then {
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
+        $0.titleLabel?.font = Fonts.Pretendard.semiBold.font(size: 14)
         $0.setTitle("관악구", for: .normal)
-        $0.backgroundColor = DesignSystemAsset.Colors.gray10.color
+        $0.backgroundColor = Colors.gray10.color
         $0.layer.cornerRadius = 8
         $0.imageEdgeInsets.left = 2
         $0.semanticContentAttribute = .forceRightToLeft
         $0.contentEdgeInsets = .init(top: 6, left: 8, bottom: 6, right: 8)
-        $0.setTitleColor(DesignSystemAsset.Colors.gray80.color, for: .normal)
-        $0.setImage(DesignSystemAsset.Icons.arrowRight.image
+        $0.setTitleColor(Colors.gray80.color, for: .normal)
+        $0.setImage(Icons.arrowRight.image
             .resizeImage(scaledTo: 16)
-            .withTintColor(DesignSystemAsset.Colors.gray60.color), for: .normal)
+            .withTintColor(Colors.gray60.color), for: .normal)
     }
 
     private let tabView = CommunityTabView(titles: ["리뷰가 많아요", "많이 왔다갔어요"])
@@ -49,7 +49,7 @@ final class CommunityStoreTabCell: BaseCollectionViewCell {
     override func setup() {
         super.setup()
 
-        backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        backgroundColor = Colors.systemWhite.color
 
         contentView.addSubViews([
             titleLabel,
@@ -131,7 +131,7 @@ final class CommunityStoreItemCell: BaseCollectionViewCell {
     private let containerView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.clipsToBounds = true
-        $0.backgroundColor = DesignSystemAsset.Colors.gray10.color
+        $0.backgroundColor = Colors.gray10.color
     }
 
     private let titleStackView = UIStackView().then {
@@ -140,8 +140,8 @@ final class CommunityStoreItemCell: BaseCollectionViewCell {
     }
 
     private let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
+        $0.font = Fonts.Pretendard.bold.font(size: 16)
+        $0.textColor = Colors.gray100.color
     }
 
     private let tagStackView = UIStackView().then {
@@ -150,8 +150,8 @@ final class CommunityStoreItemCell: BaseCollectionViewCell {
     }
 
     private let tagLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.textColor = DesignSystemAsset.Colors.gray40.color
+        $0.font = Fonts.Pretendard.medium.font(size: 12)
+        $0.textColor = Colors.gray40.color
     }
 
     private let imageView = UIImageView().then {
@@ -198,7 +198,7 @@ final class CommunityStoreItemCell: BaseCollectionViewCell {
     }
 
     func bind() {
-        imageView.image = DesignSystemAsset.Icons.faceSmile.image
+        imageView.image = Icons.faceSmile.image
         titleLabel.text = "강남역 0번 출구 앞 붕어빵"
         tagLabel.text = "#붕어빵"
     }
