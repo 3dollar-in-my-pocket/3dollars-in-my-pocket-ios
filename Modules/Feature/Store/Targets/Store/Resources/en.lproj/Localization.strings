@@ -4,3 +4,5 @@
 "store_detail.menu.share" = "공유하기";
 "store_detail.menu.navigation" = "길 안내";
 "store_detail.menu.review" = "리뷰쓰기";
+"store_detail.visit.format.visit_success" = "방문 성공 %d명";
+"store_detail.visit.format.visit_fail" = "방문 실패 %d명";

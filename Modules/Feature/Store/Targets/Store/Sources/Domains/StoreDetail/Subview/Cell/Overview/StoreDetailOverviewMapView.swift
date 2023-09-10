@@ -14,6 +14,7 @@ final class StoreDetailOverviewMapView: BaseView {
         $0.positionMode = .direction
         $0.layer.cornerRadius = 20
         $0.layer.masksToBounds = true
+        $0.isUserInteractionEnabled = false
     }
     
     private let marker = UIImageView(image: Icons.markerFocuesd.image)

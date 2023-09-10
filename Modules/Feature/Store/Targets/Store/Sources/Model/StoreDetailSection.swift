@@ -3,6 +3,7 @@ import Foundation
 struct StoreDetailSection: Hashable {
     enum StoreDetailSectionType {
         case overview
+        case visit
     }
     
     var type: StoreDetailSectionType
@@ -19,4 +20,5 @@ struct StoreDetailSectionHeader: Hashable {
 
 enum StoreDetailSectionItem: Hashable {
     case overview
+    case visit
 }

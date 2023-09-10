@@ -17,7 +17,10 @@ public final class StoreDetailViewController: BaseViewController {
     public override func viewDidLoad() {
         storeDetailView.collectionView.collectionViewLayout = createLayout()
         
-        let sections: [StoreDetailSection] = [.init(type: .overview, items: [.overview])]
+        let sections: [StoreDetailSection] = [
+            .init(type: .overview, items: [.overview]),
+            .init(type: .visit, items: [.visit])
+        ]
         
         datasource.reload(sections)
     }
@@ -48,6 +51,32 @@ public final class StoreDetailViewController: BaseViewController {
                 )
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
+                
+                return section
+                
+            case .visit:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreDetailVisitCell.Layout.height)
+                ))
+                
+                let group = NSCollectionLayoutGroup.vertical(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreDetailVisitCell.Layout.height)
+                    ),
+                    subitems: [item]
+                )
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(36)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .topLeading
+                )]
                 
                 return section
             }

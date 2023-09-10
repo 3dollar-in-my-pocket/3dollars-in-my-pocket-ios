@@ -28,6 +28,18 @@ public enum StoreStrings {
       /// 공유하기
       public static let share = StoreStrings.tr("Localization", "store_detail.menu.share")
     }
+    public enum Visit {
+      public enum Format {
+        /// 방문 실패 %d명
+        public static func visitFail(_ p1: Int) -> String {
+          return StoreStrings.tr("Localization", "store_detail.visit.format.visit_fail", p1)
+        }
+        /// 방문 성공 %d명
+        public static func visitSuccess(_ p1: Int) -> String {
+          return StoreStrings.tr("Localization", "store_detail.visit.format.visit_success", p1)
+        }
+      }
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

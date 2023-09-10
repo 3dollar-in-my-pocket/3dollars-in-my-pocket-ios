@@ -5,7 +5,7 @@ import DesignSystem
 
 final class StoreDetailOverviewCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 344
+        static let height: CGFloat = 376
     }
     
     let titleView = StoreDetailOverviewTitleView()
@@ -41,6 +41,7 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             $0.left.equalToSuperview()
             $0.top.equalTo(menuView.snp.bottom).offset(24)
             $0.right.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-32)
         }
     }
 }
