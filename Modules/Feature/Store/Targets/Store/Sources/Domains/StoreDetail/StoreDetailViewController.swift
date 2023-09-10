@@ -4,10 +4,20 @@ import Common
 
 public final class StoreDetailViewController: BaseViewController {
     private let storeDetailView = StoreDetailView()
+    private let viewModel: StoreDetailViewModel
     private lazy var datasource = StoreDetailDatasource(collectionView: storeDetailView.collectionView)
     
-    public static func instance() -> StoreDetailViewController {
-        return StoreDetailViewController(nibName: nil, bundle: nil)
+    public static func instance(storeId: Int) -> StoreDetailViewController {
+        return StoreDetailViewController(storeId: storeId)
+    }
+    
+    public init(storeId: Int) {
+        self.viewModel = StoreDetailViewModel(storeId: storeId)
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     public override func loadView() {
@@ -15,6 +25,9 @@ public final class StoreDetailViewController: BaseViewController {
     }
     
     public override func viewDidLoad() {
+        super.viewDidLoad()
+        viewModel.input.viewDidLoad.send(())
+        
         storeDetailView.collectionView.collectionViewLayout = createLayout()
         
         let sections: [StoreDetailSection] = [
