@@ -7,6 +7,7 @@ import Networking
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
+        initializationNetworkModule()
         return true
     }
       
@@ -15,6 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func initializationNetworkModule() {
-        
+        MockNetworkConfiguration.registerNetworkConfiguration()
     }
 }

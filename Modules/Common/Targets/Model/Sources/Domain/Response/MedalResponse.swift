@@ -6,11 +6,11 @@ public struct MedalResponse: Decodable {
     public let iconUrl: String
     public let disableIconUrl: String
     public let introduction: String
-    public let acquisition: MedalAcquisitionResponse
+    public let acquisition: MedalAcquisitionResponse?
 }
 
 extension MedalResponse {
     public struct MedalAcquisitionResponse: Decodable {
-        let description: String
+        let description: String?
     }
 }

@@ -78,6 +78,7 @@ final class HomeViewModel: BaseViewModel {
     private let userService: UserServiceProtocol
     private let mapService: MapServiceProtocol
     private let locationManager: LocationManagerProtocol
+    private var userDefaults: UserDefaultsUtil
     
     init(
         state: State = State(),
@@ -85,7 +86,8 @@ final class HomeViewModel: BaseViewModel {
         advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
         userService: UserServiceProtocol = UserService(),
         mapService: MapServiceProtocol = MapService(),
-        locationManager: LocationManagerProtocol = LocationManager.shared
+        locationManager: LocationManagerProtocol = LocationManager.shared,
+        userDefaults: UserDefaultsUtil = .shared
     ) {
         self.state = state
         self.storeService = storeService
@@ -93,6 +95,7 @@ final class HomeViewModel: BaseViewModel {
         self.userService = userService
         self.mapService = mapService
         self.locationManager = locationManager
+        self.userDefaults = userDefaults
         super.init()
     }
     
@@ -141,6 +144,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.resultCameraPosition = location
                 owner.state.currentLocation = owner.state.resultCameraPosition
                 owner.output.cameraPosition.send(location)
+                owner.userDefaults.userCurrentLocation = location
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -329,6 +333,7 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink { owner, location in
+                owner.userDefaults.userCurrentLocation = location
                 owner.state.currentLocation = location
                 owner.output.cameraPosition.send(location)
             }
