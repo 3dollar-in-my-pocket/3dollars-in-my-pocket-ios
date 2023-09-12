@@ -10,7 +10,7 @@ public struct StoreDetailApiResponse: Decodable {
     public let categories: [PlatformStoreFoodCategoryResponse]
     public let appearanceDays: [String]
     public let paymentMethods: [String]
-    public let menus: [StoreMenuResponse]
+    public let menus: [StoreMenuApiResponse]
     public let createdAt: String
     public let updatedAt: String
 }

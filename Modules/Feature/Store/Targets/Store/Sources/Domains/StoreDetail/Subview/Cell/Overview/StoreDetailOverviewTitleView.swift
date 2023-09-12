@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 
 final class StoreDetailOverviewTitleView: BaseView {
     enum Layout {
@@ -13,13 +14,11 @@ final class StoreDetailOverviewTitleView: BaseView {
     private let repoterLabel = UILabel().then {
         $0.font = Fonts.medium.font(size: 12)
         $0.textColor = Colors.gray50.color
-        $0.text = "맛돌이님 제보"
     }
     
     private let titleLabel = UILabel().then {
         $0.font = Fonts.semiBold.font(size: 20)
         $0.textColor = Colors.gray100.color
-        $0.text = "강남역 0번 출구 앞 붕어빵"
     }
     
     private let newBadge = UIImageView(image: Assets.iconNewBadge.image)
@@ -35,10 +34,9 @@ final class StoreDetailOverviewTitleView: BaseView {
         $0.layer.masksToBounds = true
         $0.textColor = Colors.mainPink.color
         $0.font = Fonts.medium.font(size: 12)
-        $0.text = "최근 한달 9명이 방문 성공"
     }
     
-    private let infoVIew = StoreDetailOverviewInfoCellView()
+    private let infoView = StoreDetailOverviewInfoCellView()
     
     override func setup() {
         addSubViews([
@@ -47,7 +45,7 @@ final class StoreDetailOverviewTitleView: BaseView {
             titleLabel,
             newBadge,
             visitCountLabel,
-            infoVIew
+            infoView
         ])
     }
     
@@ -82,9 +80,31 @@ final class StoreDetailOverviewTitleView: BaseView {
             $0.height.equalTo(24)
         }
         
-        infoVIew.snp.makeConstraints {
+        infoView.snp.makeConstraints {
             $0.right.equalToSuperview()
             $0.centerY.equalTo(visitCountLabel)
         }
+    }
+    
+    func prepareForReuse() {
+        infoView.prepareForReuse()
+    }
+    
+    func bind(_ overview: StoreDetailOverview) {
+        categoryImage.setImage(urlString: overview.categories.first?.imageUrl)
+        repoterLabel.text = Strings.StoreDetail.Overview.repoterNameFormat(overview.repoterName)
+        titleLabel.text = overview.storeName
+        newBadge.isHidden = overview.isNew
+        setVisitCount(overview.totalVisitSuccessCount)
+        infoView.bind(reviewCount: overview.reviewCount, distance: overview.distance)
+    }
+    
+    private func setVisitCount(_ totalVisitSuccessCount: Int) {
+        let string = Strings.StoreDetail.Overview.successVisitCountFormat(totalVisitSuccessCount)
+        let attributedString = NSMutableAttributedString(string: string)
+        let range = (string as NSString).range(of: "\(totalVisitSuccessCount)명")
+        
+        attributedString.addAttributes([.font: Fonts.bold.font(size: 12) as Any], range: range)
+        visitCountLabel.attributedText = attributedString
     }
 }

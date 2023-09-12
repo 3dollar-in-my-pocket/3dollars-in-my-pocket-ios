@@ -1,18 +1,28 @@
 import Foundation
 
 public struct PlatformStoreCategory {
-    let category: String
-    let categoryId: String
-    let name: String
-    let imageUrl: String
-    let disableImageUrl: String
-    let description: String
-    let classification: PlatformStoreCategoryClassification
-    let isNew: Bool
-    
+    public let category: String
+    public let categoryId: String
+    public let name: String
+    public let imageUrl: String
+    public let disableImageUrl: String
+    public let description: String
+    public let classification: PlatformStoreCategoryClassification
+    public let isNew: Bool
     
     public init(response: PlatformStoreCategoryResponse) {
         self.category = response.category
+        self.categoryId = response.categoryId
+        self.name = response.name
+        self.imageUrl = response.imageUrl
+        self.disableImageUrl = response.disableImageUrl
+        self.description = response.description
+        self.classification = PlatformStoreCategoryClassification(response: response.classification)
+        self.isNew = response.isNew
+    }
+    
+    public init(response: PlatformStoreFoodCategoryResponse) {
+        self.category = ""
         self.categoryId = response.categoryId
         self.name = response.name
         self.imageUrl = response.imageUrl

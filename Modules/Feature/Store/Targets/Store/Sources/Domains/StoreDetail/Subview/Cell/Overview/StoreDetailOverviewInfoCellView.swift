@@ -32,21 +32,16 @@ final class StoreDetailOverviewInfoCellView: BaseView {
         stackView.subviews.forEach { $0.removeFromSuperview() }
     }
     
-//    func bind(storeCard: StoreCard) {
-//        let reviewItemView = HomeListInfoItemView(type: .review(storeCard.reviewsCount ?? 0))
-//        stackView.addArrangedSubview(reviewItemView)
-//
-//        if storeCard.storeType == .userStore {
-//            let ratingItemView = HomeListInfoItemView(type: .rate(storeCard.rating ?? 0))
-//            addDividor()
-//            stackView.addArrangedSubview(ratingItemView)
-//        }
-//
-//        let distanceItemView = HomeListInfoItemView(type: .distance(storeCard.distance))
-//        addDividor()
-//        stackView.addArrangedSubview(distanceItemView)
-//    }
-    
+    func bind(reviewCount: Int, distance: Int) {
+        let reviewItemView = StoreDetailOverviewInfoCellItemView(type: .review(reviewCount))
+        stackView.addArrangedSubview(reviewItemView)
+        
+        addDividor()
+        
+        let distanceItemView = StoreDetailOverviewInfoCellItemView(type: .distance(distance))
+        stackView.addArrangedSubview(distanceItemView)
+    }
+        
     private func addDividor() {
         let containerView = UIView()
         let dividorView = UIView().then {

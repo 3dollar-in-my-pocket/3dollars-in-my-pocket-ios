@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct StoreDetailSection: Hashable {
     enum StoreDetailSectionType {
         case overview
@@ -19,6 +21,6 @@ struct StoreDetailSectionHeader: Hashable {
 }
 
 enum StoreDetailSectionItem: Hashable {
-    case overview
+    case overview(StoreDetailOverview)
     case visit
 }

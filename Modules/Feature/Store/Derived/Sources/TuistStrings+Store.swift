@@ -28,6 +28,16 @@ public enum StoreStrings {
       /// 공유하기
       public static let share = StoreStrings.tr("Localization", "store_detail.menu.share")
     }
+    public enum Overview {
+      /// %@님 제보
+      public static func repoterNameFormat(_ p1: Any) -> String {
+        return StoreStrings.tr("Localization", "store_detail.overview.repoter_name_format", String(describing: p1))
+      }
+      /// 최근 한달 %d명이 방문 성공
+      public static func successVisitCountFormat(_ p1: Int) -> String {
+        return StoreStrings.tr("Localization", "store_detail.overview.success_visit_count_format", p1)
+      }
+    }
     public enum Visit {
       public enum Format {
         /// 방문 실패 %d명

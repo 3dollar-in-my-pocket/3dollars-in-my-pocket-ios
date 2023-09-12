@@ -29,13 +29,20 @@ public final class StoreDetailViewController: BaseViewController {
         viewModel.input.viewDidLoad.send(())
         
         storeDetailView.collectionView.collectionViewLayout = createLayout()
+    }
+    
+    public override func bindViewModelInput() {
         
-        let sections: [StoreDetailSection] = [
-            .init(type: .overview, items: [.overview]),
-            .init(type: .visit, items: [.visit])
-        ]
-        
-        datasource.reload(sections)
+    }
+    
+    public override func bindViewModelOutput() {
+        viewModel.output.sections
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, sections: [StoreDetailSection]) in
+                owner.datasource.reload(sections)
+            }
+            .store(in: &cancellables)
     }
     
     private func createLayout() -> UICollectionViewLayout {

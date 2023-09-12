@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 
 final class StoreDetailOverviewCell: BaseCollectionViewCell {
     enum Layout {
@@ -13,6 +14,13 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
     let menuView = StoreDetailOverviewMenuView()
     
     let mapView = StoreDetailOverviewMapView()
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        titleView.prepareForReuse()
+        mapView.prepareForReuse()
+    }
     
     override func setup() {
         addSubViews([
@@ -43,5 +51,10 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             $0.right.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-32)
         }
+    }
+    
+    func bind(_ overview: StoreDetailOverview) {
+        titleView.bind(overview)
+        mapView.bind(location: overview.location, address: overview.address)
     }
 }

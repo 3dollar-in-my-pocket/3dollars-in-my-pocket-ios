@@ -53,11 +53,12 @@ final class StoreDetailViewModel: BaseViewModel {
                 latitude: userDefaults.userCurrentLocation.coordinate.latitude,
                 longitude: userDefaults.userCurrentLocation.coordinate.longitude
             )
-            let storeDetailResponse = await storeService.fetchStoreDetail(input: input)
+            let storeDetailResult = await storeService.fetchStoreDetail(input: input)
             
-            switch storeDetailResponse {
-            case .success(let storeDetail):
-                print("💜storeDetail: \(storeDetail)")
+            switch storeDetailResult {
+            case .success(let response):
+                let storeDetailData = StoreDetailData(response: response)
+                output.sections.send([.init(type: .overview, items: [.overview(storeDetailData.overview)])])
             case .failure(let failure):
                 print("💜error: \(failure)")
             }

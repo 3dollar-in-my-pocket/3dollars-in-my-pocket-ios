@@ -2,12 +2,15 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 import NMapsMap
 
 final class StoreDetailOverviewMapView: BaseView {
     enum Layout {
         static let mapHeight: CGFloat = 140
     }
+    
+    var marker: NMFMarker?
     
     let mapView = NMFMapView().then {
         $0.zoomLevel = 15
@@ -17,8 +20,6 @@ final class StoreDetailOverviewMapView: BaseView {
         $0.isUserInteractionEnabled = false
     }
     
-    private let marker = UIImageView(image: Icons.markerFocuesd.image)
-    
     private let addressLabel = PaddingLabel(
         topInset: 8,
         bottomInset: 8,
@@ -27,7 +28,6 @@ final class StoreDetailOverviewMapView: BaseView {
     ).then {
         $0.font = Fonts.medium.font(size: 12)
         $0.textColor = Colors.systemWhite.color
-        $0.text = "서울특별시 관악구 독립문로 14길"
         $0.layer.cornerRadius = 17
         $0.layer.masksToBounds = true
         $0.backgroundColor = Colors.gray95.color.withAlphaComponent(0.6)
@@ -48,7 +48,6 @@ final class StoreDetailOverviewMapView: BaseView {
     override func setup() {
         addSubViews([
             mapView,
-            marker,
             addressLabel,
             zoomButton
         ])
@@ -62,12 +61,6 @@ final class StoreDetailOverviewMapView: BaseView {
             $0.height.equalTo(Layout.mapHeight)
         }
         
-        marker.snp.makeConstraints {
-            $0.width.equalTo(32)
-            $0.height.equalTo(40)
-            $0.center.equalTo(mapView)
-        }
-        
         addressLabel.snp.makeConstraints {
             $0.left.equalTo(mapView).offset(8)
             $0.bottom.equalTo(mapView).offset(-8)
@@ -79,5 +72,38 @@ final class StoreDetailOverviewMapView: BaseView {
             $0.bottom.equalTo(mapView).offset(-8)
             $0.size.equalTo(36)
         }
+    }
+    
+    func prepareForReuse() {
+        marker?.mapView = nil
+    }
+    
+    func bind(location: Location, address: String) {
+        addressLabel.text = address
+        
+        setMarket(location: location)
+        let location = CLLocation(latitude: location.latitude, longitude: location.longitude)
+        moveCamera(location: location)
+    }
+    
+    private func moveCamera(location: CLLocation) {
+        let target = NMGLatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
+        let cameraPosition = NMFCameraPosition(target, zoom: mapView.zoomLevel)
+        let cameraUpdate = NMFCameraUpdate(position: cameraPosition)
+        
+        cameraUpdate.animation = .easeIn
+        mapView.moveCamera(cameraUpdate)
+    }
+    
+    private func setMarket(location: Location) {
+        marker = NMFMarker()
+        marker?.width = 32
+        marker?.height = 40
+        marker?.iconImage = NMFOverlayImage(image: Icons.markerFocuesd.image)
+        
+        let position = NMGLatLng(lat: location.latitude, lng: location.longitude)
+        
+        marker?.position = position
+        marker?.mapView = mapView
     }
 }
