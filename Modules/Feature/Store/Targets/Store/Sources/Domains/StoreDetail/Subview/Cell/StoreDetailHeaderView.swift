@@ -12,7 +12,7 @@ final class StoreDetailHeaderView: BaseCollectionViewReusableView {
         return stackView
     }()
     
-    private let titleLabel: UILabel = {
+    let titleLabel: UILabel = {
         let label = UILabel()
         label.font = Fonts.bold.font(size: 16)
         label.textColor = Colors.gray100.color

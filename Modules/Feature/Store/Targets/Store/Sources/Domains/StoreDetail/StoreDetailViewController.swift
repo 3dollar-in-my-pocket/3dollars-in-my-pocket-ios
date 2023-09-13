@@ -75,15 +75,16 @@ public final class StoreDetailViewController: BaseViewController {
                 return section
                 
             case .visit:
+                let height = StoreDetailVisitCell.Layout.calculateHeight(histories: sectionIdentifier.items.first?.histories ?? [])
                 let item = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(StoreDetailVisitCell.Layout.height)
+                    heightDimension: .absolute(height)
                 ))
                 
                 let group = NSCollectionLayoutGroup.vertical(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(StoreDetailVisitCell.Layout.height)
+                        heightDimension: .absolute(height)
                     ),
                     subitems: [item]
                 )

@@ -22,5 +22,13 @@ struct StoreDetailSectionHeader: Hashable {
 
 enum StoreDetailSectionItem: Hashable {
     case overview(StoreDetailOverview)
-    case visit
+    case visit(StoreDetailVisit)
+    
+    var histories: [StoreVisitHistory]? {
+        if case .visit(let storeDetailVisit) = self {
+            return storeDetailVisit.histories
+        } else {
+            return nil
+        }
+    }
 }

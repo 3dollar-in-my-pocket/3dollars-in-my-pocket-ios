@@ -2,9 +2,10 @@ import Foundation
 
 public struct StoreDetailData {
     public let overview: StoreDetailOverview
+    public let visit: StoreDetailVisit
     
     public init(response: StoreWithDetailApiResponse) {
-        overview = StoreDetailOverview(
+        self.overview = StoreDetailOverview(
             categories: response.store.categories.map { PlatformStoreCategory(response: $0) },
             repoterName: response.creator.name,
             storeName: response.store.name,
@@ -15,5 +16,7 @@ public struct StoreDetailData {
             location: Location(response: response.store.location),
             address: response.store.address.fullAddress
         )
+        
+        self.visit = StoreDetailVisit(response: response.visits)
     }
 }

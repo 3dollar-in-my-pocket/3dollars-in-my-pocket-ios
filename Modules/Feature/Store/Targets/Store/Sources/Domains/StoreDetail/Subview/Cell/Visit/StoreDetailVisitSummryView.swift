@@ -45,7 +45,6 @@ final class StoreDetailVisitSummryView: BaseView {
     override func bindConstraints() {
         containerView.snp.makeConstraints {
             $0.size.equalTo(Layout.size)
-            $0.edges.equalToSuperview()
         }
         
         iconView.snp.makeConstraints {

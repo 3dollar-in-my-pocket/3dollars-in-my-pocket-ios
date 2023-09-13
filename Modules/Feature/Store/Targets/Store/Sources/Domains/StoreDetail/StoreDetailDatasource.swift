@@ -22,9 +22,9 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 cell.bind(data)
                 return cell
                 
-            case .visit:
+            case .visit(let data):
                 let cell: StoreDetailVisitCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                
+                cell.bind(data)
                 return cell
             }
         }
@@ -42,6 +42,14 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                     withReuseIdentifier: "\(StoreDetailHeaderView.self)",
                     for: indexPath
                 ) as? StoreDetailHeaderView
+                
+                if case .visit(let storeDetailVisit) = section.items.first {
+                    if storeDetailVisit.histories.isEmpty {
+                        headerView?.titleLabel.text = "아직 방문 인증 내역이 없어요 :("
+                    } else {
+                        headerView?.titleLabel.text = "이번 달 방문 인증 내역"
+                    }
+                }
                 
                 return headerView
             }

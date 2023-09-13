@@ -58,7 +58,10 @@ final class StoreDetailViewModel: BaseViewModel {
             switch storeDetailResult {
             case .success(let response):
                 let storeDetailData = StoreDetailData(response: response)
-                output.sections.send([.init(type: .overview, items: [.overview(storeDetailData.overview)])])
+                output.sections.send([
+                    .init(type: .overview, items: [.overview(storeDetailData.overview)]),
+                    .init(type: .visit, items: [.visit(storeDetailData.visit)])
+                ])
             case .failure(let failure):
                 print("💜error: \(failure)")
             }
