@@ -1,6 +1,6 @@
 import UIKit
 
-import Membership
+import Store
 import Networking
 
 @UIApplicationMain

@@ -6,7 +6,8 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
     init(collectionView: UICollectionView) {
         collectionView.register([
             StoreDetailOverviewCell.self,
-            StoreDetailVisitCell.self
+            StoreDetailVisitCell.self,
+            StoreDetailInfoCell.self
         ])
         
         collectionView.register(
@@ -24,6 +25,11 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 
             case .visit(let data):
                 let cell: StoreDetailVisitCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(data)
+                return cell
+                
+            case .info(let data):
+                let cell: StoreDetailInfoCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(data)
                 return cell
             }
@@ -50,6 +56,18 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                         headerView?.titleLabel.text = "이번 달 방문 인증 내역"
                     }
                 }
+                
+                return headerView
+                
+            case .info:
+                let headerView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: UICollectionView.elementKindSectionHeader,
+                    withReuseIdentifier: "\(StoreDetailHeaderView.self)",
+                    for: indexPath
+                ) as? StoreDetailHeaderView
+                
+                headerView?.bind(section.header)
+                
                 
                 return headerView
             }

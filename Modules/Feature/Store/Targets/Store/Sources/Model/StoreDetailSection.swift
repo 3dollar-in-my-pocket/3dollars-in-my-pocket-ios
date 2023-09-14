@@ -6,6 +6,7 @@ struct StoreDetailSection: Hashable {
     enum StoreDetailSectionType {
         case overview
         case visit
+        case info
     }
     
     var type: StoreDetailSectionType
@@ -23,6 +24,7 @@ struct StoreDetailSectionHeader: Hashable {
 enum StoreDetailSectionItem: Hashable {
     case overview(StoreDetailOverview)
     case visit(StoreDetailVisit)
+    case info(StoreDetailInfo)
     
     var histories: [StoreVisitHistory]? {
         if case .visit(let storeDetailVisit) = self {

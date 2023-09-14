@@ -3,6 +3,7 @@ import Foundation
 public struct StoreDetailData {
     public let overview: StoreDetailOverview
     public let visit: StoreDetailVisit
+    public let info: StoreDetailInfo
     
     public init(response: StoreWithDetailApiResponse) {
         self.overview = StoreDetailOverview(
@@ -18,5 +19,12 @@ public struct StoreDetailData {
         )
         
         self.visit = StoreDetailVisit(response: response.visits)
+        
+        self.info = StoreDetailInfo(
+            lastUpdated: response.store.updatedAt,
+            salesType: SalesType(value: response.store.salesType),
+            appearanceDays: response.store.appearanceDays.map { AppearanceDay(value: $0) },
+            paymentMethods: response.store.paymentMethods.map { PaymentMethod(value: $0) }
+        )
     }
 }

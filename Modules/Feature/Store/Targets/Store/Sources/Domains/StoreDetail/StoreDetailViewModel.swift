@@ -60,7 +60,8 @@ final class StoreDetailViewModel: BaseViewModel {
                 let storeDetailData = StoreDetailData(response: response)
                 output.sections.send([
                     .init(type: .overview, items: [.overview(storeDetailData.overview)]),
-                    .init(type: .visit, items: [.visit(storeDetailData.visit)])
+                    .init(type: .visit, items: [.visit(storeDetailData.visit)]),
+                    .init(type: .info, header: .init(title: "가게 정보 & 메뉴", description: "2023.02.04 업데이트", value: nil, buttonTitle: "정보 수정"), items: [.info(storeDetailData.info)])
                 ])
             case .failure(let failure):
                 print("💜error: \(failure)")

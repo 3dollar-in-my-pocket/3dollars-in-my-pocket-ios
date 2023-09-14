@@ -20,6 +20,44 @@ public enum StoreStrings {
       /// 방문 인증하기
       public static let visit = StoreStrings.tr("Localization", "store_detail.bottom_sticky.visit")
     }
+    public enum Info {
+      /// 출몰시기
+      public static let appearanceDay = StoreStrings.tr("Localization", "store_detail.info.appearance_day")
+      /// 금
+      public static let friday = StoreStrings.tr("Localization", "store_detail.info.friday")
+      /// 월
+      public static let monday = StoreStrings.tr("Localization", "store_detail.info.monday")
+      /// 결제방식
+      public static let paymentMethod = StoreStrings.tr("Localization", "store_detail.info.payment_method")
+      /// 토
+      public static let saturday = StoreStrings.tr("Localization", "store_detail.info.saturday")
+      /// 가게형태
+      public static let storeType = StoreStrings.tr("Localization", "store_detail.info.store_type")
+      /// 일
+      public static let sunday = StoreStrings.tr("Localization", "store_detail.info.sunday")
+      /// 목
+      public static let thursday = StoreStrings.tr("Localization", "store_detail.info.thursday")
+      /// 화
+      public static let tuesday = StoreStrings.tr("Localization", "store_detail.info.tuesday")
+      /// 수
+      public static let wednesday = StoreStrings.tr("Localization", "store_detail.info.wednesday")
+      public enum PaymentMethod {
+        /// 계좌이체
+        public static let accountTransfer = StoreStrings.tr("Localization", "store_detail.info.payment_method.account_transfer")
+        /// 카드
+        public static let card = StoreStrings.tr("Localization", "store_detail.info.payment_method.card")
+        /// 현금
+        public static let cash = StoreStrings.tr("Localization", "store_detail.info.payment_method.cash")
+      }
+      public enum SalesType {
+        /// 편의점
+        public static let convenienceStore = StoreStrings.tr("Localization", "store_detail.info.sales_type.convenience_store")
+        /// 길거리
+        public static let road = StoreStrings.tr("Localization", "store_detail.info.sales_type.road")
+        /// 매장
+        public static let store = StoreStrings.tr("Localization", "store_detail.info.sales_type.store")
+      }
+    }
     public enum Menu {
       /// 길 안내
       public static let navigation = StoreStrings.tr("Localization", "store_detail.menu.navigation")
