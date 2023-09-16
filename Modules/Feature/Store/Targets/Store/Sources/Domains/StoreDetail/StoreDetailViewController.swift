@@ -102,17 +102,28 @@ public final class StoreDetailViewController: BaseViewController {
                 return section
                 
             case .info:
-                let item = NSCollectionLayoutItem(layoutSize: .init(
+                let infoItemHeight = StoreDetailInfoCell.Layout.height
+                let infoItem = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(StoreDetailInfoCell.Layout.height)
+                    heightDimension: .absolute(infoItemHeight)
+                ))
+                
+                let menuCellViewModel = sectionIdentifier.items.last?.menuCellViewModel
+                let menuItemHeight = StoreDetailMenuCell.Layout.calculateHeight(
+                    menus: menuCellViewModel?.output.menus ?? [],
+                    isShowAll: menuCellViewModel?.output.isShowAll ?? false
+                )
+                let menuItem = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(menuItemHeight)
                 ))
                 
                 let group = NSCollectionLayoutGroup.vertical(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(StoreDetailInfoCell.Layout.height)
+                        heightDimension: .absolute(infoItemHeight + menuItemHeight)
                     ),
-                    subitems: [item]
+                    subitems: [infoItem, menuItem]
                 )
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)

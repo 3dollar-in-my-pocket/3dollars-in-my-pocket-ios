@@ -7,7 +7,8 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
         collectionView.register([
             StoreDetailOverviewCell.self,
             StoreDetailVisitCell.self,
-            StoreDetailInfoCell.self
+            StoreDetailInfoCell.self,
+            StoreDetailMenuCell.self
         ])
         
         collectionView.register(
@@ -31,6 +32,11 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             case .info(let data):
                 let cell: StoreDetailInfoCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(data)
+                return cell
+                
+            case .menu(let menus):
+                let cell: StoreDetailMenuCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(menus)
                 return cell
             }
         }

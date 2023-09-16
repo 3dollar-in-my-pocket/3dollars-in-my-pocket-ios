@@ -4,6 +4,7 @@ public struct StoreDetailData {
     public let overview: StoreDetailOverview
     public let visit: StoreDetailVisit
     public let info: StoreDetailInfo
+    public let menus: [StoreDetailMenu]
     
     public init(response: StoreWithDetailApiResponse) {
         self.overview = StoreDetailOverview(
@@ -26,5 +27,7 @@ public struct StoreDetailData {
             appearanceDays: response.store.appearanceDays.map { AppearanceDay(value: $0) },
             paymentMethods: response.store.paymentMethods.map { PaymentMethod(value: $0) }
         )
+        
+        self.menus = response.store.menus.map { StoreDetailMenu(response: $0) }
     }
 }

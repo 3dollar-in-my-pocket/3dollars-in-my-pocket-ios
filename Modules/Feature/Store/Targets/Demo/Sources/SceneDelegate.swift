@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = StoreDetailViewController.instance(storeId: 128)
+        window?.rootViewController = StoreDetailViewController.instance(storeId: 126)
         window?.makeKeyAndVisible()
     }
 }

@@ -9,6 +9,7 @@ final class StoreDetailViewModel: BaseViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let didTapDelete = PassthroughSubject<Void, Never>()
+        let didTapShowMoreMenu = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -47,7 +48,9 @@ final class StoreDetailViewModel: BaseViewModel {
     }
     
     private func fetchStoreDetail() {
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
+            
             let input = FetchStoreDetailInput(
                 storeId: state.storeId,
                 latitude: userDefaults.userCurrentLocation.coordinate.latitude,
@@ -58,14 +61,27 @@ final class StoreDetailViewModel: BaseViewModel {
             switch storeDetailResult {
             case .success(let response):
                 let storeDetailData = StoreDetailData(response: response)
+                let menuCellViewModel = createMenuCellViewModel(storeDetailData)
+                
                 output.sections.send([
                     .init(type: .overview, items: [.overview(storeDetailData.overview)]),
                     .init(type: .visit, items: [.visit(storeDetailData.visit)]),
-                    .init(type: .info, header: .init(title: "가게 정보 & 메뉴", description: "2023.02.04 업데이트", value: nil, buttonTitle: "정보 수정"), items: [.info(storeDetailData.info)])
+                    .init(type: .info, header: .init(title: "가게 정보 & 메뉴", description: "2023.02.04 업데이트", value: nil, buttonTitle: "정보 수정"), items: [.info(storeDetailData.info), .menu(menuCellViewModel)])
                 ])
             case .failure(let failure):
                 print("💜error: \(failure)")
             }
         }
+    }
+    
+    private func createMenuCellViewModel(_ data: StoreDetailData) -> StoreDetailMenuCellViewModel {
+        let config = StoreDetailMenuCellViewModel.Config(menus: data.menus, isShowAll: false)
+        let viewModel = StoreDetailMenuCellViewModel(config: config)
+        
+        viewModel.output.didTapMore
+            .subscribe(input.didTapShowMoreMenu)
+            .store(in: &cancellables)
+        
+        return viewModel
     }
 }
