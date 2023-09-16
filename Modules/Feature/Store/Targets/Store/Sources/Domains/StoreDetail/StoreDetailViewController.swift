@@ -75,7 +75,7 @@ public final class StoreDetailViewController: BaseViewController {
                 return section
                 
             case .visit:
-                let height = StoreDetailVisitCell.Layout.calculateHeight(histories: sectionIdentifier.items.first?.histories ?? [])
+                let height = StoreDetailVisitCell.Layout.calculateHeight(historyCount: sectionIdentifier.items.first?.historyTotalCount ?? 0)
                 let item = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
                     heightDimension: .absolute(height)
@@ -89,7 +89,7 @@ public final class StoreDetailViewController: BaseViewController {
                     subitems: [item]
                 )
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 32, trailing: 20)
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),

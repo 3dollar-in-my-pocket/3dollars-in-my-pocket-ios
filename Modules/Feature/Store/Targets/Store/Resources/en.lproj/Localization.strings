@@ -10,6 +10,7 @@
 "store_detail.visit.header.title_normal" = "이번 달 방문 인증 내역";
 "store_detail.visit.format.visit_success" = "방문 성공 %d명";
 "store_detail.visit.format.visit_fail" = "방문 실패 %d명";
+"store_detail.visit.more_format" = "+ 그 외 %d명이 다녀갔어요!";
 "store_detail.info.header.title" = "가게 정보 & 메뉴";
 "store_detail.info.header.button" = "정보 수정";
 "store_detail.info.store_type" = "가게형태";

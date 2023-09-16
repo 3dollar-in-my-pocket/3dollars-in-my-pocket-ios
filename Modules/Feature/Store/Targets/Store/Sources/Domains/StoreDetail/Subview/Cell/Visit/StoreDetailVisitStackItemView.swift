@@ -73,6 +73,7 @@ final class StoreDetailVisitStackItemView: BaseView {
     
     private func bind(_ history: StoreVisitHistory) {
         dotView.backgroundColor = history.type == .exists ? Colors.mainGreen.color : Colors.mainRed.color
+        dateLabel.text = history.visitTime
         nameLabel.text = history.name
     }
 }

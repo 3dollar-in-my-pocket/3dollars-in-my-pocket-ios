@@ -14,9 +14,9 @@ enum StoreDetailSectionItem: Hashable {
 }
 
 extension StoreDetailSectionItem {
-    var histories: [StoreVisitHistory]? {
+    var historyTotalCount: Int? {
         if case .visit(let storeDetailVisit) = self {
-            return storeDetailVisit.histories
+            return storeDetailVisit.existsCounts + storeDetailVisit.notExistsCounts
         } else {
             return nil
         }

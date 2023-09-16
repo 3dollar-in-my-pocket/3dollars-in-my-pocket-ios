@@ -6,11 +6,12 @@ import Model
 
 final class StoreDetailVisitCell: BaseCollectionViewCell {
     enum Layout {
-        static func calculateHeight(histories: [StoreVisitHistory]) -> CGFloat {
+        static func calculateHeight(historyCount: Int) -> CGFloat {
             let summaryViewHeight = StoreDetailVisitSummryView.Layout.size.height
-            let historyViewHeight = StoreDetailVisitHistoryView.Layout.calculateHeight(count: histories.count)
+            let historyViewHeight = StoreDetailVisitHistoryView.Layout.calculateHeight(count: historyCount)
+            let space: CGFloat = 8
             
-            return summaryViewHeight + historyViewHeight
+            return summaryViewHeight + space + historyViewHeight
         }
     }
     
@@ -19,6 +20,12 @@ final class StoreDetailVisitCell: BaseCollectionViewCell {
     private let failSummaryView = StoreDetailVisitSummryView()
     
     private let historyView = StoreDetailVisitHistoryView()
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        historyView.prepareForReuse()
+    }
     
     override func setup() {
         contentView.addSubViews([
@@ -53,6 +60,6 @@ final class StoreDetailVisitCell: BaseCollectionViewCell {
     func bind(_ visit: StoreDetailVisit) {
         successSummaryView.bind(.success(visit.existsCounts))
         failSummaryView.bind(.fail(visit.notExistsCounts))
-        historyView.bind(visit.histories)
+        historyView.bind(visit.histories, totalCount: visit.existsCounts + visit.notExistsCounts)
     }
 }
