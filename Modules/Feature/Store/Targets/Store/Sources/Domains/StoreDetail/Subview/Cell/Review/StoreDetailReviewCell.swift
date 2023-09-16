@@ -28,7 +28,7 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
     
     private let rightButton: UIButton = {
         let button = UIButton()
-        button.setTitle("신고", for: .normal)
+        button.setTitle(Strings.StoreDetail.Review.report, for: .normal)
         button.setTitleColor(Colors.gray60.color, for: .normal)
         button.titleLabel?.font = Fonts.bold.font(size: 12)
         
@@ -60,6 +60,7 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         label.textColor = Colors.gray80.color
         label.font = Fonts.regular.font(size: 14)
         label.textAlignment = .left
+        label.numberOfLines = 0
         
         return label
     }()

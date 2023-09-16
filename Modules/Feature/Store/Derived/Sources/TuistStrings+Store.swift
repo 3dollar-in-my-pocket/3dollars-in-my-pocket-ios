@@ -99,6 +99,14 @@ public enum StoreStrings {
       public static let title = StoreStrings.tr("Localization", "store_detail.rating.title")
     }
     public enum Review {
+      /// 수정
+      public static let edit = StoreStrings.tr("Localization", "store_detail.review.edit")
+      /// 리뷰 %d개 더보기
+      public static func moreFormat(_ p1: Int) -> String {
+        return StoreStrings.tr("Localization", "store_detail.review.more_format", p1)
+      }
+      /// 신고
+      public static let report = StoreStrings.tr("Localization", "store_detail.review.report")
       public enum Header {
         /// 리뷰 쓰기
         public static let button = StoreStrings.tr("Localization", "store_detail.review.header.button")

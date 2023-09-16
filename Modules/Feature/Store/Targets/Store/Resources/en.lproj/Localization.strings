@@ -35,3 +35,6 @@
 "store_detail.review.header.title" = "리뷰";
 "store_detail.review.header.button" = "리뷰 쓰기";
 "store_detail.rating.title" = "평균 별점";
+"store_detail.review.report" = "신고";
+"store_detail.review.edit" = "수정";
+"store_detail.review.more_format" = "리뷰 %d개 더보기";

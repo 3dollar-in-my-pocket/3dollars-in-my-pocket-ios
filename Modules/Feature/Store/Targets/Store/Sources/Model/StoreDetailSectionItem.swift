@@ -10,6 +10,7 @@ enum StoreDetailSectionItem: Hashable {
     case photo(StoreDetailPhoto)
     case rating(Double)
     case review(StoreDetailReview)
+    case reviewMore(Int)
 }
 
 extension StoreDetailSectionItem {
