@@ -57,7 +57,7 @@ final class StoreDetailPhotoCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         photoView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.edges.equalToSuperview().priority(.high)
             $0.size.equalTo(Layout.size)
         }
         

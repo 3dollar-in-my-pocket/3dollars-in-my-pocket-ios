@@ -76,7 +76,7 @@ extension StoreDetailSection {
         )
     }
     
-    static func reviewSection(totalCount: Int, rating: Double) -> StoreDetailSection {
+    static func reviewSection(totalCount: Int, rating: Double, reviews: [StoreDetailReview]) -> StoreDetailSection {
         let header = StoreDetailSectionHeader(
             title: Strings.StoreDetail.Review.Header.title,
             description: nil,
@@ -84,6 +84,10 @@ extension StoreDetailSection {
             buttonTitle: Strings.StoreDetail.Review.Header.button
         )
         
-        return .init(type: .review(totalCount: totalCount), header: header, items: [.rating(rating)])
+        return .init(
+            type: .review(totalCount: totalCount),
+            header: header,
+            items: [.rating(rating)] + reviews.map { .review($0) }
+        )
     }
 }

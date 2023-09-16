@@ -62,9 +62,10 @@ final class StoreDetailRatingCell: BaseCollectionViewCell {
     override func bindConstraints() {
         containerView.snp.makeConstraints {
             $0.left.equalToSuperview()
-            $0.top.equalToSuperview()
+            $0.top.equalToSuperview().priority(.high)
             $0.right.equalToSuperview()
             $0.height.equalTo(Layout.height)
+            $0.bottom.equalToSuperview().priority(.high)
         }
         
         ratingLabel.snp.makeConstraints {

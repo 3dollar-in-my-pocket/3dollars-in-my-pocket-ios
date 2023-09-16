@@ -10,7 +10,8 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             StoreDetailInfoCell.self,
             StoreDetailMenuCell.self,
             StoreDetailPhotoCell.self,
-            StoreDetailRatingCell.self
+            StoreDetailRatingCell.self,
+            StoreDetailReviewCell.self
         ])
         
         collectionView.register(
@@ -53,8 +54,12 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 
             case .rating(let rating):
                 let cell: StoreDetailRatingCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                
                 cell.bind(rating)
+                return cell
+                
+            case .review(let review):
+                let cell: StoreDetailReviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(review)
                 return cell
             }
         }

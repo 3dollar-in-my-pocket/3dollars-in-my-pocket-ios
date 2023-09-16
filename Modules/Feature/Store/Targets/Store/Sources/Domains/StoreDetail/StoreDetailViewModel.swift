@@ -73,7 +73,11 @@ final class StoreDetailViewModel: BaseViewModel {
                         menuCellViewModel: createMenuCellViewModel(storeDetailData)
                     ),
                     .photoSection(totalCount: photoCount, photos: storeDetailData.photos),
-                    .reviewSection(totalCount: reviewCount, rating: storeDetailData.rating)
+                    .reviewSection(
+                        totalCount: reviewCount,
+                        rating: storeDetailData.rating,
+                        reviews: storeDetailData.reviews
+                    )
                 ])
             case .failure(let failure):
                 print("💜error: \(failure)")

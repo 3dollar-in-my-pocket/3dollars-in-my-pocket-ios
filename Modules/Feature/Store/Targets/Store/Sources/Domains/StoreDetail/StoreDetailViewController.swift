@@ -168,18 +168,17 @@ public final class StoreDetailViewController: BaseViewController {
             case .review:
                 let item = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(StoreDetailRatingCell.Layout.height)
+                    heightDimension: .estimated(StoreDetailReviewCell.Layout.estimatedHeight)
                 ))
-                
-                let group = NSCollectionLayoutGroup.horizontal(
+                let group = NSCollectionLayoutGroup.vertical(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(StoreDetailRatingCell.Layout.height)
+                        heightDimension: .estimated(StoreDetailReviewCell.Layout.estimatedHeight)
                     ),
                     subitems: [item]
                 )
-                group.interItemSpacing = NSCollectionLayoutSpacing.fixed(8)
                 let section = NSCollectionLayoutSection(group: group)
+                section.interGroupSpacing = 8
                 section.contentInsets = .init(top: 12, leading: 20, bottom: 32, trailing: 20)
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(

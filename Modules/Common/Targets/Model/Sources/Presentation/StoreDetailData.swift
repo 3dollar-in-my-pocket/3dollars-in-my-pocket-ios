@@ -7,6 +7,7 @@ public struct StoreDetailData {
     public let menus: [StoreDetailMenu]
     public let photos: [StoreDetailPhoto]
     public let rating: Double
+    public let reviews: [StoreDetailReview]
     
     public init(response: StoreWithDetailApiResponse) {
         self.overview = StoreDetailOverview(
@@ -36,5 +37,6 @@ public struct StoreDetailData {
             totalCount: response.images.cursor.totalCount
         ) }
         self.rating = response.store.rating
+        self.reviews = response.reviews.contents.map { StoreDetailReview(response: $0) }
     }
 }
