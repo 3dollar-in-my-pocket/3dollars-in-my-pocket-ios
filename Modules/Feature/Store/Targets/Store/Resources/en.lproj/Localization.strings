@@ -32,3 +32,6 @@
 "store_detail.photo.header.title" = "가게 사진";
 "store_detail.photo.header.button" = "사진 제보";
 "store_detail.photo.more" = "더보기";
+"store_detail.review.header.title" = "리뷰";
+"store_detail.review.header.button" = "리뷰 쓰기";
+"store_detail.rating.title" = "평균 별점";

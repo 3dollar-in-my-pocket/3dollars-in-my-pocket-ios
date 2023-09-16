@@ -41,6 +41,19 @@ final class StoreDetailHeaderView: BaseCollectionViewReusableView {
         return label
     }()
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        if let stackLastView = verticalStackView.arrangedSubviews.last,
+           stackLastView == descriptionLabel {
+            stackLastView.removeFromSuperview()
+        }
+        
+        descriptionLabel.text = nil
+        valueLabel.text = nil
+        rightButton.setTitle(nil, for: .normal)
+    }
+    
     override func setup() {
         verticalStackView.addArrangedSubview(titleLabel)
         addSubViews([
@@ -80,6 +93,7 @@ final class StoreDetailHeaderView: BaseCollectionViewReusableView {
     func bind(_ header: StoreDetailSectionHeader?) {
         guard let header else { return }
         titleLabel.text = header.title
+        verticalStackView.addArrangedSubview(titleLabel)
         
         if let description = header.description {
             verticalStackView.setCustomSpacing(2, after: titleLabel)

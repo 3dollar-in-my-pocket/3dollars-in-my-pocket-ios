@@ -8,6 +8,7 @@ enum StoreDetailSectionItem: Hashable {
     case info(StoreDetailInfo)
     case menu(StoreDetailMenuCellViewModel)
     case photo(StoreDetailPhoto)
+    case rating(Double)
 }
 
 extension StoreDetailSectionItem {

@@ -9,7 +9,8 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             StoreDetailVisitCell.self,
             StoreDetailInfoCell.self,
             StoreDetailMenuCell.self,
-            StoreDetailPhotoCell.self
+            StoreDetailPhotoCell.self,
+            StoreDetailRatingCell.self
         ])
         
         collectionView.register(
@@ -49,6 +50,12 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                     cell.bind(photo: photo, isLast: false)
                 }
                 return cell
+                
+            case .rating(let rating):
+                let cell: StoreDetailRatingCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                
+                cell.bind(rating)
+                return cell
             }
         }
         
@@ -76,7 +83,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 
                 return headerView
                 
-            case .info, .photo:
+            case .info, .photo, .review:
                 let headerView = collectionView.dequeueReusableSupplementaryView(
                     ofKind: UICollectionView.elementKindSectionHeader,
                     withReuseIdentifier: "\(StoreDetailHeaderView.self)",

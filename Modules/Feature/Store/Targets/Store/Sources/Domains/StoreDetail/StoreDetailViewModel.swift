@@ -62,6 +62,7 @@ final class StoreDetailViewModel: BaseViewModel {
             case .success(let response):
                 let storeDetailData = StoreDetailData(response: response)
                 let photoCount = response.images.cursor.totalCount
+                let reviewCount = response.reviews.cursor.totalCount
                 
                 output.sections.send([
                     .overviewSection(storeDetailData.overview),
@@ -71,7 +72,8 @@ final class StoreDetailViewModel: BaseViewModel {
                         info: storeDetailData.info,
                         menuCellViewModel: createMenuCellViewModel(storeDetailData)
                     ),
-                    .photoSection(totalCount: photoCount, photos: storeDetailData.photos)
+                    .photoSection(totalCount: photoCount, photos: storeDetailData.photos),
+                    .reviewSection(totalCount: reviewCount, rating: storeDetailData.rating)
                 ])
             case .failure(let failure):
                 print("💜error: \(failure)")

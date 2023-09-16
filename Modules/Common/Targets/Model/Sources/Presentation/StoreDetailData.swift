@@ -6,6 +6,7 @@ public struct StoreDetailData {
     public let info: StoreDetailInfo
     public let menus: [StoreDetailMenu]
     public let photos: [StoreDetailPhoto]
+    public let rating: Double
     
     public init(response: StoreWithDetailApiResponse) {
         self.overview = StoreDetailOverview(
@@ -34,5 +35,6 @@ public struct StoreDetailData {
             response: $0,
             totalCount: response.images.cursor.totalCount
         ) }
+        self.rating = response.store.rating
     }
 }

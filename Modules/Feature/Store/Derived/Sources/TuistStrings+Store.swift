@@ -94,6 +94,18 @@ public enum StoreStrings {
         public static let title = StoreStrings.tr("Localization", "store_detail.photo.header.title")
       }
     }
+    public enum Rating {
+      /// 평균 별점
+      public static let title = StoreStrings.tr("Localization", "store_detail.rating.title")
+    }
+    public enum Review {
+      public enum Header {
+        /// 리뷰 쓰기
+        public static let button = StoreStrings.tr("Localization", "store_detail.review.header.button")
+        /// 리뷰
+        public static let title = StoreStrings.tr("Localization", "store_detail.review.header.title")
+      }
+    }
     public enum Visit {
       public enum Format {
         /// 방문 실패 %d명

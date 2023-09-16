@@ -8,18 +8,19 @@ struct StoreDetailSection: Hashable {
         case visit
         case info
         case photo(totalCount: Int)
+        case review(totalCount: Int)
     }
     
     var type: StoreDetailSectionType
     var header: StoreDetailSectionHeader?
     var items: [StoreDetailSectionItem]
-    
-    
 }
 
 extension StoreDetailSection {
     var totalCount: Int? {
         if case .photo(let totalCount) = type {
+            return totalCount
+        } else if case .review(let totalCount) = type {
             return totalCount
         } else {
             return nil
@@ -73,5 +74,16 @@ extension StoreDetailSection {
             header: header,
             items: slicedPhotos.map { .photo($0) }
         )
+    }
+    
+    static func reviewSection(totalCount: Int, rating: Double) -> StoreDetailSection {
+        let header = StoreDetailSectionHeader(
+            title: Strings.StoreDetail.Review.Header.title,
+            description: nil,
+            value: "\(totalCount)개",
+            buttonTitle: Strings.StoreDetail.Review.Header.button
+        )
+        
+        return .init(type: .review(totalCount: totalCount), header: header, items: [.rating(rating)])
     }
 }
