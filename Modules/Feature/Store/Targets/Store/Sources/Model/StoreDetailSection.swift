@@ -3,43 +3,75 @@ import Foundation
 import Model
 
 struct StoreDetailSection: Hashable {
-    enum StoreDetailSectionType {
+    enum StoreDetailSectionType: Hashable {
         case overview
         case visit
         case info
+        case photo(totalCount: Int)
     }
     
     var type: StoreDetailSectionType
     var header: StoreDetailSectionHeader?
     var items: [StoreDetailSectionItem]
-}
-
-struct StoreDetailSectionHeader: Hashable {
-    let title: String
-    let description: String?
-    let value: String?
-    let buttonTitle: String?
-}
-
-enum StoreDetailSectionItem: Hashable {
-    case overview(StoreDetailOverview)
-    case visit(StoreDetailVisit)
-    case info(StoreDetailInfo)
-    case menu(StoreDetailMenuCellViewModel)
     
-    var histories: [StoreVisitHistory]? {
-        if case .visit(let storeDetailVisit) = self {
-            return storeDetailVisit.histories
+    
+}
+
+extension StoreDetailSection {
+    var totalCount: Int? {
+        if case .photo(let totalCount) = type {
+            return totalCount
         } else {
             return nil
         }
     }
     
-    var menuCellViewModel: StoreDetailMenuCellViewModel? {
-        if case .menu(let viewModel) = self {
-            return viewModel
+    static func overviewSection(_ overview: StoreDetailOverview) -> StoreDetailSection {
+        return .init(type: .overview, items: [.overview(overview)])
+    }
+    
+    static func visitSection(_ visit: StoreDetailVisit) -> StoreDetailSection {
+        return .init(type: .visit, items: [.visit(visit)])
+    }
+    
+    static func infoSection(
+        updatedAt: String,
+        info: StoreDetailInfo,
+        menuCellViewModel: StoreDetailMenuCellViewModel
+    ) -> StoreDetailSection {
+        let header = StoreDetailSectionHeader(
+            title: Strings.StoreDetail.Info.Header.title,
+            description: updatedAt,
+            value: nil,
+            buttonTitle: Strings.StoreDetail.Info.Header.button
+        )
+        
+        return .init(
+            type: .info,
+            header: header,
+            items: [.info(info), .menu(menuCellViewModel)]
+        )
+    }
+    
+    static func photoSection(totalCount: Int, photos: [StoreDetailPhoto]) -> StoreDetailSection {
+        let header = StoreDetailSectionHeader(
+            title: Strings.StoreDetail.Photo.Header.title,
+            description: nil,
+            value: nil,
+            buttonTitle: Strings.StoreDetail.Photo.Header.button
+        )
+        
+        let slicedPhotos: [StoreDetailPhoto]
+        if photos.count > 4 {
+            slicedPhotos = Array(photos[..<4])
         } else {
-            return nil
+            slicedPhotos = photos
         }
+        
+        return .init(
+            type: .photo(totalCount: totalCount),
+            header: header,
+            items: slicedPhotos.map { .photo($0) }
+        )
     }
 }

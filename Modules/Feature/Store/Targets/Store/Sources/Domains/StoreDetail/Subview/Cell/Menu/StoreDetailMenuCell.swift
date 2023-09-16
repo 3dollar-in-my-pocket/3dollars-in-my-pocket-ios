@@ -58,12 +58,18 @@ final class StoreDetailMenuCell: BaseCollectionViewCell {
     
     private let moreButton: UIButton = {
         let button = UIButton()
-        button.setTitle("메뉴 더 보기", for: .normal)
+        button.setTitle(Strings.StoreDetail.Menu.more, for: .normal)
         button.setTitleColor(Colors.gray60.color, for: .normal)
         button.titleLabel?.font = Fonts.medium.font(size: 12)
         
         return button
     }()
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        menuStackView.prepareForReuse()
+    }
     
     override func setup() {
         contentView.addSubViews([

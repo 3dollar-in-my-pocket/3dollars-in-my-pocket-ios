@@ -41,6 +41,12 @@ public enum StoreStrings {
       public static let tuesday = StoreStrings.tr("Localization", "store_detail.info.tuesday")
       /// 수
       public static let wednesday = StoreStrings.tr("Localization", "store_detail.info.wednesday")
+      public enum Header {
+        /// 정보 수정
+        public static let button = StoreStrings.tr("Localization", "store_detail.info.header.button")
+        /// 가게 정보 & 메뉴
+        public static let title = StoreStrings.tr("Localization", "store_detail.info.header.title")
+      }
       public enum PaymentMethod {
         /// 계좌이체
         public static let accountTransfer = StoreStrings.tr("Localization", "store_detail.info.payment_method.account_transfer")
@@ -59,6 +65,8 @@ public enum StoreStrings {
       }
     }
     public enum Menu {
+      /// 메뉴 더 보기
+      public static let more = StoreStrings.tr("Localization", "store_detail.menu.more")
       /// 길 안내
       public static let navigation = StoreStrings.tr("Localization", "store_detail.menu.navigation")
       /// 리뷰쓰기
@@ -76,6 +84,16 @@ public enum StoreStrings {
         return StoreStrings.tr("Localization", "store_detail.overview.success_visit_count_format", p1)
       }
     }
+    public enum Photo {
+      /// 더보기
+      public static let more = StoreStrings.tr("Localization", "store_detail.photo.more")
+      public enum Header {
+        /// 사진 제보
+        public static let button = StoreStrings.tr("Localization", "store_detail.photo.header.button")
+        /// 가게 사진
+        public static let title = StoreStrings.tr("Localization", "store_detail.photo.header.title")
+      }
+    }
     public enum Visit {
       public enum Format {
         /// 방문 실패 %d명
@@ -86,6 +104,12 @@ public enum StoreStrings {
         public static func visitSuccess(_ p1: Int) -> String {
           return StoreStrings.tr("Localization", "store_detail.visit.format.visit_success", p1)
         }
+      }
+      public enum Header {
+        /// 아직 방문 인증 내역이 없어요 :(
+        public static let titleEmpty = StoreStrings.tr("Localization", "store_detail.visit.header.title_empty")
+        /// 이번 달 방문 인증 내역
+        public static let titleNormal = StoreStrings.tr("Localization", "store_detail.visit.header.title_normal")
       }
     }
   }

@@ -8,7 +8,8 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             StoreDetailOverviewCell.self,
             StoreDetailVisitCell.self,
             StoreDetailInfoCell.self,
-            StoreDetailMenuCell.self
+            StoreDetailMenuCell.self,
+            StoreDetailPhotoCell.self
         ])
         
         collectionView.register(
@@ -38,6 +39,16 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 let cell: StoreDetailMenuCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(menus)
                 return cell
+                
+            case .photo(let photo):
+                let cell: StoreDetailPhotoCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                
+                if indexPath.item == 3 {
+                    cell.bind(photo: photo, isLast: true)
+                } else {
+                    cell.bind(photo: photo, isLast: false)
+                }
+                return cell
             }
         }
         
@@ -57,15 +68,15 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 
                 if case .visit(let storeDetailVisit) = section.items.first {
                     if storeDetailVisit.histories.isEmpty {
-                        headerView?.titleLabel.text = "아직 방문 인증 내역이 없어요 :("
+                        headerView?.titleLabel.text = Strings.StoreDetail.Visit.Header.titleEmpty
                     } else {
-                        headerView?.titleLabel.text = "이번 달 방문 인증 내역"
+                        headerView?.titleLabel.text = Strings.StoreDetail.Visit.Header.titleNormal
                     }
                 }
                 
                 return headerView
                 
-            case .info:
+            case .info, .photo:
                 let headerView = collectionView.dequeueReusableSupplementaryView(
                     ofKind: UICollectionView.elementKindSectionHeader,
                     withReuseIdentifier: "\(StoreDetailHeaderView.self)",

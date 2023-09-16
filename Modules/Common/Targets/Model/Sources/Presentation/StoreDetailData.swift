@@ -5,6 +5,7 @@ public struct StoreDetailData {
     public let visit: StoreDetailVisit
     public let info: StoreDetailInfo
     public let menus: [StoreDetailMenu]
+    public let photos: [StoreDetailPhoto]
     
     public init(response: StoreWithDetailApiResponse) {
         self.overview = StoreDetailOverview(
@@ -29,5 +30,9 @@ public struct StoreDetailData {
         )
         
         self.menus = response.store.menus.map { StoreDetailMenu(response: $0) }
+        self.photos = response.images.contents.map { StoreDetailPhoto(
+            response: $0,
+            totalCount: response.images.cursor.totalCount
+        ) }
     }
 }

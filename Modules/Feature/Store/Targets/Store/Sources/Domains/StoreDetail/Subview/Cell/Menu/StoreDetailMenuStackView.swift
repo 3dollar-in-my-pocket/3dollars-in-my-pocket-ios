@@ -15,6 +15,10 @@ final class StoreDetailMenuStackView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func prepareForReuse() {
+        arrangedSubviews.forEach { $0.removeFromSuperview() }
+    }
+    
     func bind(_ menus: [StoreDetailMenu], isShowAll: Bool) {
         var stackItemCount = 0
         let categories = menus.map { $0.category }

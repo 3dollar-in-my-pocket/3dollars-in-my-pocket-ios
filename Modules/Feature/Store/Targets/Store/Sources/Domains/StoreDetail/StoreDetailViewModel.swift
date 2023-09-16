@@ -61,12 +61,17 @@ final class StoreDetailViewModel: BaseViewModel {
             switch storeDetailResult {
             case .success(let response):
                 let storeDetailData = StoreDetailData(response: response)
-                let menuCellViewModel = createMenuCellViewModel(storeDetailData)
+                let photoCount = response.images.cursor.totalCount
                 
                 output.sections.send([
-                    .init(type: .overview, items: [.overview(storeDetailData.overview)]),
-                    .init(type: .visit, items: [.visit(storeDetailData.visit)]),
-                    .init(type: .info, header: .init(title: "가게 정보 & 메뉴", description: "2023.02.04 업데이트", value: nil, buttonTitle: "정보 수정"), items: [.info(storeDetailData.info), .menu(menuCellViewModel)])
+                    .overviewSection(storeDetailData.overview),
+                    .visitSection(storeDetailData.visit),
+                    .infoSection(
+                        updatedAt: "2023.02.04 업데이트",
+                        info: storeDetailData.info,
+                        menuCellViewModel: createMenuCellViewModel(storeDetailData)
+                    ),
+                    .photoSection(totalCount: photoCount, photos: storeDetailData.photos)
                 ])
             case .failure(let failure):
                 print("💜error: \(failure)")

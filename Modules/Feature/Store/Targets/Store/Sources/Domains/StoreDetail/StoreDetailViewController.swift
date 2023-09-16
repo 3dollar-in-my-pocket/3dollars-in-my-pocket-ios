@@ -126,11 +126,38 @@ public final class StoreDetailViewController: BaseViewController {
                     subitems: [infoItem, menuItem]
                 )
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 32, trailing: 20)
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
                         heightDimension: .absolute(44)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .topLeading
+                )]
+                
+                return section
+                
+            case .photo:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .absolute(StoreDetailPhotoCell.Layout.size.width),
+                    heightDimension: .absolute(StoreDetailPhotoCell.Layout.size.height)
+                ))
+                
+                let group = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreDetailPhotoCell.Layout.size.height)
+                    ),
+                    subitems: [item]
+                )
+                group.interItemSpacing = NSCollectionLayoutSpacing.fixed(StoreDetailPhotoCell.Layout.space)  
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 12, leading: 20, bottom: 32, trailing: 20)
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(24)
                     ),
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .topLeading
