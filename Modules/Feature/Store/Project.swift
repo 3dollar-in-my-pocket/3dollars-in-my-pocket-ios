@@ -54,6 +54,18 @@ let project = Project(
             dependencies: [
                 .project(target: "Store", path: "./")
             ]
+        ),
+        Target(
+            name: "StoreInterface",
+            platform: .iOS,
+            product: .framework,
+            bundleId: "com.macgongmon.-dollar-in-my-pocket.store-interface",
+            deploymentTarget: .iOS(targetVersion: "14.0", devices: .iphone),
+            infoPlist: .default,
+            sources: ["Targets/Interface/Sources/**"],
+            dependencies: [
+                .project(target: "Store", path: "./"),
+            ]
         )
     ],
     schemes: [

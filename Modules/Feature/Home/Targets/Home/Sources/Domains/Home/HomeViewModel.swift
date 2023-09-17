@@ -63,7 +63,8 @@ final class HomeViewModel: BaseViewModel {
     enum Route {
         case presentCategoryFilter(PlatformStoreCategory?)
         case presentListView(HomeListViewModel.State)
-        case pushStoreDetail(storeId: String)
+        case pushStoreDetail(storeId: Int)
+        case pushBossStoreDetail(storeId: String)
         case presentVisit(StoreCard)
         case presentPolicy
         case presentMarkerAdvertisement
@@ -170,7 +171,7 @@ final class HomeViewModel: BaseViewModel {
                 await owner.userService.fetchUser()
             }
             .compactMapValue()
-            .filter { $0.marketingConsent == .unverified }
+            .filter { MarketingConsent(value: $0.marketingConsent) == .unverified }
             .map { _ in Route.presentPolicy }
             .subscribe(output.route)
             .store(in: &cancellables)
@@ -386,9 +387,8 @@ final class HomeViewModel: BaseViewModel {
             .sink { owner, selectIndex in
                 guard let store = owner.state.stores[safe: selectIndex],
                       let location = store.location else { return }
-                
                 if selectIndex == owner.state.selectedIndex {
-                    owner.output.route.send(.pushStoreDetail(storeId: store.storeId))
+                    owner.pushStoreDetail(store: store)
                 } else {
                     let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
                     owner.output.cameraPosition.send(cameraPosition)
@@ -436,6 +436,14 @@ final class HomeViewModel: BaseViewModel {
             self?.state.hasMore = response.cursor.hasMore
             
             return response.contents.map(StoreCard.init(response:))
+        }
+    }
+    
+    private func pushStoreDetail(store: StoreCard) {
+        if store.storeType == .userStore {
+            output.route.send(.pushStoreDetail(storeId: Int(store.storeId) ?? 0))
+        } else {
+            output.route.send(.pushBossStoreDetail(storeId: store.storeId))
         }
     }
 }

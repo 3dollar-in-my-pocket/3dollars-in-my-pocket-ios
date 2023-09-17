@@ -14,6 +14,7 @@ public final class StoreDetailViewController: BaseViewController {
     public init(storeId: Int) {
         self.viewModel = StoreDetailViewModel(storeId: storeId)
         super.init(nibName: nil, bundle: nil)
+        hidesBottomBarWhenPushed = true
     }
     
     required init?(coder: NSCoder) {
@@ -29,6 +30,17 @@ public final class StoreDetailViewController: BaseViewController {
         viewModel.input.viewDidLoad.send(())
         
         storeDetailView.collectionView.collectionViewLayout = createLayout()
+    }
+    
+    public override func bindEvent() {
+        storeDetailView.backButton
+            .controlPublisher(for: .touchUpInside)
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.navigationController?.popViewController(animated: true)
+            }
+            .store(in: &cancellables)
     }
     
     public override func bindViewModelInput() {
