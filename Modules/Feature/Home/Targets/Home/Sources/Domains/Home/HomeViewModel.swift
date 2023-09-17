@@ -63,7 +63,8 @@ final class HomeViewModel: BaseViewModel {
     enum Route {
         case presentCategoryFilter(PlatformStoreCategory?)
         case presentListView(HomeListViewModel.State)
-        case pushStoreDetail(storeId: String)
+        case pushStoreDetail(storeId: Int)
+        case pushBossStoreDetail(storeId: String)
         case presentVisit(StoreCard)
         case presentPolicy
         case presentMarkerAdvertisement
@@ -78,6 +79,7 @@ final class HomeViewModel: BaseViewModel {
     private let userService: UserServiceProtocol
     private let mapService: MapServiceProtocol
     private let locationManager: LocationManagerProtocol
+    private var userDefaults: UserDefaultsUtil
     
     init(
         state: State = State(),
@@ -85,7 +87,8 @@ final class HomeViewModel: BaseViewModel {
         advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
         userService: UserServiceProtocol = UserService(),
         mapService: MapServiceProtocol = MapService(),
-        locationManager: LocationManagerProtocol = LocationManager.shared
+        locationManager: LocationManagerProtocol = LocationManager.shared,
+        userDefaults: UserDefaultsUtil = .shared
     ) {
         self.state = state
         self.storeService = storeService
@@ -93,6 +96,7 @@ final class HomeViewModel: BaseViewModel {
         self.userService = userService
         self.mapService = mapService
         self.locationManager = locationManager
+        self.userDefaults = userDefaults
         super.init()
     }
     
@@ -141,6 +145,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.resultCameraPosition = location
                 owner.state.currentLocation = owner.state.resultCameraPosition
                 owner.output.cameraPosition.send(location)
+                owner.userDefaults.userCurrentLocation = location
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -166,7 +171,7 @@ final class HomeViewModel: BaseViewModel {
                 await owner.userService.fetchUser()
             }
             .compactMapValue()
-            .filter { $0.marketingConsent == .unverified }
+            .filter { MarketingConsent(value: $0.marketingConsent) == .unverified }
             .map { _ in Route.presentPolicy }
             .subscribe(output.route)
             .store(in: &cancellables)
@@ -329,6 +334,7 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink { owner, location in
+                owner.userDefaults.userCurrentLocation = location
                 owner.state.currentLocation = location
                 owner.output.cameraPosition.send(location)
             }
@@ -381,9 +387,8 @@ final class HomeViewModel: BaseViewModel {
             .sink { owner, selectIndex in
                 guard let store = owner.state.stores[safe: selectIndex],
                       let location = store.location else { return }
-                
                 if selectIndex == owner.state.selectedIndex {
-                    owner.output.route.send(.pushStoreDetail(storeId: store.storeId))
+                    owner.pushStoreDetail(store: store)
                 } else {
                     let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
                     owner.output.cameraPosition.send(cameraPosition)
@@ -431,6 +436,14 @@ final class HomeViewModel: BaseViewModel {
             self?.state.hasMore = response.cursor.hasMore
             
             return response.contents.map(StoreCard.init(response:))
+        }
+    }
+    
+    private func pushStoreDetail(store: StoreCard) {
+        if store.storeType == .userStore {
+            output.route.send(.pushStoreDetail(storeId: Int(store.storeId) ?? 0))
+        } else {
+            output.route.send(.pushBossStoreDetail(storeId: store.storeId))
         }
     }
 }

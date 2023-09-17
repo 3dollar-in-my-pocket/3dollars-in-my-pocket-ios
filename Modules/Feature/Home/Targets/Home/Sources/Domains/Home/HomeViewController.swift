@@ -3,6 +3,8 @@ import Combine
 
 import Common
 import DesignSystem
+import StoreInterface
+
 import NMapsMap
 import Then
 import PanModal
@@ -189,16 +191,19 @@ public final class HomeViewController: BaseViewController {
                     owner.present(HomeListViewController.instance(state: state), animated: true)
                     
                 case .pushStoreDetail(let storeId):
-                    print("🔥 상품 상세화면 구현 필요")
+                    owner.pushStoreDetail(storeId: storeId)
+                    
+                case .pushBossStoreDetail(let storeId):
+                    ToastManager.shared.show(message: "🔥 사장님 가게 상세 화면 구현 필요")
                     
                 case .presentVisit(let storeCard):
-                    print("🔥 방문 화면 구현 필요")
+                    ToastManager.shared.show(message: "🔥 방문 화면 구현 필요")
                     
                 case .presentPolicy:
-                    print("🔥 처리 방침 구현 필요")
+                    ToastManager.shared.show(message: "🔥 처리 방침 구현 필요")
                     
                 case .presentMarkerAdvertisement:
-                    print("🔥 마커 광고 화면 구현 필요")
+                    ToastManager.shared.show(message: "🔥 마커 광고 화면 구현 필요")
                     
                 case .showErrorAlert(let error):
                     if error is LocationError {
@@ -276,6 +281,12 @@ public final class HomeViewController: BaseViewController {
         if UIApplication.shared.canOpenURL(settingsUrl) {
             UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
         }
+    }
+    
+    private func pushStoreDetail(storeId: Int) {
+        let viewController = StoreInterfaceImpl().pushStoreDetail(storeId: storeId)
+        
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
