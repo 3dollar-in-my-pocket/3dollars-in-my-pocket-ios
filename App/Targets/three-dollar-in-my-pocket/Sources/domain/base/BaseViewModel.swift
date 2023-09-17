@@ -1,6 +1,5 @@
 import RxSwift
 import RxCocoa
-import Combine
 
 class BaseViewModel {
   
@@ -11,8 +10,7 @@ class BaseViewModel {
   // showErrorAlert에서 HTTPError도 처리중!
   let httpErrorAlert = PublishRelay<HTTPError>()
   let showSystemAlert = PublishRelay<AlertContent>()
-
-  var cancellables = Set<AnyCancellable>()
+ 
   
   init() {
     self.bind()

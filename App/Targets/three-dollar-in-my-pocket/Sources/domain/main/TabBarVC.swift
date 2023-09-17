@@ -151,7 +151,7 @@ class TabBarVC: UITabBarController {
             Home.HomeViewController.instance(),
             StreetFoodListViewController.instance(),
             WriteAddressViewController.instance(delegate: self),
-            CommunityViewController.instance(),
+            FoodTruckListViewController.instance(),
             MyPageViewController.instance()
         ], animated: true)
         self.tabBar.tintColor = Color.red
