@@ -42,7 +42,7 @@ public final class CommunityViewController: BaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        dataSource.reloadData()
+        viewModel.input.viewDidLoad.send(())
     }
 
     public override func bindEvent() {
@@ -62,5 +62,14 @@ public final class CommunityViewController: BaseViewController {
                 }
             }
             .store(in: &cancellables)
+
+        viewModel.output.sections
+            .main
+            .withUnretained(self)
+            .sink { owner, sections in
+                owner.dataSource.reload(sections)
+            }
+            .store(in: &cancellables)
+
     }
 }

@@ -4,10 +4,21 @@ import Common
 import DesignSystem
 import Then
 
-final class CommunityStoreTabCell: BaseCollectionViewCell {
+final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
 
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 450)
+        static func size(viewModel: CommunityPopularStoreTabCellViewModel) -> CGSize {
+            let titleHeight: CGFloat = 88
+            let tabHeight: CGFloat = CommunityTabView.Layout.height
+            let itemCount = CGFloat(viewModel.output.storeList.count)
+            let total: CGFloat = CommunityPopularStoreItemCell.Layout.size.height * itemCount + (itemSpacing * itemCount - 1) + 48.0
+            return CGSize(
+                width: UIScreen.main.bounds.width,
+                height: titleHeight + tabHeight + total
+            )
+        }
+
+        static let itemSpacing: CGFloat = 9
     }
 
     private let titleLabel = UILabel().then {
@@ -42,10 +53,13 @@ final class CommunityStoreTabCell: BaseCollectionViewCell {
         $0.backgroundColor = .clear
         $0.contentInset = .init(top: 24, left: 0, bottom: 24, right: 0)
         $0.showsVerticalScrollIndicator = false
-        $0.register([CommunityStoreItemCell.self])
+        $0.register([CommunityPopularStoreItemCell.self])
         $0.dataSource = self
         $0.delegate = self
+        $0.isScrollEnabled = false
     }
+
+    private var viewModel: CommunityPopularStoreTabCellViewModel?
 
     override func setup() {
         super.setup()
@@ -90,117 +104,36 @@ final class CommunityStoreTabCell: BaseCollectionViewCell {
         }
     }
 
+    func bind(viewModel: CommunityPopularStoreTabCellViewModel) {
+        self.viewModel = viewModel
+    }
+
     private func generateLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CommunityStoreItemCell.Layout.size
+        layout.itemSize = CommunityPopularStoreItemCell.Layout.size
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 9
-        layout.minimumInteritemSpacing = 9
+        layout.minimumLineSpacing = Layout.itemSpacing
+        layout.minimumInteritemSpacing = Layout.itemSpacing
 
         return layout
     }
 }
 
-extension CommunityStoreTabCell: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
+extension CommunityPopularStoreTabCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return viewModel?.output.storeList.count ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: CommunityStoreItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-        cell.bind()
+        guard let item = viewModel?.output.storeList[safe: indexPath.item] else { return UICollectionViewCell() }
+
+        let cell: CommunityPopularStoreItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        cell.bind(item: item)
         return cell
     }
 }
 
-extension CommunityStoreTabCell: UICollectionViewDelegate {
+extension CommunityPopularStoreTabCell: UICollectionViewDelegate {
 
 }
 
-// MARK: - CommunityStoreItemCell
-
-final class CommunityStoreItemCell: BaseCollectionViewCell {
-
-    enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width - 40, height: 72)
-    }
-
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 20
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.gray10.color
-    }
-
-    private let titleStackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 4
-    }
-
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.gray100.color
-    }
-
-    private let tagStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 8
-    }
-
-    private let tagLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray40.color
-    }
-
-    private let imageView = UIImageView().then {
-        $0.backgroundColor = .clear
-    }
-
-    override func setup() {
-        super.setup()
-
-        contentView.addSubViews([
-            containerView
-        ])
-
-        containerView.addSubViews([
-            titleStackView,
-            tagStackView,
-            imageView
-        ])
-
-        titleStackView.addArrangedSubview(tagStackView)
-        titleStackView.addArrangedSubview(titleLabel)
-
-        tagStackView.addArrangedSubview(tagLabel)
-    }
-
-    override func bindConstraints() {
-        super.bindConstraints()
-
-        containerView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-
-        imageView.snp.makeConstraints {
-            $0.size.equalTo(48)
-            $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().inset(16)
-        }
-
-        titleStackView.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.leading.equalTo(imageView.snp.trailing).offset(16)
-            $0.trailing.lessThanOrEqualToSuperview().inset(16)
-        }
-    }
-
-    func bind() {
-        imageView.image = Icons.faceSmile.image
-        titleLabel.text = "강남역 0번 출구 앞 붕어빵"
-        tagLabel.text = "#붕어빵"
-    }
-}

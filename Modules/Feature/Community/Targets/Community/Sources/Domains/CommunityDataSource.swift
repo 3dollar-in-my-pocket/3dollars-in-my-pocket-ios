@@ -8,7 +8,7 @@ struct CommunitySection: Hashable {
 
 enum CommunitySectionItem: Hashable {
     case poll
-    case store
+    case popularStore(CommunityPopularStoreTabCellViewModel)
 }
 
 final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySection, CommunitySectionItem> {
@@ -22,7 +22,7 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
 
         collectionView.register([
             CommunityPollListCell.self,
-            CommunityStoreTabCell.self
+            CommunityPopularStoreTabCell.self
         ])
 
         super.init(collectionView: collectionView) { [weak viewModel] collectionView, indexPath, itemIdentifier in
@@ -40,9 +40,9 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
                     .subscribe(viewModel.input.didSelectPollItem)
                     .store(in: &cell.cancellables)
                 return cell
-            case .store:
-                let cell: CommunityStoreTabCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-
+            case .popularStore(let viewModel):
+                let cell: CommunityPopularStoreTabCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
                 return cell
             }
         }
@@ -50,13 +50,9 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
         collectionView.delegate = self
     }
 
-    func reloadData() {
+    func reload(_ sections: [CommunitySection]) {
         var snapshot = Snapshot()
-
-        let sections = [CommunitySection(items: [
-            .poll, .store
-        ])]
-
+        
         sections.forEach {
             snapshot.appendSections([$0])
             snapshot.appendItems($0.items)
@@ -71,8 +67,8 @@ extension CommunityDataSource: UICollectionViewDelegateFlowLayout {
         switch self[indexPath] {
         case .poll:
             return CommunityPollListCell.Layout.size
-        case .store:
-            return CommunityStoreTabCell.Layout.size
+        case .popularStore(let viewModel):
+            return CommunityPopularStoreTabCell.Layout.size(viewModel: viewModel)
         default:
             return .zero
         }

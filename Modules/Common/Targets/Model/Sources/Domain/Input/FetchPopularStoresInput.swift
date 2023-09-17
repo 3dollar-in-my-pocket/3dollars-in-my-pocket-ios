@@ -7,7 +7,7 @@ public struct FetchPopularStoresInput: Encodable {
     public let district: String
 
     public init(
-        size: Int = 30,
+        size: Int = 20,
         cursor: String? = nil,
         criteria: String,
         district: String
