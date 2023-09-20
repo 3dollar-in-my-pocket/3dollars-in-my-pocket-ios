@@ -10,7 +10,7 @@ class BaseViewModel {
   // showErrorAlert에서 HTTPError도 처리중!
   let httpErrorAlert = PublishRelay<HTTPError>()
   let showSystemAlert = PublishRelay<AlertContent>()
-  
+ 
   
   init() {
     self.bind()
