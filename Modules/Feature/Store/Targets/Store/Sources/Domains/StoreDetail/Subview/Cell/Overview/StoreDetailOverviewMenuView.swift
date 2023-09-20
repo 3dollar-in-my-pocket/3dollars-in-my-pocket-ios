@@ -21,13 +21,13 @@ final class StoreDetailOverviewMenuView: BaseView {
         $0.alignment = .center
     }
     
-    let saveButton = ItemView(.save(count: 0))
+    let favoriteButton = ItemButton(.save(count: 0))
     
-    let shareButton = ItemView(.share)
+    let shareButton = ItemButton(.share)
     
-    let navigationButton = ItemView(.navigation)
+    let navigationButton = ItemButton(.navigation)
     
-    let reviewButton = ItemView(.review)
+    let reviewButton = ItemButton(.review)
     
     
     override func setup() {
@@ -36,27 +36,27 @@ final class StoreDetailOverviewMenuView: BaseView {
             stackView
         ])
         
-        stackView.addArrangedSubview(saveButton)
-        saveButton.snp.makeConstraints {
-            $0.size.equalTo(ItemView.Layout.size)
+        stackView.addArrangedSubview(favoriteButton)
+        favoriteButton.snp.makeConstraints {
+            $0.size.equalTo(ItemButton.Layout.size)
         }
         addDivider()
         
         stackView.addArrangedSubview(shareButton)
         shareButton.snp.makeConstraints {
-            $0.size.equalTo(ItemView.Layout.size)
+            $0.size.equalTo(ItemButton.Layout.size)
         }
         addDivider()
         
         stackView.addArrangedSubview(navigationButton)
         navigationButton.snp.makeConstraints {
-            $0.size.equalTo(ItemView.Layout.size)
+            $0.size.equalTo(ItemButton.Layout.size)
         }
         addDivider()
         
         stackView.addArrangedSubview(reviewButton)
         reviewButton.snp.makeConstraints {
-            $0.size.equalTo(ItemView.Layout.size).priority(.high)
+            $0.size.equalTo(ItemButton.Layout.size).priority(.high)
         }
     }
     
@@ -89,7 +89,7 @@ final class StoreDetailOverviewMenuView: BaseView {
 }
 
 extension StoreDetailOverviewMenuView {
-    final class ItemView: BaseView {
+    final class ItemButton: UIControl {
         enum Layout {
             static let size = CGSize(
                 width: (UIScreen.main.bounds.width - 64 - 36)/4,
@@ -136,7 +136,7 @@ extension StoreDetailOverviewMenuView {
             }
         }
         
-        let icon = UIImageView()
+        var icon = UIImageView()
         
         let label = UILabel().then {
             $0.font = Fonts.medium.font(size: 12)
@@ -144,25 +144,51 @@ extension StoreDetailOverviewMenuView {
             $0.textAlignment = .center
         }
         
+        override var isSelected: Bool {
+            didSet {
+                switch type {
+                case .save:
+                    if isSelected {
+                        icon.image = Icons.bookmarkSolid.image.withTintColor(Colors.mainRed.color)
+                    } else {
+                        icon.image = Icons.bookmarkLine.image.withTintColor(Colors.systemBlack.color)
+                    }
+                    
+                default:
+                    return
+                }
+            }
+        }
+        
+        private let type: ItemType
+        
         init(_ type: ItemType) {
+            self.type = type
             super.init(frame: .zero)
             
             icon.image = type.icon
             label.text = type.text
+            
+            setup()
+            bindConstraints()
         }
         
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
         
-        override func setup() {
+        func setCount(_ count: Int) {
+            label.text = "\(count)"
+        }
+        
+        private func setup() {
             addSubViews([
                 icon,
                 label
             ])
         }
         
-        override func bindConstraints() {
+        private  func bindConstraints() {
             icon.snp.makeConstraints {
                 $0.centerX.equalToSuperview()
                 $0.top.equalToSuperview()

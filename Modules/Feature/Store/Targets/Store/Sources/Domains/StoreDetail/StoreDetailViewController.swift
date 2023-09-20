@@ -1,6 +1,7 @@
 import UIKit
 
 import Common
+import DesignSystem
 
 public final class StoreDetailViewController: BaseViewController {
     private let storeDetailView = StoreDetailView()
@@ -44,7 +45,11 @@ public final class StoreDetailViewController: BaseViewController {
     }
     
     public override func bindViewModelInput() {
-        
+        storeDetailView.bottomStickyView.saveButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapSave)
+            .store(in: &cancellables)
     }
     
     public override func bindViewModelOutput() {
@@ -53,6 +58,21 @@ public final class StoreDetailViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewController, sections: [StoreDetailSection]) in
                 owner.datasource.reload(sections)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.toast
+            .receive(on: DispatchQueue.main)
+            .sink { (message: String) in
+                ToastManager.shared.show(message: message)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.isFavorited
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, isSaved: Bool) in
+                owner.storeDetailView.bottomStickyView.setSaved(isSaved)
             }
             .store(in: &cancellables)
     }

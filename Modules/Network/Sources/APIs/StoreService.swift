@@ -11,6 +11,8 @@ public protocol StoreServiceProtocol {
     func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResposne<PlatformStoreWithDetailResponse>, Error>
     
     func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<StoreWithDetailApiResponse, Error>
+    
+    func saveStore(storeType: StoreType, storeId: String, isDelete: Bool) async -> Result<String, Error>
 }
 
 public struct StoreService: StoreServiceProtocol {
@@ -36,6 +38,12 @@ public struct StoreService: StoreServiceProtocol {
     
     public func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<StoreWithDetailApiResponse, Error> {
         let request = FetchStoreDetailRequest(input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func saveStore(storeType: StoreType, storeId: String, isDelete: Bool) async -> Result<String, Error> {
+        let request = SaveStoreRequest(storeType: storeType, storeId: storeId, isDelete: isDelete)
         
         return await NetworkManager.shared.request(requestType: request)
     }

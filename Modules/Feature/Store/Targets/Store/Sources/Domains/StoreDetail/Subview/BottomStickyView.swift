@@ -57,4 +57,16 @@ final class BottomStickyView: BaseView {
             $0.left.equalTo(saveButton.snp.right).offset(16)
         }
     }
+    
+    func setSaved(_ isSaved: Bool) {
+        if isSaved {
+            saveButton.leftIcon = Icons.bookmarkSolid.image
+            saveButton.tintColor = Colors.mainRed.color
+            saveButton.setTitleColor(Colors.mainRed.color, for: .normal)
+        } else {
+            saveButton.leftIcon = Icons.bookmarkLine.image
+            saveButton.tintColor = Colors.gray70.color
+            saveButton.setTitleColor(Colors.gray70.color, for: .normal)
+        }
+    }
 }

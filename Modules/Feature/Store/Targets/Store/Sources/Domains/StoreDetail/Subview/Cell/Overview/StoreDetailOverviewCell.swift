@@ -53,8 +53,50 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(_ overview: StoreDetailOverview) {
-        titleView.bind(overview)
-        mapView.bind(location: overview.location, address: overview.address)
+    func bind(_ viewModel: StoreDetailOverviewCellViewModel) {
+        titleView.bind(viewModel.output.overview)
+        mapView.bind(
+            location: viewModel.output.overview.location,
+            address: viewModel.output.overview.address
+        )
+        menuView.favoriteButton.isSelected = viewModel.output.overview.isFavorited
+        menuView.favoriteButton.setCount(viewModel.output.overview.subscribersCount)
+        
+        menuView.favoriteButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapFavorite)
+            .store(in: &cancellables)
+        
+        menuView.shareButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapShare)
+            .store(in: &cancellables)
+        
+        menuView.navigationButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapNavigation)
+            .store(in: &cancellables)
+        
+        menuView.reviewButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapWriteReview)
+            .store(in: &cancellables)
+        
+        viewModel.output.isFavorited
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.isSelected, on: menuView.favoriteButton)
+            .store(in: &cancellables)
+        
+        viewModel.output.subscribersCount
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner: StoreDetailOverviewCell, count) in
+                owner.menuView.favoriteButton.setCount(count)
+            }
+            .store(in: &cancellables)
     }
 }

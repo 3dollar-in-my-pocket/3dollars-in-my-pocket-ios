@@ -10,4 +10,6 @@ public struct StoreDetailOverview: Hashable {
     public let distance: Int
     public let location: Location
     public let address: String
+    public var isFavorited: Bool
+    public var subscribersCount: Int
 }

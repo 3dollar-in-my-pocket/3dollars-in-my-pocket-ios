@@ -39,3 +39,5 @@
 "store_detail.review.report" = "신고";
 "store_detail.review.edit" = "수정";
 "store_detail.review.more_format" = "리뷰 %d개 더보기";
+"store_detail.toast.add_favorite" = "즐겨찾기가 추가되었습니다!";
+"store_detail.toast.remove_favorite" = "즐겨찾기가 삭제되었습니다!";

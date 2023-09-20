@@ -3,7 +3,7 @@ import Foundation
 import Model
 
 enum StoreDetailSectionItem: Hashable {
-    case overview(StoreDetailOverview)
+    case overview(StoreDetailOverviewCellViewModel)
     case visit(StoreDetailVisit)
     case info(StoreDetailInfo)
     case menu(StoreDetailMenuCellViewModel)

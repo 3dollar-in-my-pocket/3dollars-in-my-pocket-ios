@@ -114,6 +114,12 @@ public enum StoreStrings {
         public static let title = StoreStrings.tr("Localization", "store_detail.review.header.title")
       }
     }
+    public enum Toast {
+      /// 즐겨찾기가 추가되었습니다!
+      public static let addFavorite = StoreStrings.tr("Localization", "store_detail.toast.add_favorite")
+      /// 즐겨찾기가 삭제되었습니다!
+      public static let removeFavorite = StoreStrings.tr("Localization", "store_detail.toast.remove_favorite")
+    }
     public enum Visit {
       /// + 그 외 %d명이 다녀갔어요!
       public static func moreFormat(_ p1: Int) -> String {

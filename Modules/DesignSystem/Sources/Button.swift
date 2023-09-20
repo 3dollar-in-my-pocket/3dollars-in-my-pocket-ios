@@ -44,7 +44,11 @@ public class Button {
         
         private let size: Size
         private var text: String?
-        private var leftIcon: UIImage?
+        public var leftIcon: UIImage? {
+            didSet {
+                setImage(leftIcon?.withRenderingMode(.alwaysTemplate), for: .normal)
+            }
+        }
         
         public init(size: Size, text: String? = nil, leftIcon: UIImage? = nil) {
             self.size = size

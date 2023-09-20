@@ -1,7 +1,7 @@
 import Foundation
 
 public struct StoreDetailData {
-    public let overview: StoreDetailOverview
+    public var overview: StoreDetailOverview
     public let visit: StoreDetailVisit
     public let info: StoreDetailInfo
     public let menus: [StoreDetailMenu]
@@ -19,7 +19,9 @@ public struct StoreDetailData {
             reviewCount: response.reviews.cursor.totalCount,
             distance: response.distanceM,
             location: Location(response: response.store.location),
-            address: response.store.address.fullAddress
+            address: response.store.address.fullAddress,
+            isFavorited: response.favorite.isFavorite,
+            subscribersCount: response.favorite.totalSubscribersCount
         )
         
         self.visit = StoreDetailVisit(response: response.visits)
