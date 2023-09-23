@@ -10,6 +10,7 @@ final class CommunityPopularStoreTabCellViewModel: BaseViewModel {
 
     struct Output {
         let storeList: [PlatformStore]
+        let district: String
     }
 
     struct Config {
@@ -18,8 +19,17 @@ final class CommunityPopularStoreTabCellViewModel: BaseViewModel {
     let input = Input()
     let output: Output
 
-    init(storeList: [PlatformStore]) {
-        self.output = Output(storeList: storeList)
+    private let userDefaultsUtil: UserDefaultsUtil
+
+    init(
+        storeList: [PlatformStore],
+        userDefaultsUtil: UserDefaultsUtil = .shared
+    ) {
+        self.userDefaultsUtil = userDefaultsUtil
+        self.output = Output(
+            storeList: storeList,
+            district: userDefaultsUtil.communityPopularStoreNeighborhoods.description
+        )
 
         super.init()
     }

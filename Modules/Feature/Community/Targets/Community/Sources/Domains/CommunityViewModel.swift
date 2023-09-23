@@ -10,6 +10,7 @@ final class CommunityViewModel: BaseViewModel {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let didTapPollCategoryButton = PassthroughSubject<Void, Never>()
         let didSelectPollItem = PassthroughSubject<String, Never>()
+        let didTapDistrictButton = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -25,6 +26,7 @@ final class CommunityViewModel: BaseViewModel {
     enum Route {
         case pollCategoryTab
         case pollDetail
+        case popularStoreNeighborhoods
     }
 
     let input = Input()
@@ -59,6 +61,11 @@ final class CommunityViewModel: BaseViewModel {
 
         input.didSelectPollItem
             .map { _ in .pollDetail }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+
+        input.didTapDistrictButton
+            .map { _ in .popularStoreNeighborhoods }
             .subscribe(output.route)
             .store(in: &cancellables)
     }

@@ -59,6 +59,9 @@ public final class CommunityViewController: BaseViewController {
                 case .pollDetail:
                     let vc = PollDetailViewController()
                     owner.navigationController?.pushViewController(vc, animated: true)
+                case .popularStoreNeighborhoods:
+                    let vc = CommunityPopularStoreNeighborhoodsViewController()
+                    owner.present(vc, animated: true, completion: nil)
                 }
             }
             .store(in: &cancellables)
@@ -70,6 +73,5 @@ public final class CommunityViewController: BaseViewController {
                 owner.dataSource.reload(sections)
             }
             .store(in: &cancellables)
-
     }
 }

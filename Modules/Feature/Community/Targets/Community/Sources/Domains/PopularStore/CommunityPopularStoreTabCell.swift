@@ -33,9 +33,8 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
         $0.text = "아직 서울만 볼 수 있어요! 조금만 기다려 주세요 :)"
     }
 
-    private let locationButton = UIButton().then {
+    let districtButton = UIButton().then {
         $0.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        $0.setTitle("관악구", for: .normal)
         $0.backgroundColor = Colors.gray10.color
         $0.layer.cornerRadius = 8
         $0.imageEdgeInsets.left = 2
@@ -69,7 +68,7 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
         contentView.addSubViews([
             titleLabel,
             descriptionLabel,
-            locationButton,
+            districtButton,
             tabView,
             collectionView
         ])
@@ -88,7 +87,7 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
             $0.leading.equalTo(titleLabel)
         }
 
-        locationButton.snp.makeConstraints {
+        districtButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(38)
             $0.trailing.equalToSuperview().inset(20)
         }
@@ -106,6 +105,8 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
 
     func bind(viewModel: CommunityPopularStoreTabCellViewModel) {
         self.viewModel = viewModel
+
+        districtButton.setTitle(viewModel.output.district, for: .normal)
     }
 
     private func generateLayout() -> UICollectionViewLayout {
