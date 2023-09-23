@@ -12,34 +12,6 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
 public enum MembershipStrings {
-  /// 지도뷰
-  public static let categoryFileterMapView = MembershipStrings.tr("Localization", "category_fileter_map_view")
-  /// new
-  public static let categoryFilterNew = MembershipStrings.tr("Localization", "category_filter_new")
-  /// 이 안에 네 최애 하나쯤은 있겠지!
-  public static let categoryFilterTitle = MembershipStrings.tr("Localization", "category_filter_title")
-  /// 전체 메뉴
-  public static let homeCategoryFilterButton = MembershipStrings.tr("Localization", "home_category_filter_button")
-  /// 다른 주소로 검색하거나 직접 제보해보세요!
-  public static let homeEmptyDescription = MembershipStrings.tr("Localization", "home_empty_description")
-  /// 주변 2km 이내에\n가게가 없어요.
-  public static let homeEmptyTitle = MembershipStrings.tr("Localization", "home_empty_title")
-  /// 전체 메뉴
-  public static let homeListHeaderTotal = MembershipStrings.tr("Localization", "home_list_header_total")
-  /// 방문 인증 가게
-  public static let homeListIsOnlyCertified = MembershipStrings.tr("Localization", "home_list_is_only_certified")
-  /// 리스트뷰
-  public static let homeListViewButton = MembershipStrings.tr("Localization", "home_list_view_button")
-  /// 사장님 직영점만
-  public static let homeOnlyBossButton = MembershipStrings.tr("Localization", "home_only_boss_button")
-  /// 현재 지도에서 가게 재검색
-  public static let homeResearchButton = MembershipStrings.tr("Localization", "home_research_button")
-  /// 거리순 보기
-  public static let homeSortingButtonDistance = MembershipStrings.tr("Localization", "home_sorting_button_distance")
-  /// 최근 등록순 보기
-  public static let homeSortingButtonLatest = MembershipStrings.tr("Localization", "home_sorting_button_latest")
-  /// 방문하기
-  public static let homeVisitButton = MembershipStrings.tr("Localization", "home_visit_button")
   /// 중복된 이름이에요!
   public static let nicknameAlreayExisted = MembershipStrings.tr("Localization", "nickname_alreay_existed")
   /// 닉네임
