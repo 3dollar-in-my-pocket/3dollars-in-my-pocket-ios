@@ -94,7 +94,7 @@ final class StoreDetailOverviewTitleView: BaseView {
         categoryImage.setImage(urlString: overview.categories.first?.imageUrl)
         repoterLabel.text = Strings.StoreDetail.Overview.repoterNameFormat(overview.repoterName)
         titleLabel.text = overview.storeName
-        newBadge.isHidden = overview.isNew
+        newBadge.isHidden = !overview.isNew
         setVisitCount(overview.totalVisitSuccessCount)
         infoView.bind(reviewCount: overview.reviewCount, distance: overview.distance)
     }
