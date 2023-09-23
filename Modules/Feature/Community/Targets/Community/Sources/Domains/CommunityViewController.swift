@@ -26,6 +26,11 @@ public final class CommunityViewController: BaseViewController {
 
     public static func instance() -> UINavigationController {
         let viewController = CommunityViewController()
+        viewController.tabBarItem = UITabBarItem(
+            title: nil,
+            image: Icons.communitySolid.image.resizeImage(scaledTo: 30),
+            tag: TabBarTag.foodTruck.rawValue
+        )
 
         return UINavigationController(rootViewController: viewController).then {
             $0.isNavigationBarHidden = true

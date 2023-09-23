@@ -5,6 +5,7 @@ import Home
 import Model
 import DependencyInjection
 import MembershipInterface
+import Community
 
 class TabBarVC: UITabBarController {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
@@ -151,7 +152,7 @@ class TabBarVC: UITabBarController {
             Home.HomeViewController.instance(),
             StreetFoodListViewController.instance(),
             WriteAddressViewController.instance(delegate: self),
-            FoodTruckListViewController.instance(),
+            Community.CommunityViewController.instance(),
             MyPageViewController.instance()
         ], animated: true)
         self.tabBar.tintColor = Color.red
