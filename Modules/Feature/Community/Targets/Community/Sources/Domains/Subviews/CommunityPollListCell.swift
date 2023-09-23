@@ -102,7 +102,12 @@ extension CommunityPollListCell: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: PollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-        cell.bind()
+        if indexPath.item == 0 {
+            cell.test()
+        } else {
+            cell.bind()
+        }
+
         return cell
     }
 }
