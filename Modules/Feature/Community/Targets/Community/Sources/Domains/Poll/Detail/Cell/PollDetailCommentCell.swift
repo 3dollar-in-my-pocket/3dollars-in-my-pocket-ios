@@ -36,6 +36,10 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         $0.contentEdgeInsets = .zero
     }
 
+    private let lineView = UIView().then {
+        $0.backgroundColor = Colors.gray10.color
+    }
+
     override func setup() {
         super.setup()
 
@@ -44,7 +48,8 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
             dateLabel,
             reportButton,
             badgeStackView,
-            contentLabel
+            contentLabel,
+            lineView
         ])
     }
 
@@ -67,14 +72,20 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
             $0.trailing.lessThanOrEqualToSuperview().inset(20)
         }
 
-        reportButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(16)
-            $0.trailing.equalToSuperview().inset(20)
-        }
-
         dateLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(16)
             $0.trailing.equalTo(reportButton.snp.leading)
+        }
+
+        reportButton.snp.makeConstraints {
+            $0.centerY.equalTo(dateLabel)
+            $0.trailing.equalToSuperview().inset(20)
+        }
+
+        lineView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalToSuperview()
+            $0.height.equalTo(1)
         }
     }
 
