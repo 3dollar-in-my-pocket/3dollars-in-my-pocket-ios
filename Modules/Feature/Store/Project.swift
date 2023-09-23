@@ -40,7 +40,8 @@ let project = Project(
                 .project(target: "Common", path: "../../Common"),
                 .project(target: "Model", path: "../../Common"),
                 .external(name: "SnapKit"),
-                .external(name: "Then")
+                .external(name: "Then"),
+                .external(name: "PanModal")
             ]
         ),
         Target(

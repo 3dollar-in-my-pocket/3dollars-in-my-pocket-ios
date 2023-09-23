@@ -8,7 +8,10 @@ import Model
 final class StoreDetailViewModel: BaseViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
-        let didTapDelete = PassthroughSubject<Void, Never>()
+        let didTapReport = PassthroughSubject<Void, Never>()
+        
+        // Report modal
+        let dismissReportModal = PassthroughSubject<Void, Never>()
         
         // Overview section
         let didTapSave = PassthroughSubject<Void, Never>()
@@ -28,6 +31,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         
         let toast = PassthroughSubject<String, Never>()
+        let route = PassthroughSubject<Route, Never>()
         let error = PassthroughSubject<Error, Never>()
     }
     
@@ -35,6 +39,11 @@ final class StoreDetailViewModel: BaseViewModel {
         let storeId: Int
         let storeType: StoreType = .userStore
         var storeDetailData: StoreDetailData?
+    }
+    
+    enum Route {
+        case dismissReportModalAndPop
+        case presnetReport(ReportModalViewModel)
     }
     
     let input = Input()
@@ -63,6 +72,18 @@ final class StoreDetailViewModel: BaseViewModel {
             .sink { (owner: StoreDetailViewModel, _: Void) in
                 owner.fetchStoreDetail()
             }
+            .store(in: &cancellables)
+        
+        input.didTapReport
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: StoreDetailViewModel, _) in
+                owner.presentReportModal()
+            })
+            .store(in: &cancellables)
+        
+        input.dismissReportModal
+            .map { Route.dismissReportModalAndPop }
+            .subscribe(output.route)
             .store(in: &cancellables)
     }
     
@@ -187,5 +208,34 @@ final class StoreDetailViewModel: BaseViewModel {
                 output.error.send(error)
             }
         }
+    }
+    
+    private func presentReportModal() {
+        Task {
+            let reportReasonResult = await storeService.fetchReportReasons(group: .store)
+                .map { response in
+                    response.reasons.map { ReportReason(response: $0) }
+                }
+            
+            switch reportReasonResult {
+            case .success(let reasons):
+                let viewModel = createReportModalViewModel(reasons: reasons)
+                output.route.send(Route.presnetReport(viewModel))
+                
+            case .failure(let error):
+                output.error.send(error)
+            }
+        }
+    }
+    
+    private func createReportModalViewModel(reasons: [ReportReason]) -> ReportModalViewModel {
+        let config = ReportModalViewModel.Config(storeId: state.storeId, reportReasons: reasons)
+        let viewModel = ReportModalViewModel(config: config)
+        
+        viewModel.output.dismissWithPop
+            .subscribe(input.dismissReportModal)
+            .store(in: &viewModel.cancellables)
+        
+        return viewModel
     }
 }

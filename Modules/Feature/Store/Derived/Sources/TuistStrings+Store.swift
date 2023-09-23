@@ -13,6 +13,17 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 public enum StoreStrings {
 
+  public enum ReportModal {
+    /// 신고하기
+    public static let button = StoreStrings.tr("Localization", "report_modal.button")
+    /// 3건 이상의 요청이 들어오면 자동 삭제됩니다
+    public static let description = StoreStrings.tr("Localization", "report_modal.description")
+    /// 3건 이상
+    public static let descriptionBold = StoreStrings.tr("Localization", "report_modal.description_bold")
+    /// 삭제 요청 하시는 이유가 궁금해요!
+    public static let title = StoreStrings.tr("Localization", "report_modal.title")
+  }
+
   public enum StoreDetail {
     public enum BottomSticky {
       /// 즐겨찾기

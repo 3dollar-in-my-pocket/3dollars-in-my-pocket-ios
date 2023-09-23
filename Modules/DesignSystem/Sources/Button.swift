@@ -37,10 +37,13 @@ public class Button {
         public override var isEnabled: Bool {
             didSet {
                 UIView.transition(with: self, duration: 0.1) {
-                    self.backgroundColor = self.isEnabled ? DesignSystemAsset.Colors.mainPink.color : DesignSystemAsset.Colors.gray30.color
+                    self.backgroundColor = self.isEnabled ? self.enabledBackgroundColor : self.disabledBackgroundColor
                 }
             }
         }
+        
+        public var enabledBackgroundColor: UIColor = DesignSystemAsset.Colors.mainPink.color
+        public var disabledBackgroundColor: UIColor = DesignSystemAsset.Colors.gray30.color
         
         private let size: Size
         private var text: String?

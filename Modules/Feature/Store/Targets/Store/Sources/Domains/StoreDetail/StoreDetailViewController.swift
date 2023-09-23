@@ -45,6 +45,12 @@ public final class StoreDetailViewController: BaseViewController {
     }
     
     public override func bindViewModelInput() {
+        storeDetailView.reportnButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapReport)
+            .store(in: &cancellables)
+        
         storeDetailView.bottomStickyView.saveButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
@@ -73,6 +79,20 @@ public final class StoreDetailViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewController, isSaved: Bool) in
                 owner.storeDetailView.bottomStickyView.setSaved(isSaved)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.route
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, route) in
+                switch route {
+                case .presnetReport(let viewModel):
+                    owner.presentReport(viewModel: viewModel)
+                    
+                case .dismissReportModalAndPop:
+                    owner.dismissReportModalAndPop()
+                }
             }
             .store(in: &cancellables)
     }
@@ -226,5 +246,19 @@ public final class StoreDetailViewController: BaseViewController {
         }
         
         return layout
+    }
+    
+    private func presentReport(viewModel: ReportModalViewModel) {
+        let viewController = ReportModalViewController.instance(viewModel: viewModel)
+        
+        presentPanModal(viewController)
+    }
+    
+    private func dismissReportModalAndPop() {
+        if let presentedViewController = presentedViewController {
+            presentedViewController.dismiss(animated: true) { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
     }
 }

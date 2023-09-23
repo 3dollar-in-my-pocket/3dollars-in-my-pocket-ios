@@ -41,3 +41,9 @@
 "store_detail.review.more_format" = "리뷰 %d개 더보기";
 "store_detail.toast.add_favorite" = "즐겨찾기가 추가되었습니다!";
 "store_detail.toast.remove_favorite" = "즐겨찾기가 삭제되었습니다!";
+
+// 가게 신고 화면
+"report_modal.title" = "삭제 요청 하시는 이유가 궁금해요!";
+"report_modal.description" = "3건 이상의 요청이 들어오면 자동 삭제됩니다";
+"report_modal.description_bold" = "3건 이상";
+"report_modal.button" = "신고하기";
