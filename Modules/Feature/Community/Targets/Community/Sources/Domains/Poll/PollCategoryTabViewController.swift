@@ -8,6 +8,9 @@ final class PollCategoryTabViewController: BaseViewController {
 
     private let navigationBar = CommunityNavigationBar(title: "맛대맛 투표")
     private let tabView = CommunityTabView(titles: ["실시간 참여순", "최신순"])
+    private let lineView: UIView = UIView().then {
+        $0.backgroundColor = Colors.gray20.color
+    }
     private let pageContainerView = UIView()
     private let pageViewController = BasePageViewController(
         transitionStyle: .scroll,
@@ -88,6 +91,7 @@ final class PollCategoryTabViewController: BaseViewController {
 
         view.addSubViews([
             navigationBar,
+            lineView,
             tabView,
             createPollButton
         ])
@@ -100,6 +104,12 @@ final class PollCategoryTabViewController: BaseViewController {
         tabView.snp.makeConstraints {
             $0.top.equalTo(navigationBar.snp.bottom)
             $0.leading.trailing.equalToSuperview().inset(20)
+        }
+
+        lineView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(tabView)
+            $0.height.equalTo(1)
         }
 
         createPollButton.snp.makeConstraints {

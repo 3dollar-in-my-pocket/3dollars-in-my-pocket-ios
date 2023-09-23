@@ -47,6 +47,9 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
     }
 
     private let tabView = CommunityTabView(titles: ["리뷰가 많아요", "많이 왔다갔어요"])
+    private let lineView: UIView = UIView().then {
+        $0.backgroundColor = Colors.gray20.color
+    }
 
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
@@ -69,6 +72,7 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
             titleLabel,
             descriptionLabel,
             districtButton,
+            lineView,
             tabView,
             collectionView
         ])
@@ -95,6 +99,12 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
         tabView.snp.makeConstraints {
             $0.top.equalTo(descriptionLabel.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview().inset(20)
+        }
+
+        lineView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(tabView)
+            $0.height.equalTo(1)
         }
 
         collectionView.snp.makeConstraints {
