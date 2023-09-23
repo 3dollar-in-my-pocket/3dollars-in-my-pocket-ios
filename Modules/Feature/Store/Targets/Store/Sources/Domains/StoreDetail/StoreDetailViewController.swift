@@ -87,11 +87,14 @@ public final class StoreDetailViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewController, route) in
                 switch route {
-                case .presnetReport(let viewModel):
-                    owner.presentReport(viewModel: viewModel)
-                    
                 case .dismissReportModalAndPop:
                     owner.dismissReportModalAndPop()
+                    
+                case .presentReport(let viewModel):
+                    owner.presentReport(viewModel: viewModel)
+                    
+                case .presentNavigation:
+                    owner.presentNavigationModal()
                 }
             }
             .store(in: &cancellables)
@@ -260,5 +263,32 @@ public final class StoreDetailViewController: BaseViewController {
                 self?.navigationController?.popViewController(animated: true)
             }
         }
+    }
+    
+    private func presentNavigationModal() {
+        let alertController = UIAlertController(
+            title: Strings.NavigationBottomSheet.title,
+            message: Strings.NavigationBottomSheet.message,
+            preferredStyle: .actionSheet
+        )
+        let naverAction = UIAlertAction(
+            title: Strings.NavigationBottomSheet.Action.naverMap,
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.input.didTapNavigationAction.send(.naver)
+        }
+        let kakaoAction = UIAlertAction(
+            title: Strings.NavigationBottomSheet.Action.kakaoMap,
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.input.didTapNavigationAction.send(.kakao)
+        }
+        let cancelAction = UIAlertAction(title: Strings.NavigationBottomSheet.Action.cancel, style: .cancel)
+        
+        alertController.addAction(naverAction)
+        alertController.addAction(kakaoAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true)
     }
 }

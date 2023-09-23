@@ -13,6 +13,21 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 public enum StoreStrings {
 
+  public enum NavigationBottomSheet {
+    /// 지도앱이 설치되어있지 않은 경우 정상적으로 실행되지 않습니다.
+    public static let message = StoreStrings.tr("Localization", "navigation_bottom_sheet.message")
+    /// 길 안내 앱 선택
+    public static let title = StoreStrings.tr("Localization", "navigation_bottom_sheet.title")
+    public enum Action {
+      /// 취소
+      public static let cancel = StoreStrings.tr("Localization", "navigation_bottom_sheet.action.cancel")
+      /// 카카오 지도
+      public static let kakaoMap = StoreStrings.tr("Localization", "navigation_bottom_sheet.action.kakao_map")
+      /// 네이버 지도
+      public static let naverMap = StoreStrings.tr("Localization", "navigation_bottom_sheet.action.naver_map")
+    }
+  }
+
   public enum ReportModal {
     /// 신고하기
     public static let button = StoreStrings.tr("Localization", "report_modal.button")

@@ -1,9 +1,10 @@
-import Foundation
+import UIKit
 import Combine
 
 import Common
 import Networking
 import Model
+import DependencyInjection
 
 final class StoreDetailViewModel: BaseViewModel {
     struct Input {
@@ -17,6 +18,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let didTapSave = PassthroughSubject<Void, Never>()
         let didTapShare = PassthroughSubject<Void, Never>()
         let didTapNavigation = PassthroughSubject<Void, Never>()
+        let didTapNavigationAction = PassthroughSubject<NavigationAppType, Never>()
         let didTapWriteReview = PassthroughSubject<Void, Never>()
         
         let didTapShowMoreMenu = PassthroughSubject<Void, Never>()
@@ -43,7 +45,8 @@ final class StoreDetailViewModel: BaseViewModel {
     
     enum Route {
         case dismissReportModalAndPop
-        case presnetReport(ReportModalViewModel)
+        case presentReport(ReportModalViewModel)
+        case presentNavigation
     }
     
     let input = Input()
@@ -74,16 +77,16 @@ final class StoreDetailViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
+        input.dismissReportModal
+            .map { Route.dismissReportModalAndPop }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+        
         input.didTapReport
             .withUnretained(self)
             .sink(receiveValue: { (owner: StoreDetailViewModel, _) in
                 owner.presentReportModal()
             })
-            .store(in: &cancellables)
-        
-        input.dismissReportModal
-            .map { Route.dismissReportModalAndPop }
-            .subscribe(output.route)
             .store(in: &cancellables)
     }
     
@@ -93,6 +96,18 @@ final class StoreDetailViewModel: BaseViewModel {
             .sink { (owner: StoreDetailViewModel, _) in
                 let isDeleted = owner.state.storeDetailData?.overview.isFavorited == true
                 owner.saveStore(isDelete: isDeleted)
+            }
+            .store(in: &cancellables)
+        
+        input.didTapNavigation
+            .map { Route.presentNavigation }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+        
+        input.didTapNavigationAction
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, type: NavigationAppType) in
+                owner.goToNavigationApplication(type: type)
             }
             .store(in: &cancellables)
     }
@@ -220,7 +235,7 @@ final class StoreDetailViewModel: BaseViewModel {
             switch reportReasonResult {
             case .success(let reasons):
                 let viewModel = createReportModalViewModel(reasons: reasons)
-                output.route.send(Route.presnetReport(viewModel))
+                output.route.send(Route.presentReport(viewModel))
                 
             case .failure(let error):
                 output.error.send(error)
@@ -237,5 +252,24 @@ final class StoreDetailViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         
         return viewModel
+    }
+    
+    private func goToNavigationApplication(type: NavigationAppType) {
+        guard let storeDetailData = state.storeDetailData,
+              let appInfomation = DIContainer.shared.container.resolve(AppInfomation.self) else { return }
+        let location = storeDetailData.overview.location
+        let storeName = storeDetailData.overview.storeName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        
+        let urlScheme: String
+        switch type {
+        case .kakao:
+            urlScheme = "kakaomap://look?p=\(location.latitude),\(location.longitude)"
+            
+        case .naver:
+            urlScheme = "nmap://place?lat=\(location.latitude)&lng=\(location.longitude)&name=\(storeName)&zoom=20&appname=\(appInfomation.bundleId)"
+        }
+        
+        guard let url = URL(string: urlScheme) else { return }
+        UIApplication.shared.open(url)
     }
 }
