@@ -8,9 +8,9 @@ final class PollListViewController: BaseViewController {
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
         $0.register([PollItemCell.self])
-        $0.dataSource = self
-        $0.delegate = self
     }
+
+    private lazy var dataSource = PollListDataSource(collectionView: collectionView)
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -34,6 +34,15 @@ final class PollListViewController: BaseViewController {
 
     override func bindEvent() {
         super.bindEvent()
+
+        dataSource.reload([
+            .init(items: [
+                .poll("1"),
+                .poll("2"),
+                .poll("3"),
+                .poll("4")
+            ])
+        ])
     }
 
     private func generateLayout() -> UICollectionViewLayout {
@@ -44,30 +53,4 @@ final class PollListViewController: BaseViewController {
 
         return layout
     }
-}
-
-extension PollListViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: PollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-        cell.bind()
-        return cell
-    }
-}
-
-extension PollListViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width - 40, height: 246)
-    }
-}
-
-extension PollListViewController: UICollectionViewDelegate {
-
 }
