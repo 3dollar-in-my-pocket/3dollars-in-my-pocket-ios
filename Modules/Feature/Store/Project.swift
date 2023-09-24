@@ -40,6 +40,7 @@ let project = Project(
                 .project(target: "Common", path: "../../Common"),
                 .project(target: "Model", path: "../../Common"),
                 .project(target: "DependencyInjection", path: "../../DependencyInjection"),
+                .project(target: "AppInterface", path: "../../../App"),
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "PanModal")

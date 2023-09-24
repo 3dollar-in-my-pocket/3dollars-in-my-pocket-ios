@@ -5,6 +5,7 @@ import Common
 import Networking
 import Model
 import DependencyInjection
+import AppInterface
 
 final class StoreDetailViewModel: BaseViewModel {
     struct Input {
