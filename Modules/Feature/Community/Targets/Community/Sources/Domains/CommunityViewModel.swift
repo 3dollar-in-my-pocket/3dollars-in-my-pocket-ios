@@ -17,6 +17,7 @@ final class CommunityViewModel: BaseViewModel {
         let showLoading = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
         let sections = PassthroughSubject<[CommunitySection], Never>()
+        let updatePopularStores = PassthroughSubject<Void, Never>()
     }
 
     struct State {
@@ -26,7 +27,7 @@ final class CommunityViewModel: BaseViewModel {
     enum Route {
         case pollCategoryTab
         case pollDetail
-        case popularStoreNeighborhoods
+        case popularStoreNeighborhoods(CommunityPopularStoreNeighborhoodsViewModel)
     }
 
     let input = Input()
@@ -50,7 +51,7 @@ final class CommunityViewModel: BaseViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .sink { (owner: CommunityViewModel, _: Void) in
-                owner.fetchPopularStores()
+                owner.reloadDataSource()
             }
             .store(in: &cancellables)
 
@@ -63,36 +64,44 @@ final class CommunityViewModel: BaseViewModel {
             .map { _ in .pollDetail }
             .subscribe(output.route)
             .store(in: &cancellables)
-
-        input.didTapDistrictButton
-            .map { _ in .popularStoreNeighborhoods }
-            .subscribe(output.route)
-            .store(in: &cancellables)
     }
 
-    private func fetchPopularStores() {
-        Task { [weak self] in
-            guard let self else { return }
+    private func reloadDataSource() {
+        var sectionItems: [CommunitySectionItem] = []
 
-            let input = FetchPopularStoresInput(criteria: "MOST_REVIEWS", district: "GYEONGGI_GUNPO")
+        sectionItems.append(.poll)
+        sectionItems.append(.popularStore(bindPopularStoreTabCellViewModel()))
 
-            let storeDetailResult = await communityService.fetchPopularStores(input: input)
+        output.sections.send([
+            CommunitySection(items: sectionItems)
+        ])
+    }
 
-            switch storeDetailResult {
-            case .success(let response):
-                let storeList = response.contents.map {
-                    PlatformStore(response: $0)
-                }
-                let cellViewModel = CommunityPopularStoreTabCellViewModel(storeList: storeList)
-                output.sections.send([
-                    .init(items: [
-                        .poll,
-                        .popularStore(cellViewModel)
-                    ])
-                ])
-            case .failure(let failure):
-                print("💜error: \(failure)")
+    private func bindPopularStoreTabCellViewModel() -> CommunityPopularStoreTabCellViewModel {
+        let cellViewModel = CommunityPopularStoreTabCellViewModel()
+
+        cellViewModel.output.didTapDistrictButton
+            .withUnretained(self)
+            .map { owner, _ in
+                return .popularStoreNeighborhoods(owner.bindPopularStoreNeighborhoodsViewModel())
             }
-        }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+
+        output.updatePopularStores
+            .subscribe(cellViewModel.input.reload)
+            .store(in: &cancellables)
+
+        return cellViewModel
+    }
+
+    private func bindPopularStoreNeighborhoodsViewModel() -> CommunityPopularStoreNeighborhoodsViewModel {
+        let viewModel = CommunityPopularStoreNeighborhoodsViewModel()
+
+        viewModel.output.updatePopularStores
+            .subscribe(output.updatePopularStores)
+            .store(in: &cancellables)
+
+        return viewModel
     }
 }

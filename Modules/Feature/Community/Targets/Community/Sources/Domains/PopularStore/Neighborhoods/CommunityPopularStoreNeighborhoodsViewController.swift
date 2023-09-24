@@ -44,7 +44,7 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
     private lazy var dataSource = CommunityPopularStoreNeighborhoodsDataSource(collectionView: collectionView)
     private let viewModel: CommunityPopularStoreNeighborhoodsViewModel
 
-    init(viewModel: CommunityPopularStoreNeighborhoodsViewModel = .init()) {
+    init(_ viewModel: CommunityPopularStoreNeighborhoodsViewModel) {
         self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
@@ -122,7 +122,7 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
             .main
             .withUnretained(self)
             .sink { owner, _ in
-                owner.dismiss(animated: true)
+                owner.back()
             }
             .store(in: &cancellables)
 
@@ -134,6 +134,21 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
                 owner.dataSource.reloadData(sections)
             }
             .store(in: &cancellables)
+
+        viewModel.output.route
+            .main
+            .withUnretained(self)
+            .sink { owner, route in
+                switch route {
+                case .back:
+                    owner.back()
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func back() {
+        dismiss(animated: true)
     }
 
     private func generateLayout() -> UICollectionViewFlowLayout {
@@ -148,7 +163,12 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
 
 extension CommunityPopularStoreNeighborhoodsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        dismiss(animated: true)
+        switch dataSource.itemIdentifier(for: indexPath) {
+        case let .district(item):
+            viewModel.input.didSelectItem.send(item)
+        default:
+            break
+        }
     }
 }
 

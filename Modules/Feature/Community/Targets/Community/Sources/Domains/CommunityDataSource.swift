@@ -43,11 +43,6 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
             case .popularStore(let cellViewModel):
                 let cell: CommunityPopularStoreTabCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel: cellViewModel)
-                cell.districtButton
-                    .controlPublisher(for: .touchUpInside)
-                    .mapVoid
-                    .subscribe(viewModel.input.didTapDistrictButton)
-                    .store(in: &cell.cancellables)
                 return cell
             }
         }

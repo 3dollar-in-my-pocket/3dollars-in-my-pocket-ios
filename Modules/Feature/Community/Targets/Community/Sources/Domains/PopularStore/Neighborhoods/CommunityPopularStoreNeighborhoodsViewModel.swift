@@ -8,12 +8,14 @@ import Common
 final class CommunityPopularStoreNeighborhoodsViewModel: BaseViewModel {
     struct Input {
         let firstLoad = PassthroughSubject<Void, Never>()
-
+        let didSelectItem = PassthroughSubject<CommunityNeighborhoods, Never>()
     }
 
     struct Output {
         let showLoading = PassthroughSubject<Bool, Never>()
         let dataSource = PassthroughSubject<[CommunityPopularStoreNeighborhoodsSection], Never>()
+        let updatePopularStores = PassthroughSubject<Void, Never>()
+        let route = PassthroughSubject<Route, Never>()
     }
 
     struct State {
@@ -49,6 +51,15 @@ final class CommunityPopularStoreNeighborhoodsViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.fetchPopularStores()
+            }
+            .store(in: &cancellables)
+
+        input.didSelectItem
+            .withUnretained(self)
+            .sink { owner, item in
+                owner.userDefaultsUtil.communityPopularStoreNeighborhoods = item
+                owner.output.updatePopularStores.send()
+                owner.output.route.send(.back)
             }
             .store(in: &cancellables)
     }
