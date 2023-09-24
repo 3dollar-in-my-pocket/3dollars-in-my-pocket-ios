@@ -100,6 +100,13 @@ final class StoreDetailViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
+        input.didTapShare
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.shareKakao()
+            }
+            .store(in: &cancellables)
+        
         input.didTapNavigation
             .map { Route.presentNavigation }
             .subscribe(output.route)
@@ -272,5 +279,12 @@ final class StoreDetailViewModel: BaseViewModel {
         
         guard let url = URL(string: urlScheme) else { return }
         UIApplication.shared.open(url)
+    }
+    
+    private func shareKakao() {
+        guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self),
+              let overview = state.storeDetailData?.overview else { return }
+        
+        appInterface.shareKakao(storeId: state.storeId, storeDetailOverview: overview)
     }
 }
