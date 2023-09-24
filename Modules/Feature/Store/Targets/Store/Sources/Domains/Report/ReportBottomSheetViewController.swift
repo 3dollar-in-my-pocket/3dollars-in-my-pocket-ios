@@ -4,15 +4,15 @@ import Common
 import DesignSystem
 import PanModal
 
-final class ReportModalViewController: BaseViewController {
-    private let reportModalView = ReportModalView()
-    private let viewModel: ReportModalViewModel
+final class ReportBottomSheetViewController: BaseViewController {
+    private let reportBottomSheet = ReportBottomSheet()
+    private let viewModel: ReportBottomSheetViewModel
     
-    static func instance(viewModel: ReportModalViewModel) -> ReportModalViewController {
-        return ReportModalViewController(viewModel: viewModel)
+    static func instance(viewModel: ReportBottomSheetViewModel) -> ReportBottomSheetViewController {
+        return ReportBottomSheetViewController(viewModel: viewModel)
     }
     
-    init(viewModel: ReportModalViewModel) {
+    init(viewModel: ReportBottomSheetViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -22,30 +22,30 @@ final class ReportModalViewController: BaseViewController {
     }
     
     override func loadView() {
-        self.view = reportModalView
+        self.view = reportBottomSheet
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        reportModalView.collectionView.dataSource = self
-        reportModalView.collectionView.delegate = self
-        reportModalView.collectionView.reloadData()
-        reportModalView.updateCollectionViewHeight(itemCount: viewModel.output.reportReasons.count)
+        reportBottomSheet.collectionView.dataSource = self
+        reportBottomSheet.collectionView.delegate = self
+        reportBottomSheet.collectionView.reloadData()
+        reportBottomSheet.updateCollectionViewHeight(itemCount: viewModel.output.reportReasons.count)
     }
     
     override func bindEvent() {
-        reportModalView.closeButton
+        reportBottomSheet.closeButton
             .controlPublisher(for: .touchUpInside)
             .withUnretained(self)
-            .sink { (owner: ReportModalViewController, _) in
+            .sink { (owner: ReportBottomSheetViewController, _) in
                 owner.dismiss(animated: true)
             }
             .store(in: &cancellables)
     }
     
     override func bindViewModelInput() {
-        reportModalView.reportButon
+        reportBottomSheet.reportButon
             .controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.didTapReport)
@@ -55,20 +55,20 @@ final class ReportModalViewController: BaseViewController {
     override func bindViewModelOutput() {
         viewModel.output.isEnableReport
             .receive(on: DispatchQueue.main)
-            .assign(to: \.isEnabled, on: reportModalView.reportButon)
+            .assign(to: \.isEnabled, on: reportBottomSheet.reportButon)
             .store(in: &cancellables)
         
         viewModel.output.showErrorAlert
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
-            .sink { (owner: ReportModalViewController, error: Error) in
+            .sink { (owner: ReportBottomSheetViewController, error: Error) in
                 owner.showErrorAlert(error: error)
             }
             .store(in: &cancellables)
     }
 }
 
-extension ReportModalViewController: UICollectionViewDataSource {
+extension ReportBottomSheetViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.output.reportReasons.count
     }
@@ -82,23 +82,23 @@ extension ReportModalViewController: UICollectionViewDataSource {
     }
 }
 
-extension ReportModalViewController: UICollectionViewDelegate {
+extension ReportBottomSheetViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel.input.didTapReason.send(indexPath.item)
     }
 }
 
-extension ReportModalViewController: PanModalPresentable {
+extension ReportBottomSheetViewController: PanModalPresentable {
     var panScrollable: UIScrollView? {
-        return reportModalView.collectionView
+        return reportBottomSheet.collectionView
     }
     
     var shortFormHeight: PanModalHeight {
-        return .contentHeight(192 + ReportModalView.Layout.calculateCollectionViewHeight(itemCount: viewModel.output.reportReasons.count))
+        return .contentHeight(192 + ReportBottomSheet.Layout.calculateCollectionViewHeight(itemCount: viewModel.output.reportReasons.count))
     }
     
     var longFormHeight: PanModalHeight {
-        return .contentHeight(192 + ReportModalView.Layout.calculateCollectionViewHeight(itemCount: viewModel.output.reportReasons.count))
+        return .contentHeight(192 + ReportBottomSheet.Layout.calculateCollectionViewHeight(itemCount: viewModel.output.reportReasons.count))
     }
     
     var cornerRadius: CGFloat {

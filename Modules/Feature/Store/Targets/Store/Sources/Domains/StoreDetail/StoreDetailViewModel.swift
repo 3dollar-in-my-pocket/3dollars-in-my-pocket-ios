@@ -46,7 +46,7 @@ final class StoreDetailViewModel: BaseViewModel {
     
     enum Route {
         case dismissReportModalAndPop
-        case presentReport(ReportModalViewModel)
+        case presentReport(ReportBottomSheetViewModel)
         case presentNavigation
     }
     
@@ -251,9 +251,9 @@ final class StoreDetailViewModel: BaseViewModel {
         }
     }
     
-    private func createReportModalViewModel(reasons: [ReportReason]) -> ReportModalViewModel {
-        let config = ReportModalViewModel.Config(storeId: state.storeId, reportReasons: reasons)
-        let viewModel = ReportModalViewModel(config: config)
+    private func createReportModalViewModel(reasons: [ReportReason]) -> ReportBottomSheetViewModel {
+        let config = ReportBottomSheetViewModel.Config(storeId: state.storeId, reportReasons: reasons)
+        let viewModel = ReportBottomSheetViewModel(config: config)
         
         viewModel.output.dismissWithPop
             .subscribe(input.dismissReportModal)

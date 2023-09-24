@@ -251,8 +251,8 @@ public final class StoreDetailViewController: BaseViewController {
         return layout
     }
     
-    private func presentReport(viewModel: ReportModalViewModel) {
-        let viewController = ReportModalViewController.instance(viewModel: viewModel)
+    private func presentReport(viewModel: ReportBottomSheetViewModel) {
+        let viewController = ReportBottomSheetViewController.instance(viewModel: viewModel)
         
         presentPanModal(viewController)
     }

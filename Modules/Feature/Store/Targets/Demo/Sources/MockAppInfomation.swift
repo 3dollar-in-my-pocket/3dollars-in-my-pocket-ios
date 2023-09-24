@@ -1,5 +1,6 @@
 import Foundation
 
+import AppInterface
 import DependencyInjection
 
 struct MockAppInfomationImpl: AppInfomation {

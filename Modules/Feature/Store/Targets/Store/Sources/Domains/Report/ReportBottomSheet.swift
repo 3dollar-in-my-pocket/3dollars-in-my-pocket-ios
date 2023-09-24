@@ -4,7 +4,7 @@ import Combine
 import Common
 import DesignSystem
 
-final class ReportModalView: BaseView {
+final class ReportBottomSheet: BaseView {
     enum Layout {
         static let space: CGFloat = 6
         static func calculateCollectionViewHeight(itemCount: Int) -> CGFloat {
@@ -48,8 +48,8 @@ final class ReportModalView: BaseView {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.itemSize = ReportReasonCell.Layout.size
-        layout.minimumInteritemSpacing = ReportModalView.Layout.space
-        layout.minimumLineSpacing = ReportModalView.Layout.space
+        layout.minimumInteritemSpacing = ReportBottomSheet.Layout.space
+        layout.minimumLineSpacing = ReportBottomSheet.Layout.space
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register([ReportReasonCell.self])

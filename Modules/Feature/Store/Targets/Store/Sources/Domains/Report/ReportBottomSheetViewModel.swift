@@ -4,7 +4,7 @@ import Common
 import Networking
 import Model
 
-final class ReportModalViewModel: BaseViewModel {
+final class ReportBottomSheetViewModel: BaseViewModel {
     struct Input {
         let didTapReason = PassthroughSubject<Int, Never>()
         let didTapReport = PassthroughSubject<Void, Never>()
@@ -43,7 +43,7 @@ final class ReportModalViewModel: BaseViewModel {
     override func bind() {
         input.didTapReason
             .withUnretained(self)
-            .sink { (owner: ReportModalViewModel, index) in
+            .sink { (owner: ReportBottomSheetViewModel, index) in
                 guard let reason = owner.output.reportReasons[safe: index] else { return }
                 
                 owner.state.selectedReasone = reason
@@ -53,7 +53,7 @@ final class ReportModalViewModel: BaseViewModel {
         
         input.didTapReport
             .withUnretained(self)
-            .sink { (owner: ReportModalViewModel, _) in
+            .sink { (owner: ReportBottomSheetViewModel, _) in
                 guard let reason = owner.state.selectedReasone else { return }
                 owner.reportStore(reason: reason)
             }
