@@ -61,8 +61,8 @@ public final class CommunityViewController: BaseViewController {
                 case .pollCategoryTab:
                     let vc = PollCategoryTabViewController()
                     owner.navigationController?.pushViewController(vc, animated: true)
-                case .pollDetail:
-                    let vc = PollDetailViewController()
+                case .pollDetail(let viewModel):
+                    let vc = PollDetailViewController(viewModel)
                     owner.navigationController?.pushViewController(vc, animated: true)
                 case .popularStoreNeighborhoods(let viewModel):
                     let vc = CommunityPopularStoreNeighborhoodsViewController(viewModel)

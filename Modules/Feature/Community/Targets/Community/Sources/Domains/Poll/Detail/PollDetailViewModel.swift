@@ -9,6 +9,7 @@ final class PollDetailViewModel: BaseViewModel {
 
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
+        let didTapReportButton = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -20,7 +21,7 @@ final class PollDetailViewModel: BaseViewModel {
     }
 
     enum Route {
-        case none
+        case report(ReportPollViewModel)
     }
 
     let input = Input()
@@ -28,11 +29,23 @@ final class PollDetailViewModel: BaseViewModel {
 
     private var state = State()
 
-    override init() {
+    private let pollId: String
+
+    init(pollId: String) {
+        self.pollId = pollId
+
         super.init()
     }
 
     override func bind() {
         super.bind()
+
+        input.didTapReportButton
+            .withUnretained(self)
+            .map { owner, _ in
+                .report(ReportPollViewModel(pollId: owner.pollId))
+            }
+            .subscribe(output.route)
+            .store(in: &cancellables)
     }
 }

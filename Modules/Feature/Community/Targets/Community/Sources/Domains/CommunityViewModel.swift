@@ -26,7 +26,7 @@ final class CommunityViewModel: BaseViewModel {
 
     enum Route {
         case pollCategoryTab
-        case pollDetail
+        case pollDetail(PollDetailViewModel)
         case popularStoreNeighborhoods(CommunityPopularStoreNeighborhoodsViewModel)
     }
 
@@ -61,7 +61,9 @@ final class CommunityViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         input.didSelectPollItem
-            .map { _ in .pollDetail }
+            .map { _ in
+                .pollDetail(PollDetailViewModel(pollId: "Dummy"))
+            }
             .subscribe(output.route)
             .store(in: &cancellables)
     }

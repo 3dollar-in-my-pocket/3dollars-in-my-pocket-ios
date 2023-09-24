@@ -23,7 +23,7 @@ struct FetchPopularStoresRequest: RequestType {
     }
 }
 
-struct FetchPopularStoreNeighborhoods: RequestType {
+struct FetchPopularStoreNeighborhoodsRequest: RequestType {
     var param: Encodable? {
         return nil
     }
@@ -37,3 +37,37 @@ struct FetchPopularStoreNeighborhoods: RequestType {
     }
 }
 
+struct FetchPollReportReasonRequest: RequestType {
+    var param: Encodable? {
+        return nil
+    }
+
+    var method: RequestMethod {
+        return .get
+    }
+
+    var path: String {
+        return "/api/v1/report/group/POLL/reasons"
+    }
+}
+
+struct PollReportCreateRequest: RequestType {
+    let pollId: String
+    let requestInput: PollReportCreateRequestInput
+
+    var param: Encodable? {
+        return requestInput
+    }
+
+    var method: RequestMethod {
+        return .post
+    }
+
+    var header: HTTPHeaderType {
+        return .auth
+    }
+
+    var path: String {
+        return "/api/v1/poll/\(pollId)/report"
+    }
+}

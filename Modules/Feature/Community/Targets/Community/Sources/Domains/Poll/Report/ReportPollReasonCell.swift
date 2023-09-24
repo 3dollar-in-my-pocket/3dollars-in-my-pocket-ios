@@ -22,6 +22,12 @@ final class ReportPollReasonCell: BaseCollectionViewCell {
         $0.textColor = Colors.gray60.color
     }
 
+    private let checkImageView = UIImageView().then {
+        $0.image = Icons.check.image
+            .resizeImage(scaledTo: 20)
+            .withTintColor(Colors.mainRed.color)
+    }
+
     override func setup() {
         super.setup()
 
@@ -31,6 +37,7 @@ final class ReportPollReasonCell: BaseCollectionViewCell {
 
         containerView.addSubViews([
             titleLabel,
+            checkImageView
         ])
     }
 
@@ -45,9 +52,17 @@ final class ReportPollReasonCell: BaseCollectionViewCell {
             $0.leading.equalToSuperview().inset(12)
             $0.centerY.equalToSuperview()
         }
+
+        checkImageView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(12)
+        }
     }
 
-    func bind(title: String) {
+    func bind(title: String, isSelected: Bool) {
         titleLabel.text = title
+        titleLabel.textColor = isSelected ? Colors.gray100.color : Colors.gray60.color
+        containerView.layer.borderColor = isSelected ? Colors.mainRed.color.cgColor : Colors.gray40.color.cgColor
+        checkImageView.isHidden = !isSelected
     }
 }

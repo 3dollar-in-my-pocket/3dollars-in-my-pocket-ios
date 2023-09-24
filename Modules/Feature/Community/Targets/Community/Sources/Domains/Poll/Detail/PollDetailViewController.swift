@@ -25,7 +25,11 @@ final class PollDetailViewController: BaseViewController {
 
     private lazy var dataSource = PollDetailDataSource(collectionView: collectionView)
 
-    init() {
+    private let viewModel: PollDetailViewModel
+
+    init(_ viewModel: PollDetailViewModel) {
+        self.viewModel = viewModel
+
         super.init(nibName: nil, bundle: nil)
 
         hidesBottomBarWhenPushed = true
@@ -39,29 +43,6 @@ final class PollDetailViewController: BaseViewController {
         super.viewDidLoad()
 
         setupUI()
-    }
-
-    override func bindEvent() {
-        super.bindEvent()
-
-        reportButton
-            .controlPublisher(for: .touchUpInside)
-            .main
-            .withUnretained(self)
-            .sink { owner, index in
-                let vc = ReportPollViewController()
-                owner.present(vc, animated: true, completion: nil)
-            }
-            .store(in: &cancellables)
-
-        navigationBar.backButton
-            .controlPublisher(for: .touchUpInside)
-            .main
-            .withUnretained(self)
-            .sink { owner, index in
-                owner.navigationController?.popViewController(animated: true)
-            }
-            .store(in: &cancellables)
     }
 
     private func setupUI() {
@@ -90,7 +71,41 @@ final class PollDetailViewController: BaseViewController {
         }
 
         addKeyboardObservers()
+    }
 
+    override func bindEvent() {
+        super.bindEvent()
+
+        navigationBar.backButton
+            .controlPublisher(for: .touchUpInside)
+            .main
+            .withUnretained(self)
+            .sink { owner, index in
+                owner.navigationController?.popViewController(animated: true)
+            }
+            .store(in: &cancellables)
+
+        // Input
+        reportButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapReportButton)
+            .store(in: &cancellables)
+
+        // Output
+        viewModel.output.route
+            .withUnretained(self)
+            .main
+            .sink { owner, route in
+                switch route {
+                case .report(let viewModel):
+                    let vc = ReportPollViewController(viewModel)
+                    owner.present(vc, animated: true, completion: nil)
+                }
+            }
+            .store(in: &cancellables)
+
+        // Test
         dataSource.reloadData()
     }
 
