@@ -132,3 +132,21 @@ struct FetchPollRequest: RequestType {
         return "/api/v1/poll/\(pollId)"
     }
 }
+
+struct FetchPollUserPollPolicyRequest: RequestType {
+    var param: Encodable? {
+        return nil
+    }
+
+    var method: RequestMethod {
+        return .get
+    }
+
+    var header: HTTPHeaderType {
+        return .auth
+    }
+
+    var path: String {
+        return "/api/v1/user/poll/policy"
+    }
+}

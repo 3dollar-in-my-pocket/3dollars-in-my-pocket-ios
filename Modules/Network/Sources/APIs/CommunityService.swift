@@ -14,6 +14,8 @@ public protocol CommunityServiceProtocol {
     func createChoicePoll(pollId: String, input: PollChoiceCreateRequestInput) async -> Result<String, Error>
     /// 투표 단건 조회
     func fetchPoll(pollId: String) async -> Result<PollWithMetaApiResponse, Error>
+    /// 유저 투표 정책 조회
+    func fetchUserPollPolicy() async -> Result<PollPolicyApiResponse, Error>
 }
 
 public struct CommunityService: CommunityServiceProtocol {
@@ -57,6 +59,12 @@ public struct CommunityService: CommunityServiceProtocol {
 
     public func fetchPoll(pollId: String) async -> Result<PollWithMetaApiResponse, Error> {
         let request = FetchPollRequest(pollId: pollId)
+
+        return await NetworkManager.shared.request(requestType: request)
+    }
+
+    public func fetchUserPollPolicy() async -> Result<PollPolicyApiResponse, Error> {
+        let request = FetchPollUserPollPolicyRequest()
 
         return await NetworkManager.shared.request(requestType: request)
     }

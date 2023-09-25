@@ -18,8 +18,8 @@ final class PollCategoryTabViewController: BaseViewController {
     )
     private lazy var pageContentViewControllers: [PollListViewController] = {
         return [
-            PollListViewController(),
-            PollListViewController()
+            PollListViewController(viewModel: .init()),
+            PollListViewController(viewModel: .init())
         ]
     }()
     private let createPollButton = UIButton().then {
@@ -38,7 +38,11 @@ final class PollCategoryTabViewController: BaseViewController {
         $0.layer.shadowOpacity = 0.1
     }
 
-    init() {
+    private let viewModel: PollCategoryTabViewModel
+
+    init(viewModel: PollCategoryTabViewModel = .init()) {
+        self.viewModel = viewModel
+
         super.init(nibName: nil, bundle: nil)
 
         hidesBottomBarWhenPushed = true
@@ -52,38 +56,8 @@ final class PollCategoryTabViewController: BaseViewController {
         super.viewDidLoad()
 
         setupUI()
-    }
 
-    override func bindEvent() {
-        super.bindEvent()
-
-        tabView.didTap
-            .main
-            .withUnretained(self)
-            .sink { owner, index in
-                owner.changePage(to: index)
-            }
-            .store(in: &cancellables)
-
-        navigationBar.backButton
-            .controlPublisher(for: .touchUpInside)
-            .main
-            .withUnretained(self)
-            .sink { owner, index in
-                owner.navigationController?.popViewController(animated: true)
-            }
-            .store(in: &cancellables)
-
-
-        createPollButton
-            .controlPublisher(for: .touchUpInside)
-            .main
-            .withUnretained(self)
-            .sink { owner, index in
-                let modal = CreatePollModalViewController()
-                owner.present(modal, animated: true, completion: nil)
-            }
-            .store(in: &cancellables)
+        viewModel.input.firstLoad.send()
     }
 
     private func setupUI() {
@@ -113,7 +87,7 @@ final class PollCategoryTabViewController: BaseViewController {
         }
 
         createPollButton.snp.makeConstraints {
-            $0.size.equalTo(CGSize(width: 147, height: 44))
+            $0.height.equalTo(44)
             $0.centerX.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-12)
         }
@@ -160,6 +134,54 @@ final class PollCategoryTabViewController: BaseViewController {
             direction: direction,
             animated: true
         )
+    }
+
+    override func bindEvent() {
+        super.bindEvent()
+
+        tabView.didTap
+            .main
+            .withUnretained(self)
+            .sink { owner, index in
+                owner.changePage(to: index)
+            }
+            .store(in: &cancellables)
+
+        navigationBar.backButton
+            .controlPublisher(for: .touchUpInside)
+            .main
+            .withUnretained(self)
+            .sink { owner, index in
+                owner.navigationController?.popViewController(animated: true)
+            }
+            .store(in: &cancellables)
+
+        createPollButton
+            .controlPublisher(for: .touchUpInside)
+            .main
+            .withUnretained(self)
+            .sink { owner, index in
+                let modal = CreatePollModalViewController()
+                owner.present(modal, animated: true, completion: nil)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.createPollButtonTitle
+            .main
+            .withUnretained(self)
+            .sink { owner, title in
+                owner.createPollButton.setTitle(title, for: .normal)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.isEnabledCreatePollButton
+            .main
+            .removeDuplicates()
+            .withUnretained(self)
+            .sink { owner, isEnabled in
+                owner.createPollButton.isEnabled = isEnabled
+            }
+            .store(in: &cancellables)
     }
 }
 

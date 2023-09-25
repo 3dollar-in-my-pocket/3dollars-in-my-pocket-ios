@@ -7,12 +7,16 @@ final class PollListViewController: BaseViewController {
 
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
-        $0.register([PollItemCell.self])
+        $0.delegate = self
     }
 
     private lazy var dataSource = PollListDataSource(collectionView: collectionView)
 
-    init() {
+    private let viewModel: PollListViewModel
+
+    init(viewModel: PollListViewModel) {
+        self.viewModel = viewModel
+
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -23,6 +27,12 @@ final class PollListViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupUI()
+
+        viewModel.input.firstLoad.send()
+    }
+
+    private func setupUI() {
         view.addSubViews([
             collectionView
         ])
@@ -35,14 +45,35 @@ final class PollListViewController: BaseViewController {
     override func bindEvent() {
         super.bindEvent()
 
-        dataSource.reload([
-            .init(items: [
-                .poll("1"),
-                .poll("2"),
-                .poll("3"),
-                .poll("4")
-            ])
-        ])
+        viewModel.output.dataSource
+            .withUnretained(self)
+            .sink { owner, sections in
+                owner.dataSource.reload(sections)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.showLoading
+            .removeDuplicates()
+            .main
+            .sink { LoadingManager.shared.showLoading(isShow: $0) }
+            .store(in: &cancellables)
+
+        viewModel.output.showToast
+            .main
+            .sink { ToastManager.shared.show(message: $0) }
+            .store(in: &cancellables)
+
+        viewModel.output.route
+            .main
+            .withUnretained(self)
+            .sink { owner, route in
+                switch route {
+                case .pollDetail(let viewModel):
+                    let vc = PollDetailViewController(viewModel)
+                    owner.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+            .store(in: &cancellables)
     }
 
     private func generateLayout() -> UICollectionViewLayout {
@@ -52,5 +83,26 @@ final class PollListViewController: BaseViewController {
         layout.minimumInteritemSpacing = 16
 
         return layout
+    }
+}
+
+extension PollListViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.input.didSelectPollItem.send(indexPath.item)
+    }
+}
+
+extension PollListViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        switch dataSource.itemIdentifier(for: indexPath) {
+        case .poll:
+            return CGSize(width: UIScreen.main.bounds.width - 40, height: 246)
+        default:
+            return .zero
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: UIScreen.main.bounds.width, height: PollHeaderView.Layout.height)
     }
 }

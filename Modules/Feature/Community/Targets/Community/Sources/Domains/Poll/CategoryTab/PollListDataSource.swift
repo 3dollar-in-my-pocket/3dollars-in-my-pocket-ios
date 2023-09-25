@@ -7,7 +7,7 @@ struct PollListSection: Hashable {
 }
 
 enum PollListSectionItem: Hashable {
-    case poll(String)
+    case poll(PollItemCellViewModel)
 }
 
 final class PollListDataSource: UICollectionViewDiffableDataSource<PollListSection, PollListSectionItem> {
@@ -26,8 +26,9 @@ final class PollListDataSource: UICollectionViewDiffableDataSource<PollListSecti
 
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .poll:
+            case .poll(let cellViewModel):
                 let cell: PollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(viewModel: cellViewModel)
                 return cell
             }
         }
@@ -41,8 +42,6 @@ final class PollListDataSource: UICollectionViewDiffableDataSource<PollListSecti
             headerView.bind()
             return headerView
         }
-
-        collectionView.delegate = self
     }
 
     func reload(_ sections: [PollListSection]) {
@@ -54,20 +53,5 @@ final class PollListDataSource: UICollectionViewDiffableDataSource<PollListSecti
         }
 
         apply(snapshot, animatingDifferences: true)
-    }
-}
-
-extension PollListDataSource: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        switch self[indexPath] {
-        case .poll:
-            return CGSize(width: UIScreen.main.bounds.width - 40, height: 246)
-        default:
-            return .zero
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width, height: PollHeaderView.Layout.height)
     }
 }

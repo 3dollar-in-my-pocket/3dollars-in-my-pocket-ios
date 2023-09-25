@@ -159,16 +159,12 @@ final class PollItemCell: BaseCollectionViewCell {
         viewModel.output.showLoading
             .removeDuplicates()
             .main
-            .sink {
-                LoadingManager.shared.showLoading(isShow: $0)
-            }
+            .sink { LoadingManager.shared.showLoading(isShow: $0) }
             .store(in: &cancellables)
 
         viewModel.output.showToast
             .main
-            .sink {
-                ToastManager.shared.show(message: $0)
-            }
+            .sink { ToastManager.shared.show(message: $0) }
             .store(in: &cancellables)
     }
 
