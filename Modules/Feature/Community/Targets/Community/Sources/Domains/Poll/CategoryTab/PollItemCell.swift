@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 
 final class PollItemCell: BaseCollectionViewCell {
 
@@ -45,6 +46,9 @@ final class PollItemCell: BaseCollectionViewCell {
         $0.setImage(Icons.communityLine.image
             .resizeImage(scaledTo: 16)
             .withTintColor(Colors.gray50.color), for: .normal)
+        $0.contentEdgeInsets.right = 2
+        $0.imageEdgeInsets.left = -2
+        $0.titleEdgeInsets.right = -2
     }
 
     private let countButton = UIButton().then {
@@ -53,6 +57,9 @@ final class PollItemCell: BaseCollectionViewCell {
         $0.setImage(Icons.fireLine.image
             .resizeImage(scaledTo: 16)
             .withTintColor(Colors.gray50.color), for: .normal)
+        $0.contentEdgeInsets.right = 2
+        $0.imageEdgeInsets.left = -2
+        $0.titleEdgeInsets.right = -2
     }
 
     private let deadlineLabel = UILabel().then {
@@ -120,42 +127,37 @@ final class PollItemCell: BaseCollectionViewCell {
         }
     }
 
-    func bind() {
-        titleLabel.text = "내가 정상 님들이 비정상"
-        userNameLabel.text = "관악구 광화문연가"
-        commentButton.setTitle("23", for: .normal)
-        countButton.setTitle("400명 투표", for: .normal)
-        deadlineLabel.text = "오늘 마감"
+    func bind(item: PollWithMetaApiResponse) {
+        titleLabel.text = item.poll.content.title
+        userNameLabel.text = item.pollWriter.name
+        commentButton.setTitle("\(item.meta.totalCommentsCount)", for: .normal)
+        countButton.setTitle("\(item.meta.totalParticipantsCount)명 투표", for: .normal)
+        deadlineLabel.text = item.poll.period.endDateTime
 
-        firstSelectionView.nothing()
-        firstSelectionView.titleLabel.text = "슈붕 비정상 팥붕 정상"
-        firstSelectionView.update(isSelected: false)
+        let firstOption = item.poll.options[safe: 0]
+        let secondOption = item.poll.options[safe: 1]
 
-        secondSelectionView.nothing()
-        secondSelectionView.titleLabel.text = "먼솔 슈붕임"
-        secondSelectionView.update(isSelected: false)
-    }
+        if firstOption?.choice.selectedByMe ?? false || secondOption?.choice.selectedByMe ?? false { // 선택
+            if firstOption?.choice.count ?? 0 > secondOption?.choice.count ?? 0 {
+                firstSelectionView.win()
+                secondSelectionView.lose()
+            } else {
+                firstSelectionView.lose()
+                secondSelectionView.win()
+            }
+            firstSelectionView.update(isSelected: firstOption?.choice.selectedByMe ?? false)
+            secondSelectionView.update(isSelected: secondOption?.choice.selectedByMe ?? false)
+        } else {
+            firstSelectionView.nothing()
+            secondSelectionView.nothing()
+        }
 
-    func test() {
-        titleLabel.text = "내가 정상 님들이 비정상"
-        userNameLabel.text = "관악구 광화문연가"
-        commentButton.setTitle("23", for: .normal)
-        countButton.setTitle("400명 투표", for: .normal)
-        deadlineLabel.text = "오늘 마감"
-        
-        firstSelectionView.titleLabel.text = "슈붕 비정상 팥붕 정상"
-        firstSelectionView.emojiLabel.text = "🤣"
-        firstSelectionView.percentLabel.text = "79%"
-        firstSelectionView.countLabel.text = "300명"
-        firstSelectionView.win()
-        firstSelectionView.update(isSelected: true)
+        firstSelectionView.titleLabel.text = firstOption?.name
+        firstSelectionView.percentLabel.text = "\(firstOption?.choice.ratio ?? 0)%"
+        firstSelectionView.countLabel.text = "\(firstOption?.choice.count ?? 0)명"
 
-        secondSelectionView.titleLabel.text = "먼솔 슈붕임"
-        secondSelectionView.emojiLabel.text = "😞"
-        secondSelectionView.percentLabel.text = "21%"
-        secondSelectionView.countLabel.text = "101명"
-        secondSelectionView.lose()
-        secondSelectionView.update(isSelected: false)
+        secondSelectionView.titleLabel.text = secondOption?.name
+        secondSelectionView.percentLabel.text = "\(secondOption?.choice.count ?? 0)명"
     }
 }
 
@@ -278,6 +280,7 @@ final class CommunityPollSelectionView: BaseView {
         stackView.isHidden = false
 
         percentLabel.textColor = Colors.systemWhite.color
+        emojiLabel.text = "🤣"
 
         countLabel.textColor = Colors.gray30.color
     }
@@ -292,6 +295,7 @@ final class CommunityPollSelectionView: BaseView {
         stackView.isHidden = false
 
         percentLabel.textColor = Colors.gray60.color
+        emojiLabel.text = "😞"
 
         countLabel.textColor = Colors.gray40.color
     }

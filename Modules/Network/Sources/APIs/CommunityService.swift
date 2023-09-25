@@ -8,6 +8,8 @@ public protocol CommunityServiceProtocol {
     func fetchPollReportReasons() async -> Result<PollReportReasonResponse, Error>
     /// 투표 신고
     func reportPoll(pollId: String, input: PollReportCreateRequestInput) async -> Result<Bool, Error>
+    /// 투표 목록 조회
+    func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResposne<PollWithMetaApiResponse>, Error>
 }
 
 public struct CommunityService: CommunityServiceProtocol {
@@ -33,6 +35,12 @@ public struct CommunityService: CommunityServiceProtocol {
 
     public func reportPoll(pollId: String, input: PollReportCreateRequestInput) async -> Result<Bool, Error> {
         let request = PollReportCreateRequest(pollId: pollId, requestInput: input)
+
+        return await NetworkManager.shared.request(requestType: request)
+    }
+
+    public func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResposne<PollWithMetaApiResponse>, Error> {
+        let request = FetchPollsRequest(requestInput: input)
 
         return await NetworkManager.shared.request(requestType: request)
     }

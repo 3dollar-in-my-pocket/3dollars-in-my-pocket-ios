@@ -54,24 +54,12 @@ final class CommunityViewModel: BaseViewModel {
                 owner.reloadDataSource()
             }
             .store(in: &cancellables)
-
-        input.didTapPollCategoryButton
-            .map { _ in .pollCategoryTab }
-            .subscribe(output.route)
-            .store(in: &cancellables)
-
-        input.didSelectPollItem
-            .map { _ in
-                .pollDetail(PollDetailViewModel(pollId: "Dummy"))
-            }
-            .subscribe(output.route)
-            .store(in: &cancellables)
     }
 
     private func reloadDataSource() {
         var sectionItems: [CommunitySectionItem] = []
 
-        sectionItems.append(.poll)
+        sectionItems.append(.poll(bindPollListCellViewModel()))
         sectionItems.append(.popularStore(bindPopularStoreTabCellViewModel()))
 
         output.sections.send([
@@ -105,5 +93,23 @@ final class CommunityViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         return viewModel
+    }
+
+    private func bindPollListCellViewModel() -> CommunityPollListCellViewModel {
+        let cellViewModel = CommunityPollListCellViewModel()
+
+        cellViewModel.output.didSelectCategory
+            .map { _ in .pollCategoryTab }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+
+        cellViewModel.output.didSelectPollItem
+            .map { pollId in
+                .pollDetail(PollDetailViewModel(pollId: pollId))
+            }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+
+        return cellViewModel
     }
 }

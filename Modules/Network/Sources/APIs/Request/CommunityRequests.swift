@@ -71,3 +71,23 @@ struct PollReportCreateRequest: RequestType {
         return "/api/v1/poll/\(pollId)/report"
     }
 }
+
+struct FetchPollsRequest: RequestType {
+    let requestInput: FetchPollsRequestInput
+
+    var param: Encodable? {
+        return requestInput
+    }
+
+    var method: RequestMethod {
+        return .get
+    }
+
+    var header: HTTPHeaderType {
+        return .auth
+    }
+
+    var path: String {
+        return "/api/v1/polls"
+    }
+}
