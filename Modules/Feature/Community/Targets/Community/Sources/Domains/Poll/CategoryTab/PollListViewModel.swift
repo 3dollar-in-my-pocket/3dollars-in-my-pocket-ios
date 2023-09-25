@@ -7,6 +7,7 @@ import Networking
 final class PollListViewModel: BaseViewModel {
     struct Input {
         let firstLoad = PassthroughSubject<Void, Never>()
+        let reload = PassthroughSubject<Void, Never>()
         let didSelectPollItem = PassthroughSubject<Int, Never>()
     }
 
@@ -46,6 +47,7 @@ final class PollListViewModel: BaseViewModel {
         super.bind()
 
         input.firstLoad
+            .merge(with: input.reload)
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.showLoading.send(true)

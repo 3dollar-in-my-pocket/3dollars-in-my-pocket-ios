@@ -192,3 +192,23 @@ struct CreatePollCommentRequest: RequestType {
         return "/api/v1/poll/\(pollId)/comment"
     }
 }
+
+struct CreatePollRequest: RequestType {
+    let requestInput: PollCreateRequestInput
+
+    var param: Encodable? {
+        return requestInput
+    }
+
+    var method: RequestMethod {
+        return .post
+    }
+
+    var header: HTTPHeaderType {
+        return .auth
+    }
+
+    var path: String {
+        return "/api/v1/poll"
+    }
+}

@@ -16,12 +16,7 @@ final class PollCategoryTabViewController: BaseViewController {
         transitionStyle: .scroll,
         navigationOrientation: .horizontal
     )
-    private lazy var pageContentViewControllers: [PollListViewController] = {
-        return [
-            PollListViewController(viewModel: .init()),
-            PollListViewController(viewModel: .init())
-        ]
-    }()
+    private var pageContentViewControllers: [PollListViewController] = []
     private let createPollButton = UIButton().then {
         $0.backgroundColor = Colors.mainRed.color
         $0.layer.cornerRadius = 22
@@ -113,8 +108,6 @@ final class PollCategoryTabViewController: BaseViewController {
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
-
-        changePage(to: .zero)
     }
 
     private func changePage(to index: Int) {
@@ -156,13 +149,22 @@ final class PollCategoryTabViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
+        // Input
         createPollButton
             .controlPublisher(for: .touchUpInside)
-            .main
+            .mapVoid
+            .subscribe(viewModel.input.didTapCreatePollButton)
+            .store(in: &cancellables)
+
+        // Output
+        viewModel.output.tabList
             .withUnretained(self)
-            .sink { owner, index in
-                let modal = CreatePollModalViewController()
-                owner.present(modal, animated: true, completion: nil)
+            .main
+            .sink { owner, tabList in
+                owner.pageContentViewControllers = tabList.map {
+                    PollListViewController(viewModel: $0)
+                }
+                owner.changePage(to: .zero)
             }
             .store(in: &cancellables)
 
@@ -180,6 +182,18 @@ final class PollCategoryTabViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, isEnabled in
                 owner.createPollButton.isEnabled = isEnabled
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.route
+            .main
+            .withUnretained(self)
+            .sink { owner, route in
+                switch route {
+                case .createPoll(let viewModel):
+                    let vc = CreatePollModalViewController(viewModel: viewModel)
+                    owner.present(vc, animated: true, completion: nil)
+                }
             }
             .store(in: &cancellables)
     }
