@@ -11,7 +11,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
     }
 
     struct Output {
-        let pollList = CurrentValueSubject<[PollWithMetaApiResponse], Never>([])
+        let pollList = CurrentValueSubject<[PollItemCellViewModel], Never>([])
         let didSelectPollItem = PassthroughSubject<String, Never>()
         let didSelectCategory = PassthroughSubject<String, Never>()
     }
@@ -51,7 +51,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, index in
                 guard let item = owner.output.pollList.value[safe: index] else { return }
-                owner.output.didSelectPollItem.send(item.poll.pollId)
+                owner.output.didSelectPollItem.send(item.pollId)
             }
             .store(in: &cancellables)
     }
@@ -66,11 +66,18 @@ final class CommunityPollListCellViewModel: BaseViewModel {
 
             switch result {
             case .success(let response):
-                self.output.pollList.send(response.contents)
+                self.output.pollList.send(response.contents.map {
+                    self.bindPollItemCellViewModel(with: $0)
+                })
             case .failure(let failure):
                 print("💜error: \(failure)")
             }
         }
+    }
+
+    private func bindPollItemCellViewModel(with data: PollWithMetaApiResponse) -> PollItemCellViewModel {
+        let cellViewModel = PollItemCellViewModel(data: data)
+        return cellViewModel
     }
 }
 

@@ -91,3 +91,44 @@ struct FetchPollsRequest: RequestType {
         return "/api/v1/polls"
     }
 }
+
+struct CreateChoicePollRequest: RequestType {
+    let pollId: String
+    let requestInput: PollChoiceCreateRequestInput
+
+    var param: Encodable? {
+        return requestInput
+    }
+
+    var method: RequestMethod {
+        return .put
+    }
+
+    var header: HTTPHeaderType {
+        return .auth
+    }
+
+    var path: String {
+        return "/api/v1/poll/\(pollId)/choice"
+    }
+}
+
+struct FetchPollRequest: RequestType {
+    let pollId: String
+
+    var param: Encodable? {
+        return nil
+    }
+
+    var method: RequestMethod {
+        return .get
+    }
+
+    var header: HTTPHeaderType {
+        return .auth
+    }
+
+    var path: String {
+        return "/api/v1/poll/\(pollId)"
+    }
+}

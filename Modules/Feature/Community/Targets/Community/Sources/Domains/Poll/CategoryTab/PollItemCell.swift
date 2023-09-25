@@ -49,6 +49,7 @@ final class PollItemCell: BaseCollectionViewCell {
         $0.contentEdgeInsets.right = 2
         $0.imageEdgeInsets.left = -2
         $0.titleEdgeInsets.right = -2
+        $0.isUserInteractionEnabled = false
     }
 
     private let countButton = UIButton().then {
@@ -60,12 +61,15 @@ final class PollItemCell: BaseCollectionViewCell {
         $0.contentEdgeInsets.right = 2
         $0.imageEdgeInsets.left = -2
         $0.titleEdgeInsets.right = -2
+        $0.isUserInteractionEnabled = false
     }
 
     private let deadlineLabel = UILabel().then {
         $0.font = Fonts.medium.font(size: 12)
         $0.textColor = Colors.gray50.color
     }
+
+    private var viewModel: PollItemCellViewModel?
 
     override func setup() {
         super.setup()
@@ -127,7 +131,48 @@ final class PollItemCell: BaseCollectionViewCell {
         }
     }
 
-    func bind(item: PollWithMetaApiResponse) {
+    func bind(viewModel: PollItemCellViewModel) {
+        self.viewModel = viewModel
+
+        // Input
+        firstSelectionView
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didSelectFirstOption)
+            .store(in: &cancellables)
+
+        secondSelectionView
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didSelectSecondOption)
+            .store(in: &cancellables)
+
+        // Output
+        viewModel.output.item
+            .main
+            .withUnretained(self)
+            .sink { owner, item in
+                owner.bindUI(with: item)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.showLoading
+            .removeDuplicates()
+            .main
+            .sink {
+                LoadingManager.shared.showLoading(isShow: $0)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.showToast
+            .main
+            .sink {
+                ToastManager.shared.show(message: $0)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func bindUI(with item: PollWithMetaApiResponse) {
         titleLabel.text = item.poll.content.title
         userNameLabel.text = item.pollWriter.name
         commentButton.setTitle("\(item.meta.totalCommentsCount)", for: .normal)
@@ -163,7 +208,7 @@ final class PollItemCell: BaseCollectionViewCell {
 
 // MARK: - CommunityPollSelectionView
 
-final class CommunityPollSelectionView: BaseView {
+final class CommunityPollSelectionView: UIControl {
 
     enum Layout {
         static let height: CGFloat = 44
@@ -173,6 +218,7 @@ final class CommunityPollSelectionView: BaseView {
         $0.layer.cornerRadius = 12
         $0.layer.borderColor = Colors.gray30.color.cgColor
         $0.layer.borderWidth = 1
+        $0.isUserInteractionEnabled = false
     }
 
     private let titleStackView = UIStackView().then {
@@ -213,9 +259,18 @@ final class CommunityPollSelectionView: BaseView {
         $0.spacing = 2
     }
 
-    override func setup() {
-        super.setup()
+    init() {
+        super.init(frame: .zero)
 
+        setup()
+        bindConstraints()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setup() {
         addSubViews([
             containerView,
         ])
@@ -233,9 +288,7 @@ final class CommunityPollSelectionView: BaseView {
         stackView.addArrangedSubview(countLabel)
     }
 
-    override func bindConstraints() {
-        super.bindConstraints()
-
+    private func bindConstraints() {
         snp.makeConstraints {
             $0.height.equalTo(Layout.height)
         }
