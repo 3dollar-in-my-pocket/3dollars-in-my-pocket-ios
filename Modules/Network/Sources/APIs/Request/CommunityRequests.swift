@@ -150,3 +150,45 @@ struct FetchPollUserPollPolicyRequest: RequestType {
         return "/api/v1/user/poll/policy"
     }
 }
+
+struct FetchPollCommentsRequest: RequestType {
+    let pollId: String
+    let requestInput: CursorRequestInput
+
+    var param: Encodable? {
+        return requestInput
+    }
+
+    var method: RequestMethod {
+        return .get
+    }
+
+    var header: HTTPHeaderType {
+        return .auth
+    }
+
+    var path: String {
+        return "/api/v1/poll/\(pollId)/comments"
+    }
+}
+
+struct CreatePollCommentRequest: RequestType {
+    let pollId: String
+    let requestInput: CreatePollCommentRequestInput
+
+    var param: Encodable? {
+        return requestInput
+    }
+
+    var method: RequestMethod {
+        return .post
+    }
+
+    var header: HTTPHeaderType {
+        return .auth
+    }
+
+    var path: String {
+        return "/api/v1/poll/\(pollId)/comment"
+    }
+}

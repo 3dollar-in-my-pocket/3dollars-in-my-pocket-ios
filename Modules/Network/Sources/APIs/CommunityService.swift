@@ -16,6 +16,10 @@ public protocol CommunityServiceProtocol {
     func fetchPoll(pollId: String) async -> Result<PollWithMetaApiResponse, Error>
     /// 유저 투표 정책 조회
     func fetchUserPollPolicy() async -> Result<PollPolicyApiResponse, Error>
+    /// 투표에 등록된 댓글 목록 조회
+    func fetchPollComments(pollId: String, input: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PollCommentWithUserRecursiveApiResponse>, Error>
+    /// 투표에 새로운 댓글 등록
+    func createPollComment(pollId: String, input: CreatePollCommentRequestInput) async -> Result<IdResponseString, Error>
 }
 
 public struct CommunityService: CommunityServiceProtocol {
@@ -65,6 +69,18 @@ public struct CommunityService: CommunityServiceProtocol {
 
     public func fetchUserPollPolicy() async -> Result<PollPolicyApiResponse, Error> {
         let request = FetchPollUserPollPolicyRequest()
+
+        return await NetworkManager.shared.request(requestType: request)
+    }
+
+    public func fetchPollComments(pollId: String, input: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PollCommentWithUserRecursiveApiResponse>, Error> {
+        let request = FetchPollCommentsRequest(pollId: pollId, requestInput: input)
+
+        return await NetworkManager.shared.request(requestType: request)
+    }
+
+    public func createPollComment(pollId: String, input: CreatePollCommentRequestInput) async -> Result<IdResponseString, Error> {
+        let request = CreatePollCommentRequest(pollId: pollId, requestInput: input)
 
         return await NetworkManager.shared.request(requestType: request)
     }

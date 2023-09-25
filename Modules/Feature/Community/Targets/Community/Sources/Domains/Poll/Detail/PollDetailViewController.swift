@@ -19,9 +19,10 @@ final class PollDetailViewController: BaseViewController {
 
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
+        $0.delegate = self
     }
 
-    private let writeCommentView = WriteCommentView()
+    private let writeCommentView = PollDetailWriteCommentView()
 
     private lazy var dataSource = PollDetailDataSource(collectionView: collectionView)
 
@@ -43,6 +44,8 @@ final class PollDetailViewController: BaseViewController {
         super.viewDidLoad()
 
         setupUI()
+
+        viewModel.input.firstLoad.send()
     }
 
     private func setupUI() {
@@ -92,10 +95,31 @@ final class PollDetailViewController: BaseViewController {
             .subscribe(viewModel.input.didTapReportButton)
             .store(in: &cancellables)
 
+        writeCommentView.writeButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapWirteCommentButton)
+            .store(in: &cancellables)
+
+        writeCommentView.didChangeText
+            .subscribe(viewModel.input.comment)
+            .store(in: &cancellables)
+
         // Output
-        viewModel.output.route
-            .withUnretained(self)
+        viewModel.output.showLoading
+            .removeDuplicates()
             .main
+            .sink { LoadingManager.shared.showLoading(isShow: $0) }
+            .store(in: &cancellables)
+
+        viewModel.output.showToast
+            .main
+            .sink { ToastManager.shared.show(message: $0) }
+            .store(in: &cancellables)
+
+        viewModel.output.route
+            .main
+            .withUnretained(self)
             .sink { owner, route in
                 switch route {
                 case .report(let viewModel):
@@ -105,8 +129,13 @@ final class PollDetailViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
-        // Test
-        dataSource.reloadData()
+        viewModel.output.dataSource
+            .main
+            .withUnretained(self)
+            .sink { owner, sections in
+                owner.dataSource.reloadData(sections)
+            }
+            .store(in: &cancellables)
     }
 
     private func generateLayout() -> UICollectionViewLayout {
@@ -153,97 +182,32 @@ final class PollDetailViewController: BaseViewController {
     }
 }
 
-// MARK: TextField
-final class WriteCommentView: BaseView {
-    enum Layout {
-        enum Placeholder {
-            static let text = "의견 달기"
-            static let color = Colors.gray50.color
+extension PollDetailViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = UIScreen.main.bounds.width
+
+        switch dataSource.itemIdentifier(for: indexPath) {
+        case .detail:
+            return CGSize(width: width, height: PollDetailContentCell.Layout.height)
+        case .comment:
+            return CGSize(width: width, height: PollDetailCommentCell.Layout.height)
+        default:
+            return .zero
         }
-
-        static let textColor = Colors.gray100.color
     }
 
-    let lineView = UIView().then {
-        $0.backgroundColor = Colors.gray30.color
-    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        let width = UIScreen.main.bounds.width
 
-    lazy var textView = UITextView().then {
-        $0.backgroundColor = Colors.gray10.color
-        $0.layer.cornerRadius = 8
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.clear.cgColor
-        $0.isScrollEnabled = false
-        $0.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
-        $0.text = Layout.Placeholder.text
-        $0.textColor = Layout.Placeholder.color
-        $0.font = Fonts.regular.font(size: 14)
-        $0.keyboardDismissMode = .interactive
-        $0.delegate = self
-    }
-
-    let writeButton = UIButton().then {
-        $0.setImage(Icons.writeSolid.image
-            .resizeImage(scaledTo: 20)
-            .withTintColor(Colors.mainPink.color), for: .normal)
-        $0.setImage(Icons.writeSolid.image
-            .resizeImage(scaledTo: 20)
-            .withTintColor(Colors.gray40.color), for: .disabled)
-        $0.contentEdgeInsets = .init(top: 16, left: 12, bottom: 20, right: 16)
-    }
-
-    override func setup() {
-        super.setup()
-
-        backgroundColor = Colors.systemWhite.color
-
-        addSubViews([lineView, textView, writeButton])
-    }
-
-    override func bindConstraints() {
-        super.bindConstraints()
-
-        lineView.snp.makeConstraints {
-            $0.top.leading.trailing.equalToSuperview()
-            $0.height.equalTo(1)
-        }
-
-        textView.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview().inset(8)
-            $0.leading.equalToSuperview().inset(16)
-            $0.trailing.equalToSuperview().inset(48)
-        }
-
-        writeButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview()
-            $0.top.equalToSuperview()
+        switch dataSource.sectionIdentifier(section: section)?.type {
+        case .comment:
+            return CGSize(width: width, height: PollDetailCommentHeaderView.Layout.height)
+        default:
+            return .zero
         }
     }
 }
 
-extension WriteCommentView: UITextViewDelegate {
-    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        textView.layer.borderColor = Colors.mainPink.color.cgColor
-        if textView.text == Layout.Placeholder.text {
-            textView.text.removeAll()
-        }
-        textView.textColor = Layout.textColor
-        return true
-    }
+extension PollDetailViewController: UICollectionViewDelegate {
 
-    func textViewDidChange(_ textView: UITextView) {
-        writeButton.isEnabled = textView.text.isNotEmpty
-    }
-
-    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
-        textView.layer.borderColor = UIColor.clear.cgColor
-        textView.textColor = Layout.textColor
-
-        if textView.text.isEmpty {
-            textView.text = Layout.Placeholder.text
-            textView.textColor = Layout.Placeholder.color
-        }
-
-        return true
-    }
 }

@@ -6,27 +6,51 @@ struct PollDetailSection: Hashable {
     enum SectionType {
         case detail
         case banner
-        case comment
+        case comment(totalCount: Int)
     }
 
     var type: SectionType
     var items: [PollDetailSectionItem]
-}
-
-enum PollDetailSectionItem: Hashable {
-    case detail
-    case banner
-    case comment(String)
-    case blindComment
 
     func hash(into hasher: inout Hasher) {
-        switch self {
+        switch type {
         case .detail:
             hasher.combine("detail")
         case .banner:
             hasher.combine("banner")
-        case .comment(let title):
-            hasher.combine(title)
+        case .comment(let count):
+            hasher.combine(count)
+        }
+    }
+
+    static func == (lhs: PollDetailSection, rhs: PollDetailSection) -> Bool {
+        switch (lhs.type, rhs.type) {
+        case (.detail, .detail):
+            return true
+        case (.banner, .banner):
+            return true
+        case (.comment(let lhsCount), .comment(let rhsCount)):
+            return lhsCount == rhsCount
+        default:
+            return false
+        }
+    }
+}
+
+enum PollDetailSectionItem: Hashable {
+    case detail(PollItemCellViewModel)
+    case banner
+    case comment(PollDetailCommentCellViewModel)
+    case blindComment
+
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case .detail(let viewModel):
+            hasher.combine(viewModel.hashValue)
+        case .banner:
+            hasher.combine("banner")
+        case .comment(let viewModel):
+            hasher.combine(viewModel.hashValue)
         case .blindComment:
             hasher.combine("blindComment")
         }
@@ -49,13 +73,13 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
 
         super.init(collectionView: collectionView) {collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .detail:
+            case .detail(let cellViewModel):
                 let cell: PollDetailContentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                cell.bind()
+                cell.bind(viewModel: cellViewModel)
                 return cell
-            case .comment:
+            case .comment(let cellViewModel):
                 let cell: PollDetailCommentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                cell.bind()
+                cell.bind(viewModel: cellViewModel)
                 return cell
             default:
                 return UICollectionViewCell()
@@ -68,25 +92,18 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
             }
 
             switch section.type {
-            case .comment:
+            case .comment(let totalCount):
                 let headerView: PollDetailCommentHeaderView = collectionView.dequeueReusableSupplementaryView(ofkind: UICollectionView.elementKindSectionHeader, indexPath: indexPath)
-                headerView.bind(count: 24)
+                headerView.bind(count: totalCount)
                 return headerView
             default:
                 return nil
             }
         }
-
-        collectionView.delegate = self
     }
 
-    func reloadData() {
+    func reloadData(_ sections: [PollDetailSection]) {
         var snapshot = Snapshot()
-
-        let sections: [PollDetailSection] = [
-            .init(type: .detail, items: [.detail]),
-            .init(type: .comment, items: [.comment("1"), .comment("2"), .comment("3"), .comment("4")])
-        ]
 
         sections.forEach {
             snapshot.appendSections([$0])
@@ -95,34 +112,4 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
 
         apply(snapshot, animatingDifferences: true)
     }
-}
-
-extension PollDetailDataSource: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = UIScreen.main.bounds.width
-
-        switch self[indexPath] {
-        case .detail:
-            return CGSize(width: width, height: PollDetailContentCell.Layout.height)
-        case .comment:
-            return CGSize(width: width, height: PollDetailCommentCell.Layout.height)
-        default:
-            return .zero
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let width = UIScreen.main.bounds.width
-
-        switch sectionIdentifier(section: section)?.type {
-        case .comment:
-            return CGSize(width: width, height: PollDetailCommentHeaderView.Layout.height)
-        default:
-            return .zero
-        }
-    }
-}
-
-extension PollDetailDataSource: UICollectionViewDelegate {
-
 }

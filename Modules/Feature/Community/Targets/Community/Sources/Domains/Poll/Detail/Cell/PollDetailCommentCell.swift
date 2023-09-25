@@ -3,6 +3,7 @@ import UIKit
 import Common
 import DesignSystem
 import Then
+import Model
 
 final class PollDetailCommentCell: BaseCollectionViewCell {
 
@@ -39,6 +40,8 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
     private let lineView = UIView().then {
         $0.backgroundColor = Colors.gray10.color
     }
+
+    private var viewModel: PollDetailCommentCellViewModel?
 
     override func setup() {
         super.setup()
@@ -89,10 +92,34 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         }
     }
 
-    func bind() {
-        userNameLabel.text = "관악구 광화문연가"
-        dateLabel.text = "2023.04.30"
+    func bind(viewModel: PollDetailCommentCellViewModel) {
+        self.viewModel = viewModel
+
+        // Output
+        viewModel.output.item
+            .main
+            .withUnretained(self)
+            .sink { owner, item in
+                owner.bindUI(with: item)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.showLoading
+            .removeDuplicates()
+            .main
+            .sink { LoadingManager.shared.showLoading(isShow: $0) }
+            .store(in: &cancellables)
+
+        viewModel.output.showToast
+            .main
+            .sink { ToastManager.shared.show(message: $0) }
+            .store(in: &cancellables)
+    }
+
+    private func bindUI(with data: PollCommentWithUserApiResponse) {
+        userNameLabel.text = data.commentWriter.name
+        dateLabel.text = data.comment.updatedAt
         reportButton.setTitle("신고", for: .normal)
-        contentLabel.text = "슈붕을 좋아하면 델리만쥬를 먹지 왜 붕어빵을 먹음?"
+        contentLabel.text = data.comment.content
     }
 }
