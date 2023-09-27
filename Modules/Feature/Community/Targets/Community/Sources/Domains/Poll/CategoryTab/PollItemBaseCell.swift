@@ -138,11 +138,12 @@ class PollItemBaseCell: BaseCollectionViewCell {
         }
 
         firstSelectionView.titleLabel.text = firstOption?.name
-        firstSelectionView.percentLabel.text = "\(firstOption?.choice.ratio ?? 0)%"
+        firstSelectionView.percentLabel.text = "\(Int((firstOption?.choice.ratio ?? 0) * 100))%"
         firstSelectionView.countLabel.text = "\(firstOption?.choice.count ?? 0)명"
 
         secondSelectionView.titleLabel.text = secondOption?.name
-        secondSelectionView.percentLabel.text = "\(secondOption?.choice.count ?? 0)명"
+        secondSelectionView.percentLabel.text = "\(Int((secondOption?.choice.ratio ?? 0) * 100))%"
+        secondSelectionView.countLabel.text = "\(secondOption?.choice.count ?? 0)명"
     }
 }
 
