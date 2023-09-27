@@ -6,11 +6,12 @@ import Networking
 
 final class PollDetailCommentCellViewModel: BaseViewModel {
     struct Input {
-
+        let didTapReportOrUpdateButton = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
-        let item: CurrentValueSubject<PollCommentWithUserApiResponse, Never>
+        let item: PollCommentWithUserApiResponse
+        let isMine: Bool
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
     }
@@ -27,13 +28,18 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
     private var state = State()
     private let communityService: CommunityServiceProtocol
 
+    private let userInfo: UserWithDeviceApiResponse?
+
     init(
         data: PollCommentWithUserApiResponse,
+        userInfo: UserWithDeviceApiResponse?,
         communityService: CommunityServiceProtocol = CommunityService()
     ) {
         self.communityService = communityService
+        self.userInfo = userInfo
         self.output = Output(
-            item: .init(data)
+            item: data,
+            isMine: userInfo?.userId == data.commentWriter.userId
         )
 
         super.init()

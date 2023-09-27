@@ -22,6 +22,8 @@ public protocol CommunityServiceProtocol {
     func createPollComment(pollId: String, input: CreatePollCommentRequestInput) async -> Result<IdResponseString, Error>
     /// 투표 등록
     func createPoll(input: PollCreateRequestInput) async -> Result<IdResponseString, Error>
+    /// 투표 댓글 조회
+    func fetchPollComment(pollId: String, commentId: String) async -> Result<PollCommentWithUserRecursiveApiResponse, Error>
 }
 
 public struct CommunityService: CommunityServiceProtocol {
@@ -89,6 +91,12 @@ public struct CommunityService: CommunityServiceProtocol {
 
     public func createPoll(input: PollCreateRequestInput) async -> Result<IdResponseString, Error> {
         let request = CreatePollRequest(requestInput: input)
+
+        return await NetworkManager.shared.request(requestType: request)
+    }
+
+    public func fetchPollComment(pollId: String, commentId: String) async -> Result<PollCommentWithUserRecursiveApiResponse, Error> {
+        let request = FetchPollCommentRequest(pollId: pollId, commentId: commentId)
 
         return await NetworkManager.shared.request(requestType: request)
     }

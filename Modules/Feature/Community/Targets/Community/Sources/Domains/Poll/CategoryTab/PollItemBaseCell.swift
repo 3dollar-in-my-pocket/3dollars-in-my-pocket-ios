@@ -117,7 +117,7 @@ class PollItemBaseCell: BaseCollectionViewCell {
         userNameLabel.text = item.pollWriter.name
         commentButton.setTitle("\(item.meta.totalCommentsCount)", for: .normal)
         countButton.setTitle("\(item.meta.totalParticipantsCount)명 투표", for: .normal)
-        deadlineLabel.text = item.poll.period.endDateTime
+        deadlineLabel.text = item.poll.period.endDateTime.toDate()?.toString() ?? item.poll.period.endDateTime
 
         let firstOption = item.poll.options[safe: 0]
         let secondOption = item.poll.options[safe: 1]

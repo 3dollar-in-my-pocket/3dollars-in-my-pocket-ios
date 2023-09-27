@@ -53,4 +53,15 @@ public extension Publisher {
             }
         }
     }
+
+    func mapValue<V, E>() -> Publishers.Map<Self, V?> where E: Error, Output == Result<V, E> {
+        map { result in
+            switch result {
+            case .success(let value):
+                return value
+            default:
+                return nil
+            }
+        }
+    }
 }

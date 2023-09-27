@@ -17,4 +17,18 @@ public extension String {
     var isNotEmpty: Bool {
         return !isEmpty
     }
+
+    func toDate() -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        return dateFormatter.date(from: self)
+    }
+
+    func height(width: CGFloat) -> CGFloat {
+        (self as NSString).boundingRect(
+            with: CGSize(width: width, height: .greatestFiniteMagnitude),
+            options: .usesLineFragmentOrigin,
+            context: nil
+        ).size.height
+    }
 }

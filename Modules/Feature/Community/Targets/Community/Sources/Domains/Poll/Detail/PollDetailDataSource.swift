@@ -110,6 +110,6 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
             snapshot.appendItems($0.items)
         }
 
-        apply(snapshot, animatingDifferences: true)
+        apply(snapshot, animatingDifferences: false)
     }
 }

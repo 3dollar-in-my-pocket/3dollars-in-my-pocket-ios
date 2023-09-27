@@ -136,11 +136,23 @@ final class PollDetailViewController: BaseViewController {
                 owner.dataSource.reloadData(sections)
             }
             .store(in: &cancellables)
+
+        viewModel.output.completedWriteComment
+            .main
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.view.endEditing(true)
+                owner.writeCommentView.clear()
+                owner.collectionView.scrollToBottom()
+            }
+            .store(in: &cancellables)
     }
 
     private func generateLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
         return layout
     }
 
@@ -189,8 +201,8 @@ extension PollDetailViewController: UICollectionViewDelegateFlowLayout {
         switch dataSource.itemIdentifier(for: indexPath) {
         case .detail:
             return CGSize(width: width, height: PollDetailContentCell.Layout.height)
-        case .comment:
-            return CGSize(width: width, height: PollDetailCommentCell.Layout.height)
+        case .comment(let viewModel):
+            return CGSize(width: width, height: PollDetailCommentCell.Layout.height(content: viewModel.output.item.comment.content))
         default:
             return .zero
         }
@@ -209,5 +221,7 @@ extension PollDetailViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension PollDetailViewController: UICollectionViewDelegate {
-
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        view.endEditing(true)
+    }
 }

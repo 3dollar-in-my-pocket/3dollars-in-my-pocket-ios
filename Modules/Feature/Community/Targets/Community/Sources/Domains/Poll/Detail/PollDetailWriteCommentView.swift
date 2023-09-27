@@ -43,6 +43,7 @@ final class PollDetailWriteCommentView: BaseView {
             .resizeImage(scaledTo: 20)
             .withTintColor(Colors.gray40.color), for: .disabled)
         $0.contentEdgeInsets = .init(top: 16, left: 12, bottom: 20, right: 16)
+        $0.isEnabled = false
     }
 
     override func setup() {
@@ -72,12 +73,19 @@ final class PollDetailWriteCommentView: BaseView {
             $0.top.equalToSuperview()
         }
     }
+
+    func clear() {
+        textView.text.removeAll()
+        textView.text = Layout.Placeholder.text
+        textView.textColor = Layout.Placeholder.color
+        writeButton.isEnabled = false
+    }
 }
 
 extension PollDetailWriteCommentView: UITextViewDelegate {
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         textView.layer.borderColor = Colors.mainPink.color.cgColor
-        if textView.text == Layout.Placeholder.text {
+        if textView.textColor == Layout.Placeholder.color {
             textView.text.removeAll()
         }
         textView.textColor = Layout.textColor
@@ -96,6 +104,7 @@ extension PollDetailWriteCommentView: UITextViewDelegate {
         if textView.text.isEmpty {
             textView.text = Layout.Placeholder.text
             textView.textColor = Layout.Placeholder.color
+            writeButton.isEnabled = false
         }
 
         return true

@@ -14,6 +14,7 @@ final class PollItemCellViewModel: BaseViewModel {
         let item: CurrentValueSubject<PollWithMetaApiResponse, Never>
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
+        let reloadComments = PassthroughSubject<Int, Never>()
     }
 
     struct State {
@@ -88,6 +89,7 @@ final class PollItemCellViewModel: BaseViewModel {
                 case .success(let response):
                     owner.output.showToast.send("업데이트 성공")
                     owner.output.item.send(response)
+                    owner.output.reloadComments.send(response.meta.totalCommentsCount)
                 case .failure(let error):
                     owner.output.showToast.send("업데이트 실패: \(error.localizedDescription)")
                 }
