@@ -207,7 +207,23 @@ final class PollDetailViewModel: BaseViewModel {
     }
 
     private func bindCommentCellViewModel(with data: PollCommentWithUserApiResponse) -> PollDetailCommentCellViewModel {
-        let cellViewModel = PollDetailCommentCellViewModel(data: data, userInfo: output.userInfo.value)
+        let cellViewModel = PollDetailCommentCellViewModel(
+            pollId: pollId,
+            data: data,
+            userInfo: output.userInfo.value
+        )
+
+        cellViewModel.output.deleteCell
+            .withUnretained(self)
+            .sink { owner, commentId in
+                var updatedComments = owner.state.comments.value
+                updatedComments.removeAll(where: {
+                    $0.comment.commentId == commentId
+                })
+                owner.state.comments.send(updatedComments)
+            }
+            .store(in: &cancellables)
+
         return cellViewModel
     }
 }

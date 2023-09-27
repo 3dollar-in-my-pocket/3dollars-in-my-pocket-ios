@@ -14,6 +14,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
         let isMine: Bool
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
+        let deleteCell = PassthroughSubject<String, Never>()
     }
 
     struct State {
@@ -28,13 +29,16 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
     private var state = State()
     private let communityService: CommunityServiceProtocol
 
+    private let pollId: String
     private let userInfo: UserWithDeviceApiResponse?
 
     init(
+        pollId: String,
         data: PollCommentWithUserApiResponse,
         userInfo: UserWithDeviceApiResponse?,
         communityService: CommunityServiceProtocol = CommunityService()
     ) {
+        self.pollId = pollId
         self.communityService = communityService
         self.userInfo = userInfo
         self.output = Output(
@@ -48,6 +52,32 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
     override func bind() {
         super.bind()
 
+        let delete = input.didTapReportOrUpdateButton
+            .withUnretained(self)
+            .filter { owner, _ in owner.output.isMine }
+
+        delete
+            .handleEvents(receiveOutput: { owner, _ in
+                owner.output.showLoading.send(true)
+            })
+            .asyncMap { owner, input in
+                await owner.communityService.deletePollComment(
+                    pollId: owner.pollId,
+                    commentId: owner.output.item.comment.commentId
+                )
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                owner.output.showLoading.send(false)
+                switch result {
+                case .success:
+                    owner.output.deleteCell.send(owner.output.item.comment.commentId)
+                    owner.output.showToast.send("삭제했어요")
+                case .failure(let error):
+                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                }
+            }
+            .store(in: &cancellables)
     }
 }
 

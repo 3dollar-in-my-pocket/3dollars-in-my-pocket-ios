@@ -233,3 +233,24 @@ struct FetchPollCommentRequest: RequestType {
         return "/api/v1/poll/\(pollId)/comment/\(commentId)"
     }
 }
+
+struct DeletePollCommentRequest: RequestType {
+    let pollId: String
+    let commentId: String
+
+    var param: Encodable? {
+        return nil
+    }
+
+    var method: RequestMethod {
+        return .delete
+    }
+
+    var header: HTTPHeaderType {
+        return .auth
+    }
+
+    var path: String {
+        return "/api/v1/poll/\(pollId)/comment/\(commentId)"
+    }
+}
