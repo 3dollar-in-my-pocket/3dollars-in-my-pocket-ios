@@ -27,6 +27,8 @@ class PollItemBaseCell: BaseCollectionViewCell {
         $0.textColor = Colors.gray80.color
     }
 
+    let medalView = CommunityUserMedalView()
+
     let selectionStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 8
@@ -115,6 +117,7 @@ class PollItemBaseCell: BaseCollectionViewCell {
     private func bindUI(with item: PollWithMetaApiResponse) {
         titleLabel.text = item.poll.content.title
         userNameLabel.text = item.pollWriter.name
+        medalView.bind(imageUrl: item.pollWriter.medal.iconUrl, title: item.pollWriter.medal.name)
         commentButton.setTitle("\(item.meta.totalCommentsCount)", for: .normal)
         countButton.setTitle("\(item.meta.totalParticipantsCount)명 투표", for: .normal)
         deadlineLabel.text = item.poll.period.endDateTime.toDate()?.toString() ?? item.poll.period.endDateTime

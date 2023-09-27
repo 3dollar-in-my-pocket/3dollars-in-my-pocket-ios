@@ -78,6 +78,17 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
                 }
             }
             .store(in: &cancellables)
+
+        let report = input.didTapReportOrUpdateButton
+            .withUnretained(self)
+            .filter { owner, _ in !owner.output.isMine }
+
+        report
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.output.showToast.send("신고 구현 필요")
+            }
+            .store(in: &cancellables)
     }
 }
 

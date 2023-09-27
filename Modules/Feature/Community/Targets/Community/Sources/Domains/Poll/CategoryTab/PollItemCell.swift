@@ -27,6 +27,7 @@ final class PollItemCell: PollItemBaseCell {
         ])
 
         userInfoStackView.addArrangedSubview(userNameLabel)
+        userInfoStackView.addArrangedSubview(medalView)
 
         selectionStackView.addArrangedSubview(firstSelectionView)
         selectionStackView.addArrangedSubview(secondSelectionView)

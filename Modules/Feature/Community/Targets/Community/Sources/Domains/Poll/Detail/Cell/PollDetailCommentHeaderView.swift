@@ -6,7 +6,7 @@ import Then
 final class PollDetailCommentHeaderView: UICollectionReusableView {
 
     enum Layout {
-        static let height: CGFloat = 48
+        static let height: CGFloat = 68
     }
 
     private let countLabel = UILabel().then {
@@ -44,7 +44,7 @@ final class PollDetailCommentHeaderView: UICollectionReusableView {
 
         stackView.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(20)
-            $0.bottom.equalToSuperview()
+            $0.centerY.equalToSuperview()
         }
     }
 

@@ -21,9 +21,14 @@ final class PollDetailContentCell: PollItemBaseCell {
         ])
 
         userInfoStackView.addArrangedSubview(userNameLabel)
-
+        userInfoStackView.addArrangedSubview(medalView)
+        
         selectionStackView.addArrangedSubview(firstSelectionView)
         selectionStackView.addArrangedSubview(secondSelectionView)
+
+        countButton.setImage(Icons.fireSolid.image.resizeImage(scaledTo: 20).withTintColor(Colors.mainRed.color), for: .normal)
+        countButton.titleLabel?.font = Fonts.semiBold.font(size: 14)
+        countButton.setTitleColor(Colors.gray100.color, for: .normal)
     }
 
     override func bindConstraints() {
