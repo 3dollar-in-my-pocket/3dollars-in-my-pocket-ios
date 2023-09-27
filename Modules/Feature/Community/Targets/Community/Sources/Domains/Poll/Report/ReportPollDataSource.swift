@@ -1,66 +1,66 @@
 import UIKit
 
+import Model
+
 struct ReportPollSection: Hashable {
     var items: [ReportPollSectionItem]
 }
 
 enum ReportPollSectionItem: Hashable {
-    case reason(String)
+    case reason(item: PollReportReason, isSelected: Bool)
+    case reasonDetail
 
     func hash(into hasher: inout Hasher) {
         switch self {
-        case .reason(let title):
-            hasher.combine(title)
+        case .reason(let item, let isSelected):
+            hasher.combine(item.type)
+            hasher.combine(isSelected)
+        case .reasonDetail:
+            hasher.combine("reasonDetail")
         }
     }
 }
 
 final class ReportPollDataSource: UICollectionViewDiffableDataSource<ReportPollSection, ReportPollSectionItem> {
-
+    
     private typealias Snapshot = NSDiffableDataSourceSnapshot<ReportPollSection, ReportPollSectionItem>
-
-    init(collectionView: UICollectionView) {
-        super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+    
+    init(viewModel: ReportPollViewModel, collectionView: UICollectionView) {
+        super.init(collectionView: collectionView) { [weak viewModel] collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .reason(let title):
+            case .reason(let item, let isSelected):
                 let cell: ReportPollReasonCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                cell.bind(title: title)
+                cell.bind(title: item.description, isSelected: isSelected)
+                return cell
+            case .reasonDetail:
+                let cell: ReportPollReasonDetailCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.didChangeText
+                    .sink { [weak viewModel] text in
+                        viewModel?.input.didChangeText.send(text)
+                    }
+                    .store(in: &cell.cancellables)
                 return cell
             }
         }
-
-        collectionView.register([ReportPollReasonCell.self])
-        collectionView.delegate = self
+        
+        collectionView.register([
+            ReportPollReasonCell.self,
+            ReportPollReasonDetailCell.self
+        ])
     }
-
-    func reloadData() {
+    
+    func reloadData(sectionItems: [ReportPollSectionItem], completion: (() -> Void)? = nil) {
         var snapshot = Snapshot()
 
         let sections: [ReportPollSection] = [
-            .init(items: [
-                .reason("욕설, 비방, 혐오조장"),
-                .reason("홍보, 영리목적"),
-                .reason("도배, 스팸"),
-                .reason("불법 정보"),
-                .reason("기타")
-            ])
+            .init(items: sectionItems)
         ]
-
+        
         sections.forEach {
             snapshot.appendSections([$0])
             snapshot.appendItems($0.items)
         }
-
-        apply(snapshot, animatingDifferences: true)
-    }
-}
-
-extension ReportPollDataSource: UICollectionViewDelegate {
-
-}
-
-extension ReportPollDataSource: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: ReportPollReasonCell.Layout.height)
+        
+        apply(snapshot, animatingDifferences: false, completion: completion)
     }
 }

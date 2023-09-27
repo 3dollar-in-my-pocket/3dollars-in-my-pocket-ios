@@ -3,8 +3,9 @@ import UIKit
 import Common
 import DesignSystem
 import Then
+import Model
 
-final class ReportPollReasonCell: BaseCollectionViewCell {
+final class CommunityPopularStoreNeighborhoodsCell: BaseCollectionViewCell {
 
     enum Layout {
         static let height: CGFloat = 44
@@ -59,10 +60,10 @@ final class ReportPollReasonCell: BaseCollectionViewCell {
         }
     }
 
-    func bind(title: String, isSelected: Bool) {
-        titleLabel.text = title
-        titleLabel.textColor = isSelected ? Colors.gray100.color : Colors.gray60.color
-        containerView.layer.borderColor = isSelected ? Colors.mainRed.color.cgColor : Colors.gray40.color.cgColor
-        checkImageView.isHidden = !isSelected
+    func bind(item: CommunityNeighborhoods) {
+        titleLabel.text = item.description
+        titleLabel.textColor = item.isSelected ? Colors.gray100.color : Colors.gray60.color
+        containerView.layer.borderColor = item.isSelected ? Colors.mainRed.color.cgColor : Colors.gray40.color.cgColor
+        checkImageView.isHidden = !item.isSelected
     }
 }

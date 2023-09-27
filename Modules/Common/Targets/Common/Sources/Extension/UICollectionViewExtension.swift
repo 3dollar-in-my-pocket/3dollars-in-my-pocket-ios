@@ -48,4 +48,33 @@ public extension UICollectionView {
         
         return view
     }
+
+    func scrollToBottom(animated: Bool = true) {
+        guard numberOfSections > 0 else { return }
+
+        let lastSection = numberOfSections - 1
+        let lastItem = numberOfItems(inSection: lastSection) - 1
+
+        let indexPath = IndexPath(
+            item: lastItem,
+            section: lastSection
+        )
+        scrollToItemIfAvailable(at: indexPath, at: .bottom, animated: true)
+    }
+
+    func scrollToItemIfAvailable(at indexPath: IndexPath, at scrollPosition: UICollectionView.ScrollPosition, animated: Bool) {
+        guard isIndexPathAvailable(indexPath) else { return }
+
+        scrollToItem(at: indexPath, at: scrollPosition, animated: animated)
+    }
+
+    func isIndexPathAvailable(_ indexPath: IndexPath) -> Bool {
+        guard dataSource != nil,
+              indexPath.section < numberOfSections,
+              indexPath.item < numberOfItems(inSection: indexPath.section) else {
+            return false
+        }
+
+        return true
+    }
 }

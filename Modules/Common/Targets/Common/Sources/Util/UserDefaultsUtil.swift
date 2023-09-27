@@ -1,4 +1,5 @@
 import Foundation
+import Model
 import CoreLocation
 
 public final class UserDefaultsUtil {
@@ -25,6 +26,22 @@ public final class UserDefaultsUtil {
             let longitude = instance.double(forKey: "KEY_CURRENT_LONGITUDE")
             
             return CLLocation(latitude: latitude, longitude: longitude)
+        }
+    }
+
+    /// 커뮤니티 동네 인기가게 - 유저가 선택한 동네
+    public var communityPopularStoreNeighborhoods: CommunityNeighborhoods {
+        set {
+            instance.set(newValue.district, forKey: "KEY_COMMUNITY_POPULAR_STORE_NEIGHBORHOODS_DISTRICT")
+            instance.set(newValue.description, forKey: "KEY_COMMUNITY_POPULAR_STORE_NEIGHBORHOODS_DESCRIPTION")
+        }
+        get {
+            guard let district = instance.string(forKey: "KEY_COMMUNITY_POPULAR_STORE_NEIGHBORHOODS_DISTRICT"),
+                  let descrition = instance.string(forKey: "KEY_COMMUNITY_POPULAR_STORE_NEIGHBORHOODS_DESCRIPTION") else {
+                return .defaultValue
+            }
+
+            return CommunityNeighborhoods(district: district, description: descrition, isSelected: true)
         }
     }
 }

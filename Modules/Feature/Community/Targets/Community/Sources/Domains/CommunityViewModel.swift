@@ -10,12 +10,14 @@ final class CommunityViewModel: BaseViewModel {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let didTapPollCategoryButton = PassthroughSubject<Void, Never>()
         let didSelectPollItem = PassthroughSubject<String, Never>()
+        let didTapDistrictButton = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
         let showLoading = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
         let sections = PassthroughSubject<[CommunitySection], Never>()
+        let updatePopularStores = PassthroughSubject<Void, Never>()
     }
 
     struct State {
@@ -24,7 +26,8 @@ final class CommunityViewModel: BaseViewModel {
 
     enum Route {
         case pollCategoryTab
-        case pollDetail
+        case pollDetail(PollDetailViewModel)
+        case popularStoreNeighborhoods(CommunityPopularStoreNeighborhoodsViewModel)
     }
 
     let input = Input()
@@ -48,44 +51,65 @@ final class CommunityViewModel: BaseViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .sink { (owner: CommunityViewModel, _: Void) in
-                owner.fetchPopularStores()
+                owner.reloadDataSource()
             }
             .store(in: &cancellables)
+    }
 
-        input.didTapPollCategoryButton
+    private func reloadDataSource() {
+        var sectionItems: [CommunitySectionItem] = []
+
+        sectionItems.append(.poll(bindPollListCellViewModel()))
+        sectionItems.append(.popularStore(bindPopularStoreTabCellViewModel()))
+
+        output.sections.send([
+            CommunitySection(items: sectionItems)
+        ])
+    }
+
+    private func bindPopularStoreTabCellViewModel() -> CommunityPopularStoreTabCellViewModel {
+        let cellViewModel = CommunityPopularStoreTabCellViewModel()
+
+        cellViewModel.output.didTapDistrictButton
+            .withUnretained(self)
+            .map { owner, _ in
+                return .popularStoreNeighborhoods(owner.bindPopularStoreNeighborhoodsViewModel())
+            }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+
+        output.updatePopularStores
+            .subscribe(cellViewModel.input.reload)
+            .store(in: &cancellables)
+
+        return cellViewModel
+    }
+
+    private func bindPopularStoreNeighborhoodsViewModel() -> CommunityPopularStoreNeighborhoodsViewModel {
+        let viewModel = CommunityPopularStoreNeighborhoodsViewModel()
+
+        viewModel.output.updatePopularStores
+            .subscribe(output.updatePopularStores)
+            .store(in: &cancellables)
+
+        return viewModel
+    }
+
+    private func bindPollListCellViewModel() -> CommunityPollListCellViewModel {
+        let cellViewModel = CommunityPollListCellViewModel()
+
+        cellViewModel.output.didSelectCategory
             .map { _ in .pollCategoryTab }
             .subscribe(output.route)
             .store(in: &cancellables)
 
-        input.didSelectPollItem
-            .map { _ in .pollDetail }
+        cellViewModel.output.didSelectPollItem
+            .map { pollId in
+                .pollDetail(PollDetailViewModel(pollId: pollId))
+            }
             .subscribe(output.route)
             .store(in: &cancellables)
-    }
 
-    private func fetchPopularStores() {
-        Task { [weak self] in
-            guard let self else { return }
-
-            let input = FetchPopularStoresInput(criteria: "MOST_REVIEWS", district: "GYEONGGI_GUNPO")
-
-            let storeDetailResult = await communityService.fetchPopularStores(input: input)
-
-            switch storeDetailResult {
-            case .success(let response):
-                let storeList = response.contents.map {
-                    PlatformStore(response: $0)
-                }
-                let cellViewModel = CommunityPopularStoreTabCellViewModel(storeList: storeList)
-                output.sections.send([
-                    .init(items: [
-                        .poll,
-                        .popularStore(cellViewModel)
-                    ])
-                ])
-            case .failure(let failure):
-                print("💜error: \(failure)")
-            }
-        }
+        return cellViewModel
     }
 }

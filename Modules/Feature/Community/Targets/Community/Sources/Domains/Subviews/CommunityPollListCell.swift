@@ -11,8 +11,6 @@ final class CommunityPollListCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 426)
     }
 
-    let didSelectItem = PassthroughSubject<String, Never>()
-
     private let titleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 24)
         $0.textColor = Colors.gray100.color
@@ -20,7 +18,7 @@ final class CommunityPollListCell: BaseCollectionViewCell {
         $0.text = "그만싸워 얘덜아...\n먹을걸로 왜그래..."
     }
 
-    let categoryButton = UIButton().then {
+    private let categoryButton = UIButton().then {
         $0.titleLabel?.font = Fonts.bold.font(size: 18)
         $0.setTitle("맛짱 투표", for: .normal)
         $0.setTitleColor(Colors.gray80.color, for: .normal)
@@ -43,6 +41,8 @@ final class CommunityPollListCell: BaseCollectionViewCell {
         $0.dataSource = self
         $0.delegate = self
     }
+
+    private var viewModel: CommunityPollListCellViewModel?
 
     override func setup() {
         super.setup()
@@ -89,26 +89,44 @@ final class CommunityPollListCell: BaseCollectionViewCell {
 
         return layout
     }
+
+    func bind(viewModel: CommunityPollListCellViewModel) {
+        self.viewModel = viewModel
+
+        // Input
+        categoryButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didSelectCategory)
+            .store(in: &cancellables)
+        
+        // Output
+        viewModel.output.pollList
+            .main
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.collectionView.reloadData()
+            }
+            .store(in: &cancellables)
+    }
 }
 
 extension CommunityPollListCell: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return viewModel?.output.pollList.value.count ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cellViewModel = viewModel?.output.pollList.value[safe: indexPath.item] else { return UICollectionViewCell() }
+
         let cell: PollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-        cell.bind()
+        cell.bind(viewModel: cellViewModel)
         return cell
     }
 }
 
 extension CommunityPollListCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        didSelectItem.send("ID")
+        viewModel?.input.didSelectPollItem.send(indexPath.item)
     }
 }

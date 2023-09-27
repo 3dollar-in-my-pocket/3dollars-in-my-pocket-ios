@@ -26,6 +26,11 @@ public final class CommunityViewController: BaseViewController {
 
     public static func instance() -> UINavigationController {
         let viewController = CommunityViewController()
+        viewController.tabBarItem = UITabBarItem(
+            title: nil,
+            image: Icons.communitySolid.image.resizeImage(scaledTo: 30),
+            tag: TabBarTag.foodTruck.rawValue
+        )
 
         return UINavigationController(rootViewController: viewController).then {
             $0.isNavigationBarHidden = true
@@ -56,9 +61,12 @@ public final class CommunityViewController: BaseViewController {
                 case .pollCategoryTab:
                     let vc = PollCategoryTabViewController()
                     owner.navigationController?.pushViewController(vc, animated: true)
-                case .pollDetail:
-                    let vc = PollDetailViewController()
+                case .pollDetail(let viewModel):
+                    let vc = PollDetailViewController(viewModel)
                     owner.navigationController?.pushViewController(vc, animated: true)
+                case .popularStoreNeighborhoods(let viewModel):
+                    let vc = CommunityPopularStoreNeighborhoodsViewController(viewModel)
+                    owner.present(vc, animated: true, completion: nil)
                 }
             }
             .store(in: &cancellables)
@@ -70,6 +78,5 @@ public final class CommunityViewController: BaseViewController {
                 owner.dataSource.reload(sections)
             }
             .store(in: &cancellables)
-
     }
 }

@@ -7,7 +7,7 @@ struct CommunitySection: Hashable {
 }
 
 enum CommunitySectionItem: Hashable {
-    case poll
+    case poll(CommunityPollListCellViewModel)
     case popularStore(CommunityPopularStoreTabCellViewModel)
 }
 
@@ -29,20 +29,13 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
             guard let viewModel else { return UICollectionViewCell() }
 
             switch itemIdentifier {
-            case .poll:
+            case .poll(let cellViewModel):
                 let cell: CommunityPollListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                cell.categoryButton
-                    .controlPublisher(for: .touchUpInside)
-                    .mapVoid
-                    .subscribe(viewModel.input.didTapPollCategoryButton)
-                    .store(in: &cell.cancellables)
-                cell.didSelectItem
-                    .subscribe(viewModel.input.didSelectPollItem)
-                    .store(in: &cell.cancellables)
+                cell.bind(viewModel: cellViewModel)
                 return cell
-            case .popularStore(let viewModel):
+            case .popularStore(let cellViewModel):
                 let cell: CommunityPopularStoreTabCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                cell.bind(viewModel: viewModel)
+                cell.bind(viewModel: cellViewModel)
                 return cell
             }
         }

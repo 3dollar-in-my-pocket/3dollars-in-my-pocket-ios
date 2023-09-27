@@ -5,6 +5,15 @@ public class BasePageViewController: UIPageViewController, UIScrollViewDelegate 
 
     public let transitionInProgress = CurrentValueSubject<Bool, Never>(false)
 
+    var scrollView: UIScrollView? {
+        for view in self.view.subviews {
+            if let scrollView = view as? UIScrollView {
+                return scrollView
+            }
+        }
+        return nil
+    }
+
     public override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -13,6 +22,15 @@ public class BasePageViewController: UIPageViewController, UIScrollViewDelegate 
 
     public func setupUI() {
         delegate = self
+        scrollView?.delegate = self
+
+        setupPopGesture()
+    }
+
+    private func setupPopGesture() {
+        guard let popGesture = navigationController?.interactivePopGestureRecognizer else { return }
+
+        scrollView?.panGestureRecognizer.require(toFail: popGesture)
     }
 
     public override func setViewControllers(_ viewControllers: [UIViewController]?, direction: UIPageViewController.NavigationDirection, animated: Bool, completion: ((Bool) -> Void)? = nil) {
