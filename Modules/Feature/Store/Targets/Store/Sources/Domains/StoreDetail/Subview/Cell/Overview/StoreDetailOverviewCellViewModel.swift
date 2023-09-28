@@ -11,6 +11,8 @@ final class StoreDetailOverviewCellViewModel: BaseViewModel {
         let didTapShare = PassthroughSubject<Void, Never>()
         let didTapNavigation = PassthroughSubject<Void, Never>()
         let didTapWriteReview = PassthroughSubject<Void, Never>()
+        let didTapAddress = PassthroughSubject<Void, Never>()
+        let didTapMapDetail = PassthroughSubject<Void, Never>()
         
         // From parent
         let isFavorited = PassthroughSubject<Bool, Never>()
@@ -23,6 +25,8 @@ final class StoreDetailOverviewCellViewModel: BaseViewModel {
         let didTapShare = PassthroughSubject<Void, Never>()
         let didTapNavigation = PassthroughSubject<Void, Never>()
         let didTapWriteReview = PassthroughSubject<Void, Never>()
+        let didTapAddress = PassthroughSubject<Void, Never>()
+        let didTapMapDetail = PassthroughSubject<Void, Never>()
         
         let isFavorited = PassthroughSubject<Bool, Never>()
         let subscribersCount = PassthroughSubject<Int, Never>()
@@ -64,6 +68,14 @@ final class StoreDetailOverviewCellViewModel: BaseViewModel {
         
         input.subscribersCount
             .subscribe(output.subscribersCount)
+            .store(in: &cancellables)
+        
+        input.didTapAddress
+            .subscribe(output.didTapAddress)
+            .store(in: &cancellables)
+        
+        input.didTapMapDetail
+            .subscribe(output.didTapMapDetail)
             .store(in: &cancellables)
     }
 }

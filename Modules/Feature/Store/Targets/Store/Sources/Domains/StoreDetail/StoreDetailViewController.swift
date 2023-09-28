@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 
 public final class StoreDetailViewController: BaseViewController {
     private let storeDetailView = StoreDetailView()
@@ -98,6 +99,9 @@ public final class StoreDetailViewController: BaseViewController {
                     
                 case .presentWriteReview(let viewModel):
                     owner.presentWriteReviewBottomSheet(viewModel)
+                    
+                case .presentMapDetail(let viewModel):
+                    owner.presentMapDetail(viewModel)
                 }
             }
             .store(in: &cancellables)
@@ -299,5 +303,11 @@ public final class StoreDetailViewController: BaseViewController {
         let viewController = ReviewBottomSheetViewController.instance(viewModel: viewModel)
         
         presentPanModal(viewController)
+    }
+    
+    private func presentMapDetail(_ viewModel: MapDetailViewModel) {
+        let viewController = MapDetailViewController.instance(viewModel: viewModel)
+        
+        present(viewController, animated: true)
     }
 }
