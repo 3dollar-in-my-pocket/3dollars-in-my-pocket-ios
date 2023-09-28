@@ -12,7 +12,7 @@ final class StoreDetailView: BaseView {
         )
     }
     
-    let deletionButton = UIButton().then {
+    let reportnButton = UIButton().then {
         $0.setImage(Icons.deletion.image.withTintColor(Colors.mainRed.color), for: .normal)
     }
     
@@ -29,7 +29,7 @@ final class StoreDetailView: BaseView {
         
         addSubViews([
             backButton,
-            deletionButton,
+            reportnButton,
             collectionView,
             bottomStickyView
         ])
@@ -42,7 +42,7 @@ final class StoreDetailView: BaseView {
             $0.size.equalTo(24)
         }
         
-        deletionButton.snp.makeConstraints {
+        reportnButton.snp.makeConstraints {
             $0.centerY.equalTo(backButton)
             $0.right.equalToSuperview().offset(-16)
         }

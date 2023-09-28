@@ -13,6 +13,41 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 public enum StoreStrings {
 
+  public enum NavigationBottomSheet {
+    /// 지도앱이 설치되어있지 않은 경우 정상적으로 실행되지 않습니다.
+    public static let message = StoreStrings.tr("Localization", "navigation_bottom_sheet.message")
+    /// 길 안내 앱 선택
+    public static let title = StoreStrings.tr("Localization", "navigation_bottom_sheet.title")
+    public enum Action {
+      /// 취소
+      public static let cancel = StoreStrings.tr("Localization", "navigation_bottom_sheet.action.cancel")
+      /// 카카오 지도
+      public static let kakaoMap = StoreStrings.tr("Localization", "navigation_bottom_sheet.action.kakao_map")
+      /// 네이버 지도
+      public static let naverMap = StoreStrings.tr("Localization", "navigation_bottom_sheet.action.naver_map")
+    }
+  }
+
+  public enum ReportModal {
+    /// 신고하기
+    public static let button = StoreStrings.tr("Localization", "report_modal.button")
+    /// 3건 이상의 요청이 들어오면 자동 삭제됩니다
+    public static let description = StoreStrings.tr("Localization", "report_modal.description")
+    /// 3건 이상
+    public static let descriptionBold = StoreStrings.tr("Localization", "report_modal.description_bold")
+    /// 삭제 요청 하시는 이유가 궁금해요!
+    public static let title = StoreStrings.tr("Localization", "report_modal.title")
+  }
+
+  public enum ReviewBottomSheet {
+    /// 리뷰를 남겨주세요!(100자 이내)
+    public static let placeholder = StoreStrings.tr("Localization", "review_bottom_sheet.placeholder")
+    /// 이 가게를 추천하시나요?
+    public static let title = StoreStrings.tr("Localization", "review_bottom_sheet.title")
+    /// 리뷰 쓰기
+    public static let writeButton = StoreStrings.tr("Localization", "review_bottom_sheet.write_button")
+  }
+
   public enum StoreDetail {
     public enum BottomSticky {
       /// 즐겨찾기
@@ -113,6 +148,12 @@ public enum StoreStrings {
         /// 리뷰
         public static let title = StoreStrings.tr("Localization", "store_detail.review.header.title")
       }
+    }
+    public enum Toast {
+      /// 즐겨찾기가 추가되었습니다!
+      public static let addFavorite = StoreStrings.tr("Localization", "store_detail.toast.add_favorite")
+      /// 즐겨찾기가 삭제되었습니다!
+      public static let removeFavorite = StoreStrings.tr("Localization", "store_detail.toast.remove_favorite")
     }
     public enum Visit {
       /// + 그 외 %d명이 다녀갔어요!

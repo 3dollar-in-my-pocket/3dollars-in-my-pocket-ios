@@ -39,3 +39,24 @@
 "store_detail.review.report" = "신고";
 "store_detail.review.edit" = "수정";
 "store_detail.review.more_format" = "리뷰 %d개 더보기";
+"store_detail.toast.add_favorite" = "즐겨찾기가 추가되었습니다!";
+"store_detail.toast.remove_favorite" = "즐겨찾기가 삭제되었습니다!";
+
+// 가게 신고 모달
+"report_modal.title" = "삭제 요청 하시는 이유가 궁금해요!";
+"report_modal.description" = "3건 이상의 요청이 들어오면 자동 삭제됩니다";
+"report_modal.description_bold" = "3건 이상";
+"report_modal.button" = "신고하기";
+
+// 길 안내 바텀 시트
+"navigation_bottom_sheet.title" = "길 안내 앱 선택";
+"navigation_bottom_sheet.message" = "지도앱이 설치되어있지 않은 경우 정상적으로 실행되지 않습니다.";
+"navigation_bottom_sheet.action.kakao_map" = "카카오 지도";
+"navigation_bottom_sheet.action.naver_map" = "네이버 지도";
+"navigation_bottom_sheet.action.cancel" = "취소";
+
+// 리뷰 바텀 시트
+"review_bottom_sheet.title" = "이 가게를 추천하시나요?";
+"review_bottom_sheet.placeholder" = "리뷰를 남겨주세요!(100자 이내)";
+"review_bottom_sheet.write_button" = "리뷰 쓰기";
+

@@ -1,6 +1,7 @@
 import UIKit
 
 import Common
+import DesignSystem
 
 public final class StoreDetailViewController: BaseViewController {
     private let storeDetailView = StoreDetailView()
@@ -44,7 +45,17 @@ public final class StoreDetailViewController: BaseViewController {
     }
     
     public override func bindViewModelInput() {
+        storeDetailView.reportnButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapReport)
+            .store(in: &cancellables)
         
+        storeDetailView.bottomStickyView.saveButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapSave)
+            .store(in: &cancellables)
     }
     
     public override func bindViewModelOutput() {
@@ -53,6 +64,41 @@ public final class StoreDetailViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewController, sections: [StoreDetailSection]) in
                 owner.datasource.reload(sections)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.toast
+            .receive(on: DispatchQueue.main)
+            .sink { (message: String) in
+                ToastManager.shared.show(message: message)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.isFavorited
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, isSaved: Bool) in
+                owner.storeDetailView.bottomStickyView.setSaved(isSaved)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.route
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, route) in
+                switch route {
+                case .dismissReportModalAndPop:
+                    owner.dismissReportModalAndPop()
+                    
+                case .presentReport(let viewModel):
+                    owner.presentReport(viewModel: viewModel)
+                    
+                case .presentNavigation:
+                    owner.presentNavigationModal()
+                    
+                case .presentWriteReview(let viewModel):
+                    owner.presentWriteReviewBottomSheet(viewModel)
+                }
             }
             .store(in: &cancellables)
     }
@@ -206,5 +252,52 @@ public final class StoreDetailViewController: BaseViewController {
         }
         
         return layout
+    }
+    
+    private func presentReport(viewModel: ReportBottomSheetViewModel) {
+        let viewController = ReportBottomSheetViewController.instance(viewModel: viewModel)
+        
+        presentPanModal(viewController)
+    }
+    
+    private func dismissReportModalAndPop() {
+        if let presentedViewController = presentedViewController {
+            presentedViewController.dismiss(animated: true) { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
+    }
+    
+    private func presentNavigationModal() {
+        let alertController = UIAlertController(
+            title: Strings.NavigationBottomSheet.title,
+            message: Strings.NavigationBottomSheet.message,
+            preferredStyle: .actionSheet
+        )
+        let naverAction = UIAlertAction(
+            title: Strings.NavigationBottomSheet.Action.naverMap,
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.input.didTapNavigationAction.send(.naver)
+        }
+        let kakaoAction = UIAlertAction(
+            title: Strings.NavigationBottomSheet.Action.kakaoMap,
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.input.didTapNavigationAction.send(.kakao)
+        }
+        let cancelAction = UIAlertAction(title: Strings.NavigationBottomSheet.Action.cancel, style: .cancel)
+        
+        alertController.addAction(naverAction)
+        alertController.addAction(kakaoAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true)
+    }
+    
+    private func presentWriteReviewBottomSheet(_ viewModel: ReviewBottomSheetViewModel) {
+        let viewController = ReviewBottomSheetViewController.instance(viewModel: viewModel)
+        
+        presentPanModal(viewController)
     }
 }

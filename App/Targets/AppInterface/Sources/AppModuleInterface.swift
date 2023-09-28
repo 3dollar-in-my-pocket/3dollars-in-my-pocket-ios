@@ -13,4 +13,5 @@ public protocol AppModuleInterface {
     func goToMain()
     func createBookmarkViewerViewController(folderId: String) -> UIViewController
     func createWebViewController(webviewType: WebViewType) -> UIViewController
+    func shareKakao(storeId: Int, storeDetailOverview: StoreDetailOverview)
 }

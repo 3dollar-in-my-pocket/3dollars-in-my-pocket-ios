@@ -105,6 +105,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NetworkConfigurationImpl.registerNetworkConfiguration()
         MembershipInterfaceImpl.registerMembershipInterface()
         AppModuleInterfaceImpl.registerAppModuleInterface()
+        AppInfomationImpl.registerAppInfomation()
     }
     
     func application(

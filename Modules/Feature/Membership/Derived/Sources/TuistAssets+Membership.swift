@@ -17,6 +17,9 @@
 
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum MembershipAsset {
+  public static let icCheckSolidOff = MembershipImages(name: "ic_check_solid_off")
+  public static let icCheckSolidOn = MembershipImages(name: "ic_check_solid_on")
+  public static let imageBungeoppang = MembershipImages(name: "image_bungeoppang")
   public static let imageSplash = MembershipImages(name: "image_splash")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name

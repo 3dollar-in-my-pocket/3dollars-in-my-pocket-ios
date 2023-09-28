@@ -11,6 +11,14 @@ public protocol StoreServiceProtocol {
     func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResposne<PlatformStoreWithDetailResponse>, Error>
     
     func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<StoreWithDetailApiResponse, Error>
+    
+    func saveStore(storeType: StoreType, storeId: String, isDelete: Bool) async -> Result<String, Error>
+    
+    func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error>
+    
+    func fetchReportReasons(group: ReportGroup) async -> Result<ReportReasonApiResponse, Error>
+    
+    func writeReview(input: WriteReviewRequestInput) async -> Result<ReviewWithUserApiResponse, Error>
 }
 
 public struct StoreService: StoreServiceProtocol {
@@ -36,6 +44,30 @@ public struct StoreService: StoreServiceProtocol {
     
     public func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<StoreWithDetailApiResponse, Error> {
         let request = FetchStoreDetailRequest(input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func saveStore(storeType: StoreType, storeId: String, isDelete: Bool) async -> Result<String, Error> {
+        let request = SaveStoreRequest(storeType: storeType, storeId: storeId, isDelete: isDelete)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error> {
+        let request = ReportStoreRequest(storeId: storeId, reportReason: reportReason)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func fetchReportReasons(group: ReportGroup) async -> Result<ReportReasonApiResponse, Error> {
+        let request = FetchReportReasonListRequest(group: group)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func writeReview(input: WriteReviewRequestInput) async -> Result<ReviewWithUserApiResponse, Error> {
+        let request = WriteReviewRequest(input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }

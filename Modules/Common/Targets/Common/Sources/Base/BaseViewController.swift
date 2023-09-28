@@ -38,7 +38,7 @@ open class BaseViewController: UIViewController {
             case .errorContainer(let container):
                 AlertUtils.showWithAction(
                     viewController: self,
-                    message: container.message,
+                    message: container.message ?? "",
                     onTapOk: nil
                 )
                 

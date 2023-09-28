@@ -27,8 +27,8 @@ extension StoreDetailSection {
         }
     }
     
-    static func overviewSection(_ overview: StoreDetailOverview) -> StoreDetailSection {
-        return .init(type: .overview, items: [.overview(overview)])
+    static func overviewSection(_ viewModel: StoreDetailOverviewCellViewModel) -> StoreDetailSection {
+        return .init(type: .overview, items: [.overview(viewModel)])
     }
     
     static func visitSection(_ visit: StoreDetailVisit) -> StoreDetailSection {

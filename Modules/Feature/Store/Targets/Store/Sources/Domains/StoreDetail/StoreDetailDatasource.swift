@@ -23,9 +23,9 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
         
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .overview(let data):
+            case .overview(let viewModel):
                 let cell: StoreDetailOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                cell.bind(data)
+                cell.bind(viewModel)
                 return cell
                 
             case .visit(let data):
