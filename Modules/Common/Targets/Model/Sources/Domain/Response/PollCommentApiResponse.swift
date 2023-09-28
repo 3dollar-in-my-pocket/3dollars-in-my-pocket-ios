@@ -19,9 +19,9 @@ public struct PollCommentApiResponse: Decodable {
     public let updatedAt: String
 
     public enum PollCommentStatus: String, Decodable {
-        case active
-        case blinded
-        case deleted
+        case active = "ACTIVE"
+        case blinded = "BLINDED"
+        case deleted = "DELETED"
         case unknown
 
         public init(from decoder: Decoder) throws {
