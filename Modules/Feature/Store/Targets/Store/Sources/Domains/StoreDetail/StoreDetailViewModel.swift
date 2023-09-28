@@ -25,7 +25,11 @@ final class StoreDetailViewModel: BaseViewModel {
         let didTapAddress = PassthroughSubject<Void, Never>()
         let didTapMapDetail = PassthroughSubject<Void, Never>()
         
+        // 가게 정보 메뉴 섹션
         let didTapShowMoreMenu = PassthroughSubject<Void, Never>()
+        
+        // 사진 섹션
+        let didTapUploadPhoto = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -53,6 +57,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentNavigation
         case presentWriteReview(ReviewBottomSheetViewModel)
         case presentMapDetail(MapDetailViewModel)
+        case presentUploadPhoto(UploadPhotoViewModel)
     }
     
     let input = Input()
@@ -75,6 +80,7 @@ final class StoreDetailViewModel: BaseViewModel {
     
     override func bind() {
         bindOverviewSection()
+        bindPhotoSection()
         
         input.viewDidLoad
             .withUnretained(self)
@@ -151,6 +157,15 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
                 owner.presentMapDetail()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func bindPhotoSection() {
+        input.didTapUploadPhoto
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.presentUploadPhoto()
             }
             .store(in: &cancellables)
     }
@@ -361,5 +376,12 @@ final class StoreDetailViewModel: BaseViewModel {
         let viewModel = MapDetailViewModel(config: config)
         
         output.route.send(.presentMapDetail(viewModel))
+    }
+    
+    private func presentUploadPhoto() {
+        let config = UploadPhotoViewModel.Config(storeId: state.storeId)
+        let viewModel = UploadPhotoViewModel(config: config)
+        
+        output.route.send(.presentUploadPhoto(viewModel))
     }
 }

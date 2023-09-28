@@ -7,7 +7,10 @@ import Model
 public final class StoreDetailViewController: BaseViewController {
     private let storeDetailView = StoreDetailView()
     private let viewModel: StoreDetailViewModel
-    private lazy var datasource = StoreDetailDatasource(collectionView: storeDetailView.collectionView)
+    private lazy var datasource = StoreDetailDatasource(
+        collectionView: storeDetailView.collectionView,
+        viewModel: viewModel
+    )
     
     public static func instance(storeId: Int) -> StoreDetailViewController {
         return StoreDetailViewController(storeId: storeId)
@@ -102,6 +105,9 @@ public final class StoreDetailViewController: BaseViewController {
                     
                 case .presentMapDetail(let viewModel):
                     owner.presentMapDetail(viewModel)
+                    
+                case .presentUploadPhoto(let viewModel):
+                    owner.presentUploadPhoto(viewModel)
                 }
             }
             .store(in: &cancellables)
@@ -307,6 +313,12 @@ public final class StoreDetailViewController: BaseViewController {
     
     private func presentMapDetail(_ viewModel: MapDetailViewModel) {
         let viewController = MapDetailViewController.instance(viewModel: viewModel)
+        
+        present(viewController, animated: true)
+    }
+    
+    private func presentUploadPhoto(_ viewModel: UploadPhotoViewModel) {
+        let viewController = UploadPhotoViewController.instance(viewModel: viewModel)
         
         present(viewController, animated: true)
     }
