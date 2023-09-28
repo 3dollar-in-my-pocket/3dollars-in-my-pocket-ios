@@ -54,4 +54,8 @@ final class CommunityUserMedalView: BaseView {
         imageView.setImage(urlString: imageUrl)
         titleLabel.text = title
     }
+
+    func setBackgroundColor(_ color: UIColor?) {
+        containerView.backgroundColor = color ?? UIColor(hex: "#FFA1AA")?.withAlphaComponent(0.1)
+    }
 }
