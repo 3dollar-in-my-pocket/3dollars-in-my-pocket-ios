@@ -92,6 +92,12 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             .subscribe(viewModel.input.didTapAddress)
             .store(in: &cancellables)
         
+        mapView.zoomButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapMapDetail)
+            .store(in: &cancellables)
+        
         viewModel.output.isFavorited
             .receive(on: DispatchQueue.main)
             .assign(to: \.isSelected, on: menuView.favoriteButton)

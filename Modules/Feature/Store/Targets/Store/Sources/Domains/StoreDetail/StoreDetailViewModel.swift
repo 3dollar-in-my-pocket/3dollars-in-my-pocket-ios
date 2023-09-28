@@ -23,6 +23,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let didTapWriteReview = PassthroughSubject<Void, Never>()
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
         let didTapAddress = PassthroughSubject<Void, Never>()
+        let didTapMapDetail = PassthroughSubject<Void, Never>()
         
         let didTapShowMoreMenu = PassthroughSubject<Void, Never>()
     }
@@ -51,6 +52,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentReport(ReportBottomSheetViewModel)
         case presentNavigation
         case presentWriteReview(ReviewBottomSheetViewModel)
+        case presentMapDetail(MapDetailViewModel)
     }
     
     let input = Input()
@@ -144,6 +146,13 @@ final class StoreDetailViewModel: BaseViewModel {
                 owner.copyAddressToClipBoard()
             }
             .store(in: &cancellables)
+        
+        input.didTapMapDetail
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.presentMapDetail()
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchStoreDetail() {
@@ -216,6 +225,10 @@ final class StoreDetailViewModel: BaseViewModel {
         
         viewModel.output.didTapAddress
             .subscribe(input.didTapAddress)
+            .store(in: &cancellables)
+        
+        viewModel.output.didTapMapDetail
+            .subscribe(input.didTapMapDetail)
             .store(in: &cancellables)
         
         output.isFavorited
@@ -340,5 +353,13 @@ final class StoreDetailViewModel: BaseViewModel {
         UIPasteboard.general.string = address
         
         output.toast.send(Strings.StoreDetail.Toast.copyToAddress)
+    }
+    
+    private func presentMapDetail() {
+        guard let storeDetailData = state.storeDetailData else { return }
+        let config = MapDetailViewModel.Config(storeDetailData: storeDetailData)
+        let viewModel = MapDetailViewModel(config: config)
+        
+        output.route.send(.presentMapDetail(viewModel))
     }
 }

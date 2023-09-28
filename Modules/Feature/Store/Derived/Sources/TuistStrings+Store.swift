@@ -13,6 +13,13 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 public enum StoreStrings {
 
+  public enum MapDetail {
+    /// 길 안내보기
+    public static let navigationButton = StoreStrings.tr("Localization", "map_detail.navigation_button")
+    /// 지도 보기
+    public static let title = StoreStrings.tr("Localization", "map_detail.title")
+  }
+
   public enum NavigationBottomSheet {
     /// 지도앱이 설치되어있지 않은 경우 정상적으로 실행되지 않습니다.
     public static let message = StoreStrings.tr("Localization", "navigation_bottom_sheet.message")

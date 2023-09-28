@@ -61,3 +61,6 @@
 "review_bottom_sheet.placeholder" = "리뷰를 남겨주세요!(100자 이내)";
 "review_bottom_sheet.write_button" = "리뷰 쓰기";
 
+// 지도 상세 화면
+"map_detail.title" = "지도 보기";
+"map_detail.navigation_button" = "길 안내보기";

@@ -38,7 +38,7 @@ final class StoreDetailOverviewMapView: BaseView {
         return button
     }()
     
-    private let zoomButton = UIButton().then {
+    let zoomButton = UIButton().then {
         $0.backgroundColor = Colors.systemWhite.color
         $0.layer.cornerRadius = 18
         $0.layer.masksToBounds = true
