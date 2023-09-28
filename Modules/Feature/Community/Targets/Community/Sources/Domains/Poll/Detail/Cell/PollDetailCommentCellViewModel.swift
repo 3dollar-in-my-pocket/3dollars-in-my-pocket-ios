@@ -15,6 +15,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let deleteCell = PassthroughSubject<String, Never>()
+        let didTapReportButton = PassthroughSubject<String, Never>()
     }
 
     struct State {
@@ -30,6 +31,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
     private let communityService: CommunityServiceProtocol
 
     private let pollId: String
+    private let commentId: String
     private let userInfo: UserWithDeviceApiResponse?
 
     init(
@@ -39,6 +41,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
         communityService: CommunityServiceProtocol = CommunityService()
     ) {
         self.pollId = pollId
+        self.commentId = data.comment.commentId
         self.communityService = communityService
         self.userInfo = userInfo
         self.output = Output(
@@ -63,7 +66,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
             .asyncMap { owner, input in
                 await owner.communityService.deletePollComment(
                     pollId: owner.pollId,
-                    commentId: owner.output.item.comment.commentId
+                    commentId: owner.commentId
                 )
             }
             .withUnretained(self)
@@ -71,7 +74,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
                 owner.output.showLoading.send(false)
                 switch result {
                 case .success:
-                    owner.output.deleteCell.send(owner.output.item.comment.commentId)
+                    owner.output.deleteCell.send(owner.commentId)
                     owner.output.showToast.send("삭제했어요")
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")
@@ -86,7 +89,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
         report
             .withUnretained(self)
             .sink { owner, _ in
-                owner.output.showToast.send("신고 구현 필요")
+                owner.output.didTapReportButton.send(owner.commentId)
             }
             .store(in: &cancellables)
     }

@@ -8,6 +8,7 @@ public struct PollCommentWithUserApiResponse: Decodable {
     public let comment: PollCommentApiResponse
     public let commentWriter: UserApiResponse
     public let commentReport: PollCommentReportApiResponse
+    public let poll: PollWithSelectedOptionsApiResponse
 }
 
 public struct PollCommentApiResponse: Decodable {
@@ -18,9 +19,9 @@ public struct PollCommentApiResponse: Decodable {
     public let updatedAt: String
 
     public enum PollCommentStatus: String, Decodable {
-        case active
-        case blinded
-        case deleted
+        case active = "ACTIVE"
+        case blinded = "BLINDED"
+        case deleted = "DELETED"
         case unknown
 
         public init(from decoder: Decoder) throws {
@@ -31,4 +32,14 @@ public struct PollCommentApiResponse: Decodable {
 
 public struct PollCommentReportApiResponse: Decodable {
     public let reportedByMe: Bool
+}
+
+public struct PollWithSelectedOptionsApiResponse: Decodable {
+    public let isWriter: Bool
+    public let selectedOptions: [PollOptionApiResponse]
+}
+
+public struct PollOptionApiResponse: Decodable {
+    public let optionId: String
+    public let name: String
 }

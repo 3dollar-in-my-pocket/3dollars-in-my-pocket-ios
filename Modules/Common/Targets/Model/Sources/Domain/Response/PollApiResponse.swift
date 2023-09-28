@@ -12,7 +12,7 @@ public struct PollApiResponse: Decodable {
     public let pollId: String
     public let category: PollCategoryApiResponse
     public let content: PollContentApiResponse
-    public let options: [PollOptionApiResponse]
+    public let options: [PollOptionWithChoiceApiResponse]
     public let period: PollPeriodApiResponse
 }
 
@@ -25,7 +25,7 @@ public struct PollContentApiResponse: Decodable {
     public let title: String
 }
 
-public struct PollOptionApiResponse: Decodable {
+public struct PollOptionWithChoiceApiResponse: Decodable {
     public let optionId: String
     public let name: String
     public let choice: PollOptionChoiceApiResponse

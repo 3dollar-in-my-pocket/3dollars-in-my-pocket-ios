@@ -101,8 +101,11 @@ final class PollDetailViewModel: BaseViewModel {
             .sink { owner, result in
                 switch result {
                 case .success(let response):
-                    // 날짜 순서로 나오게 반대로 정렬함
-                    owner.state.comments.send(response.contents.map { $0.current }.reversed())
+                    // 날짜 순서로 나오게 반대로 정렬함, delete 상태 제거
+                    let comments = response.contents.map { $0.current }
+                        .filter { $0.comment.status != .deleted }
+                        .reversed()
+                    owner.state.comments.send(Array(comments))
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")
                 }
@@ -112,7 +115,7 @@ final class PollDetailViewModel: BaseViewModel {
         input.didTapReportButton
             .withUnretained(self)
             .map { owner, _ in
-                    .report(ReportPollViewModel(pollId: owner.pollId))
+                .report(owner.bindReportPollViewModel(pollId: owner.pollId))
             }
             .subscribe(output.route)
             .store(in: &cancellables)
@@ -224,6 +227,20 @@ final class PollDetailViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
+        cellViewModel.output.didTapReportButton
+            .withUnretained(self)
+            .map { owner, commentId in
+                .report(owner.bindReportPollViewModel(pollId: owner.pollId, commentId: commentId))
+            }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+
         return cellViewModel
+    }
+
+    private func bindReportPollViewModel(pollId: String, commentId: String? = nil) -> ReportPollViewModel {
+        let viewModel = ReportPollViewModel(pollId: pollId, commentId: commentId)
+
+        return viewModel
     }
 }

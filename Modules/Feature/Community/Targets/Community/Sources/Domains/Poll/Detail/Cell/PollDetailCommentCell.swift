@@ -27,6 +27,8 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
 
     private let writerBadge = BadgeView(text: "작성자")
 
+    private let pollOptionBadge = BadgeView(text: "")
+
     private let contentLabel = UILabel().then {
         $0.font = Fonts.regular.font(size: 14)
         $0.textColor = Colors.gray80.color
@@ -72,6 +74,7 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         ])
 
         badgeStackView.addArrangedSubview(medalView)
+        badgeStackView.addArrangedSubview(pollOptionBadge)
         badgeStackView.addArrangedSubview(writerBadge)
 
         dateStackView.addArrangedSubview(dateLabel)
@@ -119,6 +122,7 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
     func bind(viewModel: PollDetailCommentCellViewModel) {
         self.viewModel = viewModel
 
+        // Input
         reportOrUpdateButton.controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.didTapReportOrUpdateButton)
@@ -141,15 +145,31 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
 
     private func bindUI(with data: PollCommentWithUserApiResponse, isMine: Bool) {
         userNameLabel.text = data.commentWriter.name
+
         dateLabel.text = data.comment.updatedAt.toDate()?.toRelativeString() ?? data.comment.updatedAt
+
         reportOrUpdateButton.setTitle(isMine ? "삭제" : "신고", for: .normal)
+
         contentLabel.text = data.comment.content
+
         backgroundColor = isMine ? Colors.pink100.color : .clear
-        writerBadge.isHidden = !isMine
+
+        writerBadge.isHidden = !data.poll.isWriter
+        writerBadge.setBackgroundColor(isMine ? Colors.systemWhite.color : Colors.gray10.color)
+
+        if let selectedOptionName = data.poll.selectedOptions.first?.name {
+            pollOptionBadge.bind(text: selectedOptionName, suffix: "투표")
+            pollOptionBadge.setBackgroundColor(isMine ? Colors.systemWhite.color : Colors.gray10.color)
+            pollOptionBadge.isHidden = false
+        } else {
+            pollOptionBadge.isHidden = true
+        }
+
         medalView.bind(
             imageUrl: data.commentWriter.medal.iconUrl,
             title: data.commentWriter.medal.name
         )
+        medalView.setBackgroundColor(isMine ? Colors.systemWhite.color : nil)
     }
 }
 
@@ -182,9 +202,19 @@ private final class BadgeView: BaseView {
         $0.backgroundColor = Colors.gray10.color
     }
 
+    private let stackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 4
+    }
+
     private let titleLabel = UILabel().then {
         $0.font = Fonts.medium.font(size: 10)
         $0.textColor = Colors.gray80.color
+    }
+
+    private let suffixLabel = UILabel().then {
+        $0.font = Fonts.medium.font(size: 10)
+        $0.textColor = Colors.gray60.color
     }
 
     init(text: String) {
@@ -201,7 +231,7 @@ private final class BadgeView: BaseView {
         super.setup()
 
         addSubViews([containerView])
-        containerView.addSubViews([titleLabel])
+        containerView.addSubViews([stackView])
 
         backgroundColor = .clear
     }
@@ -213,9 +243,22 @@ private final class BadgeView: BaseView {
             $0.edges.equalToSuperview()
         }
 
-        titleLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(4)
+        stackView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(4)
             $0.top.bottom.equalToSuperview().inset(3)
         }
+
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(suffixLabel)
+    }
+
+    func bind(text: String, suffix: String? = nil) {
+        titleLabel.text = text
+        suffixLabel.text = suffix
+        suffixLabel.isHidden = suffix == nil
+    }
+
+    func setBackgroundColor(_ color: UIColor) {
+        containerView.backgroundColor = color
     }
 }

@@ -5,9 +5,9 @@ public protocol CommunityServiceProtocol {
     /// 동네 인기 가게가 활성화된 동네 목록 조회
     func fetchPopularStoreNeighborhoods() async -> Result<NeighborhoodsResponse, Error>
     /// 투표 신고 이유 목록 조회 (나중에 공용 API 로 통합 필요)
-    func fetchPollReportReasons() async -> Result<PollReportReasonResponse, Error>
+    func fetchPollReportReasons(type: FetchPollReportReasonsGroupType) async -> Result<PollReportReasonResponse, Error>
     /// 투표 신고
-    func reportPoll(pollId: String, input: PollReportCreateRequestInput) async -> Result<Bool, Error>
+    func reportPoll(pollId: String, input: PollReportCreateRequestInput) async -> Result<String, Error>
     /// 투표 목록 조회
     func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResposne<PollWithMetaApiResponse>, Error>
     // 투표 참여
@@ -26,6 +26,8 @@ public protocol CommunityServiceProtocol {
     func fetchPollComment(pollId: String, commentId: String) async -> Result<PollCommentWithUserRecursiveApiResponse, Error>
     /// 투표 댓글 삭제
     func deletePollComment(pollId: String, commentId: String) async -> Result<String, Error>
+    /// 댓글 신고
+    func reportComment(pollId: String, commentId: String, input: PollCommentReportCreateRequestInput) async -> Result<String, Error>
 }
 
 public struct CommunityService: CommunityServiceProtocol {
@@ -43,13 +45,13 @@ public struct CommunityService: CommunityServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
 
-    public func fetchPollReportReasons() async -> Result<PollReportReasonResponse, Error> {
-        let request = FetchPollReportReasonRequest()
+    public func fetchPollReportReasons(type: FetchPollReportReasonsGroupType) async -> Result<PollReportReasonResponse, Error> {
+        let request = FetchPollReportReasonRequest(type: type)
         
         return await NetworkManager.shared.request(requestType: request)
     }
 
-    public func reportPoll(pollId: String, input: PollReportCreateRequestInput) async -> Result<Bool, Error> {
+    public func reportPoll(pollId: String, input: PollReportCreateRequestInput) async -> Result<String, Error> {
         let request = PollReportCreateRequest(pollId: pollId, requestInput: input)
 
         return await NetworkManager.shared.request(requestType: request)
@@ -105,6 +107,12 @@ public struct CommunityService: CommunityServiceProtocol {
 
     public func deletePollComment(pollId: String, commentId: String) async -> Result<String, Error> {
         let request = DeletePollCommentRequest(pollId: pollId, commentId: commentId)
+
+        return await NetworkManager.shared.request(requestType: request)
+    }
+
+    public func reportComment(pollId: String, commentId: String, input: PollCommentReportCreateRequestInput) async -> Result<String, Error> {
+        let request = ReportPollCommentCreateRequest(pollId: pollId, commentId: commentId, requestInput: input)
 
         return await NetworkManager.shared.request(requestType: request)
     }
