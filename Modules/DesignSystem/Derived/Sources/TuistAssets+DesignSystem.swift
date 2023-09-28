@@ -63,6 +63,7 @@ public enum DesignSystemAsset {
     public static let communityLine = DesignSystemImages(name: "community.line")
     public static let communitySolid = DesignSystemImages(name: "community.solid")
     public static let delete = DesignSystemImages(name: "delete")
+    public static let deleteX = DesignSystemImages(name: "delete_x")
     public static let deletion = DesignSystemImages(name: "deletion")
     public static let faceSad = DesignSystemImages(name: "face.sad")
     public static let faceSmile = DesignSystemImages(name: "face.smile")

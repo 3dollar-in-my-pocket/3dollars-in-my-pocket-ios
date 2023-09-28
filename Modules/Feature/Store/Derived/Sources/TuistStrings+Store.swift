@@ -39,6 +39,15 @@ public enum StoreStrings {
     public static let title = StoreStrings.tr("Localization", "report_modal.title")
   }
 
+  public enum ReviewBottomSheet {
+    /// 리뷰를 남겨주세요!(100자 이내)
+    public static let placeholder = StoreStrings.tr("Localization", "review_bottom_sheet.placeholder")
+    /// 이 가게를 추천하시나요?
+    public static let title = StoreStrings.tr("Localization", "review_bottom_sheet.title")
+    /// 리뷰 쓰기
+    public static let writeButton = StoreStrings.tr("Localization", "review_bottom_sheet.write_button")
+  }
+
   public enum StoreDetail {
     public enum BottomSticky {
       /// 즐겨찾기

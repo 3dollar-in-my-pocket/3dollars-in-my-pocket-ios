@@ -21,6 +21,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let didTapNavigation = PassthroughSubject<Void, Never>()
         let didTapNavigationAction = PassthroughSubject<NavigationAppType, Never>()
         let didTapWriteReview = PassthroughSubject<Void, Never>()
+        let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
         
         let didTapShowMoreMenu = PassthroughSubject<Void, Never>()
     }
@@ -48,6 +49,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case dismissReportModalAndPop
         case presentReport(ReportBottomSheetViewModel)
         case presentNavigation
+        case presentWriteReview(ReviewBottomSheetViewModel)
     }
     
     let input = Input()
@@ -118,6 +120,22 @@ final class StoreDetailViewModel: BaseViewModel {
                 owner.goToNavigationApplication(type: type)
             }
             .store(in: &cancellables)
+        
+        input.didTapWriteReview
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: StoreDetailViewModel, _) in
+                owner.presentWriteReviewBottomSheet()
+            })
+            .store(in: &cancellables)
+        
+        input.onSuccessWriteReview
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, review) in
+                owner.state.storeDetailData?.reviews.insert(review, at: 0)
+                owner.state.storeDetailData?.totalReviewCount += 1
+                owner.refreshSections()
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchStoreDetail() {
@@ -133,33 +151,39 @@ final class StoreDetailViewModel: BaseViewModel {
             
             switch storeDetailResult {
             case .success(let response):
-                let storeDetailData = StoreDetailData(response: response)
-                let photoCount = response.images.cursor.totalCount
-                let reviewCount = response.reviews.cursor.totalCount
+                let storeDetailData = StoreDetailData(
+                    response: response,
+                    totalPhotoCount: response.images.cursor.totalCount,
+                    totalReviewCount: response.reviews.cursor.totalCount
+                )
                 
                 state.storeDetailData = storeDetailData
-                
-                output.sections.send([
-                    .overviewSection(createOverviewCellViewModel(storeDetailData.overview)),
-                    .visitSection(storeDetailData.visit),
-                    .infoSection(
-                        updatedAt: "2023.02.04 업데이트",
-                        info: storeDetailData.info,
-                        menuCellViewModel: createMenuCellViewModel(storeDetailData)
-                    ),
-                    .photoSection(totalCount: photoCount, photos: storeDetailData.photos),
-                    .reviewSection(
-                        totalCount: reviewCount,
-                        rating: storeDetailData.rating,
-                        reviews: storeDetailData.reviews
-                    )
-                ])
-                
+                refreshSections()
                 output.isFavorited.send(response.favorite.isFavorite)
             case .failure(let failure):
                 print("💜error: \(failure)")
             }
         }
+    }
+    
+    private func refreshSections() {
+        guard let storeDetailData = state.storeDetailData else { return }
+        
+        output.sections.send([
+            .overviewSection(createOverviewCellViewModel(storeDetailData.overview)),
+            .visitSection(storeDetailData.visit),
+            .infoSection(
+                updatedAt: "2023.02.04 업데이트",
+                info: storeDetailData.info,
+                menuCellViewModel: createMenuCellViewModel(storeDetailData)
+            ),
+            .photoSection(totalCount: storeDetailData.totalPhotoCount, photos: storeDetailData.photos),
+            .reviewSection(
+                totalCount: storeDetailData.totalReviewCount,
+                rating: storeDetailData.rating,
+                reviews: storeDetailData.reviews
+            )
+        ])
     }
     
     private func createOverviewCellViewModel(_ data: StoreDetailOverview) -> StoreDetailOverviewCellViewModel {
@@ -286,5 +310,16 @@ final class StoreDetailViewModel: BaseViewModel {
               let overview = state.storeDetailData?.overview else { return }
         
         appInterface.shareKakao(storeId: state.storeId, storeDetailOverview: overview)
+    }
+    
+    private func presentWriteReviewBottomSheet() {
+        let config = ReviewBottomSheetViewModel.Config(storeId: state.storeId)
+        let viewModel = ReviewBottomSheetViewModel(config: config)
+        
+        viewModel.output.onSuccessWriteReview
+            .subscribe(input.onSuccessWriteReview)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.presentWriteReview(viewModel))
     }
 }

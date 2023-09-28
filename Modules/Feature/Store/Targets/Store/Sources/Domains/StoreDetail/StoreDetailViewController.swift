@@ -95,6 +95,9 @@ public final class StoreDetailViewController: BaseViewController {
                     
                 case .presentNavigation:
                     owner.presentNavigationModal()
+                    
+                case .presentWriteReview(let viewModel):
+                    owner.presentWriteReviewBottomSheet(viewModel)
                 }
             }
             .store(in: &cancellables)
@@ -290,5 +293,11 @@ public final class StoreDetailViewController: BaseViewController {
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true)
+    }
+    
+    private func presentWriteReviewBottomSheet(_ viewModel: ReviewBottomSheetViewModel) {
+        let viewController = ReviewBottomSheetViewController.instance(viewModel: viewModel)
+        
+        presentPanModal(viewController)
     }
 }

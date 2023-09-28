@@ -17,7 +17,7 @@ final class ReportBottomSheet: BaseView {
     
     let closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(Icons.delete.image.withTintColor(Colors.gray40.color), for: .normal)
+        button.setImage(Icons.deleteX.image.withTintColor(Colors.gray40.color), for: .normal)
         
         return button
     }()
