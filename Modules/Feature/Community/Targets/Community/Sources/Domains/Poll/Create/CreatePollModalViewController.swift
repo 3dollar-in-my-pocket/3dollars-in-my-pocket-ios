@@ -6,6 +6,10 @@ import DesignSystem
 
 final class CreatePollModalViewController: BaseViewController {
 
+    enum Constant {
+        static let maxTitleCount: Int = 20
+    }
+
     private let backgroundView = UIView()
 
     private let containerView = UIView().then {
@@ -13,10 +17,16 @@ final class CreatePollModalViewController: BaseViewController {
         $0.backgroundColor = .white
     }
 
-    private let titleCountLabel = UILabel().then {
-        $0.text = "0/20"
+    private let countLabel = UILabel().then {
+        $0.text = "0"
         $0.font = Fonts.medium.font(size: 12)
         $0.textColor = Colors.gray60.color
+    }
+
+    private let maxCountLabel = UILabel().then {
+        $0.text = "/\(Constant.maxTitleCount)"
+        $0.font = Fonts.medium.font(size: 12)
+        $0.textColor = Colors.gray30.color
     }
 
     private lazy var titleTextField = UITextField().then {
@@ -72,9 +82,27 @@ final class CreatePollModalViewController: BaseViewController {
 
     private let descriptionLabel = UILabel().then {
         $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray100.color
+        $0.textColor = Colors.gray50.color
         $0.numberOfLines = 0
-        $0.text = "* 투표는 3일 동안만 진행돼요\n* 1일 1회만 올릴 수 있어요\n* 부적절한 내용일 경우 임의로 삭제될 수 있어요"
+        $0.setLineHeight(lineHeight: 18)
+        let style = NSMutableParagraphStyle()
+
+        style.maximumLineHeight = 18
+        style.minimumLineHeight = 18
+
+        let text = "* 투표는 3일 동안만 진행돼요\n* 1일 1회만 올릴 수 있어요\n* 부적절한 내용일 경우 임의로 삭제될 수 있어요"
+        let attributedText = NSMutableAttributedString(string: text, attributes: [.paragraphStyle: style])
+        attributedText.addAttribute(
+            .foregroundColor,
+            value: Colors.gray100.color,
+            range: (text as NSString).range(of: "3일 동안")
+        )
+        attributedText.addAttribute(
+            .foregroundColor,
+            value: Colors.gray100.color,
+            range: (text as NSString).range(of: "1일 1회")
+        )
+        $0.attributedText = attributedText
     }
 
     private lazy var buttonStackView = UIStackView(
@@ -132,7 +160,8 @@ final class CreatePollModalViewController: BaseViewController {
     private func setupUI() {
         containerView.addSubViews([
             titleTextField,
-            titleCountLabel,
+            countLabel,
+            maxCountLabel,
             firstOptionTextField,
             secondOptionTextField,
             descriptionLabel,
@@ -156,6 +185,17 @@ final class CreatePollModalViewController: BaseViewController {
         titleTextField.snp.makeConstraints {
             $0.top.equalToSuperview().inset(24)
             $0.leading.equalToSuperview().inset(20)
+            $0.trailing.equalToSuperview().inset(60)
+        }
+
+        maxCountLabel.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(20)
+            $0.centerY.equalTo(titleTextField)
+        }
+
+        countLabel.snp.makeConstraints {
+            $0.trailing.equalTo(maxCountLabel.snp.leading)
+            $0.centerY.equalTo(titleTextField)
         }
 
         firstOptionTextField.snp.makeConstraints {
@@ -277,6 +317,9 @@ final class CreatePollModalViewController: BaseViewController {
         switch sender {
         case titleTextField:
             viewModel.input.title.send(sender.text ?? "")
+            let textCount = sender.text?.count ?? 0
+            countLabel.text = "\(textCount)"
+            countLabel.textColor = textCount > 0 ? Colors.mainPink.color : Colors.gray60.color
         case firstOptionTextField:
             viewModel.input.firstOption.send(sender.text ?? "")
         case secondOptionTextField:
@@ -289,6 +332,17 @@ final class CreatePollModalViewController: BaseViewController {
 
 // MARK: UITextFieldDelegate
 extension CreatePollModalViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let text = textField.text, textField == titleTextField else { return true }
+
+        let newLength = text.countWithoutWhitespace + string.countWithoutWhitespace - range.length
+        if newLength > Constant.maxTitleCount {
+            ToastManager.shared.show(message: "\(Constant.maxTitleCount)자 이상 입력할 수 없어요.")
+            return false
+        }
+        return true
+    }
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -316,5 +370,15 @@ private final class CreatePollOptionTextField: UITextField {
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         let rect = super.editingRect(forBounds: bounds)
         return rect.inset(by: textPadding)
+    }
+}
+
+private extension String {
+    var removeAllWhitespace: String {
+        self.filter { !$0.isWhitespace }
+    }
+
+    var countWithoutWhitespace: Int {
+        removeAllWhitespace.count
     }
 }
