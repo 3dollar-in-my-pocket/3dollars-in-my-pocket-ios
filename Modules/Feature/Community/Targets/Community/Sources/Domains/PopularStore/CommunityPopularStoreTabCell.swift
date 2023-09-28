@@ -141,7 +141,7 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
             .main
             .sink { owner, _ in
                 owner.collectionView.reloadData()
-                ToastManager.shared.show(message: "🔥 군포만 보여짐")
+                ToastManager.shared.show(message: "[동네 인기 가게] 지금은 군포만 보여줌")
             }
             .store(in: &cancellables)
     }
