@@ -112,7 +112,7 @@ final class PollDetailViewModel: BaseViewModel {
         input.didTapReportButton
             .withUnretained(self)
             .map { owner, _ in
-                    .report(ReportPollViewModel(pollId: owner.pollId))
+                .report(owner.bindReportPollViewModel(pollId: owner.pollId))
             }
             .subscribe(output.route)
             .store(in: &cancellables)
@@ -224,6 +224,20 @@ final class PollDetailViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
+        cellViewModel.output.didTapReportButton
+            .withUnretained(self)
+            .map { owner, commentId in
+                .report(owner.bindReportPollViewModel(pollId: owner.pollId, commentId: commentId))
+            }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+
         return cellViewModel
+    }
+
+    private func bindReportPollViewModel(pollId: String, commentId: String? = nil) -> ReportPollViewModel {
+        let viewModel = ReportPollViewModel(pollId: pollId, commentId: commentId)
+
+        return viewModel
     }
 }

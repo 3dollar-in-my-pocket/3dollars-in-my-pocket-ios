@@ -38,6 +38,8 @@ struct FetchPopularStoreNeighborhoodsRequest: RequestType {
 }
 
 struct FetchPollReportReasonRequest: RequestType {
+    let type: FetchPollReportReasonsGroupType
+
     var param: Encodable? {
         return nil
     }
@@ -47,7 +49,7 @@ struct FetchPollReportReasonRequest: RequestType {
     }
 
     var path: String {
-        return "/api/v1/report/group/POLL/reasons"
+        return "/api/v1/report/group/\(type.rawValue)/reasons"
     }
 }
 
@@ -252,5 +254,28 @@ struct DeletePollCommentRequest: RequestType {
 
     var path: String {
         return "/api/v1/poll/\(pollId)/comment/\(commentId)"
+    }
+}
+
+struct ReportPollCommentCreateRequest: RequestType {
+    let pollId: String
+    let commentId: String
+
+    let requestInput: PollCommentReportCreateRequestInput
+
+    var param: Encodable? {
+        return requestInput
+    }
+
+    var method: RequestMethod {
+        return .post
+    }
+
+    var header: HTTPHeaderType {
+        return .auth
+    }
+
+    var path: String {
+        return "/api/v1/poll/\(pollId)/comment/\(commentId)/report"
     }
 }

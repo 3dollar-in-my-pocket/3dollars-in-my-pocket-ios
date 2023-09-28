@@ -37,13 +37,16 @@ final class ReportPollViewModel: BaseViewModel {
     private var state = State()
 
     private let pollId: String
+    private let commentId: String?
     private let communityService: CommunityServiceProtocol
 
     init(
         pollId: String,
+        commentId: String?,
         communityService: CommunityServiceProtocol = CommunityService()
     ) {
         self.pollId = pollId
+        self.commentId = commentId
         self.communityService = communityService
 
         super.init()
@@ -79,17 +82,87 @@ final class ReportPollViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
-        input.didTapReportButton
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.reportPoll()
-            }
-            .store(in: &cancellables)
-
         input.didChangeText
             .withUnretained(self)
             .sink { owner, text in
                 owner.state.reasonDetail = text
+            }
+            .store(in: &cancellables)
+
+        let reportPoll = input.didTapReportButton
+            .withUnretained(self)
+            .filter { owner, _ in owner.commentId == nil }
+
+        reportPoll
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, _ in
+                owner.output.showLoading.send(true)
+            })
+            .compactMap { owner, _ in
+                guard let item = owner.state.selectItem else { return nil }
+
+                if item.hasReasonDetail, owner.state.reasonDetail.isEmpty {
+                    owner.output.showToast.send("신고 사유를 입력해 주세요.")
+                    return nil
+                }
+                return PollReportCreateRequestInput(
+                    reason: item.type,
+                    reasonDetail: owner.state.reasonDetail
+                )
+            }
+            .withUnretained(self)
+            .asyncMap { owner, input in
+                await owner.communityService.reportPoll(pollId: owner.pollId, input: input)
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                owner.output.showLoading.send(false)
+                switch result {
+                case .success(let response):
+                    owner.output.showToast.send("신고했어요")
+                    owner.output.route.send(.back)
+                case .failure(let error):
+                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                }
+            }
+            .store(in: &cancellables)
+
+        let reportComment = input.didTapReportButton
+            .withUnretained(self)
+            .filter { owner, _ in owner.commentId != nil }
+
+
+        reportComment
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, _ in
+                owner.output.showLoading.send(true)
+            })
+            .compactMap { owner, _ in
+                guard let item = owner.state.selectItem else { return nil }
+
+                if item.hasReasonDetail, owner.state.reasonDetail.isEmpty {
+                    owner.output.showToast.send("신고 사유를 입력해 주세요.")
+                    return nil
+                }
+                return PollCommentReportCreateRequestInput(
+                    reason: item.type,
+                    reasonDetail: owner.state.reasonDetail
+                )
+            }
+            .withUnretained(self)
+            .asyncMap { owner, input in
+                await owner.communityService.reportComment(pollId: owner.pollId, commentId: owner.commentId ?? "", input: input)
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                owner.output.showLoading.send(false)
+                switch result {
+                case .success(let response):
+                    owner.output.showToast.send("신고했어요")
+                    owner.output.route.send(.back)
+                case .failure(let error):
+                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                }
             }
             .store(in: &cancellables)
     }
@@ -98,7 +171,7 @@ final class ReportPollViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
 
-            let apiResult = await communityService.fetchPollReportReasons()
+            let apiResult = await communityService.fetchPollReportReasons(type: self.commentId == nil ? .poll : .pollComment)
 
             switch apiResult {
             case .success(let response):
@@ -107,30 +180,6 @@ final class ReportPollViewModel: BaseViewModel {
                 }
                 self.state.reasons = response.reasons
                 self.output.dataSource.send(sectionItems)
-            case .failure(let failure):
-                self.output.showToast.send(failure.localizedDescription)
-            }
-        }
-    }
-
-    private func reportPoll() {
-        Task { [weak self] in
-            guard let self, let item = self.state.selectItem else { return }
-
-            if item.hasReasonDetail, self.state.reasonDetail.isEmpty {
-                self.output.showToast.send("신고 사유를 입력해 주세요.")
-                return
-            }
-
-            let apiResult = await communityService.reportPoll(
-                pollId: self.pollId,
-                input: .init(reason: item.type, reasonDetail: item.hasReasonDetail ? self.state.reasonDetail : nil)
-            )
-
-            switch apiResult {
-            case .success(let response):
-                print("💜error: \(response)")
-                self.output.route.send(.back)
             case .failure(let failure):
                 self.output.showToast.send(failure.localizedDescription)
             }
