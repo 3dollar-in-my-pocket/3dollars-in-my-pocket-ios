@@ -22,6 +22,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let didTapNavigationAction = PassthroughSubject<NavigationAppType, Never>()
         let didTapWriteReview = PassthroughSubject<Void, Never>()
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
+        let didTapAddress = PassthroughSubject<Void, Never>()
         
         let didTapShowMoreMenu = PassthroughSubject<Void, Never>()
     }
@@ -136,6 +137,13 @@ final class StoreDetailViewModel: BaseViewModel {
                 owner.refreshSections()
             }
             .store(in: &cancellables)
+        
+        input.didTapAddress
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.copyAddressToClipBoard()
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchStoreDetail() {
@@ -204,6 +212,10 @@ final class StoreDetailViewModel: BaseViewModel {
         
         viewModel.output.didTapWriteReview
             .subscribe(input.didTapWriteReview)
+            .store(in: &cancellables)
+        
+        viewModel.output.didTapAddress
+            .subscribe(input.didTapAddress)
             .store(in: &cancellables)
         
         output.isFavorited
@@ -321,5 +333,12 @@ final class StoreDetailViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         
         output.route.send(.presentWriteReview(viewModel))
+    }
+    
+    private func copyAddressToClipBoard() {
+        guard let address = state.storeDetailData?.overview.address else { return }
+        UIPasteboard.general.string = address
+        
+        output.toast.send(Strings.StoreDetail.Toast.copyToAddress)
     }
 }

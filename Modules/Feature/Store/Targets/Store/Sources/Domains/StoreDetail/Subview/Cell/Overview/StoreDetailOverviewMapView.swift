@@ -20,18 +20,23 @@ final class StoreDetailOverviewMapView: BaseView {
         $0.isUserInteractionEnabled = false
     }
     
-    private let addressLabel = PaddingLabel(
-        topInset: 8,
-        bottomInset: 8,
-        leftInset: 16,
-        rightInset: 16
-    ).then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.systemWhite.color
-        $0.layer.cornerRadius = 17
-        $0.layer.masksToBounds = true
-        $0.backgroundColor = Colors.gray95.color.withAlphaComponent(0.6)
-    }
+    let addressButton: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(Colors.systemWhite.color, for: .normal)
+        button.titleLabel?.font = Fonts.medium.font(size: 12)
+        button.layer.cornerRadius = 17
+        button.layer.masksToBounds = true
+        button.backgroundColor = Colors.gray95.color.withAlphaComponent(0.6)
+        button.setImage(
+            Icons.copy.image.withTintColor(Colors.systemWhite.color).resizeImage(scaledTo: 16),
+            for: .normal
+        )
+        button.contentEdgeInsets = .init(top: 8, left: 12, bottom: 8, right: 12)
+        button.imageEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 4)
+        button.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
+        
+        return button
+    }()
     
     private let zoomButton = UIButton().then {
         $0.backgroundColor = Colors.systemWhite.color
@@ -48,7 +53,7 @@ final class StoreDetailOverviewMapView: BaseView {
     override func setup() {
         addSubViews([
             mapView,
-            addressLabel,
+            addressButton,
             zoomButton
         ])
     }
@@ -61,7 +66,7 @@ final class StoreDetailOverviewMapView: BaseView {
             $0.height.equalTo(Layout.mapHeight)
         }
         
-        addressLabel.snp.makeConstraints {
+        addressButton.snp.makeConstraints {
             $0.left.equalTo(mapView).offset(8)
             $0.bottom.equalTo(mapView).offset(-8)
             $0.height.equalTo(34)
@@ -79,7 +84,7 @@ final class StoreDetailOverviewMapView: BaseView {
     }
     
     func bind(location: Location, address: String) {
-        addressLabel.text = address
+        addressButton.setTitle(address, for: .normal)
         
         setMarket(location: location)
         let location = CLLocation(latitude: location.latitude, longitude: location.longitude)

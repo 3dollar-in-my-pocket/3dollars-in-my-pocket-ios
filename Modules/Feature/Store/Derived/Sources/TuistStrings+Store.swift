@@ -152,6 +152,8 @@ public enum StoreStrings {
     public enum Toast {
       /// 즐겨찾기가 추가되었습니다!
       public static let addFavorite = StoreStrings.tr("Localization", "store_detail.toast.add_favorite")
+      /// 🔗 주소를 클립보드에 복사했습니다.
+      public static let copyToAddress = StoreStrings.tr("Localization", "store_detail.toast.copy_to_address")
       /// 즐겨찾기가 삭제되었습니다!
       public static let removeFavorite = StoreStrings.tr("Localization", "store_detail.toast.remove_favorite")
     }
