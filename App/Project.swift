@@ -242,7 +242,7 @@ let project = Project(
         .remote(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", requirement: .exact("1.9.6")),
         .remote(url: "https://github.com/devicekit/DeviceKit.git", requirement: .exact("5.0.0")),
         .remote(url: "https://github.com/sparrowcode/PermissionsKit", requirement: .exact("9.0.2")),
-        .remote(url: "https://github.com/firebase/firebase-ios-sdk", requirement: .exact("9.6.0")),
+        .remote(url: "https://github.com/firebase/firebase-ios-sdk", requirement: .upToNextMajor(from: "10.4.0")),
         .remote(url: "https://github.com/ReactiveX/RxSwift.git", requirement: .exact("6.5.0"))
     ],
     settings: .settings(
