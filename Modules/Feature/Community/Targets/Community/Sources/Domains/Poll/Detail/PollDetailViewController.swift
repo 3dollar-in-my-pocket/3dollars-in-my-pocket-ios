@@ -143,7 +143,7 @@ final class PollDetailViewController: BaseViewController {
             .sink { owner, _ in
                 owner.view.endEditing(true)
                 owner.writeCommentView.clear()
-                owner.collectionView.scrollToBottom()
+                owner.collectionView.scrollToItemIfAvailable(at: IndexPath(row: 0, section: 0), at: .top, animated: true) // TODO
             }
             .store(in: &cancellables)
     }
@@ -223,5 +223,14 @@ extension PollDetailViewController: UICollectionViewDelegateFlowLayout {
 extension PollDetailViewController: UICollectionViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         view.endEditing(true)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        switch dataSource.itemIdentifier(for: indexPath) {
+        case .comment:
+            viewModel.input.willDisplayCommentCell.send(indexPath.item)
+        default:
+            break
+        }
     }
 }

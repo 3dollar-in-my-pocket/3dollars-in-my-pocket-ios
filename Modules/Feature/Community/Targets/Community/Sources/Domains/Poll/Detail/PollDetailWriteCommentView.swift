@@ -109,4 +109,15 @@ extension PollDetailWriteCommentView: UITextViewDelegate {
 
         return true
     }
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        textView.layer.borderColor = UIColor.clear.cgColor
+        textView.textColor = Layout.textColor
+
+        if textView.text.isEmpty {
+            textView.text = Layout.Placeholder.text
+            textView.textColor = Layout.Placeholder.color
+            writeButton.isEnabled = false
+        }
+    }
 }

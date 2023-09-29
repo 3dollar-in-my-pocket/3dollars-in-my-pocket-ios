@@ -7,11 +7,16 @@ import Common
 
 final class PollDetailViewModel: BaseViewModel {
 
+    enum Constants {
+        static let commentSize: Int = 20
+    }
+
     struct Input {
         let firstLoad = PassthroughSubject<Void, Never>()
         let didTapReportButton = PassthroughSubject<Void, Never>()
         let comment = CurrentValueSubject<String, Never>("")
         let didTapWirteCommentButton = PassthroughSubject<Void, Never>()
+        let willDisplayCommentCell = PassthroughSubject<Int, Never>()
     }
 
     struct Output {
@@ -26,8 +31,10 @@ final class PollDetailViewModel: BaseViewModel {
     struct State {
         var pollDetail = CurrentValueSubject<PollWithMetaApiResponse?, Never>(nil)
         var comments = CurrentValueSubject<[PollCommentWithUserApiResponse], Never>([])
-        let loadComments = PassthroughSubject<Int, Never>() // 불러올 코멘트 개수
+        let loadComments = PassthroughSubject<Void, Never>()
         let loadComment = PassthroughSubject<String, Never>() // commentId
+        var nextCursor: String? = nil
+        var hasMore: Bool = true
     }
 
     enum Route {
@@ -81,7 +88,7 @@ final class PollDetailViewModel: BaseViewModel {
                 switch result {
                 case .success(let response):
                     owner.state.pollDetail.send(response)
-                    owner.state.loadComments.send(response.meta.totalCommentsCount)
+                    owner.state.loadComments.send()
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")
                 }
@@ -89,23 +96,30 @@ final class PollDetailViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         state.loadComments
-            .removeDuplicates()
             .withUnretained(self)
-            .asyncMap { owner, count in
+            .asyncMap { owner, _ in
                 await owner.communityService.fetchPollComments(
                     pollId: owner.pollId,
-                    input: CursorRequestInput(size: count)
+                    input: CursorRequestInput(
+                        size: Constants.commentSize,
+                        cursor: owner.state.nextCursor
+                    )
                 )
             }
             .withUnretained(self)
             .sink { owner, result in
                 switch result {
                 case .success(let response):
+                    var updatedComments = owner.state.comments.value
                     // 날짜 순서로 나오게 반대로 정렬함, delete 상태 제거
                     let comments = response.contents.map { $0.current }
                         .filter { $0.comment.status != .deleted }
-                        .reversed()
-                    owner.state.comments.send(Array(comments))
+//                        .reversed()
+                    updatedComments.append(contentsOf: Array(comments))
+
+                    owner.state.comments.send(updatedComments)
+                    owner.state.nextCursor = response.cursor.nextCursor
+                    owner.state.hasMore = response.cursor.hasMore
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")
                 }
@@ -171,13 +185,22 @@ final class PollDetailViewModel: BaseViewModel {
                 owner.output.showLoading.send(false)
                 switch result {
                 case .success(let response):
-                    var updatedComments = owner.state.comments.value
-                    updatedComments.append(response.current)
-                    owner.state.comments.send(updatedComments)
+                    let comments = [response.current] + owner.state.comments.value
+                    owner.state.comments.send(comments)
                     owner.output.completedWriteComment.send()
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")
                 }
+            }
+            .store(in: &cancellables)
+
+        input.willDisplayCommentCell
+            .withUnretained(self)
+            .filter { owner, row in
+                owner.canLoadMore(willDisplayRow: row)
+            }
+            .sink { owner, _ in
+                owner.state.loadComments.send()
             }
             .store(in: &cancellables)
     }
@@ -192,7 +215,7 @@ final class PollDetailViewModel: BaseViewModel {
         }
 
         sections.append(PollDetailSection(
-            type: .comment(totalCount: comments.count),
+            type: .comment(totalCount: item?.meta.totalCommentsCount ?? comments.count),
             items: comments.map { .comment(bindCommentCellViewModel(with: $0)) }
         ))
 
@@ -201,10 +224,10 @@ final class PollDetailViewModel: BaseViewModel {
 
     private func bindPollItemCellViewModel(with data: PollWithMetaApiResponse) -> PollItemCellViewModel {
         let cellViewModel = PollItemCellViewModel(data: data)
-
-        cellViewModel.output.reloadComments
-            .subscribe(state.loadComments)
-            .store(in: &cancellables)
+// TODO
+//        cellViewModel.output.reloadComments.mapVoid
+//            .subscribe(state.loadComments)
+//            .store(in: &cancellables)
 
         return cellViewModel
     }
@@ -242,5 +265,9 @@ final class PollDetailViewModel: BaseViewModel {
         let viewModel = ReportPollViewModel(pollId: pollId, commentId: commentId)
 
         return viewModel
+    }
+
+    private func canLoadMore(willDisplayRow: Int) -> Bool {
+        return willDisplayRow == state.comments.value.count - 1 && state.hasMore
     }
 }
