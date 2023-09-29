@@ -22,6 +22,10 @@ final class UploadPhotoViewController: BaseViewController {
         modalPresentationStyle = .overCurrentContext
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -33,9 +37,10 @@ final class UploadPhotoViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        addObserver()
         uploadPhotoView.photoCollectionView.delegate = self
         uploadPhotoView.photoCollectionView.dataSource = self
-        viewModel.input.viewDidLoad.send(())
+        viewModel.input.load.send(())
     }
     
     override func bindEvent() {
@@ -83,7 +88,11 @@ final class UploadPhotoViewController: BaseViewController {
             .main
             .withUnretained(self)
             .sink { (owner: UploadPhotoViewController, error) in
-                owner.showErrorAlert(error: error)
+                if error is PhotoError {
+                    owner.showAuthorizationError()
+                } else {
+                    owner.showErrorAlert(error: error)
+                }
             }
             .store(in: &cancellables)
         
@@ -109,6 +118,31 @@ final class UploadPhotoViewController: BaseViewController {
             }
             .store(in: &cancellables)
     }
+    
+    private func addObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationDidBecome),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func applicationDidBecome() {
+        viewModel.input.load.send(())
+    }
+    
+    private func showAuthorizationError() {
+        AlertUtils.showWithCancel(viewController: self, message: Strings.UploadPhoto.AuthErrorAlert.message) {
+            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+                return
+            }
+            
+            if UIApplication.shared.canOpenURL(settingsUrl) {
+                UIApplication.shared.open(settingsUrl)
+            }
+        }
+    }
 }
 
 extension UploadPhotoViewController: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -128,7 +162,7 @@ extension UploadPhotoViewController: UICollectionViewDataSource, UICollectionVie
         viewModel.input.selectAsset.send(indexPath.item)
     }
     
-    func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
-        return UploadPhotoViewModel.Constant.limitOfPhoto >= viewModel.state.assets.count
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        return UploadPhotoViewModel.Constant.limitOfPhoto > viewModel.state.selectedAssets.count
     }
 }

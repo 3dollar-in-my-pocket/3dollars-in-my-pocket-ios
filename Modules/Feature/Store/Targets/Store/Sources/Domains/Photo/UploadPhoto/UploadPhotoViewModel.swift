@@ -13,7 +13,7 @@ final class UploadPhotoViewModel: BaseViewModel {
     }
     
     struct Input {
-        let viewDidLoad = PassthroughSubject<Void, Never>()
+        let load = PassthroughSubject<Void, Never>()
         let selectAsset = PassthroughSubject<Int, Never>()
         let deSelectAsset = PassthroughSubject<Int, Never>()
         let didTapUpload = PassthroughSubject<Void, Never>()
@@ -65,7 +65,7 @@ final class UploadPhotoViewModel: BaseViewModel {
     }
     
     override func bind() {
-        input.viewDidLoad
+        input.load
             .withUnretained(self)
             .sink { (owner: UploadPhotoViewModel, _) in
                 switch owner.photoManager.getPhotoAuthorizationStatus() {
@@ -90,8 +90,7 @@ final class UploadPhotoViewModel: BaseViewModel {
         input.selectAsset
             .withUnretained(self)
             .sink { (owner: UploadPhotoViewModel, index) in
-                guard owner.state.selectedAssets.count != Constant.limitOfPhoto,
-                let selectedAsset = owner.state.assets[safe: index] else { return }
+                guard let selectedAsset = owner.state.assets[safe: index] else { return }
                 
                 owner.state.selectedAssets.append(selectedAsset)
             }
@@ -137,6 +136,7 @@ final class UploadPhotoViewModel: BaseViewModel {
     private func fetchPhotos() {
         let assets = photoManager.fetchAssets()
         
+        state.assets = assets
         output.assets.send(assets)
     }
     

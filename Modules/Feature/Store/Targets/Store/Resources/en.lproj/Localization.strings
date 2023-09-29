@@ -64,3 +64,6 @@
 // 지도 상세 화면
 "map_detail.title" = "지도 보기";
 "map_detail.navigation_button" = "길 안내보기";
+
+// 사진 업로드 화면
+"upload_photo.auth_error_alert.message" = "사진 제보를 위해 앨범 권한이 필요합니다.";
