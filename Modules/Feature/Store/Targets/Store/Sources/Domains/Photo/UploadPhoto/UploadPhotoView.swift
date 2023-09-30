@@ -41,7 +41,6 @@ final class UploadPhotoView: BaseView {
     
     let uploadButton: UIButton = {
         let button = UIButton()
-        button.setTitle(Strings.MapDetail.navigationButton, for: .normal)
         button.titleLabel?.font = Fonts.bold.font(size: 16)
         button.setTitleColor(Colors.systemWhite.color, for: .normal)
         button.backgroundColor = Colors.gray30.color
@@ -105,8 +104,20 @@ final class UploadPhotoView: BaseView {
         }
     }
     
-    func deselectCollectionItem(index: Int) {
-        self.photoCollectionView.deselectItem(at: IndexPath(row: index, section: 0), animated: true)
+    func setUploadButtonTitle(count: Int) {
+        let title = Strings.UploadPhoto.Button.titleFormat(count, UploadPhotoViewModel.Constant.limitOfPhoto)
+        uploadButton.setTitle(title, for: .normal)
+    }
+    
+    func setEnableUploadButton(_ isEnabled: Bool) {
+        if isEnabled {
+            uploadButton.backgroundColor = Colors.mainPink.color
+            buttonBackgroundView.backgroundColor = Colors.mainPink.color
+        } else {
+            uploadButton.backgroundColor = Colors.gray30.color
+            buttonBackgroundView.backgroundColor = Colors.gray30.color
+        }
+        
     }
     
     private func createLayout() -> UICollectionViewLayout {

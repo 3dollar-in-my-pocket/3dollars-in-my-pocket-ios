@@ -22,8 +22,8 @@ final class UploadPhotoViewModel: BaseViewModel {
     struct Output {
         let assets = PassthroughSubject<[PHAsset], Never>()
         let onSuccessUploadPhotos = PassthroughSubject<[PHAsset], Never>()
-        let uploadButtonTitle = PassthroughSubject<String, Never>()
-        let isEnableUploadButton = PassthroughSubject<Bool, Never>()
+        let uploadButtonTitle = CurrentValueSubject<Int, Never>(0)
+        let isEnableUploadButton = CurrentValueSubject<Bool, Never>(false)
         let showErrorAlert = PassthroughSubject<Error, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
@@ -93,6 +93,8 @@ final class UploadPhotoViewModel: BaseViewModel {
                 guard let selectedAsset = owner.state.assets[safe: index] else { return }
                 
                 owner.state.selectedAssets.append(selectedAsset)
+                owner.output.uploadButtonTitle.send(owner.state.selectedAssets.count)
+                owner.output.isEnableUploadButton.send(owner.isEnableUploadButton())
             }
             .store(in: &cancellables)
         
@@ -104,6 +106,8 @@ final class UploadPhotoViewModel: BaseViewModel {
                 if let targetIndex = owner.state.selectedAssets.firstIndex(of: deSelectedAsset) {
                     owner.state.selectedAssets.remove(at: targetIndex)
                 }
+                owner.output.uploadButtonTitle.send(owner.state.selectedAssets.count)
+                owner.output.isEnableUploadButton.send(owner.isEnableUploadButton())
             }
             .store(in: &cancellables)
         
@@ -138,6 +142,10 @@ final class UploadPhotoViewModel: BaseViewModel {
         
         state.assets = assets
         output.assets.send(assets)
+    }
+    
+    private func isEnableUploadButton() -> Bool {
+        return state.selectedAssets.count == Constant.limitOfPhoto
     }
     
 //    func mutate(action: Action) -> Observable<Mutation> {

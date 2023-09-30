@@ -74,14 +74,17 @@ final class UploadPhotoViewController: BaseViewController {
         viewModel.output.uploadButtonTitle
             .main
             .withUnretained(self)
-            .sink(receiveValue: { (owner: UploadPhotoViewController, title) in
-                owner.uploadPhotoView.uploadButton.setTitle(title, for: .normal)
+            .sink(receiveValue: { (owner: UploadPhotoViewController, count) in
+                owner.uploadPhotoView.setUploadButtonTitle(count: count)
             })
             .store(in: &cancellables)
         
         viewModel.output.isEnableUploadButton
             .main
-            .assign(to: \.isEnabled, on: uploadPhotoView.uploadButton)
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: UploadPhotoViewController, isEnabled) in
+                owner.uploadPhotoView.setEnableUploadButton(isEnabled)
+            })
             .store(in: &cancellables)
         
         viewModel.output.showErrorAlert
@@ -160,6 +163,10 @@ extension UploadPhotoViewController: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel.input.selectAsset.send(indexPath.item)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        viewModel.input.deSelectAsset.send(indexPath.item)
     }
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {

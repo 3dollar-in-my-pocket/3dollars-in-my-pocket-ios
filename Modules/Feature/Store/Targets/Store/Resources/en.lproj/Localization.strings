@@ -67,3 +67,4 @@
 
 // 사진 업로드 화면
 "upload_photo.auth_error_alert.message" = "사진 제보를 위해 앨범 권한이 필요합니다.";
+"upload_photo.button.title_format" = "총 %d장 / %d장 의 사진 등록";

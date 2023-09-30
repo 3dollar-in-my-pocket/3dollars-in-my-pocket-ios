@@ -193,6 +193,12 @@ public enum StoreStrings {
       /// 사진 제보를 위해 앨범 권한이 필요합니다.
       public static let message = StoreStrings.tr("Localization", "upload_photo.auth_error_alert.message")
     }
+    public enum Button {
+      /// 총 %d장 / %d장 의 사진 등록
+      public static func titleFormat(_ p1: Int, _ p2: Int) -> String {
+        return StoreStrings.tr("Localization", "upload_photo.button.title_format", p1, p2)
+      }
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
