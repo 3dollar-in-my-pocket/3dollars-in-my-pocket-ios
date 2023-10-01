@@ -206,7 +206,7 @@ public final class StoreDetailViewController: BaseViewController {
                 
                 return section
                 
-            case .photo:
+            case .photo(let totalCount):
                 let item = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .absolute(StoreDetailPhotoCell.Layout.size.width),
                     heightDimension: .absolute(StoreDetailPhotoCell.Layout.size.height)
@@ -222,14 +222,25 @@ public final class StoreDetailViewController: BaseViewController {
                 group.interItemSpacing = NSCollectionLayoutSpacing.fixed(StoreDetailPhotoCell.Layout.space)  
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = .init(top: 12, leading: 20, bottom: 32, trailing: 20)
-                section.boundarySupplementaryItems = [.init(
-                    layoutSize: .init(
-                        widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(24)
+                section.boundarySupplementaryItems = [
+                    .init(
+                        layoutSize: .init(
+                            widthDimension: .fractionalWidth(1),
+                            heightDimension: .absolute(24)
+                        ),
+                        elementKind: UICollectionView.elementKindSectionHeader,
+                        alignment: .topLeading
                     ),
-                    elementKind: UICollectionView.elementKindSectionHeader,
-                    alignment: .topLeading
-                )]
+                    .init(
+                        layoutSize: .init(
+                            widthDimension: .fractionalWidth(1),
+                            heightDimension: .absolute(totalCount > 0 ? 0 : StoreDetailPhotoFooterView.Layout.height)
+                        ),
+                        elementKind: UICollectionView.elementKindSectionFooter,
+                        alignment: .bottom,
+                        absoluteOffset: CGPoint(x: 0, y: -32)
+                    ),
+                ]
                 
                 return section
                 

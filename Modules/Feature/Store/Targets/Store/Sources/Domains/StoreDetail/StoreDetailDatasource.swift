@@ -24,6 +24,10 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: "\(StoreDetailHeaderView.self)"
         )
+        collectionView.register(
+            StoreDetailPhotoFooterView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+            withReuseIdentifier: "\(StoreDetailPhotoFooterView.self)")
         
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
@@ -109,22 +113,33 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 
                 return headerView
                 
-            case .photo:
-                let headerView = collectionView.dequeueReusableSupplementaryView(
-                    ofKind: UICollectionView.elementKindSectionHeader,
-                    withReuseIdentifier: "\(StoreDetailHeaderView.self)",
-                    for: indexPath
-                ) as? StoreDetailHeaderView
-                
-                guard let headerView else { return BaseCollectionViewReusableView() }
-                headerView.bind(section.header)
-                headerView.rightButton
-                    .controlPublisher(for: .touchUpInside)
-                    .mapVoid
-                    .subscribe(viewModel.input.didTapUploadPhoto)
-                    .store(in: &headerView.cancellables)
-                
-                return headerView
+            case .photo(let totalCount):
+                if kind == UICollectionView.elementKindSectionHeader {
+                    let headerView = collectionView.dequeueReusableSupplementaryView(
+                        ofKind: UICollectionView.elementKindSectionHeader,
+                        withReuseIdentifier: "\(StoreDetailHeaderView.self)",
+                        for: indexPath
+                    ) as? StoreDetailHeaderView
+                    
+                    guard let headerView else { return BaseCollectionViewReusableView() }
+                    headerView.bind(section.header)
+                    headerView.rightButton
+                        .controlPublisher(for: .touchUpInside)
+                        .mapVoid
+                        .subscribe(viewModel.input.didTapUploadPhoto)
+                        .store(in: &headerView.cancellables)
+                    
+                    return headerView
+                } else {
+                    let footerView = collectionView.dequeueReusableSupplementaryView(
+                        ofKind: UICollectionView.elementKindSectionFooter,
+                        withReuseIdentifier: "\(StoreDetailPhotoFooterView.self)",
+                        for: indexPath
+                    ) as? StoreDetailPhotoFooterView
+                    
+                    footerView?.bind(totalCount)
+                    return footerView
+                }
             }
         }
     }

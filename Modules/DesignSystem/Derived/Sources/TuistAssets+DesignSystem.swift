@@ -66,6 +66,7 @@ public enum DesignSystemAsset {
     public static let delete = DesignSystemImages(name: "delete")
     public static let deleteX = DesignSystemImages(name: "delete_x")
     public static let deletion = DesignSystemImages(name: "deletion")
+    public static let empty02 = DesignSystemImages(name: "empty_02")
     public static let faceSad = DesignSystemImages(name: "face.sad")
     public static let faceSmile = DesignSystemImages(name: "face.smile")
     public static let fireLine = DesignSystemImages(name: "fire.line")
