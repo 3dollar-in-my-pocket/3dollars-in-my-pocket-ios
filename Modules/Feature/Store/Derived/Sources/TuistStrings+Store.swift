@@ -35,6 +35,13 @@ public enum StoreStrings {
     }
   }
 
+  public enum PhotoList {
+    /// 사진
+    public static let title = StoreStrings.tr("Localization", "photo_list.title")
+    /// 사진 제보하기
+    public static let uploadButton = StoreStrings.tr("Localization", "photo_list.upload_button")
+  }
+
   public enum ReportModal {
     /// 신고하기
     public static let button = StoreStrings.tr("Localization", "report_modal.button")
@@ -127,6 +134,8 @@ public enum StoreStrings {
       }
     }
     public enum Photo {
+      /// 사진을 제보해주세요!
+      public static let empty = StoreStrings.tr("Localization", "store_detail.photo.empty")
       /// 더보기
       public static let more = StoreStrings.tr("Localization", "store_detail.photo.more")
       public enum Header {

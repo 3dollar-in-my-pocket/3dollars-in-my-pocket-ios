@@ -30,6 +30,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         // 사진 섹션
         let didTapUploadPhoto = PassthroughSubject<Void, Never>()
+        let didTapMorePhoto = PassthroughSubject<Void, Never>()
         let onSuccessUploadPhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
     }
     
@@ -59,6 +60,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentWriteReview(ReviewBottomSheetViewModel)
         case presentMapDetail(MapDetailViewModel)
         case presentUploadPhoto(UploadPhotoViewModel)
+        case pushPhotoList(PhotoListViewModel)
     }
     
     let input = Input()
@@ -167,6 +169,13 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
                 owner.presentUploadPhoto()
+            }
+            .store(in: &cancellables)
+        
+        input.didTapMorePhoto
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.pushPhotoList()
             }
             .store(in: &cancellables)
         
@@ -402,5 +411,16 @@ final class StoreDetailViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         output.route.send(.presentUploadPhoto(viewModel))
+    }
+    
+    private func pushPhotoList() {
+        let config = PhotoListViewModel.Config(storeId: state.storeId)
+        let viewModel = PhotoListViewModel(config: config)
+        
+        viewModel.output.onSuccessUploadPhotos
+            .subscribe(input.onSuccessUploadPhotos)
+            .store(in: &cancellables)
+        
+        output.route.send(.pushPhotoList(viewModel))
     }
 }

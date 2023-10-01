@@ -33,6 +33,7 @@
 "store_detail.photo.header.title" = "가게 사진";
 "store_detail.photo.header.button" = "사진 제보";
 "store_detail.photo.more" = "더보기";
+"store_detail.photo.empty" = "사진을 제보해주세요!";
 "store_detail.review.header.title" = "리뷰";
 "store_detail.review.header.button" = "리뷰 쓰기";
 "store_detail.rating.title" = "평균 별점";
@@ -68,3 +69,7 @@
 // 사진 업로드 화면
 "upload_photo.auth_error_alert.message" = "사진 제보를 위해 앨범 권한이 필요합니다.";
 "upload_photo.button.title_format" = "총 %d장 / %d장 의 사진 등록";
+
+// 사진 리스트 화면
+"photo_list.title" = "사진";
+"photo_list.upload_button" = "사진 제보하기";

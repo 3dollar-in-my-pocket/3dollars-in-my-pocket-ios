@@ -35,7 +35,7 @@ final class StoreDetailPhotoFooterView: BaseCollectionViewReusableView {
         let label = UILabel()
         label.font = Fonts.medium.font(size: 12)
         label.textColor = Colors.gray50.color
-        label.text = "사진을 제보해주세요!"
+        label.text = Strings.StoreDetail.Photo.empty
         
         return label
     }()

@@ -108,6 +108,9 @@ public final class StoreDetailViewController: BaseViewController {
                     
                 case .presentUploadPhoto(let viewModel):
                     owner.presentUploadPhoto(viewModel)
+                    
+                case .pushPhotoList(let viewModel):
+                    owner.pushPhotoList(viewModel)
                 }
             }
             .store(in: &cancellables)
@@ -332,5 +335,11 @@ public final class StoreDetailViewController: BaseViewController {
         let viewController = UploadPhotoViewController.instance(viewModel: viewModel)
         
         present(viewController, animated: true)
+    }
+    
+    private func pushPhotoList(_ viewModel: PhotoListViewModel) {
+        let viewController = PhotoListViewController.instance(viewModel: viewModel)
+        
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }

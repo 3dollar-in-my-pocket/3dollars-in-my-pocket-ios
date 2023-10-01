@@ -10,4 +10,8 @@ public struct StoreDetailPhoto: Hashable {
         self.url = response.url
         self.totalCount = totalCount
     }
+    
+    public init(response: StoreImageApiResponse) {
+        self = .init(response: response, totalCount: 0)
+    }
 }

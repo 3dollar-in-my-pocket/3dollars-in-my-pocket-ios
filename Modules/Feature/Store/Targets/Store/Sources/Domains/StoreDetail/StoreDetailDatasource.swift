@@ -142,6 +142,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 }
             }
         }
+        collectionView.delegate = self
     }
     
     func reload(_ sections: [StoreDetailSection]) {
@@ -152,5 +153,18 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             snapshot.appendItems(section.items, toSection: section)
         }
         apply(snapshot, animatingDifferences: false)
+    }
+}
+
+extension StoreDetailDatasource: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let section = sectionIdentifier(section: indexPath.section),
+              case .photo(_) = section.type else { return }
+        
+        if indexPath.item == 3 {
+            viewModel.input.didTapMorePhoto.send(())
+        } else {
+            // TODO: 사진 선택 이벤트 바인딩 필요
+        }
     }
 }
