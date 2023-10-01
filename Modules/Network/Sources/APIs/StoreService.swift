@@ -19,6 +19,8 @@ public protocol StoreServiceProtocol {
     func fetchReportReasons(group: ReportGroup) async -> Result<ReportReasonApiResponse, Error>
     
     func writeReview(input: WriteReviewRequestInput) async -> Result<ReviewWithUserApiResponse, Error>
+    
+    func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageApiResponse], Error>
 }
 
 public struct StoreService: StoreServiceProtocol {
@@ -68,6 +70,12 @@ public struct StoreService: StoreServiceProtocol {
     
     public func writeReview(input: WriteReviewRequestInput) async -> Result<ReviewWithUserApiResponse, Error> {
         let request = WriteReviewRequest(input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageApiResponse], Error> {
+        let request = UploadPhotoRequest(storeId: storeId, photos: photos)
         
         return await NetworkManager.shared.request(requestType: request)
     }

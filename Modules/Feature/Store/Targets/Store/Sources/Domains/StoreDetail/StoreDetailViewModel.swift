@@ -30,6 +30,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         // 사진 섹션
         let didTapUploadPhoto = PassthroughSubject<Void, Never>()
+        let onSuccessUploadPhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
     }
     
     struct Output {
@@ -166,6 +167,20 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
                 owner.presentUploadPhoto()
+            }
+            .store(in: &cancellables)
+        
+        input.onSuccessUploadPhotos
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, photos: [StoreDetailPhoto]) in
+                owner.state.storeDetailData?.photos += photos
+                
+                if let photos = owner.state.storeDetailData?.photos {
+                    for index in photos.indices {
+                        owner.state.storeDetailData?.photos[index].totalCount = photos.count
+                    }
+                }
+                owner.refreshSections()
             }
             .store(in: &cancellables)
     }
@@ -381,6 +396,10 @@ final class StoreDetailViewModel: BaseViewModel {
     private func presentUploadPhoto() {
         let config = UploadPhotoViewModel.Config(storeId: state.storeId)
         let viewModel = UploadPhotoViewModel(config: config)
+        
+        viewModel.output.onSuccessUploadPhotos
+            .subscribe(input.onSuccessUploadPhotos)
+            .store(in: &cancellables)
         
         output.route.send(.presentUploadPhoto(viewModel))
     }

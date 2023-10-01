@@ -3,6 +3,7 @@ import Combine
 import Photos
 
 import Common
+import Model
 import Networking
 import AppInterface
 import DependencyInjection
@@ -21,7 +22,7 @@ final class UploadPhotoViewModel: BaseViewModel {
     
     struct Output {
         let assets = PassthroughSubject<[PHAsset], Never>()
-        let onSuccessUploadPhotos = PassthroughSubject<[PHAsset], Never>()
+        let onSuccessUploadPhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
         let uploadButtonTitle = CurrentValueSubject<Int, Never>(0)
         let isEnableUploadButton = CurrentValueSubject<Bool, Never>(false)
         let showErrorAlert = PassthroughSubject<Error, Never>()
@@ -114,7 +115,7 @@ final class UploadPhotoViewModel: BaseViewModel {
         input.didTapUpload
             .withUnretained(self)
             .sink { (owner: UploadPhotoViewModel, _) in
-                
+                owner.uploadPhotos()
             }
             .store(in: &cancellables)
     }
@@ -145,94 +146,29 @@ final class UploadPhotoViewModel: BaseViewModel {
     }
     
     private func isEnableUploadButton() -> Bool {
-        return state.selectedAssets.count == Constant.limitOfPhoto
+        return state.selectedAssets.count > 0 && state.selectedAssets.count <= Constant.limitOfPhoto
     }
     
-//    func mutate(action: Action) -> Observable<Mutation> {
-//        switch action {
-//        case .viewDidLoad:
-//            switch self.photoManager.getPhotoAuthorizationStatus() {
-//            case .authorized:
-//                return self.fetchPhotos()
-//
-//            case .denied:
-//                return .just(.showErrorAlert(error: BaseError.custom("사진 제보를 위해 앨범 권한이 필요합니다.")))
-//
-//            case .notDetermined:
-//                return self.requestPhotosPermission()
-//
-//            case .restricted:
-//                return .just(.showErrorAlert(error: BaseError.custom("사진 제보를 위해 앨범 권한이 필요합니다.")))
-//
-//            default:
-//                return .empty()
-//            }
-//
-//        case .selectAsset(let row):
-//            if self.currentState.selectedAssets.count == 3 {
-//                return .just(.deSelectAsset(row: row))
-//
-//            } else {
-//                let selectedPhoto = self.currentState.assets[row]
-//
-//                return .just(.appendToSelectedAsset(selectedPhoto))
-//            }
-//
-//        case .deSelectAsset(let row):
-//            let deSelectedPhoto = self.currentState.assets[row]
-//
-//            return .just(.removeFromSelectedAsset(deSelectedPhoto))
-//
-//        case .tapRegister:
-//            let assets = self.currentState.selectedAssets
-//
-//            return .concat([
-//                .just(.showLoading(isShow: true)),
-//                self.savePhotos(storeId: self.storeId, assets: assets),
-//                .just(.showLoading(isShow: false))
-//            ])
-//        }
-//    }
-//
-//    func reduce(state: State, mutation: Mutation) -> State {
-//        var newState = state
-//
-//        switch mutation {
-//        case .setAssets(let assets):
-//            newState.assets = assets
-//
-//        case .deSelectAsset(let row):
-//            self.deSelectPublisher.accept(row)
-//
-//        case .appendToSelectedAsset(let assets):
-//            newState.selectedAssets.append(assets)
-//
-//        case .removeFromSelectedAsset(let assets):
-//            if let targetIndex = state.selectedAssets.firstIndex(of: assets) {
-//                newState.selectedAssets.remove(at: targetIndex)
-//            }
-//
-//        case .dismiss:
-//            self.dismissPublisher.accept(())
-//
-//        case .showLoading(let isShow):
-//            self.showLoadingPublisher.accept(isShow)
-//
-//        case .showErrorAlert(let error):
-//            self.showErrorAlertPublisher.accept(error)
-//        }
-//
-//        return newState
-//    }
-//
-//    private func savePhotos(storeId: Int, assets: [PHAsset]) -> Observable<Mutation> {
-//        let photos = assets.map { ImageUtils.getImage(from: $0) }
-//
-//        return self.storeService.savePhoto(storeId: storeId, photos: photos)
-//            .do { [weak self] images in
-//                self?.globalState.addStorePhotos.onNext(images)
-//            }
-//            .map { _ in .dismiss }
-//            .catch { .just(.showErrorAlert(error: $0)) }
-//    }
+    private func uploadPhotos() {
+        output.showLoading.send(true)
+        let selectedPhotos = state.selectedAssets.map { ImageUtils.getImage(from: $0) }
+        let datas = ImageUtils.dataArrayFromImages(photos: selectedPhotos)
+        
+        Task { [weak self] in
+            guard let self else { return }
+            let result = await storeService.uploadPhotos(storeId: config.storeId, photos: datas)
+            
+            switch result {
+            case .success(let imageResponse):
+                let storeDetailPhotos = imageResponse.map { StoreDetailPhoto(response: $0, totalCount: 0) }
+                output.showLoading.send(false)
+                output.onSuccessUploadPhotos.send(storeDetailPhotos)
+                output.route.send(.dismiss)
+                
+            case .failure(let error):
+                output.showLoading.send(false)
+                output.showErrorAlert.send(error)
+            }
+        }
+    }
 }

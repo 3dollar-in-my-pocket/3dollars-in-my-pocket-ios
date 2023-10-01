@@ -117,7 +117,10 @@ final class UploadPhotoViewController: BaseViewController {
             .main
             .withUnretained(self)
             .sink { (owner: UploadPhotoViewController, route) in
-                
+                switch route {
+                case .dismiss:
+                    owner.dismiss(animated: true)
+                }
             }
             .store(in: &cancellables)
     }
