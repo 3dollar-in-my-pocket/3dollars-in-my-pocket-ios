@@ -161,10 +161,6 @@ extension StoreDetailDatasource: UICollectionViewDelegate {
         guard let section = sectionIdentifier(section: indexPath.section),
               case .photo(_) = section.type else { return }
         
-        if indexPath.item == 3 {
-            viewModel.input.didTapMorePhoto.send(())
-        } else {
-            // TODO: 사진 선택 이벤트 바인딩 필요
-        }
+        viewModel.input.didTapPhoto.send(indexPath.item)
     }
 }

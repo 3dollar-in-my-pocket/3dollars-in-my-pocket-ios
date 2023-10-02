@@ -88,8 +88,8 @@ final class PhotoListViewController: BaseViewController {
     
     private func handleRoute(_ route: PhotoListViewModel.Route) {
         switch route {
-        case .presentPhotoDetail:
-            print("💜구현 예정~")
+        case .presentPhotoDetail(let viewModel):
+            presentPhotoDetail(viewModel: viewModel)
             
         case .presentUploadPhoto(let viewModel):
             presentUploadPhoto(viewModel: viewModel)
@@ -98,6 +98,12 @@ final class PhotoListViewController: BaseViewController {
     
     private func presentUploadPhoto(viewModel: UploadPhotoViewModel) {
         let viewController = UploadPhotoViewController.instance(viewModel: viewModel)
+        
+        present(viewController, animated: true)
+    }
+    
+    private func presentPhotoDetail(viewModel: PhotoDetailViewModel) {
+        let viewController = PhotoDetailViewController.instance(viewModel: viewModel)
         
         present(viewController, animated: true)
     }

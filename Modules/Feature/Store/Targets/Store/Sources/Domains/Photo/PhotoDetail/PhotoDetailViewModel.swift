@@ -2,104 +2,111 @@ import Foundation
 import Combine
 
 import Common
-import Networking
 import Model
+import Networking
 
-final class PhotoListViewModel: BaseViewModel {
+final class PhotoDetailViewModel: BaseViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
+        let onCollectionViewLoad = PassthroughSubject<Void, Never>()
         let willDisplayCell = PassthroughSubject<Int, Never>()
-        let didTapPhoto = PassthroughSubject<Int, Never>()
-        let didTapUpload = PassthroughSubject<Void, Never>()
-        let onSuccessUploadPhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
-        
-        /// 사진 상세화면에서 업데이트된 State이벤트 받음
-        let updateState = PassthroughSubject<State, Never>()
+        let didTapLeft = PassthroughSubject<Void, Never>()
+        let didTapRight = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
-        let photos = PassthroughSubject<[StoreDetailPhoto], Never>()
-        let route = PassthroughSubject<Route, Never>()
+        let photos: CurrentValueSubject<[StoreDetailPhoto], Never>
+        let scrollToIndex = PassthroughSubject<(index: Int, animated: Bool), Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
-        let onSuccessUploadPhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
+        
+        /// 상세화면에서 업데이트된 페이징 정보를 리스트 화면으로 전달
+        let updatePhotoListState = PassthroughSubject<PhotoListViewModel.State, Never>()
     }
     
     struct State {
-        var photos: [StoreDetailPhoto] = []
+        var photos: [StoreDetailPhoto]
         var nextCursor: String?
-        var hasMore = true
-    }
-    
-    enum Route {
-        case presentPhotoDetail(PhotoDetailViewModel)
-        case presentUploadPhoto(UploadPhotoViewModel)
+        var hasMore: Bool
+        var currentIndex: Int
     }
     
     struct Config {
         let storeId: Int
+        var photos: [StoreDetailPhoto]
+        var nextCursor: String?
+        var hasMore: Bool
+        var currentIndex: Int
     }
     
     let input = Input()
-    let output = Output()
+    let output: Output
+    let config: Config
     private let storeService: StoreServiceProtocol
-    private let config: Config
-    private var state = State()
+    private var state: State
     
     init(config: Config, storeService: StoreServiceProtocol = StoreService()) {
+        self.output = Output(photos: .init(config.photos))
         self.config = config
         self.storeService = storeService
+        self.state = State(
+            photos: config.photos,
+            nextCursor: config.nextCursor,
+            hasMore: config.hasMore,
+            currentIndex: config.currentIndex
+        )
     }
     
     override func bind() {
         input.viewDidLoad
             .withUnretained(self)
-            .sink { (owner: PhotoListViewModel, _) in
-                owner.fetchStorePhotos()
+            .sink { (owner: PhotoDetailViewModel, _) in
+                if owner.state.photos.isEmpty {
+                    owner.fetchStorePhotos()
+                }
+            }
+            .store(in: &cancellables)
+        
+        input.onCollectionViewLoad
+            .withUnretained(self)
+            .sink { (owner: PhotoDetailViewModel, _) in
+                owner.output.scrollToIndex.send((index: owner.state.currentIndex, animated: false))
             }
             .store(in: &cancellables)
         
         input.willDisplayCell
             .withUnretained(self)
-            .filter { (owner: PhotoListViewModel, index: Int) in
+            .filter { (owner: PhotoDetailViewModel, index: Int) in
                 return owner.canLoadMore(index: index)
             }
-            .sink { (owner: PhotoListViewModel, _) in
+            .sink { (owner: PhotoDetailViewModel, _) in
                 owner.fetchMoreStorePhotos(cursor: owner.state.nextCursor)
             }
             .store(in: &cancellables)
         
-        input.didTapPhoto
+        input.willDisplayCell
+            .dropFirst()
             .withUnretained(self)
-            .sink { (owner: PhotoListViewModel, index: Int) in
-                owner.presentPhotoDetail(index: index)
+            .sink { (owner: PhotoDetailViewModel, index: Int) in
+                owner.state.currentIndex = index
             }
             .store(in: &cancellables)
         
-        input.didTapUpload
+        input.didTapLeft
             .withUnretained(self)
-            .sink { (owner: PhotoListViewModel, _) in
-                owner.presentUploadPhoto()
+            .sink { (owner: PhotoDetailViewModel, _) in
+                guard owner.state.currentIndex - 1 >= 0 else { return }
+                owner.state.currentIndex -= 1
+                owner.output.scrollToIndex.send((index: owner.state.currentIndex, animated: true))
             }
             .store(in: &cancellables)
         
-        input.onSuccessUploadPhotos
+        input.didTapRight
             .withUnretained(self)
-            .sink { (owner: PhotoListViewModel, photos: [StoreDetailPhoto]) in
-                owner.state.photos.append(contentsOf: photos)
-                owner.output.photos.send(owner.state.photos)
-            }
-            .store(in: &cancellables)
-        
-        input.onSuccessUploadPhotos
-            .subscribe(output.onSuccessUploadPhotos)
-            .store(in: &cancellables)
-        
-        input.updateState
-            .withUnretained(self)
-            .sink { (owner: PhotoListViewModel, state: State) in
-                owner.state = state
-                owner.output.photos.send(owner.state.photos)
+            .sink { (owner: PhotoDetailViewModel, _) in
+                guard owner.state.currentIndex + 1 < owner.state.photos.count else { return }
+                owner.state.currentIndex += 1
+                owner.output.scrollToIndex.send((index: owner.state.currentIndex, animated: true))
             }
             .store(in: &cancellables)
     }
@@ -140,6 +147,7 @@ final class PhotoListViewModel: BaseViewModel {
                 state.nextCursor = response.cursor.nextCursor
                 state.photos.append(contentsOf: response.contents.map { StoreDetailPhoto(response: $0.image) })
                 output.photos.send(state.photos)
+                updatePhotoListState()
                 
             case .failure(let error):
                 output.showErrorAlert.send(error)
@@ -151,31 +159,13 @@ final class PhotoListViewModel: BaseViewModel {
         return index >= state.photos.count - 1 && state.hasMore
     }
     
-    private func presentUploadPhoto() {
-        let config = UploadPhotoViewModel.Config(storeId: config.storeId)
-        let viewModel = UploadPhotoViewModel(config: config)
-        
-        viewModel.output.onSuccessUploadPhotos
-            .subscribe(input.onSuccessUploadPhotos)
-            .store(in: &viewModel.cancellables)
-        
-        output.route.send(.presentUploadPhoto(viewModel))
-    }
-    
-    private func presentPhotoDetail(index: Int) {
-        let config = PhotoDetailViewModel.Config(
-            storeId: config.storeId,
+    private func updatePhotoListState() {
+        let updatedState = PhotoListViewModel.State(
             photos: state.photos,
             nextCursor: state.nextCursor,
-            hasMore: state.hasMore,
-            currentIndex: index
+            hasMore: state.hasMore
         )
-        let viewModel = PhotoDetailViewModel(config: config)
         
-        viewModel.output.updatePhotoListState
-            .subscribe(input.updateState)
-            .store(in: &viewModel.cancellables)
-        
-        output.route.send(.presentPhotoDetail(viewModel))
+        output.updatePhotoListState.send(updatedState)
     }
 }
