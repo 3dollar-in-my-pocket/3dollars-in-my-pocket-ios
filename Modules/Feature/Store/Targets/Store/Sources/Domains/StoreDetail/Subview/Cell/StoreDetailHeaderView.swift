@@ -26,7 +26,7 @@ final class StoreDetailHeaderView: BaseCollectionViewReusableView {
         return label
     }()
     
-    private let rightButton: UIButton = {
+    let rightButton: UIButton = {
         let button = UIButton()
         button.titleLabel?.font = Fonts.bold.font(size: 12)
         button.setTitleColor(Colors.mainPink.color, for: .normal)

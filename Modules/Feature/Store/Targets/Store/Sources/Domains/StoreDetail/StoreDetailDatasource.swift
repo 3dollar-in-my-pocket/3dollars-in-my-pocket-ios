@@ -1,9 +1,13 @@
 import UIKit
 
+import Common
+
 final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetailSection, StoreDetailSectionItem> {
     typealias Snapshot = NSDiffableDataSourceSnapshot<StoreDetailSection, StoreDetailSectionItem>
+    private let viewModel: StoreDetailViewModel
     
-    init(collectionView: UICollectionView) {
+    init(collectionView: UICollectionView, viewModel: StoreDetailViewModel) {
+        self.viewModel = viewModel
         collectionView.register([
             StoreDetailOverviewCell.self,
             StoreDetailVisitCell.self,
@@ -20,6 +24,10 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: "\(StoreDetailHeaderView.self)"
         )
+        collectionView.register(
+            StoreDetailPhotoFooterView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+            withReuseIdentifier: "\(StoreDetailPhotoFooterView.self)")
         
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
@@ -94,7 +102,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 
                 return headerView
                 
-            case .info, .photo, .review:
+            case .info, .review:
                 let headerView = collectionView.dequeueReusableSupplementaryView(
                     ofKind: UICollectionView.elementKindSectionHeader,
                     withReuseIdentifier: "\(StoreDetailHeaderView.self)",
@@ -103,10 +111,38 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 
                 headerView?.bind(section.header)
                 
-                
                 return headerView
+                
+            case .photo(let totalCount):
+                if kind == UICollectionView.elementKindSectionHeader {
+                    let headerView = collectionView.dequeueReusableSupplementaryView(
+                        ofKind: UICollectionView.elementKindSectionHeader,
+                        withReuseIdentifier: "\(StoreDetailHeaderView.self)",
+                        for: indexPath
+                    ) as? StoreDetailHeaderView
+                    
+                    guard let headerView else { return BaseCollectionViewReusableView() }
+                    headerView.bind(section.header)
+                    headerView.rightButton
+                        .controlPublisher(for: .touchUpInside)
+                        .mapVoid
+                        .subscribe(viewModel.input.didTapUploadPhoto)
+                        .store(in: &headerView.cancellables)
+                    
+                    return headerView
+                } else {
+                    let footerView = collectionView.dequeueReusableSupplementaryView(
+                        ofKind: UICollectionView.elementKindSectionFooter,
+                        withReuseIdentifier: "\(StoreDetailPhotoFooterView.self)",
+                        for: indexPath
+                    ) as? StoreDetailPhotoFooterView
+                    
+                    footerView?.bind(totalCount)
+                    return footerView
+                }
             }
         }
+        collectionView.delegate = self
     }
     
     func reload(_ sections: [StoreDetailSection]) {
@@ -117,5 +153,14 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             snapshot.appendItems(section.items, toSection: section)
         }
         apply(snapshot, animatingDifferences: false)
+    }
+}
+
+extension StoreDetailDatasource: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let section = sectionIdentifier(section: indexPath.section),
+              case .photo(_) = section.type else { return }
+        
+        viewModel.input.didTapPhoto.send(indexPath.item)
     }
 }

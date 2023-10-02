@@ -35,6 +35,13 @@ public enum StoreStrings {
     }
   }
 
+  public enum PhotoList {
+    /// 사진
+    public static let title = StoreStrings.tr("Localization", "photo_list.title")
+    /// 사진 제보하기
+    public static let uploadButton = StoreStrings.tr("Localization", "photo_list.upload_button")
+  }
+
   public enum ReportModal {
     /// 신고하기
     public static let button = StoreStrings.tr("Localization", "report_modal.button")
@@ -127,6 +134,8 @@ public enum StoreStrings {
       }
     }
     public enum Photo {
+      /// 사진을 제보해주세요!
+      public static let empty = StoreStrings.tr("Localization", "store_detail.photo.empty")
       /// 더보기
       public static let more = StoreStrings.tr("Localization", "store_detail.photo.more")
       public enum Header {
@@ -184,6 +193,19 @@ public enum StoreStrings {
         public static let titleEmpty = StoreStrings.tr("Localization", "store_detail.visit.header.title_empty")
         /// 이번 달 방문 인증 내역
         public static let titleNormal = StoreStrings.tr("Localization", "store_detail.visit.header.title_normal")
+      }
+    }
+  }
+
+  public enum UploadPhoto {
+    public enum AuthErrorAlert {
+      /// 사진 제보를 위해 앨범 권한이 필요합니다.
+      public static let message = StoreStrings.tr("Localization", "upload_photo.auth_error_alert.message")
+    }
+    public enum Button {
+      /// 총 %d장 / %d장 의 사진 등록
+      public static func titleFormat(_ p1: Int, _ p2: Int) -> String {
+        return StoreStrings.tr("Localization", "upload_photo.button.title_format", p1, p2)
       }
     }
   }

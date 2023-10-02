@@ -6,7 +6,7 @@ public struct StoreDetailData {
     public let info: StoreDetailInfo
     public let menus: [StoreDetailMenu]
     public var totalPhotoCount: Int
-    public let photos: [StoreDetailPhoto]
+    public var photos: [StoreDetailPhoto]
     public let rating: Double
     public var totalReviewCount: Int
     public var reviews: [StoreDetailReview]

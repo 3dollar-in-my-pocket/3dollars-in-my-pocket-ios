@@ -8,6 +8,7 @@ public protocol AppModuleInterface {
     var kakaoSigninManager: SigninManagerProtocol { get }
     var appleSigninManager: SigninManagerProtocol { get }
     var deeplinkManager: DeeplinkManagerProtocol { get }
+    var photoManager: PhotoManagerProtocol { get }
     
     func getFCMToken(completion: @escaping ((String) -> ()))
     func goToMain()

@@ -81,7 +81,7 @@ final class StoreDetailPhotoCell: BaseCollectionViewCell {
     func bind(photo: StoreDetailPhoto, isLast: Bool) {
         photoView.setImage(urlString: photo.url)
         
-        if isLast {
+        if isLast && (photo.totalCount - 4) > 0 {
             dimmedView.isHidden = false
             countValueLabel.isHidden = false
             countLabel.isHidden = false

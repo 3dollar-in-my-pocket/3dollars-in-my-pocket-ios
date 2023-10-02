@@ -25,7 +25,13 @@ final class StoreDetailViewModel: BaseViewModel {
         let didTapAddress = PassthroughSubject<Void, Never>()
         let didTapMapDetail = PassthroughSubject<Void, Never>()
         
+        // 가게 정보 메뉴 섹션
         let didTapShowMoreMenu = PassthroughSubject<Void, Never>()
+        
+        // 사진 섹션
+        let didTapUploadPhoto = PassthroughSubject<Void, Never>()
+        let didTapPhoto = PassthroughSubject<Int, Never>()
+        let onSuccessUploadPhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
     }
     
     struct Output {
@@ -53,6 +59,9 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentNavigation
         case presentWriteReview(ReviewBottomSheetViewModel)
         case presentMapDetail(MapDetailViewModel)
+        case presentUploadPhoto(UploadPhotoViewModel)
+        case pushPhotoList(PhotoListViewModel)
+        case presentPhotoDetail(PhotoDetailViewModel)
     }
     
     let input = Input()
@@ -75,6 +84,7 @@ final class StoreDetailViewModel: BaseViewModel {
     
     override func bind() {
         bindOverviewSection()
+        bindPhotoSection()
         
         input.viewDidLoad
             .withUnretained(self)
@@ -151,6 +161,41 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
                 owner.presentMapDetail()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func bindPhotoSection() {
+        input.didTapUploadPhoto
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.presentUploadPhoto()
+            }
+            .store(in: &cancellables)
+        
+        input.onSuccessUploadPhotos
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, photos: [StoreDetailPhoto]) in
+                owner.state.storeDetailData?.photos += photos
+                
+                if let photos = owner.state.storeDetailData?.photos {
+                    for index in photos.indices {
+                        owner.state.storeDetailData?.photos[index].totalCount = photos.count
+                    }
+                }
+                owner.refreshSections()
+            }
+            .store(in: &cancellables)
+        
+        input.didTapPhoto
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, index: Int) in
+                let photoCount = owner.state.storeDetailData?.photos.count ?? 0
+                if index == 3 && photoCount > 4 {
+                    owner.pushPhotoList()
+                } else {
+                    owner.presentPhotoDetail(index: index)
+                }
             }
             .store(in: &cancellables)
     }
@@ -361,5 +406,35 @@ final class StoreDetailViewModel: BaseViewModel {
         let viewModel = MapDetailViewModel(config: config)
         
         output.route.send(.presentMapDetail(viewModel))
+    }
+    
+    private func presentUploadPhoto() {
+        let config = UploadPhotoViewModel.Config(storeId: state.storeId)
+        let viewModel = UploadPhotoViewModel(config: config)
+        
+        viewModel.output.onSuccessUploadPhotos
+            .subscribe(input.onSuccessUploadPhotos)
+            .store(in: &cancellables)
+        
+        output.route.send(.presentUploadPhoto(viewModel))
+    }
+    
+    private func pushPhotoList() {
+        let config = PhotoListViewModel.Config(storeId: state.storeId)
+        let viewModel = PhotoListViewModel(config: config)
+        
+        viewModel.output.onSuccessUploadPhotos
+            .subscribe(input.onSuccessUploadPhotos)
+            .store(in: &cancellables)
+        
+        output.route.send(.pushPhotoList(viewModel))
+    }
+    
+    private func presentPhotoDetail(index: Int) {
+        guard let photos = state.storeDetailData?.photos else { return }
+        let config = PhotoDetailViewModel.Config(storeId: state.storeId, photos: photos, hasMore: true, currentIndex: index)
+        let viewModel = PhotoDetailViewModel(config: config)
+        
+        output.route.send(.presentPhotoDetail(viewModel))
     }
 }

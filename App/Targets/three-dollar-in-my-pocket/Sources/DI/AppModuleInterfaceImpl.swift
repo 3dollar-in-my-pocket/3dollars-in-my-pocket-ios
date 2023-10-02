@@ -32,6 +32,10 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         return DeeplinkManager.shared
     }
     
+    var photoManager: AppInterface.PhotoManagerProtocol {
+        return CombinePhotoManager.shared
+    }
+    
     func getFCMToken(completion: @escaping ((String) -> ())) {
         Messaging.messaging().token { token, error in
             guard let token = token else {

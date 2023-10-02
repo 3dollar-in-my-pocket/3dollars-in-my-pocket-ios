@@ -45,22 +45,34 @@ final class RequestProvider {
         urlRequest.httpMethod = requestType.method.rawValue
         urlRequest.allHTTPHeaderFields = generateHeader(type: requestType.header)
         
-        if requestType.method == .post || requestType.method == .put {
-            urlRequest.httpBody = requestType.body
+        switch requestType.header {
+        case .multipart:
+            urlRequest.httpBody = (requestType as? MultipartRequestType)?.data
+            
+        default:
+            if requestType.method == .post || requestType.method == .put {
+                urlRequest.httpBody = requestType.body
+            }
         }
+        
         return urlRequest
     }
     
     private func generateHeader(type: HTTPHeaderType) -> [String: String] {
         var header = [
             "Accept": "application/json",
-            "Content-Type": "application/json",
             "User-Agent": config.userAgent
         ]
         
         switch type {
         case .json:
-            break
+            header["Content-Type"] = "application/json"
+            
+        case .multipart(let boundary):
+            header["Content-Type"] = "multipart/form-data; boundary=\(boundary)"
+            if let authToken = config.authToken {
+                header["Authorization"] = authToken
+            }
             
         case .auth:
             if let authToken = config.authToken {
