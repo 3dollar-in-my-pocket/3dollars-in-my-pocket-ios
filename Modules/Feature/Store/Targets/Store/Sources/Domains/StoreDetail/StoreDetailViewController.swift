@@ -240,7 +240,7 @@ public final class StoreDetailViewController: BaseViewController {
                     .init(
                         layoutSize: .init(
                             widthDimension: .fractionalWidth(1),
-                            heightDimension: .absolute(totalCount > 0 ? 0 : StoreDetailPhotoFooterView.Layout.height)
+                            heightDimension: .absolute(totalCount > 0 ? 0.1 : StoreDetailPhotoFooterView.Layout.height)
                         ),
                         elementKind: UICollectionView.elementKindSectionFooter,
                         alignment: .bottom,

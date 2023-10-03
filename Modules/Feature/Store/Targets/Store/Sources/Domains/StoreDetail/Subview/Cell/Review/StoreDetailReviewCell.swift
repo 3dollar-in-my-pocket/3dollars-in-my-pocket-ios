@@ -26,7 +26,7 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         return label
     }()
     
-    private let rightButton: UIButton = {
+    let rightButton: UIButton = {
         let button = UIButton()
         button.setTitle(Strings.StoreDetail.Review.report, for: .normal)
         button.setTitleColor(Colors.gray60.color, for: .normal)
@@ -134,9 +134,21 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
     
     func bind(_ review: StoreDetailReview) {
         nameLabel.text = review.user.name
-        dateLabel.text = review.createdAt
+        dateLabel.text = DateUtils.toString(dateString: review.createdAt, format: "yyyy.MM.dd")
         medalBadge.bind(review.user.medal)
         starBadge.bind(review.rating)
         contentLabel.text = review.contents
+        
+        if UserDefaultsUtil().userId == review.user.userId {
+            containerView.backgroundColor = Colors.pink100.color
+            medalBadge.containerView.backgroundColor = Colors.systemWhite.color
+            starBadge.containerView.backgroundColor = Colors.systemWhite.color
+            rightButton.setTitle(Strings.StoreDetail.Review.edit, for: .normal)
+        } else {
+            containerView.backgroundColor = Colors.gray0.color
+            medalBadge.containerView.backgroundColor = Colors.pink100.color
+            starBadge.containerView.backgroundColor = Colors.pink100.color
+            rightButton.setTitle(Strings.StoreDetail.Review.report, for: .normal)
+        }
     }
 }

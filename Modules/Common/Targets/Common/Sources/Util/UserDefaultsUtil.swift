@@ -44,4 +44,13 @@ public final class UserDefaultsUtil {
             return CommunityNeighborhoods(district: district, description: descrition, isSelected: true)
         }
     }
+    
+    public var userId: Int {
+        set {
+            instance.set(newValue, forKey: "KEY_USER_ID")
+        }
+        get {
+            return instance.integer(forKey: "KEY_USER_ID")
+        }
+    }
 }

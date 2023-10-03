@@ -83,11 +83,14 @@ extension StoreDetailSection {
             value: "\(totalCount)개",
             buttonTitle: Strings.StoreDetail.Review.Header.button
         )
-        let sectionItems: [StoreDetailSectionItem]
-        if reviews.count > 3 {
-            sectionItems = reviews[..<3].map { .review($0) } + [.reviewMore(totalCount)]
+        var sectionItems: [StoreDetailSectionItem] = [.rating(rating)]
+        
+        if reviews.isEmpty {
+            sectionItems.append(.reviewEmpty)
+        } else if reviews.count > 3 {
+            sectionItems.append(contentsOf: reviews[..<3].map { .review($0) } + [.reviewMore(totalCount)])
         } else {
-            sectionItems = reviews.map { .review($0) }
+            sectionItems.append(contentsOf: reviews.map { .review($0) })
         }
         
         return .init(

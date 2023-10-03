@@ -3,9 +3,9 @@ import Foundation
 public struct StoreDetailReview: Hashable {
     public let user: User
     public let reviewId: Int
-    public let contents: String
+    public var contents: String
     public let createdAt: String
-    public let rating: Int
+    public var rating: Int
     public let reportedByMe: Bool
     
     public init(response: ReviewWithUserApiResponse) {

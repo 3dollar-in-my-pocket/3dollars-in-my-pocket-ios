@@ -18,6 +18,7 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
         let contents: CurrentValueSubject<String?, Never>
         let isEnableWriteButton: CurrentValueSubject<Bool, Never>
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
+        let onSuccessEditReview = PassthroughSubject<ReviewApiResponse, Never>()
         let errorAlert = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
@@ -33,8 +34,7 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     
     struct Config {
         let storeId: Int
-        let rating: Int? = nil
-        let contents: String? = nil
+        let review: StoreDetailReview?
     }
     
     let input = Input()
@@ -47,13 +47,13 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
         self.config = config
         self.storeService = storeService
         
-        let isEnableWriteButton = (config.contents != nil) && (config.rating != nil)
+        let isEnableWriteButton = (config.review?.contents != nil) && (config.review?.rating != nil)
         self.output = Output(
-            rating: .init(config.rating),
-            contents: .init(config.contents),
+            rating: .init(config.review?.rating),
+            contents: .init(config.review?.contents),
             isEnableWriteButton: .init(isEnableWriteButton)
         )
-        self.state = State(rating: config.rating, contents: config.contents)
+        self.state = State(rating: config.review?.rating, contents: config.review?.contents)
     }
     
     override func bind() {
@@ -76,7 +76,11 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
         input.didTapWrite
             .withUnretained(self)
             .sink { (owner: ReviewBottomSheetViewModel, _) in
-                owner.writeReview()
+                if let _ = owner.config.review?.reviewId {
+                    owner.editReview()
+                } else {
+                    owner.writeReview()
+                }
             }
             .store(in: &cancellables)
     }
@@ -105,6 +109,26 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
             case .success(let response):
                 let storeDetailReview = StoreDetailReview(response: response)
                 output.onSuccessWriteReview.send(storeDetailReview)
+                output.route.send(.dismiss)
+                
+            case .failure(let error):
+                output.errorAlert.send(error)
+            }
+        }
+    }
+    
+    private func editReview() {
+        guard let reviewId = config.review?.reviewId,
+              let rating = state.rating,
+              let contents = state.contents else { return }
+        
+        Task {
+            let input = EditReviewRequestInput(contents: contents, rating: rating)
+            let result = await storeService.editReview(reviewId: reviewId, input: input)
+            
+            switch result {
+            case .success(let response):
+                output.onSuccessEditReview.send(response)
                 output.route.send(.dismiss)
                 
             case .failure(let error):

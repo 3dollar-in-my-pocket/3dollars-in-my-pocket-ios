@@ -152,6 +152,8 @@ public enum StoreStrings {
     public enum Review {
       /// 수정
       public static let edit = StoreStrings.tr("Localization", "store_detail.review.edit")
+      /// 리뷰를 작성해주세요.
+      public static let empty = StoreStrings.tr("Localization", "store_detail.review.empty")
       /// 리뷰 %d개 더보기
       public static func moreFormat(_ p1: Int) -> String {
         return StoreStrings.tr("Localization", "store_detail.review.more_format", p1)

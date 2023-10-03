@@ -1,5 +1,6 @@
 import UIKit
 
+import Common
 import Store
 import Networking
 
@@ -8,6 +9,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
         initializationNetworkModule()
+        initializationUserDefault()
         return true
     }
       
@@ -18,5 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func initializationNetworkModule() {
         MockNetworkConfiguration.registerNetworkConfiguration()
         MockAppInfomationImpl.registerAppInfomation()
+    }
+    
+    private func initializationUserDefault() {
+        UserDefaultsUtil().userId = 244
     }
 }

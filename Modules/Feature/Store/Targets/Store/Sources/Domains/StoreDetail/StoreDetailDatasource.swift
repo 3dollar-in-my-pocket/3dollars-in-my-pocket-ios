@@ -16,7 +16,8 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             StoreDetailPhotoCell.self,
             StoreDetailRatingCell.self,
             StoreDetailReviewCell.self,
-            StoreDetailReviewMoreCell.self
+            StoreDetailReviewMoreCell.self,
+            StoreDetailReviewEmptyCell.self
         ])
         
         collectionView.register(
@@ -69,11 +70,21 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             case .review(let review):
                 let cell: StoreDetailReviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(review)
+                cell.rightButton
+                    .controlPublisher(for: .touchUpInside)
+                    .map { _ in indexPath.item - 1 }
+                    .subscribe(viewModel.input.didTapReviewRightButton)
+                    .store(in: &cell.cancellables)
+                
                 return cell
                 
             case .reviewMore(let totalCount):
                 let cell: StoreDetailReviewMoreCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(totalCount)
+                return cell
+                
+            case .reviewEmpty:
+                let cell: StoreDetailReviewEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 return cell
             }
         }
@@ -102,7 +113,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 
                 return headerView
                 
-            case .info, .review:
+            case .info:
                 let headerView = collectionView.dequeueReusableSupplementaryView(
                     ofKind: UICollectionView.elementKindSectionHeader,
                     withReuseIdentifier: "\(StoreDetailHeaderView.self)",
@@ -140,6 +151,22 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                     footerView?.bind(totalCount)
                     return footerView
                 }
+                
+            case .review:
+                guard let headerView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: UICollectionView.elementKindSectionHeader,
+                    withReuseIdentifier: "\(StoreDetailHeaderView.self)",
+                    for: indexPath
+                ) as? StoreDetailHeaderView else { return BaseCollectionViewCell() }
+                
+                headerView.bind(section.header)
+                headerView.rightButton
+                    .controlPublisher(for: .touchUpInside)
+                    .mapVoid
+                    .subscribe(viewModel.input.didTapWriteReview)
+                    .store(in: &headerView.cancellables)
+                
+                return headerView
             }
         }
         collectionView.delegate = self
