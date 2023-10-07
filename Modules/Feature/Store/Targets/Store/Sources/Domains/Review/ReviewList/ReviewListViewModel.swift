@@ -151,7 +151,7 @@ final class ReviewListViewModel: BaseViewModel {
                 state.hasMore = response.cursor.hasMore
                 state.cursor = response.cursor.nextCursor
                 state.reviews.append(contentsOf: response.contents.map { StoreDetailReview(response: $0) })
-                output.sections.send([.init(type: .list, items: state.reviews.map { ReviewListSectionItem.review($0) })])
+                output.sections.send(getReviewListSection())
                 
             case .failure(let error):
                 output.showErrorAlert.send(error)
@@ -185,6 +185,20 @@ final class ReviewListViewModel: BaseViewModel {
         
         state.reviews[targetIndex].rating = review.rating
         state.reviews[targetIndex].contents = review.contents
-        output.sections.send([.init(type: .list, items: state.reviews.map { ReviewListSectionItem.review($0) })])
+        output.sections.send(getReviewListSection())
+    }
+    
+    private func getReviewListSection() -> [ReviewListSection] {
+        var sectionItems: [ReviewListSectionItem] = []
+        
+        for review in state.reviews {
+            if review.isFiltered {
+                sectionItems.append(.filtered(review))
+            } else {
+                sectionItems.append(.review(review))
+            }
+        }
+        
+        return [.init(type: .list, items: sectionItems)]
     }
 }

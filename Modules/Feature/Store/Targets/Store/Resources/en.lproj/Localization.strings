@@ -81,3 +81,4 @@
 "review_list.sort_type.latest" = "최신순";
 "review_list.sort_type.highest_rating" = "별점 높은순";
 "review_list.sort_type.lowest_rating" = "별점 낮은순";
+"review_list.filtered" = "규정 위반으로 블라인드 처리되었습니다.";

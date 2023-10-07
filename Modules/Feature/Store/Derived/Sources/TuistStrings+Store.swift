@@ -63,6 +63,8 @@ public enum StoreStrings {
   }
 
   public enum ReviewList {
+    /// 규정 위반으로 블라인드 처리되었습니다.
+    public static let filtered = StoreStrings.tr("Localization", "review_list.filtered")
     /// 리뷰
     public static let title = StoreStrings.tr("Localization", "review_list.title")
     /// 리뷰 작성하기

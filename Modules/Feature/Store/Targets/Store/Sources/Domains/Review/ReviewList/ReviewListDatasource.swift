@@ -10,7 +10,10 @@ final class ReviewListDatasource: UICollectionViewDiffableDataSource<ReviewListS
     init(collection: UICollectionView, viewModel: ReviewListViewModel) {
         self.viewModel = viewModel
         
-        collection.register([ReviewListCell.self])
+        collection.register([
+            ReviewListCell.self,
+            FilteredReviewCell.self
+        ])
         
         super.init(collectionView: collection) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
@@ -22,6 +25,11 @@ final class ReviewListDatasource: UICollectionViewDiffableDataSource<ReviewListS
                     .map { _ in indexPath.item }
                     .subscribe(viewModel.input.didTapRightButton)
                     .store(in: &cell.cancellables)
+                
+                return cell
+                
+            case .filtered:
+                let cell: FilteredReviewCell = collection.dequeueReuseableCell(indexPath: indexPath)
                 
                 return cell
             }
