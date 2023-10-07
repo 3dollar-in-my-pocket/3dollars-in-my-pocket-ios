@@ -17,7 +17,8 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             StoreDetailRatingCell.self,
             StoreDetailReviewCell.self,
             StoreDetailReviewMoreCell.self,
-            StoreDetailReviewEmptyCell.self
+            StoreDetailReviewEmptyCell.self,
+            StoreDetailFilteredReviewCell.self
         ])
         
         collectionView.register(
@@ -89,6 +90,10 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 
             case .reviewEmpty:
                 let cell: StoreDetailReviewEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                return cell
+                
+            case .filteredReview:
+                let cell: StoreDetailFilteredReviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 return cell
             }
         }

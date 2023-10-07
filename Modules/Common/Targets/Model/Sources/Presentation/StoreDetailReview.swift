@@ -7,7 +7,7 @@ public struct StoreDetailReview: Hashable {
     public let createdAt: String
     public var rating: Int
     public let reportedByMe: Bool
-    public let isFiltered: Bool
+    public var isFiltered: Bool
     
     public init(response: ReviewWithUserApiResponse) {
         self.user = User(response: response.reviewWriter)

@@ -53,6 +53,15 @@ public enum StoreStrings {
     public static let title = StoreStrings.tr("Localization", "report_modal.title")
   }
 
+  public enum ReportReviewBottomSheet {
+    /// 신고 사유 직접 입력
+    public static let placeholder = StoreStrings.tr("Localization", "report_review_bottom_sheet.placeholder")
+    /// 신고하기
+    public static let report = StoreStrings.tr("Localization", "report_review_bottom_sheet.report")
+    /// 신고 사유
+    public static let title = StoreStrings.tr("Localization", "report_review_bottom_sheet.title")
+  }
+
   public enum ReviewBottomSheet {
     /// 리뷰를 남겨주세요!(100자 이내)
     public static let placeholder = StoreStrings.tr("Localization", "review_bottom_sheet.placeholder")

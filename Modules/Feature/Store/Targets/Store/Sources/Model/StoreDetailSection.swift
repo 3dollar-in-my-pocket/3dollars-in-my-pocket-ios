@@ -88,9 +88,17 @@ extension StoreDetailSection {
         if reviews.isEmpty {
             sectionItems.append(.reviewEmpty)
         } else if reviews.count > 3 {
-            sectionItems.append(contentsOf: reviews[..<3].map { .review($0) } + [.reviewMore(totalCount)])
+            let reviewSectionItem: [StoreDetailSectionItem] = reviews[..<3].map {
+                return $0.isFiltered ? .filteredReview($0) : .review($0)
+            }
+            
+            sectionItems.append(contentsOf: reviewSectionItem + [.reviewMore(totalCount)])
         } else {
-            sectionItems.append(contentsOf: reviews.map { .review($0) })
+            let reviewSectionItem: [StoreDetailSectionItem] = reviews.map {
+                return $0.isFiltered ? .filteredReview($0) : .review($0)
+            }
+            
+            sectionItems.append(contentsOf: reviewSectionItem)
         }
         
         return .init(
