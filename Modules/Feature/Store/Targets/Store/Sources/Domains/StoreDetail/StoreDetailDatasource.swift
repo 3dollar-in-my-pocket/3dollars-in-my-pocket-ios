@@ -81,6 +81,10 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             case .reviewMore(let totalCount):
                 let cell: StoreDetailReviewMoreCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(totalCount)
+                cell.moreButton.controlPublisher(for: .touchUpInside)
+                    .mapVoid
+                    .subscribe(viewModel.input.didTapReviewMore)
+                    .store(in: &cell.cancellables)
                 return cell
                 
             case .reviewEmpty:

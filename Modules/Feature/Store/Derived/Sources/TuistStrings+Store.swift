@@ -62,6 +62,21 @@ public enum StoreStrings {
     public static let writeButton = StoreStrings.tr("Localization", "review_bottom_sheet.write_button")
   }
 
+  public enum ReviewList {
+    /// 리뷰
+    public static let title = StoreStrings.tr("Localization", "review_list.title")
+    /// 리뷰 작성하기
+    public static let writeReview = StoreStrings.tr("Localization", "review_list.write_review")
+    public enum SortType {
+      /// 별점 높은순
+      public static let highestRating = StoreStrings.tr("Localization", "review_list.sort_type.highest_rating")
+      /// 최신순
+      public static let latest = StoreStrings.tr("Localization", "review_list.sort_type.latest")
+      /// 별점 낮은순
+      public static let lowestRating = StoreStrings.tr("Localization", "review_list.sort_type.lowest_rating")
+    }
+  }
+
   public enum StoreDetail {
     public enum BottomSticky {
       /// 즐겨찾기

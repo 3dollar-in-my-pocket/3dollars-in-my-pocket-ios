@@ -6,7 +6,7 @@ import SnapKit
 
 final class BottomStickyView: BaseView {
     enum Layout {
-        static let height: CGFloat = (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0) + 71
+        static let height: CGFloat = UIUtils.bottomSafeAreaInset + 71
     }
     
     private let divider = UIView().then {

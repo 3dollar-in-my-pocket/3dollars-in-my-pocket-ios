@@ -36,6 +36,7 @@ final class StoreDetailViewModel: BaseViewModel {
         // 리뷰 섹션
         let didTapReviewRightButton = PassthroughSubject<Int, Never>()
         let onSuccessEditReview = PassthroughSubject<ReviewApiResponse, Never>()
+        let didTapReviewMore = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -66,6 +67,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentUploadPhoto(UploadPhotoViewModel)
         case pushPhotoList(PhotoListViewModel)
         case presentPhotoDetail(PhotoDetailViewModel)
+        case pushReviewList(ReviewListViewModel)
     }
     
     let input = Input()
@@ -229,6 +231,13 @@ final class StoreDetailViewModel: BaseViewModel {
                 owner.state.storeDetailData?.reviews[targetIndex].rating = response.rating
                 owner.state.storeDetailData?.reviews[targetIndex].contents = response.contents
                 owner.refreshSections()
+            }
+            .store(in: &cancellables)
+        
+        input.didTapReviewMore
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.pushReviewList()
             }
             .store(in: &cancellables)
     }
@@ -447,7 +456,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         viewModel.output.onSuccessUploadPhotos
             .subscribe(input.onSuccessUploadPhotos)
-            .store(in: &cancellables)
+            .store(in: &viewModel.cancellables)
         
         output.route.send(.presentUploadPhoto(viewModel))
     }
@@ -458,7 +467,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         viewModel.output.onSuccessUploadPhotos
             .subscribe(input.onSuccessUploadPhotos)
-            .store(in: &cancellables)
+            .store(in: &viewModel.cancellables)
         
         output.route.send(.pushPhotoList(viewModel))
     }
@@ -479,5 +488,20 @@ final class StoreDetailViewModel: BaseViewModel {
             .subscribe(input.onSuccessEditReview)
             .store(in: &viewModel.cancellables)
         output.route.send(.presentWriteReview(viewModel))
+    }
+    
+    private func pushReviewList() {
+        let config = ReviewListViewModel.Config(storeId: state.storeId)
+        let viewModel = ReviewListViewModel(config: config)
+        
+        viewModel.output.onSuccessEditReview
+            .subscribe(input.onSuccessEditReview)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onSuccessWriteReview
+            .subscribe(input.onSuccessWriteReview)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.pushReviewList(viewModel))
     }
 }

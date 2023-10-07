@@ -74,3 +74,10 @@
 // 사진 리스트 화면
 "photo_list.title" = "사진";
 "photo_list.upload_button" = "사진 제보하기";
+
+// 리뷰 리스트 화면
+"review_list.title" = "리뷰";
+"review_list.write_review" = "리뷰 작성하기";
+"review_list.sort_type.latest" = "최신순";
+"review_list.sort_type.highest_rating" = "별점 높은순";
+"review_list.sort_type.lowest_rating" = "별점 낮은순";
