@@ -1,0 +1,204 @@
+import Foundation
+import Combine
+
+import Common
+import Model
+import Networking
+
+final class ReviewListViewModel: BaseViewModel {
+    enum Constant {
+        static let pageSize = 20
+    }
+    
+    struct Input {
+        let viewDidLoad = PassthroughSubject<Void, Never>()
+        let willDisplayCell = PassthroughSubject<Int, Never>()
+        let didTapSortType = PassthroughSubject<SubtabStackView.SortType, Never>()
+        let didTapRightButton = PassthroughSubject<Int, Never>()
+        let didTapWrite = PassthroughSubject<Void, Never>()
+        let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
+        let onSuccessEditReview = PassthroughSubject<ReviewApiResponse, Never>()
+    }
+    
+    struct Output {
+        let sortType = CurrentValueSubject<SubtabStackView.SortType, Never>(.latest)
+        let sections = PassthroughSubject<[ReviewListSection], Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
+        let route = PassthroughSubject<Route, Never>()
+        
+        // StoreDetailViewModel 전달용 이벤트
+        let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
+        let onSuccessEditReview = PassthroughSubject<ReviewApiResponse, Never>()
+    }
+    
+    struct State {
+        var reviews: [StoreDetailReview] = []
+        var cursor: String?
+        var sortType: SubtabStackView.SortType = .latest
+        var hasMore: Bool = true
+    }
+    
+    enum Route {
+        case presentWriteReview(ReviewBottomSheetViewModel)
+    }
+    
+    struct Config {
+        let storeId: Int
+    }
+    
+    let input = Input()
+    let output = Output()
+    private let config: Config
+    private var state = State()
+    private let reviewService: ReviewServiceProtocol
+    private let userDefaults: UserDefaultsUtil
+    
+    init(
+        config: Config,
+        reviewService: ReviewServiceProtocol = ReviewService(),
+        userDefaults: UserDefaultsUtil = .shared
+    ) {
+        self.config = config
+        self.reviewService = reviewService
+        self.userDefaults = userDefaults
+    }
+    
+    override func bind() {
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { (owner: ReviewListViewModel, _) in
+                owner.fetchReviewList()
+            }
+            .store(in: &cancellables)
+        
+        input.willDisplayCell
+            .withUnretained(self)
+            .sink { (owner: ReviewListViewModel, index: Int) in
+                guard owner.canLoadMore(index: index) else { return }
+                owner.fetchReviewList()
+            }
+            .store(in: &cancellables)
+        
+        input.didTapSortType
+            .withUnretained(self)
+            .sink { (owner: ReviewListViewModel, sortType: SubtabStackView.SortType) in
+                guard owner.state.sortType != sortType else { return }
+                owner.state.sortType = sortType
+                owner.state.cursor = nil
+                owner.state.reviews.removeAll()
+                owner.fetchReviewList()
+            }
+            .store(in: &cancellables)
+        
+        input.didTapRightButton
+            .withUnretained(self)
+            .sink { (owner: ReviewListViewModel, index: Int) in
+                guard let review = owner.state.reviews[safe: index] else { return }
+                
+                if review.user.userId == owner.userDefaults.userId {
+                    owner.presentWriteReviewBottomSheet(review: review)
+                } else {
+                    // 신고
+                }
+            }
+            .store(in: &cancellables)
+        
+        input.didTapWrite
+            .withUnretained(self)
+            .sink { (owner: ReviewListViewModel, _) in
+                owner.presentWriteReviewBottomSheet(review: nil)
+            }
+            .store(in: &cancellables)
+        
+        input.onSuccessWriteReview
+            .withUnretained(self)
+            .sink { (owner: ReviewListViewModel, _) in
+                owner.state.sortType = .latest
+                owner.output.sortType.send(owner.state.sortType)
+                owner.state.cursor = nil
+                owner.state.reviews.removeAll()
+                owner.fetchReviewList()
+            }
+            .store(in: &cancellables)
+        
+        input.onSuccessWriteReview
+            .subscribe(output.onSuccessWriteReview)
+            .store(in: &cancellables)
+        
+        input.onSuccessEditReview
+            .withUnretained(self)
+            .sink { (owner: ReviewListViewModel, response: ReviewApiResponse) in
+                owner.updateReview(response)
+            }
+            .store(in: &cancellables)
+        
+        input.onSuccessEditReview
+            .subscribe(output.onSuccessEditReview)
+            .store(in: &cancellables)
+    }
+    
+    private func fetchReviewList() {
+        Task {
+            let input = FetchStoreReviewRequestInput(
+                size: Constant.pageSize,
+                cursor: state.cursor,
+                sort: state.sortType.rawValue
+            )
+            let result = await reviewService.fetchStoreReview(storeId: config.storeId, input: input)
+            
+            switch result {
+            case .success(let response):
+                state.hasMore = response.cursor.hasMore
+                state.cursor = response.cursor.nextCursor
+                state.reviews.append(contentsOf: response.contents.map { StoreDetailReview(response: $0) })
+                output.sections.send(getReviewListSection())
+                
+            case .failure(let error):
+                output.showErrorAlert.send(error)
+            }
+        }
+    }
+    
+    private func canLoadMore(index: Int) -> Bool {
+        return state.hasMore && state.cursor != nil && (index == state.reviews.count - 1)
+    }
+    
+    private func presentWriteReviewBottomSheet(review: StoreDetailReview?) {
+        let config = ReviewBottomSheetViewModel.Config(storeId: config.storeId, review: review)
+        let viewModel = ReviewBottomSheetViewModel(config: config)
+        
+        viewModel.output.onSuccessWriteReview
+            .subscribe(input.onSuccessWriteReview)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onSuccessEditReview
+            .subscribe(input.onSuccessEditReview)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.presentWriteReview(viewModel))
+    }
+    
+    private func updateReview(_ review: ReviewApiResponse) {
+        guard let targetIndex = state.reviews.firstIndex(where: {
+            $0.reviewId == review.reviewId
+        }) else { return }
+        
+        state.reviews[targetIndex].rating = review.rating
+        state.reviews[targetIndex].contents = review.contents
+        output.sections.send(getReviewListSection())
+    }
+    
+    private func getReviewListSection() -> [ReviewListSection] {
+        var sectionItems: [ReviewListSectionItem] = []
+        
+        for review in state.reviews {
+            if review.isFiltered {
+                sectionItems.append(.filtered(review))
+            } else {
+                sectionItems.append(.review(review))
+            }
+        }
+        
+        return [.init(type: .list, items: sectionItems)]
+    }
+}

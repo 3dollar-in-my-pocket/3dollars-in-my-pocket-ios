@@ -75,11 +75,15 @@ final class RequestProvider {
             }
             
         case .auth:
+            header["Content-Type"] = "application/json"
+            
             if let authToken = config.authToken {
                 header["Authorization"] = authToken
             }
             
         case .custom(let dict):
+            header["Content-Type"] = "application/json"
+            
             if let authToken = config.authToken {
                 header["Authorization"] = authToken
             }

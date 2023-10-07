@@ -62,6 +62,23 @@ public enum StoreStrings {
     public static let writeButton = StoreStrings.tr("Localization", "review_bottom_sheet.write_button")
   }
 
+  public enum ReviewList {
+    /// 규정 위반으로 블라인드 처리되었습니다.
+    public static let filtered = StoreStrings.tr("Localization", "review_list.filtered")
+    /// 리뷰
+    public static let title = StoreStrings.tr("Localization", "review_list.title")
+    /// 리뷰 작성하기
+    public static let writeReview = StoreStrings.tr("Localization", "review_list.write_review")
+    public enum SortType {
+      /// 별점 높은순
+      public static let highestRating = StoreStrings.tr("Localization", "review_list.sort_type.highest_rating")
+      /// 최신순
+      public static let latest = StoreStrings.tr("Localization", "review_list.sort_type.latest")
+      /// 별점 낮은순
+      public static let lowestRating = StoreStrings.tr("Localization", "review_list.sort_type.lowest_rating")
+    }
+  }
+
   public enum StoreDetail {
     public enum BottomSticky {
       /// 즐겨찾기
@@ -152,6 +169,8 @@ public enum StoreStrings {
     public enum Review {
       /// 수정
       public static let edit = StoreStrings.tr("Localization", "store_detail.review.edit")
+      /// 리뷰를 작성해주세요.
+      public static let empty = StoreStrings.tr("Localization", "store_detail.review.empty")
       /// 리뷰 %d개 더보기
       public static func moreFormat(_ p1: Int) -> String {
         return StoreStrings.tr("Localization", "store_detail.review.more_format", p1)

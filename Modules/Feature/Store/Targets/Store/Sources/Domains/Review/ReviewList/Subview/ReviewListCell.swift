@@ -4,19 +4,10 @@ import Common
 import DesignSystem
 import Model
 
-final class StoreDetailReviewCell: BaseCollectionViewCell {
+final class ReviewListCell: BaseCollectionViewCell {
     enum Layout {
         static let estimatedHeight: CGFloat = 120
     }
-    
-    private let containerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Colors.gray0.color
-        view.layer.cornerRadius = 12
-        view.layer.masksToBounds = true
-        
-        return view
-    }()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
@@ -73,7 +64,6 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
     
     override func setup() {
         contentView.addSubViews([
-            containerView,
             nameLabel,
             rightButton,
             dotView,
@@ -85,22 +75,14 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
     }
     
     override func bindConstraints() {
-        containerView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.top.equalToSuperview()
-            $0.right.equalToSuperview()
-            $0.bottom.equalTo(contentLabel).offset(16)
-            $0.bottom.equalToSuperview()
-        }
-        
         nameLabel.snp.makeConstraints {
-            $0.left.equalTo(containerView).offset(16)
-            $0.top.equalTo(containerView).offset(16)
+            $0.top.equalToSuperview().offset(16)
+            $0.left.equalToSuperview().offset(20)
             $0.right.lessThanOrEqualTo(dateLabel.snp.left)
         }
         
         rightButton.snp.makeConstraints {
-            $0.right.equalTo(containerView).offset(-16)
+            $0.right.equalToSuperview().offset(-20)
             $0.centerY.equalTo(nameLabel)
         }
         
@@ -116,7 +98,7 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         }
         
         medalBadge.snp.makeConstraints {
-            $0.left.equalTo(containerView).offset(16)
+            $0.left.equalTo(nameLabel)
             $0.top.equalTo(nameLabel.snp.bottom).offset(2)
         }
 
@@ -126,9 +108,10 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         }
 
         contentLabel.snp.makeConstraints {
-            $0.left.equalTo(containerView).offset(16)
-            $0.right.equalTo(containerView).offset(-16)
+            $0.left.equalToSuperview().offset(20)
+            $0.right.equalToSuperview().offset(-20)
             $0.top.equalTo(medalBadge.snp.bottom).offset(8)
+            $0.bottom.equalToSuperview().offset(-16)
         }
     }
     
@@ -140,12 +123,12 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         contentLabel.text = review.contents
         
         if UserDefaultsUtil().userId == review.user.userId {
-            containerView.backgroundColor = Colors.pink100.color
+            contentView.backgroundColor = Colors.pink100.color
             medalBadge.containerView.backgroundColor = Colors.systemWhite.color
             starBadge.containerView.backgroundColor = Colors.systemWhite.color
             rightButton.setTitle(Strings.StoreDetail.Review.edit, for: .normal)
         } else {
-            containerView.backgroundColor = Colors.gray0.color
+            contentView.backgroundColor = Colors.systemWhite.color
             medalBadge.containerView.backgroundColor = Colors.pink100.color
             starBadge.containerView.backgroundColor = Colors.pink100.color
             rightButton.setTitle(Strings.StoreDetail.Review.report, for: .normal)

@@ -9,7 +9,7 @@ final class StoreDetailStarBadgeView: BaseView {
         static let size = CGSize(width: 68, height: 20)
     }
     
-    private let containerView: UIView = {
+    let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = Colors.pink100.color
         view.layer.cornerRadius = 4

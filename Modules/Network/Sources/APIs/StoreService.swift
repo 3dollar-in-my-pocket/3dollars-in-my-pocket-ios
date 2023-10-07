@@ -23,6 +23,8 @@ public protocol StoreServiceProtocol {
     func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageApiResponse], Error>
     
     func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResposne<StoreImageWithApiResponse>, Error>
+    
+    func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<ReviewApiResponse, Error>
 }
 
 public struct StoreService: StoreServiceProtocol {
@@ -84,6 +86,12 @@ public struct StoreService: StoreServiceProtocol {
     
     public func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResposne<StoreImageWithApiResponse>, Error> {
         let request = FetchStorePhotoRequest(storeId: storeId, size: 20, cursor: cursor)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<ReviewApiResponse, Error> {
+        let request = EditReviewRequest(reviewId: reviewId, input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }

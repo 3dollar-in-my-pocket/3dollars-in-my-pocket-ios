@@ -32,6 +32,11 @@ final class StoreDetailViewModel: BaseViewModel {
         let didTapUploadPhoto = PassthroughSubject<Void, Never>()
         let didTapPhoto = PassthroughSubject<Int, Never>()
         let onSuccessUploadPhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
+        
+        // 리뷰 섹션
+        let didTapReviewRightButton = PassthroughSubject<Int, Never>()
+        let onSuccessEditReview = PassthroughSubject<ReviewApiResponse, Never>()
+        let didTapReviewMore = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -62,6 +67,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentUploadPhoto(UploadPhotoViewModel)
         case pushPhotoList(PhotoListViewModel)
         case presentPhotoDetail(PhotoDetailViewModel)
+        case pushReviewList(ReviewListViewModel)
     }
     
     let input = Input()
@@ -85,6 +91,7 @@ final class StoreDetailViewModel: BaseViewModel {
     override func bind() {
         bindOverviewSection()
         bindPhotoSection()
+        bindReviewSection()
         
         input.viewDidLoad
             .withUnretained(self)
@@ -200,6 +207,41 @@ final class StoreDetailViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
     
+    private func bindReviewSection() {
+        input.didTapReviewRightButton
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, index: Int) in
+                guard let review = owner.state.storeDetailData?.reviews[safe: index] else { return }
+                
+                if review.user.userId == owner.userDefaults.userId {
+                    owner.presentEditReviewBottomSheet(review: review)
+                } else {
+                    // TODO: 신고하기 노출
+                }
+            }
+            .store(in: &cancellables)
+        
+        input.onSuccessEditReview
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, response: ReviewApiResponse) in
+                guard let targetIndex = owner.state.storeDetailData?.reviews.firstIndex(where: {
+                    $0.reviewId == response.reviewId
+                }) else { return }
+                
+                owner.state.storeDetailData?.reviews[targetIndex].rating = response.rating
+                owner.state.storeDetailData?.reviews[targetIndex].contents = response.contents
+                owner.refreshSections()
+            }
+            .store(in: &cancellables)
+        
+        input.didTapReviewMore
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.pushReviewList()
+            }
+            .store(in: &cancellables)
+    }
+    
     private func fetchStoreDetail() {
         Task { [weak self] in
             guard let self else { return }
@@ -235,7 +277,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .overviewSection(createOverviewCellViewModel(storeDetailData.overview)),
             .visitSection(storeDetailData.visit),
             .infoSection(
-                updatedAt: "2023.02.04 업데이트",
+                updatedAt: DateUtils.toString(dateString: storeDetailData.info.lastUpdated, format: "yyyy.MM.dd 업데이트"),
                 info: storeDetailData.info,
                 menuCellViewModel: createMenuCellViewModel(storeDetailData)
             ),
@@ -383,7 +425,7 @@ final class StoreDetailViewModel: BaseViewModel {
     }
     
     private func presentWriteReviewBottomSheet() {
-        let config = ReviewBottomSheetViewModel.Config(storeId: state.storeId)
+        let config = ReviewBottomSheetViewModel.Config(storeId: state.storeId, review: nil)
         let viewModel = ReviewBottomSheetViewModel(config: config)
         
         viewModel.output.onSuccessWriteReview
@@ -414,7 +456,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         viewModel.output.onSuccessUploadPhotos
             .subscribe(input.onSuccessUploadPhotos)
-            .store(in: &cancellables)
+            .store(in: &viewModel.cancellables)
         
         output.route.send(.presentUploadPhoto(viewModel))
     }
@@ -425,7 +467,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         viewModel.output.onSuccessUploadPhotos
             .subscribe(input.onSuccessUploadPhotos)
-            .store(in: &cancellables)
+            .store(in: &viewModel.cancellables)
         
         output.route.send(.pushPhotoList(viewModel))
     }
@@ -436,5 +478,30 @@ final class StoreDetailViewModel: BaseViewModel {
         let viewModel = PhotoDetailViewModel(config: config)
         
         output.route.send(.presentPhotoDetail(viewModel))
+    }
+    
+    private func presentEditReviewBottomSheet(review: StoreDetailReview) {
+        let config = ReviewBottomSheetViewModel.Config(storeId: state.storeId, review: review)
+        let viewModel = ReviewBottomSheetViewModel(config: config)
+        
+        viewModel.output.onSuccessEditReview
+            .subscribe(input.onSuccessEditReview)
+            .store(in: &viewModel.cancellables)
+        output.route.send(.presentWriteReview(viewModel))
+    }
+    
+    private func pushReviewList() {
+        let config = ReviewListViewModel.Config(storeId: state.storeId)
+        let viewModel = ReviewListViewModel(config: config)
+        
+        viewModel.output.onSuccessEditReview
+            .subscribe(input.onSuccessEditReview)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onSuccessWriteReview
+            .subscribe(input.onSuccessWriteReview)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.pushReviewList(viewModel))
     }
 }

@@ -9,7 +9,7 @@ final class StoreDetailMedalBadgeView: BaseView {
         static let height: CGFloat = 20
     }
     
-    private let containerView: UIView = {
+    let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = Colors.pink100.color
         view.layer.cornerRadius = 4

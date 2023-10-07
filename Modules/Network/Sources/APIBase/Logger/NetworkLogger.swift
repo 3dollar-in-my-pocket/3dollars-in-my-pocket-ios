@@ -14,6 +14,7 @@ public final class NetworkLogger {
         ============================================
         💚[NetworkModule -> RequestProvider]
         👉 URL: \(urlString)
+        👉 Method: \(request.httpMethod ?? "")
         👉 Headers: \(headers.prettyString)
         👉 Data: \(request.httpBody?.prettyRequestString ?? "null")
         ============================================

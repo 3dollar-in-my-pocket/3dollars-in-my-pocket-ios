@@ -114,6 +114,9 @@ public final class StoreDetailViewController: BaseViewController {
                     
                 case .presentPhotoDetail(let viewModel):
                     owner.presentPhotoDetail(viewModel)
+                    
+                case .pushReviewList(let viewModel):
+                    owner.pushReviewList(viewModel)
                 }
             }
             .store(in: &cancellables)
@@ -240,7 +243,7 @@ public final class StoreDetailViewController: BaseViewController {
                     .init(
                         layoutSize: .init(
                             widthDimension: .fractionalWidth(1),
-                            heightDimension: .absolute(totalCount > 0 ? 0 : StoreDetailPhotoFooterView.Layout.height)
+                            heightDimension: .absolute(totalCount > 0 ? 0.1 : StoreDetailPhotoFooterView.Layout.height)
                         ),
                         elementKind: UICollectionView.elementKindSectionFooter,
                         alignment: .bottom,
@@ -350,5 +353,11 @@ public final class StoreDetailViewController: BaseViewController {
         let viewController = PhotoDetailViewController.instance(viewModel: viewModel)
         
         present(viewController, animated: true)
+    }
+    
+    private func pushReviewList(_ viewModel: ReviewListViewModel) {
+        let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
+        
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }

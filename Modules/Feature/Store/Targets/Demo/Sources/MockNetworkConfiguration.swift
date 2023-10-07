@@ -24,7 +24,7 @@ struct MockNetworkConfiguration: NetworkConfigurable {
     }
     
     var authToken: String? {
-        return "076f48c5-39e8-4995-b509-b291e32fd354"
+        return "03572dd2-cc32-413c-baf2-e1e08048f4d4"
     }
 }
 
