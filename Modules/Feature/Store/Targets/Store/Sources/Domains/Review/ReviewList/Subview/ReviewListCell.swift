@@ -128,7 +128,7 @@ final class ReviewListCell: BaseCollectionViewCell {
             starBadge.containerView.backgroundColor = Colors.systemWhite.color
             rightButton.setTitle(Strings.StoreDetail.Review.edit, for: .normal)
         } else {
-            contentView.backgroundColor = Colors.gray0.color
+            contentView.backgroundColor = Colors.systemWhite.color
             medalBadge.containerView.backgroundColor = Colors.pink100.color
             starBadge.containerView.backgroundColor = Colors.pink100.color
             rightButton.setTitle(Strings.StoreDetail.Review.report, for: .normal)

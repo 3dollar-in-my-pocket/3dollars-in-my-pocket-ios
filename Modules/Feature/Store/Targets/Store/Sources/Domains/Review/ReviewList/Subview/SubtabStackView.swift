@@ -161,10 +161,8 @@ final class SubtabStackView: UIStackView {
             }
         }
         
-        DispatchQueue.main.async {
-            UIView.animate(withDuration: 0.3) {
-                self.layoutIfNeeded()
-            }
+        UIView.animate(withDuration: 0.3) {
+            self.layoutIfNeeded()
         }
     }
 }
