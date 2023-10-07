@@ -16,8 +16,6 @@ public protocol StoreServiceProtocol {
     
     func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error>
     
-    func fetchReportReasons(group: ReportGroup) async -> Result<ReportReasonApiResponse, Error>
-    
     func writeReview(input: WriteReviewRequestInput) async -> Result<ReviewWithUserApiResponse, Error>
     
     func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageApiResponse], Error>
@@ -62,12 +60,6 @@ public struct StoreService: StoreServiceProtocol {
     
     public func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error> {
         let request = ReportStoreRequest(storeId: storeId, reportReason: reportReason)
-        
-        return await NetworkManager.shared.request(requestType: request)
-    }
-    
-    public func fetchReportReasons(group: ReportGroup) async -> Result<ReportReasonApiResponse, Error> {
-        let request = FetchReportReasonListRequest(group: group)
         
         return await NetworkManager.shared.request(requestType: request)
     }

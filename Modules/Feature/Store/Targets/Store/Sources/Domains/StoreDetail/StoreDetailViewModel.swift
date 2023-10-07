@@ -37,6 +37,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let didTapReviewRightButton = PassthroughSubject<Int, Never>()
         let onSuccessEditReview = PassthroughSubject<ReviewApiResponse, Never>()
         let didTapReviewMore = PassthroughSubject<Void, Never>()
+        let onSuccessReportReview = PassthroughSubject<Int, Never>()
     }
     
     struct Output {
@@ -68,21 +69,25 @@ final class StoreDetailViewModel: BaseViewModel {
         case pushPhotoList(PhotoListViewModel)
         case presentPhotoDetail(PhotoDetailViewModel)
         case pushReviewList(ReviewListViewModel)
+        case presentReportBottomSheetReview(ReportReviewBottomSheetViewModel)
     }
     
     let input = Input()
     let output = Output()
     var state: State
     private let storeService: StoreServiceProtocol
+    private let reportService: ReportServiceProtocol
     private let userDefaults: UserDefaultsUtil
     
     init(
         storeId: Int,
         storeService: StoreServiceProtocol = StoreService(),
+        reportService: ReportServiceProtocol = ReportService(),
         userDefaults: UserDefaultsUtil = .shared
     ) {
         self.state = State(storeId: storeId)
         self.storeService = storeService
+        self.reportService = reportService
         self.userDefaults = userDefaults
         
         super.init()
@@ -216,7 +221,7 @@ final class StoreDetailViewModel: BaseViewModel {
                 if review.user.userId == owner.userDefaults.userId {
                     owner.presentEditReviewBottomSheet(review: review)
                 } else {
-                    // TODO: 신고하기 노출
+                    owner.presentReportReviewBottomSheet(review: review)
                 }
             }
             .store(in: &cancellables)
@@ -238,6 +243,16 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
                 owner.pushReviewList()
+            }
+            .store(in: &cancellables)
+        
+        input.onSuccessReportReview
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, reviewId: Int) in
+                guard let targetIndex = owner.state.storeDetailData?.reviews.firstIndex(where: { $0.reviewId == reviewId }) else { return }
+                
+                owner.state.storeDetailData?.reviews[targetIndex].isFiltered = true
+                owner.refreshSections()
             }
             .store(in: &cancellables)
     }
@@ -264,8 +279,8 @@ final class StoreDetailViewModel: BaseViewModel {
                 state.storeDetailData = storeDetailData
                 refreshSections()
                 output.isFavorited.send(response.favorite.isFavorite)
-            case .failure(let failure):
-                print("💜error: \(failure)")
+            case .failure(let error):
+                output.error.send(error)
             }
         }
     }
@@ -371,7 +386,7 @@ final class StoreDetailViewModel: BaseViewModel {
     
     private func presentReportModal() {
         Task {
-            let reportReasonResult = await storeService.fetchReportReasons(group: .store)
+            let reportReasonResult = await reportService.fetchReportReasons(group: .store)
                 .map { response in
                     response.reasons.map { ReportReason(response: $0) }
                 }
@@ -502,6 +517,48 @@ final class StoreDetailViewModel: BaseViewModel {
             .subscribe(input.onSuccessWriteReview)
             .store(in: &viewModel.cancellables)
         
+        viewModel.output.onSuccessReportReview
+            .subscribe(input.onSuccessReportReview)
+            .store(in: &viewModel.cancellables)
+        
         output.route.send(.pushReviewList(viewModel))
+    }
+    
+    private func presentReportReviewBottomSheet(review: StoreDetailReview) {
+        Task {
+            let reportReasonResult = await reportService.fetchReportReasons(group: .review)
+                .map { response in
+                    response.reasons.map { ReportReason(response: $0) }
+                }
+            
+            switch reportReasonResult {
+            case .success(let reasons):
+                let viewModel = createReportReviewBottomSheetViewModel(review: review, reasons: reasons)
+                
+                output.route.send(.presentReportBottomSheetReview(viewModel))
+                
+            case .failure(let error):
+                output.error.send(error)
+            }
+        }
+    }
+    
+    private func createReportReviewBottomSheetViewModel(
+        review: StoreDetailReview,
+        reasons: [ReportReason]
+    ) -> ReportReviewBottomSheetViewModel {
+        let config = ReportReviewBottomSheetViewModel.Config(
+            storeId: state.storeId,
+            reviewId: review.reviewId,
+            reportReasons: reasons
+        )
+        let viewModel = ReportReviewBottomSheetViewModel(config: config)
+        
+        viewModel.output
+            .onSuccessReport
+            .subscribe(input.onSuccessReportReview)
+            .store(in: &viewModel.cancellables)
+        
+        return viewModel
     }
 }

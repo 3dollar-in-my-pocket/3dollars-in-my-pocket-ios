@@ -117,6 +117,9 @@ public final class StoreDetailViewController: BaseViewController {
                     
                 case .pushReviewList(let viewModel):
                     owner.pushReviewList(viewModel)
+                    
+                case .presentReportBottomSheetReview(let viewModel):
+                    owner.presentReportReviewBottomSheet(viewModel)
                 }
             }
             .store(in: &cancellables)
@@ -359,5 +362,11 @@ public final class StoreDetailViewController: BaseViewController {
         let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
         
         navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func presentReportReviewBottomSheet(_ viewModel: ReportReviewBottomSheetViewModel) {
+        let viewController = ReportReviewBottomSheetViewController.instance(viewModel: viewModel)
+        
+        presentPanModal(viewController)
     }
 }

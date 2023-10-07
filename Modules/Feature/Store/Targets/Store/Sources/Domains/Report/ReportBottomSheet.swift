@@ -26,7 +26,7 @@ final class ReportBottomSheet: BaseView {
         let label = UILabel()
         label.font = Fonts.semiBold.font(size: 20)
         label.textColor = Colors.gray100.color
-        label.text = Strings.ReportModal.title
+        label.text = Strings.ReportReviewBottomSheet.title
         
         return label
     }()
@@ -58,8 +58,8 @@ final class ReportBottomSheet: BaseView {
         return collectionView
     }()
     
-    let reportButon: Button.Normal = {
-        let button = Button.Normal(size: .h48, text: Strings.ReportModal.button)
+    let reportButton: Button.Normal = {
+        let button = Button.Normal(size: .h48, text: Strings.ReportReviewBottomSheet.report)
         button.enabledBackgroundColor = Colors.mainRed.color
         return button
     }()
@@ -70,7 +70,7 @@ final class ReportBottomSheet: BaseView {
             closeButton,
             descriptionLabel,
             collectionView,
-            reportButon
+            reportButton
         ])
     }
     
@@ -98,7 +98,7 @@ final class ReportBottomSheet: BaseView {
             $0.height.equalTo(0)
         }
         
-        reportButon.snp.makeConstraints {
+        reportButton.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20).priority(.high)
             $0.right.equalToSuperview().offset(-20).priority(.high)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-20)

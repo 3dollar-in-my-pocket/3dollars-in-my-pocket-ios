@@ -12,6 +12,7 @@ enum StoreDetailSectionItem: Hashable {
     case review(StoreDetailReview)
     case reviewMore(Int)
     case reviewEmpty
+    case filteredReview(StoreDetailReview)
 }
 
 extension StoreDetailSectionItem {

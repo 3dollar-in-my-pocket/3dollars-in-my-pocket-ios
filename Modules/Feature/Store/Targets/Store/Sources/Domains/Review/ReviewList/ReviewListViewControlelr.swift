@@ -95,6 +95,15 @@ final class ReviewListViewControlelr: BaseViewController {
             let viewController = ReviewBottomSheetViewController.instance(viewModel: viewModel)
             
             presentPanModal(viewController)
+            
+        case .presentReportBottomSheetReview(let viewModel):
+            presentReportReviewBottomSheet(viewModel)
         }
+    }
+    
+    private func presentReportReviewBottomSheet(_ viewModel: ReportReviewBottomSheetViewModel) {
+        let viewController = ReportReviewBottomSheetViewController.instance(viewModel: viewModel)
+        
+        presentPanModal(viewController)
     }
 }

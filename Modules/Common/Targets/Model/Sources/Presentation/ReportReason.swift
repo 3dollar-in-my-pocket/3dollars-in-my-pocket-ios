@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ReportReason {
+public struct ReportReason: Hashable {
     public let type: String
     public let description: String
     public let hasReasonDetail: Bool

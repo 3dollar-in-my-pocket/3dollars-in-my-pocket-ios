@@ -45,7 +45,7 @@ final class ReportBottomSheetViewController: BaseViewController {
     }
     
     override func bindViewModelInput() {
-        reportBottomSheet.reportButon
+        reportBottomSheet.reportButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.didTapReport)
@@ -55,7 +55,7 @@ final class ReportBottomSheetViewController: BaseViewController {
     override func bindViewModelOutput() {
         viewModel.output.isEnableReport
             .receive(on: DispatchQueue.main)
-            .assign(to: \.isEnabled, on: reportBottomSheet.reportButon)
+            .assign(to: \.isEnabled, on: reportBottomSheet.reportButton)
             .store(in: &cancellables)
         
         viewModel.output.showErrorAlert
