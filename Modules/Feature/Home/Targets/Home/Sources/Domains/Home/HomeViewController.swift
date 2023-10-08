@@ -4,6 +4,8 @@ import Combine
 import Common
 import DesignSystem
 import StoreInterface
+import Model
+import DependencyInjection
 
 import NMapsMap
 import Then
@@ -197,7 +199,8 @@ public final class HomeViewController: BaseViewController {
                     ToastManager.shared.show(message: "🔥 사장님 가게 상세 화면 구현 필요")
                     
                 case .presentVisit(let storeCard):
-                    ToastManager.shared.show(message: "🔥 방문 화면 구현 필요")
+                    let storeId = Int(storeCard.storeId) ?? 0
+                    owner.presentVisit(storeId: storeId, store: storeCard)
                     
                 case .presentPolicy:
                     ToastManager.shared.show(message: "🔥 처리 방침 구현 필요")
@@ -284,9 +287,19 @@ public final class HomeViewController: BaseViewController {
     }
     
     private func pushStoreDetail(storeId: Int) {
-        let viewController = StoreInterfaceImpl().pushStoreDetail(storeId: storeId)
+        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
+        let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
         
         navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func presentVisit(storeId: Int, store: VisitableStore) {
+        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
+        let viewController = storeInterface.getVisitViewController(storeId: storeId, visitableStore: store) {
+            // TODO: 성공 시, 재조회 필요
+        }
+        
+        tabBarController?.present(viewController, animated: true)
     }
 }
 

@@ -60,6 +60,11 @@ public final class StoreDetailViewController: BaseViewController {
             .mapVoid
             .subscribe(viewModel.input.didTapSave)
             .store(in: &cancellables)
+        
+        storeDetailView.bottomStickyView.visitButton.controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapVisit)
+            .store(in: &cancellables)
     }
     
     public override func bindViewModelOutput() {
@@ -120,6 +125,9 @@ public final class StoreDetailViewController: BaseViewController {
                     
                 case .presentReportBottomSheetReview(let viewModel):
                     owner.presentReportReviewBottomSheet(viewModel)
+                    
+                case .presentVisit(let viewModel):
+                    owner.presentVisit(viewModel)
                 }
             }
             .store(in: &cancellables)
@@ -368,5 +376,11 @@ public final class StoreDetailViewController: BaseViewController {
         let viewController = ReportReviewBottomSheetViewController.instance(viewModel: viewModel)
         
         presentPanModal(viewController)
+    }
+    
+    private func presentVisit(_ viewModel: VisitViewModel) {
+        let viewController = VisitViewController(viewModel: viewModel)
+        
+        present(viewController, animated: true)
     }
 }

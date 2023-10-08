@@ -1,6 +1,7 @@
 import UIKit
 
 import Common
+import Model
 
 final class HomeListViewController: BaseViewController {
     private let homeListView = HomeListView()

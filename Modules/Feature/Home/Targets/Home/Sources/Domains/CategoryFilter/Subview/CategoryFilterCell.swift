@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 
 final class CategoryFilterCell: BaseCollectionViewCell {
     static let size = CGSize(

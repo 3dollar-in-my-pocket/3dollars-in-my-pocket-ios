@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "img_fail.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

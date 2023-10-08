@@ -10,6 +10,7 @@ import FirebaseMessaging
 import DesignSystem
 import DependencyInjection
 import Membership
+import Store
 
 typealias Log = SwiftyBeaver
 typealias Fonts = DesignSystemFontFamily
@@ -104,6 +105,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func initializeDI() {
         NetworkConfigurationImpl.registerNetworkConfiguration()
         MembershipInterfaceImpl.registerMembershipInterface()
+        StoreInterfaceImpl.registerStoreInterface()
         AppModuleInterfaceImpl.registerAppModuleInterface()
         AppInfomationImpl.registerAppInfomation()
     }

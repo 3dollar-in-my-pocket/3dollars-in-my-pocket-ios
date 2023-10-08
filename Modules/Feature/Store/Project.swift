@@ -41,6 +41,7 @@ let project = Project(
                 .project(target: "Model", path: "../../Common"),
                 .project(target: "DependencyInjection", path: "../../DependencyInjection"),
                 .project(target: "AppInterface", path: "../../../App"),
+                .project(target: "StoreInterface", path: "./"),
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "PanModal")
@@ -67,7 +68,8 @@ let project = Project(
             infoPlist: .default,
             sources: ["Targets/Interface/Sources/**"],
             dependencies: [
-                .project(target: "Store", path: "./"),
+                .project(target: "DependencyInjection", path: "../../DependencyInjection"),
+                .project(target: "Model", path: "../../Common")
             ]
         )
     ],

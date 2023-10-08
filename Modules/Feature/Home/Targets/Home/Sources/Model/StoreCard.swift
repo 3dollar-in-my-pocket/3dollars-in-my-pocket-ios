@@ -50,3 +50,9 @@ extension StoreCard: Hashable {
         hasher.combine(storeId)
     }
 }
+
+extension StoreCard: VisitableStore {
+    var storeLocation: Location? {
+        return location
+    }
+}

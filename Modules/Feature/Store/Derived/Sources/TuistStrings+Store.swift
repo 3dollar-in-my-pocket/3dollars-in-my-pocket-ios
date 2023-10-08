@@ -237,6 +237,27 @@ public enum StoreStrings {
       }
     }
   }
+
+  public enum Visit {
+    /// 인증까지 %dm
+    public static func distanceFormat(_ p1: Int) -> String {
+      return StoreStrings.tr("Localization", "visit.distance_format", p1)
+    }
+    /// 방문 성공
+    public static let exists = StoreStrings.tr("Localization", "visit.exists")
+    /// 방문 실패
+    public static let notExists = StoreStrings.tr("Localization", "visit.not_exists")
+    public enum Title {
+      /// 가게 도착!\n방문을 인증해보세요!
+      public static let exists = StoreStrings.tr("Localization", "visit.title.exists")
+      /// 가게 도착!
+      public static let existsBold = StoreStrings.tr("Localization", "visit.title.exists_bold")
+      /// 가게 근처에서\n방문을 인증할 수 있어요!
+      public static let notExists = StoreStrings.tr("Localization", "visit.title.not_exists")
+      /// 가게 근처
+      public static let notExistsBold = StoreStrings.tr("Localization", "visit.title.not_exists_bold")
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

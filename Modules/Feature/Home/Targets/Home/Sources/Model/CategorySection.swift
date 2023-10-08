@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 struct CategorySection: Hashable {
     var title: String
     var items: [CategorySectionItem]
