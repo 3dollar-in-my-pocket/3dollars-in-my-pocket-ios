@@ -2,6 +2,7 @@ import UIKit
 import Combine
 
 import Common
+import Model
 import PanModal
 
 protocol CategoryFilterDelegate: AnyObject {

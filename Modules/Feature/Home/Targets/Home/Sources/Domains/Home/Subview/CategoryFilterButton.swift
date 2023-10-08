@@ -1,6 +1,8 @@
 import UIKit
 
 import DesignSystem
+import Model
+
 import Kingfisher
 
 final class CategoryFilterButton: UIButton {

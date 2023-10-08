@@ -11,6 +11,7 @@ final class StoreDetailViewModel: BaseViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let didTapReport = PassthroughSubject<Void, Never>()
+        let didTapVisit = PassthroughSubject<Void, Never>()
         
         // Report modal
         let dismissReportModal = PassthroughSubject<Void, Never>()
@@ -70,6 +71,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentPhotoDetail(PhotoDetailViewModel)
         case pushReviewList(ReviewListViewModel)
         case presentReportBottomSheetReview(ReportReviewBottomSheetViewModel)
+        case presentVisit(VisitViewModel)
     }
     
     let input = Input()
@@ -115,6 +117,13 @@ final class StoreDetailViewModel: BaseViewModel {
             .sink(receiveValue: { (owner: StoreDetailViewModel, _) in
                 owner.presentReportModal()
             })
+            .store(in: &cancellables)
+        
+        input.didTapVisit
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.presentVisit()
+            }
             .store(in: &cancellables)
     }
     
@@ -444,7 +453,8 @@ final class StoreDetailViewModel: BaseViewModel {
         let viewModel = ReviewBottomSheetViewModel(config: config)
         
         viewModel.output.onSuccessWriteReview
-            .subscribe(input.onSuccessWriteReview)
+            .mapVoid
+            .subscribe(input.viewDidLoad)
             .store(in: &viewModel.cancellables)
         
         output.route.send(.presentWriteReview(viewModel))
@@ -560,5 +570,17 @@ final class StoreDetailViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         
         return viewModel
+    }
+    
+    private func presentVisit() {
+        guard let overview = state.storeDetailData?.overview else { return }
+        let config = VisitViewModel.Config(storeId: state.storeId, store: overview)
+        let viewModel = VisitViewModel(config: config)
+        
+        viewModel.output.onSuccessVisit
+            .subscribe(input.viewDidLoad)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.presentVisit(viewModel))
     }
 }

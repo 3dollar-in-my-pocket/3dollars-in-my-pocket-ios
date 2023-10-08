@@ -18,7 +18,7 @@ final class ResponseProvider {
         } else {
             if let errorContainer = decodeError(data: data) {
                 throw NetworkError.errorContainer(.init(
-                    message: errorContainer.error,
+                    message: errorContainer.message,
                     resultCode: errorContainer.resultCode
                 ))
             } else {

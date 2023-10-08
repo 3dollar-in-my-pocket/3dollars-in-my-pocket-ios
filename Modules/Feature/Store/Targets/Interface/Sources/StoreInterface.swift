@@ -1,15 +1,14 @@
 import UIKit
+import Combine
 
-import Store
+import Model
 
 public protocol StoreInterface {
-    func pushStoreDetail(storeId: Int) -> UIViewController
-}
-
-public final class StoreInterfaceImpl: StoreInterface {
-    public init() { }
+    func getStoreDetailViewController(storeId: Int) -> UIViewController
     
-    public func pushStoreDetail(storeId: Int) -> UIViewController {
-        return StoreDetailViewController.instance(storeId: storeId)
-    }
+    func getVisitViewController(
+        storeId: Int,
+        visitableStore: VisitableStore,
+        onSuccessVisit: @escaping (() -> Void)
+    ) -> UIViewController
 }

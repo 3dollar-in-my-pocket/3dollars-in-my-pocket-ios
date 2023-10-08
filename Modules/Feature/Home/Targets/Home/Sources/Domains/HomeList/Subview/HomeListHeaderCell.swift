@@ -1,6 +1,7 @@
 import UIKit
 
 import Common
+import Model
 import DesignSystem
 
 final class HomeListHeaderCell: BaseCollectionViewReusableView {

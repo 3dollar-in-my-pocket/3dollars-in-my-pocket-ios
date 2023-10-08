@@ -273,6 +273,7 @@ let project = Project(
                 .project(target: "AppInterface", path: "./"),
                 .project(target: "Membership", path: "../Modules/Feature/Membership"),
                 .project(target: "Home", path: "../Modules/Feature/Home"),
+                .project(target: "Store", path: "../Modules/Feature/Store"),
                 .project(target: "Community", path: "../Modules/Feature/Community"),
                 .project(target: "Networking", path: "../Modules/Network"),
                 .project(target: "DesignSystem", path: "../Modules/DesignSystem"),
