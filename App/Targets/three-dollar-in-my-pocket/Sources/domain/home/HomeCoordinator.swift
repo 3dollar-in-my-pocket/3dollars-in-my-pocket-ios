@@ -60,9 +60,9 @@ extension HomeCoordinator where Self: UIViewController {
     }
     
     func presentVisit(store: Store) {
-        let viewController = VisitViewController.instance(store: store)
-        
-        self.presenter.present(viewController, animated: true, completion: nil)
+//        let viewController = VisitViewController.instance(store: store)
+//        
+//        self.presenter.present(viewController, animated: true, completion: nil)
     }
     
     func presentPolicy() {
