@@ -37,3 +37,17 @@ target 'StoreDemo' do
   
   pod 'NMapsMap'
 end
+
+target 'Write' do
+  project 'Modules/Feature/Write/Write.xcodeproj'
+  use_frameworks!
+  
+  pod 'NMapsMap'
+end
+
+target 'WriteDemo' do
+  project 'Modules/Feature/Write/Write.xcodeproj'
+  use_frameworks!
+  
+  pod 'NMapsMap'
+end

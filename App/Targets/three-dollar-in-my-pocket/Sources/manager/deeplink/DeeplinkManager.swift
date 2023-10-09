@@ -167,7 +167,8 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         var viewController: UIViewController
         switch StoreType(value: storeTypeString) {
         case .streetFood:
-            viewController = StoreDetailViewController.instance(storeId: Int(storeId) ?? 0)
+//            viewController = StoreDetailViewController.instance(storeId: Int(storeId) ?? 0)
+            return nil
             
         case .foodTruck:
             viewController = BossStoreDetailViewController.instance(storeId: storeId)

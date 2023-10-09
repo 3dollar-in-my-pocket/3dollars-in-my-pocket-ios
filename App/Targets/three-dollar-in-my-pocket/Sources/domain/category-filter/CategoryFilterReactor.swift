@@ -3,6 +3,8 @@ import RxCocoa
 import ReactorKit
 import RxDataSources
 
+import AppInterface
+
 final class CategoryFilterReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad

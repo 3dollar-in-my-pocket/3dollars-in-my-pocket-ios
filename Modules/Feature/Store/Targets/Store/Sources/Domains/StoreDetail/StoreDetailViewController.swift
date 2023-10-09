@@ -3,6 +3,8 @@ import UIKit
 import Common
 import DesignSystem
 import Model
+import WriteInterface
+import DependencyInjection
 
 public final class StoreDetailViewController: BaseViewController {
     private let storeDetailView = StoreDetailView()
@@ -128,6 +130,9 @@ public final class StoreDetailViewController: BaseViewController {
                     
                 case .presentVisit(let viewModel):
                     owner.presentVisit(viewModel)
+                    
+                case .pushEditStore(let storeId, let storeDetailData):
+                    owner.pushEditStore(storeId: storeId, storeDetailData: storeDetailData)
                 }
             }
             .store(in: &cancellables)
@@ -382,5 +387,18 @@ public final class StoreDetailViewController: BaseViewController {
         let viewController = VisitViewController(viewModel: viewModel)
         
         present(viewController, animated: true)
+    }
+    
+    private func pushEditStore(storeId: Int, storeDetailData: StoreDetailData) {
+        guard let writeInterface = DIContainer.shared.container.resolve(WriteInterface.self) else {
+            fatalError("⚠️WriteInterface가 정의되지 않았습니다.")
+        }
+        let viewController = writeInterface.getEditDetailViewController(
+            storeId: storeId,
+            storeDetailData: storeDetailData) { storeDetailData in
+                
+            }
+        
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }

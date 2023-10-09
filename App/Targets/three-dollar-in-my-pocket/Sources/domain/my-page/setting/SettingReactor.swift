@@ -4,6 +4,8 @@ import RxCocoa
 import KakaoSDKUser
 import KakaoSDKCommon
 
+import AppInterface
+
 final class SettingReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad

@@ -1,5 +1,7 @@
 import CoreLocation
 
+import AppInterface
+
 import ReactorKit
 import RxSwift
 import RxCocoa
