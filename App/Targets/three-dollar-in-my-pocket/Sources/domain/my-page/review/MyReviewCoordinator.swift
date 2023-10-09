@@ -16,9 +16,9 @@ protocol MyReviewCoordinator: Coordinator, AnyObject {
 
 extension MyReviewCoordinator {
     func goToStoreDetail(storeId: Int) {
-        let viewController = StoreDetailViewController.instance(storeId: storeId)
-        
-        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+//        let viewController = StoreDetailViewController.instance(storeId: storeId)
+//        
+//        self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
     func showMoreActionSheet(row: Int, onTapDelete: @escaping () -> Void) {

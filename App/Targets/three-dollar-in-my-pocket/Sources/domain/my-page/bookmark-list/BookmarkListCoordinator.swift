@@ -14,10 +14,10 @@ protocol BookmarkListCoordinator: BaseCoordinator, AnyObject {
 
 extension BookmarkListCoordinator {
     func pushStoreDetail(storeId: String) {
-        guard let storeId = Int(storeId) else { return }
-        let viewController = StoreDetailViewController.instance(storeId: storeId)
-        
-        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+//        guard let storeId = Int(storeId) else { return }
+//        let viewController = StoreDetailViewController.instance(storeId: storeId)
+//        
+//        self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
     func pushFoodTruckDetail(storeId: String) {

@@ -13,12 +13,12 @@ protocol HomeCoordinator: BaseCoordinator, AnyObject {
 
 extension HomeCoordinator where Self: UIViewController {
     func pushStoreDetail(storeId: String) {
-        let storeDetailVC = StoreDetailViewController.instance(storeId: Int(storeId) ?? 0)
-        
-        self.presenter.navigationController?.pushViewController(
-            storeDetailVC,
-            animated: true
-        )
+//        let storeDetailVC = StoreDetailViewController.instance(storeId: Int(storeId) ?? 0)
+//        
+//        self.presenter.navigationController?.pushViewController(
+//            storeDetailVC,
+//            animated: true
+//        )
     }
     
     func pushBossStoreDetail(storeId: String) {

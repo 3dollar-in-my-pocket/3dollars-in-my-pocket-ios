@@ -52,9 +52,9 @@ extension MyPageCoordinator {
     }
     
     func goToStoreDetail(storeId: Int) {
-        let viewController = StoreDetailViewController.instance(storeId: storeId)
-        
-        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+//        let viewController = StoreDetailViewController.instance(storeId: storeId)
+//        
+//        self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
     func pushFoodtruckDetail(storeId: String) {
