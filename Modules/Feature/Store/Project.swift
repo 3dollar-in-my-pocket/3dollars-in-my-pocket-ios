@@ -42,6 +42,7 @@ let project = Project(
                 .project(target: "DependencyInjection", path: "../../DependencyInjection"),
                 .project(target: "AppInterface", path: "../../../App"),
                 .project(target: "StoreInterface", path: "./"),
+                .project(target: "WriteInterface", path: "../Write"),
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "PanModal")

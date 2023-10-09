@@ -5,6 +5,8 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
+import AppInterface
+
 final class StoreDetailReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad

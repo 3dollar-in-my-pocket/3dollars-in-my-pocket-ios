@@ -4,6 +4,8 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
+import AppInterface
+
 final class StreetFoodListReactor: BaseReactor, Reactor {
     enum Action {
         case viewDidLoad

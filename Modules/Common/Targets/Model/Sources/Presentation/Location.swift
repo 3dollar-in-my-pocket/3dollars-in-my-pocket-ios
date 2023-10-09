@@ -14,4 +14,9 @@ public struct Location: Hashable {
         self.latitude = response.latitude
         self.longitude = response.longitude
     }
+    
+    public init(latitude: Double, longitude: Double) {
+        self.latitude = latitude
+        self.longitude = longitude
+    }
 }

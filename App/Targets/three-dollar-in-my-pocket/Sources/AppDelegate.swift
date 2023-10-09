@@ -11,6 +11,7 @@ import DesignSystem
 import DependencyInjection
 import Membership
 import Store
+import Write
 
 typealias Log = SwiftyBeaver
 typealias Fonts = DesignSystemFontFamily
@@ -106,6 +107,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NetworkConfigurationImpl.registerNetworkConfiguration()
         MembershipInterfaceImpl.registerMembershipInterface()
         StoreInterfaceImpl.registerStoreInterface()
+        WriteInterfaceImpl.registerStoreInterface()
         AppModuleInterfaceImpl.registerAppModuleInterface()
         AppInfomationImpl.registerAppInfomation()
     }

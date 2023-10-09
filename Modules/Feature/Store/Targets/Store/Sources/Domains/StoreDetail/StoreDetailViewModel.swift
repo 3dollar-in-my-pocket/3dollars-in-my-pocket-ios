@@ -28,6 +28,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         // 가게 정보 메뉴 섹션
         let didTapShowMoreMenu = PassthroughSubject<Void, Never>()
+        let didTapEdit = PassthroughSubject<Void, Never>()
         
         // 사진 섹션
         let didTapUploadPhoto = PassthroughSubject<Void, Never>()
@@ -48,7 +49,6 @@ final class StoreDetailViewModel: BaseViewModel {
         let isFavorited = PassthroughSubject<Bool, Never>()
         let subscribersCount = PassthroughSubject<Int, Never>()
         
-        
         let toast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         let error = PassthroughSubject<Error, Never>()
@@ -66,6 +66,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentNavigation
         case presentWriteReview(ReviewBottomSheetViewModel)
         case presentMapDetail(MapDetailViewModel)
+        case pushEditStore(storeId: Int, storeDetailData: StoreDetailData)
         case presentUploadPhoto(UploadPhotoViewModel)
         case pushPhotoList(PhotoListViewModel)
         case presentPhotoDetail(PhotoDetailViewModel)
@@ -97,6 +98,7 @@ final class StoreDetailViewModel: BaseViewModel {
     
     override func bind() {
         bindOverviewSection()
+        bindInfoSection()
         bindPhotoSection()
         bindReviewSection()
         
@@ -182,6 +184,15 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
                 owner.presentMapDetail()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func bindInfoSection() {
+        input.didTapEdit
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.pushEditStore()
             }
             .store(in: &cancellables)
     }
@@ -582,5 +593,11 @@ final class StoreDetailViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         
         output.route.send(.presentVisit(viewModel))
+    }
+    
+    private func pushEditStore() {
+        guard let storeDetailData = state.storeDetailData else { return }
+        
+        output.route.send(.pushEditStore(storeId: state.storeId, storeDetailData: storeDetailData))
     }
 }

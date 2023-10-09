@@ -6,6 +6,8 @@ import Model
 import DependencyInjection
 import MembershipInterface
 import Community
+import WriteInterface
+import StoreInterface
 
 class TabBarVC: UITabBarController {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
@@ -15,7 +17,17 @@ class TabBarVC: UITabBarController {
     private lazy var dimView = UIView(frame: self.view.frame).then {
         $0.backgroundColor = .clear
     }
+    
+    private lazy var contentViewControllers: [UIViewController] = [
+        Home.HomeViewController.instance(),
+        writeInterface.getWriteAddressViewController(onSuccessWrite: { _ in }),
+        Community.CommunityViewController.instance(),
+        MyPageViewController.instance()
+    ]
+    
     private let membershipInterface: MembershipInterface
+    private let writeInterface: WriteInterface
+    private let storeInterface: StoreInterface
     
     static func instance() -> TabBarVC {
         return TabBarVC()
@@ -30,7 +42,18 @@ class TabBarVC: UITabBarController {
             fatalError("⚠️ MembershipInterface가 등록되지 않았습니다.")
         }
         
+        guard let writeInterface = DIContainer.shared.container.resolve(WriteInterface.self) else {
+            fatalError("⚠️ WriteInterface가 등록되지 않았습니다.")
+        }
+        
+        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else {
+            fatalError("⚠️ StoreInterface가 등록되지 않았습니다.")
+        }
+        
+        
         self.membershipInterface = membershipInterface
+        self.writeInterface = writeInterface
+        self.storeInterface = storeInterface
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -148,13 +171,7 @@ class TabBarVC: UITabBarController {
     }
     
     private func setupTabBarController() {
-        self.setViewControllers([
-            Home.HomeViewController.instance(),
-            StreetFoodListViewController.instance(),
-            WriteAddressViewController.instance(delegate: self),
-            Community.CommunityViewController.instance(),
-            MyPageViewController.instance()
-        ], animated: true)
+        self.setViewControllers(contentViewControllers, animated: true)
         self.tabBar.tintColor = Color.red
         self.tabBar.layer.borderWidth = 0
         self.tabBar.layer.borderColor = UIColor.clear.cgColor
@@ -229,33 +246,42 @@ class TabBarVC: UITabBarController {
                 })
             .disposed(by: self.deeplinkDisposeBag)
     }
-}
-
-extension TabBarVC: WriteAddressDelegate {
-    func onWriteSuccess(storeId: Int) {
-        self.selectedIndex = 0
-        if let navigationViewController = self.viewControllers?[0] as? UINavigationController,
-           let homeViewController
-            = navigationViewController.viewControllers[0] as? HomeViewController {
-            navigationViewController.popToRootViewController(animated: false)
-            homeViewController.coordinator?.pushStoreDetail(storeId: String(storeId))
-        }
+    
+    private func pushStoreDetail(storeId: Int) {
+        guard let navigationController = contentViewControllers[safe: 0] as? UINavigationController else { return }
+        let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
+        
+        navigationController.pushViewController(viewController, animated: true)
     }
 }
+
+//extension TabBarVC: WriteAddressDelegate {
+//    func onWriteSuccess(storeId: Int) {
+//        self.selectedIndex = 0
+//        if let navigationViewController = self.viewControllers?[0] as? UINavigationController,
+//           let homeViewController
+//            = navigationViewController.viewControllers[0] as? HomeViewController {
+//            navigationViewController.popToRootViewController(animated: false)
+//            homeViewController.coordinator?.pushStoreDetail(storeId: String(storeId))
+//        }
+//    }
+//}
 
 extension TabBarVC: UITabBarControllerDelegate {
     func tabBarController(
         _ tabBarController: UITabBarController,
         shouldSelect viewController: UIViewController
     ) -> Bool {
-        if let navigationViewController = viewController as? UINavigationController {
-            if navigationViewController.topViewController is WriteAddressViewController {
-                let writeVC = WriteAddressViewController.instance(delegate: self)
-                
-                self.present(writeVC, animated: true, completion: nil)
-                return false
+        if viewController == contentViewControllers[safe: 1] {
+            let writeViewController = writeInterface.getWriteAddressViewController { [weak self] storeId in
+                self?.pushStoreDetail(storeId: storeId)
             }
             
+            present(writeViewController, animated: true, completion: nil)
+            return false
+        }
+        
+        if let navigationViewController = viewController as? UINavigationController {
             if navigationViewController.topViewController is MyPageViewController,
                UserDefaultsUtil().isAnonymousUser {
                 let viewController = membershipInterface.createSigninAnonymousViewController()

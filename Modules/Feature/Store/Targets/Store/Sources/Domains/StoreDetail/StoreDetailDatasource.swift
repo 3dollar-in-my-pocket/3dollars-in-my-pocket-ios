@@ -129,7 +129,13 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                     for: indexPath
                 ) as? StoreDetailHeaderView
                 
-                headerView?.bind(section.header)
+                guard let headerView else { return BaseCollectionViewReusableView() }
+                headerView.bind(section.header)
+                headerView.rightButton
+                    .controlPublisher(for: .touchUpInside)
+                    .mapVoid
+                    .subscribe(viewModel.input.didTapEdit)
+                    .store(in: &headerView.cancellables)
                 
                 return headerView
                 

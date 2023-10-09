@@ -41,9 +41,9 @@ extension StoreDetailCoordinator where Self: StoreDetailViewController {
     }
     
     func goToModify(store: Store) {
-        let modifyVC = ModifyVC.instance(store: store)
-        
-        self.presenter.navigationController?.pushViewController(modifyVC, animated: true)
+//        let modifyVC = ModifyVC.instance(store: store)
+//        
+//        self.presenter.navigationController?.pushViewController(modifyVC, animated: true)
     }
     
     func showReviewModal(storeId: Int, review: Review? = nil) {

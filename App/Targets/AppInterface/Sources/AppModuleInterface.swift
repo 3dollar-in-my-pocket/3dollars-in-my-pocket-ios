@@ -9,6 +9,7 @@ public protocol AppModuleInterface {
     var appleSigninManager: SigninManagerProtocol { get }
     var deeplinkManager: DeeplinkManagerProtocol { get }
     var photoManager: PhotoManagerProtocol { get }
+    var analyticsManager: AnalyticsManagerProtocol { get }
     
     func getFCMToken(completion: @escaping ((String) -> ()))
     func goToMain()

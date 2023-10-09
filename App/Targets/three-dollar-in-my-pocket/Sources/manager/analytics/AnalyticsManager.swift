@@ -1,14 +1,5 @@
 import FirebaseAnalytics
-
-protocol AnalyticsManagerProtocol {
-    func logPageView(screen: AnalyticsScreen, type: AnyObject.Type)
-    
-    func logEvent(event: AnalyticsEvent, screen: AnalyticsScreen)
-    
-    func setPushEnable(isEnable: Bool)
-    
-    func setUser(id: String?)
-}
+import AppInterface
 
 final class AnalyticsManager: AnalyticsManagerProtocol {
     static let shared = AnalyticsManager()
