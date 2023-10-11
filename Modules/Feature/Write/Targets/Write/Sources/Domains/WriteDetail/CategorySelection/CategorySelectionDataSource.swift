@@ -2,11 +2,14 @@ import UIKit
 
 import Model
 
+typealias CategorySelectionSnapshot = NSDiffableDataSourceSnapshot<CategorySelectionSection, CategorySelectionItem>
+
 final class CategorySelectionDataSource: UICollectionViewDiffableDataSource<CategorySelectionSection, CategorySelectionItem> {
     let viewModel: CategorySelectionViewModel
     
     init(collectionView: UICollectionView, viewModel: CategorySelectionViewModel) {
         self.viewModel = viewModel
+        
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .category(let category):
@@ -22,7 +25,18 @@ final class CategorySelectionDataSource: UICollectionViewDiffableDataSource<Cate
         ])
         collectionView.delegate = self
     }
+    
+    func reload(_ sections: [CategorySelectionSection]) {
+        var snapshot = CategorySelectionSnapshot()
+        
+        snapshot.appendSections(sections)
+        sections.forEach { section in
+            snapshot.appendItems(section.items, toSection: section)
+        }
+        apply(snapshot, animatingDifferences: false)
+    }
 }
+
 
 extension CategorySelectionDataSource: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -33,7 +47,6 @@ extension CategorySelectionDataSource: UICollectionViewDelegate {
         viewModel.input.deSelectCategory.send(indexPath.row)
     }
 }
-
 
 struct CategorySelectionSection: Hashable {
     enum SectionType: Hashable {

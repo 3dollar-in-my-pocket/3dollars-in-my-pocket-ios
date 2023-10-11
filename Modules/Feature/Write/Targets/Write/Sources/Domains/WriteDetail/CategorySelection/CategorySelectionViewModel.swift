@@ -61,15 +61,8 @@ final class CategorySelectionViewModel: BaseViewModel {
     override func bind() {
         input.viewDidLoad
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, _ in
-                owner.sendPageViewLog()
-            })
-            .withUnretained(self)
             .sink { owner, _ in
-//                let categories = owner.metadataManager.categories
-//                owner.state.categories = categories
-//                owner.output.categories.send(categories)
-//                owner.output.selectCategories.send(owner.state.selectedCategories)
+                owner.sendPageViewLog()
             }
             .store(in: &cancellables)
         

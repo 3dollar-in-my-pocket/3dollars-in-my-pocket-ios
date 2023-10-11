@@ -151,7 +151,7 @@ final class WriteDetailViewController: Common.BaseViewController {
     private func presentCategorySelection(_ viewModel: CategorySelectionViewModel) {
         let viewController = CategorySelectionViewController(viewModel: viewModel)
         
-        navigationController?.present(viewController, animated: true)
+        presentPanModal(viewController)
     }
     
     @objc func onShowKeyboard(notification: NSNotification) {
