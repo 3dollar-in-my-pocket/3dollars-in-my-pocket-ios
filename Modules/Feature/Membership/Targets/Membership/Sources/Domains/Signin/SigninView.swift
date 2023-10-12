@@ -18,6 +18,7 @@ final class SigninView: BaseView {
     }
     
     override func setup() {
+        logoImage.contentMode = .scaleAspectFit
         backgroundColor = Colors.mainPink.color
         addSubViews([
             logoImage,
@@ -31,7 +32,7 @@ final class SigninView: BaseView {
         logoImage.snp.makeConstraints {
             $0.left.equalToSuperview().offset(32)
             $0.right.equalToSuperview().offset(-32)
-            $0.bottom.equalTo(kakaoButton.snp.top).offset(-48)
+            $0.bottom.equalTo(kakaoButton.snp.top).offset(-72)
         }
         
         kakaoButton.snp.makeConstraints {
