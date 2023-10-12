@@ -11,4 +11,6 @@ public protocol StoreInterface {
         visitableStore: VisitableStore,
         onSuccessVisit: @escaping (() -> Void)
     ) -> UIViewController
+    
+    func getMapDeetailViewController(location: Location, storeName: String) -> UIViewController
 }

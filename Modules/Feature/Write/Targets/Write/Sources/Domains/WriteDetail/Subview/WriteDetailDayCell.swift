@@ -29,6 +29,10 @@ final class WriteDetailDayCell: BaseCollectionViewCell {
             $0.bottom.equalToSuperview().offset(-28)
         }
     }
+    
+    func bind(_ appearanceDays: [AppearanceDay]) {
+        dayStackView.selectAppearanceDays(appearanceDays)
+    }
 }
 
 extension WriteDetailDayCell {
@@ -55,6 +59,14 @@ extension WriteDetailDayCell {
         
         required init(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
+        }
+        
+        func selectAppearanceDays(_ appearanceDays: [AppearanceDay]) {
+            for appearanceDay in appearanceDays {
+                if let targetIndex = dayButtons.firstIndex(where: { $0.appearanceDay == appearanceDay }) {
+                    dayButtons[targetIndex].isSelected = true
+                }
+            }
         }
         
         private func setup() {

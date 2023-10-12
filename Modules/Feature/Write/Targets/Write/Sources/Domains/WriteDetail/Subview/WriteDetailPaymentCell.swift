@@ -29,6 +29,10 @@ final class WriteDetailPaymentCell: BaseCollectionViewCell {
             $0.bottom.equalToSuperview().offset(-16)
         }
     }
+    
+    func bind(paymentMethods: [PaymentMethod]) {
+        paymentStackView.selectMethods(paymentMethods)
+    }
 }
 
 extension WriteDetailPaymentCell {
@@ -57,6 +61,24 @@ extension WriteDetailPaymentCell {
         
         required init(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
+        }
+        
+        func selectMethods(_ paymentMethods: [PaymentMethod]) {
+            for paymentMethod in paymentMethods {
+                switch paymentMethod {
+                case .cash:
+                    cashCheckButton.isSelected = true
+                    
+                case .accountTransfer:
+                    transferCheckButton.isSelected = true
+                    
+                case .card:
+                    cardCheckButton.isSelected = true
+                    
+                case .unknown:
+                    continue
+                }
+            }
         }
         
         private func setup() {

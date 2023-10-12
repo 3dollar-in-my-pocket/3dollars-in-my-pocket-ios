@@ -6,7 +6,9 @@ import Model
 public protocol StoreServiceProtocol {
     func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<IsStoresExistedAroundResponse, Error>
     
-    func createStore(input: StoreCreateRequestInput) async -> Result<StoreCategoryResponse, Error>
+    func createStore(input: StoreCreateRequestInput) async -> Result<StoreCreateResponse, Error>
+    
+    func editStore(storeId: Int, input: EditStoreRequestInput) async -> Result<StoreCreateResponse, Error>
     
     func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResposne<PlatformStoreWithDetailResponse>, Error>
     
@@ -34,8 +36,14 @@ public struct StoreService: StoreServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func createStore(input: StoreCreateRequestInput) async -> Result<StoreCategoryResponse, Error> {
+    public func createStore(input: StoreCreateRequestInput) async -> Result<StoreCreateResponse, Error> {
         let request = StoreCreateRequest(requestInput: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func editStore(storeId: Int, input: EditStoreRequestInput) async -> Result<StoreCreateResponse, Error> {
+        let request = EditStoreRequest(storeId: storeId, requestInput: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }

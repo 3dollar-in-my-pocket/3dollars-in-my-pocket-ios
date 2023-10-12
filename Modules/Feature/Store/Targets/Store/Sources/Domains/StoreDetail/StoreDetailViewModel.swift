@@ -9,7 +9,7 @@ import AppInterface
 
 final class StoreDetailViewModel: BaseViewModel {
     struct Input {
-        let viewDidLoad = PassthroughSubject<Void, Never>()
+        let load = PassthroughSubject<Void, Never>()
         let didTapReport = PassthroughSubject<Void, Never>()
         let didTapVisit = PassthroughSubject<Void, Never>()
         
@@ -102,7 +102,7 @@ final class StoreDetailViewModel: BaseViewModel {
         bindPhotoSection()
         bindReviewSection()
         
-        input.viewDidLoad
+        input.load
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _: Void) in
                 owner.fetchStoreDetail()
@@ -465,7 +465,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         viewModel.output.onSuccessWriteReview
             .mapVoid
-            .subscribe(input.viewDidLoad)
+            .subscribe(input.load)
             .store(in: &viewModel.cancellables)
         
         output.route.send(.presentWriteReview(viewModel))
@@ -480,7 +480,10 @@ final class StoreDetailViewModel: BaseViewModel {
     
     private func presentMapDetail() {
         guard let storeDetailData = state.storeDetailData else { return }
-        let config = MapDetailViewModel.Config(storeDetailData: storeDetailData)
+        let config = MapDetailViewModel.Config(
+            location: storeDetailData.overview.location,
+            storeName: storeDetailData.overview.storeName
+        )
         let viewModel = MapDetailViewModel(config: config)
         
         output.route.send(.presentMapDetail(viewModel))
@@ -589,7 +592,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let viewModel = VisitViewModel(config: config)
         
         viewModel.output.onSuccessVisit
-            .subscribe(input.viewDidLoad)
+            .subscribe(input.load)
             .store(in: &viewModel.cancellables)
         
         output.route.send(.presentVisit(viewModel))

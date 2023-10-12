@@ -26,6 +26,7 @@ final class WriteDetailViewModel: BaseViewModel {
     }
     
     struct Output {
+        let isCloseButtonHidden: CurrentValueSubject<Bool, Never>
         let isSaveButtonEnable = PassthroughSubject<Bool, Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -35,23 +36,23 @@ final class WriteDetailViewModel: BaseViewModel {
     
     private struct State {
         var storeId: Int?
-        var location: Model.Location
+        var location: Location
         var addess: String
         var name = ""
         var salesType: SalesType?
         var paymentMethods: [PaymentMethod] = []
         var appearanceDays: [AppearanceDay] = []
-        var categories: [Model.PlatformStoreCategory] = []
+        var categories: [PlatformStoreCategory] = []
         var menu: [[NewMenu]] = []
         var isEdit: Bool
     }
     
     enum Route {
         case pop
-        case presentFullMap
+        case presentMapDetail(Location, String)
         case presentCategorySelection(CategorySelectionViewModel)
         case dismissWithStoreId(Int)
-        case dismissWIthStoreDetailData(StoreDetailData)
+        case dismissWithUpdatedStore(StoreCreateResponse)
     }
     
     struct EditConfig: WriteStoreConfigurable {
@@ -60,12 +61,12 @@ final class WriteDetailViewModel: BaseViewModel {
     }
     
     struct WriteConfig: WriteStoreConfigurable {
-        let location: Model.Location
+        let location: Location
         let address: String
     }
     
     let input = Input()
-    let output = Output()
+    let output: Output
     private var state: State
     private let storeService: StoreServiceProtocol
     private let categoryService: CategoryServiceProtocol
@@ -90,7 +91,21 @@ final class WriteDetailViewModel: BaseViewModel {
                 addess: writeConfig.address,
                 isEdit: false
             )
+            self.output = Output(isCloseButtonHidden: .init(false))
         } else if let editConfig = config as? EditConfig {
+            var menus: [[NewMenu]] = []
+            
+            for category in editConfig.storeDetailData.overview.categories {
+                var categoryMenus: [NewMenu] = []
+                
+                for menu in editConfig.storeDetailData.menus {
+                    if menu.category == category {
+                        categoryMenus.append(NewMenu(category: menu.category, name: menu.name ?? "", price: menu.price ?? ""))
+                    }
+                }
+                menus.append(categoryMenus)
+            }
+            
             self.state = State(
                 storeId: editConfig.storeId,
                 location: editConfig.storeDetailData.overview.location,
@@ -100,8 +115,10 @@ final class WriteDetailViewModel: BaseViewModel {
                 paymentMethods: editConfig.storeDetailData.info.paymentMethods,
                 appearanceDays: editConfig.storeDetailData.info.appearanceDays,
                 categories: editConfig.storeDetailData.overview.categories,
+                menu: menus,
                 isEdit: true
             )
+            self.output = Output(isCloseButtonHidden: .init(true))
         } else {
             fatalError("올바른 접근이 아닙니다.")
         }
@@ -120,7 +137,10 @@ final class WriteDetailViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.tapFullMap
-            .map { .presentFullMap }
+            .withUnretained(self)
+            .map { (owner: WriteDetailViewModel, _) in
+                Route.presentMapDetail(owner.state.location, owner.state.name)
+            }
             .subscribe(output.route)
             .store(in: &cancellables)
         
@@ -244,28 +264,13 @@ final class WriteDetailViewModel: BaseViewModel {
         
         input.tapSave
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, _ in
-                owner.output.showLoading.send(true)
-            })
-            .map { owner, _ in
-                owner.createStoreCreateRequestInput()
-            }
-            .withUnretained(self)
-            .asyncMap { owner, input in
-                await owner.storeService.createStore(input: input)
-            }
-            .withUnretained(self)
-            .sink { owner, result in
-                owner.output.showLoading.send(false)
-                owner.sendSaveClickLog()
-                switch result {
-                case .success(let response):
-                    owner.output.route.send(.dismissWithStoreId(response.storeId))
-
-                case .failure(let error):
-                    owner.output.error.send(error)
+            .sink(receiveValue: { (owner: WriteDetailViewModel, _) in
+                if owner.state.isEdit {
+                    owner.editStore()
+                } else {
+                    owner.createStore()
                 }
-            }
+            })
             .store(in: &cancellables)
     }
     
@@ -291,9 +296,9 @@ final class WriteDetailViewModel: BaseViewModel {
             WriteDetailSection(type: .map, items: [.map(state.location)]),
             WriteDetailSection(type: .address, items: [.address(state.addess)]),
             WriteDetailSection(type: .name, items: [.name(state.name)]),
-            WriteDetailSection(type: .storeType, items: [.storeType]),
-            WriteDetailSection(type: .paymentMethod, items: [.paymentMethod]),
-            WriteDetailSection(type: .appearanceDay, items: [.appearanceDay]),
+            WriteDetailSection(type: .storeType, items: [.storeType(state.salesType)]),
+            WriteDetailSection(type: .paymentMethod, items: [.paymentMethod(state.paymentMethods)]),
+            WriteDetailSection(type: .appearanceDay, items: [.appearanceDay(state.appearanceDays)]),
             WriteDetailSection(type: .category, items: [ .categoryCollection([nil] + state.categories)] + menuGroups)
         ]
         output.sections.send(sections)
@@ -307,7 +312,7 @@ final class WriteDetailViewModel: BaseViewModel {
     }
     
     private func createStoreCreateRequestInput() -> StoreCreateRequestInput {
-        var menuRequestInputs = [Model.StoreMenuRequestInput]()
+        var menuRequestInputs = [StoreMenuRequestInput]()
         for menuGroup in state.menu {
             let emptyMenuCount = menuGroup.filter { !$0.isValid }.count
             var filteredMenuGroup = [NewMenu]()
@@ -318,13 +323,42 @@ final class WriteDetailViewModel: BaseViewModel {
             }
             
             let requests = filteredMenuGroup.map { menu in
-                Model.StoreMenuRequestInput(name: menu.name, price: menu.price, category: menu.category.category)
+                StoreMenuRequestInput(name: menu.name, price: menu.price, category: menu.category.categoryId)
             }
             
             menuRequestInputs.append(contentsOf: requests)
         }
         
         return StoreCreateRequestInput(
+            latitude: state.location.latitude,
+            longitude: state.location.longitude,
+            storeName: state.name,
+            storeType: state.salesType?.rawValue,
+            appearanceDays: state.appearanceDays.map { $0.rawValue },
+            paymentMethods: state.paymentMethods.map { $0.rawValue },
+            menus: menuRequestInputs
+        )
+    }
+    
+    private func createEditStoreRequestInput() -> EditStoreRequestInput {
+        var menuRequestInputs = [StoreMenuRequestInput]()
+        for menuGroup in state.menu {
+            let emptyMenuCount = menuGroup.filter { !$0.isValid }.count
+            var filteredMenuGroup = [NewMenu]()
+            if emptyMenuCount == menuGroup.count {
+                filteredMenuGroup = [menuGroup[0]]
+            } else {
+                filteredMenuGroup = menuGroup.filter { $0.isValid }
+            }
+            
+            let requests = filteredMenuGroup.map { menu in
+                StoreMenuRequestInput(name: menu.name, price: menu.price, category: menu.category.categoryId)
+            }
+            
+            menuRequestInputs.append(contentsOf: requests)
+        }
+        
+        return EditStoreRequestInput(
             latitude: state.location.latitude,
             longitude: state.location.longitude,
             storeName: state.name,
@@ -383,6 +417,44 @@ final class WriteDetailViewModel: BaseViewModel {
                     .store(in: &viewModel.cancellables)
                 
                 output.route.send(.presentCategorySelection(viewModel))
+                
+            case .failure(let error):
+                output.error.send(error)
+            }
+        }
+    }
+    
+    private func createStore() {
+        Task {
+            sendSaveClickLog()
+            output.showLoading.send(true)
+            let input = createStoreCreateRequestInput()
+            
+            let result = await storeService.createStore(input: input)
+            
+            output.showLoading.send(false)
+            switch result {
+            case .success(let response):
+                output.route.send(.dismissWithStoreId(response.storeId))
+                
+            case .failure(let error):
+                output.error.send(error)
+            }
+        }
+    }
+    
+    private func editStore() {
+        guard let storeId = state.storeId else { return }
+        let input = createEditStoreRequestInput()
+        output.showLoading.send(true)
+        
+        Task {
+            let result = await storeService.editStore(storeId: storeId, input: input)
+            
+            output.showLoading.send(false)
+            switch result {
+            case .success(let response):
+                output.route.send(.dismissWithUpdatedStore(response))
                 
             case .failure(let error):
                 output.error.send(error)

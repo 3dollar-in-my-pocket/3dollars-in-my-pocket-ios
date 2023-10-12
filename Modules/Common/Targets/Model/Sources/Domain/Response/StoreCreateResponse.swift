@@ -1,6 +1,6 @@
 import Foundation
 
-public struct StoreCategoryResponse: Decodable {
+public struct StoreCreateResponse: Decodable {
     public let storeId: Int
     public let userId: Int
     public let storeName: String

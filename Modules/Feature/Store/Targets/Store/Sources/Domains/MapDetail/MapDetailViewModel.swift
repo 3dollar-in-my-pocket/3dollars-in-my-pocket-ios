@@ -7,7 +7,7 @@ import Model
 import DependencyInjection
 import AppInterface
 
-final class MapDetailViewModel: BaseViewModel {
+public final class MapDetailViewModel: BaseViewModel {
     struct Input {
         let didTapNavigation = PassthroughSubject<Void, Never>()
         let didTapNavigationAction = PassthroughSubject<NavigationAppType, Never>()
@@ -19,11 +19,13 @@ final class MapDetailViewModel: BaseViewModel {
     }
     
     struct State {
-        let storeDetailData: StoreDetailData
+        let location: Location
+        let storeName: String
     }
     
-    struct Config {
-        let storeDetailData: StoreDetailData
+    public struct Config {
+        let location: Location
+        let storeName: String
     }
     
     enum Route {
@@ -34,17 +36,17 @@ final class MapDetailViewModel: BaseViewModel {
     let output: Output
     private var state: State
     
-    init(config: Config) {
-        self.state = State(storeDetailData: config.storeDetailData)
+    public init(config: Config) {
+        self.state = State(location: config.location, storeName: config.storeName)
         
         let location = CLLocation(
-            latitude: config.storeDetailData.overview.location.latitude,
-            longitude: config.storeDetailData.overview.location.longitude
+            latitude: config.location.latitude,
+            longitude: config.location.longitude
         )
         self.output = Output(storeLocation: .init(location))
     }
     
-    override func bind() {
+    public override func bind() {
         input.didTapNavigation
             .map { Route.presentNavigationActionSheet }
             .subscribe(output.route)
@@ -60,8 +62,8 @@ final class MapDetailViewModel: BaseViewModel {
     
     private func goToNavigationApplication(type: NavigationAppType) {
         guard let appInfomation = DIContainer.shared.container.resolve(AppInfomation.self) else { return }
-        let location = state.storeDetailData.overview.location
-        let storeName = state.storeDetailData.overview.storeName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let location = state.location
+        let storeName = state.storeName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         
         let urlScheme: String
         switch type {

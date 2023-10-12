@@ -4,24 +4,14 @@ import Common
 import DesignSystem
 
 final class CategorySelectionView: BaseView {
-    enum Layout {
-        static let itemSpace: CGFloat = 16
-        static let lineSpace: CGFloat = 12
-    }
-    
-    let backgroundButton = UIButton()
-    
-    private let containerView = UIView().then {
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 24
-        $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-    }
-    
-    private let titleLabel = UILabel().then {
-        $0.text = Strings.categorySelectionTitle
-        $0.textColor = Colors.gray100.color
-        $0.font = Fonts.semiBold.font(size: 20)
-    }
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = Colors.gray100.color
+        label.font = Fonts.semiBold.font(size: 20)
+        label.text = Strings.categorySelectionTitle
+        
+        return label
+    }()
     
     private let multiLabel = UILabel().then {
         $0.text = Strings.categorySelectionMulti
@@ -44,10 +34,8 @@ final class CategorySelectionView: BaseView {
     }
     
     override func setup() {
-        backgroundColor = .clear
+        backgroundColor = Colors.systemWhite.color
         addSubViews([
-            backgroundButton,
-            containerView,
             titleLabel,
             multiLabel,
             categoryCollectionView,
@@ -56,23 +44,9 @@ final class CategorySelectionView: BaseView {
     }
     
     override func bindConstraints() {
-        backgroundButton.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
-            $0.top.equalToSuperview()
-            $0.bottom.equalTo(containerView.snp.top)
-        }
-        
-        containerView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
-            $0.bottom.equalToSuperview()
-            $0.top.equalTo(titleLabel).offset(-24)
-        }
-        
         titleLabel.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20)
-            $0.bottom.equalTo(categoryCollectionView.snp.top).offset(-17)
+            $0.top.equalToSuperview().offset(24)
         }
         
         multiLabel.snp.makeConstraints {
@@ -81,10 +55,10 @@ final class CategorySelectionView: BaseView {
         }
         
         categoryCollectionView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.left.equalToSuperview()
+            $0.right.equalToSuperview()
+            $0.top.equalTo(titleLabel.snp.bottom).offset(17)
             $0.bottom.equalTo(selectButton.snp.top).offset(-28)
-            $0.height.equalTo(0)
         }
         
         selectButton.snp.makeConstraints {
@@ -94,23 +68,29 @@ final class CategorySelectionView: BaseView {
         }
     }
     
-    func updateCollectionViewHeight(itemCount: Int) {
-        let row = CGFloat(itemCount / 5 + 1)
-        let height = (CategorySelectionCell.Layout.size.height * row) + (Layout.lineSpace * (row - 1))
-        
-        categoryCollectionView.snp.updateConstraints {
-            $0.height.equalTo(height)
+    private func generateLayout() -> UICollectionViewLayout {
+        return UICollectionViewCompositionalLayout { sectionIndex, _ in
+            let item = NSCollectionLayoutItem(layoutSize: .init(
+                widthDimension: .absolute(CategorySelectionCell.size.width),
+                heightDimension: .absolute(CategorySelectionCell.size.height)
+            ))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .absolute(CategorySelectionCell.size.height)
+            ), subitems: [item])
+            group.interItemSpacing = NSCollectionLayoutSpacing.fixed(12)
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
+            section.interGroupSpacing = 12
+            section.boundarySupplementaryItems = [ .init(
+                layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(CategorySelectionHeaderView.estimatedHeight)),
+                elementKind: UICollectionView.elementKindSectionHeader,
+                alignment: .topLeading
+            )]
+            
+            return section
         }
-        layoutIfNeeded()
-    }
-    
-    private func generateLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.itemSize = CategorySelectionCell.Layout.size
-        layout.minimumInteritemSpacing = Layout.itemSpace
-        layout.minimumLineSpacing = Layout.lineSpace
-        
-        return layout
     }
 }
