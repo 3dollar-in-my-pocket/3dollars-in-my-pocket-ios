@@ -11,8 +11,8 @@ final class CategorySelectionViewModel: BaseViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let onLoadDataSource = PassthroughSubject<Void, Never>()
-        let selectCategory = PassthroughSubject<Int, Never>()
-        let deSelectCategory = PassthroughSubject<Int, Never>()
+        let selectCategory = PassthroughSubject<String, Never>()
+        let deSelectCategory = PassthroughSubject<String, Never>()
         let tapSelect = PassthroughSubject<Void, Never>()
     }
     
@@ -76,8 +76,8 @@ final class CategorySelectionViewModel: BaseViewModel {
         
         input.selectCategory
             .withUnretained(self)
-            .sink { owner, index in
-                guard let selectedCategory = owner.state.categories[safe: index] else { return }
+            .sink { owner, categoryId in
+                guard let selectedCategory = owner.state.categories.first(where: { $0.categoryId == categoryId }) else { return }
                 
                 owner.state.selectedCategories.append(selectedCategory)
                 owner.output.isEnableSelectButton.send(owner.state.selectedCategories.isNotEmpty)
@@ -86,8 +86,8 @@ final class CategorySelectionViewModel: BaseViewModel {
         
         input.deSelectCategory
             .withUnretained(self)
-            .sink { owner, index in
-                guard let selectedCategory = owner.state.categories[safe: index],
+            .sink { owner, categoryId in
+                guard let selectedCategory = owner.state.categories.first(where: { $0.categoryId == categoryId }),
                       let targetIndex = owner.state.selectedCategories.firstIndex(of: selectedCategory)
                 else { return }
                 

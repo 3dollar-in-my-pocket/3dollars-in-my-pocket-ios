@@ -82,6 +82,13 @@ final class CategorySelectionView: BaseView {
             let section = NSCollectionLayoutSection(group: group)
             section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
             section.interGroupSpacing = 12
+            section.boundarySupplementaryItems = [ .init(
+                layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(CategorySelectionHeaderView.estimatedHeight)),
+                elementKind: UICollectionView.elementKindSectionHeader,
+                alignment: .topLeading
+            )]
             
             return section
         }

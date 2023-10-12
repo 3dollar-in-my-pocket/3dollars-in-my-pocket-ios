@@ -4,17 +4,22 @@ import NMapsMap
 import Common
 import DesignSystem
 import Model
+import DependencyInjection
+import StoreInterface
 
 typealias WriteDetailSanpshot = NSDiffableDataSourceSnapshot<WriteDetailSection, WriteDetailSectionItem>
 
 protocol WriteDetailDelegate: AnyObject {
     func onSuccessWrite(storeId: Int)
     
-    func onSuccessEdit(storeDetailData: StoreDetailData)
+    func onSuccessEdit(storeCreateResponse: StoreCreateResponse)
 }
 
 final class WriteDetailViewController: Common.BaseViewController {
     weak var deleagte: WriteDetailDelegate?
+    
+    var onSuccessWrite: ((Int) -> Void)?
+    var onSuccessEdit: ((StoreCreateResponse) -> Void)?
     
     private let writeDetailView = WriteDetailView()
     private lazy var dataSource = WriteDetailDataSource(collectionView: writeDetailView.collectionView, viewModel: viewModel)
@@ -67,6 +72,11 @@ final class WriteDetailViewController: Common.BaseViewController {
     }
     
     override func bindViewModelOutput() {
+        viewModel.output.isCloseButtonHidden
+            .main
+            .assign(to: \.isHidden, on: writeDetailView.closeButton)
+            .store(in: &cancellables)
+        
         viewModel.output.isSaveButtonEnable
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
@@ -113,22 +123,20 @@ final class WriteDetailViewController: Common.BaseViewController {
         case .pop:
             navigationController?.popViewController(animated: true)
             
-        case .presentFullMap:
-            // TODO: 전체 지도 디자인 필요
-            break
+        case .presentMapDetail(let location, let storeName):
+            presentMapDetail(location: location, storeName: storeName)
             
         case .presentCategorySelection(let viewModel):
             presentCategorySelection(viewModel)
             
         case .dismissWithStoreId(let storeId):
             dismiss(animated: true) { [weak self] in
-                self?.deleagte?.onSuccessWrite(storeId: storeId)
+                self?.onSuccessWrite?(storeId)
             }
             
-        case .dismissWIthStoreDetailData(let storeDetailData):
-            dismiss(animated: true) { [weak self] in
-                self?.deleagte?.onSuccessEdit(storeDetailData: storeDetailData)
-            }
+        case .dismissWithUpdatedStore(let storeCreateResponse):
+            navigationController?.popViewController(animated: true)
+            onSuccessEdit?(storeCreateResponse)
         }
     }
     
@@ -152,6 +160,13 @@ final class WriteDetailViewController: Common.BaseViewController {
         let viewController = CategorySelectionViewController(viewModel: viewModel)
         
         presentPanModal(viewController)
+    }
+    
+    private func presentMapDetail(location: Location, storeName: String) {
+        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else { return }
+        
+        let viewController = storeInterface.getMapDeetailViewController(location: location, storeName: storeName)
+        present(viewController, animated: true)
     }
     
     @objc func onShowKeyboard(notification: NSNotification) {

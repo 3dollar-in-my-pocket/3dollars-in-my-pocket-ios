@@ -26,6 +26,14 @@ public final class StoreInterfaceImpl: StoreInterface {
         
         return VisitViewController(viewModel: viewModel)
     }
+    
+    public func getMapDeetailViewController(location: Location, storeName: String) -> UIViewController {
+        let config = MapDetailViewModel.Config(location: location, storeName: storeName)
+        let viewModel = MapDetailViewModel(config: config)
+        let viewController = MapDetailViewController(viewModel: viewModel)
+        
+        return viewController
+    }
 }
 
 public extension StoreInterfaceImpl {

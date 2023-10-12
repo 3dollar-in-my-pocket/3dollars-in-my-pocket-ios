@@ -49,12 +49,15 @@ final class CategorySelectionViewController: BaseViewController {
             .receive(on: DispatchQueue.main)
             .sink { (owner: CategorySelectionViewController, categories: [PlatformStoreCategory]) in
                 var categorySections: [CategorySelectionSection] = []
-                
                 let groupingByCategoryType = Dictionary(grouping: categories) { $0.classification }
                 
                 for categoryType in groupingByCategoryType.keys.sorted(by: <) {
                     if let categories = groupingByCategoryType[categoryType] {
-                        let categorySection = CategorySelectionSection(type: .category, items: categories.map { CategorySelectionItem.category($0) })
+                        let categorySection = CategorySelectionSection(
+                            type: .category,
+                            title: categoryType.description,
+                            items: categories.map { CategorySelectionItem.category($0) }
+                        )
                         
                         categorySections.append(categorySection)
                     }
@@ -69,9 +72,12 @@ final class CategorySelectionViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, selectedCategories in
                 for category in selectedCategories {
-                    if let index = owner.dataSource.snapshot().indexOfItem(.category(category)) {
-                        let indexPath = IndexPath(row: index, section: 0)
-                        owner.categorySelectionView.categoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredVertically)
+                    if let indexPath = owner.dataSource.getIndexPath(of: .category(category)) {
+                        owner.categorySelectionView.categoryCollectionView.selectItem(
+                            at: indexPath,
+                            animated: false,
+                            scrollPosition: .centeredVertically
+                        )
                     }
                 }
             }

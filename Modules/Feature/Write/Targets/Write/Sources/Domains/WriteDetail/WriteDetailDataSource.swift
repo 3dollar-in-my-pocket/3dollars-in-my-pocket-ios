@@ -56,24 +56,27 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
                 return cell
                 
-            case .storeType:
+            case .storeType(let salesType):
                 let cell: WriteDetailTypeCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(salesType: salesType)
                 cell.tapPublisher
                     .subscribe(viewModel.input.tapSalesType)
                     .store(in: &cell.cancellables)
                 
                 return cell
                 
-            case .paymentMethod:
+            case .paymentMethod(let paymentMethods):
                 let cell: WriteDetailPaymentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(paymentMethods: paymentMethods)
                 cell.tapPublisher
                     .subscribe(viewModel.input.tapPaymentMethod)
                     .store(in: &cell.cancellables)
                 
                 return cell
                 
-            case .appearanceDay:
+            case .appearanceDay(let appearanceDays):
                 let cell: WriteDetailDayCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(appearanceDays)
                 cell.tapPublisher
                     .subscribe(viewModel.input.tapDay)
                     .store(in: &cell.cancellables)
@@ -186,9 +189,9 @@ enum WriteDetailSectionItem: Hashable {
     case map(Model.Location)
     case address(String)
     case name(String)
-    case storeType
-    case paymentMethod
-    case appearanceDay
+    case storeType(SalesType?)
+    case paymentMethod([PaymentMethod])
+    case appearanceDay([AppearanceDay])
     case categoryCollection([Model.PlatformStoreCategory?])
     case menuGroup(WriteDetailMenuGroupViewModel)
     

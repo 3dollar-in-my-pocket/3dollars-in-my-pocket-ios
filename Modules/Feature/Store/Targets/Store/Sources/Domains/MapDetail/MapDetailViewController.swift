@@ -4,15 +4,11 @@ import Common
 import DesignSystem
 import Model
 
-final class MapDetailViewController: BaseViewController {
+public final class MapDetailViewController: BaseViewController {
     private let mapDetailView = MapDetailView()
     private let viewModel: MapDetailViewModel
     
-    static func instance(viewModel: MapDetailViewModel) -> MapDetailViewController {
-        return MapDetailViewController(viewModel: viewModel)
-    }
-    
-    init(viewModel: MapDetailViewModel) {
+    public init(viewModel: MapDetailViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         
@@ -23,15 +19,15 @@ final class MapDetailViewController: BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func loadView() {
+    public override func loadView() {
         self.view = mapDetailView
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
     }
     
-    override func bindEvent() {
+    public override func bindEvent() {
         mapDetailView.closeButton
             .controlPublisher(for: .touchUpInside)
             .main
@@ -42,7 +38,7 @@ final class MapDetailViewController: BaseViewController {
             .store(in: &cancellables)
     }
     
-    override func bindViewModelInput() {
+    public override func bindViewModelInput() {
         mapDetailView.navigationButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
@@ -50,7 +46,7 @@ final class MapDetailViewController: BaseViewController {
             .store(in: &cancellables)
     }
     
-    override func bindViewModelOutput() {
+    public override func bindViewModelOutput() {
         viewModel.output.storeLocation
             .main
             .withUnretained(self)

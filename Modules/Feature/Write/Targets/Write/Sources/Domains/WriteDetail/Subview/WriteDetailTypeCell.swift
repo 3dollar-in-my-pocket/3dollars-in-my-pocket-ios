@@ -29,6 +29,10 @@ final class WriteDetailTypeCell: BaseCollectionViewCell {
             $0.bottom.equalToSuperview().offset(-16)
         }
     }
+    
+    func bind(salesType: SalesType?) {
+        typeStackView.selectType(type: salesType)
+    }
 }
 
 extension WriteDetailTypeCell {

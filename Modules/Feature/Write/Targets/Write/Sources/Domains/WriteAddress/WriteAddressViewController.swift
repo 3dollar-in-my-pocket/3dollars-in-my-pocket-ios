@@ -131,7 +131,9 @@ public final class WriteAddressViewController: BaseViewController {
     
     private func pushWriteDetail(_ viewModel: WriteDetailViewModel) {
         let viewController = WriteDetailViewController(viewModel: viewModel)
-        viewController.deleagte = self
+        viewController.onSuccessWrite = { [weak self] storeId in
+            self?.onSuccessWrite?(storeId)
+        }
         
         navigationController?.pushViewController(viewController, animated: true)
     }
@@ -140,16 +142,6 @@ public final class WriteAddressViewController: BaseViewController {
         let viewController = AddressConfirmPopupViewController(viewModel: viewModel)
         
         navigationController?.present(viewController, animated: true)
-    }
-}
-
-extension WriteAddressViewController: WriteDetailDelegate {
-    func onSuccessWrite(storeId: Int) {
-        onSuccessWrite?(storeId)
-    }
-    
-    func onSuccessEdit(storeDetailData: Model.StoreDetailData) {
-        // 사용 하지 않습니다.
     }
 }
 

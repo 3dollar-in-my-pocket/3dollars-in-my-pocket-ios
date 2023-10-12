@@ -34,7 +34,7 @@ public final class StoreDetailViewController: BaseViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.input.viewDidLoad.send(())
+        viewModel.input.load.send(())
         
         storeDetailView.collectionView.collectionViewLayout = createLayout()
     }
@@ -348,7 +348,7 @@ public final class StoreDetailViewController: BaseViewController {
     }
     
     private func presentMapDetail(_ viewModel: MapDetailViewModel) {
-        let viewController = MapDetailViewController.instance(viewModel: viewModel)
+        let viewController = MapDetailViewController(viewModel: viewModel)
         
         present(viewController, animated: true)
     }
@@ -391,12 +391,13 @@ public final class StoreDetailViewController: BaseViewController {
     
     private func pushEditStore(storeId: Int, storeDetailData: StoreDetailData) {
         guard let writeInterface = DIContainer.shared.container.resolve(WriteInterface.self) else {
-            fatalError("⚠️WriteInterface가 정의되지 않았습니다.")
+            ToastManager.shared.show(message: "⚠️WriteInterface가 정의되지 않았습니다.")
+            return
         }
         let viewController = writeInterface.getEditDetailViewController(
             storeId: storeId,
-            storeDetailData: storeDetailData) { storeDetailData in
-                
+            storeDetailData: storeDetailData) { [weak self] _ in
+                self?.viewModel.input.load.send(())
             }
         
         navigationController?.pushViewController(viewController, animated: true)
