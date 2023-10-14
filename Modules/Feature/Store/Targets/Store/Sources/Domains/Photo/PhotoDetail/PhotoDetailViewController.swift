@@ -10,10 +10,6 @@ final class PhotoDetailViewController: BaseViewController {
     private var photos: [StoreDetailPhoto] = []
     private var isFirstLoad = true
     
-    static func instance(viewModel: PhotoDetailViewModel) -> PhotoDetailViewController {
-        return PhotoDetailViewController(viewModel: viewModel)
-    }
-    
     init(viewModel: PhotoDetailViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -43,6 +39,20 @@ final class PhotoDetailViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: PhotoDetailViewController, _) in
                 owner.dismiss(animated: true)
+            }
+            .store(in: &cancellables)
+        
+        photoDetailView.deleteButton
+            .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { (owner: PhotoDetailViewController, _) in
+                AlertUtils.showWithCancel(
+                    viewController: owner,
+                    title: Strings.PhotoDetail.Delete.title,
+                    okButtonTitle: Strings.PhotoDetail.Delete.delete
+                ) {
+                    owner.viewModel.input.deletePhoto.send(())
+                }
             }
             .store(in: &cancellables)
     }
