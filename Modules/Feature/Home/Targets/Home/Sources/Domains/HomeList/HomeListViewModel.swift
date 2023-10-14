@@ -41,6 +41,7 @@ final class HomeListViewModel: BaseViewModel {
     
     enum Route {
         case pushStoreDetail(storeId: String)
+        case pushBossStoreDetail(storeId: String)
         case showErrorAlert(Error)
         case presentCategoryFilter(PlatformStoreCategory?)
     }
@@ -194,11 +195,17 @@ final class HomeListViewModel: BaseViewModel {
         
         input.onTapStore
             .withUnretained(self)
-            .compactMap { owner, index in
-                owner.state.stores[safe: index]?.storeId
-            }
-            .map { Route.pushStoreDetail(storeId: $0) }
-            .subscribe(output.route)
+            .sink(receiveValue: { (owner: HomeListViewModel, index: Int) in
+                guard let store = owner.state.stores[safe: index] else { return }
+                
+                switch store.storeType {
+                case .bossStore:
+                    owner.output.route.send(.pushBossStoreDetail(storeId: store.storeId))
+                    
+                case .userStore:
+                    owner.output.route.send(.pushStoreDetail(storeId: store.storeId))
+                }
+            })
             .store(in: &cancellables)
     }
     

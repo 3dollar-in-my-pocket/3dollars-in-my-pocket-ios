@@ -190,7 +190,9 @@ public final class HomeViewController: BaseViewController {
                     owner.presentPanModal(categoryFilterViewController)
                     
                 case .presentListView(let state):
-                    owner.present(HomeListViewController.instance(state: state), animated: true)
+                    let viewController = HomeListViewController.instance(state: state)
+                    
+                    owner.navigationController?.present(viewController, animated: true)
                     
                 case .pushStoreDetail(let storeId):
                     owner.pushStoreDetail(storeId: storeId)
