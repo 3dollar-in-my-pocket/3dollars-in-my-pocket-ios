@@ -8,24 +8,14 @@ import Model
 final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
 
     enum Layout {
-        static func size(viewModel: CommunityPopularStoreTabCellViewModel) -> CGSize {
-            let titleHeight: CGFloat = 88
-            let tabHeight: CGFloat = CommunityTabView.Layout.height
-            let itemCount = CGFloat(20) // CGFloat(viewModel.output.storeList.value.count)
-            let total: CGFloat = CommunityPopularStoreItemCell.Layout.size.height * itemCount + (itemSpacing * itemCount - 1) + 48.0
-            return CGSize(
-                width: UIScreen.main.bounds.width,
-                height: titleHeight + tabHeight + total
-            )
-        }
-
+        static let size = CGSize(width: UIScreen.main.bounds.width, height: 128)
         static let itemSpacing: CGFloat = 9
     }
 
     private let titleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 16)
         $0.textColor = Colors.systemBlack.color
-        $0.text = "이번 주 동네 인기 가게"
+        $0.text = "동네 인기 가게"
     }
 
     private let descriptionLabel = UILabel().then {
@@ -52,16 +42,6 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
         $0.backgroundColor = Colors.gray20.color
     }
 
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = .clear
-        $0.contentInset = .init(top: 24, left: 0, bottom: 24, right: 0)
-        $0.showsVerticalScrollIndicator = false
-        $0.register([CommunityPopularStoreItemCell.self])
-        $0.dataSource = self
-        $0.delegate = self
-        $0.isScrollEnabled = false
-    }
-
     private var viewModel: CommunityPopularStoreTabCellViewModel?
 
     override func setup() {
@@ -74,8 +54,7 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
             descriptionLabel,
             districtButton,
             lineView,
-            tabView,
-            collectionView
+            tabView
         ])
     }
 
@@ -107,11 +86,6 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
             $0.bottom.equalTo(tabView)
             $0.height.equalTo(1)
         }
-
-        collectionView.snp.makeConstraints {
-            $0.top.equalTo(tabView.snp.bottom)
-            $0.leading.trailing.bottom.equalToSuperview()
-        }
     }
 
     func bind(viewModel: CommunityPopularStoreTabCellViewModel) {
@@ -136,44 +110,15 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
             }
             .store(in: &cancellables)
 
-        viewModel.output.storeList
+        viewModel.output.currentTab
+            .removeDuplicates()
             .withUnretained(self)
             .main
-            .sink { owner, _ in
-                owner.collectionView.reloadData()
-                ToastManager.shared.show(message: "[동네 인기 가게] 지금은 군포만 보여줌")
+            .sink { owner, tab in
+                let index = owner.viewModel?.output.tabList.firstIndex(where: { $0 == tab })
+                owner.tabView.updateSelect(index ?? 0)
             }
             .store(in: &cancellables)
-    }
-
-    private func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CommunityPopularStoreItemCell.Layout.size
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = Layout.itemSpacing
-        layout.minimumInteritemSpacing = Layout.itemSpacing
-
-        return layout
+        
     }
 }
-
-extension CommunityPopularStoreTabCell: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel?.output.storeList.value.count ?? 0
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let item = viewModel?.output.storeList.value[safe: indexPath.item] else { return UICollectionViewCell() }
-
-        let cell: CommunityPopularStoreItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-        cell.bind(item: item)
-        return cell
-    }
-}
-
-extension CommunityPopularStoreTabCell: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        ToastManager.shared.show(message: "🔥 스토어 상세로 랜딩?")
-    }
-}
-

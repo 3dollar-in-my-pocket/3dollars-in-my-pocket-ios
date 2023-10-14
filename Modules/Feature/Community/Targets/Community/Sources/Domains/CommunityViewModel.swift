@@ -7,27 +7,32 @@ import Common
 
 final class CommunityViewModel: BaseViewModel {
     struct Input {
-        let viewDidLoad = PassthroughSubject<Void, Never>()
+        let firstLoad = PassthroughSubject<Void, Never>()
         let didTapPollCategoryButton = PassthroughSubject<Void, Never>()
         let didSelectPollItem = PassthroughSubject<String, Never>()
         let didTapDistrictButton = PassthroughSubject<Void, Never>()
+        let didSelect = PassthroughSubject<IndexPath, Never>()
     }
 
     struct Output {
         let showLoading = PassthroughSubject<Bool, Never>()
+        let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
-        let sections = PassthroughSubject<[CommunitySection], Never>()
+        let sections = CurrentValueSubject<[CommunitySection], Never>([])
         let updatePopularStores = PassthroughSubject<Void, Never>()
     }
 
     struct State {
-
+        let storeList = CurrentValueSubject<[PlatformStore], Never>([])
+        let reload = PassthroughSubject<Void, Never>()
+        let currentStoreTab = CurrentValueSubject<CommunityPopularStoreTab, Never>(.defaultTab)
     }
 
     enum Route {
         case pollCategoryTab
         case pollDetail(PollDetailViewModel)
         case popularStoreNeighborhoods(CommunityPopularStoreNeighborhoodsViewModel)
+        case storeDetail(Int)
     }
 
     let input = Input()
@@ -36,11 +41,16 @@ final class CommunityViewModel: BaseViewModel {
     private var state = State()
 
     private let communityService: CommunityServiceProtocol
+    private let userDefaultsUtil: UserDefaultsUtil
+
+    private lazy var pollListCellViewModel = bindPollListCellViewModel()
 
     init(
-        communityService: CommunityServiceProtocol = CommunityService()
+        communityService: CommunityServiceProtocol = CommunityService(),
+        userDefaultsUtil: UserDefaultsUtil = .shared
     ) {
         self.communityService = communityService
+        self.userDefaultsUtil = userDefaultsUtil
 
         super.init()
     }
@@ -48,10 +58,47 @@ final class CommunityViewModel: BaseViewModel {
     override func bind() {
         super.bind()
 
-        input.viewDidLoad
+        input.firstLoad
+            .merge(with: state.reload)
             .withUnretained(self)
-            .sink { (owner: CommunityViewModel, _: Void) in
-                owner.reloadDataSource()
+            .handleEvents(receiveOutput: { owner, _ in
+                owner.output.showLoading.send(true)
+            })
+            .map { (owner: CommunityViewModel, _: Void) in
+                return FetchPopularStoresInput(
+                    criteria: owner.state.currentStoreTab.value.rawValue,
+                    district: owner.userDefaultsUtil.communityPopularStoreNeighborhoods.district
+                )
+            }
+            .withUnretained(self)
+            .asyncMap { owner, input in
+                await owner.communityService.fetchPopularStores(input: input)
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                owner.output.showLoading.send(false)
+                switch result {
+                case .success(let response):
+                    owner.state.storeList.send(response.contents.map {
+                        PlatformStore(response: $0)
+                    })
+                    if response.contents.isEmpty {
+                        owner.output.showToast.send("데이터가 없어요!")
+                    }
+                    owner.reloadDataSource()
+                case .failure(let error):
+                    owner.output.showToast.send(error.localizedDescription)
+                }
+            }
+            .store(in: &cancellables)
+
+        input.didSelect
+            .withUnretained(self)
+            .sink { owner, indexPath in
+                let item = owner.output.sections.value[safe: indexPath.section]?.items[safe: indexPath.item]
+                if case .popularStore(let store) = item, let id = Int(store.id) {
+                    owner.output.route.send(.storeDetail(id))
+                }
             }
             .store(in: &cancellables)
     }
@@ -59,8 +106,12 @@ final class CommunityViewModel: BaseViewModel {
     private func reloadDataSource() {
         var sectionItems: [CommunitySectionItem] = []
 
-        sectionItems.append(.poll(bindPollListCellViewModel()))
-        sectionItems.append(.popularStore(bindPopularStoreTabCellViewModel()))
+        sectionItems.append(.poll(pollListCellViewModel))
+        sectionItems.append(.popularStoreTab(bindPopularStoreTabCellViewModel()))
+
+        sectionItems.append(contentsOf: state.storeList.value.map {
+            .popularStore($0)
+        })
 
         output.sections.send([
             CommunitySection(items: sectionItems)
@@ -68,7 +119,7 @@ final class CommunityViewModel: BaseViewModel {
     }
 
     private func bindPopularStoreTabCellViewModel() -> CommunityPopularStoreTabCellViewModel {
-        let cellViewModel = CommunityPopularStoreTabCellViewModel()
+        let cellViewModel = CommunityPopularStoreTabCellViewModel(tab: state.currentStoreTab.value)
 
         cellViewModel.output.didTapDistrictButton
             .withUnretained(self)
@@ -78,8 +129,14 @@ final class CommunityViewModel: BaseViewModel {
             .subscribe(output.route)
             .store(in: &cancellables)
 
-        output.updatePopularStores
-            .subscribe(cellViewModel.input.reload)
+        cellViewModel.output.currentTab
+            .dropFirst()
+            .removeDuplicates()
+            .withUnretained(self)
+            .sink { owner, tab in
+                owner.state.currentStoreTab.send(tab)
+                owner.state.reload.send()
+            }
             .store(in: &cancellables)
 
         return cellViewModel
@@ -90,6 +147,10 @@ final class CommunityViewModel: BaseViewModel {
 
         viewModel.output.updatePopularStores
             .subscribe(output.updatePopularStores)
+            .store(in: &cancellables)
+
+        viewModel.output.updatePopularStores
+            .subscribe(state.reload)
             .store(in: &cancellables)
 
         return viewModel
