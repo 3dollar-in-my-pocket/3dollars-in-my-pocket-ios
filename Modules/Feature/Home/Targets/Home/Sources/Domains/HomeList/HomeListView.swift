@@ -25,6 +25,13 @@ final class HomeListView: BaseView {
         $0.backgroundColor = .clear
     }
     
+    let emptyView: HomeListEmptyView = {
+        let view = HomeListEmptyView()
+        view.isHidden = true
+        
+        return view
+    }()
+    
     let mapViewButton = UIButton().then {
         $0.setImage(DesignSystemAsset.Icons.map.image.resizeImage(scaledTo: 16).withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
         $0.setTitle(HomeStrings.categoryFileterMapView, for: .normal)
@@ -49,6 +56,7 @@ final class HomeListView: BaseView {
             adView,
             adTitleLabel,
             collectionView,
+            emptyView,
             mapViewButton
         ])
     }
@@ -87,6 +95,11 @@ final class HomeListView: BaseView {
             $0.top.equalTo(adView.snp.bottom)
         }
         
+        emptyView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(collectionView).offset(92)
+        }
+        
         mapViewButton.snp.makeConstraints {
             $0.right.equalToSuperview().offset(-20)
             $0.height.equalTo(40)
@@ -95,7 +108,7 @@ final class HomeListView: BaseView {
     }
     
     private func generateLayout() -> UICollectionViewLayout {
-        let layout = HomeCardFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         layout.itemSize = HomeListCell.Layout.size
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 8

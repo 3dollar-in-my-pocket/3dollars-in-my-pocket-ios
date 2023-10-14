@@ -44,6 +44,15 @@ public enum HomeStrings {
   public static let locationDenyDescription = HomeStrings.tr("Localization", "location_deny_description")
   /// 위치 권한 거절
   public static let locationDenyTitle = HomeStrings.tr("Localization", "location_deny_title")
+
+  public enum HomeList {
+    public enum Empty {
+      /// 다른 주소로 검색하거나 직접 제보해보세요!
+      public static let description = HomeStrings.tr("Localization", "home_list.empty.description")
+      /// 주변 2km 이내에 가게가 없어요.
+      public static let title = HomeStrings.tr("Localization", "home_list.empty.title")
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

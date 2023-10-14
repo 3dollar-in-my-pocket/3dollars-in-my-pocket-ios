@@ -80,6 +80,7 @@ final class HomeListViewController: BaseViewController {
                 let section = HomeListSection(items: items)
                 
                 owner.updateDataSource(section: [section])
+                owner.homeListView.emptyView.isHidden = storeCards.isNotEmpty
             }
             .store(in: &cancellables)
         

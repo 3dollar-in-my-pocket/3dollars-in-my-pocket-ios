@@ -18,6 +18,9 @@
 // 홈 리스트 뷰 화면
 "home_list_header_total" = "전체 메뉴";
 "home_list_is_only_certified" = "방문 인증 가게";
+"home_list.empty.title" = "주변 2km 이내에 가게가 없어요.";
+"home_list.empty.description" = "다른 주소로 검색하거나 직접 제보해보세요!";
 
 "location_deny_title" = "위치 권한 거절";
 "location_deny_description" = "현재 내 위치와 가까운 가게를 찾기 위해 위치 권한이 필요합니다. 설정에서 위치 권한을 허용시켜주세요.";
+
