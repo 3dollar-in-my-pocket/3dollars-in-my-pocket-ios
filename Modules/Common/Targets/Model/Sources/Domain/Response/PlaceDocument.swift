@@ -1,6 +1,6 @@
 import Foundation
 
-public struct PlaceDocument: Decodable {
+public struct PlaceDocument: Decodable, Hashable {
     public let addressName: String
     public let y: String
     public let x: String

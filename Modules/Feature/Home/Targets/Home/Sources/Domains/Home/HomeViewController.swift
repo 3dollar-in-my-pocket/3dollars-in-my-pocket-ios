@@ -20,6 +20,7 @@ public final class HomeViewController: BaseViewController {
     private var markers: [NMFMarker] = []
     
     private var isFirstLoad = true
+    fileprivate let transition = SearchTransition()
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -72,6 +73,11 @@ public final class HomeViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.onTapOnlyBoss)
+            .store(in: &cancellables)
+        
+        homeView.addressButton.tap
+            .mapVoid
+            .subscribe(viewModel.input.onTapSearchAddress)
             .store(in: &cancellables)
         
         homeView.researchButton
@@ -210,6 +216,9 @@ public final class HomeViewController: BaseViewController {
                 case .presentMarkerAdvertisement:
                     ToastManager.shared.show(message: "🔥 마커 광고 화면 구현 필요")
                     
+                case .presentSearchAddress(let viewModel):
+                    owner.presentSearchAddress(viewModel)
+                    
                 case .showErrorAlert(let error):
                     if error is LocationError {
                         owner.showDenyAlert()
@@ -303,6 +312,13 @@ public final class HomeViewController: BaseViewController {
         
         tabBarController?.present(viewController, animated: true)
     }
+    
+    private func presentSearchAddress(_ viewModel: SearchAddressViewModel) {
+        let viewController = SearchAddressViewController(viewModel: viewModel)
+//        viewController.transitioningDelegate = self
+        
+        tabBarController?.present(viewController, animated: true, completion: nil)
+    }
 }
 
 extension HomeViewController: NMFMapViewCameraDelegate {
@@ -360,5 +376,28 @@ extension HomeViewController: UICollectionViewDelegate {
 extension HomeViewController: CategoryFilterDelegate {
     func onSelectCategory(category: PlatformStoreCategory?) {
         viewModel.input.selectCategory.send(category)
+    }
+}
+
+
+extension HomeViewController: UIViewControllerTransitioningDelegate {
+    public func animationController(
+        forPresented presented: UIViewController,
+        presenting: UIViewController,
+        source: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
+        transition.transitionMode = .present
+        transition.maskView.frame = homeView.addressButton.frame
+        
+        return transition
+    }
+    
+    public func animationController(
+        forDismissed dismissed: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
+        transition.transitionMode = .dismiss
+        transition.maskOriginalFrame = homeView.addressButton.frame
+        
+        return transition
     }
 }

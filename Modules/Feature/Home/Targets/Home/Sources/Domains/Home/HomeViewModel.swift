@@ -20,7 +20,8 @@ final class HomeViewModel: BaseViewModel {
         let selectCategory = PassthroughSubject<PlatformStoreCategory?, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
-        let searchByAddress = PassthroughSubject<CLLocation, Never>()
+        let onTapSearchAddress = PassthroughSubject<Void, Never>()
+        let searchByAddress = PassthroughSubject<PlaceDocument, Never>()
         let onTapResearch = PassthroughSubject<Void, Never>()
         let onTapCurrentLocation = PassthroughSubject<Void, Never>()
         let onTapListView = PassthroughSubject<Void, Never>()
@@ -68,6 +69,7 @@ final class HomeViewModel: BaseViewModel {
         case presentVisit(StoreCard)
         case presentPolicy
         case presentMarkerAdvertisement
+        case presentSearchAddress(SearchAddressViewModel)
         case showErrorAlert(Error)
     }
     
@@ -271,6 +273,44 @@ final class HomeViewModel: BaseViewModel {
             })
             .store(in: &cancellables)
         
+        input.onTapSearchAddress
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, _) in
+                owner.presentSearchAddress()
+            }
+            .store(in: &cancellables)
+        
+        input.searchByAddress
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: HomeViewModel, placeDocument: PlaceDocument) in
+                owner.state.address = placeDocument.placeName
+                owner.output.address.send(placeDocument.placeName)
+                
+                let latitude = Double(placeDocument.y) ?? 0
+                let longitude = Double(placeDocument.x) ?? 0
+                let location = CLLocation(latitude: latitude, longitude: longitude)
+                owner.state.newCameraPosition = location
+                owner.state.resultCameraPosition = location
+                owner.output.cameraPosition.send(location)
+            })
+            .asyncMap { owner, _ in
+                await owner.fetchAroundStore()
+            }
+            .withUnretained(self)
+            .sink(receiveValue: { owner, result in
+                owner.output.showLoading.send(false)
+                switch result {
+                case .success(let storeCards):
+                    owner.state.stores = storeCards
+                    owner.output.storeCards.send(storeCards)
+                    owner.output.scrollToIndex.send(0)
+                    
+                case .failure(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            })
+            .store(in: &cancellables)
+        
         input.onTapResearch
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
@@ -445,5 +485,14 @@ final class HomeViewModel: BaseViewModel {
         } else {
             output.route.send(.pushBossStoreDetail(storeId: store.storeId))
         }
+    }
+    
+    private func presentSearchAddress() {
+        let viewModel = SearchAddressViewModel()
+        viewModel.output.selectAddress
+            .subscribe(input.searchByAddress)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.presentSearchAddress(viewModel))
     }
 }

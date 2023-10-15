@@ -53,6 +53,13 @@ public enum HomeStrings {
       public static let title = HomeStrings.tr("Localization", "home_list.empty.title")
     }
   }
+
+  public enum SearchAddress {
+    /// 구, 동, 건물명, 역 등으로 검색
+    public static let placeholder = HomeStrings.tr("Localization", "search_address.placeholder")
+    /// 위치 검색
+    public static let title = HomeStrings.tr("Localization", "search_address.title")
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

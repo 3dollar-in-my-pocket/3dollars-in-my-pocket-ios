@@ -1,13 +1,13 @@
 import UIKit
 import Combine
 
-public extension UITextField {
+public extension UITextView {
     var textPublisher: AnyPublisher<String, Never> {
         NotificationCenter.default.publisher(
-            for: UITextField.textDidChangeNotification,
+            for: UITextView.textDidChangeNotification,
             object: self
         )
-        .map { ($0.object as? UITextField)?.text ?? "" }
+        .map { ($0.object as? UITextView)?.text ?? "" }
         .eraseToAnyPublisher()
     }
 }
