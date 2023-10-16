@@ -9,6 +9,7 @@ final class PollListViewModel: BaseViewModel {
         let firstLoad = PassthroughSubject<Void, Never>()
         let reload = PassthroughSubject<Void, Never>()
         let didSelectPollItem = PassthroughSubject<Int, Never>()
+        let willDisplaytCell = PassthroughSubject<Int, Never>()
     }
 
     struct Output {
@@ -19,7 +20,10 @@ final class PollListViewModel: BaseViewModel {
     }
 
     struct State {
-
+        var items: [PollWithMetaApiResponse] = []
+        var nextCursor: String? = nil
+        var hasMore: Bool = false
+        let loadMore = PassthroughSubject<Void, Never>()
     }
 
     enum Route {
@@ -53,7 +57,7 @@ final class PollListViewModel: BaseViewModel {
                 owner.output.showLoading.send(true)
             })
             .compactMap { owner, _ in
-                return FetchPollsRequestInput()
+                return FetchPollsRequestInput(cursor: owner.state.nextCursor)
             }
             .withUnretained(self)
             .asyncMap { owner, input in
@@ -64,12 +68,10 @@ final class PollListViewModel: BaseViewModel {
                 owner.output.showLoading.send(false)
                 switch result {
                 case .success(let response):
-                    let sectionItems: [PollListSectionItem] = response.contents.map {
-                        .poll(owner.bindPollItemCellViewModel(with: $0))
-                    }
-                    owner.output.dataSource.send([
-                        PollListSection(items: sectionItems)
-                    ])
+                    owner.state.items.append(contentsOf: response.contents)
+                    owner.state.hasMore = response.cursor.hasMore
+                    owner.state.nextCursor = response.cursor.nextCursor
+                    owner.updateDataSource()
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")
                 }
@@ -90,6 +92,48 @@ final class PollListViewModel: BaseViewModel {
             }
             .subscribe(output.route)
             .store(in: &cancellables)
+
+        input.willDisplaytCell
+            .withUnretained(self)
+            .filter { owner, row in
+                owner.canLoadMore(willDisplayRow: row)
+            }
+            .sink { owner, _ in
+                owner.state.loadMore.send()
+            }
+            .store(in: &cancellables)
+
+        state.loadMore
+            .withUnretained(self)
+            .compactMap { owner, _ in
+                return FetchPollsRequestInput(cursor: owner.state.nextCursor)
+            }
+            .withUnretained(self)
+            .asyncMap { owner, input in
+                await owner.communityService.fetchPolls(input: input)
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                switch result {
+                case .success(let response):
+                    owner.state.items.append(contentsOf: response.contents)
+                    owner.state.hasMore = response.cursor.hasMore
+                    owner.state.nextCursor = response.cursor.nextCursor
+                    owner.updateDataSource()
+                case .failure(let error):
+                    print(error)
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func updateDataSource() {
+        let sectionItems: [PollListSectionItem] = state.items.map {
+            .poll(bindPollItemCellViewModel(with: $0))
+        }
+        output.dataSource.send([
+            PollListSection(items: sectionItems)
+        ])
     }
 
     private func bindPollItemCellViewModel(with data: PollWithMetaApiResponse) -> PollItemCellViewModel {
@@ -100,5 +144,9 @@ final class PollListViewModel: BaseViewModel {
     private func bindPollDetailViewModel(with pollId: String) -> PollDetailViewModel {
         let viewModel = PollDetailViewModel(pollId: pollId)
         return viewModel
+    }
+
+    private func canLoadMore(willDisplayRow: Int) -> Bool {
+        return willDisplayRow == state.items.count - 1 && state.hasMore
     }
 }
