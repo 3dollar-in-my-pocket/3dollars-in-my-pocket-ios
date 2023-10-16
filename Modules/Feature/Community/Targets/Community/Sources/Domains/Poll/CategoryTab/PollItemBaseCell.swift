@@ -129,21 +129,12 @@ class PollItemBaseCell: BaseCollectionViewCell {
         medalView.bind(imageUrl: item.pollWriter.medal.iconUrl, title: item.pollWriter.medal.name)
         commentButton.setTitle("\(item.meta.totalCommentsCount)", for: .normal)
         countButton.setTitle("\(item.meta.totalParticipantsCount)명 투표", for: .normal)
-        deadlineLabel.text = item.poll.period.endDateTime.toDate()?.toString() ?? item.poll.period.endDateTime
 
         let firstOption = item.poll.options[safe: 0]
         let secondOption = item.poll.options[safe: 1]
 
         if firstOption?.choice.selectedByMe ?? false || secondOption?.choice.selectedByMe ?? false { // 선택
-            if firstOption?.choice.count ?? 0 > secondOption?.choice.count ?? 0 {
-                firstSelectionView.updateWinnerState()
-                secondSelectionView.updateLoserState()
-            } else {
-                firstSelectionView.updateLoserState()
-                secondSelectionView.updateWinnerState()
-            }
-            firstSelectionView.updateSelection(firstOption?.choice.selectedByMe ?? false)
-            secondSelectionView.updateSelection(secondOption?.choice.selectedByMe ?? false)
+            updateState(firstOption: firstOption, secondOption: secondOption)
         } else {
             firstSelectionView.updateSelection(false)
             secondSelectionView.updateSelection(false)
@@ -158,6 +149,52 @@ class PollItemBaseCell: BaseCollectionViewCell {
         secondSelectionView.titleLabel.text = secondOption?.name
         secondSelectionView.percentLabel.text = "\(Int((secondOption?.choice.ratio ?? 0) * 100))%"
         secondSelectionView.countLabel.text = "\(secondOption?.choice.count ?? 0)명"
+
+        updateDeadline(with: item)
+    }
+
+    private func updateDeadline(with item: PollWithMetaApiResponse) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.locale = Locale.current
+        dateFormatter.timeZone = TimeZone.current
+        if let endDate = item.poll.period.endDateTime.toDate()?.toString(),
+           let targetDate: Date = dateFormatter.date(from: endDate),
+           let fromDate: Date = dateFormatter.date(from: Date().toString()) {
+            switch targetDate.compare(fromDate) {
+            case .orderedSame:
+                deadlineLabel.text = "오늘 마감"
+            case .orderedDescending:
+                deadlineLabel.text = endDate
+            case .orderedAscending:
+                deadlineLabel.text = "마감"
+                updateState(firstOption: item.poll.options[safe: 0], secondOption: item.poll.options[safe: 1])
+                firstSelectionView.isUserInteractionEnabled = false
+                secondSelectionView.isUserInteractionEnabled = false
+            }
+        }
+    }
+
+    private func updateState(firstOption: PollOptionWithChoiceApiResponse?, secondOption: PollOptionWithChoiceApiResponse?) {
+        if firstOption?.choice.count ?? 0 > secondOption?.choice.count ?? 0 {
+            firstSelectionView.updateWinnerState()
+            secondSelectionView.updateLoserState()
+        } else if firstOption?.choice.count ?? 0 < secondOption?.choice.count ?? 0 {
+            firstSelectionView.updateLoserState()
+            secondSelectionView.updateWinnerState()
+        } else {
+            firstSelectionView.updateDrawState()
+            secondSelectionView.updateDrawState()
+        }
+        firstSelectionView.updateSelection(firstOption?.choice.selectedByMe ?? false)
+        secondSelectionView.updateSelection(secondOption?.choice.selectedByMe ?? false)
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        firstSelectionView.isUserInteractionEnabled = true
+        secondSelectionView.isUserInteractionEnabled = true
     }
 }
 
@@ -292,6 +329,23 @@ final class CommunityPollSelectionView: UIControl {
         }
 
         checkImageView.isHidden = true
+    }
+
+    func updateDrawState() {
+        containerView.backgroundColor = Colors.gray100.color
+
+        titleLabel.textAlignment = .left
+        titleLabel.font = Fonts.bold.font(size: 12)
+        titleLabel.textColor = Colors.systemWhite.color
+
+        stackView.arrangedSubviews.forEach {
+            $0.isHidden = false
+        }
+
+        percentLabel.textColor = Colors.systemWhite.color
+        emojiLabel.text = "😠"
+
+        countLabel.textColor = Colors.gray30.color
     }
 
     func updateWinnerState() {
