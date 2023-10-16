@@ -42,7 +42,7 @@ final class PollItemCell: PollItemBaseCell {
 
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
-            $0.centerX.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(8)
         }
 
         userInfoStackView.snp.makeConstraints {

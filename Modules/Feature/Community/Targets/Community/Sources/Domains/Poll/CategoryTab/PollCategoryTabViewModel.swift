@@ -41,9 +41,10 @@ final class PollCategoryTabViewModel: BaseViewModel {
 
         super.init()
 
+        // 현재는 탭 없이 최신순 목록만 보여줌
         output.tabList.send([
-            bindPollListViewModel(),
             bindPollListViewModel()
+//            bindPollListViewModel()
         ])
     }
 
@@ -51,7 +52,6 @@ final class PollCategoryTabViewModel: BaseViewModel {
         super.bind()
 
         input.firstLoad
-            .withUnretained(self)
             .withUnretained(self)
             .asyncMap { owner, input in
                 await owner.communityService.fetchUserPollPolicy()
@@ -73,6 +73,10 @@ final class PollCategoryTabViewModel: BaseViewModel {
                 .createPoll(owner.bindCreatePollModalViewModel())
             }
             .subscribe(output.route)
+            .store(in: &cancellables)
+
+        input.updatePollList
+            .subscribe(output.updatePollList)
             .store(in: &cancellables)
     }
 

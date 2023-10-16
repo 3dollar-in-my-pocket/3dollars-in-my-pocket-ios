@@ -33,6 +33,7 @@ final class PollListDataSource: UICollectionViewDiffableDataSource<PollListSecti
             }
         }
 
+        /*
         supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView? in
             guard let _ = self?.sectionIdentifier(section: indexPath.section) else {
                 return nil
@@ -42,6 +43,7 @@ final class PollListDataSource: UICollectionViewDiffableDataSource<PollListSecti
             headerView.bind()
             return headerView
         }
+         */
     }
 
     func reload(_ sections: [PollListSection]) {

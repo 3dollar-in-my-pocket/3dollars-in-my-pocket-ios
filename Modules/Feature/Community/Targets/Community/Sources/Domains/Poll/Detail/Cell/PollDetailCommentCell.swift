@@ -9,7 +9,7 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
 
     enum Layout {
         static func height(content: String) -> CGFloat {
-            return content.height(width: UIScreen.main.bounds.width - 60) + 90
+            return content.height(font: Fonts.regular.font(size: 14), width: UIScreen.main.bounds.width - 40) + 90
         }
     }
 
@@ -17,7 +17,7 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         $0.font = Fonts.medium.font(size: 12)
         $0.textColor = Colors.gray80.color
     }
-
+ 
     private let badgeStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 4
@@ -93,7 +93,7 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         }
 
         badgeStackView.snp.makeConstraints {
-            $0.top.equalTo(userNameLabel.snp.bottom).offset(2)
+            $0.top.equalTo(userNameLabel.snp.bottom).offset(6)
             $0.leading.equalToSuperview().inset(20)
         }
 

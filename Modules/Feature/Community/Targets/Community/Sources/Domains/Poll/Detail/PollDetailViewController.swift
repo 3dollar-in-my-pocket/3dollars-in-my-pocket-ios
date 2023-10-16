@@ -203,6 +203,8 @@ extension PollDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: PollDetailContentCell.Layout.height)
         case .comment(let viewModel):
             return CGSize(width: width, height: PollDetailCommentCell.Layout.height(content: viewModel.output.item.comment.content))
+        case .blindComment:
+            return CGSize(width: width, height: PollDetailBlindCommentCell.Layout.height)
         default:
             return .zero
         }

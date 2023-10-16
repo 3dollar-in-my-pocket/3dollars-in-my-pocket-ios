@@ -34,7 +34,8 @@ final class PollDetailViewModel: BaseViewModel {
         let loadComments = PassthroughSubject<Void, Never>()
         let loadComment = PassthroughSubject<String, Never>() // commentId
         var nextCursor: String? = nil
-        var hasMore: Bool = true
+        var hasMore: Bool = false
+        var commentTotalCount: Int = 0
     }
 
     enum Route {
@@ -88,6 +89,7 @@ final class PollDetailViewModel: BaseViewModel {
                 switch result {
                 case .success(let response):
                     owner.state.pollDetail.send(response)
+                    owner.state.commentTotalCount = response.meta.totalCommentsCount
                     owner.state.loadComments.send()
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")
@@ -111,10 +113,9 @@ final class PollDetailViewModel: BaseViewModel {
                 switch result {
                 case .success(let response):
                     var updatedComments = owner.state.comments.value
-                    // 날짜 순서로 나오게 반대로 정렬함, delete 상태 제거
+
                     let comments = response.contents.map { $0.current }
                         .filter { $0.comment.status != .deleted }
-//                        .reversed()
                     updatedComments.append(contentsOf: Array(comments))
 
                     owner.state.comments.send(updatedComments)
@@ -187,6 +188,7 @@ final class PollDetailViewModel: BaseViewModel {
                 case .success(let response):
                     let comments = [response.current] + owner.state.comments.value
                     owner.state.comments.send(comments)
+                    owner.state.commentTotalCount += 1
                     owner.output.completedWriteComment.send()
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")
@@ -214,9 +216,19 @@ final class PollDetailViewModel: BaseViewModel {
             ]))
         }
 
+        var commentSectionItems: [PollDetailSectionItem] = []
+
+        comments.forEach {
+            if $0.comment.status == .blinded {
+                commentSectionItems.append(.blindComment($0.comment.commentId))
+            } else {
+                commentSectionItems.append(.comment(bindCommentCellViewModel(with: $0)))
+            }
+        }
+
         sections.append(PollDetailSection(
-            type: .comment(totalCount: item?.meta.totalCommentsCount ?? comments.count),
-            items: comments.map { .comment(bindCommentCellViewModel(with: $0)) }
+            type: .comment(totalCount: state.commentTotalCount),
+            items: commentSectionItems
         ))
 
         output.dataSource.send(sections)

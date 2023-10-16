@@ -29,7 +29,7 @@ final class CommunityViewModel: BaseViewModel {
     }
 
     enum Route {
-        case pollCategoryTab
+        case pollCategoryTab(PollCategoryTabViewModel)
         case pollDetail(PollDetailViewModel)
         case popularStoreNeighborhoods(CommunityPopularStoreNeighborhoodsViewModel)
         case storeDetail(Int)
@@ -160,7 +160,8 @@ final class CommunityViewModel: BaseViewModel {
         let cellViewModel = CommunityPollListCellViewModel()
 
         cellViewModel.output.didSelectCategory
-            .map { _ in .pollCategoryTab }
+            .withUnretained(self)
+            .map { owner, _ in .pollCategoryTab(owner.bindPollCategoryTabViewModel()) }
             .subscribe(output.route)
             .store(in: &cancellables)
 
@@ -172,5 +173,15 @@ final class CommunityViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         return cellViewModel
+    }
+
+    private func bindPollCategoryTabViewModel() -> PollCategoryTabViewModel {
+        let viewModel = PollCategoryTabViewModel()
+
+        viewModel.output.updatePollList
+            .subscribe(pollListCellViewModel.input.reload)
+            .store(in: &cancellables)
+
+        return viewModel
     }
 }

@@ -64,7 +64,6 @@ final class PollItemCellViewModel: BaseViewModel {
             .sink { owner, result in
                 switch result {
                 case .success(let response):
-                    owner.output.showToast.send("성공")
                     owner.state.reload.send()
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")
@@ -87,7 +86,6 @@ final class PollItemCellViewModel: BaseViewModel {
 
                 switch result {
                 case .success(let response):
-                    owner.output.showToast.send("업데이트 성공")
                     owner.output.item.send(response)
                     owner.output.reloadComments.send(response.meta.totalCommentsCount)
                 case .failure(let error):
