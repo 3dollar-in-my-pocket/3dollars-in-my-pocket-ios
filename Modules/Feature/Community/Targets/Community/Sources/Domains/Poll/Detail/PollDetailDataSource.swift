@@ -41,7 +41,7 @@ enum PollDetailSectionItem: Hashable {
     case detail(PollItemCellViewModel)
     case banner
     case comment(PollDetailCommentCellViewModel)
-    case blindComment
+    case blindComment(String)
 
     func hash(into hasher: inout Hasher) {
         switch self {
@@ -51,8 +51,8 @@ enum PollDetailSectionItem: Hashable {
             hasher.combine("banner")
         case .comment(let viewModel):
             hasher.combine(viewModel.hashValue)
-        case .blindComment:
-            hasher.combine("blindComment")
+        case .blindComment(let id):
+            hasher.combine(id)
         }
     }
 }
@@ -64,7 +64,8 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
     init(collectionView: UICollectionView) {
         collectionView.register([
             PollDetailContentCell.self,
-            PollDetailCommentCell.self
+            PollDetailCommentCell.self,
+            PollDetailBlindCommentCell.self
         ])
 
         collectionView.registerSectionHeader([
@@ -80,6 +81,9 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
             case .comment(let cellViewModel):
                 let cell: PollDetailCommentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel: cellViewModel)
+                return cell
+            case .blindComment:
+                let cell: PollDetailBlindCommentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 return cell
             default:
                 return UICollectionViewCell()

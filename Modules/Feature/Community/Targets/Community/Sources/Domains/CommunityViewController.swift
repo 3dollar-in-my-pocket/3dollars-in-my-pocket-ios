@@ -4,17 +4,21 @@ import Model
 import DesignSystem
 import Then
 import Common
+import DependencyInjection
+import StoreInterface
 
 public final class CommunityViewController: BaseViewController {
 
     private let communityView = CommunityView()
-    private let viewModel = CommunityViewModel()
+    private let viewModel: CommunityViewModel
     private lazy var dataSource = CommunityDataSource(
         collectionView: communityView.collectionView,
         viewModel: viewModel
     )
 
-    init() {
+    init(viewModel: CommunityViewModel = CommunityViewModel()) {
+        self.viewModel = viewModel
+
         super.init(nibName: nil, bundle: nil)
 
         tabBarItem = UITabBarItem(title: nil, image: Icons.communitySolid.image, tag: 0)
@@ -47,7 +51,7 @@ public final class CommunityViewController: BaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        viewModel.input.viewDidLoad.send(())
+        viewModel.input.firstLoad.send(())
     }
 
     public override func bindEvent() {
@@ -58,8 +62,8 @@ public final class CommunityViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, route in
                 switch route {
-                case .pollCategoryTab:
-                    let vc = PollCategoryTabViewController()
+                case .pollCategoryTab(let viewModel):
+                    let vc = PollCategoryTabViewController(viewModel: viewModel)
                     owner.navigationController?.pushViewController(vc, animated: true)
                 case .pollDetail(let viewModel):
                     let vc = PollDetailViewController(viewModel)
@@ -67,6 +71,8 @@ public final class CommunityViewController: BaseViewController {
                 case .popularStoreNeighborhoods(let viewModel):
                     let vc = CommunityPopularStoreNeighborhoodsViewController(viewModel)
                     owner.present(vc, animated: true, completion: nil)
+                case .storeDetail(let storeId):
+                    owner.pushStoreDetail(storeId: storeId)
                 }
             }
             .store(in: &cancellables)
@@ -78,5 +84,17 @@ public final class CommunityViewController: BaseViewController {
                 owner.dataSource.reload(sections)
             }
             .store(in: &cancellables)
+
+        viewModel.output.showToast
+            .main
+            .sink { ToastManager.shared.show(message: $0) }
+            .store(in: &cancellables)
+    }
+
+    private func pushStoreDetail(storeId: Int) {
+        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
+        let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
+
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }

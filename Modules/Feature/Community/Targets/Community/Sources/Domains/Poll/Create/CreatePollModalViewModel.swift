@@ -77,7 +77,7 @@ final class CreatePollModalViewModel: BaseViewModel {
                 switch result {
                 case .success(let response):
                     owner.output.created.send()
-                    owner.output.showToast.send("투표 만들기 성공: \(response.id)")
+                    owner.output.showToast.send("투표를 만들었어요!")
                     owner.output.route.send(.back)
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")

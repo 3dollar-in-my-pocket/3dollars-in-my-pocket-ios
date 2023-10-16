@@ -8,6 +8,7 @@ final class PollListViewController: BaseViewController {
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
         $0.delegate = self
+        $0.contentInset.bottom = 80
     }
 
     private lazy var dataSource = PollListDataSource(collectionView: collectionView)
@@ -90,6 +91,10 @@ extension PollListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel.input.didSelectPollItem.send(indexPath.item)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        viewModel.input.willDisplaytCell.send(indexPath.item)
+    }
 }
 
 extension PollListViewController: UICollectionViewDelegateFlowLayout {
@@ -102,7 +107,7 @@ extension PollListViewController: UICollectionViewDelegateFlowLayout {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width, height: PollHeaderView.Layout.height)
-    }
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+//        return CGSize(width: UIScreen.main.bounds.width, height: PollHeaderView.Layout.height)
+//    }
 }

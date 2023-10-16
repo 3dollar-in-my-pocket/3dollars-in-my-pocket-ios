@@ -27,12 +27,8 @@ final class CommunityPopularStoreTabCellViewModel: BaseViewModel {
     struct Output {
         let tabList: [CommunityPopularStoreTab]
         let district: CurrentValueSubject<String, Never>
-        let storeList = CurrentValueSubject<[PlatformStore], Never>([])
+        let currentTab: CurrentValueSubject<CommunityPopularStoreTab, Never>
         let didTapDistrictButton = PassthroughSubject<Void, Never>()
-    }
-
-    struct State {
-        var currentTab: CommunityPopularStoreTab = .defaultTab
     }
 
     lazy var identifier = ObjectIdentifier(self)
@@ -40,12 +36,11 @@ final class CommunityPopularStoreTabCellViewModel: BaseViewModel {
     let input = Input()
     let output: Output
 
-    private var state = State()
-
     private let communityService: CommunityServiceProtocol
     private let userDefaultsUtil: UserDefaultsUtil
 
     init(
+        tab: CommunityPopularStoreTab = .defaultTab,
         communityService: CommunityServiceProtocol = CommunityService(),
         userDefaultsUtil: UserDefaultsUtil = .shared
     ) {
@@ -53,12 +48,11 @@ final class CommunityPopularStoreTabCellViewModel: BaseViewModel {
         self.userDefaultsUtil = userDefaultsUtil
         self.output = Output(
             tabList: CommunityPopularStoreTab.allCases,
-            district: .init(userDefaultsUtil.communityPopularStoreNeighborhoods.description)
+            district: .init(userDefaultsUtil.communityPopularStoreNeighborhoods.description),
+            currentTab: .init(tab)
         )
 
         super.init()
-
-        fetchPopularStores()
     }
 
     override func bind() {
@@ -67,8 +61,7 @@ final class CommunityPopularStoreTabCellViewModel: BaseViewModel {
         input.didSelectTab
             .withUnretained(self)
             .sink { (owner: CommunityPopularStoreTabCellViewModel, index: Int) in
-                owner.state.currentTab = owner.output.tabList[safe: index] ?? .defaultTab
-                owner.fetchPopularStores()
+                owner.output.currentTab.send(owner.output.tabList[safe: index] ?? .defaultTab)
             }
             .store(in: &cancellables)
 
@@ -80,32 +73,8 @@ final class CommunityPopularStoreTabCellViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: CommunityPopularStoreTabCellViewModel, _) in
                 owner.output.district.send(owner.userDefaultsUtil.communityPopularStoreNeighborhoods.description)
-                owner.fetchPopularStores()
             }
             .store(in: &cancellables)
-    }
-
-    private func fetchPopularStores() {
-        Task { [weak self] in
-            guard let self else { return }
-
-            let input = FetchPopularStoresInput(
-                criteria: state.currentTab.rawValue,
-                district: "GYEONGGI_GUNPO" // userDefaultsUtil.communityPopularStoreNeighborhoods.district
-            )
-
-            let storeDetailResult = await communityService.fetchPopularStores(input: input)
-
-            switch storeDetailResult {
-            case .success(let response):
-                let storeList = response.contents.map {
-                    PlatformStore(response: $0)
-                }
-                output.storeList.send(storeList)
-            case .failure(let failure):
-                print("💜error: \(failure)")
-            }
-        }
     }
 }
 

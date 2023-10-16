@@ -15,6 +15,7 @@ class PollItemBaseCell: BaseCollectionViewCell {
     let titleLabel = UILabel().then {
         $0.font = Fonts.semiBold.font(size: 20)
         $0.textColor = Colors.gray90.color
+        $0.textAlignment = .center
     }
 
     let userInfoStackView = UIStackView().then {
@@ -83,12 +84,20 @@ class PollItemBaseCell: BaseCollectionViewCell {
         // Input
         firstSelectionView
             .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .filter { owner, _ in
+                !owner.firstSelectionView.isSelected
+            }
             .mapVoid
             .subscribe(viewModel.input.didSelectFirstOption)
             .store(in: &cancellables)
 
         secondSelectionView
             .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .filter { owner, _ in
+                !owner.secondSelectionView.isSelected
+            }
             .mapVoid
             .subscribe(viewModel.input.didSelectSecondOption)
             .store(in: &cancellables)
@@ -120,24 +129,17 @@ class PollItemBaseCell: BaseCollectionViewCell {
         medalView.bind(imageUrl: item.pollWriter.medal.iconUrl, title: item.pollWriter.medal.name)
         commentButton.setTitle("\(item.meta.totalCommentsCount)", for: .normal)
         countButton.setTitle("\(item.meta.totalParticipantsCount)명 투표", for: .normal)
-        deadlineLabel.text = item.poll.period.endDateTime.toDate()?.toString() ?? item.poll.period.endDateTime
 
         let firstOption = item.poll.options[safe: 0]
         let secondOption = item.poll.options[safe: 1]
 
         if firstOption?.choice.selectedByMe ?? false || secondOption?.choice.selectedByMe ?? false { // 선택
-            if firstOption?.choice.count ?? 0 > secondOption?.choice.count ?? 0 {
-                firstSelectionView.win()
-                secondSelectionView.lose()
-            } else {
-                firstSelectionView.lose()
-                secondSelectionView.win()
-            }
-            firstSelectionView.update(isSelected: firstOption?.choice.selectedByMe ?? false)
-            secondSelectionView.update(isSelected: secondOption?.choice.selectedByMe ?? false)
+            updateState(firstOption: firstOption, secondOption: secondOption)
         } else {
-            firstSelectionView.nothing()
-            secondSelectionView.nothing()
+            firstSelectionView.updateSelection(false)
+            secondSelectionView.updateSelection(false)
+            firstSelectionView.updateNotSelectedState()
+            secondSelectionView.updateNotSelectedState()
         }
 
         firstSelectionView.titleLabel.text = firstOption?.name
@@ -147,6 +149,52 @@ class PollItemBaseCell: BaseCollectionViewCell {
         secondSelectionView.titleLabel.text = secondOption?.name
         secondSelectionView.percentLabel.text = "\(Int((secondOption?.choice.ratio ?? 0) * 100))%"
         secondSelectionView.countLabel.text = "\(secondOption?.choice.count ?? 0)명"
+
+        updateDeadline(with: item)
+    }
+
+    private func updateDeadline(with item: PollWithMetaApiResponse) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.locale = Locale.current
+        dateFormatter.timeZone = TimeZone.current
+        if let endDate = item.poll.period.endDateTime.toDate()?.toString(),
+           let targetDate: Date = dateFormatter.date(from: endDate),
+           let fromDate: Date = dateFormatter.date(from: Date().toString()) {
+            switch targetDate.compare(fromDate) {
+            case .orderedSame:
+                deadlineLabel.text = "오늘 마감"
+            case .orderedDescending:
+                deadlineLabel.text = endDate
+            case .orderedAscending:
+                deadlineLabel.text = "마감"
+                updateState(firstOption: item.poll.options[safe: 0], secondOption: item.poll.options[safe: 1])
+                firstSelectionView.isUserInteractionEnabled = false
+                secondSelectionView.isUserInteractionEnabled = false
+            }
+        }
+    }
+
+    private func updateState(firstOption: PollOptionWithChoiceApiResponse?, secondOption: PollOptionWithChoiceApiResponse?) {
+        if firstOption?.choice.count ?? 0 > secondOption?.choice.count ?? 0 {
+            firstSelectionView.updateWinnerState()
+            secondSelectionView.updateLoserState()
+        } else if firstOption?.choice.count ?? 0 < secondOption?.choice.count ?? 0 {
+            firstSelectionView.updateLoserState()
+            secondSelectionView.updateWinnerState()
+        } else {
+            firstSelectionView.updateDrawState()
+            secondSelectionView.updateDrawState()
+        }
+        firstSelectionView.updateSelection(firstOption?.choice.selectedByMe ?? false)
+        secondSelectionView.updateSelection(secondOption?.choice.selectedByMe ?? false)
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        firstSelectionView.isUserInteractionEnabled = true
+        secondSelectionView.isUserInteractionEnabled = true
     }
 }
 
@@ -243,7 +291,9 @@ final class CommunityPollSelectionView: UIControl {
 
         titleStackView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.leading.equalToSuperview().inset(16)
+            $0.trailing.equalTo(stackView.snp.leading).offset(-16).priority(.high)
+            $0.trailing.equalToSuperview().inset(16).priority(.medium)
         }
 
         stackView.snp.makeConstraints {
@@ -254,9 +304,19 @@ final class CommunityPollSelectionView: UIControl {
         checkImageView.snp.makeConstraints {
             $0.size.equalTo(16)
         }
+
+        checkImageView.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        titleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        emojiLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        percentLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        countLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+
+        stackView.arrangedSubviews.forEach {
+            $0.isHidden = true
+        }
     }
 
-    func nothing() {
+    func updateNotSelectedState() {
         containerView.layer.borderColor = Colors.gray30.color.cgColor
         containerView.backgroundColor = Colors.systemWhite.color
 
@@ -264,17 +324,40 @@ final class CommunityPollSelectionView: UIControl {
         titleLabel.font = Fonts.medium.font(size: 16)
         titleLabel.textColor = Colors.gray100.color
 
-        stackView.isHidden = true
+        stackView.arrangedSubviews.forEach {
+            $0.isHidden = true
+        }
+
+        checkImageView.isHidden = true
     }
 
-    func win() {
+    func updateDrawState() {
         containerView.backgroundColor = Colors.gray100.color
 
         titleLabel.textAlignment = .left
         titleLabel.font = Fonts.bold.font(size: 12)
         titleLabel.textColor = Colors.systemWhite.color
 
-        stackView.isHidden = false
+        stackView.arrangedSubviews.forEach {
+            $0.isHidden = false
+        }
+
+        percentLabel.textColor = Colors.systemWhite.color
+        emojiLabel.text = "😠"
+
+        countLabel.textColor = Colors.gray30.color
+    }
+
+    func updateWinnerState() {
+        containerView.backgroundColor = Colors.gray100.color
+
+        titleLabel.textAlignment = .left
+        titleLabel.font = Fonts.bold.font(size: 12)
+        titleLabel.textColor = Colors.systemWhite.color
+
+        stackView.arrangedSubviews.forEach {
+            $0.isHidden = false
+        }
 
         percentLabel.textColor = Colors.systemWhite.color
         emojiLabel.text = "🤣"
@@ -282,14 +365,16 @@ final class CommunityPollSelectionView: UIControl {
         countLabel.textColor = Colors.gray30.color
     }
 
-    func lose() {
+    func updateLoserState() {
         containerView.backgroundColor = Colors.systemWhite.color
 
         titleLabel.textAlignment = .left
         titleLabel.font = Fonts.bold.font(size: 12)
         titleLabel.textColor = Colors.gray60.color
 
-        stackView.isHidden = false
+        stackView.arrangedSubviews.forEach {
+            $0.isHidden = false
+        }
 
         percentLabel.textColor = Colors.gray60.color
         emojiLabel.text = "😞"
@@ -297,8 +382,9 @@ final class CommunityPollSelectionView: UIControl {
         countLabel.textColor = Colors.gray40.color
     }
 
-    func update(isSelected: Bool) {
+    func updateSelection(_ isSelected: Bool) {
         checkImageView.isHidden = !isSelected
         containerView.layer.borderColor = isSelected ? Colors.mainRed.color.cgColor : Colors.gray30.color.cgColor
+        self.isSelected = isSelected
     }
 }

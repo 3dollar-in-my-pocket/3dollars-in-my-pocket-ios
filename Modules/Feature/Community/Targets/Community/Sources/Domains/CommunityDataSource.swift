@@ -1,6 +1,7 @@
 import UIKit
 
 import Combine
+import Model
 
 struct CommunitySection: Hashable {
     var items: [CommunitySectionItem]
@@ -8,7 +9,27 @@ struct CommunitySection: Hashable {
 
 enum CommunitySectionItem: Hashable {
     case poll(CommunityPollListCellViewModel)
-    case popularStore(CommunityPopularStoreTabCellViewModel)
+    case popularStoreTab(CommunityPopularStoreTabCellViewModel)
+    case popularStore(PlatformStore)
+
+    var identifier: String {
+        switch self {
+        case .poll(let viewModel):
+            return String(viewModel.identifier.hashValue)
+        case .popularStoreTab(let viewModel):
+            return String(viewModel.identifier.hashValue)
+        case .popularStore(let item):
+            return item.id
+        }
+    }
+
+    static func == (lhs: CommunitySectionItem, rhs: CommunitySectionItem) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
 }
 
 final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySection, CommunitySectionItem> {
@@ -22,20 +43,23 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
 
         collectionView.register([
             CommunityPollListCell.self,
-            CommunityPopularStoreTabCell.self
+            CommunityPopularStoreTabCell.self,
+            CommunityPopularStoreItemCell.self
         ])
 
-        super.init(collectionView: collectionView) { [weak viewModel] collectionView, indexPath, itemIdentifier in
-            guard let viewModel else { return UICollectionViewCell() }
-
+        super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .poll(let cellViewModel):
                 let cell: CommunityPollListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel: cellViewModel)
                 return cell
-            case .popularStore(let cellViewModel):
+            case .popularStoreTab(let cellViewModel):
                 let cell: CommunityPopularStoreTabCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel: cellViewModel)
+                return cell
+            case .popularStore(let item):
+                let cell: CommunityPopularStoreItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(item: item)
                 return cell
             }
         }
@@ -55,13 +79,21 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
     }
 }
 
+extension CommunityDataSource: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.input.didSelect.send(indexPath)
+    }
+}
+
 extension CommunityDataSource: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch self[indexPath] {
         case .poll:
             return CommunityPollListCell.Layout.size
-        case .popularStore(let viewModel):
-            return CommunityPopularStoreTabCell.Layout.size(viewModel: viewModel)
+        case .popularStoreTab:
+            return CommunityPopularStoreTabCell.Layout.size
+        case .popularStore:
+            return CommunityPopularStoreItemCell.Layout.size
         default:
             return .zero
         }

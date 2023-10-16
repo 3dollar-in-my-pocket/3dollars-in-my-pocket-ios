@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 public extension String {
     func maxLength(length: Int) -> String {
@@ -24,11 +25,10 @@ public extension String {
         return dateFormatter.date(from: self)
     }
 
-    func height(width: CGFloat) -> CGFloat {
-        (self as NSString).boundingRect(
-            with: CGSize(width: width, height: .greatestFiniteMagnitude),
-            options: .usesLineFragmentOrigin,
-            context: nil
-        ).size.height
+    func height(font: UIFont, width: CGFloat) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
+
+        return ceil(boundingBox.size.height)
     }
 }

@@ -8,6 +8,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
     struct Input {
         let didSelectPollItem = PassthroughSubject<Int, Never>()
         let didSelectCategory = PassthroughSubject<Void, Never>()
+        let reload = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -52,6 +53,13 @@ final class CommunityPollListCellViewModel: BaseViewModel {
             .sink { owner, index in
                 guard let item = owner.output.pollList.value[safe: index] else { return }
                 owner.output.didSelectPollItem.send(item.pollId)
+            }
+            .store(in: &cancellables)
+
+        input.reload
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.fetchPolls()
             }
             .store(in: &cancellables)
     }
