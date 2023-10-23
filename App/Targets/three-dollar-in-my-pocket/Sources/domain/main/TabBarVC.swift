@@ -162,9 +162,15 @@ class TabBarVC: UITabBarController {
     
     private func handleRoute(_ route: MainTabBarViewModel.Route) {
         switch route {
-        case .presentPopup(let advertisement):
-            ToastManager.shared.show(message: "💜메인 팝업 호출")
+        case .presentMainBannerPopup(let viewModel):
+            presentMainBannerPopup(viewModel)
         }
+    }
+    
+    private func presentMainBannerPopup(_ viewModel: MainBannerPopupViewModel) {
+        let viewController = MainBannerPopupViewController(viewModel: viewModel)
+        
+        present(viewController, animated: true)
     }
     
     private func setTabBarColor(tab: TabBarTag) {

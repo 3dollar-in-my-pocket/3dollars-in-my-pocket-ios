@@ -15,7 +15,7 @@ final class MainTabBarViewModel: Common.BaseViewModel {
     }
     
     enum Route {
-        case presentPopup(Model.Advertisement)
+        case presentMainBannerPopup(MainBannerPopupViewModel)
     }
     
     let input = Input()
@@ -59,12 +59,15 @@ final class MainTabBarViewModel: Common.BaseViewModel {
     }
     
     private func presentMainAdBannerIfNeeded(_ advertisement: Model.Advertisement) {
+        let config = MainBannerPopupViewModel.Config(advertisement: advertisement)
+        let viewModel = MainBannerPopupViewModel(config: config)
+        
         if let shownDate = userDefaults.getShownMainBannerDate(id: advertisement.advertisementId) {
             if shownDate != Common.DateUtils.todayString() {
-                output.route.send(.presentPopup(advertisement))
+                output.route.send(.presentMainBannerPopup(viewModel))
             }
         } else {
-            output.route.send(.presentPopup(advertisement))
+            output.route.send(.presentMainBannerPopup(viewModel))
         }
     }
 }

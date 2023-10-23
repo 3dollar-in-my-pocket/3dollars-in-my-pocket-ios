@@ -87,8 +87,6 @@
 "review_modal_placeholder" = "리뷰를 남겨주세요! (100자 이내)";
 "review_modal_register" = "리뷰 쓰기";
 "review_modal_modify" = "리뷰 수정";
-"popup_close" = "닫기";
-"popup_disable_today" = "오늘 하루 보지않기";
 "write_address_unknown" = "주소를 알 수 없는 위치입니다.";
 "write_store_sunday" = "일";
 "write_store_monday" = "월";
@@ -291,3 +289,7 @@
 "policy_policy_label" = "(필수) 이용약관 동의";
 "policy_marketing_label" = "(선택) 마케팅 활용 및 광고성 정보 수신 동의";
 "policy_next_button" = "동의하고 계속하기";
+
+// 메인 배너 팝업
+"main_banner_popup.close" = "닫기";
+"main_banner_popup.disable_today" = "오늘 하루 보지않기";
