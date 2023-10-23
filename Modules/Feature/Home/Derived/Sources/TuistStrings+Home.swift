@@ -18,6 +18,8 @@ public enum HomeStrings {
   public static let categoryFilterNew = HomeStrings.tr("Localization", "category_filter_new")
   /// 이 안에 네 최애 하나쯤은 있겠지!
   public static let categoryFilterTitle = HomeStrings.tr("Localization", "category_filter_title")
+  /// 사장님 직영
+  public static let homeBossStoreTag = HomeStrings.tr("Localization", "home_boss_store_tag")
   /// 전체 메뉴
   public static let homeCategoryFilterButton = HomeStrings.tr("Localization", "home_category_filter_button")
   /// 다른 주소로 검색하거나 직접 제보해보세요!

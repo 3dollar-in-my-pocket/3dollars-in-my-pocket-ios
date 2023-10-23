@@ -77,7 +77,7 @@ final class HomeCellInfoView: BaseView {
         if distance > 1000 {
             locationLabel.text = "1km +"
         } else {
-            locationLabel.text = "\(distance)km"
+            locationLabel.text = "\(distance)m"
         }
     }
 }

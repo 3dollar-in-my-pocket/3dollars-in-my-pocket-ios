@@ -33,6 +33,8 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
     
     private let tagView = HomeCellTagView()
     
+    private let bossStoreTagView = BossStoreTagView()
+    
     private let infoView = HomeCellInfoView()
     
     let visitButton = UIButton().then {
@@ -52,9 +54,10 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
         categoryImage.setImage(urlString: storeCard.categories.first?.imageUrl)
         categoryLabel.text = storeCard.categoriesString
         titleLabel.text = storeCard.storeName.maxLength(length: 10)
-        tagView.bind(existsCount: storeCard.existsCounts)
+        setTagView(storeCard: storeCard)
         newBadge.isHidden = !storeCard.isNew
         infoView.bind(reviewCount: storeCard.reviewsCount, distance: storeCard.distance)
+        visitButton.isHidden = storeCard.storeType == .bossStore
     }
     
     override func setup() {
@@ -65,6 +68,7 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
             titleLabel,
             newBadge,
             tagView,
+            bossStoreTagView,
             infoView,
             visitButton
         ])
@@ -103,6 +107,11 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
             $0.top.equalTo(titleLabel.snp.bottom).offset(4)
         }
         
+        bossStoreTagView.snp.makeConstraints {
+            $0.left.equalTo(categoryLabel)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(4)
+        }
+        
         infoView.snp.makeConstraints {
             $0.left.equalTo(categoryLabel)
             $0.centerY.equalTo(visitButton)
@@ -111,6 +120,19 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
         visitButton.snp.makeConstraints {
             $0.right.equalToSuperview().offset(-16)
             $0.bottom.equalToSuperview().offset(-16)
+        }
+    }
+    
+    private func setTagView(storeCard: StoreCard) {
+        switch storeCard.storeType {
+        case .bossStore:
+            tagView.isHidden = true
+            bossStoreTagView.isHidden = false
+            
+        case .userStore:
+            tagView.isHidden = false
+            bossStoreTagView.isHidden = true
+            tagView.bind(existsCount: storeCard.existsCounts)
         }
     }
 }
