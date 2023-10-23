@@ -10,7 +10,7 @@ import Community
 import WriteInterface
 import StoreInterface
 
-class TabBarVC: UITabBarController {
+final class MainTabBarViewController: UITabBarController {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
     private let disposeBag = DisposeBag()
     private var deeplinkDisposeBag = DisposeBag()
@@ -31,10 +31,6 @@ class TabBarVC: UITabBarController {
     private let storeInterface: StoreInterface
     private let viewModel: MainTabBarViewModel
     private var cancellables = Set<AnyCancellable>()
-    
-    static func instance() -> TabBarVC {
-        return TabBarVC()
-    }
     
     deinit {
         self.removeKakaoLinkObserver()
@@ -154,7 +150,7 @@ class TabBarVC: UITabBarController {
         viewModel.output.route
             .main
             .withUnretained(self)
-            .sink { (owner: TabBarVC, route: MainTabBarViewModel.Route) in
+            .sink { (owner: MainTabBarViewController, route: MainTabBarViewModel.Route) in
                 owner.handleRoute(route)
             }
             .store(in: &cancellables)
@@ -260,7 +256,7 @@ class TabBarVC: UITabBarController {
     }
 }
 
-extension TabBarVC: UITabBarControllerDelegate {
+extension MainTabBarViewController: UITabBarControllerDelegate {
     func tabBarController(
         _ tabBarController: UITabBarController,
         shouldSelect viewController: UIViewController

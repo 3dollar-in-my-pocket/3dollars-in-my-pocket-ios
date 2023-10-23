@@ -57,7 +57,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func goToMain() {
-        window?.rootViewController = TabBarVC.instance()
+        window?.rootViewController = MainTabBarViewController()
         window?.makeKeyAndVisible()
     }
     

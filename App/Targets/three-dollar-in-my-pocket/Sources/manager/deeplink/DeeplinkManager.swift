@@ -109,7 +109,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
         
         if let tab = contents.selectedTab {
-            if let tabBarViewController = rootViewController as? TabBarVC {
+            if let tabBarViewController = rootViewController as? MainTabBarViewController {
                 tabBarViewController.selectTab(tab: tab)
             }
         }
@@ -124,7 +124,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
                     targetViewController,
                     animated: true
                 )
-            } else if let tabBarViewController = rootViewController as? TabBarVC,
+            } else if let tabBarViewController = rootViewController as? MainTabBarViewController,
                  let navigationController
                         = tabBarViewController.selectedViewController as? UINavigationController {
                 navigationController.pushViewController(
