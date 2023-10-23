@@ -12,6 +12,14 @@ public struct DateUtils {
         return dateFormatter.string(from: date)
     }
     
+    public static func todayString(format: String = "yyyy-MM-dd") -> String {
+        let dateFormatter = DateFormatter()
+        
+        dateFormatter.dateFormat = format
+        dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone?
+        return dateFormatter.string(from: Date())
+    }
+    
     private static func toDate(dateString: String) -> Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = Self.defaultFormat

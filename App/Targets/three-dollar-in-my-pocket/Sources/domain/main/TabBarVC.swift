@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 import RxSwift
 
 import Home
@@ -28,6 +29,8 @@ class TabBarVC: UITabBarController {
     private let membershipInterface: MembershipInterface
     private let writeInterface: WriteInterface
     private let storeInterface: StoreInterface
+    private let viewModel: MainTabBarViewModel
+    private var cancellables = Set<AnyCancellable>()
     
     static func instance() -> TabBarVC {
         return TabBarVC()
@@ -37,7 +40,7 @@ class TabBarVC: UITabBarController {
         self.removeKakaoLinkObserver()
     }
     
-    init() {
+    init(viewModel: MainTabBarViewModel = MainTabBarViewModel()) {
         guard let membershipInterface = DIContainer.shared.container.resolve(MembershipInterface.self) else {
             fatalError("⚠️ MembershipInterface가 등록되지 않았습니다.")
         }
@@ -54,6 +57,7 @@ class TabBarVC: UITabBarController {
         self.membershipInterface = membershipInterface
         self.writeInterface = writeInterface
         self.storeInterface = storeInterface
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -64,7 +68,10 @@ class TabBarVC: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.checkIfBannerExisted()
+        bind()
+        
+        viewModel.input.viewDidLoad.send(())
+        
         self.setupTabBarController()
         self.addKakaoLinkObserver()
         self.feedbackGenerator.prepare()
@@ -141,6 +148,23 @@ class TabBarVC: UITabBarController {
     func selectTab(tab: TabBarTag) {
         self.selectedIndex = tab.rawValue
         self.setTabBarColor(tab: tab)
+    }
+    
+    private func bind() {
+        viewModel.output.route
+            .main
+            .withUnretained(self)
+            .sink { (owner: TabBarVC, route: MainTabBarViewModel.Route) in
+                owner.handleRoute(route)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func handleRoute(_ route: MainTabBarViewModel.Route) {
+        switch route {
+        case .presentPopup(let advertisement):
+            ToastManager.shared.show(message: "💜메인 팝업 호출")
+        }
     }
     
     private func setTabBarColor(tab: TabBarTag) {
@@ -222,31 +246,6 @@ class TabBarVC: UITabBarController {
         }
     }
     
-    private func checkIfBannerExisted() {
-        AdvertisementService().fetchAdvertisements(position: .splash)
-            .subscribe(
-                onNext: { [weak self] advertisements in
-                    if !advertisements.isEmpty {
-                        if let isDisable
-                            = UserDefaultsUtil.getEventDisableToday(id: advertisements[0].id) {
-                            if isDisable != DateUtils.todayString() {
-                                // 다시보기 설정한 날짜가 오늘이 아니라면 팝업띄우기
-                                self?.present(
-                                    PopupViewController.instance(advertisement: advertisements[0]),
-                                    animated: false
-                                )
-                            }
-                        } else {
-                            self?.present(
-                                PopupViewController.instance(advertisement: advertisements[0]),
-                                animated: false
-                            )
-                        }
-                    }
-                })
-            .disposed(by: self.deeplinkDisposeBag)
-    }
-    
     private func pushStoreDetail(storeId: Int) {
         guard let navigationController = contentViewControllers[safe: 0] as? UINavigationController else { return }
         let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
@@ -254,18 +253,6 @@ class TabBarVC: UITabBarController {
         navigationController.pushViewController(viewController, animated: true)
     }
 }
-
-//extension TabBarVC: WriteAddressDelegate {
-//    func onWriteSuccess(storeId: Int) {
-//        self.selectedIndex = 0
-//        if let navigationViewController = self.viewControllers?[0] as? UINavigationController,
-//           let homeViewController
-//            = navigationViewController.viewControllers[0] as? HomeViewController {
-//            navigationViewController.popToRootViewController(animated: false)
-//            homeViewController.coordinator?.pushStoreDetail(storeId: String(storeId))
-//        }
-//    }
-//}
 
 extension TabBarVC: UITabBarControllerDelegate {
     func tabBarController(
