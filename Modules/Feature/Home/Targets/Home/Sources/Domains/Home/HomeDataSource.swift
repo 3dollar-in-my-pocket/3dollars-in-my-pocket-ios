@@ -30,5 +30,25 @@ final class HomeDataSource: UICollectionViewDiffableDataSource<HomeSection, Home
                 return cell
             }
         }
+        
+        collectionView.delegate = self
+    }
+}
+
+extension HomeDataSource: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard let sectionItem = snapshot().itemIdentifiers[safe: indexPath.item] else { return .zero }
+        
+        switch sectionItem {
+        case .empty:
+            return HomeStoreEmptyCell.Layout.size
+            
+        case .storeCard:
+            return HomeStoreCardCell.Layout.size    
+            
+        default:
+            return .zero
+        }
+        
     }
 }
