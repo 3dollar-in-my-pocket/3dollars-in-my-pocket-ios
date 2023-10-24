@@ -453,6 +453,11 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.route.send(.presentVisit(store))
             }
             .store(in: &cancellables)
+        
+        input.onTapCurrentMarker
+            .map { Route.presentMarkerAdvertisement }
+            .subscribe(output.route)
+            .store(in: &cancellables)
     }
     
     private func fetchAroundStore() async -> Result<[StoreCard], Error> {

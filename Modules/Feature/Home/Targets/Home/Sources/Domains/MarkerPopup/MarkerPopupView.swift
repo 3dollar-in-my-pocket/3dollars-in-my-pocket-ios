@@ -15,6 +15,7 @@ final class MarkerPopupView: BaseView {
     
     private let imageView = UIImageView().then {
         $0.contentMode = .scaleAspectFill
+        $0.clipsToBounds = true
     }
     
     let closeButton = UIButton().then {

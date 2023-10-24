@@ -225,7 +225,7 @@ public final class HomeViewController: BaseViewController {
                     ToastManager.shared.show(message: "🔥 처리 방침 구현 필요")
                     
                 case .presentMarkerAdvertisement:
-                    ToastManager.shared.show(message: "🔥 마커 광고 화면 구현 필요")
+                    owner.presentMarkerPopup()
                     
                 case .presentSearchAddress(let viewModel):
                     owner.presentSearchAddress(viewModel)
@@ -328,6 +328,12 @@ public final class HomeViewController: BaseViewController {
         let viewController = SearchAddressViewController(viewModel: viewModel)
         
         tabBarController?.present(viewController, animated: true, completion: nil)
+    }
+    
+    private func presentMarkerPopup() {
+        let viewController = MarkerPopupViewController()
+        
+        tabBarController?.present(viewController, animated: true)
     }
 }
 

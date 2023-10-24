@@ -46,10 +46,46 @@ final class MarkerPopupViewModel: BaseViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .sink { (owner: MarkerPopupViewModel, _) in
-                <#code#>
+                owner.fetchMarkerPopup()
             }
+            .store(in: &cancellables)
+        
+        input.didTapButton
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: MarkerPopupViewModel, _) in
+                owner.sendClickEvent()
+            })
+            .compactMap({ (owner: MarkerPopupViewModel, _) in
+                owner.state.advertisement?.linkUrl
+            })
+            .map { Route.goToURL($0) }
+            .subscribe(output.route)
             .store(in: &cancellables)
     }
     
-    private func 
+    private func fetchMarkerPopup() {
+        Task {
+            let input = FetchAdvertisementInput(position: .storeMarkerPopup, size: nil)
+            let result = await advertisementService.fetchAdvertisements(input: input)
+            
+            switch result {
+            case .success(let response):
+                guard let advertisementResponse = response.first else { return }
+                let advertisement = Advertisement(response: advertisementResponse)
+                
+                output.advertisement.send(advertisement)
+                
+            case .failure(let error):
+                output.showErrorAloer.send(error)
+            }
+        }
+    }
+    
+    private func sendClickEvent() {
+        guard let advertisementId = state.advertisement?.advertisementId else { return }
+        
+        Task {
+            let _ = await eventService.sendClickEvent(targetId: advertisementId, type: "ADVERTISEMENT")
+        }
+    }
 }
