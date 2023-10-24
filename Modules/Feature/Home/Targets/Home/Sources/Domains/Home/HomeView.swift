@@ -2,6 +2,8 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
+
 import NMapsMap
 import SnapKit
 import Then
@@ -150,6 +152,23 @@ final class HomeView: BaseView {
         
         cameraUpdate.animation = .easeIn
         mapView.moveCamera(cameraUpdate)
+    }
+    
+    func setAdvertisementMarker(_ advertisement: Advertisement) {
+        guard let urlString = advertisement.imageUrl,
+              let url = URL(string: urlString) else { return }
+        
+        
+        DispatchQueue.global().async { [weak self] in
+            guard let data = try? Data(contentsOf: url),
+                  let image = UIImage(data: data) else { return }
+            
+            DispatchQueue.main.async {
+                self?.mapView.locationOverlay.icon = NMFOverlayImage(image: image)
+                self?.mapView.locationOverlay.iconWidth = CGFloat(advertisement.imageWidth)
+                self?.mapView.locationOverlay.iconHeight = CGFloat(advertisement.imageHeight)
+            }
+        }
     }
     
     private func generateLayout() -> UICollectionViewLayout {

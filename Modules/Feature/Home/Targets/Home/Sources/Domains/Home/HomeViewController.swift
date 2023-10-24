@@ -55,9 +55,7 @@ public final class HomeViewController: BaseViewController {
     
     public override func bindViewModelInput() {
         // TODO: 다른 화면 구현 후 바인딩 필요
-//        let selectCategory = PassthroughSubject<Category?, Never>()
 //        let searchByAddress = PassthroughSubject<CLLocation, Never>()
-//        let onTapCurrentMarker = PassthroughSubject<Void, Never>()
         
         homeView.categoryFilterButton
             .controlPublisher(for: .touchUpInside)
@@ -109,6 +107,11 @@ public final class HomeViewController: BaseViewController {
                 .subscribe(viewModel.input.selectStore)
                 .store(in: &cancellables)
         }
+        
+        homeView.mapView.locationOverlay.touchHandler = { [weak self] _ in
+            self?.viewModel.input.onTapCurrentMarker.send(())
+            return true
+        }
     }
     
     public override func bindViewModelOutput() {
@@ -141,6 +144,14 @@ public final class HomeViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, location in
                 owner.homeView.moveCamera(location: location)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.advertisementMarker
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, advertisement: Advertisement) in
+                owner.homeView.setAdvertisementMarker(advertisement)
             }
             .store(in: &cancellables)
         
@@ -315,7 +326,6 @@ public final class HomeViewController: BaseViewController {
     
     private func presentSearchAddress(_ viewModel: SearchAddressViewModel) {
         let viewController = SearchAddressViewController(viewModel: viewModel)
-//        viewController.transitioningDelegate = self
         
         tabBarController?.present(viewController, animated: true, completion: nil)
     }

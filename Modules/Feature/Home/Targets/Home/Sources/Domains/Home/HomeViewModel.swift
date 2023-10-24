@@ -54,7 +54,7 @@ final class HomeViewModel: BaseViewModel {
         var newMapMaxDistance: Double?
         var resultCameraPosition: CLLocation?
         var currentLocation: CLLocation?
-        var advertisementMarker: Advertisement? // Splash에서 조회하여 Context로 전달 받아야 함
+        var advertisementMarker: Advertisement?
         var stores: [StoreCard] = []
         var selectedIndex = 0
         var hasMore: Bool = true
@@ -103,6 +103,13 @@ final class HomeViewModel: BaseViewModel {
     }
     
     override func bind() {
+        input.onMapLoad
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, _) in
+                owner.fetchAdvertisementMarker()
+            }
+            .store(in: &cancellables)
+        
         let getCurrentLocation = input.onMapLoad
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, distance in
@@ -476,6 +483,23 @@ final class HomeViewModel: BaseViewModel {
             self?.state.hasMore = response.cursor.hasMore
             
             return response.contents.map(StoreCard.init(response:))
+        }
+    }
+    
+    private func fetchAdvertisementMarker() {
+        Task {
+            let input = FetchAdvertisementInput(position: .storeMarker, size: nil)
+            let result = await advertisementService.fetchAdvertisements(input: input)
+            
+            switch result {
+            case .success(let response):
+                guard let advertisementResponse = response.first else { return }
+                let advertisement = Advertisement(response: advertisementResponse)
+                output.advertisementMarker.send(advertisement)
+                
+            case .failure(_):
+                break
+            }
         }
     }
     
