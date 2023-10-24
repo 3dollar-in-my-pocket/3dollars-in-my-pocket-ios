@@ -39,6 +39,8 @@ final class HomeListViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        viewModel.input.viewDidLoad.send(())
+        
         homeListView.mapViewButton
             .controlPublisher(for: .touchUpInside)
             .receive(on: DispatchQueue.main)
@@ -69,6 +71,14 @@ final class HomeListViewController: BaseViewController {
     }
     
     override func bindViewModelOutput() {
+        viewModel.output.advertisement
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, advertisement: Advertisement?) in
+                owner.homeListView.adBannerView.load(advertisement, in: owner)
+            }
+            .store(in: &cancellables)
+        
         viewModel.output.categoryFilter
             .receive(on: DispatchQueue.main)
             .withUnretained(self)

@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 
 final class CategoryBannerCell: BaseCollectionViewCell {
     static let size = CGSize(width: UIScreen.main.bounds.width - 48, height: 100)

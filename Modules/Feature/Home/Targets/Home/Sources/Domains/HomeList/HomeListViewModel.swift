@@ -8,6 +8,7 @@ import Model
 
 final class HomeListViewModel: BaseViewModel {
     struct Input {
+        let viewDidLoad = PassthroughSubject<Void, Never>()
         let willDisplay = PassthroughSubject<Int, Never>()
         let onTapCategoryFilter = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<PlatformStoreCategory?, Never>()
@@ -18,6 +19,7 @@ final class HomeListViewModel: BaseViewModel {
     }
     
     struct Output {
+        let advertisement = PassthroughSubject<Advertisement?, Never>()
         let categoryFilter: CurrentValueSubject<PlatformStoreCategory?, Never>
         let stores: CurrentValueSubject<[StoreCard], Never>
         let sortType: CurrentValueSubject<StoreSortType, Never>
@@ -50,10 +52,12 @@ final class HomeListViewModel: BaseViewModel {
     let output: Output
     private var state: State
     private let storeService: StoreServiceProtocol
+    private let advertisementService: AdvertisementServiceProtocol
     
     init(
         state: State,
-        storeService: StoreServiceProtocol = StoreService()
+        storeService: StoreServiceProtocol = StoreService(),
+        advertisementService: AdvertisementServiceProtocol = AdvertisementService()
     ) {
         self.output = Output(
             categoryFilter: .init(state.categoryFilter),
@@ -63,10 +67,18 @@ final class HomeListViewModel: BaseViewModel {
         )
         self.state = state
         self.storeService = storeService
+        self.advertisementService = advertisementService
         super.init()
     }
     
     override func bind() {
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { (owner: HomeListViewModel, _) in
+                owner.fetchAdvertisement()
+            }
+            .store(in: &cancellables)
+        
         input.willDisplay
             .withUnretained(self)
             .filter { owner, index in
@@ -240,6 +252,26 @@ final class HomeListViewModel: BaseViewModel {
             self?.state.hasMore = response.cursor.hasMore
             self?.state.nextCursor = response.cursor.nextCursor
             return response.contents.map(StoreCard.init(response:))
+        }
+    }
+    
+    private func fetchAdvertisement() {
+        Task {
+            // TODO: 포지션 설정 필요
+            let input = FetchAdvertisementInput(position: .storeCategoryList, size: nil)
+            let result = await advertisementService.fetchAdvertisements(input: input)
+            
+            switch result {
+            case .success(let response):
+                if let advertisementResponse = response.first {
+                    let advertisement = Advertisement(response: advertisementResponse)
+                    output.advertisement.send(advertisement)
+                } else {
+                    output.advertisement.send(nil)
+                }
+            case .failure(_):
+                output.advertisement.send(nil)
+            }
         }
     }
 }

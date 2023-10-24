@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import AppInterface
 
 final class HomeListView: BaseView {
     let categoryFilterButton = CategoryFilterButton()
@@ -10,16 +11,12 @@ final class HomeListView: BaseView {
     
     let onlyBossToggleButton = OnlyBossToggleButton()
     
-    /// 임시 생성
-    private let adView = UIView().then {
-        $0.backgroundColor = .gray
-    }
-    
-    /// 임시 생성
-    private let adTitleLabel = UILabel().then {
-        $0.textColor = .black
-        $0.text = "광고가 들어갈 예정입니다."
-    }
+    let adBannerView: AdBannerViewProtocol = {
+        let view = Environment.appModuleInterface.adBannerView
+        
+        view.backgroundColor = DesignSystemAsset.Colors.gray0.color
+        return view
+    }()
     
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
@@ -53,8 +50,7 @@ final class HomeListView: BaseView {
             categoryFilterButton,
             sortingButton,
             onlyBossToggleButton,
-            adView,
-            adTitleLabel,
+            adBannerView,
             collectionView,
             emptyView,
             mapViewButton
@@ -77,22 +73,18 @@ final class HomeListView: BaseView {
             $0.left.equalTo(sortingButton.snp.right).offset(10)
         }
         
-        adView.snp.makeConstraints {
+        adBannerView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()
             $0.top.equalTo(categoryFilterButton.snp.bottom).offset(13)
             $0.height.equalTo(49)
         }
         
-        adTitleLabel.snp.makeConstraints {
-            $0.center.equalTo(adView)
-        }
-        
         collectionView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()
             $0.bottom.equalToSuperview()
-            $0.top.equalTo(adView.snp.bottom)
+            $0.top.equalTo(adBannerView.snp.bottom)
         }
         
         emptyView.snp.makeConstraints {
