@@ -49,6 +49,9 @@ extension HomeDataSource: UICollectionViewDelegateFlowLayout {
         default:
             return .zero
         }
-        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.input.onTapStore.send(indexPath.item)
     }
 }

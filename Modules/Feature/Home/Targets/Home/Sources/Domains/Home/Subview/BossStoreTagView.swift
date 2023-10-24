@@ -55,5 +55,10 @@ final class BossStoreTagView: BaseView {
             $0.leading.equalTo(checkImage.snp.trailing).offset(4)
             $0.centerY.equalTo(containerView)
         }
+        
+        snp.makeConstraints {
+            $0.leading.equalTo(containerView).priority(.high)
+            $0.trailing.equalTo(containerView).priority(.high)
+        }
     }
 }

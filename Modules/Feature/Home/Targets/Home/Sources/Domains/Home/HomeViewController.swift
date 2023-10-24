@@ -48,15 +48,11 @@ public final class HomeViewController: BaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        homeView.collectionView.delegate = self
         homeView.mapView.addCameraDelegate(delegate: self)
         viewModel.input.viewDidLoad.send(())
     }
     
     public override func bindViewModelInput() {
-        // TODO: 다른 화면 구현 후 바인딩 필요
-//        let searchByAddress = PassthroughSubject<CLLocation, Never>()
-        
         homeView.categoryFilterButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
@@ -380,12 +376,6 @@ extension HomeViewController: NMFMapViewCameraDelegate {
             viewModel.input.changeMaxDistance.send(distance / 3)
             viewModel.input.changeMapLocation.send(mapLocation)
         }
-    }
-}
-
-extension HomeViewController: UICollectionViewDelegate {
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.input.onTapStore.send(indexPath.row)
     }
 }
 
