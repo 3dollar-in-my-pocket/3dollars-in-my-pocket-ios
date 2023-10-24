@@ -5,7 +5,11 @@ typealias CategoryFilterSanpshot = NSDiffableDataSourceSnapshot<CategorySection,
 final class CategoryFilterDataSource: UICollectionViewDiffableDataSource<CategorySection, CategorySectionItem> {
     let viewModel: CategoryFilterViewModel
     
-    init(collectionView: UICollectionView, viewModel: CategoryFilterViewModel) {
+    init(
+        collectionView: UICollectionView,
+        viewModel: CategoryFilterViewModel,
+        rootViewController: UIViewController
+    ) {
         self.viewModel = viewModel
         
         collectionView.register([
@@ -29,7 +33,7 @@ final class CategoryFilterDataSource: UICollectionViewDiffableDataSource<Categor
             case .advertisement(let advertisement):
                 let cell: CategoryBannerCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 
-                cell.bind(advertisement: advertisement)
+                cell.bind(advertisement: advertisement, in: rootViewController)
                 return cell
             }
         }

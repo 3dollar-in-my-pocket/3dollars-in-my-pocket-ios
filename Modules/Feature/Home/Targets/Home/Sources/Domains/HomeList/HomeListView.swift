@@ -3,6 +3,7 @@ import UIKit
 import Common
 import DesignSystem
 import AppInterface
+import Model
 
 final class HomeListView: BaseView {
     let categoryFilterButton = CategoryFilterButton()
@@ -96,6 +97,16 @@ final class HomeListView: BaseView {
             $0.right.equalToSuperview().offset(-20)
             $0.height.equalTo(40)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-24)
+        }
+    }
+    
+    func bindAdvertisement(advertisement: Advertisement?, in rootViewController: UIViewController) {
+        if let advertisement {
+            // TODO: 자체 구좌 확인
+            adBannerView.isHidden = true
+        } else {
+            adBannerView.load(in: rootViewController)
+            adBannerView.isHidden = false
         }
     }
     

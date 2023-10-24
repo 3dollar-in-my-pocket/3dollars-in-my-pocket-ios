@@ -15,7 +15,8 @@ final class CategoryFilterViewController: BaseViewController {
     private let viewModel: CategoryFilterViewModel
     private lazy var dataSource = CategoryFilterDataSource(
         collectionView: categoryFilterView.collectionView,
-        viewModel: viewModel
+        viewModel: viewModel,
+        rootViewController: self
     )
     
     static func instance(selectedCategory: PlatformStoreCategory? = nil) -> CategoryFilterViewController {

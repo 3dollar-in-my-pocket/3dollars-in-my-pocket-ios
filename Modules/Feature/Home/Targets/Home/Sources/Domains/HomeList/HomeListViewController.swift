@@ -75,7 +75,7 @@ final class HomeListViewController: BaseViewController {
             .main
             .withUnretained(self)
             .sink { (owner: HomeListViewController, advertisement: Advertisement?) in
-                owner.homeListView.adBannerView.load(advertisement, in: owner)
+                owner.homeListView.bindAdvertisement(advertisement: advertisement, in: owner)
             }
             .store(in: &cancellables)
         

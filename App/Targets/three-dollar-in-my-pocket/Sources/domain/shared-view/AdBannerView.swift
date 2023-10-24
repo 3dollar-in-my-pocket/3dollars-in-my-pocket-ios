@@ -1,8 +1,8 @@
 import UIKit
 import AppTrackingTransparency
 
+import DesignSystem
 import AppInterface
-import Model
 
 import GoogleMobileAds
 
@@ -27,7 +27,7 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     }
     
     private func setup() {
-        backgroundColor = .gray
+        backgroundColor = Colors.gray10.color
         addSubview(admobView)
     }
     
@@ -37,15 +37,11 @@ class AdBannerView: UIView, AdBannerViewProtocol {
         }
     }
     
-    func load(_ advertisement: Model.Advertisement?, in rootViewController: UIViewController) {
-        if let advertisement {
-            
-        } else {
-            admobView.rootViewController = rootViewController
-            admobView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(frame.width)
-            admobView.delegate = self
-            admobView.load(GADRequest())
-        }
+    func load(in rootViewController: UIViewController) {
+        admobView.rootViewController = rootViewController
+        admobView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(frame.width)
+        admobView.delegate = self
+        admobView.load(GADRequest())
     }
 }
 
