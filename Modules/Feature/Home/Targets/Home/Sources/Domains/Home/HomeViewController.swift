@@ -20,6 +20,7 @@ public final class HomeViewController: BaseViewController {
     private var markers: [NMFMarker] = []
     
     private var isFirstLoad = true
+    fileprivate let transition = SearchTransition()
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -47,17 +48,11 @@ public final class HomeViewController: BaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        homeView.collectionView.delegate = self
         homeView.mapView.addCameraDelegate(delegate: self)
         viewModel.input.viewDidLoad.send(())
     }
     
     public override func bindViewModelInput() {
-        // TODO: 다른 화면 구현 후 바인딩 필요
-//        let selectCategory = PassthroughSubject<Category?, Never>()
-//        let searchByAddress = PassthroughSubject<CLLocation, Never>()
-//        let onTapCurrentMarker = PassthroughSubject<Void, Never>()
-        
         homeView.categoryFilterButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
@@ -72,6 +67,11 @@ public final class HomeViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.onTapOnlyBoss)
+            .store(in: &cancellables)
+        
+        homeView.addressButton.tap
+            .mapVoid
+            .subscribe(viewModel.input.onTapSearchAddress)
             .store(in: &cancellables)
         
         homeView.researchButton
@@ -102,6 +102,11 @@ public final class HomeViewController: BaseViewController {
             layout.currentIndexPublisher
                 .subscribe(viewModel.input.selectStore)
                 .store(in: &cancellables)
+        }
+        
+        homeView.mapView.locationOverlay.touchHandler = { [weak self] _ in
+            self?.viewModel.input.onTapCurrentMarker.send(())
+            return true
         }
     }
     
@@ -135,6 +140,14 @@ public final class HomeViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, location in
                 owner.homeView.moveCamera(location: location)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.advertisementMarker
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, advertisement: Advertisement) in
+                owner.homeView.setAdvertisementMarker(advertisement)
             }
             .store(in: &cancellables)
         
@@ -190,7 +203,9 @@ public final class HomeViewController: BaseViewController {
                     owner.presentPanModal(categoryFilterViewController)
                     
                 case .presentListView(let state):
-                    owner.present(HomeListViewController.instance(state: state), animated: true)
+                    let viewController = HomeListViewController.instance(state: state)
+                    
+                    owner.navigationController?.present(viewController, animated: true)
                     
                 case .pushStoreDetail(let storeId):
                     owner.pushStoreDetail(storeId: storeId)
@@ -206,7 +221,10 @@ public final class HomeViewController: BaseViewController {
                     ToastManager.shared.show(message: "🔥 처리 방침 구현 필요")
                     
                 case .presentMarkerAdvertisement:
-                    ToastManager.shared.show(message: "🔥 마커 광고 화면 구현 필요")
+                    owner.presentMarkerPopup()
+                    
+                case .presentSearchAddress(let viewModel):
+                    owner.presentSearchAddress(viewModel)
                     
                 case .showErrorAlert(let error):
                     if error is LocationError {
@@ -301,6 +319,18 @@ public final class HomeViewController: BaseViewController {
         
         tabBarController?.present(viewController, animated: true)
     }
+    
+    private func presentSearchAddress(_ viewModel: SearchAddressViewModel) {
+        let viewController = SearchAddressViewController(viewModel: viewModel)
+        
+        tabBarController?.present(viewController, animated: true, completion: nil)
+    }
+    
+    private func presentMarkerPopup() {
+        let viewController = MarkerPopupViewController()
+        
+        tabBarController?.present(viewController, animated: true)
+    }
 }
 
 extension HomeViewController: NMFMapViewCameraDelegate {
@@ -349,14 +379,31 @@ extension HomeViewController: NMFMapViewCameraDelegate {
     }
 }
 
-extension HomeViewController: UICollectionViewDelegate {
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.input.onTapStore.send(indexPath.row)
-    }
-}
-
 extension HomeViewController: CategoryFilterDelegate {
     func onSelectCategory(category: PlatformStoreCategory?) {
         viewModel.input.selectCategory.send(category)
+    }
+}
+
+
+extension HomeViewController: UIViewControllerTransitioningDelegate {
+    public func animationController(
+        forPresented presented: UIViewController,
+        presenting: UIViewController,
+        source: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
+        transition.transitionMode = .present
+        transition.maskView.frame = homeView.addressButton.frame
+        
+        return transition
+    }
+    
+    public func animationController(
+        forDismissed dismissed: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
+        transition.transitionMode = .dismiss
+        transition.maskOriginalFrame = homeView.addressButton.frame
+        
+        return transition
     }
 }

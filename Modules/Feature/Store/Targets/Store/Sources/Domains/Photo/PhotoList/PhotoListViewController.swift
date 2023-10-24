@@ -103,7 +103,7 @@ final class PhotoListViewController: BaseViewController {
     }
     
     private func presentPhotoDetail(viewModel: PhotoDetailViewModel) {
-        let viewController = PhotoDetailViewController.instance(viewModel: viewModel)
+        let viewController = PhotoDetailViewController(viewModel: viewModel)
         
         present(viewController, animated: true)
     }

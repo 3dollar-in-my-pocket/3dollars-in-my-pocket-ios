@@ -75,6 +75,10 @@
 "photo_list.title" = "사진";
 "photo_list.upload_button" = "사진 제보하기";
 
+// 사진 상세 화면
+"photo_detail.delete.title" = "정말로 사진을 삭제하시겠습니까?";
+"photo_detail.delete.delete" = "삭제";
+
 // 리뷰 리스트 화면
 "review_list.title" = "리뷰";
 "review_list.write_review" = "리뷰 작성하기";

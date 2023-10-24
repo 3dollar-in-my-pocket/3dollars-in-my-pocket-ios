@@ -53,4 +53,13 @@ public final class UserDefaultsUtil {
             return instance.integer(forKey: "KEY_USER_ID")
         }
     }
+    
+    
+    public func setShownMainBannerDate(id: Int) {
+        instance.set(DateUtils.todayString(), forKey: "KEY_SHOWN_MAIN_BANNER_\(id)")
+    }
+    
+    public func getShownMainBannerDate(id: Int) -> String? {
+        return instance.string(forKey: "KEY_SHOWN_MAIN_BANNER_\(id)")
+    }
 }

@@ -8,6 +8,7 @@
 "home_only_boss_button" = "사장님 직영점만";
 "home_sorting_button_distance" = "거리순 보기";
 "home_sorting_button_latest" = "최근 등록순 보기";
+"home_boss_store_tag" = "사장님 직영";
 
 // 카테고리 필터 화면
 "category_filter_new" = "new";
@@ -18,6 +19,13 @@
 // 홈 리스트 뷰 화면
 "home_list_header_total" = "전체 메뉴";
 "home_list_is_only_certified" = "방문 인증 가게";
+"home_list.empty.title" = "주변 2km 이내에 가게가 없어요.";
+"home_list.empty.description" = "다른 주소로 검색하거나 직접 제보해보세요!";
+
+// 주소 검색 화면
+"search_address.title" = "위치 검색";
+"search_address.placeholder" = "구, 동, 건물명, 역 등으로 검색";
 
 "location_deny_title" = "위치 권한 거절";
 "location_deny_description" = "현재 내 위치와 가까운 가게를 찾기 위해 위치 권한이 필요합니다. 설정에서 위치 권한을 허용시켜주세요.";
+

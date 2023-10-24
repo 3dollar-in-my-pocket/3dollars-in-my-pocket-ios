@@ -5,7 +5,7 @@ import DesignSystem
 
 final class HomeStoreEmptyCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width - 81, height: 152)
+        static let size = CGSize(width: UIScreen.main.bounds.width - 81, height: 80)
     }
     
     private let containerView = UIView().then {
@@ -23,20 +23,11 @@ final class HomeStoreEmptyCell: BaseCollectionViewCell {
         $0.text = HomeStrings.homeEmptyTitle
     }
     
-    private let descriptionLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.textColor = DesignSystemAsset.Colors.gray50.color
-        $0.numberOfLines = 1
-        $0.textAlignment = .left
-        $0.text = HomeStrings.homeEmptyDescription
-    }
-    
     override func setup() {
         contentView.addSubViews([
             containerView,
             categoryImage,
-            titleLabel,
-            descriptionLabel
+            titleLabel
         ])
     }
     
@@ -54,11 +45,6 @@ final class HomeStoreEmptyCell: BaseCollectionViewCell {
         titleLabel.snp.makeConstraints {
             $0.left.equalTo(categoryImage.snp.right).offset(14)
             $0.top.equalTo(categoryImage)
-        }
-        
-        descriptionLabel.snp.makeConstraints {
-            $0.left.equalTo(titleLabel)
-            $0.top.equalTo(titleLabel.snp.bottom).offset(4)
         }
     }
 }

@@ -2,6 +2,9 @@ import UIKit
 
 import Common
 import Model
+import DesignSystem
+import DependencyInjection
+import StoreInterface
 
 final class HomeListViewController: BaseViewController {
     private let homeListView = HomeListView()
@@ -10,11 +13,13 @@ final class HomeListViewController: BaseViewController {
     
     static func instance(state: HomeListViewModel.State) -> UINavigationController {
         let viewController = HomeListViewController(state: state)
+        viewController.hidesBottomBarWhenPushed = true
         
         return UINavigationController(rootViewController: viewController).then {
             $0.isNavigationBarHidden = true
             $0.interactivePopGestureRecognizer?.delegate = nil
             $0.modalPresentationStyle = .overCurrentContext
+            $0.hidesBottomBarWhenPushed = true
         }
     }
     
@@ -33,6 +38,8 @@ final class HomeListViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        viewModel.input.viewDidLoad.send(())
         
         homeListView.mapViewButton
             .controlPublisher(for: .touchUpInside)
@@ -64,6 +71,14 @@ final class HomeListViewController: BaseViewController {
     }
     
     override func bindViewModelOutput() {
+        viewModel.output.advertisement
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, advertisement: Advertisement?) in
+                owner.homeListView.bindAdvertisement(advertisement: advertisement, in: owner)
+            }
+            .store(in: &cancellables)
+        
         viewModel.output.categoryFilter
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
@@ -80,6 +95,7 @@ final class HomeListViewController: BaseViewController {
                 let section = HomeListSection(items: items)
                 
                 owner.updateDataSource(section: [section])
+                owner.homeListView.emptyView.isHidden = storeCards.isNotEmpty
             }
             .store(in: &cancellables)
         
@@ -103,18 +119,7 @@ final class HomeListViewController: BaseViewController {
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, route in
-                switch route {
-                case .presentCategoryFilter(let category):
-                    let categoryFilterViewController = CategoryFilterViewController.instance(selectedCategory: category)
-                    categoryFilterViewController.delegate = owner
-                    owner.presentPanModal(categoryFilterViewController)
-                    
-                case .pushStoreDetail(let storeId):
-                    print("🔥 상품 상세화면 구현 필요")
-                    
-                case .showErrorAlert(let error):
-                    owner.showErrorAlert(error: error)
-                }
+                owner.handleRoute(route)
             }
             .store(in: &cancellables)
     }
@@ -128,6 +133,36 @@ final class HomeListViewController: BaseViewController {
         }
         
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func handleRoute(_ route: HomeListViewModel.Route) {
+        switch route {
+        case .presentCategoryFilter(let category):
+            let categoryFilterViewController = CategoryFilterViewController.instance(selectedCategory: category)
+            categoryFilterViewController.delegate = self
+            presentPanModal(categoryFilterViewController)
+            
+        case .pushStoreDetail(let storeId):
+            pushStoreDetail(storeId: storeId)
+            
+        case .pushBossStoreDetail(let storeId):
+            pushBossStoreDetail(storeId: storeId)
+            
+        case .showErrorAlert(let error):
+            showErrorAlert(error: error)
+        }
+    }
+    
+    private func pushStoreDetail(storeId: String) {
+        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self),
+              let storeId = Int(storeId) else { return }
+        
+        let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func pushBossStoreDetail(storeId: String) {
+        ToastManager.shared.show(message: "사장님 상세 화면 구현 필요")
     }
 }
 

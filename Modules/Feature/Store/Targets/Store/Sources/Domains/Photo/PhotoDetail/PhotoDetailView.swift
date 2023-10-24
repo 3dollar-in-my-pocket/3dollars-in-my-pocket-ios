@@ -47,13 +47,21 @@ final class PhotoDetailView: BaseView {
         return button
     }()
     
+    let deleteButton: UIButton = {
+        let button = UIButton()
+        button.setImage(Icons.delete.image.withTintColor(Colors.gray60.color), for: .normal)
+        
+        return button
+    }()
+    
     override func setup() {
         backgroundColor = Colors.gray100.color
         addSubViews([
             closeButton,
             collectionView,
             leftButton,
-            rightButton
+            rightButton,
+            deleteButton
         ])
     }
     
@@ -81,6 +89,12 @@ final class PhotoDetailView: BaseView {
             $0.right.equalToSuperview().offset(-20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-16)
             $0.size.equalTo(44)
+        }
+        
+        deleteButton.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalTo(leftButton)
+            $0.size.equalTo(24)
         }
     }
     

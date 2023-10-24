@@ -366,7 +366,7 @@ public final class StoreDetailViewController: BaseViewController {
     }
     
     private func presentPhotoDetail(_ viewModel: PhotoDetailViewModel) {
-        let viewController = PhotoDetailViewController.instance(viewModel: viewModel)
+        let viewController = PhotoDetailViewController(viewModel: viewModel)
         
         present(viewController, animated: true)
     }

@@ -36,13 +36,13 @@ class BaseVC: UIViewController {
     func bindViewModelOutput() { }
     
     func showRootLoading(isShow: Bool) {
-        if let tabBarVC = self.navigationController?.parent as? TabBarVC {
+        if let tabBarVC = self.navigationController?.parent as? MainTabBarViewController {
             tabBarVC.showLoading(isShow: isShow)
         }
     }
     
     func showRootDim(isShow: Bool) {
-        if let tabBarVC = self.navigationController?.parent as? TabBarVC {
+        if let tabBarVC = self.navigationController?.parent as? MainTabBarViewController {
             tabBarVC.showDim(isShow: isShow)
         } else {
             self.showDim(isShow: isShow)

@@ -35,6 +35,15 @@ public enum StoreStrings {
     }
   }
 
+  public enum PhotoDetail {
+    public enum Delete {
+      /// 삭제
+      public static let delete = StoreStrings.tr("Localization", "photo_detail.delete.delete")
+      /// 정말로 사진을 삭제하시겠습니까?
+      public static let title = StoreStrings.tr("Localization", "photo_detail.delete.title")
+    }
+  }
+
   public enum PhotoList {
     /// 사진
     public static let title = StoreStrings.tr("Localization", "photo_list.title")

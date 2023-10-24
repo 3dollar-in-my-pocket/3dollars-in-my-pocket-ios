@@ -34,6 +34,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let didTapUploadPhoto = PassthroughSubject<Void, Never>()
         let didTapPhoto = PassthroughSubject<Int, Never>()
         let onSuccessUploadPhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
+        let onSuccessUpdatePhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
         
         // 리뷰 섹션
         let didTapReviewRightButton = PassthroughSubject<Int, Never>()
@@ -228,6 +229,14 @@ final class StoreDetailViewModel: BaseViewModel {
                 } else {
                     owner.presentPhotoDetail(index: index)
                 }
+            }
+            .store(in: &cancellables)
+        
+        input.onSuccessUpdatePhotos
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, photos: [StoreDetailPhoto]) in
+                owner.state.storeDetailData?.photos = photos
+                owner.refreshSections()
             }
             .store(in: &cancellables)
     }
@@ -512,9 +521,13 @@ final class StoreDetailViewModel: BaseViewModel {
     }
     
     private func presentPhotoDetail(index: Int) {
-        guard let photos = state.storeDetailData?.photos else { return }
-        let config = PhotoDetailViewModel.Config(storeId: state.storeId, photos: photos, hasMore: true, currentIndex: index)
+        let config = PhotoDetailViewModel.Config(storeId: state.storeId, hasMore: true, currentIndex: index)
         let viewModel = PhotoDetailViewModel(config: config)
+        
+        viewModel.output.updatePhotoListState
+            .map { $0.photos }
+            .subscribe(input.onSuccessUpdatePhotos)
+            .store(in: &viewModel.cancellables)
         
         output.route.send(.presentPhotoDetail(viewModel))
     }

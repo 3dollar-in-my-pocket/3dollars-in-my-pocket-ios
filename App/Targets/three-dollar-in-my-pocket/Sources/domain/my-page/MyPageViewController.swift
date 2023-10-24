@@ -25,8 +25,8 @@ final class MyPageViewController: BaseViewController, View, MyPageCoordinator {
     static func instance() -> UINavigationController {
         let viewController = MyPageViewController(nibName: nil, bundle: nil).then {
             $0.tabBarItem = UITabBarItem(
-                title: "tab_my".localized,
-                image: UIImage(named: "ic_my"),
+                title: nil,
+                image: Icons.mySolid.image,
                 tag: TabBarTag.my.rawValue
             )
         }

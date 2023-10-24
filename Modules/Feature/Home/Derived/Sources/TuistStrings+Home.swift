@@ -18,6 +18,8 @@ public enum HomeStrings {
   public static let categoryFilterNew = HomeStrings.tr("Localization", "category_filter_new")
   /// 이 안에 네 최애 하나쯤은 있겠지!
   public static let categoryFilterTitle = HomeStrings.tr("Localization", "category_filter_title")
+  /// 사장님 직영
+  public static let homeBossStoreTag = HomeStrings.tr("Localization", "home_boss_store_tag")
   /// 전체 메뉴
   public static let homeCategoryFilterButton = HomeStrings.tr("Localization", "home_category_filter_button")
   /// 다른 주소로 검색하거나 직접 제보해보세요!
@@ -44,6 +46,22 @@ public enum HomeStrings {
   public static let locationDenyDescription = HomeStrings.tr("Localization", "location_deny_description")
   /// 위치 권한 거절
   public static let locationDenyTitle = HomeStrings.tr("Localization", "location_deny_title")
+
+  public enum HomeList {
+    public enum Empty {
+      /// 다른 주소로 검색하거나 직접 제보해보세요!
+      public static let description = HomeStrings.tr("Localization", "home_list.empty.description")
+      /// 주변 2km 이내에 가게가 없어요.
+      public static let title = HomeStrings.tr("Localization", "home_list.empty.title")
+    }
+  }
+
+  public enum SearchAddress {
+    /// 구, 동, 건물명, 역 등으로 검색
+    public static let placeholder = HomeStrings.tr("Localization", "search_address.placeholder")
+    /// 위치 검색
+    public static let title = HomeStrings.tr("Localization", "search_address.title")
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

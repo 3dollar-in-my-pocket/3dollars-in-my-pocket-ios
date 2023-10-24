@@ -334,10 +334,6 @@ public enum ThreeDollarInMyPocketStrings {
   public static let policyNextButton = ThreeDollarInMyPocketStrings.tr("Localization", "policy_next_button")
   /// (필수) 이용약관 동의
   public static let policyPolicyLabel = ThreeDollarInMyPocketStrings.tr("Localization", "policy_policy_label")
-  /// 닫기
-  public static let popupClose = ThreeDollarInMyPocketStrings.tr("Localization", "popup_close")
-  /// 오늘 하루 보지않기
-  public static let popupDisableToday = ThreeDollarInMyPocketStrings.tr("Localization", "popup_disable_today")
   /// 개인정보처리방침
   public static let privacyTitle = ThreeDollarInMyPocketStrings.tr("Localization", "privacy_title")
   /// 1:1문의
@@ -604,6 +600,13 @@ public enum ThreeDollarInMyPocketStrings {
   public static let writeStoreTuesday = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_tuesday")
   /// 수
   public static let writeStoreWednesday = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_wednesday")
+
+  public enum MainBannerPopup {
+    /// 닫기
+    public static let close = ThreeDollarInMyPocketStrings.tr("Localization", "main_banner_popup.close")
+    /// 오늘 하루 보지않기
+    public static let disableToday = ThreeDollarInMyPocketStrings.tr("Localization", "main_banner_popup.disable_today")
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

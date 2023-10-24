@@ -12,6 +12,7 @@ final class PhotoDetailViewModel: BaseViewModel {
         let willDisplayCell = PassthroughSubject<Int, Never>()
         let didTapLeft = PassthroughSubject<Void, Never>()
         let didTapRight = PassthroughSubject<Void, Never>()
+        let deletePhoto = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -33,7 +34,7 @@ final class PhotoDetailViewModel: BaseViewModel {
     
     struct Config {
         let storeId: Int
-        var photos: [StoreDetailPhoto]
+        var photos: [StoreDetailPhoto] = []
         var nextCursor: String?
         var hasMore: Bool
         var currentIndex: Int
@@ -61,9 +62,7 @@ final class PhotoDetailViewModel: BaseViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .sink { (owner: PhotoDetailViewModel, _) in
-                if owner.state.photos.isEmpty {
-                    owner.fetchStorePhotos()
-                }
+                owner.fetchStorePhotos()
             }
             .store(in: &cancellables)
         
@@ -109,6 +108,13 @@ final class PhotoDetailViewModel: BaseViewModel {
                 owner.output.scrollToIndex.send((index: owner.state.currentIndex, animated: true))
             }
             .store(in: &cancellables)
+        
+        input.deletePhoto
+            .withUnretained(self)
+            .sink { (owner: PhotoDetailViewModel, _) in
+                owner.deletePhoto()
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchStorePhotos(cursor: String? = nil) {
@@ -124,7 +130,14 @@ final class PhotoDetailViewModel: BaseViewModel {
             case .success(let response):
                 state.hasMore = response.cursor.hasMore
                 state.nextCursor = response.cursor.nextCursor
-                state.photos.append(contentsOf: response.contents.map { StoreDetailPhoto(response: $0.image) })
+                
+                let photos = response.contents.map { StoreDetailPhoto(response: $0.image) }
+                if cursor != nil {
+                    state.photos = photos
+                } else {
+                    state.photos.append(contentsOf: photos)
+                }
+                 
                 output.photos.send(state.photos)
                 output.showLoading.send(false)
                 
@@ -167,5 +180,29 @@ final class PhotoDetailViewModel: BaseViewModel {
         )
         
         output.updatePhotoListState.send(updatedState)
+    }
+    
+    private func deletePhoto() {
+        guard let photoId = state.photos[safe: state.currentIndex]?.imageId else { return }
+        output.showLoading.send(true)
+        Task {
+            let result = await storeService.deletePhoto(photoId: photoId)
+            
+            output.showLoading.send(false)
+            
+            switch result {
+            case .success(_):
+                state.photos.remove(at: state.currentIndex)
+                if state.photos.count == state.currentIndex {
+                    state.currentIndex -= 1
+                }
+                output.photos.send(state.photos)
+                output.scrollToIndex.send((state.currentIndex , true))
+                updatePhotoListState()
+                
+            case .failure(let error):
+                output.showErrorAlert.send(error)
+            }
+        }
     }
 }

@@ -14,11 +14,6 @@ import Store
 import Write
 
 typealias Log = SwiftyBeaver
-typealias Fonts = DesignSystemFontFamily
-typealias Colors = DesignSystemAsset.Colors
-typealias Strings = ThreeDollarInMyPocketStrings
-typealias Assets = ThreeDollarInMyPocketAsset.Assets
-typealias Icons = DesignSystemAsset.Icons
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

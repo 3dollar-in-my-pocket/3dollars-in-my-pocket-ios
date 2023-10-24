@@ -10,6 +10,7 @@ public protocol AppModuleInterface {
     var deeplinkManager: DeeplinkManagerProtocol { get }
     var photoManager: PhotoManagerProtocol { get }
     var analyticsManager: AnalyticsManagerProtocol { get }
+    var adBannerView: AdBannerViewProtocol { get }
     
     func getFCMToken(completion: @escaping ((String) -> ()))
     func goToMain()

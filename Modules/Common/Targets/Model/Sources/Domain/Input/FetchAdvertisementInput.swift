@@ -3,6 +3,7 @@ import Foundation
 public struct FetchAdvertisementInput: Encodable {
     public let position: AdvertisementPosition
     public let size: Int?
+    public let platform = "IOS"
     
     public init(position: AdvertisementPosition, size: Int?) {
         self.position = position

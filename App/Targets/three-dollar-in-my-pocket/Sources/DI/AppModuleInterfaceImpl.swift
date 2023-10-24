@@ -40,6 +40,10 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         return AnalyticsManager.shared
     }
     
+    var adBannerView: AdBannerViewProtocol {
+        return AdBannerView()
+    }
+    
     func getFCMToken(completion: @escaping ((String) -> ())) {
         Messaging.messaging().token { token, error in
             guard let token = token else {
