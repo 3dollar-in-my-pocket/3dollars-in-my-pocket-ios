@@ -68,7 +68,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
 
-            let input = FetchPollsRequestInput()
+            let input = FetchPollsRequestInput(sortType: .popular)
 
             let result = await communityService.fetchPolls(input: input)
 
