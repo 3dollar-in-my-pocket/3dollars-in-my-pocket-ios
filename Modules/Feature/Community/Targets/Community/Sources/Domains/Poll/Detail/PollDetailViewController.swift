@@ -24,7 +24,7 @@ final class PollDetailViewController: BaseViewController {
 
     private let writeCommentView = PollDetailWriteCommentView()
 
-    private lazy var dataSource = PollDetailDataSource(collectionView: collectionView)
+    private lazy var dataSource = PollDetailDataSource(collectionView: collectionView, containerVC: self)
 
     private let viewModel: PollDetailViewModel
 

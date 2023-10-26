@@ -61,7 +61,7 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
 
     private typealias Snapshot = NSDiffableDataSourceSnapshot<PollDetailSection, PollDetailSectionItem>
 
-    init(collectionView: UICollectionView) {
+    init(collectionView: UICollectionView, containerVC: UIViewController) {
         collectionView.register([
             PollDetailContentCell.self,
             PollDetailCommentCell.self,
@@ -72,7 +72,7 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
             PollDetailCommentHeaderView.self,
         ])
 
-        super.init(collectionView: collectionView) {collectionView, indexPath, itemIdentifier in
+        super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .detail(let cellViewModel):
                 let cell: PollDetailContentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
@@ -81,6 +81,7 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
             case .comment(let cellViewModel):
                 let cell: PollDetailCommentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel: cellViewModel)
+                cell.containerVC = containerVC
                 return cell
             case .blindComment:
                 let cell: PollDetailBlindCommentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
