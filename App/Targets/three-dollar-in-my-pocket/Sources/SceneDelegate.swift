@@ -57,7 +57,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func goToMain() {
-        window?.rootViewController = MainTabBarViewController()
+        let tabBarViewController = MainTabBarViewController()
+        let navigationViewController = UINavigationController(rootViewController: tabBarViewController)
+        navigationViewController.isNavigationBarHidden = true
+        window?.rootViewController = navigationViewController
         window?.makeKeyAndVisible()
     }
     

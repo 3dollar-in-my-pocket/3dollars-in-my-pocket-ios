@@ -6,21 +6,22 @@ import DesignSystem
 import DependencyInjection
 import StoreInterface
 
+protocol HomeListDelegate: AnyObject {
+    func didTapStore(storeId: Int)
+}
+
 final class HomeListViewController: BaseViewController {
+    weak var delegate: HomeListDelegate?
     private let homeListView = HomeListView()
     private let viewModel: HomeListViewModel
     private lazy var dataSource = HomeListDataSource(collectionView: homeListView.collectionView, viewModel: viewModel)
     
-    static func instance(state: HomeListViewModel.State) -> UINavigationController {
+    static func instance(state: HomeListViewModel.State) -> HomeListViewController {
         let viewController = HomeListViewController(state: state)
         viewController.hidesBottomBarWhenPushed = true
+        viewController.modalPresentationStyle = .currentContext
         
-        return UINavigationController(rootViewController: viewController).then {
-            $0.isNavigationBarHidden = true
-            $0.interactivePopGestureRecognizer?.delegate = nil
-            $0.modalPresentationStyle = .overCurrentContext
-            $0.hidesBottomBarWhenPushed = true
-        }
+        return viewController
     }
     
     init(state: HomeListViewModel.State) {
@@ -143,7 +144,7 @@ final class HomeListViewController: BaseViewController {
             presentPanModal(categoryFilterViewController)
             
         case .pushStoreDetail(let storeId):
-            pushStoreDetail(storeId: storeId)
+            delegate?.didTapStore(storeId: Int(storeId) ?? 0)
             
         case .pushBossStoreDetail(let storeId):
             pushBossStoreDetail(storeId: storeId)
@@ -151,14 +152,6 @@ final class HomeListViewController: BaseViewController {
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
         }
-    }
-    
-    private func pushStoreDetail(storeId: String) {
-        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self),
-              let storeId = Int(storeId) else { return }
-        
-        let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
-        navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func pushBossStoreDetail(storeId: String) {

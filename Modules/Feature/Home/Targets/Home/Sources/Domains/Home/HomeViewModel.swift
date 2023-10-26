@@ -9,6 +9,7 @@ import Common
 final class HomeViewModel: BaseViewModel {
     enum Constent {
         static let defaultLocation = CLLocation(latitude: 37.497941, longitude: 127.027616)
+        static let cardAdvertisementIndex = 2
     }
     
     struct Input {
@@ -38,6 +39,7 @@ final class HomeViewModel: BaseViewModel {
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let advertisementMarker = PassthroughSubject<Advertisement, Never>()
+        let advertisementCard = PassthroughSubject<Advertisement?, Never>()
         let storeCards = PassthroughSubject<[StoreCard], Never>()
         let scrollToIndex = PassthroughSubject<Int, Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
@@ -55,6 +57,7 @@ final class HomeViewModel: BaseViewModel {
         var resultCameraPosition: CLLocation?
         var currentLocation: CLLocation?
         var advertisementMarker: Advertisement?
+        var advertisementCard: Advertisement?
         var stores: [StoreCard] = []
         var selectedIndex = 0
         var hasMore: Bool = true
@@ -71,6 +74,7 @@ final class HomeViewModel: BaseViewModel {
         case presentMarkerAdvertisement
         case presentSearchAddress(SearchAddressViewModel)
         case showErrorAlert(Error)
+        case openURL(String)
     }
     
     let input = Input()
@@ -183,6 +187,13 @@ final class HomeViewModel: BaseViewModel {
             .filter { MarketingConsent(value: $0.marketingConsent) == .unverified }
             .map { _ in Route.presentPolicy }
             .subscribe(output.route)
+            .store(in: &cancellables)
+        
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, _) in
+                owner.fetchAdvertisementCard()
+            }
             .store(in: &cancellables)
         
         input.changeMaxDistance
@@ -306,6 +317,7 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { owner, result in
                 owner.output.showLoading.send(false)
+                owner.output.isHiddenResearchButton.send(true)
                 switch result {
                 case .success(let storeCards):
                     owner.state.stores = storeCards
@@ -408,13 +420,24 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.selectStore
+            .filter { $0 != Constent.cardAdvertisementIndex }
+            .map {
+                $0 < Constent.cardAdvertisementIndex ? $0 : $0 - 1
+            }
             .withUnretained(self)
             .sink { owner, selectIndex in
                 guard let store = owner.state.stores[safe: selectIndex],
                       let location = store.location else { return }
                 let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
                 owner.output.cameraPosition.send(cameraPosition)
+            }
+            .store(in: &cancellables)
+        
+        input.selectStore
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, selectIndex: Int) in
                 owner.output.scrollToIndex.send(selectIndex)
+                owner.state.selectedIndex = selectIndex
             }
             .store(in: &cancellables)
         
@@ -425,18 +448,32 @@ final class HomeViewModel: BaseViewModel {
                       let location = store.location else { return }
                 let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
                 owner.output.cameraPosition.send(cameraPosition)
-                owner.output.scrollToIndex.send(selectIndex)
+                
+                let scrollIndex = selectIndex < Constent.cardAdvertisementIndex ? selectIndex : selectIndex + 1
+                owner.output.scrollToIndex.send(scrollIndex)
             }
             .store(in: &cancellables)
         
         input.onTapStore
             .withUnretained(self)
             .sink { owner, selectIndex in
-                guard let store = owner.state.stores[safe: selectIndex],
-                      let location = store.location else { return }
                 if selectIndex == owner.state.selectedIndex {
-                    owner.pushStoreDetail(store: store)
+                    if selectIndex == Constent.cardAdvertisementIndex {
+                        // 광고 클릭
+                        guard let advertisement = owner.state.advertisementCard,
+                              let linkUrl = advertisement.linkUrl else { return }
+                        owner.output.route.send(.openURL(linkUrl))
+                    } else {
+                        // 가게 클릭
+                        let storeIndex = selectIndex < Constent.cardAdvertisementIndex ? selectIndex : selectIndex - 1
+                        guard let store = owner.state.stores[safe: storeIndex] else { return }
+                        owner.pushStoreDetail(store: store)
+                    }
                 } else {
+                    // 스크롤
+                    let storeIndex = selectIndex < Constent.cardAdvertisementIndex ? selectIndex : selectIndex - 1
+                    guard let store = owner.state.stores[safe: storeIndex],
+                          let location = store.location else { return }
                     let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
                     owner.output.cameraPosition.send(cameraPosition)
                     owner.output.scrollToIndex.send(selectIndex)
@@ -504,6 +541,27 @@ final class HomeViewModel: BaseViewModel {
                 
             case .failure(_):
                 break
+            }
+        }
+    }
+    
+    private func fetchAdvertisementCard() {
+        Task {
+            let input = FetchAdvertisementInput(position: .mainPageCard, size: nil)
+            let result = await advertisementService.fetchAdvertisements(input: input)
+            
+            switch result {
+            case .success(let response):
+                if let advertisementResponse = response.first {
+                    let advertisement = Advertisement(response: advertisementResponse)
+                    state.advertisementCard = advertisement
+                    output.advertisementCard.send(advertisement)
+                } else {
+                    output.advertisementCard.send(nil)
+                }
+                
+            case .failure(_):
+                output.advertisementCard.send(nil)
             }
         }
     }

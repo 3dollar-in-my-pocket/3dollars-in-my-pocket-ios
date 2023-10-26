@@ -16,7 +16,11 @@ typealias HomeStoreCardSanpshot = NSDiffableDataSourceSnapshot<HomeSection, Home
 public final class HomeViewController: BaseViewController {
     private let homeView = HomeView()
     private let viewModel = HomeViewModel()
-    private lazy var dataSource = HomeDataSource(collectionView: homeView.collectionView, viewModel: viewModel)
+    private lazy var dataSource = HomeDataSource(
+        collectionView: homeView.collectionView,
+        viewModel: viewModel,
+        rootViewController: self
+    )
     private var markers: [NMFMarker] = []
     
     private var isFirstLoad = true
@@ -152,34 +156,50 @@ public final class HomeViewController: BaseViewController {
             .store(in: &cancellables)
         
         viewModel.output.storeCards
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, storeCards in
+            .combineLatest(viewModel.output.advertisementCard)
+            .main
+            .sink { [weak self] (storeCards: [StoreCard], advertisement: Advertisement?) in
+                guard let self else { return }
+                
                 var section: HomeSection
                 
                 if storeCards.isEmpty {
                     section = HomeSection(items: [HomeSectionItem.empty])
                 } else {
-                    section = HomeSection(items: storeCards.map { HomeSectionItem.storeCard($0) })
+                    var items = storeCards.map { HomeSectionItem.storeCard($0) }
+                    
+                    if items.count > 2 {
+                        items.insert(.advertisement(advertisement), at: 2)
+                    } else {
+                        items.append(.advertisement(advertisement))
+                    }
+                    
+                    section = HomeSection(items: items)
                 }
-                owner.updateDataSource(section: [section])
+                self.updateDataSource(section: [section])
             }
             .store(in: &cancellables)
         
         viewModel.output.scrollToIndex
             .combineLatest(viewModel.output.storeCards)
-            .receive(on: DispatchQueue.main)
+            .main
             .withUnretained(self)
             .sink { owner, storeCardWithSelectIndex in
                 let (selectIndex, storeCards) = storeCardWithSelectIndex
-                guard storeCards.count > selectIndex else {
+                guard storeCards.count + 1 > selectIndex else {
                     owner.clearMarker()
                     return
                 }
                 
                 let indexPath = IndexPath(row: selectIndex, section: 0)
                 
-                owner.selectMarker(selectedIndex: selectIndex, storeCards: storeCards)
+                if selectIndex != HomeViewModel.Constent.cardAdvertisementIndex {
+                    if selectIndex >= HomeViewModel.Constent.cardAdvertisementIndex {
+                        owner.selectMarker(selectedIndex: selectIndex - 1, storeCards: storeCards)
+                    } else {
+                        owner.selectMarker(selectedIndex: selectIndex, storeCards: storeCards)
+                    }
+                }
                 owner.homeView.collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
             }
             .store(in: &cancellables)
@@ -203,9 +223,7 @@ public final class HomeViewController: BaseViewController {
                     owner.presentPanModal(categoryFilterViewController)
                     
                 case .presentListView(let state):
-                    let viewController = HomeListViewController.instance(state: state)
-                    
-                    owner.navigationController?.present(viewController, animated: true)
+                    owner.presentHomeList(state: state)
                     
                 case .pushStoreDetail(let storeId):
                     owner.pushStoreDetail(storeId: storeId)
@@ -218,7 +236,7 @@ public final class HomeViewController: BaseViewController {
                     owner.presentVisit(storeId: storeId, store: storeCard)
                     
                 case .presentPolicy:
-                    ToastManager.shared.show(message: "🔥 처리 방침 구현 필요")
+                    owner.presentPolicy()
                     
                 case .presentMarkerAdvertisement:
                     owner.presentMarkerPopup()
@@ -232,6 +250,10 @@ public final class HomeViewController: BaseViewController {
                     } else {
                         owner.showErrorAlert(error: error)
                     }
+                    
+                case .openURL(let urlString):
+                    guard let url = URL(string: urlString) else { return }
+                    UIApplication.shared.open(url)
                 }
             }
             .store(in: &cancellables)
@@ -308,12 +330,13 @@ public final class HomeViewController: BaseViewController {
         guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
         let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
         
-        navigationController?.pushViewController(viewController, animated: true)
+        tabBarController?.navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func presentVisit(storeId: Int, store: VisitableStore) {
         guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
         let viewController = storeInterface.getVisitViewController(storeId: storeId, visitableStore: store) {
+            
             // TODO: 성공 시, 재조회 필요
         }
         
@@ -330,6 +353,19 @@ public final class HomeViewController: BaseViewController {
         let viewController = MarkerPopupViewController()
         
         tabBarController?.present(viewController, animated: true)
+    }
+    
+    private func presentPolicy() {
+        let viewController = Environment.membershipInterface.createPolicyViewController()
+        
+        tabBarController?.present(viewController, animated: true)
+    }
+    
+    private func presentHomeList(state: HomeListViewModel.State) {
+        let viewController = HomeListViewController.instance(state: state)
+        viewController.delegate = self
+        
+        navigationController?.present(viewController, animated: true)
     }
 }
 
@@ -382,6 +418,12 @@ extension HomeViewController: NMFMapViewCameraDelegate {
 extension HomeViewController: CategoryFilterDelegate {
     func onSelectCategory(category: PlatformStoreCategory?) {
         viewModel.input.selectCategory.send(category)
+    }
+}
+
+extension HomeViewController: HomeListDelegate {
+    func didTapStore(storeId: Int) {
+        pushStoreDetail(storeId: storeId)
     }
 }
 

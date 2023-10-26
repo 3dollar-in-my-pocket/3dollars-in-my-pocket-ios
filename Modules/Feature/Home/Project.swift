@@ -41,6 +41,7 @@ let project = Project(
                 .project(target: "Model", path: "../../Common"),
                 .project(target: "AppInterface", path: "../../../App"),
                 .project(target: "StoreInterface", path: "../Store"),
+                .project(target: "MembershipInterface", path: "../Membership"),
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "PanModal")
