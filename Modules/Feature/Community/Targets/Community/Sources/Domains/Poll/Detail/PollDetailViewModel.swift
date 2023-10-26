@@ -25,7 +25,6 @@ final class PollDetailViewModel: BaseViewModel {
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         let completedWriteComment = PassthroughSubject<Void, Never>()
-        let userInfo = CurrentValueSubject<UserWithDeviceApiResponse?, Never>(nil)
     }
 
     struct State {
@@ -47,33 +46,21 @@ final class PollDetailViewModel: BaseViewModel {
 
     private var state = State()
     private let communityService: CommunityServiceProtocol
-    private let userService: UserServiceProtocol
 
     private let pollId: String
 
     init(
         pollId: String,
-        communityService: CommunityServiceProtocol = CommunityService(),
-        userService: UserServiceProtocol = UserService()
+        communityService: CommunityServiceProtocol = CommunityService()
     ) {
         self.pollId = pollId
         self.communityService = communityService
-        self.userService = userService
 
         super.init()
     }
 
     override func bind() {
         super.bind()
-
-        input.firstLoad
-            .withUnretained(self)
-            .asyncMap { owner, _ in
-                await owner.userService.fetchUser()
-            }
-            .mapValue()
-            .subscribe(output.userInfo)
-            .store(in: &cancellables)
 
         input.firstLoad
             .withUnretained(self)
@@ -247,8 +234,7 @@ final class PollDetailViewModel: BaseViewModel {
     private func bindCommentCellViewModel(with data: PollCommentWithUserApiResponse) -> PollDetailCommentCellViewModel {
         let cellViewModel = PollDetailCommentCellViewModel(
             pollId: pollId,
-            data: data,
-            userInfo: output.userInfo.value
+            data: data
         )
 
         cellViewModel.output.deleteCell

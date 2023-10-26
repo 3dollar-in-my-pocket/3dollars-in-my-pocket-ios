@@ -32,21 +32,18 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
 
     private let pollId: String
     private let commentId: String
-    private let userInfo: UserWithDeviceApiResponse?
 
     init(
         pollId: String,
         data: PollCommentWithUserApiResponse,
-        userInfo: UserWithDeviceApiResponse?,
         communityService: CommunityServiceProtocol = CommunityService()
     ) {
         self.pollId = pollId
         self.commentId = data.comment.commentId
         self.communityService = communityService
-        self.userInfo = userInfo
         self.output = Output(
             item: data,
-            isMine: userInfo?.userId == data.commentWriter.userId
+            isMine: data.comment.isOwner
         )
 
         super.init()
