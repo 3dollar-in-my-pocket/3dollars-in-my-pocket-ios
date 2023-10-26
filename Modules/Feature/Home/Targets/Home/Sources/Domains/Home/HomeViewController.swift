@@ -223,9 +223,7 @@ public final class HomeViewController: BaseViewController {
                     owner.presentPanModal(categoryFilterViewController)
                     
                 case .presentListView(let state):
-                    let viewController = HomeListViewController.instance(state: state)
-                    
-                    owner.navigationController?.present(viewController, animated: true)
+                    owner.presentHomeList(state: state)
                     
                 case .pushStoreDetail(let storeId):
                     owner.pushStoreDetail(storeId: storeId)
@@ -332,12 +330,13 @@ public final class HomeViewController: BaseViewController {
         guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
         let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
         
-        navigationController?.pushViewController(viewController, animated: true)
+        tabBarController?.navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func presentVisit(storeId: Int, store: VisitableStore) {
         guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
         let viewController = storeInterface.getVisitViewController(storeId: storeId, visitableStore: store) {
+            
             // TODO: 성공 시, 재조회 필요
         }
         
@@ -360,6 +359,13 @@ public final class HomeViewController: BaseViewController {
         let viewController = Environment.membershipInterface.createPolicyViewController()
         
         tabBarController?.present(viewController, animated: true)
+    }
+    
+    private func presentHomeList(state: HomeListViewModel.State) {
+        let viewController = HomeListViewController.instance(state: state)
+        viewController.delegate = self
+        
+        navigationController?.present(viewController, animated: true)
     }
 }
 
@@ -412,6 +418,12 @@ extension HomeViewController: NMFMapViewCameraDelegate {
 extension HomeViewController: CategoryFilterDelegate {
     func onSelectCategory(category: PlatformStoreCategory?) {
         viewModel.input.selectCategory.send(category)
+    }
+}
+
+extension HomeViewController: HomeListDelegate {
+    func didTapStore(storeId: Int) {
+        pushStoreDetail(storeId: storeId)
     }
 }
 
