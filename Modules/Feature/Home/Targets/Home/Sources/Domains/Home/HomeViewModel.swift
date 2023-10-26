@@ -38,6 +38,7 @@ final class HomeViewModel: BaseViewModel {
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let advertisementMarker = PassthroughSubject<Advertisement, Never>()
+        let advertisementCard = PassthroughSubject<Advertisement?, Never>()
         let storeCards = PassthroughSubject<[StoreCard], Never>()
         let scrollToIndex = PassthroughSubject<Int, Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
@@ -183,6 +184,13 @@ final class HomeViewModel: BaseViewModel {
             .filter { MarketingConsent(value: $0.marketingConsent) == .unverified }
             .map { _ in Route.presentPolicy }
             .subscribe(output.route)
+            .store(in: &cancellables)
+        
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, _) in
+                owner.fetchAdvertisementCard()
+            }
             .store(in: &cancellables)
         
         input.changeMaxDistance
@@ -504,6 +512,26 @@ final class HomeViewModel: BaseViewModel {
                 
             case .failure(_):
                 break
+            }
+        }
+    }
+    
+    private func fetchAdvertisementCard() {
+        Task {
+            let input = FetchAdvertisementInput(position: .mainPageCard, size: nil)
+            let result = await advertisementService.fetchAdvertisements(input: input)
+            
+            switch result {
+            case .success(let response):
+                if let advertisementResponse = response.first {
+                    let advertisement = Advertisement(response: advertisementResponse)
+                    output.advertisementCard.send(advertisement)
+                } else {
+                    output.advertisementCard.send(nil)
+                }
+                
+            case .failure(_):
+                output.advertisementCard.send(nil)
             }
         }
     }

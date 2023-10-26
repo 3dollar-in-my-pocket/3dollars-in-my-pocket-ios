@@ -16,7 +16,11 @@ typealias HomeStoreCardSanpshot = NSDiffableDataSourceSnapshot<HomeSection, Home
 public final class HomeViewController: BaseViewController {
     private let homeView = HomeView()
     private let viewModel = HomeViewModel()
-    private lazy var dataSource = HomeDataSource(collectionView: homeView.collectionView, viewModel: viewModel)
+    private lazy var dataSource = HomeDataSource(
+        collectionView: homeView.collectionView,
+        viewModel: viewModel,
+        rootViewController: self
+    )
     private var markers: [NMFMarker] = []
     
     private var isFirstLoad = true
@@ -152,19 +156,44 @@ public final class HomeViewController: BaseViewController {
             .store(in: &cancellables)
         
         viewModel.output.storeCards
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, storeCards in
+            .zip(viewModel.output.advertisementCard)
+            .main
+            .sink { [weak self] (storeCards: [StoreCard], advertisement: Advertisement?) in
+                guard let self else { return }
+                
                 var section: HomeSection
                 
                 if storeCards.isEmpty {
                     section = HomeSection(items: [HomeSectionItem.empty])
                 } else {
-                    section = HomeSection(items: storeCards.map { HomeSectionItem.storeCard($0) })
+                    var items = storeCards.map { HomeSectionItem.storeCard($0) }
+                    
+                    if items.count > 2 {
+                        items.insert(.advertisement(advertisement), at: 2)
+                    } else {
+                        items.append(.advertisement(advertisement))
+                    }
+                    
+                    section = HomeSection(items: items)
                 }
-                owner.updateDataSource(section: [section])
+                self.updateDataSource(section: [section])
             }
             .store(in: &cancellables)
+        
+//        viewModel.output.storeCards
+//            .receive(on: DispatchQueue.main)
+//            .withUnretained(self)
+//            .sink { owner, storeCards in
+//                var section: HomeSection
+//                
+//                if storeCards.isEmpty {
+//                    section = HomeSection(items: [HomeSectionItem.empty])
+//                } else {
+//                    section = HomeSection(items: storeCards.map { HomeSectionItem.storeCard($0) })
+//                }
+//                owner.updateDataSource(section: [section])
+//            }
+//            .store(in: &cancellables)
         
         viewModel.output.scrollToIndex
             .combineLatest(viewModel.output.storeCards)

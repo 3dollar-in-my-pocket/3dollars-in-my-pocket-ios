@@ -3,12 +3,17 @@ import UIKit
 final class HomeDataSource: UICollectionViewDiffableDataSource<HomeSection, HomeSectionItem> {
     let viewModel: HomeViewModel
     
-    init(collectionView: UICollectionView, viewModel: HomeViewModel) {
+    init(
+        collectionView: UICollectionView,
+        viewModel: HomeViewModel,
+        rootViewController: UIViewController
+    ) {
         self.viewModel = viewModel
         
         collectionView.register([
             HomeStoreCardCell.self,
-            HomeStoreEmptyCell.self
+            HomeStoreEmptyCell.self,
+            HomeCardAdvertisementCell.self
         ])
         
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
@@ -28,6 +33,12 @@ final class HomeDataSource: UICollectionViewDiffableDataSource<HomeSection, Home
                 let cell: HomeStoreEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 
                 return cell
+                
+            case .advertisement(let advertisement):
+                let cell: HomeCardAdvertisementCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                
+                cell.bind(advertisement: advertisement, in: rootViewController)
+                return cell
             }
         }
         
@@ -46,8 +57,8 @@ extension HomeDataSource: UICollectionViewDelegateFlowLayout {
         case .storeCard:
             return HomeStoreCardCell.Layout.size    
             
-        default:
-            return .zero
+        case .advertisement:
+            return HomeCardAdvertisementCell.Layout.size
         }
     }
     
