@@ -7,6 +7,10 @@ public final class MembershipInterfaceImpl: MembershipInterface {
     public func createSigninAnonymousViewController() -> UIViewController {
         return SigninAnonymousViewController.instance()
     }
+    
+    public func createPolicyViewController() -> UIViewController {
+        return PolicyViewController.instance()
+    }
 }
 
 public extension MembershipInterfaceImpl {

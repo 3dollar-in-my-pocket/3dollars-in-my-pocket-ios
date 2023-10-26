@@ -10,7 +10,7 @@ protocol PolicyViewControllerDelegate: AnyObject {
     func onDismiss()
 }
 
-final class PolicyViewController: Common.BaseViewController {
+public final class PolicyViewController: Common.BaseViewController {
     private weak var delegate: PolicyViewControllerDelegate?
     private let policyView = PolicyView()
     private let viewModel = PolicyViewModel()
@@ -35,11 +35,11 @@ final class PolicyViewController: Common.BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func loadView() {
+    public override func loadView() {
         view = policyView
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         if let parentView = self.presentingViewController?.view {
@@ -47,11 +47,12 @@ final class PolicyViewController: Common.BaseViewController {
         }
     }
     
-    override func bindEvent() {
+    public override func bindEvent() {
         policyView.backgroundButton
             .controlPublisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
+                DimManager.shared.hideDim()
                 owner.dismiss(animated: true)
             }
             .store(in: &cancellables)
@@ -73,7 +74,7 @@ final class PolicyViewController: Common.BaseViewController {
             .store(in: &cancellables)
     }
     
-    override func bindViewModelInput() {
+    public override func bindViewModelInput() {
         policyView.allCheckButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
@@ -99,7 +100,7 @@ final class PolicyViewController: Common.BaseViewController {
             .store(in: &cancellables)
     }
     
-    override func bindViewModelOutput() {
+    public override func bindViewModelOutput() {
         viewModel.output.isCheckedAll
             .receive(on: DispatchQueue.main)
             .assign(to: \.isSelected, on: policyView.allCheckButton)
