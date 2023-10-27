@@ -329,3 +329,7 @@
 "policy_policy_label" = "(필수) 이용약관 동의";
 "policy_marketing_label" = "(선택) 마케팅 활용 및 광고성 정보 수신 동의";
 "policy_next_button" = "동의하고 계속하기";
+
+// 메인 배너 팝업
+"main_banner_popup.close" = "닫기";
+"main_banner_popup.disable_today" = "오늘 하루 보지않기";
