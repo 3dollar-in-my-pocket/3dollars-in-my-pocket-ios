@@ -39,7 +39,7 @@ enum Deeplink {
     }
     
     var url: URL? {
-        var component = URLComponents(string: Bundle.dynamiclinkHost + type.path + "?")
+        var component = URLComponents(string: Bundle.dynamiclinkHost + "/" + type.path + "?")
         
         if let parameters = parameters {
             for parameter in parameters {
