@@ -55,8 +55,9 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         }
         
         var deeplinkContents: DeepLinkContents?
+        let path = url.relativePath.replacingOccurrences(of: "/", with: "")
         
-        switch DeeplinkType(rawValue: "/\(url.relativePath)") {
+        switch DeeplinkType(rawValue: path) {
         case .bookmark:
             deeplinkContents = self.createBookmarkContents(query: url.params())
             
