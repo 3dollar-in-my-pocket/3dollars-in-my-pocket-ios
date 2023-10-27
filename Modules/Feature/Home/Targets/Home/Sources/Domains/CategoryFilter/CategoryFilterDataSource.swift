@@ -1,5 +1,7 @@
 import UIKit
 
+import Model
+
 typealias CategoryFilterSanpshot = NSDiffableDataSourceSnapshot<CategorySection, CategorySectionItem>
 
 final class CategoryFilterDataSource: UICollectionViewDiffableDataSource<CategorySection, CategorySectionItem> {

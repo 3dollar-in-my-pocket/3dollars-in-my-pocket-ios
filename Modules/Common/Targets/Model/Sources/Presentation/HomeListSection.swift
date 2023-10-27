@@ -1,7 +1,11 @@
 import Foundation
 
 public struct HomeListSection: Hashable {
-    var items: [HomeListSectionItem]
+    public var items: [HomeListSectionItem]
+    
+    public init(items: [HomeListSectionItem]) {
+        self.items = items
+    }
 }
         
 public enum HomeListSectionItem: Hashable {
