@@ -395,8 +395,7 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onTapListView
-            .combineLatest(output.collectionItems)
-            .map { $1 }
+            .withLatestFrom(output.collectionItems)
             .withUnretained(self)
             .map { (owner: HomeViewModel, items: [HomeSectionItem] ) in
                 let stores = items.compactMap { $0.storeCard }
@@ -418,7 +417,7 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.selectStore
-            .combineLatest(output.collectionItems)
+            .withLatestFrom(output.collectionItems) { ($0, $1) }
             .handleEvents(receiveOutput: { [weak self] (index: Int, items: [HomeSectionItem]) in
                 self?.output.scrollToIndex.send(index)
                 self?.state.selectedIndex = index
@@ -441,7 +440,7 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onTapMarker
-            .combineLatest(output.collectionItems)
+            .withLatestFrom(output.collectionItems) { ($0, $1) }
             .sink(receiveValue: { [weak self] (index: Int, items: [HomeSectionItem]) in
                 guard let self,
                       let store = items[safe: index]?.storeCard,
@@ -454,7 +453,7 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onTapStore
-            .combineLatest(output.collectionItems)
+            .withLatestFrom(output.collectionItems) { ($0, $1) }
             .sink(receiveValue: { [weak self] (index: Int, items: [HomeSectionItem]) in
                 guard let self,
                       let item = items[safe: index] else { return }
@@ -484,7 +483,7 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onTapVisitButton
-            .combineLatest(output.collectionItems)
+            .withLatestFrom(output.collectionItems) { ($0, $1) }
             .sink { [weak self] index, items in
                 guard let self,
                       let item = items[safe: index],

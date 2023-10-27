@@ -60,6 +60,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabBarViewController = MainTabBarViewController()
         let navigationViewController = UINavigationController(rootViewController: tabBarViewController)
         navigationViewController.isNavigationBarHidden = true
+        navigationViewController.interactivePopGestureRecognizer?.delegate = nil
         window?.rootViewController = navigationViewController
         window?.makeKeyAndVisible()
     }
