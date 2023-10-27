@@ -21,7 +21,7 @@ public final class HomeViewController: BaseViewController {
         viewModel: viewModel,
         rootViewController: self
     )
-    private var markers: [NMFMarker] = []
+    private var markers: [NMFMarker?] = []
     
     private var isFirstLoad = true
     fileprivate let transition = SearchTransition()
@@ -155,52 +155,30 @@ public final class HomeViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.storeCards
-            .combineLatest(viewModel.output.advertisementCard)
+        viewModel.output.collectionItems
             .main
-            .sink { [weak self] (storeCards: [StoreCard], advertisement: Advertisement?) in
-                guard let self else { return }
-                
-                var section: HomeSection
-                
-                if storeCards.isEmpty {
-                    section = HomeSection(items: [HomeSectionItem.empty])
-                } else {
-                    var items = storeCards.map { HomeSectionItem.storeCard($0) }
-                    
-                    if items.count > 2 {
-                        items.insert(.advertisement(advertisement), at: 2)
-                    } else {
-                        items.append(.advertisement(advertisement))
-                    }
-                    
-                    section = HomeSection(items: items)
-                }
-                self.updateDataSource(section: [section])
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, items: [HomeSectionItem]) in
+                let section = HomeSection(items: items)
+                owner.updateDataSource(section: [section])
             }
             .store(in: &cancellables)
         
         viewModel.output.scrollToIndex
-            .combineLatest(viewModel.output.storeCards)
+            .combineLatest(viewModel.output.collectionItems)
             .main
-            .withUnretained(self)
-            .sink { owner, storeCardWithSelectIndex in
-                let (selectIndex, storeCards) = storeCardWithSelectIndex
-                guard storeCards.count + 1 > selectIndex else {
-                    owner.clearMarker()
+            .sink { [weak self] index, items in
+                guard let self,
+                      items.count > index else {
+                    self?.clearMarker()
                     return
                 }
                 
-                let indexPath = IndexPath(row: selectIndex, section: 0)
+                let indexPath = IndexPath(row: index, section: 0)
+                let storeCards = items.map { $0.storeCard }
                 
-                if selectIndex != HomeViewModel.Constent.cardAdvertisementIndex {
-                    if selectIndex >= HomeViewModel.Constent.cardAdvertisementIndex {
-                        owner.selectMarker(selectedIndex: selectIndex - 1, storeCards: storeCards)
-                    } else {
-                        owner.selectMarker(selectedIndex: selectIndex, storeCards: storeCards)
-                    }
-                }
-                owner.homeView.collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+                selectMarker(selectedIndex: index, storeCards: storeCards)
+                homeView.collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
             }
             .store(in: &cancellables)
         
@@ -270,40 +248,44 @@ public final class HomeViewController: BaseViewController {
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
-    private func selectMarker(selectedIndex: Int?, storeCards: [StoreCard]) {
+    private func selectMarker(selectedIndex: Int?, storeCards: [StoreCard?]) {
         clearMarker()
         
         for value in storeCards.enumerated() {
             let marker = NMFMarker()
             
-            if selectedIndex == value.offset {
-                marker.width = 32
-                marker.height = 40
-                marker.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerFocused.image)
+            if let storeCard = value.element {
+                if selectedIndex == value.offset {
+                    marker.width = 32
+                    marker.height = 40
+                    marker.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerFocused.image)
+                } else {
+                    marker.width = 24
+                    marker.height = 24
+                    marker.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerUnfocused.image)
+                }
+                guard let latitude = storeCard.location?.latitude,
+                      let longitude = storeCard.location?.longitude else { break }
+                let position = NMGLatLng(lat: latitude, lng: longitude)
+                
+                marker.position = position
+                marker.mapView = homeView.mapView
+                marker.touchHandler = { [weak self] _ in
+                    self?.viewModel.input.onTapMarker.send(value.offset)
+                    return true
+                }
+                markers.append(marker)
             } else {
-                marker.width = 24
-                marker.height = 24
-                marker.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerUnfocused.image)
+                markers.append(nil)
             }
-            guard let latitude = value.element.location?.latitude,
-                  let longitude = value.element.location?.longitude else { break }
-            let position = NMGLatLng(lat: latitude, lng: longitude)
-            
-            marker.position = position
-            marker.mapView = homeView.mapView
-            marker.touchHandler = { [weak self] _ in
-                self?.viewModel.input.onTapMarker.send(value.offset)
-                return true
-            }
-            markers.append(marker)
         }
     }
     
     private func clearMarker() {
         for marker in self.markers {
-            marker.mapView = nil
+            marker?.mapView = nil
         }
-        self.markers.removeAll()
+        markers.removeAll()
     }
     
     private func showDenyAlert() {

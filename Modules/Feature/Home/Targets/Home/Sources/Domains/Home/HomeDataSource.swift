@@ -1,5 +1,7 @@
 import UIKit
 
+import Model
+
 final class HomeDataSource: UICollectionViewDiffableDataSource<HomeSection, HomeSectionItem> {
     let viewModel: HomeViewModel
     
