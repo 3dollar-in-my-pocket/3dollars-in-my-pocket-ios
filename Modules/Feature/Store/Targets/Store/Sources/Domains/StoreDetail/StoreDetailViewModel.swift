@@ -207,17 +207,8 @@ final class StoreDetailViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onSuccessUploadPhotos
-            .withUnretained(self)
-            .sink { (owner: StoreDetailViewModel, photos: [StoreDetailPhoto]) in
-                owner.state.storeDetailData?.photos += photos
-                
-                if let photos = owner.state.storeDetailData?.photos {
-                    for index in photos.indices {
-                        owner.state.storeDetailData?.photos[index].totalCount = photos.count
-                    }
-                }
-                owner.refreshSections()
-            }
+            .mapVoid
+            .subscribe(input.load)
             .store(in: &cancellables)
         
         input.didTapPhoto
@@ -233,11 +224,8 @@ final class StoreDetailViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onSuccessUpdatePhotos
-            .withUnretained(self)
-            .sink { (owner: StoreDetailViewModel, photos: [StoreDetailPhoto]) in
-                owner.state.storeDetailData?.photos = photos
-                owner.refreshSections()
-            }
+            .mapVoid
+            .subscribe(input.load)
             .store(in: &cancellables)
     }
     
@@ -398,12 +386,12 @@ final class StoreDetailViewModel: BaseViewModel {
                     state.storeDetailData?.overview.isFavorited = false
                     state.storeDetailData?.overview.subscribersCount -= 1
                     output.isFavorited.send(false)
-                    output.toast.send(Strings.StoreDetail.Toast.addFavorite)
+                    output.toast.send(Strings.StoreDetail.Toast.removeFavorite)
                 } else {
                     state.storeDetailData?.overview.isFavorited = true
                     state.storeDetailData?.overview.subscribersCount += 1
                     output.isFavorited.send(true)
-                    output.toast.send(Strings.StoreDetail.Toast.removeFavorite)
+                    output.toast.send(Strings.StoreDetail.Toast.addFavorite)
                 }
                 output.subscribersCount.send(state.storeDetailData?.overview.subscribersCount ?? 0)
                 
