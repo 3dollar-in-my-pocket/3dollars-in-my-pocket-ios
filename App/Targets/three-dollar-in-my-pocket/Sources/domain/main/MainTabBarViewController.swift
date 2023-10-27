@@ -230,6 +230,8 @@ final class MainTabBarViewController: UITabBarController {
         } else {
             selectedIndex = 0
             pushStoreDetail(storeId: Int(storeId) ?? 0)
+            var userDefaults = UserDefaultsUtil()
+            userDefaults.shareLink = ""
         }
     }
     
@@ -256,7 +258,7 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         shouldSelect viewController: UIViewController
     ) -> Bool {
         if let navigationViewController = tabBarController.selectedViewController as? UINavigationController,
-           let homeViewController = navigationViewController.topViewController as? HomeViewController,
+           navigationViewController.topViewController is HomeViewController,
            let presentedViewController = navigationViewController.presentedViewController {
             presentedViewController.dismiss(animated: false)
         }
