@@ -503,7 +503,9 @@ final class HomeViewModel: BaseViewModel {
         var items: [HomeSectionItem] = storeCards.map { .storeCard($0) }
         let advertisement = advertisementCard ?? state.advertisementCard
         
-        if items.count > Constent.cardAdvertisementIndex {
+        if items.isEmpty {
+            items = [.empty]
+        } else if items.count > Constent.cardAdvertisementIndex {
             items.insert(.advertisement(advertisement), at: Constent.cardAdvertisementIndex)
         } else {
             items.append(.advertisement(advertisement))
