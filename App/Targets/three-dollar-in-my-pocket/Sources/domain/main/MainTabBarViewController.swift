@@ -228,24 +228,18 @@ final class MainTabBarViewController: UITabBarController {
         if storeType ==  "foodTruck" {
             self.pushBossStoreDetail(storeId: String(storeId))
         } else {
-            self.goToStoreDetail(storeId: Int(storeId) ?? 0)
-        }
-    }
-    
-    private func goToStoreDetail(storeId: Int) {
-        self.selectedIndex = 0
-        if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-           let homeVC = navigationVC.topViewController as? HomeViewController {
-            homeVC.coordinator?.pushStoreDetail(storeId: String(storeId))
+            selectedIndex = 0
+            pushStoreDetail(storeId: Int(storeId) ?? 0)
         }
     }
     
     private func pushBossStoreDetail(storeId: String) {
-        self.selectedIndex = 0
-        if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-           let homeVC = navigationVC.topViewController as? HomeViewController {
-            homeVC.coordinator?.pushBossStoreDetail(storeId: storeId)
-        }
+        ToastManager.shared.show(message: "사장님 상세 화면 구현 예정")
+//        self.selectedIndex = 0
+//        if let navigationVC = self.viewControllers?[0] as? UINavigationController,
+//           let homeVC = navigationVC.topViewController as? HomeViewController {
+//            homeVC.coordinator?.pushBossStoreDetail(storeId: storeId)
+//        }
     }
     
     private func pushStoreDetail(storeId: Int) {
