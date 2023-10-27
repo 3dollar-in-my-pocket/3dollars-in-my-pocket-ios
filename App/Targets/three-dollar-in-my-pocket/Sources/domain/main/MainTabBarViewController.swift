@@ -255,6 +255,12 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         _ tabBarController: UITabBarController,
         shouldSelect viewController: UIViewController
     ) -> Bool {
+        if let navigationViewController = tabBarController.selectedViewController as? UINavigationController,
+           let homeViewController = navigationViewController.topViewController as? HomeViewController,
+           let presentedViewController = navigationViewController.presentedViewController {
+            presentedViewController.dismiss(animated: false)
+        }
+        
         if viewController == contentViewControllers[safe: 1] {
             let writeViewController = writeInterface.getWriteAddressViewController { [weak self] storeId in
                 self?.pushStoreDetail(storeId: storeId)
