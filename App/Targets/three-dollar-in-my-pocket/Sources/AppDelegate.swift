@@ -1,17 +1,19 @@
 import UIKit
+import AppTrackingTransparency
 
 import Networking
+import DesignSystem
+import DependencyInjection
+import Membership
+import Store
+import Write
+
 import SnapKit
 import Firebase
 import SwiftyBeaver
 import GoogleMobileAds
 import KakaoSDKCommon
 import FirebaseMessaging
-import DesignSystem
-import DependencyInjection
-import Membership
-import Store
-import Write
 
 typealias Log = SwiftyBeaver
 
