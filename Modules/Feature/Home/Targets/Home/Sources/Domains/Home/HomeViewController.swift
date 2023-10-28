@@ -58,6 +58,21 @@ public final class HomeViewController: BaseViewController {
         viewModel.input.viewDidLoad.send(())
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if isFirstLoad {
+            isFirstLoad = false
+            
+            let distance = homeView.mapView
+                .contentBounds
+                .boundsLatLngs[0]
+                .distance(to: homeView.mapView.contentBounds.boundsLatLngs[1])
+            
+            viewModel.input.onMapLoad.send(distance / 3)
+        }
+    }
+    
     public override func bindViewModelInput() {
         homeView.categoryFilterButton
             .controlPublisher(for: .touchUpInside)
@@ -368,14 +383,6 @@ extension HomeViewController: NMFMapViewCameraDelegate {
             
             viewModel.input.changeMaxDistance.send(distance / 3)
             viewModel.input.changeMapLocation.send(mapLocation)
-        } else if reason == NMFMapChangedByDeveloper && isFirstLoad {
-            isFirstLoad = false
-            let distance = mapView
-                .contentBounds
-                .boundsLatLngs[0]
-                .distance(to: mapView.contentBounds.boundsLatLngs[1])
-            
-            viewModel.input.onMapLoad.send(distance)
         }
     }
     
