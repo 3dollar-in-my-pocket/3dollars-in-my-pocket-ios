@@ -38,10 +38,6 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         return CombinePhotoManager.shared
     }
     
-    var analyticsManager: AnalyticsManagerProtocol {
-        return AnalyticsManager.shared
-    }
-    
     var adBannerView: AdBannerViewProtocol {
         return AdBannerView()
     }

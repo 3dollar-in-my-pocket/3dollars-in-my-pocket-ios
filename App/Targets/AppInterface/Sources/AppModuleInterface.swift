@@ -9,7 +9,6 @@ public protocol AppModuleInterface {
     var appleSigninManager: SigninManagerProtocol { get }
     var deeplinkManager: DeeplinkManagerProtocol { get }
     var photoManager: PhotoManagerProtocol { get }
-    var analyticsManager: AnalyticsManagerProtocol { get }
     var adBannerView: AdBannerViewProtocol { get }
     var onClearSession: (() -> Void) { get }
     
