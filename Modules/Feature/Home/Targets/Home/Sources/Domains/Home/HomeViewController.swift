@@ -3,9 +3,7 @@ import Combine
 
 import Common
 import DesignSystem
-import StoreInterface
 import Model
-import DependencyInjection
 
 import NMapsMap
 import Then
@@ -309,16 +307,13 @@ public final class HomeViewController: BaseViewController {
     }
     
     private func pushStoreDetail(storeId: Int) {
-        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
-        let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
+        let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
         
         tabBarController?.navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func presentVisit(storeId: Int, store: VisitableStore) {
-        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
-        let viewController = storeInterface.getVisitViewController(storeId: storeId, visitableStore: store) {
-            
+        let viewController = Environment.storeInterface.getVisitViewController(storeId: storeId, visitableStore: store) {
             // TODO: 성공 시, 재조회 필요
         }
         
