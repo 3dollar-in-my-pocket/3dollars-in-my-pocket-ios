@@ -33,7 +33,7 @@ public final class CommunityViewController: BaseViewController {
         viewController.tabBarItem = UITabBarItem(
             title: nil,
             image: Icons.communitySolid.image.resizeImage(scaledTo: 30),
-            tag: TabBarTag.foodTruck.rawValue
+            tag: TabBarTag.community.rawValue
         )
 
         return UINavigationController(rootViewController: viewController).then {

@@ -181,7 +181,7 @@ final class MainTabBarViewController: UITabBarController {
                 self.tabBar.standardAppearance = appearance
                 self.tabBar.scrollEdgeAppearance = appearance
             }
-        case .home, .streetFood, .foodTruck:
+        case .home, .community:
             self.tabBar.barTintColor = .white
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()

@@ -27,7 +27,11 @@ public final class HomeViewController: BaseViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         
-        tabBarItem = UITabBarItem(title: nil, image: DesignSystemAsset.Icons.homeSolid.image, tag: 0)
+        tabBarItem = UITabBarItem(
+            title: nil,
+            image: DesignSystemAsset.Icons.homeSolid.image,
+            tag: TabBarTag.home.rawValue
+        )
     }
     
     required init?(coder: NSCoder) {

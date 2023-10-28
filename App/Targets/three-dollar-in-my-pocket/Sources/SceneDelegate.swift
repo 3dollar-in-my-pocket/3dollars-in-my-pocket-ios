@@ -46,7 +46,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
             DeeplinkManager.shared.handleDeeplink(url: url)
         }
-        
     }
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
