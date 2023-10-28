@@ -1,5 +1,6 @@
 import DesignSystem
 import AppInterface
+import StoreInterface
 import DependencyInjection
 
 typealias Fonts = DesignSystemFontFamily.Pretendard
@@ -15,5 +16,13 @@ final class Environment {
         }
         
         return appModuleInterface
+    }
+    
+    static var storeInterface: StoreInterface {
+        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else {
+            fatalError("StoreInterface가 정의되지 않았습니다.")
+        }
+        
+        return storeInterface
     }
 }

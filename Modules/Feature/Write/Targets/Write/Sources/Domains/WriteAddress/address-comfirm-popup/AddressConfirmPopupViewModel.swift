@@ -2,8 +2,7 @@ import Foundation
 import Combine
 
 import Common
-import AppInterface
-import DependencyInjection
+import Log
 
 final class AddressConfirmPopupViewModel: BaseViewModel {
     struct Input {
@@ -12,6 +11,7 @@ final class AddressConfirmPopupViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .writeAddressPopup
         let address = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         
@@ -33,15 +33,11 @@ final class AddressConfirmPopupViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     private let state: State
-    private let analyticsManager: AnalyticsManagerProtocol
+    private let logManager: LogManagerProtocol
     
-    init(config: Config) {
+    init(config: Config, logManager: LogManagerProtocol = LogManager.shared) {
         self.state = State(address: config.address)
-        
-        guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("AppModuleInterface가 정의되지 않았습니다.")
-        }
-        self.analyticsManager = appModuleInterface.analyticsManager
+        self.logManager = logManager
         
         super.init()
     }
@@ -49,9 +45,6 @@ final class AddressConfirmPopupViewModel: BaseViewModel {
     override func bind() {
         input.viewDidLoad
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, _ in
-                owner.sendPageViewLog()
-            })
             .map { owner, _ in
                 owner.state.address
             }
@@ -70,11 +63,13 @@ final class AddressConfirmPopupViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
     
-    private func sendPageViewLog() {
-        analyticsManager.logPageView(screen: .writeAddressPopup, type: AddressConfirmPopupViewController.self)
-    }
-    
     private func sendClickOkLog(address: String) {
-        analyticsManager.logEvent(event: .clickAddressOk(address: address), screen: .writeAddressPopup)
+        logManager.sendEvent(LogEvent(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .button,
+            objectId: "address_ok",
+            extraParameters: [.address: address]
+        ))
     }
 }

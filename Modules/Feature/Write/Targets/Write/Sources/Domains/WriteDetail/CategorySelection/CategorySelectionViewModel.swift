@@ -4,12 +4,10 @@ import Combine
 import Common
 import Networking
 import Model
-import AppInterface
-import DependencyInjection
+import Log
 
 final class CategorySelectionViewModel: BaseViewModel {
     struct Input {
-        let viewDidLoad = PassthroughSubject<Void, Never>()
         let onLoadDataSource = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<String, Never>()
         let deSelectCategory = PassthroughSubject<String, Never>()
@@ -17,6 +15,7 @@ final class CategorySelectionViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .categorySelection
         let categories: CurrentValueSubject<[PlatformStoreCategory], Never>
         let selectCategories = PassthroughSubject<[PlatformStoreCategory], Never>()
         let isEnableSelectButton = PassthroughSubject<Bool, Never>()
@@ -43,29 +42,17 @@ final class CategorySelectionViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     private var state: State
-    private let analyticsManager: AnalyticsManagerProtocol
+    private let logManager: LogManagerProtocol
     
-    init(config: Config) {
+    init(config: Config, logManager: LogManagerProtocol = LogManager.shared) {
         self.output = Output(categories: .init(config.categories))
         self.state = State(categories: config.categories, selectedCategories: config.selectedCategories)
-        
-        guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("AppModuleInterface가 정의되지 않았습니다.")
-        }
-        
-        self.analyticsManager = appModuleInterface.analyticsManager
+        self.logManager = logManager
         
         super.init()
     }
     
     override func bind() {
-        input.viewDidLoad
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.sendPageViewLog()
-            }
-            .store(in: &cancellables)
-        
         input.onLoadDataSource
             .withUnretained(self)
             .map { owner, _ in
@@ -99,9 +86,7 @@ final class CategorySelectionViewModel: BaseViewModel {
         input.tapSelect
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
-                let selectedCategoryIds = owner.state.selectedCategories.map { $0.categoryId }
-                
-                owner.sendClickCategoryLog(categoryIds: selectedCategoryIds)
+                owner.sendClickCategoryLog(categories: owner.state.selectedCategories)
             })
             .sink(receiveValue: { (owner: CategorySelectionViewModel, _) in
                 owner.output.onSelectCategories.send(owner.state.selectedCategories)
@@ -110,11 +95,14 @@ final class CategorySelectionViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
     
-    private func sendPageViewLog() {
-        analyticsManager.logPageView(screen: .categorySelection, type: CategorySelectionViewController.self)
-    }
-    
-    private func sendClickCategoryLog(categoryIds: [String]) {
-        analyticsManager.logEvent(event: .clickSelectCategory(categoryIds: categoryIds), screen: .categorySelection)
+    private func sendClickCategoryLog(categories: [PlatformStoreCategory]) {
+        let categoryNames = categories.map { $0.name }.joined(separator: ",")
+        logManager.sendEvent(LogEvent(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .button,
+            objectId: "select_category",
+            extraParameters: [.category_name: categoryNames]
+        ))
     }
 }

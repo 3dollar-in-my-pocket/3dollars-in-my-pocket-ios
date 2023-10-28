@@ -2,9 +2,13 @@ import Foundation
 
 import Common
 import DesignSystem
-
+import Log
 
 final class AddressConfirmPopupViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return .writeAddressPopup
+    }
+    
     private let addressConfirmPopupView = AddressConfirmPopupView()
     private let viewModel: AddressConfirmPopupViewModel
     

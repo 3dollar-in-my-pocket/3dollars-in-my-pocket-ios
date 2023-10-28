@@ -6,4 +6,6 @@ public enum ParameterName: String {
     case objectType = "object_type"
     case type
     case nickname
+    case address
+    case category_name
 }

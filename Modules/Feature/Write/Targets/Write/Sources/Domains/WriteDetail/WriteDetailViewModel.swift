@@ -4,8 +4,7 @@ import Combine
 import Networking
 import Model
 import Common
-import AppInterface
-import DependencyInjection
+import Log
 
 final class WriteDetailViewModel: BaseViewModel {
     struct Input {
@@ -26,6 +25,7 @@ final class WriteDetailViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .writeAddressDetail
         let isCloseButtonHidden: CurrentValueSubject<Bool, Never>
         let isSaveButtonEnable = PassthroughSubject<Bool, Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
@@ -70,20 +70,17 @@ final class WriteDetailViewModel: BaseViewModel {
     private var state: State
     private let storeService: StoreServiceProtocol
     private let categoryService: CategoryServiceProtocol
-    private let analyticsManager: AnalyticsManagerProtocol
+    private let logManager: LogManagerProtocol
     
     init(
         config: WriteStoreConfigurable,
         storeService: StoreServiceProtocol = StoreService(),
-        categoryService: CategoryServiceProtocol = CategoryService()
+        categoryService: CategoryServiceProtocol = CategoryService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.storeService = storeService
         self.categoryService = categoryService
-        
-        guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("AppModuleInterface가 정의되지 않았습니다.")
-        }
-        self.analyticsManager = appModuleInterface.analyticsManager
+        self.logManager = logManager
         
         if let writeConfig = config as? WriteConfig {
             self.state = State(
@@ -132,7 +129,6 @@ final class WriteDetailViewModel: BaseViewModel {
             .sink { owner, _ in
                 owner.updateSections()
                 owner.updateSaveButtonEnable()
-                owner.sendPageViewLog()
             }
             .store(in: &cancellables)
         
@@ -391,12 +387,13 @@ final class WriteDetailViewModel: BaseViewModel {
         state.menu[section].append(NewMenu(category: category))
     }
     
-    private func sendPageViewLog() {
-        analyticsManager.logPageView(screen: .writeAddressDetail, type: WriteDetailViewController.self)
-    }
-    
     private func sendSaveClickLog() {
-        analyticsManager.logEvent(event: .clickSave, screen: .writeAddressDetail)
+        logManager.sendEvent(LogEvent(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .button,
+            objectId: "save"
+        ))
     }
     
     private func presentCategorySelection() {

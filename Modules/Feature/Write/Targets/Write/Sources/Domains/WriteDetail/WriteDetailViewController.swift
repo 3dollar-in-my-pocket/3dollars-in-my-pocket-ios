@@ -4,8 +4,7 @@ import NMapsMap
 import Common
 import DesignSystem
 import Model
-import DependencyInjection
-import StoreInterface
+import Log
 
 typealias WriteDetailSanpshot = NSDiffableDataSourceSnapshot<WriteDetailSection, WriteDetailSectionItem>
 
@@ -15,7 +14,11 @@ protocol WriteDetailDelegate: AnyObject {
     func onSuccessEdit(storeCreateResponse: StoreCreateResponse)
 }
 
-final class WriteDetailViewController: Common.BaseViewController {
+final class WriteDetailViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     weak var deleagte: WriteDetailDelegate?
     
     var onSuccessWrite: ((Int) -> Void)?
@@ -163,9 +166,7 @@ final class WriteDetailViewController: Common.BaseViewController {
     }
     
     private func presentMapDetail(location: Location, storeName: String) {
-        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else { return }
-        
-        let viewController = storeInterface.getMapDeetailViewController(location: location, storeName: storeName)
+        let viewController = Environment.storeInterface.getMapDeetailViewController(location: location, storeName: storeName)
         present(viewController, animated: true)
     }
     

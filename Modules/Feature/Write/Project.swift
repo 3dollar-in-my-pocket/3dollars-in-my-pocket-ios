@@ -43,6 +43,7 @@ let project = Project(
                 .project(target: "AppInterface", path: "../../../App"),
                 .project(target: "StoreInterface", path: "../Store"),
                 .project(target: "WriteInterface", path: "./"),
+                .project(target: "Log", path: "../../Log"),
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "PanModal")

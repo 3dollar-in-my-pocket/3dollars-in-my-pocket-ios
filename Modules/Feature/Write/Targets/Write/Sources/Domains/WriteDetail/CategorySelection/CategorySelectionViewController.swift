@@ -3,10 +3,15 @@ import UIKit
 import Common
 import Model
 import DesignSystem
+import Log
 
 import PanModal
 
 final class CategorySelectionViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return .categorySelection
+    }
+    
     private let categorySelectionView = CategorySelectionView()
     private let viewModel: CategorySelectionViewModel
     private lazy var dataSource = CategorySelectionDataSource(collectionView: categorySelectionView.categoryCollectionView, viewModel: viewModel)
@@ -31,8 +36,6 @@ final class CategorySelectionViewController: BaseViewController {
         if let parentView = presentingViewController?.view {
             DimManager.shared.showDim(targetView: parentView)
         }
-        
-        viewModel.input.viewDidLoad.send(())
     }
     
     override func bindViewModelInput() {
