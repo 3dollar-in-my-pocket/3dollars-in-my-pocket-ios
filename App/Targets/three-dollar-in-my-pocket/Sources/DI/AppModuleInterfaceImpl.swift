@@ -6,6 +6,7 @@ import DependencyInjection
 import Model
 
 import FirebaseMessaging
+import FirebaseAnalytics
 import KakaoSDKShare
 import KakaoSDKTemplate
 
@@ -146,6 +147,17 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
             ATTrackingManager.requestTrackingAuthorization { _ in                
             }
         }
+    }
+    
+    func sendPageView(screenName: String, type: AnyObject.Type) {
+        Analytics.logEvent(AnalyticsEventScreenView, parameters: [
+            AnalyticsParameterScreenName: screenName,
+            AnalyticsParameterScreenClass: type.self
+        ])
+    }
+    
+    func sendEvent(name: String, parameters: [String : Any]?) {
+        Analytics.logEvent(name, parameters: parameters)
     }
 }
 

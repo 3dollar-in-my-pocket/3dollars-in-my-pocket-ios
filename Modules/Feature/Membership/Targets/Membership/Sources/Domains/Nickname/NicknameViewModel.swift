@@ -5,7 +5,7 @@ import Common
 import Networking
 import Model
 import AppInterface
-import DependencyInjection
+import Log
 
 final class NicknameViewModel: BaseViewModel {
     struct Input {
@@ -15,6 +15,7 @@ final class NicknameViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .signUp
         let isEnableSignupButton = PassthroughSubject<Bool, Never>()
         let isHiddenWarningLabel = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -39,21 +40,21 @@ final class NicknameViewModel: BaseViewModel {
     let output = Output()
     private var state: State
     private var appInterface: AppModuleInterface
-    private let userService: Networking.UserServiceProtocol
+    private let userService: UserServiceProtocol
+    private let logManager: LogManagerProtocol
     
     init(
         socialType: SocialType,
         accessToken: String,
         bookmarkFolderId: String? = nil,
-        userService: Networking.UserServiceProtocol = Networking.UserService()
+        appInterface: AppModuleInterface = Environment.appModuleInterface,
+        userService: UserServiceProtocol = UserService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
-        guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("⚠️ AppModuleInterface가 등록되지 않았습니다.")
-        }
-        
         self.state = State(socialType: socialType, accessToken: accessToken)
         self.appInterface = appInterface
         self.userService = userService
+        self.logManager = logManager
     }
     
     override func bind() {
@@ -71,6 +72,7 @@ final class NicknameViewModel: BaseViewModel {
         input.onTapSigninButton
             .withUnretained(self)
             .sink(receiveValue: { owner, _ in
+                owner.sendSignupLog()
                 if owner.state.isSignupSuccess {
                     owner.output.route.send(.presentPolicy)
                 } else {
@@ -122,5 +124,15 @@ final class NicknameViewModel: BaseViewModel {
         } else {
             output.route.send(.showErrorAlert(error))
         }
+    }
+    
+    private func sendSignupLog() {
+        logManager.sendEvent(LogEvent(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .button,
+            objectId: "sign_up",
+            extraParameters: [.nickname: state.nickname]
+        ))
     }
 }

@@ -8,10 +8,15 @@ import Model
 import NMapsMap
 import Then
 import PanModal
+import Log
 
 typealias HomeStoreCardSanpshot = NSDiffableDataSourceSnapshot<HomeSection, HomeSectionItem>
 
 public final class HomeViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return .home
+    }
+    
     private let homeView = HomeView()
     private let viewModel = HomeViewModel()
     private lazy var dataSource = HomeDataSource(

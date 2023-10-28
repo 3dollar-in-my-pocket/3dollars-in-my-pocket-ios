@@ -4,8 +4,7 @@ import Combine
 import Networking
 import Common
 import Model
-import DependencyInjection
-import AppInterface
+import Log
 
 final class SigninViewModel: BaseViewModel {
     enum Route {
@@ -21,22 +20,25 @@ final class SigninViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .signIn
         let route = PassthroughSubject<Route, Never>()
     }
     
     let input = Input()
     let output = Output()
-    private var appInterface: AppModuleInterface?
-    private let userService: Networking.UserServiceProtocol
-    private let deviceService: Networking.DeviceServiceProtocol
+    private var appInterface = Environment.appModuleInterface
+    private let userService: UserServiceProtocol
+    private let deviceService: DeviceServiceProtocol
+    private let logManager: LogManagerProtocol
     
     init(
-        userService: Networking.UserServiceProtocol = Networking.UserService(),
-        deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService()
+        userService: UserServiceProtocol = UserService(),
+        deviceService: DeviceServiceProtocol = DeviceService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
         self.userService = userService
         self.deviceService = deviceService
+        self.logManager = logManager
         
         super.init()
     }
@@ -45,6 +47,7 @@ final class SigninViewModel: BaseViewModel {
         input.onTapSignin
             .withUnretained(self)
             .sink { owner, socialType in
+                owner.sendClickSignInLog(type: socialType)
                 switch socialType {
                 case .kakao:
                     owner.signinWithKakao()
@@ -61,6 +64,7 @@ final class SigninViewModel: BaseViewModel {
         input.onTapSigninAnonymous
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
+                owner.sendClickAnonymousLog()
                 owner.output.route.send(.showLoading(isShow: true))
             })
             .asyncMap { owner, _ in
@@ -72,9 +76,9 @@ final class SigninViewModel: BaseViewModel {
                 
                 switch result {
                 case .success(let signinResponse):
-                    owner.appInterface?.userDefaults.userId = signinResponse.userId
-                    owner.appInterface?.userDefaults.authToken = signinResponse.token
-                    owner.appInterface?.userDefaults.isAnonymousUser = true
+                    owner.appInterface.userDefaults.userId = signinResponse.userId
+                    owner.appInterface.userDefaults.authToken = signinResponse.token
+                    owner.appInterface.userDefaults.isAnonymousUser = true
                     owner.output.route.send(.goToMain)
                     
                 case .failure(let error):
@@ -85,7 +89,7 @@ final class SigninViewModel: BaseViewModel {
     }
     
     private func signinWithKakao() {
-        appInterface?.kakaoSigninManager.signin()
+        appInterface.kakaoSigninManager.signin()
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.route.send(.showLoading(isShow: true))
@@ -106,7 +110,7 @@ final class SigninViewModel: BaseViewModel {
     }
     
     private func signinWithApple() {
-        appInterface?.appleSigninManager.signin()
+        appInterface.appleSigninManager.signin()
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.route.send(.showLoading(isShow: true))
@@ -132,8 +136,8 @@ final class SigninViewModel: BaseViewModel {
             
             switch result {
             case .success(let signinResponse):
-                appInterface?.userDefaults.userId = signinResponse.userId
-                appInterface?.userDefaults.authToken = signinResponse.token
+                appInterface.userDefaults.userId = signinResponse.userId
+                appInterface.userDefaults.authToken = signinResponse.token
                 sendFCMToken(socialType: socialType)
                 
             case .failure(let error):
@@ -154,7 +158,7 @@ final class SigninViewModel: BaseViewModel {
     }
     
     private func sendFCMToken(socialType: SocialType) {
-        appInterface?.getFCMToken { [weak self] token in
+        appInterface.getFCMToken { [weak self] token in
             guard let self = self else { return }
             
             Task {
@@ -171,5 +175,25 @@ final class SigninViewModel: BaseViewModel {
                 }
             }
         }
+    }
+    
+    private func sendClickSignInLog(type: SocialType) {
+        logManager.sendEvent(LogEvent(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .button,
+            objectId: "sign_in",
+            extraParameters: [.type: type.rawValue.lowercased()]
+        ))
+    }
+    
+    private func sendClickAnonymousLog() {
+        logManager.sendEvent(LogEvent(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .button,
+            objectId: "sign_in",
+            extraParameters: [.type: "anonymous"]
+        ))
     }
 }

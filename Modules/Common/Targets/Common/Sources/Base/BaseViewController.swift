@@ -2,11 +2,18 @@ import UIKit
 import Combine
 
 import Model
+import Log
+import DependencyInjection
+import AppInterface
+import Log
 import DependencyInjection
 import AppInterface
 
 open class BaseViewController: UIViewController {
     open var cancellables = Set<AnyCancellable>()
+    open var screenName: ScreenName {
+        return .empty
+    }
     
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -18,6 +25,12 @@ open class BaseViewController: UIViewController {
     
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        sendPageView()
     }
     
     open func bindEvent() { }
@@ -66,6 +79,12 @@ open class BaseViewController: UIViewController {
                 message: error.localizedDescription,
                 onTapOk: nil
             )
+        }
+    }
+    
+    private func sendPageView() {
+        if screenName != .empty {
+            LogManager.shared.sendPageView(screen: screenName, type: Self.self)
         }
     }
 }

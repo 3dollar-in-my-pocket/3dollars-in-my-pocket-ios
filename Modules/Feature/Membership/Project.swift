@@ -43,6 +43,7 @@ let project = Project(
                 .project(target: "DependencyInjection", path: "../../DependencyInjection"),
                 .project(target: "AppInterface", path: "../../../App"),
                 .project(target: "MembershipInterface", path: "./"),
+                .project(target: "Log", path: "../../Log"),
                 .external(name: "SnapKit"),
                 .external(name: "Then")
             ]

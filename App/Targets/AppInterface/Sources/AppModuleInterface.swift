@@ -19,4 +19,8 @@ public protocol AppModuleInterface {
     func createWebViewController(webviewType: WebViewType) -> UIViewController
     func shareKakao(storeId: Int, storeType: StoreType, storeDetailOverview: StoreDetailOverview)
     func requestATTIfNeeded()
+    
+    /// GA
+    func sendPageView(screenName: String, type: AnyObject.Type)
+    func sendEvent(name: String, parameters: [String: Any]?)
 }
