@@ -11,7 +11,8 @@ public final class StoreDetailViewController: BaseViewController {
     private let viewModel: StoreDetailViewModel
     private lazy var datasource = StoreDetailDatasource(
         collectionView: storeDetailView.collectionView,
-        viewModel: viewModel
+        viewModel: viewModel,
+        rootViewController: self
     )
     
     public static func instance(storeId: Int) -> StoreDetailViewController {
