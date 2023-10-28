@@ -2,6 +2,7 @@ import UIKit
 import Combine
 
 import DesignSystem
+import Model
 
 final class SortingButton: UIButton {
     let sortTypePublisher = PassthroughSubject<StoreSortType, Never>()

@@ -181,7 +181,7 @@ final class MainTabBarViewController: UITabBarController {
                 self.tabBar.standardAppearance = appearance
                 self.tabBar.scrollEdgeAppearance = appearance
             }
-        case .home, .streetFood, .foodTruck:
+        case .home, .community:
             self.tabBar.barTintColor = .white
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()
@@ -228,24 +228,20 @@ final class MainTabBarViewController: UITabBarController {
         if storeType ==  "foodTruck" {
             self.pushBossStoreDetail(storeId: String(storeId))
         } else {
-            self.goToStoreDetail(storeId: Int(storeId) ?? 0)
-        }
-    }
-    
-    private func goToStoreDetail(storeId: Int) {
-        self.selectedIndex = 0
-        if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-           let homeVC = navigationVC.topViewController as? HomeViewController {
-            homeVC.coordinator?.pushStoreDetail(storeId: String(storeId))
+            selectedIndex = 0
+            pushStoreDetail(storeId: Int(storeId) ?? 0)
+            var userDefaults = UserDefaultsUtil()
+            userDefaults.shareLink = ""
         }
     }
     
     private func pushBossStoreDetail(storeId: String) {
-        self.selectedIndex = 0
-        if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-           let homeVC = navigationVC.topViewController as? HomeViewController {
-            homeVC.coordinator?.pushBossStoreDetail(storeId: storeId)
-        }
+        ToastManager.shared.show(message: "사장님 상세 화면 구현 예정")
+//        self.selectedIndex = 0
+//        if let navigationVC = self.viewControllers?[0] as? UINavigationController,
+//           let homeVC = navigationVC.topViewController as? HomeViewController {
+//            homeVC.coordinator?.pushBossStoreDetail(storeId: storeId)
+//        }
     }
     
     private func pushStoreDetail(storeId: Int) {
@@ -261,6 +257,12 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         _ tabBarController: UITabBarController,
         shouldSelect viewController: UIViewController
     ) -> Bool {
+        if let navigationViewController = tabBarController.selectedViewController as? UINavigationController,
+           navigationViewController.topViewController is HomeViewController,
+           let presentedViewController = navigationViewController.presentedViewController {
+            presentedViewController.dismiss(animated: false)
+        }
+        
         if viewController == contentViewControllers[safe: 1] {
             let writeViewController = writeInterface.getWriteAddressViewController { [weak self] storeId in
                 self?.pushStoreDetail(storeId: storeId)

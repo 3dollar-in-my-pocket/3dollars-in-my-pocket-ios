@@ -7,7 +7,7 @@ public enum StoreSortType: String {
         self = StoreSortType(rawValue: value) ?? .unknown
     }
     
-    func toggled() -> StoreSortType {
+    public func toggled() -> StoreSortType {
         switch self {
         case .distanceAsc:
             return .latest

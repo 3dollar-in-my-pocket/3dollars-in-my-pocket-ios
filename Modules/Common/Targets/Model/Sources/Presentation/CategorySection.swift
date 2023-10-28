@@ -1,8 +1,13 @@
 import Foundation
 
 public struct CategorySection: Hashable {
-    var title: String
-    var items: [CategorySectionItem]
+    public var title: String
+    public var items: [CategorySectionItem]
+    
+    public init(title: String, items: [CategorySectionItem]) {
+        self.title = title
+        self.items = items
+    }
 }
 
 public enum CategorySectionItem: Hashable {

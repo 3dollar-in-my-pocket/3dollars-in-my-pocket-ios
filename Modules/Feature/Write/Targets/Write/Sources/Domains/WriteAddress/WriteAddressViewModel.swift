@@ -5,7 +5,6 @@ import Combine
 import Networking
 import Model
 import Common
-import DependencyInjection
 import AppInterface
 
 public final class WriteAddressViewModel: BaseViewModel {
@@ -52,11 +51,7 @@ public final class WriteAddressViewModel: BaseViewModel {
         self.mapService = mapService
         self.storeService = storeService
         self.locationManager = locationManager
-        
-        guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("AppModuleInterface가 주입되지 않았습니다.")
-        }
-        self.analyticsManager = appModuleInterface.analyticsManager
+        self.analyticsManager = Environment.appModuleInterface.analyticsManager
         
         super.init()
     }

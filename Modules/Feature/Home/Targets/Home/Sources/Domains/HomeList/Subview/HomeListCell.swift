@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 
 public class HomeListCell: BaseCollectionViewCell {
     enum Layout {

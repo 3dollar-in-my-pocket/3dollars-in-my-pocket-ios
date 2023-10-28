@@ -40,6 +40,7 @@ public final class SigninViewController: BaseViewController {
         super.viewDidLoad()
         
         appInterface?.deeplinkManager.flushDelayedDeeplink()
+        appInterface?.requestATTIfNeeded()
     }
     
     public override func bindViewModelInput() {

@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 
 final class HomeListCellInfoView: BaseView {
     private let stackView = UIStackView().then {

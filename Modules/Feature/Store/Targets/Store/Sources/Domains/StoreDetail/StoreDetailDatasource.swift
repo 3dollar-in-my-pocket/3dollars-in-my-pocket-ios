@@ -6,7 +6,11 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
     typealias Snapshot = NSDiffableDataSourceSnapshot<StoreDetailSection, StoreDetailSectionItem>
     private let viewModel: StoreDetailViewModel
     
-    init(collectionView: UICollectionView, viewModel: StoreDetailViewModel) {
+    init(
+        collectionView: UICollectionView,
+        viewModel: StoreDetailViewModel,
+        rootViewController: UIViewController
+    ) {
         self.viewModel = viewModel
         collectionView.register([
             StoreDetailOverviewCell.self,
@@ -35,7 +39,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             switch itemIdentifier {
             case .overview(let viewModel):
                 let cell: StoreDetailOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                cell.bind(viewModel)
+                cell.bind(viewModel, rootViewController: rootViewController)
                 return cell
                 
             case .visit(let data):

@@ -13,57 +13,67 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     private var delayedDeeplink: DeepLinkContents?
     
     func handleDynamiclink(url: URL?) {
-        guard let deeplinkContents = self.extractDynamiclinkContents(url: url) else { return }
+        guard let deeplinkContents = extractDynamiclinkContents(url: url) else { return }
         
-        self.navigateDeeplink(contents: deeplinkContents)
+        navigateDeeplink(contents: deeplinkContents)
     }
     
     func reserveDynamiclink(url: URL?) {
-        guard let deeplinkContents = self.extractDynamiclinkContents(url: url) else { return }
+        guard let deeplinkContents = extractDynamiclinkContents(url: url) else { return }
         
-        self.delayedDeeplink = deeplinkContents
+        delayedDeeplink = deeplinkContents
     }
     
     func handleDeeplink(url: URL?) {
-        guard let deeplinkContents = self.extractDeeplinkContents(url: url) else { return }
+        guard let deeplinkContents = extractDeeplinkContents(url: url) else { return }
         
         self.navigateDeeplink(contents: deeplinkContents)
     }
     
     func reserveDeeplink(url: URL?) {
-        guard let deeplinkContents = self.extractDeeplinkContents(url: url) else { return }
+        guard let deeplinkContents = extractDeeplinkContents(url: url) else { return }
         
-        self.delayedDeeplink = deeplinkContents
+        delayedDeeplink = deeplinkContents
     }
     
     func reserveDeeplink(deeplinkContents: DeepLinkContents) {
-        self.delayedDeeplink = deeplinkContents
+        delayedDeeplink = deeplinkContents
     }
     
     func flushDelayedDeeplink() {
-        guard let delayedDeeplink = self.delayedDeeplink else { return }
+        guard let delayedDeeplink = delayedDeeplink else { return }
         
-        self.navigateDeeplink(contents: delayedDeeplink)
+        navigateDeeplink(contents: delayedDeeplink)
         self.delayedDeeplink = nil
     }
     
     private func extractDynamiclinkContents(url: URL?) -> DeepLinkContents? {
         guard let url = url,
-        self.validateHost(host: url.host) else {
+        validateHost(host: url.host) else {
             Log.debug("URL 형식이 아닙니다.")
             return nil
         }
         
         var deeplinkContents: DeepLinkContents?
+        let path = url.relativePath.replacingOccurrences(of: "/", with: "")
         
-        switch DeeplinkType(rawValue: "/\(url.relativePath)") {
+        switch DeeplinkType(value: path) {
         case .bookmark:
-            deeplinkContents = self.createBookmarkContents(query: url.params())
+            deeplinkContents = createBookmarkContents(query: url.params())
             
         case .store:
-            deeplinkContents = self.createStoreDetailContents(query: url.params())
+            deeplinkContents = createStoreDetailContents(query: url.params())
             
-        default:
+        case .home:
+            deeplinkContents = createHomeContents()
+            
+        case .medal:
+            deeplinkContents = createMedalContents()
+            
+        case .community:
+            deeplinkContents = createCommunityContents()
+            
+        case .unknown:
             Log.debug("지원하는 Deeplink가 아닙니다.")
         }
         
@@ -72,7 +82,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     
     private func extractDeeplinkContents(url: URL?) -> DeepLinkContents? {
         guard let url = url,
-              self.validateScheme(scheme: url.scheme),
+              validateScheme(scheme: url.scheme),
               let host = url.host else {
             Log.debug("올바른 딥링크 형식이 아닙니다.")
             return nil
@@ -80,22 +90,24 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         
         var deeplinkContents: DeepLinkContents?
         
-        switch DeeplinkType(rawValue: host + url.path) {
+        switch DeeplinkType(value: host + url.path) {
         case .bookmark:
-            deeplinkContents = self.createBookmarkContents(query: url.params())
+            deeplinkContents = createBookmarkContents(query: url.params())
             
         case .store:
-            deeplinkContents = self.createStoreDetailContents(query: url.params())
+            deeplinkContents = createStoreDetailContents(query: url.params())
             
         case .home:
-            deeplinkContents = self.createHomeContents()
+            deeplinkContents = createHomeContents()
             
         case .medal:
-            deeplinkContents = self.createMedalContents()
+            deeplinkContents = createMedalContents()
             
-        default:
+        case .community:
+            deeplinkContents = createCommunityContents()
+            
+        case .unknown:
             Log.debug("지원하는 Deeplink가 아닙니다.")
-            
         }
         
         return deeplinkContents
@@ -108,10 +120,10 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     private func navigateDeeplink(contents: DeepLinkContents) {
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
         
-        if let tab = contents.selectedTab {
-            if let tabBarViewController = rootViewController as? MainTabBarViewController {
-                tabBarViewController.selectTab(tab: tab)
-            }
+        if let tab = contents.selectedTab,
+           let navigationViewController = rootViewController as? UINavigationController,
+           let tabBarViewController = navigationViewController.topViewController as? MainTabBarViewController {
+            tabBarViewController.selectTab(tab: tab)
         }
         
         guard let transitionType = contents.transitionType,
@@ -132,7 +144,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
                     animated: true
                 )
             } else if rootViewController is SplashVC {
-                self.reserveDeeplink(deeplinkContents: contents)
+                reserveDeeplink(deeplinkContents: contents)
             } else {
                 Log.error("UINavigationViewController가 없습니다.")
             }
@@ -167,8 +179,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         var viewController: UIViewController
         switch StoreType(value: storeTypeString) {
         case .streetFood:
-//            viewController = StoreDetailViewController.instance(storeId: Int(storeId) ?? 0)
-            return nil
+            viewController = Environment.storeInterface.getStoreDetailViewController(storeId: Int(storeId) ?? 0)
             
         case .foodTruck:
             viewController = BossStoreDetailViewController.instance(storeId: storeId)
@@ -195,5 +206,9 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
             targetViewController: targetViewController,
             transitionType: .push
         )
+    }
+    
+    private func createCommunityContents() -> DeepLinkContents {
+        return DeepLinkContents(selectedTab: .community)
     }
 }

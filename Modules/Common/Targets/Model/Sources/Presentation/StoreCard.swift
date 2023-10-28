@@ -1,16 +1,16 @@
 import Foundation
 
 public struct StoreCard {
-    let storeType: StoreType
-    let storeId: String
-    let storeName: String
-    let location: Location?
-    let categories: [PlatformStoreCategory]
-    let distance: Int
-    let reviewsCount: Int?
-    let rating: Double?
-    let existsCounts: Int?
-    let isNew: Bool
+    public let storeType: StoreType
+    public let storeId: String
+    public let storeName: String
+    public let location: Location?
+    public let categories: [PlatformStoreCategory]
+    public let distance: Int
+    public let reviewsCount: Int?
+    public let rating: Double?
+    public let existsCounts: Int?
+    public let isNew: Bool
     
     public init(response: PlatformStoreWithDetailResponse) {
         self.storeType = StoreType(value: response.store.storeType)
@@ -46,5 +46,11 @@ extension StoreCard: Hashable {
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(storeId)
+    }
+}
+
+extension StoreCard: VisitableStore {
+    public var storeLocation: Location? {
+        return location
     }
 }

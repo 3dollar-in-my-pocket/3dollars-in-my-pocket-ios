@@ -3,10 +3,11 @@ import UIKit
 import Common
 import DesignSystem
 import Model
+import AppInterface
 
 final class StoreDetailOverviewCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 376
+        static let height: CGFloat = 437
     }
     
     let titleView = StoreDetailOverviewTitleView()
@@ -14,6 +15,13 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
     let menuView = StoreDetailOverviewMenuView()
     
     let mapView = StoreDetailOverviewMapView()
+    
+    let adBannerView: AdBannerViewProtocol = {
+        let view = Environment.appModuleInterface.adBannerView
+        
+        view.backgroundColor = DesignSystemAsset.Colors.gray0.color
+        return view
+    }()
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -26,7 +34,8 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
         addSubViews([
             titleView,
             menuView,
-            mapView
+            mapView,
+            adBannerView
         ])
     }
     
@@ -49,11 +58,18 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             $0.left.equalToSuperview()
             $0.top.equalTo(menuView.snp.bottom).offset(24)
             $0.right.equalToSuperview()
+            $0.bottom.equalTo(adBannerView.snp.top).offset(-12)
+        }
+        
+        adBannerView.snp.makeConstraints {
+            $0.left.equalToSuperview()
+            $0.right.equalToSuperview()
+            $0.height.equalTo(49)
             $0.bottom.equalToSuperview().offset(-32)
         }
     }
     
-    func bind(_ viewModel: StoreDetailOverviewCellViewModel) {
+    func bind(_ viewModel: StoreDetailOverviewCellViewModel, rootViewController: UIViewController) {
         titleView.bind(viewModel.output.overview)
         mapView.bind(
             location: viewModel.output.overview.location,
@@ -61,6 +77,7 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
         )
         menuView.favoriteButton.isSelected = viewModel.output.overview.isFavorited
         menuView.favoriteButton.setCount(viewModel.output.overview.subscribersCount)
+        adBannerView.load(in: rootViewController)
         
         menuView.favoriteButton
             .controlPublisher(for: .touchUpInside)

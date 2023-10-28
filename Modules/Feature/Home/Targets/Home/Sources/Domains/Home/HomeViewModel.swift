@@ -40,7 +40,7 @@ final class HomeViewModel: BaseViewModel {
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let advertisementMarker = PassthroughSubject<Advertisement, Never>()
         let advertisementCard = PassthroughSubject<Advertisement?, Never>()
-        let storeCards = PassthroughSubject<[StoreCard], Never>()
+        let collectionItems = PassthroughSubject<[HomeSectionItem], Never>()
         let scrollToIndex = PassthroughSubject<Int, Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -58,7 +58,6 @@ final class HomeViewModel: BaseViewModel {
         var currentLocation: CLLocation?
         var advertisementMarker: Advertisement?
         var advertisementCard: Advertisement?
-        var stores: [StoreCard] = []
         var selectedIndex = 0
         var hasMore: Bool = true
         var nextCursor: String? = nil
@@ -152,29 +151,35 @@ final class HomeViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
-        getCurrentLocation
+        let fetchAroundStore = getCurrentLocation
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, location in
                 owner.state.resultCameraPosition = location
                 owner.state.currentLocation = owner.state.resultCameraPosition
                 owner.output.cameraPosition.send(location)
                 owner.userDefaults.userCurrentLocation = location
+                owner.output.showLoading.send(false)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
             }
+            .share()
+        
+        fetchAroundStore
+            .compactMapValue()
+            .combineLatest(output.advertisementCard)
+            .sink { [weak self] (storeCards: [StoreCard], advertisement: Advertisement?) in
+                guard let self else { return }
+                state.advertisementCard = advertisement
+                updateCollectionItems(storeCards: storeCards, advertisementCard: advertisement)
+            }
+            .store(in: &cancellables)
+        
+        fetchAroundStore
+            .compactMapError()
             .withUnretained(self)
-            .sink(receiveValue: { owner, result in
-                owner.output.showLoading.send(false)
-                switch result {
-                case .success(let storeCards):
-                    owner.state.stores = storeCards
-                    owner.output.storeCards.send(storeCards)
-                    owner.output.scrollToIndex.send(0)
-                    
-                case .failure(let error):
-                    owner.output.route.send(.showErrorAlert(error))
-                }
+            .sink(receiveValue: { owner, error in
+                owner.output.route.send(.showErrorAlert(error))
             })
             .store(in: &cancellables)
         
@@ -233,10 +238,8 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.showLoading.send(false)
                 
                 switch result {
-                case .success(let storeCard):
-                    owner.state.stores = storeCard
-                    owner.output.storeCards.send(storeCard)
-                    owner.output.scrollToIndex.send(0)
+                case .success(let storeCards):
+                    owner.updateCollectionItems(storeCards: storeCards)
                     owner.output.categoryFilter.send(owner.state.categoryFilter)
                     
                 case .failure(let error):
@@ -258,10 +261,8 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.showLoading.send(false)
                 
                 switch result {
-                case .success(let storeCard):
-                    owner.state.stores = storeCard
-                    owner.output.storeCards.send(storeCard)
-                    owner.output.scrollToIndex.send(0)
+                case .success(let storeCards):
+                    owner.updateCollectionItems(storeCards: storeCards)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -280,10 +281,8 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { owner, result in
                 switch result {
-                case .success(let storeCard):
-                    owner.state.stores = storeCard
-                    owner.output.storeCards.send(storeCard)
-                    owner.output.scrollToIndex.send(0)
+                case .success(let storeCards):
+                    owner.updateCollectionItems(storeCards: storeCards)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -320,9 +319,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.isHiddenResearchButton.send(true)
                 switch result {
                 case .success(let storeCards):
-                    owner.state.stores = storeCards
-                    owner.output.storeCards.send(storeCards)
-                    owner.output.scrollToIndex.send(0)
+                    owner.updateCollectionItems(storeCards: storeCards)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -346,10 +343,8 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.isHiddenResearchButton.send(true)
                 
                 switch result {
-                case .success(let storeCard):
-                    owner.state.stores = storeCard
-                    owner.output.storeCards.send(storeCard)
-                    owner.output.scrollToIndex.send(0)
+                case .success(let storeCards):
+                    owner.updateCollectionItems(storeCards: storeCards)
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -400,15 +395,17 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onTapListView
+            .withLatestFrom(output.collectionItems)
             .withUnretained(self)
-            .map { owner, _ in
+            .map { (owner: HomeViewModel, items: [HomeSectionItem] ) in
+                let stores = items.compactMap { $0.storeCard }
                 let state = HomeListViewModel.State(
                     categoryFilter: owner.state.categoryFilter,
                     sortType: owner.state.sortType,
                     isOnlyBossStore: owner.state.isOnlyBossStore,
                     mapLocation: owner.state.resultCameraPosition,
                     currentLocation: owner.state.currentLocation,
-                    stores: owner.state.stores,
+                    stores: stores,
                     nextCursor: owner.state.nextCursor,
                     hasMore: owner.state.hasMore,
                     mapMaxDistance: owner.state.mapMaxDistance
@@ -420,74 +417,79 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.selectStore
-            .filter { $0 != Constent.cardAdvertisementIndex }
-            .map {
-                $0 < Constent.cardAdvertisementIndex ? $0 : $0 - 1
+            .withLatestFrom(output.collectionItems) { ($0, $1) }
+            .handleEvents(receiveOutput: { [weak self] (index: Int, items: [HomeSectionItem]) in
+                self?.output.scrollToIndex.send(index)
+                self?.state.selectedIndex = index
+            })
+            .compactMap { (index: Int, items: [HomeSectionItem]) in
+                return items[safe: index]
             }
             .withUnretained(self)
-            .sink { owner, selectIndex in
-                guard let store = owner.state.stores[safe: selectIndex],
-                      let location = store.location else { return }
-                let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
-                owner.output.cameraPosition.send(cameraPosition)
-            }
-            .store(in: &cancellables)
-        
-        input.selectStore
-            .withUnretained(self)
-            .sink { (owner: HomeViewModel, selectIndex: Int) in
-                owner.output.scrollToIndex.send(selectIndex)
-                owner.state.selectedIndex = selectIndex
-            }
+            .sink(receiveValue: { (owner: HomeViewModel, sectionItem: HomeSectionItem) in
+                switch sectionItem {
+                case .storeCard(let storeCard):
+                    guard let location = storeCard.location else { return }
+                    let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                    owner.output.cameraPosition.send(cameraPosition)
+                    
+                case .empty, .advertisement:
+                    break
+                }
+            })
             .store(in: &cancellables)
         
         input.onTapMarker
-            .withUnretained(self)
-            .sink { owner, selectIndex in
-                guard let store = owner.state.stores[safe: selectIndex],
+            .withLatestFrom(output.collectionItems) { ($0, $1) }
+            .sink(receiveValue: { [weak self] (index: Int, items: [HomeSectionItem]) in
+                guard let self,
+                      let store = items[safe: index]?.storeCard,
                       let location = store.location else { return }
-                let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
-                owner.output.cameraPosition.send(cameraPosition)
                 
-                let scrollIndex = selectIndex < Constent.cardAdvertisementIndex ? selectIndex : selectIndex + 1
-                owner.output.scrollToIndex.send(scrollIndex)
-            }
+                let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                output.cameraPosition.send(cameraPosition)
+                output.scrollToIndex.send(index)
+            })
             .store(in: &cancellables)
         
         input.onTapStore
-            .withUnretained(self)
-            .sink { owner, selectIndex in
-                if selectIndex == owner.state.selectedIndex {
-                    if selectIndex == Constent.cardAdvertisementIndex {
-                        // 광고 클릭
-                        guard let advertisement = owner.state.advertisementCard,
-                              let linkUrl = advertisement.linkUrl else { return }
-                        owner.output.route.send(.openURL(linkUrl))
-                    } else {
-                        // 가게 클릭
-                        let storeIndex = selectIndex < Constent.cardAdvertisementIndex ? selectIndex : selectIndex - 1
-                        guard let store = owner.state.stores[safe: storeIndex] else { return }
-                        owner.pushStoreDetail(store: store)
+            .withLatestFrom(output.collectionItems) { ($0, $1) }
+            .sink(receiveValue: { [weak self] (index: Int, items: [HomeSectionItem]) in
+                guard let self,
+                      let item = items[safe: index] else { return }
+                
+                if index == state.selectedIndex {
+                    switch item {
+                    case .advertisement(let advertisement):
+                        guard let linkUrl = advertisement?.linkUrl else { return }
+                        output.route.send(.openURL(linkUrl))
+                        
+                    case .storeCard(let storeCard):
+                        pushStoreDetail(store: storeCard)
+                        
+                    default:
+                        break
                     }
                 } else {
-                    // 스크롤
-                    let storeIndex = selectIndex < Constent.cardAdvertisementIndex ? selectIndex : selectIndex - 1
-                    guard let store = owner.state.stores[safe: storeIndex],
-                          let location = store.location else { return }
-                    let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
-                    owner.output.cameraPosition.send(cameraPosition)
-                    owner.output.scrollToIndex.send(selectIndex)
-                    owner.state.selectedIndex = selectIndex
+                    if let storeCard = item.storeCard,
+                       let location = storeCard.location {
+                        let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                        output.cameraPosition.send(cameraPosition)
+                    }
+                    output.scrollToIndex.send(index)
+                    state.selectedIndex = index
                 }
-            }
+            })
             .store(in: &cancellables)
         
         input.onTapVisitButton
-            .withUnretained(self)
-            .sink { owner, selectIndex in
-                guard let store = owner.state.stores[safe: selectIndex] else { return }
+            .withLatestFrom(output.collectionItems) { ($0, $1) }
+            .sink { [weak self] index, items in
+                guard let self,
+                      let item = items[safe: index],
+                      let storeCard = item.storeCard else { return }
                 
-                owner.output.route.send(.presentVisit(store))
+                output.route.send(.presentVisit(storeCard))
             }
             .store(in: &cancellables)
         
@@ -495,6 +497,22 @@ final class HomeViewModel: BaseViewModel {
             .map { Route.presentMarkerAdvertisement }
             .subscribe(output.route)
             .store(in: &cancellables)
+    }
+    
+    private func updateCollectionItems(storeCards: [StoreCard], advertisementCard: Advertisement? = nil) {
+        var items: [HomeSectionItem] = storeCards.map { .storeCard($0) }
+        let advertisement = advertisementCard ?? state.advertisementCard
+        
+        if items.isEmpty {
+            items = [.empty]
+        } else if items.count > Constent.cardAdvertisementIndex {
+            items.insert(.advertisement(advertisement), at: Constent.cardAdvertisementIndex)
+        } else {
+            items.append(.advertisement(advertisement))
+        }
+        
+        output.collectionItems.send(items)
+        output.scrollToIndex.send(0)
     }
     
     private func fetchAroundStore() async -> Result<[StoreCard], Error> {
@@ -554,7 +572,6 @@ final class HomeViewModel: BaseViewModel {
             case .success(let response):
                 if let advertisementResponse = response.first {
                     let advertisement = Advertisement(response: advertisementResponse)
-                    state.advertisementCard = advertisement
                     output.advertisementCard.send(advertisement)
                 } else {
                     output.advertisementCard.send(nil)

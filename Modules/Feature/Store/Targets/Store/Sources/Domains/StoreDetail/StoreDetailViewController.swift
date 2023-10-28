@@ -3,15 +3,14 @@ import UIKit
 import Common
 import DesignSystem
 import Model
-import WriteInterface
-import DependencyInjection
 
 public final class StoreDetailViewController: BaseViewController {
     private let storeDetailView = StoreDetailView()
     private let viewModel: StoreDetailViewModel
     private lazy var datasource = StoreDetailDatasource(
         collectionView: storeDetailView.collectionView,
-        viewModel: viewModel
+        viewModel: viewModel,
+        rootViewController: self
     )
     
     public static func instance(storeId: Int) -> StoreDetailViewController {
@@ -390,11 +389,7 @@ public final class StoreDetailViewController: BaseViewController {
     }
     
     private func pushEditStore(storeId: Int, storeDetailData: StoreDetailData) {
-        guard let writeInterface = DIContainer.shared.container.resolve(WriteInterface.self) else {
-            ToastManager.shared.show(message: "⚠️WriteInterface가 정의되지 않았습니다.")
-            return
-        }
-        let viewController = writeInterface.getEditDetailViewController(
+        let viewController = Environment.writeInterface.getEditDetailViewController(
             storeId: storeId,
             storeDetailData: storeDetailData) { [weak self] _ in
                 self?.viewModel.input.load.send(())
