@@ -15,10 +15,10 @@ protocol BookmarkViewerCoordinator: BaseCoordinator, AnyObject {
 
 extension BookmarkViewerCoordinator {
     func pushStoreDetail(storeId: String) {
-//        guard let storeId = Int(storeId) else { return }
-//        let viewController = StoreDetailViewController.instance(storeId: storeId)
-//        
-//        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+        guard let storeId = Int(storeId) else { return }
+        let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
+        
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
     func pushFoodTruckDetail(storeId: String) {

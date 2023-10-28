@@ -1,6 +1,7 @@
 import DesignSystem
 import AppInterface
 import DependencyInjection
+import WriteInterface
 
 typealias Fonts = DesignSystemFontFamily.Pretendard
 typealias Colors = DesignSystemAsset.Colors
@@ -15,5 +16,13 @@ final class Environment {
         }
         
         return appModuleInterface
+    }
+    
+    static var writeInterface: WriteInterface {
+        guard let writeInterface = DIContainer.shared.container.resolve(WriteInterface.self) else {
+            fatalError("WriteInterface가 정의되지 않았습니다.")
+        }
+        
+        return writeInterface
     }
 }
