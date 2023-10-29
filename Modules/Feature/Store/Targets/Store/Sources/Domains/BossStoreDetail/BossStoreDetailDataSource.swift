@@ -3,28 +3,16 @@ import UIKit
 import Combine
 
 struct BossStoreDetailSection: Hashable {
-    enum SectionType {
-        case none
+    enum SectionType: Hashable {
+        case overview
     }
 
     var type: SectionType
     var items: [BossStoreDetailSectionItem]
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine("banner")
-    }
-
-    static func == (lhs: BossStoreDetailSection, rhs: BossStoreDetailSection) -> Bool {
-        return true
-    }
 }
 
 enum BossStoreDetailSectionItem: Hashable {
-    case none
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine("banner")
-    }
+    case overview(StoreDetailOverviewCellViewModel)
 }
 
 final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossStoreDetailSection, BossStoreDetailSectionItem> {
@@ -32,17 +20,17 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
     private typealias Snapshot = NSDiffableDataSourceSnapshot<BossStoreDetailSection, BossStoreDetailSectionItem>
 
     init(collectionView: UICollectionView, containerVC: UIViewController) {
-        collectionView.register([])
+        collectionView.register([StoreDetailOverviewCell.self])
 
         collectionView.registerSectionHeader([])
 
         super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
+            guard let containerVC else { return UICollectionViewCell() }
             switch itemIdentifier {
-            case .none:
-//                let cell: PollDetailContentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-//                cell.bind(viewModel: cellViewModel)
-//                return cell
-                return UICollectionViewCell()
+            case .overview(let viewModel):
+                let cell: StoreDetailOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(viewModel, rootViewController: containerVC)
+                return cell
             default:
                 return UICollectionViewCell()
             }

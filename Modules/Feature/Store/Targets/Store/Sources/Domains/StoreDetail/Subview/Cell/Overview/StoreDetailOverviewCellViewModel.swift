@@ -13,7 +13,8 @@ final class StoreDetailOverviewCellViewModel: BaseViewModel {
         let didTapWriteReview = PassthroughSubject<Void, Never>()
         let didTapAddress = PassthroughSubject<Void, Never>()
         let didTapMapDetail = PassthroughSubject<Void, Never>()
-        
+        let didTapSnsButton = PassthroughSubject<Void, Never>()
+
         // From parent
         let isFavorited = PassthroughSubject<Bool, Never>()
         let subscribersCount = PassthroughSubject<Int, Never>()
@@ -21,10 +22,12 @@ final class StoreDetailOverviewCellViewModel: BaseViewModel {
     
     struct Output {
         let overview: StoreDetailOverview
+        let menuList: [StoreDetailOverviewMenuItemType]
         let didTapFavorite = PassthroughSubject<Void, Never>()
         let didTapShare = PassthroughSubject<Void, Never>()
         let didTapNavigation = PassthroughSubject<Void, Never>()
         let didTapWriteReview = PassthroughSubject<Void, Never>()
+        let didTapSnsButton = PassthroughSubject<Void, Never>()
         let didTapAddress = PassthroughSubject<Void, Never>()
         let didTapMapDetail = PassthroughSubject<Void, Never>()
         
@@ -40,8 +43,8 @@ final class StoreDetailOverviewCellViewModel: BaseViewModel {
     let output: Output
     
     init(config: Config) {
-        self.output = Output(overview: config.overview)
-        
+        self.output = Output(overview: config.overview, menuList: config.overview.menuList)
+
         super.init()
     }
     
@@ -61,7 +64,11 @@ final class StoreDetailOverviewCellViewModel: BaseViewModel {
         input.didTapWriteReview
             .subscribe(output.didTapWriteReview)
             .store(in: &cancellables)
-        
+
+        input.didTapSnsButton
+            .subscribe(output.didTapSnsButton)
+            .store(in: &cancellables)
+
         input.isFavorited
             .subscribe(output.isFavorited)
             .store(in: &cancellables)
@@ -93,5 +100,23 @@ extension StoreDetailOverviewCellViewModel: Hashable {
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+}
+
+private extension StoreDetailOverview {
+    var menuList: [StoreDetailOverviewMenuItemType] {
+        var itemList: [StoreDetailOverviewMenuItemType] = [
+            .save(count: subscribersCount),
+            .share,
+            .navigation,
+        ]
+
+        if isBossStore, let snsUrl {
+            itemList.append(.sns)
+        } else {
+            itemList.append(.review)
+        }
+
+        return itemList
     }
 }

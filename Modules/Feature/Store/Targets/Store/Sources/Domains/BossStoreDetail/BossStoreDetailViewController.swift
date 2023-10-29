@@ -76,6 +76,8 @@ final class BossStoreDetailViewController: BaseViewController {
             $0.right.equalToSuperview()
             $0.height.equalTo(BottomStickyView.Layout.height)
         }
+
+        bottomStickyView.visitButton.setTitle("리뷰 남기기", for: .normal)
     }
 
     override func bindEvent() {
@@ -91,6 +93,17 @@ final class BossStoreDetailViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
+        bottomStickyView.saveButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapSave)
+            .store(in: &cancellables)
+
+        bottomStickyView.visitButton.controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapReviewWriteButton)
+            .store(in: &cancellables)
+
         // Output
         viewModel.output.showLoading
             .removeDuplicates()
@@ -98,10 +111,41 @@ final class BossStoreDetailViewController: BaseViewController {
             .sink { LoadingManager.shared.showLoading(isShow: $0) }
             .store(in: &cancellables)
 
-        viewModel.output.showToast
+        viewModel.output.toast
             .main
             .sink { ToastManager.shared.show(message: $0) }
             .store(in: &cancellables)
+
+        viewModel.output.dataSource
+            .main
+            .withUnretained(self)
+            .sink { owner, sections in
+                owner.dataSource.reloadData(sections)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.route
+            .main
+            .withUnretained(self)
+            .sink { owner, route in
+                switch route {
+                case .openUrl(let url):
+                    UIApplication.shared.open(url)
+                case .presentMapDetail(let viewModel):
+                    owner.presentMapDetail(viewModel)
+                case .presentNavigation:
+                    owner.presentNavigationModal()
+                }
+            }
+            .store(in: &cancellables)
+
+            viewModel.output.isFavorited
+                .main
+                .withUnretained(self)
+                .sink { owner, isSaved in
+                    owner.bottomStickyView.setSaved(isSaved)
+                }
+                .store(in: &cancellables)
     }
 
     private func generateLayout() -> UICollectionViewLayout {
@@ -111,13 +155,48 @@ final class BossStoreDetailViewController: BaseViewController {
         layout.minimumInteritemSpacing = 0
         return layout
     }
+
+    private func presentNavigationModal() {
+        let alertController = UIAlertController(
+            title: Strings.NavigationBottomSheet.title,
+            message: Strings.NavigationBottomSheet.message,
+            preferredStyle: .actionSheet
+        )
+        let naverAction = UIAlertAction(
+            title: Strings.NavigationBottomSheet.Action.naverMap,
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.input.didTapNavigationAction.send(.naver)
+        }
+        let kakaoAction = UIAlertAction(
+            title: Strings.NavigationBottomSheet.Action.kakaoMap,
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.input.didTapNavigationAction.send(.kakao)
+        }
+        let cancelAction = UIAlertAction(title: Strings.NavigationBottomSheet.Action.cancel, style: .cancel)
+
+        alertController.addAction(naverAction)
+        alertController.addAction(kakaoAction)
+        alertController.addAction(cancelAction)
+
+        present(alertController, animated: true)
+    }
+
+    private func presentMapDetail(_ viewModel: MapDetailViewModel) {
+        let viewController = MapDetailViewController(viewModel: viewModel)
+
+        present(viewController, animated: true)
+    }
 }
 
 extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = UIScreen.main.bounds.width
+        let width = UIScreen.main.bounds.width - 40
 
         switch dataSource.itemIdentifier(for: indexPath) {
+        case .overview:
+            return CGSize(width: width, height: StoreDetailOverviewCell.Layout.height)
         default:
             return .zero
         }

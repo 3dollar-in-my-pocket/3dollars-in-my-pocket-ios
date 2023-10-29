@@ -97,6 +97,11 @@ final class StoreDetailOverviewTitleView: BaseView {
         newBadge.isHidden = !overview.isNew
         setVisitCount(overview.totalVisitSuccessCount)
         infoView.bind(reviewCount: overview.reviewCount, distance: overview.distance)
+
+        if overview.isBossStore {
+            repoterLabel.text = overview.categoriesString
+            visitCountLabel.text = "사장님 직영"
+        }
     }
     
     private func setVisitCount(_ totalVisitSuccessCount: Int) {

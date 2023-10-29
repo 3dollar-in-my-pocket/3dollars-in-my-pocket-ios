@@ -27,7 +27,8 @@ public struct StoreDetailData {
             location: Location(response: response.store.location),
             address: response.store.address.fullAddress,
             isFavorited: response.favorite.isFavorite,
-            subscribersCount: response.favorite.totalSubscribersCount
+            subscribersCount: response.favorite.totalSubscribersCount, 
+            isBossStore: false
         )
         
         self.visit = StoreDetailVisit(response: response.visits)

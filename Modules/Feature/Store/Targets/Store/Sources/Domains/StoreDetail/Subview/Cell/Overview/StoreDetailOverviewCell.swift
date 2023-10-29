@@ -75,6 +75,7 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             location: viewModel.output.overview.location,
             address: viewModel.output.overview.address
         )
+        menuView.bind(viewModel.output.menuList)
         menuView.favoriteButton.isSelected = viewModel.output.overview.isFavorited
         menuView.favoriteButton.setCount(viewModel.output.overview.subscribersCount)
         adBannerView.load(in: rootViewController)
@@ -102,7 +103,13 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             .mapVoid
             .subscribe(viewModel.input.didTapWriteReview)
             .store(in: &cancellables)
-        
+
+        menuView.snsButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapSnsButton)
+            .store(in: &cancellables)
+
         mapView.addressButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
