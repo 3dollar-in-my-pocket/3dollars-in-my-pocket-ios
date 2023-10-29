@@ -174,8 +174,8 @@ final class PollDetailViewModel: BaseViewModel {
                 switch result {
                 case .success(let response):
                     let comments = [response.current] + owner.state.comments.value
-                    owner.state.comments.send(comments)
                     owner.state.commentTotalCount += 1
+                    owner.state.comments.send(comments)
                     owner.output.completedWriteComment.send()
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")
