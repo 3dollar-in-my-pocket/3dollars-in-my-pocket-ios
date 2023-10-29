@@ -80,7 +80,7 @@ final class CreatePollModalViewController: BaseViewController {
         $0.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
     }
 
-    private let descriptionLabel = UILabel().then {
+    private lazy var descriptionLabel = UILabel().then {
         $0.font = Fonts.medium.font(size: 12)
         $0.textColor = Colors.gray50.color
         $0.numberOfLines = 0
@@ -90,12 +90,12 @@ final class CreatePollModalViewController: BaseViewController {
         style.maximumLineHeight = 18
         style.minimumLineHeight = 18
 
-        let text = "* 투표는 3일 동안만 진행돼요\n* 1일 1회만 올릴 수 있어요\n* 부적절한 내용일 경우 임의로 삭제될 수 있어요"
+        let text = "* 투표는 \(viewModel.output.pollRetentionDays)일 동안만 진행돼요\n* 1일 1회만 올릴 수 있어요\n* 부적절한 내용일 경우 임의로 삭제될 수 있어요"
         let attributedText = NSMutableAttributedString(string: text, attributes: [.paragraphStyle: style])
         attributedText.addAttribute(
             .foregroundColor,
             value: Colors.gray100.color,
-            range: (text as NSString).range(of: "3일 동안")
+            range: (text as NSString).range(of: "\(viewModel.output.pollRetentionDays)일 동안")
         )
         attributedText.addAttribute(
             .foregroundColor,

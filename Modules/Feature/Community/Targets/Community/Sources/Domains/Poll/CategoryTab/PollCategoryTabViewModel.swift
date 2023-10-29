@@ -21,7 +21,7 @@ final class PollCategoryTabViewModel: BaseViewModel {
     }
 
     struct State {
-
+        var createPolicy: PollCreatePolicyApiResponse?
     }
 
     enum Route {
@@ -61,6 +61,7 @@ final class PollCategoryTabViewModel: BaseViewModel {
                 switch result {
                 case .success(let response):
                     owner.updateCreatePollButton(with: response)
+                    owner.state.createPolicy = response.createPolicy
                 case .failure(let error):
                     owner.output.showToast.send("유저 투표 정책 조회 실패: \(error.localizedDescription)")
                 }
@@ -98,7 +99,7 @@ final class PollCategoryTabViewModel: BaseViewModel {
     }
 
     private func bindCreatePollModalViewModel() -> CreatePollModalViewModel {
-        let viewModel = CreatePollModalViewModel()
+        let viewModel = CreatePollModalViewModel(pollRetentionDays: state.createPolicy?.pollRetentionDays ?? 3)
 
         viewModel.output.created
             .subscribe(input.updatePollList)
