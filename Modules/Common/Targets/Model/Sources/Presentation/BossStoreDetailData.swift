@@ -2,6 +2,7 @@ import Foundation
 
 public struct BossStoreDetailData {
     public var overview: StoreDetailOverview
+    public var workdays: [BossStoreAppearanceDay]
 
     public init(
         response: BossStoreWithDetailApiResponse
@@ -21,5 +22,8 @@ public struct BossStoreDetailData {
             isBossStore: true,
             snsUrl: response.store.snsUrl
         )
+        self.workdays = response.store.appearanceDays.map {
+            BossStoreAppearanceDay(response: $0)
+        }
     }
 }

@@ -160,7 +160,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
         guard let storeDetailData = state.storeDetailData else { return }
 
         output.dataSource.send([
-            .init(type: .overview, items: [.overview(createOverviewCellViewModel(storeDetailData.overview))])
+            .init(type: .overview, items: [.overview(createOverviewCellViewModel(storeDetailData.overview))]),
+            .init(type: .workday, items: [.workday(storeDetailData.workdays)])
         ])
     }
 

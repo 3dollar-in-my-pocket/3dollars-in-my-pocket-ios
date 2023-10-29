@@ -197,6 +197,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         switch dataSource.itemIdentifier(for: indexPath) {
         case .overview:
             return CGSize(width: width, height: StoreDetailOverviewCell.Layout.height)
+        case .workday:
+            return CGSize(width: width, height: BossStoreWorkdayCell.Layout.height)
         default:
             return .zero
         }

@@ -1,10 +1,12 @@
 import UIKit
 
 import Combine
+import Model
 
 struct BossStoreDetailSection: Hashable {
     enum SectionType: Hashable {
         case overview
+        case workday
     }
 
     var type: SectionType
@@ -13,6 +15,7 @@ struct BossStoreDetailSection: Hashable {
 
 enum BossStoreDetailSectionItem: Hashable {
     case overview(StoreDetailOverviewCellViewModel)
+    case workday([BossStoreAppearanceDay])
 }
 
 final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossStoreDetailSection, BossStoreDetailSectionItem> {
@@ -20,7 +23,10 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
     private typealias Snapshot = NSDiffableDataSourceSnapshot<BossStoreDetailSection, BossStoreDetailSectionItem>
 
     init(collectionView: UICollectionView, containerVC: UIViewController) {
-        collectionView.register([StoreDetailOverviewCell.self])
+        collectionView.register([
+            StoreDetailOverviewCell.self,
+            BossStoreWorkdayCell.self
+        ])
 
         collectionView.registerSectionHeader([])
 
@@ -30,6 +36,10 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             case .overview(let viewModel):
                 let cell: StoreDetailOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel, rootViewController: containerVC)
+                return cell
+            case .workday(let days):
+                let cell: BossStoreWorkdayCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(appearanceDays: days)
                 return cell
             default:
                 return UICollectionViewCell()
