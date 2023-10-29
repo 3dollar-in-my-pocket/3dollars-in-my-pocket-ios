@@ -160,12 +160,13 @@ final class BossStoreDetailViewModel: BaseViewModel {
         guard let storeDetailData = state.storeDetailData else { return }
 
         output.dataSource.send([
-            .init(type: .overview, items: [.overview(createOverviewCellViewModel(storeDetailData.overview))]),
-            .init(type: .workday, items: [.workday(storeDetailData.workdays)])
+            .init(type: .overview, items: [.overview(bindOverviewCellViewModel(storeDetailData.overview))]),
+            .init(type: .workday, items: [.workday(storeDetailData.workdays)]),
+            .init(type: .feedbacks, items: [.feedbacks(bindFeedbacksCellViewModel(with: storeDetailData.feedbacks))])
         ])
     }
 
-    private func createOverviewCellViewModel(_ data: StoreDetailOverview) -> StoreDetailOverviewCellViewModel {
+    private func bindOverviewCellViewModel(_ data: StoreDetailOverview) -> StoreDetailOverviewCellViewModel {
         let config = StoreDetailOverviewCellViewModel.Config(overview: data)
         let viewModel = StoreDetailOverviewCellViewModel(config: config)
 
@@ -202,6 +203,11 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         return viewModel
+    }
+
+    private func bindFeedbacksCellViewModel(with data: [FeedbackCountWithRatioResponse]) -> BossStoreFeedbacksCellViewModel {
+        let cellViewModel = BossStoreFeedbacksCellViewModel(data: data)
+        return cellViewModel
     }
 
     private func saveStore(isDelete: Bool) {

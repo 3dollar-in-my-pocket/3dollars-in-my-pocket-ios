@@ -151,8 +151,8 @@ final class BossStoreDetailViewController: BaseViewController {
     private func generateLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 32
+        layout.minimumInteritemSpacing = 32
         return layout
     }
 
@@ -199,6 +199,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: StoreDetailOverviewCell.Layout.height)
         case .workday:
             return CGSize(width: width, height: BossStoreWorkdayCell.Layout.height)
+        case .feedbacks(let viewModel):
+            return CGSize(width: width, height: BossStoreFeedbacksCell.Layout.height(viewModel: viewModel))
         default:
             return .zero
         }

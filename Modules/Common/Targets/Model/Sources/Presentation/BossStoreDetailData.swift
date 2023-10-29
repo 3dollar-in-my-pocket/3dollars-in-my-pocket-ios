@@ -3,6 +3,7 @@ import Foundation
 public struct BossStoreDetailData {
     public var overview: StoreDetailOverview
     public var workdays: [BossStoreAppearanceDay]
+    public var feedbacks: [FeedbackCountWithRatioResponse]
 
     public init(
         response: BossStoreWithDetailApiResponse
@@ -25,5 +26,6 @@ public struct BossStoreDetailData {
         self.workdays = response.store.appearanceDays.map {
             BossStoreAppearanceDay(response: $0)
         }
+        self.feedbacks = response.feedbacks
     }
 }
