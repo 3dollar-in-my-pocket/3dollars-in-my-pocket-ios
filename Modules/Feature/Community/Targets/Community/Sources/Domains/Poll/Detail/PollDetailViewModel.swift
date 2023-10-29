@@ -25,7 +25,6 @@ final class PollDetailViewModel: BaseViewModel {
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         let completedWriteComment = PassthroughSubject<Void, Never>()
-        let userInfo = CurrentValueSubject<UserWithDeviceApiResponse?, Never>(nil)
     }
 
     struct State {
@@ -36,6 +35,7 @@ final class PollDetailViewModel: BaseViewModel {
         var nextCursor: String? = nil
         var hasMore: Bool = false
         var commentTotalCount: Int = 0
+        var blindedCommentIds: [String] = []
     }
 
     enum Route {
@@ -47,33 +47,21 @@ final class PollDetailViewModel: BaseViewModel {
 
     private var state = State()
     private let communityService: CommunityServiceProtocol
-    private let userService: UserServiceProtocol
 
     private let pollId: String
 
     init(
         pollId: String,
-        communityService: CommunityServiceProtocol = CommunityService(),
-        userService: UserServiceProtocol = UserService()
+        communityService: CommunityServiceProtocol = CommunityService()
     ) {
         self.pollId = pollId
         self.communityService = communityService
-        self.userService = userService
 
         super.init()
     }
 
     override func bind() {
         super.bind()
-
-        input.firstLoad
-            .withUnretained(self)
-            .asyncMap { owner, _ in
-                await owner.userService.fetchUser()
-            }
-            .mapValue()
-            .subscribe(output.userInfo)
-            .store(in: &cancellables)
 
         input.firstLoad
             .withUnretained(self)
@@ -187,8 +175,8 @@ final class PollDetailViewModel: BaseViewModel {
                 switch result {
                 case .success(let response):
                     let comments = [response.current] + owner.state.comments.value
-                    owner.state.comments.send(comments)
                     owner.state.commentTotalCount += 1
+                    owner.state.comments.send(comments)
                     owner.output.completedWriteComment.send()
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")
@@ -218,11 +206,11 @@ final class PollDetailViewModel: BaseViewModel {
 
         var commentSectionItems: [PollDetailSectionItem] = []
 
-        comments.forEach {
-            if $0.comment.status == .blinded {
-                commentSectionItems.append(.blindComment($0.comment.commentId))
+        comments.forEach { item in
+            if item.comment.status == .blinded || state.blindedCommentIds.contains(where: { $0 == item.comment.commentId }) {
+                commentSectionItems.append(.blindComment(item.comment.commentId))
             } else {
-                commentSectionItems.append(.comment(bindCommentCellViewModel(with: $0)))
+                commentSectionItems.append(.comment(bindCommentCellViewModel(with: item)))
             }
         }
 
@@ -247,8 +235,7 @@ final class PollDetailViewModel: BaseViewModel {
     private func bindCommentCellViewModel(with data: PollCommentWithUserApiResponse) -> PollDetailCommentCellViewModel {
         let cellViewModel = PollDetailCommentCellViewModel(
             pollId: pollId,
-            data: data,
-            userInfo: output.userInfo.value
+            data: data
         )
 
         cellViewModel.output.deleteCell
@@ -275,6 +262,17 @@ final class PollDetailViewModel: BaseViewModel {
 
     private func bindReportPollViewModel(pollId: String, commentId: String? = nil) -> ReportPollViewModel {
         let viewModel = ReportPollViewModel(pollId: pollId, commentId: commentId)
+
+        viewModel.output.reportComment
+            .withUnretained(self)
+            .sink { (owner: PollDetailViewModel, id: String) in
+                owner.state.blindedCommentIds.append(id)
+                owner.updateDataSource(
+                    item: owner.state.pollDetail.value,
+                    comments: owner.state.comments.value
+                )
+            }
+            .store(in: &cancellables)
 
         return viewModel
     }

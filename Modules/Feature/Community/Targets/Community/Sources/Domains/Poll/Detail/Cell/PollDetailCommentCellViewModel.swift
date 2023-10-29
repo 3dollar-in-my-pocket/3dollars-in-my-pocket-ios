@@ -7,6 +7,7 @@ import Networking
 final class PollDetailCommentCellViewModel: BaseViewModel {
     struct Input {
         let didTapReportOrUpdateButton = PassthroughSubject<Void, Never>()
+        let deleteAction = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -16,6 +17,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
         let showToast = PassthroughSubject<String, Never>()
         let deleteCell = PassthroughSubject<String, Never>()
         let didTapReportButton = PassthroughSubject<String, Never>()
+        let showDeleteAlert = PassthroughSubject<Void, Never>()
     }
 
     struct State {
@@ -32,21 +34,18 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
 
     private let pollId: String
     private let commentId: String
-    private let userInfo: UserWithDeviceApiResponse?
 
     init(
         pollId: String,
         data: PollCommentWithUserApiResponse,
-        userInfo: UserWithDeviceApiResponse?,
         communityService: CommunityServiceProtocol = CommunityService()
     ) {
         self.pollId = pollId
         self.commentId = data.comment.commentId
         self.communityService = communityService
-        self.userInfo = userInfo
         self.output = Output(
             item: data,
-            isMine: userInfo?.userId == data.commentWriter.userId
+            isMine: data.comment.isOwner
         )
 
         super.init()
@@ -55,11 +54,17 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
     override func bind() {
         super.bind()
 
-        let delete = input.didTapReportOrUpdateButton
+        let didTapReportOrUpdateButton = input.didTapReportOrUpdateButton.share()
+
+        didTapReportOrUpdateButton
             .withUnretained(self)
             .filter { owner, _ in owner.output.isMine }
+            .mapVoid
+            .subscribe(output.showDeleteAlert)
+            .store(in: &cancellables)
 
-        delete
+        input.deleteAction
+            .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.showLoading.send(true)
             })
@@ -82,7 +87,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
-        let report = input.didTapReportOrUpdateButton
+        let report = didTapReportOrUpdateButton
             .withUnretained(self)
             .filter { owner, _ in !owner.output.isMine }
 

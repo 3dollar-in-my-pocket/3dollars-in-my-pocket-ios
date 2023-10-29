@@ -106,8 +106,17 @@ final class CommunityPollListCell: BaseCollectionViewCell {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.collectionView.reloadData()
+                owner.scrollToStoredContentOffset()
             }
             .store(in: &cancellables)
+    }
+
+    private func scrollToStoredContentOffset() {
+        if let contentOffset = viewModel?.output.storedContentOffset.value {
+            collectionView.contentOffset = contentOffset
+        } else {
+            collectionView.scrollToTop(animated: false)
+        }
     }
 }
 
@@ -128,5 +137,10 @@ extension CommunityPollListCell: UICollectionViewDataSource {
 extension CommunityPollListCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel?.input.didSelectPollItem.send(indexPath.item)
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffset = collectionView.contentOffset
+        viewModel?.input.updateStoredContentOffset.send(contentOffset)
     }
 }

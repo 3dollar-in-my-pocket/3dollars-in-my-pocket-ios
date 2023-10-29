@@ -8,7 +8,7 @@ import Model
 final class CommunityPopularStoreItemCell: BaseCollectionViewCell {
 
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width - 40, height: 72)
+        static let size = CGSize(width: UIScreen.main.bounds.width, height: 72)
     }
 
     private let containerView = UIView().then {
@@ -64,7 +64,8 @@ final class CommunityPopularStoreItemCell: BaseCollectionViewCell {
         super.bindConstraints()
 
         containerView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(20)
         }
 
         imageView.snp.makeConstraints {

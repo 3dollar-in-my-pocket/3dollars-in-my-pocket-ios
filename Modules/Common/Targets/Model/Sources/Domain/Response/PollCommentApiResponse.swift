@@ -17,6 +17,7 @@ public struct PollCommentApiResponse: Decodable {
     public let status: PollCommentStatus
     public let createdAt: String
     public let updatedAt: String
+    public let isOwner: Bool
 
     public enum PollCommentStatus: String, Decodable {
         case active = "ACTIVE"

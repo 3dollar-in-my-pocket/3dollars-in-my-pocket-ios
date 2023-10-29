@@ -19,6 +19,7 @@ final class ReportPollViewModel: BaseViewModel {
         let isEnabledButton = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
         let showToast = PassthroughSubject<String, Never>()
+        let reportComment = PassthroughSubject<String, Never>()
     }
 
     struct State {
@@ -151,7 +152,11 @@ final class ReportPollViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.reportComment(pollId: owner.pollId, commentId: owner.commentId ?? "", input: input)
+                await owner.communityService.reportComment(
+                    pollId: owner.pollId,
+                    commentId: owner.commentId ?? "",
+                    input: input
+                )
             }
             .withUnretained(self)
             .sink { owner, result in
@@ -159,6 +164,9 @@ final class ReportPollViewModel: BaseViewModel {
                 switch result {
                 case .success(let response):
                     owner.output.showToast.send("신고했어요")
+                    if let commentId = owner.commentId {
+                        owner.output.reportComment.send(commentId)
+                    }
                     owner.output.route.send(.back)
                 case .failure(let error):
                     owner.output.showToast.send("실패: \(error.localizedDescription)")

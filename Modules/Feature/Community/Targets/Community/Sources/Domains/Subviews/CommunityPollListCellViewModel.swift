@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 
 import Common
 import Model
@@ -9,12 +10,14 @@ final class CommunityPollListCellViewModel: BaseViewModel {
         let didSelectPollItem = PassthroughSubject<Int, Never>()
         let didSelectCategory = PassthroughSubject<Void, Never>()
         let reload = PassthroughSubject<Void, Never>()
+        let updateStoredContentOffset = PassthroughSubject<CGPoint?, Never>()
     }
 
     struct Output {
         let pollList = CurrentValueSubject<[PollItemCellViewModel], Never>([])
         let didSelectPollItem = PassthroughSubject<String, Never>()
         let didSelectCategory = PassthroughSubject<String, Never>()
+        let storedContentOffset = CurrentValueSubject<CGPoint?, Never>(nil)
     }
 
     struct State {
@@ -62,15 +65,17 @@ final class CommunityPollListCellViewModel: BaseViewModel {
                 owner.fetchPolls()
             }
             .store(in: &cancellables)
+
+        input.updateStoredContentOffset
+            .subscribe(output.storedContentOffset)
+            .store(in: &cancellables)
     }
 
     private func fetchPolls() {
         Task { [weak self] in
             guard let self else { return }
 
-            let input = FetchPollsRequestInput()
-
-            let result = await communityService.fetchPolls(input: input)
+            let result = await communityService.fetchPolls(input: FetchPollsRequestInput(sortType: .popular))
 
             switch result {
             case .success(let response):

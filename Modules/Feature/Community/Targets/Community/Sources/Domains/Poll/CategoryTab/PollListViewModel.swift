@@ -32,13 +32,13 @@ final class PollListViewModel: BaseViewModel {
 
     let input = Input()
     let output = Output()
-    let sortType: String
+    let sortType: PollListSortType
 
     private var state = State()
     private let communityService: CommunityServiceProtocol
 
     init(
-        sortType: String = "LATEST", // TODO
+        sortType: PollListSortType = .latest, // 현재 따로 변경하고 있지는 않음
         communityService: CommunityServiceProtocol = CommunityService()
     ) {
         self.sortType = sortType

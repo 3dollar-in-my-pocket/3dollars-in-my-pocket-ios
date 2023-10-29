@@ -13,6 +13,8 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         }
     }
 
+    weak var containerVC: UIViewController?
+
     private let userNameLabel = UILabel().then {
         $0.font = Fonts.medium.font(size: 12)
         $0.textColor = Colors.gray80.color
@@ -141,6 +143,12 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
             .main
             .sink { ToastManager.shared.show(message: $0) }
             .store(in: &cancellables)
+
+        viewModel.output.showDeleteAlert
+            .main
+            .withUnretained(self)
+            .sink { owner, _ in owner.showDeleteAlert() }
+            .store(in: &cancellables)
     }
 
     private func bindUI(with data: PollCommentWithUserApiResponse, isMine: Bool) {
@@ -170,6 +178,26 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
             title: data.commentWriter.medal.name
         )
         medalView.setBackgroundColor(isMine ? Colors.systemWhite.color : nil)
+    }
+
+    private func showDeleteAlert() {
+        guard let containerVC else { return }
+
+        let okAction = UIAlertAction(
+            title: "삭제",
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel?.input.deleteAction.send()
+        }
+
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+
+        AlertUtils.show(
+            viewController: containerVC,
+            title: "삭제하시겠습니까?",
+            message: "",
+            [okAction, cancelAction]
+        )
     }
 }
 
