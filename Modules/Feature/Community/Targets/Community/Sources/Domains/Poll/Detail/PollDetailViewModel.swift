@@ -35,6 +35,7 @@ final class PollDetailViewModel: BaseViewModel {
         var nextCursor: String? = nil
         var hasMore: Bool = false
         var commentTotalCount: Int = 0
+        var blindedCommentIds: [String] = []
     }
 
     enum Route {
@@ -205,11 +206,11 @@ final class PollDetailViewModel: BaseViewModel {
 
         var commentSectionItems: [PollDetailSectionItem] = []
 
-        comments.forEach {
-            if $0.comment.status == .blinded {
-                commentSectionItems.append(.blindComment($0.comment.commentId))
+        comments.forEach { item in
+            if item.comment.status == .blinded || state.blindedCommentIds.contains(where: { $0 == item.comment.commentId }) {
+                commentSectionItems.append(.blindComment(item.comment.commentId))
             } else {
-                commentSectionItems.append(.comment(bindCommentCellViewModel(with: $0)))
+                commentSectionItems.append(.comment(bindCommentCellViewModel(with: item)))
             }
         }
 
@@ -261,6 +262,17 @@ final class PollDetailViewModel: BaseViewModel {
 
     private func bindReportPollViewModel(pollId: String, commentId: String? = nil) -> ReportPollViewModel {
         let viewModel = ReportPollViewModel(pollId: pollId, commentId: commentId)
+
+        viewModel.output.reportComment
+            .withUnretained(self)
+            .sink { (owner: PollDetailViewModel, id: String) in
+                owner.state.blindedCommentIds.append(id)
+                owner.updateDataSource(
+                    item: owner.state.pollDetail.value,
+                    comments: owner.state.comments.value
+                )
+            }
+            .store(in: &cancellables)
 
         return viewModel
     }
