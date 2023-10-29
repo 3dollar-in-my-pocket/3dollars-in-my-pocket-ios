@@ -29,20 +29,50 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
     private var state = State()
     private let storeService: StoreServiceProtocol
+    private let userDefaults: UserDefaultsUtil
 
     private let storeId: String
 
     init(
         storeId: String,
-        storeService: StoreServiceProtocol = StoreService()
+        storeService: StoreServiceProtocol = StoreService(),
+        userDefaults: UserDefaultsUtil = .shared
     ) {
         self.storeId = storeId
         self.storeService = storeService
+        self.userDefaults = userDefaults
 
         super.init()
     }
 
     override func bind() {
         super.bind()
+
+        input.firstLoad
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, _ in
+                owner.output.showLoading.send(true)
+            })
+            .asyncMap { owner, input in
+                let input = FetchBossStoreDetailInput(
+                    storeId: owner.storeId,
+                    latitude: owner.userDefaults.userCurrentLocation.coordinate.latitude,
+                    longitude: owner.userDefaults.userCurrentLocation.coordinate.longitude
+                )
+
+                return await owner.storeService.fetchBossStoreDetail(input: input)
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                owner.output.showLoading.send(false)
+                switch result {
+                case .success(let response):
+                    print("@@@\(response)")
+                case .failure(let error):
+                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                }
+            }
+            .store(in: &cancellables)
+
     }
 }
