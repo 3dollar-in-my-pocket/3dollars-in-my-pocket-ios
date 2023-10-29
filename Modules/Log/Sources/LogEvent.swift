@@ -44,5 +44,8 @@ public enum EventType: String {
 
 public enum ObjectType: String {
     case button
+    case card
+    case marker
+    case inputField = "input_field"
 }
 

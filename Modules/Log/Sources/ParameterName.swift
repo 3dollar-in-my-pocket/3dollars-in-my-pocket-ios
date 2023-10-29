@@ -7,5 +7,8 @@ public enum ParameterName: String {
     case type
     case nickname
     case address
-    case category_name
+    case categoryName = "category_name"
+    case storeId = "store_id"
+    case value
+    case advertisementId = "advertisement_id"
 }

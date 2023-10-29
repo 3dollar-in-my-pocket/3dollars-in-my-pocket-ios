@@ -102,7 +102,7 @@ final class CategorySelectionViewModel: BaseViewModel {
             eventType: .click,
             objectType: .button,
             objectId: "select_category",
-            extraParameters: [.category_name: categoryNames]
+            extraParameters: [.categoryName: categoryNames]
         ))
     }
 }

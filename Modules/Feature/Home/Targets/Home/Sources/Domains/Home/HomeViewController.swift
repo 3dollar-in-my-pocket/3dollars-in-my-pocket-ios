@@ -14,7 +14,7 @@ typealias HomeStoreCardSanpshot = NSDiffableDataSourceSnapshot<HomeSection, Home
 
 public final class HomeViewController: BaseViewController {
     public override var screenName: ScreenName {
-        return .home
+        return viewModel.output.screenName
     }
     
     private let homeView = HomeView()
