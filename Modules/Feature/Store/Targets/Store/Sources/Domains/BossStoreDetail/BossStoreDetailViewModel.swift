@@ -12,6 +12,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
     struct Input {
         let firstLoad = PassthroughSubject<Void, Never>()
+        let reload = PassthroughSubject<Void, Never>()
         let didTapReviewWriteButton = PassthroughSubject<Void, Never>()
 
         // Overview section
@@ -45,6 +46,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case openUrl(URL)
         case presentNavigation
         case presentMapDetail(MapDetailViewModel)
+        case presentFeedback(BossStoreFeedbackViewModel)
     }
 
     let input = Input()
@@ -74,6 +76,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         super.bind()
 
         input.firstLoad
+            .merge(with: input.reload)
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.showLoading.send(true)
@@ -98,6 +101,17 @@ final class BossStoreDetailViewModel: BaseViewModel {
                     owner.output.toast.send("실패: \(error.localizedDescription)")
                 }
             }
+            .store(in: &cancellables)
+
+        input.didTapReviewWriteButton
+            .withUnretained(self)
+            .map { owner, _ in
+                owner.bindFeedbackViewModel(
+                    with: owner.state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
+                )
+            }
+            .map { .presentFeedback($0) }
+            .subscribe(output.route)
             .store(in: &cancellables)
     }
 
@@ -281,5 +295,15 @@ final class BossStoreDetailViewModel: BaseViewModel {
         let viewModel = MapDetailViewModel(config: config)
 
         output.route.send(.presentMapDetail(viewModel))
+    }
+
+    private func bindFeedbackViewModel(with data: [FeedbackType]) -> BossStoreFeedbackViewModel {
+        let viewModel = BossStoreFeedbackViewModel(storeId: storeId, feedbackTypes: data)
+        
+        viewModel.output.sendFeedbacks
+            .subscribe(input.reload)
+            .store(in: &cancellables)
+
+        return viewModel
     }
 }

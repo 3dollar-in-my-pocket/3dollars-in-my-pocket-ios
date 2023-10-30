@@ -135,6 +135,9 @@ final class BossStoreDetailViewController: BaseViewController {
                     owner.presentMapDetail(viewModel)
                 case .presentNavigation:
                     owner.presentNavigationModal()
+                case .presentFeedback(let viewModel):
+                    let viewController = BossStoreFeedbackViewController(viewModel)
+                    owner.present(viewController, animated: true)
                 }
             }
             .store(in: &cancellables)
