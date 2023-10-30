@@ -37,6 +37,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
         // Overview section
         let isFavorited = PassthroughSubject<Bool, Never>()
         let subscribersCount = PassthroughSubject<Int, Never>()
+
+        let updateHeight = PassthroughSubject<Void, Never>()
     }
 
     struct State {
@@ -175,12 +177,16 @@ final class BossStoreDetailViewModel: BaseViewModel {
     private func reloadDataSource() {
         guard let storeDetailData = state.storeDetailData else { return }
 
+        var infoItems: [BossStoreDetailSectionItem] = [.info(BossStoreInfoCellViewModel(data: storeDetailData))]
+        if storeDetailData.store.menus.isEmpty {
+            infoItems.append(.emptyMenu)
+        } else {
+            infoItems.append(.menuList(bindMenuListCellViewModel(with: storeDetailData)))
+        }
+
         output.dataSource.send([
             .init(type: .overview, items: [.overview(bindOverviewCellViewModel(storeDetailData.overview))]),
-            .init(type: .info, items: [
-                .info(BossStoreInfoCellViewModel(data: storeDetailData)),
-                .emptyMenu
-            ]),
+            .init(type: .info, items: infoItems),
             .init(type: .workday, items: [.workday(storeDetailData.workdays)]),
             .init(type: .feedbacks, items: [.feedbacks(bindFeedbacksCellViewModel(with: storeDetailData.feedbacks))])
         ])
@@ -311,5 +317,15 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         return viewModel
+    }
+
+    private func bindMenuListCellViewModel(with data: BossStoreDetailData) -> BossStoreMenuListCellViewModel {
+        let cellViewModel = BossStoreMenuListCellViewModel(data: data)
+
+        cellViewModel.output.updateHeight
+            .subscribe(output.updateHeight)
+            .store(in: &cancellables)
+
+        return cellViewModel
     }
 }

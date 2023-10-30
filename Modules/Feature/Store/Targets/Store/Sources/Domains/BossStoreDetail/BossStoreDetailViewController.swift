@@ -158,13 +158,21 @@ final class BossStoreDetailViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
-            viewModel.output.isFavorited
-                .main
-                .withUnretained(self)
-                .sink { owner, isSaved in
-                    owner.bottomStickyView.setSaved(isSaved)
-                }
-                .store(in: &cancellables)
+        viewModel.output.isFavorited
+            .main
+            .withUnretained(self)
+            .sink { owner, isSaved in
+                owner.bottomStickyView.setSaved(isSaved)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.updateHeight
+            .main
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.collectionView.collectionViewLayout.invalidateLayout()
+            }
+            .store(in: &cancellables)
     }
 
     private func generateLayout() -> UICollectionViewLayout {
@@ -219,6 +227,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: StoreDetailOverviewCell.Layout.height)
         case .info:
             return CGSize(width: width, height: BossStoreInfoCell.Layout.height)
+        case .menuList(let viewModel):
+            return CGSize(width: width, height: BossStoreMenuListCell.Layout.height(viewModel: viewModel))
         case .emptyMenu:
             return CGSize(width: width, height: BossStoreEmptyMenuCell.Layout.height)
         case .workday:
