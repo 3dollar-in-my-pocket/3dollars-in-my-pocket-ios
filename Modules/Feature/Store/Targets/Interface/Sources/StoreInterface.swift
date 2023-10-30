@@ -5,7 +5,9 @@ import Model
 
 public protocol StoreInterface {
     func getStoreDetailViewController(storeId: Int) -> UIViewController
-    
+
+    func getBossStoreDetailViewController(storeId: String) -> UIViewController
+
     func getVisitViewController(
         storeId: Int,
         visitableStore: VisitableStore,

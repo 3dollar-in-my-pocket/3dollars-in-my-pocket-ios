@@ -224,8 +224,8 @@ public final class HomeViewController: BaseViewController {
                     owner.pushStoreDetail(storeId: storeId)
                     
                 case .pushBossStoreDetail(let storeId):
-                    ToastManager.shared.show(message: "🔥 사장님 가게 상세 화면 구현 필요")
-                    
+                    owner.pushBossStoreDetail(storeId: storeId)
+
                 case .presentVisit(let storeCard):
                     let storeId = Int(storeCard.storeId) ?? 0
                     owner.presentVisit(storeId: storeId, store: storeCard)
@@ -330,7 +330,13 @@ public final class HomeViewController: BaseViewController {
         
         tabBarController?.navigationController?.pushViewController(viewController, animated: true)
     }
-    
+
+    private func pushBossStoreDetail(storeId: String) {
+        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+
+        tabBarController?.navigationController?.pushViewController(viewController, animated: true)
+    }
+
     private func presentVisit(storeId: Int, store: VisitableStore) {
         let viewController = Environment.storeInterface.getVisitViewController(storeId: storeId, visitableStore: store) {
             // TODO: 성공 시, 재조회 필요

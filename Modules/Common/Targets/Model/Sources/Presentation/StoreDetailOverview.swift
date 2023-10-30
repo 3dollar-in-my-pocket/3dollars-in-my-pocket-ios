@@ -12,6 +12,8 @@ public struct StoreDetailOverview: Hashable {
     public let address: String
     public var isFavorited: Bool
     public var subscribersCount: Int
+    public var isBossStore: Bool
+    public var snsUrl: String?
 }
 
 extension StoreDetailOverview {

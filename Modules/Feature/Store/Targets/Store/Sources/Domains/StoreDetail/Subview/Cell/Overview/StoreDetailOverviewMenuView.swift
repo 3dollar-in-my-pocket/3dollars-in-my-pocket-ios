@@ -28,35 +28,33 @@ final class StoreDetailOverviewMenuView: BaseView {
     let navigationButton = ItemButton(.navigation)
     
     let reviewButton = ItemButton(.review)
-    
-    
+
+    let snsButton = ItemButton(.sns)
+
     override func setup() {
         addSubViews([
             containerView,
             stackView
         ])
-        
-        stackView.addArrangedSubview(favoriteButton)
+
         favoriteButton.snp.makeConstraints {
             $0.size.equalTo(ItemButton.Layout.size)
         }
-        addDivider()
-        
-        stackView.addArrangedSubview(shareButton)
+
         shareButton.snp.makeConstraints {
             $0.size.equalTo(ItemButton.Layout.size)
         }
-        addDivider()
-        
-        stackView.addArrangedSubview(navigationButton)
+
         navigationButton.snp.makeConstraints {
             $0.size.equalTo(ItemButton.Layout.size)
         }
-        addDivider()
-        
-        stackView.addArrangedSubview(reviewButton)
+
         reviewButton.snp.makeConstraints {
             $0.size.equalTo(ItemButton.Layout.size).priority(.high)
+        }
+
+        snsButton.snp.makeConstraints {
+            $0.size.equalTo(ItemButton.Layout.size)
         }
     }
     
@@ -86,54 +84,88 @@ final class StoreDetailOverviewMenuView: BaseView {
         
         stackView.addArrangedSubview(divider)
     }
+
+    func bind(_ menuList: [StoreDetailOverviewMenuItemType]) {
+        stackView.arrangedSubviews.forEach {
+            stackView.removeArrangedSubview($0)
+            $0.removeFromSuperview()
+        }
+
+        menuList.forEach {
+            switch $0 {
+            case .save:
+                stackView.addArrangedSubview(favoriteButton)
+                addDivider()
+            case .share:
+                stackView.addArrangedSubview(shareButton)
+                addDivider()
+            case .navigation:
+                stackView.addArrangedSubview(navigationButton)
+                addDivider()
+            case .review:
+                stackView.addArrangedSubview(reviewButton)
+            case .sns:
+                stackView.addArrangedSubview(snsButton)
+            }
+        }
+    }
+}
+
+enum StoreDetailOverviewMenuItemType {
+    case save(count: Int)
+    case share
+    case navigation
+    case review
+    case sns
+
+    var icon: UIImage {
+        switch self {
+        case .save:
+            return Icons.bookmarkLine.image.withTintColor(Colors.systemBlack.color)
+
+        case .share:
+            return Icons.share.image.withTintColor(Colors.systemBlack.color)
+
+        case .navigation:
+            return Icons.locationLine.image.withTintColor(Colors.systemBlack.color)
+
+        case .review:
+            return Icons.writeLine.image.withTintColor(Colors.systemBlack.color)
+
+        case .sns:
+            return Icons.link.image.withTintColor(Colors.systemBlack.color)
+        }
+    }
+
+    var text: String {
+        switch self {
+        case .save(let count):
+            return "\(count)"
+
+        case .share:
+            return Strings.StoreDetail.Menu.share
+
+        case .navigation:
+            return Strings.StoreDetail.Menu.navigation
+
+        case .review:
+            return Strings.StoreDetail.Menu.review
+
+        case .sns:
+            return "SNS"
+        }
+    }
 }
 
 extension StoreDetailOverviewMenuView {
     final class ItemButton: UIControl {
+        typealias ItemType = StoreDetailOverviewMenuItemType
+
         enum Layout {
             static let size = CGSize(
                 width: (UIScreen.main.bounds.width - 64 - 36)/4,
                 height: 42
             )
-        }
-        
-        enum ItemType {
-            case save(count: Int)
-            case share
-            case navigation
-            case review
-            
-            var icon: UIImage {
-                switch self {
-                case .save:
-                    return Icons.bookmarkLine.image.withTintColor(Colors.systemBlack.color)
-                    
-                case .share:
-                    return Icons.share.image.withTintColor(Colors.systemBlack.color)
-                    
-                case .navigation:
-                    return Icons.locationLine.image.withTintColor(Colors.systemBlack.color)
-                    
-                case .review:
-                    return Icons.writeLine.image.withTintColor(Colors.systemBlack.color)
-                }
-            }
-            
-            var text: String {
-                switch self {
-                case .save(let count):
-                    return "\(count)"
-                    
-                case .share:
-                    return Strings.StoreDetail.Menu.share
-                    
-                case .navigation:
-                    return Strings.StoreDetail.Menu.navigation
-                    
-                case .review:
-                    return Strings.StoreDetail.Menu.review
-                }
-            }
         }
         
         var icon = UIImageView()

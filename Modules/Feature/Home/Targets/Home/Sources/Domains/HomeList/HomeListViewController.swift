@@ -155,7 +155,10 @@ final class HomeListViewController: BaseViewController {
     }
     
     private func pushBossStoreDetail(storeId: String) {
-        ToastManager.shared.show(message: "사장님 상세 화면 구현 필요")
+        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
+        
+        let viewController = storeInterface.getBossStoreDetailViewController(storeId: storeId)
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

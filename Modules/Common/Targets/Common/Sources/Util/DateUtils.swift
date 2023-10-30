@@ -19,7 +19,15 @@ public struct DateUtils {
         dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone?
         return dateFormatter.string(from: Date())
     }
-    
+
+    public static func toString(date: Date, format: String?) -> String {
+        let dateFormatter = DateFormatter()
+
+        dateFormatter.dateFormat = format ?? Self.defaultFormat
+        dateFormatter.locale = Locale(identifier: "ko")
+        return dateFormatter.string(from: date)
+    }
+
     private static func toDate(dateString: String) -> Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = Self.defaultFormat

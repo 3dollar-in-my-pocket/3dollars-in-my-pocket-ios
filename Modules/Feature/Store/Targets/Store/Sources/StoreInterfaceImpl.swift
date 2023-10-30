@@ -9,7 +9,11 @@ public final class StoreInterfaceImpl: StoreInterface {
     public func getStoreDetailViewController(storeId: Int) -> UIViewController {
         return StoreDetailViewController.instance(storeId: storeId)
     }
-    
+
+    public func getBossStoreDetailViewController(storeId: String) -> UIViewController {
+        return BossStoreDetailViewController.instance(storeId: storeId)
+    }
+
     public func getVisitViewController(
         storeId: Int,
         visitableStore: VisitableStore,
