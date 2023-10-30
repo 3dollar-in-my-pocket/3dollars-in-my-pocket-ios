@@ -4,6 +4,7 @@ public struct BossStoreDetailData {
     public var overview: StoreDetailOverview
     public var workdays: [BossStoreAppearanceDay]
     public var feedbacks: [FeedbackCountWithRatioResponse]
+    public var store: BossStoreDetailApiResponse
 
     public init(
         response: BossStoreWithDetailApiResponse
@@ -27,5 +28,6 @@ public struct BossStoreDetailData {
             BossStoreAppearanceDay(response: $0)
         }
         self.feedbacks = response.feedbacks
+        self.store = response.store
     }
 }

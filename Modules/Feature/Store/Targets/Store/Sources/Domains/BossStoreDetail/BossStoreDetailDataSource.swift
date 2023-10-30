@@ -6,6 +6,7 @@ import Model
 struct BossStoreDetailSection: Hashable {
     enum SectionType: Hashable {
         case overview
+        case info
         case workday
         case feedbacks
     }
@@ -16,6 +17,7 @@ struct BossStoreDetailSection: Hashable {
 
 enum BossStoreDetailSectionItem: Hashable {
     case overview(StoreDetailOverviewCellViewModel)
+    case info(BossStoreInfoCellViewModel)
     case workday([BossStoreAppearanceDay])
     case feedbacks(BossStoreFeedbacksCellViewModel)
 }
@@ -27,6 +29,7 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
     init(collectionView: UICollectionView, containerVC: UIViewController) {
         collectionView.register([
             StoreDetailOverviewCell.self,
+            BossStoreInfoCell.self,
             BossStoreWorkdayCell.self,
             BossStoreFeedbacksCell.self
         ])
@@ -39,6 +42,10 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             case .overview(let viewModel):
                 let cell: StoreDetailOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel, rootViewController: containerVC)
+                return cell
+            case .info(let viewModel):
+                let cell: BossStoreInfoCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(viewModel)
                 return cell
             case .workday(let days):
                 let cell: BossStoreWorkdayCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
