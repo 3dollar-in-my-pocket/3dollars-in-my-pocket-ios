@@ -32,6 +32,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         let toast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         let error = PassthroughSubject<Error, Never>()
+        let isHiddenClosedStoreButton = CurrentValueSubject<Bool, Never>(true)
 
         // Overview section
         let isFavorited = PassthroughSubject<Bool, Never>()
@@ -96,6 +97,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
                 switch result {
                 case .success(let response):
                     owner.state.storeDetailData = BossStoreDetailData(response: response)
+                    owner.output.isHiddenClosedStoreButton.send(response.openStatus.status == .open)
                     owner.reloadDataSource()
                 case .failure(let error):
                     owner.output.toast.send("실패: \(error.localizedDescription)")

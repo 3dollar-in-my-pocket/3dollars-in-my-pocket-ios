@@ -22,6 +22,16 @@ final class BossStoreDetailViewController: BaseViewController {
 
     private let bottomStickyView = BottomStickyView()
 
+    private let closedStoreButton = UIButton().then {
+        $0.setTitle("지금은 준비중이에요! 🧑‍🍳", for: .normal)
+        $0.titleLabel?.font = Fonts.semiBold.font(size: 14)
+        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
+        $0.backgroundColor = Colors.gray100.color
+        $0.contentEdgeInsets = .init(top: 10, left: 16, bottom: 10, right: 16)
+        $0.layer.cornerRadius = 20
+        $0.isUserInteractionEnabled = false
+    }
+
     private let viewModel: BossStoreDetailViewModel
 
     public static func instance(storeId: String) -> BossStoreDetailViewController {
@@ -54,7 +64,8 @@ final class BossStoreDetailViewController: BaseViewController {
         view.addSubViews([
             backButton,
             collectionView,
-            bottomStickyView
+            bottomStickyView,
+            closedStoreButton
         ])
 
         backButton.snp.makeConstraints {
@@ -75,6 +86,11 @@ final class BossStoreDetailViewController: BaseViewController {
             $0.bottom.equalToSuperview()
             $0.right.equalToSuperview()
             $0.height.equalTo(BottomStickyView.Layout.height)
+        }
+
+        closedStoreButton.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalTo(bottomStickyView.snp.top).offset(-8)
         }
 
         bottomStickyView.visitButton.setTitle("리뷰 남기기", for: .normal)
