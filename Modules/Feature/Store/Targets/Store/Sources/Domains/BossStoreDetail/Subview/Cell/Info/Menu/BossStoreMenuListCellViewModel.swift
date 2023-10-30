@@ -18,6 +18,10 @@ final class BossStoreMenuListCellViewModel: BaseViewModel {
         let menus: [BossStoreMenuApiResponse]
     }
 
+    enum Constants {
+        static let initialViewCount: Int = 5
+    }
+
     let input = Input()
     let output: Output
 
@@ -25,8 +29,8 @@ final class BossStoreMenuListCellViewModel: BaseViewModel {
 
     init(data: BossStoreDetailData) {
         self.output = Output(
-            menuList: .init(Array(data.store.menus.prefix(5))),
-            moreItemCount: .init(max(data.store.menus.count - 1, 0))
+            menuList: .init(Array(data.store.menus.prefix(Constants.initialViewCount))),
+            moreItemCount: .init(max(data.store.menus.count - Constants.initialViewCount, 0))
         )
         self.state = State(
             menus: data.store.menus

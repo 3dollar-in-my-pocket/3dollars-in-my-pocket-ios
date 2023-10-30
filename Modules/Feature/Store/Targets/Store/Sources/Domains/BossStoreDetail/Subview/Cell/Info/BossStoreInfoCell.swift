@@ -52,6 +52,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         $0.layer.cornerRadius = 12
         $0.contentMode = .scaleAspectFill
         $0.layer.masksToBounds = true
+        $0.backgroundColor = Colors.gray10.color
     }
 
     override func setup() {
@@ -101,7 +102,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
 
         snsButton.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(16)
-            $0.leading.equalTo(snsTitleLabel.snp.trailing)
+            $0.leading.lessThanOrEqualTo(snsTitleLabel.snp.trailing)
             $0.centerY.equalTo(snsTitleLabel)
         }
 
