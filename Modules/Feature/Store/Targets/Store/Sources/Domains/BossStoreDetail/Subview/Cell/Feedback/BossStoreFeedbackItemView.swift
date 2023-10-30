@@ -4,7 +4,9 @@ import DesignSystem
 import Model
 
 final class BossStoreFeedbackItemView: BaseView {
-    static let height: CGFloat = 50
+    enum Layout {
+        static let height: CGFloat = 50
+    }
 
     private let titleLabel = UILabel().then {
         $0.font = Fonts.semiBold.font(size: 14)
@@ -36,57 +38,60 @@ final class BossStoreFeedbackItemView: BaseView {
     }
 
     override func setup() {
-        self.backgroundColor = .clear
-        self.addSubViews([
-            self.titleLabel,
-            self.countLabel,
-            self.progressBackgroundView,
-            self.progressView
+        super.setup()
+
+        backgroundColor = .clear
+
+        addSubViews([
+            titleLabel,
+            countLabel,
+            progressBackgroundView,
+            progressView
         ])
     }
 
     override func bindConstraints() {
-        self.titleLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(24)
-            make.top.equalTo(self.countLabel).offset(2)
+        super.bindConstraints()
+
+        titleLabel.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(24)
+            $0.top.equalTo(self.countLabel).offset(2)
         }
 
-        self.countLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-24)
+        countLabel.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.trailing.equalToSuperview().offset(-24)
         }
 
-        self.progressBackgroundView.snp.makeConstraints { make in
-            make.leading.equalTo(self.titleLabel)
-            make.top.equalTo(self.titleLabel.snp.bottom).offset(12)
-            make.trailing.equalToSuperview().offset(-24)
-            make.height.equalTo(16)
-            make.bottom.equalToSuperview()
+        progressBackgroundView.snp.makeConstraints {
+            $0.leading.equalTo(self.titleLabel)
+            $0.top.equalTo(self.titleLabel.snp.bottom).offset(12)
+            $0.trailing.equalToSuperview().offset(-24)
+            $0.height.equalTo(16)
+            $0.bottom.equalToSuperview()
         }
 
-        self.progressView.snp.makeConstraints { make in
-            make.leading.equalTo(self.progressBackgroundView).offset(4)
-            make.top.equalTo(self.progressBackgroundView).offset(4)
-            make.trailing.equalTo(self.progressBackgroundView).offset(-4)
-            make.bottom.equalTo(self.progressBackgroundView).offset(-4)
+        progressView.snp.makeConstraints {
+            $0.leading.equalTo(self.progressBackgroundView).offset(4)
+            $0.top.equalTo(self.progressBackgroundView).offset(4)
+            $0.trailing.equalTo(self.progressBackgroundView).offset(-4)
+            $0.bottom.equalTo(self.progressBackgroundView).offset(-4)
         }
 
-        self.snp.makeConstraints { make in
-            make.height.equalTo(Self.height)
+        snp.makeConstraints {
+            $0.height.equalTo(Layout.height)
         }
     }
 
     func bind(feedback: FeedbackCountWithRatioResponse, isTopRate: Bool) {
-        self.titleLabel.text = "\(feedback.feedbackType.emoji) \(feedback.feedbackType.description)"
-        self.countLabel.text = "\(feedback.count)개"
-        self.progressView.progress = Float(feedback.ratio)
-        self.setProgressBar(isTopRate: feedback.count == 0 ? false : isTopRate)
+        titleLabel.text = "\(feedback.feedbackType.emoji) \(feedback.feedbackType.description)"
+        countLabel.text = "\(feedback.count)개"
+        progressView.progress = Float(feedback.ratio)
+        setProgressBar(isTopRate: feedback.count == 0 ? false : isTopRate)
     }
 
     private func setProgressBar(isTopRate: Bool) {
-        self.progressBackgroundView.backgroundColor
-        = isTopRate ? Colors.pink100.color : Colors.gray10.color
-        self.progressView.progressTintColor
-        = isTopRate ? Colors.mainPink.color : Colors.gray30.color
+        progressBackgroundView.backgroundColor = isTopRate ? Colors.pink100.color : Colors.gray10.color
+        progressView.progressTintColor = isTopRate ? Colors.mainPink.color : Colors.gray30.color
     }
 }

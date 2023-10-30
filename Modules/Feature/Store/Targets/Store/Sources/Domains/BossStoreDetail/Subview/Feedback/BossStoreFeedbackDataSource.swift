@@ -22,8 +22,8 @@ final class BossStoreFeedbackDataSource: UICollectionViewDiffableDataSource<Boss
 
     private typealias Snapshot = NSDiffableDataSourceSnapshot<BossStoreFeedbackSection, BossStoreFeedbackSectionItem>
 
-    init(viewModel: BossStoreFeedbackViewModel, collectionView: UICollectionView) {
-        super.init(collectionView: collectionView) { [weak viewModel] collectionView, indexPath, itemIdentifier in
+    init(collectionView: UICollectionView) {
+        super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .feedback(let item, let isSelected):
                 let cell: BossStoreFeedbackItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
@@ -32,11 +32,7 @@ final class BossStoreFeedbackDataSource: UICollectionViewDiffableDataSource<Boss
             }
         }
 
-        supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView? in
-            guard let section = self?.sectionIdentifier(section: indexPath.section) else {
-                return nil
-            }
-
+        supplementaryViewProvider = { collectionView, kind, indexPath -> UICollectionReusableView? in
             let headerView: BossStoreFeedbackHeaderCell = collectionView.dequeueReusableSupplementaryView(ofkind: UICollectionView.elementKindSectionHeader, indexPath: indexPath)
             return headerView
         }

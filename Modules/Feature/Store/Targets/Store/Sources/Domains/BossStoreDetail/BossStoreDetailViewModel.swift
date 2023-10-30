@@ -100,6 +100,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
                 case .success(let response):
                     owner.state.storeDetailData = BossStoreDetailData(response: response)
                     owner.output.isHiddenClosedStoreButton.send(response.openStatus.status == .open)
+                    owner.output.isFavorited.send(response.favorite.isFavorite)
                     owner.reloadDataSource()
                 case .failure(let error):
                     owner.output.toast.send("실패: \(error.localizedDescription)")
@@ -233,6 +234,11 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
     private func bindFeedbacksCellViewModel(with data: [FeedbackCountWithRatioResponse]) -> BossStoreFeedbacksCellViewModel {
         let cellViewModel = BossStoreFeedbacksCellViewModel(data: data)
+        
+        cellViewModel.output.didTapSendFeedbackButton
+            .subscribe(input.didTapReviewWriteButton)
+            .store(in: &cancellables)
+
         return cellViewModel
     }
 

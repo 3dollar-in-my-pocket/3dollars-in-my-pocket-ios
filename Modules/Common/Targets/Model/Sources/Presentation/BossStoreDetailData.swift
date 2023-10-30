@@ -15,7 +15,7 @@ public struct BossStoreDetailData {
             storeName: response.store.name,
             isNew: response.tags.isNew,
             totalVisitSuccessCount: 0,
-            reviewCount: 0,
+            reviewCount: response.feedbacks.map { $0.count }.reduce(0, +),
             distance: response.distanceM,
             location: Location(response: response.store.location ?? .init(latitude: 0, longitude: 0)),
             address: response.store.address.fullAddress,

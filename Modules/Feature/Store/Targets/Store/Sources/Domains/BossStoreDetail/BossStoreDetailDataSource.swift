@@ -38,8 +38,6 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             BossStoreFeedbacksCell.self
         ])
 
-        collectionView.registerSectionHeader([])
-
         super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
             guard let containerVC else { return UICollectionViewCell() }
             switch itemIdentifier {
@@ -70,21 +68,6 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
                 return UICollectionViewCell()
             }
         }
-
-//        supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView? in
-//            guard let section = self?.sectionIdentifier(section: indexPath.section) else {
-//                return nil
-//            }
-//
-//            switch section.type {
-//            case .comment(let totalCount):
-//                let headerView: PollDetailCommentHeaderView = collectionView.dequeueReusableSupplementaryView(ofkind: UICollectionView.elementKindSectionHeader, indexPath: indexPath)
-//                headerView.bind(count: totalCount)
-//                return headerView
-//            default:
-//                return nil
-//            }
-//        }
     }
 
     func reloadData(_ sections: [BossStoreDetailSection]) {

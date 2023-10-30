@@ -7,10 +7,7 @@ import Common
 final class BossStoreDetailViewController: BaseViewController {
     
     private let backButton = UIButton().then {
-        $0.setImage(
-            Icons.arrowLeft.image.withTintColor(Colors.gray100.color),
-            for: .normal
-        )
+        $0.setImage(Icons.arrowLeft.image.withTintColor(Colors.gray100.color), for: .normal)
     }
 
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
@@ -239,22 +236,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return .zero
         }
     }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let width = UIScreen.main.bounds.width
-
-        switch dataSource.sectionIdentifier(section: section)?.type {
-        default:
-            return .zero
-        }
-    }
 }
 
 extension BossStoreDetailViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        switch dataSource.itemIdentifier(for: indexPath) {
-        default:
-            break
-        }
-    }
+
 }

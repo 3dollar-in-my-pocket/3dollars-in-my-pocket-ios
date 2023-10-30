@@ -5,7 +5,9 @@ import DesignSystem
 import Model
 
 final class BossStoreWorkdayStackViewItem: BaseView {
-    static let height: CGFloat = 66
+    enum Layout {
+        static let height: CGFloat = 64
+    }
 
     private let weekDayLabel = UILabel().then {
         $0.font = Fonts.semiBold.font(size: 14)
@@ -29,62 +31,61 @@ final class BossStoreWorkdayStackViewItem: BaseView {
     }
 
     override func setup() {
-        self.addSubViews([
-            self.weekDayLabel,
-            self.timeLabel,
-            self.locationLabel,
-            self.dividerView
+        super.setup()
+
+        addSubViews([
+            weekDayLabel,
+            timeLabel,
+            locationLabel,
+            dividerView
         ])
     }
 
     override func bindConstraints() {
-        self.weekDayLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(12)
-            make.left.equalToSuperview().offset(16)
+        super.bindConstraints()
+
+        weekDayLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(12)
+            $0.leading.equalToSuperview().offset(16)
         }
 
-        self.timeLabel.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-16)
-            make.centerY.equalTo(self.weekDayLabel)
+        timeLabel.snp.makeConstraints {
+            $0.trailing.equalToSuperview().offset(-16)
+            $0.centerY.equalTo(self.weekDayLabel)
         }
 
-        self.locationLabel.snp.makeConstraints { make in
-            make.right.equalTo(self.timeLabel)
-            make.top.equalTo(self.timeLabel.snp.bottom).offset(2)
+        locationLabel.snp.makeConstraints {
+            $0.trailing.equalTo(self.timeLabel)
+            $0.top.equalTo(self.timeLabel.snp.bottom).offset(2)
         }
 
-        self.dividerView.snp.makeConstraints { make in
-            make.left.equalTo(self.timeLabel)
-            make.right.equalTo(self.locationLabel)
-            make.top.equalTo(locationLabel.snp.bottom).offset(12)
-            make.height.equalTo(1)
+        dividerView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(12)
+            $0.top.equalTo(locationLabel.snp.bottom).offset(12)
+            $0.height.equalTo(1)
         }
 
-        self.snp.makeConstraints { make in
-            make.height.equalTo(Self.height).priority(.high)
+        snp.makeConstraints {
+            $0.height.equalTo(Layout.height).priority(.high)
         }
     }
 
     func bind(appearanceDay: BossStoreAppearanceDay) {
-        self.weekDayLabel.text = appearanceDay.dayOfTheWeek.fullText
-        self.dividerView.isHidden = appearanceDay.dayOfTheWeek == .sunday
-        if appearanceDay.isClosedDay {
-            self.timeLabel.text = "휴무"
-            self.timeLabel.textColor = Colors.gray50.color
-            self.locationLabel.text = "-"
-        } else {
-            let startTime = DateUtils.toString(
-                date: appearanceDay.openingHours,
-                format: "HH:mm"
-            )
-            let endTime = DateUtils.toString(
-                date: appearanceDay.closingHours,
-                format: "HH:mm"
-            )
+        weekDayLabel.text = appearanceDay.dayOfTheWeek.fullText
+        dividerView.isHidden = appearanceDay.dayOfTheWeek == .sunday
 
-            self.timeLabel.text = "\(startTime) - \(endTime)"
-            self.timeLabel.textColor = Colors.gray70.color
-            self.locationLabel.text = appearanceDay.locationDescription
+        if appearanceDay.isClosedDay {
+            timeLabel.text = "휴무"
+            timeLabel.textColor = Colors.gray50.color
+
+            locationLabel.text = "-"
+        } else {
+            let startTime = DateUtils.toString(date: appearanceDay.openingHours, format: "HH:mm")
+            let endTime = DateUtils.toString(date: appearanceDay.closingHours, format: "HH:mm")
+            timeLabel.text = "\(startTime) - \(endTime)"
+            timeLabel.textColor = Colors.gray70.color
+
+            locationLabel.text = appearanceDay.locationDescription.isEmpty ? "-" : appearanceDay.locationDescription
         }
     }
 }

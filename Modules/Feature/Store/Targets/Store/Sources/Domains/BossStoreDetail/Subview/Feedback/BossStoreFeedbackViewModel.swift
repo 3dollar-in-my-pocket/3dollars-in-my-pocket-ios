@@ -90,8 +90,8 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
             .sink { owner, result in
                 owner.output.showLoading.send(false)
                 switch result {
-                case .success(let response):
-                    owner.output.showToast.send("리뷰를 남겼어요!")
+                case .success(let _):
+                    owner.output.showToast.send("소중한 리뷰가 사장님께 전달되었습니다!")
                     owner.output.route.send(.back)
                     owner.output.sendFeedbacks.send()
                 case .failure(let error):

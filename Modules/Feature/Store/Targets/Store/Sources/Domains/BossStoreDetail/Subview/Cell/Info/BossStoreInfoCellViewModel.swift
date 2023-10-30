@@ -30,7 +30,7 @@ final class BossStoreInfoCellViewModel: BaseViewModel {
     }
 
     override func bind() {
-
+        super.bind()
     }
 }
 

@@ -24,8 +24,6 @@ final class BossStoreWorkdayCell: BaseCollectionViewCell {
     private let stackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 0
-        $0.layoutMargins = .init(top: 4, left: 0, bottom: 0, right: 0)
-        $0.isLayoutMarginsRelativeArrangement = true
     }
 
     override func prepareForReuse() {
@@ -49,6 +47,7 @@ final class BossStoreWorkdayCell: BaseCollectionViewCell {
         super.bindConstraints()
 
         titleLabel.snp.makeConstraints {
+            $0.height.equalTo(24)
             $0.top.equalToSuperview()
             $0.leading.equalToSuperview()
         }
@@ -59,7 +58,8 @@ final class BossStoreWorkdayCell: BaseCollectionViewCell {
         }
 
         stackView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalToSuperview().inset(4)
+            $0.leading.trailing.equalToSuperview()
         }
     }
 
@@ -77,17 +77,14 @@ final class BossStoreWorkdayCell: BaseCollectionViewCell {
         appearanceDays.forEach { resultAppearanceDays[$0.index] = $0 }
 
         for appearanceDay in resultAppearanceDays {
-            let stackViewItem = self.generateStackViewItem(appearanceDay: appearanceDay)
+            let stackViewItem = generateStackViewItem(appearanceDay: appearanceDay)
 
-            self.stackView.addArrangedSubview(stackViewItem)
+            stackView.addArrangedSubview(stackViewItem)
         }
     }
 
-    func generateStackViewItem(
-        appearanceDay: BossStoreAppearanceDay
-    ) -> BossStoreWorkdayStackViewItem {
+    func generateStackViewItem(appearanceDay: BossStoreAppearanceDay) -> BossStoreWorkdayStackViewItem {
         let stackViewItem = BossStoreWorkdayStackViewItem()
-
         stackViewItem.bind(appearanceDay: appearanceDay)
         return stackViewItem
     }

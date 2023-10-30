@@ -13,7 +13,12 @@ final class BossStoreFeedbackViewController: BaseViewController {
     }
 
     private let closeButton = UIButton().then {
-        $0.setImage(Icons.close.image.resizeImage(scaledTo: 24).withTintColor(Colors.gray100.color), for: .normal)
+        $0.setImage(
+            Icons.close.image
+                .resizeImage(scaledTo: 24)
+                .withTintColor(Colors.gray100.color),
+            for: .normal
+        )
     }
 
     private let titleLabel = UILabel().then {
@@ -44,7 +49,7 @@ final class BossStoreFeedbackViewController: BaseViewController {
         $0.backgroundColor = Colors.mainPink.color
     }
 
-    private lazy var dataSource = BossStoreFeedbackDataSource(viewModel: viewModel, collectionView: collectionView)
+    private lazy var dataSource = BossStoreFeedbackDataSource(collectionView: collectionView)
 
     private let viewModel: BossStoreFeedbackViewModel
 
@@ -110,6 +115,7 @@ final class BossStoreFeedbackViewController: BaseViewController {
     override func bindEvent() {
         super.bindEvent()
 
+        // Input
         closeButton
             .controlPublisher(for: .touchUpInside)
             .main
@@ -119,7 +125,6 @@ final class BossStoreFeedbackViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
-        // Input
         sendFeedbackButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
@@ -171,7 +176,6 @@ final class BossStoreFeedbackViewController: BaseViewController {
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 8
         layout.minimumLineSpacing = 8
-
         return layout
     }
 
