@@ -632,7 +632,7 @@ extension HomeViewModel {
             screen: output.screenName,
             eventType: .click,
             objectType: .card,
-            objectId: "store_card",
+            objectId: "store",
             extraParameters: [
                 .storeId: storeCard.storeId,
                 .type: storeCard.storeType.rawValue

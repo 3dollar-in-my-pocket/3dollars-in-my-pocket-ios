@@ -5,6 +5,7 @@ import CoreLocation
 import Networking
 import Common
 import Model
+import Log
 
 final class HomeListViewModel: BaseViewModel {
     struct Input {
@@ -19,6 +20,7 @@ final class HomeListViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .homeList
         let advertisement = PassthroughSubject<Advertisement?, Never>()
         let categoryFilter: CurrentValueSubject<PlatformStoreCategory?, Never>
         let stores: CurrentValueSubject<[StoreCard], Never>
@@ -53,11 +55,13 @@ final class HomeListViewModel: BaseViewModel {
     private var state: State
     private let storeService: StoreServiceProtocol
     private let advertisementService: AdvertisementServiceProtocol
+    private let logManager: LogManagerProtocol
     
     init(
         state: State,
         storeService: StoreServiceProtocol = StoreService(),
-        advertisementService: AdvertisementServiceProtocol = AdvertisementService()
+        advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.output = Output(
             categoryFilter: .init(state.categoryFilter),
@@ -68,6 +72,7 @@ final class HomeListViewModel: BaseViewModel {
         self.state = state
         self.storeService = storeService
         self.advertisementService = advertisementService
+        self.logManager = logManager
         super.init()
     }
     
@@ -105,6 +110,7 @@ final class HomeListViewModel: BaseViewModel {
             .sink { owner, _ in
                 let currentCategory = owner.state.categoryFilter
                 
+                owner.sendClickCategoryFilterLog()
                 owner.output.route.send(.presentCategoryFilter(currentCategory))
             }
             .store(in: &cancellables)
@@ -139,6 +145,7 @@ final class HomeListViewModel: BaseViewModel {
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
                 owner.state.isOnleyCertifiedStore.toggle()
+                owner.sendClickOnlyVisitFilterLog(owner.state.isOnleyCertifiedStore)
                 owner.output.isOnlyCertified.send(owner.state.isOnleyCertifiedStore)
             })
             .asyncMap { owner, _ in
@@ -163,6 +170,7 @@ final class HomeListViewModel: BaseViewModel {
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
                 owner.state.sortType = owner.state.sortType.toggled()
+                owner.sendClickSortingLog(owner.state.sortType)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -186,6 +194,7 @@ final class HomeListViewModel: BaseViewModel {
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
                 owner.state.isOnlyBossStore.toggle()
+                owner.sendClickOnlyBossFilterLog(owner.state.isOnlyBossStore)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -209,6 +218,7 @@ final class HomeListViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeListViewModel, index: Int) in
                 guard let store = owner.state.stores[safe: index] else { return }
+                owner.sendClickStore(store)
                 
                 switch store.storeType {
                 case .bossStore:
@@ -273,5 +283,67 @@ final class HomeListViewModel: BaseViewModel {
                 output.advertisement.send(nil)
             }
         }
+    }
+    
+    private func sendClickStore(_ storeCard: StoreCard) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .card,
+            objectId: "store",
+            extraParameters: [
+                .storeId: storeCard.storeId,
+                .type: storeCard.storeType.rawValue
+            ]
+        ))
+    }
+    
+    private func sendClickCategoryFilterLog() {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .button,
+            objectId: "category_filter"
+        ))
+    }
+    
+    private func sendClickSortingLog(_ sortType: StoreSortType) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .button,
+            objectId: "sorting",
+            extraParameters: [.type: sortType.rawValue]
+        ))
+    }
+    
+    private func sendClickAdBannerLog(_ advertisement: Advertisement) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .banner,
+            objectId: "advertisement",
+            extraParameters: [.advertisementId: advertisement.advertisementId]
+        ))
+    }
+    
+    private func sendClickOnlyBossFilterLog(_ isOn: Bool) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .button,
+            objectId: "boss_filter",
+            extraParameters: [.value: isOn]
+        ))
+    }
+    
+    private func sendClickOnlyVisitFilterLog(_ isOn: Bool) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventType: .click,
+            objectType: .button,
+            objectId: "only_visit",
+            extraParameters: [.value: isOn]
+        ))
     }
 }

@@ -9,6 +9,7 @@ public enum ScreenName: String {
     
     // Home
     case home
+    case homeList = "home_list"
     case categoryFilter = "category_filter"
     
     /// Write
