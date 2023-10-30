@@ -47,5 +47,6 @@ public enum ObjectType: String {
     case card
     case marker
     case inputField = "input_field"
+    case banner
 }
 
