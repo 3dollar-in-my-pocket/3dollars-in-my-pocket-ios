@@ -526,7 +526,7 @@ final class HomeViewModel: BaseViewModel {
             categoryIds: categoryIds,
             targetStores: targetStores.map { $0.rawValue },
             sortType: state.sortType.rawValue,
-            filterCertifiedStores: state.isOnlyBossStore,
+            filterCertifiedStores: false,
             size: 10,
             cursor: nil,
             mapLatitude: state.resultCameraPosition?.coordinate.latitude ?? 0,
