@@ -135,6 +135,14 @@ public final class StoreDetailViewController: BaseViewController {
                 }
             }
             .store(in: &cancellables)
+        
+        viewModel.output.error
+            .main
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
     }
     
     private func createLayout() -> UICollectionViewLayout {
