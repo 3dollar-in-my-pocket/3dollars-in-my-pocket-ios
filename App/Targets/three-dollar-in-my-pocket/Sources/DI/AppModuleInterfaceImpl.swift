@@ -105,7 +105,6 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         )
         
         ShareApi.shared.shareDefault(templatable: feedTemplate) { linkResult, error in
-            
             if let error = error,
                let rootViewController = SceneDelegate.shared?.window?.rootViewController {
                 AlertUtils.showWithAction(
@@ -113,11 +112,19 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
                     message: error.localizedDescription,
                     onTapOk: nil
                 )
-                
             } else {
-                if let linkResult = linkResult {
-                    UIApplication.shared.open(linkResult.url, options: [:], completionHandler: nil)
+                guard let linkResult = linkResult,
+                      UIApplication.shared.canOpenURL(linkResult.url) else {
+                    if let rootViewController = SceneDelegate.shared?.window?.rootViewController {
+                        AlertUtils.showWithAction(
+                            viewController: rootViewController,
+                            message: "카카오톡 URL을 열 수 없습니다.",
+                            onTapOk: nil
+                        )
+                    }
+                    return
                 }
+                UIApplication.shared.open(linkResult.url, options: [:], completionHandler: nil)
             }
         }
     }
