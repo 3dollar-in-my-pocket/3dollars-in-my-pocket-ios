@@ -24,6 +24,7 @@ final class VisitViewModel: BaseViewModel {
         let canVisit = PassthroughSubject<Bool, Never>()
         let moveCamera = PassthroughSubject<CLLocation, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
+        let toast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         
         // 뷰모델 이벤트 전달용
@@ -119,10 +120,6 @@ final class VisitViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
     
-    private func fetchCurrentLocation() {
-        
-    }
-    
     private func visitStore(type: VisitType) {
         Task {
             let result = await visitService.visitStore(storeId: config.storeId, type: type)
@@ -130,6 +127,7 @@ final class VisitViewModel: BaseViewModel {
             switch result {
             case .success(_):
                 output.onSuccessVisit.send(())
+                output.toast.send(Strings.Visit.resultMessage)
                 output.route.send(.dismiss)
             case .failure(let error):
                 output.showErrorAlert.send(error)

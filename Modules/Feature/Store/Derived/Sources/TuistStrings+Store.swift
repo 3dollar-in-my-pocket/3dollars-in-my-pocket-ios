@@ -256,6 +256,8 @@ public enum StoreStrings {
     public static let exists = StoreStrings.tr("Localization", "visit.exists")
     /// 방문 실패
     public static let notExists = StoreStrings.tr("Localization", "visit.not_exists")
+    /// 방문 기록을 저장했습니다👍
+    public static let resultMessage = StoreStrings.tr("Localization", "visit.result_message")
     public enum Title {
       /// 가게 도착!\n방문을 인증해보세요!
       public static let exists = StoreStrings.tr("Localization", "visit.title.exists")
