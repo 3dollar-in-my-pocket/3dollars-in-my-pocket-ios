@@ -7,7 +7,7 @@ public struct BossStoreDetailApiResponse: Decodable {
     public let location: LocationResponse?
     public let address: AddressResponse
     public let imageUrl: String?
-    public let introdution: String?
+    public let introduction: String?
     public let snsUrl: String?
     public let menus: [BossStoreMenuApiResponse]
     public let appearanceDays: [BossStoreAppearanceDayApiResponse]

@@ -154,6 +154,14 @@ final class BossStoreFeedbackViewController: BaseViewController {
                 ToastManager.shared.show(message: $0)
             }
             .store(in: &cancellables)
+        
+        viewModel.output.error
+            .main
+            .withUnretained(self)
+            .sink { (owner: BossStoreFeedbackViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
 
         viewModel.output.route
             .main

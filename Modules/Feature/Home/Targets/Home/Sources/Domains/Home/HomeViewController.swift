@@ -416,11 +416,14 @@ extension HomeViewController: CategoryFilterDelegate {
 }
 
 extension HomeViewController: HomeListDelegate {
-    func didTapStore(storeId: Int) {
+    func didTapUserStore(storeId: Int) {
         pushStoreDetail(storeId: storeId)
     }
+    
+    func didTapBossStore(storeId: String) {
+        pushBossStoreDetail(storeId: storeId)
+    }
 }
-
 
 extension HomeViewController: UIViewControllerTransitioningDelegate {
     public func animationController(

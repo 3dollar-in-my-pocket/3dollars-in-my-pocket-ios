@@ -8,3 +8,15 @@ public enum StoreType: String {
         self = StoreType(rawValue: value) ?? .userStore
     }
 }
+
+public extension StoreType {
+    var kakaoParameterValue: String {
+        switch self {
+        case .bossStore:
+            return "foodTruck"
+            
+        case .userStore:
+            return "streetFood"
+        }
+    }
+}

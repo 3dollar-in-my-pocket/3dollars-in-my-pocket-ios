@@ -21,7 +21,7 @@ final class StoreDetailOverviewMenuView: BaseView {
         $0.alignment = .center
     }
     
-    let favoriteButton = ItemButton(.save(count: 0))
+    let favoriteButton = ItemButton(.save)
     
     let shareButton = ItemButton(.share)
     
@@ -112,7 +112,7 @@ final class StoreDetailOverviewMenuView: BaseView {
 }
 
 enum StoreDetailOverviewMenuItemType {
-    case save(count: Int)
+    case save
     case share
     case navigation
     case review
@@ -139,8 +139,8 @@ enum StoreDetailOverviewMenuItemType {
 
     var text: String {
         switch self {
-        case .save(let count):
-            return "\(count)"
+        case .save:
+            return ""
 
         case .share:
             return Strings.StoreDetail.Menu.share

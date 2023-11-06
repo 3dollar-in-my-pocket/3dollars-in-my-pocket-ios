@@ -22,7 +22,7 @@ final class BossStoreInfoCellViewModel: BaseViewModel {
         self.output = Output(
             updatedAt: DateUtils.toString(dateString: data.store.updatedAt, format: "yyyy.MM.dd 업데이트"),
             snsUrl: data.overview.snsUrl,
-            introduction: data.store.introdution,
+            introduction: data.store.introduction,
             imageUrl: data.store.imageUrl
         )
 

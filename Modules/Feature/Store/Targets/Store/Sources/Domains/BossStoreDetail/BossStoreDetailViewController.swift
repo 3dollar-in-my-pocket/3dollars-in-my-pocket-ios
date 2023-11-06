@@ -136,6 +136,11 @@ final class BossStoreDetailViewController: BaseViewController {
                 owner.dataSource.reloadData(sections)
             }
             .store(in: &cancellables)
+        
+        viewModel.output.isHiddenClosedStoreButton
+            .main
+            .assign(to: \.isHidden, on: closedStoreButton)
+            .store(in: &cancellables)
 
         viewModel.output.route
             .main

@@ -21,6 +21,7 @@ final class StoreDetailMenuStackView: UIStackView {
     
     func bind(_ menus: [StoreDetailMenu], isShowAll: Bool) {
         let categories = menus.map { $0.category }.unique
+        var menuCount = 0
         
         for category in categories {
             let categoryItemView = StoreDetailMenuCategoryStackItemView()
@@ -30,15 +31,16 @@ final class StoreDetailMenuStackView: UIStackView {
             
             let categoryMenus = menus.filter { $0.category == category && $0.isValid }
             
-            categoryMenus.forEach {
+            for categoryMenu in categoryMenus {
                 let categoryMenuItemView = StoreDetailMenuStackItemView()
-                categoryMenuItemView.bind($0)
+                categoryMenuItemView.bind(categoryMenu)
                 
                 addArrangedSubview(categoryMenuItemView)
-            }
-            
-            if (categoryMenus.count >= StoreDetailMenuCell.Layout.moreButtonShowCount) && !isShowAll {
-                break
+                menuCount += 1
+                
+                if (menuCount >= StoreDetailMenuCell.Layout.moreButtonShowCount) && !isShowAll {
+                    break
+                }
             }
         }
     }

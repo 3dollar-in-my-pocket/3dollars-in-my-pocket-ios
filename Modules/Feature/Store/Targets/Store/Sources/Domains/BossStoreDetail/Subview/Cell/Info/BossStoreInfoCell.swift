@@ -113,7 +113,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
 
         introductionValueLabel.snp.makeConstraints {
             $0.top.equalTo(introductionTitleLabel.snp.bottom).offset(2)
-            $0.leading.trailing.bottom.equalToSuperview().inset(16)
+            $0.leading.trailing.equalToSuperview().inset(16)
         }
     }
 
