@@ -2,6 +2,7 @@ import RxSwift
 import RxCocoa
 import FirebaseRemoteConfig
 import Kingfisher
+import Common
 
 final class SplashViewModel: BaseViewModel {
     struct Input {
@@ -99,6 +100,7 @@ final class SplashViewModel: BaseViewModel {
     private func validateTokenFromServer() {
         self.userService.fetchUserInfo()
             .do(onNext: { [weak self] userInfoResponse in
+                Common.UserDefaultsUtil().userId = userInfoResponse.userId
                 self?.userDefaults.userId = userInfoResponse.userId
             })
             .map { _ in Void() }
