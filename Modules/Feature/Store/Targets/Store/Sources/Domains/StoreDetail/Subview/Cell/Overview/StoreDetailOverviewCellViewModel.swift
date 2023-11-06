@@ -21,8 +21,8 @@ final class StoreDetailOverviewCellViewModel: BaseViewModel {
     }
     
     struct Output {
-        let overview: StoreDetailOverview
-        let menuList: [StoreDetailOverviewMenuItemType]
+        var overview: StoreDetailOverview
+        var menuList: [StoreDetailOverviewMenuItemType]
         let didTapFavorite = PassthroughSubject<Void, Never>()
         let didTapShare = PassthroughSubject<Void, Never>()
         let didTapNavigation = PassthroughSubject<Void, Never>()
@@ -40,7 +40,7 @@ final class StoreDetailOverviewCellViewModel: BaseViewModel {
     }
     
     let input = Input()
-    let output: Output
+    var output: Output
     
     init(config: Config) {
         self.output = Output(overview: config.overview, menuList: config.overview.menuList)
@@ -70,6 +70,12 @@ final class StoreDetailOverviewCellViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         input.isFavorited
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: StoreDetailOverviewCellViewModel, isFavorited: Bool) in
+                owner.output.overview.isFavorited = isFavorited
+                owner.output.menuList = owner.output.overview.menuList
+            })
+            .map { $1 }
             .subscribe(output.isFavorited)
             .store(in: &cancellables)
         
