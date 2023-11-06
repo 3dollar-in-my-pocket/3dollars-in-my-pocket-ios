@@ -69,7 +69,7 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         return WebViewController.instance(webviewType: webviewType)
     }
     
-    func shareKakao(storeId: Int, storeDetailOverview: StoreDetailOverview) {
+    func shareKakao(storeId: Int, storeType: Model.StoreType, storeDetailOverview: StoreDetailOverview) {
         let storeName = storeDetailOverview.storeName
         let latitude = storeDetailOverview.location.latitude
         let longitude = storeDetailOverview.location.longitude
@@ -82,11 +82,11 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
             mobileWebUrl: webURL,
             androidExecutionParams: [
                 "storeId": String(storeId),
-                "storeType": "streetFood"
+                "storeType": storeType.kakaoParameterValue
             ],
             iosExecutionParams: [
                 "storeId": String(storeId),
-                "storeType": "streetFood"
+                "storeType": storeType.kakaoParameterValue
             ]
         )
         let content = Content(

@@ -225,23 +225,22 @@ final class MainTabBarViewController: UITabBarController {
         let storeType = kakaoShareLink.split(separator: ":").first ?? "foodTruck"
         let storeId = kakaoShareLink.split(separator: ":").last ?? ""
         
+        selectedIndex = 0
         if storeType ==  "foodTruck" {
-            self.pushBossStoreDetail(storeId: String(storeId))
+            pushBossStoreDetail(storeId: String(storeId))
         } else {
             selectedIndex = 0
             pushStoreDetail(storeId: Int(storeId) ?? 0)
-            var userDefaults = UserDefaultsUtil()
-            userDefaults.shareLink = ""
         }
+        var userDefaults = UserDefaultsUtil()
+        userDefaults.shareLink = ""
     }
     
     private func pushBossStoreDetail(storeId: String) {
-        ToastManager.shared.show(message: "사장님 상세 화면 구현 예정")
-//        self.selectedIndex = 0
-//        if let navigationVC = self.viewControllers?[0] as? UINavigationController,
-//           let homeVC = navigationVC.topViewController as? HomeViewController {
-//            homeVC.coordinator?.pushBossStoreDetail(storeId: storeId)
-//        }
+        guard let navigationController = contentViewControllers[safe: 0] as? UINavigationController else { return }
+        let viewController = storeInterface.getBossStoreDetailViewController(storeId: storeId)
+        
+        navigationController.pushViewController(viewController, animated: true)
     }
     
     private func pushStoreDetail(storeId: Int) {
