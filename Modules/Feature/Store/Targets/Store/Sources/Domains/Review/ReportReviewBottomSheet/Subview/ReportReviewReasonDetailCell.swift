@@ -28,6 +28,7 @@ final class ReportReviewReasonDetailCell: BaseCollectionViewCell {
         $0.textColor = Layout.Placeholder.color
         $0.font = Fonts.regular.font(size: 14)
         $0.keyboardDismissMode = .onDrag
+        $0.returnKeyType = .done
         $0.delegate = self
     }
 
@@ -71,6 +72,14 @@ extension ReportReviewReasonDetailCell: UITextViewDelegate {
             textView.textColor = Layout.Placeholder.color
         }
 
+        return true
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if(text == "\n") {
+            textView.resignFirstResponder()
+            return false
+        }
         return true
     }
 }

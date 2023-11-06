@@ -14,6 +14,10 @@ final class ReportReviewBottomSheetViewController: BaseViewController {
         return ReportReviewBottomSheetViewController(viewModel: viewModel)
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     init(viewModel: ReportReviewBottomSheetViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -30,6 +34,7 @@ final class ReportReviewBottomSheetViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupKeyboardEvent()
         reportReviewBottomSheet.collectionView.dataSource = datasource
     }
     
@@ -93,6 +98,51 @@ final class ReportReviewBottomSheetViewController: BaseViewController {
         switch route {
         case .dismiss:
             dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    private func setupKeyboardEvent() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onShowKeyboard(notification:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onHideKeyboard(notification:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    @objc func onShowKeyboard(notification: NSNotification) {
+        guard let keyboardFrameInfo
+                = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {
+            return
+        }
+        var keyboardFrame = keyboardFrameInfo.cgRectValue
+
+        keyboardFrame = view.convert(keyboardFrame, from: nil)
+
+        let window = UIApplication.shared.windows.first
+        let bottomPadding = UIUtils.bottomSafeAreaInset
+
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.reportReviewBottomSheet.transform = .init(
+                translationX: 0,
+                y: -keyboardFrame.size.height + bottomPadding
+            )
+            self?.reportReviewBottomSheet.transform = .init(
+                translationX: 0,
+                y: -keyboardFrame.size.height + bottomPadding
+            )
+        }
+    }
+    
+    @objc func onHideKeyboard(notification: NSNotification) {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.reportReviewBottomSheet.transform = .identity
         }
     }
 }

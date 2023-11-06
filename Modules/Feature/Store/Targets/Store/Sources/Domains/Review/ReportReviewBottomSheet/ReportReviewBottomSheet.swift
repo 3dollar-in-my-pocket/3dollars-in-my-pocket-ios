@@ -74,7 +74,7 @@ final class ReportReviewBottomSheet: BaseView {
         reportButton.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20).priority(.high)
             $0.right.equalToSuperview().offset(-20).priority(.high)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-20)
+            $0.bottom.equalToSuperview().offset(-20 - UIUtils.bottomSafeAreaInset)
         }
     }
     
