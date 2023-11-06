@@ -100,3 +100,4 @@
 "visit.distance_format" = "인증까지 %dm";
 "visit.exists" = "방문 성공";
 "visit.not_exists" = "방문 실패";
+"visit.result_message" = "방문 기록을 저장했습니다👍";

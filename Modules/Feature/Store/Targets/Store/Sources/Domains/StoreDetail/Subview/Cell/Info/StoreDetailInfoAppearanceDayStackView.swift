@@ -22,6 +22,7 @@ final class StoreDetailInfoAppearanceDayStackView: UIStackView {
     }
     
     func bind(_ appearanceDays: [AppearanceDay]) {
+        clearAppearanceDays()
         for appearanceDay in appearanceDays {
             switch appearanceDay {
             case .monday:
@@ -61,5 +62,15 @@ final class StoreDetailInfoAppearanceDayStackView: UIStackView {
         addArrangedSubview(fridayItem)
         addArrangedSubview(saturdayItem)
         addArrangedSubview(sundayItem)
+    }
+    
+    private func clearAppearanceDays() {
+        mondayItem.setSelected(false)
+        tuesdayItem.setSelected(false)
+        wednesdayItem.setSelected(false)
+        thursdayItem.setSelected(false)
+        fridayItem.setSelected(false)
+        saturdayItem.setSelected(false)
+        sundayItem.setSelected(false)
     }
 }

@@ -135,6 +135,14 @@ public final class StoreDetailViewController: BaseViewController {
                 }
             }
             .store(in: &cancellables)
+        
+        viewModel.output.error
+            .main
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
     }
     
     private func createLayout() -> UICollectionViewLayout {
@@ -167,7 +175,7 @@ public final class StoreDetailViewController: BaseViewController {
                 return section
                 
             case .visit:
-                let height = StoreDetailVisitCell.Layout.calculateHeight(historyCount: sectionIdentifier.items.first?.historyTotalCount ?? 0)
+                let height = StoreDetailVisitCell.Layout.calculateHeight(historyCount: sectionIdentifier.items.first?.historyContentsCount ?? 0)
                 let item = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
                     heightDimension: .absolute(height)

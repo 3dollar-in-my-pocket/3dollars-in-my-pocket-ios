@@ -3,6 +3,7 @@ import CoreLocation
 
 import Common
 import Model
+import DesignSystem
 
 final class VisitViewController: BaseViewController {
     private let visitView = VisitView()
@@ -95,6 +96,14 @@ final class VisitViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: VisitViewController, error: Error) in
                 owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.toast
+            .main
+            .withUnretained(self)
+            .sink { (owner: VisitViewController, message: String) in
+                ToastManager.shared.show(message: message)
             }
             .store(in: &cancellables)
         

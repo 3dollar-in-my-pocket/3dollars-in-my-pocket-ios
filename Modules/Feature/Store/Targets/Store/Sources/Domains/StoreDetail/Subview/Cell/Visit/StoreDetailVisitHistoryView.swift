@@ -19,7 +19,7 @@ final class StoreDetailVisitHistoryView: BaseView {
             
             var space: CGFloat = 0
             if count > 1 {
-                space = itemHeight * CGFloat(count - 1)
+                space = Layout.space * CGFloat(count - 1)
             }
             
             let labelHeight: CGFloat = count > Constant.moreButtonShowCount ? 18 + 12 : 0

@@ -77,7 +77,8 @@ final class ReportReviewBottomSheetViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: ReportReviewBottomSheetViewModel, _) in
                 guard let reason = owner.state.selectedReasone else { return }
-                owner.reportReview(reason: reason, reasonDetail: owner.state.reasonDetail)
+                let reasonDetail = reason.hasReasonDetail ? owner.state.reasonDetail : nil
+                owner.reportReview(reason: reason, reasonDetail: reasonDetail)
             }
             .store(in: &cancellables)
         

@@ -59,7 +59,7 @@ final class StoreDetailStarBadgeView: BaseView {
     
     func bind(_ rating: Int) {
         for index in 0..<5 {
-            if rating >= index {
+            if rating >= index + 1 {
                 let starImageView = UIImageView(image: Icons.starSolid.image.withTintColor(Colors.mainPink.color))
                 starImageView.snp.makeConstraints {
                     $0.size.equalTo(12)
