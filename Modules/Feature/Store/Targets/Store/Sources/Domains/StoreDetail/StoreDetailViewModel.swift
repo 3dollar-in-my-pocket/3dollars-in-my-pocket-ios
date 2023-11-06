@@ -244,7 +244,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .sink { (owner: StoreDetailViewModel, index: Int) in
                 guard let review = owner.state.storeDetailData?.reviews[safe: index] else { return }
                 
-                if review.user.userId != owner.userDefaults.userId {
+                if review.user.userId == owner.userDefaults.userId {
                     owner.presentEditReviewBottomSheet(review: review)
                 } else {
                     owner.presentReportReviewBottomSheet(review: review)

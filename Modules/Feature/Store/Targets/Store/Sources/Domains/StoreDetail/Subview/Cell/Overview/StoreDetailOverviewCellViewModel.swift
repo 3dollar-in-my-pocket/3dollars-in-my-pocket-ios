@@ -73,6 +73,12 @@ final class StoreDetailOverviewCellViewModel: BaseViewModel {
             .withUnretained(self)
             .handleEvents(receiveOutput: { (owner: StoreDetailOverviewCellViewModel, isFavorited: Bool) in
                 owner.output.overview.isFavorited = isFavorited
+                if isFavorited {
+                    owner.output.overview.subscribersCount += 1
+                } else {
+                    owner.output.overview.subscribersCount -= 1
+                }
+                
                 owner.output.menuList = owner.output.overview.menuList
             })
             .map { $1 }
@@ -112,7 +118,7 @@ extension StoreDetailOverviewCellViewModel: Hashable {
 private extension StoreDetailOverview {
     var menuList: [StoreDetailOverviewMenuItemType] {
         var itemList: [StoreDetailOverviewMenuItemType] = [
-            .save(count: subscribersCount),
+            .save,
             .share,
             .navigation,
         ]

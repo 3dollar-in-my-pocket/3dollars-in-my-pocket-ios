@@ -76,6 +76,7 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             address: viewModel.output.overview.address
         )
         menuView.bind(viewModel.output.menuList)
+        menuView.favoriteButton.label.text = "\(viewModel.output.overview.subscribersCount)"
         menuView.favoriteButton.isSelected = viewModel.output.overview.isFavorited
         menuView.favoriteButton.setCount(viewModel.output.overview.subscribersCount)
         adBannerView.load(in: rootViewController)
