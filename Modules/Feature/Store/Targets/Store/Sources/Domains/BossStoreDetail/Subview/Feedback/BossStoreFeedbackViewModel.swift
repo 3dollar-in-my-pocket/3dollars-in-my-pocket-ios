@@ -19,6 +19,7 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let sendFeedbacks = PassthroughSubject<Void, Never>()
+        let error = PassthroughSubject<Error, Never>()
     }
 
     struct State {
@@ -95,7 +96,7 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
                     owner.output.route.send(.back)
                     owner.output.sendFeedbacks.send()
                 case .failure(let error):
-                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                    owner.output.error.send(error)
                 }
             }
             .store(in: &cancellables)

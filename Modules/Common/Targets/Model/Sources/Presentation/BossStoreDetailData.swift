@@ -22,7 +22,8 @@ public struct BossStoreDetailData {
             isFavorited: response.favorite.isFavorite,
             subscribersCount: response.favorite.totalSubscribersCount,
             isBossStore: true,
-            snsUrl: response.store.snsUrl
+            snsUrl: response.store.snsUrl,
+            introduction: response.store.introduction
         )
         self.workdays = response.store.appearanceDays.map {
             BossStoreAppearanceDay(response: $0)
