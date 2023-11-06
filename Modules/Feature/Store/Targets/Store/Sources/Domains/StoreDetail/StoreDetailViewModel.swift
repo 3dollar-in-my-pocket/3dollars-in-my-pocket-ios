@@ -59,6 +59,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let storeId: Int
         let storeType: StoreType = .userStore
         var storeDetailData: StoreDetailData?
+        var showAllMenu: Bool = false
     }
     
     enum Route {
@@ -190,6 +191,14 @@ final class StoreDetailViewModel: BaseViewModel {
     }
     
     private func bindInfoSection() {
+        input.didTapShowMoreMenu
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.state.showAllMenu = true
+                owner.refreshSections()
+            }
+            .store(in: &cancellables)
+        
         input.didTapEdit
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
@@ -362,7 +371,7 @@ final class StoreDetailViewModel: BaseViewModel {
     }
     
     private func createMenuCellViewModel(_ data: StoreDetailData) -> StoreDetailMenuCellViewModel {
-        let config = StoreDetailMenuCellViewModel.Config(menus: data.menus, isShowAll: false)
+        let config = StoreDetailMenuCellViewModel.Config(menus: data.menus, isShowAll: state.showAllMenu)
         let viewModel = StoreDetailMenuCellViewModel(config: config)
         
         viewModel.output.didTapMore
