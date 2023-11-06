@@ -7,7 +7,9 @@ import DependencyInjection
 import StoreInterface
 
 protocol HomeListDelegate: AnyObject {
-    func didTapStore(storeId: Int)
+    func didTapUserStore(storeId: Int)
+    
+    func didTapBossStore(storeId: String)
 }
 
 final class HomeListViewController: BaseViewController {
@@ -144,21 +146,14 @@ final class HomeListViewController: BaseViewController {
             presentPanModal(categoryFilterViewController)
             
         case .pushStoreDetail(let storeId):
-            delegate?.didTapStore(storeId: Int(storeId) ?? 0)
+            delegate?.didTapUserStore(storeId: Int(storeId) ?? 0)
             
         case .pushBossStoreDetail(let storeId):
-            pushBossStoreDetail(storeId: storeId)
+            delegate?.didTapBossStore(storeId: storeId)
             
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
         }
-    }
-    
-    private func pushBossStoreDetail(storeId: String) {
-        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
-        
-        let viewController = storeInterface.getBossStoreDetailViewController(storeId: storeId)
-        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
