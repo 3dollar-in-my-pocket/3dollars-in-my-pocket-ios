@@ -86,7 +86,8 @@ final class PhotoListViewModel: BaseViewModel {
         input.onSuccessUploadPhotos
             .withUnretained(self)
             .sink { (owner: PhotoListViewModel, photos: [StoreDetailPhoto]) in
-                owner.state.photos.append(contentsOf: photos)
+                owner.state.photos.insert(contentsOf: photos, at: 0)
+//                owner.state.photos.append(contentsOf: photos)
                 owner.output.photos.send(owner.state.photos)
             }
             .store(in: &cancellables)
