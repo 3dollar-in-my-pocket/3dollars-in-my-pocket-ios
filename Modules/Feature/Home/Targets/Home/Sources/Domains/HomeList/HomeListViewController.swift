@@ -112,7 +112,7 @@ final class HomeListViewController: BaseViewController {
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, isOnlyBoss in
-                owner.homeListView.onlyBossToggleButton.setSelected(isOnlyBoss)
+                owner.homeListView.onlyBossToggleButton.isSelected = isOnlyBoss
             }
             .store(in: &cancellables)
         
