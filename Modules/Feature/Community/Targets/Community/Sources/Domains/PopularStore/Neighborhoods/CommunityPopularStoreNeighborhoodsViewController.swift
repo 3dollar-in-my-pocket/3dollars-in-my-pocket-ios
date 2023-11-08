@@ -145,6 +145,14 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
                 }
             }
             .store(in: &cancellables)
+        
+        viewModel.output.showErrorAlert
+            .main
+            .withUnretained(self)
+            .sink { (owner: CommunityPopularStoreNeighborhoodsViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
     }
 
     private func back() {

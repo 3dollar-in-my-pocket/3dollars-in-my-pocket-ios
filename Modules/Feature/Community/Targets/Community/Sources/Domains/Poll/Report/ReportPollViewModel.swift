@@ -20,6 +20,7 @@ final class ReportPollViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let reportComment = PassthroughSubject<String, Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
     }
 
     struct State {
@@ -123,7 +124,7 @@ final class ReportPollViewModel: BaseViewModel {
                     owner.output.showToast.send("신고했어요")
                     owner.output.route.send(.back)
                 case .failure(let error):
-                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
@@ -169,7 +170,7 @@ final class ReportPollViewModel: BaseViewModel {
                     }
                     owner.output.route.send(.back)
                 case .failure(let error):
-                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
@@ -189,7 +190,7 @@ final class ReportPollViewModel: BaseViewModel {
                 self.state.reasons = response.reasons
                 self.output.dataSource.send(sectionItems)
             case .failure(let failure):
-                self.output.showToast.send(failure.localizedDescription)
+                self.output.showErrorAlert.send(failure)
             }
         }
     }

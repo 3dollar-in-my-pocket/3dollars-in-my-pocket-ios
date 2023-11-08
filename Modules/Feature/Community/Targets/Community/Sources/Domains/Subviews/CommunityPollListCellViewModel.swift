@@ -18,6 +18,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
         let didSelectPollItem = PassthroughSubject<String, Never>()
         let didSelectCategory = PassthroughSubject<String, Never>()
         let storedContentOffset = CurrentValueSubject<CGPoint?, Never>(nil)
+        let showErrorAlert = PassthroughSubject<Error, Never>()
     }
 
     struct State {
@@ -83,13 +84,17 @@ final class CommunityPollListCellViewModel: BaseViewModel {
                     self.bindPollItemCellViewModel(with: $0)
                 })
             case .failure(let failure):
-                print("💜error: \(failure)")
+                output.showErrorAlert.send(failure)
             }
         }
     }
 
     private func bindPollItemCellViewModel(with data: PollWithMetaApiResponse) -> PollItemCellViewModel {
         let cellViewModel = PollItemCellViewModel(data: data)
+        
+        cellViewModel.output.showErrorAlert
+            .subscribe(output.showErrorAlert)
+            .store(in: &cellViewModel.cancellables)
         return cellViewModel
     }
 }

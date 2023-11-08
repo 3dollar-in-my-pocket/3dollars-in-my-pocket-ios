@@ -178,7 +178,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
     private func reloadDataSource() {
         guard let storeDetailData = state.storeDetailData else { return }
 
-        var infoItems: [BossStoreDetailSectionItem] = [.info(BossStoreInfoCellViewModel(data: storeDetailData))]
+        var infoItems: [BossStoreDetailSectionItem] = [.info(bindInfoCellViewModel(storeDetailData))]
         if storeDetailData.store.menus.isEmpty {
             infoItems.append(.emptyMenu)
         } else {
@@ -191,6 +191,15 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .init(type: .workday, items: [.workday(storeDetailData.workdays)]),
             .init(type: .feedbacks, items: [.feedbacks(bindFeedbacksCellViewModel(with: storeDetailData.feedbacks))])
         ])
+    }
+    
+    private func bindInfoCellViewModel(_ data: BossStoreDetailData) -> BossStoreInfoCellViewModel {
+        let viewModel = BossStoreInfoCellViewModel(data: data)
+        
+        viewModel.output.didTapSnsButton
+            .subscribe(input.didTapSnsButton)
+            .store(in: &viewModel.cancellables)
+        return viewModel
     }
 
     private func bindOverviewCellViewModel(_ data: StoreDetailOverview) -> StoreDetailOverviewCellViewModel {

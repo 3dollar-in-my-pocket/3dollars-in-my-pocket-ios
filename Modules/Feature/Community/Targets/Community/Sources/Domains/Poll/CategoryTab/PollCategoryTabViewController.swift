@@ -197,6 +197,14 @@ final class PollCategoryTabViewController: BaseViewController {
                 }
             }
             .store(in: &cancellables)
+        
+        viewModel.output.showErrorAlert
+            .main
+            .withUnretained(self)
+            .sink { (owner: PollCategoryTabViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
     }
 }
 

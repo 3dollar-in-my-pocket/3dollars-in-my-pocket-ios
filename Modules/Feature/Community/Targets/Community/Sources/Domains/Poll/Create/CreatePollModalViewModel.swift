@@ -21,6 +21,7 @@ final class CreatePollModalViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
         let created = PassthroughSubject<Void, Never>()
         let isEnabledCreateButton = CurrentValueSubject<Bool, Never>(false)
+        let showErrorAlert = PassthroughSubject<Error, Never>()
     }
 
     struct State {
@@ -83,7 +84,7 @@ final class CreatePollModalViewModel: BaseViewModel {
                     owner.output.showToast.send("투표를 만들었어요!")
                     owner.output.route.send(.back)
                 case .failure(let error):
-                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)

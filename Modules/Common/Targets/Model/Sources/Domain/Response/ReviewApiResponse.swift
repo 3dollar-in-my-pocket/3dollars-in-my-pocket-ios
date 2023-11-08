@@ -7,4 +7,5 @@ public struct ReviewApiResponse: Decodable {
     public let rating: Int
     public let contents: String
     public let status: String
+    public let isOwner: Bool
 }
