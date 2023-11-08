@@ -5,7 +5,7 @@ import Model
 
 final class BossStoreInfoCellViewModel: BaseViewModel {
     struct Input {
-
+        let didTapSnsButton = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -13,6 +13,7 @@ final class BossStoreInfoCellViewModel: BaseViewModel {
         let snsUrl: String?
         let introduction: String?
         let imageUrl: String?
+        let didTapSnsButton = PassthroughSubject<Void, Never>()
     }
 
     let input = Input()
@@ -31,6 +32,10 @@ final class BossStoreInfoCellViewModel: BaseViewModel {
 
     override func bind() {
         super.bind()
+        
+        input.didTapSnsButton
+            .subscribe(output.didTapSnsButton)
+            .store(in: &cancellables)
     }
 }
 

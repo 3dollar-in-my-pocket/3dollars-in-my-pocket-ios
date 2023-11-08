@@ -5,7 +5,22 @@ import Model
 
 final class BossStoreInfoCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 446
+        static func calculateHeight(introduction: String?) -> CGFloat {
+            let introducationHeight = calculageIntroductionHeight(introduction: introduction)
+            
+            return introducationHeight + 356
+        }
+        
+        static func calculageIntroductionHeight(introduction: String?) -> CGFloat {
+            guard let introduction else { return .zero }
+            let label = UILabel()
+            label.font = Fonts.medium.font(size: 12)
+            label.numberOfLines = 0
+            label.text = introduction
+            label.sizeToFit()
+            
+            return label.frame.height
+        }
     }
 
     private let titleLabel = UILabel().then {
@@ -33,6 +48,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
     let snsButton = UIButton().then {
         $0.titleLabel?.font = Fonts.medium.font(size: 12)
         $0.setTitleColor(Colors.mainPink.color, for: .normal)
+        $0.titleLabel?.textAlignment = .right
     }
 
     private let introductionTitleLabel = UILabel().then {
@@ -92,7 +108,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         containerView.snp.makeConstraints {
             $0.top.equalTo(photoView.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(168)
+            $0.bottom.equalTo(introductionValueLabel).offset(16)
         }
 
         snsTitleLabel.snp.makeConstraints {
@@ -102,7 +118,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
 
         snsButton.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(16)
-            $0.leading.lessThanOrEqualTo(snsTitleLabel.snp.trailing)
+            $0.leading.equalTo(snsTitleLabel.snp.trailing)
             $0.centerY.equalTo(snsTitleLabel)
         }
 
@@ -130,5 +146,10 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         }
 
         updatedAtLabel.text = viewModel.output.updatedAt
+        
+        snsButton.controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapSnsButton)
+            .store(in: &cancellables)
     }
 }
