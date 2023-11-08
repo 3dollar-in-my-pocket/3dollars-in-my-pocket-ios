@@ -52,13 +52,13 @@ extension MyPageCoordinator {
     }
     
     func goToStoreDetail(storeId: Int) {
-//        let viewController = StoreDetailViewController.instance(storeId: storeId)
-//        
-//        self.presenter.navigationController?.pushViewController(viewController, animated: true)
+        let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
+        
+        self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
     
     func pushFoodtruckDetail(storeId: String) {
-        let viewController = BossStoreDetailViewController.instance(storeId: storeId)
+        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
