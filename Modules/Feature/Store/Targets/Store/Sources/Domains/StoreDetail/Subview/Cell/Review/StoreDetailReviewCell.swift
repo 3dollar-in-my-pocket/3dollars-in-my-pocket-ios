@@ -139,7 +139,7 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         starBadge.bind(review.rating)
         contentLabel.text = review.contents
         
-        if UserDefaultsUtil().userId == review.user.userId {
+        if review.isOwner {
             containerView.backgroundColor = Colors.pink100.color
             medalBadge.containerView.backgroundColor = Colors.systemWhite.color
             starBadge.containerView.backgroundColor = Colors.systemWhite.color
