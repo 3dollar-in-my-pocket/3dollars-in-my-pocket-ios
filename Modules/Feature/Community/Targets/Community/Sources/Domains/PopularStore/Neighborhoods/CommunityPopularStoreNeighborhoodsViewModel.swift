@@ -16,6 +16,7 @@ final class CommunityPopularStoreNeighborhoodsViewModel: BaseViewModel {
         let dataSource = PassthroughSubject<[CommunityPopularStoreNeighborhoodsSection], Never>()
         let updatePopularStores = PassthroughSubject<Void, Never>()
         let route = PassthroughSubject<Route, Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
     }
 
     struct State {
@@ -88,7 +89,7 @@ final class CommunityPopularStoreNeighborhoodsViewModel: BaseViewModel {
                         )
                     ])
                 case .failure(let error):
-                    print("")
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)

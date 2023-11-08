@@ -17,6 +17,7 @@ final class PollListViewModel: BaseViewModel {
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
     }
 
     struct State {
@@ -73,7 +74,7 @@ final class PollListViewModel: BaseViewModel {
                     owner.state.nextCursor = response.cursor.nextCursor
                     owner.updateDataSource()
                 case .failure(let error):
-                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
@@ -121,7 +122,7 @@ final class PollListViewModel: BaseViewModel {
                     owner.state.nextCursor = response.cursor.nextCursor
                     owner.updateDataSource()
                 case .failure(let error):
-                    print(error)
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)

@@ -20,6 +20,7 @@ final class CommunityViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
         let sections = CurrentValueSubject<[CommunitySection], Never>([])
         let updatePopularStores = PassthroughSubject<Void, Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
     }
 
     struct State {
@@ -170,6 +171,10 @@ final class CommunityViewModel: BaseViewModel {
                 .pollDetail(PollDetailViewModel(pollId: pollId))
             }
             .subscribe(output.route)
+            .store(in: &cancellables)
+        
+        cellViewModel.output.showErrorAlert
+            .subscribe(output.showErrorAlert)
             .store(in: &cancellables)
 
         return cellViewModel

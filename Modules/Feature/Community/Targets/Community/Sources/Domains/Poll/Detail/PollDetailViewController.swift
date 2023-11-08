@@ -146,6 +146,14 @@ final class PollDetailViewController: BaseViewController {
                 owner.collectionView.scrollToItemIfAvailable(at: IndexPath(row: 0, section: 0), at: .top, animated: true) // TODO
             }
             .store(in: &cancellables)
+        
+        viewModel.output.showErrorAlert
+            .main
+            .withUnretained(self)
+            .sink { (owner: PollDetailViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
     }
 
     private func generateLayout() -> UICollectionViewLayout {

@@ -90,6 +90,16 @@ public final class CommunityViewController: BaseViewController {
             .sink { ToastManager.shared.show(message: $0) }
             .store(in: &cancellables)
     }
+    
+    public override func bindViewModelOutput() {
+        viewModel.output.showErrorAlert
+            .main
+            .withUnretained(self)
+            .sink { (owner: CommunityViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
+    }
 
     private func pushStoreDetail(storeId: Int) {
         guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }

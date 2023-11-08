@@ -25,6 +25,7 @@ final class PollDetailViewModel: BaseViewModel {
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         let completedWriteComment = PassthroughSubject<Void, Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
     }
 
     struct State {
@@ -80,7 +81,7 @@ final class PollDetailViewModel: BaseViewModel {
                     owner.state.commentTotalCount = response.meta.totalCommentsCount
                     owner.state.loadComments.send()
                 case .failure(let error):
-                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
@@ -110,7 +111,7 @@ final class PollDetailViewModel: BaseViewModel {
                     owner.state.nextCursor = response.cursor.nextCursor
                     owner.state.hasMore = response.cursor.hasMore
                 case .failure(let error):
-                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
@@ -156,7 +157,7 @@ final class PollDetailViewModel: BaseViewModel {
                     owner.state.loadComment.send(response.id)
                 case .failure(let error):
                     owner.output.showLoading.send(false)
-                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
@@ -179,7 +180,7 @@ final class PollDetailViewModel: BaseViewModel {
                     owner.state.comments.send(comments)
                     owner.output.completedWriteComment.send()
                 case .failure(let error):
-                    owner.output.showToast.send("실패: \(error.localizedDescription)")
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
@@ -229,6 +230,9 @@ final class PollDetailViewModel: BaseViewModel {
 //            .subscribe(state.loadComments)
 //            .store(in: &cancellables)
 
+        cellViewModel.output.showErrorAlert
+            .subscribe(output.showErrorAlert)
+            .store(in: &cancellables)
         return cellViewModel
     }
 

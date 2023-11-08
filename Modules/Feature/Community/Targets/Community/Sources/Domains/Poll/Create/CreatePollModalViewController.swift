@@ -275,6 +275,14 @@ final class CreatePollModalViewController: BaseViewController {
                 }
             }
             .store(in: &cancellables)
+        
+        viewModel.output.showErrorAlert
+            .main
+            .withUnretained(self)
+            .sink { (owner: CreatePollModalViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
     }
 
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {

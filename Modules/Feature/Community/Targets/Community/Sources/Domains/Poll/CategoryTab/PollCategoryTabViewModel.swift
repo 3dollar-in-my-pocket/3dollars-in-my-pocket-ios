@@ -18,6 +18,7 @@ final class PollCategoryTabViewModel: BaseViewModel {
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         let updatePollList = PassthroughSubject<Void, Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
     }
 
     struct State {
@@ -63,7 +64,7 @@ final class PollCategoryTabViewModel: BaseViewModel {
                     owner.updateCreatePollButton(with: response)
                     owner.state.createPolicy = response.createPolicy
                 case .failure(let error):
-                    owner.output.showToast.send("유저 투표 정책 조회 실패: \(error.localizedDescription)")
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
