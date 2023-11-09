@@ -24,7 +24,7 @@ extension BaseCoordinator where Self: BaseViewController {
                     viewController: self,
                     title: nil,
                     message: httpError.description,
-                    okbuttonTitle: "common_ok".localized
+                    okbuttonTitle: "확인"
                 ) {
                     UserDefaultsUtil().clear()
                     self.goToSignin()
