@@ -188,8 +188,8 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
             viewController = Environment.storeInterface.getStoreDetailViewController(storeId: Int(storeId) ?? 0)
             
         case .foodTruck:
-            viewController = BossStoreDetailViewController.instance(storeId: storeId)
-            
+            viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+
         case .unknown:
             Log.debug("알 수 없는 storeType 입니다.")
             return nil
