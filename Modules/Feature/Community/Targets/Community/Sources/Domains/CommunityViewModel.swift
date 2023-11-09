@@ -34,6 +34,7 @@ final class CommunityViewModel: BaseViewModel {
         case pollDetail(PollDetailViewModel)
         case popularStoreNeighborhoods(CommunityPopularStoreNeighborhoodsViewModel)
         case storeDetail(Int)
+        case bossStoreDetail(String)
     }
 
     let input = Input()
@@ -98,7 +99,12 @@ final class CommunityViewModel: BaseViewModel {
             .sink { owner, indexPath in
                 let item = owner.output.sections.value[safe: indexPath.section]?.items[safe: indexPath.item]
                 if case .popularStore(let store) = item, let id = Int(store.id) {
-                    owner.output.route.send(.storeDetail(id))
+                    switch store.storeCategory {
+                    case .bossStore:
+                        owner.output.route.send(.bossStoreDetail(store.id))
+                    case .userStore:
+                        owner.output.route.send(.storeDetail(id))
+                    }
                 }
             }
             .store(in: &cancellables)
