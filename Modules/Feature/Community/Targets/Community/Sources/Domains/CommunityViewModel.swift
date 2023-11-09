@@ -145,6 +145,10 @@ final class CommunityViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
+        output.updatePopularStores
+            .subscribe(cellViewModel.input.reload)
+            .store(in: &cancellables)
+
         return cellViewModel
     }
 
