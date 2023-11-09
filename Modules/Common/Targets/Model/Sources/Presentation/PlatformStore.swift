@@ -1,4 +1,5 @@
 public struct PlatformStore {
+    public let type: StoreType
     public let id: String
     public let latitude: Double
     public let longitude: Double
@@ -7,6 +8,7 @@ public struct PlatformStore {
     public let categories: [PlatformStoreCategory]
 
     public init(response: PlatformStoreResponse) {
+        self.type = StoreType(value: response.storeType)
         self.id = response.storeId
         self.latitude = 0
         self.longitude = 0

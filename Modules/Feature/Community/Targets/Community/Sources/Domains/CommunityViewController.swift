@@ -109,11 +109,10 @@ public final class CommunityViewController: BaseViewController {
 
         navigationController?.pushViewController(viewController, animated: true)
     }
-
+    
     private func pushBossStoreDetail(storeId: String) {
-        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
-        let viewController = storeInterface.getBossStoreDetailViewController(storeId: storeId)
-
+        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+        
         navigationController?.pushViewController(viewController, animated: true)
     }
 }
