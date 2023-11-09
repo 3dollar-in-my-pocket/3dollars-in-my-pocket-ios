@@ -59,6 +59,7 @@ final class NicknameViewModel: BaseViewModel {
     override func bind() {
         input.inputNickname
             .withUnretained(self)
+            .print("💜nickname")
             .sink(receiveValue: { owner, nickname in
                 let isEnableSignup = nickname.trimmingCharacters(in: .whitespaces).isNotEmpty
                 

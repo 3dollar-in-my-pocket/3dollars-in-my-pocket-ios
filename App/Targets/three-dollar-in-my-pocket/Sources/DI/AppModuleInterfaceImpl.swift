@@ -45,6 +45,18 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         return AdBannerView()
     }
     
+    var onClearSession: (() -> Void) {
+        let onClearSession = {
+            UserDefaultsUtil().clear()
+            if let sceneDelegate
+                = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                sceneDelegate.goToSignIn()
+            }
+        }
+        
+        return onClearSession
+    }
+    
     func getFCMToken(completion: @escaping ((String) -> ())) {
         Messaging.messaging().token { token, error in
             guard let token = token else {

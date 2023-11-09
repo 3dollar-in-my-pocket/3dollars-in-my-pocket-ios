@@ -11,6 +11,7 @@ public protocol AppModuleInterface {
     var photoManager: PhotoManagerProtocol { get }
     var analyticsManager: AnalyticsManagerProtocol { get }
     var adBannerView: AdBannerViewProtocol { get }
+    var onClearSession: (() -> Void) { get }
     
     func getFCMToken(completion: @escaping ((String) -> ()))
     func goToMain()

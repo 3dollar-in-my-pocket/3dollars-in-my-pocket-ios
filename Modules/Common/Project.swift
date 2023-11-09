@@ -34,6 +34,8 @@ let project = Project(
             sources: ["Targets/Common/Sources/**"],
             dependencies: [
                 .project(target: "Model", path: "./"),
+                .project(target: "AppInterface", path: "../../App"),
+                .project(target: "DependencyInjection", path: "../DependencyInjection"),
                 .external(name: "Kingfisher")
             ]
         ),
