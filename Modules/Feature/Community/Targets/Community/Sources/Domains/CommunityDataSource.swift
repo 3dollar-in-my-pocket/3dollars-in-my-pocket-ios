@@ -116,4 +116,22 @@ extension CommunityDataSource: UICollectionViewDelegateFlowLayout {
             return .zero
         }
     }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        switch self.sectionIdentifier(section: section)?.type {
+        case .popularStore:
+            return .zero
+        default:
+            return 16
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        switch self.sectionIdentifier(section: section)?.type {
+        case .popularStore:
+            return .init(top: 0, left: 0, bottom: 24, right: 0)
+        default:
+            return .zero
+        }
+    }
 }
