@@ -195,6 +195,7 @@ class PollItemBaseCell: BaseCollectionViewCell {
 
         firstSelectionView.isUserInteractionEnabled = true
         secondSelectionView.isUserInteractionEnabled = true
+        medalView.bind(imageUrl: nil, title: nil)
     }
 }
 

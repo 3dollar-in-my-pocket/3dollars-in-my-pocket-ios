@@ -73,6 +73,8 @@ public final class CommunityViewController: BaseViewController {
                     owner.present(vc, animated: true, completion: nil)
                 case .storeDetail(let storeId):
                     owner.pushStoreDetail(storeId: storeId)
+                case .bossStoreDetail(let storeId):
+                    owner.pushBossStoreDetail(storeId: storeId)
                 }
             }
             .store(in: &cancellables)
@@ -104,6 +106,13 @@ public final class CommunityViewController: BaseViewController {
     private func pushStoreDetail(storeId: Int) {
         guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
         let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
+
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+
+    private func pushBossStoreDetail(storeId: String) {
+        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
+        let viewController = storeInterface.getBossStoreDetailViewController(storeId: storeId)
 
         navigationController?.pushViewController(viewController, animated: true)
     }

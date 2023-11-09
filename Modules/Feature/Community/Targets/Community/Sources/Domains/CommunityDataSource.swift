@@ -4,7 +4,25 @@ import Combine
 import Model
 
 struct CommunitySection: Hashable {
+    enum SectionType {
+        case pollList
+        case popularStoreTab
+        case popularStore
+    }
+
+    var type: SectionType
     var items: [CommunitySectionItem]
+
+    func hash(into hasher: inout Hasher) {
+        switch type {
+        case .pollList:
+            hasher.combine("pollList")
+        case .popularStoreTab:
+            hasher.combine("popularStoreTab")
+        case .popularStore:
+            hasher.combine("popularStore")
+        }
+    }
 }
 
 enum CommunitySectionItem: Hashable {
@@ -94,6 +112,24 @@ extension CommunityDataSource: UICollectionViewDelegateFlowLayout {
             return CommunityPopularStoreTabCell.Layout.size
         case .popularStore:
             return CommunityPopularStoreItemCell.Layout.size
+        default:
+            return .zero
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        switch self.sectionIdentifier(section: section)?.type {
+        case .popularStore:
+            return .zero
+        default:
+            return 16
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        switch self.sectionIdentifier(section: section)?.type {
+        case .popularStore:
+            return .init(top: 0, left: 0, bottom: 24, right: 0)
         default:
             return .zero
         }

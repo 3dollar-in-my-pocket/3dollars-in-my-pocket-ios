@@ -5,7 +5,8 @@ enum Deeplink {
     case storeDetail(storeType: StoreType, storeId: String)
     case home
     case medal
-    
+    case pollDetail(pollId: String)
+
     var type: DeeplinkType {
         switch self {
         case .bookmark:
@@ -19,6 +20,9 @@ enum Deeplink {
             
         case .medal:
             return .medal
+
+        case .pollDetail:
+            return .community
         }
     }
     
@@ -32,7 +36,10 @@ enum Deeplink {
                 "storeType": storeType.targetType,
                 "storeId": storeId
             ]
-            
+        case .pollDetail(let pollId):
+            return [
+                "pollId": pollId
+            ]
         default:
             return nil
         }

@@ -7,6 +7,7 @@ import DependencyInjection
 import Membership
 import Store
 import Write
+import Community
 
 import SnapKit
 import Firebase
@@ -105,6 +106,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         MembershipInterfaceImpl.registerMembershipInterface()
         StoreInterfaceImpl.registerStoreInterface()
         WriteInterfaceImpl.registerStoreInterface()
+        CommunityInterfaceImpl.registerCommunityInterface()
         AppModuleInterfaceImpl.registerAppModuleInterface()
         AppInfomationImpl.registerAppInfomation()
     }

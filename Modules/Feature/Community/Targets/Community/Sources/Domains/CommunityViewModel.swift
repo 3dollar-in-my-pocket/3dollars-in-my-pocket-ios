@@ -34,6 +34,7 @@ final class CommunityViewModel: BaseViewModel {
         case pollDetail(PollDetailViewModel)
         case popularStoreNeighborhoods(CommunityPopularStoreNeighborhoodsViewModel)
         case storeDetail(Int)
+        case bossStoreDetail(String)
     }
 
     let input = Input()
@@ -45,6 +46,7 @@ final class CommunityViewModel: BaseViewModel {
     private let userDefaultsUtil: UserDefaultsUtil
 
     private lazy var pollListCellViewModel = bindPollListCellViewModel()
+    private lazy var storeTabCellViewModel = bindPopularStoreTabCellViewModel()
 
     init(
         communityService: CommunityServiceProtocol = CommunityService(),
@@ -98,25 +100,28 @@ final class CommunityViewModel: BaseViewModel {
             .sink { owner, indexPath in
                 let item = owner.output.sections.value[safe: indexPath.section]?.items[safe: indexPath.item]
                 if case .popularStore(let store) = item, let id = Int(store.id) {
-                    owner.output.route.send(.storeDetail(id))
+                    switch store.storeCategory {
+                    case .bossStore:
+                        owner.output.route.send(.bossStoreDetail(store.id))
+                    case .userStore:
+                        owner.output.route.send(.storeDetail(id))
+                    }
                 }
             }
             .store(in: &cancellables)
     }
 
     private func reloadDataSource() {
-        var sectionItems: [CommunitySectionItem] = []
+        var sections: [CommunitySection] = []
 
-        sectionItems.append(.poll(pollListCellViewModel))
-        sectionItems.append(.popularStoreTab(bindPopularStoreTabCellViewModel()))
+        sections.append(.init(type: .pollList, items: [.poll(pollListCellViewModel)]))
+        sections.append(.init(type: .popularStoreTab, items: [.popularStoreTab(storeTabCellViewModel)]))
 
-        sectionItems.append(contentsOf: state.storeList.value.map {
+        sections.append(.init(type: .popularStore, items: state.storeList.value.map {
             .popularStore($0)
-        })
+        }))
 
-        output.sections.send([
-            CommunitySection(items: sectionItems)
-        ])
+        output.sections.send(sections)
     }
 
     private func bindPopularStoreTabCellViewModel() -> CommunityPopularStoreTabCellViewModel {
@@ -138,6 +143,10 @@ final class CommunityViewModel: BaseViewModel {
                 owner.state.currentStoreTab.send(tab)
                 owner.state.reload.send()
             }
+            .store(in: &cancellables)
+
+        output.updatePopularStores
+            .subscribe(cellViewModel.input.reload)
             .store(in: &cancellables)
 
         return cellViewModel

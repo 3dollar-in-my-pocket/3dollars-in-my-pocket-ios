@@ -30,8 +30,6 @@ final class CommunityView: BaseView {
     private func generateLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 16
-        layout.minimumInteritemSpacing = 16
 
         return layout
     }

@@ -16,6 +16,7 @@ final class CreatePollModalViewModel: BaseViewModel {
 
     struct Output {
         let pollRetentionDays: Int
+        let limitCount: Int
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -39,10 +40,14 @@ final class CreatePollModalViewModel: BaseViewModel {
     private let communityService: CommunityServiceProtocol
 
     init(
-        pollRetentionDays: Int,
+        pollRetentionDays: Int?,
+        limitCount: Int?,
         communityService: CommunityServiceProtocol = CommunityService()
     ) {
-        self.output = Output(pollRetentionDays: pollRetentionDays)
+        self.output = Output(
+            pollRetentionDays: pollRetentionDays ?? 3,
+            limitCount: limitCount ?? 1
+        )
         self.communityService = communityService
 
         super.init()

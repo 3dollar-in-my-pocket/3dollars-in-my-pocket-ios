@@ -4,6 +4,7 @@ enum DeeplinkType: String {
     case home
     case medal
     case community
+    case pollDetail
     case unknown
     
     init(value: String) {
