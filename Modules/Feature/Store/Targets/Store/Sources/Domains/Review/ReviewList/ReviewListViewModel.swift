@@ -17,7 +17,7 @@ final class ReviewListViewModel: BaseViewModel {
         let didTapRightButton = PassthroughSubject<Int, Never>()
         let didTapWrite = PassthroughSubject<Void, Never>()
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
-        let onSuccessEditReview = PassthroughSubject<ReviewApiResponse, Never>()
+        let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
     }
     
@@ -29,7 +29,7 @@ final class ReviewListViewModel: BaseViewModel {
         
         // StoreDetailViewModel 전달용 이벤트
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
-        let onSuccessEditReview = PassthroughSubject<ReviewApiResponse, Never>()
+        let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
     }
     
@@ -133,7 +133,7 @@ final class ReviewListViewModel: BaseViewModel {
         
         input.onSuccessEditReview
             .withUnretained(self)
-            .sink { (owner: ReviewListViewModel, response: ReviewApiResponse) in
+            .sink { (owner: ReviewListViewModel, response: StoreReviewResponse) in
                 owner.updateReview(response)
             }
             .store(in: &cancellables)
@@ -198,7 +198,7 @@ final class ReviewListViewModel: BaseViewModel {
         output.route.send(.presentWriteReview(viewModel))
     }
     
-    private func updateReview(_ review: ReviewApiResponse) {
+    private func updateReview(_ review: StoreReviewResponse) {
         guard let targetIndex = state.reviews.firstIndex(where: {
             $0.reviewId == review.reviewId
         }) else { return }

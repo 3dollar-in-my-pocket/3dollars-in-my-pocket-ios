@@ -38,7 +38,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         // 리뷰 섹션
         let didTapReviewRightButton = PassthroughSubject<Int, Never>()
-        let onSuccessEditReview = PassthroughSubject<ReviewApiResponse, Never>()
+        let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
         let didTapReviewMore = PassthroughSubject<Void, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
     }
@@ -254,7 +254,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         input.onSuccessEditReview
             .withUnretained(self)
-            .sink { (owner: StoreDetailViewModel, response: ReviewApiResponse) in
+            .sink { (owner: StoreDetailViewModel, response: StoreReviewResponse) in
                 guard let targetIndex = owner.state.storeDetailData?.reviews.firstIndex(where: {
                     $0.reviewId == response.reviewId
                 }) else { return }
