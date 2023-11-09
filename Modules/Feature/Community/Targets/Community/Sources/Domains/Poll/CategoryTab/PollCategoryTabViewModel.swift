@@ -100,7 +100,10 @@ final class PollCategoryTabViewModel: BaseViewModel {
     }
 
     private func bindCreatePollModalViewModel() -> CreatePollModalViewModel {
-        let viewModel = CreatePollModalViewModel(pollRetentionDays: state.createPolicy?.pollRetentionDays ?? 3)
+        let viewModel = CreatePollModalViewModel(
+            pollRetentionDays: state.createPolicy?.pollRetentionDays,
+            limitCount: state.createPolicy?.limitCount
+        )
 
         viewModel.output.created
             .subscribe(input.updatePollList)
