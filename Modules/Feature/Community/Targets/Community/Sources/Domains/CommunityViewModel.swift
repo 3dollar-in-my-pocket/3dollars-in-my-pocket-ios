@@ -46,6 +46,7 @@ final class CommunityViewModel: BaseViewModel {
     private let userDefaultsUtil: UserDefaultsUtil
 
     private lazy var pollListCellViewModel = bindPollListCellViewModel()
+    private lazy var storeTabCellViewModel = bindPopularStoreTabCellViewModel()
 
     init(
         communityService: CommunityServiceProtocol = CommunityService(),
@@ -111,18 +112,16 @@ final class CommunityViewModel: BaseViewModel {
     }
 
     private func reloadDataSource() {
-        var sectionItems: [CommunitySectionItem] = []
+        var sections: [CommunitySection] = []
 
-        sectionItems.append(.poll(pollListCellViewModel))
-        sectionItems.append(.popularStoreTab(bindPopularStoreTabCellViewModel()))
+        sections.append(.init(type: .pollList, items: [.poll(pollListCellViewModel)]))
+        sections.append(.init(type: .popularStoreTab, items: [.popularStoreTab(storeTabCellViewModel)]))
 
-        sectionItems.append(contentsOf: state.storeList.value.map {
+        sections.append(.init(type: .popularStore, items: state.storeList.value.map {
             .popularStore($0)
-        })
+        }))
 
-        output.sections.send([
-            CommunitySection(items: sectionItems)
-        ])
+        output.sections.send(sections)
     }
 
     private func bindPopularStoreTabCellViewModel() -> CommunityPopularStoreTabCellViewModel {
