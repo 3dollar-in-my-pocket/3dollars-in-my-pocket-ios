@@ -72,7 +72,10 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
             
         case .community:
             deeplinkContents = createCommunityContents()
-            
+
+        case .pollDetail:
+            deeplinkContents = createPollDetailContents(query: url.params())
+
         case .unknown:
             Log.debug("지원하는 Deeplink가 아닙니다.")
         }
@@ -105,7 +108,10 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
             
         case .community:
             deeplinkContents = createCommunityContents()
-            
+
+        case .pollDetail:
+            deeplinkContents = createPollDetailContents(query: url.params())
+
         case .unknown:
             Log.debug("지원하는 Deeplink가 아닙니다.")
         }
@@ -210,5 +216,16 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     
     private func createCommunityContents() -> DeepLinkContents {
         return DeepLinkContents(selectedTab: .community)
+    }
+
+    private func createPollDetailContents(query: [String: Any]?) -> DeepLinkContents? {
+        guard let query, let pollId = query["pollId"] as? String else { return nil }
+
+        let viewController = Environment.communityInterface.getPollDetailViewController(pollId: pollId)
+
+        return DeepLinkContents(
+            targetViewController: viewController,
+            transitionType: .push
+        )
     }
 }
