@@ -39,6 +39,8 @@ let project = Project(
                 .project(target: "DesignSystem", path: "../../DesignSystem"),
                 .project(target: "Common", path: "../../Common"),
                 .project(target: "Model", path: "../../Common"),
+                .project(target: "DependencyInjection", path: "../../DependencyInjection"),
+                .project(target: "CommunityInterface", path: "./"),
                 .external(name: "SnapKit"),
                 .external(name: "Then")
             ]
@@ -64,7 +66,8 @@ let project = Project(
             infoPlist: .default,
             sources: ["Targets/Interface/Sources/**"],
             dependencies: [
-                .project(target: "Community", path: "./"),
+                .project(target: "DependencyInjection", path: "../../DependencyInjection"),
+                .project(target: "Model", path: "../../Common")
             ]
         )
     ],

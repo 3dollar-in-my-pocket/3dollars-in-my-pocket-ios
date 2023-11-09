@@ -276,6 +276,7 @@ let project = Project(
                 .project(target: "Store", path: "../Modules/Feature/Store"),
                 .project(target: "StoreInterface", path: "../Modules/Feature/Store"),
                 .project(target: "Community", path: "../Modules/Feature/Community"),
+                .project(target: "CommunityInterface", path: "../Modules/Feature/Community"),
                 .project(target: "WriteInterface", path: "../Modules/Feature/Write"),
                 .project(target: "Write", path: "../Modules/Feature/Write"),
                 .project(target: "Networking", path: "../Modules/Network"),
