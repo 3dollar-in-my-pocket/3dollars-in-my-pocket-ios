@@ -153,14 +153,14 @@ extension ReportReviewBottomSheetViewController: PanModalPresentable {
     }
     
     var shortFormHeight: PanModalHeight {
-        guard let sectionItems = datasource.snapshot().sectionIdentifiers.first?.items else { return .contentHeight(.zero) }
+        guard let sectionItems = datasource.snapshot().sectionIdentifiers.first?.items else { return .maxHeight }
         let collectionViewHeight = reportReviewBottomSheet.getCollectionViewHeight(sectionItems: sectionItems)
         
         return .contentHeight(collectionViewHeight + 164)
     }
     
     var longFormHeight: PanModalHeight {
-        guard let sectionItems = datasource.snapshot().sectionIdentifiers.first?.items else { return .contentHeight(.zero) }
+        guard let sectionItems = datasource.snapshot().sectionIdentifiers.first?.items else { return .maxHeight }
         let collectionViewHeight = reportReviewBottomSheet.getCollectionViewHeight(sectionItems: sectionItems)
         
         return .contentHeight(collectionViewHeight + 164)
