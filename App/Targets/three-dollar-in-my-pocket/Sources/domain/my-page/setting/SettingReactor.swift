@@ -182,7 +182,14 @@ final class SettingReactor: BaseReactor, Reactor {
                     self?.userDefaults.clear()
                 })
                 .map { .goToSignin }
-                .catch { .just(.showErrorAlert($0)) }
+                .catch({ error -> Observable<Mutation> in
+                    if let sdkError = error as? SdkError,
+                       case .AuthFailed(_, _) = sdkError {
+                        return .just(.showErrorAlert(HTTPError.unauthorized))
+                    } else {
+                        return .just(.showErrorAlert(error))
+                    }
+                })
             
         case .apple:
             return self.appleSigninManager.logout()
@@ -207,7 +214,14 @@ final class SettingReactor: BaseReactor, Reactor {
                     return self.signout()
                 }
                 .map { .goToSignin }
-                .catch { .just(.showErrorAlert($0)) }
+                .catch({ error -> Observable<Mutation> in
+                    if let sdkError = error as? SdkError,
+                       case .AuthFailed(_, _) = sdkError {
+                        return .just(.showErrorAlert(HTTPError.unauthorized))
+                    } else {
+                        return .just(.showErrorAlert(error))
+                    }
+                })
                 
             
         case .apple:

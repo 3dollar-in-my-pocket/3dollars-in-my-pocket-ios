@@ -18,7 +18,7 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
         let contents: CurrentValueSubject<String?, Never>
         let isEnableWriteButton: CurrentValueSubject<Bool, Never>
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
-        let onSuccessEditReview = PassthroughSubject<ReviewApiResponse, Never>()
+        let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
         let errorAlert = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
     }

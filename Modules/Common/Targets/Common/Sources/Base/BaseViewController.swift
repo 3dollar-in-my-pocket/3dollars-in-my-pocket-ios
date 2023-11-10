@@ -2,6 +2,8 @@ import UIKit
 import Combine
 
 import Model
+import DependencyInjection
+import AppInterface
 
 open class BaseViewController: UIViewController {
     open var cancellables = Set<AnyCancellable>()
@@ -25,7 +27,6 @@ open class BaseViewController: UIViewController {
     open func bindViewModelOutput() { }
     
     open func showErrorAlert(error: Error) {
-        // TODO: unauthorized 에러 처리 필요
         if let networkError = error as? Model.NetworkError {
             switch networkError {
             case .message(let message):
@@ -36,11 +37,21 @@ open class BaseViewController: UIViewController {
                 )
                 
             case .errorContainer(let container):
-                AlertUtils.showWithAction(
-                    viewController: self,
-                    message: container.message ?? "",
-                    onTapOk: nil
-                )
+                if container.resultCode == "UA000" {
+                    AlertUtils.showWithAction(
+                        viewController: self,
+                        message: "세션이 만료되었습니다.\n다시 로그인해주세요.") {
+                            guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else { return }
+                            
+                            appModuleInterface.onClearSession()
+                        }
+                } else {
+                    AlertUtils.showWithAction(
+                        viewController: self,
+                        message: container.message ?? "",
+                        onTapOk: nil
+                    )
+                }
                 
             default:
                 AlertUtils.showWithAction(

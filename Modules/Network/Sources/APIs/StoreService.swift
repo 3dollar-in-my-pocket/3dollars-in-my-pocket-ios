@@ -24,7 +24,7 @@ public protocol StoreServiceProtocol {
     
     func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResposne<StoreImageWithApiResponse>, Error>
     
-    func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<ReviewApiResponse, Error>
+    func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<StoreReviewResponse, Error>
     
     func deletePhoto(photoId: Int) async -> Result<String?, Error>
 
@@ -94,7 +94,7 @@ public struct StoreService: StoreServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<ReviewApiResponse, Error> {
+    public func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<StoreReviewResponse, Error> {
         let request = EditReviewRequest(reviewId: reviewId, input: input)
         
         return await NetworkManager.shared.request(requestType: request)

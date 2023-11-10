@@ -99,12 +99,13 @@ final class CommunityViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, indexPath in
                 let item = owner.output.sections.value[safe: indexPath.section]?.items[safe: indexPath.item]
-                if case .popularStore(let store) = item, let id = Int(store.id) {
-                    switch store.storeCategory {
+                if case .popularStore(let store) = item {
+                    switch store.type {
+                    case .userStore:
+                        guard let storeId = Int(store.id) else { return }
+                        owner.output.route.send(.storeDetail(storeId))
                     case .bossStore:
                         owner.output.route.send(.bossStoreDetail(store.id))
-                    case .userStore:
-                        owner.output.route.send(.storeDetail(id))
                     }
                 }
             }
