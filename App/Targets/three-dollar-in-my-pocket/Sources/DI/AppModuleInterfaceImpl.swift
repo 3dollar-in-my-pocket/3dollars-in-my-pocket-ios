@@ -148,7 +148,7 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
     func sendPageView(screenName: String, type: AnyObject.Type) {
         Analytics.logEvent(AnalyticsEventScreenView, parameters: [
             AnalyticsParameterScreenName: screenName,
-            AnalyticsParameterScreenClass: type.self
+            AnalyticsParameterScreenClass: NSStringFromClass(type.self)
         ])
     }
     
