@@ -38,4 +38,7 @@ public enum EventName: String {
     case clickWriteStore = "click_write_store"
     
     
+    // 마커 배너 팝업
+    case clickBottomButton = "click_bottom_button"
+    
 }
