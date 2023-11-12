@@ -99,9 +99,7 @@ final class CategorySelectionViewModel: BaseViewModel {
         let categoryNames = categories.map { $0.name }.joined(separator: ",")
         logManager.sendEvent(LogEvent(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "select_category",
+            eventName: .clickCategory,
             extraParameters: [.categoryName: categoryNames]
         ))
     }

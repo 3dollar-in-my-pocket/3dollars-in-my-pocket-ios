@@ -249,9 +249,7 @@ extension WriteAddressViewModel {
     private func sendClickCurrentLocationLog() {
         logManager.sendEvent(LogEvent(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "current_location",
+            eventName: .clickCurrentLocation,
             extraParameters: [.address: state.address]
         ))
     }
@@ -259,9 +257,7 @@ extension WriteAddressViewModel {
     private func sendClickSetAddressLog(address: String) {
         logManager.sendEvent(LogEvent(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "set_address",
+            eventName: .clickSetAddress,
             extraParameters: [.address: state.address]
         ))
     }

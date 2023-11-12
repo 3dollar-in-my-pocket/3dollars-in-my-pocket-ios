@@ -390,9 +390,7 @@ final class WriteDetailViewModel: BaseViewModel {
     private func sendSaveClickLog() {
         logManager.sendEvent(LogEvent(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "save"
+            eventName: .clickWriteStore
         ))
     }
     

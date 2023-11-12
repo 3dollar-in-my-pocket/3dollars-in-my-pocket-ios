@@ -288,9 +288,7 @@ final class HomeListViewModel: BaseViewModel {
     private func sendClickStore(_ storeCard: StoreCard) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .card,
-            objectId: "store",
+            eventName: .clickStore,
             extraParameters: [
                 .storeId: storeCard.storeId,
                 .type: storeCard.storeType.rawValue
@@ -301,18 +299,14 @@ final class HomeListViewModel: BaseViewModel {
     private func sendClickCategoryFilterLog() {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "category_filter"
+            eventName: .clickCategoryFilter
         ))
     }
     
     private func sendClickSortingLog(_ sortType: StoreSortType) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "sorting",
+            eventName: .clickSorting,
             extraParameters: [.type: sortType.rawValue]
         ))
     }
@@ -320,9 +314,7 @@ final class HomeListViewModel: BaseViewModel {
     private func sendClickAdBannerLog(_ advertisement: Advertisement) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .banner,
-            objectId: "advertisement",
+            eventName: .clickAdBanner,
             extraParameters: [.advertisementId: advertisement.advertisementId]
         ))
     }
@@ -330,9 +322,7 @@ final class HomeListViewModel: BaseViewModel {
     private func sendClickOnlyBossFilterLog(_ isOn: Bool) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "boss_filter",
+            eventName: .clickBossFilter,
             extraParameters: [.value: isOn]
         ))
     }
@@ -340,9 +330,7 @@ final class HomeListViewModel: BaseViewModel {
     private func sendClickOnlyVisitFilterLog(_ isOn: Bool) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "only_visit",
+            eventName: .clickOnlyVisit,
             extraParameters: [.value: isOn]
         ))
     }

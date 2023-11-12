@@ -630,9 +630,7 @@ extension HomeViewModel {
     private func sendClickStoreLog(_ storeCard: StoreCard) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .card,
-            objectId: "store",
+            eventName: .clickStore,
             extraParameters: [
                 .storeId: storeCard.storeId,
                 .type: storeCard.storeType.rawValue
@@ -642,9 +640,7 @@ extension HomeViewModel {
     private func sendClickVisitStoreLog(_ storeCard: StoreCard) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "visit",
+            eventName: .clickVisit,
             extraParameters: [.storeId: storeCard.storeId]
         ))
     }
@@ -652,18 +648,14 @@ extension HomeViewModel {
     private func sendClickCurrentLocationLog() {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "current_location"
+            eventName: .clickCurrentLocation
         ))
     }
     
     private func sendClickMarkerLog(storeCard: StoreCard) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .marker,
-            objectId: "marker",
+            eventName: .clickMarker,
             extraParameters: [
                 .storeId: storeCard.storeId,
                 .type: storeCard.storeType.rawValue
@@ -673,27 +665,21 @@ extension HomeViewModel {
     private func sendClickAddressLog() {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .inputField,
-            objectId: "address"
+            eventName: .clickAddressField
         ))
     }
     
     private func sendClickCategoryFilterLog() {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "category_filter"
+            eventName: .clickCategoryFilter
         ))
     }
     
     private func sendClickOnlyBossFilterLog(isOn: Bool) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "boss_filter",
+            eventName: .clickBossFilter,
             extraParameters: [.value: isOn]
         ))
     }
@@ -701,9 +687,7 @@ extension HomeViewModel {
     private func sendClickSortingFilterLog(sortType: StoreSortType) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "sorting",
+            eventName: .clickSorting,
             extraParameters: [.type: sortType.rawValue]
         ))
     }
@@ -711,9 +695,7 @@ extension HomeViewModel {
     private func sendClickAdCard(advertisement: Advertisement) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .card,
-            objectId: "advertisement",
+            eventName: .clickAdCard,
             extraParameters: [.advertisementId: advertisement.advertisementId]
         ))
     }
@@ -721,9 +703,7 @@ extension HomeViewModel {
     private func sendClickAdMarker(advertisement: Advertisement) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .marker,
-            objectId: "advertisement",
+            eventName: .clickAdMarker,
             extraParameters: [.advertisementId: advertisement.advertisementId]
         ))
     }

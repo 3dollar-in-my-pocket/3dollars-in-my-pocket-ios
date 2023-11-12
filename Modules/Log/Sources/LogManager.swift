@@ -27,7 +27,7 @@ public final class LogManager: LogManagerProtocol {
     
     public func sendEvent(_ event: LogEvent) {
         Environment.appModuleInterface.sendEvent(
-            name: event.eventType.rawValue,
+            name: event.name.rawValue,
             parameters: event.parameters
         )
         
@@ -53,7 +53,7 @@ public final class LogManager: LogManagerProtocol {
             => parameter: %{PUBLIC}@
         """
         
-        os_log(.debug, message, event.eventType.rawValue, event.parameters.prettyString)
+        os_log(.debug, message, event.name.rawValue, event.parameters.prettyString)
     }
 }
 

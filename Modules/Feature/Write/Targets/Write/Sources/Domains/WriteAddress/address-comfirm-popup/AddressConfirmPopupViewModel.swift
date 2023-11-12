@@ -66,9 +66,7 @@ final class AddressConfirmPopupViewModel: BaseViewModel {
     private func sendClickOkLog(address: String) {
         logManager.sendEvent(LogEvent(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "address_ok",
+            eventName: .clickAddressOk,
             extraParameters: [.address: address]
         ))
     }

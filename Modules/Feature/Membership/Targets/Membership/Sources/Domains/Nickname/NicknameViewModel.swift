@@ -129,9 +129,7 @@ final class NicknameViewModel: BaseViewModel {
     private func sendSignupLog() {
         logManager.sendEvent(LogEvent(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "sign_up",
+            eventName: .clickSignUp,
             extraParameters: [.nickname: state.nickname]
         ))
     }

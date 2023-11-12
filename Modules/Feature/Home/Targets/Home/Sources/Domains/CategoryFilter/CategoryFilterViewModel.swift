@@ -152,9 +152,7 @@ final class CategoryFilterViewModel: BaseViewModel {
     private func sendClickCategoryLog(_ category: PlatformStoreCategory?) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .button,
-            objectId: "category",
+            eventName: .clickCategory,
             extraParameters: [.categoryId: category?.categoryId as Any]
         ))
     }
@@ -162,9 +160,7 @@ final class CategoryFilterViewModel: BaseViewModel {
     private func sendClickBannerLog(_ advertisement: Advertisement) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventType: .click,
-            objectType: .banner,
-            objectId: "advertisement",
+            eventName: .clickAdBanner,
             extraParameters: [.advertisementId: advertisement.advertisementId]
         ))
     }

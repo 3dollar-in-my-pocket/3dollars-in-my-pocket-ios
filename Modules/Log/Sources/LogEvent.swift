@@ -2,22 +2,16 @@ import Foundation
 
 public struct LogEvent {
     public let screen: ScreenName
-    public let eventType: EventType
-    public let objectType: ObjectType
-    public let objectId: String
+    public let name: EventName
     public let extraParameters: [ParameterName: Any]?
     
     public init(
         screen: ScreenName,
-        eventType: EventType,
-        objectType: ObjectType,
-        objectId: String,
+        eventName: EventName,
         extraParameters: [ParameterName : Any]? = nil
     ) {
         self.screen = screen
-        self.eventType = eventType
-        self.objectType = objectType
-        self.objectId = objectId
+        self.name = eventName
         self.extraParameters = extraParameters
     }
     
@@ -31,22 +25,7 @@ public struct LogEvent {
         }
         
         result[ParameterName.screen.rawValue] = screen.rawValue
-        result[ParameterName.objectId.rawValue] = objectId
-        result[ParameterName.objectType.rawValue] = objectType.rawValue
         return result
     }
     
 }
-
-public enum EventType: String {
-    case click
-}
-
-public enum ObjectType: String {
-    case button
-    case card
-    case marker
-    case inputField = "input_field"
-    case banner
-}
-
