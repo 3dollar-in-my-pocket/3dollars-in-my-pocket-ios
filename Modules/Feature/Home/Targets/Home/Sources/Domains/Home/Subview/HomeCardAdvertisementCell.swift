@@ -49,6 +49,7 @@ final class HomeCardAdvertisementCell: BaseCollectionViewCell {
         let label = UILabel()
         label.textColor = Colors.gray50.color
         label.font = Fonts.medium.font(size: 12)
+        label.numberOfLines = 0
         
         return label
     }()

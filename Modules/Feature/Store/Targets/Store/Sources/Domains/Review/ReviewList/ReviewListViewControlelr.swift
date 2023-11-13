@@ -69,6 +69,9 @@ final class ReviewListViewControlelr: BaseViewController {
             .withUnretained(self)
             .sink { (owner: ReviewListViewControlelr, section: [ReviewListSection]) in
                 owner.datasource.reload(section)
+                DispatchQueue.main.async {
+                    owner.reviewListView.collectionView.scrollToTop(animated: true)
+                }
             }
             .store(in: &cancellables)
         
