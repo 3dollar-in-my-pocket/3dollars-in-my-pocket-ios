@@ -6,6 +6,7 @@ import DependencyInjection
 import Model
 
 import FirebaseMessaging
+import FirebaseAnalytics
 import KakaoSDKShare
 import KakaoSDKTemplate
 
@@ -35,10 +36,6 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
     
     var photoManager: AppInterface.PhotoManagerProtocol {
         return CombinePhotoManager.shared
-    }
-    
-    var analyticsManager: AnalyticsManagerProtocol {
-        return AnalyticsManager.shared
     }
     
     var adBannerView: AdBannerViewProtocol {
@@ -146,6 +143,17 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
             ATTrackingManager.requestTrackingAuthorization { _ in                
             }
         }
+    }
+    
+    func sendPageView(screenName: String, type: AnyObject.Type) {
+        Analytics.logEvent(AnalyticsEventScreenView, parameters: [
+            AnalyticsParameterScreenName: screenName,
+            AnalyticsParameterScreenClass: NSStringFromClass(type.self)
+        ])
+    }
+    
+    func sendEvent(name: String, parameters: [String : Any]?) {
+        Analytics.logEvent(name, parameters: parameters)
     }
 }
 

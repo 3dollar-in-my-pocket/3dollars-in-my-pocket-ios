@@ -5,6 +5,7 @@ import CoreLocation
 import Networking
 import Model
 import Common
+import Log
 
 final class HomeViewModel: BaseViewModel {
     enum Constent {
@@ -34,6 +35,7 @@ final class HomeViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .home
         let address = PassthroughSubject<String, Never>()
         let categoryFilter = PassthroughSubject<PlatformStoreCategory?, Never>()
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
@@ -85,6 +87,7 @@ final class HomeViewModel: BaseViewModel {
     private let mapService: MapServiceProtocol
     private let locationManager: LocationManagerProtocol
     private var userDefaults: UserDefaultsUtil
+    private let logManager: LogManagerProtocol
     
     init(
         state: State = State(),
@@ -93,7 +96,8 @@ final class HomeViewModel: BaseViewModel {
         userService: UserServiceProtocol = UserService(),
         mapService: MapServiceProtocol = MapService(),
         locationManager: LocationManagerProtocol = LocationManager.shared,
-        userDefaults: UserDefaultsUtil = .shared
+        userDefaults: UserDefaultsUtil = .shared,
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.state = state
         self.storeService = storeService
@@ -102,6 +106,7 @@ final class HomeViewModel: BaseViewModel {
         self.mapService = mapService
         self.locationManager = locationManager
         self.userDefaults = userDefaults
+        self.logManager = logManager
         super.init()
     }
     
@@ -219,6 +224,9 @@ final class HomeViewModel: BaseViewModel {
         
         input.onTapCategoryFilter
             .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: HomeViewModel, _) in
+                owner.sendClickCategoryFilterLog()
+            })
             .map { owner, _ in
                 Route.presentCategoryFilter(owner.state.categoryFilter)
             }
@@ -252,6 +260,7 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, sortType in
                 owner.state.sortType = sortType
+                owner.sendClickSortingFilterLog(sortType: sortType)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -274,6 +283,7 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, isOnlyBoss in
                 owner.state.isOnlyBossStore.toggle()
+                owner.sendClickOnlyBossFilterLog(isOn: owner.state.isOnlyBossStore)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -293,6 +303,7 @@ final class HomeViewModel: BaseViewModel {
         input.onTapSearchAddress
             .withUnretained(self)
             .sink { (owner: HomeViewModel, _) in
+                owner.sendClickAddressLog()
                 owner.presentSearchAddress()
             }
             .store(in: &cancellables)
@@ -388,6 +399,7 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink { owner, location in
+                owner.sendClickCurrentLocationLog()
                 owner.userDefaults.userCurrentLocation = location
                 owner.state.currentLocation = location
                 owner.output.cameraPosition.send(location)
@@ -445,6 +457,7 @@ final class HomeViewModel: BaseViewModel {
                 guard let self,
                       let store = items[safe: index]?.storeCard,
                       let location = store.location else { return }
+                sendClickMarkerLog(storeCard: store)
                 
                 let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
                 output.cameraPosition.send(cameraPosition)
@@ -461,10 +474,13 @@ final class HomeViewModel: BaseViewModel {
                 if index == state.selectedIndex {
                     switch item {
                     case .advertisement(let advertisement):
-                        guard let linkUrl = advertisement?.linkUrl else { return }
+                        guard let advertisement = advertisement,
+                              let linkUrl = advertisement.linkUrl else { return }
+                        sendClickAdCard(advertisement: advertisement)
                         output.route.send(.openURL(linkUrl))
                         
                     case .storeCard(let storeCard):
+                        sendClickStoreLog(storeCard)
                         pushStoreDetail(store: storeCard)
                         
                     default:
@@ -488,13 +504,18 @@ final class HomeViewModel: BaseViewModel {
                 guard let self,
                       let item = items[safe: index],
                       let storeCard = item.storeCard else { return }
-                
+                sendClickVisitStoreLog(storeCard)
                 output.route.send(.presentVisit(storeCard))
             }
             .store(in: &cancellables)
         
         input.onTapCurrentMarker
             .map { Route.presentMarkerAdvertisement }
+            .handleEvents(receiveOutput: { [weak self] _ in
+                guard let self = self,
+                      let advertisement = state.advertisementMarker else { return }
+                sendClickAdMarker(advertisement: advertisement)
+            })
             .subscribe(output.route)
             .store(in: &cancellables)
     }
@@ -555,6 +576,7 @@ final class HomeViewModel: BaseViewModel {
             case .success(let response):
                 guard let advertisementResponse = response.first else { return }
                 let advertisement = Advertisement(response: advertisementResponse)
+                state.advertisementMarker = advertisement
                 output.advertisementMarker.send(advertisement)
                 
             case .failure(_):
@@ -598,5 +620,91 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         
         output.route.send(.presentSearchAddress(viewModel))
+    }
+    
+    
+}
+
+// MARK: Log
+extension HomeViewModel {
+    private func sendClickStoreLog(_ storeCard: StoreCard) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickStore,
+            extraParameters: [
+                .storeId: storeCard.storeId,
+                .type: storeCard.storeType.rawValue
+            ]))
+    }
+    
+    private func sendClickVisitStoreLog(_ storeCard: StoreCard) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickVisit,
+            extraParameters: [.storeId: storeCard.storeId]
+        ))
+    }
+    
+    private func sendClickCurrentLocationLog() {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickCurrentLocation
+        ))
+    }
+    
+    private func sendClickMarkerLog(storeCard: StoreCard) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickMarker,
+            extraParameters: [
+                .storeId: storeCard.storeId,
+                .type: storeCard.storeType.rawValue
+            ]))
+    }
+    
+    private func sendClickAddressLog() {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickAddressField
+        ))
+    }
+    
+    private func sendClickCategoryFilterLog() {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickCategoryFilter
+        ))
+    }
+    
+    private func sendClickOnlyBossFilterLog(isOn: Bool) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickBossFilter,
+            extraParameters: [.value: isOn]
+        ))
+    }
+    
+    private func sendClickSortingFilterLog(sortType: StoreSortType) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickSorting,
+            extraParameters: [.type: sortType.rawValue]
+        ))
+    }
+    
+    private func sendClickAdCard(advertisement: Advertisement) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickAdCard,
+            extraParameters: [.advertisementId: advertisement.advertisementId]
+        ))
+    }
+    
+    private func sendClickAdMarker(advertisement: Advertisement) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickAdMarker,
+            extraParameters: [.advertisementId: advertisement.advertisementId]
+        ))
     }
 }

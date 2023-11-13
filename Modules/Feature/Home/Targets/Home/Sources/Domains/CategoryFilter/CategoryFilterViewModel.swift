@@ -4,6 +4,7 @@ import Combine
 import Common
 import Networking
 import Model
+import Log
 
 final class CategoryFilterViewModel: BaseViewModel {
     struct Input {
@@ -14,6 +15,7 @@ final class CategoryFilterViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .categoryFilter
         let advertisement = PassthroughSubject<Advertisement?, Never>()
         let categories = PassthroughSubject<[PlatformStoreCategory], Never>()
         let selectCategory = PassthroughSubject<PlatformStoreCategory?, Never>()
@@ -37,15 +39,18 @@ final class CategoryFilterViewModel: BaseViewModel {
     private var state: State
     private let categoryService: CategoryServiceProtocol
     private let advertisementService: AdvertisementServiceProtocol
+    private let logManager: LogManagerProtocol
     
     init(
         category: PlatformStoreCategory?,
         categoryService: CategoryServiceProtocol = CategoryService(),
-        advertisementService: AdvertisementServiceProtocol = AdvertisementService()
+        advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.state = State(currentCategory: category, advertisement: nil, categories: [])
         self.categoryService = categoryService
         self.advertisementService = advertisementService
+        self.logManager = logManager
         
         super.init()
     }
@@ -108,6 +113,10 @@ final class CategoryFilterViewModel: BaseViewModel {
         
         input.onTapBanner
             .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: CategoryFilterViewModel, _) in
+                guard let advertisement = owner.state.advertisement else { return }
+                owner.sendClickBannerLog(advertisement)
+            })
             .compactMap { owner, _ in
                 guard let advertisement = owner.state.advertisement,
                       let linkUrl = advertisement.linkUrl else { return  nil }
@@ -121,11 +130,12 @@ final class CategoryFilterViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, categoryId in
                 guard let selectedCategory = owner.state.categories.first(where: { $0.categoryId == categoryId }) else { return }
-                
                 if selectedCategory == owner.state.currentCategory {
                     owner.output.route.send(.dismissWithCategory(nil))
+                    owner.sendClickCategoryLog(nil)
                 } else {
                     owner.output.route.send(.dismissWithCategory(selectedCategory))
+                    owner.sendClickCategoryLog(selectedCategory)
                 }
             }
             .store(in: &cancellables)
@@ -137,5 +147,21 @@ final class CategoryFilterViewModel: BaseViewModel {
             }
             .subscribe(output.selectCategory)
             .store(in: &cancellables)
+    }
+    
+    private func sendClickCategoryLog(_ category: PlatformStoreCategory?) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickCategory,
+            extraParameters: [.categoryId: category?.categoryId as Any]
+        ))
+    }
+    
+    private func sendClickBannerLog(_ advertisement: Advertisement) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickAdBanner,
+            extraParameters: [.advertisementId: advertisement.advertisementId]
+        ))
     }
 }

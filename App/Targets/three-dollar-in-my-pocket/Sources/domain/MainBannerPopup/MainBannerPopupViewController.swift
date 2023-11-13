@@ -2,8 +2,13 @@ import UIKit
 
 import Common
 import Model
+import Log
 
 final class MainBannerPopupViewController: Common.BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let mainBannerPopupView = MainBannerPopupView()
     private let viewModel: MainBannerPopupViewModel
     
@@ -23,16 +28,6 @@ final class MainBannerPopupViewController: Common.BaseViewController {
         self.view = mainBannerPopupView
     }
     
-    override func bindEvent() {
-        mainBannerPopupView.cancelButton.controlPublisher(for: .touchUpInside)
-            .main
-            .withUnretained(self)
-            .sink(receiveValue: { (owner: MainBannerPopupViewController, _) in
-                owner.dismiss(animated: true, completion: nil)
-            })
-            .store(in: &cancellables)
-    }
-    
     override func bindViewModelInput() {
         mainBannerPopupView.bannerButton.controlPublisher(for: .touchUpInside)
             .mapVoid
@@ -42,6 +37,11 @@ final class MainBannerPopupViewController: Common.BaseViewController {
         mainBannerPopupView.disableTodayButton.controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.didTapDisableToday)
+            .store(in: &cancellables)
+        
+        mainBannerPopupView.cancelButton.controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapClose)
             .store(in: &cancellables)
     }
     

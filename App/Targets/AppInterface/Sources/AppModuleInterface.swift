@@ -9,7 +9,6 @@ public protocol AppModuleInterface {
     var appleSigninManager: SigninManagerProtocol { get }
     var deeplinkManager: DeeplinkManagerProtocol { get }
     var photoManager: PhotoManagerProtocol { get }
-    var analyticsManager: AnalyticsManagerProtocol { get }
     var adBannerView: AdBannerViewProtocol { get }
     var onClearSession: (() -> Void) { get }
     
@@ -19,4 +18,8 @@ public protocol AppModuleInterface {
     func createWebViewController(webviewType: WebViewType) -> UIViewController
     func shareKakao(storeId: Int, storeType: StoreType, storeDetailOverview: StoreDetailOverview)
     func requestATTIfNeeded()
+    
+    /// GA
+    func sendPageView(screenName: String, type: AnyObject.Type)
+    func sendEvent(name: String, parameters: [String: Any]?)
 }

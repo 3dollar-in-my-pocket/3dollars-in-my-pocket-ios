@@ -5,6 +5,7 @@ import CoreLocation
 import Networking
 import Common
 import Model
+import Log
 
 final class HomeListViewModel: BaseViewModel {
     struct Input {
@@ -19,6 +20,7 @@ final class HomeListViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .homeList
         let advertisement = PassthroughSubject<Advertisement?, Never>()
         let categoryFilter: CurrentValueSubject<PlatformStoreCategory?, Never>
         let stores: CurrentValueSubject<[StoreCard], Never>
@@ -53,11 +55,13 @@ final class HomeListViewModel: BaseViewModel {
     private var state: State
     private let storeService: StoreServiceProtocol
     private let advertisementService: AdvertisementServiceProtocol
+    private let logManager: LogManagerProtocol
     
     init(
         state: State,
         storeService: StoreServiceProtocol = StoreService(),
-        advertisementService: AdvertisementServiceProtocol = AdvertisementService()
+        advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.output = Output(
             categoryFilter: .init(state.categoryFilter),
@@ -68,6 +72,7 @@ final class HomeListViewModel: BaseViewModel {
         self.state = state
         self.storeService = storeService
         self.advertisementService = advertisementService
+        self.logManager = logManager
         super.init()
     }
     
@@ -105,6 +110,7 @@ final class HomeListViewModel: BaseViewModel {
             .sink { owner, _ in
                 let currentCategory = owner.state.categoryFilter
                 
+                owner.sendClickCategoryFilterLog()
                 owner.output.route.send(.presentCategoryFilter(currentCategory))
             }
             .store(in: &cancellables)
@@ -139,6 +145,7 @@ final class HomeListViewModel: BaseViewModel {
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
                 owner.state.isOnleyCertifiedStore.toggle()
+                owner.sendClickOnlyVisitFilterLog(owner.state.isOnleyCertifiedStore)
                 owner.output.isOnlyCertified.send(owner.state.isOnleyCertifiedStore)
             })
             .asyncMap { owner, _ in
@@ -163,6 +170,7 @@ final class HomeListViewModel: BaseViewModel {
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
                 owner.state.sortType = owner.state.sortType.toggled()
+                owner.sendClickSortingLog(owner.state.sortType)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -186,6 +194,7 @@ final class HomeListViewModel: BaseViewModel {
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
                 owner.state.isOnlyBossStore.toggle()
+                owner.sendClickOnlyBossFilterLog(owner.state.isOnlyBossStore)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -209,6 +218,7 @@ final class HomeListViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeListViewModel, index: Int) in
                 guard let store = owner.state.stores[safe: index] else { return }
+                owner.sendClickStore(store)
                 
                 switch store.storeType {
                 case .bossStore:
@@ -256,22 +266,73 @@ final class HomeListViewModel: BaseViewModel {
     }
     
     private func fetchAdvertisement() {
-        Task {
-            // TODO: 포지션 설정 필요
-            let input = FetchAdvertisementInput(position: .storeCategoryList, size: nil)
-            let result = await advertisementService.fetchAdvertisements(input: input)
-            
-            switch result {
-            case .success(let response):
-                if let advertisementResponse = response.first {
-                    let advertisement = Advertisement(response: advertisementResponse)
-                    output.advertisement.send(advertisement)
-                } else {
-                    output.advertisement.send(nil)
-                }
-            case .failure(_):
-                output.advertisement.send(nil)
-            }
-        }
+        // TODO: 기획 구체화 이후 정의 필요
+        output.advertisement.send(nil)
+//        Task {
+//            let input = FetchAdvertisementInput(position: .storeCategoryList, size: nil)
+//            let result = await advertisementService.fetchAdvertisements(input: input)
+//            
+//            switch result {
+//            case .success(let response):
+//                if let advertisementResponse = response.first {
+//                    let advertisement = Advertisement(response: advertisementResponse)
+//                    output.advertisement.send(advertisement)
+//                } else {
+//                    output.advertisement.send(nil)
+//                }
+//            case .failure(_):
+//                output.advertisement.send(nil)
+//            }
+//        }
+    }
+    
+    private func sendClickStore(_ storeCard: StoreCard) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickStore,
+            extraParameters: [
+                .storeId: storeCard.storeId,
+                .type: storeCard.storeType.rawValue
+            ]
+        ))
+    }
+    
+    private func sendClickCategoryFilterLog() {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickCategoryFilter
+        ))
+    }
+    
+    private func sendClickSortingLog(_ sortType: StoreSortType) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickSorting,
+            extraParameters: [.type: sortType.rawValue]
+        ))
+    }
+    
+    private func sendClickAdBannerLog(_ advertisement: Advertisement) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickAdBanner,
+            extraParameters: [.advertisementId: advertisement.advertisementId]
+        ))
+    }
+    
+    private func sendClickOnlyBossFilterLog(_ isOn: Bool) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickBossFilter,
+            extraParameters: [.value: isOn]
+        ))
+    }
+    
+    private func sendClickOnlyVisitFilterLog(_ isOn: Bool) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickOnlyVisit,
+            extraParameters: [.value: isOn]
+        ))
     }
 }

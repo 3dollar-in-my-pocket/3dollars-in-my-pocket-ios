@@ -2,13 +2,16 @@ import UIKit
 
 import Common
 import DesignSystem
-import AppInterface
-import DependencyInjection
+import Log
 
 public final class SigninViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let signinView = SigninView()
     private let viewModel = SigninViewModel()
-    private let appInterface: AppModuleInterface?
+    private let appInterface = Environment.appModuleInterface
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -24,7 +27,6 @@ public final class SigninViewController: BaseViewController {
     }
     
     init() {
-        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -39,8 +41,8 @@ public final class SigninViewController: BaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        appInterface?.deeplinkManager.flushDelayedDeeplink()
-        appInterface?.requestATTIfNeeded()
+        appInterface.deeplinkManager.flushDelayedDeeplink()
+        appInterface.requestATTIfNeeded()
     }
     
     public override func bindViewModelInput() {
@@ -70,7 +72,7 @@ public final class SigninViewController: BaseViewController {
             .sink { owner, route in
                 switch route {
                 case .goToMain:
-                    owner.appInterface?.goToMain()
+                    owner.appInterface.goToMain()
                     
                 case .pushNickname(let socialType, let accessToken):
                     let viewController = NicknameViewController.instance(

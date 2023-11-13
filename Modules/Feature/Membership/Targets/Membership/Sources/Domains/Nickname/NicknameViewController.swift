@@ -3,13 +3,16 @@ import UIKit
 import Common
 import DesignSystem
 import Model
-import AppInterface
-import DependencyInjection
+import Log
 
 public final class NicknameViewController: Common.BaseViewController {
+    public override var screenName: ScreenName {
+        return .signUp
+    }
+    
     private let nicknameView = NicknameView()
     private let viewModel: NicknameViewModel
-    private let appInterface: AppModuleInterface?
+    private let appInterface = Environment.appModuleInterface
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -28,7 +31,6 @@ public final class NicknameViewController: Common.BaseViewController {
     }
   
     init(socialType: SocialType, accessToken: String, bookmarkFolderId: String?) {
-        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
         self.viewModel = NicknameViewModel(
             socialType: socialType,
             accessToken: accessToken,
@@ -120,16 +122,16 @@ public final class NicknameViewController: Common.BaseViewController {
     }
     
     private func goToMain(with bookmarkFolderId: String?) {
-        appInterface?.goToMain()
+        appInterface.goToMain()
         
         if let bookmarkFolderId {
-            let targetViewController = appInterface?.createBookmarkViewerViewController(folderId: bookmarkFolderId)
+            let targetViewController = appInterface.createBookmarkViewerViewController(folderId: bookmarkFolderId)
             let deepLinkContents = DeepLinkContents(
                 targetViewController: targetViewController,
                 transitionType: .present
             )
             
-            appInterface?.deeplinkManager.reserveDeeplink(deeplinkContents: deepLinkContents)
+            appInterface.deeplinkManager.reserveDeeplink(deeplinkContents: deepLinkContents)
         }
     }
 }

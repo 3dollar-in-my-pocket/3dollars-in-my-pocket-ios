@@ -5,11 +5,15 @@ import DesignSystem
 import Networking
 import Common
 import Model
-import AppInterface
+import Log
 
 import NMapsMap
 
 public final class WriteAddressViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     var onSuccessWrite: ((Int) -> ())?
     private let writeAddressView = WriteAddressView()
     private let viewModel: WriteAddressViewModel
@@ -38,12 +42,6 @@ public final class WriteAddressViewController: BaseViewController {
         
         setupMap()
         viewModel.input.tapCurrentLocation.send(())
-    }
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        viewModel.input.viewWillAppear.send(())
     }
     
     public override func bindEvent() {

@@ -6,10 +6,10 @@ import Networking
 import Model
 import Common
 import AppInterface
+import Log
 
 public final class WriteAddressViewModel: BaseViewModel {
     struct Input {
-        let viewWillAppear = PassthroughSubject<Void, Never>()
         let moveMapCenter = PassthroughSubject<Location, Never>()
         let tapCurrentLocation = PassthroughSubject<Void, Never>()
         let tapSetAddress = PassthroughSubject<Void, Never>()
@@ -17,6 +17,7 @@ public final class WriteAddressViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .writeAddress
         let setNearStores = PassthroughSubject<[Location], Never>()
         let moveCamera = PassthroughSubject<Location, Never>()
         let setAddress = PassthroughSubject<String, Never>()
@@ -32,7 +33,6 @@ public final class WriteAddressViewModel: BaseViewModel {
     private struct State {
         var address = ""
         var cameraPosition: Location?
-        let screen: AnalyticsScreen = .writeAddress
     }
     
     let input = Input()
@@ -41,33 +41,23 @@ public final class WriteAddressViewModel: BaseViewModel {
     private let mapService: MapServiceProtocol
     private let storeService: StoreServiceProtocol
     private let locationManager: LocationManagerProtocol
-    private let analyticsManager: AnalyticsManagerProtocol
+    private let logManager: LogManagerProtocol
     
     public init(
         mapService: MapServiceProtocol = MapService(),
         storeService: StoreServiceProtocol = StoreService(),
-        locationManager: LocationManagerProtocol = LocationManager.shared
+        locationManager: LocationManagerProtocol = LocationManager.shared,
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.mapService = mapService
         self.storeService = storeService
         self.locationManager = locationManager
-        self.analyticsManager = Environment.appModuleInterface.analyticsManager
+        self.logManager = logManager
         
         super.init()
     }
     
     public override func bind() {
-        input.viewWillAppear
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.analyticsManager.logPageView(
-                    screen: owner.state.screen,
-                    type: WriteAddressViewController.self
-                )
-            }
-            .store(in: &cancellables)
-        
-        
         let moveCamera = input.moveMapCenter
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, location in
@@ -257,10 +247,18 @@ public final class WriteAddressViewModel: BaseViewModel {
 
 extension WriteAddressViewModel {
     private func sendClickCurrentLocationLog() {
-        analyticsManager.logEvent(event: .clickCurrentLocation, screen: state.screen)
+        logManager.sendEvent(LogEvent(
+            screen: output.screenName,
+            eventName: .clickCurrentLocation,
+            extraParameters: [.address: state.address]
+        ))
     }
     
     private func sendClickSetAddressLog(address: String) {
-        analyticsManager.logEvent(event: .clickSetAddress(address: address), screen: state.screen)
+        logManager.sendEvent(LogEvent(
+            screen: output.screenName,
+            eventName: .clickSetAddress,
+            extraParameters: [.address: state.address]
+        ))
     }
 }

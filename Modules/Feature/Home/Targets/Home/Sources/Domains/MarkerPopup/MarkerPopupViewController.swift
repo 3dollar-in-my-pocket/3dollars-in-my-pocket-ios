@@ -4,8 +4,13 @@ import Combine
 import Common
 import DesignSystem
 import Model
+import Log
 
 final class MarkerPopupViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let markerPopupView = MarkerPopupView()
     private let viewModel: MarkerPopupViewModel
     

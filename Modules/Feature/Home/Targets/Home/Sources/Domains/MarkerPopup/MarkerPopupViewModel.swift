@@ -4,6 +4,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 final class MarkerPopupViewModel: BaseViewModel {
     struct Input {
@@ -12,6 +13,7 @@ final class MarkerPopupViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .markerPopup
         let advertisement = PassthroughSubject<Advertisement, Never>()
         let showErrorAloer = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -31,13 +33,16 @@ final class MarkerPopupViewModel: BaseViewModel {
     private var state = State()
     private let advertisementService: AdvertisementServiceProtocol
     private let eventService: EventServiceProtocol
+    private let logManager: LogManagerProtocol
     
     init(
         advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
-        eventService: EventServiceProtocol = EventService()
+        eventService: EventServiceProtocol = EventService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.advertisementService = advertisementService
         self.eventService = eventService
+        self.logManager = logManager
         
         super.init()
     }
@@ -54,6 +59,7 @@ final class MarkerPopupViewModel: BaseViewModel {
             .withUnretained(self)
             .handleEvents(receiveOutput: { (owner: MarkerPopupViewModel, _) in
                 owner.sendClickEvent()
+                owner.sendClickEventLog()
             })
             .compactMap({ (owner: MarkerPopupViewModel, _) in
                 owner.state.advertisement?.linkUrl
@@ -73,6 +79,7 @@ final class MarkerPopupViewModel: BaseViewModel {
                 guard let advertisementResponse = response.first else { return }
                 let advertisement = Advertisement(response: advertisementResponse)
                 
+                state.advertisement = advertisement
                 output.advertisement.send(advertisement)
                 
             case .failure(let error):
@@ -87,5 +94,16 @@ final class MarkerPopupViewModel: BaseViewModel {
         Task {
             let _ = await eventService.sendClickEvent(targetId: advertisementId, type: "ADVERTISEMENT")
         }
+    }
+    
+    private func sendClickEventLog() {
+        guard let advertisementId = state.advertisement?.advertisementId else { return }
+        
+        logManager.sendEvent(LogEvent(
+            screen: output.screenName,
+            eventName: .clickBottomButton,
+            extraParameters: [
+                .advertisementId: advertisementId
+            ]))
     }
 }

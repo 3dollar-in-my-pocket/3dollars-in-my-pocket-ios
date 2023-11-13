@@ -5,6 +5,7 @@ import Model
 import DesignSystem
 import DependencyInjection
 import StoreInterface
+import Log
 
 protocol HomeListDelegate: AnyObject {
     func didTapUserStore(storeId: Int)
@@ -13,6 +14,10 @@ protocol HomeListDelegate: AnyObject {
 }
 
 final class HomeListViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return .homeList
+    }
+    
     weak var delegate: HomeListDelegate?
     private let homeListView = HomeListView()
     private let viewModel: HomeListViewModel

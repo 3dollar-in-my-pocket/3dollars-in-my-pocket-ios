@@ -4,12 +4,17 @@ import Combine
 import Common
 import Model
 import PanModal
+import Log
 
 protocol CategoryFilterDelegate: AnyObject {
     func onSelectCategory(category: PlatformStoreCategory?)
 }
 
 final class CategoryFilterViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     weak var delegate: CategoryFilterDelegate?
     private let categoryFilterView = CategoryFilterView()
     private let viewModel: CategoryFilterViewModel
