@@ -266,23 +266,24 @@ final class HomeListViewModel: BaseViewModel {
     }
     
     private func fetchAdvertisement() {
-        Task {
-            // TODO: 포지션 설정 필요
-            let input = FetchAdvertisementInput(position: .storeCategoryList, size: nil)
-            let result = await advertisementService.fetchAdvertisements(input: input)
-            
-            switch result {
-            case .success(let response):
-                if let advertisementResponse = response.first {
-                    let advertisement = Advertisement(response: advertisementResponse)
-                    output.advertisement.send(advertisement)
-                } else {
-                    output.advertisement.send(nil)
-                }
-            case .failure(_):
-                output.advertisement.send(nil)
-            }
-        }
+        // TODO: 기획 구체화 이후 정의 필요
+        output.advertisement.send(nil)
+//        Task {
+//            let input = FetchAdvertisementInput(position: .storeCategoryList, size: nil)
+//            let result = await advertisementService.fetchAdvertisements(input: input)
+//            
+//            switch result {
+//            case .success(let response):
+//                if let advertisementResponse = response.first {
+//                    let advertisement = Advertisement(response: advertisementResponse)
+//                    output.advertisement.send(advertisement)
+//                } else {
+//                    output.advertisement.send(nil)
+//                }
+//            case .failure(_):
+//                output.advertisement.send(nil)
+//            }
+//        }
     }
     
     private func sendClickStore(_ storeCard: StoreCard) {
