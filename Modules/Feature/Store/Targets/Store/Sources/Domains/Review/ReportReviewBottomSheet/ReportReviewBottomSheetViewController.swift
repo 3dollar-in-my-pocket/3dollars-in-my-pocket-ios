@@ -65,9 +65,12 @@ final class ReportReviewBottomSheetViewController: BaseViewController {
                 owner.reportReviewBottomSheet.collectionView.snp.updateConstraints {
                     $0.height.equalTo(collectionViewHeight)
                 }
-                owner.datasource.reloadData(sectionItems: sectionItems) {
-                    owner.panModalSetNeedsLayoutUpdate()
-                    owner.panModalTransition(to: .shortForm)
+                
+                DispatchQueue.main.async {
+                    owner.reportReviewBottomSheet.layoutIfNeeded()
+                    owner.datasource.reloadData(sectionItems: sectionItems) {
+                        owner.panModalSetNeedsLayoutUpdate()
+                    }
                 }
             }
             .store(in: &cancellables)
