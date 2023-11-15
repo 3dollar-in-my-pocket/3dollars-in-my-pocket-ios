@@ -3,7 +3,7 @@ import ProjectDescriptionHelpers
 
 struct Version {
     static let version: SettingValue = "4.0.0"
-    static let buildNumber: SettingValue = "3"
+    static let buildNumber: SettingValue = "4"
 }
 
 struct BuildSetting {
