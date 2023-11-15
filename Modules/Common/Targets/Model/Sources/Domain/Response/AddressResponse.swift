@@ -1,5 +1,5 @@
 import Foundation
 
 public struct AddressResponse: Decodable {
-    let fullAddress: String
+    let fullAddress: String?
 }

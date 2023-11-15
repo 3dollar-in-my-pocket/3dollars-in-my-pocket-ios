@@ -37,7 +37,7 @@ final class WriteDetailViewModel: BaseViewModel {
     private struct State {
         var storeId: Int?
         var location: Location
-        var addess: String
+        var addess: String?
         var name = ""
         var salesType: SalesType?
         var paymentMethods: [PaymentMethod] = []
