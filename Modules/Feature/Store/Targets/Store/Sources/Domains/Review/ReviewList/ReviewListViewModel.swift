@@ -24,6 +24,7 @@ final class ReviewListViewModel: BaseViewModel {
     struct Output {
         let sortType = CurrentValueSubject<SubtabStackView.SortType, Never>(.latest)
         let sections = PassthroughSubject<[ReviewListSection], Never>()
+        let scrollToTop = PassthroughSubject<Void, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
         
@@ -93,6 +94,7 @@ final class ReviewListViewModel: BaseViewModel {
                 owner.state.cursor = nil
                 owner.state.reviews.removeAll()
                 owner.fetchReviewList()
+                owner.output.scrollToTop.send(())
             }
             .store(in: &cancellables)
         
