@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ic_check_solid_off.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

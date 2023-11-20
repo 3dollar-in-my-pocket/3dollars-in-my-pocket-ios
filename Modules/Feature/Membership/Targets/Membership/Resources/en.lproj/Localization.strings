@@ -1,0 +1,22 @@
+// 로그인 화면
+"signin_with_kakao" = "카카오 계정으로 로그인";
+"signin_with_apple" = "Sign in with Apple";
+"signin_anonymous" = "로그인 없이 둘러보기";
+
+// 로그인 화면 (팝업)
+"signin_anonymous_description" = "가슴속 3천원에 로그인하고\n더 많은 기능을 사용해 보세요!";
+"signin_anonymous_warning" = "비로그인 상태로 남겨주신 제보, 리뷰는 비로그인 상태로 일정 기간 접속하지 않거나 앱 삭제 시, 볼 수 없습니다.";
+"signin_with_existed_account" = "이미 가입한 계정이 있습니다.\n해당 계정으로 로그인 하시겠습니까?\n비로그인으로 활동한 이력들은 유지되지 않습니다";
+
+// 닉네임 설정 화면
+"nickname_label_1" = "닉네임";
+"nickname_placeholder" = "닉네임을 입력해주세요.";
+"nickname_label_2" = "로 시작할래요";
+"nickname_signup" = "회원가입";
+"nickname_alreay_existed" = "중복된 이름이에요!";
+
+// 정책 화면
+"policy_agree_all" = "전체 동의하기";
+"policy_policy_label" = "(필수) 이용약관 동의";
+"policy_marketing_label" = "(선택) 마케팅 활용 및 광고성 정보 수신 동의";
+"policy_next_button" = "동의하고 계속하기";

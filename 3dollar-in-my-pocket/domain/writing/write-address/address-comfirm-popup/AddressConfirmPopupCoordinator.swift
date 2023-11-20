@@ -1,3 +1,0 @@
-protocol AddressConfirmPopupCoordinator: AnyObject, Coordinator {
-    
-}

@@ -1,0 +1,103 @@
+// 가게 상세 화면
+"store_detail.bottom_sticky.save" = "즐겨찾기";
+"store_detail.bottom_sticky.visit" = "방문 인증하기";
+"store_detail.overview.repoter_name_format" = "%@님 제보";
+"store_detail.overview.success_visit_count_format" = "최근 한달 %d명이 방문 성공";
+"store_detail.menu.share" = "공유하기";
+"store_detail.menu.navigation" = "길 안내";
+"store_detail.menu.review" = "리뷰쓰기";
+"store_detail.visit.header.title_empty" = "아직 방문 인증 내역이 없어요 :(";
+"store_detail.visit.header.title_normal" = "이번 달 방문 인증 내역";
+"store_detail.visit.format.visit_success" = "방문 성공 %d명";
+"store_detail.visit.format.visit_fail" = "방문 실패 %d명";
+"store_detail.visit.more_format" = "+ 그 외 %d명이 다녀갔어요!";
+"store_detail.info.header.title" = "가게 정보 & 메뉴";
+"store_detail.info.header.button" = "정보 수정";
+"store_detail.info.store_type" = "가게형태";
+"store_detail.info.appearance_day" = "출몰시기";
+"store_detail.info.payment_method" = "결제방식";
+"store_detail.info.monday" = "월";
+"store_detail.info.tuesday" = "화";
+"store_detail.info.wednesday" = "수";
+"store_detail.info.thursday" = "목";
+"store_detail.info.friday" = "금";
+"store_detail.info.saturday" = "토";
+"store_detail.info.sunday" = "일";
+"store_detail.info.sales_type.road" = "길거리";
+"store_detail.info.sales_type.store" = "매장";
+"store_detail.info.sales_type.convenience_store" = "편의점";
+"store_detail.info.payment_method.cash" = "현금";
+"store_detail.info.payment_method.account_transfer" = "계좌이체";
+"store_detail.info.payment_method.card" = "카드";
+"store_detail.menu.more" = "메뉴 더 보기";
+"store_detail.photo.header.title" = "가게 사진";
+"store_detail.photo.header.button" = "사진 제보";
+"store_detail.photo.more" = "더보기";
+"store_detail.photo.empty" = "사진을 제보해주세요!";
+"store_detail.review.header.title" = "리뷰";
+"store_detail.review.header.button" = "리뷰 쓰기";
+"store_detail.rating.title" = "평균 별점";
+"store_detail.review.report" = "신고";
+"store_detail.review.edit" = "수정";
+"store_detail.review.empty" = "리뷰를 작성해주세요.";
+"store_detail.review.more_format" = "리뷰 %d개 더보기";
+"store_detail.toast.add_favorite" = "즐겨찾기가 추가되었습니다!";
+"store_detail.toast.remove_favorite" = "즐겨찾기가 삭제되었습니다!";
+"store_detail.toast.copy_to_address" = "🔗 주소를 클립보드에 복사했습니다.";
+
+// 가게 신고 모달
+"report_modal.title" = "삭제 요청 하시는 이유가 궁금해요!";
+"report_modal.description" = "3건 이상의 요청이 들어오면 자동 삭제됩니다";
+"report_modal.description_bold" = "3건 이상";
+"report_modal.button" = "신고하기";
+
+// 길 안내 바텀 시트
+"navigation_bottom_sheet.title" = "길 안내 앱 선택";
+"navigation_bottom_sheet.message" = "지도앱이 설치되어있지 않은 경우 정상적으로 실행되지 않습니다.";
+"navigation_bottom_sheet.action.kakao_map" = "카카오 지도";
+"navigation_bottom_sheet.action.naver_map" = "네이버 지도";
+"navigation_bottom_sheet.action.cancel" = "취소";
+
+// 리뷰 바텀 시트
+"review_bottom_sheet.title" = "이 가게를 추천하시나요?";
+"review_bottom_sheet.placeholder" = "리뷰를 남겨주세요!(100자 이내)";
+"review_bottom_sheet.write_button" = "리뷰 쓰기";
+
+// 지도 상세 화면
+"map_detail.title" = "지도 보기";
+"map_detail.navigation_button" = "길 안내보기";
+
+// 사진 업로드 화면
+"upload_photo.auth_error_alert.message" = "사진 제보를 위해 앨범 권한이 필요합니다.";
+"upload_photo.button.title_format" = "총 %d장 / %d장 의 사진 등록";
+
+// 사진 리스트 화면
+"photo_list.title" = "사진";
+"photo_list.upload_button" = "사진 제보하기";
+
+// 사진 상세 화면
+"photo_detail.delete.title" = "정말로 사진을 삭제하시겠습니까?";
+"photo_detail.delete.delete" = "삭제";
+
+// 리뷰 리스트 화면
+"review_list.title" = "리뷰";
+"review_list.write_review" = "리뷰 작성하기";
+"review_list.sort_type.latest" = "최신순";
+"review_list.sort_type.highest_rating" = "별점 높은순";
+"review_list.sort_type.lowest_rating" = "별점 낮은순";
+"review_list.filtered" = "규정 위반으로 블라인드 처리되었습니다.";
+
+// 리뷰 신고 화면
+"report_review_bottom_sheet.title" = "신고 사유";
+"report_review_bottom_sheet.placeholder" = "신고 사유 직접 입력";
+"report_review_bottom_sheet.report" = "신고하기";
+
+// 방문 인증 화면
+"visit.title.exists" = "가게 도착!\n방문을 인증해보세요!";
+"visit.title.exists_bold" = "가게 도착!";
+"visit.title.not_exists" = "가게 근처에서\n방문을 인증할 수 있어요!";
+"visit.title.not_exists_bold" = "가게 근처";
+"visit.distance_format" = "인증까지 %dm";
+"visit.exists" = "방문 성공";
+"visit.not_exists" = "방문 실패";
+"visit.result_message" = "방문 기록을 저장했습니다👍";
