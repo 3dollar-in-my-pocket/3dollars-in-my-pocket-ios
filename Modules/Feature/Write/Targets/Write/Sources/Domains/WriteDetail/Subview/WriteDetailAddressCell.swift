@@ -54,7 +54,7 @@ final class WriteDetailAddressCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(address: String) {
+    func bind(address: String?) {
         addressLabel.text = address
     }
 }

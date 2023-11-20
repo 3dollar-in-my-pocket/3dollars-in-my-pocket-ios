@@ -83,7 +83,7 @@ final class StoreDetailOverviewMapView: BaseView {
         marker?.mapView = nil
     }
     
-    func bind(location: Location, address: String) {
+    func bind(location: Location, address: String?) {
         addressButton.setTitle(address, for: .normal)
         
         setMarket(location: location)

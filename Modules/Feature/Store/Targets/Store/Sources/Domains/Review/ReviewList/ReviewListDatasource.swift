@@ -34,6 +34,7 @@ final class ReviewListDatasource: UICollectionViewDiffableDataSource<ReviewListS
                 return cell
             }
         }
+        collection.delegate = self
     }
     
     func reload(_ sections: [ReviewListSection]) {
