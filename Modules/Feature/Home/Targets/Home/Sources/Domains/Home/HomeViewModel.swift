@@ -510,6 +510,9 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onTapCurrentMarker
+            .filter { [weak self] in
+                return self?.state.advertisementMarker != nil
+            }
             .map { Route.presentMarkerAdvertisement }
             .handleEvents(receiveOutput: { [weak self] _ in
                 guard let self = self,
