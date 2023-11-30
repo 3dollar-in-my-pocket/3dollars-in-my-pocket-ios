@@ -10,6 +10,7 @@ import Log
 
 public final class WriteAddressViewModel: BaseViewModel {
     struct Input {
+        let viewDidLoad = PassthroughSubject<Void, Never>()
         let moveMapCenter = PassthroughSubject<Location, Never>()
         let tapCurrentLocation = PassthroughSubject<Void, Never>()
         let tapSetAddress = PassthroughSubject<Void, Never>()
@@ -21,6 +22,7 @@ public final class WriteAddressViewModel: BaseViewModel {
         let setNearStores = PassthroughSubject<[Location], Never>()
         let moveCamera = PassthroughSubject<Location, Never>()
         let setAddress = PassthroughSubject<String, Never>()
+        let editLocation = PassthroughSubject<(address: String, location: Location), Never>()
         let error = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
@@ -28,27 +30,54 @@ public final class WriteAddressViewModel: BaseViewModel {
     enum Route {
         case pushWriteDetail(WriteDetailViewModel)
         case presentConfirmPopup(AddressConfirmPopupViewModel)
+        case dismiss
     }
     
     private struct State {
+        var type: WriteAddressType = .write
         var address = ""
         var cameraPosition: Location?
     }
     
+    public enum WriteAddressType {
+        /// 작성하기로 진입
+        case write
+        
+        /// 가게 수정으로 진입
+        case edit
+    }
+    
+    public struct Config {
+        public let type: WriteAddressType
+        public let address: String
+        public let cameraPosition: Location
+    }
+    
     let input = Input()
     let output = Output()
-    private var state = State()
+    private var state: State
     private let mapService: MapServiceProtocol
     private let storeService: StoreServiceProtocol
     private let locationManager: LocationManagerProtocol
     private let logManager: LogManagerProtocol
     
     public init(
+        config: Config? = nil,
         mapService: MapServiceProtocol = MapService(),
         storeService: StoreServiceProtocol = StoreService(),
         locationManager: LocationManagerProtocol = LocationManager.shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
+        if let config {
+            self.state = State(
+                type: config.type,
+                address: config.address,
+                cameraPosition: config.cameraPosition
+            )
+        } else {
+            self.state = State()
+        }
+        
         self.mapService = mapService
         self.storeService = storeService
         self.locationManager = locationManager
@@ -58,6 +87,18 @@ public final class WriteAddressViewModel: BaseViewModel {
     }
     
     public override func bind() {
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { (owner: WriteAddressViewModel, _) in
+                if let cameraPosition = owner.state.cameraPosition {
+                    owner.output.moveCamera.send(cameraPosition)
+                    owner.output.setAddress.send(owner.state.address)
+                } else {
+                    owner.input.tapCurrentLocation.send(())
+                }
+            }
+            .store(in: &cancellables)
+        
         let moveCamera = input.moveMapCenter
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, location in
@@ -86,6 +127,9 @@ public final class WriteAddressViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         moveCamera
+            .filter({ (owner: WriteAddressViewModel, _) in
+                owner.state.type == .write
+            })
             .asyncMap { owner, location in
                 await owner.fetchAroundStores(cameraPosition: location)
             }
@@ -164,7 +208,14 @@ public final class WriteAddressViewModel: BaseViewModel {
             .sink(receiveValue: { owner, _ in
                 guard let cameraPosition = owner.state.cameraPosition else { return }
                 
-                owner.isStoreExistedAround(location: cameraPosition)
+                switch owner.state.type {
+                case .write:
+                    owner.isStoreExistedAround(location: cameraPosition)
+                    
+                case .edit:
+                    owner.output.editLocation.send((owner.state.address, cameraPosition))
+                    owner.output.route.send(.dismiss)
+                }
             })
             .store(in: &cancellables)
         

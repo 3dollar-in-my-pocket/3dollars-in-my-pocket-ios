@@ -35,7 +35,8 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
             withReuseIdentifier: "\(StoreDetailPhotoFooterView.self)")
         
-        super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+        super.init(collectionView: collectionView) { [weak rootViewController] collectionView, indexPath, itemIdentifier in
+            guard let rootViewController else { return UICollectionViewCell() }
             switch itemIdentifier {
             case .overview(let viewModel):
                 let cell: StoreDetailOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)

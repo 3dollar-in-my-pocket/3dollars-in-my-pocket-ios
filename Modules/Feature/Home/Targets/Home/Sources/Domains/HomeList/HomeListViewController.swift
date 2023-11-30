@@ -23,16 +23,8 @@ final class HomeListViewController: BaseViewController {
     private let viewModel: HomeListViewModel
     private lazy var dataSource = HomeListDataSource(collectionView: homeListView.collectionView, viewModel: viewModel)
     
-    static func instance(state: HomeListViewModel.State) -> HomeListViewController {
-        let viewController = HomeListViewController(state: state)
-        viewController.hidesBottomBarWhenPushed = true
-        viewController.modalPresentationStyle = .currentContext
-        
-        return viewController
-    }
-    
-    init(state: HomeListViewModel.State) {
-        self.viewModel = HomeListViewModel(state: state)
+    init(viewModel: HomeListViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     

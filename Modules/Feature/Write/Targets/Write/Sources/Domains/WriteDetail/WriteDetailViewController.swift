@@ -140,6 +140,9 @@ final class WriteDetailViewController: BaseViewController {
         case .dismissWithUpdatedStore(let storeCreateResponse):
             navigationController?.popViewController(animated: true)
             onSuccessEdit?(storeCreateResponse)
+            
+        case .presentWriteAddress(let viewModel):
+            presentWriteAddress(viewModel: viewModel)
         }
     }
     
@@ -167,6 +170,13 @@ final class WriteDetailViewController: BaseViewController {
     
     private func presentMapDetail(location: Location, storeName: String) {
         let viewController = Environment.storeInterface.getMapDeetailViewController(location: location, storeName: storeName)
+        present(viewController, animated: true)
+    }
+    
+    private func presentWriteAddress(viewModel: WriteAddressViewModel) {
+        let viewController = WriteAddressViewController(viewModel: viewModel)
+        viewController.modalPresentationStyle = .overCurrentContext
+        
         present(viewController, animated: true)
     }
     
