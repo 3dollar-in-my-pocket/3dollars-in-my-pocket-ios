@@ -22,6 +22,9 @@ final class WriteDetailViewModel: BaseViewModel {
         let inputMenuName = PassthroughSubject<(IndexPath, String), Never>()
         let inputMenuPrice = PassthroughSubject<(IndexPath, String), Never>()
         let tapSave = PassthroughSubject<Void, Never>()
+        
+        // From WriteDetail
+        let onEditLocation = PassthroughSubject<(address: String, location: Location), Never>()
     }
     
     struct Output {
@@ -49,6 +52,7 @@ final class WriteDetailViewModel: BaseViewModel {
     
     enum Route {
         case pop
+        case presentWriteAddress(WriteAddressViewModel)
         case presentMapDetail(Location, String)
         case presentCategorySelection(CategorySelectionViewModel)
         case dismissWithStoreId(Int)
@@ -141,8 +145,10 @@ final class WriteDetailViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.tapEditLocation
-            .map { .pop }
-            .subscribe(output.route)
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: WriteDetailViewModel, _) in
+                owner.pushWriteAddress()
+            })
             .store(in: &cancellables)
         
         input.storeName
@@ -267,6 +273,17 @@ final class WriteDetailViewModel: BaseViewModel {
                     owner.createStore()
                 }
             })
+            .store(in: &cancellables)
+        
+        input.onEditLocation
+            .withUnretained(self)
+            .sink { (owner: WriteDetailViewModel, data: (String, Location)) in
+                let (address, location) = data
+                
+                owner.state.addess = address
+                owner.state.location = location
+                owner.updateSections()
+            }
             .store(in: &cancellables)
     }
     
@@ -417,6 +434,21 @@ final class WriteDetailViewModel: BaseViewModel {
                 output.error.send(error)
             }
         }
+    }
+    
+    private func pushWriteAddress() {
+        let config = WriteAddressViewModel.Config(
+            type: .edit,
+            address: state.addess ?? "",
+            cameraPosition: state.location
+        )
+        let viewModel = WriteAddressViewModel(config: config)
+        
+        viewModel.output.editLocation
+            .subscribe(input.onEditLocation)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.presentWriteAddress(viewModel))
     }
     
     private func createStore() {

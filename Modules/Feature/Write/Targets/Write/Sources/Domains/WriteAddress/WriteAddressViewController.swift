@@ -41,7 +41,7 @@ public final class WriteAddressViewController: BaseViewController {
         super.viewDidLoad()
         
         setupMap()
-        viewModel.input.tapCurrentLocation.send(())
+        viewModel.input.viewDidLoad.send(())
     }
     
     public override func bindEvent() {
@@ -118,6 +118,9 @@ public final class WriteAddressViewController: BaseViewController {
                     
                 case .presentConfirmPopup(let viewModel):
                     owner.presentConfirmPopup(viewModel)
+                    
+                case .dismiss:
+                    owner.dismiss(animated: true)
                 }
             }
             .store(in: &cancellables)
