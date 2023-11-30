@@ -28,6 +28,10 @@ final class HomeListViewModel: BaseViewModel {
         let isOnlyBoss: CurrentValueSubject<Bool, Never>
         let isOnlyCertified = CurrentValueSubject<Bool, Never>(false)
         let route = PassthroughSubject<Route, Never>()
+        
+        // To HomeViewModel
+        let onToggleSort = PassthroughSubject<StoreSortType, Never>()
+        let onTapOnlyBoss = PassthroughSubject<Void, Never>()
     }
     
     struct State {
@@ -41,6 +45,10 @@ final class HomeListViewModel: BaseViewModel {
         var nextCursor: String?
         var hasMore: Bool
         let mapMaxDistance: Double?
+    }
+    
+    struct Config {
+        let initialState: State
     }
     
     enum Route {
@@ -58,22 +66,24 @@ final class HomeListViewModel: BaseViewModel {
     private let logManager: LogManagerProtocol
     
     init(
-        state: State,
+        config: Config,
         storeService: StoreServiceProtocol = StoreService(),
         advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.output = Output(
-            categoryFilter: .init(state.categoryFilter),
-            stores: .init(state.stores),
-            sortType: .init(state.sortType),
-            isOnlyBoss: .init(state.isOnlyBossStore)
+            categoryFilter: .init(config.initialState.categoryFilter),
+            stores: .init(config.initialState.stores),
+            sortType: .init(config.initialState.sortType),
+            isOnlyBoss: .init(config.initialState.isOnlyBossStore)
         )
-        self.state = state
+        self.state = config.initialState
         self.storeService = storeService
         self.advertisementService = advertisementService
         self.logManager = logManager
         super.init()
+        
+        bindRelay()
     }
     
     override func bind() {
@@ -228,6 +238,16 @@ final class HomeListViewModel: BaseViewModel {
                     owner.output.route.send(.pushStoreDetail(storeId: store.storeId))
                 }
             })
+            .store(in: &cancellables)
+    }
+    
+    private func bindRelay() {
+        input.onToggleSort
+            .subscribe(output.onToggleSort)
+            .store(in: &cancellables)
+        
+        input.onTapOnlyBoss
+            .subscribe(output.onTapOnlyBoss)
             .store(in: &cancellables)
     }
     

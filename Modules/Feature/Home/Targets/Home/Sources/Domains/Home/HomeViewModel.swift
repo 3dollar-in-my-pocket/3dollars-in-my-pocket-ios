@@ -38,6 +38,8 @@ final class HomeViewModel: BaseViewModel {
         let screenName: ScreenName = .home
         let address = PassthroughSubject<String, Never>()
         let categoryFilter = PassthroughSubject<PlatformStoreCategory?, Never>()
+        let sortType = PassthroughSubject<StoreSortType, Never>()
+        let isOnlyBoss = PassthroughSubject<Bool, Never>()
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let advertisementMarker = PassthroughSubject<Advertisement, Never>()
@@ -67,7 +69,7 @@ final class HomeViewModel: BaseViewModel {
     
     enum Route {
         case presentCategoryFilter(PlatformStoreCategory?)
-        case presentListView(HomeListViewModel.State)
+        case presentListView(HomeListViewModel)
         case pushStoreDetail(storeId: Int)
         case pushBossStoreDetail(storeId: String)
         case presentVisit(StoreCard)
@@ -274,14 +276,16 @@ final class HomeViewModel: BaseViewModel {
                     owner.updateCollectionItems(storeCards: storeCards)
                     
                 case .failure(let error):
+                    owner.state.sortType = owner.state.sortType.toggled()
                     owner.output.route.send(.showErrorAlert(error))
                 }
+                owner.output.sortType.send(owner.state.sortType)
             })
             .store(in: &cancellables)
         
         input.onTapOnlyBoss
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, isOnlyBoss in
+            .handleEvents(receiveOutput: { owner, _ in
                 owner.state.isOnlyBossStore.toggle()
                 owner.sendClickOnlyBossFilterLog(isOn: owner.state.isOnlyBossStore)
             })
@@ -295,8 +299,10 @@ final class HomeViewModel: BaseViewModel {
                     owner.updateCollectionItems(storeCards: storeCards)
                     
                 case .failure(let error):
+                    owner.state.isOnlyBossStore.toggle()
                     owner.output.route.send(.showErrorAlert(error))
                 }
+                owner.output.isOnlyBoss.send(owner.state.isOnlyBossStore)
             })
             .store(in: &cancellables)
         
@@ -422,8 +428,11 @@ final class HomeViewModel: BaseViewModel {
                     hasMore: owner.state.hasMore,
                     mapMaxDistance: owner.state.mapMaxDistance
                 )
+                let config = HomeListViewModel.Config(initialState: state)
+                let viewModel = HomeListViewModel(config: config)
+                owner.bindHomeListViewModel(viewModel)
                 
-                return Route.presentListView(state)
+                return Route.presentListView(viewModel)
             }
             .subscribe(output.route)
             .store(in: &cancellables)
@@ -625,7 +634,19 @@ final class HomeViewModel: BaseViewModel {
         output.route.send(.presentSearchAddress(viewModel))
     }
     
-    
+    private func bindHomeListViewModel(_ viewModel: HomeListViewModel) {
+        viewModel.output.onToggleSort
+            .subscribe(input.onToggleSort)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onTapOnlyBoss
+            .subscribe(input.onTapOnlyBoss)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.categoryFilter
+            .subscribe(input.selectCategory)
+            .store(in: &viewModel.cancellables)
+    }
 }
 
 // MARK: Log
