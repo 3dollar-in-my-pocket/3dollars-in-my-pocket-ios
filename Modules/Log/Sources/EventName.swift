@@ -58,4 +58,8 @@ public enum EventName: String {
     
     // 길거리 음식점 리뷰 작성 바텀시트
     case clickReviewBottomButton = "click_review_bottom_button"
+    
+    // 가게 방문 인증 화면
+    case clickVisitSuccess = "click_visit_success"
+    case clickVisitFail = "click_visit_fail"
 }
