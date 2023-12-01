@@ -49,6 +49,7 @@ final class SortingButton: UIButton {
     }
     
     func bind(_ sortType: StoreSortType) {
+        self.sortType = sortType
         switch sortType {
         case .distanceAsc:
             setTitle(HomeStrings.homeSortingButtonDistance, for: .normal)

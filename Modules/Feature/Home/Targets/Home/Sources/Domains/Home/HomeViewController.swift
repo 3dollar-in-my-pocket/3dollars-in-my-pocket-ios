@@ -153,6 +153,22 @@ public final class HomeViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
+        viewModel.output.sortType
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, sortType: StoreSortType) in
+                owner.homeView.sortingButton.bind(sortType)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.isOnlyBoss
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, isOnlyBoss: Bool) in
+                owner.homeView.onlyBossToggleButton.isSelected = isOnlyBoss
+            }
+            .store(in: &cancellables)
+        
         viewModel.output.isHiddenResearchButton
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
@@ -222,8 +238,8 @@ public final class HomeViewController: BaseViewController {
                     categoryFilterViewController.delegate = self
                     owner.presentPanModal(categoryFilterViewController)
                     
-                case .presentListView(let state):
-                    owner.presentHomeList(state: state)
+                case .presentListView(let viewModel):
+                    owner.presentHomeList(viewModel)
                     
                 case .pushStoreDetail(let storeId):
                     owner.pushStoreDetail(storeId: storeId)
@@ -368,9 +384,11 @@ public final class HomeViewController: BaseViewController {
         tabBarController?.present(viewController, animated: true)
     }
     
-    private func presentHomeList(state: HomeListViewModel.State) {
-        let viewController = HomeListViewController.instance(state: state)
+    private func presentHomeList(_ viewModel: HomeListViewModel) {
+        let viewController = HomeListViewController(viewModel: viewModel)
         viewController.delegate = self
+        viewController.hidesBottomBarWhenPushed = true
+        viewController.modalPresentationStyle = .currentContext
         
         navigationController?.present(viewController, animated: true)
     }

@@ -2,8 +2,8 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 struct Version {
-    static let version: SettingValue = "4.0.0"
-    static let buildNumber: SettingValue = "4"
+    static let version: SettingValue = "4.0.1"
+    static let buildNumber: SettingValue = "1"
 }
 
 struct BuildSetting {
