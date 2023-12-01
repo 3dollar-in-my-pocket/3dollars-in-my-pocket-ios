@@ -30,8 +30,5 @@ public enum ScreenName: String {
     case reviewBottomSheet = "review_bottom_sheet"
     case visitStore = "visit_store"
     case bossStoreDetail = "boss_store_detail"
-    //    case splashPopup = "splash_popup"
-    //    case categoryFilter = "category_filter"
-    //    case streetFoodList = "street_food_list"
-    //    case foodTruckList = "food_truck_list"
+    case bossStoreReview = "boss_store_review"
 }
