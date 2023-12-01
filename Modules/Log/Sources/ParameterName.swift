@@ -13,4 +13,5 @@ public enum ParameterName: String {
     case advertisementId = "advertisement_id"
     case categoryId = "category_id"
     case count
+    case reviewId = "review_id"
 }

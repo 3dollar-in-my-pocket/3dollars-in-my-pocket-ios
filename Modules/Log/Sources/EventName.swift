@@ -51,4 +51,8 @@ public enum EventName: String {
     
     // 사진 업로드 화면
     case clickUpload = "click_upload"
+    
+    // 리뷰 리스트 화면
+    case clickSort = "click_sort"
+    case clickEditReview = "click_edit_review"
 }

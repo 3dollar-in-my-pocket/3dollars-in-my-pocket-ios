@@ -25,7 +25,7 @@ public enum ScreenName: String {
     /// Store
     case storeDetail = "store_detail"
     case uploadPhoto = "upload_photo"
-    
+    case reviewList = "review_list"
     //    case splashPopup = "splash_popup"
     //    case categoryFilter = "category_filter"
     //    case streetFoodList = "street_food_list"
