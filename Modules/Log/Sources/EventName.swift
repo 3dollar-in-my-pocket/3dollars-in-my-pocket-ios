@@ -37,8 +37,15 @@ public enum EventName: String {
     case clickAddressOk = "click_address_ok"
     case clickWriteStore = "click_write_store"
     
-    
     // 마커 배너 팝업
     case clickBottomButton = "click_bottom_button"
     
+    // 길거리 음식점 가게 상세 화면
+    case clickFavorite = "click_favorite"
+    case clickReport = "click_report"
+    case clickShare = "click_share"
+    case clickNavigation = "click_navigation"
+    case clickWriteReview = "click_write_review"
+    case clickCopyAddress = "click_copy_address"
+    case clickZoomMap = "click_zoom_map"
 }
