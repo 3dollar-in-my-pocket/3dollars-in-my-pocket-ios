@@ -62,4 +62,7 @@ public enum EventName: String {
     // 가게 방문 인증 화면
     case clickVisitSuccess = "click_visit_success"
     case clickVisitFail = "click_visit_fail"
+    
+    // 사장님 가게 상세 화면
+    case clickSns = "click_sns"
 }
