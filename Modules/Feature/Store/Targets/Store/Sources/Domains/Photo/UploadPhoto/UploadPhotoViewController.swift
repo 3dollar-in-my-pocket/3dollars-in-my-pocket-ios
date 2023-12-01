@@ -4,8 +4,13 @@ import Photos
 
 import Common
 import DesignSystem
+import Log
 
 final class UploadPhotoViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let uploadPhotoView = UploadPhotoView()
     private let viewModel: UploadPhotoViewModel
     

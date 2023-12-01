@@ -48,4 +48,7 @@ public enum EventName: String {
     case clickWriteReview = "click_write_review"
     case clickCopyAddress = "click_copy_address"
     case clickZoomMap = "click_zoom_map"
+    
+    // 사진 업로드 화면
+    case clickUpload = "click_upload"
 }

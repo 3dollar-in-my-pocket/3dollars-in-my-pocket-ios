@@ -7,6 +7,7 @@ import Model
 import Networking
 import AppInterface
 import DependencyInjection
+import Log
 
 final class UploadPhotoViewModel: BaseViewModel {
     enum Constant {
@@ -21,6 +22,7 @@ final class UploadPhotoViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .uploadPhoto
         let assets = PassthroughSubject<[PHAsset], Never>()
         let onSuccessUploadPhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
         let uploadButtonTitle = CurrentValueSubject<Int, Never>(0)
@@ -50,19 +52,17 @@ final class UploadPhotoViewModel: BaseViewModel {
     private let config: Config
     private let storeService: StoreServiceProtocol
     private let photoManager: PhotoManagerProtocol
+    private let logManager: LogManagerProtocol
     
     init(
         config: Config,
-        storeService: StoreServiceProtocol = StoreService()
+        storeService: StoreServiceProtocol = StoreService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
         self.storeService = storeService
-        
-        guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
-            fatalError("⚠️ AppModuleInterface가 등록되지 않았습니다.")
-        }
-        
-        self.photoManager = appModuleInterface.photoManager
+        self.photoManager = Environment.appModuleInterface.photoManager
+        self.logManager = logManager
     }
     
     override func bind() {
@@ -116,6 +116,7 @@ final class UploadPhotoViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: UploadPhotoViewModel, _) in
                 owner.uploadPhotos()
+                owner.sendClickUploadPhoto(count: owner.state.selectedAssets.count)
             }
             .store(in: &cancellables)
     }
@@ -170,5 +171,19 @@ final class UploadPhotoViewModel: BaseViewModel {
                 output.showErrorAlert.send(error)
             }
         }
+    }
+}
+
+// MARK: Log
+extension UploadPhotoViewModel {
+    private func sendClickUploadPhoto(count: Int) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickUpload,
+            extraParameters: [
+                .storeId: config.storeId,
+                .count: count
+            ]
+        ))
     }
 }
