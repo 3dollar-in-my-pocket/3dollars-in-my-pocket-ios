@@ -155,17 +155,18 @@ class PollItemBaseCell: BaseCollectionViewCell {
 
     private func updateDeadline(with item: PollWithMetaApiResponse) {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        dateFormatter.dateFormat = dateFormat
         dateFormatter.locale = Locale.current
         dateFormatter.timeZone = TimeZone.current
-        if let endDate = item.poll.period.endDateTime.toDate()?.toString(),
+        if let endDate = item.poll.period.endDateTime.toDate()?.toString(format: dateFormat),
            let targetDate: Date = dateFormatter.date(from: endDate),
-           let fromDate: Date = dateFormatter.date(from: Date().toString()) {
+           let fromDate: Date = dateFormatter.date(from: Date().toString(format: dateFormat)) {
             switch targetDate.compare(fromDate) {
             case .orderedSame:
                 deadlineLabel.text = "오늘 마감"
             case .orderedDescending:
-                deadlineLabel.text = endDate
+                deadlineLabel.text = item.poll.period.endDateTime.toDate()?.toString(format: "yyyy-MM-dd")
             case .orderedAscending:
                 deadlineLabel.text = "마감"
                 updateState(firstOption: item.poll.options[safe: 0], secondOption: item.poll.options[safe: 1])
