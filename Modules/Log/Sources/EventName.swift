@@ -72,4 +72,7 @@ public enum EventName: String {
     case clickPollCategory = "click_poll_category"
     case clickDistrict = "click_district"
     case clickPopularFilter = "click_popular_filter"
+    
+    // 투표 리스트 화면
+    case clickCreatePoll = "click_create_poll"
 }

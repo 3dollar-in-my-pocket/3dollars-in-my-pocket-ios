@@ -3,8 +3,12 @@ import Combine
 
 import DesignSystem
 import Common
+import Log
 
 final class PollCategoryTabViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
 
     private let navigationBar = CommunityNavigationBar(title: "맛대맛 투표")
 //    private let tabView = CommunityTabView(titles: ["실시간 참여순", "최신순"])
