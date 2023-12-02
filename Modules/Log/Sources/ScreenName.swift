@@ -38,4 +38,5 @@ public enum ScreenName: String {
     case pollList = "poll_list"
     case reportPoll = "report_poll"
     case reportReview = "report_review"
+    case createPoll = "careate_poll"
 }

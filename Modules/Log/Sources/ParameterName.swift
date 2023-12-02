@@ -17,4 +17,7 @@ public enum ParameterName: String {
     case rating
     case pollId = "poll_id"
     case optionId = "option_id"
+    case title
+    case pollFirstOption = "poll_first_option"
+    case pollSecondOption = "poll_second_option"
 }

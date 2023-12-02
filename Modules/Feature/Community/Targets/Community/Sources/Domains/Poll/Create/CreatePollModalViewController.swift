@@ -3,8 +3,12 @@ import UIKit
 import Then
 import Common
 import DesignSystem
+import Log
 
 final class CreatePollModalViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
 
     enum Constant {
         static let maxTitleCount: Int = 20
