@@ -35,13 +35,17 @@ final class PollCategoryTabViewModel: BaseViewModel {
     let output = Output()
 
     private var state = State()
+    
+    private let categoryId: String
     private let communityService: CommunityServiceProtocol
     private let logManager: LogManagerProtocol
 
     init(
+        categoryId: String,
         communityService: CommunityServiceProtocol = CommunityService(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
+        self.categoryId = categoryId
         self.communityService = communityService
         self.logManager = logManager
 
@@ -98,7 +102,10 @@ final class PollCategoryTabViewModel: BaseViewModel {
     }
 
     private func bindPollListViewModel() -> PollListViewModel {
-        let config = PollListViewModel.Config(screenName: output.screenName)
+        let config = PollListViewModel.Config(
+            screenName: output.screenName,
+            categoryId: categoryId
+        )
         let viewModel = PollListViewModel(config: config)
 
         output.updatePollList

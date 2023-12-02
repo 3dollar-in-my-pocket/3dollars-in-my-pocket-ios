@@ -34,6 +34,7 @@ final class PollListViewModel: BaseViewModel {
     
     struct Config {
         let screenName: ScreenName
+        let categoryId: String
         let sortType: PollListSortType = .latest // 현재 따로 변경하고 있지는 않음
     }
 
@@ -67,7 +68,10 @@ final class PollListViewModel: BaseViewModel {
                 owner.output.showLoading.send(true)
             })
             .compactMap { owner, _ in
-                return FetchPollsRequestInput(cursor: owner.state.nextCursor)
+                return FetchPollsRequestInput(
+                    categoryId: owner.config.categoryId,
+                    cursor: owner.state.nextCursor
+                )
             }
             .withUnretained(self)
             .asyncMap { owner, input in
@@ -119,7 +123,10 @@ final class PollListViewModel: BaseViewModel {
         state.loadMore
             .withUnretained(self)
             .compactMap { owner, _ in
-                return FetchPollsRequestInput(cursor: owner.state.nextCursor)
+                return FetchPollsRequestInput(
+                    categoryId: owner.config.categoryId,
+                    cursor: owner.state.nextCursor
+                )
             }
             .withUnretained(self)
             .asyncMap { owner, input in

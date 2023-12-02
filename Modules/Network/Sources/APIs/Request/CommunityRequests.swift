@@ -279,3 +279,17 @@ struct ReportPollCommentCreateRequest: RequestType {
         return "/api/v1/poll/\(pollId)/comment/\(commentId)/report"
     }
 }
+
+struct FetchPollCategoriesRequest: RequestType {
+    var param: Encodable? {
+        return nil
+    }
+
+    var method: RequestMethod {
+        return .get
+    }
+
+    var path: String {
+        return "/api/v1/poll-categories"
+    }
+}

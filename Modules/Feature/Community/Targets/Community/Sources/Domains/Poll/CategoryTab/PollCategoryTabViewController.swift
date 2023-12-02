@@ -39,7 +39,7 @@ final class PollCategoryTabViewController: BaseViewController {
 
     private let viewModel: PollCategoryTabViewModel
 
-    init(viewModel: PollCategoryTabViewModel = .init()) {
+    init(viewModel: PollCategoryTabViewModel) {
         self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
