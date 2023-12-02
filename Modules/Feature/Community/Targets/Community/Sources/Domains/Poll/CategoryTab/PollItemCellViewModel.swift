@@ -17,6 +17,7 @@ final class PollItemCellViewModel: BaseViewModel {
         let showToast = PassthroughSubject<String, Never>()
         let reloadComments = PassthroughSubject<Int, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
+        let updatePoll = PassthroughSubject<PollWithMetaApiResponse, Never>()
     }
 
     struct State {
@@ -102,6 +103,7 @@ final class PollItemCellViewModel: BaseViewModel {
                 case .success(let response):
                     owner.output.item.send(response)
                     owner.output.reloadComments.send(response.meta.totalCommentsCount)
+                    owner.output.updatePoll.send(response)
                 case .failure(let error):
                     owner.output.showErrorAlert.send(error)
                 }

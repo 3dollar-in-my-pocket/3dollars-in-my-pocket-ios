@@ -36,7 +36,9 @@ public class BasePageViewController: UIPageViewController, UIScrollViewDelegate 
     public override func setViewControllers(_ viewControllers: [UIViewController]?, direction: UIPageViewController.NavigationDirection, animated: Bool, completion: ((Bool) -> Void)? = nil) {
         guard !transitionInProgress.value else { return }
 
-        transitionInProgress.send(true)
+        if animated {
+            transitionInProgress.send(true)
+        }
 
         super.setViewControllers(
             viewControllers,
@@ -51,6 +53,10 @@ public class BasePageViewController: UIPageViewController, UIScrollViewDelegate 
 }
 
 public extension BasePageViewController {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        transitionInProgress.send(true)
+    }
+    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         transitionInProgress.send(false)
     }
@@ -59,6 +65,10 @@ public extension BasePageViewController {
         if !decelerate {
             transitionInProgress.send(false)
         }
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        transitionInProgress.send(false)
     }
 }
 

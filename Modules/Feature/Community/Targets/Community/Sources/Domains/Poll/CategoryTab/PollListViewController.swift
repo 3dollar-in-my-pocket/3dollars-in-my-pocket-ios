@@ -8,6 +8,7 @@ final class PollListViewController: BaseViewController {
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
         $0.delegate = self
+        $0.contentInset.top = 20
         $0.contentInset.bottom = 80
     }
 
@@ -81,6 +82,14 @@ final class PollListViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: PollListViewController, error: Error) in
                 owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.scrollToTop
+            .main
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.collectionView.scrollToTop(animated: true)
             }
             .store(in: &cancellables)
     }

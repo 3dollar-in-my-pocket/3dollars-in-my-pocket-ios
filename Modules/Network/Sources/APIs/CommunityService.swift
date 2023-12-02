@@ -28,6 +28,8 @@ public protocol CommunityServiceProtocol {
     func deletePollComment(pollId: String, commentId: String) async -> Result<String, Error>
     /// 댓글 신고
     func reportComment(pollId: String, commentId: String, input: PollCommentReportCreateRequestInput) async -> Result<String, Error>
+    /// 투표 카테고리 목록 조회
+    func fetchPollCategories() async -> Result<PollCategoryListApiReponse, Error>
 }
 
 public struct CommunityService: CommunityServiceProtocol {
@@ -114,6 +116,12 @@ public struct CommunityService: CommunityServiceProtocol {
     public func reportComment(pollId: String, commentId: String, input: PollCommentReportCreateRequestInput) async -> Result<String, Error> {
         let request = ReportPollCommentCreateRequest(pollId: pollId, commentId: commentId, requestInput: input)
 
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func fetchPollCategories() async -> Result<PollCategoryListApiReponse, Error> {
+        let request = FetchPollCategoriesRequest()
+        
         return await NetworkManager.shared.request(requestType: request)
     }
 }

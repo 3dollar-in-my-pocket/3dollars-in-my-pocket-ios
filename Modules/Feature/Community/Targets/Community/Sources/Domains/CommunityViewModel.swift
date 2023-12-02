@@ -140,6 +140,7 @@ final class CommunityViewModel: BaseViewModel {
         output.sections.send(sections)
     }
 
+    /// 동네 인기 가게 탭
     private func bindPopularStoreTabCellViewModel() -> CommunityPopularStoreTabCellViewModel {
         let cellViewModel = CommunityPopularStoreTabCellViewModel(tab: state.currentStoreTab.value)
 
@@ -172,6 +173,7 @@ final class CommunityViewModel: BaseViewModel {
         return cellViewModel
     }
 
+    /// 동네 인기 가게 - 동네 선택
     private func bindPopularStoreNeighborhoodsViewModel() -> CommunityPopularStoreNeighborhoodsViewModel {
         let viewModel = CommunityPopularStoreNeighborhoodsViewModel()
 
@@ -186,16 +188,24 @@ final class CommunityViewModel: BaseViewModel {
         return viewModel
     }
 
+    /// 투표 목록
     private func bindPollListCellViewModel() -> CommunityPollListCellViewModel {
         let config = CommunityPollListCellViewModel.Config(screenName: output.screenName)
         let cellViewModel = CommunityPollListCellViewModel(config: config)
+        
+        input.viewWillAppear
+            .subscribe(cellViewModel.input.loadPollList)
+            .store(in: &cancellables)
 
         cellViewModel.output.didSelectCategory
             .withUnretained(self)
             .handleEvents(receiveOutput: { (owner: CommunityViewModel, _) in
                 owner.sendClickPollCategoryLog()
             })
-            .map { owner, _ in .pollCategoryTab(owner.bindPollCategoryTabViewModel()) }
+            .map { owner, category in 
+                let viewModel = owner.bindPollCategoryTabViewModel(with: category)
+                return .pollCategoryTab(viewModel) 
+            }
             .subscribe(output.route)
             .store(in: &cancellables)
 
@@ -216,12 +226,13 @@ final class CommunityViewModel: BaseViewModel {
         return cellViewModel
     }
 
-    private func bindPollCategoryTabViewModel() -> PollCategoryTabViewModel {
-        let viewModel = PollCategoryTabViewModel()
-
-        viewModel.output.updatePollList
-            .subscribe(pollListCellViewModel.input.reload)
-            .store(in: &cancellables)
+    /// 투표 카테고리 탭 목록
+    private func bindPollCategoryTabViewModel(with category: PollCategoryResponse) -> PollCategoryTabViewModel {
+        let config = PollCategoryTabViewModel.Config(
+            categoryId: category.categoryId, 
+            categoryName: category.title
+        )
+        let viewModel = PollCategoryTabViewModel(config: config)
 
         return viewModel
     }
