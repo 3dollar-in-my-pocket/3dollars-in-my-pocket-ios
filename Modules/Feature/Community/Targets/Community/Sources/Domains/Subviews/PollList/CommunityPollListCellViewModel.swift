@@ -21,7 +21,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
         let categoryName = CurrentValueSubject<String?, Never>(nil)
         let sections = CurrentValueSubject<[CommunityPollListCellSection], Never>([])
         let didSelectPollItem = PassthroughSubject<String, Never>()
-        let didSelectCategory = PassthroughSubject<String, Never>()
+        let didSelectCategory = PassthroughSubject<PollCategoryResponse, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
     }
 
@@ -84,7 +84,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
 
         input.didSelectCategory
             .withUnretained(self)
-            .compactMap { owner, _ in owner.state.category?.categoryId }
+            .compactMap { owner, _ in owner.state.category }
             .subscribe(output.didSelectCategory)
             .store(in: &cancellables)
 

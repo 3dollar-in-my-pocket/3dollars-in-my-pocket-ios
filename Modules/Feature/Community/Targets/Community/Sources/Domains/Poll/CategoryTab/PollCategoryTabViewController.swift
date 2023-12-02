@@ -4,17 +4,20 @@ import Combine
 import DesignSystem
 import Common
 import Log
+import Model
 
 final class PollCategoryTabViewController: BaseViewController {
     override var screenName: ScreenName {
         return viewModel.output.screenName
     }
 
-    private let navigationBar = CommunityNavigationBar(title: "맛대맛 투표")
-//    private let tabView = CommunityTabView(titles: ["실시간 참여순", "최신순"])
-//    private let lineView: UIView = UIView().then {
-//        $0.backgroundColor = Colors.gray20.color
-//    }
+    private lazy var navigationBar = CommunityNavigationBar(title: viewModel.output.categoryName)
+    private let tabView: CommunityTabView = CommunityTabView(titles: PollListSortType.list.compactMap { $0.title }).then {
+        $0.isUserInteractionEnabled = false
+    }
+    private let lineView: UIView = UIView().then {
+        $0.backgroundColor = Colors.gray20.color
+    }
     private let pageContainerView = UIView()
     private let pageViewController = BasePageViewController(
         transitionStyle: .scroll,
@@ -64,8 +67,8 @@ final class PollCategoryTabViewController: BaseViewController {
 
         view.addSubViews([
             navigationBar,
-//            lineView,
-//            tabView,
+            lineView,
+            tabView,
             createPollButton
         ])
 
@@ -74,16 +77,16 @@ final class PollCategoryTabViewController: BaseViewController {
             $0.leading.trailing.equalToSuperview()
         }
 
-//        tabView.snp.makeConstraints {
-//            $0.top.equalTo(navigationBar.snp.bottom)
-//            $0.leading.trailing.equalToSuperview().inset(20)
-//        }
+        tabView.snp.makeConstraints {
+            $0.top.equalTo(navigationBar.snp.bottom)
+            $0.leading.trailing.equalToSuperview().inset(20)
+        }
 
-//        lineView.snp.makeConstraints {
-//            $0.leading.trailing.equalToSuperview()
-//            $0.bottom.equalTo(tabView)
-//            $0.height.equalTo(1)
-//        }
+        lineView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(tabView)
+            $0.height.equalTo(1)
+        }
 
         createPollButton.snp.makeConstraints {
             $0.height.equalTo(44)
@@ -108,42 +111,49 @@ final class PollCategoryTabViewController: BaseViewController {
 
         view.addSubview(pageContainerView)
         pageContainerView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom)
-//            $0.top.equalTo(tabView.snp.bottom)
+            $0.top.equalTo(tabView.snp.bottom)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
 
-    private func changePage(to index: Int) {
+    private func changePage(to index: Int, animated: Bool) {
         guard let viewController = pageContentViewControllers[safe: index] else { return }
-
+        
         var direction: UIPageViewController.NavigationDirection = .forward
         let currentIndex = pageContentViewControllers.firstIndex(where: {
             $0 == pageViewController.viewControllers?.first
-        })
+        }) ?? 0
 
-        if let currentIndex, index < currentIndex {
+        if index < currentIndex {
             direction = .reverse
         }
 
         pageViewController.setViewControllers(
             [viewController],
             direction: direction,
-            animated: true
-        )
+            animated: animated)
     }
 
     override func bindEvent() {
         super.bindEvent()
 
-//        tabView.didTap
-//            .main
-//            .withUnretained(self)
-//            .sink { owner, index in
-//                owner.changePage(to: index)
-//            }
-//            .store(in: &cancellables)
+        pageViewController.transitionInProgress
+            .main
+            .removeDuplicates()
+            .withUnretained(self)
+            .sink { owner, transitionInProgress in
+                owner.tabView.isUserInteractionEnabled = !transitionInProgress
+            }
+            .store(in: &cancellables)
+        
+        tabView.didTap
+            .main
+            .withUnretained(self)
+            .sink { owner, index in
+                owner.changePage(to: index, animated: true)
+            }
+            .store(in: &cancellables)
 
         navigationBar.backButton
             .controlPublisher(for: .touchUpInside)
@@ -169,7 +179,8 @@ final class PollCategoryTabViewController: BaseViewController {
                 owner.pageContentViewControllers = tabList.map {
                     PollListViewController(viewModel: $0)
                 }
-                owner.changePage(to: .zero)
+                owner.changePage(to: .zero, animated: false)
+                owner.tabView.isUserInteractionEnabled = true
             }
             .store(in: &cancellables)
 
@@ -209,6 +220,15 @@ final class PollCategoryTabViewController: BaseViewController {
                 owner.showErrorAlert(error: error)
             }
             .store(in: &cancellables)
+        
+        viewModel.output.changeTab
+            .main
+            .withUnretained(self)
+            .sink { owner, index in
+                owner.tabView.updateSelect(index)
+                owner.changePage(to: index, animated: false)
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -233,6 +253,6 @@ extension PollCategoryTabViewController: UIPageViewControllerDelegate {
         guard let changedViewController = pageViewController.viewControllers?.first as? PollListViewController,
               let changedIndex = pageContentViewControllers.firstIndex(of: changedViewController) else { return }
 
-//        tabView.updateSelect(changedIndex)
+        tabView.updateSelect(changedIndex)
     }
 }

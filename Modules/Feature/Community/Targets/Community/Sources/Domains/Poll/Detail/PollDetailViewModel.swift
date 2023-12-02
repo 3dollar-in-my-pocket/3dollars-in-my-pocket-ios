@@ -28,6 +28,7 @@ final class PollDetailViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
         let completedWriteComment = PassthroughSubject<Void, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
+        let updatePoll = PassthroughSubject<PollWithMetaApiResponse, Never>()
     }
 
     struct State {
@@ -239,6 +240,10 @@ final class PollDetailViewModel: BaseViewModel {
 //        cellViewModel.output.reloadComments.mapVoid
 //            .subscribe(state.loadComments)
 //            .store(in: &cancellables)
+        
+        cellViewModel.output.updatePoll
+            .subscribe(output.updatePoll)
+            .store(in: &cancellables)
 
         cellViewModel.output.showErrorAlert
             .subscribe(output.showErrorAlert)

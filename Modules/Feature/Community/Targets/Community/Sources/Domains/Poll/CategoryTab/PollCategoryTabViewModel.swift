@@ -9,18 +9,24 @@ final class PollCategoryTabViewModel: BaseViewModel {
     struct Input {
         let firstLoad = PassthroughSubject<Void, Never>()
         let didTapCreatePollButton = PassthroughSubject<Void, Never>()
-        let updatePollList = PassthroughSubject<Void, Never>()
+        let pollCreated = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
+        let categoryName: String
         let screenName: ScreenName = .pollList
         let tabList = CurrentValueSubject<[PollListViewModel], Never>([])
         let createPollButtonTitle = CurrentValueSubject<String?, Never>(nil)
         let isEnabledCreatePollButton = CurrentValueSubject<Bool, Never>(false)
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
-        let updatePollList = PassthroughSubject<Void, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
+        let changeTab = PassthroughSubject<Int, Never>()
+    }
+    
+    struct Config {
+        let categoryId: String
+        let categoryName: String
     }
 
     struct State {
@@ -32,30 +38,29 @@ final class PollCategoryTabViewModel: BaseViewModel {
     }
 
     let input = Input()
-    let output = Output()
+    let output: Output
 
     private var state = State()
     
-    private let categoryId: String
+    private let config: Config
     private let communityService: CommunityServiceProtocol
     private let logManager: LogManagerProtocol
 
     init(
-        categoryId: String,
+        config: Config,
         communityService: CommunityServiceProtocol = CommunityService(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.categoryId = categoryId
+        self.config = config
         self.communityService = communityService
         self.logManager = logManager
+        self.output = Output(categoryName: config.categoryName)
 
         super.init()
 
-        // 현재는 탭 없이 최신순 목록만 보여줌
-        output.tabList.send([
-            bindPollListViewModel()
-//            bindPollListViewModel()
-        ])
+        output.tabList.send(PollListSortType.list.map {
+            bindPollListViewModel(with: $0)
+        })
     }
 
     override func bind() {
@@ -89,8 +94,10 @@ final class PollCategoryTabViewModel: BaseViewModel {
             .subscribe(output.route)
             .store(in: &cancellables)
 
-        input.updatePollList
-            .subscribe(output.updatePollList)
+        input.pollCreated
+            .withUnretained(self)
+            .compactMap { _ in PollListSortType.list.firstIndex(where: { $0 == .latest })}
+            .subscribe(output.changeTab)
             .store(in: &cancellables)
     }
 
@@ -101,15 +108,16 @@ final class PollCategoryTabViewModel: BaseViewModel {
         output.isEnabledCreatePollButton.send(isEnabled)
     }
 
-    private func bindPollListViewModel() -> PollListViewModel {
+    private func bindPollListViewModel(with sortType: PollListSortType) -> PollListViewModel {
         let config = PollListViewModel.Config(
             screenName: output.screenName,
-            categoryId: categoryId
+            categoryId: config.categoryId,
+            sortType: sortType
         )
         let viewModel = PollListViewModel(config: config)
 
-        output.updatePollList
-            .subscribe(viewModel.input.reload)
+        input.pollCreated
+            .subscribe(viewModel.input.pollCreated)
             .store(in: &cancellables)
 
         return viewModel
@@ -122,7 +130,7 @@ final class PollCategoryTabViewModel: BaseViewModel {
         )
 
         viewModel.output.created
-            .subscribe(input.updatePollList)
+            .subscribe(input.pollCreated)
             .store(in: &cancellables)
 
         return viewModel

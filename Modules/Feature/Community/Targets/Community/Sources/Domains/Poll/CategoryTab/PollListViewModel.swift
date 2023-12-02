@@ -8,6 +8,7 @@ import Log
 final class PollListViewModel: BaseViewModel {
     struct Input {
         let firstLoad = PassthroughSubject<Void, Never>()
+        let pollCreated = PassthroughSubject<Void, Never>()
         let reload = PassthroughSubject<Void, Never>()
         let didSelectPollItem = PassthroughSubject<Int, Never>()
         let willDisplaytCell = PassthroughSubject<Int, Never>()
@@ -19,10 +20,13 @@ final class PollListViewModel: BaseViewModel {
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
+        let scrollToTop = PassthroughSubject<Void, Never>()
+        /// 특정 투표 아이템이 업데이트됨
+        let updatePoll = PassthroughSubject<PollWithMetaApiResponse, Never>()
     }
 
     struct State {
-        var items: [PollWithMetaApiResponse] = []
+        var items: [PollItemCellViewModel] = []
         var nextCursor: String? = nil
         var hasMore: Bool = false
         let loadMore = PassthroughSubject<Void, Never>()
@@ -35,7 +39,7 @@ final class PollListViewModel: BaseViewModel {
     struct Config {
         let screenName: ScreenName
         let categoryId: String
-        let sortType: PollListSortType = .latest // 현재 따로 변경하고 있지는 않음
+        let sortType: PollListSortType
     }
 
     let input = Input()
@@ -65,11 +69,14 @@ final class PollListViewModel: BaseViewModel {
             .merge(with: input.reload)
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
+                owner.state.nextCursor = nil
+                owner.state.hasMore = false
                 owner.output.showLoading.send(true)
             })
             .compactMap { owner, _ in
                 return FetchPollsRequestInput(
                     categoryId: owner.config.categoryId,
+                    sortType: owner.config.sortType,
                     cursor: owner.state.nextCursor
                 )
             }
@@ -82,7 +89,7 @@ final class PollListViewModel: BaseViewModel {
                 owner.output.showLoading.send(false)
                 switch result {
                 case .success(let response):
-                    owner.state.items.append(contentsOf: response.contents)
+                    owner.state.items = response.contents.map { owner.bindPollItemCellViewModel(with: $0) }
                     owner.state.hasMore = response.cursor.hasMore
                     owner.state.nextCursor = response.cursor.nextCursor
                     owner.updateDataSource()
@@ -125,6 +132,7 @@ final class PollListViewModel: BaseViewModel {
             .compactMap { owner, _ in
                 return FetchPollsRequestInput(
                     categoryId: owner.config.categoryId,
+                    sortType: owner.config.sortType,
                     cursor: owner.state.nextCursor
                 )
             }
@@ -136,7 +144,7 @@ final class PollListViewModel: BaseViewModel {
             .sink { owner, result in
                 switch result {
                 case .success(let response):
-                    owner.state.items.append(contentsOf: response.contents)
+                    owner.state.items.append(contentsOf: response.contents.map { owner.bindPollItemCellViewModel(with: $0) })
                     owner.state.hasMore = response.cursor.hasMore
                     owner.state.nextCursor = response.cursor.nextCursor
                     owner.updateDataSource()
@@ -145,11 +153,20 @@ final class PollListViewModel: BaseViewModel {
                 }
             }
             .store(in: &cancellables)
+        
+        input.pollCreated
+            .withUnretained(self)
+            .filter { owner, _ in owner.config.sortType == .latest }
+            .sink { owner, _ in
+                owner.input.reload.send()
+                owner.output.scrollToTop.send()
+            }
+            .store(in: &cancellables)
     }
 
     private func updateDataSource() {
         let sectionItems: [PollListSectionItem] = state.items.map {
-            .poll(bindPollItemCellViewModel(with: $0))
+            .poll($0)
         }
         output.dataSource.send([
             PollListSection(items: sectionItems)
@@ -159,11 +176,19 @@ final class PollListViewModel: BaseViewModel {
     private func bindPollItemCellViewModel(with data: PollWithMetaApiResponse) -> PollItemCellViewModel {
         let config = PollItemCellViewModel.Config(screenName: config.screenName, data: data)
         let cellViewModel = PollItemCellViewModel(config: config)
+        output.updatePoll
+            .filter { $0.poll.pollId == cellViewModel.pollId }
+            .subscribe(cellViewModel.output.item)
+            .store(in: &cancellables)
+        
         return cellViewModel
     }
 
     private func bindPollDetailViewModel(with pollId: String) -> PollDetailViewModel {
         let viewModel = PollDetailViewModel(pollId: pollId)
+        viewModel.output.updatePoll
+            .subscribe(output.updatePoll)
+            .store(in: &cancellables)
         return viewModel
     }
 
