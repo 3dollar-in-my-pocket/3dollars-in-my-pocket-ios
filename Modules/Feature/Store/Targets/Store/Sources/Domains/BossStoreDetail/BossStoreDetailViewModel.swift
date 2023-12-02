@@ -7,6 +7,7 @@ import Model
 import Common
 import DependencyInjection
 import AppInterface
+import Log
 
 final class BossStoreDetailViewModel: BaseViewModel {
 
@@ -27,6 +28,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .bossStoreDetail
         let dataSource = CurrentValueSubject<[BossStoreDetailSection], Never>([])
         let showLoading = PassthroughSubject<Bool, Never>()
         let toast = PassthroughSubject<String, Never>()
@@ -58,17 +60,20 @@ final class BossStoreDetailViewModel: BaseViewModel {
     private var state = State()
     private let storeService: StoreServiceProtocol
     private let userDefaults: UserDefaultsUtil
+    private let logManager: LogManagerProtocol
 
     private let storeId: String
 
     init(
         storeId: String,
         storeService: StoreServiceProtocol = StoreService(),
-        userDefaults: UserDefaultsUtil = .shared
+        userDefaults: UserDefaultsUtil = .shared,
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.storeId = storeId
         self.storeService = storeService
         self.userDefaults = userDefaults
+        self.logManager = logManager
 
         super.init()
 
@@ -110,6 +115,9 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
         input.didTapReviewWriteButton
             .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: BossStoreDetailViewModel, _) in
+                owner.sendClickLog(eventName: .clickWriteReview)
+            })
             .map { owner, _ in
                 owner.bindFeedbackViewModel(
                     with: owner.state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
@@ -126,6 +134,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .sink { owner, _ in
                 let isDeleted = owner.state.storeDetailData?.overview.isFavorited == true
                 owner.saveStore(isDelete: isDeleted)
+                owner.sendClickFavoriteLog(isDelete: isDeleted)
             }
             .store(in: &cancellables)
 
@@ -133,10 +142,14 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.shareKakao()
+                owner.sendClickLog(eventName: .clickShare)
             }
             .store(in: &cancellables)
 
         input.didTapNavigation
+            .handleEvents(receiveOutput: { [weak self] in
+                self?.sendClickLog(eventName: .clickNavigation)
+            })
             .map { .presentNavigation }
             .subscribe(output.route)
             .store(in: &cancellables)
@@ -150,6 +163,9 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
         input.didTapSnsButton
             .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: BossStoreDetailViewModel, _) in
+                owner.sendClickLog(eventName: .clickSns)
+            })
             .compactMap { owner, _ in
                 if let snsUrl = owner.state.storeDetailData?.overview.snsUrl {
                     return URL(string: snsUrl)
@@ -342,5 +358,26 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         return cellViewModel
+    }
+}
+
+extension BossStoreDetailViewModel {
+    private func sendClickFavoriteLog(isDelete: Bool) {
+        let value = isDelete ? "off" : "on"
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickFavorite,
+            extraParameters: [
+                .storeId: storeId,
+                .value: value
+            ]
+        ))
+    }
+    
+    private func sendClickLog(eventName: EventName) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: eventName,
+            extraParameters: [.storeId: storeId]))
     }
 }

@@ -3,6 +3,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 final class PollDetailCommentCellViewModel: BaseViewModel {
     struct Input {
@@ -11,6 +12,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName
         let item: PollCommentWithUserApiResponse
         let isMine: Bool
         let showLoading = PassthroughSubject<Bool, Never>()
@@ -23,29 +25,39 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
     struct State {
 
     }
+    
+    struct Config {
+        let screenName: ScreenName
+        let pollId: String
+        let commentId: String
+        let data: PollCommentWithUserApiResponse
+    }
 
     lazy var identifier = ObjectIdentifier(self)
 
     let input = Input()
     let output: Output
+    let config: Config
 
+    private var commentId: String {
+        config.data.comment.commentId
+    }
     private var state = State()
     private let communityService: CommunityServiceProtocol
-
-    private let pollId: String
-    private let commentId: String
+    private let logManager: LogManagerProtocol
 
     init(
-        pollId: String,
-        data: PollCommentWithUserApiResponse,
-        communityService: CommunityServiceProtocol = CommunityService()
+        config: Config,
+        communityService: CommunityServiceProtocol = CommunityService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.pollId = pollId
-        self.commentId = data.comment.commentId
+        self.config = config
         self.communityService = communityService
+        self.logManager = logManager
         self.output = Output(
-            item: data,
-            isMine: data.comment.isOwner
+            screenName: config.screenName,
+            item: config.data,
+            isMine: config.data.comment.isOwner
         )
 
         super.init()
@@ -59,6 +71,9 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
         didTapReportOrUpdateButton
             .withUnretained(self)
             .filter { owner, _ in owner.output.isMine }
+            .handleEvents(receiveOutput: { (owner: PollDetailCommentCellViewModel, _) in
+                owner.sendClickDeleteReviewLog(reviewId: owner.commentId)
+            })
             .mapVoid
             .subscribe(output.showDeleteAlert)
             .store(in: &cancellables)
@@ -70,7 +85,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
             })
             .asyncMap { owner, input in
                 await owner.communityService.deletePollComment(
-                    pollId: owner.pollId,
+                    pollId: owner.config.pollId,
                     commentId: owner.commentId
                 )
             }
@@ -94,9 +109,31 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
         report
             .withUnretained(self)
             .sink { owner, _ in
+                owner.sendClickReportReviewLog(reviewId: owner.commentId)
                 owner.output.didTapReportButton.send(owner.commentId)
             }
             .store(in: &cancellables)
+    }
+}
+
+extension PollDetailCommentCellViewModel {
+    private func sendClickReportReviewLog(reviewId: String) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickReport,
+            extraParameters: [
+                .reviewId: reviewId
+            ]
+        ))
+    }
+    
+    private func sendClickDeleteReviewLog(reviewId: String) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickDeleteReview,
+            extraParameters: [
+                .reviewId: reviewId
+            ]))
     }
 }
 

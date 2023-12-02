@@ -4,6 +4,7 @@ import Combine
 import Networking
 import Model
 import Common
+import Log
 
 final class CreatePollModalViewModel: BaseViewModel {
 
@@ -15,6 +16,7 @@ final class CreatePollModalViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .createPoll
         let pollRetentionDays: Int
         let limitCount: Int
         let showLoading = PassthroughSubject<Bool, Never>()
@@ -38,18 +40,20 @@ final class CreatePollModalViewModel: BaseViewModel {
 
     private var state = State()
     private let communityService: CommunityServiceProtocol
+    private let logManager: LogManagerProtocol
 
     init(
         pollRetentionDays: Int?,
         limitCount: Int?,
-        communityService: CommunityServiceProtocol = CommunityService()
+        communityService: CommunityServiceProtocol = CommunityService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.output = Output(
             pollRetentionDays: pollRetentionDays ?? 3,
             limitCount: limitCount ?? 1
         )
         self.communityService = communityService
-
+        self.logManager = logManager
         super.init()
     }
 
@@ -82,6 +86,7 @@ final class CreatePollModalViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink { owner, result in
+                owner.sendClickCreatePollLog()
                 owner.output.showLoading.send(false)
                 switch result {
                 case .success(let response):
@@ -101,5 +106,20 @@ final class CreatePollModalViewModel: BaseViewModel {
             }
             .subscribe(output.isEnabledCreateButton)
             .store(in: &cancellables)
+    }
+}
+
+// MARK: Log
+extension CreatePollModalViewModel {
+    private func sendClickCreatePollLog() {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickCreatePoll,
+            extraParameters: [
+                .title: input.title.value,
+                .pollFirstOption: input.firstOption.value,
+                .pollSecondOption: input.secondOption.value
+            ]
+        ))
     }
 }

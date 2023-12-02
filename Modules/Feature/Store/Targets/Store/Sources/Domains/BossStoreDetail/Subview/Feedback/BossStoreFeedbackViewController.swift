@@ -5,9 +5,13 @@ import Combine
 import Then
 import Common
 import DesignSystem
+import Log
 
 final class BossStoreFeedbackViewController: BaseViewController {
-
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     enum Layout {
 
     }

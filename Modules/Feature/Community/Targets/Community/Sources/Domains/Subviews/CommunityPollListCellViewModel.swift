@@ -4,6 +4,7 @@ import Foundation
 import Common
 import Model
 import Networking
+import Log
 
 final class CommunityPollListCellViewModel: BaseViewModel {
     struct Input {
@@ -23,19 +24,26 @@ final class CommunityPollListCellViewModel: BaseViewModel {
 
     struct State {
     }
+    
+    struct Config {
+        let screenName: ScreenName
+    }
 
     lazy var identifier = ObjectIdentifier(self)
 
     let input = Input()
     let output: Output
+    let config: Config
 
     private var state = State()
 
     private let communityService: CommunityServiceProtocol
 
     init(
+        config: Config,
         communityService: CommunityServiceProtocol = CommunityService()
     ) {
+        self.config = config
         self.communityService = communityService
         self.output = Output()
 
@@ -90,7 +98,8 @@ final class CommunityPollListCellViewModel: BaseViewModel {
     }
 
     private func bindPollItemCellViewModel(with data: PollWithMetaApiResponse) -> PollItemCellViewModel {
-        let cellViewModel = PollItemCellViewModel(data: data)
+        let config = PollItemCellViewModel.Config(screenName: config.screenName, data: data)
+        let cellViewModel = PollItemCellViewModel(config: config)
         
         cellViewModel.output.showErrorAlert
             .subscribe(output.showErrorAlert)

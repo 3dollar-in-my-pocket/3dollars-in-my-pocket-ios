@@ -4,8 +4,12 @@ import CoreLocation
 import Common
 import Model
 import DesignSystem
+import Log
 
 final class VisitViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
     private let visitView = VisitView()
     private let viewModel: VisitViewModel
     

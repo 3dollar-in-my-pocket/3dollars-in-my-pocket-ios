@@ -12,4 +12,12 @@ public enum ParameterName: String {
     case value
     case advertisementId = "advertisement_id"
     case categoryId = "category_id"
+    case count
+    case reviewId = "review_id"
+    case rating
+    case pollId = "poll_id"
+    case optionId = "option_id"
+    case title
+    case pollFirstOption = "poll_first_option"
+    case pollSecondOption = "poll_second_option"
 }

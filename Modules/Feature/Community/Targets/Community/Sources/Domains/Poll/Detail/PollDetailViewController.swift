@@ -3,8 +3,12 @@ import UIKit
 import DesignSystem
 import Then
 import Common
+import Log
 
 final class PollDetailViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
 
     private lazy var navigationBar = CommunityNavigationBar(rightButtons: [reportButton])
 

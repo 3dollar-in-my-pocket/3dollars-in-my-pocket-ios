@@ -3,8 +3,12 @@ import UIKit
 import DesignSystem
 import Then
 import Common
+import Log
 
 final class BossStoreDetailViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
     
     private let backButton = UIButton().then {
         $0.setImage(Icons.arrowLeft.image.withTintColor(Colors.gray100.color), for: .normal)

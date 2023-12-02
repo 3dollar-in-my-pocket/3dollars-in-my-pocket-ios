@@ -3,6 +3,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 final class PollCategoryTabViewModel: BaseViewModel {
     struct Input {
@@ -12,6 +13,7 @@ final class PollCategoryTabViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .pollList
         let tabList = CurrentValueSubject<[PollListViewModel], Never>([])
         let createPollButtonTitle = CurrentValueSubject<String?, Never>(nil)
         let isEnabledCreatePollButton = CurrentValueSubject<Bool, Never>(false)
@@ -34,11 +36,14 @@ final class PollCategoryTabViewModel: BaseViewModel {
 
     private var state = State()
     private let communityService: CommunityServiceProtocol
+    private let logManager: LogManagerProtocol
 
     init(
-        communityService: CommunityServiceProtocol = CommunityService()
+        communityService: CommunityServiceProtocol = CommunityService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.communityService = communityService
+        self.logManager = logManager
 
         super.init()
 
@@ -71,6 +76,9 @@ final class PollCategoryTabViewModel: BaseViewModel {
 
         input.didTapCreatePollButton
             .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: PollCategoryTabViewModel, _) in
+                owner.sendClickCreatePollLog()
+            })
             .map { owner, _ in
                 .createPoll(owner.bindCreatePollModalViewModel())
             }
@@ -90,7 +98,8 @@ final class PollCategoryTabViewModel: BaseViewModel {
     }
 
     private func bindPollListViewModel() -> PollListViewModel {
-        let viewModel = PollListViewModel()
+        let config = PollListViewModel.Config(screenName: output.screenName)
+        let viewModel = PollListViewModel(config: config)
 
         output.updatePollList
             .subscribe(viewModel.input.reload)
@@ -110,5 +119,15 @@ final class PollCategoryTabViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         return viewModel
+    }
+}
+
+// MARK: Log
+extension PollCategoryTabViewModel {
+    private func sendClickCreatePollLog() {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickCreatePoll
+        ))
     }
 }

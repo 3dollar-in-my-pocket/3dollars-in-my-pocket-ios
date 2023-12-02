@@ -4,6 +4,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 final class ReviewListViewModel: BaseViewModel {
     enum Constant {
@@ -22,6 +23,7 @@ final class ReviewListViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .reviewList
         let sortType = CurrentValueSubject<SubtabStackView.SortType, Never>(.latest)
         let sections = PassthroughSubject<[ReviewListSection], Never>()
         let scrollToTop = PassthroughSubject<Void, Never>()
@@ -56,18 +58,21 @@ final class ReviewListViewModel: BaseViewModel {
     private var state = State()
     private let reviewService: ReviewServiceProtocol
     private let reportService: ReportServiceProtocol
+    private let logManager: LogManagerProtocol
     private let userDefaults: UserDefaultsUtil
     
     init(
         config: Config,
         reviewService: ReviewServiceProtocol = ReviewService(),
         reportService: ReportServiceProtocol = ReportService(),
-        userDefaults: UserDefaultsUtil = .shared
+        userDefaults: UserDefaultsUtil = .shared,
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
         self.reviewService = reviewService
         self.reportService = reportService
         self.userDefaults = userDefaults
+        self.logManager = logManager
     }
     
     override func bind() {
@@ -95,6 +100,7 @@ final class ReviewListViewModel: BaseViewModel {
                 owner.state.reviews.removeAll()
                 owner.fetchReviewList()
                 owner.output.scrollToTop.send(())
+                owner.sendClickSortLog(sortType: sortType)
             }
             .store(in: &cancellables)
         
@@ -104,8 +110,10 @@ final class ReviewListViewModel: BaseViewModel {
                 guard let review = owner.state.reviews[safe: index] else { return }
                 
                 if review.user.userId == owner.userDefaults.userId {
+                    owner.sendClickEditReviewLog(reviewId: review.reviewId)
                     owner.presentWriteReviewBottomSheet(review: review)
                 } else {
+                    owner.sendClickReportReviewLog(reviewId: review.reviewId)
                     owner.presentReportReviewBottomSheet(review: review)
                 }
             }
@@ -115,6 +123,7 @@ final class ReviewListViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: ReviewListViewModel, _) in
                 owner.presentWriteReviewBottomSheet(review: nil)
+                owner.sendClickWriteReviewLog()
             }
             .store(in: &cancellables)
         
@@ -260,5 +269,42 @@ final class ReviewListViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         
         return viewModel
+    }
+}
+
+// MARK: Log
+extension ReviewListViewModel {
+    private func sendClickSortLog(sortType: SubtabStackView.SortType) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickSort,
+            extraParameters: [
+                .type: sortType.rawValue
+            ]
+        ))
+    }
+    
+    private func sendClickEditReviewLog(reviewId: Int) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickEditReview,
+            extraParameters: [
+                .reviewId: reviewId
+            ]
+        ))
+    }
+    
+    private func sendClickReportReviewLog(reviewId: Int) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickReport,
+            extraParameters: [
+                .reviewId: reviewId
+            ]
+        ))
+    }
+    
+    private func sendClickWriteReviewLog() {
+        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickWriteReview))
     }
 }

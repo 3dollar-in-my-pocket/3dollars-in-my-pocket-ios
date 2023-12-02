@@ -4,6 +4,7 @@ import Combine
 import Networking
 import Model
 import Common
+import Log
 
 final class BossStoreFeedbackViewModel: BaseViewModel {
     struct Input {
@@ -13,6 +14,7 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .bossStoreReview
         let dataSource: CurrentValueSubject<[BossStoreFeedbackSectionItem], Never>
         let showLoading = PassthroughSubject<Bool, Never>()
         let isEnabledButton = CurrentValueSubject<Bool, Never>(false)
@@ -38,15 +40,18 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
     private let storeId: String
     private let feedbackTypes: [FeedbackType]
     private let feedbackService: FeedbackServiceProtocol
+    private let logmanager: LogManagerProtocol
 
     init(
         storeId: String,
         feedbackTypes: [FeedbackType],
-        feedbackService: FeedbackServiceProtocol = FeedbackService()
+        feedbackService: FeedbackServiceProtocol = FeedbackService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.storeId = storeId
         self.feedbackTypes = feedbackTypes
         self.feedbackService = feedbackService
+        self.logmanager = logManager
 
         self.output = Output(dataSource: .init(feedbackTypes.map { .feedback(item: $0, isSelected: false) }))
 
@@ -60,7 +65,7 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
             .removeDuplicates()
             .withUnretained(self)
             .sink { (owner: BossStoreFeedbackViewModel, sectionItem: BossStoreFeedbackSectionItem) in
-                if case .feedback(let item, let _) = sectionItem {
+                if case .feedback(let item, _) = sectionItem {
                     if owner.state.selectItems.contains(item) {
                         owner.state.selectItems.remove(item)
                     } else {
@@ -90,8 +95,9 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, result in
                 owner.output.showLoading.send(false)
+                owner.sendClickWriteReviewLog()
                 switch result {
-                case .success(let _):
+                case .success(_):
                     owner.output.showToast.send("소중한 리뷰가 사장님께 전달되었습니다!")
                     owner.output.route.send(.back)
                     owner.output.sendFeedbacks.send()
@@ -100,5 +106,16 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
                 }
             }
             .store(in: &cancellables)
+    }
+}
+
+// MARK: Log
+extension BossStoreFeedbackViewModel {
+    private func sendClickWriteReviewLog() {
+        logmanager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickWriteReview,
+            extraParameters: [.storeId: storeId]
+        ))
     }
 }

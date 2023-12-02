@@ -3,8 +3,12 @@ import UIKit
 import Common
 import DesignSystem
 import PanModal
+import Log
 
 final class ReportBottomSheetViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
     private let reportBottomSheet = ReportBottomSheet()
     private let viewModel: ReportBottomSheetViewModel
     

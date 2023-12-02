@@ -1,14 +1,13 @@
 import UIKit
 
+import Then
+
 import Model
 import DesignSystem
-import Then
 import Common
-import DependencyInjection
 import StoreInterface
 
 public final class CommunityViewController: BaseViewController {
-
     private let communityView = CommunityView()
     private let viewModel: CommunityViewModel
     private lazy var dataSource = CommunityDataSource(
@@ -52,6 +51,12 @@ public final class CommunityViewController: BaseViewController {
         super.viewDidLoad()
 
         viewModel.input.firstLoad.send(())
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        viewModel.input.viewWillAppear.send(())
     }
 
     public override func bindEvent() {
@@ -104,8 +109,7 @@ public final class CommunityViewController: BaseViewController {
     }
 
     private func pushStoreDetail(storeId: Int) {
-        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else  { return }
-        let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
+        let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
 
         navigationController?.pushViewController(viewController, animated: true)
     }
