@@ -130,6 +130,7 @@ final class CommunityViewModel: BaseViewModel {
         var sections: [CommunitySection] = []
 
         sections.append(.init(type: .pollList, items: [.poll(pollListCellViewModel)]))
+        sections.append(.init(type: .banner, items: [.banner]))
         sections.append(.init(type: .popularStoreTab, items: [.popularStoreTab(storeTabCellViewModel)]))
 
         sections.append(.init(type: .popularStore, items: state.storeList.value.map {

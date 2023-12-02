@@ -8,6 +8,7 @@ struct CommunitySection: Hashable {
         case pollList
         case popularStoreTab
         case popularStore
+        case banner
     }
 
     var type: SectionType
@@ -21,6 +22,8 @@ struct CommunitySection: Hashable {
             hasher.combine("popularStoreTab")
         case .popularStore:
             hasher.combine("popularStore")
+        case .banner:
+            hasher.combine("banner")
         }
     }
 }
@@ -29,6 +32,7 @@ enum CommunitySectionItem: Hashable {
     case poll(CommunityPollListCellViewModel)
     case popularStoreTab(CommunityPopularStoreTabCellViewModel)
     case popularStore(PlatformStore)
+    case banner
 
     var identifier: String {
         switch self {
@@ -38,6 +42,8 @@ enum CommunitySectionItem: Hashable {
             return String(viewModel.identifier.hashValue)
         case .popularStore(let item):
             return item.id
+        case .banner:
+            return "banner"
         }
     }
 
@@ -56,16 +62,17 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
 
     private let viewModel: CommunityViewModel
 
-    init(collectionView: UICollectionView, viewModel: CommunityViewModel) {
+    init(collectionView: UICollectionView, viewModel: CommunityViewModel, containerVC: UIViewController) {
         self.viewModel = viewModel
 
         collectionView.register([
             CommunityPollListCell.self,
             CommunityPopularStoreTabCell.self,
-            CommunityPopularStoreItemCell.self
+            CommunityPopularStoreItemCell.self,
+            CommunityBannerCell.self
         ])
 
-        super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+        super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .poll(let cellViewModel):
                 let cell: CommunityPollListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
@@ -78,6 +85,10 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
             case .popularStore(let item):
                 let cell: CommunityPopularStoreItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(item: item)
+                return cell
+            case .banner:
+                let cell: CommunityBannerCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(in: containerVC)
                 return cell
             }
         }
@@ -112,6 +123,8 @@ extension CommunityDataSource: UICollectionViewDelegateFlowLayout {
             return CommunityPopularStoreTabCell.Layout.size
         case .popularStore:
             return CommunityPopularStoreItemCell.Layout.size
+        case .banner:
+            return CommunityBannerCell.Layout.size
         default:
             return .zero
         }

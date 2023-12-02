@@ -12,7 +12,8 @@ public final class CommunityViewController: BaseViewController {
     private let viewModel: CommunityViewModel
     private lazy var dataSource = CommunityDataSource(
         collectionView: communityView.collectionView,
-        viewModel: viewModel
+        viewModel: viewModel,
+        containerVC: self
     )
 
     init(viewModel: CommunityViewModel = CommunityViewModel()) {
