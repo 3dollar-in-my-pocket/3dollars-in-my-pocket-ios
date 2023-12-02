@@ -3,6 +3,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 final class PollListViewModel: BaseViewModel {
     struct Input {
@@ -13,6 +14,7 @@ final class PollListViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .pollList
         let dataSource = CurrentValueSubject<[PollListSection], Never>([])
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
@@ -138,7 +140,8 @@ final class PollListViewModel: BaseViewModel {
     }
 
     private func bindPollItemCellViewModel(with data: PollWithMetaApiResponse) -> PollItemCellViewModel {
-        let cellViewModel = PollItemCellViewModel(data: data)
+        let config = PollItemCellViewModel.Config(screenName: output.screenName, data: data)
+        let cellViewModel = PollItemCellViewModel(config: config)
         return cellViewModel
     }
 

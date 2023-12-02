@@ -4,6 +4,7 @@ import Combine
 import Networking
 import Model
 import Common
+import Log
 
 final class PollDetailViewModel: BaseViewModel {
 
@@ -20,6 +21,7 @@ final class PollDetailViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .pollDetail
         let dataSource = CurrentValueSubject<[PollDetailSection], Never>([])
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
@@ -224,7 +226,8 @@ final class PollDetailViewModel: BaseViewModel {
     }
 
     private func bindPollItemCellViewModel(with data: PollWithMetaApiResponse) -> PollItemCellViewModel {
-        let cellViewModel = PollItemCellViewModel(data: data)
+        let config = PollItemCellViewModel.Config(screenName: output.screenName, data: data)
+        let cellViewModel = PollItemCellViewModel(config: config)
 // TODO
 //        cellViewModel.output.reloadComments.mapVoid
 //            .subscribe(state.loadComments)

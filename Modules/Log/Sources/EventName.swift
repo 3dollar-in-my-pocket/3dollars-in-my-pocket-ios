@@ -65,4 +65,11 @@ public enum EventName: String {
     
     // 사장님 가게 상세 화면
     case clickSns = "click_sns"
+    
+    // 커뮤니티 화면
+    case clickPoll = "click_poll"
+    case clickPollOption = "click_poll_option"
+    case clickPollCategory = "click_poll_category"
+    case clickDistrict = "click_district"
+    case clickPopularFilter = "click_popular_filter"
 }

@@ -15,4 +15,6 @@ public enum ParameterName: String {
     case count
     case reviewId = "review_id"
     case rating
+    case pollId = "poll_id"
+    case optionId = "option_id"
 }

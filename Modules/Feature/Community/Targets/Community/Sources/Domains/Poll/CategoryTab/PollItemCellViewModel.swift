@@ -3,6 +3,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 final class PollItemCellViewModel: BaseViewModel {
     struct Input {
@@ -21,24 +22,35 @@ final class PollItemCellViewModel: BaseViewModel {
     struct State {
         let reload = PassthroughSubject<Void, Never>()
     }
+    
+    struct Config {
+        let screenName: ScreenName
+        let data: PollWithMetaApiResponse
+    }
 
     lazy var identifier = ObjectIdentifier(self)
 
     let input = Input()
     let output: Output
-    let pollId: String
+    let config: Config
 
+    var pollId: String {
+        config.data.poll.pollId
+    }
     private var state = State()
     private let communityService: CommunityServiceProtocol
+    private let logManager: LogManagerProtocol
 
     init(
-        data: PollWithMetaApiResponse,
-        communityService: CommunityServiceProtocol = CommunityService()
+        config: Config,
+        communityService: CommunityServiceProtocol = CommunityService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.pollId = data.poll.pollId
+        self.config = config
         self.communityService = communityService
+        self.logManager = logManager
         self.output = Output(
-            item: .init(data)
+            item: .init(config.data)
         )
 
         super.init()
@@ -55,6 +67,7 @@ final class PollItemCellViewModel: BaseViewModel {
             })
             .compactMap { owner, optionIndex in
                 guard let optionId = owner.output.item.value.poll.options[safe: optionIndex]?.optionId else { return nil }
+                owner.sendClickPollOptionLog(pollId: owner.pollId, optionId: optionId)
                 return PollChoiceCreateRequestInput(options: [.init(optionId: optionId)])
             }
             .withUnretained(self)
@@ -97,6 +110,21 @@ final class PollItemCellViewModel: BaseViewModel {
 
     }
 }
+
+// MARK: Log
+extension PollItemCellViewModel {
+    private func sendClickPollOptionLog(pollId: String, optionId: String) {
+        logManager.sendEvent(.init(
+            screen: .community,
+            eventName: .clickPollOption,
+            extraParameters: [
+                .pollId: pollId,
+                .optionId: optionId
+            ]
+        ))
+    }
+}
+
 
 extension PollItemCellViewModel: Hashable {
     static func == (lhs: PollItemCellViewModel, rhs: PollItemCellViewModel) -> Bool {
