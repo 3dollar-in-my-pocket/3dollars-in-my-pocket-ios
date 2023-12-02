@@ -277,7 +277,8 @@ final class PollDetailViewModel: BaseViewModel {
     }
 
     private func bindReportPollViewModel(pollId: String, commentId: String? = nil) -> ReportPollViewModel {
-        let viewModel = ReportPollViewModel(pollId: pollId, commentId: commentId)
+        let config = ReportPollViewModel.Config(screenName: .reportPoll, pollId: pollId, commentId: commentId)
+        let viewModel = ReportPollViewModel(config: config)
 
         viewModel.output.reportComment
             .withUnretained(self)

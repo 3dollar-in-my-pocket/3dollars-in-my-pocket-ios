@@ -36,4 +36,6 @@ public enum ScreenName: String {
     case community = "community"
     case pollDetail = "poll_detail"
     case pollList = "poll_list"
+    case reportPoll = "report_poll"
+    case reportReview = "report_review"
 }
