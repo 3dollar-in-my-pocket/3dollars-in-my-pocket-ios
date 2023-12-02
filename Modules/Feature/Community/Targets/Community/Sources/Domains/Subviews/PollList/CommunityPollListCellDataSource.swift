@@ -9,6 +9,7 @@ struct CommunityPollListCellSection: Hashable {
 
 enum CommunityPollListCellSectionItem: Hashable {
     case poll(PollItemCellViewModel)
+    case ad(CommunityPollListAdCellViewModel)
 }
 
 final class CommunityPollListCellDataSource: UICollectionViewDiffableDataSource<CommunityPollListCellSection, CommunityPollListCellSectionItem> {
@@ -22,10 +23,17 @@ final class CommunityPollListCellDataSource: UICollectionViewDiffableDataSource<
                 let cell: PollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
+            case .ad(let viewModel):
+                let cell: CommunityPollListAdCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
+                return cell
             }
         }
 
-        collectionView.register([PollItemCell.self])
+        collectionView.register([
+            PollItemCell.self,
+            CommunityPollListAdCell.self
+        ])
     }
 
     func reloadData(_ sections: [CommunityPollListCellSection]) {

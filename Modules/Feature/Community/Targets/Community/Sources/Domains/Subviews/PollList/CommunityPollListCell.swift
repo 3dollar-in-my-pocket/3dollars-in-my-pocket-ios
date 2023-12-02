@@ -124,6 +124,22 @@ final class CommunityPollListCell: BaseCollectionViewCell {
                 owner.dataSource.reloadData(sections)
             }
             .store(in: &cancellables)
+        
+        viewModel.output.openUrl
+            .main
+            .withUnretained(self)
+            .sink { owner, url in
+                owner.openUrl(with: url)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func openUrl(with urlString: String?) {
+        guard let urlString, 
+                let url = URL(string: urlString), 
+                UIApplication.shared.canOpenURL(url) else { return }
+        
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
 

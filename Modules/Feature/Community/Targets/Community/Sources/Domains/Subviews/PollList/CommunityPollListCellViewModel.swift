@@ -23,10 +23,13 @@ final class CommunityPollListCellViewModel: BaseViewModel {
         let didSelectPollItem = PassthroughSubject<String, Never>()
         let didSelectCategory = PassthroughSubject<PollCategoryResponse, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
+        let openUrl = PassthroughSubject<String?, Never>()
     }
 
     struct State {
         var category: PollCategoryResponse? 
+        var pollList: [PollItemCellViewModel] = []
+        var ad: Advertisement?
     }
     
     struct Config {
@@ -36,20 +39,22 @@ final class CommunityPollListCellViewModel: BaseViewModel {
     lazy var identifier = ObjectIdentifier(self)
 
     let input = Input()
-    let output: Output
+    let output = Output()
     let config: Config
 
     private var state = State()
 
     private let communityService: CommunityServiceProtocol
+    private let advertisementService: AdvertisementServiceProtocol
 
     init(
         config: Config,
-        communityService: CommunityServiceProtocol = CommunityService()
+        communityService: CommunityServiceProtocol = CommunityService(),
+        advertisementService: AdvertisementServiceProtocol = AdvertisementService()
     ) {
         self.config = config
         self.communityService = communityService
-        self.output = Output()
+        self.advertisementService = advertisementService
 
         super.init()
         
@@ -95,12 +100,17 @@ final class CommunityPollListCellViewModel: BaseViewModel {
                 switch sectionItem {
                 case .poll(let viewModel):
                     owner.output.didSelectPollItem.send(viewModel.pollId)
+                case .ad(let viewModel):
+                    owner.output.openUrl.send(viewModel.output.item.linkUrl)
                 }
             }
             .store(in: &cancellables)
 
-        input.loadPollList
+        let load = input.loadPollList
             .compactMap { [weak self] _ in self?.state.category?.categoryId }
+            .share()
+        
+        load
             .withUnretained(self)
             .asyncMap { owner, categoryId in
                 await owner.communityService.fetchPolls(
@@ -111,14 +121,47 @@ final class CommunityPollListCellViewModel: BaseViewModel {
             .sink { owner, result in
                 switch result {
                 case .success(let response):
-                    owner.output.sections.send([.init(items: response.contents.map { 
-                        .poll(owner.bindPollItemCellViewModel(with: $0))
-                    })])
+                    owner.state.pollList = response.contents.map { 
+                       owner.bindPollItemCellViewModel(with: $0)
+                    }
+                    owner.updateDataSource()
                 case .failure(let error):
                     owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
+        
+        load
+            .map { _ in FetchAdvertisementInput(position: .pollCard, size: nil) }
+            .withUnretained(self)
+            .asyncMap { owner, input in
+                await owner.advertisementService.fetchAdvertisements(input: input)
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                switch result {
+                case .success(let advertisements):
+                    guard let advertisementResponse = advertisements.first else { return }
+                    owner.state.ad = Advertisement(response: advertisementResponse)
+                    owner.updateDataSource()
+                case .failure:
+                    break
+                }
+            }
+            .store(in: &cancellables)
+        
+    }
+    
+    private func updateDataSource() {
+        var sectionItems: [CommunityPollListCellSectionItem] = []
+       
+        sectionItems.append(contentsOf: state.pollList.map { .poll($0) })
+        if let ad = state.ad, sectionItems.isNotEmpty {
+            let index = min(2, sectionItems.count - 1) // 나중에 서버에서 받아오는 index 로 설정 필요
+            sectionItems.insert(.ad(CommunityPollListAdCellViewModel(config: .init(ad: ad))), at: index)
+        }
+        
+        output.sections.send([.init(items: sectionItems)])
     }
 
     private func bindPollItemCellViewModel(with data: PollWithMetaApiResponse) -> PollItemCellViewModel {
