@@ -50,15 +50,18 @@ final class PollDetailViewModel: BaseViewModel {
 
     private var state = State()
     private let communityService: CommunityServiceProtocol
+    private let logManager: LogManagerProtocol
 
     private let pollId: String
 
     init(
         pollId: String,
-        communityService: CommunityServiceProtocol = CommunityService()
+        communityService: CommunityServiceProtocol = CommunityService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.pollId = pollId
         self.communityService = communityService
+        self.logManager = logManager
 
         super.init()
     }
@@ -120,6 +123,9 @@ final class PollDetailViewModel: BaseViewModel {
 
         input.didTapReportButton
             .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: PollDetailViewModel, _) in
+                owner.sendClickReportPollLog()
+            })
             .map { owner, _ in
                 .report(owner.bindReportPollViewModel(pollId: owner.pollId))
             }
@@ -240,10 +246,13 @@ final class PollDetailViewModel: BaseViewModel {
     }
 
     private func bindCommentCellViewModel(with data: PollCommentWithUserApiResponse) -> PollDetailCommentCellViewModel {
-        let cellViewModel = PollDetailCommentCellViewModel(
+        let config = PollDetailCommentCellViewModel.Config(
+            screenName: output.screenName,
             pollId: pollId,
+            commentId: data.comment.commentId,
             data: data
         )
+        let cellViewModel = PollDetailCommentCellViewModel(config: config)
 
         cellViewModel.output.deleteCell
             .withUnretained(self)
@@ -286,5 +295,18 @@ final class PollDetailViewModel: BaseViewModel {
 
     private func canLoadMore(willDisplayRow: Int) -> Bool {
         return willDisplayRow == state.comments.value.count - 1 && state.hasMore
+    }
+}
+
+// MARK: Log
+extension PollDetailViewModel {
+    private func sendClickReportPollLog() {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickReport,
+            extraParameters: [
+                .pollId: pollId
+            ]
+        ))
     }
 }

@@ -75,4 +75,7 @@ public enum EventName: String {
     
     // 투표 리스트 화면
     case clickCreatePoll = "click_create_poll"
+    
+    // 투표 상세 화면
+    case clickDeleteReview = "click_delete_review"
 }
