@@ -11,7 +11,7 @@ final class PollDetailContentCell: PollItemBaseCell {
     
     override func setup() {
         super.setup()
-        
+        backgroundColor = Colors.gray0.color
         contentView.addSubViews([
             titleLabel,
             userInfoStackView,

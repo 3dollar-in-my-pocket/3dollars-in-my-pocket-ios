@@ -160,7 +160,7 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
 
         contentLabel.text = data.comment.content
 
-        backgroundColor = isMine ? Colors.pink100.color : .clear
+        backgroundColor = isMine ? Colors.pink100.color : Colors.systemWhite.color
 
         writerBadge.isHidden = !data.poll.isWriter
         writerBadge.setBackgroundColor(isMine ? Colors.systemWhite.color : Colors.gray10.color)

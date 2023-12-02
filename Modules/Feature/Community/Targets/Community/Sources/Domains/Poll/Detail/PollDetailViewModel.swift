@@ -223,6 +223,7 @@ final class PollDetailViewModel: BaseViewModel {
             }
         }
 
+        sections.append(PollDetailSection(type: .banner, items: [.banner]))
         sections.append(PollDetailSection(
             type: .comment(totalCount: state.commentTotalCount),
             items: commentSectionItems

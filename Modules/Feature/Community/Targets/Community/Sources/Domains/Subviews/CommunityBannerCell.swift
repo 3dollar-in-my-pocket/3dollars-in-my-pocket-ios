@@ -3,7 +3,7 @@ import UIKit
 import Common
 import AppInterface
 
-final class PollDetailBannerCell: BaseCollectionViewCell {
+final class CommunityBannerCell: BaseCollectionViewCell {
     enum Layout {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 49)
     }

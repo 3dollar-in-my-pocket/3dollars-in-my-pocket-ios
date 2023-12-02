@@ -21,7 +21,7 @@ final class PollDetailBlindCommentCell: BaseCollectionViewCell {
 
     override func setup() {
         super.setup()
-
+        backgroundColor = Colors.systemWhite.color
         contentView.addSubViews([
             titleLabel,
             lineView
