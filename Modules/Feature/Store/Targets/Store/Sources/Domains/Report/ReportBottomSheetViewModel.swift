@@ -3,6 +3,7 @@ import Combine
 import Common
 import Networking
 import Model
+import Log
 
 final class ReportBottomSheetViewModel: BaseViewModel {
     struct Input {
@@ -11,6 +12,7 @@ final class ReportBottomSheetViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .reportStore
         let reportReasons: [ReportReason]
         let isEnableReport = CurrentValueSubject<Bool, Never>(false)
         let dismissWithPop = PassthroughSubject<Void, Never>()
@@ -31,11 +33,17 @@ final class ReportBottomSheetViewModel: BaseViewModel {
     private let config: Config
     private var state = State()
     private let storeService: StoreServiceProtocol
+    private let logManager: LogManagerProtocol
     
-    init(config: Config, storeService: StoreServiceProtocol = StoreService()) {
+    init(
+        config: Config,
+        storeService: StoreServiceProtocol = StoreService(),
+        logManager: LogManagerProtocol = LogManager.shared
+    ) {
         self.output = Output(reportReasons: config.reportReasons)
         self.config = config
         self.storeService = storeService
+        self.logManager = logManager
         
         super.init()
     }
@@ -56,6 +64,7 @@ final class ReportBottomSheetViewModel: BaseViewModel {
             .sink { (owner: ReportBottomSheetViewModel, _) in
                 guard let reason = owner.state.selectedReasone else { return }
                 owner.reportStore(reason: reason)
+                owner.sendClickReportLog(reason: reason)
             }
             .store(in: &cancellables)
     }
@@ -72,5 +81,18 @@ final class ReportBottomSheetViewModel: BaseViewModel {
                 output.showErrorAlert.send(error)
             }
         }
+    }
+}
+
+// MARK: Log
+extension ReportBottomSheetViewModel {
+    private func sendClickReportLog(reason: ReportReason) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickReport,
+            extraParameters: [
+                .storeId: config.storeId,
+                .value: reason.description
+            ]))
     }
 }

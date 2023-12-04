@@ -5,6 +5,7 @@ import Common
 import DesignSystem
 import Model
 import Networking
+import Log
 
 final class ReviewBottomSheetViewModel: BaseViewModel {
     struct Input {
@@ -14,6 +15,7 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .reviewBottomSheet
         let rating: CurrentValueSubject<Int?, Never>
         let contents: CurrentValueSubject<String?, Never>
         let isEnableWriteButton: CurrentValueSubject<Bool, Never>
@@ -40,12 +42,18 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     private let storeService: StoreServiceProtocol
+    private let logManager: LogManagerProtocol
     private let config: Config
     private var state: State
     
-    init(config: Config, storeService: StoreServiceProtocol = StoreService()) {
+    init(
+        config: Config,
+        storeService: StoreServiceProtocol = StoreService(),
+        logManager: LogManagerProtocol = LogManager.shared
+    ) {
         self.config = config
         self.storeService = storeService
+        self.logManager = logManager
         
         let isEnableWriteButton = (config.review?.contents != nil) && (config.review?.rating != nil)
         self.output = Output(
@@ -81,6 +89,7 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
                 } else {
                     owner.writeReview()
                 }
+                owner.sendClickWriteReview()
             }
             .store(in: &cancellables)
     }
@@ -135,5 +144,21 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
                 output.errorAlert.send(error)
             }
         }
+    }
+}
+
+// MARK: Log
+extension ReviewBottomSheetViewModel {
+    private func sendClickWriteReview() {
+        guard let rating = state.rating else { return }
+        
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickReviewBottomButton,
+            extraParameters: [
+                .storeId: config.storeId,
+                .rating: rating
+            ]
+        ))
     }
 }

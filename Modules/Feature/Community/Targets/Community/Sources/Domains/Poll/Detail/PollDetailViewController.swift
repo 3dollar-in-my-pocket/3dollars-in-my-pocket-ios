@@ -3,10 +3,16 @@ import UIKit
 import DesignSystem
 import Then
 import Common
+import Log
 
 final class PollDetailViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
 
-    private lazy var navigationBar = CommunityNavigationBar(rightButtons: [reportButton])
+    private lazy var navigationBar = CommunityNavigationBar(rightButtons: [reportButton]).then {
+        $0.backgroundColor = Colors.gray0.color
+    }
 
     private let reportButton = UIButton().then {
         $0.setImage(
@@ -18,7 +24,7 @@ final class PollDetailViewController: BaseViewController {
     }
 
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = .clear
+        $0.backgroundColor = Colors.systemWhite.color
         $0.delegate = self
     }
 
@@ -49,7 +55,7 @@ final class PollDetailViewController: BaseViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = Colors.systemWhite.color
+        view.backgroundColor = Colors.gray0.color
 
         view.addSubViews([
             navigationBar,
@@ -213,6 +219,8 @@ extension PollDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: PollDetailCommentCell.Layout.height(content: viewModel.output.item.comment.content))
         case .blindComment:
             return CGSize(width: width, height: PollDetailBlindCommentCell.Layout.height)
+        case .banner:
+            return PollDetailBannerCell.Layout.size
         default:
             return .zero
         }

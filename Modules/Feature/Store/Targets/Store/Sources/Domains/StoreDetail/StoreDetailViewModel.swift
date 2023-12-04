@@ -6,6 +6,7 @@ import Networking
 import Model
 import DependencyInjection
 import AppInterface
+import Log
 
 final class StoreDetailViewModel: BaseViewModel {
     struct Input {
@@ -44,6 +45,7 @@ final class StoreDetailViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .storeDetail
         let sections = PassthroughSubject<[StoreDetailSection], Never>()
         
         // Overview section
@@ -83,17 +85,20 @@ final class StoreDetailViewModel: BaseViewModel {
     private let storeService: StoreServiceProtocol
     private let reportService: ReportServiceProtocol
     private let userDefaults: UserDefaultsUtil
+    private let logManager: LogManagerProtocol
     
     init(
         storeId: Int,
         storeService: StoreServiceProtocol = StoreService(),
         reportService: ReportServiceProtocol = ReportService(),
-        userDefaults: UserDefaultsUtil = .shared
+        userDefaults: UserDefaultsUtil = .shared,
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.state = State(storeId: storeId)
         self.storeService = storeService
         self.reportService = reportService
         self.userDefaults = userDefaults
+        self.logManager = logManager
         
         super.init()
     }
@@ -120,6 +125,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { (owner: StoreDetailViewModel, _) in
                 owner.presentReportModal()
+                owner.sendClickEvent(.clickReport)
             })
             .store(in: &cancellables)
         
@@ -127,6 +133,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
                 owner.presentVisit()
+                owner.sendClickEvent(.clickVisit)
             }
             .store(in: &cancellables)
     }
@@ -137,6 +144,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .sink { (owner: StoreDetailViewModel, _) in
                 let isDeleted = owner.state.storeDetailData?.overview.isFavorited == true
                 owner.saveStore(isDelete: isDeleted)
+                owner.sendClickSaveLog(isDelete: isDeleted)
             }
             .store(in: &cancellables)
         
@@ -144,10 +152,14 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
                 owner.shareKakao()
+                owner.sendClickEvent(.clickShare)
             }
             .store(in: &cancellables)
         
         input.didTapNavigation
+            .handleEvents(receiveOutput: { [weak self] in
+                self?.sendClickEvent(.clickNavigation)
+            })
             .map { Route.presentNavigation }
             .subscribe(output.route)
             .store(in: &cancellables)
@@ -163,6 +175,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { (owner: StoreDetailViewModel, _) in
                 owner.presentWriteReviewBottomSheet()
+                owner.sendClickEvent(.clickWriteReview)
             })
             .store(in: &cancellables)
         
@@ -179,6 +192,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
                 owner.copyAddressToClipBoard()
+                owner.sendClickEvent(.clickCopyAddress)
             }
             .store(in: &cancellables)
         
@@ -186,6 +200,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
                 owner.presentMapDetail()
+                owner.sendClickEvent(.clickZoomMap)
             }
             .store(in: &cancellables)
     }
@@ -612,5 +627,27 @@ final class StoreDetailViewModel: BaseViewModel {
         guard let storeDetailData = state.storeDetailData else { return }
         
         output.route.send(.pushEditStore(storeId: state.storeId, storeDetailData: storeDetailData))
+    }
+}
+
+// MARK: Log
+extension StoreDetailViewModel {
+    private func sendClickSaveLog(isDelete: Bool) {
+        let value = isDelete ? "off" : "on"
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickFavorite,
+            extraParameters: [
+                .storeId: state.storeId,
+                .value: value
+            ]))
+    }
+    
+    private func sendClickEvent(_ eventName: EventName) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: eventName,
+            extraParameters: [.storeId: state.storeId]
+        ))
     }
 }

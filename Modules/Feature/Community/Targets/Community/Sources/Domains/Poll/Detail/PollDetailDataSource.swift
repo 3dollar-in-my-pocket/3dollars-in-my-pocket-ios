@@ -65,7 +65,8 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
         collectionView.register([
             PollDetailContentCell.self,
             PollDetailCommentCell.self,
-            PollDetailBlindCommentCell.self
+            PollDetailBlindCommentCell.self,
+            PollDetailBannerCell.self
         ])
 
         collectionView.registerSectionHeader([
@@ -86,8 +87,10 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
             case .blindComment:
                 let cell: PollDetailBlindCommentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 return cell
-            default:
-                return UICollectionViewCell()
+            case .banner:
+                let cell: PollDetailBannerCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(in: containerVC)
+                return cell
             }
         }
 

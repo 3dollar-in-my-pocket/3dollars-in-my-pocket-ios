@@ -37,8 +37,45 @@ public enum EventName: String {
     case clickAddressOk = "click_address_ok"
     case clickWriteStore = "click_write_store"
     
-    
     // 마커 배너 팝업
     case clickBottomButton = "click_bottom_button"
     
+    // 길거리 음식점 가게 상세 화면
+    case clickFavorite = "click_favorite"
+    case clickReport = "click_report"
+    case clickShare = "click_share"
+    case clickNavigation = "click_navigation"
+    case clickWriteReview = "click_write_review"
+    case clickCopyAddress = "click_copy_address"
+    case clickZoomMap = "click_zoom_map"
+    
+    // 사진 업로드 화면
+    case clickUpload = "click_upload"
+    
+    // 리뷰 리스트 화면
+    case clickSort = "click_sort"
+    case clickEditReview = "click_edit_review"
+    
+    // 길거리 음식점 리뷰 작성 바텀시트
+    case clickReviewBottomButton = "click_review_bottom_button"
+    
+    // 가게 방문 인증 화면
+    case clickVisitSuccess = "click_visit_success"
+    case clickVisitFail = "click_visit_fail"
+    
+    // 사장님 가게 상세 화면
+    case clickSns = "click_sns"
+    
+    // 커뮤니티 화면
+    case clickPoll = "click_poll"
+    case clickPollOption = "click_poll_option"
+    case clickPollCategory = "click_poll_category"
+    case clickDistrict = "click_district"
+    case clickPopularFilter = "click_popular_filter"
+    
+    // 투표 리스트 화면
+    case clickCreatePoll = "click_create_poll"
+    
+    // 투표 상세 화면
+    case clickDeleteReview = "click_delete_review"
 }

@@ -4,6 +4,7 @@ import Combine
 import Networking
 import Model
 import Common
+import Log
 
 final class PollDetailViewModel: BaseViewModel {
 
@@ -20,6 +21,7 @@ final class PollDetailViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .pollDetail
         let dataSource = CurrentValueSubject<[PollDetailSection], Never>([])
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
@@ -48,15 +50,18 @@ final class PollDetailViewModel: BaseViewModel {
 
     private var state = State()
     private let communityService: CommunityServiceProtocol
+    private let logManager: LogManagerProtocol
 
     private let pollId: String
 
     init(
         pollId: String,
-        communityService: CommunityServiceProtocol = CommunityService()
+        communityService: CommunityServiceProtocol = CommunityService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.pollId = pollId
         self.communityService = communityService
+        self.logManager = logManager
 
         super.init()
     }
@@ -118,6 +123,9 @@ final class PollDetailViewModel: BaseViewModel {
 
         input.didTapReportButton
             .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: PollDetailViewModel, _) in
+                owner.sendClickReportPollLog()
+            })
             .map { owner, _ in
                 .report(owner.bindReportPollViewModel(pollId: owner.pollId))
             }
@@ -215,6 +223,7 @@ final class PollDetailViewModel: BaseViewModel {
             }
         }
 
+        sections.append(PollDetailSection(type: .banner, items: [.banner]))
         sections.append(PollDetailSection(
             type: .comment(totalCount: state.commentTotalCount),
             items: commentSectionItems
@@ -224,7 +233,8 @@ final class PollDetailViewModel: BaseViewModel {
     }
 
     private func bindPollItemCellViewModel(with data: PollWithMetaApiResponse) -> PollItemCellViewModel {
-        let cellViewModel = PollItemCellViewModel(data: data)
+        let config = PollItemCellViewModel.Config(screenName: output.screenName, data: data)
+        let cellViewModel = PollItemCellViewModel(config: config)
 // TODO
 //        cellViewModel.output.reloadComments.mapVoid
 //            .subscribe(state.loadComments)
@@ -237,10 +247,13 @@ final class PollDetailViewModel: BaseViewModel {
     }
 
     private func bindCommentCellViewModel(with data: PollCommentWithUserApiResponse) -> PollDetailCommentCellViewModel {
-        let cellViewModel = PollDetailCommentCellViewModel(
+        let config = PollDetailCommentCellViewModel.Config(
+            screenName: output.screenName,
             pollId: pollId,
+            commentId: data.comment.commentId,
             data: data
         )
+        let cellViewModel = PollDetailCommentCellViewModel(config: config)
 
         cellViewModel.output.deleteCell
             .withUnretained(self)
@@ -265,7 +278,8 @@ final class PollDetailViewModel: BaseViewModel {
     }
 
     private func bindReportPollViewModel(pollId: String, commentId: String? = nil) -> ReportPollViewModel {
-        let viewModel = ReportPollViewModel(pollId: pollId, commentId: commentId)
+        let config = ReportPollViewModel.Config(screenName: .reportPoll, pollId: pollId, commentId: commentId)
+        let viewModel = ReportPollViewModel(config: config)
 
         viewModel.output.reportComment
             .withUnretained(self)
@@ -283,5 +297,18 @@ final class PollDetailViewModel: BaseViewModel {
 
     private func canLoadMore(willDisplayRow: Int) -> Bool {
         return willDisplayRow == state.comments.value.count - 1 && state.hasMore
+    }
+}
+
+// MARK: Log
+extension PollDetailViewModel {
+    private func sendClickReportPollLog() {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickReport,
+            extraParameters: [
+                .pollId: pollId
+            ]
+        ))
     }
 }

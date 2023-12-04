@@ -4,10 +4,12 @@ import Combine
 import Networking
 import Model
 import Common
+import Log
 
 final class CommunityViewModel: BaseViewModel {
     struct Input {
         let firstLoad = PassthroughSubject<Void, Never>()
+        let viewWillAppear = PassthroughSubject<Void, Never>()
         let didTapPollCategoryButton = PassthroughSubject<Void, Never>()
         let didSelectPollItem = PassthroughSubject<String, Never>()
         let didTapDistrictButton = PassthroughSubject<Void, Never>()
@@ -15,6 +17,7 @@ final class CommunityViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .community
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -44,16 +47,19 @@ final class CommunityViewModel: BaseViewModel {
 
     private let communityService: CommunityServiceProtocol
     private let userDefaultsUtil: UserDefaultsUtil
+    private let logManager: LogManagerProtocol
 
     private lazy var pollListCellViewModel = bindPollListCellViewModel()
     private lazy var storeTabCellViewModel = bindPopularStoreTabCellViewModel()
 
     init(
         communityService: CommunityServiceProtocol = CommunityService(),
-        userDefaultsUtil: UserDefaultsUtil = .shared
+        userDefaultsUtil: UserDefaultsUtil = .shared,
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.communityService = communityService
         self.userDefaultsUtil = userDefaultsUtil
+        self.logManager = logManager
 
         super.init()
     }
@@ -94,6 +100,13 @@ final class CommunityViewModel: BaseViewModel {
                 }
             }
             .store(in: &cancellables)
+        
+        input.viewWillAppear
+            .withUnretained(self)
+            .sink { (owner: CommunityViewModel, _) in
+                owner.sendPageView()
+            }
+            .store(in: &cancellables)
 
         input.didSelect
             .withUnretained(self)
@@ -107,6 +120,7 @@ final class CommunityViewModel: BaseViewModel {
                     case .bossStore:
                         owner.output.route.send(.bossStoreDetail(store.id))
                     }
+                    owner.sendClickStoreLog(store: store)
                 }
             }
             .store(in: &cancellables)
@@ -116,6 +130,7 @@ final class CommunityViewModel: BaseViewModel {
         var sections: [CommunitySection] = []
 
         sections.append(.init(type: .pollList, items: [.poll(pollListCellViewModel)]))
+        sections.append(.init(type: .banner, items: [.banner]))
         sections.append(.init(type: .popularStoreTab, items: [.popularStoreTab(storeTabCellViewModel)]))
 
         sections.append(.init(type: .popularStore, items: state.storeList.value.map {
@@ -130,6 +145,9 @@ final class CommunityViewModel: BaseViewModel {
 
         cellViewModel.output.didTapDistrictButton
             .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: CommunityViewModel, _) in
+                owner.sendClickDistrictLog()
+            })
             .map { owner, _ in
                 return .popularStoreNeighborhoods(owner.bindPopularStoreNeighborhoodsViewModel())
             }
@@ -143,6 +161,7 @@ final class CommunityViewModel: BaseViewModel {
             .sink { owner, tab in
                 owner.state.currentStoreTab.send(tab)
                 owner.state.reload.send()
+                owner.sendClickPopularFilterLog(type: tab)
             }
             .store(in: &cancellables)
 
@@ -168,15 +187,22 @@ final class CommunityViewModel: BaseViewModel {
     }
 
     private func bindPollListCellViewModel() -> CommunityPollListCellViewModel {
-        let cellViewModel = CommunityPollListCellViewModel()
+        let config = CommunityPollListCellViewModel.Config(screenName: output.screenName)
+        let cellViewModel = CommunityPollListCellViewModel(config: config)
 
         cellViewModel.output.didSelectCategory
             .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: CommunityViewModel, _) in
+                owner.sendClickPollCategoryLog()
+            })
             .map { owner, _ in .pollCategoryTab(owner.bindPollCategoryTabViewModel()) }
             .subscribe(output.route)
             .store(in: &cancellables)
 
         cellViewModel.output.didSelectPollItem
+            .handleEvents(receiveOutput: { [weak self] pollId in
+                self?.sendClickPollLog(pollId: pollId)
+            })
             .map { pollId in
                 .pollDetail(PollDetailViewModel(pollId: pollId))
             }
@@ -198,5 +224,47 @@ final class CommunityViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         return viewModel
+    }
+}
+
+// MARK: Log
+extension CommunityViewModel {
+    private func sendPageView() {
+        logManager.sendPageView(screen: output.screenName, type: CommunityViewController.self)
+    }
+    
+    private func sendClickPollLog(pollId: String) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickPoll,
+            extraParameters: [ .pollId: pollId]
+        ))
+    }
+    
+    private func sendClickPollCategoryLog() {
+        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickPollCategory))
+    }
+    
+    private func sendClickDistrictLog() {
+        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickDistrict))
+    }
+    
+    private func sendClickPopularFilterLog(type: CommunityPopularStoreTab) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickPopularFilter,
+            extraParameters: [
+                .value: type.rawValue
+            ]))
+    }
+    
+    private func sendClickStoreLog(store: PlatformStore) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickStore,
+            extraParameters: [
+                .storeId: store.id,
+                .type: store.type.rawValue
+            ]))
     }
 }

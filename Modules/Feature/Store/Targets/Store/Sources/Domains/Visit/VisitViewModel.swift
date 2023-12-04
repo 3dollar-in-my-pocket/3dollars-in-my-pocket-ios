@@ -5,6 +5,7 @@ import CoreLocation
 import Common
 import Model
 import Networking
+import Log
 
 final class VisitViewModel: BaseViewModel {
     enum Constent {
@@ -19,6 +20,7 @@ final class VisitViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .visitStore
         let store: CurrentValueSubject<VisitableStore, Never>
         let distance = PassthroughSubject<Int, Never>()
         let canVisit = PassthroughSubject<Bool, Never>()
@@ -55,16 +57,19 @@ final class VisitViewModel: BaseViewModel {
     private let config: Config
     private let locationManager: LocationManagerProtocol
     private let visitService: VisitServiceProtocol
+    private let logManager: LogManagerProtocol
     
     init(
         config: Config,
         locationManager: LocationManagerProtocol = LocationManager.shared,
-        visitService: VisitServiceProtocol = VisitService()
+        visitService: VisitServiceProtocol = VisitService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.output = Output(store: .init(config.store))
         self.config = config
         self.locationManager = locationManager
         self.visitService = visitService
+        self.logManager = logManager
     }
     
     override func bind() {
@@ -87,6 +92,7 @@ final class VisitViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: VisitViewModel, type: VisitType) in
                 owner.visitStore(type: type)
+                owner.sendClickVisitLog(type: type)
             }
             .store(in: &cancellables)
     }
@@ -133,5 +139,26 @@ final class VisitViewModel: BaseViewModel {
                 output.showErrorAlert.send(error)
             }
         }
+    }
+}
+
+// MARK: Log
+extension VisitViewModel {
+    private func sendClickVisitLog(type: VisitType) {
+        let eventName: EventName
+        
+        switch type {
+        case .exists:
+            eventName = .clickVisitSuccess
+            
+        case .notExists:
+            eventName = .clickVisitFail
+        }
+        
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: eventName,
+            extraParameters: [.storeId: config.storeId]
+        ))
     }
 }

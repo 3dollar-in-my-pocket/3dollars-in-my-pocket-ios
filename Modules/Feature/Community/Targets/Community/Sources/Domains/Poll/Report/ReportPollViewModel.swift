@@ -4,6 +4,7 @@ import Combine
 import Networking
 import Model
 import Common
+import Log
 
 final class ReportPollViewModel: BaseViewModel {
     struct Input {
@@ -14,6 +15,7 @@ final class ReportPollViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName
         let showLoading = PassthroughSubject<Bool, Never>()
         let dataSource = CurrentValueSubject<[ReportPollSectionItem], Never>([])
         let isEnabledButton = PassthroughSubject<Bool, Never>()
@@ -28,28 +30,34 @@ final class ReportPollViewModel: BaseViewModel {
         var reasonDetail: String = ""
         var selectItem: PollReportReason?
     }
+    
+    struct Config {
+        let screenName: ScreenName
+        let pollId: String
+        let commentId: String?
+    }
 
     enum Route {
         case back
     }
 
     let input = Input()
-    let output = Output()
+    let output: Output
+    let config: Config
 
     private var state = State()
-
-    private let pollId: String
-    private let commentId: String?
     private let communityService: CommunityServiceProtocol
+    private let logManager: LogManagerProtocol
 
     init(
-        pollId: String,
-        commentId: String?,
-        communityService: CommunityServiceProtocol = CommunityService()
+        config: Config,
+        communityService: CommunityServiceProtocol = CommunityService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.pollId = pollId
-        self.commentId = commentId
+        self.config = config
+        self.output = Output(screenName: config.screenName)
         self.communityService = communityService
+        self.logManager = logManager
 
         super.init()
     }
@@ -93,7 +101,7 @@ final class ReportPollViewModel: BaseViewModel {
 
         let reportPoll = input.didTapReportButton
             .withUnretained(self)
-            .filter { owner, _ in owner.commentId == nil }
+            .filter { owner, _ in owner.config.commentId == nil }
 
         reportPoll
             .withUnretained(self)
@@ -114,10 +122,11 @@ final class ReportPollViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.reportPoll(pollId: owner.pollId, input: input)
+                await owner.communityService.reportPoll(pollId: owner.config.pollId, input: input)
             }
             .withUnretained(self)
             .sink { owner, result in
+                owner.sendClickReportLog()
                 owner.output.showLoading.send(false)
                 switch result {
                 case .success(let response):
@@ -131,7 +140,7 @@ final class ReportPollViewModel: BaseViewModel {
 
         let reportComment = input.didTapReportButton
             .withUnretained(self)
-            .filter { owner, _ in owner.commentId != nil }
+            .filter { owner, _ in owner.config.commentId != nil }
 
 
         reportComment
@@ -154,18 +163,19 @@ final class ReportPollViewModel: BaseViewModel {
             .withUnretained(self)
             .asyncMap { owner, input in
                 await owner.communityService.reportComment(
-                    pollId: owner.pollId,
-                    commentId: owner.commentId ?? "",
+                    pollId: owner.config.pollId,
+                    commentId: owner.config.commentId ?? "",
                     input: input
                 )
             }
             .withUnretained(self)
             .sink { owner, result in
+                owner.sendClickReportLog()
                 owner.output.showLoading.send(false)
                 switch result {
                 case .success(let response):
                     owner.output.showToast.send("신고했어요")
-                    if let commentId = owner.commentId {
+                    if let commentId = owner.config.commentId {
                         owner.output.reportComment.send(commentId)
                     }
                     owner.output.route.send(.back)
@@ -179,8 +189,8 @@ final class ReportPollViewModel: BaseViewModel {
     private func fetchPollReasons() {
         Task { [weak self] in
             guard let self else { return }
-
-            let apiResult = await communityService.fetchPollReportReasons(type: self.commentId == nil ? .poll : .pollComment)
+            
+            let apiResult = await communityService.fetchPollReportReasons(type: self.config.commentId == nil ? .poll : .pollComment)
 
             switch apiResult {
             case .success(let response):
@@ -193,5 +203,20 @@ final class ReportPollViewModel: BaseViewModel {
                 self.output.showErrorAlert.send(failure)
             }
         }
+    }
+}
+
+extension ReportPollViewModel {
+    private func sendClickReportLog() {
+        var parameters: [ParameterName: Any] = [.pollId: config.pollId]
+        
+        if let commentId = config.commentId {
+            parameters[.reviewId] = commentId
+        }
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickReport,
+            extraParameters: parameters
+        ))
     }
 }

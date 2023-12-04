@@ -3,6 +3,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 final class PollListViewModel: BaseViewModel {
     struct Input {
@@ -30,20 +31,28 @@ final class PollListViewModel: BaseViewModel {
     enum Route {
         case pollDetail(PollDetailViewModel)
     }
+    
+    struct Config {
+        let screenName: ScreenName
+        let sortType: PollListSortType = .latest // 현재 따로 변경하고 있지는 않음
+    }
 
     let input = Input()
     let output = Output()
-    let sortType: PollListSortType
+    let config: Config
 
     private var state = State()
     private let communityService: CommunityServiceProtocol
+    private let logManager: LogManagerProtocol
 
     init(
-        sortType: PollListSortType = .latest, // 현재 따로 변경하고 있지는 않음
-        communityService: CommunityServiceProtocol = CommunityService()
+        config: Config,
+        communityService: CommunityServiceProtocol = CommunityService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.sortType = sortType
+        self.config = config
         self.communityService = communityService
+        self.logManager = logManager
 
         super.init()
     }
@@ -88,6 +97,9 @@ final class PollListViewModel: BaseViewModel {
                 return nil
             }
             .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: PollListViewModel, pollId: String) in
+                owner.sendClickPollLog(pollId: pollId)
+            })
             .map { owner, pollId in
                     .pollDetail(owner.bindPollDetailViewModel(with: pollId))
             }
@@ -138,7 +150,8 @@ final class PollListViewModel: BaseViewModel {
     }
 
     private func bindPollItemCellViewModel(with data: PollWithMetaApiResponse) -> PollItemCellViewModel {
-        let cellViewModel = PollItemCellViewModel(data: data)
+        let config = PollItemCellViewModel.Config(screenName: config.screenName, data: data)
+        let cellViewModel = PollItemCellViewModel(config: config)
         return cellViewModel
     }
 
@@ -149,5 +162,16 @@ final class PollListViewModel: BaseViewModel {
 
     private func canLoadMore(willDisplayRow: Int) -> Bool {
         return willDisplayRow == state.items.count - 1 && state.hasMore
+    }
+}
+
+// MARK: Log
+extension PollListViewModel {
+    private func sendClickPollLog(pollId: String) {
+        logManager.sendEvent(.init(
+            screen: config.screenName,
+            eventName: .clickPoll,
+            extraParameters: [.pollId: pollId]
+        ))
     }
 }

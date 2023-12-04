@@ -2,8 +2,13 @@ import UIKit
 
 import Common
 import DesignSystem
+import Log
 
 final class ReviewListViewControlelr: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let reviewListView = ReviewListView()
     private let viewModel: ReviewListViewModel
     private lazy var datasource = ReviewListDatasource(

@@ -3,8 +3,13 @@ import UIKit
 import Common
 import DesignSystem
 import Model
+import Log
 
 public final class StoreDetailViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let storeDetailView = StoreDetailView()
     private let viewModel: StoreDetailViewModel
     private lazy var datasource = StoreDetailDatasource(
