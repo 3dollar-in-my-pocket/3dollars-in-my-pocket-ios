@@ -77,4 +77,34 @@ public extension UICollectionView {
 
         return true
     }
+    
+    func getNearByItemScrollOffset(velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>, sectionInsets: UIEdgeInsets) -> CGPoint? {
+        var index = IndexPath(row: 0, section: 0)
+        var shortDistance = CGFloat.greatestFiniteMagnitude
+        
+        indexPathsForVisibleItems.forEach { [weak self] indexPath in
+            guard let self else { return }
+            
+            if let cell = cellForItem(at: indexPath) {
+                let compareOriginX = if velocity.x > 0 {
+                    abs(bounds.midX - cell.frame.origin.x)
+                } else if velocity.x < 0 {
+                    abs(targetContentOffset.pointee.x - cell.frame.midX)
+                } else {
+                    abs(targetContentOffset.pointee.x - cell.frame.origin.x)
+                }
+                
+                if shortDistance > compareOriginX {
+                    shortDistance = compareOriginX
+                    index = indexPath
+                }
+            }
+        }
+        
+        if let origin = cellForItem(at: index)?.frame.origin {
+            return CGPoint(x: origin.x - sectionInsets.left, y: origin.y)
+        }
+        
+        return nil
+    }
 }
