@@ -26,7 +26,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
     private let titleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 16)
         $0.textColor = Colors.gray100.color
-        $0.text = "가게 정보 & 메뉴"
+        $0.text = Strings.BossStoreDetail.Info.title
     }
 
     private let updatedAtLabel = UILabel().then {
@@ -42,7 +42,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
     private let snsTitleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 12)
         $0.textColor = Colors.gray60.color
-        $0.text = "SNS"
+        $0.text = Strings.BossStoreDetail.Info.sns
     }
 
     let snsButton = UIButton().then {
@@ -54,7 +54,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
     private let introductionTitleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 12)
         $0.textColor = Colors.gray60.color
-        $0.text = "사장님 한마디"
+        $0.text = Strings.BossStoreDetail.Info.introduction
     }
 
     private let introductionValueLabel = UILabel().then {
@@ -134,18 +134,18 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
     }
 
     func bind(_ viewModel: BossStoreInfoCellViewModel) {
-        if let snsUrl = viewModel.output.snsUrl {
-            self.snsButton.isHidden = snsUrl.isEmpty
-            self.snsButton.setTitle(snsUrl, for: .normal)
+        if let snsUrl = viewModel.output.info.snsUrl {
+            snsButton.isHidden = snsUrl.isEmpty
+            snsButton.setTitle(snsUrl, for: .normal)
         } else {
-            self.snsButton.isHidden = true
+            snsButton.isHidden = true
         }
-        self.introductionValueLabel.text = viewModel.output.introduction
-        if let imageUrl = viewModel.output.imageUrl {
-            self.photoView.setImage(urlString: imageUrl)
+        introductionValueLabel.text = viewModel.output.info.introduction
+        if let imageUrl = viewModel.output.info.imageUrl {
+            photoView.setImage(urlString: imageUrl)
         }
 
-        updatedAtLabel.text = viewModel.output.updatedAt
+        updatedAtLabel.text = DateUtils.toString(dateString: viewModel.output.info.updatedAt, format: "yyyy.MM.dd " + Strings.BossStoreDetail.Info.update)
         
         snsButton.controlPublisher(for: .touchUpInside)
             .mapVoid

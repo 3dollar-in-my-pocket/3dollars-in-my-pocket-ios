@@ -13,6 +13,19 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 public enum StoreStrings {
 
+  public enum BossStoreDetail {
+    public enum Info {
+      /// 사장님 한마디
+      public static let introduction = StoreStrings.tr("Localization", "boss_store_detail.info.introduction")
+      /// SNS
+      public static let sns = StoreStrings.tr("Localization", "boss_store_detail.info.sns")
+      /// 가게 정보 & 메뉴
+      public static let title = StoreStrings.tr("Localization", "boss_store_detail.info.title")
+      /// 업데이트
+      public static let update = StoreStrings.tr("Localization", "boss_store_detail.info.update")
+    }
+  }
+
   public enum MapDetail {
     /// 길 안내보기
     public static let navigationButton = StoreStrings.tr("Localization", "map_detail.navigation_button")

@@ -9,24 +9,15 @@ final class BossStoreInfoCellViewModel: BaseViewModel {
     }
 
     struct Output {
-        let updatedAt: String
-        let snsUrl: String?
-        let introduction: String?
-        let imageUrl: String?
+        let info: BossStoreInfo
         let didTapSnsButton = PassthroughSubject<Void, Never>()
     }
 
     let input = Input()
     let output: Output
-
-    init(data: BossStoreDetailData) {
-        self.output = Output(
-            updatedAt: DateUtils.toString(dateString: data.store.updatedAt, format: "yyyy.MM.dd 업데이트"),
-            snsUrl: data.overview.snsUrl,
-            introduction: data.store.introduction,
-            imageUrl: data.store.imageUrl
-        )
-
+    
+    init(info: BossStoreInfo) {
+        self.output = Output(info: info)
         super.init()
     }
 

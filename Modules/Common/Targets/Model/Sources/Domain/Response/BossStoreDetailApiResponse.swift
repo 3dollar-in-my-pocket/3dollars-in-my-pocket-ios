@@ -12,6 +12,7 @@ public struct BossStoreDetailApiResponse: Decodable {
     public let menus: [BossStoreMenuApiResponse]
     public let appearanceDays: [BossStoreAppearanceDayApiResponse]
     public let categories: [PlatformStoreFoodCategoryResponse]
+    public let accountNumbers: [StoreAccountNumberResponse]
     public let createdAt: String
     public let updatedAt: String
 }
