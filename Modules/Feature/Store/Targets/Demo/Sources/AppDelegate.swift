@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func initializationNetworkModule() {
+        MockAppModuleInterfaceImpl.registerAppModuleInterface()
         MockNetworkConfiguration.registerNetworkConfiguration()
         MockAppInfomationImpl.registerAppInfomation()
     }

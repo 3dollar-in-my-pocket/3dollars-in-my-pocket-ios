@@ -57,7 +57,9 @@ let project = Project(
             infoPlist: "Targets/Demo/Info.plist",
             sources: ["Targets/Demo/Sources/**"],
             dependencies: [
-                .project(target: "Store", path: "./")
+                .project(target: "Store", path: "./"),
+                .project(target: "Common", path: "../../Common"),
+                .external(name: "SnapKit")
             ]
         ),
         Target(
