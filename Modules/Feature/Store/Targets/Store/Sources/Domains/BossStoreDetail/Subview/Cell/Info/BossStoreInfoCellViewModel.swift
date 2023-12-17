@@ -55,7 +55,7 @@ final class BossStoreInfoCellViewModel: BaseViewModel {
         guard let account = output.info.accountInfos.first else { return }
         UIPasteboard.general.string = "\(account.bank.description) \(account.accountNumber)"
         
-        output.toast.send("🔗 계좌번호가 복사되었습니다.")
+        output.toast.send(Strings.BossStoreDetail.Info.copyToast)
     }
 }
 

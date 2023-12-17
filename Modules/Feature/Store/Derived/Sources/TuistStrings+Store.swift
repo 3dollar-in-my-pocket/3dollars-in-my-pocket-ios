@@ -19,6 +19,8 @@ public enum StoreStrings {
       public static let accountTitle = StoreStrings.tr("Localization", "boss_store_detail.info.account_title")
       /// 복사하기
       public static let copy = StoreStrings.tr("Localization", "boss_store_detail.info.copy")
+      /// 🔗 계좌번호가 복사되었습니다.
+      public static let copyToast = StoreStrings.tr("Localization", "boss_store_detail.info.copy_toast")
       /// 사장님 한마디
       public static let introduction = StoreStrings.tr("Localization", "boss_store_detail.info.introduction")
       /// SNS
