@@ -11,7 +11,10 @@ final class StoreDetailConfigurationViewController: UIViewController {
         return textField
     }()
     
-    init() {
+    private let storeViewType: StoreViewType
+    
+    init(storeViewType: StoreViewType) {
+        self.storeViewType = storeViewType
         super.init(nibName: nil, bundle: nil)
         
         setup()
@@ -48,10 +51,27 @@ final class StoreDetailConfigurationViewController: UIViewController {
     }
     
     @objc private func didTapMove() {
-        guard let storeIdString = idField.text,
-              let storeId = Int(storeIdString) else { return }
-        let viewController = StoreDetailViewController(storeId: storeId)
+        guard let storeId = idField.text else { return }
         
+        switch storeViewType {
+        case .storeDetail:
+            pushStoreDetail(id: storeId)
+            
+        case .bossStoreDetail:
+            pushBossStoreDetail(id: storeId)
+        }
+    }
+    
+    private func pushStoreDetail(id: String) {
+        guard let storeId = Int(id) else { return }
+        let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
+        
+        navigationController?.isNavigationBarHidden = true
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func pushBossStoreDetail(id: String) {
+        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: id)
         
         navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(viewController, animated: true)

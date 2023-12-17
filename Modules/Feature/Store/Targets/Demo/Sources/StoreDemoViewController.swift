@@ -36,14 +36,10 @@ final class StoreDemoViewController: UIViewController {
         }
     }
     
-    private func pushStoreDetailConfiguration() {
-        let viewController = StoreDetailConfigurationViewController()
+    private func pushStoreDetailConfiguration(storeViewType: StoreViewType) {
+        let viewController = StoreDetailConfigurationViewController(storeViewType: storeViewType)
         
         navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    private func pushBossStoreDetailConfiguration() {
-        
     }
 }
 
@@ -55,6 +51,7 @@ extension StoreDemoViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
+        cell.selectionStyle = .none
         cell.textLabel?.text = datasource[indexPath.item].title
         return cell
     }
@@ -64,10 +61,10 @@ extension StoreDemoViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch datasource[indexPath.item] {
         case .storeDetail:
-            pushStoreDetailConfiguration()
+            pushStoreDetailConfiguration(storeViewType: .storeDetail)
             
         case .bossStoreDetail:
-            pushBossStoreDetailConfiguration()
+            pushStoreDetailConfiguration(storeViewType: .bossStoreDetail)
         }
     }
 }

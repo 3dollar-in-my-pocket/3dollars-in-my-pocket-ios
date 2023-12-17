@@ -5,8 +5,8 @@ import DesignSystem
 import Model
 import Log
 
-public final class StoreDetailViewController: BaseViewController {
-    public override var screenName: ScreenName {
+final class StoreDetailViewController: BaseViewController {
+    override var screenName: ScreenName {
         return viewModel.output.screenName
     }
     
@@ -18,11 +18,11 @@ public final class StoreDetailViewController: BaseViewController {
         rootViewController: self
     )
     
-    public static func instance(storeId: Int) -> StoreDetailViewController {
+    static func instance(storeId: Int) -> StoreDetailViewController {
         return StoreDetailViewController(storeId: storeId)
     }
     
-    public init(storeId: Int) {
+    init(storeId: Int) {
         self.viewModel = StoreDetailViewModel(storeId: storeId)
         super.init(nibName: nil, bundle: nil)
         hidesBottomBarWhenPushed = true
@@ -32,18 +32,18 @@ public final class StoreDetailViewController: BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func loadView() {
+    override func loadView() {
         view = storeDetailView
     }
     
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.input.load.send(())
         
         storeDetailView.collectionView.collectionViewLayout = createLayout()
     }
     
-    public override func bindEvent() {
+    override func bindEvent() {
         storeDetailView.backButton
             .controlPublisher(for: .touchUpInside)
             .receive(on: DispatchQueue.main)
@@ -54,7 +54,7 @@ public final class StoreDetailViewController: BaseViewController {
             .store(in: &cancellables)
     }
     
-    public override func bindViewModelInput() {
+    override func bindViewModelInput() {
         storeDetailView.reportnButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
@@ -73,7 +73,7 @@ public final class StoreDetailViewController: BaseViewController {
             .store(in: &cancellables)
     }
     
-    public override func bindViewModelOutput() {
+    override func bindViewModelOutput() {
         viewModel.output.sections
             .receive(on: DispatchQueue.main)
             .withUnretained(self)

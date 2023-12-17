@@ -13,9 +13,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let rootViewController = StoreDemoViewController()
         let navigationViewController = UINavigationController(rootViewController: rootViewController)
-//        let rootViewController = StoreDetailViewController.instance(storeId: 126)
-//        let navigationViewController = UINavigationController(rootViewController: rootViewController)
-//        navigationViewController.isNavigationBarHidden = true
         
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
