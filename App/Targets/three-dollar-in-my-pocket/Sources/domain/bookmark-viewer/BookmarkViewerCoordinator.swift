@@ -22,7 +22,7 @@ extension BookmarkViewerCoordinator {
     }
     
     func pushFoodTruckDetail(storeId: String) {
-        let viewController = BossStoreDetailViewController.instance(storeId: storeId)
+        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
         
         self.presenter.navigationController?.pushViewController(viewController, animated: true)
     }
