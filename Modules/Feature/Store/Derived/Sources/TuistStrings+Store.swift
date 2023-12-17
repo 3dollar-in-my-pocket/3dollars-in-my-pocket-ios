@@ -13,6 +13,37 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 public enum StoreStrings {
 
+  public enum BossStoreDetail {
+    public enum Info {
+      /// 계좌번호
+      public static let accountTitle = StoreStrings.tr("Localization", "boss_store_detail.info.account_title")
+      /// 복사하기
+      public static let copy = StoreStrings.tr("Localization", "boss_store_detail.info.copy")
+      /// 🔗 계좌번호가 복사되었습니다.
+      public static let copyToast = StoreStrings.tr("Localization", "boss_store_detail.info.copy_toast")
+      /// 사장님 한마디
+      public static let introduction = StoreStrings.tr("Localization", "boss_store_detail.info.introduction")
+      /// SNS
+      public static let sns = StoreStrings.tr("Localization", "boss_store_detail.info.sns")
+      /// 가게 정보 & 메뉴
+      public static let title = StoreStrings.tr("Localization", "boss_store_detail.info.title")
+      /// 업데이트
+      public static let update = StoreStrings.tr("Localization", "boss_store_detail.info.update")
+    }
+    public enum Menu {
+      /// 등록된 메뉴가 없습니다.\n사장님이 메뉴를 등록할 때 까지 잠시만 기다려주세요!
+      public static let empty = StoreStrings.tr("Localization", "boss_store_detail.menu.empty")
+      /// 메뉴 %d개 더보기
+      public static func menuMoreFormat(_ p1: Int) -> String {
+        return StoreStrings.tr("Localization", "boss_store_detail.menu.menu_more_format", p1)
+      }
+      /// %@원
+      public static func priceFormat(_ p1: Any) -> String {
+        return StoreStrings.tr("Localization", "boss_store_detail.menu.price_format", String(describing: p1))
+      }
+    }
+  }
+
   public enum MapDetail {
     /// 길 안내보기
     public static let navigationButton = StoreStrings.tr("Localization", "map_detail.navigation_button")

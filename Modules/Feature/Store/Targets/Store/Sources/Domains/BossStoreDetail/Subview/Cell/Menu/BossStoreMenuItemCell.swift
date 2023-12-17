@@ -58,9 +58,9 @@ final class BossStoreMenuItemCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(imageUrl: String?, name: String, price: Int) {
-        imageView.setImage(urlString: imageUrl)
-        nameLabel.text = name
-        priceLabel.text = "\(price)원"
+    func bind(menu: BossStoreMenu) {
+        imageView.setImage(urlString: menu.imageUrl)
+        nameLabel.text = menu.name
+        priceLabel.text = Strings.BossStoreDetail.Menu.priceFormat(menu.price.decimalFormat ?? "")
     }
 }

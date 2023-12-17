@@ -14,7 +14,7 @@ final class BossStoreEmptyMenuCell: BaseCollectionViewCell {
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = "등록된 메뉴가 없습니다.\n사장님이 메뉴를 등록할 때 까지 잠시만 기다려주세요!"
+        $0.text = Strings.BossStoreDetail.Menu.empty
         $0.textColor = Colors.gray50.color
         $0.font = Fonts.medium.font(size: 12)
         $0.numberOfLines = 0

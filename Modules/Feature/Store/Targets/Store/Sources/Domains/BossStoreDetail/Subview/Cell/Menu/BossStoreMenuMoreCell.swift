@@ -44,6 +44,6 @@ final class BossStoreMenuMoreCell: BaseCollectionViewCell {
     }
 
     func bind(count: Int) {
-        titleLabel.text = "메뉴 \(count)개 더보기"
+        titleLabel.text = Strings.BossStoreDetail.Menu.menuMoreFormat(count)
     }
 }

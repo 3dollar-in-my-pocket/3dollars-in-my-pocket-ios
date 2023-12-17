@@ -103,7 +103,7 @@ extension BossStoreMenuListCell: UICollectionViewDataSource {
         case 0:
             let cell: BossStoreMenuItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
             if let menu = viewModel?.output.menuList.value[safe: indexPath.item] {
-                cell.bind(imageUrl: menu.imageUrl, name: menu.name, price: menu.price)
+                cell.bind(menu: menu)
             }
             
             return cell

@@ -101,3 +101,15 @@
 "visit.exists" = "방문 성공";
 "visit.not_exists" = "방문 실패";
 "visit.result_message" = "방문 기록을 저장했습니다👍";
+
+// 사장님 가게 상세화면
+"boss_store_detail.info.title" = "가게 정보 & 메뉴";
+"boss_store_detail.info.sns" = "SNS";
+"boss_store_detail.info.introduction" = "사장님 한마디";
+"boss_store_detail.info.update" = "업데이트";
+"boss_store_detail.info.account_title" = "계좌번호";
+"boss_store_detail.info.copy" = "복사하기";
+"boss_store_detail.info.copy_toast" = "🔗 계좌번호가 복사되었습니다.";
+"boss_store_detail.menu.empty" = "등록된 메뉴가 없습니다.\n사장님이 메뉴를 등록할 때 까지 잠시만 기다려주세요!";
+"boss_store_detail.menu.price_format" = "%@원";
+"boss_store_detail.menu.menu_more_format" = "메뉴 %d개 더보기";
