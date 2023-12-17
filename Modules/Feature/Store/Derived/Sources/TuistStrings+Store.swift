@@ -24,6 +24,18 @@ public enum StoreStrings {
       /// 업데이트
       public static let update = StoreStrings.tr("Localization", "boss_store_detail.info.update")
     }
+    public enum Menu {
+      /// 등록된 메뉴가 없습니다.\n사장님이 메뉴를 등록할 때 까지 잠시만 기다려주세요!
+      public static let empty = StoreStrings.tr("Localization", "boss_store_detail.menu.empty")
+      /// 메뉴 %d개 더보기
+      public static func menuMoreFormat(_ p1: Int) -> String {
+        return StoreStrings.tr("Localization", "boss_store_detail.menu.menu_more_format", p1)
+      }
+      /// %@원
+      public static func priceFormat(_ p1: Any) -> String {
+        return StoreStrings.tr("Localization", "boss_store_detail.menu.price_format", String(describing: p1))
+      }
+    }
   }
 
   public enum MapDetail {

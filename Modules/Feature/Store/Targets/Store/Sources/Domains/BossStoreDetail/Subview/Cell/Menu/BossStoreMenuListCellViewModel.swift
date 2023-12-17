@@ -9,13 +9,13 @@ final class BossStoreMenuListCellViewModel: BaseViewModel {
     }
 
     struct Output {
-        let menuList: CurrentValueSubject<[BossStoreMenuApiResponse], Never>
+        let menuList: CurrentValueSubject<[BossStoreMenu], Never>
         let moreItemCount: CurrentValueSubject<Int, Never>
         let updateHeight = PassthroughSubject<Void, Never>()
     }
 
     struct State {
-        let menus: [BossStoreMenuApiResponse]
+        let menus: [BossStoreMenu]
     }
 
     enum Constants {
@@ -27,14 +27,12 @@ final class BossStoreMenuListCellViewModel: BaseViewModel {
 
     private let state: State
 
-    init(data: BossStoreDetailData) {
+    init(menus: [BossStoreMenu]) {
         self.output = Output(
-            menuList: .init(Array(data.store.menus.prefix(Constants.initialViewCount))),
-            moreItemCount: .init(max(data.store.menus.count - Constants.initialViewCount, 0))
+            menuList: .init(Array(menus.prefix(Constants.initialViewCount))),
+            moreItemCount: .init(max(menus.count - Constants.initialViewCount, 0))
         )
-        self.state = State(
-            menus: data.store.menus
-        )
+        self.state = State(menus: menus)
 
         super.init()
     }

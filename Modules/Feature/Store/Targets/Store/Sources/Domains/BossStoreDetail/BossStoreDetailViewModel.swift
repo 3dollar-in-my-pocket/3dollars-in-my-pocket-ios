@@ -198,7 +198,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         if storeDetailData.store.menus.isEmpty {
             infoItems.append(.emptyMenu)
         } else {
-            infoItems.append(.menuList(bindMenuListCellViewModel(with: storeDetailData)))
+            infoItems.append(.menuList(bindMenuListCellViewModel(with: storeDetailData.menus)))
         }
 
         output.dataSource.send([
@@ -350,8 +350,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
         return viewModel
     }
 
-    private func bindMenuListCellViewModel(with data: BossStoreDetailData) -> BossStoreMenuListCellViewModel {
-        let cellViewModel = BossStoreMenuListCellViewModel(data: data)
+    private func bindMenuListCellViewModel(with menus: [BossStoreMenu]) -> BossStoreMenuListCellViewModel {
+        let cellViewModel = BossStoreMenuListCellViewModel(menus: menus)
 
         cellViewModel.output.updateHeight
             .subscribe(output.updateHeight)
