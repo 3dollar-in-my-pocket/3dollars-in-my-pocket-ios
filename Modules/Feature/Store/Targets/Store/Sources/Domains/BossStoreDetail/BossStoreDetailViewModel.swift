@@ -210,7 +210,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
     }
     
     private func bindInfoCellViewModel(_ info: BossStoreInfo) -> BossStoreInfoCellViewModel {
-        let viewModel = BossStoreInfoCellViewModel(info: info)
+        let config = BossStoreInfoCellViewModel.Config(screenName: output.screenName, storeId: storeId, info: info)
+        let viewModel = BossStoreInfoCellViewModel(config: config)
         
         viewModel.output.didTapSnsButton
             .subscribe(input.didTapSnsButton)

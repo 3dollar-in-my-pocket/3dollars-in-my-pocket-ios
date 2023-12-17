@@ -15,6 +15,10 @@ public enum StoreStrings {
 
   public enum BossStoreDetail {
     public enum Info {
+      /// 계좌번호
+      public static let accountTitle = StoreStrings.tr("Localization", "boss_store_detail.info.account_title")
+      /// 복사하기
+      public static let copy = StoreStrings.tr("Localization", "boss_store_detail.info.copy")
       /// 사장님 한마디
       public static let introduction = StoreStrings.tr("Localization", "boss_store_detail.info.introduction")
       /// SNS
