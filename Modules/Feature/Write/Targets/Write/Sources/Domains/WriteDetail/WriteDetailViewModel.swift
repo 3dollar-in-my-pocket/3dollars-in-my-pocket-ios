@@ -312,6 +312,7 @@ final class WriteDetailViewModel: BaseViewModel {
             WriteDetailSection(type: .storeType, items: [.storeType(state.salesType)]),
             WriteDetailSection(type: .paymentMethod, items: [.paymentMethod(state.paymentMethods)]),
             WriteDetailSection(type: .appearanceDay, items: [.appearanceDay(state.appearanceDays)]),
+            WriteDetailSection(type: .time, items: [.time]),
             WriteDetailSection(type: .category, items: [ .categoryCollection([nil] + state.categories)] + menuGroups)
         ]
         output.sections.send(sections)
