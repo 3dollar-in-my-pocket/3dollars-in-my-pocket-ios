@@ -9,25 +9,25 @@ final class WriteDetailTimeCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIUtils.windowBounds.width, height: 72)
     }
     
-    private let startTimeField = TimeField()
+    let startTimeField = TimeField(placeholder: Strings.writeDetailTimeFromPlaceholder)
     
     private let fromLabel: UILabel = {
         let label = UILabel()
         
         label.textColor = Colors.gray100.color
         label.font = Fonts.medium.font(size: 12)
-        label.text = "부터"
+        label.text = Strings.writeDetailTimeFrom
         return label
     }()
     
-    private let endTimeField = TimeField()
+    let endTimeField = TimeField(placeholder: Strings.writeDetailTimeUntilPlaceholder)
     
     private let untilLabel: UILabel = {
         let label = UILabel()
         
         label.textColor = Colors.gray100.color
         label.font = Fonts.medium.font(size: 12)
-        label.text = "까지"
+        label.text = Strings.writeDetailTimeUntil
         return label
     }()
     
@@ -66,6 +66,29 @@ final class WriteDetailTimeCell: BaseCollectionViewCell {
         }
     }
     
+    func bind(viewModel: WriteDetailTimeCellViewModel) {
+        startTimeField.didTapDone = { [weak viewModel] startTime in
+            viewModel?.input.inputStartDate.send(startTime)
+        }
+        
+        endTimeField.didTapDone = { [weak viewModel] endTime in
+            viewModel?.input.inputEndDate.send(endTime)
+        }
+        
+        viewModel.output.inputStartDate
+            .withUnretained(self)
+            .sink { (cell: WriteDetailTimeCell, startDate: String?) in
+                cell.startTimeField.textField.text = startDate
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.inputEndDate
+            .withUnretained(self)
+            .sink { (cell: WriteDetailTimeCell, endDate: String?) in
+                cell.endTimeField.textField.text = endDate
+            }
+            .store(in: &cancellables)
+    }
 }
 
 
@@ -83,17 +106,34 @@ extension WriteDetailTimeCell {
             return view
         }()
         
-        private let textField: UITextField = {
+        let textField: UITextField = {
             let textField = UITextField()
             textField.textAlignment = .left
             textField.font = Fonts.regular.font(size: 14)
             textField.textColor = Colors.gray100.color
-            textField.attributedPlaceholder = NSAttributedString(string: Strings.writeDetailNamePlaceholer, attributes: [.foregroundColor: Colors.gray50.color])
             
             return textField
         }()
         
+        private let datePicker = UIDatePicker()
+        var didTapDone: ((String) -> Void)? = nil
+        
+        init(placeholder: String) {
+            super.init(frame: .zero)
+            
+            textField.attributedPlaceholder = NSAttributedString(
+                string: placeholder,
+                attributes: [.foregroundColor: Colors.gray50.color]
+            )
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
         override func setup() {
+            setupDatePicker()
+            setupToolBar()
             addSubViews([
                 containerView,
                 textField
@@ -116,6 +156,31 @@ extension WriteDetailTimeCell {
             snp.makeConstraints {
                 $0.height.equalTo(containerView).priority(.high)
             }
+        }
+        
+        private func setupDatePicker() {
+            datePicker.datePickerMode = .time
+            datePicker.preferredDatePickerStyle = .wheels
+            datePicker.locale = Locale.current
+            datePicker.minuteInterval = 0
+            textField.inputView = datePicker
+        }
+        
+        private func setupToolBar() {
+            let toolBar = UIToolbar()
+            let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDoen))
+
+            toolBar.items = [flexibleSpace, doneButton]
+            toolBar.sizeToFit()
+            textField.inputAccessoryView = toolBar
+        }
+        
+        @objc private func didTapDoen() {
+            let dateString = DateUtils.toString(date: datePicker.date, format: Strings.writeDetailTimeFormat)
+            
+            didTapDone?(dateString)
+            textField.resignFirstResponder()
         }
     }
 }

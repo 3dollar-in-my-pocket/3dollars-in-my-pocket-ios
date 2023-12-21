@@ -84,9 +84,10 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 
                 return cell
                 
-            case .time:
+            case .time(let viewModel):
                 let cell: WriteDetailTimeCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 
+                cell.bind(viewModel: viewModel)
                 return cell
                 
             case .categoryCollection(let categories):
@@ -202,7 +203,7 @@ enum WriteDetailSectionItem: Hashable {
     case storeType(SalesType?)
     case paymentMethod([PaymentMethod])
     case appearanceDay([AppearanceDay])
-    case time
+    case time(WriteDetailTimeCellViewModel)
     case categoryCollection([Model.PlatformStoreCategory?])
     case menuGroup(WriteDetailMenuGroupViewModel)
     

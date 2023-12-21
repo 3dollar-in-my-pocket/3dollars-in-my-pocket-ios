@@ -1,4 +1,4 @@
-public enum DayOfTheWeek: String, Decodable {
+public enum DayOfTheWeek: String, Codable {
     case monday = "MONDAY"
     case tuesday = "TUESDAY"
     case wednesday = "WEDNESDAY"

@@ -5,7 +5,7 @@ public struct StoreCreateRequestInput: Encodable {
     public let longitude: Double
     public let storeName: String
     public let storeType: String?
-    public let appearanceDays: [String]
+    public let appearanceDaysV2: [StoreAppearanceDayApiRequest]
     public let paymentMethods: [String]
     public let menus: [StoreMenuRequestInput]
     
@@ -14,7 +14,7 @@ public struct StoreCreateRequestInput: Encodable {
         longitude: Double,
         storeName: String,
         storeType: String?,
-        appearanceDays: [String],
+        appearanceDaysV2: [StoreAppearanceDayApiRequest],
         paymentMethods: [String],
         menus: [StoreMenuRequestInput]
     ) {
@@ -22,7 +22,7 @@ public struct StoreCreateRequestInput: Encodable {
         self.longitude = longitude
         self.storeName = storeName
         self.storeType = storeType
-        self.appearanceDays = appearanceDays
+        self.appearanceDaysV2 = appearanceDaysV2
         self.paymentMethods = paymentMethods
         self.menus = menus
     }

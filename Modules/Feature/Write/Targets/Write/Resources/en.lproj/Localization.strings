@@ -31,6 +31,11 @@
 "write_detail_store_option" = "(선택)";
 "write_detail_store_can_select_multi" = "*다중선택 가능";
 "write_detail_register_button" = "가게 등록하기";
+"write_detail_time_from" = "부터";
+"write_detail_time_until" = "까지";
+"write_detail_time_from_placeholder" = "오전 9시";
+"write_detail_time_until_placeholder" = "오후 9시";
+"write_detail_time_format" = "a h시";
 
 // 카테고리 선택 화면
 "category_selection_title" = "카테고리 선택";

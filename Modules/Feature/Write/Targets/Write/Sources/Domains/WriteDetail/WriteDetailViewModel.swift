@@ -15,6 +15,8 @@ final class WriteDetailViewModel: BaseViewModel {
         let tapSalesType = PassthroughSubject<SalesType, Never>()
         let tapPaymentMethod = PassthroughSubject<PaymentMethod, Never>()
         let tapDay = PassthroughSubject<AppearanceDay, Never>()
+        let inputStartDate = PassthroughSubject<String?, Never>()
+        let inputEndDate = PassthroughSubject<String?, Never>()
         let tapAddCategory = PassthroughSubject<Void, Never>()
         let tapDeleteCategory = PassthroughSubject<Int, Never>()
         let addCategories = PassthroughSubject<[PlatformStoreCategory], Never>()
@@ -45,6 +47,8 @@ final class WriteDetailViewModel: BaseViewModel {
         var salesType: SalesType?
         var paymentMethods: [PaymentMethod] = []
         var appearanceDays: [AppearanceDay] = []
+        var startDate: String?
+        var endDate: String?
         var categories: [PlatformStoreCategory] = []
         var menu: [[NewMenu]] = []
         var isEdit: Bool
@@ -188,6 +192,20 @@ final class WriteDetailViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
+        input.inputStartDate
+            .withUnretained(self)
+            .sink { (owner: WriteDetailViewModel, startDate: String?) in
+                owner.state.startDate = startDate
+            }
+            .store(in: &cancellables)
+        
+        input.inputEndDate
+            .withUnretained(self)
+            .sink { (owner: WriteDetailViewModel, endDate: String?) in
+                owner.state.endDate = endDate
+            }
+            .store(in: &cancellables)
+        
         input.tapAddCategory
             .withUnretained(self)
             .sink(receiveValue: { (owner: WriteDetailViewModel, _) in
@@ -312,7 +330,7 @@ final class WriteDetailViewModel: BaseViewModel {
             WriteDetailSection(type: .storeType, items: [.storeType(state.salesType)]),
             WriteDetailSection(type: .paymentMethod, items: [.paymentMethod(state.paymentMethods)]),
             WriteDetailSection(type: .appearanceDay, items: [.appearanceDay(state.appearanceDays)]),
-            WriteDetailSection(type: .time, items: [.time]),
+            WriteDetailSection(type: .time, items: [.time(createTimeCellViewModel())]),
             WriteDetailSection(type: .category, items: [ .categoryCollection([nil] + state.categories)] + menuGroups)
         ]
         output.sections.send(sections)
@@ -348,7 +366,7 @@ final class WriteDetailViewModel: BaseViewModel {
             longitude: state.location.longitude,
             storeName: state.name,
             storeType: state.salesType?.rawValue,
-            appearanceDays: state.appearanceDays.map { $0.rawValue },
+            appearanceDaysV2: [],
             paymentMethods: state.paymentMethods.map { $0.rawValue },
             menus: menuRequestInputs
         )
@@ -391,6 +409,24 @@ final class WriteDetailViewModel: BaseViewModel {
         viewModel.output.inputMenuPrice
             .subscribe(input.inputMenuPrice)
             .store(in: &cancellables)
+    }
+    
+    private func createTimeCellViewModel() -> WriteDetailTimeCellViewModel {
+        let config = WriteDetailTimeCellViewModel.Config(
+            startDate: state.startDate,
+            endDate: state.endDate
+        )
+        let viewModel = WriteDetailTimeCellViewModel(config: config)
+        
+        viewModel.output.inputStartDate
+            .subscribe(input.inputStartDate)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.inputEndDate
+            .subscribe(input.inputEndDate)
+            .store(in: &viewModel.cancellables)
+        
+        return viewModel
     }
     
     private func isAllMenuEntered(section: Int) -> Bool {
