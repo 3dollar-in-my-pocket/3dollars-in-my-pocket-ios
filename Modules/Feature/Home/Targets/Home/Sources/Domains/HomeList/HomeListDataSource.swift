@@ -2,6 +2,20 @@ import UIKit
 
 import Model
 
+struct HomeListSection: Hashable {
+    public var items: [HomeListSectionItem]
+    
+    public init(items: [HomeListSectionItem]) {
+        self.items = items
+    }
+}
+        
+enum HomeListSectionItem: Hashable {
+    case storeCard(StoreCard)
+    case ad(HomeListAdCellViewModel)
+    case emptyStore
+}
+
 typealias HomeListSnapshot = NSDiffableDataSourceSnapshot<HomeListSection, HomeListSectionItem>
 
 final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSection, HomeListSectionItem> {
@@ -10,7 +24,11 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
     init(collectionView: UICollectionView, viewModel: HomeListViewModel) {
         self.viewModel = viewModel
         
-        collectionView.register([HomeListCell.self])
+        collectionView.register([
+            HomeListCell.self,
+            HomeListAdCell.self,
+            HomeListEmptyCell.self
+        ])
         collectionView.registerSectionHeader([HomeListHeaderCell.self])
         
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
@@ -19,6 +37,14 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
                 let cell: HomeListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 
                 cell.bind(storeCard: storeCard)
+                return cell
+            case .ad(let viewModel):
+                let cell: HomeListAdCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                
+                cell.bind(viewModel: viewModel)
+                return cell
+            case .emptyStore:
+                let cell: HomeListEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 return cell
             }
         }
@@ -66,10 +92,37 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
 
 extension HomeListDataSource: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        viewModel.input.willDisplay.send(indexPath.row)
+        switch itemIdentifier(for: indexPath) {
+        case .storeCard(let storeCard):
+            viewModel.input.willDisplay.send(indexPath.row)
+        default:
+            break
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.input.onTapStore.send(indexPath.row)
+        switch itemIdentifier(for: indexPath) {
+        case .storeCard(let storeCard):
+            viewModel.input.onTapStore.send(storeCard)
+        case .ad(let adCellViewModel):
+            viewModel.input.onTapAdvertisement.send(adCellViewModel.output.item)
+        default:
+            break
+        }
+    }
+}
+
+extension HomeListDataSource: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        switch itemIdentifier(for: indexPath) {
+        case .storeCard:
+            return HomeListCell.Layout.size
+        case .ad:
+            return HomeListAdCell.Layout.size
+        case .emptyStore:
+            return HomeListEmptyCell.Layout.size
+        case .none:
+            return .zero
+        }
     }
 }

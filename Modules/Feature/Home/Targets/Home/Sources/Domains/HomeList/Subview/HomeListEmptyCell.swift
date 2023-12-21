@@ -3,7 +3,12 @@ import UIKit
 import Common
 import DesignSystem
 
-final class HomeListEmptyView: BaseView {
+final class HomeListEmptyCell: BaseCollectionViewCell {
+    
+    enum Layout {
+        static let size: CGSize = CGSize(width: UIScreen.main.bounds.width, height: 220)
+    }
+    
     private let emptyImageView = UIImageView(image: Assets.imageEmptyList.image)
     
     private let emptyTitleLabel: UILabel = {
@@ -25,7 +30,7 @@ final class HomeListEmptyView: BaseView {
     }()
     
     override func setup() {
-        addSubViews([
+        contentView.addSubViews([
             emptyImageView,
             emptyTitleLabel,
             emptyDescriptionLabel
@@ -47,14 +52,6 @@ final class HomeListEmptyView: BaseView {
         emptyDescriptionLabel.snp.makeConstraints {
             $0.top.equalTo(emptyTitleLabel.snp.bottom).offset(4)
             $0.centerX.equalToSuperview()
-            $0.bottom.equalToSuperview()
-        }
-        
-        snp.makeConstraints {
-            $0.top.equalTo(emptyImageView)
-            $0.leading.equalTo(emptyTitleLabel)
-            $0.trailing.equalTo(emptyTitleLabel)
-            $0.bottom.equalTo(emptyDescriptionLabel)
         }
     }
 }
