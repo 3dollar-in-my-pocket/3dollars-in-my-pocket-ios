@@ -3,7 +3,7 @@ import Foundation
 public struct StoreDetailReview: Hashable {
     public let user: User
     public let reviewId: Int
-    public var contents: String
+    public var contents: String?
     public let createdAt: String
     public var rating: Int
     public let reportedByMe: Bool
