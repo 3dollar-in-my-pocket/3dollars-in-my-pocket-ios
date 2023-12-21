@@ -71,14 +71,6 @@ final class HomeListViewController: BaseViewController {
     }
     
     override func bindViewModelOutput() {
-        viewModel.output.advertisement
-            .main
-            .withUnretained(self)
-            .sink { (owner: HomeListViewController, advertisement: Advertisement?) in
-                owner.homeListView.bindAdvertisement(advertisement: advertisement, in: owner)
-            }
-            .store(in: &cancellables)
-        
         viewModel.output.categoryFilter
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
@@ -87,16 +79,20 @@ final class HomeListViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.stores
+        viewModel.output.dataSource
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
-            .sink { owner, storeCards in
-                let items = storeCards.map { HomeListSectionItem.storeCard($0) }
-                let section = HomeListSection(items: items)
-                
-                owner.updateDataSource(section: [section])
-                owner.homeListView.emptyView.isHidden = storeCards.isNotEmpty
+            .sink { owner, sections in
+                owner.updateDataSource(section: sections)
             }
+            .store(in: &cancellables)
+            
+        viewModel.output.isEmptyAdvertisement
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, isEmptyAdvertisement in
+                owner.homeListView.bindAdvertisement(isHidden: !isEmptyAdvertisement, in: owner)
+            }        
             .store(in: &cancellables)
         
         viewModel.output.sortType
@@ -150,7 +146,17 @@ final class HomeListViewController: BaseViewController {
             
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
+        case .openUrl(let url):
+            openUrl(with: url)
         }
+    }
+    
+    private func openUrl(with urlString: String?) {
+        guard let urlString, 
+                let url = URL(string: urlString), 
+                UIApplication.shared.canOpenURL(url) else { return }
+
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
 

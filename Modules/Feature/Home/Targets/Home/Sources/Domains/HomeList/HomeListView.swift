@@ -1,5 +1,6 @@
 import UIKit
 
+import SnapKit
 import Common
 import DesignSystem
 import AppInterface
@@ -23,13 +24,6 @@ final class HomeListView: BaseView {
         $0.backgroundColor = .clear
     }
     
-    let emptyView: HomeListEmptyView = {
-        let view = HomeListEmptyView()
-        view.isHidden = true
-        
-        return view
-    }()
-    
     let mapViewButton = UIButton().then {
         $0.setImage(DesignSystemAsset.Icons.map.image.resizeImage(scaledTo: 16).withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
         $0.setTitle(HomeStrings.categoryFileterMapView, for: .normal)
@@ -44,6 +38,8 @@ final class HomeListView: BaseView {
         $0.layer.shadowOpacity = 0.1
     }
     
+    private var adBannerViewHeightConstraint: Constraint?
+    
     override func setup() {
         backgroundColor = DesignSystemAsset.Colors.gray0.color
         
@@ -53,7 +49,6 @@ final class HomeListView: BaseView {
             onlyBossToggleButton,
             adBannerView,
             collectionView,
-            emptyView,
             mapViewButton
         ])
     }
@@ -78,7 +73,7 @@ final class HomeListView: BaseView {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()
             $0.top.equalTo(categoryFilterButton.snp.bottom).offset(13)
-            $0.height.equalTo(49)
+            adBannerViewHeightConstraint = $0.height.equalTo(49).constraint
         }
         
         collectionView.snp.makeConstraints {
@@ -88,11 +83,6 @@ final class HomeListView: BaseView {
             $0.top.equalTo(adBannerView.snp.bottom)
         }
         
-        emptyView.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.top.equalTo(collectionView).offset(92)
-        }
-        
         mapViewButton.snp.makeConstraints {
             $0.right.equalToSuperview().offset(-20)
             $0.height.equalTo(40)
@@ -100,19 +90,16 @@ final class HomeListView: BaseView {
         }
     }
     
-    func bindAdvertisement(advertisement: Advertisement?, in rootViewController: UIViewController) {
-        if let advertisement {
-            // TODO: 자체 구좌 확인
-            adBannerView.isHidden = true
-        } else {
+    func bindAdvertisement(isHidden: Bool, in rootViewController: UIViewController) {
+        adBannerView.isHidden = isHidden
+        adBannerViewHeightConstraint?.update(offset: isHidden ? 0 : 49)
+        if !isHidden {
             adBannerView.load(in: rootViewController)
-            adBannerView.isHidden = false
         }
     }
     
     private func generateLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = HomeListCell.Layout.size
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 8
         layout.minimumInteritemSpacing = 8

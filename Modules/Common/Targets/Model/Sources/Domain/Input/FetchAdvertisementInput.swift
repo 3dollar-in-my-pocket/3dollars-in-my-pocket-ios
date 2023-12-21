@@ -19,4 +19,5 @@ public enum AdvertisementPosition: String, Encodable {
     case storeMarker = "STORE_MARKER"
     case storeMarkerPopup = "STORE_MARKER_POPUP"
     case pollCard = "POLL_CARD"
+    case storeList = "STORE_LIST"
 }

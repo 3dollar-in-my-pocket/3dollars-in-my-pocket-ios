@@ -418,12 +418,12 @@ final class HomeViewModel: BaseViewModel {
             .map { (owner: HomeViewModel, items: [HomeSectionItem] ) in
                 let stores = items.compactMap { $0.storeCard }
                 let state = HomeListViewModel.State(
+                    stores: .init(stores),
                     categoryFilter: owner.state.categoryFilter,
                     sortType: owner.state.sortType,
                     isOnlyBossStore: owner.state.isOnlyBossStore,
                     mapLocation: owner.state.resultCameraPosition,
                     currentLocation: owner.state.currentLocation,
-                    stores: stores,
                     nextCursor: owner.state.nextCursor,
                     hasMore: owner.state.hasMore,
                     mapMaxDistance: owner.state.mapMaxDistance
