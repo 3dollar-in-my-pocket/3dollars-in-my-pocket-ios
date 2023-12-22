@@ -67,6 +67,8 @@ public enum WriteStrings {
   /// (선택)
   public static let writeDetailStoreOption = WriteStrings.tr("Localization", "write_detail_store_option")
   /// a h시
+  public static let writeDetailTimeDisplayFormat = WriteStrings.tr("Localization", "write_detail_time_display_format")
+  /// HH:mm
   public static let writeDetailTimeFormat = WriteStrings.tr("Localization", "write_detail_time_format")
   /// 부터
   public static let writeDetailTimeFrom = WriteStrings.tr("Localization", "write_detail_time_from")

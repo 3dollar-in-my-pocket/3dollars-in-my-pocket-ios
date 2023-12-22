@@ -366,7 +366,8 @@ final class WriteDetailViewModel: BaseViewModel {
             longitude: state.location.longitude,
             storeName: state.name,
             storeType: state.salesType?.rawValue,
-            appearanceDaysV2: [],
+            appearanceDays: state.appearanceDays.map { $0.rawValue },
+            openingHours: .init(startTime: state.startDate, endTime: state.endDate),
             paymentMethods: state.paymentMethods.map { $0.rawValue },
             menus: menuRequestInputs
         )

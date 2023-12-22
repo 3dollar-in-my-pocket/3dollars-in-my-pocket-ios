@@ -78,16 +78,29 @@ final class WriteDetailTimeCell: BaseCollectionViewCell {
         viewModel.output.inputStartDate
             .withUnretained(self)
             .sink { (cell: WriteDetailTimeCell, startDate: String?) in
-                cell.startTimeField.textField.text = startDate
+                cell.startTimeField.textField.text = cell.toDisplayDateString(startDate)
             }
             .store(in: &cancellables)
         
         viewModel.output.inputEndDate
             .withUnretained(self)
             .sink { (cell: WriteDetailTimeCell, endDate: String?) in
-                cell.endTimeField.textField.text = endDate
+                cell.endTimeField.textField.text = cell.toDisplayDateString(endDate)
             }
             .store(in: &cancellables)
+    }
+    
+    private func toDisplayDateString(_ string: String?) -> String? {
+        if let string {
+            let dateString = DateUtils.toString(
+                dateString: string,
+                format: Strings.writeDetailTimeDisplayFormat,
+                inputFormat: Strings.writeDetailTimeFormat
+            )
+            return dateString
+        } else {
+            return nil
+        }
     }
 }
 

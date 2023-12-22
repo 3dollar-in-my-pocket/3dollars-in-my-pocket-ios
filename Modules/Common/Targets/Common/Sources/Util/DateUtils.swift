@@ -3,8 +3,8 @@ import Foundation
 public struct DateUtils {
     private static let defaultFormat = "yyyy-MM-dd'T'HH:mm:ss"
     
-    public static func toString(dateString: String, format: String? = nil) -> String {
-        let date = Self.toDate(dateString: dateString)
+    public static func toString(dateString: String, format: String? = nil, inputFormat: String? = nil) -> String {
+        let date = Self.toDate(dateString: dateString, format: inputFormat)
         let dateFormatter = DateFormatter()
         
         dateFormatter.dateFormat = format ?? Self.defaultFormat
@@ -28,9 +28,9 @@ public struct DateUtils {
         return dateFormatter.string(from: date)
     }
 
-    private static func toDate(dateString: String) -> Date {
+    private static func toDate(dateString: String, format: String? = nil) -> Date {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = Self.defaultFormat
+        dateFormatter.dateFormat = format ?? Self.defaultFormat
         dateFormatter.locale = Locale(identifier: "ko")
         
         return dateFormatter.date(from: dateString)!
