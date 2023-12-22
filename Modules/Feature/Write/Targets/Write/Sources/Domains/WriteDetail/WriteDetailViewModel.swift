@@ -119,6 +119,8 @@ final class WriteDetailViewModel: BaseViewModel {
                 salesType: editConfig.storeDetailData.info.salesType,
                 paymentMethods: editConfig.storeDetailData.info.paymentMethods,
                 appearanceDays: editConfig.storeDetailData.info.appearanceDays,
+                startDate: editConfig.storeDetailData.info.openingHours?.startTime,
+                endDate: editConfig.storeDetailData.info.openingHours?.endTime,
                 categories: editConfig.storeDetailData.overview.categories,
                 menu: menus,
                 isEdit: true
@@ -397,6 +399,7 @@ final class WriteDetailViewModel: BaseViewModel {
             storeName: state.name,
             storeType: state.salesType?.rawValue,
             appearanceDays: state.appearanceDays.map { $0.rawValue },
+            openingHours: .init(startTime: state.startDate, endTime: state.endDate),
             paymentMethods: state.paymentMethods.map { $0.rawValue },
             menus: menuRequestInputs
         )
