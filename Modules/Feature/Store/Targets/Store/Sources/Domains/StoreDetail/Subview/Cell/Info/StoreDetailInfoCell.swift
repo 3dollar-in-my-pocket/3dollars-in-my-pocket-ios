@@ -72,6 +72,12 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
     
     private let paymentMethodStackView = StoreDetailInfoPaymentStackView()
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        paymentMethodStackView.prepareForReuse()
+    }
+    
     override func setup() {
         contentView.addSubViews([
             containerView,
