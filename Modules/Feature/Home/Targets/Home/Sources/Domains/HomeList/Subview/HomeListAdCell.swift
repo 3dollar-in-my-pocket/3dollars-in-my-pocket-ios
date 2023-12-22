@@ -26,13 +26,13 @@ final class HomeListAdCell: BaseCollectionViewCell {
     private let titleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 16)
         $0.textColor = Colors.gray90.color
-        $0.textAlignment = .center
+        $0.textAlignment = .left
     }
 
     private let contentLabel = UILabel().then {
         $0.font = Fonts.medium.font(size: 12)
         $0.textColor = Colors.gray50.color
-        $0.textAlignment = .center
+        $0.textAlignment = .left
     }
 
     private let adButton = UIButton().then {
