@@ -6,7 +6,7 @@ import Model
 
 final class StoreDetailInfoCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 121
+        static let height: CGFloat = 152
     }
     
     private let containerView: UIView = {
@@ -45,6 +45,22 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
     
     private let appearanceDayStackView = StoreDetailInfoAppearanceDayStackView()
     
+    private let openingHoursLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = Colors.gray100.color
+        label.font = Fonts.bold.font(size: 12)
+        label.text = Strings.StoreDetail.Info.openingHours
+        
+        return label
+    }()
+    
+    private let openingHoursValueLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.medium.font(size: 12)
+        
+        return label
+    }()
+    
     private let paymentMethodLabel: UILabel = {
         let label = UILabel()
         label.textColor = Colors.gray100.color
@@ -63,6 +79,8 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
             typeValueLabel,
             appearanceDayLabel,
             appearanceDayStackView,
+            openingHoursLabel,
+            openingHoursValueLabel,
             paymentMethodLabel,
             paymentMethodStackView
         ])
@@ -99,10 +117,21 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
             $0.right.equalTo(containerView).offset(-16)
         }
         
-        paymentMethodLabel.snp.makeConstraints {
+        openingHoursLabel.snp.makeConstraints {
             $0.left.equalTo(appearanceDayLabel)
             $0.top.equalTo(appearanceDayLabel.snp.bottom).offset(8)
-            $0.height.equalTo(18)
+            $0.height.equalTo(24)
+        }
+        
+        openingHoursValueLabel.snp.makeConstraints {
+            $0.right.equalTo(containerView).offset(-16)
+            $0.centerY.equalTo(openingHoursLabel)
+        }
+        
+        paymentMethodLabel.snp.makeConstraints {
+            $0.left.equalTo(openingHoursLabel)
+            $0.top.equalTo(openingHoursLabel.snp.bottom).offset(8)
+            $0.height.equalTo(24)
         }
         
         paymentMethodStackView.snp.makeConstraints {
@@ -115,6 +144,7 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
         setSalesType(info.salesType)
         appearanceDayStackView.bind(info.appearanceDays)
         paymentMethodStackView.bind(info.paymentMethods)
+        setOpeningHours(info.openingHours)
     }
     
     private func setSalesType(_ type: SalesType?) {
@@ -134,5 +164,18 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
         }
         
         typeValueLabel.text = salesType
+    }
+    
+    private func setOpeningHours(_ openingHours: StoreDetailOpeningHours?) {
+        if let openingHours {
+            let startDate = DateUtils.toString(dateString: openingHours.startTime, format: "a h시", inputFormat: "HH:mm")
+            let endDate = DateUtils.toString(dateString: openingHours.endTime, format: "a h시", inputFormat: "HH:mm")
+            
+            openingHoursValueLabel.text = "\(startDate) - \(endDate)"
+            openingHoursValueLabel.textColor = Colors.gray70.color
+        } else {
+            openingHoursValueLabel.text = Strings.StoreDetail.Info.emptyOpeningHours
+            openingHoursValueLabel.textColor = Colors.gray40.color
+        }
     }
 }

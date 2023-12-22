@@ -138,10 +138,14 @@ public enum StoreStrings {
     public enum Info {
       /// 출몰시기
       public static let appearanceDay = StoreStrings.tr("Localization", "store_detail.info.appearance_day")
+      /// 제보가 필요해요😢
+      public static let emptyOpeningHours = StoreStrings.tr("Localization", "store_detail.info.empty_opening_hours")
       /// 금
       public static let friday = StoreStrings.tr("Localization", "store_detail.info.friday")
       /// 월
       public static let monday = StoreStrings.tr("Localization", "store_detail.info.monday")
+      /// 출몰 시간대
+      public static let openingHours = StoreStrings.tr("Localization", "store_detail.info.opening_hours")
       /// 결제방식
       public static let paymentMethod = StoreStrings.tr("Localization", "store_detail.info.payment_method")
       /// 토
