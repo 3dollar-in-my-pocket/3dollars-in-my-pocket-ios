@@ -129,7 +129,7 @@ extension WriteDetailTimeCell {
         }()
         
         private let datePicker = UIDatePicker()
-        var didTapDone: ((String) -> Void)? = nil
+        var didTapDone: ((String?) -> Void)? = nil
         
         init(placeholder: String) {
             super.init(frame: .zero)
@@ -181,18 +181,38 @@ extension WriteDetailTimeCell {
         
         private func setupToolBar() {
             let toolBar = UIToolbar()
-            let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDoen))
+            let deleteButton = UIBarButtonItem(
+                title: Strings.writeDetailTimeDelete,
+                style: .plain,
+                target: self,
+                action: #selector(didTapDelete)
+            )
+            let flexibleSpace = UIBarButtonItem(
+                barButtonSystemItem: .flexibleSpace,
+                target: nil,
+                action: nil
+            )
+            let doneButton = UIBarButtonItem(
+                title: Strings.writeDetailTimeConfirm,
+                style: .done,
+                target: self,
+                action: #selector(didTapConfirm)
+            )
 
-            toolBar.items = [flexibleSpace, doneButton]
+            toolBar.items = [deleteButton, flexibleSpace, doneButton]
             toolBar.sizeToFit()
             textField.inputAccessoryView = toolBar
         }
         
-        @objc private func didTapDoen() {
+        @objc private func didTapConfirm() {
             let dateString = DateUtils.toString(date: datePicker.date, format: Strings.writeDetailTimeFormat)
             
             didTapDone?(dateString)
+            textField.resignFirstResponder()
+        }
+        
+        @objc private func didTapDelete() {
+            didTapDone?(nil)
             textField.resignFirstResponder()
         }
     }

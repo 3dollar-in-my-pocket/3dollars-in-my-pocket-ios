@@ -174,14 +174,42 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
     
     private func setOpeningHours(_ openingHours: StoreDetailOpeningHours?) {
         if let openingHours {
-            let startDate = DateUtils.toString(dateString: openingHours.startTime, format: "a h시", inputFormat: "HH:mm")
-            let endDate = DateUtils.toString(dateString: openingHours.endTime, format: "a h시", inputFormat: "HH:mm")
+            let startDate = getStartFormattedDateString(dateString: openingHours.startTime)
+            let endDate = getEndFormattedDateString(dateString: openingHours.endTime)
             
-            openingHoursValueLabel.text = "\(startDate) - \(endDate)"
-            openingHoursValueLabel.textColor = Colors.gray70.color
+            if startDate.isEmpty && endDate.isEmpty {
+                setEmptyOpeningHours()
+            } else {
+                openingHoursValueLabel.text = "\(startDate) \(endDate)"
+                openingHoursValueLabel.textColor = Colors.gray70.color
+            }
         } else {
-            openingHoursValueLabel.text = Strings.StoreDetail.Info.emptyOpeningHours
-            openingHoursValueLabel.textColor = Colors.gray40.color
+            setEmptyOpeningHours()
         }
+    }
+    
+    private func getStartFormattedDateString(dateString: String?) -> String {
+        guard let dateString else { return "" }
+        
+        return DateUtils.toString(
+            dateString: dateString,
+            format: Strings.StoreDetail.Info.startTimeFormat,
+            inputFormat: "HH:mm"
+        )
+    }
+    
+    private func getEndFormattedDateString(dateString: String?) -> String {
+        guard let dateString else { return "" }
+        
+        return DateUtils.toString(
+            dateString: dateString,
+            format: Strings.StoreDetail.Info.endTimeFormat,
+            inputFormat: "HH:mm"
+        )
+    }
+    
+    private func setEmptyOpeningHours() {
+        openingHoursValueLabel.text = Strings.StoreDetail.Info.emptyOpeningHours
+        openingHoursValueLabel.textColor = Colors.gray40.color
     }
 }

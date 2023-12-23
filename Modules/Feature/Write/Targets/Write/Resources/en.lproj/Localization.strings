@@ -37,6 +37,8 @@
 "write_detail_time_until_placeholder" = "오후 9시";
 "write_detail_time_format" = "HH:mm";
 "write_detail_time_display_format" = "a h시";
+"write_detail_time_confirm" = "확인";
+"write_detail_time_delete" = "삭제";
 
 // 카테고리 선택 화면
 "category_selection_title" = "카테고리 선택";

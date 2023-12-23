@@ -17,6 +17,8 @@
 "store_detail.info.appearance_day" = "출몰시기";
 "store_detail.info.opening_hours" = "출몰 시간대";
 "store_detail.info.empty_opening_hours" = "제보가 필요해요😢";
+"store_detail.info.start_time_format" = "a h시부터";
+"store_detail.info.end_time_format" = "a h시까지";
 "store_detail.info.payment_method" = "결제방식";
 "store_detail.info.monday" = "월";
 "store_detail.info.tuesday" = "화";
