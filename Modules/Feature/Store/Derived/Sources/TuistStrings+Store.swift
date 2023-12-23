@@ -42,6 +42,10 @@ public enum StoreStrings {
         return StoreStrings.tr("Localization", "boss_store_detail.menu.price_format", String(describing: p1))
       }
     }
+    public enum Sns {
+      /// SNS 주소가 없습니다🥲
+      public static let empty = StoreStrings.tr("Localization", "boss_store_detail.sns.empty")
+    }
   }
 
   public enum MapDetail {
