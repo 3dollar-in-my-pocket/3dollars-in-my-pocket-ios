@@ -19,6 +19,8 @@ final class HomeListAdCell: BaseCollectionViewCell {
 
     private let imageView = UIImageView().then {
         $0.layer.cornerRadius = 12
+        $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+        $0.layer.masksToBounds = true
         $0.clipsToBounds = true
         $0.contentMode = .scaleAspectFill
     }
@@ -26,13 +28,13 @@ final class HomeListAdCell: BaseCollectionViewCell {
     private let titleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 16)
         $0.textColor = Colors.gray90.color
-        $0.textAlignment = .center
+        $0.textAlignment = .left
     }
 
     private let contentLabel = UILabel().then {
         $0.font = Fonts.medium.font(size: 12)
         $0.textColor = Colors.gray50.color
-        $0.textAlignment = .center
+        $0.textAlignment = .left
     }
 
     private let adButton = UIButton().then {

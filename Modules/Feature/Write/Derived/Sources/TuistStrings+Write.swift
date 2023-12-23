@@ -66,6 +66,22 @@ public enum WriteStrings {
   public static let writeDetailStoreCanSelectMulti = WriteStrings.tr("Localization", "write_detail_store_can_select_multi")
   /// (선택)
   public static let writeDetailStoreOption = WriteStrings.tr("Localization", "write_detail_store_option")
+  /// 확인
+  public static let writeDetailTimeConfirm = WriteStrings.tr("Localization", "write_detail_time_confirm")
+  /// 삭제
+  public static let writeDetailTimeDelete = WriteStrings.tr("Localization", "write_detail_time_delete")
+  /// a h시
+  public static let writeDetailTimeDisplayFormat = WriteStrings.tr("Localization", "write_detail_time_display_format")
+  /// HH:mm
+  public static let writeDetailTimeFormat = WriteStrings.tr("Localization", "write_detail_time_format")
+  /// 부터
+  public static let writeDetailTimeFrom = WriteStrings.tr("Localization", "write_detail_time_from")
+  /// 오전 9시
+  public static let writeDetailTimeFromPlaceholder = WriteStrings.tr("Localization", "write_detail_time_from_placeholder")
+  /// 까지
+  public static let writeDetailTimeUntil = WriteStrings.tr("Localization", "write_detail_time_until")
+  /// 오후 9시
+  public static let writeDetailTimeUntilPlaceholder = WriteStrings.tr("Localization", "write_detail_time_until_placeholder")
   /// 가게 제보
   public static let writeDetailTitle = WriteStrings.tr("Localization", "write_detail_title")
 }

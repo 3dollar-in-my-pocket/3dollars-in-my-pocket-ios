@@ -42,6 +42,10 @@ public enum StoreStrings {
         return StoreStrings.tr("Localization", "boss_store_detail.menu.price_format", String(describing: p1))
       }
     }
+    public enum Sns {
+      /// SNS 주소가 없습니다🥲
+      public static let empty = StoreStrings.tr("Localization", "boss_store_detail.sns.empty")
+    }
   }
 
   public enum MapDetail {
@@ -138,14 +142,22 @@ public enum StoreStrings {
     public enum Info {
       /// 출몰시기
       public static let appearanceDay = StoreStrings.tr("Localization", "store_detail.info.appearance_day")
+      /// 제보가 필요해요😢
+      public static let emptyOpeningHours = StoreStrings.tr("Localization", "store_detail.info.empty_opening_hours")
+      /// a h시까지
+      public static let endTimeFormat = StoreStrings.tr("Localization", "store_detail.info.end_time_format")
       /// 금
       public static let friday = StoreStrings.tr("Localization", "store_detail.info.friday")
       /// 월
       public static let monday = StoreStrings.tr("Localization", "store_detail.info.monday")
+      /// 출몰 시간대
+      public static let openingHours = StoreStrings.tr("Localization", "store_detail.info.opening_hours")
       /// 결제방식
       public static let paymentMethod = StoreStrings.tr("Localization", "store_detail.info.payment_method")
       /// 토
       public static let saturday = StoreStrings.tr("Localization", "store_detail.info.saturday")
+      /// a h시부터
+      public static let startTimeFormat = StoreStrings.tr("Localization", "store_detail.info.start_time_format")
       /// 가게형태
       public static let storeType = StoreStrings.tr("Localization", "store_detail.info.store_type")
       /// 일

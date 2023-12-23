@@ -169,8 +169,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .compactMap { owner, _ in
                 if let snsUrl = owner.state.storeDetailData?.overview.snsUrl {
                     return URL(string: snsUrl)
+                } else {
+                    owner.output.toast.send(Strings.BossStoreDetail.Sns.empty)
+                    return nil
                 }
-                return nil
             }
             .map { .openUrl($0) }
             .subscribe(output.route)

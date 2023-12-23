@@ -27,7 +27,7 @@ final class StoreDetailIntoPaymentStackItemView: BaseView {
         let title: String
         switch method {
         case .cash:
-            title = Strings.StoreDetail.Info.PaymentMethod.card
+            title = Strings.StoreDetail.Info.PaymentMethod.cash
             
         case .accountTransfer:
             title = Strings.StoreDetail.Info.PaymentMethod.accountTransfer
