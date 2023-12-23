@@ -124,6 +124,7 @@ extension WriteDetailTimeCell {
             textField.textAlignment = .left
             textField.font = Fonts.regular.font(size: 14)
             textField.textColor = Colors.gray100.color
+            textField.tintColor = .clear
             
             return textField
         }()
