@@ -26,7 +26,7 @@ final class BossStoreFeedbackViewController: BaseViewController {
     }
 
     private let titleLabel = UILabel().then {
-        $0.text = "리뷰 남기기"
+        $0.text = Strings.BossStoreFeedback.title
         $0.textColor = Colors.gray100.color
         $0.font = Fonts.medium.font(size: 16)
     }
@@ -44,7 +44,7 @@ final class BossStoreFeedbackViewController: BaseViewController {
     private let sendFeedbackButton = UIButton().then {
         $0.isEnabled = false
         $0.backgroundColor = Colors.mainPink.color
-        $0.setTitle("리뷰 남기기 완료!", for: .normal)
+        $0.setTitle(Strings.BossStoreFeedback.sendFeedback, for: .normal)
         $0.titleLabel?.font = Fonts.bold.font(size: 16)
         $0.setTitleColor(.white, for: .normal)
     }

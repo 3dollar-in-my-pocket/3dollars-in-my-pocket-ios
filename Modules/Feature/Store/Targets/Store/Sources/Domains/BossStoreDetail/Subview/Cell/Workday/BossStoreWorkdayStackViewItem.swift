@@ -27,7 +27,7 @@ final class BossStoreWorkdayStackViewItem: BaseView {
     }
 
     private let dividerView = UIImageView().then {
-        $0.image = UIImage(named: "img_divider")?.withTintColor(Colors.gray30.color)
+        $0.image = Assets.imageDivider.image.withTintColor(Colors.gray30.color)
     }
 
     override func setup() {
@@ -75,7 +75,7 @@ final class BossStoreWorkdayStackViewItem: BaseView {
         dividerView.isHidden = appearanceDay.dayOfTheWeek == .sunday
 
         if appearanceDay.isClosedDay {
-            timeLabel.text = "휴무"
+            timeLabel.text = Strings.BossStoreDetail.Workday.closed
             timeLabel.textColor = Colors.gray50.color
 
             locationLabel.text = "-"

@@ -19,6 +19,7 @@
 public enum StoreAsset {
   public static let iconDistanceIndicator = StoreImages(name: "icon_distance_indicator")
   public static let iconNewBadge = StoreImages(name: "icon_new_badge")
+  public static let imageDivider = StoreImages(name: "image_divider")
   public static let imageFailVisit = StoreImages(name: "image_fail_visit")
   public static let imageSuccessVisit = StoreImages(name: "image_success_visit")
 }

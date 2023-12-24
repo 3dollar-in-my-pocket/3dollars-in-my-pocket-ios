@@ -118,3 +118,15 @@
 "boss_store_detail.menu.price_format" = "%@원";
 "boss_store_detail.menu.menu_more_format" = "메뉴 %d개 더보기";
 "boss_store_detail.sns.empty" = "SNS 주소가 없습니다🥲";
+"boss_store_detail.feedback.title" = "가게 평가";
+"boss_store_detail.feedback.send_feedback" = "리뷰 남기기";
+"boss_store_detail.workday.title" = "영업 일정";
+"boss_store_detail.workday.closed" = "휴무";
+
+// 사장님
+"boss_store_feedback.content.title" = "음식은 어떠셨나요?";
+"boss_store_feedback.content.subtitle" = "여러개의 리뷰를 선택할 수 있습니다.";
+"boss_store_feedback.title" = "리뷰 남기기";
+"boss_store_feedback.send_feedback" = "리뷰 남기기 완료!";
+"boss_store_feedback.finish_toast" = "소중한 리뷰가 사장님께 전달되었습니다!";
+
