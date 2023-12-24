@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-public final class TokenService {
+public final class MockTokenService {
     public init() { }
     
     public func generateTeestToken(completion: @escaping ((MockAuth) -> Void))  {

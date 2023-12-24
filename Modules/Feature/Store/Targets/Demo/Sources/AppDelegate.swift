@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func initializeDI() {
-        TokenService().generateTeestToken { [weak self] auth in
+        MockTokenService().generateTeestToken { [weak self] auth in
             self?.networkConfiguration.authToken = auth.token
             self?.mockUserDefaults.authToken = auth.token
             self?.mockUserDefaults.userId = auth.userId
