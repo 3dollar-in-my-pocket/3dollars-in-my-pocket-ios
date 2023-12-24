@@ -21,6 +21,10 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     
     public var onClearSession: (() -> Void) = { }
     
+    public init(userDefaults: UserDefaultProtocol) {
+        self.userDefaults = userDefaults
+    }
+    
     public func getFCMToken(completion: @escaping ((String) -> ())) { }
     
     public func goToMain() { }
@@ -43,9 +47,9 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
 }
 
 extension MockAppModuleInterfaceImpl {
-    public static func registerAppModuleInterface() {
+    public static func registerAppModuleInterface(userDefaults: UserDefaultProtocol) {
         DIContainer.shared.container.register(AppModuleInterface.self) { _ in
-            return MockAppModuleInterfaceImpl()
+            return MockAppModuleInterfaceImpl(userDefaults: userDefaults)
         }
     }
 }
