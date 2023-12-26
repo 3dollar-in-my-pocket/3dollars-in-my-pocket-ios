@@ -14,6 +14,12 @@ import Foundation
 public enum StoreStrings {
 
   public enum BossStoreDetail {
+    public enum Feedback {
+      /// 리뷰 남기기
+      public static let sendFeedback = StoreStrings.tr("Localization", "boss_store_detail.feedback.send_feedback")
+      /// 가게 평가
+      public static let title = StoreStrings.tr("Localization", "boss_store_detail.feedback.title")
+    }
     public enum Info {
       /// 계좌번호
       public static let accountTitle = StoreStrings.tr("Localization", "boss_store_detail.info.account_title")
@@ -45,6 +51,27 @@ public enum StoreStrings {
     public enum Sns {
       /// SNS 주소가 없습니다🥲
       public static let empty = StoreStrings.tr("Localization", "boss_store_detail.sns.empty")
+    }
+    public enum Workday {
+      /// 휴무
+      public static let closed = StoreStrings.tr("Localization", "boss_store_detail.workday.closed")
+      /// 영업 일정
+      public static let title = StoreStrings.tr("Localization", "boss_store_detail.workday.title")
+    }
+  }
+
+  public enum BossStoreFeedback {
+    /// 소중한 리뷰가 사장님께 전달되었습니다!
+    public static let finishToast = StoreStrings.tr("Localization", "boss_store_feedback.finish_toast")
+    /// 리뷰 남기기 완료!
+    public static let sendFeedback = StoreStrings.tr("Localization", "boss_store_feedback.send_feedback")
+    /// 리뷰 남기기
+    public static let title = StoreStrings.tr("Localization", "boss_store_feedback.title")
+    public enum Content {
+      /// 여러개의 리뷰를 선택할 수 있습니다.
+      public static let subtitle = StoreStrings.tr("Localization", "boss_store_feedback.content.subtitle")
+      /// 음식은 어떠셨나요?
+      public static let title = StoreStrings.tr("Localization", "boss_store_feedback.content.title")
     }
   }
 

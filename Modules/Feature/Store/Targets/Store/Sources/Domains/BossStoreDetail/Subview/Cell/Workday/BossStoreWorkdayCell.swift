@@ -13,7 +13,7 @@ final class BossStoreWorkdayCell: BaseCollectionViewCell {
     private let titleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 16)
         $0.textColor = Colors.gray100.color
-        $0.text = "영업 일정"
+        $0.text = Strings.BossStoreDetail.Workday.title
     }
 
     private let containerView = UIView().then {

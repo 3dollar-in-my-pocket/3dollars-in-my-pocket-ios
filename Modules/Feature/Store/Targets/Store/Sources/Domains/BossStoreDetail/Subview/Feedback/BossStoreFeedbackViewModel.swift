@@ -98,7 +98,7 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
                 owner.sendClickWriteReviewLog()
                 switch result {
                 case .success(_):
-                    owner.output.showToast.send("소중한 리뷰가 사장님께 전달되었습니다!")
+                    owner.output.showToast.send(Strings.BossStoreFeedback.finishToast)
                     owner.output.route.send(.back)
                     owner.output.sendFeedbacks.send()
                 case .failure(let error):
