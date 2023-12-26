@@ -54,7 +54,7 @@ final class HomeCardAdvertisementCell: BaseCollectionViewCell {
         return label
     }()
     
-    private let adBannerView = Environment.appModuleInterface.adBannerView
+    private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .homeCard)
     
     override func setup() {
         adBannerView.layer.cornerRadius = 20

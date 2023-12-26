@@ -17,7 +17,7 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
     let mapView = StoreDetailOverviewMapView()
     
     let adBannerView: AdBannerViewProtocol = {
-        let view = Environment.appModuleInterface.adBannerView
+        let view = Environment.appModuleInterface.createAdBannerView(adType: .storeDetail)
         
         view.backgroundColor = DesignSystemAsset.Colors.gray0.color
         return view

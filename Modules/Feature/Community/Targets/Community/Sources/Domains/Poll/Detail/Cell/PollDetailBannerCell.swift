@@ -8,7 +8,7 @@ final class PollDetailBannerCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 49)
     }
     
-    private let adBannerView = Environment.appModuleInterface.adBannerView
+    private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .pollDetail)
     
     override func setup() {
         contentView.addSubViews([

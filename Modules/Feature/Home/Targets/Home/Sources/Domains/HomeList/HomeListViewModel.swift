@@ -23,10 +23,8 @@ final class HomeListViewModel: BaseViewModel {
     
     struct Output {
         let screenName: ScreenName = .homeList
-        let advertisement = PassthroughSubject<Advertisement?, Never>()
         let categoryFilter: CurrentValueSubject<PlatformStoreCategory?, Never>
         let dataSource = CurrentValueSubject<[HomeListSection], Never>([])
-        let isEmptyAdvertisement = CurrentValueSubject<Bool, Never>(false)
         
         let sortType: CurrentValueSubject<StoreSortType, Never>
         let isOnlyBoss: CurrentValueSubject<Bool, Never>
@@ -332,7 +330,6 @@ final class HomeListViewModel: BaseViewModel {
             sectionItems.insert(.ad(HomeListAdCellViewModel(config: .init(ad: advertisement))), at: index)
         }
         
-        output.isEmptyAdvertisement.send(advertisement.isNil)
         output.dataSource.send([HomeListSection(items: sectionItems)])
     }
     

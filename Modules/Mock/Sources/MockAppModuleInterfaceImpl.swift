@@ -17,12 +17,14 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     
     public var photoManager: PhotoManagerProtocol = MockPhotoManager()
     
-    public var adBannerView: AdBannerViewProtocol = MockAdBannerView()
-    
     public var onClearSession: (() -> Void) = { }
     
     public init(userDefaults: UserDefaultProtocol) {
         self.userDefaults = userDefaults
+    }
+    
+    public func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
+        return MockAdBannerView()
     }
     
     public func getFCMToken(completion: @escaping ((String) -> ())) { }
