@@ -30,7 +30,7 @@ final class CategoryBannerCell: BaseCollectionViewCell {
     
     private let rightImageView = UIImageView()
     
-    private let adBannerView = Environment.appModuleInterface.adBannerView
+    private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .categoryFilter)
     
     override func setup() {
         stackView.addArrangedSubview(titleLabel)

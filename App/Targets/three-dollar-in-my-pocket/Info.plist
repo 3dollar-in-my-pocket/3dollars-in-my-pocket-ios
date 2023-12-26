@@ -2,6 +2,21 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ADMOB_UNIT_ID</key>
+	<dict>
+		<key>ADMOB_UNIT_ID_STORE_DETAIL</key>
+		<string>$(ADMOB_UNIT_ID_STORE_DETAIL)</string>
+		<key>ADMOB_UNIT_ID_POLL_DETAIL</key>
+		<string>$(ADMOB_UNIT_ID_POLL_DETAIL)</string>
+		<key>ADMOB_UNIT_ID_CATEGORY_FILTER</key>
+		<string>$(ADMOB_UNIT_ID_CATEGORY_FILTER)</string>
+		<key>ADMOB_UNIT_ID_COMMUNITY</key>
+		<string>$(ADMOB_UNIT_ID_COMMUNITY)</string>
+		<key>ADMOB_UNIT_ID_HOME_LIST</key>
+		<string>$(ADMOB_UNIT_ID_HOME_LIST)</string>
+		<key>ADMOB_UNIT_ID_HOME_CARD</key>
+		<string>$(ADMOB_UNIT_ID_HOME_CARD)</string>
+	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>사용자의 위치는 현재 사용자의 위치를 바탕으로 가까운 붕어빵 가게를 찾는데 사용됩니다.</string>
 	<key>FirebaseAutomaticScreenReportingEnabled</key>
@@ -10,8 +25,6 @@
 	<false/>
 	<key>DEEP_LINK_SCHEME</key>
 	<string>$(DEEP_LINK_SCHEME)</string>
-	<key>ADMOB_UNIT_ID</key>
-	<string>$(ADMOB_UNIT_ID)</string>
 	<key>ANDROID_PACKAGE_NAME</key>
 	<string>$(ANDROID_PACKAGE_NAME)</string>
 	<key>API_URL</key>

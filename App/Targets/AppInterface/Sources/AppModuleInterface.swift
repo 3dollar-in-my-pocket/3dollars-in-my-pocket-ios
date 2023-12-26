@@ -9,9 +9,9 @@ public protocol AppModuleInterface {
     var appleSigninManager: SigninManagerProtocol { get }
     var deeplinkManager: DeeplinkManagerProtocol { get }
     var photoManager: PhotoManagerProtocol { get }
-    var adBannerView: AdBannerViewProtocol { get }
     var onClearSession: (() -> Void) { get }
     
+    func createAdBannerView(adType: AdType) -> AdBannerViewProtocol
     func getFCMToken(completion: @escaping ((String) -> ()))
     func goToMain()
     func createBookmarkViewerViewController(folderId: String) -> UIViewController

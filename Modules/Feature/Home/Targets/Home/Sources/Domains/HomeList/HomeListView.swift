@@ -14,7 +14,7 @@ final class HomeListView: BaseView {
     let onlyBossToggleButton = OnlyBossToggleButton()
     
     let adBannerView: AdBannerViewProtocol = {
-        let view = Environment.appModuleInterface.adBannerView
+        let view = Environment.appModuleInterface.createAdBannerView(adType: .homeList)
         
         view.backgroundColor = DesignSystemAsset.Colors.gray0.color
         return view

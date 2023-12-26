@@ -1,12 +1,10 @@
 import Foundation
 
+import Model
+
 extension Bundle {
     static var baseURL: String {
         return Bundle.main.infoDictionary?["API_URL"] as? String ?? ""
-    }
-    
-    static var admobUnitId: String {
-        return Bundle.main.infoDictionary?["ADMOB_UNIT_ID"] as? String ?? ""
     }
     
     static var policyURL: String {
@@ -43,5 +41,12 @@ extension Bundle {
     
     static var deeplinkScheme: String {
         return Bundle.main.infoDictionary?["DEEP_LINK_SCHEME"] as? String ?? ""
+    }
+    
+    static func getAdmobId(adType: AdType) -> String {
+        guard let idDictionary = Bundle.main.infoDictionary?["ADMOB_UNIT_ID"] as? [String: Any],
+              let admobId = idDictionary[adType.bundleKey] as? String else { return "" }
+        
+        return admobId
     }
 }

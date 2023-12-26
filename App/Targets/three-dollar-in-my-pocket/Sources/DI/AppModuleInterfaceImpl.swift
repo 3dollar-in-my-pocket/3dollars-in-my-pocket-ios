@@ -38,10 +38,6 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         return CombinePhotoManager.shared
     }
     
-    var adBannerView: AdBannerViewProtocol {
-        return AdBannerView()
-    }
-    
     var onClearSession: (() -> Void) {
         let onClearSession = {
             UserDefaultsUtil().clear()
@@ -52,6 +48,10 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         }
         
         return onClearSession
+    }
+    
+    func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
+        return AdBannerView(adType: adType)
     }
     
     func getFCMToken(completion: @escaping ((String) -> ())) {
