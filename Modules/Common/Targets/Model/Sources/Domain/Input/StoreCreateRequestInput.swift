@@ -6,6 +6,7 @@ public struct StoreCreateRequestInput: Encodable {
     public let storeName: String
     public let storeType: String?
     public let appearanceDays: [String]
+    public let openingHours: StoreOpeningHoursRequest?
     public let paymentMethods: [String]
     public let menus: [StoreMenuRequestInput]
     
@@ -15,6 +16,7 @@ public struct StoreCreateRequestInput: Encodable {
         storeName: String,
         storeType: String?,
         appearanceDays: [String],
+        openingHours: StoreOpeningHoursRequest?,
         paymentMethods: [String],
         menus: [StoreMenuRequestInput]
     ) {
@@ -23,6 +25,7 @@ public struct StoreCreateRequestInput: Encodable {
         self.storeName = storeName
         self.storeType = storeType
         self.appearanceDays = appearanceDays
+        self.openingHours = openingHours
         self.paymentMethods = paymentMethods
         self.menus = menus
     }

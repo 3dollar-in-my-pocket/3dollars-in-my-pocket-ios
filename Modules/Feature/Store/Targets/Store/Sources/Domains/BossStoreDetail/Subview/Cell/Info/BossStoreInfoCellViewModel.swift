@@ -1,32 +1,37 @@
+import UIKit
 import Combine
 
 import Common
 import Model
+import Log
 
 final class BossStoreInfoCellViewModel: BaseViewModel {
     struct Input {
         let didTapSnsButton = PassthroughSubject<Void, Never>()
+        let didTapCopyAccountNumber = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
-        let updatedAt: String
-        let snsUrl: String?
-        let introduction: String?
-        let imageUrl: String?
+        let info: BossStoreInfo
         let didTapSnsButton = PassthroughSubject<Void, Never>()
+        let toast = PassthroughSubject<String, Never>()
+    }
+    
+    struct Config {
+        let screenName: ScreenName
+        let storeId: String
+        let info: BossStoreInfo
     }
 
     let input = Input()
     let output: Output
-
-    init(data: BossStoreDetailData) {
-        self.output = Output(
-            updatedAt: DateUtils.toString(dateString: data.store.updatedAt, format: "yyyy.MM.dd 업데이트"),
-            snsUrl: data.overview.snsUrl,
-            introduction: data.store.introduction,
-            imageUrl: data.store.imageUrl
-        )
-
+    let config: Config
+    private let logManager: LogManagerProtocol
+    
+    init(config: Config, logManager: LogManagerProtocol = LogManager.shared) {
+        self.output = Output(info: config.info)
+        self.config = config
+        self.logManager = logManager
         super.init()
     }
 
@@ -36,6 +41,21 @@ final class BossStoreInfoCellViewModel: BaseViewModel {
         input.didTapSnsButton
             .subscribe(output.didTapSnsButton)
             .store(in: &cancellables)
+        
+        input.didTapCopyAccountNumber
+            .withUnretained(self)
+            .sink { (owner: BossStoreInfoCellViewModel, _) in
+                owner.sendClickCopyAccountLog()
+                owner.copyAccount()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func copyAccount() {
+        guard let account = output.info.accountInfos.first else { return }
+        UIPasteboard.general.string = "\(account.bank.description) \(account.accountNumber)"
+        
+        output.toast.send(Strings.BossStoreDetail.Info.copyToast)
     }
 }
 
@@ -52,5 +72,16 @@ extension BossStoreInfoCellViewModel: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+}
+
+// MARK: Log
+private extension BossStoreInfoCellViewModel {
+    func sendClickCopyAccountLog() {
+        logManager.sendEvent(.init(
+            screen: config.screenName,
+            eventName: .clickCopyAccount,
+            extraParameters: [.storeId: config.storeId]
+        ))
     }
 }

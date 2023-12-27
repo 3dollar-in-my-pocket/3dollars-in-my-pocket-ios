@@ -169,8 +169,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .compactMap { owner, _ in
                 if let snsUrl = owner.state.storeDetailData?.overview.snsUrl {
                     return URL(string: snsUrl)
+                } else {
+                    owner.output.toast.send(Strings.BossStoreDetail.Sns.empty)
+                    return nil
                 }
-                return nil
             }
             .map { .openUrl($0) }
             .subscribe(output.route)
@@ -194,11 +196,11 @@ final class BossStoreDetailViewModel: BaseViewModel {
     private func reloadDataSource() {
         guard let storeDetailData = state.storeDetailData else { return }
 
-        var infoItems: [BossStoreDetailSectionItem] = [.info(bindInfoCellViewModel(storeDetailData))]
+        var infoItems: [BossStoreDetailSectionItem] = [.info(bindInfoCellViewModel(storeDetailData.info))]
         if storeDetailData.store.menus.isEmpty {
             infoItems.append(.emptyMenu)
         } else {
-            infoItems.append(.menuList(bindMenuListCellViewModel(with: storeDetailData)))
+            infoItems.append(.menuList(bindMenuListCellViewModel(with: storeDetailData.menus)))
         }
 
         output.dataSource.send([
@@ -209,8 +211,9 @@ final class BossStoreDetailViewModel: BaseViewModel {
         ])
     }
     
-    private func bindInfoCellViewModel(_ data: BossStoreDetailData) -> BossStoreInfoCellViewModel {
-        let viewModel = BossStoreInfoCellViewModel(data: data)
+    private func bindInfoCellViewModel(_ info: BossStoreInfo) -> BossStoreInfoCellViewModel {
+        let config = BossStoreInfoCellViewModel.Config(screenName: output.screenName, storeId: storeId, info: info)
+        let viewModel = BossStoreInfoCellViewModel(config: config)
         
         viewModel.output.didTapSnsButton
             .subscribe(input.didTapSnsButton)
@@ -350,8 +353,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
         return viewModel
     }
 
-    private func bindMenuListCellViewModel(with data: BossStoreDetailData) -> BossStoreMenuListCellViewModel {
-        let cellViewModel = BossStoreMenuListCellViewModel(data: data)
+    private func bindMenuListCellViewModel(with menus: [BossStoreMenu]) -> BossStoreMenuListCellViewModel {
+        let cellViewModel = BossStoreMenuListCellViewModel(menus: menus)
 
         cellViewModel.output.updateHeight
             .subscribe(output.updateHeight)

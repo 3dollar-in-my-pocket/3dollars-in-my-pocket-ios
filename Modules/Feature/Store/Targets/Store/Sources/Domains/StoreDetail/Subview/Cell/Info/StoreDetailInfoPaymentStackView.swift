@@ -37,6 +37,12 @@ final class StoreDetailInfoPaymentStackView: UIStackView {
         }
     }
     
+    func prepareForReuse() {
+        cashItemView.setSelected(false)
+        accountTransferItemView.setSelected(false)
+        cardItemView.setSelected(false)
+    }
+    
     private func setup() {
         spacing = 4
         axis = .horizontal

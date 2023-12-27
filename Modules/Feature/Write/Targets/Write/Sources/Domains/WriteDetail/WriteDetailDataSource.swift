@@ -15,6 +15,7 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
             WriteDetailTypeCell.self,
             WriteDetailPaymentCell.self,
             WriteDetailDayCell.self,
+            WriteDetailTimeCell.self,
             WriteDetailCategoryCollectionCell.self,
             WriteDetailMenuGroupCell.self
         ])
@@ -81,6 +82,12 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                     .subscribe(viewModel.input.tapDay)
                     .store(in: &cell.cancellables)
                 
+                return cell
+                
+            case .time(let viewModel):
+                let cell: WriteDetailTimeCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                
+                cell.bind(viewModel: viewModel)
                 return cell
                 
             case .categoryCollection(let categories):
@@ -153,6 +160,7 @@ struct WriteDetailSection: Hashable {
         case storeType
         case paymentMethod
         case appearanceDay
+        case time
         case category
         
         var headerType: WriteDetailHeaderView.HeaderType {
@@ -175,6 +183,9 @@ struct WriteDetailSection: Hashable {
             case .appearanceDay:
                 return .multi(title: Strings.writeDetailHeaderDay)
                 
+            case .time:
+                return .option(title: "출몰 시간대")
+                
             case .category:
                 return .category
             }
@@ -192,6 +203,7 @@ enum WriteDetailSectionItem: Hashable {
     case storeType(SalesType?)
     case paymentMethod([PaymentMethod])
     case appearanceDay([AppearanceDay])
+    case time(WriteDetailTimeCellViewModel)
     case categoryCollection([Model.PlatformStoreCategory?])
     case menuGroup(WriteDetailMenuGroupViewModel)
     
@@ -214,6 +226,9 @@ enum WriteDetailSectionItem: Hashable {
             
         case .appearanceDay:
             return WriteDetailDayCell.Layout.size
+            
+        case .time:
+            return WriteDetailTimeCell.Layout.size
             
         case .categoryCollection(let categories):
             return WriteDetailCategoryCollectionCell.Layout.size(count: categories.count)

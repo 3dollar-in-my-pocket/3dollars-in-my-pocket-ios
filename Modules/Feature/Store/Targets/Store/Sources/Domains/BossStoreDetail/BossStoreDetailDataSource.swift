@@ -3,27 +3,6 @@ import UIKit
 import Combine
 import Model
 
-struct BossStoreDetailSection: Hashable {
-    enum SectionType: Hashable {
-        case overview
-        case info
-        case workday
-        case feedbacks
-    }
-
-    var type: SectionType
-    var items: [BossStoreDetailSectionItem]
-}
-
-enum BossStoreDetailSectionItem: Hashable {
-    case overview(StoreDetailOverviewCellViewModel)
-    case info(BossStoreInfoCellViewModel)
-    case menuList(BossStoreMenuListCellViewModel)
-    case emptyMenu
-    case workday([BossStoreAppearanceDay])
-    case feedbacks(BossStoreFeedbacksCellViewModel)
-}
-
 final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossStoreDetailSection, BossStoreDetailSectionItem> {
 
     private typealias Snapshot = NSDiffableDataSourceSnapshot<BossStoreDetailSection, BossStoreDetailSectionItem>
@@ -64,8 +43,6 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
                 let cell: BossStoreFeedbacksCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
-            default:
-                return UICollectionViewCell()
             }
         }
     }

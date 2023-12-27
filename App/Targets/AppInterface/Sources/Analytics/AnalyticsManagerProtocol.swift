@@ -1,5 +1,3 @@
-import FirebaseAnalytics
-
 public protocol AnalyticsManagerProtocol {
     func logPageView(screen: AnalyticsScreen, type: AnyObject.Type)
     

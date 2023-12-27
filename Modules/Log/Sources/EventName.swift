@@ -65,6 +65,7 @@ public enum EventName: String {
     
     // 사장님 가게 상세 화면
     case clickSns = "click_sns"
+    case clickCopyAccount = "click_copy_account"
     
     // 커뮤니티 화면
     case clickPoll = "click_poll"

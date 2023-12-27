@@ -9,6 +9,7 @@ public struct StoreDetailApiResponse: Decodable {
     public let address: AddressResponse
     public let categories: [PlatformStoreFoodCategoryResponse]
     public let appearanceDays: [String]
+    public let openingHours: StoreOpeningHoursResponse?
     public let paymentMethods: [String]
     public let menus: [StoreMenuApiResponse]
     public let createdAt: String

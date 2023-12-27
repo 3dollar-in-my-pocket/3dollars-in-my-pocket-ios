@@ -123,7 +123,7 @@ private extension StoreDetailOverview {
             .navigation,
         ]
 
-        if isBossStore, let snsUrl {
+        if isBossStore {
             itemList.append(.sns)
         } else {
             itemList.append(.review)
