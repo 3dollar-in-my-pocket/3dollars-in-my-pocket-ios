@@ -81,7 +81,6 @@ struct BuildSetting {
             "CURRENT_PROJECT_VERSION": Version.buildNumber,
             "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES": "YES",
             "APPSTORE_ID": "1496099467",
-            "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
             "CODE_SIGN_IDENTITY": "Apple Development",
             "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "iPhone Developer",
             "CODE_SIGN_STYLE": "Manual",
@@ -112,7 +111,8 @@ struct BuildSetting {
             "PRODUCT_BUNDLE_IDENTIFIER": "com.macgongmon.-dollar-in-my-pocket-debug",
             "PRODUCT_MODULE_NAME": "dollar_in_my_pocket",
             "PRODUCT_NAME": "dollar-in-my-pocket-debug",
-            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "development-user-dev"
+            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "development-user-dev",
+            "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon-Dev"
         ]
         
         static let release: SettingsDictionary = [
@@ -126,7 +126,8 @@ struct BuildSetting {
             "ONLY_ACTIVE_ARCH": "YES",
             "PRODUCT_BUNDLE_IDENTIFIER": "com.macgongmon.-dollar-in-my-pocket",
             "PRODUCT_NAME": "dollar-in-my-pocket",
-            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "development-user-prod"
+            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "development-user-prod",
+            "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon"
         ]
     }
     
