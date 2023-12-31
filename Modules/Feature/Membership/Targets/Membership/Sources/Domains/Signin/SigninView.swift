@@ -1,27 +1,35 @@
 import UIKit
 
 import Common
-import Then
 import SnapKit
 
 final class SigninView: BaseView {
-    private let logoImage = UIImageView(image: Assets.imageSplash.image)
+    let logoButton: UIButton = {
+        let button = UIButton()
+        
+        button.setImage(Assets.imageSplash.image, for: .normal)
+        button.contentMode = .scaleAspectFit
+        button.adjustsImageWhenHighlighted = false
+        return button
+    }()
     
     let kakaoButton = SigninButton(type: .kakao)
     
     let appleButton = SigninButton(type: .apple)
     
-    let signinAnonymousButton = UIButton().then {
-        $0.setTitle(Strings.signinAnonymous, for: .normal)
-        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
-        $0.titleLabel?.font = Fonts.regular.font(size: 14)
-    }
+    let signinAnonymousButton: UIButton = {
+        let button = UIButton()
+        
+        button.setTitle(Strings.signinAnonymous, for: .normal)
+        button.setTitleColor(Colors.systemWhite.color, for: .normal)
+        button.titleLabel?.font = Fonts.regular.font(size: 14)
+        return button
+    }()
     
     override func setup() {
-        logoImage.contentMode = .scaleAspectFit
         backgroundColor = Colors.mainPink.color
         addSubViews([
-            logoImage,
+            logoButton,
             kakaoButton,
             appleButton,
             signinAnonymousButton
@@ -29,7 +37,7 @@ final class SigninView: BaseView {
     }
     
     override func bindConstraints() {
-        logoImage.snp.makeConstraints {
+        logoButton.snp.makeConstraints {
             $0.left.equalToSuperview().offset(32)
             $0.right.equalToSuperview().offset(-32)
             $0.bottom.equalTo(kakaoButton.snp.top).offset(-72)

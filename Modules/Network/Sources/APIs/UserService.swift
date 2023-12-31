@@ -14,6 +14,8 @@ public protocol UserServiceProtocol {
     func changeMarketingConsent(marketingConsentType: String) async -> Result<String, Error>
     
     func connectAccount(socialType: String, accessToken: String) async -> Result<String, Error>
+    
+    func signinDemo(code: String) async -> Result<SigninResponse, Error>
 }
 
 public struct UserService: UserServiceProtocol {
@@ -55,6 +57,12 @@ public struct UserService: UserServiceProtocol {
     public func connectAccount(socialType: String, accessToken: String) async -> Result<String, Error> {
         let input = SigninRequestInput(socialType: socialType, token: accessToken)
         let request = ConnectAccountRequest(requestInput: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func signinDemo(code: String) async -> Result<SigninResponse, Error> {
+        let request = SigninDemoRequest(code: code)
         
         return await NetworkManager.shared.request(requestType: request)
     }
