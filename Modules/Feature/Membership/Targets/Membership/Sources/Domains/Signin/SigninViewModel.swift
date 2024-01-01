@@ -7,16 +7,23 @@ import Model
 import Log
 
 final class SigninViewModel: BaseViewModel {
+    enum Constant {
+        static let presentDemoCodeAlertCount = 5
+    }
+    
     enum Route {
         case goToMain
         case pushNickname(SocialType, String)
         case showErrorAlert(Error)
         case showLoading(isShow: Bool)
+        case presentDemoCodeAlert
     }
     
     struct Input {
-        let onTapSignin = PassthroughSubject<SocialType, Never>()
-        let onTapSigninAnonymous = PassthroughSubject<Void, Never>()
+        let signinDemo = PassthroughSubject<String, Never>()
+        let signinWithSocial = PassthroughSubject<SocialType, Never>()
+        let signinAnonymous = PassthroughSubject<Void, Never>()
+        let didTapLogo = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -24,8 +31,13 @@ final class SigninViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
     }
     
+    private struct State {
+        var logoTouchCount = 0
+    }
+    
     let input = Input()
     let output = Output()
+    private var state = State()
     private var appInterface = Environment.appModuleInterface
     private let userService: UserServiceProtocol
     private let deviceService: DeviceServiceProtocol
@@ -44,7 +56,14 @@ final class SigninViewModel: BaseViewModel {
     }
     
     override func bind() {
-        input.onTapSignin
+        input.signinDemo
+            .withUnretained(self)
+            .sink { (owner: SigninViewModel, code: String) in
+                owner.signinDemo(code: code)
+            }
+            .store(in: &cancellables)
+        
+        input.signinWithSocial
             .withUnretained(self)
             .sink { owner, socialType in
                 owner.sendClickSignInLog(type: socialType)
@@ -61,7 +80,7 @@ final class SigninViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
-        input.onTapSigninAnonymous
+        input.signinAnonymous
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.sendClickAnonymousLog()
@@ -83,6 +102,18 @@ final class SigninViewModel: BaseViewModel {
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
+                }
+            }
+            .store(in: &cancellables)
+        
+        input.didTapLogo
+            .withUnretained(self)
+            .sink { (owner: SigninViewModel, _) in
+                owner.state.logoTouchCount += 1
+                
+                if owner.state.logoTouchCount >= Constant.presentDemoCodeAlertCount {
+                    owner.output.route.send(.presentDemoCodeAlert)
+                    owner.state.logoTouchCount = 0
                 }
             }
             .store(in: &cancellables)
@@ -177,6 +208,30 @@ final class SigninViewModel: BaseViewModel {
         }
     }
     
+    private func signinDemo(code: String) {
+        output.route.send(.showLoading(isShow: true))
+        
+        Task {
+            let result = await userService.signinDemo(code: code)
+            
+            switch result {
+            case .success(let response):
+                appInterface.userDefaults.userId = response.userId
+                appInterface.userDefaults.authToken = response.token
+                output.route.send(.goToMain)
+                
+            case .failure(let error):
+                output.route.send(.showLoading(isShow: false))
+                output.route.send(.showErrorAlert(error))
+            }
+        }
+        .store(in: taskBag)
+    }
+}
+
+
+// MARK: Log
+extension SigninViewModel {
     private func sendClickSignInLog(type: SocialType) {
         var eventName: EventName {
             switch type {

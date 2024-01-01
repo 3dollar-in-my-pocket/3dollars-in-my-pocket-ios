@@ -42,6 +42,18 @@ public enum MembershipStrings {
   public static let signinWithExistedAccount = MembershipStrings.tr("Localization", "signin_with_existed_account")
   /// 카카오 계정으로 로그인
   public static let signinWithKakao = MembershipStrings.tr("Localization", "signin_with_kakao")
+
+  public enum CodeAlert {
+    /// 코드를 입력하세요.
+    public static let title = MembershipStrings.tr("Localization", "code_alert.title")
+  }
+
+  public enum Common {
+    /// 취소
+    public static let cancel = MembershipStrings.tr("Localization", "common.cancel")
+    /// 확인
+    public static let ok = MembershipStrings.tr("Localization", "common.ok")
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

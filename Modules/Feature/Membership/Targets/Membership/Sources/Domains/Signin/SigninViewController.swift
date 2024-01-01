@@ -49,19 +49,25 @@ public final class SigninViewController: BaseViewController {
         signinView.kakaoButton
             .controlPublisher(for: .touchUpInside)
             .map { _ in .kakao }
-            .subscribe(viewModel.input.onTapSignin)
+            .subscribe(viewModel.input.signinWithSocial)
             .store(in: &cancellables)
         
         signinView.appleButton
             .controlPublisher(for: .touchUpInside)
             .map { _ in .apple }
-            .subscribe(viewModel.input.onTapSignin)
+            .subscribe(viewModel.input.signinWithSocial)
             .store(in: &cancellables)
         
         signinView.signinAnonymousButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
-            .subscribe(viewModel.input.onTapSigninAnonymous)
+            .subscribe(viewModel.input.signinAnonymous)
+            .store(in: &cancellables)
+        
+        signinView.logoButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapLogo)
             .store(in: &cancellables)
     }
     
@@ -87,8 +93,25 @@ public final class SigninViewController: BaseViewController {
                     
                 case .showLoading(let isShow):
                     LoadingManager.shared.showLoading(isShow: isShow)
+                    
+                case .presentDemoCodeAlert:
+                    owner.presentCodeAlert()
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    private func presentCodeAlert() {
+        let alert = UIAlertController(title: Strings.CodeAlert.title, message: nil, preferredStyle: .alert)
+        let ok = UIAlertAction(title: Strings.Common.ok, style: .default) { [weak self] _ in
+            guard let code = alert.textFields?.first?.text else { return }
+            
+            self?.viewModel.input.signinDemo.send(code)
+        }
+        let cancel = UIAlertAction(title: Strings.Common.cancel, style: .cancel)
+        alert.addTextField()
+        alert.addAction(cancel)
+        alert.addAction(ok)
+        present(alert, animated: true, completion: nil)
     }
 }

@@ -182,13 +182,9 @@ final class SettingReactor: BaseReactor, Reactor {
                     self?.userDefaults.clear()
                 })
                 .map { .goToSignin }
-                .catch({ error -> Observable<Mutation> in
-                    if let sdkError = error as? SdkError,
-                       case .AuthFailed(_, _) = sdkError {
-                        return .just(.showErrorAlert(HTTPError.unauthorized))
-                    } else {
-                        return .just(.showErrorAlert(error))
-                    }
+                .catch({ [weak self] error -> Observable<Mutation> in
+                    self?.userDefaults.clear()
+                    return .just(.goToSignin)
                 })
             
         case .apple:

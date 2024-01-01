@@ -5,11 +5,22 @@ public protocol RequestType {
     var method: RequestMethod { get }
     var header: HTTPHeaderType { get }
     var path: String { get }
+    var usingQuery: Bool { get }
 }
 
 public extension RequestType {
     var param: Encodable? {
         return nil
+    }
+    
+    var usingQuery: Bool {
+        switch method {
+        case .get, .delete:
+            return true
+            
+        case .post, .put:
+            return false
+        }
     }
     
     var queryItems: [URLQueryItem]? {
