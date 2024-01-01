@@ -32,7 +32,7 @@ final class RequestProvider {
         var urlComponents = URLComponents(string: config.endPoint)
         urlComponents?.path = requestType.path
         
-        if requestType.method == .get || requestType.method == .delete,
+        if requestType.usingQuery,
            let queryItems = requestType.queryItems {
             urlComponents?.queryItems = queryItems
         }
@@ -50,7 +50,7 @@ final class RequestProvider {
             urlRequest.httpBody = (requestType as? MultipartRequestType)?.data
             
         default:
-            if requestType.method == .post || requestType.method == .put {
+            if !requestType.usingQuery {
                 urlRequest.httpBody = requestType.body
             }
         }

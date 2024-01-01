@@ -20,4 +20,8 @@ struct SigninDemoRequest: RequestType {
     var path: String {
         return "/api/login/demo"
     }
+    
+    var usingQuery: Bool {
+        return true
+    }
 }
