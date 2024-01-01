@@ -54,6 +54,14 @@ public final class UserDefaultsUtil {
         }
     }
     
+    public var subscribedMarketingTopic: Bool {
+        get {
+            instance.bool(forKey: "KEY_SUBSCRIBE_MARKETING_TOPIC")
+        }
+        set {
+            instance.set(newValue, forKey: "KEY_SUBSCRIBE_MARKETING_TOPIC")
+        }
+    }
     
     public func setShownMainBannerDate(id: Int) {
         instance.set(DateUtils.todayString(), forKey: "KEY_SHOWN_MAIN_BANNER_\(id)")

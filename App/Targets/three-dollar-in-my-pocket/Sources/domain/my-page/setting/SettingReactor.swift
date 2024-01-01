@@ -41,6 +41,7 @@ final class SettingReactor: BaseReactor, Reactor {
     private let kakaoSigninManager: SigninManagerProtocol
     private let appleSigninManager: SigninManagerProtocol
     private let globalState: GlobalState
+    private let appInterface: AppModuleInterface
   
     init(
         userDefaults: UserDefaultsUtil,
@@ -50,6 +51,7 @@ final class SettingReactor: BaseReactor, Reactor {
         kakaoSigninManager: SigninManagerProtocol,
         appleSigninManager: SigninManagerProtocol,
         globalState: GlobalState,
+        appInterface: AppModuleInterface = AppModuleInterfaceImpl(),
         state: State = State(user: User())
     ) {
         self.userDefaults = userDefaults
@@ -59,6 +61,7 @@ final class SettingReactor: BaseReactor, Reactor {
         self.kakaoSigninManager = kakaoSigninManager
         self.appleSigninManager = appleSigninManager
         self.globalState = globalState
+        self.appInterface = appInterface
         self.initialState = state
         
         super.init()
@@ -159,6 +162,7 @@ final class SettingReactor: BaseReactor, Reactor {
                 )
                 .do(onNext: { [weak self] _ in
                     self?.analyticsManager.setPushEnable(isEnable: true)
+                    self?.appInterface.subscribeMarketingFCMTopic(completion: { _ in })
                 })
             }
             .map { _ in .setPushEnable(true) }
@@ -168,6 +172,7 @@ final class SettingReactor: BaseReactor, Reactor {
     private func setDisablePush() -> Observable<Mutation> {
         return self.deviceService.deleteDevice()
             .do(onNext: { [weak self] _ in
+                self?.appInterface.unsubscribeMarketingFCMTopic(completion: { _ in })
                 self?.analyticsManager.setPushEnable(isEnable: false)
             })
             .map { .setPushEnable(false) }

@@ -39,15 +39,19 @@ final class PolicyViewModel: Common.BaseViewModel {
     private var state = State()
     private let userService: Networking.UserServiceProtocol
     private let deviceService: Networking.DeviceServiceProtocol
-    private let appInterface: AppModuleInterface?
+    private let appInterface: AppModuleInterface
+    private let userDefaults: UserDefaultsUtil
     
     init(
         userService: Networking.UserServiceProtocol = Networking.UserService(),
-        deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService()
+        deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService(),
+        appInterface: AppModuleInterface = Environment.appModuleInterface,
+        userDefaults: UserDefaultsUtil = UserDefaultsUtil()
     ) {
         self.userService = userService
         self.deviceService = deviceService
-        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
+        self.appInterface = appInterface
+        self.userDefaults = userDefaults
     }
     
     override func bind() {
@@ -100,19 +104,31 @@ final class PolicyViewModel: Common.BaseViewModel {
             output.route.send(.showLoading(isShow: false))
             switch changeMarketingConsent {
             case .success(_):
-                output.route.send(.dismiss)
+                subscribeMarketingTopic()
                 
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))
             }
         }
+        .store(in: taskBag)
     }
     
     private func registerDevice() {
-        appInterface?.getFCMToken { [weak self] token in
+        appInterface.getFCMToken { [weak self] token in
             guard let self = self else { return }
             Task {
                 await self.deviceService.registerDevice(pushToken: token)
+            }
+        }
+    }
+    
+    private func subscribeMarketingTopic() {
+        appInterface.subscribeMarketingFCMTopic { [weak self] error in
+            if let error {
+                self?.output.route.send(.showErrorAlert(error))
+            } else {
+                self?.userDefaults.subscribedMarketingTopic = true
+                self?.output.route.send(.dismiss)
             }
         }
     }
