@@ -155,6 +155,14 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
     func sendEvent(name: String, parameters: [String : Any]?) {
         Analytics.logEvent(name, parameters: parameters)
     }
+    
+    func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
+        Messaging.messaging().subscribe(toTopic: "marketing_ios", completion: completion)
+    }
+    
+    func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
+        Messaging.messaging().unsubscribe(fromTopic: "marketing_ios", completion: completion)
+    }
 }
 
 extension AppModuleInterfaceImpl {

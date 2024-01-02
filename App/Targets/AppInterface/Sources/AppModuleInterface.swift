@@ -18,6 +18,8 @@ public protocol AppModuleInterface {
     func createWebViewController(webviewType: WebViewType) -> UIViewController
     func shareKakao(storeId: Int, storeType: StoreType, storeDetailOverview: StoreDetailOverview)
     func requestATTIfNeeded()
+    func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
+    func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
     
     /// GA
     func sendPageView(screenName: String, type: AnyObject.Type)

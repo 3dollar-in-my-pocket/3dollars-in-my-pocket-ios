@@ -6,6 +6,7 @@ import Networking
 import Model
 import Common
 import Log
+import AppInterface
 
 final class HomeViewModel: BaseViewModel {
     enum Constent {
@@ -90,6 +91,7 @@ final class HomeViewModel: BaseViewModel {
     private let locationManager: LocationManagerProtocol
     private var userDefaults: UserDefaultsUtil
     private let logManager: LogManagerProtocol
+    private let appModuleInterface: AppModuleInterface
     
     init(
         state: State = State(),
@@ -99,7 +101,8 @@ final class HomeViewModel: BaseViewModel {
         mapService: MapServiceProtocol = MapService(),
         locationManager: LocationManagerProtocol = LocationManager.shared,
         userDefaults: UserDefaultsUtil = .shared,
-        logManager: LogManagerProtocol = LogManager.shared
+        logManager: LogManagerProtocol = LogManager.shared,
+        appModuleInterface: AppModuleInterface = Environment.appModuleInterface
     ) {
         self.state = state
         self.storeService = storeService
@@ -109,6 +112,7 @@ final class HomeViewModel: BaseViewModel {
         self.locationManager = locationManager
         self.userDefaults = userDefaults
         self.logManager = logManager
+        self.appModuleInterface = appModuleInterface
         super.init()
     }
     
@@ -196,9 +200,20 @@ final class HomeViewModel: BaseViewModel {
                 await owner.userService.fetchUser()
             }
             .compactMapValue()
-            .filter { MarketingConsent(value: $0.marketingConsent) == .unverified }
-            .map { _ in Route.presentPolicy }
-            .subscribe(output.route)
+            .map { MarketingConsent(value: $0.marketingConsent) }
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, marketingConsent: MarketingConsent) in
+                switch marketingConsent {
+                case .approve:
+                    owner.subscribeMarketingTopic()
+                    
+                case .unverified:
+                    owner.output.route.send(.presentPolicy)
+                    
+                case .deny:
+                    break
+                }
+            }
             .store(in: &cancellables)
         
         input.viewDidLoad
@@ -646,6 +661,18 @@ final class HomeViewModel: BaseViewModel {
         viewModel.output.categoryFilter
             .subscribe(input.selectCategory)
             .store(in: &viewModel.cancellables)
+    }
+    
+    private func subscribeMarketingTopic() {
+        guard !userDefaults.subscribedMarketingTopic else { return }
+        
+        appModuleInterface.subscribeMarketingFCMTopic { [weak self] error in
+            if let error {
+                self?.output.route.send(.showErrorAlert(error))
+            } else {
+                self?.userDefaults.subscribedMarketingTopic = true
+            }
+        }
     }
 }
 
