@@ -157,11 +157,11 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
     }
     
     func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
-        Messaging.messaging().subscribe(toTopic: "Marketing", completion: completion)
+        Messaging.messaging().subscribe(toTopic: "marketing_ios", completion: completion)
     }
     
     func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
-        Messaging.messaging().unsubscribe(fromTopic: "Marketing", completion: completion)
+        Messaging.messaging().unsubscribe(fromTopic: "marketing_ios", completion: completion)
     }
 }
 
