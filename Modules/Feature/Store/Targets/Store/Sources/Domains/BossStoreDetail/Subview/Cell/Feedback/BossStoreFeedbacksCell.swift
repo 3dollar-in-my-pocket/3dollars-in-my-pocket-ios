@@ -22,7 +22,7 @@ final class BossStoreFeedbacksCell: BaseCollectionViewCell {
     private let titleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 16)
         $0.textColor = Colors.gray100.color
-        $0.text = "가게 평가"
+        $0.text = Strings.BossStoreDetail.Feedback.title
     }
 
     private let countLabel = UILabel().then {
@@ -33,7 +33,7 @@ final class BossStoreFeedbacksCell: BaseCollectionViewCell {
     private let sendFeedbackButton = UIButton().then {
         $0.titleLabel?.font = Fonts.bold.font(size: 12)
         $0.setTitleColor(Colors.mainPink.color, for: .normal)
-        $0.setTitle("리뷰 남기기", for: .normal)
+        $0.setTitle(Strings.BossStoreDetail.Feedback.sendFeedback, for: .normal)
     }
 
     private let containerView = UIView().then {

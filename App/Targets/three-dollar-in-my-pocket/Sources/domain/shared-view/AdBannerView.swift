@@ -3,19 +3,21 @@ import AppTrackingTransparency
 
 import DesignSystem
 import AppInterface
+import Model
 
 import GoogleMobileAds
-
 
 class AdBannerView: UIView, AdBannerViewProtocol {
     let admobView: GADBannerView = {
         let view = GADBannerView()
-        view.adUnitID = Bundle.admobUnitId
         
         return view
     }()
     
-    required init() {
+    private let adType: AdType
+    
+    required init(adType: AdType) {
+        self.adType = adType
         super.init(frame: .zero)
         
         setup()
@@ -27,6 +29,7 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     }
     
     private func setup() {
+        admobView.adUnitID = Bundle.getAdmobId(adType: adType)
         backgroundColor = Colors.gray10.color
         addSubview(admobView)
     }

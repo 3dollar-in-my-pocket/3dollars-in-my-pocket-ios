@@ -9,15 +9,17 @@ public protocol AppModuleInterface {
     var appleSigninManager: SigninManagerProtocol { get }
     var deeplinkManager: DeeplinkManagerProtocol { get }
     var photoManager: PhotoManagerProtocol { get }
-    var adBannerView: AdBannerViewProtocol { get }
     var onClearSession: (() -> Void) { get }
     
+    func createAdBannerView(adType: AdType) -> AdBannerViewProtocol
     func getFCMToken(completion: @escaping ((String) -> ()))
     func goToMain()
     func createBookmarkViewerViewController(folderId: String) -> UIViewController
     func createWebViewController(webviewType: WebViewType) -> UIViewController
     func shareKakao(storeId: Int, storeType: StoreType, storeDetailOverview: StoreDetailOverview)
     func requestATTIfNeeded()
+    func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
+    func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
     
     /// GA
     func sendPageView(screenName: String, type: AnyObject.Type)

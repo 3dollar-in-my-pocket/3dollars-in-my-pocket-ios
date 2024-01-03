@@ -41,6 +41,7 @@ final class HomeListViewController: BaseViewController {
         
         viewModel.input.viewDidLoad.send(())
         
+        homeListView.bindAdvertisement(in: self)
         homeListView.mapViewButton
             .controlPublisher(for: .touchUpInside)
             .receive(on: DispatchQueue.main)
@@ -85,14 +86,6 @@ final class HomeListViewController: BaseViewController {
             .sink { owner, sections in
                 owner.updateDataSource(section: sections)
             }
-            .store(in: &cancellables)
-            
-        viewModel.output.isEmptyAdvertisement
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, isEmptyAdvertisement in
-                owner.homeListView.bindAdvertisement(isHidden: !isEmptyAdvertisement, in: owner)
-            }        
             .store(in: &cancellables)
         
         viewModel.output.sortType

@@ -14,14 +14,14 @@ final class BossStoreFeedbackHeaderCell: BaseCollectionViewCell {
         $0.font = Fonts.bold.font(size: 24)
         $0.textColor = Colors.gray100.color
         $0.textAlignment = .center
-        $0.text = "음식은 어떠셨나요?"
+        $0.text = Strings.BossStoreFeedback.Content.title
     }
 
     private let subtitleLabel = UILabel().then {
         $0.font = Fonts.medium.font(size: 12)
         $0.textColor = Colors.mainPink.color
         $0.textAlignment = .center
-        $0.text = "여러개의 리뷰를 선택할 수 있습니다."
+        $0.text = Strings.BossStoreFeedback.Content.subtitle
     }
 
     override func setup() {

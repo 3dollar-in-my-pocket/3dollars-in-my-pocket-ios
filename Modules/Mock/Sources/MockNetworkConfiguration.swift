@@ -2,36 +2,35 @@ import Model
 
 import DependencyInjection
 
-public struct MockNetworkConfiguration: NetworkConfigurable {
-    public var endPoint: String {
-        return "https://dev.threedollars.co.kr"
-    }
+public final class MockNetworkConfiguration: NetworkConfigurable {
+    public var endPoint: String
+    public var timeoutForRequest: Double
+    public var timeoutForResource: Double
+    public var appStoreVersion: String?
+    public var userAgent: String
+    public var authToken: String?
     
-    public var timeoutForRequest: Double {
-        return 15
-    }
-    
-    public var timeoutForResource: Double {
-        return 30
-    }
-    
-    public var appStoreVersion: String? {
-        return "3.4.0"
-    }
-    
-    public var userAgent: String {
-        return "3.4.0 (com.macgongmon.-dollar-in-my-pocket-debug; build:1; iOS 16.6.0)"
-    }
-    
-    public var authToken: String? {
-        return "03572dd2-cc32-413c-baf2-e1e08048f4d4"
+    public init(
+        endPoint: String = "https://dev.threedollars.co.kr",
+        timeoutForRequest: Double = 15,
+        timeoutForResource: Double = 30,
+        appStoreVersion: String? = "3.4.0",
+        userAgent: String = "3.4.0 (com.macgongmon.-dollar-in-my-pocket-debug; build:1; iOS 16.6.0)",
+        authToken: String? = "03572dd2-cc32-413c-baf2-e1e08048f4d4"
+    ) {
+        self.endPoint = endPoint
+        self.timeoutForRequest = timeoutForRequest
+        self.timeoutForResource = timeoutForResource
+        self.appStoreVersion = appStoreVersion
+        self.userAgent = userAgent
+        self.authToken = authToken
     }
 }
 
 extension MockNetworkConfiguration {
-    public static func registerNetworkConfiguration() {
+    public static func registerNetworkConfiguration(_ configuration: MockNetworkConfiguration = MockNetworkConfiguration()) {
         DIContainer.shared.container.register(NetworkConfigurable.self) { _ in
-            return MockNetworkConfiguration()
+            return configuration
         }
     }
 }

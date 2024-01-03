@@ -38,10 +38,6 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         return CombinePhotoManager.shared
     }
     
-    var adBannerView: AdBannerViewProtocol {
-        return AdBannerView()
-    }
-    
     var onClearSession: (() -> Void) {
         let onClearSession = {
             UserDefaultsUtil().clear()
@@ -52,6 +48,10 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         }
         
         return onClearSession
+    }
+    
+    func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
+        return AdBannerView(adType: adType)
     }
     
     func getFCMToken(completion: @escaping ((String) -> ())) {
@@ -154,6 +154,14 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
     
     func sendEvent(name: String, parameters: [String : Any]?) {
         Analytics.logEvent(name, parameters: parameters)
+    }
+    
+    func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
+        Messaging.messaging().subscribe(toTopic: "marketing_ios", completion: completion)
+    }
+    
+    func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
+        Messaging.messaging().unsubscribe(fromTopic: "marketing_ios", completion: completion)
     }
 }
 

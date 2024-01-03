@@ -2,10 +2,16 @@ import Foundation
 
 import AppInterface
 
-struct MockUserDefault: UserDefaultProtocol {
-    var authToken: String = ""
+public final class MockUserDefault: UserDefaultProtocol {
+    public var authToken: String
     
-    var userId: Int = 0
+    public var userId: Int
     
-    var isAnonymousUser: Bool = false
+    public var isAnonymousUser: Bool
+    
+    public init(authToken: String = "", userId: Int = 0, isAnonymousUser: Bool = false) {
+        self.authToken = authToken
+        self.userId = userId
+        self.isAnonymousUser = isAnonymousUser
+    }
 }

@@ -14,7 +14,7 @@ final class HomeListView: BaseView {
     let onlyBossToggleButton = OnlyBossToggleButton()
     
     let adBannerView: AdBannerViewProtocol = {
-        let view = Environment.appModuleInterface.adBannerView
+        let view = Environment.appModuleInterface.createAdBannerView(adType: .homeList)
         
         view.backgroundColor = DesignSystemAsset.Colors.gray0.color
         return view
@@ -37,8 +37,6 @@ final class HomeListView: BaseView {
         $0.layer.shadowOffset = CGSize(width: 2, height: 2)
         $0.layer.shadowOpacity = 0.1
     }
-    
-    private var adBannerViewHeightConstraint: Constraint?
     
     override func setup() {
         backgroundColor = DesignSystemAsset.Colors.gray0.color
@@ -73,7 +71,7 @@ final class HomeListView: BaseView {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()
             $0.top.equalTo(categoryFilterButton.snp.bottom).offset(13)
-            adBannerViewHeightConstraint = $0.height.equalTo(49).constraint
+            $0.height.equalTo(49)
         }
         
         collectionView.snp.makeConstraints {
@@ -90,12 +88,8 @@ final class HomeListView: BaseView {
         }
     }
     
-    func bindAdvertisement(isHidden: Bool, in rootViewController: UIViewController) {
-        adBannerView.isHidden = isHidden
-        adBannerViewHeightConstraint?.update(offset: isHidden ? 0 : 49)
-        if !isHidden {
-            adBannerView.load(in: rootViewController)
-        }
+    func bindAdvertisement(in rootViewController: UIViewController) {
+        adBannerView.load(in: rootViewController)
     }
     
     private func generateLayout() -> UICollectionViewLayout {
