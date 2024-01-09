@@ -1,11 +1,13 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let project = ModuleProvider.makeModule(
-    name: "Mock",
+let name = "Mock"
+
+let projdct = Project.makeModule(
+    name: name,
     product: .staticLibrary,
-    dependencise: [
-        .appInterface,
-        .dependencyInjection
+    dependencies: [
+        .Interface.appInterface,
+        .Core.dependencyInjection
     ]
 )

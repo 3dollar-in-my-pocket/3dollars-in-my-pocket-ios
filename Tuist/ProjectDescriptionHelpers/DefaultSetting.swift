@@ -14,7 +14,7 @@ public struct DefaultSetting {
 
 public extension DefaultSetting {
     static func bundleId(moduleName: String) -> String {
-        return "com.\(organizaationName).\(appIdentifier).\(moduleName)"
+        return "com.\(organizaationName).\(appIdentifier).\(moduleName.lowercased())"
     }
 }
 

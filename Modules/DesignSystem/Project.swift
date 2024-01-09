@@ -1,47 +1,13 @@
 import ProjectDescription
+import ProjectDescriptionHelpers
 
-struct Version {
-    static let targetVersion = "14.0"
-}
+let name = "DesignSystem"
 
-struct BuildSetting {
-    struct Project {
-        static let base: SettingsDictionary = [
-            "IPHONEOS_DEPLOYMENT_TARGET": "14.0"
-        ]
-    }
-}
-
-
-let project = Project(
-    name: "DesignSystem",
-    organizationName: "macgongmon",
-    packages: [],
-    settings: .settings(
-        base: BuildSetting.Project.base,
-        configurations: [
-            .debug(name: .debug),
-            .release(name: .release)
-        ]
-    ),
-    targets: [
-        Target(
-            name: "DesignSystem",
-            platform: .iOS,
-            product: .framework,
-            bundleId: "com.macgongmon.-dollar-in-my-pocket.design-system",
-            deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
-            sources: ["Sources/**"],
-            resources: ["Resources/**"],
-            dependencies: [
-                .external(name: "Lottie")
-            ]
-        )
-    ],
-    schemes: [
-        Scheme(
-            name: "DesignSystem",
-            buildAction: BuildAction(targets: ["DesignSystem"])
-        )
+let project = Project.makeModule(
+    name: name,
+    product: .framework,
+    includeResource: true,
+    dependencies: [
+        .SPM.lottie
     ]
 )

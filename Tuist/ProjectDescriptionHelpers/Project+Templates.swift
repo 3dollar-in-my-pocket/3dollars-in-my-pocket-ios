@@ -7,70 +7,113 @@ import ProjectDescription
 
 extension Project {
     /// Helper function to create the Project for this ExampleApp
-    public static func app(name: String, platform: Platform, additionalTargets: [String]) -> Project {
-        var targets = makeAppTargets(name: name,
-                                     platform: platform,
-                                     dependencies: additionalTargets.map { TargetDependency.target(name: $0) })
-        targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, platform: platform) })
-        return Project(name: name,
-                       organizationName: "tuist.io",
-                       targets: targets)
+//    public static func app(name: String, platform: Platform, additionalTargets: [String]) -> Project {
+//        var targets = makeAppTargets(name: name,
+//                                     platform: platform,
+//                                     dependencies: additionalTargets.map { TargetDependency.target(name: $0) })
+//        targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, platform: platform) })
+//        return Project(name: name,
+//                       organizationName: "tuist.io",
+//                       targets: targets)
+//    }
+    
+    public static func makeModule(
+        name: String,
+        product: Product,
+        package: [Package] = [],
+        includeResource: Bool = false,
+        dependencies: [ProjectDescription.TargetDependency]
+    ) -> Project {
+        return Project(
+            name: name,
+            organizationName: DefaultSetting.organizaationName,
+            packages: package,
+            settings: .settings(
+                base: DefaultSetting.baseProductSetting,
+                configurations: [
+                    .debug(name: .debug),
+                    .release(name: .release)
+                ]
+            ),
+            targets: [
+                Target(
+                    name: name,
+                    platform: .iOS,
+                    product: product,
+                    bundleId: DefaultSetting.bundleId(moduleName: name),
+                    deploymentTarget: .iOS(
+                        targetVersion: DefaultSetting.targetVersion.stringValue,
+                        devices: .iphone
+                    ),
+                    sources: ["Sources/**"],
+                    resources: includeResource ? ["Resources/**"] : nil,
+                    dependencies: dependencies
+                )
+            ],
+            schemes: [
+                Scheme(
+                    name: name,
+                    buildAction: BuildAction(targets: [.project(path: ".", target: name)])
+                )
+            ]
+        )
     }
 
-    // MARK: - Private
-
-    /// Helper function to create a framework target and an associated unit test target
-    private static func makeFrameworkTargets(name: String, platform: Platform) -> [Target] {
-        let sources = Target(name: name,
-                platform: platform,
-                product: .framework,
-                bundleId: "io.tuist.\(name)",
-                infoPlist: .default,
-                sources: ["Targets/\(name)/Sources/**"],
-                resources: [],
-                dependencies: [])
-        let tests = Target(name: "\(name)Tests",
-                platform: platform,
-                product: .unitTests,
-                bundleId: "io.tuist.\(name)Tests",
-                infoPlist: .default,
-                sources: ["Targets/\(name)/Tests/**"],
-                resources: [],
-                dependencies: [.target(name: name)])
-        return [sources, tests]
-    }
-
-    /// Helper function to create the application target and the unit test target.
-    private static func makeAppTargets(name: String, platform: Platform, dependencies: [TargetDependency]) -> [Target] {
-        let platform: Platform = platform
+    private static func makeFeatureModule(
+        name: String,
+        dependencies: [TargetDependency],
+        includeDemo: Bool = false
+    ) -> [Target] {
+        var targets: [Target] = []
+        // TODO: 여기 변경 필요
         let infoPlist: [String: InfoPlist.Value] = [
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": "LaunchScreen"
-            ]
-
+        ]
+        
         let mainTarget = Target(
             name: name,
-            platform: platform,
-            product: .app,
-            bundleId: "io.tuist.\(name)",
-            infoPlist: .extendingDefault(with: infoPlist),
+            platform: .iOS,
+            product: .framework,
+            bundleId: DefaultSetting.bundleId(moduleName: name),
+            infoPlist: .file(path: .relativeToCurrentFile("Targets/\(name)/")),
             sources: ["Targets/\(name)/Sources/**"],
             resources: ["Targets/\(name)/Resources/**"],
             dependencies: dependencies
         )
-
-        let testTarget = Target(
-            name: "\(name)Tests",
-            platform: platform,
-            product: .unitTests,
-            bundleId: "io.tuist.\(name)Tests",
+        targets.append(mainTarget)
+        
+        let interfaceTarget = Target(
+            name: "\(name)Interface",
+            platform: .iOS,
+            product: .framework,
+            bundleId: DefaultSetting.bundleId(moduleName: name) + "-interface",
             infoPlist: .default,
-            sources: ["Targets/\(name)/Tests/**"],
+            sources: ["Targets/Interface/Sources/**"],
             dependencies: [
-                .target(name: "\(name)")
-        ])
-        return [mainTarget, testTarget]
+                .Core.dependencyInjection,
+                .Core.model
+            ]
+        )
+        targets.append(interfaceTarget)
+
+        if includeDemo {
+            let demoTarget = Target(
+                name: "\(name)Tests",
+                platform: .iOS,
+                product: .app,
+                bundleId: DefaultSetting.bundleId(moduleName: name.lowercased()) + "-demo",
+                infoPlist: "Targets/Demo/Info.plist",
+                sources: ["Targets/Demo/Sources/**"],
+                dependencies: [
+                    .target(name: "\(name)")
+            ])
+            
+            targets.append(demoTarget)
+        }
+        
+        return targets
     }
 }
