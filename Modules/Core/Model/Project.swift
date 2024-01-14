@@ -1,12 +1,11 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let name = "Log"
+let name = "Model"
 
 let project = Project.makeModule(
     name: name,
-    product: .staticLibrary,
-    dependencies: [
-//        .Interface.appInterface
-    ]
+    product: .framework,
+    includeResource: false,
+    dependencies: []
 )

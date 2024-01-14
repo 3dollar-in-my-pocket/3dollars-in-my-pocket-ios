@@ -19,12 +19,12 @@ public extension TargetDependency {
         
         public static let common = TargetDependency.project(
             target: "Common",
-            path: .relativeToRoot("./Modules/Common")
+            path: .relativeToRoot("./Modules/Core/Common")
         )
         
         public static let model = TargetDependency.project(
             target: "Model",
-            path: .relativeToRoot("./Modules/Common")
+            path: .relativeToRoot("./Modules/Core/Model")
         )
         
         public static let log = TargetDependency.project(
@@ -32,6 +32,10 @@ public extension TargetDependency {
             path: .relativeToRoot("./Modules/Log")
         )
         
+        public static let resource = TargetDependency.project(
+            target: "Resource",
+            path: .relativeToRoot("./Modules/Core/Resource")
+        )
     }
     
     class Feature {
@@ -56,10 +60,16 @@ public extension TargetDependency {
             target: "MembershipInterface",
             path: .relativeToRoot("./Modules/Feature/Membership")
         )
+        
+        public static let writeInterface = TargetDependency.project(
+            target: "WriteInterface",
+            path: .relativeToRoot("./Modules/Feature/Write")
+        )
     }
     
     class SPM {
         public static let lottie = TargetDependency.external(name: "Lottie")
         public static let swinject = TargetDependency.external(name: "Swinject")
+        public static let kingfisher = TargetDependency.external(name: "Kingfisher")
     }
 }

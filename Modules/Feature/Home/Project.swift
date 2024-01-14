@@ -1,4 +1,5 @@
 import ProjectDescription
+import ProjectDescriptionHelpers
 
 struct Version {
     static let targetVersion = "14.0"
@@ -35,14 +36,14 @@ let project = Project(
             sources: ["Targets/Home/Sources/**"],
             resources: ["Targets/Home/Resources/**"],
             dependencies: [
-                .project(target: "Networking", path: "../../Network"),
-                .project(target: "DesignSystem", path: "../../DesignSystem"),
-                .project(target: "Common", path: "../../Common"),
-                .project(target: "Model", path: "../../Common"),
-                .project(target: "AppInterface", path: "../../../App"),
-                .project(target: "StoreInterface", path: "../Store"),
-                .project(target: "MembershipInterface", path: "../Membership"),
-                .project(target: "Log", path: "../../Log"),
+                .Core.networking,
+                .Core.designSystem,
+                .Core.common,
+                .Core.model,
+                .Core.log,
+                .Interface.appInterface,
+                .Interface.storeInterface,
+                .Interface.membershipInterface,
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "PanModal")

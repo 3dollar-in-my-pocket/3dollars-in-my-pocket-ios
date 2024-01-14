@@ -282,7 +282,7 @@ let project = Project(
                 .project(target: "Write", path: "../Modules/Feature/Write"),
                 .project(target: "Networking", path: "../Modules/Network"),
                 .project(target: "DesignSystem", path: "../Modules/DesignSystem"),
-                .project(target: "Common", path: "../Modules/Common"),
+                .Core.common,
                 .project(target: "DependencyInjection", path: "../Modules/DependencyInjection"),
                 .target(name: "service-extension"),
                 .target(name: "content-extension"),
@@ -390,8 +390,8 @@ let project = Project(
             infoPlist: .default,
             sources: ["Targets/AppInterface/Sources/**"],
             dependencies: [
-                .project(target: "DependencyInjection", path: "../Modules/DependencyInjection"),
-                .project(target: "Model", path: "../Modules/Common")
+                .Core.dependencyInjection,
+                .Core.common
             ]
         )
     ],

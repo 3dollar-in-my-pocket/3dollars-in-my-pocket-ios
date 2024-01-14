@@ -21,6 +21,7 @@ extension Project {
         name: String,
         product: Product,
         package: [Package] = [],
+        includeSource: Bool = true,
         includeResource: Bool = false,
         dependencies: [ProjectDescription.TargetDependency]
     ) -> Project {
@@ -45,7 +46,7 @@ extension Project {
                         targetVersion: DefaultSetting.targetVersion.stringValue,
                         devices: .iphone
                     ),
-                    sources: ["Sources/**"],
+                    sources: includeSource ? ["Sources/**"] : nil,
                     resources: includeResource ? ["Resources/**"] : nil,
                     dependencies: dependencies
                 )

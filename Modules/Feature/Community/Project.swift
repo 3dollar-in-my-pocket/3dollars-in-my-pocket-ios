@@ -1,4 +1,5 @@
 import ProjectDescription
+import ProjectDescriptionHelpers
 
 struct Version {
     static let targetVersion = "14.0"
@@ -35,11 +36,11 @@ let project = Project(
             sources: ["Targets/Community/Sources/**"],
             resources: ["Targets/Community/Resources/**"],
             dependencies: [
-                .project(target: "Networking", path: "../../Network"),
-                .project(target: "DesignSystem", path: "../../DesignSystem"),
-                .project(target: "Common", path: "../../Common"),
-                .project(target: "Model", path: "../../Common"),
-                .project(target: "DependencyInjection", path: "../../DependencyInjection"),
+                .Core.networking,
+                .Core.designSystem,
+                .Core.common,
+                .Core.model,
+                .Core.dependencyInjection,
                 .project(target: "CommunityInterface", path: "./"),
                 .external(name: "SnapKit"),
                 .external(name: "Then")
@@ -66,8 +67,8 @@ let project = Project(
             infoPlist: .default,
             sources: ["Targets/Interface/Sources/**"],
             dependencies: [
-                .project(target: "DependencyInjection", path: "../../DependencyInjection"),
-                .project(target: "Model", path: "../../Common")
+                .Core.designSystem,
+                .Core.model
             ]
         )
     ],

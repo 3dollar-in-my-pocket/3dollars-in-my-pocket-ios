@@ -36,14 +36,14 @@ let project = Project(
             sources: ["Targets/Store/Sources/**"],
             resources: ["Targets/Store/Resources/**"],
             dependencies: [
-                .project(target: "Networking", path: "../../Network"),
-                .project(target: "DesignSystem", path: "../../DesignSystem"),
-                .project(target: "Common", path: "../../Common"),
-                .project(target: "Model", path: "../../Common"),
-                .project(target: "DependencyInjection", path: "../../DependencyInjection"),
-                .project(target: "AppInterface", path: "../../../App"),
-                .project(target: "StoreInterface", path: "./"),
-                .project(target: "WriteInterface", path: "../Write"),
+                .Core.networking,
+                .Core.designSystem,
+                .Core.common,
+                .Core.model,
+                .Core.dependencyInjection,
+                .Interface.appInterface,
+                .Interface.storeInterface,
+                .Interface.writeInterface,
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "PanModal")
@@ -58,9 +58,9 @@ let project = Project(
             infoPlist: "Targets/Demo/Info.plist",
             sources: ["Targets/Demo/Sources/**"],
             dependencies: [
-                .project(target: "StoreInterface", path: "./"),
+                .Interface.storeInterface,
+                .Core.common,
                 .project(target: "Store", path: "./"),
-                .project(target: "Common", path: "../../Common"),
                 .project(target: "Mock", path: "../../Mock"),
                 .external(name: "SnapKit")
             ]
@@ -74,8 +74,8 @@ let project = Project(
             infoPlist: .default,
             sources: ["Targets/Interface/Sources/**"],
             dependencies: [
-                .project(target: "DependencyInjection", path: "../../DependencyInjection"),
-                .project(target: "Model", path: "../../Common")
+                .Core.dependencyInjection,
+                .Core.model,
             ]
         )
     ],

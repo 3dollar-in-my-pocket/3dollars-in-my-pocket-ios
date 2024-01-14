@@ -1,4 +1,5 @@
 import ProjectDescription
+import ProjectDescriptionHelpers
 
 struct Version {
     static let targetVersion = "14.0"
@@ -35,15 +36,15 @@ let project = Project(
             sources: ["Targets/Membership/Sources/**"],
             resources: ["Targets/Membership/Resources/**"],
             dependencies: [
-                .project(target: "Networking", path: "../../Network"),
-                .project(target: "DesignSystem", path: "../../DesignSystem"),
-                .project(target: "Common", path: "../../Common"),
-                .project(target: "Resource", path: "../../Common"),
-                .project(target: "Model", path: "../../Common"),
-                .project(target: "DependencyInjection", path: "../../DependencyInjection"),
-                .project(target: "AppInterface", path: "../../../App"),
-                .project(target: "MembershipInterface", path: "./"),
-                .project(target: "Log", path: "../../Log"),
+                .Core.networking,
+                .Core.designSystem,
+                .Core.common,
+                .Core.resource,
+                .Core.model,
+                .Core.dependencyInjection,
+                .Core.log,
+                .Interface.appInterface,
+                .Interface.membershipInterface,
                 .external(name: "SnapKit"),
                 .external(name: "Then")
             ]
@@ -69,8 +70,8 @@ let project = Project(
             infoPlist: .default,
             sources: ["Targets/Interface/Sources/**"],
             dependencies: [
-                .project(target: "DependencyInjection", path: "../../DependencyInjection"),
-                .project(target: "Model", path: "../../Common")
+                .Core.dependencyInjection,
+                .Core.model
             ]
         )
     ],
