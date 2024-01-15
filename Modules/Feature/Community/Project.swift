@@ -37,10 +37,10 @@ let project = Project(
             resources: ["Targets/Community/Resources/**"],
             dependencies: [
                 .Core.networking,
-                .Core.designSystem,
                 .Core.common,
                 .Core.model,
                 .Core.dependencyInjection,
+                .designSystem,
                 .project(target: "CommunityInterface", path: "./"),
                 .external(name: "SnapKit"),
                 .external(name: "Then")
@@ -67,8 +67,8 @@ let project = Project(
             infoPlist: .default,
             sources: ["Targets/Interface/Sources/**"],
             dependencies: [
-                .Core.designSystem,
-                .Core.model
+                .Core.model,
+                .designSystem,
             ]
         )
     ],

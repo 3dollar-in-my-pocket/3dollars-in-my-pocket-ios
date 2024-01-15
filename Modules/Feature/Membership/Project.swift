@@ -37,7 +37,6 @@ let project = Project(
             resources: ["Targets/Membership/Resources/**"],
             dependencies: [
                 .Core.networking,
-                .Core.designSystem,
                 .Core.common,
                 .Core.resource,
                 .Core.model,
@@ -45,6 +44,7 @@ let project = Project(
                 .Core.log,
                 .Interface.appInterface,
                 .Interface.membershipInterface,
+                .designSystem,
                 .external(name: "SnapKit"),
                 .external(name: "Then")
             ]

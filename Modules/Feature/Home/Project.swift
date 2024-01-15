@@ -37,13 +37,13 @@ let project = Project(
             resources: ["Targets/Home/Resources/**"],
             dependencies: [
                 .Core.networking,
-                .Core.designSystem,
                 .Core.common,
                 .Core.model,
                 .Core.log,
                 .Interface.appInterface,
                 .Interface.storeInterface,
                 .Interface.membershipInterface,
+                .designSystem,
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "PanModal")

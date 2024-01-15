@@ -271,19 +271,19 @@ let project = Project(
                 ])
             ],
             dependencies: [
-                .project(target: "AppInterface", path: "./"),
+                .Core.networking,
+                .Core.common,
+                .Core.dependencyInjection,
+                .designSystem,
+                .Interface.appInterface,
+                .Interface.storeInterface,
+                .Interface.writeInterface,
+                .Feature.home,
                 .project(target: "Membership", path: "../Modules/Feature/Membership"),
-                .project(target: "Home", path: "../Modules/Feature/Home"),
                 .project(target: "Store", path: "../Modules/Feature/Store"),
-                .project(target: "StoreInterface", path: "../Modules/Feature/Store"),
                 .project(target: "Community", path: "../Modules/Feature/Community"),
                 .project(target: "CommunityInterface", path: "../Modules/Feature/Community"),
-                .project(target: "WriteInterface", path: "../Modules/Feature/Write"),
                 .project(target: "Write", path: "../Modules/Feature/Write"),
-                .project(target: "Networking", path: "../Modules/Network"),
-                .project(target: "DesignSystem", path: "../Modules/DesignSystem"),
-                .Core.common,
-                .project(target: "DependencyInjection", path: "../Modules/DependencyInjection"),
                 .target(name: "service-extension"),
                 .target(name: "content-extension"),
                 .package(product: "CameraPermission"),
@@ -390,8 +390,7 @@ let project = Project(
             infoPlist: .default,
             sources: ["Targets/AppInterface/Sources/**"],
             dependencies: [
-                .Core.dependencyInjection,
-                .Core.common
+                .Core.dependencyInjection
             ]
         )
     ],

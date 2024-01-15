@@ -1,20 +1,20 @@
 import ProjectDescription
 
 public extension TargetDependency {
+    static let designSystem = TargetDependency.project(
+        target: "DesignSystem",
+        path: .relativeToRoot("./Modules/DesignSystem")
+    )
+    
     class Core {
         public static let dependencyInjection = TargetDependency.project(
             target: "DependencyInjection",
-            path: .relativeToRoot("./Modules/DependencyInjection")
+            path: .relativeToRoot("./Modules/Core/DependencyInjection")
         )
         
         public static let networking = TargetDependency.project(
             target: "Networking",
-            path: .relativeToRoot("./Modules/Network")
-        )
-        
-        public static let designSystem = TargetDependency.project(
-            target: "DesignSystem",
-            path: .relativeToRoot("./Modules/DesignSystem")
+            path: .relativeToRoot("./Modules/Core/Network")
         )
         
         public static let common = TargetDependency.project(
@@ -29,7 +29,7 @@ public extension TargetDependency {
         
         public static let log = TargetDependency.project(
             target: "Log",
-            path: .relativeToRoot("./Modules/Log")
+            path: .relativeToRoot("./Modules/Core/Log")
         )
         
         public static let resource = TargetDependency.project(

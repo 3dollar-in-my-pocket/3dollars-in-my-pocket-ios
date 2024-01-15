@@ -5,13 +5,13 @@ let name = "Common"
 
 let project = Project.makeModule(
     name: name,
-    product: .staticLibrary,
+    product: .framework,
     includeResource: false,
     dependencies: [
         .Core.model,
         .Core.log,
         .Core.dependencyInjection,
-//        .Interface.appInterface,
+        .Interface.appInterface,
         .SPM.kingfisher
     ]
 )

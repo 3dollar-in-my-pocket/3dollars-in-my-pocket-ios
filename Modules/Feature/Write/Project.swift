@@ -37,7 +37,6 @@ let project = Project(
             resources: ["Targets/Write/Resources/**"],
             dependencies: [
                 .Core.networking,
-                .Core.designSystem,
                 .Core.common,
                 .Core.model,
                 .Core.dependencyInjection,
@@ -45,6 +44,7 @@ let project = Project(
                 .Interface.appInterface,
                 .Interface.storeInterface,
                 .Interface.writeInterface,
+                .designSystem,
                 .external(name: "SnapKit"),
                 .external(name: "Then"),
                 .external(name: "PanModal")
