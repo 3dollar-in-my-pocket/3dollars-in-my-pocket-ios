@@ -71,5 +71,8 @@ public extension TargetDependency {
         public static let lottie = TargetDependency.external(name: "Lottie")
         public static let swinject = TargetDependency.external(name: "Swinject")
         public static let kingfisher = TargetDependency.external(name: "Kingfisher")
+        public static let snapKit = TargetDependency.external(name: "SnapKit")
+        public static let then = TargetDependency.external(name: "Then")
+        public static let panModal = TargetDependency.external(name: "PanModal")
     }
 }

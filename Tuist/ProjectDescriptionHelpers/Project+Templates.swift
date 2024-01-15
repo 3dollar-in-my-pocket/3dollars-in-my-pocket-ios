@@ -60,61 +60,89 @@ extension Project {
         )
     }
 
-    private static func makeFeatureModule(
+    public static func makeFeatureModule(
         name: String,
+        package: [Package] = [],
         dependencies: [TargetDependency],
+        includeInterface: Bool = true,
         includeDemo: Bool = false
-    ) -> [Target] {
+    ) -> Project {
         var targets: [Target] = []
-        // TODO: 여기 변경 필요
-        let infoPlist: [String: InfoPlist.Value] = [
-            "CFBundleShortVersionString": "1.0",
-            "CFBundleVersion": "1",
-            "UIMainStoryboardFile": "",
-            "UILaunchStoryboardName": "LaunchScreen"
-        ]
+        var schemes: [Scheme] = []
         
         let mainTarget = Target(
             name: name,
             platform: .iOS,
             product: .framework,
             bundleId: DefaultSetting.bundleId(moduleName: name),
-            infoPlist: .file(path: .relativeToCurrentFile("Targets/\(name)/")),
+            infoPlist: "Targets/\(name)/Info.plist",
             sources: ["Targets/\(name)/Sources/**"],
             resources: ["Targets/\(name)/Resources/**"],
             dependencies: dependencies
         )
         targets.append(mainTarget)
         
-        let interfaceTarget = Target(
-            name: "\(name)Interface",
-            platform: .iOS,
-            product: .framework,
-            bundleId: DefaultSetting.bundleId(moduleName: name) + "-interface",
-            infoPlist: .default,
-            sources: ["Targets/Interface/Sources/**"],
-            dependencies: [
-                .Core.dependencyInjection,
-                .Core.model
-            ]
+        let mainScheme = Scheme(
+            name: name,
+            buildAction: BuildAction(targets: ["\(name)"])
         )
-        targets.append(interfaceTarget)
+        schemes.append(mainScheme)
+        
+        if includeInterface {
+            let interfaceTarget = Target(
+                name: "\(name)Interface",
+                platform: .iOS,
+                product: .framework,
+                bundleId: DefaultSetting.bundleId(moduleName: name) + "-interface",
+                infoPlist: .default,
+                sources: ["Targets/Interface/Sources/**"],
+                dependencies: [
+                    .Core.dependencyInjection,
+                    .Core.model
+                ]
+            )
+            targets.append(interfaceTarget)
+        }
 
         if includeDemo {
             let demoTarget = Target(
-                name: "\(name)Tests",
+                name: "\(name)Demo",
                 platform: .iOS,
                 product: .app,
                 bundleId: DefaultSetting.bundleId(moduleName: name.lowercased()) + "-demo",
                 infoPlist: "Targets/Demo/Info.plist",
                 sources: ["Targets/Demo/Sources/**"],
                 dependencies: [
-                    .target(name: "\(name)")
-            ])
+                    .project(target: "\(name)", path: "./")
+                ]
+            )
             
             targets.append(demoTarget)
+            
+            let demoScheme = Scheme(
+                name: name + "Demo",
+                buildAction: BuildAction(targets: ["\(name)", "\(name)Demo"]),
+                runAction: .runAction(
+                    configuration: .debug,
+                    attachDebugger: true
+                )
+            )
+            schemes.append(demoScheme)
         }
         
-        return targets
+        return Project(
+            name: name,
+            organizationName: DefaultSetting.organizaationName,
+            packages: package,
+            settings: .settings(
+                base: DefaultSetting.baseProductSetting,
+                configurations: [
+                    .debug(name: .debug),
+                    .release(name: .release)
+                ]
+            ),
+            targets: targets,
+            schemes: schemes
+        )
     }
 }
