@@ -1,4 +1,4 @@
-public struct PlatformStore {
+public struct PlatformStore: Hashable {
     public let type: StoreType
     public let id: String
     public let latitude: Double

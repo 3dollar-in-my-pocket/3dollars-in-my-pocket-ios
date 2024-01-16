@@ -20,7 +20,7 @@ final class ReviewTabViewController: BaseViewController {
         transitionStyle: .scroll,
         navigationOrientation: .horizontal
     )
-    private var pageContentViewControllers: [ReviewListViewController] = []
+    private var pageContentViewControllers: [UIViewController] = []
 
     private let viewModel: ReviewTabViewModel
 
@@ -89,8 +89,13 @@ final class ReviewTabViewController: BaseViewController {
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
-        pageContentViewControllers = ReviewTab.list.map { _ in 
-            ReviewListViewController(viewModel: .init(config: .init()))
+        pageContentViewControllers = ReviewTab.list.map {
+            switch $0 {
+            case .store:
+                return StoreReviewListViewController()
+            case .bossStore:
+                return BossStoreReviewListViewController()
+            }
         }
         changePage(to: .zero, animated: false)
         tabView.isUserInteractionEnabled = true
@@ -191,7 +196,7 @@ extension ReviewTabViewController: UIPageViewControllerDataSource {
 // MARK: - UIPageViewControllerDelegate
 extension ReviewTabViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        guard let changedViewController = pageViewController.viewControllers?.first as? ReviewListViewController,
+        guard let changedViewController = pageViewController.viewControllers?.first as? UIViewController,
               let changedIndex = pageContentViewControllers.firstIndex(of: changedViewController) else { return }
 
         tabView.updateSelect(changedIndex)

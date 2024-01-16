@@ -3,7 +3,7 @@ import UIKit
 import DesignSystem
 import Common
 
-final class ReviewListViewController: BaseViewController {
+final class BossStoreReviewListViewController: BaseViewController {
 
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
@@ -12,11 +12,11 @@ final class ReviewListViewController: BaseViewController {
         $0.contentInset.bottom = 80
     }
 
-    private lazy var dataSource = ReviewListDataSource(collectionView: collectionView)
+    private lazy var dataSource = BossStoreReviewListDataSource(collectionView: collectionView)
 
-    private let viewModel: ReviewListViewModel
+    private let viewModel: BossStoreReviewListViewModel
 
-    init(viewModel: ReviewListViewModel) {
+    init(viewModel: BossStoreReviewListViewModel = BossStoreReviewListViewModel()) {
         self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
@@ -80,7 +80,7 @@ final class ReviewListViewController: BaseViewController {
         viewModel.output.showErrorAlert
             .main
             .withUnretained(self)
-            .sink { (owner: ReviewListViewController, error: Error) in
+            .sink { owner, error in
                 owner.showErrorAlert(error: error)
             }
             .store(in: &cancellables)
@@ -96,7 +96,7 @@ final class ReviewListViewController: BaseViewController {
     }
 }
 
-extension ReviewListViewController: UICollectionViewDelegate {
+extension BossStoreReviewListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 //        viewModel.input.didSelectPollItem.send(indexPath.item)
     }
@@ -106,7 +106,7 @@ extension ReviewListViewController: UICollectionViewDelegate {
     }
 }
 
-extension ReviewListViewController: UICollectionViewDelegateFlowLayout {
+extension BossStoreReviewListViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch dataSource.itemIdentifier(for: indexPath) {
         case .review:
