@@ -2,17 +2,17 @@ import UIKit
 
 import Combine
 
-struct ReviewListSection: Hashable {
-    var items: [ReviewListSectionItem]
+struct BossStoreReviewListSection: Hashable {
+    var items: [BossStoreReviewListSectionItem]
 }
 
-enum ReviewListSectionItem: Hashable {
+enum BossStoreReviewListSectionItem: Hashable {
     case review
 }
 
-final class ReviewListDataSource: UICollectionViewDiffableDataSource<ReviewListSection, ReviewListSectionItem> {
+final class BossStoreReviewListDataSource: UICollectionViewDiffableDataSource<BossStoreReviewListSection, BossStoreReviewListSectionItem> {
 
-    typealias Snapshot = NSDiffableDataSourceSnapshot<ReviewListSection, ReviewListSectionItem>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<BossStoreReviewListSection, BossStoreReviewListSectionItem>
 
 
     init(collectionView: UICollectionView) {
@@ -44,7 +44,7 @@ final class ReviewListDataSource: UICollectionViewDiffableDataSource<ReviewListS
          */
     }
 
-    func reload(_ sections: [ReviewListSection]) {
+    func reload(_ sections: [BossStoreReviewListSection]) {
         var snapshot = Snapshot()
 
         sections.forEach {

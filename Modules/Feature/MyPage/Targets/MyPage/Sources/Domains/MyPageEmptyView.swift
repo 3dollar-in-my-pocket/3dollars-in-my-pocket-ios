@@ -68,7 +68,7 @@ final class MyPageEmptyView: BaseView {
         }
     }
     
-    func bind(title: String, description: String) {
+    func bind(title: String, description: String? = nil) {
         emptyTitleLabel.text = title
         emptyDescriptionLabel.text = description
     }
