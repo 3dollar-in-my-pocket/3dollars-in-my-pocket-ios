@@ -94,6 +94,25 @@ struct FetchPollsRequest: RequestType {
     }
 }
 
+struct FetchMyPollsRequest: RequestType {
+    let requestInput: CursorRequestInput
+    var param: Encodable? {
+        return requestInput
+    }
+
+    var method: RequestMethod {
+        return .get
+    }
+
+    var header: HTTPHeaderType {
+        return .auth
+    }
+
+    var path: String {
+        return "/api/v1/my/polls"
+    }
+}
+
 struct CreateChoicePollRequest: RequestType {
     let pollId: String
     let requestInput: PollChoiceCreateRequestInput

@@ -289,6 +289,7 @@ let project = Project(
                 .Feature.membership,
                 .Feature.store,
                 .Feature.write,
+                .Feature.myPage,
                 .SPM.snapKit,
                 .SPM.then,
                 .SPM.kingfisher,

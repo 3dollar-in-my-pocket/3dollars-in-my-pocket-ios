@@ -10,6 +10,8 @@ public protocol CommunityServiceProtocol {
     func reportPoll(pollId: String, input: PollReportCreateRequestInput) async -> Result<String, Error>
     /// 투표 목록 조회
     func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResposne<PollWithMetaApiResponse>, Error>
+    /// 나의 투표 목록 조회
+    func fetchMyPolls(input: CursorRequestInput) async -> Result<PollListWithUserPollMetaApiResponse, Error>
     // 투표 참여
     func createChoicePoll(pollId: String, input: PollChoiceCreateRequestInput) async -> Result<String, Error>
     /// 투표 단건 조회
@@ -62,6 +64,11 @@ public struct CommunityService: CommunityServiceProtocol {
     public func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResposne<PollWithMetaApiResponse>, Error> {
         let request = FetchPollsRequest(requestInput: input)
 
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func fetchMyPolls(input: CursorRequestInput) async -> Result<PollListWithUserPollMetaApiResponse, Error> {
+        let request = FetchMyPollsRequest(requestInput: input)
         return await NetworkManager.shared.request(requestType: request)
     }
 
