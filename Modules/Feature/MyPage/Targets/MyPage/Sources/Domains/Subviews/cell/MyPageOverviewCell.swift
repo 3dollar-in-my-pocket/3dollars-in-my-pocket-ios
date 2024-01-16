@@ -112,6 +112,7 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
         medalImageButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
+            .merge(with: medalCountButton.controlPublisher(for: .touchUpInside).mapVoid)
             .subscribe(viewModel.input.didTapMedalImageButton)
             .store(in: &cancellables)
         
