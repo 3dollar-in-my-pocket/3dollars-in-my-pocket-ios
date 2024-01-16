@@ -6,10 +6,13 @@ import Networking
 import Log
 
 final class BossStoreReviewListViewModel: BaseViewModel {
+    private static let size: Int = 20
+    
     struct Input {
         let firstLoad = PassthroughSubject<Void, Never>()
         let reload = PassthroughSubject<Void, Never>()
         let willDisplayCell = PassthroughSubject<Int, Never>()
+        let didSelectItem = PassthroughSubject<Int, Never>()
     }
 
     struct Output {
@@ -24,24 +27,25 @@ final class BossStoreReviewListViewModel: BaseViewModel {
         var nextCursor: String? = nil
         var hasMore: Bool = false
         let loadMore = PassthroughSubject<Void, Never>()
+        var items: [MyStoreFeedback] = []
     }
 
     enum Route {
-        case none
+        case bossStoreDetail(String)
     }
 
     let input = Input()
     let output = Output()
 
     private var state = State()
-    private let communityService: CommunityServiceProtocol
+    private let feedbackService: FeedbackServiceProtocol
     private let logManager: LogManagerProtocol
 
     init(
-        communityService: CommunityServiceProtocol = CommunityService(),
+        feedbackService: FeedbackServiceProtocol = FeedbackService(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.communityService = communityService
+        self.feedbackService = feedbackService
         self.logManager = logManager
 
         super.init()
@@ -56,21 +60,20 @@ final class BossStoreReviewListViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { owner, _ in
                 owner.state.nextCursor = nil
                 owner.state.hasMore = false
-//                owner.output.showLoading.send(true)
+                owner.output.showLoading.send(true)
             })
-            .compactMap { owner, _ in
-                return nil
-            }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.fetchPolls(input: input)
+                await owner.feedbackService.fetchMyStoreFeedbacks(
+                    input: CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
+                )
             }
             .withUnretained(self)
             .sink { owner, result in
                 owner.output.showLoading.send(false)
                 switch result {
                 case .success(let response):
-//                    owner.state.items = response.contents.map { owner.bindPollItemCellViewModel(with: $0) }
+                    owner.state.items = response.contents.map { MyStoreFeedback(response: $0) }
                     owner.state.hasMore = response.cursor.hasMore
                     owner.state.nextCursor = response.cursor.nextCursor
                     owner.updateDataSource()
@@ -92,18 +95,16 @@ final class BossStoreReviewListViewModel: BaseViewModel {
 
         state.loadMore
             .withUnretained(self)
-            .compactMap { owner, _ in
-                return nil
-            }
-            .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.fetchPolls(input: input)
+                await owner.feedbackService.fetchMyStoreFeedbacks(
+                    input: CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
+                )
             }
             .withUnretained(self)
             .sink { owner, result in
                 switch result {
                 case .success(let response):
-//                    owner.state.items.append(contentsOf: response.contents.map { owner.bindPollItemCellViewModel(with: $0) })
+                    owner.state.items.append(contentsOf: response.contents.map { MyStoreFeedback(response: $0) })
                     owner.state.hasMore = response.cursor.hasMore
                     owner.state.nextCursor = response.cursor.nextCursor
                     owner.updateDataSource()
@@ -112,14 +113,24 @@ final class BossStoreReviewListViewModel: BaseViewModel {
                 }
             }
             .store(in: &cancellables)
+        
+        input.didSelectItem
+            .withUnretained(self)
+            .compactMap { owner, index in
+                owner.state.items[safe: index]?.store.id
+            }
+            .map { .bossStoreDetail($0) }
+            .subscribe(output.route)
+            .store(in: &cancellables)
     }
 
     private func updateDataSource() {
-        
+        output.dataSource.send([
+            BossStoreReviewListSection(items: state.items.map { .review($0) })
+        ])
     }
 
     private func canLoadMore(willDisplayRow: Int) -> Bool {
-        //        return willDisplayRow == state.items.count - 1 && state.hasMore
-            return false
+        return willDisplayRow == state.items.count - 1 && state.hasMore
     }
 }
