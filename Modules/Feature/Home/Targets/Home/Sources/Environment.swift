@@ -1,5 +1,4 @@
 import DesignSystem
-import Resource
 import AppInterface
 import MembershipInterface
 import StoreInterface
