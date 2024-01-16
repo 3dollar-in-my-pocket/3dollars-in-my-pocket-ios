@@ -8,7 +8,6 @@ let project = Project.makeFeatureModule(
     dependencies: [
         .Core.networking,
         .Core.common,
-        .Core.resource,
         .Core.model,
         .Core.dependencyInjection,
         .Core.log,

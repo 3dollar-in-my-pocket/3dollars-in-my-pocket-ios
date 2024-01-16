@@ -32,11 +32,6 @@ public extension TargetDependency {
             path: .relativeToRoot("./Modules/Core/Log")
         )
         
-        public static let resource = TargetDependency.project(
-            target: "Resource",
-            path: .relativeToRoot("./Modules/Core/Resource")
-        )
-        
         public static let designSystem = TargetDependency.project(
             target: "DesignSystem",
             path: .relativeToRoot("./Modules/Core/DesignSystem")
