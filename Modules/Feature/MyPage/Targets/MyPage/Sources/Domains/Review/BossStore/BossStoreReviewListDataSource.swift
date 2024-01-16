@@ -1,13 +1,14 @@
 import UIKit
-
 import Combine
+
+import Model
 
 struct BossStoreReviewListSection: Hashable {
     var items: [BossStoreReviewListSectionItem]
 }
 
 enum BossStoreReviewListSectionItem: Hashable {
-    case review
+    case review(MyStoreFeedback)
 }
 
 final class BossStoreReviewListDataSource: UICollectionViewDiffableDataSource<BossStoreReviewListSection, BossStoreReviewListSectionItem> {
@@ -17,31 +18,17 @@ final class BossStoreReviewListDataSource: UICollectionViewDiffableDataSource<Bo
 
     init(collectionView: UICollectionView) {
         collectionView.register([
-//            PollItemCell.self,
-        ])
-
-        collectionView.registerSectionHeader([
-//            PollHeaderView.self,
+            BossStoreReviewListCell.self,
         ])
 
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .review:
-                return UICollectionViewCell()
+            case .review(let feedback):
+                let cell: BossStoreReviewListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(feedback)
+                return cell
             }
         }
-
-        /*
-        supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView? in
-            guard let _ = self?.sectionIdentifier(section: indexPath.section) else {
-                return nil
-            }
-
-            let headerView: PollHeaderView = collectionView.dequeueReusableSupplementaryView(ofkind: UICollectionView.elementKindSectionHeader, indexPath: indexPath)
-            headerView.bind()
-            return headerView
-        }
-         */
     }
 
     func reload(_ sections: [BossStoreReviewListSection]) {

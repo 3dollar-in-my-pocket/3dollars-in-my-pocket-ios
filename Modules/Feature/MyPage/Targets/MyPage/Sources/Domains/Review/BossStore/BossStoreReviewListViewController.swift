@@ -2,14 +2,18 @@ import UIKit
 
 import DesignSystem
 import Common
+import StoreInterface
 
 final class BossStoreReviewListViewController: BaseViewController {
 
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout()).then {
         $0.backgroundColor = .clear
         $0.delegate = self
-        $0.contentInset.top = 20
-        $0.contentInset.bottom = 80
+    }
+    
+    private let emptyView = MyPageEmptyView().then {
+        $0.isHidden = true
+        $0.bind(title: "아직 작성한 리뷰가 없어요")
     }
 
     private lazy var dataSource = BossStoreReviewListDataSource(collectionView: collectionView)
@@ -36,11 +40,16 @@ final class BossStoreReviewListViewController: BaseViewController {
 
     private func setupUI() {
         view.addSubViews([
-            collectionView
+            collectionView,
+            emptyView
         ])
 
         collectionView.snp.makeConstraints {
             $0.edges.equalToSuperview()
+        }
+        
+        emptyView.snp.makeConstraints {
+            $0.center.equalToSuperview()
         }
     }
 
@@ -49,7 +58,9 @@ final class BossStoreReviewListViewController: BaseViewController {
 
         viewModel.output.dataSource
             .withUnretained(self)
+            .main
             .sink { owner, sections in
+                owner.emptyView.isHidden = sections.isNotEmpty
                 owner.dataSource.reload(sections)
             }
             .store(in: &cancellables)
@@ -70,9 +81,8 @@ final class BossStoreReviewListViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, route in
                 switch route {
-                case .none: break
-//                    let vc = PollDetailViewController(viewModel)
-//                    owner.navigationController?.pushViewController(vc, animated: true)
+                case .bossStoreDetail(let storeId): 
+                    owner.pushBossStoreDetail(storeId: storeId)
                 }
             }
             .store(in: &cancellables)
@@ -86,33 +96,41 @@ final class BossStoreReviewListViewController: BaseViewController {
             .store(in: &cancellables)
     }
 
-    private func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 16
-        layout.minimumInteritemSpacing = 16
-
+    private func createLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewCompositionalLayout { _, _ in
+            let item = NSCollectionLayoutItem(layoutSize: .init(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .estimated(BossStoreReviewListCell.Layout.estimatedHeight)
+            ))
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(BossStoreReviewListCell.Layout.estimatedHeight)
+                ),
+                subitems: [item]
+            )
+            let section = NSCollectionLayoutSection(group: group)
+            section.interGroupSpacing = 28
+            section.contentInsets = .init(top: 24, leading: 20, bottom: 24, trailing: 20)
+            return section
+        }
+        
         return layout
+    }
+    
+    private func pushBossStoreDetail(storeId: String) {
+        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
 extension BossStoreReviewListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        viewModel.input.didSelectPollItem.send(indexPath.item)
+        viewModel.input.didSelectItem.send(indexPath.item)
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         viewModel.input.willDisplayCell.send(indexPath.item)
-    }
-}
-
-extension BossStoreReviewListViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        switch dataSource.itemIdentifier(for: indexPath) {
-        case .review:
-            return CGSize(width: UIScreen.main.bounds.width - 40, height: 246)
-        default:
-            return .zero
-        }
     }
 }
