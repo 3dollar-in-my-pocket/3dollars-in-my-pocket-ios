@@ -8,6 +8,7 @@ import Membership
 import Store
 import Write
 import Community
+import MyPage
 
 import SnapKit
 import Firebase
@@ -107,6 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         StoreInterfaceImpl.registerStoreInterface()
         WriteInterfaceImpl.registerStoreInterface()
         CommunityInterfaceImpl.registerCommunityInterface()
+        MyPageInterfaceImpl.registerMyPageInterface()
         AppModuleInterfaceImpl.registerAppModuleInterface()
         AppInfomationImpl.registerAppInfomation()
     }
