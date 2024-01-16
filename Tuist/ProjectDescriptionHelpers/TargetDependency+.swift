@@ -105,4 +105,58 @@ public extension TargetDependency {
         public static let then = TargetDependency.external(name: "Then")
         public static let panModal = TargetDependency.external(name: "PanModal")
     }
+    
+    class Package {
+        public static let cameraPermission = TargetDependency.package(product: "CameraPermission")
+        
+        public static let deviceKit = TargetDependency.package(product: "DeviceKit")
+        
+        public static let firebaseAnalytics = TargetDependency.package(product: "FirebaseAnalytics")
+        
+        public static let firebaseCrashlytics = TargetDependency.package(product: "FirebaseCrashlytics")
+        
+        public static let firebaseDynamicLinks = TargetDependency.package(product: "FirebaseDynamicLinks")
+        
+        public static let firebaseFirestore = TargetDependency.package(product: "FirebaseFirestore")
+        
+        public static let firebaseMessaging = TargetDependency.package(product: "FirebaseMessaging")
+        
+        public static let firebaseRemoteConfig = TargetDependency.package(product: "FirebaseRemoteConfig")
+        
+        public static let kakaoSDK = TargetDependency.package(product: "KakaoSDK")
+        
+        public static let kakaoSDKAuth = TargetDependency.package(product: "KakaoSDKAuth")
+        
+        public static let kakaoSDKCommon = TargetDependency.package(product: "KakaoSDKCommon")
+        
+        public static let kakaoSDKShare = TargetDependency.package(product: "KakaoSDKShare")
+        
+        public static let kakaoSDKTalk = TargetDependency.package(product: "KakaoSDKTalk")
+        
+        public static let kakaoSDKTemplate = TargetDependency.package(product: "KakaoSDKTemplate")
+        
+        public static let kakaoSDKUser = TargetDependency.package(product: "KakaoSDKUser")
+        
+        public static let locationAlwaysPermission = TargetDependency.package(product: "LocationAlwaysPermission")
+        
+        public static let locationWhenInUsePermission = TargetDependency.package(product: "LocationWhenInUsePermission")
+        
+        public static let photoLibraryPermission = TargetDependency.package(product: "PhotoLibraryPermission")
+        
+        public static let reactorKit = TargetDependency.package(product: "ReactorKit")
+        
+        public static let rxCocoa = TargetDependency.package(product: "RxCocoa")
+        
+        public static let rxDataSources = TargetDependency.package(product: "RxDataSources")
+        
+        public static let rxRelay = TargetDependency.package(product: "RxRelay")
+        
+        public static let rxSwift = TargetDependency.package(product: "RxSwift")
+        
+        public static let swiftyBeaver = TargetDependency.package(product: "SwiftyBeaver")
+        
+        public static let rxTest = TargetDependency.package(product: "RxTest")
+        
+        public static let rxBlocking = TargetDependency.package(product: "RxBlocking")
+    }
 }
