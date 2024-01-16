@@ -46,6 +46,10 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     public func sendPageView(screenName: String, type: AnyObject.Type) { }
     
     public func sendEvent(name: String, parameters: [String : Any]?) { }
+    
+    public func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { }
+    
+    public func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { }
 }
 
 extension MockAppModuleInterfaceImpl {

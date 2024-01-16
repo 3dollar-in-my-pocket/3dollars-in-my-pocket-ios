@@ -1,9 +1,9 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let name = "Mock"
+let name = "Log"
 
-let projdct = Project.makeModule(
+let project = Project.makeModule(
     name: name,
     product: .staticLibrary,
     dependencies: [

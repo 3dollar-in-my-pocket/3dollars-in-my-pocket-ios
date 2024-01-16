@@ -2,7 +2,7 @@ import ProjectDescription
 
 public struct DefaultSetting {
     public static let targetVersion: SettingValue = "14.0"
-    public static let appVersion: SettingValue = "4.0.3"
+    public static let appVersion: SettingValue = "4.2.0"
     public static let buildNumber: SettingValue = "1"
     public static let organizaationName = "macgongmon"
     public static let appIdentifier = "-dollar-in-my-pocket"
@@ -14,7 +14,7 @@ public struct DefaultSetting {
 
 public extension DefaultSetting {
     static func bundleId(moduleName: String) -> String {
-        return "com.\(organizaationName).\(appIdentifier).\(moduleName)"
+        return "com.\(organizaationName).\(appIdentifier).\(moduleName.lowercased())"
     }
 }
 
