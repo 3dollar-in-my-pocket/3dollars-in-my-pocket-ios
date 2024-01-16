@@ -1,97 +1,23 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-struct Version {
-    static let targetVersion = "14.0"
-}
+let name = "Store"
 
-struct BuildSetting {
-    struct Project {
-        static let base: SettingsDictionary = [
-            "IPHONEOS_DEPLOYMENT_TARGET": "14.0"
-        ]
-    }
-}
-
-
-let project = Project(
-    name: "Store",
-    organizationName: "macgongmon",
-    packages: [],
-    settings: .settings(
-        base: BuildSetting.Project.base,
-        configurations: [
-            .debug(name: .debug),
-            .release(name: .release)
-        ]
-    ),
-    targets: [
-        Target(
-            name: "Store",
-            platform: .iOS,
-            product: .framework,
-            bundleId: "com.macgongmon.-dollar-in-my-pocket.store",
-            deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
-            infoPlist: .default,
-            sources: ["Targets/Store/Sources/**"],
-            resources: ["Targets/Store/Resources/**"],
-            dependencies: [
-                .Core.networking,
-                .Core.common,
-                .Core.model,
-                .Core.dependencyInjection,
-                .Interface.appInterface,
-                .Interface.storeInterface,
-                .Interface.writeInterface,
-                .designSystem,
-                .external(name: "SnapKit"),
-                .external(name: "Then"),
-                .external(name: "PanModal")
-            ]
-        ),
-        Target(
-            name: "StoreDemo",
-            platform: .iOS,
-            product: .app,
-            bundleId: "com.macgongmon.-dollar-in-my-pocket.store-demo",
-            deploymentTarget: .iOS(targetVersion: Version.targetVersion, devices: .iphone),
-            infoPlist: "Targets/Demo/Info.plist",
-            sources: ["Targets/Demo/Sources/**"],
-            dependencies: [
-                .Interface.storeInterface,
-                .Core.common,
-                .project(target: "Store", path: "./"),
-                .project(target: "Mock", path: "../../Mock"),
-                .external(name: "SnapKit")
-            ]
-        ),
-        Target(
-            name: "StoreInterface",
-            platform: .iOS,
-            product: .framework,
-            bundleId: "com.macgongmon.-dollar-in-my-pocket.store-interface",
-            deploymentTarget: .iOS(targetVersion: "14.0", devices: .iphone),
-            infoPlist: .default,
-            sources: ["Targets/Interface/Sources/**"],
-            dependencies: [
-                .Core.dependencyInjection,
-                .Core.model,
-            ]
-        )
+let project = Project.makeFeatureModule(
+    name: name,
+    dependencies: [
+        .Core.networking,
+        .Core.common,
+        .Core.model,
+        .Core.dependencyInjection,
+        .Core.designSystem,
+        .Interface.appInterface,
+        .Interface.storeInterface,
+        .Interface.writeInterface,
+        .SPM.snapKit,
+        .SPM.then,
+        .SPM.panModal
     ],
-    schemes: [
-        Scheme(
-            name: "Store",
-            buildAction: BuildAction(targets: ["Store"])
-        ),
-        Scheme(
-            name: "StoreDemo",
-            buildAction: BuildAction(targets: ["StoreDemo", "Store"]),
-            runAction: .runAction(
-                configuration: .debug,
-                attachDebugger: true
-            ),
-            archiveAction: .archiveAction(configuration: .debug)
-        ),
-    ]
+    includeInterface: true,
+    includeDemo: true
 )

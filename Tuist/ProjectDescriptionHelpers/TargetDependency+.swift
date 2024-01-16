@@ -1,9 +1,9 @@
 import ProjectDescription
 
 public extension TargetDependency {
-    static let designSystem = TargetDependency.project(
-        target: "DesignSystem",
-        path: .relativeToRoot("./Modules/DesignSystem")
+    static let mock = TargetDependency.project(
+        target: "Mock",
+        path: .relativeToRoot("./Modules/Mock")
     )
     
     class Core {
@@ -36,12 +36,37 @@ public extension TargetDependency {
             target: "Resource",
             path: .relativeToRoot("./Modules/Core/Resource")
         )
+        
+        public static let designSystem = TargetDependency.project(
+            target: "DesignSystem",
+            path: .relativeToRoot("./Modules/Core/DesignSystem")
+        )
     }
     
     class Feature {
         public static let home = TargetDependency.project(
             target: "Home",
             path: .relativeToRoot("./Modules/Feature/Home")
+        )
+        
+        public static let community = TargetDependency.project(
+            target: "Community",
+            path: .relativeToRoot("./Modules/Feature/Community")
+        )
+        
+        public static let membership = TargetDependency.project(
+            target: "Membership",
+            path: .relativeToRoot("./Modules/Feature/Membership")
+        )
+        
+        public static let store = TargetDependency.project(
+            target: "Store",
+            path: .relativeToRoot("./Modules/Feature/Store")
+        )
+        
+        public static let write = TargetDependency.project(
+            target: "Write",
+            path: .relativeToRoot("./Modules/Feature/Write")
         )
     }
     
@@ -51,14 +76,19 @@ public extension TargetDependency {
             path: .relativeToRoot("./App")
         )
         
-        public static let storeInterface = TargetDependency.project(
-            target: "StoreInterface",
-            path: .relativeToRoot("./Modules/Feature/Store")
+        public static let communityInterface = TargetDependency.project(
+            target: "CommunityInterface",
+            path: .relativeToRoot("./Modules/Feature/Community")
         )
         
         public static let membershipInterface = TargetDependency.project(
             target: "MembershipInterface",
             path: .relativeToRoot("./Modules/Feature/Membership")
+        )
+        
+        public static let storeInterface = TargetDependency.project(
+            target: "StoreInterface",
+            path: .relativeToRoot("./Modules/Feature/Store")
         )
         
         public static let writeInterface = TargetDependency.project(

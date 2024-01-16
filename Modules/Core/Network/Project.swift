@@ -8,6 +8,6 @@ let project = Project.makeModule(
     product: .framework,
     dependencies: [
         .Core.common,
-        .designSystem
+        .Core.designSystem
     ]
 )

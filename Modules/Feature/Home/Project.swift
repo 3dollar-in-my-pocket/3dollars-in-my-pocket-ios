@@ -10,10 +10,10 @@ let project = Project.makeFeatureModule(
         .Core.common,
         .Core.model,
         .Core.log,
+        .Core.designSystem,
         .Interface.appInterface,
         .Interface.storeInterface,
         .Interface.membershipInterface,
-        .designSystem,
         .SPM.snapKit,
         .SPM.then,
         .SPM.panModal

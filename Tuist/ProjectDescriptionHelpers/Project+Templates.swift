@@ -6,17 +6,6 @@ import ProjectDescription
 /// See https://docs.tuist.io/guides/helpers/
 
 extension Project {
-    /// Helper function to create the Project for this ExampleApp
-//    public static func app(name: String, platform: Platform, additionalTargets: [String]) -> Project {
-//        var targets = makeAppTargets(name: name,
-//                                     platform: platform,
-//                                     dependencies: additionalTargets.map { TargetDependency.target(name: $0) })
-//        targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, platform: platform) })
-//        return Project(name: name,
-//                       organizationName: "tuist.io",
-//                       targets: targets)
-//    }
-    
     public static func makeModule(
         name: String,
         product: Product,
@@ -64,8 +53,8 @@ extension Project {
         name: String,
         package: [Package] = [],
         dependencies: [TargetDependency],
-        includeInterface: Bool = true,
-        includeDemo: Bool = false
+        includeInterface: Bool,
+        includeDemo: Bool
     ) -> Project {
         var targets: [Target] = []
         var schemes: [Scheme] = []
@@ -113,7 +102,9 @@ extension Project {
                 infoPlist: "Targets/Demo/Info.plist",
                 sources: ["Targets/Demo/Sources/**"],
                 dependencies: [
-                    .project(target: "\(name)", path: "./")
+                    .project(target: "\(name)", path: "./"),
+                    .mock,
+                    .SPM.snapKit
                 ]
             )
             
@@ -121,7 +112,7 @@ extension Project {
             
             let demoScheme = Scheme(
                 name: name + "Demo",
-                buildAction: BuildAction(targets: ["\(name)", "\(name)Demo"]),
+                buildAction: BuildAction(targets: ["\(name)Demo", "\(name)"]),
                 runAction: .runAction(
                     configuration: .debug,
                     attachDebugger: true
