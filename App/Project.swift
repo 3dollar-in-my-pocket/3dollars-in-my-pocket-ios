@@ -395,7 +395,8 @@ let project = Project(
             infoPlist: .default,
             sources: ["Targets/AppInterface/Sources/**"],
             dependencies: [
-                .Core.dependencyInjection
+                .Core.dependencyInjection,
+                .Core.model
             ]
         )
     ],
