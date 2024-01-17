@@ -5,9 +5,6 @@ import Model
 import Log
 import DependencyInjection
 import AppInterface
-import Log
-import DependencyInjection
-import AppInterface
 
 open class BaseViewController: UIViewController {
     open var cancellables = Set<AnyCancellable>()

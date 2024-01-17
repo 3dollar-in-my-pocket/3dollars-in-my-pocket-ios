@@ -1,5 +1,4 @@
 import DesignSystem
-import Resource
 import DependencyInjection
 import AppInterface
 

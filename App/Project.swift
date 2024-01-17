@@ -1,11 +1,6 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-struct Version {
-    static let version: SettingValue = "4.2.0"
-    static let buildNumber: SettingValue = "1"
-}
-
 struct BuildSetting {
     struct Project {
         static let base: SettingsDictionary = [
@@ -77,8 +72,8 @@ struct BuildSetting {
     
     struct App {
         static let base: SettingsDictionary = [
-            "MARKETING_VERSION": Version.version,
-            "CURRENT_PROJECT_VERSION": Version.buildNumber,
+            "MARKETING_VERSION": DefaultSetting.appVersion,
+            "CURRENT_PROJECT_VERSION": DefaultSetting.buildNumber,
             "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES": "YES",
             "APPSTORE_ID": "1496099467",
             "CODE_SIGN_IDENTITY": "Apple Development",
@@ -100,7 +95,12 @@ struct BuildSetting {
         ]
         
         static let debug: SettingsDictionary = [
-            "ADMOB_UNIT_ID": "ca-app-pub-3940256099942544/2934735716",
+            "ADMOB_UNIT_ID_POLL_DETAIL": "ca-app-pub-3940256099942544/2934735716",
+            "ADMOB_UNIT_ID_HOME_LIST": "ca-app-pub-3940256099942544/2934735716",
+            "ADMOB_UNIT_ID_HOME_CARD": "ca-app-pub-3940256099942544/2934735716",
+            "ADMOB_UNIT_ID_COMMUNITY": "ca-app-pub-3940256099942544/2934735716",
+            "ADMOB_UNIT_ID_CATEGORY_FILTER": "ca-app-pub-3940256099942544/2934735716",
+            "ADMOB_UNIT_ID_STORE_DETAIL": "ca-app-pub-3940256099942544/2934735716",
             "ANDROID_PACKAGE_NAME": "com.zion830.threedollars.dev",
             "API_URL": "https://dev.threedollars.co.kr",
             "APP_DISPLAY_NAME": "가슴속3천원-Dev",
@@ -116,7 +116,12 @@ struct BuildSetting {
         ]
         
         static let release: SettingsDictionary = [
-            "ADMOB_UNIT_ID": "ca-app-pub-1527951560812478/3327283605",
+            "ADMOB_UNIT_ID_POLL_DETAIL": "ca-app-pub-1527951560812478/5573281913",
+            "ADMOB_UNIT_ID_HOME_LIST": "ca-app-pub-1527951560812478/4059484724",
+            "ADMOB_UNIT_ID_HOME_CARD": "ca-app-pub-1527951560812478/4152389037",
+            "ADMOB_UNIT_ID_COMMUNITY": "ca-app-pub-1527951560812478/9021572333",
+            "ADMOB_UNIT_ID_CATEGORY_FILTER": "ca-app-pub-1527951560812478/3327283605",
+            "ADMOB_UNIT_ID_STORE_DETAIL": "ca-app-pub-1527951560812478/5208914863",
             "ANDROID_PACKAGE_NAME": "com.zion830.threedollars",
             "API_URL": "https://threedollars.co.kr",
             "APP_DISPLAY_NAME": "가슴속3천원",
@@ -154,8 +159,8 @@ struct BuildSetting {
     
     struct ServiceExtension {
         static let base: SettingsDictionary = [
-            "MARKETING_VERSION": Version.version,
-            "CURRENT_PROJECT_VERSION": Version.buildNumber,
+            "MARKETING_VERSION": DefaultSetting.appVersion,
+            "CURRENT_PROJECT_VERSION": DefaultSetting.buildNumber,
             "CLANG_CXX_LANGUAGE_STANDARD": "gnu++17",
             "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
             "CODE_SIGN_IDENTITY": "Apple Development",
@@ -188,8 +193,8 @@ struct BuildSetting {
     
     struct ContentExtension {
         static let base: SettingsDictionary = [
-            "MARKETING_VERSION": Version.version,
-            "CURRENT_PROJECT_VERSION": Version.buildNumber,
+            "MARKETING_VERSION": DefaultSetting.appVersion,
+            "CURRENT_PROJECT_VERSION": DefaultSetting.buildNumber,
             "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
             "CODE_SIGN_IDENTITY": "Apple Development",
             "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "iPhone Developer",
@@ -237,14 +242,14 @@ let project = Project(
     name: "3dollar-in-my-pocket",
     organizationName: "macgongmon",
     packages: [
-        .remote(url: "https://github.com/ReactorKit/ReactorKit.git", requirement: .upToNextMajor(from: "3.0.0")),
-        .remote(url: "https://github.com/kakao/kakao-ios-sdk", requirement: .exact("2.11.1")),
-        .remote(url: "https://github.com/RxSwiftCommunity/RxDataSources.git", requirement: .upToNextMajor(from: "5.0.0")),
-        .remote(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", requirement: .exact("1.9.6")),
-        .remote(url: "https://github.com/devicekit/DeviceKit.git", requirement: .exact("5.0.0")),
-        .remote(url: "https://github.com/sparrowcode/PermissionsKit", requirement: .exact("9.0.2")),
-        .remote(url: "https://github.com/firebase/firebase-ios-sdk", requirement: .upToNextMajor(from: "10.4.0")),
-        .remote(url: "https://github.com/ReactiveX/RxSwift.git", requirement: .exact("6.5.0"))
+        .reactorKit,
+        .kakaoSDK,
+        .rxSwift,
+        .rxDataSources,
+        .swiftyBeaver,
+        .deviceKit,
+        .permissionsKit,
+        .firebaseSDK
     ],
     settings: .settings(
         base: BuildSetting.Project.base,
@@ -271,49 +276,49 @@ let project = Project(
                 ])
             ],
             dependencies: [
-                .project(target: "AppInterface", path: "./"),
-                .project(target: "Membership", path: "../Modules/Feature/Membership"),
-                .project(target: "Home", path: "../Modules/Feature/Home"),
-                .project(target: "Store", path: "../Modules/Feature/Store"),
-                .project(target: "StoreInterface", path: "../Modules/Feature/Store"),
-                .project(target: "Community", path: "../Modules/Feature/Community"),
-                .project(target: "CommunityInterface", path: "../Modules/Feature/Community"),
-                .project(target: "WriteInterface", path: "../Modules/Feature/Write"),
-                .project(target: "Write", path: "../Modules/Feature/Write"),
-                .project(target: "Networking", path: "../Modules/Network"),
-                .project(target: "DesignSystem", path: "../Modules/DesignSystem"),
-                .project(target: "Common", path: "../Modules/Common"),
-                .project(target: "DependencyInjection", path: "../Modules/DependencyInjection"),
+                .Core.networking,
+                .Core.common,
+                .Core.dependencyInjection,
+                .Core.designSystem,
+                .Interface.appInterface,
+                .Interface.storeInterface,
+                .Interface.writeInterface,
+                .Interface.communityInterface,
+                .Feature.home,
+                .Feature.community,
+                .Feature.membership,
+                .Feature.store,
+                .Feature.write,
+                .SPM.snapKit,
+                .SPM.then,
+                .SPM.kingfisher,
+                .SPM.lottie,
+                .Package.cameraPermission,
+                .Package.deviceKit,
+                .Package.firebaseAnalytics,
+                .Package.firebaseCrashlytics,
+                .Package.firebaseDynamicLinks,
+                .Package.firebaseFirestore,
+                .Package.firebaseMessaging,
+                .Package.firebaseRemoteConfig,
+                .Package.kakaoSDK,
+                .Package.kakaoSDKAuth,
+                .Package.kakaoSDKCommon,
+                .Package.kakaoSDKShare,
+                .Package.kakaoSDKTalk,
+                .Package.kakaoSDKTemplate,
+                .Package.kakaoSDKUser,
+                .Package.locationAlwaysPermission,
+                .Package.locationWhenInUsePermission,
+                .Package.photoLibraryPermission,
+                .Package.reactorKit,
+                .Package.rxCocoa,
+                .Package.rxDataSources,
+                .Package.rxRelay,
+                .Package.rxSwift,
+                .Package.swiftyBeaver,
                 .target(name: "service-extension"),
                 .target(name: "content-extension"),
-                .package(product: "CameraPermission"),
-                .package(product: "DeviceKit"),
-                .package(product: "FirebaseAnalytics"),
-                .package(product: "FirebaseCrashlytics"),
-                .package(product: "FirebaseDynamicLinks"),
-                .package(product: "FirebaseFirestore"),
-                .package(product: "FirebaseMessaging"),
-                .package(product: "FirebaseRemoteConfig"),
-                .package(product: "KakaoSDK"),
-                .package(product: "KakaoSDKAuth"),
-                .package(product: "KakaoSDKCommon"),
-                .package(product: "KakaoSDKShare"),
-                .package(product: "KakaoSDKTalk"),
-                .package(product: "KakaoSDKTemplate"),
-                .package(product: "KakaoSDKUser"),
-                .package(product: "LocationAlwaysPermission"),
-                .package(product: "LocationWhenInUsePermission"),
-                .package(product: "PhotoLibraryPermission"),
-                .package(product: "ReactorKit"),
-                .package(product: "RxCocoa"),
-                .package(product: "RxDataSources"),
-                .package(product: "RxRelay"),
-                .package(product: "RxSwift"),
-                .external(name: "SnapKit"),
-                .external(name: "Then"),
-                .external(name: "Kingfisher"),
-                .external(name: "Lottie"),
-                .package(product: "SwiftyBeaver"),
             ],
             settings: .settings(
                 base: BuildSetting.App.base,
@@ -333,11 +338,11 @@ let project = Project(
             resources: ["Targets/three-dollar-in-my-pocketTests/Resources/**"],
             dependencies: [
                 .target(name: "three-dollar-in-my-pocket"),
-                .package(product: "RxRelay"),
-                .package(product: "RxTest"),
-                .package(product: "RxBlocking"),
-                .package(product: "RxCocoa"),
-                .package(product: "RxSwift")
+                .Package.rxRelay,
+                .Package.rxTest,
+                .Package.rxBlocking,
+                .Package.rxCocoa,
+                .Package.rxSwift
             ],
             settings: .settings(
                 base: BuildSetting.AppTest.base,
@@ -390,8 +395,8 @@ let project = Project(
             infoPlist: .default,
             sources: ["Targets/AppInterface/Sources/**"],
             dependencies: [
-                .project(target: "DependencyInjection", path: "../Modules/DependencyInjection"),
-                .project(target: "Model", path: "../Modules/Common")
+                .Core.dependencyInjection,
+                .Core.model
             ]
         )
     ],
