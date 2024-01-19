@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "image_banner_boss.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

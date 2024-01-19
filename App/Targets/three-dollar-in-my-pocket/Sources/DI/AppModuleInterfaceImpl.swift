@@ -50,6 +50,10 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         return onClearSession
     }
     
+    var globalEventBus: GlobalEventBusProtocol {
+        return GlobalEventBus.shared
+    }
+    
     func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
         return AdBannerView(adType: adType)
     }
