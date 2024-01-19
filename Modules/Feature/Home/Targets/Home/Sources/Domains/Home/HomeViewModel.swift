@@ -200,7 +200,7 @@ final class HomeViewModel: BaseViewModel {
                 await owner.userService.fetchUser()
             }
             .compactMapValue()
-            .map { MarketingConsent(value: $0.marketingConsent) }
+            .map { MarketingConsent(value: $0.settings.marketingConsent) }
             .withUnretained(self)
             .sink { (owner: HomeViewModel, marketingConsent: MarketingConsent) in
                 switch marketingConsent {
@@ -210,7 +210,7 @@ final class HomeViewModel: BaseViewModel {
                 case .unverified:
                     owner.output.route.send(.presentPolicy)
                     
-                case .deny:
+                case .deny, .unknown:
                     break
                 }
             }

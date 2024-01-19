@@ -19,6 +19,8 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     
     public var onClearSession: (() -> Void) = { }
     
+    public var globalEventBus: GlobalEventBusProtocol = MockGlobalEventBus.shared
+    
     public init(userDefaults: UserDefaultProtocol) {
         self.userDefaults = userDefaults
     }

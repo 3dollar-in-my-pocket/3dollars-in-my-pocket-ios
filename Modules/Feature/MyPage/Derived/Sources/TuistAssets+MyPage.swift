@@ -18,6 +18,12 @@
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum MyPageAsset {
   public static let bgCloud = MyPageImages(name: "bg_cloud")
+  public static let iconApple = MyPageImages(name: "icon_apple")
+  public static let iconGoogle = MyPageImages(name: "icon_google")
+  public static let iconKakao = MyPageImages(name: "icon_kakao")
+  public static let imageBannerBoss = MyPageImages(name: "image_banner_boss")
+  public static let imageBannerNormal = MyPageImages(name: "image_banner_normal")
+  public static let imageBungeoppang = MyPageImages(name: "image_bungeoppang")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
 

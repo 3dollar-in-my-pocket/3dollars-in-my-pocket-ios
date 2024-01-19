@@ -10,6 +10,7 @@ public protocol AppModuleInterface {
     var deeplinkManager: DeeplinkManagerProtocol { get }
     var photoManager: PhotoManagerProtocol { get }
     var onClearSession: (() -> Void) { get }
+    var globalEventBus: GlobalEventBusProtocol { get }
     
     func createAdBannerView(adType: AdType) -> AdBannerViewProtocol
     func getFCMToken(completion: @escaping ((String) -> ()))

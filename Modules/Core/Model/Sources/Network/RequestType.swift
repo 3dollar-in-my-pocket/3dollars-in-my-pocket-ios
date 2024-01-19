@@ -18,7 +18,7 @@ public extension RequestType {
         case .get, .delete:
             return true
             
-        case .post, .put:
+        case .post, .put, .patch:
             return false
         }
     }

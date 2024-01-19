@@ -2,16 +2,15 @@ import Foundation
 
 import Model
 
-struct FetchStoreReviewRequest: RequestType {
-    let storeId: Int
-    let input: FetchStoreReviewRequestInput
+struct EditUserRequest: RequestType {
+    let input: UserPatchRequestInput
     
     var param: Encodable? {
         return input
     }
     
     var method: RequestMethod {
-        return .get
+        return .patch
     }
     
     var header: HTTPHeaderType {
@@ -19,6 +18,6 @@ struct FetchStoreReviewRequest: RequestType {
     }
     
     var path: String {
-        return "/api/v4/store/\(storeId)/reviews"
+        return "/api/v4/my/user"
     }
 }
