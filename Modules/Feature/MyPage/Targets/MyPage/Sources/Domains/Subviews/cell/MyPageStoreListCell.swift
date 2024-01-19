@@ -22,6 +22,7 @@ final class MyPageStoreListCell: BaseCollectionViewCell {
         $0.delegate = self
     }
     
+    private var viewModel: MyPageStoreListCellViewModel?
     private var data: [MyPageStore] = []
     
     override func setup() {
@@ -40,8 +41,9 @@ final class MyPageStoreListCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(_ data: [MyPageStore]) {
-        self.data = data
+    func bind(_ viewModel: MyPageStoreListCellViewModel) {
+        self.viewModel = viewModel
+        self.data = viewModel.output.items
         
         collectionView.reloadData()
     }
@@ -72,7 +74,7 @@ extension MyPageStoreListCell: UICollectionViewDataSource {
 
 extension MyPageStoreListCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        viewModel?.input.didSelect.send(indexPath.item)
     }
 }
 

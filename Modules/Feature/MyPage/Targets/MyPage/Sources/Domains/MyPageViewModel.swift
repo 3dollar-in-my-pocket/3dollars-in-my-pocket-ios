@@ -9,6 +9,7 @@ import Log
 final class MyPageViewModel: BaseViewModel {
     struct Input {
         let loadTrigger = PassthroughSubject<Void, Never>()
+        let reloadTrigger = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -20,7 +21,6 @@ final class MyPageViewModel: BaseViewModel {
     }
 
     struct State {
-        let reload = PassthroughSubject<Void, Never>()
         let userState = CurrentValueSubject<UserWithDetailApiResponse?, Never>(nil)
         let visitStores = CurrentValueSubject<[MyPageStore], Never>([])
         let favoriteStores = CurrentValueSubject<[MyPageStore], Never>([])
@@ -31,7 +31,10 @@ final class MyPageViewModel: BaseViewModel {
         case registeredStoreList
         case review(ReviewTabViewModel)
         case visitStore(VisitStoreListViewModel)
+        case favoriteStore
         case medal(MyMedalViewModel)
+        case storeDetail(Int)
+        case bossStoreDetail(String)
     }
 
     let input = Input()
@@ -67,7 +70,7 @@ final class MyPageViewModel: BaseViewModel {
         super.bind()
         
         let loadTrigger = input.loadTrigger
-            .merge(with: state.reload)
+            .merge(with: input.reloadTrigger)
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.showLoading.send(true)
@@ -83,7 +86,7 @@ final class MyPageViewModel: BaseViewModel {
         let fetchVisitStore = loadTrigger
             .asyncMap { owner, _ in
                 await owner.myPageService.fetchMyStoreVisits(
-                    size: 20, 
+                    size: 20, // TODO
                     cursur: nil
                 )
             }.compactMapValue()
@@ -91,7 +94,7 @@ final class MyPageViewModel: BaseViewModel {
         let fetchFavoriteStores = loadTrigger
             .asyncMap { owner, _ in
                 await owner.myPageService.fetchMyFavoriteStores(
-                    size: 20, 
+                    size: 20, // TODO
                     cursur: nil
                 )
             }.compactMapValue()
@@ -99,7 +102,7 @@ final class MyPageViewModel: BaseViewModel {
         let fetchMyPolls = loadTrigger
             .asyncMap { owner, _ in
                 await owner.communityService.fetchMyPolls(
-                    input: .init(size: 3)
+                    input: .init(size: 3) // TODO
                 )
             }.compactMapValue()
         
@@ -145,7 +148,7 @@ final class MyPageViewModel: BaseViewModel {
             if visitStores.isEmpty {
                 .empty(.visitStore)
             } else {
-                .visitStore(visitStores)
+                .visitStore(bindStoreListCellViewModel(with: visitStores))
             }
         
         sections.append(
@@ -162,7 +165,7 @@ final class MyPageViewModel: BaseViewModel {
             if favoriteStores.isEmpty {
                 .empty(.favoriteStore)
             } else {
-                .favoriteStore(favoriteStores)
+                .favoriteStore(bindStoreListCellViewModel(with: favoriteStores))
             }
         sections.append(
             MyPageSection(
@@ -204,7 +207,8 @@ final class MyPageViewModel: BaseViewModel {
         viewModel.output.didTapCountButton
             .compactMap {
                 switch $0 {
-                case .visitStore: .visitStore(.init())
+                case .visitStore: .visitStore(VisitStoreListViewModel())
+                case .favoriteStore: .favoriteStore // TODO
                 default: nil
                 }
             }
@@ -245,9 +249,25 @@ final class MyPageViewModel: BaseViewModel {
         let viewModel = MyMedalViewModel(config: config)
         return viewModel
     }
+    
+    private func bindStoreListCellViewModel(with items: [MyPageStore]) -> MyPageStoreListCellViewModel {
+        let viewModel = MyPageStoreListCellViewModel(items: items)
+        viewModel.output.route
+            .compactMap {
+                switch $0 {
+                case .storeDetail(let storeId): 
+                    return .storeDetail(storeId)
+                case .bossStoreDetail(let storeId):
+                    return .bossStoreDetail(storeId)
+                }
+            }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+        return viewModel
+    }
 }
 
-// MARK: Log
+// MARK: - Log
 extension MyPageViewModel {
   
 }

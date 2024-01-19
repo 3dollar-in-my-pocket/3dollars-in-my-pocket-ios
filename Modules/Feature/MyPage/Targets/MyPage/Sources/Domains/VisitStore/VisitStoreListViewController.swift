@@ -15,16 +15,16 @@ public final class VisitStoreListViewController: BaseViewController {
     
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = Colors.gray100.color
-        $0.contentInset = .init(top: 0, left: 0, bottom: 24, right: 0)
-        $0.dataSource = self
+        $0.contentInset = .init(top: 0, left: 20, bottom: 24, right: 20)
         $0.delegate = self
-        $0.register([VisitStoreItemCell.self])
     }
     
     private let emptyView = MyPageEmptyView().then {
         $0.isHidden = true
         $0.bind(title: "방문 인증 내역이 없어요!", description: "방문하고 가게 정확도를 높혀봐요")
     }
+    
+    private lazy var dataSource = VisitStoreListDataSource(collectionView: collectionView)
     
     private let viewModel: VisitStoreListViewModel
     
@@ -118,12 +118,12 @@ public final class VisitStoreListViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.sectionItems
+        viewModel.output.sections
             .main
             .withUnretained(self)
-            .sink { owner, sectionItems in
-                owner.emptyView.isHidden = sectionItems.isNotEmpty
-                owner.collectionView.reloadData()
+            .sink { owner, sections in
+                owner.emptyView.isHidden = sections.isNotEmpty
+                owner.dataSource.reload(sections)
             }
             .store(in: &cancellables)
         
@@ -134,6 +134,8 @@ public final class VisitStoreListViewController: BaseViewController {
                 switch route {
                 case .storeDetail(let storeId):
                     owner.pushStoreDetail(storeId: storeId)
+                case .bossStoreDetail(let storeId):
+                    owner.pushBossStoreDetail(storeId: storeId)
                 }
             }
             .store(in: &cancellables)
@@ -144,6 +146,7 @@ public final class VisitStoreListViewController: BaseViewController {
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 12
         layout.minimumLineSpacing = 12
+        layout.sectionInset = .init(top: 0, left: 0, bottom: 40, right: 0)
         return layout
     }
     
@@ -152,34 +155,30 @@ public final class VisitStoreListViewController: BaseViewController {
 
         navigationController?.pushViewController(viewController, animated: true)
     }
-}
-
-extension VisitStoreListViewController: UICollectionViewDataSource {
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.output.sectionItems.value.count
-    }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let item = viewModel.output.sectionItems.value[safe: indexPath.item] else { return UICollectionViewCell() }
+    private func pushBossStoreDetail(storeId: String) {
+        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
         
-        let cell: VisitStoreItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-        cell.bind(item: item)
-        return cell
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
 extension VisitStoreListViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.input.didSelectItem.send(indexPath.item)
+        viewModel.input.didSelectItem.send(indexPath)
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        viewModel.input.willDisplaytCell.send(indexPath.item)
+        viewModel.input.willDisplaytCell.send(indexPath.section)
     }
 }
 
 extension VisitStoreListViewController: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.frame.width, height: VisitStoreItemCell.Layout.height)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: VisitStoreHeaderView.Layout.height)
     }
 }

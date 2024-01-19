@@ -7,9 +7,11 @@ import Common
 import Log
 
 final class VisitStoreListViewModel: BaseViewModel {
+    private static let size: Int = 20
+    
     struct Input {
         let loadTrigger = PassthroughSubject<Void, Never>()
-        let didSelectItem = PassthroughSubject<Int, Never>()
+        let didSelectItem = PassthroughSubject<IndexPath, Never>()
         let willDisplaytCell = PassthroughSubject<Int, Never>()
     }
 
@@ -18,18 +20,19 @@ final class VisitStoreListViewModel: BaseViewModel {
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
-        let sectionItems = CurrentValueSubject<[UserStoreWithVisitsApiResponse], Never>([])
-        let totalCount = CurrentValueSubject<Int, Never>(0)
+        let sections = CurrentValueSubject<[VisitStoreListSection], Never>([])
     }
 
     struct State {
         var nextCursor: String? = nil
         var hasMore: Bool = false
         let loadMore = PassthroughSubject<Void, Never>()
+        var items: [MyVisitStore] = []
     }
 
     enum Route {
         case storeDetail(Int)
+        case bossStoreDetail(String)
     }
 
     let input = Input()
@@ -65,10 +68,9 @@ final class VisitStoreListViewModel: BaseViewModel {
             })
             .withUnretained(self)
             .asyncMap { owner, _ in
-                await owner.myPageService.fetchMyStores(
-                    input: .init(size: 20, cursor: owner.state.nextCursor), 
-                    latitude: owner.userDefaults.userCurrentLocation.coordinate.latitude, 
-                    longitude: owner.userDefaults.userCurrentLocation.coordinate.longitude
+                await owner.myPageService.fetchMyStoreVisits(
+                    size: Self.size, 
+                    cursur: owner.state.nextCursor
                 )
             }
             .withUnretained(self)
@@ -76,10 +78,10 @@ final class VisitStoreListViewModel: BaseViewModel {
                 owner.output.showLoading.send(false)
                 switch result {
                 case .success(let response):
-                    owner.output.totalCount.send(response.cursor.totalCount)
-                    owner.output.sectionItems.send([]) // TODO
+                    owner.state.items = response.contents.map { MyVisitStore(response: $0) }
                     owner.state.hasMore = response.cursor.hasMore
                     owner.state.nextCursor = response.cursor.nextCursor
+                    owner.updateDataSource()
                 case .failure(let error):
                     owner.output.showErrorAlert.send(error)
                 }
@@ -88,8 +90,8 @@ final class VisitStoreListViewModel: BaseViewModel {
         
         input.willDisplaytCell
             .withUnretained(self)
-            .filter { owner, row in
-                owner.canLoadMore(willDisplayRow: row)
+            .filter { owner, section in
+                owner.canLoadMore(willDisplaySection: section)
             }
             .sink { owner, _ in
                 owner.state.loadMore.send()
@@ -99,25 +101,20 @@ final class VisitStoreListViewModel: BaseViewModel {
         state.loadMore
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.myPageService.fetchMyStores(
-                    input: .init(size: 20, cursor: owner.state.nextCursor), 
-                    latitude: owner.userDefaults.userCurrentLocation.coordinate.latitude, 
-                    longitude: owner.userDefaults.userCurrentLocation.coordinate.longitude
+                await owner.myPageService.fetchMyStoreVisits(
+                    size: Self.size, 
+                    cursur: owner.state.nextCursor
                 )
             }
             .withUnretained(self)
             .sink { owner, result in
                 switch result {
                 case .success(let response):
-                    owner.output.totalCount.send(response.cursor.totalCount)
-                    var sectionItems = owner.output.sectionItems.value
-                    sectionItems.append(contentsOf: response.contents)
-                    owner.output.sectionItems.send(sectionItems)
-                    
+                    owner.state.items.append(contentsOf: response.contents.map { MyVisitStore(response: $0) })
                     owner.state.hasMore = response.cursor.hasMore
                     owner.state.nextCursor = response.cursor.nextCursor
-                case .failure(let _):
-                    // owner.output.showErrorAlert.send(error)
+                    owner.updateDataSource()
+                case .failure:
                     break
                 }
             }
@@ -125,13 +122,40 @@ final class VisitStoreListViewModel: BaseViewModel {
         
         input.didSelectItem
             .withUnretained(self)
-            .compactMap { owner, index in owner.output.sectionItems.value[safe: index]?.store.storeId }
-            .map { .storeDetail($0) }
+            .compactMap { owner, indexPath in 
+                return owner.output.sections.value[safe: indexPath.section]?.items[safe: indexPath.item] 
+            }
+            .compactMap {
+                if case .store(let item) = $0 {
+                    switch item.store.type {
+                    case .userStore:
+                        if let id = Int(item.store.id) {
+                            return .storeDetail(id)
+                        }
+                    case .bossStore:
+                        return .bossStoreDetail(item.store.id) 
+                    }
+                }
+                return nil
+            }
             .subscribe(output.route)
             .store(in: &cancellables)
     }
     
-    private func canLoadMore(willDisplayRow: Int) -> Bool {
-        return willDisplayRow == output.sectionItems.value.count - 1 && state.hasMore
+    private func updateDataSource() {
+        let sections: [VisitStoreListSection] = state.items.reduce(into: []) { result, element in
+            if let sectionIndex = result.firstIndex(where: { $0.visitDate == element.visitDate }) {
+                result[sectionIndex].items.append(.store(element))
+            } else {
+                let newSection = VisitStoreListSection(visitDate: element.visitDate, items: [.store(element)])
+                result.append(newSection)
+            }
+        }
+        
+        output.sections.send(sections)
+    }
+    
+    private func canLoadMore(willDisplaySection: Int) -> Bool {
+        return willDisplaySection == output.sections.value.count - 1 && state.hasMore
     }
 }

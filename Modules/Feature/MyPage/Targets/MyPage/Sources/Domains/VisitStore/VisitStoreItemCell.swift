@@ -8,16 +8,27 @@ import Model
 final class VisitStoreItemCell: BaseCollectionViewCell {
 
     enum Layout {
-        static let height: CGFloat = 114
+        static let height: CGFloat = 80
     }
 
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 20
+    private let visitTypeView = UIView().then {
+        $0.layer.cornerRadius = 16
         $0.clipsToBounds = true
         $0.backgroundColor = Colors.gray95.color
     }
     
-    private let storeView = UIView()
+    private let visitTypeImageView = UIImageView()
+    
+    private let visitTimeLabel = UILabel().then {
+        $0.font = Fonts.medium.font(size: 10)
+        $0.textColor = Colors.systemWhite.color
+    }
+    
+    private let storeView = UIView().then {
+        $0.layer.cornerRadius = 16
+        $0.clipsToBounds = true
+        $0.backgroundColor = Colors.gray95.color
+    }
 
     private let titleStackView = UIStackView().then {
         $0.axis = .vertical
@@ -42,30 +53,6 @@ final class VisitStoreItemCell: BaseCollectionViewCell {
     private let imageView = UIImageView().then {
         $0.backgroundColor = .clear
     }
-
-    private let bottomView = UIView()
-
-    private let ratingButton = UIButton().then {
-        $0.setImage(
-            Icons.starSolid.image
-                .resizeImage(scaledTo: 12)
-                .withTintColor(Colors.gray40.color), 
-            for: .normal
-        )
-        $0.imageEdgeInsets.right = 2
-//        $0.titleEdgeInsets.right = 8
-        $0.contentEdgeInsets.right = 8
-        $0.setTitleColor(Colors.gray40.color, for: .normal)
-        $0.titleLabel?.font = Fonts.bold.font(size: 12)
-    }
-    
-    private let countLabel = PaddingLabel(topInset: 0, bottomInset: 0, leftInset: 8, rightInset: 8).then {
-        $0.font = Fonts.bold.font(size: 12)
-        $0.textColor = Colors.systemWhite.color
-        $0.backgroundColor = Colors.gray80.color
-        $0.layer.cornerRadius = 12
-        $0.clipsToBounds = true
-    }
     
     override func setup() {
         super.setup()
@@ -73,79 +60,79 @@ final class VisitStoreItemCell: BaseCollectionViewCell {
         backgroundColor = .clear
         
         contentView.addSubViews([
-            containerView
+            visitTypeView,
+            storeView
         ])
-
-        containerView.addSubViews([
-            storeView,
-            bottomView
+        
+        visitTypeView.addSubViews([
+            visitTypeImageView,
+            visitTimeLabel
         ])
         
         storeView.addSubViews([
+            imageView,
             titleStackView,
-            tagStackView,
-            imageView
+            tagStackView
         ])
         
         titleStackView.addArrangedSubview(tagStackView)
         titleStackView.addArrangedSubview(titleLabel)
     
         tagStackView.addArrangedSubview(tagLabel)
-        
-        bottomView.addSubview(ratingButton)
-        bottomView.addSubview(countLabel)
     }
 
     override func bindConstraints() {
         super.bindConstraints()
 
-        containerView.snp.makeConstraints {
+        visitTypeView.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(20)
             $0.top.bottom.equalToSuperview()
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.width.equalTo(80)
+        }
+        
+        visitTypeImageView.snp.makeConstraints {
+            $0.size.equalTo(32)
+            $0.centerX.equalToSuperview()
+            $0.top.equalToSuperview().inset(15)
+        }
+        
+        visitTimeLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(visitTypeImageView.snp.bottom).offset(6)
         }
         
         storeView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(12)
-            $0.leading.trailing.equalToSuperview().inset(12)
-            $0.height.equalTo(48)
+            $0.leading.equalTo(visitTypeView.snp.trailing).offset(8)
+            $0.top.bottom.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(20)
         }
 
         imageView.snp.makeConstraints {
             $0.size.equalTo(48)
             $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().inset(12)
+            $0.leading.equalToSuperview().inset(16)
         }
 
         titleStackView.snp.makeConstraints {
             $0.centerY.equalTo(imageView)
             $0.leading.equalTo(imageView.snp.trailing).offset(16)
-            $0.trailing.lessThanOrEqualToSuperview().inset(12)
-        }
-        
-        bottomView.snp.makeConstraints {
-            $0.top.equalTo(storeView.snp.bottom).offset(10)
-            $0.leading.equalTo(titleStackView)
-            $0.trailing.equalToSuperview()
-            $0.height.equalTo(24)
-        }
-        
-        ratingButton.snp.makeConstraints {
-            $0.leading.centerY.equalToSuperview()
-            $0.width.equalTo(40)
-        }
-        
-        countLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(12)
-            $0.centerY.equalToSuperview()
-            $0.height.equalTo(24)
+            $0.trailing.lessThanOrEqualToSuperview().inset(16)
         }
     }
 
-    func bind(item: UserStoreWithVisitsApiResponse) {
+    func bind(item: MyVisitStore) {
         imageView.setImage(urlString: item.store.categories.first?.imageUrl)
         titleLabel.text = item.store.name
         tagLabel.text = item.store.categories.map { "#\($0.name)" }.joined(separator: " ")
-        ratingButton.setTitle("\(item.store.rating)", for: .normal)
-        countLabel.text = "최근 방문 \(item.visits.count.existsCounts)명"
+        visitTimeLabel.text = DateUtils.toString(dateString: item.createdAt, format: "HH:mm:ss")
+        
+        switch item.type {
+        case .exists:
+            visitTypeImageView.image = Icons.faceSmile.image.withTintColor(Colors.mainGreen.color)
+            visitTypeView.backgroundColor = Colors.mainGreen.color.withAlphaComponent(0.1)
+        case .notExists:
+            visitTypeImageView.image = Icons.faceSad.image.withTintColor(Colors.mainRed.color)
+            visitTypeView.backgroundColor = Colors.mainRed.color.withAlphaComponent(0.1)
+        }
     }
 }
