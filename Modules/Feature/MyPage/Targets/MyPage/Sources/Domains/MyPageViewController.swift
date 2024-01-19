@@ -119,6 +119,11 @@ public final class MyPageViewController: BaseViewController {
     
     override public func bindViewModelInput() {
         super.bindViewModelInput()
+        
+        refreshControl.controlPublisher(for: .valueChanged)
+            .mapVoid
+            .subscribe(viewModel.input.reloadTrigger)
+            .store(in: &cancellables)
     }
     
     public override func bindViewModelOutput() {
@@ -128,6 +133,9 @@ public final class MyPageViewController: BaseViewController {
             .main
             .withUnretained(self)
             .sink { owner, sections in
+                if owner.refreshControl.isRefreshing {
+                    owner.refreshControl.endRefreshing()
+                }
                 owner.dataSource.reload(sections)
             }
             .store(in: &cancellables)
@@ -141,6 +149,10 @@ public final class MyPageViewController: BaseViewController {
                 case .review(let viewModel): ReviewTabViewController(viewModel: viewModel)
                 case .visitStore(let viewModel): VisitStoreListViewController(viewModel: viewModel)
                 case .medal(let viewModel): MyMedalViewController(viewModel: viewModel)
+                case .storeDetail(let storeId): Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
+                case .bossStoreDetail(let storeId): Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+                case .favoriteStore:
+                    RegisteredStoreListViewController() // TODO: 즐겨찾기 화면 랜딩
                 }
                 owner.navigationController?.pushViewController(vc, animated: true)
             }
@@ -167,10 +179,10 @@ extension MyPageViewController: UICollectionViewDelegateFlowLayout {
         switch dataSource.itemIdentifier(for: indexPath) {
         case .overview:
             return CGSize(width: collectionView.frame.width, height: MyPageOverviewCell.Layout.height) 
-        case .visitStore(let data):
-            return CGSize(width: collectionView.frame.width, height: MyPageStoreListCell.Layout.height(data)) 
-        case .favoriteStore(let data):
-            return CGSize(width: collectionView.frame.width, height: MyPageStoreListCell.Layout.height(data))
+        case .visitStore(let viewModel):
+            return CGSize(width: collectionView.frame.width, height: MyPageStoreListCell.Layout.height(viewModel.output.items)) 
+        case .favoriteStore(let viewModel):
+            return CGSize(width: collectionView.frame.width, height: MyPageStoreListCell.Layout.height(viewModel.output.items))
         case .empty:
             return CGSize(width: collectionView.frame.width, height: MyPageEmptyCell.Layout.height)
         case .pollTotalParticipantsCount:

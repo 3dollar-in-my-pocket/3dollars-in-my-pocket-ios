@@ -26,13 +26,13 @@ final class MyPageDataSource: UICollectionViewDiffableDataSource<MyPageSection, 
                 let cell: MyPageOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
-            case .visitStore(let data):
+            case .visitStore(let viewModel):
                 let cell: MyPageStoreListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                cell.bind(data)
+                cell.bind(viewModel)
                 return cell
-            case .favoriteStore(let data):
+            case .favoriteStore(let viewModel):
                 let cell: MyPageStoreListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
-                cell.bind(data)
+                cell.bind(viewModel)
                 return cell
             case .empty(let type):
                 let cell: MyPageEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)

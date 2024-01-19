@@ -127,8 +127,8 @@ enum MyPageSectionType {
 
 enum MyPageSectionItem: Hashable {
     case overview(MyPageOverviewCellViewModel)
-    case visitStore([MyPageStore])
-    case favoriteStore([MyPageStore])
+    case visitStore(MyPageStoreListCellViewModel)
+    case favoriteStore(MyPageStoreListCellViewModel)
     case empty(MyPageSectionType)
     case pollTotalParticipantsCount(Int)
     case poll(data: PollApiResponse, isFirst: Bool, isLast: Bool)
@@ -137,10 +137,10 @@ enum MyPageSectionItem: Hashable {
         switch self {
         case .overview(let viewModel):
             return String(viewModel.identifier.hashValue)
-        case .visitStore:
-            return "visitStore"
-        case .favoriteStore:
-            return "favoriteStore"
+        case .visitStore(let viewModel):
+            return String(viewModel.identifier.hashValue)
+        case .favoriteStore(let viewModel):
+            return String(viewModel.identifier.hashValue)
         case .empty:
             return "empty"
         case .pollTotalParticipantsCount:
