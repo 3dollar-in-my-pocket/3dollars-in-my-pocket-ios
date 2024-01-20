@@ -62,7 +62,9 @@ public final class QnaViewController: BaseViewController {
     }
     
     private func pushFAQ() {
-        print("💜push faq")
+        let viewController = FaqViewController()
+        
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
