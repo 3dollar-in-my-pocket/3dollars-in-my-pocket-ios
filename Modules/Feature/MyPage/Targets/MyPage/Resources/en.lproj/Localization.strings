@@ -26,3 +26,8 @@
 "edit_nickname.warning" = "중복된 이름이에요!";
 "edit_nickname.edit" = "닉네임 변경";
 "edit_nickname.success_edit" = "닉네임이 변경되었습니다😄";
+
+// 문의사항 화면
+"qna.title" = "문의사항";
+"qna.faq" = "FAQ";
+"qna.inquiry" = "1:1 문의";

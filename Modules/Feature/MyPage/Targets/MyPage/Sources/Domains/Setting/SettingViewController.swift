@@ -94,10 +94,16 @@ public final class SettingViewController: BaseViewController {
         case .pushAgreement:
             print("💚pushAgreement")
         case .pushQna:
-            print("💚pushQna")
+            pushQna()
         case .pushTeamInfo:
             print("💚pushTeamInfo")
         }
+    }
+    
+    private func pushQna() {
+        let viewController = QnaViewController()
+        
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
@@ -165,5 +171,11 @@ extension SettingViewController: UICollectionViewDelegateFlowLayout {
         case .signout:
             return SettingSignoutCell.Layout.size
         }
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let cellType = cellTypes[safe: indexPath.item] else { return }
+        
+        viewModel.input.didTapCell.send(cellType)
     }
 }

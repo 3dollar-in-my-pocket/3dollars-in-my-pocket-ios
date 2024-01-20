@@ -22,6 +22,11 @@ public protocol AppModuleInterface {
     func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
     func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
     
+    func presentMailComposeViewController(
+        nickname: String,
+        targetViewController: UIViewController
+    )
+    
     /// GA
     func sendPageView(screenName: String, type: AnyObject.Type)
     func sendEvent(name: String, parameters: [String: Any]?)
