@@ -52,6 +52,8 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     public func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { }
     
     public func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { }
+    
+    public func presentMailComposeViewController(nickname: String, targetViewController: UIViewController) { }
 }
 
 extension MockAppModuleInterfaceImpl {

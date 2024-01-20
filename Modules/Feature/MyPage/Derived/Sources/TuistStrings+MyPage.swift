@@ -30,6 +30,15 @@ public enum MyPageStrings {
     }
   }
 
+  public enum Qna {
+    /// FAQ
+    public static let faq = MyPageStrings.tr("Localization", "qna.faq")
+    /// 1:1 문의
+    public static let inquiry = MyPageStrings.tr("Localization", "qna.inquiry")
+    /// 문의사항
+    public static let title = MyPageStrings.tr("Localization", "qna.title")
+  }
+
   public enum Setting {
     /// 투표 및 댓글 등 활동 알림
     public static let activityNotifictaion = MyPageStrings.tr("Localization", "setting.activity_notifictaion")
