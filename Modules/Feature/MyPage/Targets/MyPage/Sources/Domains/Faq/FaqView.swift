@@ -26,12 +26,14 @@ final class FaqView: BaseView {
         let label = UILabel()
         label.textColor = Colors.systemWhite.color
         label.font = Fonts.bold.font(size: 24)
-        label.text = "어떤점이 궁금하셨나요?"
+        label.text = Strings.Faq.title
         
         return label
     }()
     
     let categoryView = FaqCategoryView()
+    
+    let faqCollectionView = FaqCollectionView()
     
     override func setup() {
         backgroundColor = Colors.gray100.color
@@ -40,7 +42,8 @@ final class FaqView: BaseView {
             backButton,
             titleLabel,
             mainTitleLabel,
-            categoryView
+            categoryView,
+            faqCollectionView
         ])
     }
     
@@ -67,6 +70,13 @@ final class FaqView: BaseView {
             $0.leading.lessThanOrEqualToSuperview().offset(44)
             $0.trailing.lessThanOrEqualToSuperview().offset(-44)
             $0.height.equalTo(0)
+        }
+        
+        faqCollectionView.snp.makeConstraints {
+            $0.top.equalTo(categoryView.snp.bottom)
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.bottom.equalTo(safeAreaLayoutGuide)
         }
     }
     

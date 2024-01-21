@@ -11,6 +11,8 @@ public final class SettingViewController: BaseViewController {
     public init(viewModel: SettingViewModel = SettingViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        
+        hidesBottomBarWhenPushed = true
     }
     
     required init?(coder: NSCoder) {

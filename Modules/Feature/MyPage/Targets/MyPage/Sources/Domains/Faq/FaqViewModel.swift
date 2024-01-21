@@ -12,7 +12,7 @@ public final class FaqViewModel: BaseViewModel {
     
     struct Output {
         let faqCategory = CurrentValueSubject<[FaqCategoryResponse], Never>([])
-        let faqs = CurrentValueSubject<[FaqResponse], Never>([])
+        let faqSections = CurrentValueSubject<[[FaqResponse]], Never>([])
         let showErrorAlert = PassthroughSubject<Error, Never>()
     }
     
@@ -34,6 +34,7 @@ public final class FaqViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.filterCategory
+            .removeDuplicates()
             .withUnretained(self)
             .sink { (owner: FaqViewModel, index: Int) in
                 guard let category = owner.output.faqCategory.value[safe: index]?.category else { return }
@@ -65,15 +66,31 @@ public final class FaqViewModel: BaseViewModel {
     private func fetchFaq(category: String? = nil) {
         Task { [weak self] in
             guard let self else { return }
+            let category = category == "ALL" ? nil : category
             let result = await faqService.fetchFaq(category: category)
             
             switch result {
             case .success(let faqs):
-                output.faqs.send(faqs)
+                output.faqSections.send(getSortedFaqByCategory(faqs: faqs))
             case .failure(let error):
                 output.showErrorAlert.send(error)
             }
         }
         .store(in: taskBag)
+    }
+    
+    private func getSortedFaqByCategory(faqs: [FaqResponse]) -> [[FaqResponse]] {
+        var faqSections: [[FaqResponse]] = []
+        
+        for faq in faqs {
+            let categories = faqSections.compactMap { $0.first?.categoryInfo }
+            if let targetIndex = categories.firstIndex(of: faq.categoryInfo) {
+                faqSections[targetIndex].append(faq)
+            } else {
+                faqSections.append([faq])
+            }
+        }
+        
+        return faqSections
     }
 }
