@@ -95,6 +95,7 @@ struct BuildSetting {
         ]
         
         static let debug: SettingsDictionary = [
+            "ADMOB_UNIT_ID_HOME_CARD": "ca-app-pub-3940256099942544/4411468910",
             "ADMOB_UNIT_ID": "ca-app-pub-3940256099942544/2934735716",
             "ANDROID_PACKAGE_NAME": "com.zion830.threedollars.dev",
             "API_URL": "https://dev.threedollars.co.kr",
@@ -111,6 +112,7 @@ struct BuildSetting {
         ]
         
         static let release: SettingsDictionary = [
+            "ADMOB_UNIT_ID_HOME_CARD": "ca-app-pub-1527951560812478/1135797704",
             "ADMOB_UNIT_ID": "ca-app-pub-1527951560812478/3327283605",
             "ANDROID_PACKAGE_NAME": "com.zion830.threedollars",
             "API_URL": "https://threedollars.co.kr",

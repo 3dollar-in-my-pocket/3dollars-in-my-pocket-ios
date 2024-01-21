@@ -34,3 +34,7 @@
 
 // FAQ
 "faq.title" = "어떤점이 궁금하셨나요?";
+
+// 팀 정보
+"team_info.title" = "팀원소개";
+"team_info.insta" = "가슴속 3천원 인스타그램 바로가기";

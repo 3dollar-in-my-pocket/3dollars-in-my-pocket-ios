@@ -22,6 +22,7 @@ public protocol AppModuleInterface {
     func requestATTIfNeeded()
     func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
     func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
+    func showFrontAdmob(adType: AdType, viewController: UIViewController)
     
     /// GA
     func sendPageView(screenName: String, type: AnyObject.Type)
