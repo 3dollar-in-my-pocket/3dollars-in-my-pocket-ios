@@ -13,6 +13,7 @@ public protocol AppModuleInterface {
     var globalEventBus: GlobalEventBusProtocol { get }
     
     func createAdBannerView(adType: AdType) -> AdBannerViewProtocol
+    func createWebViewController(title: String, url: String) -> UIViewController
     func getFCMToken(completion: @escaping ((String) -> ()))
     func goToMain()
     func createBookmarkViewerViewController(folderId: String) -> UIViewController

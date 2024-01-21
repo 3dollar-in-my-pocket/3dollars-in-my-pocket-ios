@@ -58,6 +58,10 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
         return AdBannerView(adType: adType)
     }
     
+    func createWebViewController(title: String, url: String) -> UIViewController {
+        return WebViewController(title: title, url: url)
+    }
+    
     func getFCMToken(completion: @escaping ((String) -> ())) {
         Messaging.messaging().token { token, error in
             guard let token = token else {
