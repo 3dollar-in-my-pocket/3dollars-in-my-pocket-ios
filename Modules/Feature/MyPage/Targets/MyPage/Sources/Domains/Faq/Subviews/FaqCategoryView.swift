@@ -21,7 +21,6 @@ final class FaqCategoryView: BaseView {
             }
             
             let height = (row * 34) + ((row - 1) * 8)
-            print("💜height: \(height)")
             return CGFloat(height)
         }
     }

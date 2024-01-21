@@ -1,5 +1,4 @@
 import UIKit
-import MessageUI
 import AppTrackingTransparency
 
 import AppInterface
@@ -10,7 +9,6 @@ import FirebaseMessaging
 import FirebaseAnalytics
 import KakaoSDKShare
 import KakaoSDKTemplate
-import DeviceKit
 
 final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     private var _userDefaults: AppInterface.UserDefaultProtocol = UserDefaultsUtil()
@@ -169,27 +167,6 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
         Messaging.messaging().unsubscribe(fromTopic: "marketing_ios", completion: completion)
     }
-    
-    func presentMailComposeViewController(
-        nickname: String,
-        targetViewController: UIViewController
-    ) {
-        guard MFMailComposeViewController.canSendMail() else {
-            return
-        }
-        
-        let iosVersion = UIDevice.current.systemVersion
-        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-        let deviceModel = Device.current
-        
-        let composer = MFMailComposeViewController()
-        composer.mailComposeDelegate = self
-        composer.setToRecipients(["3dollarinmypocket@gmail.com"])
-        composer.setSubject("가슴속 3천원 문의")
-        composer.setMessageBody("\n\n\n\n----------\n닉네임: \(nickname)\n앱 버전: \(appVersion)\nOS: ios \(iosVersion)\n디바이스: \(deviceModel)", isHTML: false)
-        
-        targetViewController.present(composer, animated: true)
-    }
 }
 
 extension AppModuleInterfaceImpl {
@@ -197,15 +174,5 @@ extension AppModuleInterfaceImpl {
         DIContainer.shared.container.register(AppModuleInterface.self) { _ in
             return AppModuleInterfaceImpl()
         }
-    }
-}
-
-extension AppModuleInterfaceImpl: MFMailComposeViewControllerDelegate {
-    func mailComposeController(
-        _ controller: MFMailComposeViewController,
-        didFinishWith result: MFMailComposeResult,
-        error: Error?
-    ) {
-        controller.dismiss(animated: true, completion: nil)
     }
 }

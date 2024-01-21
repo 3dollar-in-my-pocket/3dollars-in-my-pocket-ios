@@ -14,7 +14,8 @@ let project = Project.makeFeatureModule(
         .Interface.appInterface,
         .Interface.myPageInterface,
         .SPM.snapKit,
-        .SPM.then
+        .SPM.then,
+        .Package.deviceKit
     ],
     includeInterface: true,
     includeDemo: true
