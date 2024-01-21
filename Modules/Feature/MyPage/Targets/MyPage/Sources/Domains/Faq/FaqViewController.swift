@@ -36,14 +36,29 @@ public final class FaqViewController: BaseViewController {
             .store(in: &cancellables)
     }
     
+    public override func bindViewModelInput() {
+        faqView.categoryView.didSelectCategory
+            .subscribe(viewModel.input.filterCategory)
+            .store(in: &cancellables)
+    }
+    
     public override func bindViewModelOutput() {
         viewModel.output.faqCategory
             .dropFirst()
             .withUnretained(self)
-            .receive(on: DispatchQueue.main)
+            .main
             .sink { (owner: FaqViewController, categories: [FaqCategoryResponse]) in
                 owner.faqView.categoryView.bind(categories: categories)
                 owner.faqView.updateCategoryViewHeight(categories: categories)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.faqSections
+            .dropFirst()
+            .withUnretained(self)
+            .main
+            .sink { (owner: FaqViewController, faqs: [[FaqResponse]]) in
+                owner.faqView.faqCollectionView.bind(faqs)
             }
             .store(in: &cancellables)
     }

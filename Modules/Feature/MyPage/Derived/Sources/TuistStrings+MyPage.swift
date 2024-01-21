@@ -30,6 +30,11 @@ public enum MyPageStrings {
     }
   }
 
+  public enum Faq {
+    /// 어떤점이 궁금하셨나요?
+    public static let title = MyPageStrings.tr("Localization", "faq.title")
+  }
+
   public enum Qna {
     /// FAQ
     public static let faq = MyPageStrings.tr("Localization", "qna.faq")

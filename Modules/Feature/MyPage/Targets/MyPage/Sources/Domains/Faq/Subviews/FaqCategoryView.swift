@@ -53,6 +53,14 @@ final class FaqCategoryView: BaseView {
     func bind(categories: [FaqCategoryResponse]) {
         datasource = categories
         collectionView.reloadData()
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.collectionView.selectItem(
+                at: IndexPath(item: 0, section: 0),
+                animated: false,
+                scrollPosition: .left
+            )
+        }
     }
     
     private func createLayout() -> UICollectionViewLayout {

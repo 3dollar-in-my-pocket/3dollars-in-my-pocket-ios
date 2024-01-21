@@ -31,3 +31,6 @@
 "qna.title" = "문의사항";
 "qna.faq" = "FAQ";
 "qna.inquiry" = "1:1 문의";
+
+// FAQ
+"faq.title" = "어떤점이 궁금하셨나요?";
