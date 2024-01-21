@@ -94,6 +94,13 @@ public enum MyPageStrings {
       public static let on = MyPageStrings.tr("Localization", "setting.marketing_notification.on")
     }
   }
+
+  public enum TeamInfo {
+    /// 가슴속 3천원 인스타그램 바로가기
+    public static let insta = MyPageStrings.tr("Localization", "team_info.insta")
+    /// 팀원소개
+    public static let title = MyPageStrings.tr("Localization", "team_info.title")
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

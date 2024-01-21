@@ -9,6 +9,7 @@ import FirebaseMessaging
 import FirebaseAnalytics
 import KakaoSDKShare
 import KakaoSDKTemplate
+import GoogleMobileAds
 
 final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     private var _userDefaults: AppInterface.UserDefaultProtocol = UserDefaultsUtil()
@@ -170,6 +171,22 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     
     func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
         Messaging.messaging().unsubscribe(fromTopic: "marketing_ios", completion: completion)
+    }
+    
+    func showFrontAdmob(adType: AdType, viewController: UIViewController) {
+        let request = GADRequest()
+        GADInterstitialAd.load(
+            withAdUnitID: adType.bundleKey,
+            request: request,
+            completionHandler: { [weak viewController] ad, error in
+                guard let viewController else { return }
+                if let error = error {
+                    print("Failed to load interstitial ad with error: \(error.localizedDescription)")
+                    return
+                }
+                ad?.present(fromRootViewController: viewController)
+            }
+        )
     }
 }
 

@@ -96,7 +96,7 @@ public final class SettingViewController: BaseViewController {
         case .pushQna:
             pushQna()
         case .pushTeamInfo:
-            print("💚pushTeamInfo")
+            pushTeamInfo()
         }
     }
     
@@ -117,6 +117,12 @@ public final class SettingViewController: BaseViewController {
             title: "이용 약관",
             url: "https://massive-iguana-121.notion.site/3-37f521af4ac842ccba75a4fb590c506d"
         )
+        
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func pushTeamInfo() {
+        let viewController = TeamInfoViewController(nibName: nil, bundle: nil)
         
         navigationController?.pushViewController(viewController, animated: true)
     }
