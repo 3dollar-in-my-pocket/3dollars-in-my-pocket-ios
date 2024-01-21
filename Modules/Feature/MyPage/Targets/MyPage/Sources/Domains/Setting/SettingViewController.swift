@@ -90,11 +90,9 @@ public final class SettingViewController: BaseViewController {
     private func handleRoute(_ route: SettingViewModel.Route) {
         switch route {
         case .pushEditNickname(let viewModel):
-            let viewController = EditNicknameViewController(viewModel: viewModel)
-            
-            navigationController?.pushViewController(viewController, animated: true)
+            pushEditNickname(viewModel: viewModel)
         case .pushAgreement:
-            print("💚pushAgreement")
+            pushAgreement()
         case .pushQna:
             pushQna()
         case .pushTeamInfo:
@@ -102,8 +100,23 @@ public final class SettingViewController: BaseViewController {
         }
     }
     
+    private func pushEditNickname(viewModel: EditNicknameViewModel) {
+        let viewController = EditNicknameViewController(viewModel: viewModel)
+        
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
     private func pushQna() {
         let viewController = QnaViewController()
+        
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func pushAgreement() {
+        let viewController = Environment.appModuleInterface.createWebViewController(
+            title: "이용 약관",
+            url: "https://massive-iguana-121.notion.site/3-37f521af4ac842ccba75a4fb590c506d"
+        )
         
         navigationController?.pushViewController(viewController, animated: true)
     }
