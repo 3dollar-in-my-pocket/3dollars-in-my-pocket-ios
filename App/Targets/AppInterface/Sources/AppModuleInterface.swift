@@ -16,6 +16,7 @@ public protocol AppModuleInterface {
     func createWebViewController(title: String, url: String) -> UIViewController
     func getFCMToken(completion: @escaping ((String) -> ()))
     func goToMain()
+    func goToSignin()
     func createBookmarkViewerViewController(folderId: String) -> UIViewController
     func createWebViewController(webviewType: WebViewType) -> UIViewController
     func shareKakao(storeId: Int, storeType: StoreType, storeDetailOverview: StoreDetailOverview)
