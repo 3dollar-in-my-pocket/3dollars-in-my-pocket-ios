@@ -34,21 +34,20 @@ public final class SettingViewModel: BaseViewModel {
         case pushQna
         case pushAgreement
         case pushTeamInfo
+        case goToSignin
     }
     
     let input = Input()
     let output = Output()
     private var state = State()
-    private var userDefaults: UserDefaultsUtil
+    private var userDefaults: UserDefaultProtocol = Environment.appModuleInterface.userDefaults
     private var userService: UserServiceProtocol
     private let globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus
     
     
     public init(
-        userDefaults: UserDefaultsUtil = UserDefaultsUtil(),
         userService: UserServiceProtocol = UserService()
     ) {
-        self.userDefaults = userDefaults
         self.userService = userService
     }
     
@@ -95,6 +94,20 @@ public final class SettingViewModel: BaseViewModel {
                 case .teamInfo:
                     owner.output.route.send(.pushTeamInfo)
                 }
+            }
+            .store(in: &cancellables)
+        
+        input.logout
+            .withUnretained(self)
+            .sink { (owner: SettingViewModel, _) in
+                owner.logout()
+            }
+            .store(in: &cancellables)
+        
+        input.signout
+            .withUnretained(self)
+            .sink { (owner: SettingViewModel, _) in
+                owner.signout()
             }
             .store(in: &cancellables)
         
@@ -198,5 +211,72 @@ public final class SettingViewModel: BaseViewModel {
         case .marketing(let isOn):
             state.user?.settings.marketingConsent = isOn ? MarketingConsent.approve.rawValue : MarketingConsent.deny.rawValue
         }
+    }
+    
+    private func logout() {
+        guard let socialType = state.user?.socialType else { return }
+        
+        Task {
+            await userService.logout()
+        }
+        .store(in: taskBag)
+        
+        switch SocialType(value: socialType) {
+        case .apple:
+            Environment.appModuleInterface.appleSigninManager.logout()
+                .sink { _ in
+                    
+                } receiveValue: { [weak self] _ in
+                    self?.clearUserDefaults()
+                    self?.output.route.send(.goToSignin)
+                }
+                .store(in: &cancellables)
+        case .kakao:
+            Environment.appModuleInterface.kakaoSigninManager.logout().sink { _ in
+                
+            } receiveValue: { [weak self] _ in
+                self?.clearUserDefaults()
+                self?.output.route.send(.goToSignin)
+            }
+            .store(in: &cancellables)
+        case .google, .unknown:
+            break
+        }
+    }
+    
+    private func signout() {
+        guard let socialType = state.user?.socialType else { return }
+        
+        Task {
+            await userService.signout()
+        }
+        .store(in: taskBag)
+        
+        switch SocialType(value: socialType) {
+        case .apple:
+            Environment.appModuleInterface.appleSigninManager.signout()
+                .sink { _ in
+                    
+                } receiveValue: { [weak self] _ in
+                    self?.clearUserDefaults()
+                    self?.output.route.send(.goToSignin)
+                }
+                .store(in: &cancellables)
+        case .kakao:
+            Environment.appModuleInterface.kakaoSigninManager.signout().sink { _ in
+                
+            } receiveValue: { [weak self] _ in
+                self?.clearUserDefaults()
+                self?.output.route.send(.goToSignin)
+            }
+            .store(in: &cancellables)
+        case .google, .unknown:
+            break
+        }
+    }
+    
+    private func clearUserDefaults() {
+        userDefaults.authToken = ""
+        userDefaults.userId = -1
     }
 }

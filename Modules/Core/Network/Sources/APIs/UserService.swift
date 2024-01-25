@@ -20,6 +20,10 @@ public protocol UserServiceProtocol {
     func editUserSetting(enableActivityNotification: Bool, marketingConsent: MarketingConsent) async -> Result<String, Error>
     
     func editUser(nickname: String?, representativeMedalId: Int?) async -> Result<String, Error>
+    
+    func logout() async -> Result<String, Error>
+    
+    func signout() async -> Result<String, Error>
 }
 
 public struct UserService: UserServiceProtocol {
@@ -84,6 +88,18 @@ public struct UserService: UserServiceProtocol {
     public func editUser(nickname: String?, representativeMedalId: Int?) async -> Result<String, Error> {
         let input = UserPatchRequestInput(name: nickname, representativeMedalId: representativeMedalId)
         let request = EditUserRequest(input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func logout() async -> Result<String, Error> {
+        let request = LogoutRequest()
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func signout() async -> Result<String, Error> {
+        let request = SignoutRequest()
         
         return await NetworkManager.shared.request(requestType: request)
     }

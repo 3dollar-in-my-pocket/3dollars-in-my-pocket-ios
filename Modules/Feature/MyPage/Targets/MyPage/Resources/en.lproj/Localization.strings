@@ -18,6 +18,9 @@
 "setting.ad.normal.description" = "광고소개서 보러 가기";
 "setting.ad.boss.title" = "직접 사장님 직영점을 운영하고 싶다면?";
 "setting.ad.boss.description" = "가슴속 3천원 사장님앱 다운받기";
+"setting.alert.logout.title" = "로그아웃 하시겠습니까?";
+"setting.alert.signout.title" = "회원탈퇴";
+"setting.alert.signout.message" = "회원탈퇴 이후에 제보했던 가게와 작성한 댓글을 더이상 볼 수 없어요.\n정말로 탈퇴하시겠어요?";
 
 // 닉네임 수정
 "edit_nickname.title" = "닉네임 수정";

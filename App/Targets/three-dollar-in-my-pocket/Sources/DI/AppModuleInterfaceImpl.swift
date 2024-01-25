@@ -79,6 +79,11 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
         sceneDelegate.goToMain()
     }
     
+    func goToSignin() {
+        guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+        sceneDelegate.goToSignIn()
+    }
+    
     func createBookmarkViewerViewController(folderId: String) -> UIViewController {
         return BookmarkViewerViewController.instance(folderId: folderId)
     }

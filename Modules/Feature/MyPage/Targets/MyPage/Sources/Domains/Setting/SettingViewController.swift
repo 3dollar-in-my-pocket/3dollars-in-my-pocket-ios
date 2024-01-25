@@ -97,6 +97,8 @@ public final class SettingViewController: BaseViewController {
             pushQna()
         case .pushTeamInfo:
             pushTeamInfo()
+        case .goToSignin:
+            goToSignin()
         }
     }
     
@@ -125,6 +127,29 @@ public final class SettingViewController: BaseViewController {
         let viewController = TeamInfoViewController(nibName: nil, bundle: nil)
         
         navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func goToSignin() {
+        Environment.appModuleInterface.goToSignin()
+    }
+    
+    private func showLogoutAlert() {
+        AlertUtils.showWithCancel(
+            viewController: self,
+            title: Strings.Setting.Alert.Logout.title
+        ) { [weak self] in
+            self?.viewModel.input.logout.send(())
+        }
+    }
+    
+    private func showSignoutAlert() {
+        AlertUtils.showWithCancel(
+            viewController: self,
+            title: Strings.Setting.Alert.Signout.title,
+            message: Strings.Setting.Alert.Signout.message
+        ) { [weak self] in
+            self?.viewModel.input.signout.send(())
+        }
     }
 }
 
@@ -174,6 +199,19 @@ extension SettingViewController: UICollectionViewDataSource {
         case .signout:
             let cell: SettingSignoutCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
             
+            cell.logoutButton
+                .controlPublisher(for: .touchUpInside)
+                .sink(receiveValue: { [weak self] _ in
+                    self?.showLogoutAlert()
+                })
+                .store(in: &cell.cancellables)
+            
+            cell.signoutButton
+                .controlPublisher(for: .touchUpInside)
+                .sink(receiveValue: { [weak self] _ in
+                    self?.showSignoutAlert()
+                })
+                .store(in: &cancellables)
             return cell
         }
     }

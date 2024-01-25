@@ -87,6 +87,18 @@ public enum MyPageStrings {
         public static let title = MyPageStrings.tr("Localization", "setting.ad.normal.title")
       }
     }
+    public enum Alert {
+      public enum Logout {
+        /// 로그아웃 하시겠습니까?
+        public static let title = MyPageStrings.tr("Localization", "setting.alert.logout.title")
+      }
+      public enum Signout {
+        /// 회원탈퇴 이후에 제보했던 가게와 작성한 댓글을 더이상 볼 수 없어요.\n정말로 탈퇴하시겠어요?
+        public static let message = MyPageStrings.tr("Localization", "setting.alert.signout.message")
+        /// 회원탈퇴
+        public static let title = MyPageStrings.tr("Localization", "setting.alert.signout.title")
+      }
+    }
     public enum MarketingNotification {
       /// 마케팅 푸시 알림 수신 거부되었습니다 🙇‍♀️
       public static let off = MyPageStrings.tr("Localization", "setting.marketing_notification.off")
