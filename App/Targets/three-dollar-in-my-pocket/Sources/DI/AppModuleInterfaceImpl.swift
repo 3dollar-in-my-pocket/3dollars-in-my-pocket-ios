@@ -9,8 +9,9 @@ import FirebaseMessaging
 import FirebaseAnalytics
 import KakaoSDKShare
 import KakaoSDKTemplate
+import GoogleMobileAds
 
-final class AppModuleInterfaceImpl: AppModuleInterface {
+final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     private var _userDefaults: AppInterface.UserDefaultProtocol = UserDefaultsUtil()
     
     var userDefaults: AppInterface.UserDefaultProtocol {
@@ -50,8 +51,16 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         return onClearSession
     }
     
+    var globalEventBus: GlobalEventBusProtocol {
+        return GlobalEventBus.shared
+    }
+    
     func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
         return AdBannerView(adType: adType)
+    }
+    
+    func createWebViewController(title: String, url: String) -> UIViewController {
+        return WebViewController(title: title, url: url)
     }
     
     func getFCMToken(completion: @escaping ((String) -> ())) {
@@ -68,6 +77,11 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
     func goToMain() {
         guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
         sceneDelegate.goToMain()
+    }
+    
+    func goToSignin() {
+        guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+        sceneDelegate.goToSignIn()
     }
     
     func createBookmarkViewerViewController(folderId: String) -> UIViewController {
@@ -162,6 +176,22 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
     
     func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
         Messaging.messaging().unsubscribe(fromTopic: "marketing_ios", completion: completion)
+    }
+    
+    func showFrontAdmob(adType: AdType, viewController: UIViewController) {
+        let request = GADRequest()
+        GADInterstitialAd.load(
+            withAdUnitID: adType.bundleKey,
+            request: request,
+            completionHandler: { [weak viewController] ad, error in
+                guard let viewController else { return }
+                if let error = error {
+                    print("Failed to load interstitial ad with error: \(error.localizedDescription)")
+                    return
+                }
+                ad?.present(fromRootViewController: viewController)
+            }
+        )
     }
 }
 

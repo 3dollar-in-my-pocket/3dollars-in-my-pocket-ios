@@ -115,6 +115,14 @@ public final class MyPageViewController: BaseViewController {
 
     public override func bindEvent() {
         super.bindEvent()
+        
+        settingButton.controlPublisher(for: .touchUpInside)
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner: MyPageViewController, _) in
+                owner.pushSetting()
+            }
+            .store(in: &cancellables)
     }
     
     override public func bindViewModelInput() {
@@ -165,6 +173,12 @@ public final class MyPageViewController: BaseViewController {
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         return layout
+    }
+    
+    private func pushSetting() {
+        let viewController = SettingViewController()
+        
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

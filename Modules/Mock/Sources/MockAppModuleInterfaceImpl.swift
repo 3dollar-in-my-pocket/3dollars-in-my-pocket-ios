@@ -19,6 +19,8 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     
     public var onClearSession: (() -> Void) = { }
     
+    public var globalEventBus: GlobalEventBusProtocol = MockGlobalEventBus.shared
+    
     public init(userDefaults: UserDefaultProtocol) {
         self.userDefaults = userDefaults
     }
@@ -50,6 +52,8 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     public func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { }
     
     public func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { }
+    
+    public func presentMailComposeViewController(nickname: String, targetViewController: UIViewController) { }
 }
 
 extension MockAppModuleInterfaceImpl {

@@ -11,9 +11,11 @@ let project = Project.makeFeatureModule(
         .Core.model,
         .Core.dependencyInjection,
         .Core.designSystem,
+        .Interface.appInterface,
         .Interface.myPageInterface,
         .SPM.snapKit,
-        .SPM.then
+        .SPM.then,
+        .Package.deviceKit
     ],
     includeInterface: true,
     includeDemo: true

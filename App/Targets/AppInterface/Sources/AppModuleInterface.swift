@@ -10,16 +10,20 @@ public protocol AppModuleInterface {
     var deeplinkManager: DeeplinkManagerProtocol { get }
     var photoManager: PhotoManagerProtocol { get }
     var onClearSession: (() -> Void) { get }
+    var globalEventBus: GlobalEventBusProtocol { get }
     
     func createAdBannerView(adType: AdType) -> AdBannerViewProtocol
+    func createWebViewController(title: String, url: String) -> UIViewController
     func getFCMToken(completion: @escaping ((String) -> ()))
     func goToMain()
+    func goToSignin()
     func createBookmarkViewerViewController(folderId: String) -> UIViewController
     func createWebViewController(webviewType: WebViewType) -> UIViewController
     func shareKakao(storeId: Int, storeType: StoreType, storeDetailOverview: StoreDetailOverview)
     func requestATTIfNeeded()
     func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
     func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
+    func showFrontAdmob(adType: AdType, viewController: UIViewController)
     
     /// GA
     func sendPageView(screenName: String, type: AnyObject.Type)

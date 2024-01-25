@@ -2,11 +2,13 @@ import Foundation
 
 import Model
 
-struct FetchUserRequest: RequestType {
-    var param: Encodable?
+struct SignoutRequest: RequestType {
+    var param: Encodable? {
+        return nil
+    }
     
     var method: RequestMethod {
-        return .get
+        return .delete
     }
     
     var header: HTTPHeaderType {
@@ -14,6 +16,6 @@ struct FetchUserRequest: RequestType {
     }
     
     var path: String {
-        return "/api/v2/user/me"
+        return "/api/v2/signout"
     }
 }
