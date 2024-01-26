@@ -159,8 +159,7 @@ public final class MyPageViewController: BaseViewController {
                 case .medal(let viewModel): MyMedalViewController(viewModel: viewModel)
                 case .storeDetail(let storeId): Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
                 case .bossStoreDetail(let storeId): Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
-                case .favoriteStore:
-                    RegisteredStoreListViewController() // TODO: 즐겨찾기 화면 랜딩
+                case .favoriteStore: BookmarkListViewController(nibName: nil, bundle: nil)
                 }
                 owner.navigationController?.pushViewController(vc, animated: true)
             }
