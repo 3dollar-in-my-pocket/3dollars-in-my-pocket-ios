@@ -119,6 +119,8 @@ final class CommunityViewModel: BaseViewModel {
                         owner.output.route.send(.storeDetail(storeId))
                     case .bossStore:
                         owner.output.route.send(.bossStoreDetail(store.id))
+                    case .unknown:
+                        break
                     }
                     owner.sendClickStoreLog(store: store)
                 }

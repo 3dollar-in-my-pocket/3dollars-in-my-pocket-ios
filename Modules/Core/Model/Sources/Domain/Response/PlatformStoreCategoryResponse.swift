@@ -8,3 +8,13 @@ public struct PlatformStoreCategoryResponse: Decodable {
     public let classification: PlatformStoreCategoryClassificationResponse
     public let isNew: Bool
 }
+
+extension PlatformStoreCategoryResponse: Hashable, Equatable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(categoryId)
+    }
+    
+    public static func == (lhs: PlatformStoreCategoryResponse, rhs: PlatformStoreCategoryResponse) -> Bool {
+        return lhs.categoryId == rhs.categoryId
+    }
+}

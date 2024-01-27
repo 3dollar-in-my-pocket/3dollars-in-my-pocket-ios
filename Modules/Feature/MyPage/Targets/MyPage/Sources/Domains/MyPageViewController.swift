@@ -159,7 +159,7 @@ public final class MyPageViewController: BaseViewController {
                 case .medal(let viewModel): MyMedalViewController(viewModel: viewModel)
                 case .storeDetail(let storeId): Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
                 case .bossStoreDetail(let storeId): Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
-                case .favoriteStore: BookmarkListViewController(nibName: nil, bundle: nil)
+                case .favoriteStore: BookmarkListViewController()
                 }
                 owner.navigationController?.pushViewController(vc, animated: true)
             }

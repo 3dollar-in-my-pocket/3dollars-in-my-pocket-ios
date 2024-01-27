@@ -1,9 +1,12 @@
 import UIKit
+import Combine
 
 import Common
 import DesignSystem
 
 final class BookmarkSectionHeaderView: UICollectionReusableView {
+    var cancellables = Set<AnyCancellable>()
+    
     enum Layout {
         static let height: CGFloat = 54
     }
@@ -31,6 +34,7 @@ final class BookmarkSectionHeaderView: UICollectionReusableView {
         button.setTitle("모두 삭제", for: .normal)
         button.setTitleColor(Colors.gray60.color, for: .normal)
         button.titleLabel?.font = Fonts.medium.font(size: 12)
+        button.alpha = 0
         return button
     }()
     
@@ -43,6 +47,7 @@ final class BookmarkSectionHeaderView: UICollectionReusableView {
         button.backgroundColor = Colors.gray95.color
         button.layer.cornerRadius = 11
         button.contentEdgeInsets = UIEdgeInsets(top: 2, left: 12, bottom: 2, right: 12)
+        button.alpha = 0
         return button
     }()
     
@@ -89,15 +94,55 @@ final class BookmarkSectionHeaderView: UICollectionReusableView {
         }
     }
     
-//    fileprivate func bind(totalCount: Int) {
-//        self.countLabel.text = "\(totalCount)개의 리스트"
-//    }
-//    
-//    fileprivate func setDeleteMode(isDeleteMode: Bool) {
-//        UIView.transition(with: self, duration: 0.3) { [weak self] in
-//            self?.deleteButton.alpha = isDeleteMode ? 0 : 1
-//            self?.deleteAllButton.alpha = isDeleteMode ? 1 : 0
-//            self?.finishButton.alpha = isDeleteMode ? 1 : 0
-//        }
-//    }
+    func bind(_ viewModel: BookmarkSectionHeaderViewModel) {
+        deleteButton.controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapDeleteMode)
+            .store(in: &cancellables)
+        
+        deleteAllButton.controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapDeleteAll)
+            .store(in: &cancellables)
+        
+        finishButton.controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapFinish)
+            .store(in: &cancellables)
+        
+        viewModel.output.totalCount
+            .main
+            .withUnretained(self)
+            .sink { (owner: BookmarkSectionHeaderView, totalCount: Int?) in
+                owner.bind(totalCount: totalCount)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.isDeleteMode
+            .main
+            .withUnretained(self)
+            .sink { (owner: BookmarkSectionHeaderView, isDeleteMode: Bool) in
+                owner.setDeleteMode(isDeleteMode: isDeleteMode)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func bind(totalCount: Int?) {
+        let text: String?
+        
+        if let totalCount {
+            text = "\(totalCount)개의 리스트"
+        } else {
+            text = nil
+        }
+        countLabel.text = text
+    }
+    
+    private func setDeleteMode(isDeleteMode: Bool) {
+        UIView.transition(with: self, duration: 0.3) { [weak self] in
+            self?.deleteButton.alpha = isDeleteMode ? 0 : 1
+            self?.deleteAllButton.alpha = isDeleteMode ? 1 : 0
+            self?.finishButton.alpha = isDeleteMode ? 1 : 0
+        }
+    }
 }

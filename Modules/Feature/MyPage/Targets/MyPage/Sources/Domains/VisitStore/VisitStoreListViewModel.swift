@@ -133,7 +133,9 @@ final class VisitStoreListViewModel: BaseViewModel {
                             return .storeDetail(id)
                         }
                     case .bossStore:
-                        return .bossStoreDetail(item.store.id) 
+                        return .bossStoreDetail(item.store.id)
+                    case .unknown:
+                        return nil
                     }
                 }
                 return nil

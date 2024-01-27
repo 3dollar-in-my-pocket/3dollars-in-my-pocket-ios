@@ -5,6 +5,21 @@ import DesignSystem
 
 final class BookmarkListViewController: BaseViewController {
     private let bookmarkView = BookmarkListView()
+    private let viewModel: BookmarkListViewModel
+    private lazy var datasource = BookmarkListDatasource(
+        collectionView: bookmarkView.collectionView,
+        viewModel: viewModel
+    )
+    
+    init(viewModel: BookmarkListViewModel = BookmarkListViewModel()) {
+        self.viewModel = viewModel
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
         view = bookmarkView
@@ -12,6 +27,8 @@ final class BookmarkListViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        viewModel.input.viewDidLoad.send(())
     }
     
     override func bindEvent() {
@@ -21,5 +38,57 @@ final class BookmarkListViewController: BaseViewController {
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)
+    }
+    
+    override func bindViewModelOutput() {
+        viewModel.output.isDeleteMode
+            .main
+            .withUnretained(self)
+            .sink { (owner: BookmarkListViewController, isDeleteMode: Bool) in
+                owner.bookmarkView.setDeleteModel(isDeleteMode)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.sections
+            .main
+            .withUnretained(self)
+            .sink { (owner: BookmarkListViewController, sections: [BookmarkListSection]) in
+                owner.datasource.reload(sections)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.route
+            .main
+            .withUnretained(self)
+            .sink { (owner: BookmarkListViewController, route: BookmarkListViewModel.Route) in
+                owner.handleRoute(route)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.showErrorAlert
+            .main
+            .withUnretained(self)
+            .sink { (owner: BookmarkListViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func handleRoute(_ route: BookmarkListViewModel.Route) {
+        // TODO: 라우팅 채워넣기
+        switch route {
+        case .presentShareBottomSheet:
+            break
+        case .pushStoreDetail(let storeId):
+            let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
+            
+            navigationController?.pushViewController(viewController, animated: true)
+        case .pushBossStoreDetail(let storeId):
+            let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+            
+            navigationController?.pushViewController(viewController, animated: true)
+        case .pushEditBookmark:
+            break
+        }
     }
 }
