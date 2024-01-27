@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 
 final class BookmarkStoreCell: BaseCollectionViewCell {
     enum Layout {
@@ -41,7 +42,7 @@ final class BookmarkStoreCell: BaseCollectionViewCell {
     let deleteButton: UIButton = {
         let button = UIButton()
         
-//        button.setImage(nil, for: .normal)
+        button.setImage(Images.iconDelete.image, for: .normal)
         button.alpha = 0
         return button
     }()
@@ -86,7 +87,7 @@ final class BookmarkStoreCell: BaseCollectionViewCell {
         
         titleLabel.snp.makeConstraints {
             $0.leading.equalTo(categoriesLabel)
-            $0.top.equalTo(categoriesLabel).offset(2)
+            $0.top.equalTo(categoriesLabel.snp.bottom).offset(2)
             $0.trailing.lessThanOrEqualToSuperview()
         }
         
@@ -98,23 +99,34 @@ final class BookmarkStoreCell: BaseCollectionViewCell {
         }
     }
     
-//    func bind(store: StoreProtocol) {
-//        guard let platformStore = store as? PlatformStore else { return }
-//        
-//        self.categoryImageView.setImage(
-//            urlString: platformStore.categories.first?.imageUrl ?? ""
-//        )
-//        self.categoriesLabel.text = platformStore.categoriesString
-//        self.titleLabel.text = platformStore.name
-//    }
-//    
-//    fileprivate func setDeleteMode(isDeleteMode: Bool) {
-//        self.containerView.snp.updateConstraints { make in
-//            make.right.equalToSuperview().offset(isDeleteMode ? -64 : -24)
-//        }
-//        UIView.transition(with: self, duration: 0.3) { [weak self] in
-//            self?.layoutIfNeeded()
-//            self?.deleteButton.alpha = isDeleteMode ? 1 : 0
-//        }
-//    }
+    func bind(_ viewModel: BookmarkStoreCellViewModel, index: Int) {
+        deleteButton.controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapDelete)
+            .store(in: &cancellables)
+        
+        viewModel.input.index.send(index)
+        
+        bindStore(viewModel.output.store)
+        
+        viewModel.output.isDeleteMode
+            .main
+            .withUnretained(self)
+            .sink { (owner: BookmarkStoreCell, isDeleteModel: Bool) in
+                owner.setDeleteMode(isDeleteMode: isDeleteModel)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func bindStore(_ store: StoreApiResponse) {
+        categoryImageView.setImage(urlString: store.categories.first?.imageUrl)
+        categoriesLabel.text = store.categoriesString
+        titleLabel.text = store.storeName
+    }
+    
+    private func setDeleteMode(isDeleteMode: Bool) {
+        UIView.transition(with: self, duration: 0.3) { [weak self] in
+            self?.deleteButton.alpha = isDeleteMode ? 1 : 0
+        }
+    }
 }

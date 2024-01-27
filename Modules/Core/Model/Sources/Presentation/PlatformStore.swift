@@ -7,13 +7,13 @@ public struct PlatformStore: Hashable {
     public let storeCategory: StoreType
     public let categories: [PlatformStoreCategory]
 
-    public init(response: PlatformStoreResponse) {
-        self.type = StoreType(value: response.storeType)
+    public init(response: StoreApiResponse) {
+        self.type = response.storeType
         self.id = response.storeId
         self.latitude = 0
         self.longitude = 0
         self.name = response.storeName
-        self.storeCategory = StoreType(value: response.storeType)
+        self.storeCategory = response.storeType
         self.categories = response.categories.map(PlatformStoreCategory.init(response:))
     }
 }

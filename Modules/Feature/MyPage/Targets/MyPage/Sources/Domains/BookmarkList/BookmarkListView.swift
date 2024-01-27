@@ -24,30 +24,6 @@ final class BookmarkListView: BaseView {
     
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     
-//    (
-//        frame: .zero,
-//        collectionViewLayout: UICollectionViewLayout()
-//    ).then {
-//        $0.backgroundColor = .clear
-//        $0.register(
-//            BookmarkOverviewCollectionViewCell.self,
-//            forCellWithReuseIdentifier: BookmarkOverviewCollectionViewCell.registerId
-//        )
-//        $0.register(
-//            BookmarkStoreCollectionViewCell.self,
-//            forCellWithReuseIdentifier: BookmarkStoreCollectionViewCell.registerId
-//        )
-//        $0.register(
-//            BookmarkEmptyCollectionViewCell.self,
-//            forCellWithReuseIdentifier: BookmarkEmptyCollectionViewCell.registerId
-//        )
-//        $0.register(
-//            BookmarkSectionHeaderView.self,
-//            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-//            withReuseIdentifier: BookmarkSectionHeaderView.registerId
-//        )
-//    }
-    
     let shareButton: UIButton = {
         let button = UIButton()
         
@@ -124,6 +100,7 @@ final class BookmarkListView: BaseView {
                     heightDimension: .estimated(BookmarkOverviewCell.Layout.estimatedHeight)
                 ), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
                 
                 return section
             } else {
@@ -140,7 +117,7 @@ final class BookmarkListView: BaseView {
                     heightDimension: .absolute(BookmarkStoreCell.Layout.height)
                 ), subitems: [storeItem, emptyItem])
                 let section = NSCollectionLayoutSection(group: group)
-                
+                section.interGroupSpacing = 12
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
@@ -149,8 +126,22 @@ final class BookmarkListView: BaseView {
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .topLeading
                 )]
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
                 return section
             }
+        }
+    }
+    
+    func setDeleteModel(_ isDeleteMode: Bool) {
+        let backgroundColor = isDeleteMode ? Colors.gray80.color : Colors.mainPink.color
+        let titleColor = isDeleteMode ? Colors.gray60.color : Colors.systemWhite.color
+        
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self else { return }
+            shareButton.isEnabled = !isDeleteMode
+            shareButton.backgroundColor = backgroundColor
+            shareButton.setTitleColor(titleColor, for: .normal)
+            bottomBackgroundView.backgroundColor = backgroundColor
         }
     }
 }

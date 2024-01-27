@@ -30,7 +30,7 @@ final class BookmarkOverviewCell: BaseCollectionViewCell {
         return label
     }()
 
-    private let descriptionLabel: UILabel = {
+    private let introductionLabel: UILabel = {
         let label = UILabel()
         
         label.font = Fonts.medium.font(size: 12)
@@ -51,7 +51,7 @@ final class BookmarkOverviewCell: BaseCollectionViewCell {
         contentView.addSubViews([
             editButton,
             titleLabel,
-            descriptionLabel,
+            introductionLabel,
             divider
         ])
     }
@@ -69,7 +69,7 @@ final class BookmarkOverviewCell: BaseCollectionViewCell {
             $0.height.equalTo(28)
         }
         
-        descriptionLabel.snp.makeConstraints {
+        introductionLabel.snp.makeConstraints {
             $0.leading.equalTo(titleLabel)
             $0.trailing.equalTo(titleLabel)
             $0.top.equalTo(titleLabel.snp.bottom).offset(12)
@@ -79,13 +79,13 @@ final class BookmarkOverviewCell: BaseCollectionViewCell {
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
             $0.height.equalTo(1)
-            $0.top.equalTo(descriptionLabel.snp.top).offset(24)
+            $0.top.equalTo(introductionLabel.snp.bottom).offset(24)
             $0.bottom.equalToSuperview()
         }
     }
-//    
-//    func bind(bookmarkFolder: BookmarkFolder) {
-//        self.titleLabel.text = bookmarkFolder.name
-//        self.descriptionLabel.text = bookmarkFolder.introduction
-//    }
+    
+    func bind(title: String, introduction: String?) {
+        titleLabel.text = title
+        introductionLabel.text = introduction
+    }
 }

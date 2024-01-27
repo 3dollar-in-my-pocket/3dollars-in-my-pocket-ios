@@ -29,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         MockAppModuleInterfaceImpl.registerAppModuleInterface(userDefaults: mockUserDefaults)
         MockNetworkConfiguration.registerNetworkConfiguration(networkConfiguration)
+        MockStoreModuleInterfaceImpl.registerModuleInterface()
     }
     
     private func initializationNetworkModule() {
