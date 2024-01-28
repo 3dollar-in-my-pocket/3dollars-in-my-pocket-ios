@@ -84,15 +84,11 @@ final class MyPageSectionHeaderView: BaseCollectionViewReusableView {
         titleLabel.text = type.title
         
         viewModel.output.count
+            .compactMap { $0 }
             .main
             .withUnretained(self)
             .sink { owner, count in
-                if let count, count > 0 {
-                    owner.countButton.setTitle("\(count)개", for: .normal)
-                    owner.countButton.isHidden = false
-                } else {
-                    owner.countButton.isHidden = true
-                }
+                owner.countButton.setTitle("\(count)개", for: .normal)
             }.store(in: &cancellables)
         
         countButton

@@ -15,6 +15,7 @@ final class BookmarkListViewController: BaseViewController {
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
+        hidesBottomBarWhenPushed = true
     }
     
     required init?(coder: NSCoder) {
@@ -28,6 +29,7 @@ final class BookmarkListViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        bookmarkView.collectionView.collectionViewLayout = datasource.createLayout()
         viewModel.input.viewDidLoad.send(())
     }
     
@@ -41,11 +43,11 @@ final class BookmarkListViewController: BaseViewController {
     }
     
     override func bindViewModelOutput() {
-        viewModel.output.isDeleteMode
+        viewModel.output.isEnableShare
             .main
             .withUnretained(self)
-            .sink { (owner: BookmarkListViewController, isDeleteMode: Bool) in
-                owner.bookmarkView.setDeleteModel(isDeleteMode)
+            .sink { (owner: BookmarkListViewController, isEnable: Bool) in
+                owner.bookmarkView.setEnableShare(isEnable)
             }
             .store(in: &cancellables)
         
@@ -89,6 +91,12 @@ final class BookmarkListViewController: BaseViewController {
             navigationController?.pushViewController(viewController, animated: true)
         case .pushEditBookmark:
             break
+        case .presentDeleteAlert:
+            let viewController = BookmarkListDeleteAlertViewController { [weak self] in
+                self?.viewModel.input.deleteAllBookmark.send(())
+            }
+            
+            present(viewController, animated: true)
         }
     }
 }

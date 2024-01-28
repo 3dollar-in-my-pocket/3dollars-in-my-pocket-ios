@@ -86,6 +86,11 @@ final class BookmarkOverviewCell: BaseCollectionViewCell {
     
     func bind(title: String, introduction: String?) {
         titleLabel.text = title
-        introductionLabel.text = introduction
+        
+        if let introduction, introduction.isNotEmpty {
+            introductionLabel.text = introduction
+        } else {
+            introductionLabel.text = "리스트에 대한 한줄평을 입력해주세요! 공유 시 사용됩니다."
+        }
     }
 }

@@ -33,6 +33,8 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     
     public func goToMain() { }
     
+    public func goToSignin() {}
+    
     public func createBookmarkViewerViewController(folderId: String) -> UIViewController {
         return UIViewController(nibName: nil, bundle: nil)
     }
