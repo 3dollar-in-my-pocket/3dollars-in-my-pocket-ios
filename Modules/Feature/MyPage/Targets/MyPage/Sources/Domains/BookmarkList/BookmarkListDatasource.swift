@@ -25,6 +25,10 @@ final class BookmarkListDatasource: UICollectionViewDiffableDataSource<BookmarkL
                 
                 cell.bind(viewModel, index: indexPath.item)
                 return cell
+            case .empty:
+                let cell: BookmarkEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                
+                return cell
             }
         }
         
@@ -42,6 +46,8 @@ final class BookmarkListDatasource: UICollectionViewDiffableDataSource<BookmarkL
                 
                 headerView.bind(viewModel)
                 return headerView
+            case .empty:
+                return nil
             }
         }
         
@@ -65,6 +71,64 @@ final class BookmarkListDatasource: UICollectionViewDiffableDataSource<BookmarkL
         }
         apply(snapshot, animatingDifferences: false)
     }
+    
+    func createLayout() -> UICollectionViewLayout {
+        return UICollectionViewCompositionalLayout { [weak self] sectionIndex, _ in
+            guard let self, let sectionType = sectionIdentifier(section: sectionIndex)?.type else {
+                fatalError("정의되지 않은 섹션입니다.")
+            }
+            
+            switch sectionType {
+            case.empty:
+                let emptyItem = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(BookmarkEmptyCell.Layout.height)
+                ))
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(BookmarkEmptyCell.Layout.height)
+                ), subitems: [emptyItem])
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
+                
+                return section
+            case .overview:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(BookmarkOverviewCell.Layout.estimatedHeight)
+                ))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(BookmarkOverviewCell.Layout.estimatedHeight)
+                ), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
+                
+                return section
+            case .storeList:
+                let storeItem = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(BookmarkStoreCell.Layout.height)
+                ))
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(BookmarkStoreCell.Layout.height)
+                ), subitems: [storeItem])
+                let section = NSCollectionLayoutSection(group: group)
+                section.interGroupSpacing = 12
+                section.boundarySupplementaryItems = [.init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(BookmarkSectionHeaderView.Layout.height)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .topLeading
+                )]
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
+                return section
+            }
+        }
+    }
 }
 
 extension BookmarkListDatasource: UICollectionViewDelegate {
@@ -76,6 +140,8 @@ extension BookmarkListDatasource: UICollectionViewDelegate {
             break
         case .storeList:
             viewModel.input.didTapStore.send(indexPath.item)
+        case .empty:
+            break
         }
     }
     
@@ -87,6 +153,8 @@ extension BookmarkListDatasource: UICollectionViewDelegate {
             break
         case .storeList:
             viewModel.input.willDisplayCell.send(indexPath.item)
+        case .empty:
+            break
         }
     }
 }

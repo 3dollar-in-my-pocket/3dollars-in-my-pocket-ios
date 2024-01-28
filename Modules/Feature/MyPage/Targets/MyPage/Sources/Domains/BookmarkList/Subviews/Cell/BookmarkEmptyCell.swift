@@ -11,7 +11,7 @@ final class BookmarkEmptyCell: BaseCollectionViewCell {
     private let emptyImage: UIImageView = {
         let imageVIew = UIImageView()
         
-//        imageVIew.image =
+        imageVIew.image = Images.imageEmpty.image
         return imageVIew
     }()
     
@@ -22,6 +22,8 @@ final class BookmarkEmptyCell: BaseCollectionViewCell {
         label.numberOfLines = 2
         label.textColor = Colors.gray60.color
         label.font = Fonts.bold.font(size: 16)
+        label.setLineHeight(lineHeight: 24)
+        label.textAlignment = .center
         return label
     }()
     

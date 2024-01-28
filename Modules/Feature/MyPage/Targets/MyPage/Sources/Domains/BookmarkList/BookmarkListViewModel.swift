@@ -15,10 +15,12 @@ final class BookmarkListViewModel: BaseViewModel {
         let didTapDeleteAll = PassthroughSubject<Void, Never>()
         let didTapDelete = PassthroughSubject<Int, Never>()
         let didTapStore = PassthroughSubject<Int, Never>()
+        let deleteAllBookmark = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
         let isDeleteMode = CurrentValueSubject<Bool, Never>(false)
+        let isEnableShare = PassthroughSubject<Bool, Never>()
         let sections = CurrentValueSubject<[BookmarkListSection], Never>([])
         let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
@@ -38,6 +40,7 @@ final class BookmarkListViewModel: BaseViewModel {
         case pushStoreDetail(Int)
         case pushBossStoreDetail(String)
         case pushEditBookmark
+        case presentDeleteAlert
     }
     
     let input = Input()
@@ -79,7 +82,11 @@ final class BookmarkListViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.isDeleteMode
-            .subscribe(output.isDeleteMode)
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: BookmarkListViewModel, isDeleteMode: Bool) in
+                owner.output.isDeleteMode.send(isDeleteMode)
+                owner.output.isEnableShare.send(owner.getShareEnable())
+            })
             .store(in: &cancellables)
         
         input.didTapDelete
@@ -92,6 +99,11 @@ final class BookmarkListViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.didTapDeleteAll
+            .map { Route.presentDeleteAlert }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+        
+        input.deleteAllBookmark
             .withUnretained(self)
             .sink { (owner: BookmarkListViewModel, _) in
                 owner.removeAllBookmark()
@@ -133,10 +145,12 @@ final class BookmarkListViewModel: BaseViewModel {
                 state.hasMore = response.cursor.hasMore
                 state.folderName = response.name
                 state.introduction = response.introduction
+                state.totalCount = response.cursor.totalCount
                 state.stores.append(contentsOf: response.favorites)
                 
                 let sections = createBookmarkListSection()
                 output.sections.send(sections)
+                output.isEnableShare.send(getShareEnable())
                 
             case .failure(let error):
                 output.showErrorAlert.send(error)
@@ -146,22 +160,33 @@ final class BookmarkListViewModel: BaseViewModel {
     }
     
     private func createBookmarkListSection() -> [BookmarkListSection] {
+        var sections: [BookmarkListSection] = []
+        
         let overviewSection = BookmarkListSection(
             type: .overview,
             items: [.overview(name: state.folderName, introduction: state.introduction)]
         )
+        sections.append(overviewSection)
         
-        let headerViewModel = createBookmarkSectionHeaderViewModel()
-        let storeCellViewModelList = state.stores.map { store in
-            return createBookmarkStoreCellViewModel(store: store)
+        
+        if state.stores.isEmpty {
+            let emptySection = BookmarkListSection(type: .empty, items: [.empty])
+            sections.append(emptySection)
+        } else {
+            let headerViewModel = createBookmarkSectionHeaderViewModel()
+            let storeCellViewModelList = state.stores.map { store in
+                return createBookmarkStoreCellViewModel(store: store)
+            }
+            let storeSectionItemList = storeCellViewModelList.map { BookmarkListSectionItem.store($0) }
+            let storeSection = BookmarkListSection(
+                type: .storeList(headerViewModel),
+                items: storeSectionItemList
+            )
+            
+            sections.append(storeSection)
         }
-        let storeSectionItemList = storeCellViewModelList.map { BookmarkListSectionItem.store($0) }
-        let storeSection = BookmarkListSection(
-            type: .storeList(headerViewModel),
-            items: storeSectionItemList
-        )
         
-        return [overviewSection] + [storeSection]
+        return sections
     }
     
     private func createBookmarkSectionHeaderViewModel() -> BookmarkSectionHeaderViewModel {
@@ -211,6 +236,7 @@ final class BookmarkListViewModel: BaseViewModel {
             switch result {
             case .success(_):
                 state.stores.remove(at: index)
+                state.totalCount -= 1
                 output.sections.send(createBookmarkListSection())
             case .failure(let error):
                 output.showErrorAlert.send(error)
@@ -228,11 +254,16 @@ final class BookmarkListViewModel: BaseViewModel {
             switch result {
             case .success:
                 state.stores.removeAll()
+                state.totalCount = 0
                 output.sections.send(createBookmarkListSection())
             case .failure(let error):
                 output.showErrorAlert.send(error)
             }
         }
-        .cancel()
+        .store(in: taskBag)
+    }
+    
+    private func getShareEnable() -> Bool {
+        return output.isDeleteMode.value.isNot && state.stores.isNotEmpty
     }
 }

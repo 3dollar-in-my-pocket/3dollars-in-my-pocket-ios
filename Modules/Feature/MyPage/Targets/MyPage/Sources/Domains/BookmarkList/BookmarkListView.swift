@@ -22,7 +22,7 @@ final class BookmarkListView: BaseView {
         return label
     }()
     
-    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
     let shareButton: UIButton = {
         let button = UIButton()
@@ -88,57 +88,13 @@ final class BookmarkListView: BaseView {
         }
     }
     
-    private func createLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { sectionIndex, _ in
-            if sectionIndex == 0 {
-                let item = NSCollectionLayoutItem(layoutSize: .init(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .estimated(BookmarkOverviewCell.Layout.estimatedHeight)
-                ))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .estimated(BookmarkOverviewCell.Layout.estimatedHeight)
-                ), subitems: [item])
-                let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
-                
-                return section
-            } else {
-                let storeItem = NSCollectionLayoutItem(layoutSize: .init(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(BookmarkStoreCell.Layout.height)
-                ))
-                let emptyItem = NSCollectionLayoutItem(layoutSize: .init(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(BookmarkStoreCell.Layout.height)
-                ))
-                let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(BookmarkStoreCell.Layout.height)
-                ), subitems: [storeItem, emptyItem])
-                let section = NSCollectionLayoutSection(group: group)
-                section.interGroupSpacing = 12
-                section.boundarySupplementaryItems = [.init(
-                    layoutSize: .init(
-                        widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(BookmarkSectionHeaderView.Layout.height)
-                    ),
-                    elementKind: UICollectionView.elementKindSectionHeader,
-                    alignment: .topLeading
-                )]
-                section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
-                return section
-            }
-        }
-    }
-    
-    func setDeleteModel(_ isDeleteMode: Bool) {
-        let backgroundColor = isDeleteMode ? Colors.gray80.color : Colors.mainPink.color
-        let titleColor = isDeleteMode ? Colors.gray60.color : Colors.systemWhite.color
+    func setEnableShare(_ isEnable: Bool) {
+        let backgroundColor = isEnable ? Colors.mainPink.color : Colors.gray80.color
+        let titleColor = isEnable ? Colors.systemWhite.color : Colors.gray60.color 
         
         UIView.animate(withDuration: 0.3) { [weak self] in
             guard let self else { return }
-            shareButton.isEnabled = !isDeleteMode
+            shareButton.isEnabled = !isEnable
             shareButton.backgroundColor = backgroundColor
             shareButton.setTitleColor(titleColor, for: .normal)
             bottomBackgroundView.backgroundColor = backgroundColor

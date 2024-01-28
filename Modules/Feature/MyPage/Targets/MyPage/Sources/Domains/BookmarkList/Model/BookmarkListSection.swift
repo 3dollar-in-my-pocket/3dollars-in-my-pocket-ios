@@ -6,6 +6,7 @@ struct BookmarkListSection: Hashable {
     enum SectionType: Hashable {
         case overview
         case storeList(BookmarkSectionHeaderViewModel)
+        case empty
     }
     
     var type: SectionType
@@ -16,4 +17,5 @@ struct BookmarkListSection: Hashable {
 enum BookmarkListSectionItem: Hashable {
     case overview(name: String, introduction: String?)
     case store(BookmarkStoreCellViewModel)
+    case empty
 }
