@@ -27,6 +27,7 @@ final class BookmarkListViewModel: BaseViewModel {
     }
     
     struct State {
+        var folderId: String?
         var folderName = ""
         var introduction: String?
         var cursor: String?
@@ -71,6 +72,13 @@ final class BookmarkListViewModel: BaseViewModel {
                 guard owner.canLoadMore(index: index) else { return }
                 
                 owner.fetchBookmarkStore(cursor: owner.state.cursor)
+            }
+            .store(in: &cancellables)
+        
+        input.didTapShare
+            .withUnretained(self)
+            .sink { (owner: BookmarkListViewModel, _) in
+                owner.presentShareBottomSheet()
             }
             .store(in: &cancellables)
         
@@ -141,6 +149,7 @@ final class BookmarkListViewModel: BaseViewModel {
             
             switch result {
             case .success(let response):
+                state.folderId = response.folderId
                 state.cursor = response.cursor.nextCursor
                 state.hasMore = response.cursor.hasMore
                 state.folderName = response.name
@@ -265,5 +274,17 @@ final class BookmarkListViewModel: BaseViewModel {
     
     private func getShareEnable() -> Bool {
         return output.isDeleteMode.value.isNot && state.stores.isNotEmpty
+    }
+    
+    private func presentShareBottomSheet() {
+        guard let folderId = state.folderId else { return }
+        let folderName = state.folderName
+        
+        Task { [weak self] in
+            let shareLinkUrl = await Environment.appModuleInterface.createBookmarkURL(folderId: folderId, name: folderName)
+            
+            guard shareLinkUrl.isNotEmpty else { return }
+            self?.output.route.send(.presentShareBottomSheet(shareLinkUrl))
+        }
     }
 }

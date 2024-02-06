@@ -24,6 +24,7 @@ public protocol AppModuleInterface {
     func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
     func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void))
     func showFrontAdmob(adType: AdType, viewController: UIViewController)
+    func createBookmarkURL(folderId: String, name: String) async -> String
     
     /// GA
     func sendPageView(screenName: String, type: AnyObject.Type)
