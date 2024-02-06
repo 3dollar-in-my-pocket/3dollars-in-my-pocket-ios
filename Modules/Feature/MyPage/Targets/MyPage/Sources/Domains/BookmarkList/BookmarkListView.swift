@@ -94,7 +94,7 @@ final class BookmarkListView: BaseView {
         
         UIView.animate(withDuration: 0.3) { [weak self] in
             guard let self else { return }
-            shareButton.isEnabled = !isEnable
+            shareButton.isEnabled = isEnable
             shareButton.backgroundColor = backgroundColor
             shareButton.setTitleColor(titleColor, for: .normal)
             bottomBackgroundView.backgroundColor = backgroundColor

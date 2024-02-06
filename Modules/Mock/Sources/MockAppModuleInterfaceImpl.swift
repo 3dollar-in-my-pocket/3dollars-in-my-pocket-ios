@@ -62,6 +62,12 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     }
     
     public func showFrontAdmob(adType: Model.AdType, viewController: UIViewController) { }
+    
+    public func createBookmarkURL(folderId: String, name: String) async -> String {
+        return await withCheckedContinuation { continuation in
+            return continuation.resume(returning: "")
+        }
+    }
 }
 
 extension MockAppModuleInterfaceImpl {

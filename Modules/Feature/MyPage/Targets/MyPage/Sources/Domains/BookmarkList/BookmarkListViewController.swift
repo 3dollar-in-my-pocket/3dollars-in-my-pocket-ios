@@ -4,10 +4,10 @@ import Common
 import DesignSystem
 
 final class BookmarkListViewController: BaseViewController {
-    private let bookmarkView = BookmarkListView()
+    private let bookmarkListView = BookmarkListView()
     private let viewModel: BookmarkListViewModel
     private lazy var datasource = BookmarkListDatasource(
-        collectionView: bookmarkView.collectionView,
+        collectionView: bookmarkListView.collectionView,
         viewModel: viewModel
     )
     
@@ -23,22 +23,29 @@ final class BookmarkListViewController: BaseViewController {
     }
     
     override func loadView() {
-        view = bookmarkView
+        view = bookmarkListView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        bookmarkView.collectionView.collectionViewLayout = datasource.createLayout()
+        bookmarkListView.collectionView.collectionViewLayout = datasource.createLayout()
         viewModel.input.viewDidLoad.send(())
     }
     
     override func bindEvent() {
-        bookmarkView.backButton.controlPublisher(for: .touchUpInside)
+        bookmarkListView.backButton.controlPublisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { (owner: BookmarkListViewController, _) in
                 owner.navigationController?.popViewController(animated: true)
             }
+            .store(in: &cancellables)
+    }
+    
+    override func bindViewModelInput() {
+        bookmarkListView.shareButton.controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapShare)
             .store(in: &cancellables)
     }
     
@@ -47,7 +54,7 @@ final class BookmarkListViewController: BaseViewController {
             .main
             .withUnretained(self)
             .sink { (owner: BookmarkListViewController, isEnable: Bool) in
-                owner.bookmarkView.setEnableShare(isEnable)
+                owner.bookmarkListView.setEnableShare(isEnable)
             }
             .store(in: &cancellables)
         
@@ -77,10 +84,15 @@ final class BookmarkListViewController: BaseViewController {
     }
     
     private func handleRoute(_ route: BookmarkListViewModel.Route) {
-        // TODO: 라우팅 채워넣기
         switch route {
-        case .presentShareBottomSheet:
-            break
+        case .presentShareBottomSheet(let url):
+            let viewController = UIActivityViewController(
+                activityItems: [url],
+                applicationActivities: nil
+            )
+            
+            viewController.popoverPresentationController?.sourceView = bookmarkListView
+            present(viewController, animated: true)
         case .pushStoreDetail(let storeId):
             let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
             
