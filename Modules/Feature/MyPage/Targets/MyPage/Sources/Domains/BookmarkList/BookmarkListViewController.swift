@@ -102,7 +102,9 @@ final class BookmarkListViewController: BaseViewController {
             
             navigationController?.pushViewController(viewController, animated: true)
         case .pushEditBookmark:
-            break
+            let viewController = EditBookmarkViewController(nibName: nil, bundle: nil)
+            
+            navigationController?.pushViewController(viewController, animated: true)
         case .presentDeleteAlert:
             let viewController = BookmarkListDeleteAlertViewController { [weak self] in
                 self?.viewModel.input.deleteAllBookmark.send(())
