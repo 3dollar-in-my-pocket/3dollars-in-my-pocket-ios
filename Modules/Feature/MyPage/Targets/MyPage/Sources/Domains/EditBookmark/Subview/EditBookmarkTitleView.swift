@@ -1,9 +1,12 @@
 import UIKit
+import Combine
 
 import Common
 import DesignSystem
 
 final class EditBookmarkTitleView: BaseView {
+    var onTextChange = PassthroughSubject<String, Never>()
+    
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
         
@@ -45,6 +48,16 @@ final class EditBookmarkTitleView: BaseView {
             containerView,
             titleField
         ])
+        
+        titleField.controlPublisher(for: .editingChanged)
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: EditBookmarkTitleView, _) in
+                let text = owner.titleField.text ?? ""
+                
+                owner.onTextChange.send(text)
+                owner.setCount(text.count)
+            })
+            .store(in: &cancellables)
     }
     
     override func bindConstraints() {
@@ -76,5 +89,24 @@ final class EditBookmarkTitleView: BaseView {
             $0.top.equalTo(titleLabel).priority(.high)
             $0.bottom.equalTo(containerView).priority(.high)
         }
+    }
+    
+    func bind(title: String) {
+        titleField.text = title
+        setCount(title.count)
+    }
+    
+    private func setCount(_ count: Int) {
+        let text = "\(count)/20"
+        let range = (text as NSString).range(of: "\(count)")
+        let attributesString = NSMutableAttributedString(string: text)
+        
+        attributesString.addAttribute(
+            .foregroundColor,
+            value: Colors.mainPink.color,
+            range: range
+        )
+        
+        countLabel.attributedText = attributesString
     }
 }

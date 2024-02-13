@@ -4,6 +4,8 @@ import Common
 import DesignSystem
 
 final class EditBookmarkView: BaseView {
+    private let tapBackground = UITapGestureRecognizer()
+    
     let backButton: UIButton = {
         let button = UIButton()
         let image = Icons.arrowLeft.image.withTintColor(Colors.systemWhite.color)
@@ -22,9 +24,9 @@ final class EditBookmarkView: BaseView {
         return label
     }()
     
-    private let editTitleView = EditBookmarkTitleView()
+    let editTitleView = EditBookmarkTitleView()
     
-    private let editDescriptionVIew = EditBookmarkDescriptionView()
+    let editDescriptionVIew = EditBookmarkDescriptionView()
     
     let saveButton: UIButton = {
         let button = UIButton()
@@ -43,7 +45,12 @@ final class EditBookmarkView: BaseView {
         return view
     }()
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func setup() {
+        addGestureRecognizer(tapBackground)
         backgroundColor = Colors.gray100.color
         addSubViews([
             backButton,
@@ -53,6 +60,9 @@ final class EditBookmarkView: BaseView {
             saveButton,
             bottomBackgroundView
         ])
+        setupKeyboardEvent()
+        
+        tapBackground.addTarget(self, action: #selector(didTapBackground))
     }
     
     override func bindConstraints() {
@@ -92,5 +102,63 @@ final class EditBookmarkView: BaseView {
             $0.bottom.equalToSuperview()
             $0.top.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
+    }
+    
+    func setEnable(_ isEnable: Bool) {
+        let backgroundColor = isEnable ? Colors.mainPink.color : Colors.gray80.color
+        
+        saveButton.backgroundColor = backgroundColor
+        saveButton.isEnabled = isEnable
+        bottomBackgroundView.backgroundColor = backgroundColor
+    }
+    
+    private func setupKeyboardEvent() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onShowKeyboard(notification:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onHideKeyboard(notification:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    @objc func onShowKeyboard(notification: NSNotification) {
+        guard let keyboardFrameInfo
+                = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {
+            return
+        }
+        var keyboardFrame = keyboardFrameInfo.cgRectValue
+
+        keyboardFrame = convert(keyboardFrame, from: nil)
+
+        let window = UIApplication.shared.windows.first
+        let bottomPadding = UIUtils.bottomSafeAreaInset
+
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.saveButton.transform = .init(
+                translationX: 0,
+                y: -keyboardFrame.size.height + bottomPadding
+            )
+            self?.bottomBackgroundView.transform = .init(
+                translationX: 0,
+                y: -keyboardFrame.size.height + bottomPadding
+            )
+        }
+    }
+    
+    @objc func onHideKeyboard(notification: NSNotification) {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.saveButton.transform = .identity
+            self?.bottomBackgroundView.transform = .identity
+        }
+    }
+    
+    @objc func didTapBackground() {
+        endEditing(true)
     }
 }

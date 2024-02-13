@@ -40,7 +40,7 @@ final class BookmarkListViewModel: BaseViewModel {
         case presentShareBottomSheet(String)
         case pushStoreDetail(Int)
         case pushBossStoreDetail(String)
-        case pushEditBookmark
+        case pushEditBookmark(viewModel: EditBookmarkViewModel)
         case presentDeleteAlert
     }
     
@@ -85,7 +85,7 @@ final class BookmarkListViewModel: BaseViewModel {
         input.didTapEditOverview
             .withUnretained(self)
             .sink { (owner: BookmarkListViewModel, _) in
-                owner.output.route.send(.pushEditBookmark)
+                owner.pushEditBookmark()
             }
             .store(in: &cancellables)
         
@@ -286,5 +286,26 @@ final class BookmarkListViewModel: BaseViewModel {
             guard shareLinkUrl.isNotEmpty else { return }
             self?.output.route.send(.presentShareBottomSheet(shareLinkUrl))
         }
+    }
+    
+    private func pushEditBookmark() {
+        let config = EditBookmarkViewModel.Config(
+            title: state.folderName,
+            description: state.introduction ?? ""
+        )
+        let viewModel = EditBookmarkViewModel(config: config)
+        
+        viewModel.relay.onUpdateFolder
+            .withUnretained(self)
+            .sink { (owner: BookmarkListViewModel, data: (title: String, description: String)) in
+                owner.state.folderName = data.title
+                owner.state.introduction = data.description
+                
+                let sections = owner.createBookmarkListSection()
+                owner.output.sections.send(sections)
+            }
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.pushEditBookmark(viewModel: viewModel))
     }
 }

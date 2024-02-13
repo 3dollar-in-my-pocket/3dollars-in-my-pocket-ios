@@ -101,8 +101,8 @@ final class BookmarkListViewController: BaseViewController {
             let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
             
             navigationController?.pushViewController(viewController, animated: true)
-        case .pushEditBookmark:
-            let viewController = EditBookmarkViewController(nibName: nil, bundle: nil)
+        case .pushEditBookmark(let viewModel):
+            let viewController = EditBookmarkViewController(viewModel: viewModel)
             
             navigationController?.pushViewController(viewController, animated: true)
         case .presentDeleteAlert:
