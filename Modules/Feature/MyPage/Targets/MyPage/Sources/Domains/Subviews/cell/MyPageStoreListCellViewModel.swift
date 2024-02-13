@@ -43,7 +43,9 @@ final class MyPageStoreListCellViewModel: BaseViewModel {
                         return .storeDetail(id)
                     }
                 case .bossStore:
-                    return .bossStoreDetail(store.id) 
+                    return .bossStoreDetail(store.id)
+                case .unknown:
+                    return nil
                 }
                 return nil
             }

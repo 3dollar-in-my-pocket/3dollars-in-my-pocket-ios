@@ -129,11 +129,12 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
         case .bossStore:
             tagView.isHidden = true
             bossStoreTagView.isHidden = false
-            
         case .userStore:
             tagView.isHidden = false
             bossStoreTagView.isHidden = true
             tagView.bind(existsCount: storeCard.existsCounts)
+        case .unknown:
+            return
         }
     }
 }

@@ -232,9 +232,10 @@ final class HomeListViewModel: BaseViewModel {
                 switch store.storeType {
                 case .bossStore:
                     owner.output.route.send(.pushBossStoreDetail(storeId: store.storeId))
-                    
                 case .userStore:
                     owner.output.route.send(.pushStoreDetail(storeId: store.storeId))
+                case .unknown:
+                    break
                 }
             })
             .store(in: &cancellables)

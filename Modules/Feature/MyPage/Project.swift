@@ -13,6 +13,7 @@ let project = Project.makeFeatureModule(
         .Core.designSystem,
         .Interface.appInterface,
         .Interface.myPageInterface,
+        .Interface.storeInterface,
         .SPM.snapKit,
         .SPM.then,
         .Package.deviceKit

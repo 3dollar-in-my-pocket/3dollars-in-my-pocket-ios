@@ -1,7 +1,7 @@
 import Model
 
 public protocol CommunityServiceProtocol {
-    func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResposne<PlatformStoreResponse>, Error>
+    func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResposne<StoreApiResponse>, Error>
     /// 동네 인기 가게가 활성화된 동네 목록 조회
     func fetchPopularStoreNeighborhoods() async -> Result<NeighborhoodsResponse, Error>
     /// 투표 신고 이유 목록 조회 (나중에 공용 API 로 통합 필요)
@@ -37,7 +37,7 @@ public protocol CommunityServiceProtocol {
 public struct CommunityService: CommunityServiceProtocol {
     public init() { }
 
-    public func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResposne<PlatformStoreResponse>, Error> {
+    public func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResposne<StoreApiResponse>, Error> {
         let request = FetchPopularStoresRequest(requestInput: input)
 
         return await NetworkManager.shared.request(requestType: request)

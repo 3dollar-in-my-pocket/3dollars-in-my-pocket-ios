@@ -33,6 +33,8 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     
     public func goToMain() { }
     
+    public func goToSignin() {}
+    
     public func createBookmarkViewerViewController(folderId: String) -> UIViewController {
         return UIViewController(nibName: nil, bundle: nil)
     }
@@ -54,6 +56,18 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     public func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { }
     
     public func presentMailComposeViewController(nickname: String, targetViewController: UIViewController) { }
+    
+    public func createWebViewController(title: String, url: String) -> UIViewController {
+        return UIViewController(nibName: nil, bundle: nil)
+    }
+    
+    public func showFrontAdmob(adType: Model.AdType, viewController: UIViewController) { }
+    
+    public func createBookmarkURL(folderId: String, name: String) async -> String {
+        return await withCheckedContinuation { continuation in
+            return continuation.resume(returning: "")
+        }
+    }
 }
 
 extension MockAppModuleInterfaceImpl {

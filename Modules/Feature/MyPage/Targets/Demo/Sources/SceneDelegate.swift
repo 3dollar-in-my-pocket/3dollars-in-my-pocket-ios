@@ -1,7 +1,5 @@
 import UIKit
 
-import Community
-
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
