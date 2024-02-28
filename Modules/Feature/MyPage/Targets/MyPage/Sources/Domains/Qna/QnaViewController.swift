@@ -66,6 +66,7 @@ public final class QnaViewController: BaseViewController {
     
     private func presentMailComposer(nickname: String) {
         guard MFMailComposeViewController.canSendMail() else {
+            ToastManager.shared.show(message: "메일앱이 지원되지 않습니다.")
             return
         }
         
