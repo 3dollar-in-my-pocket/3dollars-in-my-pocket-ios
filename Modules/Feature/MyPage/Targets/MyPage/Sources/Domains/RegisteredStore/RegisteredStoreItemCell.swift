@@ -22,6 +22,7 @@ final class RegisteredStoreItemCell: BaseCollectionViewCell {
     private let titleStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 4
+        $0.alignment = .leading
     }
 
     private let titleLabel = UILabel().then {
@@ -42,6 +43,8 @@ final class RegisteredStoreItemCell: BaseCollectionViewCell {
     private let imageView = UIImageView().then {
         $0.backgroundColor = .clear
     }
+    
+    private let newBadge = UIImageView(image: MyPageAsset.iconNewBadgeShort.image)
 
     private let bottomView = UIView()
 
@@ -78,7 +81,8 @@ final class RegisteredStoreItemCell: BaseCollectionViewCell {
 
         containerView.addSubViews([
             storeView,
-            bottomView
+            bottomView,
+            newBadge
         ])
         
         storeView.addSubViews([
@@ -139,6 +143,12 @@ final class RegisteredStoreItemCell: BaseCollectionViewCell {
             $0.centerY.equalToSuperview()
             $0.height.equalTo(24)
         }
+        
+        newBadge.snp.makeConstraints {
+            $0.size.equalTo(14)
+            $0.leading.equalTo(titleLabel.snp.trailing).offset(4)
+            $0.bottom.equalTo(countLabel.snp.top).offset(-22)
+        }
     }
 
     func bind(item: UserStoreWithVisitsApiResponse) {
@@ -147,5 +157,6 @@ final class RegisteredStoreItemCell: BaseCollectionViewCell {
         tagLabel.text = item.store.categories.map { "#\($0.name)" }.joined(separator: " ")
         ratingButton.setTitle("\(item.store.rating)", for: .normal)
         countLabel.text = "최근 방문 \(item.visits.count.existsCounts)명"
+        newBadge.isHidden = !item.tags.isNew
     }
 }
