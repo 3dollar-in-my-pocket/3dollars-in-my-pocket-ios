@@ -108,7 +108,14 @@ final class MyMedalViewController: BaseViewController {
 
 extension MyMedalViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.input.didSelectItem.send(indexPath)
+        switch dataSource.itemIdentifier(for: indexPath) {
+        case .currentMedal:
+            viewModel.input.didSelectCurrentMedal.send()
+        case .medal(let medal):
+            viewModel.input.didSelectMedal.send(medal)
+        case .none:
+            break
+        }
     }
 }
 

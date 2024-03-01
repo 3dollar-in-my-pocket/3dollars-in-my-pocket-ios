@@ -257,7 +257,8 @@ final class MyPageViewModel: BaseViewModel {
         
         let config = MyMedalViewModel.Config(
             representativeMedal: Medal(response: userState.representativeMedal, isOwned: true, isCurrentMedal: true), 
-            ownedMedals: userState.ownedMedals.map { Medal(response: $0, isOwned: true, isCurrentMedal: false) }
+            ownedMedals: userState.ownedMedals.map { Medal(response: $0, isOwned: true, isCurrentMedal: false) }, 
+            userNickname: userState.name
         )
         let viewModel = MyMedalViewModel(config: config)
         return viewModel

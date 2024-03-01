@@ -23,7 +23,7 @@ enum MyMedalSectionItem: Hashable {
         case .currentMedal(let medal):
             "currentMedal\(medal.medalId ?? 0)"
         case .medal(let medal):
-            "medal\(medal.medalId ?? 0)"
+            "medal\(medal.medalId ?? 0)\(medal.isCurrentMedal)"
         }
     }
     
