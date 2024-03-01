@@ -10,12 +10,15 @@ final class MyMedalViewModel: BaseViewModel {
     struct Config {
         let representativeMedal: Medal
         let ownedMedals: [Medal]
+        let userNickname: String
     }
     
     struct Input {
         let loadTrigger = PassthroughSubject<Void, Never>()
         let didSelectItem = PassthroughSubject<IndexPath, Never>()
         let didSelectInfoButton = PassthroughSubject<Void, Never>()
+        let didSelectCurrentMedal = PassthroughSubject<Void, Never>()
+        let didSelectMedal = PassthroughSubject<Medal, Never>()
     }
 
     struct Output {
@@ -28,6 +31,7 @@ final class MyMedalViewModel: BaseViewModel {
 
     struct State {
         var medals: [Medal] = []
+        let representativeMedal: CurrentValueSubject<Medal, Never>
     }
 
     enum Route {
@@ -37,24 +41,28 @@ final class MyMedalViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
 
-    private var state = State()
+    private var state: State
     
     private let config: Config
 
     private let medalService: MedalServiceProtocol
+    private let userService: UserServiceProtocol
     private let userDefaults: UserDefaultsUtil
     private let logManager: LogManagerProtocol
 
     init(
         config: Config,
         medalService: MedalServiceProtocol = MedalService(),
+        userService: UserServiceProtocol = UserService(),
         userDefaults: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
         self.medalService = medalService 
+        self.userService = userService
         self.userDefaults = userDefaults
         self.logManager = logManager
+        self.state = .init(representativeMedal: .init(config.representativeMedal))
 
         super.init()
     }
@@ -90,8 +98,35 @@ final class MyMedalViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
-        input.didSelectItem.mapVoid
-            .merge(with: input.didSelectInfoButton)
+        input.didSelectMedal
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { owner, medal in
+                owner.state.representativeMedal.send(medal)
+            })
+            .asyncMap { owner, medal in
+                await owner.userService.editUser(
+                    nickname: owner.config.userNickname,
+                    representativeMedalId: medal.medalId
+                )
+            }
+            .withUnretained(self)
+            .sink { owner, result in
+                switch result {
+                case .success:
+                    owner.state.medals = owner.state.medals.map { medal in
+                        var medal = medal
+                        medal.isCurrentMedal = owner.state.representativeMedal.value.medalId == medal.medalId
+                        return medal
+                    }
+                    owner.updateDataSource()
+                case .failure(let error):
+                    owner.output.showErrorAlert.send(error)
+                }
+            }
+            .store(in: &cancellables)
+        
+        input.didSelectInfoButton
+            .merge(with: input.didSelectCurrentMedal)
             .withUnretained(self)
             .map { owner, _ in .medalInfo(owner.bindMedalInfoViewModel()) }
             .subscribe(output.route)
@@ -99,7 +134,7 @@ final class MyMedalViewModel: BaseViewModel {
     }
     
     private func updateDataSource() {
-        let representativeMedal = config.representativeMedal
+        let representativeMedal = state.representativeMedal.value
         let totalMedals = state.medals
             
         // 정렬 필요한지 확인
