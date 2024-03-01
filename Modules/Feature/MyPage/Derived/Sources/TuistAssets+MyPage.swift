@@ -23,12 +23,12 @@ public enum MyPageAsset {
   public static let iconGoogle = MyPageImages(name: "icon_google")
   public static let iconInsta = MyPageImages(name: "icon_insta")
   public static let iconKakao = MyPageImages(name: "icon_kakao")
+  public static let iconNewBadgeShort = MyPageImages(name: "icon_new_badge_short")
   public static let imageBannerBoss = MyPageImages(name: "image_banner_boss")
   public static let imageBannerNormal = MyPageImages(name: "image_banner_normal")
   public static let imageBungeoppang = MyPageImages(name: "image_bungeoppang")
   public static let imageEmpty = MyPageImages(name: "image_empty")
   public static let imageLogo = MyPageImages(name: "image_logo")
-  public static let iconNewBadgeShort = MyPageImages(name: "icon_new_badge_short")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
 

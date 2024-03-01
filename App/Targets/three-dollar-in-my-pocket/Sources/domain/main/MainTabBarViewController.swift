@@ -2,11 +2,14 @@ import UIKit
 import Combine
 import RxSwift
 
-import Home
 import Model
 import DependencyInjection
-import MembershipInterface
+
+import Home
+import MyPage
 import Community
+
+import MembershipInterface
 import WriteInterface
 import StoreInterface
 import MyPageInterface
@@ -278,7 +281,7 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         }
         
         if let navigationViewController = viewController as? UINavigationController {
-            if navigationViewController.topViewController is MyPageViewController, // TODO: 하경 수정
+            if navigationViewController.topViewController is MyPage.MyPageViewController,
                UserDefaultsUtil().isAnonymousUser {
                 let viewController = membershipInterface.createSigninAnonymousViewController()
                 
