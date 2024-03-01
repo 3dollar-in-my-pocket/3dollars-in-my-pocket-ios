@@ -160,6 +160,7 @@ public final class MyPageViewController: BaseViewController {
                 case .storeDetail(let storeId): Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
                 case .bossStoreDetail(let storeId): Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
                 case .favoriteStore: BookmarkListViewController()
+                case .pollDetail(let pollId): Environment.communityInterface.getPollDetailViewController(pollId: pollId)
                 }
                 owner.navigationController?.pushViewController(vc, animated: true)
             }
@@ -183,7 +184,9 @@ public final class MyPageViewController: BaseViewController {
 
 extension MyPageViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        if let item = dataSource.itemIdentifier(for: indexPath) {
+            viewModel.input.didSelect.send(item)
+        }
     }
 }
 

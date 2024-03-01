@@ -3,6 +3,7 @@ import DependencyInjection
 import MyPageInterface
 import AppInterface
 import StoreInterface
+import CommunityInterface
 
 typealias Fonts = DesignSystemFontFamily.Pretendard
 typealias Colors = DesignSystemAsset.Colors
@@ -34,5 +35,13 @@ final class Environment {
         }
         
         return myPageInterface
+    }
+    
+    static var communityInterface: CommunityInterface {
+        guard let communityInterface = DIContainer.shared.container.resolve(CommunityInterface.self) else {
+            fatalError("CommunityInterface가 정의되지 않았습니다.")
+        }
+        
+        return communityInterface
     }
 }
