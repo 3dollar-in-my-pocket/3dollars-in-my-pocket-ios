@@ -97,4 +97,10 @@ final class MyPageSectionHeaderView: BaseCollectionViewReusableView {
             .subscribe(viewModel.input.didTapCountButton)
             .store(in: &cancellables)
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        countButton.isHidden = true
+    }
 }
