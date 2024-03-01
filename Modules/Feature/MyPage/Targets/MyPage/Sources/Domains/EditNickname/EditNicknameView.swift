@@ -76,6 +76,8 @@ final class EditNicknameView: BaseView {
             bottomBackgroundView,
             editButton
         ])
+        
+        addKeyboardObservers()
     }
     
     override func bindConstraints() {
@@ -143,5 +145,42 @@ final class EditNicknameView: BaseView {
         nicknameField.setHiddenWarning(isHidden)
         layoutIfNeeded()
         warningLabel.isHidden = isHidden
+    }
+    
+    private func addKeyboardObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func keyboardWillShow(_ sender: Notification) {
+        guard let userInfo = sender.userInfo as? [String: Any] else { return }
+        guard let keyboardFrame
+                = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+
+        let window = UIApplication.shared.windows.first
+        let bottomPadding = window?.safeAreaInsets.bottom ?? 0
+
+        UIView.animate(withDuration: 0.3) {
+            self.editButton.transform = CGAffineTransform(
+                translationX: 0,
+                y: -keyboardFrame.cgRectValue.height + bottomPadding
+            )
+        }
+    }
+
+    @objc private func keyboardWillHide(_ sender: Notification) {
+        UIView.animate(withDuration: 0.3) {
+            self.editButton.transform = .identity
+        }
     }
 }
