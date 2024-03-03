@@ -109,7 +109,8 @@ final class EditNicknameView: BaseView {
         nicknameField.snp.makeConstraints {
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
-            $0.center.equalToSuperview()
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(logoImage.snp.bottom).offset(24)
         }
         
         warningLabel.snp.makeConstraints {
@@ -122,7 +123,7 @@ final class EditNicknameView: BaseView {
             $0.width.equalTo(130)
             $0.height.equalTo(78)
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(nicknameField.snp.top).offset(-24)
+            $0.top.equalTo(backButton.snp.bottom).offset(40)
         }
     }
     
