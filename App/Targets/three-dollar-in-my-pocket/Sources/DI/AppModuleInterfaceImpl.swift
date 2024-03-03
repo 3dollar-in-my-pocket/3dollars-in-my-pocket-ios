@@ -182,7 +182,7 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     func showFrontAdmob(adType: AdType, viewController: UIViewController) {
         let request = GADRequest()
         GADInterstitialAd.load(
-            withAdUnitID: adType.bundleKey,
+            withAdUnitID: Bundle.getAdmobId(adType: adType),
             request: request,
             completionHandler: { [weak viewController] ad, error in
                 guard let viewController else { return }
