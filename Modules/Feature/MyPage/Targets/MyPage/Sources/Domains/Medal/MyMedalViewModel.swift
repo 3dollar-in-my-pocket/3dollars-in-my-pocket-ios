@@ -99,6 +99,8 @@ final class MyMedalViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.didSelectMedal
+            .removeDuplicates()
+            .filter { [weak self] in $0.medalId != self?.state.representativeMedal.value.medalId }
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, medal in
                 owner.state.representativeMedal.send(medal)
