@@ -82,6 +82,7 @@ final class MyPageSectionHeaderView: BaseCollectionViewReusableView {
         iconView.image = type.icon?.withRenderingMode(.alwaysTemplate)
         iconLabel.text = type.iconLabel
         titleLabel.text = type.title
+        countButton.isHidden = type == .poll
         
         viewModel.output.count
             .compactMap { $0 }
@@ -96,5 +97,11 @@ final class MyPageSectionHeaderView: BaseCollectionViewReusableView {
             .mapVoid
             .subscribe(viewModel.input.didTapCountButton)
             .store(in: &cancellables)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        countButton.isHidden = true
     }
 }

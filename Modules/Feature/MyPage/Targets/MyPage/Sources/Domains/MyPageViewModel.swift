@@ -10,6 +10,7 @@ final class MyPageViewModel: BaseViewModel {
     struct Input {
         let loadTrigger = PassthroughSubject<Void, Never>()
         let reloadTrigger = PassthroughSubject<Void, Never>()
+        let didSelect = PassthroughSubject<MyPageSectionItem, Never>()
     }
 
     struct Output {
@@ -35,6 +36,7 @@ final class MyPageViewModel: BaseViewModel {
         case medal(MyMedalViewModel)
         case storeDetail(Int)
         case bossStoreDetail(String)
+        case pollDetail(String)
     }
 
     let input = Input()
@@ -125,6 +127,17 @@ final class MyPageViewModel: BaseViewModel {
                 favoriteStoreHeaderViewModel.input.count.send(user.activities?.favoriteStoreCount)
                 
                 updateDataSource()
+            }
+            .store(in: &cancellables)
+        
+        input.didSelect
+            .sink { [weak self] in
+                switch $0 {
+                case let .poll(data, _, _):
+                    self?.output.route.send(.pollDetail(data.pollId))
+                default:
+                    break
+                }
             }
             .store(in: &cancellables)
     }
@@ -244,7 +257,8 @@ final class MyPageViewModel: BaseViewModel {
         
         let config = MyMedalViewModel.Config(
             representativeMedal: Medal(response: userState.representativeMedal, isOwned: true, isCurrentMedal: true), 
-            ownedMedals: userState.ownedMedals.map { Medal(response: $0, isOwned: true, isCurrentMedal: false) }
+            ownedMedals: userState.ownedMedals.map { Medal(response: $0, isOwned: true, isCurrentMedal: false) }, 
+            userNickname: userState.name
         )
         let viewModel = MyMedalViewModel(config: config)
         return viewModel

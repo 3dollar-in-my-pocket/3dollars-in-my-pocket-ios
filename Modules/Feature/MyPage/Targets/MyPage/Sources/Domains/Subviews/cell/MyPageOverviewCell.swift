@@ -133,7 +133,7 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
         self.nicknameLabel.text = user.name
         self.medalImageButton.setImage(urlString: user.representativeMedal.iconUrl, state: .normal)
         self.medalLabel.text = user.representativeMedal.name
-        self.storeCountButton.bind(count: user.activities?.visitStoreCount ?? 0)
+        self.storeCountButton.bind(count: user.activities?.createStoreCount ?? 0)
         self.reviewCountButton.bind(count: user.activities?.writeReviewCount ?? 0)
         self.medalCountButton.bind(count: user.ownedMedals.count)
     }

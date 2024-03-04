@@ -20,6 +20,12 @@ final class EditNicknameViewController: BaseViewController {
         view = editNicknameView
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        editNicknameView.nicknameField.textField.becomeFirstResponder()
+    }
+    
     override func bindEvent() {
         editNicknameView.backButton.controlPublisher(for: .touchUpInside)
             .withUnretained(self)

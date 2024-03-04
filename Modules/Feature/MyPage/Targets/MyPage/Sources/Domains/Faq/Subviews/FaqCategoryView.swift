@@ -9,14 +9,15 @@ final class FaqCategoryView: BaseView {
     enum Layout {
         static func calculateHeight(categories: [FaqCategoryResponse]) -> CGFloat {
             var row = 1
-            var totalWidth: CGFloat = 0
+            var rowWidth: CGFloat = 0
             for category in categories {
                 let width = FaqCategoryCell.Layout.calculateSize(category: category).width
-                totalWidth += width + 8
                 
-                if totalWidth >= (UIUtils.windowBounds.width - 88) {
+                if rowWidth + width >= (UIUtils.windowBounds.width - 88) {
                     row += 1
-                    totalWidth = 0
+                    rowWidth = width
+                } else {
+                    rowWidth += width + 8
                 }
             }
             
