@@ -52,6 +52,15 @@ final class WebView: BaseView {
         }
     }
     
+    func bind(title: String, url: String) {
+        titleLabel.text = title
+        
+        guard let url = URL(string: url) else { return }
+        let request = URLRequest(url: url)
+        
+        webView.load(request)
+    }
+    
     func bind(webviewType: WebViewType) {
         self.titleLabel.text = webviewType.title
         

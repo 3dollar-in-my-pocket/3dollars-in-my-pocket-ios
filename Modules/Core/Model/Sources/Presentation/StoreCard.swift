@@ -13,7 +13,7 @@ public struct StoreCard {
     public let isNew: Bool
     
     public init(response: PlatformStoreWithDetailResponse) {
-        self.storeType = StoreType(value: response.store.storeType)
+        self.storeType = response.store.storeType
         self.storeId = response.store.storeId
         self.storeName = response.store.storeName
         self.location = Location(response: response.store.location)

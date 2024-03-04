@@ -21,6 +21,12 @@ final class WebViewController: BaseViewController, WebViewCoordinator {
         self.webView.bind(webviewType: webviewType)
     }
     
+    convenience init(title: String, url: String) {
+        self.init(nibName: nil, bundle: nil)
+        
+        webView.bind(title: title, url: url)
+    }
+    
     override func loadView() {
         self.view = self.webView
     }
