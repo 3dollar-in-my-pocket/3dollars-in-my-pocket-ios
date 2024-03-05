@@ -2,8 +2,12 @@ import Foundation
 
 import Model
 
-struct FetchUserRequest: RequestType {
-    var param: Encodable?
+struct FetchMyStoreReviewRequest: RequestType {
+    let input: CursorRequestInput
+    
+    var param: Encodable? {
+        return input
+    }
     
     var method: RequestMethod {
         return .get
@@ -14,6 +18,6 @@ struct FetchUserRequest: RequestType {
     }
     
     var path: String {
-        return "/api/v2/user/me"
+        return "/api/v4/my/store-reviews"
     }
 }

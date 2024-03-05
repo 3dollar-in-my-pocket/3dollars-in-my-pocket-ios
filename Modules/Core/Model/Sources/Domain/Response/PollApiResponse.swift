@@ -6,6 +6,24 @@ public struct PollWithMetaApiResponse: Decodable {
     public let meta: PollMetaApiResponse
 }
 
+public struct PollListWithUserPollMetaApiResponse: Decodable {
+    public let polls: ContentsCursorResponsePollBasicApiResponse
+    public let meta: PollUserMetaApiResponse
+}
+
+public struct ContentsCursorResponsePollBasicApiResponse: Decodable {
+    public let contents: [PollBasicApiResponse]
+    public let cursor: CursorResponse
+}
+
+public struct PollBasicApiResponse: Decodable {
+    public let poll: PollApiResponse
+}
+
+public struct PollUserMetaApiResponse: Decodable {
+    public let totalParticipantsCount: Int
+}
+
 public struct PollApiResponse: Decodable {
     public let createdAt: String
     public let updatedAt: String

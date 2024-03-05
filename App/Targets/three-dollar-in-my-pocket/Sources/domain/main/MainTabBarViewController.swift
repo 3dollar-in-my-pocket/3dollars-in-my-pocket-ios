@@ -2,13 +2,17 @@ import UIKit
 import Combine
 import RxSwift
 
-import Home
 import Model
 import DependencyInjection
-import MembershipInterface
+
+import Home
+import MyPage
 import Community
+
+import MembershipInterface
 import WriteInterface
 import StoreInterface
+import MyPageInterface
 
 final class MainTabBarViewController: UITabBarController {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
@@ -23,12 +27,13 @@ final class MainTabBarViewController: UITabBarController {
         Home.HomeViewController.instance(),
         writeInterface.getWriteAddressViewController(onSuccessWrite: { _ in }),
         Community.CommunityViewController.instance(),
-        MyPageViewController.instance()
+        myPageInterface.getMyPageViewController()
     ]
     
     private let membershipInterface: MembershipInterface
     private let writeInterface: WriteInterface
     private let storeInterface: StoreInterface
+    private let myPageInterface: MyPageInterface
     private let viewModel: MainTabBarViewModel
     private var cancellables = Set<AnyCancellable>()
     
@@ -49,10 +54,14 @@ final class MainTabBarViewController: UITabBarController {
             fatalError("⚠️ StoreInterface가 등록되지 않았습니다.")
         }
         
+        guard let myPageInterface = DIContainer.shared.container.resolve(MyPageInterface.self) else {
+            fatalError("⚠️ MyPageInterface가 등록되지 않았습니다.")
+        }
         
         self.membershipInterface = membershipInterface
         self.writeInterface = writeInterface
         self.storeInterface = storeInterface
+        self.myPageInterface = myPageInterface
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -272,7 +281,7 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         }
         
         if let navigationViewController = viewController as? UINavigationController {
-            if navigationViewController.topViewController is MyPageViewController,
+            if navigationViewController.topViewController is MyPage.MyPageViewController,
                UserDefaultsUtil().isAnonymousUser {
                 let viewController = membershipInterface.createSigninAnonymousViewController()
                 

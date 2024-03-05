@@ -1,0 +1,43 @@
+// 설정 화면
+"setting.title" = "설정";
+"setting.apple_user" = "애플 계정 회원";
+"setting.kakao_user" = "카카오 계정 회원";
+"setting.google_user" = "구글 계정 회원";
+"setting.activity_notifictaion" = "투표 및 댓글 등 활동 알림";
+"setting.marketing_notification" = "마케팅 푸시 알림";
+"setting.qna" = "문의사항";
+"setting.agreement" = "이용 약관";
+"setting.team_info" = "가슴속 3천원 팀원 소개";
+"setting.signout" = "회원탈퇴";
+"setting.logout" = "로그아웃";
+"setting.activity_notification.on" = "투표 및 댓글 등 활동 알림 수신 동의되었습니다 👍";
+"setting.activity_notification.off" = "투표 및 댓글 등 활동 알림 수신 거부되었습니다 🙇‍♀️";
+"setting.marketing_notification.on" = "마케팅 푸시 알림 수신 동의되었습니다 👍";
+"setting.marketing_notification.off" = "마케팅 푸시 알림 수신 거부되었습니다 🙇‍♀️";
+"setting.ad.normal.title" = "가슴속 3천원 앱에 광고하고 싶다면?";
+"setting.ad.normal.description" = "광고소개서 보러 가기";
+"setting.ad.boss.title" = "직접 사장님 직영점을 운영하고 싶다면?";
+"setting.ad.boss.description" = "가슴속 3천원 사장님앱 다운받기";
+"setting.alert.logout.title" = "로그아웃 하시겠습니까?";
+"setting.alert.signout.title" = "회원탈퇴";
+"setting.alert.signout.message" = "회원탈퇴 이후에 제보했던 가게와 작성한 댓글을 더이상 볼 수 없어요.\n정말로 탈퇴하시겠어요?";
+
+// 닉네임 수정
+"edit_nickname.title" = "닉네임 수정";
+"edit_nickname.description.top" = "닉네임";
+"edit_nickname.description.bottom" = "로 바꿀래요";
+"edit_nickname.warning" = "중복된 이름이에요!";
+"edit_nickname.edit" = "닉네임 변경";
+"edit_nickname.success_edit" = "닉네임이 변경되었습니다😄";
+
+// 문의사항 화면
+"qna.title" = "문의사항";
+"qna.faq" = "FAQ";
+"qna.inquiry" = "1:1 문의";
+
+// FAQ
+"faq.title" = "어떤점이 궁금하셨나요?";
+
+// 팀 정보
+"team_info.title" = "팀원소개";
+"team_info.insta" = "가슴속 3천원 인스타그램 바로가기";

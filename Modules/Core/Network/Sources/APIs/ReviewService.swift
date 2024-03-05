@@ -6,6 +6,8 @@ public protocol ReviewServiceProtocol {
     func fetchStoreReview(storeId: Int, input: FetchStoreReviewRequestInput) async -> Result<ContentsWithCursorResposne<ReviewWithUserApiResponse>, Error>
     
     func reportReview(storeId: Int, reviewId: Int, input: ReportReviewRequestInput) async -> Result<String?, Error>
+    
+    func fetchMyStoreReview(input: CursorRequestInput) async -> Result<ContentsWithCursorResposne<StoreReviewWithDetailApiResponse>, Error>
 }
 
 public struct ReviewService: ReviewServiceProtocol {
@@ -19,6 +21,12 @@ public struct ReviewService: ReviewServiceProtocol {
     
     public func reportReview(storeId: Int, reviewId: Int, input: ReportReviewRequestInput) async -> Result<String?, Error> {
         let request = ReportReviewRequest(storeId: storeId, reviewId: reviewId, input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func fetchMyStoreReview(input: CursorRequestInput) async -> Result<ContentsWithCursorResposne<StoreReviewWithDetailApiResponse>, Error> {
+        let request = FetchMyStoreReviewRequest(input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }

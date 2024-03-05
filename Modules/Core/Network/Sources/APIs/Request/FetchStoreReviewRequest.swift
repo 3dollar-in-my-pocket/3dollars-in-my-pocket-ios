@@ -22,5 +22,3 @@ struct FetchStoreReviewRequest: RequestType {
         return "/api/v4/store/\(storeId)/reviews"
     }
 }
-
-

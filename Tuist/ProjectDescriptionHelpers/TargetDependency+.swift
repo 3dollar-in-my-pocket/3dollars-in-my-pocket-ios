@@ -63,6 +63,11 @@ public extension TargetDependency {
             target: "Write",
             path: .relativeToRoot("./Modules/Feature/Write")
         )
+        
+        public static let myPage = TargetDependency.project(
+            target: "MyPage",
+            path: .relativeToRoot("./Modules/Feature/MyPage")
+        )
     }
     
     class Interface {
@@ -89,6 +94,11 @@ public extension TargetDependency {
         public static let writeInterface = TargetDependency.project(
             target: "WriteInterface",
             path: .relativeToRoot("./Modules/Feature/Write")
+        )
+        
+        public static let myPageInterface = TargetDependency.project(
+            target: "MyPageInterface",
+            path: .relativeToRoot("./Modules/Feature/MyPage")
         )
     }
     

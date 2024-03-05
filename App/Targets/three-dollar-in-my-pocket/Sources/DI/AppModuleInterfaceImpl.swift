@@ -9,8 +9,10 @@ import FirebaseMessaging
 import FirebaseAnalytics
 import KakaoSDKShare
 import KakaoSDKTemplate
+import GoogleMobileAds
+import FirebaseDynamicLinks
 
-final class AppModuleInterfaceImpl: AppModuleInterface {
+final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     private var _userDefaults: AppInterface.UserDefaultProtocol = UserDefaultsUtil()
     
     var userDefaults: AppInterface.UserDefaultProtocol {
@@ -50,8 +52,16 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
         return onClearSession
     }
     
+    var globalEventBus: GlobalEventBusProtocol {
+        return GlobalEventBus.shared
+    }
+    
     func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
         return AdBannerView(adType: adType)
+    }
+    
+    func createWebViewController(title: String, url: String) -> UIViewController {
+        return WebViewController(title: title, url: url)
     }
     
     func getFCMToken(completion: @escaping ((String) -> ())) {
@@ -68,6 +78,11 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
     func goToMain() {
         guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
         sceneDelegate.goToMain()
+    }
+    
+    func goToSignin() {
+        guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+        sceneDelegate.goToSignIn()
     }
     
     func createBookmarkViewerViewController(folderId: String) -> UIViewController {
@@ -162,6 +177,58 @@ final class AppModuleInterfaceImpl: AppModuleInterface {
     
     func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
         Messaging.messaging().unsubscribe(fromTopic: "marketing_ios", completion: completion)
+    }
+    
+    func showFrontAdmob(adType: AdType, viewController: UIViewController) {
+        let request = GADRequest()
+        GADInterstitialAd.load(
+            withAdUnitID: Bundle.getAdmobId(adType: adType),
+            request: request,
+            completionHandler: { [weak viewController] ad, error in
+                guard let viewController else { return }
+                if let error = error {
+                    print("Failed to load interstitial ad with error: \(error.localizedDescription)")
+                    return
+                }
+                ad?.present(fromRootViewController: viewController)
+            }
+        )
+    }
+    
+    func createBookmarkURL(folderId: String, name: String) async -> String {
+        return await withCheckedContinuation { continuation in
+            guard let link = Deeplink.bookmark(folderId: folderId).url else {
+                return continuation.resume(returning: "")
+            }
+            let dynamicLinksDomainURIPrefix = Bundle.dynamicLinkURL
+            let linkBuilder = DynamicLinkComponents(
+                link: link,
+                domainURIPrefix: dynamicLinksDomainURIPrefix
+            )
+            
+            linkBuilder?.iOSParameters = DynamicLinkIOSParameters(bundleID: Bundle.bundleId)
+            linkBuilder?.iOSParameters?.appStoreID = Bundle.appstoreId
+            linkBuilder?.iOSParameters?.minimumAppVersion = "3.3.0"
+            linkBuilder?.androidParameters
+            = DynamicLinkAndroidParameters(packageName: Bundle.androidPackageName)
+            linkBuilder?.socialMetaTagParameters = DynamicLinkSocialMetaTagParameters()
+            linkBuilder?.socialMetaTagParameters?.title = "my_page_bookmark_description".localized
+            linkBuilder?.socialMetaTagParameters?.descriptionText = name
+            linkBuilder?.socialMetaTagParameters?.imageURL
+            = URL(string: "https://storage.threedollars.co.kr/share/favorite_share.png")
+            
+            linkBuilder?.shorten(completion: { url, _, _ in
+                if let shortURL = url {
+                    continuation.resume(returning: shortURL.absoluteString)
+                } else {
+                    guard let longDynamicLink = linkBuilder?.url else {
+                        return continuation.resume(returning: "")
+                    }
+                    
+                    return continuation.resume(returning: longDynamicLink.absoluteString)
+                }
+            })
+        }
     }
 }
 

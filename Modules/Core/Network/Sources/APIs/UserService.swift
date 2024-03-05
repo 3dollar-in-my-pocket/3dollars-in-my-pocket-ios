@@ -9,13 +9,21 @@ public protocol UserServiceProtocol {
     
     func signinAnonymous() async -> Result<SigninResponse, Error>
     
-    func fetchUser() async -> Result<UserWithDeviceApiResponse, Error>
+    func fetchUser() async -> Result<UserWithDetailApiResponse, Error>
     
     func changeMarketingConsent(marketingConsentType: String) async -> Result<String, Error>
     
     func connectAccount(socialType: String, accessToken: String) async -> Result<String, Error>
     
     func signinDemo(code: String) async -> Result<SigninResponse, Error>
+    
+    func editUserSetting(enableActivityNotification: Bool, marketingConsent: MarketingConsent) async -> Result<String, Error>
+    
+    func editUser(nickname: String?, representativeMedalId: Int?) async -> Result<String, Error>
+    
+    func logout() async -> Result<String, Error>
+    
+    func signout() async -> Result<String, Error>
 }
 
 public struct UserService: UserServiceProtocol {
@@ -41,8 +49,8 @@ public struct UserService: UserServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func fetchUser() async -> Result<UserWithDeviceApiResponse, Error> {
-        let request = FetchUserRequest()
+    public func fetchUser() async -> Result<UserWithDetailApiResponse, Error> {
+        let request = FetchMyUserRequest()
         
         return await NetworkManager.shared.request(requestType: request)
     }
@@ -63,6 +71,35 @@ public struct UserService: UserServiceProtocol {
     
     public func signinDemo(code: String) async -> Result<SigninResponse, Error> {
         let request = SigninDemoRequest(code: code)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func editUserSetting(enableActivityNotification: Bool, marketingConsent: MarketingConsent) async -> Result<String, Error> {
+        let input = UserAccountSettingPatchApiRequestInput(
+            enableActivitiesPush: enableActivityNotification,
+            marketingConsent: marketingConsent
+        )
+        let request = EditUserSettingRequest(input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func editUser(nickname: String?, representativeMedalId: Int?) async -> Result<String, Error> {
+        let input = UserPatchRequestInput(name: nickname, representativeMedalId: representativeMedalId)
+        let request = EditUserRequest(input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func logout() async -> Result<String, Error> {
+        let request = LogoutRequest()
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func signout() async -> Result<String, Error> {
+        let request = SignoutRequest()
         
         return await NetworkManager.shared.request(requestType: request)
     }

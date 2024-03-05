@@ -1,7 +1,7 @@
 import Model
 
 public protocol CommunityServiceProtocol {
-    func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResposne<PlatformStoreResponse>, Error>
+    func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResposne<StoreApiResponse>, Error>
     /// 동네 인기 가게가 활성화된 동네 목록 조회
     func fetchPopularStoreNeighborhoods() async -> Result<NeighborhoodsResponse, Error>
     /// 투표 신고 이유 목록 조회 (나중에 공용 API 로 통합 필요)
@@ -10,6 +10,8 @@ public protocol CommunityServiceProtocol {
     func reportPoll(pollId: String, input: PollReportCreateRequestInput) async -> Result<String, Error>
     /// 투표 목록 조회
     func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResposne<PollWithMetaApiResponse>, Error>
+    /// 나의 투표 목록 조회
+    func fetchMyPolls(input: CursorRequestInput) async -> Result<PollListWithUserPollMetaApiResponse, Error>
     // 투표 참여
     func createChoicePoll(pollId: String, input: PollChoiceCreateRequestInput) async -> Result<String, Error>
     /// 투표 단건 조회
@@ -35,7 +37,7 @@ public protocol CommunityServiceProtocol {
 public struct CommunityService: CommunityServiceProtocol {
     public init() { }
 
-    public func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResposne<PlatformStoreResponse>, Error> {
+    public func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResposne<StoreApiResponse>, Error> {
         let request = FetchPopularStoresRequest(requestInput: input)
 
         return await NetworkManager.shared.request(requestType: request)
@@ -62,6 +64,11 @@ public struct CommunityService: CommunityServiceProtocol {
     public func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResposne<PollWithMetaApiResponse>, Error> {
         let request = FetchPollsRequest(requestInput: input)
 
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func fetchMyPolls(input: CursorRequestInput) async -> Result<PollListWithUserPollMetaApiResponse, Error> {
+        let request = FetchMyPollsRequest(requestInput: input)
         return await NetworkManager.shared.request(requestType: request)
     }
 
