@@ -10,4 +10,8 @@ public extension UIImageView {
             print("⚠️ setImage(urlString: String): 올바른 URl 형태가 아닙니다.")
         }
     }
+    
+    func cancel() {
+        self.kf.cancelDownloadTask()
+    }
 }

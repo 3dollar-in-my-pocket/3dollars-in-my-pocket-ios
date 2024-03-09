@@ -47,6 +47,15 @@ final class BookmarkStoreCell: BaseCollectionViewCell {
         return button
     }()
     
+    private let arrowImage: UIImageView = {
+        let imageView = UIImageView()
+        let arrowImage = Icons.arrowRight.image.withRenderingMode(.alwaysTemplate)
+        imageView.image = arrowImage
+        imageView.tintColor = Colors.systemWhite.color
+        imageView.isHidden = true
+        return imageView
+    }()
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -59,7 +68,8 @@ final class BookmarkStoreCell: BaseCollectionViewCell {
             categoryImageView,
             titleLabel,
             categoriesLabel,
-            deleteButton
+            deleteButton,
+            arrowImage
         ])
     }
     
@@ -97,6 +107,13 @@ final class BookmarkStoreCell: BaseCollectionViewCell {
             $0.width.equalTo(24)
             $0.height.equalTo(24)
         }
+        
+        arrowImage.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalTo(containerView).offset(-16)
+            $0.width.equalTo(16)
+            $0.height.equalTo(16)
+        }
     }
     
     func bind(_ viewModel: BookmarkStoreCellViewModel, index: Int) {
@@ -116,6 +133,11 @@ final class BookmarkStoreCell: BaseCollectionViewCell {
                 owner.setDeleteMode(isDeleteMode: isDeleteModel)
             }
             .store(in: &cancellables)
+    }
+    
+    func bind(store: StoreApiResponse) {
+        bindStore(store)
+        arrowImage.isHidden = false
     }
     
     private func bindStore(_ store: StoreApiResponse) {
