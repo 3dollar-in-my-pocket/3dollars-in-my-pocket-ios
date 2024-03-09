@@ -7,12 +7,6 @@ import Common
 import Log
 
 final class MyMedalViewModel: BaseViewModel {
-    struct Config {
-        let representativeMedal: Medal
-        let ownedMedals: [Medal]
-        let userNickname: String
-    }
-    
     struct Input {
         let loadTrigger = PassthroughSubject<Void, Never>()
         let didSelectItem = PassthroughSubject<IndexPath, Never>()
@@ -31,7 +25,9 @@ final class MyMedalViewModel: BaseViewModel {
 
     struct State {
         var medals: [Medal] = []
-        let representativeMedal: CurrentValueSubject<Medal, Never>
+        var representativeMedal = Medal()
+        var ownedMedals: [Medal] = []
+        var userNickname = ""
     }
 
     enum Route {
@@ -41,9 +37,7 @@ final class MyMedalViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
 
-    private var state: State
-    
-    private let config: Config
+    private var state = State()
 
     private let medalService: MedalServiceProtocol
     private let userService: UserServiceProtocol
@@ -51,18 +45,15 @@ final class MyMedalViewModel: BaseViewModel {
     private let logManager: LogManagerProtocol
 
     init(
-        config: Config,
         medalService: MedalServiceProtocol = MedalService(),
         userService: UserServiceProtocol = UserService(),
         userDefaults: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.config = config
         self.medalService = medalService 
         self.userService = userService
         self.userDefaults = userDefaults
         self.logManager = logManager
-        self.state = .init(representativeMedal: .init(config.representativeMedal))
 
         super.init()
     }
@@ -72,42 +63,21 @@ final class MyMedalViewModel: BaseViewModel {
         
         input.loadTrigger
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, _ in
-                owner.output.showLoading.send(true)
-            })
-            .withUnretained(self)
-            .asyncMap { owner, _ in
-                await owner.medalService.fetchMedals()
-            }
-            .withUnretained(self)
-            .sink { owner, result in
-                owner.output.showLoading.send(false)
-                switch result {
-                case .success(let response):
-                    owner.state.medals = response.map { medal in
-                        Medal(
-                            response: medal, 
-                            isOwned: owner.config.ownedMedals.contains(where: { $0.medalId == medal.medalId }), 
-                            isCurrentMedal: owner.config.representativeMedal.medalId == medal.medalId
-                        ) 
-                    }
-                    owner.updateDataSource()
-                case .failure(let error):
-                    owner.output.showErrorAlert.send(error)
-                }
+            .sink { (owner: MyMedalViewModel, _) in
+                owner.fetchUserAndMedals()
             }
             .store(in: &cancellables)
         
         input.didSelectMedal
             .removeDuplicates()
-            .filter { [weak self] in $0.medalId != self?.state.representativeMedal.value.medalId }
+            .filter { [weak self] in $0.medalId != self?.state.representativeMedal.medalId }
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, medal in
-                owner.state.representativeMedal.send(medal)
+            .handleEvents(receiveOutput: { (owner: MyMedalViewModel, medal: Medal) in
+                owner.state.representativeMedal = medal
             })
-            .asyncMap { owner, medal in
+            .asyncMap { (owner: MyMedalViewModel, medal: Medal) in
                 await owner.userService.editUser(
-                    nickname: owner.config.userNickname,
+                    nickname: owner.state.userNickname,
                     representativeMedalId: medal.medalId
                 )
             }
@@ -117,7 +87,7 @@ final class MyMedalViewModel: BaseViewModel {
                 case .success:
                     owner.state.medals = owner.state.medals.map { medal in
                         var medal = medal
-                        medal.isCurrentMedal = owner.state.representativeMedal.value.medalId == medal.medalId
+                        medal.isCurrentMedal = owner.state.representativeMedal.medalId == medal.medalId
                         return medal
                     }
                     owner.updateDataSource()
@@ -135,8 +105,38 @@ final class MyMedalViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
     
+    private func fetchUserAndMedals() {
+        Task {
+            output.showLoading.send(true)
+            let medalResponse = await medalService.fetchMedals()
+            let userResponse = await userService.fetchUser()
+            output.showLoading.send(false)
+            
+            if let medals = medalResponse.data,
+               let user = userResponse.data {
+                state.medals = medals.map { medal in
+                    Medal(
+                        response: medal,
+                        isOwned: user.ownedMedals.contains(where: { $0.medalId == medal.medalId }),
+                        isCurrentMedal: user.representativeMedal.medalId == medal.medalId
+                    )
+                }
+                
+                state.representativeMedal = Medal(response: user.representativeMedal)
+                state.ownedMedals = user.ownedMedals.map(Medal.init(response:))
+                state.userNickname = user.name
+                updateDataSource()
+            } else {
+                if let medalError = medalResponse.error {
+                    output.showErrorAlert.send(medalError)
+                }
+            }
+        }
+        .store(in: taskBag)
+    }
+    
     private func updateDataSource() {
-        let representativeMedal = state.representativeMedal.value
+        let representativeMedal = state.representativeMedal
         let totalMedals = state.medals
             
         // 정렬 필요한지 확인

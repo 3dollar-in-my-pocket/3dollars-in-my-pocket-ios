@@ -9,6 +9,10 @@ public final class MyPageInterfaceImpl: MyPageInterface {
     public func getMyPageViewController() -> UIViewController {
         return MyPageViewController.instance()
     }
+    
+    public func getMyMedalViewController() -> UIViewController {
+        return MyMedalViewController()
+    }
 }
 
 public extension MyPageInterfaceImpl {

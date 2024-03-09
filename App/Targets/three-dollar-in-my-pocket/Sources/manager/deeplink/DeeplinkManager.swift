@@ -206,8 +206,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     }
     
     private func createMedalContents() -> DeepLinkContents {
-        let targetViewController = MyMedalViewController.instance()
-        
+        let targetViewController = Environment.myPageInterface.getMyMedalViewController()
         return DeepLinkContents(
             targetViewController: targetViewController,
             transitionType: .push

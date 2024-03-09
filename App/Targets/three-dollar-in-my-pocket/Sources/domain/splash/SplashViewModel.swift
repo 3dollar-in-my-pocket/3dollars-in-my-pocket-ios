@@ -22,47 +22,24 @@ final class SplashViewModel: BaseViewModel {
     var userDefaults: UserDefaultsUtil
     let userService: UserServiceProtocol
     let remoteConfigService: RemoteConfigProtocol
-    let metaContext: MetaContext
-    let medalService: MedalServiceProtocol
-    private let feedbackService: FeedbackServiceProtocol
-    private let categoryService: CategoryServiceProtocol
     private let deviceService: DeviceServiceProtocol
-    private let advertisementService: AdvertisementServiceProtocol
-    private let metadataManager: MetadataManager
     
     init(
         userDefaults: UserDefaultsUtil,
         userService: UserServiceProtocol,
         remoteConfigService: RemoteConfigProtocol,
-        metaContext: MetaContext,
-        medalService: MedalServiceProtocol,
-        feedbackService: FeedbackServiceProtocol,
-        categoryService: CategoryServiceProtocol,
-        deviceService: DeviceServiceProtocol,
-        advertisementService: AdvertisementServiceProtocol,
-        metadataManager: MetadataManager = .shared
+        deviceService: DeviceServiceProtocol
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
         self.remoteConfigService = remoteConfigService
-        self.metaContext = metaContext
-        self.medalService = medalService
-        self.feedbackService = feedbackService
-        self.categoryService = categoryService
         self.deviceService = deviceService
-        self.advertisementService = advertisementService
-        self.metadataManager = metadataManager
         
         super.init()
         
         self.input.viewDidLoad
             .bind(onNext: { [weak self] in
-                self?.fetchBossStoreTypes()
-                self?.fetchMarkerImage()
-                self?.fetchMedals()
-                self?.fetchStreetFoodCategories()
-                self?.fetchFoodTurckCategories()
-                self?.fetchMetadata()
+                self?.checkMinimalVersion()
             })
             .disposed(by: self.disposeBag)
     }
@@ -146,60 +123,5 @@ final class SplashViewModel: BaseViewModel {
         } else {
             self.showErrorAlert.accept(error)
         }
-    }
-    
-    private func fetchMedals() {
-        self.medalService.fetchMedals()
-            .map { $0.map(Medal.init) }
-            .subscribe(onNext: { [weak self] medals in
-                self?.metaContext.medals = medals
-                self?.checkMinimalVersion()
-            }, onError: { [weak self] error in
-                self?.showErrorAlert.accept(error)
-            })
-            .disposed(by: self.disposeBag)
-    }
-    
-    private func fetchBossStoreTypes() {
-        self.feedbackService.fetchFeedbackTypes(storeType: .foodTruck)
-            .subscribe(onNext: { [weak self] feedbackTypes in
-                self?.metaContext.feedbackTypes = feedbackTypes
-            }, onError: { [weak self] error in
-                self?.showErrorAlert.accept(error)
-            })
-            .disposed(by: self.disposeBag)
-    }
-    
-    private func fetchStreetFoodCategories() {
-        self.categoryService.fetchStreetFoodCategories()
-            .subscribe(onNext: { [weak self] categories in
-                self?.metaContext.streetFoodCategories = categories
-            }, onError: { [weak self] error in
-                self?.showErrorAlert.accept(error)
-            })
-            .disposed(by: self.disposeBag)
-    }
-    
-    private func fetchFoodTurckCategories() {
-        self.categoryService.fetchFoodTruckCategories()
-            .subscribe(onNext: { [weak self] categories in
-                self?.metaContext.foodTruckCategories = categories
-            }, onError: { [weak self] error in
-                self?.showErrorAlert.accept(error)
-            })
-            .disposed(by: self.disposeBag)
-    }
-    
-    private func fetchMarkerImage() {
-        self.advertisementService.fetchAdvertisements(position: .storeMarker)
-            .compactMap { $0.first }
-            .subscribe(onNext: { [weak self] advertisement in
-                self?.metaContext.advertisementMarker = advertisement
-            })
-            .disposed(by: self.disposeBag)
-    }
-    
-    private func fetchMetadata() {
-        self.metadataManager.fetchCategories()
     }
 }

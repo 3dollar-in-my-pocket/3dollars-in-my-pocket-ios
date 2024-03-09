@@ -18,7 +18,7 @@ final class MyMedalViewController: BaseViewController {
     
     private let viewModel: MyMedalViewModel
     
-    init(viewModel: MyMedalViewModel) {
+    init(viewModel: MyMedalViewModel = MyMedalViewModel()) {
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
