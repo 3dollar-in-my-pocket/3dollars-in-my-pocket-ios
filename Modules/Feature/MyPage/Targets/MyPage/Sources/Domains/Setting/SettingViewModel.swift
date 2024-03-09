@@ -232,12 +232,10 @@ public final class SettingViewModel: BaseViewModel {
                 }
                 .store(in: &cancellables)
         case .kakao:
-            Environment.appModuleInterface.kakaoSigninManager.logout().sink { _ in
-                
-            } receiveValue: { [weak self] _ in
+            Environment.appModuleInterface.kakaoSigninManager.logout().sink { [weak self] _ in
                 self?.clearUserDefaults()
                 self?.output.route.send(.goToSignin)
-            }
+            } receiveValue: { _ in }
             .store(in: &cancellables)
         case .google, .unknown:
             break
