@@ -1,3 +1,0 @@
-protocol EditNicknameCoordinator: BaseCoordinator, AnyObject {
-    
-}
