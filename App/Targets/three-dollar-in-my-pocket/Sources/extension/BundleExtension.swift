@@ -3,10 +3,6 @@ import Foundation
 import Model
 
 extension Bundle {
-    static var baseURL: String {
-        return Bundle.main.infoDictionary?["API_URL"] as? String ?? ""
-    }
-    
     static var policyURL: String {
         return Bundle.main.infoDictionary?["URL_POLICY"] as? String ?? ""
     }

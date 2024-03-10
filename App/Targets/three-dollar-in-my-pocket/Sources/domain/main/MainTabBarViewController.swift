@@ -9,6 +9,7 @@ import Home
 import MyPage
 import Community
 
+import DesignSystem
 import MembershipInterface
 import WriteInterface
 import StoreInterface
@@ -18,7 +19,6 @@ final class MainTabBarViewController: UITabBarController {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
     private let disposeBag = DisposeBag()
     private var deeplinkDisposeBag = DisposeBag()
-    private let loadingView = LoadingView()
     private lazy var dimView = UIView(frame: self.view.frame).then {
         $0.backgroundColor = .clear
     }
@@ -115,18 +115,7 @@ final class MainTabBarViewController: UITabBarController {
     }
     
     func showLoading(isShow: Bool) {
-        if isShow {
-            self.view.addSubview(loadingView)
-            self.loadingView.snp.makeConstraints { (make) in
-                make.edges.equalTo(0)
-            }
-            self.view.isUserInteractionEnabled = false
-            self.loadingView.startLoading()
-        } else {
-            self.loadingView.stopLoading()
-            self.view.isUserInteractionEnabled = true
-            self.loadingView.removeFromSuperview()
-        }
+        LoadingManager.shared.showLoading(isShow: isShow)
     }
     
     func showDim(isShow: Bool) {

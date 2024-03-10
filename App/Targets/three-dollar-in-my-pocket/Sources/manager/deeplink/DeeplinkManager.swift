@@ -3,9 +3,6 @@ import UIKit
 import AppInterface
 import Model
 
-import RxSwift
-import RxRelay
-
 final class DeeplinkManager: DeeplinkManagerProtocol {
     
     static let shared = DeeplinkManager()

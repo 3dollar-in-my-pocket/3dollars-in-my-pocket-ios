@@ -13,6 +13,7 @@ public final class NicknameViewController: Common.BaseViewController {
     private let nicknameView = NicknameView()
     private let viewModel: NicknameViewModel
     private let appInterface = Environment.appModuleInterface
+    private let myPageInterface = Environment.myPageInterface
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -125,7 +126,7 @@ public final class NicknameViewController: Common.BaseViewController {
         appInterface.goToMain()
         
         if let bookmarkFolderId {
-            let targetViewController = appInterface.createBookmarkViewerViewController(folderId: bookmarkFolderId)
+            let targetViewController = myPageInterface.getBookmarkViewerViewController(folderId: bookmarkFolderId)
             let deepLinkContents = DeepLinkContents(
                 targetViewController: targetViewController,
                 transitionType: .present

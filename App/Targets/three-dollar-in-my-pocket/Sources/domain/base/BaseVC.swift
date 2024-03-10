@@ -35,44 +35,6 @@ class BaseVC: UIViewController {
     
     func bindViewModelOutput() { }
     
-    func showRootLoading(isShow: Bool) {
-        if let tabBarVC = self.navigationController?.parent as? MainTabBarViewController {
-            tabBarVC.showLoading(isShow: isShow)
-        }
-    }
-    
-    func showRootDim(isShow: Bool) {
-        if let tabBarVC = self.navigationController?.parent as? MainTabBarViewController {
-            tabBarVC.showDim(isShow: isShow)
-        } else {
-            self.showDim(isShow: isShow)
-        }
-    }
-    
-    func showSystemAlert(alert: AlertContent) {
-        AlertUtils.show(controller: self, title: alert.title, message: alert.message)
-    }
-    
-    func showHTTPErrorAlert(error: HTTPError) {
-        if error == HTTPError.maintenance {
-            AlertUtils.showWithAction(
-                title: "error_maintenance_title".localized,
-                message: "error_maintenance_message".localized) { _ in
-                UIControl().sendAction(
-                    #selector(URLSessionTask.suspend),
-                    to: UIApplication.shared,
-                    for: nil
-                )
-            }
-        } else {
-            AlertUtils.show(
-                controller: self,
-                title: nil,
-                message: error.description
-            )
-        }
-    }
-    
     func showErrorAlert(error: Error) {
         if let httpError = error as? HTTPError {
             self.showHTTPErrorAlert2(error: httpError)
@@ -84,27 +46,6 @@ class BaseVC: UIViewController {
                 message: error.localizedDescription,
                 onTapOk: nil
             )
-        }
-    }
-    
-    private func showDim(isShow: Bool) {
-        if isShow {
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                self.view.addSubview(self.dimView)
-                UIView.animate(withDuration: 0.3) {
-                    self.dimView.backgroundColor = UIColor.init(r: 0, g: 0, b: 0, a: 0.5)
-                }
-            }
-        } else {
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                UIView.animate(withDuration: 0.3, animations: {
-                    self.dimView.backgroundColor = .clear
-                }) { (_) in
-                    self.dimView.removeFromSuperview()
-                }
-            }
         }
     }
     
