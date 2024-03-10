@@ -93,6 +93,10 @@ public final class BookmarkViewerViewController: BaseViewController {
             let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: id)
             
             navigationController?.pushViewController(viewController, animated: true)
+        case .presentSigninDialog:
+            let viewController = Environment.membershipInterface.createSigninBottomSheetViewController()
+            
+            present(viewController, animated: true)
         }
     }
 }

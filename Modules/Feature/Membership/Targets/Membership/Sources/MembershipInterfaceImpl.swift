@@ -11,6 +11,10 @@ public final class MembershipInterfaceImpl: MembershipInterface {
     public func createPolicyViewController() -> UIViewController {
         return PolicyViewController.instance()
     }
+    
+    public func createSigninBottomSheetViewController() -> UIViewController {
+        return SigninBottomSheetViewController()
+    }
 }
 
 public extension MembershipInterfaceImpl {

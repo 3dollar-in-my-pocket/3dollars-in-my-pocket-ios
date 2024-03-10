@@ -4,6 +4,7 @@ import Combine
 import Common
 import Networking
 import Model
+import AppInterface
 
 public final class BookmarkViewerViewModel: BaseViewModel {
     struct Input {
@@ -36,6 +37,7 @@ public final class BookmarkViewerViewModel: BaseViewModel {
     enum Route {
         case pushUserStoreDetail(String)
         case pushBossStoreDetail(String)
+        case presentSigninDialog
     }
     
     let input = Input()
@@ -43,13 +45,16 @@ public final class BookmarkViewerViewModel: BaseViewModel {
     private var state = State()
     private let config: Config
     private let bookmarkService: BookmarkServiceProtocol
+    private var appModuleInterface: AppModuleInterface
     
     init(
         config: Config,
-        bookmarkService: BookmarkServiceProtocol = BookmarkService()
+        bookmarkService: BookmarkServiceProtocol = BookmarkService(),
+        appModuleInterface: AppModuleInterface = Environment.appModuleInterface
     ) {
         self.config = config
         self.bookmarkService = bookmarkService
+        self.appModuleInterface = appModuleInterface
         
         super.init()
     }
@@ -61,8 +66,22 @@ public final class BookmarkViewerViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
-        input.didTapStore
+        let didTapStore = input.didTapStore.share()
+        
+        didTapStore
             .withUnretained(self)
+            .filter { (owner: BookmarkViewerViewModel, _) in
+                owner.appModuleInterface.userDefaults.authToken.isEmpty
+            }
+            .map { _ in Route.presentSigninDialog }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+        
+        didTapStore
+            .withUnretained(self)
+            .filter { (owner: BookmarkViewerViewModel, _) in
+                owner.appModuleInterface.userDefaults.authToken.isNotEmpty
+            }
             .compactMap { (owner: BookmarkViewerViewModel, index: Int) -> Route? in
                 guard let store = owner.state.stores[safe: index] else { return nil }
                 

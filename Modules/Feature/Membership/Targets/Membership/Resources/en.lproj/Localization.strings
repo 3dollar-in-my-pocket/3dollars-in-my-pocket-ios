@@ -27,3 +27,6 @@
 "policy_policy_label" = "(필수) 이용약관 동의";
 "policy_marketing_label" = "(선택) 마케팅 활용 및 광고성 정보 수신 동의";
 "policy_next_button" = "동의하고 계속하기";
+
+// 로그인 바텀시트
+"signin_bottom_sheet_title" = "로그인을 하시면\n더 맛있는 정보를 볼 수 있어요!";
