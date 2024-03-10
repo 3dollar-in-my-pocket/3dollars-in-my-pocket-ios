@@ -14,6 +14,7 @@ let project = Project.makeFeatureModule(
         .Interface.appInterface,
         .Interface.myPageInterface,
         .Interface.storeInterface,
+        .Interface.membershipInterface,
         .SPM.snapKit,
         .SPM.then,
         .Package.deviceKit

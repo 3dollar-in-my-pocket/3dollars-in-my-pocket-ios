@@ -13,6 +13,10 @@ public final class MyPageInterfaceImpl: MyPageInterface {
     public func getMyMedalViewController() -> UIViewController {
         return MyMedalViewController()
     }
+    
+    public func getBookmarkViewerViewController(folderId: String) -> UIViewController {
+        return BookmarkViewerViewController(folderId: folderId)
+    }
 }
 
 public extension MyPageInterfaceImpl {

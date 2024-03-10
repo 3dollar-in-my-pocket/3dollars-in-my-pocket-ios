@@ -4,6 +4,7 @@ import MyPageInterface
 import AppInterface
 import StoreInterface
 import CommunityInterface
+import MembershipInterface
 
 typealias Fonts = DesignSystemFontFamily.Pretendard
 typealias Colors = DesignSystemAsset.Colors
@@ -43,5 +44,13 @@ final class Environment {
         }
         
         return communityInterface
+    }
+    
+    static var membershipInterface: MembershipInterface {
+        guard let membershipInterface = DIContainer.shared.container.resolve(MembershipInterface.self) else {
+            fatalError("MembershipInterface가 정의되지 않았습니다.")
+        }
+        
+        return membershipInterface
     }
 }

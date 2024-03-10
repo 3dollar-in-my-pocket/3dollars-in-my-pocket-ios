@@ -36,6 +36,8 @@ public enum MembershipStrings {
   public static let signinAnonymousDescription = MembershipStrings.tr("Localization", "signin_anonymous_description")
   /// 비로그인 상태로 남겨주신 제보, 리뷰는 비로그인 상태로 일정 기간 접속하지 않거나 앱 삭제 시, 볼 수 없습니다.
   public static let signinAnonymousWarning = MembershipStrings.tr("Localization", "signin_anonymous_warning")
+  /// 로그인을 하시면\n더 맛있는 정보를 볼 수 있어요!
+  public static let signinBottomSheetTitle = MembershipStrings.tr("Localization", "signin_bottom_sheet_title")
   /// Sign in with Apple
   public static let signinWithApple = MembershipStrings.tr("Localization", "signin_with_apple")
   /// 이미 가입한 계정이 있습니다.\n해당 계정으로 로그인 하시겠습니까?\n비로그인으로 활동한 이력들은 유지되지 않습니다

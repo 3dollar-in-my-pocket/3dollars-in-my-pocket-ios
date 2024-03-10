@@ -10,6 +10,8 @@ public protocol BookmarkServiceProtocol {
     func removeAllBookmarkStore() async -> Result<String, Error>
     
     func editBookmarkFolder(input: EditBookmarkFolderInput) async -> Result<String, Error>
+    
+    func fetchBookmarkFolder(folderId: String, size: Int, cursor: String?) async -> Result<StoreFavoriteFolderApiResponse, Error>
 }
 
 public struct BookmarkService: BookmarkServiceProtocol {
@@ -35,6 +37,12 @@ public struct BookmarkService: BookmarkServiceProtocol {
     
     public func editBookmarkFolder(input: EditBookmarkFolderInput) async -> Result<String, Error> {
         let request = EditBookmarkFolderRequest(input: input, folderType: .favoriteStore)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func fetchBookmarkFolder(folderId: String, size: Int, cursor: String?) async -> Result<StoreFavoriteFolderApiResponse, Error> {
+        let request = FetchBookmarkFolderRequest(folderId: folderId, size: size, cursor: cursor)
         
         return await NetworkManager.shared.request(requestType: request)
     }
