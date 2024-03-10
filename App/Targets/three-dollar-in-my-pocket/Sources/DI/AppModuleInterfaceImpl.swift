@@ -25,11 +25,11 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     }
     
     var kakaoSigninManager: AppInterface.SigninManagerProtocol {
-        return NewKakaoSigninManager.shared
+        return KakaoSigninManager.shared
     }
     
     var appleSigninManager: AppInterface.SigninManagerProtocol {
-        return NewAppleSigninManager.shared
+        return AppleSigninManager.shared
     }
     
     var deeplinkManager: DeeplinkManagerProtocol {
@@ -83,10 +83,6 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     func goToSignin() {
         guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
         sceneDelegate.goToSignIn()
-    }
-    
-    func createBookmarkViewerViewController(folderId: String) -> UIViewController {
-        return BookmarkViewerViewController.instance(folderId: folderId)
     }
     
     func createWebViewController(webviewType: WebViewType) -> UIViewController {
