@@ -7,7 +7,7 @@ import DependencyInjection
 typealias Fonts = DesignSystemFontFamily.Pretendard
 typealias Colors = DesignSystemAsset.Colors
 typealias Strings = ThreeDollarInMyPocketStrings
-typealias Assets = ThreeDollarInMyPocketAsset.Assets
+typealias Assets = ThreeDollarInMyPocketAsset
 typealias Icons = DesignSystemAsset.Icons
 
 

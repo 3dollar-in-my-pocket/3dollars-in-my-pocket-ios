@@ -3,15 +3,7 @@ import Combine
 
 import AppInterface
 
-import RxSwift
-
-protocol PhotoManagerProtocol: AnyObject {
-    func getPhotoAuthorizationStatus() -> PHAuthorizationStatus
-    
-    func requestPhotosPermission() -> Observable<PHAuthorizationStatus>
-}
-
-final class CombinePhotoManager: AppInterface.PhotoManagerProtocol {
+final class CombinePhotoManager: PhotoManagerProtocol {
     public static let shared = CombinePhotoManager()
     
     public func getPhotoAuthorizationStatus() -> PHAuthorizationStatus {

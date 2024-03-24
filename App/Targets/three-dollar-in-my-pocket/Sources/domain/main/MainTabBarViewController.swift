@@ -1,6 +1,5 @@
 import UIKit
 import Combine
-import RxSwift
 
 import Model
 import DependencyInjection
@@ -17,8 +16,6 @@ import MyPageInterface
 
 final class MainTabBarViewController: UITabBarController {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
-    private let disposeBag = DisposeBag()
-    private var deeplinkDisposeBag = DisposeBag()
     private lazy var dimView = UIView(frame: self.view.frame).then {
         $0.backgroundColor = .clear
     }
@@ -99,12 +96,6 @@ final class MainTabBarViewController: UITabBarController {
         
         self.processKakaoLinkIfExisted()
         DeeplinkManager.shared.flushDelayedDeeplink()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        self.deeplinkDisposeBag = DisposeBag()
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {

@@ -32,6 +32,7 @@ final class SplashViewController: BaseViewController {
     
     override func bindViewModelOutput() {
         viewModel.output.route
+            .main
             .withUnretained(self)
             .sink { (owner: SplashViewController, route: SplashViewModel.Route) in
                 owner.handleRoute(route)
