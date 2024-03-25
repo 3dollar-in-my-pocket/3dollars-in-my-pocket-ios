@@ -1,140 +1,93 @@
+import Combine
+
+import AppInterface
+
 import KakaoSDKUser
 import KakaoSDKAuth
 import KakaoSDKCommon
-import RxSwift
 
-final class KakaoSigninManager: SigninManagerProtocol {
-    private var disposeBag = DisposeBag()
-    private var publisher = PublishSubject<SigninRequest>()
+final class KakaoSigninManager: AppInterface.SigninManagerProtocol {
+    static let shared = KakaoSigninManager()
     
-    deinit {
-        self.publisher.onCompleted()
-    }
+    private var publisher = PassthroughSubject<String, Error>()
     
-    func signin() -> Observable<SigninRequest> {
-        self.publisher = PublishSubject<SigninRequest>()
+    func signin() -> PassthroughSubject<String, Error> {
+        publisher = PassthroughSubject<String, Error>()
         
         if UserApi.isKakaoTalkLoginAvailable() {
-            self.signInWithKakaoTalk()
+            signinWithKakaoTalk()
         } else {
-            self.signInWithKakaoAccount()
+            signinWithKakaoAccount()
         }
-        return self.publisher
+        
+        return publisher
     }
     
-    func signout() -> Observable<Void> {
-        return .create { observer in
+    func signout() -> Future<Void, Error> {
+        return .init { promise in
             UserApi.shared.unlink { error in
-                if let kakaoError = error as? SdkError,
-                   kakaoError.getApiError().reason == .InvalidAccessToken {
-                    // KAKAO 토큰이 사라진 경우: 개발서버앱으로 왔다갔다 하는경우?
-                    observer.onNext(())
-                    observer.onCompleted()
+                if let sdkError = error as? SdkError,
+                   sdkError.getApiError().reason == .InvalidAccessToken {
+                    promise(.success(()))
                 } else if let error = error {
-                    observer.onError(error)
+                    promise(.failure(error))
                 } else {
-                    observer.onNext(())
-                    observer.onCompleted()
+                    promise(.success(()))
                 }
             }
-            
-            return Disposables.create()
         }
     }
     
-    func logout() -> Observable<Void> {
-        return .create { observer in
+    func logout() -> Future<Void, Error> {
+        return .init { promise in
             UserApi.shared.logout { error in
-                if let kakaoError = error as? SdkError,
-                   kakaoError.getApiError().reason == .InvalidAccessToken {
-                    // KAKAO 토큰이 사라진 경우: 개발서버앱으로 왔다갔다 하는경우?
-                    observer.onNext(())
-                    observer.onCompleted()
+                if let sdkError = error as? SdkError,
+                   sdkError.getApiError().reason == .InvalidAccessToken {
+                    promise(.success(()))
                 } else if let error = error {
-                    observer.onError(error)
+                    promise(.failure(error))
                 } else {
-                    observer.onNext(())
-                    observer.onCompleted()
+                    promise(.success(()))
                 }
-            }
-            return Disposables.create()
-        }
-    }
-    
-    private func signInWithKakaoTalk() {
-        UserApi.shared.loginWithKakaoTalk { authToken, error in
-            if let error = error {
-                if let sdkError = error as? SdkError {
-                    if sdkError.isClientFailed {
-                        switch sdkError.getClientError().reason {
-                        case .Cancelled:
-                            self.publisher.onError(BaseError.custom("cancel"))
-                        default:
-                            let errorMessage = sdkError.getApiError().info?.msg ?? ""
-                            let error = BaseError.custom(errorMessage)
-                            
-                            self.publisher.onError(error)
-                        }
-                    }
-                } else {
-                    let signInError
-                    = BaseError.custom("error is not SdkError. (\(error.self))")
-                    
-                    self.publisher.onError(signInError)
-                }
-            } else {
-                guard let authToken = authToken else {
-                    self.publisher.onError(BaseError.custom("authToken is nil"))
-                    return
-                }
-                let request = SigninRequest(
-                    socialType: .kakao,
-                    token: authToken.accessToken
-                )
-                
-                self.publisher.onNext(request)
-                self.publisher.onCompleted()
             }
         }
     }
     
-    private func signInWithKakaoAccount() {
-        UserApi.shared.loginWithKakaoAccount { authToken, error in
+    private func signinWithKakaoTalk() {
+        UserApi.shared.loginWithKakaoTalk { [weak self] authToken, error in
             if let error = error {
-                if let sdkError = error as? SdkError {
-                    if sdkError.isClientFailed {
-                        switch sdkError.getClientError().reason {
-                        case .Cancelled:
-                            let error = BaseError.custom("cancel")
-                            
-                            self.publisher.onError(error)
-                        default:
-                            let errorMessage = sdkError.getApiError().info?.msg ?? ""
-                            let error = BaseError.custom(errorMessage)
-                            
-                            self.publisher.onError(error)
-                        }
-                    }
-                } else {
-                    let signInError
-                    = BaseError.custom("error is not SdkError. (\(error.self))")
-                    
-                    self.publisher.onError(signInError)
-                }
+                self?.handleError(error: error)
             } else {
-                guard let authToken = authToken else {
-                    self.publisher.onError(BaseError.custom("authTOken is nil"))
-                    return
-                }
-                
-                let request = SigninRequest(
-                    socialType: .kakao,
-                    token: authToken.accessToken
-                )
-                
-                self.publisher.onNext(request)
-                self.publisher.onCompleted()
+                self?.handleAuthToken(authToken: authToken)
             }
         }
+    }
+    
+    private func signinWithKakaoAccount() {
+        UserApi.shared.loginWithKakaoAccount { [weak self] authToken, error in
+            if let error = error {
+                self?.handleError(error: error)
+            } else {
+                self?.handleAuthToken(authToken: authToken)
+            }
+        }
+    }
+    
+    private func handleError(error: Error) {
+        if let sdkError = error as? SdkError {
+            if sdkError.isClientFailed {
+                let errorReason = sdkError.getClientError().reason
+                if errorReason == .Cancelled {
+                    return
+                }
+            }
+        }
+        
+        publisher.send(completion: .failure(error))
+    }
+    
+    private func handleAuthToken(authToken: OAuthToken?) {
+        guard let authToken = authToken else { return }
+        publisher.send(authToken.accessToken)
     }
 }

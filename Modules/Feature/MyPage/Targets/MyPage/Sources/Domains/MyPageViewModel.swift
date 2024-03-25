@@ -233,34 +233,19 @@ final class MyPageViewModel: BaseViewModel {
     private func bindMyPageOverviewCellViewModel(with item: UserWithDetailApiResponse) -> MyPageOverviewCellViewModel {
         let viewModel = MyPageOverviewCellViewModel(item: item)
         viewModel.output.route
-            .compactMap { [weak self] in
+            .compactMap {
                 switch $0 {
                 case .review: 
                     return .review(ReviewTabViewModel(config: .init()))
                 case .store:
                     return .registeredStoreList
                 case .medal:
-                    return if let viewModel = self?.bindMyMedalViewModel() {
-                        .medal(viewModel)
-                    } else {
-                        nil
-                    }
+                    let viewModel = MyMedalViewModel()
+                    return .medal(viewModel)
                 }
             }
             .subscribe(output.route)
             .store(in: &cancellables)
-        return viewModel
-    }
-    
-    private func bindMyMedalViewModel() -> MyMedalViewModel? {
-        guard let userState = state.userState.value else { return nil }
-        
-        let config = MyMedalViewModel.Config(
-            representativeMedal: Medal(response: userState.representativeMedal, isOwned: true, isCurrentMedal: true), 
-            ownedMedals: userState.ownedMedals.map { Medal(response: $0, isOwned: true, isCurrentMedal: false) }, 
-            userNickname: userState.name
-        )
-        let viewModel = MyMedalViewModel(config: config)
         return viewModel
     }
     

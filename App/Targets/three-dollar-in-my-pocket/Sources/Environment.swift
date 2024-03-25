@@ -1,6 +1,7 @@
 import DesignSystem
 import StoreInterface
 import CommunityInterface
+import MyPageInterface
 import DependencyInjection
 
 typealias Fonts = DesignSystemFontFamily.Pretendard
@@ -25,5 +26,13 @@ final class Environment {
         }
 
         return communityInterface
+    }
+    
+    static var myPageInterface: MyPageInterface {
+        guard let myPageInterface = DIContainer.shared.container.resolve(MyPageInterface.self) else {
+            fatalError("MyPageInterface가 정의되지 않았습니다.")
+        }
+        
+        return myPageInterface
     }
 }

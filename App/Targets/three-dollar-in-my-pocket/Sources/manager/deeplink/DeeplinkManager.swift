@@ -3,9 +3,6 @@ import UIKit
 import AppInterface
 import Model
 
-import RxSwift
-import RxRelay
-
 final class DeeplinkManager: DeeplinkManagerProtocol {
     
     static let shared = DeeplinkManager()
@@ -169,10 +166,13 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
               let param = query.first,
               param.key == "folderId",
               let folderId = param.value as? String else { return nil }
-        let viewController = BookmarkViewerViewController.instance(folderId: folderId)
+        let viewController = Environment.myPageInterface.getBookmarkViewerViewController(folderId: folderId)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.modalPresentationStyle = .overCurrentContext
         
         return DeepLinkContents(
-            targetViewController: viewController,
+            targetViewController: navigationController,
             transitionType: .present
         )
     }
@@ -206,8 +206,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     }
     
     private func createMedalContents() -> DeepLinkContents {
-        let targetViewController = MyMedalViewController.instance()
-        
+        let targetViewController = Environment.myPageInterface.getMyMedalViewController()
         return DeepLinkContents(
             targetViewController: targetViewController,
             transitionType: .push

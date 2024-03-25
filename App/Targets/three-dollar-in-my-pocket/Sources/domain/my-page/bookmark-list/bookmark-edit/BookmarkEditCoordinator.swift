@@ -1,3 +1,0 @@
-protocol BookmarkEditCoordinator: AnyObject, BaseCoordinator {
-    
-}

@@ -1,17 +1,19 @@
 import AuthenticationServices
+import Combine
 
-import RxSwift
+import AppInterface
 
-final class AppleSigninManager: NSObject, SigninManagerProtocol {
-    private var publisher = PublishSubject<SigninRequest>()
+final class AppleSigninManager: NSObject, AppInterface.SigninManagerProtocol {
+    static let shared = AppleSigninManager()
     
+    private var publisher = PassthroughSubject<String, Error>()
     
     deinit {
-        self.publisher.onCompleted()
+        publisher.send(completion: .finished)
     }
     
-    func signin() -> Observable<SigninRequest> {
-        self.publisher = PublishSubject<SigninRequest>()
+    func signin() -> PassthroughSubject<String, Error> {
+        publisher = PassthroughSubject<String, Error>()
         
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
@@ -22,27 +24,20 @@ final class AppleSigninManager: NSObject, SigninManagerProtocol {
         
         authController.delegate = self
         authController.performRequests()
-        
-        return self.publisher
+        return publisher
     }
     
-    func signout() -> Observable<Void> {
+    func signout() -> Future<Void, Error> {
         // 애플에서는 회원탈퇴 API를 제공하지 않습니다.
-        return .create { observer in
-            observer.onNext(())
-            observer.onCompleted()
-            
-            return Disposables.create()
+        return .init { promise in
+            promise(.success(()))
         }
     }
     
-    func logout() -> Observable<Void> {
+    func logout() -> Future<Void, Error> {
         // 애플에서는 로그아웃 API를 제공하지 않습니다.
-        return .create { observer in
-            observer.onNext(())
-            observer.onCompleted()
-            
-            return Disposables.create()
+        return .init { promise in
+            promise(.success(()))
         }
     }
 }
@@ -55,22 +50,23 @@ extension AppleSigninManager: ASAuthorizationControllerDelegate {
         if let authorizationError = error as? ASAuthorizationError {
             switch authorizationError.code {
             case .canceled:
-                self.publisher.onError(BaseError.custom("cancel"))
+                break
+                
             case .failed, .invalidResponse, .notHandled, .unknown:
                 let error = BaseError.custom(authorizationError.localizedDescription)
                 
-                self.publisher.onError(error)
+                publisher.send(completion: .failure(error))
             default:
                 let error = BaseError.custom(error.localizedDescription)
                 
-                self.publisher.onError(error)
+                publisher.send(completion: .failure(error))
             }
         } else {
             let error = BaseError.custom(
                 "error is instance of \(error.self). not ASAuthorizationError"
             )
             
-            self.publisher.onError(error)
+            publisher.send(completion: .failure(error))
         }
     }
     
@@ -83,14 +79,14 @@ extension AppleSigninManager: ASAuthorizationControllerDelegate {
             data: appleIDCredential.identityToken!,
             encoding: .utf8
            ) {
-            self.publisher.onNext(SigninRequest(socialType: .apple, token: accessToken))
-            self.publisher.onCompleted()
+            publisher.send(accessToken)
+            publisher.send(completion: .finished)
         } else {
             let signInError = BaseError.custom(
                 "credential is not ASAuthorizationAppleIDCredential"
             )
             
-            self.publisher.onError(signInError)
+            publisher.send(completion: .failure(signInError))
         }
     }
 }
