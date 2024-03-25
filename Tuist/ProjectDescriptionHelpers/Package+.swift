@@ -13,7 +13,7 @@ public extension Package {
     
     static let permissionsKit = Package.remote(url: "https://github.com/sparrowcode/PermissionsKit", requirement: .exact("9.0.2"))
     
-    static let firebaseSDK = Package.remote(url: "https://github.com/firebase/firebase-ios-sdk", requirement: .upToNextMajor(from: "10.4.0"))
+    static let firebaseSDK = Package.remote(url: "https://github.com/firebase/firebase-ios-sdk", requirement: .exact("10.22.1"))
     
     static let rxSwift = Package.remote(url: "https://github.com/ReactiveX/RxSwift.git", requirement: .exact("6.5.0"))
 }
