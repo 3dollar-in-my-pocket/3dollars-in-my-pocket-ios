@@ -4,6 +4,7 @@ import AppTrackingTransparency
 import AppInterface
 import DependencyInjection
 import Model
+import Common
 
 import FirebaseMessaging
 import FirebaseAnalytics
@@ -110,18 +111,18 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
             ]
         )
         let content = Content(
-            title: "store_detail_share_title".localized,
+            title: Strings.storeDetailShareTitle,
             imageUrl: URL(string: "https://storage.threedollars.co.kr/share/share-with-kakao.png")!,
             imageWidth: 500,
             imageHeight: 500,
-            description: "store_detail_share_description".localized,
+            description: Strings.storeDetailShareDescription,
             link: link
         )
         let feedTemplate = FeedTemplate(
             content: content,
             social: nil,
             buttonTitle: nil,
-            buttons: [Button(title: "store_detail_share_button".localized, link: link)]
+            buttons: [Button(title: Strings.storeDetailShareButton, link: link)]
         )
         
         ShareApi.shared.shareDefault(templatable: feedTemplate) { linkResult, error in
@@ -208,7 +209,7 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
             linkBuilder?.androidParameters
             = DynamicLinkAndroidParameters(packageName: Bundle.androidPackageName)
             linkBuilder?.socialMetaTagParameters = DynamicLinkSocialMetaTagParameters()
-            linkBuilder?.socialMetaTagParameters?.title = "my_page_bookmark_description".localized
+            linkBuilder?.socialMetaTagParameters?.title = Strings.myPageBookmarkDescription
             linkBuilder?.socialMetaTagParameters?.descriptionText = name
             linkBuilder?.socialMetaTagParameters?.imageURL
             = URL(string: "https://storage.threedollars.co.kr/share/favorite_share.png")

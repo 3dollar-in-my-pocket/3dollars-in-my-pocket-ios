@@ -146,7 +146,7 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
                     targetViewController,
                     animated: true
                 )
-            } else if rootViewController is SplashVC {
+            } else if rootViewController is SplashViewController {
                 reserveDeeplink(deeplinkContents: contents)
             } else {
                 Log.error("UINavigationViewController가 없습니다.")
@@ -184,10 +184,10 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
         
         var viewController: UIViewController
         switch StoreType(value: storeTypeString) {
-        case .streetFood:
+        case .userStore:
             viewController = Environment.storeInterface.getStoreDetailViewController(storeId: Int(storeId) ?? 0)
             
-        case .foodTruck:
+        case .bossStore:
             viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
 
         case .unknown:

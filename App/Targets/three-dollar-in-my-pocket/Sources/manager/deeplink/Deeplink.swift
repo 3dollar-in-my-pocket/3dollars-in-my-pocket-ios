@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 enum Deeplink {
     case bookmark(folderId: String)
     case storeDetail(storeType: StoreType, storeId: String)
@@ -33,7 +35,7 @@ enum Deeplink {
             
         case .storeDetail(let storeType, let storeId):
             return [
-                "storeType": storeType.targetType,
+                "storeType": storeType.rawValue,
                 "storeId": storeId
             ]
         case .pollDetail(let pollId):

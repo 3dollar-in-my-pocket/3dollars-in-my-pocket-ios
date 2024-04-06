@@ -148,20 +148,6 @@ public extension TargetDependency {
         
         public static let photoLibraryPermission = TargetDependency.package(product: "PhotoLibraryPermission")
         
-        public static let reactorKit = TargetDependency.package(product: "ReactorKit")
-        
-        public static let rxCocoa = TargetDependency.package(product: "RxCocoa")
-        
-        public static let rxDataSources = TargetDependency.package(product: "RxDataSources")
-        
-        public static let rxRelay = TargetDependency.package(product: "RxRelay")
-        
-        public static let rxSwift = TargetDependency.package(product: "RxSwift")
-        
         public static let swiftyBeaver = TargetDependency.package(product: "SwiftyBeaver")
-        
-        public static let rxTest = TargetDependency.package(product: "RxTest")
-        
-        public static let rxBlocking = TargetDependency.package(product: "RxBlocking")
     }
 }

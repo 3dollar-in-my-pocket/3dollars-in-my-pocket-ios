@@ -6,7 +6,6 @@ enum BaseError: LocalizedError {
     case timeout
     case failDecoding
     case nilValue
-    case errorContainer(ResponseContainer<String>)
     
     
     var errorDescription: String? {
@@ -14,15 +13,13 @@ enum BaseError: LocalizedError {
         case .custom(let message):
             return message
         case .unknown:
-            return "error_unknown".localized
+            return Strings.errorUnknown
         case .timeout:
-            return "http_error_timeout".localized
+            return Strings.httpErrorTimeout
         case .failDecoding:
-            return "error_failed_to_json".localized
+            return Strings.errorFailedToJson
         case .nilValue:
-            return "error_value_is_nil".localized
-        case .errorContainer(let errorContainer):
-            return errorContainer.message
+            return Strings.errorValueIsNil
         }
     }
 }

@@ -5,7 +5,7 @@ import Common
 import DesignSystem
 import Model
 
-final class WebView: Common.BaseView {
+final class WebView: BaseView {
     let backButton: UIButton = {
         let button = UIButton()
         

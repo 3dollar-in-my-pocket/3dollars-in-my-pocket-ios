@@ -244,10 +244,7 @@ let project = Project(
     name: "3dollar-in-my-pocket",
     organizationName: "macgongmon",
     packages: [
-        .reactorKit,
         .kakaoSDK,
-        .rxSwift,
-        .rxDataSources,
         .swiftyBeaver,
         .deviceKit,
         .permissionsKit,
@@ -314,11 +311,6 @@ let project = Project(
                 .Package.locationAlwaysPermission,
                 .Package.locationWhenInUsePermission,
                 .Package.photoLibraryPermission,
-                .Package.reactorKit,
-                .Package.rxCocoa,
-                .Package.rxDataSources,
-                .Package.rxRelay,
-                .Package.rxSwift,
                 .Package.swiftyBeaver,
                 .target(name: "service-extension"),
                 .target(name: "content-extension"),
@@ -341,11 +333,6 @@ let project = Project(
             resources: ["Targets/three-dollar-in-my-pocketTests/Resources/**"],
             dependencies: [
                 .target(name: "three-dollar-in-my-pocket"),
-                .Package.rxRelay,
-                .Package.rxTest,
-                .Package.rxBlocking,
-                .Package.rxCocoa,
-                .Package.rxSwift
             ],
             settings: .settings(
                 base: BuildSetting.AppTest.base,
