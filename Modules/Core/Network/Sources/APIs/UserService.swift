@@ -26,6 +26,7 @@ public protocol UserServiceProtocol {
     func signout() async -> Result<String, Error>
     
     func saveMyPlace(placeType: PlaceType, input: SaveMyPlaceInput) async -> Result<Bool, Error>
+    func deleteMyPlace(placeType: PlaceType, placeId: String) async -> Result<Bool, Error>
 }
 
 public struct UserService: UserServiceProtocol {
@@ -108,6 +109,12 @@ public struct UserService: UserServiceProtocol {
     
     public func saveMyPlace(placeType: PlaceType, input: SaveMyPlaceInput) async -> Result<Bool, Error> {
         let request = SaveMyPlaceRequest(placeType: placeType, input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func deleteMyPlace(placeType: PlaceType, placeId: String) async -> Result<Bool, Error> {
+        let request = DeleteMyPlaceRequest(placeType: placeType, placeId: placeId)
         
         return await NetworkManager.shared.request(requestType: request)
     }
