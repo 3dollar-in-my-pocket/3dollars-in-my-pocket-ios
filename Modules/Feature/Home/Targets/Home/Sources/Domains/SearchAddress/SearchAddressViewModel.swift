@@ -4,6 +4,7 @@ import Combine
 import Common
 import Networking
 import Model
+import Log
 
 final class SearchAddressViewModel: BaseViewModel {
     struct Input {
@@ -17,6 +18,7 @@ final class SearchAddressViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .searchAddress
         let sections = PassthroughSubject<[SearchAddressSection], Never>()
         let isHiddenClear = PassthroughSubject<Bool, Never>()
         let hideKeyboard = PassthroughSubject<Void, Never>()
@@ -42,13 +44,16 @@ final class SearchAddressViewModel: BaseViewModel {
     private var state = State()
     private let mapService: MapServiceProtocol
     private let userService: UserServiceProtocol
+    private let logManager: LogManagerProtocol
     
     init(
         mapService: MapServiceProtocol = MapService(),
-        userService: UserServiceProtocol = UserService()
+        userService: UserServiceProtocol = UserService(),
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.mapService = mapService
         self.userService = userService
+        self.logManager = logManager
         
         super.init()
     }
@@ -77,6 +82,7 @@ final class SearchAddressViewModel: BaseViewModel {
                 
                 owner.selectAddress(document: selectedAddress)
                 owner.saveAddress(document: selectedAddress)
+                owner.sendClickLog(placeDocument: selectedAddress, type: "SEARCH")
             })
             .store(in: &cancellables)
         
@@ -136,6 +142,7 @@ final class SearchAddressViewModel: BaseViewModel {
                 )
                 owner.selectAddress(document: document)
                 owner.saveAddress(document: document)
+                owner.sendClickLog(placeDocument: document, type: "RECENT")
             })
             .store(in: &cancellables)
         
@@ -222,5 +229,19 @@ final class SearchAddressViewModel: BaseViewModel {
     private func reloadRecentSearchDataSource() {
         let sectionItems: [SearchAddressSectionItem] = state.recentSearchAddress.map { .recentSearch(bindRecentSearchCellViewModel(with: $0)) }
         output.sections.send([.init(type: .recentSearch, items: sectionItems)])
+    }
+    
+    private func sendClickLog(placeDocument: PlaceDocument, type: String) {
+        logManager.sendEvent(
+            .init(
+                screen: output.screenName,
+                eventName: .clickAddress,
+                extraParameters: [
+                    .buildingName: placeDocument.placeName,
+                    .address: placeDocument.addressName,
+                    .type: type
+                ]
+            )
+        )
     }
 }

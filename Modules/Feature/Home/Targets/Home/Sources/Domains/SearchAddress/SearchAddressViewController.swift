@@ -3,8 +3,13 @@ import CoreLocation
 
 import Common
 import Model
+import Log
 
 final class SearchAddressViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let searchAddressView = SearchAddressView()
     private let viewModel: SearchAddressViewModel
     private lazy var datasource = SearchAddressDatasource(collectionView: searchAddressView.addressCollectionView, viewModel: viewModel)
