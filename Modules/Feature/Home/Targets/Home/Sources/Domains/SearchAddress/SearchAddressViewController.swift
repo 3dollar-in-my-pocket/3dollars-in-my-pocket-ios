@@ -28,6 +28,7 @@ final class SearchAddressViewController: BaseViewController {
         
         view = searchAddressView
         searchAddressView.addressCollectionView.dataSource = datasource
+        viewModel.input.firstLoad.send()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -96,6 +97,7 @@ final class SearchAddressViewController: BaseViewController {
             .sink(receiveValue: { (owner: SearchAddressViewController, _) in
                 owner.searchAddressView.clearButton.isHidden = true
                 owner.searchAddressView.addressField.text = nil
+                owner.viewModel.input.didTapClearButton.send()
             })
             .store(in: &cancellables)
     }

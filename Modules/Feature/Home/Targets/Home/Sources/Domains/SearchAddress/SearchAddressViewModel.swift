@@ -10,6 +10,10 @@ final class SearchAddressViewModel: BaseViewModel {
         let inputKeyword = PassthroughSubject<String, Never>()
         let didTapAddress = PassthroughSubject<Int, Never>()
         let didScroll = PassthroughSubject<Void, Never>()
+        let firstLoad = PassthroughSubject<Void, Never>()
+        let willDisplayRecentSearchCell = PassthroughSubject<Int, Never>()
+        let didTapRecentSearchAddress = PassthroughSubject<Int, Never>()
+        let didTapClearButton = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -23,6 +27,10 @@ final class SearchAddressViewModel: BaseViewModel {
     
     struct State {
         var address: [PlaceDocument] = []
+        var recentSearchAddress: [PlaceResponse] = []
+        var recentSearchNextCursor: String?
+        var recentSearchHasMore: Bool = false
+        var isLoading: Bool = false
     }
     
     enum Route {
@@ -33,13 +41,21 @@ final class SearchAddressViewModel: BaseViewModel {
     let output = Output()
     private var state = State()
     private let mapService: MapServiceProtocol
+    private let userService: UserServiceProtocol
     
-    init(mapService: MapServiceProtocol = MapService()) {
+    init(
+        mapService: MapServiceProtocol = MapService(),
+        userService: UserServiceProtocol = UserService()
+    ) {
         self.mapService = mapService
+        self.userService = userService
+        
         super.init()
     }
     
     override func bind() {
+        bindRecentSearch()
+        
         input.inputKeyword
             .filter { !$0.isEmpty }
             .throttle(for: 0.5, scheduler: RunLoop.current, latest: true)
@@ -60,12 +76,77 @@ final class SearchAddressViewModel: BaseViewModel {
                 guard let selectedAddress = owner.state.address[safe: index] else { return }
                 
                 owner.selectAddress(document: selectedAddress)
+                owner.saveAddress(document: selectedAddress)
             })
             .store(in: &cancellables)
         
         input.didScroll
             .mapVoid
             .subscribe(output.hideKeyboard)
+            .store(in: &cancellables)
+    }
+    
+    private func bindRecentSearch() {
+        let recentSearchPageSize: Int = 20
+        
+        let loadMore = input.willDisplayRecentSearchCell
+            .withUnretained(self)
+            .filter { owner, row in
+                owner.canLoadMoreRecentSearch(willDisplayRow: row)
+            }
+            .mapVoid
+            .share()
+        
+        input.firstLoad
+            .merge(with: loadMore)
+            .withUnretained(self)
+            .filter { owner, _ in
+                owner.state.isLoading.isNot
+            }
+            .handleEvents(receiveOutput: { owner, _ in
+                owner.state.isLoading = true
+            })
+            .asyncMap { owner, _ in
+                await owner.userService.getMyPlaces(
+                    placeType: .recentSearch,
+                    input: CursorRequestInput(
+                        size: recentSearchPageSize,
+                        cursor: owner.state.recentSearchNextCursor
+                    )
+                )
+            }
+            .compactMapValue()
+            .withUnretained(self)
+            .sink { owner, result in
+                owner.handleRecentSearchAddressResult(result)
+            }
+            .store(in: &cancellables)
+        
+        input.didTapRecentSearchAddress
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: SearchAddressViewModel, index: Int) in
+                guard let selectedAddress = owner.state.recentSearchAddress[safe: index] else { return }
+                
+                let document = PlaceDocument(
+                    addressName: selectedAddress.addressName ?? "",
+                    y: String(selectedAddress.location.longitude),
+                    x: String(selectedAddress.location.latitude),
+                    roadAddressName: selectedAddress.roadAddressName ?? "",
+                    placeName: selectedAddress.placeName
+                )
+                owner.selectAddress(document: document)
+                owner.saveAddress(document: document)
+            })
+            .store(in: &cancellables)
+        
+        input.inputKeyword
+            .filter { $0.isEmpty }
+            .mapVoid
+            .merge(with: input.didTapClearButton.mapVoid)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.reloadRecentSearchDataSource()
+            }
             .store(in: &cancellables)
     }
     
@@ -76,10 +157,8 @@ final class SearchAddressViewModel: BaseViewModel {
             switch result {
             case .success(let response):
                 state.address = response.documents
-                
                 let sectionItems: [SearchAddressSectionItem] = response.documents.map { .address($0) }
-                output.sections.send([.init(items: sectionItems)])
-                
+                output.sections.send([.init(type: .address, items: sectionItems)])
             case .failure(let error):
                 output.showErrorAlert.send(error)
             }
@@ -89,5 +168,59 @@ final class SearchAddressViewModel: BaseViewModel {
     private func selectAddress(document: PlaceDocument) {
         output.selectAddress.send(document)
         output.route.send(.dismiss)
+    }
+    
+    private func canLoadMoreRecentSearch(willDisplayRow: Int) -> Bool {
+        return willDisplayRow == state.recentSearchAddress.count - 1 && state.recentSearchHasMore
+    }
+    
+    private func handleRecentSearchAddressResult(_ response: ContentsWithCursorResposne<PlaceResponse>) {
+        state.isLoading = false
+        state.recentSearchHasMore = response.cursor.hasMore
+        state.recentSearchNextCursor = response.cursor.nextCursor
+        state.recentSearchAddress.append(contentsOf: response.contents)
+        reloadRecentSearchDataSource()
+    }
+    
+    private func saveAddress(document: PlaceDocument) {
+        Task {
+            let input = SaveMyPlaceInput(
+                location: .init(latitude: document.x, longitude: document.y),
+                placeName: document.placeName,
+                addressName: document.addressName,
+                roadAddressName: document.roadAddressName
+            )
+            
+            let _ = await userService.saveMyPlace(
+                placeType: .recentSearch,
+                input: input
+            )
+        }
+    }
+    
+    private func bindRecentSearchCellViewModel(with data: PlaceResponse) -> RecentSearchAddressCellViewModel {
+        let cellViewModel = RecentSearchAddressCellViewModel(data: data)
+        
+        cellViewModel.output.deleteRecentSearch
+            .withUnretained(self)
+            .sink { owner, placeId in
+                Task {
+                    let _ = await owner.userService.deleteMyPlace(
+                        placeType: .recentSearch,
+                        placeId: placeId
+                    )
+                }
+                
+                owner.state.recentSearchAddress.removeAll(where: { $0.placeId == placeId })
+                owner.reloadRecentSearchDataSource()
+            }
+            .store(in: &cellViewModel.cancellables)
+        
+        return cellViewModel
+    }
+    
+    private func reloadRecentSearchDataSource() {
+        let sectionItems: [SearchAddressSectionItem] = state.recentSearchAddress.map { .recentSearch(bindRecentSearchCellViewModel(with: $0)) }
+        output.sections.send([.init(type: .recentSearch, items: sectionItems)])
     }
 }

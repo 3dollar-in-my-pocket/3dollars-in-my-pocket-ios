@@ -37,11 +37,30 @@ final class SearchAddressDatasource: UICollectionViewDiffableDataSource<SearchAd
                 
                 cell.bind(document: document)
                 return cell
+            case .recentSearch(let viewModel):
+                let cell: RecentSearchAddressCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(viewModel)
+                return cell
             }
         }
         
+        supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView? in
+            switch self?.sectionIdentifier(section: indexPath.section)?.type {
+            case .recentSearch:
+                let headerView: SearchAddressHeaderCell = collectionView.dequeueReusableSupplementaryView(ofkind: UICollectionView.elementKindSectionHeader, indexPath: indexPath)
+                headerView.bind(title: "최근 검색 위치")
+                return headerView
+            default:
+                return nil
+            }
+        }
+
         collectionView.register([
-            AddressCell.self
+            AddressCell.self,
+            RecentSearchAddressCell.self
+        ])
+        collectionView.registerSectionHeader([
+            SearchAddressHeaderCell.self,
         ])
         collectionView.delegate = self
     }
@@ -60,10 +79,38 @@ final class SearchAddressDatasource: UICollectionViewDiffableDataSource<SearchAd
 
 extension SearchAddressDatasource: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.input.didTapAddress.send(indexPath.item)
+        switch itemIdentifier(for: indexPath) {
+        case .address:
+            viewModel.input.didTapAddress.send(indexPath.item)
+        case .recentSearch:
+            viewModel.input.didTapRecentSearchAddress.send(indexPath.item)
+        case .none:
+            break
+        }
+        
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         viewModel.input.didScroll.send(())
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        switch sectionIdentifier(section: indexPath.section)?.type {
+        case .recentSearch:
+            viewModel.input.willDisplayRecentSearchCell.send(indexPath.item)
+        default:
+            break
+        }
+    }
+}
+
+extension SearchAddressDatasource: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        switch sectionIdentifier(section: section)?.type {
+        case .recentSearch:
+            SearchAddressHeaderCell.Layout.size
+        default:
+            .zero
+        }
     }
 }
