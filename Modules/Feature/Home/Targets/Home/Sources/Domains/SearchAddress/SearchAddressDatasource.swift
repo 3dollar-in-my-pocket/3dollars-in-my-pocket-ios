@@ -2,6 +2,26 @@ import UIKit
 
 import Model
 
+enum SearchAddressSectionType {
+    case address
+    case recentSearch
+}
+
+struct SearchAddressSection: Hashable {
+    var type: SearchAddressSectionType
+    var items: [SearchAddressSectionItem]
+    
+    init(type: SearchAddressSectionType, items: [SearchAddressSectionItem]) {
+        self.type = type
+        self.items = items
+    }
+}
+
+enum SearchAddressSectionItem: Hashable {
+    case address(PlaceDocument)
+    case recentSearch(RecentSearchAddressCellViewModel)
+}
+
 final class SearchAddressDatasource: UICollectionViewDiffableDataSource<SearchAddressSection, SearchAddressSectionItem> {
     typealias Snapshot = NSDiffableDataSourceSnapshot<SearchAddressSection,SearchAddressSectionItem>
     
