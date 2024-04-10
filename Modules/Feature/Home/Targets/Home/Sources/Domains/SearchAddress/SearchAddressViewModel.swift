@@ -165,7 +165,10 @@ final class SearchAddressViewModel: BaseViewModel {
             case .success(let response):
                 state.address = response.documents
                 let sectionItems: [SearchAddressSectionItem] = response.documents.map { .address($0) }
-                output.sections.send([.init(type: .address, items: sectionItems)])
+                output.sections.send([
+                    .init(type: .banner, items: [.banner]),
+                    .init(type: .address, items: sectionItems)
+                ])
             case .failure(let error):
                 output.showErrorAlert.send(error)
             }
@@ -228,7 +231,10 @@ final class SearchAddressViewModel: BaseViewModel {
     
     private func reloadRecentSearchDataSource() {
         let sectionItems: [SearchAddressSectionItem] = state.recentSearchAddress.map { .recentSearch(bindRecentSearchCellViewModel(with: $0)) }
-        output.sections.send([.init(type: .recentSearch, items: sectionItems)])
+        output.sections.send([
+            .init(type: .banner, items: [.banner]),
+            .init(type: .recentSearch, items: sectionItems)
+        ])
     }
     
     private func sendClickLog(placeDocument: PlaceDocument, type: String) {

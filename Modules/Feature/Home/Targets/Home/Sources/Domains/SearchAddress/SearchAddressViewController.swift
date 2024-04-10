@@ -12,7 +12,7 @@ final class SearchAddressViewController: BaseViewController {
     
     private let searchAddressView = SearchAddressView()
     private let viewModel: SearchAddressViewModel
-    private lazy var datasource = SearchAddressDatasource(collectionView: searchAddressView.addressCollectionView, viewModel: viewModel)
+    private lazy var datasource = SearchAddressDatasource(collectionView: searchAddressView.addressCollectionView, viewModel: viewModel, containerVC: self)
     
     init(viewModel: SearchAddressViewModel = .init()) {
         self.viewModel = viewModel

@@ -5,6 +5,7 @@ import Model
 enum SearchAddressSectionType {
     case address
     case recentSearch
+    case banner
 }
 
 struct SearchAddressSection: Hashable {
@@ -20,6 +21,7 @@ struct SearchAddressSection: Hashable {
 enum SearchAddressSectionItem: Hashable {
     case address(PlaceDocument)
     case recentSearch(RecentSearchAddressCellViewModel)
+    case banner
 }
 
 final class SearchAddressDatasource: UICollectionViewDiffableDataSource<SearchAddressSection, SearchAddressSectionItem> {
@@ -27,10 +29,10 @@ final class SearchAddressDatasource: UICollectionViewDiffableDataSource<SearchAd
     
     let viewModel: SearchAddressViewModel
     
-    init(collectionView: UICollectionView, viewModel: SearchAddressViewModel) {
+    init(collectionView: UICollectionView, viewModel: SearchAddressViewModel, containerVC: UIViewController) {
         self.viewModel = viewModel
         
-        super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+        super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .address(let document):
                 let cell: AddressCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
@@ -40,6 +42,10 @@ final class SearchAddressDatasource: UICollectionViewDiffableDataSource<SearchAd
             case .recentSearch(let viewModel):
                 let cell: RecentSearchAddressCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel)
+                return cell
+            case .banner:
+                let cell: SearchAddressBannerCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(in: containerVC)
                 return cell
             }
         }
@@ -57,7 +63,8 @@ final class SearchAddressDatasource: UICollectionViewDiffableDataSource<SearchAd
 
         collectionView.register([
             AddressCell.self,
-            RecentSearchAddressCell.self
+            RecentSearchAddressCell.self,
+            SearchAddressBannerCell.self
         ])
         collectionView.registerSectionHeader([
             SearchAddressHeaderCell.self,
@@ -84,6 +91,8 @@ extension SearchAddressDatasource: UICollectionViewDelegate {
             viewModel.input.didTapAddress.send(indexPath.item)
         case .recentSearch:
             viewModel.input.didTapRecentSearchAddress.send(indexPath.item)
+        case .banner:
+            break
         case .none:
             break
         }
@@ -105,6 +114,17 @@ extension SearchAddressDatasource: UICollectionViewDelegate {
 }
 
 extension SearchAddressDatasource: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        switch itemIdentifier(for: indexPath) {
+        case .address, .recentSearch:
+            AddressCell.Layout.size
+        case .banner:
+            SearchAddressBannerCell.Layout.size
+        case .none:
+            .zero
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         switch sectionIdentifier(section: section)?.type {
         case .recentSearch:
