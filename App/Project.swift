@@ -102,6 +102,7 @@ struct BuildSetting {
             "ADMOB_UNIT_ID_CATEGORY_FILTER": "ca-app-pub-3940256099942544/2934735716",
             "ADMOB_UNIT_ID_STORE_DETAIL": "ca-app-pub-3940256099942544/2934735716",
             "ADMOB_UNIT_ID_FRONT_BANNER": "ca-app-pub-3940256099942544/4411468910",
+            "ADMOB_UNIT_ID_SEARCH_ADDRESS": "ca-app-pub-1527951560812478/1646012090",
             "ANDROID_PACKAGE_NAME": "com.zion830.threedollars.dev",
             "API_URL": "https://dev.threedollars.co.kr",
             "APP_DISPLAY_NAME": "가슴속3천원-Dev",
