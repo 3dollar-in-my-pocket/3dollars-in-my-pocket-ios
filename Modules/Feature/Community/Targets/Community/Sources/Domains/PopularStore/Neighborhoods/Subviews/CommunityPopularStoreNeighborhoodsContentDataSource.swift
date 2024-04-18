@@ -9,9 +9,10 @@ struct CommunityPopularStoreNeighborhoodsSection: Hashable {
 
 enum CommunityPopularStoreNeighborhoodsSectionItem: Hashable {
     case district(CommunityNeighborhoods)
+    case province(CommunityNeighborhoodProvince)
 }
 
-final class CommunityPopularStoreNeighborhoodsDataSource: UICollectionViewDiffableDataSource<CommunityPopularStoreNeighborhoodsSection, CommunityPopularStoreNeighborhoodsSectionItem> {
+final class CommunityPopularStoreNeighborhoodsContentDataSource: UICollectionViewDiffableDataSource<CommunityPopularStoreNeighborhoodsSection, CommunityPopularStoreNeighborhoodsSectionItem> {
 
     private typealias Snapshot = NSDiffableDataSourceSnapshot<CommunityPopularStoreNeighborhoodsSection, CommunityPopularStoreNeighborhoodsSectionItem>
 
@@ -19,6 +20,10 @@ final class CommunityPopularStoreNeighborhoodsDataSource: UICollectionViewDiffab
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .district(let item):
+                let cell: CommunityPopularStoreNeighborhoodsCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(item: item)
+                return cell
+            case .province(let item):
                 let cell: CommunityPopularStoreNeighborhoodsCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(item: item)
                 return cell

@@ -12,6 +12,11 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
 public enum CommunityStrings {
+
+  public enum CommunityPopularStoreNeighborhoodsHeader {
+    /// 어디 인기 가게를 볼까요?
+    public static let title = CommunityStrings.tr("Localization", "community_popular_store_neighborhoods_header.title")
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

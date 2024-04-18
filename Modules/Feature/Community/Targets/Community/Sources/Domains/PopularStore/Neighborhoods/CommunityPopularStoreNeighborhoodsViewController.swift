@@ -6,11 +6,6 @@ import Common
 
 /// 커뮤니티/구 선택 팝업
 final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController {
-
-    enum Layout {
-
-    }
-
     private let backgroundButton = UIButton()
 
     private let containerView = UIView().then {
@@ -18,32 +13,19 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
         $0.layer.cornerRadius = 16
         $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
-
-    private let titleLabel = UILabel().then {
-        $0.text = "어디 인기 가게를 볼까요?"
-        $0.textColor = Colors.gray100.color
-        $0.font = Fonts.semiBold.font(size: 20)
-    }
-
-    private lazy var collectionView = UICollectionView(
-        frame: .zero,
-        collectionViewLayout: generateLayout()
-    ).then {
-        $0.delegate = self
-        $0.backgroundColor = .clear
-        $0.showsVerticalScrollIndicator = false
-        $0.showsHorizontalScrollIndicator = false
-    }
-
-    private let closeButton = UIButton().then {
-        $0.setImage(Icons.close.image.resizeImage(scaledTo: 16).withTintColor(.white), for: .normal)
-        $0.backgroundColor = Colors.gray40.color
-        $0.layer.cornerRadius = 12
-    }
-
-    private lazy var dataSource = CommunityPopularStoreNeighborhoodsDataSource(collectionView: collectionView)
+    
+    private let headerView = CommunityPopularStoreNeighborhoodsHeaderView()
+    private let contentViewController = CommunityPopularStoreNeighborhoodsContentViewController()
+    private lazy var contentsNavigationViewController: UINavigationController = {
+        let navigationViewController = UINavigationController(rootViewController: contentViewController)
+        navigationViewController.isNavigationBarHidden = true
+        
+        return navigationViewController
+    }()
+    
     private let viewModel: CommunityPopularStoreNeighborhoodsViewModel
-
+    
+    
     init(_ viewModel: CommunityPopularStoreNeighborhoodsViewModel) {
         self.viewModel = viewModel
 
@@ -62,47 +44,40 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
         viewModel.input.firstLoad.send()
     }
 
-    func setupUI() {
+    private func setupUI() {
+        addChild(contentsNavigationViewController)
+        
         view.addSubViews([
             backgroundButton,
             containerView,
         ])
-
+        
         containerView.addSubViews([
-            titleLabel,
-            collectionView,
-            closeButton
+            headerView,
+            contentsNavigationViewController.view
         ])
-
+        
         backgroundButton.snp.makeConstraints {
+            $0.leading.trailing.top.equalToSuperview()
+            $0.bottom.equalTo(containerView.snp.top)
+        }
+        
+        headerView.snp.makeConstraints {
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
             $0.top.equalToSuperview()
-            $0.bottom.equalTo(containerView.snp.top)
         }
+        
+        contentsNavigationViewController.view.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.top.equalTo(headerView.snp.bottom)
+        }
+        
+        view.addSubview(containerView)
 
         containerView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview()
-        }
-
-        titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(24)
-            $0.leading.equalToSuperview().offset(20)
-        }
-
-        closeButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(24)
-            $0.trailing.equalToSuperview().inset(20)
-            $0.size.equalTo(24)
-        }
-
-        collectionView.snp.makeConstraints {
-            $0.top.equalTo(closeButton.snp.bottom).offset(16)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.bottom.equalToSuperview()
             $0.height.equalTo(600)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
 
         view.backgroundColor = .clear
@@ -112,26 +87,24 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
     override func bindEvent() {
         super.bindEvent()
 
-        // UI
-        closeButton
+        backgroundButton
             .controlPublisher(for: .touchUpInside)
-            .merge(
-                with: backgroundButton
-                    .controlPublisher(for: .touchUpInside)
-            )
             .main
             .withUnretained(self)
             .sink { owner, _ in
-                owner.back()
+                owner.dismiss(animated: true)
             }
             .store(in: &cancellables)
-
-        // Output
-        viewModel.output.dataSource
+    }
+    
+    override func bindViewModelOutput() {
+        headerView.bind(viewModel: viewModel.headerViewModel)
+        
+        viewModel.output.contentViewModel
             .main
             .withUnretained(self)
-            .sink { owner, sections in
-                owner.dataSource.reloadData(sections)
+            .sink { (owner: CommunityPopularStoreNeighborhoodsViewController, viewModel: CommunityPopularStoreNeighborhoodsContentViewModel) in
+                owner.contentViewController.bind(viewModel)
             }
             .store(in: &cancellables)
 
@@ -140,8 +113,15 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
             .withUnretained(self)
             .sink { owner, route in
                 switch route {
+                case .pushDistrict(let viewModel):
+                    let contentViewController = CommunityPopularStoreNeighborhoodsContentViewController()
+                    contentViewController.bind(viewModel)
+                    
+                    owner.contentsNavigationViewController.pushViewController(contentViewController, animated: true)
                 case .back:
-                    owner.back()
+                    owner.contentsNavigationViewController.popViewController(animated: true)
+                case .dismiss:
+                    owner.dismiss(animated: true)
                 }
             }
             .store(in: &cancellables)
@@ -155,10 +135,6 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
             .store(in: &cancellables)
     }
 
-    private func back() {
-        dismiss(animated: true)
-    }
-
     private func generateLayout() -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -166,22 +142,5 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
         layout.minimumLineSpacing = 6
 
         return layout
-    }
-}
-
-extension CommunityPopularStoreNeighborhoodsViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        switch dataSource.itemIdentifier(for: indexPath) {
-        case let .district(item):
-            viewModel.input.didSelectItem.send(item)
-        default:
-            break
-        }
-    }
-}
-
-extension CommunityPopularStoreNeighborhoodsViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: CommunityPopularStoreNeighborhoodsCell.Layout.height)
     }
 }
