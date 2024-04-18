@@ -3,11 +3,16 @@ import CoreLocation
 
 import Common
 import Model
+import Log
 
 final class SearchAddressViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let searchAddressView = SearchAddressView()
     private let viewModel: SearchAddressViewModel
-    private lazy var datasource = SearchAddressDatasource(collectionView: searchAddressView.addressCollectionView, viewModel: viewModel)
+    private lazy var datasource = SearchAddressDatasource(collectionView: searchAddressView.addressCollectionView, viewModel: viewModel, containerVC: self)
     
     init(viewModel: SearchAddressViewModel = .init()) {
         self.viewModel = viewModel
@@ -28,6 +33,7 @@ final class SearchAddressViewController: BaseViewController {
         
         view = searchAddressView
         searchAddressView.addressCollectionView.dataSource = datasource
+        viewModel.input.firstLoad.send()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -96,6 +102,7 @@ final class SearchAddressViewController: BaseViewController {
             .sink(receiveValue: { (owner: SearchAddressViewController, _) in
                 owner.searchAddressView.clearButton.isHidden = true
                 owner.searchAddressView.addressField.text = nil
+                owner.viewModel.input.didTapClearButton.send()
             })
             .store(in: &cancellables)
     }
