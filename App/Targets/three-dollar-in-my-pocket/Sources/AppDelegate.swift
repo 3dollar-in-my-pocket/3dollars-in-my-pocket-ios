@@ -30,7 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         initializeNotification()
         initializeDI()
         initializeFirebase()
-        initializeNetworkLogger()
         initializeSwiftyBeaver()
         initializeKakao()
         initializeAdmob()
@@ -59,11 +58,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
         completionHandler(UIBackgroundFetchResult.newData)
-    }
-    
-    private func initializeNetworkLogger() {
-        NetworkActivityLogger.shared.startLogging()
-        NetworkActivityLogger.shared.level = .debug
     }
     
     private func initializeFirebase() {

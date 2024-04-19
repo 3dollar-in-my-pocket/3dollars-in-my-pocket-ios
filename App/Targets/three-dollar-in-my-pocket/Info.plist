@@ -4,6 +4,8 @@
 <dict>
 	<key>ADMOB_UNIT_ID</key>
 	<dict>
+		<key>ADMOB_UNIT_ID_SEARCH_ADDRESS</key>
+		<string>$(ADMOB_UNIT_ID_SEARCH_ADDRESS)</string>
 		<key>ADMOB_UNIT_ID_FRONT_BANNER</key>
 		<string>$(ADMOB_UNIT_ID_FRONT_BANNER)</string>
 		<key>ADMOB_UNIT_ID_STORE_DETAIL</key>

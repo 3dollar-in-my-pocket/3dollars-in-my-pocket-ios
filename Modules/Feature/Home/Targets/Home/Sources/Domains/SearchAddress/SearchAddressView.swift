@@ -129,7 +129,6 @@ final class SearchAddressView: BaseView {
     private func createLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = AddressCell.Layout.size
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         

@@ -24,6 +24,12 @@ public protocol UserServiceProtocol {
     func logout() async -> Result<String, Error>
     
     func signout() async -> Result<String, Error>
+    
+    func saveMyPlace(placeType: PlaceType, input: SaveMyPlaceInput) async -> Result<Bool, Error>
+    
+    func getMyPlaces(placeType: PlaceType, input: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PlaceResponse>, Error>
+    
+    func deleteMyPlace(placeType: PlaceType, placeId: String) async -> Result<Bool, Error>
 }
 
 public struct UserService: UserServiceProtocol {
@@ -100,6 +106,24 @@ public struct UserService: UserServiceProtocol {
     
     public func signout() async -> Result<String, Error> {
         let request = SignoutRequest()
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func saveMyPlace(placeType: PlaceType, input: SaveMyPlaceInput) async -> Result<Bool, Error> {
+        let request = SaveMyPlaceRequest(placeType: placeType, input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func getMyPlaces(placeType: PlaceType, input: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PlaceResponse>, Error> {
+        let request = GetMyPlacesRequest(placeType: placeType, input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func deleteMyPlace(placeType: PlaceType, placeId: String) async -> Result<Bool, Error> {
+        let request = DeleteMyPlaceRequest(placeType: placeType, placeId: placeId)
         
         return await NetworkManager.shared.request(requestType: request)
     }

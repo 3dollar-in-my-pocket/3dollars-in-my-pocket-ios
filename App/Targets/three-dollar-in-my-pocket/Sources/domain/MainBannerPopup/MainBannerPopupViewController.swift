@@ -4,7 +4,7 @@ import Common
 import Model
 import Log
 
-final class MainBannerPopupViewController: Common.BaseViewController {
+final class MainBannerPopupViewController: BaseViewController {
     public override var screenName: ScreenName {
         return viewModel.output.screenName
     }

@@ -20,6 +20,7 @@ public enum EventName: String {
     case clickSorting = "click_sorting"
     case clickAdCard = "click_ad_card"
     case clickAdMarker = "click_ad_marker"
+    case clickAddress = "click_address"
     
     // 카테고리 필터 화면
     case clickCategory = "click_category"

@@ -102,6 +102,7 @@ struct BuildSetting {
             "ADMOB_UNIT_ID_CATEGORY_FILTER": "ca-app-pub-3940256099942544/2934735716",
             "ADMOB_UNIT_ID_STORE_DETAIL": "ca-app-pub-3940256099942544/2934735716",
             "ADMOB_UNIT_ID_FRONT_BANNER": "ca-app-pub-3940256099942544/4411468910",
+            "ADMOB_UNIT_ID_SEARCH_ADDRESS": "ca-app-pub-1527951560812478/1646012090",
             "ANDROID_PACKAGE_NAME": "com.zion830.threedollars.dev",
             "API_URL": "https://dev.threedollars.co.kr",
             "APP_DISPLAY_NAME": "가슴속3천원-Dev",
@@ -244,10 +245,7 @@ let project = Project(
     name: "3dollar-in-my-pocket",
     organizationName: "macgongmon",
     packages: [
-        .reactorKit,
         .kakaoSDK,
-        .rxSwift,
-        .rxDataSources,
         .swiftyBeaver,
         .deviceKit,
         .permissionsKit,
@@ -314,11 +312,6 @@ let project = Project(
                 .Package.locationAlwaysPermission,
                 .Package.locationWhenInUsePermission,
                 .Package.photoLibraryPermission,
-                .Package.reactorKit,
-                .Package.rxCocoa,
-                .Package.rxDataSources,
-                .Package.rxRelay,
-                .Package.rxSwift,
                 .Package.swiftyBeaver,
                 .target(name: "service-extension"),
                 .target(name: "content-extension"),
@@ -341,11 +334,6 @@ let project = Project(
             resources: ["Targets/three-dollar-in-my-pocketTests/Resources/**"],
             dependencies: [
                 .target(name: "three-dollar-in-my-pocket"),
-                .Package.rxRelay,
-                .Package.rxTest,
-                .Package.rxBlocking,
-                .Package.rxCocoa,
-                .Package.rxSwift
             ],
             settings: .settings(
                 base: BuildSetting.AppTest.base,

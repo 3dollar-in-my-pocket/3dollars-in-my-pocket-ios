@@ -5,7 +5,7 @@ import Common
 import Model
 import Log
 
-final class MainBannerPopupViewModel: Common.BaseViewModel {
+final class MainBannerPopupViewModel: BaseViewModel {
     struct Input {
         let didTapBanner = PassthroughSubject<Void, Never>()
         let didTapDisableToday = PassthroughSubject<Void, Never>()

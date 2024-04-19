@@ -1,6 +1,5 @@
 import UIKit
 import Combine
-import RxSwift
 
 import Model
 import DependencyInjection
@@ -17,8 +16,6 @@ import MyPageInterface
 
 final class MainTabBarViewController: UITabBarController {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
-    private let disposeBag = DisposeBag()
-    private var deeplinkDisposeBag = DisposeBag()
     private lazy var dimView = UIView(frame: self.view.frame).then {
         $0.backgroundColor = .clear
     }
@@ -89,7 +86,7 @@ final class MainTabBarViewController: UITabBarController {
             self.tabBar.scrollEdgeAppearance = appearance
         }
         UITabBarItem.appearance().setTitleTextAttributes(
-            [.font: UIFont.bold(size: 10) as Any],
+            [.font: Fonts.bold.font(size: 10) as Any],
             for: .normal
         )
     }
@@ -99,12 +96,6 @@ final class MainTabBarViewController: UITabBarController {
         
         self.processKakaoLinkIfExisted()
         DeeplinkManager.shared.flushDelayedDeeplink()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        self.deeplinkDisposeBag = DisposeBag()
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -171,11 +162,11 @@ final class MainTabBarViewController: UITabBarController {
         switch tab {
         case .my:
             guard !UserDefaultsUtil().isAnonymousUser else { return }
-            self.tabBar.barTintColor = Color.gray100
+            self.tabBar.barTintColor = Colors.gray100.color
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()
                 appearance.configureWithOpaqueBackground()
-                appearance.backgroundColor = Color.gray100
+                appearance.backgroundColor = Colors.gray100.color
                 self.tabBar.standardAppearance = appearance
                 self.tabBar.scrollEdgeAppearance = appearance
             }
@@ -196,7 +187,7 @@ final class MainTabBarViewController: UITabBarController {
     
     private func setupTabBarController() {
         self.setViewControllers(contentViewControllers, animated: true)
-        self.tabBar.tintColor = Color.red
+        self.tabBar.tintColor = Colors.mainRed.color
         self.tabBar.layer.borderWidth = 0
         self.tabBar.layer.borderColor = UIColor.clear.cgColor
         self.tabBar.clipsToBounds = true

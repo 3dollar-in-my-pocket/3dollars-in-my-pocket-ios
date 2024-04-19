@@ -3,7 +3,7 @@ import UIKit
 import Common
 import Model
 
-final class WebViewController: Common.BaseViewController {
+final class WebViewController: BaseViewController {
     private let webView = WebView()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

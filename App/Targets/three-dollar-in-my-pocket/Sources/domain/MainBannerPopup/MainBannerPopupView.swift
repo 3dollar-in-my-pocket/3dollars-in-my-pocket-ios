@@ -4,7 +4,7 @@ import Common
 import DesignSystem
 import Model
 
-final class MainBannerPopupView: Common.BaseView {
+final class MainBannerPopupView: BaseView {
     let bannerButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .gray

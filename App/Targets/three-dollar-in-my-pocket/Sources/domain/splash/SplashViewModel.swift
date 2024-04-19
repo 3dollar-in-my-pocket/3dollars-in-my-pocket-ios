@@ -1,34 +1,44 @@
-import RxSwift
-import RxCocoa
-import FirebaseRemoteConfig
-import Kingfisher
+
+import Combine
+
 import Common
+import Model
+import Networking
+
+import FirebaseRemoteConfig
+import FirebaseMessaging
 
 final class SplashViewModel: BaseViewModel {
     struct Input {
-        let viewDidLoad = PublishSubject<Void>()
+        let viewDidLoad = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
-        let goToSignIn = PublishRelay<Void>()
-        let goToMain = PublishRelay<Void>()
-        let goToSignInWithAlert = PublishRelay<AlertContent>()
-        let showMaintenanceAlert = PublishRelay<AlertContent>()
-        let showUpdateAlert = PublishRelay<Void>()
+        let route = PassthroughSubject<Route, Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
+    }
+    
+    enum Route {
+        case goToSignIn
+        case goToMain
+        case goToSignInWithAlert(AlertContent)
+        case showMaintenanceAlert(AlertContent)
+        case showUpdateAlert
     }
     
     let input = Input()
     let output = Output()
-    var userDefaults: UserDefaultsUtil
-    let userService: UserServiceProtocol
-    let remoteConfigService: RemoteConfigProtocol
+    
+    private var userDefaults: UserDefaultsUtil
+    private let userService: UserServiceProtocol
+    private let remoteConfigService: RemoteConfigProtocol
     private let deviceService: DeviceServiceProtocol
     
     init(
-        userDefaults: UserDefaultsUtil,
-        userService: UserServiceProtocol,
-        remoteConfigService: RemoteConfigProtocol,
-        deviceService: DeviceServiceProtocol
+        userDefaults: UserDefaultsUtil = UserDefaultsUtil(),
+        userService: UserServiceProtocol = UserService(),
+        remoteConfigService: RemoteConfigProtocol = RemoteConfigService(),
+        deviceService: Networking.DeviceServiceProtocol = DeviceService()
     ) {
         self.userDefaults = userDefaults
         self.userService = userService
@@ -37,36 +47,42 @@ final class SplashViewModel: BaseViewModel {
         
         super.init()
         
-        self.input.viewDidLoad
-            .bind(onNext: { [weak self] in
-                self?.checkMinimalVersion()
-            })
-            .disposed(by: self.disposeBag)
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { (owner: SplashViewModel, _) in
+                owner.checkMinimalVersion()
+            }
+            .store(in: &cancellables)
     }
     
     private func checkMinimalVersion() {
-        self.remoteConfigService.fetchMinimalVersion()
-            .subscribe(onNext: { [weak self] minimalVersion in
+        Task { [weak self] in
+            guard let self else { return }
+            
+            do {
+                let minimalVersion = try await remoteConfigService.fetchMinimalVersion()
+                
                 if VersionUtils.isNeedUpdate(
                     currentVersion: VersionUtils.appVersion,
                     minimumVersion: minimalVersion
                 ) {
-                    self?.output.showUpdateAlert.accept(())
+                    output.route.send(.showUpdateAlert)
                 } else {
-                    self?.validateToken()
+                    validateToken()
                 }
-            },
-            onError: self.showErrorAlert.accept(_:))
-            .disposed(by: self.disposeBag)
+            } catch {
+                output.showErrorAlert.send(error)
+            }
+        }.store(in: taskBag)
     }
     
     private func validateToken() {
-        let token = self.userDefaults.authToken
+        let token = userDefaults.authToken
         
-        if self.validateTokenFromLocal(token: token) {
-            self.validateTokenFromServer()
+        if validateTokenFromLocal(token: token) {
+            validateTokenFromServer()
         } else {
-            self.output.goToSignIn.accept(())
+            output.route.send(.goToSignIn)
         }
     }
     
@@ -75,53 +91,60 @@ final class SplashViewModel: BaseViewModel {
     }
     
     private func validateTokenFromServer() {
-        self.userService.fetchUserInfo()
-            .do(onNext: { [weak self] userInfoResponse in
-                Common.UserDefaultsUtil().userId = userInfoResponse.userId
-                self?.userDefaults.userId = userInfoResponse.userId
-            })
-            .map { _ in Void() }
-            .subscribe(
-                onNext: self.refreshPushToken,
-                onError: self.handelValidationError(error:)
-            )
-            .disposed(by: disposeBag)
+        Task { [weak self] in
+            guard let self else { return }
+            let result = await userService.fetchUser()
+            
+            switch result {
+            case .success(let user):
+                userDefaults.userId = user.userId
+                refreshPushToken()
+                
+            case .failure(let error):
+                handleValidationError(error: error)
+            }
+        }.store(in: taskBag)
     }
     
     private func refreshPushToken() {
-        self.deviceService.getFCMToken()
-            .flatMap { [weak self] pushToken -> Observable<String> in
-                guard let self = self else { return .error(BaseError.unknown) }
+        Task { [weak self] in
+            guard let self else { return }
+            
+            do {
                 
-                return self.deviceService.refreshDeivce(
-                    pushPlatformType: .fcm,
-                    pushToken: pushToken
-                )
+                let pushToken = try await Messaging.messaging().token()
+                let result = await deviceService.refreshDevice(pushToken: pushToken)
+                
+                switch result {
+                case .success(_):
+                    output.route.send(.goToMain)
+                case .failure(let error):
+                    handleValidationError(error: error)
+                }
+            } catch {
+                handleValidationError(error: error)
             }
-            .subscribe(onNext: { [weak self] _ in
-                self?.output.goToMain.accept(())
-            }) { error in
-                self.handelValidationError(error: error)
-            }
-            .disposed(by: self.disposeBag)
+        }
+        
     }
     
-    private func handelValidationError(error: Error) {
-        if let httpError = error as? HTTPError {
+    private func handleValidationError(error: Error) {
+        if let httpError = error as? Model.HTTPError {
             switch httpError {
-            case .forbidden, .unauthorized:
-                let alertContent = AlertContent(title: nil, message: httpError.description)
-                
-                self.output.goToSignInWithAlert.accept(alertContent)
+            case .forbidden:
+                let alertContent = AlertContent(title: nil, message: Strings.httpErrorForbidden)
+                output.route.send(.goToSignInWithAlert(alertContent))
+            case .unauthorized:
+                let alertContent = AlertContent(title: nil, message: Strings.httpErrorUnauthorized)
+                output.route.send(.goToSignInWithAlert(alertContent))
             case .maintenance:
-                let alertContent = AlertContent(title: nil, message: httpError.description)
-                
-                self.output.showMaintenanceAlert.accept(alertContent)
+                let alertContent = AlertContent(title: nil, message: Strings.httpErrorMaintenance)
+                output.route.send(.showMaintenanceAlert(alertContent))
             default:
-                self.showErrorAlert.accept(error)
+                output.showErrorAlert.send(error)
             }
         } else {
-            self.showErrorAlert.accept(error)
+            output.showErrorAlert.send(error)
         }
     }
 }
