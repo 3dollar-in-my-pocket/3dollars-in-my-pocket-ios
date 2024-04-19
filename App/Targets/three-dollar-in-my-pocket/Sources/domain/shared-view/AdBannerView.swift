@@ -49,30 +49,11 @@ class AdBannerView: UIView, AdBannerViewProtocol {
 }
 
 extension AdBannerView: GADBannerViewDelegate {
-    /// Tells the delegate an ad request loaded an ad.
-    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        print("💚adViewDidReceiveAd")
+    func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
+        print("🟢bannerViewDidReceiveAd")
     }
     
-    /// Tells the delegate that a full-screen view will be presented in response
-    /// to the user clicking on an ad.
-    func bannerViewWillPresentScreen(_ bannerView: GADBannerView) {
-        print("💚adViewWillPresentScreen")
-    }
-    
-    /// Tells the delegate that the full-screen view will be dismissed.
-    func bannerViewWillDismissScreen(_ bannerView: GADBannerView) {
-        print("💚adViewWillDismissScreen")
-    }
-    
-    /// Tells the delegate that the full-screen view has been dismissed.
-    func bannerViewDidDismissScreen(_ bannerView: GADBannerView) {
-        print("💚adViewDidDismissScreen")
-    }
-    
-    /// Tells the delegate that a user click will open another app (such as
-    /// the App Store), backgrounding the current app.
-    func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
-        print("💚adViewWillLeaveApplication")
+    func bannerView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: Error) {
+        print("🟢didFailToReceiveAdWithError: \(error)")
     }
 }
