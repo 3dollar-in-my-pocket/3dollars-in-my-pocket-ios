@@ -1,6 +1,9 @@
 import Foundation
 
 public enum EventName: String {
+    // 공용
+    case clickStore = "click_store"
+    
     // 홈 화면
     case clickSignInApple = "click_sign_in_apple"
     case clickSignInKakao = "click_sign_in_kakao"
@@ -10,7 +13,6 @@ public enum EventName: String {
     case clickSignUp = "click_sign_up"
     
     // 홈 화면
-    case clickStore = "click_store"
     case clickVisit = "click_visit"
     case clickCurrentLocation = "click_current_location"
     case clickMarker = "click_marker"

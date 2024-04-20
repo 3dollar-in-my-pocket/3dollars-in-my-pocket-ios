@@ -16,6 +16,7 @@ final class VisitStoreListViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .visitedList
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -122,23 +123,27 @@ final class VisitStoreListViewModel: BaseViewModel {
         
         input.didSelectItem
             .withUnretained(self)
-            .compactMap { owner, indexPath in 
-                return owner.output.sections.value[safe: indexPath.section]?.items[safe: indexPath.item] 
+            .compactMap { owner, indexPath -> PlatformStore? in
+                guard let item = owner.output.sections.value[safe: indexPath.section]?.items[safe: indexPath.item],
+                      case .store(let store) = item else { return nil }
+                return store.store
             }
-            .compactMap {
-                if case .store(let item) = $0 {
-                    switch item.store.type {
-                    case .userStore:
-                        if let id = Int(item.store.id) {
-                            return .storeDetail(id)
-                        }
-                    case .bossStore:
-                        return .bossStoreDetail(item.store.id)
-                    case .unknown:
+            .handleEvents(receiveOutput: { [weak self] store in
+                self?.sendClickStore(store)
+            })
+            .compactMap { store -> Route? in
+                switch store.type {
+                case .userStore:
+                    if let id = Int(store.id) {
+                        return .storeDetail(id)
+                    } else {
                         return nil
                     }
+                case .bossStore:
+                    return .bossStoreDetail(store.id)
+                case .unknown:
+                    return nil
                 }
-                return nil
             }
             .subscribe(output.route)
             .store(in: &cancellables)
@@ -159,5 +164,15 @@ final class VisitStoreListViewModel: BaseViewModel {
     
     private func canLoadMore(willDisplaySection: Int) -> Bool {
         return willDisplaySection == output.sections.value.count - 1 && state.hasMore
+    }
+}
+
+// MARK: Log
+private extension VisitStoreListViewModel {
+    func sendClickStore(_ store: PlatformStore) {
+        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickStore, extraParameters: [
+            .storeId: store.id,
+            .type: store.type.rawValue
+        ]))
     }
 }
