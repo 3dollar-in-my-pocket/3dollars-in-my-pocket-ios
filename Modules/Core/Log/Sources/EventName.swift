@@ -80,4 +80,10 @@ public enum EventName: String {
     
     // 투표 상세 화면
     case clickDeleteReview = "click_delete_review"
+    
+    // 마이 페이지 화면
+    case clickMedal = "click_medal"
+    case clickVisitedStore = "click_visited_store"
+    case clickFavoritedStore = "click_favorited_store"
+    case clickMyPoll = "click_my_poll"
 }

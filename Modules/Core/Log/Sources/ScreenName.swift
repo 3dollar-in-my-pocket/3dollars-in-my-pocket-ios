@@ -40,4 +40,7 @@ public enum ScreenName: String {
     case reportPoll = "report_poll"
     case reportReview = "report_review"
     case createPoll = "careate_poll"
+    
+    // MyPage
+    case myPage = "my_page"
 }
