@@ -7,9 +7,13 @@ import Model
 import DesignSystem
 import Common
 import StoreInterface
+import Log
 
 /// 제보한 가게
 public final class RegisteredStoreListViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
     
     public override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
     
@@ -183,7 +187,7 @@ extension RegisteredStoreListViewController: UICollectionViewDelegate {
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        viewModel.input.willDisplaytCell.send(indexPath.item)
+        viewModel.input.willDisplayCell.send(indexPath.item)
     }
 }
 

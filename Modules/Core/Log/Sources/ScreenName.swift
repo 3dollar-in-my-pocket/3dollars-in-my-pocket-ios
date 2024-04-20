@@ -43,4 +43,5 @@ public enum ScreenName: String {
     
     // MyPage
     case myPage = "my_page"
+    case registeredStore = "registered_store"
 }

@@ -10,10 +10,11 @@ final class RegisteredStoreListViewModel: BaseViewModel {
     struct Input {
         let loadTrigger = PassthroughSubject<Void, Never>()
         let didSelectItem = PassthroughSubject<Int, Never>()
-        let willDisplaytCell = PassthroughSubject<Int, Never>()
+        let willDisplayCell = PassthroughSubject<Int, Never>()
     }
 
     struct Output {
+        let screenName: ScreenName = .registeredStore
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -86,7 +87,7 @@ final class RegisteredStoreListViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
-        input.willDisplaytCell
+        input.willDisplayCell
             .withUnretained(self)
             .filter { owner, row in
                 owner.canLoadMore(willDisplayRow: row)
@@ -116,22 +117,35 @@ final class RegisteredStoreListViewModel: BaseViewModel {
                     
                     owner.state.hasMore = response.cursor.hasMore
                     owner.state.nextCursor = response.cursor.nextCursor
-                case .failure(let _):
-                    // owner.output.showErrorAlert.send(error)
-                    break
+                case .failure(let error):
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
         
         input.didSelectItem
             .withUnretained(self)
-            .compactMap { owner, index in owner.output.sectionItems.value[safe: index]?.store.storeId }
-            .map { .storeDetail($0) }
+            .compactMap { owner, index in owner.output.sectionItems.value[safe: index]?.store }
+            .handleEvents(receiveOutput: { [weak self] store in
+                self?.sendClickStoreLog(store)
+            })
+            .map { .storeDetail($0.storeId) }
             .subscribe(output.route)
             .store(in: &cancellables)
     }
     
     private func canLoadMore(willDisplayRow: Int) -> Bool {
         return willDisplayRow == output.sectionItems.value.count - 1 && state.hasMore
+    }
+}
+
+
+// MARK: Log
+private extension RegisteredStoreListViewModel {
+    func sendClickStoreLog(_ store: UserStoreApiResponse) {
+        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickStore, extraParameters: [
+            .storeId: store.storeId,
+            .type: StoreType.userStore.rawValue
+        ]))
     }
 }
