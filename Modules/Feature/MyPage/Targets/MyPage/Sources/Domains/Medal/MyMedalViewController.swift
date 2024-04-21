@@ -6,8 +6,13 @@ import SnapKit
 import Model
 import DesignSystem
 import Common
+import Log
 
 final class MyMedalViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screen
+    }
+    
     private let myMedalView = MyMedalView()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

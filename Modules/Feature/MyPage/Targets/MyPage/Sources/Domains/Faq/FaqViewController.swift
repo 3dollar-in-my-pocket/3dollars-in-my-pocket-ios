@@ -2,8 +2,13 @@ import UIKit
 
 import Common
 import Model
+import Log
 
 public final class FaqViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let faqView = FaqView()
     private let viewModel: FaqViewModel
     

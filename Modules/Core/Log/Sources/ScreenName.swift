@@ -40,4 +40,20 @@ public enum ScreenName: String {
     case reportPoll = "report_poll"
     case reportReview = "report_review"
     case createPoll = "careate_poll"
+    
+    // MyPage
+    case myPage = "my_page"
+    case registeredStore = "registered_store"
+    case visitedList = "visited_list"
+    case clickReview = "click_review"
+    case myReview = "my_review"
+    case myMedal = "my_medal"
+    case myBookmarkList = "my_bookmark_list"
+    case editBookmarkList = "edit_bookmark_list"
+    case bookmarkListViewer = "bookmark_list_viewer"
+    case setting
+    case editNickname = "edit_nickname"
+    case qna
+    case faq
+    case teamInfo = "team_info"
 }

@@ -2,8 +2,13 @@ import UIKit
 
 import Common
 import DesignSystem
+import Log
 
 public final class BookmarkViewerViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let bookmarkViewerView = BookmarkViewerView()
     private let viewModel: BookmarkViewerViewModel
     private lazy var datasource = BookmarkViewerDatasource(

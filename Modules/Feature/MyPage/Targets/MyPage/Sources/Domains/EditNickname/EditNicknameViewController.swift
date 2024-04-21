@@ -2,8 +2,13 @@ import UIKit
 
 import Common
 import DesignSystem
+import Log
 
 final class EditNicknameViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let editNicknameView = EditNicknameView()
     private let viewModel: EditNicknameViewModel
     

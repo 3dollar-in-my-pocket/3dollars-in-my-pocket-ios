@@ -27,6 +27,7 @@ final class ReviewTabViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .myReview
         let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
         let changeTab = PassthroughSubject<Int, Never>()

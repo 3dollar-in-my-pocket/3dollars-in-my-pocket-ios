@@ -1,8 +1,13 @@
 import UIKit
 
 import Common
+import Log
 
 final class TeamInfoViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return .teamInfo
+    }
+    
     private let teamInfoView = TeamInfoView()
     
     override func loadView() {

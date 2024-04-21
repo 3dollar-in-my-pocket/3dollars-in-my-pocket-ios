@@ -9,13 +9,13 @@ import Log
 final class MyMedalViewModel: BaseViewModel {
     struct Input {
         let loadTrigger = PassthroughSubject<Void, Never>()
-        let didSelectItem = PassthroughSubject<IndexPath, Never>()
         let didSelectInfoButton = PassthroughSubject<Void, Never>()
         let didSelectCurrentMedal = PassthroughSubject<Void, Never>()
         let didSelectMedal = PassthroughSubject<Medal, Never>()
     }
 
     struct Output {
+        let screen: ScreenName = .myMedal
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -73,6 +73,7 @@ final class MyMedalViewModel: BaseViewModel {
             .filter { [weak self] in $0.medalId != self?.state.representativeMedal.medalId }
             .withUnretained(self)
             .handleEvents(receiveOutput: { (owner: MyMedalViewModel, medal: Medal) in
+                owner.sendClickMedal(medal)
                 owner.state.representativeMedal = medal
             })
             .asyncMap { (owner: MyMedalViewModel, medal: Medal) in
@@ -159,5 +160,14 @@ final class MyMedalViewModel: BaseViewModel {
         let config = MedalInfoViewModel.Config(medals: state.medals)
         let viewModel = MedalInfoViewModel(config: config)
         return viewModel
+    }
+}
+
+private extension MyMedalViewModel {
+    func sendClickMedal(_ medal: Medal) {
+        guard let medalId = medal.medalId else { return }
+        logManager.sendEvent(.init(screen: output.screen, eventName: .clickMedal, extraParameters: [
+            .medalId: medalId
+        ]))
     }
 }
