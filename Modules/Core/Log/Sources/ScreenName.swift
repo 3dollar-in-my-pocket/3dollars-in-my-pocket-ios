@@ -47,4 +47,5 @@ public enum ScreenName: String {
     case visitedList = "visited_list"
     case clickReview = "click_review"
     case myReview = "my_review"
+    case myMedal = "my_medal"
 }

@@ -21,4 +21,5 @@ public enum ParameterName: String {
     case pollFirstOption = "poll_first_option"
     case pollSecondOption = "poll_second_option"
     case buildingName = "building_name"
+    case medalId = "medal_id"
 }
