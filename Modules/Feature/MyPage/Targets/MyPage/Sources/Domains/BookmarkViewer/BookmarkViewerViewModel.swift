@@ -5,6 +5,7 @@ import Common
 import Networking
 import Model
 import AppInterface
+import Log
 
 public final class BookmarkViewerViewModel: BaseViewModel {
     struct Input {
@@ -13,6 +14,7 @@ public final class BookmarkViewerViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .bookmarkListViewer
         let sections = CurrentValueSubject<[BookmarkViewerSection], Never>([])
         let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
@@ -46,15 +48,18 @@ public final class BookmarkViewerViewModel: BaseViewModel {
     private let config: Config
     private let bookmarkService: BookmarkServiceProtocol
     private var appModuleInterface: AppModuleInterface
+    private let logManager: LogManagerProtocol
     
     init(
         config: Config,
         bookmarkService: BookmarkServiceProtocol = BookmarkService(),
-        appModuleInterface: AppModuleInterface = Environment.appModuleInterface
+        appModuleInterface: AppModuleInterface = Environment.appModuleInterface,
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
         self.bookmarkService = bookmarkService
         self.appModuleInterface = appModuleInterface
+        self.logManager = logManager
         
         super.init()
     }
@@ -85,7 +90,7 @@ public final class BookmarkViewerViewModel: BaseViewModel {
             .compactMap { (owner: BookmarkViewerViewModel, index: Int) -> Route? in
                 guard let store = owner.state.stores[safe: index] else { return nil }
                 
-                
+                owner.sendClickStoreLog(store)
                 switch store.storeType {
                 case .bossStore:
                     return .pushBossStoreDetail(store.storeId)
@@ -143,5 +148,15 @@ public final class BookmarkViewerViewModel: BaseViewModel {
         )
         
         output.sections.send([overViewSection, storeSection])
+    }
+}
+
+// MARK: Log
+private extension BookmarkViewerViewModel {
+    func sendClickStoreLog(_ store: StoreApiResponse) {
+        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickStore, extraParameters: [
+            .storeId: store.storeId,
+            .type: store.storeType.rawValue
+        ]))
     }
 }

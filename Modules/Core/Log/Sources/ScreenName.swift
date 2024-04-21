@@ -50,4 +50,5 @@ public enum ScreenName: String {
     case myMedal = "my_medal"
     case myBookmarkList = "my_bookmark_list"
     case editBookmarkList = "edit_bookmark_list"
+    case bookmarkListViewer = "bookmark_list_viewer"
 }
