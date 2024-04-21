@@ -88,4 +88,5 @@ public enum EventName: String {
     case clickVisitedStore = "click_visited_store"
     case clickFavoritedStore = "click_favorited_store"
     case clickMyPoll = "click_my_poll"
+    case clickReview = "click_review"
 }
