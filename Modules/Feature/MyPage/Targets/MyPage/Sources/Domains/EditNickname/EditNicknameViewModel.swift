@@ -4,6 +4,7 @@ import Common
 import Model
 import Networking
 import AppInterface
+import Log
 
 final class EditNicknameViewModel: BaseViewModel {
     struct Input {
@@ -12,6 +13,7 @@ final class EditNicknameViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .editNickname
         let nickname: CurrentValueSubject<String, Never>
         let isEnableEditButton = PassthroughSubject<Bool, Never>()
         let isHiddenWarning = PassthroughSubject<Bool, Never>()

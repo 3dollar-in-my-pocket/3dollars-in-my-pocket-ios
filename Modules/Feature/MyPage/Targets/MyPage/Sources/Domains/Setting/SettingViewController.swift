@@ -2,8 +2,13 @@ import UIKit
 
 import DesignSystem
 import Common
+import Log
 
 public final class SettingViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let settingView = SettingView()
     private let viewModel: SettingViewModel
     private var cellTypes: [SettingCellType] = []

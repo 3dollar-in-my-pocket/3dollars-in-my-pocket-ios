@@ -6,6 +6,7 @@ import Common
 import Model
 import Networking
 import AppInterface
+import Log
 
 public final class SettingViewModel: BaseViewModel {
     struct Input {
@@ -19,6 +20,7 @@ public final class SettingViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .setting
         let cellTypes = PassthroughSubject<[SettingCellType], Never>()
         let showToast = PassthroughSubject<String, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()

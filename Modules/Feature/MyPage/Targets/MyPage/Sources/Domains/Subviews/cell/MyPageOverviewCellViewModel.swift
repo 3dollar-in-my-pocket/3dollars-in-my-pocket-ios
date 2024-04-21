@@ -13,6 +13,7 @@ final class MyPageOverviewCellViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName
         let item: UserWithDetailApiResponse
         let route = PassthroughSubject<Route, Never>()
     }
@@ -23,13 +24,21 @@ final class MyPageOverviewCellViewModel: BaseViewModel {
         case medal
     }
     
+    struct Config {
+        let item: UserWithDetailApiResponse
+        let screenName: ScreenName
+    }
+    
     lazy var identifier = ObjectIdentifier(self)
 
     let input = Input()
     let output: Output
+    
+    private let logManager: LogManagerProtocol
 
-    init(item: UserWithDetailApiResponse) {
-        self.output = Output(item: item)
+    init(config: Config, logManager: LogManagerProtocol = LogManager.shared) {
+        self.output = Output(screenName: config.screenName, item: config.item)
+        self.logManager = logManager
 
         super.init()
     }
@@ -48,9 +57,19 @@ final class MyPageOverviewCellViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.didTapMedalImageButton
+            .handleEvents(receiveOutput: { [weak self] _ in
+                self?.sendMedalClickLog()
+            })
             .map { _ in .medal }
             .subscribe(output.route)
             .store(in: &cancellables)
+    }
+}
+
+// MARK: Log
+private extension MyPageOverviewCellViewModel {
+    func sendMedalClickLog() {
+        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickMedal))
     }
 }
 

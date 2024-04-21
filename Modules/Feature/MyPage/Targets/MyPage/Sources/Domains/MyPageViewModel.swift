@@ -14,6 +14,7 @@ final class MyPageViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .myPage
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -134,6 +135,7 @@ final class MyPageViewModel: BaseViewModel {
             .sink { [weak self] in
                 switch $0 {
                 case let .poll(data, _, _):
+                    self?.sendClickPoll(data)
                     self?.output.route.send(.pollDetail(data.pollId))
                 default:
                     break
@@ -161,7 +163,7 @@ final class MyPageViewModel: BaseViewModel {
             if visitStores.isEmpty {
                 .empty(.visitStore)
             } else {
-                .visitStore(bindStoreListCellViewModel(with: visitStores))
+                .visitStore(bindStoreListCellViewModel(with: visitStores, sectionType: .visit))
             }
         
         sections.append(
@@ -178,7 +180,7 @@ final class MyPageViewModel: BaseViewModel {
             if favoriteStores.isEmpty {
                 .empty(.favoriteStore)
             } else {
-                .favoriteStore(bindStoreListCellViewModel(with: favoriteStores))
+                .favoriteStore(bindStoreListCellViewModel(with: favoriteStores, sectionType: .favorite))
             }
         sections.append(
             MyPageSection(
@@ -231,7 +233,8 @@ final class MyPageViewModel: BaseViewModel {
     }
     
     private func bindMyPageOverviewCellViewModel(with item: UserWithDetailApiResponse) -> MyPageOverviewCellViewModel {
-        let viewModel = MyPageOverviewCellViewModel(item: item)
+        let config = MyPageOverviewCellViewModel.Config(item: item, screenName: output.screenName)
+        let viewModel = MyPageOverviewCellViewModel(config: config)
         viewModel.output.route
             .compactMap {
                 switch $0 {
@@ -249,8 +252,16 @@ final class MyPageViewModel: BaseViewModel {
         return viewModel
     }
     
-    private func bindStoreListCellViewModel(with items: [MyPageStore]) -> MyPageStoreListCellViewModel {
-        let viewModel = MyPageStoreListCellViewModel(items: items)
+    private func bindStoreListCellViewModel(
+        with items: [MyPageStore],
+        sectionType: MyPageStoreListCellViewModel.SectionType
+    ) -> MyPageStoreListCellViewModel {
+        let config = MyPageStoreListCellViewModel.Config(
+            screenName: output.screenName,
+            sectionType: sectionType,
+            items: items
+        )
+        let viewModel = MyPageStoreListCellViewModel(config: config)
         viewModel.output.route
             .compactMap {
                 switch $0 {
@@ -267,6 +278,8 @@ final class MyPageViewModel: BaseViewModel {
 }
 
 // MARK: - Log
-extension MyPageViewModel {
-  
+private extension MyPageViewModel {
+    func sendClickPoll(_ poll: PollApiResponse) {
+        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickMyPoll, extraParameters: [.pollId: poll.pollId]))
+    }
 }

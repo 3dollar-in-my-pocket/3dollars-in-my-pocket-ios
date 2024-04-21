@@ -6,8 +6,12 @@ import SnapKit
 import Model
 import DesignSystem
 import Common
+import Log
 
 public final class MyPageViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
     
     public override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
     

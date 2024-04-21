@@ -16,6 +16,7 @@ final class StoreReviewListViewModel: BaseViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .myReview
         let dataSource = CurrentValueSubject<[StoreReviewListSection], Never>([])
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
@@ -117,9 +118,15 @@ final class StoreReviewListViewModel: BaseViewModel {
         input.didSelectItem
             .withUnretained(self)
             .compactMap { owner, index in
-                Int(owner.state.items[safe: index]?.store.id ?? "")
+                owner.state.items[safe: index]?.store
             }
-            .map { .storeDetail($0) }
+            .handleEvents(receiveOutput: { [weak self] store in
+                self?.sendClickReview(store: store)
+            })
+            .map { store in
+                let storeId = Int(store.id) ?? 0
+                return .storeDetail(storeId)
+            }
             .subscribe(output.route)
             .store(in: &cancellables)
     }
@@ -132,5 +139,14 @@ final class StoreReviewListViewModel: BaseViewModel {
 
     private func canLoadMore(willDisplayRow: Int) -> Bool {
         return willDisplayRow == state.items.count - 1 && state.hasMore
+    }
+}
+
+private extension StoreReviewListViewModel {
+    func sendClickReview(store: PlatformStore) {
+        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickReview, extraParameters: [
+            .storeId: store.id,
+            .type: store.type.rawValue
+        ]))
     }
 }

@@ -3,6 +3,7 @@ import Combine
 
 import Common
 import Networking
+import Log
 
 public final class QnaViewModel: BaseViewModel {
     struct Input {
@@ -10,6 +11,7 @@ public final class QnaViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .qna
         let datasource: [QnaCellType] = [.faq, .inquiry]
         let route = PassthroughSubject<Route, Never>()
     }

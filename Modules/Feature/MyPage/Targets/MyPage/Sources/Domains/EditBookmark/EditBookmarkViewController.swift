@@ -2,8 +2,13 @@ import Foundation
 
 import Common
 import DesignSystem
+import Log
 
 final class EditBookmarkViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let editBookmarkView = EditBookmarkView()
     private let viewModel: EditBookmarkViewModel
     

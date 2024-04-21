@@ -7,6 +7,9 @@ import Log
 import Model
 
 final class ReviewTabViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
 
     private lazy var navigationBar = MyPageNavigationBar(title: "내가 쓴 리뷰")
     private let tabView = MyPageTabView(titles: ReviewTab.list.map { $0.title }).then {

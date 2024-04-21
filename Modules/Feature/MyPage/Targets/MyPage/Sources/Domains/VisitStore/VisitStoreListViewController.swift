@@ -7,9 +7,13 @@ import Model
 import DesignSystem
 import Common
 import StoreInterface
+import Log
 
 /// 방문 인증 내역
 public final class VisitStoreListViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
     
     private let navigationBar = MyPageNavigationBar(title: "방문 인증 내역")
     

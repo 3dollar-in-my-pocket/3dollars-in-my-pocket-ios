@@ -3,6 +3,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 public final class FaqViewModel: BaseViewModel {
     struct Input {
@@ -11,6 +12,7 @@ public final class FaqViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .faq
         let faqCategory = CurrentValueSubject<[FaqCategoryResponse], Never>([])
         let faqSections = CurrentValueSubject<[[FaqResponse]], Never>([])
         let showErrorAlert = PassthroughSubject<Error, Never>()
