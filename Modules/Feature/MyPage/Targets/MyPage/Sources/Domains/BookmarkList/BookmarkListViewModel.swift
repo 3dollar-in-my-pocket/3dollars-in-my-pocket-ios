@@ -4,6 +4,7 @@ import Common
 import Model
 import Networking
 import AppInterface
+import Log
 
 final class BookmarkListViewModel: BaseViewModel {
     struct Input {
@@ -19,6 +20,7 @@ final class BookmarkListViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screen: ScreenName = .myBookmarkList
         let isDeleteMode = CurrentValueSubject<Bool, Never>(false)
         let isEnableShare = PassthroughSubject<Bool, Never>()
         let sections = CurrentValueSubject<[BookmarkListSection], Never>([])
@@ -49,13 +51,16 @@ final class BookmarkListViewModel: BaseViewModel {
     private var state = State()
     private let bookmarkService: BookmarkServiceProtocol
     private let globalEventBus: GlobalEventBusProtocol
+    private let logManager: LogManagerProtocol
     
     init(
         bookmarkService: BookmarkServiceProtocol = BookmarkService(),
-        globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus
+        globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus,
+        logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.bookmarkService = bookmarkService
         self.globalEventBus = globalEventBus
+        self.logManager = logManager
     }
     
     override func bind() {
@@ -78,6 +83,7 @@ final class BookmarkListViewModel: BaseViewModel {
         input.didTapShare
             .withUnretained(self)
             .sink { (owner: BookmarkListViewModel, _) in
+                owner.sendClickShareLog()
                 owner.presentShareBottomSheet()
             }
             .store(in: &cancellables)
@@ -85,6 +91,7 @@ final class BookmarkListViewModel: BaseViewModel {
         input.didTapEditOverview
             .withUnretained(self)
             .sink { (owner: BookmarkListViewModel, _) in
+                owner.sendClickEditLog()
                 owner.pushEditBookmark()
             }
             .store(in: &cancellables)
@@ -123,6 +130,7 @@ final class BookmarkListViewModel: BaseViewModel {
             .sink { (owner: BookmarkListViewModel, index: Int) in
                 guard let store = owner.state.stores[safe: index] else { return }
                 
+                owner.sendClickStoreLog(store)
                 switch store.storeType {
                 case .bossStore:
                     owner.output.route.send(.pushBossStoreDetail(store.storeId))
@@ -307,5 +315,23 @@ final class BookmarkListViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         
         output.route.send(.pushEditBookmark(viewModel: viewModel))
+    }
+}
+
+// MARK: Log
+private extension BookmarkListViewModel {
+    func sendClickEditLog() {
+        logManager.sendEvent(.init(screen: output.screen, eventName: .clickEdit))
+    }
+    
+    func sendClickStoreLog(_ store: StoreApiResponse) {
+        logManager.sendEvent(.init(screen: output.screen, eventName: .clickStore, extraParameters: [
+            .storeId: store.storeId,
+            .type: store.storeType.rawValue
+        ]))
+    }
+    
+    func sendClickShareLog() {
+        logManager.sendEvent(.init(screen: output.screen, eventName: .clickShareBookmark))
     }
 }
