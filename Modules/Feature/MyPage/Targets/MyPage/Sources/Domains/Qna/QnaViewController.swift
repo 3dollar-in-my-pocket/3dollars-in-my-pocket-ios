@@ -4,8 +4,13 @@ import DeviceKit
 
 import DesignSystem
 import Common
+import Log
 
 public final class QnaViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let qnaView = QnaView()
     private let viewModel: QnaViewModel
     
