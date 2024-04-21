@@ -4,6 +4,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 final class EditBookmarkViewModel: BaseViewModel {
     struct Input {
@@ -13,6 +14,7 @@ final class EditBookmarkViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .editBookmarkList
         let isEnableSaveButton = CurrentValueSubject<Bool, Never>(true)
         let title: CurrentValueSubject<String, Never>
         let description: CurrentValueSubject<String, Never>
