@@ -29,7 +29,7 @@ public final class HomeViewController: BaseViewController {
     private var isFirstLoad = true
     fileprivate let transition = SearchTransition()
     
-    init() {
+    public init() {
         super.init(nibName: nil, bundle: nil)
         
         tabBarItem = UITabBarItem(
