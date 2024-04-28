@@ -38,6 +38,13 @@ final class SplashViewController: BaseViewController {
                 owner.handleRoute(route)
             }
             .store(in: &cancellables)
+        
+        viewModel.output.showErrorAlert
+            .main
+            .sink { [weak self] error in
+                self?.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
     }
     
     private func handleRoute(_ route: SplashViewModel.Route) {
