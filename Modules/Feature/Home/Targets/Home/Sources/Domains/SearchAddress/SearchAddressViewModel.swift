@@ -135,8 +135,8 @@ final class SearchAddressViewModel: BaseViewModel {
                 
                 let document = PlaceDocument(
                     addressName: selectedAddress.addressName ?? "",
-                    y: String(selectedAddress.location.longitude),
-                    x: String(selectedAddress.location.latitude),
+                    y: String(selectedAddress.location.latitude),
+                    x: String(selectedAddress.location.longitude),
                     roadAddressName: selectedAddress.roadAddressName ?? "",
                     placeName: selectedAddress.placeName
                 )
@@ -195,7 +195,7 @@ final class SearchAddressViewModel: BaseViewModel {
     private func saveAddress(document: PlaceDocument) {
         Task {
             let input = SaveMyPlaceInput(
-                location: .init(latitude: document.x, longitude: document.y),
+                location: .init(latitude: document.y, longitude: document.x),
                 placeName: document.placeName,
                 addressName: document.addressName,
                 roadAddressName: document.roadAddressName

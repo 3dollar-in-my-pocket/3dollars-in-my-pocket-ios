@@ -15,7 +15,7 @@ final class MedalInfoView: BaseView {
     }
     
     let closeButton = UIButton().then {
-        $0.setImage(UIImage(named: "ic_close_white"), for: .normal)
+        $0.setImage(Icons.close.image.withTintColor(Colors.systemWhite.color), for: .normal)
     }
     
     let tableView = UITableView().then {
