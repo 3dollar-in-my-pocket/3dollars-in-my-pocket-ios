@@ -146,7 +146,7 @@ extension HomeFilterCollectionView: UICollectionViewDelegateFlowLayout {
         case .category:
             homeViewModel.input.onTapCategoryFilter.send(())
         case .recentActivity:
-            break
+            homeViewModel.input.onTapOnlyRecentActivity.send(())
         case .sortingFilter(let sortType):
             homeViewModel.input.onToggleSort.send(sortType)
         case .onlyBoss:

@@ -6,6 +6,7 @@ public struct FetchAroundStoreInput: Encodable {
     public let targetStores: [String]
     public let sortType: String? // DISTANCE_ASC, LATEST
     public let filterCertifiedStores: Bool?
+    public let filterConditions: [String]?
     public let size: Int?
     public let cursor: String?
     public let mapLatitude: Double
@@ -17,6 +18,7 @@ public struct FetchAroundStoreInput: Encodable {
         targetStores: [String] = ["BOSS_STORE", "USER_STORE"],
         sortType: String? = nil,
         filterCertifiedStores: Bool? = false,
+        filterConditions: [String]? = nil,
         size: Int? = nil,
         cursor: String? = nil,
         mapLatitude: Double,
@@ -27,6 +29,7 @@ public struct FetchAroundStoreInput: Encodable {
         self.targetStores = targetStores
         self.sortType = sortType
         self.filterCertifiedStores = filterCertifiedStores
+        self.filterConditions = filterConditions
         self.size = size
         self.cursor = cursor
         self.mapLatitude = mapLatitude

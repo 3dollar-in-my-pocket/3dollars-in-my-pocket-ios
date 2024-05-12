@@ -21,6 +21,7 @@ final class HomeViewModel: BaseViewModel {
         let changeMapLocation = PassthroughSubject<CLLocation, Never>()
         let onTapCategoryFilter = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<PlatformStoreCategory?, Never>()
+        let onTapOnlyRecentActivity = PassthroughSubject<Void, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
         let onTapSearchAddress = PassthroughSubject<Void, Never>()
@@ -59,6 +60,7 @@ final class HomeViewModel: BaseViewModel {
         var categoryFilter: PlatformStoreCategory?
         var sortType: StoreSortType = .distanceAsc
         var isOnlyBossStore = false
+        var isOnlyRecentActivity = false
         var mapMaxDistance: Double?
         var newCameraPosition: CLLocation?
         var newMapMaxDistance: Double?
@@ -263,8 +265,6 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink(receiveValue: { owner, result in
-                owner.output.showLoading.send(false)
-                
                 switch result {
                 case .success(let storeCards):
                     owner.updateCollectionItems(storeCards: storeCards)
@@ -275,6 +275,28 @@ final class HomeViewModel: BaseViewModel {
                 }
             })
             .store(in: &cancellables)
+        
+        input.onTapOnlyRecentActivity
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: HomeViewModel, _) in
+                owner.state.isOnlyRecentActivity.toggle()
+            })
+            .asyncMap { owner, _ in
+                await owner.fetchAroundStore()
+            }
+            .withUnretained(self)
+            .sink(receiveValue: { owner, result in
+                switch result {
+                case .success(let storeCards):
+                    owner.updateCollectionItems(storeCards: storeCards)
+                    owner.updateFilterDatasource()
+                    
+                case .failure(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            })
+            .store(in: &cancellables)
+            
         
         input.onToggleSort
             .withUnretained(self)
@@ -552,7 +574,7 @@ final class HomeViewModel: BaseViewModel {
     private func updateFilterDatasource() {
         let datasource: [HomeFilterCollectionView.CellType] = [
             .category(state.categoryFilter),
-            .recentActivity(false),
+            .recentActivity(state.isOnlyRecentActivity),
             .sortingFilter(state.sortType),
             .onlyBoss(state.isOnlyBossStore)
         ]
@@ -582,12 +604,14 @@ final class HomeViewModel: BaseViewModel {
             categoryIds = [filterCategory.category]
         }
         let targetStores: [StoreType] = state.isOnlyBossStore ? [.bossStore] : [.userStore, .bossStore]
+        let filterConditions: [String] = state.isOnlyRecentActivity ? ["RECENT_ACTIVITY"] : ["NO_RECENT_ACTIVITY"]
         let input = FetchAroundStoreInput(
             distanceM: state.mapMaxDistance,
             categoryIds: categoryIds,
             targetStores: targetStores.map { $0.rawValue },
             sortType: state.sortType.rawValue,
             filterCertifiedStores: false,
+            filterConditions: filterConditions,
             size: 10,
             cursor: nil,
             mapLatitude: state.resultCameraPosition?.coordinate.latitude ?? 0,
