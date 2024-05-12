@@ -20,12 +20,6 @@ final class HomeView: BaseView {
     
     lazy var homeFilterCollectionView = HomeFilterCollectionView(homeViewModel: homeViewModel)
     
-//    let categoryFilterButton = CategoryFilterButton()
-//    
-//    let sortingButton = SortingButton()
-//    
-//    let onlyBossToggleButton = OnlyBossToggleButton()
-    
     let researchButton = UIButton().then {
         $0.setTitle(HomeStrings.homeResearchButton, for: .normal)
         $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
@@ -84,9 +78,6 @@ final class HomeView: BaseView {
             researchButton,
             addressButton,
             homeFilterCollectionView,
-//            categoryFilterButton,
-//            sortingButton,
-//            onlyBossToggleButton,
             currentLocationButton,
             listViewButton,
             collectionView
@@ -110,24 +101,6 @@ final class HomeView: BaseView {
             $0.right.equalToSuperview()
             $0.height.equalTo(60)
         }
-        
-//        categoryFilterButton.snp.makeConstraints {
-//            $0.left.equalToSuperview().offset(20)
-//            $0.top.equalTo(addressButton.snp.bottom).offset(14)
-//            $0.height.equalTo(34)
-//        }
-//        
-//        sortingButton.snp.makeConstraints {
-//            $0.left.equalTo(categoryFilterButton.snp.right).offset(10)
-//            $0.centerY.equalTo(categoryFilterButton)
-//            $0.height.equalTo(34)
-//        }
-//        
-//        onlyBossToggleButton.snp.makeConstraints {
-//            $0.left.equalTo(sortingButton.snp.right).offset(10)
-//            $0.centerY.equalTo(categoryFilterButton)
-//            $0.height.equalTo(34)
-//        }
         
         researchButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
