@@ -9,6 +9,7 @@
 "home_sorting_button_distance" = "거리순 보기";
 "home_sorting_button_latest" = "최근 등록순 보기";
 "home_boss_store_tag" = "사장님 직영";
+"home_recent_activity" = "최근 활동";
 
 // 카테고리 필터 화면
 "category_filter_new" = "new";

@@ -34,6 +34,8 @@ public enum HomeStrings {
   public static let homeListViewButton = HomeStrings.tr("Localization", "home_list_view_button")
   /// 사장님 직영점만
   public static let homeOnlyBossButton = HomeStrings.tr("Localization", "home_only_boss_button")
+  /// 최근 활동
+  public static let homeRecentActivity = HomeStrings.tr("Localization", "home_recent_activity")
   /// 현재 지도에서 가게 재검색
   public static let homeResearchButton = HomeStrings.tr("Localization", "home_research_button")
   /// 거리순 보기

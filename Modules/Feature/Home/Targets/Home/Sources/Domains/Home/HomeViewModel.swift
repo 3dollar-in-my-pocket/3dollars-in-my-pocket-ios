@@ -38,9 +38,12 @@ final class HomeViewModel: BaseViewModel {
     struct Output {
         let screenName: ScreenName = .home
         let address = PassthroughSubject<String, Never>()
-        let categoryFilter = PassthroughSubject<PlatformStoreCategory?, Never>()
-        let sortType = PassthroughSubject<StoreSortType, Never>()
-        let isOnlyBoss = PassthroughSubject<Bool, Never>()
+        let filterDatasource = CurrentValueSubject<[HomeFilterCollectionView.CellType], Never>([
+            .category(nil),
+            .recentActivity(false),
+            .sortingFilter(.distanceAsc),
+            .onlyBoss(false)
+        ])
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let advertisementMarker = PassthroughSubject<Advertisement, Never>()
@@ -265,7 +268,7 @@ final class HomeViewModel: BaseViewModel {
                 switch result {
                 case .success(let storeCards):
                     owner.updateCollectionItems(storeCards: storeCards)
-                    owner.output.categoryFilter.send(owner.state.categoryFilter)
+                    owner.updateFilterDatasource()
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -276,7 +279,7 @@ final class HomeViewModel: BaseViewModel {
         input.onToggleSort
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, sortType in
-                owner.state.sortType = sortType
+                owner.state.sortType = owner.state.sortType.toggled()
                 owner.sendClickSortingFilterLog(sortType: sortType)
             })
             .asyncMap { owner, _ in
@@ -289,12 +292,11 @@ final class HomeViewModel: BaseViewModel {
                 switch result {
                 case .success(let storeCards):
                     owner.updateCollectionItems(storeCards: storeCards)
-                    
+                    owner.updateFilterDatasource()
                 case .failure(let error):
                     owner.state.sortType = owner.state.sortType.toggled()
                     owner.output.route.send(.showErrorAlert(error))
                 }
-                owner.output.sortType.send(owner.state.sortType)
             })
             .store(in: &cancellables)
         
@@ -312,12 +314,12 @@ final class HomeViewModel: BaseViewModel {
                 switch result {
                 case .success(let storeCards):
                     owner.updateCollectionItems(storeCards: storeCards)
+                    owner.updateFilterDatasource()
                     
                 case .failure(let error):
                     owner.state.isOnlyBossStore.toggle()
                     owner.output.route.send(.showErrorAlert(error))
                 }
-                owner.output.isOnlyBoss.send(owner.state.isOnlyBossStore)
             })
             .store(in: &cancellables)
         
@@ -545,6 +547,17 @@ final class HomeViewModel: BaseViewModel {
             })
             .subscribe(output.route)
             .store(in: &cancellables)
+    }
+    
+    private func updateFilterDatasource() {
+        let datasource: [HomeFilterCollectionView.CellType] = [
+            .category(state.categoryFilter),
+            .recentActivity(false),
+            .sortingFilter(state.sortType),
+            .onlyBoss(state.isOnlyBossStore)
+        ]
+        
+        output.filterDatasource.send(datasource)
     }
     
     private func updateCollectionItems(storeCards: [StoreCard], advertisementCard: Advertisement? = nil) {

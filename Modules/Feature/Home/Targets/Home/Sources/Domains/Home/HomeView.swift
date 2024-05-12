@@ -9,6 +9,8 @@ import SnapKit
 import Then
 
 final class HomeView: BaseView {
+    private let homeViewModel: HomeViewModel
+    
     let mapView = NMFMapView().then {
         $0.positionMode = .direction
         $0.zoomLevel = 15
@@ -16,11 +18,13 @@ final class HomeView: BaseView {
     
     let addressButton = AddressButton()
     
-    let categoryFilterButton = CategoryFilterButton()
+    lazy var homeFilterCollectionView = HomeFilterCollectionView(homeViewModel: homeViewModel)
     
-    let sortingButton = SortingButton()
-    
-    let onlyBossToggleButton = OnlyBossToggleButton()
+//    let categoryFilterButton = CategoryFilterButton()
+//    
+//    let sortingButton = SortingButton()
+//    
+//    let onlyBossToggleButton = OnlyBossToggleButton()
     
     let researchButton = UIButton().then {
         $0.setTitle(HomeStrings.homeResearchButton, for: .normal)
@@ -65,14 +69,24 @@ final class HomeView: BaseView {
         $0.isPagingEnabled = false
     }
     
+    init(homeViewModel: HomeViewModel) {
+        self.homeViewModel = homeViewModel
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func setup() {
         addSubViews([
             mapView,
             researchButton,
             addressButton,
-            categoryFilterButton,
-            sortingButton,
-            onlyBossToggleButton,
+            homeFilterCollectionView,
+//            categoryFilterButton,
+//            sortingButton,
+//            onlyBossToggleButton,
             currentLocationButton,
             listViewButton,
             collectionView
@@ -90,27 +104,34 @@ final class HomeView: BaseView {
             $0.right.equalToSuperview().offset(-14)
         }
         
-        categoryFilterButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.top.equalTo(addressButton.snp.bottom).offset(14)
-            $0.height.equalTo(34)
+        homeFilterCollectionView.snp.makeConstraints {
+            $0.left.equalToSuperview()
+            $0.top.equalTo(addressButton.snp.bottom)
+            $0.right.equalToSuperview()
+            $0.height.equalTo(60)
         }
         
-        sortingButton.snp.makeConstraints {
-            $0.left.equalTo(categoryFilterButton.snp.right).offset(10)
-            $0.centerY.equalTo(categoryFilterButton)
-            $0.height.equalTo(34)
-        }
-        
-        onlyBossToggleButton.snp.makeConstraints {
-            $0.left.equalTo(sortingButton.snp.right).offset(10)
-            $0.centerY.equalTo(categoryFilterButton)
-            $0.height.equalTo(34)
-        }
+//        categoryFilterButton.snp.makeConstraints {
+//            $0.left.equalToSuperview().offset(20)
+//            $0.top.equalTo(addressButton.snp.bottom).offset(14)
+//            $0.height.equalTo(34)
+//        }
+//        
+//        sortingButton.snp.makeConstraints {
+//            $0.left.equalTo(categoryFilterButton.snp.right).offset(10)
+//            $0.centerY.equalTo(categoryFilterButton)
+//            $0.height.equalTo(34)
+//        }
+//        
+//        onlyBossToggleButton.snp.makeConstraints {
+//            $0.left.equalTo(sortingButton.snp.right).offset(10)
+//            $0.centerY.equalTo(categoryFilterButton)
+//            $0.height.equalTo(34)
+//        }
         
         researchButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(sortingButton)
+            make.bottom.equalTo(homeFilterCollectionView)
             make.height.equalTo(34)
         }
         
