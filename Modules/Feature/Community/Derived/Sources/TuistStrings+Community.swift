@@ -13,6 +13,13 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 public enum CommunityStrings {
 
+  public enum CommunityPopularStore {
+    public enum Tab {
+      /// 이번 주 동네 인기 가게
+      public static let title = CommunityStrings.tr("Localization", "community_popular_store.tab.title")
+    }
+  }
+
   public enum CommunityPopularStoreNeighborhoodsHeader {
     /// 어디 인기 가게를 볼까요?
     public static let title = CommunityStrings.tr("Localization", "community_popular_store_neighborhoods_header.title")
