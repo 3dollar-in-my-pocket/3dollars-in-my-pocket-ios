@@ -8,26 +8,18 @@ import Model
 final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
 
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 128)
+        static let size = CGSize(width: UIScreen.main.bounds.width, height: 156)
         static let itemSpacing: CGFloat = 9
     }
 
     private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
+        $0.font = Fonts.bold.font(size: 24)
         $0.textColor = Colors.systemBlack.color
-        $0.text = "동네 인기 가게"
-    }
-
-    private let descriptionLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray60.color
-        $0.text = "아직 서울만 볼 수 있어요! 조금만 기다려 주세요 :)"
+        $0.text = Strings.CommunityPopularStore.Tab.title
     }
 
     private let districtButton = UIButton().then {
-        $0.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        $0.backgroundColor = Colors.gray10.color
-        $0.layer.cornerRadius = 8
+        $0.titleLabel?.font = Fonts.bold.font(size: 16)
         $0.imageEdgeInsets.left = 2
         $0.semanticContentAttribute = .forceRightToLeft
         $0.contentEdgeInsets = .init(top: 6, left: 8, bottom: 6, right: 8)
@@ -51,7 +43,6 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
 
         contentView.addSubViews([
             titleLabel,
-            descriptionLabel,
             districtButton,
             lineView,
             tabView
@@ -66,18 +57,13 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
             $0.leading.equalToSuperview().offset(20)
         }
 
-        descriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(2)
+        districtButton.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(8)
             $0.leading.equalTo(titleLabel)
         }
 
-        districtButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(38)
-            $0.trailing.equalToSuperview().inset(20)
-        }
-
         tabView.snp.makeConstraints {
-            $0.top.equalTo(descriptionLabel.snp.bottom).offset(12)
+            $0.top.equalTo(districtButton.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
 
@@ -106,7 +92,7 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
             .withUnretained(self)
             .main
             .sink { owner, district in
-                owner.districtButton.setTitle(district, for: .normal)
+                owner.districtButton.setTitle("📍 \(district)", for: .normal)
             }
             .store(in: &cancellables)
 
