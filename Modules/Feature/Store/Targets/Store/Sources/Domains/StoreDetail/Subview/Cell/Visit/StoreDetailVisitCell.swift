@@ -82,6 +82,7 @@ final class StoreDetailVisitCell: BaseCollectionViewCell {
             historyView.isHidden = true
         } else {
             emptyView.isHidden = true
+            historyView.isHidden = false
             historyView.bind(visit.histories, totalCount: visit.existsCounts + visit.notExistsCounts)
         }
     }
