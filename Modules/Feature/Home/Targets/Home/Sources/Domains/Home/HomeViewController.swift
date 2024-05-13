@@ -17,7 +17,7 @@ public final class HomeViewController: BaseViewController {
         return viewModel.output.screenName
     }
     
-    private lazy var homeView = HomeView(homeViewModel: viewModel)
+    private lazy var homeView = HomeView(homeFilterSelectable: viewModel)
     private let viewModel = HomeViewModel()
     private lazy var dataSource = HomeDataSource(
         collectionView: homeView.collectionView,

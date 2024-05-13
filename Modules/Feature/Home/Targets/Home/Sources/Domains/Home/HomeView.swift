@@ -9,7 +9,7 @@ import SnapKit
 import Then
 
 final class HomeView: BaseView {
-    private let homeViewModel: HomeViewModel
+    private let homeFilterSelectable: HomeFilterSelectable
     
     let mapView = NMFMapView().then {
         $0.positionMode = .direction
@@ -18,7 +18,7 @@ final class HomeView: BaseView {
     
     let addressButton = AddressButton()
     
-    lazy var homeFilterCollectionView = HomeFilterCollectionView(homeViewModel: homeViewModel)
+    lazy var homeFilterCollectionView = HomeFilterCollectionView(homeFilterSelectable: homeFilterSelectable)
     
     let researchButton = UIButton().then {
         $0.setTitle(HomeStrings.homeResearchButton, for: .normal)
@@ -63,8 +63,8 @@ final class HomeView: BaseView {
         $0.isPagingEnabled = false
     }
     
-    init(homeViewModel: HomeViewModel) {
-        self.homeViewModel = homeViewModel
+    init(homeFilterSelectable: HomeFilterSelectable) {
+        self.homeFilterSelectable = homeFilterSelectable
         super.init(frame: .zero)
     }
     
@@ -134,7 +134,7 @@ final class HomeView: BaseView {
             duration: 0.3,
             options: .curveEaseInOut
         ) { [weak self] in
-            self?.researchButton.transform = isHidden ? .identity : .init(translationX: 0, y: 56)
+            self?.researchButton.transform = isHidden ? .identity : .init(translationX: 0, y: 35)
             self?.researchButton.alpha = isHidden ? 0.0 : 1.0
         }
     }

@@ -61,11 +61,11 @@ extension HomeFilterCollectionView {
 
 final class HomeFilterCollectionView: UICollectionView {
     private var datasource: [CellType] = []
-    private let homeViewModel: HomeViewModel
+    private let homeFilterSelectable: HomeFilterSelectable
     private var cancellables = Set<AnyCancellable>()
     
-    init(homeViewModel: HomeViewModel) {
-        self.homeViewModel = homeViewModel
+    init(homeFilterSelectable: HomeFilterSelectable) {
+        self.homeFilterSelectable = homeFilterSelectable
         super.init(frame: .zero, collectionViewLayout: Layout.createLayout())
         
         setup()
@@ -88,7 +88,7 @@ final class HomeFilterCollectionView: UICollectionView {
         delegate = self
         dataSource = self
         
-        homeViewModel.output.filterDatasource
+        homeFilterSelectable.filterDatasource
             .main
             .sink { [weak self] datasource in
                 self?.datasource = datasource
@@ -144,13 +144,13 @@ extension HomeFilterCollectionView: UICollectionViewDelegateFlowLayout {
         
         switch item {
         case .category:
-            homeViewModel.input.onTapCategoryFilter.send(())
+            homeFilterSelectable.onTapCategoryFilter.send(())
         case .recentActivity:
-            homeViewModel.input.onTapOnlyRecentActivity.send(())
+            homeFilterSelectable.onTapOnlyRecentActivity.send(())
         case .sortingFilter(let sortType):
-            homeViewModel.input.onToggleSort.send(sortType)
+            homeFilterSelectable.onToggleSort.send(sortType)
         case .onlyBoss:
-            homeViewModel.input.onTapOnlyBoss.send(())
+            homeFilterSelectable.onTapOnlyBoss.send(())
         }
     }
 }

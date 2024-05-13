@@ -459,6 +459,7 @@ final class HomeViewModel: BaseViewModel {
                 let state = HomeListViewModel.State(
                     stores: .init(stores),
                     categoryFilter: owner.state.categoryFilter,
+                    isOnlyRecentActivity: owner.state.isOnlyRecentActivity,
                     sortType: owner.state.sortType,
                     isOnlyBossStore: owner.state.isOnlyBossStore,
                     mapLocation: owner.state.resultCameraPosition,
@@ -695,8 +696,12 @@ final class HomeViewModel: BaseViewModel {
             .subscribe(input.onTapOnlyBoss)
             .store(in: &viewModel.cancellables)
         
-        viewModel.output.categoryFilter
+        viewModel.output.onSelectCategoryFilter
             .subscribe(input.selectCategory)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onTapOnlyRecentActivity
+            .subscribe(input.onTapOnlyRecentActivity)
             .store(in: &viewModel.cancellables)
     }
     
@@ -794,5 +799,31 @@ extension HomeViewModel {
             eventName: .clickAdMarker,
             extraParameters: [.advertisementId: advertisement.advertisementId]
         ))
+    }
+}
+
+extension HomeViewModel: HomeFilterSelectable {
+    var onTapCategoryFilter: PassthroughSubject<Void, Never> {
+        input.onTapCategoryFilter
+    }
+    
+    var onTapOnlyRecentActivity: PassthroughSubject<Void, Never> {
+        input.onTapOnlyRecentActivity
+    }
+    
+    var onToggleSort: PassthroughSubject<Model.StoreSortType, Never> {
+        input.onToggleSort
+    }
+    
+    var onTapOnlyBoss: PassthroughSubject<Void, Never> {
+        input.onTapOnlyBoss
+    }
+    
+    var selectCategory: PassthroughSubject<Model.PlatformStoreCategory?, Never> {
+        input.selectCategory
+    }
+    
+    var filterDatasource: CurrentValueSubject<[HomeFilterCollectionView.CellType], Never> {
+        output.filterDatasource
     }
 }
