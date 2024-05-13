@@ -16,6 +16,7 @@ final class HomeViewModel: BaseViewModel {
     
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
+        let onLoadFilter = PassthroughSubject<Void, Never>()
         let onMapLoad = PassthroughSubject<Double, Never>()
         let changeMaxDistance = PassthroughSubject<Double, Never>()
         let changeMapLocation = PassthroughSubject<CLLocation, Never>()
@@ -51,6 +52,7 @@ final class HomeViewModel: BaseViewModel {
         let advertisementCard = PassthroughSubject<Advertisement?, Never>()
         let collectionItems = PassthroughSubject<[HomeSectionItem], Never>()
         let scrollToIndex = PassthroughSubject<Int, Never>()
+        let isShowFilterTooltip = PassthroughSubject<Bool, Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
@@ -265,6 +267,7 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink(receiveValue: { owner, result in
+                owner.shownFilterTooltip()
                 switch result {
                 case .success(let storeCards):
                     owner.updateCollectionItems(storeCards: storeCards)
@@ -286,6 +289,7 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink(receiveValue: { owner, result in
+                owner.shownFilterTooltip()
                 switch result {
                 case .success(let storeCards):
                     owner.updateCollectionItems(storeCards: storeCards)
@@ -309,8 +313,7 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink(receiveValue: { owner, result in
-                owner.output.showLoading.send(false)
-                
+                owner.shownFilterTooltip()
                 switch result {
                 case .success(let storeCards):
                     owner.updateCollectionItems(storeCards: storeCards)
@@ -333,6 +336,7 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink(receiveValue: { owner, result in
+                owner.shownFilterTooltip()
                 switch result {
                 case .success(let storeCards):
                     owner.updateCollectionItems(storeCards: storeCards)
@@ -570,6 +574,15 @@ final class HomeViewModel: BaseViewModel {
             })
             .subscribe(output.route)
             .store(in: &cancellables)
+        
+        input.onLoadFilter
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, _) in
+                if owner.userDefaults.isShownFilterTooltip.isNot {
+                    owner.output.isShowFilterTooltip.send(true)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func updateFilterDatasource() {
@@ -715,6 +728,12 @@ final class HomeViewModel: BaseViewModel {
                 self?.userDefaults.subscribedMarketingTopic = true
             }
         }
+    }
+    
+    private func shownFilterTooltip() {
+        guard userDefaults.isShownFilterTooltip.isNot else { return }
+        userDefaults.isShownFilterTooltip = true
+        output.isShowFilterTooltip.send(false)
     }
 }
 

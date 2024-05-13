@@ -10,6 +10,8 @@
 "home_sorting_button_latest" = "최근 등록순 보기";
 "home_boss_store_tag" = "사장님 직영";
 "home_recent_activity" = "최근 활동";
+"home_filter_tooltip_title" = "최근 활동이 있는 가게만 볼 수 있어요!";
+"home_filter_tooltip_description" = "· 최근 한 달 내에 방문 인증 성공 내역이 있어요.\n· 신규로 생성된 가게에요.";
 
 // 카테고리 필터 화면
 "category_filter_new" = "new";
@@ -29,4 +31,3 @@
 
 "location_deny_title" = "위치 권한 거절";
 "location_deny_description" = "현재 내 위치와 가까운 가게를 찾기 위해 위치 권한이 필요합니다. 설정에서 위치 권한을 허용시켜주세요.";
-

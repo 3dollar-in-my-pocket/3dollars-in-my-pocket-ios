@@ -60,9 +60,11 @@ extension HomeFilterCollectionView {
 }
 
 final class HomeFilterCollectionView: UICollectionView {
+    var onLoadFilter: (() -> Void)?
     private var datasource: [CellType] = []
     private let homeFilterSelectable: HomeFilterSelectable
     private var cancellables = Set<AnyCancellable>()
+    private var isFirstLoad = true
     
     init(homeFilterSelectable: HomeFilterSelectable) {
         self.homeFilterSelectable = homeFilterSelectable
@@ -90,9 +92,17 @@ final class HomeFilterCollectionView: UICollectionView {
         
         homeFilterSelectable.filterDatasource
             .main
-            .sink { [weak self] datasource in
-                self?.datasource = datasource
-                self?.reloadData()
+            .withUnretained(self)
+            .sink { (owner: HomeFilterCollectionView, datasource: [CellType]) in
+                owner.datasource = datasource
+                owner.reloadData()
+                
+                if owner.isFirstLoad {
+                    owner.isFirstLoad = false
+                    DispatchQueue.main.async {
+                        owner.onLoadFilter?()
+                    }
+                }
             }
             .store(in: &cancellables)
     }

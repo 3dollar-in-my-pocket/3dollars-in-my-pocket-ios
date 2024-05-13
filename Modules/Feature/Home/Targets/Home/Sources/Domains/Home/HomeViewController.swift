@@ -118,6 +118,10 @@ public final class HomeViewController: BaseViewController {
             self?.viewModel.input.onTapCurrentMarker.send(())
             return true
         }
+        
+        homeView.homeFilterCollectionView.onLoadFilter = { [weak self] in
+            self?.viewModel.input.onLoadFilter.send(())
+        }
     }
     
     public override func bindViewModelOutput() {
@@ -231,6 +235,14 @@ public final class HomeViewController: BaseViewController {
                     guard let url = URL(string: urlString) else { return }
                     UIApplication.shared.open(url)
                 }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.isShowFilterTooltip
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, isShow: Bool) in
+                owner.homeView.showFilterTooltiop(isShow: isShow)
             }
             .store(in: &cancellables)
     }

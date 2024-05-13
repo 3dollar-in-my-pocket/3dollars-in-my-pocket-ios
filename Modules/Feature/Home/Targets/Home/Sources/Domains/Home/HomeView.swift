@@ -63,6 +63,8 @@ final class HomeView: BaseView {
         $0.isPagingEnabled = false
     }
     
+    private var homeFilterTooltip: HomeFilterTooltip?
+    
     init(homeFilterSelectable: HomeFilterSelectable) {
         self.homeFilterSelectable = homeFilterSelectable
         super.init(frame: .zero)
@@ -162,6 +164,20 @@ final class HomeView: BaseView {
                 self?.mapView.locationOverlay.iconWidth = CGFloat(advertisement.imageWidth)
                 self?.mapView.locationOverlay.iconHeight = CGFloat(advertisement.imageHeight)
             }
+        }
+    }
+    
+    func showFilterTooltiop(isShow: Bool) {
+        if isShow, let cell = homeFilterCollectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as? HomeFilterCell {
+            let homeFilterTooltip = HomeFilterTooltip()
+            addSubview(homeFilterTooltip)
+            homeFilterTooltip.snp.makeConstraints {
+                $0.centerX.equalTo(cell)
+                $0.top.equalTo(cell.snp.bottom).offset(4)
+            }
+            self.homeFilterTooltip = homeFilterTooltip
+        } else {
+            homeFilterTooltip?.removeFromSuperview()
         }
     }
     
