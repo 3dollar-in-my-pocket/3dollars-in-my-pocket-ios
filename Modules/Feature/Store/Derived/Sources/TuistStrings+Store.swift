@@ -285,6 +285,12 @@ public enum StoreStrings {
       public static func moreFormat(_ p1: Int) -> String {
         return StoreStrings.tr("Localization", "store_detail.visit.more_format", p1)
       }
+      public enum Empty {
+        /// 최근 활동 소식은 사장님과 유저들에게\n도움을 줄 수 있습니다 :)
+        public static let description = StoreStrings.tr("Localization", "store_detail.visit.empty.description")
+        /// 방문 인증으로 가게의 최근 활동을 알려주세요!
+        public static let title = StoreStrings.tr("Localization", "store_detail.visit.empty.title")
+      }
       public enum Format {
         /// 방문 실패 %d명
         public static func visitFail(_ p1: Int) -> String {
