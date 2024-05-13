@@ -91,10 +91,8 @@ final class StoreDetailVisitHistoryView: BaseView {
     }
     
     func bind(_ histories: [StoreVisitHistory], totalCount: Int) {
-        isHidden = histories.isEmpty
         setStackItem(histories, totalCount: totalCount)
     }
-    
     
     private func setStackItem(_ histories: [StoreVisitHistory], totalCount: Int) {
         for history in histories {

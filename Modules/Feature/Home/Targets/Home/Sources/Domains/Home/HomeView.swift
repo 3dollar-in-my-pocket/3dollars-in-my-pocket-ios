@@ -9,6 +9,8 @@ import SnapKit
 import Then
 
 final class HomeView: BaseView {
+    private let homeFilterSelectable: HomeFilterSelectable
+    
     let mapView = NMFMapView().then {
         $0.positionMode = .direction
         $0.zoomLevel = 15
@@ -16,11 +18,7 @@ final class HomeView: BaseView {
     
     let addressButton = AddressButton()
     
-    let categoryFilterButton = CategoryFilterButton()
-    
-    let sortingButton = SortingButton()
-    
-    let onlyBossToggleButton = OnlyBossToggleButton()
+    lazy var homeFilterCollectionView = HomeFilterCollectionView(homeFilterSelectable: homeFilterSelectable)
     
     let researchButton = UIButton().then {
         $0.setTitle(HomeStrings.homeResearchButton, for: .normal)
@@ -65,14 +63,23 @@ final class HomeView: BaseView {
         $0.isPagingEnabled = false
     }
     
+    private var homeFilterTooltip: HomeFilterTooltip?
+    
+    init(homeFilterSelectable: HomeFilterSelectable) {
+        self.homeFilterSelectable = homeFilterSelectable
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func setup() {
         addSubViews([
             mapView,
             researchButton,
             addressButton,
-            categoryFilterButton,
-            sortingButton,
-            onlyBossToggleButton,
+            homeFilterCollectionView,
             currentLocationButton,
             listViewButton,
             collectionView
@@ -90,27 +97,16 @@ final class HomeView: BaseView {
             $0.right.equalToSuperview().offset(-14)
         }
         
-        categoryFilterButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.top.equalTo(addressButton.snp.bottom).offset(14)
-            $0.height.equalTo(34)
-        }
-        
-        sortingButton.snp.makeConstraints {
-            $0.left.equalTo(categoryFilterButton.snp.right).offset(10)
-            $0.centerY.equalTo(categoryFilterButton)
-            $0.height.equalTo(34)
-        }
-        
-        onlyBossToggleButton.snp.makeConstraints {
-            $0.left.equalTo(sortingButton.snp.right).offset(10)
-            $0.centerY.equalTo(categoryFilterButton)
-            $0.height.equalTo(34)
+        homeFilterCollectionView.snp.makeConstraints {
+            $0.left.equalToSuperview()
+            $0.top.equalTo(addressButton.snp.bottom)
+            $0.right.equalToSuperview()
+            $0.height.equalTo(60)
         }
         
         researchButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(sortingButton)
+            make.bottom.equalTo(homeFilterCollectionView)
             make.height.equalTo(34)
         }
         
@@ -140,7 +136,7 @@ final class HomeView: BaseView {
             duration: 0.3,
             options: .curveEaseInOut
         ) { [weak self] in
-            self?.researchButton.transform = isHidden ? .identity : .init(translationX: 0, y: 56)
+            self?.researchButton.transform = isHidden ? .identity : .init(translationX: 0, y: 35)
             self?.researchButton.alpha = isHidden ? 0.0 : 1.0
         }
     }
@@ -168,6 +164,20 @@ final class HomeView: BaseView {
                 self?.mapView.locationOverlay.iconWidth = CGFloat(advertisement.imageWidth)
                 self?.mapView.locationOverlay.iconHeight = CGFloat(advertisement.imageHeight)
             }
+        }
+    }
+    
+    func showFilterTooltiop(isShow: Bool) {
+        if isShow, let cell = homeFilterCollectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as? HomeFilterCell {
+            let homeFilterTooltip = HomeFilterTooltip()
+            addSubview(homeFilterTooltip)
+            homeFilterTooltip.snp.makeConstraints {
+                $0.centerX.equalTo(cell)
+                $0.top.equalTo(cell.snp.bottom).offset(4)
+            }
+            self.homeFilterTooltip = homeFilterTooltip
+        } else {
+            homeFilterTooltip?.removeFromSuperview()
         }
     }
     

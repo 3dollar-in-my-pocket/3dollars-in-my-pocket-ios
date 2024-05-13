@@ -64,14 +64,6 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
                 .subscribe(viewModel.input.onToggleCertifiedStore)
                 .store(in: &headerView.cancellables)
             
-            viewModel.output.categoryFilter
-                .receive(on: DispatchQueue.main)
-                .withUnretained(headerView)
-                .sink { headerView, category in
-                    headerView.bind(category: category)
-                }
-                .store(in: &headerView.cancellables)
-            
             viewModel.output.isOnlyCertified
                 .receive(on: DispatchQueue.main)
                 .withUnretained(headerView)
@@ -80,11 +72,24 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
                 }
                 .store(in: &headerView.cancellables)
             
-            viewModel.output.isOnlyBoss
+            viewModel.output.filterDatasource
                 .receive(on: DispatchQueue.main)
-                .assign(to: \.isHidden, on: headerView.isOnlyCertifiedButton)
+                .withUnretained(headerView)
+                .sink { (headerView: HomeListHeaderCell, cellTypeList: [HomeFilterCollectionView.CellType]) in
+                    for cellType in cellTypeList {
+                        switch cellType {
+                        case .category(let category):
+                            headerView.bind(category: category)
+                        case .recentActivity(let bool):
+                            continue
+                        case .sortingFilter(let storeSortType):
+                            continue
+                        case .onlyBoss(let isOnlyBoss):
+                            headerView.isOnlyCertifiedButton.isHidden = isOnlyBoss
+                        }
+                    }
+                }
                 .store(in: &headerView.cancellables)
-            
             return headerView
         }
     }
@@ -93,7 +98,7 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
 extension HomeListDataSource: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         switch itemIdentifier(for: indexPath) {
-        case .storeCard(let storeCard):
+        case .storeCard(_):
             viewModel.input.willDisplay.send(indexPath.row)
         default:
             break

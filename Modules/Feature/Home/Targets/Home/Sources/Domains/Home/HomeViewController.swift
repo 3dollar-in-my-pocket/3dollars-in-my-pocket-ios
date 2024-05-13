@@ -17,7 +17,7 @@ public final class HomeViewController: BaseViewController {
         return viewModel.output.screenName
     }
     
-    private let homeView = HomeView()
+    private lazy var homeView = HomeView(homeFilterSelectable: viewModel)
     private let viewModel = HomeViewModel()
     private lazy var dataSource = HomeDataSource(
         collectionView: homeView.collectionView,
@@ -79,22 +79,6 @@ public final class HomeViewController: BaseViewController {
     }
     
     public override func bindViewModelInput() {
-        homeView.categoryFilterButton
-            .controlPublisher(for: .touchUpInside)
-            .mapVoid
-            .subscribe(viewModel.input.onTapCategoryFilter)
-            .store(in: &cancellables)
-        
-        homeView.sortingButton.sortTypePublisher
-            .subscribe(viewModel.input.onToggleSort)
-            .store(in: &cancellables)
-        
-        homeView.onlyBossToggleButton
-            .controlPublisher(for: .touchUpInside)
-            .mapVoid
-            .subscribe(viewModel.input.onTapOnlyBoss)
-            .store(in: &cancellables)
-        
         homeView.addressButton.tap
             .mapVoid
             .subscribe(viewModel.input.onTapSearchAddress)
@@ -134,6 +118,10 @@ public final class HomeViewController: BaseViewController {
             self?.viewModel.input.onTapCurrentMarker.send(())
             return true
         }
+        
+        homeView.homeFilterCollectionView.onLoadFilter = { [weak self] in
+            self?.viewModel.input.onLoadFilter.send(())
+        }
     }
     
     public override func bindViewModelOutput() {
@@ -142,30 +130,6 @@ public final class HomeViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, address in
                 owner.homeView.addressButton.bind(address: address)
-            }
-            .store(in: &cancellables)
-        
-        viewModel.output.categoryFilter
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, category in
-                owner.homeView.categoryFilterButton.setCategory(category)
-            }
-            .store(in: &cancellables)
-        
-        viewModel.output.sortType
-            .main
-            .withUnretained(self)
-            .sink { (owner: HomeViewController, sortType: StoreSortType) in
-                owner.homeView.sortingButton.bind(sortType)
-            }
-            .store(in: &cancellables)
-        
-        viewModel.output.isOnlyBoss
-            .main
-            .withUnretained(self)
-            .sink { (owner: HomeViewController, isOnlyBoss: Bool) in
-                owner.homeView.onlyBossToggleButton.isSelected = isOnlyBoss
             }
             .store(in: &cancellables)
         
@@ -271,6 +235,14 @@ public final class HomeViewController: BaseViewController {
                     guard let url = URL(string: urlString) else { return }
                     UIApplication.shared.open(url)
                 }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.isShowFilterTooltip
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, isShow: Bool) in
+                owner.homeView.showFilterTooltiop(isShow: isShow)
             }
             .store(in: &cancellables)
     }

@@ -13,6 +13,7 @@ final class HomeListViewModel: BaseViewModel {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let willDisplay = PassthroughSubject<Int, Never>()
         let onTapCategoryFilter = PassthroughSubject<Void, Never>()
+        let onTapOnlyRecentActivity = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<PlatformStoreCategory?, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
@@ -23,25 +24,25 @@ final class HomeListViewModel: BaseViewModel {
     
     struct Output {
         let screenName: ScreenName = .homeList
-        let categoryFilter: CurrentValueSubject<PlatformStoreCategory?, Never>
         let dataSource = CurrentValueSubject<[HomeListSection], Never>([])
-        
-        let sortType: CurrentValueSubject<StoreSortType, Never>
-        let isOnlyBoss: CurrentValueSubject<Bool, Never>
+        let filterDatasource: CurrentValueSubject<[HomeFilterCollectionView.CellType], Never>
         let isOnlyCertified = CurrentValueSubject<Bool, Never>(false)
         let route = PassthroughSubject<Route, Never>()
         
         // To HomeViewModel
+        let onSelectCategoryFilter = PassthroughSubject<PlatformStoreCategory?, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
+        let onTapOnlyRecentActivity = PassthroughSubject<Void, Never>()
     }
     
     struct State {
         let stores: CurrentValueSubject<[StoreCard], Never>
         var categoryFilter: PlatformStoreCategory?
-        var sortType: StoreSortType = .distanceAsc
-        var isOnlyBossStore = false
-        var isOnleyCertifiedStore = false
+        var isOnlyRecentActivity: Bool
+        var sortType: StoreSortType
+        var isOnlyBossStore: Bool
+        var isOnlyCertifiedStore = false
         var mapLocation: CLLocation?
         let currentLocation: CLLocation?
         var nextCursor: String?
@@ -76,9 +77,12 @@ final class HomeListViewModel: BaseViewModel {
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.output = Output(
-            categoryFilter: .init(config.initialState.categoryFilter),
-            sortType: .init(config.initialState.sortType),
-            isOnlyBoss: .init(config.initialState.isOnlyBossStore)
+            filterDatasource: .init([
+                .category(config.initialState.categoryFilter),
+                .recentActivity(config.initialState.isOnlyRecentActivity),
+                .sortingFilter(config.initialState.sortType),
+                .onlyBoss(config.initialState.isOnlyBossStore)
+            ])
         )
         self.state = config.initialState
         self.storeService = storeService
@@ -135,7 +139,7 @@ final class HomeListViewModel: BaseViewModel {
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
                 owner.state.categoryFilter = category
-                owner.output.categoryFilter.send(category)
+                owner.updateFilterDatasource()
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -145,6 +149,7 @@ final class HomeListViewModel: BaseViewModel {
                 switch result {
                 case .success(let stores):
                     owner.state.stores.send(stores)
+                    owner.updateFilterDatasource()
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -152,14 +157,35 @@ final class HomeListViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
+        input.onTapOnlyRecentActivity
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: HomeListViewModel, _) in
+                owner.state.isOnlyRecentActivity.toggle()
+            })
+            .asyncMap { owner, _ in
+                await owner.fetchAroundStore()
+            }
+            .withUnretained(self)
+            .sink(receiveValue: { owner, result in
+                switch result {
+                case .success(let stores):
+                    owner.updateFilterDatasource()
+                    owner.state.stores.send(stores)
+                    
+                case .failure(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            })
+            .store(in: &cancellables)
+        
         input.onToggleCertifiedStore
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, _ in
                 owner.state.hasMore = true
                 owner.state.nextCursor = nil
-                owner.state.isOnleyCertifiedStore.toggle()
-                owner.sendClickOnlyVisitFilterLog(owner.state.isOnleyCertifiedStore)
-                owner.output.isOnlyCertified.send(owner.state.isOnleyCertifiedStore)
+                owner.state.isOnlyCertifiedStore.toggle()
+                owner.sendClickOnlyVisitFilterLog(owner.state.isOnlyCertifiedStore)
+                owner.output.isOnlyCertified.send(owner.state.isOnlyCertifiedStore)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -168,6 +194,7 @@ final class HomeListViewModel: BaseViewModel {
             .sink { owner, result in
                 switch result {
                 case .success(let stores):
+                    owner.updateFilterDatasource()
                     owner.state.stores.send(stores)
                     
                 case .failure(let error):
@@ -191,6 +218,7 @@ final class HomeListViewModel: BaseViewModel {
             .sink { owner, result in
                 switch result {
                 case .success(let stores):
+                    owner.updateFilterDatasource()
                     owner.state.stores.send(stores)
                     
                 case .failure(let error):
@@ -212,10 +240,11 @@ final class HomeListViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink { owner, result in
-                owner.output.isOnlyBoss.send(owner.state.isOnlyBossStore)
+                owner.updateFilterDatasource()
                 
                 switch result {
                 case .success(let stores):
+                    owner.updateFilterDatasource()
                     owner.state.stores.send(stores)
                     
                 case .failure(let error):
@@ -264,6 +293,25 @@ final class HomeListViewModel: BaseViewModel {
         input.onTapOnlyBoss
             .subscribe(output.onTapOnlyBoss)
             .store(in: &cancellables)
+        
+        input.selectCategory
+            .subscribe(output.onSelectCategoryFilter)
+            .store(in: &cancellables)
+        
+        input.onTapOnlyRecentActivity
+            .subscribe(output.onTapOnlyRecentActivity)
+            .store(in: &cancellables)
+    }
+    
+    private func updateFilterDatasource() {
+        let datasource: [HomeFilterCollectionView.CellType] = [
+            .category(state.categoryFilter),
+            .recentActivity(state.isOnlyRecentActivity),
+            .sortingFilter(state.sortType),
+            .onlyBoss(state.isOnlyBossStore)
+        ]
+        
+        output.filterDatasource.send(datasource)
     }
     
     private func canLoad(index: Int) -> Bool {
@@ -276,12 +324,14 @@ final class HomeListViewModel: BaseViewModel {
             categoryIds = [filterCategory.category]
         }
         let targetStores: [StoreType] = state.isOnlyBossStore ? [.bossStore] : [.userStore, .bossStore]
+        let filterConditions: [String] = state.isOnlyRecentActivity ? ["RECENT_ACTIVITY"] : ["NO_RECENT_ACTIVITY"]
         let input = FetchAroundStoreInput(
             distanceM: state.mapMaxDistance,
             categoryIds: categoryIds,
             targetStores: targetStores.map { $0.rawValue },
             sortType: state.sortType.rawValue,
-            filterCertifiedStores: state.isOnleyCertifiedStore,
+            filterCertifiedStores: state.isOnlyCertifiedStore,
+            filterConditions: filterConditions,
             size: 10,
             cursor: state.nextCursor,
             mapLatitude: state.mapLocation?.coordinate.latitude ?? 0,
@@ -382,5 +432,31 @@ final class HomeListViewModel: BaseViewModel {
             eventName: .clickOnlyVisit,
             extraParameters: [.value: isOn]
         ))
+    }
+}
+
+extension HomeListViewModel: HomeFilterSelectable {
+    var onTapCategoryFilter: PassthroughSubject<Void, Never> {
+        return input.onTapCategoryFilter
+    }
+    
+    var onTapOnlyRecentActivity: PassthroughSubject<Void, Never> {
+        return input.onTapOnlyRecentActivity
+    }
+    
+    var onToggleSort: PassthroughSubject<Model.StoreSortType, Never> {
+        return input.onToggleSort
+    }
+    
+    var onTapOnlyBoss: PassthroughSubject<Void, Never> {
+        return input.onTapOnlyBoss
+    }
+    
+    var selectCategory: PassthroughSubject<Model.PlatformStoreCategory?, Never> {
+        return input.selectCategory
+    }
+    
+    var filterDatasource: CurrentValueSubject<[HomeFilterCollectionView.CellType], Never> {
+        return output.filterDatasource
     }
 }

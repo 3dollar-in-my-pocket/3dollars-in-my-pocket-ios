@@ -7,11 +7,9 @@ import AppInterface
 import Model
 
 final class HomeListView: BaseView {
-    let categoryFilterButton = CategoryFilterButton()
+    private let homeFilterSelectable: HomeFilterSelectable
     
-    let sortingButton = SortingButton()
-    
-    let onlyBossToggleButton = OnlyBossToggleButton()
+    private lazy var homeFilterCollectionView = HomeFilterCollectionView(homeFilterSelectable: homeFilterSelectable)
     
     let adBannerView: AdBannerViewProtocol = {
         let view = Environment.appModuleInterface.createAdBannerView(adType: .homeList)
@@ -38,13 +36,20 @@ final class HomeListView: BaseView {
         $0.layer.shadowOpacity = 0.1
     }
     
+    init(homeFilterSelectable: HomeFilterSelectable) {
+        self.homeFilterSelectable = homeFilterSelectable
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func setup() {
         backgroundColor = DesignSystemAsset.Colors.gray0.color
         
         addSubViews([
-            categoryFilterButton,
-            sortingButton,
-            onlyBossToggleButton,
+            homeFilterCollectionView,
             adBannerView,
             collectionView,
             mapViewButton
@@ -52,25 +57,17 @@ final class HomeListView: BaseView {
     }
     
     override func bindConstraints() {
-        categoryFilterButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(22)
-            $0.top.equalTo(safeAreaLayoutGuide).offset(13)
-        }
-        
-        sortingButton.snp.makeConstraints {
-            $0.centerY.equalTo(categoryFilterButton)
-            $0.left.equalTo(categoryFilterButton.snp.right).offset(10)
-        }
-        
-        onlyBossToggleButton.snp.makeConstraints {
-            $0.centerY.equalTo(categoryFilterButton)
-            $0.left.equalTo(sortingButton.snp.right).offset(10)
+        homeFilterCollectionView.snp.makeConstraints {
+            $0.left.equalToSuperview()
+            $0.top.equalTo(safeAreaLayoutGuide)
+            $0.right.equalToSuperview()
+            $0.height.equalTo(60)
         }
         
         adBannerView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()
-            $0.top.equalTo(categoryFilterButton.snp.bottom).offset(13)
+            $0.top.equalTo(homeFilterCollectionView.snp.bottom)
             $0.height.equalTo(49)
         }
         
