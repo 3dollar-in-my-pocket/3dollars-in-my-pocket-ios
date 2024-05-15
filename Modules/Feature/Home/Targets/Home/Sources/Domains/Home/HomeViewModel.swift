@@ -283,6 +283,7 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .handleEvents(receiveOutput: { (owner: HomeViewModel, _) in
                 owner.state.isOnlyRecentActivity.toggle()
+                owner.sendClickRecentActivityFilter(value: owner.state.isOnlyRecentActivity)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -817,6 +818,14 @@ extension HomeViewModel {
             screen: output.screenName,
             eventName: .clickAdMarker,
             extraParameters: [.advertisementId: advertisement.advertisementId]
+        ))
+    }
+    
+    private func sendClickRecentActivityFilter(value: Bool) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickRecentActivityFilter,
+            extraParameters: [.value: value]
         ))
     }
 }

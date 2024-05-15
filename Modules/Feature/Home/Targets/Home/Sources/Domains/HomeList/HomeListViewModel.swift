@@ -161,6 +161,7 @@ final class HomeListViewModel: BaseViewModel {
             .withUnretained(self)
             .handleEvents(receiveOutput: { (owner: HomeListViewModel, _) in
                 owner.state.isOnlyRecentActivity.toggle()
+                owner.sendClickRecentActivityFilter(value: owner.state.isOnlyRecentActivity)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -383,7 +384,10 @@ final class HomeListViewModel: BaseViewModel {
         
         output.dataSource.send([HomeListSection(items: sectionItems)])
     }
-    
+}
+
+// MARK: Log
+extension HomeListViewModel {
     private func sendClickStore(_ storeCard: StoreCard) {
         logManager.sendEvent(.init(
             screen: output.screenName,
@@ -431,6 +435,14 @@ final class HomeListViewModel: BaseViewModel {
             screen: output.screenName,
             eventName: .clickOnlyVisit,
             extraParameters: [.value: isOn]
+        ))
+    }
+    
+    private func sendClickRecentActivityFilter(value: Bool) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickRecentActivityFilter,
+            extraParameters: [.value: value]
         ))
     }
 }
