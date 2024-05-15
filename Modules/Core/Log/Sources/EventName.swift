@@ -23,6 +23,7 @@ public enum EventName: String {
     case clickAdCard = "click_ad_card"
     case clickAdMarker = "click_ad_marker"
     case clickAddress = "click_address"
+    case clickRecentActivityFilter = "click_recent_activity_filter"
     
     // 카테고리 필터 화면
     case clickCategory = "click_category"

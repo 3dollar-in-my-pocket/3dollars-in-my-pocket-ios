@@ -283,6 +283,7 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .handleEvents(receiveOutput: { (owner: HomeViewModel, _) in
                 owner.state.isOnlyRecentActivity.toggle()
+                owner.sendClickRecentActivityFilter(value: owner.state.isOnlyRecentActivity)
             })
             .asyncMap { owner, _ in
                 await owner.fetchAroundStore()
@@ -618,7 +619,7 @@ final class HomeViewModel: BaseViewModel {
             categoryIds = [filterCategory.category]
         }
         let targetStores: [StoreType] = state.isOnlyBossStore ? [.bossStore] : [.userStore, .bossStore]
-        let filterConditions: [String] = state.isOnlyRecentActivity ? ["RECENT_ACTIVITY"] : ["NO_RECENT_ACTIVITY"]
+        let filterConditions: [String] = state.isOnlyRecentActivity ? ["RECENT_ACTIVITY"] : ["RECENT_ACTIVITY", "NO_RECENT_ACTIVITY"]
         let input = FetchAroundStoreInput(
             distanceM: state.mapMaxDistance,
             categoryIds: categoryIds,
@@ -817,6 +818,14 @@ extension HomeViewModel {
             screen: output.screenName,
             eventName: .clickAdMarker,
             extraParameters: [.advertisementId: advertisement.advertisementId]
+        ))
+    }
+    
+    private func sendClickRecentActivityFilter(value: Bool) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickRecentActivityFilter,
+            extraParameters: [.value: value]
         ))
     }
 }
