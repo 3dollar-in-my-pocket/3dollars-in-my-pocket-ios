@@ -19,7 +19,7 @@ final class HomeListViewController: BaseViewController {
     }
     
     weak var delegate: HomeListDelegate?
-    private let homeListView = HomeListView()
+    private lazy var homeListView = HomeListView(homeFilterSelectable: viewModel)
     private let viewModel: HomeListViewModel
     private lazy var dataSource = HomeListDataSource(collectionView: homeListView.collectionView, viewModel: viewModel)
     
@@ -53,32 +53,17 @@ final class HomeListViewController: BaseViewController {
     }
     
     override func bindViewModelInput() {
-        homeListView.categoryFilterButton
-            .controlPublisher(for: .touchUpInside)
-            .mapVoid
-            .subscribe(viewModel.input.onTapCategoryFilter)
-            .store(in: &cancellables)
         
-        homeListView.sortingButton
-            .sortTypePublisher
-            .subscribe(viewModel.input.onToggleSort)
-            .store(in: &cancellables)
-        
-        homeListView.onlyBossToggleButton
-            .controlPublisher(for: .touchUpInside)
-            .mapVoid
-            .subscribe(viewModel.input.onTapOnlyBoss)
-            .store(in: &cancellables)
     }
     
     override func bindViewModelOutput() {
-        viewModel.output.categoryFilter
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, category in
-                owner.homeListView.categoryFilterButton.setCategory(category)
-            }
-            .store(in: &cancellables)
+//        viewModel.output.categoryFilter
+//            .receive(on: DispatchQueue.main)
+//            .withUnretained(self)
+//            .sink { owner, category in
+//                owner.homeListView.categoryFilterButton.setCategory(category)
+//            }
+//            .store(in: &cancellables)
         
         viewModel.output.dataSource
             .receive(on: DispatchQueue.main)
@@ -88,21 +73,21 @@ final class HomeListViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.sortType
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, sortType in
-                owner.homeListView.sortingButton.bind(sortType)
-            }
-            .store(in: &cancellables)
-        
-        viewModel.output.isOnlyBoss
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, isOnlyBoss in
-                owner.homeListView.onlyBossToggleButton.isSelected = isOnlyBoss
-            }
-            .store(in: &cancellables)
+//        viewModel.output.sortType
+//            .receive(on: DispatchQueue.main)
+//            .withUnretained(self)
+//            .sink { owner, sortType in
+//                owner.homeListView.sortingButton.bind(sortType)
+//            }
+//            .store(in: &cancellables)
+//        
+//        viewModel.output.isOnlyBoss
+//            .receive(on: DispatchQueue.main)
+//            .withUnretained(self)
+//            .sink { owner, isOnlyBoss in
+//                owner.homeListView.onlyBossToggleButton.isSelected = isOnlyBoss
+//            }
+//            .store(in: &cancellables)
         
         viewModel.output.route
             .receive(on: DispatchQueue.main)

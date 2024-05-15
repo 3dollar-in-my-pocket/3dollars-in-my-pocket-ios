@@ -26,6 +26,10 @@ public enum HomeStrings {
   public static let homeEmptyDescription = HomeStrings.tr("Localization", "home_empty_description")
   /// 주변 2km 이내에\n가게가 없어요.
   public static let homeEmptyTitle = HomeStrings.tr("Localization", "home_empty_title")
+  /// · 최근 한 달 내에 방문 인증 성공 내역이 있어요.\n· 신규로 생성된 가게에요.
+  public static let homeFilterTooltipDescription = HomeStrings.tr("Localization", "home_filter_tooltip_description")
+  /// 최근 활동이 있는 가게만 볼 수 있어요!
+  public static let homeFilterTooltipTitle = HomeStrings.tr("Localization", "home_filter_tooltip_title")
   /// 전체 메뉴
   public static let homeListHeaderTotal = HomeStrings.tr("Localization", "home_list_header_total")
   /// 방문 인증 가게
@@ -34,6 +38,8 @@ public enum HomeStrings {
   public static let homeListViewButton = HomeStrings.tr("Localization", "home_list_view_button")
   /// 사장님 직영점만
   public static let homeOnlyBossButton = HomeStrings.tr("Localization", "home_only_boss_button")
+  /// 최근 활동
+  public static let homeRecentActivity = HomeStrings.tr("Localization", "home_recent_activity")
   /// 현재 지도에서 가게 재검색
   public static let homeResearchButton = HomeStrings.tr("Localization", "home_research_button")
   /// 거리순 보기

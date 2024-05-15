@@ -16,11 +16,13 @@ final class HomeViewModel: BaseViewModel {
     
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
+        let onLoadFilter = PassthroughSubject<Void, Never>()
         let onMapLoad = PassthroughSubject<Double, Never>()
         let changeMaxDistance = PassthroughSubject<Double, Never>()
         let changeMapLocation = PassthroughSubject<CLLocation, Never>()
         let onTapCategoryFilter = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<PlatformStoreCategory?, Never>()
+        let onTapOnlyRecentActivity = PassthroughSubject<Void, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
         let onTapSearchAddress = PassthroughSubject<Void, Never>()
@@ -38,15 +40,19 @@ final class HomeViewModel: BaseViewModel {
     struct Output {
         let screenName: ScreenName = .home
         let address = PassthroughSubject<String, Never>()
-        let categoryFilter = PassthroughSubject<PlatformStoreCategory?, Never>()
-        let sortType = PassthroughSubject<StoreSortType, Never>()
-        let isOnlyBoss = PassthroughSubject<Bool, Never>()
+        let filterDatasource = CurrentValueSubject<[HomeFilterCollectionView.CellType], Never>([
+            .category(nil),
+            .recentActivity(false),
+            .sortingFilter(.distanceAsc),
+            .onlyBoss(false)
+        ])
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let advertisementMarker = PassthroughSubject<Advertisement, Never>()
         let advertisementCard = PassthroughSubject<Advertisement?, Never>()
         let collectionItems = PassthroughSubject<[HomeSectionItem], Never>()
         let scrollToIndex = PassthroughSubject<Int, Never>()
+        let isShowFilterTooltip = PassthroughSubject<Bool, Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
@@ -56,6 +62,7 @@ final class HomeViewModel: BaseViewModel {
         var categoryFilter: PlatformStoreCategory?
         var sortType: StoreSortType = .distanceAsc
         var isOnlyBossStore = false
+        var isOnlyRecentActivity = false
         var mapMaxDistance: Double?
         var newCameraPosition: CLLocation?
         var newMapMaxDistance: Double?
@@ -260,12 +267,11 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink(receiveValue: { owner, result in
-                owner.output.showLoading.send(false)
-                
+                owner.shownFilterTooltip()
                 switch result {
                 case .success(let storeCards):
                     owner.updateCollectionItems(storeCards: storeCards)
-                    owner.output.categoryFilter.send(owner.state.categoryFilter)
+                    owner.updateFilterDatasource()
                     
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
@@ -273,10 +279,34 @@ final class HomeViewModel: BaseViewModel {
             })
             .store(in: &cancellables)
         
+        input.onTapOnlyRecentActivity
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: HomeViewModel, _) in
+                owner.state.isOnlyRecentActivity.toggle()
+                owner.sendClickRecentActivityFilter(value: owner.state.isOnlyRecentActivity)
+            })
+            .asyncMap { owner, _ in
+                await owner.fetchAroundStore()
+            }
+            .withUnretained(self)
+            .sink(receiveValue: { owner, result in
+                owner.shownFilterTooltip()
+                switch result {
+                case .success(let storeCards):
+                    owner.updateCollectionItems(storeCards: storeCards)
+                    owner.updateFilterDatasource()
+                    
+                case .failure(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            })
+            .store(in: &cancellables)
+            
+        
         input.onToggleSort
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, sortType in
-                owner.state.sortType = sortType
+                owner.state.sortType = owner.state.sortType.toggled()
                 owner.sendClickSortingFilterLog(sortType: sortType)
             })
             .asyncMap { owner, _ in
@@ -284,17 +314,15 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink(receiveValue: { owner, result in
-                owner.output.showLoading.send(false)
-                
+                owner.shownFilterTooltip()
                 switch result {
                 case .success(let storeCards):
                     owner.updateCollectionItems(storeCards: storeCards)
-                    
+                    owner.updateFilterDatasource()
                 case .failure(let error):
                     owner.state.sortType = owner.state.sortType.toggled()
                     owner.output.route.send(.showErrorAlert(error))
                 }
-                owner.output.sortType.send(owner.state.sortType)
             })
             .store(in: &cancellables)
         
@@ -309,15 +337,16 @@ final class HomeViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .sink(receiveValue: { owner, result in
+                owner.shownFilterTooltip()
                 switch result {
                 case .success(let storeCards):
                     owner.updateCollectionItems(storeCards: storeCards)
+                    owner.updateFilterDatasource()
                     
                 case .failure(let error):
                     owner.state.isOnlyBossStore.toggle()
                     owner.output.route.send(.showErrorAlert(error))
                 }
-                owner.output.isOnlyBoss.send(owner.state.isOnlyBossStore)
             })
             .store(in: &cancellables)
         
@@ -435,6 +464,7 @@ final class HomeViewModel: BaseViewModel {
                 let state = HomeListViewModel.State(
                     stores: .init(stores),
                     categoryFilter: owner.state.categoryFilter,
+                    isOnlyRecentActivity: owner.state.isOnlyRecentActivity,
                     sortType: owner.state.sortType,
                     isOnlyBossStore: owner.state.isOnlyBossStore,
                     mapLocation: owner.state.resultCameraPosition,
@@ -545,6 +575,26 @@ final class HomeViewModel: BaseViewModel {
             })
             .subscribe(output.route)
             .store(in: &cancellables)
+        
+        input.onLoadFilter
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, _) in
+                if owner.userDefaults.isShownFilterTooltip.isNot {
+                    owner.output.isShowFilterTooltip.send(true)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateFilterDatasource() {
+        let datasource: [HomeFilterCollectionView.CellType] = [
+            .category(state.categoryFilter),
+            .recentActivity(state.isOnlyRecentActivity),
+            .sortingFilter(state.sortType),
+            .onlyBoss(state.isOnlyBossStore)
+        ]
+        
+        output.filterDatasource.send(datasource)
     }
     
     private func updateCollectionItems(storeCards: [StoreCard], advertisementCard: Advertisement? = nil) {
@@ -569,12 +619,14 @@ final class HomeViewModel: BaseViewModel {
             categoryIds = [filterCategory.category]
         }
         let targetStores: [StoreType] = state.isOnlyBossStore ? [.bossStore] : [.userStore, .bossStore]
+        let filterConditions: [String] = state.isOnlyRecentActivity ? ["RECENT_ACTIVITY"] : ["RECENT_ACTIVITY", "NO_RECENT_ACTIVITY"]
         let input = FetchAroundStoreInput(
             distanceM: state.mapMaxDistance,
             categoryIds: categoryIds,
             targetStores: targetStores.map { $0.rawValue },
             sortType: state.sortType.rawValue,
             filterCertifiedStores: false,
+            filterConditions: filterConditions,
             size: 10,
             cursor: nil,
             mapLatitude: state.resultCameraPosition?.coordinate.latitude ?? 0,
@@ -658,8 +710,12 @@ final class HomeViewModel: BaseViewModel {
             .subscribe(input.onTapOnlyBoss)
             .store(in: &viewModel.cancellables)
         
-        viewModel.output.categoryFilter
+        viewModel.output.onSelectCategoryFilter
             .subscribe(input.selectCategory)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onTapOnlyRecentActivity
+            .subscribe(input.onTapOnlyRecentActivity)
             .store(in: &viewModel.cancellables)
     }
     
@@ -673,6 +729,12 @@ final class HomeViewModel: BaseViewModel {
                 self?.userDefaults.subscribedMarketingTopic = true
             }
         }
+    }
+    
+    private func shownFilterTooltip() {
+        guard userDefaults.isShownFilterTooltip.isNot else { return }
+        userDefaults.isShownFilterTooltip = true
+        output.isShowFilterTooltip.send(false)
     }
 }
 
@@ -757,5 +819,39 @@ extension HomeViewModel {
             eventName: .clickAdMarker,
             extraParameters: [.advertisementId: advertisement.advertisementId]
         ))
+    }
+    
+    private func sendClickRecentActivityFilter(value: Bool) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickRecentActivityFilter,
+            extraParameters: [.value: value]
+        ))
+    }
+}
+
+extension HomeViewModel: HomeFilterSelectable {
+    var onTapCategoryFilter: PassthroughSubject<Void, Never> {
+        input.onTapCategoryFilter
+    }
+    
+    var onTapOnlyRecentActivity: PassthroughSubject<Void, Never> {
+        input.onTapOnlyRecentActivity
+    }
+    
+    var onToggleSort: PassthroughSubject<Model.StoreSortType, Never> {
+        input.onToggleSort
+    }
+    
+    var onTapOnlyBoss: PassthroughSubject<Void, Never> {
+        input.onTapOnlyBoss
+    }
+    
+    var selectCategory: PassthroughSubject<Model.PlatformStoreCategory?, Never> {
+        input.selectCategory
+    }
+    
+    var filterDatasource: CurrentValueSubject<[HomeFilterCollectionView.CellType], Never> {
+        output.filterDatasource
     }
 }

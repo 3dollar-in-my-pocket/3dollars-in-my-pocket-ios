@@ -14,6 +14,7 @@ final class HomeListHeaderCell: BaseCollectionViewReusableView {
         $0.textColor = DesignSystemAsset.Colors.systemBlack.color
         $0.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 20)
         $0.textAlignment = .left
+        $0.numberOfLines = 2
     }
     
     let isOnlyCertifiedButton = UIButton().then {

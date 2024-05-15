@@ -70,4 +70,13 @@ public final class UserDefaultsUtil {
     public func getShownMainBannerDate(id: Int) -> String? {
         return instance.string(forKey: "KEY_SHOWN_MAIN_BANNER_\(id)")
     }
+    
+    public var isShownFilterTooltip: Bool {
+        set {
+            instance.set(newValue, forKey: "KEY_IS_SHOWN_FILTER_TOOLTIP")
+        }
+        get {
+            return instance.bool(forKey: "KEY_IS_SHOWN_FILTER_TOOLTIP")
+        }
+    }
 }

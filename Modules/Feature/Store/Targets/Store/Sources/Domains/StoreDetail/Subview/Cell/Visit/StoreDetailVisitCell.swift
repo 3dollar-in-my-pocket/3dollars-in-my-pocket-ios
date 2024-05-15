@@ -7,11 +7,19 @@ import Model
 final class StoreDetailVisitCell: BaseCollectionViewCell {
     enum Layout {
         static func calculateHeight(historyCount: Int) -> CGFloat {
-            let summaryViewHeight = StoreDetailVisitSummryView.Layout.size.height
-            let historyViewHeight = StoreDetailVisitHistoryView.Layout.calculateHeight(count: historyCount)
-            let space: CGFloat = 8
+            var height: CGFloat = 0
+            height += StoreDetailVisitSummryView.Layout.size.height
             
-            return summaryViewHeight + space + historyViewHeight
+            if historyCount > 0 {
+                let historyViewHeight = StoreDetailVisitHistoryView.Layout.calculateHeight(count: historyCount)
+                height += historyViewHeight
+            } else {
+                height += StoreDetailVisitEmptyView.Layout.height
+            }
+            let space: CGFloat = 8
+            height += space
+            
+            return height
         }
     }
     
@@ -20,6 +28,8 @@ final class StoreDetailVisitCell: BaseCollectionViewCell {
     private let failSummaryView = StoreDetailVisitSummryView()
     
     private let historyView = StoreDetailVisitHistoryView()
+    
+    private let emptyView = StoreDetailVisitEmptyView()
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -31,7 +41,8 @@ final class StoreDetailVisitCell: BaseCollectionViewCell {
         contentView.addSubViews([
             successSummaryView,
             failSummaryView,
-            historyView
+            historyView,
+            emptyView
         ])
     }
     
@@ -55,11 +66,24 @@ final class StoreDetailVisitCell: BaseCollectionViewCell {
             $0.right.equalToSuperview()
             $0.top.equalTo(successSummaryView.snp.bottom).offset(8)
         }
+        
+        emptyView.snp.makeConstraints {
+            $0.left.right.equalToSuperview()
+            $0.top.equalTo(successSummaryView.snp.bottom).offset(8)
+        }
     }
     
     func bind(_ visit: StoreDetailVisit) {
         successSummaryView.bind(.success(visit.existsCounts))
         failSummaryView.bind(.fail(visit.notExistsCounts))
-        historyView.bind(visit.histories, totalCount: visit.existsCounts + visit.notExistsCounts)
+        
+        if visit.histories.isEmpty {
+            emptyView.isHidden = false
+            historyView.isHidden = true
+        } else {
+            emptyView.isHidden = true
+            historyView.isHidden = false
+            historyView.bind(visit.histories, totalCount: visit.existsCounts + visit.notExistsCounts)
+        }
     }
 }

@@ -48,6 +48,7 @@ public enum DesignSystemAsset {
   }
   public enum Icons {
     public static let apple = DesignSystemImages(name: "apple")
+    public static let arrowDown = DesignSystemImages(name: "arrow.down")
     public static let arrowLeft = DesignSystemImages(name: "arrow.left")
     public static let arrowRight = DesignSystemImages(name: "arrow.right")
     public static let badge = DesignSystemImages(name: "badge")
