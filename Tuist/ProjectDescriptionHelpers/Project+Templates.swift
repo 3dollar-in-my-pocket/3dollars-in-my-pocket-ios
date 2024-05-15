@@ -16,7 +16,7 @@ extension Project {
     ) -> Project {
         return Project(
             name: name,
-            organizationName: DefaultSetting.organizaationName,
+            organizationName: DefaultSetting.organizationName,
             packages: package,
             settings: .settings(
                 base: DefaultSetting.baseProductSetting,
@@ -123,7 +123,7 @@ extension Project {
         
         return Project(
             name: name,
-            organizationName: DefaultSetting.organizaationName,
+            organizationName: DefaultSetting.organizationName,
             packages: package,
             settings: .settings(
                 base: DefaultSetting.baseProductSetting,
