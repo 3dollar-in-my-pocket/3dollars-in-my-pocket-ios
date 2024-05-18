@@ -5,6 +5,8 @@ import DesignSystem
 import Model
 
 final class StoreDetailReviewCell: BaseCollectionViewCell {
+    private let feedbackGenerator = UISelectionFeedbackGenerator()
+    
     enum Layout {
         static let estimatedHeight: CGFloat = 120
     }
@@ -65,6 +67,8 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         return label
     }()
     
+    let likeButton = LikeButton()
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -80,8 +84,10 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
             dateLabel,
             medalBadge,
             starBadge,
-            contentLabel
+            contentLabel,
+            likeButton
         ])
+        feedbackGenerator.prepare()
     }
     
     override func bindConstraints() {
@@ -89,7 +95,7 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
             $0.left.equalToSuperview()
             $0.top.equalToSuperview()
             $0.right.equalToSuperview()
-            $0.bottom.equalTo(contentLabel).offset(16)
+            $0.bottom.equalTo(likeButton).offset(16)
             $0.bottom.equalToSuperview()
         }
         
@@ -130,6 +136,11 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
             $0.right.equalTo(containerView).offset(-16)
             $0.top.equalTo(medalBadge.snp.bottom).offset(8)
         }
+        
+        likeButton.snp.makeConstraints {
+            $0.leading.equalTo(contentLabel)
+            $0.top.equalTo(contentLabel.snp.bottom).offset(8)
+        }
     }
     
     func bind(_ review: StoreDetailReview) {
@@ -138,6 +149,7 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         medalBadge.bind(review.user.medal)
         starBadge.bind(review.rating)
         contentLabel.text = review.contents
+        likeButton.bind(count: review.likeCount, reactedByMe: review.reactedByMe)
         
         if review.isOwner {
             containerView.backgroundColor = Colors.pink100.color
@@ -149,6 +161,50 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
             medalBadge.containerView.backgroundColor = Colors.pink100.color
             starBadge.containerView.backgroundColor = Colors.pink100.color
             rightButton.setTitle(Strings.StoreDetail.Review.report, for: .normal)
+        }
+        
+        likeButton.controlPublisher(for: .touchUpInside)
+            .main
+            .withUnretained(self)
+            .sink { (owner: StoreDetailReviewCell, _) in
+                owner.feedbackGenerator.selectionChanged()
+            }
+            .store(in: &cancellables)
+    }
+}
+
+extension StoreDetailReviewCell {
+    final class LikeButton: UIButton {
+        private let selectedImage = Icons.heartFill.image
+            .resizeImage(scaledTo: 16)
+            .withTintColor(Colors.mainRed.color)
+        private let normalImage = Icons.heartLine.image
+            .resizeImage(scaledTo: 16)
+            .withTintColor(Colors.gray60.color)
+        
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            setup()
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        func bind(count: Int, reactedByMe: Bool) {
+            let state: UIControl.State = reactedByMe ? .selected : .normal
+            setTitle("좋아요 \(count)", for: state)
+            isSelected = reactedByMe
+        }
+        
+        private func setup() {
+            setTitle("좋아요", for: .normal)
+            setTitleColor(Colors.gray60.color, for: .normal)
+            setTitleColor(Colors.mainRed.color, for: .selected)
+            titleLabel?.font = Fonts.medium.font(size: 10)
+            setImage(selectedImage, for: .selected)
+            setImage(normalImage, for: .normal)
+            semanticContentAttribute = .forceLeftToRight
         }
     }
 }

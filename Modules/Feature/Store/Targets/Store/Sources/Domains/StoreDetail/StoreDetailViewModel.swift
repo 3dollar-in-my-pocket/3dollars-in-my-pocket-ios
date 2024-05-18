@@ -39,6 +39,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         // 리뷰 섹션
         let didTapReviewRightButton = PassthroughSubject<Int, Never>()
+        let didTapReviewLikeButton = PassthroughSubject<Int, Never>()
         let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
         let didTapReviewMore = PassthroughSubject<Void, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
@@ -296,6 +297,13 @@ final class StoreDetailViewModel: BaseViewModel {
                 owner.refreshSections()
             }
             .store(in: &cancellables)
+        
+        input.didTapReviewLikeButton
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, index: Int) in
+                owner.toggleSticker(index: index)
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchStoreDetail() {
@@ -425,6 +433,75 @@ final class StoreDetailViewModel: BaseViewModel {
         }
     }
     
+    private func createReportModalViewModel(reasons: [ReportReason]) -> ReportBottomSheetViewModel {
+        let config = ReportBottomSheetViewModel.Config(storeId: state.storeId, reportReasons: reasons)
+        let viewModel = ReportBottomSheetViewModel(config: config)
+        
+        viewModel.output.dismissWithPop
+            .subscribe(input.dismissReportModal)
+            .store(in: &viewModel.cancellables)
+        
+        return viewModel
+    }
+    
+    private func shareKakao() {
+        guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self),
+              let overview = state.storeDetailData?.overview else { return }
+        
+        appInterface.shareKakao(storeId: state.storeId, storeType: .userStore, storeDetailOverview: overview)
+    }
+    
+    private func copyAddressToClipBoard() {
+        guard let address = state.storeDetailData?.overview.address else { return }
+        UIPasteboard.general.string = address
+        
+        output.toast.send(Strings.StoreDetail.Toast.copyToAddress)
+    }
+    
+    private func createReportReviewBottomSheetViewModel(
+        review: StoreDetailReview,
+        reasons: [ReportReason]
+    ) -> ReportReviewBottomSheetViewModel {
+        let config = ReportReviewBottomSheetViewModel.Config(
+            storeId: state.storeId,
+            reviewId: review.reviewId,
+            reportReasons: reasons
+        )
+        let viewModel = ReportReviewBottomSheetViewModel(config: config)
+        
+        viewModel.output
+            .onSuccessReport
+            .subscribe(input.onSuccessReportReview)
+            .store(in: &viewModel.cancellables)
+        
+        return viewModel
+    }
+    
+    private func toggleSticker(index: Int) {
+        guard let review = state.storeDetailData?.reviews[safe: index] else { return }
+        
+        Task {
+            let input = StoreReviewStickerListReplaceInput(stickers: [.init(stickerId: review.stickerId)])
+            let result = await storeService.toggleReviewSticker(storeId: state.storeId, reviewId: review.reviewId, input: input)
+            
+            switch result {
+            case .success(_):
+                if state.storeDetailData?.reviews[index].reactedByMe == true {
+                    state.storeDetailData?.reviews[index].likeCount -= 1
+                } else {
+                    state.storeDetailData?.reviews[index].likeCount += 1
+                }
+                state.storeDetailData?.reviews[index].reactedByMe.toggle()
+                refreshSections()
+            case .failure(let error):
+                output.error.send(error)
+            }
+        }
+    }
+}
+
+// MARK: Route
+extension StoreDetailViewModel {
     private func presentReportModal() {
         Task {
             let reportReasonResult = await reportService.fetchReportReasons(group: .store)
@@ -441,17 +518,6 @@ final class StoreDetailViewModel: BaseViewModel {
                 output.error.send(error)
             }
         }
-    }
-    
-    private func createReportModalViewModel(reasons: [ReportReason]) -> ReportBottomSheetViewModel {
-        let config = ReportBottomSheetViewModel.Config(storeId: state.storeId, reportReasons: reasons)
-        let viewModel = ReportBottomSheetViewModel(config: config)
-        
-        viewModel.output.dismissWithPop
-            .subscribe(input.dismissReportModal)
-            .store(in: &viewModel.cancellables)
-        
-        return viewModel
     }
     
     private func goToNavigationApplication(type: NavigationAppType) {
@@ -473,13 +539,6 @@ final class StoreDetailViewModel: BaseViewModel {
         UIApplication.shared.open(url)
     }
     
-    private func shareKakao() {
-        guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self),
-              let overview = state.storeDetailData?.overview else { return }
-        
-        appInterface.shareKakao(storeId: state.storeId, storeType: .userStore, storeDetailOverview: overview)
-    }
-    
     private func presentWriteReviewBottomSheet() {
         let config = ReviewBottomSheetViewModel.Config(storeId: state.storeId, review: nil)
         let viewModel = ReviewBottomSheetViewModel(config: config)
@@ -490,13 +549,6 @@ final class StoreDetailViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         
         output.route.send(.presentWriteReview(viewModel))
-    }
-    
-    private func copyAddressToClipBoard() {
-        guard let address = state.storeDetailData?.overview.address else { return }
-        UIPasteboard.general.string = address
-        
-        output.toast.send(Strings.StoreDetail.Toast.copyToAddress)
     }
     
     private func presentMapDetail() {
@@ -590,25 +642,6 @@ final class StoreDetailViewModel: BaseViewModel {
                 output.error.send(error)
             }
         }
-    }
-    
-    private func createReportReviewBottomSheetViewModel(
-        review: StoreDetailReview,
-        reasons: [ReportReason]
-    ) -> ReportReviewBottomSheetViewModel {
-        let config = ReportReviewBottomSheetViewModel.Config(
-            storeId: state.storeId,
-            reviewId: review.reviewId,
-            reportReasons: reasons
-        )
-        let viewModel = ReportReviewBottomSheetViewModel(config: config)
-        
-        viewModel.output
-            .onSuccessReport
-            .subscribe(input.onSuccessReportReview)
-            .store(in: &viewModel.cancellables)
-        
-        return viewModel
     }
     
     private func presentVisit() {
