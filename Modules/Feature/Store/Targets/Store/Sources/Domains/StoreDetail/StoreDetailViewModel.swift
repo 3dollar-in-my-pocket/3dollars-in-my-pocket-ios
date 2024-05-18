@@ -43,6 +43,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
         let didTapReviewMore = PassthroughSubject<Void, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
+        let updateReview = PassthroughSubject<StoreDetailReview, Never>()
     }
     
     struct Output {
@@ -85,6 +86,7 @@ final class StoreDetailViewModel: BaseViewModel {
     var state: State
     private let storeService: StoreServiceProtocol
     private let reportService: ReportServiceProtocol
+    private let reviewService: ReviewServiceProtocol
     private let userDefaults: UserDefaultsUtil
     private let logManager: LogManagerProtocol
     
@@ -92,12 +94,14 @@ final class StoreDetailViewModel: BaseViewModel {
         storeId: Int,
         storeService: StoreServiceProtocol = StoreService(),
         reportService: ReportServiceProtocol = ReportService(),
+        reviewService: ReviewServiceProtocol = ReviewService(),
         userDefaults: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.state = State(storeId: storeId)
         self.storeService = storeService
         self.reportService = reportService
+        self.reviewService = reviewService
         self.userDefaults = userDefaults
         self.logManager = logManager
         
@@ -304,6 +308,16 @@ final class StoreDetailViewModel: BaseViewModel {
                 owner.toggleSticker(index: index)
             }
             .store(in: &cancellables)
+        
+        input.updateReview
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, review: StoreDetailReview) in
+                if let targetIndex = owner.state.storeDetailData?.reviews.firstIndex(where: { $0.reviewId == review.reviewId } ) {
+                    owner.state.storeDetailData?.reviews[targetIndex] = review
+                    owner.refreshSections()
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchStoreDetail() {
@@ -482,7 +496,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         Task {
             let input = StoreReviewStickerListReplaceInput(stickers: [.init(stickerId: review.stickerId)])
-            let result = await storeService.toggleReviewSticker(storeId: state.storeId, reviewId: review.reviewId, input: input)
+            let result = await reviewService.toggleReviewSticker(storeId: state.storeId, reviewId: review.reviewId, input: input)
             
             switch result {
             case .success(_):
@@ -620,6 +634,10 @@ extension StoreDetailViewModel {
         
         viewModel.output.onSuccessReportReview
             .subscribe(input.onSuccessReportReview)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onSuccessToggleReviewSticker
+            .subscribe(input.updateReview)
             .store(in: &viewModel.cancellables)
         
         output.route.send(.pushReviewList(viewModel))

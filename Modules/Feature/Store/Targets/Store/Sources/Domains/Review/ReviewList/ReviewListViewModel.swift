@@ -16,6 +16,7 @@ final class ReviewListViewModel: BaseViewModel {
         let willDisplayCell = PassthroughSubject<Int, Never>()
         let didTapSortType = PassthroughSubject<SubtabStackView.SortType, Never>()
         let didTapRightButton = PassthroughSubject<Int, Never>()
+        let didTapReviewLikeButton = PassthroughSubject<Int, Never>()
         let didTapWrite = PassthroughSubject<Void, Never>()
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
         let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
@@ -34,6 +35,7 @@ final class ReviewListViewModel: BaseViewModel {
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
         let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
+        let onSuccessToggleReviewSticker = PassthroughSubject<StoreDetailReview, Never>()
     }
     
     struct State {
@@ -166,6 +168,13 @@ final class ReviewListViewModel: BaseViewModel {
         input.onSuccessReportReview
             .subscribe(output.onSuccessReportReview)
             .store(in: &cancellables)
+        
+        input.didTapReviewLikeButton
+            .withUnretained(self)
+            .sink { (owner: ReviewListViewModel, index: Int) in
+                owner.toggleSticker(index: index)
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchReviewList() {
@@ -269,6 +278,29 @@ final class ReviewListViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         
         return viewModel
+    }
+    
+    private func toggleSticker(index: Int) {
+        guard let review = state.reviews[safe: index] else { return }
+        
+        Task {
+            let input = StoreReviewStickerListReplaceInput(stickers: [.init(stickerId: review.stickerId)])
+            let result = await reviewService.toggleReviewSticker(storeId: config.storeId, reviewId: review.reviewId, input: input)
+            
+            switch result {
+            case .success(_):
+                if state.reviews[index].reactedByMe == true {
+                    state.reviews[index].likeCount -= 1
+                } else {
+                    state.reviews[index].likeCount += 1
+                }
+                state.reviews[index].reactedByMe.toggle()
+                output.sections.send(getReviewListSection())
+                output.onSuccessToggleReviewSticker.send(state.reviews[index])
+            case .failure(let error):
+                output.showErrorAlert.send(error)
+            }
+        }
     }
 }
 
