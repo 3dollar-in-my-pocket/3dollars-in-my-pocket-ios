@@ -495,12 +495,12 @@ final class StoreDetailViewModel: BaseViewModel {
         guard let review = state.storeDetailData?.reviews[safe: index] else { return }
         
         Task {
-            let input = StoreReviewStickerListReplaceInput(stickers: [.init(stickerId: review.stickerId)])
+            let input = StoreReviewStickerListReplaceInput(stickers: review.reactedByMe ? [] : [.init(stickerId: review.stickerId)])
             let result = await reviewService.toggleReviewSticker(storeId: state.storeId, reviewId: review.reviewId, input: input)
             
             switch result {
             case .success(_):
-                if state.storeDetailData?.reviews[index].reactedByMe == true {
+                if review.reactedByMe {
                     state.storeDetailData?.reviews[index].likeCount -= 1
                 } else {
                     state.storeDetailData?.reviews[index].likeCount += 1

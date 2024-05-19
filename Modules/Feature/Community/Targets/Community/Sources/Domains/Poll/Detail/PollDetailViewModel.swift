@@ -278,6 +278,10 @@ final class PollDetailViewModel: BaseViewModel {
             }
             .subscribe(output.route)
             .store(in: &cancellables)
+        
+        cellViewModel.output.showErrorAlert
+            .subscribe(output.showErrorAlert)
+            .store(in: &cellViewModel.cancellables)
 
         return cellViewModel
     }

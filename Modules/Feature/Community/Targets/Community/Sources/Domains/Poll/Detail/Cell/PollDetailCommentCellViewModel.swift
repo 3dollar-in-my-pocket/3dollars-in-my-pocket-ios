@@ -9,17 +9,20 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
     struct Input {
         let didTapReportOrUpdateButton = PassthroughSubject<Void, Never>()
         let deleteAction = PassthroughSubject<Void, Never>()
+        let didTapReviewLikeButton = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
         let screenName: ScreenName
-        let item: PollCommentWithUserApiResponse
+        var item: PollCommentWithUserApiResponse
         let isMine: Bool
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let deleteCell = PassthroughSubject<String, Never>()
         let didTapReportButton = PassthroughSubject<String, Never>()
         let showDeleteAlert = PassthroughSubject<Void, Never>()
+        let refresh = PassthroughSubject<Void, Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
     }
 
     struct State {
@@ -36,7 +39,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
     lazy var identifier = ObjectIdentifier(self)
 
     let input = Input()
-    let output: Output
+    var output: Output
     let config: Config
 
     private var commentId: String {
@@ -113,6 +116,35 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
                 owner.output.didTapReportButton.send(owner.commentId)
             }
             .store(in: &cancellables)
+        
+        input.didTapReviewLikeButton
+            .withUnretained(self)
+            .sink { (owner: PollDetailCommentCellViewModel, _) in
+                owner.toggleSticker()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func toggleSticker() {
+        guard let sticker = output.item.stickers.first else { return }
+        
+        Task {
+            let input = PollCommentStickerListInput(stickers: sticker.reactedByMe ? [] : [.init(stickerId: sticker.stickerId)])
+            let result = await communityService.toggleReviewSticker(pollId: config.pollId, commentId: config.commentId, input: input)
+            
+            switch result {
+            case .success(_):
+                if output.item.stickers[0].reactedByMe == true {
+                    output.item.stickers[0].count -= 1
+                } else {
+                    output.item.stickers[0].count += 1
+                }
+                output.item.stickers[0].reactedByMe.toggle()
+                output.refresh.send(())
+            case .failure(let error):
+                output.showErrorAlert.send(error)
+            }
+        }
     }
 }
 
