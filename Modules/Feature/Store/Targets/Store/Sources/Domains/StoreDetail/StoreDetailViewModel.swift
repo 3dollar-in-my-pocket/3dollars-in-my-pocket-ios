@@ -305,6 +305,7 @@ final class StoreDetailViewModel: BaseViewModel {
         input.didTapReviewLikeButton
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, index: Int) in
+                owner.sendClickLike(isLiked: owner.state.storeDetailData?.reviews[safe: index]?.reactedByMe ??  false)
                 owner.toggleSticker(index: index)
             }
             .store(in: &cancellables)
@@ -699,6 +700,17 @@ extension StoreDetailViewModel {
             screen: output.screenName,
             eventName: eventName,
             extraParameters: [.storeId: state.storeId]
+        ))
+    }
+    
+    private func sendClickLike(isLiked: Bool) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickLike,
+            extraParameters: [
+                .storeId: state.storeId,
+                .value: !isLiked
+            ]
         ))
     }
 }

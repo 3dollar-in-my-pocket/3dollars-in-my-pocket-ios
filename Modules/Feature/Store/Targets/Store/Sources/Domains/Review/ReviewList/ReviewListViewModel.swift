@@ -172,6 +172,7 @@ final class ReviewListViewModel: BaseViewModel {
         input.didTapReviewLikeButton
             .withUnretained(self)
             .sink { (owner: ReviewListViewModel, index: Int) in
+                owner.sendClickLike(index: index)
                 owner.toggleSticker(index: index)
             }
             .store(in: &cancellables)
@@ -338,5 +339,17 @@ extension ReviewListViewModel {
     
     private func sendClickWriteReviewLog() {
         logManager.sendEvent(.init(screen: output.screenName, eventName: .clickWriteReview))
+    }
+    
+    private func sendClickLike(index: Int) {
+        guard let review = state.reviews[safe: index] else { return }
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickLike,
+            extraParameters: [
+                .reviewId: review.reviewId,
+                .value: !review.reactedByMe
+            ]
+        ))
     }
 }

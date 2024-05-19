@@ -120,6 +120,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
         input.didTapReviewLikeButton
             .withUnretained(self)
             .sink { (owner: PollDetailCommentCellViewModel, _) in
+                owner.sendClickLike(isLiked: owner.output.item.stickers.first?.reactedByMe ?? false)
                 owner.toggleSticker()
             }
             .store(in: &cancellables)
@@ -166,6 +167,18 @@ extension PollDetailCommentCellViewModel {
             extraParameters: [
                 .reviewId: reviewId
             ]))
+    }
+    
+    private func sendClickLike(isLiked: Bool) {
+        logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickLike,
+            extraParameters: [
+                .pollId: config.pollId,
+                .reviewId: config.commentId,
+                .value: !isLiked
+            ]
+        ))
     }
 }
 
