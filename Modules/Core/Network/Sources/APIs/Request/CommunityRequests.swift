@@ -312,3 +312,25 @@ struct FetchPollCategoriesRequest: RequestType {
         return "/api/v1/poll-categories"
     }
 }
+
+struct PollCommentStickerRequest: RequestType {
+    let pollId: String
+    let commentId: String
+    let input: PollCommentStickerListInput
+    
+    var param: Encodable? {
+        return input
+    }
+    
+    var method: RequestMethod {
+        return .put
+    }
+    
+    var header: HTTPHeaderType {
+        return .auth
+    }
+    
+    var path: String {
+        return "/api/v1/poll/\(pollId)/comment/\(commentId)/stickers"
+    }
+}

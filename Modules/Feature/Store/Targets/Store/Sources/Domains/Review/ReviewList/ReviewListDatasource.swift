@@ -25,6 +25,11 @@ final class ReviewListDatasource: UICollectionViewDiffableDataSource<ReviewListS
                     .map { _ in indexPath.item }
                     .subscribe(viewModel.input.didTapRightButton)
                     .store(in: &cell.cancellables)
+                cell.likeButton.controlPublisher(for: .touchUpInside)
+                    .throttle(for: 1, scheduler: RunLoop.main, latest: false)
+                    .map { _ in indexPath.item }
+                    .subscribe(viewModel.input.didTapReviewLikeButton)
+                    .store(in: &cell.cancellables)
                 
                 return cell
                 

@@ -5,6 +5,8 @@ import DesignSystem
 import Model
 
 final class StoreDetailReviewCell: BaseCollectionViewCell {
+    private let feedbackGenerator = UISelectionFeedbackGenerator()
+    
     enum Layout {
         static let estimatedHeight: CGFloat = 120
     }
@@ -65,6 +67,8 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         return label
     }()
     
+    let likeButton = LikeButton()
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -80,8 +84,10 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
             dateLabel,
             medalBadge,
             starBadge,
-            contentLabel
+            contentLabel,
+            likeButton
         ])
+        feedbackGenerator.prepare()
     }
     
     override func bindConstraints() {
@@ -89,7 +95,7 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
             $0.left.equalToSuperview()
             $0.top.equalToSuperview()
             $0.right.equalToSuperview()
-            $0.bottom.equalTo(contentLabel).offset(16)
+            $0.bottom.equalTo(likeButton).offset(16)
             $0.bottom.equalToSuperview()
         }
         
@@ -130,6 +136,11 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
             $0.right.equalTo(containerView).offset(-16)
             $0.top.equalTo(medalBadge.snp.bottom).offset(8)
         }
+        
+        likeButton.snp.makeConstraints {
+            $0.leading.equalTo(contentLabel)
+            $0.top.equalTo(contentLabel.snp.bottom).offset(8)
+        }
     }
     
     func bind(_ review: StoreDetailReview) {
@@ -138,6 +149,7 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         medalBadge.bind(review.user.medal)
         starBadge.bind(review.rating)
         contentLabel.text = review.contents
+        likeButton.bind(count: review.likeCount, reactedByMe: review.reactedByMe)
         
         if review.isOwner {
             containerView.backgroundColor = Colors.pink100.color
@@ -150,5 +162,13 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
             starBadge.containerView.backgroundColor = Colors.pink100.color
             rightButton.setTitle(Strings.StoreDetail.Review.report, for: .normal)
         }
+        
+        likeButton.controlPublisher(for: .touchUpInside)
+            .main
+            .withUnretained(self)
+            .sink { (owner: StoreDetailReviewCell, _) in
+                owner.feedbackGenerator.selectionChanged()
+            }
+            .store(in: &cancellables)
     }
 }

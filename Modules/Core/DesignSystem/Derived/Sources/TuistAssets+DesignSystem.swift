@@ -75,6 +75,7 @@ public enum DesignSystemAsset {
     public static let fireLine = DesignSystemImages(name: "fire.line")
     public static let fireSolid = DesignSystemImages(name: "fire.solid")
     public static let heartFill = DesignSystemImages(name: "heart.fill")
+    public static let heartLine = DesignSystemImages(name: "heart.line")
     public static let homeLine = DesignSystemImages(name: "home.line")
     public static let homeSolid = DesignSystemImages(name: "home.solid")
     public static let infomation = DesignSystemImages(name: "infomation")
