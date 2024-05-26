@@ -6,7 +6,8 @@ import Then
 import Model
 
 final class PollDetailCommentCell: BaseCollectionViewCell {
-
+    private let feedbackGenerator = UISelectionFeedbackGenerator()
+    
     enum Layout {
         static func height(content: String) -> CGFloat {
             return content.height(font: Fonts.regular.font(size: 14), width: UIScreen.main.bounds.width - 40) + 106
@@ -87,6 +88,7 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         dateStackView.addArrangedSubview(reportOrUpdateButton)
 
         dateStackView.setCustomSpacing(2, after: dateSideDotView)
+        feedbackGenerator.prepare()
     }
 
     override func bindConstraints() {
@@ -141,6 +143,9 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         likeButton.controlPublisher(for: .touchUpInside)
             .throttle(for: 1, scheduler: RunLoop.main, latest: false)
             .mapVoid
+            .handleEvents(receiveOutput: { [weak self] _ in
+                self?.feedbackGenerator.selectionChanged()
+            })
             .subscribe(viewModel.input.didTapReviewLikeButton)
             .store(in: &cancellables)
 
