@@ -68,6 +68,11 @@ final class StoreDetailMedalBadgeView: BaseView {
         }
     }
     
+    func prepareForReuse() {
+        badgeImgaeView.image = nil
+        titleLabel.text = nil
+    }
+    
     func bind(_ medal: Medal) {
         badgeImgaeView.setImage(urlString: medal.iconUrl)
         titleLabel.text = medal.name
