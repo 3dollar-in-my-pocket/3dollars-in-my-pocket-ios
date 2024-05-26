@@ -9,7 +9,7 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
 
     enum Layout {
         static func height(content: String) -> CGFloat {
-            return content.height(font: Fonts.regular.font(size: 14), width: UIScreen.main.bounds.width - 40) + 90
+            return content.height(font: Fonts.regular.font(size: 14), width: UIScreen.main.bounds.width - 40) + 106
         }
     }
 
@@ -57,6 +57,8 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         $0.setTitleColor(Colors.gray60.color, for: .normal)
         $0.contentEdgeInsets = .zero
     }
+    
+    let likeButton = LikeButton()
 
     private let lineView = UIView().then {
         $0.backgroundColor = Colors.gray10.color
@@ -72,6 +74,7 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
             dateStackView,
             badgeStackView,
             contentLabel,
+            likeButton,
             lineView
         ])
 
@@ -113,6 +116,11 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         dateSideDotView.snp.makeConstraints {
             $0.size.equalTo(2)
         }
+        
+        likeButton.snp.makeConstraints {
+            $0.leading.equalTo(contentLabel)
+            $0.top.equalTo(contentLabel.snp.bottom).offset(8)
+        }
 
         lineView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
@@ -128,6 +136,12 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         reportOrUpdateButton.controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.didTapReportOrUpdateButton)
+            .store(in: &cancellables)
+        
+        likeButton.controlPublisher(for: .touchUpInside)
+            .throttle(for: 1, scheduler: RunLoop.main, latest: false)
+            .mapVoid
+            .subscribe(viewModel.input.didTapReviewLikeButton)
             .store(in: &cancellables)
 
         // Output
@@ -148,6 +162,15 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
             .main
             .withUnretained(self)
             .sink { owner, _ in owner.showDeleteAlert() }
+            .store(in: &cancellables)
+        
+        viewModel.output.refresh
+            .main
+            .withUnretained(self)
+            .sink { (owner: PollDetailCommentCell, _) in
+                guard let viewModel = owner.viewModel else { return }
+                owner.bindUI(with: viewModel.output.item, isMine: viewModel.output.isMine)
+            }
             .store(in: &cancellables)
     }
 
@@ -178,6 +201,7 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
             title: data.commentWriter.medal.name
         )
         medalView.setBackgroundColor(isMine ? Colors.systemWhite.color : nil)
+        likeButton.bind(count: data.stickers.first?.count ?? 0, reactedByMe: data.stickers.first?.reactedByMe ?? false)
     }
 
     private func showDeleteAlert() {
@@ -288,5 +312,41 @@ private final class BadgeView: BaseView {
 
     func setBackgroundColor(_ color: UIColor) {
         containerView.backgroundColor = color
+    }
+}
+
+extension PollDetailCommentCell {
+    final class LikeButton: UIButton {
+        private let selectedImage = Icons.heartFill.image
+            .resizeImage(scaledTo: 16)
+            .withTintColor(Colors.mainRed.color)
+        private let normalImage = Icons.heartLine.image
+            .resizeImage(scaledTo: 16)
+            .withTintColor(Colors.gray60.color)
+        
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            setup()
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        func bind(count: Int, reactedByMe: Bool) {
+            let state: UIControl.State = reactedByMe ? .selected : .normal
+            setTitle("좋아요 \(count)", for: state)
+            isSelected = reactedByMe
+        }
+        
+        private func setup() {
+            setTitle("좋아요", for: .normal)
+            setTitleColor(Colors.gray60.color, for: .normal)
+            setTitleColor(Colors.mainRed.color, for: .selected)
+            titleLabel?.font = Fonts.medium.font(size: 10)
+            setImage(selectedImage, for: .selected)
+            setImage(normalImage, for: .normal)
+            semanticContentAttribute = .forceLeftToRight
+        }
     }
 }

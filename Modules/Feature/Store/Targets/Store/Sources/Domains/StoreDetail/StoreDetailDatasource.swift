@@ -81,6 +81,12 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                     .map { _ in indexPath.item - 1 }
                     .subscribe(viewModel.input.didTapReviewRightButton)
                     .store(in: &cell.cancellables)
+                cell.likeButton
+                    .controlPublisher(for: .touchUpInside)
+                    .throttle(for: 1, scheduler: RunLoop.main, latest: false)
+                    .map { _ in indexPath.item - 1 }
+                    .subscribe(viewModel.input.didTapReviewLikeButton)
+                    .store(in: &cell.cancellables)
                 
                 return cell
                 

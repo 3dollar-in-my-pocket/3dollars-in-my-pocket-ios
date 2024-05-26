@@ -78,7 +78,7 @@ final class MyMedalViewModel: BaseViewModel {
             })
             .asyncMap { (owner: MyMedalViewModel, medal: Medal) in
                 await owner.userService.editUser(
-                    nickname: owner.state.userNickname,
+                    nickname: nil,
                     representativeMedalId: medal.medalId
                 )
             }

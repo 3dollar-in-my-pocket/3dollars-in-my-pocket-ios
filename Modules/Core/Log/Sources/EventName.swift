@@ -3,6 +3,7 @@ import Foundation
 public enum EventName: String {
     // 공용
     case clickStore = "click_store"
+    case clickLike = "click_like"
     
     // 홈 화면
     case clickSignInApple = "click_sign_in_apple"

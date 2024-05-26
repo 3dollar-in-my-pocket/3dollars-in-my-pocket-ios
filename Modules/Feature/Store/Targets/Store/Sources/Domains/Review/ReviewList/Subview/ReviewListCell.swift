@@ -5,6 +5,8 @@ import DesignSystem
 import Model
 
 final class ReviewListCell: BaseCollectionViewCell {
+    private let feedbackGenerator = UISelectionFeedbackGenerator()
+    
     enum Layout {
         static let estimatedHeight: CGFloat = 120
     }
@@ -56,6 +58,8 @@ final class ReviewListCell: BaseCollectionViewCell {
         return label
     }()
     
+    let likeButton = LikeButton()
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -70,8 +74,10 @@ final class ReviewListCell: BaseCollectionViewCell {
             dateLabel,
             medalBadge,
             starBadge,
-            contentLabel
+            contentLabel,
+            likeButton
         ])
+        feedbackGenerator.prepare()
     }
     
     override func bindConstraints() {
@@ -111,6 +117,11 @@ final class ReviewListCell: BaseCollectionViewCell {
             $0.left.equalToSuperview().offset(20)
             $0.right.equalToSuperview().offset(-20)
             $0.top.equalTo(medalBadge.snp.bottom).offset(8)
+        }
+        
+        likeButton.snp.makeConstraints {
+            $0.leading.equalTo(contentLabel)
+            $0.top.equalTo(contentLabel.snp.bottom).offset(8)
             $0.bottom.equalToSuperview().offset(-16)
         }
     }
@@ -121,6 +132,7 @@ final class ReviewListCell: BaseCollectionViewCell {
         medalBadge.bind(review.user.medal)
         starBadge.bind(review.rating)
         contentLabel.text = review.contents
+        likeButton.bind(count: review.likeCount, reactedByMe: review.reactedByMe)
         
         if review.isOwner {
             contentView.backgroundColor = Colors.pink100.color
@@ -133,5 +145,13 @@ final class ReviewListCell: BaseCollectionViewCell {
             starBadge.containerView.backgroundColor = Colors.pink100.color
             rightButton.setTitle(Strings.StoreDetail.Review.report, for: .normal)
         }
+        
+        likeButton.controlPublisher(for: .touchUpInside)
+            .main
+            .withUnretained(self)
+            .sink { (owner: ReviewListCell, _) in
+                owner.feedbackGenerator.selectionChanged()
+            }
+            .store(in: &cancellables)
     }
 }
