@@ -64,6 +64,7 @@ final class ReviewListCell: BaseCollectionViewCell {
         super.prepareForReuse()
         
         starBadge.prepareForReuse()
+        medalBadge.prepareForReuse()
     }
     
     override func setup() {
