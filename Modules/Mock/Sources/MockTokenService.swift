@@ -4,7 +4,7 @@ import Combine
 public final class MockTokenService {
     public init() { }
     
-    public func generateTeestToken(completion: @escaping ((MockAuth) -> Void))  {
+    public func generateTestToken(completion: @escaping ((MockAuth) -> Void))  {
         let urlString = "https://dev.threedollars.co.kr/api/test-token"
         guard let url = URL(string: urlString) else { return }
         
