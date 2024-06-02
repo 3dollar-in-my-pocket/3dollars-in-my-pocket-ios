@@ -70,6 +70,7 @@ final class StoreDetailMedalBadgeView: BaseView {
     
     func prepareForReuse() {
         badgeImgaeView.image = nil
+        badgeImgaeView.cancel()
         titleLabel.text = nil
     }
     
