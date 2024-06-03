@@ -73,6 +73,7 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         super.prepareForReuse()
         
         starBadge.prepareForReuse()
+        medalBadge.prepareForReuse()
     }
     
     override func setup() {

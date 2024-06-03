@@ -179,6 +179,14 @@ final class BossStoreDetailViewController: BaseViewController {
                 owner.collectionView.collectionViewLayout.invalidateLayout()
             }
             .store(in: &cancellables)
+        
+        viewModel.output.error
+            .main
+            .withUnretained(self)
+            .sink { (owner: BossStoreDetailViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
     }
 
     private func generateLayout() -> UICollectionViewLayout {

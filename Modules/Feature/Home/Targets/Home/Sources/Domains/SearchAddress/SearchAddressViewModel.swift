@@ -103,7 +103,7 @@ final class SearchAddressViewModel: BaseViewModel {
             .mapVoid
             .share()
         
-        input.firstLoad
+        let loadRecentSearch = input.firstLoad
             .merge(with: loadMore)
             .withUnretained(self)
             .filter { owner, _ in
@@ -121,11 +121,19 @@ final class SearchAddressViewModel: BaseViewModel {
                     )
                 )
             }
+            .share()
+        
+        loadRecentSearch
             .compactMapValue()
             .withUnretained(self)
             .sink { owner, result in
                 owner.handleRecentSearchAddressResult(result)
             }
+            .store(in: &cancellables)
+        
+        loadRecentSearch
+            .compactMapError()
+            .subscribe(output.showErrorAlert)
             .store(in: &cancellables)
         
         input.didTapRecentSearchAddress

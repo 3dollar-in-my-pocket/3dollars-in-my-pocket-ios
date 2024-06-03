@@ -1,12 +1,16 @@
 import UIKit
 
 import Home
+import Mock
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    var networkConfiguration = MockNetworkConfiguration()
+    var mockUserDefaults = MockUserDefault()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-        initializationNetworkModule()
+        initializeDI()
         return true
     }
       
@@ -14,7 +18,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
     
-    private func initializationNetworkModule() {
-        MockNetworkConfiguration.registerNetworkConfiguration()
+    private func initializeDI() {
+        MockTokenService().generateTestToken { [weak self] auth in
+            self?.networkConfiguration.authToken = auth.token
+            self?.mockUserDefaults.authToken = auth.token
+            self?.mockUserDefaults.userId = auth.userId
+            self?.mockUserDefaults.isAnonymousUser = false
+        }
+        
+        MockAppModuleInterfaceImpl.registerAppModuleInterface(userDefaults: mockUserDefaults)
+        MockNetworkConfiguration.registerNetworkConfiguration(networkConfiguration)
+        MockStoreModuleInterfaceImpl.registerModuleInterface()
     }
 }
