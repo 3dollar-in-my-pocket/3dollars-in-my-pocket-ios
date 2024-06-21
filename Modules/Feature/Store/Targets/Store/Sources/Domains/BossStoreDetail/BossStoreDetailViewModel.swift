@@ -206,6 +206,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         output.dataSource.send([
             .init(type: .overview, items: [.overview(bindOverviewCellViewModel(storeDetailData.overview))]),
             .init(type: .info, items: infoItems),
+            .init(type: .post, items: [.post(.init())]),
             .init(type: .workday, items: [.workday(storeDetailData.workdays)]),
             .init(type: .feedbacks, items: [.feedbacks(bindFeedbacksCellViewModel(with: storeDetailData.feedbacks))])
         ])
