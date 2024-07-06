@@ -5,6 +5,7 @@ import Membership
 
 import KakaoSDKAuth
 import FirebaseDynamicLinks
+import netfox
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -20,7 +21,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     ) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
+        #if DEBUG
+        window = ShakeDetectingWindow(frame: windowScene.coordinateSpace.bounds)
+        #else
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
+        #endif
+        
         window?.windowScene = windowScene
         window?.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         window?.rootViewController = SplashViewController(nibName: nil, bundle: nil)
@@ -100,5 +106,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let userInfo = connectionOptions.notificationResponse?.notification.request.content.userInfo,
               let deeplink = userInfo["link"] as? String else { return }
         DeeplinkManager.shared.reserveDeeplink(url: URL(string: deeplink))
+    }
+}
+
+extension SceneDelegate {
+    final class ShakeDetectingWindow: UIWindow {
+        override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+            if motion == .motionShake {
+                let notificationFeedbackGenerator = UINotificationFeedbackGenerator()
+                notificationFeedbackGenerator.prepare()
+                notificationFeedbackGenerator.notificationOccurred(.success)
+                NFX.sharedInstance().show()
+            }
+            super.motionEnded(motion, with: event)
+        }
     }
 }

@@ -10,4 +10,6 @@ public extension Package {
     static let permissionsKit = Package.remote(url: "https://github.com/sparrowcode/PermissionsKit", requirement: .exact("9.0.2"))
     
     static let firebaseSDK = Package.remote(url: "https://github.com/firebase/firebase-ios-sdk", requirement: .exact("10.22.1"))
+    
+    static let netfox = Package.remote(url: "https://github.com/kasketis/netfox", requirement: .exact("1.21.0"))
 }
