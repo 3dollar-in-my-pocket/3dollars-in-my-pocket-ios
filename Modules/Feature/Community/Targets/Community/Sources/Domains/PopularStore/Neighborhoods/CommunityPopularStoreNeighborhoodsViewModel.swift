@@ -34,14 +34,10 @@ final class CommunityPopularStoreNeighborhoodsViewModel: BaseViewModel {
     let headerViewModel = CommunityPopularStoreNeighborhoodsHeaderViewModel()
 
     private let communityService: CommunityServiceProtocol
-    private let userDefaultsUtil: UserDefaultsUtil
+    private let preference = Preference.shared
 
-    init(
-        communityService: CommunityServiceProtocol = CommunityService(),
-        userDefaultsUtil: UserDefaultsUtil = .shared
-    ) {
+    init(communityService: CommunityServiceProtocol = CommunityService()) {
         self.communityService = communityService
-        self.userDefaultsUtil = userDefaultsUtil
 
         super.init()
     }
@@ -61,7 +57,7 @@ final class CommunityPopularStoreNeighborhoodsViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, result in
                 owner.output.showLoading.send(false)
-                let selectedItem = owner.userDefaultsUtil.communityPopularStoreNeighborhoods.district
+                let selectedItem = owner.preference.communityPopularStoreNeighborhoods.district
                 switch result {
                 case .success(let response):
                     let provinceList = response.neighborhoods.map {
@@ -139,7 +135,7 @@ final class CommunityPopularStoreNeighborhoodsViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: CommunityPopularStoreNeighborhoodsViewModel, neighborhoodProtocol: NeighborhoodProtocol) in
                 if let neighborhoods = neighborhoodProtocol as? CommunityNeighborhoods {
-                    owner.userDefaultsUtil.communityPopularStoreNeighborhoods = neighborhoods
+                    owner.preference.communityPopularStoreNeighborhoods = neighborhoods
                     owner.output.updatePopularStores.send(())
                     owner.output.route.send(.dismiss)
                 }

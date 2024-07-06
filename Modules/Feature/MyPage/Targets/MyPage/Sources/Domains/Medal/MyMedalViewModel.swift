@@ -41,18 +41,16 @@ final class MyMedalViewModel: BaseViewModel {
 
     private let medalService: MedalServiceProtocol
     private let userService: UserServiceProtocol
-    private let userDefaults: UserDefaultsUtil
+    private let userDefaults = Preference.shared
     private let logManager: LogManagerProtocol
 
     init(
         medalService: MedalServiceProtocol = MedalService(),
         userService: UserServiceProtocol = UserService(),
-        userDefaults: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.medalService = medalService 
         self.userService = userService
-        self.userDefaults = userDefaults
         self.logManager = logManager
 
         super.init()

@@ -2,6 +2,7 @@ import Foundation
 
 import DependencyInjection
 import Model
+import Common
 
 struct NetworkConfigurationImpl: NetworkConfigurable {
     var endPoint: String {
@@ -28,7 +29,7 @@ struct NetworkConfigurationImpl: NetworkConfigurable {
     }
     
     var authToken: String? {
-        return UserDefaultsUtil().authToken
+        return Preference.shared.authToken
     }
 }
 

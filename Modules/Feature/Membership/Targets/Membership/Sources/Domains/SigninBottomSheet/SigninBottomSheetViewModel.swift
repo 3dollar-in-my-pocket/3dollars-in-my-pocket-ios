@@ -27,6 +27,7 @@ final class SigninBottomSheetViewModel: BaseViewModel {
     private var appInterface = Environment.appModuleInterface
     private let userService: UserServiceProtocol
     private let deviceService: DeviceServiceProtocol
+    private var preference = Preference.shared
     
     init(
         userService: UserServiceProtocol = UserService(),
@@ -104,8 +105,8 @@ final class SigninBottomSheetViewModel: BaseViewModel {
             
             switch result {
             case .success(let signinResponse):
-                appInterface.userDefaults.userId = signinResponse.userId
-                appInterface.userDefaults.authToken = signinResponse.token
+                preference.userId = signinResponse.userId
+                preference.authToken = signinResponse.token
                 sendFCMToken(socialType: socialType)
                 
             case .failure(let error):

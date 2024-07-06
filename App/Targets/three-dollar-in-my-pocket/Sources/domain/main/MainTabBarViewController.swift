@@ -1,6 +1,7 @@
 import UIKit
 import Combine
 
+import Common
 import Model
 import DependencyInjection
 
@@ -161,7 +162,7 @@ final class MainTabBarViewController: UITabBarController {
     private func setTabBarColor(tab: TabBarTag) {
         switch tab {
         case .my:
-            guard !UserDefaultsUtil().isAnonymousUser else { return }
+            guard !Preference.shared.isAnonymousUser else { return }
             self.tabBar.barTintColor = Colors.gray100.color
             if #available(iOS 15, *) {
                 let appearance = UITabBarAppearance()
@@ -209,7 +210,7 @@ final class MainTabBarViewController: UITabBarController {
     }
     
     private func processKakaoLinkIfExisted() {
-        let kakaoShareLink = UserDefaultsUtil().shareLink
+        let kakaoShareLink = Preference.shared.shareLink
         guard !kakaoShareLink.isEmpty else { return }
         let storeType = kakaoShareLink.split(separator: ":").first ?? "foodTruck"
         let storeId = kakaoShareLink.split(separator: ":").last ?? ""
@@ -221,8 +222,7 @@ final class MainTabBarViewController: UITabBarController {
             selectedIndex = 0
             pushStoreDetail(storeId: Int(storeId) ?? 0)
         }
-        var userDefaults = UserDefaultsUtil()
-        userDefaults.shareLink = ""
+        Preference.shared.shareLink = ""
     }
     
     private func pushBossStoreDetail(storeId: String) {
@@ -262,7 +262,7 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         
         if let navigationViewController = viewController as? UINavigationController {
             if navigationViewController.topViewController is MyPage.MyPageViewController,
-               UserDefaultsUtil().isAnonymousUser {
+               Preference.shared.isAnonymousUser {
                 let viewController = membershipInterface.createSigninAnonymousViewController()
                 
                 self.present(viewController, animated: true)

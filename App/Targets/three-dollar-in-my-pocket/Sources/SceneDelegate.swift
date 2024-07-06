@@ -1,5 +1,6 @@
 import UIKit
 
+import Common
 import Membership
 
 import KakaoSDKAuth
@@ -39,9 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 if let params = url.params(),
                    let storeId = params["storeId"] as? String,
                    let storeType = params["storeType"] as? String {
-                    var userDefaultsUtil = UserDefaultsUtil()
-                    
-                    userDefaultsUtil.shareLink = "\(storeType):\(storeId)"
+                    Preference.shared.shareLink = "\(storeType):\(storeId)"
                 }
             }
             DeeplinkManager.shared.handleDeeplink(url: url)

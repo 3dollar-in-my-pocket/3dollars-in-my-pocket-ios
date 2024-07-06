@@ -21,14 +21,10 @@ final class MainTabBarViewModel: Common.BaseViewModel {
     let input = Input()
     let output = Output()
     private let advertisementService: Networking.AdvertisementServiceProtocol
-    private var userDefaults: Common.UserDefaultsUtil
+    private var preference = Preference.shared
     
-    init(
-        advertisementService: Networking.AdvertisementServiceProtocol = Networking.AdvertisementService(),
-        userDefaults: Common.UserDefaultsUtil = .shared
-    ) {
+    init(advertisementService: Networking.AdvertisementServiceProtocol = Networking.AdvertisementService()) {
         self.advertisementService = advertisementService
-        self.userDefaults = userDefaults
     }
     
     override func bind() {
@@ -62,7 +58,7 @@ final class MainTabBarViewModel: Common.BaseViewModel {
         let config = MainBannerPopupViewModel.Config(advertisement: advertisement)
         let viewModel = MainBannerPopupViewModel(config: config)
         
-        if let shownDate = userDefaults.getShownMainBannerDate(id: advertisement.advertisementId) {
+        if let shownDate = preference.getShownMainBannerDate(id: advertisement.advertisementId) {
             if shownDate != Common.DateUtils.todayString() {
                 output.route.send(.presentMainBannerPopup(viewModel))
             }

@@ -37,18 +37,16 @@ final class CommunityPopularStoreTabCellViewModel: BaseViewModel {
     let output: Output
 
     private let communityService: CommunityServiceProtocol
-    private let userDefaultsUtil: UserDefaultsUtil
+    private let preference = Preference.shared
 
     init(
         tab: CommunityPopularStoreTab = .defaultTab,
-        communityService: CommunityServiceProtocol = CommunityService(),
-        userDefaultsUtil: UserDefaultsUtil = .shared
+        communityService: CommunityServiceProtocol = CommunityService()
     ) {
         self.communityService = communityService
-        self.userDefaultsUtil = userDefaultsUtil
         self.output = Output(
             tabList: CommunityPopularStoreTab.allCases,
-            district: .init(userDefaultsUtil.communityPopularStoreNeighborhoods.description),
+            district: .init(preference.communityPopularStoreNeighborhoods.description),
             currentTab: .init(tab)
         )
 
@@ -72,7 +70,7 @@ final class CommunityPopularStoreTabCellViewModel: BaseViewModel {
         input.reload
             .withUnretained(self)
             .sink { (owner: CommunityPopularStoreTabCellViewModel, _) in
-                owner.output.district.send(owner.userDefaultsUtil.communityPopularStoreNeighborhoods.description)
+                owner.output.district.send(owner.preference.communityPopularStoreNeighborhoods.description)
             }
             .store(in: &cancellables)
     }

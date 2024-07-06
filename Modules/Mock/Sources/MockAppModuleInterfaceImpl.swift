@@ -4,11 +4,10 @@ import UIKit
 import AppInterface
 import Model
 import DependencyInjection
+import DesignSystem
 
 
 public final class MockAppModuleInterfaceImpl: AppModuleInterface {
-    public var userDefaults: UserDefaultProtocol = MockUserDefault()
-    
     public var kakaoSigninManager: SigninManagerProtocol = MockSigninManager()
     
     public var appleSigninManager: SigninManagerProtocol = MockSigninManager()
@@ -17,51 +16,67 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     
     public var photoManager: PhotoManagerProtocol = MockPhotoManager()
     
-    public var onClearSession: (() -> Void) = { }
+    public var onClearSession: (() -> Void) = { 
+        ToastManager.shared.show(message: "onClearSession")
+    }
     
     public var globalEventBus: GlobalEventBusProtocol = MockGlobalEventBus.shared
-    
-    public init(userDefaults: UserDefaultProtocol) {
-        self.userDefaults = userDefaults
-    }
     
     public func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
         return MockAdBannerView()
     }
     
-    public func getFCMToken(completion: @escaping ((String) -> ())) { }
+    public func getFCMToken(completion: @escaping ((String) -> ())) { 
+        ToastManager.shared.show(message: "getFCMToken")
+    }
     
-    public func goToMain() { }
+    public func goToMain() {
+        ToastManager.shared.show(message: "goToMain")
+    }
     
-    public func goToSignin() {}
+    public func goToSignin() {
+        ToastManager.shared.show(message: "goToSignin")
+    }
     
     public func createBookmarkViewerViewController(folderId: String) -> UIViewController {
-        return UIViewController(nibName: nil, bundle: nil)
+        return EmptyViewController()
     }
     
     public func createWebViewController(webviewType: Model.WebViewType) -> UIViewController {
-        return UIViewController(nibName: nil, bundle: nil)
+        return EmptyViewController()
     }
     
-    public func shareKakao(storeId: Int, storeType: Model.StoreType, storeDetailOverview: StoreDetailOverview) { }
+    public func shareKakao(storeId: Int, storeType: Model.StoreType, storeDetailOverview: StoreDetailOverview) {
+        ToastManager.shared.show(message: "shareKakao")
+    }
     
-    public func requestATTIfNeeded() { }
+    public func requestATTIfNeeded() { 
+        ToastManager.shared.show(message: "requestATTIfNeeded")
+    }
     
     public func sendPageView(screenName: String, type: AnyObject.Type) { }
     
     public func sendEvent(name: String, parameters: [String : Any]?) { }
     
-    public func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { }
-    
-    public func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { }
-    
-    public func presentMailComposeViewController(nickname: String, targetViewController: UIViewController) { }
-    
-    public func createWebViewController(title: String, url: String) -> UIViewController {
-        return UIViewController(nibName: nil, bundle: nil)
+    public func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { 
+        ToastManager.shared.show(message: "subscribeMarketingFCMTopic")
     }
     
-    public func showFrontAdmob(adType: Model.AdType, viewController: UIViewController) { }
+    public func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { 
+        ToastManager.shared.show(message: "unsubscribeMarketingFCMTopic")
+    }
+    
+    public func presentMailComposeViewController(nickname: String, targetViewController: UIViewController) { 
+        ToastManager.shared.show(message: "presentMailComposeViewController")
+    }
+    
+    public func createWebViewController(title: String, url: String) -> UIViewController {
+        return EmptyViewController()
+    }
+    
+    public func showFrontAdmob(adType: Model.AdType, viewController: UIViewController) { 
+        ToastManager.shared.show(message: "showFrontAdmob")
+    }
     
     public func createBookmarkURL(folderId: String, name: String) async -> String {
         return await withCheckedContinuation { continuation in
@@ -71,9 +86,9 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
 }
 
 extension MockAppModuleInterfaceImpl {
-    public static func registerAppModuleInterface(userDefaults: UserDefaultProtocol) {
+    public static func registerAppModuleInterface() {
         DIContainer.shared.container.register(AppModuleInterface.self) { _ in
-            return MockAppModuleInterfaceImpl(userDefaults: userDefaults)
+            return MockAppModuleInterfaceImpl()
         }
     }
 }

@@ -61,19 +61,17 @@ final class ReviewListViewModel: BaseViewModel {
     private let reviewService: ReviewServiceProtocol
     private let reportService: ReportServiceProtocol
     private let logManager: LogManagerProtocol
-    private let userDefaults: UserDefaultsUtil
+    private let preference = Preference.shared
     
     init(
         config: Config,
         reviewService: ReviewServiceProtocol = ReviewService(),
         reportService: ReportServiceProtocol = ReportService(),
-        userDefaults: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
         self.reviewService = reviewService
         self.reportService = reportService
-        self.userDefaults = userDefaults
         self.logManager = logManager
     }
     
@@ -111,7 +109,7 @@ final class ReviewListViewModel: BaseViewModel {
             .sink { (owner: ReviewListViewModel, index: Int) in
                 guard let review = owner.state.reviews[safe: index] else { return }
                 
-                if review.user.userId == owner.userDefaults.userId {
+                if review.user.userId == owner.preference.userId {
                     owner.sendClickEditReviewLog(reviewId: review.reviewId)
                     owner.presentWriteReviewBottomSheet(review: review)
                 } else {

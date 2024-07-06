@@ -42,6 +42,7 @@ final class SigninViewModel: BaseViewModel {
     private let userService: UserServiceProtocol
     private let deviceService: DeviceServiceProtocol
     private let logManager: LogManagerProtocol
+    private var preference = Preference.shared
     
     init(
         userService: UserServiceProtocol = UserService(),
@@ -95,9 +96,9 @@ final class SigninViewModel: BaseViewModel {
                 
                 switch result {
                 case .success(let signinResponse):
-                    owner.appInterface.userDefaults.userId = signinResponse.userId
-                    owner.appInterface.userDefaults.authToken = signinResponse.token
-                    owner.appInterface.userDefaults.isAnonymousUser = true
+                    owner.preference.userId = signinResponse.userId
+                    owner.preference.authToken = signinResponse.token
+                    owner.preference.isAnonymousUser = true
                     owner.output.route.send(.goToMain)
                     
                 case .failure(let error):
@@ -167,8 +168,8 @@ final class SigninViewModel: BaseViewModel {
             
             switch result {
             case .success(let signinResponse):
-                appInterface.userDefaults.userId = signinResponse.userId
-                appInterface.userDefaults.authToken = signinResponse.token
+                preference.userId = signinResponse.userId
+                preference.authToken = signinResponse.token
                 sendFCMToken(socialType: socialType)
                 
             case .failure(let error):
@@ -216,8 +217,8 @@ final class SigninViewModel: BaseViewModel {
             
             switch result {
             case .success(let response):
-                appInterface.userDefaults.userId = response.userId
-                appInterface.userDefaults.authToken = response.token
+                preference.userId = response.userId
+                preference.authToken = response.token
                 output.route.send(.goToMain)
                 
             case .failure(let error):

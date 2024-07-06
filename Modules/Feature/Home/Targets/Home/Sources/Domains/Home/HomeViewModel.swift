@@ -96,7 +96,7 @@ final class HomeViewModel: BaseViewModel {
     private let userService: UserServiceProtocol
     private let mapService: MapServiceProtocol
     private let locationManager: LocationManagerProtocol
-    private var userDefaults: UserDefaultsUtil
+    private var preference = Preference.shared
     private let logManager: LogManagerProtocol
     private let appModuleInterface: AppModuleInterface
     
@@ -107,7 +107,6 @@ final class HomeViewModel: BaseViewModel {
         userService: UserServiceProtocol = UserService(),
         mapService: MapServiceProtocol = MapService(),
         locationManager: LocationManagerProtocol = LocationManager.shared,
-        userDefaults: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared,
         appModuleInterface: AppModuleInterface = Environment.appModuleInterface
     ) {
@@ -117,7 +116,6 @@ final class HomeViewModel: BaseViewModel {
         self.userService = userService
         self.mapService = mapService
         self.locationManager = locationManager
-        self.userDefaults = userDefaults
         self.logManager = logManager
         self.appModuleInterface = appModuleInterface
         super.init()
@@ -175,7 +173,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.resultCameraPosition = location
                 owner.state.currentLocation = owner.state.resultCameraPosition
                 owner.output.cameraPosition.send(location)
-                owner.userDefaults.userCurrentLocation = location
+                owner.preference.userCurrentLocation = location
                 owner.output.showLoading.send(false)
             })
             .asyncMap { owner, _ in
@@ -450,7 +448,7 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, location in
                 owner.sendClickCurrentLocationLog()
-                owner.userDefaults.userCurrentLocation = location
+                owner.preference.userCurrentLocation = location
                 owner.state.currentLocation = location
                 owner.output.cameraPosition.send(location)
             }
@@ -579,7 +577,7 @@ final class HomeViewModel: BaseViewModel {
         input.onLoadFilter
             .withUnretained(self)
             .sink { (owner: HomeViewModel, _) in
-                if owner.userDefaults.isShownFilterTooltip.isNot {
+                if owner.preference.isShownFilterTooltip.isNot {
                     owner.output.isShowFilterTooltip.send(true)
                 }
             }
@@ -720,20 +718,20 @@ final class HomeViewModel: BaseViewModel {
     }
     
     private func subscribeMarketingTopic() {
-        guard !userDefaults.subscribedMarketingTopic else { return }
+        guard !preference.subscribedMarketingTopic else { return }
         
         appModuleInterface.subscribeMarketingFCMTopic { [weak self] error in
             if let error {
                 self?.output.route.send(.showErrorAlert(error))
             } else {
-                self?.userDefaults.subscribedMarketingTopic = true
+                self?.preference.subscribedMarketingTopic = true
             }
         }
     }
     
     private func shownFilterTooltip() {
-        guard userDefaults.isShownFilterTooltip.isNot else { return }
-        userDefaults.isShownFilterTooltip = true
+        guard preference.isShownFilterTooltip.isNot else { return }
+        preference.isShownFilterTooltip = true
         output.isShowFilterTooltip.send(false)
     }
 }
