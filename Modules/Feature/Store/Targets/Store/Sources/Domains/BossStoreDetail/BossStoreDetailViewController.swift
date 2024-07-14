@@ -250,7 +250,7 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         case .feedbacks(let viewModel):
             return CGSize(width: width, height: BossStoreFeedbacksCell.Layout.height(viewModel: viewModel))
         case .post(let viewModel):
-            return CGSize(width: width, height: 424)
+            return CGSize(width: width, height: BossStorePostCell.Layout.height(viewModel: viewModel, width: width))
         default:
             return .zero
         }

@@ -7,23 +7,35 @@ import Log
 
 final class BossStorePostCellViewModel: BaseViewModel {
     struct Input {
+        let didTapContent = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
-    }
-    
-    struct Config {
+        let storeName: String
+        let categoryIconUrl: String?
+        let totalCount: Int
+        let content: String
+        let imageUrls: [String]
+        let timeStamp: String
+        let isExpanded = CurrentValueSubject<Bool, Never>(false)
     }
 
     let input = Input()
     let output: Output
-    let config: Config
+    let data: BossStoreDetailRecentPost
     
     private let logManager: LogManagerProtocol
     
-    init(logManager: LogManagerProtocol = LogManager.shared) {
-        self.output = Output()
-        self.config = Config()
+    init(data: BossStoreDetailRecentPost, logManager: LogManagerProtocol = LogManager.shared) {
+        self.output = Output(
+            storeName: data.storeName,
+            categoryIconUrl: data.categoryIconUrl,
+            totalCount: data.totalCount,
+            content: data.post.body,
+            imageUrls: data.post.sections.map { $0.url },
+            timeStamp: data.post.updatedAt.toDate()?.toRelativeString() ?? data.post.updatedAt
+        )
+        self.data = data
         self.logManager = logManager
         
         super.init()
@@ -31,7 +43,15 @@ final class BossStorePostCellViewModel: BaseViewModel {
 
     override func bind() {
         super.bind()
-        
+                
+        input.didTapContent
+            .sink { [weak self] _ in
+                guard let self else { return }
+                
+                let value = output.isExpanded.value
+                output.isExpanded.send(!value)
+            }
+            .store(in: &cancellables)
     }
 }
 
