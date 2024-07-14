@@ -8,6 +8,7 @@ import Log
 final class BossStorePostCellViewModel: BaseViewModel {
     struct Input {
         let didTapContent = PassthroughSubject<Void, Never>()
+        let didTapMoreButton = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -17,25 +18,37 @@ final class BossStorePostCellViewModel: BaseViewModel {
         let content: String
         let imageUrls: [String]
         let timeStamp: String
-        let isExpanded = CurrentValueSubject<Bool, Never>(false)
+        let isExpanded: CurrentValueSubject<Bool, Never>
+        let moveToList = PassthroughSubject<Void, Never>()
+    }
+    
+    struct Config {
+        let data: BossStoreDetailRecentPost
+        let source: Source
+    }
+    
+    enum Source {
+        case storeDetail
+        case postList
     }
 
     let input = Input()
     let output: Output
-    let data: BossStoreDetailRecentPost
+    let config: Config
     
     private let logManager: LogManagerProtocol
     
-    init(data: BossStoreDetailRecentPost, logManager: LogManagerProtocol = LogManager.shared) {
+    init(config: Config, logManager: LogManagerProtocol = LogManager.shared) {
         self.output = Output(
-            storeName: data.storeName,
-            categoryIconUrl: data.categoryIconUrl,
-            totalCount: data.totalCount,
-            content: data.post.body,
-            imageUrls: data.post.sections.map { $0.url },
-            timeStamp: data.post.updatedAt.toDate()?.toRelativeString() ?? data.post.updatedAt
+            storeName: config.data.storeName,
+            categoryIconUrl: config.data.categoryIconUrl,
+            totalCount: config.data.totalCount,
+            content: config.data.post.body,
+            imageUrls: config.data.post.sections.map { $0.url },
+            timeStamp: config.data.post.updatedAt.toDate()?.toRelativeString() ?? config.data.post.updatedAt,
+            isExpanded: .init(config.source == .storeDetail ? false : true)
         )
-        self.data = data
+        self.config = config
         self.logManager = logManager
         
         super.init()
@@ -51,6 +64,10 @@ final class BossStorePostCellViewModel: BaseViewModel {
                 let value = output.isExpanded.value
                 output.isExpanded.send(!value)
             }
+            .store(in: &cancellables)
+        
+        input.didTapMoreButton
+            .subscribe(output.moveToList)
             .store(in: &cancellables)
     }
 }

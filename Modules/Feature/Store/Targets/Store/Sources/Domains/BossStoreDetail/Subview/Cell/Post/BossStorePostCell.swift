@@ -8,10 +8,11 @@ import SnapKit
 final class BossStorePostCell: BaseCollectionViewCell {
     enum Layout {
         static func height(viewModel: BossStorePostCellViewModel, width: CGFloat) -> CGFloat {
-            let defaultHeight: CGFloat = 460
+            let headerHeight: CGFloat = viewModel.config.source == .storeDetail ? 24 : 0
+            var height: CGFloat = 440
             
             if viewModel.output.isExpanded.value {
-                let height = viewModel.output.content.boundingRect(
+                let contentHeight = viewModel.output.content.boundingRect(
                     with: CGSize(
                         width: width - sectionInset.left - sectionInset.right,
                         height: CGFloat.greatestFiniteMagnitude
@@ -23,16 +24,27 @@ final class BossStorePostCell: BaseCollectionViewCell {
                     context: nil
                 ).height
                 
-                return 340 + height
+                height = 320 + contentHeight
             }
             
-            return defaultHeight
+            if viewModel.output.imageUrls.isEmpty {
+                height -= BossStorePostImageCell.Layout.size.height
+            }
+            
+            return height + headerHeight
         }
         
         static let sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
         static let contentTextFont = Fonts.regular.font(size: 14)
         static let contentTextColor = Colors.gray95.color
     }
+    
+    private let stackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 12
+    }
+    
+    private let headerView = UIView()
     
     private let titleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 16)
@@ -63,6 +75,11 @@ final class BossStorePostCell: BaseCollectionViewCell {
         $0.textColor = Colors.gray40.color
     }
     
+    private let contentStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 12
+    }
+    
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
         $0.showsHorizontalScrollIndicator = false
@@ -80,6 +97,10 @@ final class BossStorePostCell: BaseCollectionViewCell {
         $0.backgroundColor = .clear
     }
     
+    private let lineView = UIView().then {
+        $0.backgroundColor = Colors.gray10.color
+    }
+    
     private let tapGesture = UITapGestureRecognizer()
     
     private weak var viewModel: BossStorePostCellViewModel?
@@ -90,21 +111,35 @@ final class BossStorePostCell: BaseCollectionViewCell {
         tapGesture.addTarget(self, action: #selector(toggleTextView))
         
         contentView.addSubViews([
-            titleLabel,
-            moreButton,
-            containerView
+            stackView,
+            lineView
         ])
+        
+        stackView.addArrangedSubview(headerView)
+        stackView.addArrangedSubview(containerView)
+        
+        headerView.addSubViews([titleLabel, moreButton])
         
         containerView.addSubViews([
             categoryImageView,
             storeNameLabel,
             updatedAtLabel,
-            collectionView,
-            textView
+            contentStackView,
         ])
+        
+        contentStackView.addArrangedSubview(collectionView)
+        contentStackView.addArrangedSubview(textView)
     }
     
     override func bindConstraints() {
+        stackView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+        }
+        
+        headerView.snp.makeConstraints {
+            $0.height.equalTo(24)
+        }
+        
         titleLabel.snp.makeConstraints {
             $0.top.leading.equalToSuperview()
         }
@@ -112,11 +147,6 @@ final class BossStorePostCell: BaseCollectionViewCell {
         moreButton.snp.makeConstraints {
             $0.centerY.equalTo(titleLabel)
             $0.trailing.equalToSuperview()
-        }
-        
-        containerView.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
-            $0.leading.trailing.bottom.equalToSuperview()
         }
         
         categoryImageView.snp.makeConstraints {
@@ -136,21 +166,26 @@ final class BossStorePostCell: BaseCollectionViewCell {
             $0.height.equalTo(18)
         }
         
-        collectionView.snp.makeConstraints {
+        contentStackView.snp.makeConstraints {
             $0.top.equalTo(categoryImageView.snp.bottom).offset(12)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(208)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.bottom.lessThanOrEqualToSuperview().inset(16)
         }
         
-        textView.snp.makeConstraints {
-            $0.top.equalTo(collectionView.snp.bottom).offset(12)
+        collectionView.snp.makeConstraints {
+            $0.height.equalTo(BossStorePostImageCell.Layout.size.height)
+        }
+
+        lineView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(16)
+            $0.bottom.equalToSuperview()
+            $0.height.equalTo(1)
         }
     }
     
     private func generateLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 208, height: 208)
+        layout.itemSize = BossStorePostImageCell.Layout.size
         layout.scrollDirection = .horizontal
         layout.sectionInset = Layout.sectionInset
         layout.minimumLineSpacing = 12
@@ -162,10 +197,16 @@ final class BossStorePostCell: BaseCollectionViewCell {
     func bind(_ viewModel: BossStorePostCellViewModel) {
         self.viewModel = viewModel
         
+        moreButton.controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapMoreButton)
+            .store(in: &cancellables)
+        
         moreButton.setTitle("소식  더보기(\(viewModel.output.totalCount)개)", for: .normal)
         categoryImageView.setImage(urlString: viewModel.output.categoryIconUrl)
         storeNameLabel.text = viewModel.output.storeName
         updatedAtLabel.text = viewModel.output.timeStamp
+        collectionView.isHidden = viewModel.output.imageUrls.isEmpty
         
         viewModel.output.isExpanded
             .main
@@ -175,6 +216,19 @@ final class BossStorePostCell: BaseCollectionViewCell {
                 updateTextView(viewModel.output.content, isExpanded: isExpanded)
             }
             .store(in: &cancellables)
+        
+        switch viewModel.config.source {
+        case .storeDetail:
+            containerView.backgroundColor = Colors.gray0.color
+            headerView.isHidden = false
+            lineView.isHidden = true
+            tapGesture.isEnabled = true
+        case .postList:
+            containerView.backgroundColor = .clear
+            headerView.isHidden = true
+            lineView.isHidden = false
+            tapGesture.isEnabled = false
+        }
     }
     
     func updateTextView(_ fullText: String, isExpanded: Bool) {
@@ -282,12 +336,14 @@ extension BossStorePostCell: UICollectionViewDelegate {
 // MARK: - Image Cell
 private final class BossStorePostImageCell: BaseCollectionViewCell {
     enum Layout {
+        static let size = CGSize(width: 208, height: 208)
         static let sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
     }
     
     private let imageView = UIImageView().then {
         $0.backgroundColor = Colors.gray70.color
         $0.layer.cornerRadius = 16
+        $0.clipsToBounds = true
     }
     
     override func setup() {

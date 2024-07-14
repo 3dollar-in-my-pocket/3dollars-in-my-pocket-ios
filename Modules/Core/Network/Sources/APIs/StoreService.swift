@@ -29,6 +29,8 @@ public protocol StoreServiceProtocol {
     func deletePhoto(photoId: Int) async -> Result<String?, Error>
 
     func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreWithDetailApiResponse, Error>
+    
+    func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PostWithStoreApiResponse>, Error>
 }
 
 public struct StoreService: StoreServiceProtocol {
@@ -108,6 +110,12 @@ public struct StoreService: StoreServiceProtocol {
 
     public func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreWithDetailApiResponse, Error> {
         let request = FetchBossStoreDetailRequest(input: input)
+
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PostWithStoreApiResponse>, Error> {
+        let request = FetchStoreNewPostsRequest(storeId: storeId, input: cursor)
 
         return await NetworkManager.shared.request(requestType: request)
     }

@@ -52,6 +52,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case presentNavigation
         case presentMapDetail(MapDetailViewModel)
         case presentFeedback(BossStoreFeedbackViewModel)
+        case presentPostList(BossStorePostListViewModel)
     }
 
     let input = Input()
@@ -373,12 +374,21 @@ final class BossStoreDetailViewModel: BaseViewModel {
     }
     
     private func bindPostCellViewModel(with post: BossStoreDetailRecentPost) -> BossStorePostCellViewModel {
-        let cellViewModel = BossStorePostCellViewModel(data: post)
+        let cellViewModel = BossStorePostCellViewModel(config: .init(data: post, source: .storeDetail))
         
         cellViewModel.output.isExpanded.dropFirst()
             .mapVoid
             .subscribe(output.updateHeight)
-            .store(in: &cancellables)
+            .store(in: &cellViewModel.cancellables)
+        
+        cellViewModel.output.moveToList
+            .compactMap { [weak self] _ in
+                guard let self else { return nil }
+                
+                return .presentPostList(.init(storeId: storeId))
+            }
+            .subscribe(output.route)
+            .store(in: &cellViewModel.cancellables)
         
         return cellViewModel
     }

@@ -160,6 +160,9 @@ final class BossStoreDetailViewController: BaseViewController {
                 case .presentFeedback(let viewModel):
                     let viewController = BossStoreFeedbackViewController(viewModel)
                     owner.present(viewController, animated: true)
+                case .presentPostList(let viewModel):
+                    let viewController = BossStorePostListViewController(viewModel: viewModel)
+                    owner.navigationController?.pushViewController(viewController, animated: true)
                 }
             }
             .store(in: &cancellables)
