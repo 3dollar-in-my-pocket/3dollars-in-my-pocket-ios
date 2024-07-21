@@ -6,8 +6,8 @@ target 'three-dollar-in-my-pocket' do
   project 'App/3dollar-in-my-pocket.xcodeproj'
   use_frameworks!
   
-  pod 'Google-Mobile-Ads-SDK'
-  pod 'NMapsMap'
+  pod 'Google-Mobile-Ads-SDK', '11.5.0'
+  pod 'NMapsMap', '3.18.1'
 end
 
 target 'Home' do

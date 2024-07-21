@@ -20,7 +20,6 @@ export PATH="$GEM_HOME/bin:$PATH"
 
 gem install bundler:2.3.26
 bundle install
-brew install git-lfs
 
 # Install Tuist
 ../.tuist-bin/tuist fetch -p ../
