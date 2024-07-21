@@ -5,21 +5,28 @@ import Model
 
 final class BossStoreInfoCell: BaseCollectionViewCell {
     enum Layout {
-        static func calculateHeight(info: BossStoreInfo) -> CGFloat {
-            let introducationHeight = calculateIntroductionHeight(introduction: info.introduction) + calculateAccountHeight(account: info.accountInfos.first)
+        static func calculateHeight(width: CGFloat, info: BossStoreInfo) -> CGFloat {
+            let introducationHeight = calculateIntroductionHeight(width: width, introduction: info.introduction) + calculateAccountHeight(account: info.accountInfos.first)
             
             return introducationHeight + 356
         }
         
-        static func calculateIntroductionHeight(introduction: String?) -> CGFloat {
+        static func calculateIntroductionHeight(width: CGFloat, introduction: String?) -> CGFloat {
             guard let introduction else { return .zero }
-            let label = UILabel()
-            label.font = Fonts.medium.font(size: 12)
-            label.numberOfLines = 0
-            label.text = introduction
-            label.sizeToFit()
+
+            let contentHeight = introduction.boundingRect(
+                with: CGSize(
+                    width: width - 24,
+                    height: CGFloat.greatestFiniteMagnitude
+                ),
+                options: [.usesLineFragmentOrigin, .usesFontLeading],
+                attributes: [
+                    .font: Fonts.bold.font(size: 12)
+                ],
+                context: nil
+            ).height
             
-            return label.frame.height
+            return contentHeight
         }
         
         static func calculateAccountHeight(account: StoreAccountNumber?) -> CGFloat {

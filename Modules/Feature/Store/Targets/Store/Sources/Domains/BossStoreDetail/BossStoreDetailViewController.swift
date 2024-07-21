@@ -243,7 +243,7 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         case .overview:
             return CGSize(width: width, height: StoreDetailOverviewCell.Layout.height)
         case .info(let viewModel):
-            return CGSize(width: width, height: BossStoreInfoCell.Layout.calculateHeight(info: viewModel.output.info))
+            return CGSize(width: width, height: BossStoreInfoCell.Layout.calculateHeight(width: width, info: viewModel.output.info))
         case .menuList(let viewModel):
             return CGSize(width: width, height: BossStoreMenuListCell.Layout.height(viewModel: viewModel))
         case .emptyMenu:
