@@ -9,6 +9,7 @@ final class BossStorePostCellViewModel: BaseViewModel {
     struct Input {
         let didTapContent = PassthroughSubject<Void, Never>()
         let didTapMoreButton = PassthroughSubject<Void, Never>()
+        let didScroll = PassthroughSubject<CGPoint, Never>()
     }
 
     struct Output {
@@ -20,6 +21,7 @@ final class BossStorePostCellViewModel: BaseViewModel {
         let timeStamp: String
         let isExpanded: CurrentValueSubject<Bool, Never>
         let moveToList = PassthroughSubject<Void, Never>()
+        let scrollOffset = CurrentValueSubject<CGPoint, Never>(.zero)
     }
     
     struct Config {
@@ -68,6 +70,10 @@ final class BossStorePostCellViewModel: BaseViewModel {
         
         input.didTapMoreButton
             .subscribe(output.moveToList)
+            .store(in: &cancellables)
+        
+        input.didScroll
+            .subscribe(output.scrollOffset)
             .store(in: &cancellables)
     }
 }

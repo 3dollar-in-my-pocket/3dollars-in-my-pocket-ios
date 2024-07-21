@@ -8,30 +8,29 @@ import SnapKit
 final class BossStorePostCell: BaseCollectionViewCell {
     enum Layout {
         static func height(viewModel: BossStorePostCellViewModel, width: CGFloat) -> CGFloat {
+            var height: CGFloat = 72
+            
+            let contentHeight = viewModel.output.content.boundingRect(
+                with: CGSize(
+                    width: width - sectionInset.left - sectionInset.right,
+                    height: CGFloat.greatestFiniteMagnitude
+                ),
+                options: [.usesLineFragmentOrigin, .usesFontLeading],
+                attributes: [
+                    .font: Fonts.regular.font(size: 14)
+                ],
+                context: nil
+            ).height
+            
+            height += contentHeight
+            
+            if viewModel.output.imageUrls.isNotEmpty {
+                height += BossStorePostImageCell.Layout.size.height
+            }
+            
             let headerHeight: CGFloat = viewModel.config.source == .storeDetail ? 24 : 0
-            var height: CGFloat = 440
             
-            if viewModel.output.isExpanded.value {
-                let contentHeight = viewModel.output.content.boundingRect(
-                    with: CGSize(
-                        width: width - sectionInset.left - sectionInset.right,
-                        height: CGFloat.greatestFiniteMagnitude
-                    ),
-                    options: [.usesLineFragmentOrigin, .usesFontLeading],
-                    attributes: [
-                        .font: Fonts.regular.font(size: 14)
-                    ],
-                    context: nil
-                ).height
-                
-                height = 320 + contentHeight
-            }
-            
-            if viewModel.output.imageUrls.isEmpty {
-                height -= BossStorePostImageCell.Layout.size.height
-            }
-            
-            return height + headerHeight
+            return height + headerHeight + 40 // vertical margin
         }
         
         static let sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
@@ -175,7 +174,7 @@ final class BossStorePostCell: BaseCollectionViewCell {
         collectionView.snp.makeConstraints {
             $0.height.equalTo(BossStorePostImageCell.Layout.size.height)
         }
-
+        
         lineView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.bottom.equalToSuperview()
@@ -195,8 +194,6 @@ final class BossStorePostCell: BaseCollectionViewCell {
     }
     
     func bind(_ viewModel: BossStorePostCellViewModel) {
-        self.viewModel = viewModel
-        
         moreButton.controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.didTapMoreButton)
@@ -207,6 +204,15 @@ final class BossStorePostCell: BaseCollectionViewCell {
         storeNameLabel.text = viewModel.output.storeName
         updatedAtLabel.text = viewModel.output.timeStamp
         collectionView.isHidden = viewModel.output.imageUrls.isEmpty
+        
+        if self.viewModel != viewModel {
+            collectionView.reloadData()
+            DispatchQueue.main.async { [weak self] in
+                self?.collectionView.setContentOffset(viewModel.output.scrollOffset.value, animated: false)
+            }
+        }
+        
+        self.viewModel = viewModel
         
         viewModel.output.isExpanded
             .main
@@ -245,30 +251,30 @@ final class BossStorePostCell: BaseCollectionViewCell {
             textView.attributedText = limitedText
         }
     }
-
+    
     func getLimitedText(fullText: String, moreText: String = "더보기", maxLines: Int = 6) -> NSAttributedString {
         if textView.bounds.width == 0 {
             textView.layoutIfNeeded()
         }
-
+        
         let textViewWidth = textView.bounds.width - textView.textContainerInset.left - textView.textContainerInset.right
         let font = textView.font ?? Layout.contentTextFont
         let lineHeight = font.lineHeight
         let maxLines = maxLines
-
+        
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = .byWordWrapping
         let attributes: [NSAttributedString.Key: Any] = [.font: font, .paragraphStyle: paragraphStyle]
         let attributedText = NSAttributedString(string: fullText, attributes: attributes)
-
+        
         let framesetter = CTFramesetterCreateWithAttributedString(attributedText)
         let path = CGPath(rect: CGRect(x: 0, y: 0, width: textViewWidth, height: CGFloat.greatestFiniteMagnitude), transform: nil)
         let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
         let lines = CTFrameGetLines(frame) as! [CTLine]
-
+        
         var origins = [CGPoint](repeating: .zero, count: lines.count)
         CTFrameGetLineOrigins(frame, CFRangeMake(0, 0), &origins)
-
+        
         if lines.count <= maxLines {
             return attributedText
         }
@@ -279,7 +285,7 @@ final class BossStorePostCell: BaseCollectionViewCell {
             let lineText = attributedText.attributedSubstring(from: NSRange(location: lineRange.location, length: lineRange.length))
             truncatedText.append(lineText)
         }
-
+        
         guard let line = lines[safe: maxLines - 1] else {
             return attributedText
         }
@@ -288,20 +294,20 @@ final class BossStorePostCell: BaseCollectionViewCell {
         var lastLineText = attributedText.attributedSubstring(from: NSRange(location: lastLineRange.location, length: lastLineRange.length)).string
         
         let shortening = " ... "
-
+        
         while (lastLineText + shortening + moreText).boundingRect(with: CGSize(width: textViewWidth, height: .greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: nil).height > lineHeight {
             lastLineText.removeLast()
         }
-
+        
         let finalText = NSMutableAttributedString(string: lastLineText + shortening + moreText, attributes: attributes)
         finalText.addAttribute(.foregroundColor, value: Colors.gray40.color, range: NSRange(location: finalText.length - moreText.count, length: moreText.count))
         finalText.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: NSRange(location: finalText.length - moreText.count, length: moreText.count))
-
+        
         truncatedText.append(finalText)
-
+        
         return truncatedText
     }
-
+    
     @objc func toggleTextView() {
         viewModel?.input.didTapContent.send()
     }
@@ -331,6 +337,10 @@ extension BossStorePostCell: UICollectionViewDelegate {
             targetContentOffset.pointee = offset
         }
     }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        viewModel?.input.didScroll.send(scrollView.contentOffset)
+    }
 }
 
 // MARK: - Image Cell
@@ -344,6 +354,9 @@ private final class BossStorePostImageCell: BaseCollectionViewCell {
         $0.backgroundColor = Colors.gray70.color
         $0.layer.cornerRadius = 16
         $0.clipsToBounds = true
+        $0.contentMode = .scaleAspectFill
+        $0.layer.borderColor = Colors.gray20.color.cgColor
+        $0.layer.borderWidth = 0.5
     }
     
     override func setup() {

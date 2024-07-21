@@ -84,6 +84,13 @@ public final class BossStorePostListViewController: BaseViewController {
     public override func bindViewModelOutput() {
         super.bindViewModelOutput()
         
+        viewModel.output.sectionItems
+            .main
+            .sink { [weak self] _ in
+                self?.collectionView.reloadData()
+            }
+            .store(in: &cancellables)
+        
         viewModel.output.showLoading
             .removeDuplicates()
             .main
