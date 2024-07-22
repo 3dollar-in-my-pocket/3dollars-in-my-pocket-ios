@@ -19,7 +19,7 @@ public final class BossStorePostListViewController: BaseViewController {
     
     private let viewModel: BossStorePostListViewModel
     
-    init(viewModel: BossStorePostListViewModel) {
+    public init(viewModel: BossStorePostListViewModel) {
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)

@@ -6,7 +6,7 @@ import Model
 import Common
 import Log
 
-final class BossStorePostListViewModel: BaseViewModel {
+public final class BossStorePostListViewModel: BaseViewModel {
     struct Input {
         let loadTrigger = PassthroughSubject<Void, Never>()
         let willDisplayCell = PassthroughSubject<Int, Never>()
@@ -37,7 +37,7 @@ final class BossStorePostListViewModel: BaseViewModel {
 
     private let storeId: String
     
-    init(
+    public init(
         storeId: String,
         storeService: StoreServiceProtocol = StoreService(),
         preference: Preference = .shared,
@@ -51,7 +51,7 @@ final class BossStorePostListViewModel: BaseViewModel {
         super.init()
     }
 
-    override func bind() {
+    public override func bind() {
         super.bind()
         
         input.loadTrigger
