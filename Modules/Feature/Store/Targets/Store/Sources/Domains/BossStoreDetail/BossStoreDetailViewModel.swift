@@ -52,6 +52,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case presentNavigation
         case presentMapDetail(MapDetailViewModel)
         case presentFeedback(BossStoreFeedbackViewModel)
+        case presentPostList(BossStorePostListViewModel)
     }
 
     let input = Input()
@@ -200,13 +201,22 @@ final class BossStoreDetailViewModel: BaseViewModel {
         } else {
             infoItems.append(.menuList(bindMenuListCellViewModel(with: storeDetailData.menus)))
         }
-
-        output.dataSource.send([
+        
+        var sections: [BossStoreDetailSection] = [
             .init(type: .overview, items: [.overview(bindOverviewCellViewModel(storeDetailData.overview))]),
-            .init(type: .info, items: infoItems),
+            .init(type: .info, items: infoItems)
+        ]
+        
+        if let post = storeDetailData.recentPost {
+            sections.append(.init(type: .post, items: [.post(bindPostCellViewModel(with: post))]))
+        }
+        
+        sections.append(contentsOf: [
             .init(type: .workday, items: [.workday(storeDetailData.workdays)]),
             .init(type: .feedbacks, items: [.feedbacks(bindFeedbacksCellViewModel(with: storeDetailData.feedbacks))])
         ])
+
+        output.dataSource.send(sections)
     }
     
     private func bindInfoCellViewModel(_ info: BossStoreInfo) -> BossStoreInfoCellViewModel {
@@ -358,6 +368,26 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .subscribe(output.updateHeight)
             .store(in: &cancellables)
 
+        return cellViewModel
+    }
+    
+    private func bindPostCellViewModel(with post: BossStoreDetailRecentPost) -> BossStorePostCellViewModel {
+        let cellViewModel = BossStorePostCellViewModel(config: .init(data: post, source: .storeDetail))
+        
+        cellViewModel.output.isExpanded.dropFirst()
+            .mapVoid
+            .subscribe(output.updateHeight)
+            .store(in: &cellViewModel.cancellables)
+        
+        cellViewModel.output.moveToList
+            .compactMap { [weak self] _ in
+                guard let self else { return nil }
+                
+                return .presentPostList(.init(storeId: storeId))
+            }
+            .subscribe(output.route)
+            .store(in: &cellViewModel.cancellables)
+        
         return cellViewModel
     }
 }

@@ -2,6 +2,7 @@ import UIKit
 
 import AppInterface
 import Model
+import Store
 
 final class DeeplinkManager: DeeplinkManagerProtocol {
     
@@ -72,6 +73,9 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
 
         case .pollDetail:
             deeplinkContents = createPollDetailContents(query: url.params())
+            
+        case .postList:
+            deeplinkContents = createPostListContents(query: url.params())
 
         case .unknown:
             Log.debug("지원하는 Deeplink가 아닙니다.")
@@ -108,6 +112,9 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
 
         case .pollDetail:
             deeplinkContents = createPollDetailContents(query: url.params())
+            
+        case .postList:
+            deeplinkContents = createPostListContents(query: url.params())
 
         case .unknown:
             Log.debug("지원하는 Deeplink가 아닙니다.")
@@ -222,6 +229,18 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
 
         let viewController = Environment.communityInterface.getPollDetailViewController(pollId: pollId)
 
+        return DeepLinkContents(
+            targetViewController: viewController,
+            transitionType: .push
+        )
+    }
+    
+    private func createPostListContents(query: [String: Any]?) -> DeepLinkContents? {
+        guard let query, let storeId = query["storeId"] as? String else { return nil }
+        
+        let viewModel = BossStorePostListViewModel(storeId: storeId)
+        let viewController = BossStorePostListViewController(viewModel: viewModel)
+        
         return DeepLinkContents(
             targetViewController: viewController,
             transitionType: .push

@@ -7,6 +7,7 @@ public struct BossStoreDetailData {
     public var workdays: [BossStoreAppearanceDay]
     public var feedbacks: [FeedbackCountWithRatioResponse]
     public var store: BossStoreDetailApiResponse
+    public var recentPost: BossStoreDetailRecentPost?
 
     public init(response: BossStoreWithDetailApiResponse) {
         self.overview = StoreDetailOverview(
@@ -40,5 +41,13 @@ public struct BossStoreDetailData {
         }
         self.feedbacks = response.feedbacks
         self.store = response.store
+        if let post = response.newsPosts.contents.first {
+            self.recentPost = BossStoreDetailRecentPost(
+                storeName: store.name,
+                categoryIconUrl: store.categories.first?.imageUrl,
+                totalCount: response.newsPosts.cursor.totalCount,
+                post: post
+            )
+        }
     }
 }
