@@ -42,6 +42,7 @@ final class NicknameViewModel: BaseViewModel {
     private var appInterface: AppModuleInterface
     private let userService: UserServiceProtocol
     private let logManager: LogManagerProtocol
+    private var preference = Preference.shared
     
     init(
         socialType: SocialType,
@@ -100,8 +101,8 @@ final class NicknameViewModel: BaseViewModel {
             
             switch result {
             case .success(let signupResponse):
-                appInterface.userDefaults.userId = signupResponse.userId
-                appInterface.userDefaults.authToken = signupResponse.token
+                preference.userId = signupResponse.userId
+                preference.authToken = signupResponse.token
                 state.isSignupSuccess = true
                 output.route.send(.showLoading(isShow: false))
                 output.route.send(.presentPolicy)

@@ -14,17 +14,6 @@ import GoogleMobileAds
 import FirebaseDynamicLinks
 
 final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
-    private var _userDefaults: AppInterface.UserDefaultProtocol = UserDefaultsUtil()
-    
-    var userDefaults: AppInterface.UserDefaultProtocol {
-        set {
-            _userDefaults = newValue
-        }
-        get {
-            return _userDefaults
-        }
-    }
-    
     var kakaoSigninManager: AppInterface.SigninManagerProtocol {
         return KakaoSigninManager.shared
     }
@@ -43,7 +32,7 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     
     var onClearSession: (() -> Void) {
         let onClearSession = {
-            UserDefaultsUtil().clear()
+            Preference.shared.clear()
             if let sceneDelegate
                 = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
                 sceneDelegate.goToSignIn()

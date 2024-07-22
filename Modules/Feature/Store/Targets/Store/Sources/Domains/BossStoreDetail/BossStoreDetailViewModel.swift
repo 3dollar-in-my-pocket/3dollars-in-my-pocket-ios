@@ -59,7 +59,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
     private var state = State()
     private let storeService: StoreServiceProtocol
-    private let userDefaults: UserDefaultsUtil
+    private let preference = Preference.shared
     private let logManager: LogManagerProtocol
 
     private let storeId: String
@@ -67,12 +67,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
     init(
         storeId: String,
         storeService: StoreServiceProtocol = StoreService(),
-        userDefaults: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.storeId = storeId
         self.storeService = storeService
-        self.userDefaults = userDefaults
         self.logManager = logManager
 
         super.init()
@@ -92,8 +90,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .asyncMap { owner, input in
                 let input = FetchBossStoreDetailInput(
                     storeId: owner.storeId,
-                    latitude: owner.userDefaults.userCurrentLocation.coordinate.latitude,
-                    longitude: owner.userDefaults.userCurrentLocation.coordinate.longitude
+                    latitude: owner.preference.userCurrentLocation.coordinate.latitude,
+                    longitude: owner.preference.userCurrentLocation.coordinate.longitude
                 )
 
                 return await owner.storeService.fetchBossStoreDetail(input: input)

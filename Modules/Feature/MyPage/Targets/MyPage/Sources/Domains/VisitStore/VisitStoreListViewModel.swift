@@ -42,16 +42,14 @@ final class VisitStoreListViewModel: BaseViewModel {
     private var state = State()
 
     private let myPageService: MyPageServiceProtocol
-    private let userDefaults: UserDefaultsUtil
+    private let preference = Preference.shared
     private let logManager: LogManagerProtocol
 
     init(
         myPageService: MyPageServiceProtocol = MyPageService(),
-        userDefaults: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.myPageService = myPageService 
-        self.userDefaults = userDefaults
         self.logManager = logManager
 
         super.init()

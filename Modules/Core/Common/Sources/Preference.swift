@@ -2,8 +2,8 @@ import Foundation
 import Model
 import CoreLocation
 
-public final class UserDefaultsUtil {
-    public static let shared = UserDefaultsUtil()
+public final class Preference {
+    public static let shared = Preference()
     
     private let instance: UserDefaults
     
@@ -78,5 +78,55 @@ public final class UserDefaultsUtil {
         get {
             return instance.bool(forKey: "KEY_IS_SHOWN_FILTER_TOOLTIP")
         }
+    }
+    
+    public var authToken: String {
+        get {
+            return instance.string(forKey: "KEY_TOKEN") ?? ""
+        }
+        set {
+            self.instance.set(newValue, forKey: "KEY_TOKEN")
+        }
+    }
+    
+    public var isAnonymousUser: Bool {
+        get {
+            return instance.bool(forKey: "KEY_IS_ANONYMOUS_USER")
+        }
+        set {
+            instance.set(newValue, forKey: "KEY_IS_ANONYMOUS_USER")
+        }
+    }
+    
+    public var shareLink: String {
+        get {
+            let storeType = instance.string(forKey: "KEY_SHARE_LINK_STORE_TYPE") ?? ""
+            let storeId = instance.string(forKey: "KEY_SHARE_LINK_STORE_ID") ?? ""
+            
+            if storeType.isEmpty {
+                return ""
+            } else {
+                return "\(storeType):\(storeId)"
+            }
+        }
+        
+        set {
+            if newValue.isEmpty {
+                instance.set("", forKey: "KEY_SHARE_LINK_STORE_TYPE")
+                instance.set("", forKey: "KEY_SHARE_LINK_STORE_ID")
+            } else {
+                let splitArray = newValue.split(separator: ":")
+                let storeType = splitArray.first ?? "streetFood"
+                let storeId = splitArray.last ?? ""
+                
+                instance.set(storeType, forKey: "KEY_SHARE_LINK_STORE_TYPE")
+                instance.set(storeId, forKey: "KEY_SHARE_LINK_STORE_ID")
+            }
+        }
+    }
+    
+    public func clear() {
+        instance.removeObject(forKey: "KEY_USER_ID")
+        instance.removeObject(forKey: "KEY_TOKEN")
     }
 }

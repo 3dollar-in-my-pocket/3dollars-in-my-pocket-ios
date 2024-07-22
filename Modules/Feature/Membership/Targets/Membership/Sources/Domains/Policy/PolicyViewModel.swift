@@ -40,18 +40,16 @@ final class PolicyViewModel: Common.BaseViewModel {
     private let userService: Networking.UserServiceProtocol
     private let deviceService: Networking.DeviceServiceProtocol
     private let appInterface: AppModuleInterface
-    private let userDefaults: UserDefaultsUtil
+    private let preference = Preference.shared
     
     init(
         userService: Networking.UserServiceProtocol = Networking.UserService(),
         deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService(),
-        appInterface: AppModuleInterface = Environment.appModuleInterface,
-        userDefaults: UserDefaultsUtil = UserDefaultsUtil()
+        appInterface: AppModuleInterface = Environment.appModuleInterface
     ) {
         self.userService = userService
         self.deviceService = deviceService
         self.appInterface = appInterface
-        self.userDefaults = userDefaults
     }
     
     override func bind() {
@@ -127,7 +125,7 @@ final class PolicyViewModel: Common.BaseViewModel {
             if let error {
                 self?.output.route.send(.showErrorAlert(error))
             } else {
-                self?.userDefaults.subscribedMarketingTopic = true
+                self?.preference.subscribedMarketingTopic = true
                 self?.output.route.send(.dismiss)
             }
         }

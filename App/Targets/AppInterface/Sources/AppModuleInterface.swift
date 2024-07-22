@@ -4,7 +4,6 @@ import Combine
 import Model
 
 public protocol AppModuleInterface {
-    var userDefaults: UserDefaultProtocol { get set }
     var kakaoSigninManager: SigninManagerProtocol { get }
     var appleSigninManager: SigninManagerProtocol { get }
     var deeplinkManager: DeeplinkManagerProtocol { get }

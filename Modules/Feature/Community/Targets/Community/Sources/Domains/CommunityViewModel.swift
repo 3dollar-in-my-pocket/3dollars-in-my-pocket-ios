@@ -46,7 +46,7 @@ final class CommunityViewModel: BaseViewModel {
     private var state = State()
 
     private let communityService: CommunityServiceProtocol
-    private let userDefaultsUtil: UserDefaultsUtil
+    private let preference = Preference.shared
     private let logManager: LogManagerProtocol
 
     private lazy var pollListCellViewModel = bindPollListCellViewModel()
@@ -54,11 +54,9 @@ final class CommunityViewModel: BaseViewModel {
 
     init(
         communityService: CommunityServiceProtocol = CommunityService(),
-        userDefaultsUtil: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.communityService = communityService
-        self.userDefaultsUtil = userDefaultsUtil
         self.logManager = logManager
 
         super.init()
@@ -76,7 +74,7 @@ final class CommunityViewModel: BaseViewModel {
             .map { (owner: CommunityViewModel, _: Void) in
                 return FetchPopularStoresInput(
                     criteria: owner.state.currentStoreTab.value.rawValue,
-                    district: owner.userDefaultsUtil.communityPopularStoreNeighborhoods.district
+                    district: owner.preference.communityPopularStoreNeighborhoods.district
                 )
             }
             .withUnretained(self)

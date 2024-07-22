@@ -49,6 +49,7 @@ public final class BookmarkViewerViewModel: BaseViewModel {
     private let bookmarkService: BookmarkServiceProtocol
     private var appModuleInterface: AppModuleInterface
     private let logManager: LogManagerProtocol
+    private let preference = Preference.shared
     
     init(
         config: Config,
@@ -76,7 +77,7 @@ public final class BookmarkViewerViewModel: BaseViewModel {
         didTapStore
             .withUnretained(self)
             .filter { (owner: BookmarkViewerViewModel, _) in
-                owner.appModuleInterface.userDefaults.authToken.isEmpty
+                owner.preference.authToken.isEmpty
             }
             .map { _ in Route.presentSigninDialog }
             .subscribe(output.route)
@@ -85,7 +86,7 @@ public final class BookmarkViewerViewModel: BaseViewModel {
         didTapStore
             .withUnretained(self)
             .filter { (owner: BookmarkViewerViewModel, _) in
-                owner.appModuleInterface.userDefaults.authToken.isNotEmpty
+                owner.preference.authToken.isNotEmpty
             }
             .compactMap { (owner: BookmarkViewerViewModel, index: Int) -> Route? in
                 guard let store = owner.state.stores[safe: index] else { return nil }

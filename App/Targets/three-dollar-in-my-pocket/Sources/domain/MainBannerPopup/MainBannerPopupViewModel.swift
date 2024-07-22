@@ -33,18 +33,16 @@ final class MainBannerPopupViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     private var state: State
-    private let userDefaults: Common.UserDefaultsUtil
+    private let preference = Preference.shared
     private let logManager: LogManagerProtocol
     
     init(
         config: Config,
-        userDefaults: Common.UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.output = Output(advertisement: .init(config.advertisement))
         self.state = State(advertisement: config.advertisement)
         self.logManager = logManager
-        self.userDefaults = userDefaults
         
         super.init()
     }
@@ -62,7 +60,7 @@ final class MainBannerPopupViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { (owner: MainBannerPopupViewModel, _) in
                 owner.sendClickNotShowTodayLog()
-                owner.userDefaults.setShownMainBannerDate(id: owner.state.advertisement.advertisementId)
+                owner.preference.setShownMainBannerDate(id: owner.state.advertisement.advertisementId)
                 owner.output.route.send(.dismiss)
             })
             .store(in: &cancellables)

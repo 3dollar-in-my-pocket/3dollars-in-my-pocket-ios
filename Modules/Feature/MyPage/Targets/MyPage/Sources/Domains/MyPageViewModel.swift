@@ -48,7 +48,7 @@ final class MyPageViewModel: BaseViewModel {
     private let myPageService: MyPageServiceProtocol
     private let communityService: CommunityServiceProtocol
     
-    private let userDefaultsUtil: UserDefaultsUtil
+    private let preference = Preference.shared
     private let logManager: LogManagerProtocol
     
     private lazy var visitStoreHeaderViewModel = bindHeaderViewModel(.visitStore)
@@ -58,12 +58,10 @@ final class MyPageViewModel: BaseViewModel {
     init(
         myPageService: MyPageServiceProtocol = MyPageService(),
         communityService: CommunityServiceProtocol = CommunityService(),
-        userDefaultsUtil: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.myPageService = myPageService
         self.communityService = communityService
-        self.userDefaultsUtil = userDefaultsUtil
         self.logManager = logManager
 
         super.init()
