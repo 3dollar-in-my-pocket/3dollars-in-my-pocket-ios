@@ -29,18 +29,16 @@ final class SplashViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     
-    private var userDefaults: UserDefaultsUtil
+    private var preference = Preference.shared
     private let userService: UserServiceProtocol
     private let remoteConfigService: RemoteConfigProtocol
     private let deviceService: DeviceServiceProtocol
     
     init(
-        userDefaults: UserDefaultsUtil = UserDefaultsUtil(),
         userService: UserServiceProtocol = UserService(),
         remoteConfigService: RemoteConfigProtocol = RemoteConfigService(),
         deviceService: Networking.DeviceServiceProtocol = DeviceService()
     ) {
-        self.userDefaults = userDefaults
         self.userService = userService
         self.remoteConfigService = remoteConfigService
         self.deviceService = deviceService
@@ -77,7 +75,7 @@ final class SplashViewModel: BaseViewModel {
     }
     
     private func validateToken() {
-        let token = userDefaults.authToken
+        let token = preference.authToken
         
         if validateTokenFromLocal(token: token) {
             validateTokenFromServer()
@@ -97,7 +95,7 @@ final class SplashViewModel: BaseViewModel {
             
             switch result {
             case .success(let user):
-                userDefaults.userId = user.userId
+                preference.userId = user.userId
                 refreshPushToken()
                 
             case .failure(let error):

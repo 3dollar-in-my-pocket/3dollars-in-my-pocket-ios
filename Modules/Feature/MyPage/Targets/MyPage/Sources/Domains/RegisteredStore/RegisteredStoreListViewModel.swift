@@ -39,16 +39,14 @@ final class RegisteredStoreListViewModel: BaseViewModel {
     private var state = State()
 
     private let myPageService: MyPageServiceProtocol
-    private let userDefaults: UserDefaultsUtil
+    private let preference = Preference.shared
     private let logManager: LogManagerProtocol
 
     init(
         myPageService: MyPageServiceProtocol = MyPageService(),
-        userDefaults: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.myPageService = myPageService 
-        self.userDefaults = userDefaults
         self.logManager = logManager
 
         super.init()
@@ -68,8 +66,8 @@ final class RegisteredStoreListViewModel: BaseViewModel {
             .asyncMap { owner, _ in
                 await owner.myPageService.fetchMyStores(
                     input: .init(size: 20, cursor: owner.state.nextCursor), 
-                    latitude: owner.userDefaults.userCurrentLocation.coordinate.latitude, 
-                    longitude: owner.userDefaults.userCurrentLocation.coordinate.longitude
+                    latitude: owner.preference.userCurrentLocation.coordinate.latitude, 
+                    longitude: owner.preference.userCurrentLocation.coordinate.longitude
                 )
             }
             .withUnretained(self)
@@ -102,8 +100,8 @@ final class RegisteredStoreListViewModel: BaseViewModel {
             .asyncMap { owner, input in
                 await owner.myPageService.fetchMyStores(
                     input: .init(size: 20, cursor: owner.state.nextCursor), 
-                    latitude: owner.userDefaults.userCurrentLocation.coordinate.latitude, 
-                    longitude: owner.userDefaults.userCurrentLocation.coordinate.longitude
+                    latitude: owner.preference.userCurrentLocation.coordinate.latitude, 
+                    longitude: owner.preference.userCurrentLocation.coordinate.longitude
                 )
             }
             .withUnretained(self)
