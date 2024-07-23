@@ -2,11 +2,16 @@ import UIKit
 
 import Membership
 import Networking
+import Mock
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    var networkConfiguration = MockNetworkConfiguration()
+    var mockUserDefaults = MockUserDefault()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
+        initializeDI()
         return true
     }
       
@@ -14,7 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
     
-    private func initializationNetworkModule() {
-        
+    private func initializeDI() {
+        MockAppModuleInterfaceImpl.registerAppModuleInterface(userDefaults: mockUserDefaults)
+        MockNetworkConfiguration.registerNetworkConfiguration()
     }
 }

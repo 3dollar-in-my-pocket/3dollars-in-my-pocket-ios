@@ -6,6 +6,7 @@ struct BossStoreDetailSection: Hashable {
         case info
         case workday
         case feedbacks
+        case post
     }
 
     var type: SectionType

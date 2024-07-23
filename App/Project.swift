@@ -250,7 +250,8 @@ let project = Project(
         .swiftyBeaver,
         .deviceKit,
         .permissionsKit,
-        .firebaseSDK
+        .firebaseSDK,
+        .netfox
     ],
     settings: .settings(
         base: BuildSetting.Project.base,
@@ -314,6 +315,7 @@ let project = Project(
                 .Package.locationWhenInUsePermission,
                 .Package.photoLibraryPermission,
                 .Package.swiftyBeaver,
+                .Package.netfox,
                 .target(name: "service-extension"),
                 .target(name: "content-extension"),
             ],

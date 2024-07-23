@@ -23,4 +23,24 @@ public extension Date {
     func addDay(day: Int) -> Date {
         return Calendar.current.date(byAdding: .day, value: day, to: self) ?? Date()
     }
+    
+    func toRelativeString() -> String {
+        let currentDate = Date()
+        let components = Calendar.current.dateComponents([.minute, .day], from: self, to: currentDate)
+
+        if let minutesDifference = components.minute, minutesDifference < 1 {
+            return "방금"
+        }
+
+        if let dayDifference = components.day, dayDifference > 1 {
+            return self.toString()
+        }
+
+        let timeAgoFormatter = RelativeDateTimeFormatter()
+        timeAgoFormatter.dateTimeStyle = .named
+        timeAgoFormatter.unitsStyle = .short
+        timeAgoFormatter.locale = Locale.current
+        let dateToString = timeAgoFormatter.localizedString(for: self, relativeTo: currentDate)
+        return dateToString
+    }
 }

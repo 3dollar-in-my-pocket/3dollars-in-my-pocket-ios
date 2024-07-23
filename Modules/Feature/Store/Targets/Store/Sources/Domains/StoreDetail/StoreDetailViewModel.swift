@@ -87,7 +87,7 @@ final class StoreDetailViewModel: BaseViewModel {
     private let storeService: StoreServiceProtocol
     private let reportService: ReportServiceProtocol
     private let reviewService: ReviewServiceProtocol
-    private let userDefaults: UserDefaultsUtil
+    private let preference = Preference.shared
     private let logManager: LogManagerProtocol
     
     init(
@@ -95,14 +95,12 @@ final class StoreDetailViewModel: BaseViewModel {
         storeService: StoreServiceProtocol = StoreService(),
         reportService: ReportServiceProtocol = ReportService(),
         reviewService: ReviewServiceProtocol = ReviewService(),
-        userDefaults: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.state = State(storeId: storeId)
         self.storeService = storeService
         self.reportService = reportService
         self.reviewService = reviewService
-        self.userDefaults = userDefaults
         self.logManager = logManager
         
         super.init()
@@ -327,8 +325,8 @@ final class StoreDetailViewModel: BaseViewModel {
             
             let input = FetchStoreDetailInput(
                 storeId: state.storeId,
-                latitude: userDefaults.userCurrentLocation.coordinate.latitude,
-                longitude: userDefaults.userCurrentLocation.coordinate.longitude
+                latitude: preference.userCurrentLocation.coordinate.latitude,
+                longitude: preference.userCurrentLocation.coordinate.longitude
             )
             let storeDetailResult = await storeService.fetchStoreDetail(input: input)
             

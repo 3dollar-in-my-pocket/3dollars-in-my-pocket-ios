@@ -6,20 +6,17 @@ import Model
 import Common
 import Log
 
-final class RegisteredStoreListViewModel: BaseViewModel {
+public final class BossStorePostListViewModel: BaseViewModel {
     struct Input {
         let loadTrigger = PassthroughSubject<Void, Never>()
-        let didSelectItem = PassthroughSubject<Int, Never>()
         let willDisplayCell = PassthroughSubject<Int, Never>()
     }
 
     struct Output {
-        let screenName: ScreenName = .registeredStore
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
-        let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
-        let sectionItems = CurrentValueSubject<[UserStoreWithVisitsApiResponse], Never>([])
+        let sectionItems = CurrentValueSubject<[BossStorePostCellViewModel], Never>([])
         let totalCount = CurrentValueSubject<Int, Never>(0)
     }
 
@@ -29,30 +26,32 @@ final class RegisteredStoreListViewModel: BaseViewModel {
         let loadMore = PassthroughSubject<Void, Never>()
     }
 
-    enum Route {
-        case storeDetail(Int)
-    }
-
     let input = Input()
     let output = Output()
 
     private var state = State()
 
-    private let myPageService: MyPageServiceProtocol
-    private let preference = Preference.shared
+    private let storeService: StoreServiceProtocol
+    private let preference: Preference
     private let logManager: LogManagerProtocol
 
-    init(
-        myPageService: MyPageServiceProtocol = MyPageService(),
+    private let storeId: String
+    
+    public init(
+        storeId: String,
+        storeService: StoreServiceProtocol = StoreService(),
+        preference: Preference = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.myPageService = myPageService 
+        self.storeId = storeId
+        self.storeService = storeService
+        self.preference = preference
         self.logManager = logManager
 
         super.init()
     }
 
-    override func bind() {
+    public override func bind() {
         super.bind()
         
         input.loadTrigger
@@ -64,23 +63,24 @@ final class RegisteredStoreListViewModel: BaseViewModel {
             })
             .withUnretained(self)
             .asyncMap { owner, _ in
-                await owner.myPageService.fetchMyStores(
-                    input: .init(size: 20, cursor: owner.state.nextCursor), 
-                    latitude: owner.preference.userCurrentLocation.coordinate.latitude, 
-                    longitude: owner.preference.userCurrentLocation.coordinate.longitude
+                await owner.storeService.fetchNewPosts(
+                    storeId: owner.storeId,
+                    cursor: .init(size: 20, cursor: owner.state.nextCursor)
                 )
             }
-            .withUnretained(self)
-            .sink { owner, result in
-                owner.output.showLoading.send(false)
+            .sink { [weak self] result in
+                guard let self else { return }
+                
+                output.showLoading.send(false)
                 switch result {
                 case .success(let response):
-                    owner.output.totalCount.send(response.cursor.totalCount)
-                    owner.output.sectionItems.send(response.contents)
-                    owner.state.hasMore = response.cursor.hasMore
-                    owner.state.nextCursor = response.cursor.nextCursor
+                    output.sectionItems.send(response.contents.map {
+                        self.bindPostCellViewModel(with: BossStoreDetailRecentPost(response: $0))
+                    })
+                    state.hasMore = response.cursor.hasMore
+                    state.nextCursor = response.cursor.nextCursor
                 case .failure(let error):
-                    owner.output.showErrorAlert.send(error)
+                    output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
@@ -98,19 +98,19 @@ final class RegisteredStoreListViewModel: BaseViewModel {
         state.loadMore
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.myPageService.fetchMyStores(
-                    input: .init(size: 20, cursor: owner.state.nextCursor), 
-                    latitude: owner.preference.userCurrentLocation.coordinate.latitude, 
-                    longitude: owner.preference.userCurrentLocation.coordinate.longitude
+                await owner.storeService.fetchNewPosts(
+                    storeId: owner.storeId,
+                    cursor: .init(size: 20, cursor: owner.state.nextCursor)
                 )
             }
             .withUnretained(self)
             .sink { owner, result in
                 switch result {
                 case .success(let response):
-                    owner.output.totalCount.send(response.cursor.totalCount)
                     var sectionItems = owner.output.sectionItems.value
-                    sectionItems.append(contentsOf: response.contents)
+                    sectionItems.append(contentsOf: response.contents.map {
+                        self.bindPostCellViewModel(with: BossStoreDetailRecentPost(response: $0))
+                    })
                     owner.output.sectionItems.send(sectionItems)
                     
                     owner.state.hasMore = response.cursor.hasMore
@@ -120,30 +120,20 @@ final class RegisteredStoreListViewModel: BaseViewModel {
                 }
             }
             .store(in: &cancellables)
-        
-        input.didSelectItem
-            .withUnretained(self)
-            .compactMap { owner, index in owner.output.sectionItems.value[safe: index]?.store }
-            .handleEvents(receiveOutput: { [weak self] store in
-                self?.sendClickStoreLog(store)
-            })
-            .map { .storeDetail($0.storeId) }
-            .subscribe(output.route)
-            .store(in: &cancellables)
     }
     
     private func canLoadMore(willDisplayRow: Int) -> Bool {
         return willDisplayRow == output.sectionItems.value.count - 1 && state.hasMore
     }
+    
+    private func bindPostCellViewModel(with post: BossStoreDetailRecentPost) -> BossStorePostCellViewModel {
+        let cellViewModel = BossStorePostCellViewModel(config: .init(data: post, source: .postList))
+        return cellViewModel
+    }
 }
 
 
 // MARK: Log
-private extension RegisteredStoreListViewModel {
-    func sendClickStoreLog(_ store: UserStoreApiResponse) {
-        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickStore, extraParameters: [
-            .storeId: store.storeId,
-            .type: StoreType.userStore.rawValue
-        ]))
-    }
+private extension BossStorePostListViewModel {
+   
 }

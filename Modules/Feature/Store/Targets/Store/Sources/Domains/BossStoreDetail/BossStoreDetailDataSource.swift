@@ -14,7 +14,8 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             BossStoreMenuListCell.self,
             BossStoreEmptyMenuCell.self,
             BossStoreWorkdayCell.self,
-            BossStoreFeedbacksCell.self
+            BossStoreFeedbacksCell.self,
+            BossStorePostCell.self
         ])
 
         super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
@@ -42,6 +43,10 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             case .feedbacks(let viewModel):
                 let cell: BossStoreFeedbacksCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
+                return cell
+            case .post(let viewModel):
+                let cell: BossStorePostCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                cell.bind(viewModel)
                 return cell
             }
         }

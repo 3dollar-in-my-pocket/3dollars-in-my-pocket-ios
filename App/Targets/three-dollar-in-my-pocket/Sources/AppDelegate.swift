@@ -16,6 +16,7 @@ import SwiftyBeaver
 import GoogleMobileAds
 import KakaoSDKCommon
 import FirebaseMessaging
+import netfox
 
 typealias Log = SwiftyBeaver
 
@@ -30,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         initializeNotification()
         initializeDI()
         initializeFirebase()
-        initializeSwiftyBeaver()
+        initializeLogger()
         initializeKakao()
         initializeAdmob()
         application.registerForRemoteNotifications()
@@ -69,11 +70,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GADMobileAds.sharedInstance().start(completionHandler: nil)
     }
     
-    private func initializeSwiftyBeaver() {
+    private func initializeLogger() {
         let console = ConsoleDestination()
         
         console.format = "$DHH:mm:ss.SSS$d $C$L$c $N.$F:$l - $M"
         Log.addDestination(console)
+        
+        #if DEBUG
+        // netfox
+        NFX.sharedInstance().setGesture(.custom)
+        NFX.sharedInstance().start()
+        #endif
     }
     
     private func initializeKakao() {

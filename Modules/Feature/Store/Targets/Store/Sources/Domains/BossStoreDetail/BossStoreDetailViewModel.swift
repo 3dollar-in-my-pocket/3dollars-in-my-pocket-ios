@@ -52,6 +52,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case presentNavigation
         case presentMapDetail(MapDetailViewModel)
         case presentFeedback(BossStoreFeedbackViewModel)
+        case presentPostList(BossStorePostListViewModel)
     }
 
     let input = Input()
@@ -59,7 +60,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
     private var state = State()
     private let storeService: StoreServiceProtocol
-    private let userDefaults: UserDefaultsUtil
+    private let preference = Preference.shared
     private let logManager: LogManagerProtocol
 
     private let storeId: String
@@ -67,12 +68,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
     init(
         storeId: String,
         storeService: StoreServiceProtocol = StoreService(),
-        userDefaults: UserDefaultsUtil = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.storeId = storeId
         self.storeService = storeService
-        self.userDefaults = userDefaults
         self.logManager = logManager
 
         super.init()
@@ -92,8 +91,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .asyncMap { owner, input in
                 let input = FetchBossStoreDetailInput(
                     storeId: owner.storeId,
-                    latitude: owner.userDefaults.userCurrentLocation.coordinate.latitude,
-                    longitude: owner.userDefaults.userCurrentLocation.coordinate.longitude
+                    latitude: owner.preference.userCurrentLocation.coordinate.latitude,
+                    longitude: owner.preference.userCurrentLocation.coordinate.longitude
                 )
 
                 return await owner.storeService.fetchBossStoreDetail(input: input)
@@ -202,13 +201,22 @@ final class BossStoreDetailViewModel: BaseViewModel {
         } else {
             infoItems.append(.menuList(bindMenuListCellViewModel(with: storeDetailData.menus)))
         }
-
-        output.dataSource.send([
+        
+        var sections: [BossStoreDetailSection] = [
             .init(type: .overview, items: [.overview(bindOverviewCellViewModel(storeDetailData.overview))]),
-            .init(type: .info, items: infoItems),
+            .init(type: .info, items: infoItems)
+        ]
+        
+        if let post = storeDetailData.recentPost {
+            sections.append(.init(type: .post, items: [.post(bindPostCellViewModel(with: post))]))
+        }
+        
+        sections.append(contentsOf: [
             .init(type: .workday, items: [.workday(storeDetailData.workdays)]),
             .init(type: .feedbacks, items: [.feedbacks(bindFeedbacksCellViewModel(with: storeDetailData.feedbacks))])
         ])
+
+        output.dataSource.send(sections)
     }
     
     private func bindInfoCellViewModel(_ info: BossStoreInfo) -> BossStoreInfoCellViewModel {
@@ -360,6 +368,26 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .subscribe(output.updateHeight)
             .store(in: &cancellables)
 
+        return cellViewModel
+    }
+    
+    private func bindPostCellViewModel(with post: BossStoreDetailRecentPost) -> BossStorePostCellViewModel {
+        let cellViewModel = BossStorePostCellViewModel(config: .init(data: post, source: .storeDetail))
+        
+        cellViewModel.output.isExpanded.dropFirst()
+            .mapVoid
+            .subscribe(output.updateHeight)
+            .store(in: &cellViewModel.cancellables)
+        
+        cellViewModel.output.moveToList
+            .compactMap { [weak self] _ in
+                guard let self else { return nil }
+                
+                return .presentPostList(.init(storeId: storeId))
+            }
+            .subscribe(output.route)
+            .store(in: &cellViewModel.cancellables)
+        
         return cellViewModel
     }
 }

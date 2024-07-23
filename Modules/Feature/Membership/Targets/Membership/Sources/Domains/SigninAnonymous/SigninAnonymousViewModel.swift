@@ -29,6 +29,7 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
     private var appInterface: AppModuleInterface?
     private let userService: Networking.UserServiceProtocol
     private let deviceService: Networking.DeviceServiceProtocol
+    private var preference = Preference.shared
     
     init(
         userService: Networking.UserServiceProtocol = Networking.UserService(),
@@ -114,7 +115,7 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
             
             switch connectAccount {
             case .success(_):
-                appInterface?.userDefaults.isAnonymousUser = false
+                preference.isAnonymousUser = false
                 output.route.send(.showLoading(isShow: false))
                 output.route.send(.dismiss)
                 
@@ -142,9 +143,9 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
             
             switch result {
             case .success(let signinResponse):
-                appInterface?.userDefaults.userId = signinResponse.userId
-                appInterface?.userDefaults.authToken = signinResponse.token
-                appInterface?.userDefaults.isAnonymousUser = false
+                preference.userId = signinResponse.userId
+                preference.authToken = signinResponse.token
+                preference.isAnonymousUser = false
                 output.route.send(.showLoading(isShow: false))
                 output.route.send(.dismiss)
                 

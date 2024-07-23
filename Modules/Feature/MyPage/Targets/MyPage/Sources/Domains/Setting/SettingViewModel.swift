@@ -42,7 +42,7 @@ public final class SettingViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     private var state = State()
-    private var userDefaults: UserDefaultProtocol = Environment.appModuleInterface.userDefaults
+    private var preference = Preference.shared
     private var userService: UserServiceProtocol
     private let globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus
     
@@ -276,7 +276,7 @@ public final class SettingViewModel: BaseViewModel {
     }
     
     private func clearUserDefaults() {
-        userDefaults.authToken = ""
-        userDefaults.userId = -1
+        preference.authToken = ""
+        preference.userId = -1
     }
 }

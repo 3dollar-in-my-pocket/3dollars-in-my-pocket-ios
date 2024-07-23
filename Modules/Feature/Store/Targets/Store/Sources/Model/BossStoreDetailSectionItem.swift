@@ -9,4 +9,5 @@ enum BossStoreDetailSectionItem: Hashable {
     case emptyMenu
     case workday([BossStoreAppearanceDay])
     case feedbacks(BossStoreFeedbacksCellViewModel)
+    case post(BossStorePostCellViewModel)
 }
