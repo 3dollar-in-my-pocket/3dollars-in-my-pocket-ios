@@ -32,17 +32,17 @@ final class ReportBottomSheetViewModel: BaseViewModel {
     let output: Output
     private let config: Config
     private var state = State()
-    private let storeService: StoreServiceProtocol
+    private let storeRepository: StoreRepository
     private let logManager: LogManagerProtocol
     
     init(
         config: Config,
-        storeService: StoreServiceProtocol = StoreService(),
+        storeRespository: StoreRepository = StoreRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.output = Output(reportReasons: config.reportReasons)
         self.config = config
-        self.storeService = storeService
+        self.storeRepository = storeRespository
         self.logManager = logManager
         
         super.init()
@@ -71,7 +71,7 @@ final class ReportBottomSheetViewModel: BaseViewModel {
     
     private func reportStore(reason: ReportReason) {
         Task {
-            let reportResult = await storeService.reportStore(storeId: config.storeId, reportReason: reason.type)
+            let reportResult = await storeRepository.reportStore(storeId: config.storeId, reportReason: reason.type)
             
             switch reportResult {
             case .success(_):

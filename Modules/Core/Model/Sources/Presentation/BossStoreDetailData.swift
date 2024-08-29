@@ -30,7 +30,7 @@ public struct BossStoreDetailData {
             updatedAt: response.store.updatedAt,
             snsUrl: response.store.snsUrl,
             introduction: response.store.introduction,
-            imageUrl: response.store.representativeImages.first?.imageUrl ?? "",
+            images: response.store.representativeImages,
             accountInfos: response.store.accountNumbers.map { StoreAccountNumber(response: $0 )}
         )
         self.menus = response.store.menus.map { BossStoreMenu(response: $0) }

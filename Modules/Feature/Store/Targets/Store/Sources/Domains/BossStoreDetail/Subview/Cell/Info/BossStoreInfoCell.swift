@@ -74,24 +74,30 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         $0.numberOfLines = 0
         $0.textAlignment = .left
     }
-
-    private let photoView = UIImageView().then {
-        $0.layer.cornerRadius = 12
-        $0.contentMode = .scaleAspectFill
-        $0.layer.masksToBounds = true
-        $0.backgroundColor = Colors.gray10.color
-    }
     
+    private lazy var photoCollectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
+        return collectionView
+    }()
+
     private let accountView = BossStoreAccountView()
+    
+    private var photoDatasource: [ImageResponse] = []
 
     override func setup() {
         backgroundColor = .clear
+        photoCollectionView.delegate = self
+        photoCollectionView.dataSource = self
+        photoCollectionView.register([BossStoreInfoPhotoItemCell.self])
 
         addSubViews([
             titleLabel,
             updatedAtLabel,
             containerView,
-            photoView,
+            photoCollectionView,
             accountView
         ])
 
@@ -113,14 +119,14 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
             $0.leading.equalToSuperview()
         }
 
-        photoView.snp.makeConstraints {
+        photoCollectionView.snp.makeConstraints {
             $0.top.equalTo(updatedAtLabel.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(210)
+            $0.height.equalTo(BossStoreInfoPhotoItemCell.Layout.size.height)
         }
 
         containerView.snp.makeConstraints {
-            $0.top.equalTo(photoView.snp.bottom).offset(12)
+            $0.top.equalTo(photoCollectionView.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(introductionValueLabel).offset(16)
         }
@@ -184,9 +190,8 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
             snsButton.isHidden = true
         }
         introductionValueLabel.text = info.introduction
-        if let imageUrl = info.imageUrl {
-            photoView.setImage(urlString: imageUrl)
-        }
+        
+        setPhotos(info.images)
 
         updatedAtLabel.text = DateUtils.toString(dateString: info.updatedAt, format: "yyyy.MM.dd " + Strings.BossStoreDetail.Info.update)
         
@@ -196,5 +201,38 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         } else {
             accountView.isHidden = true
         }
+    }
+    
+    private func setPhotos(_ photos: [ImageResponse]) {
+        photoDatasource = photos
+        photoCollectionView.reloadData()
+    }
+    
+    private func createLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = BossStoreInfoPhotoItemCell.Layout.size
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 12
+        return layout
+    }
+}
+
+extension BossStoreInfoCell: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return photoDatasource.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let photo = photoDatasource[safe: indexPath.item] else { return BaseCollectionViewCell() }
+        let cell: BossStoreInfoPhotoItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        
+        cell.bind(imageUrl: photo.imageUrl)
+        return cell
+    }
+}
+
+extension BossStoreInfoCell: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
     }
 }

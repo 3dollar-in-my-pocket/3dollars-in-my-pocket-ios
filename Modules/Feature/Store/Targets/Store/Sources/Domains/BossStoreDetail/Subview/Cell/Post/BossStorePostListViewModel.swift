@@ -31,7 +31,7 @@ public final class BossStorePostListViewModel: BaseViewModel {
 
     private var state = State()
 
-    private let storeService: StoreServiceProtocol
+    private let storeService: StoreRepository
     private let preference: Preference
     private let logManager: LogManagerProtocol
 
@@ -39,7 +39,7 @@ public final class BossStorePostListViewModel: BaseViewModel {
     
     public init(
         storeId: String,
-        storeService: StoreServiceProtocol = StoreService(),
+        storeService: StoreRepository = StoreRepositoryImpl(),
         preference: Preference = .shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {

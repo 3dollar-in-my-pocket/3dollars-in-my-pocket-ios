@@ -3,7 +3,7 @@ import CoreLocation
 
 import Model
 
-public protocol StoreServiceProtocol {
+public protocol StoreRepository {
     func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<IsStoresExistedAroundResponse, Error>
     
     func createStore(input: StoreCreateRequestInput) async -> Result<StoreCreateResponse, Error>
@@ -33,7 +33,7 @@ public protocol StoreServiceProtocol {
     func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PostWithStoreResponse>, Error>
 }
 
-public struct StoreService: StoreServiceProtocol {
+public struct StoreRepositoryImpl: StoreRepository {
     public init() { }
     
     public func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<IsStoresExistedAroundResponse, Error> {

@@ -11,7 +11,8 @@ public extension UIImageView {
         }
     }
     
-    func cancel() {
-        self.kf.cancelDownloadTask()
+    func clear() {
+        image = nil
+        kf.cancelDownloadTask()
     }
 }

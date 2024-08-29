@@ -91,7 +91,7 @@ final class HomeViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     private var state: State
-    private let storeService: StoreServiceProtocol
+    private let storeRepository: StoreRepository
     private let advertisementService: AdvertisementServiceProtocol
     private let userService: UserServiceProtocol
     private let mapService: MapServiceProtocol
@@ -102,7 +102,7 @@ final class HomeViewModel: BaseViewModel {
     
     init(
         state: State = State(),
-        storeService: StoreServiceProtocol = StoreService(),
+        storeRepository: StoreRepository = StoreRepositoryImpl(),
         advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
         userService: UserServiceProtocol = UserService(),
         mapService: MapServiceProtocol = MapService(),
@@ -111,7 +111,7 @@ final class HomeViewModel: BaseViewModel {
         appModuleInterface: AppModuleInterface = Environment.appModuleInterface
     ) {
         self.state = state
-        self.storeService = storeService
+        self.storeRepository = storeRepository
         self.advertisementService = advertisementService
         self.userService = userService
         self.mapService = mapService
@@ -631,7 +631,7 @@ final class HomeViewModel: BaseViewModel {
             mapLongitude: state.resultCameraPosition?.coordinate.longitude ?? 0
         )
         
-        return await storeService.fetchAroundStores(
+        return await storeRepository.fetchAroundStores(
             input: input,
             latitude: state.currentLocation?.coordinate.latitude ?? 0,
             longitude: state.currentLocation?.coordinate.longitude ?? 0

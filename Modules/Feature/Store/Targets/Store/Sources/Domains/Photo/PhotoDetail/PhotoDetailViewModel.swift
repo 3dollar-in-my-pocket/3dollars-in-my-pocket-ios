@@ -43,13 +43,13 @@ final class PhotoDetailViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     let config: Config
-    private let storeService: StoreServiceProtocol
+    private let storeRepository: StoreRepository
     private var state: State
     
-    init(config: Config, storeService: StoreServiceProtocol = StoreService()) {
+    init(config: Config, storeRepository: StoreRepository = StoreRepositoryImpl()) {
         self.output = Output(photos: .init(config.photos))
         self.config = config
-        self.storeService = storeService
+        self.storeRepository = storeRepository
         self.state = State(
             photos: config.photos,
             nextCursor: config.nextCursor,
@@ -124,7 +124,7 @@ final class PhotoDetailViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let result = await storeService.fetchStorePhotos(storeId: config.storeId, cursor: state.nextCursor)
+            let result = await storeRepository.fetchStorePhotos(storeId: config.storeId, cursor: state.nextCursor)
             
             switch result {
             case .success(let response):
@@ -152,7 +152,7 @@ final class PhotoDetailViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let result = await storeService.fetchStorePhotos(storeId: config.storeId, cursor: state.nextCursor)
+            let result = await storeRepository.fetchStorePhotos(storeId: config.storeId, cursor: state.nextCursor)
             
             switch result {
             case .success(let response):
@@ -186,7 +186,7 @@ final class PhotoDetailViewModel: BaseViewModel {
         guard let photoId = state.photos[safe: state.currentIndex]?.imageId else { return }
         output.showLoading.send(true)
         Task {
-            let result = await storeService.deletePhoto(photoId: photoId)
+            let result = await storeRepository.deletePhoto(photoId: photoId)
             
             output.showLoading.send(false)
             

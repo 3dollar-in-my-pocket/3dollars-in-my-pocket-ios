@@ -84,7 +84,7 @@ final class StoreDetailViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     var state: State
-    private let storeService: StoreServiceProtocol
+    private let storeService: StoreRepository
     private let reportService: ReportServiceProtocol
     private let reviewService: ReviewServiceProtocol
     private let preference = Preference.shared
@@ -92,7 +92,7 @@ final class StoreDetailViewModel: BaseViewModel {
     
     init(
         storeId: Int,
-        storeService: StoreServiceProtocol = StoreService(),
+        storeService: StoreRepository = StoreRepositoryImpl(),
         reportService: ReportServiceProtocol = ReportService(),
         reviewService: ReviewServiceProtocol = ReviewService(),
         logManager: LogManagerProtocol = LogManager.shared
