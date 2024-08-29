@@ -7,5 +7,10 @@ public struct StoreOpenResponse: Decodable {
     public enum StoreOpenStatus: String, Decodable {
         case open = "OPEN"
         case closed = "CLOSED"
+        case unknown
+        
+        public init(from decoder: Decoder) throws {
+            self = try StoreOpenStatus(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
+        }
     }
 }

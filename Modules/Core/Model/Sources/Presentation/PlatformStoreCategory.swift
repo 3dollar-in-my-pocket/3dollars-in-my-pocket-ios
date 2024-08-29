@@ -5,7 +5,6 @@ public struct PlatformStoreCategory {
     public let categoryId: String
     public let name: String
     public let imageUrl: String
-    public let disableImageUrl: String
     public let description: String
     public let classification: PlatformStoreCategoryClassification
     public let isNew: Bool
@@ -15,18 +14,16 @@ public struct PlatformStoreCategory {
         self.categoryId = response.categoryId
         self.name = response.name
         self.imageUrl = response.imageUrl
-        self.disableImageUrl = response.disableImageUrl
         self.description = response.description
         self.classification = PlatformStoreCategoryClassification(response: response.classification)
         self.isNew = response.isNew
     }
     
-    public init(response: PlatformStoreFoodCategoryResponse) {
+    public init(response: StoreFoodCategoryResponse) {
         self.category = ""
         self.categoryId = response.categoryId
         self.name = response.name
         self.imageUrl = response.imageUrl
-        self.disableImageUrl = response.disableImageUrl
         self.description = response.description
         self.classification = PlatformStoreCategoryClassification(response: response.classification)
         self.isNew = response.isNew
@@ -57,7 +54,7 @@ public struct PlatformStoreCategoryClassification: Hashable, Comparable {
     public let type: ClassificationType
     public let description: String
     
-    public init(response: PlatformStoreCategoryClassificationResponse) {
+    public init(response: StoreCategoryClassificationResponse) {
         self.type = ClassificationType(value: response.type)
         self.description = response.description
     }

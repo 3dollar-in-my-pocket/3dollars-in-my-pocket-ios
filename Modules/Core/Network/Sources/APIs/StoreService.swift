@@ -28,9 +28,9 @@ public protocol StoreServiceProtocol {
     
     func deletePhoto(photoId: Int) async -> Result<String?, Error>
 
-    func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreWithDetailApiResponse, Error>
+    func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreDetailResponse, Error>
     
-    func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PostWithStoreApiResponse>, Error>
+    func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PostWithStoreResponse>, Error>
 }
 
 public struct StoreService: StoreServiceProtocol {
@@ -108,13 +108,13 @@ public struct StoreService: StoreServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
 
-    public func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreWithDetailApiResponse, Error> {
-        let request = FetchBossStoreDetailRequest(input: input)
+    public func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreDetailResponse, Error> {
+        let request = StoreApi.fetchBossStoreDetail(input)
 
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PostWithStoreApiResponse>, Error> {
+    public func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PostWithStoreResponse>, Error> {
         let request = FetchStoreNewPostsRequest(storeId: storeId, input: cursor)
 
         return await NetworkManager.shared.request(requestType: request)

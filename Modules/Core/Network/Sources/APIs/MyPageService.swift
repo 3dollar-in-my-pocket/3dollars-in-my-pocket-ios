@@ -5,7 +5,7 @@ public protocol MyPageServiceProtocol {
     func fetchMyStoreVisits(size: Int, cursur: String?) async -> Result<ContentsWithCursorResposne<StoreVisitWithStoreApiResponse>, Error>
     func fetchMyFavoriteStores(size: Int, cursur: String?) async -> Result<StoreFavoriteFolderApiResponse, Error>
     /// 유저가 등록한 가게들을 조회합니다.
-    func fetchMyStores(input: CursorRequestInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorWithTotalCountResponse<UserStoreWithVisitsApiResponse>, Error>
+    func fetchMyStores(input: CursorRequestInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorWithTotalCountResponse<UserStoreWithVisitsResponse>, Error>
 }
 
 public struct MyPageService: MyPageServiceProtocol {
@@ -31,7 +31,7 @@ public struct MyPageService: MyPageServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
 
-    public func fetchMyStores(input: CursorRequestInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorWithTotalCountResponse<UserStoreWithVisitsApiResponse>, Error> {
+    public func fetchMyStores(input: CursorRequestInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorWithTotalCountResponse<UserStoreWithVisitsResponse>, Error> {
         let request = fetchMyStoresRequest(requestInput: input, latitude: latitude, longitude: longitude)
 
         return await NetworkManager.shared.request(requestType: request)

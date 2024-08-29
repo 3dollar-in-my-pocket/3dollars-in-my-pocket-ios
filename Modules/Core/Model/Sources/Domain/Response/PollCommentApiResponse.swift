@@ -9,7 +9,7 @@ public struct PollCommentWithUserApiResponse: Decodable {
     public let commentWriter: UserApiResponse
     public let commentReport: PollCommentReportApiResponse
     public let poll: PollWithSelectedOptionsApiResponse
-    public var stickers: [StickerApiResponse]
+    public var stickers: [StickerResponse]
 }
 
 public struct PollCommentApiResponse: Decodable {
