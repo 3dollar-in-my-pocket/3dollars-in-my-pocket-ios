@@ -163,6 +163,8 @@ final class BossStoreDetailViewController: BaseViewController {
                 case .presentPostList(let viewModel):
                     let viewController = BossStorePostListViewController(viewModel: viewModel)
                     owner.navigationController?.pushViewController(viewController, animated: true)
+                case .presentBossPhotoDetail(let viewModel):
+                    owner.presentBossStorePhoto(viewModel: viewModel)
                 }
             }
             .store(in: &cancellables)
@@ -260,6 +262,11 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension BossStoreDetailViewController: UICollectionViewDelegate {
-
+// MARK: Route
+extension BossStoreDetailViewController {
+    private func presentBossStorePhoto(viewModel: BossStorePhotoViewModel) {
+        let viewController = BossStorePhotoViewController(viewModel: viewModel)
+        
+        present(viewController, animated: true)
+    }
 }

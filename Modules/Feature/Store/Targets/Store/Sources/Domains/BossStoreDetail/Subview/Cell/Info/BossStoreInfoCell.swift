@@ -85,7 +85,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
 
     private let accountView = BossStoreAccountView()
     
-    private var photoDatasource: [ImageResponse] = []
+    private var viewModel: BossStoreInfoCellViewModel?
 
     override func setup() {
         backgroundColor = .clear
@@ -160,6 +160,8 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
     }
 
     func bind(_ viewModel: BossStoreInfoCellViewModel) {
+        self.viewModel = viewModel
+        
         // Bind Input
         snsButton.controlPublisher(for: .touchUpInside)
             .mapVoid
@@ -191,7 +193,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         }
         introductionValueLabel.text = info.introduction
         
-        setPhotos(info.images)
+        photoCollectionView.reloadData()
 
         updatedAtLabel.text = DateUtils.toString(dateString: info.updatedAt, format: "yyyy.MM.dd " + Strings.BossStoreDetail.Info.update)
         
@@ -201,11 +203,6 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         } else {
             accountView.isHidden = true
         }
-    }
-    
-    private func setPhotos(_ photos: [ImageResponse]) {
-        photoDatasource = photos
-        photoCollectionView.reloadData()
     }
     
     private func createLayout() -> UICollectionViewLayout {
@@ -219,11 +216,12 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
 
 extension BossStoreInfoCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photoDatasource.count
+        return viewModel?.output.info.images.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let photo = photoDatasource[safe: indexPath.item] else { return BaseCollectionViewCell() }
+        guard let viewModel,
+              let photo = viewModel.output.info.images[safe: indexPath.item] else { return BaseCollectionViewCell() }
         let cell: BossStoreInfoPhotoItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
         
         cell.bind(imageUrl: photo.imageUrl)
@@ -233,6 +231,6 @@ extension BossStoreInfoCell: UICollectionViewDataSource {
 
 extension BossStoreInfoCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        viewModel?.input.didTapPhoto.send(indexPath.item)
     }
 }

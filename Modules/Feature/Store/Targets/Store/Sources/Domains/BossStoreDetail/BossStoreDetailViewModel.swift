@@ -25,6 +25,9 @@ final class BossStoreDetailViewModel: BaseViewModel {
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
         let didTapAddress = PassthroughSubject<Void, Never>()
         let didTapMapDetail = PassthroughSubject<Void, Never>()
+        
+        // Info Section
+        let didTapPhoto = PassthroughSubject<Int, Never>()
     }
 
     struct Output {
@@ -53,6 +56,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case presentMapDetail(MapDetailViewModel)
         case presentFeedback(BossStoreFeedbackViewModel)
         case presentPostList(BossStorePostListViewModel)
+        case presentBossPhotoDetail(BossStorePhotoViewModel)
     }
 
     let input = Input()
@@ -77,6 +81,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         super.init()
 
         bindOverviewSection()
+        bindInfoSection()
     }
 
     override func bind() {
@@ -191,6 +196,15 @@ final class BossStoreDetailViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
     }
+    
+    private func bindInfoSection() {
+        input.didTapPhoto
+            .withUnretained(self)
+            .sink { (owner: BossStoreDetailViewModel, index: Int) in
+                owner.presentBossPhoto(index: index)
+            }
+            .store(in: &cancellables)
+    }
 
     private func reloadDataSource() {
         guard let storeDetailData = state.storeDetailData else { return }
@@ -225,6 +239,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
         
         viewModel.output.didTapSnsButton
             .subscribe(input.didTapSnsButton)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.didTapPhoto
+            .subscribe(input.didTapPhoto)
             .store(in: &viewModel.cancellables)
         return viewModel
     }
@@ -389,6 +407,14 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .store(in: &cellViewModel.cancellables)
         
         return cellViewModel
+    }
+    
+    private func presentBossPhoto(index: Int) {
+        guard let store = state.storeDetailData?.store else { return }
+        let config = BossStorePhotoViewModel.Config(photos: store.representativeImages, selectedIndex: index)
+        let viewModel = BossStorePhotoViewModel(config: config)
+        
+        output.route.send(.presentBossPhotoDetail(viewModel))
     }
 }
 

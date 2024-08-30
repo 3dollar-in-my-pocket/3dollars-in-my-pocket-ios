@@ -179,6 +179,6 @@ final class MedalView: BaseView {
     }
     
     func prepareForReuse() {
-        medalImage.cancel()
+        medalImage.clear()
     }
 }

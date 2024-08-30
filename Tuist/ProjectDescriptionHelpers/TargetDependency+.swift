@@ -109,6 +109,7 @@ public extension TargetDependency {
         public static let snapKit = TargetDependency.external(name: "SnapKit")
         public static let then = TargetDependency.external(name: "Then")
         public static let panModal = TargetDependency.external(name: "PanModal")
+        public static let combineCocoa = TargetDependency.external(name: "CombineCocoa")
     }
     
     class Package {
