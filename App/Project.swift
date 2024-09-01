@@ -316,6 +316,8 @@ let project = Project(
                 .Package.photoLibraryPermission,
                 .Package.swiftyBeaver,
                 .Package.netfox,
+                .Framework.naverMap,
+                .Framework.naverGeometry,
                 .target(name: "service-extension"),
                 .target(name: "content-extension"),
             ],

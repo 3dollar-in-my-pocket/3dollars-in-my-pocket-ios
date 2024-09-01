@@ -16,7 +16,9 @@ let project = Project.makeFeatureModule(
         .Interface.membershipInterface,
         .SPM.snapKit,
         .SPM.then,
-        .SPM.panModal
+        .SPM.panModal,
+        .Framework.naverMap,
+        .Framework.naverGeometry
     ],
     includeInterface: false,
     includeDemo: true

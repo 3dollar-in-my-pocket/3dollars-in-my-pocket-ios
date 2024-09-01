@@ -7,47 +7,4 @@ target 'three-dollar-in-my-pocket' do
   use_frameworks!
   
   pod 'Google-Mobile-Ads-SDK', '11.5.0'
-  pod 'NMapsMap', '3.18.1'
-end
-
-target 'Home' do
-  project 'Modules/Feature/Home/Home.xcodeproj'
-  use_frameworks!
-  
-  pod 'NMapsMap'
-end
-
-target 'HomeDemo' do
-  project 'Modules/Feature/Home/Home.xcodeproj'
-  use_frameworks!
-  
-  pod 'NMapsMap'
-end
-
-target 'Store' do
-  project 'Modules/Feature/Store/Store.xcodeproj'
-  use_frameworks!
-  
-  pod 'NMapsMap'
-end
-
-target 'StoreDemo' do
-  project 'Modules/Feature/Store/Store.xcodeproj'
-  use_frameworks!
-  
-  pod 'NMapsMap'
-end
-
-target 'Write' do
-  project 'Modules/Feature/Write/Write.xcodeproj'
-  use_frameworks!
-  
-  pod 'NMapsMap'
-end
-
-target 'WriteDemo' do
-  project 'Modules/Feature/Write/Write.xcodeproj'
-  use_frameworks!
-  
-  pod 'NMapsMap'
 end
