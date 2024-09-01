@@ -21,7 +21,7 @@ final class BossStorePostCell: BaseCollectionViewCell {
                 totalHeight += 12 // 이미지 하단 패딩
             }
             
-            let contentHeight = viewModel.output.post.body.boundingRect(
+            var contentHeight = viewModel.output.post.body.boundingRect(
                 with: CGSize(
                     width: width - sectionInset.left - sectionInset.right,
                     height: CGFloat.greatestFiniteMagnitude
@@ -33,6 +33,12 @@ final class BossStorePostCell: BaseCollectionViewCell {
                 context: nil
             ).height
             
+            let expendContent = viewModel.output.expendContent.value
+            
+            if expendContent.isNot && isMoreThanMaxLine(body: viewModel.output.post.body) {
+                contentHeight = 116
+            }
+            
             totalHeight += contentHeight
             totalHeight += 12 // 컨텐츠 하단 패딩
             
@@ -42,6 +48,34 @@ final class BossStorePostCell: BaseCollectionViewCell {
             
             return totalHeight
         }
+        
+        static func isMoreThanMaxLine(body: String) -> Bool {
+            let textView = UITextView()
+            textView.textContainer.lineFragmentPadding = 0
+            textView.font = Layout.contentTextFont
+            textView.layoutIfNeeded()
+            
+            let textViewWidth = textView.bounds.width - textView.textContainerInset.left - textView.textContainerInset.right
+            let font = textView.font ?? Layout.contentTextFont
+            let lineHeight = font.lineHeight
+            let maxLines = 6
+            
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineBreakMode = .byWordWrapping
+            let attributes: [NSAttributedString.Key: Any] = [.font: font, .paragraphStyle: paragraphStyle]
+            let attributedText = NSAttributedString(string: body, attributes: attributes)
+            
+            let framesetter = CTFramesetterCreateWithAttributedString(attributedText)
+            let path = CGPath(rect: CGRect(x: 0, y: 0, width: textViewWidth, height: CGFloat.greatestFiniteMagnitude), transform: nil)
+            let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
+            let lines = CTFrameGetLines(frame) as! [CTLine]
+            
+            var origins = [CGPoint](repeating: .zero, count: lines.count)
+            CTFrameGetLineOrigins(frame, CFRangeMake(0, 0), &origins)
+            
+            return lines.count > maxLines
+        }
+        
         static let sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         static let contentTextFont = Fonts.regular.font(size: 14)
         static let contentTextColor = Colors.gray95.color
@@ -213,7 +247,7 @@ final class BossStorePostCell: BaseCollectionViewCell {
         }
         
         moreButton.setTitle("소식 더보기(\(viewModel.output.totalCount - 1)개)", for: .normal)
-        moreButton.isHidden = viewModel.output.totalCount < 1
+        moreButton.isHidden = viewModel.output.totalCount <= 1
         storeNameLabel.text = viewModel.output.store.name
         updatedAtLabel.text = viewModel.output.post.updatedAt.toDate()?.toRelativeString()
         collectionView.isHidden = viewModel.output.post.sections.isEmpty
