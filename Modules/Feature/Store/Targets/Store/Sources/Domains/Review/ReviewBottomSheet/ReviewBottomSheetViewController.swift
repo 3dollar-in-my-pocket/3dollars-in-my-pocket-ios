@@ -56,9 +56,8 @@ final class ReviewBottomSheetViewController: BaseViewController {
             .subscribe(viewModel.input.inputReview)
             .store(in: &cancellables)
         
-        reviewBottomSheet.writeButton
-            .controlPublisher(for: .touchUpInside)
-            .mapVoid
+        reviewBottomSheet.writeButton.tapPublisher
+            .throttleClick()
             .subscribe(viewModel.input.didTapWrite)
             .store(in: &cancellables)
     }
