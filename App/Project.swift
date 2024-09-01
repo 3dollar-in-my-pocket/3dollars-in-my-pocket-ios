@@ -251,7 +251,8 @@ let project = Project(
         .deviceKit,
         .permissionsKit,
         .firebaseSDK,
-        .netfox
+        .netfox,
+        .admob
     ],
     settings: .settings(
         base: BuildSetting.Project.base,
@@ -316,6 +317,7 @@ let project = Project(
                 .Package.photoLibraryPermission,
                 .Package.swiftyBeaver,
                 .Package.netfox,
+                .Package.admob,
                 .Framework.naverMap,
                 .Framework.naverGeometry,
                 .target(name: "service-extension"),

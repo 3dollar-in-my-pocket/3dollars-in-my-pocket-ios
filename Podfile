@@ -6,5 +6,5 @@ target 'three-dollar-in-my-pocket' do
   project 'App/3dollar-in-my-pocket.xcodeproj'
   use_frameworks!
   
-  pod 'Google-Mobile-Ads-SDK', '11.5.0'
+#  pod 'Google-Mobile-Ads-SDK', '11.5.0'
 end
