@@ -225,8 +225,4 @@ extension BossStorePhotoViewController: UICollectionViewDelegateFlowLayout {
         
         viewModel.input.didScroll.send(index)
     }
-    
-    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        (cell as? Displayable)?.didEndDisplaying()
-    }
 }

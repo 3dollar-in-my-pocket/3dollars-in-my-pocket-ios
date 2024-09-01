@@ -10,7 +10,7 @@ public protocol StoreRepository {
     
     func editStore(storeId: Int, input: EditStoreRequestInput) async -> Result<StoreCreateResponse, Error>
     
-    func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResposne<PlatformStoreWithDetailResponse>, Error>
+    func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResponse<PlatformStoreWithDetailResponse>, Error>
     
     func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<StoreWithDetailApiResponse, Error>
     
@@ -22,7 +22,7 @@ public protocol StoreRepository {
     
     func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageApiResponse], Error>
     
-    func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResposne<StoreImageWithApiResponse>, Error>
+    func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error>
     
     func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<StoreReviewResponse, Error>
     
@@ -30,7 +30,9 @@ public protocol StoreRepository {
 
     func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreDetailResponse, Error>
     
-    func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PostWithStoreResponse>, Error>
+    func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error>
+    
+    func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error>
 }
 
 public struct StoreRepositoryImpl: StoreRepository {
@@ -54,7 +56,7 @@ public struct StoreRepositoryImpl: StoreRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResposne<PlatformStoreWithDetailResponse>, Error> {
+    public func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResponse<PlatformStoreWithDetailResponse>, Error> {
         let request = FetchAroundStoreRequest(requestInput: input, latitude: latitude, longitude: longitude)
         
         return await NetworkManager.shared.request(requestType: request)
@@ -90,7 +92,7 @@ public struct StoreRepositoryImpl: StoreRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResposne<StoreImageWithApiResponse>, Error> {
+    public func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> {
         let request = FetchStorePhotoRequest(storeId: storeId, size: 20, cursor: cursor)
         
         return await NetworkManager.shared.request(requestType: request)
@@ -114,9 +116,15 @@ public struct StoreRepositoryImpl: StoreRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PostWithStoreResponse>, Error> {
-        let request = FetchStoreNewPostsRequest(storeId: storeId, input: cursor)
+    public func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error> {
+        let request = StoreApi.fetchStoreNewPosts(storeId: storeId, cursorInput: cursor)
 
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error> {
+        let request = StoreApi.togglePostSticker(storeId: storeId, postId: postId, input: input)
+        
         return await NetworkManager.shared.request(requestType: request)
     }
 }

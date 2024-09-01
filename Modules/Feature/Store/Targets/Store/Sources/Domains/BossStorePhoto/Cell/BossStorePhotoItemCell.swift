@@ -27,9 +27,3 @@ final class BossStorePhotoItemCell: BaseCollectionViewCell {
         imageView.setImage(urlString: imageResponse.imageUrl)
     }
 }
-
-extension BossStorePhotoItemCell: Displayable {
-    func didEndDisplaying() {
-        imageView.clear()
-    }
-}

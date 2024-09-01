@@ -7,7 +7,7 @@ public struct PlatformStore: Hashable {
     public let storeCategory: StoreType
     public let categories: [PlatformStoreCategory]
 
-    public init(response: StoreApiResponse) {
+    public init(response: StoreResponse) {
         self.type = response.storeType
         self.id = response.storeId
         self.latitude = 0

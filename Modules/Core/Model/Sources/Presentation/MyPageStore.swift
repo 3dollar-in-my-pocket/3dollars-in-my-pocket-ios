@@ -2,7 +2,7 @@ public struct MyPageStore {
     public let store: PlatformStore
     public let visitInfo: VisitInfo?
 
-    public init(storeResponse: StoreApiResponse, visitResponse: StoreVisitApiResponse? = nil) {
+    public init(storeResponse: StoreResponse, visitResponse: StoreVisitApiResponse? = nil) {
         store = PlatformStore(response: storeResponse)
         if let visitResponse {
             visitInfo = VisitInfo(response: visitResponse)

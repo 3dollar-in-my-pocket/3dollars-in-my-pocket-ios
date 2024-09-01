@@ -28,6 +28,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
         
         // Info Section
         let didTapPhoto = PassthroughSubject<Int, Never>()
+        
+        // Post Section
+        let didTapMorePost = PassthroughSubject<Void, Never>()
+        let didTapPostPhoto = PassthroughSubject<Int, Never>()
     }
 
     struct Output {
@@ -55,8 +59,9 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case presentNavigation
         case presentMapDetail(MapDetailViewModel)
         case presentFeedback(BossStoreFeedbackViewModel)
-        case presentPostList(BossStorePostListViewModel)
+        case pushPostList(BossStorePostListViewModel)
         case presentBossPhotoDetail(BossStorePhotoViewModel)
+        case showErrorAlert(Error)
     }
 
     let input = Input()
@@ -82,6 +87,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
         bindOverviewSection()
         bindInfoSection()
+        bindPostSection()
     }
 
     override func bind() {
@@ -205,6 +211,22 @@ final class BossStoreDetailViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
     }
+    
+    private func bindPostSection() {
+        input.didTapMorePost
+            .withUnretained(self)
+            .sink { (owner: BossStoreDetailViewModel, _) in
+                owner.pushPostList()
+            }
+            .store(in: &cancellables)
+        
+        input.didTapPostPhoto
+            .withUnretained(self)
+            .sink { (owner: BossStoreDetailViewModel, selectedIndex: Int) in
+                owner.presentBossPostPhoto(index: selectedIndex)
+            }
+            .store(in: &cancellables)
+    }
 
     private func reloadDataSource() {
         guard let storeDetailData = state.storeDetailData else { return }
@@ -221,8 +243,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .init(type: .info, items: infoItems)
         ]
         
-        if let post = storeDetailData.recentPost {
-            sections.append(.init(type: .post, items: [.post(bindPostCellViewModel(with: post))]))
+        if let post = storeDetailData.post,
+           let totalPostCount = storeDetailData.totalPostCount {
+            let cellViewModel = bindPostCellViewModel(store: storeDetailData.store, post: post, totalCount: totalPostCount)
+            sections.append(.init(type: .post, items: [.post(cellViewModel)]))
         }
         
         sections.append(contentsOf: [
@@ -389,20 +413,29 @@ final class BossStoreDetailViewModel: BaseViewModel {
         return cellViewModel
     }
     
-    private func bindPostCellViewModel(with post: BossStoreDetailRecentPost) -> BossStorePostCellViewModel {
-        let cellViewModel = BossStorePostCellViewModel(config: .init(data: post, source: .storeDetail))
+    private func bindPostCellViewModel(
+        store: BossStoreResponse,
+        post: PostResponse,
+        totalCount: Int
+    ) -> BossStorePostCellViewModel {
+        let config = BossStorePostCellViewModel.Config(store: store, post: post, totalCount: totalCount)
+        let cellViewModel = BossStorePostCellViewModel(config: config)
         
-        cellViewModel.output.isExpanded.dropFirst()
+        cellViewModel.output.didTapMore
+            .subscribe(input.didTapMorePost)
+            .store(in: &cellViewModel.cancellables)
+        
+        cellViewModel.output.expendContent.dropFirst()
             .mapVoid
             .subscribe(output.updateHeight)
             .store(in: &cellViewModel.cancellables)
+       
+        cellViewModel.output.didTapPhoto
+            .subscribe(input.didTapPostPhoto)
+            .store(in: &cellViewModel.cancellables)
         
-        cellViewModel.output.moveToList
-            .compactMap { [weak self] _ in
-                guard let self else { return nil }
-                
-                return .presentPostList(.init(storeId: storeId))
-            }
+        cellViewModel.output.showErrorAlert
+            .map { Route.showErrorAlert($0) }
             .subscribe(output.route)
             .store(in: &cellViewModel.cancellables)
         
@@ -415,6 +448,22 @@ final class BossStoreDetailViewModel: BaseViewModel {
         let viewModel = BossStorePhotoViewModel(config: config)
         
         output.route.send(.presentBossPhotoDetail(viewModel))
+    }
+    
+    private func presentBossPostPhoto(index: Int) {
+        guard let post = state.storeDetailData?.post else { return }
+        let photos = post.sections.map { ImageResponse(imageUrl: $0.url) }
+        let config = BossStorePhotoViewModel.Config(photos: photos, selectedIndex: index)
+        let viewModel = BossStorePhotoViewModel(config: config)
+        
+        output.route.send(.presentBossPhotoDetail(viewModel))
+    }
+    
+    private func pushPostList() {
+        let config = BossStorePostListViewModel.Config(storeId: storeId)
+        let viewModel = BossStorePostListViewModel(config: config)
+        
+        output.route.send(.pushPostList(viewModel))
     }
 }
 

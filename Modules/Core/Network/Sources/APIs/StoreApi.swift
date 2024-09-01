@@ -4,6 +4,8 @@ import Model
 
 enum StoreApi {
     case fetchBossStoreDetail(FetchBossStoreDetailInput)
+    case fetchStoreNewPosts(storeId: String, cursorInput: CursorRequestInput)
+    case togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest)
 }
 
 extension StoreApi: RequestType {
@@ -11,6 +13,10 @@ extension StoreApi: RequestType {
         switch self {
         case .fetchBossStoreDetail:
             return nil
+        case .fetchStoreNewPosts(_, let cursorInput):
+            return cursorInput
+        case .togglePostSticker(_, _, let input):
+            return input
         }
     }
     
@@ -18,6 +24,10 @@ extension StoreApi: RequestType {
         switch self {
         case .fetchBossStoreDetail:
             return .get
+        case .fetchStoreNewPosts:
+            return .get
+        case .togglePostSticker:
+            return .put
         }
     }
     
@@ -28,6 +38,10 @@ extension StoreApi: RequestType {
                 "X-Device-Latitude": String(input.latitude),
                 "X-Device-Longitude": String(input.longitude)
             ])
+        case .fetchStoreNewPosts:
+            return .auth
+        case .togglePostSticker:
+            return .auth
         }
     }
     
@@ -35,6 +49,10 @@ extension StoreApi: RequestType {
         switch self {
         case .fetchBossStoreDetail(let input):
             return "/api/v4/boss-store/\(input.storeId)"
+        case .fetchStoreNewPosts(let storeId, _):
+            return "/api/v1/store/\(storeId)/news-posts"
+        case .togglePostSticker(let storeId, let postId, _):
+            return "/api/v1/store/\(storeId)/news-post/\(postId)/stickers"
         }
     }
 }

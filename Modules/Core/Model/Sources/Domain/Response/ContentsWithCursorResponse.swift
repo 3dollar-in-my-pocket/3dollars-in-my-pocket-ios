@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ContentsWithCursorResposne<T: Decodable>: Decodable {
+public struct ContentsWithCursorResponse<T: Decodable>: Decodable {
     public let contents: [T]
     public let cursor: CursorString
 }
