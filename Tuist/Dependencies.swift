@@ -7,7 +7,8 @@ let dependencies = Dependencies(
         .remote(url: "https://github.com/onevcat/Kingfisher.git", requirement: .exact("7.6.2")),
         .remote(url: "https://github.com/airbnb/lottie-ios.git", requirement: .exact("4.0.1")),
         .remote(url: "https://github.com/slackhq/PanModal.git", requirement: .exact("1.2.6")),
-        .remote(url: "https://github.com/Swinject/Swinject.git", requirement: .exact("2.8.0"))
+        .remote(url: "https://github.com/Swinject/Swinject.git", requirement: .exact("2.8.0")),
+        .remote(url: "https://github.com/CombineCommunity/CombineCocoa.git", requirement: .exact("0.4.1"))
     ],
     platforms: [.iOS]
 )

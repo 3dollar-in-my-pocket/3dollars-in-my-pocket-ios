@@ -76,17 +76,17 @@ final class WriteDetailViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     private var state: State
-    private let storeService: StoreServiceProtocol
+    private let storeRepository: StoreRepository
     private let categoryService: CategoryServiceProtocol
     private let logManager: LogManagerProtocol
     
     init(
         config: WriteStoreConfigurable,
-        storeService: StoreServiceProtocol = StoreService(),
+        storeRepository: StoreRepository = StoreRepositoryImpl(),
         categoryService: CategoryServiceProtocol = CategoryService(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.storeService = storeService
+        self.storeRepository = storeRepository
         self.categoryService = categoryService
         self.logManager = logManager
         
@@ -498,7 +498,7 @@ final class WriteDetailViewModel: BaseViewModel {
             output.showLoading.send(true)
             let input = createStoreCreateRequestInput()
             
-            let result = await storeService.createStore(input: input)
+            let result = await storeRepository.createStore(input: input)
             
             output.showLoading.send(false)
             switch result {
@@ -517,7 +517,7 @@ final class WriteDetailViewModel: BaseViewModel {
         output.showLoading.send(true)
         
         Task {
-            let result = await storeService.editStore(storeId: storeId, input: input)
+            let result = await storeRepository.editStore(storeId: storeId, input: input)
             
             output.showLoading.send(false)
             switch result {

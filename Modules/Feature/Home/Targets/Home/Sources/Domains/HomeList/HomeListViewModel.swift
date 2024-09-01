@@ -66,13 +66,13 @@ final class HomeListViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     private var state: State
-    private let storeService: StoreServiceProtocol
+    private let storeRepository: StoreRepository
     private let advertisementService: AdvertisementServiceProtocol
     private let logManager: LogManagerProtocol
     
     init(
         config: Config,
-        storeService: StoreServiceProtocol = StoreService(),
+        storeRepository: StoreRepository = StoreRepositoryImpl(),
         advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
@@ -85,7 +85,7 @@ final class HomeListViewModel: BaseViewModel {
             ])
         )
         self.state = config.initialState
-        self.storeService = storeService
+        self.storeRepository = storeRepository
         self.advertisementService = advertisementService
         self.logManager = logManager
         super.init()
@@ -339,7 +339,7 @@ final class HomeListViewModel: BaseViewModel {
             mapLongitude: state.mapLocation?.coordinate.longitude ?? 0
         )
         
-        return await storeService.fetchAroundStores(
+        return await storeRepository.fetchAroundStores(
             input: input,
             latitude: state.currentLocation?.coordinate.latitude ?? 0,
             longitude: state.currentLocation?.coordinate.longitude ?? 0

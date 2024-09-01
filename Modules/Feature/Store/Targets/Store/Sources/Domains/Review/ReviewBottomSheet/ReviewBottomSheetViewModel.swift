@@ -41,14 +41,14 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     
     let input = Input()
     let output: Output
-    private let storeService: StoreServiceProtocol
+    private let storeService: StoreRepository
     private let logManager: LogManagerProtocol
     private let config: Config
     private var state: State
     
     init(
         config: Config,
-        storeService: StoreServiceProtocol = StoreService(),
+        storeService: StoreRepository = StoreRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config

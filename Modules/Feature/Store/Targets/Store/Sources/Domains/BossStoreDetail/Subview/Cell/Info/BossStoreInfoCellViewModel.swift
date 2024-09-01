@@ -9,11 +9,13 @@ final class BossStoreInfoCellViewModel: BaseViewModel {
     struct Input {
         let didTapSnsButton = PassthroughSubject<Void, Never>()
         let didTapCopyAccountNumber = PassthroughSubject<Void, Never>()
+        let didTapPhoto = PassthroughSubject<Int, Never>()
     }
 
     struct Output {
         let info: BossStoreInfo
         let didTapSnsButton = PassthroughSubject<Void, Never>()
+        let didTapPhoto = PassthroughSubject<Int, Never>()
         let toast = PassthroughSubject<String, Never>()
     }
     
@@ -48,6 +50,10 @@ final class BossStoreInfoCellViewModel: BaseViewModel {
                 owner.sendClickCopyAccountLog()
                 owner.copyAccount()
             }
+            .store(in: &cancellables)
+        
+        input.didTapPhoto
+            .subscribe(output.didTapPhoto)
             .store(in: &cancellables)
     }
     

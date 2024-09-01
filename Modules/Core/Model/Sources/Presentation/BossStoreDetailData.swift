@@ -6,10 +6,11 @@ public struct BossStoreDetailData {
     public let menus: [BossStoreMenu]
     public var workdays: [BossStoreAppearanceDay]
     public var feedbacks: [FeedbackCountWithRatioResponse]
-    public var store: BossStoreDetailApiResponse
-    public var recentPost: BossStoreDetailRecentPost?
+    public var store: BossStoreResponse
+    public let post: PostResponse?
+    public let totalPostCount: Int?
 
-    public init(response: BossStoreWithDetailApiResponse) {
+    public init(response: BossStoreDetailResponse) {
         self.overview = StoreDetailOverview(
             categories: response.store.categories.map { PlatformStoreCategory(response: $0) },
             repoterName: "",
@@ -30,7 +31,7 @@ public struct BossStoreDetailData {
             updatedAt: response.store.updatedAt,
             snsUrl: response.store.snsUrl,
             introduction: response.store.introduction,
-            imageUrl: response.store.imageUrl,
+            images: response.store.representativeImages,
             accountInfos: response.store.accountNumbers.map { StoreAccountNumber(response: $0 )}
         )
         self.menus = response.store.menus.map { BossStoreMenu(response: $0) }
@@ -42,12 +43,11 @@ public struct BossStoreDetailData {
         self.feedbacks = response.feedbacks
         self.store = response.store
         if let post = response.newsPosts.contents.first {
-            self.recentPost = BossStoreDetailRecentPost(
-                storeName: store.name,
-                categoryIconUrl: store.categories.first?.imageUrl,
-                totalCount: response.newsPosts.cursor.totalCount,
-                post: post
-            )
+            self.post = post
+            self.totalPostCount = response.newsPosts.cursor.totalCount
+        } else {
+            self.post = nil
+            self.totalPostCount = nil
         }
     }
 }

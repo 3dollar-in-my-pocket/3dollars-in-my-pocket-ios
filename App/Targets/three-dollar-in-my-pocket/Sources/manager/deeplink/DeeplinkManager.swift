@@ -237,8 +237,8 @@ final class DeeplinkManager: DeeplinkManagerProtocol {
     
     private func createPostListContents(query: [String: Any]?) -> DeepLinkContents? {
         guard let query, let storeId = query["storeId"] as? String else { return nil }
-        
-        let viewModel = BossStorePostListViewModel(storeId: storeId)
+        let config = BossStorePostListViewModel.Config(storeId: storeId)
+        let viewModel = BossStorePostListViewModel(config: config)
         let viewController = BossStorePostListViewController(viewModel: viewModel)
         
         return DeepLinkContents(

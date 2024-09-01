@@ -16,7 +16,8 @@ let project = Project.makeFeatureModule(
         .Interface.writeInterface,
         .SPM.snapKit,
         .SPM.then,
-        .SPM.panModal
+        .SPM.panModal,
+        .SPM.combineCocoa
     ],
     includeInterface: true,
     includeDemo: true

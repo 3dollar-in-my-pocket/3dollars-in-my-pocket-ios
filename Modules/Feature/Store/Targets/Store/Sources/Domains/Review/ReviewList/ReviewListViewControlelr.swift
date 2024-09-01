@@ -54,8 +54,8 @@ final class ReviewListViewControlelr: BaseViewController {
             .subscribe(viewModel.input.didTapSortType)
             .store(in: &cancellables)
         
-        reviewListView.writeButton.controlPublisher(for: .touchUpInside)
-            .mapVoid
+        reviewListView.writeButton.tapPublisher
+            .throttleClick()
             .subscribe(viewModel.input.didTapWrite)
             .store(in: &cancellables)
     }

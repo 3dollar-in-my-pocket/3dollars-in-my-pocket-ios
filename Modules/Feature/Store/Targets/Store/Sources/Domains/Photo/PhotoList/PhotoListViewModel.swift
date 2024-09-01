@@ -42,13 +42,13 @@ final class PhotoListViewModel: BaseViewModel {
     
     let input = Input()
     let output = Output()
-    private let storeService: StoreServiceProtocol
+    private let storeRepository: StoreRepository
     private let config: Config
     private var state = State()
     
-    init(config: Config, storeService: StoreServiceProtocol = StoreService()) {
+    init(config: Config, storeRepository: StoreRepository = StoreRepositoryImpl()) {
         self.config = config
-        self.storeService = storeService
+        self.storeRepository = storeRepository
     }
     
     override func bind() {
@@ -112,7 +112,7 @@ final class PhotoListViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let result = await storeService.fetchStorePhotos(storeId: config.storeId, cursor: state.nextCursor)
+            let result = await storeRepository.fetchStorePhotos(storeId: config.storeId, cursor: state.nextCursor)
             
             switch result {
             case .success(let response):
@@ -133,7 +133,7 @@ final class PhotoListViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let result = await storeService.fetchStorePhotos(storeId: config.storeId, cursor: state.nextCursor)
+            let result = await storeRepository.fetchStorePhotos(storeId: config.storeId, cursor: state.nextCursor)
             
             switch result {
             case .success(let response):

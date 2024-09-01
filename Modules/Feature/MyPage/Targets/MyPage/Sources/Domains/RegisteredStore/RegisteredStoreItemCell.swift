@@ -151,7 +151,7 @@ final class RegisteredStoreItemCell: BaseCollectionViewCell {
         }
     }
 
-    func bind(item: UserStoreWithVisitsApiResponse) {
+    func bind(item: UserStoreWithVisitsResponse) {
         imageView.setImage(urlString: item.store.categories.first?.imageUrl)
         titleLabel.text = item.store.name
         tagLabel.text = item.store.categories.map { "#\($0.name)" }.joined(separator: " ")

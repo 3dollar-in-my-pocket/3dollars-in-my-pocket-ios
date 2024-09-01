@@ -7,7 +7,7 @@ public struct BossStoreAppearanceDay: Hashable {
     public let closingHours: Date
     public let isClosedDay: Bool
 
-    public init(response: BossStoreAppearanceDayApiResponse) {
+    public init(response: StoreAppearanceDayResponse) {
         self.dayOfTheWeek = response.dayOfTheWeek
         self.locationDescription = response.locationDescription
 

@@ -11,7 +11,7 @@ final class BookmarkStoreCellViewModel: BaseViewModel {
     }
     
     struct Output {
-        var store: StoreApiResponse
+        var store: StoreResponse
         let isDeleteMode: CurrentValueSubject<Bool, Never>
         
         // For relay
@@ -23,7 +23,7 @@ final class BookmarkStoreCellViewModel: BaseViewModel {
     }
     
     struct Config {
-        let store: StoreApiResponse
+        let store: StoreResponse
         let isDeleteModel: Bool
     }
     

@@ -135,12 +135,12 @@ final class BookmarkStoreCell: BaseCollectionViewCell {
             .store(in: &cancellables)
     }
     
-    func bind(store: StoreApiResponse) {
+    func bind(store: StoreResponse) {
         bindStore(store)
         arrowImage.isHidden = false
     }
     
-    private func bindStore(_ store: StoreApiResponse) {
+    private func bindStore(_ store: StoreResponse) {
         categoryImageView.setImage(urlString: store.categories.first?.imageUrl)
         categoriesLabel.text = store.categoriesString
         titleLabel.text = store.storeName

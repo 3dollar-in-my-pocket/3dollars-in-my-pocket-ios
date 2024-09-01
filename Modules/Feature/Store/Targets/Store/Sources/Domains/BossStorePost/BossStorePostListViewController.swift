@@ -6,24 +6,32 @@ import Common
 import Log
 
 public final class BossStorePostListViewController: BaseViewController {
-    private let backButton = UIButton().then {
-        $0.setImage(Icons.arrowLeft.image.withTintColor(Colors.gray100.color), for: .normal)
-    }
-    
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.contentInset = .init(top: 0, left: 0, bottom: 24, right: 0)
-        $0.dataSource = self
-        $0.delegate = self
-        $0.register([BossStorePostCell.self])
-    }
-    
     private let viewModel: BossStorePostListViewModel
+    
+    private let backButton: UIButton = {
+        let button = UIButton()
+        let icon = Icons.arrowLeft.image.withTintColor(Colors.gray100.color)
+        button.setImage(icon, for: .normal)
+        return button
+    }()
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.medium.font(size: 16)
+        label.textColor = Colors.gray100.color
+        return label
+    }()
+    
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.contentInset = .init(top: 0, left: 0, bottom: 24, right: 0)
+        return collectionView
+    }()
     
     public init(viewModel: BossStorePostListViewModel) {
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
-        
     }
     
     required init?(coder: NSCoder) {
@@ -33,13 +41,20 @@ public final class BossStorePostListViewController: BaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupAttribute()
         setupUI()
-    }
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        bind()
         
         viewModel.input.loadTrigger.send(())
+    }
+    
+    private func setupAttribute() {
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register([
+            BossStorePostListCell.self,
+            BaseCollectionViewCell.self
+        ])
     }
     
     private func setupUI() {
@@ -47,6 +62,7 @@ public final class BossStorePostListViewController: BaseViewController {
         
         view.addSubViews([
             backButton,
+            titleLabel,
             collectionView
         ])
         
@@ -54,6 +70,11 @@ public final class BossStorePostListViewController: BaseViewController {
             $0.leading.equalToSuperview().offset(16)
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             $0.size.equalTo(24)
+        }
+        
+        titleLabel.snp.makeConstraints {
+            $0.centerY.equalTo(backButton)
+            $0.centerX.equalToSuperview()
         }
         
         collectionView.snp.makeConstraints {
@@ -64,29 +85,22 @@ public final class BossStorePostListViewController: BaseViewController {
         }
     }
     
-    public override func bindEvent() {
-        super.bindEvent()
-        
-        backButton
-            .controlPublisher(for: .touchUpInside)
+    private func bind() {
+        backButton.tapPublisher
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink(receiveValue: { (owner: BossStorePostListViewController, _) in
                 owner.navigationController?.popViewController(animated: true)
-            }
+            })
             .store(in: &cancellables)
-    }
-    
-    override public func bindViewModelInput() {
-        super.bindViewModelInput()
-    }
-    
-    public override func bindViewModelOutput() {
-        super.bindViewModelOutput()
         
+        // Output
         viewModel.output.sectionItems
             .main
-            .sink { [weak self] _ in
+            .sink { [weak self] sectionItems in
+                if let storeName = sectionItems.first?.output.data.store.storeName {
+                    self?.titleLabel.text = storeName
+                }
                 self?.collectionView.reloadData()
             }
             .store(in: &cancellables)
@@ -102,11 +116,11 @@ public final class BossStorePostListViewController: BaseViewController {
             .sink { ToastManager.shared.show(message: $0) }
             .store(in: &cancellables)
         
-        viewModel.output.showErrorAlert
+        viewModel.output.route
             .main
             .withUnretained(self)
-            .sink { owner, error in
-                owner.showErrorAlert(error: error)
+            .sink { (owner: BossStorePostListViewController, route: BossStorePostListViewModel.Route) in
+                owner.handleRoute(route)
             }
             .store(in: &cancellables)
     }
@@ -128,7 +142,7 @@ extension BossStorePostListViewController: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cellViewModel = viewModel.output.sectionItems.value[safe: indexPath.item] else { return UICollectionViewCell() }
         
-        let cell: BossStorePostCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: BossStorePostListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
         cell.bind(cellViewModel)
         return cell
     }
@@ -138,12 +152,34 @@ extension BossStorePostListViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         viewModel.input.willDisplayCell.send(indexPath.item)
     }
+    
+    public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        (cell as? Displayable)?.didEndDisplaying()
+    }
 }
 
 extension BossStorePostListViewController: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard let cellViewModel = viewModel.output.sectionItems.value[safe: indexPath.item] else { return .zero }
         
-        return CGSize(width: collectionView.frame.width, height: BossStorePostCell.Layout.height(viewModel: cellViewModel, width: collectionView.frame.width))
+        return CGSize(width: collectionView.frame.width, height: BossStorePostListCell.Layout.height(viewModel: cellViewModel, width: collectionView.frame.width))
+    }
+}
+
+// MARK: Route
+extension BossStorePostListViewController {
+    private func handleRoute(_ route: BossStorePostListViewModel.Route) {
+        switch route {
+        case .showErrorAlert(let error):
+            showErrorAlert(error: error)
+        case .presentPhotoDetail(let viewModel):
+            presentPhotoDetail(viewModel)
+        }
+    }
+    
+    private func presentPhotoDetail(_ viewModel: BossStorePhotoViewModel) {
+        let viewController = BossStorePhotoViewController(viewModel: viewModel)
+        
+        present(viewController, animated: true)
     }
 }

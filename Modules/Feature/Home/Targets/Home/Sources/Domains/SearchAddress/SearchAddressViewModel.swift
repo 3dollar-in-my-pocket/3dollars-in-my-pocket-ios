@@ -192,7 +192,7 @@ final class SearchAddressViewModel: BaseViewModel {
         return willDisplayRow == state.recentSearchAddress.count - 1 && state.recentSearchHasMore
     }
     
-    private func handleRecentSearchAddressResult(_ response: ContentsWithCursorResposne<PlaceResponse>) {
+    private func handleRecentSearchAddressResult(_ response: ContentsWithCursorResponse<PlaceResponse>) {
         state.isLoading = false
         state.recentSearchHasMore = response.cursor.hasMore
         state.recentSearchNextCursor = response.cursor.nextCursor

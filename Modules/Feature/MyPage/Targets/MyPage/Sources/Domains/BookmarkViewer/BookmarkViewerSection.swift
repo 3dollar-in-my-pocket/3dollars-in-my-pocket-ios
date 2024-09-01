@@ -14,5 +14,5 @@ struct BookmarkViewerSection: Hashable {
 
 enum BookmarkViewerSectionItem: Hashable {
     case overview(BookmarkViewerOverviewCell.UIModel)
-    case store(StoreApiResponse)
+    case store(StoreResponse)
 }
