@@ -9,26 +9,32 @@ public class HomeListCell: BaseCollectionViewCell {
         static let size: CGSize = CGSize(width: UIScreen.main.bounds.width, height: 128)
     }
     
-    private let containerView = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
-        $0.layer.cornerRadius = 20
-    }
+    private let containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        view.layer.cornerRadius = 20
+        return view
+    }()
     
     private let categoryImage = UIImageView()
     
-    private let categoryLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.textColor = DesignSystemAsset.Colors.gray40.color
-        $0.numberOfLines = 0
-        $0.textAlignment = .left
-    }
+    private let categoryLabel: UILabel = {
+        let label = UILabel()
+        label.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
+        label.textColor = DesignSystemAsset.Colors.gray40.color
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        return label
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
-        $0.textColor = DesignSystemAsset.Colors.gray100.color
-        $0.numberOfLines = 0
-        $0.textAlignment = .left
-    }
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
+        label.textColor = DesignSystemAsset.Colors.gray100.color
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        return label
+    }()
     
     private let newBadge = UIImageView(image: HomeAsset.iconNewBadgeShort.image)
     
@@ -44,6 +50,10 @@ public class HomeListCell: BaseCollectionViewCell {
     }
     
     public override func setup() {
+        setupUI()
+    }
+    
+    private func setupUI() {
         addSubViews([
             containerView,
             categoryImage,
@@ -53,9 +63,7 @@ public class HomeListCell: BaseCollectionViewCell {
             tagView,
             infoView
         ])
-    }
-    
-    public override func bindConstraints() {
+        
         containerView.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20)
             $0.right.equalToSuperview().offset(-20)
@@ -97,17 +105,18 @@ public class HomeListCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(storeCard: StoreCard) {
-        categoryImage.setImage(urlString: storeCard.categories.first?.imageUrl)
-        categoryLabel.text = storeCard.categoriesString
-        titleLabel.text = storeCard.storeName.maxLength(length: 10)
-        newBadge.isHidden = !storeCard.isNew
-        infoView.bind(storeCard: storeCard)
+    func bind(_ storeWithExtra: StoreWithExtraResponse) {
+        categoryImage.setImage(urlString: storeWithExtra.store.categories.first?.imageUrl)
+        categoryLabel.text = storeWithExtra.store.categoriesString
+        titleLabel.text = storeWithExtra.store.storeName.maxLength(length: 10)
+        newBadge.isHidden = storeWithExtra.extra.tags.isNew.isNot
+        infoView.bind(storeWithExtra)
         
-        if storeCard.storeType == .bossStore {
+        if storeWithExtra.store.storeType == .bossStore {
             tagView.bind(type: .boss)
         } else {
-            tagView.bind(type: .recentVisit(count: storeCard.existsCounts ?? 0))
+            let visitCount = storeWithExtra.extra.visitCounts?.existsCounts ?? 0
+            tagView.bind(type: .recentVisit(count: visitCount))
         }
     }
 }

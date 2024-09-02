@@ -97,7 +97,7 @@ extension QnaViewController: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cellType = viewModel.output.datasource[safe: indexPath.item] else { return BaseCollectionViewCell() }
-        let cell: QnaCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: QnaCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         
         cell.bind(cellType: cellType)
         return cell

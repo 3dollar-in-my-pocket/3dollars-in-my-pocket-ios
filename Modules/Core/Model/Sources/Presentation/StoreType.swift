@@ -1,6 +1,6 @@
 import Foundation
 
-public enum StoreType: String {
+public enum StoreType: String, Encodable {
     case userStore = "USER_STORE"
     case bossStore = "BOSS_STORE"
     case unknown

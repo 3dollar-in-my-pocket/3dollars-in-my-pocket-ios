@@ -168,7 +168,7 @@ extension SettingViewController: UICollectionViewDataSource {
         
         switch cellType {
         case .account(let name, let socialType):
-            let cell: SettingAccountCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            let cell: SettingAccountCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             
             cell.bind(name: name, socialType: socialType)
             cell.editNameButton.controlPublisher(for: .touchUpInside)
@@ -178,7 +178,7 @@ extension SettingViewController: UICollectionViewDataSource {
             return cell
             
         case .activityNotification:
-            let cell: SettingMenuCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            let cell: SettingMenuCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             
             cell.bind(cellType: cellType)
             cell.switchValue
@@ -187,7 +187,7 @@ extension SettingViewController: UICollectionViewDataSource {
                 .store(in: &cell.cancellables)
             return cell
         case .marketingNotification:
-            let cell: SettingMenuCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            let cell: SettingMenuCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             
             cell.bind(cellType: cellType)
             cell.switchValue
@@ -196,13 +196,13 @@ extension SettingViewController: UICollectionViewDataSource {
                 .store(in: &cell.cancellables)
             return cell
         case .qna, .agreement, .teamInfo:
-            let cell: SettingMenuCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            let cell: SettingMenuCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             
             cell.bind(cellType: cellType)
             return cell
             
         case .signout:
-            let cell: SettingSignoutCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            let cell: SettingSignoutCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             
             cell.logoutButton
                 .controlPublisher(for: .touchUpInside)

@@ -142,7 +142,7 @@ extension BossStorePostListViewController: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cellViewModel = viewModel.output.sectionItems.value[safe: indexPath.item] else { return UICollectionViewCell() }
         
-        let cell: BossStorePostListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: BossStorePostListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         cell.bind(cellViewModel)
         return cell
     }

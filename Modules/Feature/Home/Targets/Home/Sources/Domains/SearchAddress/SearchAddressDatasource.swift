@@ -35,16 +35,16 @@ final class SearchAddressDatasource: UICollectionViewDiffableDataSource<SearchAd
         super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .address(let document):
-                let cell: AddressCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: AddressCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(document: document)
                 return cell
             case .recentSearch(let viewModel):
-                let cell: RecentSearchAddressCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: RecentSearchAddressCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel)
                 return cell
             case .banner:
-                let cell: SearchAddressBannerCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: SearchAddressBannerCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(in: containerVC)
                 return cell
             }

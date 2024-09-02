@@ -8,18 +8,18 @@ import Common
 import Model
 import Log
 
-final class HomeListViewModel: BaseViewModel {
+extension HomeListViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let willDisplay = PassthroughSubject<Int, Never>()
         let onTapCategoryFilter = PassthroughSubject<Void, Never>()
         let onTapOnlyRecentActivity = PassthroughSubject<Void, Never>()
-        let selectCategory = PassthroughSubject<PlatformStoreCategory?, Never>()
+        let selectCategory = PassthroughSubject<StoreFoodCategoryResponse?, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
         let onToggleCertifiedStore = PassthroughSubject<Void, Never>()
-        let onTapStore = PassthroughSubject<StoreCard, Never>()
-        let onTapAdvertisement = PassthroughSubject<Advertisement, Never>()
+        let onTapStore = PassthroughSubject<StoreWithExtraResponse, Never>()
+        let onTapAdvertisement = PassthroughSubject<AdvertisementResponse, Never>()
     }
     
     struct Output {
@@ -30,15 +30,15 @@ final class HomeListViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
         
         // To HomeViewModel
-        let onSelectCategoryFilter = PassthroughSubject<PlatformStoreCategory?, Never>()
+        let onSelectCategoryFilter = PassthroughSubject<StoreFoodCategoryResponse?, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
         let onTapOnlyRecentActivity = PassthroughSubject<Void, Never>()
     }
     
     struct State {
-        let stores: CurrentValueSubject<[StoreCard], Never>
-        var categoryFilter: PlatformStoreCategory?
+        var stores: [StoreWithExtraResponse]
+        var categoryFilter: StoreFoodCategoryResponse?
         var isOnlyRecentActivity: Bool
         var sortType: StoreSortType
         var isOnlyBossStore: Bool
@@ -48,7 +48,7 @@ final class HomeListViewModel: BaseViewModel {
         var nextCursor: String?
         var hasMore: Bool
         let mapMaxDistance: Double?
-        var advertisement = CurrentValueSubject<Advertisement?, Never>(nil)
+        var advertisement: AdvertisementResponse?
     }
     
     struct Config {
@@ -59,23 +59,35 @@ final class HomeListViewModel: BaseViewModel {
         case pushStoreDetail(storeId: String)
         case pushBossStoreDetail(storeId: String)
         case showErrorAlert(Error)
-        case presentCategoryFilter(PlatformStoreCategory?)
+        case presentCategoryFilter(CategoryFilterViewModel)
         case openUrl(String?)
     }
     
+    struct Dependency {
+        let storeRepository: StoreRepository
+        let advertisementRepository: AdvertisementRepository
+        let logManager: LogManagerProtocol
+        
+        init(
+            storeRepository: StoreRepository = StoreRepositoryImpl(),
+            advertisementRepository: AdvertisementRepository =  AdvertisementRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared
+        ) {
+            self.storeRepository = storeRepository
+            self.advertisementRepository = advertisementRepository
+            self.logManager = logManager
+        }
+    }
+}
+
+
+final class HomeListViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     private var state: State
-    private let storeRepository: StoreRepository
-    private let advertisementService: AdvertisementServiceProtocol
-    private let logManager: LogManagerProtocol
+    private let dependency: Dependency
     
-    init(
-        config: Config,
-        storeRepository: StoreRepository = StoreRepositoryImpl(),
-        advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
-        logManager: LogManagerProtocol = LogManager.shared
-    ) {
+    init(config: Config, dependency: Dependency = Dependency()) {
         self.output = Output(
             filterDatasource: .init([
                 .category(config.initialState.categoryFilter),
@@ -85,9 +97,7 @@ final class HomeListViewModel: BaseViewModel {
             ])
         )
         self.state = config.initialState
-        self.storeRepository = storeRepository
-        self.advertisementService = advertisementService
-        self.logManager = logManager
+        self.dependency = dependency
         super.init()
         
         bindRelay()
@@ -106,181 +116,95 @@ final class HomeListViewModel: BaseViewModel {
             .filter { owner, index in
                 owner.canLoad(index: index)
             }
-            .asyncMap { owner, _ in
-                await owner.fetchAroundStore()
-            }
-            .withUnretained(self)
-            .sink { owner, result in
-                switch result {
-                case .success(let storeCards):
-                    var stores = owner.state.stores.value
-                    stores += storeCards
-                    owner.state.stores.send(stores)
-                    
-                case .failure(let error):
-                    owner.output.route.send(.showErrorAlert(error))
-                }
-            }
+            .sink(receiveValue: { (owner: HomeListViewModel, _) in
+                owner.fetchAroundStore()
+            })
             .store(in: &cancellables)
         
         input.onTapCategoryFilter
             .withUnretained(self)
             .sink { owner, _ in
-                let currentCategory = owner.state.categoryFilter
-                
                 owner.sendClickCategoryFilterLog()
-                owner.output.route.send(.presentCategoryFilter(currentCategory))
+                owner.presentCategoryFilter()
             }
             .store(in: &cancellables)
         
         input.selectCategory
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, category in
-                owner.state.hasMore = true
-                owner.state.nextCursor = nil
+            .sink(receiveValue: { (owner: HomeListViewModel, category: StoreFoodCategoryResponse?) in
+                owner.clearData()
                 owner.state.categoryFilter = category
                 owner.updateFilterDatasource()
+                owner.fetchAroundStore()
             })
-            .asyncMap { owner, _ in
-                await owner.fetchAroundStore()
-            }
-            .withUnretained(self)
-            .sink { owner, result in
-                switch result {
-                case .success(let stores):
-                    owner.state.stores.send(stores)
-                    owner.updateFilterDatasource()
-                    
-                case .failure(let error):
-                    owner.output.route.send(.showErrorAlert(error))
-                }
-            }
             .store(in: &cancellables)
         
         input.onTapOnlyRecentActivity
             .withUnretained(self)
-            .handleEvents(receiveOutput: { (owner: HomeListViewModel, _) in
+            .sink(receiveValue: { (owner: HomeListViewModel, _) in
                 owner.state.isOnlyRecentActivity.toggle()
+                owner.clearData()
                 owner.sendClickRecentActivityFilter(value: owner.state.isOnlyRecentActivity)
-            })
-            .asyncMap { owner, _ in
-                await owner.fetchAroundStore()
-            }
-            .withUnretained(self)
-            .sink(receiveValue: { owner, result in
-                switch result {
-                case .success(let stores):
-                    owner.updateFilterDatasource()
-                    owner.state.stores.send(stores)
-                    
-                case .failure(let error):
-                    owner.output.route.send(.showErrorAlert(error))
-                }
+                owner.fetchAroundStore()
+                owner.updateFilterDatasource()
             })
             .store(in: &cancellables)
         
         input.onToggleCertifiedStore
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, _ in
-                owner.state.hasMore = true
-                owner.state.nextCursor = nil
+            .sink(receiveValue: { (owner: HomeListViewModel, _) in
+                owner.clearData()
                 owner.state.isOnlyCertifiedStore.toggle()
                 owner.sendClickOnlyVisitFilterLog(owner.state.isOnlyCertifiedStore)
                 owner.output.isOnlyCertified.send(owner.state.isOnlyCertifiedStore)
+                owner.fetchAroundStore()
+                owner.updateFilterDatasource()
             })
-            .asyncMap { owner, _ in
-                await owner.fetchAroundStore()
-            }
-            .withUnretained(self)
-            .sink { owner, result in
-                switch result {
-                case .success(let stores):
-                    owner.updateFilterDatasource()
-                    owner.state.stores.send(stores)
-                    
-                case .failure(let error):
-                    owner.output.route.send(.showErrorAlert(error))
-                }
-            }
             .store(in: &cancellables)
         
         input.onToggleSort
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, _ in
-                owner.state.hasMore = true
-                owner.state.nextCursor = nil
+            .sink(receiveValue: { (owner: HomeListViewModel, sortType: StoreSortType) in
+                owner.clearData()
                 owner.state.sortType = owner.state.sortType.toggled()
                 owner.sendClickSortingLog(owner.state.sortType)
+                owner.fetchAroundStore()
+                owner.updateFilterDatasource()
             })
-            .asyncMap { owner, _ in
-                await owner.fetchAroundStore()
-            }
-            .withUnretained(self)
-            .sink { owner, result in
-                switch result {
-                case .success(let stores):
-                    owner.updateFilterDatasource()
-                    owner.state.stores.send(stores)
-                    
-                case .failure(let error):
-                    owner.output.route.send(.showErrorAlert(error))
-                }
-            }
             .store(in: &cancellables)
         
         input.onTapOnlyBoss
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, _ in
-                owner.state.hasMore = true
-                owner.state.nextCursor = nil
+            .sink(receiveValue: { (owner: HomeListViewModel, _) in
+                owner.clearData()
                 owner.state.isOnlyBossStore.toggle()
                 owner.sendClickOnlyBossFilterLog(owner.state.isOnlyBossStore)
-            })
-            .asyncMap { owner, _ in
-                await owner.fetchAroundStore()
-            }
-            .withUnretained(self)
-            .sink { owner, result in
+                owner.fetchAroundStore()
                 owner.updateFilterDatasource()
-                
-                switch result {
-                case .success(let stores):
-                    owner.updateFilterDatasource()
-                    owner.state.stores.send(stores)
-                    
-                case .failure(let error):
-                    owner.output.route.send(.showErrorAlert(error))
-                }
-            }
+            })
             .store(in: &cancellables)
         
         input.onTapStore
             .withUnretained(self)
-            .sink(receiveValue: { (owner: HomeListViewModel, store: StoreCard) in
-                owner.sendClickStore(store)
+            .sink(receiveValue: { (owner: HomeListViewModel, storeWithExtra: StoreWithExtraResponse) in
+                owner.sendClickStore(storeWithExtra.store)
                 
-                switch store.storeType {
+                switch storeWithExtra.store.storeType {
                 case .bossStore:
-                    owner.output.route.send(.pushBossStoreDetail(storeId: store.storeId))
+                    owner.output.route.send(.pushBossStoreDetail(storeId: storeWithExtra.store.storeId))
                 case .userStore:
-                    owner.output.route.send(.pushStoreDetail(storeId: store.storeId))
+                    owner.output.route.send(.pushStoreDetail(storeId: storeWithExtra.store.storeId))
                 case .unknown:
                     break
                 }
             })
             .store(in: &cancellables)
         
-        state.stores
-            .combineLatest(state.advertisement)
-            .sink { [weak self] stores, advertisement in
-                self?.updateDataSource(storeCards: stores, advertisement: advertisement)
-            }
-            .store(in: &cancellables)
-    
         input.onTapAdvertisement
             .withUnretained(self)
             .sink { owner, advertisement in
-                owner.output.route.send(.openUrl(advertisement.linkUrl))
+                // TODO: 딥링크 처리 필요
+//                owner.output.route.send(.openUrl(advertisement.linkUrl))
                 owner.sendClickAdBannerLog(advertisement)
             }
             .store(in: &cancellables)
@@ -316,21 +240,39 @@ final class HomeListViewModel: BaseViewModel {
     }
     
     private func canLoad(index: Int) -> Bool {
-        return index == state.stores.value.count - 1 && state.nextCursor != nil && state.hasMore
+        return index == state.stores.count - 1 && state.nextCursor != nil && state.hasMore
     }
     
-    private func fetchAroundStore() async -> Result<[StoreCard], Error> {
+    private func fetchAroundStore() {
+        Task {
+            let input = createFetchAroundStoreInput()
+            let result = await dependency.storeRepository.fetchAroundStores(input: input)
+            
+            switch result {
+            case .success(let response):
+                state.hasMore = response.cursor.hasMore
+                state.nextCursor = response.cursor.nextCursor
+                state.stores.append(contentsOf: response.contents)
+                updateDataSource()
+            case .failure(let error):
+                output.route.send(.showErrorAlert(error))
+            }
+        }
+    }
+    
+    private func createFetchAroundStoreInput() -> FetchAroundStoreInput {
         var categoryIds: [String]? = nil
         if let filterCategory = state.categoryFilter {
-            categoryIds = [filterCategory.category]
+            categoryIds = [filterCategory.categoryId]
         }
         let targetStores: [StoreType] = state.isOnlyBossStore ? [.bossStore] : [.userStore, .bossStore]
-        let filterConditions: [String] = state.isOnlyRecentActivity ? ["RECENT_ACTIVITY"] : ["RECENT_ACTIVITY", "NO_RECENT_ACTIVITY"]
-        let input = FetchAroundStoreInput(
-            distanceM: state.mapMaxDistance,
+        let filterConditions: [ActivitiesStatus] = state.isOnlyRecentActivity ? [.recentActivity] : [.recentActivity, .noRecentActivity]
+        
+        return FetchAroundStoreInput(
+            distanceM: state.mapMaxDistance ?? 0,
             categoryIds: categoryIds,
-            targetStores: targetStores.map { $0.rawValue },
-            sortType: state.sortType.rawValue,
+            targetStores: targetStores,
+            sortType: state.sortType,
             filterCertifiedStores: state.isOnlyCertifiedStore,
             filterConditions: filterConditions,
             size: 10,
@@ -338,84 +280,91 @@ final class HomeListViewModel: BaseViewModel {
             mapLatitude: state.mapLocation?.coordinate.latitude ?? 0,
             mapLongitude: state.mapLocation?.coordinate.longitude ?? 0
         )
-        
-        return await storeRepository.fetchAroundStores(
-            input: input,
-            latitude: state.currentLocation?.coordinate.latitude ?? 0,
-            longitude: state.currentLocation?.coordinate.longitude ?? 0
-        )
-        .map{ [weak self] response in
-            self?.state.hasMore = response.cursor.hasMore
-            self?.state.nextCursor = response.cursor.nextCursor
-            return response.contents.map(StoreCard.init(response:))
-        }
     }
     
     private func fetchAdvertisement() {
         Task {
             let input = FetchAdvertisementInput(position: .storeList, size: nil)
-            let result = await advertisementService.fetchAdvertisements(input: input)
+            let result = await dependency.advertisementRepository.fetchAdvertisements(input: input)
             
             switch result {
             case .success(let response):
-                if let advertisementResponse = response.first {
-                    let advertisement = Advertisement(response: advertisementResponse)
-                    state.advertisement.send(advertisement)
-                } else {
-                    state.advertisement.send(nil)
+                if let advertisement = response.advertisements.first {
+                    state.advertisement = advertisement
                 }
             case .failure(_):
-                state.advertisement.send(nil)
+                break
             }
+            updateDataSource()
         }
     }
     
-    private func updateDataSource(storeCards: [StoreCard], advertisement: Advertisement?) {
-        var sectionItems = storeCards.map { HomeListSectionItem.storeCard($0) }
+    private func updateDataSource() {
+        var sectionItems = state.stores.map { HomeListSectionItem.store($0) }
         
-        if storeCards.isEmpty {
+        if sectionItems.isEmpty {
             sectionItems.append(.emptyStore)
         }
         
-        if let advertisement {
+        if let advertisement = state.advertisement {
             let index = min(1, sectionItems.count) // 두번째 구좌에 노출
-            sectionItems.insert(.ad(HomeListAdCellViewModel(config: .init(ad: advertisement))), at: index)
+            let config = HomeListAdCellViewModel.Config(ad: advertisement)
+            let viewModel = HomeListAdCellViewModel(config: config)
+            
+            sectionItems.insert(.ad(viewModel), at: index)
         }
         
         output.dataSource.send([HomeListSection(items: sectionItems)])
+    }
+    
+    private func presentCategoryFilter() {
+        let config = CategoryFilterViewModel.Config(currentCategory: state.categoryFilter)
+        let viewModel = CategoryFilterViewModel(config: config)
+        
+        viewModel.output.didSelectCategory
+            .subscribe(input.selectCategory)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.presentCategoryFilter(viewModel))
+    }
+    
+    private func clearData() {
+        state.nextCursor = nil
+        state.hasMore = false
+        state.stores = []
     }
 }
 
 // MARK: Log
 extension HomeListViewModel {
-    private func sendClickStore(_ storeCard: StoreCard) {
-        logManager.sendEvent(.init(
+    private func sendClickStore(_ store: StoreResponse) {
+        dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickStore,
             extraParameters: [
-                .storeId: storeCard.storeId,
-                .type: storeCard.storeType.rawValue
+                .storeId: store.storeId,
+                .type: store.storeType.rawValue
             ]
         ))
     }
     
     private func sendClickCategoryFilterLog() {
-        logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickCategoryFilter
         ))
     }
     
     private func sendClickSortingLog(_ sortType: StoreSortType) {
-        logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickSorting,
             extraParameters: [.type: sortType.rawValue]
         ))
     }
     
-    private func sendClickAdBannerLog(_ advertisement: Advertisement) {
-        logManager.sendEvent(.init(
+    private func sendClickAdBannerLog(_ advertisement: AdvertisementResponse) {
+        dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickAdBanner,
             extraParameters: [.advertisementId: advertisement.advertisementId]
@@ -423,7 +372,7 @@ extension HomeListViewModel {
     }
     
     private func sendClickOnlyBossFilterLog(_ isOn: Bool) {
-        logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickBossFilter,
             extraParameters: [.value: isOn]
@@ -431,7 +380,7 @@ extension HomeListViewModel {
     }
     
     private func sendClickOnlyVisitFilterLog(_ isOn: Bool) {
-        logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickOnlyVisit,
             extraParameters: [.value: isOn]
@@ -439,7 +388,7 @@ extension HomeListViewModel {
     }
     
     private func sendClickRecentActivityFilter(value: Bool) {
-        logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickRecentActivityFilter,
             extraParameters: [.value: value]
@@ -464,7 +413,7 @@ extension HomeListViewModel: HomeFilterSelectable {
         return input.onTapOnlyBoss
     }
     
-    var selectCategory: PassthroughSubject<Model.PlatformStoreCategory?, Never> {
+    var selectCategory: PassthroughSubject<StoreFoodCategoryResponse?, Never> {
         return input.selectCategory
     }
     

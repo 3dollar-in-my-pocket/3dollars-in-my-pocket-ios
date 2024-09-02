@@ -23,7 +23,7 @@ final class StoreReviewListDataSource: UICollectionViewDiffableDataSource<StoreR
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .review(let item):
-                let cell: StoreReviewListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreReviewListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(item)
                 return cell
             }

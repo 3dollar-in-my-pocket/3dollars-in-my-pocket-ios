@@ -31,7 +31,7 @@ extension AdvertisementApi: RequestType {
     var path: String {
         switch self {
         case .fetchAdvertisements:
-            return "/api/v1/advertisements"
+            return "/api/v2/advertisements"
         }
     }
 }

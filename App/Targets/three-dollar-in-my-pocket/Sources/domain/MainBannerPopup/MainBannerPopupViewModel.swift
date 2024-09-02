@@ -14,7 +14,7 @@ final class MainBannerPopupViewModel: BaseViewModel {
     
     struct Output {
         let screenName: ScreenName = .mainBannerPopup
-        let advertisement: CurrentValueSubject<Model.Advertisement, Never>
+        let advertisement: CurrentValueSubject<AdvertisementResponse, Never>
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -23,11 +23,11 @@ final class MainBannerPopupViewModel: BaseViewModel {
     }
     
     struct State {
-        let advertisement: Model.Advertisement
+        let advertisement: AdvertisementResponse
     }
     
     struct Config {
-        let advertisement: Model.Advertisement
+        let advertisement: AdvertisementResponse
     }
     
     let input = Input()
@@ -74,8 +74,8 @@ final class MainBannerPopupViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
     
-    private func openEventURL(advertisement: Model.Advertisement) {
-        guard let urlString = advertisement.linkUrl,
+    private func openEventURL(advertisement: AdvertisementResponse) {
+        guard let urlString = advertisement.link?.url,
               let url = URL(string: urlString),
               UIApplication.shared.canOpenURL(url) else { return }
         

@@ -12,18 +12,18 @@ public struct StoreCard {
     public let existsCounts: Int?
     public let isNew: Bool
     
-    public init(response: PlatformStoreWithDetailResponse) {
-        self.storeType = response.store.storeType
-        self.storeId = response.store.storeId
-        self.storeName = response.store.storeName
-        self.location = Location(response: response.store.location)
-        self.categories = response.store.categories.map(PlatformStoreCategory.init(response:))
-        self.distance = response.distanceM
-        self.reviewsCount = response.extra.reviewsCount
-        self.rating = response.extra.rating
-        self.existsCounts = response.extra.visitCounts?.existsCounts
-        self.isNew = response.extra.tags.isNew
-    }
+//    public init(response: PlatformStoreWithDetailResponse) {
+//        self.storeType = response.store.storeType
+//        self.storeId = response.store.storeId
+//        self.storeName = response.store.storeName
+//        self.location = Location(response: response.store.location)
+//        self.categories = response.store.categories.map(PlatformStoreCategory.init(response:))
+//        self.distance = response.distanceM
+//        self.reviewsCount = response.extra.reviewsCount
+//        self.rating = response.extra.rating
+//        self.existsCounts = response.extra.visitCounts?.existsCounts
+//        self.isNew = response.extra.tags.isNew
+//    }
 }
 
 public extension StoreCard {
@@ -50,6 +50,10 @@ extension StoreCard: Hashable {
 }
 
 extension StoreCard: VisitableStore {
+    public var platformStoreCategories: [PlatformStoreCategory] {
+        return categories
+    }
+    
     public var storeLocation: Location? {
         return location
     }

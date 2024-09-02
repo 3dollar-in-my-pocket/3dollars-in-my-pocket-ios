@@ -71,7 +71,7 @@ final class MarkerPopupViewController: BaseViewController {
         viewModel.output.advertisement
             .main
             .withUnretained(self)
-            .sink { (owner: MarkerPopupViewController, advertisement: Advertisement) in
+            .sink { (owner: MarkerPopupViewController, advertisement: AdvertisementResponse) in
                 owner.markerPopupView.bind(advertisement: advertisement)
             }
             .store(in: &cancellables)

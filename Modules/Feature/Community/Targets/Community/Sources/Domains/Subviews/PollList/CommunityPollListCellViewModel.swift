@@ -29,7 +29,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
     struct State {
         var category: PollCategoryResponse? 
         var pollList: [PollItemCellViewModel] = []
-        var ad: Advertisement?
+        var ad: AdvertisementResponse?
     }
     
     struct Config {
@@ -45,16 +45,16 @@ final class CommunityPollListCellViewModel: BaseViewModel {
     private var state = State()
 
     private let communityService: CommunityServiceProtocol
-    private let advertisementService: AdvertisementServiceProtocol
+    private let advertisementRepository: AdvertisementRepository
 
     init(
         config: Config,
         communityService: CommunityServiceProtocol = CommunityService(),
-        advertisementService: AdvertisementServiceProtocol = AdvertisementService()
+        advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl()
     ) {
         self.config = config
         self.communityService = communityService
-        self.advertisementService = advertisementService
+        self.advertisementRepository = advertisementRepository
 
         super.init()
         
@@ -101,7 +101,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
                 case .poll(let viewModel):
                     owner.output.didSelectPollItem.send(viewModel.pollId)
                 case .ad(let viewModel):
-                    owner.output.openUrl.send(viewModel.output.item.linkUrl)
+                    owner.output.openUrl.send(viewModel.output.item.link?.url)
                 }
             }
             .store(in: &cancellables)
@@ -135,14 +135,14 @@ final class CommunityPollListCellViewModel: BaseViewModel {
             .map { _ in FetchAdvertisementInput(position: .pollCard, size: nil) }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.advertisementService.fetchAdvertisements(input: input)
+                await owner.advertisementRepository.fetchAdvertisements(input: input)
             }
             .withUnretained(self)
             .sink { owner, result in
                 switch result {
                 case .success(let advertisements):
-                    guard let advertisementResponse = advertisements.first else { return }
-                    owner.state.ad = Advertisement(response: advertisementResponse)
+                    guard let advertisement = advertisements.advertisements.first else { return }
+                    owner.state.ad = advertisement
                     owner.updateDataSource()
                 case .failure:
                     break

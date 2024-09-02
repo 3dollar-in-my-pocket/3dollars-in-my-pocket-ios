@@ -16,12 +16,12 @@ final class BookmarkViewerDatasource: UICollectionViewDiffableDataSource<Bookmar
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .overview(let uiModel):
-                let cell: BookmarkViewerOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BookmarkViewerOverviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(uiModel: uiModel)
                 return cell
             case .store(let store):
-                let cell: BookmarkStoreCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BookmarkStoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(store: store)
                 return cell

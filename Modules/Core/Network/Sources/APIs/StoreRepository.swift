@@ -10,7 +10,7 @@ public protocol StoreRepository {
     
     func editStore(storeId: Int, input: EditStoreRequestInput) async -> Result<StoreCreateResponse, Error>
     
-    func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResponse<PlatformStoreWithDetailResponse>, Error>
+    func fetchAroundStores(input: FetchAroundStoreInput) async -> Result<ContentsWithCursorResponse<StoreWithExtraResponse>, Error>
     
     func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<StoreWithDetailApiResponse, Error>
     
@@ -56,8 +56,8 @@ public struct StoreRepositoryImpl: StoreRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResponse<PlatformStoreWithDetailResponse>, Error> {
-        let request = FetchAroundStoreRequest(requestInput: input, latitude: latitude, longitude: longitude)
+    public func fetchAroundStores(input: FetchAroundStoreInput) async -> Result<ContentsWithCursorResponse<StoreWithExtraResponse>, Error> {
+        let request = StoreApi.fetchAroundStores(input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }

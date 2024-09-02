@@ -23,13 +23,13 @@ final class CategoryFilterDataSource: UICollectionViewDiffableDataSource<Categor
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .category(let category):
-                let cell: CategoryFilterCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: CategoryFilterCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(category: category)
                 return cell
                 
             case .advertisement(let advertisement):
-                let cell: CategoryBannerCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: CategoryBannerCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(advertisement: advertisement, in: rootViewController)
                 return cell

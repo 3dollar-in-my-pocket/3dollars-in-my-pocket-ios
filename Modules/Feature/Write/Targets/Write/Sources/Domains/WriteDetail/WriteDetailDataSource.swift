@@ -26,7 +26,7 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .map(let location):
-                let cell: WriteDetailMapCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: WriteDetailMapCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(location: location)
                 cell.zoomButton
                     .controlPublisher(for: .touchUpInside)
@@ -37,7 +37,7 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 return cell
                 
             case .address(let address):
-                let cell: WriteDetailAddressCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: WriteDetailAddressCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(address: address)
                 cell.editAddressButton
                     .controlPublisher(for: .touchUpInside)
@@ -48,7 +48,7 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 return cell
                 
             case .name(let name):
-                let cell: WriteDetailNameCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: WriteDetailNameCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(name: name)
                 cell.nameField.publisher(for: \.text)
                     .map { $0 ?? "" }
@@ -58,7 +58,7 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 return cell
                 
             case .storeType(let salesType):
-                let cell: WriteDetailTypeCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: WriteDetailTypeCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(salesType: salesType)
                 cell.tapPublisher
                     .subscribe(viewModel.input.tapSalesType)
@@ -67,7 +67,7 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 return cell
                 
             case .paymentMethod(let paymentMethods):
-                let cell: WriteDetailPaymentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: WriteDetailPaymentCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(paymentMethods: paymentMethods)
                 cell.tapPublisher
                     .subscribe(viewModel.input.tapPaymentMethod)
@@ -76,7 +76,7 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 return cell
                 
             case .appearanceDay(let appearanceDays):
-                let cell: WriteDetailDayCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: WriteDetailDayCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(appearanceDays)
                 cell.tapPublisher
                     .subscribe(viewModel.input.tapDay)
@@ -85,20 +85,20 @@ final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetai
                 return cell
                 
             case .time(let viewModel):
-                let cell: WriteDetailTimeCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: WriteDetailTimeCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(viewModel: viewModel)
                 return cell
                 
             case .categoryCollection(let categories):
-                let cell: WriteDetailCategoryCollectionCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: WriteDetailCategoryCollectionCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(categories: categories)
                 cell.bindViewModel(viewModel)
                 
                 return cell
                 
             case .menuGroup(let cellViewModel):
-                let cell: WriteDetailMenuGroupCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: WriteDetailMenuGroupCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(viewModel: cellViewModel)
                 cell.closeButton.controlPublisher(for: .touchUpInside)

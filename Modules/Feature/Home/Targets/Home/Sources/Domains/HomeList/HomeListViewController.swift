@@ -7,6 +7,8 @@ import DependencyInjection
 import StoreInterface
 import Log
 
+import CombineCocoa
+
 protocol HomeListDelegate: AnyObject {
     func didTapUserStore(storeId: Int)
     
@@ -39,58 +41,34 @@ final class HomeListViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        bind()
         viewModel.input.viewDidLoad.send(())
         
         homeListView.bindAdvertisement(in: self)
+    }
+    
+    private func bind() {
         homeListView.mapViewButton
-            .controlPublisher(for: .touchUpInside)
-            .receive(on: DispatchQueue.main)
+            .tapPublisher
+            .throttleClick()
+            .main
             .withUnretained(self)
-            .sink { owner, _ in
+            .sink { (owner: HomeListViewController, _) in
                 owner.dismiss(animated: true)
             }
             .store(in: &cancellables)
-    }
-    
-    override func bindViewModelInput() {
         
-    }
-    
-    override func bindViewModelOutput() {
-//        viewModel.output.categoryFilter
-//            .receive(on: DispatchQueue.main)
-//            .withUnretained(self)
-//            .sink { owner, category in
-//                owner.homeListView.categoryFilterButton.setCategory(category)
-//            }
-//            .store(in: &cancellables)
-        
+        // Output
         viewModel.output.dataSource
-            .receive(on: DispatchQueue.main)
+            .main
             .withUnretained(self)
             .sink { owner, sections in
-                owner.updateDataSource(section: sections)
+                owner.dataSource.reload(sections)
             }
             .store(in: &cancellables)
-        
-//        viewModel.output.sortType
-//            .receive(on: DispatchQueue.main)
-//            .withUnretained(self)
-//            .sink { owner, sortType in
-//                owner.homeListView.sortingButton.bind(sortType)
-//            }
-//            .store(in: &cancellables)
-//        
-//        viewModel.output.isOnlyBoss
-//            .receive(on: DispatchQueue.main)
-//            .withUnretained(self)
-//            .sink { owner, isOnlyBoss in
-//                owner.homeListView.onlyBossToggleButton.isSelected = isOnlyBoss
-//            }
-//            .store(in: &cancellables)
-        
+                
         viewModel.output.route
-            .receive(on: DispatchQueue.main)
+            .main
             .withUnretained(self)
             .sink { owner, route in
                 owner.handleRoute(route)
@@ -98,30 +76,15 @@ final class HomeListViewController: BaseViewController {
             .store(in: &cancellables)
     }
     
-    private func updateDataSource(section: [HomeListSection]) {
-        var snapshot = HomeListSnapshot()
-        
-        section.forEach {
-            snapshot.appendSections([$0])
-            snapshot.appendItems($0.items)
-        }
-        
-        dataSource.apply(snapshot, animatingDifferences: true)
-    }
-    
     private func handleRoute(_ route: HomeListViewModel.Route) {
         switch route {
-        case .presentCategoryFilter(let category):
-            let categoryFilterViewController = CategoryFilterViewController.instance(selectedCategory: category)
-            categoryFilterViewController.delegate = self
+        case .presentCategoryFilter(let viewModel):
+            let categoryFilterViewController = CategoryFilterViewController(viewModel: viewModel)
             presentPanModal(categoryFilterViewController)
-            
         case .pushStoreDetail(let storeId):
             delegate?.didTapUserStore(storeId: Int(storeId) ?? 0)
-            
         case .pushBossStoreDetail(let storeId):
             delegate?.didTapBossStore(storeId: storeId)
-            
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
         case .openUrl(let url):
@@ -135,11 +98,5 @@ final class HomeListViewController: BaseViewController {
                 UIApplication.shared.canOpenURL(url) else { return }
 
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
-    }
-}
-
-extension HomeListViewController: CategoryFilterDelegate {
-    func onSelectCategory(category: PlatformStoreCategory?) {
-        viewModel.input.selectCategory.send(category)
     }
 }

@@ -254,18 +254,14 @@ public final class WriteAddressViewModel: BaseViewModel {
     private func fetchAroundStores(cameraPosition: Location) async -> Result<[Location], Error> {
         let input = FetchAroundStoreInput(
             distanceM: 100,
-            targetStores: ["BOSS_STORE", "USER_STORE"],
-            sortType: "DISTANCE_ASC",
+            targetStores: [.bossStore, .userStore],
+            sortType: .distanceAsc,
             size: 20,
             mapLatitude: cameraPosition.latitude,
             mapLongitude: cameraPosition.longitude
         )
         
-        return await storeRepository.fetchAroundStores(
-            input: input,
-            latitude: cameraPosition.latitude,
-            longitude: cameraPosition.longitude
-        )
+        return await storeRepository.fetchAroundStores(input: input)
         .map { result in
             result.contents.map { storeDetail in
                 return Model.Location(

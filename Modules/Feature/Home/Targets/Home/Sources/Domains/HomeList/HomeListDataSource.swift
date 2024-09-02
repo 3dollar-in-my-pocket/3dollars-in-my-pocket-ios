@@ -11,7 +11,7 @@ struct HomeListSection: Hashable {
 }
         
 enum HomeListSectionItem: Hashable {
-    case storeCard(StoreCard)
+    case store(StoreWithExtraResponse)
     case ad(HomeListAdCellViewModel)
     case emptyStore
 }
@@ -33,18 +33,18 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
         
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .storeCard(let storeCard):
-                let cell: HomeListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            case .store(let storeWithExtra):
+                let cell: HomeListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
-                cell.bind(storeCard: storeCard)
+                cell.bind(storeWithExtra)
                 return cell
             case .ad(let viewModel):
-                let cell: HomeListAdCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: HomeListAdCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(viewModel: viewModel)
                 return cell
             case .emptyStore:
-                let cell: HomeListEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: HomeListEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 return cell
             }
         }
@@ -80,9 +80,9 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
                         switch cellType {
                         case .category(let category):
                             headerView.bind(category: category)
-                        case .recentActivity(let bool):
+                        case .recentActivity:
                             continue
-                        case .sortingFilter(let storeSortType):
+                        case .sortingFilter:
                             continue
                         case .onlyBoss(let isOnlyBoss):
                             headerView.isOnlyCertifiedButton.isHidden = isOnlyBoss
@@ -93,12 +93,23 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
             return headerView
         }
     }
+    
+    func reload(_ sections: [HomeListSection]) {
+        var snapshot = HomeListSnapshot()
+        
+        sections.forEach {
+            snapshot.appendSections([$0])
+            snapshot.appendItems($0.items)
+        }
+        
+        apply(snapshot, animatingDifferences: true)
+    }
 }
 
 extension HomeListDataSource: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         switch itemIdentifier(for: indexPath) {
-        case .storeCard(_):
+        case .store(_):
             viewModel.input.willDisplay.send(indexPath.row)
         default:
             break
@@ -107,8 +118,8 @@ extension HomeListDataSource: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch itemIdentifier(for: indexPath) {
-        case .storeCard(let storeCard):
-            viewModel.input.onTapStore.send(storeCard)
+        case .store(let storeWithExtra):
+            viewModel.input.onTapStore.send(storeWithExtra)
         case .ad(let adCellViewModel):
             viewModel.input.onTapAdvertisement.send(adCellViewModel.output.item)
         default:
@@ -120,7 +131,7 @@ extension HomeListDataSource: UICollectionViewDelegate {
 extension HomeListDataSource: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch itemIdentifier(for: indexPath) {
-        case .storeCard:
+        case .store:
             return HomeListCell.Layout.size
         case .ad:
             return HomeListAdCell.Layout.size

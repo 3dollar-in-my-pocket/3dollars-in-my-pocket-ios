@@ -118,7 +118,7 @@ extension PhotoDetailViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let photo = photos[safe: indexPath.item] else { return BaseCollectionViewCell() }
-        let cell: PhotoDetailCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: PhotoDetailCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         cell.bind(photo)
         
         return cell

@@ -208,7 +208,7 @@ extension BossStorePhotoViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let photo = viewModel.output.photos[safe: indexPath.item] else { return BaseCollectionViewCell() }
-        let cell: BossStorePhotoItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: BossStorePhotoItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         
         cell.bind(imageResponse: photo)
         return cell

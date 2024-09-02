@@ -14,8 +14,8 @@ final class MarkerPopupViewModel: BaseViewModel {
     
     struct Output {
         let screenName: ScreenName = .markerPopup
-        let advertisement = PassthroughSubject<Advertisement, Never>()
-        let showErrorAloer = PassthroughSubject<Error, Never>()
+        let advertisement = PassthroughSubject<AdvertisementResponse, Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -25,22 +25,22 @@ final class MarkerPopupViewModel: BaseViewModel {
     
     
     struct State {
-        var advertisement: Advertisement?
+        var advertisement: AdvertisementResponse?
     }
     
     let input = Input()
     let output = Output()
     private var state = State()
-    private let advertisementService: AdvertisementServiceProtocol
+    private let advertisementRepository: AdvertisementRepository
     private let eventService: EventServiceProtocol
     private let logManager: LogManagerProtocol
     
     init(
-        advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
+        advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
         eventService: EventServiceProtocol = EventService(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.advertisementService = advertisementService
+        self.advertisementRepository = advertisementRepository
         self.eventService = eventService
         self.logManager = logManager
         
@@ -62,7 +62,7 @@ final class MarkerPopupViewModel: BaseViewModel {
                 owner.sendClickEventLog()
             })
             .compactMap({ (owner: MarkerPopupViewModel, _) in
-                owner.state.advertisement?.linkUrl
+                owner.state.advertisement?.link?.url
             })
             .map { Route.goToURL($0) }
             .subscribe(output.route)
@@ -72,18 +72,17 @@ final class MarkerPopupViewModel: BaseViewModel {
     private func fetchMarkerPopup() {
         Task {
             let input = FetchAdvertisementInput(position: .storeMarkerPopup, size: nil)
-            let result = await advertisementService.fetchAdvertisements(input: input)
+            let result = await advertisementRepository.fetchAdvertisements(input: input)
             
             switch result {
             case .success(let response):
-                guard let advertisementResponse = response.first else { return }
-                let advertisement = Advertisement(response: advertisementResponse)
+                guard let advertisement = response.advertisements.first else { return }
                 
                 state.advertisement = advertisement
                 output.advertisement.send(advertisement)
                 
             case .failure(let error):
-                output.showErrorAloer.send(error)
+                output.showErrorAlert.send(error)
             }
         }
     }

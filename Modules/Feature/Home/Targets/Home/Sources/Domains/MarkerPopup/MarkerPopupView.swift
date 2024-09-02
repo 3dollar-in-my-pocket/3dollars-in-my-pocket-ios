@@ -101,10 +101,22 @@ final class MarkerPopupView: BaseView {
         }
     }
     
-    func bind(advertisement: Advertisement) {
-        imageView.setImage(urlString: advertisement.imageUrl)
-        titleLabel.text = advertisement.title
-        descriptionLabel.text = advertisement.subTitle
-        bottomButton.setTitle(advertisement.extraContent, for: .normal)
+    func bind(advertisement: AdvertisementResponse) {
+        imageView.setImage(urlString: advertisement.image?.url)
+        
+        titleLabel.text = advertisement.title?.content
+        if let titleColor = advertisement.title?.fontColor {
+            titleLabel.textColor = UIColor(hex: titleColor)
+        }
+        
+        descriptionLabel.text = advertisement.subTitle?.content
+        if let descriptionColor = advertisement.subTitle?.fontColor {
+            descriptionLabel.textColor = UIColor(hex: descriptionColor)
+        }
+        
+        bottomButton.setTitle(advertisement.extra?.content, for: .normal)
+        if let buttonTitleColor = advertisement.extra?.fontColor {
+            bottomButton.setTitleColor(UIColor(hex: buttonTitleColor), for: .normal)
+        }
     }
 }

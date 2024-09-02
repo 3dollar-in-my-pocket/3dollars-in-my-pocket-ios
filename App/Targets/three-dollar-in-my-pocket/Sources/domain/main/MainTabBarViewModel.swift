@@ -20,11 +20,11 @@ final class MainTabBarViewModel: Common.BaseViewModel {
     
     let input = Input()
     let output = Output()
-    private let advertisementService: Networking.AdvertisementServiceProtocol
+    private let advertisementRepository: AdvertisementRepository
     private var preference = Preference.shared
     
-    init(advertisementService: Networking.AdvertisementServiceProtocol = Networking.AdvertisementService()) {
-        self.advertisementService = advertisementService
+    init(advertisementService: AdvertisementRepository = AdvertisementRepositoryImpl()) {
+        self.advertisementRepository = advertisementService
     }
     
     override func bind() {
@@ -39,13 +39,11 @@ final class MainTabBarViewModel: Common.BaseViewModel {
     private func checkIfBannerExisted() {
         Task {
             let input = FetchAdvertisementInput(position: .splash, size: nil)
-            let result = await advertisementService.fetchAdvertisements(input: input)
+            let result = await advertisementRepository.fetchAdvertisements(input: input)
             
             switch result {
-            case .success(let advertisements):
-                guard let advertisementResponse = advertisements.first else { return }
-                let advertisement = Model.Advertisement(response: advertisementResponse)
-                
+            case .success(let response):
+                guard let advertisement = response.advertisements.first else { return }
                 presentMainAdBannerIfNeeded(advertisement)
                 
             case .failure:
@@ -54,7 +52,7 @@ final class MainTabBarViewModel: Common.BaseViewModel {
         }
     }
     
-    private func presentMainAdBannerIfNeeded(_ advertisement: Model.Advertisement) {
+    private func presentMainAdBannerIfNeeded(_ advertisement: AdvertisementResponse) {
         let config = MainBannerPopupViewModel.Config(advertisement: advertisement)
         let viewModel = MainBannerPopupViewModel(config: config)
         

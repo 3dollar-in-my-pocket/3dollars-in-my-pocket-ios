@@ -18,7 +18,7 @@ final class ReviewListDatasource: UICollectionViewDiffableDataSource<ReviewListS
         super.init(collectionView: collection) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .review(let review):
-                let cell: ReviewListCell = collection.dequeueReuseableCell(indexPath: indexPath)
+                let cell: ReviewListCell = collection.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(review)
                 cell.rightButton.controlPublisher(for: .touchUpInside)
@@ -34,7 +34,7 @@ final class ReviewListDatasource: UICollectionViewDiffableDataSource<ReviewListS
                 return cell
                 
             case .filtered:
-                let cell: FilteredReviewCell = collection.dequeueReuseableCell(indexPath: indexPath)
+                let cell: FilteredReviewCell = collection.dequeueReusableCell(indexPath: indexPath)
                 
                 return cell
             }

@@ -152,7 +152,7 @@ public final class HomeViewController: BaseViewController {
         viewModel.output.advertisementMarker
             .main
             .withUnretained(self)
-            .sink { (owner: HomeViewController, advertisement: Advertisement) in
+            .sink { (owner: HomeViewController, advertisement: AdvertisementResponse) in
                 owner.homeView.setAdvertisementMarker(advertisement)
             }
             .store(in: &cancellables)
@@ -177,9 +177,9 @@ public final class HomeViewController: BaseViewController {
                 }
                 
                 let indexPath = IndexPath(row: index, section: 0)
-                let storeCards = items.map { $0.storeCard }
+                let stores = items.map { $0.store }
                 
-                selectMarker(selectedIndex: index, storeCards: storeCards)
+                selectMarker(selectedIndex: index, stores: stores)
                 homeView.collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
             }
             .store(in: &cancellables)
@@ -197,9 +197,8 @@ public final class HomeViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, route in
                 switch route {
-                case .presentCategoryFilter(let category):
-                    let categoryFilterViewController = CategoryFilterViewController.instance(selectedCategory: category)
-                    categoryFilterViewController.delegate = self
+                case .presentCategoryFilter(let viewModel):
+                    let categoryFilterViewController = CategoryFilterViewController(viewModel: viewModel)
                     owner.presentPanModal(categoryFilterViewController)
                     
                 case .presentListView(let viewModel):
@@ -211,9 +210,9 @@ public final class HomeViewController: BaseViewController {
                 case .pushBossStoreDetail(let storeId):
                     owner.pushBossStoreDetail(storeId: storeId)
 
-                case .presentVisit(let storeCard):
-                    let storeId = Int(storeCard.storeId) ?? 0
-                    owner.presentVisit(storeId: storeId, store: storeCard)
+                case .presentVisit(let store):
+                    let storeId = Int(store.storeId) ?? 0
+                    owner.presentVisit(storeId: storeId, store: store)
                     
                 case .presentPolicy:
                     owner.presentPolicy()
@@ -258,13 +257,13 @@ public final class HomeViewController: BaseViewController {
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
-    private func selectMarker(selectedIndex: Int?, storeCards: [StoreCard?]) {
+    private func selectMarker(selectedIndex: Int?, stores: [StoreWithExtraResponse?]) {
         clearMarker()
         
-        for value in storeCards.enumerated() {
+        for value in stores.enumerated() {
             let marker = NMFMarker()
             
-            if let storeCard = value.element {
+            if let store = value.element {
                 if selectedIndex == value.offset {
                     marker.width = 32
                     marker.height = 40
@@ -274,8 +273,8 @@ public final class HomeViewController: BaseViewController {
                     marker.height = 24
                     marker.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerUnfocused.image)
                 }
-                guard let latitude = storeCard.location?.latitude,
-                      let longitude = storeCard.location?.longitude else { break }
+                guard let latitude = store.store.location?.latitude,
+                      let longitude = store.store.location?.longitude else { break }
                 let position = NMGLatLng(lat: latitude, lng: longitude)
                 
                 marker.position = position
@@ -401,12 +400,6 @@ extension HomeViewController: NMFMapViewCameraDelegate {
             viewModel.input.changeMaxDistance.send(distance / 3)
             viewModel.input.changeMapLocation.send(mapLocation)
         }
-    }
-}
-
-extension HomeViewController: CategoryFilterDelegate {
-    func onSelectCategory(category: PlatformStoreCategory?) {
-        viewModel.input.selectCategory.send(category)
     }
 }
 

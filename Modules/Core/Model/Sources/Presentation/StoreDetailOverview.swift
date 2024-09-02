@@ -31,6 +31,10 @@ extension StoreDetailOverview {
 }
 
 extension StoreDetailOverview: VisitableStore {
+    public var platformStoreCategories: [PlatformStoreCategory] {
+        return categories
+    }
+    
     public var storeLocation: Location? {
         return location
     }

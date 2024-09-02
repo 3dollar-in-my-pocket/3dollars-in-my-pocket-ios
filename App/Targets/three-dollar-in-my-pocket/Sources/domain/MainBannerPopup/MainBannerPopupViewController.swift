@@ -49,7 +49,7 @@ final class MainBannerPopupViewController: BaseViewController {
         viewModel.output.advertisement
             .main
             .withUnretained(self)
-            .sink(receiveValue: { (owner: MainBannerPopupViewController, advertisement: Model.Advertisement) in
+            .sink(receiveValue: { (owner: MainBannerPopupViewController, advertisement: AdvertisementResponse) in
                 owner.mainBannerPopupView.bind(advertisement: advertisement)
             })
             .store(in: &cancellables)

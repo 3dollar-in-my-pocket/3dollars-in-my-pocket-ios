@@ -19,7 +19,7 @@ public struct BossStoreResponse: Decodable {
 }
 
 
-public enum ActivitiesStatus: String, Decodable {
+public enum ActivitiesStatus: String, Codable {
     case recentActivity = "RECENT_ACTIVITY"
     case noRecentActivity = "NO_RECENT_ACTIVITY"
     case unknown

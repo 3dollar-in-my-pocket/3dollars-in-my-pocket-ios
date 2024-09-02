@@ -13,7 +13,7 @@ final class CategorySelectionDataSource: UICollectionViewDiffableDataSource<Cate
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .category(let category):
-                let cell: CategorySelectionCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: CategorySelectionCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(category: category)
                 return cell

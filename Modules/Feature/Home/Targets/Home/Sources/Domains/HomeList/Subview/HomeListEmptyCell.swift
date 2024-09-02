@@ -4,7 +4,6 @@ import Common
 import DesignSystem
 
 final class HomeListEmptyCell: BaseCollectionViewCell {
-    
     enum Layout {
         static let size: CGSize = CGSize(width: UIScreen.main.bounds.width, height: 220)
     }

@@ -27,7 +27,7 @@ final class PollListDataSource: UICollectionViewDiffableDataSource<PollListSecti
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .poll(let cellViewModel):
-                let cell: PollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: PollItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: cellViewModel)
                 return cell
             }
