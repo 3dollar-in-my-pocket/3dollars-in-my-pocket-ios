@@ -6,7 +6,7 @@ import Networking
 import Model
 import Log
 
-final class CategoryFilterViewModel: BaseViewModel {
+extension CategoryFilterViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let onTapBanner = PassthroughSubject<Void, Never>()
@@ -16,149 +16,177 @@ final class CategoryFilterViewModel: BaseViewModel {
     
     struct Output {
         let screenName: ScreenName = .categoryFilter
-        let advertisement = PassthroughSubject<Advertisement?, Never>()
-        let categories = PassthroughSubject<[PlatformStoreCategory], Never>()
-        let selectCategory = PassthroughSubject<PlatformStoreCategory?, Never>()
+        let dataSource = PassthroughSubject<[CategorySection], Never>()
+        let selectCategory = PassthroughSubject<StoreFoodCategoryResponse?, Never>()
+        let didSelectCategory = PassthroughSubject<StoreFoodCategoryResponse?, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
     struct State {
-        var currentCategory: PlatformStoreCategory?
-        var advertisement: Advertisement?
-        var categories: [PlatformStoreCategory]
+        var currentCategory: StoreFoodCategoryResponse?
+        var advertisement: AdvertisementResponse?
+        var categories: [StoreFoodCategoryResponse] = []
+    }
+    
+    struct Config {
+        let currentCategory: StoreFoodCategoryResponse?
     }
     
     enum Route {
         case showErrorAlert(Error)
-        case dismissWithCategory(PlatformStoreCategory?)
-        case goToWeb(url: String)
+        case dismiss
     }
     
+    struct Dependency {
+        let categoryRepository: CategoryRepository
+        let advertisementRepository: AdvertisementRepository
+        let logManager: LogManagerProtocol
+        
+        init(
+            categoryRepository: CategoryRepository = CategoryRepositoryImpl(),
+            advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared
+        ) {
+            self.categoryRepository = categoryRepository
+            self.advertisementRepository = advertisementRepository
+            self.logManager = logManager
+        }
+    }
+}
+
+final class CategoryFilterViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     private var state: State
-    private let categoryService: CategoryServiceProtocol
-    private let advertisementService: AdvertisementServiceProtocol
-    private let logManager: LogManagerProtocol
+    private let dependency: Dependency
     
-    init(
-        category: PlatformStoreCategory?,
-        categoryService: CategoryServiceProtocol = CategoryService(),
-        advertisementService: AdvertisementServiceProtocol = AdvertisementService(),
-        logManager: LogManagerProtocol = LogManager.shared
-    ) {
-        self.state = State(currentCategory: category, advertisement: nil, categories: [])
-        self.categoryService = categoryService
-        self.advertisementService = advertisementService
-        self.logManager = logManager
+    init(config: Config, dependency: Dependency = Dependency()) {
+        self.state = State(currentCategory: config.currentCategory, advertisement: nil)
+        self.dependency = dependency
         
         super.init()
     }
     
     override func bind() {
-        let fetchCategories = input.viewDidLoad
+        input.viewDidLoad
             .withUnretained(self)
-            .asyncMap { owner, _ in
-                await owner.categoryService.fetchCategoires()
-            }
-            .share()
-        
-        fetchCategories
-            .compactMapValue()
-            .map { response in
-                response.map { PlatformStoreCategory(response: $0) }
-            }
-            .withUnretained(self)
-            .sink { owner, categories in
-                owner.state.categories = categories
-                owner.output.categories.send(categories)
-            }
-            .store(in: &cancellables)
-        
-        fetchCategories
-            .compactMapError()
-            .map { Route.showErrorAlert($0) }
-            .subscribe(output.route)
-            .store(in: &cancellables)
-        
-        let fetchAdvertisement = input.viewDidLoad
-            .withUnretained(self)
-            .asyncMap { owner, _ in
-                let input = FetchAdvertisementInput(position: .menuCategoryBanner, size: nil)
-                
-                return await owner.advertisementService.fetchAdvertisements(input: input)
-            }
-            .share()
-        
-        fetchAdvertisement
-            .compactMapValue()
-            .withUnretained(self)
-            .sink { owner, advertisements in
-                if let advertisementResponse = advertisements.first {
-                    let advertisement = Advertisement(response: advertisementResponse)
-                    
-                    owner.state.advertisement = advertisement
-                    owner.output.advertisement.send(advertisement)
-                } else {
-                    owner.output.advertisement.send(nil)
-                }
-            }
-            .store(in: &cancellables)
-        
-        fetchAdvertisement
-            .compactMapError()
-            .map { _ in nil }
-            .subscribe(output.advertisement)
+            .sink(receiveValue: { (owner: CategoryFilterViewModel, _) in
+                owner.fetchData()
+            })
             .store(in: &cancellables)
         
         input.onTapBanner
             .withUnretained(self)
-            .handleEvents(receiveOutput: { (owner: CategoryFilterViewModel, _) in
-                guard let advertisement = owner.state.advertisement else { return }
-                owner.sendClickBannerLog(advertisement)
+            .sink(receiveValue: { (owner: CategoryFilterViewModel, _) in
+                owner.handleTapBanner()
             })
-            .compactMap { owner, _ in
-                guard let advertisement = owner.state.advertisement,
-                      let linkUrl = advertisement.linkUrl else { return  nil }
-                
-                return Route.goToWeb(url: linkUrl)
-            }
-            .subscribe(output.route)
             .store(in: &cancellables)
         
         input.onTapCategory
             .withUnretained(self)
             .sink { owner, categoryId in
-                guard let selectedCategory = owner.state.categories.first(where: { $0.categoryId == categoryId }) else { return }
-                if selectedCategory == owner.state.currentCategory {
-                    owner.output.route.send(.dismissWithCategory(nil))
-                    owner.sendClickCategoryLog(nil)
-                } else {
-                    owner.output.route.send(.dismissWithCategory(selectedCategory))
-                    owner.sendClickCategoryLog(selectedCategory)
-                }
+                owner.handleSelectCategory(categoryId)
             }
             .store(in: &cancellables)
         
         input.onCollectionViewLoaded
             .withUnretained(self)
-            .map { owner, _ -> PlatformStoreCategory? in
+            .map { owner, _ -> StoreFoodCategoryResponse? in
                 return owner.state.currentCategory
             }
             .subscribe(output.selectCategory)
             .store(in: &cancellables)
     }
     
-    private func sendClickCategoryLog(_ category: PlatformStoreCategory?) {
-        logManager.sendEvent(.init(
+    private func fetchData() {
+        Task { [weak self] in
+            guard let self else { return }
+            
+            await fetchCategories()
+            await fetchAdvertisement()
+            
+            updateDatasource()
+        }
+    }
+    
+    private func fetchCategories() async {
+        let result = await dependency.categoryRepository.fetchCategories()
+        
+        switch result {
+        case .success(let categories):
+            state.categories = categories
+        case .failure(let error):
+            output.route.send(.showErrorAlert(error))
+        }
+    }
+    
+    private func fetchAdvertisement() async {
+        let input = FetchAdvertisementInput(position: .menuCategoryBanner)
+        let result = await dependency.advertisementRepository.fetchAdvertisements(input: input)
+        
+        switch result {
+        case .success(let response):
+            let advertisement = response.advertisements.first
+            state.advertisement = advertisement
+        case .failure(let error):
+            output.route.send(.showErrorAlert(error))
+        }
+    }
+    
+    private func updateDatasource() {
+        var sections: [CategorySection] = []
+        let advertisementSectionItem = CategorySectionItem.advertisement(state.advertisement)
+        let advertisementSection = CategorySection(title: HomeStrings.categoryFilterTitle, items: [advertisementSectionItem])
+        
+        sections.append(advertisementSection)
+        
+        let groupingByCategoryType = Dictionary(grouping: state.categories) { $0.classification }
+        
+        for categoryType in groupingByCategoryType.keys.sorted(by: <) {
+            if let categories = groupingByCategoryType[categoryType] {
+                let categorySection = CategorySection(title: categoryType.description, items: categories.map { CategorySectionItem.category($0) })
+                
+                sections.append(categorySection)
+            }
+        }
+        
+        output.dataSource.send(sections)
+    }
+    
+    private func handleTapBanner() {
+        guard let advertisement = state.advertisement else { return }
+        sendClickBannerLog(advertisement)
+        
+        // TODO: 딥링크 로직 정리 후 추가 필요
+    }
+    
+    private func handleSelectCategory(_ categoryId: String) {
+        guard var selectedCategory = state.categories.first(where: { $0.categoryId == categoryId }) else { return }
+        
+        if selectedCategory == state.currentCategory {
+            output.didSelectCategory.send(nil)
+            sendClickCategoryLog(nil)
+        } else {
+            output.didSelectCategory.send(selectedCategory)
+            sendClickCategoryLog(selectedCategory)
+        }
+        output.route.send(.dismiss)
+    }
+    
+}
+
+// MARK: Log
+extension CategoryFilterViewModel {
+    private func sendClickCategoryLog(_ category: StoreFoodCategoryResponse?) {
+        dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickCategory,
             extraParameters: [.categoryId: category?.categoryId as Any]
         ))
     }
     
-    private func sendClickBannerLog(_ advertisement: Advertisement) {
-        logManager.sendEvent(.init(
+    private func sendClickBannerLog(_ advertisement: AdvertisementResponse) {
+        dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickAdBanner,
             extraParameters: [.advertisementId: advertisement.advertisementId]

@@ -2,7 +2,7 @@ import UIKit
 
 import Model
 
-typealias CategoryFilterSanpshot = NSDiffableDataSourceSnapshot<CategorySection, CategorySectionItem>
+typealias CategoryFilterSnapShot = NSDiffableDataSourceSnapshot<CategorySection, CategorySectionItem>
 
 final class CategoryFilterDataSource: UICollectionViewDiffableDataSource<CategorySection, CategorySectionItem> {
     let viewModel: CategoryFilterViewModel
@@ -18,11 +18,7 @@ final class CategoryFilterDataSource: UICollectionViewDiffableDataSource<Categor
             CategoryBannerCell.self,
             CategoryFilterCell.self
         ])
-        collectionView.register(
-            CategoryFilterHeaderView.self,
-            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: CategoryFilterHeaderView.registerId
-        )
+        collectionView.registerSectionHeader([CategoryFilterHeaderView.self])
         
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
@@ -43,17 +39,26 @@ final class CategoryFilterDataSource: UICollectionViewDiffableDataSource<Categor
         self.supplementaryViewProvider = { [weak self] collectionView, type, indexPath -> UICollectionReusableView? in
             guard let section = self?.sectionIdentifier(section: indexPath.section) else { return nil }
             
-            let headerView = collectionView.dequeueReusableSupplementaryView(
-                ofKind: UICollectionView.elementKindSectionHeader,
-                withReuseIdentifier: CategoryFilterHeaderView.registerId,
-                for: indexPath
-            ) as? CategoryFilterHeaderView
-            
-            headerView?.bind(title: section.title, isFirst: indexPath.section == 0)
+            let headerView: CategoryFilterHeaderView = collectionView.dequeueReusableSupplementaryView(
+                ofkind: UICollectionView.elementKindSectionHeader,
+                indexPath: indexPath
+            )
+            headerView.bind(title: section.title, isFirst: indexPath.section == 0)
             return headerView
         }
         
         collectionView.delegate = self
+    }
+    
+    func reload(_ sections: [CategorySection]) {
+        var snapshot = CategoryFilterSnapShot()
+        
+        sections.forEach {
+            snapshot.appendSections([$0])
+            snapshot.appendItems($0.items)
+        }
+        
+        apply(snapshot, animatingDifferences: true)
     }
 }
 

@@ -1,17 +1,20 @@
 import UIKit
 
+import Common
 import DesignSystem
 import SnapKit
-import Then
 
-final class CategoryFilterHeaderView: UICollectionReusableView {
-    static let registerId = "\(CategoryFilterHeaderView.self)"
-    static let estimatedHeight: CGFloat = 64
-    
-    private let titleLabel = UILabel().then {
-        $0.textColor = DesignSystemAsset.Colors.systemBlack.color
-        $0.textAlignment = .left
+final class CategoryFilterHeaderView: BaseCollectionViewReusableView {
+    enum Layout {
+        static let estimatedHeight: CGFloat = 64
     }
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = DesignSystemAsset.Colors.systemBlack.color
+        label.textAlignment = .left
+        return label
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -24,11 +27,12 @@ final class CategoryFilterHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setup() {
-        addSubViews([titleLabel])
+    override func setup() {
+        setupUI()
     }
     
-    private func bindConstraints() {
+    private func setupUI() {
+        addSubViews([titleLabel])
         titleLabel.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()

@@ -80,7 +80,11 @@ final class RequestProvider {
             if let authToken = config.authToken {
                 header["Authorization"] = authToken
             }
+        case .location:
+            header["Content-Type"] = "application/json"
             
+            header["X-Device-Latitude"] = String(config.userCurrentLocation.coordinate.latitude)
+            header["X-Device-Longitude"] = String(config.userCurrentLocation.coordinate.longitude)
         case .custom(let dict):
             header["Content-Type"] = "application/json"
             

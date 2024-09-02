@@ -6,33 +6,47 @@ import Model
 import AppInterface
 
 final class CategoryBannerCell: BaseCollectionViewCell {
-    static let size = CGSize(width: UIScreen.main.bounds.width - 48, height: 100)
-    
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 12
+    enum Layout {
+        static let size = CGSize(width: UIScreen.main.bounds.width - 48, height: 100)
     }
     
-    private let stackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 0
-        $0.alignment = .leading
-    }
+    private let containerView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 12
+        return view
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 14)
-        $0.textAlignment = .left
-    }
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 0
+        stackView.alignment = .leading
+        return stackView
+    }()
     
-    private let descriptionLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.regular.font(size: 12)
-        $0.numberOfLines = 0
-    }
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = DesignSystemFontFamily.Pretendard.bold.font(size: 14)
+        label.textAlignment = .left
+        return label
+    }()
+    
+    private let descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.font = DesignSystemFontFamily.Pretendard.regular.font(size: 12)
+        label.numberOfLines = 0
+        return label
+    }()
     
     private let rightImageView = UIImageView()
     
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .categoryFilter)
     
     override func setup() {
+        setupUI()
+    }
+    
+    private func setupUI() {
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(descriptionLabel)
         addSubViews([
@@ -41,9 +55,7 @@ final class CategoryBannerCell: BaseCollectionViewCell {
             rightImageView,
             adBannerView
         ])
-    }
-    
-    override func bindConstraints() {
+        
         containerView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()
@@ -68,19 +80,19 @@ final class CategoryBannerCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(advertisement: Advertisement?, in rootViewController: UIViewController) {
+    func bind(advertisement: AdvertisementResponse?, in rootViewController: UIViewController) {
         if let advertisement {
-            titleLabel.text = advertisement.title
-            titleLabel.textColor = UIColor(hex: advertisement.fontColor ?? "000000")
+            titleLabel.text = advertisement.title?.content
+            titleLabel.textColor = UIColor(hex: advertisement.title?.fontColor ?? "000000")
             titleLabel.setKern(kern: -0.4)
-            descriptionLabel.text = advertisement.subTitle
-            descriptionLabel.textColor = UIColor(hex: advertisement.fontColor ?? "000000")
+            descriptionLabel.text = advertisement.subTitle?.content
+            descriptionLabel.textColor = UIColor(hex: advertisement.subTitle?.fontColor ?? "000000")
             descriptionLabel.setKern(kern: -0.2)
-            rightImageView.setImage(urlString: advertisement.imageUrl)
-            containerView.backgroundColor = UIColor(hex: advertisement.bgColor ?? "FFFFFF")
+            rightImageView.setImage(urlString: advertisement.image?.url)
+            containerView.backgroundColor = UIColor(hex: advertisement.background?.color ?? "FFFFFF")
             
             if let subTitle = advertisement.subTitle,
-               subTitle.count < 21 {
+               subTitle.content.count < 21 {
                 stackView.spacing = 0
             } else {
                 stackView.spacing = 8
