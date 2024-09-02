@@ -13,7 +13,7 @@ public struct PollListWithUserPollMetaApiResponse: Decodable {
 
 public struct ContentsCursorResponsePollBasicApiResponse: Decodable {
     public let contents: [PollBasicApiResponse]
-    public let cursor: CursorResponse
+    public let cursor: CursorString
 }
 
 public struct PollBasicApiResponse: Decodable {

@@ -50,17 +50,17 @@ final class UploadPhotoViewModel: BaseViewModel {
     let output = Output()
     var state = State()
     private let config: Config
-    private let storeService: StoreServiceProtocol
+    private let storeRepository: StoreRepository
     private let photoManager: PhotoManagerProtocol
     private let logManager: LogManagerProtocol
     
     init(
         config: Config,
-        storeService: StoreServiceProtocol = StoreService(),
+        storeRepository: StoreRepository = StoreRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
-        self.storeService = storeService
+        self.storeRepository = storeRepository
         self.photoManager = Environment.appModuleInterface.photoManager
         self.logManager = logManager
     }
@@ -157,7 +157,7 @@ final class UploadPhotoViewModel: BaseViewModel {
         
         Task { [weak self] in
             guard let self else { return }
-            let result = await storeService.uploadPhotos(storeId: config.storeId, photos: datas)
+            let result = await storeRepository.uploadPhotos(storeId: config.storeId, photos: datas)
             
             switch result {
             case .success(let imageResponse):

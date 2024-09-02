@@ -3,14 +3,14 @@ import CoreLocation
 
 import Model
 
-public protocol StoreServiceProtocol {
+public protocol StoreRepository {
     func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<IsStoresExistedAroundResponse, Error>
     
     func createStore(input: StoreCreateRequestInput) async -> Result<StoreCreateResponse, Error>
     
     func editStore(storeId: Int, input: EditStoreRequestInput) async -> Result<StoreCreateResponse, Error>
     
-    func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResposne<PlatformStoreWithDetailResponse>, Error>
+    func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResponse<PlatformStoreWithDetailResponse>, Error>
     
     func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<StoreWithDetailApiResponse, Error>
     
@@ -22,18 +22,20 @@ public protocol StoreServiceProtocol {
     
     func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageApiResponse], Error>
     
-    func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResposne<StoreImageWithApiResponse>, Error>
+    func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error>
     
     func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<StoreReviewResponse, Error>
     
     func deletePhoto(photoId: Int) async -> Result<String?, Error>
 
-    func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreWithDetailApiResponse, Error>
+    func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreDetailResponse, Error>
     
-    func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PostWithStoreApiResponse>, Error>
+    func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error>
+    
+    func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error>
 }
 
-public struct StoreService: StoreServiceProtocol {
+public struct StoreRepositoryImpl: StoreRepository {
     public init() { }
     
     public func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<IsStoresExistedAroundResponse, Error> {
@@ -54,7 +56,7 @@ public struct StoreService: StoreServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResposne<PlatformStoreWithDetailResponse>, Error> {
+    public func fetchAroundStores(input: FetchAroundStoreInput, latitude: Double, longitude: Double) async -> Result<ContentsWithCursorResponse<PlatformStoreWithDetailResponse>, Error> {
         let request = FetchAroundStoreRequest(requestInput: input, latitude: latitude, longitude: longitude)
         
         return await NetworkManager.shared.request(requestType: request)
@@ -90,7 +92,7 @@ public struct StoreService: StoreServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResposne<StoreImageWithApiResponse>, Error> {
+    public func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> {
         let request = FetchStorePhotoRequest(storeId: storeId, size: 20, cursor: cursor)
         
         return await NetworkManager.shared.request(requestType: request)
@@ -108,15 +110,21 @@ public struct StoreService: StoreServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
 
-    public func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreWithDetailApiResponse, Error> {
-        let request = FetchBossStoreDetailRequest(input: input)
+    public func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreDetailResponse, Error> {
+        let request = StoreApi.fetchBossStoreDetail(input)
 
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PostWithStoreApiResponse>, Error> {
-        let request = FetchStoreNewPostsRequest(storeId: storeId, input: cursor)
+    public func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error> {
+        let request = StoreApi.fetchStoreNewPosts(storeId: storeId, cursorInput: cursor)
 
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error> {
+        let request = StoreApi.togglePostSticker(storeId: storeId, postId: postId, input: input)
+        
         return await NetworkManager.shared.request(requestType: request)
     }
 }

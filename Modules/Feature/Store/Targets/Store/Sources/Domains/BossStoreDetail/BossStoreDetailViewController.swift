@@ -160,9 +160,13 @@ final class BossStoreDetailViewController: BaseViewController {
                 case .presentFeedback(let viewModel):
                     let viewController = BossStoreFeedbackViewController(viewModel)
                     owner.present(viewController, animated: true)
-                case .presentPostList(let viewModel):
+                case .pushPostList(let viewModel):
                     let viewController = BossStorePostListViewController(viewModel: viewModel)
                     owner.navigationController?.pushViewController(viewController, animated: true)
+                case .presentBossPhotoDetail(let viewModel):
+                    owner.presentBossStorePhoto(viewModel: viewModel)
+                case .showErrorAlert(let error):
+                    owner.showErrorAlert(error: error)
                 }
             }
             .store(in: &cancellables)
@@ -253,13 +257,18 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         case .feedbacks(let viewModel):
             return CGSize(width: width, height: BossStoreFeedbacksCell.Layout.height(viewModel: viewModel))
         case .post(let viewModel):
-            return CGSize(width: width, height: BossStorePostCell.Layout.height(viewModel: viewModel, width: width))
+            return CGSize(width: width, height: BossStorePostCell.Layout.calculateHeight(viewModel: viewModel, width: width))
         default:
             return .zero
         }
     }
 }
 
-extension BossStoreDetailViewController: UICollectionViewDelegate {
-
+// MARK: Route
+extension BossStoreDetailViewController {
+    private func presentBossStorePhoto(viewModel: BossStorePhotoViewModel) {
+        let viewController = BossStorePhotoViewController(viewModel: viewModel)
+        
+        present(viewController, animated: true)
+    }
 }

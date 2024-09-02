@@ -32,7 +32,7 @@ public final class BookmarkViewerViewModel: BaseViewModel {
         var title = ""
         var description = ""
         var totalCount = 0
-        var stores: [StoreApiResponse] = []
+        var stores: [StoreResponse] = []
         var user: UserApiResponse?
     }
     
@@ -154,7 +154,7 @@ public final class BookmarkViewerViewModel: BaseViewModel {
 
 // MARK: Log
 private extension BookmarkViewerViewModel {
-    func sendClickStoreLog(_ store: StoreApiResponse) {
+    func sendClickStoreLog(_ store: StoreResponse) {
         logManager.sendEvent(.init(screen: output.screenName, eventName: .clickStore, extraParameters: [
             .storeId: store.storeId,
             .type: store.storeType.rawValue

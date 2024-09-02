@@ -32,6 +32,7 @@ public enum ScreenName: String {
     case visitStore = "visit_store"
     case bossStoreDetail = "boss_store_detail"
     case bossStoreReview = "boss_store_review"
+    case bossStorePhoto = "boss_store_photo"
     
     /// Community
     case community = "community"

@@ -19,7 +19,7 @@ final class RegisteredStoreListViewModel: BaseViewModel {
         let showToast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
-        let sectionItems = CurrentValueSubject<[UserStoreWithVisitsApiResponse], Never>([])
+        let sectionItems = CurrentValueSubject<[UserStoreWithVisitsResponse], Never>([])
         let totalCount = CurrentValueSubject<Int, Never>(0)
     }
 

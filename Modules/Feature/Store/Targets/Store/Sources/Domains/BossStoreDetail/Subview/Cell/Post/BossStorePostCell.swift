@@ -1,16 +1,27 @@
 import UIKit
+
 import Common
 import DesignSystem
 import Model
-import UIKit
-import SnapKit
 
 final class BossStorePostCell: BaseCollectionViewCell {
     enum Layout {
-        static func height(viewModel: BossStorePostCellViewModel, width: CGFloat) -> CGFloat {
-            var height: CGFloat = 72
+        static func calculateHeight(viewModel: BossStorePostCellViewModel, width: CGFloat) -> CGFloat {
+            var totalHeight: CGFloat = 0
             
-            let contentHeight = viewModel.output.content.boundingRect(
+            let sectionHeaderHeight: CGFloat = 24
+            totalHeight += sectionHeaderHeight
+            totalHeight += 12 // 섹션 헤더 하단 패딩
+            
+            let headerHeight: CGFloat = 68
+            totalHeight += headerHeight
+            
+            if viewModel.output.post.sections.isNotEmpty {
+                totalHeight += BossStorePostImageCell.Layout.height
+                totalHeight += 12 // 이미지 하단 패딩
+            }
+            
+            var contentHeight = viewModel.output.post.body.boundingRect(
                 with: CGSize(
                     width: width - sectionInset.left - sectionInset.right,
                     height: CGFloat.greatestFiniteMagnitude
@@ -22,130 +33,168 @@ final class BossStorePostCell: BaseCollectionViewCell {
                 context: nil
             ).height
             
-            height += contentHeight
+            let expendContent = viewModel.output.expendContent.value
             
-            if viewModel.output.imageUrls.isNotEmpty {
-                height += BossStorePostImageCell.Layout.size.height
+            if expendContent.isNot && isMoreThanMaxLine(body: viewModel.output.post.body) {
+                contentHeight = 116
             }
             
-            let headerHeight: CGFloat = viewModel.config.source == .storeDetail ? 24 : 0
+            totalHeight += contentHeight
+            totalHeight += 12 // 컨텐츠 하단 패딩
             
-            return height + headerHeight + 40 // vertical margin
+            let likeButtonHeight: CGFloat = 16
+            totalHeight += likeButtonHeight
+            totalHeight += 16 // 좋아요 버튼 하단 패딩
+            
+            return totalHeight
         }
         
-        static let sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+        static func isMoreThanMaxLine(body: String) -> Bool {
+            let textView = UITextView()
+            textView.textContainer.lineFragmentPadding = 0
+            textView.font = Layout.contentTextFont
+            textView.layoutIfNeeded()
+            
+            let textViewWidth = textView.bounds.width - textView.textContainerInset.left - textView.textContainerInset.right
+            let font = textView.font ?? Layout.contentTextFont
+            let lineHeight = font.lineHeight
+            let maxLines = 6
+            
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineBreakMode = .byWordWrapping
+            let attributes: [NSAttributedString.Key: Any] = [.font: font, .paragraphStyle: paragraphStyle]
+            let attributedText = NSAttributedString(string: body, attributes: attributes)
+            
+            let framesetter = CTFramesetterCreateWithAttributedString(attributedText)
+            let path = CGPath(rect: CGRect(x: 0, y: 0, width: textViewWidth, height: CGFloat.greatestFiniteMagnitude), transform: nil)
+            let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
+            let lines = CTFrameGetLines(frame) as! [CTLine]
+            
+            var origins = [CGPoint](repeating: .zero, count: lines.count)
+            CTFrameGetLineOrigins(frame, CFRangeMake(0, 0), &origins)
+            
+            return lines.count > maxLines
+        }
+        
+        static let sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         static let contentTextFont = Fonts.regular.font(size: 14)
         static let contentTextColor = Colors.gray95.color
     }
     
-    private let stackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 12
-    }
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "가게 소식"
+        label.textColor = Colors.gray100.color
+        label.font = Fonts.bold.font(size: 16)
+        return label
+    }()
     
-    private let headerView = UIView()
+    private let moreButton: UIButton = {
+        let button = UIButton()
+        button.titleLabel?.font = Fonts.bold.font(size: 12)
+        button.setTitleColor(Colors.mainPink.color, for: .normal)
+        return button
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.gray100.color
-        $0.text = "가게 소식"
-    }
-    
-    private let moreButton = UIButton().then {
-        $0.titleLabel?.font = Fonts.bold.font(size: 12)
-        $0.setTitleColor(Colors.mainPink.color, for: .normal)
-        $0.setTitle("더보기", for: .normal)
-    }
-    
-    private let containerView = UIView().then {
-        $0.backgroundColor = Colors.gray0.color
-        $0.layer.cornerRadius = 16
-    }
+    private let containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.gray0.color
+        view.layer.cornerRadius = 16
+        return view
+    }()
     
     private let categoryImageView = UIImageView()
     
-    private let storeNameLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 14)
-        $0.textColor = Colors.gray100.color
-    }
+    private let storeNameLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.bold.font(size: 14)
+        label.textColor = Colors.gray100.color
+        return label
+    }()
     
-    private let updatedAtLabel = UILabel().then {
-        $0.font = Fonts.regular.font(size: 12)
-        $0.textColor = Colors.gray40.color
-    }
+    private let updatedAtLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.regular.font(size: 12)
+        label.textColor = Colors.gray40.color
+        return label
+    }()
     
-    private let contentStackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 12
-    }
+    private let contentStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 12
+        stackView.alignment = .leading
+        return stackView
+    }()
     
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = .clear
-        $0.showsHorizontalScrollIndicator = false
-        $0.dataSource = self
-        $0.delegate = self
-        $0.decelerationRate = .fast
-        $0.register(BossStorePostImageCell.self, forCellWithReuseIdentifier: "BossStorePostImageCell")
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.decelerationRate = .fast
+        return collectionView
+    }()
     
-    private let textView = UITextView().then {
-        $0.isEditable = false
-        $0.isScrollEnabled = false
-        $0.textContainer.lineFragmentPadding = 0
-        $0.font = Layout.contentTextFont
-        $0.backgroundColor = .clear
-    }
+    private let textView: UITextView = {
+        let textView = UITextView()
+        textView.isEditable = false
+        textView.isScrollEnabled = false
+        textView.textContainer.lineFragmentPadding = 0
+        textView.font = Layout.contentTextFont
+        textView.backgroundColor = .clear
+        return textView
+    }()
     
-    private let lineView = UIView().then {
-        $0.backgroundColor = Colors.gray10.color
-    }
+    private let likeButton: UIButton = {
+        let button = UIButton()
+        button.titleLabel?.font = Fonts.medium.font(size: 10)
+        button.imageEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 2)
+        return button
+    }()
     
     private let tapGesture = UITapGestureRecognizer()
-    
     private weak var viewModel: BossStorePostCellViewModel?
     
     override func setup() {
-        backgroundColor = .clear
+        setupUI()
         textView.addGestureRecognizer(tapGesture)
         tapGesture.addTarget(self, action: #selector(toggleTextView))
-        
-        contentView.addSubViews([
-            stackView,
-            lineView
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register([
+            BaseCollectionViewCell.self,
+            BossStorePostImageCell.self
         ])
+    }
+    
+    private func setupUI() {
+        backgroundColor = .clear
         
-        stackView.addArrangedSubview(headerView)
-        stackView.addArrangedSubview(containerView)
-        
-        headerView.addSubViews([titleLabel, moreButton])
-        
-        containerView.addSubViews([
-            categoryImageView,
-            storeNameLabel,
-            updatedAtLabel,
-            contentStackView,
-        ])
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(moreButton)
+        contentView.addSubview(containerView)
+        containerView.addSubview(categoryImageView)
+        containerView.addSubview(storeNameLabel)
+        containerView.addSubview(updatedAtLabel)
+        containerView.addSubview(contentStackView)
         
         contentStackView.addArrangedSubview(collectionView)
         contentStackView.addArrangedSubview(textView)
-    }
-    
-    override func bindConstraints() {
-        stackView.snp.makeConstraints {
-            $0.top.leading.trailing.equalToSuperview()
-        }
-        
-        headerView.snp.makeConstraints {
-            $0.height.equalTo(24)
-        }
-        
+        contentStackView.addArrangedSubview(likeButton)
+
         titleLabel.snp.makeConstraints {
-            $0.top.leading.equalToSuperview()
+            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview()
         }
         
         moreButton.snp.makeConstraints {
             $0.centerY.equalTo(titleLabel)
             $0.trailing.equalToSuperview()
+        }
+        
+        containerView.snp.makeConstraints {
+            $0.top.equalTo(moreButton.snp.bottom).offset(12)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
         
         categoryImageView.snp.makeConstraints {
@@ -172,19 +221,18 @@ final class BossStorePostCell: BaseCollectionViewCell {
         }
         
         collectionView.snp.makeConstraints {
-            $0.height.equalTo(BossStorePostImageCell.Layout.size.height)
+            $0.height.equalTo(BossStorePostImageCell.Layout.height)
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
         }
         
-        lineView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(16)
-            $0.bottom.equalToSuperview()
-            $0.height.equalTo(1)
+        likeButton.snp.makeConstraints {
+            $0.height.equalTo(16)
         }
     }
     
-    private func generateLayout() -> UICollectionViewLayout {
+    private func createLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = BossStorePostImageCell.Layout.size
         layout.scrollDirection = .horizontal
         layout.sectionInset = Layout.sectionInset
         layout.minimumLineSpacing = 12
@@ -194,16 +242,19 @@ final class BossStorePostCell: BaseCollectionViewCell {
     }
     
     func bind(_ viewModel: BossStorePostCellViewModel) {
-        moreButton.controlPublisher(for: .touchUpInside)
-            .mapVoid
-            .subscribe(viewModel.input.didTapMoreButton)
-            .store(in: &cancellables)
+        if let category = viewModel.output.store.categories.first {
+            categoryImageView.setImage(urlString: category.imageUrl)
+        }
         
-        moreButton.setTitle("소식  더보기(\(viewModel.output.totalCount)개)", for: .normal)
-        categoryImageView.setImage(urlString: viewModel.output.categoryIconUrl)
-        storeNameLabel.text = viewModel.output.storeName
-        updatedAtLabel.text = viewModel.output.timeStamp
-        collectionView.isHidden = viewModel.output.imageUrls.isEmpty
+        moreButton.setTitle("소식 더보기(\(viewModel.output.totalCount - 1)개)", for: .normal)
+        moreButton.isHidden = viewModel.output.totalCount <= 1
+        storeNameLabel.text = viewModel.output.store.name
+        updatedAtLabel.text = viewModel.output.post.updatedAt.toDate()?.toRelativeString()
+        collectionView.isHidden = viewModel.output.post.sections.isEmpty
+        
+        if let sticker = viewModel.output.post.stickers.first {
+            setSticker(sticker)
+        }
         
         if self.viewModel != viewModel {
             collectionView.reloadData()
@@ -214,30 +265,57 @@ final class BossStorePostCell: BaseCollectionViewCell {
         
         self.viewModel = viewModel
         
-        viewModel.output.isExpanded
+        // Input
+        moreButton.tapPublisher
+            .subscribe(viewModel.input.didTapMore)
+            .store(in: &cancellables)
+        
+        likeButton.tapPublisher
+            .handleEvents(receiveOutput: { _ in
+                FeedbackGenerator.shared.generate(.impact)
+            })
+            .subscribe(viewModel.input.didTapLike)
+            .store(in: &cancellables)
+        
+        // Output
+        viewModel.output.expendContent
             .main
-            .sink { [weak self] isExpanded in
-                guard let self else { return }
-                
-                updateTextView(viewModel.output.content, isExpanded: isExpanded)
+            .withUnretained(self)
+            .sink { (owner: BossStorePostCell, isExpanded: Bool) in
+                owner.updateTextView(viewModel.output.post.body, isExpanded: isExpanded)
             }
             .store(in: &cancellables)
         
-        switch viewModel.config.source {
-        case .storeDetail:
-            containerView.backgroundColor = Colors.gray0.color
-            headerView.isHidden = false
-            lineView.isHidden = true
-            tapGesture.isEnabled = true
-        case .postList:
-            containerView.backgroundColor = .clear
-            headerView.isHidden = true
-            lineView.isHidden = false
-            tapGesture.isEnabled = false
-        }
+        viewModel.output.sticker
+            .compactMap { $0 }
+            .main
+            .withUnretained(self)
+            .sink { (owner: BossStorePostCell, sticker: StickerResponse) in
+                owner.setSticker(sticker)
+            }
+            .store(in: &cancellables)
     }
     
-    func updateTextView(_ fullText: String, isExpanded: Bool) {
+    private func setSticker(_ sticker: StickerResponse) {
+        if sticker.reactedByMe {
+            let image = Icons.heartFill.image
+                .resizeImage(scaledTo: 16)
+                .withRenderingMode(.alwaysTemplate)
+            likeButton.setImage(image, for: .normal)
+            likeButton.tintColor = Colors.mainRed.color
+            likeButton.setTitleColor(Colors.mainRed.color, for: .normal)
+        } else {
+            let image = Icons.heartLine.image
+                .resizeImage(scaledTo: 16)
+                .withRenderingMode(.alwaysTemplate)
+            likeButton.setImage(image, for: .normal)
+            likeButton.tintColor = Colors.gray60.color
+            likeButton.setTitleColor(Colors.gray60.color, for: .normal)
+        }
+        likeButton.setTitle("좋아요 \(sticker.count)", for: .normal)
+    }
+    
+    private func updateTextView(_ fullText: String, isExpanded: Bool) {
         if isExpanded {
             textView.attributedText = NSAttributedString(
                 string: fullText,
@@ -252,7 +330,7 @@ final class BossStorePostCell: BaseCollectionViewCell {
         }
     }
     
-    func getLimitedText(fullText: String, moreText: String = "더보기", maxLines: Int = 6) -> NSAttributedString {
+    private func getLimitedText(fullText: String, moreText: String = "더보기", maxLines: Int = 6) -> NSAttributedString {
         if textView.bounds.width == 0 {
             textView.layoutIfNeeded()
         }
@@ -315,30 +393,35 @@ final class BossStorePostCell: BaseCollectionViewCell {
 
 extension BossStorePostCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel?.output.imageUrls.count ?? 0
+        return viewModel?.output.post.sections.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BossStorePostImageCell", for: indexPath) as! BossStorePostImageCell
-        if let imageUrl = viewModel?.output.imageUrls[safe: indexPath.item] {
-            cell.bind(imageUrl)
-        }
+        guard let imageUrl = viewModel?.output.post.sections[safe: indexPath.item]?.url else { return BaseCollectionViewCell() }
+        let cell: BossStorePostImageCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        
+        cell.bind(imageUrl)
         return cell
     }
 }
 
-extension BossStorePostCell: UICollectionViewDelegate {
+extension BossStorePostCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        viewModel?.input.didTapPhoto.send(indexPath.item)
     }
     
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        if let offset = collectionView.getNearByItemScrollOffset(velocity: velocity, targetContentOffset: targetContentOffset, sectionInsets: Layout.sectionInset) {
-            targetContentOffset.pointee = offset
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard let ratio = viewModel?.output.post.sections[safe: indexPath.item]?.ratio else {
+            return CGSize(width: BossStorePostImageCell.Layout.height, height: BossStorePostImageCell.Layout.height)
         }
+        
+        let width = BossStorePostImageCell.Layout.height * ratio
+        let height = BossStorePostImageCell.Layout.height
+        
+        return CGSize(width: width, height: height)
     }
     
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         viewModel?.input.didScroll.send(scrollView.contentOffset)
     }
 }
@@ -346,8 +429,7 @@ extension BossStorePostCell: UICollectionViewDelegate {
 // MARK: - Image Cell
 private final class BossStorePostImageCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: 208, height: 208)
-        static let sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+        static let height: CGFloat = 208
     }
     
     private let imageView = UIImageView().then {
@@ -359,11 +441,14 @@ private final class BossStorePostImageCell: BaseCollectionViewCell {
         $0.layer.borderWidth = 0.5
     }
     
-    override func setup() {
-        contentView.addSubview(imageView)
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        imageView.clear()
     }
     
-    override func bindConstraints() {
+    override func setup() {
+        contentView.addSubview(imageView)
         imageView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }

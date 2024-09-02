@@ -27,7 +27,7 @@ public protocol UserServiceProtocol {
     
     func saveMyPlace(placeType: PlaceType, input: SaveMyPlaceInput) async -> Result<Bool, Error>
     
-    func getMyPlaces(placeType: PlaceType, input: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PlaceResponse>, Error>
+    func getMyPlaces(placeType: PlaceType, input: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PlaceResponse>, Error>
     
     func deleteMyPlace(placeType: PlaceType, placeId: String) async -> Result<Bool, Error>
 }
@@ -116,7 +116,7 @@ public struct UserService: UserServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func getMyPlaces(placeType: PlaceType, input: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PlaceResponse>, Error> {
+    public func getMyPlaces(placeType: PlaceType, input: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PlaceResponse>, Error> {
         let request = GetMyPlacesRequest(placeType: placeType, input: input)
         
         return await NetworkManager.shared.request(requestType: request)

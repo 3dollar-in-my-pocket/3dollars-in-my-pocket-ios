@@ -25,6 +25,13 @@ final class BossStoreDetailViewModel: BaseViewModel {
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
         let didTapAddress = PassthroughSubject<Void, Never>()
         let didTapMapDetail = PassthroughSubject<Void, Never>()
+        
+        // Info Section
+        let didTapPhoto = PassthroughSubject<Int, Never>()
+        
+        // Post Section
+        let didTapMorePost = PassthroughSubject<Void, Never>()
+        let didTapPostPhoto = PassthroughSubject<Int, Never>()
     }
 
     struct Output {
@@ -52,14 +59,16 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case presentNavigation
         case presentMapDetail(MapDetailViewModel)
         case presentFeedback(BossStoreFeedbackViewModel)
-        case presentPostList(BossStorePostListViewModel)
+        case pushPostList(BossStorePostListViewModel)
+        case presentBossPhotoDetail(BossStorePhotoViewModel)
+        case showErrorAlert(Error)
     }
 
     let input = Input()
     let output = Output()
 
     private var state = State()
-    private let storeService: StoreServiceProtocol
+    private let storeService: StoreRepository
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
 
@@ -67,7 +76,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
     init(
         storeId: String,
-        storeService: StoreServiceProtocol = StoreService(),
+        storeService: StoreRepository = StoreRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.storeId = storeId
@@ -77,6 +86,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
         super.init()
 
         bindOverviewSection()
+        bindInfoSection()
+        bindPostSection()
     }
 
     override func bind() {
@@ -191,6 +202,31 @@ final class BossStoreDetailViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
     }
+    
+    private func bindInfoSection() {
+        input.didTapPhoto
+            .withUnretained(self)
+            .sink { (owner: BossStoreDetailViewModel, index: Int) in
+                owner.presentBossPhoto(index: index)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func bindPostSection() {
+        input.didTapMorePost
+            .withUnretained(self)
+            .sink { (owner: BossStoreDetailViewModel, _) in
+                owner.pushPostList()
+            }
+            .store(in: &cancellables)
+        
+        input.didTapPostPhoto
+            .withUnretained(self)
+            .sink { (owner: BossStoreDetailViewModel, selectedIndex: Int) in
+                owner.presentBossPostPhoto(index: selectedIndex)
+            }
+            .store(in: &cancellables)
+    }
 
     private func reloadDataSource() {
         guard let storeDetailData = state.storeDetailData else { return }
@@ -207,8 +243,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .init(type: .info, items: infoItems)
         ]
         
-        if let post = storeDetailData.recentPost {
-            sections.append(.init(type: .post, items: [.post(bindPostCellViewModel(with: post))]))
+        if let post = storeDetailData.post,
+           let totalPostCount = storeDetailData.totalPostCount {
+            let cellViewModel = bindPostCellViewModel(store: storeDetailData.store, post: post, totalCount: totalPostCount)
+            sections.append(.init(type: .post, items: [.post(cellViewModel)]))
         }
         
         sections.append(contentsOf: [
@@ -225,6 +263,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
         
         viewModel.output.didTapSnsButton
             .subscribe(input.didTapSnsButton)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.didTapPhoto
+            .subscribe(input.didTapPhoto)
             .store(in: &viewModel.cancellables)
         return viewModel
     }
@@ -371,24 +413,57 @@ final class BossStoreDetailViewModel: BaseViewModel {
         return cellViewModel
     }
     
-    private func bindPostCellViewModel(with post: BossStoreDetailRecentPost) -> BossStorePostCellViewModel {
-        let cellViewModel = BossStorePostCellViewModel(config: .init(data: post, source: .storeDetail))
+    private func bindPostCellViewModel(
+        store: BossStoreResponse,
+        post: PostResponse,
+        totalCount: Int
+    ) -> BossStorePostCellViewModel {
+        let config = BossStorePostCellViewModel.Config(store: store, post: post, totalCount: totalCount)
+        let cellViewModel = BossStorePostCellViewModel(config: config)
         
-        cellViewModel.output.isExpanded.dropFirst()
+        cellViewModel.output.didTapMore
+            .subscribe(input.didTapMorePost)
+            .store(in: &cellViewModel.cancellables)
+        
+        cellViewModel.output.expendContent.dropFirst()
             .mapVoid
             .subscribe(output.updateHeight)
             .store(in: &cellViewModel.cancellables)
+       
+        cellViewModel.output.didTapPhoto
+            .subscribe(input.didTapPostPhoto)
+            .store(in: &cellViewModel.cancellables)
         
-        cellViewModel.output.moveToList
-            .compactMap { [weak self] _ in
-                guard let self else { return nil }
-                
-                return .presentPostList(.init(storeId: storeId))
-            }
+        cellViewModel.output.showErrorAlert
+            .map { Route.showErrorAlert($0) }
             .subscribe(output.route)
             .store(in: &cellViewModel.cancellables)
         
         return cellViewModel
+    }
+    
+    private func presentBossPhoto(index: Int) {
+        guard let store = state.storeDetailData?.store else { return }
+        let config = BossStorePhotoViewModel.Config(photos: store.representativeImages, selectedIndex: index)
+        let viewModel = BossStorePhotoViewModel(config: config)
+        
+        output.route.send(.presentBossPhotoDetail(viewModel))
+    }
+    
+    private func presentBossPostPhoto(index: Int) {
+        guard let post = state.storeDetailData?.post else { return }
+        let photos = post.sections.map { ImageResponse(imageUrl: $0.url) }
+        let config = BossStorePhotoViewModel.Config(photos: photos, selectedIndex: index)
+        let viewModel = BossStorePhotoViewModel(config: config)
+        
+        output.route.send(.presentBossPhotoDetail(viewModel))
+    }
+    
+    private func pushPostList() {
+        let config = BossStorePostListViewModel.Config(storeId: storeId)
+        let viewModel = BossStorePostListViewModel(config: config)
+        
+        output.route.send(.pushPostList(viewModel))
     }
 }
 

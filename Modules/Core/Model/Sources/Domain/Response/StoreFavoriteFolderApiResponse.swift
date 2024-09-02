@@ -4,6 +4,6 @@ public struct StoreFavoriteFolderApiResponse: Decodable {
     public let name: String
     public let introduction: String
     public let user: UserApiResponse
-    public let favorites: [StoreApiResponse]
-    public let cursor: CursorWithTotalCountResponse
+    public let favorites: [StoreResponse]
+    public let cursor: CursorAndTotalCountString
 }

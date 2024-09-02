@@ -7,7 +7,7 @@ import Mock
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var networkConfiguration = MockNetworkConfiguration()
-    var mockUserDefaults = MockUserDefault()
+    var preference = Preference(name: "Store-Demo")
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
@@ -22,12 +22,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func initializeDI() {
         MockTokenService().generateTestToken { [weak self] auth in
             self?.networkConfiguration.authToken = auth.token
-            self?.mockUserDefaults.authToken = auth.token
-            self?.mockUserDefaults.userId = auth.userId
-            self?.mockUserDefaults.isAnonymousUser = false
+            self?.preference.authToken = auth.token
+            self?.preference.userId = auth.userId
+            self?.preference.isAnonymousUser = false
         }
         
-        MockAppModuleInterfaceImpl.registerAppModuleInterface(userDefaults: mockUserDefaults)
+        MockAppModuleInterfaceImpl.registerAppModuleInterface()
         MockNetworkConfiguration.registerNetworkConfiguration(networkConfiguration)
         StoreInterfaceImpl.registerStoreInterface()
     }

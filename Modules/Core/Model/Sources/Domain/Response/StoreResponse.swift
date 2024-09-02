@@ -1,20 +1,22 @@
 import Foundation
 
-public struct StoreApiResponse: Decodable {
+public struct StoreResponse: Decodable {
     public let storeType: StoreType
     public let storeId: String
-    public let account: AccountResponse?
+    public let isOwner: Bool
+    public let account: AccountKey?
     public let storeName: String
     public let address: AddressResponse?
     public let location: LocationResponse?
-    public let categories: [PlatformStoreCategoryResponse]
+    public let categories: [StoreFoodCategoryResponse]
     public let isDeleted: Bool
+    public let activitiesStatus: ActivitiesStatus
     public let createdAt: String?
     public let updatedAt: String?
 }
 
-extension StoreApiResponse: Hashable, Equatable {
-    public static func == (lhs: StoreApiResponse, rhs: StoreApiResponse) -> Bool {
+extension StoreResponse: Hashable, Equatable {
+    public static func == (lhs: StoreResponse, rhs: StoreResponse) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
     
@@ -25,7 +27,7 @@ extension StoreApiResponse: Hashable, Equatable {
     }
 }
 
-public extension StoreApiResponse {
+public extension StoreResponse {
     /// 카테고리들 나열된 문자열 ex.) #붕어빵 #땅콩과자 #호떡
     var categoriesString: String {
         if categories.count > 3 {

@@ -57,14 +57,14 @@ public final class WriteAddressViewModel: BaseViewModel {
     let output = Output()
     private var state: State
     private let mapService: MapServiceProtocol
-    private let storeService: StoreServiceProtocol
+    private let storeRepository: StoreRepository
     private let locationManager: LocationManagerProtocol
     private let logManager: LogManagerProtocol
     
     public init(
         config: Config? = nil,
         mapService: MapServiceProtocol = MapService(),
-        storeService: StoreServiceProtocol = StoreService(),
+        storeRepository: StoreRepository = StoreRepositoryImpl(),
         locationManager: LocationManagerProtocol = LocationManager.shared,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
@@ -79,7 +79,7 @@ public final class WriteAddressViewModel: BaseViewModel {
         }
         
         self.mapService = mapService
-        self.storeService = storeService
+        self.storeRepository = storeRepository
         self.locationManager = locationManager
         self.logManager = logManager
         
@@ -232,7 +232,7 @@ public final class WriteAddressViewModel: BaseViewModel {
         let clLocation = CLLocation(latitude: location.latitude, longitude: location.longitude)
         
         Task {
-            let result =  await storeService.isStoresExistedAround(
+            let result =  await storeRepository.isStoresExistedAround(
                 distance: 10,
                 mapLocation: clLocation
             )
@@ -261,7 +261,7 @@ public final class WriteAddressViewModel: BaseViewModel {
             mapLongitude: cameraPosition.longitude
         )
         
-        return await storeService.fetchAroundStores(
+        return await storeRepository.fetchAroundStores(
             input: input,
             latitude: cameraPosition.latitude,
             longitude: cameraPosition.longitude

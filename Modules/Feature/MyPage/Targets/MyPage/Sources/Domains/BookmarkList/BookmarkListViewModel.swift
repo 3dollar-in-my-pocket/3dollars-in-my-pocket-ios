@@ -35,7 +35,7 @@ final class BookmarkListViewModel: BaseViewModel {
         var cursor: String?
         var hasMore = true
         var totalCount = 0
-        var stores: [StoreApiResponse] = []
+        var stores: [StoreResponse] = []
     }
     
     enum Route {
@@ -224,7 +224,7 @@ final class BookmarkListViewModel: BaseViewModel {
         return viewModel
     }
     
-    private func createBookmarkStoreCellViewModel(store: StoreApiResponse) -> BookmarkStoreCellViewModel {
+    private func createBookmarkStoreCellViewModel(store: StoreResponse) -> BookmarkStoreCellViewModel {
         let config = BookmarkStoreCellViewModel.Config(
             store: store,
             isDeleteModel: output.isDeleteMode.value
@@ -242,7 +242,7 @@ final class BookmarkListViewModel: BaseViewModel {
         return viewModel
     }
     
-    private func removeBookmark(store: StoreApiResponse, index: Int) {
+    private func removeBookmark(store: StoreResponse, index: Int) {
         guard let storeId = Int(store.storeId) else { return }
         
         Task { [weak self] in
@@ -324,7 +324,7 @@ private extension BookmarkListViewModel {
         logManager.sendEvent(.init(screen: output.screen, eventName: .clickEdit))
     }
     
-    func sendClickStoreLog(_ store: StoreApiResponse) {
+    func sendClickStoreLog(_ store: StoreResponse) {
         logManager.sendEvent(.init(screen: output.screen, eventName: .clickStore, extraParameters: [
             .storeId: store.storeId,
             .type: store.storeType.rawValue

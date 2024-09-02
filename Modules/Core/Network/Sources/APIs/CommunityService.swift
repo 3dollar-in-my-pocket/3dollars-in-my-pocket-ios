@@ -1,7 +1,7 @@
 import Model
 
 public protocol CommunityServiceProtocol {
-    func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResposne<StoreApiResponse>, Error>
+    func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResponse<StoreResponse>, Error>
     /// 동네 인기 가게가 활성화된 동네 목록 조회
     func fetchPopularStoreNeighborhoods() async -> Result<NeighborhoodsResponse, Error>
     /// 투표 신고 이유 목록 조회 (나중에 공용 API 로 통합 필요)
@@ -9,7 +9,7 @@ public protocol CommunityServiceProtocol {
     /// 투표 신고
     func reportPoll(pollId: String, input: PollReportCreateRequestInput) async -> Result<String, Error>
     /// 투표 목록 조회
-    func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResposne<PollWithMetaApiResponse>, Error>
+    func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResponse<PollWithMetaApiResponse>, Error>
     /// 나의 투표 목록 조회
     func fetchMyPolls(input: CursorRequestInput) async -> Result<PollListWithUserPollMetaApiResponse, Error>
     // 투표 참여
@@ -19,7 +19,7 @@ public protocol CommunityServiceProtocol {
     /// 유저 투표 정책 조회
     func fetchUserPollPolicy() async -> Result<PollPolicyApiResponse, Error>
     /// 투표에 등록된 댓글 목록 조회
-    func fetchPollComments(pollId: String, input: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PollCommentWithUserRecursiveApiResponse>, Error>
+    func fetchPollComments(pollId: String, input: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PollCommentWithUserRecursiveApiResponse>, Error>
     /// 투표에 새로운 댓글 등록
     func createPollComment(pollId: String, input: CreatePollCommentRequestInput) async -> Result<IdResponseString, Error>
     /// 투표 등록
@@ -39,7 +39,7 @@ public protocol CommunityServiceProtocol {
 public struct CommunityService: CommunityServiceProtocol {
     public init() { }
 
-    public func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResposne<StoreApiResponse>, Error> {
+    public func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResponse<StoreResponse>, Error> {
         let request = FetchPopularStoresRequest(requestInput: input)
 
         return await NetworkManager.shared.request(requestType: request)
@@ -63,7 +63,7 @@ public struct CommunityService: CommunityServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
 
-    public func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResposne<PollWithMetaApiResponse>, Error> {
+    public func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResponse<PollWithMetaApiResponse>, Error> {
         let request = FetchPollsRequest(requestInput: input)
 
         return await NetworkManager.shared.request(requestType: request)
@@ -92,7 +92,7 @@ public struct CommunityService: CommunityServiceProtocol {
         return await NetworkManager.shared.request(requestType: request)
     }
 
-    public func fetchPollComments(pollId: String, input: CursorRequestInput) async -> Result<ContentsWithCursorResposne<PollCommentWithUserRecursiveApiResponse>, Error> {
+    public func fetchPollComments(pollId: String, input: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PollCommentWithUserRecursiveApiResponse>, Error> {
         let request = FetchPollCommentsRequest(pollId: pollId, requestInput: input)
 
         return await NetworkManager.shared.request(requestType: request)
