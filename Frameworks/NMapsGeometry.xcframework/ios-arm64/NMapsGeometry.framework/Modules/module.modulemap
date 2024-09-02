@@ -1,0 +1,6 @@
+framework module NMapsGeometry {
+  umbrella header "NMapsGeometry.h"
+  export *
+
+  module * { export * }
+}
