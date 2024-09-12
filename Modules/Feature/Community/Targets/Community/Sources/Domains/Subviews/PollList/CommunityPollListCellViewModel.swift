@@ -23,7 +23,11 @@ final class CommunityPollListCellViewModel: BaseViewModel {
         let didSelectPollItem = PassthroughSubject<String, Never>()
         let didSelectCategory = PassthroughSubject<PollCategoryResponse, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
-        let openUrl = PassthroughSubject<String?, Never>()
+        let route = PassthroughSubject<Route, Never>()
+    }
+    
+    enum Route {
+        case deepLink(AdvertisementResponse)
     }
 
     struct State {
@@ -35,6 +39,14 @@ final class CommunityPollListCellViewModel: BaseViewModel {
     struct Config {
         let screenName: ScreenName
     }
+    
+    struct Dependency {
+        let logManager: LogManagerProtocol
+        
+        init(logManager: LogManagerProtocol = LogManager.shared) {
+            self.logManager = logManager
+        }
+    }
 
     lazy var identifier = ObjectIdentifier(self)
 
@@ -43,16 +55,18 @@ final class CommunityPollListCellViewModel: BaseViewModel {
     let config: Config
 
     private var state = State()
-
+    private let dependency: Dependency
     private let communityService: CommunityServiceProtocol
     private let advertisementRepository: AdvertisementRepository
 
     init(
         config: Config,
+        dependency: Dependency = Dependency(),
         communityService: CommunityServiceProtocol = CommunityService(),
         advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl()
     ) {
         self.config = config
+        self.dependency = dependency
         self.communityService = communityService
         self.advertisementRepository = advertisementRepository
 
@@ -101,7 +115,8 @@ final class CommunityPollListCellViewModel: BaseViewModel {
                 case .poll(let viewModel):
                     owner.output.didSelectPollItem.send(viewModel.pollId)
                 case .ad(let viewModel):
-                    owner.output.openUrl.send(viewModel.output.item.link?.url)
+                    owner.sendClickAdvertisementLog()
+                    owner.output.route.send(.deepLink(viewModel.output.item))
                 }
             }
             .store(in: &cancellables)
@@ -182,5 +197,17 @@ extension CommunityPollListCellViewModel: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
+    }
+}
+
+// MARK: Log
+extension CommunityPollListCellViewModel {
+    private func sendClickAdvertisementLog() {
+        guard let advertisement = state.ad else { return }
+        dependency.logManager.sendEvent(.init(
+            screen: config.screenName,
+            eventName: .clickPollAd,
+            extraParameters: [.advertisementId: advertisement.advertisementId])
+        )
     }
 }

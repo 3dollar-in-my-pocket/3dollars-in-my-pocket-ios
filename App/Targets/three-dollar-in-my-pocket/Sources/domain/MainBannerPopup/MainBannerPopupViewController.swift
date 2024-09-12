@@ -67,6 +67,11 @@ final class MainBannerPopupViewController: BaseViewController {
         switch route {
         case .dismiss:
             dismiss(animated: true, completion: nil)
+        case .deepLink(let advertisement):
+            dismiss(animated: true) {
+                guard let link = advertisement.link else { return }
+                DeepLinkHandler.shared.handleAdvertisementLink(link)
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import Common
 import Model
 import Networking
 import Log
+import AppInterface
 
 final class MarkerPopupViewModel: BaseViewModel {
     struct Input {
@@ -20,7 +21,7 @@ final class MarkerPopupViewModel: BaseViewModel {
     }
     
     enum Route {
-        case goToURL(String)
+        case deepLink(AdvertisementResponse)
     }
     
     
@@ -61,10 +62,10 @@ final class MarkerPopupViewModel: BaseViewModel {
                 owner.sendClickEvent()
                 owner.sendClickEventLog()
             })
-            .compactMap({ (owner: MarkerPopupViewModel, _) in
-                owner.state.advertisement?.link?.url
+            .compactMap({ (owner: MarkerPopupViewModel, Void) in
+                owner.state.advertisement
             })
-            .map { Route.goToURL($0) }
+            .map { Route.deepLink($0) }
             .subscribe(output.route)
             .store(in: &cancellables)
     }

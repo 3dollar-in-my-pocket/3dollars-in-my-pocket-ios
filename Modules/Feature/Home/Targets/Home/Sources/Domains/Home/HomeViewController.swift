@@ -195,7 +195,7 @@ public final class HomeViewController: BaseViewController {
         viewModel.output.route
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
-            .sink { owner, route in
+            .sink { (owner: HomeViewController, route) in
                 switch route {
                 case .presentCategoryFilter(let viewModel):
                     let categoryFilterViewController = CategoryFilterViewController(viewModel: viewModel)
@@ -230,9 +230,9 @@ public final class HomeViewController: BaseViewController {
                         owner.showErrorAlert(error: error)
                     }
                     
-                case .openURL(let urlString):
-                    guard let url = URL(string: urlString) else { return }
-                    UIApplication.shared.open(url)
+                case .deepLink(let advertisement):
+                    guard let link = advertisement.link else { return }
+                    Environment.appModuleInterface.deepLinkHandler.handleAdvertisementLink(link)
                 }
             }
             .store(in: &cancellables)

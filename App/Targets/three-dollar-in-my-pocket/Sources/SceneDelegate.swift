@@ -49,14 +49,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     Preference.shared.shareLink = "\(storeType):\(storeId)"
                 }
             }
-            DeeplinkManager.shared.handleDeeplink(url: url)
+            DeepLinkHandler.shared.handle(url.absoluteString)
         }
     }
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         guard let incomingURL = userActivity.webpageURL else { return }
         DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, _ in
-            DeeplinkManager.shared.handleDynamiclink(url: dynamicLink?.url)
+            guard let url = dynamicLink?.url else { return }
+                
+            DeepLinkHandler.shared.handle(url.absoluteString)
         }
     }
     
@@ -84,13 +86,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         for userActivity in connectionOptions.userActivities {
             if let incomingURL = userActivity.webpageURL {
                 DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { (dynamicLink, error) in
-                        guard error == nil else {
-                            Log.debug("Found an error \(error!.localizedDescription)")
-                            return
-                        }
-                        
-                        DeeplinkManager.shared.reserveDynamiclink(url: dynamicLink?.url)
+                    guard error == nil else {
+                        Log.debug("Found an error \(error!.localizedDescription)")
+                        return
                     }
+                    
+                    guard let url = dynamicLink?.url else { return }
+                    DeepLinkHandler.shared.handle(url.absoluteString)
+                }
                 break
             }
         }
@@ -99,13 +102,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func reserveDeepLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
         guard let url = connectionOptions.urlContexts.first?.url else { return }
         
-        DeeplinkManager.shared.reserveDeeplink(url: url)
+        DeepLinkHandler.shared.handle(url.absoluteString)
     }
     
     private func reserveNotificationDeepLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
         guard let userInfo = connectionOptions.notificationResponse?.notification.request.content.userInfo,
-              let deeplink = userInfo["link"] as? String else { return }
-        DeeplinkManager.shared.reserveDeeplink(url: URL(string: deeplink))
+              let deepLink = userInfo["link"] as? String else { return }
+        DeepLinkHandler.shared.handle(deepLink)
     }
 }
 

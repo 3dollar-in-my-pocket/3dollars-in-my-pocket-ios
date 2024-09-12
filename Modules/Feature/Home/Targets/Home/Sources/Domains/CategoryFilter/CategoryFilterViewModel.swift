@@ -5,6 +5,7 @@ import Common
 import Networking
 import Model
 import Log
+import AppInterface
 
 extension CategoryFilterViewModel {
     struct Input {
@@ -33,6 +34,7 @@ extension CategoryFilterViewModel {
     }
     
     enum Route {
+        case deepLink(AdvertisementResponse)
         case showErrorAlert(Error)
         case dismiss
     }
@@ -156,8 +158,7 @@ final class CategoryFilterViewModel: BaseViewModel {
     private func handleTapBanner() {
         guard let advertisement = state.advertisement else { return }
         sendClickBannerLog(advertisement)
-        
-        // TODO: 딥링크 로직 정리 후 추가 필요
+        output.route.send(.deepLink(advertisement))
     }
     
     private func handleSelectCategory(_ categoryId: String) {

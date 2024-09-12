@@ -12,7 +12,7 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     
     public var appleSigninManager: SigninManagerProtocol = MockSigninManager()
     
-    public var deeplinkManager: DeeplinkManagerProtocol = MockDeeplinkManager()
+    public var deepLinkHandler: DeepLinkHandlerProtocol = MockDeepLinkHandler()
     
     public var photoManager: PhotoManagerProtocol = MockPhotoManager()
     

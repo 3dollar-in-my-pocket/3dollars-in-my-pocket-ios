@@ -86,7 +86,7 @@ extension HomeViewModel {
         case presentMarkerAdvertisement
         case presentSearchAddress(SearchAddressViewModel)
         case showErrorAlert(Error)
-        case openURL(String)
+        case deepLink(AdvertisementResponse)
     }
     
     struct Dependency {
@@ -425,11 +425,9 @@ final class HomeViewModel: BaseViewModel {
                 if index == state.selectedIndex {
                     switch item {
                     case .advertisement(let advertisement):
-                        guard let advertisement = advertisement,
-                              let linkUrl = advertisement.link?.url else { return }
+                        guard let advertisement = advertisement else { return }
                         sendClickAdCard(advertisement: advertisement)
-                        output.route.send(.openURL(linkUrl))
-                        
+                        output.route.send(.deepLink(advertisement))
                     case .store(let storeWithExtra):
                         sendClickStoreLog(storeWithExtra.store)
                         pushStoreDetail(store: storeWithExtra.store)

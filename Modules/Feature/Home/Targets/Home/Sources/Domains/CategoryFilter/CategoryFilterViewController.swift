@@ -87,6 +87,9 @@ final class CategoryFilterViewController: BaseViewController {
 extension CategoryFilterViewController {
     private func handleRoute(_ route: CategoryFilterViewModel.Route) {
         switch route {
+        case .deepLink(let advertisement):
+            guard let link = advertisement.link else { return }
+            Environment.appModuleInterface.deepLinkHandler.handleAdvertisementLink(link)
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
         case .dismiss:

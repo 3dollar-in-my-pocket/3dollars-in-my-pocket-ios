@@ -87,12 +87,11 @@ final class MarkerPopupViewController: BaseViewController {
     
     private func handleRoute(_ route: MarkerPopupViewModel.Route) {
         switch route {
-        case .goToURL(let urlString):
+        case .deepLink(let advertisement):
             DimManager.shared.hideDim()
             dismiss(animated: true) {
-                guard let url = URL(string: urlString) else { return }
-                
-                UIApplication.shared.open(url)
+                guard let link = advertisement.link else { return }
+                Environment.appModuleInterface.deepLinkHandler.handleAdvertisementLink(link)
             }
         }
     }

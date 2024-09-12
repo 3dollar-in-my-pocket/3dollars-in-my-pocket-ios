@@ -7,6 +7,7 @@ import Networking
 import Common
 import Model
 import Log
+import AppInterface
 
 extension HomeListViewModel {
     struct Input {
@@ -67,15 +68,18 @@ extension HomeListViewModel {
         let storeRepository: StoreRepository
         let advertisementRepository: AdvertisementRepository
         let logManager: LogManagerProtocol
+        let deepLinkHandler: DeepLinkHandlerProtocol
         
         init(
             storeRepository: StoreRepository = StoreRepositoryImpl(),
             advertisementRepository: AdvertisementRepository =  AdvertisementRepositoryImpl(),
-            logManager: LogManagerProtocol = LogManager.shared
+            logManager: LogManagerProtocol = LogManager.shared,
+            deepLinkHandler: DeepLinkHandlerProtocol = Environment.appModuleInterface.deepLinkHandler
         ) {
             self.storeRepository = storeRepository
             self.advertisementRepository = advertisementRepository
             self.logManager = logManager
+            self.deepLinkHandler = deepLinkHandler
         }
     }
 }
@@ -203,9 +207,9 @@ final class HomeListViewModel: BaseViewModel {
         input.onTapAdvertisement
             .withUnretained(self)
             .sink { owner, advertisement in
-                // TODO: 딥링크 처리 필요
-//                owner.output.route.send(.openUrl(advertisement.linkUrl))
                 owner.sendClickAdBannerLog(advertisement)
+                guard let link = advertisement.link else { return }
+                owner.dependency.deepLinkHandler.handleAdvertisementLink(link)
             }
             .store(in: &cancellables)
     }
