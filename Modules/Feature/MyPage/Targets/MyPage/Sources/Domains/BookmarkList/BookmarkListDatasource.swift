@@ -16,7 +16,7 @@ final class BookmarkListDatasource: UICollectionViewDiffableDataSource<BookmarkL
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .overview(let title, let introduction):
-                let cell: BookmarkOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BookmarkOverviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(title: title, introduction: introduction)
                 cell.editButton.controlPublisher(for: .touchUpInside)
@@ -25,12 +25,12 @@ final class BookmarkListDatasource: UICollectionViewDiffableDataSource<BookmarkL
                     .store(in: &cell.cancellables)
                 return cell
             case .store(let viewModel):
-                let cell: BookmarkStoreCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BookmarkStoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(viewModel, index: indexPath.item)
                 return cell
             case .empty:
-                let cell: BookmarkEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BookmarkEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 return cell
             }

@@ -169,7 +169,7 @@ extension RegisteredStoreListViewController: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let item = viewModel.output.sectionItems.value[safe: indexPath.item] else { return UICollectionViewCell() }
         
-        let cell: RegisteredStoreItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: RegisteredStoreItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         cell.bind(item: item)
         return cell
     }

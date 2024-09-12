@@ -1,8 +1,9 @@
 import Foundation
 
-public struct StoreOpenResponse: Decodable {
+public struct StoreOpenResponse: Decodable, Hashable {
     public let status: StoreOpenStatus
     public let openStartDateTime: String?
+    public let isOpening: Bool
 
     public enum StoreOpenStatus: String, Decodable {
         case open = "OPEN"

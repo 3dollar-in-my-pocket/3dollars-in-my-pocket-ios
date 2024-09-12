@@ -7,11 +7,11 @@ import Log
 
 final class HomeListAdCellViewModel: BaseViewModel {
     struct Output {
-        let item: Advertisement
+        let item: AdvertisementResponse
     }
 
     struct Config {
-        let ad: Advertisement
+        let ad: AdvertisementResponse
     }
 
     lazy var identifier = ObjectIdentifier(self)
@@ -28,7 +28,6 @@ final class HomeListAdCellViewModel: BaseViewModel {
 
     override func bind() {
         super.bind()
-
     }
 }
 

@@ -28,7 +28,7 @@ final class VisitStoreListDataSource: UICollectionViewDiffableDataSource<VisitSt
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .store(let item):
-                let cell: VisitStoreItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: VisitStoreItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(item: item)
                 return cell
             }

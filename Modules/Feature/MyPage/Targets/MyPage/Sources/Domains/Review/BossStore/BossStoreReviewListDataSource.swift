@@ -24,7 +24,7 @@ final class BossStoreReviewListDataSource: UICollectionViewDiffableDataSource<Bo
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .review(let feedback):
-                let cell: BossStoreReviewListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BossStoreReviewListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(feedback)
                 return cell
             }

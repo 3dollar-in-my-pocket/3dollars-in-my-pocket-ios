@@ -20,11 +20,11 @@ final class CommunityPopularStoreNeighborhoodsContentDataSource: UICollectionVie
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .district(let item):
-                let cell: CommunityPopularStoreNeighborhoodsCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: CommunityPopularStoreNeighborhoodsCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(item: item)
                 return cell
             case .province(let item):
-                let cell: CommunityPopularStoreNeighborhoodsCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: CommunityPopularStoreNeighborhoodsCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(item: item)
                 return cell
             }

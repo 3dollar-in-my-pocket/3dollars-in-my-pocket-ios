@@ -398,7 +398,7 @@ extension BossStorePostCell: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let imageUrl = viewModel?.output.post.sections[safe: indexPath.item]?.url else { return BaseCollectionViewCell() }
-        let cell: BossStorePostImageCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: BossStorePostImageCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         
         cell.bind(imageUrl)
         return cell

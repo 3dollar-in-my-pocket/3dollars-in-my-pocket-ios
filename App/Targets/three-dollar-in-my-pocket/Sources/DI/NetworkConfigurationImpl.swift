@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation
 
 import DependencyInjection
 import Model
@@ -30,6 +31,10 @@ struct NetworkConfigurationImpl: NetworkConfigurable {
     
     var authToken: String? {
         return Preference.shared.authToken
+    }
+    
+    var userCurrentLocation: CLLocation {
+        return Preference.shared.userCurrentLocation
     }
 }
 

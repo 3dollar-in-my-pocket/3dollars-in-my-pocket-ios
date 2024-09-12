@@ -50,11 +50,11 @@ final class MyMedalDataSource: UICollectionViewDiffableDataSource<MyMedalSection
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .currentMedal(let medal):
-                let cell: MyMedalCollectionCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: MyMedalCollectionCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(medal: medal)
                 return cell
             case .medal(let medal):
-                let cell: MedalCollectionCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: MedalCollectionCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(medal: medal)
                 return cell
             default:

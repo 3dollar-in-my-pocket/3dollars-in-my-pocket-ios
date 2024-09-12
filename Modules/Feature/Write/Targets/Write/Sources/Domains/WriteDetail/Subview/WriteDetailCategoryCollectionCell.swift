@@ -80,7 +80,7 @@ extension WriteDetailCategoryCollectionCell: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let category = categories[safe: indexPath.row] else { return UICollectionViewCell() }
-        let cell: WriteDetailCollectionItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: WriteDetailCollectionItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         
         cell.bind(category: category)
         

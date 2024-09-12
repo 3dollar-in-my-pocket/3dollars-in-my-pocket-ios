@@ -21,13 +21,13 @@ final class ReportReviewDataSource: UICollectionViewDiffableDataSource<ReportRev
         super.init(collectionView: collectionView) { [weak viewModel] collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .reason(let reason):
-                let cell: ReportReviewReasonCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: ReportReviewReasonCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(title: reason.description)
                 
                 return cell
                 
             case .reasonDetail:
-                let cell: ReportReviewReasonDetailCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: ReportReviewReasonDetailCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.didChangeText
                     .sink { [weak viewModel] text in
                         viewModel?.input.inputReasonDetail.send(text)

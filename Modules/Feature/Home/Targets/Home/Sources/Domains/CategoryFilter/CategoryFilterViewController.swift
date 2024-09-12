@@ -6,16 +6,11 @@ import Model
 import PanModal
 import Log
 
-protocol CategoryFilterDelegate: AnyObject {
-    func onSelectCategory(category: PlatformStoreCategory?)
-}
-
 final class CategoryFilterViewController: BaseViewController {
     override var screenName: ScreenName {
         return viewModel.output.screenName
     }
     
-    weak var delegate: CategoryFilterDelegate?
     private let categoryFilterView = CategoryFilterView()
     private let viewModel: CategoryFilterViewModel
     private lazy var dataSource = CategoryFilterDataSource(
@@ -24,12 +19,8 @@ final class CategoryFilterViewController: BaseViewController {
         rootViewController: self
     )
     
-    static func instance(selectedCategory: PlatformStoreCategory? = nil) -> CategoryFilterViewController {
-        return CategoryFilterViewController(selectedCategory: selectedCategory)
-    }
-    
-    init(selectedCategory: PlatformStoreCategory? = nil) {
-        self.viewModel = CategoryFilterViewModel(category: selectedCategory)
+    init(viewModel: CategoryFilterViewModel) {
+        self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -49,87 +40,65 @@ final class CategoryFilterViewController: BaseViewController {
     }
     
     override func bindViewModelOutput() {
-        Publishers.Zip(viewModel.output.categories, viewModel.output.advertisement)
+        viewModel.output.dataSource
+            .main
             .withUnretained(self)
-            .receive(on: DispatchQueue.main)
-            .sink { owner, dataSourceItems in
-                var categorySections: [CategorySection] = []
-                let (categories, advertisement) = dataSourceItems
-                let advertisementSectionItems = advertisement == nil ? [] : [CategorySectionItem.advertisement(advertisement)]
-                let advertisementSection = CategorySection(title: HomeStrings.categoryFilterTitle, items: advertisementSectionItems)
-                
-                categorySections.append(advertisementSection)
-                
-                let groupingByCategoryType = Dictionary(grouping: categories) { $0.classification }
-                
-                for categoryType in groupingByCategoryType.keys.sorted(by: <) {
-                    if let categories = groupingByCategoryType[categoryType] {
-                        let categorySection = CategorySection(title: categoryType.description, items: categories.map { CategorySectionItem.category($0) })
-                        
-                        categorySections.append(categorySection)
-                    }
-                }
-                
-                owner.updateDataSource(section: categorySections)
-                owner.viewModel.input.onCollectionViewLoaded.send(())
-            }
-            .store(in: &cancellables)
-        
-        viewModel.output.route
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, route in
-                switch route {
-                case .showErrorAlert(let error):
-                    owner.showErrorAlert(error: error)
-                    
-                case .dismissWithCategory(let category):
-                    owner.delegate?.onSelectCategory(category: category)
-                    owner.dismiss(animated: true)
-                    
-                case .goToWeb(let urlString):
-                    owner.openURLWithSafari(urlString: urlString)
+            .sink { (owner: CategoryFilterViewController, dataSource: [CategorySection]) in
+                owner.dataSource.reload(dataSource)
+                DispatchQueue.main.async {
+                    owner.viewModel.input.onCollectionViewLoaded.send(())
                 }
             }
             .store(in: &cancellables)
         
         viewModel.output.selectCategory
-            .receive(on: DispatchQueue.main)
+            .main
             .compactMap { $0 }
             .withUnretained(self)
-            .sink { owner, selectedCategory in
-                for (sectionIndex, section) in owner.dataSource.snapshot().sectionIdentifiers.enumerated() {
-                    for (itemIndex, item) in section.items.enumerated() {
-                        if case .category(let category) = item,
-                           category == selectedCategory {
-                            let indexPath = IndexPath(row: itemIndex, section: sectionIndex)
-                            owner.categoryFilterView.collectionView.cellForItem(at: indexPath)?.isSelected = true
-                            break
-                        }
-                    }
-                }
+            .sink { (owner: CategoryFilterViewController, selectedCategory: StoreFoodCategoryResponse) in
+                owner.selectCategory(selectedCategory)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.route
+            .main
+            .withUnretained(self)
+            .sink { (owner: CategoryFilterViewController, route: CategoryFilterViewModel.Route) in
+                owner.handleRoute(route)
             }
             .store(in: &cancellables)
     }
     
-    private func updateDataSource(section: [CategorySection]) {
-        var snapshot = CategoryFilterSanpshot()
-        
-        section.forEach {
-            snapshot.appendSections([$0])
-            snapshot.appendItems($0.items)
+    private func selectCategory(_ selectedCategory: StoreFoodCategoryResponse) {
+        for (sectionIndex, section) in dataSource.snapshot().sectionIdentifiers.enumerated() {
+            for (itemIndex, item) in section.items.enumerated() {
+                if case .category(let category) = item,
+                   category == selectedCategory {
+                    let indexPath = IndexPath(row: itemIndex, section: sectionIndex)
+                    categoryFilterView.collectionView.cellForItem(at: indexPath)?.isSelected = true
+                    break
+                }
+            }
         }
-        
-        dataSource.apply(snapshot, animatingDifferences: true)
-    }
-    
-    private func openURLWithSafari(urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        
-        UIApplication.shared.open(url)
     }
 }
 
+// MARK: Route
+extension CategoryFilterViewController {
+    private func handleRoute(_ route: CategoryFilterViewModel.Route) {
+        switch route {
+        case .deepLink(let advertisement):
+            guard let link = advertisement.link else { return }
+            Environment.appModuleInterface.deepLinkHandler.handleAdvertisementLink(link)
+        case .showErrorAlert(let error):
+            showErrorAlert(error: error)
+        case .dismiss:
+            dismiss(animated: true)
+        }
+    }
+}
+
+// MARK: PanModalPresentable
 extension CategoryFilterViewController: PanModalPresentable {
     var panScrollable: UIScrollView? {
         categoryFilterView.collectionView

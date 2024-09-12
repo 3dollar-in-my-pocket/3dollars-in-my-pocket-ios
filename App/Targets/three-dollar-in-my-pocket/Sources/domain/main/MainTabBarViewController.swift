@@ -96,7 +96,7 @@ final class MainTabBarViewController: UITabBarController {
         super.viewDidAppear(animated)
         
         self.processKakaoLinkIfExisted()
-        DeeplinkManager.shared.flushDelayedDeeplink()
+        DeepLinkHandler.shared.handleReservedDeepLink()
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {

@@ -286,9 +286,9 @@ final class VisitView: BaseView {
     
     func bind(store: VisitableStore) {
         storeNameLabel.text = store.storeName
-        storeCategoryImage.setImage(urlString: store.categories.first?.imageUrl)
+        storeCategoryImage.setImage(urlString: store.platformStoreCategories.first?.imageUrl)
         storeCategoryLabel.text = store.categoriesString
-        bottomRightCategoryImage.setImage(urlString: store.categories.first?.imageUrl)
+        bottomRightCategoryImage.setImage(urlString: store.platformStoreCategories.first?.imageUrl)
         if let location = store.storeLocation {
             setupMap(location: location)
         }

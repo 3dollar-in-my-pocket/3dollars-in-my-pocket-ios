@@ -6,7 +6,7 @@ import Model
 public protocol AppModuleInterface {
     var kakaoSigninManager: SigninManagerProtocol { get }
     var appleSigninManager: SigninManagerProtocol { get }
-    var deeplinkManager: DeeplinkManagerProtocol { get }
+    var deepLinkHandler: DeepLinkHandlerProtocol { get }
     var photoManager: PhotoManagerProtocol { get }
     var onClearSession: (() -> Void) { get }
     var globalEventBus: GlobalEventBusProtocol { get }

@@ -29,11 +29,11 @@ final class ReportPollDataSource: UICollectionViewDiffableDataSource<ReportPollS
         super.init(collectionView: collectionView) { [weak viewModel] collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .reason(let item, let isSelected):
-                let cell: ReportPollReasonCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: ReportPollReasonCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(title: item.description, isSelected: isSelected)
                 return cell
             case .reasonDetail:
-                let cell: ReportPollReasonDetailCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: ReportPollReasonDetailCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.didChangeText
                     .sink { [weak viewModel] text in
                         viewModel?.input.didChangeText.send(text)

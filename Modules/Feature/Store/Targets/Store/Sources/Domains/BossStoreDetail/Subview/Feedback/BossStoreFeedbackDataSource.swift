@@ -26,7 +26,7 @@ final class BossStoreFeedbackDataSource: UICollectionViewDiffableDataSource<Boss
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .feedback(let item, let isSelected):
-                let cell: BossStoreFeedbackItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BossStoreFeedbackItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(emoji: item.emoji, title: item.description, isSelected: isSelected)
                 return cell
             }

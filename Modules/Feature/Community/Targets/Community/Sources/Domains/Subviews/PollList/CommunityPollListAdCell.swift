@@ -107,13 +107,20 @@ final class CommunityPollListAdCell: BaseCollectionViewCell {
     func bind(viewModel: CommunityPollListAdCellViewModel) {
         self.viewModel = viewModel
         
-        imageView.setImage(urlString: viewModel.output.item.imageUrl)
-        titleLabel.setText(viewModel.output.item.title, lineHeight: 28)
-        contentLabel.setText(viewModel.output.item.subTitle, lineHeight: 20)
-        if let fontColor = viewModel.output.item.fontColor {
-            contentLabel.textColor = UIColor(hex: fontColor)
+        let advertisement = viewModel.output.item
+        imageView.setImage(urlString: advertisement.image?.url)
+        
+        titleLabel.setText(advertisement.title?.content, lineHeight: 28)
+        if let titleColor = advertisement.title?.fontColor {
+            titleLabel.textColor = UIColor(hex: titleColor)
         }
-        if let backgroundColor = viewModel.output.item.bgColor {
+        
+        contentLabel.setText(advertisement.subTitle?.content, lineHeight: 20)
+        if let contentColor = advertisement.subTitle?.fontColor {
+            contentLabel.textColor = UIColor(hex: contentColor)
+        }
+        
+        if let backgroundColor = advertisement.background?.color {
             containerView.backgroundColor = UIColor(hex: backgroundColor)
         }
     }

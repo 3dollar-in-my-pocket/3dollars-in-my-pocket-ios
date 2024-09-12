@@ -17,7 +17,7 @@ extension HomeFilterCollectionView {
     }
     
     enum CellType {
-        case category(PlatformStoreCategory?)
+        case category(StoreFoodCategoryResponse?)
         case recentActivity(Bool)
         case sortingFilter(StoreSortType)
         case onlyBoss(Bool)
@@ -118,19 +118,19 @@ extension HomeFilterCollectionView: UICollectionViewDataSource {
         
         switch item {
         case .category(let category):
-            let cell: HomeFilterCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            let cell: HomeFilterCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             cell.bind(category: category)
             return cell
         case .recentActivity(let isOn):
-            let cell: HomeFilterCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            let cell: HomeFilterCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             cell.bind(icon: item.icon, title: item.title, isSelected: isOn)
             return cell
         case .sortingFilter:
-            let cell: HomeFilterCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            let cell: HomeFilterCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             cell.bind(icon: item.icon, title: item.title)
             return cell
         case .onlyBoss(let isOn):
-            let cell: HomeFilterCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            let cell: HomeFilterCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             cell.bind(icon: item.icon, title: item.title, isSelected: isOn)
             return cell
         }

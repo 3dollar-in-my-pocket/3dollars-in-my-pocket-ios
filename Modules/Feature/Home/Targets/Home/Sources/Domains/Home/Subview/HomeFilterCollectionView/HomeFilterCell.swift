@@ -80,7 +80,7 @@ final class HomeFilterCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(category: PlatformStoreCategory?) {
+    func bind(category: StoreFoodCategoryResponse?) {
         if let category = category,
            let categoryUrl = URL(string: category.imageUrl) {
             KingfisherManager.shared.retrieveImage(with: categoryUrl) { [weak self] result in

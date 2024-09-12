@@ -51,14 +51,14 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
         $0.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
     }
     
-    func bind(storeCard: StoreCard) {
-        categoryImage.setImage(urlString: storeCard.categories.first?.imageUrl)
-        categoryLabel.text = storeCard.categoriesString
-        titleLabel.text = storeCard.storeName.maxLength(length: 10)
-        setTagView(storeCard: storeCard)
-        newBadge.isHidden = !storeCard.isNew
-        infoView.bind(reviewCount: storeCard.reviewsCount, distance: storeCard.distance)
-        visitButton.isHidden = storeCard.storeType == .bossStore
+    func bind(storeWithExtra: StoreWithExtraResponse) {
+        categoryImage.setImage(urlString: storeWithExtra.store.categories.first?.imageUrl)
+        categoryLabel.text = storeWithExtra.store.categoriesString
+        titleLabel.text = storeWithExtra.store.storeName.maxLength(length: 10)
+        setTagView(storeWithExtra: storeWithExtra)
+        newBadge.isHidden = storeWithExtra.extra.tags.isNew.isNot
+        infoView.bind(reviewCount: storeWithExtra.extra.reviewsCount, distance: storeWithExtra.distanceM)
+        visitButton.isHidden = storeWithExtra.store.storeType == .bossStore
     }
     
     override func setup() {
@@ -124,15 +124,15 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
         }
     }
     
-    private func setTagView(storeCard: StoreCard) {
-        switch storeCard.storeType {
+    private func setTagView(storeWithExtra: StoreWithExtraResponse) {
+        switch storeWithExtra.store.storeType {
         case .bossStore:
             tagView.isHidden = true
             bossStoreTagView.isHidden = false
         case .userStore:
             tagView.isHidden = false
             bossStoreTagView.isHidden = true
-            tagView.bind(existsCount: storeCard.existsCounts)
+            tagView.bind(existsCount: storeWithExtra.extra.visitCounts?.existsCounts)
         case .unknown:
             return
         }

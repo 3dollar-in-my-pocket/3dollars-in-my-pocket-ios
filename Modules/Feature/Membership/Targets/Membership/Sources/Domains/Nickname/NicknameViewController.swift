@@ -124,16 +124,6 @@ public final class NicknameViewController: Common.BaseViewController {
     
     private func goToMain(with bookmarkFolderId: String?) {
         appInterface.goToMain()
-        
-        if let bookmarkFolderId {
-            let targetViewController = myPageInterface.getBookmarkViewerViewController(folderId: bookmarkFolderId)
-            let deepLinkContents = DeepLinkContents(
-                targetViewController: targetViewController,
-                transitionType: .present
-            )
-            
-            appInterface.deeplinkManager.reserveDeeplink(deeplinkContents: deepLinkContents)
-        }
     }
 }
 

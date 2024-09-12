@@ -66,7 +66,7 @@ extension MyPageStoreListCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let item = data[safe: indexPath.item] else { return UICollectionViewCell() }
         
-        let cell: MyPageStoreItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: MyPageStoreItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         cell.bind(item: item)
         return cell
     }

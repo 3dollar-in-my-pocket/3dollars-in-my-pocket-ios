@@ -5,28 +5,34 @@ import DesignSystem
 import Model
 
 final class CategoryFilterCell: BaseCollectionViewCell {
-    static let size = CGSize(
-        width: (UIScreen.main.bounds.width - 48 - 36)/4,
-        height: (UIScreen.main.bounds.width - 48 - 36)/4 + 2
-    )
+    enum Layout {
+        static let size = CGSize(
+            width: (UIScreen.main.bounds.width - 48 - 36)/4,
+            height: (UIScreen.main.bounds.width - 48 - 36)/4 + 2
+        )
+    }
     
     private let newBadge = UIImageView(image: HomeAsset.imageNewBadge.image)
     
     private let categoryImage = UIImageView()
     
-    private let categoryLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.textColor = DesignSystemAsset.Colors.gray70.color
-        $0.textAlignment = .center
-    }
+    private let categoryLabel: UILabel = {
+        let label = UILabel()
+        label.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
+        label.textColor = DesignSystemAsset.Colors.gray70.color
+        label.textAlignment = .center
+        return label
+    }()
     
-    private let selectIndicator = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.pink100.color
-        $0.layer.cornerRadius = 28
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = DesignSystemAsset.Colors.mainPink.color.cgColor
-        $0.isHidden = true
-    }
+    private let selectIndicator: UIView = {
+        let view = UIView()
+        view.backgroundColor = DesignSystemAsset.Colors.pink100.color
+        view.layer.cornerRadius = 28
+        view.layer.borderWidth = 1
+        view.layer.borderColor = DesignSystemAsset.Colors.mainPink.color.cgColor
+        view.isHidden = true
+        return view
+    }()
     
     override var isSelected: Bool {
         didSet {
@@ -36,15 +42,17 @@ final class CategoryFilterCell: BaseCollectionViewCell {
     
     override func setup() {
         backgroundColor = .clear
+        setupUI()
+    }
+    
+    private func setupUI() {
         addSubViews([
             selectIndicator,
             categoryImage,
             categoryLabel,
             newBadge
         ])
-    }
-    
-    override func bindConstraints() {
+        
         selectIndicator.snp.makeConstraints {
             $0.center.equalTo(categoryImage)
             $0.width.height.equalTo(58)
@@ -72,7 +80,7 @@ final class CategoryFilterCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(category: PlatformStoreCategory) {
+    func bind(category: StoreFoodCategoryResponse) {
         categoryLabel.text = category.name
         categoryImage.setImage(urlString: category.imageUrl)
         newBadge.isHidden = !category.isNew

@@ -22,19 +22,21 @@ final class HomeListView: BaseView {
         $0.backgroundColor = .clear
     }
     
-    let mapViewButton = UIButton().then {
-        $0.setImage(DesignSystemAsset.Icons.map.image.resizeImage(scaledTo: 16).withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
-        $0.setTitle(HomeStrings.categoryFileterMapView, for: .normal)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.layer.cornerRadius = 20
-        $0.backgroundColor = DesignSystemAsset.Colors.gray80.color
-        $0.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
-        $0.contentEdgeInsets = .init(top: 11, left: 12, bottom: 11, right: 16)
-        $0.layer.shadowColor = DesignSystemAsset.Colors.systemBlack.color.cgColor
-        $0.layer.shadowOffset = CGSize(width: 2, height: 2)
-        $0.layer.shadowOpacity = 0.1
-    }
+    let mapViewButton: UIButton = {
+        let button = UIButton()
+        button.setImage(DesignSystemAsset.Icons.map.image.resizeImage(scaledTo: 16).withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
+        button.setTitle(HomeStrings.categoryFileterMapView, for: .normal)
+        button.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        button.titleLabel?.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
+        button.layer.cornerRadius = 20
+        button.backgroundColor = DesignSystemAsset.Colors.gray80.color
+        button.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
+        button.contentEdgeInsets = .init(top: 11, left: 12, bottom: 11, right: 16)
+        button.layer.shadowColor = DesignSystemAsset.Colors.systemBlack.color.cgColor
+        button.layer.shadowOffset = CGSize(width: 2, height: 2)
+        button.layer.shadowOpacity = 0.1
+        return button
+    }()
     
     init(homeFilterSelectable: HomeFilterSelectable) {
         self.homeFilterSelectable = homeFilterSelectable
@@ -46,6 +48,10 @@ final class HomeListView: BaseView {
     }
     
     override func setup() {
+        setupUI()
+    }
+    
+    private func setupUI() {
         backgroundColor = DesignSystemAsset.Colors.gray0.color
         
         addSubViews([
@@ -54,9 +60,7 @@ final class HomeListView: BaseView {
             collectionView,
             mapViewButton
         ])
-    }
-    
-    override func bindConstraints() {
+        
         homeFilterCollectionView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.top.equalTo(safeAreaLayoutGuide)

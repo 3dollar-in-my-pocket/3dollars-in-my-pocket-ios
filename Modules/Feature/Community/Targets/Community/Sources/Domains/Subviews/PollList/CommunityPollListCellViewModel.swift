@@ -23,17 +23,29 @@ final class CommunityPollListCellViewModel: BaseViewModel {
         let didSelectPollItem = PassthroughSubject<String, Never>()
         let didSelectCategory = PassthroughSubject<PollCategoryResponse, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
-        let openUrl = PassthroughSubject<String?, Never>()
+        let route = PassthroughSubject<Route, Never>()
+    }
+    
+    enum Route {
+        case deepLink(AdvertisementResponse)
     }
 
     struct State {
         var category: PollCategoryResponse? 
         var pollList: [PollItemCellViewModel] = []
-        var ad: Advertisement?
+        var ad: AdvertisementResponse?
     }
     
     struct Config {
         let screenName: ScreenName
+    }
+    
+    struct Dependency {
+        let logManager: LogManagerProtocol
+        
+        init(logManager: LogManagerProtocol = LogManager.shared) {
+            self.logManager = logManager
+        }
     }
 
     lazy var identifier = ObjectIdentifier(self)
@@ -43,18 +55,20 @@ final class CommunityPollListCellViewModel: BaseViewModel {
     let config: Config
 
     private var state = State()
-
+    private let dependency: Dependency
     private let communityService: CommunityServiceProtocol
-    private let advertisementService: AdvertisementServiceProtocol
+    private let advertisementRepository: AdvertisementRepository
 
     init(
         config: Config,
+        dependency: Dependency = Dependency(),
         communityService: CommunityServiceProtocol = CommunityService(),
-        advertisementService: AdvertisementServiceProtocol = AdvertisementService()
+        advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl()
     ) {
         self.config = config
+        self.dependency = dependency
         self.communityService = communityService
-        self.advertisementService = advertisementService
+        self.advertisementRepository = advertisementRepository
 
         super.init()
         
@@ -101,7 +115,8 @@ final class CommunityPollListCellViewModel: BaseViewModel {
                 case .poll(let viewModel):
                     owner.output.didSelectPollItem.send(viewModel.pollId)
                 case .ad(let viewModel):
-                    owner.output.openUrl.send(viewModel.output.item.linkUrl)
+                    owner.sendClickAdvertisementLog()
+                    owner.output.route.send(.deepLink(viewModel.output.item))
                 }
             }
             .store(in: &cancellables)
@@ -135,14 +150,14 @@ final class CommunityPollListCellViewModel: BaseViewModel {
             .map { _ in FetchAdvertisementInput(position: .pollCard, size: nil) }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.advertisementService.fetchAdvertisements(input: input)
+                await owner.advertisementRepository.fetchAdvertisements(input: input)
             }
             .withUnretained(self)
             .sink { owner, result in
                 switch result {
                 case .success(let advertisements):
-                    guard let advertisementResponse = advertisements.first else { return }
-                    owner.state.ad = Advertisement(response: advertisementResponse)
+                    guard let advertisement = advertisements.advertisements.first else { return }
+                    owner.state.ad = advertisement
                     owner.updateDataSource()
                 case .failure:
                     break
@@ -182,5 +197,17 @@ extension CommunityPollListCellViewModel: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
+    }
+}
+
+// MARK: Log
+extension CommunityPollListCellViewModel {
+    private func sendClickAdvertisementLog() {
+        guard let advertisement = state.ad else { return }
+        dependency.logManager.sendEvent(.init(
+            screen: config.screenName,
+            eventName: .clickPollAd,
+            extraParameters: [.advertisementId: advertisement.advertisementId])
+        )
     }
 }

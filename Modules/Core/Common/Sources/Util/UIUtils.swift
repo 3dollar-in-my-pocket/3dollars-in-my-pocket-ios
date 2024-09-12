@@ -15,4 +15,12 @@ public struct UIUtils {
             return UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? .zero
         }
     }
+    
+    public static func getTopViewController(_ viewController: UIViewController) -> UIViewController {
+        var presentingViewController = viewController
+        while let presentedViewController = presentingViewController.presentedViewController {
+            presentingViewController = presentedViewController
+        }
+        return presentingViewController
+    }
 }

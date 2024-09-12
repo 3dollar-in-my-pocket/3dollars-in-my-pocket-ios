@@ -80,7 +80,7 @@ extension ReportBottomSheetViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let reason = viewModel.output.reportReasons[safe: indexPath.item] else { return BaseCollectionViewCell() }
         
-        let cell: ReportReasonCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: ReportReasonCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         cell.bind(reason)
         return cell
     }

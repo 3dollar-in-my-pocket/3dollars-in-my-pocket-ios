@@ -20,10 +20,10 @@ final class HomeDataSource: UICollectionViewDiffableDataSource<HomeSection, Home
         
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .storeCard(let storeCard):
-                let cell: HomeStoreCardCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            case .store(let storeWithExtra):
+                let cell: HomeStoreCardCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
-                cell.bind(storeCard: storeCard)
+                cell.bind(storeWithExtra: storeWithExtra)
                 cell.visitButton
                     .controlPublisher(for: .touchUpInside)
                     .map { _ in indexPath.row }
@@ -32,12 +32,12 @@ final class HomeDataSource: UICollectionViewDiffableDataSource<HomeSection, Home
                 return cell
                 
             case .empty:
-                let cell: HomeStoreEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: HomeStoreEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 return cell
                 
             case .advertisement(let advertisement):
-                let cell: HomeCardAdvertisementCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: HomeCardAdvertisementCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(advertisement: advertisement, in: rootViewController)
                 return cell
@@ -56,7 +56,7 @@ extension HomeDataSource: UICollectionViewDelegateFlowLayout {
         case .empty:
             return HomeStoreEmptyCell.Layout.size
             
-        case .storeCard:
+        case .store:
             return HomeStoreCardCell.Layout.size    
             
         case .advertisement:

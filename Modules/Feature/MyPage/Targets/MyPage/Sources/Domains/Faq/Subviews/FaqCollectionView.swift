@@ -62,7 +62,7 @@ extension FaqCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let faq = faqSections[safe: indexPath.section]?[safe: indexPath.item] else { return BaseCollectionViewCell() }
         
-        let cell: FaqCollectionCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: FaqCollectionCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         
         cell.bind(faq: faq)
         return cell

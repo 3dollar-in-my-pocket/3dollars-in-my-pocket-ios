@@ -1,4 +1,4 @@
-enum DeeplinkType: String {
+enum DeeplinkPath: String {
     case bookmark
     case store
     case home
@@ -6,14 +6,15 @@ enum DeeplinkType: String {
     case community
     case pollDetail
     case postList
+    case browser
     case unknown
     
     init(value: String) {
-        self = DeeplinkType(rawValue: value) ?? .unknown
+        self = DeeplinkPath(rawValue: value) ?? .unknown
     }
 }
 
-extension DeeplinkType {
+extension DeeplinkPath {
     var path: String {
         rawValue
     }
