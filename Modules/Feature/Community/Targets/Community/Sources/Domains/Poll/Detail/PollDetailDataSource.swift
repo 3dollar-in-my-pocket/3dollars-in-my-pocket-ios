@@ -76,19 +76,19 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
         super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .detail(let cellViewModel):
-                let cell: PollDetailContentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: PollDetailContentCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: cellViewModel)
                 return cell
             case .comment(let cellViewModel):
-                let cell: PollDetailCommentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: PollDetailCommentCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: cellViewModel)
                 cell.containerVC = containerVC
                 return cell
             case .blindComment:
-                let cell: PollDetailBlindCommentCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: PollDetailBlindCommentCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 return cell
             case .banner:
-                let cell: PollDetailBannerCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: PollDetailBannerCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(in: containerVC)
                 return cell
             }

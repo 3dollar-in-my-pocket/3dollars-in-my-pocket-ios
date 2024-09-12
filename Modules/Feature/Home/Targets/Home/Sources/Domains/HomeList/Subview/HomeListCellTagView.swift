@@ -12,28 +12,34 @@ final class HomeListCellTagView: BaseView {
         case boss
     }
     
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 12
-        $0.layer.masksToBounds = true
-    }
+    private let containerView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 12
+        view.layer.masksToBounds = true
+        return view
+    }()
     
-    private lazy var checkImage = UIImageView(image: DesignSystemAsset.Icons.check.image.withTintColor(DesignSystemAsset.Colors.mainPink.color)).then {
-        $0.isHidden = true
-    }
+    private lazy var checkImage: UIImageView = {
+        let imageView = UIImageView(image: DesignSystemAsset.Icons.check.image.withTintColor(DesignSystemAsset.Colors.mainPink.color))
+        imageView.isHidden = true
+        return imageView
+    }()
     
     private let titleLabel = UILabel()
     
     override func setup() {
         super.setup()
         
+        setupUI()
+    }
+    
+    private func setupUI() {
         addSubViews([
             containerView,
             checkImage,
             titleLabel
         ])
-    }
-    
-    override func bindConstraints() {
+        
         containerView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.right.equalTo(titleLabel.snp.right).offset(8)

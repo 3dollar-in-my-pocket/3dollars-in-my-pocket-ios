@@ -1,25 +1,25 @@
 import Foundation
 
 public struct FetchAroundStoreInput: Encodable {
-    public let distanceM: Double?
+    public let distanceM: Double
     public let categoryIds: [String]?
-    public let targetStores: [String]
-    public let sortType: String? // DISTANCE_ASC, LATEST
+    public let targetStores: [StoreType]?
+    public let sortType: StoreSortType
     public let filterCertifiedStores: Bool?
-    public let filterConditions: [String]?
-    public let size: Int?
+    public let filterConditions: [ActivitiesStatus]?
+    public let size: Int
     public let cursor: String?
     public let mapLatitude: Double
     public let mapLongitude: Double
     
     public init(
-        distanceM: Double? = nil,
+        distanceM: Double,
         categoryIds: [String]? = nil,
-        targetStores: [String] = ["BOSS_STORE", "USER_STORE"],
-        sortType: String? = nil,
+        targetStores: [StoreType] = [.userStore, .bossStore],
+        sortType: StoreSortType = .distanceAsc,
         filterCertifiedStores: Bool? = false,
-        filterConditions: [String]? = nil,
-        size: Int? = nil,
+        filterConditions: [ActivitiesStatus]? = nil,
+        size: Int = 10,
         cursor: String? = nil,
         mapLatitude: Double,
         mapLongitude: Double

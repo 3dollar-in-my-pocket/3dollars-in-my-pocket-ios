@@ -77,17 +77,17 @@ final class WriteDetailViewModel: BaseViewModel {
     let output: Output
     private var state: State
     private let storeRepository: StoreRepository
-    private let categoryService: CategoryServiceProtocol
+    private let categoryRepository: CategoryRepository
     private let logManager: LogManagerProtocol
     
     init(
         config: WriteStoreConfigurable,
         storeRepository: StoreRepository = StoreRepositoryImpl(),
-        categoryService: CategoryServiceProtocol = CategoryService(),
+        categoryRepository: CategoryRepository = CategoryRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.storeRepository = storeRepository
-        self.categoryService = categoryService
+        self.categoryRepository = categoryRepository
         self.logManager = logManager
         
         if let writeConfig = config as? WriteConfig {
@@ -454,7 +454,7 @@ final class WriteDetailViewModel: BaseViewModel {
     
     private func presentCategorySelection() {
         Task {
-            let result = await categoryService.fetchCategoires()
+            let result = await categoryRepository.fetchCategories()
             
             switch result {
             case .success(let response):

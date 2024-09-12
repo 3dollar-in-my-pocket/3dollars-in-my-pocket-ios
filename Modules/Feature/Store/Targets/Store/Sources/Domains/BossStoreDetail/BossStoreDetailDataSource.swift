@@ -22,30 +22,30 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             guard let containerVC else { return UICollectionViewCell() }
             switch itemIdentifier {
             case .overview(let viewModel):
-                let cell: StoreDetailOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreDetailOverviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel, rootViewController: containerVC)
                 return cell
             case .info(let viewModel):
-                let cell: BossStoreInfoCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BossStoreInfoCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel)
                 return cell
             case .menuList(let viewModel):
-                let cell: BossStoreMenuListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BossStoreMenuListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel)
                 return cell
             case .emptyMenu:
-                let cell: BossStoreEmptyMenuCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BossStoreEmptyMenuCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 return cell
             case .workday(let days):
-                let cell: BossStoreWorkdayCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BossStoreWorkdayCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(appearanceDays: days)
                 return cell
             case .feedbacks(let viewModel):
-                let cell: BossStoreFeedbacksCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BossStoreFeedbacksCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
             case .post(let viewModel):
-                let cell: BossStorePostCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: BossStorePostCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel)
                 return cell
             }

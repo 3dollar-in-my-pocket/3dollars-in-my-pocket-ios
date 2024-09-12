@@ -152,5 +152,13 @@ public extension TargetDependency {
         public static let swiftyBeaver = TargetDependency.package(product: "SwiftyBeaver")
         
         public static let netfox = TargetDependency.package(product: "netfox")
+        
+        public static let admob = TargetDependency.package(product: "GoogleMobileAds")
+    }
+    
+    class Framework {
+        public static let naverMap = TargetDependency.xcframework(path: .relativeToRoot("./Frameworks/NMapsMap.xcframework"))
+        
+        public static let naverGeometry = TargetDependency.xcframework(path: .relativeToRoot("./Frameworks/NMapsGeometry.xcframework"))
     }
 }

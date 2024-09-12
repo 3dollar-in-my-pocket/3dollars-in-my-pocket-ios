@@ -101,14 +101,14 @@ extension BossStoreMenuListCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
         case 0:
-            let cell: BossStoreMenuItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            let cell: BossStoreMenuItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             if let menu = viewModel?.output.menuList.value[safe: indexPath.item] {
                 cell.bind(menu: menu)
             }
             
             return cell
         case 1:
-            let cell: BossStoreMenuMoreCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+            let cell: BossStoreMenuMoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             cell.bind(count: viewModel?.output.moreItemCount.value ?? 0)
             return cell
         default:

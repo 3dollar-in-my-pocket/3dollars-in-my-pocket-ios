@@ -10,31 +10,37 @@ final class HomeListHeaderCell: BaseCollectionViewReusableView {
         static let height: CGFloat = 76
     }
     
-    let titleLabel = UILabel().then {
-        $0.textColor = DesignSystemAsset.Colors.systemBlack.color
-        $0.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 20)
-        $0.textAlignment = .left
-        $0.numberOfLines = 2
-    }
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = DesignSystemAsset.Colors.systemBlack.color
+        label.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 20)
+        label.textAlignment = .left
+        label.numberOfLines = 2
+        return label
+    }()
     
-    let isOnlyCertifiedButton = UIButton().then {
-        $0.setTitle(HomeStrings.homeListIsOnlyCertified, for: .normal)
-        $0.setTitleColor(DesignSystemAsset.Colors.gray60.color, for: .normal)
-        $0.setImage(DesignSystemAsset.Icons.checkBoxOff.image, for: .normal)
-        $0.setImage(DesignSystemAsset.Icons.checkBoxOn.image, for: .selected)
-        $0.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
-        $0.contentEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 4)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
-    }
+    let isOnlyCertifiedButton: UIButton = {
+        let button = UIButton()
+        button.setTitle(HomeStrings.homeListIsOnlyCertified, for: .normal)
+        button.setTitleColor(DesignSystemAsset.Colors.gray60.color, for: .normal)
+        button.setImage(DesignSystemAsset.Icons.checkBoxOff.image, for: .normal)
+        button.setImage(DesignSystemAsset.Icons.checkBoxOn.image, for: .selected)
+        button.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
+        button.contentEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 4)
+        button.titleLabel?.font = DesignSystemFontFamily.Pretendard.regular.font(size: 14)
+        return button
+    }()
     
     override func setup() {
+        setupUI()
+    }
+    
+    private func setupUI() {
         addSubViews([
             titleLabel,
             isOnlyCertifiedButton
         ])
-    }
-    
-    override func bindConstraints() {
+        
         titleLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.left.equalToSuperview().offset(20)
@@ -46,7 +52,7 @@ final class HomeListHeaderCell: BaseCollectionViewReusableView {
         }
     }
     
-    func bind(category: PlatformStoreCategory?) {
+    func bind(category: StoreFoodCategoryResponse?) {
         if let category {
             titleLabel.text = category.description
         } else {

@@ -5,20 +5,24 @@ import DesignSystem
 import Model
 
 final class HomeListCellInfoView: BaseView {
-    private let stackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-    }
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 4
+        return stackView
+    }()
     
     override func setup() {
         super.setup()
         
+        setupUI()
+    }
+    
+    private func setupUI() {
         addSubViews([
             stackView
         ])
-    }
-    
-    override func bindConstraints() {
+        
         stackView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.height.equalTo(18)
@@ -33,22 +37,22 @@ final class HomeListCellInfoView: BaseView {
         stackView.subviews.forEach { $0.removeFromSuperview() }
     }
     
-    func bind(storeCard: StoreCard) {
-        let reviewItemView = HomeListInfoItemView(type: .review(storeCard.reviewsCount ?? 0))
+    func bind(_ storeWithExtra: StoreWithExtraResponse) {
+        let reviewItemView = HomeListInfoItemView(type: .review(storeWithExtra.extra.reviewsCount ?? 0))
         stackView.addArrangedSubview(reviewItemView)
         
-        if storeCard.storeType == .userStore {
-            let ratingItemView = HomeListInfoItemView(type: .rate(storeCard.rating ?? 0))
-            addDividor()
+        if storeWithExtra.store.storeType == .userStore {
+            let ratingItemView = HomeListInfoItemView(type: .rate(storeWithExtra.extra.rating ?? 0))
+            addDivider()
             stackView.addArrangedSubview(ratingItemView)
         }
         
-        let distanceItemView = HomeListInfoItemView(type: .distance(storeCard.distance))
-        addDividor()
+        let distanceItemView = HomeListInfoItemView(type: .distance(storeWithExtra.distanceM))
+        addDivider()
         stackView.addArrangedSubview(distanceItemView)
     }
     
-    private func addDividor() {
+    private func addDivider() {
         let containerView = UIView()
         let dividorView = UIView().then {
             $0.backgroundColor = DesignSystemAsset.Colors.gray50.color

@@ -150,8 +150,8 @@ final class HomeView: BaseView {
         mapView.moveCamera(cameraUpdate)
     }
     
-    func setAdvertisementMarker(_ advertisement: Advertisement) {
-        guard let urlString = advertisement.imageUrl,
+    func setAdvertisementMarker(_ advertisement: AdvertisementResponse) {
+        guard let urlString = advertisement.image?.url,
               let url = URL(string: urlString) else { return }
         
         
@@ -161,8 +161,8 @@ final class HomeView: BaseView {
             
             DispatchQueue.main.async {
                 self?.mapView.locationOverlay.icon = NMFOverlayImage(image: image)
-                self?.mapView.locationOverlay.iconWidth = CGFloat(advertisement.imageWidth)
-                self?.mapView.locationOverlay.iconHeight = CGFloat(advertisement.imageHeight)
+                self?.mapView.locationOverlay.iconWidth = CGFloat(advertisement.image?.width ?? 0)
+                self?.mapView.locationOverlay.iconHeight = CGFloat(advertisement.image?.height ?? 0)
             }
         }
     }

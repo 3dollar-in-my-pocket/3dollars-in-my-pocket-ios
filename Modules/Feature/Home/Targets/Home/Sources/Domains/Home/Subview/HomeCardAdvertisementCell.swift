@@ -106,12 +106,20 @@ final class HomeCardAdvertisementCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(advertisement: Advertisement?, in rootViewController: UIViewController) {
+    func bind(advertisement: AdvertisementResponse?, in rootViewController: UIViewController) {
         if let advertisement {
-            titleLabel.text = advertisement.title
-            descriptionLabel.text = advertisement.subTitle
+            titleLabel.text = advertisement.title?.content
+            if let titleColor = advertisement.title?.fontColor {
+                titleLabel.textColor = UIColor(hex: titleColor)
+            }
+            
+            descriptionLabel.text = advertisement.subTitle?.content
+            if let descriptionColor = advertisement.subTitle?.fontColor {
+                descriptionLabel.textColor = UIColor(hex: descriptionColor)
+            }
             descriptionLabel.setLineHeight(lineHeight: 18)
-            imageView.setImage(urlString: advertisement.imageUrl)
+            
+            imageView.setImage(urlString: advertisement.image?.url)
             adBannerView.isHidden = true
         } else {
             adBannerView.load(in: rootViewController)

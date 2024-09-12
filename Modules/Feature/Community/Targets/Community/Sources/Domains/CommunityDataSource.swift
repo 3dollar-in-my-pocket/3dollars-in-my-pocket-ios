@@ -75,19 +75,19 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
         super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .poll(let cellViewModel):
-                let cell: CommunityPollListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: CommunityPollListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: cellViewModel)
                 return cell
             case .popularStoreTab(let cellViewModel):
-                let cell: CommunityPopularStoreTabCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: CommunityPopularStoreTabCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: cellViewModel)
                 return cell
             case .popularStore(let item):
-                let cell: CommunityPopularStoreItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: CommunityPopularStoreItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(item: item)
                 return cell
             case .banner:
-                let cell: CommunityBannerCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: CommunityBannerCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(in: containerVC)
                 return cell
             }

@@ -125,11 +125,11 @@ final class CommunityPollListCell: BaseCollectionViewCell {
             }
             .store(in: &cancellables)
         
-        viewModel.output.openUrl
+        viewModel.output.route
             .main
             .withUnretained(self)
-            .sink { owner, url in
-                owner.openUrl(with: url)
+            .sink { (owner: CommunityPollListCell, route: CommunityPollListCellViewModel.Route) in
+                owner.handleRoute(route)
             }
             .store(in: &cancellables)
     }
@@ -151,6 +151,17 @@ extension CommunityPollListCell: UICollectionViewDelegate {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if let offset = collectionView.getNearByItemScrollOffset(velocity: velocity, targetContentOffset: targetContentOffset, sectionInsets: Layout.sectionInset) {
             targetContentOffset.pointee = offset
+        }
+    }
+}
+
+// MARK: Route
+extension CommunityPollListCell {
+    private func handleRoute(_ route: CommunityPollListCellViewModel.Route) {
+        switch route {
+        case .deepLink(let advertisementResponse):
+            guard let link = advertisementResponse.link else { return }
+            Environment.appModuleInterface.deepLinkHandler.handleAdvertisementLink(link)
         }
     }
 }

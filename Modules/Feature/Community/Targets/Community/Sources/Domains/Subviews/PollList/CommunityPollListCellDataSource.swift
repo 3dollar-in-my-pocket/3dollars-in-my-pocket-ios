@@ -20,11 +20,11 @@ final class CommunityPollListCellDataSource: UICollectionViewDiffableDataSource<
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .poll(let viewModel):
-                let cell: PollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: PollItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
             case .ad(let viewModel):
-                let cell: CommunityPollListAdCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: CommunityPollListAdCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
             }

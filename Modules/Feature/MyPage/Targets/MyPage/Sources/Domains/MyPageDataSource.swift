@@ -23,27 +23,27 @@ final class MyPageDataSource: UICollectionViewDiffableDataSource<MyPageSection, 
         super.init(collectionView: collectionView) {collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .overview(let viewModel):
-                let cell: MyPageOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: MyPageOverviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
             case .visitStore(let viewModel):
-                let cell: MyPageStoreListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: MyPageStoreListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel)
                 return cell
             case .favoriteStore(let viewModel):
-                let cell: MyPageStoreListCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: MyPageStoreListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel)
                 return cell
             case .empty(let type):
-                let cell: MyPageEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: MyPageEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(type)
                 return cell
             case .pollTotalParticipantsCount(let count):
-                let cell: MyPagePollTotalParticipantsCountCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: MyPagePollTotalParticipantsCountCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(count)
                 return cell
             case .poll(let data, let isFirst, let isLast):
-                let cell: MyPagePollItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: MyPagePollItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(data, isFirst: isFirst, isLast: isLast)
                 return cell
             }

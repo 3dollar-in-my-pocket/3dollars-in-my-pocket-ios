@@ -81,7 +81,7 @@ extension FaqCategoryView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let category = datasource[safe: indexPath.item] else { return BaseCollectionViewCell() }
-        let cell: FaqCategoryCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: FaqCategoryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         
         cell.bind(category: category)
         return cell

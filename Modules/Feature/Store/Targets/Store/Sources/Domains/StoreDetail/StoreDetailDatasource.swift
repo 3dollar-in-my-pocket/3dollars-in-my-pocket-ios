@@ -39,27 +39,27 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             guard let rootViewController else { return UICollectionViewCell() }
             switch itemIdentifier {
             case .overview(let viewModel):
-                let cell: StoreDetailOverviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreDetailOverviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel, rootViewController: rootViewController)
                 return cell
                 
             case .visit(let data):
-                let cell: StoreDetailVisitCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreDetailVisitCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(data)
                 return cell
                 
             case .info(let data):
-                let cell: StoreDetailInfoCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreDetailInfoCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(data)
                 return cell
                 
             case .menu(let menus):
-                let cell: StoreDetailMenuCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreDetailMenuCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(menus)
                 return cell
                 
             case .photo(let photo):
-                let cell: StoreDetailPhotoCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreDetailPhotoCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 if indexPath.item == 3 {
                     cell.bind(photo: photo, isLast: true)
@@ -69,12 +69,12 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 return cell
                 
             case .rating(let rating):
-                let cell: StoreDetailRatingCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreDetailRatingCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(rating)
                 return cell
                 
             case .review(let review):
-                let cell: StoreDetailReviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreDetailReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(review)
                 cell.rightButton
                     .controlPublisher(for: .touchUpInside)
@@ -91,7 +91,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 return cell
                 
             case .reviewMore(let totalCount):
-                let cell: StoreDetailReviewMoreCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreDetailReviewMoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(totalCount)
                 cell.moreButton.controlPublisher(for: .touchUpInside)
                     .mapVoid
@@ -100,11 +100,11 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 return cell
                 
             case .reviewEmpty:
-                let cell: StoreDetailReviewEmptyCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreDetailReviewEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 return cell
                 
             case .filteredReview:
-                let cell: StoreDetailFilteredReviewCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+                let cell: StoreDetailFilteredReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 return cell
             }
         }

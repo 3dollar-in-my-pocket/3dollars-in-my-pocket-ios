@@ -222,7 +222,7 @@ extension BossStoreInfoCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let viewModel,
               let photo = viewModel.output.info.images[safe: indexPath.item] else { return BaseCollectionViewCell() }
-        let cell: BossStoreInfoPhotoItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: BossStoreInfoPhotoItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         
         cell.bind(imageUrl: photo.imageUrl)
         return cell

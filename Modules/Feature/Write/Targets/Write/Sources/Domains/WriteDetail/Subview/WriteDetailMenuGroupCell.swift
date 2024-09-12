@@ -117,7 +117,7 @@ extension WriteDetailMenuGroupCell: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: WriteDetailMenuItemCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: WriteDetailMenuItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         cell.bind(viewModel: viewModel, index: indexPath.row)
         
         return cell

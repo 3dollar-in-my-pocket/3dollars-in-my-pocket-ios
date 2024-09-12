@@ -41,7 +41,7 @@ public final class SigninViewController: BaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        appInterface.deeplinkManager.flushDelayedDeeplink()
+        appInterface.deepLinkHandler.handleReservedDeepLink()
         appInterface.requestATTIfNeeded()
     }
     

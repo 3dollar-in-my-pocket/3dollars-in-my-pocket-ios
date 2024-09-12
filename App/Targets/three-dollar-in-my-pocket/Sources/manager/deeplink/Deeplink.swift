@@ -9,7 +9,7 @@ enum Deeplink {
     case medal
     case pollDetail(pollId: String)
 
-    var type: DeeplinkType {
+    var type: DeeplinkPath {
         switch self {
         case .bookmark:
             return .bookmark

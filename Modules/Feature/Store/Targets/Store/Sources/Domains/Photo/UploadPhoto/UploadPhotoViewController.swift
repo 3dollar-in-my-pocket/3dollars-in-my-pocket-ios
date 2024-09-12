@@ -163,7 +163,7 @@ extension UploadPhotoViewController: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let asset = assets[safe: indexPath.item] else { return BaseCollectionViewCell() }
-        let cell: UploadPhotoCell = collectionView.dequeueReuseableCell(indexPath: indexPath)
+        let cell: UploadPhotoCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         
         cell.bind(asset: asset)
         return cell

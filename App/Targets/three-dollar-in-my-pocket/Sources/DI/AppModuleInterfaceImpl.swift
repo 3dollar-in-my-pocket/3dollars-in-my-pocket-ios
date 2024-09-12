@@ -22,8 +22,8 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
         return AppleSigninManager.shared
     }
     
-    var deeplinkManager: DeeplinkManagerProtocol {
-        return DeeplinkManager.shared
+    var deepLinkHandler: DeepLinkHandlerProtocol {
+        return DeepLinkHandler.shared
     }
     
     var photoManager: AppInterface.PhotoManagerProtocol {

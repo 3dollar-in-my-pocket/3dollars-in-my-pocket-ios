@@ -1,4 +1,5 @@
 import Model
+import CoreLocation
 
 import DependencyInjection
 
@@ -9,6 +10,7 @@ public final class MockNetworkConfiguration: NetworkConfigurable {
     public var appStoreVersion: String?
     public var userAgent: String
     public var authToken: String?
+    public var userCurrentLocation: CLLocation
     
     public init(
         endPoint: String = "https://dev.threedollars.co.kr",
@@ -16,7 +18,8 @@ public final class MockNetworkConfiguration: NetworkConfigurable {
         timeoutForResource: Double = 30,
         appStoreVersion: String? = "3.4.0",
         userAgent: String = "3.4.0 (com.macgongmon.-dollar-in-my-pocket-debug; build:1; iOS 16.6.0)",
-        authToken: String? = "03572dd2-cc32-413c-baf2-e1e08048f4d4"
+        authToken: String? = "03572dd2-cc32-413c-baf2-e1e08048f4d4",
+        userCurrentLocation: CLLocation = CLLocation(latitude: 37.497941, longitude: 127.027616)
     ) {
         self.endPoint = endPoint
         self.timeoutForRequest = timeoutForRequest
@@ -24,6 +27,7 @@ public final class MockNetworkConfiguration: NetworkConfigurable {
         self.appStoreVersion = appStoreVersion
         self.userAgent = userAgent
         self.authToken = authToken
+        self.userCurrentLocation = userCurrentLocation
     }
 }
 

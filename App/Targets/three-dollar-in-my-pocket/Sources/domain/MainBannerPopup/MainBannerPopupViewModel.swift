@@ -14,20 +14,21 @@ final class MainBannerPopupViewModel: BaseViewModel {
     
     struct Output {
         let screenName: ScreenName = .mainBannerPopup
-        let advertisement: CurrentValueSubject<Model.Advertisement, Never>
+        let advertisement: CurrentValueSubject<AdvertisementResponse, Never>
         let route = PassthroughSubject<Route, Never>()
     }
     
     enum Route {
         case dismiss
+        case deepLink(AdvertisementResponse)
     }
     
     struct State {
-        let advertisement: Model.Advertisement
+        let advertisement: AdvertisementResponse
     }
     
     struct Config {
-        let advertisement: Model.Advertisement
+        let advertisement: AdvertisementResponse
     }
     
     let input = Input()
@@ -52,7 +53,7 @@ final class MainBannerPopupViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { (owner: MainBannerPopupViewModel, _) in
                 owner.snedClickBannerLog()
-                owner.openEventURL(advertisement: owner.state.advertisement)
+                owner.output.route.send(.deepLink(owner.state.advertisement))
             })
             .store(in: &cancellables)
         
@@ -72,15 +73,6 @@ final class MainBannerPopupViewModel: BaseViewModel {
                 owner.output.route.send(.dismiss)
             }
             .store(in: &cancellables)
-    }
-    
-    private func openEventURL(advertisement: Model.Advertisement) {
-        guard let urlString = advertisement.linkUrl,
-              let url = URL(string: urlString),
-              UIApplication.shared.canOpenURL(url) else { return }
-        
-        UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        output.route.send(.dismiss)
     }
     
     private func snedClickBannerLog() {

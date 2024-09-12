@@ -11,46 +11,60 @@ final class HomeListAdCell: BaseCollectionViewCell {
         static let size: CGSize = CGSize(width: UIScreen.main.bounds.width, height: 90)
     }
     
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 20
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.systemWhite.color
-    }
+    private let containerView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 20
+        view.clipsToBounds = true
+        view.backgroundColor = Colors.systemWhite.color
+        return view
+    }()
 
-    private let imageView = UIImageView().then {
-        $0.layer.cornerRadius = 12
-        $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-        $0.layer.masksToBounds = true
-        $0.clipsToBounds = true
-        $0.contentMode = .scaleAspectFill
-    }
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.cornerRadius = 12
+        imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+        imageView.layer.masksToBounds = true
+        imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.gray90.color
-        $0.textAlignment = .left
-    }
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.bold.font(size: 16)
+        label.textColor = Colors.gray90.color
+        label.textAlignment = .left
+        return label
+    }()
 
-    private let contentLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray50.color
-        $0.textAlignment = .left
-    }
+    private let contentLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.medium.font(size: 12)
+        label.textColor = Colors.gray50.color
+        label.textAlignment = .left
+        return label
+    }()
 
-    private let adButton = UIButton().then {
-        $0.setTitle("광고", for: .normal)
-        $0.titleLabel?.font = Fonts.medium.font(size: 10)
-        $0.backgroundColor = Colors.pink100.color
-        $0.layer.cornerRadius = 9
-        $0.setTitleColor(Colors.mainPink.color, for: .normal)
-        $0.isUserInteractionEnabled = false
-    }
+    private let adButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("광고", for: .normal)
+        button.titleLabel?.font = Fonts.medium.font(size: 10)
+        button.backgroundColor = Colors.pink100.color
+        button.layer.cornerRadius = 9
+        button.setTitleColor(Colors.mainPink.color, for: .normal)
+        button.isUserInteractionEnabled = false
+        return button
+    }()
 
     private var viewModel: HomeListAdCellViewModel?
 
     override func setup() {
         super.setup()
 
+        setupUI()
+    }
+    
+    private func setupUI() {
         contentView.addSubview(containerView)
         containerView.addSubViews([
             imageView,
@@ -58,11 +72,7 @@ final class HomeListAdCell: BaseCollectionViewCell {
             titleLabel,
             contentLabel,
         ])
-    }
-
-    override func bindConstraints() {
-        super.bindConstraints()
-
+        
         containerView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(20)
@@ -95,13 +105,21 @@ final class HomeListAdCell: BaseCollectionViewCell {
     func bind(viewModel: HomeListAdCellViewModel) {
         self.viewModel = viewModel
 
-        imageView.setImage(urlString: viewModel.output.item.imageUrl)
-        titleLabel.text = viewModel.output.item.title
-        contentLabel.text = viewModel.output.item.subTitle
-        if let fontColor = viewModel.output.item.fontColor {
-            contentLabel.textColor = UIColor(hex: fontColor)
+        let advertisement = viewModel.output.item
+        imageView.setImage(urlString: advertisement.image?.url)
+        
+        titleLabel.text = advertisement.title?.content
+        if let titleColor = advertisement.title?.fontColor {
+            titleLabel.textColor = UIColor(hex: titleColor)
         }
-        if let backgroundColor = viewModel.output.item.bgColor {
+        
+        
+        contentLabel.text = advertisement.subTitle?.content
+        if let contentColor = advertisement.subTitle?.fontColor {
+            contentLabel.textColor = UIColor(hex: contentColor)
+        }
+        
+        if let backgroundColor = advertisement.background?.color {
             containerView.backgroundColor = UIColor(hex: backgroundColor)
         }
     }

@@ -84,7 +84,7 @@ final class MainBannerPopupView: BaseView {
         }
     }
     
-    func bind(advertisement: Model.Advertisement) {
-        bannerButton.setImage(urlString: advertisement.imageUrl, state: .normal)
+    func bind(advertisement: AdvertisementResponse) {
+        bannerButton.setImage(urlString: advertisement.image?.url, state: .normal)
     }
 }

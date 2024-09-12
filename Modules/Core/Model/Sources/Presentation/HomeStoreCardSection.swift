@@ -9,21 +9,21 @@ public struct HomeSection: Hashable {
 }
 
 public enum HomeSectionItem: Hashable {
-    case storeCard(StoreCard)
+    case store(StoreWithExtraResponse)
     case empty
-    case advertisement(Advertisement?)
+    case advertisement(AdvertisementResponse?)
 }
 
 public extension HomeSectionItem {
-    var storeCard: StoreCard? {
-        if case .storeCard(let storeCard) = self {
-            return storeCard
+    var store: StoreWithExtraResponse? {
+        if case .store(let storeWithExtra) = self {
+            return storeWithExtra
         } else {
             return nil
         }
     }
     
-    var advertisement: Advertisement? {
+    var advertisement: AdvertisementResponse? {
         if case .advertisement(let advertisement) = self {
             return advertisement
         } else {
