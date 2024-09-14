@@ -286,10 +286,10 @@ final class VisitView: BaseView {
     
     func bind(store: VisitableStore) {
         storeNameLabel.text = store.storeName
-        storeCategoryImage.setImage(urlString: store.platformStoreCategories.first?.imageUrl)
+        storeCategoryImage.setImage(urlString: store.categories.first?.imageUrl)
         storeCategoryLabel.text = store.categoriesString
-        bottomRightCategoryImage.setImage(urlString: store.platformStoreCategories.first?.imageUrl)
-        if let location = store.storeLocation {
+        bottomRightCategoryImage.setImage(urlString: store.categories.first?.imageUrl)
+        if let location = store.location {
             setupMap(location: location)
         }
     }
@@ -363,13 +363,13 @@ final class VisitView: BaseView {
         }
     }
     
-    private func setupMap(location: Location) {
+    private func setupMap(location: LocationResponse) {
         moveCamera(latitude: location.latitude, longitude: location.longitude)
         setupRangeOverlayView(location: location)
         setupMarker(location: location)
     }
     
-    private func setupRangeOverlayView(location: Location) {
+    private func setupRangeOverlayView(location: LocationResponse) {
         let rangeOverlayView = NMFCircleOverlay()
         rangeOverlayView.center = NMGLatLng(lat: location.latitude, lng: location.longitude)
         rangeOverlayView.radius = 100
@@ -377,7 +377,7 @@ final class VisitView: BaseView {
         rangeOverlayView.mapView = mapView
     }
     
-    private func setupMarker(location: Location) {
+    private func setupMarker(location: LocationResponse) {
         let marker = NMFMarker()
         marker.position = NMGLatLng(lat: location.latitude, lng: location.longitude)
         marker.iconImage = NMFOverlayImage(image: Icons.markerFocuesd.image)

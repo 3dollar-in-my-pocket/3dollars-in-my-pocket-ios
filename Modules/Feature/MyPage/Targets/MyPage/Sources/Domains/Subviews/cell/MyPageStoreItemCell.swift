@@ -180,9 +180,10 @@ final private class MyPageStoreVisitDateView: BaseView {
     }
     
     func bind(item: MyPageStore.VisitInfo) {
-        iconView.image = switch item.vistType {
+        iconView.image = switch item.visitType {
         case .exists: Icons.faceSmile.image.withTintColor(Colors.mainGreen.color)
         case .notExists: Icons.faceSad.image.withTintColor(Colors.mainRed.color)
+        case .unknown: nil
         }
         
         dateLabel.text = item.visitDate

@@ -1,7 +1,7 @@
 import Foundation
 
 public struct UserStoreWithVisitsResponse: Decodable {
-    public let store: UserStoreApiResponse
+    public let store: UserStoreResponse
     public let distanceM: Int
     public let visits: StoreVisitCountSimpleResponse
     public let tags: StoreTagResponse

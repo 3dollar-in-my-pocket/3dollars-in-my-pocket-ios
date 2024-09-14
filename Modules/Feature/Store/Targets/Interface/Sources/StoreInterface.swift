@@ -14,5 +14,5 @@ public protocol StoreInterface {
         onSuccessVisit: @escaping (() -> Void)
     ) -> UIViewController
     
-    func getMapDeetailViewController(location: Location, storeName: String) -> UIViewController
+    func getMapDetailViewController(location: LocationResponse, storeName: String) -> UIViewController
 }

@@ -12,15 +12,15 @@ public protocol StoreRepository {
     
     func fetchAroundStores(input: FetchAroundStoreInput) async -> Result<ContentsWithCursorResponse<StoreWithExtraResponse>, Error>
     
-    func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<StoreWithDetailApiResponse, Error>
+    func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<UserStoreDetailResponse, Error>
     
     func saveStore(storeType: StoreType, storeId: String, isDelete: Bool) async -> Result<String, Error>
     
     func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error>
     
-    func writeReview(input: WriteReviewRequestInput) async -> Result<ReviewWithUserApiResponse, Error>
+    func writeReview(input: WriteReviewRequestInput) async -> Result<StoreReviewWithWriterResponse, Error>
     
-    func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageApiResponse], Error>
+    func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageResponse], Error>
     
     func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error>
     
@@ -62,8 +62,8 @@ public struct StoreRepositoryImpl: StoreRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<StoreWithDetailApiResponse, Error> {
-        let request = FetchStoreDetailRequest(input: input)
+    public func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<UserStoreDetailResponse, Error> {
+        let request = StoreApi.fetchStoreDetail(input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }
@@ -80,13 +80,13 @@ public struct StoreRepositoryImpl: StoreRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func writeReview(input: WriteReviewRequestInput) async -> Result<ReviewWithUserApiResponse, Error> {
+    public func writeReview(input: WriteReviewRequestInput) async -> Result<StoreReviewWithWriterResponse, Error> {
         let request = WriteReviewRequest(input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageApiResponse], Error> {
+    public func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageResponse], Error> {
         let request = UploadPhotoRequest(storeId: storeId, photos: photos)
         
         return await NetworkManager.shared.request(requestType: request)

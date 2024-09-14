@@ -1,6 +1,6 @@
 import Foundation
 
-public enum PaymentMethod: String, Hashable {
+public enum PaymentMethod: String, Hashable, Decodable {
     case cash = "CASH"
     case accountTransfer = "ACCOUNT_TRANSFER"
     case card = "CARD"
@@ -8,5 +8,9 @@ public enum PaymentMethod: String, Hashable {
     
     init(value: String) {
         self = PaymentMethod(rawValue: value) ??  .unknown
+    }
+    
+    public init(from decoder: Decoder) throws {
+        self = try PaymentMethod(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
     }
 }

@@ -113,7 +113,7 @@ final class WriteDetailViewModel: BaseViewModel {
             
             self.state = State(
                 storeId: editConfig.storeId,
-                location: editConfig.storeDetailData.overview.location,
+                location: Location(response: editConfig.storeDetailData.overview.location) ?? Location(latitude: 0, longitude: 0),
                 addess: editConfig.storeDetailData.overview.address,
                 name: editConfig.storeDetailData.overview.storeName,
                 salesType: editConfig.storeDetailData.info.salesType,
@@ -121,7 +121,7 @@ final class WriteDetailViewModel: BaseViewModel {
                 appearanceDays: editConfig.storeDetailData.info.appearanceDays,
                 startDate: editConfig.storeDetailData.info.openingHours?.startTime,
                 endDate: editConfig.storeDetailData.info.openingHours?.endTime,
-                categories: editConfig.storeDetailData.overview.categories,
+                categories: editConfig.storeDetailData.overview.categories.map { PlatformStoreCategory(response: $0) },
                 menu: menus,
                 isEdit: true
             )
@@ -227,7 +227,7 @@ final class WriteDetailViewModel: BaseViewModel {
         
         input.addCategories
             .withUnretained(self)
-            .sink { owner, categories in
+            .sink { (owner: WriteDetailViewModel, categories) in
                 var updatedMenus = [[NewMenu]]()
                 for category in categories {
                     if let index = owner.state.categories.firstIndex(of: category) {

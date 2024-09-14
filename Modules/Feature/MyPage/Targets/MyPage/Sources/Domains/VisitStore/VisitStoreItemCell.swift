@@ -133,6 +133,8 @@ final class VisitStoreItemCell: BaseCollectionViewCell {
         case .notExists:
             visitTypeImageView.image = Icons.faceSad.image.withTintColor(Colors.mainRed.color)
             visitTypeView.backgroundColor = Colors.mainRed.color.withAlphaComponent(0.1)
+        case .unknown:
+            break
         }
     }
 }

@@ -6,7 +6,7 @@ public struct PollCommentWithUserRecursiveApiResponse: Decodable {
 
 public struct PollCommentWithUserApiResponse: Decodable {
     public let comment: PollCommentApiResponse
-    public let commentWriter: UserApiResponse
+    public let commentWriter: UserResponse
     public let commentReport: PollCommentReportApiResponse
     public let poll: PollWithSelectedOptionsApiResponse
     public var stickers: [StickerResponse]

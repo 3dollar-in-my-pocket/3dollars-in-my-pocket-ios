@@ -7,7 +7,7 @@ public struct MyVisitStore: Hashable {
     public let store: PlatformStore
     
     public init(response: StoreVisitWithStoreApiResponse) {
-        self.type = VisitType(value: response.visit.type)
+        self.type = response.visit.type
         self.visitDate = response.visit.visitDate
         self.createdAt = response.visit.createdAt
         self.store = PlatformStore(response: response.store)

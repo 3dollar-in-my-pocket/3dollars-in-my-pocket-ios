@@ -3,7 +3,7 @@ import Foundation
 import Model
 
 public protocol ReviewServiceProtocol {
-    func fetchStoreReview(storeId: Int, input: FetchStoreReviewRequestInput) async -> Result<ContentsWithCursorResponse<ReviewWithUserApiResponse>, Error>
+    func fetchStoreReview(storeId: Int, input: FetchStoreReviewRequestInput) async -> Result<ContentsWithCursorResponse<StoreReviewWithWriterResponse>, Error>
     
     func reportReview(storeId: Int, reviewId: Int, input: ReportReviewRequestInput) async -> Result<String?, Error>
     
@@ -15,7 +15,7 @@ public protocol ReviewServiceProtocol {
 public struct ReviewService: ReviewServiceProtocol {
     public init() { }
     
-    public func fetchStoreReview(storeId: Int, input: FetchStoreReviewRequestInput) async -> Result<ContentsWithCursorResponse<ReviewWithUserApiResponse>, Error> {
+    public func fetchStoreReview(storeId: Int, input: FetchStoreReviewRequestInput) async -> Result<ContentsWithCursorResponse<StoreReviewWithWriterResponse>, Error> {
         let request = FetchStoreReviewRequest(storeId: storeId, input: input)
         
         return await NetworkManager.shared.request(requestType: request)

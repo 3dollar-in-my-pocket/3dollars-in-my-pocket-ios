@@ -6,10 +6,10 @@ public struct User: Hashable {
     public let socialType: SocialType
     public let medal: Medal
     
-    public init(response: UserApiResponse) {
+    public init(response: UserResponse) {
         self.userId = response.userId
         self.name = response.name
-        self.socialType = SocialType(value: response.socialType ?? "")
+        self.socialType = response.socialType ?? .unknown
         self.medal = Medal(response: response.medal)
     }
 }

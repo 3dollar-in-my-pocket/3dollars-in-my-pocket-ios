@@ -79,13 +79,14 @@ final class VisitButton: UIButton {
 }
 
 extension VisitType {
-    var image: UIImage {
+    var image: UIImage? {
         switch self {
         case .exists:
             return Assets.imageSuccessVisit.image
-            
         case .notExists:
             return Assets.imageFailVisit.image
+        case .unknown:
+            return nil
         }
     }
     
@@ -93,19 +94,21 @@ extension VisitType {
         switch self {
         case .exists:
             return Strings.Visit.exists
-            
         case .notExists:
             return Strings.Visit.notExists
+        case .unknown:
+            return ""
         }
     }
     
-    var subjectTextColor: UIColor {
+    var subjectTextColor: UIColor? {
         switch self {
         case .exists:
             return Colors.mainGreen.color
-            
         case .notExists:
             return Colors.mainRed.color
+        case .unknown:
+            return nil
         }
     }
 }

@@ -83,16 +83,16 @@ final class StoreDetailOverviewMapView: BaseView {
         marker?.mapView = nil
     }
     
-    func bind(location: Location, address: String?) {
+    func bind(location: LocationResponse?, address: String?) {
         addressButton.setTitle(address, for: .normal)
         
+        guard let location else { return }
         setMarket(location: location)
-        let location = CLLocation(latitude: location.latitude, longitude: location.longitude)
         moveCamera(location: location)
     }
     
-    private func moveCamera(location: CLLocation) {
-        let target = NMGLatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
+    private func moveCamera(location: LocationResponse) {
+        let target = NMGLatLng(lat: location.latitude, lng: location.longitude)
         let cameraPosition = NMFCameraPosition(target, zoom: mapView.zoomLevel)
         let cameraUpdate = NMFCameraUpdate(position: cameraPosition)
         
@@ -100,7 +100,7 @@ final class StoreDetailOverviewMapView: BaseView {
         mapView.moveCamera(cameraUpdate)
     }
     
-    private func setMarket(location: Location) {
+    private func setMarket(location: LocationResponse) {
         marker = NMFMarker()
         marker?.width = 32
         marker?.height = 40

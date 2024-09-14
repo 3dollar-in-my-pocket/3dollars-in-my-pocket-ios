@@ -1,5 +1,5 @@
 import Foundation
 
-public struct ReviewReportApiResponse: Decodable {
+public struct ReportResponse: Decodable {
     public let reportedByMe: Bool
 }
