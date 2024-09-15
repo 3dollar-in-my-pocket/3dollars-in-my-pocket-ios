@@ -2,7 +2,7 @@ import Foundation
 
 public struct PollWithMetaApiResponse: Decodable {
     public let poll: PollApiResponse
-    public let pollWriter: UserApiResponse
+    public let pollWriter: UserResponse
     public let meta: PollMetaApiResponse
 }
 

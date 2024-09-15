@@ -323,11 +323,7 @@ final class StoreDetailViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let input = FetchStoreDetailInput(
-                storeId: state.storeId,
-                latitude: preference.userCurrentLocation.coordinate.latitude,
-                longitude: preference.userCurrentLocation.coordinate.longitude
-            )
+            let input = FetchStoreDetailInput(storeId: state.storeId)
             let storeDetailResult = await storeService.fetchStoreDetail(input: input)
             
             switch storeDetailResult {
@@ -542,10 +538,10 @@ extension StoreDetailViewModel {
         let urlScheme: String
         switch type {
         case .kakao:
-            urlScheme = "kakaomap://look?p=\(location.latitude),\(location.longitude)"
+            urlScheme = "kakaomap://look?p=\(location?.latitude ?? 0),\(location?.longitude ?? 0)"
             
         case .naver:
-            urlScheme = "nmap://place?lat=\(location.latitude)&lng=\(location.longitude)&name=\(storeName)&zoom=20&appname=\(appInfomation.bundleId)"
+            urlScheme = "nmap://place?lat=\(location?.latitude ?? 0)&lng=\(location?.longitude ?? 0)&name=\(storeName)&zoom=20&appname=\(appInfomation.bundleId)"
         }
         
         guard let url = URL(string: urlScheme) else { return }
@@ -565,9 +561,11 @@ extension StoreDetailViewModel {
     }
     
     private func presentMapDetail() {
-        guard let storeDetailData = state.storeDetailData else { return }
+        guard let storeDetailData = state.storeDetailData,
+              let location = storeDetailData.overview.location else { return }
+        
         let config = MapDetailViewModel.Config(
-            location: storeDetailData.overview.location,
+            location: location,
             storeName: storeDetailData.overview.storeName
         )
         let viewModel = MapDetailViewModel(config: config)

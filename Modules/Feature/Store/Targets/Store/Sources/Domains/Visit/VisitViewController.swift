@@ -6,6 +6,8 @@ import Model
 import DesignSystem
 import Log
 
+import CombineCocoa
+
 final class VisitViewController: BaseViewController {
     override var screenName: ScreenName {
         return viewModel.output.screenName
@@ -28,32 +30,36 @@ final class VisitViewController: BaseViewController {
         view = visitView
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        bind()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         viewModel.input.viewWillAppear.send(())
     }
     
-    override func bindEvent() {
-        visitView.closeButton.controlPublisher(for: .touchUpInside)
-            .mapVoid
+    private func bind() {
+        visitView.closeButton.tapPublisher
+            .main
             .withUnretained(self)
             .sink { (owner: VisitViewController, _) in
                 owner.dismiss(animated: true, completion: nil)
             }
             .store(in: &cancellables)
-    }
-    
-    override func bindViewModelInput() {
-        visitView.currentLocationButton.controlPublisher(for: .touchUpInside)
+        
+        // Input
+        visitView.currentLocationButton.tapPublisher
             .mapVoid
             .subscribe(viewModel.input.didTapCurrentLocation)
             .store(in: &cancellables)
         
-        visitView.existedButton.controlPublisher(for: .touchUpInside)
+        visitView.existedButton.tapPublisher
             .map { _ in VisitType.exists }
             .subscribe(viewModel.input.didTapVisit)
             .store(in: &cancellables)
         
-        visitView.notExistedButton.controlPublisher(for: .touchUpInside)
+        visitView.notExistedButton.tapPublisher
             .map { _ in VisitType.notExists }
             .subscribe(viewModel.input.didTapVisit)
             .store(in: &cancellables)
@@ -95,18 +101,9 @@ final class VisitViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.showErrorAlert
-            .main
-            .withUnretained(self)
-            .sink { (owner: VisitViewController, error: Error) in
-                owner.showErrorAlert(error: error)
-            }
-            .store(in: &cancellables)
-        
         viewModel.output.toast
             .main
-            .withUnretained(self)
-            .sink { (owner: VisitViewController, message: String) in
+            .sink { (message: String) in
                 ToastManager.shared.show(message: message)
             }
             .store(in: &cancellables)
@@ -119,11 +116,16 @@ final class VisitViewController: BaseViewController {
             }
             .store(in: &cancellables)
     }
-    
+}
+
+// MARK: Route
+extension VisitViewController {
     private func handleRoute(_ route: VisitViewModel.Route) {
         switch route {
         case .dismiss:
             dismiss(animated: true, completion: nil)
+        case .showErrorAlert(let error):
+            showErrorAlert(error: error)
         }
     }
 }

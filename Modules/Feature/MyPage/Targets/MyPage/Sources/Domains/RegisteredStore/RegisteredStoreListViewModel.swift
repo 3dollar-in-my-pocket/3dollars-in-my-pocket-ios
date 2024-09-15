@@ -140,7 +140,7 @@ final class RegisteredStoreListViewModel: BaseViewModel {
 
 // MARK: Log
 private extension RegisteredStoreListViewModel {
-    func sendClickStoreLog(_ store: UserStoreApiResponse) {
+    func sendClickStoreLog(_ store: UserStoreResponse) {
         logManager.sendEvent(.init(screen: output.screenName, eventName: .clickStore, extraParameters: [
             .storeId: store.storeId,
             .type: StoreType.userStore.rawValue

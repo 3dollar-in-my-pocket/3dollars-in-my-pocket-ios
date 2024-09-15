@@ -33,7 +33,7 @@ public final class BookmarkViewerViewModel: BaseViewModel {
         var description = ""
         var totalCount = 0
         var stores: [StoreResponse] = []
-        var user: UserApiResponse?
+        var user: UserResponse?
     }
     
     enum Route {

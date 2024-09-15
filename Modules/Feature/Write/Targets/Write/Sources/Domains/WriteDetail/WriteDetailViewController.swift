@@ -127,6 +127,7 @@ final class WriteDetailViewController: BaseViewController {
             navigationController?.popViewController(animated: true)
             
         case .presentMapDetail(let location, let storeName):
+            let location = LocationResponse(latitude: location.latitude, longitude: location.longitude)
             presentMapDetail(location: location, storeName: storeName)
             
         case .presentCategorySelection(let viewModel):
@@ -168,8 +169,8 @@ final class WriteDetailViewController: BaseViewController {
         presentPanModal(viewController)
     }
     
-    private func presentMapDetail(location: Location, storeName: String) {
-        let viewController = Environment.storeInterface.getMapDeetailViewController(location: location, storeName: storeName)
+    private func presentMapDetail(location: LocationResponse, storeName: String) {
+        let viewController = Environment.storeInterface.getMapDetailViewController(location: location, storeName: storeName)
         present(viewController, animated: true)
     }
     

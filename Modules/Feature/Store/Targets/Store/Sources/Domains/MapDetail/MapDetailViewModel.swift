@@ -19,12 +19,12 @@ public final class MapDetailViewModel: BaseViewModel {
     }
     
     struct State {
-        let location: Location
+        let location: LocationResponse
         let storeName: String
     }
     
     public struct Config {
-        let location: Location
+        let location: LocationResponse
         let storeName: String
     }
     

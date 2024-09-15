@@ -1,6 +1,6 @@
 import Foundation
 
-public enum AppearanceDay: String, Hashable {
+public enum AppearanceDay: String, Hashable, Decodable {
     case monday = "MONDAY"
     case tuesday = "TUESDAY"
     case wednesday = "WEDNESDAY"
@@ -12,5 +12,9 @@ public enum AppearanceDay: String, Hashable {
     
     init(value: String) {
         self = AppearanceDay(rawValue: value) ??  .unknown
+    }
+    
+    public init(from decoder: Decoder) throws {
+        self = try AppearanceDay(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
     }
 }

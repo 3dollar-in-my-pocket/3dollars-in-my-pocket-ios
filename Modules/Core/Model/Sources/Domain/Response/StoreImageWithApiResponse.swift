@@ -1,5 +1,5 @@
 import Foundation
 
 public struct StoreImageWithApiResponse: Decodable {
-    public let image: StoreImageApiResponse
+    public let image: StoreImageResponse
 }

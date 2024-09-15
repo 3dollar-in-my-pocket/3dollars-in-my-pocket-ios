@@ -12,14 +12,14 @@ public struct BossStoreDetailData {
 
     public init(response: BossStoreDetailResponse) {
         self.overview = StoreDetailOverview(
-            categories: response.store.categories.map { PlatformStoreCategory(response: $0) },
+            categories: response.store.categories,
             repoterName: "",
             storeName: response.store.name,
             isNew: response.tags.isNew,
             totalVisitSuccessCount: 0,
             reviewCount: response.feedbacks.map { $0.count }.reduce(0, +),
             distance: response.distanceM,
-            location: Location(response: response.store.location ?? .init(latitude: 0, longitude: 0)),
+            location: response.store.location,
             address: response.store.address.fullAddress,
             isFavorited: response.favorite.isFavorite,
             subscribersCount: response.favorite.totalSubscribersCount,

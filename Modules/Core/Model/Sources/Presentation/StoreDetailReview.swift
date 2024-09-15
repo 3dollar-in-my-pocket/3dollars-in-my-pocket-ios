@@ -13,14 +13,14 @@ public struct StoreDetailReview: Hashable {
     public var reactedByMe: Bool
     public let stickerId: String
     
-    public init(response: ReviewWithUserApiResponse) {
+    public init(response: StoreReviewWithWriterResponse) {
         self.user = User(response: response.reviewWriter)
         self.reviewId = response.review.reviewId
         self.contents = response.review.contents
         self.createdAt = response.review.createdAt
         self.rating = response.review.rating
         self.reportedByMe = response.reviewReport.reportedByMe
-        self.isFiltered = response.review.status == "FILTERED"
+        self.isFiltered = response.review.status == .filtered
         self.isOwner = response.review.isOwner
         self.likeCount = response.stickers.first?.count ?? 0
         self.reactedByMe = response.stickers.first?.reactedByMe ?? false

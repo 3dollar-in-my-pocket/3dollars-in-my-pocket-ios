@@ -102,7 +102,7 @@ extension BookmarkViewerOverviewCell {
     struct UIModel: Hashable, Equatable {
         let title: String
         let description: String
-        let user: UserApiResponse
+        let user: UserResponse
         
         static func == (lhs: BookmarkViewerOverviewCell.UIModel, rhs: BookmarkViewerOverviewCell.UIModel) -> Bool {
             return lhs.title == rhs.title && lhs.description == rhs.description

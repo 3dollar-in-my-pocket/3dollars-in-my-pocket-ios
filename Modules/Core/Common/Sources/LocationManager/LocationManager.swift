@@ -4,13 +4,69 @@ import Combine
 
 public protocol LocationManagerProtocol {
     func getCurrentLocationPublisher() -> LocationManager.LocationPublisher
+    
+    func getCurrentLocation() async throws -> CLLocation
 }
 
 public class LocationManager: NSObject, LocationManagerProtocol {
     public static let shared = LocationManager()
     
+    private let locationManager = CLLocationManager()
+    private var locationContinuation: CheckedContinuation<CLLocation, Error>?
+    
+    public override init() {
+        super.init()
+        locationManager.delegate = self
+    }
+    
     public func getCurrentLocationPublisher() -> LocationPublisher {
         return LocationPublisher()
+    }
+    
+    public func getCurrentLocation() async throws -> CLLocation {
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            self?.locationContinuation = continuation
+            if CLLocationManager.locationServicesEnabled() {
+                if self?.locationManager.authorizationStatus == .notDetermined {
+                    self?.locationManager.requestWhenInUseAuthorization()
+                } else {
+                    self?.locationManager.startUpdatingLocation()
+                }
+            } else {
+                self?.locationContinuation?.resume(throwing: LocationError.disableLocationService)
+            }
+        }
+    }
+}
+
+extension LocationManager: CLLocationManagerDelegate {
+    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first {
+            locationContinuation?.resume(returning: location)
+            locationManager.stopUpdatingLocation()
+            locationContinuation = nil
+        }
+    }
+    
+    public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        locationContinuation?.resume(throwing: error)
+        locationManager.stopUpdatingLocation()
+        locationContinuation = nil
+    }
+    
+    public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch manager.authorizationStatus {
+        case .denied, .restricted:
+            locationContinuation?.resume(throwing: LocationError.denied)
+            locationContinuation = nil
+        case .authorizedAlways, .authorizedWhenInUse:
+            locationManager.startUpdatingHeading()
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        default:
+            locationContinuation?.resume(throwing: LocationError.unknown)
+            locationContinuation = nil
+        }
     }
 }
 

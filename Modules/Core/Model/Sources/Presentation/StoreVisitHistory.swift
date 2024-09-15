@@ -5,8 +5,8 @@ public struct StoreVisitHistory: Hashable {
     public let visitTime: String
     public let name: String
     
-    public init(response: StoreVisitWithUserApiResponse) {
-        self.type = VisitType(value: response.visit.type)
+    public init(response: StoreVisitWithUserResponse) {
+        self.type = response.visit.type
         self.visitTime = response.visit.visitDate
         self.name = response.visitor.name
     }

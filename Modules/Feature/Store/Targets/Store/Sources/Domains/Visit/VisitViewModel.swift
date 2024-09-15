@@ -25,7 +25,6 @@ final class VisitViewModel: BaseViewModel {
         let distance = PassthroughSubject<Int, Never>()
         let canVisit = PassthroughSubject<Bool, Never>()
         let moveCamera = PassthroughSubject<CLLocation, Never>()
-        let showErrorAlert = PassthroughSubject<Error, Never>()
         let toast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         
@@ -35,6 +34,7 @@ final class VisitViewModel: BaseViewModel {
     
     enum Route {
         case dismiss
+        case showErrorAlert(Error)
     }
     
     struct State {
@@ -44,10 +44,21 @@ final class VisitViewModel: BaseViewModel {
     struct Config {
         let storeId: Int
         let store: VisitableStore
+    }
+    
+    struct Dependency {
+        let locationManager: LocationManagerProtocol
+        let visitRepository: VisitRepository
+        let logManager: LogManagerProtocol
         
-        public init(storeId: Int, store: VisitableStore) {
-            self.storeId = storeId
-            self.store = store
+        init(
+            locationManager: LocationManagerProtocol = LocationManager.shared,
+            visitRepository: VisitRepository = VisitRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared
+        ) {
+            self.locationManager = locationManager
+            self.visitRepository = visitRepository
+            self.logManager = logManager
         }
     }
     
@@ -55,28 +66,20 @@ final class VisitViewModel: BaseViewModel {
     let output: Output
     private var state = State()
     private let config: Config
-    private let locationManager: LocationManagerProtocol
-    private let visitService: VisitServiceProtocol
-    private let logManager: LogManagerProtocol
+    private let dependency: Dependency
     
-    init(
-        config: Config,
-        locationManager: LocationManagerProtocol = LocationManager.shared,
-        visitService: VisitServiceProtocol = VisitService(),
-        logManager: LogManagerProtocol = LogManager.shared
-    ) {
+    init(config: Config, dependency: Dependency = Dependency()) {
         self.output = Output(store: .init(config.store))
         self.config = config
-        self.locationManager = locationManager
-        self.visitService = visitService
-        self.logManager = logManager
+        self.dependency = dependency
     }
     
     override func bind() {
         input.viewWillAppear
+            .first()
             .withUnretained(self)
             .sink { (owner: VisitViewModel, _) in
-                owner.trackingLocation()
+                owner.setupTimer()
             }
             .store(in: &cancellables)
         
@@ -97,38 +100,42 @@ final class VisitViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
     
-    private func trackingLocation() {
+    private func setupTimer() {
         Timer.publish(every: 5.0, on: .main, in: .common)
             .autoconnect()
             .prepend(Date())
             .withUnretained(self)
-            .flatMap { (owner: VisitViewModel, _) in
-                return owner.locationManager.getCurrentLocationPublisher()
-                    .catch { error -> AnyPublisher<CLLocation, Never> in
-                        owner.state.currentLocation = Constent.defaultLocation
-                        // TODO: 권한 에러 발생 필요
-                        
-                        return Just(Constent.defaultLocation).eraseToAnyPublisher()
-                    }
-            }
-            .withUnretained(self)
-            .sink { (owner: VisitViewModel, location: CLLocation) in
-                let storeLocation = CLLocation(
-                    latitude: owner.config.store.storeLocation?.latitude ?? 0,
-                    longitude: owner.config.store.storeLocation?.longitude ?? 0
-                )
-                let distance = Int(location.distance(from: storeLocation))
-                
-                owner.state.currentLocation = location
-                owner.output.distance.send(distance)
-                owner.output.canVisit.send(distance <= Constent.maxVisitableDistance)
-            }
+            .sink(receiveValue: { (owner: VisitViewModel, _) in
+                owner.fetchLocation()
+            })
             .store(in: &cancellables)
+    }
+    
+    private func fetchLocation() {
+        Task {
+            var location: CLLocation
+            do {
+                location = try await dependency.locationManager.getCurrentLocation()
+            } catch {
+                location = Constent.defaultLocation
+            }
+            
+            let storeLocation = CLLocation(
+                latitude: config.store.location?.latitude ?? 0,
+                longitude: config.store.location?.longitude ?? 0
+            )
+            let distance = Int(location.distance(from: storeLocation))
+            
+            state.currentLocation = location
+            output.distance.send(distance)
+            output.canVisit.send(distance <= Constent.maxVisitableDistance)
+        }
     }
     
     private func visitStore(type: VisitType) {
         Task {
-            let result = await visitService.visitStore(storeId: config.storeId, type: type)
+            let input = VisitStoreRequestInput(storeId: config.storeId, visitType: type)
+            let result = await dependency.visitRepository.visitStore(input: input)
             
             switch result {
             case .success(_):
@@ -136,7 +143,7 @@ final class VisitViewModel: BaseViewModel {
                 output.toast.send(Strings.Visit.resultMessage)
                 output.route.send(.dismiss)
             case .failure(let error):
-                output.showErrorAlert.send(error)
+                output.route.send(.showErrorAlert(error))
             }
         }
     }
@@ -150,12 +157,13 @@ extension VisitViewModel {
         switch type {
         case .exists:
             eventName = .clickVisitSuccess
-            
         case .notExists:
             eventName = .clickVisitFail
+        case .unknown:
+            return
         }
         
-        logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: eventName,
             extraParameters: [.storeId: config.storeId]

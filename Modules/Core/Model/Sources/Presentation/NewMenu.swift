@@ -14,6 +14,16 @@ public struct NewMenu: Hashable {
         self.name = name
         self.price = price
     }
+    
+    public init(
+        category: StoreFoodCategoryResponse,
+        name: String = "",
+        price: String = ""
+    ) {
+        self.category = PlatformStoreCategory(response: category) 
+        self.name = name
+        self.price = price
+    }
 }
 
 public extension NewMenu {

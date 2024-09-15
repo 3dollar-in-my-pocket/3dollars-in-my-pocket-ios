@@ -1,6 +1,6 @@
 import Foundation
 
-public enum SalesType: String, Hashable {
+public enum SalesType: String, Hashable, Decodable {
     case road = "ROAD"
     case store = "STORE"
     case convenienceStore = "CONVENIENCE_STORE"
@@ -12,6 +12,10 @@ public enum SalesType: String, Hashable {
         } else {
             return nil
         }
+    }
+    
+    public init(from decoder: Decoder) throws {
+        self = try SalesType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
     }
     
     public func getIndexValue() -> Int {
