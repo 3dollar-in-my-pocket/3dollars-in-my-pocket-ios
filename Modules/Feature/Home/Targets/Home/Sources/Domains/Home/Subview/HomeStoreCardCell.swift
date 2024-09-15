@@ -9,26 +9,32 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIScreen.main.bounds.width - 81, height: 152)
     }
     
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 20
-        $0.backgroundColor = DesignSystemAsset.Colors.gray100.color
-    }
+    private let containerView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 20
+        view.backgroundColor = DesignSystemAsset.Colors.gray100.color
+        return view
+    }()
     
     private let categoryImage = UIImageView()
     
-    private let categoryLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.textColor = DesignSystemAsset.Colors.gray40.color
-        $0.numberOfLines = 0
-        $0.textAlignment = .left
-    }
+    private let categoryLabel: UILabel = {
+        let label = UILabel()
+        label.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
+        label.textColor = DesignSystemAsset.Colors.gray40.color
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        return label
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
-        $0.textColor = DesignSystemAsset.Colors.systemWhite.color
-        $0.numberOfLines = 0
-        $0.textAlignment = .left
-    }
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = DesignSystemFontFamily.Pretendard.bold.font(size: 16)
+        label.textColor = DesignSystemAsset.Colors.systemWhite.color
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        return label
+    }()
     
     private let newBadge = UIImageView(image: HomeAsset.iconNewBadgeShort.image)
     
@@ -38,18 +44,20 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
     
     private let infoView = HomeCellInfoView()
     
-    let visitButton = UIButton().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.mainPink.color
-        $0.layer.cornerRadius = 10
-        $0.setImage(DesignSystemAsset.Icons.locationSolid.image
+    let visitButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = DesignSystemAsset.Colors.mainPink.color
+        button.layer.cornerRadius = 10
+        button.setImage(DesignSystemAsset.Icons.locationSolid.image
             .resizeImage(scaledTo: 16)
             .withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
-        $0.setTitle(HomeStrings.homeVisitButton, for: .normal)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 12)
-        $0.contentEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 14)
-        $0.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
-    }
+        button.setTitle(HomeStrings.homeVisitButton, for: .normal)
+        button.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        button.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 12)
+        button.contentEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 14)
+        button.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
+        return button
+    }()
     
     func bind(storeWithExtra: StoreWithExtraResponse) {
         categoryImage.setImage(urlString: storeWithExtra.store.categories.first?.imageUrl)
