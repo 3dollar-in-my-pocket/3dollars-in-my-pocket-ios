@@ -9,6 +9,7 @@ import NMapsMap
 import Then
 import PanModal
 import Log
+import Kingfisher
 
 typealias HomeStoreCardSanpshot = NSDiffableDataSourceSnapshot<HomeSection, HomeSectionItem>
 
@@ -170,11 +171,7 @@ public final class HomeViewController: BaseViewController {
             .combineLatest(viewModel.output.collectionItems)
             .main
             .sink { [weak self] index, items in
-                guard let self,
-                      items.count > index else {
-                    self?.clearMarker()
-                    return
-                }
+                guard let self, items.count > index else { return }
                 
                 let indexPath = IndexPath(row: index, section: 0)
                 let stores = items.map { $0.store }
@@ -258,36 +255,148 @@ public final class HomeViewController: BaseViewController {
     }
     
     private func selectMarker(selectedIndex: Int?, stores: [StoreWithExtraResponse?]) {
-        clearMarker()
+        if markers.count > stores.count {
+            markers.remove(atOffsets: IndexSet(integersIn: (stores.count)...(markers.count - 1)))
+        }
         
-        for value in stores.enumerated() {
-            let marker = NMFMarker()
-            
-            if let store = value.element {
-                if selectedIndex == value.offset {
-                    marker.width = 32
-                    marker.height = 40
-                    marker.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerFocused.image)
+        for (index, store) in stores.enumerated() {
+            if let store {
+                if let marker = markers[safe: index] {
+                    if marker.isNotNil {
+                        setStoreMarker(store, isSelected: selectedIndex == index, index: index)
+                    } else {
+                        let marker = getStoreMarker(store, isSelected: selectedIndex == index, index: index)
+                        markers[index] = marker
+                    }
                 } else {
-                    marker.width = 24
-                    marker.height = 24
-                    marker.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerUnfocused.image)
+                    let marker = getStoreMarker(store, isSelected: selectedIndex == index, index: index)
+                    markers.append(marker)
                 }
-                guard let latitude = store.store.location?.latitude,
-                      let longitude = store.store.location?.longitude else { break }
-                let position = NMGLatLng(lat: latitude, lng: longitude)
-                
-                marker.position = position
-                marker.mapView = homeView.mapView
-                marker.touchHandler = { [weak self] _ in
-                    self?.viewModel.input.onTapMarker.send(value.offset)
-                    return true
-                }
-                markers.append(marker)
             } else {
-                markers.append(nil)
+                if let marker = markers[safe: index] {
+                    markers[index] = nil
+                } else {
+                    markers.append(nil)
+                }
             }
         }
+    }
+    
+    private func setStoreMarker(_ store: StoreWithExtraResponse, isSelected: Bool, index: Int) {
+        if let customMarker = store.marker {
+            setCustomMarker(customMarker, isSelected: isSelected, index: index)
+        } else {
+            setDefaultMarker(isSelected: isSelected, index: index)
+        }
+        
+        guard let latitude = store.store.location?.latitude,
+              let longitude = store.store.location?.longitude else { return }
+        let position = NMGLatLng(lat: latitude, lng: longitude)
+        
+        markers[index]?.position = position
+        markers[index]?.mapView = homeView.mapView
+        markers[index]?.touchHandler = { [weak self] _ in
+            self?.viewModel.input.onTapMarker.send(index)
+            return true
+        }
+    }
+    
+    private func setCustomMarker(_ response: StoreMarkerResponse, isSelected: Bool, index: Int) {
+        let markerImage = isSelected ? response.selected : response.unselected
+        guard let url = URL(string: markerImage.imageUrl) else {
+            setDefaultMarker(isSelected: isSelected, index: index)
+            return
+        }
+        
+        ImageDownloader.default.downloadImage(with: url) { [weak self] result in
+            switch result {
+            case .success(let response):
+                self?.markers[index]?.iconImage = NMFOverlayImage(image: response.image)
+                self?.markers[index]?.width = CGFloat(markerImage.width)
+                self?.markers[index]?.height = CGFloat(markerImage.height)
+            case .failure(_):
+                self?.setDefaultMarker(isSelected: isSelected, index: index)
+            }
+        }
+    }
+    
+    private func setDefaultMarker(isSelected: Bool, index: Int) {
+        if isSelected {
+            markers[index]?.width = 32
+            markers[index]?.height = 40
+            markers[index]?.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerFocused.image)
+        } else {
+            markers[index]?.width = 24
+            markers[index]?.height = 24
+            markers[index]?.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerUnfocused.image)
+        }
+    }
+    
+    private func getStoreMarker(_ store: StoreWithExtraResponse, isSelected: Bool, index: Int) -> NMFMarker {
+        var marker = NMFMarker()
+        if let customMarker = store.marker {
+            marker = getCustomMarker(customMarker, isSelected: isSelected)
+            
+        } else {
+            marker = getDefaultMarker(isSelected: isEditing)
+        }
+        
+        guard let latitude = store.store.location?.latitude,
+              let longitude = store.store.location?.longitude else { return marker }
+        let position = NMGLatLng(lat: latitude, lng: longitude)
+        
+        marker.position = position
+        marker.mapView = homeView.mapView
+        marker.touchHandler = { [weak self] _ in
+            self?.viewModel.input.onTapMarker.send(index)
+            return true
+        }
+        return marker
+    }
+    
+    private func getCustomMarker(_ response: StoreMarkerResponse, isSelected: Bool) -> NMFMarker {
+        let marker = NMFMarker()
+        let markerImage = isSelected ? response.selected : response.unselected
+        marker.iconImage = NMFOverlayImage(name: "")
+        guard let url = URL(string: markerImage.imageUrl) else {
+            return getDefaultMarker(isSelected: isSelected)
+        }
+        
+        ImageDownloader.default.downloadImage(with: url) { [weak marker] result in
+            switch result {
+            case .success(let response):
+                marker?.iconImage = NMFOverlayImage(image: response.image)
+                marker?.width = CGFloat(markerImage.width)
+                marker?.height = CGFloat(markerImage.height)
+            case .failure(_):
+                if isSelected {
+                    marker?.width = 32
+                    marker?.height = 40
+                    marker?.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerFocused.image)
+                } else {
+                    marker?.width = 24
+                    marker?.height = 24
+                    marker?.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerUnfocused.image)
+                }
+            }
+        }
+        
+        return marker
+    }
+    
+    private func getDefaultMarker(isSelected: Bool) -> NMFMarker {
+        let marker = NMFMarker()
+        if isSelected {
+            marker.width = 32
+            marker.height = 40
+            marker.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerFocused.image)
+        } else {
+            marker.width = 24
+            marker.height = 24
+            marker.iconImage = NMFOverlayImage(image: HomeAsset.iconMarkerUnfocused.image)
+        }
+        
+        return marker
     }
     
     private func clearMarker() {
