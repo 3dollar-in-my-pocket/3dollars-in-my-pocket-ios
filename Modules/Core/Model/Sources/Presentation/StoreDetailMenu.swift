@@ -1,16 +1,14 @@
 import Foundation
 
 public struct StoreDetailMenu: Hashable {
-    public let menuId: Int
     public let name: String?
     public let price: String?
-    public let category: PlatformStoreCategory
+    public let category: StoreFoodCategoryResponse
     
-    public init(response: StoreMenuApiResponse) {
-        self.menuId = response.menuId
+    public init(response: UserStoreMenuResponse) {
         self.name = response.name
         self.price = response.price
-        self.category = PlatformStoreCategory(response: response.category)
+        self.category = response.category
     }
 }
 

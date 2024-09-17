@@ -18,7 +18,7 @@ public final class MockStoreModuleInterfaceImpl: StoreInterface {
         return EmptyViewController()
     }
     
-    public func getMapDeetailViewController(location: Model.Location, storeName: String) -> UIViewController {
+    public func getMapDetailViewController(location: LocationResponse, storeName: String) -> UIViewController {
         return EmptyViewController()
     }
 }

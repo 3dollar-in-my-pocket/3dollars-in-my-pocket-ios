@@ -12,19 +12,19 @@ public struct StoreDetailData {
     public var reviews: [StoreDetailReview]
     
     public init(
-        response: StoreWithDetailApiResponse,
+        response: UserStoreDetailResponse,
         totalPhotoCount: Int,
         totalReviewCount: Int
     ) {
         self.overview = StoreDetailOverview(
-            categories: response.store.categories.map { PlatformStoreCategory(response: $0) },
+            categories: response.store.categories,
             repoterName: response.creator.name,
             storeName: response.store.name,
             isNew: response.tags.isNew,
             totalVisitSuccessCount: response.visits.counts.existsCounts,
             reviewCount: response.reviews.cursor.totalCount,
             distance: response.distanceM,
-            location: Location(response: response.store.location),
+            location: response.store.location,
             address: response.store.address.fullAddress,
             isFavorited: response.favorite.isFavorite,
             subscribersCount: response.favorite.totalSubscribersCount, 
@@ -35,10 +35,10 @@ public struct StoreDetailData {
         
         self.info = StoreDetailInfo(
             lastUpdated: response.store.updatedAt,
-            salesType: SalesType(value: response.store.salesType),
-            appearanceDays: response.store.appearanceDays.map { AppearanceDay(value: $0) },
+            salesType: response.store.salesType,
+            appearanceDays: response.store.appearanceDays,
             openingHours: StoreDetailOpeningHours(response: response.store.openingHours),
-            paymentMethods: response.store.paymentMethods.map { PaymentMethod(value: $0) }
+            paymentMethods: response.store.paymentMethods
         )
         
         self.menus = response.store.menus.map { StoreDetailMenu(response: $0) }

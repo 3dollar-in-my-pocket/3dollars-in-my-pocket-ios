@@ -698,7 +698,8 @@ extension HomeViewModel {
             extraParameters: [
                 .storeId: store.storeId,
                 .type: store.storeType.rawValue
-            ]))
+            ]
+        ))
     }
     
     private func sendClickAddressLog() {

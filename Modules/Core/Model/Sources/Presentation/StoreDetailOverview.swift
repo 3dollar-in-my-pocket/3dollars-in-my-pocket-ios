@@ -1,14 +1,14 @@
 import Foundation
 
-public struct StoreDetailOverview: Hashable {
-    public let categories: [PlatformStoreCategory]
+public struct StoreDetailOverview: Hashable, VisitableStore {
+    public let categories: [StoreFoodCategoryResponse]
     public let repoterName: String
     public let storeName: String
     public let isNew: Bool
     public let totalVisitSuccessCount: Int
     public let reviewCount: Int
     public let distance: Int
-    public let location: Location
+    public let location: LocationResponse?
     public let address: String?
     public var isFavorited: Bool
     public var subscribersCount: Int
@@ -27,15 +27,5 @@ extension StoreDetailOverview {
         } else {
             return categories.map { "#\($0.name)"}.joined(separator: " ")
         }
-    }
-}
-
-extension StoreDetailOverview: VisitableStore {
-    public var platformStoreCategories: [PlatformStoreCategory] {
-        return categories
-    }
-    
-    public var storeLocation: Location? {
-        return location
     }
 }

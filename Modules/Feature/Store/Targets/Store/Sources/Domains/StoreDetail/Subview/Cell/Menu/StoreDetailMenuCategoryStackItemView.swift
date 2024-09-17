@@ -45,7 +45,7 @@ final class StoreDetailMenuCategoryStackItemView: BaseView {
         }
     }
     
-    func bind(_ category: PlatformStoreCategory) {
+    func bind(_ category: StoreFoodCategoryResponse) {
         imageView.setImage(urlString: category.imageUrl)
         titleLabel.text = category.name
     }

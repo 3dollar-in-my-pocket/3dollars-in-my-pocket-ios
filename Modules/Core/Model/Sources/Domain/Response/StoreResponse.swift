@@ -1,6 +1,6 @@
 import Foundation
 
-public struct StoreResponse: Decodable {
+public struct StoreResponse: Decodable, VisitableStore {
     public let storeType: StoreType
     public let storeId: String
     public let isOwner: Bool
@@ -36,22 +36,6 @@ public extension StoreResponse {
             return splitedCategories.map { "#\($0.name)"}.joined(separator: " ")
         } else {
             return categories.map { "#\($0.name)"}.joined(separator: " ")
-        }
-    }
-}
-
-
-// Deprecated될 것
-extension StoreResponse: VisitableStore {
-    public var platformStoreCategories: [PlatformStoreCategory] {
-        return categories.map { PlatformStoreCategory(response: $0) }
-    }
-    
-    public var storeLocation: Location? {
-        if let location {
-            return Location(response: location)
-        } else {
-            return nil
         }
     }
 }

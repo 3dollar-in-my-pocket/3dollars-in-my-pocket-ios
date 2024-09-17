@@ -2,7 +2,7 @@ public struct MyPageStore {
     public let store: PlatformStore
     public let visitInfo: VisitInfo?
 
-    public init(storeResponse: StoreResponse, visitResponse: StoreVisitApiResponse? = nil) {
+    public init(storeResponse: StoreResponse, visitResponse: StoreVisitResponse? = nil) {
         store = PlatformStore(response: storeResponse)
         if let visitResponse {
             visitInfo = VisitInfo(response: visitResponse)
@@ -14,11 +14,11 @@ public struct MyPageStore {
 
 public extension MyPageStore {
     struct VisitInfo {
-        public let vistType: VisitType
+        public let visitType: VisitType
         public let visitDate: String
 
-        public init(response: StoreVisitApiResponse) {
-            vistType = VisitType(value: response.type)
+        public init(response: StoreVisitResponse) {
+            visitType = response.type
             visitDate = response.visitDate
         }
     }

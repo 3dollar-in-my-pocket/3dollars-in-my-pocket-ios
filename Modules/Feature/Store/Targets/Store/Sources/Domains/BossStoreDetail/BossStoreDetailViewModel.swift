@@ -365,10 +365,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
         let urlScheme: String
         switch type {
         case .kakao:
-            urlScheme = "kakaomap://look?p=\(location.latitude),\(location.longitude)"
+            urlScheme = "kakaomap://look?p=\(location?.latitude ?? 0),\(location?.longitude ?? 0)"
 
         case .naver:
-            urlScheme = "nmap://place?lat=\(location.latitude)&lng=\(location.longitude)&name=\(storeName)&zoom=20&appname=\(appInfomation.bundleId)"
+            urlScheme = "nmap://place?lat=\(location?.latitude ?? 0)&lng=\(location?.longitude ?? 0)&name=\(storeName)&zoom=20&appname=\(appInfomation.bundleId)"
         }
 
         guard let url = URL(string: urlScheme) else { return }
@@ -383,9 +383,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
     }
 
     private func presentMapDetail() {
-        guard let storeDetailData = state.storeDetailData else { return }
+        guard let storeDetailData = state.storeDetailData,
+              let location = storeDetailData.overview.location else { return }
         let config = MapDetailViewModel.Config(
-            location: storeDetailData.overview.location,
+            location: location,
             storeName: storeDetailData.overview.storeName
         )
         let viewModel = MapDetailViewModel(config: config)
