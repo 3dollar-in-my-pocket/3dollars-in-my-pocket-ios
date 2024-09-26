@@ -1,6 +1,6 @@
 import Foundation
 
-public enum AppearanceDay: String, Hashable, Decodable {
+public enum AppearanceDay: String, Hashable, Codable {
     case monday = "MONDAY"
     case tuesday = "TUESDAY"
     case wednesday = "WEDNESDAY"

@@ -531,7 +531,7 @@ extension StoreDetailViewModel {
     
     private func goToNavigationApplication(type: NavigationAppType) {
         guard let storeDetailData = state.storeDetailData,
-              let appInfomation = DIContainer.shared.container.resolve(AppInfomation.self) else { return }
+              let appInfomation = DIContainer.shared.container.resolve(AppInformation.self) else { return }
         let location = storeDetailData.overview.location
         let storeName = storeDetailData.overview.storeName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         

@@ -1,3 +1,3 @@
-public protocol AppInfomation {
+public protocol AppInformation {
     var bundleId: String { get }
 }

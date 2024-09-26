@@ -1,10 +1,10 @@
 import Foundation
 
-public struct StoreCreateResponse: Decodable {
+public struct UserStoreCreateResponse: Decodable {
     public let storeId: Int
     public let userId: Int
     public let storeName: String
-    public let salesType: String?
+    public let salesType: SalesType?
     public let latitude: Double
     public let longitude: Double
     public let address: AddressResponse

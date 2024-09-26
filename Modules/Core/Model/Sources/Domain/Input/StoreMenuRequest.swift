@@ -1,6 +1,6 @@
 import Foundation
 
-public struct StoreMenuRequestInput: Encodable {
+public struct StoreMenuRequest: Encodable {
     public let name: String
     public let price: String
     public let category: String
