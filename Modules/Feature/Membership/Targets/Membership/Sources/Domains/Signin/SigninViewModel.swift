@@ -39,17 +39,17 @@ final class SigninViewModel: BaseViewModel {
     let output = Output()
     private var state = State()
     private var appInterface = Environment.appModuleInterface
-    private let userService: UserServiceProtocol
+    private let userRepository: UserRepository
     private let deviceService: DeviceServiceProtocol
     private let logManager: LogManagerProtocol
     private var preference = Preference.shared
     
     init(
-        userService: UserServiceProtocol = UserService(),
+        userRepository: UserRepository = UserRepositoryImpl(),
         deviceService: DeviceServiceProtocol = DeviceService(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.userService = userService
+        self.userRepository = userRepository
         self.deviceService = deviceService
         self.logManager = logManager
         
@@ -88,7 +88,7 @@ final class SigninViewModel: BaseViewModel {
                 owner.output.route.send(.showLoading(isShow: true))
             })
             .asyncMap { owner, _ in
-                await owner.userService.signinAnonymous()
+                await owner.userRepository.signinAnonymous()
             }
             .withUnretained(self)
             .sink { owner, result in
@@ -164,7 +164,8 @@ final class SigninViewModel: BaseViewModel {
     
     private func signin(socialType: SocialType, accessToken: String) {
         Task {
-            let result = await userService.signin(socialType: socialType.rawValue, accessToken: accessToken)
+            let input = SigninRequestInput(socialType: socialType.rawValue, token: accessToken)
+            let result = await userRepository.signin(input: input)
             
             switch result {
             case .success(let signinResponse):
@@ -213,7 +214,7 @@ final class SigninViewModel: BaseViewModel {
         output.route.send(.showLoading(isShow: true))
         
         Task {
-            let result = await userService.signinDemo(code: code)
+            let result = await userRepository.signinDemo(code: code)
             
             switch result {
             case .success(let response):

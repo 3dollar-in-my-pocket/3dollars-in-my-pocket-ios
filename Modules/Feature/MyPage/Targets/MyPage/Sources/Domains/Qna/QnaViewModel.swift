@@ -23,10 +23,10 @@ public final class QnaViewModel: BaseViewModel {
     
     let input = Input()
     let output = Output()
-    private let userService: UserServiceProtocol
+    private let userRepository: UserRepository
     
-    public init(userService: UserServiceProtocol = UserService()) {
-        self.userService = userService
+    public init(userRepository: UserRepository = UserRepositoryImpl()) {
+        self.userRepository = userRepository
     }
     
     public override func bind() {
@@ -46,7 +46,7 @@ public final class QnaViewModel: BaseViewModel {
     }
     
     private func fetchUserNickname() async -> String {
-        let result = await userService.fetchUser()
+        let result = await userRepository.fetchUser()
         
         switch result {
         case .success(let response):

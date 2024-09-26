@@ -46,19 +46,19 @@ public final class BookmarkViewerViewModel: BaseViewModel {
     let output = Output()
     private var state = State()
     private let config: Config
-    private let bookmarkService: BookmarkServiceProtocol
+    private let bookmarkRepository: BookmarkRepository
     private var appModuleInterface: AppModuleInterface
     private let logManager: LogManagerProtocol
     private let preference = Preference.shared
     
     init(
         config: Config,
-        bookmarkService: BookmarkServiceProtocol = BookmarkService(),
+        bookmarkRepository: BookmarkRepository = BookmarkRepositoryImpl(),
         appModuleInterface: AppModuleInterface = Environment.appModuleInterface,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
-        self.bookmarkService = bookmarkService
+        self.bookmarkRepository = bookmarkRepository
         self.appModuleInterface = appModuleInterface
         self.logManager = logManager
         
@@ -110,10 +110,11 @@ public final class BookmarkViewerViewModel: BaseViewModel {
             guard let self else { return }
             
             output.showLoading.send(true)
-            let result = await bookmarkService.fetchBookmarkFolder(
+            let input = FetchBookmarkFolderInput(size: state.size, cursor: state.cursor)
+            
+            let result = await bookmarkRepository.fetchBookmarkFolder(
                 folderId: config.folderId,
-                size: state.size,
-                cursor: state.cursor
+                input: input
             )
             output.showLoading.send(false)
             

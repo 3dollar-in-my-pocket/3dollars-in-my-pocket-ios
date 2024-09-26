@@ -40,7 +40,7 @@ final class NicknameViewModel: BaseViewModel {
     let output = Output()
     private var state: State
     private var appInterface: AppModuleInterface
-    private let userService: UserServiceProtocol
+    private let userRepository: UserRepository
     private let logManager: LogManagerProtocol
     private var preference = Preference.shared
     
@@ -49,12 +49,12 @@ final class NicknameViewModel: BaseViewModel {
         accessToken: String,
         bookmarkFolderId: String? = nil,
         appInterface: AppModuleInterface = Environment.appModuleInterface,
-        userService: UserServiceProtocol = UserService(),
+        userRepository: UserRepository = UserRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.state = State(socialType: socialType, accessToken: accessToken)
         self.appInterface = appInterface
-        self.userService = userService
+        self.userRepository = userRepository
         self.logManager = logManager
     }
     
@@ -93,11 +93,8 @@ final class NicknameViewModel: BaseViewModel {
     
     private func signup() {
         Task {
-            let result = await userService.signup(
-                name: state.nickname,
-                socialType: state.socialType.rawValue,
-                token: state.accessToken
-            )
+            let input = SignupInput(name: state.nickname, socialType: state.socialType.rawValue, token: state.accessToken)
+            let result = await userRepository.signup(input: input)
             
             switch result {
             case .success(let signupResponse):

@@ -37,17 +37,17 @@ final class PolicyViewModel: Common.BaseViewModel {
     let input = Input()
     let output = Output()
     private var state = State()
-    private let userService: Networking.UserServiceProtocol
+    private let userRepository: UserRepository
     private let deviceService: Networking.DeviceServiceProtocol
     private let appInterface: AppModuleInterface
     private let preference = Preference.shared
     
     init(
-        userService: Networking.UserServiceProtocol = Networking.UserService(),
+        userRepository: UserRepository = UserRepositoryImpl(),
         deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService(),
         appInterface: AppModuleInterface = Environment.appModuleInterface
     ) {
-        self.userService = userService
+        self.userRepository = userRepository
         self.deviceService = deviceService
         self.appInterface = appInterface
     }
@@ -97,7 +97,8 @@ final class PolicyViewModel: Common.BaseViewModel {
     private func changeMarketingConsent(isMarketingOn: Bool) {
         Task {
             let marketingConsentType: MarketingConsentType = isMarketingOn ? .approve : .deny
-            let changeMarketingConsent = await userService.changeMarketingConsent(marketingConsentType: marketingConsentType.rawValue)
+            let input = ChangeMarketingConsentInput(marketingConsent: marketingConsentType.rawValue)
+            let changeMarketingConsent = await userRepository.changeMarketingConsent(input: input)
             
             output.route.send(.showLoading(isShow: false))
             switch changeMarketingConsent {

@@ -37,17 +37,17 @@ final class EditNicknameViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     private var state: State
-    private let userService: UserServiceProtocol
+    private let userRepository: UserRepository
     private let globalEventBus: GlobalEventBusProtocol
     
     init(
         config: Config,
-        userService: UserServiceProtocol = UserService(),
+        userRepository: UserRepository = UserRepositoryImpl(),
         globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus
     ) {
         self.output = Output(nickname: .init(config.nickname))
         self.state = State(nickname: config.nickname)
-        self.userService = userService
+        self.userRepository = userRepository
         self.globalEventBus = globalEventBus
     }
     
@@ -73,7 +73,8 @@ final class EditNicknameViewModel: BaseViewModel {
     
     private func editNickname(nickname: String) {
         Task {
-            let result = await userService.editUser(nickname: nickname, representativeMedalId: nil)
+            let input = UserPatchRequestInput(name: nickname, representativeMedalId: nil)
+            let result = await userRepository.editUser(input: input)
             
             switch result {
             case .success(_):

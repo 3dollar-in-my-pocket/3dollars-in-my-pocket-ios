@@ -30,16 +30,16 @@ final class SplashViewModel: BaseViewModel {
     let output = Output()
     
     private var preference = Preference.shared
-    private let userService: UserServiceProtocol
+    private let userRepository: UserRepository
     private let remoteConfigService: RemoteConfigProtocol
     private let deviceService: DeviceServiceProtocol
     
     init(
-        userService: UserServiceProtocol = UserService(),
+        userRepository: UserRepository = UserRepositoryImpl(),
         remoteConfigService: RemoteConfigProtocol = RemoteConfigService(),
         deviceService: Networking.DeviceServiceProtocol = DeviceService()
     ) {
-        self.userService = userService
+        self.userRepository = userRepository
         self.remoteConfigService = remoteConfigService
         self.deviceService = deviceService
         
@@ -91,7 +91,7 @@ final class SplashViewModel: BaseViewModel {
     private func validateTokenFromServer() {
         Task { [weak self] in
             guard let self else { return }
-            let result = await userService.fetchUser()
+            let result = await userRepository.fetchUser()
             
             switch result {
             case .success(let user):

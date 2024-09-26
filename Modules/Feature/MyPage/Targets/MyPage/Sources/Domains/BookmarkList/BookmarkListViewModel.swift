@@ -49,16 +49,16 @@ final class BookmarkListViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     private var state = State()
-    private let bookmarkService: BookmarkServiceProtocol
+    private let bookmarkRepository: BookmarkRepository
     private let globalEventBus: GlobalEventBusProtocol
     private let logManager: LogManagerProtocol
     
     init(
-        bookmarkService: BookmarkServiceProtocol = BookmarkService(),
+        bookmarkRepository: BookmarkRepository = BookmarkRepositoryImpl(),
         globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus,
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.bookmarkService = bookmarkService
+        self.bookmarkRepository = bookmarkRepository
         self.globalEventBus = globalEventBus
         self.logManager = logManager
     }
@@ -153,7 +153,7 @@ final class BookmarkListViewModel: BaseViewModel {
             guard let self else { return }
             
             let input = FetchBookmarkStoreRequestInput(size: 20, cursor: cursor)
-            let result = await bookmarkService.fetchBookmarkStore(input: input)
+            let result = await bookmarkRepository.fetchBookmarkStore(input: input)
             
             switch result {
             case .success(let response):
@@ -248,7 +248,7 @@ final class BookmarkListViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let result = await bookmarkService.removeBookmarkStore(storeId: storeId)
+            let result = await bookmarkRepository.removeBookmarkStore(storeId: storeId)
             
             switch result {
             case .success(_):
@@ -266,7 +266,7 @@ final class BookmarkListViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let result = await bookmarkService.removeAllBookmarkStore()
+            let result = await bookmarkRepository.removeAllBookmarkStore()
             
             switch result {
             case .success:
