@@ -39,7 +39,7 @@ public final class WriteInterfaceImpl: WriteInterface {
     public func getEditDetailViewController(
         storeId: Int,
         storeDetailData: StoreDetailData,
-        onSuccessEdit: @escaping ((StoreCreateResponse) -> ())
+        onSuccessEdit: @escaping ((UserStoreCreateResponse) -> ())
     ) -> UIViewController {
         let config = WriteDetailViewModel.EditConfig(storeId: storeId, storeDetailData: storeDetailData)
         let viewModel = WriteDetailViewModel(config: config)

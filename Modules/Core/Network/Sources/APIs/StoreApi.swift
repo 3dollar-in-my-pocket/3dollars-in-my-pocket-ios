@@ -8,6 +8,8 @@ enum StoreApi {
     case togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest)
     case fetchAroundStores(input: FetchAroundStoreInput)
     case fetchStoreDetail(input: FetchStoreDetailInput)
+    case createStore(input: StoreCreateRequestInput)
+    case editStore(storeId: Int, input: EditStoreRequestInput)
 }
 
 extension StoreApi: RequestType {
@@ -22,6 +24,10 @@ extension StoreApi: RequestType {
         case .fetchAroundStores(let input):
             return input
         case .fetchStoreDetail(let input):
+            return input
+        case .createStore(let input):
+            return input
+        case .editStore(_, let input):
             return input
         }
     }
@@ -38,6 +44,10 @@ extension StoreApi: RequestType {
             return .get
         case .fetchStoreDetail:
             return .get
+        case .createStore:
+            return .post
+        case .editStore:
+            return .put
         }
     }
     
@@ -56,6 +66,10 @@ extension StoreApi: RequestType {
             return .location
         case .fetchStoreDetail:
             return .location
+        case .createStore:
+            return .auth
+        case .editStore:
+            return .auth
         }
     }
     
@@ -71,6 +85,10 @@ extension StoreApi: RequestType {
             return "/api/v4/stores/around"
         case .fetchStoreDetail(let input):
             return "/api/v4/store/\(input.storeId)"
+        case .createStore:
+            return "/api/v2/store"
+        case .editStore(let storeId, _):
+            return "/api/v2/store/\(storeId)"
         }
     }
 }

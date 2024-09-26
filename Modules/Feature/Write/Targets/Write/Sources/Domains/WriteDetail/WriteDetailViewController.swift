@@ -11,7 +11,7 @@ typealias WriteDetailSanpshot = NSDiffableDataSourceSnapshot<WriteDetailSection,
 protocol WriteDetailDelegate: AnyObject {
     func onSuccessWrite(storeId: Int)
     
-    func onSuccessEdit(storeCreateResponse: StoreCreateResponse)
+    func onSuccessEdit(storeCreateResponse: UserStoreCreateResponse)
 }
 
 final class WriteDetailViewController: BaseViewController {
@@ -22,7 +22,7 @@ final class WriteDetailViewController: BaseViewController {
     weak var deleagte: WriteDetailDelegate?
     
     var onSuccessWrite: ((Int) -> Void)?
-    var onSuccessEdit: ((StoreCreateResponse) -> Void)?
+    var onSuccessEdit: ((UserStoreCreateResponse) -> Void)?
     
     private let writeDetailView = WriteDetailView()
     private lazy var dataSource = WriteDetailDataSource(collectionView: writeDetailView.collectionView, viewModel: viewModel)

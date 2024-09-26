@@ -1,6 +1,6 @@
 import Foundation
 
-public enum PaymentMethod: String, Hashable, Decodable {
+public enum PaymentMethod: String, Hashable, Codable {
     case cash = "CASH"
     case accountTransfer = "ACCOUNT_TRANSFER"
     case card = "CARD"

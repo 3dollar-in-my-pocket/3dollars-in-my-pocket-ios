@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation
 import Combine
 
 import Networking
@@ -26,7 +27,7 @@ final class WriteDetailViewModel: BaseViewModel {
         let tapSave = PassthroughSubject<Void, Never>()
         
         // From WriteDetail
-        let onEditLocation = PassthroughSubject<(address: String, location: LocationResponse), Never>()
+        let onEditLocation = PassthroughSubject<(address: String, location: CLLocation), Never>()
     }
     
     struct Output {
@@ -60,7 +61,7 @@ final class WriteDetailViewModel: BaseViewModel {
         case presentMapDetail(LocationResponse, String)
         case presentCategorySelection(CategorySelectionViewModel)
         case dismissWithStoreId(Int)
-        case dismissWithUpdatedStore(StoreCreateResponse)
+        case dismissWithUpdatedStore(UserStoreCreateResponse)
     }
     
     struct EditConfig: WriteStoreConfigurable {
@@ -297,11 +298,14 @@ final class WriteDetailViewModel: BaseViewModel {
         
         input.onEditLocation
             .withUnretained(self)
-            .sink { (owner: WriteDetailViewModel, data: (String, LocationResponse)) in
+            .sink { (owner: WriteDetailViewModel, data: (String, CLLocation)) in
                 let (address, location) = data
                 
                 owner.state.addess = address
-                owner.state.location = location
+                owner.state.location = LocationResponse(
+                    latitude: location.coordinate.latitude,
+                    longitude: location.coordinate.longitude
+                )
                 owner.updateSections()
             }
             .store(in: &cancellables)
@@ -346,7 +350,7 @@ final class WriteDetailViewModel: BaseViewModel {
     }
     
     private func createStoreCreateRequestInput() -> StoreCreateRequestInput {
-        var menuRequestInputs = [StoreMenuRequestInput]()
+        var menuRequestInputs = [StoreMenuRequest]()
         for menuGroup in state.menu {
             let emptyMenuCount = menuGroup.filter { !$0.isValid }.count
             var filteredMenuGroup = [NewMenu]()
@@ -357,7 +361,7 @@ final class WriteDetailViewModel: BaseViewModel {
             }
             
             let requests = filteredMenuGroup.map { menu in
-                StoreMenuRequestInput(name: menu.name, price: menu.price, category: menu.category.categoryId)
+                StoreMenuRequest(name: menu.name, price: menu.price, category: menu.category.categoryId)
             }
             
             menuRequestInputs.append(contentsOf: requests)
@@ -368,15 +372,15 @@ final class WriteDetailViewModel: BaseViewModel {
             longitude: state.location.longitude,
             storeName: state.name,
             storeType: state.salesType?.rawValue,
-            appearanceDays: state.appearanceDays.map { $0.rawValue },
+            appearanceDays: state.appearanceDays,
             openingHours: .init(startTime: state.startDate, endTime: state.endDate),
-            paymentMethods: state.paymentMethods.map { $0.rawValue },
+            paymentMethods: state.paymentMethods,
             menus: menuRequestInputs
         )
     }
     
     private func createEditStoreRequestInput() -> EditStoreRequestInput {
-        var menuRequestInputs = [StoreMenuRequestInput]()
+        var menuRequestInputs = [StoreMenuRequest]()
         for menuGroup in state.menu {
             let emptyMenuCount = menuGroup.filter { !$0.isValid }.count
             var filteredMenuGroup = [NewMenu]()
@@ -387,7 +391,7 @@ final class WriteDetailViewModel: BaseViewModel {
             }
             
             let requests = filteredMenuGroup.map { menu in
-                StoreMenuRequestInput(name: menu.name, price: menu.price, category: menu.category.categoryId)
+                StoreMenuRequest(name: menu.name, price: menu.price, category: menu.category.categoryId)
             }
             
             menuRequestInputs.append(contentsOf: requests)
@@ -397,10 +401,10 @@ final class WriteDetailViewModel: BaseViewModel {
             latitude: state.location.latitude,
             longitude: state.location.longitude,
             storeName: state.name,
-            storeType: state.salesType?.rawValue,
-            appearanceDays: state.appearanceDays.map { $0.rawValue },
+            storeType: state.salesType,
+            appearanceDays: state.appearanceDays,
             openingHours: .init(startTime: state.startDate, endTime: state.endDate),
-            paymentMethods: state.paymentMethods.map { $0.rawValue },
+            paymentMethods: state.paymentMethods,
             menus: menuRequestInputs
         )
     }
@@ -478,10 +482,11 @@ final class WriteDetailViewModel: BaseViewModel {
     }
     
     private func pushWriteAddress() {
+        let location = CLLocation(latitude: state.location.latitude, longitude: state.location.longitude)
         let config = WriteAddressViewModel.Config(
             type: .edit,
             address: state.addess ?? "",
-            cameraPosition: state.location
+            cameraPosition: location
         )
         let viewModel = WriteAddressViewModel(config: config)
         

@@ -15,6 +15,6 @@ public protocol WriteInterface {
     func getEditDetailViewController(
         storeId: Int,
         storeDetailData: StoreDetailData,
-        onSuccessEdit: @escaping ((StoreCreateResponse) -> ())
+        onSuccessEdit: @escaping ((UserStoreCreateResponse) -> ())
     ) -> UIViewController
 }
