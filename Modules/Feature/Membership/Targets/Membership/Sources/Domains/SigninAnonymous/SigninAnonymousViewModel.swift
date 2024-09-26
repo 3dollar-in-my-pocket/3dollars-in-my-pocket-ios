@@ -27,16 +27,16 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
     let input = Input()
     let output = Output()
     private var appInterface: AppModuleInterface?
-    private let userService: Networking.UserServiceProtocol
+    private let userRepository: UserRepository
     private let deviceService: Networking.DeviceServiceProtocol
     private var preference = Preference.shared
     
     init(
-        userService: Networking.UserServiceProtocol = Networking.UserService(),
+        userRepository: UserRepository = UserRepositoryImpl(),
         deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService()
     ) {
         self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
-        self.userService = userService
+        self.userRepository = userRepository
         self.deviceService = deviceService
         
         super.init()
@@ -111,7 +111,8 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
     
     private func connectAccount(socialType: SocialType, accessToken: String) {
         Task {
-            let connectAccount = await userService.connectAccount(socialType: socialType.rawValue, accessToken: accessToken)
+            let input = SigninRequestInput(socialType: socialType.rawValue, token: accessToken)
+            let connectAccount = await userRepository.connectAccount(input: input)
             
             switch connectAccount {
             case .success(_):
@@ -136,10 +137,8 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
     
     private func signin(_ signinRequest: SigninRequest) {
         Task {
-            let result = await userService.signin(
-                socialType: signinRequest.socialType.rawValue,
-                accessToken: signinRequest.token
-            )
+            let input = SigninRequestInput(socialType: signinRequest.socialType.rawValue, token: signinRequest.token)
+            let result = await userRepository.signin(input: input)
             
             switch result {
             case .success(let signinResponse):

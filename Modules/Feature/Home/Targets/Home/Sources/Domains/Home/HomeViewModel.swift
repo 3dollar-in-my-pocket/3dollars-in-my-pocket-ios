@@ -92,7 +92,7 @@ extension HomeViewModel {
     struct Dependency {
         let storeRepository: StoreRepository
         let advertisementRepository: AdvertisementRepository
-        let userService: UserServiceProtocol
+        let userRepository: UserRepository
         let mapRepository: MapRepository
         let locationManager: LocationManagerProtocol
         var preference: Preference
@@ -102,7 +102,7 @@ extension HomeViewModel {
         init(
             storeRepository: StoreRepository = StoreRepositoryImpl(),
             advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
-            userService: UserServiceProtocol = UserService(),
+            userRepository: UserRepository = UserRepositoryImpl(),
             mapRepository: MapRepository = MapRepositoryImpl(),
             locationManager: LocationManagerProtocol = LocationManager.shared,
             preference: Preference = .shared,
@@ -111,7 +111,7 @@ extension HomeViewModel {
         ) {
             self.storeRepository = storeRepository
             self.advertisementRepository = advertisementRepository
-            self.userService = userService
+            self.userRepository = userRepository
             self.mapRepository = mapRepository
             self.locationManager = locationManager
             self.preference = preference
@@ -180,7 +180,7 @@ final class HomeViewModel: BaseViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .asyncMap { owner, _ in
-                await owner.dependency.userService.fetchUser()
+                await owner.dependency.userRepository.fetchUser()
             }
             .compactMapValue()
             .map { MarketingConsent(value: $0.settings.marketingConsent) }

@@ -25,15 +25,15 @@ final class SigninBottomSheetViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     private var appInterface = Environment.appModuleInterface
-    private let userService: UserServiceProtocol
+    private let userRepository: UserRepository
     private let deviceService: DeviceServiceProtocol
     private var preference = Preference.shared
     
     init(
-        userService: UserServiceProtocol = UserService(),
+        userRepository: UserRepository = UserRepositoryImpl(),
         deviceService: DeviceServiceProtocol = DeviceService()
     ) {
-        self.userService = userService
+        self.userRepository = userRepository
         self.deviceService = deviceService
         
         super.init()
@@ -101,7 +101,8 @@ final class SigninBottomSheetViewModel: BaseViewModel {
     
     private func signin(socialType: SocialType, accessToken: String) {
         Task {
-            let result = await userService.signin(socialType: socialType.rawValue, accessToken: accessToken)
+            let input = SigninRequestInput(socialType: socialType.rawValue, token: accessToken)
+            let result = await userRepository.signin(input: input)
             
             switch result {
             case .success(let signinResponse):

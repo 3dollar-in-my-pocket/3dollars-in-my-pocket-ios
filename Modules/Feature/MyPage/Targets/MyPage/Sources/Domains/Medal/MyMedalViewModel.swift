@@ -40,17 +40,17 @@ final class MyMedalViewModel: BaseViewModel {
     private var state = State()
 
     private let medalService: MedalServiceProtocol
-    private let userService: UserServiceProtocol
+    private let userRepository: UserRepository
     private let userDefaults = Preference.shared
     private let logManager: LogManagerProtocol
 
     init(
         medalService: MedalServiceProtocol = MedalService(),
-        userService: UserServiceProtocol = UserService(),
+        userRepository: UserRepository = UserRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.medalService = medalService 
-        self.userService = userService
+        self.userRepository = userRepository
         self.logManager = logManager
 
         super.init()
@@ -75,10 +75,8 @@ final class MyMedalViewModel: BaseViewModel {
                 owner.state.representativeMedal = medal
             })
             .asyncMap { (owner: MyMedalViewModel, medal: Medal) in
-                await owner.userService.editUser(
-                    nickname: nil,
-                    representativeMedalId: medal.medalId
-                )
+                let input = UserPatchRequestInput(name: nil, representativeMedalId: medal.medalId)
+                return await owner.userRepository.editUser(input: input)
             }
             .withUnretained(self)
             .sink { owner, result in
@@ -108,7 +106,7 @@ final class MyMedalViewModel: BaseViewModel {
         Task {
             output.showLoading.send(true)
             let medalResponse = await medalService.fetchMedals()
-            let userResponse = await userService.fetchUser()
+            let userResponse = await userRepository.fetchUser()
             output.showLoading.send(false)
             
             if let medals = medalResponse.data,

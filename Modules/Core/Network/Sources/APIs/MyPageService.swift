@@ -12,7 +12,7 @@ public struct MyPageService: MyPageServiceProtocol {
     public init() { }
 
     public func fetchMyUser() async -> Result<UserWithDetailApiResponse, Error> {
-        let request = FetchMyUserRequest()
+        let request = UserApi.fetchUser
 
         return await NetworkManager.shared.request(requestType: request)
     }
