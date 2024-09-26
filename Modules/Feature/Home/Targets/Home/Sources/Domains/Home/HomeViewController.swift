@@ -256,6 +256,7 @@ public final class HomeViewController: BaseViewController {
     
     private func selectMarker(selectedIndex: Int?, stores: [StoreWithExtraResponse?]) {
         if markers.count > stores.count {
+            markers[(stores.count)...(markers.count - 1)].forEach { $0?.mapView = nil }
             markers.remove(atOffsets: IndexSet(integersIn: (stores.count)...(markers.count - 1)))
         }
         
@@ -273,7 +274,8 @@ public final class HomeViewController: BaseViewController {
                     markers.append(marker)
                 }
             } else {
-                if let marker = markers[safe: index] {
+                if let _ = markers[safe: index] {
+                    markers[index]?.mapView = nil
                     markers[index] = nil
                 } else {
                     markers.append(nil)
