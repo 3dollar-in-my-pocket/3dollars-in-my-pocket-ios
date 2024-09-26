@@ -3,16 +3,16 @@ import Foundation
 import AppInterface
 import DependencyInjection
 
-struct AppInfomationImpl: AppInfomation {
+struct AppInformationImpl: AppInformation {
     var bundleId: String {
         return Bundle.bundleId
     }
 }
 
-extension AppInfomationImpl {
-    static func registerAppInfomation() {
-        DIContainer.shared.container.register(AppInfomation.self) { _ in
-            return AppInfomationImpl()
+extension AppInformationImpl {
+    static func registerAppInformation() {
+        DIContainer.shared.container.register(AppInformation.self) { _ in
+            return AppInformationImpl()
         }
     }
 }

@@ -9,9 +9,13 @@ import AppInterface
 import Log
 
 public final class WriteAddressViewModel: BaseViewModel {
+    enum Constant {
+        static let maxDistance: Double = 100
+    }
+    
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
-        let moveMapCenter = PassthroughSubject<Location, Never>()
+        let moveMapCenter = PassthroughSubject<CLLocation, Never>()
         let tapCurrentLocation = PassthroughSubject<Void, Never>()
         let tapSetAddress = PassthroughSubject<Void, Never>()
         let tapConfirmAddress = PassthroughSubject<Void, Never>()
@@ -19,11 +23,10 @@ public final class WriteAddressViewModel: BaseViewModel {
     
     struct Output {
         let screenName: ScreenName = .writeAddress
-        let setNearStores = PassthroughSubject<[Location], Never>()
-        let moveCamera = PassthroughSubject<Location, Never>()
-        let setAddress = PassthroughSubject<String, Never>()
-        let editLocation = PassthroughSubject<(address: String, location: Location), Never>()
-        let error = PassthroughSubject<Error, Never>()
+        let storesNearBy = PassthroughSubject<[LocationResponse], Never>()
+        let moveCamera = PassthroughSubject<CLLocation, Never>()
+        let address = PassthroughSubject<String, Never>()
+        let editLocation = PassthroughSubject<(address: String, location: CLLocation), Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -31,12 +34,13 @@ public final class WriteAddressViewModel: BaseViewModel {
         case pushWriteDetail(WriteDetailViewModel)
         case presentConfirmPopup(AddressConfirmPopupViewModel)
         case dismiss
+        case showErrorAlert(Error)
     }
     
     private struct State {
         var type: WriteAddressType = .write
         var address = ""
-        var cameraPosition: Location?
+        var cameraPosition: CLLocation?
     }
     
     public enum WriteAddressType {
@@ -50,24 +54,34 @@ public final class WriteAddressViewModel: BaseViewModel {
     public struct Config {
         public let type: WriteAddressType
         public let address: String
-        public let cameraPosition: Location
+        public let cameraPosition: CLLocation
+    }
+    
+    public struct Dependency {
+        let mapRepository: MapRepository
+        let storeRepository: StoreRepository
+        let locationManager: LocationManagerProtocol
+        let logManager: LogManagerProtocol
+        
+        public init(
+            mapRepository: MapRepository = MapRepositoryImpl(),
+            storeRepository: StoreRepository = StoreRepositoryImpl(),
+            locationManager: LocationManagerProtocol = LocationManager.shared,
+            logManager: LogManagerProtocol = LogManager.shared
+        ) {
+            self.mapRepository = mapRepository
+            self.storeRepository = storeRepository
+            self.locationManager = locationManager
+            self.logManager = logManager
+        }
     }
     
     let input = Input()
     let output = Output()
+    private let dependency: Dependency
     private var state: State
-    private let mapService: MapServiceProtocol
-    private let storeRepository: StoreRepository
-    private let locationManager: LocationManagerProtocol
-    private let logManager: LogManagerProtocol
     
-    public init(
-        config: Config? = nil,
-        mapService: MapServiceProtocol = MapService(),
-        storeRepository: StoreRepository = StoreRepositoryImpl(),
-        locationManager: LocationManagerProtocol = LocationManager.shared,
-        logManager: LogManagerProtocol = LogManager.shared
-    ) {
+    public init(config: Config? = nil, dependency: Dependency = Dependency()) {
         if let config {
             self.state = State(
                 type: config.type,
@@ -77,12 +91,7 @@ public final class WriteAddressViewModel: BaseViewModel {
         } else {
             self.state = State()
         }
-        
-        self.mapService = mapService
-        self.storeRepository = storeRepository
-        self.locationManager = locationManager
-        self.logManager = logManager
-        
+        self.dependency = dependency
         super.init()
     }
     
@@ -92,7 +101,7 @@ public final class WriteAddressViewModel: BaseViewModel {
             .sink { (owner: WriteAddressViewModel, _) in
                 if let cameraPosition = owner.state.cameraPosition {
                     owner.output.moveCamera.send(cameraPosition)
-                    owner.output.setAddress.send(owner.state.address)
+                    owner.output.address.send(owner.state.address)
                 } else {
                     owner.input.tapCurrentLocation.send(())
                 }
@@ -107,22 +116,8 @@ public final class WriteAddressViewModel: BaseViewModel {
             .share()
         
         moveCamera
-            .asyncMap { owner, location in
-                await owner.mapService.getAddressFromLocation(
-                    latitude: location.latitude,
-                    longitude: location.longitude
-                )
-            }
-            .withUnretained(self)
-            .sink { owner, result in
-                switch result {
-                case .success(let address):
-                    owner.state.address = address
-                    owner.output.setAddress.send(address)
-                    
-                case .failure(let error):
-                    owner.output.error.send(error)
-                }
+            .sink { (owner: WriteAddressViewModel, location: CLLocation) in
+                owner.updateAddress(location: location)
             }
             .store(in: &cancellables)
         
@@ -130,74 +125,28 @@ public final class WriteAddressViewModel: BaseViewModel {
             .filter({ (owner: WriteAddressViewModel, _) in
                 owner.state.type == .write
             })
-            .asyncMap { owner, location in
-                await owner.fetchAroundStores(cameraPosition: location)
-            }
-            .compactMapValue()
-            .subscribe(output.setNearStores)
-            .store(in: &cancellables)
-            
-        
-        let currentLocation = input.tapCurrentLocation
-            .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, _ in
-                owner.sendClickCurrentLocationLog()
+            .sink(receiveValue: { (owner: WriteAddressViewModel, location: CLLocation) in
+                owner.fetchAroundStores(cameraPosition: location)
             })
-            .flatMap { owner, _ in
-                owner.locationManager.getCurrentLocationPublisher()
-                    .catch { error -> AnyPublisher<CLLocation, Never> in
-                        owner.output.error.send(error)
-                        return Empty().eraseToAnyPublisher()
-                    }
-            }
-            .share()
+            .store(in: &cancellables)
         
-        currentLocation
+        input.tapCurrentLocation
             .withUnretained(self)
-            .asyncMap { owner, location in
-                await owner.mapService.getAddressFromLocation(
-                    latitude: location.coordinate.latitude,
-                    longitude: location.coordinate.longitude
-                )
-            }
-            .withUnretained(self)
-            .sink { owner, result in
-                switch result {
-                case .success(let address):
-                    owner.state.address = address
-                    owner.output.setAddress.send(address)
-                    
-                case .failure(let error):
-                    owner.output.error.send(error)
+            .sink { (owner: WriteAddressViewModel, _) in
+                owner.sendClickCurrentLocationLog()
+                
+                Task {
+                    do {
+                        let currentLocation = try await owner.dependency.locationManager.getCurrentLocation()
+                        owner.state.cameraPosition = currentLocation
+                        owner.output.moveCamera.send(currentLocation)
+                        owner.updateAddress(location: currentLocation)
+                        owner.fetchAroundStores(cameraPosition: currentLocation)
+                    } catch {
+                        owner.output.route.send(.showErrorAlert(error))
+                    }
                 }
             }
-            .store(in: &cancellables)
-        
-        currentLocation
-            .map { location in
-                Location(
-                    latitude: location.coordinate.latitude,
-                    longitude: location.coordinate.longitude
-                )
-            }
-            .handleEvents(receiveOutput: { [weak self] location in
-                self?.state.cameraPosition = location
-            })
-            .subscribe(output.moveCamera)
-            .store(in: &cancellables)
-        
-        currentLocation
-            .withUnretained(self)
-            .asyncMap { owner, location in
-                let location = Location(
-                    latitude: location.coordinate.latitude,
-                    longitude: location.coordinate.longitude
-                )
-                
-                return await owner.fetchAroundStores(cameraPosition: location)
-            }
-            .compactMapValue()
-            .subscribe(output.setNearStores)
             .store(in: &cancellables)
         
         input.tapSetAddress
@@ -210,7 +159,7 @@ public final class WriteAddressViewModel: BaseViewModel {
                 
                 switch owner.state.type {
                 case .write:
-                    owner.isStoreExistedAround(location: cameraPosition)
+                    owner.checkStoreExistedAround(location: cameraPosition)
                     
                 case .edit:
                     owner.output.editLocation.send((owner.state.address, cameraPosition))
@@ -228,13 +177,11 @@ public final class WriteAddressViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
     
-    private func isStoreExistedAround(location: Location) {
-        let clLocation = CLLocation(latitude: location.latitude, longitude: location.longitude)
-        
+    private func checkStoreExistedAround(location: CLLocation) {
         Task {
-            let result =  await storeRepository.isStoresExistedAround(
+            let result =  await dependency.storeRepository.isStoresExistedAround(
                 distance: 10,
-                mapLocation: clLocation
+                mapLocation: location
             )
             
             switch result {
@@ -246,28 +193,47 @@ public final class WriteAddressViewModel: BaseViewModel {
                 }
                 
             case .failure(let error):
-                output.error.send(error)
+                output.route.send(.showErrorAlert(error))
             }
         }
     }
     
-    private func fetchAroundStores(cameraPosition: Location) async -> Result<[Location], Error> {
+    private func updateAddress(location: CLLocation) {
+        Task {
+            let result = await dependency.mapRepository.getAddressFromLocation(
+                latitude: location.coordinate.latitude,
+                longitude: location.coordinate.longitude
+            )
+            
+            switch result {
+            case .success(let address):
+                state.address = address
+                output.address.send(address)
+            case .failure(let error):
+                output.route.send(.showErrorAlert(error))
+            }
+        }
+    }
+    
+    private func fetchAroundStores(cameraPosition: CLLocation) {
         let input = FetchAroundStoreInput(
-            distanceM: 100,
+            distanceM: Constant.maxDistance,
             targetStores: [.bossStore, .userStore],
             sortType: .distanceAsc,
             size: 20,
-            mapLatitude: cameraPosition.latitude,
-            mapLongitude: cameraPosition.longitude
+            mapLatitude: cameraPosition.coordinate.latitude,
+            mapLongitude: cameraPosition.coordinate.longitude
         )
         
-        return await storeRepository.fetchAroundStores(input: input)
-        .map { result in
-            result.contents.map { storeDetail in
-                return Model.Location(
-                    latitude: storeDetail.store.location?.latitude ?? 0,
-                    longitude: storeDetail.store.location?.longitude ?? 0
-                )
+        Task {
+            let result = await dependency.storeRepository.fetchAroundStores(input: input)
+            
+            switch result {
+            case .success(let response):
+                let locations = response.contents.compactMap { $0.store.location }
+                output.storesNearBy.send(locations)
+            case .failure(let error):
+                output.route.send(.showErrorAlert(error))
             }
         }
     }
@@ -283,9 +249,13 @@ public final class WriteAddressViewModel: BaseViewModel {
         output.route.send(.presentConfirmPopup(viewModel))
     }
     
-    private func pushWriteDetail(location: Location) {
+    private func pushWriteDetail(location: CLLocation) {
         guard let cameraPosition = state.cameraPosition else { return }
-        let config = WriteDetailViewModel.WriteConfig(location: cameraPosition, address: state.address)
+        let cameraLocation = LocationResponse(
+            latitude: cameraPosition.coordinate.latitude,
+            longitude: cameraPosition.coordinate.longitude
+        )
+        let config = WriteDetailViewModel.WriteConfig(location: cameraLocation, address: state.address)
         let viewModel = WriteDetailViewModel(config: config)
         
         output.route.send(.pushWriteDetail(viewModel))
@@ -294,7 +264,7 @@ public final class WriteAddressViewModel: BaseViewModel {
 
 extension WriteAddressViewModel {
     private func sendClickCurrentLocationLog() {
-        logManager.sendEvent(LogEvent(
+        dependency.logManager.sendEvent(LogEvent(
             screen: output.screenName,
             eventName: .clickCurrentLocation,
             extraParameters: [.address: state.address]
@@ -302,7 +272,7 @@ extension WriteAddressViewModel {
     }
     
     private func sendClickSetAddressLog(address: String) {
-        logManager.sendEvent(LogEvent(
+        dependency.logManager.sendEvent(LogEvent(
             screen: output.screenName,
             eventName: .clickSetAddress,
             extraParameters: [.address: state.address]

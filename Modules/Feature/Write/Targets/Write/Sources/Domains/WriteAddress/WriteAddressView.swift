@@ -194,17 +194,17 @@ final class WriteAddressView: BaseView {
         }
     }
     
-    func moveCamera(location: Location) {
+    func moveCamera(location: CLLocation) {
         let camera = NMFCameraUpdate(scrollTo: NMGLatLng(
-            lat: location.latitude,
-            lng: location.longitude
+            lat: location.coordinate.latitude,
+            lng: location.coordinate.longitude
         ))
         
         camera.animation = .easeIn
         mapView.moveCamera(camera)
     }
     
-    func setNearStores(locations: [Location]) {
+    func setNearStores(locations: [LocationResponse]) {
         clearMarkers()
         
         for location in locations {

@@ -42,16 +42,16 @@ final class SearchAddressViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     private var state = State()
-    private let mapService: MapServiceProtocol
+    private let mapRepository: MapRepository
     private let userService: UserServiceProtocol
     private let logManager: LogManagerProtocol
     
     init(
-        mapService: MapServiceProtocol = MapService(),
+        mapRepository: MapRepository = MapRepositoryImpl(),
         userService: UserServiceProtocol = UserService(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.mapService = mapService
+        self.mapRepository = mapRepository
         self.userService = userService
         self.logManager = logManager
         
@@ -167,7 +167,7 @@ final class SearchAddressViewModel: BaseViewModel {
     
     private func searchAddress(keyword: String) {
         Task {
-            let result = await mapService.searchAddress(keyword: keyword)
+            let result = await mapRepository.searchAddress(keyword: keyword)
             
             switch result {
             case .success(let response):

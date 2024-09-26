@@ -7,7 +7,7 @@ public protocol WriteInterface {
     func getWriteAddressViewController(onSuccessWrite: @escaping ((Int) -> ())) -> UIViewController
     
     func getWriteDetailViewController(
-        location: Location,
+        location: LocationResponse,
         address: String,
         onSuccessWrite: @escaping ((Int) -> ())
     ) -> UIViewController

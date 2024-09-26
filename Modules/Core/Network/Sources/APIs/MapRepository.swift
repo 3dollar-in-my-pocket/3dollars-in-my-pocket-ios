@@ -3,7 +3,7 @@ import Combine
 
 import Model
 
-public protocol MapServiceProtocol {
+public protocol MapRepository {
     func getAddressFromLocation(latitude: Double, longitude: Double) async -> Result<String, Error>
     
     func searchAddress(keyword: String) async -> Result<LocalResponse<PlaceDocument>, Error>
@@ -11,7 +11,7 @@ public protocol MapServiceProtocol {
     func getCurrentAddress(latitude: Double, longitude: Double) async -> Result<LocalResponse<AddressDocument>, Error>
 }
 
-public struct MapService: MapServiceProtocol {
+public final class MapRepositoryImpl: MapRepository {
     public init() { }
     
     public func getAddressFromLocation(latitude: Double, longitude: Double) async -> Result<String, Error> {

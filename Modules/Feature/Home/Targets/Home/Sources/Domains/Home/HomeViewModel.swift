@@ -93,7 +93,7 @@ extension HomeViewModel {
         let storeRepository: StoreRepository
         let advertisementRepository: AdvertisementRepository
         let userService: UserServiceProtocol
-        let mapService: MapServiceProtocol
+        let mapRepository: MapRepository
         let locationManager: LocationManagerProtocol
         var preference: Preference
         let logManager: LogManagerProtocol
@@ -103,7 +103,7 @@ extension HomeViewModel {
             storeRepository: StoreRepository = StoreRepositoryImpl(),
             advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
             userService: UserServiceProtocol = UserService(),
-            mapService: MapServiceProtocol = MapService(),
+            mapRepository: MapRepository = MapRepositoryImpl(),
             locationManager: LocationManagerProtocol = LocationManager.shared,
             preference: Preference = .shared,
             logManager: LogManagerProtocol = LogManager.shared,
@@ -112,7 +112,7 @@ extension HomeViewModel {
             self.storeRepository = storeRepository
             self.advertisementRepository = advertisementRepository
             self.userService = userService
-            self.mapService = mapService
+            self.mapRepository = mapRepository
             self.locationManager = locationManager
             self.preference = preference
             self.logManager = logManager
@@ -316,7 +316,7 @@ final class HomeViewModel: BaseViewModel {
                 let latitude = owner.state.newCameraPosition?.coordinate.latitude ?? Constant.defaultLocation.coordinate.latitude
                 let longitude = owner.state.newCameraPosition?.coordinate.longitude ?? Constant.defaultLocation.coordinate.longitude
                 
-                return await owner.dependency.mapService.getAddressFromLocation(
+                return await owner.dependency.mapRepository.getAddressFromLocation(
                     latitude: latitude,
                     longitude: longitude
                 )
@@ -638,7 +638,7 @@ final class HomeViewModel: BaseViewModel {
     
     private func fetchAddress(location: CLLocation) {
         Task {
-            let result = await dependency.mapService.getAddressFromLocation(
+            let result = await dependency.mapRepository.getAddressFromLocation(
                 latitude: location.coordinate.latitude,
                 longitude: location.coordinate.longitude
             )

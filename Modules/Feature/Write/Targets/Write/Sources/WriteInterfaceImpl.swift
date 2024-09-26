@@ -21,7 +21,7 @@ public final class WriteInterfaceImpl: WriteInterface {
     }
     
     public func getWriteDetailViewController(
-        location: Location,
+        location: LocationResponse,
         address: String,
         onSuccessWrite: @escaping ((Int) -> ())
     ) -> UIViewController {

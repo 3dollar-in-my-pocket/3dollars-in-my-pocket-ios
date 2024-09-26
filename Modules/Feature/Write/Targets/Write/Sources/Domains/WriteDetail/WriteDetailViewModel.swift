@@ -26,7 +26,7 @@ final class WriteDetailViewModel: BaseViewModel {
         let tapSave = PassthroughSubject<Void, Never>()
         
         // From WriteDetail
-        let onEditLocation = PassthroughSubject<(address: String, location: Location), Never>()
+        let onEditLocation = PassthroughSubject<(address: String, location: LocationResponse), Never>()
     }
     
     struct Output {
@@ -41,7 +41,7 @@ final class WriteDetailViewModel: BaseViewModel {
     
     private struct State {
         var storeId: Int?
-        var location: Location
+        var location: LocationResponse
         var addess: String?
         var name = ""
         var salesType: SalesType?
@@ -57,7 +57,7 @@ final class WriteDetailViewModel: BaseViewModel {
     enum Route {
         case pop
         case presentWriteAddress(WriteAddressViewModel)
-        case presentMapDetail(Location, String)
+        case presentMapDetail(LocationResponse, String)
         case presentCategorySelection(CategorySelectionViewModel)
         case dismissWithStoreId(Int)
         case dismissWithUpdatedStore(StoreCreateResponse)
@@ -69,7 +69,7 @@ final class WriteDetailViewModel: BaseViewModel {
     }
     
     struct WriteConfig: WriteStoreConfigurable {
-        let location: Location
+        let location: LocationResponse
         let address: String
     }
     
@@ -113,7 +113,7 @@ final class WriteDetailViewModel: BaseViewModel {
             
             self.state = State(
                 storeId: editConfig.storeId,
-                location: Location(response: editConfig.storeDetailData.overview.location) ?? Location(latitude: 0, longitude: 0),
+                location: editConfig.storeDetailData.overview.location ?? LocationResponse(latitude: 0, longitude: 0),
                 addess: editConfig.storeDetailData.overview.address,
                 name: editConfig.storeDetailData.overview.storeName,
                 salesType: editConfig.storeDetailData.info.salesType,
@@ -297,7 +297,7 @@ final class WriteDetailViewModel: BaseViewModel {
         
         input.onEditLocation
             .withUnretained(self)
-            .sink { (owner: WriteDetailViewModel, data: (String, Location)) in
+            .sink { (owner: WriteDetailViewModel, data: (String, LocationResponse)) in
                 let (address, location) = data
                 
                 owner.state.addess = address

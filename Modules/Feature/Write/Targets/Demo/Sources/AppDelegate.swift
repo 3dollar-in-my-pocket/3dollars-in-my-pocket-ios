@@ -1,14 +1,13 @@
 import UIKit
 
 import Common
-import Store
-import Networking
+import Mock
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-        initializationNetworkModule()
+        initializeMock()
         return true
     }
       
@@ -16,8 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
     
-    private func initializationNetworkModule() {
+    private func initializeMock() {
+        MockAppModuleInterfaceImpl.registerAppModuleInterface()
         MockNetworkConfiguration.registerNetworkConfiguration()
-        MockAppInfomationImpl.registerAppInfomation()
+        MockAppInformationImpl.registerAppInformation()
     }
 }
