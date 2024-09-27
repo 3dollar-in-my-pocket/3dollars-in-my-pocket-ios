@@ -86,7 +86,7 @@ final class StoreDetailViewModel: BaseViewModel {
     var state: State
     private let storeService: StoreRepository
     private let reportService: ReportServiceProtocol
-    private let reviewService: ReviewServiceProtocol
+    private let reviewRepository: ReviewRepository
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
     
@@ -94,13 +94,13 @@ final class StoreDetailViewModel: BaseViewModel {
         storeId: Int,
         storeService: StoreRepository = StoreRepositoryImpl(),
         reportService: ReportServiceProtocol = ReportService(),
-        reviewService: ReviewServiceProtocol = ReviewService(),
+        reviewRepository: ReviewRepository = ReviewRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.state = State(storeId: storeId)
         self.storeService = storeService
         self.reportService = reportService
-        self.reviewService = reviewService
+        self.reviewRepository = reviewRepository
         self.logManager = logManager
         
         super.init()
@@ -491,7 +491,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         Task {
             let input = StoreReviewStickerListReplaceInput(stickers: review.reactedByMe ? [] : [.init(stickerId: review.stickerId)])
-            let result = await reviewService.toggleReviewSticker(storeId: state.storeId, reviewId: review.reviewId, input: input)
+            let result = await reviewRepository.toggleReviewSticker(storeId: state.storeId, reviewId: review.reviewId, input: input)
             
             switch result {
             case .success(_):

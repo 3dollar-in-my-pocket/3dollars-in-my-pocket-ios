@@ -58,19 +58,19 @@ final class ReviewListViewModel: BaseViewModel {
     let output = Output()
     private let config: Config
     private var state = State()
-    private let reviewService: ReviewServiceProtocol
+    private let reviewRepository: ReviewRepository
     private let reportService: ReportServiceProtocol
     private let logManager: LogManagerProtocol
     private let preference = Preference.shared
     
     init(
         config: Config,
-        reviewService: ReviewServiceProtocol = ReviewService(),
+        reviewRepository: ReviewRepository = ReviewRepositoryImpl(),
         reportService: ReportServiceProtocol = ReportService(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
-        self.reviewService = reviewService
+        self.reviewRepository = reviewRepository
         self.reportService = reportService
         self.logManager = logManager
     }
@@ -183,7 +183,7 @@ final class ReviewListViewModel: BaseViewModel {
                 cursor: state.cursor,
                 sort: state.sortType.rawValue
             )
-            let result = await reviewService.fetchStoreReview(storeId: config.storeId, input: input)
+            let result = await reviewRepository.fetchStoreReview(storeId: config.storeId, input: input)
             
             switch result {
             case .success(let response):
@@ -284,7 +284,7 @@ final class ReviewListViewModel: BaseViewModel {
         
         Task {
             let input = StoreReviewStickerListReplaceInput(stickers: review.reactedByMe ? [] : [.init(stickerId: review.stickerId)])
-            let result = await reviewService.toggleReviewSticker(storeId: config.storeId, reviewId: review.reviewId, input: input)
+            let result = await reviewRepository.toggleReviewSticker(storeId: config.storeId, reviewId: review.reviewId, input: input)
             
             switch result {
             case .success(_):

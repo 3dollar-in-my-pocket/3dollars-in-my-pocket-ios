@@ -2,7 +2,7 @@ import Foundation
 
 import Model
 
-public protocol ReviewServiceProtocol {
+public protocol ReviewRepository {
     func fetchStoreReview(storeId: Int, input: FetchStoreReviewRequestInput) async -> Result<ContentsWithCursorResponse<StoreReviewWithWriterResponse>, Error>
     
     func reportReview(storeId: Int, reviewId: Int, input: ReportReviewRequestInput) async -> Result<String?, Error>
@@ -12,29 +12,29 @@ public protocol ReviewServiceProtocol {
     func toggleReviewSticker(storeId: Int, reviewId: Int, input: StoreReviewStickerListReplaceInput) async -> Result<String?, Error>
 }
 
-public struct ReviewService: ReviewServiceProtocol {
+public struct ReviewRepositoryImpl: ReviewRepository {
     public init() { }
     
     public func fetchStoreReview(storeId: Int, input: FetchStoreReviewRequestInput) async -> Result<ContentsWithCursorResponse<StoreReviewWithWriterResponse>, Error> {
-        let request = FetchStoreReviewRequest(storeId: storeId, input: input)
+        let request = ReviewApi.fetchStoreReview(storeId: storeId, input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }
     
     public func reportReview(storeId: Int, reviewId: Int, input: ReportReviewRequestInput) async -> Result<String?, Error> {
-        let request = ReportReviewRequest(storeId: storeId, reviewId: reviewId, input: input)
+        let request = ReviewApi.reportReview(storeId: storeId, reviewId: reviewId, input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }
     
     public func fetchMyStoreReview(input: CursorRequestInput) async -> Result<ContentsWithCursorResponse<StoreReviewWithDetailApiResponse>, Error> {
-        let request = FetchMyStoreReviewRequest(input: input)
+        let request = ReviewApi.fetchMyStoreReview(input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }
     
     public func toggleReviewSticker(storeId: Int, reviewId: Int, input: StoreReviewStickerListReplaceInput) async -> Result<String?, Error> {
-        let request = StoreReviewStickerListRequest(input: input, storeId: storeId, reviewId: reviewId)
+        let request = ReviewApi.toggleReviewSticker(storeId: storeId, reviewId: reviewId, input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }
