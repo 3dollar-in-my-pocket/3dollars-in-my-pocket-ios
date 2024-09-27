@@ -59,19 +59,19 @@ final class ReviewListViewModel: BaseViewModel {
     private let config: Config
     private var state = State()
     private let reviewRepository: ReviewRepository
-    private let reportService: ReportServiceProtocol
+    private let reportRepository: ReportRepository
     private let logManager: LogManagerProtocol
     private let preference = Preference.shared
     
     init(
         config: Config,
         reviewRepository: ReviewRepository = ReviewRepositoryImpl(),
-        reportService: ReportServiceProtocol = ReportService(),
+        reportRepository: ReportRepository = ReportRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
         self.reviewRepository = reviewRepository
-        self.reportService = reportService
+        self.reportRepository = reportRepository
         self.logManager = logManager
     }
     
@@ -243,7 +243,7 @@ final class ReviewListViewModel: BaseViewModel {
     
     private func presentReportReviewBottomSheet(review: StoreDetailReview) {
         Task {
-            let reportReasonResult = await reportService.fetchReportReasons(group: .review)
+            let reportReasonResult = await reportRepository.fetchReportReasons(group: .review)
                 .map { response in
                     response.reasons.map { ReportReason(response: $0) }
                 }
