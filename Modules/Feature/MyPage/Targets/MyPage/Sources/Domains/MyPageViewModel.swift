@@ -45,7 +45,7 @@ final class MyPageViewModel: BaseViewModel {
 
     private var state = State()
 
-    private let myPageService: MyPageServiceProtocol
+    private let myPageRepository: MyPageRepository
     private let communityService: CommunityServiceProtocol
     
     private let preference = Preference.shared
@@ -56,11 +56,11 @@ final class MyPageViewModel: BaseViewModel {
     private lazy var pollHeaderViewModel = bindHeaderViewModel(.poll)
 
     init(
-        myPageService: MyPageServiceProtocol = MyPageService(),
+        myPageRepository: MyPageRepository = MyPageRepositoryImpl(),
         communityService: CommunityServiceProtocol = CommunityService(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.myPageService = myPageService
+        self.myPageRepository = myPageRepository
         self.communityService = communityService
         self.logManager = logManager
 
@@ -81,23 +81,19 @@ final class MyPageViewModel: BaseViewModel {
         
         let fetchMyUser = loadTrigger
             .asyncMap { owner, _ in
-                await owner.myPageService.fetchMyUser()
+                await owner.myPageRepository.fetchMyUser()
             }.compactMapValue()
         
         let fetchVisitStore = loadTrigger
             .asyncMap { owner, _ in
-                await owner.myPageService.fetchMyStoreVisits(
-                    size: 20, // TODO
-                    cursur: nil
-                )
+                let input = CursorRequestInput(size: 20, cursor: nil)
+                return await owner.myPageRepository.fetchMyStoreVisits(input: input)
             }.compactMapValue()
         
         let fetchFavoriteStores = loadTrigger
             .asyncMap { owner, _ in
-                await owner.myPageService.fetchMyFavoriteStores(
-                    size: 20, // TODO
-                    cursur: nil
-                )
+                let input = CursorRequestInput(size: 20, cursor: nil)
+                return await owner.myPageRepository.fetchMyFavoriteStores(input: input)
             }.compactMapValue()
         
         let fetchMyPolls = loadTrigger
