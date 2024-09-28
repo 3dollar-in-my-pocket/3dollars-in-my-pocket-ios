@@ -2,15 +2,15 @@ import Foundation
 
 import Model
 
-public protocol EventServiceProtocol {
+public protocol EventRepository {
     func sendClickEvent(targetId: Int, type: String) async -> Result<String?, Error>
 }
 
-public struct EventService: EventServiceProtocol {
+public struct EventRepositoryImpl: EventRepository {
     public init() { }
     
     public func sendClickEvent(targetId: Int, type: String) async -> Result<String?, Error> {
-        let request = SendClickEventRequest(targetId: targetId, type: type)
+        let request = EventApi.sendClickEvent(targetId: targetId, type: type)
         
         return await NetworkManager.shared.request(requestType: request)
     }
