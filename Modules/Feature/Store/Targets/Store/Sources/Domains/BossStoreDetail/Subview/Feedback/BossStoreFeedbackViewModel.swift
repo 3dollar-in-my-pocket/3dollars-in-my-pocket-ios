@@ -39,18 +39,18 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
 
     private let storeId: String
     private let feedbackTypes: [FeedbackType]
-    private let feedbackService: FeedbackServiceProtocol
+    private let feedbackRepository: FeedbackRepository
     private let logmanager: LogManagerProtocol
 
     init(
         storeId: String,
         feedbackTypes: [FeedbackType],
-        feedbackService: FeedbackServiceProtocol = FeedbackService(),
+        feedbackRepository: FeedbackRepository = FeedbackRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.storeId = storeId
         self.feedbackTypes = feedbackTypes
-        self.feedbackService = feedbackService
+        self.feedbackRepository = feedbackRepository
         self.logmanager = logManager
 
         self.output = Output(dataSource: .init(feedbackTypes.map { .feedback(item: $0, isSelected: false) }))
@@ -86,7 +86,7 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
                 owner.output.showLoading.send(true)
             })
             .asyncMap { owner, input in
-                await owner.feedbackService.sendFeedbacks(
+                await owner.feedbackRepository.sendFeedbacks(
                     targetType: "BOSS_STORE", // TODO
                     targetId: owner.storeId,
                     feedbackTypes: Array(owner.state.selectItems)

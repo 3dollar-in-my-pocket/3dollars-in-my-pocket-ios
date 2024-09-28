@@ -39,14 +39,14 @@ final class BossStoreReviewListViewModel: BaseViewModel {
     let output = Output()
 
     private var state = State()
-    private let feedbackService: FeedbackServiceProtocol
+    private let feedbackRepository: FeedbackRepository
     private let logManager: LogManagerProtocol
 
     init(
-        feedbackService: FeedbackServiceProtocol = FeedbackService(),
+        feedbackRepository: FeedbackRepository = FeedbackRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.feedbackService = feedbackService
+        self.feedbackRepository = feedbackRepository
         self.logManager = logManager
 
         super.init()
@@ -65,7 +65,7 @@ final class BossStoreReviewListViewModel: BaseViewModel {
             })
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.feedbackService.fetchMyStoreFeedbacks(
+                await owner.feedbackRepository.fetchMyStoreFeedbacks(
                     input: CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
                 )
             }
@@ -97,7 +97,7 @@ final class BossStoreReviewListViewModel: BaseViewModel {
         state.loadMore
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.feedbackService.fetchMyStoreFeedbacks(
+                await owner.feedbackRepository.fetchMyStoreFeedbacks(
                     input: CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
                 )
             }
