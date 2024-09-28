@@ -47,6 +47,7 @@ final class MyPageViewModel: BaseViewModel {
 
     private let myPageRepository: MyPageRepository
     private let communityRepository: CommunityRepository
+    private let userRepository: UserRepository
     
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
@@ -58,10 +59,12 @@ final class MyPageViewModel: BaseViewModel {
     init(
         myPageRepository: MyPageRepository = MyPageRepositoryImpl(),
         communityRepository: CommunityRepository = CommunityRepositoryImpl(),
+        userRepository: UserRepository = UserRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.myPageRepository = myPageRepository
         self.communityRepository = communityRepository
+        self.userRepository = userRepository
         self.logManager = logManager
 
         super.init()
@@ -81,7 +84,7 @@ final class MyPageViewModel: BaseViewModel {
         
         let fetchMyUser = loadTrigger
             .asyncMap { owner, _ in
-                await owner.myPageRepository.fetchMyUser()
+                await owner.userRepository.fetchUser()
             }.compactMapValue()
         
         let fetchVisitStore = loadTrigger

@@ -1,7 +1,6 @@
 import Model
 
 public protocol MyPageRepository {
-    func fetchMyUser() async -> Result<UserWithDetailApiResponse, Error>
     func fetchMyStoreVisits(input: CursorRequestInput) async -> Result<ContentsWithCursorResponse<StoreVisitWithStoreApiResponse>, Error>
     func fetchMyFavoriteStores(input: CursorRequestInput) async -> Result<StoreFavoriteFolderApiResponse, Error>
     /// 유저가 등록한 가게들을 조회합니다.
@@ -10,12 +9,6 @@ public protocol MyPageRepository {
 
 public struct MyPageRepositoryImpl: MyPageRepository {
     public init() { }
-
-    public func fetchMyUser() async -> Result<UserWithDetailApiResponse, Error> {
-        let request = UserApi.fetchUser
-
-        return await NetworkManager.shared.request(requestType: request)
-    }
 
     public func fetchMyStoreVisits(input: CursorRequestInput) async -> Result<ContentsWithCursorResponse<StoreVisitWithStoreApiResponse>, Error> {
         let request = MyPageApi.fetchMyStoreVisits(input: input)
