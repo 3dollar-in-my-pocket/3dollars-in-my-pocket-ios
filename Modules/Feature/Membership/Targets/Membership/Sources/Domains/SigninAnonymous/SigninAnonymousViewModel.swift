@@ -28,16 +28,11 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
     let output = Output()
     private var appInterface: AppModuleInterface?
     private let userRepository: UserRepository
-    private let deviceService: Networking.DeviceServiceProtocol
     private var preference = Preference.shared
     
-    init(
-        userRepository: UserRepository = UserRepositoryImpl(),
-        deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService()
-    ) {
+    init(userRepository: UserRepository = UserRepositoryImpl()) {
         self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
         self.userRepository = userRepository
-        self.deviceService = deviceService
         
         super.init()
     }
