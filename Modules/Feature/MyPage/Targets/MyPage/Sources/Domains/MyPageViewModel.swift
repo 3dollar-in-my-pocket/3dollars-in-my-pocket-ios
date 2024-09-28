@@ -46,7 +46,7 @@ final class MyPageViewModel: BaseViewModel {
     private var state = State()
 
     private let myPageRepository: MyPageRepository
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
@@ -57,11 +57,11 @@ final class MyPageViewModel: BaseViewModel {
 
     init(
         myPageRepository: MyPageRepository = MyPageRepositoryImpl(),
-        communityService: CommunityServiceProtocol = CommunityService(),
+        communityRepository: CommunityRepository = CommunityRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.myPageRepository = myPageRepository
-        self.communityService = communityService
+        self.communityRepository = communityRepository
         self.logManager = logManager
 
         super.init()
@@ -98,7 +98,7 @@ final class MyPageViewModel: BaseViewModel {
         
         let fetchMyPolls = loadTrigger
             .asyncMap { owner, _ in
-                await owner.communityService.fetchMyPolls(
+                await owner.communityRepository.fetchMyPolls(
                     input: .init(size: 3) // TODO
                 )
             }.compactMapValue()

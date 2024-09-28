@@ -46,17 +46,17 @@ final class ReportPollViewModel: BaseViewModel {
     let config: Config
 
     private var state = State()
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     private let logManager: LogManagerProtocol
 
     init(
         config: Config,
-        communityService: CommunityServiceProtocol = CommunityService(),
+        communityRepository: CommunityRepository = CommunityRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
         self.output = Output(screenName: config.screenName)
-        self.communityService = communityService
+        self.communityRepository = communityRepository
         self.logManager = logManager
 
         super.init()
@@ -122,7 +122,7 @@ final class ReportPollViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.reportPoll(pollId: owner.config.pollId, input: input)
+                await owner.communityRepository.reportPoll(pollId: owner.config.pollId, input: input)
             }
             .withUnretained(self)
             .sink { owner, result in
@@ -162,7 +162,7 @@ final class ReportPollViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.reportComment(
+                await owner.communityRepository.reportComment(
                     pollId: owner.config.pollId,
                     commentId: owner.config.commentId ?? "",
                     input: input
@@ -190,7 +190,7 @@ final class ReportPollViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let apiResult = await communityService.fetchPollReportReasons(type: self.config.commentId == nil ? .poll : .pollComment)
+            let apiResult = await communityRepository.fetchPollReportReasons(type: self.config.commentId == nil ? .poll : .pollComment)
 
             switch apiResult {
             case .success(let response):

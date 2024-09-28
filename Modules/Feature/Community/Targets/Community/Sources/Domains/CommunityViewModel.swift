@@ -45,7 +45,7 @@ final class CommunityViewModel: BaseViewModel {
 
     private var state = State()
 
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
 
@@ -53,10 +53,10 @@ final class CommunityViewModel: BaseViewModel {
     private lazy var storeTabCellViewModel = bindPopularStoreTabCellViewModel()
 
     init(
-        communityService: CommunityServiceProtocol = CommunityService(),
+        communityRepository: CommunityRepository = CommunityRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.communityService = communityService
+        self.communityRepository = communityRepository
         self.logManager = logManager
 
         super.init()
@@ -79,7 +79,7 @@ final class CommunityViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.fetchPopularStores(input: input)
+                await owner.communityRepository.fetchPopularStores(input: input)
             }
             .withUnretained(self)
             .sink { owner, result in

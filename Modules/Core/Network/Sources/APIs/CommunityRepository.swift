@@ -1,6 +1,6 @@
 import Model
 
-public protocol CommunityServiceProtocol {
+public protocol CommunityRepository {
     func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResponse<StoreResponse>, Error>
     /// 동네 인기 가게가 활성화된 동네 목록 조회
     func fetchPopularStoreNeighborhoods() async -> Result<NeighborhoodsResponse, Error>
@@ -36,106 +36,106 @@ public protocol CommunityServiceProtocol {
     func toggleReviewSticker(pollId: String, commentId: String, input: PollCommentStickerListInput) async -> Result<String?, Error>
 }
 
-public struct CommunityService: CommunityServiceProtocol {
+public struct CommunityRepositoryImpl: CommunityRepository {
     public init() { }
 
     public func fetchPopularStores(input: FetchPopularStoresInput) async -> Result<ContentsWithCursorResponse<StoreResponse>, Error> {
-        let request = FetchPopularStoresRequest(requestInput: input)
+        let request = CommunityApi.fetchPopularStores(input: input)
 
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func fetchPopularStoreNeighborhoods() async -> Result<NeighborhoodsResponse, Error> {
-        let request = FetchPopularStoreNeighborhoodsRequest()
+        let request = CommunityApi.fetchPopularStoreNeighborhoods
 
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func fetchPollReportReasons(type: FetchPollReportReasonsGroupType) async -> Result<PollReportReasonResponse, Error> {
-        let request = FetchPollReportReasonRequest(type: type)
+        let request = CommunityApi.fetchPollReportReasons(type: type)
         
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func reportPoll(pollId: String, input: PollReportCreateRequestInput) async -> Result<String, Error> {
-        let request = PollReportCreateRequest(pollId: pollId, requestInput: input)
+        let request = CommunityApi.reportPoll(pollId: pollId, input: input)
 
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func fetchPolls(input: FetchPollsRequestInput) async -> Result<ContentsWithCursorResponse<PollWithMetaApiResponse>, Error> {
-        let request = FetchPollsRequest(requestInput: input)
+        let request = CommunityApi.fetchPolls(input: input)
 
         return await NetworkManager.shared.request(requestType: request)
     }
     
     public func fetchMyPolls(input: CursorRequestInput) async -> Result<PollListWithUserPollMetaApiResponse, Error> {
-        let request = FetchMyPollsRequest(requestInput: input)
+        let request = CommunityApi.fetchMyPolls(input: input)
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func createChoicePoll(pollId: String, input: PollChoiceCreateRequestInput) async -> Result<String, Error> {
-        let request = CreateChoicePollRequest(pollId: pollId, requestInput: input)
+        let request = CommunityApi.createChoicePoll(pollId: pollId, input: input)
 
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func fetchPoll(pollId: String) async -> Result<PollWithMetaApiResponse, Error> {
-        let request = FetchPollRequest(pollId: pollId)
+        let request = CommunityApi.fetchPoll(pollId: pollId)
 
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func fetchUserPollPolicy() async -> Result<PollPolicyApiResponse, Error> {
-        let request = FetchPollUserPollPolicyRequest()
+        let request = CommunityApi.fetchUserPollPolicy
 
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func fetchPollComments(pollId: String, input: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PollCommentWithUserRecursiveApiResponse>, Error> {
-        let request = FetchPollCommentsRequest(pollId: pollId, requestInput: input)
+        let request = CommunityApi.fetchPollComments(pollId: pollId, input: input)
 
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func createPollComment(pollId: String, input: CreatePollCommentRequestInput) async -> Result<IdResponseString, Error> {
-        let request = CreatePollCommentRequest(pollId: pollId, requestInput: input)
+        let request = CommunityApi.createPollComment(pollId: pollId, input: input)
 
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func createPoll(input: PollCreateRequestInput) async -> Result<IdResponseString, Error> {
-        let request = CreatePollRequest(requestInput: input)
+        let request = CommunityApi.createPoll(input: input)
 
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func fetchPollComment(pollId: String, commentId: String) async -> Result<PollCommentWithUserRecursiveApiResponse, Error> {
-        let request = FetchPollCommentRequest(pollId: pollId, commentId: commentId)
+        let request = CommunityApi.fetchPollComment(pollId: pollId, commentId: commentId)
 
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func deletePollComment(pollId: String, commentId: String) async -> Result<String, Error> {
-        let request = DeletePollCommentRequest(pollId: pollId, commentId: commentId)
+        let request = CommunityApi.deletePollComment(pollId: pollId, commentId: commentId)
 
         return await NetworkManager.shared.request(requestType: request)
     }
 
     public func reportComment(pollId: String, commentId: String, input: PollCommentReportCreateRequestInput) async -> Result<String, Error> {
-        let request = ReportPollCommentCreateRequest(pollId: pollId, commentId: commentId, requestInput: input)
+        let request = CommunityApi.reportComment(pollId: pollId, commentId: commentId, input: input)
 
         return await NetworkManager.shared.request(requestType: request)
     }
     
     public func fetchPollCategories() async -> Result<PollCategoryListApiReponse, Error> {
-        let request = FetchPollCategoriesRequest()
+        let request = CommunityApi.fetchPollCategories
         
         return await NetworkManager.shared.request(requestType: request)
     }
     
     public func toggleReviewSticker(pollId: String, commentId: String, input: PollCommentStickerListInput) async -> Result<String?, Error> {
-        let request = PollCommentStickerRequest(pollId: pollId, commentId: commentId, input: input)
+        let request = CommunityApi.toggleReviewSticker(pollId: pollId, commentId: commentId, input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }
