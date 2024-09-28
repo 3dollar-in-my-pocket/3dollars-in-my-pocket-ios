@@ -20,10 +20,10 @@ public final class FaqViewModel: BaseViewModel {
     
     let input = Input()
     let output = Output()
-    private let faqService: FaqServiceProtocol
+    private let faqRepository: FaqRepository
     
-    public init(faqService: FaqServiceProtocol = FaqService()) {
-        self.faqService = faqService
+    public init(faqRepository: FaqRepository = FaqRepositoryImpl()) {
+        self.faqRepository = faqRepository
     }
     
     public override func bind() {
@@ -50,7 +50,7 @@ public final class FaqViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let result = await faqService.fetchFaqCategory()
+            let result = await faqRepository.fetchFaqCategory()
             
             switch result {
             case .success(let categories):
@@ -69,7 +69,7 @@ public final class FaqViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             let category = category == "ALL" ? nil : category
-            let result = await faqService.fetchFaq(category: category)
+            let result = await faqRepository.fetchFaq(category: category)
             
             switch result {
             case .success(let faqs):
