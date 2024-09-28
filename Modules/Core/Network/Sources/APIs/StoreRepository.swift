@@ -39,7 +39,7 @@ public struct StoreRepositoryImpl: StoreRepository {
     public init() { }
     
     public func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<IsStoresExistedAroundResponse, Error> {
-        let request = IsStoreExistNearbyRequest(distance: distance, mapLocation: mapLocation)
+        let request = StoreApi.isStoresExistedAround(distance: distance, mapLocation: mapLocation)
         
         return await NetworkManager.shared.request(requestType: request)
     }
@@ -69,19 +69,19 @@ public struct StoreRepositoryImpl: StoreRepository {
     }
     
     public func saveStore(storeType: StoreType, storeId: String, isDelete: Bool) async -> Result<String, Error> {
-        let request = SaveStoreRequest(storeType: storeType, storeId: storeId, isDelete: isDelete)
+        let request = StoreApi.saveStore(storeType: storeType, storeId: storeId, isDelete: isDelete)
         
         return await NetworkManager.shared.request(requestType: request)
     }
     
     public func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error> {
-        let request = ReportStoreRequest(storeId: storeId, reportReason: reportReason)
+        let request = StoreApi.reportStore(storeId: storeId, reportReason: reportReason)
         
         return await NetworkManager.shared.request(requestType: request)
     }
     
     public func writeReview(input: WriteReviewRequestInput) async -> Result<StoreReviewWithWriterResponse, Error> {
-        let request = WriteReviewRequest(input: input)
+        let request = StoreApi.writeReview(input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }
@@ -93,19 +93,19 @@ public struct StoreRepositoryImpl: StoreRepository {
     }
     
     public func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> {
-        let request = FetchStorePhotoRequest(storeId: storeId, size: 20, cursor: cursor)
+        let request = StoreApi.fetchStorePhotos(storeId: storeId, cursor: cursor)
         
         return await NetworkManager.shared.request(requestType: request)
     }
     
     public func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<StoreReviewResponse, Error> {
-        let request = EditReviewRequest(reviewId: reviewId, input: input)
+        let request = StoreApi.editReview(reviewId: reviewId, input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }
     
     public func deletePhoto(photoId: Int) async -> Result<String?, Error> {
-        let request = DeletePhotoRequest(photoId: photoId)
+        let request = StoreApi.deletePhoto(photoId: photoId)
 
         return await NetworkManager.shared.request(requestType: request)
     }
