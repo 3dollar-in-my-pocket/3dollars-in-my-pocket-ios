@@ -29,16 +29,16 @@ final class CommunityPollListAdCellViewModel: BaseViewModel {
     let config: Config
 
     private var state = State()
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     private let logManager: LogManagerProtocol
 
     init(
         config: Config,
-        communityService: CommunityServiceProtocol = CommunityService(),
+        communityRepository: CommunityRepository = CommunityRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
-        self.communityService = communityService
+        self.communityRepository = communityRepository
         self.logManager = logManager
         self.output = Output(item: config.ad)
 

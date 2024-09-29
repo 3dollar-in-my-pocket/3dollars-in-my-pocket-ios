@@ -39,14 +39,14 @@ final class StoreReviewListViewModel: BaseViewModel {
     let output = Output()
 
     private var state = State()
-    private let reviewService: ReviewServiceProtocol
+    private let reviewRepository: ReviewRepository
     private let logManager: LogManagerProtocol
 
     init(
-        reviewService: ReviewServiceProtocol = ReviewService(),
+        reviewRepository: ReviewRepository = ReviewRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.reviewService = reviewService
+        self.reviewRepository = reviewRepository
         self.logManager = logManager
 
         super.init()
@@ -65,7 +65,7 @@ final class StoreReviewListViewModel: BaseViewModel {
             })
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.reviewService.fetchMyStoreReview(
+                await owner.reviewRepository.fetchMyStoreReview(
                     input:  CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
                 )
             }
@@ -97,7 +97,7 @@ final class StoreReviewListViewModel: BaseViewModel {
         state.loadMore
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.reviewService.fetchMyStoreReview(
+                await owner.reviewRepository.fetchMyStoreReview(
                     input:  CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
                 )
             }

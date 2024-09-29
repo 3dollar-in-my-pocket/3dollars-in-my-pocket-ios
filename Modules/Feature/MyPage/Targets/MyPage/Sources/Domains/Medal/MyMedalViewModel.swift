@@ -39,17 +39,17 @@ final class MyMedalViewModel: BaseViewModel {
 
     private var state = State()
 
-    private let medalService: MedalServiceProtocol
+    private let medalRepository: MedalRepository
     private let userRepository: UserRepository
     private let userDefaults = Preference.shared
     private let logManager: LogManagerProtocol
 
     init(
-        medalService: MedalServiceProtocol = MedalService(),
+        medalRepository: MedalRepository = MedalRepositoryImpl(),
         userRepository: UserRepository = UserRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.medalService = medalService 
+        self.medalRepository = medalRepository 
         self.userRepository = userRepository
         self.logManager = logManager
 
@@ -105,7 +105,7 @@ final class MyMedalViewModel: BaseViewModel {
     private func fetchUserAndMedals() {
         Task {
             output.showLoading.send(true)
-            let medalResponse = await medalService.fetchMedals()
+            let medalResponse = await medalRepository.fetchMedals()
             let userResponse = await userRepository.fetchUser()
             output.showLoading.send(false)
             

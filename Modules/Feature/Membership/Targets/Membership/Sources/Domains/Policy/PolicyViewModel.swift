@@ -38,17 +38,17 @@ final class PolicyViewModel: Common.BaseViewModel {
     let output = Output()
     private var state = State()
     private let userRepository: UserRepository
-    private let deviceService: Networking.DeviceServiceProtocol
+    private let deviceRepository: DeviceRepository
     private let appInterface: AppModuleInterface
     private let preference = Preference.shared
     
     init(
         userRepository: UserRepository = UserRepositoryImpl(),
-        deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService(),
+        deviceRepository: DeviceRepository = DeviceRepositoryImpl(),
         appInterface: AppModuleInterface = Environment.appModuleInterface
     ) {
         self.userRepository = userRepository
-        self.deviceService = deviceService
+        self.deviceRepository = deviceRepository
         self.appInterface = appInterface
     }
     
@@ -116,7 +116,8 @@ final class PolicyViewModel: Common.BaseViewModel {
         appInterface.getFCMToken { [weak self] token in
             guard let self = self else { return }
             Task {
-                await self.deviceService.registerDevice(pushToken: token)
+                let input = DeviceRequestInput(pushPlatformType: "FCM", pushToken: token)
+                return await self.deviceRepository.registerDevice(input: input)
             }
         }
     }

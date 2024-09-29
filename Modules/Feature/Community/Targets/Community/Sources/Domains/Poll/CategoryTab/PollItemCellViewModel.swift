@@ -39,16 +39,16 @@ final class PollItemCellViewModel: BaseViewModel {
         config.data.poll.pollId
     }
     private var state = State()
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     private let logManager: LogManagerProtocol
 
     init(
         config: Config,
-        communityService: CommunityServiceProtocol = CommunityService(),
+        communityRepository: CommunityRepository = CommunityRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
-        self.communityService = communityService
+        self.communityRepository = communityRepository
         self.logManager = logManager
         self.output = Output(
             item: .init(config.data)
@@ -73,7 +73,7 @@ final class PollItemCellViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.createChoicePoll(pollId: owner.pollId, input: input)
+                await owner.communityRepository.createChoicePoll(pollId: owner.pollId, input: input)
             }
             .withUnretained(self)
             .sink { owner, result in
@@ -93,7 +93,7 @@ final class PollItemCellViewModel: BaseViewModel {
                 owner.output.showLoading.send(true)
             })
             .asyncMap { owner, _ in
-                await owner.communityService.fetchPoll(pollId: owner.pollId)
+                await owner.communityRepository.fetchPoll(pollId: owner.pollId)
             }
             .withUnretained(self)
             .sink { owner, result in

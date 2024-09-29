@@ -2,23 +2,23 @@ import Foundation
 
 import Model
 
-public protocol FaqServiceProtocol {
+public protocol FaqRepository {
     func fetchFaq(category: String?) async -> Result<[FaqResponse], Error>
     
     func fetchFaqCategory() async -> Result<[FaqCategoryResponse], Error>
 }
 
-public struct FaqService: FaqServiceProtocol {
+public struct FaqRepositoryImpl: FaqRepository {
     public init() { }
     
     public func fetchFaq(category: String?) async -> Result<[FaqResponse], Error> {
-        let request = FetchFaqRequest(category: category)
+        let request = FaqApi.fetchFaq(category: category)
         
         return await NetworkManager.shared.request(requestType: request)
     }
     
     public func fetchFaqCategory() async -> Result<[FaqCategoryResponse], Error> {
-        let request = FetchFaqCategoryRequest()
+        let request = FaqApi.fetchFaqCategory
         
         return await NetworkManager.shared.request(requestType: request)
     }

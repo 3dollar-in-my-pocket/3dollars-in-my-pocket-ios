@@ -40,17 +40,17 @@ final class SigninViewModel: BaseViewModel {
     private var state = State()
     private var appInterface = Environment.appModuleInterface
     private let userRepository: UserRepository
-    private let deviceService: DeviceServiceProtocol
+    private let deviceRepository: DeviceRepository
     private let logManager: LogManagerProtocol
     private var preference = Preference.shared
     
     init(
         userRepository: UserRepository = UserRepositoryImpl(),
-        deviceService: DeviceServiceProtocol = DeviceService(),
+        deviceRepository: DeviceRepository = DeviceRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.userRepository = userRepository
-        self.deviceService = deviceService
+        self.deviceRepository = deviceRepository
         self.logManager = logManager
         
         super.init()
@@ -195,7 +195,8 @@ final class SigninViewModel: BaseViewModel {
             guard let self = self else { return }
             
             Task {
-                let refreshDevice = await self.deviceService.refreshDevice(pushToken: token)
+                let input = DeviceRequestInput(pushPlatformType: "FCM", pushToken: token)
+                let refreshDevice = await self.deviceRepository.refreshDevice(input: input)
                 
                 self.output.route.send(.showLoading(isShow: false))
                 

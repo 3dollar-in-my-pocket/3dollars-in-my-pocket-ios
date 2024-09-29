@@ -41,15 +41,15 @@ final class VisitStoreListViewModel: BaseViewModel {
 
     private var state = State()
 
-    private let myPageService: MyPageServiceProtocol
+    private let myPageRepository: MyPageRepository
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
 
     init(
-        myPageService: MyPageServiceProtocol = MyPageService(),
+        myPageRepository: MyPageRepository = MyPageRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.myPageService = myPageService 
+        self.myPageRepository = myPageRepository 
         self.logManager = logManager
 
         super.init()
@@ -67,10 +67,8 @@ final class VisitStoreListViewModel: BaseViewModel {
             })
             .withUnretained(self)
             .asyncMap { owner, _ in
-                await owner.myPageService.fetchMyStoreVisits(
-                    size: Self.size, 
-                    cursur: owner.state.nextCursor
-                )
+                let input = CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
+                return await owner.myPageRepository.fetchMyStoreVisits(input: input)
             }
             .withUnretained(self)
             .sink { owner, result in
@@ -100,10 +98,8 @@ final class VisitStoreListViewModel: BaseViewModel {
         state.loadMore
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.myPageService.fetchMyStoreVisits(
-                    size: Self.size, 
-                    cursur: owner.state.nextCursor
-                )
+                let input = CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
+                return await owner.myPageRepository.fetchMyStoreVisits(input: input)
             }
             .withUnretained(self)
             .sink { owner, result in

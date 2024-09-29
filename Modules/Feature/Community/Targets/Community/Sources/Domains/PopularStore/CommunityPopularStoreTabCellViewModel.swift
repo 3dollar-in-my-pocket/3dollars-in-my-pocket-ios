@@ -36,14 +36,14 @@ final class CommunityPopularStoreTabCellViewModel: BaseViewModel {
     let input = Input()
     let output: Output
 
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     private let preference = Preference.shared
 
     init(
         tab: CommunityPopularStoreTab = .defaultTab,
-        communityService: CommunityServiceProtocol = CommunityService()
+        communityRepository: CommunityRepository = CommunityRepositoryImpl()
     ) {
-        self.communityService = communityService
+        self.communityRepository = communityRepository
         self.output = Output(
             tabList: CommunityPopularStoreTab.allCases,
             district: .init(preference.communityPopularStoreNeighborhoods.description),

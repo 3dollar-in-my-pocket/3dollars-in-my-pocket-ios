@@ -32,16 +32,16 @@ final class SplashViewModel: BaseViewModel {
     private var preference = Preference.shared
     private let userRepository: UserRepository
     private let remoteConfigService: RemoteConfigProtocol
-    private let deviceService: DeviceServiceProtocol
+    private let deviceRepository: DeviceRepository
     
     init(
         userRepository: UserRepository = UserRepositoryImpl(),
         remoteConfigService: RemoteConfigProtocol = RemoteConfigService(),
-        deviceService: Networking.DeviceServiceProtocol = DeviceService()
+        deviceRepository: DeviceRepository = DeviceRepositoryImpl()
     ) {
         self.userRepository = userRepository
         self.remoteConfigService = remoteConfigService
-        self.deviceService = deviceService
+        self.deviceRepository = deviceRepository
         
         super.init()
         
@@ -111,7 +111,8 @@ final class SplashViewModel: BaseViewModel {
             do {
                 
                 let pushToken = try await Messaging.messaging().token()
-                let result = await deviceService.refreshDevice(pushToken: pushToken)
+                let input = DeviceRequestInput(pushPlatformType: "FCM", pushToken: pushToken)
+                let result = await deviceRepository.refreshDevice(input: input)
                 
                 switch result {
                 case .success(_):

@@ -2,15 +2,15 @@ import Foundation
 
 import Model
 
-public protocol ReportServiceProtocol {
+public protocol ReportRepository {
     func fetchReportReasons(group: ReportGroup) async -> Result<ReportReasonApiResponse, Error>
 }
 
-public struct ReportService: ReportServiceProtocol {
+public struct ReportRepositoryImpl: ReportRepository {
     public init() { }
     
     public func fetchReportReasons(group: ReportGroup) async -> Result<ReportReasonApiResponse, Error> {
-        let request = FetchReportReasonListRequest(group: group)
+        let request = ReportApi.fetchReportReasons(group: group)
         
         return await NetworkManager.shared.request(requestType: request)
     }

@@ -26,15 +26,15 @@ final class SigninBottomSheetViewModel: BaseViewModel {
     let output = Output()
     private var appInterface = Environment.appModuleInterface
     private let userRepository: UserRepository
-    private let deviceService: DeviceServiceProtocol
+    private let deviceRepository: DeviceRepository
     private var preference = Preference.shared
     
     init(
         userRepository: UserRepository = UserRepositoryImpl(),
-        deviceService: DeviceServiceProtocol = DeviceService()
+        deviceRepository: DeviceRepository = DeviceRepositoryImpl()
     ) {
         self.userRepository = userRepository
-        self.deviceService = deviceService
+        self.deviceRepository = deviceRepository
         
         super.init()
     }
@@ -132,7 +132,8 @@ final class SigninBottomSheetViewModel: BaseViewModel {
             guard let self = self else { return }
             
             Task {
-                let refreshDevice = await self.deviceService.refreshDevice(pushToken: token)
+                let input = DeviceRequestInput(pushPlatformType: "FCM", pushToken: token)
+                let refreshDevice = await self.deviceRepository.refreshDevice(input: input)
                 
                 self.output.route.send(.showLoading(isShow: false))
                 

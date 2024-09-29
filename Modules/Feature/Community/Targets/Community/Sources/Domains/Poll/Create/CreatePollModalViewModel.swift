@@ -39,20 +39,20 @@ final class CreatePollModalViewModel: BaseViewModel {
     let output: Output
 
     private var state = State()
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     private let logManager: LogManagerProtocol
 
     init(
         pollRetentionDays: Int?,
         limitCount: Int?,
-        communityService: CommunityServiceProtocol = CommunityService(),
+        communityRepository: CommunityRepository = CommunityRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.output = Output(
             pollRetentionDays: pollRetentionDays ?? 3,
             limitCount: limitCount ?? 1
         )
-        self.communityService = communityService
+        self.communityRepository = communityRepository
         self.logManager = logManager
         super.init()
     }
@@ -82,7 +82,7 @@ final class CreatePollModalViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.createPoll(input: input)
+                await owner.communityRepository.createPoll(input: input)
             }
             .withUnretained(self)
             .sink { owner, result in
