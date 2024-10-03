@@ -1,6 +1,6 @@
 import Foundation
 
-public enum SalesType: String, Hashable, Decodable {
+public enum SalesType: String, Hashable, Codable {
     case road = "ROAD"
     case store = "STORE"
     case convenienceStore = "CONVENIENCE_STORE"

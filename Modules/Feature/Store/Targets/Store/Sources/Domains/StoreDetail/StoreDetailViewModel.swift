@@ -85,22 +85,22 @@ final class StoreDetailViewModel: BaseViewModel {
     let output = Output()
     var state: State
     private let storeService: StoreRepository
-    private let reportService: ReportServiceProtocol
-    private let reviewService: ReviewServiceProtocol
+    private let reportRepository: ReportRepository
+    private let reviewRepository: ReviewRepository
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
     
     init(
         storeId: Int,
         storeService: StoreRepository = StoreRepositoryImpl(),
-        reportService: ReportServiceProtocol = ReportService(),
-        reviewService: ReviewServiceProtocol = ReviewService(),
+        reportRepository: ReportRepository = ReportRepositoryImpl(),
+        reviewRepository: ReviewRepository = ReviewRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.state = State(storeId: storeId)
         self.storeService = storeService
-        self.reportService = reportService
-        self.reviewService = reviewService
+        self.reportRepository = reportRepository
+        self.reviewRepository = reviewRepository
         self.logManager = logManager
         
         super.init()
@@ -491,7 +491,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         Task {
             let input = StoreReviewStickerListReplaceInput(stickers: review.reactedByMe ? [] : [.init(stickerId: review.stickerId)])
-            let result = await reviewService.toggleReviewSticker(storeId: state.storeId, reviewId: review.reviewId, input: input)
+            let result = await reviewRepository.toggleReviewSticker(storeId: state.storeId, reviewId: review.reviewId, input: input)
             
             switch result {
             case .success(_):
@@ -513,7 +513,7 @@ final class StoreDetailViewModel: BaseViewModel {
 extension StoreDetailViewModel {
     private func presentReportModal() {
         Task {
-            let reportReasonResult = await reportService.fetchReportReasons(group: .store)
+            let reportReasonResult = await reportRepository.fetchReportReasons(group: .store)
                 .map { response in
                     response.reasons.map { ReportReason(response: $0) }
                 }
@@ -531,7 +531,7 @@ extension StoreDetailViewModel {
     
     private func goToNavigationApplication(type: NavigationAppType) {
         guard let storeDetailData = state.storeDetailData,
-              let appInfomation = DIContainer.shared.container.resolve(AppInfomation.self) else { return }
+              let appInfomation = DIContainer.shared.container.resolve(AppInformation.self) else { return }
         let location = storeDetailData.overview.location
         let storeName = storeDetailData.overview.storeName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         
@@ -642,7 +642,7 @@ extension StoreDetailViewModel {
     
     private func presentReportReviewBottomSheet(review: StoreDetailReview) {
         Task {
-            let reportReasonResult = await reportService.fetchReportReasons(group: .review)
+            let reportReasonResult = await reportRepository.fetchReportReasons(group: .review)
                 .map { response in
                     response.reasons.map { ReportReason(response: $0) }
                 }

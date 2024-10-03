@@ -39,18 +39,18 @@ final class SigninViewModel: BaseViewModel {
     let output = Output()
     private var state = State()
     private var appInterface = Environment.appModuleInterface
-    private let userService: UserServiceProtocol
-    private let deviceService: DeviceServiceProtocol
+    private let userRepository: UserRepository
+    private let deviceRepository: DeviceRepository
     private let logManager: LogManagerProtocol
     private var preference = Preference.shared
     
     init(
-        userService: UserServiceProtocol = UserService(),
-        deviceService: DeviceServiceProtocol = DeviceService(),
+        userRepository: UserRepository = UserRepositoryImpl(),
+        deviceRepository: DeviceRepository = DeviceRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.userService = userService
-        self.deviceService = deviceService
+        self.userRepository = userRepository
+        self.deviceRepository = deviceRepository
         self.logManager = logManager
         
         super.init()
@@ -88,7 +88,7 @@ final class SigninViewModel: BaseViewModel {
                 owner.output.route.send(.showLoading(isShow: true))
             })
             .asyncMap { owner, _ in
-                await owner.userService.signinAnonymous()
+                await owner.userRepository.signinAnonymous()
             }
             .withUnretained(self)
             .sink { owner, result in
@@ -164,7 +164,8 @@ final class SigninViewModel: BaseViewModel {
     
     private func signin(socialType: SocialType, accessToken: String) {
         Task {
-            let result = await userService.signin(socialType: socialType.rawValue, accessToken: accessToken)
+            let input = SigninRequestInput(socialType: socialType.rawValue, token: accessToken)
+            let result = await userRepository.signin(input: input)
             
             switch result {
             case .success(let signinResponse):
@@ -194,7 +195,8 @@ final class SigninViewModel: BaseViewModel {
             guard let self = self else { return }
             
             Task {
-                let refreshDevice = await self.deviceService.refreshDevice(pushToken: token)
+                let input = DeviceRequestInput(pushPlatformType: "FCM", pushToken: token)
+                let refreshDevice = await self.deviceRepository.refreshDevice(input: input)
                 
                 self.output.route.send(.showLoading(isShow: false))
                 
@@ -213,7 +215,7 @@ final class SigninViewModel: BaseViewModel {
         output.route.send(.showLoading(isShow: true))
         
         Task {
-            let result = await userService.signinDemo(code: code)
+            let result = await userRepository.signinDemo(code: code)
             
             switch result {
             case .success(let response):

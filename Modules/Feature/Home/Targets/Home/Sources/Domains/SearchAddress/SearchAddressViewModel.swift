@@ -42,17 +42,17 @@ final class SearchAddressViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     private var state = State()
-    private let mapService: MapServiceProtocol
-    private let userService: UserServiceProtocol
+    private let mapRepository: MapRepository
+    private let userRepository: UserRepository
     private let logManager: LogManagerProtocol
     
     init(
-        mapService: MapServiceProtocol = MapService(),
-        userService: UserServiceProtocol = UserService(),
+        mapRepository: MapRepository = MapRepositoryImpl(),
+        userRepository: UserRepository = UserRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.mapService = mapService
-        self.userService = userService
+        self.mapRepository = mapRepository
+        self.userRepository = userRepository
         self.logManager = logManager
         
         super.init()
@@ -113,7 +113,7 @@ final class SearchAddressViewModel: BaseViewModel {
                 owner.state.isLoading = true
             })
             .asyncMap { owner, _ in
-                await owner.userService.getMyPlaces(
+                await owner.userRepository.getMyPlaces(
                     placeType: .recentSearch,
                     input: CursorRequestInput(
                         size: recentSearchPageSize,
@@ -167,7 +167,7 @@ final class SearchAddressViewModel: BaseViewModel {
     
     private func searchAddress(keyword: String) {
         Task {
-            let result = await mapService.searchAddress(keyword: keyword)
+            let result = await mapRepository.searchAddress(keyword: keyword)
             
             switch result {
             case .success(let response):
@@ -209,7 +209,7 @@ final class SearchAddressViewModel: BaseViewModel {
                 roadAddressName: document.roadAddressName
             )
             
-            let _ = await userService.saveMyPlace(
+            let _ = await userRepository.saveMyPlace(
                 placeType: .recentSearch,
                 input: input
             )
@@ -223,7 +223,7 @@ final class SearchAddressViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, placeId in
                 Task {
-                    let _ = await owner.userService.deleteMyPlace(
+                    let _ = await owner.userRepository.deleteMyPlace(
                         placeType: .recentSearch,
                         placeId: placeId
                     )

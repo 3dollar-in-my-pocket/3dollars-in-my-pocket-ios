@@ -56,18 +56,18 @@ final class CommunityPollListCellViewModel: BaseViewModel {
 
     private var state = State()
     private let dependency: Dependency
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     private let advertisementRepository: AdvertisementRepository
 
     init(
         config: Config,
         dependency: Dependency = Dependency(),
-        communityService: CommunityServiceProtocol = CommunityService(),
+        communityRepository: CommunityRepository = CommunityRepositoryImpl(),
         advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl()
     ) {
         self.config = config
         self.dependency = dependency
-        self.communityService = communityService
+        self.communityRepository = communityRepository
         self.advertisementRepository = advertisementRepository
 
         super.init()
@@ -81,7 +81,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
         input.loadPollCategories
             .withUnretained(self)
             .asyncMap { owner, _ in
-                await owner.communityService.fetchPollCategories()
+                await owner.communityRepository.fetchPollCategories()
             }
             .withUnretained(self)
             .sink { owner, result in
@@ -128,7 +128,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
         load
             .withUnretained(self)
             .asyncMap { owner, categoryId in
-                await owner.communityService.fetchPolls(
+                await owner.communityRepository.fetchPolls(
                     input: FetchPollsRequestInput(categoryId: categoryId, sortType: .popular) // 인기순 노출 고정
                 )
             }

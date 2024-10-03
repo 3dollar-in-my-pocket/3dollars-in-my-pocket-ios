@@ -61,7 +61,7 @@ public final class MapDetailViewModel: BaseViewModel {
     }
     
     private func goToNavigationApplication(type: NavigationAppType) {
-        guard let appInfomation = DIContainer.shared.container.resolve(AppInfomation.self) else { return }
+        guard let appInfomation = DIContainer.shared.container.resolve(AppInformation.self) else { return }
         let location = state.location
         let storeName = state.storeName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         

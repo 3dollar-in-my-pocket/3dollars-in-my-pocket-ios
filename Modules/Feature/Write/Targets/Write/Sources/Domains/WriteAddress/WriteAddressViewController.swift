@@ -8,6 +8,7 @@ import Model
 import Log
 
 import NMapsMap
+import CombineCocoa
 
 public final class WriteAddressViewController: BaseViewController {
     public override var screenName: ScreenName {
@@ -40,53 +41,53 @@ public final class WriteAddressViewController: BaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
+        bind()
         setupMap()
         viewModel.input.viewDidLoad.send(())
     }
     
-    public override func bindEvent() {
-        writeAddressView.closeButton
-            .controlPublisher(for: .touchUpInside)
+    private func bind() {
+        // Event
+        writeAddressView.closeButton.tapPublisher
+            .throttleClick()
             .withUnretained(self)
-            .sink { owner, _ in
+            .sink { (owner: WriteAddressViewController, _) in
                 owner.dismiss(animated: true)
             }
             .store(in: &cancellables)
-    }
-    
-    public override func bindViewModelInput() {
-        writeAddressView.addressButton
-            .controlPublisher(for: .touchUpInside)
+        
+        // Input
+        writeAddressView.addressButton.tapPublisher
+            .throttleClick()
             .mapVoid
             .subscribe(viewModel.input.tapSetAddress)
             .store(in: &cancellables)
         
-        writeAddressView.currentLocationButton
-            .controlPublisher(for: .touchUpInside)
+        writeAddressView.currentLocationButton.tapPublisher
+            .throttleClick()
             .mapVoid
             .subscribe(viewModel.input.tapCurrentLocation)
             .store(in: &cancellables)
-    }
-    
-    public override func bindViewModelOutput() {
-        viewModel.output.setNearStores
-            .receive(on: DispatchQueue.main)
+        
+        // Output
+        viewModel.output.storesNearBy
+            .main
             .withUnretained(self)
-            .sink { owner, stores in
+            .sink { (owner: WriteAddressViewController, stores: [LocationResponse]) in
                 owner.writeAddressView.setNearStores(locations: stores)
             }
             .store(in: &cancellables)
         
         viewModel.output.moveCamera
-            .receive(on: DispatchQueue.main)
+            .main
             .withUnretained(self)
             .sink { owner, location in
                 owner.writeAddressView.moveCamera(location: location)
             }
             .store(in: &cancellables)
         
-        viewModel.output.setAddress
-            .receive(on: DispatchQueue.main)
+        viewModel.output.address
+            .main
             .withUnretained(self)
             .sink { [weak self] completion in
                 switch completion {
@@ -100,28 +101,11 @@ public final class WriteAddressViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.error
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, error in
-                owner.showErrorAlert(error: error)
-            }
-            .store(in: &cancellables)
-        
         viewModel.output.route
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
-            .sink { owner, route in
-                switch route {
-                case .pushWriteDetail(let viewModel):
-                    owner.pushWriteDetail(viewModel)
-                    
-                case .presentConfirmPopup(let viewModel):
-                    owner.presentConfirmPopup(viewModel)
-                    
-                case .dismiss:
-                    owner.dismiss(animated: true)
-                }
+            .sink { (owner: WriteAddressViewController, route: WriteAddressViewModel.Route) in
+                owner.handleRoute(route)
             }
             .store(in: &cancellables)
     }
@@ -149,12 +133,28 @@ public final class WriteAddressViewController: BaseViewController {
 extension WriteAddressViewController: NMFMapViewCameraDelegate {
     public func mapView(_ mapView: NMFMapView, cameraDidChangeByReason reason: Int, animated: Bool) {
         if animated && reason == NMFMapChangedByGesture {
-            let location = Model.Location(
+            let location = CLLocation(
                 latitude: mapView.cameraPosition.target.lat,
                 longitude: mapView.cameraPosition.target.lng
             )
             
             viewModel.input.moveMapCenter.send(location)
+        }
+    }
+}
+
+// MARK: Route
+extension WriteAddressViewController {
+    private func handleRoute(_ route: WriteAddressViewModel.Route) {
+        switch route {
+        case .pushWriteDetail(let viewModel):
+            pushWriteDetail(viewModel)
+        case .presentConfirmPopup(let viewModel):
+            presentConfirmPopup(viewModel)
+        case .dismiss:
+            dismiss(animated: true)
+        case .showErrorAlert(let error):
+            showErrorAlert(error: error)
         }
     }
 }

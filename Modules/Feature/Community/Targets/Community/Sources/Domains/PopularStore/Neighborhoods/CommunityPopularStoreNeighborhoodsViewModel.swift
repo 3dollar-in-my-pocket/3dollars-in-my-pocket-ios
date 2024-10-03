@@ -33,11 +33,11 @@ final class CommunityPopularStoreNeighborhoodsViewModel: BaseViewModel {
     let output = Output()
     let headerViewModel = CommunityPopularStoreNeighborhoodsHeaderViewModel()
 
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     private let preference = Preference.shared
 
-    init(communityService: CommunityServiceProtocol = CommunityService()) {
-        self.communityService = communityService
+    init(communityRepository: CommunityRepository = CommunityRepositoryImpl()) {
+        self.communityRepository = communityRepository
 
         super.init()
     }
@@ -52,7 +52,7 @@ final class CommunityPopularStoreNeighborhoodsViewModel: BaseViewModel {
                 owner.output.showLoading.send(true)
             })
             .asyncMap { owner, input in
-                await owner.communityService.fetchPopularStoreNeighborhoods()
+                await owner.communityRepository.fetchPopularStoreNeighborhoods()
             }
             .withUnretained(self)
             .sink { owner, result in

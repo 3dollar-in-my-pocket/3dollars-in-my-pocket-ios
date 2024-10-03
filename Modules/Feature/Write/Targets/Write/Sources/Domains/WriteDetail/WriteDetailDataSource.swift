@@ -197,7 +197,7 @@ struct WriteDetailSection: Hashable {
 }
 
 enum WriteDetailSectionItem: Hashable {
-    case map(Model.Location)
+    case map(LocationResponse)
     case address(String?)
     case name(String)
     case storeType(SalesType?)

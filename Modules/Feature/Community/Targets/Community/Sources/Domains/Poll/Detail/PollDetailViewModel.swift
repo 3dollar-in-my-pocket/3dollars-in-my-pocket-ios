@@ -50,18 +50,18 @@ final class PollDetailViewModel: BaseViewModel {
     let output = Output()
 
     private var state = State()
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     private let logManager: LogManagerProtocol
 
     private let pollId: String
 
     init(
         pollId: String,
-        communityService: CommunityServiceProtocol = CommunityService(),
+        communityRepository: CommunityRepository = CommunityRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.pollId = pollId
-        self.communityService = communityService
+        self.communityRepository = communityRepository
         self.logManager = logManager
 
         super.init()
@@ -76,7 +76,7 @@ final class PollDetailViewModel: BaseViewModel {
                 owner.output.showLoading.send(true)
             })
             .asyncMap { owner, input in
-                await owner.communityService.fetchPoll(pollId: owner.pollId)
+                await owner.communityRepository.fetchPoll(pollId: owner.pollId)
             }
             .withUnretained(self)
             .sink { owner, result in
@@ -95,7 +95,7 @@ final class PollDetailViewModel: BaseViewModel {
         state.loadComments
             .withUnretained(self)
             .asyncMap { owner, _ in
-                await owner.communityService.fetchPollComments(
+                await owner.communityRepository.fetchPollComments(
                     pollId: owner.pollId,
                     input: CursorRequestInput(
                         size: Constants.commentSize,
@@ -154,7 +154,7 @@ final class PollDetailViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.createPollComment(
+                await owner.communityRepository.createPollComment(
                     pollId: owner.pollId,
                     input: input
                 )
@@ -174,7 +174,7 @@ final class PollDetailViewModel: BaseViewModel {
         state.loadComment
             .withUnretained(self)
             .asyncMap { owner, commentId in
-                await owner.communityService.fetchPollComment(
+                await owner.communityRepository.fetchPollComment(
                     pollId: owner.pollId,
                     commentId: commentId
                 )

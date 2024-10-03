@@ -111,7 +111,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         CommunityInterfaceImpl.registerCommunityInterface()
         MyPageInterfaceImpl.registerMyPageInterface()
         AppModuleInterfaceImpl.registerAppModuleInterface()
-        AppInfomationImpl.registerAppInfomation()
+        AppInformationImpl.registerAppInformation()
     }
     
     func application(

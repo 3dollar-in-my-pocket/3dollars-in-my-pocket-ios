@@ -43,14 +43,14 @@ public final class SettingViewModel: BaseViewModel {
     let output = Output()
     private var state = State()
     private var preference = Preference.shared
-    private var userService: UserServiceProtocol
+    private var userRepository: UserRepository
     private let globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus
     
     
     public init(
-        userService: UserServiceProtocol = UserService()
+        userRepository: UserRepository = UserRepositoryImpl()
     ) {
-        self.userService = userService
+        self.userRepository = userRepository
     }
     
     public override func bind() {
@@ -126,7 +126,7 @@ public final class SettingViewModel: BaseViewModel {
     
     private func fetchUser() {
         Task {
-            let response = await userService.fetchUser()
+            let response = await userRepository.fetchUser()
             
             switch response {
             case .success(let userResponse):
@@ -179,10 +179,8 @@ public final class SettingViewModel: BaseViewModel {
         }
         
         Task {
-            let result = await userService.editUserSetting(
-                enableActivityNotification: enableActivitiesPush,
-                marketingConsent: marketingConsent
-            )
+            let input = UserAccountSettingPatchApiRequestInput(enableActivitiesPush: enableActivitiesPush, marketingConsent: marketingConsent)
+            let result = await userRepository.editUserSetting(input: input)
             
             switch result {
             case .success(_):
@@ -219,7 +217,7 @@ public final class SettingViewModel: BaseViewModel {
         guard let socialType = state.user?.socialType else { return }
         
         Task {
-            await userService.logout()
+            await userRepository.logout()
         }
         .store(in: taskBag)
         
@@ -248,7 +246,7 @@ public final class SettingViewModel: BaseViewModel {
         guard let socialType = state.user?.socialType else { return }
         
         Task {
-            await userService.signout()
+            await userRepository.signout()
         }
         .store(in: taskBag)
         

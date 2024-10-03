@@ -33,16 +33,16 @@ final class MarkerPopupViewModel: BaseViewModel {
     let output = Output()
     private var state = State()
     private let advertisementRepository: AdvertisementRepository
-    private let eventService: EventServiceProtocol
+    private let eventRepository: EventRepository
     private let logManager: LogManagerProtocol
     
     init(
         advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
-        eventService: EventServiceProtocol = EventService(),
+        eventRepository: EventRepository = EventRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.advertisementRepository = advertisementRepository
-        self.eventService = eventService
+        self.eventRepository = eventRepository
         self.logManager = logManager
         
         super.init()
@@ -92,7 +92,7 @@ final class MarkerPopupViewModel: BaseViewModel {
         guard let advertisementId = state.advertisement?.advertisementId else { return }
         
         Task {
-            let _ = await eventService.sendClickEvent(targetId: advertisementId, type: "ADVERTISEMENT")
+            let _ = await eventRepository.sendClickEvent(targetId: advertisementId, type: "ADVERTISEMENT")
         }
     }
     

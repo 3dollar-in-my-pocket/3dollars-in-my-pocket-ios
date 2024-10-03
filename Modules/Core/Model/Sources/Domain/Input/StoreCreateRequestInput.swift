@@ -5,20 +5,20 @@ public struct StoreCreateRequestInput: Encodable {
     public let longitude: Double
     public let storeName: String
     public let storeType: String?
-    public let appearanceDays: [String]
+    public let appearanceDays: [AppearanceDay]
     public let openingHours: StoreOpeningHoursRequest?
-    public let paymentMethods: [String]
-    public let menus: [StoreMenuRequestInput]
+    public let paymentMethods: [PaymentMethod]
+    public let menus: [StoreMenuRequest]
     
     public init(
         latitude: Double,
         longitude: Double,
         storeName: String,
         storeType: String?,
-        appearanceDays: [String],
+        appearanceDays: [AppearanceDay],
         openingHours: StoreOpeningHoursRequest?,
-        paymentMethods: [String],
-        menus: [StoreMenuRequestInput]
+        paymentMethods: [PaymentMethod],
+        menus: [StoreMenuRequest]
     ) {
         self.latitude = latitude
         self.longitude = longitude

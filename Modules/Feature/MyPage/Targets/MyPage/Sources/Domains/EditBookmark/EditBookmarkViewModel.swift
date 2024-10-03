@@ -46,18 +46,18 @@ final class EditBookmarkViewModel: BaseViewModel {
     let output: Output
     let relay = Relay()
     private var state: State
-    private let bookmarkService: BookmarkServiceProtocol
+    private let bookmarkRepository: BookmarkRepository
     
     init(
         config: Config,
-        bookmarkService: BookmarkServiceProtocol = BookmarkService()
+        bookmarkRepository: BookmarkRepository = BookmarkRepositoryImpl()
     ) {
         self.output = Output(
             title: .init(config.title),
             description: .init(config.description)
         )
         self.state = State(title: config.title, description: config.description)
-        self.bookmarkService = bookmarkService
+        self.bookmarkRepository = bookmarkRepository
     }
     
     override func bind() {
@@ -98,7 +98,7 @@ final class EditBookmarkViewModel: BaseViewModel {
         
         Task { [weak self] in
             guard let self else { return }
-            let result = await bookmarkService.editBookmarkFolder(input: input)
+            let result = await bookmarkRepository.editBookmarkFolder(input: input)
             
             switch result {
             case .success(_):

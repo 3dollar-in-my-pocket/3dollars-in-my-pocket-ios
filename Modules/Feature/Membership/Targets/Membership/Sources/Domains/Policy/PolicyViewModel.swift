@@ -37,18 +37,18 @@ final class PolicyViewModel: Common.BaseViewModel {
     let input = Input()
     let output = Output()
     private var state = State()
-    private let userService: Networking.UserServiceProtocol
-    private let deviceService: Networking.DeviceServiceProtocol
+    private let userRepository: UserRepository
+    private let deviceRepository: DeviceRepository
     private let appInterface: AppModuleInterface
     private let preference = Preference.shared
     
     init(
-        userService: Networking.UserServiceProtocol = Networking.UserService(),
-        deviceService: Networking.DeviceServiceProtocol = Networking.DeviceService(),
+        userRepository: UserRepository = UserRepositoryImpl(),
+        deviceRepository: DeviceRepository = DeviceRepositoryImpl(),
         appInterface: AppModuleInterface = Environment.appModuleInterface
     ) {
-        self.userService = userService
-        self.deviceService = deviceService
+        self.userRepository = userRepository
+        self.deviceRepository = deviceRepository
         self.appInterface = appInterface
     }
     
@@ -97,7 +97,8 @@ final class PolicyViewModel: Common.BaseViewModel {
     private func changeMarketingConsent(isMarketingOn: Bool) {
         Task {
             let marketingConsentType: MarketingConsentType = isMarketingOn ? .approve : .deny
-            let changeMarketingConsent = await userService.changeMarketingConsent(marketingConsentType: marketingConsentType.rawValue)
+            let input = ChangeMarketingConsentInput(marketingConsent: marketingConsentType.rawValue)
+            let changeMarketingConsent = await userRepository.changeMarketingConsent(input: input)
             
             output.route.send(.showLoading(isShow: false))
             switch changeMarketingConsent {
@@ -115,7 +116,8 @@ final class PolicyViewModel: Common.BaseViewModel {
         appInterface.getFCMToken { [weak self] token in
             guard let self = self else { return }
             Task {
-                await self.deviceService.registerDevice(pushToken: token)
+                let input = DeviceRequestInput(pushPlatformType: "FCM", pushToken: token)
+                return await self.deviceRepository.registerDevice(input: input)
             }
         }
     }

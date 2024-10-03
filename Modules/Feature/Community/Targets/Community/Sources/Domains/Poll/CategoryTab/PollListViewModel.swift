@@ -47,16 +47,16 @@ final class PollListViewModel: BaseViewModel {
     let config: Config
 
     private var state = State()
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     private let logManager: LogManagerProtocol
 
     init(
         config: Config,
-        communityService: CommunityServiceProtocol = CommunityService(),
+        communityRepository: CommunityRepository = CommunityRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
-        self.communityService = communityService
+        self.communityRepository = communityRepository
         self.logManager = logManager
 
         super.init()
@@ -82,7 +82,7 @@ final class PollListViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.fetchPolls(input: input)
+                await owner.communityRepository.fetchPolls(input: input)
             }
             .withUnretained(self)
             .sink { owner, result in
@@ -138,7 +138,7 @@ final class PollListViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.communityService.fetchPolls(input: input)
+                await owner.communityRepository.fetchPolls(input: input)
             }
             .withUnretained(self)
             .sink { owner, result in

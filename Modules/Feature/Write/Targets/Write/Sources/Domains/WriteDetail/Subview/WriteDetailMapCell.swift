@@ -62,7 +62,7 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(location: Model.Location) {
+    func bind(location: LocationResponse) {
         marker = NMFMarker()
         let targetLocation = NMGLatLng(lat: location.latitude, lng: location.longitude)
         marker?.position = targetLocation

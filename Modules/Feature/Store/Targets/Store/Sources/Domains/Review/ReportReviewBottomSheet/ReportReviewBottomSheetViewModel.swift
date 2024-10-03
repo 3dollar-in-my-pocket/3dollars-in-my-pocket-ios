@@ -42,13 +42,13 @@ final class ReportReviewBottomSheetViewModel: BaseViewModel {
     let output: Output
     var state: State
     private let config: Config
-    private let reviewService: ReviewServiceProtocol
+    private let reviewRepository: ReviewRepository
     
-    init(config: Config, reviewService: ReviewServiceProtocol = ReviewService()) {
+    init(config: Config, reviewRepository: ReviewRepository = ReviewRepositoryImpl()) {
         self.output = Output(sectionItems: .init(config.reportReasons.map { .reason(item: $0) }))
         self.config = config
         self.state = State(reportReasons: config.reportReasons)
-        self.reviewService = reviewService
+        self.reviewRepository = reviewRepository
         
         super.init()
     }
@@ -93,7 +93,7 @@ final class ReportReviewBottomSheetViewModel: BaseViewModel {
     private func reportReview(reason: ReportReason, reasonDetail: String?) {
         Task {
             let input = ReportReviewRequestInput(reason: reason.type, reasonDetail: reasonDetail)
-            let reportResult = await reviewService.reportReview(
+            let reportResult = await reviewRepository.reportReview(
                 storeId: config.storeId,
                 reviewId: config.reviewId,
                 input: input

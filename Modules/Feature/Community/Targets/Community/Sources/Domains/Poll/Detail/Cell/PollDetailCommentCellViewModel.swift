@@ -46,16 +46,16 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
         config.data.comment.commentId
     }
     private var state = State()
-    private let communityService: CommunityServiceProtocol
+    private let communityRepository: CommunityRepository
     private let logManager: LogManagerProtocol
 
     init(
         config: Config,
-        communityService: CommunityServiceProtocol = CommunityService(),
+        communityRepository: CommunityRepository = CommunityRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.config = config
-        self.communityService = communityService
+        self.communityRepository = communityRepository
         self.logManager = logManager
         self.output = Output(
             screenName: config.screenName,
@@ -87,7 +87,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
                 owner.output.showLoading.send(true)
             })
             .asyncMap { owner, input in
-                await owner.communityService.deletePollComment(
+                await owner.communityRepository.deletePollComment(
                     pollId: owner.config.pollId,
                     commentId: owner.commentId
                 )
@@ -131,7 +131,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
         
         Task {
             let input = PollCommentStickerListInput(stickers: sticker.reactedByMe ? [] : [.init(stickerId: sticker.stickerId)])
-            let result = await communityService.toggleReviewSticker(pollId: config.pollId, commentId: config.commentId, input: input)
+            let result = await communityRepository.toggleReviewSticker(pollId: config.pollId, commentId: config.commentId, input: input)
             
             switch result {
             case .success(_):

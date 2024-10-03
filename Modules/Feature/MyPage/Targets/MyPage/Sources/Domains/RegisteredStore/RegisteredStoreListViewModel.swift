@@ -38,15 +38,15 @@ final class RegisteredStoreListViewModel: BaseViewModel {
 
     private var state = State()
 
-    private let myPageService: MyPageServiceProtocol
+    private let myPageRepository: MyPageRepository
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
 
     init(
-        myPageService: MyPageServiceProtocol = MyPageService(),
+        myPageRepository: MyPageRepository = MyPageRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.myPageService = myPageService 
+        self.myPageRepository = myPageRepository 
         self.logManager = logManager
 
         super.init()
@@ -64,11 +64,8 @@ final class RegisteredStoreListViewModel: BaseViewModel {
             })
             .withUnretained(self)
             .asyncMap { owner, _ in
-                await owner.myPageService.fetchMyStores(
-                    input: .init(size: 20, cursor: owner.state.nextCursor), 
-                    latitude: owner.preference.userCurrentLocation.coordinate.latitude, 
-                    longitude: owner.preference.userCurrentLocation.coordinate.longitude
-                )
+                let input = CursorRequestInput(size: 20, cursor: owner.state.nextCursor)
+                return await owner.myPageRepository.fetchMyStores(input: input)
             }
             .withUnretained(self)
             .sink { owner, result in
@@ -98,11 +95,8 @@ final class RegisteredStoreListViewModel: BaseViewModel {
         state.loadMore
             .withUnretained(self)
             .asyncMap { owner, input in
-                await owner.myPageService.fetchMyStores(
-                    input: .init(size: 20, cursor: owner.state.nextCursor), 
-                    latitude: owner.preference.userCurrentLocation.coordinate.latitude, 
-                    longitude: owner.preference.userCurrentLocation.coordinate.longitude
-                )
+                let input = CursorRequestInput(size: 20, cursor: owner.state.nextCursor)
+                return await owner.myPageRepository.fetchMyStores(input: input)
             }
             .withUnretained(self)
             .sink { owner, result in
