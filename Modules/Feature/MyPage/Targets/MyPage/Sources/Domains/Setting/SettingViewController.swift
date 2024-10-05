@@ -104,6 +104,8 @@ public final class SettingViewController: BaseViewController {
             pushTeamInfo()
         case .goToSignin:
             goToSignin()
+        case .marketingWarning:
+            presentMarketingAlert()
         }
     }
     
@@ -154,6 +156,17 @@ public final class SettingViewController: BaseViewController {
             message: Strings.Setting.Alert.Signout.message
         ) { [weak self] in
             self?.viewModel.input.signout.send(())
+        }
+    }
+    
+    private func presentMarketingAlert() {
+        AlertUtils.showWithCancel(
+            viewController: self,
+            title: "혜택 알림 수신 거부",
+            message: "알림을 받지 않으면 선물과 혜택을 드리는 이벤트 정보를 받으실 수 없어요. 그래도 거부하시겠어요?",
+            okButtonTitle: "확인"
+        ) { [weak self] in
+            self?.viewModel.input.disableMarketingOff.send(())
         }
     }
 }

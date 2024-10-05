@@ -17,6 +17,7 @@ public final class SettingViewModel: BaseViewModel {
         let didTapCell = PassthroughSubject<SettingCellType, Never>()
         let logout = PassthroughSubject<Void, Never>()
         let signout = PassthroughSubject<Void, Never>()
+        let disableMarketingOff = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -37,6 +38,7 @@ public final class SettingViewModel: BaseViewModel {
         case pushAgreement
         case pushTeamInfo
         case goToSignin
+        case marketingWarning
     }
     
     let input = Input()
@@ -79,7 +81,15 @@ public final class SettingViewModel: BaseViewModel {
         input.toggleNotification
             .withUnretained(self)
             .sink { (owner: SettingViewModel, type: NotificationType) in
-                owner.editNotification(type: type)
+                if case .marketing(let isOn) = type,
+                   isOn == false {
+                    if let userResponse = owner.state.user {
+                        owner.output.cellTypes.send(owner.createCellTypes(user: userResponse))
+                    }
+                    owner.output.route.send(.marketingWarning)
+                } else {
+                    owner.editNotification(type: type)
+                }
             }
             .store(in: &cancellables)
         
@@ -120,6 +130,13 @@ public final class SettingViewModel: BaseViewModel {
                 
                 guard let user = owner.state.user else { return }
                 owner.output.cellTypes.send(owner.createCellTypes(user: user))
+            }
+            .store(in: &cancellables)
+        
+        input.disableMarketingOff
+            .withUnretained(self)
+            .sink { (owner: SettingViewModel, _) in
+                owner.editNotification(type: .marketing(false))
             }
             .store(in: &cancellables)
     }
@@ -186,6 +203,9 @@ public final class SettingViewModel: BaseViewModel {
             case .success(_):
                 showSuccessToast(type: type)
                 updateNotification(type: type)
+                if let user = state.user {
+                    output.cellTypes.send(createCellTypes(user: user))
+                }
             case .failure(let error):
                 output.showErrorAlert.send(error)
             }
