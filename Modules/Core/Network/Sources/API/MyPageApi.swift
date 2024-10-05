@@ -34,9 +34,9 @@ extension MyPageApi: RequestType {
     var header: HTTPHeaderType {
         switch self {
         case .fetchMyStoreVisits:
-            return .auth
+            return .json
         case .fetchMyFavoriteStores:
-            return .auth
+            return .json
         case .fetchMyStores:
             return .location
         }

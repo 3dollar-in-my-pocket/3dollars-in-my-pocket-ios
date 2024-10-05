@@ -24,7 +24,7 @@ extension EventApi: RequestType {
     var header: HTTPHeaderType {
         switch self {
         case .sendClickEvent:
-            return .auth
+            return .json
         }
     }
     

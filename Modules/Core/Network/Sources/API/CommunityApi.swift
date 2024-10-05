@@ -110,33 +110,33 @@ extension CommunityApi: RequestType {
         case .fetchPollReportReasons(let type):
             return .json
         case .reportPoll:
-            return .auth
+            return .json
         case .fetchPolls:
-            return .auth
+            return .json
         case .fetchMyPolls:
-            return .auth
+            return .json
         case .createChoicePoll:
-            return .auth
+            return .json
         case .fetchPoll:
-            return .auth
+            return .json
         case .fetchUserPollPolicy:
-            return .auth
+            return .json
         case .fetchPollComments:
-            return .auth
+            return .json
         case .createPollComment:
-            return .auth
+            return .json
         case .createPoll:
-            return .auth
+            return .json
         case .fetchPollComment:
-            return .auth
+            return .json
         case .deletePollComment:
-            return .auth
+            return .json
         case .reportComment:
-            return .auth
+            return .json
         case .fetchPollCategories:
             return .json
         case .toggleReviewSticker:
-            return .auth
+            return .json
         }
     }
     

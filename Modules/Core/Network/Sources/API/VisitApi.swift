@@ -24,7 +24,7 @@ extension VisitApi: RequestType {
     var header: HTTPHeaderType {
         switch self {
         case .visitStore:
-            return .auth
+            return .json
         }
     }
     
