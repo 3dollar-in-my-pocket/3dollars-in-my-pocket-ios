@@ -53,13 +53,6 @@ final class SettingMenuCell: BaseCollectionViewCell {
             switchButton,
             rightArrowImage
         ])
-        
-        switchButton.controlPublisher(for: .valueChanged)
-            .compactMap { [weak self] _ in
-                self?.switchButton.isOn
-            }
-            .subscribe(switchValue)
-            .store(in: &cancellables)
     }
     
     override func bindConstraints() {
@@ -101,5 +94,12 @@ final class SettingMenuCell: BaseCollectionViewCell {
         case .marketingNotification(let isOn):
             switchButton.isOn = isOn
         }
+        
+        switchButton.controlPublisher(for: .valueChanged)
+            .compactMap { [weak self] _ in
+                self?.switchButton.isOn
+            }
+            .subscribe(switchValue)
+            .store(in: &cancellables)
     }
 }
