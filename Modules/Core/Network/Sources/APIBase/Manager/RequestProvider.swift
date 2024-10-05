@@ -32,9 +32,10 @@ final class RequestProvider {
         var urlComponents = URLComponents(string: config.endPoint)
         urlComponents?.path = requestType.path
         
-        if requestType.usingQuery,
-           let queryItems = requestType.queryItems {
-            urlComponents?.queryItems = queryItems
+        if requestType.usingQuery || requestType.method == .get {
+            if let queryItems = requestType.queryItems, !queryItems.isEmpty {
+                urlComponents?.queryItems = queryItems
+            }
         }
         
         guard let url = urlComponents?.url else {
@@ -50,7 +51,7 @@ final class RequestProvider {
             urlRequest.httpBody = (requestType as? MultipartRequestType)?.data
             
         default:
-            if !requestType.usingQuery {
+            if !requestType.usingQuery && requestType.method != .get {
                 urlRequest.httpBody = requestType.body
             }
         }
@@ -67,33 +68,24 @@ final class RequestProvider {
         switch type {
         case .json:
             header["Content-Type"] = "application/json"
-            
         case .multipart(let boundary):
             header["Content-Type"] = "multipart/form-data; boundary=\(boundary)"
             if let authToken = config.authToken {
                 header["Authorization"] = authToken
             }
-            
-        case .auth:
-            header["Content-Type"] = "application/json"
-            
-            if let authToken = config.authToken {
-                header["Authorization"] = authToken
-            }
         case .location:
             header["Content-Type"] = "application/json"
-            
             header["X-Device-Latitude"] = String(config.userCurrentLocation.coordinate.latitude)
             header["X-Device-Longitude"] = String(config.userCurrentLocation.coordinate.longitude)
         case .custom(let dict):
             header["Content-Type"] = "application/json"
-            
-            if let authToken = config.authToken {
-                header["Authorization"] = authToken
-            }
             dict.forEach { key, value in
                 header[key] = value
             }
+        }
+        
+        if let authToken = config.authToken {
+            header["Authorization"] = authToken
         }
         
         return header
