@@ -4,6 +4,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 import FirebaseRemoteConfig
 import FirebaseMessaging
@@ -14,6 +15,8 @@ final class SplashViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .splash
+        let advertisement = PassthroughSubject<AdvertisementResponse, Never>()
         let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
     }
@@ -26,31 +29,70 @@ final class SplashViewModel: BaseViewModel {
         case showUpdateAlert
     }
     
+    struct Dependency {
+        var preference: Preference
+        let userRepository: UserRepository
+        let remoteConfigService: RemoteConfigProtocol
+        let deviceRepository: DeviceRepository
+        let advertisementRepository: AdvertisementRepository
+        
+        init(
+            preference: Preference = Preference.shared,
+            userRepository: UserRepository = UserRepositoryImpl(),
+            remoteConfigService: RemoteConfigProtocol = RemoteConfigService(),
+            deviceRepository: DeviceRepository = DeviceRepositoryImpl(),
+            advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl()
+        ) {
+            self.preference = preference
+            self.userRepository = userRepository
+            self.remoteConfigService = remoteConfigService
+            self.deviceRepository = deviceRepository
+            self.advertisementRepository = advertisementRepository
+        }
+    }
+    
     let input = Input()
     let output = Output()
+    private var dependency: Dependency
     
-    private var preference = Preference.shared
-    private let userRepository: UserRepository
-    private let remoteConfigService: RemoteConfigProtocol
-    private let deviceRepository: DeviceRepository
-    
-    init(
-        userRepository: UserRepository = UserRepositoryImpl(),
-        remoteConfigService: RemoteConfigProtocol = RemoteConfigService(),
-        deviceRepository: DeviceRepository = DeviceRepositoryImpl()
-    ) {
-        self.userRepository = userRepository
-        self.remoteConfigService = remoteConfigService
-        self.deviceRepository = deviceRepository
-        
+    init(dependency: Dependency = Dependency()) {
+        self.dependency = dependency
         super.init()
-        
+    }
+    
+    override func bind() {
         input.viewDidLoad
             .withUnretained(self)
             .sink { (owner: SplashViewModel, _) in
+                owner.loadSplashAdIfExisted()
+                owner.fetchAdvertisement()
                 owner.checkMinimalVersion()
             }
             .store(in: &cancellables)
+    }
+    
+    private func fetchAdvertisement() {
+        Task {
+            let input = FetchAdvertisementInput(position: .loading)
+            let result = await dependency.advertisementRepository.fetchAdvertisements(input: input)
+            
+            switch result {
+            case .success(let response):
+                if let advertisement = response.advertisements.first {
+                    dependency.preference.splashAd = advertisement
+                } else {
+                    dependency.preference.splashAd = nil
+                }
+            case .failure:
+                break
+            }
+        }
+    }
+    
+    private func loadSplashAdIfExisted() {
+        guard let advertisement = dependency.preference.splashAd else { return }
+        
+        output.advertisement.send(advertisement)
     }
     
     private func checkMinimalVersion() {
@@ -58,7 +100,7 @@ final class SplashViewModel: BaseViewModel {
             guard let self else { return }
             
             do {
-                let minimalVersion = try await remoteConfigService.fetchMinimalVersion()
+                let minimalVersion = try await dependency.remoteConfigService.fetchMinimalVersion()
                 
                 if VersionUtils.isNeedUpdate(
                     currentVersion: VersionUtils.appVersion,
@@ -75,7 +117,7 @@ final class SplashViewModel: BaseViewModel {
     }
     
     private func validateToken() {
-        let token = preference.authToken
+        let token = dependency.preference.authToken
         
         if validateTokenFromLocal(token: token) {
             validateTokenFromServer()
@@ -91,11 +133,11 @@ final class SplashViewModel: BaseViewModel {
     private func validateTokenFromServer() {
         Task { [weak self] in
             guard let self else { return }
-            let result = await userRepository.fetchUser()
+            let result = await dependency.userRepository.fetchUser()
             
             switch result {
             case .success(let user):
-                preference.userId = user.userId
+                dependency.preference.userId = user.userId
                 refreshPushToken()
                 
             case .failure(let error):
@@ -112,7 +154,7 @@ final class SplashViewModel: BaseViewModel {
                 
                 let pushToken = try await Messaging.messaging().token()
                 let input = DeviceRequestInput(pushPlatformType: "FCM", pushToken: pushToken)
-                let result = await deviceRepository.refreshDevice(input: input)
+                let result = await dependency.deviceRepository.refreshDevice(input: input)
                 
                 switch result {
                 case .success(_):
