@@ -4,13 +4,8 @@ import Combine
 import Common
 import DesignSystem
 import PanModal
-import Log
 
 final class ReviewBottomSheetViewController: BaseViewController {
-    override var screenName: ScreenName {
-        return viewModel.output.screenName
-    }
-    
     private let reviewBottomSheet = ReviewBottomSheet()
     private let viewModel: ReviewBottomSheetViewModel
     
