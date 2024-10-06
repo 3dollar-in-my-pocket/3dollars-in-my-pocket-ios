@@ -16,7 +16,8 @@ final class CategoryFilterDataSource: UICollectionViewDiffableDataSource<Categor
         
         collectionView.register([
             CategoryBannerCell.self,
-            CategoryFilterCell.self
+            CategoryFilterCell.self,
+            CategoryAdvertisementCell.self
         ])
         collectionView.registerSectionHeader([CategoryFilterHeaderView.self])
         
@@ -32,6 +33,11 @@ final class CategoryFilterDataSource: UICollectionViewDiffableDataSource<Categor
                 let cell: CategoryBannerCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(advertisement: advertisement, in: rootViewController)
+                return cell
+            case .categoryAdvertisement(let advertisement):
+                let cell: CategoryAdvertisementCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                
+                cell.bind(advertisement: advertisement)
                 return cell
             }
         }
@@ -68,10 +74,16 @@ extension CategoryFilterDataSource: UICollectionViewDelegate {
             viewModel.input.onTapBanner.send(())
         } else {
             guard let section = snapshot().sectionIdentifiers[safe: indexPath.section],
-                  let item = section.items[safe: indexPath.row],
-                  case .category(let category) = item else { return }
+                  let item = section.items[safe: indexPath.row] else { return }
             
-            viewModel.input.onTapCategory.send(category.categoryId)
+            switch item {
+            case .category(let category):
+                viewModel.input.onTapCategory.send(category.categoryId)
+            case .categoryAdvertisement(let advertisement):
+                viewModel.input.onTapCategoryAdvertisement.send(advertisement)
+            case .advertisement:
+                break
+            }
         }
     }
 }
