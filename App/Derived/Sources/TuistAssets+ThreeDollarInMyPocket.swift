@@ -18,6 +18,7 @@
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum ThreeDollarInMyPocketAsset {
   public static let icBackWhite = ThreeDollarInMyPocketImages(name: "ic_back_white")
+  public static let icSplash = ThreeDollarInMyPocketImages(name: "ic_splash")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
