@@ -13,4 +13,5 @@ public struct CategorySection: Hashable {
 public enum CategorySectionItem: Hashable {
     case category(StoreFoodCategoryResponse)
     case advertisement(AdvertisementResponse?)
+    case categoryAdvertisement(AdvertisementResponse)
 }

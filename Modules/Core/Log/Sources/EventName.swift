@@ -29,6 +29,7 @@ public enum EventName: String {
     // 카테고리 필터 화면
     case clickCategory = "click_category"
     case clickAdBanner = "click_ad_banner"
+    case clickAdCategory = "click_ad_category"
     
     // 홈 리스트 화면
     case clickOnlyVisit = "click_only_visit"
