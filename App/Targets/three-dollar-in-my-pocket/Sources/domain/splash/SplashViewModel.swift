@@ -4,6 +4,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 import FirebaseRemoteConfig
 import FirebaseMessaging
@@ -14,6 +15,7 @@ final class SplashViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .splash
         let advertisement = PassthroughSubject<AdvertisementResponse, Never>()
         let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()

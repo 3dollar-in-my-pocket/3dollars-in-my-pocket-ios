@@ -2,8 +2,13 @@ import UIKit
 
 import Common
 import Model
+import Log
 
 final class SplashViewController: BaseViewController {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
     private let icon: UIImageView = {
         let imageView = UIImageView()
         imageView.image = Assets.icSplash.image
