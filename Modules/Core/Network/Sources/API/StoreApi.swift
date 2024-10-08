@@ -59,7 +59,7 @@ extension StoreApi: RequestType {
             return params
         case .editReview(_, let input):
             return input
-        case .deletePhoto(let photoId):
+        case .deletePhoto:
             return nil
         }
     }
@@ -105,31 +105,31 @@ extension StoreApi: RequestType {
                 "X-Device-Longitude": String(input.longitude)
             ])
         case .fetchStoreNewPosts:
-            return .auth
+            return .json
         case .togglePostSticker:
-            return .auth
+            return .json
         case .fetchAroundStores:
             return .location
         case .fetchStoreDetail:
             return .location
         case .createStore:
-            return .auth
+            return .json
         case .editStore:
-            return .auth
+            return .json
         case .isStoresExistedAround:
             return .json
         case .saveStore:
-            return .auth
+            return .json
         case .reportStore:
-            return .auth
+            return .json
         case .writeReview:
-            return .auth
+            return .json
         case .fetchStorePhotos:
             return .json
         case .editReview:
-            return .auth
+            return .json
         case .deletePhoto:
-            return .auth
+            return .json
         }
     }
     

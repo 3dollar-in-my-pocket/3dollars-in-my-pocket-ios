@@ -39,13 +39,13 @@ extension ReviewApi: RequestType {
     var header: HTTPHeaderType {
         switch self {
         case .fetchStoreReview:
-            return .auth
+            return .json
         case .reportReview:
-            return .auth
+            return .json
         case .fetchMyStoreReview:
-            return .auth
+            return .json
         case .toggleReviewSticker:
-            return .auth
+            return .json
         }
     }
     

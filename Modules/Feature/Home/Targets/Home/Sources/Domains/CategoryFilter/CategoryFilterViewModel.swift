@@ -13,6 +13,7 @@ extension CategoryFilterViewModel {
         let onTapBanner = PassthroughSubject<Void, Never>()
         let onTapCategory = PassthroughSubject<String, Never>()
         let onCollectionViewLoaded = PassthroughSubject<Void, Never>()
+        let onTapCategoryAdvertisement = PassthroughSubject<AdvertisementResponse, Never>()
     }
     
     struct Output {
@@ -26,6 +27,7 @@ extension CategoryFilterViewModel {
     struct State {
         var currentCategory: StoreFoodCategoryResponse?
         var advertisement: AdvertisementResponse?
+        var categoryAdvertisement: AdvertisementResponse?
         var categories: [StoreFoodCategoryResponse] = []
     }
     
@@ -98,6 +100,13 @@ final class CategoryFilterViewModel: BaseViewModel {
             }
             .subscribe(output.selectCategory)
             .store(in: &cancellables)
+        
+        input.onTapCategoryAdvertisement
+            .withUnretained(self)
+            .sink { (owner: CategoryFilterViewModel, advertisement: AdvertisementResponse) in
+                owner.handleCategoryAdvertisement(advertisement)
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchData() {
@@ -105,6 +114,7 @@ final class CategoryFilterViewModel: BaseViewModel {
             guard let self else { return }
             
             await fetchCategories()
+            await fetchCategoryAdvertisement()
             await fetchAdvertisement()
             
             updateDatasource()
@@ -135,6 +145,19 @@ final class CategoryFilterViewModel: BaseViewModel {
         }
     }
     
+    private func fetchCategoryAdvertisement() async {
+        let input = FetchAdvertisementInput(position: .menuCategoryIcon)
+        let result = await dependency.advertisementRepository.fetchAdvertisements(input: input)
+        
+        switch result {
+        case .success(let response):
+            let advertisement = response.advertisements.first
+            state.categoryAdvertisement = advertisement
+        case .failure(let error):
+            output.route.send(.showErrorAlert(error))
+        }
+    }
+    
     private func updateDatasource() {
         var sections: [CategorySection] = []
         let advertisementSectionItem = CategorySectionItem.advertisement(state.advertisement)
@@ -150,6 +173,12 @@ final class CategoryFilterViewModel: BaseViewModel {
                 
                 sections.append(categorySection)
             }
+        }
+        
+        if sections[safe: 1].isNotNil,
+           let categoryAdvertisement = state.categoryAdvertisement {
+            let exposureIndex = categoryAdvertisement.metadata?.exposureIndex ?? 0
+            sections[1].items.insert(.categoryAdvertisement(categoryAdvertisement), at: exposureIndex)
         }
         
         output.dataSource.send(sections)
@@ -174,6 +203,11 @@ final class CategoryFilterViewModel: BaseViewModel {
         output.route.send(.dismiss)
     }
     
+    private func handleCategoryAdvertisement(_ advertisement: AdvertisementResponse) {
+        sendClickAdCategoryLog(advertisement)
+        output.route.send(.deepLink(advertisement))
+    }
+    
 }
 
 // MARK: Log
@@ -190,6 +224,14 @@ extension CategoryFilterViewModel {
         dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickAdBanner,
+            extraParameters: [.advertisementId: advertisement.advertisementId]
+        ))
+    }
+    
+    private func sendClickAdCategoryLog(_ advertisement: AdvertisementResponse) {
+        dependency.logManager.sendEvent(.init(
+            screen: output.screenName,
+            eventName: .clickAdCategory,
             extraParameters: [.advertisementId: advertisement.advertisementId]
         ))
     }

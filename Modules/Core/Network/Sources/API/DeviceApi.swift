@@ -29,9 +29,9 @@ extension DeviceApi: RequestType {
     var header: HTTPHeaderType {
         switch self {
         case .registerDevice:
-            return .auth
+            return .json
         case .refreshDevice:
-            return .auth
+            return .json
         }
     }
     

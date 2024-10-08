@@ -2,28 +2,32 @@ import UIKit
 
 import Common
 import Model
+import Log
 
 final class SplashViewController: BaseViewController {
-    private let splashView = SplashView()
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+    
+    private let icon: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = Assets.icSplash.image
+        return imageView
+    }()
+    
+    private let adView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
     private let viewModel = SplashViewModel()
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    override func loadView() {
-        view = splashView
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(willEnterForegroundNotification(_:)),
-            name: UIScene.willEnterForegroundNotification,
-            object: nil
-        )
+        setupUI()
+        viewModel.input.viewDidLoad.send(())
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -31,6 +35,14 @@ final class SplashViewController: BaseViewController {
     }
     
     override func bindViewModelOutput() {
+        viewModel.output.advertisement
+            .main
+            .withUnretained(self)
+            .sink { (owner: SplashViewController, advertisement: AdvertisementResponse) in
+                owner.setAdvertisement(advertisement)
+            }
+            .store(in: &cancellables)
+        
         viewModel.output.route
             .main
             .withUnretained(self)
@@ -45,6 +57,43 @@ final class SplashViewController: BaseViewController {
                 self?.showErrorAlert(error: error)
             }
             .store(in: &cancellables)
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = Colors.gray100.color
+        
+        view.addSubview(icon)
+        icon.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.width.equalTo(120)
+            $0.height.equalTo(72)
+        }
+        
+        view.addSubview(adView)
+        adView.snp.makeConstraints {
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.height.equalTo(0)
+        }
+    }
+    
+    private func setAdvertisement(_ advertisement: AdvertisementResponse) {
+        guard let image = advertisement.image else { return }
+        
+        if let width = image.width,
+           let height = image.height {
+            let ratio = Double(height) / Double(width)
+            adView.snp.updateConstraints {
+                $0.height.equalTo(UIUtils.windowBounds.width * ratio)
+            }
+        } else {
+            adView.snp.updateConstraints {
+                $0.height.equalTo(200)
+            }
+        }
+        
+        adView.setImage(urlString: image.url)
     }
     
     private func handleRoute(_ route: SplashViewModel.Route) {
@@ -63,14 +112,18 @@ final class SplashViewController: BaseViewController {
     }
     
     private func goToMain() {
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-            sceneDelegate.goToMain()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                sceneDelegate.goToMain()
+            }
         }
     }
     
     private func goToSignIn() {
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-            sceneDelegate.goToSignIn()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                sceneDelegate.goToSignIn()
+            }
         }
     }
     
@@ -108,12 +161,6 @@ final class SplashViewController: BaseViewController {
                UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
-        }
-    }
-    
-    @objc private func willEnterForegroundNotification(_ notification: Notification) {
-        splashView.startAnimation { [weak self] in
-            self?.viewModel.input.viewDidLoad.send(())
         }
     }
 }

@@ -125,6 +125,16 @@ public final class Preference {
         }
     }
     
+    public var splashAd: AdvertisementResponse? {
+        get {
+            return instance.getData(forKey: "KEY_SPLASH_AD")
+        }
+        set {
+            guard let newValue else { return }
+            instance.set(encodable: newValue, forKey: "KEY_SPLASH_AD")
+        }
+    }
+    
     public func clear() {
         instance.removeObject(forKey: "KEY_USER_ID")
         instance.removeObject(forKey: "KEY_TOKEN")

@@ -95,27 +95,27 @@ extension UserApi: RequestType {
         case .signinAnonymous:
             return .json
         case .fetchUser:
-            return .auth
+            return .json
         case .changeMarketingConsent:
-            return .auth
+            return .json
         case .connectAccount:
-            return .auth
+            return .json
         case .signinDemo:
             return .json
         case .editUserSetting:
-            return .auth
+            return .json
         case .editUser:
-            return .auth
+            return .json
         case .logout:
-            return .auth
+            return .json
         case .signout:
-            return .auth
+            return .json
         case .saveMyPlace:
-            return .auth
+            return .json
         case .getMyPlaces(_, let input):
-            return .auth
+            return .json
         case .deleteMyPlace:
-            return .auth
+            return .json
         }
     }
     

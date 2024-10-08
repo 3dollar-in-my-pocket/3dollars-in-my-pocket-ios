@@ -44,15 +44,15 @@ extension BookmarkApi: RequestType {
     var header: HTTPHeaderType {
         switch self {
         case .fetchBookmarkStore:
-            return .auth
+            return .json
         case .removeBookmarkStore:
-            return .auth
+            return .json
         case .removeAllBookmarkStore:
-            return .auth
+            return .json
         case .editBookmarkFolder:
-            return .auth
+            return .json
         case .fetchBookmarkFolder:
-            return .auth
+            return .json
         }
     }
     

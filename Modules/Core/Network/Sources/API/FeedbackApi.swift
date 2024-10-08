@@ -29,9 +29,9 @@ extension FeedbackApi: RequestType {
     var header: HTTPHeaderType {
         switch self {
         case .sendFeedbacks:
-            return .auth
+            return .json
         case .fetchMyStoreFeedbacks:
-            return .auth
+            return .json
         }
     }
     
