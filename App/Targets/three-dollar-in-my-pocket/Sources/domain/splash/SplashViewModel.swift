@@ -15,7 +15,6 @@ final class SplashViewModel: BaseViewModel {
     }
     
     struct Output {
-        let screenName: ScreenName = .splash
         let advertisement = PassthroughSubject<AdvertisementResponse, Never>()
         let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
