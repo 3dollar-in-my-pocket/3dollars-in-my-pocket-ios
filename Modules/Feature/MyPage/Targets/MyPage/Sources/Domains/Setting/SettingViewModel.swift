@@ -99,6 +99,8 @@ public final class SettingViewModel: BaseViewModel {
                 switch cellType {
                 case .account, .activityNotification, .marketingNotification, .signout:
                     break
+                case .accountInfo:
+                    break
                 case .qna:
                     owner.output.route.send(.pushQna)
                 case .agreement:
@@ -165,6 +167,7 @@ public final class SettingViewModel: BaseViewModel {
             .account(name: user.name, socialType: socialType),
             .activityNotification(isOn: user.settings.enableActivitiesPush),
             .marketingNotification(isOn: isEnableMarketingConsent),
+            .accountInfo,
             .qna,
             .agreement,
             .teamInfo,

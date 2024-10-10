@@ -45,6 +45,8 @@ public enum MyPageStrings {
   }
 
   public enum Setting {
+    /// 회원 정보
+    public static let accountInfo = MyPageStrings.tr("Localization", "setting.account_info")
     /// 투표 및 댓글 등 활동 알림
     public static let activityNotifictaion = MyPageStrings.tr("Localization", "setting.activity_notifictaion")
     /// 이용 약관
@@ -59,7 +61,7 @@ public enum MyPageStrings {
     public static let logout = MyPageStrings.tr("Localization", "setting.logout")
     /// 마케팅 푸시 알림
     public static let marketingNotification = MyPageStrings.tr("Localization", "setting.marketing_notification")
-    /// 문의사항
+    /// 문의하기
     public static let qna = MyPageStrings.tr("Localization", "setting.qna")
     /// 회원탈퇴
     public static let signout = MyPageStrings.tr("Localization", "setting.signout")

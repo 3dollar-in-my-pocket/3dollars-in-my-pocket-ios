@@ -208,7 +208,7 @@ extension SettingViewController: UICollectionViewDataSource {
                 .subscribe(viewModel.input.toggleNotification)
                 .store(in: &cell.cancellables)
             return cell
-        case .qna, .agreement, .teamInfo:
+        case .accountInfo, .qna, .agreement, .teamInfo:
             let cell: SettingMenuCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             
             cell.bind(cellType: cellType)
@@ -242,7 +242,7 @@ extension SettingViewController: UICollectionViewDelegateFlowLayout {
         case .account:
             return SettingAccountCell.Layout.size
             
-        case .activityNotification, .marketingNotification, .qna, .agreement, .teamInfo:
+        case .activityNotification, .marketingNotification, .qna, .agreement, .teamInfo, .accountInfo:
             return SettingMenuCell.Layout.size
             
         case .signout:

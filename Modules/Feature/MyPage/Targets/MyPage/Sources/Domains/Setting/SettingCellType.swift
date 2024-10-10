@@ -6,6 +6,7 @@ enum SettingCellType {
     case account(name: String, socialType: SocialType)
     case activityNotification(isOn: Bool)
     case marketingNotification(isOn: Bool)
+    case accountInfo
     case qna
     case agreement
     case teamInfo
@@ -19,6 +20,8 @@ enum SettingCellType {
             return Strings.Setting.activityNotifictaion
         case .marketingNotification:
             return Strings.Setting.marketingNotification
+        case .accountInfo:
+            return Strings.Setting.accountInfo
         case .qna:
             return Strings.Setting.qna
         case .agreement:
@@ -38,6 +41,8 @@ enum SettingCellType {
             return false
         case .marketingNotification:
             return false
+        case .accountInfo:
+            return true
         case .qna:
             return true
         case .agreement:
@@ -57,6 +62,8 @@ enum SettingCellType {
             return true
         case .marketingNotification:
             return true
+        case .accountInfo:
+            return false
         case .qna:
             return false
         case .agreement:
