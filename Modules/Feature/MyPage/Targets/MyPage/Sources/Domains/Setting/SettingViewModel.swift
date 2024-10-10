@@ -39,6 +39,7 @@ public final class SettingViewModel: BaseViewModel {
         case pushTeamInfo
         case goToSignin
         case marketingWarning
+        case pushAccountInfo
     }
     
     let input = Input()
@@ -100,7 +101,7 @@ public final class SettingViewModel: BaseViewModel {
                 case .account, .activityNotification, .marketingNotification, .signout:
                     break
                 case .accountInfo:
-                    break
+                    owner.output.route.send(.pushAccountInfo)
                 case .qna:
                     owner.output.route.send(.pushQna)
                 case .agreement:

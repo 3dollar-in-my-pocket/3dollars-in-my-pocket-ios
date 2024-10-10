@@ -15,6 +15,10 @@ public final class MembershipInterfaceImpl: MembershipInterface {
     public func createSigninBottomSheetViewController() -> UIViewController {
         return SigninBottomSheetViewController()
     }
+    
+    public func createAccountInfoViewController() -> UIViewController {
+        return AccountInfoViewController()
+    }
 }
 
 public extension MembershipInterfaceImpl {

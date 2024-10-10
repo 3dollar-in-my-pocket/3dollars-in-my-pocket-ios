@@ -17,7 +17,7 @@ public final class RegisteredStoreListViewController: BaseViewController {
     
     public override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
     
-    private let navigationBar = MyPageNavigationBar(title: "제보한 가게")
+    private let myPageNavigationBar = MyPageNavigationBar(title: "제보한 가게")
     
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = Colors.gray100.color
@@ -63,12 +63,12 @@ public final class RegisteredStoreListViewController: BaseViewController {
         view.backgroundColor = Colors.gray100.color
         
         view.addSubViews([
-            navigationBar,
+            myPageNavigationBar,
             collectionView,
             emptyView
         ])
         
-        navigationBar.snp.makeConstraints {
+        myPageNavigationBar.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(MyPageNavigationBar.Layout.height)
@@ -77,7 +77,7 @@ public final class RegisteredStoreListViewController: BaseViewController {
         collectionView.snp.makeConstraints {
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
-            $0.top.equalTo(self.navigationBar.snp.bottom)
+            $0.top.equalTo(self.myPageNavigationBar.snp.bottom)
             $0.bottom.equalToSuperview()
         }
         
@@ -89,7 +89,7 @@ public final class RegisteredStoreListViewController: BaseViewController {
     public override func bindEvent() {
         super.bindEvent()
         
-        navigationBar.backButton
+        myPageNavigationBar.backButton
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)

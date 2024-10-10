@@ -106,6 +106,8 @@ public final class SettingViewController: BaseViewController {
             goToSignin()
         case .marketingWarning:
             presentMarketingAlert()
+        case .pushAccountInfo:
+            pushAccountInfo()
         }
     }
     
@@ -168,6 +170,12 @@ public final class SettingViewController: BaseViewController {
         ) { [weak self] in
             self?.viewModel.input.disableMarketingOff.send(())
         }
+    }
+    
+    private func pushAccountInfo() {
+        let viewController = Environment.membershipInterface.createAccountInfoViewController()
+        
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

@@ -11,7 +11,7 @@ final class ReviewTabViewController: BaseViewController {
         return viewModel.output.screenName
     }
 
-    private lazy var navigationBar = MyPageNavigationBar(title: "내가 쓴 리뷰")
+    private lazy var myPageNavigationBar = MyPageNavigationBar(title: "내가 쓴 리뷰")
     private let tabView = MyPageTabView(titles: ReviewTab.list.map { $0.title }).then {
         $0.isUserInteractionEnabled = false
     }
@@ -51,18 +51,18 @@ final class ReviewTabViewController: BaseViewController {
         view.backgroundColor = Colors.gray100.color
 
         view.addSubViews([
-            navigationBar,
+            myPageNavigationBar,
             lineView,
             tabView,
         ])
 
-        navigationBar.snp.makeConstraints {
+        myPageNavigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
         }
 
         tabView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom)
+            $0.top.equalTo(myPageNavigationBar.snp.bottom)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
 
@@ -142,7 +142,7 @@ final class ReviewTabViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
-        navigationBar.backButton
+        myPageNavigationBar.backButton
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)

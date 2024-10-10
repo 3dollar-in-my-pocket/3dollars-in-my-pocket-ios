@@ -6,4 +6,6 @@ public protocol MembershipInterface {
     func createPolicyViewController() -> UIViewController
     
     func createSigninBottomSheetViewController() -> UIViewController
+    
+    func createAccountInfoViewController() -> UIViewController
 }

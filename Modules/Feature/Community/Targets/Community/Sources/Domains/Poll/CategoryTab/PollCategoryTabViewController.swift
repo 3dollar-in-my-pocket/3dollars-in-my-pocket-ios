@@ -11,7 +11,7 @@ final class PollCategoryTabViewController: BaseViewController {
         return viewModel.output.screenName
     }
 
-    private lazy var navigationBar = CommunityNavigationBar(title: viewModel.output.categoryName)
+    private lazy var communityNavigationBar = CommunityNavigationBar(title: viewModel.output.categoryName)
     private let tabView: CommunityTabView = CommunityTabView(titles: PollListSortType.list.compactMap { $0.title }).then {
         $0.isUserInteractionEnabled = false
     }
@@ -66,19 +66,19 @@ final class PollCategoryTabViewController: BaseViewController {
         view.backgroundColor = Colors.gray0.color
 
         view.addSubViews([
-            navigationBar,
+            communityNavigationBar,
             lineView,
             tabView,
             createPollButton
         ])
 
-        navigationBar.snp.makeConstraints {
+        communityNavigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
         }
 
         tabView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom)
+            $0.top.equalTo(communityNavigationBar.snp.bottom)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
 
@@ -155,7 +155,7 @@ final class PollCategoryTabViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
-        navigationBar.backButton
+        communityNavigationBar.backButton
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
