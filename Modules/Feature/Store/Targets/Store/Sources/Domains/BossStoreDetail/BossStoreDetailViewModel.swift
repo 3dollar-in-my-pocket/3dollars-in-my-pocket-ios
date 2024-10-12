@@ -61,6 +61,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case presentFeedback(BossStoreFeedbackViewModel)
         case pushPostList(BossStorePostListViewModel)
         case presentBossPhotoDetail(BossStorePhotoViewModel)
+        case navigateAppleMap(LocationResponse)
         case showErrorAlert(Error)
     }
 
@@ -366,13 +367,16 @@ final class BossStoreDetailViewModel: BaseViewModel {
         switch type {
         case .kakao:
             urlScheme = "kakaomap://look?p=\(location?.latitude ?? 0),\(location?.longitude ?? 0)"
-
+            guard let url = URL(string: urlScheme) else { return }
+            UIApplication.shared.open(url)
         case .naver:
             urlScheme = "nmap://place?lat=\(location?.latitude ?? 0)&lng=\(location?.longitude ?? 0)&name=\(storeName)&zoom=20&appname=\(appInfomation.bundleId)"
+            guard let url = URL(string: urlScheme) else { return }
+            UIApplication.shared.open(url)
+        case .apple:
+            guard let location else { return }
+            output.route.send(.navigateAppleMap(location))
         }
-
-        guard let url = URL(string: urlScheme) else { return }
-        UIApplication.shared.open(url)
     }
 
     private func copyAddressToClipBoard() {

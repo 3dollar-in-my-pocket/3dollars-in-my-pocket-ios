@@ -30,6 +30,7 @@ public final class MapDetailViewModel: BaseViewModel {
     
     enum Route {
         case presentNavigationActionSheet
+        case navigateAppleMap(LocationResponse)
     }
     
     let input = Input()
@@ -69,12 +70,14 @@ public final class MapDetailViewModel: BaseViewModel {
         switch type {
         case .kakao:
             urlScheme = "kakaomap://look?p=\(location.latitude),\(location.longitude)"
-            
+            guard let url = URL(string: urlScheme) else { return }
+            UIApplication.shared.open(url)
         case .naver:
             urlScheme = "nmap://place?lat=\(location.latitude)&lng=\(location.longitude)&name=\(storeName)&zoom=20&appname=\(appInfomation.bundleId)"
+            guard let url = URL(string: urlScheme) else { return }
+            UIApplication.shared.open(url)
+        case .apple:
+            output.route.send(.navigateAppleMap(state.location))
         }
-        
-        guard let url = URL(string: urlScheme) else { return }
-        UIApplication.shared.open(url)
     }
 }
