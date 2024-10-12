@@ -157,6 +157,16 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
         Analytics.logEvent(name, parameters: parameters)
     }
     
+    func setGender(gender: Gender) {
+        Analytics.setUserProperty(gender.rawValue, forName: "user_gender")
+    }
+    
+    func setAge(birthdayYear: Int) {
+        let age = Calendar.current.component(.year, from: Date()) - birthdayYear
+        
+        Analytics.setUserProperty(String(age), forName: "user_age")
+    }
+    
     func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
         Messaging.messaging().subscribe(toTopic: "marketing_ios", completion: completion)
     }

@@ -40,16 +40,21 @@ final class AccountInfoViewModel: BaseViewModel {
     
     struct Dependency {
         let userRepository: UserRepository
+        var preference: Preference
         
-        init(userRepository: UserRepository = UserRepositoryImpl()) {
+        init(
+            userRepository: UserRepository = UserRepositoryImpl(),
+            preference: Preference = .shared
+        ) {
             self.userRepository = userRepository
+            self.preference = preference
         }
     }
     
     let input = Input()
     let output = Output()
     let config: AccountInfoViewModelConfig
-    private let dependency: Dependency
+    private var dependency: Dependency
     private var state = State()
     
     init(config: AccountInfoViewModelConfig, dependency: Dependency = Dependency()) {
@@ -100,6 +105,7 @@ final class AccountInfoViewModel: BaseViewModel {
         input.didTapLater
             .withUnretained(self)
             .sink { (owner: AccountInfoViewModel, _) in
+                owner.dependency.preference.shownAccountInfo = true
                 owner.output.route.send(.dismiss)
             }
             .store(in: &cancellables)
@@ -149,15 +155,19 @@ final class AccountInfoViewModel: BaseViewModel {
     
     private func updateUser() {
         guard let user = state.user,
+              let gender = user.gender,
               let year = user.birth?.year else { return }
         
         Task {
             let birthRequest = UserBirthRequest(year: year)
-            let input = UserPatchRequestInput(gender: user.gender, birth: birthRequest)
+            let input = UserPatchRequestInput(gender: gender, birth: birthRequest)
             let result = await dependency.userRepository.editUser(input: input)
             
             switch result {
             case .success:
+                Environment.appModuleInterface.setGender(gender: gender)
+                Environment.appModuleInterface.setAge(birthdayYear: year)
+                
                 if config.shouldPush {
                     output.route.send(.back)
                 } else {

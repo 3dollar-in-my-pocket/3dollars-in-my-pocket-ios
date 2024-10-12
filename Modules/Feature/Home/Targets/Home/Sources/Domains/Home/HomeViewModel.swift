@@ -7,6 +7,7 @@ import Model
 import Common
 import Log
 import AppInterface
+import MembershipInterface
 
 extension HomeViewModel {
     enum Constant {
@@ -74,6 +75,7 @@ extension HomeViewModel {
         var selectedIndex = 0
         var hasMore: Bool = true
         var nextCursor: String? = nil
+        var user: UserDetailResponse?
     }
     
     enum Route {
@@ -87,6 +89,7 @@ extension HomeViewModel {
         case presentSearchAddress(SearchAddressViewModel)
         case showErrorAlert(Error)
         case deepLink(AdvertisementResponse)
+        case presentAccountInfo(BaseViewModel)
     }
     
     struct Dependency {
@@ -183,18 +186,17 @@ final class HomeViewModel: BaseViewModel {
                 await owner.dependency.userRepository.fetchUser()
             }
             .compactMapValue()
-            .map { MarketingConsent(value: $0.settings.marketingConsent) }
             .withUnretained(self)
-            .sink { (owner: HomeViewModel, marketingConsent: MarketingConsent) in
-                switch marketingConsent {
+            .sink { (owner: HomeViewModel, user: UserDetailResponse) in
+                switch MarketingConsent(value: user.settings.marketingConsent) {
                 case .approve:
                     owner.subscribeMarketingTopic()
-                    
+                    owner.presentAccountInfoIfNeeded(user: user)
                 case .unverified:
                     owner.output.route.send(.presentPolicy)
                     
                 case .deny, .unknown:
-                    break
+                    owner.presentAccountInfoIfNeeded(user: user)
                 }
             }
             .store(in: &cancellables)
@@ -661,6 +663,15 @@ final class HomeViewModel: BaseViewModel {
             .subscribe(input.selectCategory)
             .store(in: &viewModel.cancellables)
         output.route.send(.presentCategoryFilter(viewModel))
+    }
+    
+    private func presentAccountInfoIfNeeded(user: UserDetailResponse) {
+        guard user.gender.isNil && user.birth.isNil,
+              dependency.preference.shownAccountInfo.isNot else { return }
+        let config = AccountInfoViewModelConfig(shouldPush: false)
+        let viewModel = Environment.membershipInterface.createAccountInfoViewModel(config: config)
+        
+        output.route.send(.presentAccountInfo(viewModel))
     }
 }
 

@@ -133,6 +133,7 @@ final class AccountInfoViewController: BaseViewController {
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
+        modalPresentationStyle = .overCurrentContext
     }
     
     @MainActor required init?(coder: NSCoder) {

@@ -135,6 +135,15 @@ public final class Preference {
         }
     }
     
+    public var shownAccountInfo: Bool {
+        get {
+            return instance.bool(forKey: "KEY_SHOWN_ACCOUNT_INFO")
+        }
+        set {
+            instance.set(newValue, forKey: "KEY_SHOWN_ACCOUNT_INFO")
+        }
+    }
+    
     public func clear() {
         instance.removeObject(forKey: "KEY_USER_ID")
         instance.removeObject(forKey: "KEY_TOKEN")
