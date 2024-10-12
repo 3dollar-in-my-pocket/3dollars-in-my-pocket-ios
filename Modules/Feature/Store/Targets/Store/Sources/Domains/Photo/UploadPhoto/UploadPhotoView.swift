@@ -22,7 +22,7 @@ final class UploadPhotoView: BaseView {
   
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = Strings.MapDetail.title
+        label.text = Strings.StoreDetail.Photo.Header.button
         label.textColor = Colors.gray100.color
         label.font = Fonts.medium.font(size: 16)
         
