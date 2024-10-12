@@ -1,5 +1,7 @@
 import UIKit
 
+import Common
+
 public protocol MembershipInterface {
     func createSigninAnonymousViewController() -> UIViewController
     
@@ -7,5 +9,15 @@ public protocol MembershipInterface {
     
     func createSigninBottomSheetViewController() -> UIViewController
     
-    func createAccountInfoViewController() -> UIViewController
+    func createAccountInfoViewModel(config: AccountInfoViewModelConfig) -> BaseViewModel
+    
+    func createAccountInfoViewController(viewModel: BaseViewModel) -> UIViewController?
+}
+
+public struct AccountInfoViewModelConfig {
+    public let shouldPush: Bool
+    
+    public init(shouldPush: Bool) {
+        self.shouldPush = shouldPush
+    }
 }

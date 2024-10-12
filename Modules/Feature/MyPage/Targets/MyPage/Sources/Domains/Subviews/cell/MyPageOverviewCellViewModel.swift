@@ -14,7 +14,7 @@ final class MyPageOverviewCellViewModel: BaseViewModel {
 
     struct Output {
         let screenName: ScreenName
-        let item: UserWithDetailApiResponse
+        let item: UserDetailResponse
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -25,7 +25,7 @@ final class MyPageOverviewCellViewModel: BaseViewModel {
     }
     
     struct Config {
-        let item: UserWithDetailApiResponse
+        let item: UserDetailResponse
         let screenName: ScreenName
     }
     

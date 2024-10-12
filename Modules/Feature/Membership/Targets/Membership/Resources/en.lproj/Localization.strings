@@ -30,3 +30,19 @@
 
 // 로그인 바텀시트
 "signin_bottom_sheet_title" = "로그인을 하시면\n더 맛있는 정보를 볼 수 있어요!";
+
+// 회원 정보
+"account_info.success_toast.message" = "회원정보가 저장되었습니다!";
+"account_info.later" = "나중에";
+"account_info.title" = "회원 정보";
+"account_info.main.title" = "동년배들은 어떤 간식을\n좋아할까요?";
+"account_info.main.description" = "나이와 성별을 알려주시면\n맞춤 광고 및 간식 데이터 통계에 도움이 됩니다!";
+"account_info.main.second" = "에 태어난";
+"account_info.main.third" = "입니다!";
+"account_info.save" = "저장";
+"account_info.male" = "🙆‍♂️남자";
+"account_info.female" = "🙆‍♀️️여자";
+"account_info.unknown_gender" = "👽??";
+"account_info.birthday_year_format" = "🌱%@년";
+"account_info.nickname_format" = "%@님은";
+

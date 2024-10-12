@@ -29,7 +29,7 @@ public final class SettingViewModel: BaseViewModel {
     }
     
     private struct State {
-        var user: UserWithDetailApiResponse?
+        var user: UserDetailResponse?
     }
     
     enum Route {
@@ -160,7 +160,7 @@ public final class SettingViewModel: BaseViewModel {
         .store(in: taskBag)
     }
     
-    private func createCellTypes(user: UserWithDetailApiResponse) -> [SettingCellType] {
+    private func createCellTypes(user: UserDetailResponse) -> [SettingCellType] {
         let socialType = SocialType(value: user.socialType ?? "")
         let isEnableMarketingConsent = MarketingConsent(value: user.settings.marketingConsent) == .approve
         

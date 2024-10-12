@@ -9,7 +9,7 @@ public protocol UserRepository {
     
     func signinAnonymous() async -> Result<SigninResponse, Error>
     
-    func fetchUser() async -> Result<UserWithDetailApiResponse, Error>
+    func fetchUser() async -> Result<UserDetailResponse, Error>
     
     func changeMarketingConsent(input: ChangeMarketingConsentInput) async -> Result<String, Error>
     
@@ -53,7 +53,7 @@ public struct UserRepositoryImpl: UserRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func fetchUser() async -> Result<UserWithDetailApiResponse, Error> {
+    public func fetchUser() async -> Result<UserDetailResponse, Error> {
         let request = UserApi.fetchUser
         
         return await NetworkManager.shared.request(requestType: request)

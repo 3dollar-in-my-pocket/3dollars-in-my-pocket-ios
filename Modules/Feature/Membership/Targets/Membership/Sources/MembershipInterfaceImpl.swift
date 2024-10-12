@@ -1,5 +1,6 @@
 import UIKit
 
+import Common
 import DependencyInjection
 import MembershipInterface
 
@@ -16,8 +17,13 @@ public final class MembershipInterfaceImpl: MembershipInterface {
         return SigninBottomSheetViewController()
     }
     
-    public func createAccountInfoViewController() -> UIViewController {
-        return AccountInfoViewController()
+    public func createAccountInfoViewModel(config: AccountInfoViewModelConfig) -> BaseViewModel {
+        return AccountInfoViewModel(config: config)
+    }
+    
+    public func createAccountInfoViewController(viewModel: BaseViewModel) -> UIViewController? {
+        guard let viewModel = viewModel as? AccountInfoViewModel else { return nil }
+        return AccountInfoViewController(viewModel: viewModel)
     }
 }
 

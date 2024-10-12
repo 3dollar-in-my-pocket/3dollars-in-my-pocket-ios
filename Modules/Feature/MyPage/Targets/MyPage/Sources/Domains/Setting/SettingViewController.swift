@@ -3,6 +3,7 @@ import UIKit
 import DesignSystem
 import Common
 import Log
+import MembershipInterface
 
 public final class SettingViewController: BaseViewController {
     public override var screenName: ScreenName {
@@ -173,7 +174,9 @@ public final class SettingViewController: BaseViewController {
     }
     
     private func pushAccountInfo() {
-        let viewController = Environment.membershipInterface.createAccountInfoViewController()
+        let config = AccountInfoViewModelConfig(shouldPush: true)
+        let viewModel = Environment.membershipInterface.createAccountInfoViewModel(config: config)
+        guard let viewController = Environment.membershipInterface.createAccountInfoViewController(viewModel: viewModel) else { return }
         
         navigationController?.pushViewController(viewController, animated: true)
     }
