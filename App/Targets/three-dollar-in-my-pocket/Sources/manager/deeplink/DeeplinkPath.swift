@@ -7,6 +7,7 @@ enum DeeplinkPath: String {
     case pollDetail
     case postList
     case browser
+    case accountInfo
     case unknown
     
     init(value: String) {

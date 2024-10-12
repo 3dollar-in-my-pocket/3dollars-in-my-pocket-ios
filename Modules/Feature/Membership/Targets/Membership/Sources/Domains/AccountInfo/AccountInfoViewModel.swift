@@ -35,6 +35,7 @@ final class AccountInfoViewModel: BaseViewModel {
         case back
         case dismiss
         case showYearPicker(BirthdayYearBottomSheetViewModel)
+        case presentNeedLoginAlert
         case showErrorAlert(Error)
     }
     
@@ -67,7 +68,11 @@ final class AccountInfoViewModel: BaseViewModel {
         input.firstLoad
             .withUnretained(self)
             .sink { (owner: AccountInfoViewModel, _) in
-                owner.loadUser()
+                if owner.dependency.preference.isAnonymousUser {
+                    owner.output.route.send(.presentNeedLoginAlert)
+                } else {
+                    owner.loadUser()
+                }
             }
             .store(in: &cancellables)
         

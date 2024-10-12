@@ -336,6 +336,8 @@ extension AccountInfoViewController {
             dismiss(animated: true)
         case .showYearPicker(let viewModel):
             presentBirthdayYearBottomSheet(viewModel: viewModel)
+        case .presentNeedLoginAlert:
+            presentNeedLoginAlert()
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
         }
@@ -345,5 +347,17 @@ extension AccountInfoViewController {
         let picker = BirthdayYearBottomSheetViewController(viewModel: viewModel)
         
         presentPanModal(picker)
+    }
+    
+    private func presentNeedLoginAlert() {
+        AlertUtils.showWithAction(viewController: self, message: "로그인이 필요합니다") { [weak self] in
+            guard let self else { return }
+            
+            if navigationController?.children.count != 0 {
+                navigationController?.popViewController(animated: true)
+            } else {
+                dismiss(animated: true)
+            }
+        }
     }
 }
