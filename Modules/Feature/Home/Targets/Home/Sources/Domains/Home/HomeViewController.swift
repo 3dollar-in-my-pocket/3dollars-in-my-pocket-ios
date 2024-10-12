@@ -415,8 +415,7 @@ public final class HomeViewController: BaseViewController {
             viewController: self,
             title: HomeStrings.locationDenyTitle,
             message: HomeStrings.locationDenyDescription
-        ) { [weak self] in
-            self?.goToAppSetting()
+        ) { 
         }
     }
     
