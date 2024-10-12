@@ -11,7 +11,7 @@ struct NetworkConfigurationImpl: NetworkConfigurable {
     }
     
     var timeoutForRequest: Double {
-        return 4
+        return 8
     }
     
     var timeoutForResource: Double {
