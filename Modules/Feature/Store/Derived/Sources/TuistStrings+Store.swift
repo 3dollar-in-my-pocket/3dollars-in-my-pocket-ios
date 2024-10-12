@@ -88,6 +88,8 @@ public enum StoreStrings {
     /// 길 안내 앱 선택
     public static let title = StoreStrings.tr("Localization", "navigation_bottom_sheet.title")
     public enum Action {
+      /// 애플 지도
+      public static let appleMap = StoreStrings.tr("Localization", "navigation_bottom_sheet.action.apple_map")
       /// 취소
       public static let cancel = StoreStrings.tr("Localization", "navigation_bottom_sheet.action.cancel")
       /// 카카오 지도
