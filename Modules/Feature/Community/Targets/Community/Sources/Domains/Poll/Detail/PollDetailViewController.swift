@@ -10,7 +10,7 @@ final class PollDetailViewController: BaseViewController {
         return viewModel.output.screenName
     }
 
-    private lazy var navigationBar = CommunityNavigationBar(rightButtons: [reportButton]).then {
+    private lazy var communityNavigationBar = CommunityNavigationBar(rightButtons: [reportButton]).then {
         $0.backgroundColor = Colors.gray0.color
     }
 
@@ -58,18 +58,18 @@ final class PollDetailViewController: BaseViewController {
         view.backgroundColor = Colors.gray0.color
 
         view.addSubViews([
-            navigationBar,
+            communityNavigationBar,
             collectionView,
             writeCommentView
         ])
 
-        navigationBar.snp.makeConstraints {
+        communityNavigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
         }
 
         collectionView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom)
+            $0.top.equalTo(communityNavigationBar.snp.bottom)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(writeCommentView.snp.top)
         }
@@ -85,7 +85,7 @@ final class PollDetailViewController: BaseViewController {
     override func bindEvent() {
         super.bindEvent()
 
-        navigationBar.backButton
+        communityNavigationBar.backButton
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)

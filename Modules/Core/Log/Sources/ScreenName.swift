@@ -3,13 +3,12 @@ import Foundation
 public enum ScreenName: String {
     case empty
     
-    case splash
-    
     case markerPopup = "marker_popup"
     
     // Membership
     case signIn = "sign_in"
     case signUp = "sign_up"
+    case accountInfo = "account_info"
     
     // Home
     case home

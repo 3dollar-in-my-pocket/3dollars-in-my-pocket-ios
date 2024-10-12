@@ -29,7 +29,7 @@ public final class SettingViewModel: BaseViewModel {
     }
     
     private struct State {
-        var user: UserWithDetailApiResponse?
+        var user: UserDetailResponse?
     }
     
     enum Route {
@@ -39,6 +39,7 @@ public final class SettingViewModel: BaseViewModel {
         case pushTeamInfo
         case goToSignin
         case marketingWarning
+        case pushAccountInfo
     }
     
     let input = Input()
@@ -99,6 +100,8 @@ public final class SettingViewModel: BaseViewModel {
                 switch cellType {
                 case .account, .activityNotification, .marketingNotification, .signout:
                     break
+                case .accountInfo:
+                    owner.output.route.send(.pushAccountInfo)
                 case .qna:
                     owner.output.route.send(.pushQna)
                 case .agreement:
@@ -157,7 +160,7 @@ public final class SettingViewModel: BaseViewModel {
         .store(in: taskBag)
     }
     
-    private func createCellTypes(user: UserWithDetailApiResponse) -> [SettingCellType] {
+    private func createCellTypes(user: UserDetailResponse) -> [SettingCellType] {
         let socialType = SocialType(value: user.socialType ?? "")
         let isEnableMarketingConsent = MarketingConsent(value: user.settings.marketingConsent) == .approve
         
@@ -165,6 +168,7 @@ public final class SettingViewModel: BaseViewModel {
             .account(name: user.name, socialType: socialType),
             .activityNotification(isOn: user.settings.enableActivitiesPush),
             .marketingNotification(isOn: isEnableMarketingConsent),
+            .accountInfo,
             .qna,
             .agreement,
             .teamInfo,

@@ -5,7 +5,8 @@
 "setting.google_user" = "구글 계정 회원";
 "setting.activity_notifictaion" = "투표 및 댓글 등 활동 알림";
 "setting.marketing_notification" = "마케팅 푸시 알림";
-"setting.qna" = "문의사항";
+"setting.qna" = "문의하기";
+"setting.account_info" = "회원 정보";
 "setting.agreement" = "이용 약관";
 "setting.team_info" = "가슴속 3천원 팀원 소개";
 "setting.signout" = "회원탈퇴";

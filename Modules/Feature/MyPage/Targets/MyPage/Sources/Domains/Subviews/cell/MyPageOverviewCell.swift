@@ -129,7 +129,7 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
             .store(in: &cancellables)
     }
     
-    private func bind(user: UserWithDetailApiResponse) {
+    private func bind(user: UserDetailResponse) {
         self.nicknameLabel.text = user.name
         self.medalImageButton.setImage(urlString: user.representativeMedal.iconUrl, state: .normal)
         self.medalLabel.text = user.representativeMedal.name
