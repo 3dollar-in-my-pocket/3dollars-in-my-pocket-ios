@@ -170,9 +170,6 @@ final class AccountInfoViewModel: BaseViewModel {
             
             switch result {
             case .success:
-                Environment.appModuleInterface.setGender(gender: gender)
-                Environment.appModuleInterface.setAge(birthdayYear: year)
-                
                 if config.shouldPush {
                     output.route.send(.back)
                 } else {
