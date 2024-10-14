@@ -191,12 +191,10 @@ final class HomeViewModel: BaseViewModel {
                 switch MarketingConsent(value: user.settings.marketingConsent) {
                 case .approve:
                     owner.subscribeMarketingTopic()
-                    owner.presentAccountInfoIfNeeded(user: user)
                 case .unverified:
                     owner.output.route.send(.presentPolicy)
-                    
                 case .deny, .unknown:
-                    owner.presentAccountInfoIfNeeded(user: user)
+                    break
                 }
             }
             .store(in: &cancellables)
@@ -663,15 +661,6 @@ final class HomeViewModel: BaseViewModel {
             .subscribe(input.selectCategory)
             .store(in: &viewModel.cancellables)
         output.route.send(.presentCategoryFilter(viewModel))
-    }
-    
-    private func presentAccountInfoIfNeeded(user: UserDetailResponse) {
-        guard user.gender.isNil && user.birth.isNil,
-              dependency.preference.shownAccountInfo.isNot else { return }
-        let config = AccountInfoViewModelConfig(shouldPush: false)
-        let viewModel = Environment.membershipInterface.createAccountInfoViewModel(config: config)
-        
-        output.route.send(.presentAccountInfo(viewModel))
     }
 }
 

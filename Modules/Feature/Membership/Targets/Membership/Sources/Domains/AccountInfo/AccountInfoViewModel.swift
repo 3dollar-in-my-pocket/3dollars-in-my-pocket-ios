@@ -110,7 +110,6 @@ final class AccountInfoViewModel: BaseViewModel {
         input.didTapLater
             .withUnretained(self)
             .sink { (owner: AccountInfoViewModel, _) in
-                owner.dependency.preference.shownAccountInfo = true
                 owner.output.route.send(.dismiss)
             }
             .store(in: &cancellables)
