@@ -1,6 +1,7 @@
 import UIKit
 import AppTrackingTransparency
 
+import Common
 import Networking
 import DesignSystem
 import DependencyInjection
@@ -28,13 +29,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         // Override point for customization after application launch.
-        initializeNotification()
         initializeDI()
+        initializeNotification()
         initializeFirebase()
         initializeLogger()
         initializeKakao()
         initializeAdmob()
-        application.registerForRemoteNotifications()
         return true
     }
     
@@ -100,6 +100,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if let error = error {
                     Log.debug("error: \(error)")
                 }
+                
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
             }
     }
     
@@ -130,7 +134,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        
+        Preference.shared.fcmToken = fcmToken
     }
 }
 

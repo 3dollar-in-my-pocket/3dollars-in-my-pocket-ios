@@ -10,6 +10,7 @@ public enum ScreenName: String {
     // Membership
     case signIn = "sign_in"
     case signUp = "sign_up"
+    case accountInfo = "account_info"
     
     // Home
     case home

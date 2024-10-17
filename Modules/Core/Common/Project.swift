@@ -11,6 +11,7 @@ let project = Project.makeModule(
         .Core.model,
         .Core.log,
         .Core.dependencyInjection,
+        .Core.designSystem,
         .Interface.appInterface,
         .SPM.kingfisher
     ]

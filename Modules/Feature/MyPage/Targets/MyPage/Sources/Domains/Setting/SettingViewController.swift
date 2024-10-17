@@ -3,6 +3,7 @@ import UIKit
 import DesignSystem
 import Common
 import Log
+import MembershipInterface
 
 public final class SettingViewController: BaseViewController {
     public override var screenName: ScreenName {
@@ -106,6 +107,8 @@ public final class SettingViewController: BaseViewController {
             goToSignin()
         case .marketingWarning:
             presentMarketingAlert()
+        case .pushAccountInfo:
+            pushAccountInfo()
         }
     }
     
@@ -169,6 +172,14 @@ public final class SettingViewController: BaseViewController {
             self?.viewModel.input.disableMarketingOff.send(())
         }
     }
+    
+    private func pushAccountInfo() {
+        let config = AccountInfoViewModelConfig(shouldPush: true)
+        let viewModel = Environment.membershipInterface.createAccountInfoViewModel(config: config)
+        guard let viewController = Environment.membershipInterface.createAccountInfoViewController(viewModel: viewModel) else { return }
+        
+        navigationController?.pushViewController(viewController, animated: true)
+    }
 }
 
 extension SettingViewController: UICollectionViewDataSource {
@@ -208,7 +219,7 @@ extension SettingViewController: UICollectionViewDataSource {
                 .subscribe(viewModel.input.toggleNotification)
                 .store(in: &cell.cancellables)
             return cell
-        case .qna, .agreement, .teamInfo:
+        case .accountInfo, .qna, .agreement, .teamInfo:
             let cell: SettingMenuCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             
             cell.bind(cellType: cellType)
@@ -242,7 +253,7 @@ extension SettingViewController: UICollectionViewDelegateFlowLayout {
         case .account:
             return SettingAccountCell.Layout.size
             
-        case .activityNotification, .marketingNotification, .qna, .agreement, .teamInfo:
+        case .activityNotification, .marketingNotification, .qna, .agreement, .teamInfo, .accountInfo:
             return SettingMenuCell.Layout.size
             
         case .signout:

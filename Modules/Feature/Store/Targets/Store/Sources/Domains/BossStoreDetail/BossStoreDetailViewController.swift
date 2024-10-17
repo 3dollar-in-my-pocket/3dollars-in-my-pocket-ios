@@ -1,9 +1,11 @@
 import UIKit
+import MapKit
 
 import DesignSystem
 import Then
 import Common
 import Log
+import Model
 
 final class BossStoreDetailViewController: BaseViewController {
     override var screenName: ScreenName {
@@ -165,6 +167,8 @@ final class BossStoreDetailViewController: BaseViewController {
                     owner.navigationController?.pushViewController(viewController, animated: true)
                 case .presentBossPhotoDetail(let viewModel):
                     owner.presentBossStorePhoto(viewModel: viewModel)
+                case .navigateAppleMap(let location):
+                    owner.navigateAppleMap(location: location)
                 case .showErrorAlert(let error):
                     owner.showErrorAlert(error: error)
                 }
@@ -223,10 +227,17 @@ final class BossStoreDetailViewController: BaseViewController {
         ) { [weak self] _ in
             self?.viewModel.input.didTapNavigationAction.send(.kakao)
         }
+        let appleAction = UIAlertAction(
+            title: Strings.NavigationBottomSheet.Action.appleMap,
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.input.didTapNavigationAction.send(.apple)
+        }
         let cancelAction = UIAlertAction(title: Strings.NavigationBottomSheet.Action.cancel, style: .cancel)
 
         alertController.addAction(naverAction)
         alertController.addAction(kakaoAction)
+        alertController.addAction(appleAction)
         alertController.addAction(cancelAction)
 
         present(alertController, animated: true)
@@ -236,6 +247,23 @@ final class BossStoreDetailViewController: BaseViewController {
         let viewController = MapDetailViewController(viewModel: viewModel)
 
         present(viewController, animated: true)
+    }
+    
+    private func navigateAppleMap(location: LocationResponse) {
+        let latitude: CLLocationDegrees = location.latitude
+        let longitude: CLLocationDegrees = location.longitude
+        let destinationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let placemark = MKPlacemark(coordinate: destinationCoordinate)
+        let mapItem = MKMapItem(placemark: placemark)
+        
+        mapItem.name = "목적지"
+        
+        let options = [
+            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving,  // 운전 모드
+            MKLaunchOptionsShowsTrafficKey: true  // 교통 상황 표시
+        ] as [String : Any]
+        
+        mapItem.openInMaps(launchOptions: options)
     }
 }
 

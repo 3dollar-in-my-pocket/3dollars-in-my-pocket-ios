@@ -1,5 +1,6 @@
 import UIKit
 
+import Common
 import Membership
 import Networking
 import Mock
@@ -7,7 +8,7 @@ import Mock
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var networkConfiguration = MockNetworkConfiguration()
-    var mockUserDefaults = MockUserDefault()
+    var preference = Preference(name: "Membership")
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
@@ -20,7 +21,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func initializeDI() {
-        MockAppModuleInterfaceImpl.registerAppModuleInterface(userDefaults: mockUserDefaults)
-        MockNetworkConfiguration.registerNetworkConfiguration()
+        MockTokenService().generateTestToken { [weak self] auth in
+            self?.networkConfiguration.authToken = auth.token
+            self?.preference.authToken = auth.token
+            self?.preference.userId = auth.userId
+            self?.preference.isAnonymousUser = false
+        }
+        
+        MockAppModuleInterfaceImpl.registerAppModuleInterface()
+        MockNetworkConfiguration.registerNetworkConfiguration(networkConfiguration)
+        MembershipInterfaceImpl.registerMembershipInterface()
     }
 }

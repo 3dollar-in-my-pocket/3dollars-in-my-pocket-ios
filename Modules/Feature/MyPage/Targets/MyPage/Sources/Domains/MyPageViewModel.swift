@@ -23,7 +23,7 @@ final class MyPageViewModel: BaseViewModel {
     }
 
     struct State {
-        let userState = CurrentValueSubject<UserWithDetailApiResponse?, Never>(nil)
+        let userState = CurrentValueSubject<UserDetailResponse?, Never>(nil)
         let visitStores = CurrentValueSubject<[MyPageStore], Never>([])
         let favoriteStores = CurrentValueSubject<[MyPageStore], Never>([])
         let poll = CurrentValueSubject<PollListWithUserPollMetaApiResponse?, Never>(nil)
@@ -229,7 +229,7 @@ final class MyPageViewModel: BaseViewModel {
         return viewModel
     }
     
-    private func bindMyPageOverviewCellViewModel(with item: UserWithDetailApiResponse) -> MyPageOverviewCellViewModel {
+    private func bindMyPageOverviewCellViewModel(with item: UserDetailResponse) -> MyPageOverviewCellViewModel {
         let config = MyPageOverviewCellViewModel.Config(item: item, screenName: output.screenName)
         let viewModel = MyPageOverviewCellViewModel(config: config)
         viewModel.output.route

@@ -1,4 +1,5 @@
 import UIKit
+import MapKit
 
 import Common
 import DesignSystem
@@ -137,6 +138,8 @@ final class StoreDetailViewController: BaseViewController {
                     
                 case .pushEditStore(let storeId, let storeDetailData):
                     owner.pushEditStore(storeId: storeId, storeDetailData: storeDetailData)
+                case .navigateAppleMap(let location):
+                    owner.navigateAppleMap(location: location)
                 }
             }
             .store(in: &cancellables)
@@ -344,10 +347,17 @@ final class StoreDetailViewController: BaseViewController {
         ) { [weak self] _ in
             self?.viewModel.input.didTapNavigationAction.send(.kakao)
         }
+        let appleAction = UIAlertAction(
+            title: Strings.NavigationBottomSheet.Action.appleMap,
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.input.didTapNavigationAction.send(.apple)
+        }
         let cancelAction = UIAlertAction(title: Strings.NavigationBottomSheet.Action.cancel, style: .cancel)
         
         alertController.addAction(naverAction)
         alertController.addAction(kakaoAction)
+        alertController.addAction(appleAction)
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true)
@@ -409,5 +419,22 @@ final class StoreDetailViewController: BaseViewController {
             }
         
         navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func navigateAppleMap(location: LocationResponse) {
+        let latitude: CLLocationDegrees = location.latitude
+        let longitude: CLLocationDegrees = location.longitude
+        let destinationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let placemark = MKPlacemark(coordinate: destinationCoordinate)
+        let mapItem = MKMapItem(placemark: placemark)
+        
+        mapItem.name = "목적지"
+        
+        let options = [
+            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving,  // 운전 모드
+            MKLaunchOptionsShowsTrafficKey: true  // 교통 상황 표시
+        ] as [String : Any]
+        
+        mapItem.openInMaps(launchOptions: options)
     }
 }

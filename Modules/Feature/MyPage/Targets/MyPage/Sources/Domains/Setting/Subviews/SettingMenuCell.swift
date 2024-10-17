@@ -87,7 +87,7 @@ final class SettingMenuCell: BaseCollectionViewCell {
         rightArrowImage.isHidden = cellType.isHiddenArrow
         
         switch cellType {
-        case .account, .signout, .qna, .agreement, .teamInfo:
+        case .account, .signout, .qna, .agreement, .teamInfo, .accountInfo:
             break
         case .activityNotification(let isOn):
             switchButton.isOn = isOn

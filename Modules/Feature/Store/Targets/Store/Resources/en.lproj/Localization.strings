@@ -62,6 +62,7 @@
 "navigation_bottom_sheet.message" = "지도앱이 설치되어있지 않은 경우 정상적으로 실행되지 않습니다.";
 "navigation_bottom_sheet.action.kakao_map" = "카카오 지도";
 "navigation_bottom_sheet.action.naver_map" = "네이버 지도";
+"navigation_bottom_sheet.action.apple_map" = "애플 지도";
 "navigation_bottom_sheet.action.cancel" = "취소";
 
 // 리뷰 바텀 시트

@@ -87,7 +87,8 @@ extension Project {
                 sources: ["Targets/Interface/Sources/**"],
                 dependencies: [
                     .Core.dependencyInjection,
-                    .Core.model
+                    .Core.model,
+                    .Core.common
                 ]
             )
             targets.append(interfaceTarget)

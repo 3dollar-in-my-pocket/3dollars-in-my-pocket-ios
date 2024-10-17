@@ -5,6 +5,7 @@ import Common
 import AppInterface
 import Model
 import Store
+import MembershipInterface
 
 import PanModal
 
@@ -108,6 +109,13 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
                   UIApplication.shared.canOpenURL(url) else { return }
             
             UIApplication.shared.open(url)
+        case .accountInfo:
+            let config = AccountInfoViewModelConfig(shouldPush: false)
+            let viewModel = Environment.membershipInterface.createAccountInfoViewModel(config: config)
+            let viewController = Environment.membershipInterface.createAccountInfoViewController(viewModel: viewModel)
+            
+            guard let viewController else { return }
+            route(viewController)
         case .unknown:
             os_log(.debug, "🔴알 수 없는 형태의 딥링크입니다. %{PUBLIC}@", urlString)
             break

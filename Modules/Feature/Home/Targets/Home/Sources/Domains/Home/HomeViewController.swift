@@ -220,6 +220,8 @@ public final class HomeViewController: BaseViewController {
                 case .presentSearchAddress(let viewModel):
                     owner.presentSearchAddress(viewModel)
                     
+                case .presentAccountInfo(let viewModel):
+                    owner.presentAccountInfo(viewModel: viewModel)
                 case .showErrorAlert(let error):
                     if error is LocationError {
                         owner.showDenyAlert()
@@ -413,8 +415,7 @@ public final class HomeViewController: BaseViewController {
             viewController: self,
             title: HomeStrings.locationDenyTitle,
             message: HomeStrings.locationDenyDescription
-        ) { [weak self] in
-            self?.goToAppSetting()
+        ) { 
         }
     }
     
@@ -473,6 +474,12 @@ public final class HomeViewController: BaseViewController {
         viewController.modalPresentationStyle = .currentContext
         
         navigationController?.present(viewController, animated: true)
+    }
+    
+    private func presentAccountInfo(viewModel: BaseViewModel) {
+        guard let viewController = Environment.membershipInterface.createAccountInfoViewController(viewModel: viewModel) else { return }
+        
+        tabBarController?.present(viewController, animated: true)
     }
 }
 

@@ -150,9 +150,7 @@ final class SplashViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            do {
-                
-                let pushToken = try await Messaging.messaging().token()
+            if let pushToken = dependency.preference.fcmToken {
                 let input = DeviceRequestInput(pushPlatformType: "FCM", pushToken: pushToken)
                 let result = await dependency.deviceRepository.refreshDevice(input: input)
                 
@@ -162,8 +160,8 @@ final class SplashViewModel: BaseViewModel {
                 case .failure(let error):
                     handleValidationError(error: error)
                 }
-            } catch {
-                handleValidationError(error: error)
+            } else {
+                output.route.send(.goToMain)
             }
         }
         

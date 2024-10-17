@@ -45,6 +45,43 @@ public enum MembershipStrings {
   /// 카카오 계정으로 로그인
   public static let signinWithKakao = MembershipStrings.tr("Localization", "signin_with_kakao")
 
+  public enum AccountInfo {
+    /// 🌱%@년
+    public static func birthdayYearFormat(_ p1: Any) -> String {
+      return MembershipStrings.tr("Localization", "account_info.birthday_year_format", String(describing: p1))
+    }
+    /// 🙆‍♀️️여자
+    public static let female = MembershipStrings.tr("Localization", "account_info.female")
+    /// 나중에
+    public static let later = MembershipStrings.tr("Localization", "account_info.later")
+    /// 🙆‍♂️남자
+    public static let male = MembershipStrings.tr("Localization", "account_info.male")
+    /// %@님은
+    public static func nicknameFormat(_ p1: Any) -> String {
+      return MembershipStrings.tr("Localization", "account_info.nickname_format", String(describing: p1))
+    }
+    /// 저장
+    public static let save = MembershipStrings.tr("Localization", "account_info.save")
+    /// 회원 정보
+    public static let title = MembershipStrings.tr("Localization", "account_info.title")
+    /// 👽??
+    public static let unknownGender = MembershipStrings.tr("Localization", "account_info.unknown_gender")
+    public enum Main {
+      /// 나이와 성별을 알려주시면\n맞춤 광고 및 간식 데이터 통계에 도움이 됩니다!
+      public static let description = MembershipStrings.tr("Localization", "account_info.main.description")
+      /// 에 태어난
+      public static let second = MembershipStrings.tr("Localization", "account_info.main.second")
+      /// 입니다!
+      public static let third = MembershipStrings.tr("Localization", "account_info.main.third")
+      /// 동년배들은 어떤 간식을\n좋아할까요?
+      public static let title = MembershipStrings.tr("Localization", "account_info.main.title")
+    }
+    public enum SuccessToast {
+      /// 회원정보가 저장되었습니다!
+      public static let message = MembershipStrings.tr("Localization", "account_info.success_toast.message")
+    }
+  }
+
   public enum CodeAlert {
     /// 코드를 입력하세요.
     public static let title = MembershipStrings.tr("Localization", "code_alert.title")

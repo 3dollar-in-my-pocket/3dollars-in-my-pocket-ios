@@ -7,6 +7,7 @@ import Model
 import Common
 import Log
 import AppInterface
+import MembershipInterface
 
 extension HomeViewModel {
     enum Constant {
@@ -74,6 +75,7 @@ extension HomeViewModel {
         var selectedIndex = 0
         var hasMore: Bool = true
         var nextCursor: String? = nil
+        var user: UserDetailResponse?
     }
     
     enum Route {
@@ -87,6 +89,7 @@ extension HomeViewModel {
         case presentSearchAddress(SearchAddressViewModel)
         case showErrorAlert(Error)
         case deepLink(AdvertisementResponse)
+        case presentAccountInfo(BaseViewModel)
     }
     
     struct Dependency {
@@ -183,16 +186,13 @@ final class HomeViewModel: BaseViewModel {
                 await owner.dependency.userRepository.fetchUser()
             }
             .compactMapValue()
-            .map { MarketingConsent(value: $0.settings.marketingConsent) }
             .withUnretained(self)
-            .sink { (owner: HomeViewModel, marketingConsent: MarketingConsent) in
-                switch marketingConsent {
+            .sink { (owner: HomeViewModel, user: UserDetailResponse) in
+                switch MarketingConsent(value: user.settings.marketingConsent) {
                 case .approve:
                     owner.subscribeMarketingTopic()
-                    
                 case .unverified:
                     owner.output.route.send(.presentPolicy)
-                    
                 case .deny, .unknown:
                     break
                 }
