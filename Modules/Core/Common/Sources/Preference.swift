@@ -135,15 +135,6 @@ public final class Preference {
         }
     }
     
-    public var shownAccountInfo: Bool {
-        get {
-            return instance.bool(forKey: "KEY_SHOWN_ACCOUNT_INFO")
-        }
-        set {
-            instance.set(newValue, forKey: "KEY_SHOWN_ACCOUNT_INFO")
-        }
-    }
-    
     public var fcmToken: String? {
         get {
             return instance.string(forKey: "KEY_FCM_TOKEN")

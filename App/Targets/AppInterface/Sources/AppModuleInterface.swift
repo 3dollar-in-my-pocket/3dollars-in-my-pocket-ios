@@ -27,6 +27,4 @@ public protocol AppModuleInterface {
     /// GA
     func sendPageView(screenName: String, type: AnyObject.Type)
     func sendEvent(name: String, parameters: [String: Any]?)
-    func setGender(gender: Gender)
-    func setAge(birthdayYear: Int)
 }
