@@ -323,11 +323,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
     private func saveStore(isDelete: Bool) {
         Task {
-            let saveResult = await storeService.saveStore(
-                storeType: .bossStore,
-                storeId: storeId,
-                isDelete: isDelete
-            )
+            let saveResult = await storeService.saveStore(storeId: storeId, isDelete: isDelete)
 
             switch saveResult {
             case .success(_):
