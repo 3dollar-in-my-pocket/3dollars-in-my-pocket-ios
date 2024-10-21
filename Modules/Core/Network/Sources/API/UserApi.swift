@@ -112,7 +112,7 @@ extension UserApi: RequestType {
             return .json
         case .saveMyPlace:
             return .json
-        case .getMyPlaces(_, let input):
+        case .getMyPlaces:
             return .json
         case .deleteMyPlace:
             return .json

@@ -58,8 +58,7 @@ final class SettingNotificationCell: BaseCollectionViewCell {
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(descriptionLabel)
         contentView.addSubview(containerView)
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(descriptionLabel)
+        contentView.addSubview(stackView)
         contentView.addSubview(switchButton)
         
         switchButton.transform = .init(scaleX: 0.8, y: 0.8)
@@ -71,16 +70,10 @@ final class SettingNotificationCell: BaseCollectionViewCell {
             $0.bottom.equalToSuperview().offset(-4)
         }
         
-        titleLabel.snp.makeConstraints {
+        stackView.snp.makeConstraints {
             $0.leading.equalTo(containerView).offset(16)
             $0.trailing.equalTo(switchButton.snp.leading).offset(-12)
-            $0.top.equalTo(containerView).offset(12)
-        }
-        
-        descriptionLabel.snp.makeConstraints {
-            $0.leading.equalTo(titleLabel)
-            $0.trailing.equalTo(titleLabel)
-            $0.top.equalTo(titleLabel.snp.bottom).offset(2)
+            $0.centerY.equalToSuperview()
         }
         
         switchButton.snp.makeConstraints {
