@@ -116,8 +116,8 @@ final class PolicyViewModel: Common.BaseViewModel {
         appInterface.getFCMToken { [weak self] token in
             guard let self = self else { return }
             Task {
-                let input = DeviceRequestInput(pushPlatformType: "FCM", pushToken: token)
-                return await self.deviceRepository.registerDevice(input: input)
+                let input = UserDeviceUpsertRequest(pushPlatformType: "FCM", pushToken: token)
+                return await self.deviceRepository.updateDevice(input: input)
             }
         }
     }
