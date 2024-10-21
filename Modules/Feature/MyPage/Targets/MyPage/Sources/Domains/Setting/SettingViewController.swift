@@ -202,7 +202,7 @@ extension SettingViewController: UICollectionViewDataSource {
             return cell
             
         case .activityNotification:
-            let cell: SettingMenuCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+            let cell: SettingNotificationCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             
             cell.bind(cellType: cellType)
             cell.switchValue
@@ -211,7 +211,7 @@ extension SettingViewController: UICollectionViewDataSource {
                 .store(in: &cell.cancellables)
             return cell
         case .marketingNotification:
-            let cell: SettingMenuCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+            let cell: SettingNotificationCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             
             cell.bind(cellType: cellType)
             cell.switchValue
@@ -252,10 +252,10 @@ extension SettingViewController: UICollectionViewDelegateFlowLayout {
         switch cellType {
         case .account:
             return SettingAccountCell.Layout.size
-            
-        case .activityNotification, .marketingNotification, .qna, .agreement, .teamInfo, .accountInfo:
+        case .activityNotification, .marketingNotification:
+            return SettingNotificationCell.Layout.size
+        case .qna, .agreement, .teamInfo, .accountInfo:
             return SettingMenuCell.Layout.size
-            
         case .signout:
             return SettingSignoutCell.Layout.size
         }
