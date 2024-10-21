@@ -3,8 +3,10 @@
 "setting.apple_user" = "애플 계정 회원";
 "setting.kakao_user" = "카카오 계정 회원";
 "setting.google_user" = "구글 계정 회원";
-"setting.activity_notifictaion" = "투표 및 댓글 등 활동 알림";
-"setting.marketing_notification" = "마케팅 푸시 알림";
+"setting.activity_notification.title" = "내 활동 알림";
+"setting.activity_notification.description" = "투표 및 댓글 등 내 활동 알림을 보내드려요";
+"setting.marketing_notification.title" = "혜택 및 이벤트 알림";
+"setting.marketing_notification.description" = "선물 및 이벤트 정보를 가장 먼저 알려드릴게요";
 "setting.qna" = "문의하기";
 "setting.account_info" = "회원 정보";
 "setting.agreement" = "이용 약관";
