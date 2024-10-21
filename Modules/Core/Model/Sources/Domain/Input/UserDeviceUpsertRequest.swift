@@ -1,6 +1,6 @@
 import Foundation
 
-public struct DeviceRequestInput: Encodable {
+public struct UserDeviceUpsertRequest: Encodable {
     public let pushPlatformType: String
     public let pushToken: String
     

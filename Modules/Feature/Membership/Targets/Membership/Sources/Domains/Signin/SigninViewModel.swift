@@ -195,8 +195,8 @@ final class SigninViewModel: BaseViewModel {
             guard let self = self else { return }
             
             Task {
-                let input = DeviceRequestInput(pushPlatformType: "FCM", pushToken: token)
-                let refreshDevice = await self.deviceRepository.refreshDevice(input: input)
+                let input = UserDeviceUpsertRequest(pushPlatformType: "FCM", pushToken: token)
+                let refreshDevice = await self.deviceRepository.updateDevice(input: input)
                 
                 self.output.route.send(.showLoading(isShow: false))
                 

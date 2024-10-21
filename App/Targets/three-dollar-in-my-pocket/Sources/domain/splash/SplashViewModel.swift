@@ -151,8 +151,8 @@ final class SplashViewModel: BaseViewModel {
             guard let self else { return }
             
             if let pushToken = dependency.preference.fcmToken {
-                let input = DeviceRequestInput(pushPlatformType: "FCM", pushToken: pushToken)
-                let result = await dependency.deviceRepository.refreshDevice(input: input)
+                let input = UserDeviceUpsertRequest(pushPlatformType: "FCM", pushToken: pushToken)
+                let result = await dependency.deviceRepository.updateDevice(input: input)
                 
                 switch result {
                 case .success(_):
