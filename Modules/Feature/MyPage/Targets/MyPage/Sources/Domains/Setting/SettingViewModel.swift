@@ -40,6 +40,7 @@ public final class SettingViewModel: BaseViewModel {
         case goToSignin
         case marketingWarning
         case pushAccountInfo
+        case showErrorAlert(Error)
     }
     
     let input = Input()
@@ -270,10 +271,19 @@ public final class SettingViewModel: BaseViewModel {
         guard let socialType = state.user?.socialType else { return }
         
         Task {
-            await userRepository.signout()
+            let result = await userRepository.signout()
+            
+            switch result {
+            case .success:
+                signoutSocial(socialType: socialType)
+            case .failure(let error):
+                output.route.send(.showErrorAlert(error))
+            }
         }
         .store(in: taskBag)
-        
+    }
+    
+    private func signoutSocial(socialType: String) {
         switch SocialType(value: socialType) {
         case .apple:
             Environment.appModuleInterface.appleSigninManager.signout()

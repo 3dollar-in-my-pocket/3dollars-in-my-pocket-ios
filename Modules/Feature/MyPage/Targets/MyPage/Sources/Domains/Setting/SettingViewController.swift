@@ -109,6 +109,8 @@ public final class SettingViewController: BaseViewController {
             presentMarketingAlert()
         case .pushAccountInfo:
             pushAccountInfo()
+        case .showErrorAlert(let error):
+            showErrorAlert(error: error)
         }
     }
     
