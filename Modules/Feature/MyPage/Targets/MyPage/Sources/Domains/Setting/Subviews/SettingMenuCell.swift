@@ -9,8 +9,6 @@ final class SettingMenuCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIUtils.windowBounds.width, height: 56)
     }
     
-    let switchValue = PassthroughSubject<Bool, Never>()
-    
     private let containerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 12
@@ -29,13 +27,6 @@ final class SettingMenuCell: BaseCollectionViewCell {
         return label
     }()
     
-    let switchButton: UISwitch = {
-        let button = UISwitch()
-        button.onTintColor = Colors.mainPink.color
-        
-        return button
-    }()
-    
     private let rightArrowImage: UIImageView = {
         let imageView = UIImageView()
         
@@ -45,12 +36,9 @@ final class SettingMenuCell: BaseCollectionViewCell {
     }()
     
     override func setup() {
-        switchButton.transform = .init(scaleX: 0.8, y: 0.8)
-        
         contentView.addSubViews([
             containerView,
             titleLabel,
-            switchButton,
             rightArrowImage
         ])
     }
@@ -66,12 +54,7 @@ final class SettingMenuCell: BaseCollectionViewCell {
         titleLabel.snp.makeConstraints {
             $0.centerY.equalTo(containerView)
             $0.leading.equalTo(containerView).offset(16)
-            $0.trailing.lessThanOrEqualTo(switchButton.snp.leading).offset(-12)
-        }
-        
-        switchButton.snp.makeConstraints {
-            $0.trailing.equalTo(containerView).offset(-16)
-            $0.centerY.equalTo(containerView)
+            $0.trailing.lessThanOrEqualTo(rightArrowImage.snp.leading).offset(-12)
         }
         
         rightArrowImage.snp.makeConstraints {
@@ -83,23 +66,5 @@ final class SettingMenuCell: BaseCollectionViewCell {
     
     func bind(cellType: SettingCellType) {
         titleLabel.text = cellType.title
-        switchButton.isHidden = cellType.isHiddenSwitch
-        rightArrowImage.isHidden = cellType.isHiddenArrow
-        
-        switch cellType {
-        case .account, .signout, .qna, .agreement, .teamInfo, .accountInfo:
-            break
-        case .activityNotification(let isOn):
-            switchButton.isOn = isOn
-        case .marketingNotification(let isOn):
-            switchButton.isOn = isOn
-        }
-        
-        switchButton.controlPublisher(for: .valueChanged)
-            .compactMap { [weak self] _ in
-                self?.switchButton.isOn
-            }
-            .subscribe(switchValue)
-            .store(in: &cancellables)
     }
 }

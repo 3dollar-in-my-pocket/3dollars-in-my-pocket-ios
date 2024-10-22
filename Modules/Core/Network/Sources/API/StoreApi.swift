@@ -12,7 +12,7 @@ enum StoreApi {
     case createStore(input: StoreCreateRequestInput)
     case editStore(storeId: Int, input: EditStoreRequestInput)
     case isStoresExistedAround(distance: Double, mapLocation: CLLocation)
-    case saveStore(storeType: StoreType, storeId: String, isDelete: Bool)
+    case saveStore(storeId: String, isDelete: Bool)
     case reportStore(storeId: Int, reportReason: String)
     case writeReview(input: WriteReviewRequestInput)
     case fetchStorePhotos(storeId: Int, cursor: String?)
@@ -82,7 +82,7 @@ extension StoreApi: RequestType {
             return .put
         case .isStoresExistedAround:
             return .get
-        case .saveStore(_, _, let isDelete):
+        case .saveStore(_, let isDelete):
             return isDelete ? .delete : .put
         case .reportStore:
             return .delete
@@ -151,8 +151,8 @@ extension StoreApi: RequestType {
             return "/api/v2/store/\(storeId)"
         case .isStoresExistedAround:
             return "/api/v1/stores/near/exists"
-        case .saveStore(let storeType, let storeId, _):
-            return "/api/v1/favorite/subscription/store/target/\(storeType.rawValue)/\(storeId)"
+        case .saveStore(let storeId, _):
+            return "/api/v2/store/\(storeId)/favorite"
         case .reportStore(let storeId, _):
             return "/api/v2/store/\(storeId)"
         case .writeReview:

@@ -34,7 +34,8 @@ final class SettingView: BaseView {
         collectionView.register([
             SettingAccountCell.self,
             SettingMenuCell.self,
-            SettingSignoutCell.self
+            SettingSignoutCell.self,
+            SettingNotificationCell.self
         ])
         
         addSubViews([
@@ -80,10 +81,6 @@ final class SettingView: BaseView {
     
     private func createLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
-        layout.estimatedItemSize = CGSize(
-            width: UIUtils.windowBounds.width,
-            height: SettingAccountCell.Layout.size.height
-        )
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0

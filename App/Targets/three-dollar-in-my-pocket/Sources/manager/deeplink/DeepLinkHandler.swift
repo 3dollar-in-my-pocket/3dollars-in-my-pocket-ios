@@ -132,6 +132,13 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
     private func moveTab(_ tab: TabBarTag) {
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
         
+        if let rootViewController {
+            let topViewController = UIUtils.getTopViewController(rootViewController)
+            if topViewController.isPanModalPresented == true {
+                topViewController.dismiss(animated: true)
+            }
+        }
+        
         if let navigationViewController = rootViewController as? UINavigationController,
            let tabBarViewController = navigationViewController.topViewController as? MainTabBarViewController {
             tabBarViewController.selectTab(tab: tab)

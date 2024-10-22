@@ -47,8 +47,6 @@ public enum MyPageStrings {
   public enum Setting {
     /// 회원 정보
     public static let accountInfo = MyPageStrings.tr("Localization", "setting.account_info")
-    /// 투표 및 댓글 등 활동 알림
-    public static let activityNotifictaion = MyPageStrings.tr("Localization", "setting.activity_notifictaion")
     /// 이용 약관
     public static let agreement = MyPageStrings.tr("Localization", "setting.agreement")
     /// 애플 계정 회원
@@ -59,8 +57,6 @@ public enum MyPageStrings {
     public static let kakaoUser = MyPageStrings.tr("Localization", "setting.kakao_user")
     /// 로그아웃
     public static let logout = MyPageStrings.tr("Localization", "setting.logout")
-    /// 마케팅 푸시 알림
-    public static let marketingNotification = MyPageStrings.tr("Localization", "setting.marketing_notification")
     /// 문의하기
     public static let qna = MyPageStrings.tr("Localization", "setting.qna")
     /// 회원탈퇴
@@ -70,10 +66,14 @@ public enum MyPageStrings {
     /// 설정
     public static let title = MyPageStrings.tr("Localization", "setting.title")
     public enum ActivityNotification {
+      /// 투표 및 댓글 등 내 활동 알림을 보내드려요
+      public static let description = MyPageStrings.tr("Localization", "setting.activity_notification.description")
       /// 투표 및 댓글 등 활동 알림 수신 거부되었습니다 🙇‍♀️
       public static let off = MyPageStrings.tr("Localization", "setting.activity_notification.off")
       /// 투표 및 댓글 등 활동 알림 수신 동의되었습니다 👍
       public static let on = MyPageStrings.tr("Localization", "setting.activity_notification.on")
+      /// 내 활동 알림
+      public static let title = MyPageStrings.tr("Localization", "setting.activity_notification.title")
     }
     public enum Ad {
       public enum Boss {
@@ -102,10 +102,14 @@ public enum MyPageStrings {
       }
     }
     public enum MarketingNotification {
+      /// 선물 및 이벤트 정보를 가장 먼저 알려드릴게요
+      public static let description = MyPageStrings.tr("Localization", "setting.marketing_notification.description")
       /// 마케팅 푸시 알림 수신 거부되었습니다 🙇‍♀️
       public static let off = MyPageStrings.tr("Localization", "setting.marketing_notification.off")
       /// 마케팅 푸시 알림 수신 동의되었습니다 👍
       public static let on = MyPageStrings.tr("Localization", "setting.marketing_notification.on")
+      /// 혜택 및 이벤트 알림
+      public static let title = MyPageStrings.tr("Localization", "setting.marketing_notification.title")
     }
   }
 

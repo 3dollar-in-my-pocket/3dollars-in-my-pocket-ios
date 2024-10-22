@@ -14,7 +14,7 @@ public protocol StoreRepository {
     
     func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<UserStoreDetailResponse, Error>
     
-    func saveStore(storeType: StoreType, storeId: String, isDelete: Bool) async -> Result<String, Error>
+    func saveStore(storeId: String, isDelete: Bool) async -> Result<String, Error>
     
     func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error>
     
@@ -68,8 +68,8 @@ public struct StoreRepositoryImpl: StoreRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func saveStore(storeType: StoreType, storeId: String, isDelete: Bool) async -> Result<String, Error> {
-        let request = StoreApi.saveStore(storeType: storeType, storeId: storeId, isDelete: isDelete)
+    public func saveStore(storeId: String, isDelete: Bool) async -> Result<String, Error> {
+        let request = StoreApi.saveStore(storeId: storeId, isDelete: isDelete)
         
         return await NetworkManager.shared.request(requestType: request)
     }

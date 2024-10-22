@@ -17,9 +17,9 @@ enum SettingCellType {
         case .account:
             return nil
         case .activityNotification:
-            return Strings.Setting.activityNotifictaion
+            return Strings.Setting.ActivityNotification.title
         case .marketingNotification:
-            return Strings.Setting.marketingNotification
+            return Strings.Setting.MarketingNotification.title
         case .accountInfo:
             return Strings.Setting.accountInfo
         case .qna:
@@ -33,45 +33,24 @@ enum SettingCellType {
         }
     }
     
-    var isHiddenSwitch: Bool {
+    var description: String? {
         switch self {
         case .account:
-            return true
+            return nil
         case .activityNotification:
-            return false
+            return Strings.Setting.ActivityNotification.description
         case .marketingNotification:
-            return false
+            return Strings.Setting.MarketingNotification.description
         case .accountInfo:
-            return true
+            return nil
         case .qna:
-            return true
+            return nil
         case .agreement:
-            return true
+            return nil
         case .teamInfo:
-            return true
+            return nil
         case .signout:
-            return true
-        }
-    }
-    
-    var isHiddenArrow: Bool {
-        switch self {
-        case .account:
-            return true
-        case .activityNotification:
-            return true
-        case .marketingNotification:
-            return true
-        case .accountInfo:
-            return false
-        case .qna:
-            return false
-        case .agreement:
-            return false
-        case .teamInfo:
-            return false
-        case .signout:
-            return true
+            return nil
         }
     }
 }
