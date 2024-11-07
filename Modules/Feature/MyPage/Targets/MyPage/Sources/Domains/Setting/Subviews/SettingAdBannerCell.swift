@@ -3,9 +3,9 @@ import UIKit
 import Common
 import DesignSystem
 
-final class SettingAdBanner: BaseView {
+final class SettingAdBannerCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 64
+        static let size = CGSize(width: UIUtils.windowBounds.width, height: 64)
     }
     
     private let titleLabel: UILabel = {
@@ -40,30 +40,26 @@ final class SettingAdBanner: BaseView {
         return imageView
     }()
     
-    let button = UIButton()
-    
-    init(bannerType: SettingAdBannerType) {
-        super.init(frame: .zero)
-        
-        bind(bannerType)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func setup() {
+        setupUI()
+    }
+    
+    func bind(_ type: SettingAdBannerType) {
+        titleLabel.text = type.title
+        titleLabel.textColor = type.titleColor
+        descriptionLabel.text = type.description
+        bannerImage.image = type.bannerImage
+    }
+    
+    private func setupUI() {
         backgroundColor = .clear
-        addSubViews([
+        contentView.addSubViews([
             titleLabel,
             descriptionLabel,
             arrowImage,
-            bannerImage,
-            button
+            bannerImage
         ])
-    }
-    
-    override func bindConstraints() {
+        
         titleLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(24)
             $0.top.equalToSuperview().offset(13)
@@ -86,20 +82,5 @@ final class SettingAdBanner: BaseView {
             $0.height.equalTo(64)
             $0.centerY.equalToSuperview()
         }
-        
-        button.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        snp.makeConstraints {
-            $0.height.equalTo(Layout.height).priority(.high)
-        }
-    }
-    
-    private func bind(_ type: SettingAdBannerType) {
-        titleLabel.text = type.title
-        titleLabel.textColor = type.titleColor
-        descriptionLabel.text = type.description
-        bannerImage.image = type.bannerImage
     }
 }

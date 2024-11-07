@@ -47,18 +47,6 @@ public final class SettingViewController: BaseViewController {
             .store(in: &cancellables)
     }
     
-    public override func bindViewModelInput() {
-        settingView.normalAdBanner.button.controlPublisher(for: .touchUpInside)
-            .map { _ in SettingAdBannerType.normal }
-            .subscribe(viewModel.input.didTapAdBanner)
-            .store(in: &cancellables)
-        
-        settingView.bossAdBanner.button.controlPublisher(for: .touchUpInside)
-            .map { _ in SettingAdBannerType.boss }
-            .subscribe(viewModel.input.didTapAdBanner)
-            .store(in: &cancellables)
-    }
-    
     public override func bindViewModelOutput() {
         viewModel.output.cellTypes
             .main
@@ -111,6 +99,8 @@ public final class SettingViewController: BaseViewController {
             pushAccountInfo()
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
+        case .openURL(let urlString):
+            openURL(urlString)
         }
     }
     
@@ -182,6 +172,11 @@ public final class SettingViewController: BaseViewController {
         
         navigationController?.pushViewController(viewController, animated: true)
     }
+    
+    private func openURL(_ urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        UIApplication.shared.open(url)
+    }
 }
 
 extension SettingViewController: UICollectionViewDataSource {
@@ -226,7 +221,10 @@ extension SettingViewController: UICollectionViewDataSource {
             
             cell.bind(cellType: cellType)
             return cell
-            
+        case .advertisement(let bannerType):
+            let cell: SettingAdBannerCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+            cell.bind(bannerType)
+            return cell
         case .signout:
             let cell: SettingSignoutCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             
@@ -258,6 +256,8 @@ extension SettingViewController: UICollectionViewDelegateFlowLayout {
             return SettingNotificationCell.Layout.size
         case .qna, .agreement, .teamInfo, .accountInfo:
             return SettingMenuCell.Layout.size
+        case .advertisement:
+            return SettingAdBannerCell.Layout.size
         case .signout:
             return SettingSignoutCell.Layout.size
         }
