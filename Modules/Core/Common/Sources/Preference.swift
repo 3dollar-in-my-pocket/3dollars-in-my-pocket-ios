@@ -130,7 +130,6 @@ public final class Preference {
             return instance.getData(forKey: "KEY_SPLASH_AD")
         }
         set {
-            guard let newValue else { return }
             instance.set(encodable: newValue, forKey: "KEY_SPLASH_AD")
         }
     }
