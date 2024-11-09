@@ -23,27 +23,23 @@ final class SettingView: BaseView {
     
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     
-    let normalAdBanner = SettingAdBanner(bannerType: .normal)
-    
-    let bossAdBanner = SettingAdBanner(bannerType: .boss)
-    
     override func setup() {
         backgroundColor = Colors.gray100.color
         
         collectionView.backgroundColor = .clear
+        collectionView.contentInset = .init(top: 0, left: 0, bottom: 24, right: 0)
         collectionView.register([
             SettingAccountCell.self,
             SettingMenuCell.self,
             SettingSignoutCell.self,
-            SettingNotificationCell.self
+            SettingNotificationCell.self,
+            SettingAdBannerCell.self
         ])
         
         addSubViews([
             backButton,
             titleLabel,
-            collectionView,
-            normalAdBanner,
-            bossAdBanner
+            collectionView
         ])
     }
     
@@ -64,18 +60,6 @@ final class SettingView: BaseView {
             $0.top.equalTo(backButton.snp.bottom).offset(16)
             $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
-        }
-        
-        normalAdBanner.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
-            $0.bottom.equalTo(bossAdBanner.snp.top)
-        }
-        
-        bossAdBanner.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-16)
         }
     }
     

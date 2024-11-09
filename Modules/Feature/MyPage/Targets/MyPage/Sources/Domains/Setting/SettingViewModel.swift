@@ -12,7 +12,6 @@ public final class SettingViewModel: BaseViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let didTapEditNickname = PassthroughSubject<Void, Never>()
-        let didTapAdBanner = PassthroughSubject<SettingAdBannerType, Never>()
         let toggleNotification = PassthroughSubject<NotificationType, Never>()
         let didTapCell = PassthroughSubject<SettingCellType, Never>()
         let logout = PassthroughSubject<Void, Never>()
@@ -40,6 +39,7 @@ public final class SettingViewModel: BaseViewModel {
         case goToSignin
         case marketingWarning
         case pushAccountInfo
+        case openURL(String)
         case showErrorAlert(Error)
     }
     
@@ -72,14 +72,6 @@ public final class SettingViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
-        input.didTapAdBanner
-            .withUnretained(self)
-            .sink { (owner: SettingViewModel, type: SettingAdBannerType) in
-                guard let url = URL(string: type.url) else { return }
-                UIApplication.shared.open(url)
-            }
-            .store(in: &cancellables)
-        
         input.toggleNotification
             .withUnretained(self)
             .sink { (owner: SettingViewModel, type: NotificationType) in
@@ -109,6 +101,8 @@ public final class SettingViewModel: BaseViewModel {
                     owner.output.route.send(.pushAgreement)
                 case .teamInfo:
                     owner.output.route.send(.pushTeamInfo)
+                case .advertisement(let type):
+                    owner.output.route.send(.openURL(type.url))
                 }
             }
             .store(in: &cancellables)
@@ -173,6 +167,8 @@ public final class SettingViewModel: BaseViewModel {
             .qna,
             .agreement,
             .teamInfo,
+            .advertisement(.normal),
+            .advertisement(.boss),
             .signout
         ]
     }

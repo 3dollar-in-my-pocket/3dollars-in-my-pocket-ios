@@ -93,6 +93,8 @@ final class SettingNotificationCell: BaseCollectionViewCell {
             switchButton.isOn = isOn
         case .marketingNotification(let isOn):
             switchButton.isOn = isOn
+        case .advertisement:
+            return
         }
         
         switchButton.controlPublisher(for: .valueChanged)
