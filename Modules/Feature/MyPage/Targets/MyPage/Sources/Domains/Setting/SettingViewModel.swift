@@ -236,9 +236,10 @@ public final class SettingViewModel: BaseViewModel {
     
     private func logout() {
         guard let socialType = state.user?.socialType else { return }
-        
+        let deviceInput = UserLogOutDeviceRequestInput(pushPlatform: "FCM", pushToken: preference.fcmToken)
+        let requestInput = UserLogOutRequestInput(logoutDevice: deviceInput)
         Task {
-            await userRepository.logout()
+            await userRepository.logout(input: requestInput)
         }
         .store(in: taskBag)
         
