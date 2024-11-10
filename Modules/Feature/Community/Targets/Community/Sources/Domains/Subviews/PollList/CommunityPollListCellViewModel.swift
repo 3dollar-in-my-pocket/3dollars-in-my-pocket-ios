@@ -206,7 +206,7 @@ extension CommunityPollListCellViewModel {
         guard let advertisement = state.ad else { return }
         dependency.logManager.sendEvent(.init(
             screen: config.screenName,
-            eventName: .clickPollAd,
+            eventName: .clickAdCard,
             extraParameters: [.advertisementId: advertisement.advertisementId])
         )
     }

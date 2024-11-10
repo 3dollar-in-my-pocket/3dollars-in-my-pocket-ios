@@ -13,7 +13,7 @@ final class MainBannerPopupViewModel: BaseViewModel {
     }
     
     struct Output {
-        let screenName: ScreenName = .mainBannerPopup
+        let screenName: ScreenName = .mainAdBanner
         let advertisement: CurrentValueSubject<AdvertisementResponse, Never>
         let route = PassthroughSubject<Route, Never>()
     }
@@ -77,7 +77,7 @@ final class MainBannerPopupViewModel: BaseViewModel {
     
     private func snedClickBannerLog() {
         logManager.sendEvent(LogEvent(
-            screen: .mainBannerPopup,
+            screen: output.screenName,
             eventName: .clickAdBanner,
             extraParameters: [
                 .advertisementId: state.advertisement.advertisementId
@@ -86,14 +86,14 @@ final class MainBannerPopupViewModel: BaseViewModel {
     
     private func sendClickNotShowTodayLog() {
         logManager.sendEvent(LogEvent(
-            screen: .mainBannerPopup,
+            screen: output.screenName,
             eventName: .clickNotShowToday
         ))
     }
     
     private func sendClickCloseLog() {
         logManager.sendEvent(LogEvent(
-            screen: .mainBannerPopup,
+            screen: output.screenName,
             eventName: .clickClose
         ))
     }
