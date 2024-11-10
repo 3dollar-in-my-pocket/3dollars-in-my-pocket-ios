@@ -12,7 +12,7 @@ import MembershipInterface
 extension HomeViewModel {
     enum Constant {
         static let defaultLocation = CLLocation(latitude: 37.497941, longitude: 127.027616)
-        static let cardAdvertisementIndex = 2
+        static let cardAdvertisementIndex = 1
     }
     
     struct Input {
@@ -495,11 +495,12 @@ final class HomeViewModel: BaseViewModel {
     private func updateDatasource() {
         var items: [HomeSectionItem] = state.store.map { .store($0) }
         let advertisement = state.advertisementCard
+        let advertisementIndex = state.advertisementCard?.metadata?.exposureIndex ?? Constant.cardAdvertisementIndex
         
         if items.isEmpty {
             items = [.empty]
-        } else if items.count > Constant.cardAdvertisementIndex {
-            items.insert(.advertisement(advertisement), at: Constant.cardAdvertisementIndex)
+        } else if items.count > advertisementIndex {
+            items.insert(.advertisement(advertisement), at: advertisementIndex)
         } else {
             items.append(.advertisement(advertisement))
         }
