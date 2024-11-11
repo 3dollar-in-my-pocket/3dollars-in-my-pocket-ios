@@ -11,6 +11,7 @@ enum SettingCellType {
     case agreement
     case teamInfo
     case signout
+    case advertisement(SettingAdBannerType)
     
     var title: String? {
         switch self {
@@ -28,6 +29,8 @@ enum SettingCellType {
             return Strings.Setting.agreement
         case .teamInfo:
             return Strings.Setting.teamInfo
+        case .advertisement:
+            return nil
         case .signout:
             return nil
         }
@@ -48,6 +51,8 @@ enum SettingCellType {
         case .agreement:
             return nil
         case .teamInfo:
+            return nil
+        case .advertisement:
             return nil
         case .signout:
             return nil

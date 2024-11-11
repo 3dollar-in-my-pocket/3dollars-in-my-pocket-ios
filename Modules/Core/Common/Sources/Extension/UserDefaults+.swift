@@ -1,10 +1,14 @@
 import Foundation
 
 public extension UserDefaults {
-    func set(encodable: Encodable, forKey key: String) {
-        let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(encodable) {
-            self.set(encoded, forKey: key)
+    func set(encodable: Encodable?, forKey key: String) {
+        if let encodable {
+            let encoder = JSONEncoder()
+            if let encoded = try? encoder.encode(encodable) {
+                self.set(encoded, forKey: key)
+            }
+        } else {
+            self.set(nil, forKey: key)
         }
     }
     

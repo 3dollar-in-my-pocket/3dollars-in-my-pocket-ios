@@ -7,6 +7,10 @@ import Networking
 import Log
 
 final class CommunityPollListCellViewModel: BaseViewModel {
+    enum Constant {
+        static let advertisementIndex = 1
+    }
+    
     struct Input {
         let loadPollCategories = PassthroughSubject<Void, Never>()
         let loadPollList = PassthroughSubject<Void, Never>()
@@ -172,7 +176,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
        
         sectionItems.append(contentsOf: state.pollList.map { .poll($0) })
         if let ad = state.ad, sectionItems.isNotEmpty {
-            let index = min(2, sectionItems.count - 1) // 나중에 서버에서 받아오는 index 로 설정 필요
+            let index = ad.metadata?.exposureIndex ?? Constant.advertisementIndex
             sectionItems.insert(.ad(CommunityPollListAdCellViewModel(config: .init(ad: ad))), at: index)
         }
         
@@ -206,7 +210,7 @@ extension CommunityPollListCellViewModel {
         guard let advertisement = state.ad else { return }
         dependency.logManager.sendEvent(.init(
             screen: config.screenName,
-            eventName: .clickPollAd,
+            eventName: .clickAdCard,
             extraParameters: [.advertisementId: advertisement.advertisementId])
         )
     }

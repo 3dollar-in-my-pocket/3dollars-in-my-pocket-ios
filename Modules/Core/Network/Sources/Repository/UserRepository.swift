@@ -21,7 +21,7 @@ public protocol UserRepository {
     
     func editUser(input: UserPatchRequestInput) async -> Result<String, Error>
     
-    func logout() async -> Result<String, Error>
+    func logout(input: UserLogOutRequestInput) async -> Result<String, Error>
     
     func signout() async -> Result<String, Error>
     
@@ -89,8 +89,8 @@ public struct UserRepositoryImpl: UserRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
     
-    public func logout() async -> Result<String, Error> {
-        let request = UserApi.logout
+    public func logout(input: UserLogOutRequestInput) async -> Result<String, Error> {
+        let request = UserApi.logout(input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }

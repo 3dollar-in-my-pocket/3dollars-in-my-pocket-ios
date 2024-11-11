@@ -12,7 +12,7 @@ enum UserApi {
     case signinDemo(code: String)
     case editUserSetting(input: UserAccountSettingPatchApiRequestInput)
     case editUser(input: UserPatchRequestInput)
-    case logout
+    case logout(input: UserLogOutRequestInput)
     case signout
     case saveMyPlace(placeType: PlaceType, input: SaveMyPlaceInput)
     case getMyPlaces(placeType: PlaceType, input: CursorRequestInput)
@@ -40,8 +40,8 @@ extension UserApi: RequestType {
             return input
         case .editUser(let input):
             return input
-        case .logout:
-            return nil
+        case .logout(let input):
+            return input
         case .signout:
             return nil
         case .saveMyPlace(_, let input):

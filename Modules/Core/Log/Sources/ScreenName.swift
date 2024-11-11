@@ -16,7 +16,7 @@ public enum ScreenName: String {
     case home
     case homeList = "home_list"
     case categoryFilter = "category_filter"
-    case mainBannerPopup = "main_banner_popup"
+    case mainAdBanner = "main_ad_banner"
     case searchAddress = "search_address"
     
     /// Write
