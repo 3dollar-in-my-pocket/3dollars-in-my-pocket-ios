@@ -35,6 +35,8 @@ final class WriteDetailTimeCellViewModel: BaseViewModel {
             inputStartDate: .init(config.startDate),
             inputEndDate: .init(config.endDate)
         )
+        
+        super.init()
     }
     
     override func bind() {
@@ -54,13 +56,18 @@ final class WriteDetailTimeCellViewModel: BaseViewModel {
     }
 }
 
+extension WriteDetailTimeCellViewModel: Identifiable {
+    var id: ObjectIdentifier {
+        return ObjectIdentifier(self)
+    }
+}
+
 extension WriteDetailTimeCellViewModel: Hashable  {
     static func == (lhs: WriteDetailTimeCellViewModel, rhs: WriteDetailTimeCellViewModel) -> Bool {
-        return lhs.state.startDate == rhs.state.startDate && lhs.state.endDate == rhs.state.endDate
+        return lhs.id == rhs.id
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(state.startDate)
-        hasher.combine(state.endDate)
+        hasher.combine(id)
     }
 }
