@@ -51,10 +51,10 @@ final class SplashViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.showErrorAlert
+        viewModel.output.showDefaultAlert
             .main
-            .sink { [weak self] error in
-                self?.showErrorAlert(error: error)
+            .sink { [weak self] in
+                self?.showDefaultAlert()
             }
             .store(in: &cancellables)
     }
@@ -161,6 +161,19 @@ final class SplashViewController: BaseViewController {
                UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
+        }
+    }
+    
+    private func showDefaultAlert() {
+        AlertUtils.showWithAction(
+            viewController: self,
+            message: Strings.Splash.defaultError
+        ) {
+            UIControl().sendAction(
+                #selector(URLSessionTask.suspend),
+                to: UIApplication.shared,
+                for: nil
+            )
         }
     }
 }

@@ -18,7 +18,7 @@ final class SplashViewModel: BaseViewModel {
         let screenName: ScreenName = .splash
         let advertisement = PassthroughSubject<AdvertisementResponse, Never>()
         let route = PassthroughSubject<Route, Never>()
-        let showErrorAlert = PassthroughSubject<Error, Never>()
+        let showDefaultAlert = PassthroughSubject<Void, Never>()
     }
     
     enum Route {
@@ -111,7 +111,7 @@ final class SplashViewModel: BaseViewModel {
                     validateToken()
                 }
             } catch {
-                output.showErrorAlert.send(error)
+                output.showDefaultAlert.send(())
             }
         }.store(in: taskBag)
     }
@@ -180,10 +180,10 @@ final class SplashViewModel: BaseViewModel {
                 let alertContent = AlertContent(title: nil, message: Strings.httpErrorMaintenance)
                 output.route.send(.showMaintenanceAlert(alertContent))
             default:
-                output.showErrorAlert.send(error)
+                output.showDefaultAlert.send(())
             }
         } else {
-            output.showErrorAlert.send(error)
+            output.showDefaultAlert.send(())
         }
     }
 }
