@@ -607,6 +607,11 @@ public enum ThreeDollarInMyPocketStrings {
     /// 오늘 하루 보지않기
     public static let disableToday = ThreeDollarInMyPocketStrings.tr("Localization", "main_banner_popup.disable_today")
   }
+
+  public enum Splash {
+    /// 일시적인 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.
+    public static let defaultError = ThreeDollarInMyPocketStrings.tr("Localization", "splash.default_error")
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name
