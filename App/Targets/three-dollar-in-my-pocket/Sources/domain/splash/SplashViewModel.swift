@@ -11,7 +11,7 @@ import FirebaseMessaging
 
 final class SplashViewModel: BaseViewModel {
     struct Input {
-        let viewDidLoad = PassthroughSubject<Void, Never>()
+        let load = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -61,7 +61,7 @@ final class SplashViewModel: BaseViewModel {
     }
     
     override func bind() {
-        input.viewDidLoad
+        input.load
             .withUnretained(self)
             .sink { (owner: SplashViewModel, _) in
                 owner.loadSplashAdIfExisted()

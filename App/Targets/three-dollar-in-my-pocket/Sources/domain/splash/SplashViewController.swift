@@ -23,11 +23,16 @@ final class SplashViewController: BaseViewController {
     
     private let viewModel = SplashViewModel()
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
-        viewModel.input.viewDidLoad.send(())
+        setupNotification()
+        viewModel.input.load.send(())
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -76,6 +81,15 @@ final class SplashViewController: BaseViewController {
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(0)
         }
+    }
+    
+    private func setupNotification() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
     }
     
     private func setAdvertisement(_ advertisement: AdvertisementResponse) {
@@ -164,6 +178,8 @@ final class SplashViewController: BaseViewController {
         }
     }
     
+    @objc private func handleWillEnterForeground() {
+        viewModel.input.load.send(())
     private func showDefaultAlert() {
         AlertUtils.showWithAction(
             viewController: self,
