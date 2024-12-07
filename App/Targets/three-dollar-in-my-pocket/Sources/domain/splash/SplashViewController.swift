@@ -180,6 +180,8 @@ final class SplashViewController: BaseViewController {
     
     @objc private func handleWillEnterForeground() {
         viewModel.input.load.send(())
+    }
+    
     private func showDefaultAlert() {
         AlertUtils.showWithAction(
             viewController: self,

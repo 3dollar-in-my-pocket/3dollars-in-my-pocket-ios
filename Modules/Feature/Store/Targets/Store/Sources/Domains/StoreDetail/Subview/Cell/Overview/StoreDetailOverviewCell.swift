@@ -16,6 +16,8 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
     
     let mapView = StoreDetailOverviewMapView()
     
+    let bossTooltipView = TooltipView(emoji: "💌", message: Strings.StoreDetail.Tooltip.bookmark, tailDirection: .topLeft)
+    
     let adBannerView: AdBannerViewProtocol = {
         let view = Environment.appModuleInterface.createAdBannerView(adType: .storeDetail)
         
@@ -35,7 +37,8 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             titleView,
             menuView,
             mapView,
-            adBannerView
+            adBannerView,
+            bossTooltipView
         ])
     }
     
@@ -52,6 +55,11 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             $0.top.equalTo(titleView.snp.bottom).offset(20)
             $0.height.equalTo(StoreDetailOverviewMenuView.Layout.height)
             $0.right.equalToSuperview()
+        }
+        
+        bossTooltipView.snp.makeConstraints {
+            $0.top.equalTo(menuView.snp.bottom).offset(-12)
+            $0.left.equalTo(menuView).offset(12)
         }
         
         mapView.snp.makeConstraints {
@@ -80,6 +88,10 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
         menuView.favoriteButton.isSelected = viewModel.output.overview.isFavorited
         menuView.favoriteButton.setCount(viewModel.output.overview.subscribersCount)
         adBannerView.load(in: rootViewController)
+        
+        bossTooltipView.didTap = { [weak viewModel] in
+            viewModel?.input.didTapTooltip.send(())
+        }
         
         menuView.favoriteButton
             .controlPublisher(for: .touchUpInside)
@@ -133,6 +145,14 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             .withUnretained(self)
             .sink { (owner: StoreDetailOverviewCell, count) in
                 owner.menuView.favoriteButton.setCount(count)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.showTooltip
+            .main
+            .withUnretained(self)
+            .sink { (owner: StoreDetailOverviewCell, isShow: Bool) in
+                owner.bossTooltipView.isHidden = !isShow
             }
             .store(in: &cancellables)
     }

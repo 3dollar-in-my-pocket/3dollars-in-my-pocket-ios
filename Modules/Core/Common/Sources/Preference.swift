@@ -143,6 +143,15 @@ public final class Preference {
         }
     }
     
+    public var shownBookmarkTooltip: Bool {
+        get {
+            return instance.bool(forKey: "KEY_SHOWN_BOOKMARK_TOOLTIP")
+        }
+        set {
+            instance.set(newValue, forKey: "KEY_SHOWN_BOOKMARK_TOOLTIP")
+        }
+    }
+    
     public func clear() {
         instance.removeObject(forKey: "KEY_USER_ID")
         instance.removeObject(forKey: "KEY_TOKEN")
