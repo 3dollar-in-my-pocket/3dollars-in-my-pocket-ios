@@ -58,14 +58,6 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     
     public func sendEvent(name: String, parameters: [String : Any]?) { }
     
-    public func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { 
-        ToastManager.shared.show(message: "subscribeMarketingFCMTopic")
-    }
-    
-    public func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) { 
-        ToastManager.shared.show(message: "unsubscribeMarketingFCMTopic")
-    }
-    
     public func presentMailComposeViewController(nickname: String, targetViewController: UIViewController) { 
         ToastManager.shared.show(message: "presentMailComposeViewController")
     }
