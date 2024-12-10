@@ -98,6 +98,9 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             guard let params = url.params(),
                   let storeId = params["storeId"] as? String else { return }
             
+            let storeDetailViewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+            route(storeDetailViewController)
+            
             let config = BossStorePostListViewModel.Config(storeId: storeId)
             let viewModel = BossStorePostListViewModel(config: config)
             let viewController = BossStorePostListViewController(viewModel: viewModel)

@@ -50,6 +50,7 @@
 "store_detail.toast.add_favorite" = "즐겨찾기가 추가되었습니다!";
 "store_detail.toast.remove_favorite" = "즐겨찾기가 삭제되었습니다!";
 "store_detail.toast.copy_to_address" = "🔗 주소를 클립보드에 복사했습니다.";
+"store_detail.tooltip.bookmark" = "북마크를 하고 사장님의 메세지를 받아보세요!";
 
 // 가게 신고 모달
 "report_modal.title" = "삭제 요청 하시는 이유가 궁금해요!";

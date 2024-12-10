@@ -282,6 +282,10 @@ public enum StoreStrings {
       /// 즐겨찾기가 삭제되었습니다!
       public static let removeFavorite = StoreStrings.tr("Localization", "store_detail.toast.remove_favorite")
     }
+    public enum Tooltip {
+      /// 북마크를 하고 사장님의 메세지를 받아보세요!
+      public static let bookmark = StoreStrings.tr("Localization", "store_detail.tooltip.bookmark")
+    }
     public enum Visit {
       /// + 그 외 %d명이 다녀갔어요!
       public static func moreFormat(_ p1: Int) -> String {

@@ -23,11 +23,16 @@ final class SplashViewController: BaseViewController {
     
     private let viewModel = SplashViewModel()
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
-        viewModel.input.viewDidLoad.send(())
+        setupNotification()
+        viewModel.input.load.send(())
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -51,10 +56,10 @@ final class SplashViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.showErrorAlert
+        viewModel.output.showDefaultAlert
             .main
-            .sink { [weak self] error in
-                self?.showErrorAlert(error: error)
+            .sink { [weak self] in
+                self?.showDefaultAlert()
             }
             .store(in: &cancellables)
     }
@@ -76,6 +81,15 @@ final class SplashViewController: BaseViewController {
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(0)
         }
+    }
+    
+    private func setupNotification() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
     }
     
     private func setAdvertisement(_ advertisement: AdvertisementResponse) {
@@ -161,6 +175,23 @@ final class SplashViewController: BaseViewController {
                UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
+        }
+    }
+    
+    @objc private func handleWillEnterForeground() {
+        viewModel.input.load.send(())
+    }
+    
+    private func showDefaultAlert() {
+        AlertUtils.showWithAction(
+            viewController: self,
+            message: Strings.Splash.defaultError
+        ) {
+            UIControl().sendAction(
+                #selector(URLSessionTask.suspend),
+                to: UIApplication.shared,
+                for: nil
+            )
         }
     }
 }
