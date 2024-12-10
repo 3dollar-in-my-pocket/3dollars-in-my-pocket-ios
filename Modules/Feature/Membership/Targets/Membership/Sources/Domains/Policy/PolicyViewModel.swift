@@ -103,8 +103,7 @@ final class PolicyViewModel: Common.BaseViewModel {
             output.route.send(.showLoading(isShow: false))
             switch changeMarketingConsent {
             case .success(_):
-                subscribeMarketingTopic()
-                
+                output.route.send(.dismiss)
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))
             }
@@ -118,17 +117,6 @@ final class PolicyViewModel: Common.BaseViewModel {
             Task {
                 let input = UserDeviceUpsertRequest(pushPlatformType: "FCM", pushToken: token)
                 return await self.deviceRepository.updateDevice(input: input)
-            }
-        }
-    }
-    
-    private func subscribeMarketingTopic() {
-        appInterface.subscribeMarketingFCMTopic { [weak self] error in
-            if let error {
-                self?.output.route.send(.showErrorAlert(error))
-            } else {
-                self?.preference.subscribedMarketingTopic = true
-                self?.output.route.send(.dismiss)
             }
         }
     }

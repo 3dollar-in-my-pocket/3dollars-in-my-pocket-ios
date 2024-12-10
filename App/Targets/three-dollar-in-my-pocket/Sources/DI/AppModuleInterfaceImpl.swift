@@ -167,14 +167,6 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
         Analytics.setUserProperty(String(age), forName: "user_age")
     }
     
-    func subscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
-        Messaging.messaging().subscribe(toTopic: "marketing_ios", completion: completion)
-    }
-    
-    func unsubscribeMarketingFCMTopic(completion: @escaping ((Error?) -> Void)) {
-        Messaging.messaging().unsubscribe(fromTopic: "marketing_ios", completion: completion)
-    }
-    
     func showFrontAdmob(adType: AdType, viewController: UIViewController) {
         let request = GADRequest()
         GADInterstitialAd.load(

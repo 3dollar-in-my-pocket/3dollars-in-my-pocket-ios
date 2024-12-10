@@ -188,14 +188,8 @@ final class HomeViewModel: BaseViewModel {
             .compactMapValue()
             .withUnretained(self)
             .sink { (owner: HomeViewModel, user: UserDetailResponse) in
-                switch MarketingConsent(value: user.settings.marketingConsent) {
-                case .approve:
-                    owner.subscribeMarketingTopic()
-                case .unverified:
-                    owner.output.route.send(.presentPolicy)
-                case .deny, .unknown:
-                    break
-                }
+                guard MarketingConsent(value: user.settings.marketingConsent) == .unverified else { return }
+                owner.output.route.send(.presentPolicy)
             }
             .store(in: &cancellables)
         
@@ -617,18 +611,6 @@ final class HomeViewModel: BaseViewModel {
         viewModel.output.onTapOnlyRecentActivity
             .subscribe(input.onTapOnlyRecentActivity)
             .store(in: &viewModel.cancellables)
-    }
-    
-    private func subscribeMarketingTopic() {
-        guard !dependency.preference.subscribedMarketingTopic else { return }
-        
-        dependency.appModuleInterface.subscribeMarketingFCMTopic { [weak self] error in
-            if let error {
-                self?.output.route.send(.showErrorAlert(error))
-            } else {
-                self?.dependency.preference.subscribedMarketingTopic = true
-            }
-        }
     }
     
     private func hiddenTooltip() {
