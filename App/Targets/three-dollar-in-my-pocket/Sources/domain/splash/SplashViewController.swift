@@ -32,7 +32,6 @@ final class SplashViewController: BaseViewController {
         
         setupUI()
         setupNotification()
-        viewModel.input.load.send(())
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
