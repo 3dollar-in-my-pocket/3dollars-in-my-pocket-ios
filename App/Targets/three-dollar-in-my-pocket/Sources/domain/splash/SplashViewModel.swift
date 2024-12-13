@@ -168,18 +168,19 @@ final class SplashViewModel: BaseViewModel {
     }
     
     private func handleValidationError(error: Error) {
-        if let httpError = error as? Model.HTTPError {
-            switch httpError {
+        if let networkError = error as? NetworkError,
+           case .errorContainer(let errorContainer) = networkError {
+            switch NetworkResultCode(value: errorContainer.resultCode) {
+            case.unauthorized:
+                let alertContent = AlertContent(title: nil, message: Strings.httpErrorUnauthorized)
+                output.route.send(.goToSignInWithAlert(alertContent))
+            case .serviceUnavailable:
+                let alertContent = AlertContent(title: nil, message: Strings.httpErrorMaintenance)
+                output.route.send(.showMaintenanceAlert(alertContent))
             case .forbidden:
                 let alertContent = AlertContent(title: nil, message: Strings.httpErrorForbidden)
                 output.route.send(.goToSignInWithAlert(alertContent))
-            case .unauthorized:
-                let alertContent = AlertContent(title: nil, message: Strings.httpErrorUnauthorized)
-                output.route.send(.goToSignInWithAlert(alertContent))
-            case .maintenance:
-                let alertContent = AlertContent(title: nil, message: Strings.httpErrorMaintenance)
-                output.route.send(.showMaintenanceAlert(alertContent))
-            default:
+            case .unknown:
                 output.showDefaultAlert.send(())
             }
         } else {
