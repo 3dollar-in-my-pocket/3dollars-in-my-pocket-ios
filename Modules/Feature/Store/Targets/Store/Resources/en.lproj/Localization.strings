@@ -113,6 +113,7 @@
 // 사장님 가게 상세화면
 "boss_store_detail.info.title" = "가게 정보 & 메뉴";
 "boss_store_detail.info.sns" = "SNS";
+"boss_store_detail.info.contact" = "연락처";
 "boss_store_detail.info.introduction" = "사장님 한마디";
 "boss_store_detail.info.update" = "업데이트";
 "boss_store_detail.info.account_title" = "계좌번호";

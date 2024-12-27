@@ -61,6 +61,20 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         $0.setTitleColor(Colors.mainPink.color, for: .normal)
         $0.titleLabel?.textAlignment = .right
     }
+    
+    private let contactLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.bold.font(size: 12)
+        label.textColor = Colors.gray60.color
+        label.text = Strings.BossStoreDetail.Info.contact
+        return label
+    }()
+    
+    let contactButton = UIButton().then {
+        $0.titleLabel?.font = Fonts.medium.font(size: 12)
+        $0.setTitleColor(Colors.mainPink.color, for: .normal)
+        $0.titleLabel?.textAlignment = .right
+    }
 
     private let introductionTitleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 12)
@@ -104,6 +118,8 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         containerView.addSubViews([
             snsTitleLabel,
             snsButton,
+            contactLabel,
+            contactButton,
             introductionTitleLabel,
             introductionValueLabel
         ])
@@ -138,12 +154,21 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
 
         snsButton.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(16)
-            $0.leading.equalTo(snsTitleLabel.snp.trailing)
             $0.centerY.equalTo(snsTitleLabel)
+        }
+        
+        contactLabel.snp.makeConstraints {
+            $0.leading.equalTo(snsTitleLabel)
+            $0.top.equalTo(snsTitleLabel.snp.bottom).offset(8)
+        }
+        
+        contactButton.snp.makeConstraints {
+            $0.trailing.equalTo(snsButton)
+            $0.centerY.equalTo(contactLabel)
         }
 
         introductionTitleLabel.snp.makeConstraints {
-            $0.top.equalTo(snsTitleLabel.snp.bottom).offset(8)
+            $0.top.equalTo(contactLabel.snp.bottom).offset(8)
             $0.leading.equalToSuperview().inset(16)
         }
 
@@ -191,6 +216,14 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         } else {
             snsButton.isHidden = true
         }
+        
+        if let contactsNumber = info.contactsNumbers.first {
+            contactButton.isHidden = contactsNumber.number.isEmpty
+            contactButton.setTitle(contactsNumber.number, for: .normal)
+        } else {
+            contactButton.isHidden = true
+        }
+        
         introductionValueLabel.text = info.introduction
         
         photoCollectionView.reloadData()
