@@ -92,6 +92,7 @@ struct BuildSetting {
             "FRAMEWORK_SEARCH_PATHS": "$(inherited) $(PROJECT_DIR)",
             "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks",
             "OTHER_LDFLAGS": "$(inherited) -framework 'Accelerate' -framework 'CFNetwork'",
+            "KAKAO_CHANNEL_URL": "http://pf.kakao.com/_RxghUb/chat"
         ]
         
         static let debug: SettingsDictionary = [

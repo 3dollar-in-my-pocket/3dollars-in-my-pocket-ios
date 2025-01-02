@@ -1,7 +1,6 @@
 import Foundation
 
 import Model
-import Networking
 
 enum CommonApi {
     case createNonceToken

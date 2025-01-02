@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>KAKAO_CHANNEL_URL</key>
+	<string>$(KAKAO_CHANNEL_URL)</string>
 	<key>ADMOB_UNIT_ID</key>
 	<dict>
 		<key>ADMOB_UNIT_ID_SEARCH_ADDRESS</key>

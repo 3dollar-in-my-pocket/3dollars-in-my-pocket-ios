@@ -18,7 +18,7 @@ public final class QnaViewModel: BaseViewModel {
     
     enum Route {
         case pushFAQ
-        case presentMail(nickname: String)
+        case goToKakao
     }
     
     let input = Input()
@@ -39,29 +39,9 @@ public final class QnaViewModel: BaseViewModel {
                 case .faq:
                     owner.output.route.send(.pushFAQ)
                 case .inquiry:
-                    owner.presentMail()
+                    owner.output.route.send(.goToKakao)
                 }
             }
             .store(in: &cancellables)
-    }
-    
-    private func fetchUserNickname() async -> String {
-        let result = await userRepository.fetchUser()
-        
-        switch result {
-        case .success(let response):
-            return response.name
-        case .failure:
-            return ""
-        }
-    }
-    
-    private func presentMail() {
-        Task {
-            let nickname = await fetchUserNickname()
-            
-            output.route.send(.presentMail(nickname: nickname))
-        }
-        .store(in: taskBag)
     }
 }
