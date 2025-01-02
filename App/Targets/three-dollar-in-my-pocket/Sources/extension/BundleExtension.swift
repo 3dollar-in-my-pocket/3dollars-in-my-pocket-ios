@@ -39,6 +39,10 @@ extension Bundle {
         return Bundle.main.infoDictionary?["DEEP_LINK_SCHEME"] as? String ?? ""
     }
     
+    static var kakaoChannelUrl: String {
+        return Bundle.main.infoDictionary?["KAKAO_CHANNEL_URL"] as? String ?? ""
+    }
+    
     static func getAdmobId(adType: AdType) -> String {
         guard let idDictionary = Bundle.main.infoDictionary?["ADMOB_UNIT_ID"] as? [String: Any],
               let admobId = idDictionary[adType.bundleKey] as? String else { return "" }
