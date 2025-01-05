@@ -73,11 +73,6 @@ final class HomeCellInfoView: BaseView {
     func bind(reviewCount: Int?, distance: Int) {
         let reviewCount = reviewCount ?? 0
         reviewCountLabel.text = "\(reviewCount)개"
-        
-        if distance > 1000 {
-            locationLabel.text = "1km +"
-        } else {
-            locationLabel.text = "\(distance)m"
-        }
+        locationLabel.text = distance.distanceString
     }
 }

@@ -24,11 +24,7 @@ final class StoreDetailOverviewInfoCellItemView: BaseView {
                 return "\(count)개"
                 
             case .distance(let distance):
-                if distance > 1000 {
-                    return "1km +"
-                } else {
-                    return "\(distance)m"
-                }
+                return distance.distanceString
             }
         }
     }
