@@ -2,18 +2,22 @@ import Foundation
 
 public struct StoreVisitHistory: Hashable {
     public let type: VisitType
-    public let visitTime: String
     public let name: String
+    public let createdAt: String
     
     public init(response: StoreVisitWithUserResponse) {
         self.type = response.visit.type
-        self.visitTime = response.visit.visitDate
         self.name = response.visitor.name
+        self.createdAt = response.visit.createdAt
     }
     
-    public init(type: VisitType, visitTime: String, name: String) {
+    public init(
+        type: VisitType,
+        name: String,
+        createdAt: String
+    ) {
         self.type = type
-        self.visitTime = visitTime
         self.name = name
+        self.createdAt = createdAt
     }
 }

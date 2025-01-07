@@ -9,6 +9,7 @@ import Log
 
 final class ReviewBottomSheetViewModel: BaseViewModel {
     struct Input {
+        let load = PassthroughSubject<Void, Never>()
         let didTapRating = PassthroughSubject<Int, Never>()
         let inputReview = PassthroughSubject<String, Never>()
         let didTapWrite = PassthroughSubject<Void, Never>()
@@ -28,6 +29,7 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     struct State {
         var rating: Int?
         var contents: String?
+        var nonceToken: String?
     }
     
     enum Route {
@@ -42,6 +44,7 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     private let storeService: StoreRepository
+    private let commonRepository: CommonRepository
     private let logManager: LogManagerProtocol
     private let config: Config
     private var state: State
@@ -49,11 +52,13 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     init(
         config: Config,
         storeService: StoreRepository = StoreRepositoryImpl(),
-        logManager: LogManagerProtocol = LogManager.shared
+        logManager: LogManagerProtocol = LogManager.shared,
+        commonRepository: CommonRepository = CommonRepositoryImpl()
     ) {
         self.config = config
         self.storeService = storeService
         self.logManager = logManager
+        self.commonRepository = commonRepository
         
         let isEnableWriteButton = (config.review?.contents != nil) && (config.review?.rating != nil)
         self.output = Output(
@@ -65,6 +70,13 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     }
     
     override func bind() {
+        input.load
+            .withUnretained(self)
+            .sink { (owner: ReviewBottomSheetViewModel, _) in
+                owner.createNonceToken()
+            }
+            .store(in: &cancellables)
+        
         input.didTapRating
             .withUnretained(self)
             .sink { (owner: ReviewBottomSheetViewModel, rating: Int) in
@@ -103,13 +115,15 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     
     private func writeReview() {
         guard let rating = state.rating,
-              let contents = state.contents else { return }
+              let contents = state.contents,
+              let nonceToken = state.nonceToken else { return }
         
         Task {
             let input = WriteReviewRequestInput(
                 storeId: config.storeId,
                 contents: contents,
-                rating: rating
+                rating: rating,
+                nonceToken: nonceToken
             )
             
             let result = await storeService.writeReview(input: input)
@@ -129,10 +143,11 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     private func editReview() {
         guard let reviewId = config.review?.reviewId,
               let rating = state.rating,
-              let contents = state.contents else { return }
+              let contents = state.contents,
+              let nonceToken = state.nonceToken else { return }
         
         Task {
-            let input = EditReviewRequestInput(contents: contents, rating: rating)
+            let input = EditReviewRequestInput(contents: contents, rating: rating, nonceToken: nonceToken)
             let result = await storeService.editReview(reviewId: reviewId, input: input)
             
             switch result {
@@ -140,6 +155,19 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
                 output.onSuccessEditReview.send(response)
                 output.route.send(.dismiss)
                 
+            case .failure(let error):
+                output.errorAlert.send(error)
+            }
+        }
+    }
+    
+    private func createNonceToken() {
+        Task {
+            let result = await commonRepository.createNonceToken()
+            
+            switch result {
+            case .success(let response):
+                state.nonceToken = response.nonce
             case .failure(let error):
                 output.errorAlert.send(error)
             }

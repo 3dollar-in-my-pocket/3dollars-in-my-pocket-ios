@@ -13,6 +13,7 @@ public struct BossStoreResponse: Decodable {
     public let appearanceDays: [StoreAppearanceDayResponse]
     public let categories: [StoreFoodCategoryResponse]
     public let accountNumbers: [StoreAccountNumberResponse]
+    public let contactsNumbers: [BossStoreContactsNumberResponse]
     public let activitiesStatus: ActivitiesStatus
     public let createdAt: String
     public let updatedAt: String
@@ -27,4 +28,10 @@ public enum ActivitiesStatus: String, Codable {
     public init(from decoder: Decoder) throws {
         self = try ActivitiesStatus(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
     }
+}
+
+
+public struct BossStoreContactsNumberResponse: Decodable {
+    public let number: String
+    public let description: String?
 }

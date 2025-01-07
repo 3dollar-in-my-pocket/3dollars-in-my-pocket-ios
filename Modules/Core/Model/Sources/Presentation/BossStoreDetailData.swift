@@ -32,7 +32,8 @@ public struct BossStoreDetailData {
             snsUrl: response.store.snsUrl,
             introduction: response.store.introduction,
             images: response.store.representativeImages,
-            accountInfos: response.store.accountNumbers.map { StoreAccountNumber(response: $0 )}
+            accountInfos: response.store.accountNumbers.map { StoreAccountNumber(response: $0 )},
+            contactsNumbers: response.store.contactsNumbers
         )
         self.menus = response.store.menus.map { BossStoreMenu(response: $0) }
         

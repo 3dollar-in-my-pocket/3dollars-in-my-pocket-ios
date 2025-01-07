@@ -46,6 +46,10 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
         return GlobalEventBus.shared
     }
     
+    var kakaoChannelUrl: String {
+        return Bundle.kakaoChannelUrl
+    }
+    
     func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
         return AdBannerView(adType: adType)
     }

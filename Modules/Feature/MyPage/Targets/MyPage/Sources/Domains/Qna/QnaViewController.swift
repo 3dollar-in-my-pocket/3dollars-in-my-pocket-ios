@@ -58,8 +58,8 @@ public final class QnaViewController: BaseViewController {
         switch route {
         case .pushFAQ:
             pushFAQ()
-        case .presentMail(let nickname):
-            presentMailComposer(nickname: nickname)
+        case .goToKakao:
+            goToKakao()
         }
     }
     
@@ -69,24 +69,9 @@ public final class QnaViewController: BaseViewController {
         navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func presentMailComposer(nickname: String) {
-        guard MFMailComposeViewController.canSendMail() else {
-            ToastManager.shared.show(message: "메일앱이 지원되지 않습니다.")
-            return
-        }
-        
-        let iosVersion = UIDevice.current.systemVersion
-        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-        let deviceModel = Device.current
-        
-        let composer = MFMailComposeViewController()
-        composer.mailComposeDelegate = self
-        composer.setToRecipients(["3dollarinmypocket@gmail.com"])
-        composer.setSubject("가슴속 3천원 문의")
-        composer.setMessageBody("\n\n\n\n----------\n닉네임: \(nickname)\n앱 버전: \(appVersion)\nOS: ios \(iosVersion)\n디바이스: \(deviceModel)", isHTML: false)
-        
-        
-        present(composer, animated: true)
+    private func goToKakao() {
+        guard let url = URL(string: Environment.appModuleInterface.kakaoChannelUrl) else { return }
+        UIApplication.shared.open(url)
     }
 }
 
@@ -107,15 +92,5 @@ extension QnaViewController: UICollectionViewDataSource {
 extension QnaViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel.input.didTapCell.send(indexPath.item)
-    }
-}
-
-extension QnaViewController: MFMailComposeViewControllerDelegate {
-    public func mailComposeController(
-        _ controller: MFMailComposeViewController,
-        didFinishWith result: MFMailComposeResult,
-        error: Error?
-    ) {
-        controller.dismiss(animated: true, completion: nil)
     }
 }

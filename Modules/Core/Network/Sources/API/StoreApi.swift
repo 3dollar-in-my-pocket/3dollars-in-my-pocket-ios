@@ -122,12 +122,12 @@ extension StoreApi: RequestType {
             return .json
         case .reportStore:
             return .json
-        case .writeReview:
-            return .json
+        case .writeReview(let input):
+            return .custom(["X-Nonce-Token": input.nonceToken])
         case .fetchStorePhotos:
             return .json
-        case .editReview:
-            return .json
+        case .editReview(_, let input):
+            return .custom(["X-Nonce-Token": input.nonceToken])
         case .deletePhoto:
             return .json
         }

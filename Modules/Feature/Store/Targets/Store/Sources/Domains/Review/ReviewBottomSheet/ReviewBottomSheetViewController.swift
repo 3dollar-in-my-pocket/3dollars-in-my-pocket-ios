@@ -38,6 +38,7 @@ final class ReviewBottomSheetViewController: BaseViewController {
         super.viewDidLoad()
         
         addKeyboardObservers()
+        viewModel.input.load.send(())
     }
     
     override func bindEvent() {

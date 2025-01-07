@@ -10,6 +10,7 @@ public protocol AppModuleInterface {
     var photoManager: PhotoManagerProtocol { get }
     var onClearSession: (() -> Void) { get }
     var globalEventBus: GlobalEventBusProtocol { get }
+    var kakaoChannelUrl: String { get }
     
     func createAdBannerView(adType: AdType) -> AdBannerViewProtocol
     func createWebViewController(title: String, url: String) -> UIViewController
