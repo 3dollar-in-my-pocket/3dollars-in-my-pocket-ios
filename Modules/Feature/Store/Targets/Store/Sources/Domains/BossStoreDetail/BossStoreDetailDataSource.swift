@@ -2,6 +2,7 @@ import UIKit
 
 import Combine
 import Model
+import DesignSystem
 
 final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossStoreDetailSection, BossStoreDetailSectionItem> {
 
@@ -15,7 +16,10 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             BossStoreEmptyMenuCell.self,
             BossStoreWorkdayCell.self,
             BossStoreFeedbacksCell.self,
-            BossStorePostCell.self
+            BossStorePostCell.self,
+            StoreDetailRatingCell.self,
+            StoreDetailReviewEmptyCell.self,
+            StoreDetailReviewMoreCell.self
         ])
 
         super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
@@ -47,6 +51,19 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             case .post(let viewModel):
                 let cell: BossStorePostCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel)
+                return cell
+            case .reviewRating(let rating):
+                let cell: StoreDetailRatingCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(rating)
+                return cell
+            case .reviewEmpty:
+                let cell: StoreDetailReviewEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.updateBackgroundColor(.clear)
+                return cell
+            case .reviewMore(let totalCount):
+                let cell: StoreDetailReviewMoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.moreButton.backgroundColor = Colors.gray10.color
+                cell.bind(totalCount)
                 return cell
             }
         }

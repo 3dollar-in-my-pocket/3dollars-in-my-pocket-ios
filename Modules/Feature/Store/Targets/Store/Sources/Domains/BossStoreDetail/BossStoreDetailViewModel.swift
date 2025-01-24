@@ -252,7 +252,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         
         sections.append(contentsOf: [
             .init(type: .workday, items: [.workday(storeDetailData.workdays)]),
-            .init(type: .feedbacks, items: [.feedbacks(bindFeedbacksCellViewModel(with: storeDetailData.feedbacks))])
+            .init(type: .review, items: [.reviewRating(rating: 0), .reviewEmpty, .reviewMore(totalCount: 50)]),
         ])
 
         output.dataSource.send(sections)

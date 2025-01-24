@@ -286,6 +286,12 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: BossStoreFeedbacksCell.Layout.height(viewModel: viewModel))
         case .post(let viewModel):
             return CGSize(width: width, height: BossStorePostCell.Layout.calculateHeight(viewModel: viewModel, width: width))
+        case .reviewRating:
+            return CGSize(width: width, height: StoreDetailRatingCell.Layout.height)
+        case .reviewEmpty:
+            return CGSize(width: width, height: StoreDetailReviewEmptyCell.Layout.height)
+        case .reviewMore:
+            return CGSize(width: width, height: StoreDetailReviewMoreCell.Layout.height)
         default:
             return .zero
         }
