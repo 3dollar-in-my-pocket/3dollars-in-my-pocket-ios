@@ -171,6 +171,9 @@ final class BossStoreDetailViewController: BaseViewController {
                     owner.navigateAppleMap(location: location)
                 case .showErrorAlert(let error):
                     owner.showErrorAlert(error: error)
+                case .presentReviewWrite(let viewModel):
+                    let viewController = ReviewWriteViewController(viewModel: viewModel)
+                    owner.navigationController?.pushViewController(viewController, animated: true)
                 }
             }
             .store(in: &cancellables)

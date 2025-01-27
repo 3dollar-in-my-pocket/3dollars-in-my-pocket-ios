@@ -63,6 +63,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case presentBossPhotoDetail(BossStorePhotoViewModel)
         case navigateAppleMap(LocationResponse)
         case showErrorAlert(Error)
+        case presentReviewWrite(ReviewWriteViewModel)
     }
 
     let input = Input()
@@ -130,11 +131,12 @@ final class BossStoreDetailViewModel: BaseViewModel {
                 owner.sendClickLog(eventName: .clickWriteReview)
             })
             .map { owner, _ in
-                owner.bindFeedbackViewModel(
-                    with: owner.state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
-                )
+                ReviewWriteViewModel(config: .init(storeId: "", feedbackTypes: owner.state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []))
+//                owner.bindFeedbackViewModel(
+//                    with: owner.state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
+//                )
             }
-            .map { .presentFeedback($0) }
+            .map { .presentReviewWrite($0) }
             .subscribe(output.route)
             .store(in: &cancellables)
     }
