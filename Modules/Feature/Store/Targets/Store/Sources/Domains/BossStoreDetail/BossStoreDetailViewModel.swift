@@ -32,6 +32,14 @@ final class BossStoreDetailViewModel: BaseViewModel {
         // Post Section
         let didTapMorePost = PassthroughSubject<Void, Never>()
         let didTapPostPhoto = PassthroughSubject<Int, Never>()
+        
+        // 리뷰 섹션
+        let didTapReviewRightButton = PassthroughSubject<Int, Never>()
+        let didTapReviewLikeButton = PassthroughSubject<Int, Never>()
+        let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
+        let didTapReviewMore = PassthroughSubject<Void, Never>()
+        let onSuccessReportReview = PassthroughSubject<Int, Never>()
+        let updateReview = PassthroughSubject<StoreDetailReview, Never>()
     }
 
     struct Output {
@@ -256,9 +264,23 @@ final class BossStoreDetailViewModel: BaseViewModel {
         }
         
         sections.append(contentsOf: [
-            .init(type: .workday, items: [.workday(storeDetailData.workdays)]),
-            .init(type: .review, items: [.reviewRating(rating: 0), .reviewEmpty, .reviewMore(totalCount: 50)]),
+            .init(type: .workday, items: [.workday(storeDetailData.workdays)])
         ])
+        
+        var reviewSectionItems: [BossStoreDetailSectionItem] = []
+        
+        if storeDetailData.reviews.isEmpty {
+            reviewSectionItems.append(.reviewEmpty)
+        } else {
+            reviewSectionItems.append(contentsOf: storeDetailData.reviews.prefix(3).map {
+                .review($0)
+            })
+            if storeDetailData.reviews.count > 3 {
+                reviewSectionItems.append(.reviewMore(totalCount: storeDetailData.totalReviewCount))
+            }
+        }
+        
+        sections.append(.init(type: .review, items: reviewSectionItems))
 
         output.dataSource.send(sections)
     }

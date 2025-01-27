@@ -21,7 +21,7 @@ final class BossStoreDetailViewController: BaseViewController {
         $0.delegate = self
     }
 
-    private lazy var dataSource = BossStoreDetailDataSource(collectionView: collectionView, containerVC: self)
+    private lazy var dataSource = BossStoreDetailDataSource(collectionView: collectionView, containerVC: self, viewModel: viewModel)
 
     private let bottomStickyView = BottomStickyView()
 
@@ -295,6 +295,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: StoreDetailReviewEmptyCell.Layout.height)
         case .reviewMore:
             return CGSize(width: width, height: StoreDetailReviewMoreCell.Layout.height)
+        case .review:
+            return CGSize(width: width, height: 120)
         default:
             return .zero
         }

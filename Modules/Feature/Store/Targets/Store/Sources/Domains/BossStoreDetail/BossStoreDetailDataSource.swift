@@ -7,8 +7,12 @@ import DesignSystem
 final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossStoreDetailSection, BossStoreDetailSectionItem> {
 
     private typealias Snapshot = NSDiffableDataSourceSnapshot<BossStoreDetailSection, BossStoreDetailSectionItem>
+    
+    private weak var viewModel: BossStoreDetailViewModel?
 
-    init(collectionView: UICollectionView, containerVC: UIViewController) {
+    init(collectionView: UICollectionView, containerVC: UIViewController, viewModel: BossStoreDetailViewModel?) {
+        self.viewModel = viewModel
+        
         collectionView.register([
             StoreDetailOverviewCell.self,
             BossStoreInfoCell.self,
@@ -18,12 +22,13 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             BossStoreFeedbacksCell.self,
             BossStorePostCell.self,
             StoreDetailRatingCell.self,
+            StoreDetailReviewCell.self,
             StoreDetailReviewEmptyCell.self,
             StoreDetailReviewMoreCell.self
         ])
-
-        super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
-            guard let containerVC else { return UICollectionViewCell() }
+        
+        super.init(collectionView: collectionView) { [weak containerVC, viewModel] collectionView, indexPath, itemIdentifier in
+            guard let containerVC, let viewModel else { return UICollectionViewCell() }
             switch itemIdentifier {
             case .overview(let viewModel):
                 let cell: StoreDetailOverviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
@@ -51,6 +56,22 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             case .post(let viewModel):
                 let cell: BossStorePostCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel)
+                return cell
+            case .review(let review):
+                let cell: StoreDetailReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(review)
+                cell.rightButton
+                    .controlPublisher(for: .touchUpInside)
+                    .map { _ in indexPath.item - 1 }
+                    .subscribe(viewModel.input.didTapReviewRightButton)
+                    .store(in: &cell.cancellables)
+                cell.likeButton
+                    .controlPublisher(for: .touchUpInside)
+                    .throttle(for: 1, scheduler: RunLoop.main, latest: false)
+                    .map { _ in indexPath.item - 1 }
+                    .subscribe(viewModel.input.didTapReviewLikeButton)
+                    .store(in: &cell.cancellables)
+                
                 return cell
             case .reviewRating(let rating):
                 let cell: StoreDetailRatingCell = collectionView.dequeueReusableCell(indexPath: indexPath)
