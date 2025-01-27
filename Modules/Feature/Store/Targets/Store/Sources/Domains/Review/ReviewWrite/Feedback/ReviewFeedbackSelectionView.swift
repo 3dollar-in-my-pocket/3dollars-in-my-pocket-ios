@@ -45,7 +45,7 @@ final class ReviewFeedbackSelectionView: BaseView {
         collectionView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(14)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(330)
+            $0.height.equalTo(278)
             $0.bottom.equalToSuperview()
         }
     }

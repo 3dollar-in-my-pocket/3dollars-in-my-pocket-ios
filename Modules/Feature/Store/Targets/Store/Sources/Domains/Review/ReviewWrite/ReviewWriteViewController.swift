@@ -12,10 +12,21 @@ final class ReviewWriteViewController: BaseViewController {
     }
     
     private let scrollView = UIScrollView()
-    private let contentView = UIView()
+    private let containerView = UIView()
     
     private lazy var feedbackSelectionView = ReviewFeedbackSelectionView(viewModel.output.feedbackSelectionViewModel)
-    private let reviewBottomSheet = ReviewBottomSheet()
+    private let contentView = ReviewWriteContentView()
+    private let photoListView = ReviewPhotoListView()
+    private let completeButton = UIButton().then {
+//        $0.isEnabled = false
+        $0.backgroundColor = Colors.mainPink.color
+        $0.setTitle(Strings.BossStoreFeedback.sendFeedback, for: .normal)
+        $0.titleLabel?.font = Fonts.bold.font(size: 16)
+        $0.setTitleColor(.white, for: .normal)
+    }
+    private let bottomBackgroundView = UIView().then {
+        $0.backgroundColor = Colors.mainPink.color
+    }
     
     private let viewModel: ReviewWriteViewModel
     
@@ -40,43 +51,66 @@ final class ReviewWriteViewController: BaseViewController {
         setupUI()
         
         addKeyboardObservers()
-//        viewModel.input.load.send(())
+        viewModel.input.load.send(())
     }
     
     private func setupUI() {
         view.backgroundColor = .white
         
-        view.addSubview(scrollView)
+        view.addSubViews([
+            scrollView,
+            completeButton,
+            bottomBackgroundView
+        ])
+        
         scrollView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(completeButton.snp.top)
         }
         
-        scrollView.addSubview(contentView)
-        contentView.snp.makeConstraints {
+        
+        scrollView.addSubview(containerView)
+        containerView.snp.makeConstraints {
             $0.edges.equalToSuperview()
             $0.width.equalToSuperview()
         }
         
-        contentView.addSubview(feedbackSelectionView)
-        contentView.addSubview(reviewBottomSheet)
+        containerView.addSubview(feedbackSelectionView)
+        containerView.addSubview(contentView)
+        containerView.addSubview(photoListView)
         
         feedbackSelectionView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
         }
-        reviewBottomSheet.snp.makeConstraints {
-            $0.top.equalTo(feedbackSelectionView.snp.bottom)
+        contentView.snp.makeConstraints {
+            $0.top.equalTo(feedbackSelectionView.snp.bottom).offset(52)
+            $0.leading.trailing.equalToSuperview()
+        }
+        photoListView.snp.makeConstraints {
+            $0.top.equalTo(contentView.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
+        }
+        
+        completeButton.snp.makeConstraints {
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.bottom.equalTo(bottomBackgroundView.snp.top)
+            $0.height.equalTo(64)
+        }
+
+        bottomBackgroundView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
+            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
         }
     }
     
     override func bindEvent() {
-        reviewBottomSheet.closeButton
+        completeButton
             .controlPublisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { (owner: ReviewWriteViewController, _) in
-                owner.dismiss(animated: true)
-            }
+            .mapVoid
+            .subscribe(viewModel.input.didTapCompleteButton)
             .store(in: &cancellables)
     }
     

@@ -131,7 +131,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
                 owner.sendClickLog(eventName: .clickWriteReview)
             })
             .map { owner, _ in
-                ReviewWriteViewModel(config: .init(storeId: "", feedbackTypes: owner.state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []))
+                ReviewWriteViewModel(config: .init(
+                    storeId: owner.storeId,
+                    feedbackTypes: owner.state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
+                ))
 //                owner.bindFeedbackViewModel(
 //                    with: owner.state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
 //                )
