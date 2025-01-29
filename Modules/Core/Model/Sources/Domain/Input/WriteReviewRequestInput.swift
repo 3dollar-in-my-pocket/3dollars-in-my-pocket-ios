@@ -45,5 +45,9 @@ public extension WriteReviewRequestInput {
     
     struct Feedback: Encodable {
         public let emojiType: String
+        
+        public init(emojiType: String) {
+            self.emojiType = emojiType
+        }
     }
 }

@@ -20,12 +20,8 @@ final class ReviewFeedbackSelectionViewModel: BaseViewModel {
         let isEnabledButton = CurrentValueSubject<Bool, Never>(false)
         let route = PassthroughSubject<Route, Never>()
         let showToast = PassthroughSubject<String, Never>()
-        let sendFeedbacks = PassthroughSubject<Void, Never>()
+        var selectedFeedbacks: Set<FeedbackType> = .init()
         let error = PassthroughSubject<Error, Never>()
-    }
-
-    struct State {
-        var selectItems: Set<FeedbackType> = .init()
     }
 
     enum Route {
@@ -33,9 +29,7 @@ final class ReviewFeedbackSelectionViewModel: BaseViewModel {
     }
 
     let input = Input()
-    let output: Output
-
-    private var state = State()
+    var output: Output
 
     private let storeId: String
     private let feedbackTypes: [FeedbackType]
@@ -66,43 +60,16 @@ final class ReviewFeedbackSelectionViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: ReviewFeedbackSelectionViewModel, sectionItem: BossStoreFeedbackSectionItem) in
                 if case .feedback(let item, _) = sectionItem {
-                    if owner.state.selectItems.contains(item) {
-                        owner.state.selectItems.remove(item)
+                    if owner.output.selectedFeedbacks.contains(item) {
+                        owner.output.selectedFeedbacks.remove(item)
                     } else {
-                        owner.state.selectItems.insert(item)
+                        owner.output.selectedFeedbacks.insert(item)
                     }
                     let items: [BossStoreFeedbackSectionItem] = owner.feedbackTypes.map {
-                        .feedback(item: $0, isSelected: owner.state.selectItems.contains($0))
+                        .feedback(item: $0, isSelected: owner.output.selectedFeedbacks.contains($0))
                     }
                     owner.output.dataSource.send(items)
-                    owner.output.isEnabledButton.send(!owner.state.selectItems.isEmpty)
-                }
-            }
-            .store(in: &cancellables)
-
-        input.didTapSendFeedbackButton
-            .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, _ in
-                owner.output.showLoading.send(true)
-            })
-            .asyncMap { owner, input in
-                await owner.feedbackRepository.sendFeedbacks(
-                    targetType: "BOSS_STORE", // TODO
-                    targetId: owner.storeId,
-                    feedbackTypes: Array(owner.state.selectItems)
-                )
-            }
-            .withUnretained(self)
-            .sink { owner, result in
-                owner.output.showLoading.send(false)
-                owner.sendClickWriteReviewLog()
-                switch result {
-                case .success(_):
-                    owner.output.showToast.send(Strings.BossStoreFeedback.finishToast)
-                    owner.output.route.send(.back)
-                    owner.output.sendFeedbacks.send()
-                case .failure(let error):
-                    owner.output.error.send(error)
+                    owner.output.isEnabledButton.send(!owner.output.selectedFeedbacks.isEmpty)
                 }
             }
             .store(in: &cancellables)

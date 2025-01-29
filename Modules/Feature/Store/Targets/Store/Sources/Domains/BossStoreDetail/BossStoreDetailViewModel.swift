@@ -139,13 +139,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
                 owner.sendClickLog(eventName: .clickWriteReview)
             })
             .map { owner, _ in
-                ReviewWriteViewModel(config: .init(
-                    storeId: owner.storeId,
-                    feedbackTypes: owner.state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
-                ))
-//                owner.bindFeedbackViewModel(
-//                    with: owner.state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
-//                )
+                owner.bindReviewWriteViewModel()
             }
             .map { .presentReviewWrite($0) }
             .subscribe(output.route)
@@ -519,6 +513,20 @@ extension BossStoreDetailViewModel {
     
     private func bindReviewCellViewModel(with data: StoreDetailReview) -> BossStoreDetailReviewCellViewModel {
         let viewModel = BossStoreDetailReviewCellViewModel(data: data)
+        return viewModel
+    }
+    
+    private func bindReviewWriteViewModel() -> ReviewWriteViewModel {
+        let viewModel = ReviewWriteViewModel(config: .init(
+            storeId: storeId,
+            feedbackTypes: state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
+        ))
+        
+        viewModel.output.onSuccessWriteReview
+            .mapVoid
+            .subscribe(input.reload)
+            .store(in: &viewModel.cancellables)
+        
         return viewModel
     }
 }

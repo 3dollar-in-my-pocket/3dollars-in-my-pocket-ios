@@ -16,7 +16,9 @@ final class ReviewPhotoListView: BaseView {
         $0.contentInset = .init(top: 0, left: 20, bottom: 0, right: 20)
     }
     
-    private var imageUrls: [String] = ["", "", "", ""]
+    private let photoAddButtonView = ReviewPhotoAddButtonView()
+    
+    private var imageUrls: [String] = []
 
     init() {
         super.init(frame: .zero)
@@ -31,7 +33,8 @@ final class ReviewPhotoListView: BaseView {
     override func setup() {
         backgroundColor = Colors.systemWhite.color
         addSubViews([
-            collectionView
+            collectionView,
+            photoAddButtonView
         ])
         
         collectionView.register([
@@ -44,6 +47,10 @@ final class ReviewPhotoListView: BaseView {
         
         snp.makeConstraints {
             $0.height.equalTo(72)
+        }
+        
+        photoAddButtonView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
     }
     
@@ -93,8 +100,59 @@ extension ReviewPhotoListView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return ReviewPhotoListCell.Layout.size
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return ReviewPhotoListCell.Layout.size
+        return imageUrls.isEmpty ? .zero : ReviewPhotoListCell.Layout.size
+    }
+}
+
+// MARK: - EmptyView
+private final class ReviewPhotoAddButtonView: UIControl {
+    private let containerView = UIView().then {
+        $0.backgroundColor = Colors.gray10.color
+        $0.layer.cornerRadius = 10
+    }
+    
+    private let stackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.alignment = .center
+        $0.spacing = 4
+    }
+    
+    private let titleLabel = UILabel().then {
+        $0.font = Fonts.regular.font(size: 14)
+        $0.textColor = Colors.gray60.color
+        $0.text = "사진 추가하기"
+    }
+    
+    private let imageView = UIImageView().then {
+        $0.image = Icons.camera.image.resizeImage(scaledTo: 21).withTintColor(Colors.gray60.color)
+    }
+    
+    init() {
+        super.init(frame: .zero)
+        
+        setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupUI() {
+        addSubViews([containerView])
+        containerView.addSubViews([stackView])
+        stackView.addArrangedSubview(imageView)
+        stackView.addArrangedSubview(titleLabel)
+        
+        containerView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.centerY.equalToSuperview()
+            $0.height.equalTo(53)
+        }
+        
+        stackView.snp.makeConstraints {
+            $0.center.equalToSuperview()
+        }
     }
 }

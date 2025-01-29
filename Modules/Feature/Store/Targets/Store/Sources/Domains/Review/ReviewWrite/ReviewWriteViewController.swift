@@ -11,6 +11,22 @@ final class ReviewWriteViewController: BaseViewController {
         return .accountInfo // TODO
     }
     
+    private let backButton: UIButton = {
+        let button = UIButton()
+        button.setImage(Icons.arrowLeft.image.withTintColor(Colors.gray100.color), for: .normal)
+        
+        return button
+    }()
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = Strings.ReviewList.title
+        label.font = Fonts.medium.font(size: 16)
+        label.textColor = Colors.gray100.color
+        
+        return label
+    }()
+    
     private let scrollView = UIScrollView()
     private let containerView = UIView()
     
@@ -18,7 +34,7 @@ final class ReviewWriteViewController: BaseViewController {
     private let contentView = ReviewWriteContentView()
     private let photoListView = ReviewPhotoListView()
     private let completeButton = UIButton().then {
-//        $0.isEnabled = false
+        $0.isEnabled = false
         $0.backgroundColor = Colors.mainPink.color
         $0.setTitle(Strings.BossStoreFeedback.sendFeedback, for: .normal)
         $0.titleLabel?.font = Fonts.bold.font(size: 16)
@@ -58,13 +74,27 @@ final class ReviewWriteViewController: BaseViewController {
         view.backgroundColor = .white
         
         view.addSubViews([
+            backButton,
+            titleLabel,
             scrollView,
             completeButton,
             bottomBackgroundView
         ])
         
+        backButton.snp.makeConstraints {
+            $0.left.equalToSuperview().offset(16)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(16)
+            $0.size.equalTo(24)
+        }
+        
+        titleLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalTo(backButton)
+        }
+        
         scrollView.snp.makeConstraints {
-            $0.top.leading.trailing.equalToSuperview()
+            $0.top.equalTo(backButton.snp.bottom).offset(24)
+            $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(completeButton.snp.top)
         }
         
@@ -89,7 +119,7 @@ final class ReviewWriteViewController: BaseViewController {
         photoListView.snp.makeConstraints {
             $0.top.equalTo(contentView.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(30)
         }
         
         completeButton.snp.makeConstraints {
@@ -98,7 +128,7 @@ final class ReviewWriteViewController: BaseViewController {
             $0.bottom.equalTo(bottomBackgroundView.snp.top)
             $0.height.equalTo(64)
         }
-
+        
         bottomBackgroundView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
@@ -112,65 +142,56 @@ final class ReviewWriteViewController: BaseViewController {
             .mapVoid
             .subscribe(viewModel.input.didTapCompleteButton)
             .store(in: &cancellables)
+        
+        backButton
+            .controlPublisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { (owner: ReviewWriteViewController, _) in
+                owner.navigationController?.popViewController(animated: true)
+            }
+            .store(in: &cancellables)
     }
     
     override func bindViewModelInput() {
-//        reviewBottomSheet.ratingInputView.ratingPublisher
-//            .subscribe(viewModel.input.didTapRating)
-//            .store(in: &cancellables)
-//        
-//        reviewBottomSheet.textView
-//            .textPublisher
-//            .filter { $0 != Strings.ReviewBottomSheet.placeholder }
-//            .subscribe(viewModel.input.inputReview)
-//            .store(in: &cancellables)
-//        
-//        reviewBottomSheet.writeButton.tapPublisher
-//            .throttleClick()
-//            .subscribe(viewModel.input.didTapWrite)
-//            .store(in: &cancellables)
+        contentView.ratingInputView.ratingPublisher
+            .subscribe(viewModel.input.didTapRating)
+            .store(in: &cancellables)
+        
+        contentView.textView
+            .textPublisher
+            .filter { $0 != Strings.ReviewBottomSheet.placeholder }
+            .subscribe(viewModel.input.inputReview)
+            .store(in: &cancellables)
     }
     
     override func bindViewModelOutput() {
-//        viewModel.output.rating
-//            .main
-//            .withUnretained(self)
-//            .sink { (owner: ReviewWriteViewController, rating) in
-//                owner.reviewBottomSheet.setRating(rating)
-//            }
-//            .store(in: &cancellables)
-//        
-//        viewModel.output.contents
-//            .main
-//            .withUnretained(self)
-//            .sink { (owner: ReviewWriteViewController, contents) in
-//                owner.reviewBottomSheet.setContents(contents)
-//            }
-//            .store(in: &cancellables)
-//        
-//        viewModel.output.isEnableWriteButton
-//            .main
-//            .assign(to: \.isEnabled, on: reviewBottomSheet.writeButton)
-//            .store(in: &cancellables)
-//        
-//        viewModel.output.errorAlert
-//            .main
-//            .withUnretained(self)
-//            .sink { (owner: ReviewWriteViewController, error) in
-//                owner.showErrorAlert(error: error)
-//            }
-//            .store(in: &cancellables)
-//        
-//        viewModel.output.route
-//            .main
-//            .withUnretained(self)
-//            .sink { (owner: ReviewWriteViewController, route) in
-//                switch route {
-//                case .dismiss:
-//                    owner.dismiss(animated: true)
-//                }
-//            }
-//            .store(in: &cancellables)
+        viewModel.output.isEnableWriteButton
+            .main
+            .sink { [weak self] isEnabled in
+                guard let self else { return }
+                
+                completeButton.backgroundColor = isEnabled ? Colors.mainPink.color : Colors.gray30.color
+                bottomBackgroundView.backgroundColor = isEnabled ? Colors.mainPink.color : Colors.gray30.color
+                completeButton.isEnabled = isEnabled
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.onSuccessWriteReview
+            .main
+            .sink { [weak self] isEnabled in
+                guard let self else { return }
+                
+                navigationController?.popViewController(animated: true)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.errorAlert
+            .main
+            .withUnretained(self)
+            .sink { (owner: ReviewWriteViewController, error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
     }
     
     private func addKeyboardObservers() {
@@ -187,7 +208,7 @@ final class ReviewWriteViewController: BaseViewController {
             object: nil
         )
     }
-
+    
     @objc private func keyboardWillShow(_ sender: Notification) {
         guard let userInfo = sender.userInfo as? [String: Any] else { return }
         guard let keyboardFrame
@@ -195,7 +216,7 @@ final class ReviewWriteViewController: BaseViewController {
         
         keyboardHeight = keyboardFrame.cgRectValue.height
     }
-
+    
     @objc private func keyboardWillHide(_ sender: Notification) {
         keyboardHeight = .zero
     }

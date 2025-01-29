@@ -25,7 +25,7 @@ final class ReviewWriteContentView: BaseView {
         textView.font = Fonts.regular.font(size: 14)
         textView.contentInset = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
         textView.backgroundColor = Colors.gray10.color
-        textView.textColor = Colors.gray100.color
+        textView.textColor = Colors.gray40.color
         textView.returnKeyType = .done
         textView.layer.cornerRadius = 12
         textView.layer.borderColor = Colors.mainPink.color.cgColor

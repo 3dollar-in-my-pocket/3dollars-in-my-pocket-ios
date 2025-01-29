@@ -11,12 +11,16 @@ final class ReviewWriteViewModel: BaseViewModel {
     struct Input {
         let didTapCompleteButton = PassthroughSubject<Void, Never>()
         let load = PassthroughSubject<Void, Never>()
+        let didTapRating = PassthroughSubject<Int, Never>()
+        let inputReview = PassthroughSubject<String, Never>()
     }
     
     struct Output {
         let feedbackSelectionViewModel: ReviewFeedbackSelectionViewModel
         let errorAlert = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
+        let isEnableWriteButton = CurrentValueSubject<Bool, Never>(false)
+        let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
     }
     
     enum Route {
@@ -61,9 +65,7 @@ final class ReviewWriteViewModel: BaseViewModel {
         input.didTapCompleteButton
             .withUnretained(self)
             .sink { (owner: ReviewWriteViewModel, _) in
-                
-                    owner.writeReview()
-        
+                owner.writeReview()
             }
             .store(in: &cancellables)
         
@@ -73,19 +75,39 @@ final class ReviewWriteViewModel: BaseViewModel {
                 owner.createNonceToken()
             }
             .store(in: &cancellables)
+        
+        input.didTapRating
+            .withUnretained(self)
+            .sink { (owner: ReviewWriteViewModel, rating: Int) in
+                owner.state.rating = rating
+                owner.output.isEnableWriteButton.send(owner.isEnableWriteButton())
+            }
+            .store(in: &cancellables)
+        
+        input.inputReview
+            .withUnretained(self)
+            .sink { (owner: ReviewWriteViewModel, contents: String) in
+                owner.state.contents = contents
+                owner.output.isEnableWriteButton.send(owner.isEnableWriteButton())
+            }
+            .store(in: &cancellables)
     }
     
     private func writeReview() {
-//        guard let rating = state.rating,
-//              let contents = state.contents,
-//              let nonceToken = state.nonceToken else { return }
+        guard let rating = state.rating,
+              let contents = state.contents,
+              let nonceToken = state.nonceToken else { return }
+        
+        
+        let feedbacks: [WriteReviewRequestInput.Feedback] = output.feedbackSelectionViewModel.output.selectedFeedbacks.map { WriteReviewRequestInput.Feedback(emojiType: $0.rawValue) }
         
         Task {
             let input = WriteReviewRequestInput(
                 storeId: Int(config.storeId) ?? 0,
-                contents: "TEST",
-                rating: 4,
-                nonceToken: state.nonceToken ?? ""
+                contents: contents,
+                rating: rating,
+                nonceToken: nonceToken,
+                feedbacks: feedbacks
             )
             
             let result = await storeService.writeReview(input: input)
@@ -93,7 +115,7 @@ final class ReviewWriteViewModel: BaseViewModel {
             switch result {
             case .success(let response):
                 let storeDetailReview = StoreDetailReview(response: response)
-//                output.onSuccessWriteReview.send(storeDetailReview)
+                output.onSuccessWriteReview.send(storeDetailReview)
                 output.route.send(.dismiss)
                 
             case .failure(let error):
@@ -113,5 +135,13 @@ final class ReviewWriteViewModel: BaseViewModel {
                 output.errorAlert.send(error)
             }
         }
+    }
+    
+    private func isEnableWriteButton() -> Bool {
+        guard let _ = state.rating,
+              let contents = state.contents,
+                output.feedbackSelectionViewModel.output.isEnabledButton.value else { return false }
+        
+        return contents.isNotEmpty
     }
 }
