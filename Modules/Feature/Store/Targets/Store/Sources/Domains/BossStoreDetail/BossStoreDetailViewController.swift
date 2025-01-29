@@ -297,6 +297,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: StoreDetailReviewMoreCell.Layout.height)
         case .review:
             return CGSize(width: width, height: 120)
+        case .reviewFeedbackSummary:
+            return CGSize(width: width, height: 120)
         default:
             return .zero
         }

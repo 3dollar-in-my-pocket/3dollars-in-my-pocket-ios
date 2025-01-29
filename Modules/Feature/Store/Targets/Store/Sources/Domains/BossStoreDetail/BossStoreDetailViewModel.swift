@@ -272,6 +272,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
         if storeDetailData.reviews.isEmpty {
             reviewSectionItems.append(.reviewEmpty)
         } else {
+            reviewSectionItems.append(.reviewRating(rating: storeDetailData.store.rating))
+            reviewSectionItems.append(.reviewFeedbackSummary(bindReviewFeedbackSummaryCellViewModel(with: storeDetailData.feedbacks)))
             reviewSectionItems.append(contentsOf: storeDetailData.reviews.prefix(3).map {
                 .review($0)
             })
@@ -492,6 +494,27 @@ final class BossStoreDetailViewModel: BaseViewModel {
         let viewModel = BossStorePostListViewModel(config: config)
         
         output.route.send(.pushPostList(viewModel))
+    }
+}
+                                    
+// MARK: - Review Section
+extension BossStoreDetailViewModel {
+    private func bindReviewFeedbackSummaryCellViewModel(with data: [FeedbackCountWithRatioResponse]) -> BossStoreDetailReviewFeedbackSummaryCellViewModel {
+        let viewModel = BossStoreDetailReviewFeedbackSummaryCellViewModel(data: data)
+        
+        // TODO: 수정 필요
+        viewModel.output.moveToFeedbackList
+            .compactMap { [weak self] in
+                guard let self else { return nil }
+                
+                return .presentFeedback(bindFeedbackViewModel(
+                    with: state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
+                ))
+            }
+            .subscribe(output.route)
+            .store(in: &viewModel.cancellables)
+        
+        return viewModel
     }
 }
 
