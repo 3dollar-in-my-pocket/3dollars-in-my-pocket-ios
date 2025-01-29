@@ -272,7 +272,8 @@ final class BossStoreDetailViewController: BaseViewController {
 
 extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = UIScreen.main.bounds.width - 40
+        let containerWidth = UIScreen.main.bounds.width
+        let width = containerWidth - 40
 
         switch dataSource.itemIdentifier(for: indexPath) {
         case .overview:
@@ -295,8 +296,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: StoreDetailReviewEmptyCell.Layout.height)
         case .reviewMore:
             return CGSize(width: width, height: StoreDetailReviewMoreCell.Layout.height)
-        case .review:
-            return CGSize(width: width, height: 120)
+        case .review(let viewModel):
+            return BossStoreDetailReviewCell.Layout.size(width: containerWidth, viewModel: viewModel)
         case .reviewFeedbackSummary:
             return CGSize(width: width, height: 120)
         default:

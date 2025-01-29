@@ -275,7 +275,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
             reviewSectionItems.append(.reviewRating(rating: storeDetailData.store.rating))
             reviewSectionItems.append(.reviewFeedbackSummary(bindReviewFeedbackSummaryCellViewModel(with: storeDetailData.feedbacks)))
             reviewSectionItems.append(contentsOf: storeDetailData.reviews.prefix(3).map {
-                .review($0)
+                .review(bindReviewCellViewModel(with: $0))
             })
             if storeDetailData.reviews.count > 3 {
                 reviewSectionItems.append(.reviewMore(totalCount: storeDetailData.totalReviewCount))
@@ -514,6 +514,11 @@ extension BossStoreDetailViewModel {
             .subscribe(output.route)
             .store(in: &viewModel.cancellables)
         
+        return viewModel
+    }
+    
+    private func bindReviewCellViewModel(with data: StoreDetailReview) -> BossStoreDetailReviewCellViewModel {
+        let viewModel = BossStoreDetailReviewCellViewModel(data: data)
         return viewModel
     }
 }

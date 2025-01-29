@@ -22,7 +22,7 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             BossStoreFeedbacksCell.self,
             BossStorePostCell.self,
             StoreDetailRatingCell.self,
-            StoreDetailReviewCell.self,
+            BossStoreDetailReviewCell.self,
             StoreDetailReviewEmptyCell.self,
             StoreDetailReviewMoreCell.self,
             BossStoreDetailReviewFeedbackSummaryCell.self
@@ -58,21 +58,9 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
                 let cell: BossStorePostCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel)
                 return cell
-            case .review(let review):
-                let cell: StoreDetailReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(review)
-                cell.rightButton
-                    .controlPublisher(for: .touchUpInside)
-                    .map { _ in indexPath.item - 1 }
-                    .subscribe(viewModel.input.didTapReviewRightButton)
-                    .store(in: &cell.cancellables)
-                cell.likeButton
-                    .controlPublisher(for: .touchUpInside)
-                    .throttle(for: 1, scheduler: RunLoop.main, latest: false)
-                    .map { _ in indexPath.item - 1 }
-                    .subscribe(viewModel.input.didTapReviewLikeButton)
-                    .store(in: &cell.cancellables)
-                
+            case .review(let viewModel):
+                let cell: BossStoreDetailReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel)
                 return cell
             case .reviewRating(let rating):
                 let cell: StoreDetailRatingCell = collectionView.dequeueReusableCell(indexPath: indexPath)
