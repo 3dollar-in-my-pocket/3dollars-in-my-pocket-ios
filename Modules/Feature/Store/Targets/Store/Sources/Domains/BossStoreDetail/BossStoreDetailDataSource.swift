@@ -28,6 +28,12 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             BossStoreDetailReviewFeedbackSummaryCell.self
         ])
         
+        collectionView.register(
+            BossStoreDetailReviewHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "\(BossStoreDetailReviewHeaderView.self)"
+        )
+        
         super.init(collectionView: collectionView) { [weak containerVC, viewModel] collectionView, indexPath, itemIdentifier in
             guard let containerVC, let viewModel else { return UICollectionViewCell() }
             switch itemIdentifier {
@@ -79,6 +85,32 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
                 let cell: BossStoreDetailReviewFeedbackSummaryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
+            }
+        }
+        
+        supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView? in
+            guard let section = self?.sectionIdentifier(section: indexPath.section) else { return nil }
+            
+            switch section.type {
+            case .review:
+                guard let headerView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: UICollectionView.elementKindSectionHeader,
+                    withReuseIdentifier: "\(BossStoreDetailReviewHeaderView.self)",
+                    for: indexPath
+                ) as? BossStoreDetailReviewHeaderView else { return UICollectionViewCell() }
+                
+                headerView.bind(section.header)
+                /*
+                headerView.rightButton
+                    .controlPublisher(for: .touchUpInside)
+                    .mapVoid
+                    .subscribe(viewModel.input.didTapWriteReview)
+                    .store(in: &headerView.cancellables)
+                 */
+                
+                return headerView
+            default:
+                return nil
             }
         }
     }

@@ -11,6 +11,10 @@ final class BossStoreDetailReviewFeedbackSummaryCell: BaseCollectionViewCell {
         static let buttonColumnCount: Int = 2
         static let buttonHeight: CGFloat = 30
         static let buttonContentEdgeInsets: UIEdgeInsets = .init(top: 6, left: 10, bottom: 6, right: 10)
+        
+        static func height(_ viewModel: BossStoreDetailReviewFeedbackSummaryCellViewModel) -> CGFloat {
+            return viewModel.output.feedbacks.count <= 1 ? 84 : 120
+        }
     }
     
     private let containerView = UIView().then {
@@ -93,9 +97,7 @@ final class BossStoreDetailReviewFeedbackSummaryCell: BaseCollectionViewCell {
         var currentY: CGFloat = 0
         
         for (index, feedbacks) in chunkedArray.enumerated() {
-            let stackView = UIStackView()
-            stackView.alignment = .center
-            stackView.spacing = buttonSpacing
+            let stackView = createButtonStackView()
             buttonContainerView.addSubview(stackView)
             stackView.snp.makeConstraints {
                 $0.top.equalTo(currentY)
@@ -112,6 +114,24 @@ final class BossStoreDetailReviewFeedbackSummaryCell: BaseCollectionViewCell {
             
             currentY = (CGFloat((index + 1)) * Layout.buttonHeight) + buttonSpacing
         }
+        
+        if feedbacks.isEmpty {
+            let stackView = createButtonStackView()
+            buttonContainerView.addSubview(stackView)
+            stackView.snp.makeConstraints {
+                $0.top.equalTo(currentY)
+                $0.centerX.equalToSuperview()
+            }
+            stackView.addArrangedSubview(createEmptyButton())
+            stackView.addArrangedSubview(seeAllButton)
+        }
+    }
+    
+    private func createButtonStackView() -> UIStackView {
+        let stackView = UIStackView()
+        stackView.alignment = .center
+        stackView.spacing = 4
+        return stackView
     }
     
     private func createFeedbackButton(emoji: String, text: String, count: Int) -> UIButton {
@@ -119,6 +139,17 @@ final class BossStoreDetailReviewFeedbackSummaryCell: BaseCollectionViewCell {
         button.setTitle("\(emoji) \(text) \(count)개", for: .normal)
         button.titleLabel?.font = Fonts.medium.font(size: 12)
         button.setTitleColor(Colors.gray95.color, for: .normal)
+        button.backgroundColor = Colors.systemWhite.color
+        button.layer.cornerRadius = Layout.buttonHeight / 2
+        button.contentEdgeInsets = Layout.buttonContentEdgeInsets
+        return button
+    }
+    
+    private func createEmptyButton() -> UIButton {
+        let button = UIButton()
+        button.setTitle("피드백/리뷰를 남겨주세요!", for: .normal)
+        button.titleLabel?.font = Fonts.medium.font(size: 12)
+        button.setTitleColor(Colors.gray50.color, for: .normal)
         button.backgroundColor = Colors.systemWhite.color
         button.layer.cornerRadius = Layout.buttonHeight / 2
         button.contentEdgeInsets = Layout.buttonContentEdgeInsets

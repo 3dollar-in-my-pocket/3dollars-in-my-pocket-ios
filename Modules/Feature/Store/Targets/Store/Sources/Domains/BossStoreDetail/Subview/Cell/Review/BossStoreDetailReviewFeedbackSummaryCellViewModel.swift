@@ -18,7 +18,7 @@ final class BossStoreDetailReviewFeedbackSummaryCellViewModel: BaseViewModel {
 
     init(data: [FeedbackCountWithRatioResponse]) {
         self.output = Output(
-            feedbacks: data.sorted(by: { $0.count > $1.count })
+            feedbacks: data.filter { $0.count != 0 }.sorted(by: { $0.count > $1.count })
         )
 
         super.init()

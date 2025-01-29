@@ -298,10 +298,17 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: StoreDetailReviewMoreCell.Layout.height)
         case .review(let viewModel):
             return BossStoreDetailReviewCell.Layout.size(width: containerWidth, viewModel: viewModel)
-        case .reviewFeedbackSummary:
-            return CGSize(width: width, height: 120)
+        case .reviewFeedbackSummary(let viewModel):
+            return CGSize(width: width, height: BossStoreDetailReviewFeedbackSummaryCell.Layout.height(viewModel))
         default:
             return .zero
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        switch dataSource.sectionIdentifier(section: section)?.type {
+        case .review: return CGSize(width: collectionView.frame.width, height: 40)
+        default: return .zero
         }
     }
 }

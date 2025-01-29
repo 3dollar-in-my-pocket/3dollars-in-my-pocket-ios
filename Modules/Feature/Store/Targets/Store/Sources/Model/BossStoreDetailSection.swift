@@ -11,5 +11,12 @@ struct BossStoreDetailSection: Hashable {
     }
 
     var type: SectionType
+    var header: StoreDetailSectionHeader?
     var items: [BossStoreDetailSectionItem]
+    
+    init(type: SectionType, header: StoreDetailSectionHeader? = nil, items: [BossStoreDetailSectionItem]) {
+        self.type = type
+        self.header = header
+        self.items = items
+    }
 }

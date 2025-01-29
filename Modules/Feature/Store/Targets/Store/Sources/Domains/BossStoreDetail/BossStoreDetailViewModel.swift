@@ -261,22 +261,9 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .init(type: .workday, items: [.workday(storeDetailData.workdays)])
         ])
         
-        var reviewSectionItems: [BossStoreDetailSectionItem] = []
-        
-        if storeDetailData.reviews.isEmpty {
-            reviewSectionItems.append(.reviewEmpty)
-        } else {
-            reviewSectionItems.append(.reviewRating(rating: storeDetailData.store.rating))
-            reviewSectionItems.append(.reviewFeedbackSummary(bindReviewFeedbackSummaryCellViewModel(with: storeDetailData.feedbacks)))
-            reviewSectionItems.append(contentsOf: storeDetailData.reviews.prefix(3).map {
-                .review(bindReviewCellViewModel(with: $0))
-            })
-            if storeDetailData.reviews.count > 3 {
-                reviewSectionItems.append(.reviewMore(totalCount: storeDetailData.totalReviewCount))
-            }
+        if let reviewSection = createReviewSection() {
+            sections.append(reviewSection)
         }
-        
-        sections.append(.init(type: .review, items: reviewSectionItems))
 
         output.dataSource.send(sections)
     }
@@ -493,6 +480,36 @@ final class BossStoreDetailViewModel: BaseViewModel {
                                     
 // MARK: - Review Section
 extension BossStoreDetailViewModel {
+    private func createReviewSection() -> BossStoreDetailSection? {
+        guard let storeDetailData = state.storeDetailData else { return nil }
+        
+        var reviewSectionItems: [BossStoreDetailSectionItem] = []
+        
+        let header = StoreDetailSectionHeader(
+            title: Strings.StoreDetail.Review.Header.title,
+            description: nil,
+            value: " \(storeDetailData.totalReviewCount)개",
+            buttonTitle: Strings.StoreDetail.Review.Header.button
+        )
+        
+        if storeDetailData.reviews.isEmpty {
+            reviewSectionItems.append(.reviewRating(rating: 0.0))
+            reviewSectionItems.append(.reviewFeedbackSummary(bindReviewFeedbackSummaryCellViewModel(with: storeDetailData.feedbacks)))
+            reviewSectionItems.append(.reviewEmpty)
+        } else {
+            reviewSectionItems.append(.reviewRating(rating: storeDetailData.store.rating))
+            reviewSectionItems.append(.reviewFeedbackSummary(bindReviewFeedbackSummaryCellViewModel(with: storeDetailData.feedbacks)))
+            reviewSectionItems.append(contentsOf: storeDetailData.reviews.prefix(3).map {
+                .review(bindReviewCellViewModel(with: $0))
+            })
+            if storeDetailData.totalReviewCount > 3 {
+                reviewSectionItems.append(.reviewMore(totalCount: storeDetailData.totalReviewCount))
+            }
+        }
+        
+        return BossStoreDetailSection(type: .review, header: header, items: reviewSectionItems)
+    }
+    
     private func bindReviewFeedbackSummaryCellViewModel(with data: [FeedbackCountWithRatioResponse]) -> BossStoreDetailReviewFeedbackSummaryCellViewModel {
         let viewModel = BossStoreDetailReviewFeedbackSummaryCellViewModel(data: data)
         
