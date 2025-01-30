@@ -90,21 +90,24 @@ final class BossStoreDetailReviewHeaderView: BaseCollectionViewReusableView {
         }
     }
     
-    func bind(_ header: StoreDetailSectionHeader?) {
-        guard let header else { return }
-        titleLabel.text = header.title
+    func bind(_ viewModel: BossStoreDetailReviewHeaderViewModel) {
+        titleLabel.text = viewModel.output.title
         verticalStackView.addArrangedSubview(titleLabel)
         
-        if let description = header.description {
+        if let description = viewModel.output.description {
             verticalStackView.setCustomSpacing(2, after: titleLabel)
             verticalStackView.addArrangedSubview(descriptionLabel)
             descriptionLabel.text = description
         }
         
-        rightButton.setTitle(header.buttonTitle, for: .normal)
+        rightButton.setTitle(viewModel.output.buttonTitle, for: .normal)
         
-        if let value = header.value {
+        if let value = viewModel.output.value {
             valueLabel.text = value
         }
+        
+        rightButton.tapPublisher
+            .subscribe(viewModel.input.didTapRightButton)
+            .store(in: &cancellables)
     }
 }

@@ -96,21 +96,14 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             guard let section = self?.sectionIdentifier(section: indexPath.section) else { return nil }
             
             switch section.type {
-            case .review:
+            case .review(let headerViewModel):
                 guard let headerView = collectionView.dequeueReusableSupplementaryView(
                     ofKind: UICollectionView.elementKindSectionHeader,
                     withReuseIdentifier: "\(BossStoreDetailReviewHeaderView.self)",
                     for: indexPath
                 ) as? BossStoreDetailReviewHeaderView else { return UICollectionViewCell() }
                 
-                headerView.bind(section.header)
-                /*
-                headerView.rightButton
-                    .controlPublisher(for: .touchUpInside)
-                    .mapVoid
-                    .subscribe(viewModel.input.didTapWriteReview)
-                    .store(in: &headerView.cancellables)
-                 */
+                headerView.bind(headerViewModel)
                 
                 return headerView
             default:

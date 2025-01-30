@@ -486,13 +486,6 @@ extension BossStoreDetailViewModel {
         
         var reviewSectionItems: [BossStoreDetailSectionItem] = []
         
-        let header = StoreDetailSectionHeader(
-            title: Strings.StoreDetail.Review.Header.title,
-            description: nil,
-            value: " \(storeDetailData.totalReviewCount)개",
-            buttonTitle: Strings.StoreDetail.Review.Header.button
-        )
-        
         if storeDetailData.reviews.isEmpty {
             reviewSectionItems.append(.reviewRating(rating: 0.0))
             reviewSectionItems.append(.reviewFeedbackSummary(bindReviewFeedbackSummaryCellViewModel(with: storeDetailData.feedbacks)))
@@ -508,7 +501,15 @@ extension BossStoreDetailViewModel {
             }
         }
         
-        return BossStoreDetailSection(type: .review, header: header, items: reviewSectionItems)
+        let headerViewModel = BossStoreDetailReviewHeaderViewModel(totalCount: storeDetailData.totalReviewCount)
+        
+        headerViewModel.output.moveToReviewWrite
+            .compactMap { [weak self] in self?.bindReviewWriteViewModel() }
+            .map { .presentReviewWrite($0) }
+            .subscribe(output.route)
+            .store(in: &headerViewModel.cancellables)
+        
+        return BossStoreDetailSection(type: .review(headerViewModel), items: reviewSectionItems)
     }
     
     private func bindReviewFeedbackSummaryCellViewModel(with data: [FeedbackCountWithRatioResponse]) -> BossStoreDetailReviewFeedbackSummaryCellViewModel {
