@@ -53,6 +53,7 @@ final class ReviewListViewModel: BaseViewModel {
     
     struct Config {
         let storeId: Int
+        let isBossStore: Bool
     }
     
     let input = Input()
@@ -123,7 +124,9 @@ final class ReviewListViewModel: BaseViewModel {
         input.didTapWrite
             .withUnretained(self)
             .sink { (owner: ReviewListViewModel, _) in
-                owner.presentWriteReviewBottomSheet(review: nil)
+                if owner.config.isBossStore.isNot {
+                    owner.presentWriteReviewBottomSheet(review: nil)
+                }
                 owner.sendClickWriteReviewLog()
             }
             .store(in: &cancellables)

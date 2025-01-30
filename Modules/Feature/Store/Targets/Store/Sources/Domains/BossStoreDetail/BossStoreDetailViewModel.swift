@@ -528,32 +528,51 @@ extension BossStoreDetailViewModel {
                 reloadDataSource()
             }
             .store(in: &cancellables)
+        
+        input.onSuccessWriteReview
+            .mapVoid
+            .subscribe(input.reload)
+            .store(in: &cancellables)
     }
     
     private func pushReviewWrite() {
-        let viewModel = ReviewWriteViewModel(config: .init(
-            storeId: storeId,
-            feedbackTypes: state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
-        ))
+        @Sendable func route() {
+            let viewModel = ReviewWriteViewModel(config: .init(
+                storeId: storeId,
+                feedbackTypes: state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
+            ))
+            
+            viewModel.output.onSuccessWriteReview
+                .subscribe(input.onSuccessWriteReview)
+                .store(in: &viewModel.cancellables)
+            
+            output.route.send(.presentReviewWrite(viewModel))
+        }
         
-        viewModel.output.onSuccessWriteReview
-            .mapVoid
-            .subscribe(input.reload)
-            .store(in: &viewModel.cancellables)
-        
-        output.route.send(.presentReviewWrite(viewModel))
+        Task {
+            let result = await storeService.existsFeedbackOnDateByAccount(storeId: Int(storeId) ?? 0)
+
+            switch result {
+            case .success(let response) where response.exists:
+                output.toast.send("오늘 이미 리뷰를 남기셨습니다 다른 날 다시 리뷰를 남겨주세요 :)")
+            default:
+                route()
+            }
+        }
     }
     
     private func pushReviewList() {
-        let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0)
+        let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0, isBossStore: true)
         let viewModel = ReviewListViewModel(config: config)
+        
+        viewModel.input.didTapWrite
+            .sink { [weak self] in
+                self?.pushReviewWrite()
+            }
+            .store(in: &viewModel.cancellables)
         
         viewModel.output.onSuccessEditReview
             .subscribe(input.onSuccessEditReview)
-            .store(in: &viewModel.cancellables)
-        
-        viewModel.output.onSuccessWriteReview
-            .subscribe(input.onSuccessWriteReview)
             .store(in: &viewModel.cancellables)
         
         viewModel.output.onSuccessReportReview
@@ -566,6 +585,10 @@ extension BossStoreDetailViewModel {
         
         viewModel.output.onSuccessDeleteReview
             .subscribe(input.onSuccessDeleteReview)
+            .store(in: &viewModel.cancellables)
+        
+        input.onSuccessWriteReview
+            .subscribe(viewModel.input.onSuccessWriteReview)
             .store(in: &viewModel.cancellables)
         
         output.route.send(.pushReviewList(viewModel))

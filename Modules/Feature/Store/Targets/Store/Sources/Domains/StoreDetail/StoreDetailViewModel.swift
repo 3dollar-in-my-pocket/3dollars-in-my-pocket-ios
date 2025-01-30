@@ -627,7 +627,7 @@ extension StoreDetailViewModel {
     }
     
     private func pushReviewList() {
-        let config = ReviewListViewModel.Config(storeId: state.storeId)
+        let config = ReviewListViewModel.Config(storeId: state.storeId, isBossStore: false)
         let viewModel = ReviewListViewModel(config: config)
         
         viewModel.output.onSuccessEditReview
