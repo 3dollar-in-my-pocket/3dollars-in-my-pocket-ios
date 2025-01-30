@@ -81,6 +81,9 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
                 let cell: StoreDetailReviewMoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.moreButton.backgroundColor = Colors.gray10.color
                 cell.bind(totalCount)
+                cell.moreButton.tapPublisher
+                    .subscribe(viewModel.input.didTapReviewMore)
+                    .store(in: &viewModel.cancellables)
                 return cell
             case .reviewFeedbackSummary(let viewModel):
                 let cell: BossStoreDetailReviewFeedbackSummaryCell = collectionView.dequeueReusableCell(indexPath: indexPath)

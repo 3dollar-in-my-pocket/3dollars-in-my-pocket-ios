@@ -33,12 +33,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
         let didTapMorePost = PassthroughSubject<Void, Never>()
         let didTapPostPhoto = PassthroughSubject<Int, Never>()
         
-        // 리뷰 섹션
-        let didTapReviewRightButton = PassthroughSubject<Int, Never>()
-        let didTapReviewLikeButton = PassthroughSubject<Int, Never>()
+        // Review Section
         let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
-        let didTapReviewMore = PassthroughSubject<Void, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
+        let didTapReviewMore = PassthroughSubject<Void, Never>()
         let updateReview = PassthroughSubject<StoreDetailReview, Never>()
     }
 
@@ -73,6 +71,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case showErrorAlert(Error)
         case presentReviewWrite(ReviewWriteViewModel)
         case presentReportBottomSheetReview(ReportReviewBottomSheetViewModel)
+        case pushReviewList(ReviewListViewModel)
     }
 
     let input = Input()
@@ -99,6 +98,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         bindOverviewSection()
         bindInfoSection()
         bindPostSection()
+        bindReviewSection()
     }
 
     override func bind() {
@@ -512,6 +512,47 @@ extension BossStoreDetailViewModel {
         return BossStoreDetailSection(type: .review(headerViewModel), items: reviewSectionItems)
     }
     
+    private func bindReviewSection() {
+        input.didTapReviewMore
+            .withUnretained(self)
+            .sink { (owner: BossStoreDetailViewModel, _) in
+                owner.pushReviewList()
+            }
+            .store(in: &cancellables)
+        
+        input.onSuccessReportReview
+            .sink { [weak self] reviewId in
+                guard let self, let targetIndex = state.storeDetailData?.reviews.firstIndex(where: { $0.reviewId == reviewId }) else { return }
+                
+                state.storeDetailData?.reviews[targetIndex].isFiltered = true
+                reloadDataSource()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func pushReviewList() {
+        let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0)
+        let viewModel = ReviewListViewModel(config: config)
+        
+        viewModel.output.onSuccessEditReview
+            .subscribe(input.onSuccessEditReview)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onSuccessWriteReview
+            .subscribe(input.onSuccessWriteReview)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onSuccessReportReview
+            .subscribe(input.onSuccessReportReview)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onSuccessToggleReviewSticker
+            .subscribe(input.updateReview)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.pushReviewList(viewModel))
+    }
+    
     private func bindReviewFeedbackSummaryCellViewModel(with data: [FeedbackCountWithRatioResponse]) -> BossStoreDetailReviewFeedbackSummaryCellViewModel {
         let viewModel = BossStoreDetailReviewFeedbackSummaryCellViewModel(data: data)
         
@@ -582,12 +623,7 @@ extension BossStoreDetailViewModel {
         let viewModel = ReportReviewBottomSheetViewModel(config: config)
         
         viewModel.output.onSuccessReport
-            .sink { [weak self] reviewId in
-                guard let self, let targetIndex = state.storeDetailData?.reviews.firstIndex(where: { $0.reviewId == reviewId }) else { return }
-                
-                state.storeDetailData?.reviews[targetIndex].isFiltered = true
-                reloadDataSource()
-            }
+            .subscribe(input.onSuccessReportReview)
             .store(in: &viewModel.cancellables)
         
         return viewModel

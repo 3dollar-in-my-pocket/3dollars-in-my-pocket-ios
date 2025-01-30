@@ -177,6 +177,9 @@ final class BossStoreDetailViewController: BaseViewController {
                 case .presentReportBottomSheetReview(let viewModel):
                     let viewController = ReportReviewBottomSheetViewController.instance(viewModel: viewModel)
                     owner.presentPanModal(viewController)
+                case .pushReviewList(let viewModel):
+                    let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
+                    owner.navigationController?.pushViewController(viewController, animated: true)
                 }
             }
             .store(in: &cancellables)
