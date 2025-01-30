@@ -83,6 +83,12 @@ final class BossStoreDetailReviewCell: BaseCollectionViewCell {
     
     private weak var viewModel: BossStoreDetailReviewCellViewModel?
     
+    weak var containerViewController: UIViewController? {
+        didSet {
+            photoListView.containerViewController = containerViewController
+        }
+    }
+    
     override func setup() {
         contentView.addSubViews([
             containerView,
@@ -199,7 +205,7 @@ final class BossStoreDetailReviewCell: BaseCollectionViewCell {
         contentLabel.setLineHeight(lineHeight: 20)
         likeButton.bind(count: review.likeCount, reactedByMe: review.reactedByMe)
         photoListView.isHidden = review.images.isEmpty
-        photoListView.setImages(review.images.map { $0.imageUrl })
+        photoListView.setImages(review.images)
         
         if review.isOwner {
             backgroundColor = Colors.pink100.color

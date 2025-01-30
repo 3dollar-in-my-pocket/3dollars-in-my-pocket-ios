@@ -27,7 +27,7 @@ final class ReviewWriteViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
         let isEnableWriteButton = CurrentValueSubject<Bool, Never>(false)
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
-        let imageUrls = CurrentValueSubject<[WriteReviewRequestInput.Image], Never>([])
+        let imageUrls = CurrentValueSubject<[ImageResponse], Never>([])
         let showToast = PassthroughSubject<String, Never>()
     }
     
@@ -120,7 +120,7 @@ final class ReviewWriteViewModel: BaseViewModel {
                     let viewModel = UploadPhotoViewModel(config: config)
                     viewModel.output.onSuccessUploadImages
                         .sink { [weak self] in
-                            self?.output.imageUrls.send($0.map { .init(url: $0.imageUrl, width: $0.width ?? 500, height: $0.height ?? 500) })
+                            self?.output.imageUrls.send($0.map { .init(imageUrl: $0.imageUrl, width: $0.width, height: $0.height) })
                         }
                         .store(in: &viewModel.cancellables)
                     owner.output.route.send(.uploadPhoto(viewModel))
@@ -152,7 +152,7 @@ final class ReviewWriteViewModel: BaseViewModel {
                 contents: contents,
                 rating: rating,
                 nonceToken: nonceToken,
-                images: output.imageUrls.value,
+                images: output.imageUrls.value.map { .init(url: $0.imageUrl, width: $0.width ?? 500, height: $0.height ?? 500) },
                 feedbacks: feedbacks
             )
             

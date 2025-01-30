@@ -62,6 +62,7 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
                 return cell
             case .review(let viewModel):
                 let cell: BossStoreDetailReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.containerViewController = containerVC
                 cell.bind(viewModel)
                 return cell
             case .reviewRating(let rating):

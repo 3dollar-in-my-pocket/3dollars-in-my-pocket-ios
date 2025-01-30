@@ -63,6 +63,12 @@ final class ReviewListCell: BaseCollectionViewCell {
     
     let likeButton = LikeButton()
     
+    weak var containerViewController: UIViewController? {
+        didSet {
+            photoListView.containerViewController = containerViewController
+        }
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -148,7 +154,7 @@ final class ReviewListCell: BaseCollectionViewCell {
         contentLabel.text = review.contents
         likeButton.bind(count: review.likeCount, reactedByMe: review.reactedByMe)
         photoListView.isHidden = review.images.isEmpty
-        photoListView.setImages(review.images.map { $0.imageUrl })
+        photoListView.setImages(review.images)
         
         if review.isOwner {
             contentView.backgroundColor = Colors.pink100.color

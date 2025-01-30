@@ -3,10 +3,13 @@ import Combine
 
 import Common
 import DesignSystem
+import Model
 
 final class ReviewPhotoListView: BaseView {
     let removeImage = PassthroughSubject<Int, Never>()
     let didTapUploadPhoto = PassthroughSubject<Void, Never>()
+    
+    weak var containerViewController: UIViewController?
     
     struct Config {
         let size: CGSize
@@ -26,7 +29,7 @@ final class ReviewPhotoListView: BaseView {
     
     private let photoAddButtonView = ReviewPhotoAddButtonView()
     
-    private var imageUrls: [String] = []
+    private var imageList: [ImageResponse] = []
     
     private let config: Config
 
@@ -91,21 +94,28 @@ final class ReviewPhotoListView: BaseView {
         return layout
     }
     
-    func setImages(_ urls: [String]) {
-        imageUrls = urls
-        photoAddButtonView.isHidden = self.imageUrls.isNotEmpty || config.canEdit.isNot
+    func setImages(_ imageList: [ImageResponse]) {
+        self.imageList = imageList
+        photoAddButtonView.isHidden = imageList.isNotEmpty || config.canEdit.isNot
         collectionView.reloadData()
+    }
+    
+    private func presentPhotoDetail(selectedIndex: Int) {
+        let config = BossStorePhotoViewModel.Config(photos: imageList, selectedIndex: selectedIndex)
+        let viewModel = BossStorePhotoViewModel(config: config)
+        let viewController = BossStorePhotoViewController(viewModel: viewModel)
+        containerViewController?.present(viewController, animated: true)
     }
 }
 
 extension ReviewPhotoListView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageUrls.count
+        return imageList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: ReviewPhotoListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-        cell.bind(imageUrl: imageUrls[safe: indexPath.item], canEdit: config.canEdit)
+        cell.bind(imageUrl: imageList[safe: indexPath.item]?.imageUrl, canEdit: config.canEdit)
         cell.removeButton.tapPublisher
             .sink { [weak self] in
                 self?.removeImage.send(indexPath.item)
@@ -116,7 +126,7 @@ extension ReviewPhotoListView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let headerView: ReviewPhotoListHeaderView = collectionView.dequeueReusableSupplementaryView(ofkind: UICollectionView.elementKindSectionHeader, indexPath: indexPath)
-        headerView.bind(totalCount: imageUrls.count)
+        headerView.bind(totalCount: imageList.count)
         headerView.didTapEvent
             .subscribe(didTapUploadPhoto)
             .store(in: &headerView.cancellables)
@@ -126,6 +136,7 @@ extension ReviewPhotoListView: UICollectionViewDataSource {
 
 extension ReviewPhotoListView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        presentPhotoDetail(selectedIndex: indexPath.item)
     }
 }
 
@@ -137,7 +148,7 @@ extension ReviewPhotoListView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         guard config.canEdit else { return .zero }
         
-        return imageUrls.isEmpty ? .zero : config.size
+        return imageList.isEmpty ? .zero : config.size
     }
 }
 

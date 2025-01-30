@@ -46,8 +46,6 @@ final class ReviewWriteViewController: BaseViewController {
     
     private let viewModel: ReviewWriteViewModel
     
-    private var keyboardHeight: CGFloat = .zero
-    
     static func instance(viewModel: ReviewWriteViewModel) -> ReviewWriteViewController {
         return ReviewWriteViewController(viewModel: viewModel)
     }
@@ -65,6 +63,7 @@ final class ReviewWriteViewController: BaseViewController {
         super.viewDidLoad()
         
         setupUI()
+        photoListView.containerViewController = self
         
         addKeyboardObservers()
         viewModel.input.load.send(())
@@ -220,7 +219,7 @@ final class ReviewWriteViewController: BaseViewController {
         viewModel.output.imageUrls
             .main
             .sink { [weak self] in
-                self?.photoListView.setImages($0.map { $0.url })
+                self?.photoListView.setImages($0)
             }
             .store(in: &cancellables)
     }
@@ -244,11 +243,21 @@ final class ReviewWriteViewController: BaseViewController {
         guard let userInfo = sender.userInfo as? [String: Any] else { return }
         guard let keyboardFrame
                 = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-        
-        keyboardHeight = keyboardFrame.cgRectValue.height
+
+        let window = UIApplication.shared.windows.first
+        let bottomPadding = window?.safeAreaInsets.bottom ?? 0
+
+        UIView.animate(withDuration: 0.3) {
+            self.containerView.transform = CGAffineTransform(
+                translationX: 0,
+                y: -keyboardFrame.cgRectValue.height + bottomPadding
+            )
+        }
     }
-    
+
     @objc private func keyboardWillHide(_ sender: Notification) {
-        keyboardHeight = .zero
+        UIView.animate(withDuration: 0.3) {
+            self.containerView.transform = .identity
+        }
     }
 }
