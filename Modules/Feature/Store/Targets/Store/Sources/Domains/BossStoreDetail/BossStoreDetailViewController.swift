@@ -180,6 +180,9 @@ final class BossStoreDetailViewController: BaseViewController {
                 case .pushReviewList(let viewModel):
                     let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
                     owner.navigationController?.pushViewController(viewController, animated: true)
+                case .pushFeedbackList(let data):
+                    let viewController = BossStoreFeedbackListViewController.instance(data)
+                    owner.navigationController?.pushViewController(viewController, animated: true)
                 }
             }
             .store(in: &cancellables)
@@ -292,8 +295,6 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: BossStoreEmptyMenuCell.Layout.height)
         case .workday:
             return CGSize(width: width, height: BossStoreWorkdayCell.Layout.height)
-        case .feedbacks(let viewModel):
-            return CGSize(width: width, height: BossStoreFeedbacksCell.Layout.height(viewModel: viewModel))
         case .post(let viewModel):
             return CGSize(width: width, height: BossStorePostCell.Layout.calculateHeight(viewModel: viewModel, width: width))
         case .reviewRating:

@@ -19,7 +19,6 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             BossStoreMenuListCell.self,
             BossStoreEmptyMenuCell.self,
             BossStoreWorkdayCell.self,
-            BossStoreFeedbacksCell.self,
             BossStorePostCell.self,
             StoreDetailRatingCell.self,
             BossStoreDetailReviewCell.self,
@@ -56,10 +55,6 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             case .workday(let days):
                 let cell: BossStoreWorkdayCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(appearanceDays: days)
-                return cell
-            case .feedbacks(let viewModel):
-                let cell: BossStoreFeedbacksCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(viewModel: viewModel)
                 return cell
             case .post(let viewModel):
                 let cell: BossStorePostCell = collectionView.dequeueReusableCell(indexPath: indexPath)

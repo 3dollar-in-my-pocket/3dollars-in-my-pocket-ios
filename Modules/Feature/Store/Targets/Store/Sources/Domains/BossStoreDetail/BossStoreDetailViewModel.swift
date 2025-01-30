@@ -72,6 +72,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case presentReviewWrite(ReviewWriteViewModel)
         case presentReportBottomSheetReview(ReportReviewBottomSheetViewModel)
         case pushReviewList(ReviewListViewModel)
+        case pushFeedbackList(BossStoreFeedbackListViewModel)
     }
 
     let input = Input()
@@ -139,11 +140,9 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { (owner: BossStoreDetailViewModel, _) in
                 owner.sendClickLog(eventName: .clickWriteReview)
             })
-            .map { owner, _ in
-                owner.bindReviewWriteViewModel()
+            .sink { [weak self] _ in
+                self?.pushReviewWrite()
             }
-            .map { .presentReviewWrite($0) }
-            .subscribe(output.route)
             .store(in: &cancellables)
     }
 
@@ -322,16 +321,6 @@ final class BossStoreDetailViewModel: BaseViewModel {
         return viewModel
     }
 
-    private func bindFeedbacksCellViewModel(with data: [FeedbackCountWithRatioResponse]) -> BossStoreFeedbacksCellViewModel {
-        let cellViewModel = BossStoreFeedbacksCellViewModel(data: data)
-        
-        cellViewModel.output.didTapSendFeedbackButton
-            .subscribe(input.didTapReviewWriteButton)
-            .store(in: &cancellables)
-
-        return cellViewModel
-    }
-
     private func saveStore(isDelete: Bool) {
         Task {
             let saveResult = await storeService.saveStore(storeId: storeId, isDelete: isDelete)
@@ -504,9 +493,9 @@ extension BossStoreDetailViewModel {
         let headerViewModel = BossStoreDetailReviewHeaderViewModel(totalCount: storeDetailData.totalReviewCount)
         
         headerViewModel.output.moveToReviewWrite
-            .compactMap { [weak self] in self?.bindReviewWriteViewModel() }
-            .map { .presentReviewWrite($0) }
-            .subscribe(output.route)
+            .sink { [weak self] in
+                self?.pushReviewWrite()
+            }
             .store(in: &headerViewModel.cancellables)
         
         return BossStoreDetailSection(type: .review(headerViewModel), items: reviewSectionItems)
@@ -528,6 +517,20 @@ extension BossStoreDetailViewModel {
                 reloadDataSource()
             }
             .store(in: &cancellables)
+    }
+    
+    private func pushReviewWrite() {
+        let viewModel = ReviewWriteViewModel(config: .init(
+            storeId: storeId,
+            feedbackTypes: state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
+        ))
+        
+        viewModel.output.onSuccessWriteReview
+            .mapVoid
+            .subscribe(input.reload)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.presentReviewWrite(viewModel))
     }
     
     private func pushReviewList() {
@@ -556,16 +559,18 @@ extension BossStoreDetailViewModel {
     private func bindReviewFeedbackSummaryCellViewModel(with data: [FeedbackCountWithRatioResponse]) -> BossStoreDetailReviewFeedbackSummaryCellViewModel {
         let viewModel = BossStoreDetailReviewFeedbackSummaryCellViewModel(data: data)
         
-        // TODO: 수정 필요
         viewModel.output.moveToFeedbackList
-            .compactMap { [weak self] in
-                guard let self else { return nil }
-                
-                return .presentFeedback(bindFeedbackViewModel(
-                    with: state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
-                ))
+            .sink { [weak self] in
+                guard let self else { return }
+
+                let feedbackListViewModel = BossStoreFeedbackListViewModel(data: state.storeDetailData?.feedbacks ?? [])
+                feedbackListViewModel.output.moveToReviewWrite
+                    .sink { [weak self] in
+                        self?.pushReviewWrite()
+                    }
+                    .store(in: &feedbackListViewModel.cancellables)
+                output.route.send(.pushFeedbackList(feedbackListViewModel))
             }
-            .subscribe(output.route)
             .store(in: &viewModel.cancellables)
         
         return viewModel
@@ -595,20 +600,6 @@ extension BossStoreDetailViewModel {
                 state.storeDetailData?.reviews.removeAll(where: { $0.reviewId == reviewId })
                 reloadDataSource()
             }
-            .store(in: &viewModel.cancellables)
-        
-        return viewModel
-    }
-    
-    private func bindReviewWriteViewModel() -> ReviewWriteViewModel {
-        let viewModel = ReviewWriteViewModel(config: .init(
-            storeId: storeId,
-            feedbackTypes: state.storeDetailData?.feedbacks.map { $0.feedbackType }.compactMap { $0 } ?? []
-        ))
-        
-        viewModel.output.onSuccessWriteReview
-            .mapVoid
-            .subscribe(input.reload)
             .store(in: &viewModel.cancellables)
         
         return viewModel
