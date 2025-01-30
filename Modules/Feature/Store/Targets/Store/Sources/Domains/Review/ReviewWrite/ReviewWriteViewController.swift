@@ -8,7 +8,7 @@ import Log
 
 final class ReviewWriteViewController: BaseViewController {
     override var screenName: ScreenName {
-        return .accountInfo // TODO
+        return .bossStoreReviewWrite
     }
     
     private let backButton: UIButton = {

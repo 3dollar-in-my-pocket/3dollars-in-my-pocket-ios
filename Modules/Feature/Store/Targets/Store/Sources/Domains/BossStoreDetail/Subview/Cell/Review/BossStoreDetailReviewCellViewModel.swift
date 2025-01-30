@@ -124,14 +124,14 @@ final class BossStoreDetailReviewCellViewModel: BaseViewModel {
     }
     
     private func sendClickLike(isLiked: Bool) {
-//        logManager.sendEvent(.init(
-//            screen: output.screenName,
-//            eventName: .clickLike,
-//            extraParameters: [
-//                .storeId: state.storeId,
-//                .value: !isLiked
-//            ]
-//        ))
+        logManager.sendEvent(.init(
+            screen: .bossStoreReview,
+            eventName: .clickLike,
+            extraParameters: [
+                .storeId: config.storeId,
+                .value: !isLiked
+            ]
+        ))
     }
 }
 
