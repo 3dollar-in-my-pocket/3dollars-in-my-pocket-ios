@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 import Common
 import DesignSystem
@@ -11,7 +12,8 @@ final class ReviewPhotoListCell: BaseCollectionViewCell {
     }
     
     private let imageView = UIImageView()
-    private let removeButton: UIButton = {
+    
+    let removeButton: UIButton = {
         let button = UIButton()
         button.setImage(Icons.deleteX.image.withTintColor(Colors.mainRed.color), for: .normal)
         
@@ -42,14 +44,17 @@ final class ReviewPhotoListCell: BaseCollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        imageView.clear()
     }
     
-    func bind() {
-        
+    func bind(imageUrl: String?) {
+        imageView.setImage(urlString: imageUrl)
     }
 }
 
 final class ReviewPhotoListHeaderView: BaseCollectionViewReusableView {
+    let didTapEvent = PassthroughSubject<Void, Never>()
+    
     private let plusBackgroundView = UIView().then {
         $0.backgroundColor = Colors.gray100.color
         $0.clipsToBounds = true
@@ -101,11 +106,11 @@ final class ReviewPhotoListHeaderView: BaseCollectionViewReusableView {
         super.prepareForReuse()
     }
     
-    func bind() {
-        countLabel.text = "4/10"
+    func bind(totalCount: Int) {
+        countLabel.text = "\(totalCount)/10"
     }
 
     @objc private func didTap() {
-        
+        didTapEvent.send()
     }
 }

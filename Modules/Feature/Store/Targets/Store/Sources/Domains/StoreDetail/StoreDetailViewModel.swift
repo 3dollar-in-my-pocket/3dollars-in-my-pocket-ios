@@ -574,7 +574,7 @@ extension StoreDetailViewModel {
     }
     
     private func presentUploadPhoto() {
-        let config = UploadPhotoViewModel.Config(storeId: state.storeId)
+        let config = UploadPhotoViewModel.Config(uploadType: .storeImage(storeId: state.storeId))
         let viewModel = UploadPhotoViewModel(config: config)
         
         viewModel.output.onSuccessUploadPhotos

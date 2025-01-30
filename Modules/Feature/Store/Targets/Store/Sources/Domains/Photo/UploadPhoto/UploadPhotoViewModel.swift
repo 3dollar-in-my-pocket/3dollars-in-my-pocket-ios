@@ -10,8 +10,23 @@ import DependencyInjection
 import Log
 
 final class UploadPhotoViewModel: BaseViewModel {
-    enum Constant {
-        static let limitOfPhoto = 3
+    enum UploadType {
+        case storeImage(storeId: Int)
+        case reviewImage(limitOfPhoto: Int)
+        
+        var title: String {
+            switch self {
+            case .storeImage: Strings.StoreDetail.Photo.Header.button
+            case .reviewImage: "사진 선택"
+            }
+        }
+        
+        var limitOfPhoto: Int {
+            switch self {
+            case .storeImage: 3
+            case .reviewImage(let limitOfPhoto): limitOfPhoto
+            }
+        }
     }
     
     struct Input {
@@ -23,8 +38,11 @@ final class UploadPhotoViewModel: BaseViewModel {
     
     struct Output {
         let screenName: ScreenName = .uploadPhoto
+        let title: String
+        let limitOfPhoto: Int
         let assets = PassthroughSubject<[PHAsset], Never>()
         let onSuccessUploadPhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
+        let onSuccessUploadImages = PassthroughSubject<[ImageUploadResponse], Never>()
         let uploadButtonTitle = CurrentValueSubject<Int, Never>(0)
         let isEnableUploadButton = CurrentValueSubject<Bool, Never>(false)
         let showErrorAlert = PassthroughSubject<Error, Never>()
@@ -43,26 +61,31 @@ final class UploadPhotoViewModel: BaseViewModel {
     }
     
     struct Config {
-        let storeId: Int
+        let uploadType: UploadType
     }
     
     let input = Input()
-    let output = Output()
+    let output: Output
     var state = State()
     private let config: Config
     private let storeRepository: StoreRepository
     private let photoManager: PhotoManagerProtocol
     private let logManager: LogManagerProtocol
+    private let imageUploadService: ImageUploadServiceType
     
     init(
         config: Config,
         storeRepository: StoreRepository = StoreRepositoryImpl(),
-        logManager: LogManagerProtocol = LogManager.shared
+        logManager: LogManagerProtocol = LogManager.shared,
+        imageUploadService: ImageUploadServiceType = ImageUploadService()
     ) {
         self.config = config
+        
+        self.output = Output(title: config.uploadType.title, limitOfPhoto: config.uploadType.limitOfPhoto)
         self.storeRepository = storeRepository
         self.photoManager = Environment.appModuleInterface.photoManager
         self.logManager = logManager
+        self.imageUploadService = imageUploadService
     }
     
     override func bind() {
@@ -116,7 +139,6 @@ final class UploadPhotoViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: UploadPhotoViewModel, _) in
                 owner.uploadPhotos()
-                owner.sendClickUploadPhoto(count: owner.state.selectedAssets.count)
             }
             .store(in: &cancellables)
     }
@@ -147,7 +169,7 @@ final class UploadPhotoViewModel: BaseViewModel {
     }
     
     private func isEnableUploadButton() -> Bool {
-        return state.selectedAssets.count > 0 && state.selectedAssets.count <= Constant.limitOfPhoto
+        return state.selectedAssets.count > 0 && state.selectedAssets.count <= output.limitOfPhoto
     }
     
     private func uploadPhotos() {
@@ -155,9 +177,19 @@ final class UploadPhotoViewModel: BaseViewModel {
         let selectedPhotos = state.selectedAssets.map { ImageUtils.getImage(from: $0) }
         let datas = ImageUtils.dataArrayFromImages(photos: selectedPhotos)
         
+        switch config.uploadType {
+        case .storeImage(let storeId):
+            uploadStorePhotos(storeId: storeId, datas: datas)
+            sendClickUploadPhoto(count: state.selectedAssets.count, storeId: storeId)
+        case .reviewImage:
+            uploadImages(fileType: .storeReviewImage, datas: datas)
+        }
+    }
+    
+    private func uploadStorePhotos(storeId: Int, datas: [Data]) {
         Task { [weak self] in
             guard let self else { return }
-            let result = await storeRepository.uploadPhotos(storeId: config.storeId, photos: datas)
+            let result = await storeRepository.uploadPhotos(storeId: storeId, photos: datas)
             
             switch result {
             case .success(let imageResponse):
@@ -172,16 +204,34 @@ final class UploadPhotoViewModel: BaseViewModel {
             }
         }
     }
+    
+    private func uploadImages(fileType: FileType, datas: [Data]) {
+        Task { [weak self] in
+            guard let self else { return }
+            let result = await imageUploadService.uploadImages(datas: datas, fileType: fileType)
+            
+            switch result {
+            case .success(let imageResponse):
+                output.showLoading.send(false)
+                output.onSuccessUploadImages.send(imageResponse)
+                output.route.send(.dismiss)
+                
+            case .failure(let error):
+                output.showLoading.send(false)
+                output.showErrorAlert.send(error)
+            }
+        }
+    }
 }
 
 // MARK: Log
 extension UploadPhotoViewModel {
-    private func sendClickUploadPhoto(count: Int) {
+    private func sendClickUploadPhoto(count: Int, storeId: Int) {
         logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickUpload,
             extraParameters: [
-                .storeId: config.storeId,
+                .storeId: storeId,
                 .count: count
             ]
         ))

@@ -8,11 +8,17 @@ import Networking
 import Log
 
 final class ReviewWriteViewModel: BaseViewModel {
+    enum Constants {
+        static let maxPhotoCount: Int = 10
+    }
+    
     struct Input {
         let didTapCompleteButton = PassthroughSubject<Void, Never>()
         let load = PassthroughSubject<Void, Never>()
         let didTapRating = PassthroughSubject<Int, Never>()
         let inputReview = PassthroughSubject<String, Never>()
+        let didTapUploadPhoto = PassthroughSubject<Void, Never>()
+        let removeImage = PassthroughSubject<Int, Never>()
     }
     
     struct Output {
@@ -21,10 +27,13 @@ final class ReviewWriteViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
         let isEnableWriteButton = CurrentValueSubject<Bool, Never>(false)
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
+        let imageUrls = CurrentValueSubject<[WriteReviewRequestInput.Image], Never>([])
+        let showToast = PassthroughSubject<String, Never>()
     }
     
     enum Route {
         case dismiss
+        case uploadPhoto(UploadPhotoViewModel)
     }
     
     struct Config {
@@ -84,11 +93,47 @@ final class ReviewWriteViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
+        output.feedbackSelectionViewModel.output.isEnabledButton
+            .withUnretained(self)
+            .sink { (owner: ReviewWriteViewModel, _) in
+                owner.output.isEnableWriteButton.send(owner.isEnableWriteButton())
+            }
+            .store(in: &cancellables)
+        
         input.inputReview
             .withUnretained(self)
             .sink { (owner: ReviewWriteViewModel, contents: String) in
                 owner.state.contents = contents
                 owner.output.isEnableWriteButton.send(owner.isEnableWriteButton())
+            }
+            .store(in: &cancellables)
+        
+        input.didTapUploadPhoto
+            .withUnretained(self)
+            .sink { (owner: ReviewWriteViewModel, _) in
+                let limitOfPhoto: Int = Constants.maxPhotoCount - owner.output.imageUrls.value.count
+                
+                if limitOfPhoto <= 0 {
+                    owner.output.showToast.send("10개까지만 등록 가능해요!")
+                } else {
+                    let config = UploadPhotoViewModel.Config(uploadType: .reviewImage(limitOfPhoto: limitOfPhoto))
+                    let viewModel = UploadPhotoViewModel(config: config)
+                    viewModel.output.onSuccessUploadImages
+                        .sink { [weak self] in
+                            self?.output.imageUrls.send($0.map { .init(url: $0.imageUrl, width: $0.width ?? 500, height: $0.height ?? 500) })
+                        }
+                        .store(in: &viewModel.cancellables)
+                    owner.output.route.send(.uploadPhoto(viewModel))
+                }
+            }
+            .store(in: &cancellables)
+        
+        input.removeImage
+            .withUnretained(self)
+            .sink { (owner: ReviewWriteViewModel, index: Int) in
+                var imageUrls = owner.output.imageUrls.value
+                imageUrls.remove(at: index)
+                owner.output.imageUrls.send(imageUrls)
             }
             .store(in: &cancellables)
     }
@@ -107,6 +152,7 @@ final class ReviewWriteViewModel: BaseViewModel {
                 contents: contents,
                 rating: rating,
                 nonceToken: nonceToken,
+                images: output.imageUrls.value,
                 feedbacks: feedbacks
             )
             
@@ -116,8 +162,6 @@ final class ReviewWriteViewModel: BaseViewModel {
             case .success(let response):
                 let storeDetailReview = StoreDetailReview(response: response)
                 output.onSuccessWriteReview.send(storeDetailReview)
-                output.route.send(.dismiss)
-                
             case .failure(let error):
                 output.errorAlert.send(error)
             }

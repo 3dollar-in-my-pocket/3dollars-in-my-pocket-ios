@@ -162,6 +162,14 @@ final class ReviewWriteViewController: BaseViewController {
             .filter { $0 != Strings.ReviewBottomSheet.placeholder }
             .subscribe(viewModel.input.inputReview)
             .store(in: &cancellables)
+        
+        photoListView.didTapUploadPhoto
+            .subscribe(viewModel.input.didTapUploadPhoto)
+            .store(in: &cancellables)
+        
+        photoListView.removeImage
+            .subscribe(viewModel.input.removeImage)
+            .store(in: &cancellables)
     }
     
     override func bindViewModelOutput() {
@@ -181,6 +189,7 @@ final class ReviewWriteViewController: BaseViewController {
             .sink { [weak self] isEnabled in
                 guard let self else { return }
                 
+                ToastManager.shared.show(message: "리뷰가 등록되었습니다!")
                 navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)
@@ -190,6 +199,28 @@ final class ReviewWriteViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: ReviewWriteViewController, error) in
                 owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.route
+            .main
+            .sink { [weak self] route in
+                guard let self else { return }
+                
+                switch route {
+                case .dismiss:
+                    navigationController?.popViewController(animated: true)
+                case .uploadPhoto(let viewModel):
+                    let viewController = UploadPhotoViewController.instance(viewModel: viewModel)
+                    present(viewController, animated: true)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.imageUrls
+            .main
+            .sink { [weak self] in
+                self?.photoListView.setImages($0.map { $0.url })
             }
             .store(in: &cancellables)
     }
