@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ImageResponse: Decodable {
+public struct ImageResponse: Decodable, Hashable {
     public let imageUrl: String
     
     public init(imageUrl: String) {

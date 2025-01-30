@@ -8,6 +8,11 @@ final class ReviewPhotoListView: BaseView {
     let removeImage = PassthroughSubject<Int, Never>()
     let didTapUploadPhoto = PassthroughSubject<Void, Never>()
     
+    struct Config {
+        let size: CGSize
+        let canEdit: Bool
+    }
+    
     private lazy var collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: generateLayout()
@@ -17,13 +22,17 @@ final class ReviewPhotoListView: BaseView {
         $0.showsHorizontalScrollIndicator = false
         $0.delegate = self
         $0.dataSource = self
-        $0.contentInset = .init(top: 0, left: 20, bottom: 0, right: 20)
     }
     
     private let photoAddButtonView = ReviewPhotoAddButtonView()
+    
     private var imageUrls: [String] = []
+    
+    private let config: Config
 
-    init() {
+    init(config: Config) {
+        self.config = config
+        
         super.init(frame: .zero)
         
         bindEvent()
@@ -33,8 +42,13 @@ final class ReviewPhotoListView: BaseView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override var intrinsicContentSize: CGSize {
+        CGSize(width: bounds.width, height: config.size.height)
+    }
+    
     override func setup() {
-        backgroundColor = Colors.systemWhite.color
+        backgroundColor = .clear
+        
         addSubViews([
             collectionView,
             photoAddButtonView
@@ -48,13 +62,11 @@ final class ReviewPhotoListView: BaseView {
             ReviewPhotoListHeaderView.self,
         ])
         
-        snp.makeConstraints {
-            $0.height.equalTo(72)
-        }
-        
         photoAddButtonView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
+        
+        photoAddButtonView.isHidden = true
     }
     
     override func bindConstraints() {
@@ -75,13 +87,13 @@ final class ReviewPhotoListView: BaseView {
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 8
         layout.minimumLineSpacing = 8
-        layout.sectionInset.left = 8
+        layout.sectionInset.left = config.canEdit ? 8 : .zero
         return layout
     }
     
     func setImages(_ urls: [String]) {
         imageUrls = urls
-        photoAddButtonView.isHidden = self.imageUrls.isNotEmpty
+        photoAddButtonView.isHidden = self.imageUrls.isNotEmpty || config.canEdit.isNot
         collectionView.reloadData()
     }
 }
@@ -93,7 +105,7 @@ extension ReviewPhotoListView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: ReviewPhotoListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-        cell.bind(imageUrl: imageUrls[safe: indexPath.item])
+        cell.bind(imageUrl: imageUrls[safe: indexPath.item], canEdit: config.canEdit)
         cell.removeButton.tapPublisher
             .sink { [weak self] in
                 self?.removeImage.send(indexPath.item)
@@ -119,11 +131,13 @@ extension ReviewPhotoListView: UICollectionViewDelegate {
 
 extension ReviewPhotoListView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return ReviewPhotoListCell.Layout.size
+        return config.size
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return imageUrls.isEmpty ? .zero : ReviewPhotoListCell.Layout.size
+        guard config.canEdit else { return .zero }
+        
+        return imageUrls.isEmpty ? .zero : config.size
     }
 }
 
@@ -168,7 +182,7 @@ final class ReviewPhotoAddButtonView: UIControl {
         stackView.addArrangedSubview(titleLabel)
         
         containerView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalToSuperview()
             $0.centerY.equalToSuperview()
             $0.height.equalTo(53)
         }

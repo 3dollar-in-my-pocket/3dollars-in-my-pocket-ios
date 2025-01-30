@@ -6,11 +6,6 @@ import DesignSystem
 import Then
 
 final class ReviewPhotoListCell: BaseCollectionViewCell {
-    
-    enum Layout {
-        static let size = CGSize(width: 72, height: 72)
-    }
-    
     private let imageView = UIImageView()
     
     let removeButton: UIButton = {
@@ -47,8 +42,9 @@ final class ReviewPhotoListCell: BaseCollectionViewCell {
         imageView.clear()
     }
     
-    func bind(imageUrl: String?) {
+    func bind(imageUrl: String?, canEdit: Bool) {
         imageView.setImage(urlString: imageUrl)
+        removeButton.isHidden = canEdit.isNot
     }
 }
 

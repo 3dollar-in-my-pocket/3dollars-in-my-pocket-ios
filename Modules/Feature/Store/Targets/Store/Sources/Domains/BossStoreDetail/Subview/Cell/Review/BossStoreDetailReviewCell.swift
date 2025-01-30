@@ -76,6 +76,9 @@ final class BossStoreDetailReviewCell: BaseCollectionViewCell {
         return label
     }()
     
+    private let stackView = UIStackView()
+    private let photoListView = ReviewPhotoListView(config: .init(size: CGSize(width: 96, height: 96), canEdit: false))
+    
     private let likeButton = LikeButton()
     
     private weak var viewModel: BossStoreDetailReviewCellViewModel?
@@ -92,9 +95,12 @@ final class BossStoreDetailReviewCell: BaseCollectionViewCell {
             dateLabel,
             medalBadge,
             starBadge,
+            stackView,
             contentLabel,
             likeButton
         ])
+        
+        stackView.addArrangedSubview(photoListView)
         
         feedbackGenerator.prepare()
     }
@@ -136,10 +142,15 @@ final class BossStoreDetailReviewCell: BaseCollectionViewCell {
             $0.centerY.equalTo(medalBadge)
             $0.leading.equalTo(medalBadge.snp.trailing).offset(4)
         }
+        
+        stackView.snp.makeConstraints {
+            $0.top.equalTo(medalBadge.snp.bottom).offset(8)
+            $0.leading.trailing.equalToSuperview()
+        }
 
         contentLabel.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.top.equalTo(medalBadge.snp.bottom).offset(8)
+            $0.top.equalTo(stackView.snp.bottom).offset(8)
         }
         
         likeButton.snp.makeConstraints {
@@ -187,6 +198,8 @@ final class BossStoreDetailReviewCell: BaseCollectionViewCell {
         contentLabel.text = review.contents
         contentLabel.setLineHeight(lineHeight: 20)
         likeButton.bind(count: review.likeCount, reactedByMe: review.reactedByMe)
+        photoListView.isHidden = review.images.isEmpty
+        photoListView.setImages(review.images.map { $0.imageUrl })
         
         if review.isOwner {
             backgroundColor = Colors.pink100.color
@@ -206,5 +219,7 @@ final class BossStoreDetailReviewCell: BaseCollectionViewCell {
         
         starBadge.prepareForReuse()
         medalBadge.prepareForReuse()
+        photoListView.isHidden = true
+        photoListView.setImages([])
     }
 }

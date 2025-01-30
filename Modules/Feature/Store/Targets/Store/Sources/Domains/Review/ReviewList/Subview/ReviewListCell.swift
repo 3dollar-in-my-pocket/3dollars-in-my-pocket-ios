@@ -48,6 +48,9 @@ final class ReviewListCell: BaseCollectionViewCell {
     
     private let starBadge = StoreDetailStarBadgeView()
     
+    private let stackView = UIStackView()
+    private let photoListView = ReviewPhotoListView(config: .init(size: CGSize(width: 96, height: 96), canEdit: false))
+    
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.textColor = Colors.gray80.color
@@ -65,6 +68,8 @@ final class ReviewListCell: BaseCollectionViewCell {
         
         starBadge.prepareForReuse()
         medalBadge.prepareForReuse()
+        photoListView.isHidden = true
+        photoListView.setImages([])
     }
     
     override func setup() {
@@ -75,9 +80,11 @@ final class ReviewListCell: BaseCollectionViewCell {
             dateLabel,
             medalBadge,
             starBadge,
+            stackView,
             contentLabel,
             likeButton
         ])
+        stackView.addArrangedSubview(photoListView)
         feedbackGenerator.prepare()
     }
     
@@ -113,11 +120,17 @@ final class ReviewListCell: BaseCollectionViewCell {
             $0.centerY.equalTo(medalBadge)
             $0.left.equalTo(medalBadge.snp.right).offset(4)
         }
+        
+        stackView.snp.makeConstraints {
+            $0.top.equalTo(medalBadge.snp.bottom).offset(8)
+            $0.leading.equalToSuperview().inset(16)
+            $0.trailing.equalToSuperview()
+        }
 
         contentLabel.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20)
             $0.right.equalToSuperview().offset(-20)
-            $0.top.equalTo(medalBadge.snp.bottom).offset(8)
+            $0.top.equalTo(stackView.snp.bottom).offset(8)
         }
         
         likeButton.snp.makeConstraints {
@@ -134,6 +147,8 @@ final class ReviewListCell: BaseCollectionViewCell {
         starBadge.bind(review.rating)
         contentLabel.text = review.contents
         likeButton.bind(count: review.likeCount, reactedByMe: review.reactedByMe)
+        photoListView.isHidden = review.images.isEmpty
+        photoListView.setImages(review.images.map { $0.imageUrl })
         
         if review.isOwner {
             contentView.backgroundColor = Colors.pink100.color

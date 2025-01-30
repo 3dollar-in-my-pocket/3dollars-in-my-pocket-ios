@@ -32,7 +32,7 @@ final class ReviewWriteViewController: BaseViewController {
     
     private lazy var feedbackSelectionView = ReviewFeedbackSelectionView(viewModel.output.feedbackSelectionViewModel)
     private let contentView = ReviewWriteContentView()
-    private let photoListView = ReviewPhotoListView()
+    private let photoListView = ReviewPhotoListView(config: .init(size: CGSize(width: 72, height: 72), canEdit: true))
     private let completeButton = UIButton().then {
         $0.isEnabled = false
         $0.backgroundColor = Colors.mainPink.color
@@ -118,7 +118,7 @@ final class ReviewWriteViewController: BaseViewController {
         }
         photoListView.snp.makeConstraints {
             $0.top.equalTo(contentView.snp.bottom).offset(20)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(30)
         }
         
