@@ -154,7 +154,7 @@ final class ReviewListCell: BaseCollectionViewCell {
             contentView.backgroundColor = Colors.pink100.color
             medalBadge.containerView.backgroundColor = Colors.systemWhite.color
             starBadge.containerView.backgroundColor = Colors.systemWhite.color
-            rightButton.setTitle(Strings.StoreDetail.Review.edit, for: .normal)
+            rightButton.setTitle("삭제", for: .normal)
         } else {
             contentView.backgroundColor = Colors.systemWhite.color
             medalBadge.containerView.backgroundColor = Colors.pink100.color

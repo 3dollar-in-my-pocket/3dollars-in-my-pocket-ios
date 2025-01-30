@@ -36,6 +36,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         // Review Section
         let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
+        let onSuccessDeleteReview = PassthroughSubject<Int, Never>()
         let didTapReviewMore = PassthroughSubject<Void, Never>()
         let updateReview = PassthroughSubject<StoreDetailReview, Never>()
     }
@@ -517,6 +518,16 @@ extension BossStoreDetailViewModel {
                 reloadDataSource()
             }
             .store(in: &cancellables)
+        
+        input.onSuccessDeleteReview
+            .sink { [weak self] reviewId in
+                guard let self else { return }
+                
+                output.toast.send("리뷰가 삭제되었어요.")
+                state.storeDetailData?.reviews.removeAll(where: { $0.reviewId == reviewId })
+                reloadDataSource()
+            }
+            .store(in: &cancellables)
     }
     
     private func pushReviewWrite() {
@@ -551,6 +562,10 @@ extension BossStoreDetailViewModel {
         
         viewModel.output.onSuccessToggleReviewSticker
             .subscribe(input.updateReview)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onSuccessDeleteReview
+            .subscribe(input.onSuccessDeleteReview)
             .store(in: &viewModel.cancellables)
         
         output.route.send(.pushReviewList(viewModel))
@@ -593,13 +608,7 @@ extension BossStoreDetailViewModel {
             .store(in: &viewModel.cancellables)
         
         viewModel.output.onSuccessDelete
-            .sink { [weak self] reviewId in
-                guard let self else { return }
-                
-                output.toast.send("리뷰가 삭제되었어요.")
-                state.storeDetailData?.reviews.removeAll(where: { $0.reviewId == reviewId })
-                reloadDataSource()
-            }
+            .subscribe(input.onSuccessDeleteReview)
             .store(in: &viewModel.cancellables)
         
         return viewModel

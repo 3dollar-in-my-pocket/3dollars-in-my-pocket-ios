@@ -44,6 +44,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let didTapReviewMore = PassthroughSubject<Void, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
         let updateReview = PassthroughSubject<StoreDetailReview, Never>()
+        let onSuccessDeleteReview = PassthroughSubject<Int, Never>()
     }
     
     struct Output {
@@ -316,6 +317,14 @@ final class StoreDetailViewModel: BaseViewModel {
                     owner.state.storeDetailData?.reviews[targetIndex] = review
                     owner.refreshSections()
                 }
+            }
+            .store(in: &cancellables)
+        
+        input.onSuccessDeleteReview
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, reviewId: Int) in
+                owner.state.storeDetailData?.reviews.removeAll(where: { $0.reviewId == reviewId })
+               owner.refreshSections()
             }
             .store(in: &cancellables)
     }
@@ -635,6 +644,10 @@ extension StoreDetailViewModel {
         
         viewModel.output.onSuccessToggleReviewSticker
             .subscribe(input.updateReview)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onSuccessDeleteReview
+            .subscribe(input.onSuccessDeleteReview)
             .store(in: &viewModel.cancellables)
         
         output.route.send(.pushReviewList(viewModel))
