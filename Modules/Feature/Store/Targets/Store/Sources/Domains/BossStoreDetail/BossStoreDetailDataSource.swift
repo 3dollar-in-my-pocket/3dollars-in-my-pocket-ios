@@ -25,7 +25,8 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             BossStoreDetailReviewCell.self,
             StoreDetailReviewEmptyCell.self,
             StoreDetailReviewMoreCell.self,
-            BossStoreDetailReviewFeedbackSummaryCell.self
+            BossStoreDetailReviewFeedbackSummaryCell.self,
+            StoreDetailFilteredReviewCell.self
         ])
         
         collectionView.register(
@@ -84,6 +85,9 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             case .reviewFeedbackSummary(let viewModel):
                 let cell: BossStoreDetailReviewFeedbackSummaryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
+                return cell
+            case .filteredReview:
+                let cell: StoreDetailFilteredReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 return cell
             }
         }

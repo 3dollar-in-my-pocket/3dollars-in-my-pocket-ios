@@ -174,6 +174,9 @@ final class BossStoreDetailViewController: BaseViewController {
                 case .presentReviewWrite(let viewModel):
                     let viewController = ReviewWriteViewController(viewModel: viewModel)
                     owner.navigationController?.pushViewController(viewController, animated: true)
+                case .presentReportBottomSheetReview(let viewModel):
+                    let viewController = ReportReviewBottomSheetViewController.instance(viewModel: viewModel)
+                    owner.presentPanModal(viewController)
                 }
             }
             .store(in: &cancellables)
@@ -300,6 +303,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return BossStoreDetailReviewCell.Layout.size(width: containerWidth, viewModel: viewModel)
         case .reviewFeedbackSummary(let viewModel):
             return CGSize(width: width, height: BossStoreDetailReviewFeedbackSummaryCell.Layout.height(viewModel))
+        case .filteredReview:
+            return CGSize(width: width, height: 76)
         default:
             return .zero
         }

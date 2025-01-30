@@ -15,4 +15,5 @@ enum BossStoreDetailSectionItem: Hashable {
     case reviewMore(totalCount: Int)
     case review(BossStoreDetailReviewCellViewModel)
     case reviewFeedbackSummary(BossStoreDetailReviewFeedbackSummaryCellViewModel)
+    case filteredReview(StoreDetailReview)
 }

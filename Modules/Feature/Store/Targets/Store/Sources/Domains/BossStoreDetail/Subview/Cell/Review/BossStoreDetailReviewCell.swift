@@ -5,7 +5,7 @@ import DesignSystem
 import Model
 
 final class BossStoreDetailReviewCell: BaseCollectionViewCell {
-    private let feedbackGenerator = UISelectionFeedbackGenerator()
+    private lazy var feedbackGenerator = UISelectionFeedbackGenerator()
     
     private static let sharedCell = BossStoreDetailReviewCell()
     
@@ -76,14 +76,9 @@ final class BossStoreDetailReviewCell: BaseCollectionViewCell {
         return label
     }()
     
-    let likeButton = LikeButton()
+    private let likeButton = LikeButton()
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        starBadge.prepareForReuse()
-        medalBadge.prepareForReuse()
-    }
+    private weak var viewModel: BossStoreDetailReviewCellViewModel?
     
     override func setup() {
         contentView.addSubViews([
@@ -155,11 +150,39 @@ final class BossStoreDetailReviewCell: BaseCollectionViewCell {
     }
     
     func bind(_ viewModel: BossStoreDetailReviewCellViewModel) {
-        let review = viewModel.output.review
+        self.viewModel = viewModel
         
+        updateUI()
+        
+        viewModel.output.updateUI
+            .main
+            .sink { [weak self] in
+                self?.updateUI()
+            }
+            .store(in: &cancellables)
+        
+        likeButton.tapPublisher
+            .sink { [weak self] in
+                self?.viewModel?.input.didTapLikeButton.send()
+                DispatchQueue.main.async {
+                    self?.feedbackGenerator.selectionChanged()
+                }
+            }
+            .store(in: &cancellables)
+        
+        rightButton.tapPublisher
+            .subscribe(viewModel.input.didTapRightButton)
+            .store(in: &cancellables)
+    }
+    
+    private func updateUI() {
+        guard let viewModel else { return }
+        
+        let review = viewModel.output.review
         nameLabel.text = review.user.name
         dateLabel.text = DateUtils.toString(dateString: review.createdAt, format: "yyyy.MM.dd")
         medalBadge.bind(review.user.medal)
+        starBadge.prepareForReuse()
         starBadge.bind(review.rating)
         contentLabel.text = review.contents
         contentLabel.setLineHeight(lineHeight: 20)
@@ -176,13 +199,12 @@ final class BossStoreDetailReviewCell: BaseCollectionViewCell {
             starBadge.containerView.backgroundColor = Colors.pink100.color
             rightButton.setTitle(Strings.StoreDetail.Review.report, for: .normal)
         }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
         
-        likeButton.controlPublisher(for: .touchUpInside)
-            .main
-            .withUnretained(self)
-            .sink { (owner: BossStoreDetailReviewCell, _) in
-                owner.feedbackGenerator.selectionChanged()
-            }
-            .store(in: &cancellables)
+        starBadge.prepareForReuse()
+        medalBadge.prepareForReuse()
     }
 }

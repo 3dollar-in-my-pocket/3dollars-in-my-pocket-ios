@@ -10,7 +10,7 @@ public struct BossStoreDetailData {
     public let post: PostResponse?
     public let totalPostCount: Int?
     public let totalReviewCount: Int
-    public let reviews: [StoreDetailReview]
+    public var reviews: [StoreDetailReview]
 
     public init(response: BossStoreDetailResponse) {
         self.overview = StoreDetailOverview(

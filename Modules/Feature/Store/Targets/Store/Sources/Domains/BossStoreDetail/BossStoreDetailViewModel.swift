@@ -72,6 +72,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case navigateAppleMap(LocationResponse)
         case showErrorAlert(Error)
         case presentReviewWrite(ReviewWriteViewModel)
+        case presentReportBottomSheetReview(ReportReviewBottomSheetViewModel)
     }
 
     let input = Input()
@@ -500,7 +501,7 @@ extension BossStoreDetailViewModel {
             reviewSectionItems.append(.reviewRating(rating: storeDetailData.store.rating))
             reviewSectionItems.append(.reviewFeedbackSummary(bindReviewFeedbackSummaryCellViewModel(with: storeDetailData.feedbacks)))
             reviewSectionItems.append(contentsOf: storeDetailData.reviews.prefix(3).map {
-                .review(bindReviewCellViewModel(with: $0))
+                $0.isFiltered ? .filteredReview($0) : .review(bindReviewCellViewModel(with: $0))
             })
             if storeDetailData.totalReviewCount > 3 {
                 reviewSectionItems.append(.reviewMore(totalCount: storeDetailData.totalReviewCount))
@@ -529,7 +530,31 @@ extension BossStoreDetailViewModel {
     }
     
     private func bindReviewCellViewModel(with data: StoreDetailReview) -> BossStoreDetailReviewCellViewModel {
-        let viewModel = BossStoreDetailReviewCellViewModel(data: data)
+        let config = BossStoreDetailReviewCellViewModel.Config(storeId: storeId)
+        let viewModel = BossStoreDetailReviewCellViewModel(config: config, data: data)
+        
+        viewModel.output.error
+            .subscribe(output.error)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.presentReportBottomSheetReview
+            .compactMap { [weak self] in
+                self?.bindReportReviewBottomSheetViewModel(review: $0.0, reasons: $0.1)
+            }
+            .map { .presentReportBottomSheetReview($0) }
+            .subscribe(output.route)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onSuccessDelete
+            .sink { [weak self] reviewId in
+                guard let self else { return }
+                
+                output.toast.send("리뷰가 삭제되었어요.")
+                state.storeDetailData?.reviews.removeAll(where: { $0.reviewId == reviewId })
+                reloadDataSource()
+            }
+            .store(in: &viewModel.cancellables)
+        
         return viewModel
     }
     
@@ -542,6 +567,26 @@ extension BossStoreDetailViewModel {
         viewModel.output.onSuccessWriteReview
             .mapVoid
             .subscribe(input.reload)
+            .store(in: &viewModel.cancellables)
+        
+        return viewModel
+    }
+    
+    private func bindReportReviewBottomSheetViewModel(review: StoreDetailReview, reasons: [ReportReason]) -> ReportReviewBottomSheetViewModel {
+        let config = ReportReviewBottomSheetViewModel.Config(
+            storeId: Int(storeId) ?? 0,
+            reviewId: review.reviewId,
+            reportReasons: reasons
+        )
+        let viewModel = ReportReviewBottomSheetViewModel(config: config)
+        
+        viewModel.output.onSuccessReport
+            .sink { [weak self] reviewId in
+                guard let self, let targetIndex = state.storeDetailData?.reviews.firstIndex(where: { $0.reviewId == reviewId }) else { return }
+                
+                state.storeDetailData?.reviews[targetIndex].isFiltered = true
+                reloadDataSource()
+            }
             .store(in: &viewModel.cancellables)
         
         return viewModel
