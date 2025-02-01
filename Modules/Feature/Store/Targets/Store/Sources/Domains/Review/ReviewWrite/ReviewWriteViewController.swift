@@ -222,6 +222,12 @@ final class ReviewWriteViewController: BaseViewController {
                 self?.photoListView.setImages($0)
             }
             .store(in: &cancellables)
+        
+        viewModel.output.showLoading
+            .removeDuplicates()
+            .main
+            .sink { LoadingManager.shared.showLoading(isShow: $0) }
+            .store(in: &cancellables)
     }
     
     private func addKeyboardObservers() {

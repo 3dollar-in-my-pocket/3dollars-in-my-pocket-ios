@@ -29,6 +29,7 @@ final class ReviewWriteViewModel: BaseViewModel {
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
         let imageUrls = CurrentValueSubject<[ImageResponse], Never>([])
         let showToast = PassthroughSubject<String, Never>()
+        let showLoading = PassthroughSubject<Bool, Never>()
     }
     
     enum Route {
@@ -156,8 +157,9 @@ final class ReviewWriteViewModel: BaseViewModel {
                 feedbacks: feedbacks
             )
             
+            output.showLoading.send(true)
             let result = await storeService.writeReview(input: input)
-            
+            output.showLoading.send(false)
             switch result {
             case .success(let response):
                 let storeDetailReview = StoreDetailReview(response: response)
