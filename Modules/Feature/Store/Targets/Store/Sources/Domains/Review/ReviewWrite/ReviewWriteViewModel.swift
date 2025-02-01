@@ -110,21 +110,26 @@ final class ReviewWriteViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.didTapUploadPhoto
-            .withUnretained(self)
-            .sink { (owner: ReviewWriteViewModel, _) in
-                let limitOfPhoto: Int = Constants.maxPhotoCount - owner.output.imageUrls.value.count
+            .sink { [weak self] _ in
+                guard let self else { return }
+                
+                let limitOfPhoto: Int = Constants.maxPhotoCount - output.imageUrls.value.count
                 
                 if limitOfPhoto <= 0 {
-                    owner.output.showToast.send("10개까지만 등록 가능해요!")
+                    output.showToast.send("10개까지만 등록 가능해요!")
                 } else {
                     let config = UploadPhotoViewModel.Config(uploadType: .reviewImage(limitOfPhoto: limitOfPhoto))
                     let viewModel = UploadPhotoViewModel(config: config)
                     viewModel.output.onSuccessUploadImages
                         .sink { [weak self] in
-                            self?.output.imageUrls.send($0.map { .init(imageUrl: $0.imageUrl, width: $0.width, height: $0.height) })
+                            guard let self else { return }
+                            
+                            var imageUrls = output.imageUrls.value
+                            imageUrls.append(contentsOf: $0.map { .init(imageUrl: $0.imageUrl, width: $0.width, height: $0.height) })
+                            output.imageUrls.send(imageUrls)
                         }
                         .store(in: &viewModel.cancellables)
-                    owner.output.route.send(.uploadPhoto(viewModel))
+                    output.route.send(.uploadPhoto(viewModel))
                 }
             }
             .store(in: &cancellables)
