@@ -97,40 +97,39 @@ final class BossStoreDetailReviewFeedbackSummaryCell: BaseCollectionViewCell {
         var currentY: CGFloat = 0
         
         for (index, feedbacks) in chunkedArray.enumerated() {
-            let stackView = createButtonStackView()
-            buttonContainerView.addSubview(stackView)
-            stackView.snp.makeConstraints {
-                $0.top.equalTo(currentY)
-                $0.centerX.equalToSuperview()
-            }
+            let stackView = createButtonStackView(offsetY: currentY)
             feedbacks.forEach {
                 let button = createFeedbackButton(emoji: $0.feedbackType.emoji, text: $0.feedbackType.description, count: $0.count)
                 stackView.addArrangedSubview(button)
             }
             
-            if index == chunkedArray.count - 1 {
-                stackView.addArrangedSubview(seeAllButton)
-            }
-            
             currentY = (CGFloat((index + 1)) * Layout.buttonHeight) + buttonSpacing
+            
+            if index == chunkedArray.count - 1 {
+                if feedbacks.count == 1 {
+                    stackView.addArrangedSubview(seeAllButton)
+                } else {
+                    createButtonStackView(offsetY: currentY).addArrangedSubview(seeAllButton)
+                }
+            }
         }
         
         if feedbacks.isEmpty {
-            let stackView = createButtonStackView()
-            buttonContainerView.addSubview(stackView)
-            stackView.snp.makeConstraints {
-                $0.top.equalTo(currentY)
-                $0.centerX.equalToSuperview()
-            }
+            let stackView = createButtonStackView(offsetY: currentY)
             stackView.addArrangedSubview(createEmptyButton())
             stackView.addArrangedSubview(seeAllButton)
         }
     }
     
-    private func createButtonStackView() -> UIStackView {
+    private func createButtonStackView(offsetY: CGFloat) -> UIStackView {
         let stackView = UIStackView()
         stackView.alignment = .center
         stackView.spacing = 4
+        buttonContainerView.addSubview(stackView)
+        stackView.snp.makeConstraints {
+            $0.top.equalTo(offsetY)
+            $0.centerX.equalToSuperview()
+        }
         return stackView
     }
     
