@@ -12,6 +12,7 @@ public struct StoreDetailReview: Hashable {
     public var likeCount: Int
     public var reactedByMe: Bool
     public let stickerId: String
+    public let images: [ImageResponse]
     
     public init(response: StoreReviewWithWriterResponse) {
         self.user = User(response: response.reviewWriter)
@@ -25,5 +26,6 @@ public struct StoreDetailReview: Hashable {
         self.likeCount = response.stickers.first?.count ?? 0
         self.reactedByMe = response.stickers.first?.reactedByMe ?? false
         self.stickerId = response.stickers.first?.stickerId ?? ""
+        self.images = response.review.images
     }
 }

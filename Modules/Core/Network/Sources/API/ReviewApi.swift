@@ -7,6 +7,7 @@ enum ReviewApi {
     case reportReview(storeId: Int, reviewId: Int, input: ReportReviewRequestInput)
     case fetchMyStoreReview(input: CursorRequestInput)
     case toggleReviewSticker(storeId: Int, reviewId: Int, input: StoreReviewStickerListReplaceInput)
+    case deleteReview(reviewId: Int)
 }
 
 extension ReviewApi: RequestType {
@@ -20,6 +21,8 @@ extension ReviewApi: RequestType {
             return input
         case .toggleReviewSticker(_, _, let input):
             return input
+        case .deleteReview:
+            return nil
         }
     }
     
@@ -33,6 +36,8 @@ extension ReviewApi: RequestType {
             return .get
         case .toggleReviewSticker:
             return .put
+        case .deleteReview:
+            return .delete
         }
     }
     
@@ -45,6 +50,8 @@ extension ReviewApi: RequestType {
         case .fetchMyStoreReview:
             return .json
         case .toggleReviewSticker:
+            return .json
+        case .deleteReview:
             return .json
         }
     }
@@ -59,6 +66,8 @@ extension ReviewApi: RequestType {
             return "/api/v4/my/store-reviews"
         case .toggleReviewSticker(let storeId, let reviewId, _):
             return "/api/v1/store/\(storeId)/review/\(reviewId)/stickers"
+        case .deleteReview(let reviewId):
+            return "/api/v2/store/review/\(reviewId)"
         }
     }
 }

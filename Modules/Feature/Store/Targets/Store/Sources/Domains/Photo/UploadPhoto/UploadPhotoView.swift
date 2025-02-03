@@ -104,8 +104,12 @@ final class UploadPhotoView: BaseView {
         }
     }
     
-    func setUploadButtonTitle(count: Int) {
-        let title = Strings.UploadPhoto.Button.titleFormat(count, UploadPhotoViewModel.Constant.limitOfPhoto)
+    func setTitle(_ text: String) {
+        titleLabel.text = text
+    }
+    
+    func setUploadButtonTitle(count: Int, limitOfPhoto: Int) {
+        let title = Strings.UploadPhoto.Button.titleFormat(count, limitOfPhoto)
         uploadButton.setTitle(title, for: .normal)
     }
     

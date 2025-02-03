@@ -7,7 +7,7 @@ import Then
 final class BossStoreFeedbackItemCell: BaseCollectionViewCell {
 
     enum Layout {
-        static let height: CGFloat = 52
+        static let height: CGFloat = 44
     }
 
     private let containerView = UIView().then {
@@ -18,19 +18,13 @@ final class BossStoreFeedbackItemCell: BaseCollectionViewCell {
     }
 
     private let emojiLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 14)
+        $0.font = Fonts.semiBold.font(size: 12)
         $0.textColor = Colors.gray95.color
     }
 
     private let titleLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 14)
+        $0.font = Fonts.bold.font(size: 12)
         $0.textColor = Colors.gray95.color
-    }
-
-    private let checkImageView = UIImageView().then {
-        $0.image = Icons.check.image
-            .resizeImage(scaledTo: 20)
-            .withTintColor(Colors.mainPink.color)
     }
 
     override func setup() {
@@ -42,8 +36,7 @@ final class BossStoreFeedbackItemCell: BaseCollectionViewCell {
 
         containerView.addSubViews([
             emojiLabel,
-            titleLabel,
-            checkImageView
+            titleLabel
         ])
     }
 
@@ -51,23 +44,17 @@ final class BossStoreFeedbackItemCell: BaseCollectionViewCell {
         super.bindConstraints()
 
         containerView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.bottom.equalToSuperview()
+            $0.edges.equalToSuperview()
         }
 
         emojiLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(20)
+            $0.leading.equalToSuperview().inset(16)
             $0.centerY.equalToSuperview()
         }
 
         titleLabel.snp.makeConstraints {
             $0.leading.equalTo(emojiLabel.snp.trailing).offset(8)
             $0.centerY.equalToSuperview()
-        }
-
-        checkImageView.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(16)
         }
     }
 
@@ -76,6 +63,5 @@ final class BossStoreFeedbackItemCell: BaseCollectionViewCell {
         titleLabel.text = title
         containerView.layer.borderColor = isSelected ? Colors.mainPink.color.cgColor : Colors.gray20.color.cgColor
         containerView.backgroundColor = isSelected ? Colors.pink100.color : Colors.systemWhite.color
-        checkImageView.isHidden = !isSelected
     }
 }

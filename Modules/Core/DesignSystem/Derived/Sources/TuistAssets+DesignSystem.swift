@@ -54,6 +54,7 @@ public enum DesignSystemAsset {
     public static let badge = DesignSystemImages(name: "badge")
     public static let bookmarkLine = DesignSystemImages(name: "bookmark.line")
     public static let bookmarkSolid = DesignSystemImages(name: "bookmark.solid")
+    public static let camera = DesignSystemImages(name: "camera")
     public static let category = DesignSystemImages(name: "category")
     public static let change = DesignSystemImages(name: "change")
     public static let checkBoxOff = DesignSystemImages(name: "check.box.off")

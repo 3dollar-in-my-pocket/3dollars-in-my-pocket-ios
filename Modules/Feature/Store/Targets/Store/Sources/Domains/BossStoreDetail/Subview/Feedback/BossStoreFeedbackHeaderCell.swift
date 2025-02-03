@@ -7,20 +7,18 @@ import Then
 final class BossStoreFeedbackHeaderCell: BaseCollectionViewCell {
 
     enum Layout {
-        static let height: CGFloat = 108
+        static let height: CGFloat = 68
     }
 
     private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 24)
+        $0.font = Fonts.semiBold.font(size: 20)
         $0.textColor = Colors.gray100.color
-        $0.textAlignment = .center
-        $0.text = Strings.BossStoreFeedback.Content.title
+        $0.text = "이 가게에서 가장 좋았던 점은 무엇인가요?" // Strings.BossStoreFeedback.Content.title
     }
 
     private let subtitleLabel = UILabel().then {
         $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.mainPink.color
-        $0.textAlignment = .center
+        $0.textColor = Colors.gray50.color
         $0.text = Strings.BossStoreFeedback.Content.subtitle
     }
 
@@ -37,13 +35,13 @@ final class BossStoreFeedbackHeaderCell: BaseCollectionViewCell {
         super.bindConstraints()
 
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(20)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.top.equalToSuperview().inset(14)
+            $0.leading.trailing.equalToSuperview()
         }
 
         subtitleLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(8)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(2)
+            $0.leading.trailing.equalToSuperview()
         }
     }
 }

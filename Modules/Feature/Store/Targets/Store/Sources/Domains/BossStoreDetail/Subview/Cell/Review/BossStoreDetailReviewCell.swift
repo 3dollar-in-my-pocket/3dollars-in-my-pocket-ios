@@ -4,12 +4,30 @@ import Common
 import DesignSystem
 import Model
 
-final class ReviewListCell: BaseCollectionViewCell {
-    private let feedbackGenerator = UISelectionFeedbackGenerator()
+final class BossStoreDetailReviewCell: BaseCollectionViewCell {
+    private lazy var feedbackGenerator = UISelectionFeedbackGenerator()
+    
+    private static let sharedCell = BossStoreDetailReviewCell()
     
     enum Layout {
-        static let estimatedHeight: CGFloat = 120
+        static func size(width: CGFloat, viewModel: BossStoreDetailReviewCellViewModel) -> CGSize {
+            
+            sharedCell.bind(viewModel)
+            
+            let size: CGSize = .init(width: width, height: UIView.layoutFittingCompressedSize.height)
+            let cellSize = sharedCell.systemLayoutSizeFitting(
+                size,
+                withHorizontalFittingPriority: .required,
+                verticalFittingPriority: .fittingSizeLevel
+            )
+            return cellSize
+        }
     }
+    
+    private let containerView: UIView = {
+        let view = UIView()
+        return view
+    }()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
@@ -19,7 +37,7 @@ final class ReviewListCell: BaseCollectionViewCell {
         return label
     }()
     
-    let rightButton: UIButton = {
+    private let rightButton: UIButton = {
         let button = UIButton()
         button.setTitle(Strings.StoreDetail.Review.report, for: .normal)
         button.setTitleColor(Colors.gray60.color, for: .normal)
@@ -48,9 +66,6 @@ final class ReviewListCell: BaseCollectionViewCell {
     
     private let starBadge = StoreDetailStarBadgeView()
     
-    private let stackView = UIStackView()
-    private let photoListView = ReviewPhotoListView(config: .init(size: CGSize(width: 96, height: 96), canEdit: false))
-    
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.textColor = Colors.gray80.color
@@ -61,7 +76,12 @@ final class ReviewListCell: BaseCollectionViewCell {
         return label
     }()
     
-    let likeButton = LikeButton()
+    private let stackView = UIStackView()
+    private let photoListView = ReviewPhotoListView(config: .init(size: CGSize(width: 96, height: 96), canEdit: false))
+    
+    private let likeButton = LikeButton()
+    
+    private weak var viewModel: BossStoreDetailReviewCellViewModel?
     
     weak var containerViewController: UIViewController? {
         didSet {
@@ -69,17 +89,12 @@ final class ReviewListCell: BaseCollectionViewCell {
         }
     }
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        starBadge.prepareForReuse()
-        medalBadge.prepareForReuse()
-        photoListView.isHidden = true
-        photoListView.setImages([])
-    }
-    
     override func setup() {
         contentView.addSubViews([
+            containerView,
+        ])
+        
+        containerView.addSubViews([
             nameLabel,
             rightButton,
             dotView,
@@ -90,91 +105,128 @@ final class ReviewListCell: BaseCollectionViewCell {
             contentLabel,
             likeButton
         ])
+        
         stackView.addArrangedSubview(photoListView)
+        
         feedbackGenerator.prepare()
     }
     
     override func bindConstraints() {
+        containerView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(16)
+        }
+        
         nameLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(16)
-            $0.left.equalToSuperview().offset(20)
-            $0.right.lessThanOrEqualTo(dateLabel.snp.left)
+            $0.top.equalToSuperview().inset(16)
+            $0.leading.equalToSuperview()
+            $0.trailing.lessThanOrEqualTo(dateLabel.snp.leading)
         }
         
         rightButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview()
             $0.centerY.equalTo(nameLabel)
         }
         
         dotView.snp.makeConstraints {
             $0.centerY.equalTo(rightButton)
             $0.size.equalTo(2)
-            $0.right.equalTo(rightButton.snp.left).offset(-4)
+            $0.trailing.equalTo(rightButton.snp.leading).offset(-4)
         }
         
         dateLabel.snp.makeConstraints {
-            $0.right.equalTo(dotView.snp.left).offset(-4)
+            $0.trailing.equalTo(dotView.snp.leading).offset(-4)
             $0.centerY.equalTo(dotView)
         }
         
         medalBadge.snp.makeConstraints {
-            $0.left.equalTo(nameLabel)
+            $0.leading.equalToSuperview()
             $0.top.equalTo(nameLabel.snp.bottom).offset(2)
             $0.height.equalTo(StoreDetailMedalBadgeView.Layout.height)
         }
 
         starBadge.snp.makeConstraints {
             $0.centerY.equalTo(medalBadge)
-            $0.left.equalTo(medalBadge.snp.right).offset(4)
+            $0.leading.equalTo(medalBadge.snp.trailing).offset(4)
         }
         
         stackView.snp.makeConstraints {
             $0.top.equalTo(medalBadge.snp.bottom).offset(8)
-            $0.leading.equalToSuperview().inset(16)
-            $0.trailing.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
         }
 
         contentLabel.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(stackView.snp.bottom).offset(8)
         }
         
         likeButton.snp.makeConstraints {
             $0.leading.equalTo(contentLabel)
             $0.top.equalTo(contentLabel.snp.bottom).offset(8)
-            $0.bottom.equalToSuperview().offset(-16)
+            $0.bottom.equalToSuperview().inset(8)
         }
     }
     
-    func bind(_ review: StoreDetailReview) {
+    func bind(_ viewModel: BossStoreDetailReviewCellViewModel) {
+        self.viewModel = viewModel
+        
+        updateUI()
+        
+        viewModel.output.updateUI
+            .main
+            .sink { [weak self] in
+                self?.updateUI()
+            }
+            .store(in: &cancellables)
+        
+        likeButton.tapPublisher
+            .sink { [weak self] in
+                self?.viewModel?.input.didTapLikeButton.send()
+                DispatchQueue.main.async {
+                    self?.feedbackGenerator.selectionChanged()
+                }
+            }
+            .store(in: &cancellables)
+        
+        rightButton.tapPublisher
+            .subscribe(viewModel.input.didTapRightButton)
+            .store(in: &cancellables)
+    }
+    
+    private func updateUI() {
+        guard let viewModel else { return }
+        
+        let review = viewModel.output.review
         nameLabel.text = review.user.name
         dateLabel.text = DateUtils.toString(dateString: review.createdAt, format: "yyyy.MM.dd")
         medalBadge.bind(review.user.medal)
+        starBadge.prepareForReuse()
         starBadge.bind(review.rating)
         contentLabel.text = review.contents
+        contentLabel.setLineHeight(lineHeight: 20)
         likeButton.bind(count: review.likeCount, reactedByMe: review.reactedByMe)
         photoListView.isHidden = review.images.isEmpty
         photoListView.setImages(review.images)
         
         if review.isOwner {
-            contentView.backgroundColor = Colors.pink100.color
+            backgroundColor = Colors.pink100.color
             medalBadge.containerView.backgroundColor = Colors.systemWhite.color
             starBadge.containerView.backgroundColor = Colors.systemWhite.color
             rightButton.setTitle("삭제", for: .normal)
         } else {
-            contentView.backgroundColor = Colors.systemWhite.color
+            backgroundColor = Colors.systemWhite.color
             medalBadge.containerView.backgroundColor = Colors.pink100.color
             starBadge.containerView.backgroundColor = Colors.pink100.color
             rightButton.setTitle(Strings.StoreDetail.Review.report, for: .normal)
         }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
         
-        likeButton.controlPublisher(for: .touchUpInside)
-            .main
-            .withUnretained(self)
-            .sink { (owner: ReviewListCell, _) in
-                owner.feedbackGenerator.selectionChanged()
-            }
-            .store(in: &cancellables)
+        starBadge.prepareForReuse()
+        medalBadge.prepareForReuse()
+        photoListView.isHidden = true
+        photoListView.setImages([])
     }
 }

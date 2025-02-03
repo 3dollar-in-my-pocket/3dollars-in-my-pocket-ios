@@ -125,6 +125,7 @@ final class StoreDetailReviewCell: BaseCollectionViewCell {
         medalBadge.snp.makeConstraints {
             $0.left.equalTo(containerView).offset(16)
             $0.top.equalTo(nameLabel.snp.bottom).offset(2)
+            $0.height.equalTo(StoreDetailMedalBadgeView.Layout.height)
         }
 
         starBadge.snp.makeConstraints {

@@ -18,6 +18,7 @@ enum StoreApi {
     case fetchStorePhotos(storeId: Int, cursor: String?)
     case editReview(reviewId: Int, input: EditReviewRequestInput)
     case deletePhoto(photoId: Int)
+    case existsFeedbackOnDateByAccount(storeId: Int)
 }
 
 extension StoreApi: RequestType {
@@ -61,6 +62,8 @@ extension StoreApi: RequestType {
             return input
         case .deletePhoto:
             return nil
+        case .existsFeedbackOnDateByAccount:
+            return nil
         }
     }
     
@@ -94,6 +97,8 @@ extension StoreApi: RequestType {
             return .put
         case .deletePhoto:
             return .delete
+        case .existsFeedbackOnDateByAccount:
+            return .get
         }
     }
     
@@ -130,6 +135,8 @@ extension StoreApi: RequestType {
             return .custom(["X-Nonce-Token": input.nonceToken])
         case .deletePhoto:
             return .json
+        case .existsFeedbackOnDateByAccount:
+            return .json
         }
     }
     
@@ -163,6 +170,8 @@ extension StoreApi: RequestType {
             return "/api/v2/store/review/\(reviewId)"
         case .deletePhoto(let photoId):
             return "/api/v2/store/image/\(photoId)"
+        case .existsFeedbackOnDateByAccount(let storeId):
+            return "/api/v1/feedback/STORE/target/\(storeId)/exists"
         }
     }
 }

@@ -13,6 +13,8 @@ final class StoreDetailReviewMoreCell: BaseCollectionViewCell {
         button.setTitleColor(Colors.gray60.color, for: .normal)
         button.titleLabel?.font = Fonts.medium.font(size: 12)
         button.titleLabel?.textAlignment = .center
+        button.layer.cornerRadius = 12
+        button.clipsToBounds = true
         
         return button
     }()

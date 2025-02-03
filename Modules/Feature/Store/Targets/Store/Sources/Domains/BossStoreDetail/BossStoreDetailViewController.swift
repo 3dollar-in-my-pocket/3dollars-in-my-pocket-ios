@@ -21,7 +21,7 @@ final class BossStoreDetailViewController: BaseViewController {
         $0.delegate = self
     }
 
-    private lazy var dataSource = BossStoreDetailDataSource(collectionView: collectionView, containerVC: self)
+    private lazy var dataSource = BossStoreDetailDataSource(collectionView: collectionView, containerVC: self, viewModel: viewModel)
 
     private let bottomStickyView = BottomStickyView()
 
@@ -171,6 +171,18 @@ final class BossStoreDetailViewController: BaseViewController {
                     owner.navigateAppleMap(location: location)
                 case .showErrorAlert(let error):
                     owner.showErrorAlert(error: error)
+                case .presentReviewWrite(let viewModel):
+                    let viewController = ReviewWriteViewController(viewModel: viewModel)
+                    owner.navigationController?.pushViewController(viewController, animated: true)
+                case .presentReportBottomSheetReview(let viewModel):
+                    let viewController = ReportReviewBottomSheetViewController.instance(viewModel: viewModel)
+                    owner.presentPanModal(viewController)
+                case .pushReviewList(let viewModel):
+                    let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
+                    owner.navigationController?.pushViewController(viewController, animated: true)
+                case .pushFeedbackList(let data):
+                    let viewController = BossStoreFeedbackListViewController.instance(data)
+                    owner.navigationController?.pushViewController(viewController, animated: true)
                 }
             }
             .store(in: &cancellables)
@@ -269,7 +281,8 @@ final class BossStoreDetailViewController: BaseViewController {
 
 extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = UIScreen.main.bounds.width - 40
+        let containerWidth = UIScreen.main.bounds.width
+        let width = containerWidth - 40
 
         switch dataSource.itemIdentifier(for: indexPath) {
         case .overview:
@@ -282,12 +295,29 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: BossStoreEmptyMenuCell.Layout.height)
         case .workday:
             return CGSize(width: width, height: BossStoreWorkdayCell.Layout.height)
-        case .feedbacks(let viewModel):
-            return CGSize(width: width, height: BossStoreFeedbacksCell.Layout.height(viewModel: viewModel))
         case .post(let viewModel):
             return CGSize(width: width, height: BossStorePostCell.Layout.calculateHeight(viewModel: viewModel, width: width))
+        case .reviewRating:
+            return CGSize(width: width, height: StoreDetailRatingCell.Layout.height)
+        case .reviewEmpty:
+            return CGSize(width: width, height: StoreDetailReviewEmptyCell.Layout.height)
+        case .reviewMore:
+            return CGSize(width: width, height: StoreDetailReviewMoreCell.Layout.height)
+        case .review(let viewModel):
+            return BossStoreDetailReviewCell.Layout.size(width: containerWidth, viewModel: viewModel)
+        case .reviewFeedbackSummary(let viewModel):
+            return CGSize(width: width, height: BossStoreDetailReviewFeedbackSummaryCell.Layout.height(viewModel))
+        case .filteredReview:
+            return CGSize(width: width, height: 76)
         default:
             return .zero
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        switch dataSource.sectionIdentifier(section: section)?.type {
+        case .review: return CGSize(width: collectionView.frame.width, height: 40)
+        default: return .zero
         }
     }
 }

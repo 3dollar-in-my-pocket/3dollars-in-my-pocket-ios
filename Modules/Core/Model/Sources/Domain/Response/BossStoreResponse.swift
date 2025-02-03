@@ -4,6 +4,7 @@ public struct BossStoreResponse: Decodable {
     public let storeId: String
     public let isOwner: Bool
     public let name: String
+    public let rating: Double
     public let location: LocationResponse?
     public let address: AddressResponse
     public let representativeImages: [ImageResponse]
