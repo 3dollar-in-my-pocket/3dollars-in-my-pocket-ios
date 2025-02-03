@@ -79,7 +79,7 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
                 cell.bind(totalCount)
                 cell.moreButton.tapPublisher
                     .subscribe(viewModel.input.didTapReviewMore)
-                    .store(in: &viewModel.cancellables)
+                    .store(in: &cell.cancellables)
                 return cell
             case .reviewFeedbackSummary(let viewModel):
                 let cell: BossStoreDetailReviewFeedbackSummaryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
