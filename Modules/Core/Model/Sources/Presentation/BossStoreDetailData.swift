@@ -9,6 +9,8 @@ public struct BossStoreDetailData {
     public var store: BossStoreResponse
     public let post: PostResponse?
     public let totalPostCount: Int?
+    public let totalReviewCount: Int
+    public var reviews: [StoreDetailReview]
 
     public init(response: BossStoreDetailResponse) {
         self.overview = StoreDetailOverview(
@@ -50,5 +52,7 @@ public struct BossStoreDetailData {
             self.post = nil
             self.totalPostCount = nil
         }
+        self.totalReviewCount = response.reviews.cursor.totalCount
+        self.reviews = response.reviews.contents.map { StoreDetailReview(response: $0) }
     }
 }

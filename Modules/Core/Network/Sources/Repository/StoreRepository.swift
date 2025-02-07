@@ -33,6 +33,8 @@ public protocol StoreRepository {
     func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error>
     
     func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error>
+    
+    func existsFeedbackOnDateByAccount(storeId: Int) async -> Result<FeedbackExistsResponse, Error>
 }
 
 public struct StoreRepositoryImpl: StoreRepository {
@@ -124,6 +126,12 @@ public struct StoreRepositoryImpl: StoreRepository {
     
     public func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error> {
         let request = StoreApi.togglePostSticker(storeId: storeId, postId: postId, input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func existsFeedbackOnDateByAccount(storeId: Int) async -> Result<FeedbackExistsResponse, Error> {
+        let request = StoreApi.existsFeedbackOnDateByAccount(storeId: storeId)
         
         return await NetworkManager.shared.request(requestType: request)
     }

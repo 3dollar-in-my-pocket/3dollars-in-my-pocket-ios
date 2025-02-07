@@ -44,6 +44,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let didTapReviewMore = PassthroughSubject<Void, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
         let updateReview = PassthroughSubject<StoreDetailReview, Never>()
+        let onSuccessDeleteReview = PassthroughSubject<Int, Never>()
     }
     
     struct Output {
@@ -318,6 +319,14 @@ final class StoreDetailViewModel: BaseViewModel {
                 }
             }
             .store(in: &cancellables)
+        
+        input.onSuccessDeleteReview
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, reviewId: Int) in
+                owner.state.storeDetailData?.reviews.removeAll(where: { $0.reviewId == reviewId })
+               owner.refreshSections()
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchStoreDetail() {
@@ -574,7 +583,7 @@ extension StoreDetailViewModel {
     }
     
     private func presentUploadPhoto() {
-        let config = UploadPhotoViewModel.Config(storeId: state.storeId)
+        let config = UploadPhotoViewModel.Config(uploadType: .storeImage(storeId: state.storeId))
         let viewModel = UploadPhotoViewModel(config: config)
         
         viewModel.output.onSuccessUploadPhotos
@@ -618,7 +627,7 @@ extension StoreDetailViewModel {
     }
     
     private func pushReviewList() {
-        let config = ReviewListViewModel.Config(storeId: state.storeId)
+        let config = ReviewListViewModel.Config(storeId: state.storeId, isBossStore: false)
         let viewModel = ReviewListViewModel(config: config)
         
         viewModel.output.onSuccessEditReview
@@ -635,6 +644,10 @@ extension StoreDetailViewModel {
         
         viewModel.output.onSuccessToggleReviewSticker
             .subscribe(input.updateReview)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.onSuccessDeleteReview
+            .subscribe(input.onSuccessDeleteReview)
             .store(in: &viewModel.cancellables)
         
         output.route.send(.pushReviewList(viewModel))

@@ -21,6 +21,7 @@ final class StoreDetailMedalBadgeView: BaseView {
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
+        stackView.alignment = .center
         stackView.spacing = 2
         return stackView
     }()
@@ -48,23 +49,16 @@ final class StoreDetailMedalBadgeView: BaseView {
     
     override func bindConstraints() {
         containerView.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.left.equalToSuperview()
-            $0.right.equalTo(stackView).offset(4)
-            $0.bottom.equalTo(stackView).offset(4)
+            $0.edges.equalToSuperview()
         }
         
         stackView.snp.makeConstraints {
-            $0.left.equalTo(containerView).offset(4)
-            $0.top.equalTo(containerView).offset(4)
+            $0.leading.trailing.equalToSuperview().inset(4)
+            $0.centerY.equalToSuperview()
         }
         
         badgeImgaeView.snp.makeConstraints {
             $0.size.equalTo(16)
-        }
-        
-        snp.makeConstraints {
-            $0.edges.equalTo(containerView)
         }
     }
     

@@ -36,6 +36,7 @@ final class ReviewListViewModel: BaseViewModel {
         let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
         let onSuccessToggleReviewSticker = PassthroughSubject<StoreDetailReview, Never>()
+        let onSuccessDeleteReview = PassthroughSubject<Int, Never>()
     }
     
     struct State {
@@ -52,6 +53,7 @@ final class ReviewListViewModel: BaseViewModel {
     
     struct Config {
         let storeId: Int
+        let isBossStore: Bool
     }
     
     let input = Input()
@@ -110,8 +112,8 @@ final class ReviewListViewModel: BaseViewModel {
                 guard let review = owner.state.reviews[safe: index] else { return }
                 
                 if review.user.userId == owner.preference.userId {
-                    owner.sendClickEditReviewLog(reviewId: review.reviewId)
-                    owner.presentWriteReviewBottomSheet(review: review)
+                    owner.sendClickDeleteReviewLog(reviewId: review.reviewId)
+                    owner.deleteReview(index: index)
                 } else {
                     owner.sendClickReportReviewLog(reviewId: review.reviewId)
                     owner.presentReportReviewBottomSheet(review: review)
@@ -122,7 +124,9 @@ final class ReviewListViewModel: BaseViewModel {
         input.didTapWrite
             .withUnretained(self)
             .sink { (owner: ReviewListViewModel, _) in
-                owner.presentWriteReviewBottomSheet(review: nil)
+                if owner.config.isBossStore.isNot {
+                    owner.presentWriteReviewBottomSheet(review: nil)
+                }
                 owner.sendClickWriteReviewLog()
             }
             .store(in: &cancellables)
@@ -301,6 +305,22 @@ final class ReviewListViewModel: BaseViewModel {
             }
         }
     }
+    
+    private func deleteReview(index: Int) {
+        guard let review = state.reviews[safe: index] else { return }
+        
+        Task {
+            let result = await reviewRepository.deleteReview(reviewId: review.reviewId)
+            switch result {
+            case .success(_):
+                state.reviews.remove(at: index)
+                output.sections.send(getReviewListSection())
+                output.onSuccessDeleteReview.send(review.reviewId)
+            case .failure(let error):
+                output.showErrorAlert.send(error)
+            }
+        }
+    }
 }
 
 // MARK: Log
@@ -315,10 +335,10 @@ extension ReviewListViewModel {
         ))
     }
     
-    private func sendClickEditReviewLog(reviewId: Int) {
+    private func sendClickDeleteReviewLog(reviewId: Int) {
         logManager.sendEvent(.init(
             screen: output.screenName,
-            eventName: .clickEditReview,
+            eventName: .clickDeleteReview,
             extraParameters: [
                 .reviewId: reviewId
             ]

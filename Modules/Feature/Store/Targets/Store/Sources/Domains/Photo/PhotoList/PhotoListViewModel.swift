@@ -153,7 +153,7 @@ final class PhotoListViewModel: BaseViewModel {
     }
     
     private func presentUploadPhoto() {
-        let config = UploadPhotoViewModel.Config(storeId: config.storeId)
+        let config = UploadPhotoViewModel.Config(uploadType: .storeImage(storeId: config.storeId))
         let viewModel = UploadPhotoViewModel(config: config)
         
         viewModel.output.onSuccessUploadPhotos
