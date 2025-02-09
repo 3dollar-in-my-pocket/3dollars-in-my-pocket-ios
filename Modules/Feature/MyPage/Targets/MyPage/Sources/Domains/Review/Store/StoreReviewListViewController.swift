@@ -83,6 +83,8 @@ final class StoreReviewListViewController: BaseViewController {
                 switch route {
                 case .storeDetail(let storeId): 
                     owner.pushStoreDetail(storeId: storeId)
+                case .bossStoreDetail(let storeId):
+                    owner.pushBossStoreDetail(storeId: storeId)
                 }
             }
             .store(in: &cancellables)
@@ -120,6 +122,12 @@ final class StoreReviewListViewController: BaseViewController {
     
     private func pushStoreDetail(storeId: Int) {
         let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
+
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func pushBossStoreDetail(storeId: String) {
+        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
 
         navigationController?.pushViewController(viewController, animated: true)
     }

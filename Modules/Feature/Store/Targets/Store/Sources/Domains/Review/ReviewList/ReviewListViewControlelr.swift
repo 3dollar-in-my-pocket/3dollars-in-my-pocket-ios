@@ -13,7 +13,8 @@ final class ReviewListViewControlelr: BaseViewController {
     private let viewModel: ReviewListViewModel
     private lazy var datasource = ReviewListDatasource(
         collection: reviewListView.collectionView,
-        viewModel: viewModel
+        viewModel: viewModel,
+        vc: self
     )
     
     static func instance(viewModel: ReviewListViewModel) -> ReviewListViewControlelr {

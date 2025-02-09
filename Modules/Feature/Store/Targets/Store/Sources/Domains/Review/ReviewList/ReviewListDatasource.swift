@@ -7,7 +7,7 @@ final class ReviewListDatasource: UICollectionViewDiffableDataSource<ReviewListS
     
     private let viewModel: ReviewListViewModel
     
-    init(collection: UICollectionView, viewModel: ReviewListViewModel) {
+    init(collection: UICollectionView, viewModel: ReviewListViewModel, vc: UIViewController) {
         self.viewModel = viewModel
         
         collection.register([
@@ -19,7 +19,7 @@ final class ReviewListDatasource: UICollectionViewDiffableDataSource<ReviewListS
             switch itemIdentifier {
             case .review(let review):
                 let cell: ReviewListCell = collection.dequeueReusableCell(indexPath: indexPath)
-                
+                cell.containerViewController = vc
                 cell.bind(review)
                 cell.rightButton.controlPublisher(for: .touchUpInside)
                     .map { _ in indexPath.item }

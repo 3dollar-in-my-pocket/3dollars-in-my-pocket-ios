@@ -10,6 +10,7 @@ public struct StoreReviewResponse: Decodable {
     public let isOwner: Bool
     public let createdAt: String
     public let updatedAt: String
+    public let images: [ImageResponse]
 }
 
 public enum ReviewStatus: String, Decodable {

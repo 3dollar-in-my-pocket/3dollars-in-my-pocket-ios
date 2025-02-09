@@ -7,6 +7,7 @@ struct BossStoreDetailSection: Hashable {
         case workday
         case feedbacks
         case post
+        case review(BossStoreDetailReviewHeaderViewModel)
     }
 
     var type: SectionType

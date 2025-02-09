@@ -60,7 +60,6 @@ public enum EventName: String {
     
     // 리뷰 리스트 화면
     case clickSort = "click_sort"
-    case clickEditReview = "click_edit_review"
     
     // 길거리 음식점 리뷰 작성 바텀시트
     case clickReviewBottomButton = "click_review_bottom_button"

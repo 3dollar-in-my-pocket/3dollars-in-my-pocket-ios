@@ -33,6 +33,7 @@ final class StoreReviewListViewModel: BaseViewModel {
 
     enum Route {
         case storeDetail(Int)
+        case bossStoreDetail(String)
     }
 
     let input = Input()
@@ -123,9 +124,14 @@ final class StoreReviewListViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { [weak self] store in
                 self?.sendClickReview(store: store)
             })
-            .map { store in
-                let storeId = Int(store.id) ?? 0
-                return .storeDetail(storeId)
+            .compactMap { store in
+                switch store.type {
+                case .userStore, .unknown:
+                    let storeId = Int(store.id) ?? 0
+                    return .storeDetail(storeId)
+                case .bossStore:
+                    return .bossStoreDetail(store.id)
+                }
             }
             .subscribe(output.route)
             .store(in: &cancellables)

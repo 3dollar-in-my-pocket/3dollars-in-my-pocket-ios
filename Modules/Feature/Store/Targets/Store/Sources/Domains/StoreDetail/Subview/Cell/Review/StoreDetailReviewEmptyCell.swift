@@ -66,4 +66,8 @@ final class StoreDetailReviewEmptyCell: BaseCollectionViewCell {
             $0.size.equalTo(48)
         }
     }
+    
+    func updateBackgroundColor(_ color: UIColor) {
+        containerView.backgroundColor = color
+    }
 }

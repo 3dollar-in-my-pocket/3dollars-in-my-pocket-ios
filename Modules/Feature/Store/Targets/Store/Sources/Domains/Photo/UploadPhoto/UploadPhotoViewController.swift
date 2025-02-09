@@ -67,6 +67,8 @@ final class UploadPhotoViewController: BaseViewController {
     }
     
     override func bindViewModelOutput() {
+        uploadPhotoView.setTitle(viewModel.output.title)
+        
         viewModel.output.assets
             .main
             .withUnretained(self)
@@ -80,7 +82,7 @@ final class UploadPhotoViewController: BaseViewController {
             .main
             .withUnretained(self)
             .sink(receiveValue: { (owner: UploadPhotoViewController, count) in
-                owner.uploadPhotoView.setUploadButtonTitle(count: count)
+                owner.uploadPhotoView.setUploadButtonTitle(count: count, limitOfPhoto: owner.viewModel.output.limitOfPhoto)
             })
             .store(in: &cancellables)
         
@@ -178,6 +180,6 @@ extension UploadPhotoViewController: UICollectionViewDataSource, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return UploadPhotoViewModel.Constant.limitOfPhoto > viewModel.state.selectedAssets.count
+        return viewModel.output.limitOfPhoto > viewModel.state.selectedAssets.count
     }
 }

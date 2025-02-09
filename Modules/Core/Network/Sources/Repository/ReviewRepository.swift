@@ -10,6 +10,8 @@ public protocol ReviewRepository {
     func fetchMyStoreReview(input: CursorRequestInput) async -> Result<ContentsWithCursorResponse<StoreReviewWithDetailApiResponse>, Error>
     
     func toggleReviewSticker(storeId: Int, reviewId: Int, input: StoreReviewStickerListReplaceInput) async -> Result<String?, Error>
+    
+    func deleteReview(reviewId: Int) async -> Result<String?, Error>
 }
 
 public struct ReviewRepositoryImpl: ReviewRepository {
@@ -35,6 +37,12 @@ public struct ReviewRepositoryImpl: ReviewRepository {
     
     public func toggleReviewSticker(storeId: Int, reviewId: Int, input: StoreReviewStickerListReplaceInput) async -> Result<String?, Error> {
         let request = ReviewApi.toggleReviewSticker(storeId: storeId, reviewId: reviewId, input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func deleteReview(reviewId: Int) async -> Result<String?, Error> {
+        let request = ReviewApi.deleteReview(reviewId: reviewId)
         
         return await NetworkManager.shared.request(requestType: request)
     }
