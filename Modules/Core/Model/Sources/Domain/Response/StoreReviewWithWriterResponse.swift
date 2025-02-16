@@ -5,4 +5,5 @@ public struct StoreReviewWithWriterResponse: Decodable {
     public let reviewWriter: UserResponse
     public let reviewReport: ReportResponse
     public let stickers: [StickerResponse]
+    public let comments: ContentListCommentResponse
 }
