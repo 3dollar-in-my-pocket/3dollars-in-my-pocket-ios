@@ -13,6 +13,7 @@ public struct StoreDetailReview: Hashable {
     public var reactedByMe: Bool
     public let stickerId: String
     public let images: [ImageResponse]
+    public let comment: StoreDetailReviewComment?
     
     public init(response: StoreReviewWithWriterResponse) {
         self.user = User(response: response.reviewWriter)
@@ -27,5 +28,10 @@ public struct StoreDetailReview: Hashable {
         self.reactedByMe = response.stickers.first?.reactedByMe ?? false
         self.stickerId = response.stickers.first?.stickerId ?? ""
         self.images = response.review.images
+        if let commentResponse = response.comments.contents.first(where: { $0.status == .active }) {
+            self.comment = StoreDetailReviewComment(response: commentResponse)
+        } else {
+            self.comment = nil
+        }
     }
 }
