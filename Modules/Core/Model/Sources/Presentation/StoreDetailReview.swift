@@ -1,6 +1,7 @@
 import Foundation
 
 public struct StoreDetailReview: Hashable {
+    public let storeName: String?
     public let user: User
     public let reviewId: Int
     public var contents: String?
@@ -15,7 +16,8 @@ public struct StoreDetailReview: Hashable {
     public let images: [ImageResponse]
     public let comment: StoreDetailReviewComment?
     
-    public init(response: StoreReviewWithWriterResponse) {
+    public init(response: StoreReviewWithWriterResponse, storeName: String? = nil) {
+        self.storeName = storeName
         self.user = User(response: response.reviewWriter)
         self.reviewId = response.review.reviewId
         self.contents = response.review.contents

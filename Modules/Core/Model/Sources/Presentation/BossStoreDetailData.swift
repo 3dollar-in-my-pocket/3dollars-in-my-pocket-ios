@@ -53,6 +53,6 @@ public struct BossStoreDetailData {
             self.totalPostCount = nil
         }
         self.totalReviewCount = response.reviews.cursor.totalCount
-        self.reviews = response.reviews.contents.map { StoreDetailReview(response: $0) }
+        self.reviews = response.reviews.contents.map { StoreDetailReview(response: $0, storeName: response.store.name) }
     }
 }
