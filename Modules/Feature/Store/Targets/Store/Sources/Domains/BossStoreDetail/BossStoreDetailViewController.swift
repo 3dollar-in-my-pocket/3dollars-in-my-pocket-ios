@@ -304,7 +304,7 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         case .reviewMore:
             return CGSize(width: width, height: StoreDetailReviewMoreCell.Layout.height)
         case .review(let viewModel):
-            return BossStoreDetailReviewCell.Layout.size(width: containerWidth, viewModel: viewModel)
+            return ReviewListCell.Layout.size(width: containerWidth, viewModel: viewModel)
         case .reviewFeedbackSummary(let viewModel):
             return CGSize(width: width, height: BossStoreDetailReviewFeedbackSummaryCell.Layout.height(viewModel))
         case .filteredReview:

@@ -614,9 +614,9 @@ extension BossStoreDetailViewModel {
         return viewModel
     }
     
-    private func bindReviewCellViewModel(with data: StoreDetailReview) -> BossStoreDetailReviewCellViewModel {
-        let config = BossStoreDetailReviewCellViewModel.Config(storeId: storeId)
-        let viewModel = BossStoreDetailReviewCellViewModel(config: config, data: data)
+    private func bindReviewCellViewModel(with data: StoreDetailReview) -> ReviewListCellViewModel {
+        let config = ReviewListCellViewModel.Config(storeId: storeId)
+        let viewModel = ReviewListCellViewModel(config: config, data: data)
         
         viewModel.output.error
             .subscribe(output.error)

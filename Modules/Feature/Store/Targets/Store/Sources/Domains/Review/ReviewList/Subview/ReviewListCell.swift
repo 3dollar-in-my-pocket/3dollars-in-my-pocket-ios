@@ -7,8 +7,22 @@ import Model
 final class ReviewListCell: BaseCollectionViewCell {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
     
+    private static let sharedCell = ReviewListCell()
+    
     enum Layout {
         static let estimatedHeight: CGFloat = 120
+        static func size(width: CGFloat, viewModel: ReviewListCellViewModel) -> CGSize {
+            
+            sharedCell.bind(viewModel)
+            
+            let size: CGSize = .init(width: width, height: UIView.layoutFittingCompressedSize.height)
+            let cellSize = sharedCell.systemLayoutSizeFitting(
+                size,
+                withHorizontalFittingPriority: .required,
+                verticalFittingPriority: .fittingSizeLevel
+            )
+            return cellSize
+        }
     }
     
     private let nameLabel: UILabel = {
@@ -73,6 +87,8 @@ final class ReviewListCell: BaseCollectionViewCell {
             photoListView.containerViewController = containerViewController
         }
     }
+    
+    private weak var viewModel: ReviewListCellViewModel?
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -160,14 +176,42 @@ final class ReviewListCell: BaseCollectionViewCell {
         commentStackView.addArrangedSubview(commentView)
     }
     
+    func bind(_ viewModel: ReviewListCellViewModel) {
+        self.viewModel = viewModel
+        
+        updateUI(viewModel.output.review)
+        
+        viewModel.output.updateUI
+            .main
+            .sink { [weak self] in
+                self?.updateUI(viewModel.output.review)
+            }
+            .store(in: &cancellables)
+        
+        likeButton.tapPublisher
+            .subscribe(viewModel.input.didTapLikeButton)
+            .store(in: &cancellables)
+        
+        rightButton.tapPublisher
+            .subscribe(viewModel.input.didTapRightButton)
+            .store(in: &cancellables)
+        
+        bindEvent()
     }
     
     func bind(_ review: StoreDetailReview) {
+        updateUI(review)
+        bindEvent()
+    }
+    
+    private func updateUI(_ review: StoreDetailReview) {
         nameLabel.text = review.user.name
         dateLabel.text = DateUtils.toString(dateString: review.createdAt, format: "yyyy.MM.dd")
         medalBadge.bind(review.user.medal)
+        starBadge.prepareForReuse()
         starBadge.bind(review.rating)
         contentLabel.text = review.contents
+        contentLabel.setLineHeight(lineHeight: 20)
         likeButton.bind(count: review.likeCount, reactedByMe: review.reactedByMe)
         photoListView.isHidden = review.images.isEmpty
         photoListView.setImages(review.images)
@@ -190,7 +234,9 @@ final class ReviewListCell: BaseCollectionViewCell {
             starBadge.containerView.backgroundColor = Colors.pink100.color
             rightButton.setTitle(Strings.StoreDetail.Review.report, for: .normal)
         }
-        
+    }
+    
+    private func bindEvent() {
         likeButton.controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
