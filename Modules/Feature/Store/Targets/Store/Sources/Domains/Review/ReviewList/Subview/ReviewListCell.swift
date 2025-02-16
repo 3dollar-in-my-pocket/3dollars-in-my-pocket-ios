@@ -48,8 +48,10 @@ final class ReviewListCell: BaseCollectionViewCell {
     
     private let starBadge = StoreDetailStarBadgeView()
     
-    private let stackView = UIStackView()
-    private let photoListView = ReviewPhotoListView(config: .init(size: CGSize(width: 96, height: 96), canEdit: false))
+    private let photoStackView = UIStackView()
+    private let photoListView = ReviewPhotoListView(
+        config: ReviewPhotoListView.Config(size: CGSize(width: 96, height: 96), canEdit: false)
+    )
     
     private let contentLabel: UILabel = {
         let label = UILabel()
@@ -62,6 +64,9 @@ final class ReviewListCell: BaseCollectionViewCell {
     }()
     
     let likeButton = LikeButton()
+    
+    private let commentStackView = UIStackView()
+    private let commentView = ReviewCommentView()
     
     weak var containerViewController: UIViewController? {
         didSet {
@@ -86,11 +91,12 @@ final class ReviewListCell: BaseCollectionViewCell {
             dateLabel,
             medalBadge,
             starBadge,
-            stackView,
+            photoStackView,
             contentLabel,
-            likeButton
+            likeButton,
+            commentStackView
         ])
-        stackView.addArrangedSubview(photoListView)
+        photoStackView.addArrangedSubview(photoListView)
         feedbackGenerator.prepare()
     }
     
@@ -128,7 +134,7 @@ final class ReviewListCell: BaseCollectionViewCell {
             $0.left.equalTo(medalBadge.snp.right).offset(4)
         }
         
-        stackView.snp.makeConstraints {
+        photoStackView.snp.makeConstraints {
             $0.top.equalTo(medalBadge.snp.bottom).offset(8)
             $0.leading.equalToSuperview().inset(16)
             $0.trailing.equalToSuperview()
@@ -137,14 +143,23 @@ final class ReviewListCell: BaseCollectionViewCell {
         contentLabel.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20)
             $0.right.equalToSuperview().offset(-20)
-            $0.top.equalTo(stackView.snp.bottom).offset(8)
+            $0.top.equalTo(photoStackView.snp.bottom).offset(8)
         }
         
         likeButton.snp.makeConstraints {
             $0.leading.equalTo(contentLabel)
             $0.top.equalTo(contentLabel.snp.bottom).offset(8)
+        }
+        
+        commentStackView.snp.makeConstraints {
+            $0.top.equalTo(likeButton.snp.bottom).offset(8)
+            $0.leading.trailing.equalTo(contentLabel)
             $0.bottom.equalToSuperview().offset(-16)
         }
+        
+        commentStackView.addArrangedSubview(commentView)
+    }
+    
     }
     
     func bind(_ review: StoreDetailReview) {
@@ -156,6 +171,13 @@ final class ReviewListCell: BaseCollectionViewCell {
         likeButton.bind(count: review.likeCount, reactedByMe: review.reactedByMe)
         photoListView.isHidden = review.images.isEmpty
         photoListView.setImages(review.images)
+        
+        if let comment = review.comment {
+            commentView.bind(name: review.storeName, comment: comment)
+            commentView.isHidden = false
+        } else {
+            commentView.isHidden = true
+        }
         
         if review.isOwner {
             contentView.backgroundColor = Colors.pink100.color
