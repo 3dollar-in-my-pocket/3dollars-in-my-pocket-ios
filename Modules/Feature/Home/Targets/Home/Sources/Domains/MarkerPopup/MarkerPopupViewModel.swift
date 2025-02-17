@@ -103,7 +103,7 @@ final class MarkerPopupViewModel: BaseViewModel {
             screen: output.screenName,
             eventName: .clickBottomButton,
             extraParameters: [
-                .advertisementId: advertisementId
+                .advertisementId: "\(advertisementId)"
             ]))
     }
 }

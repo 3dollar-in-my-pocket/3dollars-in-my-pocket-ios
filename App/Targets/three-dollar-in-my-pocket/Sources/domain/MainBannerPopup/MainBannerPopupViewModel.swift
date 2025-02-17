@@ -80,7 +80,7 @@ final class MainBannerPopupViewModel: BaseViewModel {
             screen: output.screenName,
             eventName: .clickAdBanner,
             extraParameters: [
-                .advertisementId: state.advertisement.advertisementId
+                .advertisementId: "\(state.advertisement.advertisementId)"
             ]))
     }
     
