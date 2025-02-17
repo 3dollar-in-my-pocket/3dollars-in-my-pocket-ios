@@ -22,6 +22,7 @@ final class ReviewPhotoListCell: BaseCollectionViewCell {
         clipsToBounds = true
         layer.cornerRadius = 12
         backgroundColor = Colors.gray10.color
+        imageView.contentMode = .scaleAspectFill
 
         contentView.addSubview(imageView)
         contentView.addSubview(removeButton)

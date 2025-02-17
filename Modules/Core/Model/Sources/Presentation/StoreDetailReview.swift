@@ -1,6 +1,7 @@
 import Foundation
 
 public struct StoreDetailReview: Hashable {
+    public let storeName: String?
     public let user: User
     public let reviewId: Int
     public var contents: String?
@@ -13,8 +14,10 @@ public struct StoreDetailReview: Hashable {
     public var reactedByMe: Bool
     public let stickerId: String
     public let images: [ImageResponse]
+    public let comment: StoreDetailReviewComment?
     
-    public init(response: StoreReviewWithWriterResponse) {
+    public init(response: StoreReviewWithWriterResponse, storeName: String? = nil) {
+        self.storeName = storeName
         self.user = User(response: response.reviewWriter)
         self.reviewId = response.review.reviewId
         self.contents = response.review.contents
@@ -27,5 +30,10 @@ public struct StoreDetailReview: Hashable {
         self.reactedByMe = response.stickers.first?.reactedByMe ?? false
         self.stickerId = response.stickers.first?.stickerId ?? ""
         self.images = response.review.images
+        if let commentResponse = response.comments.contents.first(where: { $0.status == .active }) {
+            self.comment = StoreDetailReviewComment(response: commentResponse)
+        } else {
+            self.comment = nil
+        }
     }
 }

@@ -7,7 +7,7 @@ import DependencyInjection
 import AppInterface
 import Log
 
-final class BossStoreDetailReviewCellViewModel: BaseViewModel {
+final class ReviewListCellViewModel: BaseViewModel {
     struct Input {
         let didTapRightButton = PassthroughSubject<Void, Never>()
         let didTapLikeButton = PassthroughSubject<Void, Never>()
@@ -54,7 +54,7 @@ final class BossStoreDetailReviewCellViewModel: BaseViewModel {
         
         input.didTapRightButton
             .withUnretained(self)
-            .sink { (owner: BossStoreDetailReviewCellViewModel, _) in
+            .sink { (owner: ReviewListCellViewModel, _) in
                 let review = owner.output.review
                 if review.isOwner {
                     owner.deleteReview()
@@ -66,7 +66,7 @@ final class BossStoreDetailReviewCellViewModel: BaseViewModel {
         
         input.didTapLikeButton
             .withUnretained(self)
-            .sink { (owner: BossStoreDetailReviewCellViewModel, _) in
+            .sink { (owner: ReviewListCellViewModel, _) in
                 owner.sendClickLike(isLiked: owner.output.review.reactedByMe)
                 owner.toggleSticker()
             }
@@ -135,14 +135,14 @@ final class BossStoreDetailReviewCellViewModel: BaseViewModel {
     }
 }
 
-extension BossStoreDetailReviewCellViewModel: Identifiable {
+extension ReviewListCellViewModel: Identifiable {
     var id: ObjectIdentifier {
         return ObjectIdentifier(self)
     }
 }
 
-extension BossStoreDetailReviewCellViewModel: Hashable {
-    static func == (lhs: BossStoreDetailReviewCellViewModel, rhs: BossStoreDetailReviewCellViewModel) -> Bool {
+extension ReviewListCellViewModel: Hashable {
+    static func == (lhs: ReviewListCellViewModel, rhs: ReviewListCellViewModel) -> Bool {
         return lhs.id == rhs.id
     }
     
