@@ -371,7 +371,7 @@ extension HomeListViewModel {
         dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickAdBanner,
-            extraParameters: [.advertisementId: advertisement.advertisementId]
+            extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
         ))
     }
     

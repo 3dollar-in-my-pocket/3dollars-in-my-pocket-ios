@@ -719,7 +719,7 @@ extension HomeViewModel {
         dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickAdCard,
-            extraParameters: [.advertisementId: advertisement.advertisementId]
+            extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
         ))
     }
     
@@ -727,7 +727,7 @@ extension HomeViewModel {
         dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickAdMarker,
-            extraParameters: [.advertisementId: advertisement.advertisementId]
+            extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
         ))
     }
     
