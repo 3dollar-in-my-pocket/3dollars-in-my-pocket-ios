@@ -562,7 +562,7 @@ extension BossStoreDetailViewModel {
     }
     
     private func pushReviewList() {
-        let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0, isBossStore: true)
+        let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0, storeName: state.storeDetailData?.store.name, isBossStore: true)
         let viewModel = ReviewListViewModel(config: config)
         
         viewModel.input.didTapWrite
@@ -614,9 +614,9 @@ extension BossStoreDetailViewModel {
         return viewModel
     }
     
-    private func bindReviewCellViewModel(with data: StoreDetailReview) -> BossStoreDetailReviewCellViewModel {
-        let config = BossStoreDetailReviewCellViewModel.Config(storeId: storeId)
-        let viewModel = BossStoreDetailReviewCellViewModel(config: config, data: data)
+    private func bindReviewCellViewModel(with data: StoreDetailReview) -> ReviewListCellViewModel {
+        let config = ReviewListCellViewModel.Config(storeId: storeId)
+        let viewModel = ReviewListCellViewModel(config: config, data: data)
         
         viewModel.output.error
             .subscribe(output.error)

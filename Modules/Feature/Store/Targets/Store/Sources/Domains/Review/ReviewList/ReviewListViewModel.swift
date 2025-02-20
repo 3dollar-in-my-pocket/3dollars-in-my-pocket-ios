@@ -53,6 +53,7 @@ final class ReviewListViewModel: BaseViewModel {
     
     struct Config {
         let storeId: Int
+        let storeName: String?
         let isBossStore: Bool
     }
     
@@ -193,7 +194,12 @@ final class ReviewListViewModel: BaseViewModel {
             case .success(let response):
                 state.hasMore = response.cursor.hasMore
                 state.cursor = response.cursor.nextCursor
-                state.reviews.append(contentsOf: response.contents.map { StoreDetailReview(response: $0) })
+                state.reviews.append(contentsOf: response.contents.map {
+                    StoreDetailReview(
+                        response: $0,
+                        storeName: config.storeName
+                    )
+                })
                 output.sections.send(getReviewListSection())
                 
             case .failure(let error):

@@ -211,7 +211,7 @@ extension CommunityPollListCellViewModel {
         dependency.logManager.sendEvent(.init(
             screen: config.screenName,
             eventName: .clickAdCard,
-            extraParameters: [.advertisementId: advertisement.advertisementId])
+            extraParameters: [.advertisementId: "\(advertisement.advertisementId)"])
         )
     }
 }

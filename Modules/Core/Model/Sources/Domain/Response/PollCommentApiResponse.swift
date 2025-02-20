@@ -5,31 +5,11 @@ public struct PollCommentWithUserRecursiveApiResponse: Decodable {
 }
 
 public struct PollCommentWithUserApiResponse: Decodable {
-    public let comment: PollCommentApiResponse
+    public let comment: CommentResponse
     public let commentWriter: UserResponse
     public let commentReport: PollCommentReportApiResponse
     public let poll: PollWithSelectedOptionsApiResponse
     public var stickers: [StickerResponse]
-}
-
-public struct PollCommentApiResponse: Decodable {
-    public let commentId: String
-    public let content: String
-    public let status: PollCommentStatus
-    public let createdAt: String
-    public let updatedAt: String
-    public let isOwner: Bool
-
-    public enum PollCommentStatus: String, Decodable {
-        case active = "ACTIVE"
-        case blinded = "BLINDED"
-        case deleted = "DELETED"
-        case unknown
-
-        public init(from decoder: Decoder) throws {
-            self = try PollCommentStatus(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
-        }
-    }
 }
 
 public struct PollCommentReportApiResponse: Decodable {

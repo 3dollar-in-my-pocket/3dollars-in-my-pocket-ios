@@ -224,7 +224,7 @@ extension CategoryFilterViewModel {
         dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickAdBanner,
-            extraParameters: [.advertisementId: advertisement.advertisementId]
+            extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
         ))
     }
     
@@ -232,7 +232,7 @@ extension CategoryFilterViewModel {
         dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickAdCategory,
-            extraParameters: [.advertisementId: advertisement.advertisementId]
+            extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
         ))
     }
 }
