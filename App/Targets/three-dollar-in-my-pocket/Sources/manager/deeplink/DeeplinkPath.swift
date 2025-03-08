@@ -8,6 +8,7 @@ enum DeeplinkPath: String {
     case postList
     case browser
     case accountInfo
+    case reviewList
     case unknown
     
     init(value: String) {

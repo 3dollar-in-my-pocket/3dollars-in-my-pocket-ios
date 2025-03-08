@@ -6,7 +6,7 @@ import Model
 import Networking
 import Log
 
-final class ReviewListViewModel: BaseViewModel {
+public final class ReviewListViewModel: BaseViewModel {
     enum Constant {
         static let pageSize = 20
     }
@@ -70,7 +70,7 @@ final class ReviewListViewModel: BaseViewModel {
     private let logManager: LogManagerProtocol
     private let preference = Preference.shared
     
-    init(
+    public init(
         config: Config,
         reviewRepository: ReviewRepository = ReviewRepositoryImpl(),
         reportRepository: ReportRepository = ReportRepositoryImpl(),
@@ -82,7 +82,7 @@ final class ReviewListViewModel: BaseViewModel {
         self.logManager = logManager
     }
     
-    override func bind() {
+    public override func bind() {
         input.viewDidLoad
             .withUnretained(self)
             .sink { (owner: ReviewListViewModel, _) in
