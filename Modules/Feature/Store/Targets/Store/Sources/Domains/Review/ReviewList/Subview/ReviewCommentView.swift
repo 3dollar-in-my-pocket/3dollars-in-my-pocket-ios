@@ -89,8 +89,8 @@ final class ReviewCommentView: BaseView {
         
     }
     
-    func bind(name: String?, comment: StoreDetailReviewComment) {
-        nameLabel.text = name
+    func bind(comment: StoreDetailReviewComment) {
+        nameLabel.text = comment.name
         dateLabel.text = DateUtils.toString(dateString: comment.updatedAt, format: "yyyy.MM.dd")
         contentLabel.text = comment.content
         contentLabel.setLineHeight(lineHeight: 20)

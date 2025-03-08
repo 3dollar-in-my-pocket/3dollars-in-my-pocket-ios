@@ -51,10 +51,14 @@ final class ReviewListViewModel: BaseViewModel {
         case presentReportBottomSheetReview(ReportReviewBottomSheetViewModel)
     }
     
-    struct Config {
-        let storeId: Int
-        let storeName: String?
-        let isBossStore: Bool
+    public struct Config {
+        public let storeId: Int
+        public let isBossStore: Bool
+        
+        public init(storeId: Int, isBossStore: Bool) {
+            self.storeId = storeId
+            self.isBossStore = isBossStore
+        }
     }
     
     let input = Input()
@@ -195,10 +199,7 @@ final class ReviewListViewModel: BaseViewModel {
                 state.hasMore = response.cursor.hasMore
                 state.cursor = response.cursor.nextCursor
                 state.reviews.append(contentsOf: response.contents.map {
-                    StoreDetailReview(
-                        response: $0,
-                        storeName: config.storeName
-                    )
+                    StoreDetailReview(response: $0)
                 })
                 output.sections.send(getReviewListSection())
                 
