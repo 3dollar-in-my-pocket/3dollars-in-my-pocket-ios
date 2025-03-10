@@ -217,7 +217,7 @@ final class ReviewListCell: BaseCollectionViewCell {
         photoListView.setImages(review.images)
         
         if let comment = review.comment {
-            commentView.bind(name: review.storeName, comment: comment)
+            commentView.bind(comment: comment)
             commentView.isHidden = false
         } else {
             commentView.isHidden = true

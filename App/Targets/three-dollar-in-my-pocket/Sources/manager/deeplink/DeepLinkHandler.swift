@@ -119,6 +119,15 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             
             guard let viewController else { return }
             route(viewController)
+        case .reviewList:
+            guard let params = url.params(),
+                  let storeId = params["storeId"] as? String,
+                  let storeType = params["storeType"] as? String else { return }
+            
+            let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0, isBossStore: StoreType(value: storeType) == .bossStore)
+            let viewModel = ReviewListViewModel(config: config)
+            let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
+            route(viewController)
         case .unknown:
             os_log(.debug, "🔴알 수 없는 형태의 딥링크입니다. %{PUBLIC}@", urlString)
             break

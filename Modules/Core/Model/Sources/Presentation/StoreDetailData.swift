@@ -49,6 +49,6 @@ public struct StoreDetailData {
         ) }
         self.rating = response.store.rating
         self.totalReviewCount = totalReviewCount
-        self.reviews = response.reviews.contents.map { StoreDetailReview(response: $0, storeName: response.store.name) }
+        self.reviews = response.reviews.contents.map { StoreDetailReview(response: $0) }
     }
 }
