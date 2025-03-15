@@ -114,6 +114,7 @@ final class UploadPhotoView: BaseView {
     }
     
     func setEnableUploadButton(_ isEnabled: Bool) {
+        uploadButton.isEnabled = isEnabled
         if isEnabled {
             uploadButton.backgroundColor = Colors.mainPink.color
             buttonBackgroundView.backgroundColor = Colors.mainPink.color
@@ -121,7 +122,6 @@ final class UploadPhotoView: BaseView {
             uploadButton.backgroundColor = Colors.gray30.color
             buttonBackgroundView.backgroundColor = Colors.gray30.color
         }
-        
     }
     
     private func createLayout() -> UICollectionViewLayout {
