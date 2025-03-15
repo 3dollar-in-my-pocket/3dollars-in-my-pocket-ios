@@ -6,6 +6,7 @@ import Networking
 import Model
 import Common
 import Log
+import WriteInterface
 
 final class WriteDetailViewModel: BaseViewModel {
     struct Input {
@@ -483,7 +484,7 @@ final class WriteDetailViewModel: BaseViewModel {
     
     private func pushWriteAddress() {
         let location = CLLocation(latitude: state.location.latitude, longitude: state.location.longitude)
-        let config = WriteAddressViewModel.Config(
+        let config = WriteAddressViewModelConfig(
             type: .edit,
             address: state.addess ?? "",
             cameraPosition: location

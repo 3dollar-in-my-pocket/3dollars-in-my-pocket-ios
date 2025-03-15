@@ -22,11 +22,13 @@ final class MainTabBarViewController: UITabBarController {
     }
     
     private lazy var contentViewControllers: [UIViewController] = [
-        Home.HomeViewController.instance(),
-        writeInterface.getWriteAddressViewController(onSuccessWrite: { _ in }),
+        UINavigationController(rootViewController: homeViewController),
+        writeInterface.getWriteAddressViewController(config: nil, onSuccessWrite: { _ in }),
         Community.CommunityViewController.instance(),
         myPageInterface.getMyPageViewController()
     ]
+    
+    private let homeViewController = HomeViewController()
     
     private let membershipInterface: MembershipInterface
     private let writeInterface: WriteInterface
@@ -238,6 +240,23 @@ final class MainTabBarViewController: UITabBarController {
         
         navigationController.pushViewController(viewController, animated: true)
     }
+    
+    private func presentWriteAddress() {
+        var config: WriteAddressViewModelConfig?
+        if let cameraPosition = homeViewController.focusedPosition {
+            config = WriteAddressViewModelConfig(
+                type: .write,
+                address: homeViewController.currentAddress,
+                cameraPosition: cameraPosition
+            )
+        }
+        
+        let writeViewController = writeInterface.getWriteAddressViewController(config: config) { [weak self] storeId in
+            self?.pushStoreDetail(storeId: storeId)
+        }
+        
+        present(writeViewController, animated: true, completion: nil)
+    }
 }
 
 extension MainTabBarViewController: UITabBarControllerDelegate {
@@ -252,11 +271,7 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         }
         
         if viewController == contentViewControllers[safe: 1] {
-            let writeViewController = writeInterface.getWriteAddressViewController { [weak self] storeId in
-                self?.pushStoreDetail(storeId: storeId)
-            }
-            
-            present(writeViewController, animated: true, completion: nil)
+            presentWriteAddress()
             return false
         }
         
