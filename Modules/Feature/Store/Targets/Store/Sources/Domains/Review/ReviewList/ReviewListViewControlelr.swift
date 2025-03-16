@@ -4,8 +4,8 @@ import Common
 import DesignSystem
 import Log
 
-final class ReviewListViewControlelr: BaseViewController {
-    override var screenName: ScreenName {
+public final class ReviewListViewControlelr: BaseViewController {
+    public override var screenName: ScreenName {
         return viewModel.output.screenName
     }
     
@@ -17,7 +17,7 @@ final class ReviewListViewControlelr: BaseViewController {
         vc: self
     )
     
-    static func instance(viewModel: ReviewListViewModel) -> ReviewListViewControlelr {
+    public static func instance(viewModel: ReviewListViewModel) -> ReviewListViewControlelr {
         return ReviewListViewControlelr(viewModel: viewModel)
     }
     
@@ -30,17 +30,17 @@ final class ReviewListViewControlelr: BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func loadView() {
+    public override func loadView() {
         view = reviewListView
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         viewModel.input.viewDidLoad.send(())
     }
     
-    override func bindEvent() {
+    public override func bindEvent() {
         reviewListView.backButton
             .controlPublisher(for: .touchUpInside)
             .withUnretained(self)
@@ -50,7 +50,7 @@ final class ReviewListViewControlelr: BaseViewController {
             .store(in: &cancellables)
     }
     
-    override func bindViewModelInput() {
+    public override func bindViewModelInput() {
         reviewListView.subtabStackView.sortTypePublisher
             .subscribe(viewModel.input.didTapSortType)
             .store(in: &cancellables)
@@ -61,7 +61,7 @@ final class ReviewListViewControlelr: BaseViewController {
             .store(in: &cancellables)
     }
     
-    override func bindViewModelOutput() {
+    public override func bindViewModelOutput() {
         viewModel.output.sortType
             .main
             .withUnretained(self)

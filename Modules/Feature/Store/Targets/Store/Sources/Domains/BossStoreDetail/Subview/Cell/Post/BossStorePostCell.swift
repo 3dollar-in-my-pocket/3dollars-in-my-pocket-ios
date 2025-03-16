@@ -31,7 +31,7 @@ final class BossStorePostCell: BaseCollectionViewCell {
                     .font: Fonts.regular.font(size: 14)
                 ],
                 context: nil
-            ).height
+            ).height + 20
             
             let expendContent = viewModel.output.expendContent.value
             
@@ -55,13 +55,15 @@ final class BossStorePostCell: BaseCollectionViewCell {
             textView.font = Layout.contentTextFont
             textView.layoutIfNeeded()
             
-            let textViewWidth = textView.bounds.width - textView.textContainerInset.left - textView.textContainerInset.right
+            let textViewWidth = UIUtils.windowBounds.width - 48
             let font = textView.font ?? Layout.contentTextFont
             let lineHeight = font.lineHeight
             let maxLines = 6
             
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineBreakMode = .byWordWrapping
+            paragraphStyle.minimumLineHeight = lineHeight
+            paragraphStyle.maximumLineHeight = lineHeight
             let attributes: [NSAttributedString.Key: Any] = [.font: font, .paragraphStyle: paragraphStyle]
             let attributedText = NSAttributedString(string: body, attributes: attributes)
             
@@ -335,7 +337,8 @@ final class BossStorePostCell: BaseCollectionViewCell {
             textView.layoutIfNeeded()
         }
         
-        let textViewWidth = textView.bounds.width - textView.textContainerInset.left - textView.textContainerInset.right
+        let textViewWidth = UIUtils.windowBounds.width - Layout.sectionInset.left - Layout.sectionInset.right
+        
         let font = textView.font ?? Layout.contentTextFont
         let lineHeight = font.lineHeight
         let maxLines = maxLines

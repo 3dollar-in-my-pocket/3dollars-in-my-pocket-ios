@@ -131,7 +131,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
                     owner.output.isFavorited.send(response.favorite.isFavorite)
                     owner.reloadDataSource()
                 case .failure(let error):
-                    owner.output.toast.send("실패: \(error.localizedDescription)")
+                    owner.output.route.send(.showErrorAlert(error))
                 }
             }
             .store(in: &cancellables)
@@ -562,7 +562,7 @@ extension BossStoreDetailViewModel {
     }
     
     private func pushReviewList() {
-        let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0, storeName: state.storeDetailData?.store.name, isBossStore: true)
+        let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0, isBossStore: true)
         let viewModel = ReviewListViewModel(config: config)
         
         viewModel.input.didTapWrite
