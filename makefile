@@ -2,16 +2,16 @@ install:
 	bundle install
 
 project:
-	./.tuist-bin/tuist fetch
-	./.tuist-bin/tuist generate -n
+	tuist install
+	tuist generate
 	open 3dollar-in-my-pocket.xcworkspace
 
 edit:
-	./.tuist-bin/tuist edit
+	tuist edit
 
 clean:
-	./.tuist-bin/tuist clean
-	./.tuist-bin/tuist clean dependencies
+	tuist clean
+	tuist clean dependencies
 	rm -rf **/*.xcodeproj
 	rm -rf *.xcworkspace
 	rm -rf *.xcodeproj

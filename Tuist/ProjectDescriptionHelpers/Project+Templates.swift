@@ -26,24 +26,21 @@ extension Project {
                 ]
             ),
             targets: [
-                Target(
+                .target(
                     name: name,
-                    platform: .iOS,
+                    destinations: .iOS,
                     product: product,
                     bundleId: DefaultSetting.bundleId(moduleName: name),
-                    deploymentTarget: .iOS(
-                        targetVersion: DefaultSetting.targetVersion.stringValue,
-                        devices: .iphone
-                    ),
+                    deploymentTargets: .iOS(DefaultSetting.targetVersion.stringValue),
                     sources: includeSource ? ["Sources/**"] : nil,
                     resources: includeResource ? ["Resources/**"] : nil,
                     dependencies: dependencies
                 )
             ],
             schemes: [
-                Scheme(
+                .scheme(
                     name: name,
-                    buildAction: BuildAction(targets: [.project(path: ".", target: name)])
+                    buildAction: .buildAction(targets: [.project(path: ".", target: name)])
                 )
             ]
         )
@@ -59,9 +56,9 @@ extension Project {
         var targets: [Target] = []
         var schemes: [Scheme] = []
         
-        let mainTarget = Target(
+        let mainTarget: Target = .target(
             name: name,
-            platform: .iOS,
+            destinations: .iOS,
             product: .framework,
             bundleId: DefaultSetting.bundleId(moduleName: name),
             infoPlist: "Targets/\(name)/Info.plist",
@@ -71,16 +68,16 @@ extension Project {
         )
         targets.append(mainTarget)
         
-        let mainScheme = Scheme(
+        let mainScheme: Scheme = .scheme(
             name: name,
-            buildAction: BuildAction(targets: ["\(name)"])
+            buildAction: .buildAction(targets: ["\(name)"])
         )
         schemes.append(mainScheme)
         
         if includeInterface {
-            let interfaceTarget = Target(
+            let interfaceTarget: Target = .target(
                 name: "\(name)Interface",
-                platform: .iOS,
+                destinations: .iOS,
                 product: .framework,
                 bundleId: DefaultSetting.bundleId(moduleName: name) + "-interface",
                 infoPlist: .default,
@@ -95,9 +92,9 @@ extension Project {
         }
 
         if includeDemo {
-            let demoTarget = Target(
+            let demoTarget: Target = .target(
                 name: "\(name)Demo",
-                platform: .iOS,
+                destinations: .iOS,
                 product: .app,
                 bundleId: DefaultSetting.bundleId(moduleName: name.lowercased()) + "-demo",
                 infoPlist: "Targets/Demo/Info.plist",
@@ -111,9 +108,9 @@ extension Project {
             
             targets.append(demoTarget)
             
-            let demoScheme = Scheme(
+            let demoScheme: Scheme = .scheme(
                 name: name + "Demo",
-                buildAction: BuildAction(targets: ["\(name)Demo", "\(name)"]),
+                buildAction: .buildAction(targets: ["\(name)Demo", "\(name)"]),
                 runAction: .runAction(
                     configuration: .debug,
                     attachDebugger: true
