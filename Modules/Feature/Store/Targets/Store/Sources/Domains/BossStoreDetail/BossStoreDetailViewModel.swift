@@ -131,7 +131,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
                     owner.output.isFavorited.send(response.favorite.isFavorite)
                     owner.reloadDataSource()
                 case .failure(let error):
-                    owner.output.toast.send("실패: \(error.localizedDescription)")
+                    owner.output.route.send(.showErrorAlert(error))
                 }
             }
             .store(in: &cancellables)

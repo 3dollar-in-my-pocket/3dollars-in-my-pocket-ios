@@ -18,6 +18,14 @@ public final class HomeViewController: BaseViewController {
         return viewModel.output.screenName
     }
     
+    public var currentAddress: String {
+        viewModel.currentAddress
+    }
+    
+    public var focusedPosition: CLLocation? {
+        viewModel.focusedPosition
+    }
+    
     private lazy var homeView = HomeView(homeFilterSelectable: viewModel)
     private let viewModel = HomeViewModel()
     private lazy var dataSource = HomeDataSource(
@@ -30,7 +38,7 @@ public final class HomeViewController: BaseViewController {
     private var isFirstLoad = true
     fileprivate let transition = SearchTransition()
     
-    init() {
+    public init() {
         super.init(nibName: nil, bundle: nil)
         
         tabBarItem = UITabBarItem(
@@ -59,7 +67,7 @@ public final class HomeViewController: BaseViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setupNavigation()
         homeView.mapView.addCameraDelegate(delegate: self)
         viewModel.input.viewDidLoad.send(())
     }
@@ -77,6 +85,11 @@ public final class HomeViewController: BaseViewController {
             
             viewModel.input.onMapLoad.send(distance / 3)
         }
+    }
+    
+    private func setupNavigation() {
+        navigationController?.isNavigationBarHidden = true
+        navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }
     
     public override func bindViewModelInput() {

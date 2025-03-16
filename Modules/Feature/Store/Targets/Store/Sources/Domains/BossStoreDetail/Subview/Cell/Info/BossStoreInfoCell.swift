@@ -54,12 +54,14 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         $0.font = Fonts.bold.font(size: 12)
         $0.textColor = Colors.gray60.color
         $0.text = Strings.BossStoreDetail.Info.sns
+        $0.setContentHuggingPriority(.required, for: .horizontal)
     }
 
     let snsButton = UIButton().then {
         $0.titleLabel?.font = Fonts.medium.font(size: 12)
         $0.setTitleColor(Colors.mainPink.color, for: .normal)
-        $0.titleLabel?.textAlignment = .right
+        $0.titleLabel?.lineBreakMode = .byTruncatingTail
+        $0.contentHorizontalAlignment = .right
     }
     
     private let contactLabel: UILabel = {
@@ -149,10 +151,10 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
 
         snsTitleLabel.snp.makeConstraints {
             $0.top.leading.equalToSuperview().inset(16)
-            $0.width.equalTo(104)
         }
 
         snsButton.snp.makeConstraints {
+            $0.leading.equalTo(snsTitleLabel.snp.trailing).offset(16)
             $0.trailing.equalToSuperview().inset(16)
             $0.centerY.equalTo(snsTitleLabel)
         }

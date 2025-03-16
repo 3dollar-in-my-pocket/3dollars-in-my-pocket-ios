@@ -7,6 +7,7 @@ import Model
 import Common
 import AppInterface
 import Log
+import WriteInterface
 
 public final class WriteAddressViewModel: BaseViewModel {
     enum Constant {
@@ -43,20 +44,6 @@ public final class WriteAddressViewModel: BaseViewModel {
         var cameraPosition: CLLocation?
     }
     
-    public enum WriteAddressType {
-        /// 작성하기로 진입
-        case write
-        
-        /// 가게 수정으로 진입
-        case edit
-    }
-    
-    public struct Config {
-        public let type: WriteAddressType
-        public let address: String
-        public let cameraPosition: CLLocation
-    }
-    
     public struct Dependency {
         let mapRepository: MapRepository
         let storeRepository: StoreRepository
@@ -81,7 +68,10 @@ public final class WriteAddressViewModel: BaseViewModel {
     private let dependency: Dependency
     private var state: State
     
-    public init(config: Config? = nil, dependency: Dependency = Dependency()) {
+    public init(
+        config: WriteAddressViewModelConfig? = nil,
+        dependency: Dependency = Dependency()
+    ) {
         if let config {
             self.state = State(
                 type: config.type,

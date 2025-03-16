@@ -41,11 +41,9 @@ final class HomeListCellInfoView: BaseView {
         let reviewItemView = HomeListInfoItemView(type: .review(storeWithExtra.extra.reviewsCount ?? 0))
         stackView.addArrangedSubview(reviewItemView)
         
-        if storeWithExtra.store.storeType == .userStore {
-            let ratingItemView = HomeListInfoItemView(type: .rate(storeWithExtra.extra.rating ?? 0))
-            addDivider()
-            stackView.addArrangedSubview(ratingItemView)
-        }
+        let ratingItemView = HomeListInfoItemView(type: .rate(storeWithExtra.extra.rating ?? 0))
+        addDivider()
+        stackView.addArrangedSubview(ratingItemView)
         
         let distanceItemView = HomeListInfoItemView(type: .distance(storeWithExtra.distanceM))
         addDivider()

@@ -6,8 +6,11 @@ import WriteInterface
 import Model
 
 public final class WriteInterfaceImpl: WriteInterface {
-    public func getWriteAddressViewController(onSuccessWrite: @escaping ((Int) -> ())) -> UIViewController {
-        let viewModel = WriteAddressViewModel()
+    public func getWriteAddressViewController(
+        config: WriteAddressViewModelConfig?,
+        onSuccessWrite: @escaping ((Int) -> ())
+    ) -> UIViewController {
+        let viewModel = WriteAddressViewModel(config: config)
         let viewController = WriteAddressViewController(viewModel: viewModel)
         
         viewController.onSuccessWrite = { storeId in

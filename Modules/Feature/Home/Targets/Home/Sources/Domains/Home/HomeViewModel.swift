@@ -127,6 +127,15 @@ extension HomeViewModel {
 final class HomeViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
+    
+    var currentAddress: String {
+        state.address
+    }
+    
+    var focusedPosition: CLLocation? {
+        state.newCameraPosition
+    }
+    
     private var state = State()
     private var dependency: Dependency
     
