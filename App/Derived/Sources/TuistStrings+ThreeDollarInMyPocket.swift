@@ -1,3 +1,4 @@
+// swiftlint:disable:this file_name
 // swiftlint:disable all
 // swift-format-ignore-file
 // swiftformat:disable all
@@ -11,10 +12,10 @@ import Foundation
 
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
-public enum ThreeDollarInMyPocketStrings {
+public enum ThreeDollarInMyPocketStrings: Sendable {
   /// 총 %d개 선택하기
   public static func addCategoryNumberFormat(_ p1: Int) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "add_category_number_format", p1)
+    return ThreeDollarInMyPocketStrings.tr("Localization", "add_category_number_format",p1)
   }
   /// 리스트에 대한 한줄평을 입력해주세요! 공유 시 사용됩니다.
   public static let bookmarkEditPlaceholderDescription = ThreeDollarInMyPocketStrings.tr("Localization", "bookmark_edit_placeholder_description")
@@ -42,11 +43,11 @@ public enum ThreeDollarInMyPocketStrings {
   public static let bookmarkListTitle = ThreeDollarInMyPocketStrings.tr("Localization", "bookmark_list_title")
   /// %d개의 리스트
   public static func bookmarkViewerCountFormat(_ p1: Int) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "bookmark_viewer_count_format", p1)
+    return ThreeDollarInMyPocketStrings.tr("Localization", "bookmark_viewer_count_format",p1)
   }
   /// %@님의 즐겨찾기
   public static func bookmarkViewerNameFormat(_ p1: Any) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "bookmark_viewer_name_format", String(describing: p1))
+    return ThreeDollarInMyPocketStrings.tr("Localization", "bookmark_viewer_name_format",String(describing: p1))
   }
   /// 지금은 준비중이에요! 🧑‍🍳
   public static let bossStoreClosed = ThreeDollarInMyPocketStrings.tr("Localization", "boss_store_closed")
@@ -72,7 +73,7 @@ public enum ThreeDollarInMyPocketStrings {
   public static let bossStoreMenuInfo = ThreeDollarInMyPocketStrings.tr("Localization", "boss_store_menu_info")
   /// %d개의 메뉴가 더 있습니다.
   public static func bossStoreMoreMenu(_ p1: Int) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "boss_store_more_menu", p1)
+    return ThreeDollarInMyPocketStrings.tr("Localization", "boss_store_more_menu",p1)
   }
   /// 공유하기
   public static let bossStoreShare = ThreeDollarInMyPocketStrings.tr("Localization", "boss_store_share")
@@ -176,7 +177,7 @@ public enum ThreeDollarInMyPocketStrings {
   public static let editNicknameTitle = ThreeDollarInMyPocketStrings.tr("Localization", "edit_nickname_title")
   /// API통신중 요류 발생.\nurl: %s\nmessage: %s
   public static func errorCrashlyticsFormat(_ p1: UnsafePointer<CChar>, _ p2: UnsafePointer<CChar>) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "error_crashlytics_format", p1, p2)
+    return ThreeDollarInMyPocketStrings.tr("Localization", "error_crashlytics_format",p1, p2)
   }
   /// 데이터를 가져오는 도중 오류가 발생했습니다.\n다시 시도해주세요.
   public static let errorFailedToJson = ThreeDollarInMyPocketStrings.tr("Localization", "error_failed_to_json")
@@ -240,7 +241,7 @@ public enum ThreeDollarInMyPocketStrings {
   public static let httpErrorUnauthorized = ThreeDollarInMyPocketStrings.tr("Localization", "http_error_unauthorized")
   /// Status code: %@\nrequest_url: %@\nresponse: %@
   public static func httpErrorUndefiend(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "http_error_undefiend", String(describing: p1), String(describing: p2), String(describing: p3))
+    return ThreeDollarInMyPocketStrings.tr("Localization", "http_error_undefiend",String(describing: p1), String(describing: p2), String(describing: p3))
   }
   /// 현재 내 위치와 가까운 가게를 찾기 위해 위치 권한이 필요합니다. 설정에서 위치 권한을 허용시켜주세요.
   public static let locationDenyDescription = ThreeDollarInMyPocketStrings.tr("Localization", "location_deny_description")
@@ -288,7 +289,7 @@ public enum ThreeDollarInMyPocketStrings {
   public static let myPageVisitHistoryEmptyTitle = ThreeDollarInMyPocketStrings.tr("Localization", "my_page_visit_history_empty_title")
   /// %d개의 리뷰
   public static func myReviewCountFormat(_ p1: Int) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "my_review_count_format", p1)
+    return ThreeDollarInMyPocketStrings.tr("Localization", "my_review_count_format",p1)
   }
   /// 아직 작성한 리뷰가 없어요!
   public static let myReviewEmptyTitle = ThreeDollarInMyPocketStrings.tr("Localization", "my_review_empty_title")
@@ -344,13 +345,13 @@ public enum ThreeDollarInMyPocketStrings {
   public static let questionTitle = ThreeDollarInMyPocketStrings.tr("Localization", "question_title")
   /// 총 %d장/3장의 사진 등록
   public static func registerPhotoButtonFormat(_ p1: Int) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "register_photo_button_format", p1)
+    return ThreeDollarInMyPocketStrings.tr("Localization", "register_photo_button_format",p1)
   }
   /// 사진 제보
   public static let registerPhotoTitle = ThreeDollarInMyPocketStrings.tr("Localization", "register_photo_title")
   /// %d개의 가게
   public static func registeredStoreCountFormat(_ p1: Int) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "registered_store_count_format", p1)
+    return ThreeDollarInMyPocketStrings.tr("Localization", "registered_store_count_format",p1)
   }
   /// 발견한 가게를 제보해 보세요 :)
   public static let registeredStoreEmptyDescription = ThreeDollarInMyPocketStrings.tr("Localization", "registered_store_empty_description")
@@ -494,7 +495,7 @@ public enum ThreeDollarInMyPocketStrings {
   public static let storeDetailHeaderAddReview = ThreeDollarInMyPocketStrings.tr("Localization", "store_detail_header_add_review")
   /// %d개
   public static func storeDetailHeaderCount(_ p1: Int) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "store_detail_header_count", p1)
+    return ThreeDollarInMyPocketStrings.tr("Localization", "store_detail_header_count",p1)
   }
   /// 가게 정보
   public static let storeDetailHeaderInfo = ThreeDollarInMyPocketStrings.tr("Localization", "store_detail_header_info")
@@ -510,7 +511,7 @@ public enum ThreeDollarInMyPocketStrings {
   public static let storeDetailMenu = ThreeDollarInMyPocketStrings.tr("Localization", "store_detail_menu")
   /// %d개
   public static func storeDetailMenuFormat(_ p1: Int) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "store_detail_menu_format", p1)
+    return ThreeDollarInMyPocketStrings.tr("Localization", "store_detail_menu_format",p1)
   }
   /// 댓글 수정
   public static let storeDetailModifyReview = ThreeDollarInMyPocketStrings.tr("Localization", "store_detail_modify_review")
@@ -544,7 +545,7 @@ public enum ThreeDollarInMyPocketStrings {
   public static let storeDetailUnbookmarkToast = ThreeDollarInMyPocketStrings.tr("Localization", "store_detail_unbookmark_toast")
   /// 1달 동안 %d명이 다녀간 가게에요!
   public static func storeDetailVisitHistory(_ p1: Int) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "store_detail_visit_history", p1)
+    return ThreeDollarInMyPocketStrings.tr("Localization", "store_detail_visit_history",p1)
   }
   /// 가게 위치 수정
   public static let storeModifyAddressTitle = ThreeDollarInMyPocketStrings.tr("Localization", "store_modify_address_title")
@@ -570,7 +571,7 @@ public enum ThreeDollarInMyPocketStrings {
   public static let visitFail = ThreeDollarInMyPocketStrings.tr("Localization", "visit_fail")
   /// 이번 달 %d명이\n다녀간 가게에요!
   public static func visitHistoryTotalCount(_ p1: Int) -> String {
-    return ThreeDollarInMyPocketStrings.tr("Localization", "visit_history_total_count", p1)
+    return ThreeDollarInMyPocketStrings.tr("Localization", "visit_history_total_count",p1)
   }
   /// 방문 성공
   public static let visitSuccess = ThreeDollarInMyPocketStrings.tr("Localization", "visit_success")
@@ -601,15 +602,15 @@ public enum ThreeDollarInMyPocketStrings {
   /// 수
   public static let writeStoreWednesday = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_wednesday")
 
-  public enum MainBannerPopup {
-    /// 닫기
+  public enum MainBannerPopup: Sendable {
+  /// 닫기
     public static let close = ThreeDollarInMyPocketStrings.tr("Localization", "main_banner_popup.close")
     /// 오늘 하루 보지않기
     public static let disableToday = ThreeDollarInMyPocketStrings.tr("Localization", "main_banner_popup.disable_today")
   }
 
-  public enum Splash {
-    /// 일시적인 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.
+  public enum Splash: Sendable {
+  /// 일시적인 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.
     public static let defaultError = ThreeDollarInMyPocketStrings.tr("Localization", "splash.default_error")
   }
 }
@@ -620,7 +621,7 @@ public enum ThreeDollarInMyPocketStrings {
 
 extension ThreeDollarInMyPocketStrings {
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-    let format = ThreeDollarInMyPocketResources.bundle.localizedString(forKey: key, value: nil, table: table)
+    let format = Bundle.module.localizedString(forKey: key, value: nil, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }

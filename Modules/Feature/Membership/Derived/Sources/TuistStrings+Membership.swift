@@ -1,3 +1,4 @@
+// swiftlint:disable:this file_name
 // swiftlint:disable all
 // swift-format-ignore-file
 // swiftformat:disable all
@@ -11,7 +12,7 @@ import Foundation
 
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
-public enum MembershipStrings {
+public enum MembershipStrings: Sendable {
   /// 중복된 이름이에요!
   public static let nicknameAlreayExisted = MembershipStrings.tr("Localization", "nickname_alreay_existed")
   /// 닉네임
@@ -45,10 +46,10 @@ public enum MembershipStrings {
   /// 카카오 계정으로 로그인
   public static let signinWithKakao = MembershipStrings.tr("Localization", "signin_with_kakao")
 
-  public enum AccountInfo {
-    /// 🌱%@년
+  public enum AccountInfo: Sendable {
+  /// 🌱%@년
     public static func birthdayYearFormat(_ p1: Any) -> String {
-      return MembershipStrings.tr("Localization", "account_info.birthday_year_format", String(describing: p1))
+      return MembershipStrings.tr("Localization", "account_info.birthday_year_format",String(describing: p1))
     }
     /// 🙆‍♀️️여자
     public static let female = MembershipStrings.tr("Localization", "account_info.female")
@@ -58,7 +59,7 @@ public enum MembershipStrings {
     public static let male = MembershipStrings.tr("Localization", "account_info.male")
     /// %@님은
     public static func nicknameFormat(_ p1: Any) -> String {
-      return MembershipStrings.tr("Localization", "account_info.nickname_format", String(describing: p1))
+      return MembershipStrings.tr("Localization", "account_info.nickname_format",String(describing: p1))
     }
     /// 저장
     public static let save = MembershipStrings.tr("Localization", "account_info.save")
@@ -66,8 +67,9 @@ public enum MembershipStrings {
     public static let title = MembershipStrings.tr("Localization", "account_info.title")
     /// 👽??
     public static let unknownGender = MembershipStrings.tr("Localization", "account_info.unknown_gender")
-    public enum Main {
-      /// 나이와 성별을 알려주시면\n맞춤 광고 및 간식 데이터 통계에 도움이 됩니다!
+
+    public enum Main: Sendable {
+    /// 나이와 성별을 알려주시면\n맞춤 광고 및 간식 데이터 통계에 도움이 됩니다!
       public static let description = MembershipStrings.tr("Localization", "account_info.main.description")
       /// 에 태어난
       public static let second = MembershipStrings.tr("Localization", "account_info.main.second")
@@ -76,19 +78,20 @@ public enum MembershipStrings {
       /// 동년배들은 어떤 간식을\n좋아할까요?
       public static let title = MembershipStrings.tr("Localization", "account_info.main.title")
     }
-    public enum SuccessToast {
-      /// 회원정보가 저장되었습니다!
+
+    public enum SuccessToast: Sendable {
+    /// 회원정보가 저장되었습니다!
       public static let message = MembershipStrings.tr("Localization", "account_info.success_toast.message")
     }
   }
 
-  public enum CodeAlert {
-    /// 코드를 입력하세요.
+  public enum CodeAlert: Sendable {
+  /// 코드를 입력하세요.
     public static let title = MembershipStrings.tr("Localization", "code_alert.title")
   }
 
-  public enum Common {
-    /// 취소
+  public enum Common: Sendable {
+  /// 취소
     public static let cancel = MembershipStrings.tr("Localization", "common.cancel")
     /// 확인
     public static let ok = MembershipStrings.tr("Localization", "common.ok")
@@ -101,7 +104,7 @@ public enum MembershipStrings {
 
 extension MembershipStrings {
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-    let format = MembershipResources.bundle.localizedString(forKey: key, value: nil, table: table)
+    let format = Bundle.module.localizedString(forKey: key, value: nil, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }
