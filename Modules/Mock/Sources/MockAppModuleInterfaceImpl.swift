@@ -22,6 +22,10 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     
     public var globalEventBus: GlobalEventBusProtocol = MockGlobalEventBus.shared
     
+    public var kakaoChannelUrl: String {
+        return "kakaoChannelUrl"
+    }
+    
     public func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
         return MockAdBannerView()
     }
