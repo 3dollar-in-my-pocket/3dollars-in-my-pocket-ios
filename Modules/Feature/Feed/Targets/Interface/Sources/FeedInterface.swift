@@ -1,23 +1,26 @@
 import UIKit
 
 import Common
+import Networking
 
-public protocol MembershipInterface {
-    func createSigninAnonymousViewController() -> UIViewController
+public protocol FeedInterface {
     
-    func createPolicyViewController() -> UIViewController
-    
-    func createSigninBottomSheetViewController() -> UIViewController
-    
-    func createAccountInfoViewModel(config: AccountInfoViewModelConfig) -> BaseViewModel
-    
-    func createAccountInfoViewController(viewModel: BaseViewModel) -> UIViewController?
 }
 
-public struct AccountInfoViewModelConfig {
-    public let shouldPush: Bool
+public struct FeedListViewModelConfig {
+    public var mapLatitude: Double?
+    public var mapLongitude: Double?
     
-    public init(shouldPush: Bool) {
-        self.shouldPush = shouldPush
+    public init(mapLatitude: Double? = nil, mapLongitude: Double? = nil) {
+        self.mapLatitude = mapLatitude
+        self.mapLongitude = mapLongitude
+    }
+}
+
+public struct FeedListViewModelDependency {
+    let feedRepository: FeedRepository
+    
+    public init(feedRepository: FeedRepository = FeedRepositoryImpl()) {
+        self.feedRepository = feedRepository
     }
 }

@@ -12,6 +12,9 @@ let project = Project.makeFeatureModule(
         .Core.log,
         .Core.designSystem,
         .Interface.appInterface,
+        .Interface.membershipInterface,
+        .Interface.storeInterface,
+        .Interface.feedInterface,
         .SPM.snapKit,
         .SPM.combineCocoa,
         .SPM.kingfisher

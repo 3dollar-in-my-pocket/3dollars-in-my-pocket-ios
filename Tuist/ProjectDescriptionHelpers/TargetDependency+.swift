@@ -100,6 +100,11 @@ public extension TargetDependency {
             target: "MyPageInterface",
             path: .relativeToRoot("./Modules/Feature/MyPage")
         )
+        
+        public static let feedInterface = TargetDependency.project(
+            target: "FeedInterface",
+            path: .relativeToRoot("./Modules/Feature/Feed")
+        )
     }
     
     class SPM {
