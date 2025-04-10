@@ -13,7 +13,8 @@ import PackageDescription
             "lottie-ios": .framework,
             "PanModal": .framework,
             "Swinject": .framework,
-            "CombineCocoa": .framework
+            "CombineCocoa": .framework,
+            "ZMarkupParser": .framework,
         ]
     )
 #endif
@@ -27,7 +28,8 @@ let package = Package(
         .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.0.1"),
         .package(url: "https://github.com/slackhq/PanModal.git", from: "1.2.6"),
         .package(url: "https://github.com/Swinject/Swinject.git", from: "2.8.0"),
-        .package(url: "https://github.com/CombineCommunity/CombineCocoa.git", from: "0.4.1")
+        .package(url: "https://github.com/CombineCommunity/CombineCocoa.git", from: "0.4.1"),
+        .package(url: "https://github.com/ZhgChgLi/ZMarkupParser.git", from: "1.12.0"),
     ],
     targets: []
 )

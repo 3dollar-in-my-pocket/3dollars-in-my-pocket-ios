@@ -62,6 +62,24 @@
         "revision" : "e421a7b3440a271834337694e6050133a3958bc7",
         "version" : "2.7.0"
       }
+    },
+    {
+      "identity" : "zmarkupparser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ZhgChgLi/ZMarkupParser.git",
+      "state" : {
+        "revision" : "f25c9838e9e77ae49cc3f434ee26e669cb4043c7",
+        "version" : "1.12.0"
+      }
+    },
+    {
+      "identity" : "znstextattachment",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ZhgChgLi/ZNSTextAttachment",
+      "state" : {
+        "revision" : "8c6c34e82eb31ad373b209cb88c2a2aff76c6cdf",
+        "version" : "1.1.9"
+      }
     }
   ],
   "version" : 2

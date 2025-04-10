@@ -1,5 +1,8 @@
 import UIKit
 
+import Model
+import ZMarkupParser
+
 public extension UILabel {
     func setKern(kern: Float) {
         guard let text = text else { return }
@@ -26,5 +29,14 @@ public extension UILabel {
         )
         
         attributedText = attributedString
+    }
+    
+    func setUiText(_ uiText: UiText) {
+        textColor = UIColor(hex: uiText.fontColor)
+        if uiText.isHtml {
+            attributedText = ZHTMLParserBuilder.initWithDefault().build().render(uiText.text)
+        } else {
+            text = uiText.text
+        }
     }
 }

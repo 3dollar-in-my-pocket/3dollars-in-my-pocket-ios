@@ -2,9 +2,9 @@ import Foundation
 
 public struct FeedResponse: Decodable {
     public let feedId: String
-    public let category: FeedCategoryResponse
-    public let header: FeedHeaderResponse
-    public let body: FeedBodyResponse
+    public let category: FeedCategoryResponse?
+    public let header: FeedHeaderResponse?
+    public let body: FeedBodyResponse?
     public let link: LinkResponse
     public let createdAt: String
     public let updatedAt: String
