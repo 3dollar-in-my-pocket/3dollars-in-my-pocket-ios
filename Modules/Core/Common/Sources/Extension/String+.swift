@@ -69,4 +69,22 @@ public extension String {
 
         return ceil(boundingBox.size.height)
     }
+    
+    func width(font: UIFont, height: CGFloat) -> CGFloat {
+        return NSAttributedString(string: self, attributes: [NSAttributedString.Key.font: font])
+            .width(height: height)
+    }
+    
+    func height(font: UIFont?, width: CGFloat) -> CGFloat {
+        guard let font = font else { return .zero }
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let height = (self as NSString).boundingRect(
+            with: constraintRect,
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            attributes: [.font: font as Any],
+            context: nil
+        ).height
+        
+        return height
+    }
 }
