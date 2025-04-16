@@ -1,18 +1,27 @@
 import UIKit
 
 import Common
-import DesignSystem
 import Model
+import DesignSystem
 
-final class FeedCellContentWithImagesBodyView: BaseView {
+final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
     enum Layout {
-        static func calculateHeight(body: ContentWithImagesFeedBodyResponse) -> CGFloat {
+        static func calculateHeight(body: ContentWithTitleAndImagesFeedBodyResponse) -> CGFloat {
             let width = UIUtils.windowBounds.width - 56
             let contentHeight = body.content.text.height(font: Fonts.regular.font(size: 14), width: width)
             
-            return contentHeight + 168
+            return contentHeight + 116
         }
     }
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.bold.font(size: 12)
+        
+        return label
+    }()
+    
+    private let starBadgeView = StarBadgeView()
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -22,23 +31,15 @@ final class FeedCellContentWithImagesBodyView: BaseView {
             ImageCell.self,
             UICollectionViewCell.self
         ])
-        collectionView.delegate = self
         return collectionView
     }()
     
-    private func createLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
-        
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 12
-        layout.minimumLineSpacing = 12
-        return layout
-    }
     
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.font = Fonts.regular.font(size: 14)
-        label.textColor = Colors.gray95.color
+        label.textColor = Colors.gray80.color
+        label.numberOfLines = 5
         return label
     }()
     
@@ -46,35 +47,51 @@ final class FeedCellContentWithImagesBodyView: BaseView {
     
     override func setup() {
         backgroundColor = Colors.gray0.color
+        layer.cornerRadius = 12
+        layer.masksToBounds = true
+        
         addSubViews([
-            collectionView,
+            titleLabel,
+            starBadgeView,
             contentLabel
         ])
         
-        collectionView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.top.equalToSuperview().offset(16)
-            $0.trailing.equalToSuperview()
-            $0.height.equalTo(124)
+        titleLabel.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(12)
+            $0.top.equalToSuperview().offset(13)
+            $0.trailing.lessThanOrEqualTo(contentLabel.snp.leading).offset(-12)
         }
         
-        contentLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(16)
-            $0.trailing.equalToSuperview().offset(-16)
-            $0.top.equalTo(collectionView.snp.bottom).offset(12)
+        starBadgeView.snp.makeConstraints {
+            $0.centerY.equalTo(titleLabel)
+            $0.trailing.equalToSuperview().offset(-12)
+            $0.size.equalTo(StarBadgeView.Layout.size)
         }
     }
     
-    func bind(body: ContentWithImagesFeedBodyResponse) {
-        backgroundColor = UIColor(hex: body.style.backgroundColor)
+    func bind(body: ContentWithTitleAndImagesFeedBodyResponse) {
+        titleLabel.setUiText(body.title)
+        
+        // TODO: Rating 설정 필요
         contentLabel.setUiText(body.content)
+        backgroundColor = UIColor(hex: body.style.backgroundColor)
         
         images = body.images
         collectionView.reloadData()
     }
+    
+    private func createLayout() -> UICollectionViewFlowLayout {
+        let layout = UICollectionViewFlowLayout()
+        
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 8
+        layout.minimumLineSpacing = 8
+        layout.itemSize = ImageCell.Layout.size
+        return layout
+    }
 }
 
-extension FeedCellContentWithImagesBodyView: UICollectionViewDataSource {
+extension FeedCellContentWithTitleAndImagesBodyView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return images.count
     }
@@ -89,34 +106,18 @@ extension FeedCellContentWithImagesBodyView: UICollectionViewDataSource {
         return cell
     }
 }
-
-extension FeedCellContentWithImagesBodyView: UICollectionViewDelegateFlowLayout {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        guard let image = images[safe: indexPath.item],
-              let width = image.width,
-              let height = image.height else { return .zero }
-        
-        let ratio = CGFloat(width) / CGFloat(height)
-        let cellHeight = ImageCell.Layout.height
-        return CGSize(width: cellHeight * ratio, height: ImageCell.Layout.height)
-    }
-}
     
 
-extension FeedCellContentWithImagesBodyView {
+extension FeedCellContentWithTitleAndImagesBodyView {
     private final class ImageCell: BaseCollectionViewCell {
         enum Layout {
-            static let height: CGFloat = 124
+            static let size = CGSize(width: 56, height: 56)
         }
         
         private let imageView: UIImageView = {
             let imageView = UIImageView()
             imageView.contentMode = .scaleAspectFill
-            imageView.layer.cornerRadius = 8
+            imageView.layer.cornerRadius = 10
             imageView.layer.masksToBounds = true
             return imageView
         }()
@@ -140,3 +141,4 @@ extension FeedCellContentWithImagesBodyView {
         }
     }
 }
+

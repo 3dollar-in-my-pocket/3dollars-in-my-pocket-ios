@@ -37,6 +37,19 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         }
     }
     
+    func handleLinkResponse(_ linkResponse: LinkResponse) {
+        switch linkResponse.type {
+        case .appScheme:
+            let urlString = "\(Bundle.deeplinkScheme):/\(linkResponse.link)"
+            handle(urlString)
+        case .web:
+            let urlString = "\(Bundle.deeplinkScheme)://browser?url=\(linkResponse.link)"
+            handle(urlString)
+        case .unknown:
+            return
+        }
+    }
+    
     func handle(_ urlString: String) {
         guard canHandleDeepLink else {
             reservedDeepLink = urlString

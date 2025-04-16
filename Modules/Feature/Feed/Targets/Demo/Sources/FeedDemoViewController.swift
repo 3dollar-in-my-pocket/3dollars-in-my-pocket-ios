@@ -1,6 +1,8 @@
 import UIKit
 
 import Common
+import Feed
+import FeedInterface
 
 import SnapKit
 
@@ -76,7 +78,13 @@ extension FeedDemoViewController: UICollectionViewDelegate {
         
         switch viewType {
         case .feedList:
-            print("피드 리스트")
+            let config = FeedListViewModelConfig(
+                mapLatitude: 37.287934,
+                mapLongitude: 127.056573
+            )
+            let viewModel = FeedListViewModel(config: config)
+            let viewController = FeedListViewController(viewModel: viewModel)
+            present(viewController, animated: true)
         }
     }
 }
