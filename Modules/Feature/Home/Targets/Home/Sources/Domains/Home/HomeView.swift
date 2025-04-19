@@ -63,6 +63,12 @@ final class HomeView: BaseView {
         $0.isPagingEnabled = false
     }
     
+    let feedButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("🍀 이 동네 가게 소식!", for: .normal)
+        return button
+    }()
+    
     private var homeFilterTooltip: HomeFilterTooltip?
     
     init(homeFilterSelectable: HomeFilterSelectable) {
@@ -82,7 +88,8 @@ final class HomeView: BaseView {
             homeFilterCollectionView,
             currentLocationButton,
             listViewButton,
-            collectionView
+            collectionView,
+            feedButton
         ])
     }
     
@@ -127,6 +134,12 @@ final class HomeView: BaseView {
             $0.right.equalToSuperview()
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-15)
             $0.height.equalTo(HomeStoreCardCell.Layout.size.height)
+        }
+        
+        feedButton.snp.makeConstraints {
+            $0.right.equalTo(listViewButton)
+            $0.bottom.equalTo(listViewButton.snp.top).offset(-12)
+            $0.height.equalTo(44)
         }
     }
     

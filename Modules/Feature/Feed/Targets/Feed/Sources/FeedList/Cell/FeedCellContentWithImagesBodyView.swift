@@ -45,6 +45,9 @@ final class FeedCellContentWithImagesBodyView: BaseView {
     private var images: [ImageResponse] = []
     
     override func setup() {
+        layer.cornerRadius = 12
+        layer.masksToBounds = true
+        
         backgroundColor = Colors.gray0.color
         addSubViews([
             collectionView,

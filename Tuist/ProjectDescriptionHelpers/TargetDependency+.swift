@@ -68,6 +68,11 @@ public extension TargetDependency {
             target: "MyPage",
             path: .relativeToRoot("./Modules/Feature/MyPage")
         )
+        
+        public static let feed = TargetDependency.project(
+            target: "Feed",
+            path: .relativeToRoot("./Modules/Feature/Feed")
+        )
     }
     
     class Interface {

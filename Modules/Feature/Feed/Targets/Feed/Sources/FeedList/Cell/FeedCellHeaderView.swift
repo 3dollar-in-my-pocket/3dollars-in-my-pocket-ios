@@ -56,8 +56,14 @@ final class FeedCellHeaderView: BaseView {
         ])
         
         verticalStackView.addArrangedSubview(topLabel)
+        topLabel.snp.makeConstraints {
+            $0.height.equalTo(18)
+        }
         verticalStackView.setCustomSpacing(0, after: topLabel)
         verticalStackView.addArrangedSubview(contentLabel)
+        contentLabel.snp.makeConstraints {
+            $0.height.equalTo(24)
+        }
         verticalStackView.setCustomSpacing(4, after: contentLabel)
         verticalStackView.addArrangedSubview(metadataStackView)
         
@@ -95,7 +101,11 @@ final class FeedCellHeaderView: BaseView {
     }
     
     private func createDivider() -> UIView {
-        let view = UIView(frame: .init(x: 0, y: 0, width: 1, height: 8))
+        let view = UIView()
+        view.snp.makeConstraints {
+            $0.width.equalTo(1)
+            $0.height.equalTo(8)
+        }
         view.backgroundColor = Colors.gray20.color
         return view
     }
@@ -134,6 +144,10 @@ extension FeedCellHeaderView {
             
             stackView.snp.makeConstraints {
                 $0.edges.equalToSuperview()
+            }
+            
+            imageView.snp.makeConstraints {
+                $0.size.equalTo(12)
             }
         }
         

@@ -9,6 +9,7 @@ import Networking
 extension FeedListViewModel {
     struct Input {
         let load = PassthroughSubject<Void, Never>()
+        let reload = PassthroughSubject<Void, Never>()
         let willDisplayCell = PassthroughSubject<Int, Never>()
         let didTapFeed = PassthroughSubject<Int, Never>()
     }
@@ -49,6 +50,15 @@ public final class FeedListViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: FeedListViewModel, _) in
                 owner.state.cursor = nil
+                owner.loadFeedList()
+            }
+            .store(in: &cancellables)
+        
+        input.reload
+            .withUnretained(self)
+            .sink { (owner: FeedListViewModel, _) in
+                owner.state.cursor = nil
+                owner.state.feeds = []
                 owner.loadFeedList()
             }
             .store(in: &cancellables)

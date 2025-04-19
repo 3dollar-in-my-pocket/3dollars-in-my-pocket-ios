@@ -19,6 +19,8 @@ final class FeedCellContentOnlyBodyView: BaseView {
     }()
     
     override func setup() {
+        layer.cornerRadius = 12
+        layer.masksToBounds = true
         addSubview(contentLabel)
         
         contentLabel.snp.makeConstraints {

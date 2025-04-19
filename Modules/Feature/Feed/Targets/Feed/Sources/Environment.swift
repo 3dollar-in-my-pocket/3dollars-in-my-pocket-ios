@@ -7,8 +7,8 @@ import DependencyInjection
 typealias Fonts = DesignSystemFontFamily.Pretendard
 typealias Colors = DesignSystemAsset.Colors
 typealias Icons = DesignSystemAsset.Icons
-//typealias Assets = HomeAsset
-//typealias Strings = HomeStrings
+typealias Assets = FeedAsset
+typealias Strings = FeedStrings
 
 
 final class Environment {

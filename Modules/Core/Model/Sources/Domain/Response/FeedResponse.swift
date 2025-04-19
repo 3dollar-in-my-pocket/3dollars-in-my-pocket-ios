@@ -37,20 +37,29 @@ public struct FeedResponse: Decodable {
         }
         
         // Decode body
-        let bodyContainer = try container.nestedContainer(keyedBy: FeedBodyCodingKeys.self, forKey: .body)
-        let bodyType = try bodyContainer.decode(FeedBodyType.self, forKey: .type)
-        let bodyDecoder = try container.superDecoder(forKey: .body)
-        switch bodyType {
-        case .contentOnly:
-            body = try ContentOnlyFeedBodyResponse(from: bodyDecoder)
-        case .contentWithTitle:
-            body = try ContentWithTitleFeedBodyResponse(from: bodyDecoder)
-        case .titleContentImages:
-            body = try ContentWithImagesFeedBodyResponse(from: bodyDecoder)
-        case .contentWithTitleAndImages:
-            body = try ContentWithTitleAndImagesFeedBodyResponse(from: bodyDecoder)
-        case .unknown:
-            body = try ContentOnlyFeedBodyResponse(from: bodyDecoder)
+        if container.contains(.body),
+           try container.decodeNil(forKey: .body) == false {
+            let bodyContainer = try container.nestedContainer(keyedBy: FeedBodyCodingKeys.self, forKey: .body)
+            let bodyType = try bodyContainer.decodeIfPresent(FeedBodyType.self, forKey: .type)
+            let bodyDecoder = try container.superDecoder(forKey: .body)
+            switch bodyType {
+            case .contentOnly:
+                body = try ContentOnlyFeedBodyResponse(from: bodyDecoder)
+            case .contentWithTitle:
+                body = try ContentWithTitleFeedBodyResponse(from: bodyDecoder)
+            case .titleContentImages:
+                body = try ContentWithImagesFeedBodyResponse(from: bodyDecoder)
+            case .contentWithTitleAndImages:
+                body = try ContentWithTitleAndImagesFeedBodyResponse(from: bodyDecoder)
+            case .contentWithImages:
+                body = try ContentWithImagesFeedBodyResponse(from: bodyDecoder)
+            case .unknown:
+                body = try ContentOnlyFeedBodyResponse(from: bodyDecoder)
+            default:
+                body = nil
+            }
+        } else {
+            body = nil
         }
             
         link = try container.decode(LinkResponse.self, forKey: .link)

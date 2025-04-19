@@ -12,6 +12,7 @@ public enum FeedBodyType: String, Decodable {
     case contentOnly = "CONTENT_ONLY"
     case contentWithTitle = "CONTENT_WITH_TITLE"
     case titleContentImages = "TITLE_CONTENT_IMAGES"
+    case contentWithImages = "CONTENT_WITH_IMAGES"
     case contentWithTitleAndImages = "CONTENT_WITH_TITLE_AND_IMAGES"
     case unknown
     
@@ -48,4 +49,9 @@ public struct ContentWithTitleFeedBodyResponse: FeedBodyResponse {
     public let title: UiText
     public let content: UiText
     public let style: FeedStyleResponse
+    public let additionalInfos: AdditionalInfos?
+}
+
+public struct AdditionalInfos: Decodable {
+    public let reviewRating: Int?
 }

@@ -15,6 +15,7 @@ final class FeedCellCategoryView: BaseView {
         let label = PaddingLabel(topInset: 4, bottomInset: 4, leftInset: 12, rightInset: 12)
         label.layer.cornerRadius = 13
         label.layer.masksToBounds = true
+        label.font = Fonts.bold.font(size: 12)
         return label
     }()
     
@@ -38,7 +39,6 @@ final class FeedCellCategoryView: BaseView {
         
         categoryLabel.snp.makeConstraints {
             $0.leading.top.bottom.equalToSuperview()
-            $0.height.equalTo(40)
             $0.trailing.lessThanOrEqualTo(updatedAtLabel.snp.leading).offset(-12)
         }
         

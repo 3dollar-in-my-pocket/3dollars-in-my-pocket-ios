@@ -20,7 +20,8 @@ let project = Project.makeFeatureModule(
         .SPM.combineCocoa,
         .SPM.kingfisher,
         .Framework.naverMap,
-        .Framework.naverGeometry
+        .Framework.naverGeometry,
+        .Feature.feed
     ],
     includeInterface: false,
     includeDemo: true

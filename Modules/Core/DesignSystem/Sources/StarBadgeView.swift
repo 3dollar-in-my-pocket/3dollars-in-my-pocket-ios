@@ -9,7 +9,7 @@ public final class StarBadgeView: UIView {
         let view = UIView()
         view.layer.cornerRadius = 4
         view.layer.masksToBounds = true
-        
+        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
@@ -17,7 +17,7 @@ public final class StarBadgeView: UIView {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 0
-        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
@@ -33,6 +33,7 @@ public final class StarBadgeView: UIView {
     }
     
     private func setup() {
+        translatesAutoresizingMaskIntoConstraints = false
         addSubview(containerView)
         addSubview(stackView)
     }
@@ -70,6 +71,7 @@ public final class StarBadgeView: UIView {
             if rating >= index + 1 {
                 let image = DesignSystemAsset.Icons.starSolid.image.withTintColor(DesignSystemAsset.Colors.mainPink.color)
                 let starImageView = UIImageView(image: image)
+                starImageView.translatesAutoresizingMaskIntoConstraints = false
                 NSLayoutConstraint.activate([
                     starImageView.widthAnchor.constraint(equalToConstant: 12),
                     starImageView.heightAnchor.constraint(equalToConstant: 12)
@@ -79,6 +81,7 @@ public final class StarBadgeView: UIView {
             } else {
                 let image = DesignSystemAsset.Icons.starSolid.image.withTintColor(DesignSystemAsset.Colors.gray70.color)
                 let starImageView = UIImageView(image: image)
+                starImageView.translatesAutoresizingMaskIntoConstraints = false
                 NSLayoutConstraint.activate([
                     starImageView.widthAnchor.constraint(equalToConstant: 12),
                     starImageView.heightAnchor.constraint(equalToConstant: 12)
