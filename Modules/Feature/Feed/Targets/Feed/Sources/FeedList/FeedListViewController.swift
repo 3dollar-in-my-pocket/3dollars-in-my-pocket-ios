@@ -77,7 +77,7 @@ public final class FeedListViewController: BaseViewController {
             .font: DesignSystemFontFamily.Pretendard.medium.font(size: 16)
         ]
         navigationBar?.tintColor = Colors.gray100.color
-        navigationItem.title = Strings.FeedList.Empty.title
+        navigationItem.title = Strings.FeedList.title
         let closeImage = Icons.close.image
             .resizeImage(scaledTo: 24)
         let buttonItem = UIBarButtonItem(

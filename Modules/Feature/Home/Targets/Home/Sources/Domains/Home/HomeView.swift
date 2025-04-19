@@ -65,7 +65,17 @@ final class HomeView: BaseView {
     
     let feedButton: UIButton = {
         let button = UIButton()
-        button.setTitle("🍀 이 동네 가게 소식!", for: .normal)
+        button.setTitle(Strings.Home.feedButton, for: .normal)
+        button.setTitleColor(Colors.mainGreen.color, for: .normal)
+        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
+        button.contentEdgeInsets = .init(top: 12, left: 16, bottom: 12, right: 16)
+        button.backgroundColor = Colors.systemWhite.color
+        button.layer.cornerRadius = 16
+        button.layer.borderWidth = 1
+        button.layer.borderColor = Colors.mainGreen.color.cgColor
+        button.layer.shadowColor = Colors.mainGreen.color.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowOffset = CGSize(width: 0, height: 4)
         return button
     }()
     
