@@ -27,6 +27,7 @@ public struct ContentOnlyFeedBodyResponse: FeedBodyResponse {
     public let type: FeedBodyType
     public let content: UiText
     public let style: FeedStyleResponse
+    public let contentLeadingImage: ImageResponse?
 }
 
 public struct ContentWithImagesFeedBodyResponse: FeedBodyResponse {

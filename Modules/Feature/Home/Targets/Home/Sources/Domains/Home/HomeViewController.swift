@@ -507,8 +507,11 @@ public final class HomeViewController: BaseViewController {
     
     private func presentFeedList(viewModel: FeedListViewModel) {
         let viewController = FeedListViewController(viewModel: viewModel)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .overCurrentContext
+        navigationController.isNavigationBarHidden = true
         
-        tabBarController?.present(viewController, animated: true)
+        tabBarController?.present(navigationController, animated: true)
     }
 }
 
