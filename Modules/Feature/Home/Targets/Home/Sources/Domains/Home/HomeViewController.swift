@@ -71,6 +71,7 @@ public final class HomeViewController: BaseViewController {
         super.viewDidLoad()
         setupNavigation()
         homeView.mapView.addCameraDelegate(delegate: self)
+        homeView.startFeedButtonAnimation()
         viewModel.input.viewDidLoad.send(())
     }
     

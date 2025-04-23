@@ -80,6 +80,8 @@ final class HomeView: BaseView {
     }()
     
     private var homeFilterTooltip: HomeFilterTooltip?
+    private var feedButtonTimer: Timer?
+    private var buttonStateFlag = true
     
     init(homeFilterSelectable: HomeFilterSelectable) {
         self.homeFilterSelectable = homeFilterSelectable
@@ -212,5 +214,32 @@ final class HomeView: BaseView {
         layout.minimumInteritemSpacing = 12
         
         return layout
+    }
+    
+    func startFeedButtonAnimation() {
+        feedButtonTimer?.invalidate()
+        feedButtonTimer = nil
+        feedButtonTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            
+            if buttonStateFlag {
+                UIView.animate(withDuration: 0.3) {
+                    self.feedButton.setTitle(Strings.Home.feedButton, for: .normal)
+                    self.feedButton.setTitleColor(Colors.mainGreen.color, for: .normal)
+                    self.feedButton.backgroundColor = Colors.systemWhite.color
+                    self.feedButton.layer.borderWidth = 1
+                    self.feedButton.layer.borderColor = Colors.mainGreen.color.cgColor
+                }
+                buttonStateFlag = false
+            } else {
+                UIView.animate(withDuration: 0.3) {
+                    self.feedButton.setTitle(Strings.Home.feedButton2, for: .normal)
+                    self.feedButton.setTitleColor(Colors.systemWhite.color, for: .normal)
+                    self.feedButton.backgroundColor = Colors.mainGreen.color
+                    self.feedButton.layer.borderColor = Colors.systemWhite.color.withAlphaComponent(0.5).cgColor
+                }
+                buttonStateFlag = true
+            }
+        }
     }
 }
