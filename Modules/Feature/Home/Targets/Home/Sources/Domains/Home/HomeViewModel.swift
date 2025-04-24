@@ -490,7 +490,7 @@ final class HomeViewModel: BaseViewModel {
         input.didTapFeedButton
             .withUnretained(self)
             .sink { (owner: HomeViewModel, _) in
-                let mapLocation = owner.state.currentLocation ?? owner.state.newCameraPosition
+                let mapLocation = owner.state.newCameraPosition ?? owner.state.currentLocation 
                 let config = FeedListViewModelConfig(
                     mapLatitude: mapLocation?.coordinate.latitude,
                     mapLongitude: mapLocation?.coordinate.longitude

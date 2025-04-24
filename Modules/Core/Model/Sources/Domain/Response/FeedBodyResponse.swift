@@ -43,6 +43,7 @@ public struct ContentWithTitleAndImagesFeedBodyResponse: FeedBodyResponse {
     public let content: UiText
     public let images: [ImageResponse]
     public let style: FeedStyleResponse
+    public let additionalInfos: FeedAdditionalResponse?
 }
 
 public struct ContentWithTitleFeedBodyResponse: FeedBodyResponse {
@@ -50,9 +51,20 @@ public struct ContentWithTitleFeedBodyResponse: FeedBodyResponse {
     public let title: UiText
     public let content: UiText
     public let style: FeedStyleResponse
-    public let additionalInfos: AdditionalInfos?
+    public let additionalInfos: FeedAdditionalResponse?
 }
 
-public struct AdditionalInfos: Decodable {
-    public let reviewRating: Int?
+public struct FeedAdditionalResponse: Decodable {
+    public let rating: FeedRatingResponse?
+}
+
+public struct FeedRatingResponse: Decodable {
+    public let starRating: Float
+    public let maxRating: Float
+    public let style: FeedRatingStyleResponse
+}
+
+public struct FeedRatingStyleResponse: Decodable {
+    public let filledColor: String
+    public let emptyColor: String
 }

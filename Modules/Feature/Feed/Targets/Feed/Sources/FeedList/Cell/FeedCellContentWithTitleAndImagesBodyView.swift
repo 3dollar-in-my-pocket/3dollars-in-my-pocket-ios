@@ -55,13 +55,14 @@ final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
         addSubViews([
             titleLabel,
             starBadgeView,
+            collectionView,
             contentLabel
         ])
         
         titleLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(12)
             $0.top.equalToSuperview().offset(13)
-            $0.trailing.lessThanOrEqualTo(contentLabel.snp.leading).offset(-12)
+            $0.trailing.lessThanOrEqualTo(starBadgeView.snp.leading).offset(-12)
         }
         
         starBadgeView.snp.makeConstraints {
@@ -69,12 +70,28 @@ final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
             $0.trailing.equalToSuperview().offset(-12)
             $0.size.equalTo(StarBadgeView.Layout.size)
         }
+        
+        collectionView.snp.makeConstraints {
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.top.equalTo(starBadgeView.snp.bottom).offset(8)
+            $0.height.equalTo(56)
+        }
+        
+        contentLabel.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(12)
+            $0.trailing.equalToSuperview().offset(-12)
+            $0.top.equalTo(collectionView.snp.bottom).offset(8)
+        }
     }
     
     func bind(body: ContentWithTitleAndImagesFeedBodyResponse) {
         titleLabel.setUiText(body.title)
         
-        // TODO: Rating 설정 필요
+        if let rating = body.additionalInfos?.rating?.starRating {
+            starBadgeView.bind(Int(rating))
+        }
+        
         contentLabel.setUiText(body.content)
         backgroundColor = UIColor(hex: body.style.backgroundColor)
         

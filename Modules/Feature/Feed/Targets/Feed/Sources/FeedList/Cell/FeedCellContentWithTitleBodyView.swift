@@ -64,8 +64,8 @@ final class FeedCellContentWithTitleBodyView: BaseView {
     func bind(body: ContentWithTitleFeedBodyResponse) {
         titleLabel.setUiText(body.title)
         
-        if let rating = body.additionalInfos?.reviewRating {
-            starBadgeView.bind(rating)
+        if let rating = body.additionalInfos?.rating?.starRating {
+            starBadgeView.bind(Int(rating))
         }
         
         contentLabel.setUiText(body.content)
