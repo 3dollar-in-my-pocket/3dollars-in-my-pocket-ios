@@ -19,7 +19,7 @@ public struct BossStoreDetailData {
             storeName: response.store.name,
             isNew: response.tags.isNew,
             totalVisitSuccessCount: 0,
-            reviewCount: response.feedbacks.map { $0.count }.reduce(0, +),
+            reviewCount: response.reviews.cursor.totalCount,
             distance: response.distanceM,
             location: response.store.location,
             address: response.store.address.fullAddress,
