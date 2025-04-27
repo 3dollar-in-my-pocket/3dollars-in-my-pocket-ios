@@ -54,6 +54,13 @@ public enum HomeStrings: Sendable {
   /// 위치 권한 거절
   public static let locationDenyTitle = HomeStrings.tr("Localization", "location_deny_title")
 
+  public enum Home: Sendable {
+  /// 🍀 이 동네 가게 소식!
+    public static let feedButton = HomeStrings.tr("Localization", "home.feed_button")
+    /// 여기가 바로 핫플 🔥
+    public static let feedButton2 = HomeStrings.tr("Localization", "home.feed_button_2")
+  }
+
   public enum HomeList: Sendable {
 
     public enum Empty: Sendable {

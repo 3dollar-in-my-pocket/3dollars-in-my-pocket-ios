@@ -28,7 +28,7 @@ public struct DateUtils {
         return dateFormatter.string(from: date)
     }
 
-    private static func toDate(dateString: String, format: String? = nil) -> Date {
+    public static func toDate(dateString: String, format: String? = nil) -> Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format ?? Self.defaultFormat
         dateFormatter.locale = Locale(identifier: "ko")

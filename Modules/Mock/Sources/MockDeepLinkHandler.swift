@@ -9,4 +9,6 @@ final class MockDeepLinkHandler: DeepLinkHandlerProtocol {
     func handleAdvertisementLink(_ advertisementLink: AdvertisementLinkResponse) { }
     
     func handleReservedDeepLink() { }
+    
+    func handleLinkResponse(_ linkResponse: LinkResponse) { }
 }

@@ -63,7 +63,25 @@ final class HomeView: BaseView {
         $0.isPagingEnabled = false
     }
     
+    let feedButton: UIButton = {
+        let button = UIButton()
+        button.setTitle(Strings.Home.feedButton, for: .normal)
+        button.setTitleColor(Colors.mainGreen.color, for: .normal)
+        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
+        button.contentEdgeInsets = .init(top: 12, left: 16, bottom: 12, right: 16)
+        button.backgroundColor = Colors.systemWhite.color
+        button.layer.cornerRadius = 16
+        button.layer.borderWidth = 1
+        button.layer.borderColor = Colors.mainGreen.color.cgColor
+        button.layer.shadowColor = Colors.mainGreen.color.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+        return button
+    }()
+    
     private var homeFilterTooltip: HomeFilterTooltip?
+    private var feedButtonTimer: Timer?
+    private var buttonStateFlag = true
     
     init(homeFilterSelectable: HomeFilterSelectable) {
         self.homeFilterSelectable = homeFilterSelectable
@@ -82,7 +100,8 @@ final class HomeView: BaseView {
             homeFilterCollectionView,
             currentLocationButton,
             listViewButton,
-            collectionView
+            collectionView,
+            feedButton
         ])
     }
     
@@ -127,6 +146,12 @@ final class HomeView: BaseView {
             $0.right.equalToSuperview()
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-15)
             $0.height.equalTo(HomeStoreCardCell.Layout.size.height)
+        }
+        
+        feedButton.snp.makeConstraints {
+            $0.right.equalTo(listViewButton)
+            $0.bottom.equalTo(listViewButton.snp.top).offset(-12)
+            $0.height.equalTo(44)
         }
     }
     
@@ -189,5 +214,32 @@ final class HomeView: BaseView {
         layout.minimumInteritemSpacing = 12
         
         return layout
+    }
+    
+    func startFeedButtonAnimation() {
+        feedButtonTimer?.invalidate()
+        feedButtonTimer = nil
+        feedButtonTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            
+            if buttonStateFlag {
+                UIView.animate(withDuration: 0.3) {
+                    self.feedButton.setTitle(Strings.Home.feedButton, for: .normal)
+                    self.feedButton.setTitleColor(Colors.mainGreen.color, for: .normal)
+                    self.feedButton.backgroundColor = Colors.systemWhite.color
+                    self.feedButton.layer.borderWidth = 1
+                    self.feedButton.layer.borderColor = Colors.mainGreen.color.cgColor
+                }
+                buttonStateFlag = false
+            } else {
+                UIView.animate(withDuration: 0.3) {
+                    self.feedButton.setTitle(Strings.Home.feedButton2, for: .normal)
+                    self.feedButton.setTitleColor(Colors.systemWhite.color, for: .normal)
+                    self.feedButton.backgroundColor = Colors.mainGreen.color
+                    self.feedButton.layer.borderColor = Colors.systemWhite.color.withAlphaComponent(0.5).cgColor
+                }
+                buttonStateFlag = true
+            }
+        }
     }
 }

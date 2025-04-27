@@ -8,6 +8,8 @@ import Common
 import Log
 import AppInterface
 import MembershipInterface
+import Feed
+import FeedInterface
 
 extension HomeViewModel {
     enum Constant {
@@ -36,6 +38,7 @@ extension HomeViewModel {
         let onTapVisitButton = PassthroughSubject<Int, Never>()
         let onTapMarker = PassthroughSubject<Int, Never>()
         let onTapCurrentMarker = PassthroughSubject<Void, Never>()
+        let didTapFeedButton = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -90,6 +93,7 @@ extension HomeViewModel {
         case showErrorAlert(Error)
         case deepLink(AdvertisementResponse)
         case presentAccountInfo(BaseViewModel)
+        case presentFeedList(FeedListViewModel)
     }
     
     struct Dependency {
@@ -480,6 +484,19 @@ final class HomeViewModel: BaseViewModel {
                 if owner.dependency.preference.isShownFilterTooltip.isNot {
                     owner.output.isShowFilterTooltip.send(true)
                 }
+            }
+            .store(in: &cancellables)
+        
+        input.didTapFeedButton
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, _) in
+                let mapLocation = owner.state.newCameraPosition ?? owner.state.currentLocation 
+                let config = FeedListViewModelConfig(
+                    mapLatitude: mapLocation?.coordinate.latitude,
+                    mapLongitude: mapLocation?.coordinate.longitude
+                )
+                let viewModel = FeedListViewModel(config: config)
+                owner.output.route.send(.presentFeedList(viewModel))
             }
             .store(in: &cancellables)
     }
