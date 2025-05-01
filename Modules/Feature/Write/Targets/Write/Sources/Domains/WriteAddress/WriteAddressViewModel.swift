@@ -20,6 +20,7 @@ public final class WriteAddressViewModel: BaseViewModel {
         let tapCurrentLocation = PassthroughSubject<Void, Never>()
         let tapSetAddress = PassthroughSubject<Void, Never>()
         let tapConfirmAddress = PassthroughSubject<Void, Never>()
+        let didTapClose = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -165,6 +166,13 @@ public final class WriteAddressViewModel: BaseViewModel {
                 owner.pushWriteDetail(location: cameraPosition)
             }
             .store(in: &cancellables)
+        
+        input.didTapClose
+            .sink { [weak self] in
+                self?.sendClickCloseButtonLog()
+                self?.output.route.send(.dismiss)
+            }
+            .store(in: &cancellables)
     }
     
     private func checkStoreExistedAround(location: CLLocation) {
@@ -252,6 +260,8 @@ public final class WriteAddressViewModel: BaseViewModel {
     }
 }
 
+
+// MARK: Log
 extension WriteAddressViewModel {
     private func sendClickCurrentLocationLog() {
         dependency.logManager.sendEvent(LogEvent(
@@ -266,6 +276,13 @@ extension WriteAddressViewModel {
             screen: output.screenName,
             eventName: .clickSetAddress,
             extraParameters: [.address: state.address]
+        ))
+    }
+    
+    private func sendClickCloseButtonLog() {
+        dependency.logManager.sendEvent(LogEvent(
+            screen: output.screenName,
+            eventName: .clickClose
         ))
     }
 }

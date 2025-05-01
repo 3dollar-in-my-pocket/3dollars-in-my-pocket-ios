@@ -50,10 +50,7 @@ public final class WriteAddressViewController: BaseViewController {
         // Event
         writeAddressView.closeButton.tapPublisher
             .throttleClick()
-            .withUnretained(self)
-            .sink { (owner: WriteAddressViewController, _) in
-                owner.dismiss(animated: true)
-            }
+            .subscribe(viewModel.input.didTapClose)
             .store(in: &cancellables)
         
         // Input
