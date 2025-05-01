@@ -87,7 +87,7 @@ extension StoreDetailSection {
         
         if reviews.isEmpty {
             sectionItems.append(.reviewEmpty)
-        } else if reviews.count > 3 {
+        } else if totalCount > 3 {
             let reviewSectionItem: [StoreDetailSectionItem] = reviews[..<3].map {
                 return $0.isFiltered ? .filteredReview($0) : .review($0)
             }

@@ -333,7 +333,7 @@ final class StoreDetailViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let input = FetchStoreDetailInput(storeId: state.storeId)
+            let input = FetchStoreDetailInput(storeId: state.storeId, reviewsCount: 3)
             let storeDetailResult = await storeService.fetchStoreDetail(input: input)
             
             switch storeDetailResult {
