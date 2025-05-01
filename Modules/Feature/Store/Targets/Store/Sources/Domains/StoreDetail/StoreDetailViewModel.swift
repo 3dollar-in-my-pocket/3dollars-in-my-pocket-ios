@@ -323,7 +323,10 @@ final class StoreDetailViewModel: BaseViewModel {
         input.onSuccessDeleteReview
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, reviewId: Int) in
-                owner.state.storeDetailData?.reviews.removeAll(where: { $0.reviewId == reviewId })
+                if let targetIndex = owner.state.storeDetailData?.reviews.firstIndex(where: { $0.reviewId == reviewId }) {
+                    owner.state.storeDetailData?.totalReviewCount -= 1
+                    owner.state.storeDetailData?.reviews.remove(at: targetIndex)
+                }
                owner.refreshSections()
             }
             .store(in: &cancellables)
