@@ -26,6 +26,7 @@ final class WriteDetailViewModel: BaseViewModel {
         let inputMenuName = PassthroughSubject<(IndexPath, String), Never>()
         let inputMenuPrice = PassthroughSubject<(IndexPath, String), Never>()
         let tapSave = PassthroughSubject<Void, Never>()
+        let didTapClose = PassthroughSubject<Void, Never>()
         
         // From WriteDetail
         let onEditLocation = PassthroughSubject<(address: String, location: CLLocation), Never>()
@@ -63,6 +64,7 @@ final class WriteDetailViewModel: BaseViewModel {
         case presentCategorySelection(CategorySelectionViewModel)
         case dismissWithStoreId(Int)
         case dismissWithUpdatedStore(UserStoreCreateResponse)
+        case dismiss
     }
     
     struct EditConfig: WriteStoreConfigurable {
@@ -310,6 +312,13 @@ final class WriteDetailViewModel: BaseViewModel {
                 owner.updateSections()
             }
             .store(in: &cancellables)
+        
+        input.didTapClose
+            .sink { [weak self] in
+                self?.sendClickCloseButtonLog()
+                self?.output.route.send(.dismiss)
+            }
+            .store(in: &cancellables)
     }
     
     private func updateSaveButtonEnable() {
@@ -534,5 +543,15 @@ final class WriteDetailViewModel: BaseViewModel {
                 output.error.send(error)
             }
         }
+    }
+}
+
+// MARK: Log
+extension WriteDetailViewModel {
+    private func sendClickCloseButtonLog() {
+        logManager.sendEvent(LogEvent(
+            screen: output.screenName,
+            eventName: .clickClose
+        ))
     }
 }

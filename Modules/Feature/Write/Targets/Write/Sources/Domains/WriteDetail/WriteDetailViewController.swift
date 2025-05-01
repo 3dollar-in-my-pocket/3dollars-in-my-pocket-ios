@@ -56,14 +56,6 @@ final class WriteDetailViewController: BaseViewController {
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)
-        
-        writeDetailView.closeButton
-            .controlPublisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.dismiss(animated: true)
-            }
-            .store(in: &cancellables)
     }
     
     override func bindViewModelInput() {
@@ -71,6 +63,12 @@ final class WriteDetailViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.tapSave)
+            .store(in: &cancellables)
+        
+        writeDetailView.closeButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapClose)
             .store(in: &cancellables)
     }
     
@@ -144,6 +142,8 @@ final class WriteDetailViewController: BaseViewController {
             
         case .presentWriteAddress(let viewModel):
             presentWriteAddress(viewModel: viewModel)
+        case .dismiss:
+            dismiss(animated: true)
         }
     }
     
