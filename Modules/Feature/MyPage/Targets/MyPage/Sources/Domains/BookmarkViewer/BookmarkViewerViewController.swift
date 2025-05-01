@@ -95,7 +95,7 @@ public final class BookmarkViewerViewController: BaseViewController {
             
             navigationController?.pushViewController(viewController, animated: true)
         case .pushBossStoreDetail(let id):
-            let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: id)
+            let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: id, shouldPushReviewList: false)
             
             navigationController?.pushViewController(viewController, animated: true)
         case .presentSigninDialog:

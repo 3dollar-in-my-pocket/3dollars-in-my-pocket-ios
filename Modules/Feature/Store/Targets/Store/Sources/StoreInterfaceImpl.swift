@@ -10,8 +10,11 @@ public final class StoreInterfaceImpl: StoreInterface {
         return StoreDetailViewController.instance(storeId: storeId)
     }
 
-    public func getBossStoreDetailViewController(storeId: String) -> UIViewController {
-        return BossStoreDetailViewController.instance(storeId: storeId)
+    public func getBossStoreDetailViewController(
+        storeId: String,
+        shouldPushReviewList: Bool
+    ) -> UIViewController {
+        return BossStoreDetailViewController.instance(storeId: storeId, shouldPushReviewList: shouldPushReviewList)
     }
 
     public func getVisitViewController(

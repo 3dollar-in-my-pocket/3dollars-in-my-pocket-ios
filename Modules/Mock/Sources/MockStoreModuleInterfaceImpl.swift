@@ -10,7 +10,7 @@ public final class MockStoreModuleInterfaceImpl: StoreInterface {
         return EmptyViewController()
     }
     
-    public func getBossStoreDetailViewController(storeId: String) -> UIViewController {
+    public func getBossStoreDetailViewController(storeId: String, shouldPushReviewList: Bool) -> UIViewController {
         return EmptyViewController()
     }
     

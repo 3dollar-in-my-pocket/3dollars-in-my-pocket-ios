@@ -103,7 +103,7 @@ final class BookmarkListViewController: BaseViewController {
             
             navigationController?.pushViewController(viewController, animated: true)
         case .pushBossStoreDetail(let storeId):
-            let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+            let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
             
             navigationController?.pushViewController(viewController, animated: true)
         case .pushEditBookmark(let viewModel):
