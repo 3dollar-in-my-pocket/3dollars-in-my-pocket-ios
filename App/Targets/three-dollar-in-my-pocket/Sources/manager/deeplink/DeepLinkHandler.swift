@@ -6,6 +6,7 @@ import AppInterface
 import Model
 import Store
 import MembershipInterface
+import MyPage
 
 import PanModal
 
@@ -89,7 +90,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             case .userStore:
                 viewController = Environment.storeInterface.getStoreDetailViewController(storeId: Int(storeId) ?? 0)
             case .bossStore:
-                viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+                viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
             case .unknown:
                 return
             }
@@ -111,7 +112,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             guard let params = url.params(),
                   let storeId = params["storeId"] as? String else { return }
             
-            let storeDetailViewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+            let storeDetailViewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
             route(storeDetailViewController)
             
             let config = BossStorePostListViewModel.Config(storeId: storeId)
@@ -144,17 +145,17 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
                     let storeDetailViewController = Environment.storeInterface.getStoreDetailViewController(storeId: intStoreId)
                     route(storeDetailViewController)
                 }
+                
+                let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0, isBossStore: storeType == .bossStore)
+                let viewModel = ReviewListViewModel(config: config)
+                let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
+                route(viewController)
             case .bossStore:
-                let storeDetailViewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+                let storeDetailViewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: true)
                 route(storeDetailViewController)
             case .unknown:
                 break
             }
-            
-            let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0, isBossStore: storeType == .bossStore)
-            let viewModel = ReviewListViewModel(config: config)
-            let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
-            route(viewController)
         case .unknown:
             os_log(.debug, "🔴알 수 없는 형태의 딥링크입니다. %{PUBLIC}@", urlString)
             break

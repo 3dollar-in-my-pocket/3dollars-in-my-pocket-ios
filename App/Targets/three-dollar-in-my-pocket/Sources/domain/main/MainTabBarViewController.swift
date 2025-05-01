@@ -229,7 +229,7 @@ final class MainTabBarViewController: UITabBarController {
     
     private func pushBossStoreDetail(storeId: String) {
         guard let navigationController = contentViewControllers[safe: 0] as? UINavigationController else { return }
-        let viewController = storeInterface.getBossStoreDetailViewController(storeId: storeId)
+        let viewController = storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
         
         navigationController.pushViewController(viewController, animated: true)
     }

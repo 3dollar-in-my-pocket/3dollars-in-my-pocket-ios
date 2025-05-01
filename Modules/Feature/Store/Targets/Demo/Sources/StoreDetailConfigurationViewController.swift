@@ -71,7 +71,7 @@ final class StoreDetailConfigurationViewController: UIViewController {
     }
     
     private func pushBossStoreDetail(id: String) {
-        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: id)
+        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: id, shouldPushReviewList: false)
         
         navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(viewController, animated: true)

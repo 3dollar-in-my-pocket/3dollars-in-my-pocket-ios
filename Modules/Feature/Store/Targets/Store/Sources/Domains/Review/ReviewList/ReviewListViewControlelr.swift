@@ -109,7 +109,6 @@ public final class ReviewListViewControlelr: BaseViewController {
             let viewController = ReviewBottomSheetViewController.instance(viewModel: viewModel)
             
             presentPanModal(viewController)
-            
         case .presentReportBottomSheetReview(let viewModel):
             presentReportReviewBottomSheet(viewModel)
         case .presentDeleteReviewAlert(let index):
