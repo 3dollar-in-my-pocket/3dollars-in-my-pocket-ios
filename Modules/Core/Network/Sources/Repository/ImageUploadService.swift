@@ -1,7 +1,5 @@
 import UIKit
 
-import Alamofire
-
 import Model
 
 public protocol ImageUploadServiceType {

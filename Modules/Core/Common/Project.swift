@@ -13,6 +13,7 @@ let project = Project.makeModule(
         .Core.dependencyInjection,
         .Core.designSystem,
         .Interface.appInterface,
-        .SPM.kingfisher
+        .SPM.kingfisher,
+        .SPM.zMarkupParser
     ]
 )

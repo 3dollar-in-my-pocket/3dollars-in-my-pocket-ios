@@ -9,6 +9,7 @@ let projdct = Project.makeModule(
     dependencies: [
         .Core.dependencyInjection,
         .Interface.appInterface,
+        .Interface.storeInterface,
         .Core.designSystem
     ]
 )

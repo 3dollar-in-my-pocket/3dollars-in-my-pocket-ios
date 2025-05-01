@@ -37,6 +37,19 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         }
     }
     
+    func handleLinkResponse(_ linkResponse: LinkResponse) {
+        switch linkResponse.type {
+        case .appScheme:
+            let urlString = "\(Bundle.deeplinkScheme):/\(linkResponse.link)"
+            handle(urlString)
+        case .web:
+            let urlString = "\(Bundle.deeplinkScheme)://browser?url=\(linkResponse.link)"
+            handle(urlString)
+        case .unknown:
+            return
+        }
+    }
+    
     func handle(_ urlString: String) {
         guard canHandleDeepLink else {
             reservedDeepLink = urlString
@@ -122,9 +135,23 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         case .reviewList:
             guard let params = url.params(),
                   let storeId = params["storeId"] as? String,
-                  let storeType = params["storeType"] as? String else { return }
+                  let storeTypeString = params["storeType"] as? String else { return }
+            let storeType = StoreType(value: storeTypeString)
             
-            let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0, isBossStore: StoreType(value: storeType) == .bossStore)
+            switch storeType {
+            case .userStore:
+                if let intStoreId = Int(storeId) {
+                    let storeDetailViewController = Environment.storeInterface.getStoreDetailViewController(storeId: intStoreId)
+                    route(storeDetailViewController)
+                }
+            case .bossStore:
+                let storeDetailViewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+                route(storeDetailViewController)
+            case .unknown:
+                break
+            }
+            
+            let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0, isBossStore: storeType == .bossStore)
             let viewModel = ReviewListViewModel(config: config)
             let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
             route(viewController)

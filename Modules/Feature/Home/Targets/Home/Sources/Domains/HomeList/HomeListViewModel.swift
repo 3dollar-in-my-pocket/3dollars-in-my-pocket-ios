@@ -116,6 +116,7 @@ final class HomeListViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.willDisplay
+            .removeDuplicates()
             .withUnretained(self)
             .filter { owner, index in
                 owner.canLoad(index: index)
@@ -244,7 +245,11 @@ final class HomeListViewModel: BaseViewModel {
     }
     
     private func canLoad(index: Int) -> Bool {
-        return index == state.stores.count - 1 && state.nextCursor != nil && state.hasMore
+        var contentsCount = state.stores.count
+        if state.advertisement.isNotNil {
+            contentsCount += 1
+        }
+        return index >= contentsCount - 1 && state.nextCursor != nil && state.hasMore
     }
     
     private func fetchAroundStore() {

@@ -43,7 +43,7 @@ struct BuildSetting {
             "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
             "GCC_WARN_UNUSED_FUNCTION": "YES",
             "GCC_WARN_UNUSED_VARIABLE": "YES",
-            "IPHONEOS_DEPLOYMENT_TARGET": "14.0",
+            "IPHONEOS_DEPLOYMENT_TARGET": "18.0",
             "MTL_FAST_MATH": "YES",
             "SDKROOT": "iphoneos",
         ]
@@ -262,21 +262,21 @@ let project = Project(
             .release(name: .release, settings: BuildSetting.Project.release)
         ]),
     targets: [
-        Target(
+        .target(
             name: "three-dollar-in-my-pocket",
-            platform: .iOS,
+            destinations: .iOS,
             product: .app,
             bundleId: "$(PRODUCT_BUNDLE_IDENTIFIER)",
-            deploymentTarget: .iOS(targetVersion: "14.0", devices: .iphone),
+            deploymentTargets: .iOS("18.0"),
             infoPlist: "Targets/three-dollar-in-my-pocket/Info.plist",
             sources: ["Targets/three-dollar-in-my-pocket/Sources/**"],
             resources: ["Targets/three-dollar-in-my-pocket/Resources/**"],
-            entitlements: .relativeToManifest("Targets/three-dollar-in-my-pocket/three-dollar-in-my-pocket.entitlements"),
+            entitlements: .file(path: .relativeToManifest("Targets/three-dollar-in-my-pocket/three-dollar-in-my-pocket.entitlements")),
             scripts: [
                 .pre(script: Script.googleService, name: "GoogleService Info"),
                 .post(script: Script.firebaseCrashlytics, name: "FirebaseCrashlytics", inputPaths: [
-                    .relativeToManifest("${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}"),
-                    .relativeToManifest("$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)")
+                    .glob(.relativeToManifest("${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}")),
+                    .glob(.relativeToManifest("$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)"))
                 ])
             ],
             dependencies: [
@@ -331,12 +331,12 @@ let project = Project(
                     .release(name: .release, settings: BuildSetting.App.release)
                 ])
         ),
-        Target(
+        .target(
             name: "three-dollar-in-my-pocketTests",
-            platform: .iOS,
+            destinations: .iOS,
             product: .unitTests,
             bundleId: "com.macgongmon.-dollar-in-my-pocketTests",
-            deploymentTarget: .iOS(targetVersion: "14.0", devices: .iphone),
+            deploymentTargets: .iOS("18.0"),
             infoPlist: "Targets/three-dollar-in-my-pocketTests/Info.plist",
             sources: ["Targets/three-dollar-in-my-pocketTests/Sources/**"],
             resources: ["Targets/three-dollar-in-my-pocketTests/Resources/**"],
@@ -350,12 +350,12 @@ let project = Project(
                     .release(name: .release, settings: BuildSetting.AppTest.release)
                 ])
         ),
-        Target(
+        .target(
             name: "service-extension",
-            platform: .iOS,
+            destinations: .iOS,
             product: .appExtension,
             bundleId: "$(PRODUCT_BUNDLE_IDENTIFIER)",
-            deploymentTarget: .iOS(targetVersion: "14.0", devices: .iphone),
+            deploymentTargets: .iOS("18.0"),
             infoPlist: "Targets/service-extension/Info.plist",
             sources: ["Targets/service-extension/Sources/**"],
             dependencies: [],
@@ -366,9 +366,9 @@ let project = Project(
                     .release(name: .release, settings: BuildSetting.ServiceExtension.release)
                 ])
         ),
-        Target(
+        .target(
             name: "content-extension",
-            platform: .iOS,
+            destinations: .iOS,
             product: .appExtension,
             bundleId: "$(PRODUCT_BUNDLE_IDENTIFIER)",
             infoPlist: "Targets/content-extension/Info.plist",
@@ -385,12 +385,12 @@ let project = Project(
                     .release(name: .release, settings: BuildSetting.ContentExtension.release)
                 ])
         ),
-        Target(
+        .target(
             name: "AppInterface",
-            platform: .iOS,
+            destinations: .iOS,
             product: .framework,
             bundleId: "com.macgongmon.-dollar-in-my-pocket.app-interface",
-            deploymentTarget: .iOS(targetVersion: "14.0", devices: .iphone),
+            deploymentTargets: .iOS("18.0"),
             infoPlist: .default,
             sources: ["Targets/AppInterface/Sources/**"],
             dependencies: [
@@ -400,40 +400,40 @@ let project = Project(
         )
     ],
     schemes: [
-        Scheme(
+        .scheme(
             name: "three-dollar-in-my-pocket-debug",
-            buildAction: BuildAction(targets: ["three-dollar-in-my-pocket"]),
+            buildAction: .buildAction(targets: ["three-dollar-in-my-pocket"]),
             runAction: .runAction(
                 configuration: .debug,
                 attachDebugger: true,
-                arguments: Arguments(launchArguments: [LaunchArgument(name: "-FIRDebugEnabled", isEnabled: true)])
+                arguments: .arguments(launchArguments: [.launchArgument(name: "-FIRDebugEnabled", isEnabled: true)])
             ),
             archiveAction: .archiveAction(configuration: .debug)
         ),
-        Scheme(
+        .scheme(
             name: "three-dollar-in-my-pocket",
-            buildAction: BuildAction(targets: ["three-dollar-in-my-pocket"]),
+            buildAction: .buildAction(targets: ["three-dollar-in-my-pocket"]),
             runAction: .runAction(
                 configuration: .release,
                 attachDebugger: true
             )
         ),
-        Scheme(
+        .scheme(
             name: "three-dollar-in-my-pocketTests",
-            buildAction: BuildAction(targets: ["three-dollar-in-my-pocketTests"]),
+            buildAction: .buildAction(targets: ["three-dollar-in-my-pocketTests"]),
             testAction: .targets(["three-dollar-in-my-pocketTests"]),
             runAction: .runAction(
                 configuration: .debug,
                 attachDebugger: false
             )
         ),
-        Scheme(
+        .scheme(
             name: "content-extension",
-            buildAction: BuildAction(targets: ["content-extension", "three-dollar-in-my-pocket"])
+            buildAction: .buildAction(targets: ["content-extension", "three-dollar-in-my-pocket"])
         ),
-        Scheme(
+        .scheme(
             name: "service-extension",
-            buildAction: BuildAction(targets: ["service-extension", "three-dollar-in-my-pocket"])
+            buildAction: .buildAction(targets: ["service-extension", "three-dollar-in-my-pocket"])
         )
     ]
 )

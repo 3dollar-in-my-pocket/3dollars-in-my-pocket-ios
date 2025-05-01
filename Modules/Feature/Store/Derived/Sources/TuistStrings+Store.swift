@@ -1,3 +1,4 @@
+// swiftlint:disable:this file_name
 // swiftlint:disable all
 // swift-format-ignore-file
 // swiftformat:disable all
@@ -11,17 +12,19 @@ import Foundation
 
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
-public enum StoreStrings {
+public enum StoreStrings: Sendable {
 
-  public enum BossStoreDetail {
-    public enum Feedback {
-      /// 리뷰 남기기
+  public enum BossStoreDetail: Sendable {
+
+    public enum Feedback: Sendable {
+    /// 리뷰 남기기
       public static let sendFeedback = StoreStrings.tr("Localization", "boss_store_detail.feedback.send_feedback")
       /// 가게 평가
       public static let title = StoreStrings.tr("Localization", "boss_store_detail.feedback.title")
     }
-    public enum Info {
-      /// 계좌번호
+
+    public enum Info: Sendable {
+    /// 계좌번호
       public static let accountTitle = StoreStrings.tr("Localization", "boss_store_detail.info.account_title")
       /// 연락처
       public static let contact = StoreStrings.tr("Localization", "boss_store_detail.info.contact")
@@ -38,59 +41,64 @@ public enum StoreStrings {
       /// 업데이트
       public static let update = StoreStrings.tr("Localization", "boss_store_detail.info.update")
     }
-    public enum Menu {
-      /// 등록된 메뉴가 없습니다.\n사장님이 메뉴를 등록할 때 까지 잠시만 기다려주세요!
+
+    public enum Menu: Sendable {
+    /// 등록된 메뉴가 없습니다.\n사장님이 메뉴를 등록할 때 까지 잠시만 기다려주세요!
       public static let empty = StoreStrings.tr("Localization", "boss_store_detail.menu.empty")
       /// 메뉴 %d개 더보기
       public static func menuMoreFormat(_ p1: Int) -> String {
-        return StoreStrings.tr("Localization", "boss_store_detail.menu.menu_more_format", p1)
+        return StoreStrings.tr("Localization", "boss_store_detail.menu.menu_more_format",p1)
       }
       /// %@원
       public static func priceFormat(_ p1: Any) -> String {
-        return StoreStrings.tr("Localization", "boss_store_detail.menu.price_format", String(describing: p1))
+        return StoreStrings.tr("Localization", "boss_store_detail.menu.price_format",String(describing: p1))
       }
     }
-    public enum Sns {
-      /// SNS 주소가 없습니다🥲
+
+    public enum Sns: Sendable {
+    /// SNS 주소가 없습니다🥲
       public static let empty = StoreStrings.tr("Localization", "boss_store_detail.sns.empty")
     }
-    public enum Workday {
-      /// 휴무
+
+    public enum Workday: Sendable {
+    /// 휴무
       public static let closed = StoreStrings.tr("Localization", "boss_store_detail.workday.closed")
       /// 영업 일정
       public static let title = StoreStrings.tr("Localization", "boss_store_detail.workday.title")
     }
   }
 
-  public enum BossStoreFeedback {
-    /// 소중한 리뷰가 사장님께 전달되었습니다!
+  public enum BossStoreFeedback: Sendable {
+  /// 소중한 리뷰가 사장님께 전달되었습니다!
     public static let finishToast = StoreStrings.tr("Localization", "boss_store_feedback.finish_toast")
     /// 리뷰 남기기 완료!
     public static let sendFeedback = StoreStrings.tr("Localization", "boss_store_feedback.send_feedback")
     /// 리뷰 남기기
     public static let title = StoreStrings.tr("Localization", "boss_store_feedback.title")
-    public enum Content {
-      /// 여러개의 리뷰를 선택할 수 있습니다.
+
+    public enum Content: Sendable {
+    /// 여러개의 리뷰를 선택할 수 있습니다.
       public static let subtitle = StoreStrings.tr("Localization", "boss_store_feedback.content.subtitle")
       /// 음식은 어떠셨나요?
       public static let title = StoreStrings.tr("Localization", "boss_store_feedback.content.title")
     }
   }
 
-  public enum MapDetail {
-    /// 길 안내보기
+  public enum MapDetail: Sendable {
+  /// 길 안내보기
     public static let navigationButton = StoreStrings.tr("Localization", "map_detail.navigation_button")
     /// 지도 보기
     public static let title = StoreStrings.tr("Localization", "map_detail.title")
   }
 
-  public enum NavigationBottomSheet {
-    /// 지도앱이 설치되어있지 않은 경우 정상적으로 실행되지 않습니다.
+  public enum NavigationBottomSheet: Sendable {
+  /// 지도앱이 설치되어있지 않은 경우 정상적으로 실행되지 않습니다.
     public static let message = StoreStrings.tr("Localization", "navigation_bottom_sheet.message")
     /// 길 안내 앱 선택
     public static let title = StoreStrings.tr("Localization", "navigation_bottom_sheet.title")
-    public enum Action {
-      /// 애플 지도
+
+    public enum Action: Sendable {
+    /// 애플 지도
       public static let appleMap = StoreStrings.tr("Localization", "navigation_bottom_sheet.action.apple_map")
       /// 취소
       public static let cancel = StoreStrings.tr("Localization", "navigation_bottom_sheet.action.cancel")
@@ -101,24 +109,25 @@ public enum StoreStrings {
     }
   }
 
-  public enum PhotoDetail {
-    public enum Delete {
-      /// 삭제
+  public enum PhotoDetail: Sendable {
+
+    public enum Delete: Sendable {
+    /// 삭제
       public static let delete = StoreStrings.tr("Localization", "photo_detail.delete.delete")
       /// 정말로 사진을 삭제하시겠습니까?
       public static let title = StoreStrings.tr("Localization", "photo_detail.delete.title")
     }
   }
 
-  public enum PhotoList {
-    /// 사진
+  public enum PhotoList: Sendable {
+  /// 사진
     public static let title = StoreStrings.tr("Localization", "photo_list.title")
     /// 사진 제보하기
     public static let uploadButton = StoreStrings.tr("Localization", "photo_list.upload_button")
   }
 
-  public enum ReportModal {
-    /// 신고하기
+  public enum ReportModal: Sendable {
+  /// 신고하기
     public static let button = StoreStrings.tr("Localization", "report_modal.button")
     /// 3건 이상의 요청이 들어오면 자동 삭제됩니다
     public static let description = StoreStrings.tr("Localization", "report_modal.description")
@@ -128,8 +137,8 @@ public enum StoreStrings {
     public static let title = StoreStrings.tr("Localization", "report_modal.title")
   }
 
-  public enum ReportReviewBottomSheet {
-    /// 신고 사유 직접 입력
+  public enum ReportReviewBottomSheet: Sendable {
+  /// 신고 사유 직접 입력
     public static let placeholder = StoreStrings.tr("Localization", "report_review_bottom_sheet.placeholder")
     /// 신고하기
     public static let report = StoreStrings.tr("Localization", "report_review_bottom_sheet.report")
@@ -137,8 +146,8 @@ public enum StoreStrings {
     public static let title = StoreStrings.tr("Localization", "report_review_bottom_sheet.title")
   }
 
-  public enum ReviewBottomSheet {
-    /// 리뷰를 남겨주세요!(100자 이내)
+  public enum ReviewBottomSheet: Sendable {
+  /// 리뷰를 남겨주세요!(100자 이내)
     public static let placeholder = StoreStrings.tr("Localization", "review_bottom_sheet.placeholder")
     /// 이 가게를 추천하시나요?
     public static let title = StoreStrings.tr("Localization", "review_bottom_sheet.title")
@@ -146,15 +155,16 @@ public enum StoreStrings {
     public static let writeButton = StoreStrings.tr("Localization", "review_bottom_sheet.write_button")
   }
 
-  public enum ReviewList {
-    /// 규정 위반으로 블라인드 처리되었습니다.
+  public enum ReviewList: Sendable {
+  /// 규정 위반으로 블라인드 처리되었습니다.
     public static let filtered = StoreStrings.tr("Localization", "review_list.filtered")
     /// 리뷰
     public static let title = StoreStrings.tr("Localization", "review_list.title")
     /// 리뷰 작성하기
     public static let writeReview = StoreStrings.tr("Localization", "review_list.write_review")
-    public enum SortType {
-      /// 별점 높은순
+
+    public enum SortType: Sendable {
+    /// 별점 높은순
       public static let highestRating = StoreStrings.tr("Localization", "review_list.sort_type.highest_rating")
       /// 최신순
       public static let latest = StoreStrings.tr("Localization", "review_list.sort_type.latest")
@@ -163,15 +173,17 @@ public enum StoreStrings {
     }
   }
 
-  public enum StoreDetail {
-    public enum BottomSticky {
-      /// 즐겨찾기
+  public enum StoreDetail: Sendable {
+
+    public enum BottomSticky: Sendable {
+    /// 즐겨찾기
       public static let save = StoreStrings.tr("Localization", "store_detail.bottom_sticky.save")
       /// 방문 인증하기
       public static let visit = StoreStrings.tr("Localization", "store_detail.bottom_sticky.visit")
     }
-    public enum Info {
-      /// 출몰시기
+
+    public enum Info: Sendable {
+    /// 출몰시기
       public static let appearanceDay = StoreStrings.tr("Localization", "store_detail.info.appearance_day")
       /// 제보가 필요해요😢
       public static let emptyOpeningHours = StoreStrings.tr("Localization", "store_detail.info.empty_opening_hours")
@@ -199,22 +211,25 @@ public enum StoreStrings {
       public static let tuesday = StoreStrings.tr("Localization", "store_detail.info.tuesday")
       /// 수
       public static let wednesday = StoreStrings.tr("Localization", "store_detail.info.wednesday")
-      public enum Header {
-        /// 정보 수정
+
+      public enum Header: Sendable {
+      /// 정보 수정
         public static let button = StoreStrings.tr("Localization", "store_detail.info.header.button")
         /// 가게 정보 & 메뉴
         public static let title = StoreStrings.tr("Localization", "store_detail.info.header.title")
       }
-      public enum PaymentMethod {
-        /// 계좌이체
+
+      public enum PaymentMethod: Sendable {
+      /// 계좌이체
         public static let accountTransfer = StoreStrings.tr("Localization", "store_detail.info.payment_method.account_transfer")
         /// 카드
         public static let card = StoreStrings.tr("Localization", "store_detail.info.payment_method.card")
         /// 현금
         public static let cash = StoreStrings.tr("Localization", "store_detail.info.payment_method.cash")
       }
-      public enum SalesType {
-        /// 편의점
+
+      public enum SalesType: Sendable {
+      /// 편의점
         public static let convenienceStore = StoreStrings.tr("Localization", "store_detail.info.sales_type.convenience_store")
         /// 길거리
         public static let road = StoreStrings.tr("Localization", "store_detail.info.sales_type.road")
@@ -222,8 +237,9 @@ public enum StoreStrings {
         public static let store = StoreStrings.tr("Localization", "store_detail.info.sales_type.store")
       }
     }
-    public enum Menu {
-      /// 메뉴 더 보기
+
+    public enum Menu: Sendable {
+    /// 메뉴 더 보기
       public static let more = StoreStrings.tr("Localization", "store_detail.menu.more")
       /// 길 안내
       public static let navigation = StoreStrings.tr("Localization", "store_detail.menu.navigation")
@@ -232,85 +248,97 @@ public enum StoreStrings {
       /// 공유하기
       public static let share = StoreStrings.tr("Localization", "store_detail.menu.share")
     }
-    public enum Overview {
-      /// %@님 제보
+
+    public enum Overview: Sendable {
+    /// %@님 제보
       public static func repoterNameFormat(_ p1: Any) -> String {
-        return StoreStrings.tr("Localization", "store_detail.overview.repoter_name_format", String(describing: p1))
+        return StoreStrings.tr("Localization", "store_detail.overview.repoter_name_format",String(describing: p1))
       }
       /// 최근 한달 %d명이 방문 성공
       public static func successVisitCountFormat(_ p1: Int) -> String {
-        return StoreStrings.tr("Localization", "store_detail.overview.success_visit_count_format", p1)
+        return StoreStrings.tr("Localization", "store_detail.overview.success_visit_count_format",p1)
       }
     }
-    public enum Photo {
-      /// 사진을 제보해주세요!
+
+    public enum Photo: Sendable {
+    /// 사진을 제보해주세요!
       public static let empty = StoreStrings.tr("Localization", "store_detail.photo.empty")
       /// 더보기
       public static let more = StoreStrings.tr("Localization", "store_detail.photo.more")
-      public enum Header {
-        /// 사진 제보
+
+      public enum Header: Sendable {
+      /// 사진 제보
         public static let button = StoreStrings.tr("Localization", "store_detail.photo.header.button")
         /// 가게 사진
         public static let title = StoreStrings.tr("Localization", "store_detail.photo.header.title")
       }
     }
-    public enum Rating {
-      /// 평균 별점
+
+    public enum Rating: Sendable {
+    /// 평균 별점
       public static let title = StoreStrings.tr("Localization", "store_detail.rating.title")
     }
-    public enum Review {
-      /// 수정
+
+    public enum Review: Sendable {
+    /// 수정
       public static let edit = StoreStrings.tr("Localization", "store_detail.review.edit")
       /// 리뷰를 작성해주세요.
       public static let empty = StoreStrings.tr("Localization", "store_detail.review.empty")
       /// 리뷰 %d개 더보기
       public static func moreFormat(_ p1: Int) -> String {
-        return StoreStrings.tr("Localization", "store_detail.review.more_format", p1)
+        return StoreStrings.tr("Localization", "store_detail.review.more_format",p1)
       }
       /// 신고
       public static let report = StoreStrings.tr("Localization", "store_detail.review.report")
-      public enum Header {
-        /// 리뷰 쓰기
+
+      public enum Header: Sendable {
+      /// 리뷰 쓰기
         public static let button = StoreStrings.tr("Localization", "store_detail.review.header.button")
         /// 리뷰
         public static let title = StoreStrings.tr("Localization", "store_detail.review.header.title")
       }
     }
-    public enum Toast {
-      /// 즐겨찾기가 추가되었습니다!
+
+    public enum Toast: Sendable {
+    /// 즐겨찾기가 추가되었습니다!
       public static let addFavorite = StoreStrings.tr("Localization", "store_detail.toast.add_favorite")
       /// 🔗 주소를 클립보드에 복사했습니다.
       public static let copyToAddress = StoreStrings.tr("Localization", "store_detail.toast.copy_to_address")
       /// 즐겨찾기가 삭제되었습니다!
       public static let removeFavorite = StoreStrings.tr("Localization", "store_detail.toast.remove_favorite")
     }
-    public enum Tooltip {
-      /// 북마크를 하고 사장님의 메세지를 받아보세요!
+
+    public enum Tooltip: Sendable {
+    /// 북마크를 하고 사장님의 메세지를 받아보세요!
       public static let bookmark = StoreStrings.tr("Localization", "store_detail.tooltip.bookmark")
     }
-    public enum Visit {
-      /// + 그 외 %d명이 다녀갔어요!
+
+    public enum Visit: Sendable {
+    /// + 그 외 %d명이 다녀갔어요!
       public static func moreFormat(_ p1: Int) -> String {
-        return StoreStrings.tr("Localization", "store_detail.visit.more_format", p1)
+        return StoreStrings.tr("Localization", "store_detail.visit.more_format",p1)
       }
-      public enum Empty {
-        /// 최근 활동 소식은 사장님과 유저들에게\n도움을 줄 수 있습니다 :)
+
+      public enum Empty: Sendable {
+      /// 최근 활동 소식은 사장님과 유저들에게\n도움을 줄 수 있습니다 :)
         public static let description = StoreStrings.tr("Localization", "store_detail.visit.empty.description")
         /// 방문 인증으로 가게의 최근 활동을 알려주세요!
         public static let title = StoreStrings.tr("Localization", "store_detail.visit.empty.title")
       }
-      public enum Format {
-        /// 방문 실패 %d명
+
+      public enum Format: Sendable {
+      /// 방문 실패 %d명
         public static func visitFail(_ p1: Int) -> String {
-          return StoreStrings.tr("Localization", "store_detail.visit.format.visit_fail", p1)
+          return StoreStrings.tr("Localization", "store_detail.visit.format.visit_fail",p1)
         }
         /// 방문 성공 %d명
         public static func visitSuccess(_ p1: Int) -> String {
-          return StoreStrings.tr("Localization", "store_detail.visit.format.visit_success", p1)
+          return StoreStrings.tr("Localization", "store_detail.visit.format.visit_success",p1)
         }
       }
-      public enum Header {
-        /// 아직 방문 인증 내역이 없어요 :(
+
+      public enum Header: Sendable {
+      /// 아직 방문 인증 내역이 없어요 :(
         public static let titleEmpty = StoreStrings.tr("Localization", "store_detail.visit.header.title_empty")
         /// 이번 달 방문 인증 내역
         public static let titleNormal = StoreStrings.tr("Localization", "store_detail.visit.header.title_normal")
@@ -318,23 +346,25 @@ public enum StoreStrings {
     }
   }
 
-  public enum UploadPhoto {
-    public enum AuthErrorAlert {
-      /// 사진 제보를 위해 앨범 권한이 필요합니다.
+  public enum UploadPhoto: Sendable {
+
+    public enum AuthErrorAlert: Sendable {
+    /// 사진 제보를 위해 앨범 권한이 필요합니다.
       public static let message = StoreStrings.tr("Localization", "upload_photo.auth_error_alert.message")
     }
-    public enum Button {
-      /// 총 %d장 / %d장 의 사진 등록
+
+    public enum Button: Sendable {
+    /// 총 %d장 / %d장 의 사진 등록
       public static func titleFormat(_ p1: Int, _ p2: Int) -> String {
-        return StoreStrings.tr("Localization", "upload_photo.button.title_format", p1, p2)
+        return StoreStrings.tr("Localization", "upload_photo.button.title_format",p1, p2)
       }
     }
   }
 
-  public enum Visit {
-    /// 인증까지 %dm
+  public enum Visit: Sendable {
+  /// 인증까지 %dm
     public static func distanceFormat(_ p1: Int) -> String {
-      return StoreStrings.tr("Localization", "visit.distance_format", p1)
+      return StoreStrings.tr("Localization", "visit.distance_format",p1)
     }
     /// 방문 성공
     public static let exists = StoreStrings.tr("Localization", "visit.exists")
@@ -342,8 +372,9 @@ public enum StoreStrings {
     public static let notExists = StoreStrings.tr("Localization", "visit.not_exists")
     /// 방문 기록을 저장했습니다👍
     public static let resultMessage = StoreStrings.tr("Localization", "visit.result_message")
-    public enum Title {
-      /// 가게 도착!\n방문을 인증해보세요!
+
+    public enum Title: Sendable {
+    /// 가게 도착!\n방문을 인증해보세요!
       public static let exists = StoreStrings.tr("Localization", "visit.title.exists")
       /// 가게 도착!
       public static let existsBold = StoreStrings.tr("Localization", "visit.title.exists_bold")
@@ -361,7 +392,7 @@ public enum StoreStrings {
 
 extension StoreStrings {
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-    let format = StoreResources.bundle.localizedString(forKey: key, value: nil, table: table)
+    let format = Bundle.module.localizedString(forKey: key, value: nil, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }

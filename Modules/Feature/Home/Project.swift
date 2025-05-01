@@ -14,13 +14,15 @@ let project = Project.makeFeatureModule(
         .Interface.appInterface,
         .Interface.storeInterface,
         .Interface.membershipInterface,
+        .Interface.feedInterface,
         .SPM.snapKit,
         .SPM.then,
         .SPM.panModal,
         .SPM.combineCocoa,
         .SPM.kingfisher,
         .Framework.naverMap,
-        .Framework.naverGeometry
+        .Framework.naverGeometry,
+        .Feature.feed
     ],
     includeInterface: false,
     includeDemo: true

@@ -68,6 +68,11 @@ public extension TargetDependency {
             target: "MyPage",
             path: .relativeToRoot("./Modules/Feature/MyPage")
         )
+        
+        public static let feed = TargetDependency.project(
+            target: "Feed",
+            path: .relativeToRoot("./Modules/Feature/Feed")
+        )
     }
     
     class Interface {
@@ -100,6 +105,11 @@ public extension TargetDependency {
             target: "MyPageInterface",
             path: .relativeToRoot("./Modules/Feature/MyPage")
         )
+        
+        public static let feedInterface = TargetDependency.project(
+            target: "FeedInterface",
+            path: .relativeToRoot("./Modules/Feature/Feed")
+        )
     }
     
     class SPM {
@@ -110,6 +120,7 @@ public extension TargetDependency {
         public static let then = TargetDependency.external(name: "Then")
         public static let panModal = TargetDependency.external(name: "PanModal")
         public static let combineCocoa = TargetDependency.external(name: "CombineCocoa")
+        public static let zMarkupParser = TargetDependency.external(name: "ZMarkupParser")
     }
     
     class Package {

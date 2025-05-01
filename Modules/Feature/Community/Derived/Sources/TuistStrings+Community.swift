@@ -1,3 +1,4 @@
+// swiftlint:disable:this file_name
 // swiftlint:disable all
 // swift-format-ignore-file
 // swiftformat:disable all
@@ -11,17 +12,18 @@ import Foundation
 
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
-public enum CommunityStrings {
+public enum CommunityStrings: Sendable {
 
-  public enum CommunityPopularStore {
-    public enum Tab {
-      /// 이번 주 동네 인기 가게
+  public enum CommunityPopularStore: Sendable {
+
+    public enum Tab: Sendable {
+    /// 이번 주 동네 인기 가게
       public static let title = CommunityStrings.tr("Localization", "community_popular_store.tab.title")
     }
   }
 
-  public enum CommunityPopularStoreNeighborhoodsHeader {
-    /// 어디 인기 가게를 볼까요?
+  public enum CommunityPopularStoreNeighborhoodsHeader: Sendable {
+  /// 어디 인기 가게를 볼까요?
     public static let title = CommunityStrings.tr("Localization", "community_popular_store_neighborhoods_header.title")
   }
 }
@@ -32,7 +34,7 @@ public enum CommunityStrings {
 
 extension CommunityStrings {
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-    let format = CommunityResources.bundle.localizedString(forKey: key, value: nil, table: table)
+    let format = Bundle.module.localizedString(forKey: key, value: nil, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }

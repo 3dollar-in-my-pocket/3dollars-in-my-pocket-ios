@@ -1,3 +1,4 @@
+// swiftlint:disable:this file_name
 // swiftlint:disable all
 // swift-format-ignore-file
 // swiftformat:disable all
@@ -11,7 +12,7 @@ import Foundation
 
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
-public enum WriteStrings {
+public enum WriteStrings: Sendable {
   /// * 다중선택 가능
   public static let categorySelectionMulti = WriteStrings.tr("Localization", "category_selection_multi")
   /// 카테고리 선택 완료
@@ -92,7 +93,7 @@ public enum WriteStrings {
 
 extension WriteStrings {
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-    let format = WriteResources.bundle.localizedString(forKey: key, value: nil, table: table)
+    let format = Bundle.module.localizedString(forKey: key, value: nil, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }

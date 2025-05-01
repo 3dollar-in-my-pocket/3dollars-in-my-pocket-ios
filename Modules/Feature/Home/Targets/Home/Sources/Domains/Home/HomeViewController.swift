@@ -10,6 +10,8 @@ import Then
 import PanModal
 import Log
 import Kingfisher
+import Feed
+import CombineCocoa
 
 typealias HomeStoreCardSanpshot = NSDiffableDataSourceSnapshot<HomeSection, HomeSectionItem>
 
@@ -69,6 +71,7 @@ public final class HomeViewController: BaseViewController {
         super.viewDidLoad()
         setupNavigation()
         homeView.mapView.addCameraDelegate(delegate: self)
+        homeView.startFeedButtonAnimation()
         viewModel.input.viewDidLoad.send(())
     }
     
@@ -136,6 +139,12 @@ public final class HomeViewController: BaseViewController {
         homeView.homeFilterCollectionView.onLoadFilter = { [weak self] in
             self?.viewModel.input.onLoadFilter.send(())
         }
+        
+        homeView.feedButton
+            .tapPublisher
+            .mapVoid
+            .subscribe(viewModel.input.didTapFeedButton)
+            .store(in: &cancellables)
     }
     
     public override func bindViewModelOutput() {
@@ -245,6 +254,8 @@ public final class HomeViewController: BaseViewController {
                 case .deepLink(let advertisement):
                     guard let link = advertisement.link else { return }
                     Environment.appModuleInterface.deepLinkHandler.handleAdvertisementLink(link)
+                case .presentFeedList(let viewModel):
+                    owner.presentFeedList(viewModel: viewModel)
                 }
             }
             .store(in: &cancellables)
@@ -493,6 +504,15 @@ public final class HomeViewController: BaseViewController {
         guard let viewController = Environment.membershipInterface.createAccountInfoViewController(viewModel: viewModel) else { return }
         
         tabBarController?.present(viewController, animated: true)
+    }
+    
+    private func presentFeedList(viewModel: FeedListViewModel) {
+        let viewController = FeedListViewController(viewModel: viewModel)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .overCurrentContext
+        navigationController.isNavigationBarHidden = true
+        
+        tabBarController?.present(navigationController, animated: true)
     }
 }
 

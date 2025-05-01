@@ -1,3 +1,4 @@
+// swiftlint:disable:this file_name
 // swiftlint:disable all
 // swift-format-ignore-file
 // swiftformat:disable all
@@ -11,7 +12,7 @@ import Foundation
 
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
-public enum HomeStrings {
+public enum HomeStrings: Sendable {
   /// 지도뷰
   public static let categoryFileterMapView = HomeStrings.tr("Localization", "category_fileter_map_view")
   /// new
@@ -53,17 +54,25 @@ public enum HomeStrings {
   /// 위치 권한 거절
   public static let locationDenyTitle = HomeStrings.tr("Localization", "location_deny_title")
 
-  public enum HomeList {
-    public enum Empty {
-      /// 다른 주소로 검색하거나 직접 제보해보세요!
+  public enum Home: Sendable {
+  /// 🍀 이 동네 가게 소식!
+    public static let feedButton = HomeStrings.tr("Localization", "home.feed_button")
+    /// 여기가 바로 핫플 🔥
+    public static let feedButton2 = HomeStrings.tr("Localization", "home.feed_button_2")
+  }
+
+  public enum HomeList: Sendable {
+
+    public enum Empty: Sendable {
+    /// 다른 주소로 검색하거나 직접 제보해보세요!
       public static let description = HomeStrings.tr("Localization", "home_list.empty.description")
       /// 주변 2km 이내에 가게가 없어요.
       public static let title = HomeStrings.tr("Localization", "home_list.empty.title")
     }
   }
 
-  public enum SearchAddress {
-    /// 구, 동, 건물명, 역 등으로 검색
+  public enum SearchAddress: Sendable {
+  /// 구, 동, 건물명, 역 등으로 검색
     public static let placeholder = HomeStrings.tr("Localization", "search_address.placeholder")
     /// 위치 검색
     public static let title = HomeStrings.tr("Localization", "search_address.title")
@@ -76,7 +85,7 @@ public enum HomeStrings {
 
 extension HomeStrings {
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-    let format = HomeResources.bundle.localizedString(forKey: key, value: nil, table: table)
+    let format = Bundle.module.localizedString(forKey: key, value: nil, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }
