@@ -163,6 +163,11 @@ public enum StoreStrings: Sendable {
     /// 리뷰 작성하기
     public static let writeReview = StoreStrings.tr("Localization", "review_list.write_review")
 
+    public enum Alert: Sendable {
+    /// 리뷰를 삭제하시겠습니까?
+      public static let delete = StoreStrings.tr("Localization", "review_list.alert.delete")
+    }
+
     public enum SortType: Sendable {
     /// 별점 높은순
       public static let highestRating = StoreStrings.tr("Localization", "review_list.sort_type.highest_rating")

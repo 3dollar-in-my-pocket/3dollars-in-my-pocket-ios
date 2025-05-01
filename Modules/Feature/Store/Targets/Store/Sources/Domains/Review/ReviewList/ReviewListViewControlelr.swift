@@ -112,6 +112,13 @@ public final class ReviewListViewControlelr: BaseViewController {
             
         case .presentReportBottomSheetReview(let viewModel):
             presentReportReviewBottomSheet(viewModel)
+        case .presentDeleteReviewAlert(let index):
+            AlertUtils.showWithCancel(
+                viewController: self,
+                message: Strings.ReviewList.Alert.delete
+            ) { [weak self] in
+                self?.viewModel.input.deleteReview.send(index)
+            }
         }
     }
     

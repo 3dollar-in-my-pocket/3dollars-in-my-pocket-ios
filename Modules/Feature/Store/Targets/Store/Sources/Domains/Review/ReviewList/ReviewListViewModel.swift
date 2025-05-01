@@ -21,6 +21,7 @@ public final class ReviewListViewModel: BaseViewModel {
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
         let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
+        let deleteReview = PassthroughSubject<Int, Never>()
     }
     
     struct Output {
@@ -49,6 +50,7 @@ public final class ReviewListViewModel: BaseViewModel {
     enum Route {
         case presentWriteReview(ReviewBottomSheetViewModel)
         case presentReportBottomSheetReview(ReportReviewBottomSheetViewModel)
+        case presentDeleteReviewAlert(Int)
     }
     
     public struct Config {
@@ -118,7 +120,7 @@ public final class ReviewListViewModel: BaseViewModel {
                 
                 if review.user.userId == owner.preference.userId {
                     owner.sendClickDeleteReviewLog(reviewId: review.reviewId)
-                    owner.deleteReview(index: index)
+                    owner.output.route.send(.presentDeleteReviewAlert(index))
                 } else {
                     owner.sendClickReportReviewLog(reviewId: review.reviewId)
                     owner.presentReportReviewBottomSheet(review: review)
@@ -181,6 +183,12 @@ public final class ReviewListViewModel: BaseViewModel {
             .sink { (owner: ReviewListViewModel, index: Int) in
                 owner.sendClickLike(index: index)
                 owner.toggleSticker(index: index)
+            }
+            .store(in: &cancellables)
+        
+        input.deleteReview
+            .sink { [weak self] index in
+                self?.deleteReview(index: index)
             }
             .store(in: &cancellables)
     }
