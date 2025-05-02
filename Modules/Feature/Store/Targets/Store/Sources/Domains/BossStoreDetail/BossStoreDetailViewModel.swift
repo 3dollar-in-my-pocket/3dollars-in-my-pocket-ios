@@ -59,6 +59,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
     struct State {
         var storeDetailData: BossStoreDetailData?
+        var shouldPushReviewList: Bool
     }
 
     enum Route {
@@ -79,7 +80,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
 
-    private var state = State()
+    private var state: State
     private let storeService: StoreRepository
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
@@ -88,12 +89,14 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
     init(
         storeId: String,
+        shouldPushReviewList: Bool = false,
         storeService: StoreRepository = StoreRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.storeId = storeId
         self.storeService = storeService
         self.logManager = logManager
+        self.state = State(shouldPushReviewList: shouldPushReviewList)
 
         super.init()
 
@@ -133,6 +136,14 @@ final class BossStoreDetailViewModel: BaseViewModel {
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
                 }
+            }
+            .store(in: &cancellables)
+        
+        input.firstLoad
+            .sink { [weak self] in
+                guard let self, state.shouldPushReviewList else { return }
+                
+                pushReviewList()
             }
             .store(in: &cancellables)
 

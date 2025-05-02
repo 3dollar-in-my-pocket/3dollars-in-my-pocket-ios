@@ -162,7 +162,7 @@ public final class MyPageViewController: BaseViewController {
                 case .visitStore(let viewModel): VisitStoreListViewController(viewModel: viewModel)
                 case .medal(let viewModel): MyMedalViewController(viewModel: viewModel)
                 case .storeDetail(let storeId): Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
-                case .bossStoreDetail(let storeId): Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+                case .bossStoreDetail(let storeId): Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
                 case .favoriteStore: BookmarkListViewController()
                 case .pollDetail(let pollId): Environment.communityInterface.getPollDetailViewController(pollId: pollId)
                 }

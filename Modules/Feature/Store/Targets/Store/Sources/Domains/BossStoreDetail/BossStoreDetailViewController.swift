@@ -37,12 +37,12 @@ final class BossStoreDetailViewController: BaseViewController {
 
     private let viewModel: BossStoreDetailViewModel
 
-    public static func instance(storeId: String) -> BossStoreDetailViewController {
-        return BossStoreDetailViewController(storeId: storeId)
+    public static func instance(storeId: String, shouldPushReviewList: Bool) -> BossStoreDetailViewController {
+        return BossStoreDetailViewController(storeId: storeId, shouldPushReviewList: shouldPushReviewList)
     }
 
-    public init(storeId: String) {
-        self.viewModel = BossStoreDetailViewModel(storeId: storeId)
+    public init(storeId: String, shouldPushReviewList: Bool) {
+        self.viewModel = BossStoreDetailViewModel(storeId: storeId, shouldPushReviewList: shouldPushReviewList)
 
         super.init(nibName: nil, bundle: nil)
 

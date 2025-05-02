@@ -116,7 +116,7 @@ public final class CommunityViewController: BaseViewController {
     }
     
     private func pushBossStoreDetail(storeId: String) {
-        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId)
+        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
         
         navigationController?.pushViewController(viewController, animated: true)
     }

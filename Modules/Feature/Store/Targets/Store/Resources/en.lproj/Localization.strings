@@ -94,6 +94,7 @@
 "review_list.sort_type.highest_rating" = "별점 높은순";
 "review_list.sort_type.lowest_rating" = "별점 낮은순";
 "review_list.filtered" = "규정 위반으로 블라인드 처리되었습니다.";
+"review_list.alert.delete" = "리뷰를 삭제하시겠습니까?";
 
 // 리뷰 신고 화면
 "report_review_bottom_sheet.title" = "신고 사유";
