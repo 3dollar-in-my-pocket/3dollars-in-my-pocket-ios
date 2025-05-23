@@ -4,6 +4,8 @@ import Common
 import DesignSystem
 import Model
 
+import CombineCocoa
+
 final class HomeStoreCardCell: BaseCollectionViewCell {
     enum Layout {
         static let size = CGSize(width: UIScreen.main.bounds.width - 81, height: 152)
@@ -36,37 +38,44 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
         return label
     }()
     
-    private let newBadge = UIImageView(image: HomeAsset.iconNewBadgeShort.image)
+    private let badgeImageView = UIImageView()
     
-    private let tagView = HomeCellTagView()
+    private let tagStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 4
+        return stackView
+    }()
     
-    private let bossStoreTagView = BossStoreTagView()
+    private let infoView = HomeStoreCardInfoView()
     
-    private let infoView = HomeCellInfoView()
-    
-    let visitButton: UIButton = {
+    private let actionButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = DesignSystemAsset.Colors.mainPink.color
+        button.backgroundColor = Colors.mainPink.color
         button.layer.cornerRadius = 10
-        button.setImage(DesignSystemAsset.Icons.locationSolid.image
-            .resizeImage(scaledTo: 16)
-            .withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
-        button.setTitle(HomeStrings.homeVisitButton, for: .normal)
-        button.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        button.titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 12)
         button.contentEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 14)
         button.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
+        button.titleLabel?.font = Fonts.bold.font(size: 12)
         return button
     }()
     
-    func bind(storeWithExtra: StoreWithExtraResponse) {
-        categoryImage.setImage(urlString: storeWithExtra.store.categories.first?.imageUrl)
-        categoryLabel.text = storeWithExtra.store.categoriesString
-        titleLabel.text = storeWithExtra.store.storeName.maxLength(length: 10)
-        setTagView(storeWithExtra: storeWithExtra)
-        newBadge.isHidden = storeWithExtra.extra.tags.isNew.isNot
-        infoView.bind(reviewCount: storeWithExtra.extra.reviewsCount, distance: storeWithExtra.distanceM)
-        visitButton.isHidden = storeWithExtra.store.storeType == .bossStore
+    private var viewModel: HomeStoreCardCellViewModel?
+    
+    func bind(viewModel: HomeStoreCardCellViewModel) {
+        bindData(viewModel.output.data)
+        
+        actionButton.tapPublisher
+            .throttleClick()
+            .subscribe(viewModel.input.didTapActionButton)
+            .store(in: &cancellables)
+        
+        self.viewModel = viewModel
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        infoView.prepareForReuse()
+        tagStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
     }
     
     override func setup() {
@@ -75,11 +84,10 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
             categoryImage,
             categoryLabel,
             titleLabel,
-            newBadge,
-            tagView,
-            bossStoreTagView,
+            badgeImageView,
+            tagStackView,
             infoView,
-            visitButton
+            actionButton
         ])
     }
     
@@ -105,44 +113,71 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
             $0.top.equalTo(categoryLabel.snp.bottom).offset(4)
         }
         
-        newBadge.snp.makeConstraints {
+        badgeImageView.snp.makeConstraints {
             $0.width.height.equalTo(14)
             $0.left.equalTo(titleLabel.snp.right).offset(4)
             $0.top.equalTo(titleLabel)
         }
         
-        tagView.snp.makeConstraints {
-            $0.left.equalTo(categoryLabel)
-            $0.top.equalTo(titleLabel.snp.bottom).offset(4)
-        }
-        
-        bossStoreTagView.snp.makeConstraints {
+        tagStackView.snp.makeConstraints {
             $0.left.equalTo(categoryLabel)
             $0.top.equalTo(titleLabel.snp.bottom).offset(4)
         }
         
         infoView.snp.makeConstraints {
             $0.left.equalTo(categoryLabel)
-            $0.centerY.equalTo(visitButton)
+            $0.centerY.equalTo(actionButton)
         }
         
-        visitButton.snp.makeConstraints {
+        actionButton.snp.makeConstraints {
             $0.right.equalToSuperview().offset(-16)
             $0.bottom.equalToSuperview().offset(-16)
         }
     }
     
-    private func setTagView(storeWithExtra: StoreWithExtraResponse) {
-        switch storeWithExtra.store.storeType {
-        case .bossStore:
-            tagView.isHidden = true
-            bossStoreTagView.isHidden = false
-        case .userStore:
-            tagView.isHidden = false
-            bossStoreTagView.isHidden = true
-            tagView.bind(existsCount: storeWithExtra.extra.visitCounts?.existsCounts)
-        case .unknown:
-            return
+    private func bindData(_ data: HomeCardSectionResponse) {
+        categoryImage.setImage(urlString: data.image?.url)
+        
+        if let subTitle = data.subTitle {
+            categoryLabel.setSDText(subTitle)
+        }
+        
+        if let title = data.title {
+            titleLabel.setSDText(title)
+        }
+        
+        setupTagLabels(labels: data.labels)
+        
+        if let badge = data.badge {
+            setupBadge(badge: badge)
+        }
+        
+        infoView.bind(data.metadata)
+        setupButton(button: data.button)
+    }
+    
+    private func setupTagLabels(labels: [SDChip]) {
+        for label in labels {
+            let tagView = HomeStoreCardCellTagView()
+            tagView.bind(chip: label)
+            tagStackView.addArrangedSubview(tagView)
+        }
+    }
+    
+    private func setupBadge(badge: SDImage) {
+        badgeImageView.setImage(urlString: badge.url)
+        badgeImageView.snp.updateConstraints {
+            $0.width.equalTo(badge.style.width)
+            $0.height.equalTo(badge.style.height)
+        }
+    }
+    
+    private func setupButton(button: SDButton?) {
+        if let button {
+            actionButton.setSDButton(button)
+            actionButton.isHidden = false
+        } else {
+            actionButton.isHidden = true
         }
     }
 }

@@ -49,7 +49,7 @@ final class FeedCellCategoryView: BaseView {
     }
     
     func bind(category: FeedCategoryResponse, updatedAt: String) {
-        categoryLabel.setUiText(category.name)
+        categoryLabel.setSDText(category.name)
         categoryLabel.backgroundColor = UIColor(hex: category.style.backgroundColor)
         updatedAtLabel.text = updatedAt.createdAtFormatted
     }

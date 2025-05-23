@@ -38,7 +38,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         }
     }
     
-    func handleLinkResponse(_ linkResponse: LinkResponse) {
+    func handleLinkResponse(_ linkResponse: SDLink) {
         switch linkResponse.type {
         case .appScheme:
             let urlString = "\(Bundle.deeplinkScheme):/\(linkResponse.link)"

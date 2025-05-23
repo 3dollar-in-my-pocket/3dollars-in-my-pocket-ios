@@ -86,13 +86,13 @@ final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
     }
     
     func bind(body: ContentWithTitleAndImagesFeedBodyResponse) {
-        titleLabel.setUiText(body.title)
+        titleLabel.setSDText(body.title)
         
         if let rating = body.additionalInfos?.rating?.starRating {
             starBadgeView.bind(Int(rating))
         }
         
-        contentLabel.setUiText(body.content)
+        contentLabel.setSDText(body.content)
         backgroundColor = UIColor(hex: body.style.backgroundColor)
         
         images = body.images

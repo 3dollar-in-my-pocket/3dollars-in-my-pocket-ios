@@ -72,7 +72,7 @@ final class FeedCellContentWithImagesBodyView: BaseView {
     
     func bind(body: ContentWithImagesFeedBodyResponse) {
         backgroundColor = UIColor(hex: body.style.backgroundColor)
-        contentLabel.setUiText(body.content)
+        contentLabel.setSDText(body.content)
         
         images = body.images
         collectionView.reloadData()

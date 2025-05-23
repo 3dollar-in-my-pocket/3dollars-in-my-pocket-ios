@@ -22,12 +22,12 @@ public enum FeedHeaderType: String, Decodable {
 public struct GeneralFeedHeaderResponse: FeedHeaderResponse {
     public let type: FeedHeaderType
     public let image: ImageResponse
-    public let top: UiText
-    public let content: UiText
+    public let top: SDText
+    public let content: SDText
     public let metadata: [FeedHeaderMetadataResponse]
 }
 
 public struct FeedHeaderMetadataResponse: Decodable {
     public let icon: ImageResponse
-    public let content: UiText
+    public let content: SDText
 }

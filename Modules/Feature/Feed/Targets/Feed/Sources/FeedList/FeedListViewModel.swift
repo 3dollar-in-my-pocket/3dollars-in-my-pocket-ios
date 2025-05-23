@@ -28,7 +28,7 @@ extension FeedListViewModel {
     
     enum Route {
         case showErrorAlert(Error)
-        case deepLink(LinkResponse)
+        case deepLink(SDLink)
     }
 }
 

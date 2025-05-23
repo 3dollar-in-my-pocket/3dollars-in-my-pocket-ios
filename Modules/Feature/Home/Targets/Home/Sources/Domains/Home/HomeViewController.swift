@@ -13,8 +13,6 @@ import Kingfisher
 import Feed
 import CombineCocoa
 
-typealias HomeStoreCardSanpshot = NSDiffableDataSourceSnapshot<HomeSection, HomeSectionItem>
-
 public final class HomeViewController: BaseViewController {
     public override var screenName: ScreenName {
         return viewModel.output.screenName
@@ -180,25 +178,25 @@ public final class HomeViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.collectionItems
+        viewModel.output.datasource
             .main
             .withUnretained(self)
-            .sink { (owner: HomeViewController, items: [HomeSectionItem]) in
-                let section = HomeSection(items: items)
+            .sink { (owner: HomeViewController, items: [HomeCardSectionItem]) in
+                let section = HomeCardSection(items: items)
                 owner.updateDataSource(section: [section])
             }
             .store(in: &cancellables)
         
         viewModel.output.scrollToIndex
-            .combineLatest(viewModel.output.collectionItems)
+            .combineLatest(viewModel.output.datasource)
             .main
             .sink { [weak self] index, items in
                 guard let self, items.count > index else { return }
                 
                 let indexPath = IndexPath(row: index, section: 0)
-                let stores = items.map { $0.store }
+                let cellViewModels = items.map { $0.store }
                 
-                selectMarker(selectedIndex: index, stores: stores)
+                selectMarker(selectedIndex: index, cellViewModels: cellViewModels)
                 homeView.collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
             }
             .store(in: &cancellables)
@@ -223,12 +221,6 @@ public final class HomeViewController: BaseViewController {
                 case .presentListView(let viewModel):
                     owner.presentHomeList(viewModel)
                     
-                case .pushStoreDetail(let storeId):
-                    owner.pushStoreDetail(storeId: storeId)
-                    
-                case .pushBossStoreDetail(let storeId):
-                    owner.pushBossStoreDetail(storeId: storeId)
-
                 case .presentVisit(let store):
                     let storeId = Int(store.storeId) ?? 0
                     owner.presentVisit(storeId: storeId, store: store)
@@ -251,9 +243,8 @@ public final class HomeViewController: BaseViewController {
                         owner.showErrorAlert(error: error)
                     }
                     
-                case .deepLink(let advertisement):
-                    guard let link = advertisement.link else { return }
-                    Environment.appModuleInterface.deepLinkHandler.handleAdvertisementLink(link)
+                case .deepLink(let link):
+                    Environment.appModuleInterface.deepLinkHandler.handleLinkResponse(link)
                 case .presentFeedList(let viewModel):
                     owner.presentFeedList(viewModel: viewModel)
                 }
@@ -269,7 +260,7 @@ public final class HomeViewController: BaseViewController {
             .store(in: &cancellables)
     }
     
-    private func updateDataSource(section: [HomeSection]) {
+    private func updateDataSource(section: [HomeCardSection]) {
         var snapshot = HomeStoreCardSanpshot()
         
         section.forEach {
@@ -280,23 +271,23 @@ public final class HomeViewController: BaseViewController {
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
-    private func selectMarker(selectedIndex: Int?, stores: [StoreWithExtraResponse?]) {
-        if markers.count > stores.count {
-            markers[(stores.count)...(markers.count - 1)].forEach { $0?.mapView = nil }
-            markers.remove(atOffsets: IndexSet(integersIn: (stores.count)...(markers.count - 1)))
+    private func selectMarker(selectedIndex: Int?, cellViewModels: [HomeStoreCardCellViewModel?]) {
+        if markers.count > cellViewModels.count {
+            markers[(cellViewModels.count)...(markers.count - 1)].forEach { $0?.mapView = nil }
+            markers.remove(atOffsets: IndexSet(integersIn: (cellViewModels.count)...(markers.count - 1)))
         }
         
-        for (index, store) in stores.enumerated() {
-            if let store {
+        for (index, cellViewModel) in cellViewModels.enumerated() {
+            if let cellViewModel {
                 if let marker = markers[safe: index] {
                     if marker.isNotNil {
-                        setStoreMarker(store, isSelected: selectedIndex == index, index: index)
+                        setStoreMarker(cellViewModel, isSelected: selectedIndex == index, index: index)
                     } else {
-                        let marker = getStoreMarker(store, isSelected: selectedIndex == index, index: index)
+                        let marker = getStoreMarker(cellViewModel, isSelected: selectedIndex == index, index: index)
                         markers[index] = marker
                     }
                 } else {
-                    let marker = getStoreMarker(store, isSelected: selectedIndex == index, index: index)
+                    let marker = getStoreMarker(cellViewModel, isSelected: selectedIndex == index, index: index)
                     markers.append(marker)
                 }
             } else {
@@ -310,16 +301,14 @@ public final class HomeViewController: BaseViewController {
         }
     }
     
-    private func setStoreMarker(_ store: StoreWithExtraResponse, isSelected: Bool, index: Int) {
-        if let customMarker = store.marker {
-            setCustomMarker(customMarker, isSelected: isSelected, index: index)
-        } else {
+    private func setStoreMarker(_ cellViewModel: HomeStoreCardCellViewModel, isSelected: Bool, index: Int) {
+        guard let customMarker = cellViewModel.output.data.marker else {
             setDefaultMarker(isSelected: isSelected, index: index)
+            return
         }
         
-        guard let latitude = store.store.location?.latitude,
-              let longitude = store.store.location?.longitude else { return }
-        let position = NMGLatLng(lat: latitude, lng: longitude)
+        setCustomMarker(customMarker, isSelected: isSelected, index: index)
+        let position = NMGLatLng(lat: customMarker.location.latitude, lng: customMarker.location.longitude)
         
         markers[index]?.position = position
         markers[index]?.mapView = homeView.mapView
@@ -329,9 +318,10 @@ public final class HomeViewController: BaseViewController {
         }
     }
     
-    private func setCustomMarker(_ response: StoreMarkerResponse, isSelected: Bool, index: Int) {
-        let markerImage = isSelected ? response.selected : response.unselected
-        guard let url = URL(string: markerImage.imageUrl) else {
+    private func setCustomMarker(_ marker: HomeCardSectionMarkerResponse, isSelected: Bool, index: Int) {
+        let markerImage = isSelected ? marker.focusedImage : marker.unfocusedImage
+        
+        guard let url = URL(string: markerImage.url) else {
             setDefaultMarker(isSelected: isSelected, index: index)
             return
         }
@@ -340,8 +330,8 @@ public final class HomeViewController: BaseViewController {
             switch result {
             case .success(let response):
                 self?.markers[index]?.iconImage = NMFOverlayImage(image: response.image)
-                self?.markers[index]?.width = CGFloat(markerImage.width)
-                self?.markers[index]?.height = CGFloat(markerImage.height)
+                self?.markers[index]?.width = CGFloat(markerImage.style.width)
+                self?.markers[index]?.height = CGFloat(markerImage.style.height)
             case .failure(_):
                 self?.setDefaultMarker(isSelected: isSelected, index: index)
             }
@@ -360,18 +350,18 @@ public final class HomeViewController: BaseViewController {
         }
     }
     
-    private func getStoreMarker(_ store: StoreWithExtraResponse, isSelected: Bool, index: Int) -> NMFMarker {
-        var marker = NMFMarker()
-        if let customMarker = store.marker {
-            marker = getCustomMarker(customMarker, isSelected: isSelected)
-            
-        } else {
-            marker = getDefaultMarker(isSelected: isEditing)
+    private func getStoreMarker(_ cellViewModel: HomeStoreCardCellViewModel, isSelected: Bool, index: Int) -> NMFMarker {
+        guard let customMarker = cellViewModel.output.data.marker else {
+            return getDefaultMarker(isSelected: isEditing)
         }
         
-        guard let latitude = store.store.location?.latitude,
-              let longitude = store.store.location?.longitude else { return marker }
-        let position = NMGLatLng(lat: latitude, lng: longitude)
+        var marker = NMFMarker()
+        marker = getCustomMarker(customMarker, isSelected: isSelected)
+        
+        let position = NMGLatLng(
+            lat: customMarker.location.latitude,
+            lng: customMarker.location.longitude
+        )
         
         marker.position = position
         marker.mapView = homeView.mapView
@@ -382,11 +372,11 @@ public final class HomeViewController: BaseViewController {
         return marker
     }
     
-    private func getCustomMarker(_ response: StoreMarkerResponse, isSelected: Bool) -> NMFMarker {
+    private func getCustomMarker(_ customMarker: HomeCardSectionMarkerResponse, isSelected: Bool) -> NMFMarker {
         let marker = NMFMarker()
-        let markerImage = isSelected ? response.selected : response.unselected
+        let markerImage = isSelected ? customMarker.focusedImage : customMarker.unfocusedImage
         marker.iconImage = NMFOverlayImage(name: "")
-        guard let url = URL(string: markerImage.imageUrl) else {
+        guard let url = URL(string: markerImage.url) else {
             return getDefaultMarker(isSelected: isSelected)
         }
         
@@ -394,8 +384,8 @@ public final class HomeViewController: BaseViewController {
             switch result {
             case .success(let response):
                 marker?.iconImage = NMFOverlayImage(image: response.image)
-                marker?.width = CGFloat(markerImage.width)
-                marker?.height = CGFloat(markerImage.height)
+                marker?.width = CGFloat(markerImage.style.width)
+                marker?.height = CGFloat(markerImage.style.height)
             case .failure(_):
                 if isSelected {
                     marker?.width = 32

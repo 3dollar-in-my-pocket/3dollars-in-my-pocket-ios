@@ -83,8 +83,8 @@ final class FeedCellHeaderView: BaseView {
     
     func bind(header: GeneralFeedHeaderResponse) {
         categoryImageView.setImage(urlString: header.image.imageUrl)
-        topLabel.setUiText(header.top)
-        contentLabel.setUiText(header.content)
+        topLabel.setSDText(header.top)
+        contentLabel.setSDText(header.content)
         setupMetadataStackView(header.metadata)
     }
     
@@ -153,7 +153,7 @@ extension FeedCellHeaderView {
         
         func bind(metadata: FeedHeaderMetadataResponse) {
             imageView.setImage(urlString: metadata.icon.imageUrl)
-            label.setUiText(metadata.content)
+            label.setSDText(metadata.content)
         }
     }
 }
