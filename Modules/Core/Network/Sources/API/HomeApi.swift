@@ -31,7 +31,7 @@ extension HomeApi: RequestType {
     var path: String {
         switch self {
         case .fetchHomeCards:
-            return "/api/v1/screen/home"
+            return "/api/v1/screen/home-cards"
         }
     }
 }

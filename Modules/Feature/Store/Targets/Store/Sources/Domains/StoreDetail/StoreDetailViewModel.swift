@@ -677,7 +677,7 @@ extension StoreDetailViewModel {
     
     private func presentVisit() {
         guard let overview = state.storeDetailData?.overview else { return }
-        let config = VisitViewModel.Config(storeId: state.storeId, store: overview)
+        let config = VisitViewModel.Config(storeId: String(state.storeId))
         let viewModel = VisitViewModel(config: config)
         
         viewModel.output.onSuccessVisit

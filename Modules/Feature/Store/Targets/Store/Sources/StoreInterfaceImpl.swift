@@ -17,12 +17,8 @@ public final class StoreInterfaceImpl: StoreInterface {
         return BossStoreDetailViewController.instance(storeId: storeId, shouldPushReviewList: shouldPushReviewList)
     }
 
-    public func getVisitViewController(
-        storeId: Int,
-        visitableStore: VisitableStore,
-        onSuccessVisit: @escaping (() -> Void)
-    ) -> UIViewController {
-        let config = VisitViewModel.Config(storeId: storeId, store: visitableStore)
+    public func getVisitViewController(storeId: Int, onSuccessVisit: @escaping (() -> Void)) -> UIViewController {
+        let config = VisitViewModel.Config(storeId: String(storeId))
         let viewModel = VisitViewModel(config: config)
         
         viewModel.output.onSuccessVisit

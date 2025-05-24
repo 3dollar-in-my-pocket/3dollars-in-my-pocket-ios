@@ -1,11 +1,11 @@
 import Foundation
 
 public struct HomeScreenResponse: Decodable {
-    public let cardSections: [any HomeCardComponent]
+    public let contents: [any HomeCardComponent]
     public let cursor: CursorString?
     
     public enum CodingKeys: String, CodingKey {
-        case cardSections
+        case contents
         case cursor
     }
     
@@ -13,7 +13,7 @@ public struct HomeScreenResponse: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.cursor = try container.decodeIfPresent(CursorString.self, forKey: .cursor)
         
-        var cardSectionsArray = try container.nestedUnkeyedContainer(forKey: .cardSections)
+        var cardSectionsArray = try container.nestedUnkeyedContainer(forKey: .contents)
         var sections: [any HomeCardComponent] = []
         
         var tempContainer = cardSectionsArray
@@ -36,7 +36,7 @@ public struct HomeScreenResponse: Decodable {
             
             sections.append(component)
         }
-        self.cardSections = sections
+        self.contents = sections
     }
 }
 

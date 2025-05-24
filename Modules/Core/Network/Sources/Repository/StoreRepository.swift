@@ -35,6 +35,8 @@ public protocol StoreRepository {
     func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error>
     
     func existsFeedbackOnDateByAccount(storeId: Int) async -> Result<FeedbackExistsResponse, Error>
+    
+    func fetchStore(input: FetchStoreInput) async -> Result<StoreDetailResponse, Error>
 }
 
 public struct StoreRepositoryImpl: StoreRepository {
@@ -132,6 +134,12 @@ public struct StoreRepositoryImpl: StoreRepository {
     
     public func existsFeedbackOnDateByAccount(storeId: Int) async -> Result<FeedbackExistsResponse, Error> {
         let request = StoreApi.existsFeedbackOnDateByAccount(storeId: storeId)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func fetchStore(input: FetchStoreInput) async -> Result<StoreDetailResponse, Error> {
+        let request = StoreApi.fetchStore(input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }

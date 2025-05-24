@@ -223,7 +223,7 @@ public final class HomeViewController: BaseViewController {
                     
                 case .presentVisit(let store):
                     let storeId = Int(store.storeId) ?? 0
-                    owner.presentVisit(storeId: storeId, store: store)
+                    owner.presentVisit(storeId: storeId)
                     
                 case .presentPolicy:
                     owner.presentPolicy()
@@ -455,8 +455,8 @@ public final class HomeViewController: BaseViewController {
         tabBarController?.navigationController?.pushViewController(viewController, animated: true)
     }
 
-    private func presentVisit(storeId: Int, store: VisitableStore) {
-        let viewController = Environment.storeInterface.getVisitViewController(storeId: storeId, visitableStore: store) {
+    private func presentVisit(storeId: Int) {
+        let viewController = Environment.storeInterface.getVisitViewController(storeId: storeId) {
             // TODO: 성공 시, 재조회 필요
         }
         

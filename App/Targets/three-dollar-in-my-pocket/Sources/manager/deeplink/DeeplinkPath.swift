@@ -10,6 +10,7 @@ enum DeeplinkPath: String {
     case accountInfo
     case reviewList
     case unknown
+    case visit
     
     init(value: String) {
         self = DeeplinkPath(rawValue: value) ?? .unknown

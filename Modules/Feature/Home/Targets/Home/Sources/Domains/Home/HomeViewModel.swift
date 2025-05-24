@@ -491,7 +491,7 @@ final class HomeViewModel: BaseViewModel {
             case .success(let response):
                 state.nextCursor = response.cursor?.nextCursor
                 state.hasMore = response.cursor?.hasMore ?? false
-                state.homeCardComponents = response.cardSections
+                state.homeCardComponents = response.contents
                 updateDatasource()
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))
