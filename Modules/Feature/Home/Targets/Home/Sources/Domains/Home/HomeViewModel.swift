@@ -339,31 +339,11 @@ final class HomeViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
-//        input.onTapListView
-//            .withLatestFrom(output.collectionItems)
-//            .withUnretained(self)
-//            .map { (owner: HomeViewModel, items: [HomeSectionItem] ) in
-//                let stores = items.compactMap { $0.store }
-//                let state = HomeListViewModel.State(
-//                    stores: .init(stores),
-//                    categoryFilter: owner.state.categoryFilter,
-//                    isOnlyRecentActivity: owner.state.isOnlyRecentActivity,
-//                    sortType: owner.state.sortType,
-//                    isOnlyBossStore: owner.state.isOnlyBossStore,
-//                    mapLocation: owner.state.resultCameraPosition,
-//                    currentLocation: owner.state.currentLocation,
-//                    nextCursor: owner.state.nextCursor,
-//                    hasMore: owner.state.hasMore,
-//                    mapMaxDistance: owner.state.mapMaxDistance
-//                )
-//                let config = HomeListViewModel.Config(initialState: state)
-//                let viewModel = HomeListViewModel(config: config)
-//                owner.bindHomeListViewModel(viewModel)
-//                
-//                return Route.presentListView(viewModel)
-//            }
-//            .subscribe(output.route)
-//            .store(in: &cancellables)
+        input.onTapListView
+            .sink(receiveValue: { [weak self] _ in
+                self?.presentListView()
+            })
+            .store(in: &cancellables)
         
         input.selectStore
             .withLatestFrom(output.datasource) { ($0, $1) }
@@ -646,6 +626,20 @@ final class HomeViewModel: BaseViewModel {
               let link = component.link else { return }
         
         output.route.send(.deepLink(link))
+    }
+    
+    private func presentListView() {
+        let config = HomeListViewModel.Config(
+            categoryFilter: state.categoryFilter,
+            isOnlyRecentActivity: state.isOnlyRecentActivity,
+            sortType: state.sortType,
+            isOnlyBossStore: state.isOnlyBossStore,
+            mapLocation: state.resultCameraPosition,
+            mapMaxDistance: state.mapMaxDistance
+        )
+        let viewModel = HomeListViewModel(config: config)
+        bindHomeListViewModel(viewModel)
+        output.route.send(.presentListView(viewModel))
     }
 }
 

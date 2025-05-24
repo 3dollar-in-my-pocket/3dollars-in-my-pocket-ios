@@ -111,7 +111,7 @@ public final class VisitViewModel: BaseViewModel {
             do {
                 output.isLoading.send(true)
                 let input = FetchStoreInput(storeId: config.storeId, includes: [])
-                let store = try await dependency.storeRepository.fetcXhStore(input: input).get()
+                let store = try await dependency.storeRepository.fetchStore(input: input).get()
                 let location = try await dependency.locationManager.getCurrentLocation()
                 
                 state.currentLocation = location
