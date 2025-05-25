@@ -13,6 +13,12 @@ public struct HomeAdCardSectionResponse: Decodable, Hashable, HomeCardComponent 
     public let labels: [SDChip]
     public let image: SDImage?
     public let link: SDLink?
+    public let adRef: AdvertisementReference
+}
+
+public struct AdvertisementReference: Decodable, Hashable {
+    public let adId: Int
+    public let adGroupId: String
 }
 
 public struct HomeAdmobCardSectionResponse: Decodable, Hashable, HomeCardComponent {

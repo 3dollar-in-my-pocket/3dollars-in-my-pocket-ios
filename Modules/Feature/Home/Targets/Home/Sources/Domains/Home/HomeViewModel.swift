@@ -618,7 +618,7 @@ final class HomeViewModel: BaseViewModel {
                 output.route.send(.deepLink(link))
             }
         case .advertisement(let data):
-//            sendClickAdCard // TODO: 서버에서 advertisement_id 내려오면 추가 필요
+            sendClickAdCard(advertisement: data.adRef)
             if let link = data.link {
                 output.route.send(.deepLink(link))
             }
@@ -697,11 +697,11 @@ extension HomeViewModel {
         ))
     }
     
-    private func sendClickAdCard(advertisement: AdvertisementResponse) {
+    private func sendClickAdCard(advertisement: AdvertisementReference) {
         dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickAdCard,
-            extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
+            extraParameters: [.advertisementId: "\(advertisement.adId)"]
         ))
     }
     
