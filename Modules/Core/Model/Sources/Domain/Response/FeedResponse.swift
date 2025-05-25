@@ -5,7 +5,7 @@ public struct FeedResponse: Decodable {
     public let category: FeedCategoryResponse?
     public let header: FeedHeaderResponse?
     public let body: FeedBodyResponse?
-    public let link: LinkResponse
+    public let link: SDLink
     public let createdAt: String
     public let updatedAt: String
     
@@ -62,7 +62,7 @@ public struct FeedResponse: Decodable {
             body = nil
         }
             
-        link = try container.decode(LinkResponse.self, forKey: .link)
+        link = try container.decode(SDLink.self, forKey: .link)
         createdAt = try container.decode(String.self, forKey: .createdAt)
         updatedAt = try container.decode(String.self, forKey: .updatedAt)
     }
@@ -70,7 +70,7 @@ public struct FeedResponse: Decodable {
 
 public struct FeedCategoryResponse: Decodable {
     public let categoryId: String
-    public let name: UiText
+    public let name: SDText
     public let style: FeedStyleResponse
 }
 

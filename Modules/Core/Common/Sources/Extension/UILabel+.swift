@@ -31,12 +31,12 @@ public extension UILabel {
         attributedText = attributedString
     }
     
-    func setUiText(_ uiText: UiText) {
-        textColor = UIColor(hex: uiText.fontColor)
-        if uiText.isHtml {
-            attributedText = ZHTMLParserBuilder.initWithDefault().build().render(uiText.text)
+    func setSDText(_ sdText: SDText) {
+        textColor = UIColor(hex: sdText.fontColor)
+        if sdText.isHtml {
+            attributedText = ZHTMLParserBuilder.initWithDefault().build().render(sdText.text)
         } else {
-            text = uiText.text
+            text = sdText.text
         }
     }
 }

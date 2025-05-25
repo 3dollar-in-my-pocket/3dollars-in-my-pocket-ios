@@ -38,14 +38,13 @@ extension HomeListViewModel {
     }
     
     struct State {
-        var stores: [StoreWithExtraResponse]
+        var stores: [StoreWithExtraResponse] = []
         var categoryFilter: StoreFoodCategoryResponse?
         var isOnlyRecentActivity: Bool
         var sortType: StoreSortType
         var isOnlyBossStore: Bool
         var isOnlyCertifiedStore = false
         var mapLocation: CLLocation?
-        let currentLocation: CLLocation?
         var nextCursor: String?
         var hasMore: Bool
         let mapMaxDistance: Double?
@@ -53,7 +52,12 @@ extension HomeListViewModel {
     }
     
     struct Config {
-        let initialState: State
+        let categoryFilter: StoreFoodCategoryResponse?
+        let isOnlyRecentActivity: Bool
+        let sortType: StoreSortType
+        let isOnlyBossStore: Bool
+        let mapLocation: CLLocation?
+        let mapMaxDistance: Double?
     }
     
     enum Route {
@@ -94,13 +98,21 @@ final class HomeListViewModel: BaseViewModel {
     init(config: Config, dependency: Dependency = Dependency()) {
         self.output = Output(
             filterDatasource: .init([
-                .category(config.initialState.categoryFilter),
-                .recentActivity(config.initialState.isOnlyRecentActivity),
-                .sortingFilter(config.initialState.sortType),
-                .onlyBoss(config.initialState.isOnlyBossStore)
+                .category(config.categoryFilter),
+                .recentActivity(config.isOnlyRecentActivity),
+                .sortingFilter(config.sortType),
+                .onlyBoss(config.isOnlyBossStore)
             ])
         )
-        self.state = config.initialState
+        self.state = State(
+            categoryFilter: config.categoryFilter,
+            isOnlyRecentActivity: config.isOnlyRecentActivity,
+            sortType: config.sortType,
+            isOnlyBossStore: config.isOnlyBossStore,
+            mapLocation: config.mapLocation,
+            hasMore: true,
+            mapMaxDistance: config.mapMaxDistance
+        )
         self.dependency = dependency
         super.init()
         
@@ -111,7 +123,7 @@ final class HomeListViewModel: BaseViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .sink { (owner: HomeListViewModel, _) in
-                owner.fetchAdvertisement()
+                owner.fetchDatas()
             }
             .store(in: &cancellables)
         
@@ -291,20 +303,27 @@ final class HomeListViewModel: BaseViewModel {
         )
     }
     
-    private func fetchAdvertisement() {
-        Task {
-            let input = FetchAdvertisementInput(position: .storeList, size: nil)
-            let result = await dependency.advertisementRepository.fetchAdvertisements(input: input)
-            
-            switch result {
-            case .success(let response):
-                if let advertisement = response.advertisements.first {
+    private func fetchDatas() {
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let advertisementInput = FetchAdvertisementInput(position: .storeList, size: nil)
+                let advertisements = try await dependency.advertisementRepository.fetchAdvertisements(input: advertisementInput).get()
+                
+                if let advertisement = advertisements.advertisements.first {
                     state.advertisement = advertisement
                 }
-            case .failure(_):
-                break
+                
+                let input = createFetchAroundStoreInput()
+                let response = try await dependency.storeRepository.fetchAroundStores(input: input).get()
+                
+                state.hasMore = response.cursor.hasMore
+                state.nextCursor = response.cursor.nextCursor
+                state.stores.append(contentsOf: response.contents)
+                updateDataSource()
+            } catch {
+                output.route.send(.showErrorAlert(error))
             }
-            updateDataSource()
         }
     }
     

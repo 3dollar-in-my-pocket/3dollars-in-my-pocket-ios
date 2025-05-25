@@ -8,14 +8,14 @@ import Log
 
 import CombineCocoa
 
-final class VisitViewController: BaseViewController {
-    override var screenName: ScreenName {
+public final class VisitViewController: BaseViewController {
+    public override var screenName: ScreenName {
         return viewModel.output.screenName
     }
     private let visitView = VisitView()
     private let viewModel: VisitViewModel
     
-    init(viewModel: VisitViewModel) {
+    public init(viewModel: VisitViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         
@@ -26,16 +26,16 @@ final class VisitViewController: BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func loadView() {
+    public override func loadView() {
         view = visitView
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         bind()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         viewModel.input.viewWillAppear.send(())
     }
     
@@ -65,12 +65,12 @@ final class VisitViewController: BaseViewController {
             .store(in: &cancellables)
     }
     
-    override func bindViewModelOutput() {
+    public override func bindViewModelOutput() {
         viewModel.output.store
+            .compactMap { $0 }
             .main
-            .withUnretained(self)
-            .sink { (owner: VisitViewController, store: VisitableStore) in
-                owner.visitView.bind(store: store)
+            .sink { [weak self] (store: StoreDetailResponse) in
+                self?.visitView.bind(store: store)
             }
             .store(in: &cancellables)
         
@@ -113,6 +113,13 @@ final class VisitViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: VisitViewController, route: VisitViewModel.Route) in
                 owner.handleRoute(route)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.isLoading
+            .main
+            .sink { isLoading in
+                LoadingManager.shared.showLoading(isShow: isLoading)
             }
             .store(in: &cancellables)
     }

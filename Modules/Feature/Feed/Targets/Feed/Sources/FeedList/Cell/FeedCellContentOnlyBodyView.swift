@@ -53,7 +53,7 @@ final class FeedCellContentOnlyBodyView: BaseView {
             }
         }
         
-        contentLabel.setUiText(body.content)
+        contentLabel.setSDText(body.content)
         stackView.addArrangedSubview(contentLabel)
         backgroundColor = UIColor(hex: body.style.backgroundColor)
     }

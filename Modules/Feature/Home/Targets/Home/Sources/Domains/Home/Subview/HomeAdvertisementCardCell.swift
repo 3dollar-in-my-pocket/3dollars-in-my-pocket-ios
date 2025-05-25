@@ -4,7 +4,7 @@ import Common
 import DesignSystem
 import Model
 
-final class HomeCardAdvertisementCell: BaseCollectionViewCell {
+final class HomeAdvertisementCardCell: BaseCollectionViewCell {
     enum Layout {
         static let size = CGSize(width: UIScreen.main.bounds.width - 81, height: 152)
     }
@@ -12,7 +12,7 @@ final class HomeCardAdvertisementCell: BaseCollectionViewCell {
     private let containerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 20
-        view.backgroundColor = DesignSystemAsset.Colors.gray100.color
+        view.backgroundColor = Colors.gray100.color
         view.clipsToBounds = true
         
         return view
@@ -54,11 +54,7 @@ final class HomeCardAdvertisementCell: BaseCollectionViewCell {
         return label
     }()
     
-    private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .homeCard)
-    
     override func setup() {
-        adBannerView.layer.cornerRadius = 20
-        adBannerView.layer.masksToBounds = true
         containerView.addSubViews([
             imageView,
             tagLabel,
@@ -66,10 +62,7 @@ final class HomeCardAdvertisementCell: BaseCollectionViewCell {
             descriptionLabel
         ])
         
-        contentView.addSubViews([
-            containerView,
-            adBannerView
-        ])
+        contentView.addSubViews([containerView])
     }
     
     override func bindConstraints() {
@@ -100,30 +93,20 @@ final class HomeCardAdvertisementCell: BaseCollectionViewCell {
             $0.trailing.equalTo(titleLabel)
             $0.top.equalTo(titleLabel.snp.bottom).offset(4)
         }
-        
-        adBannerView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
     }
     
-    func bind(advertisement: AdvertisementResponse?, in rootViewController: UIViewController) {
-        if let advertisement {
-            titleLabel.text = advertisement.title?.content
-            if let titleColor = advertisement.title?.fontColor {
-                titleLabel.textColor = UIColor(hex: titleColor)
-            }
-            
-            descriptionLabel.text = advertisement.subTitle?.content
-            if let descriptionColor = advertisement.subTitle?.fontColor {
-                descriptionLabel.textColor = UIColor(hex: descriptionColor)
-            }
+    func bind(_ data: HomeAdCardSectionResponse) {
+        if let title = data.title {
+            titleLabel.setSDText(title)
+        }
+        
+        if let subTitle = data.subTitle {
+            descriptionLabel.setSDText(subTitle)
             descriptionLabel.setLineHeight(lineHeight: 18)
-            
-            imageView.setImage(urlString: advertisement.image?.url)
-            adBannerView.isHidden = true
-        } else {
-            adBannerView.load(in: rootViewController)
-            adBannerView.isHidden = false
+        }
+        
+        if let image = data.image {
+            imageView.setImage(urlString: image.url)
         }
     }
 }
