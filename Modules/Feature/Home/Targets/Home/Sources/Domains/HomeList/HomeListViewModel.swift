@@ -105,9 +105,11 @@ final class HomeListViewModel: BaseViewModel {
             ])
         )
         self.state = State(
+            categoryFilter: config.categoryFilter,
             isOnlyRecentActivity: config.isOnlyRecentActivity,
             sortType: config.sortType,
             isOnlyBossStore: config.isOnlyBossStore,
+            mapLocation: config.mapLocation,
             hasMore: true,
             mapMaxDistance: config.mapMaxDistance
         )

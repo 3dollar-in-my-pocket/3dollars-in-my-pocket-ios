@@ -19,6 +19,9 @@ final class HomeStoreCardInfoView: UIStackView {
     private func setupUI() {
         spacing = 4
         axis = .horizontal
+        snp.makeConstraints {
+            $0.height.equalTo(12)
+        }
     }
     
     func bind(_ metadatas: [SDChip]) {
@@ -34,6 +37,7 @@ final class HomeStoreCardInfoView: UIStackView {
                     $0.width.equalTo(1)
                     $0.height.equalTo(8)
                 }
+                addArrangedSubview(divider)
             }
         }
     }

@@ -425,6 +425,12 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.route.send(.presentFeedList(viewModel))
             }
             .store(in: &cancellables)
+        
+        input.didTapCardActionButton
+            .sink { [weak self] link in
+                self?.output.route.send(.deepLink(link))
+            }
+            .store(in: &cancellables)
     }
     
     private func updateFilterDatasource() {
@@ -471,7 +477,7 @@ final class HomeViewModel: BaseViewModel {
             case .success(let response):
                 state.nextCursor = response.cursor?.nextCursor
                 state.hasMore = response.cursor?.hasMore ?? false
-                state.homeCardComponents = response.contents
+                state.homeCardComponents = response.sections
                 updateDatasource()
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))

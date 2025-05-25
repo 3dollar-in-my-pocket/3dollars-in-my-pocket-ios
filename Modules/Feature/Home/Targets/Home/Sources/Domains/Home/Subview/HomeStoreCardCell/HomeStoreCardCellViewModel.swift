@@ -31,7 +31,7 @@ final class HomeStoreCardCellViewModel: BaseViewModel {
     override func bind() {
         input.didTapActionButton
             .sink(receiveValue: { [weak self] _ in
-                guard let link = self?.output.data.link else { return }
+                guard let link = self?.output.data.button?.link else { return }
                 
                 self?.output.didTapActionButton.send(link)
             })

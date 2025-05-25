@@ -17,7 +17,8 @@ final class HomeDataSource: UICollectionViewDiffableDataSource<HomeCardSection, 
         collectionView.register([
             HomeStoreCardCell.self,
             HomeStoreEmptyCell.self,
-            HomeAdvertisementCardCell.self
+            HomeAdvertisementCardCell.self,
+            HomeAdmobCardCell.self
         ])
         
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
