@@ -41,6 +41,6 @@ public struct HomeScreenResponse: Decodable {
 }
 
 private struct TemporaryTypePreview: Decodable {
-    let type: SDComponentType
+    let type: HomeCardComponentType
 }
     

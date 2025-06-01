@@ -1,12 +1,12 @@
 import Foundation
 
 public protocol HomeCardComponent: Equatable, Hashable, Decodable {
-    var type: SDComponentType { get }
+    var type: HomeCardComponentType { get }
     var sectionId: String { get }
 }
 
 public struct HomeAdCardSectionResponse: Decodable, Hashable, HomeCardComponent {
-    public let type: SDComponentType
+    public let type: HomeCardComponentType
     public let sectionId: String
     public let title: SDText?
     public let subTitle: SDText?
@@ -22,12 +22,12 @@ public struct AdvertisementReference: Decodable, Hashable {
 }
 
 public struct HomeAdmobCardSectionResponse: Decodable, Hashable, HomeCardComponent {
-    public let type: SDComponentType
+    public let type: HomeCardComponentType
     public let sectionId: String
 }
 
 public struct HomeCardSectionResponse: Decodable, Hashable, HomeCardComponent {
-    public let type: SDComponentType
+    public let type: HomeCardComponentType
     public let sectionId: String
     public let title: SDText?
     public let subTitle: SDText?
