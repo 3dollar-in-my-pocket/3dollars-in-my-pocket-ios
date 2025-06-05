@@ -15,7 +15,7 @@ public final class MapRepositoryImpl: MapRepository {
     public init() { }
     
     public func getAddressFromLocation(latitude: Double, longitude: Double) async -> Result<String, Error> {
-        var urlComponents = URLComponents(string: "https://naveropenapi.apigw.ntruss.com")
+        var urlComponents = URLComponents(string: "https://maps.apigw.ntruss.com")
         urlComponents?.path = "/map-reversegeocode/v2/gc"
         urlComponents?.queryItems = [
             URLQueryItem(name: "request", value: "coordsToaddr"),
@@ -31,8 +31,8 @@ public final class MapRepositoryImpl: MapRepository {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         urlRequest.allHTTPHeaderFields = [
-            "X-NCP-APIGW-API-KEY-ID": "hqqqtcv85g",
-            "X-NCP-APIGW-API-KEY": "Nk7L8VvCq9YkDuGPjvGDN8FW5ELfWTt23AgcS9ie"
+            "x-ncp-apigw-api-key-id": "1ev5u0jcqy",
+            "x-ncp-apigw-api-key": "zr1XgVVKeYsUYMr71EFornncoHEfS9iSjCZaBR1P"
         ]
         
         do {

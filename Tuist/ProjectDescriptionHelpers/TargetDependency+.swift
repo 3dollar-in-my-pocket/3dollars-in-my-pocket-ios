@@ -121,6 +121,7 @@ public extension TargetDependency {
         public static let panModal = TargetDependency.external(name: "PanModal")
         public static let combineCocoa = TargetDependency.external(name: "CombineCocoa")
         public static let zMarkupParser = TargetDependency.external(name: "ZMarkupParser")
+        public static let naverMap = TargetDependency.external(name: "NMapsMap")
     }
     
     class Package {
@@ -165,11 +166,5 @@ public extension TargetDependency {
         public static let netfox = TargetDependency.package(product: "netfox")
         
         public static let admob = TargetDependency.package(product: "GoogleMobileAds")
-    }
-    
-    class Framework {
-        public static let naverMap = TargetDependency.xcframework(path: .relativeToRoot("./Frameworks/NMapsMap.xcframework"))
-        
-        public static let naverGeometry = TargetDependency.xcframework(path: .relativeToRoot("./Frameworks/NMapsGeometry.xcframework"))
     }
 }
