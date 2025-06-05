@@ -19,8 +19,7 @@ let project = Project.makeFeatureModule(
         .SPM.then,
         .SPM.panModal,
         .SPM.combineCocoa,
-        .Framework.naverMap,
-        .Framework.naverGeometry
+        .SPM.naverMap
     ],
     includeInterface: true,
     includeDemo: true
