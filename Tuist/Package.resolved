@@ -46,24 +46,6 @@
       }
     },
     {
-      "identity" : "spm-nmapsgeometry",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/navermaps/SPM-NMapsGeometry.git",
-      "state" : {
-        "revision" : "436d5e2e684f557faf5ef5862fd6633a42d7af11",
-        "version" : "1.0.2"
-      }
-    },
-    {
-      "identity" : "spm-nmapsmap",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/navermaps/SPM-NMapsMap",
-      "state" : {
-        "revision" : "ad89e53fdfec3b8d8994280fb0414b5a7b1c3e8e",
-        "version" : "3.21.0"
-      }
-    },
-    {
       "identity" : "swinject",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Swinject/Swinject.git",
