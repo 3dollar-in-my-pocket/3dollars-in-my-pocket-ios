@@ -36,6 +36,12 @@ const static NSInteger NMFMapChangedByControl = -2;
 const static NSInteger NMFMapChangedByLocation = -3;
 
 /**
+ 콘텐츠 패딩 변경으로 카메라가 움직였음을 나타내는 값.
+ @see `NMFCameraUpdate.reason`
+ */
+const static NSInteger NMFMapChangedByContentPadding = -4;
+
+/**
  * 카메라 이동 애니메이션 유형을 정의하는 열거형. `NMFCameraUpdate`에서 사용합니다.
  */
 typedef NS_ENUM(NSUInteger, NMFCameraUpdateAnimation) {

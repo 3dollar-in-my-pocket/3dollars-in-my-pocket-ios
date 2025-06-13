@@ -47,6 +47,14 @@ NMF_EXPORT
 @property (nonatomic, copy) UIColor *outlineColor;
 
 /**
+ 테두리의 점선 패턴. 패턴은 픽셀 단위의 배열로 표현되며, 각각 `2n`번째 요소는 실선의 길이,
+ `2n + 1`번째 요소는 공백의 길이를 의미합니다. 빈 배열일 경우 실선이 됩니다.
+ 
+ 기본값은 빈 배열입니다.
+ */
+@property (nonatomic, nonnull) NSArray *outlinePattern;
+
+/**
  폴리곤 객체와 색상을 지정하여 폴리곤 오버레이를 생성합니다.
  폴리곤 객체의 `isValid`속성이 `NO`일 경우 `nil`을 리턴합니다.
 

@@ -4,7 +4,7 @@
 
 #import "NMFMapView.h"
 
-NS_INLINE CGFloat ScreenScaleFactor() {
+NS_INLINE CGFloat ScreenScaleFactor(void) {
     static dispatch_once_t onceToken;
     static CGFloat screenFactor;
     

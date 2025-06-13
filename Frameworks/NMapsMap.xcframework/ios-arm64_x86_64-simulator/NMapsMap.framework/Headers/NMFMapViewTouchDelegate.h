@@ -27,7 +27,15 @@ NS_ASSUME_NONNULL_BEGIN
  @param latlng 탭된 지점의 지도 좌표.
  @param point 탭된 지점의 화면 좌표.
  */
-- (void)mapView:(NMFMapView *)mapView didTapMap:(NMGLatLng*)latlng point: (CGPoint)point;
+- (void)mapView:(NMFMapView *)mapView didTapMap:(NMGLatLng *)latlng point:(CGPoint)point;
+
+/**
+ 지도가 롱 탭되면 호출되는 콜백 메서드.
+ 
+ @param latlng 탭된 지점의 지도 좌표.
+ @param point 탭된 지점의 화면 좌표.
+ */
+- (void)mapView:(NMFMapView *)mapView didLongTapMap:(NMGLatLng *)latlng point:(CGPoint)point;
 
 @end
 

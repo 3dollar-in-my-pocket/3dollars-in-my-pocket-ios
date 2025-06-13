@@ -131,8 +131,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NMFClientId</key>
-	<string>hqqqtcv85g</string>
+	<key>NMFNcpKeyId</key>
+	<string>1ev5u0jcqy</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

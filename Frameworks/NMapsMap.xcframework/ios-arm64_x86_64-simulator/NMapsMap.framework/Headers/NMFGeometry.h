@@ -1,4 +1,3 @@
-#import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import <CoreGraphics/CGBase.h>
 #import <NMapsGeometry/NMapsGeometry.h>
