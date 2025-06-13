@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol NMFMapViewTouchDelegate;
 @protocol NMFMapViewCameraDelegate;
 @protocol NMFMapViewOptionDelegate;
+@protocol NMFMapViewLoadDelegate;
+@protocol NMFMapViewRenderDelegate;
 @protocol NMFIndoorSelectionDelegate;
 @protocol NMFPickable;
 
@@ -119,20 +121,18 @@ NMF_EXPORT IB_DESIGNABLE
 @property (class, nonatomic, readonly, nullable) UIImage *defaultBackgroundDarkImage;
 
 /**
- 지도 인증 요청. 네트워크 오류 등의 이유로 인증을 재시도할 때 호출합니다.
- @see `NMFAuthManager`
- */
-- (void)authorize;
-
-#pragma mark Creating Instances
-
-/**
  프레임 크기로 지도 뷰의 인스턴스를 생성합니다.
  
  @param frame 뷰의 프레임.
  @return `NMFMapView` 인스턴스.
  */
 - (instancetype)initWithFrame:(CGRect)frame;
+
+/**
+ 지도 인증 요청. 네트워크 오류 등의 이유로 인증을 재시도할 때 호출합니다.
+ @see `NMFAuthManager`
+ */
+- (void)authorize;
 
 #pragma mark Accessing the Delegate
 
@@ -176,6 +176,84 @@ NMF_EXPORT IB_DESIGNABLE
  */
 - (void)removeOptionDelegate:(id<NMFMapViewOptionDelegate> _Nonnull)delegate NS_SWIFT_NAME(removeOptionDelegate(delegate:));
 
+/**
+ 지도 로딩에 대한 위임자를 등록합니다.
+
+ @param delegate `NMFMapViewLoadDelegate` 객체.
+ */
+- (void)addLoadDelegate:(id<NMFMapViewLoadDelegate> _Nonnull)delegate NS_SWIFT_NAME(addLoadDelegate(delegate:));
+
+/**
+ 지도 로딩에 대한 위임자를 해제합니다.
+ 
+ @param delegate `NMFMapViewLoadDelegate` 객체.
+ */
+- (void)removeLoadDelegate:(id<NMFMapViewLoadDelegate> _Nonnull)delegate NS_SWIFT_NAME(removeLoadDelegate(delegate:));
+
+/**
+ 지도가 최초 로딩되었는지 여부.
+ 
+ 지도가 최초 로딩되었을 경우 `YES`, 그렇지 않을 경우 `NO`.
+ */
+@property (nonatomic, readonly) BOOL loaded;
+
+/**
+ 지도 렌더링에 대한 위임자를 등록합니다.
+
+ @param delegate `NMFMapViewRenderDelegate` 객체.
+ */
+- (void)addRenderDelegate:(id<NMFMapViewRenderDelegate> _Nonnull)delegate NS_SWIFT_NAME(addRenderDelegate(delegate:));
+
+/**
+ 지도 렌더링에 대한 위임자를 해제합니다.
+ 
+ @param delegate `NMFMapViewRenderDelegate` 객체.
+ */
+- (void)removeRenderDelegate:(id<NMFMapViewRenderDelegate> _Nonnull)delegate NS_SWIFT_NAME(removeRenderDelegate(delegate:));
+
+/**
+ 모든 데이터가 렌더링되었는지 여부.
+ 
+ 모든 데이터가 렌더링되었으면 `YES`, 그렇지 않을 경우 `NO`.
+ */
+@property (nonatomic, readonly) BOOL fullyRendered;
+
+/**
+ 지도에 추가 렌더링이 필요하지 않은지 여부.
+ 
+ 추가 렌더링이 필요하지 않다면 `YES`, 그렇지 않을 경우 `NO`.
+ */
+@property (nonatomic, readonly) BOOL renderingStable;
+
+/**
+ 커스텀 스타일 ID.
+ 
+ 기본값은 커스텀 스타일을 사용하지 않음을 의미하는 `nil`입니다.
+ */
+@property (nonatomic) NSString *customStyleId;
+
+/**
+ 커스텀 스타일 로딩 성공에 대한 이벤트 핸들러 타입.
+ */
+typedef void (^NMFCustomStyleLoadHandler)(void);
+
+/**
+ 커스텀 스타일 로딩 실패에 대한 이벤트 핸들러 타입.
+ */
+typedef void (^NMFCustomStyleLoadFailHandler)(NSError *);
+
+/**
+ 커스텀 스타일 ID를 지정합니다. 커스텀 스타일이 로드되면 `loadHandler`로 지정한 핸들러가, 실패하면 `failHandler`로 지정한 핸들러가 호출됩니다.
+ 
+ 기본값은 커스텀 스타일을 사용하지 않음을 의미하는 `nil`입니다.
+ 
+ @param loadHandler 커스텀 스타일 로딩 성공에 대한 핸들러.
+ @param failHandler 커스터 스타일 로딩 실패에 대한 핸들러.
+ */
+- (void)setCustomStyleId:(NSString * _Nonnull)customStyleId
+             LoadHandler:(NMFCustomStyleLoadHandler _Nullable)loadHandler
+             FailHandler:(NMFCustomStyleLoadFailHandler _Nullable)failHandler;
+
 #pragma mark Configuring the Map’s Appearance
 
 /**
@@ -205,24 +283,57 @@ NMF_EXPORT IB_DESIGNABLE
 @property (nonatomic, nullable) UIImage *backgroundImage;
 
 /**
- 지도의 패딩. 패딩에 해당하는 부분은 지도의 콘텐츠 영역에서 제외됩니다.
- 이 속성을 변경하여 패딩을 지정하면 카메라의 좌표가 변경됩니다. 즉, `setContentInset:contentInset keepCamera:NO`와 동일합니다.
+ 패딩을 제외한 지도 뷰의 너비.
+ */
+@property (nonatomic, readonly) double contentWidth;
+
+/**
+ 패딩을 제외한 지도 뷰의 높이.
+ */
+@property (nonatomic, readonly) double contentHeight;
+
+/**
+ 지도의 콘텐츠 패딩. 패딩에 해당하는 부분은 지도의 콘텐츠 영역에서 제외됩니다.
+ 이 속성을 변경하여 패딩을 지정하면 카메라의 좌표가 변경됩니다.
+ 즉, `setContentInset:contentInset keepCamera:NO`와 동일합니다.
 */
 @property (nonatomic, assign) UIEdgeInsets contentInset;
 
 /**
- 지도의 패딩. 패딩에 해당하는 부분은 지도의 콘텐츠 영역에서 제외됩니다.
+ 지도의 콘텐츠 패딩을 지정합니다. 패딩에 해당하는 부분은 지도의 콘텐츠 영역에서 제외됩니다.
+ 
+ `setContentInset:contentInset keepCamera:NO reason:reason`과 동일합니다.
 
- `keepCamera`에 따라 카메라의 좌표 또는 지도의 영역이 유지됩니다.
- - `YES`인 경우: 카메라의 좌표를 유지하며 콘텐츠 영역을 변경합니다. 따라서 화면에 나타나는 지도의 전체 영역이 변경됩니다.
- 카메라에 변화가 없으므로 `NMFMapViewCameraDelegate`의 메서드가 호출되지 않습니다.
- - `NO`인 경우: 화면에 나타나는 지도의 전체 영역을 유지하며 콘텐츠 영역을 변경합니다.
- 카메라의 좌표는 새로운 콘텐츠 영역의 중심을 가리키도록 변경되며, `NMFMapViewCameraDelegate`의 메서드가 호출됩니다.
+ @param contentInset 패딩.
+ @param reason 카메라 이동의 원인.
+*/
+- (void)setContentInset:(UIEdgeInsets)contentInset reason:(int)reason;
+
+/**
+ 지도의 콘텐츠 패딩을 지정합니다. 패딩에 해당하는 부분은 지도의 콘텐츠 영역에서 제외됩니다.
+
+ `setContentInset:contentInset keepCamera:keepCamera reason:NMFMapChangedByContentPadding`과 동일합니다.
 
  @param contentInset 패딩.
  @param keepCamera 카메라의 좌표를 유지할지 여부. 유지할 경우 `YES`, 그렇지 않을 경우 `NO`.
 */
 - (void)setContentInset:(UIEdgeInsets)contentInset keepCamera:(BOOL)keepCamera;
+
+/**
+ 지도의 콘텐츠 패딩을 지정합니다. 패딩에 해당하는 부분은 지도의 콘텐츠 영역에서 제외됩니다.
+
+ `keepCamera`에 따라 카메라의 좌표 또는 지도의 영역이 유지됩니다.
+ - `YES`인 경우: 카메라의 좌표를 유지하며 콘텐츠 영역을 변경합니다. 따라서 화면에 나타나는 지도의 전체 영역이 변경됩니다.
+ 카메라에 변화가 없으므로 `NMFMapViewCameraDelegate`의 메서드가 호출되지 않습니다.
+ - `NO`인 경우: 화면에 나타나는 지도의 전체 영역을 유지하며 콘텐츠 영역을 변경합니다.
+ 따라서 카메라의 좌표는 새로운 콘텐츠 영역의 중심을 가리키도록 변경되며,  `reason`으로 지정한 원인으로
+ `NMFMapViewCameraDelegate`의 메서드가 호출됩니다.
+
+ @param contentInset 패딩.
+ @param keepCamera 카메라의 좌표를 유지할지 여부. 유지할 경우 `YES`, 그렇지 않을 경우 `NO`.
+ @param reason 카메라 이동의 원인. `keepCamera`가 `NO`일 경우에만 유효합니다.
+*/
+- (void)setContentInset:(UIEdgeInsets)contentInset keepCamera:(BOOL)keepCamera reason:(int)reason;
 
 /**
  지도 뷰의 화면상 너비. pt 단위.
@@ -359,7 +470,7 @@ typedef NS_ENUM(NSInteger, NMFLogoAlign) {
 /**
  지도가 렌더링되는 속도(fps, frames per second)를 설정합니다.
  
- 기본값은 `60`입니다.
+ 기본값은 제한을 두지 않음을 의미하는 `0`입니다.
  @see `CADisplayLink.preferredFramesPerSecond`
  */
 @property (nonatomic, assign) double preferredFramesPerSecond;

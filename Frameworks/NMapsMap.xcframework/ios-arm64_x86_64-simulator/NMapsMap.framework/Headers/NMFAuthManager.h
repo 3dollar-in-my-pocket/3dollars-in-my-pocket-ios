@@ -37,8 +37,8 @@ typedef NS_ENUM(NSInteger, NMFAuthState) {
  네이버 지도 SDK를 사용하려면 반드시 클라이언트를 설정하고 인증 및 초기화를 수행해야 합니다. 클라이언트를
  설정하는 방법에는 두 가지가 있습니다.
  
-    - 앱의 info.plist에 `NMFClientId`를 String으로 지정합니다.
-    - 싱글턴 객체인 `shared`에서 `clientId`를 명시적으로 지정합니다.
+    - 앱의 info.plist에 `NMFNcpKeyId`를 String으로 지정합니다.
+    - 싱글턴 객체인 `shared`에서 `ncpKeyId`를 명시적으로 지정합니다.
  */
 NMF_EXPORT
 @interface NMFAuthManager : NSObject
@@ -56,17 +56,21 @@ NMF_EXPORT
 /**
  네이버 클라우드 플랫폼 인증을 위한 클라이언트 ID.
  */
-@property(nonatomic, nullable) NSString *clientId;
+@property(nonatomic, nullable) NSString *ncpKeyId;
 
 /**
- 공공기관용 네이버 클라우드 플랫폼 인증을 위한 클라이언트 ID.
+ 네이버 클라우드 플랫폼 인증을 위한 클라이언트 ID. 대신 `ncpKeyId`를 사용하세요.
  */
-@property(nonatomic, nullable) NSString *govClientId;
+@property(nonatomic, nullable) NSString *clientId __attribute__((deprecated("Use ncpKeyId.")));
+
+/**
+ 공공용 네이버 클라우드 플랫폼 인증을 위한 클라이언트 ID. 대신 `ncpKeyId`를 사용하세요.
+ */
+@property(nonatomic, nullable) NSString *govClientId __attribute__((deprecated("Use ncpKeyId.")));
 
 /**
  API 인증 상태.
  */
 @property(nonatomic, readonly) NMFAuthState authState;
-
 
 @end

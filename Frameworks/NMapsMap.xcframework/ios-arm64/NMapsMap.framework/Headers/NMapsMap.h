@@ -20,6 +20,8 @@ FOUNDATION_EXPORT NMF_EXPORT const unsigned char NaverMapFrameworVersionString[]
 #import "NMFMapViewTouchDelegate.h"
 #import "NMFMapViewCameraDelegate.h"
 #import "NMFMapViewOptionDelegate.h"
+#import "NMFMapViewLoadDelegate.h"
+#import "NMFMapViewRenderDelegate.h"
 
 #import "NMFOfflinePack.h"
 #import "NMFOfflineRegion.h"
