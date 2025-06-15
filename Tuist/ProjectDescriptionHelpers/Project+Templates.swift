@@ -86,7 +86,8 @@ extension Project {
                     .Core.dependencyInjection,
                     .Core.model,
                     .Core.common,
-                    .Core.networking
+                    .Core.networking,
+                    .Core.log
                 ]
             )
             targets.append(interfaceTarget)

@@ -8,6 +8,7 @@ let project = Project.makeModule(
     product: .framework,
     includeResource: true,
     dependencies: [
-        .SPM.lottie
+        .SPM.lottie,
+        .Core.model
     ]
 )

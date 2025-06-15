@@ -8,7 +8,6 @@ import Log
 final class BossStoreInfoCellViewModel: BaseViewModel {
     struct Input {
         let didTapSnsButton = PassthroughSubject<Void, Never>()
-        let didTapCopyAccountNumber = PassthroughSubject<Void, Never>()
         let didTapPhoto = PassthroughSubject<Int, Never>()
     }
 
@@ -44,24 +43,9 @@ final class BossStoreInfoCellViewModel: BaseViewModel {
             .subscribe(output.didTapSnsButton)
             .store(in: &cancellables)
         
-        input.didTapCopyAccountNumber
-            .withUnretained(self)
-            .sink { (owner: BossStoreInfoCellViewModel, _) in
-                owner.sendClickCopyAccountLog()
-                owner.copyAccount()
-            }
-            .store(in: &cancellables)
-        
         input.didTapPhoto
             .subscribe(output.didTapPhoto)
             .store(in: &cancellables)
-    }
-    
-    private func copyAccount() {
-        guard let account = output.info.accountInfos.first else { return }
-        UIPasteboard.general.string = "\(account.bank.description) \(account.accountNumber)"
-        
-        output.toast.send(Strings.BossStoreDetail.Info.copyToast)
     }
 }
 
@@ -78,16 +62,5 @@ extension BossStoreInfoCellViewModel: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
-    }
-}
-
-// MARK: Log
-private extension BossStoreInfoCellViewModel {
-    func sendClickCopyAccountLog() {
-        logManager.sendEvent(.init(
-            screen: config.screenName,
-            eventName: .clickCopyAccount,
-            extraParameters: [.storeId: config.storeId]
-        ))
     }
 }

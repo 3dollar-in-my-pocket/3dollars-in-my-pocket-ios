@@ -4,28 +4,26 @@ import Common
 import DesignSystem
 import Model
 
-final class StoreDetailMenuCell: BaseCollectionViewCell {
+final class StoreDetailCategorizedMenusCell: BaseCollectionViewCell {
     enum Layout {
-        static let topBottomPadding: CGFloat = 32
-        static let spaceBetweenCell: CGFloat = 12
+        static let topPadding: CGFloat = 12
+        static let spaceBetweenCategory: CGFloat = 12
+        static let spaceBetweenMenu: CGFloat = 8
+        
         static let moreButtonHeight: CGFloat = 50
         static let moreButtonShowCount = 6
-        static let space: CGFloat = 8
         
-        static func calculateHeight(menus: [StoreDetailMenu], isShowAll: Bool) -> CGFloat {
+        static func calculateHeight(data: StoreCategorizedMenusSectionResponse, isShowAll: Bool) -> CGFloat {
             var height: CGFloat = 0
             var menuCount = 0
-            let categories = menus.map { $0.category }.unique
             
-            for category in categories {
-                height += StoreDetailMenuCategoryStackItemView.Layout.height
-                height += space
+            for categorizedMenu in data.menus {
+                height += StoreDetailMenuCategoryItemView.Layout.height
+                height += spaceBetweenMenu
                 
-                let categoryMenus = menus.filter { $0.category == category && $0.isValid }
-                
-                for _ in categoryMenus {
-                    height += StoreDetailMenuStackItemView.Layout.height
-                    height += space
+                for _ in categorizedMenu.menus {
+                    height += StoreDetailMenuItemView.Layout.height
+                    height += spaceBetweenMenu
                     menuCount += 1
                     
                     if menuCount > moreButtonShowCount && !isShowAll {
@@ -34,25 +32,11 @@ final class StoreDetailMenuCell: BaseCollectionViewCell {
                 }
             }
             
-            if validMenuCount(menus: menus) > moreButtonShowCount && !isShowAll {
+            if menuCount > moreButtonShowCount && !isShowAll {
                 height += moreButtonHeight
             }
             
-            return height + topBottomPadding + spaceBetweenCell
-        }
-        
-        static func validMenuCount(menus: [StoreDetailMenu]) -> Int {
-            var count = 0
-            
-            let categories = menus.map { $0.category }.unique
-            
-            for category in categories {
-                let menuCount = menus.filter { $0.category == category && $0.isValid }.count
-                
-                count += menuCount
-            }
-            
-            return count
+            return height
         }
     }
     
@@ -113,10 +97,10 @@ final class StoreDetailMenuCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(_ viewModel: StoreDetailMenuCellViewModel) {
-        menuStackView.bind(viewModel.output.menus, isShowAll: viewModel.output.isShowAll)
+    func bind(viewModel: StoreDetailCategorizedMenusCellViewModel) {
+        menuStackView.bind(viewModel.output.data.menus, isShowAll: viewModel.output.isShowAll)
         
-        let isShowMoreButton = StoreDetailMenuCell.Layout.validMenuCount(menus: viewModel.output.menus) > StoreDetailMenuCell.Layout.moreButtonShowCount && !viewModel.output.isShowAll
+        let isShowMoreButton = viewModel.output.data.menus.map { $0.menus.count }.reduce(0, +) > Layout.moreButtonShowCount && viewModel.output.isShowAll
         setupMoreButton(isShowMoreButton: isShowMoreButton)
         
         moreButton.controlPublisher(for: .touchUpInside)

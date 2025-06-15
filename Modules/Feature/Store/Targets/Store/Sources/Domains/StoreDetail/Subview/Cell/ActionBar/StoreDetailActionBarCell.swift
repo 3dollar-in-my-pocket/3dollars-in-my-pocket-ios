@@ -1,64 +1,77 @@
 import UIKit
 
 import Common
-import DesignSystem
+import Model
 
-final class StoreDetailOverviewMenuView: BaseView {
+final class StoreDetailActionBarCell: BaseTableViewCell {
     enum Layout {
-        static let height: CGFloat = 74
+        static let height: CGFloat = 74 + topPadding
+        static let topPadding: CGFloat = 20
     }
     
-    let containerView = UIView().then {
-        $0.backgroundColor = Colors.gray0.color
-        $0.layer.cornerRadius = 20
-        $0.layer.masksToBounds = true
-    }
+    private let containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.gray0.color
+        view.layer.cornerRadius = 20
+        view.layer.masksToBounds = true
+        return view
+    }()
     
-    let stackView = UIStackView().then {
-        $0.spacing = 6
-        $0.axis = .horizontal
-        $0.distribution = .equalCentering
-        $0.alignment = .center
-    }
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.spacing = 6
+        stackView.axis = .horizontal
+        stackView.distribution = .equalCentering
+        stackView.alignment = .center
+        return stackView
+    }()
     
-    let favoriteButton = ItemButton(.save)
+    private let favoriteButton = ActionButton(.save)
     
-    let shareButton = ItemButton(.share)
+    private let shareButton = ActionButton(.share)
     
-    let navigationButton = ItemButton(.navigation)
+    private let navigationButton = ActionButton(.navigation)
     
-    let reviewButton = ItemButton(.review)
+    private let reviewButton = ActionButton(.review)
 
-    let snsButton = ItemButton(.sns)
+    private let snsButton = ActionButton(.sns)
 
     override func setup() {
+        setupUI()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+    }
+    
+    private func setupUI() {
         addSubViews([
             containerView,
             stackView
         ])
 
         favoriteButton.snp.makeConstraints {
-            $0.size.equalTo(ItemButton.Layout.size)
+            $0.size.equalTo(ActionButton.Layout.size)
         }
 
         shareButton.snp.makeConstraints {
-            $0.size.equalTo(ItemButton.Layout.size)
+            $0.size.equalTo(ActionButton.Layout.size)
         }
 
         navigationButton.snp.makeConstraints {
-            $0.size.equalTo(ItemButton.Layout.size)
+            $0.size.equalTo(ActionButton.Layout.size)
         }
 
         reviewButton.snp.makeConstraints {
-            $0.size.equalTo(ItemButton.Layout.size).priority(.high)
+            $0.size.equalTo(ActionButton.Layout.size).priority(.high)
         }
 
         snsButton.snp.makeConstraints {
-            $0.size.equalTo(ItemButton.Layout.size)
+            $0.size.equalTo(ActionButton.Layout.size)
         }
-    }
-    
-    override func bindConstraints() {
+        
         containerView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.top.equalToSuperview()
@@ -84,14 +97,77 @@ final class StoreDetailOverviewMenuView: BaseView {
         
         stackView.addArrangedSubview(divider)
     }
-
-    func bind(_ menuList: [StoreDetailOverviewMenuItemType]) {
+    
+    func bind(viewModel: StoreDetailActionBarCellViewModel) {
+        setData(data: viewModel.output.data, storeType: viewModel.output.storeType)
+        
+        favoriteButton
+            .controlPublisher(for: .touchUpInside)
+            .map { _ in StoreDetailActionBarItemType.save }
+            .subscribe(viewModel.input.didTapActionButton)
+            .store(in: &cancellables)
+        
+        shareButton
+            .controlPublisher(for: .touchUpInside)
+            .map { _ in StoreDetailActionBarItemType.share }
+            .subscribe(viewModel.input.didTapActionButton)
+            .store(in: &cancellables)
+        
+        navigationButton
+            .controlPublisher(for: .touchUpInside)
+            .map { _ in StoreDetailActionBarItemType.navigation }
+            .subscribe(viewModel.input.didTapActionButton)
+            .store(in: &cancellables)
+        
+        reviewButton
+            .controlPublisher(for: .touchUpInside)
+            .map { _ in StoreDetailActionBarItemType.review }
+            .subscribe(viewModel.input.didTapActionButton)
+            .store(in: &cancellables)
+        
+        snsButton
+            .controlPublisher(for: .touchUpInside)
+            .map { _ in StoreDetailActionBarItemType.sns }
+            .subscribe(viewModel.input.didTapActionButton)
+            .store(in: &cancellables)
+        
+        viewModel.output.favoriteStatus
+            .main
+            .sink(receiveValue: { [weak self] isFavorite in
+                self?.favoriteButton.isSelected = isFavorite
+            })
+            .store(in: &cancellables)
+        
+        viewModel.output.favoriteCount
+            .main
+            .sink { [weak self] favoriteCount in
+                self?.favoriteButton.setCount(favoriteCount)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func setData(data: StoreActionBarSectionResponse, storeType: StoreType) {
+        let menuTypeList: [StoreDetailActionBarItemType]
+        
+        switch storeType {
+        case .userStore:
+            menuTypeList = [.save, .share, .navigation, .review]
+        case .bossStore:
+            menuTypeList = [.save, .share, .navigation, .sns]
+        case .unknown:
+            menuTypeList = []
+        }
+        
+        setupStackView(menuTypeList: menuTypeList)
+    }
+    
+    private func setupStackView(menuTypeList: [StoreDetailActionBarItemType]) {
         stackView.arrangedSubviews.forEach {
             stackView.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
 
-        menuList.forEach {
+        menuTypeList.forEach {
             switch $0 {
             case .save:
                 stackView.addArrangedSubview(favoriteButton)
@@ -111,7 +187,7 @@ final class StoreDetailOverviewMenuView: BaseView {
     }
 }
 
-enum StoreDetailOverviewMenuItemType {
+enum StoreDetailActionBarItemType {
     case save
     case share
     case navigation
@@ -157,9 +233,9 @@ enum StoreDetailOverviewMenuItemType {
     }
 }
 
-extension StoreDetailOverviewMenuView {
-    final class ItemButton: UIControl {
-        typealias ItemType = StoreDetailOverviewMenuItemType
+extension StoreDetailActionBarCell {
+    final class ActionButton: UIControl {
+        typealias ItemType = StoreDetailActionBarItemType
 
         enum Layout {
             static let size = CGSize(
@@ -170,11 +246,13 @@ extension StoreDetailOverviewMenuView {
         
         var icon = UIImageView()
         
-        let label = UILabel().then {
-            $0.font = Fonts.medium.font(size: 12)
-            $0.textColor = Colors.gray100.color
-            $0.textAlignment = .center
-        }
+        let label: UILabel = {
+            let label = UILabel()
+            label.font = Fonts.medium.font(size: 12)
+            label.textColor = Colors.gray100.color
+            label.textAlignment = .center
+            return label
+        }()
         
         override var isSelected: Bool {
             didSet {

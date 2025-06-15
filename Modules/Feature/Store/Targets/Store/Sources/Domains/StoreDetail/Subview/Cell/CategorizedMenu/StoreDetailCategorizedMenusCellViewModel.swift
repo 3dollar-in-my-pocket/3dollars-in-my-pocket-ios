@@ -3,27 +3,30 @@ import Combine
 import Common
 import Model
 
-final class StoreDetailMenuCellViewModel: BaseViewModel {
+extension StoreDetailCategorizedMenusCellViewModel {
     struct Input {
         let didTapMore = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
-        let menus: [StoreDetailMenu]
+        let data: StoreCategorizedMenusSectionResponse
         let isShowAll: Bool
         let didTapMore = PassthroughSubject<Void, Never>()
     }
     
     struct Config {
-        let menus: [StoreDetailMenu]
+        let data: StoreCategorizedMenusSectionResponse
         let isShowAll: Bool
     }
-    
+}
+
+
+final class StoreDetailCategorizedMenusCellViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     
     init(config: Config) {
-        self.output = Output(menus: config.menus, isShowAll: config.isShowAll)
+        self.output = Output(data: config.data, isShowAll: config.isShowAll)
         
         super.init()
     }
@@ -35,13 +38,13 @@ final class StoreDetailMenuCellViewModel: BaseViewModel {
     }
 }
 
-extension StoreDetailMenuCellViewModel: Hashable {
-    static func == (lhs: StoreDetailMenuCellViewModel, rhs: StoreDetailMenuCellViewModel) -> Bool {
-        return lhs.output.menus == rhs.output.menus && lhs.output.isShowAll == rhs.output.isShowAll
+extension StoreDetailCategorizedMenusCellViewModel: Hashable {
+    static func == (lhs: StoreDetailCategorizedMenusCellViewModel, rhs: StoreDetailCategorizedMenusCellViewModel) -> Bool {
+        return lhs.output.data == rhs.output.data && lhs.output.isShowAll == rhs.output.isShowAll
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(output.menus)
+        hasher.combine(output.data)
         hasher.combine(output.isShowAll)
     }
 }

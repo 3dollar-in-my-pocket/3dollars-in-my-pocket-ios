@@ -4,7 +4,7 @@ import Common
 import DesignSystem
 import Model
 
-final class StoreDetailPhotoCell: BaseCollectionViewCell {
+final class StoreDetailImageItemCell: BaseCollectionViewCell {
     enum Layout {
         static let width = (UIUtils.windowBounds.width - 40 - 24) / 4
         static let size = CGSize(width: width, height: width)

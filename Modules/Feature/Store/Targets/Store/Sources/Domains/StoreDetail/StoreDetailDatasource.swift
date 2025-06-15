@@ -14,9 +14,12 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
         self.viewModel = viewModel
         collectionView.register([
             StoreDetailOverviewCell.self,
+            StoreDetailAccountNumberCell.self,
+            StoreDetailAdmobCell.self,
+            StoreDetailCategorizedMenusCell.self,
+            
             StoreDetailVisitCell.self,
             StoreDetailInfoCell.self,
-            StoreDetailMenuCell.self,
             StoreDetailPhotoCell.self,
             StoreDetailRatingCell.self,
             StoreDetailReviewCell.self,
@@ -40,8 +43,21 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             switch itemIdentifier {
             case .overview(let viewModel):
                 let cell: StoreDetailOverviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(viewModel, rootViewController: rootViewController)
+                cell.bind(viewModel)
                 return cell
+            case .accountNumber(let viewModel):
+                let cell: StoreDetailAccountNumberCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
+                return cell
+            case .admob(let viewModel):
+                let cell: StoreDetailAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
+                return cell
+            case .categorizedMenu(let viewModel):
+                let cell: StoreDetailCategorizedMenusCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
+                return cell
+                
                 
             case .visit(let data):
                 let cell: StoreDetailVisitCell = collectionView.dequeueReusableCell(indexPath: indexPath)
@@ -53,10 +69,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 cell.bind(data)
                 return cell
                 
-            case .menu(let menus):
-                let cell: StoreDetailMenuCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(menus)
-                return cell
+            
                 
             case .photo(let photo):
                 let cell: StoreDetailPhotoCell = collectionView.dequeueReusableCell(indexPath: indexPath)

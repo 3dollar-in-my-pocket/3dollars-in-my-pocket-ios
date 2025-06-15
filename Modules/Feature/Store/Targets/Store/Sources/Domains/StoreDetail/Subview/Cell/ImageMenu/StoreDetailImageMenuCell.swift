@@ -3,39 +3,46 @@ import Common
 import DesignSystem
 import Model
 
-final class BossStoreMenuListCell: BaseCollectionViewCell {
+final class StoreDetailImageMenuCell: BaseCollectionViewCell {
     enum Layout {
-        static func height(viewModel: BossStoreMenuListCellViewModel) -> CGFloat {
+        static let topPadding: CGFloat = 12
+        static let emptyCellHeight: CGFloat = 78
+        
+        static func height(viewModel: StoreDetailImageMenuCellViewModel) -> CGFloat {
             var height: CGFloat = 32
-            let itemCount = CGFloat(viewModel.output.menuList.value.count)
-            height += itemCount * BossStoreMenuItemCell.Layout.height
+            let itemCount = CGFloat(viewModel.output.menus.value.count)
+            height += itemCount * StoreDetailImageMenuItemCell.Layout.height
             height += CGFloat(itemCount - 1) * 16
             if viewModel.output.moreItemCount.value != 0 {
-                height += BossStoreMenuMoreCell.Layout.height
+                height += StoreDetailImageMenuMoreCell.Layout.height
                 height += 16
             }
             return height
         }
     }
     
-    private let containerView = UIView().then {
-        $0.backgroundColor = Colors.gray0.color
-        $0.layer.cornerRadius = 20
-    }
+    private let containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.gray0.color
+        view.layer.cornerRadius = 20
+        return view
+    }()
     
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = .clear
-        $0.delegate = self
-        $0.dataSource = self
-        $0.isScrollEnabled = false
-        $0.contentInset = .init(top: 16, left: 0, bottom: 16, right: 0)
-        $0.register([
-            BossStoreMenuItemCell.self,
-            BossStoreMenuMoreCell.self
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.backgroundColor = .clear
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.isScrollEnabled = false
+        collectionView.contentInset = .init(top: 16, left: 0, bottom: 16, right: 0)
+        collectionView.register([
+            StoreDetailImageMenuItemCell.self,
+            StoreDetailImageMenuMoreCell.self
         ])
-    }
+        return collectionView
+    }()
     
-    private var viewModel: BossStoreMenuListCellViewModel?
+    private var viewModel: StoreDetailImageMenuCellViewModel?
     
     override func setup() {
         super.setup()
@@ -59,10 +66,10 @@ final class BossStoreMenuListCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(_ viewModel: BossStoreMenuListCellViewModel) {
+    func bind(_ viewModel: StoreDetailImageMenuCellViewModel) {
         self.viewModel = viewModel
         
-        viewModel.output.menuList
+        viewModel.output.menus
             .main
             .withUnretained(self)
             .sink { owner, _ in
@@ -81,7 +88,7 @@ final class BossStoreMenuListCell: BaseCollectionViewCell {
     }
 }
 
-extension BossStoreMenuListCell: UICollectionViewDataSource {
+extension StoreDetailImageMenuCell: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if viewModel?.output.moreItemCount.value != 0 {
             return 2
@@ -92,7 +99,7 @@ extension BossStoreMenuListCell: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
-        case 0: viewModel?.output.menuList.value.count ?? 0
+        case 0: viewModel?.output.menus.value.count ?? 0
         case 1: 1
         default: 0
         }
@@ -101,14 +108,14 @@ extension BossStoreMenuListCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
         case 0:
-            let cell: BossStoreMenuItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-            if let menu = viewModel?.output.menuList.value[safe: indexPath.item] {
+            let cell: StoreDetailImageMenuItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+            if let menu = viewModel?.output.menus.value[safe: indexPath.item] {
                 cell.bind(menu: menu)
             }
             
             return cell
         case 1:
-            let cell: BossStoreMenuMoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+            let cell: StoreDetailImageMenuMoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             cell.bind(count: viewModel?.output.moreItemCount.value ?? 0)
             return cell
         default:
@@ -117,20 +124,20 @@ extension BossStoreMenuListCell: UICollectionViewDataSource {
     }
 }
 
-extension BossStoreMenuListCell: UICollectionViewDelegateFlowLayout {
+extension StoreDetailImageMenuCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch indexPath.section {
         case 0:
-            return CGSize(width: collectionView.frame.width, height: BossStoreMenuItemCell.Layout.height)
+            return CGSize(width: collectionView.frame.width, height: StoreDetailImageMenuItemCell.Layout.height)
         case 1:
-            return CGSize(width: collectionView.frame.width, height: BossStoreMenuMoreCell.Layout.height)
+            return CGSize(width: collectionView.frame.width, height: StoreDetailImageMenuMoreCell.Layout.height)
         default:
             return .zero
         }
     }
 }
 
-extension BossStoreMenuListCell: UICollectionViewDelegate {
+extension StoreDetailImageMenuCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0: break

@@ -5,6 +5,8 @@ import DesignSystem
 import Model
 
 final class StoreDetailMenuStackView: UIStackView {
+    typealias CategorizedMenu = StoreCategorizedMenusSectionResponse.StoreCategorizedMenuSectionResponse
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -19,26 +21,23 @@ final class StoreDetailMenuStackView: UIStackView {
         arrangedSubviews.forEach { $0.removeFromSuperview() }
     }
     
-    func bind(_ menus: [StoreDetailMenu], isShowAll: Bool) {
-        let categories = menus.map { $0.category }.unique
+    func bind(_ menus: [CategorizedMenu], isShowAll: Bool) {
         var menuCount = 0
         
-        for category in categories {
-            let categoryItemView = StoreDetailMenuCategoryStackItemView()
-            categoryItemView.bind(category)
+        for categorizedMenu in menus {
+            let categoryItemView = StoreDetailMenuCategoryItemView()
+            categoryItemView.bind(categorizedMenu.category)
             
             addArrangedSubview(categoryItemView)
             
-            let categoryMenus = menus.filter { $0.category == category && $0.isValid }
-            
-            for categoryMenu in categoryMenus {
-                let categoryMenuItemView = StoreDetailMenuStackItemView()
-                categoryMenuItemView.bind(categoryMenu)
+            for menu in categorizedMenu.menus {
+                let categoryMenuItemView = StoreDetailMenuItemView()
+                categoryMenuItemView.bind(menu)
                 
                 addArrangedSubview(categoryMenuItemView)
                 menuCount += 1
                 
-                if (menuCount >= StoreDetailMenuCell.Layout.moreButtonShowCount) && !isShowAll {
+                if (menuCount >= StoreDetailCategorizedMenusCell.Layout.moreButtonShowCount) && !isShowAll {
                     break
                 }
             }

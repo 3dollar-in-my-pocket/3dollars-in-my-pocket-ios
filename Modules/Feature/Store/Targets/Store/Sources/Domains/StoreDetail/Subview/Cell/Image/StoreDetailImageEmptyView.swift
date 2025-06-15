@@ -3,7 +3,7 @@ import UIKit
 import Common
 import DesignSystem
 
-final class StoreDetailPhotoFooterView: BaseCollectionViewReusableView {
+final class StoreDetailImageEmptyView: BaseCollectionViewCell {
     enum Layout {
         static let height: CGFloat = 110
     }

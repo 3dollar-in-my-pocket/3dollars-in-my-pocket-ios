@@ -7,11 +7,13 @@ import Model
 import DependencyInjection
 import AppInterface
 import Log
+import StoreInterface
 
 final class StoreDetailViewModel: BaseViewModel {
     struct Input {
         let load = PassthroughSubject<Void, Never>()
         let didTapReport = PassthroughSubject<Void, Never>()
+        
         let didTapVisit = PassthroughSubject<Void, Never>()
         
         // Report modal
@@ -57,14 +59,14 @@ final class StoreDetailViewModel: BaseViewModel {
         
         let toast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
-        let error = PassthroughSubject<Error, Never>()
     }
     
     struct State {
-        let storeId: Int
-        let storeType: StoreType = .userStore
-        var storeDetailData: StoreDetailData?
-        var showAllMenu: Bool = false
+        let storeId: String
+        var storeType: StoreType?
+        var sections: [any StoreDetailComponent] = []
+//        var storeDetailData: StoreDetailData?
+//        var showAllMenu: Bool = false
     }
     
     enum Route {
@@ -81,11 +83,15 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentReportBottomSheetReview(ReportReviewBottomSheetViewModel)
         case presentVisit(VisitViewModel)
         case navigateAppleMap(LocationResponse)
+        case showLoading(isLoading: Bool)
+        case showErrorAlert(Error)
     }
     
     let input = Input()
     let output = Output()
     var state: State
+    
+    private let dependency: StoreDetailDependency
     private let storeService: StoreRepository
     private let reportRepository: ReportRepository
     private let reviewRepository: ReviewRepository
@@ -93,17 +99,11 @@ final class StoreDetailViewModel: BaseViewModel {
     private let logManager: LogManagerProtocol
     
     init(
-        storeId: Int,
-        storeService: StoreRepository = StoreRepositoryImpl(),
-        reportRepository: ReportRepository = ReportRepositoryImpl(),
-        reviewRepository: ReviewRepository = ReviewRepositoryImpl(),
-        logManager: LogManagerProtocol = LogManager.shared
+        config: StoreDetailConfig,
+        dependency: StoreDetailDependency = StoreDetailDependencyImpl()
     ) {
-        self.state = State(storeId: storeId)
-        self.storeService = storeService
-        self.reportRepository = reportRepository
-        self.reviewRepository = reviewRepository
-        self.logManager = logManager
+        self.dependency = dependency
+        self.state = State(storeId: config.storeId)
         
         super.init()
     }
@@ -115,9 +115,8 @@ final class StoreDetailViewModel: BaseViewModel {
         bindReviewSection()
         
         input.load
-            .withUnretained(self)
-            .sink { (owner: StoreDetailViewModel, _: Void) in
-                owner.fetchStoreDetail()
+            .sink { [weak self] _ in
+                self?.fetchStoreDetail()
             }
             .store(in: &cancellables)
         
@@ -335,28 +334,22 @@ final class StoreDetailViewModel: BaseViewModel {
     private func fetchStoreDetail() {
         Task { [weak self] in
             guard let self else { return }
-            
-            let input = FetchStoreDetailInput(storeId: state.storeId, reviewsCount: 3)
-            let storeDetailResult = await storeService.fetchStoreDetail(input: input)
-            
-            switch storeDetailResult {
-            case .success(let response):
-                let storeDetailData = StoreDetailData(
-                    response: response,
-                    totalPhotoCount: response.images.cursor.totalCount,
-                    totalReviewCount: response.reviews.cursor.totalCount
-                )
+            output.route.send(.showLoading(isLoading: true))
+            do {
+                let response = try await dependency.storeDetailRepository.fetchStoreDetail(storeId: state.storeId).get()
                 
-                state.storeDetailData = storeDetailData
-                refreshSections()
-                output.isFavorited.send(response.favorite.isFavorite)
-            case .failure(let error):
-                output.error.send(error)
+                state.storeType = response.storeRef.storeType
+                state.sections = response.sections
+                updateDataSource()
+                output.route.send(.showLoading(isLoading: false))
+            } catch {
+                output.route.send(.showLoading(isLoading: false))
+                output.route.send(.showErrorAlert(error))
             }
         }
     }
     
-    private func refreshSections() {
+    private func updateDataSource() {
         guard let storeDetailData = state.storeDetailData else { return }
         
         output.sections.send([

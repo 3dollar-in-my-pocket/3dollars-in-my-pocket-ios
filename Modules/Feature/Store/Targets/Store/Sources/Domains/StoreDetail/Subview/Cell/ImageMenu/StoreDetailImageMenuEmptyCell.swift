@@ -1,28 +1,33 @@
 import UIKit
 import Common
 import DesignSystem
-import Model
 
-final class BossStoreEmptyMenuCell: BaseCollectionViewCell {
+final class StoreDetailImageMenuEmptyCell: BaseCollectionViewCell {
     enum Layout {
         static let height: CGFloat = 78
     }
     
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 6
-        $0.backgroundColor = Colors.gray0.color
-    }
+    private let containerView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 6
+        view.backgroundColor = Colors.gray0.color
+        return view
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.text = Strings.BossStoreDetail.Menu.empty
-        $0.textColor = Colors.gray50.color
-        $0.font = Fonts.medium.font(size: 12)
-        $0.numberOfLines = 0
-    }
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = Strings.BossStoreDetail.Menu.empty
+        label.textColor = Colors.gray50.color
+        label.font = Fonts.medium.font(size: 12)
+        label.numberOfLines = 0
+        return label
+    }()
     
-    private let emptyImage = UIImageView().then {
-        $0.image = Icons.empty02.image
-    }
+    private let emptyImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = Icons.empty02.image
+        return imageView
+    }()
     
     override func setup() {
         super.setup()

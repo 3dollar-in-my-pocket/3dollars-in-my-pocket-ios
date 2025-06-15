@@ -6,7 +6,7 @@ import Model
 final class BossStoreInfoCell: BaseCollectionViewCell {
     enum Layout {
         static func calculateHeight(width: CGFloat, info: BossStoreInfo) -> CGFloat {
-            let introducationHeight = calculateIntroductionHeight(width: width, introduction: info.introduction) + calculateAccountHeight(account: info.accountInfos.first)
+            let introducationHeight = calculateIntroductionHeight(width: width, introduction: info.introduction)
             
             return introducationHeight + 356
         }
@@ -27,10 +27,6 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
             ).height
             
             return contentHeight
-        }
-        
-        static func calculateAccountHeight(account: StoreAccountNumber?) -> CGFloat {
-            return account.isNil ? 0 : BossStoreAccountView.Layout.height
         }
     }
 
@@ -99,8 +95,6 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         return collectionView
     }()
 
-    private let accountView = BossStoreAccountView()
-    
     private var viewModel: BossStoreInfoCellViewModel?
 
     override func setup() {
@@ -113,8 +107,7 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
             titleLabel,
             updatedAtLabel,
             containerView,
-            photoCollectionView,
-            accountView
+            photoCollectionView
         ])
 
         containerView.addSubViews([
@@ -179,11 +172,6 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
             $0.leading.trailing.equalToSuperview().inset(16)
         }
         
-        accountView.snp.makeConstraints {
-            $0.top.equalTo(containerView.snp.bottom).offset(12)
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
-        }
     }
 
     func bind(_ viewModel: BossStoreInfoCellViewModel) {
@@ -193,11 +181,6 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
         snsButton.controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.didTapSnsButton)
-            .store(in: &cancellables)
-        
-        accountView.copyButton.controlPublisher(for: .touchUpInside)
-            .mapVoid
-            .subscribe(viewModel.input.didTapCopyAccountNumber)
             .store(in: &cancellables)
         
         // Bind output
@@ -232,12 +215,6 @@ final class BossStoreInfoCell: BaseCollectionViewCell {
 
         updatedAtLabel.text = DateUtils.toString(dateString: info.updatedAt, format: "yyyy.MM.dd " + Strings.BossStoreDetail.Info.update)
         
-        if let accountInfo = info.accountInfos.first {
-            accountView.isHidden = false
-            accountView.bind(account: accountInfo)
-        } else {
-            accountView.isHidden = true
-        }
     }
     
     private func createLayout() -> UICollectionViewLayout {

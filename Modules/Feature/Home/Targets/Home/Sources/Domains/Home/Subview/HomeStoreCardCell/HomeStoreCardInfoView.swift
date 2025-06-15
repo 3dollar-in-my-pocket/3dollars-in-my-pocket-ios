@@ -82,6 +82,5 @@ extension HomeStoreCardInfoView {
             label.setSDText(metadata.text)
             addArrangedSubview(label)
         }
-        
     }
 }

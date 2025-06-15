@@ -19,10 +19,12 @@ public enum StoreDetailComponentType: String, Decodable {
     case storeOverview = "STORE_OVERVIEW"
     case storeReviews = "STORE_REVIEWS"
     case storeVisits = "STORE_VISITS"
+    case basicStoreInfo = "BASIC_STORE_INFO"
     case unknown
     
     public init(from decoder: Decoder) throws {
-        self = try StoreDetailComponentType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
+        let rawValue = try? decoder.singleValueContainer().decode(RawValue.self)
+        self = StoreDetailComponentType(rawValue: rawValue ?? "") ?? .unknown
     }
 }
 
@@ -85,11 +87,11 @@ public struct StoreImageMenusSectionResponse: StoreDetailComponent {
     }
 }
 
-
 /// [길거리 음식점] 가게 이미지 컴포넌트
 public struct StoreImagesSectionResponse: StoreDetailComponent {
     public let type: StoreDetailComponentType
     public let sectionId: String
+    public let header: HeaderSectionResponse
     public let cards: [SDImage]
     public let more: StoreImageMoreSectionResponse?
     
@@ -243,3 +245,8 @@ public struct StoreVisitsSectionResponse: StoreDetailComponent {
     }
 }
 
+public struct HeaderSectionResponse: Decodable, Hashable {
+    public let title: SDText
+    public let subTitle: SDText?
+    public let rightButton: SDButton?
+}

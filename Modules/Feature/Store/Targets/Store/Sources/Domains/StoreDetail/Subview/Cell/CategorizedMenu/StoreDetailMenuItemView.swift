@@ -4,7 +4,9 @@ import Common
 import DesignSystem
 import Model
 
-final class StoreDetailMenuStackItemView: BaseView {
+final class StoreDetailMenuItemView: BaseView {
+    typealias Menu = StoreCategorizedMenusSectionResponse.StoreCategorizedMenuSectionResponse.StoreInfoMenuItemSectionResponse
+    
     enum Layout {
         static let height: CGFloat = 18
     }
@@ -53,10 +55,11 @@ final class StoreDetailMenuStackItemView: BaseView {
         }
     }
     
-    func bind(_ menu: StoreDetailMenu) {
-        
-        nameLabel.text = menu.name
-        priceLabel.text = menu.price
+    func bind(_ menu: Menu) {
+        nameLabel.setSDText(menu.name)
+        if let price = menu.price {
+            priceLabel.setSDText(price)
+        }
     }
     
     private func drawDash() {

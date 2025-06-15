@@ -3,7 +3,7 @@ import Combine
 
 public extension Publisher {
     var main: AnyPublisher<Output, Failure> {
-        return receive(on: DispatchQueue.main).eraseToAnyPublisher()
+        return receive(on: RunLoop.main).eraseToAnyPublisher()
     }
     
     var mapVoid : Publishers.Map<Self, Void> {

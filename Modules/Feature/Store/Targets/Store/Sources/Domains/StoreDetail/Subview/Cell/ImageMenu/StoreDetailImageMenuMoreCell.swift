@@ -3,19 +3,23 @@ import Common
 import DesignSystem
 import Model
 
-final class BossStoreMenuMoreCell: BaseCollectionViewCell {
+final class StoreDetailImageMenuMoreCell: BaseCollectionViewCell {
     enum Layout {
         static let height: CGFloat = 50
     }
 
-    private let lineView = UIView().then {
-        $0.backgroundColor = Colors.gray20.color
-    }
+    private let lineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.gray20.color
+        return view
+    }()
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray60.color
-    }
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.medium.font(size: 12)
+        label.textColor = Colors.gray60.color
+        return label
+    }()
 
     override func setup() {
         super.setup()

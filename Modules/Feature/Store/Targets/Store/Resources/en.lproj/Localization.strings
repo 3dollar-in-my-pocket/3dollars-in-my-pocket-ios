@@ -117,8 +117,6 @@
 "boss_store_detail.info.contact" = "연락처";
 "boss_store_detail.info.introduction" = "사장님 한마디";
 "boss_store_detail.info.update" = "업데이트";
-"boss_store_detail.info.account_title" = "계좌번호";
-"boss_store_detail.info.copy" = "복사하기";
 "boss_store_detail.info.copy_toast" = "🔗 계좌번호가 복사되었습니다.";
 "boss_store_detail.menu.empty" = "등록된 메뉴가 없습니다.\n사장님이 메뉴를 등록할 때 까지 잠시만 기다려주세요!";
 "boss_store_detail.menu.price_format" = "%@원";

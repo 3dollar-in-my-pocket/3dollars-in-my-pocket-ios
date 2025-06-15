@@ -4,7 +4,7 @@ import Common
 import DesignSystem
 import Model
 
-final class StoreDetailMenuCategoryStackItemView: BaseView {
+final class StoreDetailMenuCategoryItemView: BaseView {
     enum Layout {
         static let height: CGFloat = 28
     }
@@ -45,9 +45,9 @@ final class StoreDetailMenuCategoryStackItemView: BaseView {
         }
     }
     
-    func bind(_ category: StoreFoodCategoryResponse) {
-        imageView.setImage(urlString: category.imageUrl)
-        titleLabel.text = category.name
+    func bind(_ sdChip: SDChip) {
+        imageView.setImage(urlString: sdChip.image?.url)
+        titleLabel.setSDText(sdChip.text)
     }
 }
 
