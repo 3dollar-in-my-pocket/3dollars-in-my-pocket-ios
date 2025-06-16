@@ -6,6 +6,7 @@ public protocol StoreDetailComponent: Equatable, Hashable, Decodable {
 }
 
 public enum StoreDetailComponentType: String, Decodable {
+    case basicStoreInfo = "BASIC_STORE_INFO"
     case storeAccountNumber = "STORE_ACCOUNT_NUMBER"
     case storeActionBar = "STORE_ACTION_BAR"
     case storeAdmobCard = "STORE_ADMOB_CARD"
@@ -19,12 +20,44 @@ public enum StoreDetailComponentType: String, Decodable {
     case storeOverview = "STORE_OVERVIEW"
     case storeReviews = "STORE_REVIEWS"
     case storeVisits = "STORE_VISITS"
-    case basicStoreInfo = "BASIC_STORE_INFO"
     case unknown
     
     public init(from decoder: Decoder) throws {
         let rawValue = try? decoder.singleValueContainer().decode(RawValue.self)
         self = StoreDetailComponentType(rawValue: rawValue ?? "") ?? .unknown
+    }
+}
+
+/// [길거리 음식점] 가게 정보 & 메뉴 컴포넌트
+public struct BasicStoreInfoSectionResponse: StoreDetailComponent {
+    public let type: StoreDetailComponentType
+    public let sectionId: String
+    public let header: HeaderSectionResponse
+    public let salesType: StoreSalesTypeResponse?
+    public let openingDays: [OpeningDays]
+    public let openingHours: StoreOpeningHoursResponse?
+    public let paymentMethods: [PaymentMethod]
+    
+    public struct StoreSalesTypeResponse: Decodable, Hashable {
+        public let type: SalesType
+        public let description: String
+    }
+    
+    public enum OpeningDays: String, Decodable, Hashable {
+        case monday = "MONDAY"
+        case tuesday = "TUESDAY"
+        case wednesday = "WEDNESDAY"
+        case thursday = "THURSDAY"
+        case friday = "FRIDAY"
+        case saturday = "SATURDAY"
+        case sunday = "SUNDAY"
+        case unknown
+        
+        public init(from decoder: any Decoder) throws {
+            let rawValue = (try? decoder.singleValueContainer().decode(RawValue.self)) ?? ""
+            
+            self = OpeningDays(rawValue: rawValue) ?? .unknown
+        }
     }
 }
 
@@ -101,16 +134,6 @@ public struct StoreImagesSectionResponse: StoreDetailComponent {
     }
 }
 
-// TODO: 가게 정보 컴포넌트 서버 변경에 따라 적용 필요
-public struct StoreInfoSectionResponse: StoreDetailComponent {
-    public let type: StoreDetailComponentType
-    public let sectionId: String
-    public let title: SDText
-    public let subTitle: SDText?
-    public let updateButton: SDText?
-    public let representativeImages: [SDImage]?
-}
-
 /// [길거리 음식점/ 사장님 가게] 지도 컴포넌트
 public struct StoreMapSectionResponse: StoreDetailComponent {
     public let type: StoreDetailComponentType
@@ -123,8 +146,9 @@ public struct StoreMapSectionResponse: StoreDetailComponent {
 public struct StoreNewsSectionResponse: StoreDetailComponent {
     public let type: StoreDetailComponentType
     public let sectionId: String
-    public let title: SDText
+    public let header: HeaderSectionResponse
     public let cards: [StoreNewsCardSectionResponse]
+    public let moreButton: SDText?
     
     public struct StoreNewsCardSectionResponse: Decodable, Hashable {
         public let title: SDText

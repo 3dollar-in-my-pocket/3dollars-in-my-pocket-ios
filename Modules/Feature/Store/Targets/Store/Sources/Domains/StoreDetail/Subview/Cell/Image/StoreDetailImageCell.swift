@@ -1,6 +1,8 @@
 import UIKit
 
 import Common
+import Model
+import CombineCocoa
 
 final class StoreDetailImageCell: BaseCollectionViewCell {
     enum Layout {
@@ -26,6 +28,9 @@ final class StoreDetailImageCell: BaseCollectionViewCell {
         collectionView.backgroundColor = .clear
         return collectionView
     }()
+    
+    private var dataSource: [SDImage] = []
+    private var viewModel: StoreDetailImageCellViewModel?
     
     override func setup() {
         contentView.addSubViews([
@@ -64,6 +69,56 @@ final class StoreDetailImageCell: BaseCollectionViewCell {
     }
     
     func bind(viewModel: StoreDetailImageCellViewModel) {
+        bindHeader(header: viewModel.output.header)
         
+        rightButton.tapPublisher
+            .throttleClick()
+            .subscribe(viewModel.input.didTapHeaderButton)
+            .store(in: &cancellables)
+        
+        viewModel.output.images
+            .main
+            .sink { [weak self] images in
+                self?.dataSource = images
+                self?.collectionView.reloadData()
+            }
+            .store(in: &cancellables)
+        self.viewModel = viewModel
+    }
+    
+    private func bindHeader(header: HeaderSectionResponse) {
+        titleLabel.setSDText(header.title)
+        if let rightSDButton = header.rightButton {
+            rightButton.setSDButton(rightSDButton)
+        }
+    }
+}
+
+extension StoreDetailImageCell: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return dataSource.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let image = dataSource[safe: indexPath.item] else {
+            return UICollectionViewCell()
+        }
+        
+        let cell: StoreDetailImageItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        
+        cell.bind(sdImage: image)
+        
+        if indexPath.item == dataSource.count - 1,
+           let more = viewModel?.output.more {
+            cell.bind(more: more)
+        }
+        
+        return cell
+    }
+}
+
+extension StoreDetailImageCell: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel?.input.didTapImage.send(indexPath.item)
     }
 }

@@ -2,7 +2,7 @@ import UIKit
 
 import DesignSystem
 
-final class StoreDetailInfoAppearanceDayStackItemView: UILabel {
+final class StoreDetailBaseInfoAppearanceDayStackItemView: UILabel {
     enum Layout {
         static let size = CGSize(width: 24, height: 24)
     }

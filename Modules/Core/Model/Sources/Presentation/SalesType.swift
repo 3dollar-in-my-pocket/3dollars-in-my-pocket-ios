@@ -15,7 +15,8 @@ public enum SalesType: String, Hashable, Codable {
     }
     
     public init(from decoder: Decoder) throws {
-        self = try SalesType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
+        let rawValue = try? decoder.singleValueContainer().decode(RawValue.self)
+        self = SalesType(value: rawValue) ?? .unknown
     }
     
     public func getIndexValue() -> Int {

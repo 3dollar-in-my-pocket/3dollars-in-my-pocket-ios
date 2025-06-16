@@ -3,15 +3,19 @@ import Foundation
 import Model
 
 enum StoreDetailSectionItem: Hashable {
-    case overview(StoreDetailOverviewCellViewModel)
+    case baseInfo(StoreDetailBaseInfoCellViewModel)
     case accountNumber(StoreDetailAccountNumberCellViewModel)
+    case actionBar(StoreDetailActionBarCellViewModel)
     case admob(StoreDetailAdmobCellViewModel)
     case categorizedMenu(StoreDetailCategorizedMenusCellViewModel)
+    case imageMenu(StoreDetailImageMenuCellViewModel)
+    case images(StoreDetailImageCellViewModel)
+    case map(StoreDetailMapCellViewModel)
+    case news(StoreDetailNewsCellViewModel)
+    case openingDays(StoreDetailOpeningDaysCellViewModel)
+    case overview(StoreDetailOverviewCellViewModel)
     
     case visit(StoreDetailVisit)
-    case info(StoreDetailInfo)
-    
-    case photo(StoreDetailPhoto)
     case rating(Double)
     case review(StoreDetailReview)
     case reviewMore(Int)

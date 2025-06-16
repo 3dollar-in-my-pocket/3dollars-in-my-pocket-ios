@@ -4,7 +4,7 @@ import Common
 import DesignSystem
 import Model
 
-final class BossStoreWorkdayStackViewItem: BaseView {
+final class StoreDetailOpeningDayItemView: BaseView {
     enum Layout {
         static let height: CGFloat = 64
     }
@@ -69,23 +69,16 @@ final class BossStoreWorkdayStackViewItem: BaseView {
             $0.height.equalTo(Layout.height).priority(.high)
         }
     }
-
-    func bind(appearanceDay: BossStoreAppearanceDay) {
-        weekDayLabel.text = appearanceDay.dayOfTheWeek.fullText
-        dividerView.isHidden = appearanceDay.dayOfTheWeek == .sunday
-
-        if appearanceDay.isClosedDay {
-            timeLabel.text = Strings.BossStoreDetail.Workday.closed
-            timeLabel.textColor = Colors.gray50.color
-
-            locationLabel.text = "-"
-        } else {
-            let startTime = DateUtils.toString(date: appearanceDay.openingHours, format: "HH:mm")
-            let endTime = DateUtils.toString(date: appearanceDay.closingHours, format: "HH:mm")
-            timeLabel.text = "\(startTime) - \(endTime)"
-            timeLabel.textColor = Colors.gray70.color
-
-            locationLabel.text = appearanceDay.locationDescription.isEmpty ? "-" : appearanceDay.locationDescription
+    
+    func bind(
+        openingDay: StoreOpeningDaysSectionResponse.StoreOpeningDaySectionResponse,
+        isLast: Bool
+    ) {
+        weekDayLabel.setSDText(openingDay.dayOfTheWeek)
+        timeLabel.setSDText(openingDay.opeingTime)
+        if let placeDescription = openingDay.placeDescription {
+            locationLabel.setSDText(placeDescription)
         }
+        dividerView.isHidden = isLast
     }
 }

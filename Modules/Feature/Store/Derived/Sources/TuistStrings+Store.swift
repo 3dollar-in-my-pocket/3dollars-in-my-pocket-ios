@@ -264,8 +264,6 @@ public enum StoreStrings: Sendable {
     public enum Photo: Sendable {
     /// 사진을 제보해주세요!
       public static let empty = StoreStrings.tr("Localization", "store_detail.photo.empty")
-      /// 더보기
-      public static let more = StoreStrings.tr("Localization", "store_detail.photo.more")
 
       public enum Header: Sendable {
       /// 사진 제보

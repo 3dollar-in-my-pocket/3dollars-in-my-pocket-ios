@@ -7,8 +7,9 @@ import AppInterface
 
 final class StoreDetailOverviewCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 78 + topPadding
+        static let height: CGFloat = 78 + topPadding + bottomPadding
         static let topPadding: CGFloat = 8
+        static let bottomPadding: CGFloat = 20
     }
     
     private let categoryImage: UIImageView = {
@@ -52,8 +53,6 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
         stackView.spacing = 4
         return stackView
     }()
-
-    //    let mapView = StoreDetailOverviewMapView()
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -131,29 +130,6 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
         
         setupLabelStackView(labels: data.labels)
         setupMetdataStackView(metadatas: data.metadata)
-        
-//        mapView.bind(
-//            location: viewModel.output.overview.location,
-//            address: viewModel.output.overview.address
-//        )
-
-//        adBannerView.load(in: rootViewController)
-//
-
-//
-//        mapView.addressButton
-//            .controlPublisher(for: .touchUpInside)
-//            .mapVoid
-//            .subscribe(viewModel.input.didTapAddress)
-//            .store(in: &cancellables)
-//
-//        mapView.zoomButton
-//            .controlPublisher(for: .touchUpInside)
-//            .mapVoid
-//            .subscribe(viewModel.input.didTapMapDetail)
-//            .store(in: &cancellables)
-//
-
     }
     
     private func setupLabelStackView(labels: [SDChip]) {

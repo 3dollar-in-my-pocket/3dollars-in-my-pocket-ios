@@ -13,14 +13,19 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
     ) {
         self.viewModel = viewModel
         collectionView.register([
-            StoreDetailOverviewCell.self,
+            StoreDetailBaseInfoCell.self,
             StoreDetailAccountNumberCell.self,
+            StoreDetailActionBarCell.self,
             StoreDetailAdmobCell.self,
             StoreDetailCategorizedMenusCell.self,
+            StoreDetailImageMenuCell.self,
+            StoreDetailImageCell.self,
+            StoreDetailMapCell.self,
+            StoreDetailNewsCell.self,
+            StoreDetailOpeningDaysCell.self,
+            StoreDetailOverviewCell.self,
             
             StoreDetailVisitCell.self,
-            StoreDetailInfoCell.self,
-            StoreDetailPhotoCell.self,
             StoreDetailRatingCell.self,
             StoreDetailReviewCell.self,
             StoreDetailReviewMoreCell.self,
@@ -33,20 +38,20 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: "\(StoreDetailHeaderView.self)"
         )
-        collectionView.register(
-            StoreDetailPhotoFooterView.self,
-            forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-            withReuseIdentifier: "\(StoreDetailPhotoFooterView.self)")
         
         super.init(collectionView: collectionView) { [weak rootViewController] collectionView, indexPath, itemIdentifier in
             guard let rootViewController else { return UICollectionViewCell() }
             switch itemIdentifier {
-            case .overview(let viewModel):
-                let cell: StoreDetailOverviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(viewModel)
+            case .baseInfo(let viewModel):
+                let cell: StoreDetailBaseInfoCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
                 return cell
             case .accountNumber(let viewModel):
                 let cell: StoreDetailAccountNumberCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
+                return cell
+            case .actionBar(let viewModel):
+                let cell: StoreDetailActionBarCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
             case .admob(let viewModel):
@@ -57,30 +62,35 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 let cell: StoreDetailCategorizedMenusCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
-                
+            case .imageMenu(let viewModel):
+                let cell: StoreDetailImageMenuCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
+                return cell
+            case .images(let viewModel):
+                let cell: StoreDetailImageCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
+                return cell
+            case .map(let viewModel):
+                let cell: StoreDetailMapCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
+                return cell
+            case .news(let viewModel):
+                let cell: StoreDetailNewsCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel)
+                return cell
+            case .openingDays(let viewModel):
+                let cell: StoreDetailOpeningDaysCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
+                return cell
+            case .overview(let viewModel):
+                let cell: StoreDetailOverviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel)
+                return cell
                 
             case .visit(let data):
                 let cell: StoreDetailVisitCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(data)
                 return cell
-                
-            case .info(let data):
-                let cell: StoreDetailInfoCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(data)
-                return cell
-                
-            
-                
-            case .photo(let photo):
-                let cell: StoreDetailPhotoCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                
-                if indexPath.item == 3 {
-                    cell.bind(photo: photo, isLast: true)
-                } else {
-                    cell.bind(photo: photo, isLast: false)
-                }
-                return cell
-                
             case .rating(let rating):
                 let cell: StoreDetailRatingCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(rating)

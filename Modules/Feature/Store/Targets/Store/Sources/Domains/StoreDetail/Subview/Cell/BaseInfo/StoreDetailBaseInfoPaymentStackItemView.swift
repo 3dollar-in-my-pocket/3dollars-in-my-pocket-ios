@@ -4,7 +4,7 @@ import Common
 import DesignSystem
 import Model
 
-final class StoreDetailIntoPaymentStackItemView: BaseView {
+final class StoreDetailBaseInfoPaymentStackItemView: BaseView {
     private let dotView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 2

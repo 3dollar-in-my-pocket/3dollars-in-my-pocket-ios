@@ -7,8 +7,6 @@ extension StoreDetailImageCellViewModel {
     struct Input {
         let didTapImage = PassthroughSubject<Int, Never>()
         let didTapHeaderButton = PassthroughSubject<Void, Never>()
-        let didTapMore = PassthroughSubject<Void, Never>()
-        
     }
     
     struct Output {
@@ -41,6 +39,8 @@ final class StoreDetailImageCellViewModel: BaseViewModel {
     override func bind() {
         input.didTapImage
             .sink { [weak self] index in
+                // TODO: 더보기 로직 처리 필요
+                
                 self?.output.presentPhotoDetail.send(index)
             }
             .store(in: &cancellables)
@@ -52,5 +52,17 @@ final class StoreDetailImageCellViewModel: BaseViewModel {
                 self?.output.deeplink.send(link)
             }
             .store(in: &cancellables)
+    }
+}
+
+extension StoreDetailImageCellViewModel: Hashable {
+    static func == (lhs: StoreDetailImageCellViewModel, rhs: StoreDetailImageCellViewModel) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(output.header)
+        hasher.combine(output.more)
+        hasher.combine(output.images.value)
     }
 }

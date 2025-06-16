@@ -4,10 +4,12 @@ import Common
 import DesignSystem
 import Model
 
-final class StoreDetailInfoCell: BaseCollectionViewCell {
+final class StoreDetailBaseInfoCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 152
+        static let height: CGFloat = 220
     }
+    
+    private let headerView = StoreDetailHeaderView()
     
     private let containerView: UIView = {
         let view = UIView()
@@ -43,7 +45,7 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
         return label
     }()
     
-    private let appearanceDayStackView = StoreDetailInfoAppearanceDayStackView()
+    private let appearanceDayStackView = StoreDetailBaseInfoAppearanceDayStackView()
     
     private let openingHoursLabel: UILabel = {
         let label = UILabel()
@@ -70,7 +72,7 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
         return label
     }()
     
-    private let paymentMethodStackView = StoreDetailInfoPaymentStackView()
+    private let paymentMethodStackView = StoreDetailBaseInfoPaymentStackView()
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -79,7 +81,12 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
     }
     
     override func setup() {
+        setupUI()
+    }
+    
+    private func setupUI() {
         contentView.addSubViews([
+            headerView,
             containerView,
             typeLabel,
             typeValueLabel,
@@ -90,67 +97,84 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
             paymentMethodLabel,
             paymentMethodStackView
         ])
-    }
-    
-    override func bindConstraints() {
+        
+        headerView.snp.makeConstraints {
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.top.equalToSuperview()
+            $0.height.equalTo(0)
+        }
+        
         containerView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.top.equalToSuperview().offset(12)
-            $0.right.equalToSuperview()
-            $0.bottom.equalToSuperview()
-            $0.height.equalTo(109)
+            $0.leading.equalToSuperview()
+            $0.top.equalTo(headerView.snp.bottom).offset(12)
+            $0.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-12)
+            $0.height.equalTo(152)
         }
         
         typeLabel.snp.makeConstraints {
             $0.top.equalTo(containerView).offset(17)
-            $0.left.equalTo(containerView).offset(16)
+            $0.leading.equalTo(containerView).offset(16)
             $0.height.equalTo(18)
         }
         
         typeValueLabel.snp.makeConstraints {
-            $0.right.equalTo(containerView).offset(-16)
+            $0.trailing.equalTo(containerView).offset(-16)
             $0.centerY.equalTo(typeLabel)
         }
         
         appearanceDayLabel.snp.makeConstraints {
             $0.top.equalTo(typeLabel.snp.bottom).offset(8)
-            $0.left.equalTo(typeLabel)
+            $0.leading.equalTo(typeLabel)
             $0.height.equalTo(24)
         }
         
         appearanceDayStackView.snp.makeConstraints {
             $0.centerY.equalTo(appearanceDayLabel)
-            $0.right.equalTo(containerView).offset(-16)
+            $0.trailing.equalTo(containerView).offset(-16)
         }
         
         openingHoursLabel.snp.makeConstraints {
-            $0.left.equalTo(appearanceDayLabel)
+            $0.leading.equalTo(appearanceDayLabel)
             $0.top.equalTo(appearanceDayLabel.snp.bottom).offset(8)
             $0.height.equalTo(24)
         }
         
         openingHoursValueLabel.snp.makeConstraints {
-            $0.right.equalTo(containerView).offset(-16)
+            $0.trailing.equalTo(containerView).offset(-16)
             $0.centerY.equalTo(openingHoursLabel)
         }
         
         paymentMethodLabel.snp.makeConstraints {
-            $0.left.equalTo(openingHoursLabel)
+            $0.leading.equalTo(openingHoursLabel)
             $0.top.equalTo(openingHoursLabel.snp.bottom).offset(8)
             $0.height.equalTo(24)
         }
         
         paymentMethodStackView.snp.makeConstraints {
             $0.centerY.equalTo(paymentMethodLabel)
-            $0.right.equalTo(containerView).offset(-16)
+            $0.trailing.equalTo(containerView).offset(-16)
         }
     }
     
-    func bind(_ info: StoreDetailInfo) {
-        setSalesType(info.salesType)
-        appearanceDayStackView.bind(info.appearanceDays)
-        paymentMethodStackView.bind(info.paymentMethods)
-        setOpeningHours(info.openingHours)
+    func bind(viewModel: StoreDetailBaseInfoCellViewModel) {
+        let data = viewModel.output.data
+        
+        setHeader(data.header)
+        setSalesType(data.salesType?.type)
+        appearanceDayStackView.bind(data.openingDays)
+        paymentMethodStackView.bind(data.paymentMethods)
+        setOpeningHours(data.openingHours)
+    }
+    
+    private func setHeader(_ header: HeaderSectionResponse) {
+        headerView.bind(header: header)
+        
+        let height = StoreDetailHeaderView.Layout.calculateHeight(header: header)
+        headerView.snp.updateConstraints {
+            $0.height.equalTo(height)
+        }
     }
     
     private func setSalesType(_ type: SalesType?) {
@@ -172,7 +196,7 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
         typeValueLabel.text = salesType
     }
     
-    private func setOpeningHours(_ openingHours: StoreDetailOpeningHours?) {
+    private func setOpeningHours(_ openingHours: StoreOpeningHoursResponse?) {
         if let openingHours {
             let startDate = getStartFormattedDateString(dateString: openingHours.startTime)
             let endDate = getEndFormattedDateString(dateString: openingHours.endTime)

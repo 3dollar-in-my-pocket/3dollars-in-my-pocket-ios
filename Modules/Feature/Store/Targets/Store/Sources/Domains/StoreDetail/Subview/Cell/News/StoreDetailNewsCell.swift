@@ -4,9 +4,10 @@ import Common
 import DesignSystem
 import Model
 
-final class BossStorePostCell: BaseCollectionViewCell {
+final class StoreDetailNewsCell: BaseCollectionViewCell {
     enum Layout {
-        static func calculateHeight(viewModel: BossStorePostCellViewModel, width: CGFloat) -> CGFloat {
+        static func calculateHeight(viewModel: StoreDetailNewsCellViewModel, width: CGFloat) -> CGFloat {
+            guard let news = viewModel.output.news else { return 0 }
             var totalHeight: CGFloat = 0
             
             let sectionHeaderHeight: CGFloat = 24
@@ -16,12 +17,12 @@ final class BossStorePostCell: BaseCollectionViewCell {
             let headerHeight: CGFloat = 68
             totalHeight += headerHeight
             
-            if viewModel.output.post.sections.isNotEmpty {
-                totalHeight += BossStorePostImageCell.Layout.height
+            if news.images.isNotEmpty {
+                totalHeight += StoreDetailNewsImageCell.Layout.height
                 totalHeight += 12 // 이미지 하단 패딩
             }
             
-            var contentHeight = viewModel.output.post.body.boundingRect(
+            var contentHeight = news.content.text.boundingRect(
                 with: CGSize(
                     width: width - sectionInset.left - sectionInset.right,
                     height: CGFloat.greatestFiniteMagnitude
@@ -35,7 +36,7 @@ final class BossStorePostCell: BaseCollectionViewCell {
             
             let expendContent = viewModel.output.expendContent.value
             
-            if expendContent.isNot && isMoreThanMaxLine(body: viewModel.output.post.body) {
+            if expendContent.isNot && isMoreThanMaxLine(body: news.content.text) {
                 contentHeight = 116
             }
             
@@ -83,20 +84,7 @@ final class BossStorePostCell: BaseCollectionViewCell {
         static let contentTextColor = Colors.gray95.color
     }
     
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "가게 소식"
-        label.textColor = Colors.gray100.color
-        label.font = Fonts.bold.font(size: 16)
-        return label
-    }()
-    
-    private let moreButton: UIButton = {
-        let button = UIButton()
-        button.titleLabel?.font = Fonts.bold.font(size: 12)
-        button.setTitleColor(Colors.mainPink.color, for: .normal)
-        return button
-    }()
+    private let headerView = StoreDetailHeaderView()
     
     private let containerView: UIView = {
         let view = UIView()
@@ -155,7 +143,7 @@ final class BossStorePostCell: BaseCollectionViewCell {
     }()
     
     private let tapGesture = UITapGestureRecognizer()
-    private weak var viewModel: BossStorePostCellViewModel?
+    private weak var viewModel: StoreDetailNewsCellViewModel?
     
     override func setup() {
         setupUI()
@@ -165,15 +153,14 @@ final class BossStorePostCell: BaseCollectionViewCell {
         collectionView.delegate = self
         collectionView.register([
             BaseCollectionViewCell.self,
-            BossStorePostImageCell.self
+            StoreDetailNewsImageCell.self
         ])
     }
     
     private func setupUI() {
         backgroundColor = .clear
         
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(moreButton)
+        contentView.addSubview(headerView)
         contentView.addSubview(containerView)
         containerView.addSubview(categoryImageView)
         containerView.addSubview(storeNameLabel)
@@ -184,18 +171,15 @@ final class BossStorePostCell: BaseCollectionViewCell {
         contentStackView.addArrangedSubview(textView)
         contentStackView.addArrangedSubview(likeButton)
 
-        titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview()
+        headerView.snp.makeConstraints {
             $0.leading.equalToSuperview()
-        }
-        
-        moreButton.snp.makeConstraints {
-            $0.centerY.equalTo(titleLabel)
+            $0.top.equalToSuperview()
             $0.trailing.equalToSuperview()
+            $0.height.equalTo(0)
         }
         
         containerView.snp.makeConstraints {
-            $0.top.equalTo(moreButton.snp.bottom).offset(12)
+            $0.top.equalTo(headerView.snp.bottom).offset(12)
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
@@ -223,7 +207,7 @@ final class BossStorePostCell: BaseCollectionViewCell {
         }
         
         collectionView.snp.makeConstraints {
-            $0.height.equalTo(BossStorePostImageCell.Layout.height)
+            $0.height.equalTo(StoreDetailNewsImageCell.Layout.height)
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
         }
@@ -243,32 +227,16 @@ final class BossStorePostCell: BaseCollectionViewCell {
         return layout
     }
     
-    func bind(_ viewModel: BossStorePostCellViewModel) {
-        if let category = viewModel.output.store.categories.first {
-            categoryImageView.setImage(urlString: category.imageUrl)
-        }
-        
-        moreButton.setTitle("소식 더보기(\(viewModel.output.totalCount - 1)개)", for: .normal)
-        moreButton.isHidden = viewModel.output.totalCount <= 1
-        storeNameLabel.text = viewModel.output.store.name
-        updatedAtLabel.text = viewModel.output.post.updatedAt.toDate()?.toRelativeString()
-        collectionView.isHidden = viewModel.output.post.sections.isEmpty
-        
-        if let sticker = viewModel.output.post.stickers.first {
-            setSticker(sticker)
-        }
-        
-        if self.viewModel != viewModel {
-            collectionView.reloadData()
-            DispatchQueue.main.async { [weak self] in
-                self?.collectionView.setContentOffset(viewModel.output.scrollOffset.value, animated: false)
-            }
+    func bind(_ viewModel: StoreDetailNewsCellViewModel) {
+        setHeaderView(header: viewModel.output.header)
+        if let news = viewModel.output.news {
+            setNews(news: news)
         }
         
         self.viewModel = viewModel
         
         // Input
-        moreButton.tapPublisher
+        headerView.rightButton.tapPublisher
             .subscribe(viewModel.input.didTapMore)
             .store(in: &cancellables)
         
@@ -282,24 +250,58 @@ final class BossStorePostCell: BaseCollectionViewCell {
         // Output
         viewModel.output.expendContent
             .main
-            .withUnretained(self)
-            .sink { (owner: BossStorePostCell, isExpanded: Bool) in
-                owner.updateTextView(viewModel.output.post.body, isExpanded: isExpanded)
+            .sink { [weak self] (isExpanded: Bool) in
+                guard let content = viewModel.output.news?.content.text else { return }
+                
+                self?.updateTextView(content, isExpanded: isExpanded)
             }
             .store(in: &cancellables)
         
         viewModel.output.sticker
             .compactMap { $0 }
             .main
-            .withUnretained(self)
-            .sink { (owner: BossStorePostCell, sticker: StickerResponse) in
-                owner.setSticker(sticker)
+            .sink { [weak self] (likeSection: StoreNewsSectionResponse.StoreNewsCardSectionResponse.LikeSectionResponse) in
+                self?.setLikeButton(likeSection)
             }
             .store(in: &cancellables)
     }
     
-    private func setSticker(_ sticker: StickerResponse) {
-        if sticker.reactedByMe {
+    private func setHeaderView(header: HeaderSectionResponse) {
+        headerView.bind(header: header)
+        headerView.snp.updateConstraints {
+            $0.height.equalTo(StoreDetailHeaderView.Layout.calculateHeight(header: header))
+        }
+    }
+    
+    private func setNews(news: StoreNewsSectionResponse.StoreNewsCardSectionResponse) {
+        if let thumbnail = news.thumbnail {
+            categoryImageView.setImage(urlString: thumbnail.url)
+        }
+        
+        storeNameLabel.setSDText(news.title)
+        if let subTitle = news.subTitle {
+            updatedAtLabel.setSDText(subTitle)
+        }
+        
+        collectionView.isHidden = news.images.isEmpty
+        
+        if let likeButton = news.likeButton {
+            setLikeButton(likeButton)
+        }
+        
+        if self.viewModel != viewModel {
+            collectionView.reloadData()
+            DispatchQueue.main.async { [weak self] in
+                guard let scrollOffset = self?.viewModel?.output.scrollOffset.value else { return }
+                
+                self?.collectionView.setContentOffset(scrollOffset, animated: true)
+            }
+        }
+    }
+    
+    private func setLikeButton(_ likeSection: StoreNewsSectionResponse.StoreNewsCardSectionResponse.LikeSectionResponse) {
+        
+        if likeSection.isSelected {
             let image = Icons.heartFill.image
                 .resizeImage(scaledTo: 16)
                 .withRenderingMode(.alwaysTemplate)
@@ -314,7 +316,7 @@ final class BossStorePostCell: BaseCollectionViewCell {
             likeButton.tintColor = Colors.gray60.color
             likeButton.setTitleColor(Colors.gray60.color, for: .normal)
         }
-        likeButton.setTitle("좋아요 \(sticker.count)", for: .normal)
+        likeButton.setSDButton(likeSection.button)
     }
     
     private func updateTextView(_ fullText: String, isExpanded: Bool) {
@@ -327,7 +329,10 @@ final class BossStorePostCell: BaseCollectionViewCell {
                 ]
             )
         } else {
-            let limitedText = getLimitedText(fullText: fullText)
+            let limitedText = getLimitedText(
+                fullText: fullText,
+                moreText: viewModel?.output.moreButton?.text ?? "더보기"
+            )
             textView.attributedText = limitedText
         }
     }
@@ -394,70 +399,38 @@ final class BossStorePostCell: BaseCollectionViewCell {
     }
 }
 
-extension BossStorePostCell: UICollectionViewDataSource {
+extension StoreDetailNewsCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel?.output.post.sections.count ?? 0
+        return viewModel?.output.news?.images.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let imageUrl = viewModel?.output.post.sections[safe: indexPath.item]?.url else { return BaseCollectionViewCell() }
-        let cell: BossStorePostImageCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        guard let image = viewModel?.output.news?.images[safe: indexPath.item] else { return BaseCollectionViewCell() }
+        let cell: StoreDetailNewsImageCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         
-        cell.bind(imageUrl)
+        cell.bind(sdImage: image)
         return cell
     }
 }
 
-extension BossStorePostCell: UICollectionViewDelegateFlowLayout {
+extension StoreDetailNewsCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel?.input.didTapPhoto.send(indexPath.item)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let ratio = viewModel?.output.post.sections[safe: indexPath.item]?.ratio else {
-            return CGSize(width: BossStorePostImageCell.Layout.height, height: BossStorePostImageCell.Layout.height)
+        guard let image = viewModel?.output.news?.images[safe: indexPath.item] else {
+            return CGSize(width: StoreDetailNewsImageCell.Layout.height, height: StoreDetailNewsImageCell.Layout.height)
         }
         
-        let width = BossStorePostImageCell.Layout.height * ratio
-        let height = BossStorePostImageCell.Layout.height
+        let ratio = image.style.width / image.style.height
+        let width = StoreDetailNewsImageCell.Layout.height * ratio
+        let height = StoreDetailNewsImageCell.Layout.height
         
         return CGSize(width: width, height: height)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         viewModel?.input.didScroll.send(scrollView.contentOffset)
-    }
-}
-
-// MARK: - Image Cell
-private final class BossStorePostImageCell: BaseCollectionViewCell {
-    enum Layout {
-        static let height: CGFloat = 208
-    }
-    
-    private let imageView = UIImageView().then {
-        $0.backgroundColor = Colors.gray70.color
-        $0.layer.cornerRadius = 16
-        $0.clipsToBounds = true
-        $0.contentMode = .scaleAspectFill
-        $0.layer.borderColor = Colors.gray20.color.cgColor
-        $0.layer.borderWidth = 0.5
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        imageView.clear()
-    }
-    
-    override func setup() {
-        contentView.addSubview(imageView)
-        imageView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-    }
-    
-    func bind(_ imageUrl: String) {
-        imageView.setImage(urlString: imageUrl)
     }
 }

@@ -2,12 +2,12 @@ import UIKit
 
 import Model
 
-final class StoreDetailInfoPaymentStackView: UIStackView {
-    private let cashItemView = StoreDetailIntoPaymentStackItemView(method: .cash)
+final class StoreDetailBaseInfoPaymentStackView: UIStackView {
+    private let cashItemView = StoreDetailBaseInfoPaymentStackItemView(method: .cash)
     
-    private let accountTransferItemView = StoreDetailIntoPaymentStackItemView(method: .accountTransfer)
+    private let accountTransferItemView = StoreDetailBaseInfoPaymentStackItemView(method: .accountTransfer)
     
-    private let cardItemView = StoreDetailIntoPaymentStackItemView(method: .card)
+    private let cardItemView = StoreDetailBaseInfoPaymentStackItemView(method: .card)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

@@ -58,3 +58,13 @@ final class StoreDetailActionBarCellViewModel: BaseViewModel {
         }
     }
 }
+
+extension StoreDetailActionBarCellViewModel: Hashable {
+    static func == (lhs: StoreDetailActionBarCellViewModel, rhs: StoreDetailActionBarCellViewModel) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(output.data)
+    }
+}

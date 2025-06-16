@@ -2,8 +2,19 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 
-final class StoreDetailHeaderView: BaseCollectionViewReusableView {
+final class StoreDetailHeaderView: BaseView {
+    enum Layout {
+        static func calculateHeight(header: HeaderSectionResponse) -> CGFloat {
+            if header.subTitle.isNil {
+                return 24
+            } else {
+                return 44
+            }
+        }
+    }
+    
     private let verticalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -19,7 +30,7 @@ final class StoreDetailHeaderView: BaseCollectionViewReusableView {
         return label
     }()
     
-    private let descriptionLabel: UILabel = {
+    private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.font = Fonts.medium.font(size: 12)
         label.textColor = Colors.gray60.color
@@ -33,40 +44,25 @@ final class StoreDetailHeaderView: BaseCollectionViewReusableView {
         return button
     }()
     
-    private let valueLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.medium.font(size: 16)
-        label.textColor = Colors.gray100.color
-        
-        return label
-    }()
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        if let stackLastView = verticalStackView.arrangedSubviews.last,
-           stackLastView == descriptionLabel {
-            stackLastView.removeFromSuperview()
-        }
-        
-        descriptionLabel.text = nil
-        valueLabel.text = nil
-        rightButton.setTitle(nil, for: .normal)
+    override func setup() {
+        setupUI()
     }
     
-    override func setup() {
-        verticalStackView.addArrangedSubview(titleLabel)
+    func prepareForReuse() {
+        verticalStackView.arrangedSubviews.forEach {
+            $0.removeFromSuperview()
+        }
+        subtitleLabel.text = nil
+    }
+    
+    private func setupUI() {
         addSubViews([
             verticalStackView,
-            rightButton,
-            valueLabel
+            rightButton
         ])
-    }
-    
-    override func bindConstraints() {
+        
         verticalStackView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
             $0.top.equalToSuperview()
         }
         
@@ -74,37 +70,28 @@ final class StoreDetailHeaderView: BaseCollectionViewReusableView {
             $0.height.equalTo(24)
         }
         
-        descriptionLabel.snp.makeConstraints {
+        subtitleLabel.snp.makeConstraints {
             $0.height.equalTo(18)
         }
         
         rightButton.snp.makeConstraints {
-            $0.right.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalTo(verticalStackView)
             $0.height.equalTo(18)
         }
-        
-        valueLabel.snp.makeConstraints {
-            $0.left.equalTo(titleLabel.snp.right)
-            $0.centerY.equalTo(titleLabel)
-        }
     }
     
-    func bind(_ header: StoreDetailSectionHeader?) {
-        guard let header else { return }
-        titleLabel.text = header.title
+    func bind(header: HeaderSectionResponse) {
+        titleLabel.setSDText(header.title)
         verticalStackView.addArrangedSubview(titleLabel)
         
-        if let description = header.description {
-            verticalStackView.setCustomSpacing(2, after: titleLabel)
-            verticalStackView.addArrangedSubview(descriptionLabel)
-            descriptionLabel.text = description
+        if let subTitle = header.subTitle {
+            subtitleLabel.setSDText(subTitle)
+            verticalStackView.addArrangedSubview(subtitleLabel)
         }
         
-        rightButton.setTitle(header.buttonTitle, for: .normal)
-        
-        if let value = header.value {
-            valueLabel.text = value
+        if let rightButton = header.rightButton {
+            self.rightButton.setSDButton(rightButton)
         }
     }
 }

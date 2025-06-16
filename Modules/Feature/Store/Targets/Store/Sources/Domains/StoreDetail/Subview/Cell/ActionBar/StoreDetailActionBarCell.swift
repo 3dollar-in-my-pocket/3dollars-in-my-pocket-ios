@@ -3,7 +3,7 @@ import UIKit
 import Common
 import Model
 
-final class StoreDetailActionBarCell: BaseTableViewCell {
+final class StoreDetailActionBarCell: BaseCollectionViewCell {
     enum Layout {
         static let height: CGFloat = 74 + topPadding
         static let topPadding: CGFloat = 20

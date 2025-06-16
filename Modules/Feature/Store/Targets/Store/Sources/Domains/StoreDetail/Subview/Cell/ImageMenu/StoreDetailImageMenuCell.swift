@@ -66,7 +66,7 @@ final class StoreDetailImageMenuCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(_ viewModel: StoreDetailImageMenuCellViewModel) {
+    func bind(viewModel: StoreDetailImageMenuCellViewModel) {
         self.viewModel = viewModel
         
         viewModel.output.menus

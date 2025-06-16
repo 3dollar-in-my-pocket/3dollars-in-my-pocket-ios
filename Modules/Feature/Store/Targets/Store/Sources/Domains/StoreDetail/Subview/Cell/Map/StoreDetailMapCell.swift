@@ -4,23 +4,26 @@ import Common
 import DesignSystem
 import Model
 import NMapsMap
+import CombineCocoa
 
-final class StoreDetailOverviewMapView: BaseView {
+final class StoreDetailMapCell: BaseCollectionViewCell {
     enum Layout {
-        static let mapHeight: CGFloat = 140
+        static let height: CGFloat = 172
     }
     
-    var marker: NMFMarker?
+    private var marker: NMFMarker?
     
-    let mapView = NMFMapView().then {
-        $0.zoomLevel = 15
-        $0.positionMode = .direction
-        $0.layer.cornerRadius = 20
-        $0.layer.masksToBounds = true
-        $0.isUserInteractionEnabled = false
-    }
+    private let mapView: NMFMapView = {
+        let mapView = NMFMapView()
+        mapView.zoomLevel = 15
+        mapView.positionMode = .direction
+        mapView.layer.cornerRadius = 20
+        mapView.layer.masksToBounds = true
+        mapView.isUserInteractionEnabled = false
+        return mapView
+    }()
     
-    let addressButton: UIButton = {
+    private let addressButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(Colors.systemWhite.color, for: .normal)
         button.titleLabel?.font = Fonts.medium.font(size: 12)
@@ -38,57 +41,73 @@ final class StoreDetailOverviewMapView: BaseView {
         return button
     }()
     
-    let zoomButton = UIButton().then {
-        $0.backgroundColor = Colors.systemWhite.color
-        $0.layer.cornerRadius = 18
-        $0.layer.masksToBounds = true
-        $0.layer.borderColor = Colors.gray20.color.cgColor
-        $0.layer.borderWidth = 1
-        $0.layer.shadowOffset = CGSize(width: 2, height: 2)
-        $0.layer.shadowColor = Colors.systemBlack.color.withAlphaComponent(0.1).cgColor
-        $0.setImage(Icons.zoom.image.withTintColor(Colors.gray50.color), for: .normal)
-        $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
+    private let zoomButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = Colors.systemWhite.color
+        button.layer.cornerRadius = 18
+        button.layer.masksToBounds = true
+        button.layer.borderColor = Colors.gray20.color.cgColor
+        button.layer.borderWidth = 1
+        button.layer.shadowOffset = CGSize(width: 2, height: 2)
+        button.layer.shadowColor = Colors.systemBlack.color.withAlphaComponent(0.1).cgColor
+        button.setImage(Icons.zoom.image.withTintColor(Colors.gray50.color), for: .normal)
+        button.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
+        return button
+    }()
+    
+    override func prepareForReuse() {
+        marker?.mapView = nil
     }
     
     override func setup() {
+        setupUI()
+    }
+    
+    private func setupUI() {
         addSubViews([
             mapView,
             addressButton,
             zoomButton
         ])
-    }
-    
-    override func bindConstraints() {
+        
         mapView.snp.makeConstraints {
-            $0.left.equalToSuperview()
+            $0.leading.equalToSuperview()
             $0.top.equalToSuperview()
-            $0.right.equalToSuperview()
-            $0.height.equalTo(Layout.mapHeight)
+            $0.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-32)
         }
         
         addressButton.snp.makeConstraints {
-            $0.left.equalTo(mapView).offset(8)
+            $0.leading.equalTo(mapView).offset(8)
             $0.bottom.equalTo(mapView).offset(-8)
             $0.height.equalTo(34)
         }
         
         zoomButton.snp.makeConstraints {
-            $0.right.equalTo(mapView).offset(-8)
+            $0.trailing.equalTo(mapView).offset(-8)
             $0.bottom.equalTo(mapView).offset(-8)
             $0.size.equalTo(36)
         }
     }
     
-    func prepareForReuse() {
-        marker?.mapView = nil
+    func bind(viewModel: StoreDetailMapCellViewModel) {
+        bindData(viewModel.output.data)
+        
+        addressButton.tapPublisher
+            .throttleClick()
+            .subscribe(viewModel.input.didTapAddress)
+            .store(in: &cancellables)
+        
+        zoomButton.tapPublisher
+            .throttleClick()
+            .subscribe(viewModel.input.didTapMapDetail)
+            .store(in: &cancellables)
     }
     
-    func bind(location: LocationResponse?, address: String?) {
-        addressButton.setTitle(address, for: .normal)
-        
-        guard let location else { return }
-        setMarket(location: location)
-        moveCamera(location: location)
+    private func bindData(_ data: StoreMapSectionResponse) {
+        addressButton.setTitle(data.addressName?.text, for: .normal)
+        setMarket(location: data.location)
+        moveCamera(location: data.location)
     }
     
     private func moveCamera(location: LocationResponse) {

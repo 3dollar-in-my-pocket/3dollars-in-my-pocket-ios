@@ -38,7 +38,6 @@
 "store_detail.menu.more" = "메뉴 더 보기";
 "store_detail.photo.header.title" = "가게 사진";
 "store_detail.photo.header.button" = "사진 제보";
-"store_detail.photo.more" = "더보기";
 "store_detail.photo.empty" = "사진을 제보해주세요!";
 "store_detail.review.header.title" = "리뷰";
 "store_detail.review.header.button" = "리뷰 쓰기";
@@ -124,7 +123,6 @@
 "boss_store_detail.sns.empty" = "SNS 주소가 없습니다🥲";
 "boss_store_detail.feedback.title" = "가게 평가";
 "boss_store_detail.feedback.send_feedback" = "리뷰 남기기";
-"boss_store_detail.workday.title" = "영업 일정";
 "boss_store_detail.workday.closed" = "휴무";
 
 // 사장님

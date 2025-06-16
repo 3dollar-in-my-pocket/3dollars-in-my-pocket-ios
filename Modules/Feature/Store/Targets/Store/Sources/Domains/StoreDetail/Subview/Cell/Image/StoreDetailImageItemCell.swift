@@ -33,7 +33,6 @@ final class StoreDetailImageItemCell: BaseCollectionViewCell {
         let label = UILabel()
         label.font = Fonts.bold.font(size: 12)
         label.textColor = Colors.mainPink.color
-        
         return label
     }()
     
@@ -41,8 +40,6 @@ final class StoreDetailImageItemCell: BaseCollectionViewCell {
         let label = UILabel()
         label.textColor = Colors.gray0.color
         label.font = Fonts.medium.font(size: 12)
-        label.text = Strings.StoreDetail.Photo.more
-        
         return label
     }()
     
@@ -78,18 +75,20 @@ final class StoreDetailImageItemCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(photo: StoreDetailPhoto, isLast: Bool) {
-        photoView.setImage(urlString: photo.url)
-        
-        if isLast && (photo.totalCount - 4) > 0 {
-            dimmedView.isHidden = false
-            countValueLabel.isHidden = false
-            countLabel.isHidden = false
-            countValueLabel.text = "+\(photo.totalCount - 4)"
-        } else {
-            dimmedView.isHidden = true
-            countValueLabel.isHidden = true
-            countLabel.isHidden = true
+    func bind(sdImage: SDImage) {
+        photoView.setImage(urlString: sdImage.url)
+        dimmedView.isHidden = true
+        countLabel.isHidden = true
+        countValueLabel.isHidden = true
+    }
+    
+    func bind(more: StoreImagesSectionResponse.StoreImageMoreSectionResponse) {
+        dimmedView.isHidden = false
+        countLabel.isHidden = false
+        countValueLabel.isHidden = false
+        countLabel.setSDText(more.title)
+        if let subTitle = more.subTitle {
+            countValueLabel.setSDText(subTitle)
         }
     }
 }

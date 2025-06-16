@@ -2,14 +2,14 @@ import UIKit
 
 import Model
 
-final class StoreDetailInfoAppearanceDayStackView: UIStackView {
-    private let mondayItem = StoreDetailInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.monday)
-    private let tuesdayItem = StoreDetailInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.tuesday)
-    private let wednesdayItem = StoreDetailInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.wednesday)
-    private let thursdayItem = StoreDetailInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.thursday)
-    private let fridayItem = StoreDetailInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.friday)
-    private let saturdayItem = StoreDetailInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.saturday)
-    private let sundayItem = StoreDetailInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.sunday)
+final class StoreDetailBaseInfoAppearanceDayStackView: UIStackView {
+    private let mondayItem = StoreDetailBaseInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.monday)
+    private let tuesdayItem = StoreDetailBaseInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.tuesday)
+    private let wednesdayItem = StoreDetailBaseInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.wednesday)
+    private let thursdayItem = StoreDetailBaseInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.thursday)
+    private let fridayItem = StoreDetailBaseInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.friday)
+    private let saturdayItem = StoreDetailBaseInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.saturday)
+    private let sundayItem = StoreDetailBaseInfoAppearanceDayStackItemView(value: Strings.StoreDetail.Info.sunday)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,9 +21,9 @@ final class StoreDetailInfoAppearanceDayStackView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(_ appearanceDays: [AppearanceDay]) {
+    func bind(_ openingDays: [BasicStoreInfoSectionResponse.OpeningDays]) {
         clearAppearanceDays()
-        for appearanceDay in appearanceDays {
+        for appearanceDay in openingDays {
             switch appearanceDay {
             case .monday:
                 mondayItem.setSelected(true)

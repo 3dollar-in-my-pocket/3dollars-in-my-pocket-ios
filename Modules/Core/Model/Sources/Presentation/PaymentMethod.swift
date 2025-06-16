@@ -11,6 +11,7 @@ public enum PaymentMethod: String, Hashable, Codable {
     }
     
     public init(from decoder: Decoder) throws {
-        self = try PaymentMethod(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
+        let rawValue = try? decoder.singleValueContainer().decode(RawValue.self)
+        self = PaymentMethod(value: rawValue ?? "")
     }
 }
