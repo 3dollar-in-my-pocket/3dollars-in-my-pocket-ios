@@ -2,8 +2,10 @@ import UIKit
 
 import Model
 
-final class HomeDataSource: UICollectionViewDiffableDataSource<HomeSection, HomeSectionItem> {
-    let viewModel: HomeViewModel
+typealias HomeStoreCardSanpshot = NSDiffableDataSourceSnapshot<HomeCardSection, HomeCardSectionItem>
+
+final class HomeDataSource: UICollectionViewDiffableDataSource<HomeCardSection, HomeCardSectionItem> {
+    private let viewModel: HomeViewModel
     
     init(
         collectionView: UICollectionView,
@@ -15,31 +17,26 @@ final class HomeDataSource: UICollectionViewDiffableDataSource<HomeSection, Home
         collectionView.register([
             HomeStoreCardCell.self,
             HomeStoreEmptyCell.self,
-            HomeCardAdvertisementCell.self
+            HomeAdvertisementCardCell.self,
+            HomeAdmobCardCell.self
         ])
         
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .store(let storeWithExtra):
+            case .store(let viewModel):
                 let cell: HomeStoreCardCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                
-                cell.bind(storeWithExtra: storeWithExtra)
-                cell.visitButton
-                    .controlPublisher(for: .touchUpInside)
-                    .map { _ in indexPath.row }
-                    .subscribe(viewModel.input.onTapVisitButton)
-                    .store(in: &cell.cancellables)
+                cell.bind(viewModel: viewModel)
                 return cell
-                
+            case .advertisement(let data):
+                let cell: HomeAdvertisementCardCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(data)
+                return cell
+            case .admob(let data):
+                let cell: HomeAdmobCardCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(rootViewController: rootViewController)
+                return cell
             case .empty:
                 let cell: HomeStoreEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                
-                return cell
-                
-            case .advertisement(let advertisement):
-                let cell: HomeCardAdvertisementCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                
-                cell.bind(advertisement: advertisement, in: rootViewController)
                 return cell
             }
         }
@@ -53,14 +50,14 @@ extension HomeDataSource: UICollectionViewDelegateFlowLayout {
         guard let sectionItem = snapshot().itemIdentifiers[safe: indexPath.item] else { return .zero }
         
         switch sectionItem {
+        case .store:
+            return HomeStoreCardCell.Layout.size
+        case .advertisement:
+            return HomeAdvertisementCardCell.Layout.size
+        case .admob:
+            return HomeAdmobCardCell.Layout.size
         case .empty:
             return HomeStoreEmptyCell.Layout.size
-            
-        case .store:
-            return HomeStoreCardCell.Layout.size    
-            
-        case .advertisement:
-            return HomeCardAdvertisementCell.Layout.size
         }
     }
     

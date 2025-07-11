@@ -13,8 +13,7 @@ import FeedInterface
 
 extension HomeViewModel {
     enum Constant {
-        static let defaultLocation = CLLocation(latitude: 37.497941, longitude: 127.027616)
-        static let cardAdvertisementIndex = 1
+        static let defaultLocation = CLLocation(latitude: 37.497941, longitude: 127.027616) // 강남역
     }
     
     struct Input {
@@ -35,10 +34,12 @@ extension HomeViewModel {
         let onTapListView = PassthroughSubject<Void, Never>()
         let selectStore = PassthroughSubject<Int, Never>()
         let onTapStore = PassthroughSubject<Int, Never>()
-        let onTapVisitButton = PassthroughSubject<Int, Never>()
         let onTapMarker = PassthroughSubject<Int, Never>()
         let onTapCurrentMarker = PassthroughSubject<Void, Never>()
         let didTapFeedButton = PassthroughSubject<Void, Never>()
+        
+        // From SubViewModel
+        let didTapCardActionButton = PassthroughSubject<SDLink, Never>()
     }
     
     struct Output {
@@ -53,8 +54,7 @@ extension HomeViewModel {
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let advertisementMarker = PassthroughSubject<AdvertisementResponse, Never>()
-        let advertisementCard = PassthroughSubject<AdvertisementResponse?, Never>()
-        let collectionItems = PassthroughSubject<[HomeSectionItem], Never>()
+        let datasource = PassthroughSubject<[HomeCardSectionItem], Never>()
         let scrollToIndex = PassthroughSubject<Int, Never>()
         let isShowFilterTooltip = PassthroughSubject<Bool, Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
@@ -64,7 +64,7 @@ extension HomeViewModel {
     struct State {
         var address = ""
         var categoryFilter: StoreFoodCategoryResponse?
-        var store: [StoreWithExtraResponse] = []
+        var homeCardComponents: [any HomeCardComponent] = []
         var sortType: StoreSortType = .distanceAsc
         var isOnlyBossStore = false
         var isOnlyRecentActivity = false
@@ -74,7 +74,6 @@ extension HomeViewModel {
         var resultCameraPosition: CLLocation?
         var currentLocation: CLLocation?
         var advertisementMarker: AdvertisementResponse?
-        var advertisementCard: AdvertisementResponse?
         var selectedIndex = 0
         var hasMore: Bool = true
         var nextCursor: String? = nil
@@ -84,20 +83,18 @@ extension HomeViewModel {
     enum Route {
         case presentCategoryFilter(CategoryFilterViewModel)
         case presentListView(HomeListViewModel)
-        case pushStoreDetail(storeId: Int)
-        case pushBossStoreDetail(storeId: String)
         case presentVisit(StoreResponse)
         case presentPolicy
         case presentMarkerAdvertisement
         case presentSearchAddress(SearchAddressViewModel)
         case showErrorAlert(Error)
-        case deepLink(AdvertisementResponse)
+        case deepLink(SDLink)
         case presentAccountInfo(BaseViewModel)
         case presentFeedList(FeedListViewModel)
     }
     
     struct Dependency {
-        let storeRepository: StoreRepository
+        let homeRepository: HomeRepository
         let advertisementRepository: AdvertisementRepository
         let userRepository: UserRepository
         let mapRepository: MapRepository
@@ -107,7 +104,7 @@ extension HomeViewModel {
         let appModuleInterface: AppModuleInterface
         
         init(
-            storeRepository: StoreRepository = StoreRepositoryImpl(),
+            homeRepository: HomeRepository = HomeRepositoryImpl(),
             advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
             userRepository: UserRepository = UserRepositoryImpl(),
             mapRepository: MapRepository = MapRepositoryImpl(),
@@ -116,7 +113,7 @@ extension HomeViewModel {
             logManager: LogManagerProtocol = LogManager.shared,
             appModuleInterface: AppModuleInterface = Environment.appModuleInterface
         ) {
-            self.storeRepository = storeRepository
+            self.homeRepository = homeRepository
             self.advertisementRepository = advertisementRepository
             self.userRepository = userRepository
             self.mapRepository = mapRepository
@@ -151,9 +148,8 @@ final class HomeViewModel: BaseViewModel {
     
     override func bind() {
         input.onMapLoad
-            .withUnretained(self)
-            .sink { (owner: HomeViewModel, _) in
-                owner.fetchAdvertisementMarker()
+            .sink { [weak self] _ in
+                self?.fetchAdvertisementMarker()
             }
             .store(in: &cancellables)
         
@@ -189,52 +185,35 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.currentLocation = owner.state.resultCameraPosition
                 owner.output.cameraPosition.send(location)
                 owner.dependency.preference.userCurrentLocation = location
-                owner.fetchAroundStores()
+                owner.fetchHomeCards()
             })
             .store(in: &cancellables)
                 
         input.viewDidLoad
-            .withUnretained(self)
-            .asyncMap { owner, _ in
-                await owner.dependency.userRepository.fetchUser()
-            }
-            .compactMapValue()
-            .withUnretained(self)
-            .sink { (owner: HomeViewModel, user: UserDetailResponse) in
-                guard MarketingConsent(value: user.settings.marketingConsent) == .unverified else { return }
-                owner.output.route.send(.presentPolicy)
-            }
-            .store(in: &cancellables)
-        
-        input.viewDidLoad
-            .withUnretained(self)
-            .sink { (owner: HomeViewModel, _) in
-                owner.fetchAdvertisementCard()
-            }
+            .sink(receiveValue: { [weak self] in
+                self?.presentPolicyIfNeeded()
+            })
             .store(in: &cancellables)
         
         input.changeMaxDistance
-            .withUnretained(self)
-            .sink { owner, distance in
-                owner.state.newMapMaxDistance = distance
-                owner.output.isHiddenResearchButton.send(false)
+            .sink { [weak self] distance in
+                self?.state.newMapMaxDistance = distance
+                self?.output.isHiddenResearchButton.send(false)
             }
             .store(in: &cancellables)
         
         input.changeMapLocation
-            .withUnretained(self)
-            .sink { owner, location in
-                owner.state.newCameraPosition = location
-                owner.output.isHiddenResearchButton.send(false)
+            .sink { [weak self] location in
+                self?.state.newCameraPosition = location
+                self?.output.isHiddenResearchButton.send(false)
             }
             .store(in: &cancellables)
         
         input.onTapCategoryFilter
-            .withUnretained(self)
-            .sink(receiveValue: { (owner: HomeViewModel, _) in
-                owner.hiddenTooltip()
-                owner.sendClickCategoryFilterLog()
-                owner.presentCategoryFilter()
+            .sink(receiveValue: { [weak self] _ in
+                self?.hiddenTooltip()
+                self?.sendClickCategoryFilterLog()
+                self?.presentCategoryFilter()
             })
             .store(in: &cancellables)
         
@@ -242,7 +221,7 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, category: StoreFoodCategoryResponse?) in
                 owner.state.categoryFilter = category
-                owner.fetchAroundStores()
+                owner.fetchHomeCards()
                 owner.hiddenTooltip()
                 owner.updateFilterDatasource()
             })
@@ -254,7 +233,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.hiddenTooltip()
                 owner.state.isOnlyRecentActivity.toggle()
                 owner.sendClickRecentActivityFilter(value: owner.state.isOnlyRecentActivity)
-                owner.fetchAroundStores()
+                owner.fetchHomeCards()
                 owner.updateFilterDatasource()
             })
             .store(in: &cancellables)
@@ -265,7 +244,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.hiddenTooltip()
                 owner.state.sortType = owner.state.sortType.toggled()
                 owner.sendClickSortingFilterLog(sortType: sortType)
-                owner.fetchAroundStores()
+                owner.fetchHomeCards()
                 owner.updateFilterDatasource()
             })
             .store(in: &cancellables)
@@ -276,7 +255,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.hiddenTooltip()
                 owner.state.isOnlyBossStore.toggle()
                 owner.sendClickOnlyBossFilterLog(isOn: owner.state.isOnlyBossStore)
-                owner.fetchAroundStores()
+                owner.fetchHomeCards()
                 owner.updateFilterDatasource()
             })
             .store(in: &cancellables)
@@ -301,7 +280,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.newCameraPosition = location
                 owner.state.resultCameraPosition = location
                 owner.output.cameraPosition.send(location)
-                owner.fetchAroundStores()
+                owner.fetchHomeCards()
                 owner.output.isHiddenResearchButton.send(true)
             })
             .store(in: &cancellables)
@@ -312,7 +291,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.showLoading.send(true)
                 owner.state.mapMaxDistance = owner.state.newMapMaxDistance
                 owner.state.resultCameraPosition = owner.state.newCameraPosition
-                owner.fetchAroundStores()
+                owner.fetchHomeCards()
                 owner.output.isHiddenResearchButton.send(true)
             })
             .store(in: &cancellables)
@@ -361,108 +340,58 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onTapListView
-            .withLatestFrom(output.collectionItems)
-            .withUnretained(self)
-            .map { (owner: HomeViewModel, items: [HomeSectionItem] ) in
-                let stores = items.compactMap { $0.store }
-                let state = HomeListViewModel.State(
-                    stores: .init(stores),
-                    categoryFilter: owner.state.categoryFilter,
-                    isOnlyRecentActivity: owner.state.isOnlyRecentActivity,
-                    sortType: owner.state.sortType,
-                    isOnlyBossStore: owner.state.isOnlyBossStore,
-                    mapLocation: owner.state.resultCameraPosition,
-                    currentLocation: owner.state.currentLocation,
-                    nextCursor: owner.state.nextCursor,
-                    hasMore: owner.state.hasMore,
-                    mapMaxDistance: owner.state.mapMaxDistance
-                )
-                let config = HomeListViewModel.Config(initialState: state)
-                let viewModel = HomeListViewModel(config: config)
-                owner.bindHomeListViewModel(viewModel)
-                
-                return Route.presentListView(viewModel)
-            }
-            .subscribe(output.route)
+            .sink(receiveValue: { [weak self] _ in
+                self?.presentListView()
+            })
             .store(in: &cancellables)
         
         input.selectStore
-            .withLatestFrom(output.collectionItems) { ($0, $1) }
-            .handleEvents(receiveOutput: { [weak self] (index: Int, items: [HomeSectionItem]) in
+            .withLatestFrom(output.datasource) { ($0, $1) }
+            .handleEvents(receiveOutput: { [weak self] (index: Int, items: [HomeCardSectionItem]) in
                 self?.output.scrollToIndex.send(index)
                 self?.state.selectedIndex = index
             })
-            .compactMap { (index: Int, items: [HomeSectionItem]) in
+            .compactMap { (index: Int, items: [HomeCardSectionItem]) in
                 return items[safe: index]
             }
             .withUnretained(self)
-            .sink(receiveValue: { (owner: HomeViewModel, sectionItem: HomeSectionItem) in
-                switch sectionItem {
-                case .store(let storeWithExtra):
-                    guard let location = storeWithExtra.store.location else { return }
+            .sink(receiveValue: { (owner: HomeViewModel, sectionItem: HomeCardSectionItem) in
+                if case .store(let cellViewModel) = sectionItem,
+                   let location = cellViewModel.output.data.marker?.location {
                     let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
                     owner.output.cameraPosition.send(cameraPosition)
-                    
-                case .empty, .advertisement:
-                    break
                 }
             })
             .store(in: &cancellables)
         
         input.onTapMarker
-            .withLatestFrom(output.collectionItems) { ($0, $1) }
-            .sink(receiveValue: { [weak self] (index: Int, items: [HomeSectionItem]) in
+            .withLatestFrom(output.datasource) { ($0, $1) }
+            .sink(receiveValue: { [weak self] (index: Int, items: [HomeCardSectionItem]) in
                 guard let self,
-                      let store = items[safe: index]?.store,
-                      let location = store.store.location else { return }
-                sendClickMarkerLog(store: store.store)
-                
-                let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                      let item = items[safe: index],
+                      case .store(let cellViewModel) = item,
+                      let marker = cellViewModel.output.data.marker else { return }
+                let cameraPosition = CLLocation(
+                    latitude: marker.location.latitude,
+                    longitude: marker.location.longitude
+                )
                 output.cameraPosition.send(cameraPosition)
                 output.scrollToIndex.send(index)
             })
             .store(in: &cancellables)
         
         input.onTapStore
-            .withLatestFrom(output.collectionItems) { ($0, $1) }
-            .sink(receiveValue: { [weak self] (index: Int, items: [HomeSectionItem]) in
+            .withLatestFrom(output.datasource) { ($0, $1) }
+            .sink(receiveValue: { [weak self] (index: Int, items: [HomeCardSectionItem]) in
                 guard let self,
                       let item = items[safe: index] else { return }
                 
                 if index == state.selectedIndex {
-                    switch item {
-                    case .advertisement(let advertisement):
-                        guard let advertisement = advertisement else { return }
-                        sendClickAdCard(advertisement: advertisement)
-                        output.route.send(.deepLink(advertisement))
-                    case .store(let storeWithExtra):
-                        sendClickStoreLog(storeWithExtra.store)
-                        pushStoreDetail(store: storeWithExtra.store)
-                        
-                    default:
-                        break
-                    }
+                    routeCard(item)
                 } else {
-                    if let store = item.store?.store,
-                       let location = store.location {
-                        let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
-                        output.cameraPosition.send(cameraPosition)
-                    }
-                    output.scrollToIndex.send(index)
-                    state.selectedIndex = index
+                    selectCard(item, index: index)
                 }
             })
-            .store(in: &cancellables)
-        
-        input.onTapVisitButton
-            .withLatestFrom(output.collectionItems) { ($0, $1) }
-            .sink { [weak self] index, items in
-                guard let self,
-                      let item = items[safe: index],
-                      let store = item.store?.store else { return }
-                sendClickVisitStoreLog(store)
-                output.route.send(.presentVisit(store))
-            }
             .store(in: &cancellables)
         
         input.onTapCurrentMarker
@@ -479,11 +408,8 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.onLoadFilter
-            .withUnretained(self)
-            .sink { (owner: HomeViewModel, _) in
-                if owner.dependency.preference.isShownFilterTooltip.isNot {
-                    owner.output.isShowFilterTooltip.send(true)
-                }
+            .sink { [weak self] _ in
+                self?.showFilterTooltipIfNeeded()
             }
             .store(in: &cancellables)
         
@@ -497,6 +423,12 @@ final class HomeViewModel: BaseViewModel {
                 )
                 let viewModel = FeedListViewModel(config: config)
                 owner.output.route.send(.presentFeedList(viewModel))
+            }
+            .store(in: &cancellables)
+        
+        input.didTapCardActionButton
+            .sink { [weak self] link in
+                self?.output.route.send(.deepLink(link))
             }
             .store(in: &cancellables)
     }
@@ -513,48 +445,56 @@ final class HomeViewModel: BaseViewModel {
     }
     
     private func updateDatasource() {
-        var items: [HomeSectionItem] = state.store.map { .store($0) }
-        let advertisement = state.advertisementCard
-        let advertisementIndex = state.advertisementCard?.metadata?.exposureIndex ?? Constant.cardAdvertisementIndex
-        
-        if items.isEmpty {
-            items = [.empty]
-        } else if items.count > advertisementIndex {
-            items.insert(.advertisement(advertisement), at: advertisementIndex)
-        } else {
-            items.append(.advertisement(advertisement))
+        var datasource: [HomeCardSectionItem] = []
+        for component in state.homeCardComponents {
+            if let data = component as? HomeCardSectionResponse {
+                let config = HomeStoreCardCellViewModel.Config(data: data)
+                let viewModel = HomeStoreCardCellViewModel(config: config)
+                bindHomeStoreCellViewModel(viewModel)
+                datasource.append(.store(viewModel))
+            } else if let data = component as? HomeAdCardSectionResponse {
+                datasource.append(.advertisement(data))
+            } else if let data = component as? HomeAdmobCardSectionResponse {
+                datasource.append(.admob(data))
+            }
         }
         
-        output.collectionItems.send(items)
+        if datasource.isEmpty {
+            datasource = [.empty]
+        }
+        
+        output.datasource.send(datasource)
         output.scrollToIndex.send(0)
     }
     
-    private func fetchAroundStores() {
+    private func fetchHomeCards() {
         Task {
-            let input = createFetchAroundStoreInput()
-            let result = await dependency.storeRepository.fetchAroundStores(input: input)
+            output.showLoading.send(true)
+            let input = createFetchHomeCardInput()
+            let result = await dependency.homeRepository.fetchHomeCards(input: input)
             
             switch result {
             case .success(let response):
-                state.nextCursor = response.cursor.nextCursor
-                state.hasMore = response.cursor.hasMore
-                state.store = response.contents
+                state.nextCursor = response.cursor?.nextCursor
+                state.hasMore = response.cursor?.hasMore ?? false
+                state.homeCardComponents = response.sections
                 updateDatasource()
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))
             }
             output.showLoading.send(false)
         }
+        .store(in: taskBag)
     }
     
-    private func createFetchAroundStoreInput() -> FetchAroundStoreInput {
+    private func createFetchHomeCardInput() -> FetchHomeCardInput {
         var categoryIds: [String]? = nil
         if let filterCategory = state.categoryFilter {
             categoryIds = [filterCategory.categoryId]
         }
         let targetStores: [StoreType] = state.isOnlyBossStore ? [.bossStore] : [.userStore, .bossStore]
         let filterConditions: [ActivitiesStatus] = state.isOnlyRecentActivity ? [.recentActivity] : [.recentActivity, .noRecentActivity]
-        return FetchAroundStoreInput(
+        return FetchHomeCardInput(
             distanceM: state.mapMaxDistance ?? 0,
             categoryIds: categoryIds,
             targetStores: targetStores,
@@ -571,45 +511,13 @@ final class HomeViewModel: BaseViewModel {
     private func fetchAdvertisementMarker() {
         Task {
             let input = FetchAdvertisementInput(position: .storeMarker, size: nil)
-            let result = await dependency.advertisementRepository.fetchAdvertisements(input: input)
+            let response = await dependency.advertisementRepository.fetchAdvertisements(input: input).data
             
-            switch result {
-            case .success(let response):
-                guard let advertisement = response.advertisements.first else { return }
-                state.advertisementMarker = advertisement
-                output.advertisementMarker.send(advertisement)
-            case .failure(_):
-                break
-            }
+            guard let advertisement = response?.advertisements.first else { return }
+            state.advertisementMarker = advertisement
+            output.advertisementMarker.send(advertisement)
         }
-    }
-    
-    private func fetchAdvertisementCard() {
-        Task {
-            let input = FetchAdvertisementInput(position: .mainPageCard, size: nil)
-            let result = await dependency.advertisementRepository.fetchAdvertisements(input: input)
-            
-            switch result {
-            case .success(let response):
-                if let advertisement = response.advertisements.first {
-                    state.advertisementCard = advertisement
-                    output.advertisementCard.send(advertisement)
-                } else {
-                    output.advertisementCard.send(nil)
-                }
-                
-            case .failure(_):
-                output.advertisementCard.send(nil)
-            }
-        }
-    }
-    
-    private func pushStoreDetail(store: StoreResponse) {
-        if store.storeType == .userStore {
-            output.route.send(.pushStoreDetail(storeId: Int(store.storeId) ?? 0))
-        } else {
-            output.route.send(.pushBossStoreDetail(storeId: store.storeId))
-        }
+        .store(in: taskBag)
     }
     
     private func presentSearchAddress() {
@@ -671,43 +579,91 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         output.route.send(.presentCategoryFilter(viewModel))
     }
+    
+    private func presentPolicyIfNeeded() {
+        Task {
+            let user = await dependency.userRepository.fetchUser().data
+            
+            guard
+                let user,
+                MarketingConsent(value: user.settings.marketingConsent) == .unverified
+            else {
+                return
+            }
+            
+            output.route.send(.presentPolicy)
+        }.store(in: taskBag)
+    }
+    
+    private func showFilterTooltipIfNeeded() {
+        guard dependency.preference.isShownFilterTooltip.isNot else { return }
+        output.isShowFilterTooltip.send(true)
+    }
+    
+    private func selectCard(_ item: HomeCardSectionItem, index: Int) {
+        if case .store(let cellViewModel) = item,
+           let location = cellViewModel.output.data.marker?.location {
+            let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
+            output.cameraPosition.send(cameraPosition)
+        }
+        
+        output.scrollToIndex.send(index)
+        state.selectedIndex = index
+    }
+    
+    private func routeCard(_ item: HomeCardSectionItem) {
+        switch item {
+        case .store(let cellViewModel):
+            if let link = cellViewModel.output.data.link {
+                output.route.send(.deepLink(link))
+            }
+        case .advertisement(let data):
+            sendClickAdCard(advertisement: data.adRef)
+            if let link = data.link {
+                output.route.send(.deepLink(link))
+            }
+        default:
+            break
+        }
+    }
+    
+    private func didTapCardButton(_ component: any HomeCardComponent) {
+        guard let component = component as? HomeAdCardSectionResponse,
+              let link = component.link else { return }
+        
+        output.route.send(.deepLink(link))
+    }
+    
+    private func presentListView() {
+        let config = HomeListViewModel.Config(
+            categoryFilter: state.categoryFilter,
+            isOnlyRecentActivity: state.isOnlyRecentActivity,
+            sortType: state.sortType,
+            isOnlyBossStore: state.isOnlyBossStore,
+            mapLocation: state.resultCameraPosition,
+            mapMaxDistance: state.mapMaxDistance
+        )
+        let viewModel = HomeListViewModel(config: config)
+        bindHomeListViewModel(viewModel)
+        output.route.send(.presentListView(viewModel))
+    }
+}
+
+// MARK: Subcell
+extension HomeViewModel {
+    private func bindHomeStoreCellViewModel(_ viewModel: HomeStoreCardCellViewModel) {
+        viewModel.output.didTapActionButton
+            .subscribe(input.didTapCardActionButton)
+            .store(in: &viewModel.cancellables)
+    }
 }
 
 // MARK: Log
 extension HomeViewModel {
-    private func sendClickStoreLog(_ store: StoreResponse) {
-        dependency.logManager.sendEvent(.init(
-            screen: output.screenName,
-            eventName: .clickStore,
-            extraParameters: [
-                .storeId: store.storeId,
-                .type: store.storeType.rawValue
-            ]))
-    }
-    
-    private func sendClickVisitStoreLog(_ store: StoreResponse) {
-        dependency.logManager.sendEvent(.init(
-            screen: output.screenName,
-            eventName: .clickVisit,
-            extraParameters: [.storeId: store.storeId]
-        ))
-    }
-    
     private func sendClickCurrentLocationLog() {
         dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickCurrentLocation
-        ))
-    }
-    
-    private func sendClickMarkerLog(store: StoreResponse) {
-        dependency.logManager.sendEvent(.init(
-            screen: output.screenName,
-            eventName: .clickMarker,
-            extraParameters: [
-                .storeId: store.storeId,
-                .type: store.storeType.rawValue
-            ]
         ))
     }
     
@@ -741,11 +697,11 @@ extension HomeViewModel {
         ))
     }
     
-    private func sendClickAdCard(advertisement: AdvertisementResponse) {
+    private func sendClickAdCard(advertisement: AdvertisementReference) {
         dependency.logManager.sendEvent(.init(
             screen: output.screenName,
             eventName: .clickAdCard,
-            extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
+            extraParameters: [.advertisementId: "\(advertisement.adId)"]
         ))
     }
     

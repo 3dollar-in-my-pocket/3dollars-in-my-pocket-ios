@@ -38,7 +38,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         }
     }
     
-    func handleLinkResponse(_ linkResponse: LinkResponse) {
+    func handleLinkResponse(_ linkResponse: SDLink) {
         switch linkResponse.type {
         case .appScheme:
             let urlString = "\(Bundle.deeplinkScheme):/\(linkResponse.link)"
@@ -156,6 +156,14 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             case .unknown:
                 break
             }
+        case .visit:
+            guard let params = url.params(),
+                  let storeId = params["storeId"] as? String else { return }
+            
+            let config = VisitViewModel.Config(storeId: storeId)
+            let viewModel = VisitViewModel(config: config)
+            let viewController = VisitViewController(viewModel: viewModel)
+            route(viewController, forcePresent: true)
         case .unknown:
             os_log(.debug, "🔴알 수 없는 형태의 딥링크입니다. %{PUBLIC}@", urlString)
             break
@@ -189,9 +197,19 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         return url.scheme == Bundle.deeplinkScheme && url.host.isNotNil
     }
     
-    private func route(_ viewController: UIViewController) {
+    private func route(_ viewController: UIViewController, forcePresent: Bool = false) {
         guard let rootViewController = SceneDelegate.shared?.window?.rootViewController else { return }
         let topViewController = UIUtils.getTopViewController(rootViewController)
+        
+        if forcePresent {
+            if topViewController is PanModalPresentable {
+                topViewController.dismiss(animated: true) { [weak self] in
+                    self?.route(viewController, forcePresent: true)
+                }
+            } else {
+                topViewController.present(viewController, animated: true)
+            }
+        }
         
         if viewController is UINavigationController {
             topViewController.present(viewController, animated: true)

@@ -25,22 +25,22 @@ public enum FeedBodyType: String, Decodable {
 
 public struct ContentOnlyFeedBodyResponse: FeedBodyResponse {
     public let type: FeedBodyType
-    public let content: UiText
+    public let content: SDText
     public let style: FeedStyleResponse
     public let contentLeadingImage: ImageResponse?
 }
 
 public struct ContentWithImagesFeedBodyResponse: FeedBodyResponse {
     public let type: FeedBodyType
-    public let content: UiText
+    public let content: SDText
     public let images: [ImageResponse]
     public let style: FeedStyleResponse
 }
 
 public struct ContentWithTitleAndImagesFeedBodyResponse: FeedBodyResponse {
     public let type: FeedBodyType
-    public let title: UiText
-    public let content: UiText
+    public let title: SDText
+    public let content: SDText
     public let images: [ImageResponse]
     public let style: FeedStyleResponse
     public let additionalInfos: FeedAdditionalResponse?
@@ -48,8 +48,8 @@ public struct ContentWithTitleAndImagesFeedBodyResponse: FeedBodyResponse {
 
 public struct ContentWithTitleFeedBodyResponse: FeedBodyResponse {
     public var type: FeedBodyType
-    public let title: UiText
-    public let content: UiText
+    public let title: SDText
+    public let content: SDText
     public let style: FeedStyleResponse
     public let additionalInfos: FeedAdditionalResponse?
 }

@@ -284,8 +284,8 @@ final class VisitView: BaseView {
         }
     }
     
-    func bind(store: VisitableStore) {
-        storeNameLabel.text = store.storeName
+    func bind(store: StoreDetailResponse) {
+        storeNameLabel.text = store.name
         storeCategoryImage.setImage(urlString: store.categories.first?.imageUrl)
         storeCategoryLabel.text = store.categoriesString
         bottomRightCategoryImage.setImage(urlString: store.categories.first?.imageUrl)

@@ -11,11 +11,7 @@ public protocol StoreInterface {
         shouldPushReviewList: Bool
     ) -> UIViewController
 
-    func getVisitViewController(
-        storeId: Int,
-        visitableStore: VisitableStore,
-        onSuccessVisit: @escaping (() -> Void)
-    ) -> UIViewController
+    func getVisitViewController(storeId: Int, onSuccessVisit: @escaping (() -> Void)) -> UIViewController
     
     func getMapDetailViewController(location: LocationResponse, storeName: String) -> UIViewController
 }
