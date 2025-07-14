@@ -31,18 +31,12 @@ public enum WriteStrings: Sendable {
   public static let storeTypeRoad = WriteStrings.tr("Localization", "store_type_road")
   /// 매장
   public static let storeTypeStore = WriteStrings.tr("Localization", "store_type_store")
-  /// 맛집 위치는 바로 여기!
-  public static let writeAddressBottomTitle = WriteStrings.tr("Localization", "write_address_bottom_title")
-  /// 이 위치로 하기
-  public static let writeAddressButton = WriteStrings.tr("Localization", "write_address_button")
   /// 중복된 가게 제보인지 확인해 주세요.
   public static let writeAddressConfirmPopupDescription = WriteStrings.tr("Localization", "write_address_confirm_popup_description")
   /// 여기가 확실해요
   public static let writeAddressConfirmPopupOk = WriteStrings.tr("Localization", "write_address_confirm_popup_ok")
   /// 10m이내에 이미 제보된\n가게가 있어요! 
   public static let writeAddressConfirmPopupTitle = WriteStrings.tr("Localization", "write_address_confirm_popup_title")
-  /// 가게 제보
-  public static let writeAddressTitle = WriteStrings.tr("Localization", "write_address_title")
   /// 수정
   public static let writeDetailEditLocation = WriteStrings.tr("Localization", "write_detail_edit_location")
   /// 메뉴 카테고리
@@ -85,6 +79,52 @@ public enum WriteStrings: Sendable {
   public static let writeDetailTimeUntilPlaceholder = WriteStrings.tr("Localization", "write_detail_time_until_placeholder")
   /// 가게 제보
   public static let writeDetailTitle = WriteStrings.tr("Localization", "write_detail_title")
+
+  public enum BossAppBottomSheet: Sendable {
+  /// 아래의 기능을 모두 무료로 만나볼 수 있어요
+    public static let description = WriteStrings.tr("Localization", "boss_app_bottom_sheet.description")
+    /// 모두 무료로
+    public static let greenDescription = WriteStrings.tr("Localization", "boss_app_bottom_sheet.green_description")
+    /// 사장님 앱 설치하기
+    public static let install = WriteStrings.tr("Localization", "boss_app_bottom_sheet.install")
+    /// 사장님 앱을 설치하고\n더 편하게 가게를 관리해 보세요
+    public static let title = WriteStrings.tr("Localization", "boss_app_bottom_sheet.title")
+
+    public enum Feature: Sendable {
+    /// ✏️ 가게 정보 관리하기
+      public static let information = WriteStrings.tr("Localization", "boss_app_bottom_sheet.feature.information")
+      /// 🚚 실시간 가게 영업 정보 관리하기
+      public static let live = WriteStrings.tr("Localization", "boss_app_bottom_sheet.feature.live")
+      /// 💌 단골 손님에게 메세지 보내기
+      public static let message = WriteStrings.tr("Localization", "boss_app_bottom_sheet.feature.message")
+      /// 📢 가게 소식 공지하기
+      public static let notice = WriteStrings.tr("Localization", "boss_app_bottom_sheet.feature.notice")
+      /// 🗳️ 리뷰 관리하기
+      public static let review = WriteStrings.tr("Localization", "boss_app_bottom_sheet.feature.review")
+    }
+  }
+
+  public enum WriteAddress: Sendable {
+  /// 더 편하게 가게 관리하기
+    public static let bossButton = WriteStrings.tr("Localization", "write_address.boss_button")
+    /// 👩‍🍳 혹시 제보할 가게의 사장님이라면?
+    public static let bossDescription = WriteStrings.tr("Localization", "write_address.boss_description")
+    /// 현위치로 가게 제보
+    public static let button = WriteStrings.tr("Localization", "write_address.button")
+    /// 가게 제보
+    public static let title = WriteStrings.tr("Localization", "write_address.title")
+  }
+
+  public enum WriteCloseModal: Sendable {
+  /// 닫기
+    public static let cancel = WriteStrings.tr("Localization", "write_close_modal.cancel")
+    /// 지금까지 입력한 정보가 저장되지 않아요.
+    public static let description = WriteStrings.tr("Localization", "write_close_modal.description")
+    /// 나가기
+    public static let dismiss = WriteStrings.tr("Localization", "write_close_modal.dismiss")
+    /// 다음에 할까요?
+    public static let title = WriteStrings.tr("Localization", "write_close_modal.title")
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

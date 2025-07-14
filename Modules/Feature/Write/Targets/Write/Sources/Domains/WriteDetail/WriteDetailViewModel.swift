@@ -498,11 +498,11 @@ final class WriteDetailViewModel: BaseViewModel {
             address: state.addess ?? "",
             cameraPosition: location
         )
-        let viewModel = WriteAddressViewModel(config: config)
+        let viewModel = WriteAddressViewModel()
         
-        viewModel.output.editLocation
-            .subscribe(input.onEditLocation)
-            .store(in: &viewModel.cancellables)
+//        viewModel.output.editLocation
+//            .subscribe(input.onEditLocation)
+//            .store(in: &viewModel.cancellables)
         
         output.route.send(.presentWriteAddress(viewModel))
     }

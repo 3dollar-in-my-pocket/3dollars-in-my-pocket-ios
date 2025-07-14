@@ -8,9 +8,27 @@
 
 
 // 가게 제보 주소 화면
-"write_address_title" = "가게 제보";
-"write_address_bottom_title" = "맛집 위치는 바로 여기!";
-"write_address_button" = "이 위치로 하기";
+"write_address.title" = "가게 제보";
+"write_address.button" = "현위치로 가게 제보";
+"write_address.boss_description" = "👩‍🍳 혹시 제보할 가게의 사장님이라면?";
+"write_address.boss_button" = "더 편하게 가게 관리하기";
+
+// 가게 제보 취소 모달
+"write_close_modal.title" = "다음에 할까요?";
+"write_close_modal.description" = "지금까지 입력한 정보가 저장되지 않아요.";
+"write_close_modal.cancel" = "닫기";
+"write_close_modal.dismiss" = "나가기";
+
+// 사장님 가게 유도 바텀 시트
+"boss_app_bottom_sheet.title" = "사장님 앱을 설치하고\n더 편하게 가게를 관리해 보세요";
+"boss_app_bottom_sheet.description" = "아래의 기능을 모두 무료로 만나볼 수 있어요";
+"boss_app_bottom_sheet.green_description" = "모두 무료로";
+"boss_app_bottom_sheet.feature.message" = "💌 단골 손님에게 메세지 보내기";
+"boss_app_bottom_sheet.feature.information" = "✏️ 가게 정보 관리하기";
+"boss_app_bottom_sheet.feature.notice" = "📢 가게 소식 공지하기";
+"boss_app_bottom_sheet.feature.review" = "🗳️ 리뷰 관리하기";
+"boss_app_bottom_sheet.feature.live" = "🚚 실시간 가게 영업 정보 관리하기";
+"boss_app_bottom_sheet.install" = "사장님 앱 설치하기";
 
 // 가게 제보 중복 바텀 시트
 "write_address_confirm_popup_title" = "10m이내에 이미 제보된\n가게가 있어요! ";

@@ -10,16 +10,15 @@ public final class WriteInterfaceImpl: WriteInterface {
         config: WriteAddressViewModelConfig?,
         onSuccessWrite: @escaping ((Int) -> ())
     ) -> UIViewController {
-        let viewModel = WriteAddressViewModel(config: config)
+        let viewModel = WriteAddressViewModel()
         let viewController = WriteAddressViewController(viewModel: viewModel)
         
         viewController.onSuccessWrite = { storeId in
             onSuccessWrite(storeId)
         }
         
-        let navigationController = UINavigationController(rootViewController: viewController)
+        let navigationController = WriteNavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .overCurrentContext
-        navigationController.isNavigationBarHidden = true
         return navigationController
     }
     
