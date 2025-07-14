@@ -31,9 +31,11 @@
 "boss_app_bottom_sheet.install" = "사장님 앱 설치하기";
 
 // 가게 제보 중복 바텀 시트
-"write_address_confirm_popup_title" = "10m이내에 이미 제보된\n가게가 있어요! ";
-"write_address_confirm_popup_description" = "중복된 가게 제보인지 확인해 주세요.";
-"write_address_confirm_popup_ok" = "여기가 확실해요";
+"address_confirm_bottom_sheet.title_format" = "50m 이내에 이미 등록된 %d개의\n가게가 있어요";
+"address_confirm_bottom_sheet.near_store" = "근처 가게";
+"address_confirm_bottom_sheet.confirm_button" = "이 장소가 확실해요";
+"address_confirm_bottom_sheet.more_format" = "외 %d개";
+"address_confirm_bottom_sheet.boss_directly" = "사장님 직영";
 
 // 가게 제보 상세화면
 "write_detail_title" = "가게 제보";

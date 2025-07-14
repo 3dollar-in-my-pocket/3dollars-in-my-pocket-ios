@@ -286,10 +286,10 @@ extension WriteAddressViewController {
         navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func presentConfirmPopup(_ viewModel: AddressConfirmPopupViewModel) {
-        let viewController = AddressConfirmPopupViewController(viewModel: viewModel)
+    private func presentConfirmPopup(_ viewModel: AddressConfirmBottomSheetViewModel) {
+        let viewController = AddressConfirmBottomSheetViewController(viewModel: viewModel)
         
-        navigationController?.present(viewController, animated: true)
+        presentPanModal(viewController)
     }
     
     private func presentBossAppBottomSheet(_ viewModel: BossAppBottomSheetViewModel) {

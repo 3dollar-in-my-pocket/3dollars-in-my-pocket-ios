@@ -20,11 +20,11 @@ extension WriteAddressViewModel {
         let didTapCurrentLocation = PassthroughSubject<Void, Never>()
         let didTapSetAddress = PassthroughSubject<Void, Never>()
         let didTapBossButton = PassthroughSubject<Void, Never>()
+        let didTapConfirmAddress = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
         let screenName: ScreenName = .writeAddress
-//        let storesNearBy = PassthroughSubject<[LocationResponse], Never>()
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let address = CurrentValueSubject<String, Never>("")
 //        let editLocation = PassthroughSubject<(address: String, location: CLLocation), Never>()
@@ -33,7 +33,7 @@ extension WriteAddressViewModel {
     
     enum Route {
         case pushWriteDetail(WriteDetailViewModel)
-        case presentConfirmPopup(AddressConfirmPopupViewModel)
+        case presentConfirmPopup(AddressConfirmBottomSheetViewModel)
         case presentBossAppBottomSheet(BossAppBottomSheetViewModel)
         case showErrorAlert(Error)
     }
@@ -129,17 +129,20 @@ public final class WriteAddressViewModel: BaseViewModel {
     
     private func checkStoreExistedAround(location: CLLocation) {
         Task {
-            let result =  await dependency.storeRepository.isStoresExistedAround(
-                distance: 10,
-                mapLocation: location
+            let input = FetchAroundStoreInput(
+                distanceM: 50,
+                targetStores: [.userStore, .bossStore],
+                mapLatitude: location.coordinate.latitude,
+                mapLongitude: location.coordinate.longitude
             )
+            let result = await dependency.storeRepository.fetchAroundStores(input: input)
             
             switch result {
             case .success(let response):
-                if response.isExists {
-                    presentConfirmPopup()
-                } else {
+                if response.contents.isEmpty {
                     pushWriteDetail(location: location)
+                } else {
+                    presentConfirmPopup(stores: response.contents, address: output.address.value)
                 }
                 
             case .failure(let error):
@@ -163,40 +166,16 @@ public final class WriteAddressViewModel: BaseViewModel {
             }
         }
     }
-    
-//    private func fetchAroundStores(cameraPosition: CLLocation) {
-//        let input = FetchAroundStoreInput(
-//            distanceM: Constant.maxDistance,
-//            targetStores: [.bossStore, .userStore],
-//            sortType: .distanceAsc,
-//            size: 20,
-//            mapLatitude: cameraPosition.coordinate.latitude,
-//            mapLongitude: cameraPosition.coordinate.longitude
-//        )
-//        
-//        Task {
-//            let result = await dependency.storeRepository.fetchAroundStores(input: input)
-//            
-//            switch result {
-//            case .success(let response):
-//                let locations = response.contents.compactMap { $0.store.location }
-//                output.storesNearBy.send(locations)
-//            case .failure(let error):
-//                output.route.send(.showErrorAlert(error))
-//            }
-//        }
-//    }
-    
-    private func presentConfirmPopup() {
-        // TODO: 가게 정보도 노출하는 바텀시트로 적용 필요
-//        let config = AddressConfirmPopupViewModel.Config(address: state.address)
-//        let viewModel = AddressConfirmPopupViewModel(config: config)
-//        
-//        viewModel.output.onClickOk
-//            .subscribe(input.tapConfirmAddress)
-//            .store(in: &viewModel.cancellables)
-//        
-//        output.route.send(.presentConfirmPopup(viewModel))
+        
+    private func presentConfirmPopup(stores: [StoreWithExtraResponse], address: String) {
+        let config = AddressConfirmBottomSheetViewModel.Config(stores: stores, address: address)
+        let viewModel = AddressConfirmBottomSheetViewModel(config: config)
+        
+        viewModel.output.didTapConfirm
+            .subscribe(input.didTapConfirmAddress)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.presentConfirmPopup(viewModel))
     }
     
     private func pushWriteDetail(location: CLLocation) {

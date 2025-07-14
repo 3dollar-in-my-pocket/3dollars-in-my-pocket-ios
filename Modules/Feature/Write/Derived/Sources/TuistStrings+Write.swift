@@ -31,12 +31,6 @@ public enum WriteStrings: Sendable {
   public static let storeTypeRoad = WriteStrings.tr("Localization", "store_type_road")
   /// 매장
   public static let storeTypeStore = WriteStrings.tr("Localization", "store_type_store")
-  /// 중복된 가게 제보인지 확인해 주세요.
-  public static let writeAddressConfirmPopupDescription = WriteStrings.tr("Localization", "write_address_confirm_popup_description")
-  /// 여기가 확실해요
-  public static let writeAddressConfirmPopupOk = WriteStrings.tr("Localization", "write_address_confirm_popup_ok")
-  /// 10m이내에 이미 제보된\n가게가 있어요! 
-  public static let writeAddressConfirmPopupTitle = WriteStrings.tr("Localization", "write_address_confirm_popup_title")
   /// 수정
   public static let writeDetailEditLocation = WriteStrings.tr("Localization", "write_detail_edit_location")
   /// 메뉴 카테고리
@@ -79,6 +73,23 @@ public enum WriteStrings: Sendable {
   public static let writeDetailTimeUntilPlaceholder = WriteStrings.tr("Localization", "write_detail_time_until_placeholder")
   /// 가게 제보
   public static let writeDetailTitle = WriteStrings.tr("Localization", "write_detail_title")
+
+  public enum AddressConfirmBottomSheet: Sendable {
+  /// 사장님 직영
+    public static let bossDirectly = WriteStrings.tr("Localization", "address_confirm_bottom_sheet.boss_directly")
+    /// 이 장소가 확실해요
+    public static let confirmButton = WriteStrings.tr("Localization", "address_confirm_bottom_sheet.confirm_button")
+    /// 외 %d개
+    public static func moreFormat(_ p1: Int) -> String {
+      return WriteStrings.tr("Localization", "address_confirm_bottom_sheet.more_format",p1)
+    }
+    /// 근처 가게
+    public static let nearStore = WriteStrings.tr("Localization", "address_confirm_bottom_sheet.near_store")
+    /// 50m 이내에 이미 등록된 %d개의\n가게가 있어요
+    public static func titleFormat(_ p1: Int) -> String {
+      return WriteStrings.tr("Localization", "address_confirm_bottom_sheet.title_format",p1)
+    }
+  }
 
   public enum BossAppBottomSheet: Sendable {
   /// 아래의 기능을 모두 무료로 만나볼 수 있어요

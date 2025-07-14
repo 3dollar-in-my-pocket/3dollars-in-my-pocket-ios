@@ -4,8 +4,6 @@ import CoreLocation
 import Model
 
 public protocol StoreRepository {
-    func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<IsStoresExistedAroundResponse, Error>
-    
     func createStore(input: StoreCreateRequestInput) async -> Result<UserStoreCreateResponse, Error>
     
     func editStore(storeId: Int, input: EditStoreRequestInput) async -> Result<UserStoreCreateResponse, Error>
@@ -41,12 +39,6 @@ public protocol StoreRepository {
 
 public struct StoreRepositoryImpl: StoreRepository {
     public init() { }
-    
-    public func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<IsStoresExistedAroundResponse, Error> {
-        let request = StoreApi.isStoresExistedAround(distance: distance, mapLocation: mapLocation)
-        
-        return await NetworkManager.shared.request(requestType: request)
-    }
     
     public func createStore(input: StoreCreateRequestInput) async -> Result<UserStoreCreateResponse, Error> {
         let request = StoreApi.createStore(input: input)

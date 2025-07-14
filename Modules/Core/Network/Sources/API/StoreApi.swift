@@ -11,7 +11,6 @@ enum StoreApi {
     case fetchStoreDetail(input: FetchStoreDetailInput)
     case createStore(input: StoreCreateRequestInput)
     case editStore(storeId: Int, input: EditStoreRequestInput)
-    case isStoresExistedAround(distance: Double, mapLocation: CLLocation)
     case saveStore(storeId: String, isDelete: Bool)
     case reportStore(storeId: Int, reportReason: String)
     case writeReview(input: WriteReviewRequestInput)
@@ -39,12 +38,6 @@ extension StoreApi: RequestType {
             return input
         case .editStore(_, let input):
             return input
-        case .isStoresExistedAround(let distance, let mapLocation):
-            return [
-                "distance": distance,
-                "mapLatitude": mapLocation.coordinate.latitude,
-                "mapLongitude": mapLocation.coordinate.longitude
-            ]
         case .saveStore:
             return nil
         case .reportStore(_, let reportReason):
@@ -86,8 +79,6 @@ extension StoreApi: RequestType {
             return .post
         case .editStore:
             return .put
-        case .isStoresExistedAround:
-            return .get
         case .saveStore(_, let isDelete):
             return isDelete ? .delete : .put
         case .reportStore:
@@ -126,8 +117,6 @@ extension StoreApi: RequestType {
             return .json
         case .editStore:
             return .json
-        case .isStoresExistedAround:
-            return .json
         case .saveStore:
             return .json
         case .reportStore:
@@ -163,8 +152,6 @@ extension StoreApi: RequestType {
             return "/api/v2/store"
         case .editStore(let storeId, _):
             return "/api/v2/store/\(storeId)"
-        case .isStoresExistedAround:
-            return "/api/v1/stores/near/exists"
         case .saveStore(let storeId, _):
             return "/api/v2/store/\(storeId)/favorite"
         case .reportStore(let storeId, _):
