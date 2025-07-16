@@ -277,18 +277,11 @@ extension WriteAddressViewController {
         present(viewController, animated: true)
     }
     
-    private func pushWriteDetail(_ viewModel: WriteDetailViewModel) {
-        let viewController = WriteDetailViewController(viewModel: viewModel)
-        viewController.onSuccessWrite = { [weak self] storeId in
-            self?.onSuccessWrite?(storeId)
-        }
-        
-        navigationController?.pushViewController(viewController, animated: true)
-    }
-    
     private func presentConfirmPopup(_ viewModel: AddressConfirmBottomSheetViewModel) {
         let viewController = AddressConfirmBottomSheetViewController(viewModel: viewModel)
-        
+        viewController.onDismissed = { [weak self] in
+            self?.viewModel.input.didTapConfirmAddress.send(())
+        }
         presentPanModal(viewController)
     }
     
@@ -315,8 +308,6 @@ extension WriteAddressViewController: NMFMapViewCameraDelegate {
 extension WriteAddressViewController {
     private func handleRoute(_ route: WriteAddressViewModel.Route) {
         switch route {
-        case .pushWriteDetail(let viewModel):
-            pushWriteDetail(viewModel)
         case .presentConfirmPopup(let viewModel):
             presentConfirmPopup(viewModel)
         case .presentBossAppBottomSheet(let viewModel):

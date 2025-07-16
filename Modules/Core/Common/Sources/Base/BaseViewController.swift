@@ -128,6 +128,7 @@ open class BaseViewController: UIViewController {
                 target: self,
                 action: #selector(didTapBack)
             )
+            backButtonItem.tintColor = DesignSystemAsset.Colors.gray100.color
             navigationItem.setAutoInsetLeftBarButtonItem(backButtonItem)
         }
     }

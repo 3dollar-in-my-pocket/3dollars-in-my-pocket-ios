@@ -9,7 +9,7 @@ enum StoreApi {
     case togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest)
     case fetchAroundStores(input: FetchAroundStoreInput)
     case fetchStoreDetail(input: FetchStoreDetailInput)
-    case createStore(input: StoreCreateRequestInput)
+    case createStore(input: UserStoreCreateRequest, nonceToken: String)
     case editStore(storeId: Int, input: EditStoreRequestInput)
     case saveStore(storeId: String, isDelete: Bool)
     case reportStore(storeId: Int, reportReason: String)
@@ -34,7 +34,7 @@ extension StoreApi: RequestType {
             return input
         case .fetchStoreDetail(let input):
             return input
-        case .createStore(let input):
+        case .createStore(let input, _):
             return input
         case .editStore(_, let input):
             return input
@@ -113,8 +113,8 @@ extension StoreApi: RequestType {
             return .location
         case .fetchStoreDetail:
             return .location
-        case .createStore:
-            return .json
+        case .createStore(_, let token):
+            return .custom(["X-Nonce-Token": token])
         case .editStore:
             return .json
         case .saveStore:

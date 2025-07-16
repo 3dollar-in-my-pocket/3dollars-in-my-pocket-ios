@@ -10,12 +10,6 @@ public protocol WriteInterface {
         onSuccessWrite: @escaping ((Int) -> ())
     ) -> UIViewController
     
-    func getWriteDetailViewController(
-        location: LocationResponse,
-        address: String,
-        onSuccessWrite: @escaping ((Int) -> ())
-    ) -> UIViewController
-    
     func getEditDetailViewController(
         storeId: Int,
         storeDetailData: StoreDetailData,

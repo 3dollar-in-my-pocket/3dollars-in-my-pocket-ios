@@ -1,6 +1,6 @@
 import Foundation
 
-public struct StoreOpeningHoursRequest: Encodable {
+public struct UserStoreOpeningHoursRequest: Encodable {
     public let startTime: String?
     public let endTime: String?
     

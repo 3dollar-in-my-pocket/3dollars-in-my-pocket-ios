@@ -28,11 +28,11 @@ extension WriteAddressViewModel {
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let address = CurrentValueSubject<String, Never>("")
 //        let editLocation = PassthroughSubject<(address: String, location: CLLocation), Never>()
+        let finishWriteAddress = PassthroughSubject<(address: String, location: CLLocation), Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
     enum Route {
-        case pushWriteDetail(WriteDetailViewModel)
         case presentConfirmPopup(AddressConfirmBottomSheetViewModel)
         case presentBossAppBottomSheet(BossAppBottomSheetViewModel)
         case showErrorAlert(Error)
@@ -110,6 +110,14 @@ public final class WriteAddressViewModel: BaseViewModel {
                 self?.output.route.send(.presentBossAppBottomSheet(viewModel))
             }
             .store(in: &cancellables)
+        
+        input.didTapConfirmAddress
+            .sink { [weak self] _ in
+                guard let location = self?.state.cameraPosition,
+                      let address = self?.output.address.value else { return }
+                self?.output.finishWriteAddress.send((address, location))
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchCurrentLocation() {
@@ -140,7 +148,7 @@ public final class WriteAddressViewModel: BaseViewModel {
             switch result {
             case .success(let response):
                 if response.contents.isEmpty {
-                    pushWriteDetail(location: location)
+                    output.finishWriteAddress.send((output.address.value, location))
                 } else {
                     presentConfirmPopup(stores: response.contents, address: output.address.value)
                 }
@@ -171,24 +179,7 @@ public final class WriteAddressViewModel: BaseViewModel {
         let config = AddressConfirmBottomSheetViewModel.Config(stores: stores, address: address)
         let viewModel = AddressConfirmBottomSheetViewModel(config: config)
         
-        viewModel.output.didTapConfirm
-            .subscribe(input.didTapConfirmAddress)
-            .store(in: &viewModel.cancellables)
-        
         output.route.send(.presentConfirmPopup(viewModel))
-    }
-    
-    private func pushWriteDetail(location: CLLocation) {
-        // TODO: 가게 상세 구현하고 나서 연동 필요
-//        guard let cameraPosition = state.cameraPosition else { return }
-//        let cameraLocation = LocationResponse(
-//            latitude: cameraPosition.coordinate.latitude,
-//            longitude: cameraPosition.coordinate.longitude
-//        )
-//        let config = WriteDetailViewModel.WriteConfig(location: cameraLocation, address: state.address)
-//        let viewModel = WriteDetailViewModel(config: config)
-//        
-//        output.route.send(.pushWriteDetail(viewModel))
     }
 }
 

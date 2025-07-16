@@ -11,7 +11,6 @@ extension AddressConfirmBottomSheetViewModel {
     struct Output {
         let stores: [StoreWithExtraResponse]
         let address: String
-        let didTapConfirm = PassthroughSubject<Void, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -39,7 +38,6 @@ final class AddressConfirmBottomSheetViewModel: BaseViewModel {
         input.didTapConfirm
             .sink { [weak self] in
                 self?.output.route.send(.dismiss)
-                self?.output.didTapConfirm.send(())
             }
             .store(in: &cancellables)
     }

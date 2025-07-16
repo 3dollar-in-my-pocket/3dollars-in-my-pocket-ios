@@ -4,7 +4,7 @@ import CoreLocation
 import Model
 
 public protocol StoreRepository {
-    func createStore(input: StoreCreateRequestInput) async -> Result<UserStoreCreateResponse, Error>
+    func createStore(input: UserStoreCreateRequest, nonceToken: String) async -> Result<UserStoreCreateResponse, Error>
     
     func editStore(storeId: Int, input: EditStoreRequestInput) async -> Result<UserStoreCreateResponse, Error>
     
@@ -40,8 +40,8 @@ public protocol StoreRepository {
 public struct StoreRepositoryImpl: StoreRepository {
     public init() { }
     
-    public func createStore(input: StoreCreateRequestInput) async -> Result<UserStoreCreateResponse, Error> {
-        let request = StoreApi.createStore(input: input)
+    public func createStore(input: UserStoreCreateRequest, nonceToken: String) async -> Result<UserStoreCreateResponse, Error> {
+        let request = StoreApi.createStore(input: input, nonceToken: nonceToken)
         
         return await NetworkManager.shared.request(requestType: request)
     }

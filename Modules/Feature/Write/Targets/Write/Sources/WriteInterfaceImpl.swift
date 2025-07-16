@@ -11,31 +11,20 @@ public final class WriteInterfaceImpl: WriteInterface {
         onSuccessWrite: @escaping ((Int) -> ())
     ) -> UIViewController {
         let viewModel = WriteAddressViewModel()
-        let viewController = WriteAddressViewController(viewModel: viewModel)
+        let navigationViewModel = WriteNavigationViewModel()
         
+        viewModel.output.finishWriteAddress
+            .subscribe(navigationViewModel.input.finishWriteAddress)
+            .store(in: &viewModel.cancellables)
+        
+        let viewController = WriteAddressViewController(viewModel: viewModel)
         viewController.onSuccessWrite = { storeId in
             onSuccessWrite(storeId)
         }
         
-        let navigationController = WriteNavigationController(rootViewController: viewController)
+        let navigationController = WriteNavigationController(rootViewController: viewController, viewModel: navigationViewModel)
         navigationController.modalPresentationStyle = .overCurrentContext
         return navigationController
-    }
-    
-    public func getWriteDetailViewController(
-        location: LocationResponse,
-        address: String,
-        onSuccessWrite: @escaping ((Int) -> ())
-    ) -> UIViewController {
-        let config = WriteDetailViewModel.WriteConfig(location: location, address: address)
-        let viewModel = WriteDetailViewModel(config: config)
-        let viewController = WriteDetailViewController(viewModel: viewModel)
-        
-        viewController.onSuccessWrite = { storeId in
-            onSuccessWrite(storeId)
-        }
-        
-        return viewController
     }
     
     public func getEditDetailViewController(
@@ -43,15 +32,16 @@ public final class WriteInterfaceImpl: WriteInterface {
         storeDetailData: StoreDetailData,
         onSuccessEdit: @escaping ((UserStoreCreateResponse) -> ())
     ) -> UIViewController {
-        let config = WriteDetailViewModel.EditConfig(storeId: storeId, storeDetailData: storeDetailData)
-        let viewModel = WriteDetailViewModel(config: config)
-        let viewController = WriteDetailViewController(viewModel: viewModel)
-        
-        viewController.onSuccessEdit = { storeCreateResponse in
-            onSuccessEdit(storeCreateResponse)
-        }
-        
-        return viewController
+//        let config = WriteDetailViewModel.EditConfig(storeId: storeId, storeDetailData: storeDetailData)
+//        let viewModel = WriteDetailViewModel(config: config)
+//        let viewController = WriteDetailViewController(viewModel: viewModel)
+//        
+//        viewController.onSuccessEdit = { storeCreateResponse in
+//            onSuccessEdit(storeCreateResponse)
+//        }
+//        
+//        return viewController
+        return UIViewController(nibName: nil, bundle: nil)
     }
 }
 

@@ -136,6 +136,42 @@ public enum WriteStrings: Sendable {
     /// 다음에 할까요?
     public static let title = WriteStrings.tr("Localization", "write_close_modal.title")
   }
+
+  public enum WriteDetailInfo: Sendable {
+  /// 지금 당장 가게 이름을 알 수 없다면, 근처의 랜드마크와 함께 입력해 보세요.
+    public static let description = WriteStrings.tr("Localization", "write_detail_info.description")
+    /// 다음
+    public static let next = WriteStrings.tr("Localization", "write_detail_info.next")
+    /// 가게 정보 입력
+    public static let subTitle = WriteStrings.tr("Localization", "write_detail_info.sub_title")
+    /// 가게 제보
+    public static let title = WriteStrings.tr("Localization", "write_detail_info.title")
+
+    public enum NameTextField: Sendable {
+    /// 봉어빵역 2번 출구 삼거리 근처 붕어빵 집
+      public static let placeholder = WriteStrings.tr("Localization", "write_detail_info.name_text_field.placeholder")
+      /// 가게 이름
+      public static let title = WriteStrings.tr("Localization", "write_detail_info.name_text_field.title")
+    }
+
+    public enum StoreType: Sendable {
+    /// 가게형태
+      public static let convience = WriteStrings.tr("Localization", "write_detail_info.store_type.convience")
+      /// 가게형태
+      public static let foodTruck = WriteStrings.tr("Localization", "write_detail_info.store_type.food_truck")
+      /// 가게형태
+      public static let road = WriteStrings.tr("Localization", "write_detail_info.store_type.road")
+      /// 가게형태
+      public static let store = WriteStrings.tr("Localization", "write_detail_info.store_type.store")
+      /// 가게형태
+      public static let title = WriteStrings.tr("Localization", "write_detail_info.store_type.title")
+    }
+
+    public enum Toast: Sendable {
+    /// 가게 이름을 입력해주세요.
+      public static let needStoreName = WriteStrings.tr("Localization", "write_detail_info.toast.need_store_name")
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

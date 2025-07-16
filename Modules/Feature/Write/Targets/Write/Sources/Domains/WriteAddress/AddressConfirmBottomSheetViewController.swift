@@ -32,6 +32,7 @@ final class AddressConfirmBottomSheetViewController: BaseViewController {
     }
     
     private let viewModel: AddressConfirmBottomSheetViewModel
+    var onDismissed: (() -> Void)?
     
     // MARK: - UI
     private let closeButton: UIButton = {
@@ -224,7 +225,9 @@ extension AddressConfirmBottomSheetViewController {
     private func handleRoute(_ route: AddressConfirmBottomSheetViewModel.Route) {
         switch route {
         case .dismiss:
-            dismiss(animated: true)
+            dismiss(animated: true) { [weak self] in
+                self?.onDismissed?()
+            }
         }
     }
 }

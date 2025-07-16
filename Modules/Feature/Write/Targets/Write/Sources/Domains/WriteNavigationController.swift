@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 import DesignSystem
 
@@ -10,11 +11,24 @@ final class WriteNavigationController: UINavigationController {
         return progressView
     }()
     
+    private let viewModel: WriteNavigationViewModel
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(rootViewController: UIViewController, viewModel: WriteNavigationViewModel) {
+        self.viewModel = viewModel
+        super.init(rootViewController: rootViewController)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavigationBar()
         setupUI()
+        bind()
     }
     
     private func setupUI() {
@@ -42,11 +56,35 @@ final class WriteNavigationController: UINavigationController {
         navigationBar.scrollEdgeAppearance = appearance
     }
     
+    private func bind() {
+        viewModel.output.route
+            .main
+            .sink { [weak self] route in
+                self?.handleRoute(route)
+            }
+            .store(in: &cancellables)
+    }
+    
     func updateProgress(_ progress: Float) {
         progressView.setProgress(progress, animated: true)
     }
     
     func setProgressHidden(_ isHidden: Bool) {
         progressView.isHidden = isHidden
+    }
+}
+
+// MARK: Route
+extension WriteNavigationController {
+    private func handleRoute(_ route: WriteNavigationViewModel.Route) {
+        switch route {
+        case .pushWriteDetailInfo(let viewModel):
+            pushWriteDetailInfo(viewModel)
+        }
+    }
+    
+    private func pushWriteDetailInfo(_ viewModel: WriteDetailInfoViewModel) {
+        let viewController = WriteDetailInfoViewController(viewModel: viewModel)
+        pushViewController(viewController, animated: true)
     }
 }
