@@ -8,6 +8,7 @@ extension WriteNavigationViewModel {
     struct Input {
         let finishWriteAddress = PassthroughSubject<(address: String, location: CLLocation), Never>()
         let finishWriteDetailInfo = PassthroughSubject<(storeName: String, storeType: UserStoreCreateRequest.StoreType), Never>()
+        let finishSelectCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
     }
     
     struct Output {
@@ -16,6 +17,7 @@ extension WriteNavigationViewModel {
     
     enum Route {
         case pushWriteDetailInfo(WriteDetailInfoViewModel)
+        case pushWriteDetailCategory(WriteDetailCategoryViewModel)
     }
     
     private struct State {
@@ -61,6 +63,11 @@ final class WriteNavigationViewModel: BaseViewModel {
     }
     
     private func pushWriteDetailCategory() {
+        let viewModel = WriteDetailCategoryViewModel()
         
+        viewModel.output.finishSelectCategory
+            .subscribe(input.finishSelectCategory)
+            .store(in: &viewModel.cancellables)
+        output.route.send(.pushWriteDetailCategory(viewModel))
     }
 }

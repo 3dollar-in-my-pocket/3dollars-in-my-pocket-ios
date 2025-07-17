@@ -80,11 +80,18 @@ extension WriteNavigationController {
         switch route {
         case .pushWriteDetailInfo(let viewModel):
             pushWriteDetailInfo(viewModel)
+        case .pushWriteDetailCategory(let viewModel):
+            pushWriteDetailCategory(viewModel)
         }
     }
     
     private func pushWriteDetailInfo(_ viewModel: WriteDetailInfoViewModel) {
         let viewController = WriteDetailInfoViewController(viewModel: viewModel)
+        pushViewController(viewController, animated: true)
+    }
+    
+    private func pushWriteDetailCategory(_ viewModel: WriteDetailCategoryViewModel) {
+        let viewController = WriteDetailCategoryViewController(viewModel: viewModel)
         pushViewController(viewController, animated: true)
     }
 }
