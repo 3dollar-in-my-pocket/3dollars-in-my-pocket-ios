@@ -1,0 +1,174 @@
+---
+alwaysApply: true
+---
+# 프로젝트 구조 및 모듈화 규칙
+
+- 모든 코드는 기능별(Feature) 모듈, Core(공통) 모듈, App(엔트리포인트)로 분리한다.
+- Feature 모듈은 실제 앱 큰 단위의 화면 단위로 분리하며, 각 모듈은 Targets, Derived 디렉토리 구조를 가진다. (Derived 디렉토리는 Tuist를 통해 생성되는 디렉토리이다.)
+- Targets디렉토리는 피처 이름의 디렉토리(해당 디렉토리 안에는 Resoruces, Sources 디렉토리로 구성), Demo(피처 모듈의 데모앱), Interface(피처 모듈을 호출할 수 있는 인터페이스) 디렉토리로 구성된다.
+- Core 모듈은 공통 유틸리티, 네트워크, 디자인 시스템, 모델, DI 등을 포함한다.
+- 외부 라이브러리는 Frameworks/에 위치한다.
+
+---
+globs: *ViewModel.swift
+description: ViewModel 구조 및 선언 규칙
+alwaysApply: true
+---
+# ViewModel 구조 규칙
+
+- 모든 화면(ViewController)용 ViewModel은 아래 구조를 반드시 따른다.
+- Input, Output, Route, Config, Dependency, State 등은 ViewModel 클래스 정의 상단에 extension으로 선언한다.
+    - Input: 뷰컨트롤러에서 입력할 수 있는 이벤트 모음.
+    - Ouput: ViewModel에서 로직을 처리하고 뷰컨트롤러에 이벤트를 전달하거나 상/하위 계층의 ViewModel로 이벤트를 전달할 수 있는 모음
+    - Route: 연결된 ViewController에서 이동할 수 있는 라우팅 테이블. 뷰모델에서 처리하는 라우팅 로직이 없다면 정의하지 않는다.
+    - Dependency: ViewModel에서 의존하고 있는 외부 클래스 모음 (API를 호출하는 Repository, 로그를 전송 할 수 있는 LogManager등이 주로 사용된다.) 뷰모델에서 의존할 클래스가 없다면 Dependency는 정의하지 않는다.
+    - State: 뷰모델에서 가지고 있어야 할 상태 변수가 있다면 정의하여 사용하는 구조체이다.
+    - Config: ViewModel을 생성하는데 필요한 변수를 가지고 있는 구조체이다. Config가 있다면 생성자의 인자로 받아야 하고, Config를 통해 Output, State 등의 인스턴스를 생성할 수 있다.
+예시:
+```swift
+extension MyViewModel {
+    struct Input { 
+        ... 
+    }
+
+    struct Output { 
+        ... 
+    }
+
+    enum Route { 
+        ...
+    }
+
+    struct Config { 
+        ... 
+    }
+
+    struct Dependency { 
+        ...
+    }
+
+    struct State {
+        ...
+    }
+}
+
+final class MyViewModel: BaseViewModel {
+    let input = Input()
+    let output = Output()
+    // ... 기타 프로퍼티 및 init, bind 등 ...
+}
+```
+
+- ViewModel 본문에는 프로퍼티, init, bind 등 실제 로직만 위치한다.
+- 이 규칙은 신규 ViewModel 모두에 적용한다.
+- 코드 리뷰, 자동화 도구, AI 코드 생성 시 반드시 준수한다.
+
+---
+globs: *ViewController.swift
+description: ViewController 규칙
+alwaysApply: true
+---
+# ViewController & MVVM 패턴 규칙
+
+- 모든 ViewController는 BaseViewController를 상속한다. BaseViewController는 Common모듈에 있으므로 "import Common" 이 코드 상단에 반드시 필요하다.
+- ViewController는 UI 구성, 이벤트 바인딩, ViewModel과의 바인딩만 담당한다.
+- ViewModel은 생성자 주입 방식으로 연결한다.
+- 화면 전환, 에러 처리, 로딩 등은 ViewModel Output/Route를 통해 처리한다.
+- ViewModel.output에 route 관련 이벤트 스트림이 있어 바인딩 해야한다면 extension을 생성하여 처리한다.
+예시:
+```swift
+final class MyViewController: BaseViewController {
+    private let viewModel: MyViewModel
+
+    ...
+
+    func bind() {
+        viewModel.output.route
+            .main
+            .sink { [weak self] route in
+                self?.handleRoute(route)
+            }
+            .store(&cancellables)
+    }
+}
+
+// MARK: Route
+extension MyViewController {
+    private func handleRoute(_ route: MyViewModel.Route) {
+        switch route {
+            ...
+        }
+    }
+
+    private func pushMySectionViewController(_ viewModel: ...) {
+
+    }
+}
+```
+
+- 색상, 폰트, 아이콘, 버튼 등은 반드시 DesignSystem(Colors, Fonts, Icons 등)으로만 사용한다.
+- SnapKit으로 레이아웃을 구성, Kingfisher로 이미지 로딩
+- SnapKit을 사용할 때 left, right 대신 leading, trailing을 사용한다.
+- 커스텀 뷰/컴포넌트는 재사용성을 고려해 설계한다.
+- 접근성, 동적 타입, 반응형 레이아웃을 지원한다.
+- 신규로 생성하는 코드(파일/클래스/함수/뷰 등)에서는 then 라이브러리 사용을 금지한다.
+- 대신, Swift 표준 문법(클로저, var/let 선언 후 속성 설정 등)을 사용한다.
+- 예시:
+  ```swift
+  // 권장 방식
+  private let label: UILabel = {
+      let label = UILabel()
+      label.text = "텍스트"
+      label.textColor = .black
+      return label
+  }()
+
+  // 비권장(금지) 방식
+  private let label = UILabel().then {
+      $0.text = "텍스트"
+      $0.textColor = .black
+  }
+  ```
+
+---
+globs: *Api.swift,*Repository.swift,Modules/Core/Model/**/*.swift
+description: 네트워크, API, Repository, 모델 설계 규칙
+alwaysApply: true
+---
+# Network/Repository/Model 규칙
+
+- 모든 API는 enum + RequestType 프로토콜 확장으로 구현한다.
+- Repository는 Protocol + Impl 구조로 분리한다.
+- API/Repository/Model 네이밍은 서버에서 정의한 네이밍과 동일하게 정의한다. (API 서버 문서: https://dev.threedollars.co.kr/api/swagger-ui/swagger-ui/index.html)
+- 외부 API 연동, 인증, 에러 처리, 로깅은 NetworkManager/Logger를 통해 일관되게 처리한다.
+
+---
+description: SwiftLint, 네이밍, import, 파일/메서드 순서 등 코드 스타일 규칙
+alwaysApply: true
+---
+# 코드 스타일/네이밍/구조 규칙
+
+- SwiftLint 규칙(.swiftlint.yml) 및 Swift 표준 컨벤션을 따른다.
+- Import 순서: 표준 → 내부모듈 → 서드파티. 각 분류 사이에는 한줄 띄어서 사용한다.
+- 클래스/구조체/enum: PascalCase, 변수/함수/상수: camelCase
+- 파일 구성: Import → 선언 → Nested Types → Properties → Initializers → Public Methods → Private Methods → Extensions
+- 메서드 순서: Lifecycle → Setup → Binding → Action → Helper
+- Combine 구독은 cancellables에 저장, Task는 taskBag에 저장
+- 주석은 \"왜\"에 집중(코드가 네이밍이 길거나 코드가 어려운 경우에 주로 사용), 문서화 주석은 Swift 표준 사용
+- Git-flow 브랜치 전략, 커밋 메시지 컨벤션(feat/fix/docs 등) 준수
+
+
+---
+globs: *CollectionViewCell.swift
+description: UICollectionViewCell 및 SnapKit 구현 규칙
+alwaysApply: true
+---
+# UICollectionViewCell 구현 규칙
+
+- 새로 생성하는 모든 UICollectionViewCell은 반드시 BaseCollectionViewCell을 상속한다.
+- 셀 내부에 registerId(혹은 reuseIdentifier)와 같은 static 프로퍼티를 별도로 생성하지 않는다. (registerId 사용 금지)
+
+---
+
+**위 규칙들은 실제 코드베이스와 팀의 개발 패턴, 그리고 지금까지의 합의/요구사항을 모두 반영한 최신 규칙입니다.**  
+추가로 세부 규칙이 필요하거나, 특정 파일/모듈에 대한 별도 규칙이 필요하면 언제든 말씀해 주세요!
