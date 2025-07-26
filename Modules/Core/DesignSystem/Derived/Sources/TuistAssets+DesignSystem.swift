@@ -70,6 +70,7 @@ public enum DesignSystemAsset: Sendable {
     public static let communityLine = DesignSystemImages(name: "community.line")
     public static let communitySolid = DesignSystemImages(name: "community.solid")
     public static let copy = DesignSystemImages(name: "copy")
+    public static let couponLine = DesignSystemImages(name: "coupon_line")
     public static let delete = DesignSystemImages(name: "delete")
     public static let deleteX = DesignSystemImages(name: "delete_x")
     public static let deletion = DesignSystemImages(name: "deletion")
