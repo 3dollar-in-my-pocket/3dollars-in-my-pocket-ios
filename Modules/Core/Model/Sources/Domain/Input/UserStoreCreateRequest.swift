@@ -42,4 +42,3 @@ public extension UserStoreCreateRequest {
         case foodTruck = "FOOD_TRUCK"
     }
 }
-

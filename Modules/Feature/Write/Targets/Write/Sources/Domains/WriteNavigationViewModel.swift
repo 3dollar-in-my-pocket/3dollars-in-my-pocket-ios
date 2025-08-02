@@ -9,6 +9,7 @@ extension WriteNavigationViewModel {
         let finishWriteAddress = PassthroughSubject<(address: String, location: CLLocation), Never>()
         let finishWriteDetailInfo = PassthroughSubject<(storeName: String, storeType: UserStoreCreateRequest.StoreType), Never>()
         let finishSelectCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
+        let finishWriteMenus = PassthroughSubject<[UserStoreMenuV2Request], Never>()
     }
     
     struct Output {
@@ -18,6 +19,7 @@ extension WriteNavigationViewModel {
     enum Route {
         case pushWriteDetailInfo(WriteDetailInfoViewModel)
         case pushWriteDetailCategory(WriteDetailCategoryViewModel)
+        case pushWriteDetailMenu(WriteDetailMenuViewModel)
     }
     
     private struct State {
@@ -25,6 +27,8 @@ extension WriteNavigationViewModel {
         var address: String?
         var storeName: String?
         var storeType: UserStoreCreateRequest.StoreType?
+        var categories: [StoreFoodCategoryResponse] = []
+        var menus: [UserStoreMenuV2Request] = []
     }
 }
 
@@ -49,6 +53,13 @@ final class WriteNavigationViewModel: BaseViewModel {
                 self?.pushWriteDetailCategory()
             }
             .store(in: &cancellables)
+        
+        input.finishSelectCategory
+            .sink { [weak self] (category: [StoreFoodCategoryResponse]) in
+                self?.state.categories = category
+                self?.pushWriteDetailMenu()
+            }
+            .store(in: &cancellables)
     }
 
     private func pushWriteDetailInfo() {
@@ -69,5 +80,15 @@ final class WriteNavigationViewModel: BaseViewModel {
             .subscribe(input.finishSelectCategory)
             .store(in: &viewModel.cancellables)
         output.route.send(.pushWriteDetailCategory(viewModel))
+    }
+    
+    private func pushWriteDetailMenu() {
+        let config = WriteDetailMenuViewModel.Config(categories: state.categories, menus: [])
+        let viewModel = WriteDetailMenuViewModel(config: config)
+        
+        viewModel.output.finishInputMenu
+            .subscribe(input.finishWriteMenus)
+            .store(in: &viewModel.cancellables)
+        output.route.send(.pushWriteDetailMenu(viewModel))
     }
 }

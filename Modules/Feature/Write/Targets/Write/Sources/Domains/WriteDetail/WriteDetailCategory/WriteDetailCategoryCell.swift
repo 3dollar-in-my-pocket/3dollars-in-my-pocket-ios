@@ -6,19 +6,18 @@ import Model
 
 final class WriteDetailCategoryCell: BaseCollectionViewCell {
     enum Layout {
-        static func calculateSize(category: StoreFoodCategoryResponse) -> CGSize {
+        static func calculateSize(category: StoreFoodCategoryResponse, isSmall: Bool = false) -> CGSize {
             let imageWidth: CGFloat = 24
             let nameWidth = category.name.size(withAttributes: [.font: Fonts.semiBold.font(size: 14)]).width
-            let padding: CGFloat = 29
+            let padding: CGFloat = isSmall ? 20 : 29
             
-            return CGSize(width: imageWidth + nameWidth + padding, height: 40)
+            return CGSize(width: imageWidth + nameWidth + padding, height: isSmall ? 32 : 40)
         }
     }
     
     private let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = Colors.gray10.color
-        view.layer.cornerRadius = 20
         view.layer.masksToBounds = true
         return view
     }()
@@ -40,6 +39,12 @@ final class WriteDetailCategoryCell: BaseCollectionViewCell {
         didSet {
             updateSelectedState()
         }
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        containerView.layer.cornerRadius = self.frame.height / 2
     }
     
     override func setup() {
@@ -68,10 +73,20 @@ final class WriteDetailCategoryCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(category: StoreFoodCategoryResponse, selected: Bool) {
+    func bind(category: StoreFoodCategoryResponse, selected: Bool, isSmall: Bool = false) {
         nameLabel.text = category.name
         imageView.setImage(urlString: category.imageUrl)
         isSelected = selected
+        
+        if isSmall {
+            imageView.snp.updateConstraints {
+                $0.leading.equalToSuperview().offset(8)
+            }
+            
+            nameLabel.snp.updateConstraints {
+                $0.trailing.lessThanOrEqualToSuperview().offset(-8)
+            }
+        }
     }
     
     private func updateSelectedState() {
