@@ -73,10 +73,9 @@ final class WriteDetailCategoryCell: BaseCollectionViewCell {
         }
     }
     
-    func bind(category: StoreFoodCategoryResponse, selected: Bool, isSmall: Bool = false) {
+    func bind(category: StoreFoodCategoryResponse, isSmall: Bool = false) {
         nameLabel.text = category.name
         imageView.setImage(urlString: category.imageUrl)
-        isSelected = selected
         
         if isSmall {
             imageView.snp.updateConstraints {

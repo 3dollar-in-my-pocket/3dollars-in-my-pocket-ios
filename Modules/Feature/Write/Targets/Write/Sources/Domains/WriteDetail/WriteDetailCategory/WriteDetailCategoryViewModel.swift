@@ -21,6 +21,7 @@ extension WriteDetailCategoryViewModel {
         let selectedCategoryCount = CurrentValueSubject<Int, Never>(0)
         let setErrorCountState = CurrentValueSubject<Bool, Never>(false)
         let finishSelectCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
+        let fetchedCategories = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -86,6 +87,7 @@ final class WriteDetailCategoryViewModel: BaseViewModel {
                 let response = try await self.dependency.categoryRepository.fetchCategories().get()
                 state.categories = response
                 updateDatasource()
+                output.fetchedCategories.send(response)
             } catch {
                 output.route.send(.showErrorAlert(error))
             }

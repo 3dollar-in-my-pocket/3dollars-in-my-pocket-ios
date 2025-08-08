@@ -14,6 +14,7 @@ extension WriteDetailMenuViewModel {
         let didTapAddMenu = PassthroughSubject<Void, Never>()
         let didTapSkip = PassthroughSubject<Void, Never>()
         let didTapNext = PassthroughSubject<Void, Never>()
+        let editCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
     }
     
     struct Output {
@@ -26,16 +27,18 @@ extension WriteDetailMenuViewModel {
     }
     
     enum Route {
-        case presentWriteDetailCategory
+        case presentCategoryBottomSheet(WriteDetailCategoryBottomSheetViewModel)
     }
     
     struct State {
-        var categories: [StoreFoodCategoryResponse]
+        let categories: [StoreFoodCategoryResponse]
+        var selectedCategories: [StoreFoodCategoryResponse]
         var menus: [String: [UserStoreMenuV2Request]] = [:]
     }
     
     struct Config {
         let categories: [StoreFoodCategoryResponse]
+        let selectedCategories: [StoreFoodCategoryResponse]
         let menus: [UserStoreMenuV2Request]
     }
 }
@@ -47,7 +50,11 @@ final class WriteDetailMenuViewModel: BaseViewModel {
     private var state: State
 
     init(config: Config) {
-        self.state = State(categories: config.categories, menus: Dictionary(grouping: config.menus, by: { $0.category }))
+        self.state = State(
+            categories: config.categories,
+            selectedCategories: config.selectedCategories,
+            menus: Dictionary(grouping: config.menus, by: { $0.category })
+        )
         super.init()
     }
 
@@ -55,7 +62,7 @@ final class WriteDetailMenuViewModel: BaseViewModel {
         input.viewDidLoad
             .sink { [weak self]  in
                 guard let self else { return }
-                output.categories.send(state.categories)
+                output.categories.send(state.selectedCategories)
                 fetchCurrentCategoryMenus()
             }
             .store(in: &cancellables)
@@ -107,10 +114,16 @@ final class WriteDetailMenuViewModel: BaseViewModel {
                 self?.finishInputMenu()
             }
             .store(in: &cancellables)
+        
+        input.editCategory
+            .sink { [weak self] selectedCategories in
+                self?.editCategories(categories: selectedCategories)
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchCurrentCategoryMenus() {
-        guard let currentCategory = state.categories[safe: output.selectedCategoryIndex.value] else { return }
+        guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
         
         let currentCategoryMenus: [UserStoreMenuV2Request]
         if let menus = state.menus[currentCategory.categoryId] {
@@ -130,36 +143,44 @@ final class WriteDetailMenuViewModel: BaseViewModel {
     }
     
     private func selectCategory(index: Int) {
-        guard let selectCategory = state.categories[safe: index] else { return }
-        
         output.selectedCategoryIndex.send(index)
         fetchCurrentCategoryMenus()
     }
     
     private func inputMenuName(index: Int, name: String) {
-        guard let currentCategory = state.categories[safe: output.selectedCategoryIndex.value] else { return }
+        guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
         
         state.menus[currentCategory.categoryId]?[index].name = name
     }
     
     private func inputMenuQuantity(index: Int, quantity: Int) {
-        guard let currentCategory = state.categories[safe: output.selectedCategoryIndex.value] else { return }
+        guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
         
         state.menus[currentCategory.categoryId]?[index].count = quantity
     }
     
     private func inputMenuPrice(index: Int, price: Int) {
-        guard let currentCategory = state.categories[safe: output.selectedCategoryIndex.value] else { return }
+        guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
         
         state.menus[currentCategory.categoryId]?[index].price = price
     }
     
     private func presentWriteDetailCategoryBottomSheet() {
-        // TODO: 바텀시트 구현 후 연동 필요
+        let config = WriteDetailCategoryBottomSheetViewModel.Config(
+            categories: state.categories,
+            selectedCategories: state.selectedCategories
+        )
+        let viewModel = WriteDetailCategoryBottomSheetViewModel(config: config)
+        
+        viewModel.output.finishEditCategory
+            .subscribe(input.editCategory)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.presentCategoryBottomSheet(viewModel))
     }
     
     private func addMenu() {
-        guard let currentCategory = state.categories[safe: output.selectedCategoryIndex.value] else { return }
+        guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
         
         let newMenu = UserStoreMenuV2Request(category: currentCategory.categoryId)
         let index = state.menus[currentCategory.categoryId]?.count ?? 0
@@ -197,6 +218,19 @@ final class WriteDetailMenuViewModel: BaseViewModel {
         let validMenus = menus.filter { $0.isValid }
         
         output.finishInputMenu.send(validMenus)
+    }
+    
+    private func editCategories(categories: [StoreFoodCategoryResponse]) {
+        for oldCategory in state.selectedCategories {
+            if categories.contains(where: { $0.categoryId == oldCategory.categoryId }).isNot {
+                state.menus[oldCategory.categoryId] = nil
+            }
+        }
+        
+        state.selectedCategories = categories
+        output.categories.send(categories)
+        output.selectedCategoryIndex.send(0)
+        fetchCurrentCategoryMenus()
     }
 }
 

@@ -1,18 +1,18 @@
 import UIKit
 import Model
 
-final class WriteDetailCategoryDatasource: UICollectionViewDiffableDataSource<WriteDetailCategorySection, WriteDetailCategorySectionItem> {
+final class WriteDetailCategoryBottomSheetDatasource: UICollectionViewDiffableDataSource<WriteDetailCategorySection, WriteDetailCategorySectionItem> {
     typealias Snapshot = NSDiffableDataSourceSnapshot<WriteDetailCategorySection, WriteDetailCategorySectionItem>
     
-    private let viewModel: WriteDetailCategoryViewModel
+    private let viewModel: WriteDetailCategoryBottomSheetViewModel
     
-    init(collectionView: UICollectionView, viewModel: WriteDetailCategoryViewModel) {
+    init(collectionView: UICollectionView, viewModel: WriteDetailCategoryBottomSheetViewModel) {
         self.viewModel = viewModel
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .category(let category, _):
                 let cell: WriteDetailCategoryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(category: category)
+                cell.bind(category: category, isSmall: false)
                 return cell
             }
         }
@@ -43,12 +43,12 @@ final class WriteDetailCategoryDatasource: UICollectionViewDiffableDataSource<Wr
     }
 }
 
-extension WriteDetailCategoryDatasource: UICollectionViewDelegateFlowLayout {
+extension WriteDetailCategoryBottomSheetDatasource: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard let item = self[indexPath] else { return .zero }
         switch item {
         case .category(let category, _):
-            return WriteDetailCategoryCell.Layout.calculateSize(category: category)
+            return WriteDetailCategoryCell.Layout.calculateSize(category: category, isSmall: false)
         }
     }
     
@@ -74,25 +74,5 @@ extension WriteDetailCategoryDatasource: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return .zero
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return viewModel.output.selectedCategoryCount.value < WriteDetailCategoryViewModel.Constants.maximumSelectedCategoryCount
-    }
-}
-
-struct WriteDetailCategorySection: Hashable {
-    let classification: StoreCategoryClassificationResponse
-    let items: [WriteDetailCategorySectionItem]
-}
-
-enum WriteDetailCategorySectionItem: Hashable {
-    case category(StoreFoodCategoryResponse, isSelected: Bool)
-    
-    var isSelected: Bool {
-        switch self {
-        case .category(_, let isSelected):
-            return isSelected
-        }
     }
 }

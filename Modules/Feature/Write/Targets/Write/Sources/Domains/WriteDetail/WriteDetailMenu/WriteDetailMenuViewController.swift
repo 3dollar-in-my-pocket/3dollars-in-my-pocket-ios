@@ -15,7 +15,7 @@ final class WriteDetailMenuViewController: BaseViewController {
 
     private let stackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.layoutMargins = .init(top: 0, left: 0, bottom: 20, right: 0)
+        stackView.layoutMargins = .init(top: 0, left: 0, bottom: 48, right: 0)
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.axis = .vertical
         return stackView
@@ -189,7 +189,7 @@ final class WriteDetailMenuViewController: BaseViewController {
         
         skipButton.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(nextButton.snp.top).offset(-12)
+            $0.bottom.equalTo(nextButton.snp.top)
             $0.height.equalTo(48)
         }
         
@@ -245,6 +245,15 @@ final class WriteDetailMenuViewController: BaseViewController {
             .first()
             .sink { [weak self] (categories, index) in
                 self?.loadCategories(categories: categories, selectedIndex: index)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.categories
+            .dropFirst()
+            .main
+            .sink { [weak self] (categories: [StoreFoodCategoryResponse]) in
+                guard let self else { return }
+                loadCategories(categories: categories, selectedIndex: viewModel.output.selectedCategoryIndex.value)
             }
             .store(in: &cancellables)
         
@@ -401,8 +410,8 @@ final class WriteDetailMenuViewController: BaseViewController {
 extension WriteDetailMenuViewController {
     private func handleRoute(_ route: WriteDetailMenuViewModel.Route) {
         switch route {
-        case .presentWriteDetailCategory:
-            print("✅ 카테고리 수정 바텀시트 노출")
+        case .presentCategoryBottomSheet(let viewModel):
+            presentCategoryBottomSheet(viewModel: viewModel)
         }
     }
     
@@ -411,6 +420,11 @@ extension WriteDetailMenuViewController {
             self?.dismiss(animated: true)
         }
         present(viewController, animated: true)
+    }
+    
+    private func presentCategoryBottomSheet(viewModel: WriteDetailCategoryBottomSheetViewModel) {
+        let viewController = WriteDetailCategoryBottomSheetViewController(viewModel: viewModel)
+        presentPanModal(viewController)
     }
 }
 
@@ -428,11 +442,7 @@ extension WriteDetailMenuViewController: UICollectionViewDataSource {
         } else {
             guard let category = categoryDatasource[safe: indexPath.item] else { return UICollectionViewCell() }
             let cell: WriteDetailCategoryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-            cell.bind(
-                category: category,
-                selected: indexPath.item == viewModel.output.selectedCategoryIndex.value,
-                isSmall: true
-            )
+            cell.bind(category: category, isSmall: true)
             return cell
         }
     }
@@ -440,11 +450,7 @@ extension WriteDetailMenuViewController: UICollectionViewDataSource {
 
 extension WriteDetailMenuViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.item == categoryDatasource.count {
-            viewModel.input.didTapAddMenu.send(())
-        } else {
-            viewModel.input.selectCategory.send(indexPath.item)
-        }
+        viewModel.input.selectCategory.send(indexPath.item)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -453,6 +459,15 @@ extension WriteDetailMenuViewController: UICollectionViewDelegateFlowLayout {
         } else {
             guard let category = categoryDatasource[safe: indexPath.item] else { return .zero }
             return WriteDetailCategoryCell.Layout.calculateSize(category: category, isSmall: true)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        if indexPath.item == categoryDatasource.count {
+            viewModel.input.didTapEditCategory.send(())
+            return false
+        } else {
+            return true
         }
     }
 }

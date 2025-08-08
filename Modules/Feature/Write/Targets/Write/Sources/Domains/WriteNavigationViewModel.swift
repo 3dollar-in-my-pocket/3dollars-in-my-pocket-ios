@@ -6,6 +6,7 @@ import Model
 
 extension WriteNavigationViewModel {
     struct Input {
+        let fetchedCategories = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let finishWriteAddress = PassthroughSubject<(address: String, location: CLLocation), Never>()
         let finishWriteDetailInfo = PassthroughSubject<(storeName: String, storeType: UserStoreCreateRequest.StoreType), Never>()
         let finishSelectCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
@@ -28,6 +29,7 @@ extension WriteNavigationViewModel {
         var storeName: String?
         var storeType: UserStoreCreateRequest.StoreType?
         var categories: [StoreFoodCategoryResponse] = []
+        var selectedCategories: [StoreFoodCategoryResponse] = []
         var menus: [UserStoreMenuV2Request] = []
     }
 }
@@ -38,6 +40,12 @@ final class WriteNavigationViewModel: BaseViewModel {
     private var state = State()
     
     override func bind() {
+        input.fetchedCategories
+            .sink { [weak self] (categories: [StoreFoodCategoryResponse]) in
+                self?.state.categories = categories
+            }
+            .store(in: &cancellables)
+        
         input.finishWriteAddress
             .sink { [weak self] (address: String, location: CLLocation) in
                 self?.state.address = address
@@ -56,8 +64,14 @@ final class WriteNavigationViewModel: BaseViewModel {
         
         input.finishSelectCategory
             .sink { [weak self] (category: [StoreFoodCategoryResponse]) in
-                self?.state.categories = category
+                self?.state.selectedCategories = category
                 self?.pushWriteDetailMenu()
+            }
+            .store(in: &cancellables)
+        
+        input.finishWriteMenus
+            .sink { [weak self] (menus: [UserStoreMenuV2Request]) in
+                self?.state.menus = menus
             }
             .store(in: &cancellables)
     }
@@ -79,11 +93,19 @@ final class WriteNavigationViewModel: BaseViewModel {
         viewModel.output.finishSelectCategory
             .subscribe(input.finishSelectCategory)
             .store(in: &viewModel.cancellables)
+        
+        viewModel.output.fetchedCategories
+            .subscribe(input.fetchedCategories)
+            .store(in: &viewModel.cancellables)
         output.route.send(.pushWriteDetailCategory(viewModel))
     }
     
     private func pushWriteDetailMenu() {
-        let config = WriteDetailMenuViewModel.Config(categories: state.categories, menus: [])
+        let config = WriteDetailMenuViewModel.Config(
+            categories: state.categories,
+            selectedCategories: state.selectedCategories,
+            menus: []
+        )
         let viewModel = WriteDetailMenuViewModel(config: config)
         
         viewModel.output.finishInputMenu
