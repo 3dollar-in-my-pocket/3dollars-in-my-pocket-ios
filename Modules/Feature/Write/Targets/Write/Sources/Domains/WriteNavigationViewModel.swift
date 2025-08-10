@@ -28,6 +28,7 @@ extension WriteNavigationViewModel {
         case pushWriteDetailCategory(WriteDetailCategoryViewModel)
         case pushWriteDetailMenu(WriteDetailMenuViewModel)
         case pushWriteDetailAdditionalInfo(WriteDetailAdditionalInfoViewModel)
+        case pushWriteComplete(WriteCompleteViewModel)
     }
     
     private struct State {
@@ -94,7 +95,7 @@ final class WriteNavigationViewModel: BaseViewModel {
                 self?.state.startTime = startTime
                 self?.state.endTime = endTime
                 
-                // TODO: 완료화면 이동
+                self?.pushWriteComplete()
             }
             .store(in: &cancellables)
     }
@@ -146,5 +147,11 @@ final class WriteNavigationViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         
         output.route.send(.pushWriteDetailAdditionalInfo(viewModel))
+    }
+    
+    private func pushWriteComplete() {
+        let config = WriteCompleteViewModel.Config(storeCreateResponse: nil)
+        let viewModel = WriteCompleteViewModel(config: config)
+        output.route.send(.pushWriteComplete(viewModel))
     }
 }
