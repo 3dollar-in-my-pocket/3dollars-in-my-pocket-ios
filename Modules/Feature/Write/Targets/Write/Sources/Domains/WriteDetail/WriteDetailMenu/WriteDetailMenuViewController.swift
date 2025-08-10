@@ -129,12 +129,16 @@ final class WriteDetailMenuViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationBar()
         setupUI()
         setupCollectionView()
         addKeyboardObservers()
         bind()
         viewModel.input.viewDidLoad.send(())
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationBar()
     }
     
     override func viewDidLayoutSubviews() {
@@ -208,7 +212,7 @@ final class WriteDetailMenuViewController: BaseViewController {
     private func setupNavigationBar() {
         title = "가게 제보"
         guard let navigationController = navigationController as? WriteNavigationController else { return }
-        navigationController.updateProgress(0.5)
+        navigationController.updateProgress(0.75)
         navigationController.setProgressHidden(false)
         
         let closeImage = DesignSystemAsset.Icons.close.image

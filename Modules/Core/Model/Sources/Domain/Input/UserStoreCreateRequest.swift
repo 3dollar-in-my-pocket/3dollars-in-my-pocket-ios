@@ -6,7 +6,7 @@ public struct UserStoreCreateRequest: Encodable {
     public let storeName: String
     public let storeType: UserStoreCreateRequest.StoreType?
     public let appearanceDays: [AppearanceDay]
-    public let openingHours: UserStoreOpeningHoursRequest?
+    public let openingHours: StoreOpeningHours?
     public let paymentMethods: [PaymentMethod]
     public let menus: [UserStoreMenuV2Request]
     public let nonceToken: String
@@ -17,7 +17,7 @@ public struct UserStoreCreateRequest: Encodable {
         storeName: String,
         storeType: UserStoreCreateRequest.StoreType?,
         appearanceDays: [AppearanceDay],
-        openingHours: UserStoreOpeningHoursRequest?,
+        openingHours: StoreOpeningHours?,
         paymentMethods: [PaymentMethod],
         menus: [UserStoreMenuV2Request],
         nonceToken: String

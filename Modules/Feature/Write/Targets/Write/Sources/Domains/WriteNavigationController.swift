@@ -84,6 +84,8 @@ extension WriteNavigationController {
             pushWriteDetailCategory(viewModel)
         case .pushWriteDetailMenu(let viewModel):
             pushWriteDetailMenu(viewModel)
+        case .pushWriteDetailAdditionalInfo(let viewModel):
+            pushWriteDetailAdditionalInfo(viewModel)
         }
     }
     
@@ -99,6 +101,11 @@ extension WriteNavigationController {
     
     private func pushWriteDetailMenu(_ viewModel: WriteDetailMenuViewModel) {
         let viewController = WriteDetailMenuViewController(viewModel: viewModel)
+        pushViewController(viewController, animated: true)
+    }
+    
+    private func pushWriteDetailAdditionalInfo(_ viewModel: WriteDetailAdditionalInfoViewModel) {
+        let viewController = WriteDetailAdditionalInfoViewController(viewModel: viewModel)
         pushViewController(viewController, animated: true)
     }
 }

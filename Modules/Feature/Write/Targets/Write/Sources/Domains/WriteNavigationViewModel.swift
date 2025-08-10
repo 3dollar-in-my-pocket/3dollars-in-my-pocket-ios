@@ -11,6 +11,12 @@ extension WriteNavigationViewModel {
         let finishWriteDetailInfo = PassthroughSubject<(storeName: String, storeType: UserStoreCreateRequest.StoreType), Never>()
         let finishSelectCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let finishWriteMenus = PassthroughSubject<[UserStoreMenuV2Request], Never>()
+        let finishWriteAdditionalInfo = PassthroughSubject<(
+            paymentMethods: [PaymentMethod],
+            appearanceDays: [AppearanceDay],
+            startTime: Date?,
+            endTime: Date?
+        ), Never>()
     }
     
     struct Output {
@@ -21,6 +27,7 @@ extension WriteNavigationViewModel {
         case pushWriteDetailInfo(WriteDetailInfoViewModel)
         case pushWriteDetailCategory(WriteDetailCategoryViewModel)
         case pushWriteDetailMenu(WriteDetailMenuViewModel)
+        case pushWriteDetailAdditionalInfo(WriteDetailAdditionalInfoViewModel)
     }
     
     private struct State {
@@ -31,6 +38,10 @@ extension WriteNavigationViewModel {
         var categories: [StoreFoodCategoryResponse] = []
         var selectedCategories: [StoreFoodCategoryResponse] = []
         var menus: [UserStoreMenuV2Request] = []
+        var paymentMethods: [PaymentMethod] = []
+        var appearanceDays: [AppearanceDay] = []
+        var startTime: Date?
+        var endTime: Date?
     }
 }
 
@@ -72,6 +83,18 @@ final class WriteNavigationViewModel: BaseViewModel {
         input.finishWriteMenus
             .sink { [weak self] (menus: [UserStoreMenuV2Request]) in
                 self?.state.menus = menus
+                self?.pushWriteDetailAdditionalInfo()
+            }
+            .store(in: &cancellables)
+        
+        input.finishWriteAdditionalInfo
+            .sink { [weak self] (paymentMethods: [PaymentMethod], appearanceDays: [AppearanceDay], startTime: Date?, endTime: Date?) in
+                self?.state.paymentMethods = paymentMethods
+                self?.state.appearanceDays = appearanceDays
+                self?.state.startTime = startTime
+                self?.state.endTime = endTime
+                
+                // TODO: 완료화면 이동
             }
             .store(in: &cancellables)
     }
@@ -112,5 +135,16 @@ final class WriteNavigationViewModel: BaseViewModel {
             .subscribe(input.finishWriteMenus)
             .store(in: &viewModel.cancellables)
         output.route.send(.pushWriteDetailMenu(viewModel))
+    }
+    
+    private func pushWriteDetailAdditionalInfo() {
+        let config = WriteDetailAdditionalInfoViewModel.Config()
+        let viewModel = WriteDetailAdditionalInfoViewModel(config: config)
+        
+        viewModel.output.finishWriteAdditionalInfo
+            .subscribe(input.finishWriteAdditionalInfo)
+            .store(in: &viewModel.cancellables)
+        
+        output.route.send(.pushWriteDetailAdditionalInfo(viewModel))
     }
 }

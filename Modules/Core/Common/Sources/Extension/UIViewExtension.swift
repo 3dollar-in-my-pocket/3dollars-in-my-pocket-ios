@@ -11,3 +11,11 @@ public extension UIView {
         return .init(view: self, gestureType: type)
     }
 }
+
+public extension UIStackView {
+    func addArrangedSubViews(_ views: [UIView]) {
+        for view in views {
+            addArrangedSubview(view)
+        }
+    }
+}

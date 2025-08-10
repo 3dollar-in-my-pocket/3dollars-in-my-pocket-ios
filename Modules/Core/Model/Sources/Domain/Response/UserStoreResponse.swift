@@ -10,7 +10,7 @@ public struct UserStoreResponse: Decodable {
     public let address: AddressResponse
     public let categories: [StoreFoodCategoryResponse]
     public let appearanceDays: [AppearanceDay]
-    public let openingHours: StoreOpeningHoursResponse?
+    public let openingHours: StoreOpeningHours?
     public let paymentMethods: [PaymentMethod]
     public let menus: [UserStoreMenuResponse]
     public let isDeleted: Bool
