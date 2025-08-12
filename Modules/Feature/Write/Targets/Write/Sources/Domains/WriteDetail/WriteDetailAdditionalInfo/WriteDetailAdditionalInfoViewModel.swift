@@ -26,6 +26,7 @@ extension WriteDetailAdditionalInfoViewModel {
             startTime: Date?,
             endTime: Date?
         ), Never>()
+        let didTapSkip = PassthroughSubject<Void, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -123,10 +124,7 @@ final class WriteDetailAdditionalInfoViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.didTapSkip
-            .sink { [weak self] _ in
-                // TODO: Skip 추가 정보 입력 로직
-                
-            }
+            .subscribe(output.didTapSkip)
             .store(in: &cancellables)
     }
     

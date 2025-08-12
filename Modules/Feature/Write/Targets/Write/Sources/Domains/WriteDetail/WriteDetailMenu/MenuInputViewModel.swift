@@ -18,7 +18,7 @@ extension MenuInputViewModel {
     }
     
     struct Config {
-        let menu: UserStoreMenuV2Request
+        let menu: UserStoreMenuRequestV3
     }
 }
 

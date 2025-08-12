@@ -22,7 +22,8 @@ extension WriteDetailMenuViewModel {
         let selectedCategoryIndex = CurrentValueSubject<Int, Never>(0)
         let menus = PassthroughSubject<[MenuInputViewModel], Never>()
         let addMenus = PassthroughSubject<MenuInputViewModel, Never>()
-        let finishInputMenu = PassthroughSubject<[UserStoreMenuV2Request], Never>()
+        let finishInputMenu = PassthroughSubject<[UserStoreMenuRequestV3], Never>()
+        let didTapSkip = PassthroughSubject<Void, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -33,13 +34,13 @@ extension WriteDetailMenuViewModel {
     struct State {
         let categories: [StoreFoodCategoryResponse]
         var selectedCategories: [StoreFoodCategoryResponse]
-        var menus: [String: [UserStoreMenuV2Request]] = [:]
+        var menus: [String: [UserStoreMenuRequestV3]] = [:]
     }
     
     struct Config {
         let categories: [StoreFoodCategoryResponse]
         let selectedCategories: [StoreFoodCategoryResponse]
-        let menus: [UserStoreMenuV2Request]
+        let menus: [UserStoreMenuRequestV3]
     }
 }
 
@@ -104,9 +105,7 @@ final class WriteDetailMenuViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.didTapSkip
-            .sink { [weak self] in
-                // TODO: 목적지 정해지면 구현 필요
-            }
+            .subscribe(output.didTapSkip)
             .store(in: &cancellables)
         
         input.didTapNext
@@ -125,11 +124,11 @@ final class WriteDetailMenuViewModel: BaseViewModel {
     private func fetchCurrentCategoryMenus() {
         guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
         
-        let currentCategoryMenus: [UserStoreMenuV2Request]
+        let currentCategoryMenus: [UserStoreMenuRequestV3]
         if let menus = state.menus[currentCategory.categoryId] {
             currentCategoryMenus = menus
         } else {
-            let menus = [UserStoreMenuV2Request(category: currentCategory.categoryId)]
+            let menus = [UserStoreMenuRequestV3(category: currentCategory.categoryId)]
             state.menus[currentCategory.categoryId] = menus
             currentCategoryMenus = menus
         }
@@ -182,7 +181,7 @@ final class WriteDetailMenuViewModel: BaseViewModel {
     private func addMenu() {
         guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
         
-        let newMenu = UserStoreMenuV2Request(category: currentCategory.categoryId)
+        let newMenu = UserStoreMenuRequestV3(category: currentCategory.categoryId)
         let index = state.menus[currentCategory.categoryId]?.count ?? 0
         
         state.menus[currentCategory.categoryId]?.append(newMenu)
@@ -234,8 +233,8 @@ final class WriteDetailMenuViewModel: BaseViewModel {
     }
 }
 
-private extension UserStoreMenuV2Request {
+private extension UserStoreMenuRequestV3 {
     var isValid: Bool {
-        return name.isNotEmpty || count > 0 || price > 0
+        return name.isNotEmpty
     }
 }

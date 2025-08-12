@@ -176,29 +176,38 @@ final class WriteCompleteViewController: BaseViewController {
     }
     
     private func bind() {
-//        // Input
-//        addStoreMenuButton.tapPublisher
-//            .throttleClick()
-//            .subscribe(viewModel.input.didTapMenuDetail)
-//            .store(in: &cancellables)
-//        
-//        storeDetailButton.tapPublisher
-//            .throttleClick()
-//            .subscribe(viewModel.input.didTapStoreDetail)
-//            .store(in: &cancellables)
-//        
-//        completeButton.tapPublisher
-//            .throttleClick()
-//            .subscribe(viewModel.input.didTapComplete)
-//            .store(in: &cancellables)
-//        
-//        // Output
-//        viewModel.output.route
-//            .main
-//            .sink { [weak self] route in
-//                self?.handleRoute(route)
-//            }
-//            .store(in: &cancellables)
+        // Input
+        addStoreMenuButton.tapPublisher
+            .eraseToAnyPublisher()
+            .throttleClick()
+            .subscribe(viewModel.input.didTapAddMenu)
+            .store(in: &cancellables)
+        
+        addAdditionalInfoButton.tapPublisher
+            .eraseToAnyPublisher()
+            .throttleClick()
+            .subscribe(viewModel.input.didTapAddAdditionalInfo)
+            .store(in: &cancellables)
+        
+        completeButton.tapPublisher
+            .throttleClick()
+            .subscribe(viewModel.input.didTapComplete)
+            .store(in: &cancellables)
+        
+        // Output
+        viewModel.output.userStoreResponse
+            .main
+            .sink { [weak self] userStoreResponse in
+                self?.updateStore(userStoreResponse)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.route
+            .main
+            .sink { [weak self] route in
+                self?.handleRoute(route)
+            }
+            .store(in: &cancellables)
     }
     
     private func setupNavigationBar() {
@@ -207,37 +216,25 @@ final class WriteCompleteViewController: BaseViewController {
         navigationController.isNavigationBarHidden = true
     }
     
-//    private func updateMenuDetailButton(status: WriteCompleteDetailStatus, iconImageView: UIImageView, subtitleLabel: UILabel) {
-//        switch status {
-//        case .notAdded:
-//            iconImageView.image = DesignSystemAsset.Icons.plus.image
-//            iconImageView.tintColor = Colors.gray60.color
-//            subtitleLabel.text = "메뉴명 · 메뉴 가격"
-//            addStoreMenuButton.layer.borderColor = Colors.gray30.color.cgColor
-//            
-//        case .added:
-//            iconImageView.image = DesignSystemAsset.Icons.check.image
-//            iconImageView.tintColor = Colors.mainGreen.color
-//            subtitleLabel.text = "작성 완료"
-//            addStoreMenuButton.layer.borderColor = Colors.mainGreen.color.cgColor
-//        }
-//    }
-//    
-//    private func updateStoreDetailButton(status: WriteCompleteDetailStatus, iconImageView: UIImageView, subtitleLabel: UILabel) {
-//        switch status {
-//        case .notAdded:
-//            iconImageView.image = DesignSystemAsset.Icons.plus.image
-//            iconImageView.tintColor = Colors.gray60.color
-//            subtitleLabel.text = "가게 형태 · 결제 방식 · 출몰 요일 · 출몰 시간대"
-//            addStoreMenuButton.layer.borderColor = Colors.gray30.color.cgColor
-//            
-//        case .added:
-//            iconImageView.image = DesignSystemAsset.Icons.check.image
-//            iconImageView.tintColor = Colors.mainGreen.color
-//            subtitleLabel.text = "작성 완료"
-//            addAdditionalInfoButton.layer.borderColor = Colors.mainGreen.color.cgColor
-//        }
-//    }
+    private func updateStore(_ store: UserStoreResponse) {
+        storeNameLabel.text = store.name
+        updateStoreCategory(store.categories)
+        addStoreMenuButton.bind(isChecked: store.menusV2.isNotEmpty)
+        updateAddAdditionalInfoButton(store: store)
+    }
+    
+    private func updateStoreCategory(_ categories: [StoreFoodCategoryResponse]) {
+        storeCategoryStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        for category in categories {
+            let tagView = CategoryTagView(category: category)
+            storeCategoryStackView.addArrangedSubview(tagView)
+        }
+    }
+    
+    private func updateAddAdditionalInfoButton(store: UserStoreResponse) {
+        let isChecked = store.paymentMethods.isNotEmpty || store.appearanceDays.isNotEmpty || store.openingHours.isNotNil
+        addAdditionalInfoButton.bind(isChecked: isChecked)
+    }
 }
 
 // MARK: Route
@@ -261,5 +258,53 @@ extension WriteCompleteViewController {
     private func pushWriteDetailAdditionalInfo(_ viewModel: WriteDetailAdditionalInfoViewModel) {
         let viewController = WriteDetailAdditionalInfoViewController(viewModel: viewModel)
         navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+private class CategoryTagView: UIStackView {
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.medium.font(size: 10)
+        label.textColor = Colors.mainPink.color
+        return label
+    }()
+    
+    init(category: StoreFoodCategoryResponse) {
+        super.init(frame: .zero)
+        
+        setupUI()
+        imageView.setImage(urlString: category.imageUrl)
+        titleLabel.text = category.name
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        setupUI()
+    }
+    
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupUI() {
+        spacing = 2
+        axis = .horizontal
+        layoutMargins = .init(top: 2, left: 4, bottom: 2, right: 4)
+        isLayoutMarginsRelativeArrangement = true
+        backgroundColor = Colors.pink100.color
+        addArrangedSubview(imageView)
+        
+        imageView.snp.makeConstraints {
+            $0.size.equalTo(16)
+        }
+        
+        addArrangedSubview(titleLabel)
     }
 }

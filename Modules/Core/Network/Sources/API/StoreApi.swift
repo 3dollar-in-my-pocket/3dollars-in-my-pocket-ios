@@ -9,7 +9,7 @@ enum StoreApi {
     case togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest)
     case fetchAroundStores(input: FetchAroundStoreInput)
     case fetchStoreDetail(input: FetchStoreDetailInput)
-    case createStore(input: UserStoreCreateRequest, nonceToken: String)
+    case createStore(input: UserStoreCreateRequestV3, nonceToken: String)
     case editStore(storeId: Int, input: EditStoreRequestInput)
     case saveStore(storeId: String, isDelete: Bool)
     case reportStore(storeId: Int, reportReason: String)

@@ -8,7 +8,7 @@ public struct EditStoreRequestInput: Encodable {
     public let appearanceDays: [AppearanceDay]
     public let openingHours: StoreOpeningHours?
     public let paymentMethods: [PaymentMethod]
-    public let menus: [UserStoreMenuV2Request]
+    public let menus: [UserStoreMenuRequestV3]
     
     public init(
         latitude: Double,
@@ -18,7 +18,7 @@ public struct EditStoreRequestInput: Encodable {
         appearanceDays: [AppearanceDay],
         openingHours: StoreOpeningHours?,
         paymentMethods: [PaymentMethod],
-        menus: [UserStoreMenuV2Request]
+        menus: [UserStoreMenuRequestV3]
     ) {
         self.latitude = latitude
         self.longitude = longitude

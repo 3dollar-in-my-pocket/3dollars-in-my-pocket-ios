@@ -155,13 +155,13 @@ public enum WriteStrings: Sendable {
     }
 
     public enum StoreType: Sendable {
-    /// 가게형태
+    /// 편의점
       public static let convience = WriteStrings.tr("Localization", "write_detail_info.store_type.convience")
-      /// 가게형태
+      /// 푸드트럭
       public static let foodTruck = WriteStrings.tr("Localization", "write_detail_info.store_type.food_truck")
-      /// 가게형태
+      /// 길거리
       public static let road = WriteStrings.tr("Localization", "write_detail_info.store_type.road")
-      /// 가게형태
+      /// 매장
       public static let store = WriteStrings.tr("Localization", "write_detail_info.store_type.store")
       /// 가게형태
       public static let title = WriteStrings.tr("Localization", "write_detail_info.store_type.title")

@@ -1,16 +1,16 @@
 import Foundation
 
-public struct UserStoreMenuV2Request: Encodable {
+public struct UserStoreMenuRequestV3: Encodable {
     public var name: String
-    public var count: Int
-    public var price: Int
+    public var count: Int?
+    public var price: Int?
     public var category: String
     public var description: String?
     
     public init(
         name: String = "",
-        count: Int = 0,
-        price: Int = 0,
+        count: Int? = nil,
+        price: Int? = nil,
         category: String = "",
         description: String? = nil
     ) {

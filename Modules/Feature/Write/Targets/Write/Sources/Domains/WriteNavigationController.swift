@@ -2,6 +2,10 @@ import UIKit
 import Combine
 
 import DesignSystem
+import Model
+import Common
+import DependencyInjection
+import AppInterface
 
 final class WriteNavigationController: UINavigationController {
     private let progressView: UIProgressView = {
@@ -63,6 +67,13 @@ final class WriteNavigationController: UINavigationController {
                 self?.handleRoute(route)
             }
             .store(in: &cancellables)
+        
+        viewModel.output.isLoading
+            .main
+            .sink { isLoading in
+                LoadingManager.shared.showLoading(isShow: isLoading)
+            }
+            .store(in: &cancellables)
     }
     
     func updateProgress(_ progress: Float) {
@@ -88,6 +99,10 @@ extension WriteNavigationController {
             pushWriteDetailAdditionalInfo(viewModel)
         case .pushWriteComplete(let viewModel):
             pushWriteComplete(viewModel)
+        case .toast(let message):
+            ToastManager.shared.show(message: message)
+        case .showErrorAlert(let error):
+            showErrorAlert(error: error)
         }
     }
     
@@ -115,4 +130,48 @@ extension WriteNavigationController {
         let viewController = WriteCompleteViewController(viewModel: viewModel)
         pushViewController(viewController, animated: true)
     }
+    
+    private func showErrorAlert(error: Error) {
+        if let networkError = error as? Model.NetworkError {
+            switch networkError {
+            case .message(let message):
+                AlertUtils.showWithAction(
+                    viewController: self,
+                    message: message,
+                    onTapOk: nil
+                )
+                
+            case .errorContainer(let container):
+                if container.resultCode == "UA000" {
+                    AlertUtils.showWithAction(
+                        viewController: self,
+                        message: "세션이 만료되었습니다.\n다시 로그인해주세요.") {
+                            guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else { return }
+                            
+                            appModuleInterface.onClearSession()
+                        }
+                } else {
+                    AlertUtils.showWithAction(
+                        viewController: self,
+                        message: container.message ?? "",
+                        onTapOk: nil
+                    )
+                }
+                
+            default:
+                AlertUtils.showWithAction(
+                    viewController: self,
+                    message: error.localizedDescription,
+                    onTapOk: nil
+                )
+            }
+        } else {
+            AlertUtils.showWithAction(
+                viewController: self,
+                message: error.localizedDescription,
+                onTapOk: nil
+            )
+        }
+    }
+    
 }

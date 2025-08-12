@@ -14,6 +14,12 @@ final class WriteCompleteAdditionalButton: BaseView {
     
     private let iconImageView = UIImageView()
     
+    private let checkImageView: UIImageView = {
+        let imageView = UIImageView(image: WriteAsset.iconGreenCheck.image)
+        imageView.isHidden = true
+        return imageView
+    }()
+    
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.font = Fonts.semiBold.font(size: 14)
@@ -46,6 +52,13 @@ final class WriteCompleteAdditionalButton: BaseView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func bind(isChecked: Bool) {
+        let description = isChecked ? "작성 완료" : description
+        descriptionLabel.text = description
+        descriptionLabel.textColor = isChecked ? Colors.mainGreen.color : Colors.gray60.color
+        checkImageView.isHidden = !isChecked
+    }
+    
     private func setupUI() {
         backgroundColor = Colors.systemWhite.color
         layer.cornerRadius = 16
@@ -55,6 +68,7 @@ final class WriteCompleteAdditionalButton: BaseView {
         
         addSubViews([
             iconContainer,
+            checkImageView,
             titleLabel,
             descriptionLabel
         ])
@@ -69,6 +83,12 @@ final class WriteCompleteAdditionalButton: BaseView {
         iconImageView.snp.makeConstraints {
             $0.size.equalTo(24)
             $0.center.equalToSuperview()
+        }
+        
+        checkImageView.snp.makeConstraints {
+            $0.trailing.equalToSuperview().offset(5)
+            $0.top.equalToSuperview().offset(-3)
+            $0.size.equalTo(16)
         }
         
         titleLabel.snp.makeConstraints {

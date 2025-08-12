@@ -9,11 +9,11 @@ extension WriteCompleteViewModel {
         let didTapAddMenu = PassthroughSubject<Void, Never>()
         let didTapAddAdditionalInfo = PassthroughSubject<Void, Never>()
         let didTapComplete = PassthroughSubject<Void, Never>()
-        let updateStore = PassthroughSubject<UserStoreCreateResponse?, Never>()
+        let updateStore = PassthroughSubject<UserStoreResponse, Never>()
     }
     
     struct Output {
-        let storeCreateResponse: CurrentValueSubject<UserStoreCreateResponse?, Never>
+        let userStoreResponse: CurrentValueSubject<UserStoreResponse, Never>
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -24,11 +24,11 @@ extension WriteCompleteViewModel {
     }
     
     struct State {
-        var storeCreateResponse: UserStoreCreateResponse?
+        var userStoreResponse: UserStoreResponse
     }
     
     struct Config {
-        let storeCreateResponse: UserStoreCreateResponse?
+        let userStoreResponse: UserStoreResponse
     }
 }
 
@@ -39,8 +39,8 @@ final class WriteCompleteViewModel: BaseViewModel {
     private var state: State
     
     init(config: Config) {
-        self.output = Output(storeCreateResponse: .init(config.storeCreateResponse))
-        self.state = State(storeCreateResponse: config.storeCreateResponse)
+        self.output = Output(userStoreResponse: .init(config.userStoreResponse))
+        self.state = State(userStoreResponse: config.userStoreResponse)
         super.init()
     }
     
@@ -64,9 +64,9 @@ final class WriteCompleteViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.updateStore
-            .sink { [weak self] storeCreateResponse in
-                self?.state.storeCreateResponse = storeCreateResponse
-                self?.output.storeCreateResponse.send(storeCreateResponse)
+            .sink { [weak self] userStoreResponse in
+                self?.state.userStoreResponse = userStoreResponse
+                self?.output.userStoreResponse.send(userStoreResponse)
             }
             .store(in: &cancellables)
     }

@@ -45,10 +45,10 @@
 "write_detail_info.name_text_field.title" = "가게 이름";
 "write_detail_info.name_text_field.placeholder" = "봉어빵역 2번 출구 삼거리 근처 붕어빵 집";
 "write_detail_info.store_type.title" = "가게형태";
-"write_detail_info.store_type.road" = "가게형태";
-"write_detail_info.store_type.store" = "가게형태";
-"write_detail_info.store_type.food_truck" = "가게형태";
-"write_detail_info.store_type.convience" = "가게형태";
+"write_detail_info.store_type.road" = "길거리";
+"write_detail_info.store_type.store" = "매장";
+"write_detail_info.store_type.food_truck" = "푸드트럭";
+"write_detail_info.store_type.convience" = "편의점";
 "write_detail_info.next" = "다음";
 "write_detail_info.toast.need_store_name" = "가게 이름을 입력해주세요.";
 

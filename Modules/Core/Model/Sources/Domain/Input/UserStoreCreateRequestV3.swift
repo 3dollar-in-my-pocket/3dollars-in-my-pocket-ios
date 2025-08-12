@@ -1,25 +1,25 @@
 import Foundation
 
-public struct UserStoreCreateRequest: Encodable {
+public struct UserStoreCreateRequestV3: Encodable {
     public let latitude: Double
     public let longitude: Double
     public let storeName: String
-    public let storeType: UserStoreCreateRequest.StoreType?
+    public let storeType: UserStoreCreateRequestV3.StoreType?
     public let appearanceDays: [AppearanceDay]
     public let openingHours: StoreOpeningHours?
     public let paymentMethods: [PaymentMethod]
-    public let menus: [UserStoreMenuV2Request]
+    public let menus: [UserStoreMenuRequestV3]
     public let nonceToken: String
     
     public init(
         latitude: Double,
         longitude: Double,
         storeName: String,
-        storeType: UserStoreCreateRequest.StoreType?,
+        storeType: UserStoreCreateRequestV3.StoreType?,
         appearanceDays: [AppearanceDay],
         openingHours: StoreOpeningHours?,
         paymentMethods: [PaymentMethod],
-        menus: [UserStoreMenuV2Request],
+        menus: [UserStoreMenuRequestV3],
         nonceToken: String
     ) {
         self.latitude = latitude
@@ -34,11 +34,16 @@ public struct UserStoreCreateRequest: Encodable {
     }
 }
 
-public extension UserStoreCreateRequest {
+public extension UserStoreCreateRequestV3 {
     enum StoreType: String, Encodable, Equatable {
         case road = "ROAD"
         case store = "STORE"
         case convenienceStore = "CONVENIENCE_STORE"
         case foodTruck = "FOOD_TRUCK"
+        case unknown
+        
+        public init(from decoder: Decoder) throws {
+            self = try StoreType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
+        }
     }
 }
