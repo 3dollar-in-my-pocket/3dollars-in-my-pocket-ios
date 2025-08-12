@@ -210,26 +210,34 @@ final class WriteDetailMenuViewController: BaseViewController {
     }
     
     private func setupNavigationBar() {
-        title = "가게 제보"
-        guard let navigationController = navigationController as? WriteNavigationController else { return }
-        navigationController.updateProgress(0.75)
-        navigationController.setProgressHidden(false)
-        
-        let closeImage = DesignSystemAsset.Icons.close.image
-            .resizeImage(scaledTo: 24)
-            .withRenderingMode(.alwaysTemplate)
-            .withTintColor(.white)
-        let closeButtonItem = UIBarButtonItem(
-            image: closeImage,
-            style: .plain,
-            target: self,
-            action: #selector(didTapClose)
-        )
-        closeButtonItem.tintColor = Colors.gray100.color
-        navigationItem.setAutoInsetRightBarButtonItem(closeButtonItem)
+        if viewModel.output.afterCreatedStore {
+            title = "메뉴 상세 정보"
+            guard let navigationController = navigationController as? WriteNavigationController else { return }
+            navigationController.setProgressHidden(true)
+            navigationItem.rightBarButtonItem = nil
+        } else {
+            title = "가게 제보"
+            guard let navigationController = navigationController as? WriteNavigationController else { return }
+            navigationController.updateProgress(0.75)
+            navigationController.setProgressHidden(false)
+            
+            let closeImage = DesignSystemAsset.Icons.close.image
+                .resizeImage(scaledTo: 24)
+                .withRenderingMode(.alwaysTemplate)
+                .withTintColor(.white)
+            let closeButtonItem = UIBarButtonItem(
+                image: closeImage,
+                style: .plain,
+                target: self,
+                action: #selector(didTapClose)
+            )
+            closeButtonItem.tintColor = Colors.gray100.color
+            navigationItem.setAutoInsetRightBarButtonItem(closeButtonItem)
+        }
     }
 
     private func bind() {
+        bindAfterCreateStore(viewModel.output.afterCreatedStore)
         addMenuButton.tapPublisher
             .throttleClick()
             .subscribe(viewModel.input.didTapAddMenu)
@@ -292,6 +300,14 @@ final class WriteDetailMenuViewController: BaseViewController {
                 self?.handleRoute(route)
             }
             .store(in: &cancellables)
+    }
+    
+    private func bindAfterCreateStore(_ afterCreateStore: Bool) {
+        let string = afterCreateStore ? "작성 완료" : "다음"
+        nextButton.configuration?.attributedTitle = AttributedString(string, attributes: AttributeContainer([
+            .font: Fonts.semiBold.font(size: 16),
+            .foregroundColor: Colors.systemWhite.color
+        ]))
     }
     
     private func setupCollectionView() {

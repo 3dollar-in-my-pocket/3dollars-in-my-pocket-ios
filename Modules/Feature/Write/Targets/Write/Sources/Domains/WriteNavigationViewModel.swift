@@ -61,6 +61,7 @@ extension WriteNavigationViewModel {
         var appearanceDays: [AppearanceDay] = []
         var startTime: Date?
         var endTime: Date?
+        var afterCreatedStore = false
     }
 }
 
@@ -107,19 +108,30 @@ final class WriteNavigationViewModel: BaseViewModel {
         
         input.finishWriteMenus
             .sink { [weak self] (menus: [UserStoreMenuRequestV3]) in
-                self?.state.menus = menus
-                self?.pushWriteDetailAdditionalInfo()
+                guard let self else { return }
+                state.menus = menus
+                
+                if state.afterCreatedStore {
+                    // TODO: 가게 업데이트
+                } else {
+                    pushWriteDetailAdditionalInfo()
+                }
             }
             .store(in: &cancellables)
         
         input.finishWriteAdditionalInfo
             .sink { [weak self] (paymentMethods: [PaymentMethod], appearanceDays: [AppearanceDay], startTime: Date?, endTime: Date?) in
-                self?.state.paymentMethods = paymentMethods
-                self?.state.appearanceDays = appearanceDays
-                self?.state.startTime = startTime
-                self?.state.endTime = endTime
+                guard let self else { return }
+                state.paymentMethods = paymentMethods
+                state.appearanceDays = appearanceDays
+                state.startTime = startTime
+                state.endTime = endTime
                 
-                self?.createStore()
+                if state.afterCreatedStore {
+                    // TODO: 가게 업데이트
+                } else {
+                    createStore()
+                }
             }
             .store(in: &cancellables)
         
@@ -156,9 +168,9 @@ final class WriteNavigationViewModel: BaseViewModel {
     
     private func pushWriteDetailMenu() {
         let config = WriteDetailMenuViewModel.Config(
-            categories: state.categories,
             selectedCategories: state.selectedCategories,
-            menus: []
+            menus: [],
+            afterCreatedStore: state.afterCreatedStore
         )
         let viewModel = WriteDetailMenuViewModel(config: config)
         
@@ -219,6 +231,7 @@ final class WriteNavigationViewModel: BaseViewModel {
                 let response = try await dependency.storeRepository.createStore(input: input, nonceToken: nonceToken).get()
                 
                 output.isLoading.send(false)
+                state.afterCreatedStore = true
                 pushWriteComplete(userStoreResponse: response)
             } catch {
                 output.isLoading.send(false)

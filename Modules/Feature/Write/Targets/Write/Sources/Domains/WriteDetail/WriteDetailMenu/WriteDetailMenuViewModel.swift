@@ -2,6 +2,7 @@ import Combine
 
 import Common
 import Model
+import Networking
 
 extension WriteDetailMenuViewModel {
     struct Input {
@@ -18,6 +19,7 @@ extension WriteDetailMenuViewModel {
     }
     
     struct Output {
+        let afterCreatedStore: Bool
         let categories = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let selectedCategoryIndex = CurrentValueSubject<Int, Never>(0)
         let menus = PassthroughSubject<[MenuInputViewModel], Never>()
@@ -29,33 +31,44 @@ extension WriteDetailMenuViewModel {
     
     enum Route {
         case presentCategoryBottomSheet(WriteDetailCategoryBottomSheetViewModel)
+        case showErrorAlert(Error)
+    }
+    
+    struct Dependency {
+        let categoryRepository: CategoryRepository
+        
+        init(categoryRepository: CategoryRepository = CategoryRepositoryImpl()) {
+            self.categoryRepository = categoryRepository
+        }
     }
     
     struct State {
-        let categories: [StoreFoodCategoryResponse]
+        var categories: [StoreFoodCategoryResponse] = []
         var selectedCategories: [StoreFoodCategoryResponse]
         var menus: [String: [UserStoreMenuRequestV3]] = [:]
     }
     
     struct Config {
-        let categories: [StoreFoodCategoryResponse]
         let selectedCategories: [StoreFoodCategoryResponse]
         let menus: [UserStoreMenuRequestV3]
+        let afterCreatedStore: Bool
     }
 }
 
 
 final class WriteDetailMenuViewModel: BaseViewModel {
     let input = Input()
-    let output = Output()
+    let output: Output
     private var state: State
+    private let dependencies: Dependency
 
-    init(config: Config) {
+    init(config: Config, dependencies: Dependency = Dependency()) {
+        self.output = Output(afterCreatedStore: config.afterCreatedStore)
         self.state = State(
-            categories: config.categories,
             selectedCategories: config.selectedCategories,
             menus: Dictionary(grouping: config.menus, by: { $0.category })
         )
+        self.dependencies = dependencies
         super.init()
     }
 
@@ -63,6 +76,7 @@ final class WriteDetailMenuViewModel: BaseViewModel {
         input.viewDidLoad
             .sink { [weak self]  in
                 guard let self else { return }
+                fetchCategories()
                 output.categories.send(state.selectedCategories)
                 fetchCurrentCategoryMenus()
             }
@@ -119,6 +133,18 @@ final class WriteDetailMenuViewModel: BaseViewModel {
                 self?.editCategories(categories: selectedCategories)
             }
             .store(in: &cancellables)
+    }
+    
+    private func fetchCategories() {
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let categories = try await dependencies.categoryRepository.fetchCategories().get()
+                state.categories = categories
+            } catch {
+                output.route.send(.showErrorAlert(error))
+            }
+        }
     }
     
     private func fetchCurrentCategoryMenus() {

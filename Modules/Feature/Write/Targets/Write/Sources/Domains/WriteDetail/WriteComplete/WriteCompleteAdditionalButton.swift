@@ -57,6 +57,7 @@ final class WriteCompleteAdditionalButton: BaseView {
         descriptionLabel.text = description
         descriptionLabel.textColor = isChecked ? Colors.mainGreen.color : Colors.gray60.color
         checkImageView.isHidden = !isChecked
+        isUserInteractionEnabled = isChecked.isNot
     }
     
     private func setupUI() {
