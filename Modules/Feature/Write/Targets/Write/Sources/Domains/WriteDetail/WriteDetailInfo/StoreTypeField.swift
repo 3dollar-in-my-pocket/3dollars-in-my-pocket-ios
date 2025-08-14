@@ -31,7 +31,7 @@ final class StoreTypeField: BaseView {
     
     private let convienceTypeButton = StoreTypeButton(title: Strings.WriteDetailInfo.StoreType.convience)
     
-    let tapPublisher = PassthroughSubject<UserStoreCreateRequestV3.StoreType, Never>()
+    let tapPublisher = PassthroughSubject<SalesType, Never>()
     
     override func setup() {
         addSubViews([
@@ -46,16 +46,16 @@ final class StoreTypeField: BaseView {
         
         let tapRoadType = roadTypeButton.tapPublisher
             .throttleClick()
-            .map { _ in UserStoreCreateRequestV3.StoreType.road }
+            .map { _ in SalesType.road }
         let tapStoreType = storeTypeButton.tapPublisher
             .throttleClick()
-            .map { _ in UserStoreCreateRequestV3.StoreType.store }
+            .map { _ in SalesType.store }
         let tapFoodTruckType = foodTruckTypeButton.tapPublisher
             .throttleClick()
-            .map { _ in UserStoreCreateRequestV3.StoreType.foodTruck }
+            .map { _ in SalesType.foodTruck }
         let tapConvienceType = convienceTypeButton.tapPublisher
             .throttleClick()
-            .map { _ in UserStoreCreateRequestV3.StoreType.convenienceStore }
+            .map { _ in SalesType.convenienceStore }
         
         Publishers.Merge4(tapRoadType, tapStoreType, tapFoodTruckType, tapConvienceType)
             .sink { [weak self] storeType in
@@ -79,7 +79,7 @@ final class StoreTypeField: BaseView {
         }
     }
     
-    func selectStoreType(_ type: UserStoreCreateRequestV3.StoreType) {
+    func selectStoreType(_ type: SalesType) {
         roadTypeButton.isSelected = type == .road
         storeTypeButton.isSelected = type == .store
         foodTruckTypeButton.isSelected = type == .foodTruck

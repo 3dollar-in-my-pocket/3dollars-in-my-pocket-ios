@@ -9,7 +9,7 @@ extension WriteNavigationViewModel {
     struct Input {
         let fetchedCategories = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let finishWriteAddress = PassthroughSubject<(address: String, location: CLLocation), Never>()
-        let finishWriteDetailInfo = PassthroughSubject<(storeName: String, storeType: UserStoreCreateRequestV3.StoreType), Never>()
+        let finishWriteDetailInfo = PassthroughSubject<(storeName: String, storeType: SalesType), Never>()
         let finishSelectCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let finishWriteMenus = PassthroughSubject<[UserStoreMenuRequestV3], Never>()
         let finishWriteAdditionalInfo = PassthroughSubject<(
@@ -54,7 +54,7 @@ extension WriteNavigationViewModel {
         var location: CLLocation?
         var address: String?
         var storeName: String?
-        var storeType: UserStoreCreateRequestV3.StoreType?
+        var storeType: SalesType?
         var categories: [StoreFoodCategoryResponse] = []
         var selectedCategories: [StoreFoodCategoryResponse] = []
         var menus: [UserStoreMenuRequestV3] = []
@@ -93,7 +93,7 @@ final class WriteNavigationViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.finishWriteDetailInfo
-            .sink { [weak self] (storeName: String, storeType: UserStoreCreateRequestV3.StoreType) in
+            .sink { [weak self] (storeName: String, storeType: SalesType) in
                 self?.state.storeName = storeName
                 self?.state.storeType = storeType
                 self?.pushWriteDetailCategory()

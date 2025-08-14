@@ -10,6 +10,12 @@ public struct StoreDetailMenu: Hashable {
         self.price = response.price
         self.category = response.category
     }
+    
+    public init(response: UserStoreMenuResponseV3) {
+        self.name = response.name
+        self.price = response.price.map { "\($0)" }
+        self.category = response.category
+    }
 }
 
 public extension StoreDetailMenu {

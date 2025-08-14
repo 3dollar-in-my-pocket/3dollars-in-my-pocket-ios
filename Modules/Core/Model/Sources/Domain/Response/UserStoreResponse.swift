@@ -29,7 +29,7 @@ public struct UserStoreResponse: Decodable {
 
 
 public struct StoreSalesTypeResponse: Decodable {
-    public let type: UserStoreCreateRequestV3.StoreType
+    public let type: SalesType
     public let description: String
 }
 

@@ -6,17 +6,17 @@ import Model
 extension WriteDetailInfoViewModel {
     struct Input {
         let storeName = PassthroughSubject<String, Never>()
-        let selectStoreType = PassthroughSubject<UserStoreCreateRequestV3.StoreType, Never>()
+        let selectStoreType = PassthroughSubject<SalesType, Never>()
         let didTapChangeAddress = PassthroughSubject<Void, Never>()
         let didTapNext = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
         let storeName: CurrentValueSubject<String, Never>
-        let storeTypes: CurrentValueSubject<UserStoreCreateRequestV3.StoreType, Never>
+        let storeTypes: CurrentValueSubject<SalesType, Never>
         let address: String
         let setErrorState = PassthroughSubject<Void, Never>()
-        let finishWriteDetailInfo = PassthroughSubject<(storeName: String, storeType: UserStoreCreateRequestV3.StoreType), Never>()
+        let finishWriteDetailInfo = PassthroughSubject<(storeName: String, storeType: SalesType), Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -28,14 +28,14 @@ extension WriteDetailInfoViewModel {
     
     private struct State {
         var storeName: String
-        var storeType: UserStoreCreateRequestV3.StoreType
+        var storeType: SalesType
         var address: String
     }
     
     struct Config {
         let address: String
         let storeName: String = ""
-        let storeTypes: UserStoreCreateRequestV3.StoreType = .road
+        let storeTypes: SalesType = .road
     }
 }
 

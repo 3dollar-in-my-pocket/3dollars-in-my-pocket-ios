@@ -4,7 +4,7 @@ public struct UserStoreCreateRequestV3: Encodable {
     public let latitude: Double
     public let longitude: Double
     public let storeName: String
-    public let storeType: UserStoreCreateRequestV3.StoreType?
+    public let storeType: SalesType?
     public let appearanceDays: [AppearanceDay]
     public let openingHours: StoreOpeningHours?
     public let paymentMethods: [PaymentMethod]
@@ -15,7 +15,7 @@ public struct UserStoreCreateRequestV3: Encodable {
         latitude: Double,
         longitude: Double,
         storeName: String,
-        storeType: UserStoreCreateRequestV3.StoreType?,
+        storeType: SalesType?,
         appearanceDays: [AppearanceDay],
         openingHours: StoreOpeningHours?,
         paymentMethods: [PaymentMethod],
@@ -31,19 +31,5 @@ public struct UserStoreCreateRequestV3: Encodable {
         self.paymentMethods = paymentMethods
         self.menus = menus
         self.nonceToken = nonceToken
-    }
-}
-
-public extension UserStoreCreateRequestV3 {
-    enum StoreType: String, Codable, Equatable {
-        case road = "ROAD"
-        case store = "STORE"
-        case convenienceStore = "CONVENIENCE_STORE"
-        case foodTruck = "FOOD_TRUCK"
-        case unknown
-        
-        public init(from decoder: Decoder) throws {
-            self = try StoreType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
-        }
     }
 }
