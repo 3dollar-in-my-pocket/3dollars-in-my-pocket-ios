@@ -35,6 +35,8 @@ public protocol StoreRepository {
     func existsFeedbackOnDateByAccount(storeId: Int) async -> Result<FeedbackExistsResponse, Error>
     
     func fetchStore(input: FetchStoreInput) async -> Result<StoreDetailResponse, Error>
+    
+    func patchStore(storeId: String, input: UserStorePatchRequestV3) async -> Result<UserStoreResponse, Error>
 }
 
 public struct StoreRepositoryImpl: StoreRepository {
@@ -132,6 +134,12 @@ public struct StoreRepositoryImpl: StoreRepository {
     
     public func fetchStore(input: FetchStoreInput) async -> Result<StoreDetailResponse, Error> {
         let request = StoreApi.fetchStore(input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func patchStore(storeId: String, input: UserStorePatchRequestV3) async -> Result<UserStoreResponse, Error> {
+        let request = StoreApi.patchStore(storeId: storeId, input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }

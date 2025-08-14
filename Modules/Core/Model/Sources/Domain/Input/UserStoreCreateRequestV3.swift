@@ -35,7 +35,7 @@ public struct UserStoreCreateRequestV3: Encodable {
 }
 
 public extension UserStoreCreateRequestV3 {
-    enum StoreType: String, Encodable, Equatable {
+    enum StoreType: String, Codable, Equatable {
         case road = "ROAD"
         case store = "STORE"
         case convenienceStore = "CONVENIENCE_STORE"

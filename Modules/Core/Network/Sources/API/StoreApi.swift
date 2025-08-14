@@ -19,6 +19,7 @@ enum StoreApi {
     case deletePhoto(photoId: Int)
     case existsFeedbackOnDateByAccount(storeId: Int)
     case fetchStore(input: FetchStoreInput)
+    case patchStore(storeId: String, input: UserStorePatchRequestV3)
 }
 
 extension StoreApi: RequestType {
@@ -60,6 +61,8 @@ extension StoreApi: RequestType {
             return nil
         case .fetchStore(let input):
             return ["includes": input.includes]
+        case .patchStore(_, let input):
+            return input
         }
     }
     
@@ -95,6 +98,8 @@ extension StoreApi: RequestType {
             return .get
         case .fetchStore:
             return .get
+        case .patchStore:
+            return .patch
         }
     }
     
@@ -133,6 +138,8 @@ extension StoreApi: RequestType {
             return .json
         case .fetchStore:
             return .location
+        case .patchStore:
+            return .json
         }
     }
     
@@ -149,7 +156,7 @@ extension StoreApi: RequestType {
         case .fetchStoreDetail(let input):
             return "/api/v4/store/\(input.storeId)"
         case .createStore:
-            return "/api/v2/store"
+            return "/api/v3/store"
         case .editStore(let storeId, _):
             return "/api/v2/store/\(storeId)"
         case .saveStore(let storeId, _):
@@ -168,6 +175,8 @@ extension StoreApi: RequestType {
             return "/api/v1/feedback/STORE/target/\(storeId)/exists"
         case .fetchStore(let input):
             return "/api/v5/store/\(input.storeId)"
+        case .patchStore(let storeId, _):
+            return "/api/v3/store/\(storeId)"
         }
     }
 }

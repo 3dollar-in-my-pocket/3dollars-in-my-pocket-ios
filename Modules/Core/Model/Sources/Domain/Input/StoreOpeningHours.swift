@@ -9,3 +9,9 @@ public struct StoreOpeningHours: Codable {
         self.endTime = endTime
     }
 }
+
+public extension StoreOpeningHours {
+    var isValid: Bool {
+        return startTime != nil || endTime != nil
+    }
+}

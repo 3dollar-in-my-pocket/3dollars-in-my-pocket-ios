@@ -222,7 +222,7 @@ final class MainTabBarViewController: UITabBarController {
             pushBossStoreDetail(storeId: String(storeId))
         } else {
             selectedIndex = 0
-            pushStoreDetail(storeId: Int(storeId) ?? 0)
+            pushStoreDetail(storeId: String(storeId))
         }
         Preference.shared.shareLink = ""
     }
@@ -234,8 +234,9 @@ final class MainTabBarViewController: UITabBarController {
         navigationController.pushViewController(viewController, animated: true)
     }
     
-    private func pushStoreDetail(storeId: Int) {
-        guard let navigationController = contentViewControllers[safe: 0] as? UINavigationController else { return }
+    private func pushStoreDetail(storeId: String) {
+        guard let navigationController = contentViewControllers[safe: 0] as? UINavigationController,
+              let storeId = Int(storeId) else { return }
         let viewController = storeInterface.getStoreDetailViewController(storeId: storeId)
         
         navigationController.pushViewController(viewController, animated: true)

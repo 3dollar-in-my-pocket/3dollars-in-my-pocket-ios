@@ -47,6 +47,7 @@ extension WriteNavigationViewModel {
         case pushWriteComplete(WriteCompleteViewModel)
         case toast(String)
         case showErrorAlert(Error)
+        case dismissWithStoreId(String)
     }
     
     private struct State {
@@ -102,6 +103,7 @@ final class WriteNavigationViewModel: BaseViewModel {
         input.finishSelectCategory
             .sink { [weak self] (category: [StoreFoodCategoryResponse]) in
                 self?.state.selectedCategories = category
+                self?.state.menus = category.map { UserStoreMenuRequestV3(name: "", category: $0.categoryId) }
                 self?.pushWriteDetailMenu()
             }
             .store(in: &cancellables)
@@ -111,9 +113,7 @@ final class WriteNavigationViewModel: BaseViewModel {
                 guard let self else { return }
                 state.menus = menus
                 
-                if state.afterCreatedStore {
-                    // TODO: 가게 업데이트
-                } else {
+                if state.afterCreatedStore.isNot {
                     pushWriteDetailAdditionalInfo()
                 }
             }
@@ -127,9 +127,7 @@ final class WriteNavigationViewModel: BaseViewModel {
                 state.startTime = startTime
                 state.endTime = endTime
                 
-                if state.afterCreatedStore {
-                    // TODO: 가게 업데이트
-                } else {
+                if state.afterCreatedStore.isNot {
                     createStore()
                 }
             }
@@ -169,7 +167,7 @@ final class WriteNavigationViewModel: BaseViewModel {
     private func pushWriteDetailMenu() {
         let config = WriteDetailMenuViewModel.Config(
             selectedCategories: state.selectedCategories,
-            menus: [],
+            menus: state.menus,
             afterCreatedStore: state.afterCreatedStore
         )
         let viewModel = WriteDetailMenuViewModel(config: config)
@@ -184,7 +182,7 @@ final class WriteNavigationViewModel: BaseViewModel {
     }
     
     private func pushWriteDetailAdditionalInfo() {
-        let config = WriteDetailAdditionalInfoViewModel.Config()
+        let config = WriteDetailAdditionalInfoViewModel.Config(afterCreatedStore: state.afterCreatedStore)
         let viewModel = WriteDetailAdditionalInfoViewModel(config: config)
         
         viewModel.output.finishWriteAdditionalInfo
@@ -199,6 +197,11 @@ final class WriteNavigationViewModel: BaseViewModel {
     private func pushWriteComplete(userStoreResponse: UserStoreResponse) {
         let config = WriteCompleteViewModel.Config(userStoreResponse: userStoreResponse)
         let viewModel = WriteCompleteViewModel(config: config)
+        viewModel.output.didTapComplete
+            .sink(receiveValue: { [weak self] storeId in
+                self?.output.route.send(.dismissWithStoreId(storeId))
+            })
+            .store(in: &viewModel.cancellables)
         output.route.send(.pushWriteComplete(viewModel))
     }
     

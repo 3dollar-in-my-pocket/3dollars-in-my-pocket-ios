@@ -18,6 +18,8 @@ final class WriteNavigationController: UINavigationController {
     private let viewModel: WriteNavigationViewModel
     private var cancellables = Set<AnyCancellable>()
     
+    var onSuccessWrite: ((String) -> Void)?
+    
     init(rootViewController: UIViewController, viewModel: WriteNavigationViewModel) {
         self.viewModel = viewModel
         super.init(rootViewController: rootViewController)
@@ -103,6 +105,10 @@ extension WriteNavigationController {
             ToastManager.shared.show(message: message)
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
+        case .dismissWithStoreId(let storeId):
+            dismiss(animated: true) { [weak self] in
+                self?.onSuccessWrite?(storeId)
+            }
         }
     }
     

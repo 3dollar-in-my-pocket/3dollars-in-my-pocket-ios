@@ -91,7 +91,6 @@ public final class WriteAddressViewController: BaseViewController {
         return viewModel.output.screenName
     }
     
-    var onSuccessWrite: ((Int) -> ())?
     private let viewModel: WriteAddressViewModel
     
     public init(viewModel: WriteAddressViewModel) {

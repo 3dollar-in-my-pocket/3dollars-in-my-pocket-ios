@@ -20,4 +20,12 @@ public struct UserStoreMenuRequestV3: Encodable {
         self.category = category
         self.description = description
     }
+    
+    public init(response: UserStoreMenuResponseV3) {
+        self.name = response.name
+        self.count = response.count
+        self.price = response.price
+        self.category = response.category.categoryId
+        self.description = response.description
+    }
 }

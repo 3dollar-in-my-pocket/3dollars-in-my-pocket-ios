@@ -32,6 +32,7 @@ extension WriteDetailMenuViewModel {
     enum Route {
         case presentCategoryBottomSheet(WriteDetailCategoryBottomSheetViewModel)
         case showErrorAlert(Error)
+        case pop
     }
     
     struct Dependency {
@@ -240,9 +241,11 @@ final class WriteDetailMenuViewModel: BaseViewModel {
     
     private func finishInputMenu() {
         let menus = state.menus.flatMap { $0.value }
-        let validMenus = menus.filter { $0.isValid }
+        output.finishInputMenu.send(menus)
         
-        output.finishInputMenu.send(validMenus)
+        if output.afterCreatedStore {
+            output.route.send(.pop)
+        }
     }
     
     private func editCategories(categories: [StoreFoodCategoryResponse]) {
@@ -256,11 +259,5 @@ final class WriteDetailMenuViewModel: BaseViewModel {
         output.categories.send(categories)
         output.selectedCategoryIndex.send(0)
         fetchCurrentCategoryMenus()
-    }
-}
-
-private extension UserStoreMenuRequestV3 {
-    var isValid: Bool {
-        return name.isNotEmpty
     }
 }

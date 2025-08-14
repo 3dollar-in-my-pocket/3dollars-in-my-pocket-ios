@@ -20,7 +20,7 @@ public struct UserStoreResponse: Decodable {
     @available(*, deprecated, message: "menusV2를 사용하세요.")
     public let menus: [UserStoreMenuResponse]
     
-    public let menusV2: [UserStoreMenuResponseV2]
+    public var menusV3: [UserStoreMenuResponseV3]
     public let isDeleted: Bool
     public let activitiesStatus: ActivitiesStatus
     public let createdAt: String
@@ -29,11 +29,11 @@ public struct UserStoreResponse: Decodable {
 
 
 public struct StoreSalesTypeResponse: Decodable {
-    public let type: String
+    public let type: UserStoreCreateRequestV3.StoreType
     public let description: String
 }
 
-public struct UserStoreMenuResponseV2: Decodable {
+public struct UserStoreMenuResponseV3: Decodable {
     public let name: String
     public let price: Int?
     public let count: Int?

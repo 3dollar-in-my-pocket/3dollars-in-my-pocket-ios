@@ -16,6 +16,7 @@ extension WriteDetailAdditionalInfoViewModel {
     }
     
     struct Output {
+        let afterCreatedStore: Bool
         let selectedPaymentMethods: CurrentValueSubject<[PaymentMethod], Never>
         let selectedDays: CurrentValueSubject<[AppearanceDay], Never>
         let selectedStartTime: CurrentValueSubject<Date?, Never>
@@ -32,6 +33,7 @@ extension WriteDetailAdditionalInfoViewModel {
     
     enum Route {
         case showErrorAlert(Error)
+        case pop
     }
     
     struct State {
@@ -53,15 +55,18 @@ extension WriteDetailAdditionalInfoViewModel {
         let paymentMethods: [PaymentMethod]
         let appearanceDays: [AppearanceDay]
         let openingHours: StoreOpeningHours?
+        let afterCreatedStore: Bool
         
         init(
             paymentMethods: [PaymentMethod] = [],
             appearanceDays: [AppearanceDay] = [],
-            openingHours: StoreOpeningHours? = nil
+            openingHours: StoreOpeningHours? = nil,
+            afterCreatedStore: Bool
         ) {
             self.paymentMethods = paymentMethods
             self.appearanceDays = appearanceDays
             self.openingHours = openingHours
+            self.afterCreatedStore = afterCreatedStore
         }
     }
 }
@@ -81,6 +86,7 @@ final class WriteDetailAdditionalInfoViewModel: BaseViewModel {
             endTime: config.openingHours?.endTime?.toDate()
         )
         self.output = Output(
+            afterCreatedStore: config.afterCreatedStore,
             selectedPaymentMethods: .init(config.paymentMethods),
             selectedDays: .init(config.appearanceDays),
             selectedStartTime: .init(config.openingHours?.startTime?.toDate()),
@@ -135,6 +141,10 @@ final class WriteDetailAdditionalInfoViewModel: BaseViewModel {
             startTime: state.startTime,
             endTime: state.endTime
         ))
+        
+        if output.afterCreatedStore {
+            output.route.send(.pop)
+        }
     }
     
     private func handlePaymentMethodSelection(_ paymentMethod: PaymentMethod) {

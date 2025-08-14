@@ -8,7 +8,7 @@ import Model
 public final class WriteInterfaceImpl: WriteInterface {
     public func getWriteAddressViewController(
         config: WriteAddressViewModelConfig?,
-        onSuccessWrite: @escaping ((Int) -> ())
+        onSuccessWrite: @escaping ((String) -> ())
     ) -> UIViewController {
         let viewModel = WriteAddressViewModel()
         let navigationViewModel = WriteNavigationViewModel()
@@ -16,13 +16,12 @@ public final class WriteInterfaceImpl: WriteInterface {
         viewModel.output.finishWriteAddress
             .subscribe(navigationViewModel.input.finishWriteAddress)
             .store(in: &viewModel.cancellables)
-        
         let viewController = WriteAddressViewController(viewModel: viewModel)
-        viewController.onSuccessWrite = { storeId in
+        let navigationController = WriteNavigationController(rootViewController: viewController, viewModel: navigationViewModel)
+        
+        navigationController.onSuccessWrite = { storeId in
             onSuccessWrite(storeId)
         }
-        
-        let navigationController = WriteNavigationController(rootViewController: viewController, viewModel: navigationViewModel)
         navigationController.modalPresentationStyle = .overCurrentContext
         return navigationController
     }

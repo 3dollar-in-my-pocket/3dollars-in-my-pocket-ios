@@ -53,9 +53,10 @@ final class WriteCompleteAdditionalButton: BaseView {
     }
     
     func bind(isChecked: Bool) {
-        let description = isChecked ? "작성 완료" : description
+        let description = isChecked ? "작성 완료" : descriptionLabel.text
         descriptionLabel.text = description
         descriptionLabel.textColor = isChecked ? Colors.mainGreen.color : Colors.gray60.color
+        iconContainer.backgroundColor = isChecked ? Colors.green200.color : Colors.gray10.color
         checkImageView.isHidden = !isChecked
         isUserInteractionEnabled = isChecked.isNot
     }
@@ -87,8 +88,8 @@ final class WriteCompleteAdditionalButton: BaseView {
         }
         
         checkImageView.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(5)
-            $0.top.equalToSuperview().offset(-3)
+            $0.trailing.equalTo(iconContainer).offset(5)
+            $0.top.equalTo(iconContainer).offset(-3)
             $0.size.equalTo(16)
         }
         
@@ -99,7 +100,7 @@ final class WriteCompleteAdditionalButton: BaseView {
         }
         
         descriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(4)
+            $0.bottom.equalToSuperview().offset(-12)
             $0.leading.equalTo(titleLabel)
             $0.trailing.lessThanOrEqualToSuperview().offset(-12)
         }
@@ -111,6 +112,7 @@ final class WriteCompleteAdditionalButton: BaseView {
     
     private func bind() {
         addGestureRecognizer(tapGestureRecognizer)
+        isUserInteractionEnabled = true
         tapGestureRecognizer.tapPublisher
             .map { _ in () }
             .subscribe(tapPublisher)

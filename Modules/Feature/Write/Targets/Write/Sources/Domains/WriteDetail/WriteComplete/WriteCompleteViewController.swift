@@ -44,7 +44,6 @@ final class WriteCompleteViewController: BaseViewController {
     
     private let storeNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "봉어빵 2번 출구 상가 근처 봉어빵집"
         label.font = Fonts.semiBold.font(size: 14)
         label.textColor = Colors.gray100.color
         label.textAlignment = .center
@@ -158,6 +157,18 @@ final class WriteCompleteViewController: BaseViewController {
             storeCategoryStackView
         ])
         
+        storeNameLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(16)
+            $0.trailing.equalToSuperview().offset(-16)
+        }
+        
+        storeCategoryStackView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-16)
+            $0.height.equalTo(20)
+        }
+        
         stackView.addArrangedSubview(descriptionLabel, previousSpace: 28)
         stackView.addArrangedSubview(addStoreMenuButton, previousSpace: 12)
         stackView.addArrangedSubview(addAdditionalInfoButton, previousSpace: 8)
@@ -208,6 +219,13 @@ final class WriteCompleteViewController: BaseViewController {
                 self?.handleRoute(route)
             }
             .store(in: &cancellables)
+        
+        viewModel.output.isLoading
+            .main
+            .sink { isLoading in
+                LoadingManager.shared.showLoading(isShow: isLoading)
+            }
+            .store(in: &cancellables)
     }
     
     private func setupNavigationBar() {
@@ -219,7 +237,9 @@ final class WriteCompleteViewController: BaseViewController {
     private func updateStore(_ store: UserStoreResponse) {
         storeNameLabel.text = store.name
         updateStoreCategory(store.categories)
-        addStoreMenuButton.bind(isChecked: store.menusV2.isNotEmpty)
+        
+        let isValidMenus = store.menusV3.allSatisfy { $0.name.isNotEmpty } && store.menusV3.isNotEmpty
+        addStoreMenuButton.bind(isChecked: isValidMenus)
         updateAddAdditionalInfoButton(store: store)
     }
     
@@ -232,7 +252,7 @@ final class WriteCompleteViewController: BaseViewController {
     }
     
     private func updateAddAdditionalInfoButton(store: UserStoreResponse) {
-        let isChecked = store.paymentMethods.isNotEmpty || store.appearanceDays.isNotEmpty || store.openingHours.isNotNil
+        let isChecked = store.paymentMethods.isNotEmpty || store.appearanceDays.isNotEmpty || (store.openingHours?.isValid ?? false)
         addAdditionalInfoButton.bind(isChecked: isChecked)
     }
 }
@@ -245,8 +265,10 @@ extension WriteCompleteViewController {
             pushWriteDetailMenu(viewModel)
         case .pushWriteDetailAdditionalInfo(let viewModel):
             pushWriteDetailAdditionalInfo(viewModel)
-        case .dismiss:
-            dismiss(animated: true)
+        case .tosat(let message):
+            ToastManager.shared.show(message: message)
+        case .showErrorAlert(let error):
+            showErrorAlert(error: error)
         }
     }
     
@@ -294,6 +316,8 @@ private class CategoryTagView: UIStackView {
     }
     
     private func setupUI() {
+        layer.cornerRadius = 4
+        layer.masksToBounds = true
         spacing = 2
         axis = .horizontal
         layoutMargins = .init(top: 2, left: 4, bottom: 2, right: 4)

@@ -9,7 +9,7 @@ final class WriteDetailMenuViewController: BaseViewController {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = false
-        scrollView.backgroundColor = .clear
+        scrollView.backgroundColor = Colors.gray10.color
         return scrollView
     }()
 
@@ -147,7 +147,7 @@ final class WriteDetailMenuViewController: BaseViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = Colors.gray10.color
+        view.backgroundColor = Colors.systemWhite.color
         view.addSubViews([
             scrollView,
             skipButton,
@@ -210,14 +210,14 @@ final class WriteDetailMenuViewController: BaseViewController {
     }
     
     private func setupNavigationBar() {
+        guard let navigationController = navigationController as? WriteNavigationController else { return }
+        navigationController.isNavigationBarHidden = false
         if viewModel.output.afterCreatedStore {
             title = "메뉴 상세 정보"
-            guard let navigationController = navigationController as? WriteNavigationController else { return }
             navigationController.setProgressHidden(true)
             navigationItem.rightBarButtonItem = nil
         } else {
             title = "가게 제보"
-            guard let navigationController = navigationController as? WriteNavigationController else { return }
             navigationController.updateProgress(0.75)
             navigationController.setProgressHidden(false)
             
@@ -308,6 +308,7 @@ final class WriteDetailMenuViewController: BaseViewController {
             .font: Fonts.semiBold.font(size: 16),
             .foregroundColor: Colors.systemWhite.color
         ]))
+        skipButton.isHidden = afterCreateStore
     }
     
     private func setupCollectionView() {
@@ -432,6 +433,10 @@ extension WriteDetailMenuViewController {
         switch route {
         case .presentCategoryBottomSheet(let viewModel):
             presentCategoryBottomSheet(viewModel: viewModel)
+        case .showErrorAlert(let error):
+            showErrorAlert(error: error)
+        case .pop:
+            navigationController?.popViewController(animated: true)
         }
     }
     

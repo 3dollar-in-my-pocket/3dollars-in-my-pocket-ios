@@ -159,26 +159,35 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
     }
     
     private func setupNavigationBar() {
-        title = "가게 제보"
         guard let navigationController = navigationController as? WriteNavigationController else { return }
-        navigationController.updateProgress(1.0)
-        navigationController.setProgressHidden(false)
+        navigationController.isNavigationBarHidden = false
         
-        let closeImage = DesignSystemAsset.Icons.close.image
-            .resizeImage(scaledTo: 24)
-            .withRenderingMode(.alwaysTemplate)
-            .withTintColor(.white)
-        let closeButtonItem = UIBarButtonItem(
-            image: closeImage,
-            style: .plain,
-            target: self,
-            action: #selector(didTapClose)
-        )
-        closeButtonItem.tintColor = Colors.gray100.color
-        navigationItem.setAutoInsetRightBarButtonItem(closeButtonItem)
+        if viewModel.output.afterCreatedStore {
+            title = "가게 상세 정보"
+            navigationController.setProgressHidden(true)
+            navigationItem.rightBarButtonItem = nil
+        } else {
+            title = "가게 제보"
+            navigationController.updateProgress(1.0)
+            navigationController.setProgressHidden(false)
+            
+            let closeImage = DesignSystemAsset.Icons.close.image
+                .resizeImage(scaledTo: 24)
+                .withRenderingMode(.alwaysTemplate)
+                .withTintColor(.white)
+            let closeButtonItem = UIBarButtonItem(
+                image: closeImage,
+                style: .plain,
+                target: self,
+                action: #selector(didTapClose)
+            )
+            closeButtonItem.tintColor = Colors.gray100.color
+            navigationItem.setAutoInsetRightBarButtonItem(closeButtonItem)
+        }
     }
     
     private func bind() {
+        bindAfterCreateStore(viewModel.output.afterCreatedStore)
         // Input
         finishButton.tapPublisher
             .throttleClick()
@@ -186,12 +195,10 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
             .store(in: &cancellables)
         
         paymentMothodView.selectedPaymentMethods
-            .removeDuplicates()
             .subscribe(viewModel.input.didSelectPaymentMethod)
             .store(in: &cancellables)
         
         appearanceDayView.selectedDayChanged
-            .removeDuplicates()
             .subscribe(viewModel.input.didSelectAppearanceDay)
             .store(in: &cancellables)
         
@@ -247,6 +254,15 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
             .store(in: &cancellables)
     }
     
+    private func bindAfterCreateStore(_ afterCreateStore: Bool) {
+        let string = afterCreateStore ? "작성 완료" : "다음"
+        finishButton.configuration?.attributedTitle = AttributedString(string, attributes: AttributeContainer([
+            .font: Fonts.semiBold.font(size: 16),
+            .foregroundColor: Colors.systemWhite.color
+        ]))
+        skipButton.isHidden = afterCreateStore
+    }
+    
     @objc private func didTapClose() {
         presentDismissModal()
     }
@@ -258,6 +274,8 @@ extension WriteDetailAdditionalInfoViewController {
         switch route {
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
+        case .pop:
+            navigationController?.popViewController(animated: true)
         }
     }
     

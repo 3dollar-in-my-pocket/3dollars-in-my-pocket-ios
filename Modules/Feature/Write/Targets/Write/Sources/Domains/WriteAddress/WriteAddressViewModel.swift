@@ -81,6 +81,7 @@ public final class WriteAddressViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.moveMapCenter
+            .throttle(for: 0.5, scheduler: RunLoop.main, latest: true)
             .sink(receiveValue: { [weak self] location in
                 self?.state.cameraPosition = location
                 self?.updateAddress(location: location)
