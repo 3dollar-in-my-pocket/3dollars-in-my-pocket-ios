@@ -11,7 +11,7 @@ import PanModal
 final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "추가할 카테고리를 선택해 주세요"
+        label.text = Strings.WriteDetailCategoryBottomSheet.title
         label.font = Fonts.semiBold.font(size: 20)
         label.textColor = Colors.gray100.color
         return label
@@ -25,7 +25,6 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
     
     private let countLabel: UILabel = {
         let label = UILabel()
-        label.text = "(6/10)"
         label.font = Fonts.bold.font(size: 16)
         label.textColor = Colors.gray100.color
         return label
@@ -46,7 +45,7 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
     
     private let editButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString("수정 완료", attributes: AttributeContainer([
+        config.attributedTitle = AttributedString(Strings.WriteDetailCategoryBottomSheet.edit, attributes: AttributeContainer([
             .font: Fonts.semiBold.font(size: 14),
             .foregroundColor: Colors.systemWhite.color
         ]))

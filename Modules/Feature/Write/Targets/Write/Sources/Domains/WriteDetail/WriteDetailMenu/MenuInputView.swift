@@ -10,7 +10,7 @@ final class MenuInputView: BaseView {
         let label = UILabel()
         label.font = Fonts.semiBold.font(size: 14)
         label.textColor = Colors.gray100.color
-        label.text = "메뉴 1"
+        label.text = Strings.WriteDetailMenu.Menu.titleFormat(1)
         label.textAlignment = .left
         return label
     }()
@@ -27,7 +27,7 @@ final class MenuInputView: BaseView {
         let textField = UITextField()
         textField.font = Fonts.regular.font(size: 14)
         textField.textColor = Colors.gray90.color
-        textField.attributedPlaceholder = NSAttributedString(string: "슈크림 붕어빵", attributes: [
+        textField.attributedPlaceholder = NSAttributedString(string: Strings.WriteDetailMenu.Menu.namePlaceholder, attributes: [
             .foregroundColor: Colors.gray50.color
         ])
         textField.tintColor = Colors.mainPink.color
@@ -48,7 +48,7 @@ final class MenuInputView: BaseView {
         textField.font = Fonts.regular.font(size: 14)
         textField.textColor = Colors.gray100.color
         textField.keyboardType = .numberPad
-        textField.attributedPlaceholder = NSAttributedString(string: "1", attributes: [
+        textField.attributedPlaceholder = NSAttributedString(string: Strings.WriteDetailMenu.Menu.quantityPlaceholder, attributes: [
             .foregroundColor: Colors.gray50.color
         ])
         textField.tintColor = Colors.mainPink.color
@@ -58,7 +58,7 @@ final class MenuInputView: BaseView {
     
     private let quantityLabel: UILabel = {
         let label = UILabel()
-        label.text = "개"
+        label.text = Strings.WriteDetailMenu.Menu.quantity
         label.font = Fonts.regular.font(size: 14)
         label.textColor = Colors.gray90.color
         
@@ -78,7 +78,7 @@ final class MenuInputView: BaseView {
         textField.font = Fonts.regular.font(size: 14)
         textField.textColor = Colors.gray100.color
         textField.keyboardType = .decimalPad
-        textField.attributedPlaceholder = NSAttributedString(string: "1,000", attributes: [
+        textField.attributedPlaceholder = NSAttributedString(string: Strings.WriteDetailMenu.Menu.pricePlaceholder, attributes: [
             .foregroundColor: Colors.gray50.color
         ])
         textField.tintColor = Colors.mainPink.color
@@ -87,7 +87,7 @@ final class MenuInputView: BaseView {
     
     private let priceLabel: UILabel = {
         let label = UILabel()
-        label.text = "원"
+        label.text = Strings.WriteDetailMenu.Menu.price
         label.font = Fonts.regular.font(size: 14)
         label.textColor = Colors.gray90.color
         return label

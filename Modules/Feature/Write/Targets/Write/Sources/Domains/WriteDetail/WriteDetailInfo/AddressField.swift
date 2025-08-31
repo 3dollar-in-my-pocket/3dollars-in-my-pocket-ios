@@ -8,7 +8,7 @@ final class AddressField: BaseView {
         let label = UILabel()
         label.font = Fonts.semiBold.font(size: 14)
         label.textColor = Colors.gray100.color
-        label.text = "가게 위치 확인"
+        label.text = Strings.WriteDetailInfo.AddressField.title
         return label
     }()
     
@@ -30,7 +30,7 @@ final class AddressField: BaseView {
     private let changeButton: UIButton = {
         var config = UIButton.Configuration.plain()
         let button = UIButton()
-        button.setTitle("위치 변경", for: .normal)
+        button.setTitle(Strings.WriteDetailInfo.AddressField.change, for: .normal)
         button.setTitleColor(Colors.mainPink.color, for: .normal)
         button.titleLabel?.font = Fonts.semiBold.font(size: 14)
         return button

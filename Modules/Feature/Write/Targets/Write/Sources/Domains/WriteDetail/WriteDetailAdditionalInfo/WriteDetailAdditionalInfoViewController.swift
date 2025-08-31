@@ -27,13 +27,13 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
         label.font = Fonts.bold.font(size: 24)
         label.textColor = Colors.gray100.color
         
-        let string = "가게 상세 정보 추가 선택"
+        let string = Strings.WriteAdditionalInfo.title
         var attributedString = NSMutableAttributedString(string: string, attributes: [
             .font: Fonts.bold.font(size: 24),
             .foregroundColor: Colors.gray100.color
         ])
         
-        let range = (string as NSString).range(of: "선택")
+        let range = (string as NSString).range(of: Strings.WriteAdditionalInfo.titleSmallerRange)
         attributedString.addAttribute(.font, value: Fonts.bold.font(size: 16), range: range)
         attributedString.addAttribute(.foregroundColor, value: Colors.gray50.color, range: range)
         label.attributedText = attributedString
@@ -45,7 +45,7 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
         let label = UILabel()
         label.font = Fonts.regular.font(size: 14)
         label.textColor = Colors.gray80.color
-        label.text = "가게 세부 정보를 입력하고 더 알찬 정보를 제공해 보세요"
+        label.text = Strings.WriteAdditionalInfo.description
         label.textAlignment = .left
         return label
     }()
@@ -56,7 +56,7 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
     
     private let skipButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString("건너뛰기", attributes: AttributeContainer([
+        config.attributedTitle = AttributedString(Strings.WriteAdditionalInfo.skip, attributes: AttributeContainer([
             .font: Fonts.medium.font(size: 16),
             .foregroundColor: Colors.gray70.color
         ]))
@@ -72,7 +72,7 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
     
     private let finishButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString("제보 완료", attributes: AttributeContainer([
+        config.attributedTitle = AttributedString(Strings.WriteAdditionalInfo.Finish.normal, attributes: AttributeContainer([
             .font: Fonts.bold.font(size: 16),
             .foregroundColor: Colors.systemWhite.color
         ]))
@@ -163,11 +163,11 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
         navigationController.isNavigationBarHidden = false
         
         if viewModel.output.afterCreatedStore {
-            title = "가게 상세 정보"
+            title = Strings.WriteAdditionalInfo.Navigation.Title.afterCreated
             navigationController.setProgressHidden(true)
             navigationItem.rightBarButtonItem = nil
         } else {
-            title = "가게 제보"
+            title = Strings.WriteAdditionalInfo.Navigation.Title.normal
             navigationController.updateProgress(1.0)
             navigationController.setProgressHidden(false)
             

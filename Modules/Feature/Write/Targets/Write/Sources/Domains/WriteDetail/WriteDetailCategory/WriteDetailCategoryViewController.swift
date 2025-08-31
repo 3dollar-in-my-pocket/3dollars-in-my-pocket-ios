@@ -9,7 +9,7 @@ import SnapKit
 final class WriteDetailCategoryViewController: BaseViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "음식 카테고리 선택"
+        label.text = Strings.WriteDetailCategory.title
         label.font = Fonts.bold.font(size: 24)
         label.textColor = Colors.gray100.color
         label.setContentHuggingPriority(.required, for: .horizontal)
@@ -116,7 +116,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
     }
     
     private func setupNavigationBar() {
-        title = "가게 제보"
+        title = Strings.WriteDetailCategory.Navigation.title
         guard let navigationController = navigationController as? WriteNavigationController else { return }
         navigationController.updateProgress(0.5)
         navigationController.setProgressHidden(false)

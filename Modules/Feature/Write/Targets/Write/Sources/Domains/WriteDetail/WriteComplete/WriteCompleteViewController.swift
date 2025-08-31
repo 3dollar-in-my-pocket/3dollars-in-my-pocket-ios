@@ -25,7 +25,7 @@ final class WriteCompleteViewController: BaseViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "새로운 길거리 음식점을\n제보했어요"
+        label.text = Strings.WriteComplete.title
         label.font = Fonts.bold.font(size: 24)
         label.textColor = Colors.gray100.color
         label.textAlignment = .center
@@ -61,7 +61,7 @@ final class WriteCompleteViewController: BaseViewController {
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "이 업체에 대해 더 알려주세요!"
+        label.text = Strings.WriteComplete.description
         label.font = Fonts.bold.font(size: 16)
         label.textColor = Colors.gray80.color
         label.textAlignment = .center
@@ -70,19 +70,19 @@ final class WriteCompleteViewController: BaseViewController {
     
     private let addStoreMenuButton = WriteCompleteAdditionalButton(
         icon: WriteAsset.iconForkKnife.image,
-        title: "메뉴 상세 정보 추가하기",
-        description: "메뉴명 ∙ 메뉴 가격"
+        title: Strings.WriteComplete.AddMenu.title,
+        description: Strings.WriteComplete.AddMenu.description
     )
     
     private let addAdditionalInfoButton = WriteCompleteAdditionalButton(
         icon: WriteAsset.iconMegaphone.image,
-        title: "가게 세부 정보 추가하기",
-        description: "가게 형태 ∙ 결제 방식 ∙ 출몰 요일 ∙ 출몰 시간대"
+        title: Strings.WriteComplete.AddInfo.title,
+        description: Strings.WriteComplete.AddInfo.description
     )
     
     private let completeButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString("완료", attributes: AttributeContainer([
+        config.attributedTitle = AttributedString(Strings.WriteComplete.finish, attributes: AttributeContainer([
             .font: Fonts.bold.font(size: 16),
             .foregroundColor: Colors.systemWhite.color
         ]))

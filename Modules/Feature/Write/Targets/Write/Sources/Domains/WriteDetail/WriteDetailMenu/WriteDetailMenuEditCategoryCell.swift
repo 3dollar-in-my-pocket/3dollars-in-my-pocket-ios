@@ -26,7 +26,7 @@ final class WriteDetailMenuEditCategoryCell: BaseCollectionViewCell {
         label.font = Fonts.semiBold.font(size: 14)
         label.textColor = Colors.gray90.color
         label.textAlignment = .left
-        label.text = "카테고리 수정"
+        label.text = Strings.WriteDetailMenu.editCategory
         return label
     }()
     

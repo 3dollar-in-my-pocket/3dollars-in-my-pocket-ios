@@ -72,8 +72,8 @@ extension OpeningHoursSectionView {
             toolbar.sizeToFit()
             
             let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-            let doneButton = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(didTapDone))
-            let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(didTapCancel))
+            let doneButton = UIBarButtonItem(title: Strings.WriteAdditionalInfo.OpeningHours.done, style: .done, target: self, action: #selector(didTapDone))
+            let cancelButton = UIBarButtonItem(title: Strings.WriteAdditionalInfo.OpeningHours.cancel, style: .plain, target: self, action: #selector(didTapCancel))
             
             toolbar.items = [cancelButton, flexSpace, doneButton]
             textField.inputAccessoryView = toolbar
@@ -82,7 +82,7 @@ extension OpeningHoursSectionView {
         @objc private func didTapDone() {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "ko_KR")
-            formatter.dateFormat = "a h시"
+            formatter.dateFormat = Strings.WriteAdditionalInfo.OpeningHours.dateFormat
             let timeString = formatter.string(from: datePicker.date)
             textField.text = timeString
             
@@ -102,22 +102,8 @@ extension OpeningHoursSectionView {
             datePicker.date = date
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "ko_KR")
-            formatter.dateFormat = "a h시"
+            formatter.dateFormat = Strings.WriteAdditionalInfo.OpeningHours.dateFormat
             textField.text = formatter.string(from: date)
-        }
-        
-        // MARK: - Touch Event Debugging
-        override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-            print("🔍 TimeField hitTest - point: \(point), bounds: \(bounds)")
-            let result = super.hitTest(point, with: event)
-            print("🔍 TimeField hitTest result: \(String(describing: result))")
-            return result
-        }
-        
-        override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-            let isInside = super.point(inside: point, with: event)
-            print("🔍 TimeField point(inside:) - point: \(point), isInside: \(isInside)")
-            return isInside
         }
     }
 }
@@ -125,28 +111,28 @@ extension OpeningHoursSectionView {
 final class OpeningHoursSectionView: UIView {
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "출몰 시간대"
+        label.text = Strings.WriteAdditionalInfo.OpeningHours.title
         label.font = Fonts.semiBold.font(size: 14)
         label.textColor = Colors.gray100.color
         return label
     }()
     
-    private let startTimeField = TimeField(placeholder: "오전 11시")
+    private let startTimeField = TimeField(placeholder: Strings.WriteAdditionalInfo.OpeningHours.startTimePlaceholder)
     
     private let separatorLabel: UILabel = {
         let label = UILabel()
-        label.text = "부터"
+        label.text = Strings.WriteAdditionalInfo.OpeningHours.separator
         label.font = Fonts.medium.font(size: 14)
         label.textColor = Colors.gray70.color
         label.textAlignment = .center
         return label
     }()
     
-    private let endTimeField = TimeField(placeholder: "오후 8시")
+    private let endTimeField = TimeField(placeholder: Strings.WriteAdditionalInfo.OpeningHours.endTimePlaceholder)
     
     private let untilLabel: UILabel = {
         let label = UILabel()
-        label.text = "까지"
+        label.text = Strings.WriteAdditionalInfo.OpeningHours.until
         label.font = Fonts.medium.font(size: 14)
         label.textColor = Colors.gray70.color
         label.textAlignment = .center

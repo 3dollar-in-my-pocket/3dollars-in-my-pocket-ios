@@ -53,7 +53,7 @@ final class WriteCompleteAdditionalButton: BaseView {
     }
     
     func bind(isChecked: Bool) {
-        let description = isChecked ? "작성 완료" : descriptionLabel.text
+        let description = isChecked ? Strings.WriteComplete.finishWriting : descriptionLabel.text
         descriptionLabel.text = description
         descriptionLabel.textColor = isChecked ? Colors.mainGreen.color : Colors.gray60.color
         iconContainer.backgroundColor = isChecked ? Colors.green200.color : Colors.gray10.color

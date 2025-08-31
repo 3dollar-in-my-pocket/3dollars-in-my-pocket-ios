@@ -115,6 +115,87 @@ public enum WriteStrings: Sendable {
     }
   }
 
+  public enum WriteAdditionalInfo: Sendable {
+  /// 가게 세부 정보를 입력하고 더 알찬 정보를 제공해 보세요
+    public static let description = WriteStrings.tr("Localization", "write_additional_info.description")
+    /// 금
+    public static let friday = WriteStrings.tr("Localization", "write_additional_info.friday")
+    /// 월
+    public static let monday = WriteStrings.tr("Localization", "write_additional_info.monday")
+    /// 토
+    public static let saturday = WriteStrings.tr("Localization", "write_additional_info.saturday")
+    /// 건너뛰기
+    public static let skip = WriteStrings.tr("Localization", "write_additional_info.skip")
+    /// 일
+    public static let sunday = WriteStrings.tr("Localization", "write_additional_info.sunday")
+    /// 목
+    public static let thursday = WriteStrings.tr("Localization", "write_additional_info.thursday")
+    /// 가게 상세 정보 추가 선택
+    public static let title = WriteStrings.tr("Localization", "write_additional_info.title")
+    /// 선택
+    public static let titleSmallerRange = WriteStrings.tr("Localization", "write_additional_info.title_smaller_range")
+    /// 화
+    public static let tuesday = WriteStrings.tr("Localization", "write_additional_info.tuesday")
+    /// 수
+    public static let wednesday = WriteStrings.tr("Localization", "write_additional_info.wednesday")
+
+    public enum AppearanceDays: Sendable {
+    /// *다중선택 가능
+      public static let description = WriteStrings.tr("Localization", "write_additional_info.appearance_days.description")
+      /// 출몰 요일
+      public static let title = WriteStrings.tr("Localization", "write_additional_info.appearance_days.title")
+    }
+
+    public enum Finish: Sendable {
+    /// 작성 완료
+      public static let afterCreated = WriteStrings.tr("Localization", "write_additional_info.finish.after_created")
+      /// 제보완료
+      public static let normal = WriteStrings.tr("Localization", "write_additional_info.finish.normal")
+    }
+
+    public enum Navigation: Sendable {
+
+      public enum Title: Sendable {
+      /// 가게 상세 정보
+        public static let afterCreated = WriteStrings.tr("Localization", "write_additional_info.navigation.title.after_created")
+        /// 가게 제보
+        public static let normal = WriteStrings.tr("Localization", "write_additional_info.navigation.title.normal")
+      }
+    }
+
+    public enum OpeningHours: Sendable {
+    /// 취소
+      public static let cancel = WriteStrings.tr("Localization", "write_additional_info.opening_hours.cancel")
+      /// a h시
+      public static let dateFormat = WriteStrings.tr("Localization", "write_additional_info.opening_hours.date_format")
+      /// 완료
+      public static let done = WriteStrings.tr("Localization", "write_additional_info.opening_hours.done")
+      /// 오후 8시
+      public static let endTimePlaceholder = WriteStrings.tr("Localization", "write_additional_info.opening_hours.end_time_placeholder")
+      /// 부터
+      public static let separator = WriteStrings.tr("Localization", "write_additional_info.opening_hours.separator")
+      /// 오전 11시
+      public static let startTimePlaceholder = WriteStrings.tr("Localization", "write_additional_info.opening_hours.start_time_placeholder")
+      /// 출몰 시간대
+      public static let title = WriteStrings.tr("Localization", "write_additional_info.opening_hours.title")
+      /// 까지
+      public static let until = WriteStrings.tr("Localization", "write_additional_info.opening_hours.until")
+    }
+
+    public enum PaymentMethod: Sendable {
+    /// 카드
+      public static let card = WriteStrings.tr("Localization", "write_additional_info.payment_method.card")
+      /// 현금
+      public static let cash = WriteStrings.tr("Localization", "write_additional_info.payment_method.cash")
+      /// *다중선택 가능
+      public static let description = WriteStrings.tr("Localization", "write_additional_info.payment_method.description")
+      /// 결제 방식
+      public static let title = WriteStrings.tr("Localization", "write_additional_info.payment_method.title")
+      /// 계좌이체
+      public static let transfer = WriteStrings.tr("Localization", "write_additional_info.payment_method.transfer")
+    }
+  }
+
   public enum WriteAddress: Sendable {
   /// 더 편하게 가게 관리하기
     public static let bossButton = WriteStrings.tr("Localization", "write_address.boss_button")
@@ -137,6 +218,58 @@ public enum WriteStrings: Sendable {
     public static let title = WriteStrings.tr("Localization", "write_close_modal.title")
   }
 
+  public enum WriteComplete: Sendable {
+  /// 이 업체에 대해 더 알려주세요!
+    public static let description = WriteStrings.tr("Localization", "write_complete.description")
+    /// 완료
+    public static let finish = WriteStrings.tr("Localization", "write_complete.finish")
+    /// 작성 완료
+    public static let finishWriting = WriteStrings.tr("Localization", "write_complete.finish_writing")
+    /// 새로운 길거리 음식점을\n제보했어요
+    public static let title = WriteStrings.tr("Localization", "write_complete.title")
+
+    public enum AddInfo: Sendable {
+    /// 가게 형태 ∙ 결제 방식 ∙ 출몰 요일 ∙ 출몰 시간대
+      public static let description = WriteStrings.tr("Localization", "write_complete.add_info.description")
+      /// 가게 세부 정보 추가하기
+      public static let title = WriteStrings.tr("Localization", "write_complete.add_info.title")
+    }
+
+    public enum AddMenu: Sendable {
+    /// 메뉴명 ∙ 메뉴 가격
+      public static let description = WriteStrings.tr("Localization", "write_complete.add_menu.description")
+      /// 메뉴 상세 정보 추가하기
+      public static let title = WriteStrings.tr("Localization", "write_complete.add_menu.title")
+    }
+  }
+
+  public enum WriteDetailCategory: Sendable {
+  /// 음식 카테고리 선택
+    public static let title = WriteStrings.tr("Localization", "write_detail_category.title")
+
+    public enum Navigation: Sendable {
+    /// 가게 제보
+      public static let title = WriteStrings.tr("Localization", "write_detail_category.navigation.title")
+    }
+
+    public enum Toast: Sendable {
+    /// 1개 이상의 음식 카테고리를 선택해주세요
+      public static let needCategory = WriteStrings.tr("Localization", "write_detail_category.toast.need_category")
+    }
+  }
+
+  public enum WriteDetailCategoryBottomSheet: Sendable {
+  /// 수정 완료
+    public static let edit = WriteStrings.tr("Localization", "write_detail_category_bottom_sheet.edit")
+    /// 추가할 카테고리를 선택해 주세요
+    public static let title = WriteStrings.tr("Localization", "write_detail_category_bottom_sheet.title")
+
+    public enum Toast: Sendable {
+    /// 1개 이상의 음식 카테고리를 선택해주세요
+      public static let needCategory = WriteStrings.tr("Localization", "write_detail_category_bottom_sheet.toast.need_category")
+    }
+  }
+
   public enum WriteDetailInfo: Sendable {
   /// 지금 당장 가게 이름을 알 수 없다면, 근처의 랜드마크와 함께 입력해 보세요.
     public static let description = WriteStrings.tr("Localization", "write_detail_info.description")
@@ -146,6 +279,13 @@ public enum WriteStrings: Sendable {
     public static let subTitle = WriteStrings.tr("Localization", "write_detail_info.sub_title")
     /// 가게 제보
     public static let title = WriteStrings.tr("Localization", "write_detail_info.title")
+
+    public enum AddressField: Sendable {
+    /// 위치 변경
+      public static let change = WriteStrings.tr("Localization", "write_detail_info.address_field.change")
+      /// 가게 위치 확인
+      public static let title = WriteStrings.tr("Localization", "write_detail_info.address_field.title")
+    }
 
     public enum NameTextField: Sendable {
     /// 봉어빵역 2번 출구 삼거리 근처 붕어빵 집
@@ -170,6 +310,60 @@ public enum WriteStrings: Sendable {
     public enum Toast: Sendable {
     /// 가게 이름을 입력해주세요.
       public static let needStoreName = WriteStrings.tr("Localization", "write_detail_info.toast.need_store_name")
+    }
+  }
+
+  public enum WriteDetailMenu: Sendable {
+  /// 메뉴 추가
+    public static let addMenu = WriteStrings.tr("Localization", "write_detail_menu.add_menu")
+    /// 음식 카테고리
+    public static let category = WriteStrings.tr("Localization", "write_detail_menu.category")
+    /// 카테고리 수정
+    public static let editCategory = WriteStrings.tr("Localization", "write_detail_menu.edit_category")
+    /// 작성 완료
+    public static let finish = WriteStrings.tr("Localization", "write_detail_menu.finish")
+    /// 다음
+    public static let next = WriteStrings.tr("Localization", "write_detail_menu.next")
+    /// 건너뛰기
+    public static let skip = WriteStrings.tr("Localization", "write_detail_menu.skip")
+    /// 메뉴 상세 정보 추가 선택
+    public static let title = WriteStrings.tr("Localization", "write_detail_menu.title")
+    /// 선택
+    public static let titleSmallRange = WriteStrings.tr("Localization", "write_detail_menu.title_small_range")
+
+    public enum Menu: Sendable {
+    /// 슈크림 붕어빵
+      public static let namePlaceholder = WriteStrings.tr("Localization", "write_detail_menu.menu.name_placeholder")
+      /// 원
+      public static let price = WriteStrings.tr("Localization", "write_detail_menu.menu.price")
+      /// 1,000
+      public static let pricePlaceholder = WriteStrings.tr("Localization", "write_detail_menu.menu.price_placeholder")
+      /// 개
+      public static let quantity = WriteStrings.tr("Localization", "write_detail_menu.menu.quantity")
+      /// 1
+      public static let quantityPlaceholder = WriteStrings.tr("Localization", "write_detail_menu.menu.quantity_placeholder")
+      /// 메뉴 %d
+      public static func titleFormat(_ p1: Int) -> String {
+        return WriteStrings.tr("Localization", "write_detail_menu.menu.title_format",p1)
+      }
+    }
+
+    public enum Navigation: Sendable {
+
+      public enum Title: Sendable {
+      /// 메뉴 상세 정보
+        public static let afterCreated = WriteStrings.tr("Localization", "write_detail_menu.navigation.title.after_created")
+        /// 가게 제보
+        public static let normal = WriteStrings.tr("Localization", "write_detail_menu.navigation.title.normal")
+      }
+    }
+  }
+
+  public enum WriteNavigation: Sendable {
+
+    public enum Toast: Sendable {
+    /// 필수 데이터가 입력되지 않았어요. 다시 시도해주세요.
+      public static let needData = WriteStrings.tr("Localization", "write_navigation.toast.need_data")
     }
   }
 }

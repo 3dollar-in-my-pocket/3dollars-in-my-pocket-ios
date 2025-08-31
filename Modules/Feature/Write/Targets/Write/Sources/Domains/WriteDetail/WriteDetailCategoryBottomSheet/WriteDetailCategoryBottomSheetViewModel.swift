@@ -114,7 +114,7 @@ final class WriteDetailCategoryBottomSheetViewModel: BaseViewModel {
     
     private func validateAndComplete() {
         guard state.selectedCategories.isNotEmpty else {
-            output.route.send(.toast("1개 이상의 음식 카테고리를 선택해주세요"))
+            output.route.send(.toast(Strings.WriteDetailCategoryBottomSheet.Toast.needCategory))
             output.setErrorCountState.send(true)
             return
         }

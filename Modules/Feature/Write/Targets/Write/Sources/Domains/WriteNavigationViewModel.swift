@@ -208,7 +208,7 @@ final class WriteNavigationViewModel: BaseViewModel {
     private func createStore() {
         guard let location = state.location,
               let storeName = state.storeName else {
-            output.route.send(.toast("필수 데이터가 입력되지 않았어요. 다시 시도해주세요."))
+            output.route.send(.toast(Strings.WriteNavigation.Toast.needData))
             return
         }
         

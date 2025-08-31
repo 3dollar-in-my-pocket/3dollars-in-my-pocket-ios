@@ -26,8 +26,8 @@ final class WriteDetailMenuViewController: BaseViewController {
         label.font = Fonts.bold.font(size: 24)
         label.textColor = Colors.gray100.color
         
-        let string = "메뉴 상세 정보 추가 선택"
-        let range = (string as NSString).range(of: "선택")
+        let string = Strings.WriteDetailMenu.title
+        let range = (string as NSString).range(of: Strings.WriteDetailMenu.titleSmallRange)
         let attributedString = NSMutableAttributedString(string: string)
         
         attributedString.addAttribute(.font, value: Fonts.bold.font(size: 16), range: range)
@@ -41,7 +41,7 @@ final class WriteDetailMenuViewController: BaseViewController {
     private let categoryLabel: PaddingLabel = {
         let label = PaddingLabel(topInset: 8, bottomInset: 0, leftInset: 20, rightInset: 20)
         label.font = Fonts.regular.font(size: 14)
-        label.text = "음식 카테고리"
+        label.text = Strings.WriteDetailMenu.category
         label.textColor = Colors.gray80.color
         label.textAlignment = .left
         label.backgroundColor = Colors.systemWhite.color
@@ -66,7 +66,7 @@ final class WriteDetailMenuViewController: BaseViewController {
     private let addMenuButton: UIButton = {
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = Colors.gray90.color
-        config.attributedTitle = AttributedString("메뉴 추가", attributes: AttributeContainer([
+        config.attributedTitle = AttributedString(Strings.WriteDetailMenu.addMenu, attributes: AttributeContainer([
             .font: Fonts.bold.font(size: 12),
             .foregroundColor: Colors.systemWhite.color
         ]))
@@ -78,7 +78,7 @@ final class WriteDetailMenuViewController: BaseViewController {
     
     private let skipButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString("건너뛰기", attributes: AttributeContainer([
+        config.attributedTitle = AttributedString(Strings.WriteDetailMenu.skip, attributes: AttributeContainer([
             .font: Fonts.medium.font(size: 16),
             .foregroundColor: Colors.gray70.color
         ]))
@@ -94,7 +94,7 @@ final class WriteDetailMenuViewController: BaseViewController {
 
     private let nextButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString("다음", attributes: AttributeContainer([
+        config.attributedTitle = AttributedString(Strings.WriteDetailMenu.next, attributes: AttributeContainer([
             .font: Fonts.semiBold.font(size: 16),
             .foregroundColor: Colors.systemWhite.color
         ]))
@@ -213,11 +213,11 @@ final class WriteDetailMenuViewController: BaseViewController {
         guard let navigationController = navigationController as? WriteNavigationController else { return }
         navigationController.isNavigationBarHidden = false
         if viewModel.output.afterCreatedStore {
-            title = "메뉴 상세 정보"
+            title = Strings.WriteDetailMenu.Navigation.Title.afterCreated
             navigationController.setProgressHidden(true)
             navigationItem.rightBarButtonItem = nil
         } else {
-            title = "가게 제보"
+            title = Strings.WriteDetailMenu.Navigation.Title.normal
             navigationController.updateProgress(0.75)
             navigationController.setProgressHidden(false)
             
@@ -303,7 +303,7 @@ final class WriteDetailMenuViewController: BaseViewController {
     }
     
     private func bindAfterCreateStore(_ afterCreateStore: Bool) {
-        let string = afterCreateStore ? "작성 완료" : "다음"
+        let string = afterCreateStore ? Strings.WriteDetailMenu.finish : Strings.WriteDetailMenu.next
         nextButton.configuration?.attributedTitle = AttributedString(string, attributes: AttributeContainer([
             .font: Fonts.semiBold.font(size: 16),
             .foregroundColor: Colors.systemWhite.color

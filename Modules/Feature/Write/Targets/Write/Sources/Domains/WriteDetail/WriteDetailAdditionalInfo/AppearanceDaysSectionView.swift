@@ -82,13 +82,13 @@ final class AppearanceDaysSectionView: UIView {
         return stackView
     }()
     
-    private let mondayButton = DayButton(title: "월", appearanceDay: .monday)
-    private let tuesdayButton = DayButton(title: "화", appearanceDay: .tuesday)
-    private let wednesdayButton = DayButton(title: "수", appearanceDay: .wednesday)
-    private let thursdayButton = DayButton(title: "목", appearanceDay: .thursday)
-    private let fridayButton = DayButton(title: "금", appearanceDay: .friday)
-    private let saturdayButton = DayButton(title: "토", appearanceDay: .saturday)
-    private let sundayButton = DayButton(title: "일", appearanceDay: .sunday)
+    private let mondayButton = DayButton(title: Strings.WriteAdditionalInfo.monday, appearanceDay: .monday)
+    private let tuesdayButton = DayButton(title: Strings.WriteAdditionalInfo.tuesday, appearanceDay: .tuesday)
+    private let wednesdayButton = DayButton(title: Strings.WriteAdditionalInfo.wednesday, appearanceDay: .wednesday)
+    private let thursdayButton = DayButton(title: Strings.WriteAdditionalInfo.thursday, appearanceDay: .thursday)
+    private let fridayButton = DayButton(title: Strings.WriteAdditionalInfo.friday, appearanceDay: .friday)
+    private let saturdayButton = DayButton(title: Strings.WriteAdditionalInfo.saturday, appearanceDay: .saturday)
+    private let sundayButton = DayButton(title: Strings.WriteAdditionalInfo.sunday, appearanceDay: .sunday)
     
     private lazy var dayButtons: [DayButton] = [
         mondayButton, tuesdayButton, wednesdayButton, thursdayButton,

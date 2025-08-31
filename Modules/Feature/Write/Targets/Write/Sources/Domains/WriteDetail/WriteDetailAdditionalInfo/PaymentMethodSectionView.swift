@@ -64,7 +64,7 @@ extension PaymentMethodSectionView {
 final class PaymentMethodSectionView: BaseView {
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "결제방식"
+        label.text = Strings.WriteAdditionalInfo.PaymentMethod.title
         label.font = Fonts.semiBold.font(size: 14)
         label.textColor = Colors.gray100.color
         return label
@@ -72,7 +72,7 @@ final class PaymentMethodSectionView: BaseView {
     
     private let requiredLabel: UILabel = {
         let label = UILabel()
-        label.text = "*다중선택 가능"
+        label.text = Strings.WriteAdditionalInfo.PaymentMethod.description
         label.font = Fonts.bold.font(size: 12)
         label.textColor = Colors.mainPink.color
         return label
@@ -86,9 +86,9 @@ final class PaymentMethodSectionView: BaseView {
         return stackView
     }()
     
-    private let cashButton = PaymentMethodButton(title: "현금")
-    private let cardButton = PaymentMethodButton(title: "카드")
-    private let accountButton = PaymentMethodButton(title: "계좌이체")
+    private let cashButton = PaymentMethodButton(title: Strings.WriteAdditionalInfo.PaymentMethod.cash)
+    private let cardButton = PaymentMethodButton(title: Strings.WriteAdditionalInfo.PaymentMethod.card)
+    private let accountButton = PaymentMethodButton(title: Strings.WriteAdditionalInfo.PaymentMethod.transfer)
     
     var selectedPaymentMethods = PassthroughSubject<PaymentMethod, Never>()
     
