@@ -30,12 +30,21 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
         return label
     }()
     
+    private let containerScrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = .clear
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        return scrollView
+    }()
+    
     private lazy var collectionView: UICollectionView = {
         let layout = LeftAlignedCollectionViewFlowLayout()
         layout.minimumLineSpacing = 8
         layout.minimumInteritemSpacing = 8
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        collectionView.contentInsetAdjustmentBehavior = .never
         collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
         collectionView.allowsMultipleSelection = true
@@ -82,9 +91,14 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
             titleLabel,
             closeButton,
             countLabel,
-            collectionView,
+            containerScrollView,
             editButton
         ])
+        
+        containerScrollView.addSubview(collectionView)
+        collectionView.snp.makeConstraints {
+            $0.height.equalTo(0)
+        }
         
         titleLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
@@ -102,16 +116,21 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
             $0.top.equalTo(titleLabel.snp.bottom).offset(2)
         }
         
-        collectionView.snp.makeConstraints {
+        containerScrollView.snp.makeConstraints {
             $0.top.equalTo(countLabel.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(0)
         }
         
+        collectionView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.width.equalTo(containerScrollView)
+        }
+        
         editButton.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalToSuperview().offset(-20)
-            $0.top.equalTo(collectionView.snp.bottom).offset(24)
+            $0.top.equalTo(containerScrollView.snp.bottom).offset(24)
             $0.height.equalTo(48)
         }
     }
@@ -133,9 +152,13 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
             .main
             .sink { [weak self] sections in
                 if let collectionViewHeight = self?.calculateCollectionViewHeight(from: sections) {
+                    self?.containerScrollView.snp.updateConstraints {
+                        $0.height.equalTo(collectionViewHeight)
+                    }
                     self?.collectionView.snp.updateConstraints {
                         $0.height.equalTo(collectionViewHeight)
                     }
+                    self?.containerScrollView.contentSize = CGSize(width: UIUtils.windowBounds.width, height: collectionViewHeight)
                 }
                 self?.datasource.reload(sections)
                 DispatchQueue.main.async {
@@ -254,7 +277,7 @@ extension WriteDetailCategoryBottomSheetViewController {
 // MARK: PanModalPresentable
 extension WriteDetailCategoryBottomSheetViewController: PanModalPresentable {
     var panScrollable: UIScrollView? {
-        return nil
+        return containerScrollView
     }
     
     var longFormHeight: PanModalHeight {
