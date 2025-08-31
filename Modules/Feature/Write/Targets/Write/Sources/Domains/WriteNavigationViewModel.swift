@@ -63,6 +63,7 @@ extension WriteNavigationViewModel {
         var startTime: Date?
         var endTime: Date?
         var afterCreatedStore = false
+        var nonceToken: String?
     }
 }
 
@@ -75,6 +76,7 @@ final class WriteNavigationViewModel: BaseViewModel {
     init(dependency: Dependency = Dependency()) {
         self.dependency = dependency
         super.init()
+        fetchToekn()
     }
     
     override func bind() {
@@ -205,6 +207,15 @@ final class WriteNavigationViewModel: BaseViewModel {
         output.route.send(.pushWriteComplete(viewModel))
     }
     
+    private func fetchToekn() {
+        Task { [weak self] in
+            guard let self else { return }
+            
+            let nonceToken = try? await dependency.commonRepository.createNonceToken().get().nonce
+            state.nonceToken = nonceToken
+        }
+    }
+    
     private func createStore() {
         guard let location = state.location,
               let storeName = state.storeName else {
@@ -216,7 +227,13 @@ final class WriteNavigationViewModel: BaseViewModel {
             guard let self else { return }
             do {
                 output.isLoading.send(true)
-                let nonceToken = try await dependency.commonRepository.createNonceToken().get().nonce
+                let token: String
+                if let nonceToken = state.nonceToken {
+                    token = nonceToken
+                } else {
+                    token = try await dependency.commonRepository.createNonceToken().get().nonce
+                }
+                
                 let input = UserStoreCreateRequestV3(
                     latitude: location.coordinate.latitude,
                     longitude: location.coordinate.longitude,
@@ -229,9 +246,9 @@ final class WriteNavigationViewModel: BaseViewModel {
                     ),
                     paymentMethods: state.paymentMethods,
                     menus: state.menus,
-                    nonceToken: nonceToken
+                    nonceToken: token
                 )
-                let response = try await dependency.storeRepository.createStore(input: input, nonceToken: nonceToken).get()
+                let response = try await dependency.storeRepository.createStore(input: input, nonceToken: token).get()
                 
                 output.isLoading.send(false)
                 state.afterCreatedStore = true
