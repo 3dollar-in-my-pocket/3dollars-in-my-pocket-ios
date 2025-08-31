@@ -140,7 +140,6 @@ final class PaymentMethodSectionView: BaseView {
     
     private func bind() {
         cashButton.tapPublisher
-            .throttleClick()
             .sink { [weak self] _ in
                 self?.cashButton.isSelected.toggle()
                 self?.selectedPaymentMethods.send(.cash)
@@ -148,7 +147,6 @@ final class PaymentMethodSectionView: BaseView {
             .store(in: &cancellables)
         
         cardButton.tapPublisher
-            .throttleClick()
             .sink { [weak self] _ in
                 self?.cardButton.isSelected.toggle()
                 self?.selectedPaymentMethods.send(.card)
@@ -156,7 +154,6 @@ final class PaymentMethodSectionView: BaseView {
             .store(in: &cancellables)
         
         accountButton.tapPublisher
-            .throttleClick()
             .sink { [weak self] _ in
                 self?.accountButton.isSelected.toggle()
                 self?.selectedPaymentMethods.send(.accountTransfer)

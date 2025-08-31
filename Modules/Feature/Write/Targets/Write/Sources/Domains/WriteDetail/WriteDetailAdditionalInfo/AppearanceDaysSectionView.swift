@@ -153,7 +153,6 @@ final class AppearanceDaysSectionView: UIView {
     
     private func bind() {
         mondayButton.tapPublisher
-            .throttleClick()
             .sink { [weak self] _ in
                 self?.mondayButton.isSelected.toggle()
                 self?.toggleDay(0)
@@ -161,7 +160,6 @@ final class AppearanceDaysSectionView: UIView {
             .store(in: &cancellables)
         
         tuesdayButton.tapPublisher
-            .throttleClick()
             .sink { [weak self] _ in
                 self?.tuesdayButton.isSelected.toggle()
                 self?.toggleDay(1)
@@ -169,7 +167,6 @@ final class AppearanceDaysSectionView: UIView {
             .store(in: &cancellables)
         
         wednesdayButton.tapPublisher
-            .throttleClick()
             .sink { [weak self] _ in
                 self?.wednesdayButton.isSelected.toggle()
                 self?.toggleDay(2)
@@ -177,7 +174,6 @@ final class AppearanceDaysSectionView: UIView {
             .store(in: &cancellables)
         
         thursdayButton.tapPublisher
-            .throttleClick()
             .sink { [weak self] _ in
                 self?.thursdayButton.isSelected.toggle()
                 self?.toggleDay(3)
@@ -185,7 +181,6 @@ final class AppearanceDaysSectionView: UIView {
             .store(in: &cancellables)
         
         fridayButton.tapPublisher
-            .throttleClick()
             .sink { [weak self] _ in
                 self?.fridayButton.isSelected.toggle()
                 self?.toggleDay(4)
@@ -193,7 +188,6 @@ final class AppearanceDaysSectionView: UIView {
             .store(in: &cancellables)
         
         saturdayButton.tapPublisher
-            .throttleClick()
             .sink { [weak self] _ in
                 self?.saturdayButton.isSelected.toggle()
                 self?.toggleDay(5)
@@ -201,7 +195,6 @@ final class AppearanceDaysSectionView: UIView {
             .store(in: &cancellables)
         
         sundayButton.tapPublisher
-            .throttleClick()
             .sink { [weak self] _ in
                 self?.sundayButton.isSelected.toggle()
                 self?.toggleDay(6)

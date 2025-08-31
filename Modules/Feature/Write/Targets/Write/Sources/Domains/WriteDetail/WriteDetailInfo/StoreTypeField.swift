@@ -45,16 +45,12 @@ final class StoreTypeField: BaseView {
         storeTypeStack.addArrangedSubview(convienceTypeButton)
         
         let tapRoadType = roadTypeButton.tapPublisher
-            .throttleClick()
             .map { _ in SalesType.road }
         let tapStoreType = storeTypeButton.tapPublisher
-            .throttleClick()
             .map { _ in SalesType.store }
         let tapFoodTruckType = foodTruckTypeButton.tapPublisher
-            .throttleClick()
             .map { _ in SalesType.foodTruck }
         let tapConvienceType = convienceTypeButton.tapPublisher
-            .throttleClick()
             .map { _ in SalesType.convenienceStore }
         
         Publishers.Merge4(tapRoadType, tapStoreType, tapFoodTruckType, tapConvienceType)
