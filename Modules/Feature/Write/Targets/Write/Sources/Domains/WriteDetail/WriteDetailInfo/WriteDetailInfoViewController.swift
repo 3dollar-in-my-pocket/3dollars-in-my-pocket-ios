@@ -233,14 +233,16 @@ final class WriteDetailInfoViewController: BaseViewController {
     }
     
     @objc private func keyboardWillShow(_ notification: Notification) {
+        guard currentInset == .zero else { return }
         let keyboardHeight = UIUtils.mapNotificationToKeyboardHeight(notification: notification)
         let inset = keyboardHeight > 0 ? (keyboardHeight - view.safeAreaInsets.bottom) : 0
-        currentInset = scrollView.contentInset.bottom
-        scrollView.contentInset.bottom += inset
+        currentInset = inset
+        scrollView.contentInset.bottom += currentInset
     }
 
     @objc private func keyboardWillHide(_ sender: Notification) {
-        scrollView.contentInset.bottom = currentInset
+        scrollView.contentInset.bottom -= currentInset
+        currentInset = .zero
     }
     
     @objc private func didTapClose() {

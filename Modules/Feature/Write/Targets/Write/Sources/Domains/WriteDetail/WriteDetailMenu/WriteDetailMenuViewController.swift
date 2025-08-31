@@ -409,17 +409,16 @@ final class WriteDetailMenuViewController: BaseViewController {
     }
     
     @objc private func keyboardWillShow(_ notification: Notification) {
-        if currentInset != 0 {
-            scrollView.contentInset.bottom = currentInset
-        }
+        guard currentInset == .zero else { return }
         let keyboardHeight = UIUtils.mapNotificationToKeyboardHeight(notification: notification)
         let inset = keyboardHeight > 0 ? (keyboardHeight - view.safeAreaInsets.bottom) : 0
-        currentInset = scrollView.contentInset.bottom
+        currentInset = inset
         scrollView.contentInset.bottom += inset
     }
 
     @objc private func keyboardWillHide(_ sender: Notification) {
-        scrollView.contentInset.bottom = currentInset
+        scrollView.contentInset.bottom -= currentInset
+        currentInset = .zero
     }
     
     @objc private func didTapClose() {
