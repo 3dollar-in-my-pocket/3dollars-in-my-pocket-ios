@@ -82,14 +82,15 @@ final class WriteDetailInfoViewModel: BaseViewModel {
         input.didTapNext
             .sink { [weak self] in
                 guard let self else { return }
+                let storeName = state.storeName.trimmingCharacters(in: .whitespaces)
                 
-                guard state.storeName.isNotEmpty else {
+                guard storeName.isNotEmpty else {
                     output.route.send(.showToast(Strings.WriteDetailInfo.Toast.needStoreName))
                     output.setErrorState.send(())
                     return
                 }
                 
-                output.finishWriteDetailInfo.send((state.storeName, state.storeType))
+                output.finishWriteDetailInfo.send((storeName, state.storeType))
             }
             .store(in: &cancellables)
     }
