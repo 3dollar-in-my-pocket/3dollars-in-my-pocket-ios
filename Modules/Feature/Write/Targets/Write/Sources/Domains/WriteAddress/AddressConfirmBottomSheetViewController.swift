@@ -237,6 +237,7 @@ extension AddressConfirmBottomSheetViewController {
 private final class StoreRowView: BaseView {
     enum Layout {
         static let height: CGFloat = 24
+        static let space: CGFloat = 4
     }
     
     private let titleLabel: UILabel = {
@@ -251,8 +252,9 @@ private final class StoreRowView: BaseView {
     private let tagStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.spacing = 4
+        stackView.spacing = Layout.space
         stackView.alignment = .trailing
+        stackView.setContentHuggingPriority(.required, for: .horizontal)
         return stackView
     }()
     
@@ -286,6 +288,7 @@ private final class StoreRowView: BaseView {
         tagStackView.snp.makeConstraints {
             $0.trailing.equalToSuperview()
             $0.centerY.equalTo(titleLabel)
+            $0.width.equalTo(0)
         }
         
         snp.makeConstraints {
@@ -294,26 +297,41 @@ private final class StoreRowView: BaseView {
     }
     
     private func setupTagStackView() {
+        var width: CGFloat = 0
         if store.store.storeType == .bossStore {
             let badge = PaddingLabel(topInset: 3, bottomInset: 3, leftInset: 8, rightInset: 8)
-            badge.text = Strings.AddressConfirmBottomSheet.bossDirectly
+            let text = Strings.AddressConfirmBottomSheet.bossDirectly
+            badge.text = text
             badge.font = Fonts.bold.font(size: 12)
             badge.textColor = Colors.mainPink.color
             badge.backgroundColor = Colors.pink100.color
             badge.layer.cornerRadius = 12
             badge.layer.masksToBounds = true
             tagStackView.addArrangedSubview(badge)
+            
+            width += text.width(font: Fonts.bold.font(size: 12), height: 24) + 17
         }
         
         if let category = store.store.categories.first {
             let tagLabel = PaddingLabel(topInset: 3, bottomInset: 3, leftInset: 8, rightInset: 8)
-            tagLabel.text = "#" + category.name
+            let text = "#" + category.name
+            tagLabel.text = text
             tagLabel.font = Fonts.medium.font(size: 12)
             tagLabel.textColor = Colors.gray70.color
             tagLabel.backgroundColor = Colors.gray10.color
             tagLabel.layer.cornerRadius = 12
             tagLabel.layer.masksToBounds = true
             tagStackView.addArrangedSubview(tagLabel)
+            
+            width += text.width(font: Fonts.medium.font(size: 12), height: 24) + 17
+        }
+        
+        let count = max(0, tagStackView.arrangedSubviews.count - 1)
+        let space = CGFloat(count) * Layout.space
+        width += space
+        
+        tagStackView.snp.updateConstraints {
+            $0.width.equalTo(width)
         }
     }
 }
