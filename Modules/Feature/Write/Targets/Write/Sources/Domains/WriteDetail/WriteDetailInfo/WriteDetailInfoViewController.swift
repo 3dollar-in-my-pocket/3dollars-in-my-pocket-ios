@@ -57,6 +57,7 @@ final class WriteDetailInfoViewController: BaseViewController {
     
     private let viewModel: WriteDetailInfoViewModel
     private var currentInset: CGFloat = .zero
+    private let tapBackground = UITapGestureRecognizer()
     
     init(viewModel: WriteDetailInfoViewModel) {
         self.viewModel = viewModel
@@ -168,7 +169,14 @@ final class WriteDetailInfoViewController: BaseViewController {
     }
     
     private func bind() {
+        scrollView.addGestureRecognizer(tapBackground)
         addressField.setAddress(viewModel.output.address)
+        
+        tapBackground.tapPublisher
+            .sink { [weak self] _ in
+                self?.view.endEditing(true)
+            }
+            .store(in: &cancellables)
         
         // Input
         nameTextField.textPublisher

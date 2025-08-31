@@ -113,6 +113,7 @@ final class WriteDetailMenuViewController: BaseViewController {
     private var categoryDatasource: [StoreFoodCategoryResponse] = []
     private var gradientLayer: CAGradientLayer?
     private var currentInset: CGFloat = .zero
+    private let tapBackground = UITapGestureRecognizer()
     
     init(viewModel: WriteDetailMenuViewModel) {
         self.viewModel = viewModel
@@ -237,6 +238,13 @@ final class WriteDetailMenuViewController: BaseViewController {
     }
 
     private func bind() {
+        scrollView.addGestureRecognizer(tapBackground)
+        tapBackground.tapPublisher
+            .sink { [weak self] _ in
+                self?.view.endEditing(true)
+            }
+            .store(in: &cancellables)
+        
         bindAfterCreateStore(viewModel.output.afterCreatedStore)
         addMenuButton.tapPublisher
             .throttleClick()
