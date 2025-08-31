@@ -302,6 +302,13 @@ final class WriteDetailMenuViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
+        viewModel.output.toast
+            .main
+            .sink { message in
+                ToastManager.shared.show(message: message)
+            }
+            .store(in: &cancellables)
+        
         viewModel.output.route
             .main
             .sink { [weak self] route in

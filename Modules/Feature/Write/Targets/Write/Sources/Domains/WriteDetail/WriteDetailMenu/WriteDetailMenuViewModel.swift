@@ -26,6 +26,7 @@ extension WriteDetailMenuViewModel {
         let addMenus = PassthroughSubject<MenuInputViewModel, Never>()
         let finishInputMenu = PassthroughSubject<[UserStoreMenuRequestV3], Never>()
         let didTapSkip = PassthroughSubject<Void, Never>()
+        let toast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -241,6 +242,16 @@ final class WriteDetailMenuViewModel: BaseViewModel {
     
     private func finishInputMenu() {
         let menus = state.menus.flatMap { $0.value }
+        
+        guard validateCount(menus: menus) else {
+            output.toast.send(Strings.WriteDetailMenu.Toast.validateMenu)
+            return
+        }
+        
+        guard validatePrice(menus: menus) else {
+            output.toast.send(Strings.WriteDetailMenu.Toast.validatePrice)
+            return
+        }
         output.finishInputMenu.send(menus)
         
         if output.afterCreatedStore {
@@ -259,5 +270,23 @@ final class WriteDetailMenuViewModel: BaseViewModel {
         output.categories.send(categories)
         output.selectedCategoryIndex.send(0)
         fetchCurrentCategoryMenus()
+    }
+    
+    private func validateCount(menus: [UserStoreMenuRequestV3]) -> Bool {
+        for menu in menus {
+            if let count = menu.count, count <= 0 {
+                return false
+            }
+        }
+        return true
+    }
+    
+    private func validatePrice(menus: [UserStoreMenuRequestV3]) -> Bool {
+        for menu in menus {
+            if let price = menu.price, price <= 0 {
+                return false
+            }
+        }
+        return true
     }
 }

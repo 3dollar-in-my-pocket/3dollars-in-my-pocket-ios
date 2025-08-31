@@ -151,6 +151,8 @@
 "write_detail_menu.next" = "다음";
 "write_detail_menu.navigation.title.after_created" = "메뉴 상세 정보";
 "write_detail_menu.navigation.title.normal" = "가게 제보";
+"write_detail_menu.toast.validate_price" = "최소 가격은 1원 이상 입력해주세요";
+"write_detail_menu.toast.validate_menu" = "최소 수량은 1개 이상 입력해주세요";
 
 // WriteNavigation
 "write_navigation.toast.need_data" = "필수 데이터가 입력되지 않았어요. 다시 시도해주세요.";

@@ -357,6 +357,13 @@ public enum WriteStrings: Sendable {
         public static let normal = WriteStrings.tr("Localization", "write_detail_menu.navigation.title.normal")
       }
     }
+
+    public enum Toast: Sendable {
+    /// 최소 수량은 1개 이상 입력해주세요
+      public static let validateMenu = WriteStrings.tr("Localization", "write_detail_menu.toast.validate_menu")
+      /// 최소 가격은 1원 이상 입력해주세요
+      public static let validatePrice = WriteStrings.tr("Localization", "write_detail_menu.toast.validate_price")
+    }
   }
 
   public enum WriteNavigation: Sendable {
