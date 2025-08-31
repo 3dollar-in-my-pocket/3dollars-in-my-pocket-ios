@@ -267,6 +267,10 @@ final class WriteDetailMenuViewModel: BaseViewModel {
         }
         
         state.selectedCategories = categories
+        
+        let menus = categories.map { UserStoreMenuRequestV3(name: "", category: $0.categoryId) }
+        state.menus = Dictionary(grouping: menus, by: { $0.category} )
+        
         output.categories.send(categories)
         output.selectedCategoryIndex.send(0)
         fetchCurrentCategoryMenus()

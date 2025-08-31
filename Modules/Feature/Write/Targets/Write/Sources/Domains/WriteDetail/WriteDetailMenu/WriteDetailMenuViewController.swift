@@ -239,6 +239,7 @@ final class WriteDetailMenuViewController: BaseViewController {
 
     private func bind() {
         scrollView.addGestureRecognizer(tapBackground)
+        tapBackground.cancelsTouchesInView = false
         tapBackground.tapPublisher
             .sink { [weak self] _ in
                 self?.view.endEditing(true)
