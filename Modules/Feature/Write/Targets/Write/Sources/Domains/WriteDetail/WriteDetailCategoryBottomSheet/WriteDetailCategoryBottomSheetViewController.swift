@@ -130,7 +130,12 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
         editButton.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalToSuperview().offset(-20)
-            $0.top.equalTo(containerScrollView.snp.bottom).offset(24)
+            
+            if UIUtils.bottomSafeAreaInset > 0 {
+                $0.top.equalTo(containerScrollView.snp.bottom).offset(24)
+            } else {
+                $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-12)
+            }
             $0.height.equalTo(48)
         }
     }
