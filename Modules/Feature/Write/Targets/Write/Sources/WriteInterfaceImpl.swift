@@ -26,21 +26,16 @@ public final class WriteInterfaceImpl: WriteInterface {
         return navigationController
     }
     
-    public func getEditDetailViewController(
-        storeId: Int,
-        storeDetailData: StoreDetailData,
-        onSuccessEdit: @escaping ((UserStoreCreateResponse) -> ())
-    ) -> UIViewController {
-//        let config = WriteDetailViewModel.EditConfig(storeId: storeId, storeDetailData: storeDetailData)
-//        let viewModel = WriteDetailViewModel(config: config)
-//        let viewController = WriteDetailViewController(viewModel: viewModel)
-//        
-//        viewController.onSuccessEdit = { storeCreateResponse in
-//            onSuccessEdit(storeCreateResponse)
-//        }
-//        
-//        return viewController
-        return UIViewController(nibName: nil, bundle: nil)
+    public func createEditStoreViewModel(config: EditStoreViewModelConfig) -> EditStoreViewModelInterface {
+        return EditStoreViewModel(config: config)
+    }
+    
+    public func createEditStoreViewController(viewModel: EditStoreViewModelInterface) -> UIViewController {
+        guard let viewModel = viewModel as? EditStoreViewModel else {
+            return UIViewController(nibName: nil, bundle: nil)
+        }
+        
+        return EditStoreViewController(viewModel: viewModel)
     }
 }
 

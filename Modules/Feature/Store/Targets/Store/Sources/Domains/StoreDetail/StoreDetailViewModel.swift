@@ -7,6 +7,7 @@ import Model
 import DependencyInjection
 import AppInterface
 import Log
+import WriteInterface
 
 final class StoreDetailViewModel: BaseViewModel {
     struct Input {
@@ -65,6 +66,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let storeType: StoreType = .userStore
         var storeDetailData: StoreDetailData?
         var showAllMenu: Bool = false
+        var userStoreResponse: UserStoreResponse?
     }
     
     enum Route {
@@ -73,7 +75,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentNavigation
         case presentWriteReview(ReviewBottomSheetViewModel)
         case presentMapDetail(MapDetailViewModel)
-        case pushEditStore(storeId: Int, storeDetailData: StoreDetailData)
+        case pushEditStore(EditStoreViewModelInterface)
         case presentUploadPhoto(UploadPhotoViewModel)
         case pushPhotoList(PhotoListViewModel)
         case presentPhotoDetail(PhotoDetailViewModel)
@@ -347,6 +349,7 @@ final class StoreDetailViewModel: BaseViewModel {
                     totalReviewCount: response.reviews.cursor.totalCount
                 )
                 
+                state.userStoreResponse = response.store
                 state.storeDetailData = storeDetailData
                 refreshSections()
                 output.isFavorited.send(response.favorite.isFavorite)
@@ -688,9 +691,12 @@ extension StoreDetailViewModel {
     }
     
     private func pushEditStore() {
-        guard let storeDetailData = state.storeDetailData else { return }
+        guard let store = state.userStoreResponse else { return }
         
-        output.route.send(.pushEditStore(storeId: state.storeId, storeDetailData: storeDetailData))
+        let config = EditStoreViewModelConfig(store: store)
+        let viewModel = Environment.writeInterface.createEditStoreViewModel(config: config)
+        
+        output.route.send(.pushEditStore(viewModel))
     }
 }
 

@@ -10,11 +10,9 @@ public protocol WriteInterface {
         onSuccessWrite: @escaping ((String) -> ())
     ) -> UIViewController
     
-    func getEditDetailViewController(
-        storeId: Int,
-        storeDetailData: StoreDetailData,
-        onSuccessEdit: @escaping ((UserStoreCreateResponse) -> ())
-    ) -> UIViewController
+    func createEditStoreViewModel(config: EditStoreViewModelConfig) -> EditStoreViewModelInterface
+    
+    func createEditStoreViewController(viewModel: EditStoreViewModelInterface) -> UIViewController
 }
 
 
