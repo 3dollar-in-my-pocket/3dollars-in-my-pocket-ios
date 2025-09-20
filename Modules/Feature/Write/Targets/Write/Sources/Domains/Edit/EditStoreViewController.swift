@@ -27,15 +27,7 @@ final class EditStoreViewController: BaseViewController {
         return label
     }()
     
-    private let descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.text = "작은 제보로 가게 정보 완성에 힘을 보탬니다"
-        label.textColor = Colors.gray70.color
-        label.font = Fonts.regular.font(size: 14)
-        label.textAlignment = .center
-        return label
-    }()
-    
+    private let descriptionLabel = DescriptionLabel()
     private let storeAddressSection = EditStoreAddressView()
     private let storeInfoSection = EditStoreInfoView()
     private let storeMenuSection = EditStoreMenuView()
@@ -143,7 +135,7 @@ final class EditStoreViewController: BaseViewController {
         viewModel.output.changedCount
             .main
             .sink { [weak self] count in
-                
+                self?.descriptionLabel.bind(count: count)
             }
             .store(in: &cancellables)
         
@@ -243,5 +235,88 @@ extension EditStoreViewController {
     private func pushEditMenu(viewModel: WriteDetailMenuViewModel) {
         let viewController = WriteDetailMenuViewController(viewModel: viewModel)
         navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+extension EditStoreViewController {
+    private class DescriptionLabel: BaseView {
+        private let containerStackView: UIStackView = {
+            let stackView = UIStackView()
+            stackView.axis = .horizontal
+            stackView.alignment = .center
+            return stackView
+        }()
+        
+        private let leftImageView: UIImageView = {
+            let imageView = UIImageView(image: Icons.check.image.withRenderingMode(.alwaysTemplate))
+            imageView.tintColor = Colors.mainGreen.color
+            return imageView
+        }()
+        private let titleLabel: UILabel = {
+            let label = UILabel()
+            label.font = Fonts.regular.font(size: 14)
+            label.textAlignment = .center
+            return label
+        }()
+        
+        private let stackView: UIStackView = {
+            let stackView = UIStackView()
+            stackView.axis = .horizontal
+            stackView.spacing = 4
+            stackView.isLayoutMarginsRelativeArrangement = true
+            stackView.layer.masksToBounds = true
+            stackView.alignment = .center
+            return stackView
+        }()
+        
+        override func setup() {
+            super.setup()
+            addSubview(containerStackView)
+            
+            let leftSpacer = UIView()
+            let rightSpacer = UIView()
+            
+            containerStackView.addArrangedSubview(leftSpacer)
+            containerStackView.addArrangedSubview(stackView)
+            containerStackView.addArrangedSubview(rightSpacer)
+            
+            containerStackView.snp.makeConstraints {
+                $0.edges.equalToSuperview()
+            }
+            
+            leftSpacer.snp.makeConstraints {
+                $0.width.equalTo(rightSpacer)
+            }
+        }
+        
+        func bind(count: Int?) {
+            stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+            
+            if let count {
+                stackView.backgroundColor = Colors.green100.color
+                stackView.addArrangedSubview(leftImageView)
+                leftImageView.snp.makeConstraints {
+                    $0.size.equalTo(16)
+                }
+                stackView.addArrangedSubview(titleLabel)
+                stackView.layoutMargins = .init(top: 6, left: 12, bottom: 6, right: 16)
+                stackView.layer.cornerRadius = 14
+                titleLabel.text = "\(count)개의 수정된 정보가 있어요"
+                titleLabel.textColor = Colors.mainGreen.color
+                snp.updateConstraints {
+                    $0.height.equalTo(28)
+                }
+            } else {
+                stackView.backgroundColor = .clear
+                stackView.addArrangedSubview(titleLabel)
+                stackView.layoutMargins = .zero
+                stackView.layer.cornerRadius = 0
+                titleLabel.text = "작은 제보로 가게 정보 완성에 힘을 보태요"
+                titleLabel.textColor = Colors.gray70.color
+                snp.updateConstraints {
+                    $0.height.equalTo(20)
+                }
+            }
+        }
     }
 }

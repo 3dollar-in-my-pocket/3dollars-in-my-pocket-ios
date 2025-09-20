@@ -26,7 +26,6 @@ final class EditStoreAddressView: BaseView {
     
     private let addressLabel: UILabel = {
         let label = UILabel()
-        label.text = "서울특별시 강남구 독립문로 14길"
         label.textColor = Colors.gray60.color
         label.font = Fonts.medium.font(size: 12)
         label.lineBreakMode = .byTruncatingHead

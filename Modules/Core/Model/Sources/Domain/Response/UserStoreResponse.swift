@@ -33,7 +33,7 @@ public struct StoreSalesTypeResponse: Decodable {
     public let description: String
 }
 
-public struct UserStoreMenuResponseV3: Decodable {
+public struct UserStoreMenuResponseV3: Decodable, Hashable {
     public let name: String
     public let price: Int?
     public let count: Int?

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct StoreOpeningHours: Codable {
+public struct StoreOpeningHours: Codable, Equatable {
     public var startTime: String?
     public var endTime: String?
     

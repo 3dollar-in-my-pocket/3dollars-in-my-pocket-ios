@@ -114,6 +114,7 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
         viewModel.output.finishWriteAddress
             .sink { [weak self] (address: String, location: CLLocation) in
                 self?.didUpdatedAddress(address: address, location: location)
+                self?.updateEditedCount()
                 self?.output.route.send(.pop)
             }
             .store(in: &viewModel.cancellables)
@@ -127,6 +128,7 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
         viewModel.output.editedStoreInfo
             .sink { [weak self] store in
                 self?.state.currentStore = store
+                self?.updateEditedCount()
                 self?.output.store.send(store)
             }
             .store(in: &viewModel.cancellables)
@@ -151,6 +153,7 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
         viewModel.output.finishInputMenu
             .sink { [weak self] menus in
                 self?.state.editedMenus = menus
+                self?.updateEditedCount()
                 self?.output.menuCount.send(menus.count)
             }
             .store(in: &viewModel.cancellables)
@@ -193,6 +196,41 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
             longitude: location.coordinate.longitude
         )
         output.store.send(state.currentStore)
+    }
+    
+    private func updateEditedCount() {
+        var editedCount = 0
+        
+        if state.currentStore.address.fullAddress != state.originalStore.address.fullAddress {
+            editedCount += 1
+        }
+        
+        if state.currentStore.name != state.originalStore.name {
+            editedCount += 1
+        }
+        
+        if state.currentStore.salesTypeV2?.type != state.originalStore.salesTypeV2?.type {
+            editedCount += 1
+        }
+        
+        if state.currentStore.paymentMethods != state.originalStore.paymentMethods {
+            editedCount += 1
+        }
+        
+        if state.currentStore.appearanceDays != state.originalStore.appearanceDays {
+            editedCount += 1
+        }
+        
+        if state.currentStore.openingHours != state.originalStore.openingHours {
+            editedCount += 1
+        }
+        
+        if let editedMenus = state.editedMenus,
+           editedMenus.count != state.originalStore.menusV3.count {
+            editedCount += 1
+        }
+
+        output.changedCount.send(editedCount)
     }
 }
 
