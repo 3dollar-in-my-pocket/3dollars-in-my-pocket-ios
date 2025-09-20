@@ -15,7 +15,6 @@ extension WriteAddressViewModel {
     }
     
     struct Input {
-        let viewDidLoad = PassthroughSubject<Void, Never>()
         let moveMapCenter = PassthroughSubject<CLLocation, Never>()
         let didTapCurrentLocation = PassthroughSubject<Void, Never>()
         let didTapSetAddress = PassthroughSubject<Void, Never>()
@@ -25,9 +24,8 @@ extension WriteAddressViewModel {
     
     struct Output {
         let screenName: ScreenName = .writeAddress
-        let cameraPosition = PassthroughSubject<CLLocation, Never>()
-        let address = CurrentValueSubject<String, Never>("")
-//        let editLocation = PassthroughSubject<(address: String, location: CLLocation), Never>()
+        let cameraPosition: CurrentValueSubject<CLLocation, Never>
+        let address: CurrentValueSubject<String, Never>
         let finishWriteAddress = PassthroughSubject<(address: String, location: CLLocation), Never>()
         let route = PassthroughSubject<Route, Never>()
     }
@@ -39,7 +37,7 @@ extension WriteAddressViewModel {
     }
     
     private struct State {
-        var cameraPosition: CLLocation? = nil
+        var cameraPosition: CLLocation?
     }
     
     public struct Dependency {
@@ -62,24 +60,32 @@ extension WriteAddressViewModel {
     }
 }
 
-public final class WriteAddressViewModel: BaseViewModel {
+public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelInterface {
     let input = Input()
-    let output = Output()
+    let output: Output
     private let dependency: Dependency
-    private var state = State()
+    private var state: State
     
-    public init(dependency: Dependency = Dependency()) {
+    public var onFinishWriteAddress: PassthroughSubject<(address: String, location: CLLocation), Never> {
+        return output.finishWriteAddress
+    }
+    
+    public convenience init(config: WriteAddressViewModelConfig) {
+        self.init(config: config, dependency: Dependency())
+    }
+    
+    public init(config: WriteAddressViewModelConfig, dependency: Dependency = Dependency()) {
         self.dependency = dependency
+        self.state = State(cameraPosition: config.location)
+        
+        self.output = Output(
+            cameraPosition: .init(config.location),
+            address: .init(config.address)
+        )
         super.init()
     }
     
     public override func bind() {
-        input.viewDidLoad
-            .sink { [weak self] _ in
-                self?.fetchCurrentLocation()
-            }
-            .store(in: &cancellables)
-        
         input.moveMapCenter
             .throttle(for: 0.5, scheduler: RunLoop.main, latest: true)
             .sink(receiveValue: { [weak self] location in

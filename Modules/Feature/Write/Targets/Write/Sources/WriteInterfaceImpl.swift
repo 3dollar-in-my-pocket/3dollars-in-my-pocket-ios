@@ -7,10 +7,10 @@ import Model
 
 public final class WriteInterfaceImpl: WriteInterface {
     public func getWriteAddressViewController(
-        config: WriteAddressViewModelConfig?,
+        config: WriteAddressViewModelConfig,
         onSuccessWrite: @escaping ((String) -> ())
     ) -> UIViewController {
-        let viewModel = WriteAddressViewModel()
+        let viewModel = WriteAddressViewModel(config: config)
         let navigationViewModel = WriteNavigationViewModel()
         
         viewModel.output.finishWriteAddress

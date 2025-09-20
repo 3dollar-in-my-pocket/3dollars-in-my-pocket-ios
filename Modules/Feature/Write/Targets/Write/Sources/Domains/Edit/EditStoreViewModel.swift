@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import CoreLocation
 
 import Common
 import Model
@@ -25,9 +26,10 @@ extension EditStoreViewModel {
     
     enum Route {
         case dismiss
-        case editAddress
+        case pushEditAddress(WriteAddressViewModel)
         case editStoreInfo
         case editMenu
+        case pop
         case toast(String)
         case showErrorAlert(Error)
     }
@@ -105,7 +107,20 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
     }
     
     private func pushEditAddress() {
+        guard let address = state.currentStore.address.fullAddress else { return }
+        let config = WriteAddressViewModelConfig(
+            address: address,
+            location: state.currentStore.location.toCLLocation
+        )
+        let viewModel = WriteAddressViewModel(config: config)
         
+        viewModel.output.finishWriteAddress
+            .sink { [weak self] (address: String, location: CLLocation) in
+                self?.didUpdatedAddress(address: address, location: location)
+                self?.output.route.send(.pop)
+            }
+            .store(in: &viewModel.cancellables)
+        output.route.send(.pushEditAddress(viewModel))
     }
     
     private func pushEditStoreInfo() {
@@ -136,6 +151,15 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
                 output.route.send(.showErrorAlert(error))
             }
         }
+    }
+    
+    private func didUpdatedAddress(address: String, location: CLLocation) {
+        state.currentStore.address.fullAddress = address
+        state.currentStore.location = LocationResponse(
+            latitude: location.coordinate.latitude,
+            longitude: location.coordinate.longitude
+        )
+        output.store.send(state.currentStore)
     }
 }
 

@@ -1,5 +1,6 @@
 import UIKit
 import Combine
+import CoreLocation
 
 import Common
 import Model
@@ -23,7 +24,7 @@ final class MainTabBarViewController: UITabBarController {
     
     private lazy var contentViewControllers: [UIViewController] = [
         UINavigationController(rootViewController: homeViewController),
-        writeInterface.getWriteAddressViewController(config: nil, onSuccessWrite: { _ in }),
+        WriteTabBarIconViewController(),
         Community.CommunityViewController.instance(),
         myPageInterface.getMyPageViewController()
     ]
@@ -243,14 +244,11 @@ final class MainTabBarViewController: UITabBarController {
     }
     
     private func presentWriteAddress() {
-        var config: WriteAddressViewModelConfig?
-        if let cameraPosition = homeViewController.focusedPosition {
-            config = WriteAddressViewModelConfig(
-                type: .write,
-                address: homeViewController.currentAddress,
-                cameraPosition: cameraPosition
-            )
-        }
+        guard let focusedPosition = homeViewController.focusedPosition else { return }
+        let config = WriteAddressViewModelConfig(
+            address: homeViewController.currentAddress,
+            location: focusedPosition
+        )
         
         let writeViewController = writeInterface.getWriteAddressViewController(config: config) { [weak self] storeId in
             self?.pushStoreDetail(storeId: storeId)
@@ -286,5 +284,23 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
             }
         }
         return true
+    }
+}
+
+extension MainTabBarViewController {
+    final class WriteTabBarIconViewController: UIViewController {
+        init() {
+            super.init(nibName: nil, bundle: nil)
+            
+            tabBarItem = UITabBarItem(
+                title: nil,
+                image: DesignSystemAsset.Icons.writeSolid.image,
+                tag: TabBarTag.write.rawValue
+            )
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError()
+        }
     }
 }

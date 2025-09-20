@@ -10,7 +10,6 @@ enum StoreApi {
     case fetchAroundStores(input: FetchAroundStoreInput)
     case fetchStoreDetail(input: FetchStoreDetailInput)
     case createStore(input: UserStoreCreateRequestV3, nonceToken: String)
-    case editStore(storeId: Int, input: EditStoreRequestInput)
     case saveStore(storeId: String, isDelete: Bool)
     case reportStore(storeId: Int, reportReason: String)
     case writeReview(input: WriteReviewRequestInput)
@@ -36,8 +35,6 @@ extension StoreApi: RequestType {
         case .fetchStoreDetail(let input):
             return input
         case .createStore(let input, _):
-            return input
-        case .editStore(_, let input):
             return input
         case .saveStore:
             return nil
@@ -80,8 +77,6 @@ extension StoreApi: RequestType {
             return .get
         case .createStore:
             return .post
-        case .editStore:
-            return .put
         case .saveStore(_, let isDelete):
             return isDelete ? .delete : .put
         case .reportStore:
@@ -120,8 +115,6 @@ extension StoreApi: RequestType {
             return .location
         case .createStore(_, let token):
             return .custom(["X-Nonce-Token": token])
-        case .editStore:
-            return .json
         case .saveStore:
             return .json
         case .reportStore:
@@ -157,8 +150,6 @@ extension StoreApi: RequestType {
             return "/api/v4/store/\(input.storeId)"
         case .createStore:
             return "/api/v3/store"
-        case .editStore(let storeId, _):
-            return "/api/v2/store/\(storeId)"
         case .saveStore(let storeId, _):
             return "/api/v2/store/\(storeId)/favorite"
         case .reportStore(let storeId, _):

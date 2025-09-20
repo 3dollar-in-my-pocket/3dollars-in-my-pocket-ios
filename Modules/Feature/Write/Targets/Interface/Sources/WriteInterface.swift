@@ -6,24 +6,11 @@ import Model
 
 public protocol WriteInterface {
     func getWriteAddressViewController(
-        config: WriteAddressViewModelConfig?,
+        config: WriteAddressViewModelConfig,
         onSuccessWrite: @escaping ((String) -> ())
     ) -> UIViewController
     
     func createEditStoreViewModel(config: EditStoreViewModelConfig) -> EditStoreViewModelInterface
     
     func createEditStoreViewController(viewModel: EditStoreViewModelInterface) -> UIViewController
-}
-
-
-public struct WriteAddressViewModelConfig {
-    public let type: WriteAddressType
-    public let address: String
-    public let cameraPosition: CLLocation
-    
-    public init(type: WriteAddressType, address: String, cameraPosition: CLLocation) {
-        self.type = type
-        self.address = address
-        self.cameraPosition = cameraPosition
-    }
 }

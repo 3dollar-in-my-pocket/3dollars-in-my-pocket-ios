@@ -209,21 +209,25 @@ extension EditStoreViewController {
         switch route {
         case .dismiss:
             dismiss(animated: true)
-        case .editAddress:
-            // TODO: 카테고리 수정 화면 이동
-            break
+        case .pushEditAddress(let viewModel):
+            pushEditAddress(viewModel: viewModel)
         case .editStoreInfo:
             // TODO: 메뉴 수정 화면 이동
             break
         case .editMenu:
             // TODO: 운영시간 수정 화면 이동
             break
+        case .pop:
+            navigationController?.popViewController(animated: true)
         case .toast(let message):
             ToastManager.shared.show(message: message)
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
         }
     }
+    
+    private func pushEditAddress(viewModel: WriteAddressViewModel) {
+        let viewController = WriteAddressViewController(viewModel: viewModel)
+        navigationController?.pushViewController(viewController, animated: true)
+    }
 }
-
-

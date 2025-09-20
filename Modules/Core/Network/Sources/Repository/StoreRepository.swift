@@ -6,8 +6,6 @@ import Model
 public protocol StoreRepository {
     func createStore(input: UserStoreCreateRequestV3, nonceToken: String) async -> Result<UserStoreResponse, Error>
     
-    func editStore(storeId: Int, input: EditStoreRequestInput) async -> Result<UserStoreCreateResponse, Error>
-    
     func fetchAroundStores(input: FetchAroundStoreInput) async -> Result<ContentsWithCursorResponse<StoreWithExtraResponse>, Error>
     
     func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<UserStoreDetailResponse, Error>
@@ -44,12 +42,6 @@ public struct StoreRepositoryImpl: StoreRepository {
     
     public func createStore(input: UserStoreCreateRequestV3, nonceToken: String) async -> Result<UserStoreResponse, Error> {
         let request = StoreApi.createStore(input: input, nonceToken: nonceToken)
-        
-        return await NetworkManager.shared.request(requestType: request)
-    }
-    
-    public func editStore(storeId: Int, input: EditStoreRequestInput) async -> Result<UserStoreCreateResponse, Error> {
-        let request = StoreApi.editStore(storeId: storeId, input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }

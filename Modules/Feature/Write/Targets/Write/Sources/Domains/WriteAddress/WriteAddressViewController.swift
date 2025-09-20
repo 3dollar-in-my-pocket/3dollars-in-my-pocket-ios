@@ -114,7 +114,6 @@ public final class WriteAddressViewController: BaseViewController {
         setupUI()
         bind()
         setupMap()
-        viewModel.input.viewDidLoad.send(())
     }
     
     private func setupUI() {

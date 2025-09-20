@@ -10,8 +10,8 @@ public struct UserStoreResponse: Decodable {
     
     public let salesTypeV2: StoreSalesTypeResponse?
     public let rating: Double
-    public let location: LocationResponse
-    public let address: AddressResponse
+    public var location: LocationResponse
+    public var address: AddressResponse
     public let categories: [StoreFoodCategoryResponse]
     public let appearanceDays: [AppearanceDay]
     public let openingHours: StoreOpeningHours?
