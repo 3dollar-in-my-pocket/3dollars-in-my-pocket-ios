@@ -1,7 +1,7 @@
 import Foundation
 
 public struct UserStoreDetailResponse: Decodable {
-    public let store: UserStoreResponse
+    public var store: UserStoreResponse
     public let openStatus: StoreOpenResponse
     public let distanceM: Int
     public let creator: UserResponse

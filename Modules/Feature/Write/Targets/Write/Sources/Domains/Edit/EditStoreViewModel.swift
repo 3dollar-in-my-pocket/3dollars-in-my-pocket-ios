@@ -13,11 +13,11 @@ extension EditStoreViewModel {
         let didTapStoreInfo = PassthroughSubject<Void, Never>()
         let didTapMenu = PassthroughSubject<Void, Never>()
         let didTapEdit = PassthroughSubject<Void, Never>()
-        let didUpdateStore = PassthroughSubject<UserStoreResponse, Never>()
     }
     
     struct Output {
         let store: CurrentValueSubject<UserStoreResponse, Never>
+        let menuCount: CurrentValueSubject<Int, Never>
         let changedCount = CurrentValueSubject<Int?, Never>(nil)
         let route = PassthroughSubject<Route, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
@@ -28,7 +28,7 @@ extension EditStoreViewModel {
         case dismiss
         case pushEditAddress(WriteAddressViewModel)
         case editStoreInfo(EditStoreInfoViewModel)
-        case editMenu
+        case editMenu(WriteDetailMenuViewModel)
         case pop
         case toast(String)
         case showErrorAlert(Error)
@@ -45,6 +45,7 @@ extension EditStoreViewModel {
     private struct State {
         var originalStore: UserStoreResponse
         var currentStore: UserStoreResponse
+        var editedMenus: [UserStoreMenuRequestV3]?
     }
 }
 
@@ -68,7 +69,10 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
             originalStore: config.store,
             currentStore: config.store
         )
-        self.output = Output(store: .init(config.store))
+        self.output = Output(
+            store: .init(config.store),
+            menuCount: .init(config.store.menusV3.count)
+        )
         
         super.init()
     }
@@ -95,13 +99,6 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
         input.didTapEdit
             .sink { [weak self] in
                 self?.editStore()
-            }
-            .store(in: &cancellables)
-        
-        input.didUpdateStore
-            .sink { [weak self] store in
-                self?.state.currentStore = store
-                self?.output.store.send(store)
             }
             .store(in: &cancellables)
     }
@@ -137,7 +134,33 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
     }
     
     private func pushEditMenu() {
+        let menus: [UserStoreMenuRequestV3]
+        if let editedMenus = state.editedMenus {
+            menus = editedMenus
+        } else {
+            menus = state.currentStore.menusV3.map { UserStoreMenuRequestV3(response: $0) }
+        }
         
+        let config = WriteDetailMenuViewModel.Config(
+            selectedCategories: state.currentStore.categories,
+            menus: menus,
+            afterCreatedStore: true
+        )
+        let viewModel = WriteDetailMenuViewModel(config: config)
+        
+        viewModel.output.finishInputMenu
+            .sink { [weak self] menus in
+                self?.state.editedMenus = menus
+                self?.output.menuCount.send(menus.count)
+            }
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.finishInputCategory
+            .sink { [weak self] categories in
+                self?.state.currentStore.categories = categories
+            }
+            .store(in: &viewModel.cancellables)
+        output.route.send(.editMenu(viewModel))
     }
     
     private func editStore() {
@@ -153,6 +176,7 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
                 ).get()
                 
                 output.onEdit.send(response)
+                output.isLoading.send(false)
                 output.route.send(.toast("가게 정보가 수정되었습니다"))
                 output.route.send(.dismiss)
             } catch {

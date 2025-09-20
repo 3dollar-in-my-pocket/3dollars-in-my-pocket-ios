@@ -147,6 +147,13 @@ final class EditStoreViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
+        viewModel.output.menuCount
+            .main
+            .sink { [weak self] menuCount in
+                self?.storeMenuSection.bind(menuCount: menuCount)
+            }
+            .store(in: &cancellables)
+        
         viewModel.output.route
             .main
             .sink { [weak self] route in
@@ -190,7 +197,6 @@ final class EditStoreViewController: BaseViewController {
     private func bindStore(_ store: UserStoreResponse) {
         storeAddressSection.bind(address: store.address.fullAddress)
         storeInfoSection.bind(store: store)
-        storeMenuSection.bind(menuCount: store.menusV3.count)
     }
     
     @objc private func didTapClose() {
@@ -213,9 +219,8 @@ extension EditStoreViewController {
             pushEditAddress(viewModel: viewModel)
         case .editStoreInfo(let viewModel):
             pushEditStoreInfo(viewModel: viewModel)
-        case .editMenu:
-            // TODO: 운영시간 수정 화면 이동
-            break
+        case .editMenu(let viewModel):
+            pushEditMenu(viewModel: viewModel)
         case .pop:
             navigationController?.popViewController(animated: true)
         case .toast(let message):
@@ -232,6 +237,11 @@ extension EditStoreViewController {
     
     private func pushEditStoreInfo(viewModel: EditStoreInfoViewModel) {
         let viewController = EditStoreInfoViewController(viewModel: viewModel)
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func pushEditMenu(viewModel: WriteDetailMenuViewModel) {
+        let viewController = WriteDetailMenuViewController(viewModel: viewModel)
         navigationController?.pushViewController(viewController, animated: true)
     }
 }

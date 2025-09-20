@@ -25,6 +25,7 @@ extension WriteDetailMenuViewModel {
         let menus = PassthroughSubject<[MenuInputViewModel], Never>()
         let addMenus = PassthroughSubject<MenuInputViewModel, Never>()
         let finishInputMenu = PassthroughSubject<[UserStoreMenuRequestV3], Never>()
+        let finishInputCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let didTapSkip = PassthroughSubject<Void, Never>()
         let toast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -253,6 +254,7 @@ final class WriteDetailMenuViewModel: BaseViewModel {
             return
         }
         output.finishInputMenu.send(menus)
+        output.finishInputCategory.send(state.selectedCategories)
         
         if output.afterCreatedStore {
             output.route.send(.pop)

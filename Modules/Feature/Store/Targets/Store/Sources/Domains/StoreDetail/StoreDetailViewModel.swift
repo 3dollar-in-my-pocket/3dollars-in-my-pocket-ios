@@ -66,7 +66,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let storeType: StoreType = .userStore
         var storeDetailData: StoreDetailData?
         var showAllMenu: Bool = false
-        var userStoreResponse: UserStoreResponse?
+        var userStoreDetailResponse: UserStoreDetailResponse?
     }
     
     enum Route {
@@ -349,7 +349,7 @@ final class StoreDetailViewModel: BaseViewModel {
                     totalReviewCount: response.reviews.cursor.totalCount
                 )
                 
-                state.userStoreResponse = response.store
+                state.userStoreDetailResponse = response
                 state.storeDetailData = storeDetailData
                 refreshSections()
                 output.isFavorited.send(response.favorite.isFavorite)
@@ -691,12 +691,31 @@ extension StoreDetailViewModel {
     }
     
     private func pushEditStore() {
-        guard let store = state.userStoreResponse else { return }
+        guard let store = state.userStoreDetailResponse?.store else { return }
         
         let config = EditStoreViewModelConfig(store: store)
         let viewModel = Environment.writeInterface.createEditStoreViewModel(config: config)
         
+        viewModel.onEdit
+            .main
+            .sink { [weak self] store in
+                self?.updateStore(store)
+            }
+            .store(in: &cancellables)
+        
         output.route.send(.pushEditStore(viewModel))
+    }
+    
+    private func updateStore(_ store: UserStoreResponse) {
+        state.userStoreDetailResponse?.store = store
+        
+        guard let storeDetailResponse = state.userStoreDetailResponse else { return }
+        state.storeDetailData = .init(
+            response: storeDetailResponse,
+            totalPhotoCount: state.storeDetailData?.totalPhotoCount ?? 0,
+            totalReviewCount: state.storeDetailData?.totalReviewCount ?? 0
+        )
+        refreshSections()
     }
 }
 

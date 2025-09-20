@@ -12,7 +12,7 @@ public struct UserStoreResponse: Decodable {
     public let rating: Double
     public var location: LocationResponse
     public var address: AddressResponse
-    public let categories: [StoreFoodCategoryResponse]
+    public var categories: [StoreFoodCategoryResponse]
     public var appearanceDays: [AppearanceDay]
     public var openingHours: StoreOpeningHours?
     public var paymentMethods: [PaymentMethod]
