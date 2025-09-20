@@ -27,7 +27,7 @@ extension EditStoreViewModel {
     enum Route {
         case dismiss
         case pushEditAddress(WriteAddressViewModel)
-        case editStoreInfo
+        case editStoreInfo(EditStoreInfoViewModel)
         case editMenu
         case pop
         case toast(String)
@@ -124,7 +124,16 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
     }
     
     private func pushEditStoreInfo() {
+        let config = EditStoreInfoViewModel.Config(store: state.currentStore)
+        let viewModel = EditStoreInfoViewModel(config: config)
         
+        viewModel.output.editedStoreInfo
+            .sink { [weak self] store in
+                self?.state.currentStore = store
+                self?.output.store.send(store)
+            }
+            .store(in: &viewModel.cancellables)
+        output.route.send(.editStoreInfo(viewModel))
     }
     
     private func pushEditMenu() {

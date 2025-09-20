@@ -3,19 +3,19 @@ import Foundation
 public struct UserStoreResponse: Decodable {
     public let storeId: Int
     public let isOwner: Bool
-    public let name: String
+    public var name: String
     
     @available(*, deprecated, message: "salesTypeV2를 사용하세요.")
     public let salesType: SalesType?
     
-    public let salesTypeV2: StoreSalesTypeResponse?
+    public var salesTypeV2: StoreSalesTypeResponse?
     public let rating: Double
     public var location: LocationResponse
     public var address: AddressResponse
     public let categories: [StoreFoodCategoryResponse]
-    public let appearanceDays: [AppearanceDay]
-    public let openingHours: StoreOpeningHours?
-    public let paymentMethods: [PaymentMethod]
+    public var appearanceDays: [AppearanceDay]
+    public var openingHours: StoreOpeningHours?
+    public var paymentMethods: [PaymentMethod]
     
     @available(*, deprecated, message: "menusV2를 사용하세요.")
     public let menus: [UserStoreMenuResponse]
@@ -29,7 +29,7 @@ public struct UserStoreResponse: Decodable {
 
 
 public struct StoreSalesTypeResponse: Decodable {
-    public let type: SalesType
+    public var type: SalesType
     public let description: String
 }
 

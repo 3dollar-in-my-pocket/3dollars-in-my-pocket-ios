@@ -57,9 +57,9 @@ public extension String {
         }
     }
 
-    func toDate() -> Date? {
+    func toDate(format: String? = "yyyy-MM-dd'T'HH:mm:ss") -> Date? {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        dateFormatter.dateFormat = format
         return dateFormatter.date(from: self)
     }
 

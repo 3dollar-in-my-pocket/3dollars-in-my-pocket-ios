@@ -211,9 +211,8 @@ extension EditStoreViewController {
             dismiss(animated: true)
         case .pushEditAddress(let viewModel):
             pushEditAddress(viewModel: viewModel)
-        case .editStoreInfo:
-            // TODO: 메뉴 수정 화면 이동
-            break
+        case .editStoreInfo(let viewModel):
+            pushEditStoreInfo(viewModel: viewModel)
         case .editMenu:
             // TODO: 운영시간 수정 화면 이동
             break
@@ -228,6 +227,11 @@ extension EditStoreViewController {
     
     private func pushEditAddress(viewModel: WriteAddressViewModel) {
         let viewController = WriteAddressViewController(viewModel: viewModel)
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func pushEditStoreInfo(viewModel: EditStoreInfoViewModel) {
+        let viewController = EditStoreInfoViewController(viewModel: viewModel)
         navigationController?.pushViewController(viewController, animated: true)
     }
 }

@@ -1,8 +1,8 @@
 import Foundation
 
 public struct StoreOpeningHours: Codable {
-    public let startTime: String?
-    public let endTime: String?
+    public var startTime: String?
+    public var endTime: String?
     
     public init(startTime: String?, endTime: String?) {
         self.startTime = startTime

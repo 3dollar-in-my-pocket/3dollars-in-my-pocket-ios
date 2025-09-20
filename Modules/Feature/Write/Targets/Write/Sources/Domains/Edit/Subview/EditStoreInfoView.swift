@@ -87,12 +87,17 @@ final class EditStoreInfoView: BaseView {
         }
     }
     
-    
     func bind(store: UserStoreResponse) {
         nameItemView.bind(value: store.name)
         typeItemVIew.bind(value: store.salesTypeV2?.description)
         methodItemView.bind(value: store.paymentMethods.strings)
         appearanceDaysItemView.bind(value: store.appearanceDays.strings)
+        
+        
+        let startTime = store.openingHours?.startTime?.toDate(format: "HH:mm")?.toString(format: Strings.WriteAdditionalInfo.OpeningHours.dateFormat) ?? ""
+        let endTime = store.openingHours?.endTime?.toDate(format: "HH:mm")?.toString(format: Strings.WriteAdditionalInfo.OpeningHours.dateFormat) ?? ""
+        let openingHourString = startTime.isNotEmpty || endTime.isNotEmpty ? "\(startTime) ~ \(endTime)" : nil
+        openingHoursItemView.bind(value: openingHourString)
     }
 }
 
@@ -178,8 +183,7 @@ final class EditStoreInfoItemView: BaseView {
 
 private extension Array where Element == PaymentMethod {
     var strings: String {
-        let test = self.map { $0.string }.joined(separator: ",")
-        return test
+        self.sorted().map { $0.string }.joined(separator: ",")
     }
 }
 
@@ -200,7 +204,7 @@ private extension PaymentMethod {
 
 private extension Array where Element == AppearanceDay {
     var strings: String {
-        self.map { $0.string }.joined(separator: ",")
+        self.sorted().map { $0.string }.joined(separator: ",")
     }
 }
 
