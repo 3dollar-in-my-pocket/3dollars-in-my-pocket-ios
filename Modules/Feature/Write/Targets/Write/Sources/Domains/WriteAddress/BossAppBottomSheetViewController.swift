@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Log
 
 import PanModal
 
@@ -127,6 +128,9 @@ final class BossAppBottomSheetViewController: BaseViewController {
         return button
     }()
 
+    override var screenName: ScreenName {
+        return .writeAddressBossBottomSheet
+    }
     private let viewModel: BossAppBottomSheetViewModel
 
     init(viewModel: BossAppBottomSheetViewModel) {

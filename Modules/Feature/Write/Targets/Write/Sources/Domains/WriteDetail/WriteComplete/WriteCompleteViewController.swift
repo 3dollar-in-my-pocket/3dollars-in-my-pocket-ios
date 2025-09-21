@@ -5,6 +5,7 @@ import Common
 import DesignSystem
 import Model
 import SnapKit
+import Log
 
 final class WriteCompleteViewController: BaseViewController {
     private let stackView: UIStackView = {
@@ -96,6 +97,10 @@ final class WriteCompleteViewController: BaseViewController {
         view.backgroundColor = Colors.mainPink.color
         return view
     }()
+    
+    override var screenName: ScreenName {
+        return .writeDetailComplete
+    }
     
     private let viewModel: WriteCompleteViewModel
     

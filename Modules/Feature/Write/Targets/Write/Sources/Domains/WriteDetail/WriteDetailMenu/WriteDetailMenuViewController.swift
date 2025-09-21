@@ -4,6 +4,7 @@ import Combine
 import Common
 import DesignSystem
 import Model
+import Log
 
 final class WriteDetailMenuViewController: BaseViewController {
     private let scrollView: UIScrollView = {
@@ -114,6 +115,10 @@ final class WriteDetailMenuViewController: BaseViewController {
     private var gradientLayer: CAGradientLayer?
     private var currentInset: CGFloat = .zero
     private let tapBackground = UITapGestureRecognizer()
+    
+    override var screenName: ScreenName {
+        return .writeDetailMenu
+    }
     
     init(viewModel: WriteDetailMenuViewModel) {
         self.viewModel = viewModel

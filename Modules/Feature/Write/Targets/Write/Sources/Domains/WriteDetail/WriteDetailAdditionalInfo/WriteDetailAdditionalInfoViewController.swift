@@ -5,6 +5,7 @@ import Common
 import DesignSystem
 import Model
 import SnapKit
+import Log
 
 final class WriteDetailAdditionalInfoViewController: BaseViewController {
     private let scrollView: UIScrollView = {
@@ -87,6 +88,10 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
         view.backgroundColor = Colors.mainPink.color
         return view
     }()
+    
+    override var screenName: ScreenName {
+        return .writeDetailAdditionalInfo
+    }
     
     private let viewModel: WriteDetailAdditionalInfoViewModel
     

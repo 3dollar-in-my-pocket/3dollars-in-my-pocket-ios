@@ -5,6 +5,7 @@ import SnapKit
 import Common
 import DesignSystem
 import Model
+import Log
 
 final class EditStoreViewController: BaseViewController {
     private let viewModel: EditStoreViewModel
@@ -49,6 +50,10 @@ final class EditStoreViewController: BaseViewController {
         view.backgroundColor = Colors.mainPink.color
         return view
     }()
+    
+    override var screenName: ScreenName {
+        return .editStore
+    }
     
     init(viewModel: EditStoreViewModel) {
         self.viewModel = viewModel

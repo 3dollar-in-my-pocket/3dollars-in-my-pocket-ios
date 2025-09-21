@@ -5,6 +5,7 @@ import Common
 import DesignSystem
 import Model
 import SnapKit
+import Log
 
 final class WriteDetailCategoryViewController: BaseViewController {
     private let titleLabel: UILabel = {
@@ -54,6 +55,10 @@ final class WriteDetailCategoryViewController: BaseViewController {
     
     private let viewModel: WriteDetailCategoryViewModel
     private lazy var datasource = WriteDetailCategoryDatasource(collectionView: collectionView, viewModel: viewModel)
+    
+    override var screenName: ScreenName {
+        return .writeDetailCategory
+    }
     
     init(viewModel: WriteDetailCategoryViewModel) {
         self.viewModel = viewModel

@@ -5,6 +5,7 @@ import Common
 import DesignSystem
 import Model
 import SnapKit
+import Log
 
 import PanModal
 
@@ -64,6 +65,10 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
         button.layer.masksToBounds = true
         return button
     }()
+    
+    override var screenName: ScreenName {
+        return .writeDetailCategoryBottomSheet
+    }
     
     private let viewModel: WriteDetailCategoryBottomSheetViewModel
     private lazy var datasource = WriteDetailCategoryBottomSheetDatasource(collectionView: collectionView, viewModel: viewModel)

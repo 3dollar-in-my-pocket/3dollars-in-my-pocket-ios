@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Log
 
 final class WriteDetailInfoViewController: BaseViewController {
     private let scrollView = UIScrollView()
@@ -58,6 +59,10 @@ final class WriteDetailInfoViewController: BaseViewController {
     private let viewModel: WriteDetailInfoViewModel
     private var currentInset: CGFloat = .zero
     private let tapBackground = UITapGestureRecognizer()
+    
+    override var screenName: ScreenName {
+        return .writeDetailInfo
+    }
     
     init(viewModel: WriteDetailInfoViewModel) {
         self.viewModel = viewModel

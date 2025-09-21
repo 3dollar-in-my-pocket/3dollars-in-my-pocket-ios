@@ -4,6 +4,7 @@ import Combine
 import Common
 import DesignSystem
 import Model
+import Log
 
 import PanModal
 
@@ -29,6 +30,10 @@ final class AddressConfirmBottomSheetViewController: BaseViewController {
             
             return containerHeight
         }
+    }
+    
+    override var screenName: ScreenName {
+        return .writeAddressPopup
     }
     
     private let viewModel: AddressConfirmBottomSheetViewModel

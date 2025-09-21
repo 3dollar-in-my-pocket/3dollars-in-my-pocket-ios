@@ -29,8 +29,14 @@ open class BaseViewController: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         
-        sendPageView()
+        
         addBackButtonIfNeeded()
+    }
+    
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        sendPageView()
     }
     
     open func bindEvent() { }

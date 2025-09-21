@@ -5,6 +5,7 @@ import Common
 import DesignSystem
 import Model
 import SnapKit
+import Log
 
 final class EditStoreInfoViewController: BaseViewController {
     private let scrollView = UIScrollView()
@@ -43,6 +44,10 @@ final class EditStoreInfoViewController: BaseViewController {
     private let viewModel: EditStoreInfoViewModel
     private var currentInset: CGFloat = .zero
     private let tapBackground = UITapGestureRecognizer()
+    
+    override var screenName: ScreenName {
+        return .editStoreInfo
+    }
     
     init(viewModel: EditStoreInfoViewModel) {
         self.viewModel = viewModel
