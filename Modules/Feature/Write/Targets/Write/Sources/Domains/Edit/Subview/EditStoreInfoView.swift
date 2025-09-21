@@ -89,7 +89,7 @@ final class EditStoreInfoView: BaseView {
     
     func bind(store: UserStoreResponse) {
         nameItemView.bind(value: store.name)
-        typeItemVIew.bind(value: store.salesTypeV2?.description)
+        typeItemVIew.bind(value: store.salesTypeV2?.type.string)
         methodItemView.bind(value: store.paymentMethods.strings)
         appearanceDaysItemView.bind(value: store.appearanceDays.strings)
         
@@ -227,6 +227,23 @@ private extension AppearanceDay {
             "일"
         case .unknown:
             ""
+        }
+    }
+}
+
+private extension SalesType {
+    var string: String {
+        switch self {
+        case .convenienceStore:
+            return "편의점"
+        case .foodTruck:
+            return "푸드트럭"
+        case .road:
+            return "길거리"
+        case .store:
+            return "매장"
+        case .unknown:
+            return ""
         }
     }
 }
