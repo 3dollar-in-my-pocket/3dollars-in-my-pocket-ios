@@ -171,11 +171,16 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
         
         Task {
             let storeId = state.originalStore.storeId
+            var input = UserStorePatchRequestV3(response: state.currentStore)
+            
+            if let editedMenu = state.editedMenus {
+                input.menus = editedMenu
+            }
             
             do {
                 let response = try await dependency.storeRepository.patchStore(
                     storeId: String(storeId),
-                    input: .init(response: state.currentStore)
+                    input: input
                 ).get()
                 
                 output.onEdit.send(response)

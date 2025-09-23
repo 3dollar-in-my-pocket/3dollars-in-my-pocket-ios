@@ -8,7 +8,7 @@ public struct UserStorePatchRequestV3: Encodable {
     public let appearanceDays: [AppearanceDay]?
     public let openingHours: StoreOpeningHours?
     public let paymentMethods: [PaymentMethod]?
-    public let menus: [UserStoreMenuRequestV3]?
+    public var menus: [UserStoreMenuRequestV3]?
     
     public init(
         latitude: Double?,

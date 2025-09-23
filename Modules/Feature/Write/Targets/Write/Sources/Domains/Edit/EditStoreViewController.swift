@@ -297,7 +297,7 @@ extension EditStoreViewController {
         func bind(count: Int?) {
             stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
             
-            if let count {
+            if let count, count > 0 {
                 stackView.backgroundColor = Colors.green100.color
                 stackView.addArrangedSubview(leftImageView)
                 leftImageView.snp.makeConstraints {
