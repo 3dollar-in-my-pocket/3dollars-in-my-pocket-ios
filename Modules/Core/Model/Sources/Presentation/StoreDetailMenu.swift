@@ -15,7 +15,13 @@ public struct StoreDetailMenu: Hashable {
     
     public init(response: UserStoreMenuResponseV3) {
         self.name = response.name
-        self.price = response.price.map { "\($0)" }
+        
+        // 구버전에서 작성한 가게 데이터 대응
+        if response.count != nil {
+            self.price = response.price.map { "\($0)" }
+        } else {
+            self.price = response.description
+        }
         self.category = response.category
         self.count = response.count
     }
