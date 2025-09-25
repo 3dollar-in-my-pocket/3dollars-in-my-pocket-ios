@@ -88,11 +88,11 @@ public extension String {
         return height
     }
     
-    var decimal: Int {
+    var decimal: Int? {
         let trimmed = replacingOccurrences(of: ",", with: "")
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         let number = formatter.number(from: trimmed)
-        return number?.intValue ?? 0
+        return number?.intValue
     }
 }

@@ -26,6 +26,6 @@ public struct UserStoreMenuRequestV3: Encodable {
         self.count = response.count
         self.price = response.price
         self.category = response.category.categoryId
-        self.description = response.description
+        self.description = nil // count, price는 지웠지만 description이 안지워져서 수정이 제대로 이루어지지 않는 케이스 존재.
     }
 }

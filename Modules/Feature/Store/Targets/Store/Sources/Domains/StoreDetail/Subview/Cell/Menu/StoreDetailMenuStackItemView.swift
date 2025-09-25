@@ -55,14 +55,7 @@ final class StoreDetailMenuStackItemView: BaseView {
     
     func bind(_ menu: StoreDetailMenu) {
         nameLabel.text = menu.name
-        
-        if let count = menu.count,
-           let price = menu.price,
-           count > 0 {
-            priceLabel.text = "\(count)개 \(price)원"
-        } else {
-            priceLabel.text = menu.price
-        }
+        priceLabel.text = menu.description
     }
     
     private func drawDash() {

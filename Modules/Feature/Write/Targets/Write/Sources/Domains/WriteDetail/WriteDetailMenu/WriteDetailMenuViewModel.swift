@@ -105,13 +105,13 @@ final class WriteDetailMenuViewModel: BaseViewModel {
         
         input.inputMenuQuantity
             .sink { [weak self] (index: Int, quantity: Int?) in
-                self?.inputMenuQuantity(index: index, quantity: quantity ?? 0)
+                self?.inputMenuQuantity(index: index, quantity: quantity)
             }
             .store(in: &cancellables)
         
         input.inputMenuPrice
             .sink { [weak self] (index: Int, price: Int?) in
-                self?.inputMenuPrice(index: index, price: price ?? 0)
+                self?.inputMenuPrice(index: index, price: price)
             }
             .store(in: &cancellables)
         
@@ -181,13 +181,13 @@ final class WriteDetailMenuViewModel: BaseViewModel {
         state.menus[currentCategory.categoryId]?[index].name = name
     }
     
-    private func inputMenuQuantity(index: Int, quantity: Int) {
+    private func inputMenuQuantity(index: Int, quantity: Int?) {
         guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
         
         state.menus[currentCategory.categoryId]?[index].count = quantity
     }
     
-    private func inputMenuPrice(index: Int, price: Int) {
+    private func inputMenuPrice(index: Int, price: Int?) {
         guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
         
         state.menus[currentCategory.categoryId]?[index].price = price
@@ -229,13 +229,11 @@ final class WriteDetailMenuViewModel: BaseViewModel {
             .store(in: &viewModel.cancellables)
         
         viewModel.output.quantity
-            .compactMap { $0 }
             .map { (index, $0) }
             .subscribe(input.inputMenuQuantity)
             .store(in: &viewModel.cancellables)
         
         viewModel.output.price
-            .compactMap { $0 }
             .map { (index, $0) }
             .subscribe(input.inputMenuPrice)
             .store(in: &viewModel.cancellables)
@@ -268,10 +266,13 @@ final class WriteDetailMenuViewModel: BaseViewModel {
             }
         }
         
-        state.selectedCategories = categories
+        for category in categories {
+            if state.menus.map({ $0.key }).contains(where: { $0 == category.categoryId }).isNot {
+                state.menus[category.categoryId] = [UserStoreMenuRequestV3(name: "", category: category.categoryId)]
+            }
+        }
         
-        let menus = categories.map { UserStoreMenuRequestV3(name: "", category: $0.categoryId) }
-        state.menus = Dictionary(grouping: menus, by: { $0.category} )
+        state.selectedCategories = categories
         
         output.categories.send(categories)
         output.selectedCategoryIndex.send(0)
