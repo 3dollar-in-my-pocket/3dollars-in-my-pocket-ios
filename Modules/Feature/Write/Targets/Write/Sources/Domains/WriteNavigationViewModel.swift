@@ -238,7 +238,7 @@ final class WriteNavigationViewModel: BaseViewModel {
                     latitude: location.coordinate.latitude,
                     longitude: location.coordinate.longitude,
                     storeName: storeName,
-                    storeType: state.storeType,
+                    salesType: state.storeType,
                     appearanceDays: state.appearanceDays,
                     openingHours: StoreOpeningHours(
                         startTime: state.startTime?.toString(format: "HH:mm"),

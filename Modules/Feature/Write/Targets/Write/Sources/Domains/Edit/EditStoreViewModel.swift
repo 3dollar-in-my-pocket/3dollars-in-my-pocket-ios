@@ -246,7 +246,7 @@ private extension UserStorePatchRequestV3 {
             latitude: response.location.latitude,
             longitude: response.location.longitude,
             storeName: response.name,
-            storeType: response.salesTypeV2?.type,
+            salesType: response.salesTypeV2?.type,
             appearanceDays: response.appearanceDays,
             openingHours: response.openingHours,
             paymentMethods: response.paymentMethods,

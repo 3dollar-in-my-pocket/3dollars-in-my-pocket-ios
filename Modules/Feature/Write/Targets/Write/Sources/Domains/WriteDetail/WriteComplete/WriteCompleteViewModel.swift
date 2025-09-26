@@ -141,7 +141,7 @@ final class WriteCompleteViewModel: BaseViewModel {
                     latitude: store.location.latitude,
                     longitude: store.location.longitude,
                     storeName: store.name,
-                    storeType: store.salesTypeV2?.type,
+                    salesType: store.salesTypeV2?.type,
                     appearanceDays: state.appearanceDays,
                     openingHours: .init(startTime: state.startTime?.toString(format: "HH:mm"), endTime: state.endTime?.toString(format: "HH:mm")),
                     paymentMethods: state.paymentMethods,
