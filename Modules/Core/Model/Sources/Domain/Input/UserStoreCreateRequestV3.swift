@@ -1,14 +1,15 @@
 import Foundation
 
-public struct EditStoreRequestInput: Encodable {
+public struct UserStoreCreateRequestV3: Encodable {
     public let latitude: Double
     public let longitude: Double
     public let storeName: String
     public let storeType: SalesType?
     public let appearanceDays: [AppearanceDay]
-    public let openingHours: StoreOpeningHoursRequest?
+    public let openingHours: StoreOpeningHours?
     public let paymentMethods: [PaymentMethod]
-    public let menus: [StoreMenuRequest]
+    public let menus: [UserStoreMenuRequestV3]
+    public let nonceToken: String
     
     public init(
         latitude: Double,
@@ -16,9 +17,10 @@ public struct EditStoreRequestInput: Encodable {
         storeName: String,
         storeType: SalesType?,
         appearanceDays: [AppearanceDay],
-        openingHours: StoreOpeningHoursRequest?,
+        openingHours: StoreOpeningHours?,
         paymentMethods: [PaymentMethod],
-        menus: [StoreMenuRequest]
+        menus: [UserStoreMenuRequestV3],
+        nonceToken: String
     ) {
         self.latitude = latitude
         self.longitude = longitude
@@ -28,5 +30,6 @@ public struct EditStoreRequestInput: Encodable {
         self.openingHours = openingHours
         self.paymentMethods = paymentMethods
         self.menus = menus
+        self.nonceToken = nonceToken
     }
 }

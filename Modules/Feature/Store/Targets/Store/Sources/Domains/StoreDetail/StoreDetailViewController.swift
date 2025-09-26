@@ -5,6 +5,7 @@ import Common
 import DesignSystem
 import Model
 import Log
+import WriteInterface
 
 final class StoreDetailViewController: BaseViewController {
     override var screenName: ScreenName {
@@ -136,8 +137,8 @@ final class StoreDetailViewController: BaseViewController {
                 case .presentVisit(let viewModel):
                     owner.presentVisit(viewModel)
                     
-                case .pushEditStore(let storeId, let storeDetailData):
-                    owner.pushEditStore(storeId: storeId, storeDetailData: storeDetailData)
+                case .pushEditStore(let viewModel):
+                    owner.pushEditStore(viewModel: viewModel)
                 case .navigateAppleMap(let location):
                     owner.navigateAppleMap(location: location)
                 }
@@ -411,14 +412,11 @@ final class StoreDetailViewController: BaseViewController {
         present(viewController, animated: true)
     }
     
-    private func pushEditStore(storeId: Int, storeDetailData: StoreDetailData) {
-        let viewController = Environment.writeInterface.getEditDetailViewController(
-            storeId: storeId,
-            storeDetailData: storeDetailData) { [weak self] _ in
-                self?.viewModel.input.load.send(())
-            }
-        
-        navigationController?.pushViewController(viewController, animated: true)
+    private func pushEditStore(viewModel: EditStoreViewModelInterface) {
+        let viewController = Environment.writeInterface.createEditStoreViewController(viewModel: viewModel)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true)
     }
     
     private func navigateAppleMap(location: LocationResponse) {

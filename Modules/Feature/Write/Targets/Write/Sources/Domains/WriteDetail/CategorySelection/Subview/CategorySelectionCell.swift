@@ -3,6 +3,7 @@ import UIKit
 import Common
 import DesignSystem
 import Model
+import Then
 
 final class CategorySelectionCell: BaseCollectionViewCell {
     static let size = CGSize(

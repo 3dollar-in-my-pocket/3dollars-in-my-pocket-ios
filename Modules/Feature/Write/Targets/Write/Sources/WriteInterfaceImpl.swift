@@ -7,52 +7,35 @@ import Model
 
 public final class WriteInterfaceImpl: WriteInterface {
     public func getWriteAddressViewController(
-        config: WriteAddressViewModelConfig?,
-        onSuccessWrite: @escaping ((Int) -> ())
+        config: WriteAddressViewModelConfig,
+        onSuccessWrite: @escaping ((String) -> ())
     ) -> UIViewController {
         let viewModel = WriteAddressViewModel(config: config)
-        let viewController = WriteAddressViewController(viewModel: viewModel)
+        let navigationViewModel = WriteNavigationViewModel()
         
-        viewController.onSuccessWrite = { storeId in
+        viewModel.output.finishWriteAddress
+            .subscribe(navigationViewModel.input.finishWriteAddress)
+            .store(in: &viewModel.cancellables)
+        let viewController = WriteAddressViewController(viewModel: viewModel)
+        let navigationController = WriteNavigationController(rootViewController: viewController, viewModel: navigationViewModel)
+        
+        navigationController.onSuccessWrite = { storeId in
             onSuccessWrite(storeId)
         }
-        
-        let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .overCurrentContext
-        navigationController.isNavigationBarHidden = true
         return navigationController
     }
     
-    public func getWriteDetailViewController(
-        location: LocationResponse,
-        address: String,
-        onSuccessWrite: @escaping ((Int) -> ())
-    ) -> UIViewController {
-        let config = WriteDetailViewModel.WriteConfig(location: location, address: address)
-        let viewModel = WriteDetailViewModel(config: config)
-        let viewController = WriteDetailViewController(viewModel: viewModel)
-        
-        viewController.onSuccessWrite = { storeId in
-            onSuccessWrite(storeId)
-        }
-        
-        return viewController
+    public func createEditStoreViewModel(config: EditStoreViewModelConfig) -> EditStoreViewModelInterface {
+        return EditStoreViewModel(config: config)
     }
     
-    public func getEditDetailViewController(
-        storeId: Int,
-        storeDetailData: StoreDetailData,
-        onSuccessEdit: @escaping ((UserStoreCreateResponse) -> ())
-    ) -> UIViewController {
-        let config = WriteDetailViewModel.EditConfig(storeId: storeId, storeDetailData: storeDetailData)
-        let viewModel = WriteDetailViewModel(config: config)
-        let viewController = WriteDetailViewController(viewModel: viewModel)
-        
-        viewController.onSuccessEdit = { storeCreateResponse in
-            onSuccessEdit(storeCreateResponse)
+    public func createEditStoreViewController(viewModel: EditStoreViewModelInterface) -> UIViewController {
+        guard let viewModel = viewModel as? EditStoreViewModel else {
+            return UIViewController(nibName: nil, bundle: nil)
         }
         
-        return viewController
+        return EditStoreViewController(viewModel: viewModel)
     }
 }
 

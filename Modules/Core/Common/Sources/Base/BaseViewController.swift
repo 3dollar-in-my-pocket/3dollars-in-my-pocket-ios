@@ -29,8 +29,14 @@ open class BaseViewController: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         
-        sendPageView()
+        
         addBackButtonIfNeeded()
+    }
+    
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        sendPageView()
     }
     
     open func bindEvent() { }
@@ -128,6 +134,7 @@ open class BaseViewController: UIViewController {
                 target: self,
                 action: #selector(didTapBack)
             )
+            backButtonItem.tintColor = DesignSystemAsset.Colors.gray100.color
             navigationItem.setAutoInsetLeftBarButtonItem(backButtonItem)
         }
     }

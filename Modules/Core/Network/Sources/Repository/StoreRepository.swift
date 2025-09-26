@@ -4,11 +4,7 @@ import CoreLocation
 import Model
 
 public protocol StoreRepository {
-    func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<IsStoresExistedAroundResponse, Error>
-    
-    func createStore(input: StoreCreateRequestInput) async -> Result<UserStoreCreateResponse, Error>
-    
-    func editStore(storeId: Int, input: EditStoreRequestInput) async -> Result<UserStoreCreateResponse, Error>
+    func createStore(input: UserStoreCreateRequestV3, nonceToken: String) async -> Result<UserStoreResponse, Error>
     
     func fetchAroundStores(input: FetchAroundStoreInput) async -> Result<ContentsWithCursorResponse<StoreWithExtraResponse>, Error>
     
@@ -37,25 +33,15 @@ public protocol StoreRepository {
     func existsFeedbackOnDateByAccount(storeId: Int) async -> Result<FeedbackExistsResponse, Error>
     
     func fetchStore(input: FetchStoreInput) async -> Result<StoreDetailResponse, Error>
+    
+    func patchStore(storeId: String, input: UserStorePatchRequestV3) async -> Result<UserStoreResponse, Error>
 }
 
 public struct StoreRepositoryImpl: StoreRepository {
     public init() { }
     
-    public func isStoresExistedAround(distance: Double, mapLocation: CLLocation) async -> Result<IsStoresExistedAroundResponse, Error> {
-        let request = StoreApi.isStoresExistedAround(distance: distance, mapLocation: mapLocation)
-        
-        return await NetworkManager.shared.request(requestType: request)
-    }
-    
-    public func createStore(input: StoreCreateRequestInput) async -> Result<UserStoreCreateResponse, Error> {
-        let request = StoreApi.createStore(input: input)
-        
-        return await NetworkManager.shared.request(requestType: request)
-    }
-    
-    public func editStore(storeId: Int, input: EditStoreRequestInput) async -> Result<UserStoreCreateResponse, Error> {
-        let request = StoreApi.editStore(storeId: storeId, input: input)
+    public func createStore(input: UserStoreCreateRequestV3, nonceToken: String) async -> Result<UserStoreResponse, Error> {
+        let request = StoreApi.createStore(input: input, nonceToken: nonceToken)
         
         return await NetworkManager.shared.request(requestType: request)
     }
@@ -140,6 +126,12 @@ public struct StoreRepositoryImpl: StoreRepository {
     
     public func fetchStore(input: FetchStoreInput) async -> Result<StoreDetailResponse, Error> {
         let request = StoreApi.fetchStore(input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func patchStore(storeId: String, input: UserStorePatchRequestV3) async -> Result<UserStoreResponse, Error> {
+        let request = StoreApi.patchStore(storeId: storeId, input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }

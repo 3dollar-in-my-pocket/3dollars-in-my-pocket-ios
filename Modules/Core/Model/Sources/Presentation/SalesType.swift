@@ -4,6 +4,7 @@ public enum SalesType: String, Hashable, Codable {
     case road = "ROAD"
     case store = "STORE"
     case convenienceStore = "CONVENIENCE_STORE"
+    case foodTruck = "FOOD_TRUCK"
     case unknown
     
     public init?(value: String?) {
@@ -23,7 +24,8 @@ public enum SalesType: String, Hashable, Codable {
         case .road: return 0
         case .store: return 1
         case .convenienceStore: return 2
-        case .unknown: return 3
+        case .foodTruck: return 3
+        case .unknown: return 4
         }
     }
 }

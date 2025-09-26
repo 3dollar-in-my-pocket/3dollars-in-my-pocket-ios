@@ -8,14 +8,51 @@
 
 
 // 가게 제보 주소 화면
-"write_address_title" = "가게 제보";
-"write_address_bottom_title" = "맛집 위치는 바로 여기!";
-"write_address_button" = "이 위치로 하기";
+"write_address.title" = "가게 제보";
+"write_address.button" = "현위치로 가게 제보";
+"write_address.boss_description" = "👩‍🍳 혹시 제보할 가게의 사장님이라면?";
+"write_address.boss_button" = "더 편하게 가게 관리하기";
+
+// 가게 제보 취소 모달
+"write_close_modal.title" = "다음에 할까요?";
+"write_close_modal.description" = "지금까지 입력한 정보가 저장되지 않아요.";
+"write_close_modal.cancel" = "닫기";
+"write_close_modal.dismiss" = "나가기";
+
+// 사장님 가게 유도 바텀 시트
+"boss_app_bottom_sheet.title" = "사장님 앱을 설치하고\n더 편하게 가게를 관리해 보세요";
+"boss_app_bottom_sheet.description" = "아래의 기능을 모두 무료로 만나볼 수 있어요";
+"boss_app_bottom_sheet.green_description" = "모두 무료로";
+"boss_app_bottom_sheet.feature.message" = "💌 단골 손님에게 메세지 보내기";
+"boss_app_bottom_sheet.feature.information" = "✏️ 가게 정보 관리하기";
+"boss_app_bottom_sheet.feature.notice" = "📢 가게 소식 공지하기";
+"boss_app_bottom_sheet.feature.review" = "🗳️ 리뷰 관리하기";
+"boss_app_bottom_sheet.feature.live" = "🚚 실시간 가게 영업 정보 관리하기";
+"boss_app_bottom_sheet.install" = "사장님 앱 설치하기";
 
 // 가게 제보 중복 바텀 시트
-"write_address_confirm_popup_title" = "10m이내에 이미 제보된\n가게가 있어요! ";
-"write_address_confirm_popup_description" = "중복된 가게 제보인지 확인해 주세요.";
-"write_address_confirm_popup_ok" = "여기가 확실해요";
+"address_confirm_bottom_sheet.title_format" = "50m 이내에 이미 등록된 %d개의\n가게가 있어요";
+"address_confirm_bottom_sheet.near_store" = "근처 가게";
+"address_confirm_bottom_sheet.confirm_button" = "이 장소가 확실해요";
+"address_confirm_bottom_sheet.more_format" = "외 %d개";
+"address_confirm_bottom_sheet.boss_directly" = "사장님 직영";
+
+
+// WriteDetailInfo
+"write_detail_info.title" = "가게 제보";
+"write_detail_info.sub_title" = "가게 정보 입력";
+"write_detail_info.description" = "지금 당장 가게 이름을 알 수 없다면, 근처의 랜드마크와 함께 입력해 보세요.";
+"write_detail_info.name_text_field.title" = "가게 이름";
+"write_detail_info.name_text_field.placeholder" = "봉어빵역 2번 출구 삼거리 근처 붕어빵 집";
+"write_detail_info.store_type.title" = "가게형태";
+"write_detail_info.store_type.road" = "길거리";
+"write_detail_info.store_type.store" = "매장";
+"write_detail_info.store_type.food_truck" = "푸드트럭";
+"write_detail_info.store_type.convience" = "편의점";
+"write_detail_info.next" = "다음";
+"write_detail_info.toast.need_store_name" = "가게 이름을 입력해주세요.";
+"write_detail_info.address_field.title" = "가게 위치 확인";
+"write_detail_info.address_field.change" = "위치 변경";
 
 // 가게 제보 상세화면
 "write_detail_title" = "가게 제보";
@@ -44,3 +81,78 @@
 "category_selection_title" = "카테고리 선택";
 "category_selection_multi" = "* 다중선택 가능";
 "category_selection_ok" = "카테고리 선택 완료";
+
+// WriteComplete
+"write_complete.finish_writing" = "작성 완료";
+"write_complete.title" = "새로운 길거리 음식점을\n제보했어요";
+"write_complete.description" = "이 업체에 대해 더 알려주세요!";
+"write_complete.add_menu.title" = "메뉴 상세 정보 추가하기";
+"write_complete.add_menu.description" = "메뉴명 ∙ 메뉴 가격";
+"write_complete.add_info.title" = "가게 세부 정보 추가하기";
+"write_complete.add_info.description" = "가게 형태 ∙ 결제 방식 ∙ 출몰 요일 ∙ 출몰 시간대";
+"write_complete.finish" = "완료";
+
+// WriteAdditionalInfo
+"write_additional_info.navigation.title.normal" = "가게 제보";
+"write_additional_info.navigation.title.after_created" = "가게 상세 정보";
+"write_additional_info.title" = "가게 상세 정보 추가 선택";
+"write_additional_info.title_smaller_range" = "선택";
+"write_additional_info.description" = "가게 세부 정보를 입력하고 더 알찬 정보를 제공해 보세요";
+"write_additional_info.skip" = "건너뛰기";
+"write_additional_info.finish.after_created" = "작성 완료";
+"write_additional_info.finish.normal" = "제보완료";
+"write_additional_info.appearance_days.title" = "출몰 요일";
+"write_additional_info.appearance_days.description" = "*다중선택 가능";
+"write_additional_info.monday" = "월";
+"write_additional_info.tuesday" = "화";
+"write_additional_info.wednesday" = "수";
+"write_additional_info.thursday" = "목";
+"write_additional_info.friday" = "금";
+"write_additional_info.saturday" = "토";
+"write_additional_info.sunday" = "일";
+"write_additional_info.opening_hours.done" = "완료";
+"write_additional_info.opening_hours.cancel" = "취소";
+"write_additional_info.opening_hours.date_format" = "a h시";
+"write_additional_info.opening_hours.title" = "출몰 시간대";
+"write_additional_info.opening_hours.start_time_placeholder" = "오전 11시";
+"write_additional_info.opening_hours.separator" = "부터";
+"write_additional_info.opening_hours.end_time_placeholder" = "오후 8시";
+"write_additional_info.opening_hours.until" = "까지";
+"write_additional_info.payment_method.title" = "결제 방식";
+"write_additional_info.payment_method.description" = "*다중선택 가능";
+"write_additional_info.payment_method.cash" = "현금";
+"write_additional_info.payment_method.transfer" = "계좌이체";
+"write_additional_info.payment_method.card" = "카드";
+
+// WriteDetailCategory
+"write_detail_category.title" = "음식 카테고리 선택";
+"write_detail_category.navigation.title" = "가게 제보";
+"write_detail_category.toast.need_category" = "1개 이상의 음식 카테고리를 선택해주세요";
+
+// WriteDetailCategoryBottomSheet
+"write_detail_category_bottom_sheet.title" = "추가할 카테고리를 선택해 주세요";
+"write_detail_category_bottom_sheet.edit" = "수정 완료";
+"write_detail_category_bottom_sheet.toast.need_category" = "1개 이상의 음식 카테고리를 선택해주세요";
+
+// WriteDetailMenu
+"write_detail_menu.menu.title_format" = "메뉴 %d";
+"write_detail_menu.menu.name_placeholder" = "슈크림 붕어빵";
+"write_detail_menu.menu.quantity_placeholder" = "1";
+"write_detail_menu.menu.quantity" = "개";
+"write_detail_menu.menu.price_placeholder" = "1,000";
+"write_detail_menu.menu.price" = "원";
+"write_detail_menu.edit_category" = "카테고리 수정";
+"write_detail_menu.title" = "메뉴 상세 정보 추가 선택";
+"write_detail_menu.title_small_range" = "선택";
+"write_detail_menu.category" = "음식 카테고리";
+"write_detail_menu.add_menu" = "메뉴 추가";
+"write_detail_menu.skip" = "건너뛰기";
+"write_detail_menu.finish" = "작성 완료";
+"write_detail_menu.next" = "다음";
+"write_detail_menu.navigation.title.after_created" = "메뉴 상세 정보";
+"write_detail_menu.navigation.title.normal" = "가게 제보";
+"write_detail_menu.toast.validate_price" = "최소 가격은 1원 이상 입력해주세요";
+"write_detail_menu.toast.validate_menu" = "최소 수량은 1개 이상 입력해주세요";
+
+// WriteNavigation
+"write_navigation.toast.need_data" = "필수 데이터가 입력되지 않았어요. 다시 시도해주세요.";

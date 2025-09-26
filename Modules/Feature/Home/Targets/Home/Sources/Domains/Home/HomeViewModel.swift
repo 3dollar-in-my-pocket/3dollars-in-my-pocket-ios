@@ -183,6 +183,7 @@ final class HomeViewModel: BaseViewModel {
             .sink(receiveValue: { (owner: HomeViewModel, location: CLLocation) in
                 owner.state.resultCameraPosition = location
                 owner.state.currentLocation = owner.state.resultCameraPosition
+                owner.state.newCameraPosition = location
                 owner.output.cameraPosition.send(location)
                 owner.dependency.preference.userCurrentLocation = location
                 owner.fetchHomeCards()

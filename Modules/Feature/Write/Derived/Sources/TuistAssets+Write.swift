@@ -21,7 +21,15 @@
 
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum WriteAsset: Sendable {
+  public static let icSettingFill = WriteImages(name: "ic_setting_fill")
+  public static let iconCheck = WriteImages(name: "icon_check")
+  public static let iconClap = WriteImages(name: "icon_clap")
+  public static let iconClose = WriteImages(name: "icon_close")
   public static let iconDistanceIndicator = WriteImages(name: "icon_distance_indicator")
+  public static let iconForkKnife = WriteImages(name: "icon_fork_knife")
+  public static let iconGreenCheck = WriteImages(name: "icon_green_check")
+  public static let iconMap = WriteImages(name: "icon_map")
+  public static let iconMegaphone = WriteImages(name: "icon_megaphone")
   public static let iconNewBadge = WriteImages(name: "icon_new_badge")
   public static let imageFailVisit = WriteImages(name: "image_fail_visit")
   public static let imageSuccessVisit = WriteImages(name: "image_success_visit")

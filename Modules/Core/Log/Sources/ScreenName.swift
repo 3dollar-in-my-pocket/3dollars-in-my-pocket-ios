@@ -23,8 +23,16 @@ public enum ScreenName: String {
     case writeAddress = "write_address"
     case writeAddressPopup = "write_address_popop"
     case writeAddressDetail = "write_address_detail"
-    
+    case writeAddressBossBottomSheet = "write_address_boss_bottom_sheet"
+    case writeDetailComplete = "write_detail_complete"
+    case writeDetailAdditionalInfo = "write_detail_additional_info"
+    case writeDetailCategory = "write_detail_category"
+    case writeDetailCategoryBottomSheet = "write_detail_category_botom_sheet"
+    case writeDetailInfo = "write_detail_info"
+    case writeDetailMenu = "write_detail_menu"
     case categorySelection = "category_selection"
+    case editStore = "edit_store"
+    case editStoreInfo = "edit_store_info"
     
     /// Store
     case storeDetail = "store_detail"
