@@ -158,13 +158,12 @@ final class StoreDetailInfoCell: BaseCollectionViewCell {
         switch type {
         case .road:
             salesType = Strings.StoreDetail.Info.SalesType.road
-            
         case .store:
             salesType = Strings.StoreDetail.Info.SalesType.store
-            
         case .convenienceStore:
             salesType = Strings.StoreDetail.Info.SalesType.convenienceStore
-            
+        case .foodTruck:
+            salesType = Strings.StoreDetail.Info.SalesType.foodTruck
         default:
             salesType = "-"
         }

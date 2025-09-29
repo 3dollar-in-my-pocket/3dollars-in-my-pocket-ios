@@ -4,7 +4,7 @@ public struct UserStoreCreateRequestV3: Encodable {
     public let latitude: Double
     public let longitude: Double
     public let storeName: String
-    public let storeType: SalesType?
+    public let salesType: SalesType?
     public let appearanceDays: [AppearanceDay]
     public let openingHours: StoreOpeningHours?
     public let paymentMethods: [PaymentMethod]
@@ -15,7 +15,7 @@ public struct UserStoreCreateRequestV3: Encodable {
         latitude: Double,
         longitude: Double,
         storeName: String,
-        storeType: SalesType?,
+        salesType: SalesType?,
         appearanceDays: [AppearanceDay],
         openingHours: StoreOpeningHours?,
         paymentMethods: [PaymentMethod],
@@ -25,7 +25,7 @@ public struct UserStoreCreateRequestV3: Encodable {
         self.latitude = latitude
         self.longitude = longitude
         self.storeName = storeName
-        self.storeType = storeType
+        self.salesType = salesType
         self.appearanceDays = appearanceDays
         self.openingHours = openingHours
         self.paymentMethods = paymentMethods
