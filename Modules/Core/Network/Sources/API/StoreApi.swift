@@ -9,9 +9,7 @@ enum StoreApi {
     case togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest)
     case fetchAroundStores(input: FetchAroundStoreInput)
     case fetchStoreDetail(input: FetchStoreDetailInput)
-    case createStore(input: StoreCreateRequestInput)
-    case editStore(storeId: Int, input: EditStoreRequestInput)
-    case isStoresExistedAround(distance: Double, mapLocation: CLLocation)
+    case createStore(input: UserStoreCreateRequestV3, nonceToken: String)
     case saveStore(storeId: String, isDelete: Bool)
     case reportStore(storeId: Int, reportReason: String)
     case writeReview(input: WriteReviewRequestInput)
@@ -20,6 +18,7 @@ enum StoreApi {
     case deletePhoto(photoId: Int)
     case existsFeedbackOnDateByAccount(storeId: Int)
     case fetchStore(input: FetchStoreInput)
+    case patchStore(storeId: String, input: UserStorePatchRequestV3)
 }
 
 extension StoreApi: RequestType {
@@ -35,16 +34,8 @@ extension StoreApi: RequestType {
             return input
         case .fetchStoreDetail(let input):
             return input
-        case .createStore(let input):
+        case .createStore(let input, _):
             return input
-        case .editStore(_, let input):
-            return input
-        case .isStoresExistedAround(let distance, let mapLocation):
-            return [
-                "distance": distance,
-                "mapLatitude": mapLocation.coordinate.latitude,
-                "mapLongitude": mapLocation.coordinate.longitude
-            ]
         case .saveStore:
             return nil
         case .reportStore(_, let reportReason):
@@ -67,6 +58,8 @@ extension StoreApi: RequestType {
             return nil
         case .fetchStore(let input):
             return ["includes": input.includes]
+        case .patchStore(_, let input):
+            return input
         }
     }
     
@@ -84,10 +77,6 @@ extension StoreApi: RequestType {
             return .get
         case .createStore:
             return .post
-        case .editStore:
-            return .put
-        case .isStoresExistedAround:
-            return .get
         case .saveStore(_, let isDelete):
             return isDelete ? .delete : .put
         case .reportStore:
@@ -104,6 +93,8 @@ extension StoreApi: RequestType {
             return .get
         case .fetchStore:
             return .get
+        case .patchStore:
+            return .patch
         }
     }
     
@@ -122,12 +113,8 @@ extension StoreApi: RequestType {
             return .location
         case .fetchStoreDetail:
             return .location
-        case .createStore:
-            return .json
-        case .editStore:
-            return .json
-        case .isStoresExistedAround:
-            return .json
+        case .createStore(_, let token):
+            return .custom(["X-Nonce-Token": token])
         case .saveStore:
             return .json
         case .reportStore:
@@ -144,6 +131,8 @@ extension StoreApi: RequestType {
             return .json
         case .fetchStore:
             return .location
+        case .patchStore:
+            return .json
         }
     }
     
@@ -160,11 +149,7 @@ extension StoreApi: RequestType {
         case .fetchStoreDetail(let input):
             return "/api/v4/store/\(input.storeId)"
         case .createStore:
-            return "/api/v2/store"
-        case .editStore(let storeId, _):
-            return "/api/v2/store/\(storeId)"
-        case .isStoresExistedAround:
-            return "/api/v1/stores/near/exists"
+            return "/api/v3/store"
         case .saveStore(let storeId, _):
             return "/api/v2/store/\(storeId)/favorite"
         case .reportStore(let storeId, _):
@@ -181,6 +166,8 @@ extension StoreApi: RequestType {
             return "/api/v1/feedback/STORE/target/\(storeId)/exists"
         case .fetchStore(let input):
             return "/api/v5/store/\(input.storeId)"
+        case .patchStore(let storeId, _):
+            return "/api/v3/store/\(storeId)"
         }
     }
 }

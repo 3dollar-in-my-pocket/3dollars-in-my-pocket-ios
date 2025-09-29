@@ -54,9 +54,8 @@ final class StoreDetailMenuStackItemView: BaseView {
     }
     
     func bind(_ menu: StoreDetailMenu) {
-        
         nameLabel.text = menu.name
-        priceLabel.text = menu.price
+        priceLabel.text = menu.description
     }
     
     private func drawDash() {
