@@ -209,6 +209,8 @@ extension MyPageViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: collectionView.frame.width, height: MyPagePollTotalParticipantsCountCell.Layout.height)
         case .poll:
             return CGSize(width: collectionView.frame.width, height: MyPagePollItemCell.Layout.height)
+        case .coupon(let viewModel):
+            return CGSize(width: collectionView.frame.width, height: MyPageStoreListCell.Layout.height(viewModel.output.items))
         case .none:
             return .zero
         }
@@ -216,7 +218,7 @@ extension MyPageViewController: UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         switch dataSource.sectionIdentifier(section: section)?.type {
-        case .visitStore, .favoriteStore, .poll:
+        case .visitStore, .favoriteStore, .poll, .coupon:
             return CGSize(width: collectionView.frame.width, height: MyPageSectionHeaderView.Layout.height)  
         default:
             return .zero

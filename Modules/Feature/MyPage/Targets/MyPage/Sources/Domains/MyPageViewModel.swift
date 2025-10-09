@@ -55,6 +55,7 @@ final class MyPageViewModel: BaseViewModel {
     private lazy var visitStoreHeaderViewModel = bindHeaderViewModel(.visitStore)
     private lazy var favoriteStoreHeaderViewModel = bindHeaderViewModel(.favoriteStore)
     private lazy var pollHeaderViewModel = bindHeaderViewModel(.poll)
+    private lazy var couponStoreHeaderViewModel = bindHeaderViewModel(.coupon)
 
     init(
         myPageRepository: MyPageRepository = MyPageRepositoryImpl(),
@@ -153,6 +154,15 @@ final class MyPageViewModel: BaseViewModel {
                 )
             )
         }
+        
+        // 쿠폰
+        sections.append(
+            MyPageSection(
+                type: .coupon,
+                items: [.empty(.coupon)],
+                headerViewModel: couponStoreHeaderViewModel
+            )
+        )
         
         // 방문한 가게
         let visitStores = state.visitStores.value

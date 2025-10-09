@@ -9,6 +9,7 @@ extension MyPageStoreListCellViewModel {
     enum SectionType {
         case visit
         case favorite
+        case coupon
     }
     
     struct Input {
@@ -84,6 +85,8 @@ private extension MyPageStoreListCellViewModel {
             eventName = .clickVisitedStore
         case .favorite:
             eventName = .clickFavoritedStore
+        case .coupon:
+            eventName = .clickFavoritedStore // TODO 수정
         }
         logManager.sendEvent(.init(screen: output.screenName, eventName: eventName, extraParameters: [
             .storeId: store.id,

@@ -183,6 +183,9 @@ final class BossStoreDetailViewController: BaseViewController {
                 case .pushFeedbackList(let data):
                     let viewController = BossStoreFeedbackListViewController.instance(data)
                     owner.navigationController?.pushViewController(viewController, animated: true)
+                case .presentUseCoupon(let viewModel):
+                    let viewController = BossStoreCouponBottomSheetViewController(viewModel: viewModel)
+                    owner.presentPanModal(viewController)
                 }
             }
             .store(in: &cancellables)
@@ -309,6 +312,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: BossStoreDetailReviewFeedbackSummaryCell.Layout.height(viewModel))
         case .filteredReview:
             return CGSize(width: width, height: 76)
+        case .coupon(let viewModel):
+            return BossStoreCouponCell.Layout.size(width: containerWidth, viewModel: viewModel)
         default:
             return .zero
         }
@@ -317,6 +322,7 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         switch dataSource.sectionIdentifier(section: section)?.type {
         case .review: return CGSize(width: collectionView.frame.width, height: 40)
+        case .coupons: return CGSize(width: collectionView.frame.width, height: 40)
         default: return .zero
         }
     }

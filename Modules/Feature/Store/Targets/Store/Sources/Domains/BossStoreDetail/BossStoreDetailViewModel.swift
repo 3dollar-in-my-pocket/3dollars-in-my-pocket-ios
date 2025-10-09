@@ -75,6 +75,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case presentReportBottomSheetReview(ReportReviewBottomSheetViewModel)
         case pushReviewList(ReviewListViewModel)
         case pushFeedbackList(BossStoreFeedbackListViewModel)
+        case presentUseCoupon(BossStoreCouponBottomSheetViewModel)
+        case pushCouponList
     }
 
     let input = Input()
@@ -250,18 +252,21 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
     private func reloadDataSource() {
         guard let storeDetailData = state.storeDetailData else { return }
+        
+        var sections: [BossStoreDetailSection] = [.init(type: .overview, items: [.overview(bindOverviewCellViewModel(storeDetailData.overview))])]
 
+        if storeDetailData.coupons.isNotEmpty {
+            let couponItems: [BossStoreDetailSectionItem] = storeDetailData.coupons.map { .coupon(bindCouponCellViewModel($0)) }
+            sections.append(.init(type: .coupons(bindCouponHeaderViewModel()), items: couponItems))
+        }
+        
         var infoItems: [BossStoreDetailSectionItem] = [.info(bindInfoCellViewModel(storeDetailData.info))]
         if storeDetailData.store.menus.isEmpty {
             infoItems.append(.emptyMenu)
         } else {
             infoItems.append(.menuList(bindMenuListCellViewModel(with: storeDetailData.menus)))
         }
-        
-        var sections: [BossStoreDetailSection] = [
-            .init(type: .overview, items: [.overview(bindOverviewCellViewModel(storeDetailData.overview))]),
-            .init(type: .info, items: infoItems)
-        ]
+        sections.append(.init(type: .info, items: infoItems))
         
         if let post = storeDetailData.post,
            let totalPostCount = storeDetailData.totalPostCount {
@@ -291,6 +296,54 @@ final class BossStoreDetailViewModel: BaseViewModel {
         viewModel.output.didTapPhoto
             .subscribe(input.didTapPhoto)
             .store(in: &viewModel.cancellables)
+        return viewModel
+    }
+    
+    private func bindCouponHeaderViewModel() -> BossStoreDetailCouponHeaderViewModel {
+        let viewModel = BossStoreDetailCouponHeaderViewModel()
+        
+        viewModel.output.moveToCouponList
+            .map {
+                return .pushCouponList
+            }
+            .subscribe(output.route)
+            .store(in: &viewModel.cancellables)
+        
+        return viewModel
+    }
+    
+    private func bindCouponCellViewModel(_ coupon: StoreCouponSimpleResponse) -> BossStoreCouponViewModel {
+        let config = BossStoreCouponViewModel.Config(storeId: storeId, data: coupon, sourceType: .storeDetail)
+        let viewModel = BossStoreCouponViewModel(config: config)
+        
+        viewModel.output.showLoading
+            .subscribe(output.showLoading)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.showToast
+            .subscribe(output.toast)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.moveToUseCoupon
+            .withUnretained(self)
+            .map { owner, coupon in
+                let viewModel = owner.bindStoreCouponBottomSheetViewModel(coupon)
+                return .presentUseCoupon(viewModel)
+            }
+            .subscribe(output.route)
+            .store(in: &viewModel.cancellables)
+        
+        return viewModel
+    }
+    
+    private func bindStoreCouponBottomSheetViewModel(_ data: StoreCouponSimpleResponse) -> BossStoreCouponBottomSheetViewModel {
+        let config = BossStoreCouponBottomSheetViewModel.Config(storeId: storeId, coupon: data)
+        let viewModel = BossStoreCouponBottomSheetViewModel(config: config)
+        
+        viewModel.output.reloadCouponList
+            .subscribe(input.reload)
+            .store(in: &viewModel.cancellables)
+        
         return viewModel
     }
 

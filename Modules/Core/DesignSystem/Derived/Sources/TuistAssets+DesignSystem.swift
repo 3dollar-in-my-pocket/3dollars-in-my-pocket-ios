@@ -15,11 +15,8 @@
   import SwiftUI
 #endif
 
-// swiftlint:disable superfluous_disable_command file_length implicit_return
-
 // MARK: - Asset Catalogs
 
-// swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum DesignSystemAsset: Sendable {
   public enum Colors {
   public static let gray0 = DesignSystemColors(name: "gray0")
@@ -74,6 +71,7 @@ public enum DesignSystemAsset: Sendable {
     public static let delete = DesignSystemImages(name: "delete")
     public static let deleteX = DesignSystemImages(name: "delete_x")
     public static let deletion = DesignSystemImages(name: "deletion")
+    public static let download = DesignSystemImages(name: "download")
     public static let empty02 = DesignSystemImages(name: "empty_02")
     public static let empty100 = DesignSystemImages(name: "empty_100")
     public static let faceSad = DesignSystemImages(name: "face.sad")
@@ -92,7 +90,9 @@ public enum DesignSystemAsset: Sendable {
     public static let locationLine = DesignSystemImages(name: "location.line")
     public static let locationSolid = DesignSystemImages(name: "location.solid")
     public static let map = DesignSystemImages(name: "map")
+    public static let mappinUnfocusedCoupon = DesignSystemImages(name: "mappin.unfocused.coupon")
     public static let mappinUnfocused = DesignSystemImages(name: "mappin.unfocused")
+    public static let markerFocuesdCoupon = DesignSystemImages(name: "marker.focuesd.coupon")
     public static let markerFocuesd = DesignSystemImages(name: "marker.focuesd")
     public static let markerUnfocused = DesignSystemImages(name: "marker.unfocused")
     public static let myLine = DesignSystemImages(name: "my.line")
@@ -109,7 +109,6 @@ public enum DesignSystemAsset: Sendable {
     public static let zoom = DesignSystemImages(name: "zoom")
   }
 }
-// swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
 // MARK: - Implementation Details
 
@@ -218,5 +217,5 @@ public extension SwiftUI.Image {
 }
 #endif
 
-// swiftlint:enable all
 // swiftformat:enable all
+// swiftlint:enable all
