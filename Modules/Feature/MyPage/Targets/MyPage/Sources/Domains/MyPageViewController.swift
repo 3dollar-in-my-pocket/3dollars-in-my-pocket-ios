@@ -165,6 +165,10 @@ public final class MyPageViewController: BaseViewController {
                 case .bossStoreDetail(let storeId): Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
                 case .favoriteStore: BookmarkListViewController()
                 case .pollDetail(let pollId): Environment.communityInterface.getPollDetailViewController(pollId: pollId)
+                case .myCoupons:
+                    Environment.storeInterface.getCouponListViewController(onReload: { [weak self] in
+                        self?.viewModel.input.reloadTrigger.send()
+                    })
                 }
                 owner.navigationController?.pushViewController(vc, animated: true)
             }

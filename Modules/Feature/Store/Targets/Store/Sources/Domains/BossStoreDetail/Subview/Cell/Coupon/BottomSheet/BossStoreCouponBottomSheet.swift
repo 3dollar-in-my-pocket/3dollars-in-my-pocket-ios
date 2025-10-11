@@ -59,7 +59,6 @@ final class BossStoreCouponBottomSheet: BaseView {
         couponView.snp.makeConstraints {
             $0.top.equalTo(descriptionLabel.snp.bottom).offset(24)
             $0.leading.trailing.equalToSuperview().inset(24)
-            $0.height.equalTo(118)
         }
         
         closeButton.snp.makeConstraints {

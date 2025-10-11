@@ -30,6 +30,7 @@ final class BossStoreCouponViewModel: BaseViewModel {
         let deadline: String?
         let couponStatus: CurrentValueSubject<CouponStatus, Never>
         let isRightViewHidden: Bool
+        let store: PlatformStore?
         
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
@@ -74,12 +75,19 @@ final class BossStoreCouponViewModel: BaseViewModel {
             }
         }()
         
+        let store: PlatformStore? = {
+            guard let storeResponse = config.data.store else { return nil }
+           
+            return PlatformStore(response: storeResponse)
+        }()
+        
         self.output = Output(
             title: config.data.name,
             date: "\(startDate) ~ \(endDate)",
             deadline: deadline,
             couponStatus: .init(couponStatus),
-            isRightViewHidden: config.sourceType == .useCoupon
+            isRightViewHidden: config.sourceType == .useCoupon,
+            store: store
         )
         
         self.logManager = logManager

@@ -78,6 +78,7 @@ final class BossStoreCouponBottomSheetViewModel: BaseViewModel {
             switch result {
             case .success:
                 output.showLoading.send(false)
+                output.reloadCouponList.send()
                 output.showToast.send("쿠폰을 사용했어요!")
                 output.route.send(.dismiss)
             case .failure(let error):

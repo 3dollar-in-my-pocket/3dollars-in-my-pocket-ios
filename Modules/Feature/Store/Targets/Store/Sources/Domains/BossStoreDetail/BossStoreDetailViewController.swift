@@ -186,6 +186,9 @@ final class BossStoreDetailViewController: BaseViewController {
                 case .presentUseCoupon(let viewModel):
                     let viewController = BossStoreCouponBottomSheetViewController(viewModel: viewModel)
                     owner.presentPanModal(viewController)
+                case .pushCouponList(let viewModel):
+                    let viewController = CouponTabViewController(viewModel: viewModel)
+                    owner.navigationController?.pushViewController(viewController, animated: true)
                 }
             }
             .store(in: &cancellables)

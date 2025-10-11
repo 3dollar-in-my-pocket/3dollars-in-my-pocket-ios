@@ -1,11 +1,11 @@
 public struct MyPageStore {
     public let store: PlatformStore
     public let visitInfo: VisitInfo?
-    public let coupon: PlatformStore
+    public let coupon: StoreCouponSimpleResponse?
 
-    public init(storeResponse: StoreResponse, visitResponse: StoreVisitResponse? = nil) {
+    public init(storeResponse: StoreResponse, visitResponse: StoreVisitResponse? = nil, couponResponse: StoreCouponSimpleResponse? = nil) {
         store = PlatformStore(response: storeResponse)
-        coupon = PlatformStore(response: storeResponse)
+        coupon = couponResponse
         if let visitResponse {
             visitInfo = VisitInfo(response: visitResponse)
         } else {

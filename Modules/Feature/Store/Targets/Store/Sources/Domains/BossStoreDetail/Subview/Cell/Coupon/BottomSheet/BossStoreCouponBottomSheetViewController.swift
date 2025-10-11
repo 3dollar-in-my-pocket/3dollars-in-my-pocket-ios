@@ -101,11 +101,11 @@ extension BossStoreCouponBottomSheetViewController: PanModalPresentable {
     }
     
     var shortFormHeight: PanModalHeight {
-        return .contentHeight(375 - UIUtils.bottomSafeAreaInset)
+        return .contentHeight(380)
     }
     
     var longFormHeight: PanModalHeight {
-        return .contentHeight(375 - UIUtils.bottomSafeAreaInset)
+        return .maxHeight
     }
     
     var cornerRadius: CGFloat {

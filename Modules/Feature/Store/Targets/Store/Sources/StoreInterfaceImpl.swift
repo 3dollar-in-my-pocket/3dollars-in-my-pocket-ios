@@ -37,6 +37,16 @@ public final class StoreInterfaceImpl: StoreInterface {
         
         return viewController
     }
+    
+    public func getCouponListViewController(onReload: @escaping (() -> Void)) -> UIViewController {
+        let viewModel = CouponTabViewModel()
+        viewModel.output.onReload
+            .sink { _ in
+                onReload()
+            }
+            .store(in: &viewModel.cancellables)
+        return CouponTabViewController(viewModel: viewModel)
+    }
 }
 
 public extension StoreInterfaceImpl {

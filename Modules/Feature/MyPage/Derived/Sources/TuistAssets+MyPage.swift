@@ -20,6 +20,7 @@
 public enum MyPageAsset: Sendable {
   public static let bgCloud = MyPageImages(name: "bg_cloud")
   public static let iconApple = MyPageImages(name: "icon_apple")
+  public static let iconCouponSolid = MyPageImages(name: "icon_coupon_solid")
   public static let iconDelete = MyPageImages(name: "icon_delete")
   public static let iconGoogle = MyPageImages(name: "icon_google")
   public static let iconInsta = MyPageImages(name: "icon_insta")

@@ -1,6 +1,12 @@
 import Model
 
 public struct GetMyIssuedCouponsInput: Encodable {
+    public enum Status: String {
+        case issued = "ISSUED"
+        case used = "USED"
+        case expired = "EXPIRED"
+    }
+    
     public let cursor: String?
     public let size: Int?
     public let sortBy: String
@@ -10,12 +16,12 @@ public struct GetMyIssuedCouponsInput: Encodable {
         cursor: String? = nil,
         size: Int? = 20,
         sortBy: String = "LATEST",
-        statuses: [String] = ["ISSUED", "USED", "EXPIRED"]
+        statuses: [Status]
     ) {
         self.cursor = cursor
         self.size = size
         self.sortBy = sortBy
-        self.statuses = statuses
+        self.statuses = statuses.map { $0.rawValue }
     }
 }
 

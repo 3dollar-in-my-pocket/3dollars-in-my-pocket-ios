@@ -9,4 +9,15 @@ public struct StoreCouponSimpleResponse: Decodable {
     public let name: String
     public let validityPeriod: DateTimeIntervalResponse
     public let issued: StoreCouponIssuedResponse?
+    public let store: StoreResponse?
+}
+
+extension StoreCouponSimpleResponse: Hashable, Equatable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(couponId)
+    }
+    
+    public static func == (lhs: StoreCouponSimpleResponse, rhs: StoreCouponSimpleResponse) -> Bool {
+        return lhs.couponId == rhs.couponId
+    }
 }

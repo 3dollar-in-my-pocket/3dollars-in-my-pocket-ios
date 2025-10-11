@@ -132,6 +132,7 @@ final class BossStoreCouponView: BaseView {
         
         deadlineLabel.text = viewModel.output.deadline
         titleLabel.text = viewModel.output.title
+        titleLabel.setLineHeight(lineHeight: 24)
         dateLabel.text = viewModel.output.date
         rightIconImageView.isHidden = viewModel.output.isRightViewHidden
         rightButton.isHidden = viewModel.output.isRightViewHidden

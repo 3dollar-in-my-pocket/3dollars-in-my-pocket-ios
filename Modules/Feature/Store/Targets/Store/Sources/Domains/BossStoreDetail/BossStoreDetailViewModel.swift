@@ -76,7 +76,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case pushReviewList(ReviewListViewModel)
         case pushFeedbackList(BossStoreFeedbackListViewModel)
         case presentUseCoupon(BossStoreCouponBottomSheetViewModel)
-        case pushCouponList
+        case pushCouponList(CouponTabViewModel)
     }
 
     let input = Input()
@@ -303,8 +303,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
         let viewModel = BossStoreDetailCouponHeaderViewModel()
         
         viewModel.output.moveToCouponList
-            .map {
-                return .pushCouponList
+            .compactMap { [weak self] in
+                guard let self else { return nil }
+                
+                return .pushCouponList(bindCouponTabViewModel())
             }
             .subscribe(output.route)
             .store(in: &viewModel.cancellables)
@@ -344,6 +346,14 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .subscribe(input.reload)
             .store(in: &viewModel.cancellables)
         
+        return viewModel
+    }
+    
+    private func bindCouponTabViewModel() -> CouponTabViewModel {
+        let viewModel = CouponTabViewModel()
+        viewModel.output.onReload
+            .subscribe(input.reload)
+            .store(in: &viewModel.cancellables)
         return viewModel
     }
 

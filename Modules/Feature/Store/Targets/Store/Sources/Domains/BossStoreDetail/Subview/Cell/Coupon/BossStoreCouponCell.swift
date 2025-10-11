@@ -11,8 +11,6 @@ final class BossStoreCouponCell: BaseCollectionViewCell {
         static let estimatedHeight: CGFloat = 100
         static func size(width: CGFloat, viewModel: BossStoreCouponViewModel) -> CGSize {
             
-//            return CGSize(width: width, height: estimatedHeight)
-            
             sharedCell.bind(viewModel: viewModel)
             
             let size: CGSize = .init(width: width, height: UIView.layoutFittingCompressedSize.height)
