@@ -12,7 +12,7 @@ final class CouponListViewController: BaseViewController {
     }
     
     private let emptyView = CouponEmptyView().then {
-        $0.isHidden = true
+        $0.isHidden = false
         $0.bind(title: "아직 쿠폰이 없어요")
     }
 
@@ -60,7 +60,7 @@ final class CouponListViewController: BaseViewController {
             .withUnretained(self)
             .main
             .sink { owner, sections in
-                owner.emptyView.isHidden = sections.isNotEmpty
+                owner.emptyView.isHidden = sections.flatMap { $0.items }.isNotEmpty
                 owner.dataSource.reload(sections)
             }
             .store(in: &cancellables)

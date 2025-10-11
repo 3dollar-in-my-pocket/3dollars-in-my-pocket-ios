@@ -1,4 +1,7 @@
 import UIKit
+
+import SnapKit
+
 import Common
 import DesignSystem
 import Model
@@ -43,7 +46,7 @@ final class BossStoreCouponView: BaseView {
     }
     
     private let dashedBorderLineView = UIImageView().then {
-        $0.image = Assets.couponDot.image
+        $0.image = Assets.couponDot.image.withTintColor(UIColor(hex: "#BC4BD6")!)
     }
 
     private let deadlineLabel = PaddingLabel(
@@ -58,6 +61,8 @@ final class BossStoreCouponView: BaseView {
         $0.layer.cornerRadius = 13
         $0.clipsToBounds = true
     }
+    
+    private var contentViewTopConstraints: Constraint?
     
     override func setup() {
         super.setup()
@@ -106,7 +111,7 @@ final class BossStoreCouponView: BaseView {
             $0.top.bottom.trailing.equalToSuperview()
         }
         contentView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(18)
+            self.contentViewTopConstraints = $0.top.equalToSuperview().inset(18).constraint
             $0.leading.trailing.equalToSuperview()
             $0.bottom.lessThanOrEqualToSuperview()
         }
@@ -148,6 +153,7 @@ final class BossStoreCouponView: BaseView {
                     owner.titleLabel.textColor = Colors.gray80.color
                     owner.dateLabel.textColor = Colors.gray70.color
                     owner.deadlineLabel.isHidden = false
+                    owner.contentViewTopConstraints?.update(offset: 18)
                     if viewModel.output.isRightViewHidden.isNot {
                         owner.rightIconImageView.isHidden = false
                         owner.rightTextLabel.isHidden = true
@@ -157,6 +163,7 @@ final class BossStoreCouponView: BaseView {
                     owner.titleLabel.textColor = Colors.gray80.color
                     owner.dateLabel.textColor = Colors.gray70.color
                     owner.deadlineLabel.isHidden = false
+                    owner.contentViewTopConstraints?.update(offset: 18)
                     if viewModel.output.isRightViewHidden.isNot {
                         owner.rightIconImageView.isHidden = false
                         owner.rightTextLabel.isHidden = true
@@ -166,18 +173,34 @@ final class BossStoreCouponView: BaseView {
                     owner.titleLabel.textColor = Colors.gray60.color
                     owner.dateLabel.textColor = Colors.gray60.color
                     owner.deadlineLabel.isHidden = true
+                    owner.contentViewTopConstraints?.update(inset: 0)
                     if viewModel.output.isRightViewHidden.isNot {
                         owner.rightIconImageView.isHidden = true
                         owner.rightTextLabel.isHidden = false
+                    }
+                    if viewModel.output.fromMyCoupons {
+                        owner.dashedBorderLineView.image = Assets.couponDot.image.withTintColor(Colors.gray70.color)
+                        owner.backgroundImageView.image = Assets.couponBackgroundBlack.image
+                    } else {
+                        owner.backgroundImageView.image = Assets.couponBackground.image
+                        owner.dashedBorderLineView.image = Assets.couponDot.image.withTintColor(UIColor(hex: "#BC4BD6")!)
                     }
                 case .expired:
                     owner.rightTextLabel.text = "기간만료"
                     owner.titleLabel.textColor = Colors.gray60.color
                     owner.dateLabel.textColor = Colors.gray60.color
                     owner.deadlineLabel.isHidden = true
+                    owner.contentViewTopConstraints?.update(inset: 0)
                     if viewModel.output.isRightViewHidden.isNot {
                         owner.rightIconImageView.isHidden = true
                         owner.rightTextLabel.isHidden = false
+                    }
+                    if viewModel.output.fromMyCoupons {
+                        owner.dashedBorderLineView.image = Assets.couponDot.image.withTintColor(Colors.gray70.color)
+                        owner.backgroundImageView.image = Assets.couponBackgroundBlack.image
+                    } else {
+                        owner.backgroundImageView.image = Assets.couponBackground.image
+                        owner.dashedBorderLineView.image = Assets.couponDot.image.withTintColor(UIColor(hex: "#BC4BD6")!)
                     }
                 }
             }

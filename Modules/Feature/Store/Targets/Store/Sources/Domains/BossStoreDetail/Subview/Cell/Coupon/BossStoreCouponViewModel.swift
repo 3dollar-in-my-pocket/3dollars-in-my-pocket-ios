@@ -31,6 +31,7 @@ final class BossStoreCouponViewModel: BaseViewModel {
         let couponStatus: CurrentValueSubject<CouponStatus, Never>
         let isRightViewHidden: Bool
         let store: PlatformStore?
+        let fromMyCoupons: Bool
         
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
@@ -87,7 +88,8 @@ final class BossStoreCouponViewModel: BaseViewModel {
             deadline: deadline,
             couponStatus: .init(couponStatus),
             isRightViewHidden: config.sourceType == .useCoupon,
-            store: store
+            store: store,
+            fromMyCoupons: config.sourceType == .myCoupons
         )
         
         self.logManager = logManager
