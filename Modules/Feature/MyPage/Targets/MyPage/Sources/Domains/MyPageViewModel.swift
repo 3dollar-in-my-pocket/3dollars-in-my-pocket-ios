@@ -174,28 +174,6 @@ final class MyPageViewModel: BaseViewModel {
             )
         }
         
-        // 쿠폰
-        let coupons = state.coupons.value
-        let myPageStores: [MyPageStore] = coupons.compactMap { coupon in
-            guard let store = coupon.store else { return nil }
-            return MyPageStore(storeResponse: store, couponResponse: coupon)
-        }
-        
-        let couponSectionItem: MyPageSectionItem =
-            if myPageStores.isEmpty {
-                .empty(.coupon)
-            } else {
-                .coupon(bindStoreListCouponCellViewModel(with: myPageStores, sectionType: .coupon))
-            }
-        
-        sections.append(
-            MyPageSection(
-                type: .coupon,
-                items: [couponSectionItem],
-                headerViewModel: couponStoreHeaderViewModel
-            )
-        )
-        
         // 방문한 가게
         let visitStores = state.visitStores.value
         let visitStoreSectionItems: MyPageSectionItem = 
@@ -250,6 +228,28 @@ final class MyPageViewModel: BaseViewModel {
                 type: .poll, 
                 items: pollSectionItems, 
                 headerViewModel: pollHeaderViewModel
+            )
+        )
+        
+        // 쿠폰
+        let coupons = state.coupons.value
+        let myPageStores: [MyPageStore] = coupons.compactMap { coupon in
+            guard let store = coupon.store else { return nil }
+            return MyPageStore(storeResponse: store, couponResponse: coupon)
+        }
+        
+        let couponSectionItem: MyPageSectionItem =
+            if myPageStores.isEmpty {
+                .empty(.coupon)
+            } else {
+                .coupon(bindStoreListCouponCellViewModel(with: myPageStores, sectionType: .coupon))
+            }
+        
+        sections.append(
+            MyPageSection(
+                type: .coupon,
+                items: [couponSectionItem],
+                headerViewModel: couponStoreHeaderViewModel
             )
         )
         
