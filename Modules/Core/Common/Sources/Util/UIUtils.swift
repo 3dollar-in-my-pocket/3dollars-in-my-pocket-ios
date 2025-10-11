@@ -23,4 +23,14 @@ public struct UIUtils {
         }
         return presentingViewController
     }
+    
+    public static func mapNotificationToKeyboardHeight(notification: Notification) -> CGFloat {
+        if notification.name == UIResponder.keyboardDidShowNotification ||
+            notification.name == UIResponder.keyboardWillShowNotification {
+            let rect = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect ?? .zero
+            return rect.height
+        } else {
+            return 0
+        }
+    }
 }

@@ -6,7 +6,7 @@ public extension Date {
         let dateFormatter = DateFormatter()
 
         dateFormatter.dateFormat = format
-        dateFormatter.locale = Locale.current
+        dateFormatter.locale = Locale(identifier: "ko_KR")
         dateFormatter.timeZone = TimeZone.current
 
         return dateFormatter.string(from: self)

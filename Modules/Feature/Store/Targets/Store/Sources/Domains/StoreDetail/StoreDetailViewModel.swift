@@ -7,6 +7,7 @@ import Model
 import DependencyInjection
 import AppInterface
 import Log
+import WriteInterface
 
 final class StoreDetailViewModel: BaseViewModel {
     struct Input {
@@ -65,6 +66,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let storeType: StoreType = .userStore
         var storeDetailData: StoreDetailData?
         var showAllMenu: Bool = false
+        var userStoreDetailResponse: UserStoreDetailResponse?
     }
     
     enum Route {
@@ -73,7 +75,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentNavigation
         case presentWriteReview(ReviewBottomSheetViewModel)
         case presentMapDetail(MapDetailViewModel)
-        case pushEditStore(storeId: Int, storeDetailData: StoreDetailData)
+        case pushEditStore(EditStoreViewModelInterface)
         case presentUploadPhoto(UploadPhotoViewModel)
         case pushPhotoList(PhotoListViewModel)
         case presentPhotoDetail(PhotoDetailViewModel)
@@ -347,6 +349,7 @@ final class StoreDetailViewModel: BaseViewModel {
                     totalReviewCount: response.reviews.cursor.totalCount
                 )
                 
+                state.userStoreDetailResponse = response
                 state.storeDetailData = storeDetailData
                 refreshSections()
                 output.isFavorited.send(response.favorite.isFavorite)
@@ -688,9 +691,31 @@ extension StoreDetailViewModel {
     }
     
     private func pushEditStore() {
-        guard let storeDetailData = state.storeDetailData else { return }
+        guard let store = state.userStoreDetailResponse?.store else { return }
         
-        output.route.send(.pushEditStore(storeId: state.storeId, storeDetailData: storeDetailData))
+        let config = EditStoreViewModelConfig(store: store)
+        let viewModel = Environment.writeInterface.createEditStoreViewModel(config: config)
+        
+        viewModel.onEdit
+            .main
+            .sink { [weak self] store in
+                self?.updateStore(store)
+            }
+            .store(in: &cancellables)
+        
+        output.route.send(.pushEditStore(viewModel))
+    }
+    
+    private func updateStore(_ store: UserStoreResponse) {
+        state.userStoreDetailResponse?.store = store
+        
+        guard let storeDetailResponse = state.userStoreDetailResponse else { return }
+        state.storeDetailData = .init(
+            response: storeDetailResponse,
+            totalPhotoCount: state.storeDetailData?.totalPhotoCount ?? 0,
+            totalReviewCount: state.storeDetailData?.totalReviewCount ?? 0
+        )
+        refreshSections()
     }
 }
 

@@ -36,13 +36,13 @@ public struct StoreDetailData {
         
         self.info = StoreDetailInfo(
             lastUpdated: response.store.updatedAt,
-            salesType: response.store.salesType,
+            salesType: response.store.salesTypeV2.map { $0.type },
             appearanceDays: response.store.appearanceDays,
             openingHours: StoreDetailOpeningHours(response: response.store.openingHours),
             paymentMethods: response.store.paymentMethods
         )
         
-        self.menus = response.store.menus.map { StoreDetailMenu(response: $0) }
+        self.menus = response.store.menusV3.map { StoreDetailMenu(response: $0) }
         self.totalPhotoCount = totalPhotoCount
         self.photos = response.images.contents.map { StoreDetailPhoto(
             response: $0,

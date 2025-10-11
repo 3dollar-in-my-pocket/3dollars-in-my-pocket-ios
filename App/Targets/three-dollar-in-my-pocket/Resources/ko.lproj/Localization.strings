@@ -273,8 +273,6 @@
 
 // 가게 제보 주소 화면
 "write_address_title" = "가게 제보";
-"write_address_bottom_title" = "맛집 위치는 바로 여기!";
-"write_address_button" = "이 위치로 하기";
 
 // 가게 제보 중복 바텀 시트
 "write_address_confirm_popup_title" = "10m이내에 이미 제보된\n가게가 있어요! ";

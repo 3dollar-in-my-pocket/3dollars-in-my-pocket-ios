@@ -236,6 +236,8 @@ public enum StoreStrings: Sendable {
       public enum SalesType: Sendable {
       /// 편의점
         public static let convenienceStore = StoreStrings.tr("Localization", "store_detail.info.sales_type.convenience_store")
+        /// 푸드트럭
+        public static let foodTruck = StoreStrings.tr("Localization", "store_detail.info.sales_type.food_truck")
         /// 길거리
         public static let road = StoreStrings.tr("Localization", "store_detail.info.sales_type.road")
         /// 매장

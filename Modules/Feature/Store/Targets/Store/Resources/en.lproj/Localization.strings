@@ -32,6 +32,7 @@
 "store_detail.info.sales_type.road" = "길거리";
 "store_detail.info.sales_type.store" = "매장";
 "store_detail.info.sales_type.convenience_store" = "편의점";
+"store_detail.info.sales_type.food_truck" = "푸드트럭";
 "store_detail.info.payment_method.cash" = "현금";
 "store_detail.info.payment_method.account_transfer" = "계좌이체";
 "store_detail.info.payment_method.card" = "카드";
