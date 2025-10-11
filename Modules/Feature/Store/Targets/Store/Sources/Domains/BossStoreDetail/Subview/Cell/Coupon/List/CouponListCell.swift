@@ -54,6 +54,7 @@ final class CouponListCell: BaseCollectionViewCell {
         $0.backgroundColor = .clear
     }
 
+    private let storeTapGesture = UITapGestureRecognizer()
     
     override func setup() {
         super.setup()
@@ -76,6 +77,9 @@ final class CouponListCell: BaseCollectionViewCell {
         titleStackView.addArrangedSubview(titleLabel)
 
         tagStackView.addArrangedSubview(tagLabel)
+        
+        storeView.isUserInteractionEnabled = true
+        storeView.addGestureRecognizer(storeTapGesture)
     }
     
     override func bindConstraints() {
@@ -119,6 +123,9 @@ final class CouponListCell: BaseCollectionViewCell {
             titleLabel.text = store.name
             tagLabel.text = store.categoriesString
         }
+        storeTapGesture.tapPublisher.mapVoid
+            .subscribe(viewModel.input.didTapStoreView)
+            .store(in: &cancellables)
     }
     
     override func prepareForReuse() {

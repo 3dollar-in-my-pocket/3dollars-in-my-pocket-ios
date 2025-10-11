@@ -38,6 +38,7 @@ final class CouponListViewModel: BaseViewModel {
 
     enum Route {
         case presentUseCoupon(BossStoreCouponBottomSheetViewModel)
+        case bossStoreDetail(String)
     }
 
     let input = Input()
@@ -147,6 +148,14 @@ final class CouponListViewModel: BaseViewModel {
             .map { owner, coupon in
                 let viewModel = owner.bindStoreCouponBottomSheetViewModel(coupon)
                 return .presentUseCoupon(viewModel)
+            }
+            .subscribe(output.route)
+            .store(in: &viewModel.cancellables)
+        
+        viewModel.output.moveToStoreDetail
+            .withUnretained(self)
+            .map { owner, storeId in
+                return .bossStoreDetail(storeId)
             }
             .subscribe(output.route)
             .store(in: &viewModel.cancellables)

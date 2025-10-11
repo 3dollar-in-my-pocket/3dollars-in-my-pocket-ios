@@ -22,6 +22,7 @@ final class BossStoreCouponViewModel: BaseViewModel {
     
     struct Input {
         let didTapRightButton = PassthroughSubject<Void, Never>()
+        let didTapStoreView = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -36,6 +37,7 @@ final class BossStoreCouponViewModel: BaseViewModel {
         let showLoading = PassthroughSubject<Bool, Never>()
         let showToast = PassthroughSubject<String, Never>()
         let moveToUseCoupon = PassthroughSubject<StoreCouponSimpleResponse, Never>()
+        let moveToStoreDetail = PassthroughSubject<String, Never>()
     }
     
     struct Config {
@@ -141,6 +143,14 @@ final class BossStoreCouponViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.output.moveToUseCoupon.send(owner.coupon)
+            }
+            .store(in: &cancellables)
+        
+        input.didTapStoreView
+            .withUnretained(self)
+            .sink { owner, _ in
+                guard let storeId = owner.coupon.store?.storeId else { return }
+                owner.output.moveToStoreDetail.send(storeId)
             }
             .store(in: &cancellables)
     }
