@@ -25,13 +25,20 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             StoreDetailReviewEmptyCell.self,
             StoreDetailReviewMoreCell.self,
             BossStoreDetailReviewFeedbackSummaryCell.self,
-            StoreDetailFilteredReviewCell.self
+            StoreDetailFilteredReviewCell.self,
+            BossStoreCouponCell.self
         ])
         
         collectionView.register(
             BossStoreDetailReviewHeaderView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: "\(BossStoreDetailReviewHeaderView.self)"
+        )
+        
+        collectionView.register(
+            BossStoreDetailCouponHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "\(BossStoreDetailCouponHeaderView.self)"
         )
         
         super.init(collectionView: collectionView) { [weak containerVC, viewModel] collectionView, indexPath, itemIdentifier in
@@ -88,6 +95,10 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             case .filteredReview:
                 let cell: StoreDetailFilteredReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 return cell
+            case .coupon(let viewModel):
+                let cell: BossStoreCouponCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
+                return cell
             }
         }
         
@@ -101,6 +112,16 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
                     withReuseIdentifier: "\(BossStoreDetailReviewHeaderView.self)",
                     for: indexPath
                 ) as? BossStoreDetailReviewHeaderView else { return UICollectionViewCell() }
+                
+                headerView.bind(headerViewModel)
+                
+                return headerView
+            case .coupons(let headerViewModel):
+                guard let headerView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: UICollectionView.elementKindSectionHeader,
+                    withReuseIdentifier: "\(BossStoreDetailCouponHeaderView.self)",
+                    for: indexPath
+                ) as? BossStoreDetailCouponHeaderView else { return UICollectionViewCell() }
                 
                 headerView.bind(headerViewModel)
                 

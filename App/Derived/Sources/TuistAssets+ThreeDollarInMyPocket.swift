@@ -15,16 +15,12 @@
   import SwiftUI
 #endif
 
-// swiftlint:disable superfluous_disable_command file_length implicit_return
-
 // MARK: - Asset Catalogs
 
-// swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum ThreeDollarInMyPocketAsset: Sendable {
   public static let icBackWhite = ThreeDollarInMyPocketImages(name: "ic_back_white")
   public static let icSplash = ThreeDollarInMyPocketImages(name: "ic_splash")
 }
-// swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
 // MARK: - Implementation Details
 
@@ -80,5 +76,5 @@ public extension SwiftUI.Image {
 }
 #endif
 
-// swiftlint:enable all
 // swiftformat:enable all
+// swiftlint:enable all

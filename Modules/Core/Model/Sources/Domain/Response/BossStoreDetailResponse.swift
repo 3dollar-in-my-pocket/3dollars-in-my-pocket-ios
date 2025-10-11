@@ -9,5 +9,6 @@ public struct BossStoreDetailResponse: Decodable {
     // 서버 수정 필요
     public let newsPosts: ContentsWithCursorWithTotalCountResponse<PostResponse>
     public let tags: StoreTagResponse
+    public let coupons: ContentListStoreCouponSimpleResponse
     public let reviews: ContentsWithCursorWithTotalCountResponse<StoreReviewWithWriterResponse>
 }

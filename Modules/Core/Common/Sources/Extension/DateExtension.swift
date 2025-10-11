@@ -43,4 +43,21 @@ public extension Date {
         let dateToString = timeAgoFormatter.localizedString(for: self, relativeTo: currentDate)
         return dateToString
     }
+    
+    func remainingDaysString() -> String {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let targetDay = calendar.startOfDay(for: self)
+        
+        let components = calendar.dateComponents([.day], from: today, to: targetDay)
+        guard let day = components.day else { return "" }
+        
+        if day > 0 {
+            return "\(day)일 남음"
+        } else if day == 0 {
+            return "오늘"
+        } else {
+            return "\(-day)일 지남"
+        }
+    }
 }

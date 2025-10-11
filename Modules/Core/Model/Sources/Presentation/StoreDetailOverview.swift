@@ -15,6 +15,7 @@ public struct StoreDetailOverview: Hashable, VisitableStore {
     public var isBossStore: Bool
     public var snsUrl: String?
     public var introduction: String?
+    public let hasIssuableCoupon: Bool
 }
 
 extension StoreDetailOverview {

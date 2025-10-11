@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "coupon_line.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -35,6 +35,32 @@ final class StoreDetailOverviewTitleView: BaseView {
         $0.textColor = Colors.mainPink.color
         $0.font = Fonts.medium.font(size: 12)
     }
+    private let couponView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.mainPink.color
+        view.layer.cornerRadius = 12
+        view.layer.masksToBounds = true
+        let stackView = UIStackView()
+        stackView.spacing = 4
+        stackView.alignment = .center
+        view.addSubview(stackView)
+        stackView.snp.makeConstraints {
+            $0.horizontalEdges.equalToSuperview().inset(8)
+            $0.verticalEdges.equalToSuperview()
+            $0.height.equalTo(24)
+        }
+        let imageView = UIImageView(image: DesignSystemAsset.Icons.couponLine.image)
+        imageView.snp.makeConstraints {
+            $0.size.equalTo(16)
+        }
+        stackView.addArrangedSubview(imageView)
+        let label = UILabel()
+        label.font = Fonts.medium.font(size: 12)
+        label.textColor = Colors.systemWhite.color
+        label.text = "쿠폰!"
+        stackView.addArrangedSubview(label)
+        return view
+    }()
     
     private let infoView = StoreDetailOverviewInfoCellView()
     
@@ -45,6 +71,7 @@ final class StoreDetailOverviewTitleView: BaseView {
             titleLabel,
             newBadge,
             visitCountLabel,
+            couponView,
             infoView
         ])
     }
@@ -80,6 +107,11 @@ final class StoreDetailOverviewTitleView: BaseView {
             $0.height.equalTo(24)
         }
         
+        couponView.snp.makeConstraints {
+            $0.leading.equalTo(visitCountLabel.snp.trailing).offset(5)
+            $0.centerY.equalTo(visitCountLabel)
+        }
+        
         infoView.snp.makeConstraints {
             $0.right.equalToSuperview()
             $0.centerY.equalTo(visitCountLabel)
@@ -102,6 +134,8 @@ final class StoreDetailOverviewTitleView: BaseView {
             repoterLabel.text = overview.categoriesString
             visitCountLabel.text = "사장님 직영"
         }
+        
+         couponView.isHidden = overview.hasIssuableCoupon.isNot
     }
     
     private func setVisitCount(_ totalVisitSuccessCount: Int) {

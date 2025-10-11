@@ -46,6 +46,10 @@ final class MyPageDataSource: UICollectionViewDiffableDataSource<MyPageSection, 
                 let cell: MyPagePollItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(data, isFirst: isFirst, isLast: isLast)
                 return cell
+            case .coupon(let viewModel):
+                let cell: MyPageStoreListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel)
+                return cell
             }
         }
         
@@ -57,7 +61,7 @@ final class MyPageDataSource: UICollectionViewDiffableDataSource<MyPageSection, 
             switch section.type {
             case .overview:
                 return nil
-            case .visitStore, .favoriteStore, .poll:
+            case .visitStore, .favoriteStore, .poll, .coupon:
                 let headerView: MyPageSectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofkind: UICollectionView.elementKindSectionHeader, indexPath: indexPath)
                 if let viewModel = section.headerViewModel {
                     headerView.bind(viewModel: viewModel)

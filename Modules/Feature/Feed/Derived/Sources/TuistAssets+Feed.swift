@@ -15,15 +15,11 @@
   import SwiftUI
 #endif
 
-// swiftlint:disable superfluous_disable_command file_length implicit_return
-
 // MARK: - Asset Catalogs
 
-// swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum FeedAsset: Sendable {
   public static let imgEmptyList = FeedImages(name: "img_empty_list")
 }
-// swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
 // MARK: - Implementation Details
 
@@ -79,5 +75,5 @@ public extension SwiftUI.Image {
 }
 #endif
 
-// swiftlint:enable all
 // swiftformat:enable all
+// swiftlint:enable all
