@@ -4,7 +4,6 @@ import Common
 import Membership
 
 import KakaoSDKAuth
-import FirebaseDynamicLinks
 import netfox
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -32,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = SplashViewController(nibName: nil, bundle: nil)
         window?.makeKeyAndVisible()
         
-        self.reserveDynamicLinkIfExisted(connectionOptions: connectionOptions)
+        self.reserveUniversialLinkIfExisted(connectionOptions: connectionOptions)
         self.reserveDeepLinkIfExisted(connectionOptions: connectionOptions)
         self.reserveNotificationDeepLinkIfExisted(connectionOptions: connectionOptions)
         self.scene(scene, openURLContexts: connectionOptions.urlContexts)
@@ -55,11 +54,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         guard let incomingURL = userActivity.webpageURL else { return }
-        DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, _ in
-            guard let url = dynamicLink?.url else { return }
-                
-            DeepLinkHandler.shared.handle(url.absoluteString)
-        }
+        
+        DeepLinkHandler.shared.handle(incomingURL.absoluteString)
     }
     
     func goToMain() {
@@ -82,18 +78,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return url.absoluteString.hasPrefix("kakao\(kakaoAppKey)://kakaolink")
     }
     
-    private func reserveDynamicLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
+    private func reserveUniversialLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
         for userActivity in connectionOptions.userActivities {
             if let incomingURL = userActivity.webpageURL {
-                DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { (dynamicLink, error) in
-                    guard error == nil else {
-                        Log.debug("Found an error \(error!.localizedDescription)")
-                        return
-                    }
-                    
-                    guard let url = dynamicLink?.url else { return }
-                    DeepLinkHandler.shared.handle(url.absoluteString)
-                }
+                DeepLinkHandler.shared.handle(incomingURL.absoluteString)
                 break
             }
         }

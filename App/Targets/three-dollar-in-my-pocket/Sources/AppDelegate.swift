@@ -117,19 +117,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AppModuleInterfaceImpl.registerAppModuleInterface()
         AppInformationImpl.registerAppInformation()
     }
-    
-    func application(
-        _ application: UIApplication,
-        continue userActivity: NSUserActivity,
-        restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
-    ) -> Bool {
-        guard let url = userActivity.webpageURL else { return false }
-        let handled = DynamicLinks.dynamicLinks().handleUniversalLink(url) { dynamiclink, _ in
-            Log.debug("dynamic link url: \(dynamiclink?.url?.absoluteString ?? "")")
-        }
-        
-        return handled
-    }
 }
 
 extension AppDelegate: MessagingDelegate {

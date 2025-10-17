@@ -15,14 +15,6 @@ extension Bundle {
         return Bundle.main.infoDictionary?["URL_PRIVACY"] as? String ?? ""
     }
     
-    static var dynamicLinkURL: String {
-        return Bundle.main.infoDictionary?["DYNAMIC_LINK_URL"] as? String ?? ""
-    }
-    
-    static var dynamiclinkHost: String {
-        return Bundle.main.infoDictionary?["DYNAMICLINK_HOST"] as? String ?? ""
-    }
-    
     static var bundleId: String {
         return Bundle.main.bundleIdentifier ?? ""
     }
@@ -41,6 +33,10 @@ extension Bundle {
     
     static var kakaoChannelUrl: String {
         return Bundle.main.infoDictionary?["KAKAO_CHANNEL_URL"] as? String ?? ""
+    }
+    
+    static var universialLinkHost: String {
+        return Bundle.main.infoDictionary?["UNIVERSIAL_LINK_HOST"] as? String ?? ""
     }
     
     static func getAdmobId(adType: AdType) -> String {

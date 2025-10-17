@@ -132,8 +132,6 @@ public extension TargetDependency {
         
         public static let firebaseCrashlytics = TargetDependency.package(product: "FirebaseCrashlytics")
         
-        public static let firebaseDynamicLinks = TargetDependency.package(product: "FirebaseDynamicLinks")
-        
         public static let firebaseFirestore = TargetDependency.package(product: "FirebaseFirestore")
         
         public static let firebaseMessaging = TargetDependency.package(product: "FirebaseMessaging")
