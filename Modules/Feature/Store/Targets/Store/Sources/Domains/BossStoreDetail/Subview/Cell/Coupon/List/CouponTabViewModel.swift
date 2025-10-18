@@ -61,7 +61,7 @@ final class CouponTabViewModel: BaseViewModel {
         super.bind()
         
         output.activeCouponListViewModel.output.reload
-            .subscribe(output.onReload)
+            .subscribe(output.nonActiveCouponListViewModel.output.reload)
             .store(in: &output.activeCouponListViewModel.cancellables)
     }
 }
