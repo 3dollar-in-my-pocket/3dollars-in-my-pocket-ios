@@ -260,8 +260,13 @@ final class MyPageViewModel: BaseViewModel {
     private func bindHeaderViewModel(_ type: MyPageSectionType) -> MyPageSectionHeaderViewModel {
         let viewModel = MyPageSectionHeaderViewModel(item: type)
         viewModel.output.didTapCountButton
-            .map { _ in
-                .myCoupons
+            .compactMap {
+                switch $0 {
+                case .visitStore: .visitStore(VisitStoreListViewModel())
+                case .favoriteStore: .favoriteStore // TODO
+                case .coupon: .myCoupons
+                default: nil
+                }
             }
             .subscribe(output.route)
             .store(in: &cancellables)
