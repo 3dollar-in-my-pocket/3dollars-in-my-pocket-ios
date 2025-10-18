@@ -55,14 +55,6 @@ final class MyPageStoreListCellViewModel: BaseViewModel {
         super.bind()
         
         input.didSelect
-            .filter { [weak self] _ in self?.output.sectionType == .coupon }
-            .map { _ in
-                return .myCoupons
-            }
-            .subscribe(output.route)
-            .store(in: &cancellables)
-
-        input.didSelect
             .compactMap { [weak self] in self?.output.items[safe: $0]?.store }
             .handleEvents(receiveOutput: { [weak self] store in
                 self?.sendClickStoreLog(store)

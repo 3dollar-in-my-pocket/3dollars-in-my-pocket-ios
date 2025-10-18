@@ -329,6 +329,19 @@ final class MyPageViewModel: BaseViewModel {
             items: items
         )
         let viewModel = MyPageStoreListCellViewModel(config: config)
+        viewModel.output.route
+            .compactMap {
+                switch $0 {
+                case .storeDetail(let storeId):
+                    return .storeDetail(storeId)
+                case .bossStoreDetail(let storeId):
+                    return .bossStoreDetail(storeId)
+                case .myCoupons:
+                    return .myCoupons
+                }
+            }
+            .subscribe(output.route)
+            .store(in: &cancellables)
         return viewModel
     }
 }
