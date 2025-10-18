@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UNIVERSIAL_LINK_HOST</key>
+	<string>$(UNIVERSIAL_LINK_HOST)</string>
 	<key>KAKAO_CHANNEL_URL</key>
 	<string>$(KAKAO_CHANNEL_URL)</string>
 	<key>ADMOB_UNIT_ID</key>
@@ -112,10 +114,6 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>DYNAMICLINK_HOST</key>
-	<string>$(DYNAMICLINK_HOST)</string>
-	<key>DYNAMIC_LINK_URL</key>
-	<string>$(DYNAMIC_LINK_URL)</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-1527951560812478~1242588198</string>
 	<key>KAKAO_APP_KEY</key>

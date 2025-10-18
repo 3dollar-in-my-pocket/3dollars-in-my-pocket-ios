@@ -21,7 +21,7 @@ public protocol AppModuleInterface {
     func shareKakao(storeId: Int, storeType: StoreType, storeDetailOverview: StoreDetailOverview)
     func requestATTIfNeeded()
     func showFrontAdmob(adType: AdType, viewController: UIViewController)
-    func createBookmarkURL(folderId: String, name: String) async -> String
+    func createBookmarkURL(folderId: String) -> String
     
     /// GA
     func sendPageView(screenName: String, type: AnyObject.Type)

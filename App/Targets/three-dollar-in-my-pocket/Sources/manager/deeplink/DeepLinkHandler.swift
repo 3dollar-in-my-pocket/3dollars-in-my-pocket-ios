@@ -60,7 +60,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         guard let url = URL(string: urlString) else { return }
         var path: String? = nil
         
-        if isDynamicLinkHost(url: url) {
+        if isUniversalLinkHost(url: url) {
             path = url.relativePath.replacingOccurrences(of: "/", with: "")
         }
         
@@ -233,7 +233,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         }
     }
     
-    private func isDynamicLinkHost(url: URL) -> Bool {
-        return url.host == URL(string: Bundle.dynamiclinkHost)?.host
+    private func isUniversalLinkHost(url: URL) -> Bool {
+        return url.host == URL(string: Bundle.universialLinkHost)?.host
     }
 }

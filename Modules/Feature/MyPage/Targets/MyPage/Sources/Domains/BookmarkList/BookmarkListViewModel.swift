@@ -286,14 +286,10 @@ final class BookmarkListViewModel: BaseViewModel {
     
     private func presentShareBottomSheet() {
         guard let folderId = state.folderId else { return }
-        let folderName = state.folderName
+        let shareLinkUrl = Environment.appModuleInterface.createBookmarkURL(folderId: folderId)
         
-        Task { [weak self] in
-            let shareLinkUrl = await Environment.appModuleInterface.createBookmarkURL(folderId: folderId, name: folderName)
-            
-            guard shareLinkUrl.isNotEmpty else { return }
-            self?.output.route.send(.presentShareBottomSheet(shareLinkUrl))
-        }
+        guard shareLinkUrl.isNotEmpty else { return }
+        output.route.send(.presentShareBottomSheet(shareLinkUrl))
     }
     
     private func pushEditBookmark() {
