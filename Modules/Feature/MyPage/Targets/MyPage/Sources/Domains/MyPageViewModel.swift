@@ -140,9 +140,10 @@ final class MyPageViewModel: BaseViewModel {
                 state.poll.send(myPolls)
                 state.coupons.send(myCoupons.contents)
                 
-                visitStoreHeaderViewModel.input.count.send(user.activities?.visitStoreCount)
-                favoriteStoreHeaderViewModel.input.count.send(user.activities?.favoriteStoreCount)
-                couponStoreHeaderViewModel.input.count.send(myCoupons.contents.count)
+                visitStoreHeaderViewModel.input.count.send("\(user.activities?.visitStoreCount ?? 0)")
+                favoriteStoreHeaderViewModel.input.count.send("\(user.activities?.favoriteStoreCount ?? 0)")
+                let couponCount = "\(myCoupons.contents.count)"
+                couponStoreHeaderViewModel.input.count.send(myCoupons.cursor.hasMore ? couponCount + "+" : couponCount)
                 
                 updateDataSource()
             }
