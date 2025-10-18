@@ -27,6 +27,7 @@ final class MyPageViewModel: BaseViewModel {
         let visitStores = CurrentValueSubject<[MyPageStore], Never>([])
         let favoriteStores = CurrentValueSubject<[MyPageStore], Never>([])
         let poll = CurrentValueSubject<PollListWithUserPollMetaApiResponse?, Never>(nil)
+        let coupons = CurrentValueSubject<[StoreCouponSimpleResponse], Never>([])
     }
 
     enum Route {
@@ -38,6 +39,7 @@ final class MyPageViewModel: BaseViewModel {
         case storeDetail(Int)
         case bossStoreDetail(String)
         case pollDetail(String)
+        case myCoupons
     }
 
     let input = Input()
@@ -48,6 +50,7 @@ final class MyPageViewModel: BaseViewModel {
     private let myPageRepository: MyPageRepository
     private let communityRepository: CommunityRepository
     private let userRepository: UserRepository
+    private let couponRepository: CouponRepository
     
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
@@ -55,16 +58,19 @@ final class MyPageViewModel: BaseViewModel {
     private lazy var visitStoreHeaderViewModel = bindHeaderViewModel(.visitStore)
     private lazy var favoriteStoreHeaderViewModel = bindHeaderViewModel(.favoriteStore)
     private lazy var pollHeaderViewModel = bindHeaderViewModel(.poll)
+    private lazy var couponStoreHeaderViewModel = bindHeaderViewModel(.coupon)
 
     init(
         myPageRepository: MyPageRepository = MyPageRepositoryImpl(),
         communityRepository: CommunityRepository = CommunityRepositoryImpl(),
         userRepository: UserRepository = UserRepositoryImpl(),
+        couponRepository: CouponRepository = CouponRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.myPageRepository = myPageRepository
         self.communityRepository = communityRepository
         self.userRepository = userRepository
+        self.couponRepository = couponRepository
         self.logManager = logManager
 
         super.init()
@@ -106,9 +112,21 @@ final class MyPageViewModel: BaseViewModel {
                 )
             }.compactMapValue()
         
-        Publishers.Zip4(fetchMyUser, fetchVisitStore, fetchFavoriteStores, fetchMyPolls)
-            .sink { [weak self] user, visitStore, favoriteStores, myPolls in
-                guard let self else { return } 
+        let fetchMyCoupons = loadTrigger
+            .asyncMap { owner, _ in
+                await owner.couponRepository.getMyIssuedCoupons(input:  GetMyIssuedCouponsInput(statuses: [.issued]))
+            }.compactMapValue()
+        
+        Publishers.Zip(
+                Publishers.Zip4(fetchMyUser, fetchVisitStore, fetchFavoriteStores, fetchMyPolls),
+                fetchMyCoupons
+            )
+            .map { zipped4, myCoupons in
+                let (myUser, visitStore, favoriteStores, myPolls) = zipped4
+                return (myUser, visitStore, favoriteStores, myPolls, myCoupons)
+            }
+            .sink { [weak self] (user: UserDetailResponse, visitStore: ContentsWithCursorResponse<StoreVisitWithStoreApiResponse>, favoriteStores: StoreFavoriteFolderApiResponse, myPolls: PollListWithUserPollMetaApiResponse, myCoupons: ContentsWithCursorResponse<StoreCouponSimpleResponse>) in
+                guard let self else { return }
                 
                 output.showLoading.send(false)
                 
@@ -120,9 +138,12 @@ final class MyPageViewModel: BaseViewModel {
                     MyPageStore(storeResponse: $0) 
                 })
                 state.poll.send(myPolls)
+                state.coupons.send(myCoupons.contents)
                 
-                visitStoreHeaderViewModel.input.count.send(user.activities?.visitStoreCount)
-                favoriteStoreHeaderViewModel.input.count.send(user.activities?.favoriteStoreCount)
+                visitStoreHeaderViewModel.input.count.send("\(user.activities?.visitStoreCount ?? 0)")
+                favoriteStoreHeaderViewModel.input.count.send("\(user.activities?.favoriteStoreCount ?? 0)")
+                let couponCount = "\(myCoupons.contents.count)"
+                couponStoreHeaderViewModel.input.count.send(myCoupons.cursor.hasMore ? couponCount + "+" : couponCount)
                 
                 updateDataSource()
             }
@@ -211,6 +232,28 @@ final class MyPageViewModel: BaseViewModel {
             )
         )
         
+        // 쿠폰
+        let coupons = state.coupons.value
+        let myPageStores: [MyPageStore] = coupons.compactMap { coupon in
+            guard let store = coupon.store else { return nil }
+            return MyPageStore(storeResponse: store, couponResponse: coupon)
+        }
+        
+        let couponSectionItem: MyPageSectionItem =
+            if myPageStores.isEmpty {
+                .empty(.coupon)
+            } else {
+                .coupon(bindStoreListCouponCellViewModel(with: myPageStores, sectionType: .coupon))
+            }
+        
+        sections.append(
+            MyPageSection(
+                type: .coupon,
+                items: [couponSectionItem],
+                headerViewModel: couponStoreHeaderViewModel
+            )
+        )
+        
         output.sections.send(sections)
     }
     
@@ -221,6 +264,7 @@ final class MyPageViewModel: BaseViewModel {
                 switch $0 {
                 case .visitStore: .visitStore(VisitStoreListViewModel())
                 case .favoriteStore: .favoriteStore // TODO
+                case .coupon: .myCoupons
                 default: nil
                 }
             }
@@ -266,6 +310,34 @@ final class MyPageViewModel: BaseViewModel {
                     return .storeDetail(storeId)
                 case .bossStoreDetail(let storeId):
                     return .bossStoreDetail(storeId)
+                case .myCoupons:
+                    return .myCoupons
+                }
+            }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+        return viewModel
+    }
+    
+    private func bindStoreListCouponCellViewModel(
+        with items: [MyPageStore],
+        sectionType: MyPageStoreListCellViewModel.SectionType
+    ) -> MyPageStoreListCellViewModel {
+        let config = MyPageStoreListCellViewModel.Config(
+            screenName: output.screenName,
+            sectionType: sectionType,
+            items: items
+        )
+        let viewModel = MyPageStoreListCellViewModel(config: config)
+        viewModel.output.route
+            .compactMap {
+                switch $0 {
+                case .storeDetail(let storeId):
+                    return .storeDetail(storeId)
+                case .bossStoreDetail(let storeId):
+                    return .bossStoreDetail(storeId)
+                case .myCoupons:
+                    return .myCoupons
                 }
             }
             .subscribe(output.route)
