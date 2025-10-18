@@ -6,21 +6,16 @@ import StoreInterface
 
 final class CouponListCell: BaseCollectionViewCell {
     
-    private static let sharedCell = CouponListCell()
-    
     enum Layout {
-        static let estimatedHeight: CGFloat = 215
         static func size(width: CGFloat, viewModel: BossStoreCouponViewModel) -> CGSize {
-            
-            sharedCell.bind(viewModel: viewModel)
-            
-            let size: CGSize = .init(width: width, height: UIView.layoutFittingCompressedSize.height)
-            let cellSize = sharedCell.systemLayoutSizeFitting(
-                size,
-                withHorizontalFittingPriority: .required,
-                verticalFittingPriority: .fittingSizeLevel
-            )
-            return cellSize
+            let couponHeight = BossStoreCouponView.Layout.size(width: width, viewModel: viewModel).height
+            var totalHeight: CGFloat = 0
+            totalHeight += 28
+            totalHeight += 48
+            totalHeight += 12
+            totalHeight += couponHeight
+            totalHeight += 28
+            return CGSize(width: width, height: totalHeight)
         }
     }
     

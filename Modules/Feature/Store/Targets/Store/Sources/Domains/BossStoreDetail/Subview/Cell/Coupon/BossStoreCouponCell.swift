@@ -5,21 +5,9 @@ import Model
 
 final class BossStoreCouponCell: BaseCollectionViewCell {
     
-    private static let sharedCell = BossStoreCouponCell()
-    
     enum Layout {
-        static let estimatedHeight: CGFloat = 100
         static func size(width: CGFloat, viewModel: BossStoreCouponViewModel) -> CGSize {
-            
-            sharedCell.bind(viewModel: viewModel)
-            
-            let size: CGSize = .init(width: width, height: UIView.layoutFittingCompressedSize.height)
-            let cellSize = sharedCell.systemLayoutSizeFitting(
-                size,
-                withHorizontalFittingPriority: .required,
-                verticalFittingPriority: .fittingSizeLevel
-            )
-            return cellSize
+            return BossStoreCouponView.Layout.size(width: width, viewModel: viewModel)
         }
     }
     

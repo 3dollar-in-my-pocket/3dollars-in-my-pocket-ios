@@ -7,21 +7,53 @@ import DesignSystem
 import Model
 
 final class BossStoreCouponView: BaseView {
-    enum Layout {
-        static let height: CGFloat = 50
-    }
     
+    enum Layout {
+        static func size(width: CGFloat, viewModel: BossStoreCouponViewModel) -> CGSize {
+            var totalHeight: CGFloat = 0
+            var contentHeight: CGFloat = 0
+            let minContentHeight: CGFloat = 80
+           
+            // content
+            let textWidth = width - 40 - 105
+            let titleHeight = viewModel.output.title.height(font: Fonts.bold.font(size: 16), width: textWidth)
+            let dateHeight = viewModel.output.date.height(font: Fonts.regular.font(size: 14), width: textWidth)
+            contentHeight += 16
+            contentHeight += titleHeight
+            contentHeight += 4
+            contentHeight += dateHeight
+            contentHeight += 16
+            contentHeight = max(minContentHeight, contentHeight)
+            
+            switch viewModel.output.couponStatus.value {
+            case .issuable, .issued:
+                totalHeight += 18
+            case .expired, .used:
+                break
+            }
+            
+            totalHeight += contentHeight
+            
+            return CGSize(width: width, height: totalHeight)
+        }
+    }
     private let contentView = UIView()
     
     private let backgroundImageView = UIImageView().then {
         $0.image = Assets.couponBackground.image
+    }
+    
+    private let stackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 4
     }
 
     private let titleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 16)
         $0.textColor = Colors.gray80.color
         $0.setLineHeight(lineHeight: 24)
-        $0.numberOfLines = 0
+        $0.numberOfLines = 2
+        $0.lineBreakMode = .byTruncatingTail
     }
 
     private let dateLabel = UILabel().then {
@@ -76,13 +108,19 @@ final class BossStoreCouponView: BaseView {
         
         contentView.addSubViews([
             backgroundImageView,
-            titleLabel,
-            dateLabel,
+            stackView,
             dashedBorderLineView,
             rightIconImageView,
             rightTextLabel,
             rightButton
         ])
+        
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(dateLabel)
+        
+        dashedBorderLineView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        deadlineLabel.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        titleLabel.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
     }
 
     override func bindConstraints() {
@@ -113,22 +151,19 @@ final class BossStoreCouponView: BaseView {
         contentView.snp.makeConstraints {
             self.contentViewTopConstraints = $0.top.equalToSuperview().inset(18).constraint
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.lessThanOrEqualToSuperview()
+            $0.bottom.equalToSuperview()
         }
         deadlineLabel.snp.makeConstraints {
             $0.leading.equalTo(contentView.snp.leading).offset(12)
             $0.bottom.equalTo(contentView.snp.top).offset(8)
             $0.height.equalTo(26)
         }
-        titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(14)
+        stackView.snp.makeConstraints {
+            $0.top.greaterThanOrEqualToSuperview().inset(16)
             $0.leading.equalToSuperview().inset(18)
             $0.trailing.equalTo(dashedBorderLineView.snp.leading).offset(-16)
-        }
-        dateLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(4)
-            $0.leading.trailing.equalTo(titleLabel)
-            $0.bottom.equalToSuperview().inset(14)
+            $0.bottom.lessThanOrEqualToSuperview().inset(16)
+            $0.centerY.equalToSuperview()
         }
     }
     
@@ -138,6 +173,7 @@ final class BossStoreCouponView: BaseView {
         deadlineLabel.text = viewModel.output.deadline
         titleLabel.text = viewModel.output.title
         titleLabel.setLineHeight(lineHeight: 24)
+        titleLabel.lineBreakMode = .byTruncatingTail
         dateLabel.text = viewModel.output.date
         rightIconImageView.isHidden = viewModel.output.isRightViewHidden
         rightButton.isHidden = viewModel.output.isRightViewHidden
