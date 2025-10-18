@@ -335,6 +335,10 @@ final class BossStoreDetailViewModel: BaseViewModel {
             .subscribe(output.route)
             .store(in: &viewModel.cancellables)
         
+        viewModel.output.showErrorAlert
+            .subscribe(output.error)
+            .store(in: &viewModel.cancellables)
+        
         return viewModel
     }
     

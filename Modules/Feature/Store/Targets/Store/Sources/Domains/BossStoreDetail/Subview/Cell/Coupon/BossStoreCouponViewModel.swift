@@ -38,6 +38,7 @@ final class BossStoreCouponViewModel: BaseViewModel {
         let showToast = PassthroughSubject<String, Never>()
         let moveToUseCoupon = PassthroughSubject<StoreCouponSimpleResponse, Never>()
         let moveToStoreDetail = PassthroughSubject<String, Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
     }
     
     struct Config {
@@ -134,7 +135,7 @@ final class BossStoreCouponViewModel: BaseViewModel {
                     owner.output.couponStatus.send(.issued)
                     owner.coupon = data
                 case .failure(let error):
-                    owner.output.showToast.send(error.localizedDescription)
+                    owner.output.showErrorAlert.send(error)
                 }
             }
             .store(in: &cancellables)
