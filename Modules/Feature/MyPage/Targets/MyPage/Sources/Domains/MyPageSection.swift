@@ -30,7 +30,7 @@ struct MyPageSection: Hashable {
         switch type {
         case .overview:
             hasher.combine("overview")
-        case .visitStore, .favoriteStore, .poll:
+        case .visitStore, .favoriteStore, .poll, .coupon:
             hasher.combine(headerViewModel)
         }
     }
@@ -43,6 +43,7 @@ enum MyPageSectionType {
     case visitStore
     case favoriteStore
     case poll
+    case coupon
     
     var icon: UIImage? {
         switch self {
@@ -53,6 +54,8 @@ enum MyPageSectionType {
         case .favoriteStore:
             return Icons.bookmarkSolid.image
         case .poll:
+            return Icons.fireSolid.image
+        case .coupon:
             return Icons.fireSolid.image
         }
     }
@@ -67,6 +70,8 @@ enum MyPageSectionType {
             return "즐겨찾기"
         case .poll:
             return "맛대맛 투표" // TODO: API
+        case .coupon:
+            return "쿠폰"
         }
     }
     
@@ -80,6 +85,8 @@ enum MyPageSectionType {
             return "내가 좋아하는 가게는?"
         case .poll:
             return "내가 만든 투표의 히스토리"
+        case .coupon:
+            return "아 맞다! 쿠폰 안쓰고 지나갈 뻔"
         }
     }
     
@@ -92,6 +99,8 @@ enum MyPageSectionType {
         case .favoriteStore:
             return Icons.bookmarkSolid.image
         case .poll:
+            return Icons.fireSolid.image
+        case .coupon:
             return Icons.fireSolid.image
         }
     }
@@ -106,6 +115,8 @@ enum MyPageSectionType {
             return "즐겨찾기 리스트가 없어요"
         case .poll:
             return "내가 올린 투표가 없어요"
+        case .coupon:
+            return "발급받은 쿠폰이 없어요"
         }
     }
     
@@ -119,6 +130,8 @@ enum MyPageSectionType {
             return "가게 상세에서 추가해 보세요"
         case .poll:
             return "투표 상세에서 추가해 보세요"
+        case .coupon:
+            return "쿠폰을 발급받을 수 있는 사장님 직영점을 찾아보세요"
         }
     }
 }
@@ -132,6 +145,7 @@ enum MyPageSectionItem: Hashable {
     case empty(MyPageSectionType)
     case pollTotalParticipantsCount(Int)
     case poll(data: PollApiResponse, isFirst: Bool, isLast: Bool)
+    case coupon(MyPageStoreListCellViewModel)
 
     var identifier: String { // TODO
         switch self {
@@ -147,6 +161,8 @@ enum MyPageSectionItem: Hashable {
             return "pollTotalParticipantsCount"
         case .poll(let data, _, _):
             return data.pollId
+        case .coupon(let viewModel):
+            return String(viewModel.identifier.hashValue)
         }
     }
 

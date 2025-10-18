@@ -40,6 +40,12 @@ public class HomeListCell: BaseCollectionViewCell {
     
     private let tagView = HomeListCellTagView()
     
+    private let couponTagView: HomeListCellTagView = {
+        let view = HomeListCellTagView()
+        view.bind(type: .coupon)
+        return view
+    }()
+    
     private let infoView = HomeListCellInfoView()
     
     public override func prepareForReuse() {
@@ -61,7 +67,8 @@ public class HomeListCell: BaseCollectionViewCell {
             titleLabel,
             newBadge,
             tagView,
-            infoView
+            infoView,
+            couponTagView
         ])
         
         containerView.snp.makeConstraints {
@@ -103,6 +110,11 @@ public class HomeListCell: BaseCollectionViewCell {
             $0.left.equalTo(tagView)
             $0.bottom.equalTo(containerView).offset(-14)
         }
+        
+        couponTagView.snp.makeConstraints {
+            $0.leading.equalTo(tagView.snp.trailing).offset(5)
+            $0.centerY.equalTo(tagView)
+        }
     }
     
     func bind(_ storeWithExtra: StoreWithExtraResponse) {
@@ -118,5 +130,7 @@ public class HomeListCell: BaseCollectionViewCell {
             let visitCount = storeWithExtra.extra.visitCounts?.existsCounts ?? 0
             tagView.bind(type: .recentVisit(count: visitCount))
         }
+        
+        couponTagView.isHidden = storeWithExtra.extra.tags.hasIssuableCoupon.isNot
     }
 }

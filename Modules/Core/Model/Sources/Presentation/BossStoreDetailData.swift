@@ -3,6 +3,7 @@ import Foundation
 public struct BossStoreDetailData {
     public var overview: StoreDetailOverview
     public let info: BossStoreInfo
+    public let coupons: [StoreCouponSimpleResponse]
     public let menus: [BossStoreMenu]
     public var workdays: [BossStoreAppearanceDay]
     public var feedbacks: [FeedbackCountWithRatioResponse]
@@ -27,7 +28,8 @@ public struct BossStoreDetailData {
             subscribersCount: response.favorite.totalSubscribersCount,
             isBossStore: true,
             snsUrl: response.store.snsUrl,
-            introduction: response.store.introduction
+            introduction: response.store.introduction,
+            hasIssuableCoupon: response.tags.hasIssuableCoupon
         )
         self.info = BossStoreInfo(
             updatedAt: response.store.updatedAt,
@@ -38,8 +40,7 @@ public struct BossStoreDetailData {
             contactsNumbers: response.store.contactsNumbers
         )
         self.menus = response.store.menus.map { BossStoreMenu(response: $0) }
-        
-        
+        self.coupons = response.coupons.contents.map { $0 }
         self.workdays = response.store.appearanceDays.map {
             BossStoreAppearanceDay(response: $0)
         }

@@ -9,6 +9,7 @@ enum Deeplink {
     case medal
     case pollDetail(pollId: String)
     case accountInfo
+    case myCoupons
 
     var type: DeeplinkPath {
         switch self {
@@ -29,6 +30,9 @@ enum Deeplink {
             
         case .accountInfo:
             return .accountInfo
+            
+        case .myCoupons:
+            return .myCoupons
         }
     }
     

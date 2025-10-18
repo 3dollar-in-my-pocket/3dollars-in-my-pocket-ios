@@ -164,6 +164,9 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             let viewModel = VisitViewModel(config: config)
             let viewController = VisitViewController(viewModel: viewModel)
             route(viewController, forcePresent: true)
+        case .myCoupons:
+            let storeDetailViewController = Environment.storeInterface.getCouponListViewController(onReload: {})
+            route(storeDetailViewController)
         case .unknown:
             os_log(.debug, "🔴알 수 없는 형태의 딥링크입니다. %{PUBLIC}@", urlString)
             break
