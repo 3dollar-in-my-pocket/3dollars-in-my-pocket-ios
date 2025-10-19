@@ -12,7 +12,6 @@ public protocol AppModuleInterface {
     var globalEventBus: GlobalEventBusProtocol { get }
     var kakaoChannelUrl: String { get }
     
-    func createAdBannerView(adType: AdType) -> AdBannerViewProtocol
     func createWebViewController(title: String, url: String) -> UIViewController
     func getFCMToken(completion: @escaping ((String) -> ()))
     func goToMain()
@@ -20,10 +19,13 @@ public protocol AppModuleInterface {
     func createWebViewController(webviewType: WebViewType) -> UIViewController
     func shareKakao(storeId: Int, storeType: StoreType, storeDetailOverview: StoreDetailOverview)
     func requestATTIfNeeded()
-    func showFrontAdmob(adType: AdType, viewController: UIViewController)
     func createBookmarkURL(folderId: String) -> String
     
     /// GA
     func sendPageView(screenName: String, type: AnyObject.Type)
     func sendEvent(name: String, parameters: [String: Any]?)
+    
+    // Admob
+    func createAdBannerView(adType: AdType) -> AdBannerViewProtocol
+    func showFrontAdmob(adType: AdType, viewController: UIViewController)
 }

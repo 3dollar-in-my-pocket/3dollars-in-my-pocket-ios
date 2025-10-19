@@ -53,6 +53,8 @@ final class CommunityPollListAdCell: BaseCollectionViewCell {
         $0.setTitleColor(Colors.gray50.color, for: .normal)
         $0.isUserInteractionEnabled = false
     }
+    
+    private let adBanner = Environment.appModuleInterface.createAdBannerView(adType: .pollListItem)
 
     private var viewModel: CommunityPollListAdCellViewModel?
 
@@ -60,6 +62,7 @@ final class CommunityPollListAdCell: BaseCollectionViewCell {
         super.setup()
         
         contentView.addSubview(containerView)
+        contentView.addSubview(adBanner)
         containerView.addSubViews([
             imageView,
             titleLabel,
@@ -102,26 +105,39 @@ final class CommunityPollListAdCell: BaseCollectionViewCell {
             $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
+        
+        adBanner.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
     }
 
-    func bind(viewModel: CommunityPollListAdCellViewModel) {
+    func bind(viewModel: CommunityPollListAdCellViewModel, rootViewController: UIViewController?) {
         self.viewModel = viewModel
         
-        let advertisement = viewModel.output.item
-        imageView.setImage(urlString: advertisement.image?.url)
-        
-        titleLabel.setText(advertisement.title?.content, lineHeight: 28)
-        if let titleColor = advertisement.title?.fontColor {
-            titleLabel.textColor = UIColor(hex: titleColor)
-        }
-        
-        contentLabel.setText(advertisement.subTitle?.content, lineHeight: 20)
-        if let contentColor = advertisement.subTitle?.fontColor {
-            contentLabel.textColor = UIColor(hex: contentColor)
-        }
-        
-        if let backgroundColor = advertisement.background?.color {
-            containerView.backgroundColor = UIColor(hex: backgroundColor)
+        if let advertisement = viewModel.output.item {
+            
+            imageView.setImage(urlString: advertisement.image?.url)
+            
+            titleLabel.setText(advertisement.title?.content, lineHeight: 28)
+            if let titleColor = advertisement.title?.fontColor {
+                titleLabel.textColor = UIColor(hex: titleColor)
+            }
+            
+            contentLabel.setText(advertisement.subTitle?.content, lineHeight: 20)
+            if let contentColor = advertisement.subTitle?.fontColor {
+                contentLabel.textColor = UIColor(hex: contentColor)
+            }
+            
+            if let backgroundColor = advertisement.background?.color {
+                containerView.backgroundColor = UIColor(hex: backgroundColor)
+            }
+            
+            adBanner.isHidden = true
+        } else {
+            if let rootViewController {
+                adBanner.load(in: rootViewController)
+                adBanner.isHidden = false
+            }
         }
     }
 }

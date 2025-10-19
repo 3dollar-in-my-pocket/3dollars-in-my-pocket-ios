@@ -8,11 +8,7 @@ import Model
 import GoogleMobileAds
 
 class AdBannerView: UIView, AdBannerViewProtocol {
-    let admobView: GADBannerView = {
-        let view = GADBannerView()
-        
-        return view
-    }()
+    let admobView = BannerView()
     
     private let adType: AdType
     
@@ -42,18 +38,18 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     
     func load(in rootViewController: UIViewController) {
         admobView.rootViewController = rootViewController
-        admobView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(frame.width)
+        admobView.adSize = currentOrientationAnchoredAdaptiveBanner(width: frame.width)
         admobView.delegate = self
-        admobView.load(GADRequest())
+        admobView.load(Request())
     }
 }
 
-extension AdBannerView: GADBannerViewDelegate {
-    func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
+extension AdBannerView: BannerViewDelegate {
+    func bannerViewDidReceiveAd(_ bannerView: BannerView) {
         print("🟢bannerViewDidReceiveAd")
     }
     
-    func bannerView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: Error) {
+    func bannerView(_ bannerView: BannerView, didFailToReceiveAdWithError error: Error) {
         print("🟢didFailToReceiveAdWithError: \(error)")
     }
 }

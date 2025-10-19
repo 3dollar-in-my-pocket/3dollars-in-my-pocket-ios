@@ -39,8 +39,12 @@ final class CommunityPollListCell: BaseCollectionViewCell {
         $0.decelerationRate = .fast
     }
     
-    private lazy var dataSource = CommunityPollListCellDataSource(collectionView: collectionView)
+    private lazy var dataSource = CommunityPollListCellDataSource(
+        collectionView: collectionView,
+        rootViewController: rootViewController
+    )
 
+    private var rootViewController: UIViewController?
     private var viewModel: CommunityPollListCellViewModel?
 
     override func setup() {
@@ -90,8 +94,9 @@ final class CommunityPollListCell: BaseCollectionViewCell {
         return layout
     }
 
-    func bind(viewModel: CommunityPollListCellViewModel) {
+    func bind(viewModel: CommunityPollListCellViewModel, rootViewController: UIViewController?) {
         self.viewModel = viewModel
+        self.rootViewController = rootViewController
 
         // Input
         categoryButton

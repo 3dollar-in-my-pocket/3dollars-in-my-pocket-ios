@@ -171,19 +171,15 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     }
     
     func showFrontAdmob(adType: AdType, viewController: UIViewController) {
-        let request = GADRequest()
-        GADInterstitialAd.load(
-            withAdUnitID: Bundle.getAdmobId(adType: adType),
-            request: request,
-            completionHandler: { [weak viewController] ad, error in
-                guard let viewController else { return }
-                if let error = error {
-                    print("Failed to load interstitial ad with error: \(error.localizedDescription)")
-                    return
-                }
-                ad?.present(fromRootViewController: viewController)
+        Task {
+            do {
+                let ad = try await InterstitialAd.load(
+                    with: Bundle.getAdmobId(adType: adType), request: Request())
+                await ad.present(from: viewController)
+            } catch {
+                print("Failed to load interstitial ad with error: \(error.localizedDescription)")
             }
-        )
+        }
     }
     
     func createBookmarkURL(folderId: String) -> String {

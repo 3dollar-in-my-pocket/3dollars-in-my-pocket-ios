@@ -9,6 +9,7 @@ public enum AdType {
     case storeDetail
     case frontBanner
     case searchAddress
+    case pollListItem
     
     public var bundleKey: String {
         switch self {
@@ -35,6 +36,9 @@ public enum AdType {
             
         case .searchAddress:
             return "ADMOB_UNIT_ID_SEARCH_ADDRESS"
+            
+        case .pollListItem:
+            return "ADMOB_UNIT_ID_POLL_LIST_ITEM"
         }
     }
 }
