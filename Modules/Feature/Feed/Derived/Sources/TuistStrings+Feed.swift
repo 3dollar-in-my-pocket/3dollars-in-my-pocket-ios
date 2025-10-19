@@ -39,5 +39,5 @@ extension FeedStrings {
 }
 
 // swiftlint:disable convenience_type
-// swiftformat:enable all
 // swiftlint:enable all
+// swiftformat:enable all

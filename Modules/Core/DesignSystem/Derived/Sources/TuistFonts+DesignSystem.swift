@@ -95,5 +95,5 @@ public extension DesignSystemFontConvertible.Font {
     self.init(name: font.name, size: size)
   }
 }
-// swiftformat:enable all
 // swiftlint:enable all
+// swiftformat:enable all

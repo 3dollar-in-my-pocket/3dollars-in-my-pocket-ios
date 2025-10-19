@@ -15,8 +15,11 @@
   import SwiftUI
 #endif
 
+// swiftlint:disable superfluous_disable_command file_length implicit_return
+
 // MARK: - Asset Catalogs
 
+// swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum DesignSystemAsset: Sendable {
   public enum Colors {
   public static let gray0 = DesignSystemColors(name: "gray0")
@@ -90,9 +93,7 @@ public enum DesignSystemAsset: Sendable {
     public static let locationLine = DesignSystemImages(name: "location.line")
     public static let locationSolid = DesignSystemImages(name: "location.solid")
     public static let map = DesignSystemImages(name: "map")
-    public static let mappinUnfocusedCoupon = DesignSystemImages(name: "mappin.unfocused.coupon")
     public static let mappinUnfocused = DesignSystemImages(name: "mappin.unfocused")
-    public static let markerFocuesdCoupon = DesignSystemImages(name: "marker.focuesd.coupon")
     public static let markerFocuesd = DesignSystemImages(name: "marker.focuesd")
     public static let markerUnfocused = DesignSystemImages(name: "marker.unfocused")
     public static let myLine = DesignSystemImages(name: "my.line")
@@ -109,6 +110,7 @@ public enum DesignSystemAsset: Sendable {
     public static let zoom = DesignSystemImages(name: "zoom")
   }
 }
+// swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
 // MARK: - Implementation Details
 
@@ -217,5 +219,5 @@ public extension SwiftUI.Image {
 }
 #endif
 
-// swiftformat:enable all
 // swiftlint:enable all
+// swiftformat:enable all
