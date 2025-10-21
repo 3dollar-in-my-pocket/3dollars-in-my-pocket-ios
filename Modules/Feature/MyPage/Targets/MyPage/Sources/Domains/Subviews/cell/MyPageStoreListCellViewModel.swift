@@ -9,6 +9,7 @@ extension MyPageStoreListCellViewModel {
     enum SectionType {
         case visit
         case favorite
+        case coupon
     }
     
     struct Input {
@@ -25,6 +26,7 @@ extension MyPageStoreListCellViewModel {
     enum Route {
         case storeDetail(Int)
         case bossStoreDetail(String)
+        case myCoupons
     }
     
     struct Config {
@@ -51,7 +53,7 @@ final class MyPageStoreListCellViewModel: BaseViewModel {
 
     override func bind() {
         super.bind()
-
+        
         input.didSelect
             .compactMap { [weak self] in self?.output.items[safe: $0]?.store }
             .handleEvents(receiveOutput: { [weak self] store in
@@ -84,6 +86,8 @@ private extension MyPageStoreListCellViewModel {
             eventName = .clickVisitedStore
         case .favorite:
             eventName = .clickFavoritedStore
+        case .coupon:
+            eventName = .clickCoupon
         }
         logManager.sendEvent(.init(screen: output.screenName, eventName: eventName, extraParameters: [
             .storeId: store.id,

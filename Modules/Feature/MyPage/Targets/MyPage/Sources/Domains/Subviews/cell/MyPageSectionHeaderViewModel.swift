@@ -7,13 +7,13 @@ import Log
 
 final class MyPageSectionHeaderViewModel: BaseViewModel {
     struct Input {
-        let count = CurrentValueSubject<Int?, Never>(nil)
+        let count = CurrentValueSubject<String?, Never>(nil)
         let didTapCountButton = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
         let item: MyPageSectionType
-        let count = CurrentValueSubject<Int?, Never>(nil)
+        let count = CurrentValueSubject<String?, Never>(nil)
         let didTapCountButton = PassthroughSubject<MyPageSectionType, Never>()
     }
     

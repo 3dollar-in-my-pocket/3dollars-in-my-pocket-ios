@@ -11,7 +11,6 @@ import FirebaseAnalytics
 import KakaoSDKShare
 import KakaoSDKTemplate
 import GoogleMobileAds
-import FirebaseDynamicLinks
 
 final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     var kakaoSigninManager: AppInterface.SigninManagerProtocol {
@@ -187,40 +186,8 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
         )
     }
     
-    func createBookmarkURL(folderId: String, name: String) async -> String {
-        return await withCheckedContinuation { continuation in
-            guard let link = Deeplink.bookmark(folderId: folderId).url else {
-                return continuation.resume(returning: "")
-            }
-            let dynamicLinksDomainURIPrefix = Bundle.dynamicLinkURL
-            let linkBuilder = DynamicLinkComponents(
-                link: link,
-                domainURIPrefix: dynamicLinksDomainURIPrefix
-            )
-            
-            linkBuilder?.iOSParameters = DynamicLinkIOSParameters(bundleID: Bundle.bundleId)
-            linkBuilder?.iOSParameters?.appStoreID = Bundle.appstoreId
-            linkBuilder?.iOSParameters?.minimumAppVersion = "3.3.0"
-            linkBuilder?.androidParameters
-            = DynamicLinkAndroidParameters(packageName: Bundle.androidPackageName)
-            linkBuilder?.socialMetaTagParameters = DynamicLinkSocialMetaTagParameters()
-            linkBuilder?.socialMetaTagParameters?.title = Strings.myPageBookmarkDescription
-            linkBuilder?.socialMetaTagParameters?.descriptionText = name
-            linkBuilder?.socialMetaTagParameters?.imageURL
-            = URL(string: "https://storage.threedollars.co.kr/share/favorite_share.png")
-            
-            linkBuilder?.shorten(completion: { url, _, _ in
-                if let shortURL = url {
-                    continuation.resume(returning: shortURL.absoluteString)
-                } else {
-                    guard let longDynamicLink = linkBuilder?.url else {
-                        return continuation.resume(returning: "")
-                    }
-                    
-                    return continuation.resume(returning: longDynamicLink.absoluteString)
-                }
-            })
-        }
+    func createBookmarkURL(folderId: String) -> String {
+        return Deeplink.bookmark(folderId: folderId).url?.absoluteString ?? ""
     }
 }
 

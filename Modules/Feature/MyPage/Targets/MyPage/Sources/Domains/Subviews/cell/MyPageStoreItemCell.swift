@@ -11,7 +11,7 @@ final class MyPageStoreItemCell: BaseCollectionViewCell {
         static let defaultHeight: CGFloat = 72
         
         static func size(_ data: MyPageStore) -> CGSize {
-            return CGSize(width: 250, height: data.visitInfo.isNil ? defaultHeight : 118) 
+            return CGSize(width: 250, height: data.visitInfo.isNil && data.coupon.isNil ? defaultHeight : 118)
         }
     }
 
@@ -27,6 +27,7 @@ final class MyPageStoreItemCell: BaseCollectionViewCell {
     }
     
     private let visitDateView = MyPageStoreVisitDateView()
+    private let couponView = MyPageStoreCouponView()
     private let storeView = UIView()
 
     private let titleStackView = UIStackView().then {
@@ -72,6 +73,7 @@ final class MyPageStoreItemCell: BaseCollectionViewCell {
             imageView
         ])
         
+        stackView.addArrangedSubview(couponView)
         stackView.addArrangedSubview(visitDateView)
         stackView.addArrangedSubview(storeView)
         
@@ -119,6 +121,12 @@ final class MyPageStoreItemCell: BaseCollectionViewCell {
             visitDateView.isHidden = false
         } else {
             visitDateView.isHidden = true
+        }
+        if let coupon = item.coupon {
+            couponView.bind(item: coupon)
+            couponView.isHidden = false
+        } else {
+            couponView.isHidden = true
         }
     }
 }
@@ -187,11 +195,70 @@ final private class MyPageStoreVisitDateView: BaseView {
         }
         
         dateLabel.text = item.visitDate
+    }
+}
+
+// MARK: - Coupon
+final private class MyPageStoreCouponView: BaseView {
+    private let containerView = UIView().then {
+        $0.layer.cornerRadius = 13
+        $0.clipsToBounds = true
+        $0.backgroundColor = Colors.gray90.color
+    }
+    
+    private let stackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 4
+    }
+    
+    private let iconView = UIImageView().then {
+        $0.contentMode = .scaleAspectFill
+        $0.image = MyPageAsset.iconCouponSolid.image
+    }
+    
+    private let titleLabel = UILabel().then {
+        $0.font = Fonts.medium.font(size: 12)
+        $0.textColor = Colors.systemWhite.color
+    }
+    
+    override func setup() {
+        super.setup()
         
-//        DateUtils.toString(
-//            dateString: item.visitDate, 
-//            format: "MM월 dd일 HH:mm:ss"
-//        )
+        addSubViews([
+            containerView
+        ])
+        
+        containerView.addSubViews([
+            stackView
+        ])
+        
+        stackView.addArrangedSubview(iconView)
+        stackView.addArrangedSubview(titleLabel)
+    }
+    
+    override func bindConstraints() {
+        super.bindConstraints()
+        
+        snp.makeConstraints {
+            $0.height.equalTo(26)
+        }
+        
+        containerView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        stackView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(8)
+            $0.centerY.equalToSuperview()
+        }
+        
+        iconView.snp.makeConstraints {
+            $0.size.equalTo(16)
+        }
+    }
+    
+    func bind(item: StoreCouponSimpleResponse) {
+        titleLabel.text = item.name
     }
 }
 

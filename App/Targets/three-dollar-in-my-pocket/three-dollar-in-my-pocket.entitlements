@@ -12,6 +12,8 @@
 	<array>
 		<string>applinks:3dollarsdev.page.link</string>
 		<string>applinks:3dollars.page.link</string>
+		<string>applinks:app.dev.threedollars.co.kr</string>
+		<string>applinks:app.threedollars.co.kr</string>
 	</array>
 </dict>
 </plist>

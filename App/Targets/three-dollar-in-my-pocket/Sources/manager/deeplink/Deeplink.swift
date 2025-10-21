@@ -9,6 +9,7 @@ enum Deeplink {
     case medal
     case pollDetail(pollId: String)
     case accountInfo
+    case myCoupons
 
     var type: DeeplinkPath {
         switch self {
@@ -29,6 +30,9 @@ enum Deeplink {
             
         case .accountInfo:
             return .accountInfo
+            
+        case .myCoupons:
+            return .myCoupons
         }
     }
     
@@ -52,7 +56,7 @@ enum Deeplink {
     }
     
     var url: URL? {
-        var component = URLComponents(string: Bundle.dynamiclinkHost + "/" + type.path + "?")
+        var component = URLComponents(string: Bundle.universialLinkHost + "/" + type.path + "?")
         
         if let parameters = parameters {
             for parameter in parameters {
