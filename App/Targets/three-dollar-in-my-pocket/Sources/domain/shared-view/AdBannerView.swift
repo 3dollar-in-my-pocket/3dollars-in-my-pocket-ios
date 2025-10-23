@@ -12,6 +12,10 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     
     private let adType: AdType
     
+    var isLoaded: Bool {
+        return admobView.responseInfo.isNotNil
+    }
+    
     required init(adType: AdType) {
         self.adType = adType
         super.init(frame: .zero)

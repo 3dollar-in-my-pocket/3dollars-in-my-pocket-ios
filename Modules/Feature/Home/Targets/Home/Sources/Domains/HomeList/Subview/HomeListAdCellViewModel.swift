@@ -7,11 +7,11 @@ import Log
 
 final class HomeListAdCellViewModel: BaseViewModel {
     struct Output {
-        let item: AdvertisementResponse
+        let item: AdvertisementResponse?
     }
 
     struct Config {
-        let ad: AdvertisementResponse
+        let ad: AdvertisementResponse?
     }
 
     lazy var identifier = ObjectIdentifier(self)

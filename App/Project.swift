@@ -98,6 +98,7 @@ struct BuildSetting {
         static let debug: SettingsDictionary = [
             "ADMOB_UNIT_ID_POLL_DETAIL": "ca-app-pub-3940256099942544/2435281174",
             "ADMOB_UNIT_ID_HOME_LIST": "ca-app-pub-3940256099942544/2435281174",
+            "ADMOB_UNIT_ID_HOME_LIST_CARD": "ca-app-pub-3940256099942544/2435281174",
             "ADMOB_UNIT_ID_HOME_CARD": "ca-app-pub-3940256099942544/2435281174",
             "ADMOB_UNIT_ID_COMMUNITY": "ca-app-pub-3940256099942544/2435281174",
             "ADMOB_UNIT_ID_CATEGORY_FILTER": "ca-app-pub-3940256099942544/2435281174",
@@ -122,6 +123,7 @@ struct BuildSetting {
         static let release: SettingsDictionary = [
             "ADMOB_UNIT_ID_POLL_DETAIL": "ca-app-pub-1527951560812478/5573281913",
             "ADMOB_UNIT_ID_HOME_LIST": "ca-app-pub-1527951560812478/4059484724",
+            "ADMOB_UNIT_ID_HOME_LIST_CARD": "ca-app-pub-1527951560812478/5036908137",
             "ADMOB_UNIT_ID_HOME_CARD": "ca-app-pub-1527951560812478/4152389037",
             "ADMOB_UNIT_ID_COMMUNITY": "ca-app-pub-1527951560812478/9021572333",
             "ADMOB_UNIT_ID_CATEGORY_FILTER": "ca-app-pub-1527951560812478/3327283605",

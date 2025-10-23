@@ -8,6 +8,8 @@
 	<string>$(KAKAO_CHANNEL_URL)</string>
 	<key>ADMOB_UNIT_ID</key>
 	<dict>
+		<key>ADMOB_UNIT_ID_HOME_LIST_CARD</key>
+		<string>$(ADMOB_UNIT_ID_HOME_LIST_CARD)</string>
 		<key>ADMOB_UNIT_ID_POLL_LIST_ITEM</key>
 		<string>$(ADMOB_UNIT_ID_POLL_LIST_ITEM)</string>
 		<key>ADMOB_UNIT_ID_SEARCH_ADDRESS</key>

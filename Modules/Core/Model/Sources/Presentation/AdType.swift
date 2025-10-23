@@ -3,6 +3,7 @@ import Foundation
 public enum AdType {
     case homeCard
     case homeList
+    case homeListCard
     case categoryFilter
     case community
     case pollDetail
@@ -18,6 +19,9 @@ public enum AdType {
             
         case .homeList:
             return "ADMOB_UNIT_ID_HOME_LIST"
+            
+        case .homeListCard:
+            return "ADMOB_UNIT_ID_HOME_LIST_CARD"
             
         case .categoryFilter:
             return "ADMOB_UNIT_ID_CATEGORY_FILTER"
