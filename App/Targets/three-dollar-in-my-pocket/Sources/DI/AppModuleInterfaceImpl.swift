@@ -52,7 +52,11 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
         return AdBannerView(adType: adType)
     }
-    
+
+    func preloadAdBanner(adType: AdType, width: CGFloat) {
+        AdBannerPreloadManager.shared.preloadBanner(for: adType, width: width)
+    }
+
     func createWebViewController(title: String, url: String) -> UIViewController {
         return WebViewController(title: title, url: url)
     }

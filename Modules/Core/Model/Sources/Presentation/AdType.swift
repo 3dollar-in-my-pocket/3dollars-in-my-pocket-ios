@@ -1,6 +1,6 @@
 import Foundation
 
-public enum AdType {
+public enum AdType: CaseIterable {
     case homeCard
     case homeList
     case categoryFilter

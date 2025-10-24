@@ -27,9 +27,10 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
+
         titleView.prepareForReuse()
         mapView.prepareForReuse()
+        adBannerView.prepareForReuse()
     }
     
     override func setup() {

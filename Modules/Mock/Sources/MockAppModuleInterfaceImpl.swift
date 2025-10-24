@@ -29,7 +29,11 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     public func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
         return MockAdBannerView()
     }
-    
+
+    public func preloadAdBanner(adType: AdType, width: CGFloat) {
+        // Mock implementation - do nothing
+    }
+
     public func getFCMToken(completion: @escaping ((String) -> ())) { 
         ToastManager.shared.show(message: "getFCMToken")
     }

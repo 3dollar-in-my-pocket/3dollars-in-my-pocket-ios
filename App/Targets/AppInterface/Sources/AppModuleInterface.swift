@@ -13,6 +13,7 @@ public protocol AppModuleInterface {
     var kakaoChannelUrl: String { get }
     
     func createAdBannerView(adType: AdType) -> AdBannerViewProtocol
+    func preloadAdBanner(adType: AdType, width: CGFloat)
     func createWebViewController(title: String, url: String) -> UIViewController
     func getFCMToken(completion: @escaping ((String) -> ()))
     func goToMain()

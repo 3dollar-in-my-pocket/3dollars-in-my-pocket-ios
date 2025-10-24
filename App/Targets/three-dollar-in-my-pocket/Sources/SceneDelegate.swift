@@ -65,6 +65,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         navigationViewController.interactivePopGestureRecognizer?.delegate = nil
         window?.rootViewController = navigationViewController
         window?.makeKeyAndVisible()
+
+        // 주요 배너 광고 프리로드
+        preloadMainBanners()
+    }
+
+    private func preloadMainBanners() {
+        guard let window = window else { return }
+        let screenWidth = window.bounds.width
+
+        // 자주 사용되는 배너들을 미리 로드
+        AdBannerPreloadManager.shared.preloadBanner(for: .homeList, width: screenWidth)
+        AdBannerPreloadManager.shared.preloadBanner(for: .storeDetail, width: screenWidth)
+        AdBannerPreloadManager.shared.preloadBanner(for: .community, width: screenWidth)
     }
     
     func goToSignIn() {
