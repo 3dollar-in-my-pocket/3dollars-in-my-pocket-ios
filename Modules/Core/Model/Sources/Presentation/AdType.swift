@@ -11,6 +11,7 @@ public enum AdType {
     case frontBanner
     case searchAddress
     case pollListItem
+    case localNewsFeed
     
     public var bundleKey: String {
         switch self {
@@ -43,6 +44,9 @@ public enum AdType {
             
         case .pollListItem:
             return "ADMOB_UNIT_ID_POLL_LIST_ITEM"
+            
+        case .localNewsFeed:
+            return "ADMOB_UNIT_ID_LOCAL_NEWS_FEED"
         }
     }
 }

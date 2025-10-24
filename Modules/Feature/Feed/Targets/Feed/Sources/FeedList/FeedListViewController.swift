@@ -26,12 +26,6 @@ public final class FeedListViewController: BaseViewController {
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register([
-            FeedCell.self,
-            UICollectionViewCell.self
-        ])
         collectionView.backgroundColor = Colors.gray0.color
         collectionView.contentInset = .init(top: 20, left: 16, bottom: 20, right: 16)
         collectionView.refreshControl = refreshControl
@@ -42,7 +36,7 @@ public final class FeedListViewController: BaseViewController {
 
     private let refreshControl = UIRefreshControl()
     private let viewModel: FeedListViewModel
-    private var datasource: [FeedResponse] = []
+    private lazy var datasource = FeedListDatasource(collectionView: collectionView, rootViewController: self)
     private var isRefreshing = false
     
     public init(viewModel: FeedListViewModel) {
@@ -58,6 +52,7 @@ public final class FeedListViewController: BaseViewController {
         super.viewDidLoad()
         
         setup()
+        setupCollectionView()
         bind()
         viewModel.input.load.send(())
     }
@@ -95,6 +90,11 @@ public final class FeedListViewController: BaseViewController {
         }
     }
     
+    private func setupCollectionView() {
+        collectionView.dataSource = datasource
+        collectionView.delegate = self
+    }
+    
     private func bind() {
         closeButton.tapPublisher
             .withUnretained(self)
@@ -111,13 +111,11 @@ public final class FeedListViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.feeds
+        viewModel.output.datasource
             .main
-            .withUnretained(self)
-            .sink { (owner: FeedListViewController, feeds: [FeedResponse]) in
-                owner.datasource = feeds
-                owner.collectionView.reloadData()
-                owner.setEmptyListView(feeds: feeds)
+            .sink { [weak self] sections in
+                self?.datasource.reload(sections)
+                self?.setEmptyListViewHidden(isHidden: sections.first?.items.count != 1)
             }
             .store(in: &cancellables)
         
@@ -136,8 +134,8 @@ public final class FeedListViewController: BaseViewController {
         return layout
     }
     
-    private func setEmptyListView(feeds: [FeedResponse]) {
-        emptyListView.isHidden = feeds.isNotEmpty
+    private func setEmptyListViewHidden(isHidden: Bool) {
+        emptyListView.isHidden = isHidden
     }
 }
 
@@ -153,28 +151,20 @@ extension FeedListViewController {
     }
 }
 
-extension FeedListViewController: UICollectionViewDataSource {
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return datasource.count
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let feed = datasource[safe: indexPath.item] else {
-            return collectionView.dequeueReusableCell(indexPath: indexPath)
-        }
-        let cell: FeedCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-        cell.bind(feed: feed)
-        return cell
-    }
-}
-
 extension FeedListViewController: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let feed = datasource[safe: indexPath.item] else { return .zero }
         let width = UIUtils.windowBounds.width - 32
-        let height = FeedCell.Layout.calculateHeight(feed: feed)
         
-        return CGSize(width: width, height: height)
+        switch datasource.itemIdentifier(for: indexPath) {
+        case .feed(let feed):
+            let height = FeedCell.Layout.calculateHeight(feed: feed)
+            
+            return CGSize(width: width, height: height)
+        case .advertisement:
+            return CGSize(width: width, height: FeedAdvertisementCell.Layout.height)
+        case .none:
+            return .zero
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
