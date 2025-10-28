@@ -15,8 +15,11 @@
   import SwiftUI
 #endif
 
+// swiftlint:disable superfluous_disable_command file_length implicit_return
+
 // MARK: - Asset Catalogs
 
+// swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum StoreAsset: Sendable {
   public static let arrowRight = StoreImages(name: "arrow_right")
   public static let couponBackground = StoreImages(name: "coupon_background")
@@ -29,6 +32,7 @@ public enum StoreAsset: Sendable {
   public static let imageFailVisit = StoreImages(name: "image_fail_visit")
   public static let imageSuccessVisit = StoreImages(name: "image_success_visit")
 }
+// swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
 // MARK: - Implementation Details
 
@@ -84,5 +88,5 @@ public extension SwiftUI.Image {
 }
 #endif
 
-// swiftformat:enable all
 // swiftlint:enable all
+// swiftformat:enable all

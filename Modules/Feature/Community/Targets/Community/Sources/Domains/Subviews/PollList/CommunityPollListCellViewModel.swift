@@ -120,7 +120,9 @@ final class CommunityPollListCellViewModel: BaseViewModel {
                     owner.output.didSelectPollItem.send(viewModel.pollId)
                 case .ad(let viewModel):
                     owner.sendClickAdvertisementLog()
-                    owner.output.route.send(.deepLink(viewModel.output.item))
+                    if let item = viewModel.output.item {
+                        owner.output.route.send(.deepLink(item))
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -175,9 +177,9 @@ final class CommunityPollListCellViewModel: BaseViewModel {
         var sectionItems: [CommunityPollListCellSectionItem] = []
        
         sectionItems.append(contentsOf: state.pollList.map { .poll($0) })
-        if let ad = state.ad, sectionItems.isNotEmpty {
-            let index = ad.metadata?.exposureIndex ?? Constant.advertisementIndex
-            sectionItems.insert(.ad(CommunityPollListAdCellViewModel(config: .init(ad: ad))), at: index)
+        if sectionItems.isNotEmpty {
+            let index = state.ad?.metadata?.exposureIndex ?? Constant.advertisementIndex
+            sectionItems.insert(.ad(CommunityPollListAdCellViewModel(config: .init(ad: state.ad))), at: index)
         }
         
         output.sections.send([.init(items: sectionItems)])

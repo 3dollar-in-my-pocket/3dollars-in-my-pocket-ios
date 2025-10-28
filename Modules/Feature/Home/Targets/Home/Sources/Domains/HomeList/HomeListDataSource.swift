@@ -21,7 +21,7 @@ typealias HomeListSnapshot = NSDiffableDataSourceSnapshot<HomeListSection, HomeL
 final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSection, HomeListSectionItem> {
     let viewModel: HomeListViewModel
     
-    init(collectionView: UICollectionView, viewModel: HomeListViewModel) {
+    init(collectionView: UICollectionView, viewModel: HomeListViewModel, rootViewController: UIViewController) {
         self.viewModel = viewModel
         
         collectionView.register([
@@ -41,7 +41,7 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
             case .ad(let viewModel):
                 let cell: HomeListAdCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
-                cell.bind(viewModel: viewModel)
+                cell.bind(viewModel: viewModel, rootViewController: rootViewController)
                 return cell
             case .emptyStore:
                 let cell: HomeListEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)

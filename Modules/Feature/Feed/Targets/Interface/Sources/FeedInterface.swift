@@ -19,8 +19,13 @@ public struct FeedListViewModelConfig {
 
 public struct FeedListViewModelDependency {
     public let feedRepository: FeedRepository
+    public let advertisementRepository: AdvertisementRepository
     
-    public init(feedRepository: FeedRepository = FeedRepositoryImpl()) {
+    public init(
+        feedRepository: FeedRepository = FeedRepositoryImpl(),
+        advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl()
+    ) {
         self.feedRepository = feedRepository
+        self.advertisementRepository = advertisementRepository
     }
 }

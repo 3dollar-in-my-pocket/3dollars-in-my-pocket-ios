@@ -3,10 +3,10 @@ import UIKit
 import Common
 import DesignSystem
 import Model
+import AppInterface
 
 /// 메인 리스트뷰 리스트 광고 (STORE_LIST)
 final class HomeListAdCell: BaseCollectionViewCell {
-
     enum Layout {
         static let size: CGSize = CGSize(width: UIScreen.main.bounds.width, height: 90)
     }
@@ -55,6 +55,8 @@ final class HomeListAdCell: BaseCollectionViewCell {
         button.isUserInteractionEnabled = false
         return button
     }()
+    
+    private let adBanner = Environment.appModuleInterface.createAdBannerView(adType: .homeListCard)
 
     private var viewModel: HomeListAdCellViewModel?
 
@@ -66,6 +68,7 @@ final class HomeListAdCell: BaseCollectionViewCell {
     
     private func setupUI() {
         contentView.addSubview(containerView)
+        contentView.addSubview(adBanner)
         containerView.addSubViews([
             imageView,
             adButton,
@@ -100,27 +103,38 @@ final class HomeListAdCell: BaseCollectionViewCell {
             $0.leading.equalTo(imageView.snp.trailing).offset(16)
             $0.trailing.equalToSuperview().inset(16)
         }
+        
+        adBanner.snp.makeConstraints {
+            $0.edges.equalTo(containerView)
+        }
     }
 
-    func bind(viewModel: HomeListAdCellViewModel) {
+    func bind(viewModel: HomeListAdCellViewModel, rootViewController: UIViewController?) {
         self.viewModel = viewModel
 
-        let advertisement = viewModel.output.item
-        imageView.setImage(urlString: advertisement.image?.url)
-        
-        titleLabel.text = advertisement.title?.content
-        if let titleColor = advertisement.title?.fontColor {
-            titleLabel.textColor = UIColor(hex: titleColor)
-        }
-        
-        
-        contentLabel.text = advertisement.subTitle?.content
-        if let contentColor = advertisement.subTitle?.fontColor {
-            contentLabel.textColor = UIColor(hex: contentColor)
-        }
-        
-        if let backgroundColor = advertisement.background?.color {
-            containerView.backgroundColor = UIColor(hex: backgroundColor)
+        if let advertisement = viewModel.output.item {
+            imageView.setImage(urlString: advertisement.image?.url)
+            
+            titleLabel.text = advertisement.title?.content
+            if let titleColor = advertisement.title?.fontColor {
+                titleLabel.textColor = UIColor(hex: titleColor)
+            }
+            
+            
+            contentLabel.text = advertisement.subTitle?.content
+            if let contentColor = advertisement.subTitle?.fontColor {
+                contentLabel.textColor = UIColor(hex: contentColor)
+            }
+            
+            if let backgroundColor = advertisement.background?.color {
+                containerView.backgroundColor = UIColor(hex: backgroundColor)
+            }
+            adBanner.isHidden = true
+        } else {
+            if let rootViewController, adBanner.isLoaded.isNot {
+                adBanner.load(in: rootViewController)
+                adBanner.isHidden = false
+            }
         }
     }
 }
