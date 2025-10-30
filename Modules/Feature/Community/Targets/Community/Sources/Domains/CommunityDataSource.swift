@@ -76,7 +76,7 @@ final class CommunityDataSource: UICollectionViewDiffableDataSource<CommunitySec
             switch itemIdentifier {
             case .poll(let cellViewModel):
                 let cell: CommunityPollListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(viewModel: cellViewModel)
+                cell.bind(viewModel: cellViewModel, rootViewController: containerVC)
                 return cell
             case .popularStoreTab(let cellViewModel):
                 let cell: CommunityPopularStoreTabCell = collectionView.dequeueReusableCell(indexPath: indexPath)

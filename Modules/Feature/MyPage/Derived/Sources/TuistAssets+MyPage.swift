@@ -15,8 +15,11 @@
   import SwiftUI
 #endif
 
+// swiftlint:disable superfluous_disable_command file_length implicit_return
+
 // MARK: - Asset Catalogs
 
+// swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum MyPageAsset: Sendable {
   public static let bgCloud = MyPageImages(name: "bg_cloud")
   public static let iconApple = MyPageImages(name: "icon_apple")
@@ -32,6 +35,7 @@ public enum MyPageAsset: Sendable {
   public static let imageEmpty = MyPageImages(name: "image_empty")
   public static let imageLogo = MyPageImages(name: "image_logo")
 }
+// swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
 // MARK: - Implementation Details
 
@@ -87,5 +91,5 @@ public extension SwiftUI.Image {
 }
 #endif
 
-// swiftformat:enable all
 // swiftlint:enable all
+// swiftformat:enable all

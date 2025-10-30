@@ -11,7 +11,7 @@ final class CommunityPollListAdCellViewModel: BaseViewModel {
     }
 
     struct Output {
-        let item: AdvertisementResponse
+        let item: AdvertisementResponse?
     }
 
     struct State {
@@ -19,7 +19,7 @@ final class CommunityPollListAdCellViewModel: BaseViewModel {
     }
     
     struct Config {
-        let ad: AdvertisementResponse
+        let ad: AdvertisementResponse?
     }
 
     lazy var identifier = ObjectIdentifier(self)

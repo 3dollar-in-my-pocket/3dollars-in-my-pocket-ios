@@ -15,7 +15,7 @@ extension FeedListViewModel {
     }
     
     struct Output {
-        let feeds = PassthroughSubject<[FeedResponse], Never>()
+        let datasource = CurrentValueSubject<[FeedListSection], Never>([])
         let route = PassthroughSubject<Route, Never>()
     }
     
@@ -24,6 +24,7 @@ extension FeedListViewModel {
         var feeds: [FeedResponse] = []
         var mapLatitude: Double?
         var mapLongitude: Double?
+        var advertisement: AdvertisementResponse?
     }
     
     enum Route {
@@ -50,6 +51,7 @@ public final class FeedListViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: FeedListViewModel, _) in
                 owner.state.cursor = nil
+                owner.fetchAdvertisement()
                 owner.loadFeedList()
             }
             .store(in: &cancellables)
@@ -74,10 +76,17 @@ public final class FeedListViewModel: BaseViewModel {
         input.didTapFeed
             .withUnretained(self)
             .sink { (owner: FeedListViewModel, index: Int) in
-                guard let feed = owner.state.feeds[safe: index] else { return }
+                guard let feed = owner.state.feeds[safe: index - 1] else { return }
                 owner.output.route.send(.deepLink(feed.link))
             }
             .store(in: &cancellables)
+    }
+    
+    private func fetchAdvertisement() {
+        Task {
+            let advertisementResponse = try? await dependency.advertisementRepository.fetchAdvertisements(input: .init(position: .localNewsFeed)).get()
+            state.advertisement = advertisementResponse?.advertisements.first
+        }
     }
     
     private func loadFeedList() {
@@ -93,15 +102,22 @@ public final class FeedListViewModel: BaseViewModel {
             case .success(let response):
                 state.cursor = response.cursor
                 state.feeds.append(contentsOf: response.contents)
-                output.feeds.send(state.feeds)
+                refreshDatasource()
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))
             }
         }
     }
     
+    private func refreshDatasource() {
+        let advertisementItem = FeedListSectionItem.advertisement(state.advertisement)
+        let feedItemList = state.feeds.map { FeedListSectionItem.feed($0) }
+        
+        output.datasource.send([.init(items: [advertisementItem] + feedItemList)])
+    }
+    
     private func canLoadMore(index: Int) -> Bool {
-        return index >= state.feeds.count - 1
+        return index >= state.feeds.count
         && state.cursor?.hasMore == true
         && state.cursor?.nextCursor != nil
     }

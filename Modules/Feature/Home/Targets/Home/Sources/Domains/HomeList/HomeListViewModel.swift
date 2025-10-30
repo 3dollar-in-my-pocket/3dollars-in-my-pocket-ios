@@ -20,7 +20,7 @@ extension HomeListViewModel {
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
         let onToggleCertifiedStore = PassthroughSubject<Void, Never>()
         let onTapStore = PassthroughSubject<StoreWithExtraResponse, Never>()
-        let onTapAdvertisement = PassthroughSubject<AdvertisementResponse, Never>()
+        let onTapAdvertisement = PassthroughSubject<AdvertisementResponse?, Never>()
     }
     
     struct Output {
@@ -220,6 +220,7 @@ final class HomeListViewModel: BaseViewModel {
         input.onTapAdvertisement
             .withUnretained(self)
             .sink { owner, advertisement in
+                guard let advertisement else { return }
                 owner.sendClickAdBannerLog(advertisement)
                 guard let link = advertisement.link else { return }
                 owner.dependency.deepLinkHandler.handleAdvertisementLink(link)
@@ -258,9 +259,7 @@ final class HomeListViewModel: BaseViewModel {
     
     private func canLoad(index: Int) -> Bool {
         var contentsCount = state.stores.count
-        if state.advertisement.isNotNil {
-            contentsCount += 1
-        }
+        contentsCount += 1 // 광고 카운트
         return index >= contentsCount - 1 && state.nextCursor != nil && state.hasMore
     }
     
@@ -310,9 +309,7 @@ final class HomeListViewModel: BaseViewModel {
                 let advertisementInput = FetchAdvertisementInput(position: .storeList, size: nil)
                 let advertisements = try await dependency.advertisementRepository.fetchAdvertisements(input: advertisementInput).get()
                 
-                if let advertisement = advertisements.advertisements.first {
-                    state.advertisement = advertisement
-                }
+                state.advertisement = advertisements.advertisements.first
                 
                 let input = createFetchAroundStoreInput()
                 let response = try await dependency.storeRepository.fetchAroundStores(input: input).get()
@@ -334,13 +331,11 @@ final class HomeListViewModel: BaseViewModel {
             sectionItems.append(.emptyStore)
         }
         
-        if let advertisement = state.advertisement {
-            let index = min(1, sectionItems.count) // 두번째 구좌에 노출
-            let config = HomeListAdCellViewModel.Config(ad: advertisement)
-            let viewModel = HomeListAdCellViewModel(config: config)
-            
-            sectionItems.insert(.ad(viewModel), at: index)
-        }
+        let index = min(1, sectionItems.count) // 두번째 구좌에 노출
+        let config = HomeListAdCellViewModel.Config(ad: state.advertisement)
+        let viewModel = HomeListAdCellViewModel(config: config)
+        
+        sectionItems.insert(.ad(viewModel), at: index)
         
         output.dataSource.send([HomeListSection(items: sectionItems)])
     }

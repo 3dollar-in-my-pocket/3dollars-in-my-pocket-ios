@@ -3,12 +3,15 @@ import Foundation
 public enum AdType {
     case homeCard
     case homeList
+    case homeListCard
     case categoryFilter
     case community
     case pollDetail
     case storeDetail
     case frontBanner
     case searchAddress
+    case pollListItem
+    case localNewsFeed
     
     public var bundleKey: String {
         switch self {
@@ -17,6 +20,9 @@ public enum AdType {
             
         case .homeList:
             return "ADMOB_UNIT_ID_HOME_LIST"
+            
+        case .homeListCard:
+            return "ADMOB_UNIT_ID_HOME_LIST_CARD"
             
         case .categoryFilter:
             return "ADMOB_UNIT_ID_CATEGORY_FILTER"
@@ -35,6 +41,12 @@ public enum AdType {
             
         case .searchAddress:
             return "ADMOB_UNIT_ID_SEARCH_ADDRESS"
+            
+        case .pollListItem:
+            return "ADMOB_UNIT_ID_POLL_LIST_ITEM"
+            
+        case .localNewsFeed:
+            return "ADMOB_UNIT_ID_LOCAL_NEWS_FEED"
         }
     }
 }

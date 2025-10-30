@@ -23,7 +23,11 @@ final class HomeListViewController: BaseViewController {
     weak var delegate: HomeListDelegate?
     private lazy var homeListView = HomeListView(homeFilterSelectable: viewModel)
     private let viewModel: HomeListViewModel
-    private lazy var dataSource = HomeListDataSource(collectionView: homeListView.collectionView, viewModel: viewModel)
+    private lazy var dataSource = HomeListDataSource(
+        collectionView: homeListView.collectionView,
+        viewModel: viewModel,
+        rootViewController: self
+    )
     
     init(viewModel: HomeListViewModel) {
         self.viewModel = viewModel

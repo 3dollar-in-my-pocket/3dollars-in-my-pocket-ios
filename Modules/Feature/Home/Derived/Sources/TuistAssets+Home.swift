@@ -15,8 +15,11 @@
   import SwiftUI
 #endif
 
+// swiftlint:disable superfluous_disable_command file_length implicit_return
+
 // MARK: - Asset Catalogs
 
+// swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum HomeAsset: Sendable {
   public static let iconMarkerFocused = HomeImages(name: "icon_marker_focused")
   public static let iconMarkerUnfocused = HomeImages(name: "icon_marker_unfocused")
@@ -25,6 +28,7 @@ public enum HomeAsset: Sendable {
   public static let imageEmptyList = HomeImages(name: "image_empty_list")
   public static let imageNewBadge = HomeImages(name: "image_new_badge")
 }
+// swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
 // MARK: - Implementation Details
 
@@ -80,5 +84,5 @@ public extension SwiftUI.Image {
 }
 #endif
 
-// swiftformat:enable all
 // swiftlint:enable all
+// swiftformat:enable all

@@ -13,5 +13,5 @@ public extension Package {
     
     static let netfox = Package.remote(url: "https://github.com/kasketis/netfox", requirement: .exact("1.21.0"))
     
-    static let admob = Package.remote(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", requirement: .exact("11.5.0"))
+    static let admob = Package.remote(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", requirement: .exact("12.12.0"))
 }
