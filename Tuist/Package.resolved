@@ -30,10 +30,10 @@
     {
       "identity" : "panmodal",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/slackhq/PanModal.git",
+      "location" : "https://github.com/3dollar-in-my-pocket/PanModal.git",
       "state" : {
-        "revision" : "b012aecb6b67a8e46369227f893c12544846613f",
-        "version" : "1.2.7"
+        "revision" : "eb351648552c6fd419d416bdb145394d6d04fae6",
+        "version" : "1.0.0"
       }
     },
     {
