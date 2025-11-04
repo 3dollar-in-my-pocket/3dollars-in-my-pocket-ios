@@ -3,14 +3,21 @@ import UIKit
 import Common
 import DesignSystem
 import Model
+import ZMarkupParser
 
 final class FeedCellContentWithImagesBodyView: BaseView {
     enum Layout {
         static func calculateHeight(body: ContentWithImagesFeedBodyResponse) -> CGFloat {
             let width = UIUtils.windowBounds.width - 56
-            let contentHeight = body.content.text.height(font: Fonts.regular.font(size: 14), width: width)
+            let contentHeight: CGFloat
             
-            return contentHeight + 168
+            if body.content.isHtml {
+                contentHeight = ZHTMLParserBuilder.initWithDefault().build().render(body.content.text).height(width: width)
+            } else {
+                contentHeight = body.content.text.height(font: Fonts.regular.font(size: 14), width: width)
+            }
+            
+            return contentHeight + 188
         }
     }
     
@@ -41,6 +48,7 @@ final class FeedCellContentWithImagesBodyView: BaseView {
         let label = UILabel()
         label.font = Fonts.regular.font(size: 14)
         label.textColor = Colors.gray95.color
+        label.numberOfLines = 0
         return label
     }()
     
