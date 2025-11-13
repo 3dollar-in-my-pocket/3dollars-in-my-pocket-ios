@@ -1,6 +1,0 @@
-framework module NMapsMap {
-  umbrella header "NMapsMap.h"
-  export *
-
-  module * { export * }
-}
