@@ -9,7 +9,7 @@ extension BossAppBottomSheetViewModel {
     }
     
     struct Output {
-        let openAppStore = PassthroughSubject<String, Never>()
+        let openUrl = PassthroughSubject<String, Never>()
     }
 }
 
@@ -21,8 +21,8 @@ final class BossAppBottomSheetViewModel: BaseViewModel {
         input.didTapInstall
             .sink { [weak self] in
                 
-                let url = "https://apps.apple.com/kr/app/%EA%B0%80%EC%8A%B4%EC%86%8D-3%EC%B2%9C%EC%9B%90-%EC%82%AC%EC%9E%A5%EB%8B%98/id1639708958"
-                self?.output.openAppStore.send(url)
+                let url = "https://massive-iguana-121.notion.site/3-28c7ad52990e809caba2fb2040677a2a?pvs=74"
+                self?.output.openUrl.send(url)
             }
             .store(in: &cancellables)
     }
