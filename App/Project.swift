@@ -259,7 +259,8 @@ let project = Project(
         .permissionsKit,
         .firebaseSDK,
         .netfox,
-        .admob
+        .admob,
+        .naverMap
     ],
     settings: .settings(
         base: BuildSetting.Project.base,
@@ -282,7 +283,13 @@ let project = Project(
                 .pre(script: Script.googleService, name: "GoogleService Info"),
                 .post(script: Script.firebaseCrashlytics, name: "FirebaseCrashlytics", inputPaths: [
                     .glob(.relativeToManifest("${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}")),
-                    .glob(.relativeToManifest("$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)"))
+                    .glob(.relativeToManifest("$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)")),
+                    .glob(.relativeToManifest("${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}")),
+                    .glob(.relativeToManifest("${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}")),
+                    .glob(.relativeToManifest("${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist")),
+                    .glob(.relativeToManifest("$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist")),
+                    .glob(.relativeToManifest("$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)")),
+                    .glob(.relativeToManifest("${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}.debug.dylib"))
                 ])
             ],
             dependencies: [
@@ -324,8 +331,7 @@ let project = Project(
                 .Package.swiftyBeaver,
                 .Package.netfox,
                 .Package.admob,
-                .Framework.naverMap,
-                .Framework.naverGeometry,
+                .Package.naverMap,
                 .target(name: "service-extension"),
                 .target(name: "content-extension"),
             ],
