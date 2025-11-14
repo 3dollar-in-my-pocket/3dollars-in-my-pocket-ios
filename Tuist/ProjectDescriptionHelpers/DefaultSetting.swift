@@ -2,7 +2,7 @@ import ProjectDescription
 
 public struct DefaultSetting {
     public static let targetVersion: SettingValue = "18.0"
-    public static let appVersion: SettingValue = "4.28.1"
+    public static let appVersion: SettingValue = "4.28.2"
     public static let buildNumber: SettingValue = "1"
     public static let organizationName = "macgongmon"
     public static let appIdentifier = "-dollar-in-my-pocket"

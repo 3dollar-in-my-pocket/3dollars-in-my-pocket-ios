@@ -5,6 +5,9 @@ let name = "Home"
 
 let project = Project.makeFeatureModule(
     name: name,
+    package: [
+        .naverMap
+    ],
     dependencies: [
         .Core.networking,
         .Core.common,
@@ -20,8 +23,7 @@ let project = Project.makeFeatureModule(
         .SPM.panModal,
         .SPM.combineCocoa,
         .SPM.kingfisher,
-        .Framework.naverMap,
-        .Framework.naverGeometry,
+        .Package.naverMap,
         .Feature.feed
     ],
     includeInterface: false,

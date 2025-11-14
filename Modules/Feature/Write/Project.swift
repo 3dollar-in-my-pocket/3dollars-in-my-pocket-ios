@@ -5,6 +5,9 @@ let name = "Write"
 
 let project = Project.makeFeatureModule(
     name: name,
+    package: [
+        .naverMap
+    ],
     dependencies: [
         .Core.networking,
         .Core.common,
@@ -19,8 +22,7 @@ let project = Project.makeFeatureModule(
         .SPM.then,
         .SPM.panModal,
         .SPM.combineCocoa,
-        .Framework.naverMap,
-        .Framework.naverGeometry
+        .Package.naverMap,
     ],
     includeInterface: true,
     includeDemo: true
