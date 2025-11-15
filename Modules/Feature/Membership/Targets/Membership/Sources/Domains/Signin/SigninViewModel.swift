@@ -13,7 +13,7 @@ final class SigninViewModel: BaseViewModel {
     
     enum Route {
         case goToMain
-        case pushNickname(SocialType, String)
+        case pushNickname(socialType: SocialType, accessToken: String, randomName: String?)
         case showErrorAlert(Error)
         case showLoading(isShow: Bool)
         case presentDemoCodeAlert
@@ -174,18 +174,37 @@ final class SigninViewModel: BaseViewModel {
                 sendFCMToken(socialType: socialType)
                 
             case .failure(let error):
-                output.route.send(.showLoading(isShow: false))
-                
                 if let networkError = error as? NetworkError,
                    case .errorContainer(let errorContainer) = networkError {
                     if errorContainer.resultCode == "NF001" {
-                        output.route.send(.pushNickname(socialType, accessToken))
+                        createRandomName(socialType: socialType, accessToken: accessToken)
                     } else {
+                        output.route.send(.showLoading(isShow: false))
                         output.route.send(.showErrorAlert(error))
                     }
                 } else {
+                    output.route.send(.showLoading(isShow: false))
                     output.route.send(.showErrorAlert(error))
                 }
+            }
+        }
+    }
+    
+    private func createRandomName(socialType: SocialType, accessToken: String) {
+        Task {
+            let result = await userRepository.createRandomName()
+            
+            switch result {
+            case .success(let response):
+                output.route.send(.showLoading(isShow: false))
+                if let name = response.contents.first?.name {
+                    output.route.send(.pushNickname(socialType: socialType, accessToken: accessToken, randomName: name))
+                } else {
+                    output.route.send(.pushNickname(socialType: socialType, accessToken: accessToken, randomName: nil))
+                }
+            case .failure:
+                output.route.send(.showLoading(isShow: false))
+                output.route.send(.pushNickname(socialType: socialType, accessToken: accessToken, randomName: nil))
             }
         }
     }
