@@ -15,7 +15,7 @@ final class BossStoreCouponView: BaseView {
             let minContentHeight: CGFloat = 80
            
             // content
-            let textWidth = width - 40 - 105
+            let textWidth = width - 40 - 106
             let titleHeight = viewModel.output.title.height(font: Fonts.bold.font(size: 16), width: textWidth)
             let dateHeight = viewModel.output.date.height(font: Fonts.regular.font(size: 14), width: textWidth)
             contentHeight += 16
@@ -51,7 +51,6 @@ final class BossStoreCouponView: BaseView {
     private let titleLabel = UILabel().then {
         $0.font = Fonts.bold.font(size: 16)
         $0.textColor = Colors.gray80.color
-        $0.setLineHeight(lineHeight: 24)
         $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
     }
@@ -172,7 +171,6 @@ final class BossStoreCouponView: BaseView {
         
         deadlineLabel.text = viewModel.output.deadline
         titleLabel.text = viewModel.output.title
-        titleLabel.setLineHeight(lineHeight: 24)
         titleLabel.lineBreakMode = .byTruncatingTail
         dateLabel.text = viewModel.output.date
         rightIconImageView.isHidden = viewModel.output.isRightViewHidden

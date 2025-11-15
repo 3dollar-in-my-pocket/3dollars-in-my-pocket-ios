@@ -80,10 +80,11 @@ public final class SigninViewController: BaseViewController {
                 case .goToMain:
                     owner.appInterface.goToMain()
                     
-                case .pushNickname(let socialType, let accessToken):
+                case .pushNickname(let socialType, let accessToken, let randomName):
                     let viewController = NicknameViewController.instance(
                         socialType: socialType,
-                        accessToken: accessToken
+                        accessToken: accessToken,
+                        randomName: randomName
                     )
                     
                     owner.navigationController?.pushViewController(viewController, animated: true)

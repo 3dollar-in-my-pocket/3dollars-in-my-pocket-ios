@@ -22,24 +22,29 @@ public final class NicknameViewController: Common.BaseViewController {
     public static func instance(
         socialType: SocialType,
         accessToken: String,
-        bookmarkFolderId: String? = nil
+        bookmarkFolderId: String? = nil,
+        randomName: String?
     ) -> NicknameViewController {
         return NicknameViewController(
             socialType: socialType,
             accessToken: accessToken,
-            bookmarkFolderId: bookmarkFolderId
+            bookmarkFolderId: bookmarkFolderId,
+            randomName: randomName
         )
     }
   
-    init(socialType: SocialType, accessToken: String, bookmarkFolderId: String?) {
+    init(socialType: SocialType, accessToken: String, bookmarkFolderId: String?, randomName: String?) {
         self.viewModel = NicknameViewModel(
             socialType: socialType,
             accessToken: accessToken,
-            bookmarkFolderId: bookmarkFolderId
+            bookmarkFolderId: bookmarkFolderId,
+            randomName: randomName
         )
         
         super.init(nibName: nil, bundle: nil)
         navigationController?.setNavigationBarHidden(true, animated: false)
+        nicknameView.nicknameField.text = randomName
+        nicknameView.setEnableSignupButton((randomName ?? "").isNotEmpty)
     }
     
     required init?(coder: NSCoder) {
@@ -60,14 +65,42 @@ public final class NicknameViewController: Common.BaseViewController {
             .subscribe(viewModel.input.inputNickname)
             .store(in: &cancellables)
         
+        nicknameView.nicknameField
+            .controlPublisher(for: .editingDidBegin)
+            .mapVoid
+            .subscribe(viewModel.input.onTapNameField)
+            .store(in: &cancellables)
+        
         nicknameView.signupButton
             .controlPublisher(for: .touchUpInside)
             .mapVoid
             .subscribe(viewModel.input.onTapSigninButton)
             .store(in: &cancellables)
+        
+        nicknameView.refreshButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.onTapRefreshButton)
+            .store(in: &cancellables)
     }
     
     public override func bindViewModelOutput() {
+        viewModel.output.setRandomName
+            .main
+            .withUnretained(self)
+            .sink { owner, text in
+                owner.nicknameView.nicknameField.text = text
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.clearNameField
+            .main
+            .withUnretained(self)
+            .sink { owner, text in
+                owner.nicknameView.nicknameField.text = nil
+            }
+            .store(in: &cancellables)
+        
         viewModel.output.isEnableSignupButton
             .receive(on: DispatchQueue.main)
             .withUnretained(self)

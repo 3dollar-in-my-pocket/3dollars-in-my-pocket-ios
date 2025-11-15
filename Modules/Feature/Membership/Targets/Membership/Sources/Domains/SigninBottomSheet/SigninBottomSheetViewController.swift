@@ -76,12 +76,13 @@ final class SigninBottomSheetViewController: BaseViewController {
             dismiss(animated: true) {
                 Environment.appModuleInterface.goToMain()
             }
-        case .pushNickname(let socialType, let accessToken):
+        case .pushNickname(let socialType, let accessToken, let randomName):
             DimManager.shared.hideDim()
             dismiss(animated: true) { [weak self] in
                 let viewController = NicknameViewController.instance(
                     socialType: socialType,
-                    accessToken: accessToken
+                    accessToken: accessToken,
+                    randomName: randomName
                 )
                 
                 self?.navigationController?.pushViewController(viewController, animated: true)

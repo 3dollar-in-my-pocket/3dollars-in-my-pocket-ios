@@ -5,6 +5,7 @@ import Model
 enum UserApi {
     case signin(input: SigninRequestInput)
     case signup(input: SignupInput)
+    case signupWithRandomName(input: SignupInput)
     case signinAnonymous
     case fetchUser
     case changeMarketingConsent(input: ChangeMarketingConsentInput)
@@ -17,6 +18,7 @@ enum UserApi {
     case saveMyPlace(placeType: PlaceType, input: SaveMyPlaceInput)
     case getMyPlaces(placeType: PlaceType, input: CursorRequestInput)
     case deleteMyPlace(placeType: PlaceType, placeId: String)
+    case createRandomName
 }
 
 extension UserApi: RequestType {
@@ -25,6 +27,8 @@ extension UserApi: RequestType {
         case .signin(let input):
             return input
         case .signup(let input):
+            return input
+        case .signupWithRandomName(let input):
             return input
         case .signinAnonymous:
             return nil
@@ -50,6 +54,8 @@ extension UserApi: RequestType {
             return input
         case .deleteMyPlace(_, let placeId):
             return ["placeId": placeId]
+        case .createRandomName:
+            return nil
         }
     }
     
@@ -57,7 +63,7 @@ extension UserApi: RequestType {
         switch self {
         case .signin:
             return .post
-        case .signup:
+        case .signup, .signupWithRandomName:
             return .post
         case .signinAnonymous:
             return .post
@@ -83,6 +89,8 @@ extension UserApi: RequestType {
             return .get
         case .deleteMyPlace:
             return .delete
+        case .createRandomName:
+            return .post
         }
     }
     
@@ -90,7 +98,7 @@ extension UserApi: RequestType {
         switch self {
         case .signin:
             return .json
-        case .signup:
+        case .signup, .signupWithRandomName:
             return .json
         case .signinAnonymous:
             return .json
@@ -115,6 +123,8 @@ extension UserApi: RequestType {
         case .getMyPlaces:
             return .json
         case .deleteMyPlace:
+            return .json
+        case .createRandomName:
             return .json
         }
     }
@@ -125,6 +135,8 @@ extension UserApi: RequestType {
             return "/api/v2/login"
         case .signup:
             return "/api/v2/signup"
+        case .signupWithRandomName:
+            return "/api/v2/signup/random-name"
         case .signinAnonymous:
             return "/api/v1/signup/anonymous"
         case .fetchUser:
@@ -149,6 +161,8 @@ extension UserApi: RequestType {
             return "/api/v1/my/\(placeType.rawValue)/places"
         case .deleteMyPlace(let placeType, let placeId):
             return "/api/v1/my/\(placeType.rawValue)/place/\(placeId)"
+        case .createRandomName:
+            return "/api/v1/user/random-names"
         }
     }
     

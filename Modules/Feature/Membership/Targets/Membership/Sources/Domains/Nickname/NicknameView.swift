@@ -47,6 +47,18 @@ final class NicknameView: BaseView {
         $0.textColor = Colors.systemWhite.color
     }
     
+    let refreshButton = UIButton().then {
+        $0.setImage(Icons.refresh.image, for: .normal)
+        $0.layer.borderColor = Colors.gray80.color.cgColor
+        $0.layer.borderWidth = 1
+        $0.layer.cornerRadius = 5
+        $0.clipsToBounds = true
+        $0.backgroundColor = Colors.gray90.color
+        $0.snp.makeConstraints {
+            $0.size.equalTo(32)
+        }
+    }
+    
     private let warningImage = UIImageView().then {
         $0.image = Icons.infomation.image.withTintColor(Colors.mainRed.color)
         $0.isHidden = true
@@ -89,6 +101,7 @@ final class NicknameView: BaseView {
             nicknameLabel1,
             nicknameField,
             nicknameLabel2,
+            refreshButton,
             warningImage,
             warningLabel,
             signupButton,
@@ -122,7 +135,12 @@ final class NicknameView: BaseView {
         
         nicknameLabel2.snp.makeConstraints {
             $0.top.equalTo(nicknameField.snp.bottom).offset(6)
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalToSuperview().offset(-18)
+        }
+        
+        refreshButton.snp.makeConstraints {
+            $0.leading.equalTo(nicknameLabel2.snp.trailing).offset(9)
+            $0.centerY.equalTo(nicknameLabel2)
         }
         
         warningLabel.snp.makeConstraints {

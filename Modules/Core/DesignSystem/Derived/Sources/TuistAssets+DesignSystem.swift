@@ -99,6 +99,7 @@ public enum DesignSystemAsset: Sendable {
     public static let myLine = DesignSystemImages(name: "my.line")
     public static let mySolid = DesignSystemImages(name: "my.solid")
     public static let plus = DesignSystemImages(name: "plus")
+    public static let refresh = DesignSystemImages(name: "refresh")
     public static let review = DesignSystemImages(name: "review")
     public static let search = DesignSystemImages(name: "search")
     public static let setting = DesignSystemImages(name: "setting")
