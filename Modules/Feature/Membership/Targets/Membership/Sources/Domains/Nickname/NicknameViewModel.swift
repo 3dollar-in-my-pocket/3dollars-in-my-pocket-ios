@@ -12,6 +12,8 @@ final class NicknameViewModel: BaseViewModel {
         let inputNickname = PassthroughSubject<String, Never>()
         let onTapSigninButton = PassthroughSubject<Void, Never>()
         let onDismissPolicy = PassthroughSubject<Void, Never>()
+        let onTapRefreshButton = PassthroughSubject<Void, Never>()
+        let onTapNameField = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
@@ -19,14 +21,17 @@ final class NicknameViewModel: BaseViewModel {
         let isEnableSignupButton = PassthroughSubject<Bool, Never>()
         let isHiddenWarningLabel = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
+        let setRandomName = PassthroughSubject<String, Never>()
+        let clearNameField = PassthroughSubject<Void, Never>()
     }
     
     struct State {
-        var nickname = ""
+        var nickname: String
         var socialType: SocialType
         var accessToken: String
         var isSignupSuccess = false
         var bookmarkFolderId: String?
+        var isRandomName: Bool
     }
     
     enum Route {
@@ -48,11 +53,12 @@ final class NicknameViewModel: BaseViewModel {
         socialType: SocialType,
         accessToken: String,
         bookmarkFolderId: String? = nil,
+        randomName: String?,
         appInterface: AppModuleInterface = Environment.appModuleInterface,
         userRepository: UserRepository = UserRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.state = State(socialType: socialType, accessToken: accessToken)
+        self.state = State(nickname: randomName ?? "", socialType: socialType, accessToken: accessToken, isRandomName: (randomName ?? "").isNotEmpty)
         self.appInterface = appInterface
         self.userRepository = userRepository
         self.logManager = logManager
@@ -65,6 +71,7 @@ final class NicknameViewModel: BaseViewModel {
                 let isEnableSignup = nickname.trimmingCharacters(in: .whitespaces).isNotEmpty
                 
                 owner.state.nickname = nickname
+                owner.state.isRandomName = false
                 owner.output.isEnableSignupButton.send(isEnableSignup)
             })
             .store(in: &cancellables)
@@ -77,7 +84,11 @@ final class NicknameViewModel: BaseViewModel {
                     owner.output.route.send(.presentPolicy)
                 } else {
                     owner.output.route.send(.showLoading(isShow: true))
-                    owner.signup()
+                    if owner.state.isRandomName {
+                        owner.signupWithRandomName()
+                    } else {
+                        owner.signup()
+                    }
                 }
             })
             .store(in: &cancellables)
@@ -88,12 +99,51 @@ final class NicknameViewModel: BaseViewModel {
                 owner.output.route.send(.goToMain(bookmarkFolderId: owner.state.bookmarkFolderId))
             }
             .store(in: &cancellables)
+        
+        input.onTapRefreshButton
+            .withUnretained(self)
+            .sink(receiveValue: { owner, _ in
+                owner.createRandomName()
+            })
+            .store(in: &cancellables)
+        
+        input.onTapNameField
+            .withUnretained(self)
+            .sink(receiveValue: { owner, _ in
+                if owner.state.isRandomName {
+                    owner.state.isRandomName = false
+                    owner.state.nickname = ""
+                    owner.output.clearNameField.send()
+                    owner.output.isEnableSignupButton.send(false)
+                }
+            })
+            .store(in: &cancellables)
     }
     
     private func signup() {
         Task {
             let input = SignupInput(name: state.nickname, socialType: state.socialType.rawValue, token: state.accessToken)
             let result = await userRepository.signup(input: input)
+            
+            switch result {
+            case .success(let signupResponse):
+                preference.userId = signupResponse.userId
+                preference.authToken = signupResponse.token
+                state.isSignupSuccess = true
+                output.route.send(.showLoading(isShow: false))
+                output.route.send(.presentPolicy)
+                
+            case .failure(let error):
+                output.route.send(.showLoading(isShow: false))
+                handleSignupError(error: error)
+            }
+        }
+    }
+    
+    private func signupWithRandomName() {
+        Task {
+            let input = SignupInput(name: state.nickname, socialType: state.socialType.rawValue, token: state.accessToken)
+            let result = await userRepository.signupWithRandomName(input: input)
             
             switch result {
             case .success(let signupResponse):
@@ -129,5 +179,25 @@ final class NicknameViewModel: BaseViewModel {
             eventName: .clickSignUp,
             extraParameters: [.nickname: state.nickname]
         ))
+    }
+    
+    private func createRandomName() {
+        Task {
+            output.route.send(.showLoading(isShow: true))
+            let result = await userRepository.createRandomName()
+            output.route.send(.showLoading(isShow: false))
+            
+            switch result {
+            case .success(let response):
+                if let name = response.contents.first?.name {
+                    state.isRandomName = true
+                    state.nickname = name
+                    output.setRandomName.send(name)
+                    output.isEnableSignupButton.send(true)
+                }
+            case .failure:
+                break
+            }
+        }
     }
 }
