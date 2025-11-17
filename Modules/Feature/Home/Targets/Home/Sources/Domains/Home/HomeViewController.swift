@@ -191,13 +191,17 @@ public final class HomeViewController: BaseViewController {
             .combineLatest(viewModel.output.datasource)
             .main
             .sink { [weak self] index, items in
-                guard let self, items.count > index else { return }
-                
+                guard let self,
+                      items.count > index,
+                      index >= 0,
+                      self.homeView.collectionView.numberOfSections > 0,
+                      self.homeView.collectionView.numberOfItems(inSection: 0) > index else { return }
+
                 let indexPath = IndexPath(row: index, section: 0)
                 let cellViewModels = items.map { $0.store }
-                
+
                 selectMarker(selectedIndex: index, cellViewModels: cellViewModels)
-                homeView.collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+                homeView.collectionView.scrollToItemIfAvailable(at: indexPath, at: .left, animated: true)
             }
             .store(in: &cancellables)
         
@@ -267,8 +271,8 @@ public final class HomeViewController: BaseViewController {
             snapshot.appendSections([$0])
             snapshot.appendItems($0.items)
         }
-        
-        dataSource.apply(snapshot, animatingDifferences: true)
+
+        dataSource.apply(snapshot, animatingDifferences: false)
     }
     
     private func selectMarker(selectedIndex: Int?, cellViewModels: [HomeStoreCardCellViewModel?]) {

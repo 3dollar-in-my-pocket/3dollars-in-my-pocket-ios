@@ -15,9 +15,14 @@ struct VersionUtils {
   }
   
   static func isNeedUpdate(currentVersion: String, minimumVersion: String) -> Bool {
-    let currentVersionArray = currentVersion.split(separator: ".")
-    let minimumVersionArray = minimumVersion.split(separator: ".")
-    
+    let currentVersionArray = currentVersion.split(separator: ".").compactMap { Int($0) }
+    let minimumVersionArray = minimumVersion.split(separator: ".").compactMap { Int($0) }
+
+    // 버전 형식이 잘못된 경우 업데이트가 필요하지 않다고 가정
+    guard currentVersionArray.count == 3 && minimumVersionArray.count == 3 else {
+      return false
+    }
+
     if currentVersionArray[0] > minimumVersionArray[0] {
       return false
     } else if currentVersionArray[0] == minimumVersionArray[0] {
