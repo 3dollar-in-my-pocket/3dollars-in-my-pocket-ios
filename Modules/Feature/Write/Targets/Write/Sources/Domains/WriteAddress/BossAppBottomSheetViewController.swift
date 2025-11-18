@@ -225,7 +225,7 @@ final class BossAppBottomSheetViewController: BaseViewController {
             .subscribe(viewModel.input.didTapInstall)
             .store(in: &cancellables)
         
-        viewModel.output.openAppStore
+        viewModel.output.openUrl
             .receive(on: DispatchQueue.main)
             .sink { url in
                 guard let url = URL(string: url) else { return }

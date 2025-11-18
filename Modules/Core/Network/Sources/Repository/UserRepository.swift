@@ -7,6 +7,8 @@ public protocol UserRepository {
     
     func signup(input: SignupInput) async -> Result<SignupResponse, Error>
     
+    func signupWithRandomName(input: SignupInput) async -> Result<SignupResponse, Error>
+    
     func signinAnonymous() async -> Result<SigninResponse, Error>
     
     func fetchUser() async -> Result<UserDetailResponse, Error>
@@ -30,6 +32,8 @@ public protocol UserRepository {
     func getMyPlaces(placeType: PlaceType, input: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PlaceResponse>, Error>
     
     func deleteMyPlace(placeType: PlaceType, placeId: String) async -> Result<Bool, Error>
+    
+    func createRandomName() async -> Result<ContentListUserNameResponse, Error>
 }
 
 public struct UserRepositoryImpl: UserRepository {
@@ -43,6 +47,12 @@ public struct UserRepositoryImpl: UserRepository {
     
     public func signup(input: SignupInput) async -> Result<SignupResponse, Error> {
         let request = UserApi.signup(input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func signupWithRandomName(input: SignupInput) async -> Result<SignupResponse, Error> {
+        let request = UserApi.signupWithRandomName(input: input)
         
         return await NetworkManager.shared.request(requestType: request)
     }
@@ -115,6 +125,12 @@ public struct UserRepositoryImpl: UserRepository {
     
     public func deleteMyPlace(placeType: PlaceType, placeId: String) async -> Result<Bool, Error> {
         let request = UserApi.deleteMyPlace(placeType: placeType, placeId: placeId)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func createRandomName() async -> Result<ContentListUserNameResponse, Error> {
+        let request = UserApi.createRandomName
         
         return await NetworkManager.shared.request(requestType: request)
     }

@@ -48,7 +48,7 @@ enum SettingAdBannerType {
         case .normal:
             return "https://massive-iguana-121.notion.site/3-ff344e306d0c4417973daee8792cfe4d"
         case .boss:
-            return "https://apps.apple.com/kr/app/%EA%B0%80%EC%8A%B4%EC%86%8D-3%EC%B2%9C%EC%9B%90-%EC%82%AC%EC%9E%A5%EB%8B%98/id1639708958"
+            return "https://massive-iguana-121.notion.site/3-28c7ad52990e809caba2fb2040677a2a?pvs=74"
         }
     }
 }
