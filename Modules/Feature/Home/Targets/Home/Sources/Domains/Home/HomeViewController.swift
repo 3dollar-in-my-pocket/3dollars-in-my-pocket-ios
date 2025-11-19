@@ -88,6 +88,14 @@ public final class HomeViewController: BaseViewController {
         }
     }
     
+    public override func sendPageView() {
+        super.sendPageView()
+        
+        if isFirstLoad.isNot {
+            LogManager.shared.sendEvent(.init(screen: screenName, eventName: .homeReopen))
+        }
+    }
+    
     private func setupNavigation() {
         navigationController?.isNavigationBarHidden = true
         navigationController?.interactivePopGestureRecognizer?.delegate = nil

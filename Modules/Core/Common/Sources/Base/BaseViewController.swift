@@ -143,7 +143,7 @@ open class BaseViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    private func sendPageView() {
+    open func sendPageView() {
         if screenName != .empty {
             LogManager.shared.sendPageView(screen: screenName, type: Self.self)
         }
