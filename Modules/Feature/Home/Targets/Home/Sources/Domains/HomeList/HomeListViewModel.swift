@@ -267,7 +267,7 @@ final class HomeListViewModel: BaseViewModel {
         Task {
             let input = createFetchAroundStoreInput()
             let result = await dependency.storeRepository.fetchAroundStores(input: input)
-            
+
             switch result {
             case .success(let response):
                 state.hasMore = response.cursor.hasMore
@@ -278,6 +278,7 @@ final class HomeListViewModel: BaseViewModel {
                 output.route.send(.showErrorAlert(error))
             }
         }
+        .store(in: taskBag)
     }
     
     private func createFetchAroundStoreInput() -> FetchAroundStoreInput {
@@ -308,12 +309,12 @@ final class HomeListViewModel: BaseViewModel {
             do {
                 let advertisementInput = FetchAdvertisementInput(position: .storeList, size: nil)
                 let advertisements = try await dependency.advertisementRepository.fetchAdvertisements(input: advertisementInput).get()
-                
+
                 state.advertisement = advertisements.advertisements.first
-                
+
                 let input = createFetchAroundStoreInput()
                 let response = try await dependency.storeRepository.fetchAroundStores(input: input).get()
-                
+
                 state.hasMore = response.cursor.hasMore
                 state.nextCursor = response.cursor.nextCursor
                 state.stores.append(contentsOf: response.contents)
@@ -322,6 +323,7 @@ final class HomeListViewModel: BaseViewModel {
                 output.route.send(.showErrorAlert(error))
             }
         }
+        .store(in: taskBag)
     }
     
     private func updateDataSource() {
