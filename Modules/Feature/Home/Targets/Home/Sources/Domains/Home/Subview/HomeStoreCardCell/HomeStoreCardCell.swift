@@ -5,6 +5,7 @@ import DesignSystem
 import Model
 
 import CombineCocoa
+import Kingfisher
 
 final class HomeStoreCardCell: BaseCollectionViewCell {
     enum Layout {
@@ -76,6 +77,7 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
         super.prepareForReuse()
         infoView.prepareForReuse()
         tagStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        actionButton.kf.cancelImageDownloadTask()
     }
     
     override func setup() {
