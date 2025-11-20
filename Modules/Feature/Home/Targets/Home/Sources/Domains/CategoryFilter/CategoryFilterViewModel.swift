@@ -112,13 +112,14 @@ final class CategoryFilterViewModel: BaseViewModel {
     private func fetchData() {
         Task { [weak self] in
             guard let self else { return }
-            
+
             await fetchCategories()
             await fetchCategoryAdvertisement()
             await fetchAdvertisement()
-            
+
             updateDatasource()
         }
+        .store(in: taskBag)
     }
     
     private func fetchCategories() async {
