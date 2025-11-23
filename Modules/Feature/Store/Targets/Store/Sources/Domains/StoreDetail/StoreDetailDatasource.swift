@@ -22,7 +22,8 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             StoreDetailReviewCell.self,
             StoreDetailReviewMoreCell.self,
             StoreDetailReviewEmptyCell.self,
-            StoreDetailFilteredReviewCell.self
+            StoreDetailFilteredReviewCell.self,
+            StoreDetailBossStoreAppIntroCell.self
         ])
         
         collectionView.register(
@@ -106,6 +107,11 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             case .filteredReview:
                 let cell: StoreDetailFilteredReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 return cell
+                
+            case .bossStoreAppIntro(let viewModel):
+                let cell: StoreDetailBossStoreAppIntroCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel: viewModel)
+                return cell
             }
         }
         
@@ -113,7 +119,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             guard let section = self?.sectionIdentifier(section: indexPath.section) else { return nil }
             
             switch section.type {
-            case .overview:
+            case .overview, .bossStoreAppIntro:
                 return nil
                 
             case .visit:

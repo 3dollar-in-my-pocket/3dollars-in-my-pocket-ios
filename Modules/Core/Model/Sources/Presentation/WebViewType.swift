@@ -4,6 +4,7 @@ public enum WebViewType {
     case policy
     case privacy
     case marketing
+    case bossStoreAppIntro
 }
 
 public extension WebViewType {
@@ -17,6 +18,9 @@ public extension WebViewType {
             
         case .marketing:
             return "가슴속 3천원 마케팅 수신 동의"
+            
+        case .bossStoreAppIntro:
+            return "사장님 앱 소개"
         }
     }
 }

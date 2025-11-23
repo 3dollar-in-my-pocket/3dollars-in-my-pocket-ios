@@ -85,6 +85,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentReportBottomSheetReview(ReportReviewBottomSheetViewModel)
         case presentVisit(VisitViewModel)
         case navigateAppleMap(LocationResponse)
+        case pushWebView(WebViewType)
     }
     
     let input = Input()
@@ -402,7 +403,8 @@ final class StoreDetailViewModel: BaseViewModel {
                 totalCount: storeDetailData.totalReviewCount,
                 rating: storeDetailData.rating,
                 reviews: storeDetailData.reviews
-            )
+            ),
+            .bossStoreAppIntroSection(createBossStoreAppIntroCellViewModel())
         ])
     }
     
@@ -452,6 +454,19 @@ final class StoreDetailViewModel: BaseViewModel {
         viewModel.output.didTapMore
             .subscribe(input.didTapShowMoreMenu)
             .store(in: &cancellables)
+        
+        return viewModel
+    }
+    
+    private func createBossStoreAppIntroCellViewModel() -> StoreDetailBossStoreAppIntroCellViewModel {
+        let viewModel = StoreDetailBossStoreAppIntroCellViewModel()
+        
+        viewModel.output.moveToBossAppIntro
+            .map { _ in
+                .pushWebView(.bossStoreAppIntro)
+            }
+            .subscribe(output.route)
+            .store(in: &viewModel.cancellables)
         
         return viewModel
     }

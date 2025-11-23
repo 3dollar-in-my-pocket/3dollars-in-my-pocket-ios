@@ -9,6 +9,7 @@ struct StoreDetailSection: Hashable {
         case info
         case photo(totalCount: Int)
         case review(totalCount: Int)
+        case bossStoreAppIntro
     }
     
     var type: StoreDetailSectionType
@@ -106,5 +107,9 @@ extension StoreDetailSection {
             header: header,
             items: sectionItems
         )
+    }
+    
+    static func bossStoreAppIntroSection(_ viewModel: StoreDetailBossStoreAppIntroCellViewModel) -> StoreDetailSection {
+        return .init(type: .bossStoreAppIntro, items: [.bossStoreAppIntro(viewModel)])
     }
 }

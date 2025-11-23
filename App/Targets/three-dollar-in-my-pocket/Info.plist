@@ -399,6 +399,8 @@
 	<string>Light</string>
 	<key>URL_MARKETING</key>
 	<string>$(URL_MARKETING)</string>
+	<key>URL_BOSS_STORE_APP_INTRO</key>
+	<string>$(URL_BOSS_STORE_APP_INTRO)</string>
 	<key>URL_POLICY</key>
 	<string>$(URL_POLICY)</string>
 	<key>URL_PRIVACY</key>
