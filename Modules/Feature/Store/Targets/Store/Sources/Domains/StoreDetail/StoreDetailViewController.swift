@@ -152,6 +152,14 @@ final class StoreDetailViewController: BaseViewController {
                 owner.showErrorAlert(error: error)
             }
             .store(in: &cancellables)
+        
+        viewModel.output.showDisappearanceInquiryModal
+            .main
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, viewModel: StoreDetailDisappearanceInquiryModalViewModel) in
+                owner.showDisappearanceInquiryModal(with: viewModel)
+            }
+            .store(in: &cancellables)
     }
     
     private func createLayout() -> UICollectionViewLayout {
@@ -434,5 +442,16 @@ final class StoreDetailViewController: BaseViewController {
         ] as [String : Any]
         
         mapItem.openInMaps(launchOptions: options)
+    }
+    
+    private func showDisappearanceInquiryModal(with viewModel: StoreDetailDisappearanceInquiryModalViewModel) {
+        let view = StoreDetailDisappearanceInquiryModalView()
+        view.bind(viewModel: viewModel)
+        storeDetailView.addSubview(view)
+        storeDetailView.collectionView.contentInset.bottom = 80
+        view.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(12)
+            $0.bottom.equalTo(storeDetailView.bottomStickyView.snp.top).offset(-12)
+        }
     }
 }
