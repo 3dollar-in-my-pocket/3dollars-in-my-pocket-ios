@@ -15,6 +15,10 @@ extension Bundle {
         return Bundle.main.infoDictionary?["URL_PRIVACY"] as? String ?? ""
     }
     
+    static var bossStoreAppIntroURL: String {
+        return Bundle.main.infoDictionary?["URL_BOSS_STORE_APP_INTRO"] as? String ?? ""
+    }
+    
     static var bundleId: String {
         return Bundle.main.bundleIdentifier ?? ""
     }

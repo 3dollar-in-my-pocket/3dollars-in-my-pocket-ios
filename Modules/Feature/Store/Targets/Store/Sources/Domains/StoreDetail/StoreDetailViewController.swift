@@ -141,6 +141,8 @@ final class StoreDetailViewController: BaseViewController {
                     owner.pushEditStore(viewModel: viewModel)
                 case .navigateAppleMap(let location):
                     owner.navigateAppleMap(location: location)
+                case .pushWebView(let webViewType):
+                    owner.pushWebView(webViewType: webViewType)
                 }
             }
             .store(in: &cancellables)
@@ -150,6 +152,14 @@ final class StoreDetailViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewController, error: Error) in
                 owner.showErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.showDisappearanceInquiryModal
+            .main
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, viewModel: StoreDetailDisappearanceInquiryModalViewModel) in
+                owner.showDisappearanceInquiryModal(with: viewModel)
             }
             .store(in: &cancellables)
     }
@@ -260,7 +270,7 @@ final class StoreDetailViewController: BaseViewController {
                     ),
                     subitems: [item]
                 )
-                group.interItemSpacing = NSCollectionLayoutSpacing.fixed(StoreDetailPhotoCell.Layout.space)  
+                group.interItemSpacing = NSCollectionLayoutSpacing.fixed(StoreDetailPhotoCell.Layout.space)
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = .init(top: 12, leading: 20, bottom: 32, trailing: 20)
                 section.boundarySupplementaryItems = [
@@ -309,6 +319,23 @@ final class StoreDetailViewController: BaseViewController {
                     alignment: .topLeading
                 )]
                 
+                return section
+                
+            case .bossStoreAppIntro:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreDetailBossStoreAppIntroCell.Layout.height)
+                ))
+                
+                let group = NSCollectionLayoutGroup.vertical(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreDetailBossStoreAppIntroCell.Layout.height)
+                    ),
+                    subitems: [item]
+                )
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 32, trailing: 0)
                 return section
             }
         }
@@ -434,5 +461,22 @@ final class StoreDetailViewController: BaseViewController {
         ] as [String : Any]
         
         mapItem.openInMaps(launchOptions: options)
+    }
+    
+    private func showDisappearanceInquiryModal(with viewModel: StoreDetailDisappearanceInquiryModalViewModel) {
+        let view = StoreDetailDisappearanceInquiryModalView()
+        view.bind(viewModel: viewModel)
+        storeDetailView.addSubview(view)
+        storeDetailView.collectionView.contentInset.bottom = 80
+        view.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(12)
+            $0.bottom.equalTo(storeDetailView.bottomStickyView.snp.top).offset(-12)
+        }
+    }
+    
+    private func pushWebView(webViewType: WebViewType) {
+        let viewController = Environment.appModuleInterface.createWebViewController(webviewType: webViewType)
+        
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
