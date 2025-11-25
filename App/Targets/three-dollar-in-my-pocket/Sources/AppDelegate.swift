@@ -17,6 +17,7 @@ import SwiftyBeaver
 import GoogleMobileAds
 import KakaoSDKCommon
 import FirebaseMessaging
+import FirebaseInAppMessaging
 import netfox
 
 typealias Log = SwiftyBeaver
