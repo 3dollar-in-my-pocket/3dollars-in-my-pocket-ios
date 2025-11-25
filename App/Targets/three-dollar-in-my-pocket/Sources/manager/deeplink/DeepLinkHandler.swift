@@ -122,8 +122,9 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         case .browser:
             guard let params = url.params(),
                   let urlString = params["url"] as? String else { return }
+            let title = params["title"] as? String
 
-            let webViewController = WebViewController(title: "브라우저", url: urlString)
+            let webViewController = WebViewController(title: title, url: urlString)
             route(webViewController)
         case .accountInfo:
             let config = AccountInfoViewModelConfig(shouldPush: false)

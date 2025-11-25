@@ -19,7 +19,7 @@ final class WebViewController: BaseViewController {
         webView.bind(webviewType: webviewType)
     }
     
-    convenience init(title: String, url: String) {
+    convenience init(title: String?, url: String) {
         self.init(nibName: nil, bundle: nil)
         
         webView.bind(title: title, url: url)
