@@ -121,11 +121,11 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             route(viewController)
         case .browser:
             guard let params = url.params(),
-                  let urlString = params["url"] as? String,
-                  let url = URL(string: urlString),
-                  UIApplication.shared.canOpenURL(url) else { return }
-            
-            UIApplication.shared.open(url)
+                  let urlString = params["url"] as? String else { return }
+            let title = params["title"] as? String
+
+            let webViewController = WebViewController(title: title, url: urlString)
+            route(webViewController)
         case .accountInfo:
             let config = AccountInfoViewModelConfig(shouldPush: false)
             let viewModel = Environment.membershipInterface.createAccountInfoViewModel(config: config)

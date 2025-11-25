@@ -12,9 +12,7 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     
     private let adType: AdType
     
-    var isLoaded: Bool {
-        return admobView.responseInfo.isNotNil
-    }
+    var isLoaded: Bool = false
     
     required init(adType: AdType) {
         self.adType = adType
@@ -41,6 +39,7 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     }
     
     func load(in rootViewController: UIViewController) {
+        guard isLoaded.isNot else { return }
         admobView.rootViewController = rootViewController
         admobView.adSize = currentOrientationAnchoredAdaptiveBanner(width: frame.width)
         admobView.delegate = self
@@ -50,10 +49,10 @@ class AdBannerView: UIView, AdBannerViewProtocol {
 
 extension AdBannerView: BannerViewDelegate {
     func bannerViewDidReceiveAd(_ bannerView: BannerView) {
-        print("🟢bannerViewDidReceiveAd")
+        isLoaded = true
     }
     
     func bannerView(_ bannerView: BannerView, didFailToReceiveAdWithError error: Error) {
-        print("🟢didFailToReceiveAdWithError: \(error)")
+        isLoaded = false
     }
 }

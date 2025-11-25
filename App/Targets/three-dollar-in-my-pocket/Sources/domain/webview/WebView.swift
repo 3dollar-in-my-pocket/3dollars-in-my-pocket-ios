@@ -54,7 +54,7 @@ final class WebView: BaseView {
         topLineView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(1)
-            $0.top.equalTo(titleLabel.snp.bottom).offset(16)
+            $0.top.equalTo(backButton.snp.bottom).offset(10)
         }
         
         webView.snp.makeConstraints {
@@ -63,7 +63,7 @@ final class WebView: BaseView {
         }
     }
     
-    func bind(title: String, url: String) {
+    func bind(title: String?, url: String) {
         titleLabel.text = title
         
         guard let url = URL(string: url) else { return }
