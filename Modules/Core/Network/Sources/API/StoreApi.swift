@@ -19,6 +19,7 @@ enum StoreApi {
     case existsFeedbackOnDateByAccount(storeId: Int)
     case fetchStore(input: FetchStoreInput)
     case patchStore(storeId: String, input: UserStorePatchRequestV3)
+    case fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType])
 }
 
 extension StoreApi: RequestType {
@@ -60,6 +61,8 @@ extension StoreApi: RequestType {
             return ["includes": input.includes]
         case .patchStore(_, let input):
             return input
+        case .fetchDisplayItems(_, let itemTypes):
+            return ["itemTypes": itemTypes.map { $0.rawValue }]
         }
     }
     
@@ -95,6 +98,8 @@ extension StoreApi: RequestType {
             return .get
         case .patchStore:
             return .patch
+        case .fetchDisplayItems:
+            return .get
         }
     }
     
@@ -133,6 +138,8 @@ extension StoreApi: RequestType {
             return .location
         case .patchStore:
             return .json
+        case .fetchDisplayItems:
+            return .json
         }
     }
     
@@ -168,6 +175,8 @@ extension StoreApi: RequestType {
             return "/api/v5/store/\(input.storeId)"
         case .patchStore(let storeId, _):
             return "/api/v3/store/\(storeId)"
+        case .fetchDisplayItems(let storeId, _):
+            return "/api/v1/store/\(storeId)/display-items"
         }
     }
 }

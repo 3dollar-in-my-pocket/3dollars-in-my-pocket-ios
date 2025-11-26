@@ -59,6 +59,8 @@ final class StoreDetailViewModel: BaseViewModel {
         let toast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
         let error = PassthroughSubject<Error, Never>()
+        
+        let showDisappearanceInquiryModal = PassthroughSubject<StoreDetailDisappearanceInquiryModalViewModel, Never>()
     }
     
     struct State {
@@ -83,6 +85,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentReportBottomSheetReview(ReportReviewBottomSheetViewModel)
         case presentVisit(VisitViewModel)
         case navigateAppleMap(LocationResponse)
+        case pushWebView(WebViewType)
     }
     
     let input = Input()
@@ -120,6 +123,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _: Void) in
                 owner.fetchStoreDetail()
+                owner.fetchDisplayItems()
             }
             .store(in: &cancellables)
         
@@ -359,6 +363,30 @@ final class StoreDetailViewModel: BaseViewModel {
         }
     }
     
+    private func fetchDisplayItems() {
+        Task { [weak self] in
+            guard let self else { return }
+            
+            let displayItemsResult = await storeService.fetchDisplayItems(storeId: state.storeId, itemTypes: [.disappearanceInquiryModal])
+            
+            switch displayItemsResult {
+            case .success(let response):
+                if let item = response.contents.first,
+                   item.itemType == .disappearanceInquiryModal, item.isVisible {
+                    let viewModel = StoreDetailDisappearanceInquiryModalViewModel()
+                    viewModel.output.moveToReport
+                        .sink { [weak self] in
+                            self?.presentReportModal()
+                        }
+                        .store(in: &viewModel.cancellables)
+                    output.showDisappearanceInquiryModal.send(viewModel)
+                }
+            case .failure:
+                break
+            }
+        }
+    }
+    
     private func refreshSections() {
         guard let storeDetailData = state.storeDetailData else { return }
         
@@ -375,7 +403,8 @@ final class StoreDetailViewModel: BaseViewModel {
                 totalCount: storeDetailData.totalReviewCount,
                 rating: storeDetailData.rating,
                 reviews: storeDetailData.reviews
-            )
+            ),
+            .bossStoreAppIntroSection(createBossStoreAppIntroCellViewModel())
         ])
     }
     
@@ -425,6 +454,19 @@ final class StoreDetailViewModel: BaseViewModel {
         viewModel.output.didTapMore
             .subscribe(input.didTapShowMoreMenu)
             .store(in: &cancellables)
+        
+        return viewModel
+    }
+    
+    private func createBossStoreAppIntroCellViewModel() -> StoreDetailBossStoreAppIntroCellViewModel {
+        let viewModel = StoreDetailBossStoreAppIntroCellViewModel()
+        
+        viewModel.output.moveToBossAppIntro
+            .map { _ in
+                .pushWebView(.bossStoreAppIntro)
+            }
+            .subscribe(output.route)
+            .store(in: &viewModel.cancellables)
         
         return viewModel
     }

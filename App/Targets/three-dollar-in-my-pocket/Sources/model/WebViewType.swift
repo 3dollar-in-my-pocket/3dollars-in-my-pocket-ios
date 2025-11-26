@@ -13,6 +13,9 @@ extension WebViewType {
             
         case .marketing:
             return Bundle.marketingURL
+            
+        case .bossStoreAppIntro:
+            return Bundle.bossStoreAppIntroURL
         }
     }
 }

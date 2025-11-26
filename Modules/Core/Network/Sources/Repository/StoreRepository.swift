@@ -35,6 +35,8 @@ public protocol StoreRepository {
     func fetchStore(input: FetchStoreInput) async -> Result<StoreDetailResponse, Error>
     
     func patchStore(storeId: String, input: UserStorePatchRequestV3) async -> Result<UserStoreResponse, Error>
+    
+    func fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<ContentListStoreDisplayResponse, Error>
 }
 
 public struct StoreRepositoryImpl: StoreRepository {
@@ -132,6 +134,13 @@ public struct StoreRepositoryImpl: StoreRepository {
     
     public func patchStore(storeId: String, input: UserStorePatchRequestV3) async -> Result<UserStoreResponse, Error> {
         let request = StoreApi.patchStore(storeId: storeId, input: input)
+        
+        return await NetworkManager.shared.request(requestType: request)
+    }
+    
+    public func
+    fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<ContentListStoreDisplayResponse, Error> {
+        let request = StoreApi.fetchDisplayItems(storeId: storeId, itemTypes: itemTypes)
         
         return await NetworkManager.shared.request(requestType: request)
     }

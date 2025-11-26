@@ -9,6 +9,8 @@ public enum EventName: String {
     case clickSignInApple = "click_sign_in_apple"
     case clickSignInKakao = "click_sign_in_kakao"
     case clickSignInAnonymous = "click_sign_in_anonymous"
+    /// 홈화면 PV가 최소 두번 노출되면 발생하는 이벤트
+    case homeReopen = "home_reopen"
     
     // 회원가입 화면
     case clickSignUp = "click_sign_up"

@@ -168,7 +168,7 @@ final class SearchAddressViewModel: BaseViewModel {
     private func searchAddress(keyword: String) {
         Task {
             let result = await mapRepository.searchAddress(keyword: keyword)
-            
+
             switch result {
             case .success(let response):
                 state.address = response.documents
@@ -181,6 +181,7 @@ final class SearchAddressViewModel: BaseViewModel {
                 output.showErrorAlert.send(error)
             }
         }
+        .store(in: taskBag)
     }
     
     private func selectAddress(document: PlaceDocument) {
@@ -208,17 +209,18 @@ final class SearchAddressViewModel: BaseViewModel {
                 addressName: document.addressName,
                 roadAddressName: document.roadAddressName
             )
-            
+
             let _ = await userRepository.saveMyPlace(
                 placeType: .recentSearch,
                 input: input
             )
         }
+        .store(in: taskBag)
     }
     
     private func bindRecentSearchCellViewModel(with data: PlaceResponse) -> RecentSearchAddressCellViewModel {
         let cellViewModel = RecentSearchAddressCellViewModel(data: data)
-        
+
         cellViewModel.output.deleteRecentSearch
             .withUnretained(self)
             .sink { owner, placeId in
@@ -228,12 +230,13 @@ final class SearchAddressViewModel: BaseViewModel {
                         placeId: placeId
                     )
                 }
-                
+                .store(in: owner.taskBag)
+
                 owner.state.recentSearchAddress.removeAll(where: { $0.placeId == placeId })
                 owner.reloadRecentSearchDataSource()
             }
             .store(in: &cellViewModel.cancellables)
-        
+
         return cellViewModel
     }
     
