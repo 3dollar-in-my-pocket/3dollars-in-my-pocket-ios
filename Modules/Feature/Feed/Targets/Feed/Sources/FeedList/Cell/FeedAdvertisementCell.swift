@@ -4,7 +4,7 @@ import Model
 
 final class FeedAdvertisementCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 60
+        static let height: CGFloat = 200
     }
     
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .localNewsFeed)
