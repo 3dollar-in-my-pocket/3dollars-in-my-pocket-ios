@@ -18,13 +18,28 @@ final class MainTabBarViewModel: Common.BaseViewModel {
         case presentMainBannerPopup(MainBannerPopupViewModel)
     }
     
+    struct Dependency {
+        let advertisementRepository: AdvertisementRepository
+        var preference: Preference
+        let deeplinkHandler: DeepLinkHandler
+        
+        init(
+            advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
+            preference: Preference = .shared,
+            deeplinkHandler: DeepLinkHandler = .shared
+        ) {
+            self.advertisementRepository = advertisementRepository
+            self.preference = preference
+            self.deeplinkHandler = deeplinkHandler
+        }
+    }
+    
     let input = Input()
     let output = Output()
-    private let advertisementRepository: AdvertisementRepository
-    private var preference = Preference.shared
+    private var dependency: Dependency
     
-    init(advertisementService: AdvertisementRepository = AdvertisementRepositoryImpl()) {
-        self.advertisementRepository = advertisementService
+    init(dependency: Dependency = Dependency()) {
+        self.dependency = dependency
     }
     
     override func bind() {
@@ -39,11 +54,12 @@ final class MainTabBarViewModel: Common.BaseViewModel {
     private func checkIfBannerExisted() {
         Task {
             let input = FetchAdvertisementInput(position: .splash, size: nil)
-            let result = await advertisementRepository.fetchAdvertisements(input: input)
+            let result = await dependency.advertisementRepository.fetchAdvertisements(input: input)
             
             switch result {
             case .success(let response):
-                guard let advertisement = response.advertisements.first else { return }
+                guard let advertisement = response.advertisements.first,
+                      dependency.deeplinkHandler.reservedDeepLinkExisted().isNot else { return }
                 presentMainAdBannerIfNeeded(advertisement)
                 
             case .failure:
@@ -56,7 +72,7 @@ final class MainTabBarViewModel: Common.BaseViewModel {
         let config = MainBannerPopupViewModel.Config(advertisement: advertisement)
         let viewModel = MainBannerPopupViewModel(config: config)
         
-        if let shownDate = preference.getShownMainBannerDate(id: advertisement.advertisementId) {
+        if let shownDate = dependency.preference.getShownMainBannerDate(id: advertisement.advertisementId) {
             if shownDate != Common.DateUtils.todayString() {
                 output.route.send(.presentMainBannerPopup(viewModel))
             }
