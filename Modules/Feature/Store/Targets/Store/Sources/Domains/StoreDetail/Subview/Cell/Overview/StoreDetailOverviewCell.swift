@@ -7,7 +7,7 @@ import AppInterface
 
 final class StoreDetailOverviewCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 437
+        static let height: CGFloat = 588
     }
     
     let titleView = StoreDetailOverviewTitleView()
@@ -72,7 +72,7 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
         adBannerView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()
-            $0.height.equalTo(49)
+            $0.height.equalTo(200)
             $0.bottom.equalToSuperview().offset(-32)
         }
     }
