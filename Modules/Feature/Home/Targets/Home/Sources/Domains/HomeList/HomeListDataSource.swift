@@ -13,6 +13,7 @@ struct HomeListSection: Hashable {
 enum HomeListSectionItem: Hashable {
     case store(StoreWithExtraResponse)
     case ad(HomeListAdCellViewModel)
+    case admob
     case emptyStore
 }
 
@@ -27,7 +28,8 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
         collectionView.register([
             HomeListCell.self,
             HomeListAdCell.self,
-            HomeListEmptyCell.self
+            HomeListEmptyCell.self,
+            HomeListAdmobCell.self
         ])
         collectionView.registerSectionHeader([HomeListHeaderCell.self])
         
@@ -42,6 +44,10 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
                 let cell: HomeListAdCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 
                 cell.bind(viewModel: viewModel, rootViewController: rootViewController)
+                return cell
+            case .admob:
+                let cell: HomeListAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(rootViewController: rootViewController)
                 return cell
             case .emptyStore:
                 let cell: HomeListEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)
@@ -135,6 +141,8 @@ extension HomeListDataSource: UICollectionViewDelegateFlowLayout {
             return HomeListCell.Layout.size
         case .ad:
             return HomeListAdCell.Layout.size
+        case .admob:
+            return HomeListAdmobCell.Layout.size
         case .emptyStore:
             return HomeListEmptyCell.Layout.size
         case .none:

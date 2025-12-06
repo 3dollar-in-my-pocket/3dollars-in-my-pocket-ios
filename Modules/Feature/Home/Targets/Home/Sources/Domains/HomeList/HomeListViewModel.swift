@@ -259,7 +259,7 @@ final class HomeListViewModel: BaseViewModel {
     
     private func canLoad(index: Int) -> Bool {
         var contentsCount = state.stores.count
-        contentsCount += 1 // 광고 카운트
+        contentsCount += 2 // 광고 카운트
         return index >= contentsCount - 1 && state.nextCursor != nil && state.hasMore
     }
     
@@ -332,6 +332,9 @@ final class HomeListViewModel: BaseViewModel {
         if sectionItems.isEmpty {
             sectionItems.append(.emptyStore)
         }
+        
+        let admobIndex = min(0, sectionItems.count)
+        sectionItems.insert(.admob, at: admobIndex)
         
         let index = min(1, sectionItems.count) // 두번째 구좌에 노출
         let config = HomeListAdCellViewModel.Config(ad: state.advertisement)

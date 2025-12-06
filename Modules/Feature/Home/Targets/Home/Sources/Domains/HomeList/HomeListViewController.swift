@@ -47,8 +47,6 @@ final class HomeListViewController: BaseViewController {
         
         bind()
         viewModel.input.viewDidLoad.send(())
-        
-        homeListView.bindAdvertisement(in: self)
     }
     
     private func bind() {
