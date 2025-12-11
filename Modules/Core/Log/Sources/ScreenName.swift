@@ -69,4 +69,7 @@ public enum ScreenName: String {
     case qna
     case faq
     case teamInfo = "team_info"
+    
+    // Feed
+    case feedList = "feed_list"
 }

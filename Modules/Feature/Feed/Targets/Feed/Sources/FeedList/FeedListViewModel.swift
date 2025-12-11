@@ -5,6 +5,7 @@ import FeedInterface
 import Common
 import Model
 import Networking
+import Log
 
 extension FeedListViewModel {
     struct Input {
@@ -15,6 +16,7 @@ extension FeedListViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .feedList
         let datasource = CurrentValueSubject<[FeedListSection], Never>([])
         let route = PassthroughSubject<Route, Never>()
     }
