@@ -25,6 +25,10 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
     
     private var reservedDeepLink: String?
     
+    func reservedDeepLinkExisted() -> Bool {
+        return reservedDeepLink.isNotNil
+    }
+    
     func handleAdvertisementLink(_ advertisementLink: AdvertisementLinkResponse) {
         switch advertisementLink.type {
         case .appScheme:

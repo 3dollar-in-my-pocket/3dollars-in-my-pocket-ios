@@ -4,8 +4,13 @@ import Common
 import DesignSystem
 import Model
 import CombineCocoa
+import Log
 
 public final class FeedListViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        viewModel.output.screenName
+    }
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = Fonts.medium.font(size: 16)

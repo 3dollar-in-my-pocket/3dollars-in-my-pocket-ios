@@ -42,6 +42,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
             .font: Fonts.semiBold.font(size: 16),
             .foregroundColor: Colors.systemWhite.color
         ]))
+        config.background.cornerRadius = 0
         let button = UIButton(configuration: config)
         button.backgroundColor = Colors.mainPink.color
         return button

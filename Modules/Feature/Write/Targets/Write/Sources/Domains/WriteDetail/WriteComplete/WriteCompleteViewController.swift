@@ -87,6 +87,7 @@ final class WriteCompleteViewController: BaseViewController {
             .font: Fonts.bold.font(size: 16),
             .foregroundColor: Colors.systemWhite.color
         ]))
+        config.background.cornerRadius = 0
         let button = UIButton(configuration: config)
         button.backgroundColor = Colors.mainPink.color
         return button

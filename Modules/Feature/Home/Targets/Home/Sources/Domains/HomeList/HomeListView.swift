@@ -11,13 +11,6 @@ final class HomeListView: BaseView {
     
     private lazy var homeFilterCollectionView = HomeFilterCollectionView(homeFilterSelectable: homeFilterSelectable)
     
-    let adBannerView: AdBannerViewProtocol = {
-        let view = Environment.appModuleInterface.createAdBannerView(adType: .homeList)
-        
-        view.backgroundColor = DesignSystemAsset.Colors.gray0.color
-        return view
-    }()
-    
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
         $0.backgroundColor = .clear
     }
@@ -56,7 +49,6 @@ final class HomeListView: BaseView {
         
         addSubViews([
             homeFilterCollectionView,
-            adBannerView,
             collectionView,
             mapViewButton
         ])
@@ -68,18 +60,11 @@ final class HomeListView: BaseView {
             $0.height.equalTo(60)
         }
         
-        adBannerView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
-            $0.top.equalTo(homeFilterCollectionView.snp.bottom)
-            $0.height.equalTo(49)
-        }
-        
         collectionView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.right.equalToSuperview()
             $0.bottom.equalToSuperview()
-            $0.top.equalTo(adBannerView.snp.bottom)
+            $0.top.equalTo(homeFilterCollectionView.snp.bottom)
         }
         
         mapViewButton.snp.makeConstraints {
@@ -87,10 +72,6 @@ final class HomeListView: BaseView {
             $0.height.equalTo(40)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-24)
         }
-    }
-    
-    func bindAdvertisement(in rootViewController: UIViewController) {
-        adBannerView.load(in: rootViewController)
     }
     
     private func generateLayout() -> UICollectionViewLayout {
