@@ -86,13 +86,27 @@ final class EditStoreInfoViewModel: BaseViewModel {
         
         input.selectStartTime
             .sink { [weak self] time in
-                self?.state.store.openingHours?.startTime = time.toString(format: "HH:mm")
+                guard let self else { return }
+                let startTime = time.toString(format: "HH:mm")
+                
+                if state.store.openingHours.isNil {
+                    state.store.openingHours = StoreOpeningHours(startTime: startTime, endTime: nil)
+                } else {
+                    state.store.openingHours?.startTime = startTime
+                }
             }
             .store(in: &cancellables)
         
         input.selectEndTime
             .sink { [weak self] time in
-                self?.state.store.openingHours?.endTime = time.toString(format: "HH:mm")
+                guard let self else { return }
+                let endTime = time.toString(format: "HH:mm")
+                
+                if state.store.openingHours.isNil {
+                    state.store.openingHours = StoreOpeningHours(startTime: nil, endTime: endTime)
+                } else {
+                    state.store.openingHours?.endTime = endTime
+                }
             }
             .store(in: &cancellables)
         
