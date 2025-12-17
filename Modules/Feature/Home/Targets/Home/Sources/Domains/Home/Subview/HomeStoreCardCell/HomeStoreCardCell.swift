@@ -78,6 +78,8 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
         infoView.prepareForReuse()
         tagStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         actionButton.kf.cancelImageDownloadTask()
+        badgeImageView.image = nil
+        badgeImageView.isHidden = true
     }
     
     override func setup() {
@@ -149,11 +151,15 @@ final class HomeStoreCardCell: BaseCollectionViewCell {
         }
         
         setupTagLabels(labels: data.labels)
-        
+
         if let badge = data.badge {
             setupBadge(badge: badge)
+            badgeImageView.isHidden = false
+        } else {
+            badgeImageView.image = nil
+            badgeImageView.isHidden = true
         }
-        
+
         infoView.bind(data.metadata)
         setupButton(button: data.button)
     }
