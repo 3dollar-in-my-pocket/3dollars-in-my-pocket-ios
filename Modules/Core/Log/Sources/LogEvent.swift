@@ -73,8 +73,7 @@ public enum LogObjectType: String {
     case button
     case card
     case marker
-    case inputField = "input_field"
-    case advertisement
+    case banner
 }
 
 public enum LogObjectId: String {
@@ -83,13 +82,16 @@ public enum LogObjectId: String {
     case signInAnonymous = "sign_in_anonymous"
     case signUp = "sign_up"
     case random
-    case homeCard = "home_card"
+    case store
     case visit
     case currentLocation = "current_location"
-    case homeMarker = "home_marker"
     case address
     case categoryFilter = "category_filter"
     case bossFilter = "boss_filter"
     case sorting
     case recentActivityFilter = "recent_activity_filter"
+    case category
+    case banner
+    case menu
+    case advertisement
 }
