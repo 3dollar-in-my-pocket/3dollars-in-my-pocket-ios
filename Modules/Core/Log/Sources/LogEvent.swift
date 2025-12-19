@@ -1,9 +1,9 @@
 import Foundation
 
-public struct LogEvent {
-    public let screen: ScreenName
-    public let name: EventName
-    public let extraParameters: [ParameterName: Any]?
+public struct LogEvent: LogEventType {
+    public var screen: ScreenName
+    public var name: EventName
+    public var extraParameters: [ParameterName: Any]?
     
     public init(
         screen: ScreenName,
@@ -14,18 +14,82 @@ public struct LogEvent {
         self.name = eventName
         self.extraParameters = extraParameters
     }
-    
-    public var parameters: [String: Any] {
+}
+
+public protocol LogEventType {
+    var screen: ScreenName { set get }
+    var name: EventName { set get }
+    var extraParameters: [ParameterName: Any]? { set get }
+}
+
+public extension LogEventType {
+    var parameters: [String: Any] {
         var result: [String: Any] = [:]
         
         if let extraParameters {
             extraParameters.forEach { key, value in
-                result[key.rawValue] = value
+                if let objectId = value as? LogObjectId {
+                    result[key.rawValue] = objectId.rawValue
+                } else if let objectType = value as? LogObjectType {
+                    result[key.rawValue] = objectType.rawValue
+                } else {
+                    result[key.rawValue] = value
+                }
             }
         }
         
         result[ParameterName.screen.rawValue] = screen.rawValue
         return result
     }
+}
+
+public struct ClickEvent: LogEventType {
+    public var screen: ScreenName
+    public var name: EventName = .click
+    public var extraParameters: [ParameterName : Any]?
     
+    public init(
+        screen: ScreenName,
+        objectType: LogObjectType,
+        objectId: LogObjectId,
+        extraParameters: [ParameterName : Any]? = nil
+    ) {
+        self.screen = screen
+        
+        var clickObject: [ParameterName: Any] = [
+            .objectId: objectId,
+            .objectType: objectType
+        ]
+        
+        if let extraParameters {
+            clickObject.merge(extraParameters) { _, new in new }
+        }
+        
+        self.extraParameters = clickObject
+    }
+}
+
+public enum LogObjectType: String {
+    case button
+    case card
+    case marker
+    case inputField = "input_field"
+    case advertisement
+}
+
+public enum LogObjectId: String {
+    case signInApple = "sign_in_apple"
+    case signInKakao = "sign_in_kakao"
+    case signInAnonymous = "sign_in_anonymous"
+    case signUp = "sign_up"
+    case random
+    case homeCard = "home_card"
+    case visit
+    case currentLocation = "current_location"
+    case homeMarker = "home_marker"
+    case address
+    case categoryFilter = "category_filter"
+    case bossFilter = "boss_filter"
+    case sorting
+    case recentActivityFilter = "recent_activity_filter"
 }

@@ -5,6 +5,8 @@ public protocol LogManagerProtocol {
     func sendPageView(screen: ScreenName, type: AnyObject.Type)
     
     func sendEvent(_ event: LogEvent)
+    
+    func sendEvent(event: LogEventType)
 }
 
 public final class LogManager: LogManagerProtocol {
@@ -36,6 +38,17 @@ public final class LogManager: LogManagerProtocol {
         }
     }
     
+    public func sendEvent(event: LogEventType) {
+        Environment.appModuleInterface.sendEvent(
+            name: event.name.rawValue,
+            parameters: event.parameters
+        )
+        
+        if isEnableDebug {
+            debugCustomEvent(event)
+        }
+    }
+    
     private func debugPageView(screen: ScreenName, type: AnyObject.Type) {
         let message: StaticString = """
         🧡 [LogManager]: PageView
@@ -46,7 +59,7 @@ public final class LogManager: LogManagerProtocol {
         os_log(.debug, message, screen.rawValue, String(describing: type))
     }
     
-    private func debugCustomEvent(_ event: LogEvent) {
+    private func debugCustomEvent(_ event: LogEventType) {
         let message: StaticString = """
         🧡 [LogManager]: CustomEvent
             => name: %{PUBLIC}@

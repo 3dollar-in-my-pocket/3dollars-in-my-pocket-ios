@@ -1,6 +1,7 @@
 import Foundation
 
-public enum EventName: String {
+public enum EventName: String, Sendable {
+    case click = "click"
     // 공용
     case clickStore = "click_store"
     case clickLike = "click_like"
