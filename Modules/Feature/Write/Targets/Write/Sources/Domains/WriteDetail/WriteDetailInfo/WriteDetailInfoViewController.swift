@@ -62,7 +62,7 @@ final class WriteDetailInfoViewController: BaseViewController {
     private let tapBackground = UITapGestureRecognizer()
     
     override var screenName: ScreenName {
-        return .writeDetailInfo
+        return viewModel.output.screenName
     }
     
     init(viewModel: WriteDetailInfoViewModel) {

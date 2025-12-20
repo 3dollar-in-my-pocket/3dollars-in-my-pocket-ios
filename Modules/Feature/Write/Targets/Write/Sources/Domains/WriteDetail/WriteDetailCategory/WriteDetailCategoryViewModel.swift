@@ -4,6 +4,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 extension WriteDetailCategoryViewModel {
     enum Constants {
@@ -17,6 +18,7 @@ extension WriteDetailCategoryViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .writeDetailCategory
         let datasource = CurrentValueSubject<[WriteDetailCategorySection], Never>([])
         let selectedCategoryCount = CurrentValueSubject<Int, Never>(0)
         let setErrorCountState = CurrentValueSubject<Bool, Never>(false)
@@ -37,9 +39,14 @@ extension WriteDetailCategoryViewModel {
     
     struct Dependency {
         let categoryRepository: CategoryRepository
-        
-        init(categoryRepository: CategoryRepository = CategoryRepositoryImpl()) {
+        let logManager: LogManagerProtocol
+
+        init(
+            categoryRepository: CategoryRepository = CategoryRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared
+        ) {
             self.categoryRepository = categoryRepository
+            self.logManager = logManager
         }
     }
 }
@@ -120,7 +127,16 @@ final class WriteDetailCategoryViewModel: BaseViewModel {
             output.setErrorCountState.send(true)
             return
         }
-        
+
+        sendClickNextLog()
         output.finishSelectCategory.send(state.selectedCategories)
+    }
+
+    private func sendClickNextLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .next
+        ))
     }
 }

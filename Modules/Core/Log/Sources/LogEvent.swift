@@ -109,6 +109,8 @@ public enum LogObjectId: String {
     case sns
     case copyAccount = "copy_account"
     case setAddress = "set_address"
+    case next
+    case skip
     case category
     case banner
     case menu
@@ -117,4 +119,6 @@ public enum LogObjectId: String {
     case boss
     case ok
     case install
+    case addMenu = "add_menu"
+    case addAdditionalInfo = "add_additional_info"
 }

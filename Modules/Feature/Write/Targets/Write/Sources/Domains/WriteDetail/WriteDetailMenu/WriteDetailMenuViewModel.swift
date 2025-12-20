@@ -3,6 +3,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 extension WriteDetailMenuViewModel {
     struct Input {
@@ -19,6 +20,7 @@ extension WriteDetailMenuViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .writeDetailMenu
         let afterCreatedStore: Bool
         let categories = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let selectedCategoryIndex = CurrentValueSubject<Int, Never>(0)
@@ -39,9 +41,14 @@ extension WriteDetailMenuViewModel {
     
     struct Dependency {
         let categoryRepository: CategoryRepository
-        
-        init(categoryRepository: CategoryRepository = CategoryRepositoryImpl()) {
+        let logManager: LogManagerProtocol
+
+        init(
+            categoryRepository: CategoryRepository = CategoryRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared
+        ) {
             self.categoryRepository = categoryRepository
+            self.logManager = logManager
         }
     }
     
@@ -122,6 +129,9 @@ final class WriteDetailMenuViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.didTapSkip
+            .handleEvents(receiveOutput: { [weak self] _ in
+                self?.sendClickSkipLog()
+            })
             .subscribe(output.didTapSkip)
             .store(in: &cancellables)
         
@@ -241,19 +251,21 @@ final class WriteDetailMenuViewModel: BaseViewModel {
     
     private func finishInputMenu() {
         let menus = state.menus.flatMap { $0.value }
-        
+
         guard validateCount(menus: menus) else {
             output.toast.send(Strings.WriteDetailMenu.Toast.validateMenu)
             return
         }
-        
+
         guard validatePrice(menus: menus) else {
             output.toast.send(Strings.WriteDetailMenu.Toast.validatePrice)
             return
         }
+
+        sendClickNextLog()
         output.finishInputMenu.send(menus)
         output.finishInputCategory.send(state.selectedCategories)
-        
+
         if output.afterCreatedStore {
             output.route.send(.pop)
         }
@@ -295,5 +307,21 @@ final class WriteDetailMenuViewModel: BaseViewModel {
             }
         }
         return true
+    }
+
+    private func sendClickSkipLog() {
+        dependencies.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .skip
+        ))
+    }
+
+    private func sendClickNextLog() {
+        dependencies.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .next
+        ))
     }
 }

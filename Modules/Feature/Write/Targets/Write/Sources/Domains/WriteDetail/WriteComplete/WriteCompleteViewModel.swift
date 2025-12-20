@@ -4,6 +4,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 extension WriteCompleteViewModel {
     struct Input {
@@ -14,6 +15,7 @@ extension WriteCompleteViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .writeDetailComplete
         let isLoading = PassthroughSubject<Bool, Never>()
         let userStoreResponse: CurrentValueSubject<UserStoreResponse, Never>
         let didTapComplete = PassthroughSubject<String, Never>()
@@ -29,9 +31,14 @@ extension WriteCompleteViewModel {
     
     struct Dependency {
         let storeRepository: StoreRepository
-        
-        init(storeRepository: StoreRepository = StoreRepositoryImpl()) {
+        let logManager: LogManagerProtocol
+
+        init(
+            storeRepository: StoreRepository = StoreRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared
+        ) {
             self.storeRepository = storeRepository
+            self.logManager = logManager
         }
     }
     
@@ -73,19 +80,22 @@ final class WriteCompleteViewModel: BaseViewModel {
     override func bind() {
         input.didTapAddMenu
             .sink { [weak self] in
+                self?.sendClickAddMenuLog()
                 self?.pushWriteDetailMenu()
             }
             .store(in: &cancellables)
-        
+
         input.didTapAddAdditionalInfo
             .sink { [weak self] in
+                self?.sendClickAddAdditionalInfoLog()
                 self?.pushWriteDetailAdditionalInfo()
             }
             .store(in: &cancellables)
-        
+
         input.didTapComplete
             .sink(receiveValue: { [weak self] _ in
                 guard let self else { return }
+                sendClickOkLog()
                 output.didTapComplete.send(String(state.userStoreResponse.storeId))
             })
             .store(in: &cancellables)
@@ -157,5 +167,29 @@ final class WriteCompleteViewModel: BaseViewModel {
                 output.route.send(.showErrorAlert(error))
             }
         }
+    }
+
+    private func sendClickAddMenuLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .addMenu
+        ))
+    }
+
+    private func sendClickAddAdditionalInfoLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .addAdditionalInfo
+        ))
+    }
+
+    private func sendClickOkLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .ok
+        ))
     }
 }

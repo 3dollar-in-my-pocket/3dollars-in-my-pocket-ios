@@ -91,7 +91,7 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
     }()
     
     override var screenName: ScreenName {
-        return .writeDetailAdditionalInfo
+        return viewModel.output.screenName
     }
     
     private let viewModel: WriteDetailAdditionalInfoViewModel
