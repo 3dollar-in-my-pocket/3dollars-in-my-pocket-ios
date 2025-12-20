@@ -47,7 +47,7 @@ public struct ClickEvent: LogEventType {
     public var screen: ScreenName
     public var name: EventName = .click
     public var extraParameters: [ParameterName : Any]?
-    
+
     public init(
         screen: ScreenName,
         objectType: LogObjectType,
@@ -55,16 +55,16 @@ public struct ClickEvent: LogEventType {
         extraParameters: [ParameterName : Any]? = nil
     ) {
         self.screen = screen
-        
+
         var clickObject: [ParameterName: Any] = [
             .objectId: objectId,
             .objectType: objectType
         ]
-        
+
         if let extraParameters {
             clickObject.merge(extraParameters) { _, new in new }
         }
-        
+
         self.extraParameters = clickObject
     }
 }
@@ -93,6 +93,7 @@ public enum LogObjectId: String {
     case onlyVisit = "only_visit"
     case doNotShowToday = "do_not_show_today"
     case close
+    case bottomButton = "bottom_button"
     case category
     case banner
     case menu
