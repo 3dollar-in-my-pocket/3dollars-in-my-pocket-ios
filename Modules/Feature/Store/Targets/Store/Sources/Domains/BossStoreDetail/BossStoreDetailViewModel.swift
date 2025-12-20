@@ -15,6 +15,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         let firstLoad = PassthroughSubject<Void, Never>()
         let reload = PassthroughSubject<Void, Never>()
         let didTapReviewWriteButton = PassthroughSubject<Void, Never>()
+        let didAppear = PassthroughSubject<Void, Never>()
 
         // Overview section
         let didTapSave = PassthroughSubject<Void, Never>()
@@ -141,6 +142,12 @@ final class BossStoreDetailViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
         
+        input.didAppear
+            .sink { [weak self] in
+                self?.sendPageViewLog()
+            }
+            .store(in: &cancellables)
+        
         input.firstLoad
             .sink { [weak self] in
                 guard let self, state.shouldPushReviewList else { return }
@@ -213,6 +220,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         input.didTapAddress
             .withUnretained(self)
             .sink { owner, _ in
+                owner.sendClickCopyAddressLog()
                 owner.copyAddressToClipBoard()
             }
             .store(in: &cancellables)
@@ -220,6 +228,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         input.didTapMapDetail
             .withUnretained(self)
             .sink { owner, _ in
+                owner.sendClickZoomLog()
                 owner.presentMapDetail()
             }
             .store(in: &cancellables)
@@ -731,23 +740,76 @@ extension BossStoreDetailViewModel {
     }
 }
 
+// MARK: Log
 extension BossStoreDetailViewModel {
-    private func sendClickFavoriteLog(isDelete: Bool) {
-        let value = isDelete ? "off" : "on"
-        logManager.sendEvent(.init(
+    private func sendPageViewLog() {
+        logManager.sendPageView(
             screen: output.screenName,
-            eventName: .clickFavorite,
+            type: BossStoreDetailViewController.self,
             extraParameters: [
                 .storeId: storeId,
-                .value: value
+                .storeType: StoreType.bossStore.rawValue
+            ]
+        )
+    }
+    
+    private func sendClickFavoriteLog(isDelete: Bool) {
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .favorite,
+            extraParameters: [
+                .storeId: storeId,
+                .value: !isDelete
             ]
         ))
     }
-    
+
     private func sendClickLog(eventName: EventName) {
-        logManager.sendEvent(.init(
+        let objectId: LogObjectId
+        switch eventName {
+        case .clickShare:
+            objectId = .share
+        case .clickNavigation:
+            objectId = .navigation
+        case .clickSns:
+            objectId = .sns
+        case .clickWriteReview:
+            objectId = .writeReview
+        default:
+            return
+        }
+
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: eventName,
-            extraParameters: [.storeId: storeId]))
+            objectType: .button,
+            objectId: objectId,
+            extraParameters: [.storeId: storeId]
+        ))
+    }
+
+    private func sendClickCopyAccountLog() {
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .copyAccount,
+            extraParameters: [.storeId: storeId]
+        ))
+    }
+    
+    private func sendClickCopyAddressLog() {
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .copyAddress
+        ))
+    }
+    
+    private func sendClickZoomLog() {
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .zoomMap
+        ))
     }
 }

@@ -106,6 +106,8 @@ public enum LogObjectId: String {
     case deleteReview = "delete_review"
     case visitSuccess = "visit_success"
     case visitFail = "visit_fail"
+    case sns
+    case copyAccount = "copy_account"
     case category
     case banner
     case menu
