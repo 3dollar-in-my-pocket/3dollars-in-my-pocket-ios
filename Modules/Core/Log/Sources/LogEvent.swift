@@ -104,6 +104,8 @@ public enum LogObjectId: String {
     case like
     case sort
     case deleteReview = "delete_review"
+    case visitSuccess = "visit_success"
+    case visitFail = "visit_fail"
     case category
     case banner
     case menu
