@@ -227,11 +227,12 @@ final class UploadPhotoViewModel: BaseViewModel {
 // MARK: Log
 extension UploadPhotoViewModel {
     private func sendClickUploadPhoto(count: Int, storeId: Int) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickUpload,
+            objectType: .button,
+            objectId: .upload,
             extraParameters: [
-                .storeId: storeId,
+                .storeId: "\(storeId)",
                 .count: count
             ]
         ))
