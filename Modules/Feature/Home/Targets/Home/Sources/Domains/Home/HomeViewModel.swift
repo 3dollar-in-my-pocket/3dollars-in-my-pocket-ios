@@ -424,6 +424,7 @@ final class HomeViewModel: BaseViewModel {
                     mapLongitude: mapLocation?.coordinate.longitude
                 )
                 let viewModel = FeedListViewModel(config: config)
+                owner.sendClickFeedButtonLog()
                 owner.output.route.send(.presentFeedList(viewModel))
             }
             .store(in: &cancellables)
@@ -745,6 +746,14 @@ extension HomeViewModel {
             screen: output.screenName,
             objectType: .marker,
             objectId: .store
+        ))
+    }
+    
+    private func sendClickFeedButtonLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .feed
         ))
     }
 }

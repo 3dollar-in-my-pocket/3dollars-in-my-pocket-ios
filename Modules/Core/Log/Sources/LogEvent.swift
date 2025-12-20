@@ -124,4 +124,5 @@ public enum LogObjectId: String {
     case location
     case info
     case edit
+    case feed
 }
