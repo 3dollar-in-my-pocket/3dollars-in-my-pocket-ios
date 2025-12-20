@@ -102,6 +102,8 @@ public enum LogObjectId: String {
     case copyAddress = "copy_address"
     case zoomMap = "zoom_map"
     case like
+    case sort
+    case deleteReview = "delete_review"
     case category
     case banner
     case menu

@@ -341,44 +341,52 @@ public final class ReviewListViewModel: BaseViewModel {
 // MARK: Log
 extension ReviewListViewModel {
     private func sendClickSortLog(sortType: SubtabStackView.SortType) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickSort,
+            objectType: .button,
+            objectId: .sort,
             extraParameters: [
-                .type: sortType.rawValue
+                .value: sortType.rawValue
             ]
         ))
     }
-    
+
     private func sendClickDeleteReviewLog(reviewId: Int) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickDeleteReview,
+            objectType: .button,
+            objectId: .deleteReview,
             extraParameters: [
                 .reviewId: reviewId
             ]
         ))
     }
-    
+
     private func sendClickReportReviewLog(reviewId: Int) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickReport,
+            objectType: .button,
+            objectId: .report,
             extraParameters: [
                 .reviewId: reviewId
             ]
         ))
     }
-    
+
     private func sendClickWriteReviewLog() {
-        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickWriteReview))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .writeReview
+        ))
     }
-    
+
     private func sendClickLike(index: Int) {
         guard let review = state.reviews[safe: index] else { return }
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickLike,
+            objectType: .button,
+            objectId: .like,
             extraParameters: [
                 .reviewId: review.reviewId,
                 .value: !review.reactedByMe
