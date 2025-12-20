@@ -22,4 +22,5 @@ public enum ParameterName: String {
     case pollSecondOption = "poll_second_option"
     case buildingName = "building_name"
     case medalId = "medal_id"
+    case storeType = "store_type"
 }

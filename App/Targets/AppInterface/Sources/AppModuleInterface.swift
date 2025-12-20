@@ -23,6 +23,7 @@ public protocol AppModuleInterface {
     
     /// GA
     func sendPageView(screenName: String, type: AnyObject.Type)
+    func sendPageView(screenName: String, type: AnyObject.Type, parameters: [String: Any]?)
     func sendEvent(name: String, parameters: [String: Any]?)
     
     // Admob

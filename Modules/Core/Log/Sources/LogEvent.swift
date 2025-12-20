@@ -94,6 +94,14 @@ public enum LogObjectId: String {
     case doNotShowToday = "do_not_show_today"
     case close
     case bottomButton = "bottom_button"
+    case favorite
+    case report
+    case share
+    case navigation
+    case writeReview = "write_review"
+    case copyAddress = "copy_address"
+    case zoomMap = "zoom_map"
+    case like
     case category
     case banner
     case menu
