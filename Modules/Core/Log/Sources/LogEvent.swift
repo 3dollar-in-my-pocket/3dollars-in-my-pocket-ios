@@ -108,9 +108,13 @@ public enum LogObjectId: String {
     case visitFail = "visit_fail"
     case sns
     case copyAccount = "copy_account"
+    case setAddress = "set_address"
     case category
     case banner
     case menu
     case advertisement
     case upload
+    case boss
+    case ok
+    case install
 }

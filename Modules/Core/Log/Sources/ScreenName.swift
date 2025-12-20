@@ -21,7 +21,7 @@ public enum ScreenName: String {
     
     /// Write
     case writeAddress = "write_address"
-    case writeAddressPopup = "write_address_popop"
+    case writeAddressPopup = "write_address_popup"
     case writeAddressDetail = "write_address_detail"
     case writeAddressBossBottomSheet = "write_address_boss_bottom_sheet"
     case writeDetailComplete = "write_detail_complete"

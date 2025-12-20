@@ -129,7 +129,7 @@ final class BossAppBottomSheetViewController: BaseViewController {
     }()
 
     override var screenName: ScreenName {
-        return .writeAddressBossBottomSheet
+        return viewModel.output.screenName
     }
     private let viewModel: BossAppBottomSheetViewModel
 

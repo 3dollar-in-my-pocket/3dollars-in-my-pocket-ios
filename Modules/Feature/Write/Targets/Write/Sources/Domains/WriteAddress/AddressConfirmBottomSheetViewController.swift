@@ -33,7 +33,7 @@ final class AddressConfirmBottomSheetViewController: BaseViewController {
     }
     
     override var screenName: ScreenName {
-        return .writeAddressPopup
+        return viewModel.output.screen
     }
     
     private let viewModel: AddressConfirmBottomSheetViewModel
