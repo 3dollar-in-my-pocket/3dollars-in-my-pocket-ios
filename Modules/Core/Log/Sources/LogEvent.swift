@@ -91,6 +91,8 @@ public enum LogObjectId: String {
     case sorting
     case recentActivityFilter = "recent_activity_filter"
     case onlyVisit = "only_visit"
+    case doNotShowToday = "do_not_show_today"
+    case close
     case category
     case banner
     case menu

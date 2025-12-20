@@ -76,25 +76,29 @@ final class MainBannerPopupViewModel: BaseViewModel {
     }
     
     private func snedClickBannerLog() {
-        logManager.sendEvent(LogEvent(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickAdBanner,
+            objectType: .banner,
+            objectId: .advertisement,
             extraParameters: [
                 .advertisementId: "\(state.advertisement.advertisementId)"
-            ]))
-    }
-    
-    private func sendClickNotShowTodayLog() {
-        logManager.sendEvent(LogEvent(
-            screen: output.screenName,
-            eventName: .clickNotShowToday
+            ]
         ))
     }
-    
-    private func sendClickCloseLog() {
-        logManager.sendEvent(LogEvent(
+
+    private func sendClickNotShowTodayLog() {
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickClose
+            objectType: .button,
+            objectId: .doNotShowToday
+        ))
+    }
+
+    private func sendClickCloseLog() {
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .close
         ))
     }
 }
