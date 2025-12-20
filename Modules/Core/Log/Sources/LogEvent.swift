@@ -121,4 +121,7 @@ public enum LogObjectId: String {
     case install
     case addMenu = "add_menu"
     case addAdditionalInfo = "add_additional_info"
+    case location
+    case info
+    case edit
 }

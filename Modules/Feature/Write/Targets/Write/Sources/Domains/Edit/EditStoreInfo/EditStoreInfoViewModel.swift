@@ -3,6 +3,7 @@ import Combine
 
 import Common
 import Model
+import Log
 
 extension EditStoreInfoViewModel {
     struct Input {
@@ -16,6 +17,7 @@ extension EditStoreInfoViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .editStoreInfo
         let store: CurrentValueSubject<UserStoreResponse, Never>
         let nameFieldState = PassthroughSubject<NameTextField.State, Never>()
         let editedStoreInfo = PassthroughSubject<UserStoreResponse, Never>()
@@ -30,7 +32,15 @@ extension EditStoreInfoViewModel {
     struct Config {
         let store: UserStoreResponse
     }
-    
+
+    struct Dependency {
+        let logManager: LogManagerProtocol
+
+        init(logManager: LogManagerProtocol = LogManager.shared) {
+            self.logManager = logManager
+        }
+    }
+
     struct State {
         var store: UserStoreResponse
     }
@@ -39,12 +49,14 @@ extension EditStoreInfoViewModel {
 final class EditStoreInfoViewModel: BaseViewModel {
     let input = Input()
     let output: Output
-    
+
     private var state: State
-    
-    init(config: Config) {
+    private let dependency: Dependency
+
+    init(config: Config, dependency: Dependency = Dependency()) {
         self.state = State(store: config.store)
         self.output = Output(store: .init(config.store))
+        self.dependency = dependency
         super.init()
     }
     
@@ -112,6 +124,7 @@ final class EditStoreInfoViewModel: BaseViewModel {
         
         input.didTapSave
             .sink { [weak self] _ in
+                self?.sendClickEditLog()
                 self?.saveStoreInfo()
             }
             .store(in: &cancellables)
@@ -123,8 +136,16 @@ final class EditStoreInfoViewModel: BaseViewModel {
             output.nameFieldState.send(.error)
             return
         }
-        
+
         output.editedStoreInfo.send(state.store)
         output.route.send(.pop)
+    }
+
+    private func sendClickEditLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .edit
+        ))
     }
 }
