@@ -364,7 +364,6 @@ final class StoreDetailViewModel: BaseViewModel {
                 state.storeDetailData = storeDetailData
                 refreshSections()
                 output.isFavorited.send(response.favorite.isFavorite)
-                sendPageView()
             case .failure(let error):
                 output.error.send(error)
             }
@@ -826,8 +825,6 @@ extension StoreDetailViewModel {
     }
     
     private func sendPageView() {
-        guard let storeDetailData = state.storeDetailData else { return }
-        
         logManager.sendPageView(
             screen: output.screenName,
             type: StoreDetailViewController.self,
