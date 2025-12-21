@@ -6,8 +6,6 @@ public protocol LogManagerProtocol {
     
     func sendPageView(screen: ScreenName, type: AnyObject.Type, extraParameters: [ParameterName: Any])
     
-    func sendEvent(_ event: LogEvent)
-    
     func sendEvent(event: LogEventType)
 }
 
@@ -39,17 +37,6 @@ public final class LogManager: LogManagerProtocol {
         
         if isEnableDebug {
             debugPageView(screen: screen, type: type, extraParameters: parameters)
-        }
-    }
-    
-    public func sendEvent(_ event: LogEvent) {
-        Environment.appModuleInterface.sendEvent(
-            name: event.name.rawValue,
-            parameters: event.parameters
-        )
-        
-        if isEnableDebug {
-            debugCustomEvent(event)
         }
     }
     

@@ -92,7 +92,7 @@ public final class HomeViewController: BaseViewController {
         super.sendPageView()
         
         if isFirstLoad.isNot {
-            LogManager.shared.sendEvent(.init(screen: screenName, eventName: .homeReopen))
+            LogManager.shared.sendEvent(event: CustomEvent(screen: screenName, name: .homeReopen))
         }
     }
     

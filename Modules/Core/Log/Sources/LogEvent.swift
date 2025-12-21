@@ -1,21 +1,5 @@
 import Foundation
 
-public struct LogEvent: LogEventType {
-    public var screen: ScreenName
-    public var name: EventName
-    public var extraParameters: [ParameterName: Any]?
-    
-    public init(
-        screen: ScreenName,
-        eventName: EventName,
-        extraParameters: [ParameterName : Any]? = nil
-    ) {
-        self.screen = screen
-        self.name = eventName
-        self.extraParameters = extraParameters
-    }
-}
-
 public protocol LogEventType {
     var screen: ScreenName { set get }
     var name: EventName { set get }
@@ -66,6 +50,22 @@ public struct ClickEvent: LogEventType {
         }
 
         self.extraParameters = clickObject
+    }
+}
+
+public struct CustomEvent: LogEventType {
+    public var screen: ScreenName
+    public var name: EventName
+    public var extraParameters: [ParameterName : Any]?
+    
+    public init(
+        screen: ScreenName,
+        name: EventName,
+        extraParameters: [ParameterName : Any]? = nil
+    ) {
+        self.screen = screen
+        self.name = name
+        self.extraParameters = extraParameters
     }
 }
 
