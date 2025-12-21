@@ -243,39 +243,50 @@ extension CommunityViewModel {
     private func sendPageView() {
         logManager.sendPageView(screen: output.screenName, type: CommunityViewController.self)
     }
-    
+
     private func sendClickPollLog(pollId: String) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickPoll,
-            extraParameters: [ .pollId: pollId]
+            objectType: .card,
+            objectId: .poll,
+            extraParameters: [.pollId: pollId]
         ))
     }
-    
+
     private func sendClickPollCategoryLog() {
-        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickPollCategory))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .pollCategory
+        ))
     }
-    
+
     private func sendClickDistrictLog() {
-        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickDistrict))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .district
+        ))
     }
-    
+
     private func sendClickPopularFilterLog(type: CommunityPopularStoreTab) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickPopularFilter,
-            extraParameters: [
-                .value: type.rawValue
-            ]))
+            objectType: .tab,
+            objectId: .filter,
+            extraParameters: [.value: type.rawValue]
+        ))
     }
-    
+
     private func sendClickStoreLog(store: PlatformStore) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickStore,
+            objectType: .card,
+            objectId: .store,
             extraParameters: [
                 .storeId: store.id,
-                .type: store.type.rawValue
-            ]))
+                .storeType: store.type.rawValue
+            ]
+        ))
     }
 }

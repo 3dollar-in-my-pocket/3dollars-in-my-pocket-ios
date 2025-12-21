@@ -74,6 +74,7 @@ public enum LogObjectType: String {
     case card
     case marker
     case banner
+    case tab
 }
 
 public enum LogObjectId: String {
@@ -125,4 +126,9 @@ public enum LogObjectId: String {
     case info
     case edit
     case feed
+    case poll
+    case pollOption = "poll_option"
+    case pollCategory = "poll_category"
+    case district
+    case filter
 }
