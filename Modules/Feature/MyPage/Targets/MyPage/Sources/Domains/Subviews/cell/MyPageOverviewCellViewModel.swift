@@ -69,7 +69,11 @@ final class MyPageOverviewCellViewModel: BaseViewModel {
 // MARK: Log
 private extension MyPageOverviewCellViewModel {
     func sendMedalClickLog() {
-        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickMedal))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .medal
+        ))
     }
 }
 
