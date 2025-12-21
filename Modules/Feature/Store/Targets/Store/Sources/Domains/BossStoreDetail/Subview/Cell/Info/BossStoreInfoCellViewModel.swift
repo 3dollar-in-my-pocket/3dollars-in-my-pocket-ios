@@ -84,9 +84,10 @@ extension BossStoreInfoCellViewModel: Hashable {
 // MARK: Log
 private extension BossStoreInfoCellViewModel {
     func sendClickCopyAccountLog() {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: config.screenName,
-            eventName: .clickCopyAccount,
+            objectType: .button,
+            objectId: .copyAccount,
             extraParameters: [.storeId: config.storeId]
         ))
     }

@@ -214,25 +214,28 @@ final class CategoryFilterViewModel: BaseViewModel {
 // MARK: Log
 extension CategoryFilterViewModel {
     private func sendClickCategoryLog(_ category: StoreFoodCategoryResponse?) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickCategory,
+            objectType: .button,
+            objectId: .category,
             extraParameters: [.categoryId: category?.categoryId as Any]
         ))
     }
     
     private func sendClickBannerLog(_ advertisement: AdvertisementResponse) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickAdBanner,
+            objectType: .banner,
+            objectId: .advertisement,
             extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
         ))
     }
     
     private func sendClickAdCategoryLog(_ advertisement: AdvertisementResponse) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickAdCategory,
+            objectType: .button,
+            objectId: .advertisement,
             extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
         ))
     }

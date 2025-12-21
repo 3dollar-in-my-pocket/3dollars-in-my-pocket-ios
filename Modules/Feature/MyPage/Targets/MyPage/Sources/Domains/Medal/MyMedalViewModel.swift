@@ -162,8 +162,11 @@ final class MyMedalViewModel: BaseViewModel {
 private extension MyMedalViewModel {
     func sendClickMedal(_ medal: Medal) {
         guard let medalId = medal.medalId else { return }
-        logManager.sendEvent(.init(screen: output.screen, eventName: .clickMedal, extraParameters: [
-            .medalId: medalId
-        ]))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screen,
+            objectType: .medal,
+            objectId: .medal,
+            extraParameters: [.medalId: medalId]
+        ))
     }
 }

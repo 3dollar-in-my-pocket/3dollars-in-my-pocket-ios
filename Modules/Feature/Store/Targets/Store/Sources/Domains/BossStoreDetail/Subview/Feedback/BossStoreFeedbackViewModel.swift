@@ -112,9 +112,10 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
 // MARK: Log
 extension BossStoreFeedbackViewModel {
     private func sendClickWriteReviewLog() {
-        logmanager.sendEvent(.init(
+        logmanager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickWriteReview,
+            objectType: .button,
+            objectId: .writeReview,
             extraParameters: [.storeId: storeId]
         ))
     }

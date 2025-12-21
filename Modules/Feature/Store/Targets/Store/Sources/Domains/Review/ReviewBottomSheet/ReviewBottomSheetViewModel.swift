@@ -180,12 +180,12 @@ extension ReviewBottomSheetViewModel {
     private func sendClickWriteReview() {
         guard let rating = state.rating else { return }
         
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickReviewBottomButton,
+            objectType: .button,
+            objectId: .writeReview,
             extraParameters: [
-                .storeId: config.storeId,
-                .rating: rating
+                .value: rating
             ]
         ))
     }

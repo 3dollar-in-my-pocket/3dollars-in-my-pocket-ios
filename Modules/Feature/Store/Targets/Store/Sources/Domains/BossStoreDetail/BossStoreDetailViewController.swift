@@ -11,7 +11,7 @@ final class BossStoreDetailViewController: BaseViewController {
     override var screenName: ScreenName {
         return viewModel.output.screenName
     }
-    
+
     private let backButton = UIButton().then {
         $0.setImage(Icons.arrowLeft.image.withTintColor(Colors.gray100.color), for: .normal)
     }
@@ -59,6 +59,10 @@ final class BossStoreDetailViewController: BaseViewController {
         setupUI()
 
         viewModel.input.firstLoad.send()
+    }
+    
+    override func sendPageView() {
+        viewModel.input.didAppear.send(())
     }
 
     private func setupUI() {

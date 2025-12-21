@@ -3,6 +3,7 @@ import Combine
 
 import Common
 import Model
+import Log
 
 extension HomeStoreCardCellViewModel {
     struct Input {
@@ -10,12 +11,21 @@ extension HomeStoreCardCellViewModel {
     }
     
     struct Output {
+        let screen: ScreenName = .home
         let data: HomeCardSectionResponse
         let didTapActionButton = PassthroughSubject<SDLink, Never>()
     }
     
     struct Config {
         let data: HomeCardSectionResponse
+    }
+    
+    struct Dependency {
+        let logManager: LogManagerProtocol
+        
+        init(logManager: LogManagerProtocol = LogManager.shared) {
+            self.logManager = logManager
+        }
     }
 }
 
@@ -24,8 +34,11 @@ final class HomeStoreCardCellViewModel: BaseViewModel {
     let output: Output
     lazy var identifier = ObjectIdentifier(self)
     
-    init(config: Config) {
+    private let dependency: Dependency
+    
+    init(config: Config, dependency: Dependency = Dependency()) {
         self.output = Output(data: config.data)
+        self.dependency = dependency
     }
     
     override func bind() {
@@ -33,6 +46,7 @@ final class HomeStoreCardCellViewModel: BaseViewModel {
             .sink(receiveValue: { [weak self] _ in
                 guard let link = self?.output.data.button?.link else { return }
                 
+                self?.sendClickActionButtonLog()
                 self?.output.didTapActionButton.send(link)
             })
             .store(in: &cancellables)
@@ -46,5 +60,16 @@ extension HomeStoreCardCellViewModel: Hashable, Identifiable, Equatable {
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
+    }
+}
+
+// MARK: Log
+extension HomeStoreCardCellViewModel {
+    private func sendClickActionButtonLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screen,
+            objectType: .button,
+            objectId: .visit
+        ))
     }
 }

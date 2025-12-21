@@ -116,9 +116,10 @@ final class PollItemCellViewModel: BaseViewModel {
 // MARK: Log
 extension PollItemCellViewModel {
     private func sendClickPollOptionLog(pollId: String, optionId: String) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: config.screenName,
-            eventName: .clickPollOption,
+            objectType: .button,
+            objectId: .pollOption,
             extraParameters: [
                 .pollId: pollId,
                 .optionId: optionId

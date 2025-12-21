@@ -112,14 +112,10 @@ final class CreatePollModalViewModel: BaseViewModel {
 // MARK: Log
 extension CreatePollModalViewModel {
     private func sendClickCreatePollLog() {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickCreatePoll,
-            extraParameters: [
-                .title: input.title.value,
-                .pollFirstOption: input.firstOption.value,
-                .pollSecondOption: input.secondOption.value
-            ]
+            objectType: .button,
+            objectId: .create
         ))
     }
 }

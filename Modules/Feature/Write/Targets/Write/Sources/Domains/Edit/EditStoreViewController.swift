@@ -52,7 +52,7 @@ final class EditStoreViewController: BaseViewController {
     }()
     
     override var screenName: ScreenName {
-        return .editStore
+        return viewModel.output.screenName
     }
     
     init(viewModel: EditStoreViewModel) {

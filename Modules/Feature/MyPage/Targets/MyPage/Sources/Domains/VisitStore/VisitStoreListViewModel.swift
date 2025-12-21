@@ -164,9 +164,14 @@ final class VisitStoreListViewModel: BaseViewModel {
 // MARK: Log
 private extension VisitStoreListViewModel {
     func sendClickStore(_ store: PlatformStore) {
-        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickStore, extraParameters: [
-            .storeId: store.id,
-            .type: store.type.rawValue
-        ]))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .card,
+            objectId: .store,
+            extraParameters: [
+                .storeId: store.id,
+                .storeType: store.type.rawValue
+            ]
+        ))
     }
 }

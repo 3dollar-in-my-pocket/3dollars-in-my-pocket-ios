@@ -4,6 +4,7 @@ import Combine
 import Common
 import Model
 import Networking
+import Log
 
 extension WriteDetailAdditionalInfoViewModel {
     struct Input {
@@ -16,6 +17,7 @@ extension WriteDetailAdditionalInfoViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .writeDetailAdditionalInfo
         let afterCreatedStore: Bool
         let selectedPaymentMethods: CurrentValueSubject<[PaymentMethod], Never>
         let selectedDays: CurrentValueSubject<[AppearanceDay], Never>
@@ -45,9 +47,14 @@ extension WriteDetailAdditionalInfoViewModel {
     
     struct Dependency {
         let storeRepository: StoreRepository
-        
-        init(storeRepository: StoreRepository = StoreRepositoryImpl()) {
+        let logManager: LogManagerProtocol
+
+        init(
+            storeRepository: StoreRepository = StoreRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared
+        ) {
             self.storeRepository = storeRepository
+            self.logManager = logManager
         }
     }
     
@@ -102,6 +109,7 @@ final class WriteDetailAdditionalInfoViewModel: BaseViewModel {
         input.didTapFinish
             .sink { [weak self] _ in
                 self?.handleDidTapFinish()
+                self?.sendClickNextLog()
             }
             .store(in: &cancellables)
         
@@ -130,6 +138,9 @@ final class WriteDetailAdditionalInfoViewModel: BaseViewModel {
             .store(in: &cancellables)
         
         input.didTapSkip
+            .handleEvents(receiveOutput: { [weak self] _ in
+                self?.sendClickSkipLog()
+            })
             .subscribe(output.didTapSkip)
             .store(in: &cancellables)
     }
@@ -141,7 +152,7 @@ final class WriteDetailAdditionalInfoViewModel: BaseViewModel {
             startTime: state.startTime,
             endTime: state.endTime
         ))
-        
+
         if output.afterCreatedStore {
             output.route.send(.pop)
         }
@@ -161,5 +172,21 @@ final class WriteDetailAdditionalInfoViewModel: BaseViewModel {
         } else {
             state.appearanceDays.append(day)
         }
+    }
+
+    private func sendClickSkipLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .skip
+        ))
+    }
+
+    private func sendClickNextLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .next
+        ))
     }
 }

@@ -349,6 +349,10 @@ final class MyPageViewModel: BaseViewModel {
 // MARK: - Log
 private extension MyPageViewModel {
     func sendClickPoll(_ poll: PollApiResponse) {
-        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickMyPoll, extraParameters: [.pollId: poll.pollId]))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .card,
+            objectId: .poll
+        ))
     }
 }

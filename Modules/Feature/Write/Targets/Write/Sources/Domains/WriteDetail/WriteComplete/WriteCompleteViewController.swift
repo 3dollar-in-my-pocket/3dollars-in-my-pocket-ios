@@ -100,7 +100,7 @@ final class WriteCompleteViewController: BaseViewController {
     }()
     
     override var screenName: ScreenName {
-        return .writeDetailComplete
+        return viewModel.output.screenName
     }
     
     private let viewModel: WriteCompleteViewModel

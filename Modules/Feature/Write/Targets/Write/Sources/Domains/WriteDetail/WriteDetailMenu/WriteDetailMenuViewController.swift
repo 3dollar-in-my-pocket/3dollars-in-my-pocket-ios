@@ -118,7 +118,7 @@ final class WriteDetailMenuViewController: BaseViewController {
     private let tapBackground = UITapGestureRecognizer()
     
     override var screenName: ScreenName {
-        return .writeDetailMenu
+        return viewModel.output.screenName
     }
     
     init(viewModel: WriteDetailMenuViewModel) {

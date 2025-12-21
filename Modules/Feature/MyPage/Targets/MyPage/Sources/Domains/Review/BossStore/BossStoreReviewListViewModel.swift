@@ -142,9 +142,14 @@ final class BossStoreReviewListViewModel: BaseViewModel {
 // MARK: Log
 private extension BossStoreReviewListViewModel {
     func sendClickReview(store: PlatformStore) {
-        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickReview, extraParameters: [
-            .storeId: store.id,
-            .type: store.type.rawValue
-        ]))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .review,
+            objectId: .review,
+            extraParameters: [
+                .storeId: store.id,
+                .storeType: store.type.rawValue
+            ]
+        ))
     }
 }

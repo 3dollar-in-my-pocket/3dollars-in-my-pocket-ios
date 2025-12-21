@@ -366,59 +366,66 @@ final class HomeListViewModel: BaseViewModel {
 // MARK: Log
 extension HomeListViewModel {
     private func sendClickStore(_ store: StoreResponse) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickStore,
+            objectType: .card,
+            objectId: .store,
             extraParameters: [
                 .storeId: store.storeId,
                 .type: store.storeType.rawValue
             ]
         ))
     }
-    
+
     private func sendClickCategoryFilterLog() {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickCategoryFilter
+            objectType: .button,
+            objectId: .categoryFilter
         ))
     }
-    
+
     private func sendClickSortingLog(_ sortType: StoreSortType) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickSorting,
-            extraParameters: [.type: sortType.rawValue]
+            objectType: .button,
+            objectId: .sorting,
+            extraParameters: [.value: sortType.rawValue]
         ))
     }
-    
+
     private func sendClickAdBannerLog(_ advertisement: AdvertisementResponse) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickAdBanner,
+            objectType: .banner,
+            objectId: .advertisement,
             extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
         ))
     }
-    
+
     private func sendClickOnlyBossFilterLog(_ isOn: Bool) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickBossFilter,
+            objectType: .button,
+            objectId: .bossFilter,
             extraParameters: [.value: isOn]
         ))
     }
-    
+
     private func sendClickOnlyVisitFilterLog(_ isOn: Bool) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickOnlyVisit,
+            objectType: .button,
+            objectId: .onlyVisit,
             extraParameters: [.value: isOn]
         ))
     }
-    
+
     private func sendClickRecentActivityFilter(value: Bool) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickRecentActivityFilter,
+            objectType: .button,
+            objectId: .recentActivityFilter,
             extraParameters: [.value: value]
         ))
     }

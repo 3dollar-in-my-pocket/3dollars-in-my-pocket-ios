@@ -255,29 +255,30 @@ final class SigninViewModel: BaseViewModel {
 // MARK: Log
 extension SigninViewModel {
     private func sendClickSignInLog(type: SocialType) {
-        var eventName: EventName {
+        var objectId: LogObjectId {
             switch type {
             case .kakao:
-                return .clickSignInApple
-                
+                return .signInKakao
             case .apple:
-                return .clickSignInApple
-                
-            case .google:
-                return .clickSignInAnonymous
-                
-            case .unknown:
-                return .clickSignInAnonymous
+                return .signInApple
+            default:
+                return .signInAnonymous
             }
         }
+        let clickEvent = ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: objectId
+        )
         
-        logManager.sendEvent(LogEvent(screen: output.screenName, eventName: eventName))
+        logManager.sendEvent(event: clickEvent)
     }
     
     private func sendClickAnonymousLog() {
-        logManager.sendEvent(LogEvent(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickSignInAnonymous
+            objectType: .button,
+            objectId: .signInAnonymous
         ))
     }
 }
