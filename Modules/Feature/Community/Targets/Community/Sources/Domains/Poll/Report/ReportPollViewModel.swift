@@ -213,9 +213,11 @@ extension ReportPollViewModel {
         if let commentId = config.commentId {
             parameters[.reviewId] = commentId
         }
-        logManager.sendEvent(.init(
+        
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickReport,
+            objectType: .button,
+            objectId: .report,
             extraParameters: parameters
         ))
     }
