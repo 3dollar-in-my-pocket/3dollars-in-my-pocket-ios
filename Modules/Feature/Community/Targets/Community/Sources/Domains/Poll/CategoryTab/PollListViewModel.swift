@@ -200,9 +200,10 @@ final class PollListViewModel: BaseViewModel {
 // MARK: Log
 extension PollListViewModel {
     private func sendClickPollLog(pollId: String) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: config.screenName,
-            eventName: .clickPoll,
+            objectType: .card,
+            objectId: .poll,
             extraParameters: [.pollId: pollId]
         ))
     }

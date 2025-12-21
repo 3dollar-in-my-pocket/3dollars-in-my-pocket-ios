@@ -140,9 +140,10 @@ final class PollCategoryTabViewModel: BaseViewModel {
 // MARK: Log
 extension PollCategoryTabViewModel {
     private func sendClickCreatePollLog() {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickCreatePoll
+            objectType: .button,
+            objectId: .createPoll
         ))
     }
 }
