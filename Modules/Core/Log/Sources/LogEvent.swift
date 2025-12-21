@@ -132,4 +132,5 @@ public enum LogObjectId: String {
     case district
     case filter
     case createPoll = "create_poll"
+    case reportReview = "report_review"
 }

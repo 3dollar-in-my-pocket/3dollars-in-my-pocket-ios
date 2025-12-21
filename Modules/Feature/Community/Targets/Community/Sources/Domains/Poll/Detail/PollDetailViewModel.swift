@@ -312,12 +312,10 @@ final class PollDetailViewModel: BaseViewModel {
 // MARK: Log
 extension PollDetailViewModel {
     private func sendClickReportPollLog() {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickReport,
-            extraParameters: [
-                .pollId: pollId
-            ]
+            objectType: .button,
+            objectId: .report
         ))
     }
 }
