@@ -249,16 +249,13 @@ final class SearchAddressViewModel: BaseViewModel {
     }
     
     private func sendClickLog(placeDocument: PlaceDocument, type: String) {
-        logManager.sendEvent(
-            .init(
-                screen: output.screenName,
-                eventName: .clickAddress,
-                extraParameters: [
-                    .buildingName: placeDocument.placeName,
-                    .address: placeDocument.addressName,
-                    .type: type
-                ]
-            )
-        )
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .menu,
+            objectId: .address,
+            extraParameters: [
+                .value: type
+            ]
+        ))
     }
 }

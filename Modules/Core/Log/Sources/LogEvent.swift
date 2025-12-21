@@ -75,6 +75,9 @@ public enum LogObjectType: String {
     case marker
     case banner
     case tab
+    case medal
+    case review
+    case menu
 }
 
 public enum LogObjectId: String {
@@ -137,4 +140,5 @@ public enum LogObjectId: String {
     case medal
     case visitedStore = "visited_store"
     case favoritedStore = "favorited_store"
+    case review
 }

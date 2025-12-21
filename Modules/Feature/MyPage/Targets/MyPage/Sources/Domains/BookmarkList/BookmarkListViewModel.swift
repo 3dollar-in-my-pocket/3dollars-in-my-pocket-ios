@@ -317,17 +317,30 @@ final class BookmarkListViewModel: BaseViewModel {
 // MARK: Log
 private extension BookmarkListViewModel {
     func sendClickEditLog() {
-        logManager.sendEvent(.init(screen: output.screen, eventName: .clickEdit))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screen,
+            objectType: .button,
+            objectId: .edit
+        ))
     }
-    
+
     func sendClickStoreLog(_ store: StoreResponse) {
-        logManager.sendEvent(.init(screen: output.screen, eventName: .clickStore, extraParameters: [
-            .storeId: store.storeId,
-            .type: store.storeType.rawValue
-        ]))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screen,
+            objectType: .card,
+            objectId: .store,
+            extraParameters: [
+                .storeId: store.storeId,
+                .storeType: store.storeType.rawValue
+            ]
+        ))
     }
-    
+
     func sendClickShareLog() {
-        logManager.sendEvent(.init(screen: output.screen, eventName: .clickShareBookmark))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screen,
+            objectType: .button,
+            objectId: .share
+        ))
     }
 }
