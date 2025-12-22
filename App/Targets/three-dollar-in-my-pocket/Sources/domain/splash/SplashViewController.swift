@@ -119,8 +119,8 @@ final class SplashViewController: BaseViewController {
             showGoToSignInAlert(alertContent: alertContent)
         case .showMaintenanceAlert(let alertContent):
             showMaintenanceAlert(alertContent: alertContent)
-        case .showUpdateAlert:
-            showUpdateAlert()
+        case .showUpdateAlert(let title, let message, let url):
+            showUpdateAlert(title: title, message: message, url: url)
         }
     }
     
@@ -164,14 +164,13 @@ final class SplashViewController: BaseViewController {
         }
     }
     
-    private func showUpdateAlert() {
+    private func showUpdateAlert(title: String, message: String, url: URL?) {
         AlertUtils.showWithAction(
             viewController: self,
-            title: Strings.splashNeedUpdateTitle,
-            message: Strings.splashNeedUpdateDescription
+            title: title,
+            message: message
         ) {
-            if let url = URL(string: "itms-apps://itunes.apple.com/app/1496099467"),
-               UIApplication.shared.canOpenURL(url) {
+            if let url, UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         }

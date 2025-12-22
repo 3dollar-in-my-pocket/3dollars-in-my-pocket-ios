@@ -12,6 +12,7 @@ import WriteInterface
 final class StoreDetailViewModel: BaseViewModel {
     struct Input {
         let load = PassthroughSubject<Void, Never>()
+        let didAppear = PassthroughSubject<Void, Never>()
         let didTapReport = PassthroughSubject<Void, Never>()
         let didTapVisit = PassthroughSubject<Void, Never>()
         
@@ -124,6 +125,12 @@ final class StoreDetailViewModel: BaseViewModel {
             .sink { (owner: StoreDetailViewModel, _: Void) in
                 owner.fetchStoreDetail()
                 owner.fetchDisplayItems()
+            }
+            .store(in: &cancellables)
+        
+        input.didAppear
+            .sink { [weak self] in
+                self?.sendPageView()
             }
             .store(in: &cancellables)
         
@@ -765,31 +772,66 @@ extension StoreDetailViewModel {
 extension StoreDetailViewModel {
     private func sendClickSaveLog(isDelete: Bool) {
         let value = isDelete ? "off" : "on"
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickFavorite,
+            objectType: .button,
+            objectId: .favorite,
             extraParameters: [
                 .storeId: state.storeId,
                 .value: value
-            ]))
+            ]
+        ))
     }
-    
+
     private func sendClickEvent(_ eventName: EventName) {
-        logManager.sendEvent(.init(
+        let objectId: LogObjectId
+        switch eventName {
+        case .clickReport:
+            objectId = .report
+        case .clickShare:
+            objectId = .share
+        case .clickNavigation:
+            objectId = .navigation
+        case .clickWriteReview:
+            objectId = .writeReview
+        case .clickCopyAddress:
+            objectId = .copyAddress
+        case .clickZoomMap:
+            objectId = .zoomMap
+        case .clickVisit:
+            objectId = .visit
+        default:
+            return
+        }
+
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: eventName,
+            objectType: .button,
+            objectId: objectId,
             extraParameters: [.storeId: state.storeId]
         ))
     }
-    
+
     private func sendClickLike(isLiked: Bool) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickLike,
+            objectType: .button,
+            objectId: .like,
             extraParameters: [
                 .storeId: state.storeId,
                 .value: !isLiked
             ]
         ))
+    }
+    
+    private func sendPageView() {
+        logManager.sendPageView(
+            screen: output.screenName,
+            type: StoreDetailViewController.self,
+            extraParameters: [
+                .storeId: "\(state.storeId)",
+                .storeType: state.storeType.rawValue
+            ]
+        )
     }
 }

@@ -210,10 +210,11 @@ extension CommunityPollListCellViewModel: Hashable {
 extension CommunityPollListCellViewModel {
     private func sendClickAdvertisementLog() {
         guard let advertisement = state.ad else { return }
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: config.screenName,
-            eventName: .clickAdCard,
-            extraParameters: [.advertisementId: "\(advertisement.advertisementId)"])
-        )
+            objectType: .card,
+            objectId: .advertisement,
+            extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
+        ))
     }
 }

@@ -8,7 +8,7 @@ import Log
 
 final class ReviewWriteViewController: BaseViewController {
     override var screenName: ScreenName {
-        return .bossStoreReviewWrite
+        return viewModel.output.screen
     }
     
     private let backButton: UIButton = {

@@ -14,6 +14,7 @@ final class ReviewListCellViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .bossStoreReview
         var review: StoreDetailReview
         let updateUI = PassthroughSubject<Void, Never>()
         let error = PassthroughSubject<Error, Never>()
@@ -124,9 +125,10 @@ final class ReviewListCellViewModel: BaseViewModel {
     }
     
     private func sendClickLike(isLiked: Bool) {
-        logManager.sendEvent(.init(
-            screen: .bossStoreReview,
-            eventName: .clickLike,
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .like,
             extraParameters: [
                 .storeId: config.storeId,
                 .value: !isLiked

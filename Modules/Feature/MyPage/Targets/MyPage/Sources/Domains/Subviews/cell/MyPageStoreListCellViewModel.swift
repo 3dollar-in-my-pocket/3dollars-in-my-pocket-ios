@@ -80,19 +80,25 @@ final class MyPageStoreListCellViewModel: BaseViewModel {
 // MARK: Log
 private extension MyPageStoreListCellViewModel {
     func sendClickStoreLog(_ store: PlatformStore) {
-        let eventName: EventName
+        let objectId: LogObjectId
         switch output.sectionType {
         case .visit:
-            eventName = .clickVisitedStore
+            objectId = .visitedStore
         case .favorite:
-            eventName = .clickFavoritedStore
+            objectId = .favoritedStore
         case .coupon:
-            eventName = .clickCoupon
+            objectId = .store // coupon은 스펙에 없으므로 기본 store 사용
         }
-        logManager.sendEvent(.init(screen: output.screenName, eventName: eventName, extraParameters: [
-            .storeId: store.id,
-            .type: store.type.rawValue
-        ]))
+
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .card,
+            objectId: objectId,
+            extraParameters: [
+                .storeId: store.id,
+                .storeType: store.type.rawValue
+            ]
+        ))
     }
 }
 

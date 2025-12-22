@@ -22,6 +22,7 @@ final class ReviewWriteViewModel: BaseViewModel {
     }
     
     struct Output {
+        let screen: ScreenName = .bossStoreReviewWrite
         let feedbackSelectionViewModel: ReviewFeedbackSelectionViewModel
         let errorAlert = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -75,6 +76,7 @@ final class ReviewWriteViewModel: BaseViewModel {
         input.didTapCompleteButton
             .withUnretained(self)
             .sink { (owner: ReviewWriteViewModel, _) in
+                owner.sendClickWriteButtonLog()
                 owner.writeReview()
             }
             .store(in: &cancellables)
@@ -194,5 +196,16 @@ final class ReviewWriteViewModel: BaseViewModel {
                 output.feedbackSelectionViewModel.output.isEnabledButton.value else { return false }
         
         return contents.isNotEmpty
+    }
+}
+
+// MARK: Log
+extension ReviewWriteViewModel {
+    private func sendClickWriteButtonLog() {
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screen,
+            objectType: .button,
+            objectId: .writeReview
+        ))
     }
 }

@@ -191,20 +191,21 @@ public final class VisitViewModel: BaseViewModel {
 // MARK: Log
 extension VisitViewModel {
     private func sendClickVisitLog(type: VisitType) {
-        let eventName: EventName
-        
+        let objectId: LogObjectId
+
         switch type {
         case .exists:
-            eventName = .clickVisitSuccess
+            objectId = .visitSuccess
         case .notExists:
-            eventName = .clickVisitFail
+            objectId = .visitFail
         case .unknown:
             return
         }
-        
-        dependency.logManager.sendEvent(.init(
+
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: eventName,
+            objectType: .button,
+            objectId: objectId,
             extraParameters: [.storeId: config.storeId]
         ))
     }

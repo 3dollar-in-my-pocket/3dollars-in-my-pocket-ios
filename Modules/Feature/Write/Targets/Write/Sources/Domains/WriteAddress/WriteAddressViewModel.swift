@@ -113,6 +113,7 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
         
         input.didTapBossButton
             .sink { [weak self] _ in
+                self?.sendClickBossButtonLog()
                 let viewModel = BossAppBottomSheetViewModel()
                 self?.output.route.send(.presentBossAppBottomSheet(viewModel))
             }
@@ -194,18 +195,27 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
 // MARK: Log
 extension WriteAddressViewModel {
     private func sendClickCurrentLocationLog() {
-        dependency.logManager.sendEvent(LogEvent(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickCurrentLocation,
+            objectType: .button,
+            objectId: .currentLocation
+        ))
+    }
+
+    private func sendClickSetAddressLog(address: String) {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .setAddress,
             extraParameters: [.address: output.address.value]
         ))
     }
     
-    private func sendClickSetAddressLog(address: String) {
-        dependency.logManager.sendEvent(LogEvent(
+    private func sendClickBossButtonLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickSetAddress,
-            extraParameters: [.address: output.address.value]
+            objectType: .button,
+            objectId: .boss
         ))
     }
 }

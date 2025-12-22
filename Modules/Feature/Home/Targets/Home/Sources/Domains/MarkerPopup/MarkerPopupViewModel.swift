@@ -98,12 +98,14 @@ final class MarkerPopupViewModel: BaseViewModel {
     
     private func sendClickEventLog() {
         guard let advertisementId = state.advertisement?.advertisementId else { return }
-        
-        logManager.sendEvent(LogEvent(
+
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickBottomButton,
+            objectType: .button,
+            objectId: .bottomButton,
             extraParameters: [
                 .advertisementId: "\(advertisementId)"
-            ]))
+            ]
+        ))
     }
 }

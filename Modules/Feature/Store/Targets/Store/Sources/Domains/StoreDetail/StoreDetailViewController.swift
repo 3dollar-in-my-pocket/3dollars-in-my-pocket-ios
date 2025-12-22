@@ -45,6 +45,10 @@ final class StoreDetailViewController: BaseViewController {
         storeDetailView.collectionView.collectionViewLayout = createLayout()
     }
     
+    override func sendPageView() {
+        viewModel.input.didAppear.send(())
+    }
+    
     override func bindEvent() {
         storeDetailView.backButton
             .controlPublisher(for: .touchUpInside)

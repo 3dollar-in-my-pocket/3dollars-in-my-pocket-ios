@@ -6,7 +6,6 @@ import Model
 import Networking
 import Log
 
-import FirebaseRemoteConfig
 import FirebaseMessaging
 
 final class SplashViewModel: BaseViewModel {
@@ -26,28 +25,28 @@ final class SplashViewModel: BaseViewModel {
         case goToMain
         case goToSignInWithAlert(AlertContent)
         case showMaintenanceAlert(AlertContent)
-        case showUpdateAlert
+        case showUpdateAlert(title: String, message: String, url: URL?)
     }
     
     struct Dependency {
         var preference: Preference
         let userRepository: UserRepository
-        let remoteConfigService: RemoteConfigProtocol
         let deviceRepository: DeviceRepository
         let advertisementRepository: AdvertisementRepository
+        let appRepository: AppRepository
         
         init(
             preference: Preference = Preference.shared,
             userRepository: UserRepository = UserRepositoryImpl(),
-            remoteConfigService: RemoteConfigProtocol = RemoteConfigService(),
             deviceRepository: DeviceRepository = DeviceRepositoryImpl(),
-            advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl()
+            advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
+            appRepository: AppRepository = AppRepositoryImpl()
         ) {
             self.preference = preference
             self.userRepository = userRepository
-            self.remoteConfigService = remoteConfigService
             self.deviceRepository = deviceRepository
             self.advertisementRepository = advertisementRepository
+            self.appRepository = appRepository
         }
     }
     
@@ -66,7 +65,7 @@ final class SplashViewModel: BaseViewModel {
             .sink { (owner: SplashViewModel, _) in
                 owner.loadSplashAdIfExisted()
                 owner.fetchAdvertisement()
-                owner.checkMinimalVersion()
+                owner.fetchAppStatus()
             }
             .store(in: &cancellables)
     }
@@ -95,23 +94,24 @@ final class SplashViewModel: BaseViewModel {
         output.advertisement.send(advertisement)
     }
     
-    private func checkMinimalVersion() {
+    private func fetchAppStatus() {
         Task { [weak self] in
             guard let self else { return }
             
-            do {
-                let minimalVersion = try await dependency.remoteConfigService.fetchMinimalVersion()
-                
-                if VersionUtils.isNeedUpdate(
-                    currentVersion: VersionUtils.appVersion,
-                    minimumVersion: minimalVersion
-                ) {
-                    output.route.send(.showUpdateAlert)
+            let result = await dependency.appRepository.fetchAppStatus()
+            switch result {
+            case .success(let appStatus):
+                if appStatus.forceUpdate.enabled {
+                    output.route.send(.showUpdateAlert(
+                        title: appStatus.forceUpdate.title ?? Strings.splashNeedUpdateTitle,
+                        message: appStatus.forceUpdate.message ?? Strings.splashNeedUpdateDescription,
+                        url: URL(string: appStatus.forceUpdate.linkUrl ?? "itms-apps://itunes.apple.com/app/1496099467")
+                    ))
                 } else {
                     validateToken()
                 }
-            } catch {
-                output.showDefaultAlert.send(())
+            case .failure(let error):
+                handleValidationError(error: error)
             }
         }.store(in: taskBag)
     }

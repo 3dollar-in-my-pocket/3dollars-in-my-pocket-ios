@@ -318,7 +318,6 @@ let project = Project(
                 .Package.firebaseCrashlytics,
                 .Package.firebaseFirestore,
                 .Package.firebaseMessaging,
-                .Package.firebaseRemoteConfig,
                 .Package.firebaseInAppMessaging,
                 .Package.kakaoSDK,
                 .Package.kakaoSDKAuth,

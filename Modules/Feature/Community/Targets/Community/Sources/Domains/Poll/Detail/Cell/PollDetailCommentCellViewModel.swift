@@ -151,32 +151,40 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
 
 extension PollDetailCommentCellViewModel {
     private func sendClickReportReviewLog(reviewId: String) {
-        logManager.sendEvent(.init(
+        var extraParams: [ParameterName: Any] = [
+            .reviewId: reviewId,
+            .pollId: config.pollId
+        ]
+        
+        if let optionId = output.item.poll.selectedOptions.first?.optionId {
+            extraParams[.optionId] = optionId
+        }
+
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickReport,
-            extraParameters: [
-                .reviewId: reviewId
-            ]
+            objectType: .button,
+            objectId: .reportReview,
+            extraParameters: extraParams
         ))
     }
-    
+
     private func sendClickDeleteReviewLog(reviewId: String) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickDeleteReview,
-            extraParameters: [
-                .reviewId: reviewId
-            ]))
+            objectType: .button,
+            objectId: .deleteReview,
+            extraParameters: [.reviewId: reviewId]
+        ))
     }
-    
+
     private func sendClickLike(isLiked: Bool) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickLike,
+            objectType: .button,
+            objectId: .like,
             extraParameters: [
                 .pollId: config.pollId,
-                .reviewId: config.commentId,
-                .value: !isLiked
+                .reviewId: config.commentId
             ]
         ))
     }

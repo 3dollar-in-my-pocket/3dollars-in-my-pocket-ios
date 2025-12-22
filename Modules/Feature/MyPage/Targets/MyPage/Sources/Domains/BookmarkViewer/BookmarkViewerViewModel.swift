@@ -156,9 +156,14 @@ public final class BookmarkViewerViewModel: BaseViewModel {
 // MARK: Log
 private extension BookmarkViewerViewModel {
     func sendClickStoreLog(_ store: StoreResponse) {
-        logManager.sendEvent(.init(screen: output.screenName, eventName: .clickStore, extraParameters: [
-            .storeId: store.storeId,
-            .type: store.storeType.rawValue
-        ]))
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .card,
+            objectId: .store,
+            extraParameters: [
+                .storeId: store.storeId,
+                .storeType: store.storeType.rawValue
+            ]
+        ))
     }
 }

@@ -58,7 +58,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
     private lazy var datasource = WriteDetailCategoryDatasource(collectionView: collectionView, viewModel: viewModel)
     
     override var screenName: ScreenName {
-        return .writeDetailCategory
+        return viewModel.output.screenName
     }
     
     init(viewModel: WriteDetailCategoryViewModel) {

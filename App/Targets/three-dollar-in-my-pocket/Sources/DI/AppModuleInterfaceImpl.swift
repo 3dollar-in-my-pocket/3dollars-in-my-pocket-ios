@@ -156,6 +156,19 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
         ])
     }
     
+    func sendPageView(screenName: String, type: AnyObject.Type, parameters: [String: Any]?) {
+        var pageViewParameters: [String: Any] = [
+            AnalyticsParameterScreenName: screenName,
+            AnalyticsParameterScreenClass: NSStringFromClass(type.self)
+        ]
+        
+        if let parameters {
+            pageViewParameters.merge(parameters) { (_, new) in new }
+        }
+        
+        Analytics.logEvent(AnalyticsEventScreenView, parameters: parameters)
+    }
+    
     func sendEvent(name: String, parameters: [String : Any]?) {
         Analytics.logEvent(name, parameters: parameters)
     }

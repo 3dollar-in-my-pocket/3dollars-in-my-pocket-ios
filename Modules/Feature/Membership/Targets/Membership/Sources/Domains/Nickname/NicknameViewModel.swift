@@ -103,6 +103,7 @@ final class NicknameViewModel: BaseViewModel {
         input.onTapRefreshButton
             .withUnretained(self)
             .sink(receiveValue: { owner, _ in
+                owner.sendRandomNicknameLog()
                 owner.createRandomName()
             })
             .store(in: &cancellables)
@@ -174,10 +175,18 @@ final class NicknameViewModel: BaseViewModel {
     }
     
     private func sendSignupLog() {
-        logManager.sendEvent(LogEvent(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickSignUp,
-            extraParameters: [.nickname: state.nickname]
+            objectType: .button,
+            objectId: .signUp
+        ))
+    }
+    
+    private func sendRandomNicknameLog() {
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .random
         ))
     }
     

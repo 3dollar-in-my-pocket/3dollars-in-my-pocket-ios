@@ -47,7 +47,7 @@ final class EditStoreInfoViewController: BaseViewController {
     private let tapBackground = UITapGestureRecognizer()
     
     override var screenName: ScreenName {
-        return .editStoreInfo
+        return viewModel.output.screenName
     }
     
     init(viewModel: EditStoreInfoViewModel) {

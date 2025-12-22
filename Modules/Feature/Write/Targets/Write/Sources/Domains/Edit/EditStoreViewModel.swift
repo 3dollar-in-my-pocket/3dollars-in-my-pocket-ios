@@ -6,6 +6,7 @@ import Common
 import Model
 import Networking
 import WriteInterface
+import Log
 
 extension EditStoreViewModel {
     struct Input {
@@ -16,6 +17,7 @@ extension EditStoreViewModel {
     }
     
     struct Output {
+        let screenName: ScreenName = .editStore
         let store: CurrentValueSubject<UserStoreResponse, Never>
         let menuCount: CurrentValueSubject<Int, Never>
         let changedCount = CurrentValueSubject<Int?, Never>(nil)
@@ -36,9 +38,14 @@ extension EditStoreViewModel {
     
     struct Dependency {
         let storeRepository: StoreRepository
-        
-        init(storeRepository: StoreRepository = StoreRepositoryImpl()) {
+        let logManager: LogManagerProtocol
+
+        init(
+            storeRepository: StoreRepository = StoreRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared
+        ) {
             self.storeRepository = storeRepository
+            self.logManager = logManager
         }
     }
     
@@ -80,24 +87,28 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
     override func bind() {
         input.didTapAddress
             .sink { [weak self] in
+                self?.sendClickLocationLog()
                 self?.pushEditAddress()
             }
             .store(in: &cancellables)
-        
+
         input.didTapStoreInfo
             .sink { [weak self] in
+                self?.sendClickInfoLog()
                 self?.pushEditStoreInfo()
             }
             .store(in: &cancellables)
-        
+
         input.didTapMenu
             .sink { [weak self] in
+                self?.sendClickMenuLog()
                 self?.pushEditMenu()
             }
             .store(in: &cancellables)
-        
+
         input.didTapEdit
             .sink { [weak self] in
+                self?.sendClickOkLog()
                 self?.editStore()
             }
             .store(in: &cancellables)
@@ -239,6 +250,40 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
     }
 }
 
+// MARK: Log
+extension EditStoreViewModel {
+    private func sendClickLocationLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .location
+        ))
+    }
+
+    private func sendClickInfoLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .info
+        ))
+    }
+
+    private func sendClickMenuLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .menu
+        ))
+    }
+
+    private func sendClickOkLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .ok
+        ))
+    }
+}
 
 private extension UserStorePatchRequestV3 {
     init(response: UserStoreResponse) {

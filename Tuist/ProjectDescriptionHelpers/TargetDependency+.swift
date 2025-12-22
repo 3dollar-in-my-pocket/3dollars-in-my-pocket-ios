@@ -136,8 +136,6 @@ public extension TargetDependency {
         
         public static let firebaseMessaging = TargetDependency.package(product: "FirebaseMessaging")
         
-        public static let firebaseRemoteConfig = TargetDependency.package(product: "FirebaseRemoteConfig")
-        
         public static let firebaseInAppMessaging = TargetDependency.package(product: "FirebaseInAppMessaging-Beta")
         
         public static let kakaoSDK = TargetDependency.package(product: "KakaoSDK")

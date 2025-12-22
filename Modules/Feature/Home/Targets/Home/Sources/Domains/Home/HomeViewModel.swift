@@ -233,7 +233,7 @@ final class HomeViewModel: BaseViewModel {
             .sink(receiveValue: { (owner: HomeViewModel, _) in
                 owner.hiddenTooltip()
                 owner.state.isOnlyRecentActivity.toggle()
-                owner.sendClickRecentActivityFilter(value: owner.state.isOnlyRecentActivity)
+                owner.sendClickRecentActivityFilter(isOn: owner.state.isOnlyRecentActivity)
                 owner.fetchHomeCards()
                 owner.updateFilterDatasource()
             })
@@ -376,6 +376,7 @@ final class HomeViewModel: BaseViewModel {
                     latitude: marker.location.latitude,
                     longitude: marker.location.longitude
                 )
+                sendClickMarkerLog()
                 output.cameraPosition.send(cameraPosition)
                 output.scrollToIndex.send(index)
             })
@@ -423,6 +424,7 @@ final class HomeViewModel: BaseViewModel {
                     mapLongitude: mapLocation?.coordinate.longitude
                 )
                 let viewModel = FeedListViewModel(config: config)
+                owner.sendClickFeedButtonLog()
                 owner.output.route.send(.presentFeedList(viewModel))
             }
             .store(in: &cancellables)
@@ -615,6 +617,7 @@ final class HomeViewModel: BaseViewModel {
     private func routeCard(_ item: HomeCardSectionItem) {
         switch item {
         case .store(let cellViewModel):
+            sendClickHomeCardLog()
             if let link = cellViewModel.output.data.link {
                 output.route.send(.deepLink(link))
             }
@@ -661,64 +664,96 @@ extension HomeViewModel {
 
 // MARK: Log
 extension HomeViewModel {
-    private func sendClickCurrentLocationLog() {
-        dependency.logManager.sendEvent(.init(
+    private func sendClickHomeCardLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickCurrentLocation
+            objectType: .card,
+            objectId: .store
+        ))
+    }
+    
+    private func sendClickCurrentLocationLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .currentLocation
         ))
     }
     
     private func sendClickAddressLog() {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickAddressField
+            objectType: .button,
+            objectId: .address
         ))
     }
     
     private func sendClickCategoryFilterLog() {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickCategoryFilter
+            objectType: .button,
+            objectId: .categoryFilter
         ))
     }
     
     private func sendClickOnlyBossFilterLog(isOn: Bool) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickBossFilter,
+            objectType: .button,
+            objectId: .bossFilter,
             extraParameters: [.value: isOn]
         ))
     }
     
     private func sendClickSortingFilterLog(sortType: StoreSortType) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickSorting,
-            extraParameters: [.type: sortType.rawValue]
+            objectType: .button,
+            objectId: .sorting,
+            extraParameters: [.value: sortType.rawValue]
         ))
     }
     
     private func sendClickAdCard(advertisement: AdvertisementReference) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickAdCard,
+            objectType: .card,
+            objectId: .advertisement,
             extraParameters: [.advertisementId: "\(advertisement.adId)"]
         ))
     }
     
     private func sendClickAdMarker(advertisement: AdvertisementResponse) {
-        dependency.logManager.sendEvent(.init(
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickAdMarker,
+            objectType: .marker,
+            objectId: .advertisement,
             extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
         ))
     }
     
-    private func sendClickRecentActivityFilter(value: Bool) {
-        dependency.logManager.sendEvent(.init(
+    private func sendClickRecentActivityFilter(isOn: Bool) {
+        dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickRecentActivityFilter,
-            extraParameters: [.value: value]
+            objectType: .button,
+            objectId: .recentActivityFilter,
+            extraParameters: [.value: isOn]
+        ))
+    }
+    
+    private func sendClickMarkerLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .marker,
+            objectId: .store
+        ))
+    }
+    
+    private func sendClickFeedButtonLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .feed
         ))
     }
 }

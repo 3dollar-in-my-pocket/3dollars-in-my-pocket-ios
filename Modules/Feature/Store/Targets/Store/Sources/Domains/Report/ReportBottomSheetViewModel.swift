@@ -87,12 +87,13 @@ final class ReportBottomSheetViewModel: BaseViewModel {
 // MARK: Log
 extension ReportBottomSheetViewModel {
     private func sendClickReportLog(reason: ReportReason) {
-        logManager.sendEvent(.init(
+        logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
-            eventName: .clickReport,
+            objectType: .button,
+            objectId: .report,
             extraParameters: [
-                .storeId: config.storeId,
-                .value: reason.description
-            ]))
+                .value: reason.type
+            ]
+        ))
     }
 }

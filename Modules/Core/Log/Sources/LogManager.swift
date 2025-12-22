@@ -4,7 +4,9 @@ import OSLog
 public protocol LogManagerProtocol {
     func sendPageView(screen: ScreenName, type: AnyObject.Type)
     
-    func sendEvent(_ event: LogEvent)
+    func sendPageView(screen: ScreenName, type: AnyObject.Type, extraParameters: [ParameterName: Any])
+    
+    func sendEvent(event: LogEventType)
 }
 
 public final class LogManager: LogManagerProtocol {
@@ -25,7 +27,20 @@ public final class LogManager: LogManagerProtocol {
         }
     }
     
-    public func sendEvent(_ event: LogEvent) {
+    public func sendPageView(screen: ScreenName, type: AnyObject.Type, extraParameters: [ParameterName: Any]) {
+        
+        let parameters: [String: Any] = extraParameters.reduce(into: [:]) { result, pair in
+            result[pair.key.rawValue] = pair.value
+        }
+        
+        Environment.appModuleInterface.sendPageView(screenName: screen.rawValue, type: type, parameters: parameters)
+        
+        if isEnableDebug {
+            debugPageView(screen: screen, type: type, extraParameters: parameters)
+        }
+    }
+    
+    public func sendEvent(event: LogEventType) {
         Environment.appModuleInterface.sendEvent(
             name: event.name.rawValue,
             parameters: event.parameters
@@ -36,17 +51,18 @@ public final class LogManager: LogManagerProtocol {
         }
     }
     
-    private func debugPageView(screen: ScreenName, type: AnyObject.Type) {
+    private func debugPageView(screen: ScreenName, type: AnyObject.Type, extraParameters: [String: Any] = [:]) {
         let message: StaticString = """
         🧡 [LogManager]: PageView
             => screen: %{PUBLIC}@
             => type: %{PUBLIC}@
+            => parameter: %{PUBLIC}@
         """
         
-        os_log(.debug, message, screen.rawValue, String(describing: type))
+        os_log(.debug, message, screen.rawValue, String(describing: type), extraParameters.prettyString)
     }
     
-    private func debugCustomEvent(_ event: LogEvent) {
+    private func debugCustomEvent(_ event: LogEventType) {
         let message: StaticString = """
         🧡 [LogManager]: CustomEvent
             => name: %{PUBLIC}@
