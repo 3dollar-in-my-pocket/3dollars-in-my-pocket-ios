@@ -13,6 +13,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
     ) {
         self.viewModel = viewModel
         collectionView.register([
+            StoreDetailVerifiedBannerCell.self,
             StoreDetailOverviewCell.self,
             StoreDetailVisitCell.self,
             StoreDetailInfoCell.self,
@@ -39,6 +40,10 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
         super.init(collectionView: collectionView) { [weak rootViewController] collectionView, indexPath, itemIdentifier in
             guard let rootViewController else { return UICollectionViewCell() }
             switch itemIdentifier {
+            case .verifiedBanner:
+                let cell: StoreDetailVerifiedBannerCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                return cell
+
             case .overview(let viewModel):
                 let cell: StoreDetailOverviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel, rootViewController: rootViewController)
@@ -119,7 +124,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             guard let section = self?.sectionIdentifier(section: indexPath.section) else { return nil }
             
             switch section.type {
-            case .overview, .bossStoreAppIntro:
+            case .verifiedBanner, .overview, .bossStoreAppIntro:
                 return nil
                 
             case .visit:

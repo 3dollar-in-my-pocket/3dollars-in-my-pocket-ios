@@ -3,6 +3,7 @@ import Foundation
 import Model
 
 enum StoreDetailSectionItem: Hashable {
+    case verifiedBanner
     case overview(StoreDetailOverviewCellViewModel)
     case visit(StoreDetailVisit)
     case info(StoreDetailInfo)

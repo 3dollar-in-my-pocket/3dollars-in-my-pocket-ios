@@ -4,12 +4,9 @@ import Common
 import DesignSystem
 import SnapKit
 
-final class BossStoreVerifiedBannerCell: BaseCollectionViewCell {
+final class StoreDetailVerifiedBannerCell: BaseCollectionViewCell {
     enum Layout {
         static let height: CGFloat = 41
-        static func size(width: CGFloat) -> CGSize {
-            return CGSize(width: width, height: height)
-        }
     }
 
     private let containerView: UIView = {

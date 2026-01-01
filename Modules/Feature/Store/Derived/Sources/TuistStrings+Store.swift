@@ -179,6 +179,8 @@ public enum StoreStrings: Sendable {
   }
 
   public enum StoreDetail: Sendable {
+  /// 가슴속 3천원이 직접 확인한 공식 인증가게입니다!
+    public static let verified = StoreStrings.tr("Localization", "store_detail.verified")
 
     public enum BottomSticky: Sendable {
     /// 즐겨찾기
@@ -318,6 +320,11 @@ public enum StoreStrings: Sendable {
     public enum Tooltip: Sendable {
     /// 북마크를 하고 사장님의 메세지를 받아보세요!
       public static let bookmark = StoreStrings.tr("Localization", "store_detail.tooltip.bookmark")
+    }
+
+    public enum Verified: Sendable {
+    /// 공식 인증
+      public static let bold = StoreStrings.tr("Localization", "store_detail.verified.bold")
     }
 
     public enum Visit: Sendable {

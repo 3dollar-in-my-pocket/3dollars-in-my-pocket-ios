@@ -4,6 +4,7 @@ import Model
 
 struct StoreDetailSection: Hashable {
     enum StoreDetailSectionType: Hashable {
+        case verifiedBanner
         case overview
         case visit
         case info
@@ -27,7 +28,11 @@ extension StoreDetailSection {
             return nil
         }
     }
-    
+
+    static func verifiedBannerSection() -> StoreDetailSection {
+        return .init(type: .verifiedBanner, items: [.verifiedBanner])
+    }
+
     static func overviewSection(_ viewModel: StoreDetailOverviewCellViewModel) -> StoreDetailSection {
         return .init(type: .overview, items: [.overview(viewModel)])
     }
