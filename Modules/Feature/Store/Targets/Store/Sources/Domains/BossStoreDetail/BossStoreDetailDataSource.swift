@@ -14,6 +14,7 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
         self.viewModel = viewModel
         
         collectionView.register([
+            BossStoreVerifiedBannerCell.self,
             StoreDetailOverviewCell.self,
             BossStoreInfoCell.self,
             BossStoreMenuListCell.self,
@@ -44,6 +45,9 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
         super.init(collectionView: collectionView) { [weak containerVC, viewModel] collectionView, indexPath, itemIdentifier in
             guard let containerVC, let viewModel else { return UICollectionViewCell() }
             switch itemIdentifier {
+            case .verifiedBanner:
+                let cell: BossStoreVerifiedBannerCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                return cell
             case .overview(let viewModel):
                 let cell: StoreDetailOverviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel, rootViewController: containerVC)

@@ -261,8 +261,14 @@ final class BossStoreDetailViewModel: BaseViewModel {
 
     private func reloadDataSource() {
         guard let storeDetailData = state.storeDetailData else { return }
-        
-        var sections: [BossStoreDetailSection] = [.init(type: .overview, items: [.overview(bindOverviewCellViewModel(storeDetailData.overview))])]
+
+        var sections: [BossStoreDetailSection] = []
+
+        if storeDetailData.isVerifiedStore {
+            sections.append(.init(type: .verifiedBanner, items: [.verifiedBanner]))
+        }
+
+        sections.append(.init(type: .overview, items: [.overview(bindOverviewCellViewModel(storeDetailData.overview))]))
 
         if storeDetailData.coupons.isNotEmpty {
             let couponItems: [BossStoreDetailSectionItem] = storeDetailData.coupons.map { .coupon(bindCouponCellViewModel($0)) }
