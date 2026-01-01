@@ -10,6 +10,7 @@ public struct StoreDetailData {
     public let rating: Double
     public var totalReviewCount: Int
     public var reviews: [StoreDetailReview]
+    public let isVerifiedStore: Bool
     
     public init(
         response: UserStoreDetailResponse,
@@ -51,5 +52,6 @@ public struct StoreDetailData {
         self.rating = response.store.rating
         self.totalReviewCount = totalReviewCount
         self.reviews = response.reviews.contents.map { StoreDetailReview(response: $0) }
+        self.isVerifiedStore = response.tags.isVerifiedStore ?? false
     }
 }

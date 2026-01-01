@@ -179,6 +179,24 @@ final class StoreDetailViewController: BaseViewController {
             }
             
             switch sectionIdentifier.type {
+            case .verifiedBanner:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreDetailVerifiedBannerCell.Layout.height)
+                ))
+
+                let group = NSCollectionLayoutGroup.vertical(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreDetailVerifiedBannerCell.Layout.height)
+                    ),
+                    subitems: [item]
+                )
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 16, trailing: 20)
+
+                return section
+
             case .overview:
                 let item = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),

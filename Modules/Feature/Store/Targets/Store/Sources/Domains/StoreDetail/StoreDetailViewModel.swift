@@ -396,8 +396,14 @@ final class StoreDetailViewModel: BaseViewModel {
     
     private func refreshSections() {
         guard let storeDetailData = state.storeDetailData else { return }
-        
-        output.sections.send([
+
+        var sections: [StoreDetailSection] = []
+
+        if storeDetailData.isVerifiedStore {
+            sections.append(.verifiedBannerSection())
+        }
+
+        sections.append(contentsOf: [
             .overviewSection(createOverviewCellViewModel(storeDetailData.overview)),
             .visitSection(storeDetailData.visit),
             .infoSection(
@@ -413,6 +419,8 @@ final class StoreDetailViewModel: BaseViewModel {
             ),
             .bossStoreAppIntroSection(createBossStoreAppIntroCellViewModel())
         ])
+
+        output.sections.send(sections)
     }
     
     private func createOverviewCellViewModel(_ data: StoreDetailOverview) -> StoreDetailOverviewCellViewModel {

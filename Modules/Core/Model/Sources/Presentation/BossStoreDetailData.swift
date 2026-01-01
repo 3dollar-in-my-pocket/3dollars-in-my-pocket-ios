@@ -12,6 +12,7 @@ public struct BossStoreDetailData {
     public let totalPostCount: Int?
     public let totalReviewCount: Int
     public var reviews: [StoreDetailReview]
+    public let isVerifiedStore: Bool
 
     public init(response: BossStoreDetailResponse) {
         self.overview = StoreDetailOverview(
@@ -55,5 +56,6 @@ public struct BossStoreDetailData {
         }
         self.totalReviewCount = response.reviews.cursor.totalCount
         self.reviews = response.reviews.contents.map { StoreDetailReview(response: $0) }
+        self.isVerifiedStore = response.tags.isVerifiedStore ?? false
     }
 }

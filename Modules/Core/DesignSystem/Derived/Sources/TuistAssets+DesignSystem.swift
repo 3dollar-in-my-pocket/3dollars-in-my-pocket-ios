@@ -66,6 +66,7 @@ public enum DesignSystemAsset: Sendable {
     public static let check = DesignSystemImages(name: "check")
     public static let checkRoundOff = DesignSystemImages(name: "check.round.off")
     public static let checkRoundOn = DesignSystemImages(name: "check.round.on")
+    public static let checkVerified = DesignSystemImages(name: "check.verified")
     public static let close = DesignSystemImages(name: "close")
     public static let communityLine = DesignSystemImages(name: "community.line")
     public static let communitySolid = DesignSystemImages(name: "community.solid")
