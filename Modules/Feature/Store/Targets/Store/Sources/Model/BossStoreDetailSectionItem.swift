@@ -3,6 +3,7 @@ import Foundation
 import Model
 
 enum BossStoreDetailSectionItem: Hashable {
+    case verifiedBanner
     case overview(StoreDetailOverviewCellViewModel)
     case info(BossStoreInfoCellViewModel)
     case menuList(BossStoreMenuListCellViewModel)

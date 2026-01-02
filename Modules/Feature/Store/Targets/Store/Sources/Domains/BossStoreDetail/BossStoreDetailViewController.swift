@@ -295,6 +295,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         let width = containerWidth - 40
 
         switch dataSource.itemIdentifier(for: indexPath) {
+        case .verifiedBanner:
+            return BossStoreVerifiedBannerCell.Layout.size(width: width)
         case .overview:
             return CGSize(width: width, height: StoreDetailOverviewCell.Layout.height)
         case .info(let viewModel):
@@ -331,6 +333,15 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         case .review: return CGSize(width: collectionView.frame.width, height: 40)
         case .coupons: return CGSize(width: collectionView.frame.width, height: 40)
         default: return .zero
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        switch dataSource.sectionIdentifier(section: section)?.type {
+        case .verifiedBanner:
+            return UIEdgeInsets(top: 0, left: 20, bottom: 16, right: 20)
+        default:
+            return UIEdgeInsets(top: 0, left: 20, bottom: 32, right: 20)
         }
     }
 }

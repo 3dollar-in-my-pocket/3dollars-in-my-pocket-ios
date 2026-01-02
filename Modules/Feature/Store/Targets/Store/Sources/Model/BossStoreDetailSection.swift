@@ -2,6 +2,7 @@ import Foundation
 
 struct BossStoreDetailSection: Hashable {
     enum SectionType: Hashable {
+        case verifiedBanner
         case overview
         case info
         case workday
