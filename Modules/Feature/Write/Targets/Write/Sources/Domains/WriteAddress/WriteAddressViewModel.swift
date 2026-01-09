@@ -38,6 +38,7 @@ extension WriteAddressViewModel {
     
     private struct State {
         var cameraPosition: CLLocation?
+        let editingStoreId: String?
     }
     
     public struct Dependency {
@@ -76,8 +77,8 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
     
     public init(config: WriteAddressViewModelConfig, dependency: Dependency = Dependency()) {
         self.dependency = dependency
-        self.state = State(cameraPosition: config.location)
-        
+        self.state = State(cameraPosition: config.location, editingStoreId: config.storeId)
+
         self.output = Output(
             cameraPosition: .init(config.location),
             address: .init(config.address)
@@ -152,15 +153,22 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
                 mapLongitude: location.coordinate.longitude
             )
             let result = await dependency.storeRepository.fetchAroundStores(input: input)
-            
+
             switch result {
             case .success(let response):
-                if response.contents.isEmpty {
+                let filteredStores: [StoreWithExtraResponse]
+                if let editingStoreId = state.editingStoreId {
+                    filteredStores = response.contents.filter { $0.storeId != editingStoreId }
+                } else {
+                    filteredStores = response.contents
+                }
+
+                if filteredStores.isEmpty {
                     output.finishWriteAddress.send((output.address.value, location))
                 } else {
-                    presentConfirmPopup(stores: response.contents, address: output.address.value)
+                    presentConfirmPopup(stores: filteredStores, address: output.address.value)
                 }
-                
+
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))
             }
