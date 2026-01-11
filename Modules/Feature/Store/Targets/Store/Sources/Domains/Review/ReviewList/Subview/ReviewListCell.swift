@@ -152,8 +152,7 @@ final class ReviewListCell: BaseCollectionViewCell {
         
         photoStackView.snp.makeConstraints {
             $0.top.equalTo(medalBadge.snp.bottom).offset(8)
-            $0.leading.equalToSuperview().inset(16)
-            $0.trailing.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(16)
         }
 
         contentLabel.snp.makeConstraints {
