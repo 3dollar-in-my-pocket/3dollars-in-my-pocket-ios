@@ -118,10 +118,11 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
         guard let address = state.currentStore.address.fullAddress else { return }
         let config = WriteAddressViewModelConfig(
             address: address,
-            location: state.currentStore.location.toCLLocation
+            location: state.currentStore.location.toCLLocation,
+            storeId: state.currentStore.storeId
         )
         let viewModel = WriteAddressViewModel(config: config)
-        
+
         viewModel.output.finishWriteAddress
             .sink { [weak self] (address: String, location: CLLocation) in
                 self?.didUpdatedAddress(address: address, location: location)
