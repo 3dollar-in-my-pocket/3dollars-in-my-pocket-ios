@@ -7,11 +7,12 @@ import AppInterface
 
 final class StoreDetailOverviewCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 588
+        static let storeDetailHeight: CGFloat = 620
+        static let bossStoreDetailheight: CGFloat = 580
     }
     
     let titleView = StoreDetailOverviewTitleView()
-    
+
     let menuView = StoreDetailOverviewMenuView()
     
     let mapView = StoreDetailOverviewMapView()
@@ -49,7 +50,7 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             $0.right.equalToSuperview()
             $0.height.equalTo(StoreDetailOverviewTitleView.Layout.height)
         }
-        
+
         menuView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.top.equalTo(titleView.snp.bottom).offset(20)
@@ -79,6 +80,10 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
     
     func bind(_ viewModel: StoreDetailOverviewCellViewModel, rootViewController: UIViewController) {
         titleView.bind(viewModel.output.overview)
+        titleView.snp.updateConstraints {
+            let height = viewModel.output.overview.isBossStore ? StoreDetailOverviewTitleView.Layout.heightWidhoutContributors : StoreDetailOverviewTitleView.Layout.height
+            $0.height.equalTo(height)
+        }
         mapView.bind(
             location: viewModel.output.overview.location,
             address: viewModel.output.overview.address

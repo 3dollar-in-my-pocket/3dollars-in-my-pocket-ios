@@ -10,4 +10,5 @@ public struct UserStoreDetailResponse: Decodable {
     public let visits: StoreVisitListWithCountResponse
     public let favorite: StoreFavoriteResponse
     public let tags: StoreTagResponse
+    public let uniqueContributorCount: Int?
 }

@@ -200,13 +200,13 @@ final class StoreDetailViewController: BaseViewController {
             case .overview:
                 let item = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(StoreDetailOverviewCell.Layout.height)
+                    heightDimension: .absolute(StoreDetailOverviewCell.Layout.storeDetailHeight)
                 ))
                 
                 let group = NSCollectionLayoutGroup.vertical(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(StoreDetailOverviewCell.Layout.height)
+                        heightDimension: .absolute(StoreDetailOverviewCell.Layout.storeDetailHeight)
                     ),
                     subitems: [item]
                 )
