@@ -88,7 +88,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentVisit(VisitViewModel)
         case navigateAppleMap(LocationResponse)
         case pushWebView(WebViewType)
-        case presentContributors(ContributorsViewModel)
+        case presentContributors(storeId: Int, store: UserStoreResponse)
     }
     
     let input = Input()
@@ -661,13 +661,7 @@ extension StoreDetailViewModel {
     private func presentContributors() {
         guard let store = state.userStoreDetailResponse?.store else { return }
 
-        let config = ContributorsViewModel.Config(
-            storeId: state.storeId,
-            store: store
-        )
-        let viewModel = ContributorsViewModel(config: config)
-
-        output.route.send(.presentContributors(viewModel))
+        output.route.send(.presentContributors(storeId: state.storeId, store: store))
     }
     
     private func presentUploadPhoto() {

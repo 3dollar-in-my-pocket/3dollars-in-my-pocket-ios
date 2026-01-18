@@ -2,6 +2,7 @@ import Foundation
 import Combine
 
 import Common
+import DependencyInjection
 import Log
 import Model
 import Networking
@@ -29,8 +30,8 @@ extension ContributorsViewModel {
     }
 
     public struct Config {
-        let storeId: Int
-        let store: UserStoreResponse?
+        public let storeId: Int
+        public let store: UserStoreResponse?
 
         public init(storeId: Int, store: UserStoreResponse?) {
             self.storeId = storeId
@@ -43,16 +44,19 @@ extension ContributorsViewModel {
         var isLoading: Bool = false
     }
 
-    struct Dependency {
+    public struct Dependency {
         let storeRepository: StoreRepository
         let logManager: LogManagerProtocol
+        let writeInterface: WriteInterface
 
-        init(
+        public init(
             storeRepository: StoreRepository = StoreRepositoryImpl(),
-            logManager: LogManagerProtocol = LogManager.shared
+            logManager: LogManagerProtocol = LogManager.shared,
+            writeInterface: WriteInterface = DIContainer.shared.container.resolve(WriteInterface.self)!
         ) {
             self.storeRepository = storeRepository
             self.logManager = logManager
+            self.writeInterface = writeInterface
         }
     }
 }
@@ -116,7 +120,7 @@ public final class ContributorsViewModel: BaseViewModel {
 
         switch result {
         case .success(let response):
-            state.cursor = response.data.cursor
+            state.cursor = response.data.cursor.nextCursor
             let items = processCards(response.data.cards)
             output.items.send(items)
 
@@ -139,7 +143,8 @@ public final class ContributorsViewModel: BaseViewModel {
     private func pushEditStore() {
         guard let store = config.store else { return }
 
-        let viewModel = WriteInterface.getEditStoreViewModel(store: store)
+        let viewModelConfig = EditStoreViewModelConfig(store: store)
+        let viewModel = dependency.writeInterface.createEditStoreViewModel(config: viewModelConfig)
         output.route.send(.pushEditStore(viewModel))
     }
 }

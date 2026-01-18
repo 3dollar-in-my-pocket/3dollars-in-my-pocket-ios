@@ -21,7 +21,7 @@ public final class SDUCollectionView: UIView {
     }
 
     private func setup() {
-        collectionView.backgroundColor = Colors.systemWhite
+        collectionView.backgroundColor = Colors.systemWhite.color
         addSubview(collectionView)
     }
 

@@ -76,7 +76,7 @@ final class StoreDetailOverviewTitleView: BaseView {
     
     private let infoView = StoreDetailOverviewInfoCellView()
     
-    private let contributorButton = StoreDetailContributorButtonView()
+    let contributorButton = StoreDetailContributorButtonView()
     
     override func setup() {
         addSubViews([

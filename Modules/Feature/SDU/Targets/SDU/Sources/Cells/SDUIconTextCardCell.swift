@@ -109,8 +109,9 @@ public final class SDUIconTextCardCell: BaseCollectionViewCell {
             subTitleChipView.isHidden = false
             subTitleLabel.setSDText(subTitle.text)
 
-            if let backgroundColor = subTitle.style?.backgroundColor {
-                subTitleChipView.backgroundColor = UIColor(hex: backgroundColor)
+            if let backgroundColorHex = subTitle.style?.backgroundColor,
+               let backgroundColor = UIColor(hex: backgroundColorHex) {
+                subTitleChipView.backgroundColor = backgroundColor
             }
         } else {
             subTitleChipView.isHidden = true

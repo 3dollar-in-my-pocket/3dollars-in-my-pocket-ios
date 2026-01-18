@@ -9,14 +9,8 @@ final class FeedCellContentWithImagesBodyView: BaseView {
     enum Layout {
         static func calculateHeight(body: ContentWithImagesFeedBodyResponse) -> CGFloat {
             let width = UIUtils.windowBounds.width - 56
-            let contentHeight: CGFloat
-            
-            if body.content.isHtml {
-                contentHeight = ZHTMLParserBuilder.initWithDefault().build().render(body.content.text).height(width: width)
-            } else {
-                contentHeight = body.content.text.height(font: Fonts.regular.font(size: 14), width: width)
-            }
-            
+            let contentHeight = body.content.text.height(font: Fonts.regular.font(size: 14), width: width)
+
             return contentHeight + 188
         }
     }

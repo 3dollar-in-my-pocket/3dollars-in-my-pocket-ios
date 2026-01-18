@@ -2,6 +2,7 @@ import UIKit
 import Combine
 
 import Common
+import DependencyInjection
 import DesignSystem
 import Model
 import SDU
@@ -17,7 +18,7 @@ public final class ContributorsViewController: BaseViewController {
         let label = UILabel()
         label.text = "함께 만든 가게 정보"
         label.font = Fonts.semiBold.font(size: 16)
-        label.textColor = Colors.gray100
+        label.textColor = Colors.gray100.color
         return label
     }()
 
@@ -25,8 +26,8 @@ public final class ContributorsViewController: BaseViewController {
         let button = UIButton(type: .system)
         button.setTitle("나도 수정하기", for: .normal)
         button.titleLabel?.font = Fonts.semiBold.font(size: 16)
-        button.setTitleColor(Colors.systemWhite, for: .normal)
-        button.backgroundColor = Colors.mainPink
+        button.setTitleColor(Colors.systemWhite.color, for: .normal)
+        button.backgroundColor = Colors.mainPink.color
         button.layer.cornerRadius = 8
         return button
     }()
@@ -58,12 +59,11 @@ public final class ContributorsViewController: BaseViewController {
         title = "기여자 목록"
 
         let closeButton = UIBarButtonItem(
-            image: Icons.icClose.image.withRenderingMode(.alwaysTemplate),
-            style: .plain,
+            barButtonSystemItem: .close,
             target: nil,
             action: nil
         )
-        closeButton.tintColor = Colors.gray100
+        closeButton.tintColor = Colors.gray100.color
         navigationItem.leftBarButtonItem = closeButton
 
         closeButton.tapPublisher
@@ -73,7 +73,7 @@ public final class ContributorsViewController: BaseViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = Colors.systemWhite
+        view.backgroundColor = Colors.systemWhite.color
         view.addSubview(headerLabel)
         view.addSubview(sduView)
         view.addSubview(editButton)
@@ -164,9 +164,8 @@ extension ContributorsViewController {
     }
 
     private func pushEditStore(_ viewModel: EditStoreViewModelInterface) {
-        guard let writeVC = WriteInterface.getEditStoreViewController(viewModel: viewModel) else {
-            return
-        }
+        let writeInterface = DIContainer.shared.container.resolve(WriteInterface.self)!
+        let writeVC = writeInterface.createEditStoreViewController(viewModel: viewModel)
         navigationController?.pushViewController(writeVC, animated: true)
     }
 }
