@@ -139,7 +139,13 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             .mapVoid
             .subscribe(viewModel.input.didTapMapDetail)
             .store(in: &cancellables)
-        
+
+        titleView.contributorButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapContributors)
+            .store(in: &cancellables)
+
         viewModel.output.isFavorited
             .receive(on: DispatchQueue.main)
             .assign(to: \.isSelected, on: menuView.favoriteButton)

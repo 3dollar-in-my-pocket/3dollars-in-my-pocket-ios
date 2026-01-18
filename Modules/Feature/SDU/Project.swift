@@ -1,28 +1,18 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let name = "Store"
+let name = "SDU"
 
 let project = Project.makeFeatureModule(
     name: name,
-    package: [
-        .naverMap
-    ],
     dependencies: [
         .Core.networking,
         .Core.common,
         .Core.model,
-        .Core.dependencyInjection,
         .Core.designSystem,
-        .Feature.sdu,
-        .Interface.appInterface,
-        .Interface.storeInterface,
-        .Interface.writeInterface,
         .SPM.snapKit,
-        .SPM.then,
-        .SPM.panModal,
-        .SPM.combineCocoa,
-        .Package.naverMap,
+        .SPM.kingfisher,
+        .SPM.combineCocoa
     ],
     includeInterface: true,
     includeDemo: true

@@ -147,6 +147,8 @@ final class StoreDetailViewController: BaseViewController {
                     owner.navigateAppleMap(location: location)
                 case .pushWebView(let webViewType):
                     owner.pushWebView(webViewType: webViewType)
+                case .presentContributors(let viewModel):
+                    owner.presentContributors(viewModel)
                 }
             }
             .store(in: &cancellables)
@@ -421,13 +423,26 @@ final class StoreDetailViewController: BaseViewController {
     
     private func presentMapDetail(_ viewModel: MapDetailViewModel) {
         let viewController = MapDetailViewController(viewModel: viewModel)
-        
+
         present(viewController, animated: true)
     }
-    
+
+    private func presentContributors(_ viewModel: ContributorsViewModel) {
+        let viewController = ContributorsViewController.instance(
+            config: ContributorsViewModel.Config(
+                storeId: viewModel.config.storeId,
+                store: viewModel.config.store
+            )
+        )
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .fullScreen
+
+        present(navigationController, animated: true)
+    }
+
     private func presentUploadPhoto(_ viewModel: UploadPhotoViewModel) {
         let viewController = UploadPhotoViewController.instance(viewModel: viewModel)
-        
+
         present(viewController, animated: true)
     }
     

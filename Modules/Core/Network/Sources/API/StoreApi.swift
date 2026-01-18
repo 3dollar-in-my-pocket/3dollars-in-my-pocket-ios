@@ -20,6 +20,7 @@ enum StoreApi {
     case fetchStore(input: FetchStoreInput)
     case patchStore(storeId: String, input: UserStorePatchRequestV3)
     case fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType])
+    case fetchStoreContributorHistories(storeId: Int, cursor: String?)
 }
 
 extension StoreApi: RequestType {
@@ -63,6 +64,12 @@ extension StoreApi: RequestType {
             return input
         case .fetchDisplayItems(_, let itemTypes):
             return ["itemTypes": itemTypes.map { $0.rawValue }]
+        case .fetchStoreContributorHistories(_, let cursor):
+            if let cursor {
+                return ["cursor": cursor] 
+            } else {
+                return nil
+            }
         }
     }
     
@@ -99,6 +106,8 @@ extension StoreApi: RequestType {
         case .patchStore:
             return .patch
         case .fetchDisplayItems:
+            return .get
+        case .fetchStoreContributorHistories:
             return .get
         }
     }
@@ -140,6 +149,8 @@ extension StoreApi: RequestType {
             return .json
         case .fetchDisplayItems:
             return .json
+        case .fetchStoreContributorHistories:
+            return .json
         }
     }
     
@@ -177,6 +188,8 @@ extension StoreApi: RequestType {
             return "/api/v3/store/\(storeId)"
         case .fetchDisplayItems(let storeId, _):
             return "/api/v1/store/\(storeId)/display-items"
+        case .fetchStoreContributorHistories(let storeId, _):
+            return "/v1/screen/store/\(storeId)/contributors/section/histories"
         }
     }
 }
