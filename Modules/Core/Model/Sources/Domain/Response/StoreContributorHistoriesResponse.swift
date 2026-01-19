@@ -1,11 +1,6 @@
 import Foundation
 
-public struct StoreContributorHistoriesResponse: Decodable {
-    public let data: StoreContributorHistoriesSection
-}
-
 public struct StoreContributorHistoriesSection: Decodable {
-    public let type: String
     public let cards: [StoreContributorCard]
     public let cursor: CursorString
 }

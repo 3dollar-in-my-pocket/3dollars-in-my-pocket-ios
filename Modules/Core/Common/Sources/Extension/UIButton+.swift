@@ -6,11 +6,14 @@ import Kingfisher
 
 public extension UIButton {
     func setSDButton(_ sdButton: SDButton) {
-        if let color = UIColor(hex: sdButton.text.style.fontColor) {
-            setTitleColor(color, for: .normal)
+        setTitleColor(UIColor(hex: sdButton.text.fontColor), for: .normal)
+        
+        if sdButton.text.isHtml {
+            let attributedText = ZHTMLParserBuilder.initWithDefault().build().render(sdButton.text.text)
+            setAttributedTitle(attributedText, for: .normal)
+        } else {
+            setTitle(sdButton.text.text, for: .normal)
         }
-
-        setTitle(sdButton.text.text, for: .normal)
 
         if let image = sdButton.image,
            let imageUrl = URL(string: image.url),
@@ -25,9 +28,7 @@ public extension UIButton {
             }
         }
 
-        if let bgColor = UIColor(hex: sdButton.style.backgroundColor) {
-            backgroundColor = bgColor
-        }
+        backgroundColor = UIColor(hex: sdButton.style.backgroundColor)
     }
 
     private func isValidImageSize(width: Double, height: Double) -> Bool {

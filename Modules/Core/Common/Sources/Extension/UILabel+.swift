@@ -32,32 +32,11 @@ public extension UILabel {
     }
     
     func setSDText(_ sdText: SDText) {
-        text = sdText.text
-
-        if let color = UIColor(hex: sdText.style.fontColor) {
-            textColor = color
-        }
-
-        if let fontSize = sdText.style.fontSize {
-            let fontWeight = fontWeight(from: sdText.style.fontWeight)
-            font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: fontWeight)
-        }
-    }
-
-    private func fontWeight(from weight: String?) -> UIFont.Weight {
-        guard let weight else { return .regular }
-
-        switch weight.lowercased() {
-        case "bold":
-            return .bold
-        case "semibold":
-            return .semibold
-        case "medium":
-            return .medium
-        case "light":
-            return .light
-        default:
-            return .regular
+        textColor = UIColor(hex: sdText.fontColor)
+        if sdText.isHtml {
+            attributedText = ZHTMLParserBuilder.initWithDefault().build().render(sdText.text)
+        } else {
+            text = sdText.text
         }
     }
 }

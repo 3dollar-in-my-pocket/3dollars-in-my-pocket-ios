@@ -57,6 +57,8 @@ final class StoreDetailContributorButtonView: UIButton {
         stackView.addArrangedSubview(nicknameLabel)
         stackView.addArrangedSubview(messageLabel)
         stackView.addArrangedSubview(arrowIcon, previousSpace: 4)
+
+        stackView.isUserInteractionEnabled = false
     }
 
     private func bindConstraints() {

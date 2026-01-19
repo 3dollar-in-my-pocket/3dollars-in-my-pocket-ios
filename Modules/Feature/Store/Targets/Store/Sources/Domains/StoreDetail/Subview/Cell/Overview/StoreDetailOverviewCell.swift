@@ -141,8 +141,7 @@ final class StoreDetailOverviewCell: BaseCollectionViewCell {
             .store(in: &cancellables)
 
         titleView.contributorButton
-            .controlPublisher(for: .touchUpInside)
-            .mapVoid
+            .tapPublisher
             .subscribe(viewModel.input.didTapContributors)
             .store(in: &cancellables)
 

@@ -189,7 +189,7 @@ extension StoreApi: RequestType {
         case .fetchDisplayItems(let storeId, _):
             return "/api/v1/store/\(storeId)/display-items"
         case .fetchStoreContributorHistories(let storeId, _):
-            return "/v1/screen/store/\(storeId)/contributors/section/histories"
+            return "/api/v1/screen/store/\(storeId)/contributors/section/histories"
         }
     }
 }

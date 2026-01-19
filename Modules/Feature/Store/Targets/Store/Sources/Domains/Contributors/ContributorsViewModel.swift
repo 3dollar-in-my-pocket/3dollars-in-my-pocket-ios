@@ -120,8 +120,8 @@ public final class ContributorsViewModel: BaseViewModel {
 
         switch result {
         case .success(let response):
-            state.cursor = response.data.cursor.nextCursor
-            let items = processCards(response.data.cards)
+            state.cursor = response.cursor.nextCursor
+            let items = processCards(response.cards)
             output.items.send(items)
 
         case .failure(let error):
