@@ -14,32 +14,45 @@ public final class SDUDataSource: UICollectionViewDiffableDataSource<SDUSection,
 
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .callout(let data):
+            case .callout(let viewModel):
                 let cell: SDUCalloutCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(data)
+                cell.bind(viewModel)
                 return cell
 
-            case .iconText(let data):
+            case .iconText(let viewModel):
                 let cell: SDUIconTextCardCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(data)
+                cell.bind(viewModel)
                 return cell
             }
         }
     }
 
-    public func reload(_ items: [SDUItem], in section: SDUSection = .main) {
+    public func reload(_ items: [SDUItem]) {
+        let section = SDUSection(type: .main, items: items)
+        reload(sections: [section])
+    }
+
+    public func reload(sections: [SDUSection]) {
         var snapshot = Snapshot()
-        snapshot.appendSections([section])
-        snapshot.appendItems(items, toSection: section)
+
+        snapshot.appendSections(sections)
+        sections.forEach { section in
+            snapshot.appendItems(section.items, toSection: section)
+        }
         apply(snapshot, animatingDifferences: false)
     }
 }
 
-public enum SDUSection: Hashable {
-    case main
+public struct SDUSection: Hashable {
+    public let type: SDUSectionType
+    public let items: [SDUItem]
+
+    public enum SDUSectionType: Hashable {
+        case main
+    }
 }
 
 public enum SDUItem: Hashable {
-    case callout(CalloutCard)
-    case iconText(IconTextCardData)
+    case callout(SDUCalloutCellViewModel)
+    case iconText(SDUIconTextCardCellViewModel)
 }

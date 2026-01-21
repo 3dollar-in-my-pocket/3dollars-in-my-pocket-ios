@@ -3,9 +3,8 @@ import Foundation
 public struct CalloutCard: Decodable, Hashable, SDUComponent {
     public let type: SDUComponentTypes
     public let cardId: String
-    public let promptTitle: SDTextSpans
-    public let highlightMessage: SDTextSpans
-    public let description: SDTextSpans
+    public let title: SDText
+    public let description: SDText?
     public let style: SDSurfaceStyle
 }
 

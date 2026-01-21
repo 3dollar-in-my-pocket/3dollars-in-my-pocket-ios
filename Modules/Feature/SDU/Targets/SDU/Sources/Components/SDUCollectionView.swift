@@ -22,6 +22,9 @@ public final class SDUCollectionView: UIView {
 
     private func setup() {
         collectionView.backgroundColor = Colors.systemWhite.color
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.backgroundColor = .clear
         addSubview(collectionView)
     }
 

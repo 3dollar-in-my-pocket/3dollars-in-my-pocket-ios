@@ -7,22 +7,25 @@ import SnapKit
 
 public final class SDUCalloutCell: BaseCollectionViewCell {
     enum Layout {
-        static func height(data: CalloutCard) -> CGFloat {
-            var height: CGFloat = 90
-            
-            if data.promptTitle.spans.first?.text.numberOfLines ?? 0 > 1 {
-                height = 102
+        static let singleLineHeight: CGFloat = 90
+        static let doubleLineHeight: CGFloat = 102
+        static func height(viewModel: SDUCalloutCellViewModel) -> CGFloat {
+            if viewModel.output.data.title.text.numberOfLines > 1 {
+                return doubleLineHeight
+            } else {
+                return singleLineHeight
             }
-            
-            return height
         }
     }
-    
+
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = .init(top: 16, left: 10, bottom: 16, right: 10)
         stackView.axis = .vertical
+        stackView.layer.cornerRadius = 20
+        stackView.layer.masksToBounds = true
+        stackView.spacing = 4
         return stackView
     }()
 
@@ -40,6 +43,7 @@ public final class SDUCalloutCell: BaseCollectionViewCell {
         label.numberOfLines = 1
         label.textColor = Colors.gray60.color
         label.font = Fonts.medium.font(size: 12)
+        label.textAlignment = .center
         return label
     }()
 
@@ -59,15 +63,17 @@ public final class SDUCalloutCell: BaseCollectionViewCell {
         }
     }
 
-    public func bind(_ data: CalloutCard) {
-        if let title = data.promptTitle.spans.first {
-            titleLabel.setSDText(title)
-        }
+    public func bind(_ viewModel: SDUCalloutCellViewModel) {
+        let data = viewModel.output.data
 
-        if let description = data.description.spans.first {
+        titleLabel.setSDText(data.title)
+        titleLabel.setLineHeight(lineHeight: 24)
+
+        if let description = data.description {
             descriptionLabel.setSDText(description)
+            descriptionLabel.setLineHeight(lineHeight: 18)
         }
 
-        contentView.setSDSurfaceStyle(data.style)
+        stackView.setSDSurfaceStyle(data.style)
     }
 }

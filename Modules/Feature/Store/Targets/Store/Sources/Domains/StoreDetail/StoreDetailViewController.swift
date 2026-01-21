@@ -429,11 +429,11 @@ final class StoreDetailViewController: BaseViewController {
 
     private func presentContributors(storeId: Int, store: UserStoreResponse) {
         let config = ContributorsViewModel.Config(storeId: storeId, store: store)
-        let viewController = ContributorsViewController.instance(config: config)
-        let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.modalPresentationStyle = .fullScreen
+        let viewModel = ContributorsViewModel(config: config)
+        let viewController = ContributorsViewController(viewModel: viewModel)
+        viewController.modalPresentationStyle = .fullScreen
 
-        present(navigationController, animated: true)
+        present(viewController, animated: true)
     }
 
     private func presentUploadPhoto(_ viewModel: UploadPhotoViewModel) {

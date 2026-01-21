@@ -133,9 +133,14 @@ public final class ContributorsViewModel: BaseViewModel {
         return cards.compactMap { card in
             switch card.data {
             case .callout(let data):
-                return .callout(data)
+                let config = SDUCalloutCellViewModel.Config(data: data)
+                let viewModel = SDUCalloutCellViewModel(config: config)
+                return .callout(viewModel)
+
             case .iconText(let data):
-                return .iconText(data)
+                let config = SDUIconTextCardCellViewModel.Config(data: data)
+                let viewModel = SDUIconTextCardCellViewModel(config: config)
+                return .iconText(viewModel)
             }
         }
     }

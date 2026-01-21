@@ -9,38 +9,32 @@ import SnapKit
 public final class SDUIconTextCardCell: BaseCollectionViewCell {
     private let containerView: UIView = {
         let view = UIView()
+        view.layer.cornerRadius = 20
+        view.layer.masksToBounds = true
         return view
     }()
 
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView
     }()
 
-    private let contentStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 4
-        stackView.alignment = .leading
-        return stackView
-    }()
-
     private let titleLabel: UILabel = {
         let label = UILabel()
+        label.font = Fonts.bold.font(size: 16)
+        label.textColor = Colors.gray100.color
         label.numberOfLines = 1
+        label.lineBreakMode = .byTruncatingTail
         return label
     }()
 
-    private let subTitleChipView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 4
-        return view
-    }()
-
-    private let subTitleLabel: UILabel = {
-        let label = UILabel()
+    private let subTitleLabel: PaddingLabel = {
+        let label = PaddingLabel(topInset: 3, bottomInset: 3, leftInset: 8, rightInset: 8)
+        label.layer.cornerRadius = 12
+        label.layer.masksToBounds = true
+        label.font = Fonts.medium.font(size: 12)
         label.numberOfLines = 0
         return label
     }()
@@ -48,20 +42,26 @@ public final class SDUIconTextCardCell: BaseCollectionViewCell {
     private let metadataLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
+        label.textColor = Colors.gray50.color
+        label.font = Fonts.medium.font(size: 12)
+        label.textAlignment = .right
         return label
     }()
+    
+    public override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        subTitleLabel.snp.removeConstraints()
+    }
 
     public override func setup() {
         super.setup()
 
         contentView.addSubview(containerView)
         containerView.addSubview(iconImageView)
-        containerView.addSubview(contentStackView)
+        containerView.addSubview(titleLabel)
+        containerView.addSubview(subTitleLabel)
         containerView.addSubview(metadataLabel)
-
-        subTitleChipView.addSubview(subTitleLabel)
-        contentStackView.addArrangedSubview(titleLabel)
-        contentStackView.addArrangedSubview(subTitleChipView)
     }
 
     public override func bindConstraints() {
@@ -77,44 +77,58 @@ public final class SDUIconTextCardCell: BaseCollectionViewCell {
             $0.width.height.equalTo(36)
         }
 
-        contentStackView.snp.makeConstraints {
-            $0.leading.equalTo(iconImageView.snp.trailing).offset(12)
-            $0.trailing.lessThanOrEqualTo(metadataLabel.snp.leading).offset(-8)
+        titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(16)
-            $0.bottom.equalToSuperview().offset(-16)
-        }
-
-        subTitleLabel.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8))
+            $0.leading.equalTo(iconImageView.snp.trailing).offset(12)
+            $0.trailing.lessThanOrEqualToSuperview().offset(-12)
+            $0.height.equalTo(24)
         }
 
         metadataLabel.snp.makeConstraints {
             $0.trailing.equalToSuperview().offset(-16)
-            $0.centerY.equalTo(titleLabel)
+            $0.bottom.equalToSuperview().offset(-16)
         }
     }
 
-    public func bind(_ data: IconTextCardData) {
+    public func bind(_ viewModel: SDUIconTextCardCellViewModel) {
+        let data = viewModel.output.data
+
         if let url = URL(string: data.image.url) {
             iconImageView.kf.setImage(with: url)
         }
 
         iconImageView.snp.updateConstraints {
-            $0.width.height.equalTo(data.image.style.width)
+            $0.width.equalTo(data.image.style.width)
+            $0.height.equalTo(data.image.style.height)
         }
 
         titleLabel.setSDText(data.title)
 
         if let subTitle = data.subTitle {
-            subTitleChipView.isHidden = false
-            subTitleLabel.setSDText(subTitle.text)
-
-            if let backgroundColorHex = subTitle.style?.backgroundColor,
-               let backgroundColor = UIColor(hex: backgroundColorHex) {
-                subTitleChipView.backgroundColor = backgroundColor
+            subTitleLabel.isHidden = false
+            subTitleLabel.setSDChip(subTitle)
+            
+            if subTitleLabel.backgroundColor.isNotNil {
+                subTitleLabel.setPadding(top: 3, bottom: 3, left: 8, right: 8)
+                subTitleLabel.snp.makeConstraints {
+                    $0.leading.equalTo(titleLabel)
+                    $0.trailing.lessThanOrEqualTo(metadataLabel.snp.leading).offset(-4)
+                    $0.top.equalTo(titleLabel.snp.bottom).offset(4)
+                    $0.bottom.equalToSuperview().offset(-16)
+                    $0.height.equalTo(24)
+                }
+            } else {
+                subTitleLabel.setLineHeight(lineHeight:  20)
+                subTitleLabel.setPadding(top: 0, bottom: 0, left: 0, right: 0)
+                subTitleLabel.snp.makeConstraints {
+                    $0.leading.equalTo(titleLabel)
+                    $0.trailing.lessThanOrEqualTo(metadataLabel.snp.leading).offset(-4)
+                    $0.top.equalTo(titleLabel.snp.bottom).offset(4)
+                    $0.bottom.equalToSuperview().offset(-16)
+                }
             }
         } else {
-            subTitleChipView.isHidden = true
+            subTitleLabel.isHidden = true
         }
 
         if let metadata = data.metadata {
