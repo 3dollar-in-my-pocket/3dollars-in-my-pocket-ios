@@ -19,57 +19,58 @@ extension ContributorsViewModel {
 
     struct Output {
         let screenName: ScreenName = .storeContributors
+        let storeId: Int
         let items = PassthroughSubject<[SDUItem], Never>()
         let route = PassthroughSubject<Route, Never>()
-        let error = PassthroughSubject<Error, Never>()
-    }
-
-    enum Route {
-        case dismiss
-        case pushEditStore(EditStoreViewModelInterface)
-    }
-
-    public struct Config {
-        public let storeId: Int
-        public let store: UserStoreResponse?
-
-        public init(storeId: Int, store: UserStoreResponse?) {
-            self.storeId = storeId
-            self.store = store
-        }
     }
 
     struct State {
         var cursor: String?
         var isLoading: Bool = false
+        var items: [StoreContributorCard] = []
+    }
+
+    enum Route {
+        case dismiss
+        case dismissAndEdit
+        case pushEditStore(EditStoreViewModelInterface)
+        case showErrorAlert(Error)
+    }
+
+    public struct Config {
+        public let storeId: Int
+        public let onEditRequested: () -> Void
+
+        public init(storeId: Int, onEditRequested: @escaping () -> Void) {
+            self.storeId = storeId
+            self.onEditRequested = onEditRequested
+        }
     }
 
     public struct Dependency {
         let storeRepository: StoreRepository
         let logManager: LogManagerProtocol
-        let writeInterface: WriteInterface
 
         public init(
             storeRepository: StoreRepository = StoreRepositoryImpl(),
-            logManager: LogManagerProtocol = LogManager.shared,
-            writeInterface: WriteInterface = DIContainer.shared.container.resolve(WriteInterface.self)!
+            logManager: LogManagerProtocol = LogManager.shared
         ) {
             self.storeRepository = storeRepository
             self.logManager = logManager
-            self.writeInterface = writeInterface
         }
     }
 }
 
 public final class ContributorsViewModel: BaseViewModel {
     let input = Input()
-    let output = Output()
+    let output: Output
     private var state: State
-    private let config: Config
     private let dependency: Dependency
+    let onEditRequested: () -> Void
 
     public init(config: Config, dependency: Dependency = Dependency()) {
-        self.config = config
+        self.output = Output(storeId: config.storeId)
+        self.onEditRequested = config.onEditRequested
         self.dependency = dependency
         self.state = State()
     }
@@ -92,7 +93,7 @@ public final class ContributorsViewModel: BaseViewModel {
         input.didTapEdit
             .withUnretained(self)
             .sink { (owner, _) in
-                owner.pushEditStore()
+                owner.dissmissAndPushEdit()
             }
             .store(in: &cancellables)
 
@@ -106,13 +107,12 @@ public final class ContributorsViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
 
-    @MainActor
     private func fetchHistories() async {
-        guard !state.isLoading else { return }
+        guard state.isLoading.isNot else { return }
         state.isLoading = true
 
         let result = await dependency.storeRepository.fetchStoreContributorHistories(
-            storeId: config.storeId,
+            storeId: output.storeId,
             cursor: state.cursor
         )
 
@@ -121,16 +121,15 @@ public final class ContributorsViewModel: BaseViewModel {
         switch result {
         case .success(let response):
             state.cursor = response.cursor.nextCursor
-            let items = processCards(response.cards)
-            output.items.send(items)
-
+            state.items = response.cards
+            updateDatasource()
         case .failure(let error):
-            output.error.send(error)
+            output.route.send(.showErrorAlert(error))
         }
     }
 
-    private func processCards(_ cards: [StoreContributorCard]) -> [SDUItem] {
-        return cards.compactMap { card in
+    private func updateDatasource() {
+        let sduItems: [SDUItem] = state.items.compactMap { card in
             switch card.data {
             case .callout(let data):
                 let config = SDUCalloutCellViewModel.Config(data: data)
@@ -143,13 +142,11 @@ public final class ContributorsViewModel: BaseViewModel {
                 return .iconText(viewModel)
             }
         }
+
+        output.items.send(sduItems)
     }
 
-    private func pushEditStore() {
-        guard let store = config.store else { return }
-
-        let viewModelConfig = EditStoreViewModelConfig(store: store)
-        let viewModel = dependency.writeInterface.createEditStoreViewModel(config: viewModelConfig)
-        output.route.send(.pushEditStore(viewModel))
+    private func dissmissAndPushEdit() {
+        output.route.send(.dismissAndEdit)
     }
 }
