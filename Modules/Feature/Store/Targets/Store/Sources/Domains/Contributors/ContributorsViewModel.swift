@@ -33,7 +33,6 @@ extension ContributorsViewModel {
     enum Route {
         case dismiss
         case dismissAndEdit
-        case pushEditStore(EditStoreViewModelInterface)
         case showErrorAlert(Error)
     }
 
@@ -93,6 +92,7 @@ public final class ContributorsViewModel: BaseViewModel {
         input.didTapEdit
             .withUnretained(self)
             .sink { (owner, _) in
+                owner.sendClickEditButtonLog()
                 owner.dissmissAndPushEdit()
             }
             .store(in: &cancellables)
@@ -148,5 +148,16 @@ public final class ContributorsViewModel: BaseViewModel {
 
     private func dissmissAndPushEdit() {
         output.route.send(.dismissAndEdit)
+    }
+}
+
+// MARK: Log
+extension ContributorsViewModel {
+    private func sendClickEditButtonLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .edit
+        ))
     }
 }

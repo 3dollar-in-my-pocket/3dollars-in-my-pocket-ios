@@ -5,7 +5,7 @@ final class ContributorsSectionHeaderView: UICollectionReusableView {
 
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "함께 만든 가게 정보"
+        label.text = Strings.Contributors.Header.title
         label.font = Fonts.semiBold.font(size: 24)
         label.textColor = Colors.gray100.color
         return label
@@ -23,7 +23,7 @@ final class ContributorsSectionHeaderView: UICollectionReusableView {
     private func setupUI() {
         addSubview(titleLabel)
         titleLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview()
             $0.top.equalToSuperview().offset(12)
             $0.bottom.equalToSuperview().offset(-20)
         }

@@ -84,6 +84,18 @@ public enum StoreStrings: Sendable {
     }
   }
 
+  public enum Contributors: Sendable {
+  /// 나도 수정하기
+    public static let editButton = StoreStrings.tr("Localization", "contributors.edit_button")
+    /// 정보 기여자 목록
+    public static let title = StoreStrings.tr("Localization", "contributors.title")
+
+    public enum Header: Sendable {
+    /// 함께 만든 가게 정보
+      public static let title = StoreStrings.tr("Localization", "contributors.header.title")
+    }
+  }
+
   public enum MapDetail: Sendable {
   /// 길 안내보기
     public static let navigationButton = StoreStrings.tr("Localization", "map_detail.navigation_button")

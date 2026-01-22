@@ -139,3 +139,8 @@
 "boss_store_feedback.title" = "리뷰 남기기";
 "boss_store_feedback.send_feedback" = "리뷰 남기기 완료!";
 "boss_store_feedback.finish_toast" = "소중한 리뷰가 사장님께 전달되었습니다!";
+
+// 가게 기여자 화면
+"contributors.header.title" = "함께 만든 가게 정보";
+"contributors.title" = "정보 기여자 목록";
+"contributors.edit_button" = "나도 수정하기";

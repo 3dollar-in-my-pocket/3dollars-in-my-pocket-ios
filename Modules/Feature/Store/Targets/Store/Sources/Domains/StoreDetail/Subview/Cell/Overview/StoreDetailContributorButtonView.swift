@@ -35,7 +35,7 @@ final class StoreDetailContributorButtonView: UIButton {
 
     private let arrowIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = Icons.arrowRight.image.resizeImage(scaledTo: 20).withRenderingMode(.alwaysTemplate)
+        imageView.image = Icons.chevronRight.image.resizeImage(scaledTo: 20).withRenderingMode(.alwaysTemplate)
         imageView.tintColor = Colors.gray40.color
         imageView.contentMode = .scaleAspectFit
         return imageView

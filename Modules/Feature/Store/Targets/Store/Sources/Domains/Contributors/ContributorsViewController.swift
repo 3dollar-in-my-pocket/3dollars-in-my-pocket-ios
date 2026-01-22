@@ -8,8 +8,13 @@ import Model
 import SDU
 import SnapKit
 import WriteInterface
+import Log
 
 public final class ContributorsViewController: BaseViewController {
+    public override var screenName: ScreenName {
+        viewModel.output.screenName
+    }
+    
     private let viewModel: ContributorsViewModel
     private let sduCollectionView = SDUCollectionView()
     private lazy var dataSource = SDUDataSource(collectionView: sduCollectionView.collectionView)
@@ -27,7 +32,7 @@ public final class ContributorsViewController: BaseViewController {
         let label = UILabel()
         label.font = Fonts.medium.font(size: 16)
         label.textColor = Colors.gray100.color
-        label.text = "정보 기여자 목록"
+        label.text = Strings.Contributors.title
         label.textAlignment = .center
         return label
     }()
@@ -47,7 +52,7 @@ public final class ContributorsViewController: BaseViewController {
 
     private let editButton: UIButton = {
         let button = UIButton()
-        button.setTitle("나도 수정하기", for: .normal)
+        button.setTitle(Strings.Contributors.editButton, for: .normal)
         button.titleLabel?.font = Fonts.medium.font(size: 16)
         button.setTitleColor(Colors.gray100.color, for: .normal)
         button.backgroundColor = .clear
@@ -203,15 +208,10 @@ extension ContributorsViewController {
         switch route {
         case .dismiss:
             dismiss(animated: true)
-
         case .dismissAndEdit:
             dismiss(animated: true) { [weak self] in
                 self?.viewModel.onEditRequested()
             }
-
-        case .pushEditStore(let viewModel):
-            break
-
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
         }
