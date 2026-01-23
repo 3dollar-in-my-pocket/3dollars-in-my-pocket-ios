@@ -279,10 +279,17 @@ extension EditStoreViewModel {
     }
 
     private func sendClickOkLog() {
+        let extraParameters: [ParameterName: Any]? = if let fromScreen = output.fromScreen {
+            [.referer: fromScreen.rawValue]
+        } else {
+            nil
+        }
+        
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
             objectType: .button,
-            objectId: .ok
+            objectId: .ok,
+            extraParameters: extraParameters
         ))
     }
 }
