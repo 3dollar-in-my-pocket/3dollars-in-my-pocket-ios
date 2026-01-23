@@ -131,7 +131,7 @@ final class StoreDetailOverviewTitleView: BaseView {
         contributorButton.snp.makeConstraints {
             $0.leading.equalTo(titleLabel)
             $0.top.equalTo(visitCountLabel.snp.bottom).offset(12)
-            $0.trailing.lessThanOrEqualToSuperview().offset(-20)
+            $0.trailing.lessThanOrEqualToSuperview()
         }
     }
     
