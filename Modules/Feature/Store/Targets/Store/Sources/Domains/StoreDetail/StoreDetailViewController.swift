@@ -147,8 +147,8 @@ final class StoreDetailViewController: BaseViewController {
                     owner.navigateAppleMap(location: location)
                 case .pushWebView(let webViewType):
                     owner.pushWebView(webViewType: webViewType)
-                case .presentContributors(let storeId, let store):
-                    owner.presentContributors(storeId: storeId, store: store)
+                case .presentContributors(let viewModel):
+                    owner.presentContributors(viewModel: viewModel)
                 }
             }
             .store(in: &cancellables)
@@ -427,27 +427,7 @@ final class StoreDetailViewController: BaseViewController {
         present(viewController, animated: true)
     }
 
-    private func presentContributors(storeId: Int, store: UserStoreResponse) {
-        let config = ContributorsViewModel.Config(storeId: storeId) { [weak self] in
-            guard let self = self else { return }
-
-            // EditStoreViewModel 생성
-            let editConfig = EditStoreViewModelConfig(store: store)
-            let editViewModel = Environment.writeInterface.createEditStoreViewModel(config: editConfig)
-
-            // onEdit callback 설정 (수정 완료 시 화면 새로고침)
-            editViewModel.onEdit
-                .main
-                .sink { [weak self] _ in
-                    self?.viewModel.input.load.send(())
-                }
-                .store(in: &self.cancellables)
-
-            // EditStore 화면으로 push
-            self.pushEditStore(viewModel: editViewModel)
-        }
-
-        let viewModel = ContributorsViewModel(config: config)
+    private func presentContributors(viewModel: ContributorsViewModel) {
         let viewController = ContributorsViewController(viewModel: viewModel)
         viewController.modalPresentationStyle = .fullScreen
 

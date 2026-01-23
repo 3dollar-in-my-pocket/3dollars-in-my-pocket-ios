@@ -18,6 +18,7 @@ extension EditStoreViewModel {
     
     struct Output {
         let screenName: ScreenName = .editStore
+        let fromScreen: ScreenName?
         let store: CurrentValueSubject<UserStoreResponse, Never>
         let menuCount: CurrentValueSubject<Int, Never>
         let changedCount = CurrentValueSubject<Int?, Never>(nil)
@@ -77,6 +78,7 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
             currentStore: config.store
         )
         self.output = Output(
+            fromScreen: config.fromScreen,
             store: .init(config.store),
             menuCount: .init(config.store.menusV3.count)
         )

@@ -4,7 +4,7 @@ import OSLog
 public protocol LogManagerProtocol {
     func sendPageView(screen: ScreenName, type: AnyObject.Type)
     
-    func sendPageView(screen: ScreenName, type: AnyObject.Type, extraParameters: [ParameterName: Any])
+    func sendPageView(screen: ScreenName, type: AnyObject.Type, extraParameters: [ParameterName: Any]?)
     
     func sendEvent(event: LogEventType)
 }
@@ -27,9 +27,9 @@ public final class LogManager: LogManagerProtocol {
         }
     }
     
-    public func sendPageView(screen: ScreenName, type: AnyObject.Type, extraParameters: [ParameterName: Any]) {
+    public func sendPageView(screen: ScreenName, type: AnyObject.Type, extraParameters: [ParameterName: Any]? = nil) {
         
-        let parameters: [String: Any] = extraParameters.reduce(into: [:]) { result, pair in
+        let parameters: [String: Any]? = extraParameters?.reduce(into: [:]) { result, pair in
             result[pair.key.rawValue] = pair.value
         }
         
@@ -51,7 +51,7 @@ public final class LogManager: LogManagerProtocol {
         }
     }
     
-    private func debugPageView(screen: ScreenName, type: AnyObject.Type, extraParameters: [String: Any] = [:]) {
+    private func debugPageView(screen: ScreenName, type: AnyObject.Type, extraParameters: [String: Any]? = nil) {
         let message: StaticString = """
         🧡 [LogManager]: PageView
             => screen: %{PUBLIC}@
@@ -59,7 +59,7 @@ public final class LogManager: LogManagerProtocol {
             => parameter: %{PUBLIC}@
         """
         
-        os_log(.debug, message, screen.rawValue, String(describing: type), extraParameters.prettyString)
+        os_log(.debug, message, screen.rawValue, String(describing: type), extraParameters?.prettyString ?? "")
     }
     
     private func debugCustomEvent(_ event: LogEventType) {

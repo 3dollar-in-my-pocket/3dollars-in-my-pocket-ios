@@ -128,20 +128,10 @@ final class StoreDetailOverviewTitleView: BaseView {
             $0.height.equalTo(24)
         }
         
-//        couponView.snp.makeConstraints {
-//            $0.leading.equalTo(visitCountLabel.snp.trailing).offset(5)
-//            $0.centerY.equalTo(visitCountLabel)
-//        }
-        
-//        infoView.snp.makeConstraints {
-//            $0.leading.equalTo(visitCountLabel.snp.trailing).offset(4)
-//            $0.centerY.equalTo(visitCountLabel)
-//        }
-        
         contributorButton.snp.makeConstraints {
             $0.leading.equalTo(titleLabel)
             $0.top.equalTo(visitCountLabel.snp.bottom).offset(12)
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.trailing.lessThanOrEqualToSuperview().offset(-20)
         }
     }
     

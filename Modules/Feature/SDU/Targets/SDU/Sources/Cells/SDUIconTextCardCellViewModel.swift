@@ -6,13 +6,13 @@ public final class SDUIconTextCardCellViewModel: BaseViewModel {
     public struct Input { }
 
     public struct Output {
-        let data: IconTextCardData
+        let data: IconTextCard
     }
 
     public struct Config {
-        let data: IconTextCardData
+        let data: IconTextCard
 
-        public init(data: IconTextCardData) {
+        public init(data: IconTextCard) {
             self.data = data
         }
     }

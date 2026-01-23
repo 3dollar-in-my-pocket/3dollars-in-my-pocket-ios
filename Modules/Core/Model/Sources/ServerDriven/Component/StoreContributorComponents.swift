@@ -8,11 +8,12 @@ public struct CalloutCard: Decodable, Hashable, SDUComponent {
     public let style: SDSurfaceStyle
 }
 
-public struct IconTextCardData: Decodable, Hashable, SDUComponent {
+public struct IconTextCard: Decodable, Hashable, SDUComponent {
     public let type: SDUComponentTypes
     public let cardId: String
     public let title: SDText
-    public let subTitle: SDChip?
+    public let subTitles: [SDText]?
+    public let subTitleChip: SDChip?
     public let image: SDImage
     public let metadata: SDText?
     public let style: SDSurfaceStyle

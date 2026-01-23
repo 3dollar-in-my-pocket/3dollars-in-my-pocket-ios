@@ -22,6 +22,7 @@ final class StoreDetailContributorButtonView: UIButton {
         label.textColor = Colors.gray70.color
         label.lineBreakMode = .byTruncatingTail
         label.numberOfLines = 1
+        label.setContentHuggingPriority(.required, for: .horizontal)
         return label
     }()
     
@@ -30,6 +31,7 @@ final class StoreDetailContributorButtonView: UIButton {
         label.font = Fonts.medium.font(size: 14)
         label.textColor = Colors.gray60.color
         label.numberOfLines = 1
+        label.textAlignment = .left
         return label
     }()
 
@@ -68,7 +70,7 @@ final class StoreDetailContributorButtonView: UIButton {
         }
         
         nicknameLabel.snp.makeConstraints {
-            $0.width.lessThanOrEqualTo(200)
+            $0.width.lessThanOrEqualTo(70)
         }
 
         arrowIcon.snp.makeConstraints {
@@ -83,10 +85,11 @@ final class StoreDetailContributorButtonView: UIButton {
         }
 
         isHidden = false
+        let count = max(0, contributorCount - 1)
         nicknameLabel.text = nickname
         
-        if contributorCount > 0 {
-            messageLabel.text = Strings.StoreDetail.Overview.Contributor.format(contributorCount)
+        if count > 0 {
+            messageLabel.text = Strings.StoreDetail.Overview.Contributor.format(count)
         } else {
             messageLabel.text = Strings.StoreDetail.Overview.Contributor.creator
         }

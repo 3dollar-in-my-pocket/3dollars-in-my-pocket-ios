@@ -11,6 +11,7 @@ let project = Project.makeFeatureModule(
         .Core.model,
         .Core.dependencyInjection,
         .Core.designSystem,
+        .Core.log,
         .Interface.communityInterface,
         .SPM.snapKit,
         .SPM.then

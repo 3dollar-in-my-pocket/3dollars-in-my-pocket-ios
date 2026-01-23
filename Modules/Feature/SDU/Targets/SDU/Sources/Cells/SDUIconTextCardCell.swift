@@ -29,8 +29,15 @@ public final class SDUIconTextCardCell: BaseCollectionViewCell {
         label.lineBreakMode = .byTruncatingTail
         return label
     }()
+    
+    private let subtitleStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 4
+        return stackView
+    }()
 
-    private let subTitleLabel: PaddingLabel = {
+    private let subtitleChipLabel: PaddingLabel = {
         let label = PaddingLabel(topInset: 3, bottomInset: 3, leftInset: 8, rightInset: 8)
         label.layer.cornerRadius = 12
         label.layer.masksToBounds = true
@@ -51,7 +58,10 @@ public final class SDUIconTextCardCell: BaseCollectionViewCell {
     public override func prepareForReuse() {
         super.prepareForReuse()
         
-        subTitleLabel.snp.removeConstraints()
+        subtitleStackView.arrangedSubviews.forEach {
+            $0.removeFromSuperview()
+        }
+        subtitleChipLabel.isHidden = true
     }
 
     public override func setup() {
@@ -60,7 +70,7 @@ public final class SDUIconTextCardCell: BaseCollectionViewCell {
         contentView.addSubview(containerView)
         containerView.addSubview(iconImageView)
         containerView.addSubview(titleLabel)
-        containerView.addSubview(subTitleLabel)
+        containerView.addSubview(subtitleStackView)
         containerView.addSubview(metadataLabel)
     }
 
@@ -83,6 +93,17 @@ public final class SDUIconTextCardCell: BaseCollectionViewCell {
             $0.trailing.lessThanOrEqualToSuperview().offset(-12)
             $0.height.equalTo(24)
         }
+        
+        subtitleStackView.snp.makeConstraints {
+            $0.leading.equalTo(titleLabel)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(4)
+            $0.trailing.lessThanOrEqualTo(metadataLabel.snp.leading).offset(-4)
+            $0.bottom.equalToSuperview().offset(-16)
+        }
+        
+        subtitleChipLabel.snp.makeConstraints {
+            $0.height.equalTo(24)
+        }
 
         metadataLabel.snp.makeConstraints {
             $0.trailing.equalToSuperview().offset(-16)
@@ -103,32 +124,24 @@ public final class SDUIconTextCardCell: BaseCollectionViewCell {
         }
 
         titleLabel.setSDText(data.title)
-
-        if let subTitle = data.subTitle {
-            subTitleLabel.isHidden = false
-            subTitleLabel.setSDChip(subTitle)
-            
-            if subTitleLabel.backgroundColor.isNotNil {
-                subTitleLabel.setPadding(top: 3, bottom: 3, left: 8, right: 8)
-                subTitleLabel.snp.makeConstraints {
-                    $0.leading.equalTo(titleLabel)
-                    $0.trailing.lessThanOrEqualTo(metadataLabel.snp.leading).offset(-4)
-                    $0.top.equalTo(titleLabel.snp.bottom).offset(4)
-                    $0.bottom.equalToSuperview().offset(-16)
-                    $0.height.equalTo(24)
+        
+        if let subTitleChip = data.subTitleChip {
+            subtitleChipLabel.isHidden = false
+            subtitleChipLabel.setSDChip(subTitleChip)
+            subtitleStackView.addArrangedSubview(subtitleChipLabel)
+        }
+        
+        if let subTitles = data.subTitles {
+            for subTitle in subTitles {
+                let subtitleLabel = UILabel()
+                subtitleLabel.font = Fonts.medium.font(size: 12)
+                subtitleLabel.textColor = Colors.gray50.color
+                subtitleLabel.setSDText(subTitle)
+                subtitleLabel.snp.makeConstraints {
+                    $0.height.equalTo(18)
                 }
-            } else {
-                subTitleLabel.setLineHeight(lineHeight:  20)
-                subTitleLabel.setPadding(top: 0, bottom: 0, left: 0, right: 0)
-                subTitleLabel.snp.makeConstraints {
-                    $0.leading.equalTo(titleLabel)
-                    $0.trailing.lessThanOrEqualTo(metadataLabel.snp.leading).offset(-4)
-                    $0.top.equalTo(titleLabel.snp.bottom).offset(4)
-                    $0.bottom.equalToSuperview().offset(-16)
-                }
+                subtitleStackView.addArrangedSubview(subtitleLabel)
             }
-        } else {
-            subTitleLabel.isHidden = true
         }
 
         if let metadata = data.metadata {

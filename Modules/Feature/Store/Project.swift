@@ -14,6 +14,7 @@ let project = Project.makeFeatureModule(
         .Core.model,
         .Core.dependencyInjection,
         .Core.designSystem,
+        .Core.log,
         .Feature.sdu,
         .Interface.appInterface,
         .Interface.storeInterface,

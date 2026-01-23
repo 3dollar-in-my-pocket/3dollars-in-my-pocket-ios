@@ -88,7 +88,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentVisit(VisitViewModel)
         case navigateAppleMap(LocationResponse)
         case pushWebView(WebViewType)
-        case presentContributors(storeId: Int, store: UserStoreResponse)
+        case presentContributors(ContributorsViewModel)
     }
     
     let input = Input()
@@ -244,7 +244,7 @@ final class StoreDetailViewModel: BaseViewModel {
         input.didTapEdit
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
-                owner.pushEditStore()
+                owner.pushEditStore(fromScreen: owner.output.screenName)
             }
             .store(in: &cancellables)
     }
@@ -660,8 +660,14 @@ extension StoreDetailViewModel {
 
     private func presentContributors() {
         guard let store = state.userStoreDetailResponse?.store else { return }
-
-        output.route.send(.presentContributors(storeId: state.storeId, store: store))
+        
+        let config = ContributorsViewModel.Config(storeId: store.storeId) { [weak self] in
+            guard let self else { return }
+            
+            pushEditStore(fromScreen: .storeContributors)
+        }
+        let viewModel = ContributorsViewModel(config: config)
+        output.route.send(.presentContributors(viewModel))
     }
     
     private func presentUploadPhoto() {
@@ -766,10 +772,10 @@ extension StoreDetailViewModel {
         output.route.send(.presentVisit(viewModel))
     }
     
-    private func pushEditStore() {
+    private func pushEditStore(fromScreen: ScreenName) {
         guard let store = state.userStoreDetailResponse?.store else { return }
         
-        let config = EditStoreViewModelConfig(store: store)
+        let config = EditStoreViewModelConfig(store: store, fromScreen: fromScreen)
         let viewModel = Environment.writeInterface.createEditStoreViewModel(config: config)
         
         viewModel.onEdit

@@ -20,7 +20,7 @@ public struct StoreContributorCard: Decodable {
         case .calloutCard:
             self.data = .callout(try CalloutCard(from: decoder))
         case .iconTextCard:
-            self.data = .iconText(try IconTextCardData(from: decoder))
+            self.data = .iconText(try IconTextCard(from: decoder))
         case .unknown:
             throw DecodingError.dataCorruptedError(
                 forKey: .type,
@@ -33,6 +33,6 @@ public struct StoreContributorCard: Decodable {
 
 public enum StoreContributorCardData {
     case callout(CalloutCard)
-    case iconText(IconTextCardData)
+    case iconText(IconTextCard)
 }
 
