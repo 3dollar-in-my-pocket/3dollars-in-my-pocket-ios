@@ -41,12 +41,11 @@ final class StoreBridgeCarouselViewModel: BaseViewModel {
         input.didSelect
             .compactMap { [weak self] index in self?.output.items[safe: index] }
             .sink { [weak self] card in
-                // Extract store ID from the card's reference
-                if let storeRef = card.refs.first(where: { $0.type == "store" }),
-                   let storeId = Int(storeRef.storeId) {
-                    self?.output.route.send(.pushStoreDetail(storeId: storeId))
-                    self?.sendClickLog(card)
+                if let link = card.link {
+                    Environment.appModuleInterface.deepLinkHandler.handleLinkResponse(link)
                 }
+                
+                self?.sendClickLog(card)
             }
             .store(in: &cancellables)
     }
