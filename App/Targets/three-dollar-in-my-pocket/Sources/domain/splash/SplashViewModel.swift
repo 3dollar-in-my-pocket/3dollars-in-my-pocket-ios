@@ -7,6 +7,7 @@ import Networking
 import Log
 
 import FirebaseMessaging
+import AppInterface
 
 final class SplashViewModel: BaseViewModel {
     struct Input {
@@ -34,19 +35,22 @@ final class SplashViewModel: BaseViewModel {
         let deviceRepository: DeviceRepository
         let advertisementRepository: AdvertisementRepository
         let appRepository: AppRepository
+        let remoteConfigService: RemoteConfigProtocol
         
         init(
             preference: Preference = Preference.shared,
             userRepository: UserRepository = UserRepositoryImpl(),
             deviceRepository: DeviceRepository = DeviceRepositoryImpl(),
             advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
-            appRepository: AppRepository = AppRepositoryImpl()
+            appRepository: AppRepository = AppRepositoryImpl(),
+            remoteConfigService: RemoteConfigProtocol = RemoteConfigService.shared
         ) {
             self.preference = preference
             self.userRepository = userRepository
             self.deviceRepository = deviceRepository
             self.advertisementRepository = advertisementRepository
             self.appRepository = appRepository
+            self.remoteConfigService = remoteConfigService
         }
     }
     
@@ -63,11 +67,18 @@ final class SplashViewModel: BaseViewModel {
         input.load
             .withUnretained(self)
             .sink { (owner: SplashViewModel, _) in
+                owner.fetchRemoteConfig()
                 owner.loadSplashAdIfExisted()
                 owner.fetchAdvertisement()
                 owner.fetchAppStatus()
             }
             .store(in: &cancellables)
+    }
+    
+    private func fetchRemoteConfig() {
+        Task {
+            await dependency.remoteConfigService.fetchRemoteConfig()
+        }
     }
     
     private func fetchAdvertisement() {

@@ -4,6 +4,7 @@ import Combine
 import Model
 
 public protocol AppModuleInterface {
+    var remoteConfigService: RemoteConfigProtocol { get }
     var kakaoSigninManager: SigninManagerProtocol { get }
     var appleSigninManager: SigninManagerProtocol { get }
     var deepLinkHandler: DeepLinkHandlerProtocol { get }

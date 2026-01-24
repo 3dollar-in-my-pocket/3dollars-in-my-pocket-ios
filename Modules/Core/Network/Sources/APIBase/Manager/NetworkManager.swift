@@ -4,14 +4,17 @@ import Combine
 import DependencyInjection
 import Model
 import Common
+import AppInterface
 
 final public class NetworkManager {
     public static let shared = NetworkManager()
     
     private let requestProvider: RequestProvider
     private let responseProvider: ResponseProvider
+    private var appInterface: AppModuleInterface
 
     public init() {
+        self.appInterface = Environment.appModuleInterface
         self.requestProvider = RequestProvider()
         self.responseProvider = ResponseProvider()
     }
@@ -21,7 +24,7 @@ final public class NetworkManager {
             // 실험 컨텍스트 헤더가 추가된 RequestType 생성
             let modifiedRequestType = RequestTypeWithExperimentContext(
                 originalRequestType: requestType,
-                experimentContext: RemoteConfigManager.shared.experimentContext
+                experimentContext: appInterface.remoteConfigService.experimentContext
             )
             
             let response = try await requestProvider.request(requestType: modifiedRequestType)
@@ -47,7 +50,6 @@ private struct RequestTypeWithExperimentContext: RequestType {
     var param: Encodable? { originalRequestType.param }
     var method: RequestMethod { originalRequestType.method }
     var path: String { originalRequestType.path }
-    var task: HTTPTask { originalRequestType.task }
     
     var header: HTTPHeaderType {
         // 기존 헤더에 실험 컨텍스트 헤더 추가
@@ -64,6 +66,8 @@ private struct RequestTypeWithExperimentContext: RequestType {
             var newHeaders = headers
             newHeaders["Experiment-Context"] = experimentContext
             return .custom(newHeaders)
+        case .multipart(boundary: let boundary):
+            return .multipart(boundary: boundary)
         }
     }
 }

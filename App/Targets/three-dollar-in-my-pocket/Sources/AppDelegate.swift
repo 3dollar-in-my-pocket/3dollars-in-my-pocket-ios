@@ -63,7 +63,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func initializeFirebase() {
+        print("🟡 Starting Firebase configuration...")
         FirebaseApp.configure()
+        print("✅ Firebase configured successfully")
+        print("🟡 FirebaseApp.app() after configure: \(FirebaseApp.app() != nil ? "✅ Available" : "❌ Not available")")
         Messaging.messaging().delegate = self
     }
     

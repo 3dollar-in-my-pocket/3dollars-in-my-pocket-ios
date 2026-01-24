@@ -13,6 +13,10 @@ import KakaoSDKTemplate
 import GoogleMobileAds
 
 final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
+    var remoteConfigService: AppInterface.RemoteConfigProtocol {
+        return RemoteConfigService.shared
+    }
+    
     var kakaoSigninManager: AppInterface.SigninManagerProtocol {
         return KakaoSigninManager.shared
     }

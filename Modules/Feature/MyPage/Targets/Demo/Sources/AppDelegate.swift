@@ -12,11 +12,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-        // Firebase 초기화
-        FirebaseApp.configure()
-        
         initializeDI()
-        initializeRemoteConfig()
         
         return true
     }
@@ -36,13 +32,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         MockAppModuleInterfaceImpl.registerAppModuleInterface(userDefaults: mockUserDefaults)
         MockNetworkConfiguration.registerNetworkConfiguration(networkConfiguration)
         MockStoreModuleInterfaceImpl.registerModuleInterface()
-    }
-    
-    private func initializeRemoteConfig() {
-        // Remote Config 초기화 및 첫 fetch
-        Task {
-            await RemoteConfigManager.shared.fetchRemoteConfig()
-        }
     }
     
     private func initializationNetworkModule() {
