@@ -422,27 +422,46 @@ final class StoreDetailViewModel: BaseViewModel {
             sections.append(.verifiedBannerSection())
         }
         
-        // Add bridge carousel section if available
-        if let bridgeCarouselViewModel = createBridgeCarouselViewModel() {
-            sections.append(.bridgeCarouselSection(bridgeCarouselViewModel))
-        }
-
         sections.append(contentsOf: [
             .overviewSection(createOverviewCellViewModel(storeDetailData.overview)),
-            .visitSection(storeDetailData.visit),
+            .visitSection(storeDetailData.visit)
+        ])
+        
+        // divider 추가
+        
+        sections.append(
             .infoSection(
                 updatedAt: DateUtils.toString(dateString: storeDetailData.info.lastUpdated, format: "yyyy.MM.dd 업데이트"),
                 info: storeDetailData.info,
                 menuCellViewModel: createMenuCellViewModel(storeDetailData)
-            ),
-            .photoSection(totalCount: storeDetailData.totalPhotoCount, photos: storeDetailData.photos),
+            )
+        )
+        
+        // divider 추가
+        
+        sections.append(
+            .photoSection(
+                totalCount: storeDetailData.totalPhotoCount,
+                photos: storeDetailData.photos
+            )
+        )
+        
+        // divider 추가
+        
+        if let bridgeCarouselViewModel = createBridgeCarouselViewModel() {
+            sections.append(.bridgeCarouselSection(bridgeCarouselViewModel))
+            
+            // divider 추가
+            
+        }
+        
+        sections.append(
             .reviewSection(
                 totalCount: storeDetailData.totalReviewCount,
                 rating: storeDetailData.rating,
                 reviews: storeDetailData.reviews
             )
-        ])
-
+        )
         
 
         sections.append(.bossStoreAppIntroSection(createBossStoreAppIntroCellViewModel()))

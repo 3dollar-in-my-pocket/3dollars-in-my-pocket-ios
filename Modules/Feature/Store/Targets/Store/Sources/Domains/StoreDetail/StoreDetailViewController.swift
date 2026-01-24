@@ -244,6 +244,24 @@ final class StoreDetailViewController: BaseViewController {
                 
                 return section
                 
+            case .divider(_):
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreDetailDividerCell.Layout.height)
+                ))
+                
+                let group = NSCollectionLayoutGroup.vertical(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreDetailDividerCell.Layout.height)
+                    ),
+                    subitems: [item]
+                )
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                
+                return section
+                
             case .info:
                 let infoItemHeight = StoreDetailInfoCell.Layout.height
                 let infoItem = NSCollectionLayoutItem(layoutSize: .init(

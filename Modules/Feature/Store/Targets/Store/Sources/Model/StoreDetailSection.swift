@@ -7,6 +7,7 @@ struct StoreDetailSection: Hashable {
         case verifiedBanner
         case overview
         case visit
+        case divider(id: String)
         case info
         case photo(totalCount: Int)
         case review(totalCount: Int)
@@ -121,5 +122,9 @@ extension StoreDetailSection {
     
     static func bridgeCarouselSection(_ viewModel: StoreBridgeCarouselViewModel) -> StoreDetailSection {
         return .init(type: .bridgeCarousel, items: [.bridgeCarousel(viewModel)])
+    }
+    
+    static func dividerSection(id: String) -> StoreDetailSection {
+        return .init(type: .divider(id: id), items: [.divider])
     }
 }

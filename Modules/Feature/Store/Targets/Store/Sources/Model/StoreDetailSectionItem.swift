@@ -6,6 +6,7 @@ enum StoreDetailSectionItem: Hashable {
     case verifiedBanner
     case overview(StoreDetailOverviewCellViewModel)
     case visit(StoreDetailVisit)
+    case divider
     case info(StoreDetailInfo)
     case menu(StoreDetailMenuCellViewModel)
     case photo(StoreDetailPhoto)

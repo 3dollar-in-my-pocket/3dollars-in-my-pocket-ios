@@ -143,7 +143,7 @@ public final class RemoteConfigService: RemoteConfigProtocol {
     }
     
     private func isABTestKey(_ key: String) -> Bool {
-        return true // key.hasPrefix("abtest")
+        return key.hasPrefix("abtest")
     }
     
     deinit {
