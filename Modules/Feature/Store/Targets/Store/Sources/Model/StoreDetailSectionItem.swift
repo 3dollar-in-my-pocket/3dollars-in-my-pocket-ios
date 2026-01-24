@@ -34,5 +34,13 @@ extension StoreDetailSectionItem {
             return nil
         }
     }
+    
+    var bridgeCarouselViewModel: StoreBridgeCarouselViewModel? {
+        if case .bridgeCarousel(let viewModel) = self {
+            return viewModel
+        } else {
+            return nil
+        }
+    }
 }
 

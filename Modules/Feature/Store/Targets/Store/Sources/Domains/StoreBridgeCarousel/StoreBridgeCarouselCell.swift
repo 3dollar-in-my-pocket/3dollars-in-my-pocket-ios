@@ -3,6 +3,7 @@ import Common
 import DesignSystem
 import SnapKit
 import Then
+import Model
 
 final class StoreBridgeCarouselCell: BaseCollectionViewCell {
     private let containerView = StoreBridgeCarouselView()
@@ -28,7 +29,7 @@ extension StoreBridgeCarouselCell {
             guard let firstItem = items.first else { return 200 } // 기본값
             let maxImageHeight = items.map { $0.image.style.height }.max() ?? 68
             let collectionViewHeight = maxImageHeight + StoreBridgeCarouselItemCell.Layout.spacing + StoreBridgeCarouselItemCell.Layout.bottomInfoHeight
-            return 20 + 24 + 16 + collectionViewHeight // top margin + title height + spacing + collection view
+            return 52 + collectionViewHeight // top margin + title height + spacing + collection view
         }
     }
 }
@@ -58,15 +59,14 @@ final class StoreBridgeCarouselView: BaseView {
 
     override func bindConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(20)
+            $0.top.equalToSuperview().inset(16)
             $0.leading.equalToSuperview().inset(20)
             $0.trailing.equalToSuperview().inset(20)
         }
 
         collectionView.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(16)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
             $0.leading.trailing.bottom.equalToSuperview()
-            // 높이는 bind 메서드에서 동적으로 설정
         }
     }
 
