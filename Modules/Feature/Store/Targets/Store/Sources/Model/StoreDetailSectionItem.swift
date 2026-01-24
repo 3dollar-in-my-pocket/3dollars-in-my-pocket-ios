@@ -15,6 +15,7 @@ enum StoreDetailSectionItem: Hashable {
     case reviewEmpty
     case filteredReview(StoreDetailReview)
     case bossStoreAppIntro(StoreDetailBossStoreAppIntroCellViewModel)
+    case bridgeCarousel(StoreBridgeCarouselViewModel)
 }
 
 extension StoreDetailSectionItem {

@@ -50,6 +50,9 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         case .web:
             let urlString = "\(Bundle.deeplinkScheme)://browser?url=\(linkResponse.link)"
             handle(urlString)
+        case .store:
+            let urlString = "\(Bundle.deeplinkScheme):/\(linkResponse.link)"
+            handle(urlString)
         case .unknown:
             return
         }

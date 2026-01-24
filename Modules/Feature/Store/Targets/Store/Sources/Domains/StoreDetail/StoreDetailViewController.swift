@@ -147,6 +147,8 @@ final class StoreDetailViewController: BaseViewController {
                     owner.navigateAppleMap(location: location)
                 case .pushWebView(let webViewType):
                     owner.pushWebView(webViewType: webViewType)
+                case .pushStoreDetail(let storeId):
+                    owner.pushStoreDetail(storeId: storeId)
                 }
             }
             .store(in: &cancellables)
@@ -359,6 +361,23 @@ final class StoreDetailViewController: BaseViewController {
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = .init(top: 0, leading: 0, bottom: 32, trailing: 0)
                 return section
+                
+            case .bridgeCarousel:
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StoreBridgeCarouselCell.Layout.height)
+                ))
+                
+                let group = NSCollectionLayoutGroup.vertical(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(StoreBridgeCarouselCell.Layout.height)
+                    ),
+                    subitems: [item]
+                )
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 32, trailing: 0)
+                return section
             }
         }
         
@@ -498,6 +517,12 @@ final class StoreDetailViewController: BaseViewController {
     
     private func pushWebView(webViewType: WebViewType) {
         let viewController = Environment.appModuleInterface.createWebViewController(webviewType: webViewType)
+        
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func pushStoreDetail(storeId: Int) {
+        let viewController = StoreDetailViewController.instance(storeId: storeId)
         
         navigationController?.pushViewController(viewController, animated: true)
     }

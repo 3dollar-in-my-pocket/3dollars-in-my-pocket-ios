@@ -24,7 +24,8 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             StoreDetailReviewMoreCell.self,
             StoreDetailReviewEmptyCell.self,
             StoreDetailFilteredReviewCell.self,
-            StoreDetailBossStoreAppIntroCell.self
+            StoreDetailBossStoreAppIntroCell.self,
+            StoreBridgeCarouselCell.self
         ])
         
         collectionView.register(
@@ -117,6 +118,11 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 let cell: StoreDetailBossStoreAppIntroCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
+                
+            case .bridgeCarousel(let viewModel):
+                let cell: StoreBridgeCarouselCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel)
+                return cell
             }
         }
         
@@ -124,7 +130,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             guard let section = self?.sectionIdentifier(section: indexPath.section) else { return nil }
             
             switch section.type {
-            case .verifiedBanner, .overview, .bossStoreAppIntro:
+            case .verifiedBanner, .overview, .bossStoreAppIntro, .bridgeCarousel:
                 return nil
                 
             case .visit:

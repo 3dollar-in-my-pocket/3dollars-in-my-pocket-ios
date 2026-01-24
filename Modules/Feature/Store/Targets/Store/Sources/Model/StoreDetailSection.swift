@@ -11,6 +11,7 @@ struct StoreDetailSection: Hashable {
         case photo(totalCount: Int)
         case review(totalCount: Int)
         case bossStoreAppIntro
+        case bridgeCarousel
     }
     
     var type: StoreDetailSectionType
@@ -116,5 +117,9 @@ extension StoreDetailSection {
     
     static func bossStoreAppIntroSection(_ viewModel: StoreDetailBossStoreAppIntroCellViewModel) -> StoreDetailSection {
         return .init(type: .bossStoreAppIntro, items: [.bossStoreAppIntro(viewModel)])
+    }
+    
+    static func bridgeCarouselSection(_ viewModel: StoreBridgeCarouselViewModel) -> StoreDetailSection {
+        return .init(type: .bridgeCarousel, items: [.bridgeCarousel(viewModel)])
     }
 }

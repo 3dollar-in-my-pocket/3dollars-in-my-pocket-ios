@@ -70,6 +70,7 @@ final class StoreDetailViewModel: BaseViewModel {
         var storeDetailData: StoreDetailData?
         var showAllMenu: Bool = false
         var userStoreDetailResponse: UserStoreDetailResponse?
+        var storeCardComponents: [any StoreCardComponent] = []
     }
     
     enum Route {
@@ -87,6 +88,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentVisit(VisitViewModel)
         case navigateAppleMap(LocationResponse)
         case pushWebView(WebViewType)
+        case pushStoreDetail(storeId: Int)
     }
     
     let input = Input()
@@ -125,6 +127,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .sink { (owner: StoreDetailViewModel, _: Void) in
                 owner.fetchStoreDetail()
                 owner.fetchDisplayItems()
+                owner.fetchStoreScreen()
             }
             .store(in: &cancellables)
         
@@ -394,6 +397,22 @@ final class StoreDetailViewModel: BaseViewModel {
         }
     }
     
+    private func fetchStoreScreen() {
+        Task { [weak self] in
+            guard let self else { return }
+            
+            let storeDetailResult = await storeService.fetchStoreScreen(storeId: String(state.storeId))
+            
+            switch storeDetailResult {
+            case .success(let response):
+                state.storeCardComponents = response.sections
+                refreshSections()
+            case .failure(let error):
+                break
+            }
+        }
+    }
+    
     private func refreshSections() {
         guard let storeDetailData = state.storeDetailData else { return }
 
@@ -401,6 +420,11 @@ final class StoreDetailViewModel: BaseViewModel {
 
         if storeDetailData.isVerifiedStore {
             sections.append(.verifiedBannerSection())
+        }
+        
+        // Add bridge carousel section if available
+        if let bridgeCarouselViewModel = createBridgeCarouselViewModel() {
+            sections.append(.bridgeCarouselSection(bridgeCarouselViewModel))
         }
 
         sections.append(contentsOf: [
@@ -416,9 +440,12 @@ final class StoreDetailViewModel: BaseViewModel {
                 totalCount: storeDetailData.totalReviewCount,
                 rating: storeDetailData.rating,
                 reviews: storeDetailData.reviews
-            ),
-            .bossStoreAppIntroSection(createBossStoreAppIntroCellViewModel())
+            )
         ])
+
+        
+
+        sections.append(.bossStoreAppIntroSection(createBossStoreAppIntroCellViewModel()))
 
         output.sections.send(sections)
     }
@@ -482,6 +509,29 @@ final class StoreDetailViewModel: BaseViewModel {
             }
             .subscribe(output.route)
             .store(in: &viewModel.cancellables)
+        
+        return viewModel
+    }
+    
+    private func createBridgeCarouselViewModel() -> StoreBridgeCarouselViewModel? {
+        // Find StoreRelatedStoresSectionResponse from storeCardComponents
+        guard let relatedStoresSection = state.storeCardComponents.first(where: { component in
+            component is StoreRelatedStoresSectionResponse
+        }) as? StoreRelatedStoresSectionResponse else {
+            return nil
+        }
+        
+        let viewModel = StoreBridgeCarouselViewModel(data: relatedStoresSection)
+        
+        // Bind carousel route to detail route
+        viewModel.output.route
+            .sink { [weak self] route in
+                switch route {
+                case .pushStoreDetail(let storeId):
+                    self?.output.route.send(.pushStoreDetail(storeId: storeId))
+                }
+            }
+            .store(in: &cancellables)
         
         return viewModel
     }
