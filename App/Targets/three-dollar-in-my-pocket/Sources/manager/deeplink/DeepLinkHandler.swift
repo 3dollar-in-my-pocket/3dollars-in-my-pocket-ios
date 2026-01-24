@@ -17,7 +17,13 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
         
         if let navigationViewController = rootViewController as? UINavigationController {
-            return navigationViewController.topViewController is MainTabBarViewController
+            if navigationViewController.topViewController is MainTabBarViewController {
+                return true
+            } else if navigationViewController.topViewController is BaseViewController {
+                return true
+            } else {
+                return false
+            }
         } else {
             return false
         }
