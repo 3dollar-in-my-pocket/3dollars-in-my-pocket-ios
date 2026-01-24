@@ -9,6 +9,7 @@ struct BossStoreDetailSection: Hashable {
         case feedbacks
         case coupons(BossStoreDetailCouponHeaderViewModel)
         case post
+        case bridgeCarousel
         case review(BossStoreDetailReviewHeaderViewModel)
     }
 

@@ -193,6 +193,9 @@ final class BossStoreDetailViewController: BaseViewController {
                 case .pushCouponList(let viewModel):
                     let viewController = CouponTabViewController(viewModel: viewModel)
                     owner.navigationController?.pushViewController(viewController, animated: true)
+                case .pushStoreDetail(let storeId):
+                    let viewController = StoreDetailViewController.instance(storeId: storeId)
+                    owner.navigationController?.pushViewController(viewController, animated: true)
                 }
             }
             .store(in: &cancellables)
@@ -323,6 +326,9 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: 76)
         case .coupon(let viewModel):
             return BossStoreCouponCell.Layout.size(width: containerWidth, viewModel: viewModel)
+        case .bridgeCarousel(let viewModel):
+            let height = StoreBridgeCarouselCell.Layout.height(for: viewModel.output.items)
+            return CGSize(width: width, height: height)
         default:
             return .zero
         }
