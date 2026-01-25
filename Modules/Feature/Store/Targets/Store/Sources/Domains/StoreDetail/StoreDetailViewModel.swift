@@ -773,9 +773,20 @@ extension StoreDetailViewModel {
     }
     
     private func pushEditStore(fromScreen: ScreenName) {
-        guard let store = state.userStoreDetailResponse?.store else { return }
-        
-        let config = EditStoreViewModelConfig(store: store, fromScreen: fromScreen)
+        guard let userStoreDetail = state.userStoreDetailResponse else { return }
+        let store = userStoreDetail.store
+
+        let imageCount: Int? = if fromScreen == .storeContributors {
+            userStoreDetail.images.cursor.totalCount
+        } else {
+            nil
+        }
+
+        let config = EditStoreViewModelConfig(
+            store: store,
+            fromScreen: fromScreen,
+            imageCount: imageCount
+        )
         let viewModel = Environment.writeInterface.createEditStoreViewModel(config: config)
         
         viewModel.onEdit

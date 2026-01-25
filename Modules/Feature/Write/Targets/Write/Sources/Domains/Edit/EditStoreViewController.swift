@@ -5,6 +5,7 @@ import SnapKit
 import Common
 import DesignSystem
 import Model
+import StoreInterface
 import Log
 
 final class EditStoreViewController: BaseViewController {
@@ -32,6 +33,7 @@ final class EditStoreViewController: BaseViewController {
     private let storeAddressSection = EditStoreAddressView()
     private let storeInfoSection = EditStoreInfoView()
     private let storeMenuSection = EditStoreMenuView()
+    private let storePhotoSection = EditStorePhotoView()
     
     private let editButton: UIButton = {
         var config = UIButton.Configuration.plain()
@@ -94,6 +96,10 @@ final class EditStoreViewController: BaseViewController {
         stackView.addArrangedSubview(storeAddressSection, previousSpace: 24)
         stackView.addArrangedSubview(storeInfoSection, previousSpace: 8)
         stackView.addArrangedSubview(storeMenuSection, previousSpace: 8)
+
+        if viewModel.output.imageCount.value != nil {
+            stackView.addArrangedSubview(storePhotoSection, previousSpace: 8)
+        }
         
         stackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
@@ -131,7 +137,13 @@ final class EditStoreViewController: BaseViewController {
             .mapVoid
             .subscribe(viewModel.input.didTapMenu)
             .store(in: &cancellables)
-        
+
+        storePhotoSection.tapGesture.tapPublisher
+            .throttleClick()
+            .mapVoid
+            .subscribe(viewModel.input.didTapPhoto)
+            .store(in: &cancellables)
+
         editButton.tapPublisher
             .throttleClick()
             .mapVoid
@@ -158,7 +170,15 @@ final class EditStoreViewController: BaseViewController {
                 self?.storeMenuSection.bind(menuCount: menuCount)
             }
             .store(in: &cancellables)
-        
+
+        viewModel.output.imageCount
+            .compactMap { $0 }
+            .main
+            .sink { [weak self] photoCount in
+                self?.storePhotoSection.bind(photoCount: photoCount)
+            }
+            .store(in: &cancellables)
+
         viewModel.output.route
             .main
             .sink { [weak self] route in
@@ -226,6 +246,8 @@ extension EditStoreViewController {
             pushEditStoreInfo(viewModel: viewModel)
         case .editMenu(let viewModel):
             pushEditMenu(viewModel: viewModel)
+        case .editPhoto(let viewController):
+            presentUploadPhoto(viewController: viewController)
         case .pop:
             navigationController?.popViewController(animated: true)
         case .toast(let message):
@@ -248,6 +270,10 @@ extension EditStoreViewController {
     private func pushEditMenu(viewModel: WriteDetailMenuViewModel) {
         let viewController = WriteDetailMenuViewController(viewModel: viewModel)
         navigationController?.pushViewController(viewController, animated: true)
+    }
+
+    private func presentUploadPhoto(viewController: UIViewController) {
+        present(viewController, animated: true)
     }
 }
 

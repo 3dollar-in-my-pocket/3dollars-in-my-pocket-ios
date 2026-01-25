@@ -5,10 +5,12 @@ import Log
 public struct EditStoreViewModelConfig {
     public let store: UserStoreResponse
     public let fromScreen: ScreenName?
-    
-    public init(store: UserStoreResponse, fromScreen: ScreenName?) {
+    public let imageCount: Int?
+
+    public init(store: UserStoreResponse, fromScreen: ScreenName?, imageCount: Int? = nil) {
         self.store = store
         self.fromScreen = fromScreen
+        self.imageCount = imageCount
     }
 }
 
