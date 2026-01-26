@@ -82,6 +82,7 @@ public final class ContributorsViewController: BaseViewController {
 
     private func setupCollectionView() {
         sduCollectionView.collectionView.registerSectionHeader([ContributorsSectionHeaderView.self])
+        sduCollectionView.collectionView.delegate = self
         dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
             guard kind == UICollectionView.elementKindSectionHeader else { return nil }
 
@@ -215,5 +216,11 @@ extension ContributorsViewController {
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
         }
+    }
+}
+
+extension ContributorsViewController: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        viewModel.input.willDisplayCell.send(indexPath.item)
     }
 }

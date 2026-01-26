@@ -14,7 +14,7 @@ extension ContributorsViewModel {
         let load = PassthroughSubject<Void, Never>()
         let didTapClose = PassthroughSubject<Void, Never>()
         let didTapEdit = PassthroughSubject<Void, Never>()
-        let loadMore = PassthroughSubject<Void, Never>()
+        let willDisplayCell = PassthroughSubject<Int, Never>()
     }
 
     struct Output {
@@ -96,12 +96,18 @@ public final class ContributorsViewModel: BaseViewModel {
                 owner.dissmissAndPushEdit()
             }
             .store(in: &cancellables)
-
-        input.loadMore
-            .withUnretained(self)
-            .sink { (owner, _) in
-                Task { [weak owner] in
-                    await owner?.fetchHistories()
+        
+        input.willDisplayCell
+            .sink { [weak self] index in
+                guard
+                    let self,
+                    canLoadMore(index: index)
+                else {
+                    return
+                }
+                
+                Task { [weak self] in
+                    await self?.fetchHistories()
                 }
             }
             .store(in: &cancellables)
@@ -121,7 +127,7 @@ public final class ContributorsViewModel: BaseViewModel {
         switch result {
         case .success(let response):
             state.cursor = response.cursor.nextCursor
-            state.items = response.cards
+            state.items.append(contentsOf: response.cards)
             updateDatasource()
         case .failure(let error):
             output.route.send(.showErrorAlert(error))
@@ -148,6 +154,10 @@ public final class ContributorsViewModel: BaseViewModel {
 
     private func dissmissAndPushEdit() {
         output.route.send(.dismissAndEdit)
+    }
+    
+    private func canLoadMore(index: Int) -> Bool {
+        return state.cursor.isNotNil && state.items.count - 1 <= index
     }
 }
 
