@@ -1,5 +1,7 @@
 import Foundation
 
+import Foundation
+
 import DependencyInjection
 import Model
 
@@ -20,15 +22,15 @@ final class RequestProvider {
         self.sesseion = URLSession(configuration: defaultConfiguration)
     }
 
-    func request(requestType: RequestType) async throws -> (Data, URLResponse) {
-        let request = try generateURLRequest(requestType: requestType)
+    func request(requestType: RequestType, experimentContext: String? = nil) async throws -> (Data, URLResponse) {
+        let request = try generateURLRequest(requestType: requestType, experimentContext: experimentContext)
         
         NetworkLogger.logRequest(request: request)
         
         return try await sesseion.data(for: request)
     }
     
-    private func generateURLRequest(requestType: RequestType) throws -> URLRequest {
+    private func generateURLRequest(requestType: RequestType, experimentContext: String? = nil) throws -> URLRequest {
         var urlComponents = URLComponents(string: config.endPoint)
         urlComponents?.path = requestType.path
         
@@ -44,7 +46,7 @@ final class RequestProvider {
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = requestType.method.rawValue
-        urlRequest.allHTTPHeaderFields = generateHeader(type: requestType.header)
+        urlRequest.allHTTPHeaderFields = generateHeader(type: requestType.header, experimentContext: experimentContext)
         
         switch requestType.header {
         case .multipart:
@@ -59,7 +61,7 @@ final class RequestProvider {
         return urlRequest
     }
     
-    private func generateHeader(type: HTTPHeaderType) -> [String: String] {
+    private func generateHeader(type: HTTPHeaderType, experimentContext: String? = nil) -> [String: String] {
         var header = [
             "Accept": "application/json",
             "User-Agent": config.userAgent
@@ -86,6 +88,11 @@ final class RequestProvider {
         
         if let authToken = config.authToken {
             header["Authorization"] = authToken
+        }
+        
+        // 실험 컨텍스트 헤더 추가
+        if let experimentContext = experimentContext, !experimentContext.isEmpty {
+            header["Experiment-Context"] = experimentContext
         }
         
         return header
