@@ -176,10 +176,15 @@ final class CategoryFilterViewModel: BaseViewModel {
             }
         }
         
-        if sections[safe: 1].isNotNil,
+        if let sectionItems = sections[safe: 1]?.items,
            let categoryAdvertisement = state.categoryAdvertisement {
-            let exposureIndex = categoryAdvertisement.metadata?.exposureIndex ?? 0
-            sections[1].items.insert(.categoryAdvertisement(categoryAdvertisement), at: exposureIndex)
+            
+            if let exposureIndex = categoryAdvertisement.metadata?.exposureIndex {
+                let index = min(sectionItems.count, exposureIndex)
+                sections[1].items.insert(.categoryAdvertisement(categoryAdvertisement), at:  index)
+            } else {
+                sections[1].items.append(.categoryAdvertisement(categoryAdvertisement))
+            }
         }
         
         output.dataSource.send(sections)
