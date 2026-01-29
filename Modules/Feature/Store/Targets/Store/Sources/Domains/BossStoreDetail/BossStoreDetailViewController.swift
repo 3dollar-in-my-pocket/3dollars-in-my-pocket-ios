@@ -340,6 +340,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         switch dataSource.sectionIdentifier(section: section)?.type {
         case .verifiedBanner:
             return UIEdgeInsets(top: 0, left: 20, bottom: 16, right: 20)
+        case .review:
+            return UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
         default:
             return UIEdgeInsets(top: 0, left: 20, bottom: 32, right: 20)
         }
