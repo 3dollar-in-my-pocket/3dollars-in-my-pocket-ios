@@ -38,6 +38,7 @@ extension WriteAddressViewModel {
     
     private struct State {
         var cameraPosition: CLLocation?
+        let shouldSkipCheckingAround: Bool
     }
     
     public struct Dependency {
@@ -76,7 +77,10 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
     
     public init(config: WriteAddressViewModelConfig, dependency: Dependency = Dependency()) {
         self.dependency = dependency
-        self.state = State(cameraPosition: config.location)
+        self.state = State(
+            cameraPosition: config.location,
+            shouldSkipCheckingAround: config.shouldSkipCheckingAround
+        )
         
         self.output = Output(
             cameraPosition: .init(config.location),
@@ -107,7 +111,12 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
                       let cameraPosition = state.cameraPosition else { return }
                 
                 sendClickSetAddressLog(address: output.address.value)
-                checkStoreExistedAround(location: cameraPosition)
+                
+                if state.shouldSkipCheckingAround {
+                    output.finishWriteAddress.send((output.address.value, cameraPosition))
+                } else {
+                    checkStoreExistedAround(location: cameraPosition)
+                }
             }
             .store(in: &cancellables)
         

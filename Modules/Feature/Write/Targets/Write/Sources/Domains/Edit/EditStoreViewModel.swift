@@ -139,7 +139,8 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
         guard let address = state.currentStore.address.fullAddress else { return }
         let config = WriteAddressViewModelConfig(
             address: address,
-            location: state.currentStore.location.toCLLocation
+            location: state.currentStore.location.toCLLocation,
+            shouldSkipCheckingAround: true
         )
         let viewModel = WriteAddressViewModel(config: config)
         
