@@ -792,7 +792,7 @@ extension StoreDetailViewModel {
         viewModel.onEdit
             .main
             .sink { [weak self] store in
-                self?.updateStore(store)
+                self?.input.load.send(())
             }
             .store(in: &cancellables)
         
