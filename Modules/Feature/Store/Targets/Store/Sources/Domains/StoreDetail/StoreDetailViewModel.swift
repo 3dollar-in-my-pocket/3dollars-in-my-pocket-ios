@@ -545,7 +545,10 @@ final class StoreDetailViewModel: BaseViewModel {
             return nil
         }
         
-        let viewModel = StoreBridgeCarouselViewModel(data: relatedStoresSection)
+        let viewModel = StoreBridgeCarouselViewModel(
+            data: relatedStoresSection, 
+            screenName: .storeDetail
+        )
         
         // Bind carousel route to detail route
         viewModel.output.route

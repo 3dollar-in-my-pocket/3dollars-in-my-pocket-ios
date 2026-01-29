@@ -8,6 +8,7 @@ public struct StoreRelatedStoresSectionResponse: Decodable, Hashable, StoreCardC
     public let type: SDComponentType
     public let header: StoreRelatedStoresSectionHeaderResponse
     public let cards: [StoreImagePreviewCard]
+    public let reference: [ExperimentReferenceResponse]
 }
 
 public struct StoreRelatedStoresSectionHeaderResponse: Decodable, Hashable {

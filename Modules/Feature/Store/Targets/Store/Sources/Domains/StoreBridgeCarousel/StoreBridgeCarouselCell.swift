@@ -7,6 +7,7 @@ import Model
 
 final class StoreBridgeCarouselCell: BaseCollectionViewCell {
     private let containerView = StoreBridgeCarouselView()
+    private var viewModel: StoreBridgeCarouselViewModel?
     
     override func setup() {
         contentView.addSubview(containerView)
@@ -19,7 +20,13 @@ final class StoreBridgeCarouselCell: BaseCollectionViewCell {
     }
     
     func bind(_ viewModel: StoreBridgeCarouselViewModel) {
+        self.viewModel = viewModel
         containerView.bind(viewModel)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        viewModel = nil
     }
 }
 

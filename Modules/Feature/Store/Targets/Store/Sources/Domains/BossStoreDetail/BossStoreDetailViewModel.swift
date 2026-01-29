@@ -854,16 +854,17 @@ extension BossStoreDetailViewModel {
     }
     
     private func createBridgeCarouselViewModel() -> StoreBridgeCarouselViewModel? {
-        // Find StoreRelatedStoresSectionResponse from storeCardComponents
         guard let relatedStoresSection = state.storeCardComponents.first(where: { component in
             component is StoreRelatedStoresSectionResponse
         }) as? StoreRelatedStoresSectionResponse else {
             return nil
         }
         
-        let viewModel = StoreBridgeCarouselViewModel(data: relatedStoresSection)
+        let viewModel = StoreBridgeCarouselViewModel(
+            data: relatedStoresSection, 
+            screenName: .bossStoreDetail
+        )
         
-        // Bind carousel route to detail route
         viewModel.output.route
             .sink { [weak self] route in
                 switch route {

@@ -36,6 +36,8 @@ final class BossStoreDetailViewController: BaseViewController {
     }
 
     private let viewModel: BossStoreDetailViewModel
+    
+    private lazy var exposureTracker = ComponentExposureTracker(collectionView: collectionView)
 
     public static func instance(storeId: String, shouldPushReviewList: Bool) -> BossStoreDetailViewController {
         return BossStoreDetailViewController(storeId: storeId, shouldPushReviewList: shouldPushReviewList)
@@ -348,6 +350,25 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return UIEdgeInsets(top: 0, left: 20, bottom: 16, right: 20)
         default:
             return UIEdgeInsets(top: 0, left: 20, bottom: 32, right: 20)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        exposureTracker.handleWillDisplay(cell: cell, at: indexPath, exposureHandler: { [weak self] cell, indexPath in
+            self?.checkCarouselExposureIfNeeded(at: indexPath)
+        })
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        exposureTracker.handleScroll(exposureHandler: { [weak self] cell, indexPath in
+            self?.checkCarouselExposureIfNeeded(at: indexPath)
+        })
+    }
+    
+    private func checkCarouselExposureIfNeeded(at indexPath: IndexPath) {
+        if let item = dataSource.itemIdentifier(for: indexPath),
+           case .bridgeCarousel(let viewModel) = item {
+            viewModel.input.didAppear.send()
         }
     }
 }

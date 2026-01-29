@@ -23,4 +23,7 @@ public enum ParameterName: String {
     case buildingName = "building_name"
     case medalId = "medal_id"
     case storeType = "store_type"
+    case experimentType = "experiment_type"
+    case experimentKey = "experiment_key"
+    case experimentVariant = "experiment_variant"
 }
