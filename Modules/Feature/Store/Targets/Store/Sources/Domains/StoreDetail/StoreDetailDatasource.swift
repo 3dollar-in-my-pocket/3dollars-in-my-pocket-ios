@@ -5,6 +5,7 @@ import Common
 final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetailSection, StoreDetailSectionItem> {
     typealias Snapshot = NSDiffableDataSourceSnapshot<StoreDetailSection, StoreDetailSectionItem>
     private let viewModel: StoreDetailViewModel
+    private let exposureTracker: ComponentExposureTracker
     
     init(
         collectionView: UICollectionView,
@@ -12,6 +13,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
         rootViewController: UIViewController
     ) {
         self.viewModel = viewModel
+        self.exposureTracker =  ComponentExposureTracker(collectionView: collectionView)
         collectionView.register([
             StoreDetailVerifiedBannerCell.self,
             StoreDetailOverviewCell.self,
@@ -237,5 +239,24 @@ extension StoreDetailDatasource: UICollectionViewDelegate {
               case .photo(_) = section.type else { return }
         
         viewModel.input.didTapPhoto.send(indexPath.item)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        exposureTracker.handleWillDisplay(cell: cell, at: indexPath, exposureHandler: { [weak self] cell, indexPath in
+            self?.checkCarouselExposureIfNeeded(at: indexPath)
+        })
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        exposureTracker.handleScroll(exposureHandler: { [weak self] cell, indexPath in
+            self?.checkCarouselExposureIfNeeded(at: indexPath)
+        })
+    }
+    
+    private func checkCarouselExposureIfNeeded(at indexPath: IndexPath) {
+        if let item = itemIdentifier(for: indexPath),
+           case .bridgeCarousel(let viewModel) = item {
+            viewModel.input.didAppear.send()
+        }
     }
 }

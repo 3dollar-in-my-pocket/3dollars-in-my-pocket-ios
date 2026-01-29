@@ -20,8 +20,6 @@ final class StoreDetailViewController: BaseViewController {
         rootViewController: self
     )
     
-    private lazy var exposureTracker = ComponentExposureTracker(collectionView: storeDetailView.collectionView)
-    
     static func instance(storeId: Int) -> StoreDetailViewController {
         return StoreDetailViewController(storeId: storeId)
     }
@@ -45,7 +43,6 @@ final class StoreDetailViewController: BaseViewController {
         viewModel.input.load.send(())
         
         storeDetailView.collectionView.collectionViewLayout = createLayout()
-        storeDetailView.collectionView.delegate = self
     }
     
     override func sendPageView() {
@@ -550,26 +547,5 @@ final class StoreDetailViewController: BaseViewController {
         let viewController = StoreDetailViewController.instance(storeId: storeId)
         
         navigationController?.pushViewController(viewController, animated: true)
-    }
-}
-
-extension StoreDetailViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        exposureTracker.handleWillDisplay(cell: cell, at: indexPath, exposureHandler: { [weak self] cell, indexPath in
-            self?.checkCarouselExposureIfNeeded(at: indexPath)
-        })
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        exposureTracker.handleScroll(exposureHandler: { [weak self] cell, indexPath in
-            self?.checkCarouselExposureIfNeeded(at: indexPath)
-        })
-    }
-    
-    private func checkCarouselExposureIfNeeded(at indexPath: IndexPath) {
-        if let item = datasource.itemIdentifier(for: indexPath),
-           case .bridgeCarousel(let viewModel) = item {
-            viewModel.input.didAppear.send()
-        }
     }
 }
