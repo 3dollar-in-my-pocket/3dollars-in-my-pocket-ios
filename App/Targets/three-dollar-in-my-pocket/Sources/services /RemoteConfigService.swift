@@ -16,15 +16,13 @@ public final class RemoteConfigService: RemoteConfigProtocol {
         return _experimentContext
     }
     
-    private init() {
-        // 초기화 시점에는 아무것도 하지 않음 - 완전 lazy 초기화
-        print("🟡 RemoteConfigManager init() called - no Firebase calls yet")
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     private func setupNotificationsOnce() {
         guard !notificationSetup else { return }
         
-        // 백그라운드→포그라운드 전환 시에만 업데이트
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(appWillEnterForeground),
@@ -33,31 +31,14 @@ public final class RemoteConfigService: RemoteConfigProtocol {
         )
         
         notificationSetup = true
-        print("🟡 Notifications setup completed")
     }
     
     private func initializeRemoteConfigIfNeeded() {
         guard remoteConfig == nil else { return }
         
-        print("🟡 Attempting to initialize RemoteConfig...")
-        
-        // Firebase 초기화 확인을 다른 방식으로 시도
-        do {
-            print("🟡 Trying to create RemoteConfig directly...")
-            remoteConfig = RemoteConfig.remoteConfig()
-            configureRemoteConfigOnce()
-            setupNotificationsOnce()
-            print("✅ RemoteConfig initialized successfully")
-        } catch let error as NSError {
-            print("❌ RemoteConfig initialization failed: \(error)")
-            print("❌ Error domain: \(error.domain), code: \(error.code)")
-            print("❌ Error description: \(error.localizedDescription)")
-            
-            // Firebase가 초기화되지 않은 경우의 에러 코드 확인
-            if error.domain.contains("Firebase") {
-                print("❌ This is a Firebase configuration error")
-            }
-        }
+        remoteConfig = RemoteConfig.remoteConfig()
+        configureRemoteConfigOnce()
+        setupNotificationsOnce()
     }
     
     private func configureRemoteConfigOnce() {
@@ -69,11 +50,9 @@ public final class RemoteConfigService: RemoteConfigProtocol {
         remoteConfig.setDefaults([:])
         
         isConfigured = true
-        print("🟡 RemoteConfig configuration completed")
     }
     
     @objc private func appWillEnterForeground() {
-        print("🟡 App will enter foreground - refreshing RemoteConfig")
         Task {
             await fetchRemoteConfig()
         }
@@ -81,30 +60,22 @@ public final class RemoteConfigService: RemoteConfigProtocol {
     
     // MARK: - Public Methods
     public func fetchRemoteConfig() async {
-        print("🟡 fetchRemoteConfig() called")
-        
         initializeRemoteConfigIfNeeded()
         guard let remoteConfig = remoteConfig else {
-            print("❌ RemoteConfig not initialized - cannot fetch")
             return
         }
         
         do {
-            print("🟡 Starting RemoteConfig fetch...")
             let status = try await remoteConfig.fetch()
-            let activated = try await remoteConfig.activate()
-            print("✅ RemoteConfig fetch completed - status: \(status)")
+            _ = try await remoteConfig.activate()
             
             await updateExperimentContext()
         } catch {
-            print("❌ RemoteConfig fetch failed: \(error)")
-            // 실패해도 현재 캐시된 값으로 experiment context 업데이트
             await updateExperimentContext()
         }
     }
     
     public func refreshRemoteConfig() {
-        print("🟡 refreshRemoteConfig() called")
         Task {
             await fetchRemoteConfig()
         }
@@ -113,7 +84,6 @@ public final class RemoteConfigService: RemoteConfigProtocol {
     @MainActor
     private func updateExperimentContext() {
         _experimentContext = createExperimentContextString()
-        print("🟡 Experiment context updated: \(_experimentContext)")
     }
     
     private func createExperimentContextString() -> String {
@@ -123,11 +93,10 @@ public final class RemoteConfigService: RemoteConfigProtocol {
        
         var experiments: [String: String] = [:]
         
-        // ABT 관련 키들만 필터링하여 수집
         for key in allKeys {
             if isABTestKey(key) {
                 let configValue = remoteConfig.configValue(forKey: key)
-                let variant = configValue.stringValue ?? ""
+                let variant = configValue.stringValue
                 if !variant.isEmpty {
                     experiments[key] = variant
                 }
@@ -144,10 +113,5 @@ public final class RemoteConfigService: RemoteConfigProtocol {
     
     private func isABTestKey(_ key: String) -> Bool {
         return key.hasPrefix("abtest")
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-        print("🟡 RemoteConfigManager deinitialized")
     }
 }
