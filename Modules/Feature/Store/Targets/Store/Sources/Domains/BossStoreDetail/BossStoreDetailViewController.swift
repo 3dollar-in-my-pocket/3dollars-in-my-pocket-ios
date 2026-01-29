@@ -330,7 +330,7 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return BossStoreCouponCell.Layout.size(width: containerWidth, viewModel: viewModel)
         case .bridgeCarousel(let viewModel):
             let height = StoreBridgeCarouselCell.Layout.height(for: viewModel.output.items)
-            return CGSize(width: width, height: height)
+            return CGSize(width: UIScreen.main.bounds.width, height: height)
         default:
             return .zero
         }
@@ -348,6 +348,10 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         switch dataSource.sectionIdentifier(section: section)?.type {
         case .verifiedBanner:
             return UIEdgeInsets(top: 0, left: 20, bottom: 16, right: 20)
+        case .bridgeCarousel:
+            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        case .review:
+            return UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
         default:
             return UIEdgeInsets(top: 0, left: 20, bottom: 32, right: 20)
         }

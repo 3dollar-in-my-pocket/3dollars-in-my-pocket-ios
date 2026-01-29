@@ -25,6 +25,7 @@ final class StoreBridgeCarouselItemCell: BaseCollectionViewCell {
         $0.contentMode = .scaleAspectFill
         $0.layer.borderColor = Colors.gray10.color.cgColor
         $0.layer.borderWidth = 1
+        $0.backgroundColor = Colors.gray0.color
     }
     
     private let titleLabel = UILabel().then {

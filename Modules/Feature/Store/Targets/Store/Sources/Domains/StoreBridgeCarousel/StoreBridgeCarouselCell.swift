@@ -33,10 +33,10 @@ final class StoreBridgeCarouselCell: BaseCollectionViewCell {
 extension StoreBridgeCarouselCell {
     enum Layout {
         static func height(for items: [StoreImagePreviewCard]) -> CGFloat {
-            guard let firstItem = items.first else { return 200 } // 기본값
+            guard let _ = items.first else { return 200 }
             let maxImageHeight = items.map { $0.image.style.height }.max() ?? 68
             let collectionViewHeight = maxImageHeight + StoreBridgeCarouselItemCell.Layout.spacing + StoreBridgeCarouselItemCell.Layout.bottomInfoHeight
-            return 52 + collectionViewHeight // top margin + title height + spacing + collection view
+            return 52 + collectionViewHeight + 16 // top margin + title height + spacing + collection view + bottom margin
         }
     }
 }
@@ -73,23 +73,21 @@ final class StoreBridgeCarouselView: BaseView {
 
         collectionView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(12)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(16)
         }
     }
 
     func bind(_ viewModel: StoreBridgeCarouselViewModel) {
         self.viewModel = viewModel
         
-        // 제목 설정 - header의 title 사용
         if let headerTitle = viewModel.headerTitle {
             titleLabel.setSDText(headerTitle)
         }
         
-        // 컬렉션뷰 높이 동적 업데이트
         updateCollectionViewHeight(items: viewModel.output.items)
         
-        // 레이아웃 업데이트 (아이템 크기가 달라질 수 있으므로)
-        if let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+        if collectionView.collectionViewLayout is UICollectionViewFlowLayout {
             collectionView.collectionViewLayout = generateLayout()
         }
         
@@ -102,7 +100,6 @@ final class StoreBridgeCarouselView: BaseView {
         let maxImageHeight = items.map { $0.image.style.height }.max() ?? 68
         let collectionViewHeight = maxImageHeight + StoreBridgeCarouselItemCell.Layout.spacing + StoreBridgeCarouselItemCell.Layout.bottomInfoHeight
         
-        // 기존 constraint 제거 후 새로 설정
         collectionViewHeightConstraint?.deactivate()
         collectionView.snp.makeConstraints {
             collectionViewHeightConstraint = $0.height.equalTo(collectionViewHeight).constraint
@@ -134,10 +131,9 @@ extension StoreBridgeCarouselView: UICollectionViewDataSource, UICollectionViewD
         viewModel?.input.didSelect.send(indexPath.item)
     }
     
-    // 동적 아이템 크기 지원
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard let item = viewModel?.output.items[safe: indexPath.item] else {
-            return CGSize(width: 80, height: 136) // 기본값
+            return CGSize(width: 80, height: 136)
         }
         return StoreBridgeCarouselItemCell.Layout.size(for: item.image.style)
     }
