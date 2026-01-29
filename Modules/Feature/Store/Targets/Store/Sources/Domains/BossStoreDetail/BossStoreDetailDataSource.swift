@@ -28,7 +28,8 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             BossStoreDetailReviewFeedbackSummaryCell.self,
             StoreDetailFilteredReviewCell.self,
             BossStoreCouponCell.self,
-            StoreBridgeCarouselCell.self
+            StoreBridgeCarouselCell.self,
+            StoreDetailDividerCell.self
         ])
         
         collectionView.register(
@@ -107,6 +108,10 @@ final class BossStoreDetailDataSource: UICollectionViewDiffableDataSource<BossSt
             case .bridgeCarousel(let viewModel):
                 let cell: StoreBridgeCarouselCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel)
+                return cell
+            case .divider(let configure):
+                let cell: StoreDetailDividerCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.configure(with: configure)
                 return cell
             }
         }

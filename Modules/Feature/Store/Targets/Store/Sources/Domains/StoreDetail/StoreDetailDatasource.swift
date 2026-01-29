@@ -58,8 +58,9 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 cell.bind(data)
                 return cell
                 
-            case .divider:
+            case .divider(let configuration):
                 let cell: StoreDetailDividerCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.configure(with: configuration)
                 return cell
                 
             case .info(let data):
@@ -137,7 +138,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             guard let section = self?.sectionIdentifier(section: indexPath.section) else { return nil }
             
             switch section.type {
-            case .verifiedBanner, .overview, .bossStoreAppIntro, .bridgeCarousel, .divider(_):
+            case .verifiedBanner, .overview, .bossStoreAppIntro, .bridgeCarousel, .divider:
                 return nil
                 
             case .visit:

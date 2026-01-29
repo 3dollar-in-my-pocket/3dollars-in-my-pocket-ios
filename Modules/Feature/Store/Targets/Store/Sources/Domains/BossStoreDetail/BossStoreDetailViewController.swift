@@ -331,6 +331,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         case .bridgeCarousel(let viewModel):
             let height = StoreBridgeCarouselCell.Layout.height(for: viewModel.output.items)
             return CGSize(width: UIScreen.main.bounds.width, height: height)
+        case .divider(let configuration):
+            return CGSize(width: UIScreen.main.bounds.width, height: configuration.height)
         default:
             return .zero
         }
@@ -351,9 +353,11 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         case .bridgeCarousel:
             return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         case .review:
-            return UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
+            return UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
+        case .divider:
+            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         default:
-            return UIEdgeInsets(top: 0, left: 20, bottom: 32, right: 20)
+            return UIEdgeInsets(top: 16, left: 20, bottom: 0, right: 20)
         }
     }
     

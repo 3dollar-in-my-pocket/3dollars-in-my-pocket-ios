@@ -256,6 +256,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
             sections.append(.init(type: .coupons(bindCouponHeaderViewModel()), items: couponItems))
         }
         
+        sections.append(.dividerSection())
+        
         var infoItems: [BossStoreDetailSectionItem] = [.info(bindInfoCellViewModel(storeDetailData.info))]
         if storeDetailData.store.menus.isEmpty {
             infoItems.append(.emptyMenu)
@@ -263,22 +265,27 @@ final class BossStoreDetailViewModel: BaseViewModel {
             infoItems.append(.menuList(bindMenuListCellViewModel(with: storeDetailData.menus)))
         }
         sections.append(.init(type: .info, items: infoItems))
+        sections.append(.dividerSection())
         
         if let post = storeDetailData.post,
            let totalPostCount = storeDetailData.totalPostCount {
             let cellViewModel = bindPostCellViewModel(store: storeDetailData.store, post: post, totalCount: totalPostCount)
             sections.append(.init(type: .post, items: [.post(cellViewModel)]))
+            sections.append(.dividerSection())
         }
         
         sections.append(contentsOf: [
             .init(type: .workday, items: [.workday(storeDetailData.workdays)])
         ])
+        sections.append(.dividerSection())
         
         if let bridgeCarouselViewModel = createBridgeCarouselViewModel() {
             sections.append(.init(type: .bridgeCarousel, items: [.bridgeCarousel(bridgeCarouselViewModel)]))
+            sections.append(.dividerSection())
         }
         
         if let reviewSection = createReviewSection() {
+            sections.append(.dividerSection(.init(height: 16, color: .clear)))
             sections.append(reviewSection)
         }
 

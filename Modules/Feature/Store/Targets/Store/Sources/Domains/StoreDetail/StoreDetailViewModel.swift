@@ -432,7 +432,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .visitSection(storeDetailData.visit)
         ])
         
-        // divider 추가
+        sections.append(.dividerSection())
         
         sections.append(
             .infoSection(
@@ -442,7 +442,7 @@ final class StoreDetailViewModel: BaseViewModel {
             )
         )
         
-        // divider 추가
+        sections.append(.dividerSection())
         
         sections.append(
             .photoSection(
@@ -451,13 +451,11 @@ final class StoreDetailViewModel: BaseViewModel {
             )
         )
         
-        // divider 추가
+        sections.append(.dividerSection())
         
         if let bridgeCarouselViewModel = createBridgeCarouselViewModel() {
             sections.append(.bridgeCarouselSection(bridgeCarouselViewModel))
-            
-            // divider 추가
-            
+            sections.append(.dividerSection())
         }
         
         sections.append(

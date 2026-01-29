@@ -18,4 +18,5 @@ enum BossStoreDetailSectionItem: Hashable {
     case review(ReviewListCellViewModel)
     case reviewFeedbackSummary(BossStoreDetailReviewFeedbackSummaryCellViewModel)
     case filteredReview(StoreDetailReview)
+    case divider(StoreDetailDividerCell.Configuration)
 }

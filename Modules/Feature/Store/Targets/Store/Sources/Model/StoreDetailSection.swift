@@ -124,7 +124,7 @@ extension StoreDetailSection {
         return .init(type: .bridgeCarousel, items: [.bridgeCarousel(viewModel)])
     }
     
-    static func dividerSection(id: String) -> StoreDetailSection {
-        return .init(type: .divider(id: id), items: [.divider])
+    static func dividerSection(_ configuration: StoreDetailDividerCell.Configuration = .default) -> StoreDetailSection {
+        return .init(type: .divider(id: UUID().uuidString), items: [.divider(configuration)])
     }
 }

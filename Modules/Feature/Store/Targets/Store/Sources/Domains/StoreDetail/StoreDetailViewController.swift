@@ -244,16 +244,23 @@ final class StoreDetailViewController: BaseViewController {
                 
                 return section
                 
-            case .divider(_):
+            case .divider:
+                let dividerHeight: CGFloat
+                if case .divider(let configuration) = sectionIdentifier.items.first {
+                    dividerHeight = configuration.height
+                } else {
+                    dividerHeight = StoreDetailDividerCell.Layout.defaultHeight
+                }
+                
                 let item = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(StoreDetailDividerCell.Layout.height)
+                    heightDimension: .absolute(dividerHeight)
                 ))
                 
                 let group = NSCollectionLayoutGroup.vertical(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(StoreDetailDividerCell.Layout.height)
+                        heightDimension: .absolute(dividerHeight)
                     ),
                     subitems: [item]
                 )
