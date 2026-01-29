@@ -232,7 +232,7 @@ final class StoreDetailViewController: BaseViewController {
                     subitems: [item]
                 )
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 20, bottom: 32, trailing: 20)
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 16, trailing: 20)
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
@@ -245,24 +245,34 @@ final class StoreDetailViewController: BaseViewController {
                 return section
                 
             case .divider:
-                let dividerHeight: CGFloat
-                if case .divider(let configuration) = sectionIdentifier.items.first {
-                    dividerHeight = configuration.height
-                } else {
-                    dividerHeight = StoreDetailDividerCell.Layout.defaultHeight
+                let items = sectionIdentifier.items.map { sectionItem -> NSCollectionLayoutItem in
+                    let itemHeight: CGFloat
+                    if case .divider(let configuration) = sectionItem {
+                        itemHeight = configuration.height
+                    } else {
+                        itemHeight = StoreDetailDividerCell.Layout.defaultHeight
+                    }
+                    
+                    return NSCollectionLayoutItem(layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(itemHeight)
+                    ))
                 }
                 
-                let item = NSCollectionLayoutItem(layoutSize: .init(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(dividerHeight)
-                ))
+                let totalHeight = sectionIdentifier.items.reduce(0) { total, sectionItem in
+                    if case .divider(let configuration) = sectionItem {
+                        return total + configuration.height
+                    } else {
+                        return total + StoreDetailDividerCell.Layout.defaultHeight
+                    }
+                }
                 
                 let group = NSCollectionLayoutGroup.vertical(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(dividerHeight)
+                        heightDimension: .absolute(totalHeight)
                     ),
-                    subitems: [item]
+                    subitems: items
                 )
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
@@ -294,7 +304,7 @@ final class StoreDetailViewController: BaseViewController {
                     subitems: [infoItem, menuItem]
                 )
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 20, bottom: 32, trailing: 20)
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 16, trailing: 20)
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
@@ -358,7 +368,7 @@ final class StoreDetailViewController: BaseViewController {
                 )
                 let section = NSCollectionLayoutSection(group: group)
                 section.interGroupSpacing = 8
-                section.contentInsets = .init(top: 12, leading: 20, bottom: 32, trailing: 20)
+                section.contentInsets = .init(top: 12, leading: 20, bottom: 16, trailing: 20)
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
@@ -384,7 +394,7 @@ final class StoreDetailViewController: BaseViewController {
                     subitems: [item]
                 )
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 0, bottom: 32, trailing: 0)
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 16, trailing: 0)
                 return section
                 
             case .bridgeCarousel:
@@ -405,7 +415,7 @@ final class StoreDetailViewController: BaseViewController {
                     subitems: [item]
                 )
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 0, bottom: 32, trailing: 0)
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
                 return section
             }
         }

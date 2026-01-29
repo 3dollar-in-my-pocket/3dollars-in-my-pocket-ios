@@ -429,6 +429,7 @@ final class StoreDetailViewModel: BaseViewModel {
         
         sections.append(contentsOf: [
             .overviewSection(createOverviewCellViewModel(storeDetailData.overview)),
+            .dividerSection(),
             .visitSection(storeDetailData.visit)
         ])
         
