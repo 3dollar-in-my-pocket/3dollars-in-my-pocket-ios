@@ -74,26 +74,28 @@ final class MarkerPopupViewModel: BaseViewModel {
         Task {
             let input = FetchAdvertisementInput(position: .storeMarkerPopup, size: nil)
             let result = await advertisementRepository.fetchAdvertisements(input: input)
-            
+
             switch result {
             case .success(let response):
                 guard let advertisement = response.advertisements.first else { return }
-                
+
                 state.advertisement = advertisement
                 output.advertisement.send(advertisement)
-                
+
             case .failure(let error):
                 output.showErrorAlert.send(error)
             }
         }
+        .store(in: taskBag)
     }
     
     private func sendClickEvent() {
         guard let advertisementId = state.advertisement?.advertisementId else { return }
-        
+
         Task {
             let _ = await eventRepository.sendClickEvent(targetId: advertisementId, type: "ADVERTISEMENT")
         }
+        .store(in: taskBag)
     }
     
     private func sendClickEventLog() {

@@ -11,9 +11,10 @@ public struct StoreFoodCategoryResponse: Decodable, Hashable {
 
 public struct StoreCategoryClassificationResponse: Decodable, Hashable, Comparable {
     public static func < (lhs: StoreCategoryClassificationResponse, rhs: StoreCategoryClassificationResponse) -> Bool {
-        return lhs.description < rhs.description
+        return lhs.priority < rhs.priority
     }
     
     public let type: String
     public let description: String
+    public let priority: Int
 }
