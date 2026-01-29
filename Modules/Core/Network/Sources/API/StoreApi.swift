@@ -20,7 +20,7 @@ enum StoreApi {
     case fetchStore(input: FetchStoreInput)
     case patchStore(storeId: String, input: UserStorePatchRequestV3)
     case fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType])
-    case fetchStoreScreen(storeId: String)
+    case fetchStoreScreen(FetchStoreScreenInput)
 }
 
 extension StoreApi: RequestType {
@@ -145,8 +145,11 @@ extension StoreApi: RequestType {
             return .json
         case .fetchDisplayItems:
             return .json
-        case .fetchStoreScreen:
-            return .json
+        case .fetchStoreScreen(let input):
+            return .custom([
+                "X-Device-Latitude": String(input.latitude),
+                "X-Device-Longitude": String(input.longitude)
+            ])
         }
     }
     
@@ -184,8 +187,8 @@ extension StoreApi: RequestType {
             return "/api/v3/store/\(storeId)"
         case .fetchDisplayItems(let storeId, _):
             return "/api/v1/store/\(storeId)/display-items"
-        case .fetchStoreScreen(let storeId):
-            return "/api/v1/screen/store/\(storeId)"
+        case .fetchStoreScreen(let input):
+            return "/api/v1/screen/store/\(input.storeId)"
         }
     }
 }

@@ -808,9 +808,14 @@ extension BossStoreDetailViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let storeDetailResult = await storeService.fetchStoreScreen(storeId: storeId)
+            let input = FetchStoreScreenInput(
+                storeId: storeId,
+                latitude: preference.userCurrentLocation.coordinate.latitude,
+                longitude: preference.userCurrentLocation.coordinate.longitude
+            )
+            let storeScreenInput = await storeService.fetchStoreScreen(input: input)
             
-            switch storeDetailResult {
+            switch storeScreenInput {
             case .success(let response):
                 state.storeCardComponents = response.sections
                 reloadDataSource()

@@ -401,9 +401,14 @@ final class StoreDetailViewModel: BaseViewModel {
         Task { [weak self] in
             guard let self else { return }
             
-            let storeDetailResult = await storeService.fetchStoreScreen(storeId: String(state.storeId))
+            let input = FetchStoreScreenInput(
+                storeId: "\(state.storeId)",
+                latitude: preference.userCurrentLocation.coordinate.latitude,
+                longitude: preference.userCurrentLocation.coordinate.longitude
+            )
+            let storeScreenInput = await storeService.fetchStoreScreen(input: input)
             
-            switch storeDetailResult {
+            switch storeScreenInput {
             case .success(let response):
                 state.storeCardComponents = response.sections
                 refreshSections()
