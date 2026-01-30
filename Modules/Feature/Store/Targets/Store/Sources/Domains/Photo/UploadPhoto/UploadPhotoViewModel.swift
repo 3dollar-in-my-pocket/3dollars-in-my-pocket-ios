@@ -43,6 +43,7 @@ final class UploadPhotoViewModel: BaseViewModel {
         let assets = PassthroughSubject<[PHAsset], Never>()
         let onSuccessUploadPhotos = PassthroughSubject<[StoreDetailPhoto], Never>()
         let onSuccessUploadImages = PassthroughSubject<[ImageUploadResponse], Never>()
+        let onSelectedPhotos = PassthroughSubject<[Data], Never>()
         let uploadButtonTitle = CurrentValueSubject<Int, Never>(0)
         let isEnableUploadButton = CurrentValueSubject<Bool, Never>(false)
         let showErrorAlert = PassthroughSubject<Error, Never>()
@@ -62,6 +63,12 @@ final class UploadPhotoViewModel: BaseViewModel {
     
     struct Config {
         let uploadType: UploadType
+        let shouldDeferUpload: Bool
+
+        init(uploadType: UploadType, shouldDeferUpload: Bool = false) {
+            self.uploadType = uploadType
+            self.shouldDeferUpload = shouldDeferUpload
+        }
     }
     
     let input = Input()
@@ -173,10 +180,17 @@ final class UploadPhotoViewModel: BaseViewModel {
     }
     
     private func uploadPhotos() {
-        output.showLoading.send(true)
         let selectedPhotos = state.selectedAssets.map { ImageUtils.getImage(from: $0) }
         let datas = ImageUtils.dataArrayFromImages(photos: selectedPhotos)
-        
+
+        if config.shouldDeferUpload {
+            output.onSelectedPhotos.send(datas)
+            output.route.send(.dismiss)
+            return
+        }
+
+        output.showLoading.send(true)
+
         switch config.uploadType {
         case .storeImage(let storeId):
             uploadStorePhotos(storeId: storeId, datas: datas)

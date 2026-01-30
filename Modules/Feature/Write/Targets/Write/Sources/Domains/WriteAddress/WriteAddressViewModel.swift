@@ -38,7 +38,7 @@ extension WriteAddressViewModel {
     
     private struct State {
         var cameraPosition: CLLocation?
-        let editingStoreId: String?
+        let shouldSkipCheckingAround: Bool
     }
     
     public struct Dependency {
@@ -77,8 +77,11 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
     
     public init(config: WriteAddressViewModelConfig, dependency: Dependency = Dependency()) {
         self.dependency = dependency
-        self.state = State(cameraPosition: config.location, editingStoreId: config.storeId)
-
+        self.state = State(
+            cameraPosition: config.location,
+            shouldSkipCheckingAround: config.shouldSkipCheckingAround
+        )
+        
         self.output = Output(
             cameraPosition: .init(config.location),
             address: .init(config.address)
@@ -108,7 +111,12 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
                       let cameraPosition = state.cameraPosition else { return }
                 
                 sendClickSetAddressLog(address: output.address.value)
-                checkStoreExistedAround(location: cameraPosition)
+                
+                if state.shouldSkipCheckingAround {
+                    output.finishWriteAddress.send((output.address.value, cameraPosition))
+                } else {
+                    checkStoreExistedAround(location: cameraPosition)
+                }
             }
             .store(in: &cancellables)
         
@@ -156,19 +164,11 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
 
             switch result {
             case .success(let response):
-                let filteredStores: [StoreWithExtraResponse]
-                if let editingStoreId = state.editingStoreId {
-                    filteredStores = response.contents.filter { $0.storeId != editingStoreId }
-                } else {
-                    filteredStores = response.contents
-                }
-
-                if filteredStores.isEmpty {
+                if response.contents.isEmpty {
                     output.finishWriteAddress.send((output.address.value, location))
                 } else {
-                    presentConfirmPopup(stores: filteredStores, address: output.address.value)
+                    presentConfirmPopup(stores: response.contents, address: output.address.value)
                 }
-
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))
             }

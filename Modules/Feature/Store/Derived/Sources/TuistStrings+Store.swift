@@ -84,6 +84,18 @@ public enum StoreStrings: Sendable {
     }
   }
 
+  public enum Contributors: Sendable {
+  /// 나도 수정하기
+    public static let editButton = StoreStrings.tr("Localization", "contributors.edit_button")
+    /// 정보 기여자 목록
+    public static let title = StoreStrings.tr("Localization", "contributors.title")
+
+    public enum Header: Sendable {
+    /// 함께 만든 가게 정보
+      public static let title = StoreStrings.tr("Localization", "contributors.header.title")
+    }
+  }
+
   public enum MapDetail: Sendable {
   /// 길 안내보기
     public static let navigationButton = StoreStrings.tr("Localization", "map_detail.navigation_button")
@@ -259,13 +271,18 @@ public enum StoreStrings: Sendable {
     }
 
     public enum Overview: Sendable {
-    /// %@님 제보
-      public static func repoterNameFormat(_ p1: Any) -> String {
-        return StoreStrings.tr("Localization", "store_detail.overview.repoter_name_format",String(describing: p1))
-      }
-      /// 최근 한달 %d명이 방문 성공
+    /// 최근 한달 %d명이 방문 성공
       public static func successVisitCountFormat(_ p1: Int) -> String {
         return StoreStrings.tr("Localization", "store_detail.overview.success_visit_count_format",p1)
+      }
+
+      public enum Contributor: Sendable {
+      /// 님이 가게 정보를 등록했어요
+        public static let creator = StoreStrings.tr("Localization", "store_detail.overview.contributor.creator")
+        /// 님 외 %d명이 가게 정보를 수정했어요
+        public static func format(_ p1: Int) -> String {
+          return StoreStrings.tr("Localization", "store_detail.overview.contributor.format",p1)
+        }
       }
     }
 

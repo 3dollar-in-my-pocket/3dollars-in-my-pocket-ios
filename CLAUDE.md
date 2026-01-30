@@ -57,6 +57,70 @@ make clean
 - `Targets/Interface/Sources/`: 모듈 간 통신을 위한 공개 인터페이스
 - `Targets/Demo/`: 해당 피처의 독립 실행형 데모 앱
 
+### SDU (Server-Driven UI) 모듈 (`Modules/Feature/SDU/`)
+
+SDU 모듈은 서버에서 전달하는 데이터 구조에 따라 동적으로 UI를 렌더링하는 시스템입니다.
+
+**주요 컴포넌트**:
+- **SDUCollectionView**: SDU 기반 CollectionView 래퍼
+- **SDUDataSource**: CollectionView DataSource (UICollectionViewDiffableDataSource)
+- **SDUCalloutCell**: Callout 스타일 셀 (제목 + 설명)
+- **SDUIconTextCardCell**: 아이콘 + 텍스트 카드 셀
+
+**사용 방법**:
+
+```swift
+// 1. SDUCollectionView 생성
+private let sduView = SDUCollectionView()
+private lazy var dataSource = SDUDataSource(collectionView: sduView.collectionView)
+
+// 2. Layout 설정
+sduView.setLayout(createLayout())
+
+private func createLayout() -> UICollectionViewLayout {
+    let item = NSCollectionLayoutItem(layoutSize: .init(
+        widthDimension: .fractionalWidth(1),
+        heightDimension: .estimated(100)
+    ))
+
+    let group = NSCollectionLayoutGroup.vertical(
+        layoutSize: .init(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .estimated(100)
+        ),
+        subitems: [item]
+    )
+
+    let section = NSCollectionLayoutSection(group: group)
+    section.interGroupSpacing = 12
+    section.contentInsets = .init(top: 16, leading: 20, bottom: 20, trailing: 20)
+
+    return UICollectionViewCompositionalLayout(section: section)
+}
+
+// 3. 데이터 바인딩
+viewModel.output.items
+    .receive(on: DispatchQueue.main)
+    .sink { [weak self] items in
+        self?.dataSource.reload(items)
+    }
+    .store(in: &cancellables)
+```
+
+**SDUItem 타입**:
+```swift
+public enum SDUItem: Hashable {
+    case callout(CalloutCardData)
+    case iconText(IconTextCardData)
+}
+```
+
+**참고 파일**:
+- `Modules/Feature/Store/Targets/Store/Sources/Domains/Contributors/ContributorsViewController.swift`
+- `Modules/Feature/SDU/Targets/SDU/Sources/Cells/SDUCalloutCell.swift`
+- `Modules/Feature/SDU/Targets/SDU/Sources/Components/SDUCollectionView.swift`
+- `Modules/Feature/SDU/Targets/SDU/Sources/Components/SDUDataSource.swift`
+
 ### 앱 구조 (`App/`)
 - 의존성 주입 설정이 포함된 메인 앱 타겟
 - 푸시 알림용 확장 (`service-extension`, `content-extension`)
@@ -206,6 +270,108 @@ private let label = UILabel().then {
 - API URL: `https://threedollars.co.kr`
 - 딥링크 스킴: `dollars`
 - 프로덕션 AdMob ID
+
+## 빌드 및 테스트 명령어
+
+### Tuist 프로젝트 생성
+
+```bash
+make project  # Xcode 프로젝트 생성 및 워크스페이스 열기
+```
+
+### 빌드
+
+```bash
+# 전체 빌드 (Debug 스키마 사용)
+xcodebuild build \
+  -workspace 3dollar-in-my-pocket.xcworkspace \
+  -scheme three-dollar-in-my-pocket-debug \
+  -configuration Debug \
+  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
+
+# Release 빌드
+xcodebuild build \
+  -workspace 3dollar-in-my-pocket.xcworkspace \
+  -scheme three-dollar-in-my-pocket \
+  -configuration Release \
+  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
+```
+
+**주의사항**:
+- 빌드 전 반드시 `make project` 실행 (Tuist 프로젝트 생성)
+- **three-dollar-in-my-pocket-debug** 스키마 사용 (Debug 빌드)
+- **three-dollar-in-my-pocket** 스키마 사용 (Release 빌드)
+
+### 테스트
+
+```bash
+# 전체 테스트 실행
+xcodebuild test \
+  -workspace 3dollar-in-my-pocket.xcworkspace \
+  -scheme three-dollar-in-my-pocket-debug \
+  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
+
+# ViewModel 테스트만 실행
+xcodebuild test \
+  -workspace 3dollar-in-my-pocket.xcworkspace \
+  -scheme three-dollar-in-my-pocket-debug \
+  -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
+  -only-testing:three-dollar-in-my-pocketTests/ViewModelTests
+
+# 특정 테스트 파일 실행
+xcodebuild test \
+  -workspace 3dollar-in-my-pocket.xcworkspace \
+  -scheme three-dollar-in-my-pocket-debug \
+  -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
+  -only-testing:three-dollar-in-my-pocketTests/ContributorsViewModelTests
+```
+
+**테스트 파일 위치**:
+- `App/Targets/three-dollar-in-my-pocketTests/ViewModelTests/`
+
+### SwiftLint 검증
+
+```bash
+# 전체 검증
+swiftlint lint
+
+# 특정 디렉토리 검증
+swiftlint lint --path Modules/Feature/Store/Targets/Store/Sources/
+
+# 자동 수정
+swiftlint --fix
+
+# 특정 파일 자동 수정
+swiftlint --fix --path Modules/Feature/Store/Targets/Store/Sources/Domains/Contributors/
+```
+
+**주의사항**:
+- SwiftLint 오류가 있으면 빌드 실패
+- 코드 작성 후 반드시 SwiftLint 검증 수행
+- `swiftlint --fix`로 자동 수정 가능한 오류는 자동으로 수정
+
+### 빌드 + 테스트 + SwiftLint 통합
+
+```bash
+# 1. Tuist 프로젝트 생성
+make project
+
+# 2. SwiftLint 검증
+swiftlint lint
+
+# 3. 빌드
+xcodebuild build \
+  -workspace 3dollar-in-my-pocket.xcworkspace \
+  -scheme three-dollar-in-my-pocket-debug \
+  -configuration Debug \
+  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
+
+# 4. 테스트 실행
+xcodebuild test \
+  -workspace 3dollar-in-my-pocket.xcworkspace \
+  -scheme three-dollar-in-my-pocket-debug \
+  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
+```
 
 ## 의존성 및 외부 라이브러리
 
