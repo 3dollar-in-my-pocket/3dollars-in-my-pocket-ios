@@ -45,7 +45,11 @@ public final class RemoteConfigService: RemoteConfigProtocol {
         guard !isConfigured, let remoteConfig = remoteConfig else { return }
         
         let settings = RemoteConfigSettings()
+        #if DEBUG
+        settings.minimumFetchInterval = 60 // 1분
+        #else
         settings.minimumFetchInterval = 3600 // 1시간
+        #endif
         remoteConfig.configSettings = settings
         remoteConfig.setDefaults([:])
         
