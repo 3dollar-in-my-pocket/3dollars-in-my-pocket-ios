@@ -28,6 +28,7 @@ final class StoreDetailViewModel: BaseViewModel {
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
         let didTapAddress = PassthroughSubject<Void, Never>()
         let didTapMapDetail = PassthroughSubject<Void, Never>()
+        let didTapContributors = PassthroughSubject<Void, Never>()
         
         // 가게 정보 메뉴 섹션
         let didTapShowMoreMenu = PassthroughSubject<Void, Never>()
@@ -87,6 +88,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentVisit(VisitViewModel)
         case navigateAppleMap(LocationResponse)
         case pushWebView(WebViewType)
+        case presentContributors(ContributorsViewModel)
     }
     
     let input = Input()
@@ -221,6 +223,13 @@ final class StoreDetailViewModel: BaseViewModel {
                 owner.sendClickEvent(.clickZoomMap)
             }
             .store(in: &cancellables)
+
+        input.didTapContributors
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewModel, _) in
+                owner.presentContributors()
+            }
+            .store(in: &cancellables)
     }
     
     private func bindInfoSection() {
@@ -235,7 +244,7 @@ final class StoreDetailViewModel: BaseViewModel {
         input.didTapEdit
             .withUnretained(self)
             .sink { (owner: StoreDetailViewModel, _) in
-                owner.pushEditStore()
+                owner.pushEditStore(fromScreen: owner.output.screenName)
             }
             .store(in: &cancellables)
     }
@@ -450,7 +459,11 @@ final class StoreDetailViewModel: BaseViewModel {
         viewModel.output.didTapMapDetail
             .subscribe(input.didTapMapDetail)
             .store(in: &cancellables)
-        
+
+        viewModel.output.didTapContributors
+            .subscribe(input.didTapContributors)
+            .store(in: &cancellables)
+
         output.isFavorited
             .subscribe(viewModel.input.isFavorited)
             .store(in: &cancellables)
@@ -635,14 +648,26 @@ extension StoreDetailViewModel {
     private func presentMapDetail() {
         guard let storeDetailData = state.storeDetailData,
               let location = storeDetailData.overview.location else { return }
-        
+
         let config = MapDetailViewModel.Config(
             location: location,
             storeName: storeDetailData.overview.storeName
         )
         let viewModel = MapDetailViewModel(config: config)
-        
+
         output.route.send(.presentMapDetail(viewModel))
+    }
+
+    private func presentContributors() {
+        guard let store = state.userStoreDetailResponse?.store else { return }
+        
+        let config = ContributorsViewModel.Config(storeId: store.storeId) { [weak self] in
+            guard let self else { return }
+            
+            pushEditStore(fromScreen: .storeContributors)
+        }
+        let viewModel = ContributorsViewModel(config: config)
+        output.route.send(.presentContributors(viewModel))
     }
     
     private func presentUploadPhoto() {
@@ -747,16 +772,27 @@ extension StoreDetailViewModel {
         output.route.send(.presentVisit(viewModel))
     }
     
-    private func pushEditStore() {
-        guard let store = state.userStoreDetailResponse?.store else { return }
-        
-        let config = EditStoreViewModelConfig(store: store)
+    private func pushEditStore(fromScreen: ScreenName) {
+        guard let userStoreDetail = state.userStoreDetailResponse else { return }
+        let store = userStoreDetail.store
+
+        let imageCount: Int? = if fromScreen == .storeContributors {
+            userStoreDetail.images.cursor.totalCount
+        } else {
+            nil
+        }
+
+        let config = EditStoreViewModelConfig(
+            store: store,
+            fromScreen: fromScreen,
+            imageCount: imageCount
+        )
         let viewModel = Environment.writeInterface.createEditStoreViewModel(config: config)
         
         viewModel.onEdit
             .main
             .sink { [weak self] store in
-                self?.updateStore(store)
+                self?.input.load.send(())
             }
             .store(in: &cancellables)
         

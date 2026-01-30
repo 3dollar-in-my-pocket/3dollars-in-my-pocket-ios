@@ -1,7 +1,6 @@
 // 가게 상세 화면
 "store_detail.bottom_sticky.save" = "즐겨찾기";
 "store_detail.bottom_sticky.visit" = "방문 인증하기";
-"store_detail.overview.repoter_name_format" = "%@님 제보";
 "store_detail.overview.success_visit_count_format" = "최근 한달 %d명이 방문 성공";
 "store_detail.menu.share" = "공유하기";
 "store_detail.menu.navigation" = "길 안내";
@@ -54,6 +53,8 @@
 "store_detail.tooltip.bookmark" = "북마크를 하고 사장님의 메세지를 받아보세요!";
 "store_detail.verified" = "가슴속 3천원이 직접 확인한 공식 인증가게입니다!";
 "store_detail.verified.bold" = "공식 인증";
+"store_detail.overview.contributor.creator" = "님이 가게 정보를 등록했어요";
+"store_detail.overview.contributor.format" = "님 외 %d명이 가게 정보를 수정했어요";
 
 // 가게 신고 모달
 "report_modal.title" = "삭제 요청 하시는 이유가 궁금해요!";
@@ -138,3 +139,8 @@
 "boss_store_feedback.title" = "리뷰 남기기";
 "boss_store_feedback.send_feedback" = "리뷰 남기기 완료!";
 "boss_store_feedback.finish_toast" = "소중한 리뷰가 사장님께 전달되었습니다!";
+
+// 가게 기여자 화면
+"contributors.header.title" = "함께 만든 가게 정보";
+"contributors.title" = "정보 기여자 목록";
+"contributors.edit_button" = "나도 수정하기";

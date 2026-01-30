@@ -23,4 +23,5 @@ public enum ParameterName: String {
     case buildingName = "building_name"
     case medalId = "medal_id"
     case storeType = "store_type"
+    case referer
 }

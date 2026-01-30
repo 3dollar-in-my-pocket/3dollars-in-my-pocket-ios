@@ -247,7 +247,8 @@ final class MainTabBarViewController: UITabBarController {
         guard let focusedPosition = homeViewController.focusedPosition else { return }
         let config = WriteAddressViewModelConfig(
             address: homeViewController.currentAddress,
-            location: focusedPosition
+            location: focusedPosition,
+            shouldSkipCheckingAround: false
         )
         
         let writeViewController = writeInterface.getWriteAddressViewController(config: config) { [weak self] storeId in

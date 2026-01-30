@@ -5,10 +5,16 @@ import CoreLocation
 public struct WriteAddressViewModelConfig {
     public let address: String
     public let location: CLLocation
+    public let shouldSkipCheckingAround: Bool
     
-    public init(address: String, location: CLLocation) {
+    public init(
+        address: String,
+        location: CLLocation,
+        shouldSkipCheckingAround: Bool
+    ) {
         self.address = address
         self.location = location
+        self.shouldSkipCheckingAround = shouldSkipCheckingAround
     }
 }
 

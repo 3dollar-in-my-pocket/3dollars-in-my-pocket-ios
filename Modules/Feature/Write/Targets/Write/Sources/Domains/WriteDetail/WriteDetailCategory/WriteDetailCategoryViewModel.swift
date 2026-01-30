@@ -102,12 +102,17 @@ final class WriteDetailCategoryViewModel: BaseViewModel {
     }
     
     private func updateDatasource() {
+        var sections: [WriteDetailCategorySection] = []
         let groupedCategories = Dictionary(grouping: state.categories) { $0.classification }
-        let sections = groupedCategories.map { (classification: StoreCategoryClassificationResponse, value: [StoreFoodCategoryResponse]) in
-            return WriteDetailCategorySection(
-                classification: classification,
-                items: value.map { .category($0, isSelected: false) }
-            )
+        
+        for categoryType in groupedCategories.keys.sorted(by: <) {
+            if let categories = groupedCategories[categoryType] {
+                let categorySection = WriteDetailCategorySection(
+                    classification: categoryType,
+                    items: categories.map { .category($0, isSelected: false) }
+                )
+                sections.append(categorySection)
+            }
         }
         
         output.datasource.send(sections)

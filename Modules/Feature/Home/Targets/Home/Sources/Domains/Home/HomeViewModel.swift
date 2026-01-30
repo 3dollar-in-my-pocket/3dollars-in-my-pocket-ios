@@ -562,7 +562,7 @@ final class HomeViewModel: BaseViewModel {
                 latitude: location.coordinate.latitude,
                 longitude: location.coordinate.longitude
             )
-            
+
             switch result {
             case .success(let address):
                 state.address = address
@@ -571,6 +571,7 @@ final class HomeViewModel: BaseViewModel {
                 output.route.send(.showErrorAlert(error))
             }
         }
+        .store(in: taskBag)
     }
     
     private func presentCategoryFilter() {

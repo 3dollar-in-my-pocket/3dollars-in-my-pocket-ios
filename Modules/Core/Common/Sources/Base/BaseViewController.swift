@@ -12,6 +12,10 @@ open class BaseViewController: UIViewController {
     open var screenName: ScreenName {
         return .empty
     }
+    open var extraParameters: [ParameterName: Any]? {
+        return nil
+    }
+    
     open var navigationBar: UINavigationBar?
     
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -145,7 +149,11 @@ open class BaseViewController: UIViewController {
     
     open func sendPageView() {
         if screenName != .empty {
-            LogManager.shared.sendPageView(screen: screenName, type: Self.self)
+            LogManager.shared.sendPageView(
+                screen: screenName,
+                type: Self.self,
+                extraParameters: extraParameters
+            )
         }
     }
 }

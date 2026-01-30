@@ -30,7 +30,8 @@ public struct BossStoreDetailData {
             isBossStore: true,
             snsUrl: response.store.snsUrl,
             introduction: response.store.introduction,
-            hasIssuableCoupon: response.tags.hasIssuableCoupon
+            hasIssuableCoupon: response.tags.hasIssuableCoupon,
+            uniqueContributorCount: nil
         )
         self.info = BossStoreInfo(
             updatedAt: response.store.updatedAt,

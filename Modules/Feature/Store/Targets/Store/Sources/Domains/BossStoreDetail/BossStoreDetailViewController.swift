@@ -298,7 +298,7 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         case .verifiedBanner:
             return BossStoreVerifiedBannerCell.Layout.size(width: width)
         case .overview:
-            return CGSize(width: width, height: StoreDetailOverviewCell.Layout.height)
+            return CGSize(width: width, height: StoreDetailOverviewCell.Layout.bossStoreDetailheight)
         case .info(let viewModel):
             return CGSize(width: width, height: BossStoreInfoCell.Layout.calculateHeight(width: width, info: viewModel.output.info))
         case .menuList(let viewModel):
@@ -340,6 +340,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         switch dataSource.sectionIdentifier(section: section)?.type {
         case .verifiedBanner:
             return UIEdgeInsets(top: 0, left: 20, bottom: 16, right: 20)
+        case .review:
+            return UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
         default:
             return UIEdgeInsets(top: 0, left: 20, bottom: 32, right: 20)
         }
