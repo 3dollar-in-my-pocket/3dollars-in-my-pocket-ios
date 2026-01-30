@@ -143,7 +143,7 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
             shouldSkipCheckingAround: true
         )
         let viewModel = WriteAddressViewModel(config: config)
-        
+
         viewModel.output.finishWriteAddress
             .sink { [weak self] (address: String, location: CLLocation) in
                 self?.didUpdatedAddress(address: address, location: location)

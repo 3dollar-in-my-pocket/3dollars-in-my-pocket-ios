@@ -161,7 +161,7 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
                 mapLongitude: location.coordinate.longitude
             )
             let result = await dependency.storeRepository.fetchAroundStores(input: input)
-            
+
             switch result {
             case .success(let response):
                 if response.contents.isEmpty {
@@ -169,7 +169,6 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
                 } else {
                     presentConfirmPopup(stores: response.contents, address: output.address.value)
                 }
-                
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))
             }
