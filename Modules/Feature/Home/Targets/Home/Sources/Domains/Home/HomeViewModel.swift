@@ -47,7 +47,7 @@ extension HomeViewModel {
         let address = PassthroughSubject<String, Never>()
         let filterDatasource = CurrentValueSubject<[HomeFilterCollectionView.CellType], Never>([
             .category(nil),
-            .recentActivity(false),
+            .recentActivity(true),
             .sortingFilter(.distanceAsc),
             .onlyBoss(false)
         ])
@@ -67,7 +67,7 @@ extension HomeViewModel {
         var homeCardComponents: [any HomeCardComponent] = []
         var sortType: StoreSortType = .distanceAsc
         var isOnlyBossStore = false
-        var isOnlyRecentActivity = false
+        var isOnlyRecentActivity = true
         var mapMaxDistance: Double?
         var newCameraPosition: CLLocation?
         var newMapMaxDistance: Double?
