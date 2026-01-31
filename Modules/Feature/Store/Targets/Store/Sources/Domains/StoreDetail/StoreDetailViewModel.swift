@@ -452,7 +452,7 @@ final class StoreDetailViewModel: BaseViewModel {
             )
         )
         
-        sections.append(.dividerSection())
+        sections.append(.dividerSection(bottomMargin: 0))
         
         if let bridgeCarouselViewModel = createBridgeCarouselViewModel() {
             sections.append(.bridgeCarouselSection(bridgeCarouselViewModel))

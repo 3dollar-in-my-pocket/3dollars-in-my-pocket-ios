@@ -43,7 +43,7 @@ extension StoreBridgeCarouselCell {
 
 final class StoreBridgeCarouselView: BaseView {
     private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 20)
+        $0.font = Fonts.bold.font(size: 16)
         $0.textColor = Colors.gray100.color
         $0.numberOfLines = 0
     }
@@ -82,7 +82,7 @@ final class StoreBridgeCarouselView: BaseView {
         self.viewModel = viewModel
         
         if let headerTitle = viewModel.headerTitle {
-            titleLabel.setSDText(headerTitle)
+            titleLabel.setSDText(headerTitle, customFont: Fonts.bold.font(size: 16))
         }
         
         updateCollectionViewHeight(items: viewModel.output.items)
