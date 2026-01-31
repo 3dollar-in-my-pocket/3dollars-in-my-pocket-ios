@@ -88,7 +88,7 @@ extension StoreDetailSection {
         let header = StoreDetailSectionHeader(
             title: Strings.StoreDetail.Review.Header.title,
             description: nil,
-            value: "\(totalCount)개",
+            value: " \(totalCount)개",
             buttonTitle: Strings.StoreDetail.Review.Header.button
         )
         var sectionItems: [StoreDetailSectionItem] = [.rating(rating)]

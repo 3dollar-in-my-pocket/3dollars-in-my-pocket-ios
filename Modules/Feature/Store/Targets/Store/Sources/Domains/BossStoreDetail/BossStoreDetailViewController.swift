@@ -357,7 +357,7 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         case .divider:
             return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         default:
-            return UIEdgeInsets(top: 16, left: 20, bottom: 0, right: 20)
+            return UIEdgeInsets(top: 16, left: 20, bottom: 16, right: 20)
         }
     }
     
