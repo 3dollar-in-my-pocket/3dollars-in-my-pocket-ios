@@ -15,6 +15,10 @@ public extension String {
         return  string
     }
     
+    var numberOfLines: Int {
+        return self.components(separatedBy: "\n").count
+    }
+    
     var isNotEmpty: Bool {
         return !isEmpty
     }

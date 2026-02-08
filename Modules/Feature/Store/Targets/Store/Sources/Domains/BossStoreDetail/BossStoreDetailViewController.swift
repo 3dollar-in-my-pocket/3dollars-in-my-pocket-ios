@@ -303,7 +303,7 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         case .verifiedBanner:
             return BossStoreVerifiedBannerCell.Layout.size(width: width)
         case .overview:
-            return CGSize(width: width, height: StoreDetailOverviewCell.Layout.height)
+            return CGSize(width: width, height: StoreDetailOverviewCell.Layout.bossStoreDetailheight)
         case .info(let viewModel):
             return CGSize(width: width, height: BossStoreInfoCell.Layout.calculateHeight(width: width, info: viewModel.output.info))
         case .menuList(let viewModel):
@@ -328,8 +328,8 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: 76)
         case .coupon(let viewModel):
             return BossStoreCouponCell.Layout.size(width: containerWidth, viewModel: viewModel)
-        case .bridgeCarousel(let viewModel):
-            let height = StoreBridgeCarouselCell.Layout.height(for: viewModel.output.items)
+        case .bridgeCarousel:
+            let height = StoreBridgeCarouselCell.Layout.height()
             return CGSize(width: UIScreen.main.bounds.width, height: height)
         case .divider(let configuration):
             return CGSize(width: UIScreen.main.bounds.width, height: configuration.height)

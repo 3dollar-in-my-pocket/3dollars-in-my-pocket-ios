@@ -47,6 +47,24 @@ public final class StoreInterfaceImpl: StoreInterface {
             .store(in: &viewModel.cancellables)
         return CouponTabViewController(viewModel: viewModel)
     }
+
+    public func getUploadPhotoViewController(config: UploadPhotoConfig) -> UIViewController {
+        let vmConfig = UploadPhotoViewModel.Config(
+            uploadType: .storeImage(storeId: config.storeId),
+            shouldDeferUpload: config.shouldDeferUpload
+        )
+        let viewModel = UploadPhotoViewModel(config: vmConfig)
+
+        if let onSelectedPhotos = config.onSelectedPhotos {
+            viewModel.output.onSelectedPhotos
+                .sink { photoDatas in
+                    onSelectedPhotos(photoDatas)
+                }
+                .store(in: &viewModel.cancellables)
+        }
+
+        return UploadPhotoViewController.instance(viewModel: viewModel)
+    }
 }
 
 public extension StoreInterfaceImpl {

@@ -811,6 +811,31 @@ extension BossStoreDetailViewModel {
         ))
     }
     
+    private func sendStoreDetailBridgePageViewLog() {
+        guard let relatedStoresSection = state.storeCardComponents.first(where: { component in
+            component is StoreRelatedStoresSectionResponse
+        }) as? StoreRelatedStoresSectionResponse else {
+            return
+        }
+        
+        var extraParameters: [ParameterName: Any] = [:]
+        if let experimentReference = relatedStoresSection.reference.first {
+            extraParameters = [
+                .storeId: storeId,
+                .storeType: StoreType.bossStore.rawValue,
+                .experimentType: experimentReference.type,
+                .experimentKey: experimentReference.experimentKey,
+                .experimentVariant: experimentReference.variant
+            ]
+        }
+        
+        logManager.sendPageView(
+            screen: .storeDetailBridge,
+            type: StoreDetailViewController.self,
+            extraParameters: extraParameters
+        )
+    }
+    
     private func fetchStoreScreen() {
         Task { [weak self] in
             guard let self else { return }
@@ -826,7 +851,8 @@ extension BossStoreDetailViewModel {
             case .success(let response):
                 state.storeCardComponents = response.sections
                 reloadDataSource()
-            case .failure(let error):
+                sendStoreDetailBridgePageViewLog()
+            case .failure:
                 break
             }
         }

@@ -10,5 +10,5 @@ final class MockDeepLinkHandler: DeepLinkHandlerProtocol {
     
     func handleReservedDeepLink() { }
     
-    func handleLinkResponse(_ linkResponse: LinkResponse) { }
+    func handleLinkResponse(_ linkResponse: SDLink) { }
 }

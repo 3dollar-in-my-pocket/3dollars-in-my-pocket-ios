@@ -1,10 +1,10 @@
 import UIKit
 
 public class PaddingLabel: UILabel {
-    let topInset: CGFloat
-    let bottomInset: CGFloat
-    let leftInset: CGFloat
-    let rightInset: CGFloat
+    public var topInset: CGFloat
+    public var bottomInset: CGFloat
+    public var leftInset: CGFloat
+    public var rightInset: CGFloat
     
     public init(topInset: CGFloat, bottomInset: CGFloat, leftInset: CGFloat, rightInset: CGFloat) {
         self.topInset = topInset
@@ -39,5 +39,30 @@ public class PaddingLabel: UILabel {
             // ensures this works within stack views if multi-line
             preferredMaxLayoutWidth = bounds.width - (leftInset + rightInset)
         }
+    }
+
+    public func setPadding(
+        top: CGFloat? = nil,
+        bottom: CGFloat? = nil,
+        left: CGFloat? = nil,
+        right: CGFloat? = nil
+    ) {
+        if let top {
+            topInset = top
+        }
+        
+        if let bottom  {
+            bottomInset = bottom
+        }
+        
+        if let left {
+            leftInset = left
+        }
+        
+        if let right {
+            rightInset = right
+        }
+        invalidateIntrinsicContentSize()
+        setNeedsDisplay()
     }
 }

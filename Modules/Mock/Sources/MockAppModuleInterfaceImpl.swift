@@ -60,6 +60,8 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     
     public func sendPageView(screenName: String, type: AnyObject.Type) { }
     
+    public func sendPageView(screenName: String, type: any AnyObject.Type, parameters: [String : Any]?) { }
+    
     public func sendEvent(name: String, parameters: [String : Any]?) { }
     
     public func presentMailComposeViewController(nickname: String, targetViewController: UIViewController) { 
@@ -70,14 +72,12 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
         return EmptyViewController()
     }
     
-    public func showFrontAdmob(adType: Model.AdType, viewController: UIViewController) { 
+    public func showFrontAdmob(adType: Model.AdType, viewController: UIViewController) {
         ToastManager.shared.show(message: "showFrontAdmob")
     }
     
-    public func createBookmarkURL(folderId: String, name: String) async -> String {
-        return await withCheckedContinuation { continuation in
-            return continuation.resume(returning: "")
-        }
+    public func createBookmarkURL(folderId: String) -> String {
+        return ""
     }
 }
 

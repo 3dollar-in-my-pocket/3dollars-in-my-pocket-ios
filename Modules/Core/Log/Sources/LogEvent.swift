@@ -145,6 +145,7 @@ public enum LogObjectId: String {
     case category
     case banner
     case menu
+    case photo
     case advertisement
     case upload
     case boss

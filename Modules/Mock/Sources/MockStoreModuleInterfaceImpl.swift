@@ -14,12 +14,16 @@ public final class MockStoreModuleInterfaceImpl: StoreInterface {
         return EmptyViewController()
     }
     
-    public func getVisitViewController(storeId: Int, visitableStore: VisitableStore, onSuccessVisit: @escaping (() -> Void)) -> UIViewController {
-        return EmptyViewController()
+    public func getVisitViewController(storeId: Int, onSuccessVisit: @escaping () -> Void) -> UIViewController {
+        EmptyViewController()
     }
     
     public func getMapDetailViewController(location: LocationResponse, storeName: String) -> UIViewController {
         return EmptyViewController()
+    }
+    
+    public func getCouponListViewController(onReload: @escaping () -> Void) -> UIViewController {
+        EmptyViewController()
     }
 }
 
