@@ -90,17 +90,26 @@ final class StoreBridgeCarouselViewModel: BaseViewModel {
     }
     
     private func sendClickLog(_ card: StoreImagePreviewCard) {
-        if let storeRef = card.refs.first(where: { $0.type == "store" }),
+        if let storeRef = card.refs.first(where: { $0.type.lowercased() == "store" }),
            let storeId = Int(storeRef.storeId) {
+            
+            var extraParameters: [ParameterName : Any] = [:]
+            if let experimentReference {
+                extraParameters = [
+                    .experimentType: experimentReference.type,
+                    .experimentKey: experimentReference.experimentKey,
+                    .experimentVariant: experimentReference.variant
+                ]
+            }
+            
+            extraParameters.updateValue(storeId, forKey: .storeId)
+            extraParameters.updateValue(storeRef.storeType, forKey: .storeType)
             
             logManager.sendEvent(event: ClickEvent(
                 screen: screenName,
                 objectType: .card,
                 objectId: .recommendStore,
-                extraParameters: [
-                    .storeId: storeId,
-                    .storeType: storeRef.storeType
-                ]
+                extraParameters: extraParameters
             ))
         }
     }
