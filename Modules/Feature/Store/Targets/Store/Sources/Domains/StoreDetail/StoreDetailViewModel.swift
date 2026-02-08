@@ -412,7 +412,8 @@ final class StoreDetailViewModel: BaseViewModel {
             case .success(let response):
                 state.storeCardComponents = response.sections
                 refreshSections()
-            case .failure(let error):
+                sendStoreDetailBridgePageViewLog()
+            case .failure:
                 break
             }
         }
@@ -916,6 +917,31 @@ extension StoreDetailViewModel {
                 .storeId: "\(state.storeId)",
                 .storeType: state.storeType.rawValue
             ]
+        )
+    }
+    
+    private func sendStoreDetailBridgePageViewLog() {
+        guard let relatedStoresSection = state.storeCardComponents.first(where: { component in
+            component is StoreRelatedStoresSectionResponse
+        }) as? StoreRelatedStoresSectionResponse else {
+            return
+        }
+        
+        var extraParameters: [ParameterName: Any] = [:]
+        if let experimentReference = relatedStoresSection.reference.first {
+            extraParameters = [
+                .storeId: state.storeId,
+                .storeType: StoreType.userStore.rawValue,
+                .experimentType: experimentReference.type,
+                .experimentKey: experimentReference.experimentKey,
+                .experimentVariant: experimentReference.variant
+            ]
+        }
+        
+        logManager.sendPageView(
+            screen: .storeDetailBridge,
+            type: StoreDetailViewController.self,
+            extraParameters: extraParameters
         )
     }
 }

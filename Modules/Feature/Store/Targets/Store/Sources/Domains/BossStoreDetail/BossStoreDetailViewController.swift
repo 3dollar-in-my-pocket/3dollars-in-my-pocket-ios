@@ -328,7 +328,7 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: 76)
         case .coupon(let viewModel):
             return BossStoreCouponCell.Layout.size(width: containerWidth, viewModel: viewModel)
-        case .bridgeCarousel(let viewModel):
+        case .bridgeCarousel:
             let height = StoreBridgeCarouselCell.Layout.height()
             return CGSize(width: UIScreen.main.bounds.width, height: height)
         case .divider(let configuration):
