@@ -34,8 +34,7 @@ extension StoreBridgeCarouselCell {
     enum Layout {
         static func height(for items: [StoreImagePreviewCard]) -> CGFloat {
             guard let _ = items.first else { return 200 }
-            let maxImageHeight = items.map { $0.image.style.height }.max() ?? 68
-            let collectionViewHeight = maxImageHeight + StoreBridgeCarouselItemCell.Layout.spacing + StoreBridgeCarouselItemCell.Layout.bottomInfoHeight
+            let collectionViewHeight = StoreBridgeCarouselItemCell.Layout.size().height
             return 52 + collectionViewHeight + 16 // top margin + title height + spacing + collection view + bottom margin
         }
     }
@@ -135,6 +134,6 @@ extension StoreBridgeCarouselView: UICollectionViewDataSource, UICollectionViewD
         guard let item = viewModel?.output.items[safe: indexPath.item] else {
             return CGSize(width: 80, height: 136)
         }
-        return StoreBridgeCarouselItemCell.Layout.size(for: item.image.style)
+        return StoreBridgeCarouselItemCell.Layout.size()
     }
 }
