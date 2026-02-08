@@ -1,3 +1,4 @@
+import UIKit
 import Foundation
 import Combine
 import CoreLocation
@@ -6,6 +7,7 @@ import Common
 import Model
 import Networking
 import WriteInterface
+import StoreInterface
 import Log
 
 extension EditStoreViewModel {
@@ -13,13 +15,16 @@ extension EditStoreViewModel {
         let didTapAddress = PassthroughSubject<Void, Never>()
         let didTapStoreInfo = PassthroughSubject<Void, Never>()
         let didTapMenu = PassthroughSubject<Void, Never>()
+        let didTapPhoto = PassthroughSubject<Void, Never>()
         let didTapEdit = PassthroughSubject<Void, Never>()
     }
     
     struct Output {
         let screenName: ScreenName = .editStore
+        let fromScreen: ScreenName?
         let store: CurrentValueSubject<UserStoreResponse, Never>
         let menuCount: CurrentValueSubject<Int, Never>
+        let imageCount: CurrentValueSubject<Int?, Never>
         let changedCount = CurrentValueSubject<Int?, Never>(nil)
         let route = PassthroughSubject<Route, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
@@ -31,6 +36,7 @@ extension EditStoreViewModel {
         case pushEditAddress(WriteAddressViewModel)
         case editStoreInfo(EditStoreInfoViewModel)
         case editMenu(WriteDetailMenuViewModel)
+        case editPhoto(UIViewController)
         case pop
         case toast(String)
         case showErrorAlert(Error)
@@ -38,13 +44,16 @@ extension EditStoreViewModel {
     
     struct Dependency {
         let storeRepository: StoreRepository
+        let storeInterface: StoreInterface
         let logManager: LogManagerProtocol
 
         init(
             storeRepository: StoreRepository = StoreRepositoryImpl(),
+            storeInterface: StoreInterface = Environment.storeInterface,
             logManager: LogManagerProtocol = LogManager.shared
         ) {
             self.storeRepository = storeRepository
+            self.storeInterface = storeInterface
             self.logManager = logManager
         }
     }
@@ -53,6 +62,8 @@ extension EditStoreViewModel {
         var originalStore: UserStoreResponse
         var currentStore: UserStoreResponse
         var editedMenus: [UserStoreMenuRequestV3]?
+        var uploadedPhotos: [Data]?
+        var initialImageCount: Int?
     }
 }
 
@@ -74,13 +85,16 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
         self.dependency = dependency
         self.state = State(
             originalStore: config.store,
-            currentStore: config.store
+            currentStore: config.store,
+            initialImageCount: config.imageCount
         )
         self.output = Output(
+            fromScreen: config.fromScreen,
             store: .init(config.store),
-            menuCount: .init(config.store.menusV3.count)
+            menuCount: .init(config.store.menusV3.count),
+            imageCount: .init(config.imageCount)
         )
-        
+
         super.init()
     }
     
@@ -106,6 +120,13 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
             }
             .store(in: &cancellables)
 
+        input.didTapPhoto
+            .sink { [weak self] in
+                self?.sendClickPhotoLog()
+                self?.pushUploadPhoto()
+            }
+            .store(in: &cancellables)
+
         input.didTapEdit
             .sink { [weak self] in
                 self?.sendClickOkLog()
@@ -118,10 +139,11 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
         guard let address = state.currentStore.address.fullAddress else { return }
         let config = WriteAddressViewModelConfig(
             address: address,
-            location: state.currentStore.location.toCLLocation
+            location: state.currentStore.location.toCLLocation,
+            shouldSkipCheckingAround: true
         )
         let viewModel = WriteAddressViewModel(config: config)
-        
+
         viewModel.output.finishWriteAddress
             .sink { [weak self] (address: String, location: CLLocation) in
                 self?.didUpdatedAddress(address: address, location: location)
@@ -176,25 +198,64 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
             .store(in: &viewModel.cancellables)
         output.route.send(.editMenu(viewModel))
     }
-    
+
+    private func pushUploadPhoto() {
+        let config = UploadPhotoConfig(
+            storeId: state.originalStore.storeId,
+            shouldDeferUpload: true,
+            onSelectedPhotos: { [weak self] photoDatas in
+                guard let self else { return }
+                state.uploadedPhotos = photoDatas
+                updateImageCount()
+                updateEditedCount()
+            }
+        )
+
+        let viewController = dependency.storeInterface.getUploadPhotoViewController(config: config)
+        output.route.send(.editPhoto(viewController))
+    }
+
+    private func updateImageCount() {
+        guard let initialCount = state.initialImageCount else { return }
+        let uploadedCount = state.uploadedPhotos?.count ?? 0
+        output.imageCount.send(initialCount + uploadedCount)
+    }
+
     private func editStore() {
         output.isLoading.send(true)
-        
+
         Task {
             let storeId = state.originalStore.storeId
             var input = UserStorePatchRequestV3(response: state.currentStore)
-            
+
             if let editedMenu = state.editedMenus {
                 input.menus = editedMenu
             }
-            
+
             do {
-                let response = try await dependency.storeRepository.patchStore(
+                async let storePatchResult = dependency.storeRepository.patchStore(
                     storeId: String(storeId),
                     input: input
-                ).get()
-                
-                output.onEdit.send(response)
+                )
+
+                async let photoUploadResult: Result<[StoreImageResponse], Error>? = {
+                    if let photos = state.uploadedPhotos, !photos.isEmpty {
+                        return await dependency.storeRepository.uploadPhotos(
+                            storeId: storeId,
+                            photos: photos
+                        )
+                    } else {
+                        return nil
+                    }
+                }()
+
+                let patchResponse = try await storePatchResult.get()
+
+                if let uploadResult = await photoUploadResult {
+                    _ = try uploadResult.get()
+                }
+
+                output.onEdit.send(patchResponse)
                 output.isLoading.send(false)
                 output.route.send(.toast("가게 정보가 수정되었습니다"))
                 output.route.send(.dismiss)
@@ -246,6 +307,10 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
             editedCount += 1
         }
 
+        if let uploadedPhotos = state.uploadedPhotos, !uploadedPhotos.isEmpty {
+            editedCount += 1
+        }
+
         output.changedCount.send(editedCount)
     }
 }
@@ -276,11 +341,26 @@ extension EditStoreViewModel {
         ))
     }
 
-    private func sendClickOkLog() {
+    private func sendClickPhotoLog() {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
             objectType: .button,
-            objectId: .ok
+            objectId: .photo
+        ))
+    }
+
+    private func sendClickOkLog() {
+        let extraParameters: [ParameterName: Any]? = if let fromScreen = output.fromScreen {
+            [.referer: fromScreen.rawValue]
+        } else {
+            nil
+        }
+        
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .ok,
+            extraParameters: extraParameters
         ))
     }
 }

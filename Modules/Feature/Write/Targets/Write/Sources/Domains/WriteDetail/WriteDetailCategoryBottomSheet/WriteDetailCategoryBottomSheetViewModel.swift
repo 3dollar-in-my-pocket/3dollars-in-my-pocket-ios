@@ -98,15 +98,20 @@ final class WriteDetailCategoryBottomSheetViewModel: BaseViewModel {
         categories: [StoreFoodCategoryResponse],
         selectedCategories: [StoreFoodCategoryResponse]
     ) -> [WriteDetailCategorySection] {
+        var sections: [WriteDetailCategorySection] = []
         let groupedCategories = Dictionary(grouping: categories) { $0.classification }
-        let sections = groupedCategories.map { (classification: StoreCategoryClassificationResponse, categories: [StoreFoodCategoryResponse]) in
-            return WriteDetailCategorySection(
-                classification: classification,
-                items: categories.map { category in
-                    let isSelected = selectedCategories.contains(where: { $0.categoryId == category.categoryId })
-                    return .category(category, isSelected: isSelected)
-                }
-            )
+        
+        for categoryType in groupedCategories.keys.sorted(by: <) {
+            if let categories = groupedCategories[categoryType] {
+                let categorySection = WriteDetailCategorySection(
+                    classification: categoryType,
+                    items: categories.map { category in
+                        let isSelected = selectedCategories.contains(where: { $0.categoryId == category.categoryId })
+                        return .category(category, isSelected: isSelected)
+                    }
+                )
+                sections.append(categorySection)
+            }
         }
         
         return sections

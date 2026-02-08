@@ -21,6 +21,7 @@ enum StoreApi {
     case patchStore(storeId: String, input: UserStorePatchRequestV3)
     case fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType])
     case fetchStoreScreen(FetchStoreScreenInput)
+    case fetchStoreContributorHistories(storeId: Int, cursor: String?)
 }
 
 extension StoreApi: RequestType {
@@ -66,6 +67,12 @@ extension StoreApi: RequestType {
             return ["itemTypes": itemTypes.map { $0.rawValue }]
         case .fetchStoreScreen:
             return nil
+        case .fetchStoreContributorHistories(_, let cursor):
+            if let cursor {
+                return ["cursor": cursor] 
+            } else {
+                return nil
+            }
         }
     }
     
@@ -104,6 +111,8 @@ extension StoreApi: RequestType {
         case .fetchDisplayItems:
             return .get
         case .fetchStoreScreen:
+            return .get
+        case .fetchStoreContributorHistories:
             return .get
         }
     }
@@ -150,6 +159,8 @@ extension StoreApi: RequestType {
                 "X-Device-Latitude": String(input.latitude),
                 "X-Device-Longitude": String(input.longitude)
             ])
+        case .fetchStoreContributorHistories:
+            return .json
         }
     }
     
@@ -189,6 +200,8 @@ extension StoreApi: RequestType {
             return "/api/v1/store/\(storeId)/display-items"
         case .fetchStoreScreen(let input):
             return "/api/v1/screen/store/\(input.storeId)"
+        case .fetchStoreContributorHistories(let storeId, _):
+            return "/api/v1/screen/store/\(storeId)/contributors/section/histories"
         }
     }
 }

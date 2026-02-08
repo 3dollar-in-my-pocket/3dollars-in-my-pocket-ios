@@ -303,7 +303,7 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         case .verifiedBanner:
             return BossStoreVerifiedBannerCell.Layout.size(width: width)
         case .overview:
-            return CGSize(width: width, height: StoreDetailOverviewCell.Layout.height)
+            return CGSize(width: width, height: StoreDetailOverviewCell.Layout.bossStoreDetailheight)
         case .info(let viewModel):
             return CGSize(width: width, height: BossStoreInfoCell.Layout.calculateHeight(width: width, info: viewModel.output.info))
         case .menuList(let viewModel):

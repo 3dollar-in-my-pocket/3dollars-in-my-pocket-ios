@@ -7,14 +7,13 @@ import Kingfisher
 public extension UIButton {
     func setSDButton(_ sdButton: SDButton) {
         setTitleColor(UIColor(hex: sdButton.text.fontColor), for: .normal)
-
+        
         if sdButton.text.isHtml {
             let attributedText = ZHTMLParserBuilder.initWithDefault().build().render(sdButton.text.text)
             setAttributedTitle(attributedText, for: .normal)
         } else {
             setTitle(sdButton.text.text, for: .normal)
         }
-
 
         if let image = sdButton.image,
            let imageUrl = URL(string: image.url),

@@ -26,4 +26,5 @@ public enum ParameterName: String {
     case experimentType = "experiment_type"
     case experimentKey = "experiment_key"
     case experimentVariant = "experiment_variant"
+    case referer
 }
