@@ -12,7 +12,7 @@ final class StoreBridgeCarouselItemCell: BaseCollectionViewCell {
         static let spacing: CGFloat = 8 // 이미지와 하단 정보 사이 고정 spacing
         
         // 서버 응답 이미지 크기에 따른 동적 사이즈 계산
-        static func size(for imageStyle: SDImageStyle) -> CGSize {
+        static func size() -> CGSize {
             let totalHeight = imageContainerSize + spacing + bottomInfoHeight
             return CGSize(width: imageContainerSize, height: totalHeight)
         }
