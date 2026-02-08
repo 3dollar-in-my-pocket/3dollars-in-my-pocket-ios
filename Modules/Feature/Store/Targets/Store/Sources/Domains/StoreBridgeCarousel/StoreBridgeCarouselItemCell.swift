@@ -7,29 +7,32 @@ import Model
 
 final class StoreBridgeCarouselItemCell: BaseCollectionViewCell {
     enum Layout {
+        static let imageContainerSize: CGFloat = 128
         static let bottomInfoHeight: CGFloat = 56 // 하단 정보들 고정 높이
         static let spacing: CGFloat = 8 // 이미지와 하단 정보 사이 고정 spacing
         
         // 서버 응답 이미지 크기에 따른 동적 사이즈 계산
         static func size(for imageStyle: SDImageStyle) -> CGSize {
-            let imageWidth = imageStyle.width
-            let imageHeight = imageStyle.height
-            let totalHeight = imageHeight + spacing + bottomInfoHeight
-            return CGSize(width: imageWidth, height: totalHeight)
+            let totalHeight = imageContainerSize + spacing + bottomInfoHeight
+            return CGSize(width: imageContainerSize, height: totalHeight)
         }
     }
     
-    private let imageView = UIImageView().then {
-        $0.layer.cornerRadius = 16
-        $0.clipsToBounds = true
-        $0.contentMode = .scaleAspectFill
+    private let imageContainerView = UIView().then {
+        $0.backgroundColor = Colors.gray0.color
         $0.layer.borderColor = Colors.gray10.color.cgColor
         $0.layer.borderWidth = 1
-        $0.backgroundColor = Colors.gray0.color
+        $0.layer.cornerRadius = 16
+        $0.clipsToBounds = true
+    }
+    
+    private let imageView = UIImageView().then {
+        $0.clipsToBounds = true
+        $0.contentMode = .scaleAspectFill
     }
     
     private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
+        $0.font = Fonts.semiBold.font(size: 14)
         $0.textColor = Colors.gray100.color
         $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
@@ -82,12 +85,14 @@ final class StoreBridgeCarouselItemCell: BaseCollectionViewCell {
     }
     
     private let distanceLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 12)
+        $0.font = Fonts.medium.font(size: 12)
         $0.textColor = Colors.mainPink.color
     }
     
     override func setup() {
-        contentView.addSubViews([imageView, titleLabel, metricsStackView, distanceStackView])
+        contentView.addSubViews([imageContainerView, titleLabel, metricsStackView, distanceStackView])
+        
+        imageContainerView.addSubview(imageView)
         
         ratingStackView.addArrangedSubview(starIcon)
         ratingStackView.addArrangedSubview(ratingLabel)
@@ -103,14 +108,20 @@ final class StoreBridgeCarouselItemCell: BaseCollectionViewCell {
     }
     
     override func bindConstraints() {
+        imageContainerView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(Layout.imageContainerSize)
+            $0.width.equalTo(Layout.imageContainerSize)
+        }
+        
         imageView.snp.makeConstraints {
-            $0.top.centerX.equalToSuperview()
+            $0.center.equalToSuperview()
             $0.height.equalTo(40)
             $0.width.equalTo(40)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.top.equalTo(imageView.snp.bottom).offset(Layout.spacing)
+            $0.top.equalTo(imageContainerView.snp.bottom).offset(Layout.spacing)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(20)
         }
