@@ -37,9 +37,17 @@ public extension UILabel {
             var parser = ZHTMLParserBuilder.initWithDefault()
             
             if let customFont {
-                let rootStyle = MarkupStyle(font: MarkupStyleFont(font))
+                let rootStyle = MarkupStyle(font: MarkupStyleFont(customFont))
                 parser = parser.set(rootStyle: rootStyle)
             }
+            
+            let boldStyle = MarkupStyle(
+                font: MarkupStyleFont(
+                    weight: .style(.bold),
+                    bold: true
+                )
+            )
+            parser = parser.set(B_HTMLTagName(), withCustomStyle: boldStyle)
             
             attributedText = parser.build().render(sdText.text)
         } else {
