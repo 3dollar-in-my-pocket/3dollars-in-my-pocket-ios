@@ -399,8 +399,7 @@ final class StoreDetailViewController: BaseViewController {
                 
             case .bridgeCarousel:
                 let bridgeCarouselViewModel = sectionIdentifier.items.first?.bridgeCarouselViewModel
-                let items = bridgeCarouselViewModel?.output.items ?? []
-                let height = StoreBridgeCarouselCell.Layout.height(for: items)
+                let height = StoreBridgeCarouselCell.Layout.height()
                 
                 let item = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),

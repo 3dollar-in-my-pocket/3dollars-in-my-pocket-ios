@@ -32,8 +32,7 @@ final class StoreBridgeCarouselCell: BaseCollectionViewCell {
 
 extension StoreBridgeCarouselCell {
     enum Layout {
-        static func height(for items: [StoreImagePreviewCard]) -> CGFloat {
-            guard let _ = items.first else { return 200 }
+        static func height() -> CGFloat {
             let collectionViewHeight = StoreBridgeCarouselItemCell.Layout.size().height
             return 52 + collectionViewHeight + 16 // top margin + title height + spacing + collection view + bottom margin
         }
@@ -96,12 +95,9 @@ final class StoreBridgeCarouselView: BaseView {
     private func updateCollectionViewHeight(items: [StoreImagePreviewCard]) {
         guard !items.isEmpty else { return }
         
-        let maxImageHeight = items.map { $0.image.style.height }.max() ?? 68
-        let collectionViewHeight = maxImageHeight + StoreBridgeCarouselItemCell.Layout.spacing + StoreBridgeCarouselItemCell.Layout.bottomInfoHeight
-        
         collectionViewHeightConstraint?.deactivate()
         collectionView.snp.makeConstraints {
-            collectionViewHeightConstraint = $0.height.equalTo(collectionViewHeight).constraint
+            collectionViewHeightConstraint = $0.height.equalTo(StoreBridgeCarouselItemCell.Layout.size().height).constraint
         }
     }
 
