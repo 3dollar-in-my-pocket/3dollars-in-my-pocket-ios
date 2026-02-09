@@ -161,12 +161,12 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
             AnalyticsParameterScreenName: screenName,
             AnalyticsParameterScreenClass: NSStringFromClass(type.self)
         ]
-        
+
         if let parameters {
             pageViewParameters.merge(parameters) { (_, new) in new }
         }
-        
-        Analytics.logEvent(AnalyticsEventScreenView, parameters: parameters)
+
+        Analytics.logEvent(AnalyticsEventScreenView, parameters: pageViewParameters)
     }
     
     func sendEvent(name: String, parameters: [String : Any]?) {
