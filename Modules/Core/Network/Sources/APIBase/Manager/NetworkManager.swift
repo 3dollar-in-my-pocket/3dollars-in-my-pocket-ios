@@ -3,21 +3,28 @@ import Combine
 
 import DependencyInjection
 import Model
+import Common
+import AppInterface
 
 final public class NetworkManager {
     public static let shared = NetworkManager()
     
     private let requestProvider: RequestProvider
     private let responseProvider: ResponseProvider
+    private var appInterface: AppModuleInterface
 
     public init() {
+        self.appInterface = Environment.appModuleInterface
         self.requestProvider = RequestProvider()
         self.responseProvider = ResponseProvider()
     }
 
     public func request<T: Decodable>(requestType: RequestType) async -> Result<T, Error> {
         do {
-            let response = try await requestProvider.request(requestType: requestType)
+            let response = try await requestProvider.request(
+                requestType: requestType,
+                experimentContext: appInterface.remoteConfigService.experimentContext
+            )
             let data: T = try responseProvider.processResponse(data: response.0, response: response.1)
             
             return .success(data)
@@ -26,6 +33,7 @@ final public class NetworkManager {
         }
     }
 }
+
 
 extension Result {
     func publish() -> AnyPublisher<Success, Failure> {

@@ -53,6 +53,32 @@ public struct ClickEvent: LogEventType {
     }
 }
 
+public struct ImpressionEvent: LogEventType {
+    public var screen: ScreenName
+    public var name: EventName = .impression
+    public var extraParameters: [ParameterName : Any]?
+
+    public init(
+        screen: ScreenName,
+        objectType: LogObjectType,
+        objectId: LogObjectId,
+        extraParameters: [ParameterName : Any]? = nil
+    ) {
+        self.screen = screen
+
+        var clickObject: [ParameterName: Any] = [
+            .objectId: objectId,
+            .objectType: objectType
+        ]
+
+        if let extraParameters {
+            clickObject.merge(extraParameters) { _, new in new }
+        }
+
+        self.extraParameters = clickObject
+    }
+}
+
 public struct CustomEvent: LogEventType {
     public var screen: ScreenName
     public var name: EventName
@@ -78,6 +104,7 @@ public enum LogObjectType: String {
     case medal
     case review
     case menu
+    case carousel
 }
 
 public enum LogObjectId: String {
@@ -142,4 +169,6 @@ public enum LogObjectId: String {
     case visitedStore = "visited_store"
     case favoritedStore = "favorited_store"
     case review
+    case recommendStore
+    case recommend
 }

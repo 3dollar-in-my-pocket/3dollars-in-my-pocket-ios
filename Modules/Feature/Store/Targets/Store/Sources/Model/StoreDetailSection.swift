@@ -7,10 +7,12 @@ struct StoreDetailSection: Hashable {
         case verifiedBanner
         case overview
         case visit
+        case divider(id: String)
         case info
         case photo(totalCount: Int)
         case review(totalCount: Int)
         case bossStoreAppIntro
+        case bridgeCarousel
     }
     
     var type: StoreDetailSectionType
@@ -86,7 +88,7 @@ extension StoreDetailSection {
         let header = StoreDetailSectionHeader(
             title: Strings.StoreDetail.Review.Header.title,
             description: nil,
-            value: "\(totalCount)개",
+            value: " \(totalCount)개",
             buttonTitle: Strings.StoreDetail.Review.Header.button
         )
         var sectionItems: [StoreDetailSectionItem] = [.rating(rating)]
@@ -116,5 +118,16 @@ extension StoreDetailSection {
     
     static func bossStoreAppIntroSection(_ viewModel: StoreDetailBossStoreAppIntroCellViewModel) -> StoreDetailSection {
         return .init(type: .bossStoreAppIntro, items: [.bossStoreAppIntro(viewModel)])
+    }
+    
+    static func bridgeCarouselSection(_ viewModel: StoreBridgeCarouselViewModel) -> StoreDetailSection {
+        return .init(type: .bridgeCarousel, items: [.bridgeCarousel(viewModel)])
+    }
+    
+    static func dividerSection(_ configuration: StoreDetailDividerCell.Configuration = .init(), bottomMargin: CGFloat = 16) -> StoreDetailSection {
+        return .init(type: .divider(id: UUID().uuidString), items: [
+            .divider(configuration),
+            .divider(.init(height: bottomMargin, color: .clear))
+        ])
     }
 }

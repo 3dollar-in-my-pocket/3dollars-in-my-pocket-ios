@@ -71,6 +71,7 @@ final class StoreDetailViewModel: BaseViewModel {
         var storeDetailData: StoreDetailData?
         var showAllMenu: Bool = false
         var userStoreDetailResponse: UserStoreDetailResponse?
+        var storeCardComponents: [any StoreCardComponent] = []
     }
     
     enum Route {
@@ -88,6 +89,7 @@ final class StoreDetailViewModel: BaseViewModel {
         case presentVisit(VisitViewModel)
         case navigateAppleMap(LocationResponse)
         case pushWebView(WebViewType)
+        case pushStoreDetail(storeId: Int)
         case presentContributors(ContributorsViewModel)
     }
     
@@ -127,6 +129,7 @@ final class StoreDetailViewModel: BaseViewModel {
             .sink { (owner: StoreDetailViewModel, _: Void) in
                 owner.fetchStoreDetail()
                 owner.fetchDisplayItems()
+                owner.fetchStoreScreen()
             }
             .store(in: &cancellables)
         
@@ -403,6 +406,28 @@ final class StoreDetailViewModel: BaseViewModel {
         }
     }
     
+    private func fetchStoreScreen() {
+        Task { [weak self] in
+            guard let self else { return }
+            
+            let input = FetchStoreScreenInput(
+                storeId: "\(state.storeId)",
+                latitude: preference.userCurrentLocation.coordinate.latitude,
+                longitude: preference.userCurrentLocation.coordinate.longitude
+            )
+            let storeScreenInput = await storeService.fetchStoreScreen(input: input)
+            
+            switch storeScreenInput {
+            case .success(let response):
+                state.storeCardComponents = response.sections
+                refreshSections()
+                sendStoreDetailBridgePageViewLog()
+            case .failure:
+                break
+            }
+        }
+    }
+    
     private func refreshSections() {
         guard let storeDetailData = state.storeDetailData else { return }
 
@@ -411,23 +436,49 @@ final class StoreDetailViewModel: BaseViewModel {
         if storeDetailData.isVerifiedStore {
             sections.append(.verifiedBannerSection())
         }
-
+        
         sections.append(contentsOf: [
             .overviewSection(createOverviewCellViewModel(storeDetailData.overview)),
-            .visitSection(storeDetailData.visit),
+            .dividerSection(),
+            .visitSection(storeDetailData.visit)
+        ])
+        
+        sections.append(.dividerSection())
+        
+        sections.append(
             .infoSection(
                 updatedAt: DateUtils.toString(dateString: storeDetailData.info.lastUpdated, format: "yyyy.MM.dd 업데이트"),
                 info: storeDetailData.info,
                 menuCellViewModel: createMenuCellViewModel(storeDetailData)
-            ),
-            .photoSection(totalCount: storeDetailData.totalPhotoCount, photos: storeDetailData.photos),
+            )
+        )
+        
+        sections.append(.dividerSection())
+        
+        sections.append(
+            .photoSection(
+                totalCount: storeDetailData.totalPhotoCount,
+                photos: storeDetailData.photos
+            )
+        )
+        
+        sections.append(.dividerSection(bottomMargin: 0))
+        
+        if let bridgeCarouselViewModel = createBridgeCarouselViewModel() {
+            sections.append(.bridgeCarouselSection(bridgeCarouselViewModel))
+            sections.append(.dividerSection())
+        }
+        
+        sections.append(
             .reviewSection(
                 totalCount: storeDetailData.totalReviewCount,
                 rating: storeDetailData.rating,
                 reviews: storeDetailData.reviews
-            ),
-            .bossStoreAppIntroSection(createBossStoreAppIntroCellViewModel())
-        ])
+            )
+        )
+        
+
+        sections.append(.bossStoreAppIntroSection(createBossStoreAppIntroCellViewModel()))
 
         output.sections.send(sections)
     }
@@ -495,6 +546,32 @@ final class StoreDetailViewModel: BaseViewModel {
             }
             .subscribe(output.route)
             .store(in: &viewModel.cancellables)
+        
+        return viewModel
+    }
+    
+    private func createBridgeCarouselViewModel() -> StoreBridgeCarouselViewModel? {
+        // Find StoreRelatedStoresSectionResponse from storeCardComponents
+        guard let relatedStoresSection = state.storeCardComponents.first(where: { component in
+            component is StoreRelatedStoresSectionResponse
+        }) as? StoreRelatedStoresSectionResponse else {
+            return nil
+        }
+        
+        let viewModel = StoreBridgeCarouselViewModel(
+            data: relatedStoresSection, 
+            screenName: .storeDetail
+        )
+        
+        // Bind carousel route to detail route
+        viewModel.output.route
+            .sink { [weak self] route in
+                switch route {
+                case .pushStoreDetail(let storeId):
+                    self?.output.route.send(.pushStoreDetail(storeId: storeId))
+                }
+            }
+            .store(in: &cancellables)
         
         return viewModel
     }
@@ -876,6 +953,31 @@ extension StoreDetailViewModel {
                 .storeId: "\(state.storeId)",
                 .storeType: state.storeType.rawValue
             ]
+        )
+    }
+    
+    private func sendStoreDetailBridgePageViewLog() {
+        guard let relatedStoresSection = state.storeCardComponents.first(where: { component in
+            component is StoreRelatedStoresSectionResponse
+        }) as? StoreRelatedStoresSectionResponse else {
+            return
+        }
+        
+        var extraParameters: [ParameterName: Any] = [:]
+        if let experimentReference = relatedStoresSection.reference.first {
+            extraParameters = [
+                .storeId: state.storeId,
+                .storeType: StoreType.userStore.rawValue,
+                .experimentType: experimentReference.type,
+                .experimentKey: experimentReference.experimentKey,
+                .experimentVariant: experimentReference.variant
+            ]
+        }
+        
+        logManager.sendPageView(
+            screen: .storeDetailBridge,
+            type: StoreDetailViewController.self,
+            extraParameters: extraParameters
         )
     }
 }

@@ -17,7 +17,13 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
         
         if let navigationViewController = rootViewController as? UINavigationController {
-            return navigationViewController.topViewController is MainTabBarViewController
+            if navigationViewController.topViewController is MainTabBarViewController {
+                return true
+            } else if navigationViewController.topViewController is BaseViewController {
+                return true
+            } else {
+                return false
+            }
         } else {
             return false
         }
@@ -49,6 +55,9 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             handle(urlString)
         case .web:
             let urlString = "\(Bundle.deeplinkScheme)://browser?url=\(linkResponse.link)"
+            handle(urlString)
+        case .store:
+            let urlString = "\(Bundle.deeplinkScheme):/\(linkResponse.link)"
             handle(urlString)
         case .unknown:
             return

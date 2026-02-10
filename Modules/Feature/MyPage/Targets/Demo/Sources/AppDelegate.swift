@@ -1,4 +1,5 @@
 import UIKit
+import Firebase
 
 import Common
 import MyPage
@@ -12,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
         initializeDI()
+        
         return true
     }
       
