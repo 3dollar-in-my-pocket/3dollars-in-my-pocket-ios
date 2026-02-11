@@ -6,6 +6,7 @@ enum StoreDetailSectionItem: Hashable {
     case verifiedBanner
     case overview(StoreDetailOverviewCellViewModel)
     case visit(StoreDetailVisit)
+    case divider(StoreDetailDividerCell.Configuration)
     case info(StoreDetailInfo)
     case menu(StoreDetailMenuCellViewModel)
     case photo(StoreDetailPhoto)
@@ -15,6 +16,7 @@ enum StoreDetailSectionItem: Hashable {
     case reviewEmpty
     case filteredReview(StoreDetailReview)
     case bossStoreAppIntro(StoreDetailBossStoreAppIntroCellViewModel)
+    case bridgeCarousel(StoreBridgeCarouselViewModel)
 }
 
 extension StoreDetailSectionItem {
@@ -28,6 +30,14 @@ extension StoreDetailSectionItem {
     
     var menuCellViewModel: StoreDetailMenuCellViewModel? {
         if case .menu(let viewModel) = self {
+            return viewModel
+        } else {
+            return nil
+        }
+    }
+    
+    var bridgeCarouselViewModel: StoreBridgeCarouselViewModel? {
+        if case .bridgeCarousel(let viewModel) = self {
             return viewModel
         } else {
             return nil

@@ -5,6 +5,7 @@ import Common
 final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetailSection, StoreDetailSectionItem> {
     typealias Snapshot = NSDiffableDataSourceSnapshot<StoreDetailSection, StoreDetailSectionItem>
     private let viewModel: StoreDetailViewModel
+    private let exposureTracker: ComponentExposureTracker
     
     init(
         collectionView: UICollectionView,
@@ -12,10 +13,12 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
         rootViewController: UIViewController
     ) {
         self.viewModel = viewModel
+        self.exposureTracker =  ComponentExposureTracker(collectionView: collectionView)
         collectionView.register([
             StoreDetailVerifiedBannerCell.self,
             StoreDetailOverviewCell.self,
             StoreDetailVisitCell.self,
+            StoreDetailDividerCell.self,
             StoreDetailInfoCell.self,
             StoreDetailMenuCell.self,
             StoreDetailPhotoCell.self,
@@ -24,7 +27,8 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             StoreDetailReviewMoreCell.self,
             StoreDetailReviewEmptyCell.self,
             StoreDetailFilteredReviewCell.self,
-            StoreDetailBossStoreAppIntroCell.self
+            StoreDetailBossStoreAppIntroCell.self,
+            StoreBridgeCarouselCell.self
         ])
         
         collectionView.register(
@@ -52,6 +56,11 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             case .visit(let data):
                 let cell: StoreDetailVisitCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(data)
+                return cell
+                
+            case .divider(let configuration):
+                let cell: StoreDetailDividerCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.configure(with: configuration)
                 return cell
                 
             case .info(let data):
@@ -117,6 +126,11 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
                 let cell: StoreDetailBossStoreAppIntroCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(viewModel: viewModel)
                 return cell
+                
+            case .bridgeCarousel(let viewModel):
+                let cell: StoreBridgeCarouselCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(viewModel)
+                return cell
             }
         }
         
@@ -124,7 +138,7 @@ final class StoreDetailDatasource: UICollectionViewDiffableDataSource<StoreDetai
             guard let section = self?.sectionIdentifier(section: indexPath.section) else { return nil }
             
             switch section.type {
-            case .verifiedBanner, .overview, .bossStoreAppIntro:
+            case .verifiedBanner, .overview, .bossStoreAppIntro, .bridgeCarousel, .divider:
                 return nil
                 
             case .visit:
@@ -226,5 +240,24 @@ extension StoreDetailDatasource: UICollectionViewDelegate {
               case .photo(_) = section.type else { return }
         
         viewModel.input.didTapPhoto.send(indexPath.item)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        exposureTracker.handleWillDisplay(cell: cell, at: indexPath, exposureHandler: { [weak self] cell, indexPath in
+            self?.checkCarouselExposureIfNeeded(at: indexPath)
+        })
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        exposureTracker.handleScroll(exposureHandler: { [weak self] cell, indexPath in
+            self?.checkCarouselExposureIfNeeded(at: indexPath)
+        })
+    }
+    
+    private func checkCarouselExposureIfNeeded(at indexPath: IndexPath) {
+        if let item = itemIdentifier(for: indexPath),
+           case .bridgeCarousel(let viewModel) = item {
+            viewModel.input.didAppear.send()
+        }
     }
 }

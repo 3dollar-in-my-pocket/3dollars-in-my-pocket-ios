@@ -9,9 +9,17 @@ struct BossStoreDetailSection: Hashable {
         case feedbacks
         case coupons(BossStoreDetailCouponHeaderViewModel)
         case post
+        case bridgeCarousel
         case review(BossStoreDetailReviewHeaderViewModel)
+        case divider(id: String)
     }
 
     var type: SectionType
     var items: [BossStoreDetailSectionItem]
+}
+
+extension BossStoreDetailSection {
+    static func dividerSection(_ configuration: StoreDetailDividerCell.Configuration = .init()) -> BossStoreDetailSection {
+        return .init(type: .divider(id: UUID().uuidString), items: [.divider(configuration)])
+    }
 }

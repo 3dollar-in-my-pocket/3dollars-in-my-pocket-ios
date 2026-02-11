@@ -147,6 +147,8 @@ final class StoreDetailViewController: BaseViewController {
                     owner.navigateAppleMap(location: location)
                 case .pushWebView(let webViewType):
                     owner.pushWebView(webViewType: webViewType)
+                case .pushStoreDetail(let storeId):
+                    owner.pushStoreDetail(storeId: storeId)
                 case .presentContributors(let viewModel):
                     owner.presentContributors(viewModel: viewModel)
                 }
@@ -232,7 +234,7 @@ final class StoreDetailViewController: BaseViewController {
                     subitems: [item]
                 )
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 20, bottom: 32, trailing: 20)
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 16, trailing: 20)
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
@@ -243,6 +245,42 @@ final class StoreDetailViewController: BaseViewController {
                 )]
 
                 return section
+                
+            case .divider:
+                let items = sectionIdentifier.items.map { sectionItem -> NSCollectionLayoutItem in
+                    let itemHeight: CGFloat
+                    if case .divider(let configuration) = sectionItem {
+                        itemHeight = configuration.height
+                    } else {
+                        itemHeight = StoreDetailDividerCell.Layout.defaultHeight
+                    }
+                    
+                    return NSCollectionLayoutItem(layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(itemHeight)
+                    ))
+                }
+                
+                let totalHeight = sectionIdentifier.items.reduce(0) { total, sectionItem in
+                    if case .divider(let configuration) = sectionItem {
+                        return total + configuration.height
+                    } else {
+                        return total + StoreDetailDividerCell.Layout.defaultHeight
+                    }
+                }
+                
+                let group = NSCollectionLayoutGroup.vertical(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(totalHeight)
+                    ),
+                    subitems: items
+                )
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                
+                return section
+                
 
             case .info:
                 let infoItemHeight = StoreDetailInfoCell.Layout.height
@@ -269,7 +307,7 @@ final class StoreDetailViewController: BaseViewController {
                     subitems: [infoItem, menuItem]
                 )
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 20, bottom: 32, trailing: 20)
+                section.contentInsets = .init(top: 0, leading: 20, bottom: 16, trailing: 20)
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
@@ -333,7 +371,7 @@ final class StoreDetailViewController: BaseViewController {
                 )
                 let section = NSCollectionLayoutSection(group: group)
                 section.interGroupSpacing = 8
-                section.contentInsets = .init(top: 12, leading: 20, bottom: 32, trailing: 20)
+                section.contentInsets = .init(top: 12, leading: 20, bottom: 16, trailing: 20)
                 section.boundarySupplementaryItems = [.init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
@@ -359,7 +397,27 @@ final class StoreDetailViewController: BaseViewController {
                     subitems: [item]
                 )
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 0, bottom: 32, trailing: 0)
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 16, trailing: 0)
+                return section
+                
+            case .bridgeCarousel:
+                let bridgeCarouselViewModel = sectionIdentifier.items.first?.bridgeCarouselViewModel
+                let height = StoreBridgeCarouselCell.Layout.height()
+                
+                let item = NSCollectionLayoutItem(layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(height)
+                ))
+                
+                let group = NSCollectionLayoutGroup.vertical(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(height)
+                    ),
+                    subitems: [item]
+                )
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
                 return section
             }
         }
@@ -508,6 +566,12 @@ final class StoreDetailViewController: BaseViewController {
     private func pushWebView(webViewType: WebViewType) {
         let viewController = Environment.appModuleInterface.createWebViewController(webviewType: webViewType)
 
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func pushStoreDetail(storeId: Int) {
+        let viewController = StoreDetailViewController.instance(storeId: storeId)
+        
         navigationController?.pushViewController(viewController, animated: true)
     }
 }

@@ -36,6 +36,8 @@ final class BossStoreDetailViewController: BaseViewController {
     }
 
     private let viewModel: BossStoreDetailViewModel
+    
+    private lazy var exposureTracker = ComponentExposureTracker(collectionView: collectionView)
 
     public static func instance(storeId: String, shouldPushReviewList: Bool) -> BossStoreDetailViewController {
         return BossStoreDetailViewController(storeId: storeId, shouldPushReviewList: shouldPushReviewList)
@@ -193,6 +195,9 @@ final class BossStoreDetailViewController: BaseViewController {
                 case .pushCouponList(let viewModel):
                     let viewController = CouponTabViewController(viewModel: viewModel)
                     owner.navigationController?.pushViewController(viewController, animated: true)
+                case .pushStoreDetail(let storeId):
+                    let viewController = StoreDetailViewController.instance(storeId: storeId)
+                    owner.navigationController?.pushViewController(viewController, animated: true)
                 }
             }
             .store(in: &cancellables)
@@ -323,6 +328,11 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: 76)
         case .coupon(let viewModel):
             return BossStoreCouponCell.Layout.size(width: containerWidth, viewModel: viewModel)
+        case .bridgeCarousel:
+            let height = StoreBridgeCarouselCell.Layout.height()
+            return CGSize(width: UIScreen.main.bounds.width, height: height)
+        case .divider(let configuration):
+            return CGSize(width: UIScreen.main.bounds.width, height: configuration.height)
         default:
             return .zero
         }
@@ -340,10 +350,33 @@ extension BossStoreDetailViewController: UICollectionViewDelegateFlowLayout {
         switch dataSource.sectionIdentifier(section: section)?.type {
         case .verifiedBanner:
             return UIEdgeInsets(top: 0, left: 20, bottom: 16, right: 20)
+        case .bridgeCarousel:
+            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         case .review:
-            return UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
+            return UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
+        case .divider:
+            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         default:
-            return UIEdgeInsets(top: 0, left: 20, bottom: 32, right: 20)
+            return UIEdgeInsets(top: 16, left: 20, bottom: 16, right: 20)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        exposureTracker.handleWillDisplay(cell: cell, at: indexPath, exposureHandler: { [weak self] cell, indexPath in
+            self?.checkCarouselExposureIfNeeded(at: indexPath)
+        })
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        exposureTracker.handleScroll(exposureHandler: { [weak self] cell, indexPath in
+            self?.checkCarouselExposureIfNeeded(at: indexPath)
+        })
+    }
+    
+    private func checkCarouselExposureIfNeeded(at indexPath: IndexPath) {
+        if let item = dataSource.itemIdentifier(for: indexPath),
+           case .bridgeCarousel(let viewModel) = item {
+            viewModel.input.didAppear.send()
         }
     }
 }

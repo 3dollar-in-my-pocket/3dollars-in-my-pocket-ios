@@ -11,10 +11,12 @@ enum BossStoreDetailSectionItem: Hashable {
     case coupon(BossStoreCouponViewModel)
     case workday([BossStoreAppearanceDay])
     case post(BossStorePostCellViewModel)
+    case bridgeCarousel(StoreBridgeCarouselViewModel)
     case reviewRating(rating: Double)
     case reviewEmpty
     case reviewMore(totalCount: Int)
     case review(ReviewListCellViewModel)
     case reviewFeedbackSummary(BossStoreDetailReviewFeedbackSummaryCellViewModel)
     case filteredReview(StoreDetailReview)
+    case divider(StoreDetailDividerCell.Configuration)
 }

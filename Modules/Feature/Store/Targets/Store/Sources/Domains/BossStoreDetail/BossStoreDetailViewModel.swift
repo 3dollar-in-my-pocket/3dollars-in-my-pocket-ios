@@ -61,6 +61,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
     struct State {
         var storeDetailData: BossStoreDetailData?
         var shouldPushReviewList: Bool
+        var storeCardComponents: [any StoreCardComponent] = []
     }
 
     enum Route {
@@ -78,6 +79,7 @@ final class BossStoreDetailViewModel: BaseViewModel {
         case pushFeedbackList(BossStoreFeedbackListViewModel)
         case presentUseCoupon(BossStoreCouponBottomSheetViewModel)
         case pushCouponList(CouponTabViewModel)
+        case pushStoreDetail(storeId: Int)
     }
 
     let input = Input()
@@ -115,30 +117,9 @@ final class BossStoreDetailViewModel: BaseViewModel {
         input.firstLoad
             .merge(with: input.reload)
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, _ in
-                owner.output.showLoading.send(true)
-            })
-            .asyncMap { owner, input in
-                let input = FetchBossStoreDetailInput(
-                    storeId: owner.storeId,
-                    latitude: owner.preference.userCurrentLocation.coordinate.latitude,
-                    longitude: owner.preference.userCurrentLocation.coordinate.longitude
-                )
-
-                return await owner.storeService.fetchBossStoreDetail(input: input)
-            }
-            .withUnretained(self)
-            .sink { owner, result in
-                owner.output.showLoading.send(false)
-                switch result {
-                case .success(let response):
-                    owner.state.storeDetailData = BossStoreDetailData(response: response)
-                    owner.output.isHiddenClosedStoreButton.send(response.openStatus.status == .open)
-                    owner.output.isFavorited.send(response.favorite.isFavorite)
-                    owner.reloadDataSource()
-                case .failure(let error):
-                    owner.output.route.send(.showErrorAlert(error))
-                }
+            .sink { (owner: BossStoreDetailViewModel, _: Void) in
+                owner.fetchBossStoreDetail()
+                owner.fetchStoreScreen()
             }
             .store(in: &cancellables)
         
@@ -275,6 +256,8 @@ final class BossStoreDetailViewModel: BaseViewModel {
             sections.append(.init(type: .coupons(bindCouponHeaderViewModel()), items: couponItems))
         }
         
+        sections.append(.dividerSection())
+        
         var infoItems: [BossStoreDetailSectionItem] = [.info(bindInfoCellViewModel(storeDetailData.info))]
         if storeDetailData.store.menus.isEmpty {
             infoItems.append(.emptyMenu)
@@ -282,18 +265,27 @@ final class BossStoreDetailViewModel: BaseViewModel {
             infoItems.append(.menuList(bindMenuListCellViewModel(with: storeDetailData.menus)))
         }
         sections.append(.init(type: .info, items: infoItems))
+        sections.append(.dividerSection())
         
         if let post = storeDetailData.post,
            let totalPostCount = storeDetailData.totalPostCount {
             let cellViewModel = bindPostCellViewModel(store: storeDetailData.store, post: post, totalCount: totalPostCount)
             sections.append(.init(type: .post, items: [.post(cellViewModel)]))
+            sections.append(.dividerSection())
         }
         
         sections.append(contentsOf: [
             .init(type: .workday, items: [.workday(storeDetailData.workdays)])
         ])
+        sections.append(.dividerSection())
+        
+        if let bridgeCarouselViewModel = createBridgeCarouselViewModel() {
+            sections.append(.init(type: .bridgeCarousel, items: [.bridgeCarousel(bridgeCarouselViewModel)]))
+            sections.append(.dividerSection())
+        }
         
         if let reviewSection = createReviewSection() {
+            sections.append(.dividerSection(.init(height: 16, color: .clear)))
             sections.append(reviewSection)
         }
 
@@ -817,5 +809,104 @@ extension BossStoreDetailViewModel {
             objectType: .button,
             objectId: .zoomMap
         ))
+    }
+    
+    private func sendStoreDetailBridgePageViewLog() {
+        guard let relatedStoresSection = state.storeCardComponents.first(where: { component in
+            component is StoreRelatedStoresSectionResponse
+        }) as? StoreRelatedStoresSectionResponse else {
+            return
+        }
+        
+        var extraParameters: [ParameterName: Any] = [:]
+        if let experimentReference = relatedStoresSection.reference.first {
+            extraParameters = [
+                .storeId: storeId,
+                .storeType: StoreType.bossStore.rawValue,
+                .experimentType: experimentReference.type,
+                .experimentKey: experimentReference.experimentKey,
+                .experimentVariant: experimentReference.variant
+            ]
+        }
+        
+        logManager.sendPageView(
+            screen: .storeDetailBridge,
+            type: StoreDetailViewController.self,
+            extraParameters: extraParameters
+        )
+    }
+    
+    private func fetchStoreScreen() {
+        Task { [weak self] in
+            guard let self else { return }
+            
+            let input = FetchStoreScreenInput(
+                storeId: storeId,
+                latitude: preference.userCurrentLocation.coordinate.latitude,
+                longitude: preference.userCurrentLocation.coordinate.longitude
+            )
+            let storeScreenInput = await storeService.fetchStoreScreen(input: input)
+            
+            switch storeScreenInput {
+            case .success(let response):
+                state.storeCardComponents = response.sections
+                reloadDataSource()
+                sendStoreDetailBridgePageViewLog()
+            case .failure:
+                break
+            }
+        }
+    }
+    
+    private func fetchBossStoreDetail() {
+        Task { [weak self] in
+            guard let self else { return }
+            
+            output.showLoading.send(true)
+            
+            let input = FetchBossStoreDetailInput(
+                storeId: storeId,
+                latitude: preference.userCurrentLocation.coordinate.latitude,
+                longitude: preference.userCurrentLocation.coordinate.longitude
+            )
+            
+            let result = await storeService.fetchBossStoreDetail(input: input)
+            
+            output.showLoading.send(false)
+            
+            switch result {
+            case .success(let response):
+                state.storeDetailData = BossStoreDetailData(response: response)
+                output.isHiddenClosedStoreButton.send(response.openStatus.status == .open)
+                output.isFavorited.send(response.favorite.isFavorite)
+                reloadDataSource()
+            case .failure(let error):
+                output.route.send(.showErrorAlert(error))
+            }
+        }
+    }
+    
+    private func createBridgeCarouselViewModel() -> StoreBridgeCarouselViewModel? {
+        guard let relatedStoresSection = state.storeCardComponents.first(where: { component in
+            component is StoreRelatedStoresSectionResponse
+        }) as? StoreRelatedStoresSectionResponse else {
+            return nil
+        }
+        
+        let viewModel = StoreBridgeCarouselViewModel(
+            data: relatedStoresSection, 
+            screenName: .bossStoreDetail
+        )
+        
+        viewModel.output.route
+            .sink { [weak self] route in
+                switch route {
+                case .pushStoreDetail(let storeId):
+                    self?.output.route.send(.pushStoreDetail(storeId: storeId))
+                }
+            }
+            .store(in: &cancellables)
+        
+        return viewModel
     }
 }

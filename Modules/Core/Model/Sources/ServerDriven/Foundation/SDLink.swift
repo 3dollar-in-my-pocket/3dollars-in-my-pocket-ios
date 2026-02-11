@@ -8,6 +8,7 @@ public struct SDLink: Decodable, Equatable, Hashable {
 public enum SDLinkType: String, Decodable {
     case web = "WEB"
     case appScheme = "APP_SCHEME"
+    case store = "STORE"
     case unknown
     
     public init(from decoder: Decoder) throws {
