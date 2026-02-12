@@ -889,7 +889,7 @@ extension BossStoreDetailViewModel {
     private func createBridgeCarouselViewModel() -> StoreBridgeCarouselViewModel? {
         guard let relatedStoresSection = state.storeCardComponents.first(where: { component in
             component is StoreRelatedStoresSectionResponse
-        }) as? StoreRelatedStoresSectionResponse else {
+        }) as? StoreRelatedStoresSectionResponse, relatedStoresSection.cards.isNotEmpty else {
             return nil
         }
         
