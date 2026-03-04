@@ -12,13 +12,13 @@ public struct AlertUtils {
             controller.present(picker, animated: true)
         }
         let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        
+
         alert.addAction(libraryAction)
         alert.addAction(cameraAction)
         alert.addAction(cancelAction)
         controller.present(alert, animated: true)
     }
-    
+
     public static func showWithAction(
         viewController: UIViewController,
         title: String? = nil,
@@ -29,10 +29,10 @@ public struct AlertUtils {
         let okAction = UIAlertAction(title: okbuttonTitle, style: .default) { _ in
             onTapOk?()
         }
-        
+
         Self.show(viewController: viewController, title: title, message: message, [okAction])
     }
-    
+
     public static func showWithCancel(
         viewController: UIViewController,
         title: String? = nil,
@@ -44,10 +44,10 @@ public struct AlertUtils {
             onTapOk()
         }
         let cancelAction = UIAlertAction(title: "취소", style: .cancel)
-        
+
         show(viewController: viewController, title: title, message: message, [okAction, cancelAction])
     }
-    
+
     public static func show(
         viewController: UIViewController,
         title: String?,
@@ -55,11 +55,30 @@ public struct AlertUtils {
         _ actions: [UIAlertAction]
     ) {
         let controller = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
+
         for action in actions {
             controller.addAction(action)
         }
-        
+
         viewController.present(controller, animated: true)
+    }
+
+    public static func showWithTwoActions(
+        viewController: UIViewController,
+        title: String? = nil,
+        message: String? = nil,
+        leftButtonTitle: String,
+        rightButtonTitle: String,
+        onTapLeft: @escaping () -> Void,
+        onTapRight: @escaping () -> Void
+    ) {
+        let leftAction = UIAlertAction(title: leftButtonTitle, style: .cancel) { _ in
+            onTapLeft()
+        }
+        let rightAction = UIAlertAction(title: rightButtonTitle, style: .default) { _ in
+            onTapRight()
+        }
+
+        show(viewController: viewController, title: title, message: message, [leftAction, rightAction])
     }
 }

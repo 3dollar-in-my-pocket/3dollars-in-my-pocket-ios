@@ -1,4 +1,3 @@
-
 import Combine
 
 import Common
@@ -6,6 +5,7 @@ import Model
 import Networking
 import Log
 
+import FirebaseCrashlytics
 import FirebaseMessaging
 import AppInterface
 
@@ -13,14 +13,15 @@ final class SplashViewModel: BaseViewModel {
     struct Input {
         let load = PassthroughSubject<Void, Never>()
     }
-    
+
     struct Output {
         let screenName: ScreenName = .splash
         let advertisement = PassthroughSubject<AdvertisementResponse, Never>()
         let route = PassthroughSubject<Route, Never>()
         let showDefaultAlert = PassthroughSubject<Void, Never>()
+        let showRetryAlert = PassthroughSubject<SplashError, Never>()
     }
-    
+
     enum Route {
         case goToSignIn
         case goToMain
@@ -28,7 +29,35 @@ final class SplashViewModel: BaseViewModel {
         case showMaintenanceAlert(AlertContent)
         case showUpdateAlert(title: String, message: String, url: URL?)
     }
-    
+
+    enum SplashError {
+        case fetchAppStatusFailed(Error)
+        case validateTokenFailed(Error)
+        case refreshPushTokenFailed(Error)
+
+        var errorContext: String {
+            switch self {
+            case .fetchAppStatusFailed:
+                return "fetch_app_status"
+            case .validateTokenFailed:
+                return "validate_token"
+            case .refreshPushTokenFailed:
+                return "refresh_push_token"
+            }
+        }
+
+        var underlyingError: Error {
+            switch self {
+            case .fetchAppStatusFailed(let error):
+                return error
+            case .validateTokenFailed(let error):
+                return error
+            case .refreshPushTokenFailed(let error):
+                return error
+            }
+        }
+    }
+
     struct Dependency {
         var preference: Preference
         let userRepository: UserRepository
@@ -36,7 +65,7 @@ final class SplashViewModel: BaseViewModel {
         let advertisementRepository: AdvertisementRepository
         let appRepository: AppRepository
         let remoteConfigService: RemoteConfigProtocol
-        
+
         init(
             preference: Preference = Preference.shared,
             userRepository: UserRepository = UserRepositoryImpl(),
@@ -53,16 +82,16 @@ final class SplashViewModel: BaseViewModel {
             self.remoteConfigService = remoteConfigService
         }
     }
-    
+
     let input = Input()
     let output = Output()
     private var dependency: Dependency
-    
+
     init(dependency: Dependency = Dependency()) {
         self.dependency = dependency
         super.init()
     }
-    
+
     override func bind() {
         input.load
             .withUnretained(self)
@@ -74,18 +103,18 @@ final class SplashViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
     }
-    
+
     private func fetchRemoteConfig() {
         Task {
             await dependency.remoteConfigService.fetchRemoteConfig()
         }
     }
-    
+
     private func fetchAdvertisement() {
         Task {
             let input = FetchAdvertisementInput(position: .loading)
             let result = await dependency.advertisementRepository.fetchAdvertisements(input: input)
-            
+
             switch result {
             case .success(let response):
                 if let advertisement = response.advertisements.first {
@@ -98,17 +127,17 @@ final class SplashViewModel: BaseViewModel {
             }
         }
     }
-    
+
     private func loadSplashAdIfExisted() {
         guard let advertisement = dependency.preference.splashAd else { return }
-        
+
         output.advertisement.send(advertisement)
     }
-    
+
     private func fetchAppStatus() {
         Task { [weak self] in
             guard let self else { return }
-            
+
             let result = await dependency.appRepository.fetchAppStatus()
             switch result {
             case .success(let appStatus):
@@ -122,63 +151,65 @@ final class SplashViewModel: BaseViewModel {
                     validateToken()
                 }
             case .failure(let error):
-                handleValidationError(error: error)
+                handleValidationError(error: error, context: .fetchAppStatusFailed(error))
             }
         }.store(in: taskBag)
     }
-    
+
     private func validateToken() {
         let token = dependency.preference.authToken
-        
+
         if validateTokenFromLocal(token: token) {
             validateTokenFromServer()
         } else {
             output.route.send(.goToSignIn)
         }
     }
-    
+
     private func validateTokenFromLocal(token: String) -> Bool {
         return !token.isEmpty
     }
-    
+
     private func validateTokenFromServer() {
         Task { [weak self] in
             guard let self else { return }
             let result = await dependency.userRepository.fetchUser()
-            
+
             switch result {
             case .success(let user):
                 dependency.preference.userId = user.userId
                 refreshPushToken()
-                
+
             case .failure(let error):
-                handleValidationError(error: error)
+                handleValidationError(error: error, context: .validateTokenFailed(error))
             }
         }.store(in: taskBag)
     }
-    
+
     private func refreshPushToken() {
         Task { [weak self] in
             guard let self else { return }
-            
+
             if let pushToken = dependency.preference.fcmToken {
                 let input = UserDeviceUpsertRequest(pushPlatformType: "FCM", pushToken: pushToken)
                 let result = await dependency.deviceRepository.updateDevice(input: input)
-                
+
                 switch result {
-                case .success(_):
+                case .success:
                     output.route.send(.goToMain)
                 case .failure(let error):
-                    handleValidationError(error: error)
+                    handleValidationError(error: error, context: .refreshPushTokenFailed(error))
                 }
             } else {
                 output.route.send(.goToMain)
             }
         }
-        
+
     }
-    
-    private func handleValidationError(error: Error) {
+
+    private func handleValidationError(error: Error, context: SplashError) {
+        logErrorToCrashlytics(splashError: context)
+
         if let networkError = error as? NetworkError,
            case .errorContainer(let errorContainer) = networkError {
             switch NetworkResultCode(value: errorContainer.resultCode) {
@@ -192,10 +223,54 @@ final class SplashViewModel: BaseViewModel {
                 let alertContent = AlertContent(title: nil, message: Strings.httpErrorForbidden)
                 output.route.send(.goToSignInWithAlert(alertContent))
             case .unknown:
-                output.showDefaultAlert.send(())
+                output.showRetryAlert.send(context)
             }
         } else {
-            output.showDefaultAlert.send(())
+            output.showRetryAlert.send(context)
+        }
+    }
+
+    private func logErrorToCrashlytics(splashError: SplashError) {
+        let error = splashError.underlyingError
+        Crashlytics.crashlytics().record(error: error)
+
+        Crashlytics.crashlytics().setCustomValue(
+            splashError.errorContext,
+            forKey: "splash_error_context"
+        )
+
+        if let networkError = error as? NetworkError {
+            switch networkError {
+            case .errorContainer(let errorContainer):
+                Crashlytics.crashlytics().setCustomValue(
+                    errorContainer.resultCode,
+                    forKey: "network_result_code"
+                )
+                Crashlytics.crashlytics().setCustomValue(
+                    errorContainer.message,
+                    forKey: "network_error_message"
+                )
+            case .timeoutError:
+                Crashlytics.crashlytics().setCustomValue(
+                    "timeout",
+                    forKey: "network_error_type"
+                )
+            case .decodingError:
+                Crashlytics.crashlytics().setCustomValue(
+                    "decoding",
+                    forKey: "network_error_type"
+                )
+            case .unknown:
+                Crashlytics.crashlytics().setCustomValue(
+                    "unknown",
+                    forKey: "network_error_type"
+                )
+            case .noData, .message, .invalidURL:
+                Crashlytics.crashlytics().setCustomValue(
+                    "other",
+                    forKey: "network_error_type"
+                )
+            }
         }
     }
 }
