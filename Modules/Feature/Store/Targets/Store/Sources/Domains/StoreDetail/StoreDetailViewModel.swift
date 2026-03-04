@@ -554,7 +554,7 @@ final class StoreDetailViewModel: BaseViewModel {
         // Find StoreRelatedStoresSectionResponse from storeCardComponents
         guard let relatedStoresSection = state.storeCardComponents.first(where: { component in
             component is StoreRelatedStoresSectionResponse
-        }) as? StoreRelatedStoresSectionResponse else {
+        }) as? StoreRelatedStoresSectionResponse, relatedStoresSection.cards.isNotEmpty else {
             return nil
         }
         
