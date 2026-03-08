@@ -8,36 +8,36 @@ final class SplashViewController: BaseViewController {
     override var screenName: ScreenName {
         return viewModel.output.screenName
     }
-    
+
     private let icon: UIImageView = {
         let imageView = UIImageView()
         imageView.image = Assets.icSplash.image
         return imageView
     }()
-    
+
     private let adView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
-    
+
     private let viewModel = SplashViewModel()
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupUI()
         setupNotification()
     }
-    
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
+
     override func bindViewModelOutput() {
         viewModel.output.advertisement
             .main
@@ -46,7 +46,7 @@ final class SplashViewController: BaseViewController {
                 owner.setAdvertisement(advertisement)
             }
             .store(in: &cancellables)
-        
+
         viewModel.output.route
             .main
             .withUnretained(self)
@@ -54,25 +54,32 @@ final class SplashViewController: BaseViewController {
                 owner.handleRoute(route)
             }
             .store(in: &cancellables)
-        
+
         viewModel.output.showDefaultAlert
             .main
             .sink { [weak self] in
                 self?.showDefaultAlert()
             }
             .store(in: &cancellables)
+
+        viewModel.output.showRetryAlert
+            .main
+            .sink { [weak self] _ in
+                self?.showRetryAlert()
+            }
+            .store(in: &cancellables)
     }
-    
+
     private func setupUI() {
         view.backgroundColor = Colors.gray100.color
-        
+
         view.addSubview(icon)
         icon.snp.makeConstraints {
             $0.center.equalToSuperview()
             $0.width.equalTo(120)
             $0.height.equalTo(72)
         }
-        
+
         view.addSubview(adView)
         adView.snp.makeConstraints {
             $0.leading.equalToSuperview()
@@ -81,7 +88,7 @@ final class SplashViewController: BaseViewController {
             $0.height.equalTo(0)
         }
     }
-    
+
     private func setupNotification() {
         NotificationCenter.default.addObserver(
             self,
@@ -90,10 +97,10 @@ final class SplashViewController: BaseViewController {
             object: nil
         )
     }
-    
+
     private func setAdvertisement(_ advertisement: AdvertisementResponse) {
         guard let image = advertisement.image else { return }
-        
+
         if let width = image.width,
            let height = image.height {
             let ratio = Double(height) / Double(width)
@@ -105,10 +112,10 @@ final class SplashViewController: BaseViewController {
                 $0.height.equalTo(200)
             }
         }
-        
+
         adView.setImage(urlString: image.url)
     }
-    
+
     private func handleRoute(_ route: SplashViewModel.Route) {
         switch route {
         case .goToSignIn:
@@ -123,7 +130,7 @@ final class SplashViewController: BaseViewController {
             showUpdateAlert(title: title, message: message, url: url)
         }
     }
-    
+
     private func goToMain() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
@@ -131,7 +138,7 @@ final class SplashViewController: BaseViewController {
             }
         }
     }
-    
+
     private func goToSignIn() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
@@ -139,7 +146,7 @@ final class SplashViewController: BaseViewController {
             }
         }
     }
-    
+
     private func showGoToSignInAlert(alertContent: AlertContent) {
         AlertUtils.showWithAction(
             viewController: self,
@@ -149,7 +156,7 @@ final class SplashViewController: BaseViewController {
             self?.goToSignIn()
         }
     }
-    
+
     private func showMaintenanceAlert(alertContent: AlertContent) {
         AlertUtils.showWithAction(
             viewController: self,
@@ -163,7 +170,7 @@ final class SplashViewController: BaseViewController {
             )
         }
     }
-    
+
     private func showUpdateAlert(title: String, message: String, url: URL?) {
         AlertUtils.showWithAction(
             viewController: self,
@@ -175,11 +182,11 @@ final class SplashViewController: BaseViewController {
             }
         }
     }
-    
+
     @objc private func handleWillEnterForeground() {
         viewModel.input.load.send(())
     }
-    
+
     private func showDefaultAlert() {
         AlertUtils.showWithAction(
             viewController: self,
@@ -191,5 +198,24 @@ final class SplashViewController: BaseViewController {
                 for: nil
             )
         }
+    }
+
+    private func showRetryAlert() {
+        AlertUtils.showWithTwoActions(
+            viewController: self,
+            message: Strings.Splash.defaultError,
+            leftButtonTitle: "취소",
+            rightButtonTitle: "재시도",
+            onTapLeft: {
+                UIControl().sendAction(
+                    #selector(URLSessionTask.suspend),
+                    to: UIApplication.shared,
+                    for: nil
+                )
+            },
+            onTapRight: { [weak self] in
+                self?.viewModel.input.retryLoad.send(())
+            }
+        )
     }
 }
