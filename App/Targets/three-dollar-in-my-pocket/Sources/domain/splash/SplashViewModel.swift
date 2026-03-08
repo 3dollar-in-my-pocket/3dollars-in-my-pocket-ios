@@ -12,6 +12,11 @@ import AppInterface
 final class SplashViewModel: BaseViewModel {
     struct Input {
         let load = PassthroughSubject<Void, Never>()
+        let retryLoad = PassthroughSubject<Void, Never>()
+    }
+
+    struct State {
+        var retryCount: Int = 0
     }
 
     struct Output {
@@ -86,6 +91,7 @@ final class SplashViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
     private var dependency: Dependency
+    private var state = State()
 
     init(dependency: Dependency = Dependency()) {
         self.dependency = dependency
@@ -94,6 +100,17 @@ final class SplashViewModel: BaseViewModel {
 
     override func bind() {
         input.load
+            .withUnretained(self)
+            .sink { (owner: SplashViewModel, _) in
+                owner.state.retryCount = 0
+                owner.fetchRemoteConfig()
+                owner.loadSplashAdIfExisted()
+                owner.fetchAdvertisement()
+                owner.fetchAppStatus()
+            }
+            .store(in: &cancellables)
+
+        input.retryLoad
             .withUnretained(self)
             .sink { (owner: SplashViewModel, _) in
                 owner.fetchRemoteConfig()
@@ -223,10 +240,19 @@ final class SplashViewModel: BaseViewModel {
                 let alertContent = AlertContent(title: nil, message: Strings.httpErrorForbidden)
                 output.route.send(.goToSignInWithAlert(alertContent))
             case .unknown:
-                output.showRetryAlert.send(context)
+                showRetryOrDefaultAlert(context: context)
             }
         } else {
+            showRetryOrDefaultAlert(context: context)
+        }
+    }
+
+    private func showRetryOrDefaultAlert(context: SplashError) {
+        if state.retryCount < 3 {
+            state.retryCount += 1
             output.showRetryAlert.send(context)
+        } else {
+            output.showDefaultAlert.send(())
         }
     }
 

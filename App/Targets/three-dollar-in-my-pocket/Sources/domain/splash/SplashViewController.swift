@@ -214,7 +214,7 @@ final class SplashViewController: BaseViewController {
                 )
             },
             onTapRight: { [weak self] in
-                self?.viewModel.input.load.send(())
+                self?.viewModel.input.retryLoad.send(())
             }
         )
     }
