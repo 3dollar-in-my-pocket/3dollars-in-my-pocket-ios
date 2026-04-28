@@ -15,7 +15,7 @@ extension HomeViewModel {
     enum Constant {
         static let defaultLocation = CLLocation(latitude: 37.497941, longitude: 127.027616) // 강남역
     }
-    
+
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let onLoadFilter = PassthroughSubject<Void, Never>()
@@ -27,6 +27,8 @@ extension HomeViewModel {
         let onTapOnlyRecentActivity = PassthroughSubject<Void, Never>()
         let onToggleSort = PassthroughSubject<StoreSortType, Never>()
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
+        let onTapRadioOption = PassthroughSubject<(paramKey: String, optionIndex: Int), Never>()
+        let onTapActionLink = PassthroughSubject<SDLink, Never>()
         let onTapSearchAddress = PassthroughSubject<Void, Never>()
         let searchByAddress = PassthroughSubject<PlaceDocument, Never>()
         let onTapResearch = PassthroughSubject<Void, Never>()
@@ -37,20 +39,15 @@ extension HomeViewModel {
         let onTapMarker = PassthroughSubject<Int, Never>()
         let onTapCurrentMarker = PassthroughSubject<Void, Never>()
         let didTapFeedButton = PassthroughSubject<Void, Never>()
-        
+
         // From SubViewModel
         let didTapCardActionButton = PassthroughSubject<SDLink, Never>()
     }
-    
+
     struct Output {
         let screenName: ScreenName = .home
         let address = PassthroughSubject<String, Never>()
-        let filterDatasource = CurrentValueSubject<[HomeFilterCollectionView.CellType], Never>([
-            .category(nil),
-            .recentActivity(true),
-            .sortingFilter(.distanceAsc),
-            .onlyBoss(false)
-        ])
+        let filterDatasource = CurrentValueSubject<[HomeFilterCollectionView.CellType], Never>([])
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<CLLocation, Never>()
         let advertisementMarker = PassthroughSubject<AdvertisementResponse, Never>()
@@ -60,7 +57,7 @@ extension HomeViewModel {
         let showLoading = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
-    
+
     struct State {
         var address = ""
         var categoryFilter: StoreFoodCategoryResponse?
@@ -68,6 +65,10 @@ extension HomeViewModel {
         var sortType: StoreSortType = .distanceAsc
         var isOnlyBossStore = false
         var isOnlyRecentActivity = true
+        var openStatuses: [FilterOpenStatuses]?
+        var filterSections: [any HomeScreenSection] = []
+        var radioSelection: [String: Int] = [:]
+        var hasLoadedFilterScreen = false
         var mapMaxDistance: Double?
         var newCameraPosition: CLLocation?
         var newMapMaxDistance: Double?
@@ -76,10 +77,10 @@ extension HomeViewModel {
         var advertisementMarker: AdvertisementResponse?
         var selectedIndex = 0
         var hasMore: Bool = true
-        var nextCursor: String? = nil
+        var nextCursor: String?
         var user: UserDetailResponse?
     }
-    
+
     enum Route {
         case presentCategoryFilter(CategoryFilterViewModel)
         case presentListView(HomeListViewModel)
@@ -92,9 +93,10 @@ extension HomeViewModel {
         case presentAccountInfo(BaseViewModel)
         case presentFeedList(FeedListViewModel)
     }
-    
+
     struct Dependency {
         let homeRepository: HomeRepository
+        let screenRepository: ScreenRepository
         let advertisementRepository: AdvertisementRepository
         let userRepository: UserRepository
         let mapRepository: MapRepository
@@ -102,9 +104,10 @@ extension HomeViewModel {
         var preference: Preference
         let logManager: LogManagerProtocol
         let appModuleInterface: AppModuleInterface
-        
+
         init(
             homeRepository: HomeRepository = HomeRepositoryImpl(),
+            screenRepository: ScreenRepository = ScreenRepositoryImpl(),
             advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
             userRepository: UserRepository = UserRepositoryImpl(),
             mapRepository: MapRepository = MapRepositoryImpl(),
@@ -114,6 +117,7 @@ extension HomeViewModel {
             appModuleInterface: AppModuleInterface = Environment.appModuleInterface
         ) {
             self.homeRepository = homeRepository
+            self.screenRepository = screenRepository
             self.advertisementRepository = advertisementRepository
             self.userRepository = userRepository
             self.mapRepository = mapRepository
@@ -128,31 +132,31 @@ extension HomeViewModel {
 final class HomeViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
-    
+
     var currentAddress: String {
         state.address
     }
-    
+
     var focusedPosition: CLLocation? {
         state.newCameraPosition
     }
-    
+
     private var state = State()
     private var dependency: Dependency
-    
+
     init(dependency: Dependency = Dependency()) {
         self.dependency = dependency
-        
+
         super.init()
     }
-    
+
     override func bind() {
         input.onMapLoad
             .sink { [weak self] _ in
                 self?.fetchAdvertisementMarker()
             }
             .store(in: &cancellables)
-        
+
         let getCurrentLocation = input.onMapLoad
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, distance in
@@ -164,12 +168,12 @@ final class HomeViewModel: BaseViewModel {
                     .catch { error -> AnyPublisher<CLLocation, Never> in
                         owner.output.showLoading.send(false)
                         owner.output.route.send(.showErrorAlert(error))
-                        
+
                         return Just(Constant.defaultLocation).eraseToAnyPublisher()
                     }
             }
             .share()
-        
+
         getCurrentLocation
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, location: CLLocation) in
@@ -177,7 +181,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.fetchAddress(location: location)
             })
             .store(in: &cancellables)
-        
+
         getCurrentLocation
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, location: CLLocation) in
@@ -189,27 +193,28 @@ final class HomeViewModel: BaseViewModel {
                 owner.fetchHomeCards()
             })
             .store(in: &cancellables)
-                
+
         input.viewDidLoad
             .sink(receiveValue: { [weak self] in
                 self?.presentPolicyIfNeeded()
+                self?.fetchFilterScreen()
             })
             .store(in: &cancellables)
-        
+
         input.changeMaxDistance
             .sink { [weak self] distance in
                 self?.state.newMapMaxDistance = distance
                 self?.output.isHiddenResearchButton.send(false)
             }
             .store(in: &cancellables)
-        
+
         input.changeMapLocation
             .sink { [weak self] location in
                 self?.state.newCameraPosition = location
                 self?.output.isHiddenResearchButton.send(false)
             }
             .store(in: &cancellables)
-        
+
         input.onTapCategoryFilter
             .sink(receiveValue: { [weak self] _ in
                 self?.hiddenTooltip()
@@ -217,7 +222,7 @@ final class HomeViewModel: BaseViewModel {
                 self?.presentCategoryFilter()
             })
             .store(in: &cancellables)
-        
+
         input.selectCategory
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, category: StoreFoodCategoryResponse?) in
@@ -227,40 +232,60 @@ final class HomeViewModel: BaseViewModel {
                 owner.updateFilterDatasource()
             })
             .store(in: &cancellables)
-        
+
         input.onTapOnlyRecentActivity
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, _) in
                 owner.hiddenTooltip()
                 owner.state.isOnlyRecentActivity.toggle()
                 owner.sendClickRecentActivityFilter(isOn: owner.state.isOnlyRecentActivity)
+                owner.syncRadioSelectionFromLegacy()
                 owner.fetchHomeCards()
                 owner.updateFilterDatasource()
             })
             .store(in: &cancellables)
-        
+
         input.onToggleSort
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, sortType: StoreSortType) in
                 owner.hiddenTooltip()
                 owner.state.sortType = owner.state.sortType.toggled()
                 owner.sendClickSortingFilterLog(sortType: sortType)
+                owner.syncRadioSelectionFromLegacy()
                 owner.fetchHomeCards()
                 owner.updateFilterDatasource()
             })
             .store(in: &cancellables)
-        
+
         input.onTapOnlyBoss
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, _) in
                 owner.hiddenTooltip()
                 owner.state.isOnlyBossStore.toggle()
                 owner.sendClickOnlyBossFilterLog(isOn: owner.state.isOnlyBossStore)
+                owner.syncRadioSelectionFromLegacy()
                 owner.fetchHomeCards()
                 owner.updateFilterDatasource()
             })
             .store(in: &cancellables)
-        
+
+        input.onTapRadioOption
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: HomeViewModel, payload: (paramKey: String, optionIndex: Int)) in
+                owner.hiddenTooltip()
+                owner.applyRadioSelection(paramKey: payload.paramKey, optionIndex: payload.optionIndex)
+                owner.fetchHomeCards()
+                owner.updateFilterDatasource()
+            })
+            .store(in: &cancellables)
+
+        input.onTapActionLink
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: HomeViewModel, link: SDLink) in
+                owner.output.route.send(.deepLink(link))
+            })
+            .store(in: &cancellables)
+
         input.onTapSearchAddress
             .withUnretained(self)
             .sink { (owner: HomeViewModel, _) in
@@ -268,13 +293,13 @@ final class HomeViewModel: BaseViewModel {
                 owner.presentSearchAddress()
             }
             .store(in: &cancellables)
-        
+
         input.searchByAddress
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, placeDocument: PlaceDocument) in
                 owner.state.address = placeDocument.placeName
                 owner.output.address.send(placeDocument.placeName)
-                
+
                 let latitude = Double(placeDocument.y) ?? 0
                 let longitude = Double(placeDocument.x) ?? 0
                 let location = CLLocation(latitude: latitude, longitude: longitude)
@@ -285,7 +310,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.isHiddenResearchButton.send(true)
             })
             .store(in: &cancellables)
-        
+
         input.onTapResearch
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, _) in
@@ -296,13 +321,13 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.isHiddenResearchButton.send(true)
             })
             .store(in: &cancellables)
-        
+
         input.onTapResearch
             .withUnretained(self)
             .asyncMap { owner, _ in
                 let latitude = owner.state.newCameraPosition?.coordinate.latitude ?? Constant.defaultLocation.coordinate.latitude
                 let longitude = owner.state.newCameraPosition?.coordinate.longitude ?? Constant.defaultLocation.coordinate.longitude
-                
+
                 return await owner.dependency.mapRepository.getAddressFromLocation(
                     latitude: latitude,
                     longitude: longitude
@@ -314,14 +339,13 @@ final class HomeViewModel: BaseViewModel {
                 case .success(let address):
                     owner.state.address = address
                     owner.output.address.send(address)
-                    
+
                 case .failure(let error):
                     owner.output.route.send(.showErrorAlert(error))
                 }
             }
             .store(in: &cancellables)
-            
-        
+
         input.onTapCurrentLocation
             .withUnretained(self)
             .flatMap { owner, _ in
@@ -339,16 +363,16 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.cameraPosition.send(location)
             }
             .store(in: &cancellables)
-        
+
         input.onTapListView
             .sink(receiveValue: { [weak self] _ in
                 self?.presentListView()
             })
             .store(in: &cancellables)
-        
+
         input.selectStore
             .withLatestFrom(output.datasource) { ($0, $1) }
-            .handleEvents(receiveOutput: { [weak self] (index: Int, items: [HomeCardSectionItem]) in
+            .handleEvents(receiveOutput: { [weak self] (index: Int, _: [HomeCardSectionItem]) in
                 self?.output.scrollToIndex.send(index)
                 self?.state.selectedIndex = index
             })
@@ -364,7 +388,7 @@ final class HomeViewModel: BaseViewModel {
                 }
             })
             .store(in: &cancellables)
-        
+
         input.onTapMarker
             .withLatestFrom(output.datasource) { ($0, $1) }
             .sink(receiveValue: { [weak self] (index: Int, items: [HomeCardSectionItem]) in
@@ -381,13 +405,13 @@ final class HomeViewModel: BaseViewModel {
                 output.scrollToIndex.send(index)
             })
             .store(in: &cancellables)
-        
+
         input.onTapStore
             .withLatestFrom(output.datasource) { ($0, $1) }
             .sink(receiveValue: { [weak self] (index: Int, items: [HomeCardSectionItem]) in
                 guard let self,
                       let item = items[safe: index] else { return }
-                
+
                 if index == state.selectedIndex {
                     routeCard(item)
                 } else {
@@ -395,7 +419,7 @@ final class HomeViewModel: BaseViewModel {
                 }
             })
             .store(in: &cancellables)
-        
+
         input.onTapCurrentMarker
             .filter { [weak self] in
                 return self?.state.advertisementMarker != nil
@@ -408,17 +432,17 @@ final class HomeViewModel: BaseViewModel {
             })
             .subscribe(output.route)
             .store(in: &cancellables)
-        
+
         input.onLoadFilter
             .sink { [weak self] _ in
                 self?.showFilterTooltipIfNeeded()
             }
             .store(in: &cancellables)
-        
+
         input.didTapFeedButton
             .withUnretained(self)
             .sink { (owner: HomeViewModel, _) in
-                let mapLocation = owner.state.newCameraPosition ?? owner.state.currentLocation 
+                let mapLocation = owner.state.newCameraPosition ?? owner.state.currentLocation
                 let config = FeedListViewModelConfig(
                     mapLatitude: mapLocation?.coordinate.latitude,
                     mapLongitude: mapLocation?.coordinate.longitude
@@ -428,25 +452,14 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.route.send(.presentFeedList(viewModel))
             }
             .store(in: &cancellables)
-        
+
         input.didTapCardActionButton
             .sink { [weak self] link in
                 self?.output.route.send(.deepLink(link))
             }
             .store(in: &cancellables)
     }
-    
-    private func updateFilterDatasource() {
-        let datasource: [HomeFilterCollectionView.CellType] = [
-            .category(state.categoryFilter),
-            .recentActivity(state.isOnlyRecentActivity),
-            .sortingFilter(state.sortType),
-            .onlyBoss(state.isOnlyBossStore)
-        ]
-        
-        output.filterDatasource.send(datasource)
-    }
-    
+
     private func updateDatasource() {
         var datasource: [HomeCardSectionItem] = []
         for component in state.homeCardComponents {
@@ -461,21 +474,21 @@ final class HomeViewModel: BaseViewModel {
                 datasource.append(.admob(data))
             }
         }
-        
+
         if datasource.isEmpty {
             datasource = [.empty]
         }
-        
+
         output.datasource.send(datasource)
         output.scrollToIndex.send(0)
     }
-    
+
     private func fetchHomeCards() {
         Task {
             output.showLoading.send(true)
             let input = createFetchHomeCardInput()
             let result = await dependency.homeRepository.fetchHomeCards(input: input)
-            
+
             switch result {
             case .success(let response):
                 state.nextCursor = response.cursor?.nextCursor
@@ -489,20 +502,32 @@ final class HomeViewModel: BaseViewModel {
         }
         .store(in: taskBag)
     }
-    
+
     private func createFetchHomeCardInput() -> FetchHomeCardInput {
-        var categoryIds: [String]? = nil
+        var categoryIds: [String]?
         if let filterCategory = state.categoryFilter {
             categoryIds = [filterCategory.categoryId]
         }
-        let targetStores: [StoreType] = state.isOnlyBossStore ? [.bossStore] : [.userStore, .bossStore]
-        let filterConditions: [ActivitiesStatus] = state.isOnlyRecentActivity ? [.recentActivity] : [.recentActivity, .noRecentActivity]
+
+        let openStatuses: [FilterOpenStatuses]? = currentParamValue(for: "filterOpenStatuses")
+            .flatMap(FilterOpenStatuses.init(rawValue:))
+            .map { [$0] }
+        let filterConditions: [ActivitiesStatus] = (currentParamValue(for: "filterConditions") != nil)
+            ? [.recentActivity]
+            : [.recentActivity, .noRecentActivity]
+        let sortType: StoreSortType = currentParamValue(for: "sortType")
+            .flatMap(StoreSortType.init(rawValue:)) ?? .distanceAsc
+        let targetStores: [StoreType] = (currentParamValue(for: "targetStores") == "BOSS_STORE")
+            ? [.bossStore]
+            : [.userStore, .bossStore]
+
         return FetchHomeCardInput(
             distanceM: state.mapMaxDistance ?? 0,
             categoryIds: categoryIds,
             targetStores: targetStores,
-            sortType: state.sortType,
+            sortType: sortType,
             filterCertifiedStores: false,
+            filterOpenStatuses: openStatuses,
             filterConditions: filterConditions,
             size: 10,
             cursor: nil,
@@ -510,52 +535,63 @@ final class HomeViewModel: BaseViewModel {
             mapLongitude: state.resultCameraPosition?.coordinate.longitude ?? 0
         )
     }
-    
+
+    private func currentParamValue(for paramKey: String) -> String? {
+        guard
+            let radioBar = (allBars.first { ($0 as? HomeFilterRadioBar)?.paramKey == paramKey }) as? HomeFilterRadioBar,
+            let idx = state.radioSelection[paramKey],
+            let option = radioBar.options[safe: idx]
+        else {
+            return legacyParamValue(for: paramKey)
+        }
+        return option.paramValue
+    }
+
     private func fetchAdvertisementMarker() {
         Task {
             let input = FetchAdvertisementInput(position: .storeMarker, size: nil)
             let response = await dependency.advertisementRepository.fetchAdvertisements(input: input).data
-            
+
             guard let advertisement = response?.advertisements.first else { return }
             state.advertisementMarker = advertisement
             output.advertisementMarker.send(advertisement)
         }
         .store(in: taskBag)
     }
-    
+
     private func presentSearchAddress() {
         let viewModel = SearchAddressViewModel()
         viewModel.output.selectAddress
             .subscribe(input.searchByAddress)
             .store(in: &viewModel.cancellables)
-        
+
         output.route.send(.presentSearchAddress(viewModel))
     }
-    
+
     private func bindHomeListViewModel(_ viewModel: HomeListViewModel) {
         viewModel.output.onToggleSort
             .subscribe(input.onToggleSort)
             .store(in: &viewModel.cancellables)
-        
+
         viewModel.output.onTapOnlyBoss
             .subscribe(input.onTapOnlyBoss)
             .store(in: &viewModel.cancellables)
-        
+
         viewModel.output.onSelectCategoryFilter
             .subscribe(input.selectCategory)
             .store(in: &viewModel.cancellables)
-        
+
         viewModel.output.onTapOnlyRecentActivity
             .subscribe(input.onTapOnlyRecentActivity)
             .store(in: &viewModel.cancellables)
     }
-    
+
     private func hiddenTooltip() {
         guard dependency.preference.isShownFilterTooltip.isNot else { return }
         dependency.preference.isShownFilterTooltip = true
         output.isShowFilterTooltip.send(false)
     }
-    
+
     private func fetchAddress(location: CLLocation) {
         Task {
             let result = await dependency.mapRepository.getAddressFromLocation(
@@ -573,48 +609,48 @@ final class HomeViewModel: BaseViewModel {
         }
         .store(in: taskBag)
     }
-    
+
     private func presentCategoryFilter() {
         let config = CategoryFilterViewModel.Config(currentCategory: state.categoryFilter)
         let viewModel = CategoryFilterViewModel(config: config)
-        
+
         viewModel.output.didSelectCategory
             .subscribe(input.selectCategory)
             .store(in: &viewModel.cancellables)
         output.route.send(.presentCategoryFilter(viewModel))
     }
-    
+
     private func presentPolicyIfNeeded() {
         Task {
             let user = await dependency.userRepository.fetchUser().data
-            
+
             guard
                 let user,
                 MarketingConsent(value: user.settings.marketingConsent) == .unverified
             else {
                 return
             }
-            
+
             output.route.send(.presentPolicy)
         }.store(in: taskBag)
     }
-    
+
     private func showFilterTooltipIfNeeded() {
         guard dependency.preference.isShownFilterTooltip.isNot else { return }
         output.isShowFilterTooltip.send(true)
     }
-    
+
     private func selectCard(_ item: HomeCardSectionItem, index: Int) {
         if case .store(let cellViewModel) = item,
            let location = cellViewModel.output.data.marker?.location {
             let cameraPosition = CLLocation(latitude: location.latitude, longitude: location.longitude)
             output.cameraPosition.send(cameraPosition)
         }
-        
+
         output.scrollToIndex.send(index)
         state.selectedIndex = index
     }
-    
+
     private func routeCard(_ item: HomeCardSectionItem) {
         switch item {
         case .store(let cellViewModel):
@@ -631,14 +667,14 @@ final class HomeViewModel: BaseViewModel {
             break
         }
     }
-    
+
     private func didTapCardButton(_ component: any HomeCardComponent) {
         guard let component = component as? HomeAdCardSectionResponse,
               let link = component.link else { return }
-        
+
         output.route.send(.deepLink(link))
     }
-    
+
     private func presentListView() {
         let config = HomeListViewModel.Config(
             categoryFilter: state.categoryFilter,
@@ -651,6 +687,159 @@ final class HomeViewModel: BaseViewModel {
         let viewModel = HomeListViewModel(config: config)
         bindHomeListViewModel(viewModel)
         output.route.send(.presentListView(viewModel))
+    }
+}
+
+// MARK: SDUI Filter
+extension HomeViewModel {
+    private func updateFilterDatasource() {
+        let datasource = state.hasLoadedFilterScreen
+            ? flattenFilterDatasource()
+            : makeFallbackFilterDatasource()
+        output.filterDatasource.send(datasource)
+    }
+
+    private func fetchFilterScreen() {
+        Task { @MainActor in
+            let result = await dependency.screenRepository.fetchHomeFilterScreen()
+            switch result {
+            case .success(let response):
+                state.filterSections = response.sections
+                state.hasLoadedFilterScreen = true
+                initializeRadioSelectionDefaults()
+                syncRadioSelectionFromLegacy()
+                output.filterDatasource.send(flattenFilterDatasource())
+            case .failure:
+                output.filterDatasource.send(makeFallbackFilterDatasource())
+            }
+        }
+        .store(in: taskBag)
+    }
+
+    private var allBars: [any HomeFilterBar] {
+        state.filterSections
+            .compactMap { $0 as? HomeFilterSection }
+            .flatMap(\.bars)
+    }
+
+    private func initializeRadioSelectionDefaults() {
+        for case let radioBar as HomeFilterRadioBar in allBars where state.radioSelection[radioBar.paramKey] == nil {
+            state.radioSelection[radioBar.paramKey] = 0
+            if let firstOption = radioBar.options.first {
+                applyParamValueToLegacyState(paramKey: radioBar.paramKey, paramValue: firstOption.paramValue)
+            }
+        }
+    }
+
+    private func applyRadioSelection(paramKey: String, optionIndex: Int) {
+        guard let radioBar = (allBars.first { ($0 as? HomeFilterRadioBar)?.paramKey == paramKey }) as? HomeFilterRadioBar,
+              let option = radioBar.options[safe: optionIndex] else { return }
+        state.radioSelection[paramKey] = optionIndex
+        applyParamValueToLegacyState(paramKey: paramKey, paramValue: option.paramValue)
+    }
+
+    private func applyParamValueToLegacyState(paramKey: String, paramValue: String?) {
+        switch paramKey {
+        case "filterOpenStatuses":
+            if let value = paramValue, let status = FilterOpenStatuses(rawValue: value) {
+                state.openStatuses = [status]
+            } else {
+                state.openStatuses = nil
+            }
+        case "filterConditions":
+            state.isOnlyRecentActivity = (paramValue != nil)
+        case "sortType":
+            state.sortType = paramValue.flatMap(StoreSortType.init(rawValue:)) ?? .distanceAsc
+        case "targetStores":
+            state.isOnlyBossStore = (paramValue == "BOSS_STORE")
+        default:
+            break
+        }
+    }
+
+    private func syncRadioSelectionFromLegacy() {
+        for case let radioBar as HomeFilterRadioBar in allBars {
+            let targetValue: String? = legacyParamValue(for: radioBar.paramKey)
+            if let idx = radioBar.options.firstIndex(where: { $0.paramValue == targetValue }) {
+                state.radioSelection[radioBar.paramKey] = idx
+            }
+        }
+    }
+
+    private func legacyParamValue(for paramKey: String) -> String? {
+        switch paramKey {
+        case "filterOpenStatuses":
+            return state.openStatuses?.first?.rawValue
+        case "filterConditions":
+            return state.isOnlyRecentActivity ? "RECENT_ACTIVITY" : nil
+        case "sortType":
+            return state.sortType.rawValue
+        case "targetStores":
+            return state.isOnlyBossStore ? "BOSS_STORE" : nil
+        default:
+            return nil
+        }
+    }
+
+    private func flattenFilterDatasource() -> [HomeFilterCollectionView.CellType] {
+        var cells: [HomeFilterCollectionView.CellType] = []
+        for bar in allBars {
+            switch bar {
+            case let categoryBar as HomeFilterCategoryBar:
+                cells.append(.chip(categoryBar.categoriesFilter, surface: nil, action: .openCategoryFilter))
+                if let category = state.categoryFilter {
+                    let chip = makeSelectedCategoryChip(category: category, fontColor: "#000000")
+                    cells.append(.selectedCategoryChip(chip))
+                }
+            case let radioBar as HomeFilterRadioBar:
+                let selectedIndex = state.radioSelection[radioBar.paramKey] ?? 0
+                guard radioBar.options.isEmpty.isNot,
+                      let currentOption = radioBar.options[safe: selectedIndex] else { break }
+                let nextIndex = (selectedIndex + 1) % radioBar.options.count
+                let surface: SDSurfaceStyle? = selectedIndex == 0 ? nil : selectedSurface(for: currentOption.chip)
+                let action = HomeFilterCollectionView.ChipAction.selectRadio(paramKey: radioBar.paramKey, optionIndex: nextIndex)
+                cells.append(.chip(currentOption.chip, surface: surface, action: action))
+            case let actionBar as HomeFilterActionBar:
+                cells.append(.button(actionBar.button, surface: nil))
+            default:
+                break
+            }
+        }
+        return cells
+    }
+
+    private func selectedSurface(for chip: SDChip) -> SDSurfaceStyle? {
+        guard let background = chip.style?.backgroundColor else { return nil }
+        return SDSurfaceStyle(
+            backgroundColor: background,
+            borderColor: chip.text.fontColor,
+            borderWidth: 1,
+            cornerRadius: 10
+        )
+    }
+
+    private func makeSelectedCategoryChip(category: StoreFoodCategoryResponse, fontColor: String) -> SDChip {
+        SDChip(
+            image: SDImage(url: category.imageUrl, style: SDImageStyle(width: 16, height: 16)),
+            text: SDText(text: category.name, isHtml: false, fontColor: fontColor),
+            style: nil
+        )
+    }
+
+    private func makeFallbackFilterDatasource() -> [HomeFilterCollectionView.CellType] {
+        let categoriesChip = SDChip(
+            image: nil,
+            text: SDText(text: "음식 종류", isHtml: false, fontColor: "#5A5A5A"),
+            style: nil
+        )
+        var cells: [HomeFilterCollectionView.CellType] = [
+            .chip(categoriesChip, surface: nil, action: .openCategoryFilter)
+        ]
+        if let category = state.categoryFilter {
+            let chip = makeSelectedCategoryChip(category: category, fontColor: "#000000")
+            cells.append(.selectedCategoryChip(chip))
+        }
+        return cells
     }
 }
 
@@ -672,7 +861,7 @@ extension HomeViewModel {
             objectId: .store
         ))
     }
-    
+
     private func sendClickCurrentLocationLog() {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -680,7 +869,7 @@ extension HomeViewModel {
             objectId: .currentLocation
         ))
     }
-    
+
     private func sendClickAddressLog() {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -688,7 +877,7 @@ extension HomeViewModel {
             objectId: .address
         ))
     }
-    
+
     private func sendClickCategoryFilterLog() {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -696,7 +885,7 @@ extension HomeViewModel {
             objectId: .categoryFilter
         ))
     }
-    
+
     private func sendClickOnlyBossFilterLog(isOn: Bool) {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -705,7 +894,7 @@ extension HomeViewModel {
             extraParameters: [.value: isOn]
         ))
     }
-    
+
     private func sendClickSortingFilterLog(sortType: StoreSortType) {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -714,7 +903,7 @@ extension HomeViewModel {
             extraParameters: [.value: sortType.rawValue]
         ))
     }
-    
+
     private func sendClickAdCard(advertisement: AdvertisementReference) {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -723,7 +912,7 @@ extension HomeViewModel {
             extraParameters: [.advertisementId: "\(advertisement.adId)"]
         ))
     }
-    
+
     private func sendClickAdMarker(advertisement: AdvertisementResponse) {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -732,7 +921,7 @@ extension HomeViewModel {
             extraParameters: [.advertisementId: "\(advertisement.advertisementId)"]
         ))
     }
-    
+
     private func sendClickRecentActivityFilter(isOn: Bool) {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -741,7 +930,7 @@ extension HomeViewModel {
             extraParameters: [.value: isOn]
         ))
     }
-    
+
     private func sendClickMarkerLog() {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -749,7 +938,7 @@ extension HomeViewModel {
             objectId: .store
         ))
     }
-    
+
     private func sendClickFeedButtonLog() {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -763,23 +952,19 @@ extension HomeViewModel: HomeFilterSelectable {
     var onTapCategoryFilter: PassthroughSubject<Void, Never> {
         input.onTapCategoryFilter
     }
-    
-    var onTapOnlyRecentActivity: PassthroughSubject<Void, Never> {
-        input.onTapOnlyRecentActivity
+
+    var onTapRadioOption: PassthroughSubject<(paramKey: String, optionIndex: Int), Never> {
+        input.onTapRadioOption
     }
-    
-    var onToggleSort: PassthroughSubject<Model.StoreSortType, Never> {
-        input.onToggleSort
+
+    var onTapActionLink: PassthroughSubject<SDLink, Never> {
+        input.onTapActionLink
     }
-    
-    var onTapOnlyBoss: PassthroughSubject<Void, Never> {
-        input.onTapOnlyBoss
-    }
-    
+
     var selectCategory: PassthroughSubject<StoreFoodCategoryResponse?, Never> {
         input.selectCategory
     }
-    
+
     var filterDatasource: CurrentValueSubject<[HomeFilterCollectionView.CellType], Never> {
         output.filterDatasource
     }

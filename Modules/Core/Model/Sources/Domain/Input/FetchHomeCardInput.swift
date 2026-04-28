@@ -6,18 +6,20 @@ public struct FetchHomeCardInput: Encodable {
     public let targetStores: [StoreType]?
     public let sortType: StoreSortType
     public let filterCertifiedStores: Bool?
+    public let filterOpenStatuses: [FilterOpenStatuses]?
     public let filterConditions: [ActivitiesStatus]?
     public let size: Int
     public let cursor: String?
     public let mapLatitude: Double
     public let mapLongitude: Double
-    
+
     public init(
         distanceM: Double,
         categoryIds: [String]? = nil,
         targetStores: [StoreType] = [.userStore, .bossStore],
         sortType: StoreSortType = .distanceAsc,
         filterCertifiedStores: Bool? = false,
+        filterOpenStatuses: [FilterOpenStatuses]? = nil,
         filterConditions: [ActivitiesStatus]? = nil,
         size: Int = 10,
         cursor: String? = nil,
@@ -29,6 +31,7 @@ public struct FetchHomeCardInput: Encodable {
         self.targetStores = targetStores
         self.sortType = sortType
         self.filterCertifiedStores = filterCertifiedStores
+        self.filterOpenStatuses = filterOpenStatuses
         self.filterConditions = filterConditions
         self.size = size
         self.cursor = cursor

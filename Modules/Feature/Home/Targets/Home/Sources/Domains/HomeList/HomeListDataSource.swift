@@ -78,22 +78,19 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
                 }
                 .store(in: &headerView.cancellables)
             
-            viewModel.output.filterDatasource
+            viewModel.output.categoryFilter
                 .receive(on: DispatchQueue.main)
                 .withUnretained(headerView)
-                .sink { (headerView: HomeListHeaderCell, cellTypeList: [HomeFilterCollectionView.CellType]) in
-                    for cellType in cellTypeList {
-                        switch cellType {
-                        case .category(let category):
-                            headerView.bind(category: category)
-                        case .recentActivity:
-                            continue
-                        case .sortingFilter:
-                            continue
-                        case .onlyBoss(let isOnlyBoss):
-                            headerView.isOnlyCertifiedButton.isHidden = isOnlyBoss
-                        }
-                    }
+                .sink { (headerView: HomeListHeaderCell, category: StoreFoodCategoryResponse?) in
+                    headerView.bind(category: category)
+                }
+                .store(in: &headerView.cancellables)
+
+            viewModel.output.isOnlyBoss
+                .receive(on: DispatchQueue.main)
+                .withUnretained(headerView)
+                .sink { (headerView: HomeListHeaderCell, isOnlyBoss: Bool) in
+                    headerView.isOnlyCertifiedButton.isHidden = isOnlyBoss
                 }
                 .store(in: &headerView.cancellables)
             return headerView
