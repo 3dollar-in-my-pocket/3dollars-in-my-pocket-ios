@@ -831,7 +831,7 @@ extension HomeViewModel {
         for bar in allBars {
             switch bar {
             case let categoryBar as HomeFilterCategoryBar:
-                cells.append(.chip(categoryBar.categoriesFilter, surface: nil, action: .openCategoryFilter))
+                cells.append(.chip(categoryBar.categoriesFilter, action: .openCategoryFilter))
                 if let category = state.categoryFilter {
                     let fontColor = categoryBar.currentCategoryFilter?.fontColor ?? "#000000"
                     let chip = makeSelectedCategoryChip(category: category, fontColor: fontColor)
@@ -842,9 +842,8 @@ extension HomeViewModel {
                 guard radioBar.options.isEmpty.isNot,
                       let currentOption = radioBar.options[safe: selectedIndex] else { break }
                 let nextIndex = (selectedIndex + 1) % radioBar.options.count
-                let surface: SDSurfaceStyle? = selectedIndex == 0 ? nil : selectedSurface(for: currentOption.chip)
                 let action = HomeFilterCollectionView.ChipAction.selectRadio(paramKey: radioBar.paramKey, optionIndex: nextIndex)
-                cells.append(.chip(currentOption.chip, surface: surface, action: action))
+                cells.append(.chip(currentOption.chip, action: action))
             case let actionBar as HomeFilterActionBar:
                 cells.append(.button(actionBar.button, surface: nil))
             default:
@@ -852,16 +851,6 @@ extension HomeViewModel {
             }
         }
         return cells
-    }
-
-    private func selectedSurface(for chip: SDChip) -> SDSurfaceStyle? {
-        guard let background = chip.style?.backgroundColor else { return nil }
-        return SDSurfaceStyle(
-            backgroundColor: background,
-            borderColor: chip.text.fontColor,
-            borderWidth: 1,
-            cornerRadius: 10
-        )
     }
 
     private func makeSelectedCategoryChip(category: StoreFoodCategoryResponse, fontColor: String) -> SDChip {
@@ -879,7 +868,7 @@ extension HomeViewModel {
             style: nil
         )
         var cells: [HomeFilterCollectionView.CellType] = [
-            .chip(categoriesChip, surface: nil, action: .openCategoryFilter)
+            .chip(categoriesChip, action: .openCategoryFilter)
         ]
         if let category = state.categoryFilter {
             let chip = makeSelectedCategoryChip(category: category, fontColor: "#000000")

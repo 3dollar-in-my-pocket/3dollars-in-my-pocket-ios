@@ -361,7 +361,7 @@ final class HomeListViewModel: BaseViewModel {
         for bar in allBars {
             switch bar {
             case let categoryBar as HomeFilterCategoryBar:
-                cells.append(.chip(categoryBar.categoriesFilter, surface: nil, action: .openCategoryFilter))
+                cells.append(.chip(categoryBar.categoriesFilter, action: .openCategoryFilter))
                 if let category = categoryFilter {
                     let fontColor = categoryBar.currentCategoryFilter?.fontColor ?? "#000000"
                     let chip = makeSelectedCategoryChip(category: category, fontColor: fontColor)
@@ -372,9 +372,8 @@ final class HomeListViewModel: BaseViewModel {
                 guard radioBar.options.isEmpty.isNot,
                       let currentOption = radioBar.options[safe: selectedIndex] else { break }
                 let nextIndex = (selectedIndex + 1) % radioBar.options.count
-                let surface: SDSurfaceStyle? = selectedIndex == 0 ? nil : selectedSurface(for: currentOption.chip)
                 let action = HomeFilterCollectionView.ChipAction.selectRadio(paramKey: radioBar.paramKey, optionIndex: nextIndex)
-                cells.append(.chip(currentOption.chip, surface: surface, action: action))
+                cells.append(.chip(currentOption.chip, action: action))
             case let actionBar as HomeFilterActionBar:
                 cells.append(.button(actionBar.button, surface: nil))
             default:
@@ -399,11 +398,11 @@ final class HomeListViewModel: BaseViewModel {
             style: nil
         )
         var cells: [HomeFilterCollectionView.CellType] = [
-            .chip(categoriesChip, surface: nil, action: .openCategoryFilter)
+            .chip(categoriesChip, action: .openCategoryFilter)
         ]
         if let categoryFilter {
             let chip = makeSelectedCategoryChip(category: categoryFilter, fontColor: "#FF858F")
-            cells.append(.chip(chip, surface: nil, action: .openCategoryFilter))
+            cells.append(.chip(chip, action: .openCategoryFilter))
         }
         // optionIndex 는 "탭 후 전환될 다음 인덱스" 를 의미 (SDU chip 과 동일 규약).
         let recentActivityChip = SDChip(
@@ -413,7 +412,6 @@ final class HomeListViewModel: BaseViewModel {
         )
         cells.append(.chip(
             recentActivityChip,
-            surface: nil,
             action: .selectRadio(paramKey: "filterConditions", optionIndex: isOnlyRecentActivity ? 0 : 1)
         ))
         let sortChip = SDChip(
@@ -423,7 +421,6 @@ final class HomeListViewModel: BaseViewModel {
         )
         cells.append(.chip(
             sortChip,
-            surface: nil,
             action: .selectRadio(paramKey: "sortType", optionIndex: isLatestSort ? 0 : 1)
         ))
         let bossChip = SDChip(
@@ -433,20 +430,9 @@ final class HomeListViewModel: BaseViewModel {
         )
         cells.append(.chip(
             bossChip,
-            surface: nil,
             action: .selectRadio(paramKey: "targetStores", optionIndex: isOnlyBossStore ? 0 : 1)
         ))
         return cells
-    }
-
-    private static func selectedSurface(for chip: SDChip) -> SDSurfaceStyle? {
-        guard let background = chip.style?.backgroundColor else { return nil }
-        return SDSurfaceStyle(
-            backgroundColor: background,
-            borderColor: chip.text.fontColor,
-            borderWidth: 1,
-            cornerRadius: 10
-        )
     }
 
     private static func makeSelectedCategoryChip(category: StoreFoodCategoryResponse, fontColor: String) -> SDChip {

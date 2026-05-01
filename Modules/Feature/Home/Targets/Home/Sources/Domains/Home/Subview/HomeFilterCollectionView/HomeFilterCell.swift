@@ -18,7 +18,7 @@ final class HomeFilterCell: BaseCollectionViewCell {
         static let closeButtonSize: CGFloat = 14
 
         static func size(for chip: SDChip) -> CGSize {
-            sizingCell.bind(chip: chip, surface: nil)
+            sizingCell.bind(chip: chip)
             return measureSizingCell()
         }
 
@@ -127,15 +127,18 @@ final class HomeFilterCell: BaseCollectionViewCell {
         }
     }
 
-    func bind(chip: SDChip, surface: SDSurfaceStyle?) {
+    func bind(chip: SDChip) {
         closeButton.isHidden = true
         applyImage(chip.image)
         titleLabel.setSDText(chip.text)
-        applyBackground(
-            surface: surface,
-            fallbackHex: chip.style?.backgroundColor,
-            fallbackBorder: chip.style?.border
-        )
+
+        if let style = chip.style {
+            backgroundColor = UIColor(hex: style.backgroundColor)
+            if let border = style.border {
+                layer.borderColor = UIColor(hex: border.color)?.cgColor
+                layer.borderWidth = border.width
+            }
+        }
     }
 
     func bind(button: SDButton, surface: SDSurfaceStyle?) {

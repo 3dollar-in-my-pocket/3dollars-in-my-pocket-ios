@@ -17,7 +17,7 @@ extension HomeFilterCollectionView {
     }
 
     enum CellType: Hashable {
-        case chip(SDChip, surface: SDSurfaceStyle?, action: ChipAction)
+        case chip(SDChip, action: ChipAction)
         case button(SDButton, surface: SDSurfaceStyle?)
         case selectedCategoryChip(SDChip, current: HomeFilterCurrentCategory?)
     }
@@ -39,7 +39,7 @@ final class HomeFilterCollectionView: UICollectionView {
     /// 첫 RADIO_BAR 칩의 IndexPath (없으면 nil). HomeView 의 tooltip 위치 계산용.
     var firstRadioCellIndexPath: IndexPath? {
         guard let index = datasource.firstIndex(where: { cell in
-            if case .chip(_, _, .selectRadio) = cell { return true }
+            if case .chip(_, .selectRadio) = cell { return true }
             return false
         }) else { return nil }
         return IndexPath(item: index, section: 0)
@@ -96,9 +96,9 @@ extension HomeFilterCollectionView: UICollectionViewDataSource {
         guard let item = datasource[safe: indexPath.item] else { return BaseCollectionViewCell() }
 
         switch item {
-        case .chip(let chip, let surface, _):
+        case .chip(let chip, _):
             let cell: HomeFilterCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-            cell.bind(chip: chip, surface: surface)
+            cell.bind(chip: chip)
             return cell
         case .button(let button, let surface):
             let cell: HomeFilterCell = collectionView.dequeueReusableCell(indexPath: indexPath)
@@ -119,7 +119,7 @@ extension HomeFilterCollectionView: UICollectionViewDelegateFlowLayout {
         guard let item = datasource[safe: indexPath.item] else { return .zero }
 
         switch item {
-        case .chip(let chip, _, _):
+        case .chip(let chip, _):
             return HomeFilterCell.Layout.size(for: chip)
         case .button(let button, _):
             return HomeFilterCell.Layout.size(for: button)
@@ -132,7 +132,7 @@ extension HomeFilterCollectionView: UICollectionViewDelegateFlowLayout {
         guard let item = datasource[safe: indexPath.item] else { return }
 
         switch item {
-        case .chip(_, _, let action):
+        case .chip(_, let action):
             handleAction(action)
         case .button(let button, _):
             if let link = button.link {
