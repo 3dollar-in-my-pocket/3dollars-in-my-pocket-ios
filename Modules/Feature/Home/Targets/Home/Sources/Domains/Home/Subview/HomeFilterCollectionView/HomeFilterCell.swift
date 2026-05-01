@@ -27,8 +27,8 @@ final class HomeFilterCell: BaseCollectionViewCell {
             return measureSizingCell()
         }
 
-        static func sizeForSelectedCategory(chip: SDChip) -> CGSize {
-            sizingCell.bindSelectedCategory(chip: chip, onClose: {})
+        static func sizeForSelectedCategory(chip: SDChip, current: HomeFilterCurrentCategory?) -> CGSize {
+            sizingCell.bindSelectedCategory(chip: chip, current: current, onClose: {})
             return measureSizingCell()
         }
 
@@ -131,28 +131,45 @@ final class HomeFilterCell: BaseCollectionViewCell {
         closeButton.isHidden = true
         applyImage(chip.image)
         titleLabel.setSDText(chip.text)
-        applyBackground(surface: surface, fallbackHex: chip.style?.backgroundColor)
+        applyBackground(
+            surface: surface,
+            fallbackHex: chip.style?.backgroundColor,
+            fallbackBorder: chip.style?.border
+        )
     }
 
     func bind(button: SDButton, surface: SDSurfaceStyle?) {
         closeButton.isHidden = true
         applyImage(button.image)
         titleLabel.setSDText(button.text)
-        applyBackground(surface: surface, fallbackHex: button.style.backgroundColor)
+        applyBackground(
+            surface: surface,
+            fallbackHex: button.style.backgroundColor,
+            fallbackBorder: button.style.border
+        )
     }
 
-    func bindSelectedCategory(chip: SDChip, onClose: @escaping () -> Void) {
+    /// `current` 가 있으면 서버가 내려준 fontColor/style 을 그대로 적용. nil 이면 SDU 미지원 fallback (분홍 pill).
+    func bindSelectedCategory(chip: SDChip, current: HomeFilterCurrentCategory?, onClose: @escaping () -> Void) {
         applyImage(chip.image)
         titleLabel.setSDText(chip.text)
-        titleLabel.textColor = Colors.pink500.color
 
-        backgroundColor = Colors.pink100.color
-        layer.borderColor = Colors.pink500.color.cgColor
-        layer.borderWidth = 1
-        layer.cornerRadius = 10
+        if let current {
+            if let fontColor = UIColor(hex: current.fontColor) {
+                titleLabel.textColor = fontColor
+                closeButton.tintColor = fontColor
+            }
+            setSDSurfaceStyle(current.style)
+        } else {
+            titleLabel.textColor = Colors.pink500.color
+            backgroundColor = Colors.pink100.color
+            layer.borderColor = Colors.pink500.color.cgColor
+            layer.borderWidth = 1
+            layer.cornerRadius = 10
+            closeButton.tintColor = Colors.pink500.color
+        }
 
         closeButton.isHidden = false
-        closeButton.tintColor = Colors.pink500.color
         self.onClose = onClose
     }
 
@@ -169,15 +186,21 @@ final class HomeFilterCell: BaseCollectionViewCell {
         iconImageView.kf.setImage(with: url)
     }
 
-    private func applyBackground(surface: SDSurfaceStyle?, fallbackHex: String?) {
+    private func applyBackground(surface: SDSurfaceStyle?, fallbackHex: String?, fallbackBorder: SDBorder?) {
         if let surface {
             setSDSurfaceStyle(surface)
-        } else if let fallbackHex, let color = UIColor(hex: fallbackHex) {
-            backgroundColor = color
-        } else {
-            backgroundColor = Colors.systemWhite.color
-            layer.borderColor = Colors.gray30.color.cgColor
-            layer.borderWidth = 1
+            return
         }
+        if let fallbackHex, let color = UIColor(hex: fallbackHex) {
+            backgroundColor = color
+            if let fallbackBorder, let borderColor = UIColor(hex: fallbackBorder.color) {
+                layer.borderColor = borderColor.cgColor
+                layer.borderWidth = fallbackBorder.width
+            }
+            return
+        }
+        backgroundColor = Colors.systemWhite.color
+        layer.borderColor = Colors.gray30.color.cgColor
+        layer.borderWidth = 1
     }
 }

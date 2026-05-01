@@ -67,12 +67,14 @@ public struct HomeFilterSection: HomeScreenSection {
 public struct HomeFilterCategoryBar: HomeFilterBar {
     public let type: HomeFilterBarType
     public let categoriesFilter: SDChip
+    public let categoriesFilterClickLog: SDClickLog
     public let currentCategoryFilter: HomeFilterCurrentCategory?
 }
 
 public struct HomeFilterCurrentCategory: Decodable, Hashable {
     public let fontColor: String
     public let style: SDSurfaceStyle
+    public let clickLog: SDClickLog
 }
 
 public struct HomeFilterRadioBar: HomeFilterBar {
@@ -84,11 +86,13 @@ public struct HomeFilterRadioBar: HomeFilterBar {
 public struct HomeFilterRadioOption: Decodable, Hashable {
     public let chip: SDChip
     public let paramValue: String?
+    public let clickLog: SDClickLog?
 }
 
 public struct HomeFilterActionBar: HomeFilterBar {
     public let type: HomeFilterBarType
     public let button: SDButton
+    public let clickLog: SDClickLog
 }
 
 private struct BarTypePreview: Decodable {

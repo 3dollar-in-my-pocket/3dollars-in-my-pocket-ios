@@ -19,7 +19,7 @@ extension HomeFilterCollectionView {
     enum CellType: Hashable {
         case chip(SDChip, surface: SDSurfaceStyle?, action: ChipAction)
         case button(SDButton, surface: SDSurfaceStyle?)
-        case selectedCategoryChip(SDChip)
+        case selectedCategoryChip(SDChip, current: HomeFilterCurrentCategory?)
     }
 
     enum ChipAction: Hashable {
@@ -104,10 +104,10 @@ extension HomeFilterCollectionView: UICollectionViewDataSource {
             let cell: HomeFilterCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             cell.bind(button: button, surface: surface)
             return cell
-        case .selectedCategoryChip(let chip):
+        case .selectedCategoryChip(let chip, let current):
             let cell: HomeFilterCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-            cell.bindSelectedCategory(chip: chip) { [weak self] in
-                self?.homeFilterSelectable.selectCategory.send(nil)
+            cell.bindSelectedCategory(chip: chip, current: current) { [weak self] in
+                self?.homeFilterSelectable.onTapCloseSelectedCategory.send(())
             }
             return cell
         }
@@ -123,8 +123,8 @@ extension HomeFilterCollectionView: UICollectionViewDelegateFlowLayout {
             return HomeFilterCell.Layout.size(for: chip)
         case .button(let button, _):
             return HomeFilterCell.Layout.size(for: button)
-        case .selectedCategoryChip(let chip):
-            return HomeFilterCell.Layout.sizeForSelectedCategory(chip: chip)
+        case .selectedCategoryChip(let chip, let current):
+            return HomeFilterCell.Layout.sizeForSelectedCategory(chip: chip, current: current)
         }
     }
 

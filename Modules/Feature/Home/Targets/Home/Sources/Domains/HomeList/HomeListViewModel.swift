@@ -16,10 +16,8 @@ extension HomeListViewModel {
         let onTapCategoryFilter = PassthroughSubject<Void, Never>()
         let onTapRadioOption = PassthroughSubject<(paramKey: String, optionIndex: Int), Never>()
         let onTapActionLink = PassthroughSubject<SDLink, Never>()
-        let onTapOnlyRecentActivity = PassthroughSubject<Void, Never>()
+        let onTapCloseSelectedCategory = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<StoreFoodCategoryResponse?, Never>()
-        let onToggleSort = PassthroughSubject<StoreSortType, Never>()
-        let onTapOnlyBoss = PassthroughSubject<Void, Never>()
         let onToggleCertifiedStore = PassthroughSubject<Void, Never>()
         let onTapStore = PassthroughSubject<StoreWithExtraResponse, Never>()
         let onTapAdvertisement = PassthroughSubject<AdvertisementResponse?, Never>()
@@ -36,32 +34,49 @@ extension HomeListViewModel {
 
         // To HomeViewModel
         let onSelectCategoryFilter = PassthroughSubject<StoreFoodCategoryResponse?, Never>()
-        let onToggleSort = PassthroughSubject<StoreSortType, Never>()
-        let onTapOnlyBoss = PassthroughSubject<Void, Never>()
-        let onTapOnlyRecentActivity = PassthroughSubject<Void, Never>()
+        let onTapRadioOption = PassthroughSubject<(paramKey: String, optionIndex: Int), Never>()
     }
 
     struct State {
         var stores: [StoreWithExtraResponse] = []
         var categoryFilter: StoreFoodCategoryResponse?
-        var isOnlyRecentActivity: Bool
-        var sortType: StoreSortType
+        // 정적 typed targetStores 와 output.isOnlyBoss 용. SDU radioSelection["targetStores"] 와 동기화된다.
         var isOnlyBossStore: Bool
+        // SDU 가 아닌 리스트 화면 전용 토글 (인증 가게만). dynamicParams 로 주입.
         var isOnlyCertifiedStore = false
         var mapLocation: CLLocation?
         var nextCursor: String?
         var hasMore: Bool
         let mapMaxDistance: Double?
         var advertisement: AdvertisementResponse?
+        // 홈 화면에서 받은 SDU 필터 스냅샷. chip 렌더링과 dynamicParams 합성의 단일 출처.
+        var filterSections: [any HomeScreenSection] = []
+        var radioSelection: [String: Int] = [:]
     }
 
     struct Config {
         let categoryFilter: StoreFoodCategoryResponse?
-        let isOnlyRecentActivity: Bool
-        let sortType: StoreSortType
         let isOnlyBossStore: Bool
         let mapLocation: CLLocation?
         let mapMaxDistance: Double?
+        let filterSections: [any HomeScreenSection]
+        let radioSelection: [String: Int]
+
+        public init(
+            categoryFilter: StoreFoodCategoryResponse?,
+            isOnlyBossStore: Bool,
+            mapLocation: CLLocation?,
+            mapMaxDistance: Double?,
+            filterSections: [any HomeScreenSection] = [],
+            radioSelection: [String: Int] = [:]
+        ) {
+            self.categoryFilter = categoryFilter
+            self.isOnlyBossStore = isOnlyBossStore
+            self.mapLocation = mapLocation
+            self.mapMaxDistance = mapMaxDistance
+            self.filterSections = filterSections
+            self.radioSelection = radioSelection
+        }
     }
 
     enum Route {
@@ -100,10 +115,9 @@ final class HomeListViewModel: BaseViewModel {
 
     init(config: Config, dependency: Dependency = Dependency()) {
         let initialDatasource = HomeListViewModel.makeFilterDatasource(
-            categoryFilter: config.categoryFilter,
-            isOnlyRecentActivity: config.isOnlyRecentActivity,
-            sortType: config.sortType,
-            isOnlyBossStore: config.isOnlyBossStore
+            filterSections: config.filterSections,
+            radioSelection: config.radioSelection,
+            categoryFilter: config.categoryFilter
         )
         self.output = Output(
             filterDatasource: .init(initialDatasource),
@@ -112,12 +126,12 @@ final class HomeListViewModel: BaseViewModel {
         )
         self.state = State(
             categoryFilter: config.categoryFilter,
-            isOnlyRecentActivity: config.isOnlyRecentActivity,
-            sortType: config.sortType,
             isOnlyBossStore: config.isOnlyBossStore,
             mapLocation: config.mapLocation,
             hasMore: true,
-            mapMaxDistance: config.mapMaxDistance
+            mapMaxDistance: config.mapMaxDistance,
+            filterSections: config.filterSections,
+            radioSelection: config.radioSelection
         )
         self.dependency = dependency
         super.init()
@@ -162,17 +176,6 @@ final class HomeListViewModel: BaseViewModel {
             })
             .store(in: &cancellables)
 
-        input.onTapOnlyRecentActivity
-            .withUnretained(self)
-            .sink(receiveValue: { (owner: HomeListViewModel, _) in
-                owner.state.isOnlyRecentActivity.toggle()
-                owner.clearData()
-                owner.sendClickRecentActivityFilter(value: owner.state.isOnlyRecentActivity)
-                owner.fetchAroundStore()
-                owner.updateFilterDatasource()
-            })
-            .store(in: &cancellables)
-
         input.onToggleCertifiedStore
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeListViewModel, _) in
@@ -180,28 +183,6 @@ final class HomeListViewModel: BaseViewModel {
                 owner.state.isOnlyCertifiedStore.toggle()
                 owner.sendClickOnlyVisitFilterLog(owner.state.isOnlyCertifiedStore)
                 owner.output.isOnlyCertified.send(owner.state.isOnlyCertifiedStore)
-                owner.fetchAroundStore()
-                owner.updateFilterDatasource()
-            })
-            .store(in: &cancellables)
-
-        input.onToggleSort
-            .withUnretained(self)
-            .sink(receiveValue: { (owner: HomeListViewModel, _: StoreSortType) in
-                owner.clearData()
-                owner.state.sortType = owner.state.sortType.toggled()
-                owner.sendClickSortingLog(owner.state.sortType)
-                owner.fetchAroundStore()
-                owner.updateFilterDatasource()
-            })
-            .store(in: &cancellables)
-
-        input.onTapOnlyBoss
-            .withUnretained(self)
-            .sink(receiveValue: { (owner: HomeListViewModel, _) in
-                owner.clearData()
-                owner.state.isOnlyBossStore.toggle()
-                owner.sendClickOnlyBossFilterLog(owner.state.isOnlyBossStore)
                 owner.fetchAroundStore()
                 owner.updateFilterDatasource()
             })
@@ -236,66 +217,182 @@ final class HomeListViewModel: BaseViewModel {
         input.onTapRadioOption
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeListViewModel, payload: (paramKey: String, optionIndex: Int)) in
-                // chip 탭을 기존 typed input 으로 라우팅 — 기존 처리 흐름 재사용
-                switch payload.paramKey {
-                case "filterConditions":
-                    owner.input.onTapOnlyRecentActivity.send(())
-                case "sortType":
-                    owner.input.onToggleSort.send(owner.state.sortType)
-                case "targetStores":
-                    owner.input.onTapOnlyBoss.send(())
-                default:
-                    break
-                }
+                owner.applyRadioSelection(paramKey: payload.paramKey, optionIndex: payload.optionIndex)
+                owner.clearData()
+                owner.fetchAroundStore()
+                owner.updateFilterDatasource()
             })
             .store(in: &cancellables)
 
         input.onTapActionLink
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeListViewModel, link: SDLink) in
+                owner.sendActionBarClickLog(for: link)
                 owner.dependency.deepLinkHandler.handleLinkResponse(link)
+            })
+            .store(in: &cancellables)
+
+        input.onTapCloseSelectedCategory
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: HomeListViewModel, _) in
+                owner.sendCurrentCategoryCloseLog()
+                owner.input.selectCategory.send(nil)
             })
             .store(in: &cancellables)
     }
 
     private func bindRelay() {
-        input.onToggleSort
-            .subscribe(output.onToggleSort)
-            .store(in: &cancellables)
-
-        input.onTapOnlyBoss
-            .subscribe(output.onTapOnlyBoss)
-            .store(in: &cancellables)
-
         input.selectCategory
             .subscribe(output.onSelectCategoryFilter)
             .store(in: &cancellables)
 
-        input.onTapOnlyRecentActivity
-            .subscribe(output.onTapOnlyRecentActivity)
+        input.onTapRadioOption
+            .subscribe(output.onTapRadioOption)
             .store(in: &cancellables)
+    }
+
+    private func applyRadioSelection(paramKey: String, optionIndex: Int) {
+        state.radioSelection[paramKey] = optionIndex
+        let paramValue = currentParamValue(for: paramKey, fallbackOptionIndex: optionIndex)
+
+        // 정적 typed targetStores 와 output.isOnlyBoss 가 SDU 선택과 어긋나지 않도록 동기화한다.
+        if paramKey == "targetStores" {
+            state.isOnlyBossStore = (paramValue == "BOSS_STORE")
+            output.isOnlyBoss.send(state.isOnlyBossStore)
+        }
+
+        switch paramKey {
+        case "filterConditions":
+            sendClickRecentActivityFilter(value: paramValue == "RECENT_ACTIVITY")
+        case "sortType":
+            if let value = paramValue, let sortType = StoreSortType(rawValue: value) {
+                sendClickSortingLog(sortType)
+            }
+        case "targetStores":
+            sendClickOnlyBossFilterLog(paramValue == "BOSS_STORE")
+        default:
+            // 신규 paramKey 는 분석 이벤트 추가 시 case 분리.
+            break
+        }
+
+        sendClickFilterLog(paramKey: paramKey, optionIndex: optionIndex)
+    }
+
+    private func sendClickFilterLog(paramKey: String, optionIndex: Int) {
+        guard let radioBar = allBars
+            .compactMap({ $0 as? HomeFilterRadioBar })
+            .first(where: { $0.paramKey == paramKey }),
+              let option = radioBar.options[safe: optionIndex],
+              let clickLog = option.clickLog else { return }
+        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+    }
+
+    private func sendActionBarClickLog(for link: SDLink) {
+        let actionBar = allBars
+            .compactMap { $0 as? HomeFilterActionBar }
+            .first { $0.button.link == link }
+        guard let clickLog = actionBar?.clickLog else { return }
+        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+    }
+
+    private func sendCurrentCategoryCloseLog() {
+        let currentCategory = allBars
+            .compactMap { $0 as? HomeFilterCategoryBar }
+            .first?
+            .currentCategoryFilter
+        guard let clickLog = currentCategory?.clickLog else { return }
+        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+    }
+
+    /// SDU 응답에서 paramValue 를 우선 조회. 응답이 없으면 fallback chip 의 optionIndex(0/1) 로 추정한다.
+    private func currentParamValue(for paramKey: String, fallbackOptionIndex: Int) -> String? {
+        if let radioBar = allBars.compactMap({ $0 as? HomeFilterRadioBar }).first(where: { $0.paramKey == paramKey }),
+           let value = radioBar.options[safe: fallbackOptionIndex]?.paramValue {
+            return value
+        }
+        // 정적 fallback 매핑 (SDU 응답이 없을 때만 사용).
+        switch paramKey {
+        case "filterConditions":
+            return fallbackOptionIndex == 1 ? "RECENT_ACTIVITY" : nil
+        case "sortType":
+            return fallbackOptionIndex == 1 ? "LATEST" : "DISTANCE_ASC"
+        case "targetStores":
+            return fallbackOptionIndex == 1 ? "BOSS_STORE" : nil
+        default:
+            return nil
+        }
+    }
+
+    private var allBars: [any HomeFilterBar] {
+        state.filterSections
+            .compactMap { $0 as? HomeFilterSection }
+            .flatMap(\.bars)
     }
 
     private func updateFilterDatasource() {
         let datasource = HomeListViewModel.makeFilterDatasource(
-            categoryFilter: state.categoryFilter,
-            isOnlyRecentActivity: state.isOnlyRecentActivity,
-            sortType: state.sortType,
-            isOnlyBossStore: state.isOnlyBossStore
+            filterSections: state.filterSections,
+            radioSelection: state.radioSelection,
+            categoryFilter: state.categoryFilter
         )
         output.filterDatasource.send(datasource)
         output.categoryFilter.send(state.categoryFilter)
         output.isOnlyBoss.send(state.isOnlyBossStore)
     }
 
-    /// 정적 fallback chip 합성 — HomeListViewController 의 필터 영역도 chip 기반으로 렌더하기 위해.
-    /// SDUI 가 본 화면용으로 분리되기 전까지 사용.
+    /// SDU 응답이 있으면 홈 화면과 동일한 chip 을 렌더하고, 없으면 정적 fallback 으로 합성한다.
     static func makeFilterDatasource(
-        categoryFilter: StoreFoodCategoryResponse?,
-        isOnlyRecentActivity: Bool,
-        sortType: StoreSortType,
-        isOnlyBossStore: Bool
+        filterSections: [any HomeScreenSection],
+        radioSelection: [String: Int],
+        categoryFilter: StoreFoodCategoryResponse?
     ) -> [HomeFilterCollectionView.CellType] {
+        let allBars = filterSections
+            .compactMap { $0 as? HomeFilterSection }
+            .flatMap(\.bars)
+
+        guard allBars.isEmpty.isNot else {
+            return makeFallbackDatasource(
+                radioSelection: radioSelection,
+                categoryFilter: categoryFilter
+            )
+        }
+
+        var cells: [HomeFilterCollectionView.CellType] = []
+        for bar in allBars {
+            switch bar {
+            case let categoryBar as HomeFilterCategoryBar:
+                cells.append(.chip(categoryBar.categoriesFilter, surface: nil, action: .openCategoryFilter))
+                if let category = categoryFilter {
+                    let fontColor = categoryBar.currentCategoryFilter?.fontColor ?? "#000000"
+                    let chip = makeSelectedCategoryChip(category: category, fontColor: fontColor)
+                    cells.append(.selectedCategoryChip(chip, current: categoryBar.currentCategoryFilter))
+                }
+            case let radioBar as HomeFilterRadioBar:
+                let selectedIndex = radioSelection[radioBar.paramKey] ?? 0
+                guard radioBar.options.isEmpty.isNot,
+                      let currentOption = radioBar.options[safe: selectedIndex] else { break }
+                let nextIndex = (selectedIndex + 1) % radioBar.options.count
+                let surface: SDSurfaceStyle? = selectedIndex == 0 ? nil : selectedSurface(for: currentOption.chip)
+                let action = HomeFilterCollectionView.ChipAction.selectRadio(paramKey: radioBar.paramKey, optionIndex: nextIndex)
+                cells.append(.chip(currentOption.chip, surface: surface, action: action))
+            case let actionBar as HomeFilterActionBar:
+                cells.append(.button(actionBar.button, surface: nil))
+            default:
+                break
+            }
+        }
+        return cells
+    }
+
+    /// SDU 응답이 없을 때 사용. 활성/비활성 상태와 다음 optionIndex 모두 radioSelection 에서 직접 파생.
+    private static func makeFallbackDatasource(
+        radioSelection: [String: Int],
+        categoryFilter: StoreFoodCategoryResponse?
+    ) -> [HomeFilterCollectionView.CellType] {
+        let isOnlyRecentActivity = (radioSelection["filterConditions"] ?? 0) == 1
+        let isLatestSort = (radioSelection["sortType"] ?? 0) == 1
+        let isOnlyBossStore = (radioSelection["targetStores"] ?? 0) == 1
+
         let categoriesChip = SDChip(
             image: nil,
             text: SDText(text: "음식 종류", isHtml: false, fontColor: "#5A5A5A"),
@@ -305,14 +402,10 @@ final class HomeListViewModel: BaseViewModel {
             .chip(categoriesChip, surface: nil, action: .openCategoryFilter)
         ]
         if let categoryFilter {
-            let chip = SDChip(
-                image: SDImage(url: categoryFilter.imageUrl, style: SDImageStyle(width: 16, height: 16)),
-                text: SDText(text: categoryFilter.name, isHtml: false, fontColor: "#FF858F"),
-                style: nil
-            )
+            let chip = makeSelectedCategoryChip(category: categoryFilter, fontColor: "#FF858F")
             cells.append(.chip(chip, surface: nil, action: .openCategoryFilter))
         }
-        // 영업중 (filterConditions): paramValue=null 전체, "RECENT_ACTIVITY" 영업중
+        // optionIndex 는 "탭 후 전환될 다음 인덱스" 를 의미 (SDU chip 과 동일 규약).
         let recentActivityChip = SDChip(
             image: nil,
             text: SDText(text: "🔥 영업 중", isHtml: false, fontColor: isOnlyRecentActivity ? "#FF858F" : "#5A5A5A"),
@@ -321,20 +414,18 @@ final class HomeListViewModel: BaseViewModel {
         cells.append(.chip(
             recentActivityChip,
             surface: nil,
-            action: .selectRadio(paramKey: "filterConditions", optionIndex: isOnlyRecentActivity ? 1 : 0)
+            action: .selectRadio(paramKey: "filterConditions", optionIndex: isOnlyRecentActivity ? 0 : 1)
         ))
-        // 정렬 (sortType)
         let sortChip = SDChip(
             image: nil,
-            text: SDText(text: sortType == .distanceAsc ? "거리순" : "최신순", isHtml: false, fontColor: "#5A5A5A"),
+            text: SDText(text: isLatestSort ? "최신순" : "거리순", isHtml: false, fontColor: "#5A5A5A"),
             style: nil
         )
         cells.append(.chip(
             sortChip,
             surface: nil,
-            action: .selectRadio(paramKey: "sortType", optionIndex: sortType == .distanceAsc ? 0 : 1)
+            action: .selectRadio(paramKey: "sortType", optionIndex: isLatestSort ? 0 : 1)
         ))
-        // 사장님 직영점 (targetStores)
         let bossChip = SDChip(
             image: nil,
             text: SDText(text: "🧑‍🍳 사장님 직영", isHtml: false, fontColor: isOnlyBossStore ? "#FF858F" : "#5A5A5A"),
@@ -343,9 +434,27 @@ final class HomeListViewModel: BaseViewModel {
         cells.append(.chip(
             bossChip,
             surface: nil,
-            action: .selectRadio(paramKey: "targetStores", optionIndex: isOnlyBossStore ? 1 : 0)
+            action: .selectRadio(paramKey: "targetStores", optionIndex: isOnlyBossStore ? 0 : 1)
         ))
         return cells
+    }
+
+    private static func selectedSurface(for chip: SDChip) -> SDSurfaceStyle? {
+        guard let background = chip.style?.backgroundColor else { return nil }
+        return SDSurfaceStyle(
+            backgroundColor: background,
+            borderColor: chip.text.fontColor,
+            borderWidth: 1,
+            cornerRadius: 10
+        )
+    }
+
+    private static func makeSelectedCategoryChip(category: StoreFoodCategoryResponse, fontColor: String) -> SDChip {
+        SDChip(
+            image: SDImage(url: category.imageUrl, style: SDImageStyle(width: 16, height: 16)),
+            text: SDText(text: category.name, isHtml: false, fontColor: fontColor),
+            style: nil
+        )
     }
 
     private func canLoad(index: Int) -> Bool {
@@ -378,20 +487,51 @@ final class HomeListViewModel: BaseViewModel {
             categoryIds = [filterCategory.categoryId]
         }
         let targetStores: [StoreType] = state.isOnlyBossStore ? [.bossStore] : [.userStore, .bossStore]
-        let filterConditions: [ActivitiesStatus] = state.isOnlyRecentActivity ? [.recentActivity] : [.recentActivity, .noRecentActivity]
 
         return FetchAroundStoreInput(
             distanceM: state.mapMaxDistance ?? 0,
             categoryIds: categoryIds,
             targetStores: targetStores,
-            sortType: state.sortType,
-            filterCertifiedStores: state.isOnlyCertifiedStore,
-            filterConditions: filterConditions,
             size: 10,
             cursor: state.nextCursor,
             mapLatitude: state.mapLocation?.coordinate.latitude ?? 0,
-            mapLongitude: state.mapLocation?.coordinate.longitude ?? 0
+            mapLongitude: state.mapLocation?.coordinate.longitude ?? 0,
+            dynamicParams: collectDynamicParams()
         )
+    }
+
+    private func collectDynamicParams() -> [String: String] {
+        var params: [String: String] = [:]
+        let radioBars = allBars.compactMap { $0 as? HomeFilterRadioBar }
+
+        if radioBars.isEmpty {
+            // SDU 응답이 없을 때 fallback chip 의 선택 상태를 paramValue 로 매핑.
+            for paramKey in ["filterConditions", "sortType"] {
+                let idx = state.radioSelection[paramKey] ?? 0
+                if let value = currentParamValue(for: paramKey, fallbackOptionIndex: idx) {
+                    params[paramKey] = value
+                }
+            }
+        } else {
+            // targetStores 는 정적 typed 필드로 직렬화되므로 dynamicParams 에서 제외해 중복 쿼리 키를 막는다.
+            for bar in radioBars where bar.paramKey != "targetStores" {
+                let idx = state.radioSelection[bar.paramKey] ?? 0
+                if let value = bar.options[safe: idx]?.paramValue {
+                    params[bar.paramKey] = value
+                }
+            }
+        }
+
+        // SDU 와 무관한 리스트 전용 필터. true 일 때만 포함.
+        if state.isOnlyCertifiedStore {
+            params["filterCertifiedStores"] = "true"
+        }
+
+        // sortType 은 서버 required 필드. 어떤 경로로도 채워지지 않은 경우 기본값으로 보강.
+        if params["sortType"] == nil {
+            params["sortType"] = "DISTANCE_ASC"
+        }
+        return params
     }
 
     private func fetchDatas() {
@@ -469,6 +609,13 @@ extension HomeListViewModel {
     }
 
     private func sendClickCategoryFilterLog() {
+        if let clickLog = allBars
+            .compactMap({ $0 as? HomeFilterCategoryBar })
+            .first?
+            .categoriesFilterClickLog {
+            dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+            return
+        }
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
             objectType: .button,
@@ -533,6 +680,10 @@ extension HomeListViewModel: HomeFilterSelectable {
 
     var onTapActionLink: PassthroughSubject<SDLink, Never> {
         return input.onTapActionLink
+    }
+
+    var onTapCloseSelectedCategory: PassthroughSubject<Void, Never> {
+        return input.onTapCloseSelectedCategory
     }
 
     var selectCategory: PassthroughSubject<StoreFoodCategoryResponse?, Never> {

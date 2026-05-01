@@ -29,6 +29,7 @@ extension HomeViewModel {
         let onTapOnlyBoss = PassthroughSubject<Void, Never>()
         let onTapRadioOption = PassthroughSubject<(paramKey: String, optionIndex: Int), Never>()
         let onTapActionLink = PassthroughSubject<SDLink, Never>()
+        let onTapCloseSelectedCategory = PassthroughSubject<Void, Never>()
         let onTapSearchAddress = PassthroughSubject<Void, Never>()
         let searchByAddress = PassthroughSubject<PlaceDocument, Never>()
         let onTapResearch = PassthroughSubject<Void, Never>()
@@ -143,6 +144,9 @@ final class HomeViewModel: BaseViewModel {
 
     private var state = State()
     private var dependency: Dependency
+    // 필터 응답이 도착하기 전에 home-cards가 먼저 호출되면 dynamicParams가 비어버리므로,
+    // 첫 fetchHomeCards 호출만 위치 + 필터 응답 두 신호가 모두 준비될 때까지 게이팅한다.
+    private let filterScreenLoaded = PassthroughSubject<Void, Never>()
 
     init(dependency: Dependency = Dependency()) {
         self.dependency = dependency
@@ -190,6 +194,14 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.newCameraPosition = location
                 owner.output.cameraPosition.send(location)
                 owner.dependency.preference.userCurrentLocation = location
+            })
+            .store(in: &cancellables)
+
+        // 첫 home-cards 요청은 위치 + 필터 응답이 모두 준비된 뒤에만 발사한다.
+        Publishers.CombineLatest(getCurrentLocation, filterScreenLoaded)
+            .first()
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: HomeViewModel, _) in
                 owner.fetchHomeCards()
             })
             .store(in: &cancellables)
@@ -282,7 +294,16 @@ final class HomeViewModel: BaseViewModel {
         input.onTapActionLink
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, link: SDLink) in
+                owner.sendActionBarClickLog(for: link)
                 owner.output.route.send(.deepLink(link))
+            })
+            .store(in: &cancellables)
+
+        input.onTapCloseSelectedCategory
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: HomeViewModel, _) in
+                owner.sendCurrentCategoryCloseLog()
+                owner.input.selectCategory.send(nil)
             })
             .store(in: &cancellables)
 
@@ -509,14 +530,6 @@ final class HomeViewModel: BaseViewModel {
             categoryIds = [filterCategory.categoryId]
         }
 
-        let openStatuses: [FilterOpenStatuses]? = currentParamValue(for: "filterOpenStatuses")
-            .flatMap(FilterOpenStatuses.init(rawValue:))
-            .map { [$0] }
-        let filterConditions: [ActivitiesStatus] = (currentParamValue(for: "filterConditions") != nil)
-            ? [.recentActivity]
-            : [.recentActivity, .noRecentActivity]
-        let sortType: StoreSortType = currentParamValue(for: "sortType")
-            .flatMap(StoreSortType.init(rawValue:)) ?? .distanceAsc
         let targetStores: [StoreType] = (currentParamValue(for: "targetStores") == "BOSS_STORE")
             ? [.bossStore]
             : [.userStore, .bossStore]
@@ -525,15 +538,29 @@ final class HomeViewModel: BaseViewModel {
             distanceM: state.mapMaxDistance ?? 0,
             categoryIds: categoryIds,
             targetStores: targetStores,
-            sortType: sortType,
-            filterCertifiedStores: false,
-            filterOpenStatuses: openStatuses,
-            filterConditions: filterConditions,
             size: 10,
             cursor: nil,
             mapLatitude: state.resultCameraPosition?.coordinate.latitude ?? 0,
-            mapLongitude: state.resultCameraPosition?.coordinate.longitude ?? 0
+            mapLongitude: state.resultCameraPosition?.coordinate.longitude ?? 0,
+            dynamicParams: collectDynamicParams()
         )
+    }
+
+    private func collectDynamicParams() -> [String: String] {
+        var params: [String: String] = [:]
+        for case let radioBar as HomeFilterRadioBar in allBars {
+            // targetStores 는 정적 필드로 직렬화되므로 dynamicParams 에서 제외해 중복 쿼리 키를 막는다.
+            guard radioBar.paramKey != "targetStores" else { continue }
+            let selectedIndex = state.radioSelection[radioBar.paramKey] ?? 0
+            guard let option = radioBar.options[safe: selectedIndex],
+                  let paramValue = option.paramValue else { continue }
+            params[radioBar.paramKey] = paramValue
+        }
+        // sortType 은 서버 required 필드. SDU 응답이 비었거나 sortType 라디오바가 없는 경우 기본값으로 보강.
+        if params["sortType"] == nil {
+            params["sortType"] = state.sortType.rawValue
+        }
+        return params
     }
 
     private func currentParamValue(for paramKey: String) -> String? {
@@ -569,20 +596,13 @@ final class HomeViewModel: BaseViewModel {
     }
 
     private func bindHomeListViewModel(_ viewModel: HomeListViewModel) {
-        viewModel.output.onToggleSort
-            .subscribe(input.onToggleSort)
-            .store(in: &viewModel.cancellables)
-
-        viewModel.output.onTapOnlyBoss
-            .subscribe(input.onTapOnlyBoss)
-            .store(in: &viewModel.cancellables)
-
         viewModel.output.onSelectCategoryFilter
             .subscribe(input.selectCategory)
             .store(in: &viewModel.cancellables)
 
-        viewModel.output.onTapOnlyRecentActivity
-            .subscribe(input.onTapOnlyRecentActivity)
+        // 리스트에서 SDU 라디오를 토글하면 홈도 동일 paramKey/optionIndex 로 갱신해 chip · home-cards 가 싱크된다.
+        viewModel.output.onTapRadioOption
+            .subscribe(input.onTapRadioOption)
             .store(in: &viewModel.cancellables)
     }
 
@@ -678,11 +698,11 @@ final class HomeViewModel: BaseViewModel {
     private func presentListView() {
         let config = HomeListViewModel.Config(
             categoryFilter: state.categoryFilter,
-            isOnlyRecentActivity: state.isOnlyRecentActivity,
-            sortType: state.sortType,
             isOnlyBossStore: state.isOnlyBossStore,
             mapLocation: state.resultCameraPosition,
-            mapMaxDistance: state.mapMaxDistance
+            mapMaxDistance: state.mapMaxDistance,
+            filterSections: state.filterSections,
+            radioSelection: state.radioSelection
         )
         let viewModel = HomeListViewModel(config: config)
         bindHomeListViewModel(viewModel)
@@ -712,6 +732,8 @@ extension HomeViewModel {
             case .failure:
                 output.filterDatasource.send(makeFallbackFilterDatasource())
             }
+            // 성공/실패와 무관하게 게이팅을 풀어 첫 fetchHomeCards 가 진행되도록 한다.
+            filterScreenLoaded.send()
         }
         .store(in: taskBag)
     }
@@ -736,6 +758,29 @@ extension HomeViewModel {
               let option = radioBar.options[safe: optionIndex] else { return }
         state.radioSelection[paramKey] = optionIndex
         applyParamValueToLegacyState(paramKey: paramKey, paramValue: option.paramValue)
+        sendClickFilterLog(option: option)
+    }
+
+    private func sendClickFilterLog(option: HomeFilterRadioOption) {
+        guard let clickLog = option.clickLog else { return }
+        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+    }
+
+    private func sendActionBarClickLog(for link: SDLink) {
+        let actionBar = allBars
+            .compactMap { $0 as? HomeFilterActionBar }
+            .first { $0.button.link == link }
+        guard let clickLog = actionBar?.clickLog else { return }
+        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+    }
+
+    private func sendCurrentCategoryCloseLog() {
+        let currentCategory = allBars
+            .compactMap { $0 as? HomeFilterCategoryBar }
+            .first?
+            .currentCategoryFilter
+        guard let clickLog = currentCategory?.clickLog else { return }
+        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
     }
 
     private func applyParamValueToLegacyState(paramKey: String, paramValue: String?) {
@@ -788,8 +833,9 @@ extension HomeViewModel {
             case let categoryBar as HomeFilterCategoryBar:
                 cells.append(.chip(categoryBar.categoriesFilter, surface: nil, action: .openCategoryFilter))
                 if let category = state.categoryFilter {
-                    let chip = makeSelectedCategoryChip(category: category, fontColor: "#000000")
-                    cells.append(.selectedCategoryChip(chip))
+                    let fontColor = categoryBar.currentCategoryFilter?.fontColor ?? "#000000"
+                    let chip = makeSelectedCategoryChip(category: category, fontColor: fontColor)
+                    cells.append(.selectedCategoryChip(chip, current: categoryBar.currentCategoryFilter))
                 }
             case let radioBar as HomeFilterRadioBar:
                 let selectedIndex = state.radioSelection[radioBar.paramKey] ?? 0
@@ -837,7 +883,7 @@ extension HomeViewModel {
         ]
         if let category = state.categoryFilter {
             let chip = makeSelectedCategoryChip(category: category, fontColor: "#000000")
-            cells.append(.selectedCategoryChip(chip))
+            cells.append(.selectedCategoryChip(chip, current: nil))
         }
         return cells
     }
@@ -879,6 +925,13 @@ extension HomeViewModel {
     }
 
     private func sendClickCategoryFilterLog() {
+        if let clickLog = allBars
+            .compactMap({ $0 as? HomeFilterCategoryBar })
+            .first?
+            .categoriesFilterClickLog {
+            dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+            return
+        }
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
             objectType: .button,
@@ -959,6 +1012,10 @@ extension HomeViewModel: HomeFilterSelectable {
 
     var onTapActionLink: PassthroughSubject<SDLink, Never> {
         input.onTapActionLink
+    }
+
+    var onTapCloseSelectedCategory: PassthroughSubject<Void, Never> {
+        input.onTapCloseSelectedCategory
     }
 
     var selectCategory: PassthroughSubject<StoreFoodCategoryResponse?, Never> {

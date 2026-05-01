@@ -1,15 +1,19 @@
 import Foundation
 
+import Model
+
 public protocol LogEventType {
     var screen: ScreenName { set get }
     var name: EventName { set get }
     var extraParameters: [ParameterName: Any]? { set get }
+    /// GA 로 전송될 최종 파라미터. 기본 구현은 extension 에 있으며, 서버 드리븐(SDClickEvent) 등은 자체 구현으로 오버라이드한다.
+    var parameters: [String: Any] { get }
 }
 
 public extension LogEventType {
     var parameters: [String: Any] {
         var result: [String: Any] = [:]
-        
+
         if let extraParameters {
             extraParameters.forEach { key, value in
                 if let objectId = value as? LogObjectId {
@@ -21,7 +25,7 @@ public extension LogEventType {
                 }
             }
         }
-        
+
         result[ParameterName.screen.rawValue] = screen.rawValue
         return result
     }
@@ -36,6 +40,27 @@ public struct ClickEvent: LogEventType {
         screen: ScreenName,
         objectType: LogObjectType,
         objectId: LogObjectId,
+        extraParameters: [ParameterName : Any]? = nil
+    ) {
+        self.screen = screen
+
+        var clickObject: [ParameterName: Any] = [
+            .objectId: objectId,
+            .objectType: objectType
+        ]
+
+        if let extraParameters {
+            clickObject.merge(extraParameters) { _, new in new }
+        }
+
+        self.extraParameters = clickObject
+    }
+
+    /// 서버 응답으로 내려오는 동적 식별자(logKey 등)를 object_id 로 보낼 때 사용.
+    public init(
+        screen: ScreenName,
+        objectType: LogObjectType,
+        objectId: String,
         extraParameters: [ParameterName : Any]? = nil
     ) {
         self.screen = screen
@@ -76,6 +101,49 @@ public struct ImpressionEvent: LogEventType {
         }
 
         self.extraParameters = clickObject
+    }
+}
+
+/// 서버 드리븐 SDClickLog 를 GA 로그로 직렬화하는 ClickEvent 변형.
+/// - SDClickLog.screenName 은 GA `screen` 으로
+/// - SDClickLog.objectType / objectId 는 `extraParameters` 의 object_type / object_id 로
+/// - SDClickLog.extraParameters 는 그대로 GA 파라미터에 병합.
+public struct SDClickEvent: LogEventType {
+    public var screen: ScreenName = .empty
+    public var name: EventName = .click
+    public var extraParameters: [ParameterName: Any]?
+
+    private let clickLog: SDClickLog
+
+    public init(clickLog: SDClickLog, additionalParameters: [ParameterName: Any]? = nil) {
+        self.clickLog = clickLog
+        self.extraParameters = additionalParameters
+    }
+
+    public var parameters: [String: Any] {
+        var result: [String: Any] = [:]
+        result[ParameterName.screen.rawValue] = clickLog.screenName
+        result[ParameterName.objectType.rawValue] = clickLog.objectType
+        result[ParameterName.objectId.rawValue] = clickLog.objectId
+
+        for (key, value) in clickLog.extraParameters {
+            if let raw = value.anyValue {
+                result[key] = raw
+            }
+        }
+
+        if let extraParameters {
+            extraParameters.forEach { key, value in
+                if let objectId = value as? LogObjectId {
+                    result[key.rawValue] = objectId.rawValue
+                } else if let objectType = value as? LogObjectType {
+                    result[key.rawValue] = objectType.rawValue
+                } else {
+                    result[key.rawValue] = value
+                }
+            }
+        }
+        return result
     }
 }
 
