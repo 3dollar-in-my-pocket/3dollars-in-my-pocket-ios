@@ -763,7 +763,7 @@ extension HomeViewModel {
 
     private func sendClickFilterLog(option: HomeFilterRadioOption) {
         guard let clickLog = option.clickLog else { return }
-        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+        dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
     }
 
     private func sendActionBarClickLog(for link: SDLink) {
@@ -771,7 +771,7 @@ extension HomeViewModel {
             .compactMap { $0 as? HomeFilterActionBar }
             .first { $0.button.link == link }
         guard let clickLog = actionBar?.clickLog else { return }
-        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+        dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
     }
 
     private func sendCurrentCategoryCloseLog() {
@@ -780,7 +780,7 @@ extension HomeViewModel {
             .first?
             .currentCategoryFilter
         guard let clickLog = currentCategory?.clickLog else { return }
-        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+        dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
     }
 
     private func applyParamValueToLegacyState(paramKey: String, paramValue: String?) {
@@ -918,7 +918,7 @@ extension HomeViewModel {
             .compactMap({ $0 as? HomeFilterCategoryBar })
             .first?
             .categoriesFilterClickLog {
-            dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+            dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
             return
         }
         dependency.logManager.sendEvent(event: ClickEvent(

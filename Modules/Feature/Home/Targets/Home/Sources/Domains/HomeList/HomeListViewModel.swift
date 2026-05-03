@@ -284,7 +284,7 @@ final class HomeListViewModel: BaseViewModel {
             .first(where: { $0.paramKey == paramKey }),
               let option = radioBar.options[safe: optionIndex],
               let clickLog = option.clickLog else { return }
-        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+        dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
     }
 
     private func sendActionBarClickLog(for link: SDLink) {
@@ -292,7 +292,7 @@ final class HomeListViewModel: BaseViewModel {
             .compactMap { $0 as? HomeFilterActionBar }
             .first { $0.button.link == link }
         guard let clickLog = actionBar?.clickLog else { return }
-        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+        dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
     }
 
     private func sendCurrentCategoryCloseLog() {
@@ -301,7 +301,7 @@ final class HomeListViewModel: BaseViewModel {
             .first?
             .currentCategoryFilter
         guard let clickLog = currentCategory?.clickLog else { return }
-        dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+        dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
     }
 
     /// SDU 응답에서 paramValue 를 우선 조회. 응답이 없으면 fallback chip 의 optionIndex(0/1) 로 추정한다.
@@ -599,7 +599,7 @@ extension HomeListViewModel {
             .compactMap({ $0 as? HomeFilterCategoryBar })
             .first?
             .categoriesFilterClickLog {
-            dependency.logManager.sendEvent(event: SDClickEvent(clickLog: clickLog))
+            dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
             return
         }
         dependency.logManager.sendEvent(event: ClickEvent(
