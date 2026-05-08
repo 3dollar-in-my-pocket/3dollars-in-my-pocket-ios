@@ -193,7 +193,9 @@ final class HomeView: BaseView {
     }
     
     func showFilterTooltiop(isShow: Bool) {
-        if isShow, let cell = homeFilterCollectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as? HomeFilterCell {
+        if isShow,
+           let indexPath = homeFilterCollectionView.firstRadioCellIndexPath,
+           let cell = homeFilterCollectionView.cellForItem(at: indexPath) as? HomeFilterCell {
             let homeFilterTooltip = HomeFilterTooltip()
             addSubview(homeFilterTooltip)
             homeFilterTooltip.snp.makeConstraints {

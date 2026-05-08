@@ -261,7 +261,8 @@ let project = Project(
         .firebaseSDK,
         .netfox,
         .admob,
-        .naverMap
+        .naverMap,
+        .lookinServer
     ],
     settings: .settings(
         base: BuildSetting.Project.base,
@@ -334,6 +335,7 @@ let project = Project(
                 .Package.netfox,
                 .Package.admob,
                 .Package.naverMap,
+                .Package.lookinServer,
                 .target(name: "service-extension"),
                 .target(name: "content-extension"),
             ],

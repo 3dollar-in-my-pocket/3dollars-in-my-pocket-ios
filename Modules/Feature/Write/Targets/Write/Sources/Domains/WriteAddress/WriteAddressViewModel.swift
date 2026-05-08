@@ -158,7 +158,9 @@ public final class WriteAddressViewModel: BaseViewModel, WriteAddressViewModelIn
                 distanceM: 50,
                 targetStores: [.userStore, .bossStore],
                 mapLatitude: location.coordinate.latitude,
-                mapLongitude: location.coordinate.longitude
+                mapLongitude: location.coordinate.longitude,
+                // sortType 은 서버 required 필드라 SDU 흐름이 아닌 직접 호출에서도 명시한다.
+                dynamicParams: ["sortType": "DISTANCE_ASC"]
             )
             let result = await dependency.storeRepository.fetchAroundStores(input: input)
 

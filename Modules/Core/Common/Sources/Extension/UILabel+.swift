@@ -59,12 +59,12 @@ public extension UILabel {
         textColor = UIColor(hex: sdText.fontColor)
         if sdText.isHtml {
             var parser = ZHTMLParserBuilder.initWithDefault()
-            
+
             if let customFont {
                 let rootStyle = MarkupStyle(font: MarkupStyleFont(customFont))
                 parser = parser.set(rootStyle: rootStyle)
             }
-            
+
             let boldStyle = MarkupStyle(
                 font: MarkupStyleFont(
                     weight: .style(.bold),
@@ -72,7 +72,7 @@ public extension UILabel {
                 )
             )
             parser = parser.set(B_HTMLTagName(), withCustomStyle: boldStyle)
-            
+
             attributedText = parser.build().render(sdText.text)
         } else {
             text = sdText.text

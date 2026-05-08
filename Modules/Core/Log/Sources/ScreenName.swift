@@ -1,77 +1,85 @@
 import Foundation
 
-public enum ScreenName: String {
-    case empty
-    
-    case splash
-    
-    case markerPopup = "marker_popup"
-    
+public struct ScreenName: RawRepresentable, Hashable {
+    public let rawValue: String
+
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+}
+
+public extension ScreenName {
+    static let empty = ScreenName(rawValue: "empty")
+
+    static let splash = ScreenName(rawValue: "splash")
+
+    static let markerPopup = ScreenName(rawValue: "marker_popup")
+
     // Membership
-    case signIn = "sign_in"
-    case signUp = "sign_up"
-    case accountInfo = "account_info"
-    
+    static let signIn = ScreenName(rawValue: "sign_in")
+    static let signUp = ScreenName(rawValue: "sign_up")
+    static let accountInfo = ScreenName(rawValue: "account_info")
+
     // Home
-    case home
-    case homeList = "home_list"
-    case categoryFilter = "category_filter"
-    case mainAdBanner = "main_ad_banner"
-    case searchAddress = "search_address"
-    
+    static let home = ScreenName(rawValue: "home")
+    static let homeList = ScreenName(rawValue: "home_list")
+    static let categoryFilter = ScreenName(rawValue: "category_filter")
+    static let mainAdBanner = ScreenName(rawValue: "main_ad_banner")
+    static let searchAddress = ScreenName(rawValue: "search_address")
+
     /// Write
-    case writeAddress = "write_address"
-    case writeAddressPopup = "write_address_popup"
-    case writeAddressDetail = "write_address_detail"
-    case writeAddressBossBottomSheet = "write_address_boss_bottom_sheet"
-    case writeDetailComplete = "write_detail_complete"
-    case writeDetailAdditionalInfo = "write_detail_additional_info"
-    case writeDetailCategory = "write_detail_category"
-    case writeDetailCategoryBottomSheet = "write_detail_category_botom_sheet"
-    case writeDetailInfo = "write_detail_info"
-    case writeDetailMenu = "write_detail_menu"
-    case categorySelection = "category_selection"
-    case editStore = "edit_store"
-    case editStoreInfo = "edit_store_info"
-    
+    static let writeAddress = ScreenName(rawValue: "write_address")
+    static let writeAddressPopup = ScreenName(rawValue: "write_address_popup")
+    static let writeAddressDetail = ScreenName(rawValue: "write_address_detail")
+    static let writeAddressBossBottomSheet = ScreenName(rawValue: "write_address_boss_bottom_sheet")
+    static let writeDetailComplete = ScreenName(rawValue: "write_detail_complete")
+    static let writeDetailAdditionalInfo = ScreenName(rawValue: "write_detail_additional_info")
+    static let writeDetailCategory = ScreenName(rawValue: "write_detail_category")
+    static let writeDetailCategoryBottomSheet = ScreenName(rawValue: "write_detail_category_botom_sheet")
+    static let writeDetailInfo = ScreenName(rawValue: "write_detail_info")
+    static let writeDetailMenu = ScreenName(rawValue: "write_detail_menu")
+    static let categorySelection = ScreenName(rawValue: "category_selection")
+    static let editStore = ScreenName(rawValue: "edit_store")
+    static let editStoreInfo = ScreenName(rawValue: "edit_store_info")
+
     /// Store
-    case storeDetail = "store_detail"
-    case uploadPhoto = "upload_photo"
-    case reviewList = "review_list"
-    case reportStore = "report_store"
-    case reviewBottomSheet = "review_bottom_sheet"
-    case visitStore = "visit_store"
-    case bossStoreDetail = "boss_store_detail"
-    case bossStoreReview = "boss_store_review"
-    case bossStoreReviewWrite = "boss_store_review_write"
-    case bossStorePhoto = "boss_store_photo"
-    case storeDetailBridge = "store_detail_bridge"
-    case storeContributors = "store_contributors"
-    
+    static let storeDetail = ScreenName(rawValue: "store_detail")
+    static let uploadPhoto = ScreenName(rawValue: "upload_photo")
+    static let reviewList = ScreenName(rawValue: "review_list")
+    static let reportStore = ScreenName(rawValue: "report_store")
+    static let reviewBottomSheet = ScreenName(rawValue: "review_bottom_sheet")
+    static let visitStore = ScreenName(rawValue: "visit_store")
+    static let bossStoreDetail = ScreenName(rawValue: "boss_store_detail")
+    static let bossStoreReview = ScreenName(rawValue: "boss_store_review")
+    static let bossStoreReviewWrite = ScreenName(rawValue: "boss_store_review_write")
+    static let bossStorePhoto = ScreenName(rawValue: "boss_store_photo")
+    static let storeDetailBridge = ScreenName(rawValue: "store_detail_bridge")
+    static let storeContributors = ScreenName(rawValue: "store_contributors")
+
     /// Community
-    case community = "community"
-    case pollDetail = "poll_detail"
-    case pollList = "poll_list"
-    case reportPoll = "report_poll"
-    case reportReview = "report_review"
-    case createPoll = "careate_poll"
-    
+    static let community = ScreenName(rawValue: "community")
+    static let pollDetail = ScreenName(rawValue: "poll_detail")
+    static let pollList = ScreenName(rawValue: "poll_list")
+    static let reportPoll = ScreenName(rawValue: "report_poll")
+    static let reportReview = ScreenName(rawValue: "report_review")
+    static let createPoll = ScreenName(rawValue: "careate_poll")
+
     // MyPage
-    case myPage = "my_page"
-    case registeredStore = "registered_store"
-    case visitedList = "visited_list"
-    case clickReview = "click_review"
-    case myReview = "my_review"
-    case myMedal = "my_medal"
-    case myBookmarkList = "my_bookmark_list"
-    case editBookmarkList = "edit_bookmark_list"
-    case bookmarkListViewer = "bookmark_list_viewer"
-    case setting
-    case editNickname = "edit_nickname"
-    case qna
-    case faq
-    case teamInfo = "team_info"
-    
+    static let myPage = ScreenName(rawValue: "my_page")
+    static let registeredStore = ScreenName(rawValue: "registered_store")
+    static let visitedList = ScreenName(rawValue: "visited_list")
+    static let clickReview = ScreenName(rawValue: "click_review")
+    static let myReview = ScreenName(rawValue: "my_review")
+    static let myMedal = ScreenName(rawValue: "my_medal")
+    static let myBookmarkList = ScreenName(rawValue: "my_bookmark_list")
+    static let editBookmarkList = ScreenName(rawValue: "edit_bookmark_list")
+    static let bookmarkListViewer = ScreenName(rawValue: "bookmark_list_viewer")
+    static let setting = ScreenName(rawValue: "setting")
+    static let editNickname = ScreenName(rawValue: "edit_nickname")
+    static let qna = ScreenName(rawValue: "qna")
+    static let faq = ScreenName(rawValue: "faq")
+    static let teamInfo = ScreenName(rawValue: "team_info")
+
     // Feed
-    case feedList = "feed_list"
+    static let feedList = ScreenName(rawValue: "feed_list")
 }
