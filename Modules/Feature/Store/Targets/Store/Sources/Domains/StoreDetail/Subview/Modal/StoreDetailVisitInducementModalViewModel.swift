@@ -1,0 +1,83 @@
+import UIKit
+import Combine
+
+import Common
+import DesignSystem
+import Model
+import Networking
+import Log
+
+final class StoreDetailVisitInducementModalViewModel: BaseViewModel {
+    struct Input {
+        let didTapVisit = PassthroughSubject<VisitType, Never>()
+    }
+
+    struct Output {
+        let title: String
+        let subtitle: String
+        let openedButtonTitle: String
+        let closedButtonTitle: String
+
+        let onSuccessVisit = PassthroughSubject<String, Never>()
+        let showErrorAlert = PassthroughSubject<Error, Never>()
+    }
+
+    struct Config {
+        let storeId: Int
+    }
+
+    struct Dependency {
+        let visitRepository: VisitRepository
+        let logManager: LogManagerProtocol
+
+        init(
+            visitRepository: VisitRepository = VisitRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared
+        ) {
+            self.visitRepository = visitRepository
+            self.logManager = logManager
+        }
+    }
+
+    let input = Input()
+    let output: Output
+    private let config: Config
+    private let dependency: Dependency
+
+    init(config: Config, dependency: Dependency = Dependency()) {
+        self.config = config
+        self.dependency = dependency
+        self.output = Output(
+            title: Strings.VisitInducementModal.title,
+            subtitle: Strings.VisitInducementModal.subtitle,
+            openedButtonTitle: Strings.VisitInducementModal.opened,
+            closedButtonTitle: Strings.VisitInducementModal.closed
+        )
+        super.init()
+    }
+
+    override func bind() {
+        super.bind()
+
+        input.didTapVisit
+            .sink { [weak self] (type: VisitType) in
+                self?.visitStore(type: type)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func visitStore(type: VisitType) {
+        Task { [weak self] in
+            guard let self else { return }
+            let request = VisitStoreRequestInput(storeId: config.storeId, visitType: type)
+            let result = await dependency.visitRepository.visitStore(input: request)
+
+            switch result {
+            case .success:
+                output.onSuccessVisit.send(Strings.DisplayItemModal.thanksToast)
+            case .failure(let error):
+                output.showErrorAlert.send(error)
+            }
+        }
+    }
+}

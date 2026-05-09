@@ -20,6 +20,7 @@ enum StoreApi {
     case fetchStore(input: FetchStoreInput)
     case patchStore(storeId: String, input: UserStorePatchRequestV3)
     case fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType])
+    case recordDisplayItemImpression(storeId: Int, itemTypes: [StoreDisplayItemType])
     case fetchStoreScreen(FetchStoreScreenInput)
     case fetchStoreContributorHistories(storeId: Int, cursor: String?)
 }
@@ -64,6 +65,8 @@ extension StoreApi: RequestType {
         case .patchStore(_, let input):
             return input
         case .fetchDisplayItems(_, let itemTypes):
+            return ["itemTypes": itemTypes.map { $0.rawValue }]
+        case .recordDisplayItemImpression(_, let itemTypes):
             return ["itemTypes": itemTypes.map { $0.rawValue }]
         case .fetchStoreScreen:
             return nil
@@ -110,6 +113,8 @@ extension StoreApi: RequestType {
             return .patch
         case .fetchDisplayItems:
             return .get
+        case .recordDisplayItemImpression:
+            return .post
         case .fetchStoreScreen:
             return .get
         case .fetchStoreContributorHistories:
@@ -153,6 +158,8 @@ extension StoreApi: RequestType {
         case .patchStore:
             return .json
         case .fetchDisplayItems:
+            return .location
+        case .recordDisplayItemImpression:
             return .json
         case .fetchStoreScreen(let input):
             return .custom([
@@ -198,6 +205,8 @@ extension StoreApi: RequestType {
             return "/api/v3/store/\(storeId)"
         case .fetchDisplayItems(let storeId, _):
             return "/api/v1/store/\(storeId)/display-items"
+        case .recordDisplayItemImpression(let storeId, _):
+            return "/api/v1/store/\(storeId)/display-items/impression"
         case .fetchStoreScreen(let input):
             return "/api/v1/screen/store/\(input.storeId)"
         case .fetchStoreContributorHistories(let storeId, _):

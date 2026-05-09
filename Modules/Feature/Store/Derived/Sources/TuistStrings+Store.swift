@@ -96,6 +96,16 @@ public enum StoreStrings: Sendable {
     }
   }
 
+  public enum DisappearanceInquiryModal: Sendable {
+  /// 혹시... 이 가게 사라졌나요?
+    public static let title = StoreStrings.tr("Localization", "disappearance_inquiry_modal.title")
+  }
+
+  public enum DisplayItemModal: Sendable {
+  /// 고마워요! 덕분에 정보가 업데이트 됐어요!
+    public static let thanksToast = StoreStrings.tr("Localization", "display_item_modal.thanks_toast")
+  }
+
   public enum MapDetail: Sendable {
   /// 길 안내보기
     public static let navigationButton = StoreStrings.tr("Localization", "map_detail.navigation_button")
@@ -415,6 +425,17 @@ public enum StoreStrings: Sendable {
       public static let notExistsBold = StoreStrings.tr("Localization", "visit.title.not_exists_bold")
     }
   }
+
+  public enum VisitInducementModal: Sendable {
+  /// 닫았어요
+    public static let closed = StoreStrings.tr("Localization", "visit_inducement_modal.closed")
+    /// 열었어요
+    public static let opened = StoreStrings.tr("Localization", "visit_inducement_modal.opened")
+    /// 3초면 충분해요!
+    public static let subtitle = StoreStrings.tr("Localization", "visit_inducement_modal.subtitle")
+    /// 다시 찾은 이 가게, 지금 열었나요?
+    public static let title = StoreStrings.tr("Localization", "visit_inducement_modal.title")
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name
@@ -429,5 +450,5 @@ extension StoreStrings {
 }
 
 // swiftlint:disable convenience_type
-// swiftlint:enable all
 // swiftformat:enable all
+// swiftlint:enable all

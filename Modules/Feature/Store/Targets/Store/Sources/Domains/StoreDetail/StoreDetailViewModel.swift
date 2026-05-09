@@ -62,7 +62,8 @@ final class StoreDetailViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
         let error = PassthroughSubject<Error, Never>()
         
-        let showDisappearanceInquiryModal = PassthroughSubject<StoreDetailDisappearanceInquiryModalViewModel, Never>()
+        let showDisappearanceInquiryModal = PassthroughSubject<StoreDetailModalContext<StoreDetailDisappearanceInquiryModalViewModel>, Never>()
+        let showVisitCertificationInducementModal = PassthroughSubject<StoreDetailModalContext<StoreDetailVisitInducementModalViewModel>, Never>()
     }
     
     struct State {
@@ -378,30 +379,6 @@ final class StoreDetailViewModel: BaseViewModel {
                 output.isFavorited.send(response.favorite.isFavorite)
             case .failure(let error):
                 output.error.send(error)
-            }
-        }
-    }
-    
-    private func fetchDisplayItems() {
-        Task { [weak self] in
-            guard let self else { return }
-            
-            let displayItemsResult = await storeService.fetchDisplayItems(storeId: state.storeId, itemTypes: [.disappearanceInquiryModal])
-            
-            switch displayItemsResult {
-            case .success(let response):
-                if let item = response.contents.first,
-                   item.itemType == .disappearanceInquiryModal, item.isVisible {
-                    let viewModel = StoreDetailDisappearanceInquiryModalViewModel()
-                    viewModel.output.moveToReport
-                        .sink { [weak self] in
-                            self?.presentReportModal()
-                        }
-                        .store(in: &viewModel.cancellables)
-                    output.showDisappearanceInquiryModal.send(viewModel)
-                }
-            case .failure:
-                break
             }
         }
     }
@@ -980,4 +957,83 @@ extension StoreDetailViewModel {
             extraParameters: extraParameters
         )
     }
+}
+
+// MARK: - Display Items
+extension StoreDetailViewModel {
+    func fetchDisplayItems() {
+        Task { [weak self] in
+            guard let self else { return }
+
+            let viewCount = StoreViewSessionCounter.shared.increment(storeId: state.storeId)
+            let itemTypes: [StoreDisplayItemType] = [
+                .disappearanceInquiryModal,
+                .visitCertificationInducementModal
+            ]
+            let displayItemsResult = await storeService.fetchDisplayItems(
+                storeId: state.storeId,
+                itemTypes: itemTypes
+            )
+
+            switch displayItemsResult {
+            case .success(let response):
+                handleDisplayItems(contents: response.contents, viewCount: viewCount)
+            case .failure:
+                break
+            }
+        }
+    }
+
+    private func handleDisplayItems(contents: [StoreDisplayResponse], viewCount: Int) {
+        for item in contents where item.isVisible {
+            guard meetsSessionViewCountCondition(trigger: item.trigger, viewCount: viewCount) else {
+                continue
+            }
+
+            switch item.itemType {
+            case .disappearanceInquiryModal:
+                let viewModel = StoreDetailDisappearanceInquiryModalViewModel(
+                    config: .init(storeId: state.storeId)
+                )
+                let context = StoreDetailModalContext(
+                    viewModel: viewModel,
+                    trigger: item.trigger,
+                    onDisplayed: { [weak self] in
+                        self?.recordImpression(itemType: .disappearanceInquiryModal)
+                    }
+                )
+                output.showDisappearanceInquiryModal.send(context)
+            case .visitCertificationInducementModal:
+                let viewModel = StoreDetailVisitInducementModalViewModel(
+                    config: .init(storeId: state.storeId)
+                )
+                let context = StoreDetailModalContext(
+                    viewModel: viewModel,
+                    trigger: item.trigger,
+                    onDisplayed: { [weak self] in
+                        self?.recordImpression(itemType: .visitCertificationInducementModal)
+                    }
+                )
+                output.showVisitCertificationInducementModal.send(context)
+            case .unknown:
+                break
+            }
+        }
+    }
+
+    private func meetsSessionViewCountCondition(trigger: StoreDisplayTrigger?, viewCount: Int) -> Bool {
+        guard let range = trigger?.conditions?.sessionViewCountRange else { return true }
+        return range.contains(viewCount)
+    }
+
+    private func recordImpression(itemType: StoreDisplayItemType) {
+        Task { [weak self] in
+            guard let self else { return }
+            _ = await storeService.recordDisplayItemImpression(
+                storeId: state.storeId,
+                itemTypes: [itemType]
+            )
+        }
+    }
+
 }

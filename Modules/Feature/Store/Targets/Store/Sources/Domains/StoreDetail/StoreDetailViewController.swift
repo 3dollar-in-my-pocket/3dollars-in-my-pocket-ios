@@ -19,6 +19,7 @@ final class StoreDetailViewController: BaseViewController {
         viewModel: viewModel,
         rootViewController: self
     )
+    fileprivate var modalDismissWorkItems: [ObjectIdentifier: DispatchWorkItem] = [:]
 
     static func instance(storeId: Int) -> StoreDetailViewController {
         return StoreDetailViewController(storeId: storeId)
@@ -43,6 +44,22 @@ final class StoreDetailViewController: BaseViewController {
         viewModel.input.load.send(())
 
         storeDetailView.collectionView.collectionViewLayout = createLayout()
+        setupOutsideModalTapGesture()
+    }
+
+    private func setupOutsideModalTapGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(handleOutsideModalTap(_:)))
+        gesture.cancelsTouchesInView = false
+        gesture.delaysTouchesBegan = false
+        gesture.delaysTouchesEnded = false
+        storeDetailView.addGestureRecognizer(gesture)
+    }
+
+    @objc private func handleOutsideModalTap(_ gesture: UITapGestureRecognizer) {
+        let location = gesture.location(in: storeDetailView)
+        for case let modal as DismissibleStoreDetailModal in storeDetailView.subviews where !modal.frame.contains(location) {
+            animateModalOut(view: modal)
+        }
     }
 
     override func sendPageView() {
@@ -166,8 +183,16 @@ final class StoreDetailViewController: BaseViewController {
         viewModel.output.showDisappearanceInquiryModal
             .main
             .withUnretained(self)
-            .sink { (owner: StoreDetailViewController, viewModel: StoreDetailDisappearanceInquiryModalViewModel) in
-                owner.showDisappearanceInquiryModal(with: viewModel)
+            .sink { (owner: StoreDetailViewController, context) in
+                owner.showDisappearanceInquiryModal(with: context)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.showVisitCertificationInducementModal
+            .main
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, context) in
+                owner.showVisitCertificationInducementModal(with: context)
             }
             .store(in: &cancellables)
     }
@@ -552,17 +577,6 @@ final class StoreDetailViewController: BaseViewController {
         mapItem.openInMaps(launchOptions: options)
     }
 
-    private func showDisappearanceInquiryModal(with viewModel: StoreDetailDisappearanceInquiryModalViewModel) {
-        let view = StoreDetailDisappearanceInquiryModalView()
-        view.bind(viewModel: viewModel)
-        storeDetailView.addSubview(view)
-        storeDetailView.collectionView.contentInset.bottom = 80
-        view.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(12)
-            $0.bottom.equalTo(storeDetailView.bottomStickyView.snp.top).offset(-12)
-        }
-    }
-
     private func pushWebView(webViewType: WebViewType) {
         let viewController = Environment.appModuleInterface.createWebViewController(webviewType: webViewType)
 
@@ -571,7 +585,152 @@ final class StoreDetailViewController: BaseViewController {
     
     private func pushStoreDetail(storeId: Int) {
         let viewController = StoreDetailViewController.instance(storeId: storeId)
-        
+
         navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+// MARK: - Display Item Modal
+extension StoreDetailViewController {
+    func showDisappearanceInquiryModal(with context: StoreDetailModalContext<StoreDetailDisappearanceInquiryModalViewModel>) {
+        let view = StoreDetailDisappearanceInquiryModalView()
+        view.bind(viewModel: context.viewModel)
+        storeDetailView.addSubview(view)
+        storeDetailView.collectionView.contentInset.bottom = 360
+        view.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalTo(storeDetailView.bottomStickyView.snp.top).offset(-20)
+        }
+
+        context.viewModel.output.onReportSucceed
+            .main
+            .sink { [weak self, weak view] in
+                let icon = Icons.heartFill.image.withTintColor(Colors.mainRed.color, renderingMode: .alwaysOriginal)
+                ToastManager.shared.show(message: Strings.DisplayItemModal.thanksToast, icon: icon)
+                if let view {
+                    self?.animateModalOut(view: view)
+                }
+            }
+            .store(in: &context.viewModel.cancellables)
+
+        context.viewModel.output.showErrorAlert
+            .main
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &context.viewModel.cancellables)
+
+        context.viewModel.input.didTapReport
+            .main
+            .sink { [weak self, weak view] in
+                guard let self, let view else { return }
+                self.cancelAutoDismiss(view: view)
+            }
+            .store(in: &context.viewModel.cancellables)
+
+        if let duration = context.trigger?.displayDurationSeconds {
+            context.viewModel.output.selectedIndex
+                .compactMap { $0 }
+                .main
+                .sink { [weak self, weak view] _ in
+                    guard let self, let view else { return }
+                    self.scheduleAutoDismiss(view: view, duration: duration)
+                }
+                .store(in: &context.viewModel.cancellables)
+        }
+
+        animateModalIn(view: view, trigger: context.trigger, onDisplayed: context.onDisplayed)
+    }
+
+    func showVisitCertificationInducementModal(with context: StoreDetailModalContext<StoreDetailVisitInducementModalViewModel>) {
+        let view = StoreDetailVisitInducementModalView()
+        view.bind(viewModel: context.viewModel)
+        storeDetailView.addSubview(view)
+        view.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalTo(storeDetailView.bottomStickyView.snp.top).offset(-20)
+        }
+
+        context.viewModel.output.onSuccessVisit
+            .main
+            .sink { [weak self, weak view] (message: String) in
+                let icon = Icons.heartFill.image.withTintColor(Colors.mainRed.color, renderingMode: .alwaysOriginal)
+                ToastManager.shared.show(message: message, icon: icon)
+                if let view {
+                    self?.animateModalOut(view: view)
+                }
+                self?.viewModel.input.load.send(())
+            }
+            .store(in: &context.viewModel.cancellables)
+
+        context.viewModel.output.showErrorAlert
+            .main
+            .withUnretained(self)
+            .sink { (owner: StoreDetailViewController, error: Error) in
+                owner.showErrorAlert(error: error)
+            }
+            .store(in: &context.viewModel.cancellables)
+
+        animateModalIn(view: view, trigger: context.trigger, onDisplayed: context.onDisplayed)
+    }
+
+    private func animateModalIn(view: UIView, trigger: StoreDisplayTrigger?, onDisplayed: @escaping () -> Void) {
+        view.superview?.layoutIfNeeded()
+        let translationY = max(view.bounds.height + 40, 240)
+        view.transform = CGAffineTransform(translationX: 0, y: translationY)
+        view.alpha = 0
+
+        let delay = trigger?.displayAfterSeconds ?? 0
+        let duration = trigger?.displayDurationSeconds
+
+        UIView.animate(
+            withDuration: 0.5,
+            delay: delay,
+            options: [.curveEaseInOut]
+        ) {
+            view.transform = .identity
+            view.alpha = 1
+        } completion: { [weak self, weak view] _ in
+            guard let self, let view, view.superview != nil else { return }
+            onDisplayed()
+
+            if let duration {
+                self.scheduleAutoDismiss(view: view, duration: duration)
+            }
+        }
+    }
+
+    fileprivate func animateModalOut(view: UIView) {
+        cancelAutoDismiss(view: view)
+        let translationY = max(view.bounds.height + 40, 240)
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0,
+            options: [.curveEaseOut]
+        ) {
+            view.transform = CGAffineTransform(translationX: 0, y: translationY)
+            view.alpha = 0
+        } completion: { _ in
+            view.removeFromSuperview()
+        }
+    }
+
+    fileprivate func scheduleAutoDismiss(view: UIView, duration: Double) {
+        cancelAutoDismiss(view: view)
+        let id = ObjectIdentifier(view)
+        let workItem = DispatchWorkItem { [weak self, weak view] in
+            guard let self, let view, view.superview != nil else { return }
+            self.modalDismissWorkItems[id] = nil
+            self.animateModalOut(view: view)
+        }
+        modalDismissWorkItems[id] = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration, execute: workItem)
+    }
+
+    fileprivate func cancelAutoDismiss(view: UIView) {
+        let id = ObjectIdentifier(view)
+        modalDismissWorkItems[id]?.cancel()
+        modalDismissWorkItems[id] = nil
     }
 }

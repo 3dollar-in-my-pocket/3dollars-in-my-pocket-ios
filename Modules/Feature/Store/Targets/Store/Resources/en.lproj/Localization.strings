@@ -62,6 +62,18 @@
 "report_modal.description_bold" = "3건 이상";
 "report_modal.button" = "신고하기";
 
+// 사라진 가게 확인 모달
+"disappearance_inquiry_modal.title" = "혹시... 이 가게 사라졌나요?";
+
+// 방문 인증 유도 모달
+"visit_inducement_modal.title" = "다시 찾은 이 가게, 지금 열었나요?";
+"visit_inducement_modal.subtitle" = "3초면 충분해요!";
+"visit_inducement_modal.opened" = "열었어요";
+"visit_inducement_modal.closed" = "닫았어요";
+
+// 활동 유도 모달 공통
+"display_item_modal.thanks_toast" = "고마워요! 덕분에 정보가 업데이트 됐어요!";
+
 // 길 안내 바텀 시트
 "navigation_bottom_sheet.title" = "길 안내 앱 선택";
 "navigation_bottom_sheet.message" = "지도앱이 설치되어있지 않은 경우 정상적으로 실행되지 않습니다.";
