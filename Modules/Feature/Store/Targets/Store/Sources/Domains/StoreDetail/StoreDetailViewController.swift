@@ -605,10 +605,15 @@ extension StoreDetailViewController {
         context.viewModel.output.onReportSucceed
             .main
             .sink { [weak self, weak view] in
-                let icon = Icons.heartFill.image.withTintColor(Colors.mainRed.color, renderingMode: .alwaysOriginal)
-                ToastManager.shared.show(message: Strings.DisplayItemModal.thanksToast, icon: icon)
                 if let view {
                     self?.animateModalOut(view: view)
+                }
+
+                let icon = Icons.heartFill.image.withTintColor(Colors.mainRed.color, renderingMode: .alwaysOriginal)
+                let modalSlideOutDuration: TimeInterval = 0.3
+                let toastExtraDelay: TimeInterval = 0.5
+                DispatchQueue.main.asyncAfter(deadline: .now() + modalSlideOutDuration + toastExtraDelay) {
+                    ToastManager.shared.show(message: Strings.DisplayItemModal.thanksToast, icon: icon)
                 }
             }
             .store(in: &context.viewModel.cancellables)
@@ -655,12 +660,17 @@ extension StoreDetailViewController {
         context.viewModel.output.onSuccessVisit
             .main
             .sink { [weak self, weak view] (message: String) in
-                let icon = Icons.heartFill.image.withTintColor(Colors.mainRed.color, renderingMode: .alwaysOriginal)
-                ToastManager.shared.show(message: message, icon: icon)
                 if let view {
                     self?.animateModalOut(view: view)
                 }
                 self?.viewModel.input.load.send(())
+
+                let icon = Icons.heartFill.image.withTintColor(Colors.mainRed.color, renderingMode: .alwaysOriginal)
+                let modalSlideOutDuration: TimeInterval = 0.3
+                let toastExtraDelay: TimeInterval = 0.5
+                DispatchQueue.main.asyncAfter(deadline: .now() + modalSlideOutDuration + toastExtraDelay) {
+                    ToastManager.shared.show(message: message, icon: icon)
+                }
             }
             .store(in: &context.viewModel.cancellables)
 
