@@ -10,6 +10,7 @@ import Log
 final class StoreDetailVisitInducementModalViewModel: BaseViewModel {
     struct Input {
         let didTapVisit = PassthroughSubject<VisitType, Never>()
+        let didImpression = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -60,8 +61,17 @@ final class StoreDetailVisitInducementModalViewModel: BaseViewModel {
         super.bind()
 
         input.didTapVisit
-            .sink { [weak self] (type: VisitType) in
-                self?.visitStore(type: type)
+            .withUnretained(self)
+            .sink { (owner, type: VisitType) in
+                owner.sendClickVisitLog(type: type)
+                owner.visitStore(type: type)
+            }
+            .store(in: &cancellables)
+
+        input.didImpression
+            .withUnretained(self)
+            .sink { (owner, _) in
+                owner.sendImpressionLog()
             }
             .store(in: &cancellables)
     }
@@ -79,5 +89,39 @@ final class StoreDetailVisitInducementModalViewModel: BaseViewModel {
                 output.showErrorAlert.send(error)
             }
         }
+    }
+}
+
+// MARK: Log
+extension StoreDetailVisitInducementModalViewModel {
+    private func sendImpressionLog() {
+        dependency.logManager.sendEvent(event: ImpressionEvent(
+            screen: .storeDetail,
+            objectType: .banner,
+            objectId: .visitInducementModal,
+            extraParameters: [.storeId: config.storeId]
+        ))
+    }
+
+    private func sendClickVisitLog(type: VisitType) {
+        let value: LogObjectId
+        switch type {
+        case .exists:
+            value = .visitSuccess
+        case .notExists:
+            value = .visitFail
+        case .unknown:
+            return
+        }
+
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: .storeDetail,
+            objectType: .button,
+            objectId: .visitInducementModal,
+            extraParameters: [
+                .storeId: config.storeId,
+                .value: value
+            ]
+        ))
     }
 }

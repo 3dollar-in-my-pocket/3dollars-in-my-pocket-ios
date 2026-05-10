@@ -15,11 +15,13 @@ import Model
 import Networking
 import Log
 
+
 final class StoreDetailDisappearanceInquiryModalViewModel: BaseViewModel {
     struct Input {
         let load = PassthroughSubject<Void, Never>()
         let didTapReason = PassthroughSubject<Int, Never>()
         let didTapReport = PassthroughSubject<Void, Never>()
+        let didImpression = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -45,13 +47,16 @@ final class StoreDetailDisappearanceInquiryModalViewModel: BaseViewModel {
     struct Dependency {
         let reportRepository: ReportRepository
         let storeRepository: StoreRepository
+        let logManager: LogManagerProtocol
 
         init(
             reportRepository: ReportRepository = ReportRepositoryImpl(),
-            storeRepository: StoreRepository = StoreRepositoryImpl()
+            storeRepository: StoreRepository = StoreRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared
         ) {
             self.reportRepository = reportRepository
             self.storeRepository = storeRepository
+            self.logManager = logManager
         }
     }
 
@@ -89,13 +94,22 @@ final class StoreDetailDisappearanceInquiryModalViewModel: BaseViewModel {
                 owner.state.selectedReason = reason
                 owner.output.selectedIndex.send(index)
                 owner.output.isReportEnabled.send(true)
+                owner.sendSelectReasonLog(reason: reason)
             }
             .store(in: &cancellables)
 
         input.didTapReport
             .withUnretained(self)
             .sink { (owner, _) in
+                owner.sendClickReportLog()
                 owner.reportStore()
+            }
+            .store(in: &cancellables)
+
+        input.didImpression
+            .withUnretained(self)
+            .sink { (owner, _) in
+                owner.sendImpressionLog()
             }
             .store(in: &cancellables)
     }
@@ -131,5 +145,42 @@ final class StoreDetailDisappearanceInquiryModalViewModel: BaseViewModel {
                 output.showErrorAlert.send(error)
             }
         }
+    }
+}
+
+// MARK: Log
+extension StoreDetailDisappearanceInquiryModalViewModel {
+    private func sendImpressionLog() {
+        dependency.logManager.sendEvent(event: ImpressionEvent(
+            screen: .storeDetail,
+            objectType: .banner,
+            objectId: .disappearanceInquiryModal,
+            extraParameters: [.storeId: config.storeId]
+        ))
+    }
+
+    private func sendSelectReasonLog(reason: ReportReason) {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: .storeDetail,
+            objectType: .button,
+            objectId: .selectReason,
+            extraParameters: [
+                .storeId: config.storeId,
+                .reasonType: reason.type
+            ]
+        ))
+    }
+
+    private func sendClickReportLog() {
+        guard let reason = state.selectedReason else { return }
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: .storeDetail,
+            objectType: .button,
+            objectId: .report,
+            extraParameters: [
+                .storeId: config.storeId,
+                .reasonType: reason.type
+            ]
+        ))
     }
 }

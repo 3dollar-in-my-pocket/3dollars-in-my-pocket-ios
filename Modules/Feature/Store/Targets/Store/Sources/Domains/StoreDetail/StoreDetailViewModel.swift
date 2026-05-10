@@ -998,8 +998,9 @@ extension StoreDetailViewModel {
                 let context = StoreDetailModalContext(
                     viewModel: viewModel,
                     trigger: item.trigger,
-                    onDisplayed: { [weak self] in
+                    onDisplayed: { [weak self, weak viewModel] in
                         self?.recordImpression(itemType: .disappearanceInquiryModal)
+                        viewModel?.input.didImpression.send(())
                     }
                 )
                 output.showDisappearanceInquiryModal.send(context)
@@ -1010,8 +1011,9 @@ extension StoreDetailViewModel {
                 let context = StoreDetailModalContext(
                     viewModel: viewModel,
                     trigger: item.trigger,
-                    onDisplayed: { [weak self] in
+                    onDisplayed: { [weak self, weak viewModel] in
                         self?.recordImpression(itemType: .visitCertificationInducementModal)
+                        viewModel?.input.didImpression.send(())
                     }
                 )
                 output.showVisitCertificationInducementModal.send(context)
