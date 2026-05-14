@@ -131,6 +131,7 @@ public extension TargetDependency {
         public static let panModal = TargetDependency.external(name: "PanModal")
         public static let combineCocoa = TargetDependency.external(name: "CombineCocoa")
         public static let zMarkupParser = TargetDependency.external(name: "ZMarkupParser")
+        public static let floatingPanel = TargetDependency.external(name: "FloatingPanel")
     }
     
     class Package {

@@ -23,6 +23,7 @@ let project = Project.makeFeatureModule(
         .SPM.panModal,
         .SPM.combineCocoa,
         .SPM.kingfisher,
+        .SPM.floatingPanel,
         .Package.naverMap,
         .Feature.feed
     ],

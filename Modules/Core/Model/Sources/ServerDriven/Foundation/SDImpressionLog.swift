@@ -1,6 +1,6 @@
 import Foundation
 
-public struct SDClickLog: Decodable, Equatable, Hashable {
+public struct SDImpressionLog: Decodable, Equatable, Hashable {
     public let screenName: String
     public let objectType: String
     public let objectId: String

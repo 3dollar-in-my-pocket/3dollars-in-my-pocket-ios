@@ -1,147 +1,77 @@
 import UIKit
 
+import Common
 import Model
-
-struct HomeListSection: Hashable {
-    public var items: [HomeListSectionItem]
-    
-    public init(items: [HomeListSectionItem]) {
-        self.items = items
-    }
-}
-        
-enum HomeListSectionItem: Hashable {
-    case store(StoreWithExtraResponse)
-    case ad(HomeListAdCellViewModel)
-    case admob
-    case emptyStore
-}
 
 typealias HomeListSnapshot = NSDiffableDataSourceSnapshot<HomeListSection, HomeListSectionItem>
 
 final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSection, HomeListSectionItem> {
-    let viewModel: HomeListViewModel
-    
-    init(collectionView: UICollectionView, viewModel: HomeListViewModel, rootViewController: UIViewController) {
+    private let viewModel: HomeListViewModel
+
+    init(
+        collectionView: UICollectionView,
+        viewModel: HomeListViewModel,
+        rootViewController: UIViewController
+    ) {
         self.viewModel = viewModel
-        
+
         collectionView.register([
-            HomeListCell.self,
-            HomeListAdCell.self,
-            HomeListEmptyCell.self,
-            HomeListAdmobCell.self
+            HomeListStoreCell.self,
+            HomeListAdmobCell.self,
+            HomeListEmptyCell.self
         ])
-        collectionView.registerSectionHeader([HomeListHeaderCell.self])
-        
-        super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
-            switch itemIdentifier {
-            case .store(let storeWithExtra):
-                let cell: HomeListCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                
-                cell.bind(storeWithExtra)
+
+        super.init(collectionView: collectionView) { collectionView, indexPath, item in
+            switch item {
+            case .basicCard(let card):
+                let cell: HomeListStoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(card)
                 return cell
-            case .ad(let viewModel):
-                let cell: HomeListAdCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                
-                cell.bind(viewModel: viewModel, rootViewController: rootViewController)
-                return cell
-            case .admob:
+            case .admobCard:
                 let cell: HomeListAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(rootViewController: rootViewController)
                 return cell
-            case .emptyStore:
+            case .emptyCard:
                 let cell: HomeListEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 return cell
             }
         }
-        
-        collectionView.delegate = self
-        
-        self.supplementaryViewProvider = { collectionView, type, indexPath -> UICollectionReusableView? in
-            let headerView: HomeListHeaderCell = collectionView.dequeueReusableSupplementaryView(ofkind: UICollectionView.elementKindSectionHeader, indexPath: indexPath)
-            
-            headerView.isOnlyCertifiedButton
-                .controlPublisher(for: .touchUpInside)
-                .withUnretained(headerView)
-                .handleEvents(receiveOutput: { headerView, _ in
-                    headerView.isOnlyCertifiedButton.isSelected.toggle()
-                })
-                .mapVoid
-                .subscribe(viewModel.input.onToggleCertifiedStore)
-                .store(in: &headerView.cancellables)
-            
-            viewModel.output.isOnlyCertified
-                .receive(on: DispatchQueue.main)
-                .withUnretained(headerView)
-                .sink { headerView, isOnlyCertified in
-                    headerView.isOnlyCertifiedButton.isSelected = isOnlyCertified
-                }
-                .store(in: &headerView.cancellables)
-            
-            viewModel.output.categoryFilter
-                .receive(on: DispatchQueue.main)
-                .withUnretained(headerView)
-                .sink { (headerView: HomeListHeaderCell, category: StoreFoodCategoryResponse?) in
-                    headerView.bind(category: category)
-                }
-                .store(in: &headerView.cancellables)
 
-            viewModel.output.isOnlyBoss
-                .receive(on: DispatchQueue.main)
-                .withUnretained(headerView)
-                .sink { (headerView: HomeListHeaderCell, isOnlyBoss: Bool) in
-                    headerView.isOnlyCertifiedButton.isHidden = isOnlyBoss
-                }
-                .store(in: &headerView.cancellables)
-            return headerView
-        }
+        collectionView.delegate = self
     }
-    
+
     func reload(_ sections: [HomeListSection]) {
         var snapshot = HomeListSnapshot()
-        
-        sections.forEach {
-            snapshot.appendSections([$0])
-            snapshot.appendItems($0.items)
+        for section in sections {
+            snapshot.appendSections([section])
+            snapshot.appendItems(section.items, toSection: section)
         }
-        
-        apply(snapshot, animatingDifferences: true)
-    }
-}
-
-extension HomeListDataSource: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        switch itemIdentifier(for: indexPath) {
-        case .store(_):
-            viewModel.input.willDisplay.send(indexPath.row)
-        default:
-            break
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        switch itemIdentifier(for: indexPath) {
-        case .store(let storeWithExtra):
-            viewModel.input.onTapStore.send(storeWithExtra)
-        case .ad(let adCellViewModel):
-            viewModel.input.onTapAdvertisement.send(adCellViewModel.output.item)
-        default:
-            break
-        }
+        apply(snapshot, animatingDifferences: false)
     }
 }
 
 extension HomeListDataSource: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.input.didTapCard.send(indexPath.item)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        viewModel.input.willDisplay.send(indexPath.item)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = UIUtils.windowBounds.width
+        
         switch itemIdentifier(for: indexPath) {
-        case .store:
-            return HomeListCell.Layout.size
-        case .ad:
-            return HomeListAdCell.Layout.size
-        case .admob:
-            return HomeListAdmobCell.Layout.size
-        case .emptyStore:
-            return HomeListEmptyCell.Layout.size
+        case .basicCard(let response):
+            let height = HomeListStoreCell.Layout.height(response: response)
+            return CGSize(width: width, height: height)
+        case .admobCard:
+            let height = HomeListAdmobCell.Layout.height
+            return CGSize(width: width, height: height)
+        case .emptyCard:
+            let height = HomeListEmptyCell.Layout.height
+            return CGSize(width: width, height: height)
         case .none:
             return .zero
         }

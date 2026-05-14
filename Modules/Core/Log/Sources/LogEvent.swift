@@ -96,6 +96,23 @@ public struct ImpressionEvent: LogEventType {
 
         self.extraParameters = clickObject
     }
+
+    /// 서버 드리븐 SDImpressionLog 를 GA 노출 로그로 직렬화. 정적 케이스에 매핑되지 않은 화면명/파라미터 키도 raw 값 그대로 보존된다.
+    public init(impressionLog: SDImpressionLog) {
+        self.screen = ScreenName(rawValue: impressionLog.screenName)
+
+        var impressionObject: [ParameterName: Any] = [
+            .objectId: impressionLog.objectId,
+            .objectType: impressionLog.objectType
+        ]
+
+        for (key, value) in impressionLog.extraParameters {
+            guard let raw = value.anyValue else { continue }
+            impressionObject[ParameterName(rawValue: key)] = raw
+        }
+
+        self.extraParameters = impressionObject
+    }
 }
 
 public struct CustomEvent: LogEventType {

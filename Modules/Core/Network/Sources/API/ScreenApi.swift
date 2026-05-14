@@ -4,6 +4,7 @@ import Model
 
 enum ScreenApi {
     case fetchHomeFilterScreen
+    case fetchHomeSectionList(input: FetchHomeSectionListInput)
 }
 
 extension ScreenApi: RequestType {
@@ -11,12 +12,16 @@ extension ScreenApi: RequestType {
         switch self {
         case .fetchHomeFilterScreen:
             return nil
+        case .fetchHomeSectionList(let input):
+            return input
         }
     }
 
     var method: RequestMethod {
         switch self {
         case .fetchHomeFilterScreen:
+            return .get
+        case .fetchHomeSectionList:
             return .get
         }
     }
@@ -25,6 +30,8 @@ extension ScreenApi: RequestType {
         switch self {
         case .fetchHomeFilterScreen:
             return .json
+        case .fetchHomeSectionList:
+            return .location
         }
     }
 
@@ -32,6 +39,8 @@ extension ScreenApi: RequestType {
         switch self {
         case .fetchHomeFilterScreen:
             return "/api/v1/screen/home"
+        case .fetchHomeSectionList:
+            return "/api/v1/screen/home/section/list"
         }
     }
 }

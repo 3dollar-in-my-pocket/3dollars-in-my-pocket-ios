@@ -9,13 +9,26 @@ import SnapKit
 import Then
 
 final class HomeView: BaseView {
+    /// 바텀시트 short form 의 가시 영역 높이. HomeListLayout.Layout.tipVisibleHeight 와 동일.
+    private let bottomSheetShortFormHeight: CGFloat = HomeListLayout.Layout.tipVisibleHeight
+
     private let homeFilterSelectable: HomeFilterSelectable
     
     let mapView = NMFMapView().then {
         $0.positionMode = .direction
         $0.zoomLevel = 15
     }
-    
+
+    /// 바텀시트가 `.full` 상태일 때 상단 주소/필터 영역에도 시트와 동일한 배경색을 깔아 하나의 화면처럼 보이게 한다.
+    /// 평소(`.tip`) 에는 alpha 0 으로 지도를 보여주고, 시트가 끌어올려질수록 alpha 가 1 로 보간된다.
+    let topBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.systemWhite.color
+        view.alpha = 0
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+
     let addressButton = AddressButton()
     
     lazy var homeFilterCollectionView = HomeFilterCollectionView(homeFilterSelectable: homeFilterSelectable)
@@ -40,27 +53,6 @@ final class HomeView: BaseView {
         $0.layer.shadowColor = DesignSystemAsset.Colors.systemBlack.color.cgColor
         $0.layer.shadowOffset = CGSize(width: 2, height: 2)
         $0.layer.shadowOpacity = 0.1
-    }
-    
-    let listViewButton = UIButton().then {
-        $0.setImage(DesignSystemAsset.Icons.list.image.resizeImage(scaledTo: 16).withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
-        $0.setTitle(HomeStrings.homeListViewButton, for: .normal)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        $0.layer.cornerRadius = 20
-        $0.backgroundColor = DesignSystemAsset.Colors.gray80.color
-        $0.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
-        $0.contentEdgeInsets = .init(top: 11, left: 12, bottom: 11, right: 16)
-        $0.layer.shadowColor = DesignSystemAsset.Colors.systemBlack.color.cgColor
-        $0.layer.shadowOffset = CGSize(width: 2, height: 2)
-        $0.layer.shadowOpacity = 0.1
-    }
-    
-    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = .clear
-        $0.contentInset = .init(top: 0, left: 20, bottom: 0, right: 20)
-        $0.showsHorizontalScrollIndicator = false
-        $0.isPagingEnabled = false
     }
     
     let feedButton: UIButton = {
@@ -95,12 +87,11 @@ final class HomeView: BaseView {
     override func setup() {
         addSubViews([
             mapView,
+            topBackgroundView,
             researchButton,
             addressButton,
             homeFilterCollectionView,
             currentLocationButton,
-            listViewButton,
-            collectionView,
             feedButton
         ])
     }
@@ -109,18 +100,23 @@ final class HomeView: BaseView {
         mapView.snp.makeConstraints {
             $0.edges.equalTo(0)
         }
-        
+
         addressButton.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide)
             $0.left.equalToSuperview().offset(14)
             $0.right.equalToSuperview().offset(-14)
         }
-        
+
         homeFilterCollectionView.snp.makeConstraints {
             $0.left.equalToSuperview()
             $0.top.equalTo(addressButton.snp.bottom)
             $0.right.equalToSuperview()
             $0.height.equalTo(60)
+        }
+
+        topBackgroundView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(homeFilterCollectionView.snp.bottom)
         }
         
         researchButton.snp.makeConstraints { make in
@@ -131,26 +127,13 @@ final class HomeView: BaseView {
         
         currentLocationButton.snp.makeConstraints {
             $0.left.equalToSuperview().offset(20)
-            $0.bottom.equalTo(collectionView.snp.top).offset(-16)
+            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-bottomSheetShortFormHeight - 12)
             $0.width.height.equalTo(40)
         }
-        
-        listViewButton.snp.makeConstraints {
+
+        feedButton.snp.makeConstraints {
             $0.centerY.equalTo(currentLocationButton)
             $0.right.equalToSuperview().offset(-20)
-            $0.height.equalTo(40)
-        }
-        
-        collectionView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-15)
-            $0.height.equalTo(HomeStoreCardCell.Layout.size.height)
-        }
-        
-        feedButton.snp.makeConstraints {
-            $0.right.equalTo(listViewButton)
-            $0.bottom.equalTo(listViewButton.snp.top).offset(-12)
             $0.height.equalTo(44)
         }
     }
@@ -207,15 +190,12 @@ final class HomeView: BaseView {
             homeFilterTooltip?.removeFromSuperview()
         }
     }
-    
-    private func generateLayout() -> UICollectionViewLayout {
-        let layout = HomeCardFlowLayout()
-        layout.itemSize = HomeStoreCardCell.Layout.size
-        layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 12
-        layout.minimumInteritemSpacing = 12
-        
-        return layout
+
+    /// 바텀시트의 .tip → .full 진행도(0~1) 를 상단 배경 alpha 와 주소 버튼 테두리에 함께 매핑한다.
+    func updateTopBackground(progress: CGFloat) {
+        let clamped = max(0, min(1, progress))
+        topBackgroundView.alpha = clamped
+        addressButton.updateBorder(progress: clamped)
     }
     
     func startFeedButtonAnimation() {

@@ -6,13 +6,18 @@ import Kingfisher
 
 public extension UIButton {
     func setSDButton(_ sdButton: SDButton) {
-        setTitleColor(UIColor(hex: sdButton.text.fontColor), for: .normal)
-        
-        if sdButton.text.isHtml {
-            let attributedText = ZHTMLParserBuilder.initWithDefault().build().render(sdButton.text.text)
-            setAttributedTitle(attributedText, for: .normal)
+        if let sdText = sdButton.text {
+            setTitleColor(UIColor(hex: sdText.fontColor), for: .normal)
+
+            if sdText.isHtml {
+                let attributedText = ZHTMLParserBuilder.initWithDefault().build().render(sdText.text)
+                setAttributedTitle(attributedText, for: .normal)
+            } else {
+                setTitle(sdText.text, for: .normal)
+            }
         } else {
-            setTitle(sdButton.text.text, for: .normal)
+            setAttributedTitle(nil, for: .normal)
+            setTitle(nil, for: .normal)
         }
 
         if let image = sdButton.image,
