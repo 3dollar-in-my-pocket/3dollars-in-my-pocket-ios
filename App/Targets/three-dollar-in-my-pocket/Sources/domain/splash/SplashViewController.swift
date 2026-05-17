@@ -132,7 +132,8 @@ final class SplashViewController: BaseViewController {
     }
 
     private func goToMain() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        let delay: TimeInterval = viewModel.output.hasAdvertisement.value ? 2 : 0
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
                 sceneDelegate.goToMain()
             }
@@ -140,7 +141,8 @@ final class SplashViewController: BaseViewController {
     }
 
     private func goToSignIn() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        let delay: TimeInterval = viewModel.output.hasAdvertisement.value ? 2 : 0
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
                 sceneDelegate.goToSignIn()
             }

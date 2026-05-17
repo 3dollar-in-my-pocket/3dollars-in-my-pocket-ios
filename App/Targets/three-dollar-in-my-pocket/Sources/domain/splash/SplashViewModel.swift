@@ -25,6 +25,7 @@ final class SplashViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
         let showDefaultAlert = PassthroughSubject<Void, Never>()
         let showRetryAlert = PassthroughSubject<SplashError, Never>()
+        let hasAdvertisement = CurrentValueSubject<Bool, Never>(false)
     }
 
     enum Route {
@@ -147,6 +148,10 @@ final class SplashViewModel: BaseViewModel {
 
     private func loadSplashAdIfExisted() {
         guard let advertisement = dependency.preference.splashAd else { return }
+
+        if advertisement.image != nil {
+            output.hasAdvertisement.send(true)
+        }
 
         output.advertisement.send(advertisement)
     }
