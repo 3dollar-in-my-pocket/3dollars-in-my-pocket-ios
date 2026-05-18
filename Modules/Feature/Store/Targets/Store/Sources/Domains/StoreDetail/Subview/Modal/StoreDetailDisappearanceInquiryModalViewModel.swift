@@ -42,6 +42,7 @@ final class StoreDetailDisappearanceInquiryModalViewModel: BaseViewModel {
 
     struct State {
         var selectedReason: ReportReason?
+        var isInProgress: Bool = false
     }
 
     struct Dependency {
@@ -93,7 +94,7 @@ final class StoreDetailDisappearanceInquiryModalViewModel: BaseViewModel {
                 guard let reason = owner.output.reasons.value[safe: index] else { return }
                 owner.state.selectedReason = reason
                 owner.output.selectedIndex.send(index)
-                owner.output.isReportEnabled.send(true)
+                owner.emitIsReportEnabled()
                 owner.sendSelectReasonLog(reason: reason)
             }
             .store(in: &cancellables)
@@ -101,6 +102,9 @@ final class StoreDetailDisappearanceInquiryModalViewModel: BaseViewModel {
         input.didTapReport
             .withUnretained(self)
             .sink { (owner, _) in
+                guard !owner.state.isInProgress else { return }
+                owner.state.isInProgress = true
+                owner.emitIsReportEnabled()
                 owner.sendClickReportLog()
                 owner.reportStore()
             }
@@ -142,9 +146,16 @@ final class StoreDetailDisappearanceInquiryModalViewModel: BaseViewModel {
             case .success:
                 output.onReportSucceed.send(())
             case .failure(let error):
+                state.isInProgress = false
+                emitIsReportEnabled()
                 output.showErrorAlert.send(error)
             }
         }
+    }
+
+    private func emitIsReportEnabled() {
+        let enabled = state.selectedReason != nil && !state.isInProgress
+        output.isReportEnabled.send(enabled)
     }
 }
 

@@ -694,6 +694,14 @@ extension StoreDetailViewController {
         let delay = trigger?.displayAfterSeconds ?? 0
         let duration = trigger?.displayDurationSeconds
 
+        // delay 동안 모달은 hidden인데 hitTest를 잡아서 underlying 스크롤을 막음 → 슬라이드 시작 시점에만 인터랙션 허용
+        if delay > 0 {
+            view.isUserInteractionEnabled = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak view] in
+                view?.isUserInteractionEnabled = true
+            }
+        }
+
         UIView.animate(
             withDuration: 0.5,
             delay: delay,

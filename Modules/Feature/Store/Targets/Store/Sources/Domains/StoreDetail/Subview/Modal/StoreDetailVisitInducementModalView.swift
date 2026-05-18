@@ -117,6 +117,15 @@ final class StoreDetailVisitInducementModalView: BaseView, DismissibleStoreDetai
             .map { _ in VisitType.exists }
             .subscribe(viewModel.input.didTapVisit)
             .store(in: &cancellables)
+
+        viewModel.output.isInteractable
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner, interactable) in
+                owner.closedButton.isEnabled = interactable
+                owner.openedButton.isEnabled = interactable
+            }
+            .store(in: &cancellables)
     }
 }
 

@@ -19,12 +19,17 @@ final class StoreDetailVisitInducementModalViewModel: BaseViewModel {
         let openedButtonTitle: String
         let closedButtonTitle: String
 
+        let isInteractable = CurrentValueSubject<Bool, Never>(true)
         let onSuccessVisit = PassthroughSubject<String, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
     }
 
     struct Config {
         let storeId: Int
+    }
+
+    struct State {
+        var isInProgress: Bool = false
     }
 
     struct Dependency {
@@ -43,6 +48,7 @@ final class StoreDetailVisitInducementModalViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     private let config: Config
+    private var state = State()
     private let dependency: Dependency
 
     init(config: Config, dependency: Dependency = Dependency()) {
@@ -63,6 +69,9 @@ final class StoreDetailVisitInducementModalViewModel: BaseViewModel {
         input.didTapVisit
             .withUnretained(self)
             .sink { (owner, type: VisitType) in
+                guard !owner.state.isInProgress else { return }
+                owner.state.isInProgress = true
+                owner.output.isInteractable.send(false)
                 owner.sendClickVisitLog(type: type)
                 owner.visitStore(type: type)
             }
@@ -86,6 +95,8 @@ final class StoreDetailVisitInducementModalViewModel: BaseViewModel {
             case .success:
                 output.onSuccessVisit.send(Strings.DisplayItemModal.thanksToast)
             case .failure(let error):
+                state.isInProgress = false
+                output.isInteractable.send(true)
                 output.showErrorAlert.send(error)
             }
         }
